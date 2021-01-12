@@ -38,6 +38,7 @@ import javax.transaction.UserTransaction;
 
 import org.junit.Assert;
 
+import com.ibm.ws.testtooling.database.DatabaseVendor;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext;
 import com.ibm.ws.testtooling.testinfo.TestExecutionContext;
 import com.ibm.ws.testtooling.vehicle.JEEExecutionContextHelper;
@@ -260,30 +261,8 @@ public abstract class JPATestServlet extends FATServlet {
     protected static void executeDDL(String scriptName) throws Exception {
         fetchDatabaseMetadata();
 
-        String productName = "";
-        if (dbProductName.toLowerCase().contains("derby")) {
-            productName = "DERBY";
-        } else if (dbProductName.toLowerCase().contains("db2")) {
-            productName = "DB2";
-        } else if (dbProductName.toLowerCase().contains("informix")) {
-            productName = "INFORMIX";
-        } else if (dbProductName.toLowerCase().contains("hsql")) {
-            productName = "HSQL";
-        } else if (dbProductName.toLowerCase().contains("mysql")) {
-            productName = "MYSQL";
-        } else if (dbProductName.toLowerCase().contains("oracle")) {
-            productName = "ORACLE";
-        } else if (dbProductName.toLowerCase().contains("postgres")) {
-            productName = "POSTGRES";
-        } else if (dbProductName.toLowerCase().contains("sqlserver")) {
-            productName = "SQLSERVER";
-        } else if (dbProductName.toLowerCase().contains("microsoft sql server")) {
-            productName = "SQLSERVER";
-        } else if (dbProductName.toLowerCase().contains("sybase")) {
-            productName = "SYBASE";
-        }
-
-        scriptName = scriptName.replace("${dbvendor}", productName);
+        DatabaseVendor vendor = DatabaseVendor.resolveDBProduct(dbProductName);
+        scriptName = scriptName.replace("${dbvendor}", vendor.toString());
 
         System.out.println("*****");
 

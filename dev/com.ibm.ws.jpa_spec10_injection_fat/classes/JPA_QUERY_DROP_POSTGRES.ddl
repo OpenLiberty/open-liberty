@@ -1,3 +1,3 @@
-DROP TABLE ${schemaname}.NoResultEntity;
-DROP TABLE ${schemaname}.SimpleEntity;
-DROP TABLE ${schemaname}.BindParametersSimpleEntity;
+DROP TABLE NoResultEntity;
+DROP TABLE SimpleEntity;
+DROP TABLE BindParametersSimpleEntity;

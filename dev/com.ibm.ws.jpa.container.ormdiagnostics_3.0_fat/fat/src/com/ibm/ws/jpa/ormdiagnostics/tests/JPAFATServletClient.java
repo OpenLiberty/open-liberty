@@ -30,6 +30,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.config.Application;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
+import com.ibm.ws.testtooling.database.DatabaseVendor;
 
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -199,6 +200,7 @@ public class JPAFATServletClient extends FATServletClient {
 
     protected static final JavaArchive buildTestAPIJar() throws Exception {
         final JavaArchive testApiJar = ShrinkWrap.create(JavaArchive.class, "TestAPI.jar");
+        testApiJar.addPackage("com.ibm.ws.testtooling.database");
         testApiJar.addPackage("com.ibm.ws.testtooling.msgcli");
         testApiJar.addPackage("com.ibm.ws.testtooling.msgcli.jms");
         testApiJar.addPackage("com.ibm.ws.testtooling.msgcli.msc");

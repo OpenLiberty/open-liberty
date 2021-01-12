@@ -1,3 +1,3 @@
-DELETE FROM ${schemaname}.NoResultEntity;
-DELETE FROM ${schemaname}.SimpleEntity;
-DELETE FROM ${schemaname}.BindParametersSimpleEntity;
+DELETE FROM NoResultEntity;
+DELETE FROM SimpleEntity;
+DELETE FROM BindParametersSimpleEntity;

@@ -1,3 +1,5 @@
+DELETE FROM ${schemaname}.OPENJPA_SEQUENCE_TABLE;
+
 DELETE FROM ${schemaname}.Jpa2Address;
 DELETE FROM ${schemaname}.Jpa2Person;
 DELETE FROM ${schemaname}.JPAAddressBean;
@@ -17,4 +19,3 @@ DELETE FROM ${schemaname}.JPATypeTestBean;
 DELETE FROM ${schemaname}.JPAUsagePartTab;
 DELETE FROM ${schemaname}.JPAXYZ;
 DELETE FROM ${schemaname}.Person_residences;
-
