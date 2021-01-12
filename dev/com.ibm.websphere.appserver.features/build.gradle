@@ -72,20 +72,24 @@ task copyFeaturePiiFiles {
     Map<String,Properties> map = getFeatureMap()
     map.keySet().each { featureName ->
       Properties featureProps = map[featureName]
-      if ('public'.equals(featureProps['visibility'])) {
+      if (project.file('visibility/' + featureProps['visibility'] +'/' + featureProps['IBM-ShortName'] + '/resources').exists()) {
         copy {
-          from project.file('visibility/public/' + featureProps['IBM-ShortName'] + '/resources')
+          from project.file('visibility/' + featureProps['visibility'] +'/' + featureProps['IBM-ShortName'] + '/resources')
           into rootProject.file('build.pii.package/nlssrc/' + featureName)
           include 'l10n/*.properties'
         }
-      } else {
-          if (project.file(featureProps['visibility'] + '/' + featureProps['symbolicName'] + '/resources').exists()) {
-              copy {
-                  from project.file(featureProps['visibility'] + '/' + featureProps['symbolicName'] + '/resources')
-                  into rootProject.file('build.pii.package/nlssrc/' + featureName)
-                  include 'l10n/*.properties'
-              }
-          }
+      } else if (project.file(featureProps['visibility'] + '/' + featureProps['symbolicName'] + '/resources').exists()) {
+        copy {
+          from project.file(featureProps['visibility'] + '/' + featureProps['symbolicName'] + '/resources')
+          into rootProject.file('build.pii.package/nlssrc/' + featureName)
+          include 'l10n/*.properties'
+        }
+      } else if (project.file('visibility/auto/' + featureProps['IBM-ShortName'] + '/resources').exists()) {
+        copy {
+          from project.file('visibility/auto/' + featureProps['IBM-ShortName'] + '/resources')
+          into rootProject.file('build.pii.package/nlssrc/' + featureName)
+          include 'l10n/*.properties'
+        }
       }
     }
   }
@@ -163,15 +167,17 @@ task createFeatureResources {
       props.load(new FileInputStream(featureFile))
 
       String symbolicName = props['symbolicName']
+
       String kind = props['kind']
       if (kind == null) {
         throw new GradleException('Feature ' + symbolicName + ' does not contain a kind property')
       }
       String version = ('beta'.equals(kind) ? bnd.libertyBetaVersion : bnd.libertyServiceVersion)
+	  
+      String relPath = featureFile.getPath().replaceAll("\\\\", "/")
+      relPath = relPath.replace(projectDir.getPath().replaceAll("\\\\", "/") + '/visibility/', '')
 
-      String relPath = featureFile.getPath().replace(projectDir.getPath() + '/visibility/', '')
       def pathParts = relPath.split('/')
-      String visibility = pathParts[0]
       if (pathParts.length == 3) {
         copy {
           from new File(featureFolder, 'resources/l10n')
@@ -246,13 +252,19 @@ task publishFeatureResources {
       }
       String version = ('beta'.equals(kind) ? bnd.libertyBetaVersion : bnd.libertyServiceVersion)
 
-      String relPath = featureFile.getPath().replace(projectDir.getPath() + '/visibility/', '')
+      String relPath = featureFile.getPath().replaceAll("\\\\", "/")
+      relPath = relPath.replace(projectDir.getPath().replaceAll("\\\\", "/") + '/visibility/', '')
+	  
       def pathParts = relPath.split('/')
-      String visibility = pathParts[0]
       if (pathParts.length == 3) {
+
         copy {
           from new File(featureFolder, 'resources/l10n')
           into buildImage.file('wlp/lib/features/l10n')
+        }
+        copy {
+          from new File(featureFolder, 'resources/icons')
+          into buildImage.file('wlp/lib/features/icons')
         }
       }
 
@@ -294,30 +306,6 @@ task publishFeatureResources {
     }
   }
 }
-
-task publishAdminCenter {
-  inputs.dir project.file('visibility/public/adminCenter-1.0')
-  outputs.dir buildImage.file('wlp/lib/features')
-  doLast {
-    copy {
-        from new File(projectDir, 'visibility/public/adminCenter-1.0/resources')
-        into buildImage.file('wlp/lib/features')
-    }
-    copy {
-        from new File(projectDir, 'visibility/private/explore-1.0/resources')
-        into buildImage.file('wlp/lib/features')
-    }
-    copy {
-        from new File(projectDir, 'visibility/auto/javaBatch-1.0/resources')
-        into buildImage.file('wlp/lib/features')
-    }
-    copy {
-        from new File(projectDir, 'visibility/private/serverConfig-1.0/resources')
-        into buildImage.file('wlp/lib/features')
-    }
-  }
-}
-assemble.dependsOn publishAdminCenter
 
 publishing {
   publications {
