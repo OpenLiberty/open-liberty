@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -205,18 +205,18 @@ public class PostgreSQLTest extends FATServletClient {
     public void testDBRecoveryCompeteForLog() throws Exception {
         final String method = "testDBRecoveryCompeteForLog";
 
-        startServers(server1);
+        startServers(longLeaseLengthServer1);
 
         try {
-            runTestWithResponse(server1, SERVLET_NAME, "modifyLeaseOwner");
+            runTestWithResponse(longLeaseLengthServer1, SERVLET_NAME, "modifyLeaseOwner");
 
             // We expect this to fail since it is gonna crash the server
-            runTestWithResponse(server1, SERVLET_NAME, "setupRec001");
+            runTestWithResponse(longLeaseLengthServer1, SERVLET_NAME, "setupRec001");
         } catch (Throwable e) {
         }
 
-        assertNotNull(server1.getServerName() + " didn't crash properly", server1.waitForStringInLog("Dump State:"));
-
+        assertNotNull(longLeaseLengthServer1.getServerName() + " didn't crash properly", longLeaseLengthServer1.waitForStringInLog("Dump State:"));
+        longLeaseLengthServer1.postStopServerArchive(); // must explicitly collect since crashed server
         // Need to ensure we have a long (5 minute) timeout for the lease, otherwise we may decide that we CAN delete
         // and renew our own lease. longLeasLengthServer1 is a clone of server1 with a longer lease length.
 
@@ -236,7 +236,7 @@ public class PostgreSQLTest extends FATServletClient {
             Log.error(getClass(), "recoveryTestCompeteForLock", ex);
             throw ex;
         }
-
+        longLeaseLengthServer1.postStopServerArchive(); // must explicitly collect since server start failed
         // defect 210055: Now start cloud2 so that we can tidy up the environment, otherwise cloud1
         // is unstartable because its lease is owned by cloud2.
         server2.setHttpDefaultPort(cloud2ServerPort);
