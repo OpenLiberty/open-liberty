@@ -1,18 +1,16 @@
 #!/bin/bash
 # This script performs validation for PRs that will fail if a fat was created/renamed/removed but not updated in test-categories
-
 TEST_CATEGORY_DIR=$PWD/.github/test-categories/
 DEV_DIR=$PWD/dev
 TEMP_COMPAR_DIR=$PWD/category-comparison/
 
 if [ ! -d $TEMP_COMPAR_DIR ]; then 
     mkdir $TEMP_COMPAR_DIR
-    touch $TEMP_COMPAR_DIR/expected
-    touch $TEMP_COMPAR_DIR/actual
 fi
 
 #Collect existing fats in test-categories
-awk 1 $TEST_CATEGORY_DIR/* > $TEMP_COMPAR_DIR/expected
+awk 1 $TEST_CATEGORY_DIR* > $TEMP_COMPAR_DIR/expectedTmp
+awk '!/^ *#/ && NF' $TEMP_COMPAR_DIR/expectedTmp >> $TEMP_COMPAR_DIR/expected # Remove any comments or whitespace from from test-category files
 sort -o $TEMP_COMPAR_DIR/expected $TEMP_COMPAR_DIR/expected
 
 #Collect actual fats that exist in file system
@@ -32,14 +30,14 @@ then
     testsAdded=$(cat $TEMP_COMPAR_DIR/diff | grep ">" )
     testsRemoved=$(cat $TEMP_COMPAR_DIR/diff | grep "<" )
     if [ ! -z "$testsAdded" ]; then
-        echo "::error::The following fat(s) need to be added to a category: $testsAdded"
+        echo "::error::The following fat(s) need to be added to a category under .github/test-categories: $testsAdded"
     fi
 
     if [ ! -z "$testsRemoved" ]; then
-        echo "::error::The following fat(s) need to be removed from a category: $testsRemoved"
+        echo "::error::The following fat(s) need to be removed from a category under .github/test-categories: $testsRemoved"
     fi
     
     exit 1;
 else 
-    echo "Validate new tests resulted in the same list of fat tests."
+    echo "List of tests in .github/test-categories matches the list of projects with '_fat' in the name"
 fi
