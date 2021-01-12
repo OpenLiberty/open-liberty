@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015,2020 IBM Corporation and others.
+ * Copyright (c) 2015,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@ import java.util.concurrent.CancellationException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Delayed;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -197,8 +198,10 @@ class SchedulingRunnableFixedHelper<V> implements ScheduledFuture<Object>, Runna
         if (m_pendingException != null) {
             if (m_pendingException instanceof ExecutionException) {
                 throw (ExecutionException) m_pendingException;
-            } else {
+            } else if (m_pendingException instanceof RuntimeException) {
                 throw (RuntimeException) m_pendingException;
+            } else {
+                throw new RejectedExecutionException(m_pendingException);
             }
         }
 
@@ -219,8 +222,10 @@ class SchedulingRunnableFixedHelper<V> implements ScheduledFuture<Object>, Runna
         if (m_pendingException != null) {
             if (m_pendingException instanceof ExecutionException) {
                 throw (ExecutionException) m_pendingException;
-            } else {
+            } else if (m_pendingException instanceof RuntimeException) {
                 throw (RuntimeException) m_pendingException;
+            } else {
+                throw new RejectedExecutionException(m_pendingException);
             }
         }
 
