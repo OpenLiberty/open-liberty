@@ -4625,6 +4625,76 @@ public class PolicyExecutorServlet extends FATServlet {
 
     /**
      * Use a policy executor config change to suspend a repeating task while it is running
+     * on the Liberty Scheduled Executor. Also stop the policy executor while it is still running.
+     * Also tests the getMaxConcurrency and isSuspended operations.
+     */
+    @Test
+    public void testLibertyScheduledExecutorSuspendAndShutDownWhileRunning() throws Exception {
+        PolicyExecutor executor = provider.create("testLibertyScheduledExecutorSuspendAndStopWhileRunning")
+                        .maxConcurrency(6)
+                        .expedite(6);
+
+        assertEquals(6, executor.getMaxConcurrency());
+        assertFalse(executor.isSuspended());
+
+        CountDownLatch suspendRequested = new CountDownLatch(1);
+        CountDownLatch blocker = new CountDownLatch(1);
+
+        ScheduledBlockingQueueTask task1 = new ScheduledBlockingQueueTask(executor, () -> {
+            // Suspend the policy executor by reconfiguring it
+            Map<String, Object> suspendConfig = new TreeMap<String, Object>();
+            suspendConfig.put("expedite", 0);
+            suspendConfig.put("max", 0);
+            suspendConfig.put("maxPolicy", MaxPolicy.loose.name());
+            suspendConfig.put("maxWaitForEnqueue", 0l);
+            suspendConfig.put("runIfQueueFull", false);
+            executor.updateConfig(suspendConfig);
+            suspendRequested.countDown();
+
+            assertEquals(0, executor.getMaxConcurrency());
+
+            try {
+                blocker.await(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+            } catch (InterruptedException x) {
+                throw new CompletionException(x);
+            }
+        });
+
+        try {
+            ScheduledFuture<?> future1 = libertyScheduledExecutor.schedule(task1, 16, TimeUnit.MILLISECONDS);
+
+            // wait for the suspend to happen on the timer thread
+            assertTrue(suspendRequested.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+            assertFalse(executor.isSuspended());
+            assertFalse(executor.isShutdown());
+            assertFalse(executor.isTerminated());
+            assertFalse(executor.awaitTermination(26, TimeUnit.MILLISECONDS));
+
+            executor.shutdown();
+
+            assertFalse(executor.isSuspended());
+            assertTrue(executor.isShutdown());
+            assertFalse(executor.awaitTermination(36, TimeUnit.MILLISECONDS));
+            assertFalse(executor.isTerminated());
+
+            // allow the task to end so the executor can terminate
+            blocker.countDown();
+            future1.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+
+            assertEquals(0, executor.getMaxConcurrency());
+
+            assertTrue(executor.isShutdown());
+            assertTrue(executor.awaitTermination(46, TimeUnit.MILLISECONDS));
+            assertTrue(executor.isTerminated());
+            assertFalse(executor.isSuspended());
+        } finally {
+            blocker.countDown();
+        }
+    }
+
+    /**
+     * Use a policy executor config change to suspend a repeating task while it is running
      * on the Liberty Scheduled Executor.
      */
     @Test
@@ -4642,6 +4712,9 @@ public class PolicyExecutorServlet extends FATServlet {
             suspendConfig.put("maxWaitForEnqueue", 0l);
             suspendConfig.put("runIfQueueFull", false);
             executor.updateConfig(suspendConfig);
+
+            // Suspend doesn't complete until active tasks finish, and this task is still running
+            assertFalse(executor.isSuspended());
         };
 
         ScheduledBlockingQueueTask task1 = new ScheduledBlockingQueueTask(executor, null, suspendOnSecondExecution);
@@ -4651,6 +4724,12 @@ public class PolicyExecutorServlet extends FATServlet {
             // First two executions should occur, and then the task should suspend the executor,
             assertEquals(Integer.valueOf(1), task1.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
             assertEquals(Integer.valueOf(2), task1.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+            // wait for suspend to finish if it hasn't already
+            boolean suspendCompleted = false;
+            for (long start = System.nanoTime(); !suspendCompleted && System.nanoTime() - start < TIMEOUT_NS; TimeUnit.MILLISECONDS.sleep(100))
+                suspendCompleted = executor.isSuspended();
+            assertTrue(suspendCompleted);
 
             // While suspended, no further executions should occur
             assertNull(task1.poll(300, TimeUnit.MILLISECONDS));
@@ -4663,6 +4742,8 @@ public class PolicyExecutorServlet extends FATServlet {
             resumeConfig.put("maxWaitForEnqueue", 0l);
             resumeConfig.put("runIfQueueFull", false);
             executor.updateConfig(resumeConfig);
+
+            assertFalse(executor.isSuspended());
 
             // Task executes repeatedly
             assertEquals(Integer.valueOf(3), task1.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
