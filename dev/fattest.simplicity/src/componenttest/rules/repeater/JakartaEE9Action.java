@@ -224,7 +224,7 @@ public class JakartaEE9Action extends FeatureReplacementAction {
 
         // Setup file output stream and only keep if we fail
         FileOutputStream fos = null;
-        File outputLog = new File("results/transformer_output.log");
+        File outputLog = new File("results/transformer_" + appPath.getFileName() + ".log");
         try {
             fos = new FileOutputStream(outputLog);
         } catch (FileNotFoundException e1) {
