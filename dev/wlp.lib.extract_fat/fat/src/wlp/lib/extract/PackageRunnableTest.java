@@ -80,7 +80,7 @@ public class PackageRunnableTest {
             File manifest = new File(server.getInstallRoot(), "lib/extract/META-INF/MANIFEST.MF");
             if (!manifest.exists()) {
                 Log.info(c, method, "Manifest did not exist. Sleeping - " + timeout + " seconds elapsed.");
-                Thread.sleep(1);
+                Thread.sleep(1000);
             } else {
                 Log.info(c, method, "Manifest was found in " + server.getInstallRoot() + "/lib/extract/META-INF/MANIFEST.MF with size = " + manifest.length());
                 break;
