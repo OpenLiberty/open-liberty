@@ -101,8 +101,6 @@ public class ArtifactDownloaderUtils {
         }
     }
 
-
-
     public static List<String> acquireFeatureURLs(List<String> mavenCoords, String repo) {
         List<String> result = new ArrayList<String>();
         for (String coord : mavenCoords) {
@@ -224,6 +222,15 @@ public class ArtifactDownloaderUtils {
                 throw ExceptionUtils.createByKey("ERROR_FAILED_TO_CONNECT_MAVEN"); //503
             }
         }
+    }
+
+    public static String getMavenCoordFromPath(String coordPath, String groupID) {
+        String result = coordPath;
+        String[] resSplit = result.split(File.separator);
+        String artifactID = resSplit[(resSplit.length - 3)];
+        String version = resSplit[(resSplit.length - 2)];
+        result = groupID + ":" + artifactID + ":" + version;
+        return result;
     }
 
 }
