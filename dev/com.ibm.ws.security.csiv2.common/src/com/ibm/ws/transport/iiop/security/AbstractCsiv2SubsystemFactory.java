@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.transport.iiop.security;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -18,6 +17,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -68,7 +68,7 @@ public abstract class AbstractCsiv2SubsystemFactory extends SubsystemFactory {
     private ScheduledExecutorService executor;
     protected String defaultAlias;
     private Collection<String> sslRefs = Collections.emptyList();
-    private final List<ReadyRegistration> regs = new ArrayList<ReadyRegistration>();
+    private final CopyOnWriteArrayList<ReadyRegistration> regs = new CopyOnWriteArrayList<ReadyRegistration>();
 
     @Reference
     protected void setRegister(Register providerRegistry) {
