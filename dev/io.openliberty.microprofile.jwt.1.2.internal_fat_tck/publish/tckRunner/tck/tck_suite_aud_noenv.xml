@@ -55,9 +55,14 @@
 
             <class name="org.eclipse.microprofile.jwt.tck.container.jaxrs.RsaKeySignatureTest" />
             
-            <!-- EmptyTokenTest - Blocked 14011 
-            <class name="org.eclipse.microprofile.jwt.tck.container.jaxrs.EmptyTokenTest" />
-            -->
+            <!-- EmptyTokenTest invalidToken test is disabled - Blocked 14732  -->
+           
+            <class name="org.eclipse.microprofile.jwt.tck.container.jaxrs.EmptyTokenTest" >
+  				  <methods>
+       				 <exclude name="invalidToken" />
+    			  </methods>
+			</class>
+            
             
             <class name="org.eclipse.microprofile.jwt.tck.container.jaxrs.CookieTokenTest" />
 
