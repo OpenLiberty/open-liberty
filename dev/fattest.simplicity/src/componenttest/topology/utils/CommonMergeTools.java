@@ -76,8 +76,8 @@ public class CommonMergeTools {
     public boolean mergeFile(String serverXmlPath, String autoFVTPath, String serverRootLoc) {
 
         String methodName = "mergeFile";
-        autoFVTDir = autoFVTPath;
-        autoFVTServerRoot = serverRootLoc;
+        autoFVTDir = autoFVTPath.replace("\\", "/");
+        autoFVTServerRoot = serverRootLoc.replace("\\", "/");
 
         /*
          * Get XML document.
