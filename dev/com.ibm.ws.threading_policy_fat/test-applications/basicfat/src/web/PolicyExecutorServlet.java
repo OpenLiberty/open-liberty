@@ -4155,7 +4155,6 @@ public class PolicyExecutorServlet extends FATServlet {
      * Uses ScheduledPolicyExecutorTask to schedule a one-shot Callable task for the
      * Liberty scheduled executor to run on a policy executor.
      */
-    @AllowedFFDC("java.util.concurrent.RejectedExecutionException") // when we intentionally schedule a task beyond the queue capacity
     @Test
     public void testLibertyScheduledExecutorRunsCallableOnPolicyExecutor() throws Exception {
         PolicyExecutor executor = provider.create("testLibertyScheduledExecutorRunsCallableOnPolicyExecutor")
@@ -4189,12 +4188,9 @@ public class PolicyExecutorServlet extends FATServlet {
             try {
                 Boolean result = future3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
                 fail(future3 + " should not be able to run with queue full and concurrency at maximum. Result: " + result);
-            } catch (Exception x) {
+            } catch (RejectedExecutionException x) {
                 // Expect CWWKE1201E for exceeding queue capacity
-                boolean found = false;
-                for (Throwable cause = x; !found && cause != null; cause = cause.getCause())
-                    found = cause.getMessage() != null && cause.getMessage().startsWith("CWWKE1201E");
-                if (!found)
+                if (x.getMessage() == null || !x.getMessage().startsWith("CWWKE1201E"))
                     throw new RuntimeException("Test failed. See cause.", x);
             }
 
@@ -4232,8 +4228,7 @@ public class PolicyExecutorServlet extends FATServlet {
      */
     @AllowedFFDC({
                    "java.lang.NullPointerException", // test case schedules a task that intentionally raises this exception
-                   "java.util.concurrent.CompletionException", // can be raised by test task when cancel interrupts it
-                   "java.util.concurrent.RejectedExecutionException" // when we intentionally schedule a task beyond the queue capacity
+                   "java.util.concurrent.CompletionException" // can be raised by test task when cancel interrupts it
     })
     @Test
     public void testLibertyScheduledExecutorRunsFixedDelayTaskOnPolicyExecutor() throws Exception {
@@ -4269,12 +4264,9 @@ public class PolicyExecutorServlet extends FATServlet {
             try {
                 future3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
                 fail(future3 + " should not be able to run with queue full and concurrency at maximum.");
-            } catch (Exception x) {
+            } catch (RejectedExecutionException x) {
                 // Expect CWWKE1201E for exceeding queue capacity
-                boolean found = false;
-                for (Throwable cause = x; !found && cause != null; cause = cause.getCause())
-                    found = cause.getMessage() != null && cause.getMessage().startsWith("CWWKE1201E");
-                if (!found)
+                if (x.getMessage() == null || !x.getMessage().startsWith("CWWKE1201E"))
                     throw new RuntimeException("Test failed. See cause.", x);
             }
 
@@ -4330,8 +4322,7 @@ public class PolicyExecutorServlet extends FATServlet {
      */
     @AllowedFFDC({
                    "java.lang.NullPointerException", // test case schedules a task that intentionally raises this exception
-                   "java.util.concurrent.CompletionException", // can be raised by test task when cancel interrupts it
-                   "java.util.concurrent.RejectedExecutionException" // when we intentionally schedule a task beyond the queue capacity
+                   "java.util.concurrent.CompletionException" // can be raised by test task when cancel interrupts it
     })
     @Test
     public void testLibertyScheduledExecutorRunsFixedRateTaskOnPolicyExecutor() throws Exception {
@@ -4367,12 +4358,9 @@ public class PolicyExecutorServlet extends FATServlet {
             try {
                 future3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
                 fail(future3 + " should not be able to run with queue full and concurrency at maximum.");
-            } catch (Exception x) {
+            } catch (RejectedExecutionException x) {
                 // Expect CWWKE1201E for exceeding queue capacity
-                boolean found = false;
-                for (Throwable cause = x; !found && cause != null; cause = cause.getCause())
-                    found = cause.getMessage() != null && cause.getMessage().startsWith("CWWKE1201E");
-                if (!found)
+                if (x.getMessage() == null || !x.getMessage().startsWith("CWWKE1201E"))
                     throw new RuntimeException("Test failed. See cause.", x);
             }
 
@@ -4426,7 +4414,6 @@ public class PolicyExecutorServlet extends FATServlet {
      * Uses ScheduledPolicyExecutorTask to schedule a one-shot Runnable task for the
      * Liberty scheduled executor to run on a policy executor.
      */
-    @AllowedFFDC("java.util.concurrent.RejectedExecutionException") // when we intentionally schedule a task beyond the queue capacity
     @Test
     public void testLibertyScheduledExecutorRunsRunnableOnPolicyExecutor() throws Exception {
         PolicyExecutor executor = provider.create("testLibertyScheduledExecutorRunsRunnableOnPolicyExecutor")
@@ -4465,12 +4452,9 @@ public class PolicyExecutorServlet extends FATServlet {
             try {
                 future4.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
                 fail(future4 + " should not be able to run with queue full and concurrency at maximum.");
-            } catch (Exception x) {
+            } catch (RejectedExecutionException x) {
                 // Expect CWWKE1201E for exceeding queue capacity
-                boolean found = false;
-                for (Throwable cause = x; !found && cause != null; cause = cause.getCause())
-                    found = cause.getMessage() != null && cause.getMessage().startsWith("CWWKE1201E");
-                if (!found)
+                if (x.getMessage() == null || !x.getMessage().startsWith("CWWKE1201E"))
                     throw new RuntimeException("Test failed. See cause.", x);
             }
 

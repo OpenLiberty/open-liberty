@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015,2020 IBM Corporation and others.
+ * Copyright (c) 2015,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,6 +23,10 @@ import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.RunnableScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+
+import com.ibm.ws.ffdc.FFDCFilter;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.threading.ScheduledPolicyExecutorTask;
 
 /**
  * Base Wrapper for the Scheduled Runnable/Callable returned on overridden schedule methods. It's used to present a consistent state of the
@@ -73,9 +77,9 @@ class SchedulingHelper<V> implements RunnableScheduledFuture<V> {
      * get() -- Waits until cancelled or executor ends or exception one Task, then Throws??
      *
      * @throws CancellationException if the computation was cancelled
-     * @throws RuntimeException      we encountered a problem on our way to dispatching the Task
+     * @throws Exception             we encountered a problem on our way to dispatching the Task
      */
-    RuntimeException m_pendingException = null;
+    Exception m_pendingException = null;
 
     /**
      * The queue from whence this SchedulingHelper instance was originally put.
@@ -236,8 +240,12 @@ class SchedulingHelper<V> implements RunnableScheduledFuture<V> {
     public V get() throws InterruptedException, ExecutionException {
         this.m_coordinationLatch.await();
 
-        if (m_pendingException != null) {
-            throw m_pendingException;
+        if (m_pendingException instanceof RuntimeException) {
+            throw (RuntimeException) m_pendingException;
+        } else if (m_pendingException instanceof ExecutionException) {
+            throw (ExecutionException) m_pendingException;
+        } else if (m_pendingException != null) {
+            throw new RejectedExecutionException(m_pendingException);
         }
 
         return m_defaultFuture.get();
@@ -254,8 +262,12 @@ class SchedulingHelper<V> implements RunnableScheduledFuture<V> {
             throw new TimeoutException();
         }
 
-        if (m_pendingException != null) {
-            throw m_pendingException;
+        if (m_pendingException instanceof RuntimeException) {
+            throw (RuntimeException) m_pendingException;
+        } else if (m_pendingException instanceof ExecutionException) {
+            throw (ExecutionException) m_pendingException;
+        } else if (m_pendingException != null) {
+            throw new RejectedExecutionException(m_pendingException);
         }
 
         return m_defaultFuture.get(timeout, unit);
@@ -276,6 +288,7 @@ class SchedulingHelper<V> implements RunnableScheduledFuture<V> {
      *
      * @see java.lang.Runnable#run()
      */
+    @FFDCIgnore(Exception.class)
     @Override
     public void run() {
         try {
@@ -290,15 +303,29 @@ class SchedulingHelper<V> implements RunnableScheduledFuture<V> {
             this.m_executor.execute(futureTask);
             this.m_scheduledExecutorQueue.remove(this);
         } catch (Exception e) {
-            this.m_pendingException = new RuntimeException(e);
+            ScheduledPolicyExecutorTask pxtask = null;
+            SchedulingRunnableFixedHelper<?> repeatingTaskFuture = null;
+            if (m_task instanceof ScheduledPolicyExecutorTask) {
+                pxtask = (ScheduledPolicyExecutorTask) m_task;
+            } else if (m_task instanceof SchedulingRunnableFixedHelper) {
+                repeatingTaskFuture = (SchedulingRunnableFixedHelper<?>) m_task;
+                if (repeatingTaskFuture.m_runnable instanceof ScheduledPolicyExecutorTask)
+                    pxtask = (ScheduledPolicyExecutorTask) repeatingTaskFuture.m_runnable;
+            }
+
+            // If a callback is available to handle the failure, invoke it. Otherwise, log to FFDC.
+            if (pxtask == null) {
+                this.m_pendingException = new RuntimeException(e);
+                FFDCFilter.processException(e, getClass().getName(), "315", this);
+            } else {
+                this.m_pendingException = pxtask.resubmitFailed(e);
+            }
+
             // If this SchedulingHelper is unable to invoke a SchedulingRunnableFixedHelper (for a repeating task),
             // then let the SchedulingRunnableFixedHelper know that it has failed and will never run:
-            if (m_task instanceof SchedulingRunnableFixedHelper) {
-                SchedulingRunnableFixedHelper<?> repeatingTaskFuture = (SchedulingRunnableFixedHelper<?>) m_task;
-                if (repeatingTaskFuture.m_pendingException == null) {
-                    repeatingTaskFuture.m_pendingException = new RejectedExecutionException(e);
-                    repeatingTaskFuture.m_coordinationLatch.countDown();
-                }
+            if (repeatingTaskFuture != null && repeatingTaskFuture.m_pendingException == null) {
+                repeatingTaskFuture.m_pendingException = this.m_pendingException;
+                repeatingTaskFuture.m_coordinationLatch.countDown();
             }
             return;
         } finally {
