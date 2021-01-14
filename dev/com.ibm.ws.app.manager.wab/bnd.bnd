@@ -51,11 +51,13 @@ jakartaeeMe: true
 	com.ibm.ws.webcontainer;version=latest,\
 	com.ibm.ws.app.manager;version=latest,\
 	com.ibm.ws.app.manager.module;version=latest,\
-    com.ibm.ws.runtime.update,\
+	com.ibm.ws.runtime.update,\
 	com.ibm.ws.threading,\
 	com.ibm.websphere.appserver.spi.javaeedd;version=latest,\
 	com.ibm.ws.eba.wab.integrator;version=latest,\
 	com.ibm.ws.javaee.dd;version=latest,\
 	com.ibm.ws.javaee.dd.common;version=latest,\
-	com.ibm.ws.org.eclipse.equinox.region;version=latest, \
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+	com.ibm.ws.org.eclipse.equinox.region;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.ws.kernel.boot;version=latest,\
+	com.ibm.ws.transport.http;version=latest

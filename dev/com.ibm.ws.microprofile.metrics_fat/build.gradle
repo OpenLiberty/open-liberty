@@ -10,5 +10,6 @@
  *******************************************************************************/
 	
 dependencies {
+  requiredLibs project(':com.ibm.ws.kernel.boot')
 }
 

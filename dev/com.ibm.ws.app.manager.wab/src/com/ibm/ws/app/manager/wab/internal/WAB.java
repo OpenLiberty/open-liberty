@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 IBM Corporation and others.
+ * Copyright (c) 2012, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@ package com.ibm.ws.app.manager.wab.internal;
 
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 import javax.servlet.ServletContext;
@@ -24,12 +25,15 @@ import org.osgi.framework.Version;
 import org.osgi.service.event.Event;
 import org.osgi.util.tracker.BundleTrackerCustomizer;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.app.manager.module.DeployedModuleInfo;
 import com.ibm.ws.app.manager.wab.internal.WABState.State;
 import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
 import com.ibm.ws.container.service.app.deploy.extended.ModuleContainerInfo;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 
 /**
@@ -57,7 +61,12 @@ import com.ibm.wsspi.kernel.service.utils.FrameworkState;
  */
 class WAB implements BundleTrackerCustomizer<WAB> {
 
+    private static final TraceComponent tc = Tr.register(WAB.class);
+
     static final String OSGI_WEB_EVENT_TOPIC_PREFIX = "org/osgi/service/web/";
+    private static final String OPS_VIRTUAL_HOST = "liberty_ops_host";
+    private static final String ADMIN_VIRTUAL_HOST = "liberty_admin_host";
+    private static final String EARLY_ACCESS = "EARLY_ACCESS";
 
     private static final Bundle extenderBundle;
     private static final long extenderId;
@@ -79,10 +88,12 @@ class WAB implements BundleTrackerCustomizer<WAB> {
     private final WABInstaller installer;
     private final String rawVirtualHost;
     private final String resolvedVirtualHost;
+    private final Boolean isBeta;
 
     private final WABTracker<WAB> trackerForThisWAB;
 
-    private static class AddRemoveLock extends Object {};
+    private static class AddRemoveLock extends Object {
+    };
 
     private final AddRemoveLock addRemoveLock = new AddRemoveLock();
 
@@ -95,6 +106,7 @@ class WAB implements BundleTrackerCustomizer<WAB> {
         this.wabBundleVersion = wabBundle.getVersion();
         this.wabContextPath = wabContextPath;
         this.installer = installer;
+        this.isBeta = isBeta();
         this.rawVirtualHost = wabBundle.getHeaders().get("OL-VirtualHost");
         this.resolvedVirtualHost = resolveVirtualHost();
         trackerForThisWAB = installer.getTracker(this);
@@ -240,17 +252,29 @@ class WAB implements BundleTrackerCustomizer<WAB> {
     }
 
     private String resolveVirtualHost() {
-        if (rawVirtualHost == null) return null;
-    
-        if (rawVirtualHost.startsWith("${")) {
-            String resolvedVirtHost = installer.resolveVariable(rawVirtualHost);
-            if (rawVirtualHost.equals(resolvedVirtHost)) {
+        if (rawVirtualHost == null) {
+            return null;
+        }
+        if (!isBeta()) {
+            if (rawVirtualHost.equals(OPS_VIRTUAL_HOST) || rawVirtualHost.equals(ADMIN_VIRTUAL_HOST)) {
                 return null;
-            } else {
-                return resolvedVirtHost;
             }
         }
-        return rawVirtualHost;
+        if (rawVirtualHost.equals(OPS_VIRTUAL_HOST)) {
+            if (installer.isVirtualHostValid(OPS_VIRTUAL_HOST)) {
+                return OPS_VIRTUAL_HOST;
+            } else if (installer.isVirtualHostValid(ADMIN_VIRTUAL_HOST)) {
+                return ADMIN_VIRTUAL_HOST;
+            } else {
+                return null;
+            }
+        }
+        //need to change ${admin.virtual.host} to admin_host in bundles
+        if (installer.isVirtualHostValid(rawVirtualHost)) {
+            return rawVirtualHost;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -664,5 +688,21 @@ class WAB implements BundleTrackerCustomizer<WAB> {
             trackerForThisWAB.close();
             installer.wabLifecycleDebug("SubTracker closed.", WAB.this, wabBundle.getState());
         }
+    }
+
+    private boolean isBeta() {
+        try {
+            final Map<String, ProductInfo> productInfos = ProductInfo.getAllProductInfo();
+
+            for (ProductInfo info : productInfos.values()) {
+                if (EARLY_ACCESS.equals(info.getEdition())) {
+                    return true;
+                }
+            }
+        } catch (Exception e) {
+            Tr.debug(tc, "Exception getting InstalledProductInfo: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return false;
     }
 }

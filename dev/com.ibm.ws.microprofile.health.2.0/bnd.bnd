@@ -17,7 +17,7 @@ Bundle-SymbolicName: com.ibm.ws.microprofile.health.2.0
 Bundle-Description:MicroProfile Health Check 2.0 Implementation; version ${bVersion}
 
 Web-ContextPath: health
-OL-VirtualHost: ${admin.virtual.host}
+OL-VirtualHost: liberty_ops_host
 
 WS-TraceGroup: HEALTH
 
