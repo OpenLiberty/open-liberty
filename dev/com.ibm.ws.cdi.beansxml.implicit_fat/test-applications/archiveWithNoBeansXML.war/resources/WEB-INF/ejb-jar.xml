@@ -10,21 +10,21 @@
 		<session>
 			<ejb-name>SimpleEJB</ejb-name>
 			<ejb-class>
-				com.ibm.ws.cdi12.test.ejbsNoBeansXml.ManagedSimpleBean
+				com.ibm.ws.cdi.beansxml.implicit.apps.ejb.ManagedSimpleBean
 			</ejb-class>
 			<session-type>Stateful</session-type>
 		</session>
 		<session>
             <ejb-name>OtherSimpleEJB</ejb-name>
             <ejb-class>
-                    com.ibm.ws.cdi12.test.ejbsNoBeansXml.EjbImpl
+                    com.ibm.ws.cdi.beansxml.implicit.apps.ejb.EjbImpl
             </ejb-class>
             <session-type>Stateful</session-type>
         </session>
         <session>
             <ejb-name>FinalEJB</ejb-name>
             <ejb-class>
-                    com.ibm.ws.cdi12.test.ejbsNoBeansXml.EjbImpl
+                    com.ibm.ws.cdi.beansxml.implicit.apps.ejb.EjbImpl
             </ejb-class>
             <session-type>Stateful</session-type>
         </session>

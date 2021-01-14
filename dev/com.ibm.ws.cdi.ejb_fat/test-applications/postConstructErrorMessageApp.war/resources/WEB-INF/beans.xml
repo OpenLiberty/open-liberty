@@ -6,6 +6,6 @@
       http://java.sun.com/xml/ns/javaee/beans_1_0.xsd">
       
       <interceptors>
-          <class>com.ibm.ws.cdi12.test.errormessage.interceptors.ErrorMessageInterceptor</class>
+          <class>com.ibm.ws.cdi.ejb.apps.postConstructError.interceptors.ErrorMessageInterceptor</class>
       </interceptors>
 </beans>

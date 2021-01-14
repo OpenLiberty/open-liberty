@@ -16,9 +16,6 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.cdi12.fat.tests.CDIAPITests;
 
-/**
- * Tests specific to cdi-1.2
- */
 @RunWith(Suite.class)
 @SuiteClasses({
                 CDIAPITests.class,

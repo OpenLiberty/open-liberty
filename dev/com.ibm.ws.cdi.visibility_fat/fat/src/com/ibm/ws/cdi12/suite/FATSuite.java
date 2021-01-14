@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,7 +19,6 @@ import com.ibm.ws.cdi12.fat.tests.EJBVisibilityTests;
 import com.ibm.ws.cdi12.fat.tests.SharedLibraryTest;
 import com.ibm.ws.cdi12.fat.tests.ValidatorInJarTest;
 import com.ibm.ws.cdi12.fat.tests.VisTest;
-import com.ibm.ws.cdi12.fat.tests.WarLibsAccessWarBeansTest;
 
 /**
  * Tests specific to cdi-1.2
@@ -30,7 +29,6 @@ import com.ibm.ws.cdi12.fat.tests.WarLibsAccessWarBeansTest;
                 EJBVisibilityTests.class,
                 SharedLibraryTest.class,
                 ValidatorInJarTest.class,
-                WarLibsAccessWarBeansTest.class,
                 VisTest.class
 })
 public class FATSuite {

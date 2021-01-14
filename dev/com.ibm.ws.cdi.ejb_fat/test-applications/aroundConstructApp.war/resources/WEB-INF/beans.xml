@@ -6,7 +6,7 @@
       http://java.sun.com/xml/ns/javaee/beans_1_0.xsd">
       
       <interceptors>
-          <class>com.ibm.ws.cdi12.test.aroundconstruct.interceptors.InterceptorOne</class>
-          <class>com.ibm.ws.cdi12.test.aroundconstruct.interceptors.InterceptorTwo</class>
+          <class>com.ibm.ws.cdi.ejb.apps.aroundconstruct.interceptors.InterceptorOne</class>
+          <class>com.ibm.ws.cdi.ejb.apps.aroundconstruct.interceptors.InterceptorTwo</class>
       </interceptors>
 </beans>

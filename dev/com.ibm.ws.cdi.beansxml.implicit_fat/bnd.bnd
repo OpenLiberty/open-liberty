@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2018 IBM Corporation and others.
+# Copyright (c) 2018, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -14,28 +14,7 @@ bVersion=1.0
 # Define the bundle for this FAT
 
 src: \
-	fat/src,\
-        test-applications/archiveWithBeansXML.jar/src,\
-        test-applications/archiveWithNoBeansXML.war/src,\
-        test-applications/archiveWithAnnotatedModeBeansXML.jar/src,\
-        test-applications/archiveWithImplicitBeans.jar/src,\
-        test-applications/archiveWithNoImplicitBeans.jar/src,\
-        test-applications/archiveWithNoScanBeansXML.jar/src,\
-        test-applications/ejbJarInWarNoAnnotations.jar/src,\
-        test-applications/ejbJarInWarNoAnnotations.war/src,\
-        test-applications/ejbArchiveWithNoAnnotations.jar/src,\
-        test-applications/ejbArchiveWithNoAnnotations.war/src,\
-        test-applications/explicitBeanArchive.jar/src,\
-        test-applications/implicitBeanAnnotatedMode.jar/src,\
-        test-applications/implicitBeanArchiveDisabled.jar/src,\
-        test-applications/implicitBeanArchiveDisabled.war/src,\
-        test-applications/implicitBeanArchive.war/src,\
-        test-applications/implicitBeanDiscovery.war/src,\
-        test-applications/implicitBeanExplicitArchive.jar/src,\
-        test-applications/implicitBeanNoBeansXml.jar/src,\
-        test-applications/implicitEJBInWar.war/src,\
-        test-applications/implicitWarApp.war/src,\
-        test-applications/utilLib.jar/src
+	fat/src
 	
 
 tested.features:\
@@ -45,7 +24,12 @@ tested.features:\
         jpa-2.2,\
         beanValidation-2.0,\
         jaxrs-2.1,\
-        jsf-2.3
+        jsf-2.3,\
+        enterprisebeanslite-4.0,\
+        enterprisebeans-4.0,\
+        enterprisebeansremote-4.0,\
+        enterprisebeanshome-4.0,\
+        enterprisebeanspersistenttimer-4.0
 	
 test.project: true
 

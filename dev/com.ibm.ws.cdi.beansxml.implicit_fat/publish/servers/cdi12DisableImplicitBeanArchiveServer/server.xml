@@ -10,6 +10,7 @@
         <feature>servlet-3.1</feature>
         <feature>jndi-1.0</feature> 
 		<feature>localConnector-1.0</feature>
+        <feature>componentTest-1.0</feature>
 	</featureManager>
 
 	<cdi12 enableImplicitBeanArchives="false"/>
