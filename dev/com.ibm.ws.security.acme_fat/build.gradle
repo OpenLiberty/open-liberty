@@ -24,12 +24,12 @@ dependencies {
                
   runPebble    'net.java.dev.jna:jna:5.2.0',
                'org.rnorth.visible-assertions:visible-assertions:2.1.2',
-               'org.apache.commons:commons-compress:1.19',
+               'org.apache.commons:commons-compress:1.20',
                'commons-logging:commons-logging:1.1.1'
                
   runBoulder   'net.java.dev.jna:jna:5.2.0',
                'org.rnorth.visible-assertions:visible-assertions:2.1.2',
-               'org.apache.commons:commons-compress:1.19',
+               'org.apache.commons:commons-compress:1.20',
                'commons-logging:commons-logging:1.1.1'
 }
 
