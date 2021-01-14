@@ -12,8 +12,6 @@ package com.ibm.ws.app.manager.war.internal;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -21,7 +19,6 @@ import org.osgi.service.component.annotations.Reference;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.app.manager.ApplicationManager;
-import com.ibm.ws.app.manager.internal.AppManagerConstants;
 import com.ibm.ws.app.manager.module.AbstractDeployedAppInfoFactory;
 import com.ibm.ws.app.manager.module.DeployedAppInfo;
 import com.ibm.ws.app.manager.module.DeployedAppInfoFactory;
@@ -48,12 +45,12 @@ public class WARDeployedAppInfoFactoryImpl extends AbstractDeployedAppInfoFactor
     // WAR expansion ...
 
     protected void prepareExpansion() throws IOException {
-        WsResource expansionResource = deployedAppServices.getLocationAdmin().resolveResource(AppManagerConstants.EXPANDED_APPS_DIR);
+        WsResource expansionResource = expansionResource = deployedAppServices.getLocationAdmin().resolveResource(applicationManager.getExpandLocation());
         expansionResource.create();
     }
 
     protected WsResource resolveExpansion(String appName) {
-        return deployedAppServices.getLocationAdmin().resolveResource(AppManagerConstants.EXPANDED_APPS_DIR + appName + ".war/");
+        return deployedAppServices.getLocationAdmin().resolveResource(applicationManager.getExpandLocation() + appName + ".war/");
     }
 
     protected void expand(
