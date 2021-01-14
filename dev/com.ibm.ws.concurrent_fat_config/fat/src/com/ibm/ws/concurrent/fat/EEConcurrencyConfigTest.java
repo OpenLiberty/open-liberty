@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.config.Application;
 import com.ibm.websphere.simplicity.config.ConcurrencyPolicy;
 import com.ibm.websphere.simplicity.config.ContextService;
 import com.ibm.websphere.simplicity.config.ManagedExecutorService;
@@ -62,9 +63,9 @@ public class EEConcurrencyConfigTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        ShrinkHelper.defaultDropinApp(server, APP_NAME,
-                                      "fat.concurrent.ejb",
-                                      "fat.concurrent.web");
+        ShrinkHelper.defaultApp(server, APP_NAME,
+                                "fat.concurrent.ejb",
+                                "fat.concurrent.web");
         savedConfig = server.getServerConfiguration().clone();
         server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/concurrentinternals-1.0.mf");
     }
@@ -409,6 +410,45 @@ public class EEConcurrencyConfigTest extends FATServletClient {
 
         // This verifies that the previously blocked tasks complete successfully
         runTest("testTask1BlockedByTask2LongRunningCompleted", "concurrent/execSvc1");
+    }
+
+    /**
+     * A new instance of a configured ManagedThreadFactory can be looked up after
+     * application restart and is usable for creating new threads.
+     */
+    @Test
+    public void testManagedThreadFactoryUsableAcrossAppRestart() throws Exception {
+        // Add <managedThreadFactory id="threadFactory1" jndiName="concurrent/threadFactory1" createDaemonThreads="true"/>
+        ServerConfiguration config = server.getServerConfiguration();
+        ManagedThreadFactory threadFactory1 = new ManagedThreadFactory();
+        threadFactory1.setId("threadFactory1");
+        threadFactory1.setJndiName("concurrent/threadFactory1");
+        threadFactory1.setCreateDaemonThreads("true");
+        config.getManagedThreadFactories().add(threadFactory1);
+
+        // save
+        server.setMarkToEndOfLog();
+        server.updateServerConfiguration(config);
+        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+
+        runTest("testManagedThreadFactory", null);
+
+        // Stop application by removing it
+        Application concurrentApp = config.getApplications().getById("concurrentApp");
+        config.getApplications().remove(concurrentApp);
+
+        // save
+        server.setMarkToEndOfLog();
+        server.updateServerConfiguration(config);
+        server.waitForConfigUpdateInLogUsingMark(Collections.emptySet());
+
+        // Start the application by putting it back
+        config.getApplications().add(concurrentApp);
+        server.setMarkToEndOfLog();
+        server.updateServerConfiguration(config);
+        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+
+        runTest("testManagedThreadFactory", null);
     }
 
     /**
