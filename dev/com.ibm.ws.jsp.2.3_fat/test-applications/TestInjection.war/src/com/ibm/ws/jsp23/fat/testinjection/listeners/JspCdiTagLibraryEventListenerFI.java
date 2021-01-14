@@ -39,8 +39,7 @@ public class JspCdiTagLibraryEventListenerFI implements ServletRequestListener {
 
     @Override
     public void requestDestroyed(ServletRequestEvent arg0) {
-        // TODO Auto-generated method stub
-
+        // Do nothing.
     }
 
     @Override

@@ -18,12 +18,12 @@ import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 
-import  com.ibm.ws.jsf22.fat.cdicommon.beans.NavigationHandlerBean;
-import  com.ibm.ws.jsf22.fat.cdicommon.beans.injected.ConstructorBean;
-import  com.ibm.ws.jsf22.fat.cdicommon.beans.injected.FieldBean;
-import  com.ibm.ws.jsf22.fat.cdicommon.beans.injected.ManagedBeanType;
-import  com.ibm.ws.jsf22.fat.cdicommon.beans.injected.MethodBean;
-import  com.ibm.ws.jsf22.fat.cdicommon.interceptors.TestNavigationHandler;
+import com.ibm.ws.jsf22.fat.cdicommon.beans.NavigationHandlerBean;
+import com.ibm.ws.jsf22.fat.cdicommon.beans.injected.ConstructorBean;
+import com.ibm.ws.jsf22.fat.cdicommon.beans.injected.FieldBean;
+import com.ibm.ws.jsf22.fat.cdicommon.beans.injected.ManagedBeanType;
+import com.ibm.ws.jsf22.fat.cdicommon.beans.injected.MethodBean;
+import com.ibm.ws.jsf22.fat.cdicommon.interceptors.TestNavigationHandler;
 
 /**
  *
@@ -75,8 +75,6 @@ public class CustomNavigationHandler extends NavigationHandler {
     @Override
     @TestNavigationHandler
     public void handleNavigation(FacesContext context, String fromAction, String outcome) {
-        // TODO Auto-generated method stub
-
         System.out.println("handleNavigation() fromAction = " + fromAction + ", outcome = " + outcome);
         String nextPage = "/" + outcome + ".xhtml";
         if (outcome != null) {
@@ -84,8 +82,7 @@ public class CustomNavigationHandler extends NavigationHandler {
 
                 nextPage = "/NavigationHandlerPass.xhtml";
 
-                NavigationHandlerBean testBean = (NavigationHandlerBean) FacesContext.getCurrentInstance().
-                                getExternalContext().getSessionMap().get("navigationHandlerBean");
+                NavigationHandlerBean testBean = (NavigationHandlerBean) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("navigationHandlerBean");
 
                 if (testBean != null) {
 

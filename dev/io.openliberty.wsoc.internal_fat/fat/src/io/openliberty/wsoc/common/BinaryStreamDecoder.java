@@ -19,13 +19,13 @@ import javax.websocket.DecodeException;
 import javax.websocket.Decoder.BinaryStream;
 import javax.websocket.EndpointConfig;
 
-
 /**
  *
  */
 public class BinaryStreamDecoder implements BinaryStream<CustomString> {
     @Override
-    public void init(EndpointConfig arg0) {}
+    public void init(EndpointConfig arg0) {
+    }
 
     @Override
     public CustomString decode(InputStream instream) throws DecodeException {
@@ -43,13 +43,12 @@ public class BinaryStreamDecoder implements BinaryStream<CustomString> {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.websocket.Decoder#destroy()
      */
     @Override
     public void destroy() {
-        // TODO Auto-generated method stub
-
+        // Do nothing.
     }
 
 }
