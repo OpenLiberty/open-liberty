@@ -76,7 +76,6 @@ addRequiredLibraries.dependsOn copySharedSqlServerAnon
 addRequiredLibraries.dependsOn copyAnonymousSqlServer1
 addRequiredLibraries.dependsOn copyAnonymousSqlServer2
 addRequiredLibraries.dependsOn addJakartaTransformer
-addRequiredLibraries.dependsOn copyFattestDatabases
 
 jar {
   dependsOn copyCommonFiles
