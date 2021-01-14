@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,7 +18,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import org.junit.After;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -114,11 +113,6 @@ public class MSSQLServerTest extends FATServletClient {
         }
     }
 
-    @Before
-    public void before() throws Exception {
-        startServers(server1);
-    }
-
     @After
     public void cleanup() throws Exception {
 
@@ -143,7 +137,7 @@ public class MSSQLServerTest extends FATServletClient {
         final String method = "testLeaseTableAccess";
         StringBuilder sb = null;
         String id = "001";
-
+        startServers(server1);
         try {
             sb = runTestWithResponse(server1, SERVLET_NAME, "testLeaseTableAccess");
 
@@ -167,6 +161,7 @@ public class MSSQLServerTest extends FATServletClient {
         StringBuilder sb = null;
         String id = "001";
         Log.info(this.getClass(), method, "Starting testDBBaseRecovery in MSSQLServerTest");
+        startServers(server1);
         try {
             // We expect this to fail since it is gonna crash the server
             sb = runTestWithResponse(server1, SERVLET_NAME, "setupRec" + id);
@@ -207,7 +202,7 @@ public class MSSQLServerTest extends FATServletClient {
         final String method = "testDBRecoveryTakeover";
         StringBuilder sb = null;
         String id = "001";
-
+        startServers(server1);
         try {
             // We expect this to fail since it is gonna crash the server
             sb = runTestWithResponse(server1, SERVLET_NAME, "setupRec" + id);
@@ -247,22 +242,25 @@ public class MSSQLServerTest extends FATServletClient {
         final String method = "testDBRecoveryCompeteForLog";
         StringBuilder sb = null;
         String id = "001";
-
+        startServers(longLeaseLengthServer1);
         try {
-            runTestWithResponse(server1, SERVLET_NAME, "modifyLeaseOwner");
+            runTestWithResponse(longLeaseLengthServer1, SERVLET_NAME, "modifyLeaseOwner");
 
             // We expect this to fail since it is gonna crash the server
-            sb = runTestWithResponse(server1, SERVLET_NAME, "setupRec" + id);
+            sb = runTestWithResponse(longLeaseLengthServer1, SERVLET_NAME, "setupRec" + id);
         } catch (Throwable e) {
         }
 
-        assertNotNull(server1.getServerName() + " didn't crash properly", server1.waitForStringInLog("Dump State:"));
-
+        assertNotNull(longLeaseLengthServer1.getServerName() + " didn't crash properly", longLeaseLengthServer1.waitForStringInLog("Dump State:"));
+        longLeaseLengthServer1.postStopServerArchive(); // must explicitly collect since crashed server
         // Need to ensure we have a long (5 minute) timeout for the lease, otherwise we may decide that we CAN delete
         // and renew our own lease. longLeasLengthServer1 is a clone of server1 with a longer lease length.
 
         // Now re-start server1 but we fully expect this to fail
         try {
+            // The server has been halted but its status variable won't have been reset because we crashed it. In order to
+            // setup the server for a restart, set the server state manually.
+            longLeaseLengthServer1.setStarted(false);
             setUp(longLeaseLengthServer1);
             longLeaseLengthServer1.startServerExpectFailure("recovery-dblog-fail.log", false, true);
         } catch (Exception ex) {
@@ -277,7 +275,7 @@ public class MSSQLServerTest extends FATServletClient {
             Log.error(getClass(), "recoveryTestCompeteForLock", ex);
             throw ex;
         }
-
+        longLeaseLengthServer1.postStopServerArchive(); // must explicitly collect since server start failed
         // defect 210055: Now start cloud2 so that we can tidy up the environment, otherwise cloud1
         // is unstartable because its lease is owned by cloud2.
         server2.setHttpDefaultPort(cloud2ServerPort);
