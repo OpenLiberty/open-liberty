@@ -455,7 +455,7 @@ public class ExternalTestService {
         String accessToken = System.getProperty(PROP_ACCESS_TOKEN);
         if (accessToken == null) {
             throw new Exception("Missing Property called: '" + PROP_ACCESS_TOKEN
-                                + "', this property is needed to decrypt secure properties, see https://github.ibm.com/was-liberty/WS-CD-Open/wiki/Automated-Tests#running-fats-that-use-secure-properties-locally for more info");
+                                + "', this property is needed to decrypt secure properties, see https://github.ibm.com/websphere/WS-CD-Open/wiki/Automated-Tests#running-fats-that-use-secure-properties-locally for more info");
         }
 
         // Locate Properties Decrypter Instance
@@ -481,10 +481,10 @@ public class ExternalTestService {
             switch (propsRequest.getResponseCode()) {
                 case HttpsURLConnection.HTTP_UNAUTHORIZED:
                     throw new Exception(PROP_ACCESS_TOKEN
-                                        + " is not recognized by github.ibm.com, see https://github.ibm.com/was-liberty/WS-CD-Open/wiki/Automated-Tests#running-fats-that-use-secure-properties-locally for more info");
+                                        + " is not recognized by github.ibm.com, see https://github.ibm.com/websphere/WS-CD-Open/wiki/Automated-Tests#running-fats-that-use-secure-properties-locally for more info");
                 case HttpsURLConnection.HTTP_FORBIDDEN:
                     throw new Exception(PROP_ACCESS_TOKEN
-                                        + " is not able to be access organisation data, Access Token requires read:org permission, see https://github.ibm.com/was-liberty/WS-CD-Open/wiki/Automated-Tests#running-fats-that-use-secure-properties-locally for more info");
+                                        + " is not able to be access organisation data, Access Token requires read:org permission, see https://github.ibm.com/websphere/WS-CD-Open/wiki/Automated-Tests#running-fats-that-use-secure-properties-locally for more info");
                 case HttpsURLConnection.HTTP_OK:
                     //Do nothing
             }
