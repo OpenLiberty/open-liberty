@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,18 +8,16 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.cdi.extension.spi.test.app;
+package com.ibm.ws.cdi.extension.spi.test.bundle.annotations;
 
-import javax.enterprise.context.RequestScoped;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-import com.ibm.ws.cdi.extension.spi.test.bundle.getclass.interceptor.Intercept;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
-@RequestScoped
-@Intercept
-public class AppBean {
-
-    public String toString() {
-        return "application bean";
-    }
-
+@Target({ METHOD, TYPE })
+@Retention(RUNTIME)
+public @interface NewBDA {
 }

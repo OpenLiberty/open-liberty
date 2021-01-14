@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,16 +10,13 @@
  *******************************************************************************/
 package com.ibm.ws.cdi.extension.spi.test.app;
 
-import javax.enterprise.context.RequestScoped;
+import com.ibm.ws.cdi.extension.spi.test.bundle.annotations.NewBDATwo;
 
-import com.ibm.ws.cdi.extension.spi.test.bundle.getclass.interceptor.Intercept;
-
-@RequestScoped
-@Intercept
-public class AppBean {
+@NewBDATwo
+public class CustomBDABeanTwo {
 
     public String toString() {
-        return "application bean";
+        return "CustomBDABeanTwo";
     }
 
 }
