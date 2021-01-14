@@ -12,6 +12,7 @@ package com.ibm.ws.cdi.extension.spi.test.bundle;
 
 import static org.osgi.service.component.annotations.ConfigurationPolicy.IGNORE;
 
+import java.lang.annotation.Annotation;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -19,6 +20,8 @@ import javax.enterprise.inject.spi.Extension;
 
 import org.osgi.service.component.annotations.Component;
 
+import com.ibm.ws.cdi.extension.spi.test.bundle.annotations.NewBDA;
+import com.ibm.ws.cdi.extension.spi.test.bundle.annotations.NewBDATwo;
 import com.ibm.ws.cdi.extension.spi.test.bundle.extension.MyExtension;
 import com.ibm.ws.cdi.extension.spi.test.bundle.getclass.beaninjection.MyBeanInjectionString;
 import com.ibm.ws.cdi.extension.spi.test.bundle.getclass.interceptor.ClassSPIInterceptor;
@@ -41,6 +44,13 @@ public class SPIMetaData implements CDIExtensionMetadata {
         //This will register an intercepter that can be applied to other beans.
         beans.add(ClassSPIInterceptor.class);
         return beans;
+    }
+
+    public Set<Class<? extends Annotation>> getBeanDefiningAnnotationClasses() {
+        Set<Class<? extends Annotation>> BDAs = new HashSet<Class<? extends Annotation>>();
+        BDAs.add(NewBDA.class);
+        BDAs.add(NewBDATwo.class);
+        return BDAs;
     }
 
     @Override
