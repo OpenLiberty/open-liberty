@@ -69,26 +69,21 @@ rootProject.ext.betaFeatures = {
 
 task copyFeaturePiiFiles {
   doLast {
-    Map<String,Properties> map = getFeatureMap()
-    map.keySet().each { featureName ->
-      Properties featureProps = map[featureName]
-      if (project.file('visibility/' + featureProps['visibility'] +'/' + featureProps['IBM-ShortName'] + '/resources').exists()) {
+    def featureFiles = fileTree(dir: project.projectDir, include: 'visibility/**/*.feature')
+    featureFiles.each { featureFile ->
+      File featureFolder = featureFile.getParentFile()
+
+      Properties props = new Properties()
+      props.load(new FileInputStream(featureFile))
+
+      String featureName = props['symbolicName']
+
+      File l10nResources = new File(featureFolder, 'resources/l10n')
+      if (l10nResources.exists()) {
         copy {
-          from project.file('visibility/' + featureProps['visibility'] +'/' + featureProps['IBM-ShortName'] + '/resources')
+          from l10nResources
           into rootProject.file('build.pii.package/nlssrc/' + featureName)
-          include 'l10n/*.properties'
-        }
-      } else if (project.file(featureProps['visibility'] + '/' + featureProps['symbolicName'] + '/resources').exists()) {
-        copy {
-          from project.file(featureProps['visibility'] + '/' + featureProps['symbolicName'] + '/resources')
-          into rootProject.file('build.pii.package/nlssrc/' + featureName)
-          include 'l10n/*.properties'
-        }
-      } else if (project.file('visibility/auto/' + featureProps['IBM-ShortName'] + '/resources').exists()) {
-        copy {
-          from project.file('visibility/auto/' + featureProps['IBM-ShortName'] + '/resources')
-          into rootProject.file('build.pii.package/nlssrc/' + featureName)
-          include 'l10n/*.properties'
+          include '*.properties'
         }
       }
     }
@@ -167,24 +162,23 @@ task createFeatureResources {
       props.load(new FileInputStream(featureFile))
 
       String symbolicName = props['symbolicName']
-
       String kind = props['kind']
       if (kind == null) {
         throw new GradleException('Feature ' + symbolicName + ' does not contain a kind property')
       }
       String version = ('beta'.equals(kind) ? bnd.libertyBetaVersion : bnd.libertyServiceVersion)
-	  
-      String relPath = featureFile.getPath().replaceAll("\\\\", "/")
-      relPath = relPath.replace(projectDir.getPath().replaceAll("\\\\", "/") + '/visibility/', '')
 
-      def pathParts = relPath.split('/')
-      if (pathParts.length == 3) {
+      File l10nResources = new File(featureFolder, 'resources/l10n')
+      if (l10nResources.exists()) {
         copy {
-          from new File(featureFolder, 'resources/l10n')
+          from l10nResources 
           into buildImage.file('wlp/lib/features/l10n')
         }
+      }
+      File iconsResources = new File(featureFolder, 'resources/icons')
+      if (iconsResources.exists()) {
         copy {
-          from new File(featureFolder, 'resources/icons')
+          from iconsResources
           into buildImage.file('wlp/lib/features/icons')
         }
       }
@@ -252,18 +246,17 @@ task publishFeatureResources {
       }
       String version = ('beta'.equals(kind) ? bnd.libertyBetaVersion : bnd.libertyServiceVersion)
 
-      String relPath = featureFile.getPath().replaceAll("\\\\", "/")
-      relPath = relPath.replace(projectDir.getPath().replaceAll("\\\\", "/") + '/visibility/', '')
-	  
-      def pathParts = relPath.split('/')
-      if (pathParts.length == 3) {
-
+      File l10nResources = new File(featureFolder, 'resources/l10n')
+      if (l10nResources.exists()) {
         copy {
-          from new File(featureFolder, 'resources/l10n')
+          from l10nResources
           into buildImage.file('wlp/lib/features/l10n')
         }
+      }
+      File iconsResources = new File(featureFolder, 'resources/icons')
+      if (iconsResources.exists()) {
         copy {
-          from new File(featureFolder, 'resources/icons')
+          from iconsResources
           into buildImage.file('wlp/lib/features/icons')
         }
       }
