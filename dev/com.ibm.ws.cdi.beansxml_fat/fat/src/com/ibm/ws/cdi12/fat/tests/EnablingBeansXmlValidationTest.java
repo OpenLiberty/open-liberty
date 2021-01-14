@@ -56,7 +56,7 @@ public class EnablingBeansXmlValidationTest extends LoggingTest {
      * Test to ensure that an old beans.xml which was parsed by OWB is rejected as long as validation is enabled.
      */
     @Test
-    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
+    @SkipForRepeat({SkipForRepeat.EE8_FEATURES, SkipForRepeat.EE9_FEATURES})
     @AllowedFFDC({ "org.jboss.weld.exceptions.IllegalStateException", "com.ibm.ws.container.service.state.StateChangeException" }) //We are expecting these errors, but we're using Allowed because the schema download occasionally fails.
     public void testEnablingBeansXmlValidation() throws Exception {
         boolean foundNetworkError = false;
