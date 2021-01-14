@@ -20,6 +20,7 @@ import org.junit.runners.Suite.SuiteClasses;
                 AppAndResourceCDIBeanDiscoveryModeDisabledTest.class,
                 InjectAppTest.class,
                 JsonbTest.class,
+                ManagedBeansTest.class,
                 ValidatorTest.class,
                 WebXmlAppTest.class,
                 WebXmlNoAppTest.class,
