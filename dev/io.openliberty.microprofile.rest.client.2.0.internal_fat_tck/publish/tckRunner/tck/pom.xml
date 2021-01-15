@@ -79,6 +79,14 @@
         </dependency>
 
         <dependency>
+            <groupId>com.ibm.ws.org.reactivestreams</groupId>
+            <artifactId>reactive-streams</artifactId>
+            <version>${reactive.streams.version}</version>
+            <scope>system</scope>
+            <systemPath>${com.ibm.ws.org.reactivestreams.reactive-streams.1.0_}</systemPath>
+        </dependency>
+
+        <dependency>
             <groupId>com.ibm.ws.org.apache.cxf</groupId>
             <artifactId>cxf.rt.rs.mp.client</artifactId>
             <version>3.3.3.20190529</version>
