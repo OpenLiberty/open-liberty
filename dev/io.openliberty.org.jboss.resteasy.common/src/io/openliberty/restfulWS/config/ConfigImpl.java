@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,10 +33,15 @@ public class ConfigImpl implements Config {
                 }
                 return null;
             });
+        } else {
+            for (Object key : System.getProperties().keySet()) {
+                 configProperties.put((String) key, System.getProperty((String)key));
+            }
         }
-        for (Object key : System.getProperties().keySet()) {
-            configProperties.put((String) key, System.getProperty((String)key));
-        }
+        // Add EJBException to the list of wrapped exceptions that are processed by RESTEasy
+        configProperties.merge("resteasy.unwrapped.exceptions", "jakarta.ejb.EJBException", (oldVal, newVal) -> {
+            return (oldVal.contains("jakarta.ejb.EJBException") ? oldVal : oldVal + "," + newVal); });
+        
     }
 
     @Override
