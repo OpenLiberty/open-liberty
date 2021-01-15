@@ -29,6 +29,18 @@ public interface ScheduledPolicyExecutorTask {
     PolicyExecutor getExecutor();
 
     /**
+     * Computes the next fixed-rate execution time after the specified execution time,
+     * given the specified period.
+     *
+     * @param recentExecutionTime nanosecond timestamp at which the task most recently started executing.
+     * @param period              period in nanoseconds at which the fixed-rate task should execute.
+     * @return nanosecond timestamp of the next fixed-rate execution.
+     */
+    default long getNextFixedRateExecutionTime(long recentExecutionTime, long period) {
+        return recentExecutionTime + period;
+    }
+
+    /**
      * Provides a callback to be invoked when the task fails to resubmit to
      * the designated policy executor. Typically, this will be because the
      * policy executor has been shut down, suspended, or has reached its limit

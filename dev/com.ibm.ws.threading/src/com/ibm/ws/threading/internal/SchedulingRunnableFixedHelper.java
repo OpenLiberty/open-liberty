@@ -20,6 +20,8 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import com.ibm.ws.threading.ScheduledPolicyExecutorTask;
+
 /**
  * Wrapper for the ScheduledFuture returned on overridden scheduleWithFixedRate and scheduleWithFixedDelay methods.
  * It's used to present a consistent state of the submitted Runnable as it progresses through the underlying
@@ -295,7 +297,11 @@ class SchedulingRunnableFixedHelper<V> implements ScheduledFuture<Object>, Runna
         try {
             long scheduleTime = this.m_periodInterval;
             if (!this.m_scheduledWithDelay) {
-                this.m_myNextExecutionTime = this.m_myNextExecutionTime + this.m_periodInterval;
+                if (m_runnable instanceof ScheduledPolicyExecutorTask) {
+                    this.m_myNextExecutionTime = ((ScheduledPolicyExecutorTask) m_runnable).getNextFixedRateExecutionTime(m_myNextExecutionTime, m_periodInterval);
+                } else {
+                    this.m_myNextExecutionTime = this.m_myNextExecutionTime + this.m_periodInterval;
+                }
                 long currentTime = System.nanoTime();
 
                 scheduleTime = (this.m_myNextExecutionTime > currentTime) ? (this.m_myNextExecutionTime - currentTime) : 0;
