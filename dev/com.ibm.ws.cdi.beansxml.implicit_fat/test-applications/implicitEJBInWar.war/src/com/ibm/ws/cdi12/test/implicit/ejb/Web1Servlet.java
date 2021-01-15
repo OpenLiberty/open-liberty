@@ -18,6 +18,8 @@ import static org.junit.Assert.assertThat;
 import javax.ejb.EJB;
 import javax.servlet.annotation.WebServlet;
 
+import org.junit.Test;
+
 import com.ibm.ws.cdi12.test.implicit.ejb.SimpleEJB;
 import com.ibm.ws.cdi12.test.utils.SimpleAbstract;
 import componenttest.app.FATServlet;
@@ -30,6 +32,7 @@ public class Web1Servlet extends FATServlet {
     @EJB
     private SimpleEJB ejb;
 
+    @Test
     public void testImplicitEJB() {
         assertBeanWasInjected(ejb, SimpleEJB.class);
     }

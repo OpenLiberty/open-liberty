@@ -21,6 +21,8 @@ import javax.servlet.annotation.WebServlet;
 import com.ibm.ws.cdi12.test.utils.SimpleAbstract;
 import componenttest.app.FATServlet;
 
+import org.junit.Test;
+
 @WebServlet("/")
 public class TestServlet extends FATServlet {
 
@@ -37,14 +39,17 @@ public class TestServlet extends FATServlet {
     @Inject
     private NoBeansXmlBean noBeansXmlBean;
 
+    @Test
     public void testExplicitBeanArchive() {
         assertBeanWasInjected(inExplicitArchive, InExplicitBeanArchive.class);
     }
 
+    @Test
     public void testAnnotatedBeanDiscoveryMode() {
         assertBeanWasInjected(annotatedModeBean, AnnotatedModeBean.class);
     }
 
+    @Test
     public void testNoBeansXml() {
         assertBeanWasInjected(noBeansXmlBean, NoBeansXmlBean.class);
     }

@@ -16,10 +16,9 @@ import java.io.File;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TestRule;
+import org.junit.runner.RunWith;
 
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePaths;
@@ -33,23 +32,31 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
-import componenttest.rules.ServerRules;
-import componenttest.rules.TestRules;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
+import componenttest.annotation.Server;
+import componenttest.annotation.TestServlet;
+import componenttest.annotation.TestServlets;
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.topology.utils.FATServletClient;
 
 /**
  * Test that wars can be implicit bean archives.
  */
 @Mode(TestMode.FULL)
-public class ImplicitEJBTest {
-    private static final LibertyServer server = LibertyServerFactory.getLibertyServer("cdi12ImplicitServer");
+@RunWith(FATRunner.class)
+public class ImplicitEJBTest extends FATServletClient {
 
-    @ClassRule
-    public static final TestRule startAndStopServerRule = ServerRules.startAndStopAutomatically(server);
+    private static final String APP_NAME = "implicitEJBInWar";
+
+    @Server("cdi12ImplicitServer")
+    @TestServlets({
+                    @TestServlet(servlet = com.ibm.ws.cdi12.test.implicit.ejb.Web1Servlet.class, contextRoot = APP_NAME) 
+    })
+    public static LibertyServer server;
 
     @BeforeClass
     public static void buildShrinkWrap() throws Exception {
@@ -63,21 +70,14 @@ public class ImplicitEJBTest {
                         .addClass("com.ibm.ws.cdi12.test.utils.ForwardingList")
                         .add(new FileAsset(new File("test-applications/utilLib.jar/resources/META-INF/beans.xml")), "/META-INF/beans.xml");
 
-       WebArchive implicitEJBInWar = ShrinkWrap.create(WebArchive.class, "implicitEJBInWar.war")
+       WebArchive implicitEJBInWar = ShrinkWrap.create(WebArchive.class, APP_NAME+".war")
                         .addClass("com.ibm.ws.cdi12.test.implicit.ejb.Web1Servlet")
                         .addClass("com.ibm.ws.cdi12.test.implicit.ejb.SimpleEJB")
                         .addAsLibrary(utilLib);
 
-       server.setMarkToEndOfLog(server.getDefaultLogFile());
        ShrinkHelper.exportDropinAppToServer(server, implicitEJBInWar);
-       assertNotNull("implicitEJBInWar started or updated message", server.waitForStringInLogUsingMark("CWWKZ000[13]I.*implicitEJBInWar"));
+       server.startServer();
     }
-
-    @Rule
-    public final TestRule runAll = TestRules.runAllUsingTestNames(server).usingApp("implicitEJBInWar").andServlet("");
-
-    @Test
-    public void testImplicitEJB() {}
 
     @AfterClass
     public static void afterClass() throws Exception {

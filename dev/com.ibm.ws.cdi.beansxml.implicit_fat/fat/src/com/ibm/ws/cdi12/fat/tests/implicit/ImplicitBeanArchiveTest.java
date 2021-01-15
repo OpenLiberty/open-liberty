@@ -16,10 +16,9 @@ import java.io.File;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TestRule;
+import org.junit.runner.RunWith;
 
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePaths;
@@ -31,26 +30,26 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.ResourceAdapterArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 
-import com.ibm.ws.fat.util.BuildShrinkWrap;
-import com.ibm.ws.fat.util.LoggingTest;
-import com.ibm.ws.fat.util.SharedServer;
-
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
-import componenttest.rules.ServerRules;
-import componenttest.rules.TestRules;
+import componenttest.annotation.Server;
+import componenttest.annotation.TestServlet;
+import componenttest.annotation.TestServlets;
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.impl.LibertyServerFactory;
+import componenttest.topology.utils.FATServletClient;
 
 /**
  * Test that library jars inside a war can be implicit bean archives.
  */
-public class ImplicitBeanArchiveTest extends LoggingTest {
+@RunWith(FATRunner.class)
+public class ImplicitBeanArchiveTest extends FATServletClient {
 
-    private static final LibertyServer server = LibertyServerFactory.getLibertyServer("cdi12ImplicitServer");
-
-    @ClassRule
-    public static final TestRule startAndStopServerRule = ServerRules.startAndStopAutomatically(server);
+    @Server("cdi12ImplicitServer")
+    @TestServlets({
+                    @TestServlet(servlet = com.ibm.ws.cdi12.test.implicit.servlet.Web1Servlet.class, contextRoot = "/") 
+    })
+    public static LibertyServer server;
 
     @BeforeClass
     public static void buildShrinkWrap() throws Exception {
@@ -91,79 +90,8 @@ public class ImplicitBeanArchiveTest extends LoggingTest {
                         .addAsLibrary(archiveWithNoScanBeansXML)
                         .addAsLibrary(archiveWithAnnotatedModeBeansXML);
 
-       server.setMarkToEndOfLog(server.getDefaultLogFile());
        ShrinkHelper.exportDropinAppToServer(server, implicitBeanArchive);
-       assertNotNull("implicitBeanArchive started or updated message", server.waitForStringInLogUsingMark("CWWKZ000[13]I.*implicitBeanArchive"));
-    }
-
-    @Rule
-    public final TestRule runAll = TestRules.runAllUsingTestNames(server).usingApp("implicitBeanArchive").andServlet("");
-
-    @Test
-    public void testUnannotatedBeanInAllModeBeanArchive() {
-        //this one has a beans.xml with mode set to "all" so should be ok
-    }
-
-    @Test
-    public void testApplicationScopedBeanInImplicitArchive() {
-        //this one is an implicit bean so should be ok
-    }
-
-    @Test
-    public void testConversationScopedBeanInImplicitArchive() {
-        //this one is an implicit bean so should be ok
-    }
-
-    @Test
-    public void testNormalScopedBeanInImplicitArchive() {
-        //this one is an implicit bean so should be ok
-    }
-
-    @Test
-    public void testStereotypedBeanInImplicitArchive() {
-        //this one is an implicit bean so should be ok
-    }
-
-    @Test
-    public void testRequestScopedBeanInImplicitArchive() {
-        //this one is an implicit bean so should be ok
-    }
-
-    @Test
-    public void testSessionScopedBeanInImplicitArchive() {
-        //this one is an implicit bean so should be ok
-    }
-
-    @Test
-    public void testUnannotatedBeanInImplicitArchive() {
-        //this one is NOT an implicit bean and has no beans.xml so it should be null
-    }
-
-    @Test
-    public void testDependentScopedBeanInAnnotatedModeArchive() {
-        //this one is an implicit bean in an "annotated" mode archive so should be ok
-    }
-
-    @Test
-    public void testUnannotatedBeanInAnnotatedModeArchive() {
-        //this one is NOT an implicit bean in an "annotated" mode archive so should be null
-    }
-
-    @Test
-    public void testRequestScopedBeanInNoneModeArchive() {
-        //this one is an implicit bean in an "none" mode archive so should be null
-    }
-
-    @Test
-    public void testClassWithInjectButNotInABeanArchive() {
-        //this one is not an implicit bean and has no beans.xml so it should be null
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    protected SharedServer getSharedServer() {
-        // TODO Auto-generated method stub
-        return null;
+       server.startServer();
     }
 
     @AfterClass

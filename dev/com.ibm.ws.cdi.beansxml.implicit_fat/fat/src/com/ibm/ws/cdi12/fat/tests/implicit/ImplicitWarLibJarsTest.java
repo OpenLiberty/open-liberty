@@ -19,7 +19,7 @@ import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TestRule;
+import org.junit.runner.RunWith;
 
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePaths;
@@ -31,32 +31,34 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.ResourceAdapterArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 
-import com.ibm.ws.fat.util.LoggingTest;
-import com.ibm.ws.fat.util.SharedServer;
-
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
-import componenttest.rules.ServerRules;
-import componenttest.rules.TestRules;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
+import componenttest.annotation.Server;
+import componenttest.annotation.TestServlet;
+import componenttest.annotation.TestServlets;
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.topology.utils.FATServletClient;
 
 /**
  * Test that library jars inside a war can be implicit bean archives.
  */
 @Mode(TestMode.FULL)
-public class ImplicitWarLibJarsTest extends LoggingTest {
+@RunWith(FATRunner.class)
+public class ImplicitWarLibJarsTest extends FATServletClient {
 
-    private static final LibertyServer server = LibertyServerFactory.getLibertyServer("cdi12ImplicitServer");
+    private static final String APP_NAME_IMPLICIT_BEAN_DISCOVERY = "implicitBeanDiscovery";
+    private static final String APP_NAME_IMPLICIT_EJB_WAR = "implicitEJBInWar";
 
-    @ClassRule
-    public static final TestRule startAndStopServerRule = ServerRules.startAndStopAutomatically(server);
-
-    @Rule
-    public final TestRule runAll = TestRules.runAllUsingTestNames(server).usingApp("implicitBeanDiscovery").andServlet("");
+    @Server("cdi12ImplicitServer")
+    @TestServlets({
+                    @TestServlet(servlet = com.ibm.ws.cdi12.test.implicitBean.TestServlet.class, contextRoot = APP_NAME_IMPLICIT_BEAN_DISCOVERY) 
+    })
+    public static LibertyServer server;
 
     @BeforeClass
     public static void buildShrinkWrap() throws Exception {
@@ -81,12 +83,12 @@ public class ImplicitWarLibJarsTest extends LoggingTest {
                         .addClass("com.ibm.ws.cdi12.test.utils.ForwardingList")
                         .add(new FileAsset(new File("test-applications/utilLib.jar/resources/META-INF/beans.xml")), "/META-INF/beans.xml");
 
-       WebArchive implicitEJBInWar = ShrinkWrap.create(WebArchive.class, "implicitEJBInWar.war")
+       WebArchive implicitEJBInWar = ShrinkWrap.create(WebArchive.class, APP_NAME_IMPLICIT_EJB_WAR + ".war")
                         .addClass("com.ibm.ws.cdi12.test.implicit.ejb.Web1Servlet")
                         .addClass("com.ibm.ws.cdi12.test.implicit.ejb.SimpleEJB")
                         .addAsLibrary(utilLib);
 
-       WebArchive implicitBeanDiscovery = ShrinkWrap.create(WebArchive.class, "implicitBeanDiscovery.war")
+       WebArchive implicitBeanDiscovery = ShrinkWrap.create(WebArchive.class, APP_NAME_IMPLICIT_BEAN_DISCOVERY + ".war")
                         .addClass("com.ibm.ws.cdi12.test.implicitBean.TestServlet")
                         .add(new FileAsset(new File("test-applications/implicitBeanDiscovery.war/resources/WEB-INF/beans.xml")), "/WEB-INF/beans.xml")
                         .addAsLibrary(implicitBeanAnnotatedMode)
@@ -94,36 +96,9 @@ public class ImplicitWarLibJarsTest extends LoggingTest {
                         .addAsLibrary(implicitBeanExplicitArchive)
                         .addAsLibrary(utilLib);
 
-       server.setMarkToEndOfLog(server.getDefaultLogFile());
        ShrinkHelper.exportDropinAppToServer(server, implicitEJBInWar);
        ShrinkHelper.exportDropinAppToServer(server, implicitBeanDiscovery);
-       assertNotNull("implicitBeanDiscovery started or updated message", server.waitForStringInLogUsingMark("CWWKZ000[13]I.*implicitEJBInWar"));
-       assertNotNull("implicitBeanDiscovery started or updated message", server.waitForStringInLogUsingMark("CWWKZ000[13]I.*implicitBeanDiscovery"));
-    }
-
-    /**
-     * Test that we can inject beans from an explicit bean archive (sanity check).
-     */
-    @Test
-    public void testExplicitBeanArchive() {}
-
-    /**
-     * Test that we can inject annotated beans from an archive with {@code bean-discovery-mode=annotated}.
-     */
-    @Test
-    public void testAnnotatedBeanDiscoveryMode() {}
-
-    /**
-     * Test that we can inject annotated beans from an archive with no beans.xml.
-     */
-    @Test
-    public void testNoBeansXml() {}
-
-    /** {@inheritDoc} */
-    @Override
-    protected SharedServer getSharedServer() {
-        // TODO Auto-generated method stub
-        return null;
+       server.startServer();
     }
 
     @AfterClass

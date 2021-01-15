@@ -13,8 +13,10 @@ package com.ibm.ws.cdi12.fat.tests.implicit;
 import java.io.File;
 
 import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePaths;
@@ -26,22 +28,23 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.ResourceAdapterArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 
-import com.ibm.ws.fat.util.BuildShrinkWrap;
-import com.ibm.ws.fat.util.LoggingTest;
-import com.ibm.ws.fat.util.ShrinkWrapSharedServer;
+import com.ibm.websphere.simplicity.ShrinkHelper;
 
-public class ImplicitBeanArchivesDisabledTest extends LoggingTest {
+import componenttest.annotation.Server;
+import componenttest.annotation.TestServlet;
+import componenttest.annotation.TestServlets;
+import componenttest.custom.junit.runner.FATRunner;
+import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.HttpUtils;
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.fat.LoggingTest#getSharedServer()
-     */
-    @ClassRule
-    public static ShrinkWrapSharedServer SHARED_SERVER = new ShrinkWrapSharedServer("cdi12DisableImplicitBeanArchiveServer");
+@RunWith(FATRunner.class)
+public class ImplicitBeanArchivesDisabledTest {
 
-    @BuildShrinkWrap
-    public static Archive buildShrinkWrap() {
+    @Server("cdi12DisableImplicitBeanArchiveServer")
+    public static LibertyServer server;
+
+    @BeforeClass
+    public static void buildShrinkWrap() throws Exception {
 
        JavaArchive implicitBeanArchiveDisabledJar = ShrinkWrap.create(JavaArchive.class,"implicitBeanArchiveDisabled.jar")
                         .addClass("com.ibm.ws.cdi.implicit.bean.disabled.MyPlane");
@@ -56,37 +59,30 @@ public class ImplicitBeanArchivesDisabledTest extends LoggingTest {
                         .addClass("com.ibm.ws.cdi.explicit.bean.MyBike")
                         .add(new FileAsset(new File("test-applications/explicitBeanArchive.jar/resources/META-INF/beans.xml")), "/META-INF/beans.xml");
 
-       return ShrinkWrap.create(EnterpriseArchive.class,"implicitBeanArchiveDisabled.ear")
+       EnterpriseArchive implicitBeanArchiveDisabledEar = ShrinkWrap.create(EnterpriseArchive.class,"implicitBeanArchiveDisabled.ear")
                         .add(new FileAsset(new File("test-applications/implicitBeanArchiveDisabled.ear/resources/META-INF/application.xml")), "/META-INF/application.xml")
                         .addAsLibrary(explicitBeanArchive)
                         .addAsModule(implicitBeanArchiveDisabled);
-    }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.fat.LoggingTest#getSharedServer()
-     */
-    @Override
-    protected ShrinkWrapSharedServer getSharedServer() {
-        return SHARED_SERVER;
+       ShrinkHelper.exportDropinAppToServer(server, implicitBeanArchiveDisabledEar);
+       server.startServer();
     }
 
     @Test
     public void testDisableImplicitBeanArchives() throws Exception {
         //part of multiModuleApp1
-        this.verifyResponse(
+        HttpUtils.findStringInUrl(server, 
                             "/implicitBeanArchiveDisabled/",
                             "Car Bike No Plane!");
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
-        if (SHARED_SERVER != null && SHARED_SERVER.getLibertyServer().isStarted()) {
+        if (server != null && server.isStarted()) {
             /*
              * Ignore following warning as it is expected: CWOWB1009W: Implicit bean archives are disabled.
              */
-            SHARED_SERVER.getLibertyServer().stopServer("CWOWB1009W");
+            server.stopServer("CWOWB1009W");
         }
     }
 

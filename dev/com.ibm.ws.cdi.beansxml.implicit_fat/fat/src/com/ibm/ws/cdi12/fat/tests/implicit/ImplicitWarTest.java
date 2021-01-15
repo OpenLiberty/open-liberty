@@ -16,10 +16,10 @@ import java.io.File;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
+import org.junit.runner.RunWith;
 
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePaths;
@@ -33,19 +33,27 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
-import componenttest.rules.ServerRules;
-import componenttest.rules.TestRules;
+import componenttest.annotation.TestServlet;
+import componenttest.annotation.TestServlets;
+import componenttest.annotation.Server;
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
+import componenttest.topology.utils.FATServletClient;
 
 /**
  * Test that wars can be implicit bean archives.
  */
-public class ImplicitWarTest {
-    private static final LibertyServer server = LibertyServerFactory.getLibertyServer("cdi12ImplicitServer");
+@RunWith(FATRunner.class)
+public class ImplicitWarTest extends FATServletClient {
 
-    @ClassRule
-    public static final TestRule startAndStopServerRule = ServerRules.startAndStopAutomatically(server);
+    private static final String APP_NAME = "implicitWarApp";
+
+    @Server("cdi12ImplicitServer")
+    @TestServlets({
+                    @TestServlet(servlet = com.ibm.ws.cdi12.test.implicitWar.TestServlet.class, contextRoot = APP_NAME) 
+    })
+    public static LibertyServer server;
 
     @BeforeClass
     public static void buildShrinkWrap() throws Exception {
@@ -59,24 +67,14 @@ public class ImplicitWarTest {
                         .addClass("com.ibm.ws.cdi12.test.utils.ForwardingList")
                         .add(new FileAsset(new File("test-applications/utilLib.jar/resources/META-INF/beans.xml")), "/META-INF/beans.xml");
 
-       WebArchive implicitWarApp = ShrinkWrap.create(WebArchive.class, "implicitWarApp.war")
+       WebArchive implicitWarApp = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                         .addClass("com.ibm.ws.cdi12.test.implicitWar.TestServlet")
                         .addClass("com.ibm.ws.cdi12.test.implicitWar.AnnotatedBean")
                         .addAsLibrary(utilLib);
 
-       server.setMarkToEndOfLog(server.getDefaultLogFile());
        ShrinkHelper.exportDropinAppToServer(server, implicitWarApp);
-       assertNotNull("implicitWarApp started or updated message", server.waitForStringInLogUsingMark("CWWKZ000[13]I.*implicitWarApp"));
+       server.startServer();
     }
-
-    @Rule
-    public final TestRule runAll = TestRules.runAllUsingTestNames(server).usingApp("implicitWarApp").andServlet("");
-
-    /**
-     * Test that injection works in a war that has no beans.xml but does have a class with a bean-defining annotation.
-     */
-    @Test
-    public void testNoBeansXml() {}
 
     @AfterClass
     public static void afterClass() throws Exception {
