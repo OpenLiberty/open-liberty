@@ -10,8 +10,6 @@ com.cloudant:cloudant-http:2.8.0
 com.fasterxml.jackson.core:jackson-annotations:2.10.3
 com.fasterxml.jackson.core:jackson-annotations:2.11.2
 com.fasterxml.jackson.core:jackson-core:2.11.2
-com.fasterxml.jackson.core:jackson-databind:2.11.2
-com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.11.2
 com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.11.2
 com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.11.2
 com.fasterxml.jackson.jaxrs:jackson-jaxrs-base:2.11.2
@@ -21,11 +19,8 @@ com.fasterxml.jackson.module:jackson-module-parameter-names:2.11.2
 com.github.docker-java:docker-java-api:3.2.7
 com.github.docker-java:docker-java-transport-zerodep:3.2.7
 com.github.docker-java:docker-java-transport:3.2.7
-com.google.api.grpc:proto-google-common-protos:1.18.1
-com.google.code.findbugs:jsr305:3.0.2
 com.google.code.gson:gson:2.8.6
 com.google.errorprone:error_prone_annotations:2.4.0
-com.google.guava:failureaccess:1.0.1
 com.google.inject:guice:2.0
 com.google.j2objc:j2objc-annotations:1.1
 com.google.protobuf:protobuf-java-util:3.13.0
@@ -545,9 +540,7 @@ org.reactivestreams:reactive-streams:1.0.2
 org.reactivestreams:reactive-streams:1.0.3
 org.rnorth.duct-tape:duct-tape:1.0.8
 org.seleniumhq.webdriver:webdriver-common:0.9.7376
-org.slf4j:slf4j-api:1.7.26
 org.slf4j:slf4j-api:1.7.28
-org.slf4j:slf4j-api:1.7.7
 org.slf4j:slf4j-simple:1.7.30
 org.sonatype.goodies:package-url-java:1.0.1
 org.springframework.boot:spring-boot-autoconfigure:1.5.9.RELEASE
