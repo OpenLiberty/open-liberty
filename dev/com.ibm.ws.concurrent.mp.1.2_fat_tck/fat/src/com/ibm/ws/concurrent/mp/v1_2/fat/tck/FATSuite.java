@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.concurrent.mp.v1_1.fat.tck;
+package com.ibm.ws.concurrent.mp.v1_2.fat.tck;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
