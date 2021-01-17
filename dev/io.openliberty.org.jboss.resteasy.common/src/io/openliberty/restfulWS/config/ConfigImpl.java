@@ -55,12 +55,12 @@ public class ConfigImpl implements Config {
     }
 
     @Override
-    public Iterable<String> getPropertyNames() {
+    public synchronized Iterable<String> getPropertyNames() {
         return configProperties.keySet();
     }
 
     @Override
-    public <T> T getValue(String propName, Class<T> propType) {
+    public synchronized <T> T getValue(String propName, Class<T> propType) {
         String value = configProperties.get(propName);
         if (value == null || String.class.equals(propType)) {
             return (T) value;
@@ -68,7 +68,7 @@ public class ConfigImpl implements Config {
         return propType.cast(value);
     }
 
-    public void updateProperties(Map<String, String> map) {
+    public synchronized void updateProperties(Map<String, String> map) {
         configProperties.putAll(map);
     }
 }
