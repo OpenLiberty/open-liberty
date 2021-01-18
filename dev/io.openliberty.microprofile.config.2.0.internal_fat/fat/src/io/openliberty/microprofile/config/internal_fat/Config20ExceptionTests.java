@@ -24,6 +24,7 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.PropertiesAsset;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
@@ -57,7 +58,8 @@ public class Config20ExceptionTests extends FATServletClient {
 
         WebArchive brokenInjectionWar = ShrinkWrap.create(WebArchive.class, BROKEN_INJECTION_APP_NAME + ".war")
                         .addPackages(true, "io.openliberty.microprofile.config.internal_fat.apps.brokenInjection")
-                        .addAsServiceProvider(Converter.class, ValidConverter.class);
+                        .addAsServiceProvider(Converter.class, ValidConverter.class)
+                        .addAsResource(new PropertiesAsset().addProperty("validPrefix.myString", "aString"), "META-INF/microprofile-config.properties");
 
         // The 2 wars should throw deployment exceptions, hence don't validate.
         ShrinkHelper.exportDropinAppToServer(server, badObserverWar, DeployOptions.SERVER_ONLY, DeployOptions.DISABLE_VALIDATION);
@@ -111,6 +113,14 @@ public class Config20ExceptionTests extends FATServletClient {
     public void testConverterMissing() throws Exception {
         List<String> errors = server
                         .findStringsInLogs("SRCFG02006: The property noConverterKey cannot be converted to class io.openliberty.microprofile.config.internal_fat.apps.brokenInjection.TypeWithNoConverter");
+        assertNotNull(errors);
+        assertTrue(errors.size() > 0);
+    }
+
+    @Test
+    public void testBadConfigPropertiesInjection() throws Exception {
+        List<String> errors = server
+                        .findStringsInLogs("SRCFG00029: Expected an integer value, got \"aString\"");
         assertNotNull(errors);
         assertTrue(errors.size() > 0);
     }
