@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -97,12 +98,18 @@ public class FeatureReplacementAction implements RepeatTestAction {
         return new JakartaEE9Action();
     }
 
-    // +
-
-
+    /**
+     * Feature replacement action factory method: Create a feature
+     * replacement action which performs no replacements.
+     * 
+     * See {@link EmptyAction}.
+     *
+     * @return A feature replacement action which performs no replacements.
+     */
+    public static EmptyAction NO_REPLACEMENT() {
+        return new EmptyAction();
+    }
     
-    //
-
     public FeatureReplacementAction() {
         // Empty
     }
@@ -174,10 +181,20 @@ public class FeatureReplacementAction implements RepeatTestAction {
 
     //
 
-    private final Set<String> removeFeatures = new HashSet<>();
-    private final Set<String> addFeatures = new HashSet<>();
+    // These must maintain the addition order:
+    //
+    // Multiple matching replacements can be present in the
+    // feature lists.  The matching rule is that the last
+    // match is taken.  That requires that the feature lists
+    // be kept in order.
+    //
+    // TFB: TODO: The effect of ordering 'removeFeatures' is not clear.
+
+    private final Set<String> removeFeatures = new LinkedHashSet<>();
+    private final Set<String> addFeatures = new LinkedHashSet<>();
+
     private final Set<String> alwaysAddFeatures = new HashSet<>();
-    private final Set<String> serverConfigPaths = new HashSet<String>();
+    private final Set<String> serverConfigPaths = new HashSet<>();
 
     private boolean forceAddFeatures = true;
 
@@ -744,12 +761,23 @@ public class FeatureReplacementAction implements RepeatTestAction {
         baseFeature = baseFeature.toLowerCase();
 
         // "servlet-4.0".startsWith("servlet-")
-        for ( String replacementFeature : replacementFeatures ) {
-            if ( replacementFeature.toLowerCase().startsWith(baseFeature) ) {
-                Log.info(c, methodName,
-                    "Replace feature " + originalFeature + " with " + replacementFeature);
-                return replacementFeature;
+        
+        // If multiple versions of a feature listed in the replacement list, it will take the last
+        // version by looping through all of the features instead of stopping on the first that matches.
+        // The Set is a LinkedHashSet so it will iterate over them in the order that add was called.        
+
+        String replacementFeature = null;
+
+        for ( String candidateFeature : replacementFeatures ) {
+            if ( candidateFeature.toLowerCase().startsWith(baseFeature) ) {
+                replacementFeature = candidateFeature;
             }
+        }
+
+        if ( replacementFeature != null ) {
+            Log.info(c, methodName,
+                    "Replace feature " + originalFeature + " with " + replacementFeature);
+            return replacementFeature;
         }
 
         // We need to check that the feature passed is an EE7/EE8 feature which
@@ -794,11 +822,11 @@ public class FeatureReplacementAction implements RepeatTestAction {
         baseFeature += "-";
 
         // Re-check the features with the name changes
-        for ( String replacementFeature : replacementFeatures ) {
-            if ( replacementFeature.toLowerCase().contains(baseFeature) ) {
+        for ( String candidateFeature : replacementFeatures ) {
+            if ( candidateFeature.toLowerCase().contains(baseFeature) ) {
                 Log.info(c, methodName,
-                    "Replace feature " + originalFeature + " with " + replacementFeature);
-                return replacementFeature;
+                    "Replace feature " + originalFeature + " with " + candidateFeature);
+                return candidateFeature;
             }
         }
 

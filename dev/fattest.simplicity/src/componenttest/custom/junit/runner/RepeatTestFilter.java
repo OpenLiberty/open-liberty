@@ -142,6 +142,10 @@ public class RepeatTestFilter {
         while ( actions.hasNext() ) {
             String action = actions.next();
 
+            if ( "NO_MODIFICATION_ACTION".equals(action) ) {
+                continue;
+            }
+
             // At 0 : (actionText == null), (actionTextBuilder == null)
             // At 1 : (actionText != null), (actionTextBuilder == null)
             // At 2+: (actionText == null), (actionTextBuilder != null)

@@ -138,6 +138,7 @@ public class JakartaEE9Action extends FeatureReplacementAction {
         featureNameMapping.put("jaxb", "xmlBinding");
         featureNameMapping.put("jaxrsClient", "restfulWSClient");
         featureNameMapping.put("jaxws", "xmlWS");
+        featureNameMapping.put("jaxwsTest", "xmlwsTest");        
         featureNameMapping.put("jca", "connectors");
         featureNameMapping.put("jcaInboundSecurity", "connectorsInboundSecurity");
         featureNameMapping.put("jpa", "persistence");
