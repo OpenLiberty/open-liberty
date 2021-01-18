@@ -17,6 +17,6 @@
     version="1.0">
 
     <persistence-unit name="ASingleEarLibRLPersistenceUnit" transaction-type="RESOURCE_LOCAL">
-        <non-jta-data-source>jdbc/JPA_NJTADS</non-jta-data-source>
+        <non-jta-data-source>jdbc/JPA_NJTA_DS</non-jta-data-source>
     </persistence-unit>
 </persistence>

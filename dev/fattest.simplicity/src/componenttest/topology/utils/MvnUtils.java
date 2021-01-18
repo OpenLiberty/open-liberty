@@ -321,6 +321,11 @@ public class MvnUtils {
         // be different.
         stringArrayList.add("-DsuiteXmlFile=" + getSuiteFileName());
 
+        // add timestamps to mvnOutput
+        stringArrayList.add("-Dorg.slf4j.simpleLogger.showDateTime=true");
+        stringArrayList.add("-Dorg.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss,SSS");
+        stringArrayList.add("-B");
+
         // add any additional properties passed
         for (Entry<String, String> prop : getAdditionalMvnProps().entrySet()) {
             stringArrayList.add("-D" + prop.getKey() + "=" + prop.getValue());

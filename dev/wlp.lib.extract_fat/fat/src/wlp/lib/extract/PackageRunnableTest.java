@@ -30,6 +30,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -68,6 +69,26 @@ public class PackageRunnableTest {
         }
     }
 
+    @Before
+    public void setup() throws Exception {
+        String method = "setup";
+        int timeout = 0;
+
+        // Sanity check to make sure the manifest.mf that is used by package exists before starting the
+        // test case(s).
+        while (timeout <= 10) {
+            File manifest = new File(server.getInstallRoot(), "lib/extract/META-INF/MANIFEST.MF");
+            if (!manifest.exists()) {
+                Log.info(c, method, "Manifest did not exist. Sleeping - " + timeout + " seconds elapsed.");
+                Thread.sleep(1000);
+            } else {
+                Log.info(c, method, "Manifest was found in " + server.getInstallRoot() + "/lib/extract/META-INF/MANIFEST.MF with size = " + manifest.length());
+                break;
+            }
+            timeout++;
+        }
+    }
+
     @BeforeClass
     public static void setupClass() throws Exception {}
 
@@ -94,6 +115,8 @@ public class PackageRunnableTest {
     @Test
     public void testRunnableJar() throws Exception {
 
+        String method = "testRunnableJar()";
+
         // Doesn't work on z/OS (because you can't package into a jar on z/OS)
         assumeTrue(!System.getProperty("os.name").equals("z/OS"));
 
@@ -106,6 +129,8 @@ public class PackageRunnableTest {
             Log.warning(c, "Warning: test case " + PackageRunnableTest.class.getName() + " could not package server " + serverName);
             return; // get out
         }
+
+        Log.info(c, method, "stdout for package cmd is: \n" + stdout);
 
         executeTheJar(extractDirectory1, false, true, false);
         checkDirStructure(extractDirectory1, true);
@@ -124,6 +149,8 @@ public class PackageRunnableTest {
     @Test
     public void testRunnableJarLaunchOnlyWithUserDirSet() throws Exception {
 
+        String method = "testRunnableJarLaunchOnlyWithUserDirSet";
+
         // Doesn't work on z/OS (because you can't package into a jar on z/OS)
         assumeTrue(!System.getProperty("os.name").equals("z/OS"));
 
@@ -136,6 +163,8 @@ public class PackageRunnableTest {
             Log.warning(c, "Warning: test case " + PackageRunnableTest.class.getName() + " could not package server " + serverName);
             return; // get out
         }
+
+        Log.info(c, method, "stdout for package cmd is: \n" + stdout);
 
         executeTheJar(extractDirectory2, true, true, false);
         checkDirStructure(extractDirectory2, true);
@@ -149,6 +178,8 @@ public class PackageRunnableTest {
     @Test
     public void testRunnableDeleteServerMinusLogsFolder() throws Exception {
 
+        String method = "testRunnableDeleteServerMinusLogsFolder";
+
         // Doesn't work on z/OS (because you can't package into a jar on z/OS)
         assumeTrue(!System.getProperty("os.name").equals("z/OS"));
 
@@ -161,6 +192,8 @@ public class PackageRunnableTest {
             Log.warning(c, "Warning: test case " + PackageRunnableTest.class.getName() + " could not package server " + serverName);
             return; // get out
         }
+
+        Log.info(c, method, "stdout for package cmd is: \n" + stdout);
 
         extractLocation = new File(executeTheJar(extractDirectory3, true, false, true));
 
@@ -178,6 +211,8 @@ public class PackageRunnableTest {
     @Test
     public void testRunnableDoNotDeleteServerFolder() throws Exception {
 
+        String method = "testRunnableDoNotDeleteServerFolder";
+
         // Doesn't work on z/OS (because you can't package into a jar on z/OS)
         assumeTrue(!System.getProperty("os.name").equals("z/OS"));
 
@@ -190,6 +225,8 @@ public class PackageRunnableTest {
             Log.warning(c, "Warning: test case " + PackageRunnableTest.class.getName() + " could not package server " + serverName);
             return; // get out
         }
+
+        Log.info(c, method, "stdout for package cmd is: \n" + stdout);
 
         String extLoc = executeTheJar(extractDirectory3, false, true, true);
 
@@ -303,14 +340,13 @@ public class PackageRunnableTest {
 
             for (Enumeration<JarEntry> e = jarFile.entries(); e.hasMoreElements();) {
                 JarEntry je = e.nextElement();
+                Log.info(c, "executeTheJar", "entry name = " + je.getName() + " entry size = " + je.getSize());
                 if (je.getName().equals("META-INF/MANIFEST.MF")) {
-                    Log.info(c, "executeTheJar", "entry name = " + je.getName() + " entry size = " + je.getSize());
+
                     Log.info(c, "executeTheJar", "=== Start dumping contents of manifest file ===");
                     readJarEntryContent(jarFile, je);
                     manifestFound = true;
                     Log.info(c, "executeTheJar", "=== End dumping contents of manifest file ===");
-                } else {
-                    Log.info(c, "executeTheJar", "entry name = " + je.getName() + " entry size = " + je.getSize());
                 }
             }
 

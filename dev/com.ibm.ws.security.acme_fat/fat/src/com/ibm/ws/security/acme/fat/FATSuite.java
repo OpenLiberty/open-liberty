@@ -15,7 +15,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
+import componenttest.containers.ExternalTestServiceDockerClientStrategy;
 
 @RunWith(Suite.class)
 @SuiteClasses({ AcmeClientTest.class, 
@@ -41,7 +41,7 @@ public class FATSuite {
 		 * testcontainers.
 		 */
 
-		ExternalTestServiceDockerClientStrategy.clearTestcontainersConfig();
+		ExternalTestServiceDockerClientStrategy.setupTestcontainers();
 
 		// Filter out any external docker servers in the 'libhpike' cluster
 		ExternalTestServiceDockerClientStrategy.serviceFilter = (svc) -> {

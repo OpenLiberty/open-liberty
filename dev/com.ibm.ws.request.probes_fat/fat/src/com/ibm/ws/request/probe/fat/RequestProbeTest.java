@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2019 IBM Corporation and others.
+ * Copyright (c) 2014, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,7 +30,6 @@ import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
-import com.ibm.websphere.simplicity.Machine;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
@@ -72,9 +71,9 @@ public class RequestProbeTest {
         CommonTasks.writeLogMsg(Level.INFO, "-----> Updating server configuration to REMOVE Request Timing feature..");
         server.setServerConfigurationFile("server_NoRT.xml");
 
-        server.waitForStringInLogUsingMark("CWWKF0013I", 30000);
-        server.waitForStringInLogUsingMark("CWWKG0017I", 10000);
-        server.waitForStringInLogUsingMark("CWWKT0016I", 10000);
+        server.waitForStringInLogUsingMark("CWWKG0017I", 30000); // Server config update success message
+        server.waitForStringInLogUsingMark("CWWKF0013I", 30000); // Server removed feature message
+        server.waitForStringInLogUsingMark("CWWKF0008I", 30000); // Feature update complete message
 
         Thread.sleep(60000); // Sleep for one minute
         createRequest(2100);

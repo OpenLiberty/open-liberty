@@ -221,3 +221,11 @@ LDAP_REGISTRY_CUSTOM_MAPPER_FAILED.useraction=Dac\u0103 excep\u0163ia a fost nea
 LDAP_REGISTRY_INVALID_MAPPING=CWIML4504W: Mapatorul de certificate X.509 personalizat a returnat o valoare goal\u0103 sau nul\u0103. 
 LDAP_REGISTRY_INVALID_MAPPING.explanation=Mapatorul de certificate X.509 personalizat trebuie s\u0103 returneze o valoare care s\u0103 nu fie goal\u0103 sau nul\u0103 sau s\u0103 arunce una dintre excep\u0163iile numite.
 LDAP_REGISTRY_INVALID_MAPPING.useraction=Modifica\u0163i implementarea mapatorului de certificate X.509 personalizat astfel \u00eenc\u00e2t s\u0103 nu returneze o valoare goal\u0103 sau nul\u0103. Dac\u0103 nu poate fi returnat\u0103 o valoare valid\u0103, implementarea trebuie s\u0103 arunce o excep\u0163ie verificat\u0103. 
+
+LOGINPROPERTY_OVERRIDE_USERFILTER=CWIML4505W: Atributul userFilter definit este ignorat deoarece sunt definite atributele loginProperty. Filtrul de utilizatori este generat dinamic.
+LOGINPROPERTY_OVERRIDE_USERFILTER.explanation=Sunt definite una sau mai multe instan\u0163e de atribut loginProperty. Aceste atribute sunt folosite pentru a construi filtrul de utilizatori.
+LOGINPROPERTY_OVERRIDE_USERFILTER.useraction=Dac\u0103 este preferat atributul userFilter, \u00eenl\u0103tura\u0163i toate atributele loginProperty.
+
+INVALID_LOGIN_PROPERTIES=CWIML4506E: Propriet\u0103\u0163ile de logare nu sunt valide: {0}.
+INVALID_LOGIN_PROPERTIES.explanation=Una sau mai multe propriet\u0103\u0163i nu sunt propriet\u0103\u0163i WIM PersonAccount valide.
+INVALID_LOGIN_PROPERTIES.useraction=Fie alege\u0163i propriet\u0103\u0163i PersonAccount valide, fie ad\u0103uga\u0163i propriet\u0103\u0163ile la PersonAccount ca \u015fi propriet\u0103\u0163i extinse. Asigura\u0163i-v\u0103 c\u0103 tipul de litere (mari, mici) se potrive\u015fte cu cel din proprietatea PersonAccount corespondent\u0103.

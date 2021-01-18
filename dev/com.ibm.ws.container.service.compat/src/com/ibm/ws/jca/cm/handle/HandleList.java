@@ -42,7 +42,7 @@ public class HandleList implements HandleListInterface {
             for (int i = numToClose; i > 0;) {
                 HandleDetails r = list[--i];
                 list[i] = null;
-                r.close();
+                r.close(true);
             }
         }
     }

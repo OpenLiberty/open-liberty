@@ -3,13 +3,11 @@ package com.ibm.ws.microprofile.reactive.messaging.fat.kafka.containers;
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Stream;
 
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.SocatContainer;
 import org.testcontainers.utility.Base58;
-import org.testcontainers.utility.TestcontainersConfiguration;
 
 /**
  * This class is a modification of the <code>org.testcontainers.containers.KafkaContainer</code> class to add TLS support
@@ -40,7 +38,7 @@ public class KafkaTlsContainer extends GenericContainer<KafkaTlsContainer> {
      * @param confluentPlatformVersion
      */
     public KafkaTlsContainer(String confluentPlatformVersion) {
-        super(TestcontainersConfiguration.getInstance().getKafkaImage() + ":" + confluentPlatformVersion);
+        super("confluentinc/cp-kafka:" + confluentPlatformVersion);
 
         network = Network.newNetwork();
 

@@ -24,6 +24,7 @@ import com.ibm.ws.jaxws.ejb.fat.EJBWSInterceptorTest;
 import com.ibm.ws.jaxws.ejb.fat.EJBWSLifeCycleTest;
 import com.ibm.ws.jaxws.ejb.fat.EJBWSProviderTest;
 
+import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 
@@ -46,7 +47,7 @@ import componenttest.rules.repeater.RepeatTests;
                 EJBWSInterceptorTest.class
 })
 public class FATSuite {
-    @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification().andWith(new FeatureReplacementAction().addFeature("jaxws-2.3").removeFeature("jaxws-2.2").withID("jaxws-2.3"));
 
+    @ClassRule
+    public static RepeatTests r = RepeatTests.with(new EmptyAction().fullFATOnly()).andWith(FeatureReplacementAction.EE8_FEATURES().removeFeature("jaxws-2.2").addFeature("jaxws-2.3").withID("jaxws-2.3")).andWith(FeatureReplacementAction.EE9_FEATURES().removeFeature("jaxws-2.3"));
 }

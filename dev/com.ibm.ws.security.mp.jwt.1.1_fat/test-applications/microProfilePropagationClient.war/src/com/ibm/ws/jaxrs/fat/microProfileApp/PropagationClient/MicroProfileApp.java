@@ -31,7 +31,7 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 
 import com.ibm.ws.security.fat.common.Constants;
-import com.ibm.ws.security.jwt.fat.mpjwt.MpJwtFatConstants;
+import com.ibm.ws.security.fat.common.mp.jwt.MPJwt11FatConstants;
 
 // http://localhost:<nonSecurePort>/microProfileApp/rest/microProfileNoLoginConfig/MicroProfileApp
 // allow the same methods to invoke GET, POST, PUT, ... invocation type determines which is invoked.
@@ -48,9 +48,9 @@ public class MicroProfileApp {
     @Path("{id}")
     @Produces(MediaType.TEXT_PLAIN)
     public String myGetter(@Context HttpHeaders headers,
-            @PathParam("id") String id,
-            @DefaultValue("notSet") @FormParam("targetApp") String appToCall,
-            @DefaultValue("notSet") @FormParam("where") String where) {
+                           @PathParam("id") String id,
+                           @DefaultValue("notSet") @FormParam("targetApp") String appToCall,
+                           @DefaultValue("notSet") @FormParam("where") String where) {
 
         try {
             System.out.println("token in header: " + headers.getRequestHeader("Authorization"));
@@ -69,9 +69,9 @@ public class MicroProfileApp {
     @Produces(MediaType.TEXT_PLAIN)
     @Consumes("application/x-www-form-urlencoded")
     public String myPoster(@Context HttpHeaders headers,
-            @PathParam("id") String id,
-            @DefaultValue("notSet") @FormParam("targetApp") String appToCall,
-            @DefaultValue("notSet") @FormParam("where") String where) {
+                           @PathParam("id") String id,
+                           @DefaultValue("notSet") @FormParam("targetApp") String appToCall,
+                           @DefaultValue("notSet") @FormParam("where") String where) {
         try {
             System.out.println("token in header: " + headers.getRequestHeader("Authorization"));
             return doWorker(Constants.POSTMETHOD, appToCall, where);
@@ -86,9 +86,9 @@ public class MicroProfileApp {
     @Path("{id}")
     @Produces(MediaType.TEXT_PLAIN)
     public String myPutter(@Context HttpHeaders headers,
-            @PathParam("id") String id,
-            @DefaultValue("notSet") @FormParam("targetApp") String appToCall,
-            @DefaultValue("notSet") @FormParam("where") String where) {
+                           @PathParam("id") String id,
+                           @DefaultValue("notSet") @FormParam("targetApp") String appToCall,
+                           @DefaultValue("notSet") @FormParam("where") String where) {
         try {
             System.out.println("token in header: " + headers.getRequestHeader("Authorization"));
             return doWorker(Constants.PUTMETHOD, appToCall, where);
@@ -113,21 +113,21 @@ public class MicroProfileApp {
              * if set, how it should be set
              * The client property can take either the boolean or string versions of true/false
              */
-            if (where.equals(MpJwtFatConstants.PROPAGATE_TOKEN_BOOLEAN_TRUE)) {
+            if (where.equals(MPJwt11FatConstants.PROPAGATE_TOKEN_BOOLEAN_TRUE)) {
                 System.out.println("Setting client property: " + where);
-                client.property(MpJwtFatConstants.CLIENT_SEND_TOKEN_PROPERTY, true);
+                client.property(MPJwt11FatConstants.CLIENT_SEND_TOKEN_PROPERTY, true);
             }
-            if (where.equals(MpJwtFatConstants.PROPAGATE_TOKEN_STRING_TRUE)) {
+            if (where.equals(MPJwt11FatConstants.PROPAGATE_TOKEN_STRING_TRUE)) {
                 System.out.println("Setting client property: " + where);
-                client.property(MpJwtFatConstants.CLIENT_SEND_TOKEN_PROPERTY, "true");
+                client.property(MPJwt11FatConstants.CLIENT_SEND_TOKEN_PROPERTY, "true");
             }
-            if (where.equals(MpJwtFatConstants.PROPAGATE_TOKEN_BOOLEAN_FALSE)) {
+            if (where.equals(MPJwt11FatConstants.PROPAGATE_TOKEN_BOOLEAN_FALSE)) {
                 System.out.println("Setting client property: " + where);
-                client.property(MpJwtFatConstants.CLIENT_SEND_TOKEN_PROPERTY, false);
+                client.property(MPJwt11FatConstants.CLIENT_SEND_TOKEN_PROPERTY, false);
             }
-            if (where.equals(MpJwtFatConstants.PROPAGATE_TOKEN_STRING_FALSE)) {
+            if (where.equals(MPJwt11FatConstants.PROPAGATE_TOKEN_STRING_FALSE)) {
                 System.out.println("Setting client property: " + where);
-                client.property(MpJwtFatConstants.CLIENT_SEND_TOKEN_PROPERTY, "false");
+                client.property(MPJwt11FatConstants.CLIENT_SEND_TOKEN_PROPERTY, "false");
             }
 
             /* invoke the requested app */

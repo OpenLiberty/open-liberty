@@ -16,31 +16,25 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 import org.testcontainers.containers.MSSQLServerContainer;
-import org.testcontainers.containers.output.OutputFrame;
+import org.testcontainers.utility.DockerImageName;
 
-import com.ibm.websphere.simplicity.log.Log;
-
-import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
+import componenttest.containers.ExternalTestServiceDockerClientStrategy;
+import componenttest.containers.SimpleLogConsumer;
 
 @RunWith(Suite.class)
 @SuiteClasses(SQLServerTest.class)
 public class FATSuite {
 
-    static MSSQLServerContainer<?> sqlserver = new MSSQLServerContainer<>("mcr.microsoft.com/mssql/server:2019-CU2-ubuntu-16.04")//
-                    .withLogConsumer(FATSuite::log);
+    private static final DockerImageName sqlserverImage = DockerImageName.parse("aguibert/sqlserver-ssl:1.0")//
+                    .asCompatibleSubstituteFor("mcr.microsoft.com/mssql/server");
 
-    //Private Method: used to setup logging for containers to this class.
-    private static void log(OutputFrame frame) {
-        String msg = frame.getUtf8String();
-        if (msg.endsWith("\n"))
-            msg = msg.substring(0, msg.length() - 1);
-        Log.info(FATSuite.class, "sqlserver", msg);
-    }
+    static final MSSQLServerContainer<?> sqlserver = new MSSQLServerContainer<>(sqlserverImage)//
+                    .withLogConsumer(new SimpleLogConsumer(FATSuite.class, "sqlserver"));
 
     @BeforeClass
     public static void beforeSuite() throws Exception {
         //Allows local tests to switch between using a local docker client, to using a remote docker client.
-        ExternalTestServiceDockerClientStrategy.clearTestcontainersConfig();
+        ExternalTestServiceDockerClientStrategy.setupTestcontainers();
 
         sqlserver.start();
     }

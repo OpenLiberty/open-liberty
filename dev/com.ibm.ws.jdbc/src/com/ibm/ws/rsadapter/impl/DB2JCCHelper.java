@@ -124,11 +124,6 @@ public class DB2JCCHelper extends DB2Helper {
 
         configuredTraceLevel = 0; // value of DB2BaseDataSource.TRACE_NONE
 
-        Collections.addAll(staleErrorCodes,
-                           -4499,
-                           -4498,
-                           -1776);
-
         isRRSTransaction = false;
         threadIdentitySupport = AbstractConnectionFactoryService.THREAD_IDENTITY_NOT_ALLOWED;
         threadSecurity = false;
@@ -233,6 +228,16 @@ public class DB2JCCHelper extends DB2Helper {
         } else { // means need to integrate
             db2UPw = new PrintWriter(new TraceWriter(db2Tc), true);
         }
+    }
+    
+    @Override
+    void customizeStaleStates() {
+        super.customizeStaleStates();
+        
+        Collections.addAll(staleErrorCodes,
+                           -4499,
+                           -4498,
+                           -1776);
     }
 
     @Override

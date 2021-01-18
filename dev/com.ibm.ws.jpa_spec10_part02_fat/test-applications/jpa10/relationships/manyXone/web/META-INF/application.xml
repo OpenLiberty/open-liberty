@@ -12,14 +12,14 @@
  *******************************************************************************/
 -->
 <application xmlns="http://java.sun.com/xml/ns/javaee"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="5"
-	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/application_5.xsd"
-	id="Application_ID">
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="5"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/application_5.xsd"
+    id="Application_ID">
 
-	<display-name>ManyXOne_Web</display-name>
-	<module id="WebModule_1">
+    <display-name>ManyXOne_Web</display-name>
+    <module id="WebModule_1">
         <web>
-            <web-uri>manyXone.war</web-uri>
+            <web-uri>manyXoneWeb.war</web-uri>
             <context-root>ManyXOne10Web</context-root>
         </web>
     </module>

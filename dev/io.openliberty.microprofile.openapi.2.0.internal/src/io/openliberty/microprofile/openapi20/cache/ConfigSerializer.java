@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
 import java.util.function.Function;
@@ -22,6 +23,8 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.eclipse.microprofile.openapi.models.OpenAPI;
+import org.eclipse.microprofile.openapi.models.PathItem;
+import org.eclipse.microprofile.openapi.models.Paths;
 
 import io.smallrye.openapi.api.OpenApiConfig;
 import io.smallrye.openapi.api.OpenApiConfig.OperationIdStrategy;
@@ -56,6 +59,9 @@ public class ConfigSerializer {
         INFO_LICENSE_NAME("getInfoLicenseName", OpenApiConfig::getInfoLicenseName),
         INFO_LICENSE_URL("getInfoLicenseUrl", OpenApiConfig::getInfoLicenseName),
         OPERATION_ID_STRATEGY("getOperationIdStrategy", OpenApiConfig::getOperationIdStrategy, OperationIdStrategy::name),
+        ARRAY_REFERENCES_ENABLE("arrayReferencesEnable", c -> Boolean.toString(c.arrayReferencesEnable())),
+        DEFAULT_PRODUCES("getDefaultProduces", OpenApiConfig::getDefaultProduces, Optional::toString),
+        DEFAULT_CONSUMES("getDefaultConsumes", OpenApiConfig::getDefaultConsumes, Optional::toString),
         ;
 
         Function<OpenApiConfig, String> function;
@@ -132,15 +138,29 @@ public class ConfigSerializer {
     }
 
     private static Set<String> getPathNames(OpenAPI model) {
-        return model.getPaths().getPathItems().keySet();
+        return getPathItems(model).keySet();
     }
 
     private static Set<String> getOperationIds(OpenAPI model) {
-        return model.getPaths().getPathItems().values().stream() // Get the paths
+        return getPathItems(model).values().stream() // Get the paths
                     .flatMap(i -> i.getOperations().values().stream()) // Get all the operations from all the paths
                     .filter(o -> o.getOperationId() != null) // Filter out the ones without an id
                     .map(o -> o.getOperationId()) // Extract just the operation id
                     .collect(Collectors.toSet()); // Collect the IDs into a set
+    }
+    
+    private static Map<String, PathItem> getPathItems(OpenAPI model) {
+        Paths paths = model.getPaths();
+        if (paths == null) {
+            return Collections.emptyMap();
+        }
+        
+        Map<String, PathItem> pathItems = paths.getPathItems();
+        if (pathItems == null) {
+            return Collections.emptyMap();
+        }
+        
+        return pathItems;
     }
 
 }

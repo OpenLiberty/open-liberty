@@ -27,6 +27,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.Transaction.UOWCoordinator;
 import com.ibm.ws.jpa.JPAPuId;
+import com.ibm.ws.jpa.JPAVersion;
 import com.ibm.ws.jpa.container.v21.JPAEMFactoryV21;
 import com.ibm.ws.jpa.container.v21.JPAExEmInvocationV21;
 import com.ibm.ws.jpa.container.v21.JPAExEntityManagerV21;
@@ -38,15 +39,13 @@ import com.ibm.ws.jpa.management.JPAExEntityManager;
 import com.ibm.ws.jpa.management.JPAPUnitInfo;
 import com.ibm.ws.jpa.management.JPARuntime;
 import com.ibm.ws.jpa.management.JPATxEntityManager;
-import com.ibm.ws.jpa.management.JPAVersion;
 
 @Component(service = JPARuntime.class,
            property = Constants.SERVICE_RANKING + ":Integer=21")
 public class JPA21Runtime extends JPA20Runtime implements JPARuntime {
-    private static final TraceComponent tc = Tr.register
-                    (JPA21Runtime.class,
-                     JPA_TRACE_GROUP,
-                     JPA_RESOURCE_BUNDLE_NAME);
+    private static final TraceComponent tc = Tr.register(JPA21Runtime.class,
+                                                         JPA_TRACE_GROUP,
+                                                         JPA_RESOURCE_BUNDLE_NAME);
 
     private final static String JEE7_DEFAULT_JTA_DATASOURCE_JNDI = "java:comp/DefaultDataSource";
 

@@ -53,6 +53,7 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 public class EEValidationUtils {
 
     private static final TraceComponent tc = Tr.register(EEValidationUtils.class);
+    private static final String beanManagerLookupString = "java:comp/BeanManager";
 
     /**
      * Returns whether a given injection point is a producer (i.e. annotated with @Produces)
@@ -245,6 +246,16 @@ public class EEValidationUtils {
 
     @FFDCIgnore(RuntimeException.class)
     private static Class<?> getLookupClass(InitialContext c, Name lookupName) throws NamingException, CDIException {
+        Name beanManagerName = c.getNameParser("").parse(beanManagerLookupString);
+
+        // This is to prevent calling a synchronized WeldBootstrap method when 
+        // aquiring a BeanManager. Otherwise this method might be called with 
+        // a synchronized method from WeldBootstrap already on the stack and 
+        // cause liberty to hang. 
+        if (lookupName.equals(beanManagerName)) {
+            return javax.enterprise.inject.spi.BeanManager.class;
+        }
+
         try {
             Object o = c.lookup(lookupName);
             if (o != null) {

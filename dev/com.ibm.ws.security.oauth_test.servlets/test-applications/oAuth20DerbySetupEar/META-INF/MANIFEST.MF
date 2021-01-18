@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+Ant-Version: Apache Ant 1.7.1
+Class-Path: gson-2.2.4.jar guava-27.0.1-android
+Created-By: 2.3 (IBM Corporation)
+

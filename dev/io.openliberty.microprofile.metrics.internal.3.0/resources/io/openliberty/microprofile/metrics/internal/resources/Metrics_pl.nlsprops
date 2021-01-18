@@ -129,7 +129,8 @@ session.invalidated.total.description=Liczba sesji wylogowanych od momentu w\u01
 session.invalidatedbyTimeout.total.description=Liczba sesji, kt\u00f3re zosta\u0142y wylogowane z powodu przekroczenia limitu czasu od momentu w\u0142\u0105czenia tego pomiaru.
 
 
-REST.request.description=Liczba wywo\u0142a\u0144 i \u0142\u0105czny czas odpowiedzi tej metody zasobu RESTful od momentu uruchomienia serwera.
+REST.request.description=Liczba wywo\u0142a\u0144 i \u0142\u0105czny czas odpowiedzi tej metody zasobu RESTful od momentu uruchomienia serwera. Metryka nie b\u0119dzie rejestrowa\u0142a czasu obs\u0142ugi ani liczby \u017c\u0105da\u0144 REST powoduj\u0105cych nieodwzorowany wyj\u0105tek. S\u0142u\u017cy r\u00f3wnie\u017c do rejestrowania najd\u0142u\u017cszego czasu trwania w poprzedniej pe\u0142nej minucie i najkr\u00f3tszego czasu trwania w poprzedniej pe\u0142nej minucie.
+REST.request.unmappedException.description=\u0141\u0105czna liczba nieodwzorowanych wyj\u0105tk\u00f3w, kt\u00f3re wywo\u0142a\u0142a ta metoda zasobu RESTful od momentu uruchomienia serwera.
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Metrics error message
 #-----------------------------------------------------------------------------------------------------------------------------

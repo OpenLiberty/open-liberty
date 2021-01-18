@@ -46,6 +46,10 @@ public class JaxWsModuleMetaData {
 
     private final JaxWsInstanceManager jaxWsInstanceManager;
 
+    private final Map<String, String> appNameURLMap = new HashMap<String, String>();
+
+    private String contextRoot;
+
     // the ModuleMetaDatas which contain the JaxWsModuleMetadata
     private final List<ModuleMetaData> enclosingModuleMetaDatas = new ArrayList<ModuleMetaData>(2);
 
@@ -160,6 +164,10 @@ public class JaxWsModuleMetaData {
         return moduleContainer;
     }
 
+    public Map<String, String> getAppNameURLMap() {
+        return this.appNameURLMap;
+    }
+
     /**
      *
      * @return
@@ -175,5 +183,12 @@ public class JaxWsModuleMetaData {
         if (clientMetaData != null) {
             clientMetaData.destroy();
         }
+    }
+
+    /**
+     * @return the contextRoot
+     */
+    public String getContextRoot() {
+        return contextRoot;
     }
 }

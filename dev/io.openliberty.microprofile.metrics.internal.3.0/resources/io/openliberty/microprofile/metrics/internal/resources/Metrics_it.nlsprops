@@ -110,7 +110,7 @@ garbageCollectionTime.description=Visualizza il tempo trascorso accumulato appro
 #-----------------------------------------------------------------------------------------------------------------------------
 # Monitor Metrics messages
 #-----------------------------------------------------------------------------------------------------------------------------
-threadpool.activeThreads.description=Il numero di thread che stanno eseguento attivit\u00e0.
+threadpool.activeThreads.description=Il numero di thread che stanno eseguendo attivit\u00e0.
 threadpool.size.description=La dimensione del pool di thread.
 
 servlet.request.total.description=Il numero di visite a questo servlet dall'avvio del server.
@@ -129,7 +129,8 @@ session.invalidated.total.description=Il numero di sessioni da cui \u00e8 stata 
 session.invalidatedbyTimeout.total.description=Il numero di sessioni da cui \u00e8 stata effettuata l'uscita per timeout dal momento dell'abilitazione di questa metrica.
 
 
-REST.request.description=Il numero di richiami e il tempo di risposta totale di questo metodo di risorsa RESTful dall'avvio del server.
+REST.request.description=Il numero di richiami e il tempo di risposta totale di questo metodo di risorsa RESTful dall'avvio del server. La metrica non registrer\u00e0 n\u00e9 il tempo trascorso n\u00e9 il conteggio di una richiesta REST, qualora sia risultata in un'eccezione non associata. Inoltre, tiene traccia della durata di tempo pi\u00f9 elevata nel minuto interamente completato precedente e la durata di tempo minore registrata nel minuto interamente completato precedente.
+REST.request.unmappedException.description=Il numero totale di eccezioni non associate che si verificano da questo metodo risorsa RESTful dall'avvio del server.
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Metrics error message
 #-----------------------------------------------------------------------------------------------------------------------------

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.rest.handler.config.fat;
 
-import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -33,14 +32,13 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpsRequest;
 
 @RunWith(FATRunner.class)
-@SkipForRepeat(EE9_FEATURES) // TODO: Enable this once jms-3.0 is available
 public class ConfigRESTHandlerJMSTest extends FATServletClient {
     @Server("com.ibm.ws.rest.handler.config.jms.fat")
     public static LibertyServer server;
@@ -52,6 +50,8 @@ public class ConfigRESTHandlerJMSTest extends FATServletClient {
                                         .addPackage("org.test.config.adapter")
                                         .addPackage("org.test.config.jmsadapter"));
         ShrinkHelper.exportToServer(server, "connectors", rar);
+
+        FATSuite.setupServerSideAnnotations(server);
 
         server.startServer();
 
@@ -94,8 +94,8 @@ public class ConfigRESTHandlerJMSTest extends FATServletClient {
         // properties.jmsra (under jmsActivationSpec)
         JsonObject props;
         assertNotNull(err, props = aspec.getJsonObject("properties.jmsra"));
-        assertEquals(err, 2, props.size()); // increase this if we ever add additional configured values or default values
-        assertEquals(err, "javax.jms.Topic", props.getString("destinationType"));
+        assertEquals(props.toString(), 2, props.size()); // increase this if we ever add additional configured values or default values
+        assertEquals(err, JakartaEE9Action.isActive() ? "jakarta.jms.Topic" : "javax.jms.Topic", props.getString("destinationType"));
 
         // jmsDestination
         JsonObject dest;
@@ -140,7 +140,7 @@ public class ConfigRESTHandlerJMSTest extends FATServletClient {
         JsonObject props;
         assertNotNull(err, props = aspec.getJsonObject("properties.jmsra"));
         assertEquals(err, 2, props.size()); // increase this if we ever add additional configured values or default values
-        assertEquals(err, "javax.jms.Topic", props.getString("destinationType"));
+        assertEquals(err, JakartaEE9Action.isActive() ? "jakarta.jms.Topic" : "javax.jms.Topic", props.getString("destinationType"));
 
         // jmsTopic
         JsonObject dest;

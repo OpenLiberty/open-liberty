@@ -72,6 +72,7 @@ public interface CDIExtensionMetadata {
     /**
      * All classes returned by this method will be treated as CDI extensions. Override this method if you need to observe CDI container
      * lifecycle events to do something more advanced that just providing additional bean classes.
+     * All extensions must be in the same archive as your CDIExtensionMetadata.
      */
     public default Set<Class<? extends Extension>> getExtensions() {
         return Collections.emptySet();

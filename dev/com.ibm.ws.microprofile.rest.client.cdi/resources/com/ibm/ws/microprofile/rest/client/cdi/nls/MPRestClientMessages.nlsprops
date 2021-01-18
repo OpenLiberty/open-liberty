@@ -21,6 +21,6 @@
 #NLS_ENCODING=UNICODE
 
 # {0} is a space separated list of interface class names
-rest.client.interface.using.request.scope=CWWKW0750I: The following interfaces are configured as RequestScoped which will result in slower performance: {0} 
+rest.client.interface.using.request.scope=CWWKW0750I: The following interfaces are configured as RequestScoped which will result in slower performance: {0} Consider using ApplicationScoped for better performance.
 rest.client.interface.using.request.scope.explanation=MicroProfile Rest Client interfaces that are request scoped are initialized on each request which often involves redundant computations. Application scoped interfaces will only perform the initialization process once per application instance. An interface may be considered request scoped if it is annotated with @RequestScoped or if it is injected into a request scoped CDI bean with either the @Dependent annotation or no scope annotation.  
 rest.client.interface.using.request.scope.useraction=Unless there is a valid reason not to, consider using the @ApplicationScoped annotation on the interface to avoid redundant initialization.

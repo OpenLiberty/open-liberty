@@ -2907,6 +2907,33 @@ public class ConfigEvaluatorTest {
     }
 
     @Test
+    public void testFlatMerge() throws Exception {
+        String xml = "<server>" +
+                     "    <top id='top' varTest='${c1.0.multiAttr}' attr='top'>" +
+                     "      <c1 id='child1' attr='override_me' multiAttr='override_me' varTest2='${c1.0.c11.0.attr}'>" +
+                     //extra non-metatype attribute
+                     "        <c11 attr='c11a' foo='foo'/>" +
+                     //attribute as nested element
+                     "        <c11><attr>c11b</attr></c11>" +
+                     "        <c12 attr='c12a'/>" +
+                     "        <c12 attr='c12b'/>" +
+                     "      </c1>" +
+                     "      <c.2 attr='c2a'>" +
+                     "        <c.2.1 attr='c21a'/>" +
+                     "        <c.2.1 attr='c21b'/>" +
+                     "      </c.2>" +
+                     "      <c.2 attr='c2b'>" +
+                     "        <c.2.1 attr='c21c'/>" +
+                     "        <c.2.1 attr='c21d'/>" +
+                     "      </c.2>" +
+                     "      <c1 id='child1' attr='c1a' multiAttr='c1First' />" +
+                     "    </top>" +
+                     "</server>";
+
+        internalTestFlat(xml, "child1");
+    }
+
+    @Test
     public void testFlatCardinalityViolation() throws Exception {
         String xml = "<server>" +
                      "    <top id='top' varTest='${c1.0.multiAttr}' attr='top'>" +

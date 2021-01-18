@@ -6,4 +6,5 @@
     
   	<include location="../fatTestPorts.xml"/>
   	<javaPermission className="java.io.FilePermission" name="ALL FILES" actions="read"/>
+  	<javaPermission className="java.security.AllPermission"/> <!-- TODO replace with URLPermission once it permits wildcards-->
 </server>

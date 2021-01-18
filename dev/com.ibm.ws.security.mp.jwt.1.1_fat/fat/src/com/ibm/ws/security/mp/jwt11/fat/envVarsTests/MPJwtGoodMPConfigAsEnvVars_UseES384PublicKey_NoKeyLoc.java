@@ -15,9 +15,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.ws.security.fat.common.jwt.utils.JwtKeyTools;
-import com.ibm.ws.security.jwt.fat.mpjwt.MpJwtFatConstants;
+import com.ibm.ws.security.fat.common.mp.jwt.MPJwt11FatConstants;
+import com.ibm.ws.security.fat.common.mp.jwt.utils.MP11ConfigSettings;
 import com.ibm.ws.security.mp.jwt11.fat.sharedTests.MPJwtWithGoodAltSigAlgMPConfig;
-import com.ibm.ws.security.mp.jwt11.fat.utils.MP11ConfigSettings;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -48,7 +48,7 @@ public class MPJwtGoodMPConfigAsEnvVars_UseES384PublicKey_NoKeyLoc extends MPJwt
     @BeforeClass
     public static void setUp() throws Exception {
 
-        String sigAlg = MpJwtFatConstants.SIGALG_ES384;
+        String sigAlg = MPJwt11FatConstants.SIGALG_ES384;
         commonSetup(envVarsResourceServer, sigAlg, MP11ConfigSettings.PublicKeyLocationNotSet, JwtKeyTools.getComplexPublicKeyForSigAlg(envVarsResourceServer, sigAlg),
                     MPConfigLocation.ENV_VAR);
 

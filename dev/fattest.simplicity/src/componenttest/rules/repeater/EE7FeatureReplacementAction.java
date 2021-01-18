@@ -58,7 +58,8 @@ public class EE7FeatureReplacementAction extends FeatureReplacementAction {
                                                  "jms-2.0",
                                                  "wasJmsClient-2.0",
                                                  "wasJmsServer-1.0",
-                                                 "wasJmsSecurity-1.0" };
+                                                 "wasJmsSecurity-1.0",
+                                                 "jaxws-2.2" };
 
     public static final Set<String> EE7_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(EE7_FEATURES_ARRAY)));
 

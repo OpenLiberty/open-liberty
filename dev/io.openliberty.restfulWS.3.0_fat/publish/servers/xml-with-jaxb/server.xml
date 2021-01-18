@@ -10,4 +10,5 @@
     <javaPermission className="java.util.PropertyPermission"  name="*" actions="read" />
     <javaPermission className="java.net.URLPermission" name="http://localhost:8010/xml/app/path/*" actions="GET:"/>
     <javaPermission className="java.lang.RuntimePermission" name="*" actions="accessDeclaredMembers" />
+    <javaPermission className="java.net.SocketPermission" name="*" actions="connect,resolve"/>
 </server>

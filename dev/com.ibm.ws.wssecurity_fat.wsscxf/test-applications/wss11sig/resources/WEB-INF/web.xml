@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--   
+   Change History:
+   Date        UserId         Description
+   01/08/2012  syed           WSS11 Signature tests
+-->
+
+<web-app version="3.0" xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+         http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+    <display-name>wss11sig</display-name>
+
+    <servlet>
+        <servlet-name>wss11sig</servlet-name>
+        <display-name>wss11sig</display-name>
+        <description>WSS 1.1 Signature Confirmation Endpoint Service</description>
+        <servlet-class>com.ibm.ws.wssecurity.fat.wss11sig.WSS11SigWebSvc1</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    
+    <servlet-mapping>
+       <servlet-name>wss11sig</servlet-name>
+       <url-pattern>/WSS11SigService1</url-pattern>
+    </servlet-mapping>
+    
+    <servlet>
+        <servlet-name>wss11signosign</servlet-name>
+        <display-name>wss11signosign</display-name>
+        <description>WSS 1.1 Signature Confirmation Endpoint Service</description>
+        <servlet-class>com.ibm.ws.wssecurity.fat.wss11sig.WSS11SigWebSvc2</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    
+    <servlet-mapping>
+       <servlet-name>wss11signosign</servlet-name>
+       <url-pattern>/WSS11SigService2</url-pattern>
+    </servlet-mapping>
+    
+    <servlet>
+        <servlet-name>wss11sigmulti</servlet-name>
+        <display-name>wss11sigmulti</display-name>
+        <description>WSS 1.1 Signature Confirmation Endpoint Service</description>
+        <servlet-class>com.ibm.ws.wssecurity.fat.wss11sig.WSS11SigWebSvc3</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    
+    <servlet-mapping>
+       <servlet-name>wss11sigmulti</servlet-name>
+       <url-pattern>/WSS11SigService3</url-pattern>
+    </servlet-mapping>
+                          
+    <servlet>
+        <servlet-name>wss11sigmismatch1</servlet-name>
+        <display-name>wss11sigmismatch1</display-name>
+        <description>WSS 1.1 Signature Confirmation Endpoint Service</description>
+        <servlet-class>com.ibm.ws.wssecurity.fat.wss11sig.WSS11SigWebSvc4</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    
+    <servlet-mapping>
+       <servlet-name>wss11sigmismatch1</servlet-name>
+       <url-pattern>/WSS11SigService4</url-pattern>
+    </servlet-mapping>
+                      
+    <servlet>
+        <servlet-name>wss11sigmismatch2</servlet-name>
+        <display-name>wss11sigmismatch2</display-name>
+        <description>WSS 1.1 Signature Confirmation Endpoint Service</description>
+        <servlet-class>com.ibm.ws.wssecurity.fat.wss11sig.WSS11SigWebSvc5</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    
+    <servlet-mapping>
+       <servlet-name>wss11sigmismatch2</servlet-name>
+       <url-pattern>/WSS11SigService5</url-pattern>
+    </servlet-mapping>
+    
+    <servlet>
+        <servlet-name>wss11sig6</servlet-name>
+        <display-name>wss11sig6</display-name>
+        <description>WSS 1.1 Signature Confirmation Endpoint Service</description>
+        <servlet-class>com.ibm.ws.wssecurity.fat.wss11sig.WSS11SigWebSvc6</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    
+    <servlet-mapping>
+       <servlet-name>wss11sig6</servlet-name>
+       <url-pattern>/WSS11SigService6</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>wss11sig6a</servlet-name>
+        <display-name>wss11sig6a</display-name>
+        <description>WSS 1.1 Signature Confirmation Endpoint Service</description>
+        <servlet-class>com.ibm.ws.wssecurity.fat.wss11sig.WSS11SigWebSvc6a</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    
+    <servlet-mapping>
+       <servlet-name>wss11sig6a</servlet-name>
+       <url-pattern>/WSS11SigService6a</url-pattern>
+    </servlet-mapping>
+    
+    <servlet>
+        <servlet-name>wss11sig7</servlet-name>
+        <display-name>wss11sig7</display-name>
+        <description>WSS 1.1 Signature Confirmation Endpoint Service</description>
+        <servlet-class>com.ibm.ws.wssecurity.fat.wss11sig.WSS11SigWebSvc7</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    
+    <servlet-mapping>
+       <servlet-name>wss11sig7</servlet-name>
+       <url-pattern>/WSS11SigService7</url-pattern>
+    </servlet-mapping>
+        
+    <servlet>
+        <servlet-name>wss11sig7a</servlet-name>
+        <display-name>wss11sig7a</display-name>
+        <description>WSS 1.1 Signature Confirmation Endpoint Service</description>
+        <servlet-class>com.ibm.ws.wssecurity.fat.wss11sig.WSS11SigWebSvc7a</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    
+    <servlet-mapping>
+       <servlet-name>wss11sig7a</servlet-name>
+       <url-pattern>/WSS11SigService7a</url-pattern>
+    </servlet-mapping>
+                                              
+    <servlet>
+        <servlet-name>wss11sig8</servlet-name>
+        <display-name>wss11sig8</display-name>
+        <description>WSS 1.1 Signature Confirmation Endpoint Service</description>
+        <servlet-class>com.ibm.ws.wssecurity.fat.wss11sig.WSS11SigWebSvc8</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    
+    <servlet-mapping>
+       <servlet-name>wss11sig8</servlet-name>
+       <url-pattern>/WSS11SigService8</url-pattern>
+    </servlet-mapping>
+                                                                 
+    <session-config>
+       <session-timeout>60</session-timeout>
+    </session-config>
+
+</web-app>
+

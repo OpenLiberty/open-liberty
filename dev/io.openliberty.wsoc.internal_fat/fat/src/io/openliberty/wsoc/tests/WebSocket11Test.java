@@ -79,6 +79,14 @@ public class WebSocket11Test extends LoggingTest {
 
     @AfterClass
     public static void tearDown() throws Exception {
+
+        // give the system 10 seconds to settle down before stopping
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException x) {
+
+        }
+
         if (SS.getLibertyServer() != null && SS.getLibertyServer().isStarted()) {
             SS.getLibertyServer().stopServer(null);
         }

@@ -1,0 +1,26 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+# NLS_MESSAGEFORMAT_ALL
+#
+#CMVCPATHNAME com.ibm.ws.jaxrs20.client/resources/com/ibm/ws/jaxrs20/client/internal/resources/JAXRSClientMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#COMPONENTPREFIX CWWKW
+#COMPONENTNAMEFOR CWWKW WebSphere JAXRS20 Client Code
+#RANGE 0750 - 0799
+#
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# {0} is a space separated list of interface class names
+rest.client.interface.using.request.scope=CWWKW0750I: Die folgenden Schnittstellen werden als RequestScoped-Schnittstellen konfiguriert, was zu einer langsameren Verarbeitung f\u00fchrt: {0} 
+rest.client.interface.using.request.scope.explanation=MicroProfile-REST-Client-Schnittstellen, die anforderungsorientiert sind, werden bei jeder Anforderung initialisiert, was h\u00e4ufig zu redundanten Berechnungen f\u00fchrt. Anwendungsorientierte Schnittstellen f\u00fchren den Initialisierungsprozess einmal pro Anwendungsinstanz aus. Eine Schnittstelle kann als anforderungsorientiert eingestuft werden, wenn sie mit @RequestScoped annotiert ist oder wenn sie mit der Annotation @Dependent oder ohne Bereichsannotation in eine anforderungsorientierte CDI-Bean eingef\u00fcgt wird. 
+rest.client.interface.using.request.scope.useraction=Sofern es keinen triftigen Grund gibt, es nicht zu tun, sollten Sie die Annotation @ApplicationScoped verwenden, um eine redundante Initialisierung zu verhindern.

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2019 IBM Corporation and others.
+# Copyright (c) 2019, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -36,10 +36,10 @@ OIDC_CLIENT_CONFIG_MODIFIED.useraction=Nenhuma.
 # used_by_client_project and clients project IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN THE OTHER BUNDLE!
 # social also uses this and it does not have the enforceHTTPS attribute.
 #do not translate enforceHTTPS
-OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS=CWWKS1703E: O cliente OpenID Connect requer SSL (HTTPS), mas a URL do provedor OpenID Connect \u00e9 HTTP: [{0}]. Atualize a configura\u00e7\u00e3o para usar uma URL HTTPS ou use o recurso do cliente OpenID Connect e configure enforceHTTPS para false.
-
+OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS=CWWKS1703E: O cliente OpenID Connect requer SSL (HTTPS), mas a URL do provedor OpenID Connect \u00e9 HTTP: [{0}]. Atualize a configura\u00e7\u00e3o para usar uma URL HTTPS ou use o recurso do cliente OpenID Connect e configure enforceHTTPS para false. 
 OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS.explanation=O cliente OpenID Connect (parte dependente ou servidor de recurso) requer SSL (HTTPS), mas o protocolo de URL do provedor do OpenID Connect (OP) especificado na configura\u00e7\u00e3o do cliente OpenID Connect n\u00e3o \u00e9 HTTPS.
-OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS.useraction=Execute um destes procedimentos: primeiro, verifique se o provedor do OpenID Connect suporta SSL. Se o provedor do OpenID Connector n\u00e3o suportar SSL, use o recurso do cliente OpenID Connect e configure o enforceHTTPS para false na configura\u00e7\u00e3o do recurso do cliente OpenID Connect. 
+OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS.useraction=Execute um destes procedimentos: primeiro, verifique se o provedor do OpenID Connect suporta SSL. Se o provedor do OpenID Connector n\u00e3o suportar SSL, use o recurso do cliente OpenID Connect e configure o enforceHTTPS para false na configura\u00e7\u00e3o do recurso do cliente OpenID Connect.
+
 # unused, but present in both bundles.  IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES
 OIDC_CLIENT_RESPONSE_STATE_VERIFY_ERR=CWWKS1704E: O estado atual [{0}] do cliente OpenID Connect [{2}] e o par\u00e2metro de estado [{1}] na resposta do provedor OpenID Connect n\u00e3o correspondem.  Essa condi\u00e7\u00e3o n\u00e3o \u00e9 permitida.
 OIDC_CLIENT_RESPONSE_STATE_VERIFY_ERR.explanation=O cliente OpenID Connect (relying party ou RP) enviou uma solicita\u00e7\u00e3o para um provedor OpenID Connect (OP) e o OP retornou uma resposta com um par\u00e2metro de estado que n\u00e3o corresponde ao estado do RP no momento em que foi enviada. O OP deve incluir na resposta o mesmo estado em que foi enviado.  O estado \u00e9 usado dessa maneira para evitar falsifica\u00e7\u00e3o na solicita\u00e7\u00e3o de sites cruzados. 
@@ -282,5 +282,10 @@ CONFIG_AUTHFILTER_NOTUNIQUE.useraction=Revise o arquivo server.xml e corrija a c
 AUTHFILTER_MULTIPLE_MATCHED=CWWKS1531W: Mais de um filtro de autentica\u00e7\u00e3o do cliente do OpenID Connect corresponde a uma solicita\u00e7\u00e3o para a URL [{0}]. Os filtros correspondentes foram [{1}]. Isso pode causar um comportamento indeterminado.
 AUTHFILTER_MULTIPLE_MATCHED.explanation=Mais de um filtro de autentica\u00e7\u00e3o corresponde a uma solicita\u00e7\u00e3o de entrada. Qualquer cliente que use um desses filtros poderia processar a solicita\u00e7\u00e3o, levando a um comportamento indeterminado.  
 AUTHFILTER_MULTIPLE_MATCHED.useraction=Revise o arquivo server.xml e corrija a configura\u00e7\u00e3o.
+
+# do not translate hostname, wasReqURLRedirectDomainNames, and webAppSecurity
+OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE=CWWKS1532E: Uma solicita\u00e7\u00e3o para [{0}] n\u00e3o \u00e9 v\u00e1lida. Um cookie obrigat\u00f3rio com um nome que come\u00e7a com WASReqURLOidc possui um valor incorreto. O nome do host [{1}] usado no cookie n\u00e3o corresponde ao nome que est\u00e1 registrado no provedor. Um c\u00f3digo de resposta 500 ser\u00e1 retornado.
+OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE.explanation=Foi recebida uma solicita\u00e7\u00e3o que inclui um cookie malformado.
+OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE.useraction=Verifique as configura\u00e7\u00f5es de provedor e de cliente do OpenID Connect. O cookie malformado pode ser causado pela modifica\u00e7\u00e3o do cookie no agente do usu\u00e1rio com um nome de host diferente do nome de host do redirecionamento que est\u00e1 registrado com o provedor. Se o nome do host for esperado, inclua-o no atributo wasReqURLRedirectDomainNames do elemento webAppSecurity em server.xml.
 
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

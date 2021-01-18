@@ -32,7 +32,13 @@ import org.jboss.jandex.Indexer;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.container.service.app.deploy.ContainerInfo;
+import com.ibm.ws.container.service.app.deploy.ContainerInfo.Type;
+import com.ibm.ws.container.service.app.deploy.ModuleClassesContainerInfo;
 import com.ibm.ws.container.service.app.deploy.WebModuleInfo;
+import com.ibm.wsspi.adaptable.module.Container;
+import com.ibm.wsspi.adaptable.module.Entry;
+import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 
 import io.smallrye.openapi.api.OpenApiConfig;
 import io.smallrye.openapi.runtime.scanner.FilteredIndexView;
@@ -51,60 +57,27 @@ public class IndexUtils {
      * 
      * @param webModuleInfo
      *          The module info for the web module
+     * @param moduleClassesContainerInfo
+     *          The module classes container info for the web module
      * @param config
      *          The configuration that may specify which classes/packages/JARs to include/exclude. 
      * @return IndexView
      *          The org.jboss.jandex.IndexView instance.
      */
-    public static IndexView getIndexView(WebModuleInfo webModuleInfo, OpenApiConfig config) {
+    public static IndexView getIndexView(WebModuleInfo webModuleInfo, ModuleClassesContainerInfo moduleClassesContainerInfo, OpenApiConfig config) {
 
         long startTime = System.currentTimeMillis();
-
+        
         Indexer indexer = new Indexer();
         FilteredIndexView filter = new FilteredIndexView(null, config);
-
-        String containerPhysicalPath = webModuleInfo.getContainer().getPhysicalPath();
-        Path containerPath = Paths.get(containerPhysicalPath);
-        if (Files.exists(containerPath) && Files.isDirectory(containerPath)) {
-            // Container path is a directory, this is probably an expanded/loose app. Process the files in the directory.
-            try (Stream<Path> walk = Files.walk(containerPath)) {
-                List<Path> files = walk
-                    .filter(Files::isRegularFile)
-                    .collect(Collectors.toList());
-
-                for (Path file : files) {
-                    try {
-                        processFile(containerPath.relativize(file).toString(), Files.newInputStream(file), indexer, filter, config);
-                    } catch (IOException e) {
-                        if (LoggingUtils.isEventEnabled(tc)) {
-                            Tr.event(tc, String.format("Error occurred when processing file %s: %s", file.getFileName().toString(), e.getMessage()));
-                        }
-                    }
-                } // FOR
-            } catch (IOException e) {
-                if (LoggingUtils.isEventEnabled(tc)) {
-                    Tr.event(tc, String.format("Error occurred when attempting to walk files for directory %s: %s", containerPath, e.getMessage()));
+        
+        for (ContainerInfo ci : moduleClassesContainerInfo.getClassesContainerInfo()) {
+            if (ci.getType() == Type.WEB_INF_CLASSES) {
+                indexContainer(ci.getContainer(), null, indexer, filter);
+            } else if (ci.getType() == Type.WEB_INF_LIB) {
+                if (acceptJarForScanning(config, ci.getContainer().getName())) {
+                    indexContainer(ci.getContainer(), null, indexer, filter);
                 }
-            }
-        } else if (  Files.isRegularFile(containerPath)
-                  && (  containerPath.getFileName().toString().endsWith(Constants.FILE_SUFFIX_WAR)
-                     || containerPath.getFileName().toString().endsWith(Constants.FILE_SUFFIX_JAR)
-                     )
-                  ) {
-            try {
-                // Container path is a .jar or .war file.
-                if (LoggingUtils.isEventEnabled(tc)) {
-                    Tr.event(tc, "Processing archive: " + containerPath);
-                }
-                processJar(Files.newInputStream(containerPath), indexer, filter, config);
-            } catch (IOException e) {
-                if (LoggingUtils.isEventEnabled(tc)) {
-                    Tr.event(tc, String.format("Error occurred when processing archive file %s: %s", containerPath, e.getMessage()));
-                }
-            }
-        } else {
-            if (LoggingUtils.isEventEnabled(tc)) {
-                Tr.event(tc, String.format("%s is not a not a jar, war or directory", containerPath));
             }
         }
 
@@ -117,6 +90,40 @@ public class IndexUtils {
         }
 
         return view;
+    }
+    
+    private static void indexContainer(Container container, String packageName, Indexer indexer, FilteredIndexView filter) {
+        for (Entry entry : container) {
+            String entryName = entry.getName();
+            try {
+                if (entryName.endsWith(Constants.FILE_SUFFIX_CLASS)) {
+                    int nameLength = entryName.length() - Constants.FILE_SUFFIX_CLASS.length();
+                    String className = entryName.substring(0, nameLength);
+                    String qualifiedName;
+                    if (packageName == null) {
+                        qualifiedName = className;
+                    } else {
+                        qualifiedName = packageName + "." + className;
+                    }
+                    if (acceptClassForScanning(filter, qualifiedName)) {
+                        indexer.index(entry.adapt(InputStream.class));
+                    }
+                } else {
+                    Container entryContainer = entry.adapt(Container.class);
+                    if (entryContainer != null) {
+                        String entryPackageName;
+                        if (packageName == null) {
+                            entryPackageName = entryContainer.getName();
+                        } else {
+                            entryPackageName = packageName + "."  + entryContainer.getName();
+                        }
+                        indexContainer(entryContainer, entryPackageName, indexer, filter);
+                    }
+                }
+            } catch (UnableToAdaptException | IOException e) {
+                // FFDC and ignore this entry
+            }
+        }
     }
 
     /**
@@ -180,121 +187,5 @@ public class IndexUtils {
         }
         
         return acceptJar;
-    }
-
-    /**
-     * The processJar method iterates over the contents of a JAR file, processing each file in turn.
-     * 
-     * @param inputStream
-     *            The inputStream that should be used to read the content of the JAR file
-     * @param indexer
-     *            The Jandex indexer
-     * @param config
-     *            The OpenAPIConfig representation of the configuration
-     * @throws IOException
-     */
-    private static void processJar(InputStream inputStream, Indexer indexer, FilteredIndexView filter, OpenApiConfig config) throws IOException {
-        try (ZipInputStream zipInputStream = new ZipInputStream(inputStream, StandardCharsets.UTF_8)) {
-            ZipEntry zipEntry;
-            while ((zipEntry = zipInputStream.getNextEntry()) != null) {
-                processFile(zipEntry.getName(), zipInputStream, indexer, filter, config);
-            }
-        }
-    }
-
-    /**
-     * The processFile method will index the specified file if it is a class file or pass it to the processJar method
-     * if it is a WAR/JAR file.  Before performing either task, it will check whether relevant file has been configured
-     * to allow scanning based on the undlerying MP config properties.
-     * 
-     * @param fileName
-     *            The name of the file being processed
-     * @param inputStream
-     *            The inputStream that should be used to read the content of the file
-     * @param indexer
-     *            The Jandex indexer
-     * @param config
-     *            The OpenAPIConfig representation of the configuration
-     * @throws IOException
-     */
-    private static void processFile(String fileName, InputStream inputStream, Indexer indexer, FilteredIndexView filter, OpenApiConfig config) throws IOException {
-        if (fileName.endsWith(Constants.FILE_SUFFIX_CLASS)) {
-            final String className = convertToClassName(fileName);
-            if (acceptClassForScanning(filter, className)) {
-                if (LoggingUtils.isEventEnabled(tc)) {
-                    Tr.event(tc, "Indexing class: " + className);
-                }
-
-                indexer.index(inputStream);
-            } else {
-                if (LoggingUtils.isEventEnabled(tc)) {
-                    Tr.event(tc, "Filtered class: " + className);
-                }
-            }
-        } else if (fileName.endsWith(Constants.FILE_SUFFIX_WAR) || fileName.endsWith(Constants.FILE_SUFFIX_JAR)) {
-            if (acceptJarForScanning(config, fileName)) {
-                if (LoggingUtils.isEventEnabled(tc)) {
-                    Tr.event(tc, "Processing archive: " + fileName);
-                }
-
-                byte[] archive = copyArchive(inputStream);
-                processJar(new ByteArrayInputStream(archive), indexer, filter, config);
-            } else {
-                if (LoggingUtils.isEventEnabled(tc)) {
-                    Tr.event(tc, "Filtered archive: " + fileName);
-                }
-            }
-        }
-    }
-    
-    /**
-     * The convertToClassName method converts the fileName to a canonical Java class name
-     * 
-     * @param fileName
-     *            The name of the file to convert
-     * @return String
-     *             The class name
-     */
-    private static String convertToClassName(String fileName) {
-        String className;
-        // Remove ".class" extension
-        className = fileName.replace(Constants.FILE_SUFFIX_CLASS, Constants.STRING_EMPTY);
-
-        // If necessary, remove WEB-INF/classes/
-        className = className.replace(Constants.DIR_WEB_INF_CLASSES, Constants.STRING_EMPTY);
-
-        // Substitute dots for slashes and backslashes
-        className = className.replace(Constants.STRING_FORWARD_SLASH, Constants.STRING_PERIOD);
-        className = className.replace(Constants.STRING_BACK_SLASH, Constants.STRING_PERIOD);
-
-        if (className.startsWith(Constants.STRING_PERIOD)) {
-            className = className.substring(1);
-        }
-
-        return className;
-    }
-    
-    /**
-     * The copyArchive method copies the content of an embedded JAR file into a separate byte array.  This is required
-     * because simply creating another InputStream based on the original ZipInputStream will result in all of the
-     * InputStreams being closed when the first one is closed.
-     * 
-     * @param inputStream
-     *            The InputStream that is used to read the content of the embedded JAR file
-     * @return byte[]
-     *            The content of the embedded JAR file
-     * @throws IOException
-     */
-    private static byte[] copyArchive(InputStream inputStream) throws IOException {
-        byte[] content = null;
-        try (final ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-            final byte[] buffer = new byte[4096];
-            int numBytes;
-            while ((numBytes = inputStream.read(buffer, 0, buffer.length)) != -1) {
-                baos.write(buffer, 0, numBytes);
-            }
-            content = baos.toByteArray();
-        }
-        return content;
     }
 }

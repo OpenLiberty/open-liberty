@@ -115,16 +115,20 @@ public abstract class AbstractJPAProviderIntegration implements JPAProviderInteg
     }
 
     @Override
-    public void moduleStarting(ModuleInfo moduleInfo) {}
+    public void moduleStarting(ModuleInfo moduleInfo) {
+    }
 
     @Override
-    public void moduleStarted(ModuleInfo moduleInfo) {}
+    public void moduleStarted(ModuleInfo moduleInfo) {
+    }
 
     @Override
-    public void moduleStopping(ModuleInfo moduleInfo) {}
+    public void moduleStopping(ModuleInfo moduleInfo) {
+    }
 
     @Override
-    public void moduleStopped(ModuleInfo moduleInfo) {}
+    public void moduleStopped(ModuleInfo moduleInfo) {
+    }
 
     /**
      * @see com.ibm.ws.jpa.JPAProviderIntegration#supportsEntityManagerPooling()
@@ -155,8 +159,11 @@ public abstract class AbstractJPAProviderIntegration implements JPAProviderInteg
              * the aggregate function is NULL.
              *
              * Set this property to so that EclipseLink does not return null by default
+             *
+             * JPA 3.0: Do not force this override with JPA 3.0 and later.
              */
-            if (!properties.containsKey("eclipselink.allow-null-max-min")) {
+            if (!properties.containsKey("eclipselink.allow-null-max-min") &&
+                JPAAccessor.getJPAComponent().getJPAVersion().lesserThan(JPAVersion.JPA30)) {
                 props.put("eclipselink.allow-null-max-min", "false");
             }
         } else if (PROVIDER_HIBERNATE.equals(providerName)) {
@@ -188,7 +195,8 @@ public abstract class AbstractJPAProviderIntegration implements JPAProviderInteg
      * @see com.ibm.ws.jpa.JPAProvider#modifyPersistenceUnitProperties(java.lang.String, java.util.Properties)
      */
     @Override
-    public void updatePersistenceUnitProperties(String providerClassName, Properties props) {}
+    public void updatePersistenceUnitProperties(String providerClassName, Properties props) {
+    }
 
     /**
      * As of Hibernate 5.2.13+ and 5.3+ built-in knowledge of Liberty's transaction integration was delivered as:

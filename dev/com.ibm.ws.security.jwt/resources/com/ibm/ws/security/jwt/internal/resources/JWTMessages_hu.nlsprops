@@ -335,9 +335,10 @@ ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE=CWWKS6056E: A(z) [{0}] JWT fogyaszt\u00f3 
 ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE.explanation=Lehets\u00e9ges, hogy a JWE token rosszul van form\u00e1zva, vagy hi\u00e1nyoznak bel\u0151le inform\u00e1ci\u00f3k. Lehets\u00e9ges, hogy a JWE token visszafejt\u00e9s\u00e9hez haszn\u00e1lt kulcskezel\u00e9si kulcs hi\u00e1nyzik, vagy nem k\u00e9pes visszafejteni a tokent.
 ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg az \u00fczenetben l\u00e9v\u0151 hib\u00e1t. Ellen\u0151rizze, hogy a JWE helyesen van-e form\u00e1zva. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a JWT fogyaszt\u00f3 konfigur\u00e1ci\u00f3 a JWE token titkos\u00edt\u00e1s\u00e1hoz haszn\u00e1lt kulcsnak megfelel\u0151 kulcskezel\u00e9si kulcsra hivatkozik.
 
-#
-# CWWKS6057E is available
-#
+# 0="cty", 1=Value of the "cty" header in the token, 2="JWT"
+CTY_NOT_JWT_FOR_NESTED_JWS=CWWKS6057E: A JSON Web Encryption (JWE) token be\u00e1gyazott JSON Web Signature (JWS) tokent tartalmaz, de a(z) {0} fejl\u00e9c a JWE tokenben a k\u00f6vetkez\u0151 \u00e9rt\u00e9kre van be\u00e1ll\u00edtva: [{1}]. A(z) {0} JWE fejl\u00e9cet {2} \u00e9rt\u00e9kre kell be\u00e1ll\u00edtani, ha a JWE hasznos tartalom JWS.
+CTY_NOT_JWT_FOR_NESTED_JWS.explanation=A MicroProfile JSON Web Token 1.2 specifik\u00e1ci\u00f3 megk\u00f6veteli, hogy JWE tokeneknek a saj\u00e1t tartalomt\u00edpus fejl\u00e9c\u00fcket az \u00fczenetben megadott \u00e9rt\u00e9kre kell be\u00e1ll\u00edtaniuk, ha a token tartalma JWS.
+CTY_NOT_JWT_FOR_NESTED_JWS.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a JWE token tartalomt\u00edpus fejl\u00e9ce a k\u00f6telez\u0151 \u00e9rt\u00e9kre van be\u00e1ll\u00edtva.
 
 # Do not translate "JSON Web Encryption", "JWE", "Content Encryption Key"
 # 0=Builder config ID
@@ -360,3 +361,24 @@ ERROR_BUILDING_SIGNED_JWE.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt 
 KEY_MANAGEMENT_KEY_NOT_FOUND=CWWKS6061E: A(z) [{0}] JWT k\u00e9sz\u00edt\u0151 nem tud l\u00e9trehozni egy JSON Web Encryption (JWE) tokent, mert nem tal\u00e1lhat\u00f3 kulcskezel\u00e9si kulcs. A kulcskezel\u00e9si kulcs \u00e1ln\u00e9v: [{1}], a konfigur\u00e1lt tan\u00fas\u00edtv\u00e1nyt\u00e1rol\u00f3: [{2}].
 KEY_MANAGEMENT_KEY_NOT_FOUND.explanation=A kulcskezel\u00e9si kulcs egy kulcs, amely egy JWE token Tartalomtitkos\u00edt\u00e1si kulcs\u00e1nak titkos\u00edt\u00e1s\u00e1ra szolg\u00e1l. Meg kell adni egy kulcskezel\u00e9si kulcsot, hogy a JWT k\u00e9sz\u00edt\u0151 l\u00e9tre tudjon hozni JWE tokeneket. Egy kulcskezel\u00e9si kulcs az \u00fczenetben megadott kulcs \u00e1ln\u00e9v \u00e9s a konfigur\u00e1lt tan\u00fas\u00edtv\u00e1nyt\u00e1rol\u00f3 \u00e9rt\u00e9kek haszn\u00e1lat\u00e1val, vagy a JwtBuilder API haszn\u00e1lat\u00e1val adhat\u00f3 meg.
 KEY_MANAGEMENT_KEY_NOT_FOUND.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az \u00fczenetben megadott \u00e1ln\u00e9vvel rendelkez\u0151 kulcs l\u00e9tezik az \u00fczenetben megadott tan\u00fas\u00edtv\u00e1nyt\u00e1rol\u00f3ban. Ha a JwtBuilder API-t haszn\u00e1lja, akkor gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy meg van adva egy kulcskezel\u00e9si kulcs.
+
+# Do not translate "MicroProfile Config", "mp.jwt.verify.publickey.location"
+# 0=mp.jwt.decrypt.key.location
+DECRYPT_KEY_LOCATION_INLINE_KEY=CWWKS6062E: \u00dagy t\u0171nik, hogy a(z) [{0}] MicroProfile konfigur\u00e1ci\u00f3s tulajdons\u00e1g \u00e9rt\u00e9ke priv\u00e1t kulcs karaktersorozatot tartalmaz, ami nem t\u00e1mogatott be\u00e1ll\u00edt\u00e1s.
+DECRYPT_KEY_LOCATION_INLINE_KEY.explanation=A MicroProfile JWT szolg\u00e1ltat\u00e1s nem t\u00e1mogatja priv\u00e1t kulcs karaktersorozatok megad\u00e1s\u00e1t az \u00fczenetben megadott MicroProfile konfigur\u00e1ci\u00f3s tulajdons\u00e1gban. A tulajdons\u00e1g \u00e9rt\u00e9ke csak relat\u00edv el\u00e9r\u00e9si \u00fat vagy URL c\u00edm lehet.
+DECRYPT_KEY_LOCATION_INLINE_KEY.useraction=Haszn\u00e1ljon relat\u00edv el\u00e9r\u00e9si utat vagy URL c\u00edmet az \u00fczenetben megadott MicroProfile konfigur\u00e1ci\u00f3s tulajdons\u00e1g \u00e9rt\u00e9kek\u00e9nt. A t\u00e1mogatott hely \u00e9rt\u00e9kek ugyanazok, mint a mp.jwt.verify.publickey.location tulajdons\u00e1g eset\u00e9ben.
+
+# Do not translate "mp.jwt.decrypt.key.location", "keyManagementKeyAlias", "Content Encryption Key"
+# 0=JWT consumer config ID
+JWS_REQUIRED_BUT_TOKEN_NOT_JWS=CWWKS6063E: A token a k\u00e9r\u00e9sben nem JSON Web Signature (JWS) form\u00e1tum\u00fa, de a(z) [{0}] JWT fogyaszt\u00f3 csak JWS form\u00e1tum\u00fa tokeneket fogad el.
+JWS_REQUIRED_BUT_TOKEN_NOT_JWS.explanation=Lehet, hogy a token a k\u00e9r\u00e9sben rossz form\u00e1tum\u00fa vagy JSON Web Encryption (JWE) form\u00e1tum\u00fa. A tokenek csak JWS form\u00e1tum\u00faak lehetnek, ha a JWE visszafejt\u00e9si kulcs helye nincs be\u00e1ll\u00edtva. Ha a MicroProfile JWT szolg\u00e1ltat\u00e1st haszn\u00e1lja, akkor a szolg\u00e1ltat\u00e1s 1.2 vagy \u00fajabb v\u00e1ltozat\u00e1t \u00fagy kell be\u00e1ll\u00edtani, hogy JWE form\u00e1tumban fogadjon el tokeneket.
+JWS_REQUIRED_BUT_TOKEN_NOT_JWS.useraction=JWE tokenek elfogad\u00e1s\u00e1hoz \u00e1ll\u00edtsa be a mp.jwt.decrypt.key.location MicroProfile konfigur\u00e1ci\u00f3s tulajdons\u00e1got vagy a keyManagementKeyAlias attrib\u00fatumot a JWT fogyaszt\u00f3 konfigur\u00e1ci\u00f3j\u00e1ban. Ha a MicroProfile JWT szolg\u00e1ltat\u00e1st haszn\u00e1lja, akkor gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az 1.2 vagy \u00fajabb v\u00e1ltozat van be\u00e1ll\u00edtva. Egy\u00e9bk\u00e9nt pedig gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy csak JWS tokenek ker\u00fclnek elk\u00fcld\u00e9sre ennek az er\u0151forr\u00e1snak.
+
+# 0=JWT consumer config ID
+JWE_REQUIRED_BUT_TOKEN_NOT_JWE=CWWKS6064E: A token a k\u00e9r\u00e9sben nem JSON Web Encryption (JWE) form\u00e1tum\u00fa, de a(z) [{0}] JWT fogyaszt\u00f3 csak JWE form\u00e1tum\u00fa tokeneket fogad el.
+JWE_REQUIRED_BUT_TOKEN_NOT_JWE.explanation=Lehet, hogy a token a k\u00e9r\u00e9sben rossz form\u00e1tum\u00fa vagy JSON Web Signature (JWS) form\u00e1tum\u00fa. A tokenek csak JWE form\u00e1tum\u00faak lehetnek, ha a JWE visszafejt\u00e9si kulcs helye be van \u00e1ll\u00edtva.
+JWE_REQUIRED_BUT_TOKEN_NOT_JWE.useraction=Ha JWE tokenek helyett JWS tokeneket k\u00edv\u00e1n elfogadni, akkor t\u00e1vol\u00edtsa el a mp.jwt.decrypt.key.location MicroProfile konfigur\u00e1ci\u00f3s tulajdons\u00e1got \u00e9s a keyManagementKeyAlias attrib\u00fatumot a JWT fogyaszt\u00f3 konfigur\u00e1ci\u00f3j\u00e1b\u00f3l. Egy\u00e9bk\u00e9nt pedig gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy csak JWE tokenek ker\u00fclnek elk\u00fcld\u00e9sre ennek az er\u0151forr\u00e1snak.
+
+NESTED_JWS_REQUIRED_BUT_NOT_FOUND=CWWKS6065E: A k\u00e9r\u00e9sben szerepl\u0151 JSON Web Encryption (JWE) token hasznos tartalma nem JSON Web Signature (JWS) token.
+NESTED_JWS_REQUIRED_BUT_NOT_FOUND.explanation=A JWE token hasznos tartalma csak \u00e9rv\u00e9nyes JSON Web Token (JWT) lehet JWS form\u00e1tumban.
+NESTED_JWS_REQUIRED_BUT_NOT_FOUND.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a JWE token hasznos tartalma \u00e9rv\u00e9nyes JWT JWS form\u00e1tumban.

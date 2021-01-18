@@ -17,10 +17,14 @@ src: \
 
 fat.project: true
 
+# Uncomment to use remote docker host to simulate continuous build behavior.
+#fat.test.use.remote.docker: true
+
 -buildpath: \
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
 	com.ibm.websphere.javaee.jsonp.1.0;version=latest,\
-	org.testcontainers:testcontainers;version=1.14.0,\
+	com.github.docker-java:docker-java-api;version=3.2.7,\
+	org.testcontainers:testcontainers;version=1.15.1,\
 	org.slf4j:slf4j-api;version=1.7.7
 
 tested.features: componenttest-2.0

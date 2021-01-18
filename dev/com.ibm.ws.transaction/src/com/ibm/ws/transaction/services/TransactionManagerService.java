@@ -15,6 +15,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.security.PrivilegedExceptionAction;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.transaction.HeuristicMixedException;
@@ -32,6 +33,7 @@ import javax.transaction.xa.XAResource;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleException;
 import org.osgi.framework.Constants;
 import org.osgi.service.component.ComponentContext;
 
@@ -45,13 +47,12 @@ import com.ibm.tx.util.TMHelper;
 import com.ibm.tx.util.TMService;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.Transaction.JTA.Util;
 import com.ibm.ws.Transaction.UOWCallback;
 import com.ibm.ws.Transaction.UOWCoordinator;
 import com.ibm.ws.Transaction.UOWCurrent;
+import com.ibm.ws.Transaction.JTA.Util;
 import com.ibm.ws.Transaction.test.XAFlowCallbackControl;
 import com.ibm.ws.ffdc.FFDCFilter;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.tx.embeddable.EmbeddableWebSphereTransactionManager;
 import com.ibm.ws.uow.UOWScopeCallback;
 import com.ibm.wsspi.kernel.service.location.WsLocationConstants;
@@ -191,13 +192,15 @@ public class TransactionManagerService implements ExtendedTransactionManager, Tr
             Tr.exit(tc, "doShutdown");
     }
 
-    protected void deactivate(ComponentContext ctxt) {}
+    protected void deactivate(ComponentContext ctxt) {
+    }
 
     protected void setTmService(TMService tm) {
         // dependency injection ... forces tran service to initialize
     }
 
-    protected void unsetTmService(TMService tm) {}
+    protected void unsetTmService(TMService tm) {
+    }
 
     @Override
     public void setUOWEventListener(UOWEventListener el) {
@@ -459,24 +462,29 @@ public class TransactionManagerService implements ExtendedTransactionManager, Tr
         ((EmbeddableTranManagerSet) etm()).registerLTCCallback(arg0);
     }
 
-    @FFDCIgnore({ org.osgi.framework.BundleException.class })
     public void shutDownFramework() {
-//        Tr.audit(tc, "TransactionManagerService.shutDownFramework");
         try {
             if (_bundleContext != null) {
-                Bundle bundle = _bundleContext.getBundle(Constants.SYSTEM_BUNDLE_LOCATION);
+                final Bundle bundle = _bundleContext.getBundle(Constants.SYSTEM_BUNDLE_LOCATION);
 
                 if (bundle != null)
-                    bundle.stop();
+                    AccessController.doPrivileged(new PrivilegedExceptionAction<Void>() {
+                        @Override
+                        public Void run() throws BundleException {
+                            bundle.stop();
+                            return null;
+                        }
+                    });
             }
-        } catch (org.osgi.framework.BundleException e) {
-            // do not FFDC this.
-            // exceptions during bundle stop occur if framework is already stopping or stopped
         } catch (Exception e) {
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "shutDownFramework", e);
+
             // do not FFDC this.
             // exceptions during bundle stop occur if framework is already stopping or stopped
         }
-        throw new IllegalStateException("Shutting down framework due to startup problems");
+
+        throw new IllegalStateException("Shutting down framework");
     }
 
     /**

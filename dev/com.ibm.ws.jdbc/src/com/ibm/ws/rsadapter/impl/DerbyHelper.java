@@ -45,7 +45,12 @@ public class DerbyHelper extends DatabaseHelper {
         super(mcf);
 
         mcf.supportsGetTypeMap = false;
-
+    }
+    
+    @Override
+    void customizeStaleStates() {
+        super.customizeStaleStates();
+        
         Collections.addAll(staleErrorCodes,
                            40000,
                            45000,

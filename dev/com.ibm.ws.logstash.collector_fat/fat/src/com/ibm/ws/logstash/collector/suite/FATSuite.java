@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2020 IBM Corporation and others.
+ * Copyright (c) 2011, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import com.ibm.ws.logstash.collector.tests.ContainerEnvVarTest;
 import com.ibm.ws.logstash.collector.tests.CustomizedTagTest;
 import com.ibm.ws.logstash.collector.tests.LogStashWithBinaryLoggingTest;
 import com.ibm.ws.logstash.collector.tests.LogstashCollectorIndependentTest;
@@ -31,11 +32,11 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
                 LogstashSSLTest.class,
                 MaxFieldLengthTest.class,
                 LogStashWithBinaryLoggingTest.class,
-                LogstashCollectorIndependentTest.class
+                LogstashCollectorIndependentTest.class,
+                ContainerEnvVarTest.class
 })
 
 /**
  * Purpose: This suite collects and runs all known good test suites.
  */
-public class FATSuite {
-}
+public class FATSuite {}

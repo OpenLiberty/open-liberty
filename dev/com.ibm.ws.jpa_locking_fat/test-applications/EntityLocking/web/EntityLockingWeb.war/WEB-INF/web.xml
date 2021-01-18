@@ -24,21 +24,21 @@
         <servlet-name>EntityLocking20TestServlet</servlet-name>
         <url-pattern>/EntityLocking20TestServlet</url-pattern>
     </servlet-mapping>
-    
+
     <!-- JDBC Resources -->
     <resource-ref>
-        <res-ref-name>jdbc/JPA_DS</res-ref-name>
+        <res-ref-name>jdbc/JPA_JTA_DS</res-ref-name>
         <res-type>javax.sql.DataSource</res-type>
         <res-auth>Container</res-auth>
         <res-sharing-scope>Shareable</res-sharing-scope>
     </resource-ref>
     <resource-ref>
-        <res-ref-name>jdbc/JPA_NJTADS</res-ref-name>
+        <res-ref-name>jdbc/JPA_NJTA_DS</res-ref-name>
         <res-type>javax.sql.DataSource</res-type>
         <res-auth>Container</res-auth>
         <res-sharing-scope>Shareable</res-sharing-scope>
     </resource-ref>
-    
+
     <!-- JPA Resources -->
     <persistence-context-ref>
         <description>Transaction-Scoped Persistence Context</description>
@@ -58,5 +58,4 @@
         <persistence-unit-ref-name>jpa/EntityLock_AMRL</persistence-unit-ref-name>
         <persistence-unit-name>EntityLock_RL</persistence-unit-name>
     </persistence-unit-ref>
-    
 </web-app>

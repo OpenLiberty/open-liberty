@@ -128,7 +128,8 @@ session.invalidated.total.description=Die Anzahl der Sitzungen, die seit der Akt
 session.invalidatedbyTimeout.total.description=Die Anzahl der Sitzungen, die seit der Aktivierung dieser Metrik aufgrund einer Zeitlimit\u00fcberschreitung abgemeldet wurden.
 
 
-REST.request.description=Die Anzahl der Aufrufe und die Gesamtantwortzeit dieser REST-konformen Ressourcenmethode seit dem Start des Servers.
+REST.request.description=Die Anzahl der Aufrufe und die Gesamtantwortzeit dieser REST-konformen Ressourcenmethode seit dem Start des Servers. Die Metrik zeichnet weder die abgelaufene Zeit noch die Anzahl einer REST-Anforderung auf, wenn diese zu einer nicht zugeordneten Ausgabe f\u00fchrt. Au\u00dferdem werden der h\u00f6chste und der niedrigste aufgezeichnete Wert f\u00fcr die Dauer innerhalb der letzten vollen Minute aufgezeichnet.
+REST.request.unmappedException.description=Die Gesamtanzahl nicht zugeordneter Ausnahmen, die in dieser REST-konformen Ressourcenmethode seit dem Start des Servers aufgetreten sind.
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Metrics error message
 #-----------------------------------------------------------------------------------------------------------------------------

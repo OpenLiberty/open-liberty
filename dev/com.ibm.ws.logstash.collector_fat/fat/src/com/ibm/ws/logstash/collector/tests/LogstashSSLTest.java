@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2020 IBM Corporation and others.
+ * Copyright (c) 2011, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -421,7 +421,7 @@ public class LogstashSSLTest extends LogstashCollectorTest {
          * by checking 1. whether the operating system is Mac or linux 2. whether the machine is running IBM JDK
          * if both checks pass, this is the case
          **/
-        Log.info(c, methodName, "os_name: " + os.toLowerCase() + "\t java_jdk: " + System.getProperty("java.vendor"));
+        Log.info(c, methodName, "os_name: " + os + "\t java_jdk: " + System.getProperty("java.vendor"));
         String JAVA_HOME = System.getenv("JAVA_HOME");
         Log.info(c, methodName, "JAVA_HOME: " + JAVA_HOME);
         boolean healthCenterInstalled = false;
@@ -445,8 +445,12 @@ public class LogstashSSLTest extends LogstashCollectorTest {
                 Log.info(c, methodName, " unable to find heathcenter.jar, thus unable to produce gc events. Thus, this check will be by-passed");
             }
         }
-        if (os.toLowerCase().contains("mac") || !System.getProperty("java.vendor").toLowerCase().contains("ibm")
+        if (os.contains("mac") || !System.getProperty("java.vendor").toLowerCase().contains("ibm")
             || System.getProperty("java.vendor.url").toLowerCase().contains("sun") || !healthCenterInstalled) {
+            return true;
+        }
+        // Skip zOS temporary as zOS JDK has a bug that does not return any GC information.
+        if (os.contains("os/390") || os.contains("z/os") || os.contains("zos")) {
             return true;
         }
         return false;

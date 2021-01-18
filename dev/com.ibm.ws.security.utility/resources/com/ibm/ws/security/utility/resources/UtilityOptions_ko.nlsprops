@@ -203,5 +203,8 @@ tlsProfiler.required-key.port=\ \ \ \ --port
 tlsProfiler.required-desc.port=\t\ud3ec\ud2b8\ub97c \uc9c0\uc815\ud569\ub2c8\ub2e4.
 tlsProfiler.required-key.host=\ \ \ \ --host
 tlsProfiler.required-desc.host=\t\ud638\uc2a4\ud2b8\ub97c \uc9c0\uc815\ud569\ub2c8\ub2e4.
+tlsProfiler.option-key.file=\ \ \ \ --file
+tlsProfiler.option-desc.file=\t\uc120\ud0dd\uc0ac\ud56d\uc785\ub2c8\ub2e4. \uacb0\uacfc\ub294 \ucf58\uc194 \ud654\uba74 \ub300\uc2e0 \n\
+\t\uc9c0\uc815\ub41c \ud30c\uc77c\uc5d0 \uc4f0\uc5ec\uc9d1\ub2c8\ub2e4.
 tlsProfiler.option-key.verbose=\ \ \ \ --verbose
 tlsProfiler.option-desc.verbose=\t\uc548\uc804\ud558\uc9c0 \uc54a\uc740 \ud504\ub85c\ud1a0\ucf5c\uc5d0 \ub300\ud55c \ucd94\uac00 \uc815\ubcf4\ub97c \ud3ec\ud568\ud569\ub2c8\ub2e4.

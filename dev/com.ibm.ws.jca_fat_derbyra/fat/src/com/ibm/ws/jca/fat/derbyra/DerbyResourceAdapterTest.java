@@ -38,6 +38,7 @@ public class DerbyResourceAdapterTest extends FATServletClient {
 
     private static final String derbyRAAppName = "derbyRAAppName";
     private static final String DerbyRAAnnoServlet = "fvtweb/DerbyRAAnnoServlet";
+    private static final String DerbyRACFDServlet = "fvtweb/DerbyRACFDServlet";
     private static final String DerbyRAServlet = "fvtweb/DerbyRAServlet";
 
     @Server("com.ibm.ws.jca.fat.derbyra")
@@ -48,6 +49,7 @@ public class DerbyResourceAdapterTest extends FATServletClient {
 
         WebArchive war = ShrinkWrap.create(WebArchive.class, WAR_NAME + ".war");
         war.addPackage("web");
+        war.addPackage("web.cfd");
         war.addPackage("web.mdb");
         war.addAsWebInfResource(new File("test-applications/fvtweb/resources/WEB-INF/ibm-web-bnd.xml"));
         war.addAsWebInfResource(new File("test-applications/fvtweb/resources/WEB-INF/web.xml"));
@@ -127,6 +129,18 @@ public class DerbyResourceAdapterTest extends FATServletClient {
     @Test
     public void testAdminObjectResourceEnvRef() throws Exception {
         runTest(DerbyRAServlet);
+    }
+
+    @Test
+    public void testConnectionFactoryDefinitionLeakedConnectionWithAutoCloseEnabled() throws Exception {
+        runTest(server, DerbyRACFDServlet, "testConnectionFactoryDefinitionLeakConnectionWithAutoCloseEnabled");
+        runTest(server, DerbyRACFDServlet, "testConnectionFactoryDefinitionLeakedConnectionWithAutoCloseEnabledClosed");
+    }
+
+    @Test
+    public void testConnectionFactoryDefinitionLeakedConnectionWithAutoCloseDisabled() throws Exception {
+        runTest(server, DerbyRACFDServlet, "testConnectionFactoryDefinitionLeakConnectionWithAutoCloseDisabled");
+        runTest(server, DerbyRACFDServlet, "testConnectionFactoryDefinitionLeakedConnectionWithAutoCloseDisabledNotClosed");
     }
 
     @Test

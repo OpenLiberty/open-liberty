@@ -25,6 +25,10 @@ Import-Package: \
     org.jose4j.*, \
     *
 
+-dependson: \
+    build.changeDetector,\
+    com.ibm.ws.security.fat.common
+    
 Private-Package: \
 
 src: \

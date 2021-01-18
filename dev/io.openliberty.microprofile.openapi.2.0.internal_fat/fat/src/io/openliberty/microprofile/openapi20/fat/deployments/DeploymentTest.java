@@ -24,6 +24,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.ibm.websphere.simplicity.LocalFile;
 import com.ibm.websphere.simplicity.PropertiesAsset;
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.ShrinkHelper;
@@ -35,6 +36,10 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpRequest;
+import componenttest.topology.utils.LibertyServerUtils;
+import io.openliberty.microprofile.openapi20.fat.deployments.test1.DeploymentTestApp;
+import io.openliberty.microprofile.openapi20.fat.deployments.test1.DeploymentTestResource;
+import io.openliberty.microprofile.openapi20.fat.deployments.test2.DeploymentTestResource2;
 import io.openliberty.microprofile.openapi20.fat.utils.OpenAPIConnection;
 import io.openliberty.microprofile.openapi20.fat.utils.OpenAPITestUtil;
 
@@ -177,6 +182,31 @@ public class DeploymentTest {
         assertOpenApiDoc();
         assertCache(war, CacheUsed.CACHE_NOT_USED, CacheWritten.CACHE_NOT_WRITTEN);
     }
+    
+    @Test
+    public void testLooseWarWithLib() throws Exception {
+        copyLoosePackage(server, "looseFiles/warClasses", DeploymentTestResource.class.getPackage().getName());
+        copyLoosePackage(server, "looseFiles/libClasses", DeploymentTestResource2.class.getPackage().getName());
+        deployLooseApp("looseWar.war.xml", "war");
+        
+        String response = new HttpRequest(server, "/looseWar.war/test").run(String.class);
+        assertEquals("Failed to call test resource", "OK", response);
+        String response2 = new HttpRequest(server, "/looseWar.war/test2").run(String.class);
+        assertEquals("Failed to call test resource", "OK", response2);
+
+        
+        String doc = OpenAPIConnection.openAPIDocsConnection(server, false).download();
+        JsonNode openapiNode = OpenAPITestUtil.readYamlTree(doc);
+        OpenAPITestUtil.checkPaths(openapiNode, 2, "/test", "/test2");
+    }
+    
+    private void copyLoosePackage(LibertyServer server, String looseDir, String packageName) throws Exception {
+        String packageDir = packageName.replace('.', '/');
+        RemoteFile remoteDirClasses = LibertyFileManager.createRemoteFile(server.getMachine(), server.getServerRoot() + "/" + looseDir + "/" + packageDir);
+//        RemoteFile remoteDirClasses = server.getFileFromLibertyServerRoot(looseDir + "/" + packageDir);
+        LocalFile localDirClasses = new LocalFile(LibertyServerUtils.makeJavaCompatible("build/classes/" + packageDir));
+        localDirClasses.copyToDest(remoteDirClasses, true, true);
+    }
 
     private Application getConfig(Archive<?> archive) {
         Application appConfig = new Application();
@@ -266,13 +296,30 @@ public class DeploymentTest {
         server.updateServerConfiguration(config);
         server.waitForConfigUpdateInLogUsingMark(Collections.singleton(getName(archive)));
     }
+    
+    private void deployLooseApp(String fileName, String type) throws Exception {
+        server.copyFileToLibertyServerRoot("apps", fileName);
+        
+        server.setMarkToEndOfLog();
+        ServerConfiguration config = server.getServerConfiguration();
+        Application appConfig = new Application();
+        appConfig.setId("testApp");
+        appConfig.setLocation(fileName);
+        appConfig.setType(type);
+        config.getApplications().add(appConfig);
+        server.updateServerConfiguration(config);
+        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(getName(fileName)));
+    }
 
     private String getName(Archive<?> archive) {
-        String name = archive.getName();
-        int lastDot = name.lastIndexOf('.');
+        return getName(archive.getName());
+    }
+    
+    private String getName(String fileName) {
+        int lastDot = fileName.lastIndexOf('.');
         if (lastDot != -1) {
-            name = name.substring(0, lastDot);
+            fileName = fileName.substring(0, lastDot);
         }
-        return name;
+        return fileName;
     }
 }

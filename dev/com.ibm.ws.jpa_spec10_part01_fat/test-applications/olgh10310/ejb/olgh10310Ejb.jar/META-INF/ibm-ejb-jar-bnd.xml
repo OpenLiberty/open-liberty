@@ -17,15 +17,15 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 xsi:schemaLocation="http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-ejb-jar-bnd_1_0.xsd"
 version="1.0">
     <session name="OLGH10310SFEJB">
-        <resource-ref name="jdbc/JPA_DS"     binding-name="jdbc/JPA_DS" />
-        <resource-ref name="jdbc/JPA_NJTADS" binding-name="jdbc/JPA_NJTADS" />
+        <resource-ref name="jdbc/JPA_JTA_DS"     binding-name="jdbc/JPA_JTA_DS" />
+        <resource-ref name="jdbc/JPA_NJTA_DS" binding-name="jdbc/JPA_NJTA_DS" />
     </session>
     <session name="OLGH10310SFExEJB">
-        <resource-ref name="jdbc/JPA_DS"     binding-name="jdbc/JPA_DS" />
-        <resource-ref name="jdbc/JPA_NJTADS" binding-name="jdbc/JPA_NJTADS" />
+        <resource-ref name="jdbc/JPA_JTA_DS"     binding-name="jdbc/JPA_JTA_DS" />
+        <resource-ref name="jdbc/JPA_NJTA_DS" binding-name="jdbc/JPA_NJTA_DS" />
     </session>
     <session name="OLGH10310SLEJB">
-        <resource-ref name="jdbc/JPA_DS"     binding-name="jdbc/JPA_DS" />
-        <resource-ref name="jdbc/JPA_NJTADS" binding-name="jdbc/JPA_NJTADS" />
+        <resource-ref name="jdbc/JPA_JTA_DS"     binding-name="jdbc/JPA_JTA_DS" />
+        <resource-ref name="jdbc/JPA_NJTA_DS" binding-name="jdbc/JPA_NJTA_DS" />
     </session>
 </ejb-jar-bnd>

@@ -1,0 +1,26 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+# NLS_MESSAGEFORMAT_ALL
+#
+#CMVCPATHNAME com.ibm.ws.jaxrs20.client/resources/com/ibm/ws/jaxrs20/client/internal/resources/JAXRSClientMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#COMPONENTPREFIX CWWKW
+#COMPONENTNAMEFOR CWWKW WebSphere JAXRS20 Client Code
+#RANGE 0750 - 0799
+#
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# {0} is a space separated list of interface class names
+rest.client.interface.using.request.scope=CWWKW0750I: \u4e0b\u5217\u4ecb\u9762\u5df2\u914d\u7f6e\u6210 RequestScoped\uff08\u5177\u8981\u6c42\u7bc4\u570d\uff09\uff0c\u5c0e\u81f4\u6548\u80fd\u4f4e\u4e0b\uff1a{0}
+rest.client.interface.using.request.scope.explanation=\u5177\u8981\u6c42\u7bc4\u570d\u7684 MicroProfile Rest Client \u4ecb\u9762\u6703\u5728\u6bcf\u4e00\u500b\u8981\u6c42\u4e0a\u8d77\u59cb\u8a2d\u5b9a\uff0c\u901a\u5e38\u6d89\u53ca\u5230\u5197\u9918\u7684\u8a08\u7b97\u3002\u5177\u61c9\u7528\u7a0b\u5f0f\u7bc4\u570d\u7684\u4ecb\u9762\uff0c\u5728\u6bcf\u4e00\u500b\u61c9\u7528\u7a0b\u5f0f\u5be6\u4f8b\u4e2d\u50c5\u57f7\u884c\u4e00\u6b21\u8d77\u59cb\u8a2d\u5b9a\u7a0b\u5e8f\u3002\u5982\u679c\u4ecb\u9762\u4ee5 @RequestScoped \u6a19\u8a3b\uff0c\u6216\u8005\u6ce8\u5165\u5230\u4ee5 @Dependent \u8a3b\u91cb\u6a19\u8a3b\u6216\u6c92\u6709\u7bc4\u570d\u8a3b\u91cb\u7684\u5177\u8981\u6c42\u7bc4\u570d CDI Bean \u4e2d\uff0c\u5247\u53ef\u5c07\u8a72\u4ecb\u9762\u8996\u70ba\u5177\u8981\u6c42\u7bc4\u570d\u3002
+rest.client.interface.using.request.scope.useraction=\u8acb\u8003\u91cf\u5728\u8a72\u4ecb\u9762\u4e0a\u4f7f\u7528 @ApplicationScoped \u8a3b\u91cb\u4ee5\u907f\u514d\u5197\u9918\u7684\u8d77\u59cb\u8a2d\u5b9a\uff0c\u9664\u975e\u6709\u6b63\u7576\u7684\u7406\u7531\u4e0d\u9019\u9ebc\u505a\u3002

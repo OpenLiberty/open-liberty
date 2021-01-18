@@ -1,5 +1,3 @@
-package com.ibm.tx.jta.impl;
-
 /*******************************************************************************
  * Copyright (c) 2002, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
@@ -10,6 +8,7 @@ package com.ibm.tx.jta.impl;
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+package com.ibm.tx.jta.impl;
 
 import java.io.File;
 import java.net.URISyntaxException;
@@ -31,11 +30,11 @@ import com.ibm.tx.config.ConfigurationProvider;
 import com.ibm.tx.config.ConfigurationProviderManager;
 import com.ibm.tx.jta.config.DefaultConfigurationProvider;
 import com.ibm.tx.jta.util.TranLogConfiguration;
-import com.ibm.tx.util.logging.FFDCFilter;
-import com.ibm.tx.util.logging.Tr;
-import com.ibm.tx.util.logging.TraceComponent;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.Transaction.JTA.Util;
 import com.ibm.ws.Transaction.JTS.Configuration;
+import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.recoverylog.spi.ClientId;
 import com.ibm.ws.recoverylog.spi.CustomLogProperties;
 import com.ibm.ws.recoverylog.spi.FailureScope;
@@ -84,7 +83,10 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
 
     private ClassLoadingService clService;
 
-    protected TxRecoveryAgentImpl() {}
+    private boolean _checkingLeases = true;
+
+    protected TxRecoveryAgentImpl() {
+    }
 
     private static ThreadLocal<Boolean> _replayThread = new ThreadLocal<Boolean>();
 
@@ -111,7 +113,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
         ConfigurationProvider cp = ConfigurationProviderManager.getConfigurationProvider();
 
         // Set the default value of the ThreadLocal to false. It will be set to true in the thread driving replay.
-        _replayThread.set(new Boolean(false));
+        _replayThread.set(false);
 
         // In the normal Liberty runtime the Applid will have been set into the JTMConfigurationProvider by the
         // TransactionManagerService. We additionally can set the applid here for the benefit of the unittest framework.
@@ -128,7 +130,8 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
     }
 
     @Override
-    public void agentReportedFailure(int clientId, FailureScope failureScope) {}
+    public void agentReportedFailure(int clientId, FailureScope failureScope) {
+    }
 
     @Override
     public int clientIdentifier() {
@@ -529,19 +532,6 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
 
         return impl;
     }
-
-    @Override
-    public boolean isSnapshotSafe() {
-        return false;
-    }
-
-    @Override
-    public String[] logDirectories(FailureScope failureScope) {
-        return null;
-    }
-
-    @Override
-    public void prepareForRecovery(FailureScope failureScope) {}
 
     /**
      * @param fs
@@ -1064,5 +1054,31 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
         if (tc.isDebugEnabled())
             Tr.debug(tc, "setReplayThread");
         _replayThread.set(Boolean.TRUE);
+    }
+
+    @Override
+    public boolean checkingLeases() {
+        return _checkingLeases;
+    }
+
+    @Override
+    public void setCheckingLeases(boolean b) {
+        if (tc.isDebugEnabled()) {
+            if (b != _checkingLeases) {
+                if (b) {
+                    Tr.debug(tc, "Enabling lease checking");
+                } else {
+                    Tr.debug(tc, "Disabling lease checking");
+                }
+            }
+        }
+        _checkingLeases = b;
+    }
+
+    @Override
+    public void terminateServer() {
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "terminateServer");
+        ConfigurationProviderManager.getConfigurationProvider().shutDownFramework();
     }
 }

@@ -202,5 +202,8 @@ tlsProfiler.required-key.port=\ \ \ \ --port
 tlsProfiler.required-desc.port=\tEspecifique el puerto.
 tlsProfiler.required-key.host=\ \ \ \ --host
 tlsProfiler.required-desc.host=\tEspecifique el host.
+tlsProfiler.option-key.file=\ \ \ \ --file
+tlsProfiler.option-desc.file=\tOpcional. El resultado se escribir\u00e1 en el archivo\n\
+\tespecificado en lugar de en la pantalla de la consola.
 tlsProfiler.option-key.verbose=\ \ \ \ --verbose
 tlsProfiler.option-desc.verbose=\tIncluya informaci\u00f3n adicional sobre los protocolos no seguros.

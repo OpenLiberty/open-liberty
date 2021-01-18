@@ -22,6 +22,7 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
+import org.testcontainers.containers.JdbcDatabaseContainer;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.Application;
@@ -39,13 +40,19 @@ import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.topology.database.container.DatabaseContainerType;
+import componenttest.topology.database.container.DatabaseContainerUtil;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.PrivHelper;
 
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class Relationships_ManyXMany_Web extends JPAFATServletClient {
+    private final static String CONTEXT_ROOT = "ManyXMany10Web";
     private final static String RESOURCE_ROOT = "test-applications/jpa10/relationships/manyXmany/";
+    private final static String appFolder = "web";
+    private final static String appName = "manyXmanyWeb";
+    private final static String appNameEar = appName + ".ear";
 
     private final static Set<String> dropSet = new HashSet<String>();
     private final static Set<String> createSet = new HashSet<String>();
@@ -59,33 +66,40 @@ public class Relationships_ManyXMany_Web extends JPAFATServletClient {
 
     @Server("JPA10Server")
     @TestServlets({
-                    @TestServlet(servlet = TestManyXManyUnidirectionalServlet.class, path = "ManyXMany10Web" + "/" + "TestManyXManyUnidirectionalServlet"),
-                    @TestServlet(servlet = TestManyXManyBidirectionalServlet.class, path = "ManyXMany10Web" + "/" + "TestManyXManyBidirectionalServlet"),
-                    @TestServlet(servlet = TestManyXManyCollectionTypeServlet.class, path = "ManyXMany10Web" + "/" + "TestManyXManyCollectionTypeServlet"),
-                    @TestServlet(servlet = TestManyXManyCompoundPKServlet.class, path = "ManyXMany10Web" + "/" + "TestManyXManyCompoundPKServlet"),
-
+                    @TestServlet(servlet = TestManyXManyUnidirectionalServlet.class, path = CONTEXT_ROOT + "/" + "TestManyXManyUnidirectionalServlet"),
+                    @TestServlet(servlet = TestManyXManyBidirectionalServlet.class, path = CONTEXT_ROOT + "/" + "TestManyXManyBidirectionalServlet"),
+                    @TestServlet(servlet = TestManyXManyCollectionTypeServlet.class, path = CONTEXT_ROOT + "/" + "TestManyXManyCollectionTypeServlet"),
+                    @TestServlet(servlet = TestManyXManyCompoundPKServlet.class, path = CONTEXT_ROOT + "/" + "TestManyXManyCompoundPKServlet")
     })
-    public static LibertyServer server1;
+    public static LibertyServer server;
+
+    public static final JdbcDatabaseContainer<?> testContainer = FATSuite.testContainer;
 
     @BeforeClass
     public static void setUp() throws Exception {
-        PrivHelper.generateCustomPolicy(server1, FATSuite.JAXB_PERMS);
+        PrivHelper.generateCustomPolicy(server, FATSuite.JAXB_PERMS);
         bannerStart(Relationships_ManyXMany_Web.class);
         timestart = System.currentTimeMillis();
 
-        int appStartTimeout = server1.getAppStartTimeout();
+        int appStartTimeout = server.getAppStartTimeout();
         if (appStartTimeout < (120 * 1000)) {
-            server1.setAppStartTimeout(120 * 1000);
+            server.setAppStartTimeout(120 * 1000);
         }
 
-        int configUpdateTimeout = server1.getConfigUpdateTimeout();
+        int configUpdateTimeout = server.getConfigUpdateTimeout();
         if (configUpdateTimeout < (120 * 1000)) {
-            server1.setConfigUpdateTimeout(120 * 1000);
+            server.setConfigUpdateTimeout(120 * 1000);
         }
 
-        server1.startServer();
+        //Get driver name
+        server.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
 
-        setupDatabaseApplication(server1, RESOURCE_ROOT + "ddl/");
+        //Setup server DataSource properties
+        DatabaseContainerUtil.setupDataSourceProperties(server, testContainer);
+
+        server.startServer();
+
+        setupDatabaseApplication(server, RESOURCE_ROOT + "ddl/");
 
         final Set<String> ddlSet = new HashSet<String>();
 
@@ -93,19 +107,19 @@ public class Relationships_ManyXMany_Web extends JPAFATServletClient {
         for (String ddlName : dropSet) {
             ddlSet.add(ddlName.replace("${dbvendor}", getDbVendor().name()));
         }
-        executeDDL(server1, ddlSet, true);
+        executeDDL(server, ddlSet, true);
 
         ddlSet.clear();
         for (String ddlName : createSet) {
             ddlSet.add(ddlName.replace("${dbvendor}", getDbVendor().name()));
         }
-        executeDDL(server1, ddlSet, false);
+        executeDDL(server, ddlSet, false);
 
         setupTestApplication();
     }
 
     private static void setupTestApplication() throws Exception {
-        WebArchive webApp = ShrinkWrap.create(WebArchive.class, "manyXmany.war");
+        WebArchive webApp = ShrinkWrap.create(WebArchive.class, appName + ".war");
         webApp.addPackages(true, "com.ibm.ws.jpa.fvt.relationships.manyXmany.entities");
         webApp.addPackages(true, "com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.bi.annotation");
         webApp.addPackages(true, "com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.bi.xml");
@@ -118,14 +132,14 @@ public class Relationships_ManyXMany_Web extends JPAFATServletClient {
         webApp.addPackages(true, "com.ibm.ws.jpa.fvt.relationships.manyXmany.entities.uni.xml");
         webApp.addPackages(true, "com.ibm.ws.jpa.fvt.relationships.manyXmany.testlogic");
         webApp.addPackages(true, "com.ibm.ws.jpa.fvt.relationships.manyXmany.testlogic.tests.web");
-        ShrinkHelper.addDirectory(webApp, RESOURCE_ROOT + "web/manyXmany.war");
+        ShrinkHelper.addDirectory(webApp, RESOURCE_ROOT + appFolder + "/" + appName + ".war");
 
         final JavaArchive testApiJar = buildTestAPIJar();
 
-        final EnterpriseArchive app = ShrinkWrap.create(EnterpriseArchive.class, "ManyXMany_Web.ear");
+        final EnterpriseArchive app = ShrinkWrap.create(EnterpriseArchive.class, appNameEar);
         app.addAsModule(webApp);
         app.addAsLibrary(testApiJar);
-        ShrinkHelper.addDirectory(app, RESOURCE_ROOT + "web", new org.jboss.shrinkwrap.api.Filter<ArchivePath>() {
+        ShrinkHelper.addDirectory(app, RESOURCE_ROOT + appFolder, new org.jboss.shrinkwrap.api.Filter<ArchivePath>() {
 
             @Override
             public boolean include(ArchivePath arg0) {
@@ -137,42 +151,53 @@ public class Relationships_ManyXMany_Web extends JPAFATServletClient {
 
         });
 
-        ShrinkHelper.exportToServer(server1, "apps", app);
+        ShrinkHelper.exportToServer(server, "apps", app);
 
         Application appRecord = new Application();
-        appRecord.setLocation("ManyXMany_Web.ear");
-        appRecord.setName("ManyXMany_Web");
+        appRecord.setLocation(appNameEar);
+        appRecord.setName(appName);
 
-        server1.setMarkToEndOfLog();
-        ServerConfiguration sc = server1.getServerConfiguration();
-//        sc.getApplications().clear();
+        server.setMarkToEndOfLog();
+        ServerConfiguration sc = server.getServerConfiguration();
         sc.getApplications().add(appRecord);
-        server1.updateServerConfiguration(sc);
-        server1.saveServerConfiguration();
+        server.updateServerConfiguration(sc);
+        server.saveServerConfiguration();
 
         HashSet<String> appNamesSet = new HashSet<String>();
-        appNamesSet.add("ManyXMany_Web");
-        server1.waitForConfigUpdateInLogUsingMark(appNamesSet, "");
+        appNamesSet.add(appName);
+        server.waitForConfigUpdateInLogUsingMark(appNamesSet, "");
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
         try {
-//            server1.dumpServer("relationships_manyXmany_web");
-            server1.stopServer("CWWJP9991W", // From Eclipselink drop-and-create tables option
-                               "WTRN0074E: Exception caught from before_completion synchronization operation" // RuntimeException test, expected
+            // Clean up database
+            try {
+                final Set<String> ddlSet = new HashSet<String>();
+                for (String ddlName : dropSet) {
+                    ddlSet.add(ddlName.replace("${dbvendor}", getDbVendor().name()));
+                }
+                executeDDL(server, ddlSet, true);
+            } catch (Throwable t) {
+                t.printStackTrace();
+            }
+
+            server.stopServer("CWWJP9991W", // From Eclipselink drop-and-create tables option
+                              "WTRN0074E: Exception caught from before_completion synchronization operation" // RuntimeException test, expected
             );
         } finally {
+            try {
+                ServerConfiguration sc = server.getServerConfiguration();
+                sc.getApplications().clear();
+                server.updateServerConfiguration(sc);
+                server.saveServerConfiguration();
+
+                server.deleteFileFromLibertyServerRoot("apps/" + appNameEar);
+                server.deleteFileFromLibertyServerRoot("apps/DatabaseManagement.war");
+            } catch (Throwable t) {
+                t.printStackTrace();
+            }
             bannerEnd(Relationships_ManyXMany_Web.class, timestart);
         }
-
-        ServerConfiguration sc = server1.getServerConfiguration();
-        sc.getApplications().clear();
-        server1.updateServerConfiguration(sc);
-        server1.saveServerConfiguration();
-
-        server1.deleteFileFromLibertyServerRoot("apps/ManyXMany_Web.ear");
-        server1.deleteFileFromLibertyServerRoot("apps/DatabaseManagement.war");
     }
-
 }

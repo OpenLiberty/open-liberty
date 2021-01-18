@@ -53,6 +53,8 @@ public class ConfigRESTHandlerTest extends FATServletClient {
         // Install bundles for user features
         server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/test.config.nested.flat.jar");
 
+        FATSuite.setupServerSideAnnotations(server);
+
         server.startServer();
 
         // Wait for the API to become available

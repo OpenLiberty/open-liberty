@@ -414,10 +414,14 @@ public class ReplayCookieTests extends CommonSecurityFat {
         expectations.addExpectations(CommonExpectations.responseTextIncludesExpectedAccessId(currentAction, JwtFatConstants.BASIC_REALM, defaultUser));
         expectations.addExpectations(CommonExpectations.getJwtPrincipalExpectations(currentAction, defaultUser, JwtFatConstants.DEFAULT_ISS_REGEX));
 
-        Page response = actions.invokeUrlWithBearerToken(_testName, actions.createWebClient(), protectedUrl, jwtCookie.getValue());
+        WebClient webClient = actions.createWebClient();
+        Page response = actions.invokeUrlWithBearerToken(_testName, webClient, protectedUrl, jwtCookie.getValue());
         validationUtils.validateResult(response, currentAction, expectations);
 
         server.addInstalledAppForValidation(APP_NAME_JWT_BUILDER);
+
+        actions.destroyWebClient(webClient);
+
     }
 
     /**

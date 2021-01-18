@@ -22,6 +22,8 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.ibm.ws.install.InstallConstants;
 import com.ibm.ws.kernel.boot.cmdline.Utils;
@@ -132,24 +134,8 @@ public class ConfigParser {
         String[] splitPath = path.split("/"); //\\$\\{.*\\}
         for (String s : splitPath) {
             String accumulator = "";
-            if (s.startsWith("$")) {
-                s = s.replaceAll("\\{", "").replaceAll("\\}", "").replaceAll("\\$", "");
-                if (s.contains("+")) {
-                    String[] splitOnAddition = s.split("\\+");
-                    for (String t : splitOnAddition) {
-                        if (t.contains("env.")) {
-                            accumulator += System.getenv().get(t.replace("env.", "")) + "/";
-                        } else {
-                            accumulator += this.varMap.get(t) + "/";
-                        }
-                    }
-                } else {
-                    if (s.contains("env.")) {
-                        accumulator += System.getenv().get(s.replace("env.", "")) + "/";
-                    } else {
-                        accumulator += this.varMap.get(s) + "/";
-                    }
-                }
+            if (s.contains("$")) {
+                accumulator += resolveSubString(s) + "/";
             } else {
                 if (s.contains(".xml")) {
                     accumulator += s;
@@ -165,6 +151,28 @@ public class ConfigParser {
         if (InstallUtils.isWindows) {
             result = result.replaceAll("\\/", "\\\\");
         }
+        return result;
+    }
+
+    private String resolveSubString(String substr) {
+        String pattern = "(.*)\\$\\{(.*)\\}(.*)";
+        String result = substr;
+        // Create a Pattern object
+        Pattern r = Pattern.compile(pattern);
+
+        // Now create matcher object.
+        Matcher m = r.matcher(substr);
+
+        if (m.find()) {
+            String resolvedStr = m.group(2);
+            if (resolvedStr.contains("env.")) {
+                resolvedStr = System.getenv().get(resolvedStr.replace("env.", ""));
+            } else {
+                resolvedStr = this.varMap.get(resolvedStr);
+            }
+            result = m.group(1) + resolvedStr + m.group(3);
+        }
+
         return result;
     }
 

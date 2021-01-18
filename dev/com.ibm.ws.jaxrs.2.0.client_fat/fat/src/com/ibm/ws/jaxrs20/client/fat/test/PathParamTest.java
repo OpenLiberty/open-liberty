@@ -67,7 +67,7 @@ public class PathParamTest extends AbstractTest {
     @AfterClass
     public static void tearDown() throws Exception {
         if (server != null) {
-            server.stopServer();
+            server.stopServer("CWWKE1102W");  //ignore server quiesce timeouts due to slow test machines
         }
     }
 

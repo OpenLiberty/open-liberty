@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--   
+   Change History:
+   Date        UserId         Description
+   01/29/2012  mzheng         WSS11 Encryption tests
+-->
+
+<web-app version="3.0" xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+         http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+    <display-name>wss11enc</display-name>
+
+    <servlet>
+        <servlet-name>wss11enc1</servlet-name>
+        <display-name>wss11enc1</display-name>
+        <description>WSS 1.1 Encryption Endpoint Service</description>
+        <servlet-class>com.ibm.ws.wssecurity.fat.wss11enc.WSS11EncWebSvc1</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    
+    <servlet-mapping>
+       <servlet-name>wss11enc1</servlet-name>
+       <url-pattern>/WSS11EncService1</url-pattern>
+    </servlet-mapping>
+    
+    <servlet>
+        <servlet-name>wss11enc2</servlet-name>
+        <display-name>wss11enc2</display-name>
+        <description>WSS 1.1 Encryption Endpoint Service</description>
+        <servlet-class>com.ibm.ws.wssecurity.fat.wss11enc.WSS11EncWebSvc2</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    
+    <servlet-mapping>
+       <servlet-name>wss11enc2</servlet-name>
+       <url-pattern>/WSS11EncService2</url-pattern>
+    </servlet-mapping>
+    
+    <session-config>
+       <session-timeout>60</session-timeout>
+    </session-config>
+
+</web-app>
+

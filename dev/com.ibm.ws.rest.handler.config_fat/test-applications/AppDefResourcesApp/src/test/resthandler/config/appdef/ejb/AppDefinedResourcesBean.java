@@ -51,7 +51,7 @@ import javax.resource.ConnectionFactoryDefinitions;
                       })
 
 @JMSConnectionFactoryDefinition(name = "java:app/env/jms/tcf",
-                                interfaceName = "javax.jms.TopicConnectionFactory",
+                                interfaceName = "${env.TOPIC_FACTORY}",
                                 resourceAdapter = "ConfigTestAdapter",
                                 clientId = "AppDefinedClientId",
                                 maxPoolSize = 8,
@@ -62,11 +62,11 @@ import javax.resource.ConnectionFactoryDefinitions;
 
 @JMSDestinationDefinitions({
                              @JMSDestinationDefinition(name = "java:global/env/jms/dest1",
-                                                       interfaceName = "javax.jms.Destination",
+                                                       interfaceName = "${env.DESTINATION_INTERFACE}",
                                                        resourceAdapter = "ConfigTestAdapter",
                                                        destinationName = "3605 Hwy 52N, Rochester, MN 55901"),
                              @JMSDestinationDefinition(name = "java:comp/env/jms/topic1",
-                                                       interfaceName = "javax.jms.Topic",
+                                                       interfaceName = "${env.TOPIC_INTERFACE}",
                                                        destinationName = "MyTopic",
                                                        properties = {
                                                                       "priority=8",

@@ -106,7 +106,8 @@ public class JMSContextTest {
         assertNotNull("Server ready message not found", waitFor);
 
         server1.startServer("JMSContextTestServer.log");
-        waitFor = server1.waitForStringInLog("CWWKF0011I.*", server1.getMatchingLogFile("messages.log"));
+        // wait for JMS server to start before proceeding
+        waitFor = server1.waitForStringInLog("CWSID0108I.*", server1.getMatchingLogFile("messages.log"));
         assertNotNull("Server ready message not found", waitFor);
     }
 

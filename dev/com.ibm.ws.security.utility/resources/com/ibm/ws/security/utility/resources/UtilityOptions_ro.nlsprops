@@ -152,7 +152,8 @@ sslCert.option-desc.ext=\tInforma\u0163iile de extensii certificat de ad\u0103ug
 \tExtensia implicit\u0103 este o intrare Subject Alternative Name care utilizeaz\u0103 \n\
 \tnumele de gazd\u0103. Acest stegule\u0163 urmeaz\u0103 aceea\u015fi sintax\u0103 ca \u015fi stegule\u0163ul -ext\n\
 \t \
-al comenzii Java Keytool. Acest stegule\u0163 poate fi folosit de mai multe ori pe comand\u0103\n\ \ 
+al comenzii Java Keytool. Acest stegule\u0163 poate fi folosit de mai multe ori pe comand\u0103\n\
+\ 
 line.
 
 # -------- CREATE LTPA KEYS OPTIONS --------------------------------------#
@@ -203,5 +204,8 @@ tlsProfiler.required-key.port=\ \ \ \ --port
 tlsProfiler.required-desc.port=\tSpecifica\u0163i portul.
 tlsProfiler.required-key.host=\ \ \ \ --host
 tlsProfiler.required-desc.host=\tSpecifica\u0163i gazda.
+tlsProfiler.option-key.file=\ \ \ \ --file
+tlsProfiler.option-desc.file=\tOp\u0163ional. rezultatul va fi scris \u00een fi\u015fierul specificat \n\
+\t\u00een loc s\u0103 fie scris pe ecranul consolei.
 tlsProfiler.option-key.verbose=\ \ \ \ --verbose
 tlsProfiler.option-desc.verbose=\tInclude\u0163i informa\u0163ii suplimentare despre protocoalele nesigure.

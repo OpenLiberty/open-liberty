@@ -423,14 +423,11 @@ public class ChangeDetector {
         System.out.println("Parsing modified files for PR: " + prURL);
 
         // Convert: https://github.com/OpenLiberty/open-liberty/pull/5333
-        // to:      https://github.com/OpenLiberty/open-liberty/pull/4947.diff
-        // to:      https://github.ibm.com/api/v3/repos/was-liberty/WS-CD-Open/pulls/13986/files
+        // to:      https://api.github.com/repos/OpenLiberty/open-liberty/pulls/13986/files
         String prNumber = prURL.substring(prURL.lastIndexOf("/"));
 
         // Decide which GitHub we need to make an API call to and choose the appropriate URL/access key
-        String apiURL = prURL.contains("github.ibm") ? //
-                        "https://github.ibm.com/api/v3/repos/was-liberty/WS-CD-Open/pulls" + prNumber + "/files" : //
-                        "https://api.github.com/repos/OpenLiberty/open-liberty/pulls" + prNumber + "/files";
+        String apiURL = "https://api.github.com/repos/OpenLiberty/open-liberty/pulls" + prNumber + "/files";
 
         Set<String> modifiedFiles = new HashSet<>();
 

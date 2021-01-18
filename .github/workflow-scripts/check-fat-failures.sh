@@ -1,3 +1,4 @@
+#!/bin/bash
 set +e
 
 echo "Done running all FAT buckets. Checking for failures now."
@@ -19,14 +20,14 @@ else
     echo "::error::Test category $CATEGORY does not exist. A file containing a list of FAT buckets was not found at .github/test-categories/$CATEGORY";
     exit 1;
   fi
-  FAT_BUCKETS=$(cat .github/test-categories/$CATEGORY)
+  FAT_BUCKETS=$(awk '!/^ *#/ && NF' .github/test-categories/$CATEGORY) #ignore comments starting with # and empty lines
 fi
 
 cd dev
 mkdir failing_buckets
 FAILURE=false
 
-echo "### Bucket results";
+echo "::group::Bucket results";
 for FAT_BUCKET in $FAT_BUCKETS
 do
   if [[ ! -f "$FAT_BUCKET/build/libs/autoFVT/output/passed.log" ]]; then
@@ -41,10 +42,11 @@ do
     echo "  [ PASSED ] $FAT_BUCKET";
   fi
 done
+echo "::endgroup::";
 
-set -e
 if $FAILURE; then
-  echo "At least one bucket failed.";
-  exit 1;
+    echo "::set-output name=status::failure"
+else
+    echo "::set-output name=status::success"
 fi
 

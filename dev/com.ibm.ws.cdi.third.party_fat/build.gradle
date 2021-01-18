@@ -9,20 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 apply from: '../wlp-gradle/subprojects/fat.gradle'
-
-repositories {
-  if (isUsingArtifactory) {
-    maven {
-      credentials {
-        username userProps.getProperty("artifactory.download.user")
-        password userProps.getProperty("artifactory.download.token")
-      }
-      url ("https://" + gradle.userProps.getProperty("artifactory.download.server") + "/artifactory/wasliberty-maven-remote")
-    }
-  } else {
-    mavenCentral()
-  }
-}
+apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
 	
 configurations {
   deltaspikeWarLibs
@@ -43,7 +30,7 @@ dependencies {
     'org.quartz-scheduler:quartz:2.2.1',
     'org.slf4j:slf4j-jdk14:1.7.7',
     'org.slf4j:slf4j-api:1.7.7', 
-    'net.sf.jtidy:jtidy:9.3.8'
+    'net.sf.jtidy:jtidy:r938'
   hibernateSearchLibs 'org.antlr:antlr:3.5.2',
     'com.google.code.gson:gson:2.8.5',
     'commons-codec:commons-codec:1.10',

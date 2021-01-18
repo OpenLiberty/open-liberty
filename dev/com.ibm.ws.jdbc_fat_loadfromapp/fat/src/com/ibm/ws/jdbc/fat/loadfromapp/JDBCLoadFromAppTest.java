@@ -10,7 +10,10 @@
  *******************************************************************************/
 package com.ibm.ws.jdbc.fat.loadfromapp;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.File;
+import java.util.List;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
@@ -97,9 +100,15 @@ public class JDBCLoadFromAppTest extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer("CWWKS1148E(?=.*LoadFromAppLoginModule)(?=.*derbyApp)", // Intentional error: loginmod.LoadFromAppLoginModule not found in derbyApp
-                          "CWWKS1148E(?=.*LoadFromWebAppLoginModule)(?=.*otherApp)", // Intentional error: web.derby.LoadFromWebAppLoginModule not found in otherApp
-                          "SRVE9967W.*derbyLocale" // ignore missing Derby locales
-        );
+        try {
+            // Must find exactly 1 warning for connection leaks after running tests:
+            List<String> connectionLeakWarnings = server.findStringsInLogs("J2CA8070I");
+            assertEquals(connectionLeakWarnings.toString(), 1, connectionLeakWarnings.size());
+        } finally {
+            server.stopServer("CWWKS1148E(?=.*LoadFromAppLoginModule)(?=.*derbyApp)", // Intentional error: loginmod.LoadFromAppLoginModule not found in derbyApp
+                              "CWWKS1148E(?=.*LoadFromWebAppLoginModule)(?=.*otherApp)", // Intentional error: web.derby.LoadFromWebAppLoginModule not found in otherApp
+                              "SRVE9967W.*derbyLocale" // ignore missing Derby locales
+            );
+        }
     }
 }

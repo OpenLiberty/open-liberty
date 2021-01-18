@@ -293,6 +293,8 @@ public class CookieProcessingTests extends CommonSecurityFat {
         expectations.addExpectations(CommonExpectations.getJwtPrincipalExpectations(action, defaultUser, JwtFatConstants.DEFAULT_ISS_REGEX));
         expectations.addExpectations(CommonExpectations.cookieDoesNotExist(action, wc, JwtFatConstants.JWT_COOKIE_NAME));
         validationUtils.validateResult(response, action, expectations);
+        actions.destroyWebClient(wc);
+
     }
 
     //TODO: more tests for multiple cookies on non-root path

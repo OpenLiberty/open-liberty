@@ -195,7 +195,7 @@ error.no.wsdl.find.useraction=Specificare un file WSDL esistente per il servizio
 #{0}=the specified binding type
 #{1}=the port component name
 #{2}=the WSDL document
-error.endpointinfo.validation.bindingtype.and.wsdl.mismatch=CWWKW0058E: Il tipo di bind specificato {0} non corrisponde a quello nel documento WSDL {1}.
+error.endpointinfo.validation.bindingtype.and.wsdl.mismatch=CWWKW0058E: Il tipo di bind specificato {0} per il componente porta {1} non corrisponde alla definizione nel documento WSDL {2}.
 error.endpointinfo.validation.bindingtype.and.wsdl.mismatch.explanation=Il tipo di bind viene specificato utilizzando l'annotazione BindingType o dal descrittore di distribuzione e il suo valore deve corrispondere a quello indicato nel documento WSDL.
 error.endpointinfo.validation.bindingtype.and.wsdl.mismatch.useraction=Aggiornare il valore del tipo di bind in modo che corrisponda a quello indicato nel documento WSDL.
 

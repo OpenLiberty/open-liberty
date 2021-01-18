@@ -1,0 +1,63 @@
+<server>
+	<featureManager>
+		<feature>servlet-3.1</feature>
+		<feature>appSecurity-2.0</feature>
+		<feature>jsp-2.2</feature>
+		<feature>jaxws-2.2</feature>
+		<feature>wsSecurity-1.1</feature>
+	</featureManager>
+
+	<include location="../fatTestPorts.xml" />
+
+	<logging suppressSensitiveTrace="true" />
+
+	<!-- Please use encoded passwords in this server definition. We need some 
+		tests that verify that we can handle encoded pw's -->
+
+	<basicRegistry
+		id="basic"
+		realm="customRealm"
+	>
+		<user
+			name="user1"
+			password="{xor}LDo8Ki02KyY=" />
+		<user
+			name="user2"
+			password="{xor}LDo8Ki02KyY=" />
+	</basicRegistry>
+	<wsSecurityClient
+		id="default"
+		ws-security.password="{xor}LDo8Ki02KyY="
+		ws-security.username="user2"
+	>
+	</wsSecurityClient>
+	<wsSecurityProvider
+		id="default"
+		ws-security.timestamp.timeToLive="60"
+		ws-security.timestamp.futureTimeToLive="60"
+		ws-security.cache.config.file="${server.config.dir}/cxf-ehcache.xml"
+	>
+	</wsSecurityProvider>
+
+        <!-- added 12/2020 -->
+        <javaPermission className="java.io.FilePermission" name="ALL FILES" actions="read"/> 
+        <!--  this didn't work; need to have the explicit URL 
+        <javaPermission className="java.net.URLPermission" name="*:*" actions="*"/>
+        -->
+        <javaPermission className="java.net.URLPermission" name="http://localhost:8010/untoken/SOAPService2" actions="POST:AcceptSOAPActionUser-Agent"/>
+        <javaPermission className="java.net.URLPermission" name="http://localhost:8010/nowssec/SOAPService1" actions="POST:AcceptSOAPActionUser-Agent"/>
+        <javaPermission className="java.net.URLPermission" name="http://localhost:8010/untoken/SOAPService3" actions="POST:AcceptSOAPActionUser-Agent"/>
+        <javaPermission className="java.net.URLPermission" name="http://localhost:8010/untoken/SOAPService4" actions="POST:AcceptSOAPActionUser-Agent"/>
+        <javaPermission className="java.net.URLPermission" name="http://localhost:8010/nopassunt/NoPassService" actions="POST:AcceptSOAPActionUser-Agent"/>
+        <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.soap"/>
+        <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.soap.ver1_1"/>
+        <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.util"/>
+        <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.soap.name"/>
+        <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.soap.impl"/>
+        <javaPermission className="java.net.NetPermission" name="setDefaultAuthenticator"/>
+        <javaPermission className="java.util.PropertyPermission" name="javax.xml.soap.MessageFactory" actions="read"/>
+        <javaPermission className="java.util.PropertyPermission" name="javax.xml.soap.MetaFactory" actions="read"/>
+        <javaPermission className="java.util.PropertyPermission" name="java.home" actions="read"/>
+
+</server>
+

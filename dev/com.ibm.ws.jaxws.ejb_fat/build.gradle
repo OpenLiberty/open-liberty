@@ -31,3 +31,5 @@ task addJunitdependencies(type: Copy) {
 addRequiredLibraries {
   dependsOn addJunitdependencies
 }
+
+addRequiredLibraries.dependsOn addJakartaTransformer

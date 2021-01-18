@@ -207,5 +207,8 @@ tlsProfiler.required-key.port=\ \ \ \ --port
 tlsProfiler.required-desc.port=\tPodaj numer portu.
 tlsProfiler.required-key.host=\ \ \ \ --host
 tlsProfiler.required-desc.host=\tPodaj nazw\u0119 lub adres hosta.
+tlsProfiler.option-key.file=\ \ \ \ --file
+tlsProfiler.option-desc.file=\tOpcjonalna. Wynik zostanie zapisany do podanego pliku \n\
+\tzamiast na ekran konsoli.
 tlsProfiler.option-key.verbose=\ \ \ \ --verbose
 tlsProfiler.option-desc.verbose=\tUwzgl\u0119dnij dodatkowe informacje o niezabezpieczonych protoko\u0142ach.

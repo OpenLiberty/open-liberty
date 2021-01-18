@@ -71,8 +71,7 @@ src: src/
 
 app-resources= \
   META-INF/services/io.smallrye.graphql.spi.LookupService | \
-  META-INF/services/io.smallrye.graphql.client.typesafe.api.GraphQlClientBuilder | \
-  META-INF/services/javax.enterprise.inject.spi.Extension
+  META-INF/services/io.smallrye.graphql.client.typesafe.api.GraphQlClientBuilder
 
 Service-Component: \
   com.ibm.ws.io.smallrye.graphql.ResourceProvider; \

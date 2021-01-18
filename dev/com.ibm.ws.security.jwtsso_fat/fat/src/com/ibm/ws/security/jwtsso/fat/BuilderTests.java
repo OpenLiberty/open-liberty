@@ -34,12 +34,12 @@ import com.ibm.ws.security.fat.common.CommonSecurityFat;
 import com.ibm.ws.security.fat.common.actions.TestActions;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
 import com.ibm.ws.security.fat.common.utils.CommonWaitForAppChecks;
+import com.ibm.ws.security.fat.common.utils.ServerFileUtils;
 import com.ibm.ws.security.fat.common.validation.TestValidationUtils;
 import com.ibm.ws.security.jwtsso.fat.actions.JwtFatActions;
 import com.ibm.ws.security.jwtsso.fat.actions.RunWithMpJwtVersion;
 import com.ibm.ws.security.jwtsso.fat.utils.CommonExpectations;
 import com.ibm.ws.security.jwtsso.fat.utils.JwtFatConstants;
-import com.ibm.ws.security.jwtsso.fat.utils.JwtFatUtils;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -65,7 +65,7 @@ public class BuilderTests extends CommonSecurityFat {
 
     private final JwtFatActions actions = new JwtFatActions();
     private final TestValidationUtils validationUtils = new TestValidationUtils();
-    private static JwtFatUtils fatUtils = new JwtFatUtils();
+    private static ServerFileUtils fatUtils = new ServerFileUtils();
 
     String protectedUrl = "https://" + server.getHostname() + ":" + server.getHttpDefaultSecurePort() + JwtFatConstants.SIMPLE_SERVLET_PATH;
     String defaultUser = JwtFatConstants.TESTUSER;
@@ -117,6 +117,8 @@ public class BuilderTests extends CommonSecurityFat {
 
         Cookie jwtCookie = webClient.getCookieManager().getCookie(JwtFatConstants.JWT_COOKIE_NAME);
         verifyJwtHeaderContainsKey(jwtCookie.getValue(), "kid");
+        actions.destroyWebClient(webClient);
+
     }
 
     /**
@@ -151,6 +153,9 @@ public class BuilderTests extends CommonSecurityFat {
 
         //Cookie jwtCookie = webClient.getCookieManager().getCookie(JwtFatConstants.JWT_COOKIE_NAME);
         //verifyJwtHeaderDoesNotContainKey(jwtCookie.getValue(), "kid");
+
+        actions.destroyWebClient(webClient);
+
     }
 
     private void verifyJwtHeaderContainsKey(String jwt, String key) throws UnsupportedEncodingException {

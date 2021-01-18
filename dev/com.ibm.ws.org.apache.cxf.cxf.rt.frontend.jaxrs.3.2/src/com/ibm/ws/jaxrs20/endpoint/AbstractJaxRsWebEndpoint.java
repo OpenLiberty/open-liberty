@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,15 +18,15 @@ import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.BadRequestException;
 
 import org.apache.cxf.jaxrs.utils.HttpUtils;
 import org.apache.cxf.transport.http.AbstractHTTPDestination;
-import org.apache.cxf.transport.http.InvalidCharsetException;
 import org.apache.cxf.transport.servlet.BaseUrlHelper;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.cxf.exceptions.InvalidCharsetException;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.jaxrs20.JaxRsRuntimeException;
 import com.ibm.ws.jaxrs20.api.JaxRsProviderFactoryService;
 import com.ibm.ws.jaxrs20.metadata.EndpointInfo;
@@ -125,6 +125,7 @@ public abstract class AbstractJaxRsWebEndpoint implements JaxRsWebEndpoint {
      * {@inheritDoc}
      */
     @Override
+    @FFDCIgnore(InvalidCharsetException.class)
     public void invoke(HttpServletRequest request, HttpServletResponse response) throws ServletException {
         if (destination == null)
         {
@@ -134,10 +135,9 @@ public abstract class AbstractJaxRsWebEndpoint implements JaxRsWebEndpoint {
         try {
             updateDestination(request);
             destination.invoke(servletConfig, servletConfig.getServletContext(), request, response);
+        } catch (InvalidCharsetException e) {
+            response.setStatus(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
         } catch (IOException e) {
-            if (e instanceof InvalidCharsetException) {
-                throw new BadRequestException(e);
-            }
             throw new ServletException(e);
         } catch (JaxRsRuntimeException ex) {
             throw new ServletException(ex.getCause());

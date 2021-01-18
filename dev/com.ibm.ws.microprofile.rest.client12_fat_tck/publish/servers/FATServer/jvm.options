@@ -1,1 +1,2 @@
 -Dcom.ibm.tools.attach.enable=yes
+-Dorg.eclipse.microprofile.rest.client.tck.timeoutCushion=20

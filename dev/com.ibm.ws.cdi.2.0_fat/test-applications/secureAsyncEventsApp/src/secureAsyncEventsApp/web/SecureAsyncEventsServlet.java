@@ -38,7 +38,6 @@ import org.junit.Test;
 
 import com.ibm.websphere.security.auth.WSSubject;
 
-import componenttest.annotation.SkipForRepeat;
 import componenttest.app.FATServlet;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -215,7 +214,6 @@ public class SecureAsyncEventsServlet extends FATServlet {
      */
     @Test
     @Mode(TestMode.FULL)
-    @SkipForRepeat("EE9_FEATURES") // TODO: Needs removing when https://github.com/OpenLiberty/open-liberty/pull/13630 is merged
     public void testMultiThreadSecurityContext() throws Exception {
         String mtBeanName = multiThreadCDIBean.getName();
         assertTrue("Unexpected multi thread bean name - " + mtBeanName, mtBeanName.equals("Faulty"));

@@ -75,7 +75,12 @@ public class DB2iNativeHelper extends DB2Helper {
 
             switchingSupportDetermined = true;
         }
-
+    }
+    
+    @Override
+    void customizeStaleStates() {
+        super.customizeStaleStates();
+        
         // --- The Native driver will return this CLI SQLState (HY017) whenever a connection is no longer available.
         //     This covers the case when an underlying iSeries QSQSRVR prestart job on the iSeries that represents
         //     the jdbc connection in the WAS connection pool is killed and the connection is later used.

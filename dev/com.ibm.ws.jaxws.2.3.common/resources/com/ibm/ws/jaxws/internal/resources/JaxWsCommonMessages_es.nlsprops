@@ -109,7 +109,7 @@ error.service.ref.member.level.annotation.type.not.inferred.explanation=Si el ti
 error.service.ref.member.level.annotation.type.not.inferred.useraction=Especifique un atributo de tipo que no sea Object.
 
 error.service.ref.member.level.annotation.type.not.compatible=CWWKW0020E: La anotaci\u00f3n @WebServiceRef se encuentra en el miembro {0} en la clase {1}, pero la clase {2} especificada en el atributo de tipo no es compatible con la clase {3} del miembro anotado.
-error.service.ref.member.level.annotation.type.not.compatible.explanation=El atributo de tipo debe ser compatible con el tipo de miembro de clase.
+error.service.ref.member.level.annotation.type.not.compatible.explanation=El atributo de tipo debe ser compatible con el tipo de miembro de clase. 
 error.service.ref.member.level.annotation.type.not.compatible.useraction=Aseg\u00farese de que el atributo de tipo sea compatible con el tipo de miembro de clase.
 
 error.service.ref.member.level.annotation.wrong.value=CWWKW0021E: La anotaci\u00f3n @WebServiceRef se encuentra en el miembro {0} en la clase {1}. No obstante, el atributo de valor no se especifica o se especifica en la clase {2} que no es una subclase de la clase javax.xml.ws.Service. 
@@ -195,7 +195,7 @@ error.no.wsdl.find.useraction=Especifique un archivo WSDL existente para el serv
 #{0}=the specified binding type
 #{1}=the port component name
 #{2}=the WSDL document
-error.endpointinfo.validation.bindingtype.and.wsdl.mismatch=CWWKW0058E: El tipo de enlace especificado {0} no coincide con el del documento WSDL {1}.
+error.endpointinfo.validation.bindingtype.and.wsdl.mismatch=CWWKW0058E: El tipo de enlace especificado {0} para el componente de puerto {1} no coincide con la definici\u00f3n del documento WSDL {2}.
 error.endpointinfo.validation.bindingtype.and.wsdl.mismatch.explanation=Si el tipo de enlace se especifica utilizando la anotaci\u00f3n BindingType o en el descriptor de despliegue, su valor debe coincidir con el del documento WSDL.
 error.endpointinfo.validation.bindingtype.and.wsdl.mismatch.useraction=Actualice el valor del tipo de enlace para que coincida con el del documento WSDL.
 

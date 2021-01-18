@@ -22,6 +22,13 @@ Subsystem-Name: Jakarta XML Binding 3.0
   io.openliberty.jakarta.xmlBinding-3.0
 -bundles=\
   io.openliberty.xmlBinding.3.0.internal.tools
+-files=\
+ bin/xmlBinding/xjc.bat, \
+ bin/xmlBinding/tools/ws-schemagen.jar, \
+ bin/xmlBinding/schemagen; ibm.executable:=true; ibm.file.encoding:=ebcdic, \
+ bin/xmlBinding/xjc; ibm.executable:=true; ibm.file.encoding:=ebcdic, \
+ bin/xmlBinding/tools/ws-xjc.jar, \
+ bin/xmlBinding/schemagen.bat
 kind=beta
 edition=core
 WLP-Activation-Type: parallel

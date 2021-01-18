@@ -13,7 +13,7 @@ package com.ibm.ws.security.mp.jwt11.fat;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.ibm.ws.security.jwt.fat.mpjwt.MpJwtFatConstants;
+import com.ibm.ws.security.fat.common.mp.jwt.MPJwt11FatConstants;
 import com.ibm.ws.security.mp.jwt11.fat.sharedTests.MPJwtLoginConfig_VariationTests;
 
 import componenttest.custom.junit.runner.Mode;
@@ -54,9 +54,9 @@ public class MPJwtLoginConfig_ignoreApplicationAuthMethodTrueTests extends MPJwt
     public void MPJwtLoginConfig_ignoreApplicationAuthMethodTrueTests_notInWebXML_notInApp() throws Exception {
 
         genericLoginConfigVariationTest(
-                                        MpJwtFatConstants.LOGINCONFIG_NOT_IN_WEB_XML_SERVLET_NOT_IN_APP_ROOT_CONTEXT,
-                                        MpJwtFatConstants.LOGINCONFIG_NOT_IN_WEB_XML_SERVLET_NOT_IN_APP,
-                                        MpJwtFatConstants.MPJWT_APP_CLASS_NO_LOGIN_CONFIG,
+                                        MPJwt11FatConstants.LOGINCONFIG_NOT_IN_WEB_XML_SERVLET_NOT_IN_APP_ROOT_CONTEXT,
+                                        MPJwt11FatConstants.LOGINCONFIG_NOT_IN_WEB_XML_SERVLET_NOT_IN_APP,
+                                        MPJwt11FatConstants.MPJWT_APP_CLASS_NO_LOGIN_CONFIG,
                                         ExpectedResult.GOOD);
 
     }
@@ -73,9 +73,9 @@ public class MPJwtLoginConfig_ignoreApplicationAuthMethodTrueTests extends MPJwt
     public void MPJwtLoginConfig_ignoreApplicationAuthMethodTrueTests_notInWebXML_basicInApp() throws Exception {
 
         genericLoginConfigVariationTest(
-                                        MpJwtFatConstants.LOGINCONFIG_NOT_IN_WEB_XML_SERVLET_BASIC_IN_APP_ROOT_CONTEXT,
-                                        MpJwtFatConstants.LOGINCONFIG_NOT_IN_WEB_XML_SERVLET_BASIC_IN_APP,
-                                        MpJwtFatConstants.MPJWT_APP_CLASS_LOGIN_CONFIG_BASIC,
+                                        MPJwt11FatConstants.LOGINCONFIG_NOT_IN_WEB_XML_SERVLET_BASIC_IN_APP_ROOT_CONTEXT,
+                                        MPJwt11FatConstants.LOGINCONFIG_NOT_IN_WEB_XML_SERVLET_BASIC_IN_APP,
+                                        MPJwt11FatConstants.MPJWT_APP_CLASS_LOGIN_CONFIG_BASIC,
                                         ExpectedResult.GOOD);
 
     }
@@ -91,9 +91,9 @@ public class MPJwtLoginConfig_ignoreApplicationAuthMethodTrueTests extends MPJwt
     @Test
     public void MPJwtLoginConfig_ignoreApplicationAuthMethodTrueTests_notInWebXML_mpJwtInApp() throws Exception {
 
-        genericLoginConfigVariationTest(MpJwtFatConstants.LOGINCONFIG_NOT_IN_WEB_XML_SERVLET_MP_JWT_IN_APP_ROOT_CONTEXT,
-                                        MpJwtFatConstants.LOGINCONFIG_NOT_IN_WEB_XML_SERVLET_MP_JWT_IN_APP,
-                                        MpJwtFatConstants.MPJWT_APP_CLASS_LOGIN_CONFIG_MP_JWT,
+        genericLoginConfigVariationTest(MPJwt11FatConstants.LOGINCONFIG_NOT_IN_WEB_XML_SERVLET_MP_JWT_IN_APP_ROOT_CONTEXT,
+                                        MPJwt11FatConstants.LOGINCONFIG_NOT_IN_WEB_XML_SERVLET_MP_JWT_IN_APP,
+                                        MPJwt11FatConstants.MPJWT_APP_CLASS_LOGIN_CONFIG_MP_JWT,
                                         ExpectedResult.GOOD);
 
     }
@@ -110,9 +110,9 @@ public class MPJwtLoginConfig_ignoreApplicationAuthMethodTrueTests extends MPJwt
     public void MPJwtLoginConfig_ignoreApplicationAuthMethodTrueTests_formLoginInWebXML_notInApp() throws Exception {
 
         genericLoginConfigFormLoginVariationTest(
-                                                 MpJwtFatConstants.LOGINCONFIG_FORM_LOGIN_IN_WEB_XML_SERVLET_NOT_IN_APP_ROOT_CONTEXT,
-                                                 MpJwtFatConstants.LOGINCONFIG_FORM_LOGIN_IN_WEB_XML_SERVLET_NOT_IN_APP,
-                                                 MpJwtFatConstants.MPJWT_APP_CLASS_LOGIN_CONFIG_FORMLOGININWEBXML_NOTINAPP,
+                                                 MPJwt11FatConstants.LOGINCONFIG_FORM_LOGIN_IN_WEB_XML_SERVLET_NOT_IN_APP_ROOT_CONTEXT,
+                                                 MPJwt11FatConstants.LOGINCONFIG_FORM_LOGIN_IN_WEB_XML_SERVLET_NOT_IN_APP,
+                                                 MPJwt11FatConstants.MPJWT_APP_CLASS_LOGIN_CONFIG_FORMLOGININWEBXML_NOTINAPP,
                                                  UseJWTToken.YES);
 
     }
@@ -129,9 +129,9 @@ public class MPJwtLoginConfig_ignoreApplicationAuthMethodTrueTests extends MPJwt
     public void MPJwtLoginConfig_ignoreApplicationAuthMethodTrueTests_formLoginInWebXML_basicInApp() throws Exception {
 
         genericLoginConfigFormLoginVariationTest(
-                                                 MpJwtFatConstants.LOGINCONFIG_FORM_LOGIN_IN_WEB_XML_SERVLET_BASIC_IN_APP_ROOT_CONTEXT,
-                                                 MpJwtFatConstants.LOGINCONFIG_FORM_LOGIN_IN_WEB_XML_SERVLET_BASIC_IN_APP,
-                                                 MpJwtFatConstants.MPJWT_APP_CLASS_LOGIN_CONFIG_FORMLOGININWEBXML_BASICINAPP,
+                                                 MPJwt11FatConstants.LOGINCONFIG_FORM_LOGIN_IN_WEB_XML_SERVLET_BASIC_IN_APP_ROOT_CONTEXT,
+                                                 MPJwt11FatConstants.LOGINCONFIG_FORM_LOGIN_IN_WEB_XML_SERVLET_BASIC_IN_APP,
+                                                 MPJwt11FatConstants.MPJWT_APP_CLASS_LOGIN_CONFIG_FORMLOGININWEBXML_BASICINAPP,
                                                  UseJWTToken.YES);
 
     }
@@ -148,9 +148,9 @@ public class MPJwtLoginConfig_ignoreApplicationAuthMethodTrueTests extends MPJwt
     public void MPJwtLoginConfig_ignoreApplicationAuthMethodTrueTests_formLoginInWebXML_mpJwtInApp() throws Exception {
 
         genericLoginConfigFormLoginVariationTest(
-                                                 MpJwtFatConstants.LOGINCONFIG_FORM_LOGIN_IN_WEB_XML_SERVLET_MP_JWT_IN_APP_ROOT_CONTEXT,
-                                                 MpJwtFatConstants.LOGINCONFIG_FORM_LOGIN_IN_WEB_XML_SERVLET_MP_JWT_IN_APP,
-                                                 MpJwtFatConstants.MPJWT_APP_CLASS_LOGIN_CONFIG_FORMLOGININWEBXML_MPJWTINAPP,
+                                                 MPJwt11FatConstants.LOGINCONFIG_FORM_LOGIN_IN_WEB_XML_SERVLET_MP_JWT_IN_APP_ROOT_CONTEXT,
+                                                 MPJwt11FatConstants.LOGINCONFIG_FORM_LOGIN_IN_WEB_XML_SERVLET_MP_JWT_IN_APP,
+                                                 MPJwt11FatConstants.MPJWT_APP_CLASS_LOGIN_CONFIG_FORMLOGININWEBXML_MPJWTINAPP,
                                                  UseJWTToken.YES);
 
     }
@@ -167,9 +167,9 @@ public class MPJwtLoginConfig_ignoreApplicationAuthMethodTrueTests extends MPJwt
     public void MPJwtLoginConfig_ignoreApplicationAuthMethodTrueTests_mpJwtInWebXML_notInApp() throws Exception {
 
         genericLoginConfigVariationTest(
-                                        MpJwtFatConstants.LOGINCONFIG_MP_JWT_IN_WEB_XML_SERVLET_NOT_IN_APP_ROOT_CONTEXT,
-                                        MpJwtFatConstants.LOGINCONFIG_MP_JWT_IN_WEB_XML_SERVLET_NOT_IN_APP,
-                                        MpJwtFatConstants.MPJWT_APP_CLASS_LOGIN_CONFIG_MPJWTINWEBXML_NOTINAPP,
+                                        MPJwt11FatConstants.LOGINCONFIG_MP_JWT_IN_WEB_XML_SERVLET_NOT_IN_APP_ROOT_CONTEXT,
+                                        MPJwt11FatConstants.LOGINCONFIG_MP_JWT_IN_WEB_XML_SERVLET_NOT_IN_APP,
+                                        MPJwt11FatConstants.MPJWT_APP_CLASS_LOGIN_CONFIG_MPJWTINWEBXML_NOTINAPP,
                                         ExpectedResult.GOOD);
 
     }
@@ -186,9 +186,9 @@ public class MPJwtLoginConfig_ignoreApplicationAuthMethodTrueTests extends MPJwt
     @Test
     public void MPJwtLoginConfig_ignoreApplicationAuthMethodTrueTests_mpJwtInWebXML_basicInApp() throws Exception {
         genericLoginConfigVariationTest(
-                                        MpJwtFatConstants.LOGINCONFIG_MP_JWT_IN_WEB_XML_SERVLET_BASIC_IN_APP_ROOT_CONTEXT,
-                                        MpJwtFatConstants.LOGINCONFIG_MP_JWT_IN_WEB_XML_SERVLET_BASIC_IN_APP,
-                                        MpJwtFatConstants.MPJWT_APP_CLASS_LOGIN_CONFIG_MPJWTINWEBXML_BASICINAPP,
+                                        MPJwt11FatConstants.LOGINCONFIG_MP_JWT_IN_WEB_XML_SERVLET_BASIC_IN_APP_ROOT_CONTEXT,
+                                        MPJwt11FatConstants.LOGINCONFIG_MP_JWT_IN_WEB_XML_SERVLET_BASIC_IN_APP,
+                                        MPJwt11FatConstants.MPJWT_APP_CLASS_LOGIN_CONFIG_MPJWTINWEBXML_BASICINAPP,
                                         ExpectedResult.GOOD);
 
     }
@@ -205,9 +205,9 @@ public class MPJwtLoginConfig_ignoreApplicationAuthMethodTrueTests extends MPJwt
     @Test
     public void MPJwtLoginConfig_ignoreApplicationAuthMethodTrueTests_mpJwtInWebXML_mpJwtInApp() throws Exception {
         genericLoginConfigVariationTest(
-                                        MpJwtFatConstants.LOGINCONFIG_MP_JWT_IN_WEB_XML_SERVLET_MP_JWT_IN_APP_ROOT_CONTEXT,
-                                        MpJwtFatConstants.LOGINCONFIG_MP_JWT_IN_WEB_XML_SERVLET_MP_JWT_IN_APP,
-                                        MpJwtFatConstants.MPJWT_APP_CLASS_LOGIN_CONFIG_MPJWTINWEBXML_MPJWTINAPP,
+                                        MPJwt11FatConstants.LOGINCONFIG_MP_JWT_IN_WEB_XML_SERVLET_MP_JWT_IN_APP_ROOT_CONTEXT,
+                                        MPJwt11FatConstants.LOGINCONFIG_MP_JWT_IN_WEB_XML_SERVLET_MP_JWT_IN_APP,
+                                        MPJwt11FatConstants.MPJWT_APP_CLASS_LOGIN_CONFIG_MPJWTINWEBXML_MPJWTINAPP,
                                         ExpectedResult.GOOD);
 
     }
@@ -223,9 +223,9 @@ public class MPJwtLoginConfig_ignoreApplicationAuthMethodTrueTests extends MPJwt
     @Test
     public void MPJwtLoginConfig_ignoreApplicationAuthMethodTrueTests_multiLayer_notInWebXML_mpJwtInApp() throws Exception {
         genericLoginConfigVariationTest(
-                                        MpJwtFatConstants.LOGINCONFIG_MULTI_LAYER_NOT_IN_WEB_XML_SERVLET_MP_JWT_IN_APP_ROOT_CONTEXT,
-                                        MpJwtFatConstants.LOGINCONFIG_MULTI_LAYER_NOT_IN_WEB_XML_SERVLET_MP_JWT_IN_APP,
-                                        MpJwtFatConstants.MPJWT_APP_CLASS_LOGIN_CONFIG_MULTI_LAYER_MPJWTNOTINWEBXML_MPJWTINAPP,
+                                        MPJwt11FatConstants.LOGINCONFIG_MULTI_LAYER_NOT_IN_WEB_XML_SERVLET_MP_JWT_IN_APP_ROOT_CONTEXT,
+                                        MPJwt11FatConstants.LOGINCONFIG_MULTI_LAYER_NOT_IN_WEB_XML_SERVLET_MP_JWT_IN_APP,
+                                        MPJwt11FatConstants.MPJWT_APP_CLASS_LOGIN_CONFIG_MULTI_LAYER_MPJWTNOTINWEBXML_MPJWTINAPP,
                                         ExpectedResult.GOOD);
 
     }

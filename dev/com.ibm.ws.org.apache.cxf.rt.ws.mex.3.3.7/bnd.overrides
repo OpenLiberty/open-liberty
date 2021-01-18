@@ -26,7 +26,7 @@ Import-Package: \
  !org.springframework.*;resolution:=optional, \
  !org.apache.aries.*, \
  !org.osgi.service.blueprint.*, \
- org.apache.cxf.*;version="[3.3.6,3.3.7)", \
+ org.apache.cxf.*;version="[3.2.4,4.0)", \
  *
 
 DynamicImport-Package: org.apache.cxf.bus, \

@@ -13,7 +13,8 @@ package com.ibm.ws.security.mp.jwt11.fat.sharedTests;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.ibm.ws.security.jwt.fat.mpjwt.MpJwtFatConstants;
+import com.ibm.ws.security.fat.common.mp.jwt.MPJwt11FatConstants;
+import com.ibm.ws.security.fat.common.mp.jwt.sharedTests.MPJwt11MPConfigTests;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -44,8 +45,8 @@ public class MPJwtGoodMPConfigAsEnvVars extends MPJwt11MPConfigTests {
     public void MPJwtGoodMPConfigAsEnvVars_GoodMpJwtConfigSpecifiedInServerXml() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_AltConfigNotInApp_goodServerXmlConfig.xml");
-        standard11TestFlow(resourceServer, MpJwtFatConstants.NO_MP_CONFIG_IN_APP_ROOT_CONTEXT,
-                         MpJwtFatConstants.NO_MP_CONFIG_IN_APP_APP, MpJwtFatConstants.MPJWT_APP_CLASS_NO_MP_CONFIG_IN_APP);
+        standard11TestFlow(resourceServer, MPJwt11FatConstants.NO_MP_CONFIG_IN_APP_ROOT_CONTEXT,
+                           MPJwt11FatConstants.NO_MP_CONFIG_IN_APP_APP, MPJwt11FatConstants.MPJWT_APP_CLASS_NO_MP_CONFIG_IN_APP);
 
     }
 
@@ -61,8 +62,8 @@ public class MPJwtGoodMPConfigAsEnvVars extends MPJwt11MPConfigTests {
     @Test
     public void MPJwtGoodMPConfigAsEnvVars_MpJwtConfigNotSpecifiedInServerXml() throws Exception {
 
-        standard11TestFlow(resourceServer, MpJwtFatConstants.NO_MP_CONFIG_IN_APP_ROOT_CONTEXT,
-                         MpJwtFatConstants.NO_MP_CONFIG_IN_APP_APP, MpJwtFatConstants.MPJWT_APP_CLASS_NO_MP_CONFIG_IN_APP);
+        standard11TestFlow(resourceServer, MPJwt11FatConstants.NO_MP_CONFIG_IN_APP_ROOT_CONTEXT,
+                           MPJwt11FatConstants.NO_MP_CONFIG_IN_APP_APP, MPJwt11FatConstants.MPJWT_APP_CLASS_NO_MP_CONFIG_IN_APP);
 
     }
 

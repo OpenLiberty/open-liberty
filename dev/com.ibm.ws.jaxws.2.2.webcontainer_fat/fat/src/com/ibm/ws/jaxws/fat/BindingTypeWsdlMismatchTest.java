@@ -14,7 +14,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
-import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -22,17 +21,12 @@ import com.ibm.ws.jaxws.fat.util.TestUtils;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.FeatureReplacementAction;
-import componenttest.rules.repeater.RepeatTests;
 
 /**
  * Test the binding type is align with the wsdl file if specified.
  */
 @RunWith(FATRunner.class)
 public class BindingTypeWsdlMismatchTest extends BindingTypeWsdlMismatchTest_Lite {
-
-    @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification().andWith(new FeatureReplacementAction().forServers("BindingTypeWsdlMismatchTestServer").addFeature("jaxws-2.3").removeFeature("jaxws-2.2").removeFeature("jsp-2.2").removeFeature("servlet-3.1").withID("jaxws-2.3"));
 
     /**
      * TestDescription:
@@ -81,7 +75,7 @@ public class BindingTypeWsdlMismatchTest extends BindingTypeWsdlMismatchTest_Lit
                                       "dropins/testBindingTypeWsdlWeb.war/WEB-INF/wsdl", "HelloService.wsdl");
 
         server.startServerAndValidate(true, true, false);
-        List<String> results = server.findStringsInLogs("javax.xml.ws.WebServiceException.*CWWKW0058E"); // start failed
+        List<String> results = server.findStringsInLogs("xml.ws.WebServiceException.*CWWKW0058E"); // start failed
         assertTrue("The validation should be failed with a WebServiceException.", !results.isEmpty());
     }
 
@@ -107,7 +101,7 @@ public class BindingTypeWsdlMismatchTest extends BindingTypeWsdlMismatchTest_Lit
                                       "dropins/testBindingTypeWsdlWeb.war/WEB-INF/wsdl", "HelloService.wsdl");
 
         server.startServerAndValidate(true, true, false);
-        List<String> results = server.findStringsInLogs("javax.xml.ws.WebServiceException.*CWWKW0058E"); // start failed
+        List<String> results = server.findStringsInLogs("xml.ws.WebServiceException.*CWWKW0058E"); // start failed
         assertTrue("The validation should be failed with a WebServiceException.", !results.isEmpty());
     }
 
@@ -133,7 +127,7 @@ public class BindingTypeWsdlMismatchTest extends BindingTypeWsdlMismatchTest_Lit
                                       "dropins/testBindingTypeWsdlWeb.war/WEB-INF/wsdl", "HelloService.wsdl");
 
         server.startServerAndValidate(true, true, false);
-        List<String> results = server.findStringsInLogs("javax.xml.ws.WebServiceException.*CWWKW0058E"); // start failed
+        List<String> results = server.findStringsInLogs("xml.ws.WebServiceException.*CWWKW0058E"); // start failed
         assertTrue("The validation should be failed with a WebServiceException.", !results.isEmpty());
     }
 
