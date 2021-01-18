@@ -177,3 +177,11 @@ cookies.samesite.unsupportedWildcard.useraction=Ensure that only a single wildca
 cookies.samesite.knownDuplicateName=CWWKT0037W: A cookie name or pattern [{0}], which is marked as a duplicate, was found in the SameSite [{1}] configuration. The [{0}] cookie name or pattern is ignored. Any cookie name or pattern that is defined by the lax, none, and strict configurations can be defined in only one of the three configurations.
 cookies.samesite.knownDuplicateName.explanation=The specified value was already found by the configuration and mapped to a SameSite value.
 cookies.samesite.knownDuplicateName.useraction=Ensure that cookie names and patterns are unique across the lax, none, and strict configuration lists.
+
+trusted.header.origin.invalid.value=CWWKT0038W: The [{0}] configured trustedHeaderOrigin value is invalid and cannot be used.
+trusted.header.origin.invalid.value.explanation=The specified value must be either a full IP address or correctly formatted hostname.
+trusted.header.origin.invalid.value.useraction=Ensure that configured IP addresses contain a value for each segment, and that hostnames do not contain any invalid characters.
+
+trusted.sensitive.header.origin.invalid.value=CWWKT0039W: The [{0}] configured trustedSensitiveHeaderOrigin value is invalid and cannot be used.
+trusted.sensitive.header.origin.invalid.value.explanation=The specified value must be either a full IP address or correctly formatted hostname.
+trusted.sensitive.header.origin.invalid.value.useraction=Ensure that configured IP addresses contain a value for each segment, and that hostnames do not contain any invalid characters.
