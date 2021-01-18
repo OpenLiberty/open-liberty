@@ -109,7 +109,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
     public static EmptyAction NO_REPLACEMENT() {
         return new EmptyAction();
     }
-    
+
     public FeatureReplacementAction() {
         // Empty
     }
