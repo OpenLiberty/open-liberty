@@ -63,8 +63,7 @@
             <artifactId>microprofile-context-propagation-api</artifactId>
             <version>${microprofile.context.propagation.version}</version>
             <scope>system</scope>
-            <!-- Switch to 1.2 once there is a snapshot spec binary in place -->
-            <systemPath>${org.eclipse.microprofile.contextpropagation.1.1_}</systemPath>
+            <systemPath>${org.eclipse.microprofile.contextpropagation.1.2_}</systemPath>
         </dependency>
 
         <dependency>
