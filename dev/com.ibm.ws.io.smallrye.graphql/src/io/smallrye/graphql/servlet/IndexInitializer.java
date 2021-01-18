@@ -1,3 +1,5 @@
+// Based on https://github.com/smallrye/smallrye-graphql/blob/1.0.9/server/implementation-servlet/src/main/java/io/smallrye/graphql/servlet/IndexInitializer.java
+// Apache v2.0 licensed - https://github.com/smallrye/smallrye-graphql/blob/1.0.9/LICENSE
 package io.smallrye.graphql.servlet;
 
 import java.io.IOException;
@@ -35,7 +37,7 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
  */
 public class IndexInitializer {
 
-    @FFDCIgnore(IOException.class)
+    
     public IndexView createIndex(Set<URL> urls) {
         List<IndexView> indexes = new ArrayList<>();
 
@@ -45,11 +47,17 @@ public class IndexInitializer {
         // Check in this war
         try (InputStream stream = getClass().getClassLoader().getResourceAsStream(JANDEX_IDX)) {
             IndexReader reader = new IndexReader(stream);
-            IndexView i = reader.read();
-            SmallRyeGraphQLServletLogging.log.loadedIndexFrom(JANDEX_IDX);
-            indexes.add(i);
+            //IBM: reader.read() is extracted into it's own method so that the IOException can be correctly handled
+            IndexView i = readIndex(reader);
+            if(i == null) {
+                SmallRyeGraphQLServletLogging.log.generatingIndex();
+            }
+            else {
+                SmallRyeGraphQLServletLogging.log.loadedIndexFrom(JANDEX_IDX);
+                indexes.add(i);
+            }
         } catch (IOException ex) {
-            SmallRyeGraphQLServletLogging.log.generatingIndex();
+        	SmallRyeGraphQLServletLogging.log.cannotProcessFile(JANDEX_IDX, ex);
         }
 
         // Classes in this artifact
@@ -59,6 +67,22 @@ public class IndexInitializer {
         return merge(indexes);
     }
 
+    /**
+     * IBM: reader.read() is extracted into it's own method so that the IOException can be correctly handled
+     * @param reader the IndexReader to read from
+     * @return the IndexView or null if an IOException occurred
+     */
+    @FFDCIgnore(IOException.class)
+    private IndexView readIndex(IndexReader reader) {
+        IndexView i = null;
+        try {
+            i = reader.read();
+        } catch (IOException e) {
+            //ignored, return null
+        }
+        return i;
+    }
+    
     public IndexView createIndex() {
         Set<URL> urls = getUrlFromClassPath();
         return createIndexView(urls);
