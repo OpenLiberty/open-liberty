@@ -2,12 +2,12 @@
 name: Open Liberty BETA blog post
 about: Information to be included in the Open Liberty BETA blog post.
 title: BETA BLOG - title_of_your_update
-labels: ''
+labels: 'Blog, target:beta'
 assignees: austin0, jakub-pomykala
 
 ---
 
-The information you provide here will be included in the Open Liberty beta blog post ([example](https://openliberty.io/blog/2020/08/05/jakarta-grpc-beta-20009.html)), which will be published on the OpenLiberty.io blog, and potentially elsewhere, to promote this beta of Open Liberty.
+The information you provide here will be included in the Open Liberty beta blog post ([example](https://openliberty.io/blog/2020/08/05/jakarta-grpc-beta-20009.html)), which will be published on [openliberty.io/blog/](https://www.openliberty.io/blog/), and potentially elsewhere, to promote this beta feature/function of Open Liberty.
 
 Please provide the following information the week before the GA/beta date (to allow for review and publishing):
 
@@ -30,7 +30,8 @@ Please provide the following information the week before the GA/beta date (to al
    - Where can they find out more about this specific update (eg Open Liberty docs, Javadoc) and/or the wider technology?
 
 ## What happens next?
-
+- Add the label for the beta you're targeting: `target:YY00X-beta`.
+- Make sure this blog post is linked back to the Epic for this feature/function.
 - Your paragraph will be included in the beta blog post. It might be edited for style and consistency.
 - You will be asked to review a draft before publication.
 - If you would _also_ like to write a standalone blog post about your update (highly recommended), raise an issue on the [Open Liberty blogs repo](https://github.com/OpenLiberty/blogs/issues/new/choose). State in the issue that the blog post relates to a specific release so that we can ensure it is published on an appropriate date (it won't be the same day as the beta blog post).

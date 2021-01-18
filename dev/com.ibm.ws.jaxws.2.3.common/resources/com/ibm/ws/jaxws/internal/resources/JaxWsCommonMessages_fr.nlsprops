@@ -195,7 +195,7 @@ error.no.wsdl.find.useraction=Indiquez un fichier WSDL existant pour le service 
 #{0}=the specified binding type
 #{1}=the port component name
 #{2}=the WSDL document
-error.endpointinfo.validation.bindingtype.and.wsdl.mismatch=CWWKW0058E: Le type de liaison {0} indiqu\u00e9 ne correspond pas \u00e0 celui figurant dans le document WSDL {1}.
+error.endpointinfo.validation.bindingtype.and.wsdl.mismatch=CWWKW0058E: Le type de liaison {0} indiqu\u00e9 pour le composant de port {1} ne correspond pas \u00e0 la d\u00e9finition figurant dans le document WSDL {2}.
 error.endpointinfo.validation.bindingtype.and.wsdl.mismatch.explanation=Si le type de liaison est indiqu\u00e9 \u00e0 l'aide d'une annotation BindingType ou \u00e0 partir d'un descripteur de d\u00e9ploiement, sa valeur doit correspondre \u00e0 celle figurant dans le document WSDL.
 error.endpointinfo.validation.bindingtype.and.wsdl.mismatch.useraction=Mettez la valeur du type de liaison \u00e0 jour pour qu'elle corresponde \u00e0 celle figurant dans le document WSDL.
 

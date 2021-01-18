@@ -11,7 +11,6 @@
 package com.ibm.ws.wsat.fat.tests;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -37,10 +36,9 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.HttpUtils;
 
-@AllowedFFDC(value = { "javax.transaction.SystemException", "javax.transaction.xa.XAException" })
+@AllowedFFDC(value = { "javax.transaction.SystemException", "javax.transaction.xa.XAException", "java.net.SocketException" })
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class MultiRecoveryTest {

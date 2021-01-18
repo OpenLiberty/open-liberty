@@ -126,23 +126,21 @@ public class EndpointConfig implements ServerEndpointConfig {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.websocket.server.ServerEndpointConfig#getEndpointClass()
      */
     @Override
     public Class<?> getEndpointClass() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.websocket.server.ServerEndpointConfig#getPath()
      */
     @Override
     public String getPath() {
-        // TODO Auto-generated method stub
         return null;
     }
 

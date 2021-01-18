@@ -18,8 +18,8 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 
+import componenttest.containers.ExternalTestServiceDockerClientStrategy;
 import componenttest.topology.database.container.DatabaseContainerFactory;
-import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
 
 @RunWith(Suite.class)
 @SuiteClasses(DemoTimerTest.class)
@@ -30,7 +30,7 @@ public class FATSuite {
     @BeforeClass
     public static void beforeSuite() throws Exception {
         //Allows local tests to switch between using a local docker client, to using a remote docker client.
-        ExternalTestServiceDockerClientStrategy.clearTestcontainersConfig();
+        ExternalTestServiceDockerClientStrategy.setupTestcontainers();
 
         testContainer.start();
     }

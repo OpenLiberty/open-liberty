@@ -221,3 +221,10 @@ LDAP_REGISTRY_CUSTOM_MAPPER_FAILED.useraction=Si l'exception \u00e9tait inattend
 LDAP_REGISTRY_INVALID_MAPPING=CWIML4504W: Le programme de mappage de certificat X.509 personnalis\u00e9 a renvoy\u00e9 une valeur vide ou ind\u00e9finie. 
 LDAP_REGISTRY_INVALID_MAPPING.explanation=Le programme de mappage de certificat X.509 personnalis\u00e9 doit renvoyer une valeur non vide ou d\u00e9finie ou \u00e9mettre les exceptions nomm\u00e9es.
 LDAP_REGISTRY_INVALID_MAPPING.useraction=Modifiez le programme de mappage de certificat X.509 personnalis\u00e9 de sorte qu'il ne renvoie pas une valeur vide ou ind\u00e9finie. Si une valeur valide ne peut pas \u00eatre renvoy\u00e9e, l'impl\u00e9mentation doit \u00e9mettre une exception v\u00e9rifi\u00e9e. 
+
+LOGINPROPERTY_OVERRIDE_USERFILTER=CWIML4505W: L'attribut userFilter d\u00e9fini est ignor\u00e9 car des attributs loginProperty sont d\u00e9finis. Le filtre utilisateur est g\u00e9n\u00e9r\u00e9 dynamiquement.
+LOGINPROPERTY_OVERRIDE_USERFILTER.explanation=Une ou plusieurs instances de l'attribut loginProperty sont d\u00e9finies. Ces attributs sont utilis\u00e9s pour g\u00e9n\u00e9rer le filtre utilisateur.
+LOGINPROPERTY_OVERRIDE_USERFILTER.useraction=Si l'attribut userFilter est pr\u00e9f\u00e9r\u00e9, retirez tous les attributs loginProperty.
+INVALID_LOGIN_PROPERTIES=CWIML4506E: Les propri\u00e9t\u00e9s de connexion suivantes ne sont pas valides : {0}.
+INVALID_LOGIN_PROPERTIES.explanation=Une ou plusieurs propri\u00e9t\u00e9s de connexion ne sont pas des propri\u00e9t\u00e9s WIM PersonAccount valides.
+INVALID_LOGIN_PROPERTIES.useraction=Choisissez des propri\u00e9t\u00e9s PersonAccount valides ou ajoutez les propri\u00e9t\u00e9s \u00e0 PersonAccount en tant que propri\u00e9t\u00e9s \u00e9tendues. Assurez-vous que la casse de chaque propri\u00e9t\u00e9 de connexion correspond \u00e0 la casse de la propri\u00e9t\u00e9 PersonAccount correspondante.

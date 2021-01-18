@@ -22,13 +22,13 @@ import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
+import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.database.container.PostgreSQLContainer;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
-import componenttest.topology.utils.SimpleLogConsumer;
 import jdbc.fat.postgresql.web.PostgreSQLNativeSSLTestServlet;
 import jdbc.fat.postgresql.web.PostgreSQLSSLTestServlet;
 

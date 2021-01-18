@@ -34,7 +34,8 @@ import componenttest.rules.repeater.FeatureReplacementAction;
                 JsonbContextTest.class,
                 MultiClientCdiTest.class,
                 ProduceConsumeTest.class,
-                PropsTest.class
+                PropsTest.class,
+                SseTest.class
 })
 public class FATSuite {
     private static final String[] ALL_VERSIONS = {"1.0", "1.1", "1.2", "1.3", "1.4", "2.0"};

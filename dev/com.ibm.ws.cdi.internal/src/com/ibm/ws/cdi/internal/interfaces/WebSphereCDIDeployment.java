@@ -175,11 +175,4 @@ public interface WebSphereCDIDeployment extends CDI11Deployment {
      */
     public CDI<Object> getCDI();
 
-    /**
-     * Provides additional extensions added by the WebSphereCDIExtensionMetaData SPI class
-     *
-     * @param extensions a set of additional CDI extension classes.
-     */
-    void registerSPIExtensions(Set<Extension> extensions);
-
 }

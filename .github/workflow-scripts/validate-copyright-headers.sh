@@ -1,3 +1,4 @@
+#!/bin/bash
 set +e
 
 # Strings indicating IBM-specific copyright notice.

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.transaction.test.tests;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;
@@ -37,14 +38,18 @@ public class TestUtils {
 
     public static void recoveryTest(LibertyServer crashingServer, LibertyServer recoveringServer, String servletName, String id) throws Exception {
         final String method = "recoveryTest";
+
         try {
             // We expect this to fail since it is gonna crash the server
             FATServletClient.runTest(crashingServer, servletName, "setupRec" + id);
+            crashingServer.restartServer();
+            fail(crashingServer.getServerName() + " did not crash as expected");
         } catch (Exception e) {
             Log.info(TestUtils.class, method, "setupRec" + id + " crashed as expected");
+            Log.error(TestUtils.class, method, e);
         }
 
-        crashingServer.waitForStringInLog("Dump State:");
+        assertNotNull(crashingServer.getServerName() + " didn't crash properly", crashingServer.waitForStringInLog("Dump State:"));
 
         ProgramOutput po = recoveringServer.startServerAndValidate(false, true, true);
         if (po.getReturnCode() != 0) {
@@ -68,7 +73,7 @@ public class TestUtils {
         }
 
         // Server appears to have started ok
-        recoveringServer.waitForStringInTrace("Setting state from RECOVERING to ACTIVE");
+        assertNotNull(recoveringServer.getServerName() + " didn't recover properly", recoveringServer.waitForStringInTrace("Setting state from RECOVERING to ACTIVE"));
 
         int attempt = 0;
         while (true) {
@@ -82,9 +87,20 @@ public class TestUtils {
                 if (++attempt < 5) {
                     Thread.sleep(10000);
                 } else {
+                    // Something is seriously wrong with this server instance. Reset so the next test has a chance
+                    restartServer(recoveringServer);
                     throw e;
                 }
             }
+        }
+    }
+
+    private static void restartServer(LibertyServer s) {
+        try {
+            s.stopServer(".*");
+            s.startServerAndValidate(false, false, true, false);
+        } catch (Exception e) {
+            Log.error(TestUtils.class, "restartServer", e);
         }
     }
 

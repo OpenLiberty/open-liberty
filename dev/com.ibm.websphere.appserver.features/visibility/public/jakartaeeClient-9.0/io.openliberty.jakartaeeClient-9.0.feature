@@ -20,6 +20,7 @@ Subsystem-Name: Jakarta EE 9.0 Application Client
   io.openliberty.managedBeans-2.0, \
   io.openliberty.messagingClient-3.0, \
   io.openliberty.persistence-3.0, \
-  io.openliberty.xmlBinding-3.0
+  io.openliberty.xmlBinding-3.0, \
+  io.openliberty.xmlWSClient-3.0
 kind=beta
 edition=base

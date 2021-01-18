@@ -129,7 +129,8 @@ session.invalidated.total.description=N\u00famero de sesiones cerradas desde la 
 session.invalidatedbyTimeout.total.description=N\u00famero de sesiones cerradas por tiempo de espera excedido desde la habilitaci\u00f3n de esta m\u00e9trica.
 
 
-REST.request.description=N\u00famero de invocaciones y tiempo de respuesta de este m\u00e9todo de recurso RESTful desde el inicio del servidor.
+REST.request.description=N\u00famero de invocaciones y tiempo de respuesta de este m\u00e9todo de recurso RESTful desde el inicio del servidor. La m\u00e9trica no registrar\u00e1 el tiempo transcurrido ni el recuento de una solicitud REST si ha dado como resultado una excepci\u00f3n no correlacionada. Tambi\u00e9n realiza un seguimiento de la duraci\u00f3n de tiempo m\u00e1s alta registrada en el minuto completo anterior y la duraci\u00f3n de tiempo m\u00e1s baja registrada en el minuto completo anterior.
+REST.request.unmappedException.description=N\u00famero total de excepciones no correlacionadas que se producen desde este m\u00e9todo de recurso RESTful desde el inicio del servidor.
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Metrics error message
 #-----------------------------------------------------------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -74,6 +74,8 @@ public class JwtBuilderActions extends TestActions {
         } catch (Exception e) {
             Log.info(thisClass, "invokeJwtBuilder", e.getMessage());
             throw e;
+        } finally {
+            destroyWebClient(webClient);
         }
 
     }
@@ -113,7 +115,7 @@ public class JwtBuilderActions extends TestActions {
 
         return appResponse;
     }
-    
+
     public Page invokeProtectedJwtBuilder(String testName, LibertyServer server, String builderId, JSONObject attrs,
             String user, String pw) throws Exception {
 
@@ -139,6 +141,8 @@ public class JwtBuilderActions extends TestActions {
         } catch (Exception e) {
             Log.info(thisClass, "invokeJwtBuilder", e.getMessage());
             throw e;
+        } finally {
+            destroyWebClient(webClient);
         }
 
     }

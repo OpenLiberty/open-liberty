@@ -133,33 +133,6 @@ public class OracleHelper extends DatabaseHelper {
 
         matrix = new String[4]; // OracleConnection.END_TO_END_STATE_INDEX_MAX
 
-        Collections.addAll(staleErrorCodes,
-                           20,
-                           28,
-                           1012,
-                           1014,
-                           1033,
-                           1034,
-                           1035,
-                           1089,
-                           1090,
-                           1092,
-                           3113,
-                           3114,
-                           12505,
-                           12541,
-                           12560,
-                           12571,
-                           17002,
-                           17008,
-                           17009,
-                           17401,
-                           17410,
-                           17430,
-                           17447,
-                           24794,
-                           25408);
-
         int limit = 0; // unlimited
         int count = 1; // only one file to rotate through
         String _oracleLogFileName = null;
@@ -255,6 +228,38 @@ public class OracleHelper extends DatabaseHelper {
                     Tr.debug(oraTc, "Oracle trace file is not set, Oracle logging/tracing will be mergned with WAS logging based on WAS logging settings");
             }
         }
+    }
+    
+    @Override
+    void customizeStaleStates() {
+        super.customizeStaleStates();
+        
+        Collections.addAll(staleErrorCodes,
+                           20,
+                           28,
+                           1012,
+                           1014,
+                           1033,
+                           1034,
+                           1035,
+                           1089,
+                           1090,
+                           1092,
+                           3113,
+                           3114,
+                           12505,
+                           12541,
+                           12560,
+                           12571,
+                           17002,
+                           17008,
+                           17009,
+                           17401,
+                           17410,
+                           17430,
+                           17447,
+                           24794,
+                           25408);
     }
     
     @Override

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2019 IBM Corporation and others.
+# Copyright (c) 2019, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -282,5 +282,10 @@ CONFIG_AUTHFILTER_NOTUNIQUE.useraction=Examina\u0163i fi\u015fierul server.xml \
 AUTHFILTER_MULTIPLE_MATCHED=CWWKS1531W: O cerere pentru URL-ul [{0}] se potrive\u015fte cu filtrul de autentificare al mai multor clien\u0163i OpenID Connect. Filtrele care se potrivesc sunt [{1}]. Aceasta ar putea cauza un comportament nedeterminat.
 AUTHFILTER_MULTIPLE_MATCHED.explanation=O cerere de intrare se potrive\u015fte cu mai mult de un filtru de autentificare. Orice client care utilizeaz\u0103 unul dintre aceste filtre ar putea procesa cererea, ceea ce duce la un comportament nedeterminat.  
 AUTHFILTER_MULTIPLE_MATCHED.useraction=Examina\u0163i fi\u015fierul server.xml \u015fi corecta\u0163i configura\u0163ia.
+
+# do not translate hostname, wasReqURLRedirectDomainNames, and webAppSecurity
+OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE=CWWKS1532E: Nu este valid\u0103 o cerere la [{0}]. Un cookie necesar cu un nume care \u00eencepe cu WASReqURLOidc are o valoare incorect\u0103. Numele de gazd\u0103 [{1}] care este utilizat \u00een cookie nu se potrive\u015fte cu cel \u00eenregistrat la furnizor. Este returnat un cod de r\u0103spuns de 500.
+OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE.explanation=A fost primit\u0103 o cerere care include un cookie \u00een format gre\u015fit
+OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE.useraction=Verifica\u0163i furnizorul de OpenID Connect \u015fi configura\u0163iile de client. Cookie-ul cu formatul gre\u015fit poate fi cauzat de modificarea cookie-ului la agentul utilizatorului cu un nume de gazd\u0103 care difer\u0103 de numele de gazd\u0103 a redirect\u0103rii care este \u00eenregistrat cu furnizorul. Dac\u0103 numele de gazd\u0103 este cel a\u015fteptat, atunci ad\u0103uga\u0163i atributul wasReqURLRedirectDomainNames al elementului webAppSecurity \u00een server.xml.
 
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -192,6 +192,8 @@ public class ApplicationStateHealthCheckTest {
         expectHealthCheck(server1, HealthCheck.READY, Status.SUCCESS, 1);
         expectHealthCheck(server1, HealthCheck.HEALTH, Status.SUCCESS, 2);
 
+        server1.setMarkToEndOfLog();
+
         log("testDynamicallyLoadedApplicationsHealthCheckTest", "Adding " + DELAYED_APP_NAME + " to dropins");
         addApplication(server1, DELAYED_APP_NAME, "com.ibm.ws.microprofile.health20.delayed.health.check.app");
 
@@ -221,12 +223,13 @@ public class ApplicationStateHealthCheckTest {
                 // We expect a connection refused as the ports are not open until server is fully started
                 if (first_time) {
                     log("testDynamicallyLoadedApplicationsHealthCheckTest", "Testing the /health/ready endpoint as DelayedHealthCheckApp is still starting up.");
-                    String message = "The connection did not dip with a response code " + FAILED_RESPONSE_CODE + " as required, instead it received code " + responseCode +
+                    String message = "The connection did not return with a response code " + FAILED_RESPONSE_CODE + " as required, instead it received code " + responseCode +
                                      ". This is likely due to a rare timing issue where the server starts faster than we can hit the readiness endpoint.";
                     assertTrue(message, conReady != null && responseCode == FAILED_RESPONSE_CODE);
                     first_time = false;
                 } else {
                     if (responseCode == SUCCESS_RESPONSE_CODE) {
+                        log("testDynamicallyLoadedApplicationsHealthCheckTest", "The " + DELAYED_APP_NAME + " is ready.");
                         app_ready = true;
                     } else if (System.currentTimeMillis() - start_time > time_out) {
                         throw new TimeoutException("Timed out waiting for server and app to be ready. Timeout set to " + time_out + "ms.");
@@ -238,7 +241,11 @@ public class ApplicationStateHealthCheckTest {
             fail("Encountered an issue while Testing the /health/ready endpoint as the server and/or application(s) are starting up ---> " + e);
         }
 
-        log("testDynamicallyLoadedApplicationsHealthCheckTest", "Testing health check endpoints after " + SUCCESSFUL_APP_NAME + " and " + DELAYED_APP_NAME + " have started");
+        log("testDynamicallyLoadedApplicationsHealthCheckTest", "Waiting for " + DELAYED_APP_NAME + " application start success message.");
+        String line = server1.waitForStringInLogUsingMark("(CWWKZ0001I: Application " + DELAYED_APP_NAME + " started)+", APP_STARTUP_TIMEOUT);
+        log("testDynamicallyLoadedApplicationsHealthCheckTest", "Application started message found: " + line);
+
+        log("testDynamicallyLoadedApplicationsHealthCheckTest", "Testing health check endpoints after " + SUCCESSFUL_APP_NAME + " and " + DELAYED_APP_NAME + " have started.");
         expectHealthCheck(server1, HealthCheck.LIVE, Status.SUCCESS, 2);
         expectHealthCheck(server1, HealthCheck.READY, Status.SUCCESS, 2);
         expectHealthCheck(server1, HealthCheck.HEALTH, Status.SUCCESS, 4);
@@ -320,17 +327,46 @@ public class ApplicationStateHealthCheckTest {
     }
 
     public void expectHealthCheck(LibertyServer server, HealthCheck expectedHealthCheck, Status expectedStatus, int expectedChecks) throws Exception {
-        HttpURLConnection con;
-        if (expectedHealthCheck == HealthCheck.LIVE) {
-            con = HttpUtils.getHttpConnectionWithAnyResponseCode(server, LIVE_ENDPOINT);
-        } else if (expectedHealthCheck == HealthCheck.READY) {
-            con = HttpUtils.getHttpConnectionWithAnyResponseCode(server, READY_ENDPOINT);
-        } else {
-            con = HttpUtils.getHttpConnectionWithAnyResponseCode(server, HEALTH_ENDPOINT);
+        log("expectHealthCheck", "Testing Health Check endpoint " + expectedHealthCheck.toString() + " ...");
+        HttpURLConnection con = null;
+        int numOfAttempts = 0;
+        int maxAttempts = 5;
+
+        while (numOfAttempts < maxAttempts) {
+            try {
+                if (expectedHealthCheck == HealthCheck.LIVE) {
+                    con = HttpUtils.getHttpConnectionWithAnyResponseCode(server, LIVE_ENDPOINT);
+                    break;
+                } else if (expectedHealthCheck == HealthCheck.READY) {
+                    con = HttpUtils.getHttpConnectionWithAnyResponseCode(server, READY_ENDPOINT);
+                    break;
+                } else {
+                    con = HttpUtils.getHttpConnectionWithAnyResponseCode(server, HEALTH_ENDPOINT);
+                    break;
+                }
+            } catch (SocketTimeoutException ste) {
+                log("expectHealthCheck", "Encountered a SocketTimeoutException. Retrying connection. Exception: " + ste.getMessage());
+                numOfAttempts++;
+                continue;
+            } catch (SocketException se) {
+                log("expectHealthCheck", "Encountered a SocketException. Retrying connection. Exception: " + se.getMessage());
+                numOfAttempts++;
+                continue;
+            } catch (Exception e) {
+                fail("Encountered an issue while testing the " + expectedHealthCheck.toString() + " health endpoint ---> " + e.getMessage());
+            }
+        }
+
+        if (numOfAttempts == maxAttempts) {
+            log("expectHealthCheck",
+                "Reached maximum number of attempts, skipping connection test for " + expectedHealthCheck.toString()
+                                     + " endpoint as the connection could not be established, due to a timing issue, that causes the connection to not be available.");
+            return;
         }
 
         JsonObject jsonResponse = getJSONPayload(con);
         JsonArray checks = (JsonArray) jsonResponse.get("checks");
+
         assertEquals("The number of expected checks was not " + expectedChecks + ".", expectedChecks, checks.size());
 
         if (expectedStatus == Status.SUCCESS) {

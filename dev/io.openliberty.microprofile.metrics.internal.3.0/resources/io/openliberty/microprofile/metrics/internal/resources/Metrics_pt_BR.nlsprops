@@ -129,7 +129,8 @@ session.invalidated.total.description=O n\u00famero de sess\u00f5es que efetuara
 session.invalidatedbyTimeout.total.description=O n\u00famero de sess\u00f5es que efetuaram logout por tempo limite desde que essa m\u00e9trica foi ativada.
 
 
-REST.request.description=O n\u00famero de chamadas e o tempo total de resposta deste m\u00e9todo de recurso RESTful desde o in\u00edcio do servidor.
+REST.request.description=O n\u00famero de chamadas e o tempo total de resposta deste m\u00e9todo de recurso RESTful desde o in\u00edcio do servidor. A m\u00e9trica n\u00e3o registrar\u00e1 o tempo decorrido nem a contagem de uma solicita\u00e7\u00e3o REST se ela resultar em uma exce\u00e7\u00e3o n\u00e3o mapeada. Tamb\u00e9m rastreia a dura\u00e7\u00e3o de tempo mais alta registrada dentro do minuto completo anterior conclu\u00eddo e a dura\u00e7\u00e3o de tempo mais baixa registrada dentro do minuto completo anterior conclu\u00eddo.
+REST.request.unmappedException.description=O n\u00famero total de exce\u00e7\u00f5es n\u00e3o mapeadas que ocorrem a partir deste m\u00e9todo de recurso RESTful desde o in\u00edcio do servidor.
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Metrics error message
 #-----------------------------------------------------------------------------------------------------------------------------

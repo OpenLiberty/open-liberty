@@ -80,6 +80,7 @@ import org.apache.cxf.ws.addressing.EndpointReferenceUtils;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.cxf.exceptions.InvalidCharsetException;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 /**
@@ -466,7 +467,7 @@ public abstract class AbstractHTTPDestination
             String normalizedEncoding = HttpHeaderHelper.mapCharset(enc);
             if (normalizedEncoding == null) {
                 // Liberty Change Start
-                String m = "Invalid encoding: " + enc;
+                String m = "Invalid MediaType encoding: " + enc;
                 Tr.warning(tc, m);
                 throw new InvalidCharsetException(m);
                 // Liberty Change End

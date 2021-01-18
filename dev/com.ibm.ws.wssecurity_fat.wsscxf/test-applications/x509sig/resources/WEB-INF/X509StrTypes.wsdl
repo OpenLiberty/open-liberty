@@ -1,0 +1,434 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<wsdl:definitions 
+        targetNamespace="http://x509sig.wssecfvt.test"
+        xmlns="http://schemas.xmlsoap.org/wsdl/"
+        xmlns:apachesoap="http://xml.apache.org/xml-soap"
+        xmlns:intf="http://x509sig.wssecfvt.test"
+        xmlns:x1="http://x509sig.wssecfvt.test/types"
+        xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+        xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+        xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/"
+        xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd"
+        xmlns:wsp="http://www.w3.org/ns/ws-policy"
+        xmlns:sp="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702"
+        xmlns:sp13="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200802"
+        xmlns:cxf="http://cxf.apache.org/core"
+        xmlns:p="http://cxf.apache.org/policy"        
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+    <!-- 2.2.2 (WSS1.0) Mutual Authentication with X.509 Certificates, Sign, Encrypt -->
+    <wsp:Policy wsu:Id="SignBodyThumbPrint">
+      <wsp:ExactlyOne>
+         <wsp:All>
+            <sp:AsymmetricBinding>
+               <wsp:Policy>
+                  <sp:InitiatorToken>
+                     <wsp:Policy>
+                        <sp:X509Token
+                           sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/Never">
+                           <wsp:Policy>
+                              <sp:RequireThumbprintReference/>
+                              <sp:WssX509V3Token10 />
+                           </wsp:Policy>
+                        </sp:X509Token>
+                     </wsp:Policy>
+                  </sp:InitiatorToken>
+                  <sp:RecipientToken>
+                     <wsp:Policy>
+                        <sp:X509Token
+                           sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/Never">
+                           <wsp:Policy>
+                              <sp:RequireThumbprintReference/>
+                              <sp:WssX509V3Token10 />
+                           </wsp:Policy>
+                        </sp:X509Token>
+                     </wsp:Policy>
+                  </sp:RecipientToken>
+                  <sp:AlgorithmSuite>
+                     <wsp:Policy>
+                        <sp:Basic128/>
+                     </wsp:Policy>
+                  </sp:AlgorithmSuite>
+                  <sp:Layout>
+                     <wsp:Policy>
+                        <sp:Strict/>
+                     </wsp:Policy>
+                  </sp:Layout>
+                  <!-- <sp:IncludeTimestamp/> -->
+                  <sp:ProtectTokens/>
+                  <sp:OnlySignEntireHeadersAndBody/>
+               </wsp:Policy>
+            </sp:AsymmetricBinding>
+            
+            <sp:Wss11>
+               <wsp:Policy>
+                  <sp:MustSupportRefThumbprint/>
+               </wsp:Policy>
+            </sp:Wss11>
+            
+            <sp:SignedParts>
+               <sp:Body/>
+            </sp:SignedParts>
+         </wsp:All>
+      </wsp:ExactlyOne>
+   </wsp:Policy>
+   
+   <wsp:Policy wsu:Id="SignBodyIssuerSerial">
+      <wsp:ExactlyOne>
+         <wsp:All>
+            <sp:AsymmetricBinding>
+               <wsp:Policy>
+                  <sp:InitiatorSignatureToken>
+                     <wsp:Policy>
+                        <sp:X509Token
+                           sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/Never">
+                           <wsp:Policy>
+                              <sp:RequireIssuerSerialReference/>
+                              <sp:WssX509V3Token10 />
+                           </wsp:Policy>
+                        </sp:X509Token>
+                     </wsp:Policy>
+                  </sp:InitiatorSignatureToken>
+                  <sp:RecipientSignatureToken>
+                     <wsp:Policy>
+                        <sp:X509Token
+                           sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/Never">
+                           <wsp:Policy>
+                              <sp:RequireIssuerSerialReference/>
+                              <sp:WssX509V3Token10 />
+                           </wsp:Policy>
+                        </sp:X509Token>
+                     </wsp:Policy>
+                  </sp:RecipientSignatureToken>
+                  <sp:AlgorithmSuite>
+                     <wsp:Policy>
+                        <sp:Basic128/>
+                     </wsp:Policy>
+                  </sp:AlgorithmSuite>
+                  <sp:Layout>
+                     <wsp:Policy>
+                        <sp:Strict/>
+                     </wsp:Policy>
+                  </sp:Layout>
+                  <sp:OnlySignEntireHeadersAndBody/>
+               </wsp:Policy>
+            </sp:AsymmetricBinding>
+            
+            <sp:Wss10>
+               <wsp:Policy>
+                  <sp:MustSupportRefIssuerSerial/>
+               </wsp:Policy>
+            </sp:Wss10>
+            
+            <sp:SignedParts>
+               <sp:Body/>
+            </sp:SignedParts>
+                        
+         </wsp:All>
+      </wsp:ExactlyOne>   
+    </wsp:Policy>
+    
+    <wsp:Policy wsu:Id="SignBodyXForm">
+      <wsp:ExactlyOne>
+         <wsp:All>
+            <sp:AsymmetricBinding>
+               <wsp:Policy>
+                  <sp:InitiatorSignatureToken>
+                     <wsp:Policy>
+                        <sp:X509Token
+                           sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/Never">
+                           <wsp:Policy>
+                              <sp:RequireThumbprintReference/>
+                              <sp:WssX509V3Token10 />
+                           </wsp:Policy>
+                        </sp:X509Token>
+                     </wsp:Policy>
+                  </sp:InitiatorSignatureToken>
+                  <sp:RecipientSignatureToken>
+                     <wsp:Policy>
+                        <sp:X509Token
+                           sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/Never">
+                           <wsp:Policy>
+                              <sp:RequireThumbprintReference/>
+                              <sp:WssX509V3Token10 />
+                           </wsp:Policy>
+                        </sp:X509Token>
+                     </wsp:Policy>
+                  </sp:RecipientSignatureToken>
+                  <sp:AlgorithmSuite>
+                     <wsp:Policy>
+                        <sp:Basic128/>
+                        <sp:STRTransform10/>
+                     </wsp:Policy>
+                  </sp:AlgorithmSuite>
+                  <sp:Layout>
+                     <wsp:Policy>
+                        <sp:Strict/>
+                     </wsp:Policy>
+                  </sp:Layout>
+                  <!-- <sp:IncludeTimestamp/> -->
+                  <sp:ProtectTokens/>
+                  <sp:OnlySignEntireHeadersAndBody/>
+               </wsp:Policy>
+            </sp:AsymmetricBinding>
+            
+            <sp:Wss11>
+               <wsp:Policy>
+                  <sp:MustSupportRefThumbprint/>
+               </wsp:Policy>
+            </sp:Wss11>
+            
+            <sp:SignedParts>
+               <sp:Body/>
+            </sp:SignedParts>
+            
+            <sp:SignedElements>
+               <!-- <sp:XPath>/*[namespace-uri()='http://schemas.xmlsoap.org/soap/envelope/' and local-name()='Envelope']/*[namespace-uri()='http://schemas.xmlsoap.org/soap/envelope/' and local-name()='Header']/*[namespace-uri()='http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd' and local-name()='Security']/*[namespace-uri()='http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd' and local-name()='Timestamp']</sp:XPath> -->
+               <!-- <sp:XPath>/*[namespace-uri()='http://schemas.xmlsoap.org/soap/envelope/' and local-name()='Envelope']/*[namespace-uri()='http://schemas.xmlsoap.org/soap/envelope/' and local-name()='Header']/*[namespace-uri()='http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd' and local-name()='Security']/*[namespace-uri()='http://www.w3.org/2000/09/xmldsig#' and local-name()='Signature']/*[namespace-uri()='http://www.w3.org/2000/09/xmldsig#' and local-name()='KeyInfo']/*[namespace-uri()='http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd' and local-name()='SecurityTokenReference']</sp:XPath> -->
+               <!-- <sp:XPath>/*[namespace-uri()='http://schemas.xmlsoap.org/soap/envelope/' and local-name()='Envelope']/*[namespace-uri()='http://schemas.xmlsoap.org/soap/envelope/' and local-name()='Header']/*[namespace-uri()='http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd' and local-name()='Security']/*[namespace-uri()='http://www.w3.org/2000/09/xmldsig#' and local-name()='Signature']/*[namespace-uri()='http://www.w3.org/2000/09/xmldsig#' and local-name()='KeyInfo']/*[namespace-uri()='http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd' and local-name()='BinarySecurityToken']</sp:XPath> -->
+            </sp:SignedElements>
+         </wsp:All>
+      </wsp:ExactlyOne>   
+    </wsp:Policy>
+    
+    <wsp:Policy wsu:Id="SignBodyEmbedToken">
+      <wsp:ExactlyOne>
+         <wsp:All>
+            <sp:AsymmetricBinding>
+               <wsp:Policy>
+                  <sp:InitiatorSignatureToken>
+                     <wsp:Policy>
+                        <sp:X509Token
+                           sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/AlwaysToRecipient">
+                           <wsp:Policy>
+                              <sp:RequireEmbeddedTokenReference/>
+                              <sp:WssX509V3Token10 />
+                           </wsp:Policy>
+                        </sp:X509Token>
+                     </wsp:Policy>
+                  </sp:InitiatorSignatureToken>
+                  <sp:RecipientSignatureToken>
+                     <wsp:Policy>
+                        <sp:X509Token
+                           sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/AlwaysToInitiator">
+                           <wsp:Policy>
+                              <sp:RequireEmbeddedTokenReference/>
+                              <sp:WssX509V3Token10 />
+                           </wsp:Policy>
+                        </sp:X509Token>
+                     </wsp:Policy>
+                  </sp:RecipientSignatureToken>
+                  <sp:AlgorithmSuite>
+                     <wsp:Policy>
+                        <sp:Basic128/>
+                     </wsp:Policy>
+                  </sp:AlgorithmSuite>
+                  <sp:Layout>
+                     <wsp:Policy>
+                        <sp:Strict/>
+                     </wsp:Policy>
+                  </sp:Layout>
+                  <sp:IncludeTimestamp/>
+                  <sp:ProtectTokens/>
+                  <sp:OnlySignEntireHeadersAndBody/>
+               </wsp:Policy>
+            </sp:AsymmetricBinding>
+            
+            <sp:Wss10>
+               <wsp:Policy>
+                  <sp:MustSupportRefEmbeddedToken/>
+               </wsp:Policy>
+            </sp:Wss10>
+            
+            <sp:SignedParts>
+               <sp:Body/>
+            </sp:SignedParts>
+                        
+         </wsp:All>
+      </wsp:ExactlyOne>   
+    </wsp:Policy>
+    
+    <wsp:Policy wsu:Id="SignEnvelope">
+      <wsp:ExactlyOne>
+         <wsp:All>
+            <sp:AsymmetricBinding>
+               <wsp:Policy>
+                  <sp:InitiatorSignatureToken>
+                     <wsp:Policy>
+                        <sp:X509Token
+                           sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/AlwaysToRecipient">
+                           <wsp:Policy>
+                              <sp:WssX509V3Token10 />
+                           </wsp:Policy>
+                        </sp:X509Token>
+                     </wsp:Policy>
+                  </sp:InitiatorSignatureToken>
+                  <sp:RecipientSignatureToken>
+                     <wsp:Policy>
+                        <sp:X509Token
+                           sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/AlwaysToInitiator">
+                           <wsp:Policy>
+                              <sp:WssX509V3Token10 />
+                           </wsp:Policy>
+                        </sp:X509Token>
+                     </wsp:Policy>
+                  </sp:RecipientSignatureToken>
+                  <sp:AlgorithmSuite>
+                     <wsp:Policy>
+                        <sp:Basic128/>
+                     </wsp:Policy>
+                  </sp:AlgorithmSuite>
+                  <sp:Layout>
+                     <wsp:Policy>
+                        <sp:Strict/>
+                     </wsp:Policy>
+                  </sp:Layout>
+                  <sp:OnlySignEntireHeadersAndBody/>
+               </wsp:Policy>
+            </sp:AsymmetricBinding>
+                  
+            <sp:SignedElements>
+               <sp:XPath>/*[namespace-uri()='http://schemas.xmlsoap.org/soap/envelope/' and local-name()='Envelope']</sp:XPath>
+            </sp:SignedElements>
+                                                                    
+         </wsp:All>
+      </wsp:ExactlyOne>   
+    </wsp:Policy>
+  
+    <wsdl:types>
+        <xsd:schema targetNamespace="http://x509sig.wssecfvt.test/types">
+                <xsd:element name="requestString">
+                        <xsd:complexType>
+                                <xsd:sequence>
+                                        <xsd:element name="stringreq" type="xsd:string" />
+                                </xsd:sequence>
+                        </xsd:complexType>
+                </xsd:element>
+                <xsd:element name="responseString">
+                        <xsd:complexType>
+                                <xsd:sequence>
+                                        <xsd:element name="stringres" type="xsd:string" />
+                                </xsd:sequence>
+                        </xsd:complexType>
+                </xsd:element>
+        </xsd:schema>
+    </wsdl:types>
+
+   <wsdl:message name="getVersionRequest">
+      <wsdl:part element="x1:requestString" name="getVersion"/>
+   </wsdl:message>
+   <wsdl:message name="getVersionResponse">
+      <wsdl:part element="x1:responseString" name="getVersionReturn" />
+   </wsdl:message>
+
+   <wsdl:portType name="X509XmlStr">
+      <wsdl:operation name="invoke">
+         <wsdl:input message="intf:getVersionRequest" name="getVersionRequest"/>
+         <wsdl:output message="intf:getVersionResponse" name="getVersionResponse"/>
+      </wsdl:operation>
+   </wsdl:portType>
+
+   <wsdl:binding name="UrnXmlStr1SoapBinding" type="intf:X509XmlStr">
+      <wsp:PolicyReference URI="#SignBodyThumbPrint" />
+      <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+      <wsdl:operation name="invoke">
+         <wsdlsoap:operation soapAction=""/>
+         <wsdl:input name="getVersionRequest">
+            <wsdlsoap:body use="literal"/>
+         </wsdl:input>
+         <wsdl:output name="getVersionResponse">
+            <wsdlsoap:body use="literal"/>
+         </wsdl:output>
+      </wsdl:operation>
+   </wsdl:binding>
+   
+   <wsdl:binding name="UrnXmlStr2SoapBinding" type="intf:X509XmlStr">
+      <wsp:PolicyReference URI="#SignBodyIssuerSerial" />
+      <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+      <wsdl:operation name="invoke">
+         <wsdlsoap:operation soapAction=""/>
+         <wsdl:input name="getVersionRequest">
+            <wsdlsoap:body use="literal"/>
+         </wsdl:input>
+         <wsdl:output name="getVersionResponse">
+            <wsdlsoap:body use="literal"/>
+         </wsdl:output>
+      </wsdl:operation>
+   </wsdl:binding>
+   
+   <wsdl:binding name="UrnXmlStr3SoapBinding" type="intf:X509XmlStr">
+      <wsp:PolicyReference URI="#SignBodyXForm" />
+      <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+      <wsdl:operation name="invoke">
+         <wsdlsoap:operation soapAction=""/>
+         <wsdl:input name="getVersionRequest">
+            <wsdlsoap:body use="literal"/>
+         </wsdl:input>
+         <wsdl:output name="getVersionResponse">
+            <wsdlsoap:body use="literal"/>
+         </wsdl:output>
+      </wsdl:operation>
+   </wsdl:binding>
+   
+   <wsdl:binding name="UrnXmlStr4SoapBinding" type="intf:X509XmlStr">
+      <wsp:PolicyReference URI="#SignBodyEmbedToken" />
+      <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+      <wsdl:operation name="invoke">
+         <wsdlsoap:operation soapAction=""/>
+         <wsdl:input name="getVersionRequest">
+            <wsdlsoap:body use="literal"/>
+         </wsdl:input>
+         <wsdl:output name="getVersionResponse">
+            <wsdlsoap:body use="literal"/>
+         </wsdl:output>
+      </wsdl:operation>
+   </wsdl:binding>
+   
+   <wsdl:binding name="UrnXmlStr5SoapBinding" type="intf:X509XmlStr">
+      <wsp:PolicyReference URI="#SignEnvelope" />
+      <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+      <wsdl:operation name="invoke">
+         <wsdlsoap:operation soapAction=""/>
+         <wsdl:input name="getVersionRequest">
+            <wsdlsoap:body use="literal"/>
+         </wsdl:input>
+         <wsdl:output name="getVersionResponse">
+            <wsdlsoap:body use="literal"/>
+         </wsdl:output>
+      </wsdl:operation>
+   </wsdl:binding>
+   
+   <wsdl:service name="X509XmlStrService1">
+      <wsdl:port name="UrnX509Str1" binding="intf:UrnXmlStr1SoapBinding">
+         <wsdlsoap:address location="http://localhost:8010/x509sig/X509XmlStrService1"/>
+      </wsdl:port>
+   </wsdl:service>
+   
+   <wsdl:service name="X509XmlStrService2">
+      <wsdl:port name="UrnX509Str2" binding="intf:UrnXmlStr2SoapBinding">
+         <wsdlsoap:address location="http://localhost:8010/x509sig/X509XmlStrService2"/>
+      </wsdl:port>
+   </wsdl:service>
+   
+   <wsdl:service name="X509XmlStrService3">
+      <wsdl:port name="UrnX509Str3" binding="intf:UrnXmlStr3SoapBinding">
+         <wsdlsoap:address location="http://localhost:8010/x509sig/X509XmlStrService3"/>
+      </wsdl:port>
+   </wsdl:service>
+   
+   <wsdl:service name="X509XmlStrService4">
+      <wsdl:port name="UrnX509Str4" binding="intf:UrnXmlStr4SoapBinding">
+         <wsdlsoap:address location="http://localhost:8010/x509sig/X509XmlStrService4"/>
+      </wsdl:port>
+   </wsdl:service>
+   
+   <wsdl:service name="X509XmlStrService5">
+      <wsdl:port name="UrnX509Str4" binding="intf:UrnXmlStr5SoapBinding">
+         <wsdlsoap:address location="http://localhost:8010/x509sig/X509XmlStrService5"/>
+      </wsdl:port>
+   </wsdl:service>
+      
+ </wsdl:definitions>
+
+

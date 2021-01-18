@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011 IBM Corporation and others.
+# Copyright (c) 2011,2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -73,3 +73,7 @@ INVALID_MBEAN_INVOKE_ACTION_J2CA8061.useraction=Altere a a\u00e7\u00e3o que est\
 MBEAN_ATTRIBUTE_NOT_FOUND_J2CA8062=J2CA8062E: O {0} atributo n\u00e3o \u00e9 v\u00e1lido para o MBean {1}.
 MBEAN_ATTRIBUTE_NOT_FOUND_J2CA8062.explanation=Foi feita uma tentativa de obter um atributo que n\u00e3o estava dispon\u00edvel para o MBean especificado.
 MBEAN_ATTRIBUTE_NOT_FOUND_J2CA8062.useraction=Altere o atributo especificado para um dos atributos dispon\u00edveis para esse MBean.
+
+CONNECTION_LEAK_DETECTED_J2CA8070=J2CA8070I: uma conex\u00e3o obtida a partir do {0} n\u00e3o foi encerrada. A pilha a seguir identifica o c\u00f3digo que obteve a conex\u00e3o: {1}
+CONNECTION_LEAK_DETECTED_J2CA8070.explanation=Uma conex\u00e3o n\u00e3o foi encerrada pelo c\u00f3digo que a obteve. A pilha identifica uma \u00e1rea do c\u00f3digo em que ocorre uma conex\u00e3o n\u00e3o encerrada, mas outras inst\u00e2ncias podem existir em outro lugar. Para evitar a desorganiza\u00e7\u00e3o dos logs e minimizar o impacto da coleta de pilhas, apenas uma ocorr\u00eancia \u00e9 relatada por inicializa\u00e7\u00e3o do servidor.
+CONNECTION_LEAK_DETECTED_J2CA8070.useraction=Usando a pilha como guia, localize o c\u00f3digo que solicita a conex\u00e3o e atualize-o para encerrar a conex\u00e3o.

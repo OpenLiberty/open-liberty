@@ -11,10 +11,6 @@
 
 package com.ibm.tx.jta.util;
 
-import java.security.AccessController;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
-
 import javax.transaction.NotSupportedException;
 import javax.transaction.SystemException;
 import javax.transaction.TransactionManager;
@@ -35,10 +31,10 @@ import com.ibm.tx.jta.impl.TxRecoveryAgentImpl;
 import com.ibm.tx.jta.impl.UserTransactionImpl;
 import com.ibm.tx.util.TMHelper;
 import com.ibm.tx.util.TMService;
-import com.ibm.tx.util.logging.FFDCFilter;
-import com.ibm.tx.util.logging.Tr;
-import com.ibm.tx.util.logging.TraceComponent;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.Transaction.UOWCurrent;
+import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.recoverylog.spi.RecLogServiceImpl;
 import com.ibm.ws.recoverylog.spi.RecoveryDirector;
 import com.ibm.ws.recoverylog.spi.RecoveryDirectorFactory;
@@ -212,6 +208,7 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "setRecoveryLogService", ref);
 
+        _recLogService = ref.getBundle().getBundleContext().getService(ref);
         _recoveryLogServiceReady = true;
 
         if (ableToStartRecoveryNow()) {
@@ -229,16 +226,6 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
     public void unsetRecoveryLogService(ServiceReference<RecLogServiceImpl> ref) {
         if (tc.isDebugEnabled())
             Tr.debug(tc, "unsetRecoveryLogService", ref);
-    }
-
-    @Override
-    public Object runAsSystem(PrivilegedExceptionAction a) throws PrivilegedActionException {
-        return AccessController.doPrivileged(a);
-    }
-
-    @Override
-    public Object runAsSystemOrSpecified(PrivilegedExceptionAction a) throws PrivilegedActionException {
-        return runAsSystem(a);
     }
 
     @Override
@@ -322,9 +309,6 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
             synchronized (this) {
                 TMHelper.setTMService(this);
 
-                // Initalize trace
-                Tr.reinitializeTracer();
-
                 // Test whether we are logging to an RDBMS
                 final ConfigurationProvider cp = ConfigurationProviderManager.getConfigurationProvider();
                 if (cp != null && cp.isSQLRecoveryLog()) {
@@ -340,7 +324,13 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
                 }
 
                 setResyncException(null);
-                _recLogService = new RecLogServiceImpl();
+
+                if (_recLogService != null) {
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "We already have a recovery log service: " + _recLogService);
+                } else {
+                    _recLogService = new RecLogServiceImpl();
+                }
 
                 // Create the Recovery Director
                 _recoveryDirector = RecoveryDirectorFactory.createRecoveryDirector();
@@ -408,8 +398,6 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
 
                 if (_recoveryGroup != null && !_recoveryGroup.isEmpty()) {
                     txAgent.setRecoveryGroup(_recoveryGroup);
-
-                    _recLogService.setRecoveryGroup(_recoveryGroup);
                 }
 
                 setRecoveryAgent(txAgent);

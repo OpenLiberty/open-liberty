@@ -333,11 +333,12 @@ BETA_SIGNATURE_ALGORITHM_USED.useraction=Configura\u0163i un algoritm de semn\u0
 # 0=JWT configuration ID, 1=Exception message
 ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE=CWWKS6056E: Consumatorul JWT [{0}] a \u00eent\u00e2lnit o eroare \u00een timpul extragerii datelor utile JWS (JSON Web Signature) din jetonul JWE (JSON Web Encryption). {1}
 ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE.explanation=Jetonul JWE s-ar putea s\u0103 fie format gre\u015fit sau ar putea s\u0103 \u00eei lipseasc\u0103 informa\u0163ii. Cheia de gestionare chei care este folosit\u0103 pentru a decripta jetonul JWE ar putea s\u0103 lipseasc\u0103 sau ar putea s\u0103 nu fie capabil\u0103 s\u0103 decripteze jetonul.
-ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE.useraction=Vede\u0163i eroarea din mesaj pentru informa\u0163ii suplimentare. Verifica\u0163i c\u0103 JWE are un format corect. Verifica\u0163i dac\u0103 \u00een onfigura\u0163ia de consumator JWT se face referire la cheia de gestionare chei care corespunde cheii care este folosit\u0103 pentru a cripta jetonul JWE.
+ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE.useraction=Vede\u0163i eroarea din mesaj pentru informa\u0163ii suplimentare. Verifica\u0163i c\u0103 JWE are un format corect. Verifica\u0163i dac\u0103 \u00een configura\u0163ia de consumator JWT se face referire la cheia de gestionare chei care corespunde cheii care este folosit\u0103 pentru a cripta jetonul JWE.
 
-#
-# CWWKS6057E is available
-#
+# 0="cty", 1=Value of the "cty" header in the token, 2="JWT"
+CTY_NOT_JWT_FOR_NESTED_JWS=CWWKS6057E: jetonul JWE (JSON Web Encryption) con\u0163ine un jeton imbricat JWS (JSON Web Signature), dar antetul {0} din JWE este setat la [{1}]. Antetul JWE {0} trebuie setat la {2} dac\u0103 datele utile (payload) JWE reprezint\u0103 un JWS.
+CTY_NOT_JWT_FOR_NESTED_JWS.explanation=Specifica\u0163ia MicroProfile JSON Web Token 1.2 cere ca jetoanele JWE s\u0103 aib\u0103 antetul tipului de con\u0163inut setat la valoarea care este specificat\u0103 \u00een mesaj dac\u0103 con\u0163inutul jetonului este un JWS.
+CTY_NOT_JWT_FOR_NESTED_JWS.useraction=Asigura\u0163i-v\u0103 c\u0103 antetul tipului de con\u0163inut al jetonului JWE este setat la valoarea cerut\u0103.
 
 # Do not translate "JSON Web Encryption", "JWE", "Content Encryption Key"
 # 0=Builder config ID
@@ -360,3 +361,24 @@ ERROR_BUILDING_SIGNED_JWE.useraction=Verifica\u0163i eroarea care este inclus\u0
 KEY_MANAGEMENT_KEY_NOT_FOUND=CWWKS6061E: Builder-ul JWT [{0}] nu poate crea un jeton JWE (JSON Web Encryption) deoarece nu poate fi g\u0103sit\u0103 o cheie de gestionare chei. Aliasul cheii de gestionare chei este [{1}], iar depozitul de \u00eencrederi configurat este [{2}].
 KEY_MANAGEMENT_KEY_NOT_FOUND.explanation=O cheie de gestionare chei este o cheie care este utilizat\u0103 pentru a cripta cheia de criptare con\u0163inut a unui jeton JWE. O cheie de gestionare chei trebuie specificat\u0103 astfel \u00eenc\u00e2t builder-ul JWT s\u0103 poat\u0103 crea jetoane JWE. O cheie de gestionare chei poate fi specificat\u0103 utiliz\u00e2nd valorile de alias de cheie \u015fi de depozit de \u00eencrederi configurate care sunt specificate \u00een mesaj sau prin utilizarea API-ului JwtBuilder.
 KEY_MANAGEMENT_KEY_NOT_FOUND.useraction=Verifica\u0163i c\u0103 o cheie cu aliasul care este specificat \u00een mesaj exist\u0103 \u00een depozitul de \u00eencrederi care este specificat \u00een mesaj. Dac\u0103 este utilizat API-ul JwtBuilder, asigura\u0163i-v\u0103 c\u0103 este furnizat\u0103 o cheie de gestionare chei.
+
+# Do not translate "MicroProfile Config", "mp.jwt.verify.publickey.location"
+# 0=mp.jwt.decrypt.key.location
+DECRYPT_KEY_LOCATION_INLINE_KEY=CWWKS6062E: Valoarea propriet\u0103\u0163ii MicroProfile Config [{0}] pare s\u0103  includ\u0103 un \u015fir de cheie privat\u0103, ceea ce nu reprezint\u0103 o configura\u0163ie suportat\u0103.
+DECRYPT_KEY_LOCATION_INLINE_KEY.explanation=Caracteristica MicroProfile JWT nu suport\u0103 specificarea de \u015firuri de cheie privat\u0103 \u00een proprietatea MicroProfile Config care este specificat\u0103 \u00een mesaj. Valoarea acestei propriet\u0103\u0163i trebuie s\u0103 fie o cale relativ\u0103 sau un URL.
+DECRYPT_KEY_LOCATION_INLINE_KEY.useraction=Utiliza\u0163i o cale relativ\u0103 sau un URL ca valoare pentru proprietatea MicroProfile Config specificat\u0103 \u00een mesaj. Valorile de loca\u0163ie care sunt suportate sunt acelea\u015fi ca pentru proprietatea mp.jwt.verify.publickey.location.
+
+# Do not translate "mp.jwt.decrypt.key.location", "keyManagementKeyAlias", "Content Encryption Key"
+# 0=JWT consumer config ID
+JWS_REQUIRED_BUT_TOKEN_NOT_JWS=CWWKS6063E: Jetonul din cerere nu este \u00een formatul JWS (JSON Web Signature), iar consumatorul JWT [{0}] accept\u0103 doar jetoane care sunt \u00een formatul JWS.
+JWS_REQUIRED_BUT_TOKEN_NOT_JWS.explanation=Jetonul din cerere poate fi \u00eentr-un format gre\u015fit sau poate fi \u00een formatul JWE (JSON Web Encryption). Jetoanele trebuie s\u0103 fie \u00een formatul JWS dac\u0103 nu este configurat\u0103 loca\u0163ia cheii de decriptare JWE. Dac\u0103 utiliza\u0163i caracteristica MicroProfile JWT, versiunea 1.2 sau ulterioar\u0103 a caracteristicii trebuie configurat\u0103 s\u0103 accepte jetoane \u00een formatul JWE.
+JWS_REQUIRED_BUT_TOKEN_NOT_JWS.useraction=Pentru a accepta jetoane JWE, configura\u0163i proprietatea MicroProfile Config mp.jwt.decrypt.key.location sau atributul keyManagementKeyAlias \u00een configura\u0163ia consumatorului de JWT. Dac\u0103 utiliza\u0163i caracteristica MicroProfile JWT, asigura\u0163i-v\u0103 c\u0103 este configurat\u0103 versiunea 1.2 sau ulterioar\u0103. Altfel. asigura\u0163i-v\u0103 c\u0103 sunt trimise c\u0103tre resurs\u0103 numai jetoane JWS.
+
+# 0=JWT consumer config ID
+JWE_REQUIRED_BUT_TOKEN_NOT_JWE=CWWKS6064E: Jetonul din cerere nu este \u00een formatul JWE (JSON Web Encryption), iar consumatorul JWT [{0}] accept\u0103 doar jetoane care sunt \u00een formatul JWE.
+JWE_REQUIRED_BUT_TOKEN_NOT_JWE.explanation=Jetonul din cerere poate fi \u00eentr-un format gre\u015fit sau poate fi \u00een formatul JWS (JSON Web Signature). Jetoanele trebuie s\u0103 fie \u00een formatul JWE dac\u0103 este configurat\u0103 loca\u0163ia cheii de decriptare JWE.
+JWE_REQUIRED_BUT_TOKEN_NOT_JWE.useraction=Pentru a accepta JWS \u00een locu de jetoane JWE, \u00eenl\u0103tura\u0163i proprietatea MicroProfile Config mp.jwt.decrypt.key.location \u015fi atributul keyManagementKeyAlias din configura\u0163ia consumatorului de JWT. Altfel. asigura\u0163i-v\u0103 c\u0103 sunt trimise c\u0103tre resurs\u0103 numai jetoane JWE.
+
+NESTED_JWS_REQUIRED_BUT_NOT_FOUND=CWWKS6065E: Datele utile (payload) ale jetonului JWE (JSON Web Encryption) care este inclus \u00een cerere nu este un jeton JWS (JSON Web Signature).
+NESTED_JWS_REQUIRED_BUT_NOT_FOUND.explanation=Datele utile ale unui jeton JWE trebuie s\u0103 fie un JWT (JSON Web Token) \u00een formatul JWS.
+NESTED_JWS_REQUIRED_BUT_NOT_FOUND.useraction=Asigura\u0163i-v\u0103 c\u0103 datele utile ale jetonului JWE reprezint\u0103 un JWT valid \u00een formatul JWS.

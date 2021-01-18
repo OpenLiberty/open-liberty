@@ -10,14 +10,14 @@
  *******************************************************************************/
 package com.ibm.ws.security.mp.jwt11.fat.actions;
 
-import com.ibm.ws.security.jwt.fat.mpjwt.MpJwtFatConstants;
+import com.ibm.ws.security.fat.common.mp.jwt.MPJwt11FatConstants;
 import com.ibm.ws.security.mp.jwt11.fat.FATSuite;
 
 import componenttest.rules.repeater.RepeatTestAction;
 
 public class AuthHeaderPrefixTypes implements RepeatTestAction {
 
-    String tokenType = MpJwtFatConstants.TOKEN_TYPE_BEARER;
+    String tokenType = MPJwt11FatConstants.TOKEN_TYPE_BEARER;
 //    protected String currentID = null;
 
     AuthHeaderPrefixTypes(String inTokenType) {

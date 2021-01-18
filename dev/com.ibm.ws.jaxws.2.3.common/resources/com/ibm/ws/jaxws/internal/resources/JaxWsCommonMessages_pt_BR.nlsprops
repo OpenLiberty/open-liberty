@@ -195,7 +195,7 @@ error.no.wsdl.find.useraction=Especifique um arquivo WSDL existente para o servi
 #{0}=the specified binding type
 #{1}=the port component name
 #{2}=the WSDL document
-error.endpointinfo.validation.bindingtype.and.wsdl.mismatch=CWWKW0058E: O tipo de liga\u00e7\u00e3o especificado {0} n\u00e3o corresponde ao do documento WSDL {1}.
+error.endpointinfo.validation.bindingtype.and.wsdl.mismatch=CWWKW0058E: O tipo de liga\u00e7\u00e3o especificado {0} para o componente de porta {1} n\u00e3o corresponde \u00e0 defini\u00e7\u00e3o no documento WSDL {2}.
 error.endpointinfo.validation.bindingtype.and.wsdl.mismatch.explanation=Se o tipo de liga\u00e7\u00e3o for especificado usando-se a anota\u00e7\u00e3o BindingType ou a partir do descritor de implementa\u00e7\u00e3o, seu valor dever\u00e1 corresponder ao do documento WSDL.
 error.endpointinfo.validation.bindingtype.and.wsdl.mismatch.useraction=Atualize o valor do tipo de liga\u00e7\u00e3o para que corresponda ao do documento WSDL.
 

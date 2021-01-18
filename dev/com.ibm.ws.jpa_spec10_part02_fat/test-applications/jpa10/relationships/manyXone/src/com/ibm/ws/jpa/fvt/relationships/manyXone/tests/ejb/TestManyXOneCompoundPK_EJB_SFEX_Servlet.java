@@ -37,9 +37,6 @@ public class TestManyXOneCompoundPK_EJB_SFEX_Servlet extends EJBTestVehicleServl
     private void initFAT() {
         jpaPctxMap.put("test-jpa-resource-cmex",
                        new JPAPersistenceContext("test-jpa-resource-cmex", PersistenceContextType.CONTAINER_MANAGED_ES, PersistenceInjectionType.JNDI, "java:comp/env/jpa/ManyXOne_CompoundPK_CMEX"));
-        jpaPctxMap.put("cleanup",
-                       new JPAPersistenceContext("cleanup", PersistenceContextType.APPLICATION_MANAGED_RL, PersistenceInjectionType.JNDI, "java:comp/env/jpa/ManyXOne_CompoundPK_AMRL"));
-
     }
 
     /*
@@ -71,7 +68,6 @@ public class TestManyXOneCompoundPK_EJB_SFEX_Servlet extends EJBTestVehicleServl
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmex"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("EntityAName", "EmbedIDMOEntityA");
@@ -90,7 +86,6 @@ public class TestManyXOneCompoundPK_EJB_SFEX_Servlet extends EJBTestVehicleServl
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmex"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("EntityAName", "XMLEmbedIDMOEntityA");
@@ -109,7 +104,6 @@ public class TestManyXOneCompoundPK_EJB_SFEX_Servlet extends EJBTestVehicleServl
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmex"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("EntityAName", "IDClassMOEntityA");
@@ -128,7 +122,6 @@ public class TestManyXOneCompoundPK_EJB_SFEX_Servlet extends EJBTestVehicleServl
 
         final HashMap<String, JPAPersistenceContext> jpaPCInfoMap = testExecCtx.getJpaPCInfoMap();
         jpaPCInfoMap.put("test-jpa-resource", jpaPctxMap.get("test-jpa-resource-cmex"));
-        jpaPCInfoMap.put("cleanup", jpaPctxMap.get("cleanup"));
 
         HashMap<String, java.io.Serializable> properties = testExecCtx.getProperties();
         properties.put("EntityAName", "XMLIDClassMOEntityA");

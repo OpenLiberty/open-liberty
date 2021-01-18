@@ -12,6 +12,7 @@ package com.ibm.ws.rsadapter;
 
 import java.sql.SQLException; 
 import java.sql.SQLNonTransientException;
+import java.util.ArrayList;
 import java.util.Arrays; 
 import java.util.Collections;
 import java.util.List; 
@@ -20,9 +21,12 @@ import java.util.NavigableMap;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
+import javax.resource.spi.IllegalStateException;
+
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.ffdc.FFDCSelfIntrospectable; 
+import com.ibm.ws.ffdc.FFDCSelfIntrospectable;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.jca.cm.ConnectorService;
 import com.ibm.ws.jdbc.internal.DataSourceDef;
 import com.ibm.ws.jdbc.internal.PropertyService;
@@ -35,6 +39,51 @@ import com.ibm.wsspi.resource.ResourceFactory;
  */
 public class DSConfig implements FFDCSelfIntrospectable {
     private static final TraceComponent tc = Tr.register(DSConfig.class, AdapterUtil.TRACE_GROUP, AdapterUtil.NLS_FILE);
+    
+    public static class IdentifyException {
+        
+        public static enum Target {
+            None,
+            StaleConnection
+        }
+        
+        public Integer errorCode;
+        public String sqlState;
+        public Target as;
+        
+        @FFDCIgnore(IllegalArgumentException.class)
+        public void setProperty(String name, Object value) {
+            if ("errorCode".equals(name)) {
+                errorCode = (Integer) value;
+            } else if ("sqlState".equals(name)) {
+                sqlState = (String) value;
+            } else if ("as".equals(name)) {
+                try {
+                    as = Target.valueOf((String) value);
+                } catch (IllegalArgumentException e) {
+                    Tr.error(tc, "8066E_IDENTIFY_EXCEPTION_INVALID_TARGET", value, Arrays.toString(Target.values()));
+                    throw e;
+                }
+            }
+        }
+        
+        public void validate() {
+            if (errorCode == null && sqlState == null) {
+                Tr.error(tc, "8067E_IDENTIFY_EXCEPTION_ERRCODE_SQLSTATE");
+                throw new IllegalArgumentException(AdapterUtil.getNLSMessage("8067E_IDENTIFY_EXCEPTION_ERRCODE_SQLSTATE"));
+            }
+            // do not need to validate the 'as' attribute because it is marked required in metatype so it will be enforced in config layer
+        }
+        
+        @Override
+        public String toString() {
+            return new StringBuilder(super.toString())
+                            .append("{ errorCode=").append(errorCode)
+                            .append(", sqlState=").append(sqlState)
+                            .append(", as=" + as).append(" }")
+                            .toString();
+        }
+    }
 
     // WebSphere data source property names and values
     public static final String
@@ -48,6 +97,7 @@ public class DSConfig implements FFDCSelfIntrospectable {
                     ENABLE_CONNECTION_CASTING = "enableConnectionCasting",
                     ENABLE_MULTITHREADED_ACCESS_DETECTION = "enableMultithreadedAccessDetection", // currently disabled in liberty profile
                     JDBC_DRIVER_REF = "jdbcDriverRef",
+                    IDENTIFY_EXCEPTION = "identifyException",
                     ON_CONNECT = "onConnect",
                     QUERY_TIMEOUT = "queryTimeout",
                     RECOVERY_AUTH_DATA_REF = "recoveryAuthDataRef",
@@ -72,6 +122,7 @@ public class DSConfig implements FFDCSelfIntrospectable {
                                                                ENABLE_BEGIN_END_REQUEST, // Not a supported property. Only for internal testing/experimentation.
                                                                ENABLE_CONNECTION_CASTING,
                                                                JDBC_DRIVER_REF,
+                                                               IDENTIFY_EXCEPTION,
                                                                ON_CONNECT,
                                                                QUERY_TIMEOUT,
                                                                RECOVERY_AUTH_DATA_REF,
@@ -194,6 +245,11 @@ public class DSConfig implements FFDCSelfIntrospectable {
      * JNDI name.
      */
     public final String jndiName;
+    
+    /**
+     * List of identified exceptinos to check if certain errorCode or sqlState values that should map to specific actions.
+     */
+    public final List<IdentifyException> identifyExceptions;
 
     /**
      * List of SQL commands to execute once per newly established connection. Can be null if none are configured.
@@ -260,21 +316,23 @@ public class DSConfig implements FFDCSelfIntrospectable {
      * @param connectorSvc connector service instance
      * @throws Exception if an error occurs
      */
+    @SuppressWarnings("unchecked")
     public DSConfig(String id, String jndi,
                     NavigableMap<String, Object> wProps, Properties vProps,
                     ConnectorService connectorSvc) throws Exception {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
             Tr.entry(tc, getClass().getSimpleName(), new Object[] { jndi, wProps });
-
+        
         this.connectorSvc = connectorSvc;
         this.id = id;
         jndiName = jndi;
         vendorProps = vProps;
-
+        
         entries = wProps;
         entry = entries.pollFirstEntry();
-
+        
+        // All attributes must be removed in alphabetical order, otherwise they will not be found
         beginTranForResultSetScrollingAPIs = remove(BEGIN_TRAN_FOR_SCROLLING_APIS, true);
         beginTranForVendorAPIs = remove(BEGIN_TRAN_FOR_VENDOR_APIS, true);
         CommitOrRollbackOnCleanup commitOrRollback = remove(COMMIT_OR_ROLLBACK_ON_CLEANUP, null, CommitOrRollbackOnCleanup.class);
@@ -282,6 +340,7 @@ public class DSConfig implements FFDCSelfIntrospectable {
         enableBeginEndRequest = remove(ENABLE_BEGIN_END_REQUEST, false); // Not a supported property. Only for internal testing/experimentation.
         enableConnectionCasting = remove(ENABLE_CONNECTION_CASTING, false);
         enableMultithreadedAccessDetection = false;
+        identifyExceptions = new ArrayList<>(remove(IDENTIFY_EXCEPTION, Collections.emptyMap()).values());
         isolationLevel = remove(DataSourceDef.isolationLevel.name(), -1, -1, null, -1, 0, 1, 2, 4, 8, 16, 4096);
         onConnect = remove(ON_CONNECT, (String[]) null);
         queryTimeout = remove(QUERY_TIMEOUT, (Integer) null, 0, TimeUnit.SECONDS);
@@ -294,6 +353,9 @@ public class DSConfig implements FFDCSelfIntrospectable {
         commitOrRollbackOnCleanup = commitOrRollback == null
                         ? (transactional ? null : CommitOrRollbackOnCleanup.rollback)
                                         : commitOrRollback;
+                        
+        for (IdentifyException errorMapping : identifyExceptions)
+            errorMapping.validate();
 
         if (trace && tc.isDebugEnabled() && entry != null)
             Tr.debug(this, tc, "unknown attributes: " + entries);
@@ -466,6 +528,33 @@ public class DSConfig implements FFDCSelfIntrospectable {
         for (int diff; value == null && entry != null && (diff = entry.getKey().compareTo(name)) <= 0; entry = entries.pollFirstEntry()) {
             if (diff == 0) // matched
                 value = entry.getValue() instanceof String[] ? (String[]) entry.getValue() : new String[] { (String) entry.getValue() };
+            else {
+                // TODO: when we have a stricter variant of onError, apply it to unrecognized attributes
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "unrecognized attribute: " + entry.getKey());
+                //SQLException ex = AdapterUtil.ignoreWarnOrFail(tc, null, SQLException.class, "PROP_NOT_FOUND", jndiName == null ? id : jndiName, entry.getKey());
+                //if (ex != null)
+                //    throw ex;
+            }
+        }
+
+        return value == null ? defaultValue : value;
+    }
+    
+    /**
+     * Remove properties up to and including the specified property. Return the property if found.
+     * 
+     * @param name name of the property.
+     * @param defaultValue default value to use if not found.
+     * @return value of the property if found. Otherwise the default value.
+     */
+    @SuppressWarnings("rawtypes")
+    private Map remove(String name, Map defaultValue) throws SQLException {
+        Map value = null;
+
+        for (int diff; value == null && entry != null && (diff = entry.getKey().compareTo(name)) <= 0; entry = entries.pollFirstEntry()) {
+            if (diff == 0) // matched
+                value = (Map) entry.getValue();
             else {
                 // TODO: when we have a stricter variant of onError, apply it to unrecognized attributes
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())

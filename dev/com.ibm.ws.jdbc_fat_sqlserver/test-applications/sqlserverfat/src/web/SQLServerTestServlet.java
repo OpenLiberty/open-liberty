@@ -66,6 +66,9 @@ public class SQLServerTestServlet extends FATServlet {
     @Resource(lookup = "jdbc/ss-using-driver-type")
     private DataSource ss_using_driver_type;
 
+    @Resource(lookup = "jdbc/sqlserver-ssl")
+    DataSource secureDs;
+
     @Resource
     private ExecutorService executor;
 
@@ -342,6 +345,13 @@ public class SQLServerTestServlet extends FATServlet {
             assertEquals("tres", result.getNString(1));
         } finally {
             con.close();
+        }
+    }
+
+    @Test
+    public void testDatasourceWithSSL() throws Exception {
+        try (Connection con = secureDs.getConnection()) {
+            System.out.println("Got connection with SSL");
         }
     }
 

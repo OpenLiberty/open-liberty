@@ -1,6 +1,6 @@
 <server>
 
-	<include location="${shared.config.dir}/mp11ConfigFeatures.xml" />
+	<include location="${shared.config.dir}/mpConfigFeatures_mpJwt11.xml" />
 
 	<include location="${shared.config.dir}/goodBasicRegistry.xml" />
 

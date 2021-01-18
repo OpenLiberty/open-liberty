@@ -717,6 +717,12 @@ public class PermissionManager implements PermissionsCombiner {
     
     private void RecursiveArchiveFind(File dir, String individualArchive, String codeBase, ArrayList<Permission> permissions) {
         File [] files = dir.listFiles();
+        if (files == null) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Directory, " + dir + " does not exist or threw an IO exception while listing it's files - skipping");
+            }
+            return;
+        }
 
         // for every file in the current directory, see if it matches any of the individual archive files
         for (File file : files) {

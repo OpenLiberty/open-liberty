@@ -17,13 +17,6 @@
     <version>2.0</version>
     <name>MicroProfile RestClient 2.0 TCK Runner TCK Module</name>
 
-	<repositories>
-		<repository>
-			<id>ossrepo</id>
-			<url>https://oss.sonatype.org/content/repositories/orgeclipsemicroprofile-1385/</url>
-		</repository>
-	</repositories>
-
     <properties>
         <microprofile.rest.client.version>2.0</microprofile.rest.client.version>
         <arquillian.version>1.1.13.Final</arquillian.version>
@@ -83,6 +76,14 @@
             <version>${microprofile.rest.client.version}</version>
             <scope>system</scope>
             <systemPath>${io.openliberty.org.eclipse.microprofile.rest.client.2.0_}</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>com.ibm.ws.org.reactivestreams</groupId>
+            <artifactId>reactive-streams</artifactId>
+            <version>${reactive.streams.version}</version>
+            <scope>system</scope>
+            <systemPath>${com.ibm.ws.org.reactivestreams.reactive-streams.1.0_}</systemPath>
         </dependency>
 
         <dependency>
@@ -337,7 +338,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.17</version>
                 <configuration>
-                    <argLine>-Dfile.encoding=${project.build.sourceEncoding} -Dcom.ibm.tools.attach.enable=yes</argLine> <!-- Needed for ZOS. sourceEncoding is needed becuase arquillian calls string.getBtytes(). Attach is needed becuase because arquillian uses com.sun.tools.attach to find VMs -->
+                    <argLine>-Xmx4096m -Dfile.encoding=${project.build.sourceEncoding} -Dcom.ibm.tools.attach.enable=yes</argLine> <!-- Needed for ZOS. sourceEncoding is needed becuase arquillian calls string.getBtytes(). Attach is needed becuase because arquillian uses com.sun.tools.attach to find VMs -->
                     <!-- <argLine>-Dwas.debug.mode=true -Dcom.ibm.websphere.ras.inject.at.transform=true -Dsun.reflect.noInflation=true -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=7777</argLine> -->
                     <systemPropertyVariables>
                         <wlp>${wlp}</wlp>

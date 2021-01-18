@@ -111,6 +111,7 @@ instrument.disabled: true
 	com.ibm.ws.tx.embeddable;version=latest,\
 	com.ibm.tx.jta;version=latest,\
 	com.ibm.ws.jca.cm;version=latest,\
+	com.ibm.ws.jdbc.metatype;version=latest,\
 	com.ibm.ws.resource;version=latest,\
 	com.ibm.ws.classloading;version=latest,\
 	com.ibm.websphere.org.osgi.core;version=latest,\

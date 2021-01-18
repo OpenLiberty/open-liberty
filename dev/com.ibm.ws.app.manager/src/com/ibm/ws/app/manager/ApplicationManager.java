@@ -17,8 +17,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Map;
-import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Component;
@@ -38,9 +38,10 @@ public class ApplicationManager {
     private boolean useJandex;
     private long startTimeout;
     private long stopTimeout;
+    private String expandLocation;
 
     private File extractedLog;
-    private ConcurrentMap<String, ExtractedLogData> extractsDataLog = new ConcurrentHashMap<>();
+    private final ConcurrentMap<String, ExtractedLogData> extractsDataLog = new ConcurrentHashMap<>();
 
     protected void activate(ComponentContext compcontext, Map<String, Object> properties) {
         modified(compcontext, properties);
@@ -113,6 +114,9 @@ public class ApplicationManager {
         setStopTimeout(stopTimeoutValue);
         ApplicationStateCoordinator.setApplicationStartTimeout(startTimeoutValue);
         ApplicationStateCoordinator.setApplicationStopTimeout(stopTimeoutValue);
+
+        String expandLocationDir = (String) properties.get("expandLocation");
+        setExpandLocation(expandLocationDir);
     }
 
     //get a property and if not set, use the supplied default
@@ -133,31 +137,29 @@ public class ApplicationManager {
     /**
      * @return true if the app should expand, false otherwise
      */
-     public boolean shouldExpand(String id, File warFile, File expandedDir) {
+    public boolean shouldExpand(String id, File warFile, File expandedDir) {
 
-         boolean result = true;
+        boolean result = true;
 
-         long lastModified = -1;
-         long size = -1;
+        long lastModified = -1;
+        long size = -1;
 
-         ExtractedLogData data = extractsDataLog.get(id);
-         lastModified = warFile.lastModified();
-         size = warFile.length();
+        ExtractedLogData data = extractsDataLog.get(id);
+        lastModified = warFile.lastModified();
+        size = warFile.length();
 
-         if (expandedDir.exists()) {
-             if (data != null) {
-                 result = data.lastUpdated != lastModified || data.size != size;
-             }
-         }
+        if (expandedDir.exists()) {
+            if (data != null) {
+                result = data.lastUpdated != lastModified || data.size != size;
+            }
+        }
 
-         if (result) {
-             extractsDataLog.put(id, new ExtractedLogData(id, lastModified, size));
-         }
+        if (result) {
+            extractsDataLog.put(id, new ExtractedLogData(id, lastModified, size));
+        }
 
-
-
-         return result;
-     }
+        return result;
+    }
 
     /**
      * @return
@@ -215,10 +217,24 @@ public class ApplicationManager {
         this.stopTimeout = b;
     }
 
+    /**
+     * @param b
+     */
+    private void setExpandLocation(String b) {
+        this.expandLocation = b;
+    }
+
+    /**
+     * @return
+     */
+    public String getExpandLocation() {
+        return this.expandLocation;
+    }
+
     private static class ExtractedLogData {
-        private String id;
-        private long lastUpdated;
-        private long size;
+        private final String id;
+        private final long lastUpdated;
+        private final long size;
 
         public ExtractedLogData(String id, long updated, long size) {
             this.id = id;

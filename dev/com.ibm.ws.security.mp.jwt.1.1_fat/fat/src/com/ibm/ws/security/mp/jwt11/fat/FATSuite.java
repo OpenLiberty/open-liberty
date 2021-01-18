@@ -10,12 +10,14 @@
  *******************************************************************************/
 package com.ibm.ws.security.mp.jwt11.fat;
 
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.security.fat.common.AlwaysRunAndPassTest;
-import com.ibm.ws.security.jwt.fat.mpjwt.MpJwtFatConstants;
+import com.ibm.ws.security.fat.common.actions.SecurityTestFeatureRepeatAction;
+import com.ibm.ws.security.fat.common.mp.jwt.MPJwt11FatConstants;
 import com.ibm.ws.security.mp.jwt11.fat.configInAppTests.MPJwtMPConfigInApp_BadIssuerMPJwtConfigInServerXml_Tests;
 import com.ibm.ws.security.mp.jwt11.fat.configInAppTests.MPJwtMPConfigInApp_BadJwksUriMPJwtConfigInServerXml_Tests;
 import com.ibm.ws.security.mp.jwt11.fat.configInAppTests.MPJwtMPConfigInApp_BadKeyNameMPJwtConfigInServerXml_Tests;
@@ -45,6 +47,8 @@ import com.ibm.ws.security.mp.jwt11.fat.systemPropertiesTests.MPJwtGoodMPConfigA
 import com.ibm.ws.security.mp.jwt11.fat.systemPropertiesTests.MPJwtGoodMPConfigAsSystemProperties_NoPublicKey_UseKeyLocRS512JwksUri;
 import com.ibm.ws.security.mp.jwt11.fat.systemPropertiesTests.MPJwtGoodMPConfigAsSystemProperties_UsePublicKey_NoKeyLoc;
 import com.ibm.ws.security.mp.jwt11.fat.systemPropertiesTests.MPJwtGoodMPConfigAsSystemProperties_UseRS384PublicKey_NoKeyLoc;
+
+import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -99,6 +103,13 @@ import com.ibm.ws.security.mp.jwt11.fat.systemPropertiesTests.MPJwtGoodMPConfigA
 
 public class FATSuite {
 
-    public static String authHeaderPrefix = MpJwtFatConstants.TOKEN_TYPE_BEARER;
+    public static String authHeaderPrefix = MPJwt11FatConstants.TOKEN_TYPE_BEARER;
+
+    /*
+     * Run the mpJwt 1.2 tests in lite mode ONLY
+     */
+    @ClassRule
+    public static RepeatTests repeat = RepeatTests.with(new SecurityTestFeatureRepeatAction(MPJwt11FatConstants.MP_JWT_11))
+                    .andWith(new SecurityTestFeatureRepeatAction(MPJwt11FatConstants.MP_JWT_12).liteFATOnly());
 
 }

@@ -197,6 +197,7 @@ public abstract class LogstashCollectorTest {
         if (msg.endsWith("\n"))
             msg = msg.substring(0, msg.length() - 1);
         logstashOutput.add(msg);
+
         Log.info(c, "logstashContainer", msg);
     }
 
@@ -262,10 +263,26 @@ public abstract class LogstashCollectorTest {
     protected static List<JSONObject> parseJsonInContainerOutput() throws JSONException {
         ArrayList<JSONObject> list = new ArrayList<JSONObject>();
         Iterator<String> it = logstashOutput.iterator();
+
+        String partialLine = "";
         while (it.hasNext()) {
             String line = it.next();
-            JSONObject jobj = new JSONObject(line);
-            list.add(jobj);
+            if (!line.endsWith("}")) {
+                // Handle a split output frame
+                partialLine += line;
+                continue;
+            }
+            if (!partialLine.isEmpty()) {
+                line = partialLine + line;
+                partialLine = "";
+            }
+            try {
+                JSONObject json = new JSONObject(line);
+                list.add(json);
+            } catch (Exception e) {
+                Log.error(c, "parseJsonInContainerOutput", e, "Unable to parse JSON: " + line);
+                throw e;
+            }
         }
         return list;
     }

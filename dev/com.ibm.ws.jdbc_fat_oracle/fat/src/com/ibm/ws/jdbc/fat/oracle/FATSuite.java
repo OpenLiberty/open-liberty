@@ -26,7 +26,7 @@ import org.testcontainers.containers.output.OutputFrame;
 
 import com.ibm.websphere.simplicity.log.Log;
 
-import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
+import componenttest.containers.ExternalTestServiceDockerClientStrategy;
 import oracle.jdbc.pool.OracleDataSource;
 
 @RunWith(Suite.class)
@@ -49,7 +49,7 @@ public class FATSuite {
 	public static void beforeSuite() throws Exception {
 		// Allows local tests to switch between using a local docker client, to using a
 		// remote docker client.
-		ExternalTestServiceDockerClientStrategy.clearTestcontainersConfig();
+		ExternalTestServiceDockerClientStrategy.setupTestcontainers();
 
 		oracle.start();
 	}

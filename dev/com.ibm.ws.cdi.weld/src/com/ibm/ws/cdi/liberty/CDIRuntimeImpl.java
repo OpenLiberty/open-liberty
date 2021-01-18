@@ -77,7 +77,7 @@ import io.openliberty.cdi.spi.CDIExtensionMetadata;
 /**
  * This class is to get hold all necessary services.
  */
-@Component(name = "com.ibm.ws.cdi.liberty.CDIRuntimeImpl", service = { ApplicationStateListener.class, CDIService.class }, property = { "service.vendor=IBM" })
+@Component(name = "com.ibm.ws.cdi.liberty.CDIRuntimeImpl", service = { ApplicationStateListener.class, CDIService.class, CDIProvider.class }, property = { "service.vendor=IBM" })
 public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationStateListener, CDIService, CDILibertyRuntime, CDIProvider {
     private static final TraceComponent tc = Tr.register(CDIRuntimeImpl.class);
 
@@ -558,10 +558,10 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
                                                          Set<String> extraAnnotations,
                                                          boolean applicationBDAsVisible,
                                                          boolean extClassesOnly,
-                                                         Set<String> extraExtensionClasses) throws CDIException {
+                                                         Set<String> spiExtensionClasses) throws CDIException {
 
         ExtensionArchive extensionArchive = runtimeFactory.getExtensionArchiveForBundle(bundle, extraClasses, extraAnnotations, applicationBDAsVisible, extClassesOnly,
-                                                                                        extraExtensionClasses);
+                                                                                        spiExtensionClasses);
 
         return extensionArchive;
     }

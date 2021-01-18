@@ -57,7 +57,9 @@ public class GenerateCategories {
         // Discover all categories by checking for files under .github/test-categories/
         SortedSet<String> allCategories = new TreeSet<>();
         for (File categoryFile : Paths.get(TEST_CATEGORY_DIR).toFile().listFiles()) {
-            allCategories.add(categoryFile.getName().toUpperCase());
+            if(! categoryFile.getName().equalsIgnoreCase("QUARANTINE")) {
+                allCategories.add(categoryFile.getName().toUpperCase());
+            }
         }
         debug("All discovered categories are: " + allCategories);
 

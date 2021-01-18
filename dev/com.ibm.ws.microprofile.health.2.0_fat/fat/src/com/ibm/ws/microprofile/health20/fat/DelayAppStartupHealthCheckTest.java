@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -126,8 +126,11 @@ public class DelayAppStartupHealthCheckTest {
         boolean first_time = true;
         boolean app_ready = false;
         boolean repeat = true;
+        boolean runTest = true;
 
         while (repeat) {
+            Assume.assumeTrue(runTest); // Skip the test, if runTest is false.
+
             num_of_attempts += 1;
 
             // Need to ensure the server is not finish starting when readiness endpoint is hit so start the server on a separate thread
@@ -175,7 +178,8 @@ public class DelayAppStartupHealthCheckTest {
                                 log("testReadinessEndpointOnServerStart",
                                     message + " Skipping test case due to multiple failed attempts in hitting the readiness endpoint faster than the server can start.");
                                 startServerThread.join();
-                                Assume.assumeTrue(false); // Skip the test
+                                runTest = false; // Skip the test.
+                                break;
                             }
 
                             log("testReadinessEndpointOnServerStart", message + " At this point the test will be re-run. Number of current attempts ---> " + num_of_attempts);

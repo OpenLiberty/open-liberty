@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -56,11 +56,16 @@ public class JWTApiApplicationUtils {
      */
     public void handleException(PrintWriter pw, HttpServletResponse response, Exception e) throws IOException {
 
-        System.out.println(e.getMessage());
-        e.printStackTrace();
-        logIt(pw, "Caught an exception calling external App: " + e.toString()); // this is probably expected
-        //pw.close(); // we cannot close it here since it affects the following. Instead of getting 500, we will end up receiving 200.
-        //        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+        System.out.println("Debug: In handleException");
+        if (e != null) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+            logIt(pw, "Caught an exception calling external App: " + e.toString()); // this is probably expected
+            //pw.close(); // we cannot close it here since it affects the following. Instead of getting 500, we will end up receiving 200.
+            //        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+        } else {
+            logIt(pw, "Caught an exception calling an external App, but the exception returned was null.");
+        }
 
     }
 

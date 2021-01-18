@@ -56,6 +56,10 @@ public class FeatureReplacementAction implements RepeatTestAction {
     private static final Class<? extends FeatureReplacementAction> c =
         FeatureReplacementAction.class;
 
+    public static EmptyAction NO_REPLACEMENT() {
+        return new EmptyAction();
+    }
+
     /**
      * Feature replacement action factory method: Create a feature
      * replacement action which replaces JavaEE 8 features with the

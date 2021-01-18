@@ -20,7 +20,7 @@ public class FeatureBnd {
     /** */
     public static final String IBM_PROVISION_CAPABILITY = "IBM-Provision-Capability";
     /**  */
-    private static final String IBM_SHORT_NAME = "IBM-ShortName";
+    public static final String IBM_SHORT_NAME = "IBM-ShortName";
 
     private static final String IBM_LICENSE_INFORMATION = "IBM-License-Information";
 

@@ -10,13 +10,10 @@
  *******************************************************************************/
 package com.ibm.ws.recoverylog.spi;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import com.ibm.tx.TranConstants;
-import com.ibm.tx.util.logging.Tr;
-import com.ibm.tx.util.logging.TraceComponent;
+import com.ibm.tx.util.Utils;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 
 /**
  *
@@ -29,7 +26,7 @@ public class PeerLeaseData {
 
     public PeerLeaseData(String recoveryIdentity, long leaseTime, int leaseTimeout) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "PeerLeaseData", new Object[] { recoveryIdentity, leaseTime, leaseTimeout });
+            Tr.entry(tc, "PeerLeaseData", new Object[] { recoveryIdentity, Utils.traceTime(leaseTime), leaseTimeout });
         this._recoveryIdentity = recoveryIdentity;
         this._leaseTime = leaseTime;
         this._leaseTimeout = leaseTimeout;
@@ -39,11 +36,8 @@ public class PeerLeaseData {
     }
 
     public String getRecoveryIdentity() {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "getRecoveryIdentity");
-
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "getRecoveryIdentity", _recoveryIdentity);
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "getRecoveryIdentity", _recoveryIdentity);
         return _recoveryIdentity;
     }
 
@@ -52,7 +46,7 @@ public class PeerLeaseData {
      */
     public long getLeaseTime() {
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "getLeaseTime", _leaseTime);
+            Tr.debug(tc, "getLeaseTime", Utils.traceTime(_leaseTime));
         return _leaseTime;
     }
 
@@ -64,24 +58,17 @@ public class PeerLeaseData {
             Tr.entry(tc, "isExpired", new Object[] { _leaseTimeout });
         boolean expired = false;
         long curTime = System.currentTimeMillis();
-        //TODO:
-        if (curTime - _leaseTime > _leaseTimeout * 1000) //  30 seconds default for timeout
-        {
+
+        if (curTime - _leaseTime > _leaseTimeout * 1000) {
             if (tc.isDebugEnabled()) {
-                Date now = new Date(curTime);
-                Date then = new Date(_leaseTime);
-                DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy, HH:mm:ss");
-                Tr.debug(tc, "Lease has EXPIRED for " + _recoveryIdentity + ", currenttime: " + dateFormat.format(now) + ", storedTime: " + dateFormat.format(then) + " ("
-                             + (curTime - _leaseTime) / 1000 + ")");
+                Tr.debug(tc, "Lease has EXPIRED for " + _recoveryIdentity + ", currenttime: " + Utils.traceTime(curTime) + ", storedTime: " + Utils.traceTime(_leaseTime) + " ("
+                             + (curTime - _leaseTime) / 1000 + "s)");
             }
             expired = true;
         } else {
             if (tc.isDebugEnabled()) {
-                Date now = new Date(curTime);
-                Date then = new Date(_leaseTime);
-                DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy, HH:mm:ss");
-                Tr.debug(tc, "Lease has not expired for " + _recoveryIdentity + ", currenttime: " + dateFormat.format(now) + ", storedTime: " + dateFormat.format(then) + " ("
-                             + (curTime - _leaseTime) / 1000 + ")");
+                Tr.debug(tc, "Lease has not expired for " + _recoveryIdentity + ", currenttime: " + Utils.traceTime(curTime) + ", storedTime: " + Utils.traceTime(_leaseTime) + " ("
+                             + (curTime - _leaseTime) / 1000 + "s)");
             }
         }
 

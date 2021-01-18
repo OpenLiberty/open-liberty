@@ -11,15 +11,15 @@
 
 # NLS_MESSAGEFORMAT_ALL
 #
-#CMVCPATHNAME io.openliberty.jaxb.3.0.internal.tools/resources/io/openliberty/jaxb/tools/internal/resources/JaxbToolsMessages.nlsprops
+#CMVCPATHNAME io.openliberty.xmlbinding.3.0.internal.tools/resources/io/openliberty/jaxb/tools/internal/resources/JaxbToolsMessages.nlsprops
 #ISMESSAGEFILE TRUE
 #COMPONENTPREFIX CWWKW
-#COMPONENTNAMEFOR CWWKW WebSphere JAXB Tools Code
+#COMPONENTNAMEFOR CWWKW WebSphere XML Binding Tools Code
 #RANGE 0700 - 0799
 #
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
 
 error.parameter.target.missed=CWWKW0700E: Non \u00e8 stata specificato il parametro di destinazione.
-error.parameter.target.missed.explanation=Se viene specificato il parametro di destinazione, le applicazioni esistenti possono essere rigenerate senza modificare il loro comportamento quando si aggiorna il livello di specifica JAXB supportato da Liberty Profile.
-error.parameter.target.missed.useraction=Specificare il livello di specifica JAXB a cui il codice generato deve essere conforme. Il valore valido \u00e8 3.0
+error.parameter.target.missed.explanation=Se viene specificato il parametro di destinazione, le applicazioni esistenti possono essere rigenerate senza modificare il loro comportamento quando si aggiorna il livello di specifica di bind XML supportato da Liberty Profile.
+error.parameter.target.missed.useraction=Specificare il livello di specifica di bind XML a cui il codice generato deve essere conforme. Il valore valido \u00e8 3.0

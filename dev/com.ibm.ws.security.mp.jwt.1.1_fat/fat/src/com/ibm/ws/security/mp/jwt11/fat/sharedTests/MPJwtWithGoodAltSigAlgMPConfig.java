@@ -12,9 +12,10 @@ package com.ibm.ws.security.mp.jwt11.fat.sharedTests;
 
 import org.junit.runner.RunWith;
 
+import com.ibm.ws.security.fat.common.mp.jwt.MPJwt11FatConstants;
+import com.ibm.ws.security.fat.common.mp.jwt.sharedTests.MPJwt11MPConfigTests;
+import com.ibm.ws.security.fat.common.mp.jwt.utils.MP11ConfigSettings;
 import com.ibm.ws.security.fat.common.servers.ServerInstanceUtils;
-import com.ibm.ws.security.jwt.fat.mpjwt.MpJwtFatConstants;
-import com.ibm.ws.security.mp.jwt11.fat.utils.MP11ConfigSettings;
 
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
@@ -52,7 +53,7 @@ public class MPJwtWithGoodAltSigAlgMPConfig extends MPJwt11MPConfigTests {
             location = resolvedJwksUri(jwtBuilderServer, MP11ConfigSettings.jwksUri).replace("defaultJWT", sigAlg);
         }
 
-        MP11ConfigSettings mpConfigSettings = new MP11ConfigSettings(location, key, MP11ConfigSettings.IssuerNotSet, MpJwtFatConstants.X509_CERT);
+        MP11ConfigSettings mpConfigSettings = new MP11ConfigSettings(location, key, MP11ConfigSettings.IssuerNotSet, MPJwt11FatConstants.X509_CERT);
         setUpAndStartRSServerForTests(resourceServer, "rs_server_AltConfigNotInApp_goodSigAlgServerXmlConfig.xml", mpConfigSettings, where);
 
         // set signatureAlgorithm attribute in server.xml
@@ -70,8 +71,8 @@ public class MPJwtWithGoodAltSigAlgMPConfig extends MPJwt11MPConfigTests {
      */
     public void genericGoodTest() throws Exception {
 
-        standard11TestFlow(sigAlg, resourceServer, MpJwtFatConstants.NO_MP_CONFIG_IN_APP_ROOT_CONTEXT,
-                           MpJwtFatConstants.NO_MP_CONFIG_IN_APP_APP, MpJwtFatConstants.MPJWT_APP_CLASS_NO_MP_CONFIG_IN_APP);
+        standard11TestFlow(sigAlg, resourceServer, MPJwt11FatConstants.NO_MP_CONFIG_IN_APP_ROOT_CONTEXT,
+                           MPJwt11FatConstants.NO_MP_CONFIG_IN_APP_APP, MPJwt11FatConstants.MPJWT_APP_CLASS_NO_MP_CONFIG_IN_APP);
 
     }
 

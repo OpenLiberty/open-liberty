@@ -292,6 +292,13 @@
 
 		<!-- Load all env vars into env.* properties -->
 		<property environment="env" />
+		
+        <condition property="fat.test.artifactory.download.server"
+                   value="${artifactory.download.server}"
+                   else="${env.artifactory.download.server}">
+          <isset property="artifactory.download.server" />
+        </condition>
+		<property name="fat.test.artifactory.download.token" value="${artifactory.download.token}"/>
 
 		<tstamp>
 			<format property="today.day" pattern="EEEE" />
@@ -371,7 +378,7 @@
 			</else>
 		</iff>
 		<echo message="Launching FAT with zos extra vmargs: ${zos.extra.vmargs}" />
-
+		
 		<!-- START coverage properties -->
 		<property name="exec.data.file" location="${dir.log.coverage}/jacoco.exec" />
 		<property name="jacocoant.file" location="${junit_jar}/jacoco-0.7.6.201602180812/lib/jacocoant.jar" />
@@ -385,7 +392,7 @@
 		<echo>jacocoagent.file: ${jacocoagent.file}</echo>
 
 		<mkdir dir="${build.tmp.dir}" />
-
+		
 		<!-- Note that users can override framework.maxheap from personal build -->
 		<property name="framework.maxheap" value="-Xmx1024m" />
 		<echo>framework.maxheap=${framework.maxheap}</echo>

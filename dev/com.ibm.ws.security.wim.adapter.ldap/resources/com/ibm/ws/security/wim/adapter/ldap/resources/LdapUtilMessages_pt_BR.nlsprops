@@ -221,3 +221,11 @@ LDAP_REGISTRY_CUSTOM_MAPPER_FAILED.useraction=Se a exce\u00e7\u00e3o foi inesper
 LDAP_REGISTRY_INVALID_MAPPING=CWIML4504W: O mapeador de certificado X.509 customizado retornou um valor vazio ou nulo. 
 LDAP_REGISTRY_INVALID_MAPPING.explanation=O mapeador de certificado X.509 customizado deve retornar um valor n\u00e3o vazio e n\u00e3o nulo ou lan\u00e7ar uma das exce\u00e7\u00f5es nomeadas.
 LDAP_REGISTRY_INVALID_MAPPING.useraction=Modifique a implementa\u00e7\u00e3o do mapeador de certificado X.509 customizado para que ele n\u00e3o retorne um valor vazio ou nulo. Se um valor v\u00e1lido n\u00e3o puder ser retornado, a implementa\u00e7\u00e3o deve lan\u00e7ar uma exce\u00e7\u00e3o verificada. 
+
+LOGINPROPERTY_OVERRIDE_USERFILTER=CWIML4505W: O atributo userFilter definido \u00e9 ignorado porque os atributos loginProperty est\u00e3o definidos. O filtro de usu\u00e1rio \u00e9 gerado dinamicamente.
+LOGINPROPERTY_OVERRIDE_USERFILTER.explanation=Uma ou mais inst\u00e2ncias do atributo loginProperty foram definidas. Esses atributos s\u00e3o usados para construir o filtro de usu\u00e1rio.
+LOGINPROPERTY_OVERRIDE_USERFILTER.useraction=Se o atributo userFilter for preferido, remova quaisquer atributos loginProperty.
+
+INVALID_LOGIN_PROPERTIES=CWIML4506E: As propriedades de login a seguir n\u00e3o s\u00e3o v\u00e1lidas: {0}.
+INVALID_LOGIN_PROPERTIES.explanation=Uma ou mais propriedades de login n\u00e3o s\u00e3o propriedades WIM PersonAccount v\u00e1lidas.
+INVALID_LOGIN_PROPERTIES.useraction=Escolha propriedades de PersonAccount v\u00e1lidas ou inclua as propriedades em PersonAccount como propriedades estendidas. Certifique-se de que as letras mai\u00fasculas e min\u00fasculas de cada propriedade de login corresponda \u00e0s letras mai\u00fasculas e min\u00fasculas da propriedade PersonAccount correspondente.

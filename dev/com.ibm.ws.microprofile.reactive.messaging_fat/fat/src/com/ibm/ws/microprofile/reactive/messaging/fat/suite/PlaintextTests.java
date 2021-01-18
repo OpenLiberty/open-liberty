@@ -30,7 +30,7 @@ import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.serializer.KafkaCust
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.sharedLib.KafkaSharedLibTest;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.tck.ReactiveStreamsTckTest;
 
-import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
+import componenttest.containers.ExternalTestServiceDockerClientStrategy;
 
 /**
  * Tests which run against a plaintext Kafka broker
@@ -63,6 +63,6 @@ public class PlaintextTests {
 
     @BeforeClass
     public static void beforeSuite() throws Exception {
-        ExternalTestServiceDockerClientStrategy.clearTestcontainersConfig();
+        ExternalTestServiceDockerClientStrategy.setupTestcontainers();
     }
 }

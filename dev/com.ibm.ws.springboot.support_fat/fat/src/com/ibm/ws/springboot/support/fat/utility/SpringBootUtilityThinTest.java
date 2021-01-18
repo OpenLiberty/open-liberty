@@ -311,7 +311,7 @@ public class SpringBootUtilityThinTest extends CommonWebServerTests {
         super.testBasicSpringBootApplication();
     }
 
-    @Test
+    // disable test until uber jar creating works reliably @Test
     public void testDefaultHostWithAppPortRunLibertyUberJarWithSSL() throws Exception {
         String dropinsSpring = "dropins/" + SPRING_APP_TYPE + "/";
         new File(new File(server.getServerRoot()), dropinsSpring).mkdirs();

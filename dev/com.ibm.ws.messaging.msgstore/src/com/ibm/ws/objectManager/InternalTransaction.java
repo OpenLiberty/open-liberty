@@ -1,7 +1,7 @@
 package com.ibm.ws.objectManager;
 
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -354,6 +354,16 @@ class InternalTransaction
     private LogicalUnitOfWork logicalUnitOfWork;
     // Bumped each time the transaction completes, used for displaying in trace for debugging only.
     private int useCount = 0;
+    protected long completeTick = 0;
+    protected long completeTid = 0;
+    protected String completeName = "";
+    protected long freeTick = 0;
+    protected long freeTid = 0;
+    protected String freeName = "";
+    protected long registeredTick = 0;
+    protected long registeredTid = 0;
+    protected String registeredName = "";
+    protected long finaliseTick = 0;
 
     // The lock that any ManagedObjects use to indicate their locked state.
     private TransactionLock transactionLock;
@@ -2239,7 +2249,7 @@ class InternalTransaction
      * @param transaction the external Transaction completing.
      * @throws ObjectManagerException
      */
-    private final void complete(boolean reUse,
+    private synchronized final void complete(boolean reUse,
                                 Transaction transaction)
                     throws ObjectManagerException {
         final String methodName = "complete";
@@ -2259,6 +2269,9 @@ class InternalTransaction
         logSequenceNumbers.clear();
         managedObjectSequenceNumbers.clear();
         useCount++;
+        completeTick = System.currentTimeMillis();      // for orphan diagnostics
+        completeTid = Thread.currentThread().getId();
+        completeName = Thread.currentThread().getName();
 
         if (reUse) { // Reset the transaction for further use.
             // Note that we do not clear the transactionReference because the caller is still holding it.
@@ -2266,16 +2279,11 @@ class InternalTransaction
             // and this InternalTransaction may be reused for another external Transaction.
 
         } else { // Do not chain.
+            if (transactionReference != null) transactionReference.clear(); // Inhibt enqueuing of the transactionReference.
+            transactionReference = null; // This will prevent processing (and formation of a new link) if already enqueued.
             // Make sure the external Transaction cannot reach this internal one.
+            // This is done after clearing the weak reference to prevent loss of this strong reference before it is cleared.
             transaction.internalTransaction = objectManagerState.dummyInternalTransaction;
-            // This may not be sufficient to prevent its being used if the external Transaction already has passed
-            // the point where it has picked up the referenece to the Internaltransaction. Hence we terminate the
-            // InternalTransaction if it is preemptively backed out. See ObjectManagerstate.performCheckpoint()
-            // where transactions are backed out without holding the internal transaction synchronize lock.
-            if (transactionReference != null)
-                transactionReference.clear(); // Inhibt an enqueue of the transactionReference.
-            // If a reference is enqueued we are already in inactive state for this
-            // transactionReferenceSequence so no action will occur.
 
             // Tell the ObjectManager that we no longer exist as an active transaction.
             objectManagerState.deRegisterTransaction(this);
@@ -2670,19 +2678,35 @@ class InternalTransaction
      */
     public String toString()
     {
-        if (logicalUnitOfWork == null)
-            return new String("InternalTransaction"
-                              + "(null)." + useCount
-                              + "/" + stateNames[state]
-                              + "/" + Integer.toHexString(hashCode())
-                              + "/" + logSpaceReserved);
-        else
-            return new String("InternalTransaction"
-                              + "(" + logicalUnitOfWork.identifier + "." + useCount + ")"
-                              + "/" + stateNames[state]
-                              + "/" + Integer.toHexString(hashCode())
-                              + "/" + logSpaceReserved);
+        String id = (logicalUnitOfWork==null?"(null)":""+logicalUnitOfWork.identifier);
+        return new String("InternalTransaction"
+                         + "(" + id + "." + useCount + ")"
+                         + "/" + stateNames[state]
+                         + "/" + Integer.toHexString(hashCode())
+                         + "/" + logSpaceReserved
+                         );
     } // toString().
+
+    // orphan transaction diagnostics
+    public String diagString()
+    {
+        return new String(toString()
+                         // last complete() call
+                         + ",co:" + (0==completeTick?"<not set>":""+completeTick)
+                         + ":" + completeTid + ":\"" + completeName + "\""
+
+                         // these are relative to completeTick as we're really going to be interested in relative order of events
+
+                         // last addition to registeredInternalTransactions list
+                         + ",re:" + (0==registeredTick?"<not set>":""+(registeredTick-completeTick))
+                         + ":" + registeredTid + ":\"" + registeredName + "\""
+                         // last addition to freeInternalTransactions list
+                         + ",fr:" + (0==freeTick?"<not set>":""+(freeTick-completeTick))
+                         + ":" + freeTid + ":\"" + freeName + "\""
+                         // last linked external transaction finalize() call (enqueue)
+                         + ",fi:" + (0==finaliseTick?"<not set>":""+(finaliseTick-completeTick))
+                         );
+    } // diagString().
 
     // ----------------------------------------------------------------------------------------------
     // Inner classes
@@ -2748,5 +2772,31 @@ class InternalTransaction
             if (Tracing.isAnyTracingEnabled() && trace.isEntryEnabled())
                 trace.exit(this, cclass, methodName);
         } // complete().
+
+        // these are to help with diagnostics only
+        protected LogicalUnitOfWork getLogicalUnitOfWork()
+        {
+            synchronized (internalTransaction)
+            {
+                return internalTransaction.getLogicalUnitOfWork();
+            }
+        }
+        protected String getTransactionString()
+        {
+            synchronized (internalTransaction)
+            {
+                return internalTransaction.diagString();
+            }
+        }
+        protected boolean isUnused()
+        {
+            synchronized (internalTransaction)
+            {
+                return (stateError==internalTransaction.state
+                       ||stateTerminated==internalTransaction.state
+                       ||(stateInactive==internalTransaction.state&&0==logSpaceReserved)
+                      );
+            }
+        }
     } // inner class TransactionReference.
 } // class internalTransaction.

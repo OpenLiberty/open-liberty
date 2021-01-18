@@ -19,7 +19,7 @@ import org.junit.runners.Suite.SuiteClasses;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.containers.KafkaTlsContainer;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.tls.KafkaTlsTest;
 
-import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
+import componenttest.containers.ExternalTestServiceDockerClientStrategy;
 
 /**
  * Suite for tests which run against a TLS enabled kafka broker
@@ -34,7 +34,7 @@ public class TlsTests {
 
     @BeforeClass
     public static void beforeSuite() throws Exception {
-        ExternalTestServiceDockerClientStrategy.clearTestcontainersConfig();
+        ExternalTestServiceDockerClientStrategy.setupTestcontainers();
     }
 
 }

@@ -198,6 +198,13 @@ public class DefaultConfigurationProvider implements ConfigurationProvider {
         return _recoverOnStartup;
     }
 
+    protected static boolean _shutdownOnLogFailure = true;
+
+    @Override
+    public boolean isShutdownOnLogFailure() {
+        return _shutdownOnLogFailure;
+    }
+
     protected static boolean _OnePCOptimization;
 
     @Override

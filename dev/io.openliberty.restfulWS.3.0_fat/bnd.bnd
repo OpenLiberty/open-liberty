@@ -19,7 +19,9 @@ fat.project: true
 
 
 -buildpath: \
+    io.openliberty.jakarta.enterpriseBeans.4.0;version=latest,\
 	io.openliberty.jakarta.annotation.2.0;version=latest,\
+	io.openliberty.jakarta.cdi.3.0;version=latest,\
 	io.openliberty.jakarta.restfulWS.3.0;version=latest,\
 	io.openliberty.jakarta.servlet.5.0;version=latest,\
 	io.openliberty.jakarta.validation.3.0;version=latest,\

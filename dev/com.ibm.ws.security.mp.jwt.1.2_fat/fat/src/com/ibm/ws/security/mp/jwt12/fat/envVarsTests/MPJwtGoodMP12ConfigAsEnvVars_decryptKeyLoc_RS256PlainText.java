@@ -15,9 +15,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.ws.security.fat.common.jwt.utils.JwtKeyTools;
-import com.ibm.ws.security.jwt.fat.mpjwt.MpJwt12FatConstants;
+import com.ibm.ws.security.fat.common.mp.jwt.MPJwt12FatConstants;
+import com.ibm.ws.security.fat.common.mp.jwt.utils.MP12ConfigSettings;
 import com.ibm.ws.security.mp.jwt12.fat.sharedTests.GenericEnvVarsAndSystemPropertiesTests;
-import com.ibm.ws.security.mp.jwt12.fat.utils.MP12ConfigSettings;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -34,6 +34,7 @@ import componenttest.topology.impl.LibertyServer;
  *
  **/
 
+@SuppressWarnings("restriction")
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class MPJwtGoodMP12ConfigAsEnvVars_decryptKeyLoc_RS256PlainText extends GenericEnvVarsAndSystemPropertiesTests {
@@ -46,9 +47,9 @@ public class MPJwtGoodMP12ConfigAsEnvVars_decryptKeyLoc_RS256PlainText extends G
     @BeforeClass
     public static void setUp() throws Exception {
 
-        commonMpJwt12Setup(envVarsResourceServer, "rs_server_AltConfigNotInApp_good12ServerXmlConfigNoAudiences.xml", MpJwt12FatConstants.AUTHORIZATION,
-                           MpJwt12FatConstants.TOKEN_TYPE_BEARER, MP12ConfigSettings.AudiencesNotSet, MpJwt12FatConstants.SIGALG_RS256,
-                           JwtKeyTools.getComplexPrivateKeyForSigAlg(envVarsResourceServer, MpJwt12FatConstants.SIGALG_RS256),
+        commonMpJwt12Setup(envVarsResourceServer, "rs_server_AltConfigNotInApp_good12ServerXmlConfigNoAudiences.xml", MPJwt12FatConstants.AUTHORIZATION,
+                           MPJwt12FatConstants.TOKEN_TYPE_BEARER, MP12ConfigSettings.AudiencesNotSet, MPJwt12FatConstants.SIGALG_RS256,
+                           JwtKeyTools.getComplexPrivateKeyForSigAlg(envVarsResourceServer, MPJwt12FatConstants.SIGALG_RS256),
                            MPConfigLocation.ENV_VAR);
 
     }

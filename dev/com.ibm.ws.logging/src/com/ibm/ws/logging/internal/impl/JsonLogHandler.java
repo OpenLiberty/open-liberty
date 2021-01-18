@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -62,8 +62,8 @@ public abstract class JsonLogHandler implements SynchronousHandler, Formatter {
      * Constructor for the JsonLoghandler which will establish server information needed
      * to fill in the fields of the JSON data object
      *
-     * @param serverName  The wlp servername
-     * @param wlpUserDir  The wlp user directory
+     * @param serverName The wlp servername
+     * @param wlpUserDir The wlp user directory
      * @param sourcesList The first sourceList to subscribe to collectorManager with
      */
     public JsonLogHandler(String serverName, String wlpUserDir, List<String> sourcesList) {
@@ -101,7 +101,7 @@ public abstract class JsonLogHandler implements SynchronousHandler, Formatter {
         }
 
         CollectorJsonHelpers.setHostName(serverHostName);
-        CollectorJsonHelpers.setServerName(wlpServerName);
+        CollectorJsonHelpers.setServerName(this.serverName);
         CollectorJsonHelpers.setWlpUserDir(wlpUserDir);
 
     }

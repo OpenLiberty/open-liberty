@@ -33,7 +33,7 @@
   </AD>
   <AD id="reapTime"                           name="%reapTime"     description="%reapTime.desc"     default="3m"     type="String" ibm:type="duration(s)" min="-1"/>
   <!-- Advanced properties for connectionManager -->
-  <AD id="autoCloseConnections"               name="internal"       description="internal use only"   ibmui:group="Advanced" required="false" type="Boolean"/>
+  <AD id="autoCloseConnections"               name="%autoCloseCon"  description="%autoCloseCon.desc"  ibm:beta="true" ibmui:group="Advanced" required="false" type="Boolean"/>
   <AD id="enableSharingForDirectLookups"      name="%enableSharing" description="%enableSharing.desc" ibmui:group="Advanced" default="true"   type="Boolean"/>
   <AD id="maxConnectionsPerThread"            name="%maxConPerThd"  description="%maxConPerThd.desc"  ibmui:group="Advanced" required="false" type="Integer" min="0"/>
   <AD id="numConnectionsPerThreadLocal"       name="%numConPerThd"  description="%numConPerThd.desc"  ibmui:group="Advanced" required="false" type="Integer" min="0"/>

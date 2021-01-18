@@ -1,0 +1,77 @@
+<server>
+	<featureManager>
+		<feature>ssl-1.0</feature>
+		<feature>usr:wsseccbh-1.0</feature>
+		<feature>servlet-3.1</feature>
+		<feature>appSecurity-2.0</feature>
+		<feature>jsp-2.2</feature>
+		<feature>jaxws-2.2</feature>
+		<feature>wsSecurity-1.1</feature>
+	</featureManager>
+
+	<include location="../fatTestPorts.xml" />
+
+	<wsSecurityClient
+		id="default"
+		ws-security.encryption.username="x509ServerSecondCert"
+		ws-security.callback-handler="com.ibm.ws.wssecurity.example.cbh.CommonPasswordCallback"
+		ws-security.password="security"
+		ws-security.username="user1"
+	>
+		<!-- **Do not need the private key password in Symmetric tests ws-security.callback-handler="com.ibm.ws.wssecurity.example.cbh.CommonPasswordCallback"> 
+			But put back for EndorsingSupportingToken BAX35 -->
+		<!-- **Do not need Signature properties in Symmetric. But put back for 
+			EndorsingSupportingToken BAX35 -->
+		<signatureProperties
+			signatureAlgorithm="sha384"
+			org.apache.ws.security.crypto.merlin.keystore.type="jks"
+			org.apache.ws.security.crypto.merlin.keystore.password="LibertyX509Client"
+			org.apache.ws.security.crypto.merlin.keystore.alias="x509ClientDefault"
+			org.apache.ws.security.crypto.merlin.truststore.alias="x509ServerDefaultCert"
+			org.apache.ws.security.crypto.merlin.file="${server.config.dir}/x509ClientDefault.jks" />
+		<encryptionProperties
+			org.apache.ws.security.crypto.merlin.truststore.type="jks"
+			org.apache.ws.security.crypto.merlin.truststore.password="LibertyX509Client2"
+			org.apache.ws.security.crypto.merlin.truststore.file="${server.config.dir}/x509ClientSecond.jks" />
+		<!-- ** This works too, in case ws-security.encryption.username is not 
+			specified org.apache.ws.security.crypto.merlin.keystore.alias="x509ServerSecondCert" -->
+	</wsSecurityClient>
+
+	<wsSecurityProvider
+		id="default"
+		ws-security.callback-handler="com.ibm.ws.wssecurity.example.cbh.CommonPasswordCallback"
+	>
+		<!-- **Do not need Signature properties in Symmetric. But put back for 
+			EndorsingSupportingToken BAX35 -->
+		<signatureProperties
+			signatureAlgorithm="sha384"
+			org.apache.ws.security.crypto.merlin.keystore.type="jks"
+			org.apache.ws.security.crypto.merlin.keystore.password="LibertyX509Server"
+			org.apache.ws.security.crypto.merlin.keystore.alias="x509ServerDefault"
+			org.apache.ws.security.crypto.merlin.truststore.alias="x509ClientDefaultCert"
+			org.apache.ws.security.crypto.merlin.file="${server.config.dir}/x509ServerDefault.jks" />
+		<encryptionProperties
+			org.apache.ws.security.crypto.merlin.keystore.type="jks"
+			org.apache.ws.security.crypto.merlin.keystore.password="LibertyX509Server2"
+			org.apache.ws.security.crypto.merlin.keystore.alias="x509ServerSecond"
+			org.apache.ws.security.crypto.merlin.file="${server.config.dir}/x509ServerSecond.jks" />
+	</wsSecurityProvider>
+
+    <!-- added 12/2020 -->
+    <javaPermission className="java.io.FilePermission" name="ALL FILES" actions="read"/>
+    <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.soap"/>
+    <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.soap.ver1_1"/>
+    <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.util"/>
+    <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.soap.name"/>
+    <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.soap.impl"/>
+    <javaPermission className="java.net.URLPermission" name="http://localhost:8010/sha2sig/Sha2SigService1" actions="POST:AcceptSOAPActionUser-Agent"/>
+    <javaPermission className="java.net.URLPermission" name="http://localhost:8010/sha2sig/Sha2SigService2" actions="POST:AcceptSOAPActionUser-Agent"/>
+    <javaPermission className="java.net.URLPermission" name="http://localhost:8010/sha2sig/Sha2SigService3" actions="POST:AcceptSOAPActionUser-Agent"/>
+    <javaPermission className="java.net.URLPermission" name="http://localhost:8010/sha2sig/Sha2SigService4" actions="POST:AcceptSOAPActionUser-Agent"/>
+    <javaPermission className="java.net.URLPermission" name="http://localhost:8010/sha2sig/Sha2SigService5" actions="POST:AcceptSOAPActionUser-Agent"/>
+    <javaPermission className="java.net.URLPermission" name="http://localhost:8010/sha2sig/Sha2SigService7" actions="POST:AcceptSOAPActionUser-Agent"/>
+    <javaPermission className="java.net.URLPermission" name="http://localhost:8010/sha2sig/Sha2SigService8" actions="POST:AcceptSOAPActionUser-Agent"/>
+    <javaPermission className="java.lang.reflect.ReflectPermission" name="suppressAccessChecks"/>
+    
+</server>
+

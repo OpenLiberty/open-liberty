@@ -3212,7 +3212,7 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
         // of close sends another connectionClosed event, the inline processing of which would otherwise
         // interfere with the iterator.
         for (HandleDetails h : handlesToClose)
-            h.close();
+            h.close(false);
     }
 
     /**

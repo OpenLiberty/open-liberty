@@ -38,6 +38,8 @@ import org.jboss.weld.security.spi.SecurityServices;
 import org.jboss.weld.serialization.spi.ProxyServices;
 import org.jboss.weld.transaction.spi.TransactionServices;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.cdi.CDIException;
 import com.ibm.ws.cdi.executor.ExecutorServicesImpl;
@@ -55,6 +57,8 @@ import com.ibm.wsspi.injectionengine.InjectionException;
 import com.ibm.wsspi.injectionengine.ReferenceContext;
 
 public class WebSphereCDIDeploymentImpl implements WebSphereCDIDeployment {
+    private static final TraceComponent tc = Tr.register(WebSphereCDIDeploymentImpl.class);
+
     private final String id;
     private final Map<String, WebSphereBeanDeploymentArchive> deploymentDBAs = new HashMap<String, WebSphereBeanDeploymentArchive>();
     private final Set<WebSphereBeanDeploymentArchive> applicationBDAs = new HashSet<WebSphereBeanDeploymentArchive>();
@@ -75,7 +79,6 @@ public class WebSphereCDIDeploymentImpl implements WebSphereCDIDeployment {
     private Application application;
     private final SimpleServiceRegistry serviceRegistry;
     private Iterable<Metadata<Extension>> extensions;
-    private final Set<Extension> spiExtensions = new HashSet<Extension>();
     private final WebSphereInjectionServicesImpl injectionServices;
     private final CDIRuntime cdiRuntime;
     private final CDIImpl cdi;
@@ -493,18 +496,44 @@ public class WebSphereCDIDeploymentImpl implements WebSphereCDIDeployment {
                 WebSphereBeanDeploymentArchive bda = getBeanDeploymentArchive(ProbeExtension.class);
                 extensionBDAs.put(bda.getId(), bda);
             }
-            extensions = extensionSet;
 
-            for (Extension spiExtension : spiExtensions) {
-                ExtensionMetaData metaData = new ExtensionMetaData(spiExtension);
-                extensionSet.add(metaData);
+            //Now add the extensions from the SPI.
+            //Because these are not in a META-INF Service file we have to construct instances
+            //to pass to weld. 
+            Set<String> spiExtensions = new HashSet<String>();
 
-                WebSphereBeanDeploymentArchive bda = getBeanDeploymentArchive(spiExtension.getClass());
-                extensionBDAs.put(bda.getId(), bda);
+            for (WebSphereBeanDeploymentArchive deploymentBDA : deploymentDBAs.values()) {
+                Set<String> spiExtensionClassNames = deploymentBDA.getSPIExtensionClassNames();
+
+                if (spiExtensionClassNames.isEmpty()) {
+                    continue;
+                }
+
+                extensionBDAs.put(deploymentBDA.getId(), deploymentBDA);
+
+                for (String spiExtensionClazzName : spiExtensionClassNames) {
+                    Extension spiExtension = null;
+    
+                    try {
+                        Class spiExtensionClazz = Class.forName(spiExtensionClazzName, true, deploymentBDA.getClassLoader());
+                    
+                        if (!Extension.class.isAssignableFrom(spiExtensionClazz)) {
+                            throw new IllegalArgumentException(spiExtensionClazz.getCanonicalName()
+                                                       + " was registered as an extension via the WebSphereCDIExtensionMetaData interface. But it does not implement javax.enterprise.inject.spi.Extension");
+                        }
+                    
+                        spiExtension = (Extension) spiExtensionClazz.getDeclaredConstructor().newInstance();
+                        ExtensionMetaData metaData = new ExtensionMetaData(spiExtension);
+                        extensionSet.add(metaData);
+                    } catch (Exception e) {
+                        Tr.error(tc, "spi.extension.failed.to.construct.CWOWB1010E", spiExtensionClazzName, e.toString());
+                    }
+                }
             }
 
             //Create an ordered list so we will find the extension bdas first in getBeanDeploymentArchiveFromClass
             initializeOrderedBeanDeploymentArchives();
+            extensions = extensionSet;
         }
         return extensions;
     }
@@ -695,11 +724,6 @@ public class WebSphereCDIDeploymentImpl implements WebSphereCDIDeployment {
     @Override
     public CDI<Object> getCDI() {
         return this.cdi;
-    }
-
-    @Override
-    public void registerSPIExtensions(Set<Extension> extensions) {
-        spiExtensions.addAll(extensions);
     }
 
 }

@@ -1,0 +1,57 @@
+#*******************************************************************************
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+src: \
+	fat/src,\
+	test-applications/batchFAT.war/src,\
+	test-applications/batchFAT.war/resources,\
+	test-applications/batchSecurity.war/src,\
+	test-applications/batchSecurity.war/resources,\
+	test-applications/fat.common/DbServletApp.war/src,\
+	test-applications/fat.common/DbServletApp.war/resources,\
+	test-applications/fat.common/BonusPayout.war/src,\
+	test-applications/fat.common/BonusPayout.war/resources
+
+fat.project: true
+
+tested.features: \
+    batch-2.0,\
+    batchmanagement-2.0,\
+    connectors-2.0,\
+    enterprisebeans-4.0,\
+    mdb-4.0,\
+    enterprisebeansremote-4.0,\
+    enterprisebeanshome-4.0,\
+    enterprisebeanslite-4.0,\
+    enterprisebeanspersistenttimer-4.0,\
+    jsonp-2.0
+
+# Dependencies may be local bundles (e.g. com.ibm.websphere.javaee.servlet.3.1)
+# or binaries from Artifactory (e.g. commons-logging:commons-logging)
+-buildpath: \
+	com.ibm.websphere.javaee.batch.1.0;version=latest,\
+	com.ibm.websphere.javaee.cdi.1.2;version=latest,\
+	com.ibm.websphere.javaee.ejb.3.2;version=latest,\
+	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
+	com.ibm.websphere.javaee.transaction.1.2;version=latest,\
+	com.ibm.websphere.javaee.jsonp.1.0;version=latest,\
+	com.ibm.websphere.security;version=latest,\
+	com.ibm.ws.org.apache.commons.io;version=latest,\
+	com.ibm.ws.common.encoder;version=latest,\
+	com.ibm.ws.jbatch.fat.common;version=latest,\
+	com.ibm.ws.security.jaas.common;version=latest,\
+	org.osgi.annotation.versioning;version=latest
+
+-testpath: \
+	com.ibm.ws.org.apache.commons.io;version=latest,\
+	com.ibm.ws.jbatch.fat.common;version=latest	

@@ -69,6 +69,10 @@ implicit.bean.scanning.disabled.CWOWB1009W=CWOWB1009W: \u5df2\u505c\u7528\u96b1\
 implicit.bean.scanning.disabled.CWOWB1009W.explanation=\u9664\u975e\u6709 beans.xml \u6a94\uff0c\u4e0d\u6703\u6383\u63cf\u4fdd\u5b58\u6a94\u5c0b\u627e CDI Bean\u3002
 implicit.bean.scanning.disabled.CWOWB1009W.useraction=\u8acb\u78ba\u5b9a\u4f7f\u7528 CDI \u7684\u6bcf\u4e00\u500b\u4fdd\u5b58\u6a94\u90fd\u6709 beans.xml \u6a94\uff0c\u6216\u5728 server.xml \u6a94\u4e2d\u91cd\u65b0\u555f\u7528\u96b1\u542b Bean \u6383\u63cf\u3002
 
-spi.extension.failed.to.construct.CWOWB1010E=CWOWB1010E: \u7121\u6cd5\u4f7f\u7528 SPI \u5efa\u7acb CDI \u5ef6\u4f38\u3002
-spi.extension.failed.to.construct.CWOWB1010E.explanation=\u7531\u65bc\u7570\u5e38\u72c0\u6cc1 {1}\uff0cCDI \u7121\u6cd5\u547c\u53eb\u5ef6\u4f38\u985e\u5225 {0} \u7684\u5efa\u69cb\u5b50\uff0c\u8a72\u5ef6\u4f38\u985e\u5225\u662f\u4f7f\u7528 CDIExtensionMetadata \u5be6\u4f5c\u7684 getExtensions() \u65b9\u6cd5\u9032\u884c\u767b\u9304\u3002
+spi.extension.failed.to.construct.CWOWB1010E=CWOWB1010E: \u56e0\u70ba\u7570\u5e38\u72c0\u6cc1 {1}\uff0c\u7121\u6cd5\u4f7f\u7528 SPI \u5efa\u7acb CDI \u5ef6\u4f38 {0}\u3002
+spi.extension.failed.to.construct.CWOWB1010E.explanation=CDI \u7121\u6cd5\u547c\u53eb\u4f7f\u7528 CDIExtensionMetadata \u5be6\u4f5c\u7684 getExtensions() \u65b9\u6cd5\u4f86\u767b\u9304\u4e4b\u5ef6\u4f38\u985e\u5225\u7684\u5efa\u69cb\u5b50\u3002
 spi.extension.failed.to.construct.CWOWB1010E.useraction=\u8acb\u4fee\u6b63\u963b\u6b62\u60a8\u7684\u5ef6\u4f38\u9032\u884c\u5be6\u4f8b\u5316\u7684\u932f\u8aa4\u3002
+
+spi.extension.class.in.different.bundle.CWOWB1011E=CWOWB1011E: \u900f\u904e CDI \u5ef6\u4f38 SPI \u6240\u767b\u9304\u7684 {0} \u985e\u5225\uff0c\u8207 CDIExtensionMetadata \u5be6\u4f5c\u4f4d\u65bc\u4e0d\u540c\u7684\u7d44\u5408\u3002
+spi.extension.class.in.different.bundle.CWOWB1011E.explanation=\u8a72\u985e\u5225\u4e88\u4ee5\u5ffd\u7565\uff0c\u56e0\u70ba\u5b83\u662f\u4f7f\u7528 CDIExtensionMetadata \u5be6\u4f5c\u7684 getExtensions() \u6216 getBeanClasses() \u65b9\u6cd5\u9032\u884c\u767b\u9304\uff0c\u800c\u4e14\u8207 CDIExtensionMetadata \u5be6\u4f5c\u4f4d\u65bc\u4e0d\u540c\u7684\u7d44\u5408\u3002
+spi.extension.class.in.different.bundle.CWOWB1011E.useraction=\u8acb\u79fb\u52d5\u53d7\u5f71\u97ff\u7684\u985e\u5225\uff0c\u6216\u662f\u5728\u6b63\u78ba\u7684\u7d44\u5408\u4e2d\u5efa\u7acb\u65b0\u7684 CDIExtensionMetadata \u5be6\u4f5c\u3002

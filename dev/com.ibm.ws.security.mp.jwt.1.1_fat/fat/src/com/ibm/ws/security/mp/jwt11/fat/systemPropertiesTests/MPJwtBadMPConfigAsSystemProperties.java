@@ -14,9 +14,10 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.ibm.ws.security.jwt.fat.mpjwt.MpJwtFatConstants;
-import com.ibm.ws.security.mp.jwt11.fat.sharedTests.MPJwt11MPConfigTests;
-import com.ibm.ws.security.mp.jwt11.fat.utils.MP11ConfigSettings;
+import com.ibm.ws.security.fat.common.mp.jwt.MPJwt11FatConstants;
+import com.ibm.ws.security.fat.common.mp.jwt.MPJwtFatConstants;
+import com.ibm.ws.security.fat.common.mp.jwt.sharedTests.MPJwt11MPConfigTests;
+import com.ibm.ws.security.fat.common.mp.jwt.utils.MP11ConfigSettings;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -49,7 +50,7 @@ public class MPJwtBadMPConfigAsSystemProperties extends MPJwt11MPConfigTests {
 
         setUpAndStartBuilderServer(jwtBuilderServer, "server_using_buildApp.xml");
 
-        MP11ConfigSettings mpConfigSettings = new MP11ConfigSettings("badKeyLocation", "badPublicKey", "badIssuer", MpJwtFatConstants.X509_CERT);
+        MP11ConfigSettings mpConfigSettings = new MP11ConfigSettings("badKeyLocation", "badPublicKey", "badIssuer", MPJwtFatConstants.X509_CERT);
 
         setUpAndStartRSServerForTests(resourceServer, "rs_server_AltConfigNotInApp_noServerXmlConfig.xml", mpConfigSettings, MPConfigLocation.SYSTEM_PROP);
 
@@ -68,8 +69,8 @@ public class MPJwtBadMPConfigAsSystemProperties extends MPJwt11MPConfigTests {
     public void MPJwtBadMPConfigAsSystemProperties_GoodMpJwtConfigSpecifiedInServerXml() throws Exception {
 
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_AltConfigNotInApp_goodServerXmlConfig.xml");
-        standard11TestFlow(resourceServer, MpJwtFatConstants.NO_MP_CONFIG_IN_APP_ROOT_CONTEXT,
-                         MpJwtFatConstants.NO_MP_CONFIG_IN_APP_APP, MpJwtFatConstants.MPJWT_APP_CLASS_NO_MP_CONFIG_IN_APP);
+        standard11TestFlow(resourceServer, MPJwtFatConstants.NO_MP_CONFIG_IN_APP_ROOT_CONTEXT,
+                           MPJwtFatConstants.NO_MP_CONFIG_IN_APP_APP, MPJwtFatConstants.MPJWT_APP_CLASS_NO_MP_CONFIG_IN_APP);
 
     }
 
@@ -85,9 +86,9 @@ public class MPJwtBadMPConfigAsSystemProperties extends MPJwt11MPConfigTests {
     @Test
     public void MPJwtBadMPConfigAsSystemProperties_MpJwtConfigNotSpecifiedInServerXml() throws Exception {
 
-        standard11TestFlow(resourceServer, MpJwtFatConstants.NO_MP_CONFIG_IN_APP_ROOT_CONTEXT,
-                         MpJwtFatConstants.NO_MP_CONFIG_IN_APP_APP, MpJwtFatConstants.MPJWT_APP_CLASS_NO_MP_CONFIG_IN_APP,
-                         setBadIssuerExpectations(resourceServer));
+        standard11TestFlow(resourceServer, MPJwt11FatConstants.NO_MP_CONFIG_IN_APP_ROOT_CONTEXT,
+                           MPJwtFatConstants.NO_MP_CONFIG_IN_APP_APP, MPJwtFatConstants.MPJWT_APP_CLASS_NO_MP_CONFIG_IN_APP,
+                           setBadIssuerExpectations(resourceServer));
 
     }
 

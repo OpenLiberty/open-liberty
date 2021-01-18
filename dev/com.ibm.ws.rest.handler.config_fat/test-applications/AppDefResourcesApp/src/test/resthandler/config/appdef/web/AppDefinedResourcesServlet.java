@@ -36,7 +36,7 @@ import componenttest.app.FATServlet;
 
 @ConnectionFactoryDefinition(name = "java:module/env/eis/cf1",
                              description = "It is Test ConnectionFactory",
-                             interfaceName = "javax.resource.cci.ConnectionFactory",
+                             interfaceName = "${env.CONNECTION_FACTORY}",
                              resourceAdapter = "ConfigTestAdapter",
                              transactionSupport = TransactionSupportLevel.NoTransaction,
                              maxPoolSize = 101,
@@ -100,7 +100,7 @@ import componenttest.app.FATServlet;
                                                                                   "temporaryQueueNamePrefix=cfq"
                                                                    }),
                                    @JMSConnectionFactoryDefinition(name = "java:module/env/jms/qcf",
-                                                                   interfaceName = "javax.jms.QueueConnectionFactory",
+                                                                   interfaceName = "${env.QUEUE_FACTORY}",
                                                                    resourceAdapter = "wasJms",
                                                                    maxPoolSize = 7,
                                                                    minPoolSize = 3,
@@ -117,7 +117,7 @@ import componenttest.app.FATServlet;
 })
 
 @JMSDestinationDefinition(name = "java:app/env/jms/queue1",
-                          interfaceName = "javax.jms.Queue",
+                          interfaceName = "${env.QUEUE_INTERFACE}",
                           resourceAdapter = "wasJms",
                           destinationName = "MyQueue",
                           properties = "readAhead=AlwaysOff")

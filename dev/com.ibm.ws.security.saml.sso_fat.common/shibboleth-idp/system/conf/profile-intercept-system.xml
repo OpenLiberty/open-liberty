@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:c="http://www.springframework.org/schema/c"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+                           http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd"
+                           
+       default-init-method="initialize"
+       default-destroy-method="destroy">
+
+    <import resource="../../conf/intercept/profile-intercept.xml" />
+
+    <!-- Parent bean for intercept interceptor flows. -->
+    <bean id="shibboleth.InterceptFlow" abstract="true"
+        class="net.shibboleth.idp.profile.interceptor.ProfileInterceptorFlowDescriptor" />
+
+    <!-- Parent bean defining built-in interceptors used for SAML security policy handling. -->
+    <bean id="shibboleth.DefaultInterceptFlows"
+            class="org.springframework.beans.factory.config.ListFactoryBean" abstract="true">
+        <property name="sourceList">
+            <list>
+                <bean id="intercept/security-policy/shibboleth-sso" parent="shibboleth.InterceptFlow" />
+                <bean id="intercept/security-policy/saml2-sso" parent="shibboleth.InterceptFlow" />
+                <bean id="intercept/security-policy/saml2-ecp" parent="shibboleth.InterceptFlow" />
+                <bean id="intercept/security-policy/saml2-slo" parent="shibboleth.InterceptFlow" />
+                <bean id="intercept/security-policy/saml2-idwsf-ssos" parent="shibboleth.InterceptFlow" />
+                <bean id="intercept/security-policy/saml-soap" parent="shibboleth.InterceptFlow" />
+            </list>
+        </property>
+    </bean>
+
+    <!-- Parent bean for attribute release consent flows. -->
+    <bean id="shibboleth.consent.AttributeReleaseFlow" abstract="true"
+            class="net.shibboleth.idp.consent.flow.ar.impl.AttributeReleaseFlowDescriptor"
+            p:storageService-ref="#{'%{idp.consent.StorageService:shibboleth.ClientPersistentStorageService}'.trim()}"
+            p:doNotRememberConsentAllowed="%{idp.consent.allowDoNotRemember:true}"
+            p:globalConsentAllowed="%{idp.consent.allowGlobal:true}"
+            p:perAttributeConsentEnabled="%{idp.consent.allowPerAttribute:false}"
+            p:compareValues="%{idp.consent.compareValues:false}"
+            p:lifetime="%{idp.consent.storageRecordLifetime:P1Y}"
+            p:maximumNumberOfStoredRecords="%{idp.consent.maxStoredRecords:10}"
+            p:expandedNumberOfStoredRecords="%{idp.consent.expandedMaxStoredRecords:0}"
+            p:expandedStorageThreshold="%{idp.consent.expandedStorageThreshold:1048576}"
+            p:nonBrowserSupported="false">
+        <property name="activationCondition">
+            <bean parent="shibboleth.Conditions.OR">
+                <constructor-arg>
+                    <bean parent="shibboleth.Conditions.NOT">
+                        <constructor-arg value="%{idp.consent.allowPerAttribute:false}" />
+                    </bean>
+                </constructor-arg>
+                <constructor-arg>
+                    <bean class="net.shibboleth.idp.saml.profile.config.logic.IncludeAttributeStatementPredicate" />
+                </constructor-arg>
+            </bean>
+        </property>
+    </bean>
+
+    <!-- Parent bean for terms of use consent flows. -->
+    <bean id="shibboleth.consent.TermsOfUseFlow" abstract="true"
+        class="net.shibboleth.idp.consent.flow.impl.ConsentFlowDescriptor"
+        p:storageService-ref="#{'%{idp.consent.StorageService:shibboleth.ClientPersistentStorageService}'.trim()}"
+        p:compareValues="%{idp.consent.compareValues:false}"
+        p:lifetime="%{idp.consent.storageRecordLifetime:P1Y}"
+        p:maximumNumberOfStoredRecords="%{idp.consent.maxStoredRecords:10}"
+        p:expandedNumberOfStoredRecords="%{idp.consent.expandedMaxStoredRecords:0}"
+        p:expandedStorageThreshold="%{idp.consent.expandedStorageThreshold:1048576}"
+        p:nonBrowserSupported="false" />
+
+    <!-- Function to lookup consent-specific audit context as a child of the consent context. -->
+    <bean id="shibboleth.consent.ChildLookup.ConsentAuditContext"
+        class="com.google.common.base.Functions" factory-method="compose">
+        <constructor-arg name="g">
+            <bean id="shibboleth.ChildLookup.AuditContext"
+                class="org.opensaml.messaging.context.navigate.ChildContextLookup"
+                c:type="#{ T(net.shibboleth.idp.profile.context.AuditContext) }"
+                c:createContext="true" />
+        </constructor-arg>
+        <constructor-arg name="f">
+            <bean id="shibboleth.ChildLookup.ConsentContext"
+                class="org.opensaml.messaging.context.navigate.ChildContextLookup"
+                c:type="#{ T(net.shibboleth.idp.consent.context.impl.ConsentContext) }" />
+        </constructor-arg>
+    </bean>
+
+    <!-- Default pre-consent audit extractors. -->
+    <bean id="shibboleth.consent.DefaultPreConsentAuditExtractors"
+            class="org.springframework.beans.factory.config.MapFactoryBean" abstract="true">
+        <property name="sourceMap">
+            <map>
+                <entry>
+                    <key>
+                        <util:constant static-field="net.shibboleth.idp.profile.IdPAuditFields.USERNAME"/>
+                    </key>
+                    <bean class="com.google.common.base.Functions" factory-method="compose"
+                        c:g-ref="shibboleth.PrincipalNameLookup.Subject"
+                        c:f-ref="shibboleth.ChildLookup.SubjectContext" />
+                </entry>
+                <entry>
+                    <key>
+                        <util:constant static-field="net.shibboleth.idp.saml.profile.SAMLAuditFields.SERVICE_PROVIDER"/>
+                    </key>
+                    <ref bean="shibboleth.RelyingPartyIdLookup.Simple" />
+                </entry>
+                <entry>
+                    <key>
+                        <util:constant static-field="net.shibboleth.idp.saml.profile.SAMLAuditFields.IDENTITY_PROVIDER"/>
+                    </key>
+                    <ref bean="shibboleth.ResponderIdLookup.Simple" />
+                </entry>
+            </map>
+        </property>
+    </bean>
+    
+    <!-- Default consent audit extractors. -->
+    <bean id="shibboleth.consent.DefaultConsentAuditExtractors"
+            class="org.springframework.beans.factory.config.MapFactoryBean" abstract="true">
+        <property name="sourceMap">
+            <map>
+                <entry>
+                    <key>
+                        <util:constant static-field="net.shibboleth.idp.consent.audit.impl.ConsentAuditFields.CURRENT_CONSENT_IDS" />
+                    </key>
+                    <bean class="net.shibboleth.idp.consent.audit.impl.CurrentConsentIdsAuditExtractor" />
+                </entry>
+                <entry>
+                    <key>
+                        <util:constant static-field="net.shibboleth.idp.consent.audit.impl.ConsentAuditFields.CURRENT_CONSENT_VALUES" />
+                    </key>
+                    <bean class="net.shibboleth.idp.consent.audit.impl.CurrentConsentValuesAuditExtractor" />
+                </entry>
+                <entry>
+                    <key>
+                        <util:constant static-field="net.shibboleth.idp.consent.audit.impl.ConsentAuditFields.CURRENT_CONSENT_IS_APPROVED" />
+                    </key>
+                    <bean class="net.shibboleth.idp.consent.audit.impl.CurrentConsentIsApprovedAuditExtractor" />
+                </entry>
+            </map>
+        </property>
+    </bean>
+
+    <!--
+    Defining this map of attribute names to numbers allows us to specify symbolic text
+    replacements that shrink the size of results saved to client-side storage such as cookies.
+    -->
+    <bean id="shibboleth.consent.DefaultAttributeSymbolics"
+        class="org.springframework.beans.factory.config.MapFactoryBean" abstract="true">
+        <property name="sourceMap">
+            <map>
+                <!-- Attribute resolver core schema attributes -->
+                <entry key="email" value="100" />
+                <entry key="homePhone" value="101" />
+                <entry key="homePostalAddress" value="102" />
+                <entry key="mobileNumber" value="103" />
+                <entry key="pagerNumber" value="104" />
+                <entry key="commonName" value="105" />
+                <entry key="surname" value="106" />
+                <entry key="locality" value="107" />
+                <entry key="stateProvince" value="108" />
+                <entry key="street" value="109" />
+                <entry key="organizationName" value="110" />
+                <entry key="organizationalUnit" value="111" />
+                <entry key="title" value="112" />
+                <entry key="postalAddress" value="113" />
+                <entry key="postalCode" value="114" />
+                <entry key="postOfficeBox" value="115" />
+                <entry key="telephoneNumber" value="116" />
+                <entry key="givenName" value="117" />
+                <entry key="initials" value="118" />
+                <!-- Attribute resolver inetOrgPerson attributes -->
+                <entry key="departmentNumber" value="200" />
+                <entry key="displayName" value="201" />
+                <entry key="employeeNumber" value="202" />
+                <entry key="employeeType" value="203" />
+                <entry key="jpegPhoto" value="204" />
+                <entry key="preferredLanguage" value="205" />
+                <!--  Attribute resolver eduPerson attributes -->
+                <entry key="eduPersonAffiliation" value="300" />
+                <entry key="eduPersonEntitlement" value="301" />
+                <entry key="eduPersonNickname" value="302" />
+                <entry key="eduPersonOrgDN" value="303" />
+                <entry key="eduPersonOrgUnitDN" value="304" />
+                <entry key="eduPersonPrimaryAffiliation" value="305" />
+                <entry key="eduPersonPrimaryOrgUnitDN" value="306" />
+                <entry key="eduPersonPrincipalName" value="307" />
+                <entry key="eduPersonScopedAffiliation" value="308" />
+                <entry key="eduPersonAssurance" value="309" />
+            </map>
+        </property>
+    </bean>
+
+</beans>

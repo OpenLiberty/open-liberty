@@ -19,10 +19,11 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 import org.testcontainers.containers.Db2Container;
 import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy;
+import org.testcontainers.utility.DockerImageName;
 
+import componenttest.containers.ExternalTestServiceDockerClientStrategy;
+import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
-import componenttest.topology.utils.SimpleLogConsumer;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -31,7 +32,10 @@ import componenttest.topology.utils.SimpleLogConsumer;
 })
 public class FATSuite {
 
-    public static Db2Container db2 = new Db2Container("aguibert/db2-ssl:1.0")
+    static final DockerImageName db2Image = DockerImageName.parse("aguibert/db2-ssl:1.0")
+                    .asCompatibleSubstituteFor("ibmcom/db2");
+
+    public static Db2Container db2 = new Db2Container(db2Image)
                     .acceptLicense()
                     .withUsername("db2inst1") // set in Dockerfile
                     .withPassword("password") // set in Dockerfile
@@ -47,7 +51,7 @@ public class FATSuite {
     @BeforeClass
     public static void beforeSuite() throws Exception {
         //Allows local tests to switch between using a local docker client, to using a remote docker client.
-        ExternalTestServiceDockerClientStrategy.clearTestcontainersConfig();
+        ExternalTestServiceDockerClientStrategy.setupTestcontainers();
 
         // Filter out any external docker servers in the 'libhpike' cluster
         ExternalTestServiceDockerClientStrategy.serviceFilter = (svc) -> {

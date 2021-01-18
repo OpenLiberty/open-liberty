@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -56,8 +56,8 @@ import com.ibm.ws.jaxws.metadata.PortComponentRefInfo;
 import com.ibm.ws.jaxws.metadata.WebServiceRefInfo;
 import com.ibm.ws.jaxws.security.JaxWsSecurityConfigurationService;
 import com.ibm.ws.jaxws.support.JaxWsMetaDataManager;
-import com.ibm.ws.jaxws.support.LibertyHTTPTransportFactory;
 import com.ibm.ws.jaxws.utils.JaxWsUtils;
+import com.ibm.ws.jaxws23.client.security.LibertyJaxWsClientSecurityOutInterceptor;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.runtime.metadata.ModuleMetaData;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
@@ -92,7 +92,7 @@ public class ServiceRefObjectFactory implements javax.naming.spi.ObjectFactory {
     protected void setSecurityConfigurationService(ServiceReference<JaxWsSecurityConfigurationService> serviceRef) {
         securityConfigSR.setReference(serviceRef);
         LibertyProviderImpl.setSecurityConfigService(securityConfigSR);
-        LibertyHTTPTransportFactory.setSecurityConfigService(securityConfigSR);
+        LibertyJaxWsClientSecurityOutInterceptor.setSecurityConfigService(securityConfigSR);
     }
 
     protected void unsetSecurityConfigurationService(ServiceReference<JaxWsSecurityConfigurationService> serviceRef) {
@@ -178,7 +178,7 @@ public class ServiceRefObjectFactory implements javax.naming.spi.ObjectFactory {
         Object instance = null;
 
         // First, obtain an instance of the JAX-WS Service class.
-        Service svc = null;
+        final Service svc;
 
         List<WebServiceFeature> originalWsFeatureList = LibertyProviderImpl.getWebServiceFeatures();
         WebServiceRefInfo originalWebServiceRefInfo = LibertyProviderImpl.getWebServiceRefInfo();
@@ -207,7 +207,12 @@ public class ServiceRefObjectFactory implements javax.naming.spi.ObjectFactory {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Creating a port instance based on class: " + tInfo.getServiceRefTypeClass().getName());
             }
-            instance = svc.getPort(typeClass);
+            instance = AccessController.doPrivileged(new PrivilegedAction<Object>() {
+                @Override
+                public Object run() {
+                    return svc.getPort(typeClass);
+                }
+            });
         } else {// Otherwise, this was just a normal Service-type injection so we'll return the service.
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Service instance created based on class: " + svc.getClass().getName());

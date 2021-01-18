@@ -37,5 +37,5 @@ fat.project: true
     com.ibm.ws.microprofile.openapi;version=latest,\
     com.ibm.websphere.org.eclipse.microprofile.openapi.1.0;version=latest
 
-tested.features: componenttest-2.0
+tested.features: componenttest-2.0, messagingserver-3.0, messaging-3.0, enterprisebeanslite-4.0, messagingclient-3.0
 

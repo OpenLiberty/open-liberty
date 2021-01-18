@@ -31,7 +31,9 @@ Export-Package:\
  jakarta.batch.runtime.context;version="2.0";provide:=true
  
 Import-Package: org.osgi.util.tracker,\
-	org.osgi.framework
+	org.osgi.framework,\
+	jakarta.inject;version="2.0",\
+	jakarta.enterprise.util;version="3.0"
 
 -includeresource: @${repo;jakarta.batch:jakarta.batch-api;2.0.0;EXACT}!/xsd/*.xsd
 
