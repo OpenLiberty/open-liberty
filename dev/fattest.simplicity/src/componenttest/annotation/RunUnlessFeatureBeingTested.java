@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package componenttest.custom.junit.runner;
+package componenttest.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -16,18 +16,15 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation for expressing that a test method or class should be
- * run only when the named feature is present in the target server.
+ * Annotation for expressing that a test method or class should not be
+ * run when the named feature is present in the target server.
  * 
  * Availability is determined by looking at system properties, rather than
  * the server configuration. Note that a system property only expresses
- * intent.  The presence of the feature in the server is not tested.
- * 
- * Deprecated.  Use instead {@link componenttest.annotation.RunIfFeatureBeingTested}. 
+ * intent.  The presence of the feature in the server is not tested. 
  */
-@Deprecated
 @Target({ ElementType.METHOD, ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
-public @interface RunIfFeatureBeingTested {
+public @interface RunUnlessFeatureBeingTested {
     String value();
 }

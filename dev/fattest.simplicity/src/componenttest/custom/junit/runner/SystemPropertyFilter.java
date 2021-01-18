@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,60 +15,95 @@ import org.junit.runner.manipulation.Filter;
 
 import com.ibm.websphere.simplicity.log.Log;
 import componenttest.annotation.SkipIfSysProp;
+import componenttest.annotation.Util;
 
+/**
+ * Filter based on system properties.
+ * 
+ * This filter uses annotation {@link SkipIfSysProp} to filter test
+ * classes and test methods.
+ * 
+ * The annotation may be placed as a class annotation and as a method
+ * annotation.  Placement as a method annotation overrides a class
+ * annotation, when one is also present.
+ * 
+ * The annotation provides a list of values which specify system
+ * properties which may be used to disable tests.
+ * See {@link #shouldRun(Description)} for more information.
+ */
 public class SystemPropertyFilter extends Filter {
-
-    /** {@inheritDoc} */
+    /**
+     * Answer a print string for this filter.
+     * 
+     * @return A print string for this filter.
+     */
     @Override
     public String describe() {
-        return null;
+        return "SystemPropertyFilter";
     }
 
     /**
-     * Like {@link Description#getTestClass}, but without initializing the class.
+     * Tell if a test method is to be run, based on the {@link SkipIfSysProp}
+     * annotation that applies to the test method.
+     * 
+     * A method annotation is used first, followed by a class annotation.
+     * 
+     * If neither annotation is present, true is returned, indicating that
+     * the test should not be skipped.
+     * 
+     * The annotation provides a list of values which specify system
+     * properties which may be used to disable tests.
+     * 
+     * The list of annotations values has two forms: Either, the annotation
+     * value has an embedded equals sign ('='), in which case the annotation
+     * specifies a system property name followed by a specific value of
+     * that system property which will disable the target of the annotation.
+     * Or, the annotation value does not contain an embedded equals sign.
+     * Then, the annotation value is a system property name, and if that
+     * system property has any assigned value the target of the annotation
+     * is skipped.
+     * 
+     * @param desc The description of the test method which is to be tested.
+     * 
+     * @return True or false, telling if the test method should be run.
      */
-    private Class<?> getTestClass(Description desc) {
-        try {
-            return Class.forName(desc.getClassName(), false, getClass().getClassLoader());
-        } catch (ClassNotFoundException e) {
-            return null;
-        }
-    }
-
-    /** {@inheritDoc} */
     @Override
     public boolean shouldRun(Description desc) {
-        SkipIfSysProp anno = desc.getAnnotation(SkipIfSysProp.class);
-        //method level annotations supersede any class level annotation
-        if (anno == null) {
-            //there was no method level annotation
-            //check for a test class level annotation
-            anno = getTestClass(desc).getAnnotation(SkipIfSysProp.class);
-        }
-
-        if (anno == null)
+        String methodName = "shouldRun";
+        
+        SkipIfSysProp anno = Util.getAnnotation(SkipIfSysProp.class, desc);
+        if ( anno == null ) {
             return true;
-
-        for (String sysProp : anno.value()) {
-            if (sysProp.contains("=")) {
-                // Only skip if the system prop is a certain value
-                String[] keyValue = sysProp.split("=");
-                String actualPropValue = System.getProperty(keyValue[0]);
-                if (keyValue[1].equalsIgnoreCase(actualPropValue)) {
-                    Log.info(SystemPropertyFilter.class, "shouldTestRun", "System property " + keyValue[0] + " was found with value=" + keyValue[1] +
-                                                                          "  The test " + desc.getDisplayName() + " will be skipped.");
+        }
+        
+        for ( String annoValue : anno.value() ) {
+            if ( annoValue.contains("=") ) {
+                // Only skip if the system property has the specified value.
+                String[] propNameAndValue = annoValue.split("=");
+                String propName = propNameAndValue[0];
+                String targetPropValue = propNameAndValue[1];
+                String actualPropValue = System.getProperty(propName);
+                if (targetPropValue.equalsIgnoreCase(actualPropValue)) {
+                    Log.info(SystemPropertyFilter.class, methodName,
+                        "System property " + propName + " has value " + actualPropValue + " but " + targetPropValue + " is required." +
+                        " The test " + desc.getDisplayName() + " will be skipped.");
                     return false;
                 }
             } else {
-                // Skip if the system prop is found at all
-                if (System.getProperty(sysProp) != null) {
-                    Log.info(SystemPropertyFilter.class, "shouldTestRun", "System property " + sysProp + " was found.  " +
-                                                                          " The test " + desc.getDisplayName() + " will be skipped.");
+                // Skip if any value is specified for the property
+                String propName = annoValue;
+                String actualPropValue = System.getProperty(annoValue); 
+                if ( actualPropValue != null ) {
+                    Log.info(SystemPropertyFilter.class, methodName,
+                        "System property " + propName + " has value " + actualPropValue + "." +
+                        " The test " + desc.getDisplayName() + " will be skipped.");
                     return false;
                 }
             }
         }
-        // No system properties were found indicating that a test should be skipped
+
+        // Do not skip: None of the annotation values matches a system property.
+
         return true;
     }
 }
