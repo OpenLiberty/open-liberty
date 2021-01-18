@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.sib.exception.SIResourceException;
 import com.ibm.ejs.ras.TraceNLS;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.sib.admin.ControllableType;
@@ -59,7 +60,7 @@ public class LocalQueuePoint extends AbstractRegisteredControlAdapter implements
 
   private ProducerInputHandler inputHandler;
   
-  private static final TraceNLS nls = TraceNLS.getTraceNLS(SIMPConstants.RESOURCE_BUNDLE);  
+  private static final TraceNLS nls = TraceNLS.getTraceNLS(LocalQueuePoint.class, SIMPConstants.RESOURCE_BUNDLE);  
 
   private static TraceComponent tc =
     SibTr.register(
@@ -100,28 +101,39 @@ public class LocalQueuePoint extends AbstractRegisteredControlAdapter implements
    * (non-Javadoc)
    * @see com.ibm.ws.sib.processor.runtime.SIMPLocalizationControllable#setDestinationHighMsgs(long)
    */
-  public void setDestinationHighMsgs(long newDestHighMsgs)
-  {
+  public void setDestinationHighMsgs(long newDestHighMsgs) throws SIResourceException {
+    final String methodName = "setDestinationHighMsgs";
     if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) 
-      SibTr.entry(tc, "setDestinationHighMsgs", new Long(newDestHighMsgs));
+      SibTr.entry(tc, methodName, new Long(newDestHighMsgs));
     
-    itemStream.setDestHighMsgs(newDestHighMsgs);
+    try {
+      itemStream.setDestHighMsgs(newDestHighMsgs);
+    } catch (MessageStoreException messageStoreException) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            SibTr.exit(tc, methodName, messageStoreException);
+        throw new SIResourceException(messageStoreException);
+    }
     
     if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) 
-      SibTr.exit(tc, "setDestinationHighMsgs");
+      SibTr.exit(tc, methodName);
   }
 
   /**
    * (non-Javadoc)
    * @see com.ibm.ws.sib.processor.runtime.SIMPLocalizationControllable#setDestinationLowMsgs(long)
    */
-  public void setDestinationLowMsgs(long newDestLowMsgs)
-  {
+  public void setDestinationLowMsgs(long newDestLowMsgs) throws SIResourceException {
+    final String methodName = "setDestinationLowMsgs";
     if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) 
-      SibTr.entry(tc, "setDestinationLowMsgs", new Long(newDestLowMsgs));
+      SibTr.entry(tc, methodName, new Long(newDestLowMsgs));
     
-    itemStream.setDestHighMsgs(newDestLowMsgs);
-    
+    try {
+        itemStream.setDestHighMsgs(newDestLowMsgs);
+    } catch (MessageStoreException messageStoreException) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            SibTr.exit(tc, methodName, messageStoreException);
+        throw new SIResourceException(messageStoreException);
+    }
     if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) 
       SibTr.exit(tc, "setDestinationLowMsgs");
   }

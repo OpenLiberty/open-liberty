@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -61,7 +61,7 @@ public final class PubSubMessageItemStream extends BaseMessageItemStream
      * NLS for component
      */
     static final TraceNLS nls =
-                    TraceNLS.getTraceNLS(SIMPConstants.RESOURCE_BUNDLE);
+                    TraceNLS.getTraceNLS(PubSubMessageItemStream.class, SIMPConstants.RESOURCE_BUNDLE);
 
     /**
      * A snap-shot of the localization information we were last passed
@@ -203,9 +203,9 @@ public final class PubSubMessageItemStream extends BaseMessageItemStream
         initializeNonPersistent(destinationHandler);
         // If message depth intervals are configured, set the MsgStore watermarks
         // accordinly (510343)
-        setDestMsgInterval();
-        try
-        {
+       
+        try {
+            setDestMsgInterval();
             // F001338-55330
             // getStatistics() inturn will load all the metadata related to the
             // destination.With the introduction of the feature F001338-55330 this
@@ -464,7 +464,7 @@ public final class PubSubMessageItemStream extends BaseMessageItemStream
      * 
      * @param localizationDefinition
      */
-    public void updateLocalizationDefinition(LocalizationDefinition newLocalizationDefinition)
+    public void updateLocalizationDefinition(LocalizationDefinition newLocalizationDefinition) throws MessageStoreException
     {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(tc, "updateLocalizationDefinition", newLocalizationDefinition);
@@ -595,7 +595,7 @@ public final class PubSubMessageItemStream extends BaseMessageItemStream
     }
 
     @Override
-    public void setDestHighMsgs(long newDestHighMsgs)
+    public void setDestHighMsgs(long newDestHighMsgs) throws MessageStoreException
     {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(tc, "setDestHighMsgs", Long.valueOf(newDestHighMsgs));

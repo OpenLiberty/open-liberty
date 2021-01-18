@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -62,7 +62,7 @@ public abstract class PtoPMessageItemStream extends BaseMessageItemStream
       
  
   private static final TraceNLS nls =
-    TraceNLS.getTraceNLS(SIMPConstants.RESOURCE_BUNDLE);
+    TraceNLS.getTraceNLS(PtoPMessageItemStream.class, SIMPConstants.RESOURCE_BUNDLE);
  
   /**
    * Persistent data version number.
@@ -162,20 +162,17 @@ public abstract class PtoPMessageItemStream extends BaseMessageItemStream
    * 
    * @param destinationHandler to use in reconstitution
    */    
-  public void reconstitute(BaseDestinationHandler destinationHandler)
-  throws SIResourceException
+  public void reconstitute(BaseDestinationHandler destinationHandler) throws SIResourceException
   {
     if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
       SibTr.entry(tc, "reconstitute", destinationHandler); 
       
     initializeNonPersistent(destinationHandler);
     
-    // If message depth intervals are configured, set the MsgStore watermarks
-    // accordinly (510343)
-    setDestMsgInterval();
-
-    try
-    {
+    try {
+        // If message depth intervals are configured, set the MsgStore watermarks accordinly (510343)
+        setDestMsgInterval();
+        
       // F001338-55330
       // getStatistics() inturn will load all the metadata related to the
       // destination.With the introduction of the feature F001338-55330 this
@@ -184,13 +181,12 @@ public abstract class PtoPMessageItemStream extends BaseMessageItemStream
       if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
         SibTr.exit(tc, "reconstitute - counts total items, available items",
             new Object[] { new Long(statistics.getTotalItemCount()), new Long(statistics.getAvailableItemCount()) });
-    }
-    catch (MessageStoreException e)
-    {
-      // No FFDC code needed
-      SibTr.exit(tc, "reconstitute", e);
-    }     
     
+    } catch (MessageStoreException e) {
+        // No FFDC code needed
+        SibTr.exit(tc, "reconstitute", e);
+        throw new SIResourceException(e);
+    }         
   }     
   
   /**
@@ -969,7 +965,7 @@ public abstract class PtoPMessageItemStream extends BaseMessageItemStream
        SibTr.exit(tc, "getActiveTransactions");
    }
    
-   public long getTotalMsgCount()
+   public long getTotalMsgCount() throws MessageStoreException
    {
      if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
        SibTr.entry(tc, "getTotalMsgCount");
@@ -979,16 +975,17 @@ public abstract class PtoPMessageItemStream extends BaseMessageItemStream
      {
        count = getStatistics().getTotalItemCount();
      }
-     catch(MessageStoreException e)
+     catch(MessageStoreException messageStoreException)
      {
        // FFDC
        FFDCFilter.processException(
-           e,
+           messageStoreException,
            "com.ibm.ws.sib.processor.impl.store.itemstreams.PtoPMessageItemStream.getTotalMsgCount",
            "1:1021:1.93.1.14",
            this);  
        
-       SibTr.exception(tc, e);
+       SibTr.exception(tc, messageStoreException);
+       throw messageStoreException;
      }  
      
      if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())

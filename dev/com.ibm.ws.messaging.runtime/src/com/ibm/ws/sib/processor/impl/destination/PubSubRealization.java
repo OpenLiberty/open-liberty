@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -112,7 +112,7 @@ public class PubSubRealization
 
     /** NLS for component */
     static final TraceNLS nls =
-                    TraceNLS.getTraceNLS(SIMPConstants.RESOURCE_BUNDLE);
+                    TraceNLS.getTraceNLS(PubSubRealization.class, SIMPConstants.RESOURCE_BUNDLE);
 
     /**
      * For PubSub messages that are to be sent to Neighbouring ME's
@@ -1972,7 +1972,7 @@ public class PubSubRealization
      * Add PubSubLocalisation.
      * 
      */
-    public void addPubSubLocalisation(LocalizationDefinition destinationLocalizationDefinition)
+    public void addPubSubLocalisation(LocalizationDefinition destinationLocalizationDefinition) throws SIResourceException
     {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(
@@ -1980,11 +1980,16 @@ public class PubSubRealization
                         "addPubSubLocalisation",
                         new Object[] { destinationLocalizationDefinition });
 
-        _pubsubMessageItemStream.updateLocalizationDefinition(
-                        destinationLocalizationDefinition);
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.exit(tc, "addPubSubLocalisation");
+        try {
+            _pubsubMessageItemStream.updateLocalizationDefinition(
+                                     destinationLocalizationDefinition);
+        } catch (MessageStoreException messageStoreException) {
+            SibTr.exception(tc, messageStoreException);
+            throw new SIResourceException(messageStoreException);
+        } finally {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                SibTr.exit(tc, "addPubSubLocalisation");
+        }
 
     }
 
@@ -2364,19 +2369,22 @@ public class PubSubRealization
         return _pubsubMessageItemStream;
     }
 
-    public void updateLocalisationDefinition(LocalizationDefinition destinationLocalizationDefinition)
+    public void updateLocalisationDefinition(LocalizationDefinition destinationLocalizationDefinition) throws SIResourceException
     {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(
                         tc,
                         "updateLocalisationDefinition",
                         new Object[] { destinationLocalizationDefinition });
-
-        _pubsubMessageItemStream.updateLocalizationDefinition(
-                        destinationLocalizationDefinition);
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.exit(tc, "updateLocalisationDefinition");
+        try {
+            _pubsubMessageItemStream.updateLocalizationDefinition(destinationLocalizationDefinition);
+        } catch (MessageStoreException messageStoreException) {
+            SibTr.exception(tc, messageStoreException);
+            throw new SIResourceException(messageStoreException);
+        } finally {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                SibTr.exit(tc, "updateLocalisationDefinition");
+        }
     }
 
     /**

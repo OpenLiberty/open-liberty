@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,6 +9,8 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.sib.processor.runtime;
+
+import com.ibm.websphere.sib.exception.SIResourceException;
 
 /**
  * 
@@ -51,8 +53,9 @@ public interface SIMPLocalTopicSpaceControllable extends SIMPControllable
    * This value is not persisted.
    * 
    * @param arg The high messages threshold for this localization.
+ * @throws SIResourceException 
    */
-  public void setDestinationHighMsgs(long arg);
+  public void setDestinationHighMsgs(long arg) throws SIResourceException;
   
   /**
    * Allows the caller to stop this localization accepting further messages

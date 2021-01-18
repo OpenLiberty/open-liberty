@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -77,9 +77,9 @@ public class JSPtoPRealization extends AbstractProtoRealization implements PtoPR
 
     /** NLS for component */
     static final TraceNLS nls =
-                    TraceNLS.getTraceNLS(SIMPConstants.RESOURCE_BUNDLE);
+                    TraceNLS.getTraceNLS(JSPtoPRealization.class, SIMPConstants.RESOURCE_BUNDLE);
     private static final TraceNLS nls_cwsik =
-                    TraceNLS.getTraceNLS(SIMPConstants.CWSIK_RESOURCE_BUNDLE);
+                    TraceNLS.getTraceNLS(JSPtoPRealization.class, SIMPConstants.CWSIK_RESOURCE_BUNDLE);
 
     /**
      * If the destination is localised on this ME, pToPLocalMsgsItemStream
@@ -864,10 +864,16 @@ public class JSPtoPRealization extends AbstractProtoRealization implements PtoPR
         }
         else
         {
+            try {
             //The destination localisation definition is stored off the itemstream that
             //holds the local destination localisations messages
             _pToPLocalMsgsItemStream.updateLocalizationDefinition(
                             (LocalizationDefinition) destinationLocalizationDefinition);
+            } catch (MessageStoreException messageStoreException) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                    SibTr.exit(tc, "updateLocalisationDefinition", messageStoreException);
+                throw new SIResourceException(messageStoreException);
+            }
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
@@ -1469,10 +1475,10 @@ public class JSPtoPRealization extends AbstractProtoRealization implements PtoPR
      * @return
      */
     @Override
-    public int checkAbleToSend()
-    {
+    public int checkAbleToSend() {
+        final String methodName = "checkAbleToSend";
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.entry(tc, "checkAbleToSend", this);
+            SibTr.entry(tc, methodName, this);
 
         int result = DestinationHandler.OUTPUT_HANDLER_NOT_FOUND;
 
@@ -1484,20 +1490,27 @@ public class JSPtoPRealization extends AbstractProtoRealization implements PtoPR
         if (_baseDestinationHandler.isMQLink() || !_baseDestinationHandler.isLink())
             isSendAllowedOnLocalization = _pToPLocalMsgsItemStream.isSendAllowed();
 
-        // Check if the queue point is send allowed (which can be set at the individual
-        // message point level)
-        if (!isSendAllowedOnLocalization)
-            result = DestinationHandler.OUTPUT_HANDLER_SEND_ALLOWED_FALSE;
-        else if (_pToPLocalMsgsItemStream != null)
-        {
-            if (!_pToPLocalMsgsItemStream.isQFull())
-                result = DestinationHandler.OUTPUT_HANDLER_FOUND;
-            else
-                result = DestinationHandler.OUTPUT_HANDLER_ALL_HIGH_LIMIT;
+        try {
+            // Check if the queue point is send allowed (which can be set at the individual
+            // message point level)
+            if (!isSendAllowedOnLocalization)
+                result = DestinationHandler.OUTPUT_HANDLER_SEND_ALLOWED_FALSE;
+            
+            else if (_pToPLocalMsgsItemStream != null) {
+                if (!_pToPLocalMsgsItemStream.isQFull())
+                    result = DestinationHandler.OUTPUT_HANDLER_FOUND;
+                else
+                    result = DestinationHandler.OUTPUT_HANDLER_ALL_HIGH_LIMIT;
+            }
+        
+        } catch (MessageStoreException messageStoreException) {               
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                SibTr.exception(this, tc, messageStoreException);
+            result = DestinationHandler.OUTPUT_HANDLER_NOT_FOUND;
         }
-
+        
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.exit(tc, "checkAbleToSend", Integer.valueOf(result));
+            SibTr.exit(tc, methodName, Integer.valueOf(result));
         return result;
     }
 

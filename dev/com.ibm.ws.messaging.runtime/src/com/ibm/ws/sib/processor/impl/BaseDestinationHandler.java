@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -135,7 +135,7 @@ public class BaseDestinationHandler
 
     /** NLS for component */
     static final TraceNLS nls =
-                    TraceNLS.getTraceNLS(SIMPConstants.RESOURCE_BUNDLE);
+                    TraceNLS.getTraceNLS(BaseDestinationHandler.class, SIMPConstants.RESOURCE_BUNDLE);
 
     /** Persistent data version number. */
     private static final int PERSISTENT_VERSION = 1;
@@ -1002,17 +1002,25 @@ public class BaseDestinationHandler
      */
     @Override
     public int checkCanAcceptMessage(SIBUuid8 MEUuid, HashSet<SIBUuid8> scopedMEs)
-    {
+    { 
+        final String methodName = "checkCanAcceptMessage";
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.entry(tc, "checkCanAcceptMessage", new Object[] { MEUuid, scopedMEs });
+            SibTr.entry(tc, methodName, new Object[] { MEUuid, scopedMEs });
 
         int returnValue = OUTPUT_HANDLER_FOUND;
 
         // A topic space has a single itemStream for all its messages, check it
         if (isPubSub())
         {
-            if (getPublishPoint().isQHighLimit())
-                returnValue = OUTPUT_HANDLER_ALL_HIGH_LIMIT;
+            try {
+                if (getPublishPoint().isQHighLimit())
+                    returnValue = OUTPUT_HANDLER_ALL_HIGH_LIMIT;
+                
+            } catch (MessageStoreException messageStoreException) {               
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                    SibTr.exception(this, tc, messageStoreException);
+                returnValue = OUTPUT_HANDLER_NOT_FOUND;
+            }
         }
         // A queue (or link) has a pot per outputHandler (including a local consumerDispatcher)
         // so check them all
@@ -1022,7 +1030,7 @@ public class BaseDestinationHandler
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.exit(tc, "checkCanAcceptMessage", Integer.valueOf(returnValue));
+            SibTr.exit(tc, methodName, Integer.valueOf(returnValue));
         return returnValue;
     }
 
@@ -1039,8 +1047,9 @@ public class BaseDestinationHandler
     public int checkPtoPOutputHandlers(SIBUuid8 fixedMEUuid,
                                        HashSet<SIBUuid8> scopedMEs)
     {
+        final String methodName = "checkPtoPOutputHandlers";
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.entry(tc, "checkPtoPOutputHandlers",
+            SibTr.entry(tc, methodName,
                         new Object[] { this,
                                       fixedMEUuid,
                                       scopedMEs });
@@ -1088,7 +1097,7 @@ public class BaseDestinationHandler
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.exit(tc, "checkPtoPOutputHandlers", Integer.valueOf(result));
+            SibTr.exit(tc, methodName, Integer.valueOf(result));
         return result;
     }
 
@@ -2009,19 +2018,20 @@ public class BaseDestinationHandler
      * Add PubSubLocalisation.
      * 
      */
-    protected void addPubSubLocalisation(
-                                         LocalizationDefinition destinationLocalizationDefinition)
+    protected void addPubSubLocalisation(LocalizationDefinition destinationLocalizationDefinition) throws SIResourceException
     {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(tc, "addPubSubLocalisation",
                         new Object[] {
                         destinationLocalizationDefinition });
 
-        _pubSubRealization.addPubSubLocalisation(destinationLocalizationDefinition);
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.exit(tc, "addPubSubLocalisation");
-
+        try {
+            _pubSubRealization.addPubSubLocalisation(destinationLocalizationDefinition);
+       
+        } finally {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                SibTr.exit(tc, "addPubSubLocalisation");
+        }
     }
 
     /**

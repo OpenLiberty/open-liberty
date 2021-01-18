@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -44,7 +44,7 @@ public interface LocalizationPoint extends ControllableResource
   /**
    * @return
    */
-  public boolean isQHighLimit();
+  public boolean isQHighLimit() throws MessageStoreException;
   /**
    * @return
    */
@@ -59,7 +59,7 @@ public interface LocalizationPoint extends ControllableResource
   /**
    * @return
    */
-  public boolean isQLowLimit();
+  public boolean isQLowLimit() throws MessageStoreException;
   
   /**
    * @return a long for the age of the oldest message on the queue 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -59,7 +59,7 @@ public class PtoPLocalMsgsItemStream extends PtoPMessageItemStream
      * NLS for component
      */
     private static final TraceNLS nls =
-                    TraceNLS.getTraceNLS(SIMPConstants.RESOURCE_BUNDLE);
+                    TraceNLS.getTraceNLS(PtoPLocalMsgsItemStream.class, SIMPConstants.RESOURCE_BUNDLE);
 
     /**
      * A snap-shot of the localization information we were last passed
@@ -545,8 +545,7 @@ public class PtoPLocalMsgsItemStream extends PtoPMessageItemStream
      * 
      * @param localizationDefinition Has no effect if null is passed.
      */
-    public void updateLocalizationDefinition(
-                                             LocalizationDefinition newLocalizationDefinition)
+    public void updateLocalizationDefinition(LocalizationDefinition newLocalizationDefinition) throws MessageStoreException
     {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(tc, "updateLocalizationDefinition", newLocalizationDefinition);
@@ -717,7 +716,7 @@ public class PtoPLocalMsgsItemStream extends PtoPMessageItemStream
      * @return true if destination is advertised on WLM
      */
     @Override
-    public void notifyClients()
+    public void notifyClients() throws MessageStoreException
     {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(tc, "notifyClients");

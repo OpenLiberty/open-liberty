@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -112,7 +112,7 @@ public class ConsumerDispatcher
 
     // NLS for component
     private static final TraceNLS nls =
-                    TraceNLS.getTraceNLS(SIMPConstants.RESOURCE_BUNDLE);
+                    TraceNLS.getTraceNLS(ConsumerDispatcher.class, SIMPConstants.RESOURCE_BUNDLE);
 
     /**
      * If the destination is pub-sub then this ConsumerDispatcher represents a subscription.
@@ -3039,16 +3039,22 @@ public class ConsumerDispatcher
      * @return boolean true if this outputhandler's itemstream has reached QHighMessages
      */
     @Override
-    public boolean isQHighLimit()
+    public boolean isQHighLimit() throws SIResourceException
     {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(tc, "isQHighLimit");
 
-        boolean limited = itemStream.isQHighLimit();
-
+        boolean limited = false;
+        try {
+           limited = itemStream.isQHighLimit();
+        } catch (MessageStoreException messageStoreException) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                SibTr.exit(tc, "isQHighLimit", messageStoreException);
+            throw new SIResourceException(messageStoreException);
+        }
+        
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.exit(tc, "isQHighLimit", Boolean.valueOf(limited));
-
         return limited;
     }
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -99,7 +99,7 @@ public final class PtoPOutputHandler
 {
   // NLS for component
   private static final TraceNLS nls =
-    TraceNLS.getTraceNLS(SIMPConstants.RESOURCE_BUNDLE);
+    TraceNLS.getTraceNLS(PtoPOutputHandler.class, SIMPConstants.RESOURCE_BUNDLE);
 
   private static final TraceComponent tc =
     SibTr.register(
@@ -2492,12 +2492,20 @@ public final class PtoPOutputHandler
   /**  
    * @return boolean true if this outputhandler's itemstream has reached QHighMessages
    */
-  public boolean isQHighLimit()
-  {
+  @Override
+  public boolean isQHighLimit() throws SIResourceException {
     if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
       SibTr.entry(tc, "isQHighLimit");
 
-    boolean limited = transmissionItemStream.isQHighLimit();
+    boolean limited = false; 
+    try {
+      limited = transmissionItemStream.isQHighLimit();
+    } catch (MessageStoreException messageStoreException) {
+        //No FFDC code needed
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            SibTr.exit(tc, "isQHighLimit", messageStoreException);
+        throw new SIResourceException(messageStoreException);
+    }
     
     // Update health state if necessary
     if (limited && !_qHigh)
@@ -2512,16 +2520,32 @@ public final class PtoPOutputHandler
         {
           if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(tc, "alarm");
-          if (!isQHighLimit())
-          {
-            _qHigh = false;
-            sourceStreamManager
-            .getStreamSetRuntimeControl()
-            .getHealthState().updateHealth(HealthStateListener.STREAM_FULL_STATE, 
-                                           HealthState.GREEN);
+          
+          try {
+              if (!isQHighLimit())
+              {
+                  _qHigh = false;
+                  sourceStreamManager
+                  .getStreamSetRuntimeControl()
+                  .getHealthState().updateHealth(HealthStateListener.STREAM_FULL_STATE, 
+                                                 HealthState.GREEN);
+              }
+              else
+                  am.create(SIMPConstants.HEALTH_QHIGH_TIMEOUT, this);
+          } catch (SIResourceException siResourceException) {
+              // FFDC
+              FFDCFilter.processException(
+                siResourceException,
+                "com.ibm.ws.sib.processor.impl.PtoPOutputHandler.siResourceException",
+                "1:2740:1.241",
+                this);
+            // We cannot determine the Queue depth, and are unlikely to be able to do so in the future.
+            // This situation could conceivably arise if the underlying item stream is removed from the store, for example. 
+            sourceStreamManager.getStreamSetRuntimeControl()
+                               .getHealthState()
+                               .updateHealth(HealthStateListener.STREAM_FULL_STATE, HealthState.RED);
           }
-          else
-            am.create(SIMPConstants.HEALTH_QHIGH_TIMEOUT, this);   
+
           if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.exit(tc, "alarm");
         }        

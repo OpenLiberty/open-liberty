@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -44,7 +44,7 @@ public abstract class BaseMessageItemStream extends SIMPItemStream
                                    SIMPConstants.RESOURCE_BUNDLE);
 
     private static final TraceNLS nls =
-                    TraceNLS.getTraceNLS(SIMPConstants.RESOURCE_BUNDLE);
+                    TraceNLS.getTraceNLS(BaseMessageItemStream.class, SIMPConstants.RESOURCE_BUNDLE);
 
     protected ControlAdapter controlAdapter;
     /**
@@ -190,7 +190,7 @@ public abstract class BaseMessageItemStream extends SIMPItemStream
      * 
      * @param newDestHighMsgs
      */
-    public void setDestHighMsgs(long newDestHighMsgs)
+    public void setDestHighMsgs(long newDestHighMsgs) throws MessageStoreException
     {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(tc, "setDestHighMsgs", Long.valueOf(newDestHighMsgs));
@@ -207,7 +207,7 @@ public abstract class BaseMessageItemStream extends SIMPItemStream
      * 
      * @param newDestLowMsgs
      */
-    public void setDestLowMsgs(long newDestLowMsgs)
+    public void setDestLowMsgs(long newDestLowMsgs) throws MessageStoreException
     {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(tc, "setDestLowMsgs", Long.valueOf(newDestLowMsgs));
@@ -226,7 +226,7 @@ public abstract class BaseMessageItemStream extends SIMPItemStream
      * @param newDestLow
      */
     protected synchronized void setDestLimits(long newDestHighMsgs,
-                                              long newDestLowMsgs)
+                                              long newDestLowMsgs) throws MessageStoreException
     {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(tc, "setDestLimits",
@@ -288,7 +288,7 @@ public abstract class BaseMessageItemStream extends SIMPItemStream
      * accordinly (510343)
      * 
      */
-    public synchronized void setDestMsgInterval()
+    public synchronized void setDestMsgInterval() throws MessageStoreException
     {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(tc, "setDestMsgInterval");
@@ -333,12 +333,12 @@ public abstract class BaseMessageItemStream extends SIMPItemStream
             SibTr.exit(tc, "setDestMsgInterval");
     }
 
-    public abstract long getTotalMsgCount();
+    public abstract long getTotalMsgCount() throws MessageStoreException;
 
     /**
      * @return boolean true if this itemstream has reached destinationHighMsgs
      */
-    public boolean isQHighLimit()
+    public boolean isQHighLimit() throws MessageStoreException
     {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(tc, "isQHighLimit");
@@ -365,7 +365,7 @@ public abstract class BaseMessageItemStream extends SIMPItemStream
      *         the destination Low limit. If this has not been set, we compliment
      *         the q_high limit
      */
-    public boolean isQLowLimit()
+    public boolean isQLowLimit() throws MessageStoreException
     {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(tc, "isQLowLimit");
@@ -397,7 +397,7 @@ public abstract class BaseMessageItemStream extends SIMPItemStream
     /**
      * @return boolean true if this itemstream has reached destinationHighMsgs
      */
-    public boolean isQFull()
+    public boolean isQFull() throws MessageStoreException
     {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(tc, "isQFull");
@@ -435,7 +435,7 @@ public abstract class BaseMessageItemStream extends SIMPItemStream
      * 
      * @return true if destination is advertised on WLM
      */
-    public void notifyClients()
+    public void notifyClients() throws MessageStoreException
     {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(tc, "notifyClients");
@@ -539,7 +539,7 @@ public abstract class BaseMessageItemStream extends SIMPItemStream
      * @see com.ibm.ws.sib.msgstore.ItemStream#eventWatermarkBreached()
      */
     @Override
-    public synchronized void eventWatermarkBreached() {
+    public synchronized void eventWatermarkBreached() throws MessageStoreException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(tc, "eventWatermarkBreached");
 

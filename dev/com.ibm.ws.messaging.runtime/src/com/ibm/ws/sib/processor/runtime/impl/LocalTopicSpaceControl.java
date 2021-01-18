@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
 package com.ibm.ws.sib.processor.runtime.impl;
 
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.sib.exception.SIResourceException;
 import com.ibm.ejs.ras.TraceNLS;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.sib.admin.ControllableType;
@@ -46,7 +47,7 @@ public class LocalTopicSpaceControl extends AbstractRegisteredControlAdapter
 
 
 	private static final TraceNLS nls = TraceNLS
-			.getTraceNLS(SIMPConstants.RESOURCE_BUNDLE);
+			.getTraceNLS(LocalTopicSpaceControl.class, SIMPConstants.RESOURCE_BUNDLE);
 
 	public LocalTopicSpaceControl(MessageProcessor messageProcessor,
 			PubSubMessageItemStream itemStream) {
@@ -240,17 +241,22 @@ public class LocalTopicSpaceControl extends AbstractRegisteredControlAdapter
 	 * 
 	 * @see com.ibm.ws.sib.processor.runtime.SIMPLocalTopicSpaceControllable#setDestinationHighMsgs(long)
 	 */
-	public void setDestinationHighMsgs(long newDestHighMsgs) {
-		if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-			SibTr
-					.entry(tc, "setDestinationHighMsgs", new Long(
-							newDestHighMsgs));
-
-		itemStream.setDestHighMsgs(newDestHighMsgs);
-
-		if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-			SibTr.exit(tc, "setDestinationHighMsgs");
-	}
+    public void setDestinationHighMsgs(long newDestHighMsgs) throws SIResourceException {
+        final String methodName = "setDestinationHighMsgs";
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            SibTr.entry(tc, methodName, new Long(newDestHighMsgs));
+        
+        try {
+            itemStream.setDestHighMsgs(newDestHighMsgs);
+        } catch (MessageStoreException messageStoreException) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                SibTr.exit(tc, methodName, messageStoreException);
+            throw new SIResourceException(messageStoreException);
+        }
+        
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            SibTr.exit(tc, methodName);
+    }
 
 	/**
 	 * @see com.ibm.ws.sib.processor.runtime.SIMPLocalTopicSpaceControllable#getDestinationHighMsgs()
