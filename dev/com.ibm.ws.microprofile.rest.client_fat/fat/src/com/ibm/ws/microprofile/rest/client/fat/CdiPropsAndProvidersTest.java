@@ -74,8 +74,8 @@ public class CdiPropsAndProvidersTest extends FATServletClient {
             assertTrue("Did not find expected @Dependent interface injected into @RequestScoped bean in CWWKW0750I message: " + requestScopedIntfMsg,
                        requestScopedIntfMsg.contains(UnusedClient.class.getName() + "(" + UnusedBeanWithMPRestClient.class.getName() + ")"));
         } finally {
-            server.stopServer();
-            remoteAppServer.stopServer();
+            server.stopServer("CWWKE1102W");  //ignore server quiesce timeouts due to slow test machines
+            remoteAppServer.stopServer("CWWKE1102W");
         }
     }
 }

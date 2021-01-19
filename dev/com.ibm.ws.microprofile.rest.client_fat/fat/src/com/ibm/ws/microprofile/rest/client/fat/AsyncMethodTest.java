@@ -70,7 +70,8 @@ public class AsyncMethodTest extends FATServletClient {
             assertTrue("Found JsonBProvider errors in log file", 
                        jsonbProviderErrors == null || jsonbProviderErrors.isEmpty());
         } finally {
-            server.stopServer("CWWKF0033E"); //ignore this error for mismatch with jsonb-1.0 and Java EE 7
+            server.stopServer("CWWKE1102W",  //ignore server quiesce timeouts due to slow test machines
+                              "CWWKF0033E"); //ignore this error for mismatch with jsonb-1.0 and Java EE 7
         }
     }
 }

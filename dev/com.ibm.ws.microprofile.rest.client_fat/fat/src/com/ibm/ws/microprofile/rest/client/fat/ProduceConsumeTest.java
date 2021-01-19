@@ -55,6 +55,6 @@ public class ProduceConsumeTest extends FATServletClient {
 
     @AfterClass
     public static void afterClass() throws Exception {
-        server.stopServer(/*"CWWKF0033E"*/); //ignore this error for mismatch with jsonb-1.0 and Java EE 7
+        server.stopServer("CWWKE1102W");  //ignore server quiesce timeouts due to slow test machines
     }
 }
