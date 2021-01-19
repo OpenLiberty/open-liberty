@@ -716,7 +716,7 @@ public class JspOptions {
             //check for the right values..true need to be changed
             try {
                 int temp = Integer.parseInt(prepareJSPThreadCount);
-                this.prepareJSPThreadCount =temp;
+                this.prepareJSPThreadCount = temp;
             } catch (java.lang.NumberFormatException nfex) {
                 if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.INFO)) {
                     logger.logp(Level.INFO, CLASS_NAME, "populateOptions",
