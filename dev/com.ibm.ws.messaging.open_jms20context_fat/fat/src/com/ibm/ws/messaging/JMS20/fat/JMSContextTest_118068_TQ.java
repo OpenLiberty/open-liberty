@@ -17,13 +17,17 @@ import java.io.IOException;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+import componenttest.annotation.ExpectedFFDC;
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
+@RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class JMSContextTest_118068_TQ {
     private static LibertyServer engineServer =
@@ -107,6 +111,7 @@ public class JMSContextTest_118068_TQ {
         assertTrue("testToStringTemporaryQueueNameSecOffTCPIP failed ", testResult);
     }
 
+    @ExpectedFFDC("com.ibm.ws.sib.processor.exceptions.SIMPTemporaryDestinationNotFoundException")
     @Mode(TestMode.FULL)
     @Test
     public void testDeleteTemporaryQueueNameSecOffTCPIP() throws Exception {
@@ -121,6 +126,7 @@ public class JMSContextTest_118068_TQ {
         assertTrue("testDeleteExceptionTemporaryQueueNameSecOFF_B failed ", testResult);
     }
 
+    @ExpectedFFDC("com.ibm.ws.sib.processor.exceptions.SIMPTemporaryDestinationNotFoundException")
     @Mode(TestMode.FULL)
     @Test
     public void testDeleteExceptionTemporaryQueueNameSecOFF_TCPIP() throws Exception {
@@ -163,6 +169,7 @@ public class JMSContextTest_118068_TQ {
         assertTrue("testDeleteExceptionTemporaryTopicSecOff_B failed ", testResult);
     }
 
+    @ExpectedFFDC("com.ibm.wsspi.sib.core.exception.SIDestinationLockedException")
     @Mode(TestMode.FULL)
     @Test
     public void testDeleteExceptionTemporaryTopicSecOff_TCPIP() throws Exception {

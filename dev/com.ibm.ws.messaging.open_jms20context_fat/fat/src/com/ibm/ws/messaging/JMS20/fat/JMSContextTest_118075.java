@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013,2020 IBM Corporation and others.
+ * Copyright (c) 2013, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,15 +16,18 @@ import java.io.IOException;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+import componenttest.annotation.ExpectedFFDC;
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
+@RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class JMSContextTest_118075 {
     private static LibertyServer engineServer =
@@ -87,6 +90,7 @@ public class JMSContextTest_118075 {
         assertTrue("testCreateConsumerInvalidDest_B_SecOff failed", testResult);
     }
 
+    @ExpectedFFDC("com.ibm.ws.sib.processor.exceptions.SIMPNotPossibleInCurrentConfigurationException")
     @Mode(TestMode.FULL)
     @Test
     public void testCreateConsumerInvalidDest_TcpIp_SecOff() throws Exception {
@@ -101,6 +105,7 @@ public class JMSContextTest_118075 {
         assertTrue("testCreateConsumerInvalidDest_Topic_B_SecOff failed", testResult);
     }
 
+    @ExpectedFFDC("com.ibm.ws.sib.processor.exceptions.SIMPNotPossibleInCurrentConfigurationException")
     @Mode(TestMode.FULL)
     @Test
     public void testCreateConsumerInvalidDest_Topic_TcpIp_SecOff() throws Exception {
@@ -115,6 +120,7 @@ public class JMSContextTest_118075 {
         assertTrue("testCreateConsumerWithMsgSelectorInvalidDest_B_SecOff failed", testResult);
     }
 
+    @ExpectedFFDC("com.ibm.ws.sib.processor.exceptions.SIMPNotPossibleInCurrentConfigurationException")
     @Mode(TestMode.FULL)
     @Test
     public void testCreateConsumerWithMsgSelectorInvalidDest_TcpIp_SecOff() throws Exception {
@@ -129,6 +135,7 @@ public class JMSContextTest_118075 {
         assertTrue("testCreateConsumerWithMsgSelectorInvalidDest_Topic_B_SecOff failed", testResult);
     }
 
+    @ExpectedFFDC("com.ibm.ws.sib.processor.exceptions.SIMPNotPossibleInCurrentConfigurationException")
     @Mode(TestMode.FULL)
     @Test
     public void testCreateConsumerWithMsgSelectorInvalidDest_Topic_TcpIp_SecOff() throws Exception {
@@ -222,6 +229,7 @@ public class JMSContextTest_118075 {
         assertTrue("testCreateConsumerNullDest_Topic_TcpIp_SecOff failed", testResult);
     }
 
+    @ExpectedFFDC("com.ibm.wsspi.sib.core.exception.SISelectorSyntaxException")
     @Mode(TestMode.FULL)
     @Test
     public void testCreateConsumerWithInvalidMsgSelector_B_SecOff() throws Exception {
@@ -229,6 +237,7 @@ public class JMSContextTest_118075 {
         assertTrue("testCreateConsumerWithInvalidMsgSelector_B_SecOff failed", testResult);
     }
 
+    @ExpectedFFDC("com.ibm.wsspi.sib.core.exception.SISelectorSyntaxException")
     @Mode(TestMode.FULL)
     @Test
     public void testCreateConsumerWithInvalidMsgSelector_TcpIp_SecOff() throws Exception {
@@ -243,6 +252,7 @@ public class JMSContextTest_118075 {
         assertTrue("testCreateConsumerWithInvalidMsgSelector_Topic_B_SecOff failed", testResult);
     }
 
+    @ExpectedFFDC("com.ibm.wsspi.sib.core.exception.SISelectorSyntaxException")
     @Mode(TestMode.FULL)
     @Test
     public void testCreateConsumerWithInvalidMsgSelector_Topic_TcpIp_SecOff() throws Exception {
@@ -250,6 +260,7 @@ public class JMSContextTest_118075 {
         assertTrue("testCreateConsumerWithInvalidMsgSelector_Topic_TcpIp_SecOff failed", testResult);
     }
 
+    @ExpectedFFDC("com.ibm.wsspi.sib.core.exception.SISelectorSyntaxException")
     @Mode(TestMode.FULL)
     @Test
     public void testCreateConsumerWithInvalidMsgSelectorNoLocal_B_SecOff() throws Exception {
@@ -257,6 +268,7 @@ public class JMSContextTest_118075 {
         assertTrue("testCreateConsumerWithInvalidMsgSelectorNoLocal_B_SecOff failed", testResult);
     }
 
+    @ExpectedFFDC("com.ibm.wsspi.sib.core.exception.SISelectorSyntaxException")
     @Mode(TestMode.FULL)
     @Test
     public void testCreateConsumerWithInvalidMsgSelectorNoLocal_TcpIp_SecOff() throws Exception {
@@ -271,6 +283,7 @@ public class JMSContextTest_118075 {
         assertTrue("testCreateConsumerWithInvalidMsgSelectorNoLocal_Topic_B_SecOff failed", testResult);
     }
 
+    @ExpectedFFDC("com.ibm.wsspi.sib.core.exception.SISelectorSyntaxException")
     @Mode(TestMode.FULL)
     @Test
     public void testCreateConsumerWithInvalidMsgSelectorNoLocal_Topic_TcpIp_SecOff() throws Exception {
