@@ -17,8 +17,6 @@ Bundle-Description: WAS JSP 2.3, version ${bVersion}
 WLP-ServerName: IBM WebSphere Application Server
 WLP-ServerVersion: ${liberty.beta.version}
 
-jakartaeeMe: true
-
 -dsannotations: com.ibm.ws.jsp23.webcontainerext.JspVersionFactoryImpl, \
 com.ibm.ws.jsp23.webcontainerext.ws.PrepareJspHelper23Factory, \
 com.ibm.ws.jsp23.translator.visitor.validator.ElValidatorExtFactoryImpl, \
@@ -29,58 +27,6 @@ Export-Package: \
 	com.ibm.ws.jsp23.webcontainerext.ws;version="2.3", \
 	com.ibm.ws.jsp23.translator.visitor.validator;version="2.3", \
 	com.ibm.ws.jsp23.translator.visitor.generator;version="2.3", \
-	org.apache.jasper;version="2.3", \
-	org.apache.jasper.el;thread-context=true;version="2.3", \
-	org.apache.jasper.runtime;thread-context=true;version="2.3"
-
-Import-Package: \
-   !com.ibm.ws.jsp23.translator.visitor.generator, \
-   !com.ibm.ws.jsp23.translator.visitor.validator, \
-   !com.ibm.ws.jsp23.webcontainerext, \
-   !com.ibm.ws.jsp23.webcontainerext.ws, \
-   org.apache.xml.*;resolution:=optional, \
-   org.apache.xpath.*;resolution:=optional, \
-   javax.el;version=3.0, \
-   javax.servlet;version="[2.7.0,3.0.0)", \
-   javax.servlet.http;version="[2.7.0,3.0.0)", \
-   javax.servlet.resources;version="[2.7.0,3.0.0)", \
-   javax.servlet.jsp;version="2.3", \
-   javax.servlet.jsp.el;version=2.3, \
-   javax.servlet.jsp.jstl*;version=1.2, \
-   javax.servlet.jsp.resources;version=2.3, \
-   javax.servlet.jsp.tagext;version=2.3, \
-   com.ibm.websphere.servlet.*;version=0, \
-   com.ibm.wsspi.webcontainer.osgi.*;version=1.0, \
-   com.ibm.wsspi.webcontainer, \
-   com.ibm.wsspi.webcontainer.*, \
-   com.ibm.ws.webcontainer.extension, \
-   com.ibm.ws.webcontainer.util, \
-   com.ibm.ws.webcontainer.servlet,\
-   com.ibm.ws.webcontainer, \
-   com.ibm.ws.jsp;version="[2.2,2.3)", \
-   com.ibm.ws.jsp.webcontainerext;version=2.2, \
-   com.ibm.ws.jsp.translator;version=2.2, \
-   com.ibm.ws.jsp.translator.utils;version=2.2, \
-   com.ibm.ws.jsp.translator.visitor.validator;version=2.2, \
-   com.ibm.ws.jsp.translator.visitor.generator;version=2.2, \
-   com.ibm.wsspi.webcontainer31.servlet;version=1.0, \
-   com.ibm.websphere.servlet31.response;version=1.0, \
-   com.ibm.jtc.adapter;resolution:=optional, \
-   com.sun.tools.javac;resolution:=optional, \
-   org.apache.webbeans.el;resolution:=optional, \
-   com.ibm.ws.managedobject;resolution:=optional, \
-   org.apache.el; version="3.0.0", \
-   org.apache.el.lang; version="3.0.0", \
-   org.apache.el.parser; version="3.0.0", \
-   org.apache.el.util; version="3.0.0", \
-   org.eclipse.jdt.core.compiler;version="3.10.2";usage="JSP", \
-   org.eclipse.jdt.internal.compiler;version="3.10.2";usage="JSP", \
-   org.eclipse.jdt.internal.compiler.classfmt;version="3.10.2";usage="JSP", \
-   org.eclipse.jdt.internal.compiler.env;version="3.10.2";usage="JSP", \
-   org.eclipse.jdt.internal.compiler.impl;version="3.10.2";usage="JSP", \
-   org.eclipse.jdt.internal.compiler.problem;version="3.10.2";usage="JSP", \
-   sun.io;resolution:=optional, \
-   *
 
 instrument.classesIncludes: com/ibm/ws/jsp23/**/*.class
 

@@ -14,7 +14,7 @@ bVersion=1.0
 Bundle-SymbolicName: io.openliberty.pages.internal.3.0
 Bundle-Description: Pages 3.0 Internal Bundle
 
-jakartaeeMe: true
+jakartaeeMe:true
 
 -dsannotations: io.openliberty.pages30.webcontainerext.JspVersionFactoryImpl, \
 io.openliberty.pages30.webcontainerext.ws.PrepareJspHelper23Factory, \
@@ -27,7 +27,7 @@ Export-Package: \
 	io.openliberty.pages30.translator.visitor.validator;version="3.0", \
 	io.openliberty.pages30.translator.visitor.generator;version="3.0"
 
-instrument.classesIncludes: io/OpenLiberty/pages30/**/*.class
+instrument.classesIncludes: io/openliberty/pages30/**/*.class
 
 -buildpath: \
 	com.ibm.websphere.appserver.spi.logging,\

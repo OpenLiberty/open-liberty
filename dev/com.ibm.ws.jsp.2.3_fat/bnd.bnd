@@ -36,6 +36,7 @@ tested.features:\
     com.ibm.websphere.javaee.el.3.0;version=latest,\
     com.ibm.websphere.javaee.jsp.2.3;version=latest,\
     com.ibm.ws.jsp.2.3;version=latest,\
+    com.ibm.ws.jsp.el;version=latest,\
     com.ibm.ws.org.apache.jasper.el.3.0;version=latest,\
     httpunit:httpunit;version=1.5.4,\
     com.ibm.websphere.javaee.interceptor.1.1;version=latest,\
