@@ -49,7 +49,9 @@
     <javaPermission codeBase="${server.config.dir}/jdbc/driver.jar" className="java.security.AllPermission"/>
     <javaPermission codebase="${server.config.dir}/sqlserver/-" className="java.security.AllPermission"/>
 
-     <javaPermission className="java.lang.RuntimePermission" name="*" actions="*"/>
+    <javaPermission className="java.util.PropertyPermission" name="java.specification.version" actions="read"/>
+    
+    <javaPermission className="java.lang.RuntimePermission" name="*" actions="*"/>
     <javaPermission className="java.io.FilePermission" name="ALL FILES" actions="read,write,delete"/>
 
 </server>
