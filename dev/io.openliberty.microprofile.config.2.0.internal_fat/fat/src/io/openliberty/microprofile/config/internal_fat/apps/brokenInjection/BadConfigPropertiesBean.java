@@ -18,6 +18,6 @@ import org.eclipse.microprofile.config.inject.ConfigProperties;
 @Dependent
 public class BadConfigPropertiesBean {
 
-    public int myString; // validPrefix.myString is a "aString" a hence this conversion should break
+    public int myString; // validPrefix.myString is a "aString" and hence this conversion should break
 
 }
