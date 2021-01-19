@@ -9,12 +9,12 @@
     `mvn clean install`
 
 ## 2. You might need to edit the following file (see comments within) to point at snapshot that you built,
-     /com.ibm.ws.concurrent.mp.1.1_fat_tck/publish/tckRunner/tck/pom.xml
+     /com.ibm.ws.concurrent.mp.1.2_fat_tck/publish/tckRunner/tck/pom.xml
     
 ## 3. Run the MP TCK in the OpenLiberty repo as a FAT
 
 1. Run the FAT normally:
-    `./gradlew com.ibm.ws.concurrent.mp.1.1_fat_tck:buildandrun`
+    `./gradlew com.ibm.ws.concurrent.mp.1.2_fat_tck:buildandrun`
     
 ## 4. Iterate making changes and running tests (i.e. "Inner dev loop")
 
@@ -22,4 +22,4 @@
     `mvn install`
     
 2. Run the FAT normally:
-    `./gradlew com.ibm.ws.concurrent.mp.1.1_fat_tck:buildandrun`
+    `./gradlew com.ibm.ws.concurrent.mp.1.2_fat_tck:buildandrun`
