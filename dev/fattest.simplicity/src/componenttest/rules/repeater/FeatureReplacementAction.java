@@ -55,7 +55,7 @@ import componenttest.topology.impl.LibertyServerFactory;
 public class FeatureReplacementAction implements RepeatTestAction {
     private static final Class<? extends FeatureReplacementAction> c =
         FeatureReplacementAction.class;
-
+  
     /**
      * Feature replacement action factory method: Create a feature
      * replacement action which replaces JavaEE 8 features with the
@@ -192,7 +192,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
 
     private final Set<String> removeFeatures = new LinkedHashSet<>();
     private final Set<String> addFeatures = new LinkedHashSet<>();
-
+  
     private final Set<String> alwaysAddFeatures = new HashSet<>();
     private final Set<String> serverConfigPaths = new HashSet<>();
 
@@ -761,7 +761,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
         baseFeature = baseFeature.toLowerCase();
 
         // "servlet-4.0".startsWith("servlet-")
-        
+
         // If multiple versions of a feature listed in the replacement list, it will take the last
         // version by looping through all of the features instead of stopping on the first that matches.
         // The Set is a LinkedHashSet so it will iterate over them in the order that add was called.        

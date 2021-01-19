@@ -5314,7 +5314,7 @@ public class MPConcurrentTestServlet extends FATServlet {
      * than a managed executor.
      */
     @Test
-    @SkipForRepeat(MPContextPropActions.CTX11_ID)
+    @SkipForRepeat(MPContextPropActions.CTX12_ID)
     public void testWithContextCapture_CompletableFuture_builder() throws Exception {
         String servletThreadName = Thread.currentThread().getName();
 
@@ -5395,7 +5395,7 @@ public class MPConcurrentTestServlet extends FATServlet {
      * CompletionStage that is backed by a ThreadContext rather than a managed executor.
      */
     @Test
-    @SkipForRepeat(MPContextPropActions.CTX11_ID)
+    @SkipForRepeat(MPContextPropActions.CTX12_ID)
     public void testWithContextCapture_CompletableFuture_serverConfig() throws Exception {
         String servletThreadName = Thread.currentThread().getName();
 
@@ -5469,7 +5469,7 @@ public class MPConcurrentTestServlet extends FATServlet {
      * than a managed executor.
      */
     @Test
-    @SkipForRepeat(MPContextPropActions.CTX11_ID)
+    @SkipForRepeat(MPContextPropActions.CTX12_ID)
     public void testWithContextCapture_CompletionStage_builder() throws Exception {
         String servletThreadName = Thread.currentThread().getName();
 
@@ -5573,7 +5573,7 @@ public class MPConcurrentTestServlet extends FATServlet {
      * CompletionStage that is backed by a ThreadContext rather than a managed executor.
      */
     @Test
-    @SkipForRepeat(MPContextPropActions.CTX11_ID)
+    @SkipForRepeat(MPContextPropActions.CTX12_ID)
     public void testWithContextCapture_CompletionStage_serverConfig() throws Exception {
         String servletThreadName = Thread.currentThread().getName();
 
