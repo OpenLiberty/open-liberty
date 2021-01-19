@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -35,6 +35,8 @@ Servers and test suites are configured as follows:
 	                 so tests that contain microprofile-config.properties file can exercise their properties.
 	                 
 	tck_aud_noenv2 - same but requires a different maven prop passed in
+	
+	tck_aud_noenv3 - same but includes only invalidToken method of EmptyTokenTest for running with server with custom TAI property set
 	
 	tck_noaud_env - these tests omit an audience so the server is configured for that.
 	

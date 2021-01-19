@@ -55,8 +55,7 @@
 
             <class name="org.eclipse.microprofile.jwt.tck.container.jaxrs.RsaKeySignatureTest" />
             
-            <!-- EmptyTokenTest invalidToken test is disabled - Blocked 14732  -->
-           
+            <!-- EmptyTokenTest invalidToken test is disabled - Issue 14732  -->
             <class name="org.eclipse.microprofile.jwt.tck.container.jaxrs.EmptyTokenTest" >
   				  <methods>
        				 <exclude name="invalidToken" />
