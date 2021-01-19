@@ -21,7 +21,7 @@ import org.junit.runners.Suite.SuiteClasses;
                 MPConcurrentConfigTest.class,
                 MPConcurrentJAXRSTest.class,
                 MPConcurrentTxTest.class,
-                MPContextProp1_1_Test.class
+                MPContextProp1_2_Test.class
 })
 public class FATSuite {
 }

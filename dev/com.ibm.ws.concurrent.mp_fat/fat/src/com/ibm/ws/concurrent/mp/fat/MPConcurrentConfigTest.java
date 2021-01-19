@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -49,7 +49,7 @@ public class MPConcurrentConfigTest extends FATServletClient {
     private static final String APP_NAME = "MPConcurrentConfigApp";
 
     @ClassRule
-    public static RepeatTests r = MPContextPropActions.repeat("MPConcurrentConfigTestServer", MPContextPropActions.CTX10, MPContextPropActions.CTX11);
+    public static RepeatTests r = MPContextPropActions.repeat("MPConcurrentConfigTestServer", MPContextPropActions.CTX10, MPContextPropActions.CTX12);
 
     @Server("MPConcurrentConfigTestServer")
     @TestServlet(servlet = MPConcurrentConfigTestServlet.class, contextRoot = APP_NAME)

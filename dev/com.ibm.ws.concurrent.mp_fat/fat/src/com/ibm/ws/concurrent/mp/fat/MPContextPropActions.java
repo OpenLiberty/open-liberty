@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,16 +21,16 @@ import componenttest.rules.repeater.RepeatTests;
 public class MPContextPropActions {
 
     public static final String CTX10_ID = "MP_CONTEXT_PROP_10";
-    public static final String CTX11_ID = "MP_CONTEXT_PROP_11";
+    public static final String CTX12_ID = "MP_CONTEXT_PROP_12";
 
     public static final FeatureSet CTX10 = MicroProfileActions.MP32.addFeature("mpContextPropagation-1.0").build(CTX10_ID);
-    public static final FeatureSet CTX11 = MicroProfileActions.MP40.addFeature("mpContextPropagation-1.1").build(CTX11_ID);
+    public static final FeatureSet CTX12 = MicroProfileActions.MP40.addFeature("mpContextPropagation-1.2").build(CTX12_ID);
 
     public static final Set<FeatureSet> ALL;
     static {
         ALL = new HashSet<>(MicroProfileActions.ALL);
         ALL.add(CTX10);
-        ALL.add(CTX11);
+        ALL.add(CTX12);
     }
 
     public static RepeatTests repeat(String server, FeatureSet firstVersion, FeatureSet... otherVersions) {

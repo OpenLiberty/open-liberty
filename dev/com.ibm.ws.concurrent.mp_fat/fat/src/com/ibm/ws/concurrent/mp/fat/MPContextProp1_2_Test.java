@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2021 IBM Corporation and others.
+ * Copyright (c) 2020,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,49 +15,42 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.test.context.location.CityContextProvider;
 import org.test.context.location.StateContextProvider;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
-import concurrent.mp.fat.web.MPConcurrentTestServlet;
+import concurrent.mp.fat.v12.web.MPContextProp1_2_TestServlet;
 
 @RunWith(FATRunner.class)
-public class MPConcurrentTest extends FATServletClient {
+public class MPContextProp1_2_Test extends FATServletClient {
 
-    @ClassRule
-    public static RepeatTests r = MPContextPropActions.repeat("MPConcurrentTestServer", MPContextPropActions.CTX10, MPContextPropActions.CTX12);
+    private static final String APP_NAME = "MPContextProp1_2_App";
 
-    private static final String APP_NAME = "MPConcurrentApp";
-
-    @Server("MPConcurrentTestServer")
-    @TestServlet(servlet = MPConcurrentTestServlet.class, contextRoot = APP_NAME)
+    @Server("MPContextProp1_2_Server")
+    @TestServlet(servlet = MPContextProp1_2_TestServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server;
 
     @BeforeClass
     public static void setUp() throws Exception {
-        ShrinkHelper.defaultApp(server, APP_NAME, "concurrent.mp.fat.web");
+        ShrinkHelper.defaultApp(server, APP_NAME, "concurrent.mp.fat.v12.web");
 
         JavaArchive customContextProviders = ShrinkWrap.create(JavaArchive.class, "customContextProviders.jar")
                         .addPackage("org.test.context.location")
                         .addAsServiceProvider(ThreadContextProvider.class, CityContextProvider.class, StateContextProvider.class);
-        ShrinkHelper.exportToServer(server, "lib", customContextProviders, DeployOptions.SERVER_ONLY);
+        ShrinkHelper.exportToServer(server, "lib", customContextProviders);
 
         server.startServer();
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
-        FATServletClient.runTest(server, APP_NAME + "/MPConcurrentTestServlet", "testShutDownUponApplicationStop");
-        server.stopServer("CWWKL0090E");
+        server.stopServer();
     }
 }

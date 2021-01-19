@@ -1669,7 +1669,7 @@
     <dependency>
       <groupId>org.eclipse.microprofile.context-propagation</groupId>
       <artifactId>microprofile-context-propagation-api</artifactId>
-      <version>1.1</version>
+      <version>1.2-RC1</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.microprofile.fault-tolerance</groupId>
