@@ -4,6 +4,6 @@
 
     <featureManager>
         <feature>microProfile-4.0</feature>
-        <feature>mpContextPropagation-1.1</feature>
+        <feature>mpContextPropagation-1.2</feature>
     </featureManager>
 </server>
