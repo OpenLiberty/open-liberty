@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012,2020 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,10 +10,8 @@
  *******************************************************************************/
 package web;
 
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.management.ManagementFactory;
-import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -28,15 +26,15 @@ import javax.management.ObjectInstance;
 import javax.management.ObjectName;
 import javax.naming.InitialContext;
 import javax.resource.cci.ConnectionFactory;
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
-@WebServlet(urlPatterns = "/JCAEnterpriseAppTestServlet")
-public class JCAEnterpriseAppTestServlet extends HttpServlet {
+import componenttest.app.FATServlet;
+
+@WebServlet("/*")
+public class JCAEnterpriseAppTestServlet extends FATServlet {
     private static final long serialVersionUID = 2803499654909072856L;
 
     @Resource(name = "eis/cf1")
@@ -266,38 +264,5 @@ public class JCAEnterpriseAppTestServlet extends HttpServlet {
         }
 
         out.println("The size of the checkout line is size=" + queue1.size());
-    }
-
-    /**
-     * Message written to servlet to indicate that is has been successfully
-     * invoked.
-     */
-    private static final String SUCCESS_MESSAGE = "COMPLETED SUCCESSFULLY";
-
-    /**
-     * Invokes test name found in "test" parameter passed to servlet.
-     */
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String test = request.getParameter("test");
-        PrintWriter out = response.getWriter();
-        out.println(" ---> JCAEnterpriseAppTest is starting " + test + "<br>");
-        System.out.println(" ---> JCAEnterpriseAppTest is starting test: " + test);
-
-        try {
-            getClass().getMethod(test, HttpServletRequest.class, HttpServletResponse.class).invoke(this, request, response);
-            out.println(" <--- " + test + " " + SUCCESS_MESSAGE);
-            System.out.println(" <--- " + test + " " + SUCCESS_MESSAGE);
-        } catch (Throwable x) {
-            if (x instanceof InvocationTargetException)
-                x = x.getCause();
-            out.println("<pre>ERROR in " + test + ":");
-            x.printStackTrace(out);
-            out.println("</pre>");
-            x.printStackTrace();
-        } finally {
-            out.flush();
-            out.close();
-        }
     }
 }

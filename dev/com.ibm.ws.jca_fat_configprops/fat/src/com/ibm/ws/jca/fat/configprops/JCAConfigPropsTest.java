@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2020 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -37,7 +37,7 @@ public class JCAConfigPropsTest extends FATServletClient {
     public static LibertyServer server;
 
     private void runTest() throws Exception {
-        runTest(server, APP_NAME, testName);
+        runTest(server, APP_NAME, getTestMethodSimpleName());
     }
 
     @BeforeClass
