@@ -11,14 +11,13 @@
 <server description="Server for testing JavaServer Pages 2.3">
 
     <include location="../fatTestPorts.xml"/>
-    
+
     <featureManager>
         <feature>jsp-2.3</feature>
     </featureManager>
-    
+
     <jspEngine jdkSourceLevel="18"/>
-    
-    <logging traceSpecification="*=info=enabled:com.ibm.ws.webcontainer*=all:com.ibm.wsspi.webcontainer*=all:HTTPChannel=all:TCPChannel=all:GenericBNF=all:com.ibm.ws.jsp*=all" maxFileSize="20" maxFiles="10" traceFormat="BASIC"/> 
- 
-    
+
+    <logging traceSpecification="*=info=enabled:com.ibm.ws.webcontainer*=all:com.ibm.wsspi.webcontainer*=all:HTTPChannel=all:TCPChannel=all:GenericBNF=all:com.ibm.ws.jsp*=all" maxFileSize="20" maxFiles="10" traceFormat="BASIC"/>
+
 </server>

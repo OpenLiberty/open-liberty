@@ -16,7 +16,7 @@
         <feature>jsp-2.3</feature>
     </featureManager>
 
-    <logging traceSpecification="*=info=enabled:com.ibm.ws.jsp*=all" maxFileSize="20" maxFiles="10" traceFormat="BASIC"/> 
+    <logging traceSpecification="*=info=enabled:com.ibm.ws.jsp*=all" maxFileSize="20" maxFiles="10" traceFormat="BASIC"/>
     <jspEngine prepareJSPs="0" keepGenerated="true" scratchdir="scratchdir"/>
 
 </server>
