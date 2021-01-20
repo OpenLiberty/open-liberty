@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012,2020 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -52,6 +52,8 @@ import com.ibm.wsspi.security.token.AttributeNameConstants;
 public class TAIAuthenticator implements WebAuthenticator {
     private static final TraceComponent tc = Tr.register(TAIAuthenticator.class);
     private final AuthenticationResult AUTHN_CONTINUE_RESULT = new AuthenticationResult(AuthResult.CONTINUE, "Authentication continue");
+
+    public static final String WEB_REQUEST_ATTRIBUTE_NAME = "webRequestObject";
 
     private TAIService taiService = null;
     private ConcurrentServiceReferenceMap<String, TrustAssociationInterceptor> interceptorServiceRef = null;
@@ -122,6 +124,7 @@ public class TAIAuthenticator implements WebAuthenticator {
 
         String taiId = null;
         try {
+            req.setAttribute(WEB_REQUEST_ATTRIBUTE_NAME, webRequest);
             Iterator<Entry<String, TrustAssociationInterceptor>> i = tais.entrySet().iterator();
             while (i.hasNext()) {
                 Entry<String, TrustAssociationInterceptor> taiEntry = i.next();
