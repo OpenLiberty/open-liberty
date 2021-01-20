@@ -35,11 +35,6 @@
   	<properties user="${env.USER}" password="${env.PASSWORD}" serverName="${env.HOST}"
   	  url="jdbc:sqlserver://${env.HOST}:${env.PORT};databaseName=${env.DBNAME};" selectMethod="cursor"/>
     </dataSource>
-	
-    <dataSource id="jdbc/derby" jndiName="jdbc/derby" jdbcDriverRef="SQLServerEmbedded" type="javax.sql.XADataSource">
-  	<properties.microsoft.sqlserver user="${env.USER}" password="${env.PASSWORD}" serverName="${env.HOST}"
-  	  url="jdbc:sqlserver://${env.HOST}:${env.PORT};databaseName=${env.DBNAME};" selectMethod="cursor"/>
-    </dataSource>
     
     <logging traceSpecification="Transaction=all:com.ibm.ws.jdbc.*=all:RRA=all:logservice=all=enabled:*=info=enabled"/>
     

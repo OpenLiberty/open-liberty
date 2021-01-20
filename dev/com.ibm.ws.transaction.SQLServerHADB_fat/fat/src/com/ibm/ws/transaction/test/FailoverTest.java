@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,14 +13,9 @@ package com.ibm.ws.transaction.test;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.SimpleDateFormat;
 
 import org.junit.After;
 import org.junit.Before;
@@ -47,6 +42,32 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
+/**
+ * These tests are designed to exercise the ability of the SQLMultiScopeRecoveryLog (transaction logs stored
+ * in a database) to recover from transient SQL errors, such as those encountered when a High Availability (HA)
+ * database fails over.
+ *
+ * They work as follows:
+ *
+ * -> A JDBC driver is implemented that wraps the underlying SQL Server driver. The driver is provided in a jar
+ * named ifxjdbc.jar. This is inferred to be an Informix driver by the Liberty JDBC driver code.
+ *
+ * The wrapper code generally passes calls straight through to the real jdbc driver it wraps but, when prompted,
+ * it can generate SQLExceptions that will be flowed to calling code, such as SQLMultiScopeRecoveryLog.
+ *
+ * -> The JDBC driver is configured through a table named HATABLE with 3 columns,
+ * testtype - is this a runtime or startup test
+ * failoverval - how many SQL operations should be executed before generating an SQLException
+ * simsqlcode - what sqlcode should be passed in the generated SQLexception
+ *
+ * Note, in modern versions of jdbc drivers, the driver will generate SQLTransientExceptions rather than SQLExceptions
+ * with a specific sqlcode value.
+ *
+ * -> Each test starts by (re)creating HATable and inserting a row to specify the test characteristics.
+ * 
+ * ->The tests will drive a batch of 2PC transactions using artificial XAResourceImpl resources. The jdbc driver will
+ * generate a SQLException at a point defined in the HATABLE row.
+ */
 @Mode
 @RunWith(FATRunner.class)
 public class FailoverTest extends FATServletClient {
@@ -128,42 +149,23 @@ public class FailoverTest extends FATServletClient {
         server.deleteDirectoryFromLibertyInstallRoot("/usr/shared/resources/data");
     }
 
-    @Mode(TestMode.LITE)
-    @Test
-    public void testHADBControl() throws Exception {
-        final String method = "testHADBControl";
-        StringBuilder sb = null;
-        try {
-            sb = runTestWithResponse(server, SERVLET_NAME, "testControlSetup");
-        } catch (Throwable e) {
-        }
-        Log.info(this.getClass(), method, "testControlSetup returned: " + sb);
-
-        try {
-            sb = runTestWithResponse(server, SERVLET_NAME, "testDriveTransactions");
-        } catch (Throwable e) {
-        }
-    }
-
     /**
      * Run a set of transactions and simulate an HA condition
      */
     @Mode(TestMode.LITE)
     @Test
-    public void testHADBRuntimeFailoverKnownSqlcode() throws Exception {
-        final String method = "testHADBRuntimeFailoverKnownSqlcode";
+    public void testHADBRecoverableRuntimeFailover() throws Exception {
+        final String method = "testHADBRecoverableRuntimeFailover";
         StringBuilder sb = null;
 
-        logny("testHADBRuntimeFailoverKnownSqlcode - call testSetupKnownSqlcode");
-
-        Log.info(this.getClass(), method, "Call testSetupKnownSqlcode");
+        Log.info(this.getClass(), method, "Call setupForRecoverableFailover");
 
         try {
-            sb = runTestWithResponse(server, SERVLET_NAME, "testSetupKnownSqlcode");
+            sb = runTestWithResponse(server, SERVLET_NAME, "setupForRecoverableFailover");
         } catch (Throwable e) {
         }
 
-        Log.info(this.getClass(), method, "testSetupKnownSqlcode returned: " + sb);
+        Log.info(this.getClass(), method, "setupForRecoverableFailover returned: " + sb);
         Log.info(this.getClass(), method, "Call stopserver");
 
         server.stopServer("WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E");
@@ -174,9 +176,9 @@ public class FailoverTest extends FATServletClient {
         Log.info(this.getClass(), method, "call startserver");
         startServers(server);
 
-        Log.info(this.getClass(), method, "Call testDriveTransactions");
+        Log.info(this.getClass(), method, "Call driveTransactions");
         try {
-            sb = runTestWithResponse(server, SERVLET_NAME, "testDriveTransactions");
+            sb = runTestWithResponse(server, SERVLET_NAME, "driveTransactions");
         } catch (Throwable e) {
         }
 
@@ -200,14 +202,14 @@ public class FailoverTest extends FATServletClient {
     // recovery, depending on the "speed" of the recovery relative to work
     // going on in the main thread. It is most sensible to make the potential
     // set of observable FFDCs allowable.
-    public void testHADBRuntimeFailoverUnKnownSqlcode() throws Exception {
-        final String method = "testHADBRuntimeFailoverUnKnownSqlcode";
+    public void testHADBNonRecoverableRuntimeFailover() throws Exception {
+        final String method = "testHADBNonRecoverableRuntimeFailover";
         StringBuilder sb = null;
 
-        Log.info(this.getClass(), method, "call testSetupUnKnownSqlcode");
+        Log.info(this.getClass(), method, "call setupForNonRecoverableFailover");
 
         try {
-            sb = runTestWithResponse(server, SERVLET_NAME, "testSetupUnKnownSqlcode");
+            sb = runTestWithResponse(server, SERVLET_NAME, "setupForNonRecoverableFailover");
         } catch (Throwable e) {
         }
 
@@ -219,11 +221,11 @@ public class FailoverTest extends FATServletClient {
         startServers(server);
 
         Log.info(this.getClass(), method, "complete");
-        Log.info(this.getClass(), method, "call testDriveTransactionsWithFailure");
+        Log.info(this.getClass(), method, "call driveTransactionsWithFailure");
         // An unhandled sqlcode will lead to a failure to write to the log, the
         // invalidation of the log and the throwing of Internal LogExceptions
         try {
-            sb = runTestWithResponse(server, SERVLET_NAME, "testDriveTransactionsWithFailure");
+            sb = runTestWithResponse(server, SERVLET_NAME, "driveTransactionsWithFailure");
         } catch (Throwable e) {
         }
 
@@ -261,14 +263,14 @@ public class FailoverTest extends FATServletClient {
     @Mode(TestMode.LITE)
     @Test
     @AllowedFFDC(value = { "javax.transaction.xa.XAException" })
-    public void testHADBStartupFailoverKnownSqlcode() throws Exception {
-        final String method = "testHADBStartupFailoverKnownSqlcode";
+    public void testHADBRecoverableStartupFailover() throws Exception {
+        final String method = "testHADBRecoverableStartupFailover";
         StringBuilder sb = null;
 
-        Log.info(this.getClass(), method, "call testStartupSetup");
+        Log.info(this.getClass(), method, "call setupForStartupFailover");
 
         try {
-            sb = runTestWithResponse(server, SERVLET_NAME, "testStartupSetup");
+            sb = runTestWithResponse(server, SERVLET_NAME, "setupForStartupFailover");
         } catch (Throwable e) {
         }
 
@@ -278,26 +280,13 @@ public class FailoverTest extends FATServletClient {
         server.setServerStartTimeout(30000);
         Log.info(this.getClass(), method, "call startserver");
         startServers(server);
-        Log.info(this.getClass(), method, "call testDriveTransactions");
+        Log.info(this.getClass(), method, "call driveTransactions");
         try {
-            sb = runTestWithResponse(server, SERVLET_NAME, "testDriveTransactions");
+            sb = runTestWithResponse(server, SERVLET_NAME, "driveTransactions");
         } catch (Throwable e) {
         }
 
         Log.info(this.getClass(), method, "complete");
-    }
-
-    private static void logny(String text) {
-        try {
-            PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("C:/temp/HADBTranlogTest.txt", true)));
-            java.util.Date date = new java.util.Date();
-            SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy h:mm:ss a");
-            String formattedDate = sdf.format(date);
-            out.println(formattedDate + ": " + text);
-            out.close();
-        } catch (IOException e) {
-            // exception handling left as an exercise for the reader
-        }
     }
 
     private void startServers(LibertyServer... servers) {
