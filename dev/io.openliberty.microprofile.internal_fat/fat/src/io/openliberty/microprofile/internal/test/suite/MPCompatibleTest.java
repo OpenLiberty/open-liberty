@@ -235,16 +235,16 @@ public class MPCompatibleTest {
     }
 
     /**
-     * microProfile-4.0 plus mpContextPropagation-1.1
+     * microProfile-4.0 plus mpContextPropagation-1.2
      * Should always pass
      *
      * @throws Exception
      */
     @Test
     @Mode(TestMode.LITE)
-    public void testMP40andCtxPropagtion11() throws Exception {
+    public void testMP40andCtxPropagtion12() throws Exception {
         try {
-            server.setServerConfigurationFromFilePath("MP40andMPCtx11.xml");
+            server.setServerConfigurationFromFilePath("MP40andMPCtx12.xml");
             server.startServer();
             runGetMethod(200, "/helloworld/helloworld", MESSAGE);
         } finally {
