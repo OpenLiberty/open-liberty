@@ -13,6 +13,7 @@ package com.ibm.ws.jpa.ormdiagnostics.tests;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.Vector;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -31,14 +32,17 @@ import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.ws.jpa.ormdiagnostics.FATSuite;
 import com.ibm.ws.jpa.ormdiagnostics.ORMIntrospectorHelper;
 import com.ibm.ws.jpa.ormdiagnostics.ORMIntrospectorHelper.JPAClass;
+import com.ibm.ws.ormdiag.example.war.ExampleServlet;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.TestServlet;
+import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.PrivHelper;
 
 @RunWith(FATRunner.class)
-public class TestExample_WAR {
+public class TestExample_WAR extends JPAFATServletClient {
     private final static String CONTEXT_ROOT = "exampleWAR";
     private final static String RESOURCE_ROOT = "test-applications/example/";
     private final static String appName = "exampleWAR";
@@ -46,11 +50,15 @@ public class TestExample_WAR {
     private static long timestart = 0;
 
     @Server("JPAORMServer")
+    @TestServlets({
+                    @TestServlet(servlet = ExampleServlet.class, path = CONTEXT_ROOT + "/" + "ExampleServlet")
+    })
     public static LibertyServer server;
 
     @BeforeClass
     public static void setUp() throws Exception {
         PrivHelper.generateCustomPolicy(server, FATSuite.JAXB_PERMS);
+        bannerStart(TestExample_WAR.class);
         timestart = System.currentTimeMillis();
 
         int appStartTimeout = server.getAppStartTimeout();
@@ -121,12 +129,19 @@ public class TestExample_WAR {
             } catch (Throwable t) {
                 t.printStackTrace();
             }
+            bannerEnd(TestExample_WAR.class, timestart);
         }
     }
 
     @Test
     public void testBasicDump() throws Exception {
         ServerConfiguration sc = server.getServerConfiguration();
+        Set<String> fList = sc.getFeatureManager().getFeatures();
+
+        if (fList.contains("jpa-2.0")) {
+            // Auto pass, doesn't support ee7 default datasource
+            return;
+        }
 
         final LocalFile lf = server.dumpServer("jpa_testBasicDump");
         Assert.assertNotNull(lf);
@@ -138,7 +153,6 @@ public class TestExample_WAR {
 
         Assert.assertTrue(introspectorData.contains("JPA Runtime Internal State Information")); // Description
 
-        Assert.assertTrue(introspectorData.contains("JPA Runtime Internal State Information")); // Description
         Assert.assertTrue(introspectorData.contains("jpaRuntime = com.ibm.ws.jpa.container.v30.internal.JPA30Runtime"));
 
         Assert.assertTrue(introspectorData.contains("Provider Runtime Integration Service = com.ibm.ws.jpa.container.eclipselink.EclipseLinkJPAProvider"));

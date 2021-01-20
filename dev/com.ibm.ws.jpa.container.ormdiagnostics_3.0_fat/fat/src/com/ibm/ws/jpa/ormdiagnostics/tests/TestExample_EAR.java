@@ -33,8 +33,11 @@ import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.ws.jpa.ormdiagnostics.FATSuite;
 import com.ibm.ws.jpa.ormdiagnostics.ORMIntrospectorHelper;
 import com.ibm.ws.jpa.ormdiagnostics.ORMIntrospectorHelper.JPAClass;
+import com.ibm.ws.ormdiag.example.war.ExampleServlet;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.TestServlet;
+import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.PrivHelper;
@@ -48,6 +51,9 @@ public class TestExample_EAR extends JPAFATServletClient {
     private static long timestart = 0;
 
     @Server("JPAORMServer")
+    @TestServlets({
+                    @TestServlet(servlet = ExampleServlet.class, path = CONTEXT_ROOT + "/" + "ExampleServlet")
+    })
     public static LibertyServer server;
 
     @BeforeClass
@@ -164,7 +170,6 @@ public class TestExample_EAR extends JPAFATServletClient {
 
         Assert.assertTrue(introspectorData.contains("JPA Runtime Internal State Information")); // Description
 
-        Assert.assertTrue(introspectorData.contains("JPA Runtime Internal State Information")); // Description
         Assert.assertTrue(introspectorData.contains("jpaRuntime = com.ibm.ws.jpa.container.v22.internal.JPA22Runtime"));
 
         Assert.assertTrue(introspectorData.contains("Provider Runtime Integration Service = com.ibm.ws.jpa.container.eclipselink.EclipseLinkJPAProvider"));
