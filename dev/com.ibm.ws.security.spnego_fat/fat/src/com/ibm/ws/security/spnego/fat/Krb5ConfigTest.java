@@ -185,6 +185,7 @@ public class Krb5ConfigTest extends CommonTest {
                 testHelper.checkForMessages(true, MessageConstants.KRBCONFIGFILE_NOT_SPECIFIED_CWWKS4302I);
             } else {
                 Log.info(c, name.getMethodName(), "This is not Windows OS. Since the userID is not root, this test will be ignored");
+                testHelper.addShutdownMessages("CWWKS4312E");
             }
         } catch (Exception ex) {
             String message = CommonTest.maskHostnameAndPassword(ex.getMessage());
@@ -220,6 +221,7 @@ public class Krb5ConfigTest extends CommonTest {
 
             } else {
                 Log.info(c, name.getMethodName(), "This is not Windows OS. Since the userID is not root, this test will be ignored");
+                testHelper.addShutdownMessages("CWWKS4312E");
             }
         } catch (Exception ex) {
             String message = CommonTest.maskHostnameAndPassword(ex.getMessage());
