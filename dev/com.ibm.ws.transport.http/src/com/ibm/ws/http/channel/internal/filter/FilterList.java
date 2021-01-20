@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@ package com.ibm.ws.http.channel.internal.filter;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 /**
  * Contains the address tree of multiple IPv4 and IPv6 Addresses. This tree can
@@ -60,19 +61,21 @@ public class FilterList {
      * @param data
      *                 list of IPv4 and/or IPv6 address which are
      *                 to be used to create a new address tree.
+     * @return true if every address is in a valid format
      */
-    public void buildData(String[] data, boolean validateOnly) {
+    public boolean buildData(String[] data, boolean validateOnly) {
 
         if (data == null) {
-            return;
+            return false;
         }
 
         int length = data.length;
+        boolean valid = true;
 
         for (int i = 0; i < length; i++) {
-            addAddressToList(data[i], validateOnly);
+            valid = addAddressToList(data[i], validateOnly);
         }
-
+        return valid;
     }
 
     /**
@@ -80,10 +83,11 @@ public class FilterList {
      * a string and converted to an integer array by this routine. Another method
      * is then called to put it into the tree
      *
-     * @param newAddress
-     *                       address to add
+     * @param newAddress address to add
+     * @return true if the address is in a valid format
      */
-    private void addAddressToList(String newAddress, boolean validateOnly) {
+    @FFDCIgnore(NumberFormatException.class)
+    private boolean addAddressToList(String newAddress, boolean validateOnly) {
         int start = 0;
         char delimiter = '.';
         String sub;
@@ -113,13 +117,21 @@ public class FilterList {
                 if (sub.trim().equals("*")) {
                     addressToAdd[slot] = -1; // 0xFFFFFFFF is the wildcard.
                 } else {
-                    addressToAdd[slot] = Integer.parseInt(sub, radix);
+                    try {
+                        addressToAdd[slot] = Integer.parseInt(sub, radix);
+                    } catch (NumberFormatException nfe) {
+                        return false;
+                    }
                 }
             } else {
                 if (addr.trim().equals("*")) {
                     addressToAdd[slot] = -1; // 0xFFFFFFFF is the wildcard.
                 } else {
-                    addressToAdd[slot] = Integer.parseInt(addr, radix);
+                    try {
+                        addressToAdd[slot] = Integer.parseInt(addr, radix);
+                    } catch (NumberFormatException nfe) {
+                        return false;
+                    }
                 }
                 break;
             }
@@ -133,6 +145,7 @@ public class FilterList {
                 Tr.debug(tc, "address added to list of trusted hosts:" + newAddress);
             }
         }
+        return true;
     }
 
     /**

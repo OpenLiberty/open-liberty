@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -300,15 +300,7 @@ public class TrustedHeaderOriginLists {
      */
     private boolean isStringIPAddressesValid(String[] value) {
         FilterList f = new FilterList();
-        try {
-            if (value != null) {
-                f.buildData(value, true);
-            }
-        } catch (NumberFormatException x) {
-            return false;
-        }
-
-        return true;
+        return f.buildData(value, true);
     }
 
     /**
