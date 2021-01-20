@@ -26,7 +26,6 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
-@SkipForRepeat("EE9_FEATURES") // currently broken due to multiple issues
 public class ComplexClientTest extends AbstractTest {
 
     @Server("jaxrs20.client.ComplexClientTest")
@@ -69,7 +68,7 @@ public class ComplexClientTest extends AbstractTest {
 
     @Test
     public void complexTestClientPropertyInherit() throws Exception {
-        this.runTestOnServer(target, "testClientPropertyInherit", null, "{inherit1=cb},{inherit2=c, inherit1=cb},ECHO1:test");
+        this.runTestOnServer(target, "testClientPropertyInherit", null, "true,true,true,ECHO1:test");
     }
 
     @Test
@@ -78,20 +77,21 @@ public class ComplexClientTest extends AbstractTest {
     }
 
     @Test
+    @SkipForRepeat("EE9_FEATURES") // Continue to skip this test for EE9 as the EE9 ClientBuilder starts with io.openliberty.org
     public void complexTestNewClientBuilder() throws Exception {
         this.runTestOnServer(target, "testNewClientBuilder", null, "com.ibm.ws");
     }
 
     @Test
     public void complexTestNewClient() throws Exception {
-        this.runTestOnServer(target, "testNewClient", null, "clientproperty2=somevalue2");
-        this.runTestOnServer(target, "testNewClient", null, "clientproperty1=somevalue1");
+        this.runTestOnServer(target, "testNewClient", null, "true,true");
+        this.runTestOnServer(target, "testNewClient", null, "true,true");
     }
 
     @Test
     public void complexTestNewClientWithConfig() throws Exception {
-        this.runTestOnServer(target, "testNewClientWithConfig", null, "clientproperty3=somevalue3");
-        this.runTestOnServer(target, "testNewClientWithConfig", null, "clientproperty4=somevalue4");
+        this.runTestOnServer(target, "testNewClientWithConfig", null, "true,true");
+        this.runTestOnServer(target, "testNewClientWithConfig", null, "true,true");
     }
 
     @Test
@@ -126,7 +126,7 @@ public class ComplexClientTest extends AbstractTest {
 
     @Test
     public void complexTestNew2WebTargetsRequestFilter() throws Exception {
-        this.runTestOnServer(target, "testNew2WebTargetsRequestFilter", null, "{filter1=GET},{filter1=GET, filter2=*/*}");
+        this.runTestOnServer(target, "testNew2WebTargetsRequestFilter", null, "[filter1=GET],[filter1=GET, filter2=*/*]");
     }
 
     @Test
@@ -135,6 +135,7 @@ public class ComplexClientTest extends AbstractTest {
     }
 
     @Test
+    @SkipForRepeat("EE9_FEATURES") // Continue to skip this test for EE9 as RestEasy does not allow a null for a Client Property value    
     public void complexTestNew2MixFilter() throws Exception {
         this.runTestOnServer(target, "testNew2MixFilter", null, "222,{filter1=GET},223,{filter2=null}");
     }
