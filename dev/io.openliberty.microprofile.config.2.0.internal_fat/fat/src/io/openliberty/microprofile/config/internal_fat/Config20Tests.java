@@ -33,6 +33,7 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.microprofile.config.internal_fat.apps.TestUtils;
 import io.openliberty.microprofile.config.internal_fat.apps.classLoader.ClassLoadersTestServlet;
+import io.openliberty.microprofile.config.internal_fat.apps.configProperties.ConfigPropertiesTestServlet;
 import io.openliberty.microprofile.config.internal_fat.apps.converter.ConvertersTestServlet;
 import io.openliberty.microprofile.config.internal_fat.apps.defaultSources.DefaultSourcesTestServlet;
 import io.openliberty.microprofile.config.internal_fat.apps.propertyExpression.PropertyExpressionTestServlet;
@@ -41,11 +42,20 @@ import io.openliberty.microprofile.config.internal_fat.apps.unwrap.UnwrapServlet
 @RunWith(FATRunner.class)
 public class Config20Tests extends FATServletClient {
 
-    public static final String DEFAULT_SOURCES_APP_NAME = "defaultSourcesApp";
     public static final String CLASS_LOADER_APP_NAME = "classLoadersApp";
     public static final String CONVERTER_LOADER_APP_NAME = "convertersApp";
+    public static final String DEFAULT_SOURCES_APP_NAME = "defaultSourcesApp";
+
+    // new to mpConfig-2.0
+    public static final String CONFIG_PROPERTIES_APP_NAME = "configPropertiesApp";
     public static final String PROPERTY_EXPRESSION_APP_NAME = "propertyExpressionApp";
     public static final String UNWRAP_APP_NAME = "unwrapApp";
+
+    // Config Property values for ConfigProperties tests
+    public static final String NO_PREFIX_TEST_KEY = "validPrefix.validkey";
+    public static final String NO_PREFIX_TEST_VALUE = "value";
+    public static final String CAMEL_CASE_TEST_KEY = "validPrefix.validCamelCaseKey";
+    public static final String CAMEL_CASE_TEST_VALUE = "aValueFromCamelCase";
 
     public static final String SERVER_NAME = "Config20Server";
 
@@ -54,9 +64,12 @@ public class Config20Tests extends FATServletClient {
 
     @Server(SERVER_NAME)
     @TestServlets({
-                    @TestServlet(servlet = DefaultSourcesTestServlet.class, contextRoot = DEFAULT_SOURCES_APP_NAME),
+
                     @TestServlet(servlet = ClassLoadersTestServlet.class, contextRoot = CLASS_LOADER_APP_NAME),
                     @TestServlet(servlet = ConvertersTestServlet.class, contextRoot = CONVERTER_LOADER_APP_NAME),
+                    @TestServlet(servlet = DefaultSourcesTestServlet.class, contextRoot = DEFAULT_SOURCES_APP_NAME),
+
+                    @TestServlet(servlet = ConfigPropertiesTestServlet.class, contextRoot = CONFIG_PROPERTIES_APP_NAME),
                     @TestServlet(servlet = PropertyExpressionTestServlet.class, contextRoot = PROPERTY_EXPRESSION_APP_NAME),
                     @TestServlet(servlet = UnwrapServlet.class, contextRoot = UNWRAP_APP_NAME)
 
@@ -66,11 +79,20 @@ public class Config20Tests extends FATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
 
-        WebArchive defaultSourcesWar = ShrinkWrap.create(WebArchive.class, DEFAULT_SOURCES_APP_NAME + ".war")
-                        .addPackages(true, DefaultSourcesTestServlet.class.getPackage())
-                        .addAsManifestResource(new File("publish/resources/" + DEFAULT_SOURCES_APP_NAME + "/permissions.xml"),
-                                               "permissions.xml");
+        /*
+         * Define Config Values
+         */
+        PropertiesAsset configPropertiesConfigSource = new PropertiesAsset()
+                        .addProperty(NO_PREFIX_TEST_KEY, NO_PREFIX_TEST_VALUE)
+                        .addProperty(CAMEL_CASE_TEST_KEY, CAMEL_CASE_TEST_VALUE);
 
+        PropertiesAsset propertyExpressionConfigSource = new PropertiesAsset()
+                        .addProperty("value1DefinedInTwoPlaces", "value1b")
+                        .addProperty("value2DefinedInMicroprofileConfigProperties", "value2");
+
+        /*
+         * Build Wars
+         */
         WebArchive classLoadersWar = ShrinkWrap.create(WebArchive.class, CLASS_LOADER_APP_NAME + ".war")
                         .addPackages(true, ClassLoadersTestServlet.class.getPackage())
                         .addAsManifestResource(new File("publish/resources/" + CLASS_LOADER_APP_NAME + "/permissions.xml"),
@@ -85,20 +107,30 @@ public class Config20Tests extends FATServletClient {
                         .addAsManifestResource(new File("publish/resources/" + CONVERTER_LOADER_APP_NAME + "/permissions.xml"),
                                                "permissions.xml");
 
-        PropertiesAsset config = new PropertiesAsset()
-                        .addProperty("value1DefinedInTwoPlaces", "value1b")
-                        .addProperty("value2DefinedInMicroprofileConfigProperties", "value2");
+        WebArchive defaultSourcesWar = ShrinkWrap.create(WebArchive.class, DEFAULT_SOURCES_APP_NAME + ".war")
+                        .addPackages(true, DefaultSourcesTestServlet.class.getPackage())
+                        .addAsManifestResource(new File("publish/resources/" + DEFAULT_SOURCES_APP_NAME + "/permissions.xml"), "permissions.xml");
+
+        WebArchive configPropertiesWar = ShrinkWrap.create(WebArchive.class, CONFIG_PROPERTIES_APP_NAME + ".war")
+                        .addPackages(true, ConfigPropertiesTestServlet.class.getPackage())
+                        .addAsResource(configPropertiesConfigSource, "META-INF/microprofile-config.properties");
+
         WebArchive propertyExpressionWar = ShrinkWrap.create(WebArchive.class, PROPERTY_EXPRESSION_APP_NAME + ".war")
                         .addPackages(true, PropertyExpressionTestServlet.class.getPackage())
-                        .addAsResource(config, "META-INF/microprofile-config.properties");
+                        .addAsResource(propertyExpressionConfigSource, "META-INF/microprofile-config.properties");
 
         WebArchive unwrapWar = ShrinkWrap.create(WebArchive.class, UNWRAP_APP_NAME + ".war")
                         .addPackages(true, UnwrapServlet.class.getPackage())
                         .addClass(TestUtils.class);
 
-        ShrinkHelper.exportDropinAppToServer(server, defaultSourcesWar, DeployOptions.SERVER_ONLY);
+        /*
+         * Drop into servers directory
+         */
         ShrinkHelper.exportDropinAppToServer(server, classLoadersWar, DeployOptions.SERVER_ONLY);
         ShrinkHelper.exportDropinAppToServer(server, convertersWar, DeployOptions.SERVER_ONLY);
+        ShrinkHelper.exportDropinAppToServer(server, defaultSourcesWar, DeployOptions.SERVER_ONLY);
+
+        ShrinkHelper.exportDropinAppToServer(server, configPropertiesWar, DeployOptions.SERVER_ONLY);
         ShrinkHelper.exportAppToServer(server, propertyExpressionWar, DeployOptions.SERVER_ONLY);
         ShrinkHelper.exportDropinAppToServer(server, unwrapWar, DeployOptions.SERVER_ONLY);
 
