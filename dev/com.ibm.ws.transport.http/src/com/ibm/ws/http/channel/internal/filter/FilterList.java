@@ -120,6 +120,9 @@ public class FilterList {
                     try {
                         addressToAdd[slot] = Integer.parseInt(sub, radix);
                     } catch (NumberFormatException nfe) {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "addAddressToList: [" + newAddress + "] is not a valid IP address");
+                        }
                         return false;
                     }
                 }
@@ -130,6 +133,9 @@ public class FilterList {
                     try {
                         addressToAdd[slot] = Integer.parseInt(addr, radix);
                     } catch (NumberFormatException nfe) {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "addAddressToList: [" + newAddress + "] is not a valid IP address");
+                        }
                         return false;
                     }
                 }
