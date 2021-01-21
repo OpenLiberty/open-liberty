@@ -32,5 +32,4 @@ fat.project: true
 	org.rnorth.duct-tape:duct-tape;version=1.0.7,\
 	org.slf4j:slf4j-api;version=1.7.7,\
 	com.ibm.ws.transaction.test.util;version=latest,\
-	org.apache.derby:derby;version=latest,\
 	fattest.simplicity
