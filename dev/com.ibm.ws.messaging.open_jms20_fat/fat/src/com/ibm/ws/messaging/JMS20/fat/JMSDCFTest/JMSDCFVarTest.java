@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015,2020 IBM Corporation and others.
+ * Copyright (c) 2015, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,10 +20,12 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.rules.TestRule;
+import org.junit.runner.RunWith;
 
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
@@ -31,10 +33,12 @@ import componenttest.topology.impl.LibertyServerFactory;
 
 import com.ibm.ws.messaging.JMS20.fat.TestUtils;
 
+@RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class JMSDCFVarTest {
 
-    private static final LibertyServer server = LibertyServerFactory.getLibertyServer("JMSDCFServer");
+    private static final LibertyServer server =
+        LibertyServerFactory.getLibertyServer("JMSDCFServer");
 
     private static final int serverPort = server.getHttpDefaultPort();
     private static final String serverHostName  = server.getHostname();
@@ -60,7 +64,7 @@ public class JMSDCFVarTest {
         server.startServer();
     }
 
-    @org.junit.AfterClass
+    @AfterClass
     public static void tearDown() {
         try {
             server.stopServer();

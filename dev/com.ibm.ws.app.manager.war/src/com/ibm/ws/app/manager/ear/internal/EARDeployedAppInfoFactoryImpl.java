@@ -13,9 +13,7 @@ package com.ibm.ws.app.manager.ear.internal;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.Version;
@@ -28,7 +26,6 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.app.manager.ApplicationManager;
-import com.ibm.ws.app.manager.internal.AppManagerConstants;
 import com.ibm.ws.app.manager.module.AbstractDeployedAppInfoFactory;
 import com.ibm.ws.app.manager.module.DeployedAppInfo;
 import com.ibm.ws.app.manager.module.DeployedAppInfoFactory;
@@ -147,17 +144,17 @@ public class EARDeployedAppInfoFactoryImpl extends AbstractDeployedAppInfoFactor
     // Application expansion ...
 
     protected void prepareExpansion() throws IOException {
-        WsResource expansionResource = deployedAppServices.getLocationAdmin().resolveResource(AppManagerConstants.EXPANDED_APPS_DIR);
+        WsResource expansionResource = deployedAppServices.getLocationAdmin().resolveResource(applicationManager.getExpandLocation());
         expansionResource.create();
     }
 
     protected WsResource resolveExpansion(String appName) {
-        return deployedAppServices.getLocationAdmin().resolveResource(AppManagerConstants.EXPANDED_APPS_DIR + appName + ".ear/");
+        return deployedAppServices.getLocationAdmin().resolveResource(applicationManager.getExpandLocation() + appName + ".ear/");
     }
 
     protected void expand(
-        String name, File collapsedFile,
-        WsResource expandedResource, File expandedFile) throws IOException {
+                          String name, File collapsedFile,
+                          WsResource expandedResource, File expandedFile) throws IOException {
 
         String collapsedPath = collapsedFile.getAbsolutePath();
 
@@ -190,15 +187,14 @@ public class EARDeployedAppInfoFactoryImpl extends AbstractDeployedAppInfoFactor
      * expand the application to the expanded applications location.
      *
      * @param appInfo Information for the application for which to create
-     *     deployment information.
+     *            deployment information.
      * @return Deployment information for the application.
      *
      * @throws UnableToAdaptException Thrown if the deployment information
-     *     count not be created.
+     *             count not be created.
      */
     @Override
-    public DeployedAppInfo createDeployedAppInfo(ApplicationInformation<DeployedAppInfo> appInfo)
-        throws UnableToAdaptException {
+    public DeployedAppInfo createDeployedAppInfo(ApplicationInformation<DeployedAppInfo> appInfo) throws UnableToAdaptException {
 
         String appPid = appInfo.getPid();
         String appName = appInfo.getName();
@@ -275,8 +271,7 @@ public class EARDeployedAppInfoFactoryImpl extends AbstractDeployedAppInfoFactor
         }
         appInfo.setContainer(jeeContainer);
 
-        EARDeployedAppInfo deployedApp =
-            new EARDeployedAppInfo(appInfo, applicationDD, this, deployedAppServices, originalAppContainer);
+        EARDeployedAppInfo deployedApp = new EARDeployedAppInfo(appInfo, applicationDD, this, deployedAppServices, originalAppContainer);
         appInfo.setHandlerInfo(deployedApp);
 
         return deployedApp;

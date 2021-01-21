@@ -48,7 +48,8 @@ import io.openliberty.org.jboss.resteasy.common.cdi.LibertyCdiInjectorFactory;
              "bean.defining.annotations=" +
                 "javax.ws.rs.Path;" +
                 "javax.ws.rs.core.Application;" +
-                "javax.ws.rs.ext.Provider",
+                "javax.ws.rs.ext.Provider;" +
+                "jakarta.annotation.ManagedBean",
              "service.vendor=IBM" })
 
 public class LibertyResteasyCdiExtension extends ResteasyCdiExtension implements Extension, WebSphereCDIExtension {

@@ -26,6 +26,7 @@ import javax.json.Json;
 import javax.json.JsonException;
 import javax.json.JsonNumber;
 import javax.json.JsonReader;
+import javax.json.JsonString;
 import javax.json.JsonValue;
 import javax.json.JsonWriter;
 import javax.json.spi.JsonProvider;
@@ -128,6 +129,9 @@ public class JsonPProvider implements MessageBodyReader<Object>, MessageBodyWrit
             // TODO: consider checking charset in MediaType or headers and creating the reader with that...
             //reader = this.jsonProvider.createReaderFactory(null).createReader(entityStream, Charset.defaultCharset());
             if (reader != null) {
+                if (JsonString.class.isAssignableFrom(type)) {
+                    return reader.readValue();
+                }
                 return reader.read();
             }
         } catch (Throwable e) {

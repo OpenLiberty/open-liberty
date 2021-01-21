@@ -160,7 +160,7 @@ public class LDAPUtils {
                                         "To run against the remote LDAP servers, ensure that the tests are being run " +
                                         "on the IBM network, that you have added your global IBM GHE access token " +
                                         "(global.ghe.access.token) to the user.build.properties file in your home directory " +
-                                        "and that you are a member of the 'was-liberty' organization in IBM GHE.");
+                                        "and that you are a member of the 'websphere' organization in IBM GHE.");
             CONSUL_LOOKUP_FAILED = true;
             uselocalLDAP = true;
         }

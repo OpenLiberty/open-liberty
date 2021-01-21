@@ -102,7 +102,6 @@ public class CustomELResolver extends ELResolver {
      */
     @Override
     public Class<?> getType(ELContext context, Object base, Object property) {
-        // TODO Auto-generated method stub
         //System.out.println("CustomELResolver:getType: " + property.getClass());
         return String.class;
     }
@@ -114,7 +113,6 @@ public class CustomELResolver extends ELResolver {
      */
     @Override
     public void setValue(ELContext context, Object base, Object property, Object value) {
-        // TODO Auto-generated method stub
         System.out.println("CustomELResolver:setValue: " + property.getClass());
     }
 
@@ -125,7 +123,6 @@ public class CustomELResolver extends ELResolver {
      */
     @Override
     public boolean isReadOnly(ELContext context, Object base, Object property) {
-        // TODO Auto-generated method stub
         return false;
     }
 
@@ -136,7 +133,6 @@ public class CustomELResolver extends ELResolver {
      */
     @Override
     public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object base) {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -147,7 +143,6 @@ public class CustomELResolver extends ELResolver {
      */
     @Override
     public Class<?> getCommonPropertyType(ELContext context, Object base) {
-        // TODO Auto-generated method stub
         return null;
     }
 

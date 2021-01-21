@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013,2020 IBM Corporation and others.
+ * Copyright (c) 2013, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,11 +24,13 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.rules.TestRule;
+import org.junit.runner.RunWith;
 
 import componenttest.annotation.ExpectedFFDC;
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
@@ -36,24 +38,23 @@ import componenttest.topology.impl.LibertyServerFactory;
 
 import com.ibm.ws.messaging.JMS20.fat.TestUtils;
 
+@RunWith(FATRunner.class)
 public class SharedSubscriptionTest_129623 {
-
     private static LibertyServer clientServer =
         LibertyServerFactory.getLibertyServer("SharedSubscriptionClient");
+    private static final int clientPort = clientServer.getHttpDefaultPort();
+    private static final String clientHostName = clientServer.getHostname();
 
     private static LibertyServer engineServer =
         LibertyServerFactory.getLibertyServer("SharedSubscriptionEngine");
 
-    private static final int clientPort = clientServer.getHttpDefaultPort();
-    private static final String clientHostName = clientServer.getHostname();
+    //
 
     private static final String subscriptionAppName = "SharedSubscription";
     private static final String subscriptionContextRoot = "SharedSubscription";
     private static final String[] subscriptionPackages = new String[] {
         "sharedsubscription.web",
         "sharedsubscription.ejb" };
-
-    //
 
     //
 
@@ -109,7 +110,7 @@ public class SharedSubscriptionTest_129623 {
         // 'readLocalAddress' throws IOException
     }
 
-    @org.junit.AfterClass
+    @AfterClass
     public static void tearDown() {
         try {
             clientServer.stopServer();
@@ -378,7 +379,9 @@ public class SharedSubscriptionTest_129623 {
         assertTrue("Test testCreateSharedDurableConsumer_2SubscribersDiffTopic_B_SecOff failed", testResult);
     }
 
-    @ExpectedFFDC("com.ibm.wsspi.sib.core.exception.SIDurableSubscriptionMismatchException")
+    // TFB: This does not seem to occur, and the test passes.
+    //      There is no indication in the test method that an exception should occur.
+    // @ExpectedFFDC("com.ibm.wsspi.sib.core.exception.SIDurableSubscriptionMismatchException")
     @Test
     public void testCreateSharedDurableConsumer_2SubscribersDiffTopic_TCP_SecOff() throws Exception {
         boolean testResult = runInServlet("testCreateSharedDurableConsumer_2SubscribersDiffTopic_TCP_SecOff");
@@ -392,6 +395,8 @@ public class SharedSubscriptionTest_129623 {
 
     // Bindings and Security Off
 
+    @ExpectedFFDC( { "com.ibm.ws.sib.processor.exceptions.SIMPDestinationLockedException",
+                     "com.ibm.wsspi.sib.core.exception.SIDurableSubscriptionMismatchException" } )
     @Mode(TestMode.FULL)
     @Test
     public void testCreateSharedDurableConsumer_JRException_B_SecOff() throws Exception {
@@ -415,6 +420,8 @@ public class SharedSubscriptionTest_129623 {
     // client identifier (if set) then a JMSRuntimeException is thrown.
     // Bindings and Security Off
 
+    @ExpectedFFDC( { "com.ibm.ws.sib.processor.exceptions.SIMPDestinationLockedException",
+                     "com.ibm.wsspi.sib.core.exception.SIDurableSubscriptionMismatchException" } )
     @Mode(TestMode.FULL)
     @Test
     public void testCreateSharedDurableUndurableConsumer_JRException_B_SecOff() throws Exception {
@@ -478,6 +485,7 @@ public class SharedSubscriptionTest_129623 {
 
     // Defect 174713
 
+    @ExpectedFFDC("com.ibm.wsspi.sib.core.exception.SIDurableSubscriptionNotFoundException")
     @Test
     public void testUnsubscribeInvalidSID_Tsession_B_SecOff() throws Exception {
         boolean testResult = runInServlet("testUnsubscribeInvalidSID_Tsession_B_SecOff");

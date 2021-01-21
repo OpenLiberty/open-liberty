@@ -42,7 +42,7 @@ tested.features: el-3.0, persistence-3.0, servlet-5.0, cdi-3.0, beanValidation-3
 #      or binaries from Artifactory (e.g. commons-logging:commons-logging)
 -buildpath: \
     com.ibm.ws.jpa_testframework;version=latest,\
-    fattest.databases;version=latest,\
+    fattest.simplicity;version=latest,\
     com.github.docker-java:docker-java-api;version=latest,\
     com.ibm.websphere.javaee.annotation.1.2;version=latest,\
     com.ibm.websphere.javaee.cdi.2.0;version=latest,\

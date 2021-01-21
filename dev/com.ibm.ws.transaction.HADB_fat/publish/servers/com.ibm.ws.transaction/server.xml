@@ -34,15 +34,6 @@
                     createDatabase="create" />
 
 	</dataSource>
-	
-    <dataSource id="jdbc/derby" jndiName="jdbc/derby" jdbcDriverRef="DerbyEmbedded">
-      <properties
-        databaseName="${shared.resource.dir}/data/transactionFAT7"
-        createDatabase="create"
-        user="dbuser1"
-        password="{xor}Oz0vKDtu"
-      />  <!-- password="dbpwd1" -->
-    </dataSource>
     
     <logging traceSpecification="Transaction=all:com.ibm.ws.jdbc.*=all:RRA=all:logservice=all=enabled:*=info=enabled"/>
     

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013,2020 IBM Corporation and others.
+ * Copyright (c) 2013, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,20 +14,25 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
-import com.ibm.ws.messaging.JMS20.fat.TestUtils;
-
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
+import com.ibm.ws.messaging.JMS20.fat.TestUtils;
+
+@RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class JMSProducerTest_118073 {
 
-    private static LibertyServer clientServer = LibertyServerFactory.getLibertyServer("JMSProducerClient");
+    private static LibertyServer clientServer =
+        LibertyServerFactory.getLibertyServer("JMSProducerClient");
     private static boolean clientIsRunning = false;
 
     private static void ensureClient() throws Exception {
@@ -92,7 +97,7 @@ public class JMSProducerTest_118073 {
         startClient();
     }
 
-    @org.junit.AfterClass
+    @AfterClass
     public static void tearDown() {
         try {
             clientServer.stopServer();

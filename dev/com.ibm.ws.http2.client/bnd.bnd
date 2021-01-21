@@ -30,6 +30,7 @@ Export-Package: \
   com.ibm.ws.http2.test.listeners, \
   com.ibm.ws.http.channel.internal, \
   com.ibm.ws.http.channel.internal.cookies, \
+  com.ibm.ws.http.channel.internal.filter, \
   com.ibm.ws.http.channel.internal.inbound, \
   com.ibm.ws.http.channel.internal.outbound, \
   com.ibm.ws.http.channel.internal.values, \

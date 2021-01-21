@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -35,7 +35,7 @@ import concurrent.mp.fat.web.MPConcurrentTestServlet;
 public class MPConcurrentTest extends FATServletClient {
 
     @ClassRule
-    public static RepeatTests r = MPContextPropActions.repeat("MPConcurrentTestServer", MPContextPropActions.CTX10, MPContextPropActions.CTX11);
+    public static RepeatTests r = MPContextPropActions.repeat("MPConcurrentTestServer", MPContextPropActions.CTX10, MPContextPropActions.CTX12);
 
     private static final String APP_NAME = "MPConcurrentApp";
 

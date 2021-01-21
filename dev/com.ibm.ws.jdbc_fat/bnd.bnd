@@ -31,7 +31,7 @@ fat.test.databases: true
 #fat.bucket.db.type: Postgres
 
 -buildpath: \
-	fattest.databases;version=latest,\
+	fattest.simplicity;version=latest,\
 	org.slf4j:slf4j-api;version=1.7.7,\
     com.github.docker-java:docker-java-api;version=latest,\
 	com.ibm.ws.componenttest,\

@@ -64,18 +64,32 @@ public class OracleKerberosTestServlet extends FATServlet {
         for (int attempt = 0; attempt < 5; attempt++) {
             try {
                 return ds.getConnection();
-            } catch (SQLException e) {
+            } catch (Exception e) {
+                //Try to find nested SQLExceptions
+                SQLException found = null;
+                for (Throwable t = e; t.getCause() != null; t = t.getCause()) {
+                    if (t instanceof SQLException) {
+                        found = (SQLException) t;
+                    }
+                }
+                //If none was found throw original exception
+                if (found == null)
+                    throw e;
+                //Keep track of the first SQLException we found
                 if (firstEx == null)
-                    firstEx = e;
-                if (e.getMessage() != null && e.getMessage().contains("ORA-12631")) {
+                    firstEx = found;
+                //Check to see if we failed with ORA-12631 if so attempt again
+                if (found.getMessage() != null && found.getMessage().contains("ORA-12631")) {
                     System.out.println("getConnection attempt " + attempt + " failed with ORA-12631");
                     waitFor(3_000);
                     continue;
+                    //Otherwise, throw the original exception
                 } else {
                     throw e;
                 }
             }
         }
+        //After 5 attempts, throw the first SQLException we stored
         throw firstEx;
     }
 

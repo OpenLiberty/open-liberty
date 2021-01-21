@@ -44,7 +44,7 @@ import componenttest.app.FATServlet;
 public class SseClientTestServlet extends FATServlet {
     Logger LOG = Logger.getLogger(SseClientTestServlet.class.getName());
     
-    private static final int WAIT_TIME = 15; // in seconds
+    private static final int WAIT_TIME = 20; // in seconds
 
     private RestClientBuilder builder;
 

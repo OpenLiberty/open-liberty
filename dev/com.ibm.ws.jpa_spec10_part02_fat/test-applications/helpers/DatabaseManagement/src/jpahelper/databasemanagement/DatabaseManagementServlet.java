@@ -40,6 +40,9 @@ import javax.transaction.UserTransaction;
  */
 @WebServlet(urlPatterns = { "/DMS" })
 public class DatabaseManagementServlet extends HttpServlet {
+
+    private static final long serialVersionUID = 1L;
+
     @Resource
     private UserTransaction tx;
 
@@ -88,6 +91,8 @@ public class DatabaseManagementServlet extends HttpServlet {
             conn = dsRl.getConnection();
             final DatabaseMetaData dbMeta = conn.getMetaData();
             Properties properties = new Properties();
+            properties.put("dbmajor_version", Integer.toString(dbMeta.getDatabaseMajorVersion()));
+            properties.put("dbminor_version", Integer.toString(dbMeta.getDatabaseMinorVersion()));
             properties.put("dbproduct_name", dbMeta.getDatabaseProductName());
             properties.put("dbproduct_version", dbMeta.getDatabaseProductVersion());
             properties.put("jdbcdriver_version", dbMeta.getDatabaseProductVersion());
@@ -175,7 +180,6 @@ public class DatabaseManagementServlet extends HttpServlet {
                     System.out.println("Executing: " + sql);
                     pw.println("Executing: " + sql);
                     if (stmt.execute(sql)) {
-                        System.out.println("Successful execution, Result Set:");
                         pw.println("Successful execution, Result Set:");
 
                         final ResultSet rs = stmt.getResultSet();
@@ -194,34 +198,23 @@ public class DatabaseManagementServlet extends HttpServlet {
                             }
 
                             pw.println(sb);
-                            System.out.println(sb);
                         }
                     } else {
-                        System.out.println("Successful execution, update count = " + stmt.getUpdateCount());
                         pw.println("Successful execution, update count = " + stmt.getUpdateCount());
                     }
 
                     successCount++;
                 } catch (Exception e) {
-                    System.out.println("SQL Execution failed: " + e);
                     if (!swallowErrors) {
-                        e.printStackTrace();
                         pw.println("SQL Execution failed: " + e);
                     }
                 }
             }
 
             System.out.println("SQL Executed: Total = " + totalCount + " Successful = " + successCount);
-            pw.println("SQL Executed: Total = " + totalCount + " Successful = " + successCount);
 
             tx.commit();
         } catch (Exception e) {
-            try {
-                tx.rollback();
-            } catch (Exception e1) {
-                e1.printStackTrace();
-            }
-
             throw new ServletException(e);
         } finally {
             pw.close();

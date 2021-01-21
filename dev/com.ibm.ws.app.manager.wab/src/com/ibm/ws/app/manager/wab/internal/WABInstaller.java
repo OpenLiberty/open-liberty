@@ -19,11 +19,13 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.ReentrantLock;
@@ -46,6 +48,8 @@ import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicyOption;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventAdmin;
 import org.osgi.service.event.EventHandler;
@@ -59,6 +63,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.websphere.servlet.context.ExtendedServletContext;
 import com.ibm.websphere.servlet.filter.IFilterConfig;
+import com.ibm.ws.app.manager.ApplicationStateCoordinator;
 import com.ibm.ws.app.manager.module.DeployedAppServices;
 import com.ibm.ws.app.manager.module.DeployedModuleInfo;
 import com.ibm.ws.app.manager.module.internal.ModuleClassLoaderFactory;
@@ -77,6 +82,8 @@ import com.ibm.ws.container.service.app.deploy.extended.ModuleContainerInfo;
 import com.ibm.ws.container.service.metadata.MetaDataException;
 import com.ibm.ws.eba.wab.integrator.EbaProvider;
 import com.ibm.ws.javaee.dd.web.WebApp;
+import com.ibm.ws.kernel.feature.ServerReadyStatus;
+import com.ibm.ws.kernel.feature.ServerStarted;
 import com.ibm.ws.runtime.update.RuntimeUpdateListener;
 import com.ibm.ws.runtime.update.RuntimeUpdateManager;
 import com.ibm.ws.runtime.update.RuntimeUpdateNotification;
@@ -175,9 +182,9 @@ import com.ibm.wsspi.webcontainer.servlet.IServletContext;
  */
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE,
            immediate = true,
-           service = { EventHandler.class, RuntimeUpdateListener.class, ServerQuiesceListener.class },
+           service = { EventHandler.class, RuntimeUpdateListener.class, ServerQuiesceListener.class, ServerReadyStatus.class },
            property = { "service.vendor=IBM", "event.topics=org/osgi/service/web/UNDEPLOYED" })
-public class WABInstaller implements EventHandler, ExtensionFactory, RuntimeUpdateListener, ServerQuiesceListener {
+public class WABInstaller implements EventHandler, ExtensionFactory, RuntimeUpdateListener, ServerQuiesceListener, ServerReadyStatus {
 
     private static final TraceComponent tc = Tr.register(WABInstaller.class);
     private static final String CONFIGURABLE_FILTER = "(&"
@@ -231,6 +238,11 @@ public class WABInstaller implements EventHandler, ExtensionFactory, RuntimeUpda
 
     @Reference
     private volatile List<WABClassInfoHelper> classInfoHelpers;
+
+    private final Map<WAB, Future<?>> systemWABsDeploying = new ConcurrentHashMap<>();
+
+    @Reference(policyOption = ReferencePolicyOption.GREEDY, cardinality = ReferenceCardinality.OPTIONAL)
+    private volatile ServerStarted serverStarted;
 
     /* Package protected method to allow WAB's to obtain bundle trackers too */
     <T> WABTracker<T> getTracker(BundleTrackerCustomizer<T> wabTrackerCustomizer) {
@@ -1582,5 +1594,48 @@ public class WABInstaller implements EventHandler, ExtensionFactory, RuntimeUpda
     @Override
     public void serverStopping() {
         quiesceStarted.set(true);
+    }
+
+    void addSystemWABDeployFuture(WAB wab, Future<?> future) {
+        if (serverStarted != null) {
+            return;
+        }
+        EbaProvider ebaProvider = ebaProviderTracker.getService();
+        if (ebaProvider != null && ebaProvider.getApplicationInfo(wab.getBundle()) != null) {
+            return;
+        }
+        // This is a system wab, not from an OSGi application EBA.
+        systemWABsDeploying.put(wab, future);
+    }
+
+    @Override
+    public void check() {
+        AtomicBoolean timeoutOccurred = new AtomicBoolean();
+        systemWABsDeploying.forEach((w, f) -> {
+            try {
+                if (timeoutOccurred.get()) {
+                    if (!f.isDone()) {
+                        logSlowWab(w);
+                    }
+                } else {
+                    f.get(ApplicationStateCoordinator.getApplicationStartTimeout(), TimeUnit.SECONDS);
+                }
+            } catch (InterruptedException e) {
+                // FFDC here and keep interruption
+                Thread.currentThread().interrupt();
+            } catch (ExecutionException e) {
+                // FFDC here and continue
+            } catch (TimeoutException e) {
+                timeoutOccurred.set(true);
+                logSlowWab(w);
+            }
+        });
+        systemWABsDeploying.clear();
+    }
+
+    private void logSlowWab(WAB w) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+            Tr.event(tc, "Stopped waiting for the system WAB to start: ", w.getBundle().getSymbolicName());
+        }
     }
 }

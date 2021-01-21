@@ -84,7 +84,7 @@ public class FATTest extends AbstractAppManagerTest {
 
     @Test
     @Mode(TestMode.FULL)
-    @FFDCIgnore(value = { java.io.FileNotFoundException.class })
+    @AllowedFFDC("java.io.FileNotFoundException")
     public void testStartStopFromXmlFull() throws Exception {
         final String method = testName.getMethodName();
         try {

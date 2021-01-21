@@ -222,11 +222,11 @@ public class JakartaEE9Action extends FeatureReplacementAction {
         final String m = "transformApp";
         Log.info(c, m, "Transforming app: " + appPath);
 
-        // Setup FileOutputStream and never use.  JakartaTransformer defaults cause OOM
+        // Setup file output stream and only keep if we fail
         FileOutputStream fos = null;
-        File throwAwayFile = new File("transformer_output.log");
+        File outputLog = new File("results/transformer_" + appPath.getFileName() + ".log");
         try {
-            fos = new FileOutputStream(throwAwayFile);
+            fos = new FileOutputStream(outputLog);
         } catch (FileNotFoundException e1) {
             e1.printStackTrace();
         }
@@ -318,6 +318,10 @@ public class JakartaEE9Action extends FeatureReplacementAction {
             } else {
                 throw new RuntimeException("Jakarta transformer failed for: " + appPath);
             }
+            //At this point the transformer was successful, delete output
+            if (outputLog.exists()) {
+                outputLog.delete();
+            }
         } catch (Exception e) {
             Log.info(c, m, "Unable to transform app at path: " + appPath);
             Log.error(c, m, e);
@@ -326,9 +330,6 @@ public class JakartaEE9Action extends FeatureReplacementAction {
             try {
                 fos.close();
             } catch (IOException e) {
-            }
-            if (throwAwayFile.exists()) {
-                throwAwayFile.delete();
             }
             Log.info(c, m, "Transforming complete app: " + outputPath);
         }
