@@ -1,6 +1,9 @@
 # Depend on IBM Network
 com.ibm.ws.mongo_fat
 com.ibm.ws.security.oauth_fat
+com.ibm.ws.security.spnego_fat
+com.ibm.ws.security.spnego_fat.1   
+com.ibm.ws.security.spnego_fat.2
 
 # Not a fat bucket, but still has '_fat' in name
 com.ibm.ws.repository_fat_shared
