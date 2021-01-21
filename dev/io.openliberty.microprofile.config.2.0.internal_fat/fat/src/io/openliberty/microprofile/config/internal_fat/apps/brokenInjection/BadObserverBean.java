@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.microprofile.config.internal_fat.apps.badobserver;
+package io.openliberty.microprofile.config.internal_fat.apps.brokenInjection;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.Initialized;
@@ -17,7 +17,7 @@ import javax.enterprise.event.Observes;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 @ApplicationScoped
-public class TestObserver {
+public class BadObserverBean {
 
     //  Should throw a deployment exception
     private static final void observerMethod(@Observes @Initialized(ApplicationScoped.class) final Object obj,

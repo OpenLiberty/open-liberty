@@ -8,15 +8,17 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.microprofile.config.internal_fat.apps.converter;
+package io.openliberty.microprofile.config.internal_fat.apps.converter.converters;
 
 import org.eclipse.microprofile.config.spi.Converter;
 
-public class MyBadConverter implements Converter<CustomPropertyObject1> {
+import io.openliberty.microprofile.config.internal_fat.apps.converter.CustomType;
+
+public class MyBadConverter implements Converter<CustomType> {
 
     /** {@inheritDoc} */
     @Override
-    public CustomPropertyObject1 convert(String value) {
+    public CustomType convert(String value) {
         throw new IllegalArgumentException("Converter throwing intentional exception");
     }
 

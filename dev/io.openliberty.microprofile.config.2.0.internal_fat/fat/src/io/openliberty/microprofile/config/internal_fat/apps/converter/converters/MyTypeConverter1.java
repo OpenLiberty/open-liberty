@@ -8,15 +8,17 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.microprofile.config.internal_fat.apps.converter;
+package io.openliberty.microprofile.config.internal_fat.apps.converter.converters;
 
 import org.eclipse.microprofile.config.spi.Converter;
 
-public class MyTypeConverter2 implements Converter<MyTypeWithMultipleConverters> {
+import io.openliberty.microprofile.config.internal_fat.apps.converter.MyTypeWithMultipleConverters;
+
+public class MyTypeConverter1 implements Converter<MyTypeWithMultipleConverters> {
 
     /** {@inheritDoc} */
     @Override
     public MyTypeWithMultipleConverters convert(String value) {
-        return new MyTypeWithMultipleConverters("Output from Converter 2");
+        return new MyTypeWithMultipleConverters("Output from Converter 1");
     }
 }

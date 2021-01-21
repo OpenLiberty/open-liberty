@@ -8,18 +8,17 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.microprofile.config.internal_fat.apps.brokenInjection;
+package io.openliberty.microprofile.config.internal_fat.apps.converter.converters;
 
-public class TypeWithValidConverter {
+import org.eclipse.microprofile.config.spi.Converter;
 
-    private String value;
+import io.openliberty.microprofile.config.internal_fat.apps.converter.MyTypeWithMultipleConverters;
 
-    public void setValue(String value) {
-        this.value = value;
+public class MyTypeConverter2 implements Converter<MyTypeWithMultipleConverters> {
+
+    /** {@inheritDoc} */
+    @Override
+    public MyTypeWithMultipleConverters convert(String value) {
+        return new MyTypeWithMultipleConverters("Output from Converter 2");
     }
-
-    public String getValue() {
-        return this.value;
-    }
-
 }

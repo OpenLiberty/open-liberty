@@ -55,7 +55,7 @@ public class Config20NoCDITests extends FATServletClient {
                         .addProperty("aKey", "aValue");
         WebArchive noCDIWar = ShrinkWrap.create(WebArchive.class, NO_CDI_APP_NAME + ".war")
                         .addPackages(true, NoCDITestServlet.class.getPackage())
-                        .addAsResource(noCDIConfigSource, "META-INF/microprofile-config.properties");
+                        .addAsManifestResource(noCDIConfigSource, "microprofile-config.properties");
 
         ShrinkHelper.exportDropinAppToServer(server, noCDIWar, DeployOptions.SERVER_ONLY);
 

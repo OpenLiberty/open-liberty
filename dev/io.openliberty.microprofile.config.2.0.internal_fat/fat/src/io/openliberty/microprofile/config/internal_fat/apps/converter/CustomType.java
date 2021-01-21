@@ -8,19 +8,8 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.microprofile.config.internal_fat.apps.brokenInjection;
+package io.openliberty.microprofile.config.internal_fat.apps.converter;
 
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-
-import org.eclipse.microprofile.config.inject.ConfigProperty;
-
-@RequestScoped
-public class ConfigUnnamedMethodInjectionBean {
-
-    @Inject
-    public void aMethod(@ConfigProperty String aMethodParameter) {
-        //this will fail
-    }
+public class CustomType {
 
 }

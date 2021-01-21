@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,42 +16,17 @@ import java.util.concurrent.ConcurrentMap;
 
 import org.eclipse.microprofile.config.spi.ConfigSource;
 
-public class MySource implements ConfigSource {
+public class CustomSource implements ConfigSource {
 
     public ConcurrentMap<String, String> props;
     public int ordinal = 700;
     public String id = "mySource";
 
-    public ConcurrentMap<String, String> getProps() {
-        return props;
-    }
-
-    public void setProps(ConcurrentMap<String, String> props) {
-        this.props = props;
-    }
-
-    public void setOrdinal(int ordinal) {
-        this.ordinal = ordinal;
-    }
-
-    public void setid(String id) {
-        this.id = id;
-    }
-
-    public MySource() {
+    public CustomSource() {
         props = new ConcurrentHashMap<String, String>();
     }
 
-    /**
-     * @param p
-     * @param v
-     */
-    public MySource(String p, String v) {
-        props = new ConcurrentHashMap<String, String>();
-        put(p, v);
-    }
-
-    public MySource put(String key, String value) {
+    public CustomSource put(String key, String value) {
         props.put(key, value);
         return this;
     }

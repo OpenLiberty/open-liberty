@@ -12,6 +12,7 @@ package io.openliberty.microprofile.config.internal_fat;
 
 import java.io.File;
 
+import org.eclipse.microprofile.config.spi.Converter;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
@@ -35,6 +36,8 @@ import io.openliberty.microprofile.config.internal_fat.apps.TestUtils;
 import io.openliberty.microprofile.config.internal_fat.apps.classLoader.ClassLoadersTestServlet;
 import io.openliberty.microprofile.config.internal_fat.apps.configProperties.ConfigPropertiesTestServlet;
 import io.openliberty.microprofile.config.internal_fat.apps.converter.ConvertersTestServlet;
+import io.openliberty.microprofile.config.internal_fat.apps.converter.converters.MyTypeConverter1;
+import io.openliberty.microprofile.config.internal_fat.apps.converter.converters.MyTypeConverter2;
 import io.openliberty.microprofile.config.internal_fat.apps.defaultSources.DefaultSourcesTestServlet;
 import io.openliberty.microprofile.config.internal_fat.apps.propertyExpression.PropertyExpressionTestServlet;
 import io.openliberty.microprofile.config.internal_fat.apps.unwrap.UnwrapServlet;
@@ -51,11 +54,14 @@ public class Config20Tests extends FATServletClient {
     public static final String PROPERTY_EXPRESSION_APP_NAME = "propertyExpressionApp";
     public static final String UNWRAP_APP_NAME = "unwrapApp";
 
-    // Config Property values for ConfigProperties tests
+    // Config Property values for tests
     public static final String NO_PREFIX_TEST_KEY = "validPrefix.validkey";
     public static final String NO_PREFIX_TEST_VALUE = "value";
     public static final String CAMEL_CASE_TEST_KEY = "validPrefix.validCamelCaseKey";
     public static final String CAMEL_CASE_TEST_VALUE = "aValueFromCamelCase";
+    public static final String DUPLICATE_CONVERTERS_KEY_1 = "key1";
+    public static final String DUPLICATE_CONVERTERS_KEY_2 = "key2";
+    public static final String DUPLICATE_CONVERTERS_KEY_3 = "key3";
 
     public static final String SERVER_NAME = "Config20Server";
 
@@ -90,22 +96,25 @@ public class Config20Tests extends FATServletClient {
                         .addProperty("value1DefinedInTwoPlaces", "value1b")
                         .addProperty("value2DefinedInMicroprofileConfigProperties", "value2");
 
+        PropertiesAsset duplicateConvertersConfigSource = new PropertiesAsset()
+                        .addProperty(DUPLICATE_CONVERTERS_KEY_1, "input1")
+                        .addProperty(DUPLICATE_CONVERTERS_KEY_2, "input2")
+                        .addProperty(DUPLICATE_CONVERTERS_KEY_3, "input3");
+
         /*
          * Build Wars
          */
         WebArchive classLoadersWar = ShrinkWrap.create(WebArchive.class, CLASS_LOADER_APP_NAME + ".war")
                         .addPackages(true, ClassLoadersTestServlet.class.getPackage())
-                        .addAsManifestResource(new File("publish/resources/" + CLASS_LOADER_APP_NAME + "/permissions.xml"),
-                                               "permissions.xml")
+                        .addAsManifestResource(new File("publish/resources/" + CLASS_LOADER_APP_NAME + "/permissions.xml"), "permissions.xml")
                         .addClass(TestUtils.class);
 
         WebArchive convertersWar = ShrinkWrap.create(WebArchive.class, CONVERTER_LOADER_APP_NAME + ".war")
                         .addPackages(true, ConvertersTestServlet.class.getPackage())
-                        .addClass(TestUtils.class)
-                        .addAsManifestResource(new File("publish/resources/" + CONVERTER_LOADER_APP_NAME + "/org.eclipse.microprofile.config.spi.Converter"),
-                                               "services/org.eclipse.microprofile.config.spi.Converter")
-                        .addAsManifestResource(new File("publish/resources/" + CONVERTER_LOADER_APP_NAME + "/permissions.xml"),
-                                               "permissions.xml");
+                        .addAsManifestResource(new File("publish/resources/" + CONVERTER_LOADER_APP_NAME + "/permissions.xml"), "permissions.xml")
+                        .addAsManifestResource(duplicateConvertersConfigSource, "microprofile-config.properties")
+                        .addAsServiceProvider(Converter.class, MyTypeConverter1.class, MyTypeConverter2.class)
+                        .addClass(TestUtils.class);
 
         WebArchive defaultSourcesWar = ShrinkWrap.create(WebArchive.class, DEFAULT_SOURCES_APP_NAME + ".war")
                         .addPackages(true, DefaultSourcesTestServlet.class.getPackage())
@@ -113,11 +122,11 @@ public class Config20Tests extends FATServletClient {
 
         WebArchive configPropertiesWar = ShrinkWrap.create(WebArchive.class, CONFIG_PROPERTIES_APP_NAME + ".war")
                         .addPackages(true, ConfigPropertiesTestServlet.class.getPackage())
-                        .addAsResource(configPropertiesConfigSource, "META-INF/microprofile-config.properties");
+                        .addAsManifestResource(configPropertiesConfigSource, "microprofile-config.properties");
 
         WebArchive propertyExpressionWar = ShrinkWrap.create(WebArchive.class, PROPERTY_EXPRESSION_APP_NAME + ".war")
                         .addPackages(true, PropertyExpressionTestServlet.class.getPackage())
-                        .addAsResource(propertyExpressionConfigSource, "META-INF/microprofile-config.properties");
+                        .addAsManifestResource(propertyExpressionConfigSource, "microprofile-config.properties");
 
         WebArchive unwrapWar = ShrinkWrap.create(WebArchive.class, UNWRAP_APP_NAME + ".war")
                         .addPackages(true, UnwrapServlet.class.getPackage())

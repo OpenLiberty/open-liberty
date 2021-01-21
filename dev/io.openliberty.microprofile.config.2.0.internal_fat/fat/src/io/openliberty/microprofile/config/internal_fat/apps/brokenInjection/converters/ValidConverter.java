@@ -8,19 +8,19 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.microprofile.config.internal_fat.apps.brokenInjection;
+package io.openliberty.microprofile.config.internal_fat.apps.brokenInjection.converters;
 
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
+import org.eclipse.microprofile.config.spi.Converter;
 
-import org.eclipse.microprofile.config.inject.ConfigProperty;
+import junit.framework.Assert;
 
-@RequestScoped
-public class ConfigUnnamedMethodInjectionBean {
+public class ValidConverter implements Converter<TypeWithValidConverter> {
 
-    @Inject
-    public void aMethod(@ConfigProperty String aMethodParameter) {
-        //this will fail
+    /** {@inheritDoc} */
+    @Override
+    public TypeWithValidConverter convert(String value) {
+        Assert.fail(); // Should not use this converter- Config Property value is not defined.
+        return null;
     }
 
 }
