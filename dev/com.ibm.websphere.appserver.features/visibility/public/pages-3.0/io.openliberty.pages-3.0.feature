@@ -42,7 +42,7 @@ Subsystem-Name: Jakarta Server Pages 3.0
  com.ibm.ws.jsp.el.jakarta, \
  com.ibm.ws.jsp.jakarta, \
  io.openliberty.jstl.facade; start-phase:=CONTAINER_EARLY, \
- io.openliberty.org.apache.taglibs.standard
+ io.openliberty.org.apache.taglibs.standard, \
  io.openliberty.pages.internal.3.0.jakarta
 -jars=com.ibm.websphere.appserver.spi.jsp; location:=dev/spi/ibm/, \
  com.ibm.websphere.javaee.jsp.tld.2.2.jakarta; location:=dev/api/spec/
