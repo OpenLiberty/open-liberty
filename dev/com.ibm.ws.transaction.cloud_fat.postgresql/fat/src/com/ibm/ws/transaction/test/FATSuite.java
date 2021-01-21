@@ -10,37 +10,69 @@
  *******************************************************************************/
 package com.ibm.ws.transaction.test;
 
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
+import org.testcontainers.containers.JdbcDatabaseContainer;
+import org.testcontainers.containers.output.OutputFrame;
+
+import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.transaction.test.dbrotationtests.DBRotationTest;
+import com.ibm.ws.transaction.test.dbrotationtests.DualServerDynamicDBRotationTest;
 
 import componenttest.containers.ExternalTestServiceDockerClientStrategy;
-import componenttest.containers.SimpleLogConsumer;
-import componenttest.topology.database.container.PostgreSQLContainer;
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.RepeatTests;
+import componenttest.topology.database.container.DatabaseContainerFactory;
+import componenttest.topology.database.container.DatabaseContainerType;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                DualServerDynamicPostgreSQLTest.class,
+                DualServerDynamicDBRotationTest.class,
+                DBRotationTest.class,
                 PostgreSQLTest.class,
 })
 public class FATSuite {
 
-    //Required to ensure we calculate the correct strategy each run even when
-    //switching between local and remote docker hosts.
-    static {
+    // Using the RepeatTests @ClassRule will cause all tests to be run three times.
+    // First without any modifications, then again with all features upgraded to
+    // their EE8 equivalents and finally with the Jakarta EE9 features.
+    //
+    // In this test we allow one of the flavours of supported database to be selected either through
+    // specifying the fat.bucket.db.type property or it is chosen based on the date. That database is
+    // used in all 3 runs of the tests against the different version of EE.
+    @ClassRule
+    public static RepeatTests r = RepeatTests.withoutModification()
+                    .andWith(FeatureReplacementAction.EE8_FEATURES())
+                    .andWith(new JakartaEE9Action());
+
+    public static DatabaseContainerType type = DatabaseContainerType.Postgres;
+    public static JdbcDatabaseContainer<?> testContainer;
+
+    @BeforeClass
+    public static void beforeSuite() throws Exception {
+        //Allows local tests to switch between using a local docker client, to using a remote docker client.
         ExternalTestServiceDockerClientStrategy.setupTestcontainers();
+        testContainer = DatabaseContainerFactory.createType(type);
+        Log.info(FATSuite.class, "beforeSuite", "start test container of type: " + type);
+        testContainer.start();
     }
 
-    static final String POSTGRES_DB = "testdb";
-    static final String POSTGRES_USER = "postgresUser";
-    static final String POSTGRES_PASS = "superSecret";
+    @AfterClass
+    public static void afterSuite() {
+        Log.info(FATSuite.class, "afterSuite", "stop test container");
+        testContainer.stop();
+    }
 
-    @ClassRule
-    public static PostgreSQLContainer postgre = new PostgreSQLContainer("postgres:11.2-alpine")
-                    .withDatabaseName(POSTGRES_DB)
-                    .withUsername(POSTGRES_USER)
-                    .withPassword(POSTGRES_PASS)
-                    .withLogConsumer(new SimpleLogConsumer(FATSuite.class, "postgre"));
-
+    //Private Method: used to setup logging for containers to this class.
+    private static void log(OutputFrame frame) {
+        String msg = frame.getUtf8String();
+        if (msg.endsWith("\n"))
+            msg = msg.substring(0, msg.length() - 1);
+        Log.info(FATSuite.class, "dbrotation", msg);
+    }
 }

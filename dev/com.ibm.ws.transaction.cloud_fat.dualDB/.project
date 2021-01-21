@@ -22,14 +22,14 @@
 	</natures>
 	<linkedResources>
 		<link>
-			<name>com.ibm.ws.transaction.cloud_fat.1-fatsrc</name>
+			<name>com.ibm.ws.transaction.cloud_fat.base-fatsrc</name>
 			<type>2</type>
-			<locationURI>PARENT-1-PROJECT_LOC/com.ibm.ws.transaction.cloud_fat.1/fat/src</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/com.ibm.ws.transaction.cloud_fat.base/fat/src</locationURI>
 		</link>
 		<link>
-			<name>com.ibm.ws.transaction.cloud_fat.1-transaction</name>
+			<name>com.ibm.ws.transaction.cloud_fat.base-transaction</name>
 			<type>2</type>
-			<locationURI>PARENT-1-PROJECT_LOC/com.ibm.ws.transaction.cloud_fat.1/test-applications/transaction/src</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/com.ibm.ws.transaction.cloud_fat.base/test-applications/transaction/src</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>
