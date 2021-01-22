@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.saml.fat.IDPInitiated;
 
@@ -14,12 +14,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.BeforeClass;
+import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.saml.fat.common.MultipleSPSAMLTests;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLConstants;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLMessageConstants;
 
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServerWrapper;
@@ -41,6 +43,7 @@ import componenttest.topology.impl.LibertyServerWrapper;
  */
 @LibertyServerWrapper
 @Mode(TestMode.FULL)
+@RunWith(FATRunner.class)
 public class MultipleSPIDPInitiatedTests extends MultipleSPSAMLTests {
 
     private static final Class<?> thisClass = MultipleSPIDPInitiatedTests.class;

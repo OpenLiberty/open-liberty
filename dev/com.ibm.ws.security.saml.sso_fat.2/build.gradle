@@ -195,18 +195,17 @@ autoFVT.doLast {
     include '**/*.orig'
   }
   
-  copy {
-    from new File(project(':com.ibm.ws.security.saml.sso_fat.common').projectDir, 'publish/files/envVars')
-  	into new File(autoFvtDir, "publish/servers/${serverName}")
-  	include 'jvm.options'
-  }
-  
-  copy {
-    from new File(project(':com.ibm.ws.security.saml.sso_fat.common').projectDir, 'publish/files/policyFiles')
-  	into new File(autoFvtDir, "publish/servers/${serverName}/policyFiles")
-  	include '*'
-  }
-  
+//  copy {
+//    from new File(project(':com.ibm.ws.security.saml.sso_fat.common').projectDir, 'publish/files/envVars')
+//  	into new File(autoFvtDir, "publish/servers/${serverName}")
+//  	include 'jvm.options'
+//  }
+// 
+//  copy {
+//    from new File(project(':com.ibm.ws.security.saml.sso_fat.common').projectDir, 'publish/files/policyFiles')
+//  	into new File(autoFvtDir, "publish/servers/${serverName}/policyFiles")
+//  	include '*'
+//  }
   
   /*****************************************************************
    * Server: com.ibm.ws.security.saml.sso-2.0_fat.2.missingMetaData
@@ -330,10 +329,10 @@ autoFVT.doLast {
     into new File(autoFvtDir, "publish/servers/${serverName}/dropins")
   }
   // policyFileUpdates
-  copy {
-    from new File(project(':com.ibm.ws.security.saml.sso_fat.common').projectDir, 'publish/envVars/jvm.options')
-    into new File(autoFvtDir, "publish/servers/${serverName}")
-  }
+//  copy {
+//    from new File(project(':com.ibm.ws.security.saml.sso_fat.common').projectDir, 'publish/envVars/jvm.options')
+//    into new File(autoFvtDir, "publish/servers/${serverName}")
+//  }
 //
 // The restricted policy files have been standard for a while now. They shouldn't be needed.
 //
