@@ -106,7 +106,9 @@ public class IndexUtils {
                         qualifiedName = packageName + "." + className;
                     }
                     if (acceptClassForScanning(filter, qualifiedName)) {
-                        indexer.index(entry.adapt(InputStream.class));
+                        try (InputStream is = entry.adapt(InputStream.class)) {
+                            indexer.index(is);
+                        }
                     }
                 } else {
                     Container entryContainer = entry.adapt(Container.class);
