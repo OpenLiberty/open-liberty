@@ -5,7 +5,7 @@ singleton=true
 IBM-App-ForceRestart: install, uninstall
 IBM-ShortName: jakartaee-9.0
 Subsystem-Version: 9.0.0
-Subsystem-Name: Jakarta EE 9.0 Platform
+Subsystem-Name: Jakarta EE Platform 9.0
 -features=\
  com.ibm.websphere.appserver.adminSecurity-2.0,\
  com.ibm.websphere.appserver.eeCompatible-9.0,\
