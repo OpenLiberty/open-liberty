@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2020 IBM Corporation and others.
+# Copyright (c) 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -27,7 +27,24 @@ Export-Package: \
 	io.openliberty.pages30.translator.visitor.validator;version="3.0", \
 	io.openliberty.pages30.translator.visitor.generator;version="3.0"
 
+Import-Package: 
+	!io.openliberty.pages30.translator.visitor.generator, \
+	!io.openliberty.pages30.translator.visitor.validator, \
+	!io.openliberty.pages30.webcontainerext, \
+	!io.openliberty.pages30.webcontainerext.ws, \
+	com.ibm.ws.jsp;version="[2.2,2.3)", \
+	com.ibm.ws.jsp.configuration;version=2.2, \
+	com.ibm.ws.jsp.translator;version=2.2, \
+	com.ibm.ws.jsp.translator.utils;version=2.2, \
+	com.ibm.ws.jsp.translator.visitor.validator;version=2.2, \
+	com.ibm.ws.jsp.translator.visitor.generator;version=2.2, \
+	org.apache.jasper.el;version=2.2, \
+	org.apache.jasper.compiler;version=2.2, \
+	org.apache.jasper.runtime;version=2.2, \
+	*
+
 instrument.classesIncludes: io/openliberty/pages30/**/*.class
+
 
 -buildpath: \
 	com.ibm.websphere.appserver.spi.logging,\

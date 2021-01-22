@@ -30,6 +30,22 @@ Export-Package: \
 
 instrument.classesIncludes: com/ibm/ws/jsp23/**/*.class
 
+Import-Package: 
+	!com.ibm.ws.jsp23.translator.visitor.generator, \
+	!com.ibm.ws.jsp23.translator.visitor.validator, \
+	!com.ibm.ws.jsp23.webcontainerext, \
+	!com.ibm.ws.jsp23.webcontainerext.ws, \
+	com.ibm.ws.jsp;version="[2.2,2.3)", \
+	com.ibm.ws.jsp.configuration;version=2.2, \
+	com.ibm.ws.jsp.translator;version=2.2, \
+	com.ibm.ws.jsp.translator.utils;version=2.2, \
+	com.ibm.ws.jsp.translator.visitor.validator;version=2.2, \
+	com.ibm.ws.jsp.translator.visitor.generator;version=2.2, \
+	org.apache.jasper.el;version=2.2, \
+	org.apache.jasper.compiler;version=2.2, \
+	org.apache.jasper.runtime;version=2.2, \
+	*
+
 -buildpath: \
 	com.ibm.websphere.appserver.spi.logging,\
 	com.ibm.ws.jsp;version=latest,\
