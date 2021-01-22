@@ -12,8 +12,8 @@
 bVersion=1.0
 
 # Eclipselink version info
-eclVersion=2.7.7
-eclHash=69f2c2b
+eclVersion=2.7.8
+eclHash=ecdf3c3
 eclFullVersion=${eclVersion}.${eclHash}
 eclPackageVersion=2.0.16
 
@@ -114,14 +114,17 @@ Include-Resource: \
   @${repo;org.eclipse.persistence:org.eclipse.persistence.jpa.jpql;${eclFullVersion};EXACT}!/!META-INF/maven/*,\
   @${repo;org.eclipse.persistence:org.eclipse.persistence.jpa.modelgen;${eclFullVersion};EXACT}!/!META-INF/maven/*,\
   @${repo;org.eclipse.persistence:org.eclipse.persistence.jpa;${eclFullVersion};EXACT}!/!META-INF/maven/*,\
-  org/eclipse/persistence/internal/helper=${bin}/org/eclipse/persistence/internal/helper
+  org/eclipse/persistence/config=${bin}/org/eclipse/persistence/config,\
+  org/eclipse/persistence/internal/databaseaccess=${bin}/org/eclipse/persistence/internal/databaseaccess,\
+  org/eclipse/persistence/internal/helper=${bin}/org/eclipse/persistence/internal/helper,\
+  org/eclipse/persistence/internal/jpa=${bin}/org/eclipse/persistence/internal/jpa,\
+  org/eclipse/persistence/sessions=${bin}/org/eclipse/persistence/sessions
 
 publish.wlp.jar.suffix: dev/api/third-party
 
-instrument.classesExcludes: \
-  org/eclipse/persistence/exceptions/i18n/*.class, \
-  org/eclipse/persistence/internal/localization/i18n/*.class, \
-  org/eclipse/persistence/internal/helper/*.class
+# Exclude this bundle from instrumentation (RAS & FFDC trace injection)
+instrument.disabled: true
+instrument.ffdc: false
 
 -buildpath: \
     org.eclipse.persistence:org.eclipse.persistence.core;version=${eclFullVersion};strategy=exact,\

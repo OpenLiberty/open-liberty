@@ -24,8 +24,11 @@
             <property name="eclipselink.logging.parameters" value="true"/>
             <property name="eclipselink.cache.shared.default" value="false"/>
 
-             <!-- This property enables the fix for 2.6_WAS & 2.7, which is being tested here -->
+             <!-- This property enables the fix for 2.6_WAS, which is being tested here -->
             <property name="eclipselink.allow-result-type-conversion" value="true"/>
+
+             <!-- This property enables the fix for 2.7, which is being tested here -->
+            <property name="eclipselink.sql.allow-convert-result-to-boolean" value="true"/>
         </properties>
     </persistence-unit>
 
@@ -35,8 +38,11 @@
             <property name="eclipselink.logging.parameters" value="true"/>
             <property name="eclipselink.cache.shared.default" value="false"/>
 
-             <!-- This property enables the fix for 2.6_WAS & 2.7, which is being tested here -->
+             <!-- This property enables the fix for 2.6_WAS, which is being tested here -->
             <property name="eclipselink.allow-result-type-conversion" value="true"/>
+
+             <!-- This property enables the fix for 2.7, which is being tested here -->
+            <property name="eclipselink.sql.allow-convert-result-to-boolean" value="true"/>
         </properties>
     </persistence-unit>
 </persistence>
