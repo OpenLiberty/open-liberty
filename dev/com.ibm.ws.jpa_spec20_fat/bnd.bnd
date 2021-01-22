@@ -11,7 +11,6 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-
 src: \
     fat/src,\
     test-applications/cache/src,\
@@ -29,7 +28,6 @@ src: \
 
 fat.project: true
 tested.features: jdbc-4.0, beanvalidation-1.1, jpa-2.0, el-3.0, concurrent-2.0, persistence-3.0, servlet-5.0, cdi-3.0, beanValidation-3.0, enterpriseBeansLite-4.0
-
 
 # Dependencies may be local bundles (e.g. com.ibm.websphere.javaee.servlet.3.1)
 #      or binaries from Artifactory (e.g. commons-logging:commons-logging)
