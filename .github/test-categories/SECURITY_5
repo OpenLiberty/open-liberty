@@ -1,4 +1,6 @@
 com.ibm.ws.security.saml.sso_fat
-com.ibm.ws.security.spnego_fat
-com.ibm.ws.security.spnego_fat.1   
-com.ibm.ws.security.spnego_fat.2
+com.ibm.websphere.security_fat.1
+com.ibm.ws.security.auth.data_fat
+com.ibm.ws.security.client_fat
+com.ibm.ws.wssecurity_fat.wsscxf
+

@@ -60,6 +60,7 @@ addRequiredLibraries.dependsOn addJakartaTransformer
  * Configure any auto FVT artifacts.
  */
 autoFVT.dependsOn ':com.ibm.ws.security.saml.sso_fat.common:assemble'
+autoFVT.dependsOn ':com.ibm.ws.security.fat.common:assemble'
 autoFVT.doLast {
 
   /*
