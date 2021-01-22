@@ -22,11 +22,6 @@
 	</natures>
 	<linkedResources>
 		<link>
-			<name>com.ibm.ws.wsat.recovery_fat.single-fatsrc</name>
-			<type>2</type>
-			<locationURI>PARENT-1-PROJECT_LOC/com.ibm.ws.wsat.recovery_fat.single/fat/src</locationURI>
-		</link>
-		<link>
 			<name>com.ibm.ws.wsat.recovery_fat.single-recoveryClient</name>
 			<type>2</type>
 			<locationURI>PARENT-1-PROJECT_LOC/com.ibm.ws.wsat.recovery_fat.single/test-applications/recoveryClient/src</locationURI>
