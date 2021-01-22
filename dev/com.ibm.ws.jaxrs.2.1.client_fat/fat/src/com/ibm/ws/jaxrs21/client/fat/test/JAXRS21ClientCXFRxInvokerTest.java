@@ -192,14 +192,12 @@ public class JAXRS21ClientCXFRxInvokerTest extends JAXRS21AbstractTest {
     }
 
     @Test
-    @SkipForRepeat("EE9_FEATURES") // currently broken due to multiple issues
     public void testObservableRxInvoker_getReceiveTimeout() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
         this.runTestOnServer(cxfRxInvokerTarget, "testObservableRxInvoker_getReceiveTimeout", p, "Timeout as expected");
     }
 
     @Test
-    @SkipForRepeat("EE9_FEATURES") // currently broken due to multiple issues
     public void testFlowableRxInvoker_getReceiveTimeout() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
         this.runTestOnServer(cxfRxInvokerTarget, "testFlowableRxInvoker_getReceiveTimeout", p, "Timeout as expected");
@@ -218,14 +216,12 @@ public class JAXRS21ClientCXFRxInvokerTest extends JAXRS21AbstractTest {
     }
 
     @Test
-    @SkipForRepeat("EE9_FEATURES") // currently broken due to multiple issues
     public void testObservableRxInvoker_postReceiveTimeout() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
         this.runTestOnServer(cxfRxInvokerTarget, "testObservableRxInvoker_postReceiveTimeout", p, "Timeout as expected");
     }
 
     @Test
-    @SkipForRepeat("EE9_FEATURES") // currently broken due to multiple issues
     public void testFlowableRxInvoker_postReceiveTimeout() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
         this.runTestOnServer(cxfRxInvokerTarget, "testFlowableRxInvoker_postReceiveTimeout", p, "Timeout as expected");
