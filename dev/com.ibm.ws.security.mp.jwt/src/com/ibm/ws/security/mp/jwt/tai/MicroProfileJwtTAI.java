@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2016, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -51,6 +51,8 @@ import com.ibm.ws.security.mp.jwt.error.ErrorHandlerImpl;
 import com.ibm.ws.security.mp.jwt.error.MpJwtProcessingException;
 import com.ibm.ws.security.mp.jwt.impl.utils.MicroProfileJwtTaiRequest;
 import com.ibm.ws.webcontainer.security.ReferrerURLCookieHandler;
+import com.ibm.ws.webcontainer.security.WebRequest;
+import com.ibm.ws.webcontainer.security.internal.TAIAuthenticator;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
 import com.ibm.wsspi.security.tai.TAIResult;
@@ -351,12 +353,7 @@ public class MicroProfileJwtTAI implements TrustAssociationInterceptor {
 
         String token = taiRequestHelper.getBearerToken(request, mpJwtConfig);
         if (token == null) {
-            Tr.error(tc, "JWT_NOT_FOUND_IN_REQUEST");
-            TAIResult result = sendToErrorPage(response, TAIResult.create(HttpServletResponse.SC_UNAUTHORIZED));
-            if (tc.isDebugEnabled()) {
-                Tr.exit(tc, methodName, result);
-            }
-            return result;
+            return getResultForMissingToken(request, response, methodName);
         }
         if (TAIJwtUtils.isJwtPreviouslyLoggedOut(token)) {
             Tr.error(tc, "JWT_PREVIOUSLY_LOGGED_OUT");
@@ -371,6 +368,25 @@ public class MicroProfileJwtTAI implements TrustAssociationInterceptor {
             Tr.exit(tc, methodName, result);
         }
         return result;
+    }
+
+    TAIResult getResultForMissingToken(HttpServletRequest request, HttpServletResponse response, String methodName) throws WebTrustAssociationFailedException {
+        TAIResult result = null;
+        if (isUnprotectedRequest(request)) {
+            result = TAIResult.create(HttpServletResponse.SC_CONTINUE);
+        } else {
+            Tr.error(tc, "JWT_NOT_FOUND_IN_REQUEST");
+            result = sendToErrorPage(response, TAIResult.create(HttpServletResponse.SC_UNAUTHORIZED));
+        }
+        return result;
+    }
+
+    boolean isUnprotectedRequest(HttpServletRequest request) {
+        WebRequest webRequest = (WebRequest) request.getAttribute(TAIAuthenticator.WEB_REQUEST_ATTRIBUTE_NAME);
+        if (webRequest != null) {
+            return webRequest.isUnprotectedURI();
+        }
+        return false;
     }
 
     @FFDCIgnore({ Exception.class })
