@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -84,6 +84,11 @@ public class ApplicationProcessorTest extends FATServletClient {
         assertNotNull("Server did not report that it has started",
             server.waitForStringInLog("CWWKF0011I.*"));
 
+        assertNotNull("Http port not opened",
+            server.waitForStringInLog("CWWKO0219I.* defaultHttpEndpoint ")); // Wait for http port
+        assertNotNull("Https port not opened",
+            server.waitForStringInLog("CWWKO0219I.* defaultHttpEndpoint-ssl ")); // Wait for https port to open (this
+                                                                                 // can sometimes take a while)
     }
 
     /**
