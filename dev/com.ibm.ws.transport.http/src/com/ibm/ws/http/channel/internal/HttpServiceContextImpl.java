@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2020 IBM Corporation and others.
+ * Copyright (c) 2004, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution,  and is available at
@@ -3171,6 +3171,14 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 try {
                     link.writeFramesSync(framesToWrite);
                 } catch (IOException ioe) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "IOException during HTTP/2 write: " + ioe.getMessage());
+                    }
+                    if (isInboundConnection() && !(getHttpConfig().throwIOEForInboundConnections())) {
+                        // This is a server response and the request originator (the remote client) is no longer reachable.
+                        // Swallow this exception: nothing useful can be done on the server and no further work can come in.
+                        return;
+                    }
                     //throw back IOException so http channel can deal correctly with the app/servlet facing output stream
                     throw ioe;
                 } finally {
