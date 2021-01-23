@@ -2,4 +2,3 @@ com.ibm.websphere.security_fat.1
 com.ibm.ws.security.audit_fat.common.tooling
 com.ibm.ws.security.auth.data_fat
 com.ibm.ws.security.client_fat
-com.ibm.ws.wssecurity_fat.wsscxf
