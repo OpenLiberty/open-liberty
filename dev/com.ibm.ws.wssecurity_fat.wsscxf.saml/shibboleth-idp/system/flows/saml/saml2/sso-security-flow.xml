@@ -1,0 +1,24 @@
+<flow xmlns="http://www.springframework.org/schema/webflow"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/webflow http://www.springframework.org/schema/webflow/spring-webflow.xsd"
+    parent="security-policy.abstract">
+
+    <!-- Default inbound security processing for SAML 2 SSO profile. -->
+
+    <action-state id="SAML2SSOSecurityPolicy">
+        <evaluate expression="ReceivedEndpointSecurityHandler" />
+        <evaluate expression="MessageReplaySecurityHandler" />
+        <evaluate expression="MessageLifetimeSecurityHandler" />
+        <evaluate expression="SAML2AuthnRequestsSignedSecurityHandler" />
+        <evaluate expression="SAMLProtocolMessageXMLSignatureSecurityHandler" />
+        <evaluate expression="SAML2HTTPRedirectDeflateSignatureSecurityHandler" />
+        <evaluate expression="SAML2HTTPPostSimpleSignSecurityHandler" />
+        <evaluate expression="CheckMandatoryIssuer" />
+        <evaluate expression="'proceed'" />
+
+        <transition on="proceed" to="proceed" />
+    </action-state>
+    
+    <bean-import resource="../security-beans.xml" />
+
+</flow>
