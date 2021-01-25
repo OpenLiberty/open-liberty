@@ -42,8 +42,6 @@ Export-Package: \
   !io.netty.handler.ssl.*,\
   io.netty.*;version=${nettyVersion}; -split-package:=merge-first
 
-instrument.disabled: true
-
 -fixupmessages.missingexport: "Used bundle version * for exported package";is:=ignore
 
 -buildpath: \

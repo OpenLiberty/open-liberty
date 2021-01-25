@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" output="bin" path="src"/>
+	<classpathentry kind="src" output="bin_test" path="test"/>
+	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry kind="lib" path="/Users/hutchig/.m2/repository/io/netty/netty-buffer/4.1.59.Final/netty-buffer-4.1.59.Final.jar" sourcepath="/Users/hutchig/.m2/repository/io/netty/netty-buffer/4.1.59.Final/netty-buffer-4.1.59.Final-sources.jar">
+		<attributes>
+			<attribute name="bsn" value="io.netty:netty-buffer"/>
+			<attribute name="type" value="REPO"/>
+			<attribute name="project" value="com.ibm.ws.grpc_fat"/>
+			<attribute name="version" value="4.1.59.Final"/>
+		</attributes>
+		<accessrules>
+			<accessrule kind="accessible" pattern="io/netty/buffer/*"/>
+			<accessrule kind="accessible" pattern="io/netty/buffer/search/*"/>
+			<accessrule ignoreifbetter="true" kind="discouraged" pattern="**"/>
+		</accessrules>
+	</classpathentry>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

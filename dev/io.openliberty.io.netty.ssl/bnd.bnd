@@ -37,3 +37,4 @@ Export-Package:\
   io.netty:netty-handler-proxy;version=${nettyVersion},\
   io.netty:netty-resolver;version=${nettyVersion},\
   io.netty:netty-transport;version=${nettyVersion}
+  
