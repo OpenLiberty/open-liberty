@@ -30,6 +30,7 @@ public class ThrowableInfo {
 
     private Method btsMethod;
 
+    /*
     public ThrowableInfo(Instrumentation inst) {
     	Class<?> btsClass = retrieveClass(inst, BASE_TRACE_SERVICE_CLASS_NAME);
         if (btsClass != null) {
@@ -45,6 +46,28 @@ public class ThrowableInfo {
         	return false;
         }
     	return true;
+    }
+    */
+    
+    public ThrowableInfo(Instrumentation inst) {
+    	if (System.getenv("stackjoiner").equals("true")) {
+	    	Class<?> btsClass = retrieveClass(inst, BASE_TRACE_SERVICE_CLASS_NAME);
+	        if (btsClass != null) {
+				Method method = ReflectionHelper.getDeclaredMethod(btsClass, BASE_TRACE_SERVICE_METHOD_NAME, Throwable.class, PrintStream.class);
+				setBtsMethod(method);
+	        }
+    	}
+    }
+    public boolean isInitialized() {
+    	if (System.getenv("stackjoiner").equals("true")) {
+	    	if (getBtsMethod() == null) {
+	    		if (tc.isDebugEnabled())
+	    			Tr.debug(tc, "Stack joiner could not be initialized. Failed to reflect method " + BASE_TRACE_SERVICE_METHOD_NAME + " in " + BASE_TRACE_SERVICE_CLASS_NAME + ".");
+	        	return false;
+	        }
+	    	return true;
+    	}
+    	return false;
     }
     
     private Class<?> retrieveClass(Instrumentation inst, String classGroup) {

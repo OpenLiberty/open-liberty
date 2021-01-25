@@ -28,7 +28,7 @@ public class ThrowableClassFileTransformer implements ClassFileTransformer {
                             byte[] classfileBuffer) throws IllegalClassFormatException {
         byte[] ba = null;
         try {
-            ba = transformClassIfThrowable(classfileBuffer, className);
+            ba = transformClassIfThrowable(classfileBuffer, className);;
         } catch (Exception e) {
 
             throw e;
@@ -40,9 +40,11 @@ public class ThrowableClassFileTransformer implements ClassFileTransformer {
         ClassReader reader = new ClassReader(cBuffer);
         ClassWriter writer = new ClassWriter(reader, ClassWriter.COMPUTE_FRAMES);
         ClassVisitor visitor = writer;
+        /*
         if (nameOfClass.equals("java/lang/Throwable")) {
             visitor = new ThrowableClassAdapter(visitor);
-        }
+        }*/
+        visitor = new ThrowableClassAdapter(visitor);
         reader.accept(visitor, reader.SKIP_FRAMES);
         return writer.toByteArray();
     }

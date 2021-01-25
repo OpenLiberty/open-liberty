@@ -97,6 +97,7 @@ public class ThrowableProxyActivator {
      */
     protected void activate() throws Exception {    
         // Store a reference to the printStackTraceOverride method from BaseTraceService
+    	long time0 = System.currentTimeMillis();
         throwableInfo = new ThrowableInfo(inst);
         
         if (throwableInfo.isInitialized()) {
@@ -117,16 +118,19 @@ public class ThrowableProxyActivator {
             
         	activateThrowableProxyMethodTarget();
     
-			inst.addTransformer(new ThrowableClassFileTransformer(), true);
-			for (Class<?> clazz : inst.getAllLoadedClasses()) {
-			    if (clazz.getName().equals("java.lang.Throwable")) {
+        	ThrowableClassFileTransformer tcfTransformer = new ThrowableClassFileTransformer();
+			//for (Class<?> clazz : ) {
+			  //  if (clazz.getName().equals("java.lang.Throwable")) {
 			    	try {
-			            inst.retransformClasses(clazz);
+			    		inst.addTransformer(tcfTransformer, true);
+			            inst.retransformClasses(Throwable.class); //something to replace retransfornm
 			        } catch (Throwable t) {
 			            t.printStackTrace();
+			        } finally {
+			        	inst.removeTransformer(tcfTransformer);
 			        }
-			     }
-			}
+			   //  }
+	//		}
         }
     	
 	}
