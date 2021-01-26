@@ -25,6 +25,8 @@ import componenttest.containers.SimpleLogConsumer;
 @SuiteClasses({ TestCouchDbWar.class })
 public class FATSuite {
 
+    //Required to ensure we calculate the correct strategy each run even when
+    //switching between local and remote docker hosts.
     static {
         ExternalTestServiceDockerClientStrategy.setupTestcontainers();
     }

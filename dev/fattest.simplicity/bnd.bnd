@@ -32,7 +32,7 @@ Export-Package: \
 	componenttest.annotation;version=1.0.16,\
 	componenttest.common.apiservices;version=1.0.16,\
 	componenttest.common.apiservices.cmdline;version=1.0.16,\
-	componenttest.containers;version=1.0,\
+	componenttest.containers;version=1.0.16,\
 	componenttest.custom.junit.runner;version=1.0.16,\
 	componenttest.exception;version=1.0.16,\
 	componenttest.logging.ffdc;version=1.0.16,\
