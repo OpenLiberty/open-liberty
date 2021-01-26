@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -74,8 +74,6 @@ public class TestAsyncReadListener implements ReadListener {
                 dataSize += len;
 
             }
-
-            res.addHeader("PostDataRead", Long.toString(dataSize));
             LOG.info("TestAsyncReadListener onDataAvailable, read datasize --> " + Long.toString(dataSize));
         }
 
@@ -226,6 +224,8 @@ public class TestAsyncReadListener implements ReadListener {
             ac.complete();
 
         } else if (TestCall.equalsIgnoreCase("test_ReadVariousInputDataSizes_AsyncRL")) {
+            LOG.info("TestAsyncReadListener onAllDataRead, PostDataRead header value --> " + Long.toString(dataSize));
+            res.setHeader("PostDataRead", Long.toString(dataSize));
             out.flush();
             ac.complete();
 
