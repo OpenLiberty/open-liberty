@@ -10,11 +10,7 @@
  *******************************************************************************/
 define([
         'unittest/resources/_notifications/standaloneChangeListenerTests',
-        'unittest/resources/_notifications/uclApplicationsTests',
-        'unittest/resources/_notifications/uclClustersTests',
         'unittest/resources/_notifications/uclCommonTests',
-        'unittest/resources/_notifications/uclHostsTests',
-        'unittest/resources/_notifications/uclServersTests',
         'unittest/resources/_notifications/unifiedChangeListenerTests'
         ],
         function() {
