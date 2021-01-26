@@ -12,6 +12,8 @@ package com.ibm.ws.http.dispatcher.internal;
 
 import java.net.Inet6Address;
 import java.net.InetAddress;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -254,14 +256,14 @@ public class TrustedHeaderOriginLists {
                     String hostname = null;
                     if (!isTrusted && sensitiveTrustedHosts != null && sensitiveTrustedHosts.getActive()) {
                         // check if the remote hostname is in the trustedHeaderSensitiveOrigin list
-                        if ((hostname = remoteAddr.getHostName()) != null) {
+                        if ((hostname = getHostName(remoteAddr)) != null) {
                             hostname = hostname.toLowerCase();
                             isTrusted = sensitiveTrustedHosts.findInList(hostname);
                         }
                     }
                     if (!isTrusted && trustedHosts != null && trustedHosts.getActive()) {
                         // check if the remote hostname is in the trustedHeaderOrigin list
-                        if (hostname != null || (hostname = remoteAddr.getHostName()) != null) {
+                        if (hostname != null || (hostname = getHostName(remoteAddr)) != null) {
                             hostname = hostname.toLowerCase();
                             isTrusted = trustedHosts.findInList(hostname);
                         }
@@ -270,7 +272,7 @@ public class TrustedHeaderOriginLists {
                     // check if remote host is trusted to send sensitive private headers
                     if (!isTrusted && sensitiveTrustedHosts != null && sensitiveTrustedHosts.getActive()) {
                         // check if the remote hostname is in the trustedHeaderSensitiveOrigin list
-                        String hostname = remoteAddr.getHostName();
+                        String hostname = getHostName(remoteAddr);
                         if (hostname != null) {
                             hostname = hostname.toLowerCase();
                             isTrusted = sensitiveTrustedHosts.findInList(hostname);
@@ -328,4 +330,20 @@ public class TrustedHeaderOriginLists {
         }
         return true;
     }
+
+    /**
+     * Return the hostname for a InetAddress via AccessController.doPrivileged()
+     *
+     * @param InetAddress
+     * @return the hostname for the given address
+     */
+    private String getHostName(final InetAddress address) {
+        return AccessController.doPrivileged(new PrivilegedAction<String>() {
+            @Override
+            public String run() {
+                return address.getHostName();
+            }
+        });
+    }
+
 }
