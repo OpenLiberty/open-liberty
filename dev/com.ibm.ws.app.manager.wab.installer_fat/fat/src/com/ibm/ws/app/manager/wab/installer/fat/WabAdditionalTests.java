@@ -28,11 +28,8 @@ public class WabAdditionalTests extends AbstractWABTests {
     private static final String SERVLET = "/WebDescriptorServlet";
     private static final String OUTPUT_WEB_XML_SERVLET = "service: test.wab1.WebXmlMapped";
 
-    private static final String CONFIG = CONFIGS + "testDefault.xml";
-
     @BeforeClass
     public static void startServer() throws Exception {
-        server.setServerConfigurationFile(CONFIG);
         server.startServer(WabAdditionalTests.class.getSimpleName() + ".log");
     }
 
