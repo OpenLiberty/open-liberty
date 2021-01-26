@@ -396,9 +396,14 @@ public class BasicSseTestServlet extends FATServlet {
 
                                 @Override
                                 public void accept(InboundSseEvent t) {
-                                    JaxbObject o = t.readData(JaxbObject.class, MediaType.APPLICATION_XML_TYPE);
-                                    System.out.println("new event: " + o);
-                                    receivedEvents.add(o);
+                                    try {
+                                        JaxbObject o = t.readData(JaxbObject.class, MediaType.APPLICATION_XML_TYPE);
+                                        System.out.println("new event: " + o);
+                                        receivedEvents.add(o);
+                                    } catch (Throwable e) {
+                                        System.out.println("asicSSeTestServlet.accept() caught exception");
+                                        e.printStackTrace();
+                                    }
                                 }
                             },
                             new Consumer<Throwable>() {

@@ -12,6 +12,7 @@ package io.openliberty.sse.broadcaster;
 
 import java.lang.reflect.Field;
 import java.util.Set;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
@@ -89,6 +90,7 @@ public class Resource extends Application {
             synchronized (Resource.class) {
                 broadcaster.close();
                 registeredClients.set(0);
+                broadcaster = null;
                 return true;
             }
         } catch (Throwable t) {
@@ -107,10 +109,20 @@ public class Resource extends Application {
         //Class<?> broadcasterImplClass = Class.forName("org.apache.cxf.jaxrs.sse.SseBroadcasterImpl");
         Class<?> broadcasterImplClass = broadcaster.getClass();
         _log.info("broadcasterImplClass " + broadcasterImplClass);
-        Field subscribersField = broadcasterImplClass.getDeclaredField("subscribers");
-        subscribersField.setAccessible(true);
-        Set<SseEventSink> registeredSinks = (Set<SseEventSink>) subscribersField.get(broadcaster);
-        int size = registeredSinks.size();
+        String name = broadcasterImplClass.getName();
+        int size = 0;
+        boolean isEE9 = name.contains("resteasy");
+        if (isEE9) {
+            Field subscribersField = broadcasterImplClass.getDeclaredField("outputQueue");
+            subscribersField.setAccessible(true);
+            ConcurrentLinkedQueue<SseEventSink> registeredSinks = (ConcurrentLinkedQueue<SseEventSink>) subscribersField.get(broadcaster);
+            size = registeredSinks.size();
+        } else {
+            Field subscribersField = broadcasterImplClass.getDeclaredField("subscribers");
+            subscribersField.setAccessible(true);
+            Set<SseEventSink> registeredSinks = (Set<SseEventSink>) subscribersField.get(broadcaster);
+            size = registeredSinks.size();            
+        }
         _log.info("getNumOfSinksInBroadcaster " + size);
         return size;
     }

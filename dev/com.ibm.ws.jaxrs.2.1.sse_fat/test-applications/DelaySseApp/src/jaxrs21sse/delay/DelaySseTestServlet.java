@@ -88,14 +88,26 @@ public class DelaySseTestServlet extends FATServlet {
 
                                 @Override
                                 public void run() {
-                                    System.out.println("completion runnable executed");
-                                    String sourceString = source.toString();
-                                    int delayStringStart = sourceString.indexOf("delay=");
-                                    String delayString = sourceString.substring(delayStringStart);
-                                    int delaystart = delayString.indexOf("=") + 1;
-                                    int delaystop = delayString.indexOf("|");
-                                    eventSourceTimes.add(delayString.substring(delaystart, delaystop));
-                                    executionLatch.countDown();
+                                    try {
+                                        System.out.println("completion runnable executed");
+                                        String sourceString = source.toString();
+                                        System.out.println("completion runnable sourceString = " + sourceString);
+                                        int delayStringStart = sourceString.indexOf("delay=");
+                                        //RestEasy uses reconnectDelay not delay
+                                        if (delayStringStart == -1) {
+                                            delayStringStart = sourceString.indexOf("reconnectDelay");
+                                        }
+                                        String delayString = sourceString.substring(delayStringStart);
+                                        int delaystart = delayString.indexOf("=") + 1;
+                                        int delaystop = delayString.indexOf("|");
+                                        eventSourceTimes.add(delayString.substring(delaystart, delaystop));                                    
+                                        executionLatch.countDown();
+                                        System.out.println("latch counted down 1 and now is: " + executionLatch.getCount());
+                                    } catch (Throwable t) {
+                                        System.out.println("Throwable occurred in completion runnable: " + t.toString());
+                                        t.printStackTrace();
+                                        throw t;
+                                    }
                                 }
                             });
 

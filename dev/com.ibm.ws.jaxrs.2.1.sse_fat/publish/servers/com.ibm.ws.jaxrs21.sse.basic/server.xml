@@ -19,5 +19,5 @@
 	<variable name="onError" value="FAIL" />
 
 	<application location="BasicSseApp.war"/>
-
+	
 </server>

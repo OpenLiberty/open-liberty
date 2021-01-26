@@ -98,7 +98,7 @@ public class DelaySseResource extends Application {
             }
             try (SseEventSink s = eventSink) {
                 System.out.println("DelaySseResource:  sending event with no delay");
-                s.send(sse.newEventBuilder().data(returnMessage).build());
+                s.send(sse.newEventBuilder().data(returnMessage).reconnectDelay(0L).build());
             }
             //reset
             retry = 0;

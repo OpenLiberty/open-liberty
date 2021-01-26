@@ -261,9 +261,8 @@ public class BasicSseResource extends Application {
             @Override
             public void run() {
                 try (SseEventSink sink = eventSink) {
-
                     OutboundSseEvent event = sse.newEventBuilder()
-//                                  .mediaType(MediaType.APPLICATION_XML_TYPE)  Cause a IllegalArgumentException
+                                    .mediaType(MediaType.MULTIPART_FORM_DATA_TYPE) 
                                     .data(JaxbObject.class, JAXB_OBJECTS[0])
                                     .build();
                     System.out.println("BasicSseResource.sendErrorEvents() sending: " + JAXB_OBJECTS[0]);
@@ -272,6 +271,10 @@ public class BasicSseResource extends Application {
                     } catch (IllegalArgumentException ex) {
                         System.out.println("BasicSseResource.sendErrorEvents() caught IllegalArgumentException: ");
                         ex.printStackTrace();
+                    } catch (Exception ex2) {
+                        System.out.println("BasicSseResource.sendErrorEvents() caught Exception: ");
+                        ex2.printStackTrace();
+                        
                     }
                     try {
                         Thread.sleep(200);

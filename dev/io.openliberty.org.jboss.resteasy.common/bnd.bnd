@@ -133,7 +133,7 @@ Private-Package: \
   org.apache.james.*
   
   instrument.ffdc: false
-  instrument.disabled: true
+  instrument.disabled: false
 
 
 Include-Resource:\

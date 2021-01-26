@@ -24,6 +24,7 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -39,14 +40,21 @@ public class SseBroadcasterImpl implements SseBroadcaster {
 
     private final Set<BiConsumer<SseEventSink, Throwable>> exceptioners =
             new CopyOnWriteArraySet<>();
-
+    
+    private final AtomicBoolean closed = new AtomicBoolean(false);
+    
     @Override
     public void register(SseEventSink sink) {
+        assertNotClosed();
+        
         subscribers.add(sink);
     }
 
     @Override
     public CompletionStage<?> broadcast(OutboundSseEvent event) {
+        assertNotClosed();
+
+        
         final Collection<CompletableFuture<?>> futures = new ArrayList<>();
         subscribers.removeIf(sink -> {
             if (sink.isClosed()) {
@@ -65,19 +73,30 @@ public class SseBroadcasterImpl implements SseBroadcaster {
 
     @Override
     public void onClose(Consumer<SseEventSink> subscriber) {
+        assertNotClosed();
         closers.add(subscriber);
     }
 
     @Override
     public void onError(BiConsumer<SseEventSink, Throwable> exceptioner) {
+        assertNotClosed();
         exceptioners.add(exceptioner);
     }
 
     @Override
     public void close() {
-        subscribers.forEach(subscriber -> {
-            subscriber.close();
-            closers.forEach(closer -> closer.accept(subscriber));
-        });
+        if (closed.compareAndSet(false, true))
+        {
+            subscribers.forEach(subscriber -> {
+                subscriber.close();
+                closers.forEach(closer -> closer.accept(subscriber));
+            });
+        }
+    }
+    
+    private void assertNotClosed() {
+        if (closed.get()) {
+            throw new IllegalStateException("The SSE broadcaster is already closed");
+        }
     }
 }

@@ -23,6 +23,8 @@ src: \
 
 fat.project: true
 
+tested.features: mpconfig-1.4, restfulWS-3.0, restfulWSClient-3.0, appsecurity-2.0, appsecurity-3.0, jsonb-2.0
+
 -buildpath: \
   com.ibm.websphere.javaee.annotation.1.2;version=latest,\
   com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
