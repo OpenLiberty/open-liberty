@@ -60,9 +60,12 @@ public class BasicTest extends FATServletClient {
     public static void setUp() throws Exception {
         ShrinkHelper.defaultDropinApp(remoteAppServer, "basicRemoteApp", "remoteApp.basic");
         remoteAppServer.startServer();
+        remoteAppServer.waitForStringInLog("CWWKO0219I"); // CWWKO0219I: TCP Channel defaultHttpEndpoint-ssl has been started and is now listening for requests on host *  (IPv6) port 8040.
 
         ShrinkHelper.defaultDropinApp(server, appName, "mpRestClient10.basic");
         server.startServer();
+        server.waitForStringInLog("CWWKO0219I"); // CWWKO0219I: TCP Channel defaultHttpEndpoint-ssl has been started and is now listening for requests on host *  (IPv6) port 8020.
+
     }
 
     @AfterClass
