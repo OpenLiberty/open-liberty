@@ -75,7 +75,7 @@ dependencies {
     library "org.osgi:org.osgi.core:5.0.0"
     library "org.ow2.asm:asm-all:5.0.3"
     library "org.w3c.jigsaw:jigsaw:2.2.6"
-    library "xerces:xercesImpl:2.11.0"
+    library "xerces:xercesImpl:2.12.1"
     library "xml-apis:xml-apis:1.4.01"
     library "ant-jshint:ant-jshint:0.3.6-deps"
     library "closure-compiler:compiler:1.0.0"
@@ -133,7 +133,7 @@ def dependencyToPath = [
   "org.apache.velocity:velocity:1.7": "lib/cssValidator/lib/velocity-1.7.jar",
   "org.ccil.cowan.tagsoup:tagsoup:1.2.1": "lib/cssValidator/lib/tagsoup-1.2.1.jar",
   "org.w3c.jigsaw:jigsaw:2.2.6": "lib/cssValidator/lib/jigsaw-2.2.6.jar",
-  "xerces:xercesImpl:2.11.0": "lib/cssValidator/lib/xercesImpl-2.11.0.jar",
+  "xerces:xercesImpl:2.12.1": "lib/cssValidator/lib/xercesImpl-2.12.1.jar",
   "xml-apis:xml-apis:1.4.01": "lib/cssValidator/lib/xml-apis-1.4.01.jar",
   "css-validator:css-validator:1.0.0": "lib/cssValidator/css-validator.jar",
   "idx:idx:1.5.2.6": "lib/dojo/idx-1.5.2.6.zip",
