@@ -51,7 +51,7 @@ public class JAXRSMessageContextAPITest {
     public void testJAXRSMessageContextAPI() throws Exception {
         //server.installUserBundle("RSMessageContextAPITestHandler_1.0.0");
         ShrinkHelper.defaultUserFeatureArchive(server, "rsUserBundle3", "com.ibm.ws.rsuserbundle3.myhandler");
-        server.installUserFeature("RSMessageContextAPITestFeature");
+        TestUtils.installUserFeature(server, "RSMessageContextAPITestFeature");
         ShrinkHelper.defaultDropinApp(server, "rsApplication", "com.ibm.samples.jaxrs");
         server.startServer();
         server.waitForStringInLog("CWWKF0011I");

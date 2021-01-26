@@ -26,7 +26,9 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
@@ -63,10 +65,10 @@ public class JAXRSDynamicHandlerTest {
         server.stopServer();
         //server.installUserBundle("RSHandler1_1.0.0");
         ShrinkHelper.defaultUserFeatureArchive(server, "rsUserBundle1", "com.ibm.ws.rsuserbundle1.myhandler");
-        server.installUserFeature("RSHandler1Feature");
+        TestUtils.installUserFeature(server, "RSHandler1Feature");
         server.startServer();
         server.setMarkToEndOfLog();
-        server.setServerConfigurationFile("dynamicallyAddRemoveJAXRS/WithFirstOne/server.xml");
+        TestUtils.setServerConfigurationFile(server, "dynamicallyAddRemoveJAXRS/WithFirstOne/server.xml");
         assertNotNull("Expected to see config update completed", server.waitForStringInLog("CWWKG0017I"));
         assertNotNull("Expected to see feature update completed", server.waitForStringInLog("CWWKF0008I"));
         assertNotNull("usr:RSHandler1Feature install failed", server.waitForStringInLog("CWWKF0012I.*usr:RSHandler1Feature"));
@@ -78,10 +80,10 @@ public class JAXRSDynamicHandlerTest {
         server.stopServer();
         //server.installUserBundle("RSHandler2_1.0.0");
         ShrinkHelper.defaultUserFeatureArchive(server, "rsUserBundle2", "com.ibm.ws.rsuserbundle2.myhandler");
-        server.installUserFeature("RSHandler2Feature");
+        TestUtils.installUserFeature(server, "RSHandler2Feature");
         server.startServer();
         server.setMarkToEndOfLog();
-        server.setServerConfigurationFile("dynamicallyAddRemoveJAXRS/WithTwo/server.xml");
+        TestUtils.setServerConfigurationFile(server, "dynamicallyAddRemoveJAXRS/WithTwo/server.xml");
         assertNotNull("Expected to see config update completed", server.waitForStringInLog("CWWKG0017I"));
         assertNotNull("Expected to see feature update completed", server.waitForStringInLog("CWWKF0008I"));
         assertNotNull("usr:RSHandler2Feature install failed", server.waitForStringInLog("CWWKF0012I.*usr:RSHandler2Feature"));
@@ -91,7 +93,7 @@ public class JAXRSDynamicHandlerTest {
         assertNotNull("No RSInHander2 message", server.waitForStringInLog("in RSInHandler2 handleMessage method"));
 
         server.setMarkToEndOfLog();
-        server.setServerConfigurationFile("dynamicallyAddRemoveJAXRS/WithSecondOne/server.xml");
+        TestUtils.setServerConfigurationFile(server, "dynamicallyAddRemoveJAXRS/WithSecondOne/server.xml");
         assertNotNull("Expected to see config update completed", server.waitForStringInLog("CWWKG0017I"));
         assertNotNull("Expected to see feature update completed", server.waitForStringInLog("CWWKF0008I"));
         assertNotNull("usr:RSHandler1Feature remove failed", server.waitForStringInLog("CWWKF0013I.*usr:RSHandler1Feature"));
@@ -108,20 +110,21 @@ public class JAXRSDynamicHandlerTest {
     }
 
     @Test
+    @SkipForRepeat(JakartaEE9Action.ID) // bundle still resolves for EE9
     public void testGlobalHandlerFeatureOnly() throws Exception {
         //server.installUserBundle("RSHandler1_1.0.0");
         ShrinkHelper.defaultUserFeatureArchive(server, "rsUserBundle1", "com.ibm.ws.rsuserbundle1.myhandler");
-        server.installUserFeature("RSHandler1Feature");
-        server.setServerConfigurationFile("GlobalHandlerFeatureOnly/WithoutUserBundle/server.xml");
+        TestUtils.installUserFeature(server, "RSHandler1Feature");
+        TestUtils.setServerConfigurationFile(server, "GlobalHandlerFeatureOnly/WithoutUserBundle/server.xml");
         server.startServer();
         server.setMarkToEndOfLog();
-        server.setServerConfigurationFile("GlobalHandlerFeatureOnly/WithUserBundle/server.xml");
+        TestUtils.setServerConfigurationFile(server, "GlobalHandlerFeatureOnly/WithUserBundle/server.xml");
         assertNotNull("Expected to see config update completed", server.waitForStringInLog("CWWKG0017I"));
         assertNotNull("Expected to see feature update completed", server.waitForStringInLog("CWWKF0008I"));
         assertNotNull("Expected to see user bundle could not resolve", server.waitForStringInLog("CWWKF0029E", 10));
-        //131606 restore to default server.xml which contains jaxrs-1.0 feature
+        //131606 restore to default server.xml which contains jaxrs-2.0 feature
         server.setMarkToEndOfLog();
-        server.setServerConfigurationFile("GlobalHandlerFeatureOnly/Default/server.xml");
+        TestUtils.setServerConfigurationFile(server, "GlobalHandlerFeatureOnly/Default/server.xml");
         assertNotNull("Expected to see config update completed", server.waitForStringInLog("CWWKG0017I"));
         assertNotNull("Expected to see feature update completed", server.waitForStringInLog("CWWKF0008I"));
         server.stopServer("CWWKF0029E");

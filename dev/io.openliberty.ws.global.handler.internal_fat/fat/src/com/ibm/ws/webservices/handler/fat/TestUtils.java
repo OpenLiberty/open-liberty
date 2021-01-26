@@ -31,6 +31,8 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.ws.BindingProvider;
 
 import com.ibm.websphere.simplicity.RemoteFile;
+
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 
@@ -220,5 +222,21 @@ public class TestUtils {
         sb.append("/");
         sb.append(contextRoot);
         return sb.toString();
+    }
+
+    public static void installUserFeature(LibertyServer server, String featureManifestFile) throws Exception {
+        if (JakartaEE9Action.isActive()) {
+            server.installUserFeature("ee9/" + featureManifestFile);
+        } else {
+            server.installUserFeature(featureManifestFile);
+        }
+    }
+
+    public static void setServerConfigurationFile(LibertyServer server, String newConfigFile) throws Exception {
+        if (JakartaEE9Action.isActive()) {
+            server.setServerConfigurationFile(newConfigFile + ".ee9");
+        } else {
+            server.setServerConfigurationFile(newConfigFile);
+        }
     }
 }

@@ -45,10 +45,10 @@ public class HandlerRuleTest {
         server.copyFileToLibertyServerRoot("", "addNumbersClientTest/AddNumbers.wsdl");
         //server.installUserBundle("TestHandlerRuleHandler_1.0.0");
         ShrinkHelper.defaultUserFeatureArchive(server, "handlerRuleBundle", "com.ibm.ws.handlerrulebundle.myhandler");
-        server.installUserFeature("TestHandlerRuleFeature");
+        TestUtils.installUserFeature(server, "TestHandlerRuleFeature");
         //server.installUserBundle("TestHandlerRuleHandler2_1.0.0");
         ShrinkHelper.defaultUserFeatureArchive(server, "handlerRuleBundle2", "com.ibm.ws.handlerrulebundle2.myhandler");
-        server.installUserFeature("TestHandlerRuleFeature2");
+        TestUtils.installUserFeature(server, "TestHandlerRuleFeature2");
         
         ShrinkHelper.defaultDropinApp(server, "rsApplication", "com.ibm.samples.jaxrs");
         ShrinkHelper.defaultDropinApp(server, "addNumbersClient", "com.ibm.ws.jaxws.client", "com.ibm.ws.jaxws.client.servlet");

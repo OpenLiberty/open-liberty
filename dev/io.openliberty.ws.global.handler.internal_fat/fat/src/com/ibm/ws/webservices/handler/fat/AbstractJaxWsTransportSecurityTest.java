@@ -93,24 +93,6 @@ abstract public class AbstractJaxWsTransportSecurityTest {
     @Rule
     public TestName testName = new TestName();
 
-    /*
-    protected void prepareForTest(String serverConfigFile, String providerWebXMLFile, String clientBindingFile) throws Exception {
-        if (dynamicUpdate) {
-            updateServerConfigFile(serverConfigFile);
-            updateProviderWEBXMLFile(providerWebXMLFile);
-            updateClientBndFile(clientBindingFile);
-        } else {
-            startServer(testName.getMethodName() + ".log", serverConfigFile, providerWebXMLFile, clientBindingFile);
-            // check the started of the applications
-            server.waitForStringInLog("CWWKZ0001I.*TransportSecurityProvider");
-            server.waitForStringInLog("CWWKZ0001I.*TransportSecurityClient");
-            if (SERVER_CONFIG_WITH_SSL.contains(serverConfigFile)) {
-                server.waitForStringInLog("CWWKO0219I:.*-ssl");
-            }
-        }
-    }
-    */
-
     /**
      * Start server
      * 
@@ -492,7 +474,6 @@ abstract public class AbstractJaxWsTransportSecurityTest {
             this.port = port;
             this.path = path;
         }
-
     }
 
     protected enum TestMode {
@@ -508,5 +489,4 @@ abstract public class AbstractJaxWsTransportSecurityTest {
             return this.innerValue;
         }
     }
-
 }

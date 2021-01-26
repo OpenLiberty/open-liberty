@@ -69,7 +69,7 @@ public class HandlerChainTest {
     public void testProviderHandlerChainWithGlobalHandlers() throws Exception {
         //server.installUserBundle("MyHandler_1.0.0.201311011651");
         ShrinkHelper.defaultUserFeatureArchive(server, "userBundle", "com.ibm.ws.userbundle.myhandler");
-        server.installUserFeature("MyHandlerFeature");
+        TestUtils.installUserFeature(server, "MyHandlerFeature");
         server.startServer("HandlerChainProvider.log");
         ShrinkHelper.defaultDropinApp(server, "testHandlerClient", "com.ibm.samples.jaxws.client", "com.ibm.samples.jaxws.client.handler", "com.ibm.samples.jaxws.client.servlet");
         ShrinkHelper.defaultDropinApp(server, "testHandlerClientWithoutXML", "com.ibm.samples.jaxws.client", "com.ibm.samples.jaxws.client.handler", "com.ibm.samples.jaxws.client.servlet");

@@ -40,10 +40,10 @@ public class JAXRSClientHandlerTest {
     public static void beforeClass() throws Exception {
         //server.installUserBundle("RSHandler1_1.0.0");
         ShrinkHelper.defaultUserFeatureArchive(server, "rsUserBundle1", "com.ibm.ws.rsuserbundle1.myhandler");
-        server.installUserFeature("RSHandler1Feature");
+        TestUtils.installUserFeature(server, "RSHandler1Feature");
         //server.installUserBundle("RSHandler2_1.0.0");
         ShrinkHelper.defaultUserFeatureArchive(server, "rsUserBundle2", "com.ibm.ws.rsuserbundle2.myhandler");
-        server.installUserFeature("RSHandler2Feature");
+        TestUtils.installUserFeature(server, "RSHandler2Feature");
         server.setServerConfigurationFile("dynamicallyAddRemoveJAXRS/WithTwo/server.xml");
         ShrinkHelper.defaultDropinApp(server, "rs20ApplicationWithClient", "com.ibm.samples.jaxrs");
     }

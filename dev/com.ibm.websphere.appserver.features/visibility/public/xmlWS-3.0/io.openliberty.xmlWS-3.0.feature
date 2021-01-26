@@ -12,6 +12,7 @@ IBM-API-Package: \
 -features=\
  com.ibm.websphere.appserver.eeCompatible-9.0, \
  com.ibm.websphere.appserver.servlet-5.0, \
+ io.openliberty.globalhandler-2.0, \
  io.openliberty.xmlws.common-3.0
 -bundles=\
  com.ibm.ws.javaee.ddmodel.ws, \
@@ -19,9 +20,7 @@ IBM-API-Package: \
  com.ibm.ws.jaxws.webcontainer.jakarta, \
  com.ibm.ws.jaxws.2.3.web.jakarta, \
  com.ibm.ws.jaxws.2.3.wsat, \
- com.ibm.ws.webservices.javaee.common.jakarta, \
- com.ibm.ws.webservices.handler.jakarta
--jars=com.ibm.websphere.appserver.spi.globalhandler.jakarta; location:=dev/spi/ibm/
+ com.ibm.ws.webservices.javaee.common.jakarta
 -files=\
  bin/xmlWS/wsgen; ibm.executable:=true; ibm.file.encoding:=ebcdic, \
  bin/xmlWS/wsimport; ibm.executable:=true; ibm.file.encoding:=ebcdic, \

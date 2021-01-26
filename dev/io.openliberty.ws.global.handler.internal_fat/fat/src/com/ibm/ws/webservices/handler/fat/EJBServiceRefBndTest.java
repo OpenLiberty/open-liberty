@@ -32,6 +32,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.HttpUtils;
@@ -46,12 +47,15 @@ public class EJBServiceRefBndTest {
 
     private static String helloServletURL = new StringBuilder().append("http://").append(server.getHostname()).append(":").append(server.getHttpDefaultPort()).append("/ejbServiceRefBndClient/HelloServlet").toString();
 
+    private static String testFeatureName;
     @BeforeClass
     public static void setup() throws Exception {
-        server.copyFileToLibertyInstallRoot("lib/features", "EJBServiceRefBndTest/jaxwsTest-2.2.mf");
+        testFeatureName = JakartaEE9Action.isActive() ? "xmlWSTest-3.0.mf" : "jaxwsTest-2.2.mf";
+        server.copyFileToLibertyInstallRoot("lib/features", "EJBServiceRefBndTest/" + testFeatureName);
+
         //server.installUserBundle("TestHandler1_1.0.0.201311011652");
         ShrinkHelper.defaultUserFeatureArchive(server, "userBundle2", "com.ibm.ws.userbundle2.myhandler");
-        server.installUserFeature("TestHandler1Feature1");
+        TestUtils.installUserFeature(server, "TestHandler1Feature1");
         JavaArchive ejbJar = ShrinkHelper.buildJavaArchive("ejbServiceRefBnd", "com.ibm.sample.bean",
                                                                                "com.ibm.sample.jaxws.echo.client",
                                                                                "com.ibm.sample.jaxws.hello.client",
@@ -67,7 +71,7 @@ public class EJBServiceRefBndTest {
 
     @AfterClass
     public static void cleanup() throws Exception {
-        server.deleteFileFromLibertyInstallRoot("lib/features/jaxwsTest-2.2.mf");
+        server.deleteFileFromLibertyInstallRoot("lib/features/" + testFeatureName);
     }
 
     @After

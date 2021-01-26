@@ -13,6 +13,7 @@ package com.ibm.ws.jaxrs.fat.cdi.rolesallowed;
 import java.security.Principal;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.annotation.security.DenyAll;
 import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.DELETE;

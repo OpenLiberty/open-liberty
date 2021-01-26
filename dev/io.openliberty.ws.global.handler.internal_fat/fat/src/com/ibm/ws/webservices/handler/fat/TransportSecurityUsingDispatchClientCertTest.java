@@ -40,7 +40,7 @@ public class TransportSecurityUsingDispatchClientCertTest extends AbstractJaxWsT
                                                                    "com.ibm.ws.jaxws.transport.security");
         //server.installUserBundle("TestHandler1_1.0.0.201311011652");
         ShrinkHelper.defaultUserFeatureArchive(server, "userBundle2", "com.ibm.ws.userbundle2.myhandler");
-        server.installUserFeature("TestHandler1Feature1");
+        TestUtils.installUserFeature(server, "TestHandler1Feature1");
         server.setServerConfigurationFile(DEFAULT_CLIENT_CERT_CONFIG);
         lastServerConfig = "/serverConfigs/defaultClientCertConfiguration.xml";
 

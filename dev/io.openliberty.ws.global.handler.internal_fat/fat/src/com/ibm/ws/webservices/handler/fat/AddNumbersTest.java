@@ -57,10 +57,10 @@ public class AddNumbersTest {
 
         //server.installUserBundle("TestHandler1_1.0.0.201311011652");
         ShrinkHelper.defaultUserFeatureArchive(server, "userBundle2", "com.ibm.ws.userbundle2.myhandler");
-        server.installUserFeature("TestHandler1Feature1");
+        TestUtils.installUserFeature(server, "TestHandler1Feature1");
         //server.installUserBundle("TestHandler2_1.0.0.201311011653");
         ShrinkHelper.defaultUserFeatureArchive(server, "userBundle3", "com.ibm.ws.userbundle3.myhandler");
-        server.installUserFeature("TestHandler2Feature2");
+        TestUtils.installUserFeature(server, "TestHandler2Feature2");
         server.setServerConfigurationFile("dynamicallyAddRemove/WithNone/server.xml");
         server.startServer("dynamicallyAddingRemovalTest.log");
         String actual = invokeService(1, 2);
@@ -143,7 +143,7 @@ public class AddNumbersTest {
 
         //server.installUserBundle("TestHandler3_1.0.0.201311011654");
         ShrinkHelper.defaultUserFeatureArchive(server, "userBundle4", "com.ibm.ws.userbundle4.myhandler");
-        server.installUserFeature("TestHandler3Feature3");
+        TestUtils.installUserFeature(server, "TestHandler3Feature3");
         server.setServerConfigurationFile("FaultProcessingInGlobalHandlers/WithFirstOne/server.xml");
         server.startServer("FaultProcessingInGlobalHandlersTest.log");
         invokeService(1, 2);
@@ -174,7 +174,7 @@ public class AddNumbersTest {
 
         //server.installUserBundle("TestHandler3_1.0.0.201311011654");
         ShrinkHelper.defaultUserFeatureArchive(server, "userBundle4", "com.ibm.ws.userbundle4.myhandler");
-        server.installUserFeature("TestHandler3Feature3");
+        TestUtils.installUserFeature(server, "TestHandler3Feature3");
         server.setServerConfigurationFile("GlobalHandlersOnlyWithoutJAXWSRS/WithFirstOne/server.xml");
         server.startServer("GlobalHandlerFeatureWithOutJAXWSRSTest.log");
         assertStatesNotExsited(5000, new String[] {
@@ -187,7 +187,7 @@ public class AddNumbersTest {
 
         //server.installUserBundle("TestHandler5_1.0.0.201311011655");
         ShrinkHelper.defaultUserFeatureArchive(server, "userBundle5", "com.ibm.ws.userbundle5.myhandler");
-        server.installUserFeature("TestHandler5Feature5");
+        TestUtils.installUserFeature(server, "TestHandler5Feature5");
         server.setServerConfigurationFile("GlobalHandlerMessageContextAPI/server.xml");
         server.startServer("GlobalHandlerMessageContextAPIest.log");
         String actual = invokeService(1, 2);
