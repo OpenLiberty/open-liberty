@@ -39,6 +39,7 @@ import com.ibm.ws.transport.iiop.security.config.ssl.yoko.SocketFactory;
 import com.ibm.ws.transport.iiop.spi.IIOPEndpoint;
 import com.ibm.ws.transport.iiop.spi.ReadyListener;
 import com.ibm.ws.transport.iiop.spi.SubsystemFactory;
+import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 import com.ibm.wsspi.ssl.SSLSupport;
 
 /**
@@ -175,6 +176,10 @@ public abstract class AbstractCsiv2SubsystemFactory extends SubsystemFactory {
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Known ssl configurations: {0}", sslRefs);
+        }
+        // If we are stopping lets skip this message
+        if (FrameworkState.isStopping()) {
+            return;
         }
         Tr.error(tc, "SSL_SERVICE_NOT_STARTED", missing, listener.listenerId(), TIMEOUT_SECONDS);
     }
