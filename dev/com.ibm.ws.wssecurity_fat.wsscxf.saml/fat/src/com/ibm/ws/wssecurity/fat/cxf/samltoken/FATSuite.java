@@ -34,6 +34,7 @@ import com.ibm.ws.wssecurity.fat.cxf.samltoken.TwoServerTests.CxfSSLSAMLBasic2Se
        //instead, using FATSuite.java to combine with FULL and LITE
        //The following 2 tests are run as LITE FAT bucket where total 3 test cases @test are specified for LITE with @Mode(TestMode.LITE)
 	   //It takes about 5 minutes to run the 3 test cases when commenting out the following FULL test classes
+	   
 	   CxfSAMLBasic2ServerTests.class,
        CxfSSLSAMLBasic2ServerTests.class,
        
@@ -42,6 +43,7 @@ import com.ibm.ws.wssecurity.fat.cxf.samltoken.TwoServerTests.CxfSSLSAMLBasic2Se
        //by CxfSAMLBasic2ServerTests.class (LITE) as well as by CxfSAMLBasic1ServerTests.class (FULL), when running the above LITE, 
        //the test result will contain additional test cases run by some of the following FULL test classes.
        //So the total time running LITE can take up to 11 minutes
+      
        CxfSAMLSymSignEnc2ServerTests.class,
        CxfSAMLAsymSignEnc2ServerTests.class,
        CxfSAMLWSSTemplates2ServerTests.class,

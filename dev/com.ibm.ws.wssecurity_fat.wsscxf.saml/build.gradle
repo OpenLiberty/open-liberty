@@ -28,9 +28,9 @@ dependencies {
                'org.apache.httpcomponents:httpmime:4.5.3',
                'org.apache.httpcomponents:httpcomponents-client:4.5.3',
                'net.sourceforge.htmlunit:neko-htmlunit:2.44.0',
-               'xalan:xalan:2.7.2'    
-               
-               
+               'xalan:xalan:2.7.2',
+               'xerces:xercesImpl:2.11.0'   
+                        
 }
 
 
@@ -235,7 +235,9 @@ autoFVT.doLast {
     }
   
     copy {
-    from new File(project(':com.ibm.ws.security.saml.sso_fat.common').projectDir, 'publish/servers/' + server + '/bootstrap.properties')
+    //Need to update the version of perperties to add java2sec exempt on this server
+    //from new File(project(':com.ibm.ws.security.saml.sso_fat.common').projectDir, 'publish/servers/' + server + '/bootstrap.properties')
+    from project.file('publish/files/bootstrap.properties')
     into new File(autoFvtDir, 'publish/servers/' + server + '/')
     }
     
