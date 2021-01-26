@@ -21,5 +21,6 @@
   <javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
   <javaPermission className="java.lang.RuntimePermission" name="getProtectionDomain"/>
   <javaPermission className="java.lang.reflect.ReflectPermission" name="suppressAccessChecks"/>
+  <javaPermission className="javax.net.ssl.SSLPermission" name="*" actions="setHostnameVerifier" />
 
 </server>

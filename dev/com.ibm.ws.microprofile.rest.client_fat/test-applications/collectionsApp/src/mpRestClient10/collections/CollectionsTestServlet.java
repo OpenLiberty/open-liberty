@@ -48,6 +48,22 @@ public class CollectionsTestServlet extends FATServlet {
 
     private RestClientBuilder builder;
 
+    static {
+        //for localhost testing only
+        javax.net.ssl.HttpsURLConnection.setDefaultHostnameVerifier(
+                new javax.net.ssl.HostnameVerifier() {
+
+            @Override
+            public boolean verify(String hostname,
+                    javax.net.ssl.SSLSession sslSession) {
+                if (hostname.contains("localhost")) {
+                    return true;
+                }
+                return false;
+            }
+        });
+    }
+
     private static String getSysProp(String key) {
         return AccessController.doPrivileged((PrivilegedAction<String>) () -> System.getProperty(key));
     }
