@@ -12,14 +12,11 @@ package com.ibm.ws.logging.internal.osgi.stackjoiner.bci;
 
 import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.IllegalClassFormatException;
-import java.lang.instrument.Instrumentation;
 import java.security.ProtectionDomain;
 
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
-
-import com.ibm.ws.logging.internal.osgi.stackjoiner.bci.ThrowableClassAdapter;
 
 public class ThrowableClassFileTransformer implements ClassFileTransformer {
 
@@ -36,7 +33,8 @@ public class ThrowableClassFileTransformer implements ClassFileTransformer {
         return ba;
     }
 
-    private byte[] transformClassIfThrowable(byte[] cBuffer, String nameOfClass) {
+    @SuppressWarnings("static-access")
+	private byte[] transformClassIfThrowable(byte[] cBuffer, String nameOfClass) {
         ClassReader reader = new ClassReader(cBuffer);
         ClassWriter writer = new ClassWriter(reader, ClassWriter.COMPUTE_FRAMES);
         ClassVisitor visitor = writer;

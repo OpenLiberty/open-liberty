@@ -16,7 +16,6 @@ import java.lang.reflect.Method;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.logging.internal.osgi.OsgiLogConstants;
 
 /**
  * Retrieves the printStackTraceOverride method from BaseTraceService via reflection.
@@ -50,7 +49,7 @@ public class ThrowableInfo {
     */
     
     public ThrowableInfo(Instrumentation inst) {
-    	if (System.getenv("stackjoiner").equals("true")) {
+    	if (System.getenv("stackjoiner") != null && System.getenv("stackjoiner").equals("true")) {
 	    	Class<?> btsClass = retrieveClass(inst, BASE_TRACE_SERVICE_CLASS_NAME);
 	        if (btsClass != null) {
 				Method method = ReflectionHelper.getDeclaredMethod(btsClass, BASE_TRACE_SERVICE_METHOD_NAME, Throwable.class, PrintStream.class);
@@ -70,7 +69,8 @@ public class ThrowableInfo {
     	return false;
     }
     
-    private Class<?> retrieveClass(Instrumentation inst, String classGroup) {
+    @SuppressWarnings("rawtypes")
+	private Class<?> retrieveClass(Instrumentation inst, String classGroup) {
         if (inst != null) {
             Class[] loadedClasses = inst.getAllLoadedClasses();
             for (int i = 0; i < loadedClasses.length; i++) {

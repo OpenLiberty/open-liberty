@@ -42,7 +42,6 @@ import org.objectweb.asm.commons.SimpleRemapper;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Bundle;
-import org.osgi.service.component.ComponentException;
 
 public class ThrowableProxyActivator {
 	
@@ -97,7 +96,6 @@ public class ThrowableProxyActivator {
      */
     protected void activate() throws Exception {    
         // Store a reference to the printStackTraceOverride method from BaseTraceService
-    	long time0 = System.currentTimeMillis();
         throwableInfo = new ThrowableInfo(inst);
         
         if (throwableInfo.isInitialized()) {
