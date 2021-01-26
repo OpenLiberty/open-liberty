@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.transaction.test;
 
+import static com.ibm.ws.transaction.test.FATSuite.sqlserver;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
@@ -20,11 +21,9 @@ import java.sql.Statement;
 
 import org.junit.After;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 import org.testcontainers.containers.JdbcDatabaseContainer.NoDriverFoundException;
-import org.testcontainers.containers.MSSQLServerContainer;
 
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
@@ -43,9 +42,6 @@ import componenttest.topology.impl.LibertyServer;
 public class DualServerDynamicMSSQLServerTest extends DualServerDynamicCoreTest {
 
     private static final int LOG_SEARCH_TIMEOUT = 120000;
-
-    @ClassRule
-    public static MSSQLServerContainer<?> sqlserver = FATSuite.sqlserver;
 
     @Server("com.ibm.ws.transaction_CLOUD001")
     @TestServlet(servlet = Simple2PCCloudServlet.class, contextRoot = APP_NAME)

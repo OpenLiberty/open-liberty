@@ -39,5 +39,6 @@ public class FATSuite {
 
     @ClassRule
     public static MSSQLServerContainer<?> sqlserver = new MSSQLServerContainer<>("mcr.microsoft.com/mssql/server:2019-CU2-ubuntu-16.04")//
-                    .withLogConsumer(new SimpleLogConsumer(FATSuite.class, "SQLServer"));
+                    .withLogConsumer(new SimpleLogConsumer(FATSuite.class, "SQLServer"))
+                    .acceptLicense();
 }

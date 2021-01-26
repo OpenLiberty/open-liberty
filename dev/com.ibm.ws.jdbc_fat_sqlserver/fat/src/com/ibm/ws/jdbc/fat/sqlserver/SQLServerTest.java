@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.jdbc.fat.sqlserver;
 
+import static com.ibm.ws.jdbc.fat.sqlserver.FATSuite.sqlserver;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -18,11 +20,9 @@ import java.util.List;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 import org.testcontainers.containers.JdbcDatabaseContainer.NoDriverFoundException;
-import org.testcontainers.containers.MSSQLServerContainer;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
@@ -42,9 +42,6 @@ public class SQLServerTest extends FATServletClient {
     @Server("com.ibm.ws.jdbc.fat.sqlserver")
     @TestServlet(servlet = SQLServerTestServlet.class, path = APP_NAME + '/' + SERVLET_NAME)
     public static LibertyServer server;
-
-    @ClassRule
-    public static MSSQLServerContainer<?> sqlserver = FATSuite.sqlserver;
 
     @BeforeClass
     public static void setUp() throws Exception {

@@ -34,6 +34,7 @@ public class FATSuite {
                     .asCompatibleSubstituteFor("mcr.microsoft.com/mssql/server");
 
     @ClassRule
-    public static MSSQLServerContainer<?> sqlserver = new MSSQLServerContainer<>(sqlserverImage)//
-                    .withLogConsumer(new SimpleLogConsumer(FATSuite.class, "sqlserver"));
+    public static MSSQLServerContainer<?> sqlserver = new MSSQLServerContainer<>(sqlserverImage) //
+                    .withLogConsumer(new SimpleLogConsumer(FATSuite.class, "sqlserver")) //
+                    .acceptLicense();
 }
