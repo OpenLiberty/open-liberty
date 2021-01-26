@@ -12,15 +12,16 @@ package io.openliberty.microprofile.config.internal_fat.apps.brokenInjection.con
 
 import org.eclipse.microprofile.config.spi.Converter;
 
-import junit.framework.Assert;
-
+@SuppressWarnings("serial")
 public class ValidConverter implements Converter<TypeWithValidConverter> {
+
+    public static final String CHECK_STRING = "In ValidConverter";
 
     /** {@inheritDoc} */
     @Override
     public TypeWithValidConverter convert(String value) {
-        Assert.fail(); // Should not use this converter- Config Property value is not defined.
-        return null;
+        System.out.println(CHECK_STRING);
+        return new TypeWithValidConverter();
     }
 
 }

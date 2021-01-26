@@ -25,6 +25,7 @@ import org.junit.Test;
 
 import componenttest.app.FATServlet;
 
+@SuppressWarnings("serial")
 @WebServlet("/")
 public class DefaultSourcesTestServlet extends FATServlet {
 

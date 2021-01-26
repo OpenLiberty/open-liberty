@@ -12,12 +12,13 @@ package io.openliberty.microprofile.config.internal_fat.apps.brokenInjection.con
 
 import org.eclipse.microprofile.config.spi.Converter;
 
+@SuppressWarnings("serial")
 public class BadConverter implements Converter<TypeWithBadConverter> {
 
     /** {@inheritDoc} */
     @Override
     public TypeWithBadConverter convert(String value) {
-        throw new IllegalArgumentException("Converter throwing intentional exception"); // This should be thrown, though it is caught and handled by SmallRye Config
+        throw new IllegalArgumentException("Converter throwing intentional exception"); // This should be thrown, though it is caught and swallowed by SmallRye Config
     }
 
 }

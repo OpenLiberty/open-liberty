@@ -20,6 +20,7 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 public class BadObserverBean {
 
     //  Should throw a deployment exception
+    @SuppressWarnings("unused")
     private static final void observerMethod(@Observes @Initialized(ApplicationScoped.class) final Object obj,
                                              @ConfigProperty(name = "DOESNOTEXIST") final String doesnotexist) {
         throw new RuntimeException("This method should not have been called");

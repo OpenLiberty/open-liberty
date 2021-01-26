@@ -14,6 +14,7 @@ import org.eclipse.microprofile.config.spi.Converter;
 
 import io.openliberty.microprofile.config.internal_fat.apps.converter.MyTypeWithMultipleConverters;
 
+@SuppressWarnings("serial")
 public class MyTypeConverter2 implements Converter<MyTypeWithMultipleConverters> {
 
     /** {@inheritDoc} */

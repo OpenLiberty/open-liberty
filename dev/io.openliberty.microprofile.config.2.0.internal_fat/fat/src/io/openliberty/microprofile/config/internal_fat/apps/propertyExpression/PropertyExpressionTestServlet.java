@@ -25,37 +25,59 @@ import componenttest.app.FATServlet;
 @WebServlet("/propertyExpressionTestServlet")
 public class PropertyExpressionTestServlet extends FATServlet {
 
+    public static final String PE_TEST_MP_CONFIG_PROPERTIES_KEY = "KeyFromMicroprofileConfigProperties";
+    public static final String PE_TEST_MP_CONFIG_PROPERTIES_VALUE = "valueFromMicroprofileConfigProperties";
+
+    public static final String PE_TEST_2_PLACES_KEY = "KeyDefinedIn2Places";
+
     @Inject
     @ConfigProperty(name = "keyFromVariableInServerXML")
-    String key1;
+    String valueFromVariableInServerXML;
 
     @Inject
     @ConfigProperty(name = "keyFromAppPropertyInServerXML")
-    String key2;
+    String valueFromAppPropertyInServerXML;
+
+    @Inject
+    @ConfigProperty(name = "keyFromServerXML")
+    String valueFromServerXML;
 
     /**
-     * keyFromVariableInServerXML is defined as a variable in the server.xml file as "${value1DefinedInTwoPlaces}".
+     * keyFromAppPropertyInServerXML is defined as a variable in the server.xml file as "${KeyFromMicroprofileConfigProperties}"
      *
-     * value1DefinedInTwoPlaces is defined in the bootstrap.properties as "value1a" and also in microprofile-config.properties as "value1b".
+     * KeyFromMicroprofileConfigProperties is defined in the microprofile-config.properties file as "valueFromMicroprofileConfigProperties".
      *
-     * Since bootstrap.properties has a higher ordinal than microprofile-config.properties (400>100), value1DefinedInTwoPlaces="value1a".
-     *
-     * Hence, by Property Expression, `key1` should have the value of "value1a".
+     * Hence, by Property Expression, `valueFromVariableInServerXML` should have the value of "valueFromMicroprofileConfigProperties".
      */
     @Test
     public void testVariableInServerXMLProperyExpression() throws Exception {
-        Assert.assertEquals("value1a", key1);
+        Assert.assertEquals(PE_TEST_MP_CONFIG_PROPERTIES_VALUE, valueFromVariableInServerXML);
     }
 
     /**
-     * keyFromAppPropertyInServerXML is defined as an appProperty in the server.xml file as "${value2DefinedInBootstrapProperties}"
+     * keyFromAppPropertyInServerXML is defined as an appProperty in the server.xml file as "${KeyFromMicroprofileConfigProperties}"
      *
-     * value2DefinedInBootstrapProperties is defined in the bootstrap.properties file as "value2".
+     * KeyFromMicroprofileConfigProperties is defined in the microprofile-config.properties file as "valueFromMicroprofileConfigProperties".
      *
-     * Hence, by Property Expression, `key2` should have the value of "value2".
+     * Hence, by Property Expression, `valueFromAppPropertyInServerXML` should have the value of "valueFromMicroprofileConfigProperties".
      */
     @Test
     public void testAppPropertyInServerXMLProperyExpression() throws Exception {
-        Assert.assertEquals("value2", key2);
+        Assert.assertEquals(PE_TEST_MP_CONFIG_PROPERTIES_VALUE, valueFromAppPropertyInServerXML);
+    }
+
+    /**
+     * keyFromServerXML is defined as a variable in the server.xml file as "${KeyDefinedIn2Places}".
+     *
+     * KeyDefinedIn2Places is defined in the bootstrap.properties as "valueFromBootstrapProperties" and also in microprofile-config.properties as
+     * "valueFromMicroprofileConfigProperties".
+     *
+     * Since bootstrap.properties has a higher ordinal than microprofile-config.properties (400>100), KeyDefinedIn2Places="valueFromBootstrapProperties".
+     *
+     * Hence, by Property Expression, `valueFromServerXML` should have the value of "valueFromBootstrapProperties".
+     */
+    @Test
+    public void testConfigOrdinalForPropertyExpressionInServerXML() throws Exception {
+        Assert.assertEquals("valueFromBootstrapProperties", valueFromServerXML);
     }
 }

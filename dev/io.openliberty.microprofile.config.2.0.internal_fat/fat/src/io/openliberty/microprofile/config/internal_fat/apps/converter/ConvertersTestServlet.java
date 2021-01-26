@@ -13,10 +13,12 @@ package io.openliberty.microprofile.config.internal_fat.apps.converter;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.servlet.annotation.WebServlet;
 
 import org.eclipse.microprofile.config.Config;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.config.spi.ConfigBuilder;
 import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
 import org.eclipse.microprofile.config.spi.Converter;
@@ -27,11 +29,37 @@ import io.openliberty.microprofile.config.internal_fat.apps.TestUtils;
 import io.openliberty.microprofile.config.internal_fat.apps.converter.converters.MyBadConverter;
 
 @SuppressWarnings("serial")
+@RequestScoped
 @WebServlet("/")
 public class ConvertersTestServlet extends FATServlet {
 
+    public static final String DUPLICATE_CONVERTERS_KEY_1 = "key1";
+    public static final String DUPLICATE_CONVERTERS_KEY_2 = "key2";
+    public static final String DUPLICATE_CONVERTERS_KEY_3 = "key3";
+
     @Inject
-    DuplicateConvertersBean duplicateConvertersBean;
+    @ConfigProperty(name = DUPLICATE_CONVERTERS_KEY_1)
+    MyTypeWithMultipleConverters value1;
+
+    @Inject
+    @ConfigProperty(name = DUPLICATE_CONVERTERS_KEY_2)
+    MyTypeWithMultipleConverters value2;
+
+    @Inject
+    @ConfigProperty(name = DUPLICATE_CONVERTERS_KEY_3)
+    MyTypeWithMultipleConverters value3;
+
+    /**
+     * If multiple Converters are registered for the same Type with the same priority, the result should be deterministic.
+     *
+     * For mpConfig > 1.4, the first of the duplicate converters registered will be used.
+     */
+    @Test
+    public void testDuplicateConverters() throws Exception {
+        assertEquals("Output from Converter 1", value1.toString());
+        assertEquals("Output from Converter 1", value2.toString());
+        assertEquals("Output from Converter 1", value3.toString());
+    }
 
     /**
      * Test what happens when a converter raises an exception for mpConfig > 1.4.
@@ -60,18 +88,6 @@ public class ConvertersTestServlet extends FATServlet {
         } catch (IllegalArgumentException e) {
             TestUtils.assertEquals("Converter throwing intentional exception", e.getMessage());
         }
-    }
-
-    /**
-     * If multiple Converters are registered for the same Type with the same priority, the result should be deterministic.
-     *
-     * For mpConfig > 1.4, the first of the duplicate converters registered will be used.
-     */
-    @Test
-    public void testDuplicateConverters() throws Exception {
-        assertEquals("Output from Converter 1", duplicateConvertersBean.getValue1().toString());
-        assertEquals("Output from Converter 1", duplicateConvertersBean.getValue2().toString());
-        assertEquals("Output from Converter 1", duplicateConvertersBean.getValue3().toString());
     }
 
 }

@@ -19,11 +19,16 @@ import org.eclipse.microprofile.config.inject.ConfigProperties;
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
-import io.openliberty.microprofile.config.internal_fat.Config20Tests;
 
 @SuppressWarnings("serial")
 @WebServlet("/")
 public class ConfigPropertiesTestServlet extends FATServlet {
+
+    // Config Property values for tests
+    public static final String NO_PREFIX_TEST_KEY = "validPrefix.validkey";
+    public static final String NO_PREFIX_TEST_VALUE = "value";
+    public static final String CAMEL_CASE_TEST_KEY = "validPrefix.validCamelCaseKey";
+    public static final String CAMEL_CASE_TEST_VALUE = "aValueFromCamelCase";
 
     @Inject
     @ConfigProperties
@@ -39,20 +44,18 @@ public class ConfigPropertiesTestServlet extends FATServlet {
 
     @Test
     public void testConfigPropertiesWithoutPrefix() {
-        String testKey = Config20Tests.NO_PREFIX_TEST_KEY;
-        String expected = Config20Tests.NO_PREFIX_TEST_VALUE;
+
         String actual = configPropertiesBeanWithoutPrefix.validkey;
-        assertEquals("Not defining a prefix when injecting a Config Properties Bean should inherit the prefix defined in the bean itself. The key should resolve to " + testKey,
-                     expected, actual);
+        assertEquals("Not defining a prefix when injecting a Config Properties Bean should inherit the prefix defined in the bean itself. The key should resolve to " + NO_PREFIX_TEST_KEY,
+                     NO_PREFIX_TEST_VALUE, actual);
     }
 
     @Test
     public void testCamelCaseConfigProperty() {
-        String testKey = Config20Tests.CAMEL_CASE_TEST_KEY;
-        String expected = Config20Tests.CAMEL_CASE_TEST_VALUE;
+
         String actual = configPropertiesBean.validCamelCaseKey;
-        assertEquals("CamelCase Config Property's should not be a problem for Config Properties Beans. The key should resolve to " + testKey,
-                     expected, actual);
+        assertEquals("CamelCase Config Property's should not be a problem for Config Properties Beans. The key should resolve to " + CAMEL_CASE_TEST_KEY,
+                     CAMEL_CASE_TEST_VALUE, actual);
     }
 
 }

@@ -14,6 +14,7 @@ import org.eclipse.microprofile.config.spi.Converter;
 
 import io.openliberty.microprofile.config.internal_fat.apps.converter.CustomType;
 
+@SuppressWarnings("serial")
 public class MyBadConverter implements Converter<CustomType> {
 
     /** {@inheritDoc} */

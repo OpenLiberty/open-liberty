@@ -54,15 +54,6 @@ public class Config20Tests extends FATServletClient {
     public static final String PROPERTY_EXPRESSION_APP_NAME = "propertyExpressionApp";
     public static final String UNWRAP_APP_NAME = "unwrapApp";
 
-    // Config Property values for tests
-    public static final String NO_PREFIX_TEST_KEY = "validPrefix.validkey";
-    public static final String NO_PREFIX_TEST_VALUE = "value";
-    public static final String CAMEL_CASE_TEST_KEY = "validPrefix.validCamelCaseKey";
-    public static final String CAMEL_CASE_TEST_VALUE = "aValueFromCamelCase";
-    public static final String DUPLICATE_CONVERTERS_KEY_1 = "key1";
-    public static final String DUPLICATE_CONVERTERS_KEY_2 = "key2";
-    public static final String DUPLICATE_CONVERTERS_KEY_3 = "key3";
-
     public static final String SERVER_NAME = "Config20Server";
 
     @ClassRule
@@ -89,17 +80,17 @@ public class Config20Tests extends FATServletClient {
          * Define Config Values
          */
         PropertiesAsset configPropertiesConfigSource = new PropertiesAsset()
-                        .addProperty(NO_PREFIX_TEST_KEY, NO_PREFIX_TEST_VALUE)
-                        .addProperty(CAMEL_CASE_TEST_KEY, CAMEL_CASE_TEST_VALUE);
+                        .addProperty(ConfigPropertiesTestServlet.NO_PREFIX_TEST_KEY, ConfigPropertiesTestServlet.NO_PREFIX_TEST_VALUE)
+                        .addProperty(ConfigPropertiesTestServlet.CAMEL_CASE_TEST_KEY, ConfigPropertiesTestServlet.CAMEL_CASE_TEST_VALUE);
 
         PropertiesAsset propertyExpressionConfigSource = new PropertiesAsset()
-                        .addProperty("value1DefinedInTwoPlaces", "value1b")
-                        .addProperty("value2DefinedInMicroprofileConfigProperties", "value2");
+                        .addProperty(PropertyExpressionTestServlet.PE_TEST_MP_CONFIG_PROPERTIES_KEY, PropertyExpressionTestServlet.PE_TEST_MP_CONFIG_PROPERTIES_VALUE)
+                        .addProperty(PropertyExpressionTestServlet.PE_TEST_2_PLACES_KEY, PropertyExpressionTestServlet.PE_TEST_MP_CONFIG_PROPERTIES_VALUE);
 
         PropertiesAsset duplicateConvertersConfigSource = new PropertiesAsset()
-                        .addProperty(DUPLICATE_CONVERTERS_KEY_1, "input1")
-                        .addProperty(DUPLICATE_CONVERTERS_KEY_2, "input2")
-                        .addProperty(DUPLICATE_CONVERTERS_KEY_3, "input3");
+                        .addProperty(ConvertersTestServlet.DUPLICATE_CONVERTERS_KEY_1, "input1")
+                        .addProperty(ConvertersTestServlet.DUPLICATE_CONVERTERS_KEY_2, "input2")
+                        .addProperty(ConvertersTestServlet.DUPLICATE_CONVERTERS_KEY_3, "input3");
 
         /*
          * Build Wars
@@ -112,7 +103,7 @@ public class Config20Tests extends FATServletClient {
         WebArchive convertersWar = ShrinkWrap.create(WebArchive.class, CONVERTER_LOADER_APP_NAME + ".war")
                         .addPackages(true, ConvertersTestServlet.class.getPackage())
                         .addAsManifestResource(new File("publish/resources/" + CONVERTER_LOADER_APP_NAME + "/permissions.xml"), "permissions.xml")
-                        .addAsManifestResource(duplicateConvertersConfigSource, "microprofile-config.properties")
+                        .addAsResource(duplicateConvertersConfigSource, "META-INF/microprofile-config.properties")
                         .addAsServiceProvider(Converter.class, MyTypeConverter1.class, MyTypeConverter2.class)
                         .addClass(TestUtils.class);
 
@@ -122,11 +113,11 @@ public class Config20Tests extends FATServletClient {
 
         WebArchive configPropertiesWar = ShrinkWrap.create(WebArchive.class, CONFIG_PROPERTIES_APP_NAME + ".war")
                         .addPackages(true, ConfigPropertiesTestServlet.class.getPackage())
-                        .addAsManifestResource(configPropertiesConfigSource, "microprofile-config.properties");
+                        .addAsResource(configPropertiesConfigSource, "META-INF/microprofile-config.properties");
 
         WebArchive propertyExpressionWar = ShrinkWrap.create(WebArchive.class, PROPERTY_EXPRESSION_APP_NAME + ".war")
                         .addPackages(true, PropertyExpressionTestServlet.class.getPackage())
-                        .addAsManifestResource(propertyExpressionConfigSource, "microprofile-config.properties");
+                        .addAsResource(propertyExpressionConfigSource, "META-INF/microprofile-config.properties");
 
         WebArchive unwrapWar = ShrinkWrap.create(WebArchive.class, UNWRAP_APP_NAME + ".war")
                         .addPackages(true, UnwrapServlet.class.getPackage())

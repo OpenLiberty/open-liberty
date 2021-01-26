@@ -65,7 +65,7 @@ public class Config20ExceptionTests extends FATServletClient {
         WebArchive brokenInjectionWar = ShrinkWrap.create(WebArchive.class, BROKEN_INJECTION_APP_NAME + ".war")
                         .addPackages(true, "io.openliberty.microprofile.config.internal_fat.apps.brokenInjection")
                         .addAsServiceProvider(Converter.class, ValidConverter.class, BadConverter.class)
-                        .addAsManifestResource(brokenInjectionConfigSource, "microprofile-config.properties");
+                        .addAsResource(brokenInjectionConfigSource, "META-INF/microprofile-config.properties");
 
         // The war should throw a deployment exception, hence don't validate.
         ShrinkHelper.exportDropinAppToServer(server, brokenInjectionWar, DeployOptions.SERVER_ONLY, DeployOptions.DISABLE_VALIDATION);
@@ -82,65 +82,70 @@ public class Config20ExceptionTests extends FATServletClient {
         assertTrue("error not found: " + errors.size(), errors.size() > 0);
     }
 
-    // Check an appropriate error message occurs when a user tries to Inject a non-existing Config Property without a "name" field into a Method.
+    /**
+     * Check an appropriate error message occurs when a user tries to Inject a non-existing Config Property without a "name" field into a Method.
+     *
+     * Should be: java.lang.IllegalStateException: SRCFG02002: Could not find default name for @ConfigProperty InjectionPoint [BackedAnnotatedParameter] Parameter 1 of
+     * [BackedAnnotatedMethod] @Inject public io.openliberty.microprofile.config.internal_fat.apps.brokenInjection.ConfigUnnamedMethodInjectionBean.aMethod(@ConfigProperty String)
+     */
     @Test
     public void testMethodUnnamed() throws Exception {
         String beanDir = ConfigUnnamedMethodInjectionBean.class.getName();
-        List<String> errors = server
-                        .findStringsInLogs("SRCFG02002: Could not find default name for @ConfigProperty InjectionPoint \\[BackedAnnotatedParameter\\] Parameter 1 of \\[BackedAnnotatedMethod\\] @Inject public "
-                                           + beanDir + ".aMethod\\(@ConfigProperty String\\)");
+        List<String> errors = server.findStringsInLogs("SRCFG02002: .*" + beanDir + ".aMethod\\(@ConfigProperty String\\)");
         assertNotNull(errors);
         assertTrue(errors.size() > 0);
     }
 
-    // Check an appropriate error message occurs when a user tries to Inject a non-existing Config Property without a "name" field into a Constructor.
+    /**
+     * Check an appropriate error message occurs when a user tries to Inject a non-existing Config Property without a "name" field into a Constructor.
+     *
+     * Should be: java.lang.IllegalStateException: SRCFG02002: Could not find default name for @ConfigProperty InjectionPoint [BackedAnnotatedParameter] Parameter 1 of
+     * [BackedAnnotatedConstructor] @Inject public io.openliberty.microprofile.config.internal_fat.apps.brokenInjection.ConfigUnnamedConstructorInjectionBean(@ConfigProperty
+     * String)
+     */
     @Test
     public void testConstructorUnnamed() throws Exception {
         String beanDir = ConfigUnnamedConstructorInjectionBean.class.getName();
-        List<String> errors = server
-                        .findStringsInLogs("SRCFG02002: Could not find default name for @ConfigProperty InjectionPoint \\[BackedAnnotatedParameter\\] Parameter 1 of \\[BackedAnnotatedConstructor\\] @Inject public "
-                                           + beanDir + "\\(@ConfigProperty String\\)");
+        List<String> errors = server.findStringsInLogs("SRCFG02002: .*" + beanDir + "\\(@ConfigProperty String\\)");
         assertNotNull(errors);
         assertTrue(errors.size() > 0);
     }
 
     @Test
     public void testNonExistantKey() throws Exception {
-        List<String> errors = server
-                        .findStringsInLogs("SRCFG02000: No Config Value exists for required property nonExistantKey");
+        List<String> errors = server.findStringsInLogs("SRCFG02000: No Config Value exists for required property nonExistantKey");
         assertNotNull(errors);
         assertTrue(errors.size() > 0);
     }
 
     @Test
     public void testNonExistantKeyWithCustomConverter() throws Exception {
-        List<String> errors = server
-                        .findStringsInLogs("SRCFG02000: No Config Value exists for required property nonExistingKeyWithCustomConverter");
+        List<String> errors = server.findStringsInLogs("SRCFG02000: No Config Value exists for required property nonExistingKeyWithCustomConverter");
         assertNotNull(errors);
         assertTrue(errors.size() > 0);
+
+        errors = server.findStringsInLogs(ValidConverter.CHECK_STRING); // Confirm the Converter was never entered
+        assertNotNull(errors);
+        assertTrue(errors.size() == 0);
     }
 
     @Test
     public void testConverterMissing() throws Exception {
-        List<String> errors = server
-                        .findStringsInLogs("SRCFG02006: The property noConverterKey cannot be converted to class " + TypeWithNoConverter.class.getName());
+        List<String> errors = server.findStringsInLogs("SRCFG02006: The property noConverterKey cannot be converted to class " + TypeWithNoConverter.class.getName());
         assertNotNull(errors);
         assertTrue(errors.size() > 0);
     }
 
     @Test
     public void testBadConverter() throws Exception {
-        List<String> errors = server
-                        .findStringsInLogs("SRCFG02006: The property badConverterKey cannot be converted to class " + TypeWithBadConverter.class.getName());
-
+        List<String> errors = server.findStringsInLogs("SRCFG02006: The property badConverterKey cannot be converted to class " + TypeWithBadConverter.class.getName());
         assertNotNull(errors);
         assertTrue(errors.size() > 0);
     }
 
     @Test
     public void testBadConfigPropertiesInjection() throws Exception {
-        List<String> errors = server
-                        .findStringsInLogs("SRCFG00029: Expected an integer value, got \"aString\"");
+        List<String> errors = server.findStringsInLogs("SRCFG00029: Expected an integer value, got \"aString\"");
         assertNotNull(errors);
         assertTrue(errors.size() > 0);
     }
