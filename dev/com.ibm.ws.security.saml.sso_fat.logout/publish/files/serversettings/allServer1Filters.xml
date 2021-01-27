@@ -1,0 +1,141 @@
+<!-- 
+/*******************************************************************************
+ * Copyright (c) 2021 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+-->
+<server>
+
+	<authFilter id="myAuthFilter1">
+		<requestUrl
+			id="myRequestUrl"
+            urlPattern="/samlclient/fat/sp1/|/samlclient_sp1/|httpServletRequestApp/sp1/logout"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="myAuthFilter2">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="/samlclient/fat/sp2/|/samlclient_sp2/|httpServletRequestApp/sp2/logout"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="myAuthFilter13">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="/samlclient/fat/sp13/|/samlclient_sp13/|httpServletRequestApp/sp13/logout"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="myAuthFilter1s2">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="/samlclient/fat/sp1s2/|/samlclient_sp1s2/|httpServletRequestApp/sp1s2/logout"
+			matchType="contains" />
+	</authFilter>
+	
+	<authFilter id="myAuthFilterDef">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="/samlclient/fat/defaultSP/|/samlclient_defaultSP/|httpServletRequestApp/defaultSP/logout"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="myAuthFilterDash">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="/samlclient/fat/sp-dash/|/samlclient_sp-dash/|httpServletRequestApp/sp-dash/logout"
+			matchType="contains" />
+	</authFilter>
+	
+	<authFilter id="myAuthFilterUnderscore">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="/samlclient/fat/sp_underscore/|/samlclient_sp_underscore/|httpServletRequestApp/sp_underscore/logout"
+			matchType="contains" />
+	</authFilter>
+	
+	<authFilter id="myAuthFilterShortLifetime">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="/samlclient/fat/spShortLifetime/|/samlclient_spShortLifetime/|httpServletRequestApp/spShortLifetime/logout"
+			matchType="contains" />
+	</authFilter>
+		
+	<authFilter id="myAuthFilterCL1">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="/samlclient/fat/customLogout_emptyString/|/samlclient_customLogout_emptyString/|httpServletRequestApp/customLogout_emptyString/logout"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="myAuthFilterCL2">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="/samlclient/fat/customLogout_invalidURL/|/samlclient_customLogout_invalidURL/|httpServletRequestApp/customLogout_invalidURL/logout"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="myAuthFilterCL3">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="/samlclient/fat/customLogout_relativePath/|/samlclient_customLogout_relativePath/|httpServletRequestApp/customLogout_relativePath/logout"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="myAuthFilterCL3b">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="/samlclient/fat/customLogout_specialRelativePath/|/samlclient_customLogout_specialRelativePath/|httpServletRequestApp/customLogout_specialRelativePath/logout"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="myAuthFilterCL4">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="/samlclient/fat/customLogout_invalidRelativePath/|/samlclient_customLogout_invalidRelativePath/|httpServletRequestApp/customLogout_invalidRelativePath/logout"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="myAuthFilterCL5">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="/samlclient/fat/customLogout_absLocalURL/|/samlclient_customLogout_absLocalURL/|httpServletRequestApp/customLogout_absLocalURL/logout"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="myAuthFilterCL6">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="/samlclient/fat/customLogout_absExternalURL/|/samlclient_customLogout_absExternalURL/|httpServletRequestApp/customLogout_absExternalURL/logout"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="myAuthFilterCL5s">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="/samlclient/fat/sp5/|/samlclient_sp5/|httpServletRequestApp/sp5/logout"
+			matchType="contains" />
+	</authFilter>   
+	
+	<authFilter id="myAuthFilter1_server2">
+		<requestUrl
+			id="myRequestUrl"
+            urlPattern="/samlclient/fat/server2_sp1/|/samlclient_server2_sp1/|httpServletRequestApp/server2_sp1/logout"
+			matchType="contains" />
+	</authFilter>
+
+	<authFilter id="myAuthFilter2_server2">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="/samlclient/fat/server2_sp2/|/samlclient_server2_sp2/|httpServletRequestApp/server2_sp2/logout"
+			matchType="contains" />
+	</authFilter>
+
+</server>    
