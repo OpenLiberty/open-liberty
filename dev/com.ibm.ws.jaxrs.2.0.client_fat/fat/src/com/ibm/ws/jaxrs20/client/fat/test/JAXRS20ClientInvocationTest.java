@@ -24,8 +24,8 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
@@ -67,11 +67,14 @@ public class JAXRS20ClientInvocationTest extends AbstractTest {
         serverRef = null;
     }
 
-    @Test
-    @SkipForRepeat("EE9_FEATURES") // Continue to skip this test for EE9 as the RestEasy ClientImpl is org.jboss.resteasy.client.jaxrs.internal.ResteasyClientImpl 
+    @Test    
     public void testClientClass() throws Exception {
-        Map<String, String> p = new HashMap<String, String>();
-        this.runTestOnServer(invocationTarget, "testClientClass", p, "com.ibm.ws.jaxrs20.client.JAXRSClientImpl");
+        Map<String, String> p = new HashMap<String, String>();        
+        if (JakartaEE9Action.isActive()) {
+            this.runTestOnServer(invocationTarget, "testClientClass", p, "org.jboss.resteasy.client.jaxrs.internal.ResteasyClientImpl");
+        } else {
+            this.runTestOnServer(invocationTarget, "testClientClass", p, "com.ibm.ws.jaxrs20.client.JAXRSClientImpl");
+        }
     }
 
     @Test
