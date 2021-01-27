@@ -8,18 +8,19 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.microprofile.config.internal_fat.apps.brokenInjection;
+package io.openliberty.microprofile.config.internal_fat.apps.converter.converters;
 
-public class TypeWithValidConverter {
+import org.eclipse.microprofile.config.spi.Converter;
 
-    private String value;
+import io.openliberty.microprofile.config.internal_fat.apps.converter.CustomType;
 
-    public void setValue(String value) {
-        this.value = value;
-    }
+@SuppressWarnings("serial")
+public class MyBadConverter implements Converter<CustomType> {
 
-    public String getValue() {
-        return this.value;
+    /** {@inheritDoc} */
+    @Override
+    public CustomType convert(String value) {
+        throw new IllegalArgumentException("Converter throwing intentional exception");
     }
 
 }

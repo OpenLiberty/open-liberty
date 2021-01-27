@@ -8,11 +8,8 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.microprofile.config.internal_fat.apps.brokenInjection;
+package io.openliberty.microprofile.config.internal_fat.apps.brokenInjection.converters;
 
-/**
- *
- */
 public class TypeWithNoConverter {
 
 }

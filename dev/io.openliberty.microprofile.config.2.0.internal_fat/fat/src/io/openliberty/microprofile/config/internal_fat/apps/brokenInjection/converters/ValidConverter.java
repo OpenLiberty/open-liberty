@@ -8,19 +8,20 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.microprofile.config.internal_fat.apps.brokenInjection;
+package io.openliberty.microprofile.config.internal_fat.apps.brokenInjection.converters;
 
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
+import org.eclipse.microprofile.config.spi.Converter;
 
-import org.eclipse.microprofile.config.inject.ConfigProperty;
+@SuppressWarnings("serial")
+public class ValidConverter implements Converter<TypeWithValidConverter> {
 
-@RequestScoped
-public class ConfigUnnamedMethodInjectionBean {
+    public static final String CHECK_STRING = "In ValidConverter";
 
-    @Inject
-    public void aMethod(@ConfigProperty String aMethodParameter) {
-        //this will fail
+    /** {@inheritDoc} */
+    @Override
+    public TypeWithValidConverter convert(String value) {
+        System.out.println(CHECK_STRING);
+        return new TypeWithValidConverter();
     }
 
 }

@@ -34,12 +34,16 @@ import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
-import io.openliberty.microprofile.config.internal_fat.apps.brokenInjection.ValidConverter;
+import io.openliberty.microprofile.config.internal_fat.apps.brokenInjection.ConfigUnnamedConstructorInjectionBean;
+import io.openliberty.microprofile.config.internal_fat.apps.brokenInjection.ConfigUnnamedMethodInjectionBean;
+import io.openliberty.microprofile.config.internal_fat.apps.brokenInjection.converters.BadConverter;
+import io.openliberty.microprofile.config.internal_fat.apps.brokenInjection.converters.TypeWithBadConverter;
+import io.openliberty.microprofile.config.internal_fat.apps.brokenInjection.converters.TypeWithNoConverter;
+import io.openliberty.microprofile.config.internal_fat.apps.brokenInjection.converters.ValidConverter;
 
 @RunWith(FATRunner.class)
 public class Config20ExceptionTests extends FATServletClient {
 
-    public static final String BAD_OBSERVER_APP_NAME = "badObserverApp";
     public static final String BROKEN_INJECTION_APP_NAME = "brokenInjectionApp";
 
     public static final String SERVER_NAME = "Config20ExceptionServer";
@@ -53,16 +57,17 @@ public class Config20ExceptionTests extends FATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
 
-        WebArchive badObserverWar = ShrinkWrap.create(WebArchive.class, BAD_OBSERVER_APP_NAME + ".war")
-                        .addPackages(true, "io.openliberty.microprofile.config.internal_fat.apps.badobserver");
+        PropertiesAsset brokenInjectionConfigSource = new PropertiesAsset()
+                        .addProperty("validPrefix.myString", "aString")
+                        .addProperty("badConverterKey", "aValue")
+                        .addProperty("noConverterKey", "aValue");
 
         WebArchive brokenInjectionWar = ShrinkWrap.create(WebArchive.class, BROKEN_INJECTION_APP_NAME + ".war")
                         .addPackages(true, "io.openliberty.microprofile.config.internal_fat.apps.brokenInjection")
-                        .addAsServiceProvider(Converter.class, ValidConverter.class)
-                        .addAsResource(new PropertiesAsset().addProperty("validPrefix.myString", "aString"), "META-INF/microprofile-config.properties");
+                        .addAsServiceProvider(Converter.class, ValidConverter.class, BadConverter.class)
+                        .addAsResource(brokenInjectionConfigSource, "META-INF/microprofile-config.properties");
 
-        // The 2 wars should throw deployment exceptions, hence don't validate.
-        ShrinkHelper.exportDropinAppToServer(server, badObserverWar, DeployOptions.SERVER_ONLY, DeployOptions.DISABLE_VALIDATION);
+        // The war should throw a deployment exception, hence don't validate.
         ShrinkHelper.exportDropinAppToServer(server, brokenInjectionWar, DeployOptions.SERVER_ONLY, DeployOptions.DISABLE_VALIDATION);
 
         server.startServer();
@@ -77,59 +82,78 @@ public class Config20ExceptionTests extends FATServletClient {
         assertTrue("error not found: " + errors.size(), errors.size() > 0);
     }
 
+    /**
+     * Check an appropriate error message occurs when a user tries to Inject a non-existing Config Property without a "name" field into a Method.
+     *
+     * Should be: java.lang.IllegalStateException: SRCFG02002: Could not find default name for @ConfigProperty InjectionPoint [BackedAnnotatedParameter] Parameter 1 of
+     * [BackedAnnotatedMethod] @Inject public io.openliberty.microprofile.config.internal_fat.apps.brokenInjection.ConfigUnnamedMethodInjectionBean.aMethod(@ConfigProperty String)
+     */
     @Test
     public void testMethodUnnamed() throws Exception {
-        List<String> errors = server
-                        .findStringsInLogs("SRCFG02002: Could not find default name for .*io.openliberty.microprofile.config.internal_fat.apps.brokenInjection.ConfigUnnamedMethodInjectionBean.*setSimpleKey6");
-        assertNotNull("error not found", errors);
-        assertTrue("error not found: " + errors.size(), errors.size() > 0);
+        String beanDir = ConfigUnnamedMethodInjectionBean.class.getName();
+        List<String> errors = server.findStringsInLogs("SRCFG02002: .*" + beanDir + ".aMethod\\(@ConfigProperty String\\)");
+        assertNotNull(errors);
+        assertTrue(errors.size() > 0);
     }
 
+    /**
+     * Check an appropriate error message occurs when a user tries to Inject a non-existing Config Property without a "name" field into a Constructor.
+     *
+     * Should be: java.lang.IllegalStateException: SRCFG02002: Could not find default name for @ConfigProperty InjectionPoint [BackedAnnotatedParameter] Parameter 1 of
+     * [BackedAnnotatedConstructor] @Inject public io.openliberty.microprofile.config.internal_fat.apps.brokenInjection.ConfigUnnamedConstructorInjectionBean(@ConfigProperty
+     * String)
+     */
     @Test
     public void testConstructorUnnamed() throws Exception {
-        List<String> errors = server
-                        .findStringsInLogs("SRCFG02002: Could not find default name for .*io.openliberty.microprofile.config.internal_fat.apps.brokenInjection.ConfigUnnamedConstructorInjectionBean");
-        assertNotNull("error not found", errors);
-        assertTrue("error not found: " + errors.size(), errors.size() > 0);
+        String beanDir = ConfigUnnamedConstructorInjectionBean.class.getName();
+        List<String> errors = server.findStringsInLogs("SRCFG02002: .*" + beanDir + "\\(@ConfigProperty String\\)");
+        assertNotNull(errors);
+        assertTrue(errors.size() > 0);
     }
 
     @Test
     public void testNonExistantKey() throws Exception {
-        List<String> errors = server
-                        .findStringsInLogs("SRCFG02000: No Config Value exists for required property io.openliberty.microprofile.config.internal_fat.apps.brokenInjection.MissingConfigPropertyBean.nonExistantKey");
+        List<String> errors = server.findStringsInLogs("SRCFG02000: No Config Value exists for required property nonExistantKey");
         assertNotNull(errors);
         assertTrue(errors.size() > 0);
     }
 
     @Test
     public void testNonExistantKeyWithCustomConverter() throws Exception {
-        List<String> errors = server
-                        .findStringsInLogs("SRCFG02000: No Config Value exists for required property io.openliberty.microprofile.config.internal_fat.apps.brokenInjection.MissingConfigPropertyBean.undefinedKeyWithConverter");
+        List<String> errors = server.findStringsInLogs("SRCFG02000: No Config Value exists for required property nonExistingKeyWithCustomConverter");
+        assertNotNull(errors);
+        assertTrue(errors.size() > 0);
+
+        errors = server.findStringsInLogs(ValidConverter.CHECK_STRING); // Confirm the Converter was never entered
+        assertNotNull(errors);
+        assertTrue(errors.size() == 0);
+    }
+
+    @Test
+    public void testConverterMissing() throws Exception {
+        List<String> errors = server.findStringsInLogs("SRCFG02006: The property noConverterKey cannot be converted to class " + TypeWithNoConverter.class.getName());
         assertNotNull(errors);
         assertTrue(errors.size() > 0);
     }
 
     @Test
-    public void testConverterMissing() throws Exception {
-        List<String> errors = server
-                        .findStringsInLogs("SRCFG02006: The property noConverterKey cannot be converted to class io.openliberty.microprofile.config.internal_fat.apps.brokenInjection.TypeWithNoConverter");
+    public void testBadConverter() throws Exception {
+        List<String> errors = server.findStringsInLogs("SRCFG02006: The property badConverterKey cannot be converted to class " + TypeWithBadConverter.class.getName());
         assertNotNull(errors);
         assertTrue(errors.size() > 0);
     }
 
     @Test
     public void testBadConfigPropertiesInjection() throws Exception {
-        List<String> errors = server
-                        .findStringsInLogs("SRCFG00029: Expected an integer value, got \"aString\"");
+        List<String> errors = server.findStringsInLogs("SRCFG00029: Expected an integer value, got \"aString\"");
         assertNotNull(errors);
         assertTrue(errors.size() > 0);
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer("CWWKZ0002E", "CWMCG5005E");
-        //CWWKZ0002E: An exception occurred while starting the application badObserverApp/brokenInjectionApp
-        //CWMCG5005E: The InjectionPoint dependency was not resolved for the Observer method: private static final void com.ibm.ws.microprofile.config14.test.apps.badobserver.TestObserver.observerMethod(java.lang.Object,java.lang.String).
+        server.stopServer("CWWKZ0002E");
+        //CWWKZ0002E: An exception occurred while starting the application brokenInjectionApp
     }
 
 }

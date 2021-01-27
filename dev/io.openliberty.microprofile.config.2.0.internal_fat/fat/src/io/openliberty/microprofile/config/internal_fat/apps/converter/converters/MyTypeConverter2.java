@@ -8,16 +8,18 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.microprofile.config.internal_fat.apps.brokenInjection;
+package io.openliberty.microprofile.config.internal_fat.apps.converter.converters;
 
 import org.eclipse.microprofile.config.spi.Converter;
 
-public class ValidConverter implements Converter<TypeWithValidConverter> {
+import io.openliberty.microprofile.config.internal_fat.apps.converter.MyTypeWithMultipleConverters;
+
+@SuppressWarnings("serial")
+public class MyTypeConverter2 implements Converter<MyTypeWithMultipleConverters> {
 
     /** {@inheritDoc} */
     @Override
-    public TypeWithValidConverter convert(String value) {
-        throw new RuntimeException(); // Should not use this converter- Config Property value is not defined.
+    public MyTypeWithMultipleConverters convert(String value) {
+        return new MyTypeWithMultipleConverters("Output from Converter 2");
     }
-
 }

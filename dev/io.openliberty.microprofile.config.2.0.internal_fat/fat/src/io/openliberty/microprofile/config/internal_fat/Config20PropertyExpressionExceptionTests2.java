@@ -34,7 +34,7 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.microprofile.config.internal_fat.apps.brokenPropertyExpression.MissingPropertyExpressionBean2;
 
-/*
+/**
  * TODO: This class should be part of Config20ExceptionTests. But can't yet due to: https://github.com/smallrye/smallrye-config/issues/486
  */
 @RunWith(FATRunner.class)

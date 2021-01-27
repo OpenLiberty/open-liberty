@@ -52,7 +52,7 @@ public class Config20NoCDITests extends FATServletClient {
     public static void setUp() throws Exception {
 
         PropertiesAsset noCDIConfigSource = new PropertiesAsset()
-                        .addProperty("aKey", "aValue");
+                        .addProperty(NoCDITestServlet.NO_CDI_TEST_KEY, NoCDITestServlet.NO_CDI_TEST_VALUE);
         WebArchive noCDIWar = ShrinkWrap.create(WebArchive.class, NO_CDI_APP_NAME + ".war")
                         .addPackages(true, NoCDITestServlet.class.getPackage())
                         .addAsResource(noCDIConfigSource, "META-INF/microprofile-config.properties");
