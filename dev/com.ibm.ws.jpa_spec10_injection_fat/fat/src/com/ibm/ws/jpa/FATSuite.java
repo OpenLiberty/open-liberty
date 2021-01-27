@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,8 +11,6 @@
 
 package com.ibm.ws.jpa;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -38,20 +36,14 @@ public class FATSuite {
                                                 "permission java.lang.RuntimePermission \"accessClassInPackage.com.sun.xml.internal.bind\";",
                                                 "permission java.lang.RuntimePermission \"accessDeclaredMembers\";" };
 
-    public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.create();
-
-    @BeforeClass
-    public static void beforeSuite() throws Exception {
-        //Allows local tests to switch between using a local docker client, to using a remote docker client.
+    //Required to ensure we calculate the correct strategy each run even when
+    //switching between local and remote docker hosts.
+    static {
         ExternalTestServiceDockerClientStrategy.setupTestcontainers();
-
-        testContainer.start();
     }
 
-    @AfterClass
-    public static void afterSuite() {
-        testContainer.stop();
-    }
+    @ClassRule
+    public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.create();
 
     @ClassRule
     public static RepeatTests r = RepeatTests

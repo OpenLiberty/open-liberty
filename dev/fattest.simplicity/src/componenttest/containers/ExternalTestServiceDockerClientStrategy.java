@@ -61,10 +61,23 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
     private static boolean setupComplete = false;
 
     /**
+     * <pre>
      * By default, Testcontainrs will cache the DockerClient strategy in <code>~/.testcontainers.properties</code>.
-     * It is not necessary to call this method whenever Testcontainers is used, but if you want to be able to
-     * automatically switch between using your local Docker install, or a remote Docker host, call this method
-     * in FATSuite beforeClass setup.
+     *
+     * Calling this method in the FATSuite class is REQUIRED for any fat project that uses testconatiners.
+     * This is a safety measure to ensure that we run with the correct docker.client.stategy property
+     * for each FATSuite run.
+     *
+     * Example Useage:
+     *
+     * &#64;RunWith(Suite.class)
+     * &#64;SuiteClasses({ FailoverTest.class })
+     * public class FATSuite {
+     *   static {
+     *     ExternalTestServiceDockerClientStrategy.setupTestcontainers();
+     *   }
+     * }
+     * </pre>
      */
     public static void setupTestcontainers() {
         if (setupComplete)

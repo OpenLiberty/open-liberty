@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,8 +12,7 @@ package com.ibm.ws.jdbc.fat.db2;
 
 import java.time.Duration;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -32,9 +31,21 @@ import componenttest.custom.junit.runner.FATRunner;
 })
 public class FATSuite {
 
+    //Required to ensure we calculate the correct strategy each run even when
+    //switching between local and remote docker hosts.
+    static {
+        ExternalTestServiceDockerClientStrategy.setupTestcontainers();
+
+        // Filter out any external docker servers in the 'libhpike' cluster
+        ExternalTestServiceDockerClientStrategy.serviceFilter = (svc) -> {
+            return !svc.getAddress().contains("libhpike-dockerengine");
+        };
+    }
+
     static final DockerImageName db2Image = DockerImageName.parse("aguibert/db2-ssl:1.0")
                     .asCompatibleSubstituteFor("ibmcom/db2");
 
+    @ClassRule
     public static Db2Container db2 = new Db2Container(db2Image)
                     .acceptLicense()
                     .withUsername("db2inst1") // set in Dockerfile
@@ -47,22 +58,4 @@ public class FATSuite {
                                     .withStartupTimeout(Duration.ofMinutes(FATRunner.FAT_TEST_LOCALRUN ? 5 : 25)))
                     .withLogConsumer(new SimpleLogConsumer(FATSuite.class, "db2-ssl"))
                     .withReuse(true);
-
-    @BeforeClass
-    public static void beforeSuite() throws Exception {
-        //Allows local tests to switch between using a local docker client, to using a remote docker client.
-        ExternalTestServiceDockerClientStrategy.setupTestcontainers();
-
-        // Filter out any external docker servers in the 'libhpike' cluster
-        ExternalTestServiceDockerClientStrategy.serviceFilter = (svc) -> {
-            return !svc.getAddress().contains("libhpike-dockerengine");
-        };
-
-        db2.start();
-    }
-
-    @AfterClass
-    public static void afterSuite() {
-        db2.stop();
-    }
 }
