@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -67,17 +67,17 @@ public class ResteasyInjectionClassListCollaborator implements WebAppInjectionCl
     private static final Set<String> RESTFUL_WS_INTERFACE_NAMES;
     static {
         RESTFUL_WS_INTERFACE_NAMES = new HashSet<String>();
-        RESTFUL_WS_INTERFACE_NAMES.add("javax.ws.rs.ext.MessageBodyWriter");
-        RESTFUL_WS_INTERFACE_NAMES.add("javax.ws.rs.ext.MessageBodyReader");
-        RESTFUL_WS_INTERFACE_NAMES.add("javax.ws.rs.ext.ExceptionMapper");
-        RESTFUL_WS_INTERFACE_NAMES.add("javax.ws.rs.ext.ContextResolver");
-        RESTFUL_WS_INTERFACE_NAMES.add("javax.ws.rs.ext.ReaderInterceptor");
-        RESTFUL_WS_INTERFACE_NAMES.add("javax.ws.rs.ext.WriterInterceptor");
-        RESTFUL_WS_INTERFACE_NAMES.add("javax.ws.rs.ext.ParamConverterProvider");
+        RESTFUL_WS_INTERFACE_NAMES.add("jakarta.ws.rs.ext.MessageBodyWriter");
+        RESTFUL_WS_INTERFACE_NAMES.add("jakarta.ws.rs.ext.MessageBodyReader");
+        RESTFUL_WS_INTERFACE_NAMES.add("jakarta.ws.rs.ext.ExceptionMapper");
+        RESTFUL_WS_INTERFACE_NAMES.add("jakarta.ws.rs.ext.ContextResolver");
+        RESTFUL_WS_INTERFACE_NAMES.add("jakarta.ws.rs.ext.ReaderInterceptor");
+        RESTFUL_WS_INTERFACE_NAMES.add("jakarta.ws.rs.ext.WriterInterceptor");
+        RESTFUL_WS_INTERFACE_NAMES.add("jakarta.ws.rs.ext.ParamConverterProvider");
 
-        RESTFUL_WS_INTERFACE_NAMES.add("javax.ws.rs.container.ContainerRequestFilter");
-        RESTFUL_WS_INTERFACE_NAMES.add("javax.ws.rs.container.ContainerResponseFilter");
-        RESTFUL_WS_INTERFACE_NAMES.add("javax.ws.rs.container.DynamicFeature");
+        RESTFUL_WS_INTERFACE_NAMES.add("jakarta.ws.rs.container.ContainerRequestFilter");
+        RESTFUL_WS_INTERFACE_NAMES.add("jakarta.ws.rs.container.ContainerResponseFilter");
+        RESTFUL_WS_INTERFACE_NAMES.add("jakarta.ws.rs.container.DynamicFeature");
 
         RESTFUL_WS_INTERFACE_NAMES.add("org.apache.cxf.jaxrs.ext.ContextResolver");
     }
@@ -85,7 +85,7 @@ public class ResteasyInjectionClassListCollaborator implements WebAppInjectionCl
     private static final Set<String> RESTFUL_WS_ABSTRACT_CLASS_NAMES;
     static {
         RESTFUL_WS_ABSTRACT_CLASS_NAMES = new HashSet<String>();
-        RESTFUL_WS_ABSTRACT_CLASS_NAMES.add("javax.ws.rs.core.Application");
+        RESTFUL_WS_ABSTRACT_CLASS_NAMES.add("jakarta.ws.rs.core.Application");
     }
 
     /**
@@ -184,28 +184,28 @@ public class ResteasyInjectionClassListCollaborator implements WebAppInjectionCl
         }
     }
 
-    private static final String INJECT_CLASS_NAME = "javax.inject.Inject";
-    private static final String RESOURCE_CLASS_NAME = "javax.annotation.Resource";
+    private static final String INJECT_CLASS_NAME = "jakarta.inject.Inject";
+    private static final String RESOURCE_CLASS_NAME = "jakarta.annotation.Resource";
 
     private static List<String> EXPLICIT_LIFECYCLE_CLASS_NAMES = new ArrayList<String>();
     static {
-        EXPLICIT_LIFECYCLE_CLASS_NAMES.add("javax.enterprise.context.RequestScoped");
-        EXPLICIT_LIFECYCLE_CLASS_NAMES.add("javax.enterprise.context.ApplicationScoped");
-        EXPLICIT_LIFECYCLE_CLASS_NAMES.add("javax.enterprise.context.SessionScoped");
-        EXPLICIT_LIFECYCLE_CLASS_NAMES.add("javax.enterprise.context.Dependent");
+        EXPLICIT_LIFECYCLE_CLASS_NAMES.add("jakarta.enterprise.context.RequestScoped");
+        EXPLICIT_LIFECYCLE_CLASS_NAMES.add("jakarta.enterprise.context.ApplicationScoped");
+        EXPLICIT_LIFECYCLE_CLASS_NAMES.add("jakarta.enterprise.context.SessionScoped");
+        EXPLICIT_LIFECYCLE_CLASS_NAMES.add("jakarta.enterprise.context.Dependent");
     }
 
     /**
      * Tell if a class should be selected for injection.
      *
      * A class is selected for injection if it or one of its superclasses
-     * has {@link javax.inject.Inject} as a class, method, field, or constructor
-     * annotation.  Except, {@link java.inject.Inject} is ignored as a class
+     * has {@link jakarta.inject.Inject} as a class, method, field, or constructor
+     * annotation.  Except, {@link jakarta.inject.Inject} is ignored as a class
      * annotations if the class has an explicit lifecycle class annotation.
-     * Lifecycle annotations are {@link javax.enterprise.context.ApplicationScoped},
-     * {@link javax.enterprise.context.SessionScoped},
-     * {@link javax.enterprise.context.RequestScoped}, and
-     * {@link javax.enterprise.context.Dependent}.
+     * Lifecycle annotations are {@link jakarta.enterprise.context.ApplicationScoped},
+     * {@link jakarta.enterprise.context.SessionScoped},
+     * {@link jakarta.enterprise.context.RequestScoped}, and
+     * {@link jakarta.enterprise.context.Dependent}.
      *
      * Note: This test is implemented using the raw class information.
      * Annotations are detected on the target class regardless of where the
