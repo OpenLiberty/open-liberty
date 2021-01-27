@@ -205,7 +205,7 @@ autoFVT.doLast {
     from new File(project(':com.ibm.ws.security.fat.common').buildDir, 'test-application/testmarker.war')
     into new File(autoFvtDir, "publish/servers/${serverName}/dropins")
   }
-  // policyFileUpdates
+  // enable ldap trace
   copy {
     from new File(project(':com.ibm.ws.security.saml.sso_fat.common').projectDir, 'publish/envVars/jvm.options')
     into new File(autoFvtDir, "publish/servers/${serverName}")

@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.fat.common;
 
@@ -53,7 +53,7 @@ import com.meterware.httpunit.cookies.CookieProperties;
 public class TestHelpers {
 
     @ClassRule
-//    public static TestServer dummyServer = new TestServer();
+    //    public static TestServer dummyServer = new TestServer();
     private final static Class<?> thisClass = TestHelpers.class;
     protected static TrustManager[] trustAllCerts = null;
     public static CommonMessageTools msgUtils = new CommonMessageTools();
@@ -106,10 +106,12 @@ public class TestHelpers {
                 }
 
                 @Override
-                public void checkClientTrusted(X509Certificate[] certs, String authType) {}
+                public void checkClientTrusted(X509Certificate[] certs, String authType) {
+                }
 
                 @Override
-                public void checkServerTrusted(X509Certificate[] certs, String authType) {}
+                public void checkServerTrusted(X509Certificate[] certs, String authType) {
+                }
             } };
 
             // Install the all-trusting trust manager
@@ -126,11 +128,14 @@ public class TestHelpers {
                     return true;
                 }
 
-                public void verify(String string, SSLSocket ssls) throws IOException {}
+                public void verify(String string, SSLSocket ssls) throws IOException {
+                }
 
-                public void verify(String string, X509Certificate xc) throws SSLException {}
+                public void verify(String string, X509Certificate xc) throws SSLException {
+                }
 
-                public void verify(String string, String[] strings, String[] strings1) throws SSLException {}
+                public void verify(String string, String[] strings, String[] strings1) throws SSLException {
+                }
 
             };
             HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
@@ -139,8 +144,8 @@ public class TestHelpers {
             Log.info(thisClass, thisMethod, "Setting trustStore to " + Constants.JKS_LOCATION);
             System.setProperty("javax.net.ssl.trustStore", Constants.JKS_LOCATION);
             System.setProperty("javax.net.ssl.trustStorePassword",
-                               // "changeit");
-                               "LibertyClient");
+                    // "changeit");
+                    "LibertyClient");
             System.setProperty("javax.net.debug", "ssl");
             Log.info(thisClass, thisMethod, "javax.net.debug is set to: " + System.getProperty("javax.net.debug"));
 
@@ -317,18 +322,18 @@ public class TestHelpers {
         theList.add(theString);
     }
 
-//    public void setRequestParameterIfSet(com.meterware.httpunit.WebRequest requestSettings, String name, String value) throws Exception {
-//        Log.info(thisClass, "setRequestParameterIfSet", "name: " + name + " value: " + value);
-//        if (value != null) {
-//            // only log not being set - other code will dump the list of parms set later
-//            //Log.info(thisClass, "setRequestParameterIfSet", "Setting parm: " + name + " with value: " + value);
-//            if (!value.isEmpty()) {
-//                requestSettings.setParameter(name, value);
-//                return;
-//            }
-//        }
-//        Log.info(thisClass, "setRequestParameterIfSet", "Skipping set of parm: " + name);
-//    }
+    //    public void setRequestParameterIfSet(com.meterware.httpunit.WebRequest requestSettings, String name, String value) throws Exception {
+    //        Log.info(thisClass, "setRequestParameterIfSet", "name: " + name + " value: " + value);
+    //        if (value != null) {
+    //            // only log not being set - other code will dump the list of parms set later
+    //            //Log.info(thisClass, "setRequestParameterIfSet", "Setting parm: " + name + " with value: " + value);
+    //            if (!value.isEmpty()) {
+    //                requestSettings.setParameter(name, value);
+    //                return;
+    //            }
+    //        }
+    //        Log.info(thisClass, "setRequestParameterIfSet", "Skipping set of parm: " + name);
+    //    }
 
     public void setRequestParameterIfSet(com.gargoylesoftware.htmlunit.WebRequest requestSettings, String name, String value) throws Exception {
 
@@ -421,10 +426,10 @@ public class TestHelpers {
             }
         } catch (Exception e) {
             Log.info(thisClass,
-                     caller,
-                     "failure occurred running \""
-                             + cmd
-                             + "\"  This command is ONLY run after we determine that the server has a port out of range - this is NOT the cause of the failure, just a failure as we try to gather more debug information.");
+                    caller,
+                    "failure occurred running \""
+                            + cmd
+                            + "\"  This command is ONLY run after we determine that the server has a port out of range - this is NOT the cause of the failure, just a failure as we try to gather more debug information.");
             Log.error(thisClass, caller, e);
         } finally {
             try {
@@ -521,8 +526,10 @@ public class TestHelpers {
             }
         });
 
-        for (File foundFile : files) {
-            System.out.println(foundFile);
+        if (files != null) {
+            for (File foundFile : files) {
+                System.out.println(foundFile);
+            }
         }
 
         return files;
