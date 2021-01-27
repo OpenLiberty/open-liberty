@@ -18,16 +18,16 @@ Bundle-SymbolicName: io.openliberty.netty.internal
 Bundle-Description: Netty as an OSGi bundle for OpenLiberty, version ${bVersion}
 
 -includeresource: \
-  @${repo;io.netty:netty-buffer;4.1.51},\
-  @${repo;io.netty:netty-codec;4.1.51},\
-  @${repo;io.netty:netty-codec-http;4.1.51},\
-  @${repo;io.netty:netty-codec-http2;4.1.51},\
-  @${repo;io.netty:netty-codec-socks;4.1.51},\
-  @${repo;io.netty:netty-common;4.1.51},\
-  @${repo;io.netty:netty-handler;4.1.51},\
-  @${repo;io.netty:netty-handler-proxy;4.1.51},\
-  @${repo;io.netty:netty-resolver;4.1.51},\
-  @${repo;io.netty:netty-transport;4.1.51}
+  @${repo;io.netty:netty-buffer;${nettyVersion};EXACT}, \
+  @${repo;io.netty:netty-codec;${nettyVersion};EXACT}, \
+  @${repo;io.netty:netty-codec-http;${nettyVersion};EXACT}, \
+  @${repo;io.netty:netty-codec-http2;${nettyVersion};EXACT}, \
+  @${repo;io.netty:netty-codec-socks;${nettyVersion};EXACT}, \
+  @${repo;io.netty:netty-common;${nettyVersion};EXACT}, \
+  @${repo;io.netty:netty-handler;${nettyVersion};EXACT}, \
+  @${repo;io.netty:netty-handler-proxy;${nettyVersion};EXACT}, \
+  @${repo;io.netty:netty-resolver;${nettyVersion};EXACT}, \
+  @${repo;io.netty:netty-transport;${nettyVersion};EXACT}
 
 Export-Package: \
   io.netty.*;version=${nettyVersion} -split-package:=merge-first
