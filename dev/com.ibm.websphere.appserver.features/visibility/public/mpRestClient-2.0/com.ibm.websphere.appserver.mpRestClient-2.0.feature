@@ -22,6 +22,6 @@ Subsystem-Name: MicroProfile Rest Client 2.0
  com.ibm.websphere.appserver.org.reactivestreams.reactive-streams-1.0, \
  io.openliberty.mpCompatible-4.0
 -bundles=com.ibm.ws.org.apache.cxf.cxf.rt.rs.mp.client.3.3; apiJar=false; location:="lib/"
-kind=beta
+kind=ga
 edition=core
 WLP-Activation-Type: parallel

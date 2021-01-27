@@ -7,5 +7,5 @@ IBM-Provision-Capability:\
 IBM-Install-Policy: when-satisfied
 -bundles=\
  io.openliberty.rest.handler.validator.openapi.2.0
-kind=beta
+kind=ga
 edition=core
