@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,6 +27,9 @@ public class RequestTimingConstants {
     
     /** Property name for interruptHungRequests of Request Timing **/
     public static final String RT_INTERRUPT_HUNG_REQUEST = "interruptHungRequests";
+    
+    /** Property name for enableThreadDumps of Request Timing **/
+    public static final String RT_ENABLE_THREAD_DUMPS = "enableThreadDumps";
     
     /** Name for timing element of Request Timing **/
     public static final String RT_TIMING = "timing";
