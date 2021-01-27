@@ -17,6 +17,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,6 +40,7 @@ import com.ibm.ws.rest.handler.validator.loginmodule.TestLoginModule;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpsRequest;
@@ -63,6 +66,17 @@ public class ValidateDSCustomLoginModuleTest extends FATServletClient {
                                         .addPackage("org.test.validator.adapter")
                                         .addPackage("org.test.validator.jmsadapter"));
         ShrinkHelper.exportToServer(server, "dropins", rar, SERVER_ONLY);
+
+        FATSuite.setupServerSideAnnotations(server);
+
+        if (JakartaEE9Action.isActive()) {
+            //Transforming the java permission
+            final String serverXml = "validatorCustomLoginModuleServer.xml";
+            Path serverXmlFile = Paths.get("lib/LibertyFATTestFiles", serverXml);
+            JakartaEE9Action.transformApp(serverXmlFile);
+            Log.info(c, "setUp", "TRANSFORMED SERVER XML: " + serverXmlFile);
+            server.setServerConfigurationFile(serverXml);
+        }
 
         server.startServer();
 
