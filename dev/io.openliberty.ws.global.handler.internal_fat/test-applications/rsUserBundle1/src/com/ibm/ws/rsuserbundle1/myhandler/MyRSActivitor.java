@@ -1,0 +1,44 @@
+package com.ibm.ws.rsuserbundle1.myhandler;
+
+import java.util.Hashtable;
+
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
+
+import com.ibm.wsspi.webservices.handler.Handler;
+import com.ibm.wsspi.webservices.handler.HandlerConstants;
+
+public class MyRSActivitor implements BundleActivator {
+    private ServiceRegistration<Handler> serviceRegistration;
+
+    @Override
+    public void start(BundleContext context) throws Exception {
+
+        final Hashtable<String, Object> handlerProps = new Hashtable<String, Object>();
+
+        handlerProps.put(HandlerConstants.ENGINE_TYPE, HandlerConstants.ENGINE_TYPE_JAXRS);
+        handlerProps.put(HandlerConstants.IS_SERVER_SIDE, true);
+        handlerProps.put(HandlerConstants.IS_CLIENT_SIDE, false);
+        handlerProps.put(HandlerConstants.FLOW_TYPE, HandlerConstants.FLOW_TYPE_IN);
+        handlerProps.put(org.osgi.framework.Constants.SERVICE_RANKING, 1);
+        RSInHandler1 inHandler1 = new RSInHandler1();
+        serviceRegistration = context.registerService(Handler.class, inHandler1, handlerProps);
+        RSClientOutHander clientHander = new RSClientOutHander();
+        handlerProps.put(HandlerConstants.ENGINE_TYPE, HandlerConstants.ENGINE_TYPE_JAXRS);
+        handlerProps.put(HandlerConstants.IS_CLIENT_SIDE, true);
+        handlerProps.put(HandlerConstants.IS_SERVER_SIDE, false);
+        handlerProps.put(HandlerConstants.FLOW_TYPE, HandlerConstants.FLOW_TYPE_OUT);
+        handlerProps.put(org.osgi.framework.Constants.SERVICE_RANKING, 2);
+        serviceRegistration = context.registerService(Handler.class, clientHander, handlerProps);
+        System.out.println("in start method in bundle activator");
+
+    }
+
+    @Override
+    public void stop(BundleContext context) throws Exception {
+        if (serviceRegistration != null)
+            serviceRegistration.unregister();
+    }
+
+}
