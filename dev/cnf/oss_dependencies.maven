@@ -79,7 +79,7 @@ commons-net:commons-net:3.6
 httpunit:httpunit:1.5.4
 httpunit:httpunit:1.7
 io.dropwizard.metrics:metrics-core:4.1.5
-io.grpc:grpc-api:1.31.1
+io.grpc:grpc-api:1.35.0
 io.jaegertracing:jaeger-client:0.34.0
 io.jaegertracing:jaeger-client:1.2.0
 io.jaegertracing:jaeger-core:1.2.0
