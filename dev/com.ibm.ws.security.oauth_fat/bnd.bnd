@@ -39,4 +39,4 @@ fat.project: true
     com.ibm.ws.security.oauth.oidc_fat.common;version=latest, \
     com.ibm.ws.security.oauth_test.servlets;version=latest, \
     net.sf.jtidy:jtidy;version=9.3.8, \
-    httpunit:httpunit;version=1.6.2
+    com.ibm.ws.com.meterware.httpunit.1.6.2;version=latest
