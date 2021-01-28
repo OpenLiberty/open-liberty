@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.rest.handler.config.openapi;
+package io.openliberty.rest.handler.config.openapi.common;
 
 import java.io.IOException;
 
@@ -57,8 +57,7 @@ public class ConfigValidationSchemaRESTProxy extends HttpServlet {
     private void handleWithDelegate(final HttpServletRequest request,
                                     final HttpServletResponse response) throws IOException {
         // Delegate to handler
-        boolean foundHandler = REST_HANDLER_CONTAINER.handleRequest(
-                                                                    new ServletRESTRequestImpl(request),
+        boolean foundHandler = REST_HANDLER_CONTAINER.handleRequest(new ServletRESTRequestImpl(request),
                                                                     new ServletRESTResponseImpl(response));
 
         if (!foundHandler) {
