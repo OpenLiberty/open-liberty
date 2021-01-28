@@ -1,17 +1,13 @@
-//
-// @(#) 1.1 autoFVT/src/faultbean/wsfvt/server/AddNumbersException.java, WAS.websvcs.fvt, WAS85.FVT, cf011231.01 6/18/10 12:10:44 [8/8/12 06:58:49]
-//
-// IBM Confidential OCO Source Material
-// (C) COPYRIGHT International Business Machines Corp. 2009
-// The source code for this program is not published or otherwise divested
-// of its trade secrets, irrespective of what has been deposited with the
-// U.S. Copyright Office.
-//
-// Change History:
-// Date       UserId      Defect          Description
-// ----------------------------------------------------------------------------
-// 06/18/2010 jtnguyen    657385          New File
-
+/*******************************************************************************
+ * Copyright (c) 2021 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package com.ibm.ws.jaxws.provider;
 
 import javax.xml.ws.WebFault;
