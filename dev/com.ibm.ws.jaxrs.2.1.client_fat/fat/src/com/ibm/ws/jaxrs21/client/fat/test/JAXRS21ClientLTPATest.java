@@ -31,7 +31,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
-@SkipForRepeat("EE9_FEATURES") // currently broken due to multiple issues
+@SkipForRepeat("EE9_FEATURES") // Continue to skip this test for EE9 as com.ibm.ws.jaxrs.client.ltpa.handler is not supported
 public class JAXRS21ClientLTPATest extends JAXRS21AbstractTest {
     @Server("jaxrs21.client.JAXRS21ClientLTPATest")
     public static LibertyServer server;
