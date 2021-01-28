@@ -1,0 +1,42 @@
+<!-- 
+/*******************************************************************************
+ * Copyright (c) 2021 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+-->
+<server>
+
+	<samlWebSso20
+		id="sp2"
+		authFilterRef="myAuthFilter2"
+		wantAssertionsSigned="true"
+		signatureMethodAlgorithm="SHA1"
+		authnRequestsSigned="true"
+		forceAuthn="false"
+		isPassive="false"
+		nameIDPolicy="default-null"
+		idpMetadata="${server.config.dir}/imports/${tfimIdpServer}/Fed1MetaData.xml"
+		keyStoreRef="samlKeyStore"
+		keyAlias="sslspservercert"
+		trustStoreRef="serverStore"
+		clockSkew="300s"
+		tokenReplayTimeout="30m"
+		includeTokenInSubject="true"
+		errorPageURL="http://localhost:${bvt.prop.HTTP_default}/samlclient/testError2.jsp"
+		mapToUserRegistry="User"
+		nameIDFormat="unspecified" />
+
+	<authFilter id="myAuthFilter2">
+		<requestUrl
+			id="myRequestUrl2"
+			urlPattern="/samlclient/fat/sp2/"
+			matchType="contains" />
+	</authFilter>
+
+</server>    
