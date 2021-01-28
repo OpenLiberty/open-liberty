@@ -1,5 +1,0 @@
-#include("cas/header.vm")
-  <cas:proxyFailure code="$proxyTicketResponse.errorCode">
-    $proxyTicketResponse.errorDetail
-  </cas:proxyFailure>
-#include("cas/footer.vm")

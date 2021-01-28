@@ -83,13 +83,13 @@ autoFVT.doLast {
     include 'com.ibm.ws.wssecurity.example.cbh_1.0.0.jar'
     into new File(autoFvtDir, 'publish/bundles')
     }
-    
-    copy { 
-      from project.file('shibboleth-idp')
-      include '**'
-      into new File(autoFvtDir, 'shibboleth-idp')
+      
+    copy {
+    from project(':com.ibm.ws.security.saml.sso_fat.common').buildDir
+    include 'shibboleth-idp/**'
+    into autoFvtDir
     }
-    
+       
     copy { 
       from project.file('override/autoFVT/cxfclient-policies')
       include '**'
@@ -251,9 +251,9 @@ autoFVT.doLast {
     from new File(project(':com.ibm.ws.security.fat.common').buildDir, 'test-application/testmarker.war')
     into new File(autoFvtDir, 'publish/servers/' + server + '/dropins')
     }
-
+    
     copy {
-    from project.file('shibboleth-idp/war/idp.war')
+    from new File(project(':com.ibm.ws.security.saml.sso_fat.common').buildDir, 'test-application/idp.war')
     into new File(autoFvtDir, 'publish/servers/' + server + '/test-apps')
     }
 

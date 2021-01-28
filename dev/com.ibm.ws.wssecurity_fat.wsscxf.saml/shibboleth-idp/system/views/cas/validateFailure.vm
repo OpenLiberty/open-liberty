@@ -1,5 +1,0 @@
-#include("cas/header.vm")
-  <cas:authenticationFailure code="$ticketValidationResponse.errorCode">
-    $ticketValidationResponse.errorDetail
-  </cas:authenticationFailure>
-#include("cas/footer.vm")

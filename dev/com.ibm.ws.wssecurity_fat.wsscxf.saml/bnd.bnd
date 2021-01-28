@@ -13,9 +13,7 @@
 bVersion=1.0
 
 src: \
-  fat/src,\
-  test-applications/samlcxfclient/src,\
-  test-applications/samltoken/src,\
+  fat/src
   
 
 fat.project: true
