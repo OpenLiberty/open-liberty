@@ -19,4 +19,5 @@ import org.junit.runners.Suite.SuiteClasses;
                 JDBCLoadFromAppTest.class
 
 })
-public class FATSuite {}
+public class FATSuite {
+}
