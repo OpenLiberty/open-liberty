@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2021 IBM Corporation and others.
+ * Copyright (c) 1997, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -4752,8 +4752,6 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
      * @param error
      */
     private void reportRecursiveError(ServletRequest req, ServletResponse res, ServletErrorReport originalErr, ServletErrorReport recurErr) {
-        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) 
-            logger.logp(Level.FINE, CLASS_NAME, "reportRecursiveError",  "");
 
         try {
             String message = error_nls.getString("error.page.exception", "Error Page Exception");
@@ -4769,7 +4767,21 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
                 com.ibm.wsspi.webcontainer.util.FFDCWrapper.processException(e, CLASS_NAME + ".reportRecursiveError", "985", this);
                 out = new PrintWriter(new OutputStreamWriter(res.getOutputStream(), res.getCharacterEncoding()));
             }
-            
+            if (!WCCustomProperties.SUPPRESS_HTML_RECURSIVE_ERROR_OUTPUT) { // PK77421
+                out
+                        .println("<H1>"
+                            + message
+                            + "</H1>\n<H4>"
+                                + nls
+                                        .getString("cannot.use.error.page",
+                                            "The server cannot use the error page specified for your application to handle the Original Exception printed below.") // 406426
+                            + "</H4>");
+                out.println("<BR><H3>" + error_nls.getString("original.exception", "Original Exception") + ": </H3>"); // 406426
+                printErrorInfo(out, originalErr);
+                out.println("<BR><BR><H3>" + error_nls.getString("error.page.exception", "Error Page Exception") + ": </H3>"); // 406426
+                printErrorInfo(out, recurErr);
+                out.flush();
+            }
         } catch (Throwable th) {
             com.ibm.wsspi.webcontainer.util.FFDCWrapper.processException(th, CLASS_NAME + ".reportRecursiveError", "998", this);
             log("Unable to report exception to client", th);
