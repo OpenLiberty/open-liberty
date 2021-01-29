@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2021 IBM Corporation and others.
+ * Copyright (c) 1997, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -70,7 +70,7 @@ public class WCCustomProperties {
 
     public static String ERROR_PAGE_COMPATIBILITY;
     public static boolean MAP_FILTERS_TO_ASTERICK;
-    public static boolean SUPPRESS_HTML_RECURSIVE_ERROR_OUTPUT = true;         //Property is not read by the server starting 21.0.0.2; default is always true
+    public static boolean SUPPRESS_HTML_RECURSIVE_ERROR_OUTPUT;
     public static boolean THROW_MISSING_JSP_EXCEPTION;          //PK57843
 
     //638627 had to change default to true for CTS test case
@@ -533,7 +533,7 @@ public class WCCustomProperties {
 
         ERROR_PAGE_COMPATIBILITY = customProps.getProperty("com.ibm.ws.webcontainer.contenttypecompatibility");
         MAP_FILTERS_TO_ASTERICK = Boolean.valueOf(customProps.getProperty("com.ibm.ws.webcontainer.mapfilterstoasterisk")).booleanValue();
-        //SUPPRESS_HTML_RECURSIVE_ERROR_OUTPUT = Boolean.valueOf(customProps.getProperty("com.ibm.ws.webcontainer.suppresshtmlrecursiveerroroutput")).booleanValue(); // issue 14242, no longer read by the server started 21.0.0.2
+        SUPPRESS_HTML_RECURSIVE_ERROR_OUTPUT = Boolean.valueOf(customProps.getProperty("com.ibm.ws.webcontainer.suppresshtmlrecursiveerroroutput")).booleanValue();
         THROW_MISSING_JSP_EXCEPTION = Boolean.valueOf(customProps.getProperty("com.ibm.ws.webcontainer.throwmissingjspexception")).booleanValue(); //PK57843
 
         //638627 had to change default to true for CTS test case
@@ -802,7 +802,7 @@ public class WCCustomProperties {
         if(com.ibm.ws.webcontainer.osgi.WebContainer.getServletContainerSpecLevel() >= com.ibm.ws.webcontainer.osgi.WebContainer.SPEC_LEVEL_50) {
             DISABLE_X_POWERED_BY = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.disablexpoweredby","true")).booleanValue();
             STOP_APP_STARTUP_ON_LISTENER_EXCEPTION = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.stopappstartuponlistenerexception" , "true")).booleanValue();
-            DECODE_URL_PLUS_SIGN = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.decodeurlplussign", "false")).booleanValue();
+            DECODE_URL_PLUS_SIGN = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.decodeurlplussign", "false")).booleanValue(); 
         } else {
             DISABLE_X_POWERED_BY = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.disablexpoweredby","false")).booleanValue();
             STOP_APP_STARTUP_ON_LISTENER_EXCEPTION = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.stopappstartuponlistenerexception" , "false")).booleanValue();

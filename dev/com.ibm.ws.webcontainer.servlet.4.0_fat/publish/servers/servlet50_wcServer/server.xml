@@ -4,7 +4,6 @@
 
   <featureManager>
     <feature>servlet-5.0</feature>
-    <feature>jsp-2.3</feature>
   </featureManager>
 
   <logging
