@@ -352,7 +352,7 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
             // Assume a user on windows with no other preferences will want to use a remote host.
             if (System.getProperty("os.name", "unknown").toLowerCase().contains("windows")) {
                 result = true;
-                reason = "Local operating system is Windows. Default container support not guarenteed.";
+                reason = "Local operating system is Windows. Default container support not guaranteed.";
                 break;
             }
 
