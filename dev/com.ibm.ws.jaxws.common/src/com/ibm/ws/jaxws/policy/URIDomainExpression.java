@@ -31,7 +31,12 @@ import org.apache.cxf.service.model.MessageInfo.Type;
 import org.apache.cxf.service.model.ServiceInfo;
 import org.apache.cxf.ws.policy.attachment.external.DomainExpression;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+
 public class URIDomainExpression implements DomainExpression {
+
+    private static final TraceComponent tc = Tr.register(URIDomainExpression.class);
 
     private final Wsdl11XPointer wsdl11XPointer;
 
@@ -41,6 +46,10 @@ public class URIDomainExpression implements DomainExpression {
 
     @Override
     public boolean appliesTo(ServiceInfo si) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Checking appliesTo for ", si != null ? si.getName() : null);
+        }
+
         if (si == null) {
             return false;
         }
@@ -251,25 +260,20 @@ public class URIDomainExpression implements DomainExpression {
 
         private static final Pattern PATTERN_BINDING = Pattern.compile("^wsdl11.binding" + SINGLE_PATH);
 
-        private static final Pattern PATTERN_BINDING_OPERATION =
-                        Pattern.compile("^wsdl11.bindingOperation" + DOUBLE_PATH);
+        private static final Pattern PATTERN_BINDING_OPERATION = Pattern.compile("^wsdl11.bindingOperation" + DOUBLE_PATH);
 
-        private static final Pattern PATTERN_BINDING_OPERATION_INPUT =
-                        Pattern.compile("^wsdl11.bindingOperation.input" + DOUBLE_PATH);
+        private static final Pattern PATTERN_BINDING_OPERATION_INPUT = Pattern.compile("^wsdl11.bindingOperation.input" + DOUBLE_PATH);
 
-        private static final Pattern PATTERN_BINDING_OPERATION_OUTPUT =
-                        Pattern.compile("^wsdl11.bindingOperation.output" + DOUBLE_PATH);
+        private static final Pattern PATTERN_BINDING_OPERATION_OUTPUT = Pattern.compile("^wsdl11.bindingOperation.output" + DOUBLE_PATH);
 
-        private static final Pattern PATTERN_BINDING_OPERATION_FAULT =
-                        Pattern.compile("^wsdl11.bindingOperation.fault" + TRIPPLE_PATH);
+        private static final Pattern PATTERN_BINDING_OPERATION_FAULT = Pattern.compile("^wsdl11.bindingOperation.fault" + TRIPPLE_PATH);
 
         private final String targetNamespace;
         private final String wsdl11Pointer;
 
         public Wsdl11XPointer(final String uriContext) {
             if ((uriContext == null) || uriContext.isEmpty()) {
-                throw new IllegalArgumentException(
-                                "External policy attachment URI element cannot be empty");
+                throw new IllegalArgumentException("External policy attachment URI element cannot be empty");
             }
             int pos = uriContext.indexOf('#');
             if (pos != -1) {
@@ -278,6 +282,12 @@ public class URIDomainExpression implements DomainExpression {
             } else {
                 targetNamespace = "";
                 wsdl11Pointer = uriContext;
+            }
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Wsdl11XPointer uriContext", uriContext);
+                Tr.debug(tc, "Wsdl11XPointer targetnamespace", targetNamespace);
+                Tr.debug(tc, "Wsdl11XPointer wsdl11Pointer", wsdl11Pointer);
             }
         }
 
