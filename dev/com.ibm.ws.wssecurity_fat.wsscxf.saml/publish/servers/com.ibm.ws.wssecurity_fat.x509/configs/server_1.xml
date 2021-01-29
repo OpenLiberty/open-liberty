@@ -1,0 +1,10 @@
+<server>
+	<include location="imports/saml_only_features.xml" />
+	<include location="imports/BasicRegistry_withoutIDPUsers.xml" />
+	<include location="imports/misc.xml" />
+	<include location="imports/samlProvider1.xml" />
+	<include location="imports/samlTestApplication.xml" />
+	<include location="imports/goodSSLSettings.xml" />
+	<include location="imports/X509.xml" />
+
+</server>

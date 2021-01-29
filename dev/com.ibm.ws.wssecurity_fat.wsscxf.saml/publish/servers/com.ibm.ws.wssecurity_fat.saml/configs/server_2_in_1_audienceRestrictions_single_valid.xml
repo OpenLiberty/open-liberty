@@ -1,0 +1,14 @@
+<server>
+	<include location="imports/saml_cxf_features.xml" />
+	<include location="imports/BasicRegistry_withoutIDPUsers.xml" />
+	<include location="imports/misc.xml" />
+	<include location="imports/samlProvider1.xml" />
+	<include location="imports/goodSSLSettings.xml" />
+	<include location="imports/securityClient_1.xml" />
+	<include
+		location="imports/securityProvider_audienceRestrictions_single_valid.xml" />
+	<include location="imports/samltoken_testApp.xml" />
+	<include location="imports/samlcxfclient_testApp.xml" />
+
+</server>
+
