@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -196,7 +196,7 @@ public class JsonBProvider implements MessageBodyWriter<Object>, MessageBodyRead
     }
 
     private boolean isUntouchable(Class<?> clazz) {
-        final String[] jsonpClasses = new String[] { "javax.json.JsonArray", "javax.json.JsonObject", "javax.json.JsonStructure" };
+        final String[] jsonpClasses = new String[] { "jakarta.json.JsonArray", "jakarta.json.JsonObject", "jakarta.json.JsonStructure" };
 
         boolean untouchable = false;
         for (String c : jsonpClasses) {
