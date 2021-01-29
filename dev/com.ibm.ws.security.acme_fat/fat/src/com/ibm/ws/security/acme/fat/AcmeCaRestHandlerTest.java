@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -69,6 +69,12 @@ import componenttest.topology.impl.LibertyServer;
  */
 @RunWith(FATRunner.class)
 public class AcmeCaRestHandlerTest {
+	
+    //Required to ensure we calculate the correct strategy each run even when
+    //switching between local and remote docker hosts.
+    static {
+        ExternalTestServiceDockerClientStrategy.setupTestcontainers();
+    }
 
 	@Server("com.ibm.ws.security.acme.fat.rest")
 	public static LibertyServer server;
@@ -105,10 +111,6 @@ public class AcmeCaRestHandlerTest {
 
 	@Rule
 	public TestName testName = new TestName();
-
-	static {
-		ExternalTestServiceDockerClientStrategy.setupTestcontainers();
-	}
 
 	@BeforeClass
 	public static void beforeClass() throws Exception {

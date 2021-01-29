@@ -166,6 +166,22 @@ public abstract class AbstractJPAProviderIntegration implements JPAProviderInteg
                 JPAAccessor.getJPAComponent().getJPAVersion().lesserThan(JPAVersion.JPA30)) {
                 props.put("eclipselink.allow-null-max-min", "false");
             }
+
+            /*
+             * EclipseLink Bug 567891: Case expressions that should return boolean instead
+             * return integer values. The JPA spec is too vague to change this, so we set this
+             * property to be safe for customers.
+             *
+             * Set this property to `false` so that EclipseLink will return the same integer
+             * value it has always returned for CASE expressions and not change behavior
+             *
+             * NOTE: This property is only applicable for JPA 22. JPAVersion > JPA22 has changed
+             * behavior by default
+             */
+            if (!properties.containsKey("eclipselink.sql.allow-convert-result-to-boolean") &&
+                JPAAccessor.getJPAComponent().getJPAVersion().equals(JPAVersion.JPA22)) {
+                props.put("eclipselink.sql.allow-convert-result-to-boolean", "false");
+            }
         } else if (PROVIDER_HIBERNATE.equals(providerName)) {
             // Hibernate had vastly outdated built-in knowledge of WebSphere API, until version 5.2.13+ and 5.3+.
             // If the version of Hibernate has the Liberty JtaPlatform, use it

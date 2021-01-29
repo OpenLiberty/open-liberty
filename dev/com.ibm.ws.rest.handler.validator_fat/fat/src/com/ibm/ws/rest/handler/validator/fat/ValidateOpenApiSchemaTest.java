@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.rest.handler.validator.fat;
 
+import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -60,16 +61,16 @@ public class ValidateOpenApiSchemaTest extends FATServletClient {
         WebArchive app = ShrinkWrap.create(WebArchive.class, "testOpenAPIApp.war")//
                         .addPackages(true, "web")//
                         .addAsManifestResource(new File("test-applications/testOpenAPIApp/resources/META-INF/openapi.yaml"));
-        ShrinkHelper.exportDropinAppToServer(server, app);
+        ShrinkHelper.exportDropinAppToServer(server, app, SERVER_ONLY);
 
         ResourceAdapterArchive rar = ShrinkWrap.create(ResourceAdapterArchive.class, "TestValAdapter.rar")
                         .addAsLibraries(ShrinkWrap.create(JavaArchive.class)
                                         .addPackage("org.test.validator.adapter"));
-        ShrinkHelper.exportToServer(server, "dropins", rar);
+        ShrinkHelper.exportToServer(server, "dropins", rar, SERVER_ONLY);
 
         JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "customLoginModule.jar");
         jar.addPackage("com.ibm.ws.rest.handler.validator.loginmodule");
-        ShrinkHelper.exportToServer(server, "/", jar);
+        ShrinkHelper.exportToServer(server, "/", jar, SERVER_ONLY);
 
         server.startServer();
 
@@ -240,10 +241,10 @@ public class ValidateOpenApiSchemaTest extends FATServletClient {
     @Test
     public void testDisableJCAValidator() throws Exception {
         ServerConfiguration config = server.getServerConfiguration();
-        List<String> featuresToDisable = Arrays.asList("jca-1.7", "jms-2.0", "wasJmsClient-2.0", "wasJmsServer-1.0");
+        List<String> featuresToDisable = Arrays.asList("jca-1.7", "jms-2.0", "wasjmsclient-2.0", "wasjmsserver-1.0");
         try {
             //Disable JCA (JMS 2.0 implicitly enabled it).
-            config.getFeatureManager().getFeatures().removeAll(featuresToDisable);
+            config.getFeatureManager().getFeatures().removeIf(f -> featuresToDisable.contains(f.toLowerCase()));
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
             server.waitForConfigUpdateInLogUsingMark(null, true);
@@ -334,10 +335,10 @@ public class ValidateOpenApiSchemaTest extends FATServletClient {
     @Test
     public void testDisableJMSValidator() throws Exception {
         ServerConfiguration config = server.getServerConfiguration();
-        List<String> featuresToDisable = Arrays.asList("jms-2.0", "wasJmsClient-2.0", "wasJmsServer-1.0");
+        List<String> featuresToDisable = Arrays.asList("jms-2.0", "wasjmsclient-2.0", "wasjmsserver-1.0");
         try {
             //Disable JMS features.
-            config.getFeatureManager().getFeatures().removeAll(featuresToDisable);
+            config.getFeatureManager().getFeatures().removeIf(f -> featuresToDisable.contains(f.toLowerCase()));
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
             server.waitForConfigUpdateInLogUsingMark(null, true);

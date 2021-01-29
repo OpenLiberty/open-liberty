@@ -11,10 +11,14 @@
 package com.ibm.ws.rest.handler.validator.fat;
 
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.utils.HttpUtils;
 
 @RunWith(Suite.class)
@@ -27,10 +31,16 @@ import componenttest.topology.utils.HttpUtils;
 })
 
 public class FATSuite {
-// TODO: Enable this once mpopenapi-2.0 (jakarta enabled) is available
+// TODO: Enable this once a jakarta enabled mpopenapi is available
 //    @ClassRule
 //    public static RepeatTests r = RepeatTests.with(new EmptyAction())
 //                    .andWith(FeatureReplacementAction.EE9_FEATURES());
+
+    @ClassRule
+    public static RepeatTests r = MicroProfileActions.repeat(null, TestMode.FULL,
+                                                             MicroProfileActions.MP40,
+                                                             MicroProfileActions.MP30,
+                                                             MicroProfileActions.MP20);
 
     @BeforeClass
     public static void setup() throws Exception {

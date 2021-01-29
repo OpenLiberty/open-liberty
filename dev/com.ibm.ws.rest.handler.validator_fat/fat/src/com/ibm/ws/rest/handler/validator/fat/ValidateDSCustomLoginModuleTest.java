@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.rest.handler.validator.fat;
 
+import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -55,13 +56,13 @@ public class ValidateDSCustomLoginModuleTest extends FATServletClient {
     public static void setUp() throws Exception {
         JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "customLoginModule.jar");
         jar.addPackage("com.ibm.ws.rest.handler.validator.loginmodule");
-        ShrinkHelper.exportToServer(server, "/", jar);
+        ShrinkHelper.exportToServer(server, "/", jar, SERVER_ONLY);
 
         ResourceAdapterArchive rar = ShrinkWrap.create(ResourceAdapterArchive.class, "TestValidationJMSAdapter.rar")
                         .addAsLibraries(ShrinkWrap.create(JavaArchive.class)
                                         .addPackage("org.test.validator.adapter")
                                         .addPackage("org.test.validator.jmsadapter"));
-        ShrinkHelper.exportToServer(server, "dropins", rar);
+        ShrinkHelper.exportToServer(server, "dropins", rar, SERVER_ONLY);
 
         server.startServer();
 

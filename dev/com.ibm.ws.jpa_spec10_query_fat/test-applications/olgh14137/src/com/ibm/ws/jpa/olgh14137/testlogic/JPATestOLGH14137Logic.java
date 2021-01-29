@@ -61,9 +61,8 @@ public class JPATestOLGH14137Logic extends AbstractTestLogic {
             }
         }
 
-        //TODO: Disable test until EclipseLink 2.7 is updated
         //TODO: Disable test until EclipseLink 3.0 is updated to include the fix
-        if ((isUsingJPA22Feature() || isUsingJPA30Feature()) && getJPAProviderImpl(jpaResource).equals(JPAProviderImpl.ECLIPSELINK)) {
+        if ((isUsingJPA30Feature()) && getJPAProviderImpl(jpaResource).equals(JPAProviderImpl.ECLIPSELINK)) {
             return;
         }
 

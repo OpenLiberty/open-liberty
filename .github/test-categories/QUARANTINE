@@ -13,3 +13,15 @@ com.ibm.ws.security.saml.sso_fat.common
 
 # Does not have a valid build.gradle file
 com.ibm.ws.security.social_fat.oidcCertification
+
+# Temporary Quarantine
+com.ibm.ws.security.saml.sso_fat.2
+com.ibm.ws.security.saml.sso_fat.3
+com.ibm.ws.security.saml.sso_fat.config
+com.ibm.ws.security.saml.sso_fat.config.mapToUserRegistry
+com.ibm.ws.security.saml.sso_fat.endpoint.samlmetadata
+com.ibm.ws.security.saml.sso_fat.jaxrs
+com.ibm.ws.security.saml.sso_fat.jaxrs.config
+com.ibm.ws.security.saml.sso_fat.logout
+com.ibm.ws.security.saml.sso_fat.logout.httpServletRequest
+com.ibm.ws.security.saml.sso_fat.logout.IDP_initiated 

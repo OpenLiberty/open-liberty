@@ -1,0 +1,172 @@
+/*******************************************************************************
+ * Copyright (c) 2021 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+
+repositories {
+  if (isUsingArtifactory) {
+    maven {
+      credentials {
+        username userProps.getProperty("artifactory.download.user")
+        password userProps.getProperty("artifactory.download.token")
+      }
+      url ("https://" + gradle.userProps.getProperty("artifactory.download.server") + "/artifactory/wasliberty-maven-remote")
+    }
+  } else {
+    mavenCentral()
+  }
+}
+
+dependencies {
+  /*
+   * httpunit 1.7 is NOT honoring CookieProperties.setDomainMatchingStrict(false) CookieProperties.setPathMatchingStrict(false).
+   * These are needed to force the JSESSIONID to be sent back to the TFIM server.
+   */
+  requiredLibs project(':com.ibm.ws.security.saml.sso_fat.common'),
+               project(':com.ibm.ws.org.apache.httpcomponents'),
+               'commons-codec:commons-codec:1.4',
+               'commons-logging:commons-logging:1.1.1',
+               'httpunit:httpunit:1.6.2',                           // 1.7 has issues noted above
+               'jtidy:jtidy:4aug2000r7-dev',
+               'rhino:js:1.6R5'
+              
+  /*
+   * Previously we had an uber jar named htmlunit-2.20-OSGi.jar. It appears to have contained all of
+   * the runtime dependencies for htmlunit. Instead of generating an uber jar, we'll add the dependencies
+   * here. The uber jar also was configured to be an OSGi bundle, but it is not necessary for this bucket.
+   */ 
+  requiredLibs project(':com.ibm.ws.org.apache.commons.io'),        // htmlunit-2.44.0 --> 2.8.0
+               project(':com.ibm.ws.org.apache.commons.lang3'),     // htmlunit-2.44.0 --> 3.11
+               'net.sourceforge.htmlunit:htmlunit-core-js:2.44.0',
+               'net.sourceforge.htmlunit:htmlunit-cssparser:1.6.0',
+               'net.sourceforge.htmlunit:neko-htmlunit:2.44.0',
+               'org.apache.httpcomponents:httpmime:4.5.12',
+               'org.brotli:dec:0.1.2',
+               'xalan:xalan:2.7.2',
+               'xerces:xercesImpl:2.11.0'
+}
+
+addRequiredLibraries.dependsOn addJakartaTransformer
+
+
+/*
+ * Configure any auto FVT artifacts.
+ */
+autoFVT.dependsOn ':com.ibm.ws.security.saml.sso_fat.common:assemble'
+autoFVT.doLast {
+
+  copy {
+    from project(':com.ibm.ws.security.saml.sso_fat.common').projectDir
+    into autoFvtDir
+    include 'securitykeys/**'
+  }
+
+  /*****************************************************************
+   * Server: com.ibm.ws.security.saml.sso-2.0_fat.endpoint.samlmetadata
+   *****************************************************************/
+  def serverName = "com.ibm.ws.security.saml.sso-2.0_fat.endpoint.samlmetadata"
+  // updateTestServerFiles -->
+  // copySAMLTestAppFilesToServer
+  copy {
+    from new File(project(':com.ibm.ws.security.saml.sso_fat.common').buildDir, 'test-application/SAML_Demo.ear')
+    into new File(autoFvtDir, "publish/servers/${serverName}/dropins")
+  }
+  copy {
+    from new File(project(':com.ibm.ws.security.saml.sso_fat.common').buildDir, 'test-application/samlclient.war')
+    into new File(autoFvtDir, "publish/servers/${serverName}/test-apps")
+  }
+  // copyTestMarker
+  copy {
+    from new File(project(':com.ibm.ws.security.fat.common').buildDir, 'test-application/testmarker.war')
+    into new File(autoFvtDir, "publish/servers/${serverName}/dropins")
+  }
+  // copySecurityKeysToServer
+  copy {
+    from new File(project(':com.ibm.ws.security.saml.sso_fat.common').projectDir, 'securitykeys')
+    into new File(autoFvtDir, "publish/servers/${serverName}")
+    include '*.jks', '*.arm'
+  }
+  copy {
+    from new File(projectDir, 'securitykeys')
+    into new File(autoFvtDir, "publish/servers/${serverName}")
+    include '*.jks', '.arm'
+  }
+  // copySecurityDefaultFilesToServer
+  copy {
+    from new File(project(':com.ibm.ws.security.saml.sso_fat.common').projectDir, 'publish/files/serversettings/SAMLServerFiles')
+    into new File(autoFvtDir, "publish/servers/${serverName}")
+    include '*/idpMetadata.xml', '*/idpMetadata.xml.orig'
+  }
+  // copyCommonServerXmlFeatures
+  copy {
+    from new File(project(':com.ibm.ws.security.saml.sso_fat.common').projectDir, 'publish/files/serversettings')
+    into new File(autoFvtDir, "publish/servers/${serverName}/imports")
+    include '**features*.xml'
+  }
+  // copyCommonServerXmlMisc
+  copy {
+    from new File(project(':com.ibm.ws.security.saml.sso_fat.common').projectDir, 'publish/files/serversettings')
+    into new File(autoFvtDir, "publish/servers/${serverName}/imports")
+    include '**misc.xml'
+  }
+  copy {
+    from new File(project(':fattest.simplicity').projectDir, 'autoFVT-defaults')
+    into new File(autoFvtDir, "publish/servers/${serverName}/imports")
+    include "**fatTestCommon.xml"
+  }
+  // copyCommonServerXmlRegistry
+  copy {
+    from new File(project(':com.ibm.ws.security.saml.sso_fat.common').projectDir, 'publish/files/serversettings')
+    into new File(autoFvtDir, "publish/servers/${serverName}/imports")
+    include '**egistry*.xml'
+  }
+  // copyCommonServerXmlSSL
+  copy {
+    from new File(project(':com.ibm.ws.security.saml.sso_fat.common').projectDir, 'publish/files/serversettings')
+    into new File(autoFvtDir, "publish/servers/${serverName}/imports")
+    include '**ssl*.xml', '**SSL*.xml'
+  }
+  // copyCommonServerXmlProvider
+  copy {
+    from new File(project(':com.ibm.ws.security.saml.sso_fat.common').projectDir, 'publish/files/serversettings')
+    into new File(autoFvtDir, "publish/servers/${serverName}/imports")
+    include '**rovider*.xml', '**.base'
+  }
+  copy {
+    from new File(project(':com.ibm.ws.security.saml.sso_fat.common').projectDir, 'publish/files/serversettings/SAMLServerFiles')
+    into new File(autoFvtDir, "publish/servers/${serverName}/imports")
+    include '**/**'
+  }
+  // copyCommonServerXmlApplications
+  copy {
+    from new File(project(':com.ibm.ws.security.saml.sso_fat.common').projectDir, 'publish/files/serversettings')
+    into new File(autoFvtDir, "publish/servers/${serverName}/imports")
+    include '**Application*.xml'
+  }
+  // copyServerXmlParts
+  copy {
+    from new File(projectDir, 'publish/files/serversettings')
+    into new File(autoFvtDir, "publish/servers/${serverName}/imports")
+    include '**.xml'
+    include '**.base'
+  }
+  copy {
+    from new File(projectDir, 'publish/files/serversettings/SAMLServerFiles')
+    into new File(autoFvtDir, "publish/servers/${serverName}/imports")
+    include '**/**'
+  }
+  
+  copy {
+    from new File(autoFvtDir, "publish/servers/${serverName}/imports")
+    into new File(autoFvtDir, 'lib/LibertyFATTestFiles/serversettings/SAMLServerFiles')
+    include '**/*.orig'
+  }
+
+}

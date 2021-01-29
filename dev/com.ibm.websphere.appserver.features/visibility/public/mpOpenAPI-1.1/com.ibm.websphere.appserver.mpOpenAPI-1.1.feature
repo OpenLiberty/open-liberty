@@ -31,8 +31,7 @@ IBM-API-Package: \
 	org.eclipse.microprofile.openapi.models.responses; type="stable",\
 	org.eclipse.microprofile.openapi.models.security; type="stable",\
 	org.eclipse.microprofile.openapi.models.servers; type="stable",\
-	org.eclipse.microprofile.openapi.models.tags; type="stable"
-IBM-SPI-Package: \
+	org.eclipse.microprofile.openapi.models.tags; type="stable",\
     org.eclipse.microprofile.openapi.spi; type="stable"
 -features=\
  com.ibm.websphere.appserver.org.eclipse.microprofile.openapi-1.1, \

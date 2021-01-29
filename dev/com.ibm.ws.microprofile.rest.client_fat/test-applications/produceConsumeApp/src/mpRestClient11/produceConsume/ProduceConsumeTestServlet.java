@@ -34,6 +34,22 @@ import componenttest.app.FATServlet;
 public class ProduceConsumeTestServlet extends FATServlet {
     private final static Logger _log = Logger.getLogger(ProduceConsumeTestServlet.class.getName());
 
+    static {
+        //for localhost testing only
+        javax.net.ssl.HttpsURLConnection.setDefaultHostnameVerifier(
+                new javax.net.ssl.HostnameVerifier() {
+
+            @Override
+            public boolean verify(String hostname,
+                    javax.net.ssl.SSLSession sslSession) {
+                if (hostname.contains("localhost")) {
+                    return true;
+                }
+                return false;
+            }
+        });
+    }
+ 
     /**
      * Tests that MP Rest Client's <code>@Produces</code> annotation affects the value transmitted in
      * the <code>Accept</code> header, and that it's <code>@Consumes</code> annotation affects the

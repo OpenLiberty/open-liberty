@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.transaction.test;
 
+import static com.ibm.ws.transaction.test.FATSuite.sqlserver;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
@@ -19,12 +20,10 @@ import java.sql.Statement;
 
 import org.junit.After;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 import org.testcontainers.containers.JdbcDatabaseContainer.NoDriverFoundException;
-import org.testcontainers.containers.MSSQLServerContainer;
 
 import com.ibm.tx.jta.ut.util.LastingXAResourceImpl;
 import com.ibm.websphere.simplicity.ProgramOutput;
@@ -60,9 +59,6 @@ public class MSSQLServerTest extends FATServletClient {
     @Server("com.ibm.ws.transaction_CLOUD001.longlease")
     @TestServlet(servlet = Simple2PCCloudServlet.class, contextRoot = APP_NAME)
     public static LibertyServer longLeaseLengthServer1;
-
-    @ClassRule
-    public static MSSQLServerContainer<?> sqlserver = FATSuite.sqlserver;
 
     @BeforeClass
     public static void init() throws Exception {

@@ -66,11 +66,11 @@ public class ScheduledBlockingQueueTask extends LinkedBlockingQueue<Integer> imp
      * Limit to 1 catch-up execution when delayed.
      */
     @Override
-    public long getNextFixedRateExecutionTime(long recentExecutionTime, long period) {
-        long missedExecutions = (System.nanoTime() - recentExecutionTime) / period;
+    public long getNextFixedRateExecutionTime(long expectedExecutionTime, long period) {
+        long missedExecutions = (System.nanoTime() - expectedExecutionTime) / period;
         if (missedExecutions < 0)
             missedExecutions = 0;
-        return recentExecutionTime + period * (1 + missedExecutions);
+        return expectedExecutionTime + period * (1 + missedExecutions);
     }
 
     @Override

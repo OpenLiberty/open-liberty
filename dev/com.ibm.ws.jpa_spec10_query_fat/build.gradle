@@ -21,7 +21,7 @@ task addJPAFATTools (type: Copy) {
   mustRunAfter jar
   from configurations.jpaFatTools
   include "**/com.ibm.ws.jpa_testframework*.jar"
-  into new File(autoFvtDir, 'lib')      
+  into new File(autoFvtDir, 'lib')
   rename 'com.ibm.ws.jpa_testframework-(.*).jar', 'com.ibm.ws.jpa_testframework.jar'
 }
 
@@ -30,4 +30,5 @@ addRequiredLibraries {
   dependsOn copyDatabaseRotationDrivers
   dependsOn addJakartaTransformer
   dependsOn addJPAFATTools
+  dependsOn addTestcontainers
 }

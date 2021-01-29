@@ -57,11 +57,6 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
 
         final String lDbProductName = dbProductName.toLowerCase();
 
-        //TODO: Disable test until EclipseLink 2.7 is updated
-        if (isUsingJPA22Feature() && getJPAProviderImpl(jpaResource).equals(JPAProviderImpl.ECLIPSELINK)) {
-            return;
-        }
-
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
