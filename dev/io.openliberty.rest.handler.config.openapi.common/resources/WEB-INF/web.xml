@@ -17,7 +17,7 @@
   <servlet>
     <display-name>ConfigValidationSchemaRESTProxy</display-name>
     <servlet-name>ConfigValidationSchemaRESTProxy</servlet-name>
-    <servlet-class>com.ibm.ws.rest.handler.config.openapi.ConfigValidationSchemaRESTProxy</servlet-class>
+    <servlet-class>io.openliberty.rest.handler.config.openapi.common.ConfigValidationSchemaRESTProxy</servlet-class>
     <multipart-config>
         <max-file-size>1000000000</max-file-size>
         <max-request-size>1000000000</max-request-size>

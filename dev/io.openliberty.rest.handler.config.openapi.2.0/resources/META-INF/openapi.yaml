@@ -1,0 +1,191 @@
+# *******************************************************************************
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+# *******************************************************************************
+openapi: "3.0.2"
+info:
+  title: Config API
+  version: "1.0"
+  description: "The Config REST endpoint retrieves information about configured elements and lists available REST API for each."
+servers:
+  - url: https://127.0.0.1:8020/ibm/api
+paths:
+  /config/:
+    get:
+      tags:
+      - Config
+      summary: "Shows configuration of all elements"
+      description: "Retrieves configuration detail for instances of all configuration element types."
+      parameters:
+        - $ref: "#/components/parameters/queryParams"
+      responses:
+        200:
+          description: "Configuration info retrieved"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/config.result"
+  /config/{elementName}:
+    get:
+      tags:
+      - Config
+      summary: "Shows configurations of the requested config element type"
+      description: "Retrieves configuration detail for instances of the requested type of configuration element."
+      parameters:
+        - name: elementName
+          in: path
+          description: "**Configuration element name**. The type of configuration element, such as `dataSource` or `application`."
+          required: true
+          schema:
+            type: string
+            example: "dataSource"
+        - $ref: "#/components/parameters/queryParams"
+      responses:
+        200:
+          description: "Configuration info retrieved"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/config.result"
+  /config/{elementName}/{uid}:
+    get:
+      tags:
+      - Config
+      summary: "Shows configuration of a single instance of the requested type"
+      description: "Retrieves configuration detail for a single configuration element, uniquely qualfied by its unique identifier."
+      parameters:
+        - name: elementName
+          in: path
+          description: "**Configuration element name**. The type of configuration element, such as `dataSource` or `application`."
+          required: true
+          schema:
+            type: string
+            example: "dataSource"
+        - name: uid
+          in: path
+          description: "**Unique identifier**. For an element configured at top level, this is the value of the `id` attribute, if present. Otherwise, it is a generated value, such as *dataSource[default-0]*."
+          required: true
+          schema:
+            type: string
+            example: "DefaultDataSource"
+          examples:
+            example-id:
+              summary: "Top-level element with id"
+              description: "The uid of a top-level config element is the value of its `id` attribute, if present."
+              value: "DefaultDataSource"
+            example-no-id:
+              summary: "Top-level element without id"
+              description: "The uid of a top-level config element without an `id` attribute is computed based on the order of appearance within server config, starting at 0."
+              value: "jmsConnectionFactory[default-0]"
+            example-nested:
+              summary: "Nested element without id"
+              description: "This example shows a generated uid for the first connectionManager (index 0, lacking an id) that is nested under a dataSource element with id of DefaultDataSource."
+              value: "dataSource[DefaultDataSource]/connectionManager[default-0]"
+            example-nested-under-singleton:
+              summary: "Nested element (without id) under singleton"
+              description: "This example shows a generated uid for the first dataSource (index 0, lacking an id) that is nested under the transaction element. The transaction element is a singleton and cannot have an id."
+              value: "transaction/dataSource[default-0]"
+            example-app-def:
+              summary: "App-defined resource"
+              description: "The uid for application-defined resources, such as @DataSourceDefinition and @JMSConnectionFactoryDefinition, is computed based on the configured name and qualified by its scope. This example is for a @DataSourceDefinition in the MyApp application, in the MyWebModule module, with a name of java:module/env/jdbc/ds1"
+              value: "application[MyApp]/module[MyWebModule]/dataSource[java:module/env/jdbc/ds1]"
+      responses:
+        200:
+          description: "Configuration info retrieved"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/config.result"
+security:
+  - basicAuth: []
+components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+  parameters:
+    queryParams:
+      name: queryParams
+      in: query
+      description: "**Query Parameters**. Supply additional query parameters in JSON as key/value pairs. For example, the following parameters could be specified for an application-defined data source: *{ \"application\": \"MyApp\", \"jndiName\": \"java:app/env/jdbc/MyDataSource\" }*"
+      schema:
+        type: object
+        additionalProperties:
+          type: string
+        example: {} # empty because the example is also used as a default value
+  schemas:
+    config.result:
+      type: object
+      properties:
+        configElementName:
+          description: "config element name"
+          type: string
+        uid:
+          description: "unique identifier"
+          type: string
+        id:
+          description: "id of configuration element"
+          type: string
+        jndiName:
+          description: "jndiName of configuration element"
+          type: string
+        api:
+          description: "relative paths to available REST endpoints for this configuration element"
+          type: array
+          items:
+            type: string
+      additionalProperties:
+        anyOf:
+          - type: boolean
+          - type: number
+          - type: string
+          - $ref: "#/components/schemas/config.result"
+          - type: object
+          - type: array
+            items:
+              $ref: "#/components/schemas/config.result"
+      required:
+        - configElementName
+      example:
+        configElementName: "dataSource"
+        uid: "DefaultDataSource"
+        id: "DefaultDataSource"
+        beginTranForResultSetScrollingAPIs: true
+        beginTranForVendorAPIs: true
+        connectionSharing: "MatchOriginalRequest"
+        containerAuthDataRef:
+          configElementName: "containerAuthData"
+          uid: "dataSource[DefaultDataSource]/containerAuthData[default-0]"
+          password: "******"
+          user: "derbyuser1"
+        enableConnectionCasting: false
+        jdbcDriverRef:
+          configElementName: "jdbcDriver"
+          uid: "dataSource[DefaultDataSource]/jdbcDriver[default-0]"
+          libraryRef:
+            configElementName: "library"
+            uid: "Derby"
+            id: "Derby"
+            apiTypeVisibility: "spec,ibm-api,api,stable"
+            fileRef:
+              - configElementName: "file"
+                uid: "library[Derby]/file[default-0]"
+                name: "/Users/myself/drivers/derby/derby.jar"
+        statementCacheSize: 10,
+        syncQueryTimeoutWithTransactionTimeout: false,
+        transactional: true,
+        properties.derby.embedded:
+          createDatabase: "create"
+          databaseName: "memory:derbydb"
+        api:
+          - "/ibm/api/validation/dataSource/DefaultDataSource"
