@@ -385,7 +385,7 @@ public class MetricResolver {
              */
             try {
                 throw new IllegalArgumentException("Cannot reuse metric with MetricID " + metricID.toString() + "with Metadata " + of.metadata().toString()
-                                                   + ". There already exists a Metadata fopr tthis metric name with different values: " + existingMetadata.toString());
+                                                   + ". There already exists a Metadata for this metric name with different values: " + existingMetadata.toString());
             } catch (IllegalArgumentException exception) {
                 throw exception;
             }

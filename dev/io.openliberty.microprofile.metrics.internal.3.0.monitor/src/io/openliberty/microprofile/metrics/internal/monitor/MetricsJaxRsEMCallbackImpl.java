@@ -41,9 +41,8 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
 				"service.vendor=IBM" })
 public class MetricsJaxRsEMCallbackImpl  implements DefaultExceptionMapperCallback {
 
-    private static final TraceComponent tc = Tr.register(MetricsJaxRsEMCallbackImpl.class);
 	public static final String EXCEPTION_KEY = MetricsJaxRsEMCallbackImpl.class.getName() + ".Exception";
-	private static final String[] metriCDIBundles = {"io.astefanutti.metrics.cdi30", "io.openliberty.microprofile.metrics.internal.cdi30.interceptors"};
+	private static final String[] metricCDIBundles = {"io.astefanutti.metrics.cdi30", "io.openliberty.microprofile.metrics.internal.cdi30.interceptors"};
 	
 	public synchronized static Counter registerOrRetrieveRESTUnmappedExceptionMetric(String fullyQualifiedClassName, String methodSignature) {
 		MetricRegistry baseMetricRegistry = sharedMetricRegistry.getOrCreate(MetricRegistry.Type.BASE.getName());
@@ -68,30 +67,18 @@ public class MetricsJaxRsEMCallbackImpl  implements DefaultExceptionMapperCallba
 		StackTraceElement[] ste = throwable.getStackTrace();
 
 		/*
-		 * If the Exception originates from from the Metrics CDI Bundle we do not want to count
+		 * If the Exception originates from the Metrics CDI Bundle we do not want to count
 		 * the exception.
 		 * 
 		 * Validate by checking the first element on the stack to see if it came from the two packages
 		 * in the Metrics CDI bundle that throws Exceptions.
 		 */
-		if (!(ste[0].getClassName().startsWith(metriCDIBundles[0]) || ste[0].getClassName().startsWith(metriCDIBundles[1]))) {
+		if (!(ste[0].getClassName().startsWith(metricCDIBundles[0]) || ste[0].getClassName().startsWith(metricCDIBundles[1]))) {
 			Map.Entry<String, String> classXmethod = resolveSimpleTimerClassMethodTags(resourceInfo);
 			registerOrRetrieveRESTUnmappedExceptionMetric(classXmethod.getKey() ,classXmethod.getValue()).inc();
 		}
 
-		/*
-		 * Will print out the stack trace as one string.
-		 * This is chosen over the alternative which is
-		 * throwable.printStackTrace() which will stream
-		 * every stack element/line as a logging event making
-		 * messages.log cluttered. The trade-off being that
-		 * internal classes are not hidden in the console
-		 * output.
-		 */
-		StringWriter sw = new StringWriter();
-		PrintWriter pw = new PrintWriter(sw);
-		throwable.printStackTrace(pw);
-		System.err.print(sw.toString());
+		throwable.printStackTrace();
 		
 		return Collections.singletonMap(EXCEPTION_KEY, throwable);
 	}
