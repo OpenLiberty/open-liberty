@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,11 +10,15 @@
  *******************************************************************************/
 package io.openliberty.microprofile.metrics.internal.monitor;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.jaxrs.defaultexceptionmapper.DefaultExceptionMapperCallback;
 import com.ibm.ws.microprofile.metrics.impl.SharedMetricRegistries;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.reflect.Method;
 import java.util.AbstractMap;
 import java.util.Collections;
@@ -37,9 +41,9 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
 				"service.vendor=IBM" })
 public class MetricsJaxRsEMCallbackImpl  implements DefaultExceptionMapperCallback {
 
-	
+    private static final TraceComponent tc = Tr.register(MetricsJaxRsEMCallbackImpl.class);
 	public static final String EXCEPTION_KEY = MetricsJaxRsEMCallbackImpl.class.getName() + ".Exception";
-	
+	private static final String[] metriCDIBundles = {"io.astefanutti.metrics.cdi30", "io.openliberty.microprofile.metrics.internal.cdi30.interceptors"};
 	
 	public synchronized static Counter registerOrRetrieveRESTUnmappedExceptionMetric(String fullyQualifiedClassName, String methodSignature) {
 		MetricRegistry baseMetricRegistry = sharedMetricRegistry.getOrCreate(MetricRegistry.Type.BASE.getName());
@@ -57,14 +61,39 @@ public class MetricsJaxRsEMCallbackImpl  implements DefaultExceptionMapperCallba
 		
 		return counter;
 	}
-	
-	@Override
-	public Map<String, Object> onDefaultMappedException(Throwable t, int statusCode, ResourceInfo resourceInfo) {
-		Map.Entry<String, String> classXmethod = resolveSimpleTimerClassMethodTags(resourceInfo);
 
-		registerOrRetrieveRESTUnmappedExceptionMetric(classXmethod.getKey() ,classXmethod.getValue()).inc();
+	@Override
+	public Map<String, Object> onDefaultMappedException(Throwable throwable, int statusCode, ResourceInfo resourceInfo) {
+
+		StackTraceElement[] ste = throwable.getStackTrace();
+
+		/*
+		 * If the Exception originates from from the Metrics CDI Bundle we do not want to count
+		 * the exception.
+		 * 
+		 * Validate by checking the first element on the stack to see if it came from the two packages
+		 * in the Metrics CDI bundle that throws Exceptions.
+		 */
+		if (!(ste[0].getClassName().startsWith(metriCDIBundles[0]) || ste[0].getClassName().startsWith(metriCDIBundles[1]))) {
+			Map.Entry<String, String> classXmethod = resolveSimpleTimerClassMethodTags(resourceInfo);
+			registerOrRetrieveRESTUnmappedExceptionMetric(classXmethod.getKey() ,classXmethod.getValue()).inc();
+		}
+
+		/*
+		 * Will print out the stack trace as one string.
+		 * This is chosen over the alternative which is
+		 * throwable.printStackTrace() which will stream
+		 * every stack element/line as a logging event making
+		 * messages.log cluttered. The trade-off being that
+		 * internal classes are not hidden in the console
+		 * output.
+		 */
+		StringWriter sw = new StringWriter();
+		PrintWriter pw = new PrintWriter(sw);
+		throwable.printStackTrace(pw);
+		System.err.print(sw.toString());
 		
-		return Collections.singletonMap(EXCEPTION_KEY, t);
+		return Collections.singletonMap(EXCEPTION_KEY, throwable);
 	}
 
 	static SharedMetricRegistries sharedMetricRegistry;
