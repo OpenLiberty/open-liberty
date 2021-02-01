@@ -3,7 +3,6 @@
     <featureManager>
         <feature>batch-1.0</feature>
         <feature>cdi-1.2</feature>
-        <feature>ejb-3.2</feature>
         <feature>componenttest-1.0</feature>
         <!--  For Java 2 security -->
         <feature>jaxb-2.2</feature>
@@ -13,7 +12,7 @@
     
     <application location="implicit.war" />
 
-    <logging maxFileSize="100" maxFiles="4" traceSpecification="*=info:test=all:com.ibm.jbatch.*=all:com.ibm.ws.jbatch.*=all:EJBContainer=all:Injection=all:JCDI=all:MetaData=all:com.ibm.jbatch.*=all:com.ibm.ws.cdi*=all:com.ibm.ws.jbatch.*=all:org.jboss.weld*=all"/>
+    <logging maxFileSize="100" maxFiles="4" traceSpecification="*=info:test=all:com.ibm.jbatch.*=all:com.ibm.ws.jbatch.*=all:Injection=all:JCDI=all:MetaData=all:com.ibm.jbatch.*=all:com.ibm.ws.cdi*=all:com.ibm.ws.jbatch.*=all:org.jboss.weld*=all"/>
     
     <library id="DerbyLib">
 	    <fileset dir="${shared.resource.dir}/derby" includes="derby.jar"/>
