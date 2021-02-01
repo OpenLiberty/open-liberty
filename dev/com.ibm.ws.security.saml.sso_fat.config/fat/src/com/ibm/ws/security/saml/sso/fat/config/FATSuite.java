@@ -11,21 +11,30 @@
 
 package com.ibm.ws.security.saml.sso.fat.config;
 
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import componenttest.rules.repeater.EmptyAction;
+import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.RepeatTests;
+
 @RunWith(Suite.class)
 @SuiteClasses({
 
-        //        SAMLMisc1ConfigTests.class,
+        SAMLMisc1ConfigTests.class,
         SAMLMisc2ConfigTests.class,
-//        SAMLSSLConfigTests.class
+        SAMLSSLConfigTests.class
 
 })
 /**
  * Purpose: This suite collects and runs all known good test suites.
  */
 public class FATSuite {
+
+    @ClassRule
+    public static RepeatTests repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
+            .andWith(new JakartaEE9Action());
 
 }

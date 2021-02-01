@@ -6,11 +6,12 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 
 package com.ibm.ws.security.saml.fat;
 
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -25,6 +26,10 @@ import com.ibm.ws.security.saml.fat.SPInitiated.TimeUnsolicitedSPInitiatedTests;
 import com.ibm.ws.security.saml.fat.SPInitiated.TrustedIssuerSolicitedSPInitiatedTests;
 import com.ibm.ws.security.saml.fat.SPInitiated.TrustedIssuerUnsolicitedSPInitiatedTests;
 
+import componenttest.rules.repeater.EmptyAction;
+import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.RepeatTests;
+
 @RunWith(Suite.class)
 @SuiteClasses({
 
@@ -36,12 +41,16 @@ import com.ibm.ws.security.saml.fat.SPInitiated.TrustedIssuerUnsolicitedSPInitia
         PkixUnsolicitedSPInitiatedTests.class, // no lite
         TrustedIssuerIDPInitiatedTests.class,
         TrustedIssuerSolicitedSPInitiatedTests.class,
-        TrustedIssuerUnsolicitedSPInitiatedTests.class // TrustedIssuerUnsolicitedSPInitiatedTests
+        TrustedIssuerUnsolicitedSPInitiatedTests.class // no lite
 
 })
 /**
  * Purpose: This suite collects and runs all known good test suites.
  */
 public class FATSuite {
+
+    @ClassRule
+    public static RepeatTests repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
+            .andWith(new JakartaEE9Action());
 
 }

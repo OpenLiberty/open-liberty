@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.security.saml.fat.logout.httpServletRequest;
 
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -27,6 +28,10 @@ import com.ibm.ws.security.saml.fat.logout.SPInitiated_Login.UnsolicitedSPInitia
 import com.ibm.ws.security.saml.fat.logout.SPInitiated_Login.UnsolicitedSPInitiatedLogin_servletRequestLogout_spLogoutFalse_Tests;
 import com.ibm.ws.security.saml.fat.logout.SPInitiated_Login.UnsolicitedSPInitiatedLogin_servletRequestLogout_spLogoutTrue_LTPA_Tests;
 import com.ibm.ws.security.saml.fat.logout.SPInitiated_Login.UnsolicitedSPInitiatedLogin_servletRequestLogout_spLogoutTrue_Tests;
+
+import componenttest.rules.repeater.EmptyAction;
+import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.RepeatTests;
 
 /**
  * Collection of all SAML logout related tests, including SAML Single Logout.
@@ -60,5 +65,9 @@ import com.ibm.ws.security.saml.fat.logout.SPInitiated_Login.UnsolicitedSPInitia
 
 })
 public class FATSuite {
+
+    @ClassRule
+    public static RepeatTests repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
+            .andWith(new JakartaEE9Action());
 
 }
