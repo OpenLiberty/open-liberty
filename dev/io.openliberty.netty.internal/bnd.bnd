@@ -30,4 +30,4 @@ Bundle-Description: Netty as an OSGi bundle for OpenLiberty, version ${bVersion}
   @${repo;io.netty:netty-transport;${nettyVersion};EXACT}
 
 Export-Package: \
-  io.netty.*;version=${nettyVersion} -split-package:=merge-first
+  io.netty.*;version=${nettyVersion}; -split-package:=merge-first
