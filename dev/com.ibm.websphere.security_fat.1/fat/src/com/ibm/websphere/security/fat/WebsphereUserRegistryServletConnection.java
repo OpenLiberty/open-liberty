@@ -260,7 +260,7 @@ public class WebsphereUserRegistryServletConnection implements UserRegistry {
             }
             return result;
         } else {
-            throw new IllegalStateException(methodName + " expected a Result response, but recieved [" + str + "]");
+            throw new IllegalStateException(methodName + " expected a Result response, but received [" + str + "]");
         }
     }
 

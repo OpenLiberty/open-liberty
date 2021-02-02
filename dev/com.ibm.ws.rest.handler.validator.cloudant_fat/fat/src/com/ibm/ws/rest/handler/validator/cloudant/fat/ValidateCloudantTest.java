@@ -438,7 +438,7 @@ public class ValidateCloudantTest extends FATServletClient {
             os.write("{\"name\":\"travis\",\"password\":\"password\",\"roles\":[],\"type\":\"user\"}");
         }
 
-        assertEquals("Unexpected response recieved from cloudant: " + getResponse(http), 201, http.getResponseCode());
+        assertEquals("Unexpected response received from cloudant: " + getResponse(http), 201, http.getResponseCode());
 
         //Add a new user kevin to the db
         url = new URL(CLOUDANT_URL + "/_users/org.couchdb.user:kevin");
@@ -452,7 +452,7 @@ public class ValidateCloudantTest extends FATServletClient {
             os.write("{\"name\":\"kevin\",\"password\":\"password\",\"roles\":[],\"type\":\"user\"}");
         }
 
-        assertEquals("Unexpected response recieved from cloudant: " + getResponse(http), 201, http.getResponseCode());
+        assertEquals("Unexpected response received from cloudant: " + getResponse(http), 201, http.getResponseCode());
 
         //Create a new database testauthdb
         url = new URL(CLOUDANT_URL + "/testauthdb");
@@ -461,7 +461,7 @@ public class ValidateCloudantTest extends FATServletClient {
 
         http.setRequestMethod("PUT");
         http.setRequestProperty("Authorization", "Basic YWRtaW46cGFzcw==");
-        assertEquals("Unexpected response recieved from cloudant: " + getResponse(http), 201, http.getResponseCode());
+        assertEquals("Unexpected response received from cloudant: " + getResponse(http), 201, http.getResponseCode());
 
         //Add the user travis as a member of the testauthdb database
         url = new URL(CLOUDANT_URL + "/testauthdb/_security");
@@ -476,7 +476,7 @@ public class ValidateCloudantTest extends FATServletClient {
             os.write("{\"admins\": { \"names\": [], \"roles\": [] }, \"members\": { \"names\": [\"travis\"], \"roles\": [] } }");
         }
 
-        assertEquals("Unexpected response recieved from database: " + getResponse(http), 200, http.getResponseCode());
+        assertEquals("Unexpected response received from database: " + getResponse(http), 200, http.getResponseCode());
 
         //Test that validation succeeds for travis and testauthdb
         HttpsRequest request = new HttpsRequest(server, "/ibm/api/validation/cloudantDatabase/dbTestAuth?auth=container&authAlias=travisAuthData");

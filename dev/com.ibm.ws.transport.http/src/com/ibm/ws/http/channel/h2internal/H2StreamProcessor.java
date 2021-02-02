@@ -237,7 +237,7 @@ public class H2StreamProcessor {
                 }
             } else if (direction.equals(Constants.Direction.READ_IN) &&
                        !frame.getFrameType().equals(FrameTypes.PUSH_PROMISE)) {
-                // handle a frame recieved after stream closure
+                // handle a frame received after stream closure
                 if (frame.getFrameType() == FrameTypes.PRIORITY || frame.getFrameType() == FrameTypes.RST_STREAM
                     || frame.getFrameType() == FrameTypes.WINDOW_UPDATE) {
                     // Ignore PRIORITY RST_STREAM and WINDOW_UPDATE in all closed situations

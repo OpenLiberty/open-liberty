@@ -30,8 +30,8 @@ public class KafkaAutoAckReceptionBean extends AbstractReceptionBean<String> {
     @Override
     @Incoming(CHANNEL_IN)
     @Acknowledgment(MANUAL)
-    public CompletionStage<Void> recieveMessage(Message<String> msg) {
-        return super.recieveMessage(msg);
+    public CompletionStage<Void> receiveMessage(Message<String> msg) {
+        return super.receiveMessage(msg);
     }
 
 }

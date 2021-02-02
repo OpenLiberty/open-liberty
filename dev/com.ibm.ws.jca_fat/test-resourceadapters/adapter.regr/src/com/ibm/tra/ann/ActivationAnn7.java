@@ -52,7 +52,7 @@ public class ActivationAnn7 extends ActivationSpecBase {
         destination = dest;
         if (DebugTracer.isDebugActivationSpec()) {
             PrintStream out = DebugTracer.getPrintStream();
-            out.println("ActivationAnn7.setDestination(): recieved dest: ");
+            out.println("ActivationAnn7.setDestination(): received dest: ");
             out.println("toString(): " + destination.toString());
             out.println("Class: " + destination.getClass().getName());
             out.println("End ActivationAnn7.setDestination()");

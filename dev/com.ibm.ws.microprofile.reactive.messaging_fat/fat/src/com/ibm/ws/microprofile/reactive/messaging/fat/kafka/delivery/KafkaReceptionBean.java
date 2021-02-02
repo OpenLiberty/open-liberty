@@ -29,8 +29,8 @@ public class KafkaReceptionBean extends AbstractReceptionBean<String> {
     @Incoming(CHANNEL_NAME)
     @Acknowledgment(Strategy.MANUAL)
     @Override
-    public CompletionStage<Void> recieveMessage(Message<String> msg) {
-        return super.recieveMessage(msg);
+    public CompletionStage<Void> receiveMessage(Message<String> msg) {
+        return super.receiveMessage(msg);
     }
 
 }
