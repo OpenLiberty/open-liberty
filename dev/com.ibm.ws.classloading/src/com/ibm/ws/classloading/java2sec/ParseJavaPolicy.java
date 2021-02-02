@@ -59,13 +59,22 @@ public class ParseJavaPolicy {
             if (file == null) {
                 String javaHome = System.getProperty("java.home");
                 if (javaHome != null) {
-                    file = javaHome.concat("/lib/security/java.policy");
+                    if (javaHome.endsWith("jre")) {
+                        file=javaHome.concat("/lib/security/java.policy");
+                    } else {
+                        file = javaHome.concat("jre/lib/security/java.policy");
+                    }
                 }
             } 
             
-            if (file.charAt(0) == '=') {
+            if (file != null && file.charAt(0) == '=') {
                 // skip '=' for case where "==" is specified
                 file = file.substring(1);
+            }
+            
+            if (file == null) {
+                // no java.policy file found, just return
+                return;
             }
 
             fr = new FileReader(file);
