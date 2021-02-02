@@ -53,12 +53,18 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
      * Used to specify a particular docker host machine to run with. For example: -Dfat.test.docker.host=some-docker-host.mycompany.com
      */
     private static final String USE_DOCKER_HOST = System.getProperty("fat.test.docker.host");
-    private static final boolean USE_REMOTE_DOCKER = Boolean.getBoolean("fat.test.use.remote.docker") || USE_DOCKER_HOST != null;
 
     private DefaultDockerClientConfig config;
     private TransportConfig transportConfig;
 
     private static boolean setupComplete = false;
+
+    /**
+     * Used to specify if we plan on running against a remote docker host, or a local docker host.
+     *
+     * @see #useRemoteDocker()
+     */
+    public static final boolean USE_REMOTE_DOCKER_HOST = useRemoteDocker();
 
     /**
      * <pre>
@@ -115,7 +121,7 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
      */
     private static void generateDockerConfig() {
         final String m = "generateDockerConfig";
-        if (!useRemoteDocker())
+        if (!USE_REMOTE_DOCKER_HOST)
             return;
 
         File configDir = new File(System.getProperty("user.home"), ".docker");
@@ -288,7 +294,7 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
 
     @Override
     protected int getPriority() {
-        return useRemoteDocker() ? 900 : 0;
+        return USE_REMOTE_DOCKER_HOST ? 900 : 0;
     }
 
     @Override
@@ -302,15 +308,65 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
         return true;
     }
 
-    public static boolean useRemoteDocker() {
-        if (USE_REMOTE_DOCKER) {
-            return true; // remote docker explicitly requested
-        }
-        if (Boolean.parseBoolean(System.getenv("GITHUB_ACTIONS"))) {
-            return false; // always use local docker for GH Actions
-        }
-        // Otherwise, use local docker for local runs, and remote docker for remote (RTC) runs
-        return !FATRunner.FAT_TEST_LOCALRUN;
-    }
+    /**
+     * Determines if we are going to attempt to run against a remote
+     * docker host, or a local docker host.
+     *
+     * Priority:
+     * 1. System Property: fat.test.use.remote.docker
+     * 2. System Property: fat.test.docker.host -> REMOTE
+     * 3. System: GITHUB_ACTIONS -> LOCAL
+     * 4. System: WINDOWS -> REMOTE
+     *
+     * default (!!! fat.test.localrun)
+     *
+     * @return true, we are running against a remote docker host, false otherwise.
+     */
+    private static boolean useRemoteDocker() {
+        boolean result;
+        String reason;
 
+        do {
+            //State 1: fat.test.use.remote.docker should always be honored first
+            if (System.getProperty("fat.test.use.remote.docker") != null) {
+                result = Boolean.getBoolean("fat.test.use.remote.docker");
+                reason = "fat.test.use.remote.docker set to " + result;
+                break;
+            }
+
+            //State 2: User provided a remote docker host, assume they want to use the remote host
+            if (USE_DOCKER_HOST != null) {
+                result = true;
+                reason = "fat.test.docker.host set to " + USE_DOCKER_HOST;
+                break;
+            }
+
+            //State 3: Github actions build should always use local
+            if (Boolean.parseBoolean(System.getenv("GITHUB_ACTIONS"))) {
+                result = false;
+                reason = "GitHub Actions Build";
+                break;
+            }
+
+            //State 4: Earlier version of TestContainers didn't support docker for windows
+            // Assume a user on windows with no other preferences will want to use a remote host.
+            if (System.getProperty("os.name", "unknown").toLowerCase().contains("windows")) {
+                result = true;
+                reason = "Local operating system is Windows. Default container support not guaranteed.";
+                break;
+            }
+
+            // Default, use local docker for local runs, and remote docker for remote (RTC) runs
+            result = !FATRunner.FAT_TEST_LOCALRUN;
+            reason = "fat.test.localrun set to " + FATRunner.FAT_TEST_LOCALRUN;
+        } while (false);
+
+        reason = result ? //
+                        "Running against remote docker host.  Reason: " + reason : //
+                        "Running against local docker host. Reason: " + reason;
+
+        Log.info(c, "useRemoteDocker", reason);
+        return result;
+
+    }
 }
