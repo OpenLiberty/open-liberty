@@ -170,14 +170,14 @@
 		<AD id="timestampFormat" name="%timestampFormat" description="%timestampFormat.desc" required="false" type="String" />
 		<!-- End VMM ported Entries -->	
 
-	<AD id="bindAuthMechanism" name="internal" description="internal use only" required="false" type="String">
+	<AD id="bindAuthMechanism" name="internal" description="internal use only" required="false" type="String" ibm:beta="true">
 		<Option label="%bindAuthMechanism.none" value="none" />
 		<Option label="%bindAuthMechanism.simple" value="simple" />
 		<Option label="%bindAuthMechanism.GSSAPI" value="GSSAPI" />
 	</AD>
 
-	<AD id="krb5Principal" name="internal" description="internal use only" type="String" required="false" />
-	<AD id="krb5TicketCache" name="internal" description="internal use only" type="String" required="false" />
+	<AD id="krb5Principal" name="internal" description="internal use only" type="String" required="false" ibm:beta="true" />
+	<AD id="krb5TicketCache" name="internal" description="internal use only" type="String" required="false" ibm:beta="true" />
 
     </OCD>
 
