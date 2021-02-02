@@ -8,13 +8,9 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= jar:${fileuri;${repo;org.apache.cxf:cxf-rt-security;3.3.6;EXACT}}!/META-INF/MANIFEST.MF,bnd.overrides
+-include= jar:${fileuri;${repo;org.apache.cxf:cxf-rt-ws-mex;3.4.1;EXACT}}!/META-INF/MANIFEST.MF,bnd.overrides
 
 -includeresource: \
-    @${repo;org.apache.cxf:cxf-rt-security;3.3.6;EXACT}!/!META-INF/maven/*|META-INF/MANIFEST.MF
+    @${repo;org.apache.cxf:cxf-rt-ws-mex;3.4.1;EXACT}!/!META-INF/maven/*
 
-globalize: false
-instrument.ffdc: true
-
--buildpath: \
-	org.apache.cxf:cxf-rt-security;strategy=exact;version=3.3.6
+-buildpath: org.apache.cxf:cxf-rt-ws-mex;strategy=exact;version=3.4.1

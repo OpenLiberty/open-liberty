@@ -14,12 +14,12 @@ bVersion=1.0
 WS-TraceGroup: WSSECURITY
 
 Bundle-Name: com.ibm.ws.org.apache.cxf.rt.security
-Bundle-Description: cxf rt security, version 3.3.6
-Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.rt.security.3.3.6
+Bundle-Description: cxf rt security, version 3.4.1
+Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.rt.security.3.4.1
 Bundle-ActivationPolicy: lazy
 
 Export-Package: \
-  org.apache.cxf.rt.security.*;version="3.3.6"
+  org.apache.cxf.rt.security.*;version="3.4.1"
 
 Import-Package:  \
   org.apache.cxf.*; version="[3.2.4,4.0.0)", \
@@ -29,9 +29,9 @@ Import-Package:  \
   *
 
 Include-Resource: \
-  @${repo;org.apache.cxf:cxf-rt-security;3.3.6;EXACT}!/!META-INF/MANIFEST.MF, \
-  @${repo;org.apache.cxf:cxf-rt-security;3.3.6;EXACT}!/META-INF/DEPENDENCIES, \
-  @${repo;org.apache.cxf:cxf-rt-security;3.3.6;EXACT}!/META-INF/LICENSE, \
-  @${repo;org.apache.cxf:cxf-rt-security;3.3.6;EXACT}!/META-INF/NOTICE, \
-  @${repo;org.apache.cxf:cxf-rt-security;3.3.6;EXACT}!/META-INF/cxf/*
+  @${repo;org.apache.cxf:cxf-rt-security;3.4.1;EXACT}!/!META-INF/MANIFEST.MF, \
+  @${repo;org.apache.cxf:cxf-rt-security;3.4.1;EXACT}!/META-INF/DEPENDENCIES, \
+  @${repo;org.apache.cxf:cxf-rt-security;3.4.1;EXACT}!/META-INF/LICENSE, \
+  @${repo;org.apache.cxf:cxf-rt-security;3.4.1;EXACT}!/META-INF/NOTICE, \
+  @${repo;org.apache.cxf:cxf-rt-security;3.4.1;EXACT}!/META-INF/cxf/*
 

@@ -100,8 +100,8 @@ instrument.classesExcludes: com/ibm/ws/wssecurity/resources/*.class
 	com.ibm.ws.kernel.service;version=latest,\
 	com.ibm.ws.logging.core;version=latest,\
 	com.ibm.ws.logging;version=latest,\
-	com.ibm.ws.org.apache.cxf.rt.security.3.3.6;version=latest,\
-	com.ibm.ws.org.apache.cxf.rt.ws.security.3.3.6;version=latest,\
+	com.ibm.ws.org.apache.cxf.rt.security.3.4.1;version=latest,\
+	com.ibm.ws.org.apache.cxf.rt.ws.security.3.4.1;version=latest,\
 	com.ibm.ws.org.apache.neethi.3.1.1;version=latest,\
 	com.ibm.ws.org.apache.santuario.xmlsec.2.2.0;version=latest,\
 	com.ibm.ws.org.apache.wss4j.ws.security.common.2.3.0;version=latest,\
