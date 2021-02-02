@@ -1220,7 +1220,7 @@ public final class Neighbour extends SIMPItemStream implements AlarmListener
       meName = iMEUuid.toString();
 
     SibTr.push(iProxyHandler.getMessageProcessor().getMessagingEngine());
-    SibTr.info(tc, "NEIGHBOUR_REPLY_RECIEVED_INFO_CWSIP0382",
+    SibTr.info(tc, "NEIGHBOUR_REPLY_RECEIVED_INFO_CWSIP0382",
                new Object[]{meName});
     SibTr.pop();
 

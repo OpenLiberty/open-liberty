@@ -39,7 +39,7 @@ import com.ibm.tra.trace.DebugTracer;
 
 @SuppressWarnings("serial")
 @Connector(
-//authMechanisms={ @AuthenticationMechanism() },  // CONN_DEF_2_AUTHMECH_1=AUTHMECH_DEF    
+//authMechanisms={ @AuthenticationMechanism() },  // CONN_DEF_2_AUTHMECH_1=AUTHMECH_DEF
 
 //description="CONN_DEF_2_DESC",
 
@@ -83,7 +83,8 @@ public class ConnectorAnnDef2 implements ResourceAdapter, Serializable {
 
     private transient XATerminator myXATerminator = null;
 
-    public ConnectorAnnDef2() {}
+    public ConnectorAnnDef2() {
+    }
 
     // Resource Adapter Configuration Properties
 //  @ConfigProperty(
@@ -196,7 +197,7 @@ public class ConnectorAnnDef2 implements ResourceAdapter, Serializable {
         if (activationSpec instanceof ActivationSpecImpl) {
             if (debug) {
                 ActivationSpecImpl aSpec = (ActivationSpecImpl) activationSpec;
-                out.println("Recieved com.ibm.inbound.impl.ActivationSpecImpl");
+                out.println("Received com.ibm.inbound.impl.ActivationSpecImpl");
                 out.println("Contents of ActivationSpec: ");
                 out.println("prop1: " + aSpec.getProp1());
                 out.println("destType: " + aSpec.getDestinationType());
@@ -231,7 +232,7 @@ public class ConnectorAnnDef2 implements ResourceAdapter, Serializable {
         if (activationSpec instanceof ActivationSpecImpl) {
             ActivationSpecImpl aSpec = (ActivationSpecImpl) activationSpec;
             if (debug) {
-                out.println("Recieved com.ibm.inbound.impl.ActivationSpecImpl");
+                out.println("Received com.ibm.inbound.impl.ActivationSpecImpl");
                 out.println("Contents of ActivationSpec: ");
                 out.println("prop1:" + aSpec.getProp1());
                 out.println("destType: " + aSpec.getDestinationType());

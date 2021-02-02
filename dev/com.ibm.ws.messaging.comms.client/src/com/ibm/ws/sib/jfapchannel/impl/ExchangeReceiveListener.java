@@ -158,7 +158,7 @@ public class ExchangeReceiveListener implements ReceiveListener, ReceivedData {
     return exception;
   }
 
-  /** @see com.ibm.js.comms.channelfw.ReceiveListener#closeRecieved(boolean) */
+  /** @see com.ibm.js.comms.channelfw.ReceiveListener#closeReceived(boolean) */
   public void closeReceived (final boolean quiesce) { // Not synchronized as is a nop
     if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "closeReceived", "quiesce="+quiesce);
     if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "closeReceived");

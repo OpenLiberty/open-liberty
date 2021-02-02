@@ -224,7 +224,7 @@ public class AuthDataServiceImplTest {
 
     private void assertNoSuchAliasMessage(LoginException e, String authDataAlias) {
         String noSuchAliasMessage = "CWWKS1300E: A configuration exception has occurred. The requested authentication data alias " + authDataAlias + " could not be found.";
-        assertEquals("Recieved wrong exception message", noSuchAliasMessage, e.getMessage());
+        assertEquals("Received wrong exception message", noSuchAliasMessage, e.getMessage());
         assertTrue("Expected error message was not logged",
                    outputMgr.checkForStandardErr(noSuchAliasMessage));
     }
@@ -290,7 +290,7 @@ public class AuthDataServiceImplTest {
 
     private void assertConfigErrorIncomplete(LoginException e, String attribute) {
         String configErrorIncompleteMessage = "CWWKS1301E: A configuration error has occurred. The attribute " + attribute + " must be defined.";
-        assertEquals("Recieved wrong exception message", configErrorIncompleteMessage, e.getMessage());
+        assertEquals("Received wrong exception message", configErrorIncompleteMessage, e.getMessage());
         assertTrue("Expected error message was not logged",
                    outputMgr.checkForMessages(configErrorIncompleteMessage));
     }

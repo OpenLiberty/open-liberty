@@ -206,7 +206,7 @@ public class UsernameAndPasswordLoginModuleTest extends LoginModuleTester {
         try {
             module.login();
         } catch (AuthenticationException e) {
-            assertEquals("Recieved wrong exception message",
+            assertEquals("Received wrong exception message",
                          "CWWKS1100A: Authentication did not succeed for user ID userName. An invalid user ID or password was specified.",
                          e.getMessage());
 
@@ -289,7 +289,8 @@ public class UsernameAndPasswordLoginModuleTest extends LoginModuleTester {
                     }
 
                     @Override
-                    public void describeTo(Description arg0) {}
+                    public void describeTo(Description arg0) {
+                    }
                 });
             }
         });

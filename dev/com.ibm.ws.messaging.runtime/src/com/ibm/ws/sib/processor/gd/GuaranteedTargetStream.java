@@ -543,7 +543,7 @@ public class GuaranteedTargetStream extends ControllableStream implements Target
                         repeatedValue = true;
                     }
 
-                    // It's acceptable to recieve the odd repeated value, for example a message
+                    // It's acceptable to receive the odd repeated value, for example a message
                     // is sent from the source slightly out of order with subsequent messages
                     // due to it's transaction taking longer to complete than others). So we (the
                     // target) see a gap appear, nack the gap (after a few milliseconds) then the
@@ -559,7 +559,7 @@ public class GuaranteedTargetStream extends ControllableStream implements Target
                     //     once a gap is introduced (by the sender overloading the socket) the gap
                     //     is nacked multiple times. This is due to the nack repetition timer (NRT)
                     //     popping multiple times before the re-sent message (from the first nack) is
-                    //     actually recieved and the NRT cancelled. This end-to-end delay has been seen due
+                    //     actually received and the NRT cancelled. This end-to-end delay has been seen due
                     //     to excessive buffering of inbound messages in the Comms layer before being
                     //     processed by us. This buffer in Comms can be configured using
                     //     com.ibm.ws.sib.jfapchanel.RL_DISPATCH_MAXQUEUESIZE. The excessive buffering

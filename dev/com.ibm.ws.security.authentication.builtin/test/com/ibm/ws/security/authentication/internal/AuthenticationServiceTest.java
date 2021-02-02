@@ -175,7 +175,7 @@ public class AuthenticationServiceTest {
                 authenticationServiceImpl.authenticate(null, (AuthenticationData) null, null);
                 fail("Expected an AuthenticationException as there is no JAAS service available");
             } catch (AuthenticationException e) {
-                assertEquals("Recieved wrong exception message",
+                assertEquals("Received wrong exception message",
                              "CWWKS1000E: The JAAS Service is unavailable.",
                              e.getMessage());
                 assertTrue("Expected error message was not logged", outputMgr.checkForStandardErr("CWWKS1000E: The JAAS Service is unavailable."));
@@ -470,7 +470,8 @@ public class AuthenticationServiceTest {
                 }
 
                 @Override
-                public void describeTo(Description arg0) {}
+                public void describeTo(Description arg0) {
+                }
             };
 
             final Action secondGetSubjectAction = new Action() {
@@ -481,7 +482,8 @@ public class AuthenticationServiceTest {
                 }
 
                 @Override
-                public void describeTo(Description arg0) {}
+                public void describeTo(Description arg0) {
+                }
             };
 
             mockery.checking(new Expectations() {

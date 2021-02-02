@@ -119,7 +119,7 @@ public class SipContainer
 
 	/**
 	 * Being modified when administrator sets quiesce on/off
-	 * State that the server will not recieve more calls 
+	 * State that the server will not receive more calls
 	 */
 	private boolean s_isInQuiesce = false;
 

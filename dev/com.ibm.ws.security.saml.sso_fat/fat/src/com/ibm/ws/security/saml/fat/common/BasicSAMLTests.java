@@ -738,7 +738,7 @@ public class BasicSAMLTests extends SAMLCommonTest {
         if (flowType.contains(SAMLConstants.IDP_INITIATED)) {
             theFlow = standardFlowExtendedKeepingCookies;
             expectations = helpers.setDefaultGoodSAMLExpectations(flowType, updatedTestSettings);
-            expectations = vData.addExpectation(expectations, SAMLConstants.INVOKE_ALTERNATE_APP, SAMLConstants.RESPONSE_FULL, SAMLConstants.STRING_CONTAINS, "Did not recieve Private Credential: Saml20Token in Alternate app output.", null, "Private Credential: Saml20Token");
+            expectations = vData.addExpectation(expectations, SAMLConstants.INVOKE_ALTERNATE_APP, SAMLConstants.RESPONSE_FULL, SAMLConstants.STRING_CONTAINS, "Did not receive Private Credential: Saml20Token in Alternate app output.", null, "Private Credential: Saml20Token");
             expectations = vData.addExpectation(expectations, SAMLConstants.INVOKE_ALTERNATE_APP, SAMLConstants.COOKIES, SAMLConstants.STRING_CONTAINS, "Conversation did NOT have an SP Cookie.", SAMLConstants.SP_COOKIE_PREFIX, null);
         } else {
             // for this flow, make sure that we land on the app and that we do NOT have any SP cookies
@@ -785,7 +785,7 @@ public class BasicSAMLTests extends SAMLCommonTest {
 
         theFlow = standardFlowExtendedKeepingCookies;
         expectations = helpers.setDefaultGoodSAMLExpectations(flowType, updatedTestSettings);
-        expectations = vData.addExpectation(expectations, SAMLConstants.INVOKE_ALTERNATE_APP, SAMLConstants.RESPONSE_FULL, SAMLConstants.STRING_CONTAINS, "Did not recieve Private Credential: Saml20Token in Alternate app output.", null, "Private Credential: Saml20Token");
+        expectations = vData.addExpectation(expectations, SAMLConstants.INVOKE_ALTERNATE_APP, SAMLConstants.RESPONSE_FULL, SAMLConstants.STRING_CONTAINS, "Did not receive Private Credential: Saml20Token in Alternate app output.", null, "Private Credential: Saml20Token");
         expectations = vData.addExpectation(expectations, SAMLConstants.INVOKE_ALTERNATE_APP, SAMLConstants.COOKIES, SAMLConstants.STRING_CONTAINS, "Conversation did NOT have an SP Cookie.", SAMLConstants.SP_COOKIE_PREFIX, null);
         expectations = vData.addExpectation(expectations, SAMLConstants.INVOKE_ALTERNATE_APP, SAMLConstants.RESPONSE_FULL, SAMLConstants.STRING_CONTAINS, "Output did NOT contain the issuer and should have", null, "SAMLIssuerName:" + testSettings.getIdpIssuer());
 
@@ -816,7 +816,7 @@ public class BasicSAMLTests extends SAMLCommonTest {
         if (flowType.contains(SAMLConstants.IDP_INITIATED)) {
             theFlow = standardFlowExtendedKeepingCookies;
             expectations = helpers.setDefaultGoodSAMLExpectations(flowType, updatedTestSettings);
-            expectations = vData.addExpectation(expectations, SAMLConstants.INVOKE_ALTERNATE_APP, SAMLConstants.RESPONSE_FULL, SAMLConstants.STRING_CONTAINS, "Did not recieve Private Credential: Saml20Token in Alternate app output.", null, "Private Credential: Saml20Token");
+            expectations = vData.addExpectation(expectations, SAMLConstants.INVOKE_ALTERNATE_APP, SAMLConstants.RESPONSE_FULL, SAMLConstants.STRING_CONTAINS, "Did not receive Private Credential: Saml20Token in Alternate app output.", null, "Private Credential: Saml20Token");
             expectations = vData.addExpectation(expectations, SAMLConstants.INVOKE_ALTERNATE_APP, SAMLConstants.COOKIES, SAMLConstants.STRING_CONTAINS, "Conversation did NOT have an LTPA Token.", SAMLConstants.LTPA_TOKEN_NAME, null);
         } else {
             // for this flow, make sure that we land on the app and that we do NOT have any SP cookies
@@ -866,7 +866,7 @@ public class BasicSAMLTests extends SAMLCommonTest {
 
         theFlow = standardFlowExtendedKeepingCookies;
         expectations = helpers.setDefaultGoodSAMLExpectations(flowType, updatedTestSettings);
-        expectations = vData.addExpectation(expectations, SAMLConstants.INVOKE_ALTERNATE_APP, SAMLConstants.RESPONSE_FULL, SAMLConstants.STRING_CONTAINS, "Did not recieve Private Credential: Saml20Token in Alternate app output.", null, "Private Credential: Saml20Token");
+        expectations = vData.addExpectation(expectations, SAMLConstants.INVOKE_ALTERNATE_APP, SAMLConstants.RESPONSE_FULL, SAMLConstants.STRING_CONTAINS, "Did not receive Private Credential: Saml20Token in Alternate app output.", null, "Private Credential: Saml20Token");
         expectations = vData.addExpectation(expectations, SAMLConstants.INVOKE_ALTERNATE_APP, SAMLConstants.COOKIES, SAMLConstants.STRING_CONTAINS, "Conversation did NOT have an LTPA Token.", SAMLConstants.LTPA_TOKEN_NAME, null);
         expectations = vData.addExpectation(expectations, SAMLConstants.INVOKE_ALTERNATE_APP, SAMLConstants.RESPONSE_FULL, SAMLConstants.STRING_CONTAINS, "Output did NOT contain the issuer and should have", null, "SAMLIssuerName:" + testSettings.getIdpIssuer());
 
