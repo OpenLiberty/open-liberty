@@ -79,8 +79,8 @@ Falls die Anwendung die Referenz jedoch ohne abnormale Beendigung verloren hat, 
 # {1} tick count when this was reported
 # {2} unknown or free
 InternalTransaction_OrphanDiagnostics=CWSOM0101W: Diagnose: {0} {1} {2}.
-InternalTransaction_OrphanDiagnostics.explanation=Interne Diagnosemeldung.
-InternalTransaction_OrphanDiagnostics.useraction=n/a.
+InternalTransaction_OrphanDiagnostics.explanation=Interne Diagnosenachricht.
+InternalTransaction_OrphanDiagnostics.useraction=Nicht zutreffend.
 
 # ----------------------------------------------------------------------------------------------------
 

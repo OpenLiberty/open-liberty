@@ -21,6 +21,6 @@
 #NLS_ENCODING=UNICODE
 
 # {0} is a space separated list of interface class names
-rest.client.interface.using.request.scope=CWWKW0750I: Las interfaces siguientes se configuran como RequestScoped, lo que da lugar a un rendimiento m\u00e1s lento: {0} 
+rest.client.interface.using.request.scope=CWWKW0750I: Las interfaces siguientes se configuran como RequestScoped, lo que da lugar a un rendimiento m\u00e1s lento: {0} Tenga en cuenta la posibilidad de utilizar ApplicationScoped para mejorar el rendimiento.
 rest.client.interface.using.request.scope.explanation=Las interfaces de cliente Rest de MicroProfile que tienen \u00e1mbito de solicitud se inicializan en cada solicitud, lo que suele dar lugar a c\u00e1lculos redundantes. Las interfaces con \u00e1mbito de aplicaci\u00f3n solo realizar\u00e1n el proceso de inicializaci\u00f3n una vez por instancia de aplicaci\u00f3n. Una interfaz se puede considerar como \u00e1mbito de solicitud si se anota con @RequestScoped o si se inyecta en un bean de CDI con \u00e1mbito de solicitud con la anotaci\u00f3n @Dependent o sin ninguna anotaci\u00f3n de \u00e1mbito.  
 rest.client.interface.using.request.scope.useraction=A menos que haya una raz\u00f3n v\u00e1lida para no hacerlo, considere a posibilidad de utilizar la anotaci\u00f3n @ApplicationScoped en la interfaz para evitar una inicializaci\u00f3n redundante.

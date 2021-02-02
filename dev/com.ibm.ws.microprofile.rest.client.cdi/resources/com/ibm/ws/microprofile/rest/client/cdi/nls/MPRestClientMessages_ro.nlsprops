@@ -21,6 +21,6 @@
 #NLS_ENCODING=UNICODE
 
 # {0} is a space separated list of interface class names
-rest.client.interface.using.request.scope=CWWKW0750I: Urm\u0103toarele interfe\u0163e sunt configurate ca RequestScoped ceea ce va avea ca rezultat o performan\u0163\u0103 mai sc\u0103zut\u0103: {0} 
+rest.client.interface.using.request.scope=CWWKW0750I: Urm\u0103toarele interfe\u0163e sunt configurate ca RequestScoped ceea ce va avea ca rezultat o performan\u0163\u0103 mai sc\u0103zut\u0103: {0} Lua\u0163i \u00een considerare utilizarea ApplicationScoped pentru o performan\u0163\u0103 mai bun\u0103.
 rest.client.interface.using.request.scope.explanation=Interfe\u0163ele MicroProfileRest Client care sunt scopate pe cerere sunt ini\u0163ializate pe fiecare cerere ceea ce implic\u0103 de multe ori calcule redundante. Interfe\u0163ele scopate pe aplica\u0163ie vor realiza procesul de ini\u0163ializare o dat\u0103 pe instan\u0163a de aplica\u0163ie. O interfa\u0163\u0103  poate fi considerat\u0103 scopat\u0103 pe cerere dac\u0103 este adnotat\u0103 cu @RequestScoped sau dac\u0103 este injectat\u0103 \u00eentr-un bean CDI scopat pe cerere fie cu adnotarea @Dependent, fie f\u0103r\u0103 nicio adnotare.  
 rest.client.interface.using.request.scope.useraction=Lua\u0163i \u00een considerare utilizarea adnot\u0103rii @ApplicationScoped pe interfa\u0163\u0103 pentru a evita ini\u0163ializarea redundant\u0103, \u00een afara cazurilor c\u00e2nd exist\u0103 un motiv valid s\u0103 nu face\u0163i aceasta.
