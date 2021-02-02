@@ -62,7 +62,7 @@ public class ParseJavaPolicy {
                     if (javaHome.endsWith("jre")) {
                         file=javaHome.concat("/lib/security/java.policy");
                     } else {
-                        file = javaHome.concat("jre/lib/security/java.policy");
+                        file = javaHome.concat("/jre/lib/security/java.policy");
                     }
                 }
             } 
