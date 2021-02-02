@@ -21,9 +21,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.jar.Manifest;
 import java.util.regex.Pattern;
 
@@ -682,10 +684,14 @@ public class FeatureDefinitionUtils {
                     return Collections.emptyList();
                 }
 
-                Map<String, Map<String, String>> data = ManifestHeaderProcessor.parseImportString(contents);
+                // using parseExportString to maintain order; but need to prevent dups
+                List<NameValuePair> data = ManifestHeaderProcessor.parseExportString(contents);
                 result = new ArrayList<FeatureResource>(data.size());
-                for (Map.Entry<String, Map<String, String>> entry : data.entrySet()) {
-                    result.add(new FeatureResourceImpl(entry.getKey(), entry.getValue(), iAttr.bundleRepositoryType, iAttr.featureName, iAttr.activationType));
+                Set<String> preventDups = new HashSet<>();
+                for (NameValuePair content : data) {
+                    if (preventDups.add(content.getName())) {
+                        result.add(new FeatureResourceImpl(content.getName(), content.getAttributes(), iAttr.bundleRepositoryType, iAttr.featureName, iAttr.activationType));
+                    }
                 }
 
                 subsystemContent = result;
