@@ -790,7 +790,7 @@ public class ProducerServlet extends HttpServlet {
                                                             "First run the ProducerService to delete the app. AppName = " + appName);
 
             assertTrue(isValidResponse);
-            id = "Expected AlreadyExistException recieved.";
+            id = "Expected AlreadyExistException received.";
         } finally {
             // stop the grpc service
             helper.stopService();

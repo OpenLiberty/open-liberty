@@ -178,7 +178,7 @@ public class Lock
           {
             FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.Lock.getSharedLock", "180", this);
             if (tc.isDebugEnabled()) Tr.debug(tc, "Thread " + Integer.toHexString(currentThread.hashCode()) + " was interrupted unexpectedly during wait. Retesting condition");
-            // This exception is recieved if another thread interrupts this thread by calling this threads 
+            // This exception is received if another thread interrupts this thread by calling this threads 
             // Thread.interrupt method. The Lock class does not use this mechanism for breaking out of the
             // wait call - it uses notifyAll to wake up all waiting threads. This exception should never
             // be generated. If for some reason it is called then ignore it and start to wait again.
@@ -327,7 +327,7 @@ public class Lock
             {
               FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.Lock.attemptExclusiveLock", "325", this);
               if (tc.isDebugEnabled()) Tr.debug(tc, "Thread " + Integer.toHexString(currentThread.hashCode()) + " was interrupted unexpectedly during wait. Retesting condition");
-              // This exception is recieved if another thread interrupts this thread by calling this threads 
+              // This exception is received if another thread interrupts this thread by calling this threads 
               // Thread.interrupt method. The Lock class does not use this mechanism for breaking out of the
               // wait call - it uses notifyAll to wake up all waiting threads. This exception should never
               // be generated. If for some reason it is called then ignore it and start to wait again.
@@ -364,7 +364,7 @@ public class Lock
             {
               FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.Lock.attemptExclusiveLock", "362", this);
               if (tc.isDebugEnabled()) Tr.debug(tc, "Thread " + Integer.toHexString(currentThread.hashCode()) + " was interrupted unexpectedly during wait. Retesting condition");
-              // This exception is recieved if another thread interrupts this thread by calling this threads 
+              // This exception is received if another thread interrupts this thread by calling this threads 
               // Thread.interrupt method. The Lock class does not use this mechanism for breaking out of the
               // wait call - it uses notifyAll to wake up all waiting threads. This exception should never
               // be generated. If for some reason it is called then ignore it and start to wait again.

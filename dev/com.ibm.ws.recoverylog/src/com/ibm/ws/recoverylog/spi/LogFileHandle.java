@@ -1015,7 +1015,7 @@ class LogFileHandle
     //------------------------------------------------------------------------------
     /**
      * Called by the controlling logic to inform this file handle that it represents
-     * a brand new file that has been selected to recieve the first data written to
+     * a brand new file that has been selected to receive the first data written to
      * the log. This method will only be called during a cold start when there are
      * no existing log files available for recovery. Both file handles that make up
      * the log have been pre-set to INACTIVE state and this method is used to set

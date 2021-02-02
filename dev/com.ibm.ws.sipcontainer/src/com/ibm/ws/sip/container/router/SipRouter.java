@@ -1147,7 +1147,7 @@ public class SipRouter {
             //Continue processing 
             handleRequest(request, transactoinUser, serverTransaction);
         } else {            
-            //send an Error response on Cancel request that was recieved
+            //send an Error response on Cancel request that was received
             // on the terminated transaction - Invite was already answered 
             // with final response
             if (c_logger.isTraceDebugEnabled()) {

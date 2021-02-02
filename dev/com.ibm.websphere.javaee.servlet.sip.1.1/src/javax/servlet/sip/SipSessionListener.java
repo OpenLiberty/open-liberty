@@ -15,7 +15,7 @@ import java.util.EventListener;
 /**
  * Implementations of this interface are notified of changes to the list
  * of active <code>SipSessions</code> in a SIP servlet application. To
- * recieve notification events, the implementation class must be configured
+ * receive notification events, the implementation class must be configured
  * in the deployment descriptor for the SIP application.
  */
 public interface SipSessionListener extends EventListener {

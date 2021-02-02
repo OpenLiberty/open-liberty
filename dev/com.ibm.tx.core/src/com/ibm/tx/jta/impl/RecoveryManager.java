@@ -1506,7 +1506,7 @@ public class RecoveryManager implements Runnable {
             else if (XArecovered && (_recoveringTransactions.size() == 0)) {
                 // NOTE TO REVIEWERS - should we close the logs here or in shutdown?
                 // shutdown is always called.  We should not remove the RM from _activeRecoveryManagers
-                // until shutdown as we may recieve commit/rollback for completed transactions.
+                // until shutdown as we may receive commit/rollback for completed transactions.
 
                 // NOTE it is NOT possible that shutdown is racing us to close the logs - it will be waiting in prepareToShutdown
                 if (tc.isDebugEnabled())

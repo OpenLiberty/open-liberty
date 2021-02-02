@@ -729,7 +729,7 @@ public final class CustomProperties
         com.ibm.ws.sib.utils.Runtime.changedPropertyValue(key, value);
       }
       // (510343)
-      // It's acceptable to recieve the odd repeated value, for example a message
+      // It's acceptable to receive the odd repeated value, for example a message
       // is sent from the source slightly out of order with subsequent messages
       // due to it's transaction taking longer to complete than others). So we (the
       // target) see a gap appear, nack the gap (after a few milliseconds) then the
@@ -746,7 +746,7 @@ public final class CustomProperties
       //     once a gap is introduced (by the sender overloading the socket) the gap
       //     is nacked multiple times. This is due to the nack repetition timer (NRT)
       //     popping multiple times before the re-sent message (from the first nack) is
-      //     actually recieved and the NRT cancelled. This end-to-end delay has been seen due
+      //     actually received and the NRT cancelled. This end-to-end delay has been seen due
       //     to excessive buffering of inbound messages in the Comms layer before being
       //     processed by us. This buffer in Comms can be configured using
       //     com.ibm.ws.sib.jfapchanel.RL_DISPATCHER_MAXQUEUESIZE. The excessive buffering
@@ -791,7 +791,7 @@ public final class CustomProperties
       
       // Due to threading and differences in the time it takes to complete the commit of a transaction
       // (this is NOT related to the time between sending a message and committing the transaction
-      // though), it is legitimate to recieve messages out of order on a stream. This is why the delay
+      // though), it is legitimate to receive messages out of order on a stream. This is why the delay
       // between detecting a gap and NACKing it exists.
       
       // However, if the NACKing is too eager it will result in messages that haven't been dropped but

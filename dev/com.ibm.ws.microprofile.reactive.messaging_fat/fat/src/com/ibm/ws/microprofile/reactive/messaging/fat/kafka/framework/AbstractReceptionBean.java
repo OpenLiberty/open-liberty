@@ -26,13 +26,13 @@ import org.eclipse.microprofile.reactive.messaging.Message;
 /**
  * Test bean to monitor reception of messages from reactive messaging
  * <p>
- * To use this class, subclass it and override {@link #recieveMessage(Message)} to add {@code @Incoming} and {@code @Acknowledgement} annotations.
+ * To use this class, subclass it and override {@link #receiveMessage(Message)} to add {@code @Incoming} and {@code @Acknowledgement} annotations.
  */
 public class AbstractReceptionBean<T> {
 
     private final Queue<Message<T>> receivedMessages = new LinkedList<>();
 
-    public CompletionStage<Void> recieveMessage(Message<T> msg) {
+    public CompletionStage<Void> receiveMessage(Message<T> msg) {
         synchronized (this) {
             receivedMessages.add(msg);
             this.notifyAll();

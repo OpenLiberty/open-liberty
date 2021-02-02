@@ -59,7 +59,7 @@ public class SecPermAnnInvLoc1 extends ActivationSpecBase {
         destination = dest;
         if (DebugTracer.isDebugActivationSpec()) {
             PrintStream out = DebugTracer.getPrintStream();
-            out.println("SecPermAnnInvLoc1.setDestination(): recieved dest: ");
+            out.println("SecPermAnnInvLoc1.setDestination(): received dest: ");
             out.println("toString(): " + destination.toString());
             out.println("Class: " + destination.getClass().getName());
             out.println("End SecPermAnnInvLoc1.setDestination()");

@@ -62,7 +62,7 @@ public interface JmsJcaActivationSpec extends ActivationSpec, Serializable {
     String getPassword();
 
     /**
-     * Set the destination to recieve messages from
+     * Set the destination to receive messages from
      * 
      * @param destination
      *            the destination
@@ -70,7 +70,7 @@ public interface JmsJcaActivationSpec extends ActivationSpec, Serializable {
     void setDestination(Destination destination);
 
     /**
-     * Get the destination to recieve messages from
+     * Get the destination to receive messages from
      * 
      * @return the destination.
      */

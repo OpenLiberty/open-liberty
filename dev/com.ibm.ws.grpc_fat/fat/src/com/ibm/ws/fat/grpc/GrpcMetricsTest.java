@@ -64,7 +64,7 @@ public class GrpcMetricsTest extends FATServletClient {
                                       "com.ibm.ws.fat.grpc.tls");
 
         grpcMetricsServer.startServer(GrpcMetricsTest.class.getSimpleName() + ".log");
-        assertNotNull("CWWKO0219I.*ssl not recieved", grpcMetricsServer.waitForStringInLog("CWWKO0219I.*ssl"));
+        assertNotNull("CWWKO0219I.*ssl not received", grpcMetricsServer.waitForStringInLog("CWWKO0219I.*ssl"));
     }
 
     @AfterClass

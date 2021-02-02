@@ -72,7 +72,7 @@ public class PluginUtilityGenerateTest {
                 remoteAccessServer.waitForStringInLog("CWWKF0011I"));
 
         // wait for LTPA key to be available to avoid CWWKS4000E
-        assertNotNull("CWWKS4105I.* not recieved on remoteAccessServer",
+        assertNotNull("CWWKS4105I.* not received on remoteAccessServer",
                 remoteAccessServer.waitForStringInLog("CWWKS4105I.*"));
     }
 

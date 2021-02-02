@@ -64,7 +64,7 @@ public class ActivationSpecImpl extends ActivationSpecBase {
         _dest = (Destination) dest;
         if (DebugTracer.isDebugActivationSpec()) {
             PrintStream out = DebugTracer.getPrintStream();
-            out.println("ActivationSpecImpl.setDestination(): recieved dest: ");
+            out.println("ActivationSpecImpl.setDestination(): received dest: ");
             out.println("toString(): " + dest.toString());
             out.println("Class: " + dest.getClass().getName());
             out.println("End ActivationSpecImpl.setDestination()");

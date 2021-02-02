@@ -390,7 +390,7 @@ public class HashtableLoginModuleTest extends LoginModuleTester {
             module.login();
             fail("");
         } catch (AuthenticationException e) {
-            assertEquals("Recieved wrong exception message",
+            assertEquals("Received wrong exception message",
                          "CWWKS1100A: Authentication did not succeed for user ID userId. An invalid user ID or password was specified.",
                          e.getMessage());
             assertTrue("Expected audit message was not logged",
@@ -533,7 +533,8 @@ public class HashtableLoginModuleTest extends LoginModuleTester {
                     }
 
                     @Override
-                    public void describeTo(Description arg0) {}
+                    public void describeTo(Description arg0) {
+                    }
                 });
             }
         });
