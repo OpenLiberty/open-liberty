@@ -13,7 +13,10 @@
 bVersion=1.0
 
 src: \
-  fat/src
+  fat/src,\
+  test-applications/samltoken/src,\
+  test-applications/samlcallerclient/src,\
+  test-applications/samlcallertoken/src
   
 
 fat.project: true
