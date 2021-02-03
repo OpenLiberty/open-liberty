@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -321,9 +321,7 @@ public class MvnUtils {
         // be different.
         stringArrayList.add("-DsuiteXmlFile=" + getSuiteFileName());
 
-        // add timestamps to mvnOutput
-        stringArrayList.add("-Dorg.slf4j.simpleLogger.showDateTime=true");
-        stringArrayList.add("-Dorg.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss,SSS");
+        // Batch mode, gives better output when logged to a file and allows timestamps to be enabled
         stringArrayList.add("-B");
 
         // add any additional properties passed
@@ -965,6 +963,12 @@ public class MvnUtils {
      */
     public static int runCmd(String[] cmd, File workingDirectory, File outputFile) throws IOException, InterruptedException {
         ProcessBuilder pb = new ProcessBuilder(cmd);
+
+        // Enables timestamps in the mvnOutput logs
+        pb.environment()
+                        .put("MAVEN_OPTS", "-Dorg.slf4j.simpleLogger.showDateTime=true" +
+                                           " -Dorg.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss,SSS");
+
         pb.directory(workingDirectory);
         pb.redirectOutput(outputFile);
         pb.redirectErrorStream(true);
