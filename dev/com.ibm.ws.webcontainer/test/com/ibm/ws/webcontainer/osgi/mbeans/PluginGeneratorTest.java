@@ -39,12 +39,12 @@ import org.jmock.api.Action;
 import org.jmock.api.Invocation;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
-import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.w3c.dom.Comment;
@@ -65,15 +65,11 @@ import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.location.WsResource;
 
 import test.common.SharedOutputManager;
-import test.common.junit.rules.MaximumJavaLevelRule;
 
 /**
  *
  */
 public class PluginGeneratorTest {
-    
-    @ClassRule
-    public static MaximumJavaLevelRule maxLevel = new MaximumJavaLevelRule(8);
     
     private static SharedOutputManager outputMgr = SharedOutputManager.getInstance().trace("*=info:webcontainer=all");
 
@@ -102,6 +98,7 @@ public class PluginGeneratorTest {
     public TestRule rule = outputMgr;
 
     final BundleContext mockBundleContext = context.mock(BundleContext.class);
+    final Bundle mockBundle = context.mock(Bundle.class);
     final WsLocationAdmin mockLocationAdmin = context.mock(WsLocationAdmin.class);
     final DynamicVirtualHostManager mockVhostMgr = context.mock(DynamicVirtualHostManager.class);
     final DynamicVirtualHost mockDefaultHost = context.mock(DynamicVirtualHost.class, "default_host");
@@ -125,6 +122,12 @@ public class PluginGeneratorTest {
 
         context.checking(new Expectations() {
             {
+                allowing(mockBundleContext).getBundle();
+                will(returnValue(mockBundle));
+
+                allowing(mockBundle).getDataFile("cached-PluginCfg.xml");
+                will(returnValue(new File("")));
+
                 allowing(mockLocationAdmin).getServerName();
                 will(returnValue("SystemProvidedServerName"));
 
@@ -160,9 +163,15 @@ public class PluginGeneratorTest {
         assertFalse("clusterServer1 " + clusterServers.get(0), clusterServers.get(0).transports.get(0).isSslEnabled);
     }
 
-    private void setCommentExpectations() throws Exception {
+    private void setCommonExpectations() throws Exception {
         context.checking(new Expectations() {
             {
+                allowing(mockBundleContext).getBundle();
+                will(returnValue(mockBundle));
+
+                allowing(mockBundle).getDataFile("cached-PluginCfg.xml");
+                will(returnValue(new File("")));
+
                 allowing(element).getOwnerDocument();
                 will(returnValue(doc));
 
@@ -187,7 +196,7 @@ public class PluginGeneratorTest {
     }
 
     private void setCommonVHostExpectations() throws Exception {
-        setCommentExpectations();
+        setCommonExpectations();
         context.checking(new Expectations() {
             {
                 allowing(mockLocationAdmin).getServerName();
@@ -290,7 +299,7 @@ public class PluginGeneratorTest {
         final DynamicVirtualHost mockAltHost = context.mock(DynamicVirtualHost.class, "alternate");
         final ServiceReference<?> mockAltVhostRef = context.mock(ServiceReference.class, "alternateRef");
 
-        setCommentExpectations();
+        setCommonExpectations();
 
         context.checking(new Expectations() {
             {
@@ -460,7 +469,7 @@ public class PluginGeneratorTest {
     public void testServerIOTimeoutRetry() throws Exception {
         setCommonVHostExpectations();
         setXMLGenerateExpectations();
-        setCommentExpectations();
+        setCommonExpectations();
 
         // set expectations specific for this test
         context.checking(new Expectations() {
@@ -536,7 +545,7 @@ public class PluginGeneratorTest {
     public void testImplicitDefaultXMLGenerate() throws Exception {
         setCommonVHostExpectations();
         setXMLGenerateExpectations();
-        setCommentExpectations();
+        setCommonExpectations();
         commonImplicitSetup();
 
         Map<String, Object> config = new HashMap<String, Object>();
@@ -597,7 +606,7 @@ public class PluginGeneratorTest {
     public void testExplicitXMLGenerate() throws Exception {
         setCommonVHostExpectations();
         setXMLGenerateExpectations();
-        setCommentExpectations();
+        setCommonExpectations();
 
         // set expectations specific for this test
         context.checking(new Expectations() {
@@ -667,7 +676,7 @@ public class PluginGeneratorTest {
     public void testAdditionalProperties() throws Exception {
         setCommonVHostExpectations();
         setXMLGenerateExpectations();
-        setCommentExpectations();
+        setCommonExpectations();
 
         // set expectations specific for this test
         context.checking(new Expectations() {
@@ -736,7 +745,7 @@ public class PluginGeneratorTest {
     public void testLoadBalanceWeight() throws Exception {
         setCommonVHostExpectations();
         setXMLGenerateExpectations();
-        setCommentExpectations();
+        setCommonExpectations();
 
         // set expectations specific for this test
         context.checking(new Expectations() {
@@ -798,7 +807,7 @@ public class PluginGeneratorTest {
     public void testDisableESI() throws Exception {
         setCommonVHostExpectations();
         setXMLGenerateExpectations();
-        setCommentExpectations();
+        setCommonExpectations();
 
         // set expectations specific for this test
         context.checking(new Expectations() {
@@ -868,7 +877,7 @@ public class PluginGeneratorTest {
     public void testServerRole() throws Exception {
         setCommonVHostExpectations();
         setXMLGenerateExpectations();
-        setCommentExpectations();
+        setCommonExpectations();
 
         // set expectations specific for this test
         context.checking(new Expectations() {

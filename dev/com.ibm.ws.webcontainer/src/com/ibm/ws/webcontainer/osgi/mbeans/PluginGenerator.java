@@ -208,7 +208,7 @@ public class PluginGenerator {
 
     /** Wrapped method for getting the bundle context: required for test */
     protected BundleContext getBundleContext() {
-        return FrameworkUtil.getBundle(PluginGenerator.class).getBundleContext();
+        return context;
     }
 
     private boolean isBundleUninstalled() {
