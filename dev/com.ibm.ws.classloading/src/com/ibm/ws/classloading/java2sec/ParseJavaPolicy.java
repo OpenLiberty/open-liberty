@@ -77,6 +77,12 @@ public class ParseJavaPolicy {
                 return;
             }
 
+            File fileToCheck = new File(file);
+            if (!fileToCheck.exists()) {
+                // no java.policy file found, just return
+                return;
+            }
+            
             fr = new FileReader(file);
             
             init(fr, expandProp);
