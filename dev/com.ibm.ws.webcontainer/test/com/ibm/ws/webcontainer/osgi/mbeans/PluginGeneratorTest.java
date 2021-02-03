@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -150,7 +150,7 @@ public class PluginGeneratorTest {
         config.put("httpEndpointRef", "Endpoint1");
 
         PluginGenerator pluginGen = new PluginGenerator(config, mockLocationAdmin, mockBundleContext);
-        pluginGen.buildServerTransportData("serverName", "dummyId", mockEndpointInfo, clusterServers, false);
+        pluginGen.buildServerTransportData("serverName", "dummyId", mockEndpointInfo, clusterServers, false, mockWebContainer);
         System.out.println(clusterServers);
         assertEquals("1 elements in server data list", 1, clusterServers.size());
 
