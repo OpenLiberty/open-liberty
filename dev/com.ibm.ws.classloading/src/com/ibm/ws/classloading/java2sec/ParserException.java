@@ -11,7 +11,7 @@
 package com.ibm.ws.classloading.java2sec;
 
 /**
- *
+ *  Syntax error in the permission grant, throw an exception
  */
 public class ParserException extends java.security.GeneralSecurityException {
     

@@ -15,8 +15,27 @@ import java.util.List;
 import java.util.Iterator;
 
 /**
+ *  
+ *  Each grant entry includes one or more "permission entries" preceded by optional codeBase, 
+ *  signedBy, and principal name/value pairs that specify which code you want to grant the 
+ *  permissions. The basic format of a grant entry is the following:
  *
+ * grant signedBy "signer_names", codeBase "URL",
+ *       principal principal_class_name "principal_name",
+ *       principal principal_class_name "principal_name",
+ *       ... {
+ *
+ *     permission permission_class_name "target_name", "action", 
+ *         signedBy "signer_names";
+ *     permission permission_class_name "target_name", "action", 
+ *         signedBy "signer_names";
+ *     ...
+ * };
+ * 
+ * In this implementation, codeBase and signedBy map accordingly.  
+ * permissionEntries is an arraylist of permissions granted to this codeBase.
  */
+
 public class GrantEntry {
     
     String codeBase;
@@ -24,15 +43,6 @@ public class GrantEntry {
     private List permissionEntries = new ArrayList();
 
     
-    final static String NEW_LINE = System.getProperty("line.separator");
-    final static String QUOTED_STRING = "quoted string";
-    final static String PERMISSION_TYPE = "permission type";
-    final static String GRANT_KEYWORD = "grant";
-    final static String KEYSTORE_KEYWORD = "keystore";
-    final static String CODEBASE_KEYWORD = "codeBase";
-    final static String PERMISSION_KEYWORD = "permission";
-    final static String SIGNEDBY_KEYWORD = "signedBy";
-    final static String FILTER_KEYWORD = "filterMask";
 
     public GrantEntry() {
     }
@@ -70,22 +80,22 @@ public class GrantEntry {
 
     public String toString() {
         StringBuffer buf = new StringBuffer(permissionEntries.size() * 40);
-        buf.append(GRANT_KEYWORD).append(' ');
+        buf.append(Constants.GRANT_KEYWORD).append(' ');
         if (codeBase != null) {
-            buf.append(CODEBASE_KEYWORD).append(" \"").append(codeBase).append("\" ");
+            buf.append(Constants.CODEBASE_KEYWORD).append(" \"").append(codeBase).append("\" ");
             if (signedBy != null) {
                 buf.append(", ");
             }
         }
         if (signedBy != null) {
-            buf.append(SIGNEDBY_KEYWORD).append(" \"").append(signedBy).append("\" ");
+            buf.append(Constants.SIGNEDBY_KEYWORD).append(" \"").append(signedBy).append("\" ");
         }
-        buf.append('{').append(NEW_LINE);
+        buf.append('{').append(Constants.NEW_LINE);
         Iterator it = permissionEntries.iterator();
         while (it.hasNext()) {
             buf.append(it.next().toString());
         }
-        buf.append("};").append(NEW_LINE);
+        buf.append("};").append(Constants.NEW_LINE);
         return buf.toString();
     }
 

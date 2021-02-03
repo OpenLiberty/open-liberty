@@ -11,7 +11,8 @@
 package com.ibm.ws.classloading.java2sec;
 
 /**
- *
+ *  Utility class that reads the policy file, and indicates if eof is reached or if a particular character
+ *  matches an expectation.     Aids in parsing the policy file as well as ensuring the syntax is as expected.
  */
 import java.io.*;
 
