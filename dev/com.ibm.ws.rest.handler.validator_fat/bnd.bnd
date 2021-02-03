@@ -24,7 +24,11 @@ tested.features: mpOpenApi-2.0,\
                  mpConfig-2.0,\
                  jsonp-1.1,\
                  jaxrsclient-2.1,\
-                 jaxrs-2.1
+                 jaxrs-2.1,\
+                 componenttest-2.0,\
+                 appSecurity-4.0,\
+                 messaging-3.0,\
+                 connectors-2.0
 
 -buildpath: \
 	com.ibm.websphere.javaee.annotation.1.2;version=latest,\
