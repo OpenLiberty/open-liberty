@@ -77,7 +77,7 @@ Se, no entanto, o aplicativo perdeu sua refer\u00eancia sem ser finalizado de fo
 # {0} the orphan transaction
 # {1} tick count when this was reported
 # {2} unknown or free
-InternalTransaction_OrphanDiagnostics=CWSOM0101W: Diagn\u00f3stico: {0} {1} {2}.
+InternalTransaction_OrphanDiagnostics=CWSOM0101W: Diagn\u00f3sticos: {0} {1} {2}.
 InternalTransaction_OrphanDiagnostics.explanation=Mensagem de diagn\u00f3stico interno.
 InternalTransaction_OrphanDiagnostics.useraction=n/a.
 

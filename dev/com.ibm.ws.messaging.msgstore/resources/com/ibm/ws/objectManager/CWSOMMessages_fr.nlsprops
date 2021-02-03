@@ -78,9 +78,9 @@ Cependant, si l'application a perdu sa r\u00e9f\u00e9rence sans se terminer anor
 # {0} the orphan transaction
 # {1} tick count when this was reported
 # {2} unknown or free
-InternalTransaction_OrphanDiagnostics=CWSOM0101W: Diagnostique: {0} {1} {2}.
+InternalTransaction_OrphanDiagnostics=CWSOM0101W: Diagnostic : {0} {1} {2}.
 InternalTransaction_OrphanDiagnostics.explanation=Message de diagnostic interne.
-InternalTransaction_OrphanDiagnostics.useraction=n/a.
+InternalTransaction_OrphanDiagnostics.useraction=N/A
 
 # ----------------------------------------------------------------------------------------------------
 

@@ -168,6 +168,7 @@ decompression.tolerance.reached.useraction=Je\u015bli ten wyj\u0105tek wyst\u011
 cookies.samesite.duplicateName=CWWKT0035W: W konfiguracji SameSite [{1}] znaleziono zduplikowan\u0105 nazw\u0119 lub wzorzec informacji cookie [{0}]. Nazwa lub wzorzec informacji cookie [{0}] b\u0119d\u0105 ignorowane dla wszystkich list konfiguracji. Ka\u017cda nazwa lub wzorzec informacji cookie, kt\u00f3re s\u0105 zdefiniowane przez konfiguracje ''lax'', ''none'' i ''strict'', mog\u0105 by\u0107 zdefiniowane tylko w jednej z tych trzech konfiguracji.
 cookies.samesite.duplicateName.explanation=Podana warto\u015b\u0107 zosta\u0142a ju\u017c znaleziona przez konfiguracj\u0119 i odwzorowana na warto\u015b\u0107 SameSite.
 cookies.samesite.duplicateName.useraction=Upewnij si\u0119, \u017ce nazwy i wzorce informacji cookie s\u0105 unikalne w obr\u0119bie list konfiguracji 'lax', 'none' i 'strict'.
+
 cookies.samesite.unsupportedWildcard=CWWKT0036W: Podj\u0119to pr\u00f3b\u0119 nieobs\u0142ugiwanego u\u017cycia znaku wieloznacznego w warto\u015bci [{0}]. Dla tej warto\u015bci nie ustawiono konfiguracji SameSite.
 cookies.samesite.unsupportedWildcard.explanation=Znak wieloznaczny (*) zosta\u0142 u\u017cyty w nieobs\u0142ugiwany spos\u00f3b. Obs\u0142ugiwany jest jeden znak wieloznaczny (*) stosowany jako warto\u015b\u0107 autonomiczna lub po dowolnej liczbie przedrostk\u00f3w nazw informacji cookie.
 cookies.samesite.unsupportedWildcard.useraction=Upewnij si\u0119, \u017ce dla ka\u017cdego wzorca na listach 'lax', 'none' i 'strict' u\u017cywany jest tylko jeden znak wieloznaczny (*). Ponadto u\u017cycie tego znaku jest obs\u0142ugiwane tylko wtedy, gdy jest on u\u017cywany jako warto\u015b\u0107 autonomiczna albo po przedrostkach nazw informacji cookie.
@@ -175,3 +176,11 @@ cookies.samesite.unsupportedWildcard.useraction=Upewnij si\u0119, \u017ce dla ka
 cookies.samesite.knownDuplicateName=CWWKT0037W: W konfiguracji obiektu SameSite [{1}] znaleziono nazw\u0119 lub wzorzec informacji cookie [{0}] oznaczony jako zduplikowany. Nazwa lub wzorzec informacji cookie [{0}] zostan\u0105 zignorowane. Ka\u017cda nazwa lub wzorzec informacji cookie, kt\u00f3re s\u0105 zdefiniowane przez konfiguracje ''lax'', ''none'' i ''strict'', mog\u0105 by\u0107 zdefiniowane tylko w jednej z tych trzech konfiguracji.
 cookies.samesite.knownDuplicateName.explanation=Podana warto\u015b\u0107 zosta\u0142a ju\u017c znaleziona przez konfiguracj\u0119 i odwzorowana na warto\u015b\u0107 SameSite.
 cookies.samesite.knownDuplicateName.useraction=Upewnij si\u0119, \u017ce nazwy i wzorce informacji cookie s\u0105 unikalne w obr\u0119bie list konfiguracji 'lax', 'none' i 'strict'.
+
+trusted.header.origin.invalid.value=CWWKT0038W: Skonfigurowana warto\u015b\u0107 trustedHeaderOrigin [{0}] jest niepoprawna i nie mo\u017cna jej u\u017cy\u0107.
+trusted.header.origin.invalid.value.explanation=Okre\u015blona warto\u015b\u0107 musi by\u0107 albo pe\u0142nym adresem IP, albo nazw\u0105 hosta w prawid\u0142owym formacie.
+trusted.header.origin.invalid.value.useraction=Upewnij si\u0119, \u017ce skonfigurowane adresy IP zawieraj\u0105 warto\u015bci we wszystkich segmentach, a nazwy host\u00f3w nie zawieraj\u0105 niedozwolonych znak\u00f3w.
+
+trusted.sensitive.header.origin.invalid.value=CWWKT0039W: Skonfigurowana warto\u015b\u0107 trustedSensitiveHeaderOrigin [{0}] jest niepoprawna i nie mo\u017cna jej u\u017cy\u0107.
+trusted.sensitive.header.origin.invalid.value.explanation=Okre\u015blona warto\u015b\u0107 musi by\u0107 albo pe\u0142nym adresem IP, albo nazw\u0105 hosta w prawid\u0142owym formacie.
+trusted.sensitive.header.origin.invalid.value.useraction=Upewnij si\u0119, \u017ce skonfigurowane adresy IP zawieraj\u0105 warto\u015bci we wszystkich segmentach, a nazwy host\u00f3w nie zawieraj\u0105 niedozwolonych znak\u00f3w.

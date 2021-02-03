@@ -175,3 +175,11 @@ cookies.samesite.unsupportedWildcard.useraction=Aseg\u00farese de que s\u00f3lo 
 cookies.samesite.knownDuplicateName=CWWKT0037W: Se ha encontrado un patr\u00f3n o nombre de cookie [{0}], que se ha marcado como duplicado, en la configuraci\u00f3n de SameSite [{1}]. Se ignora el patr\u00f3n o nombre de cookie [{0}]. Cualquier nombre o patr\u00f3n de cookie definido por las configuraciones lax, none y strict se puede definir s\u00f3lo en una de las tres configuraciones.
 cookies.samesite.knownDuplicateName.explanation=El valor especificado ya lo ha encontrado la configuraci\u00f3n y se ha correlacionado con un valor de SameSite.
 cookies.samesite.knownDuplicateName.useraction=Aseg\u00farese de que los nombres y patrones de cookie son exclusivos en las listas de configuraci\u00f3n lax, none y strict.
+
+trusted.header.origin.invalid.value=CWWKT0038W: El valor TrustedHeaderOrigin configurado [{0}] no es v\u00e1lido y no se puede utilizar.
+trusted.header.origin.invalid.value.explanation=El valor especificado debe ser una direcci\u00f3n IP completa o un nombre de host con el formato correcto.
+trusted.header.origin.invalid.value.useraction=Aseg\u00farese de que las direcciones IP configuradas contienen un valor para cada segmento y que los nombres de host no contienen caracteres no v\u00e1lidos.
+
+trusted.sensitive.header.origin.invalid.value=CWWKT0039W: El valor trustedSensitiveHeaderOrigin configurado [{0}] no es v\u00e1lido y no se puede utilizar.
+trusted.sensitive.header.origin.invalid.value.explanation=El valor especificado debe ser una direcci\u00f3n IP completa o un nombre de host con el formato correcto.
+trusted.sensitive.header.origin.invalid.value.useraction=Aseg\u00farese de que las direcciones IP configuradas contienen un valor para cada segmento y que los nombres de host no contienen caracteres no v\u00e1lidos.

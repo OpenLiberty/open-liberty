@@ -77,9 +77,9 @@ Totu\u015fi dac\u0103 aplica\u0163ia a pierdut referin\u0163a sa f\u0103r\u0103 
 # {0} the orphan transaction
 # {1} tick count when this was reported
 # {2} unknown or free
-InternalTransaction_OrphanDiagnostics=CWSOM0101W: Diagnostice: {0} {1} {2}.
-InternalTransaction_OrphanDiagnostics.explanation=Mesaj de diagnostic intern.
-InternalTransaction_OrphanDiagnostics.useraction=n/a.
+InternalTransaction_OrphanDiagnostics=CWSOM0101W: Diagnoze: {0} {1} {2}.
+InternalTransaction_OrphanDiagnostics.explanation=Mesaj de diagnoz\u0103 intern\u0103.
+InternalTransaction_OrphanDiagnostics.useraction=Nu este disponibil\u0103.
 
 # ----------------------------------------------------------------------------------------------------
 

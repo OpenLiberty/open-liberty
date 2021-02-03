@@ -78,8 +78,8 @@ InternalTransaction_BackoutOrphan.useraction=\uc560\ud50c\ub9ac\ucf00\uc774\uc15
 # {1} tick count when this was reported
 # {2} unknown or free
 InternalTransaction_OrphanDiagnostics=CWSOM0101W: \uc9c4\ub2e8: {0} {1} {2}.
-InternalTransaction_OrphanDiagnostics.explanation=\ub0b4\ubd80 \uc9c4\ub2e8 \uba54\uc2dc\uc9c0.
-InternalTransaction_OrphanDiagnostics.useraction=n/a.
+InternalTransaction_OrphanDiagnostics.explanation=\ub0b4\ubd80 \uc9c4\ub2e8 \uba54\uc2dc\uc9c0\uc785\ub2c8\ub2e4.
+InternalTransaction_OrphanDiagnostics.useraction=\ud574\ub2f9\uc0ac\ud56d \uc5c6\uc74c.
 
 # ----------------------------------------------------------------------------------------------------
 
@@ -163,6 +163,7 @@ InvalidObjectToStoreException_info.useraction=\uc800\uc7a5\ub420 ManagedObject\u
 StoreSequenceException_info=CWSOM1009E: ObjectStore={0}(ObjectStore)\uc774(\uac00) {2}(ManagedObject)\uc5d0\uc11c \uc774\ubbf8 \uc0ac\uc6a9\ub41c sequenceNumber={1}(Long)\uc744(\ub97c) \uc0dd\uc131\ud588\uc2b5\ub2c8\ub2e4. 
 StoreSequenceException_info.explanation=ObjectStore\uc5d0\uc11c \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
 StoreSequenceException_info.useraction=CMSG0002 
+
 # {0} ObjectStore throwing the replacementException.
 # {1} The ManagedObject being replaced.
 # {2} The Token referencing the replacement.
@@ -298,11 +299,13 @@ CheckpointEndNotFoundException_info.useraction=\ub85c\uadf8 \ud30c\uc77c\uc774 \
 InMemoryObjectNotAvailableException_info=CWSOM1030E: \uba54\ubaa8\ub9ac \uae30\ubc18 ObjectStore {0}\uc5d0 \uc544\uc9c1 \uba54\ubaa8\ub9ac\uc5d0 \uc788\uc9c0 \uc54a\uc740 \ud1a0\ud070={0}(Token)\uc5d0 \ub300\ud55c ManagedObject\ub97c \uac80\uc0c9\ud558\ub3c4\ub85d \uc694\uccad\ud558\uc600\uc2b5\ub2c8\ub2e4. 
 InMemoryObjectNotAvailableException_info.explanation=ObjectManager\uc5d0 \uba54\ubaa8\ub9ac\uc5d0 \uc788\uc5b4\uc57c \ud558\uc9c0\ub9cc \uc5c6\ub294 ManagedObject\ub97c \uac80\uc0c9\ud558\ub3c4\ub85d \uc694\uccad\ud588\uc2b5\ub2c8\ub2e4.
 InMemoryObjectNotAvailableException_info.useraction=CMSG0002 
+
 # {0} The maximum size in bytes the serialized ManagedObject should be.
 # {1} The actual size in bytes of the ManagedObject in bytes.
 SimplifiedSerializationSizeExceptionException_info=CWSOM1031E: \ub2e8\uc21c\ud654\ub41c \uc9c1\ub82c\ud654 \ud06c\uae30\uac00 maximumSize={0}(long) actualSize={1}(long)\uc744(\ub97c) \ucd08\uacfc\ud588\uc2b5\ub2c8\ub2e4. 
 SimplifiedSerializationSizeExceptionException_info.explanation=\uc9c1\ub82c\ud654\ub41c ManagedObject\uac00 \ucd5c\ub300 \ud06c\uae30\ub97c \ucd08\uacfc\ud588\uc2b5\ub2c8\ub2e4.
 SimplifiedSerializationSizeExceptionException_info.useraction=CMSG0002 
+
 # {0} The current size of the log.
 # {1} The requested size of the log.
 # {2} The space available in the log.
@@ -400,6 +403,7 @@ SubListEntryNotInListException_info.useraction=\ud56d\ubaa9\uc774 \ubaa9\ub85d\u
 ObjectSignatureNotFoundException_info=CWSOM1045E: ObjectManager\uc5d0\uc11c \uc778\uc2dd\ud558\uc9c0 \uc54a\uc740 \uc11c\uba85={0}(int)\uc744 \uac00\uc9c4 ManagedObject\ub97c \uc9c1\ub82c\ud654 \ud574\uc81c\ud558\ub824\uace0 \uc2dc\ub3c4\ud588\uc2b5\ub2c8\ub2e4.
 ObjectSignatureNotFoundException_info.explanation=ManagedObject\uc5d0\uc11c \uc778\uc2dd\ub418\uc9c0 \uc54a\uc740 \uc11c\uba85\uc774 \uc788\uc73c\ubbc0\ub85c \uc9c1\ub82c\ud654 \ud574\uc81c\uac00 \uc911\ub2e8\ub429\ub2c8\ub2e4.
 ObjectSignatureNotFoundException_info.useraction=CMSG0002 
+
 # {0} The ObjectStore being constructed.
 # {1} The store strategy value that is not valid.
 InvalidStoreStrategyException_info=CWSOM1046E: \uc720\ud6a8\ud558\uc9c0 \uc54a\uc740 \uc800\uc7a5 \uacc4\ud68d={1}(int)\uc744(\ub97c) \uc0ac\uc6a9\ud558\uc5ec ObjectStore={0}\uc774(\uac00) \uad6c\uc131\ub418\uc5c8\uc2b5\ub2c8\ub2e4. 
@@ -421,6 +425,7 @@ DuplicateObjectStoreIdentifierException_info.useraction=\uc0c8 Objectstores\ub97
 GuardBytesException_info=CWSOM1048E: \uc624\ube0c\uc81d\ud2b8={0}\uc774(\uac00) \uc624\ube0c\uc81d\ud2b8={1}(Object)\uc5d0\uc11c \uc7a0\uc7ac\uc801\uc73c\ub85c \uc190\uc0c1\ub41c \ub370\uc774\ud130\ub97c \ubc1c\uacac\ud588\uc2b5\ub2c8\ub2e4. 
 GuardBytesException_info.explanation=\ubcf4\ud638 \ubc14\uc774\ud2b8\ub85c \ubcf4\ud638 \uc124\uc815\ub41c \ub370\uc774\ud130\uc5d0 \ub300\ud574 ObjectManager\uac00 \ubcf4\ud638 \ubc14\uc774\ud2b8\uc758 \uac12\uc774 \ubd88\uc77c\uce58\ud568\uc744 \ubc1c\uacac\ud588\uc2b5\ub2c8\ub2e4.
 GuardBytesException_info.useraction=CMSG0002 
+
 # {0} The name of the ObjectStore discovering corruption in its file header.
 # {1} The corrupted signature found.
 # {2} The correct signature expected.
@@ -440,6 +445,7 @@ InvalidLogFileSignatureException_info.useraction=\ud30c\uc77c\uc774 \uc190\uc0c1
 ThreadNotRunningException_info=CWSOM1051E: \uc2a4\ub808\ub4dc={0}\uc774(\uac00) \uc2e4\ud589\uc744 \uc911\uc9c0\ud55c \ub2e4\uc74c \uc694\uccad={1}\uc744(\ub97c) \uc218\ud589\ud558\ub3c4\ub85d \uc694\uccad\ub418\uc5c8\uc2b5\ub2c8\ub2e4. 
 ThreadNotRunningException_info.explanation=\uc9c0\uc815\ub41c \uc2a4\ub808\ub4dc\uac00 \uc2e4\ud328\ud588\uac70\ub098 \uc694\uccad \uc791\uc131 \uc2dc \uc911\uc9c0\ud558\ub3c4\ub85d \uc694\uccad\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
 ThreadNotRunningException_info.useraction=CMSG0002 
+
 # {0} ObjectStore which is unable to locate the file.
 # {1} The exception caught by the ObjectStore when trying to locate the file, or null.
 # {2} The file name of the file that cannot be found.
