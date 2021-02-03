@@ -93,13 +93,7 @@
             name="%decodeUrlPlusSign.name" 
             description="%decodeUrlPlusSign.desc" 
             required="false" type="Boolean" />
-
-        <!--com.ibm.ws.webcontainer.-->
-        <AD id="suppressHtmlRecursiveErrorOutput"
-            name="%suppressHtmlRecursiveErrorOutput.name" 
-            description="%suppressHtmlRecursiveErrorOutput.desc" 
-            required="false" type="Boolean" default="false" />
-
+        
 		<!--com.ibm.ws.webcontainer.-->
         <AD id="fileWrapperEvents"
             name="%fileWrapperEvents.name" 
