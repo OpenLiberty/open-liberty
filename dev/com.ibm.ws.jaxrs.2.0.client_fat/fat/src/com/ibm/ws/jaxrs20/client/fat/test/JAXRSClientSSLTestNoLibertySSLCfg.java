@@ -41,7 +41,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 
-@SkipForRepeat("EE9_FEATURES") // currently broken due to multiple issues
+@SkipForRepeat("EE9_FEATURES") // Continue to skip this test for EE9 as Default SSL is not supported yet
 @RunWith(FATRunner.class)
 public class JAXRSClientSSLTestNoLibertySSLCfg extends AbstractTest {
 
