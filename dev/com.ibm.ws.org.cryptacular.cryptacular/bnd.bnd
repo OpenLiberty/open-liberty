@@ -12,5 +12,5 @@
 
 -buildpath: \
  org.cryptacular:cryptacular;version=1.2.4, \
- com.ibm.ws.org.apache.cxf.rt.security.saml.3.3.6;version=latest, \
+ com.ibm.ws.org.apache.cxf.rt.security.saml.3.4.1;version=latest, \
  org.bouncycastle:bcprov-jdk15on;version=latest
