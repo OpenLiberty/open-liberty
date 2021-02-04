@@ -1079,12 +1079,12 @@
     <dependency>
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-security-saml</artifactId>
-      <version>3.3.6</version>
+      <version>3.4.1</version>
     </dependency>
     <dependency>
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-security</artifactId>
-      <version>3.3.6</version>
+      <version>3.4.1</version>
     </dependency>
     <dependency>
       <groupId>org.apache.cxf</groupId>
@@ -1114,7 +1114,7 @@
     <dependency>
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-ws-mex</artifactId>
-      <version>3.3.7</version>
+      <version>3.4.1</version>
     </dependency>
     <dependency>
       <groupId>org.apache.cxf</groupId>
@@ -1129,7 +1129,7 @@
     <dependency>
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-ws-security</artifactId>
-      <version>3.3.6</version>
+      <version>3.4.1</version>
     </dependency>
     <dependency>
       <groupId>org.apache.cxf</groupId>

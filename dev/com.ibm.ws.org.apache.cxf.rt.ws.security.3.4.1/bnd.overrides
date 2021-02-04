@@ -14,11 +14,11 @@ bVersion=1.0
 WS-TraceGroup: WSSECURITY
 
 Bundle-Name: com.ibm.ws.org.apache.cxf.rt.ws.security
-Bundle-Description: cxf ws security, version 3.3.6
-Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.rt.ws.security.3.3.6
+Bundle-Description: cxf ws security, version 3.4.1
+Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.rt.ws.security.3.4.1
 Bundle-ActivationPolicy: lazy
 
-cxfVersion=3.3.6
+cxfVersion=3.4.1
 
 Export-Package: \
   org.apache.cxf.ws.security.sts.provider.operation;version=${cxfVersion}, \
@@ -62,9 +62,9 @@ DynamicImport-Package: \
   com.ctc.wstx.*
 
 Include-Resource: \
-  @${repo;org.apache.cxf:cxf-rt-ws-security;3.3.6;EXACT}!/META-INF/DEPENDENCIES, \
-  @${repo;org.apache.cxf:cxf-rt-ws-security;3.3.6;EXACT}!/META-INF/LICENSE, \
-  @${repo;org.apache.cxf:cxf-rt-ws-security;3.3.6;EXACT}!/META-INF/NOTICE, \
-  @${repo;org.apache.cxf:cxf-rt-ws-security;3.3.6;EXACT}!/META-INF/cxf/*,\
+  @${repo;org.apache.cxf:cxf-rt-ws-security;3.4.1;EXACT}!/META-INF/DEPENDENCIES, \
+  @${repo;org.apache.cxf:cxf-rt-ws-security;3.4.1;EXACT}!/META-INF/LICENSE, \
+  @${repo;org.apache.cxf:cxf-rt-ws-security;3.4.1;EXACT}!/META-INF/NOTICE, \
+  @${repo;org.apache.cxf:cxf-rt-ws-security;3.4.1;EXACT}!/META-INF/cxf/*,\
   cxf-ehcache.xml=resources/cxf-ehcache.xml
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2019 IBM Corporation and others.
+ * Copyright (c) 2013, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -45,6 +45,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 import javax.resource.spi.ActivationSpec;
+import javax.resource.spi.Connector;
 import javax.resource.spi.InvalidPropertyException;
 import javax.resource.spi.ManagedConnectionFactory;
 import javax.resource.spi.ResourceAdapter;
@@ -1404,7 +1405,10 @@ public class MetatypeGenerator {
             RaConnector parsedXml = processor.getProcessedConnector();
             if (xmlFileSet.parsedXml == null && !processor.isAnnotatedConnector()) {
                 // not annotated connector and no resource adapter xml
-                throw new ResourceAdapterInstallException(Tr.formatMessage(tc, "J2CA9943.missing.connector.dd", adapterName));
+                if (Connector.class.getPackage().getName().startsWith("jak"))
+                    throw new ResourceAdapterInstallException(Tr.formatMessage(tc, "J2CA9944.missing.connector.jakarta", adapterName));
+                else
+                    throw new ResourceAdapterInstallException(Tr.formatMessage(tc, "J2CA9945.missing.connector.javax", adapterName));
             }
             xmlFileSet.parsedXml = parsedXml;
         } else {

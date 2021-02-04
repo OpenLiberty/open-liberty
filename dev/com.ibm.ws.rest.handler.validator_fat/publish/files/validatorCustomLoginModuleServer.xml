@@ -77,5 +77,4 @@
                   className="javax.security.auth.PrivateCredentialPermission"
                   signedBy="javax.resource.spi.security.PasswordCredential"
                   principalType="*" principalName="*" actions="read"/>
-                  
 </server>

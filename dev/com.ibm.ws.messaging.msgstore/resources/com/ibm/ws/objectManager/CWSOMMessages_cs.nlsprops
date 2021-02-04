@@ -78,8 +78,8 @@ Pokud v\u0161ak aplikace ztratila odkaz, ani\u017e by byla jej\u00ed \u010dinnos
 # {1} tick count when this was reported
 # {2} unknown or free
 InternalTransaction_OrphanDiagnostics=CWSOM0101W: Diagnostika: {0} {1} {2}.
-InternalTransaction_OrphanDiagnostics.explanation=Intern\u00ed diagnostick\u00e1 zpr\u00e1va.
-InternalTransaction_OrphanDiagnostics.useraction=n/a.
+InternalTransaction_OrphanDiagnostics.explanation=Intern\u00ed zpr\u00e1va diagnostiky.
+InternalTransaction_OrphanDiagnostics.useraction=nedostupn\u00e9
 
 # ----------------------------------------------------------------------------------------------------
 

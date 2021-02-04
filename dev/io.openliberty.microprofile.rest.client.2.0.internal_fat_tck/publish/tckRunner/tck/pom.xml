@@ -136,6 +136,14 @@
 
         <dependency>
             <groupId>com.ibm.ws</groupId>
+            <artifactId>jaxrs21.common</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${com.ibm.ws.jaxrs.2.1.common_}</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>com.ibm.ws</groupId>
             <artifactId>jaxrs.2.1.common</artifactId>
             <version>1.0</version>
             <scope>system</scope>

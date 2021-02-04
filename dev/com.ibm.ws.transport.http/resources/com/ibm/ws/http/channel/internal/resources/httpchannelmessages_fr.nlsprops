@@ -175,3 +175,11 @@ cookies.samesite.unsupportedWildcard.useraction=Assurez-vous qu'un seul caract\u
 cookies.samesite.knownDuplicateName=CWWKT0037W: Un nom de cookie ou un masque [{0}], signal\u00e9 comme doublon, a \u00e9t\u00e9 d\u00e9tect\u00e9 dans la configuration SameSite [{1}]. Le nom de cookie ou le masque [{0}] est ignor\u00e9. Tout nom de cookie ou masque d\u00e9fini par les configurations lax, none et strict ne peut \u00eatre d\u00e9fini que dans l''une des trois configurations.
 cookies.samesite.knownDuplicateName.explanation=La valeur sp\u00e9cifi\u00e9e a d\u00e9j\u00e0 \u00e9t\u00e9 trouv\u00e9e par la configuration et est d\u00e9j\u00e0 mapp\u00e9e \u00e0 une valeur SameSite.
 cookies.samesite.knownDuplicateName.useraction=Assurez-vous que les noms de cookie et les masques sont uniques dans les listes de configuration lax, none et strict.
+
+trusted.header.origin.invalid.value=CWWKT0038W: La valeur [ {0} ] configur\u00e9e trustedHeaderOrigin n''est pas valide et ne peut pas \u00eatre utilis\u00e9e.
+trusted.header.origin.invalid.value.explanation=La valeur sp\u00e9cifi\u00e9e doit \u00eatre une adresse IP compl\u00e8te ou un nom d'h\u00f4te correctement format\u00e9.
+trusted.header.origin.invalid.value.useraction=Assurez-vous que les adresses IP configur\u00e9es contiennent une valeur pour chaque segment et que les noms d'h\u00f4te ne contiennent pas de caract\u00e8res non valides.
+
+trusted.sensitive.header.origin.invalid.value=CWWKT0039W: La valeur [{0}] configur\u00e9e trustedSensitiveHeaderOrigin n''est pas valide et ne peut pas \u00eatre utilis\u00e9e.
+trusted.sensitive.header.origin.invalid.value.explanation=La valeur sp\u00e9cifi\u00e9e doit \u00eatre une adresse IP compl\u00e8te ou un nom d'h\u00f4te correctement format\u00e9.
+trusted.sensitive.header.origin.invalid.value.useraction=Assurez-vous que les adresses IP configur\u00e9es contiennent une valeur pour chaque segment et que les noms d'h\u00f4te ne contiennent pas de caract\u00e8res non valides.

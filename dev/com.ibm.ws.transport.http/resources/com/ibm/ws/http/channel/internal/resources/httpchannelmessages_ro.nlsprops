@@ -175,3 +175,11 @@ cookies.samesite.unsupportedWildcard.useraction=Asigura\u0163i-v\u0103 c\u0103 d
 cookies.samesite.knownDuplicateName=CWWKT0037W: Un model sau nume de cookie [{0}], care este marcat ca \u015fi duplicat, a fost g\u0103sit \u00een configura\u0163ia [{1}] SameSite. Modelul sau numele de cookie [{0}] este ignorat. Orice model sau nume de cookie care este definit de configura\u0163iile lax, none \u015fi strict poate fi definit doar \u00een una din cele trei configura\u0163ii.
 cookies.samesite.knownDuplicateName.explanation=Valoarea specificat\u0103 a fost deja g\u0103sit\u0103 de configura\u0163ie \u015fi mapat\u0103 la o valoare SameSite.
 cookies.samesite.knownDuplicateName.useraction=Asigura\u0163i-v\u0103 c\u0103 modelele \u015fi numele de cookie sunt unice peste listele de configura\u0163ie lax, none \u015fi strict.
+
+trusted.header.origin.invalid.value=CWWKT0038W: Valoarea trustedHeaderOrigin configurat\u0103 [{0}] nu este valid\u0103 \u015fi nu poate fi utilizat\u0103.
+trusted.header.origin.invalid.value.explanation=Valoarea specificat\u0103 trebuie s\u0103 fie ori o adres\u0103 IP complet\u0103, ori numele de gazd\u0103 format corect.
+trusted.header.origin.invalid.value.useraction=Verifica\u0163i c\u0103 adresa IP con\u0163ine o valoare pentru fiecare segment \u015fi c\u0103 numele de gazde nu con\u0163in caractere invalide.
+
+trusted.sensitive.header.origin.invalid.value=CWWKT0039W: Valoarea trustedSensitiveHeaderOrigin configurat\u0103 [{0}] nu este valid\u0103 \u015fi nu poate fi utilizat\u0103.
+trusted.sensitive.header.origin.invalid.value.explanation=Valoarea specificat\u0103 trebuie s\u0103 fie ori o adres\u0103 IP complet\u0103, ori numele de gazd\u0103 format corect.
+trusted.sensitive.header.origin.invalid.value.useraction=Verifica\u0163i c\u0103 adresa IP con\u0163ine o valoare pentru fiecare segment \u015fi c\u0103 numele de gazde nu con\u0163in caractere invalide.

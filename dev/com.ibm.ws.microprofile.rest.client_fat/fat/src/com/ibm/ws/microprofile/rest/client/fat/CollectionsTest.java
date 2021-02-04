@@ -69,11 +69,11 @@ public class CollectionsTest extends FATServletClient {
         app.addAsLibraries(new File(JSONB_API).listFiles());
         ShrinkHelper.exportDropinAppToServer(remoteAppServer, app);
         remoteAppServer.startServer();
-        remoteAppServer.waitForStringInLog("CWWKO0219I"); // CWWKO0219I: TCP Channel defaultHttpEndpoint-ssl has been started and is now listening for requests on host *  (IPv6) port 8020.
+        remoteAppServer.waitForStringInLog("CWWKO0219I.*ssl"); // CWWKO0219I: TCP Channel defaultHttpEndpoint-ssl has been started and is now listening for requests on host *  (IPv6) port 8020.
 
         ShrinkHelper.defaultDropinApp(server, appName, "mpRestClient10.collections");
         server.startServer();
-        server.waitForStringInLog("CWWKO0219I"); // CWWKO0219I: TCP Channel defaultHttpEndpoint-ssl has been started and is now listening for requests on host *  (IPv6) port 8020.
+        server.waitForStringInLog("CWWKO0219I.*ssl"); // CWWKO0219I: TCP Channel defaultHttpEndpoint-ssl has been started and is now listening for requests on host *  (IPv6) port 8020.
     }
 
     @AfterClass

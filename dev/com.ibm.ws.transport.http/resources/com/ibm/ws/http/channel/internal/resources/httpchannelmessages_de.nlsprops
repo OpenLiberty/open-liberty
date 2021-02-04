@@ -156,7 +156,7 @@ compression.duplicateTypeAddRemove.useraction=F\u00fcgen Sie nicht denselben Inh
 
 compression.duplicateOverwriteAndAdd=CWWKT0032W: Es wurde versucht, die Standardkonfiguration f\u00fcr die Komprimierung zu \u00fcberschreiben, und die Option zum Hinzuf\u00fcgen (+) wurde f\u00fcr andere Inhaltstypen verwendet. Es wird stattdessen die Standardkonfiguration {0} verwendet.
 compression.duplicateOverwriteAndAdd.explanation=Die Konfiguration versucht, den Standardwert zu \u00fcberschreiben, w\u00e4hrend gleichzeitig auch die Option zum Hinzuf\u00fcgen (+) verwendet wird. Die Option zum Hinzuf\u00fcgen darf nicht verwendet werden, wenn Sie Standardwert \u00fcberschreiben.
-compression.duplicateOverwriteAndAdd.useraction=Wenn die Standardkonfiguration \u00fcberschrieben werden muss, verwenden Sie nicht die Option zum Hinzuf\u00fcgen (+). F\u00fcgen Sie weitere gew\u00fcnschte Inhaltstypen mithilfe der Option zum Hinzfu\u00fcgen (+) hinzu, wenn die Standardkonfiguration nicht \u00fcberschrieben werden muss.
+compression.duplicateOverwriteAndAdd.useraction=Wenn die Standardkonfiguration \u00fcberschrieben werden muss, verwenden Sie nicht die Option zum Hinzuf\u00fcgen (+). F\u00fcgen Sie weitere gew\u00fcnschte Inhaltstypen mithilfe der Option zum Hinzuf\u00fcgen (+) hinzu, wenn die Standardkonfiguration nicht \u00fcberschrieben werden muss.
 
 compression.unsupportedAlgorithm=CWWKT0033W: Es wurde versucht, {0} als bevorzugten Algorithmus f\u00fcr den Server zu konfigurieren. Zu den unterst\u00fctzten Werten geh\u00f6ren gzip, x-gzip, zlib, deflate, identity und none. Die Standardkonfiguration {1} wird stattdessen verwendet.
 compression.unsupportedAlgorithm.explanation=Die Konfiguration versucht, einen nicht unterst\u00fctzten Algorithmus als bevorzugten Algorithmus f\u00fcr die Komprimierung zu verwenden. 
@@ -177,3 +177,11 @@ cookies.samesite.unsupportedWildcard.useraction=Stellen Sie sicher, dass nur ein
 cookies.samesite.knownDuplicateName=CWWKT0037W: Ein Cookiename oder Muster [{0}], das als Duplikat markiert wurde, wurde in der SameSite-Konfiguration [{1}] gefunden. Der Cookiename bzw. das Muster [{0}] wird ignoriert. Alle Cookienamen oder Muster, die in den Konfigurationen ''Lax'', ''None'' und ''Strict'' enthalten sind, k\u00f6nnen nur in einer einzigen dieser drei Konfigurationen definiert sein.
 cookies.samesite.knownDuplicateName.explanation=Der angegebene Wert wurde bereits in der Konfiguration gefunden und einem SameSite-Wert zugeordnet.
 cookies.samesite.knownDuplicateName.useraction=Stellen Sie sicher, dass Cookienamen und Muster in den Konfigurationslisten 'Lax', 'None' und 'Strict' eindeutig sind.
+
+trusted.header.origin.invalid.value=CWWKT0038W: Der konfigurierte trustedHeaderOrigin-Wert [{0}] ist ung\u00fcltig und kann nicht verwendet werden.
+trusted.header.origin.invalid.value.explanation=Sie m\u00fcssen eine vollst\u00e4ndige IP-Adresse oder einen korrekt formatierten Hostnamen angeben.
+trusted.header.origin.invalid.value.useraction=Stellen Sie sicher, dass konfigurierte IP-Adressen einen Wert f\u00fcr jedes Segment enthalten und dass Hostnamen keine ung\u00fcltigen Zeichen enthalten.
+
+trusted.sensitive.header.origin.invalid.value=CWWKT0039W: Der konfigurierte trustedSensitiveHeaderOrigin-Wert [{0}] ist ung\u00fcltig und kann nicht verwendet werden.
+trusted.sensitive.header.origin.invalid.value.explanation=Sie m\u00fcssen eine vollst\u00e4ndige IP-Adresse oder einen korrekt formatierten Hostnamen angeben.
+trusted.sensitive.header.origin.invalid.value.useraction=Stellen Sie sicher, dass konfigurierte IP-Adressen einen Wert f\u00fcr jedes Segment enthalten und dass Hostnamen keine ung\u00fcltigen Zeichen enthalten.

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2020 IBM Corporation and others.
+ * Copyright (c) 2013, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
 package com.ibm.ws.webcontainer.servlet31.fat.tests;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -79,10 +80,16 @@ public class FormLoginReadListenerTest extends LoggingTest {
         //Replace config for the other server
         LibertyServer wlp = SHARED_SERVER.getLibertyServer();
         wlp.saveServerConfiguration();
+        wlp.setMarkToEndOfLog();
         wlp.setServerConfigurationFile("FormLogin_ReadListener/server.xml");
 
         SHARED_SERVER.startIfNotStarted();
-        wlp.waitForStringInLog("CWWKZ0001I.* " + FORM_LOGIN_READ_LISTENER_APP_NAME);
+        wlp.waitForStringInLogUsingMark("CWWKZ0001I.* " + FORM_LOGIN_READ_LISTENER_APP_NAME);
+
+        // Wait for LTPA key to be available to avoid CWWKS4000E
+        // CWWKS4105I: LTPA configuration is ready after x seconds
+        assertNotNull("CWWKS4105I LTPA configuration message not found.",
+                      wlp.waitForStringInLogUsingMark("CWWKS4105I.*"));
     }
 
     @AfterClass

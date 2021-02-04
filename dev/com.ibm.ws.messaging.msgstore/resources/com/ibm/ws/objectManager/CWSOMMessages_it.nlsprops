@@ -78,8 +78,8 @@ Se tuttavia, l'applicazione ha perso il relativo riferimento senza terminare in 
 # {1} tick count when this was reported
 # {2} unknown or free
 InternalTransaction_OrphanDiagnostics=CWSOM0101W: Diagnostica: {0} {1} {2}.
-InternalTransaction_OrphanDiagnostics.explanation=Messaggio diagnostico interno.
-InternalTransaction_OrphanDiagnostics.useraction=n/a.
+InternalTransaction_OrphanDiagnostics.explanation=Messaggio interno di diagnostica.
+InternalTransaction_OrphanDiagnostics.useraction=n/d.
 
 # ----------------------------------------------------------------------------------------------------
 

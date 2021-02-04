@@ -49,7 +49,7 @@ public class FATSuite {
         };
     }
 
-    public static final boolean REUSE_CONTAINERS = FATRunner.FAT_TEST_LOCALRUN && !ExternalTestServiceDockerClientStrategy.useRemoteDocker();
+    public static final boolean REUSE_CONTAINERS = FATRunner.FAT_TEST_LOCALRUN && !ExternalTestServiceDockerClientStrategy.USE_REMOTE_DOCKER_HOST;
 
     static {
         // Needed for IBM JDK 8 support.

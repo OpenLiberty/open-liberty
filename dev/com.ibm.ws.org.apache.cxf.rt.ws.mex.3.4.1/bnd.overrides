@@ -12,11 +12,11 @@
 bVersion=1.0
 
 Bundle-Name: Apache CXF Runtime WS MetadataExchange
-Bundle-Description: Apache CXF Runtime WS MetadataExchange, version 3.3.7
-Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.rt.ws.mex.3.3.7
+Bundle-Description: Apache CXF Runtime WS MetadataExchange, version 3.4.1
+Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.rt.ws.mex.3.4.1
 Bundle-ActivationPolicy: lazy
 
-cxfVersion=3.3.7
+cxfVersion=3.4.1
 Export-Package: \
  org.apache.cxf.*;version=${cxfVersion}
 
@@ -33,8 +33,8 @@ DynamicImport-Package: org.apache.cxf.bus, \
  org.apache.cxf.*
 
 Include-Resource:\
-  @${repo;org.apache.cxf:cxf-rt-ws-mex;3.3.7;EXACT}!/META-INF/DEPENDENCIES, \
-  @${repo;org.apache.cxf:cxf-rt-ws-mex;3.3.7;EXACT}!/META-INF/LICENSE, \
-  @${repo;org.apache.cxf:cxf-rt-ws-mex;3.3.7;EXACT}!/META-INF/NOTICE, \
-  @${repo;org.apache.cxf:cxf-rt-ws-mex;3.3.7;EXACT}!/META-INF/cxf/*
+  @${repo;org.apache.cxf:cxf-rt-ws-mex;3.4.1;EXACT}!/META-INF/DEPENDENCIES, \
+  @${repo;org.apache.cxf:cxf-rt-ws-mex;3.4.1;EXACT}!/META-INF/LICENSE, \
+  @${repo;org.apache.cxf:cxf-rt-ws-mex;3.4.1;EXACT}!/META-INF/NOTICE, \
+  @${repo;org.apache.cxf:cxf-rt-ws-mex;3.4.1;EXACT}!/META-INF/cxf/*
 

@@ -21,6 +21,6 @@
 #NLS_ENCODING=UNICODE
 
 # {0} is a space separated list of interface class names
-rest.client.interface.using.request.scope=CWWKW0750I: Die folgenden Schnittstellen werden als RequestScoped-Schnittstellen konfiguriert, was zu einer langsameren Verarbeitung f\u00fchrt: {0} 
+rest.client.interface.using.request.scope=CWWKW0750I: Die folgenden Schnittstellen werden als RequestScoped-Schnittstellen konfiguriert, was zu einer langsameren Verarbeitung f\u00fchrt: {0}. Ziehen Sie die Verwendung von ApplicationScoped in Erw\u00e4gung, um eine bessere Leistung zu erzielen.
 rest.client.interface.using.request.scope.explanation=MicroProfile-REST-Client-Schnittstellen, die anforderungsorientiert sind, werden bei jeder Anforderung initialisiert, was h\u00e4ufig zu redundanten Berechnungen f\u00fchrt. Anwendungsorientierte Schnittstellen f\u00fchren den Initialisierungsprozess einmal pro Anwendungsinstanz aus. Eine Schnittstelle kann als anforderungsorientiert eingestuft werden, wenn sie mit @RequestScoped annotiert ist oder wenn sie mit der Annotation @Dependent oder ohne Bereichsannotation in eine anforderungsorientierte CDI-Bean eingef\u00fcgt wird. 
 rest.client.interface.using.request.scope.useraction=Sofern es keinen triftigen Grund gibt, es nicht zu tun, sollten Sie die Annotation @ApplicationScoped verwenden, um eine redundante Initialisierung zu verhindern.
