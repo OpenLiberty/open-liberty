@@ -28,7 +28,7 @@ public interface ChannelFactoryProvider {
     /**
      * Query the type/factory matchs provided by this class. The keys are
      * the type names and the values are the factory class for each type.
-     * 
+     *
      * @return Map<String,Class<? extends ChannelFactory>>
      */
     Map<String, Class<? extends ChannelFactory>> getTypes();

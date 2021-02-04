@@ -11,6 +11,7 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
+<<<<<<< HEAD
 Bundle-Name: io.openliberty.netty
 Bundle-SymbolicName: io.openliberty.netty; singleton:=true
 Bundle-Description: At the moment, provides the implenentation
@@ -34,6 +35,7 @@ Private-Package: \
 Include-Resource: \
     OSGI-INF=resources/OSGI-INF
 
+<<<<<<< HEAD
 -dsannotations: \
    com.ibm.ws.bytebuffer.internal.ByteBufferConfiguration
 
@@ -53,10 +55,9 @@ instrument.disabled: true
 	com.ibm.ws.kernel.security.thread,\
 	com.ibm.ws.kernel.boot.core;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
-    com.ibm.websphere.channelfw*; version=latest, \
-    com.ibm.wsspi.channelfw*; version=latest
-    
-    
+	com.ibm.websphere.channelfw*; version=latest, \
+	com.ibm.wsspi.channelfw*; version=latest
+
 #  <property name="unittest.prop.com.ibm.ws.logging.exception.log.enabled" value="false" />
 #  file /dev/com.ibm.ws.channelfw/unittestports.properties
 
