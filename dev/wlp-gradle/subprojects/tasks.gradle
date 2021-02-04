@@ -151,7 +151,7 @@ configurations {
 }
 
 dependencies {
-  jakartaeeTransformJars 'biz.aQute.bnd:biz.aQute.bnd.transform:5.1.1',
+  jakartaeeTransformJars 'biz.aQute.bnd:biz.aQute.bnd.transform:5.2.0',
                           'commons-cli:commons-cli:1.4',
                           'org.slf4j:slf4j-simple:1.7.30',
                           'org.slf4j:slf4j-api:1.7.26',
@@ -198,6 +198,7 @@ task jakartaeeTransform {
  
       def transformerArgs = [
         initialBundleJarName, finalBundleJarName,
+        '-q', // quiet output
         '-tr', transformProject.getFile('rules/jakarta-renames.properties').path,
         '-ts', transformProject.getFile('rules/jakarta-selections.properties').path,
         '-tv', transformProject.getFile('rules/jakarta-versions.properties').path,
