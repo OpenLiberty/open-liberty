@@ -15,6 +15,7 @@ import org.osgi.service.component.annotations.Component;
 
 import com.ibm.ws.container.service.state.ApplicationStateListener;
 import com.ibm.ws.microprofile.config12.impl.Config12ProviderResolverImpl;
+import com.ibm.wsspi.logging.Introspector;
 
-@Component(service = { ConfigProviderResolver.class, ApplicationStateListener.class }, property = { "service.vendor=IBM" }, immediate = true)
+@Component(service = { ConfigProviderResolver.class, ApplicationStateListener.class, Introspector.class }, property = { "service.vendor=IBM" }, immediate = true)
 public class Config12ProviderResolverComponent extends Config12ProviderResolverImpl {}

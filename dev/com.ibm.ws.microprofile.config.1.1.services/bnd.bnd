@@ -37,5 +37,6 @@ WS-TraceGroup: APPCONFIG
 	com.ibm.ws.logging;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
 	com.ibm.ws.container.service;version=latest, \
+	com.ibm.ws.logging;version=latest, \
         com.ibm.ws.microprofile.config.1.1;version=latest, \
 	com.ibm.websphere.org.eclipse.microprofile.config.1.1;version=latest

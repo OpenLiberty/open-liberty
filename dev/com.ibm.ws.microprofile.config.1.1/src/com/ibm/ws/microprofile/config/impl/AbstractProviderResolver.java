@@ -11,6 +11,7 @@
 package com.ibm.ws.microprofile.config.impl;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.security.AccessController;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -39,10 +40,12 @@ import com.ibm.ws.microprofile.config.interfaces.WebSphereConfig;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
+import com.ibm.wsspi.logging.Introspector;
 
 import io.openliberty.microprofile.config.internal.common.ConfigException;
+import io.openliberty.microprofile.config.internal.common.ConfigIntrospection;
 
-public abstract class AbstractProviderResolver extends ConfigProviderResolver implements ApplicationStateListener {
+public abstract class AbstractProviderResolver extends ConfigProviderResolver implements ApplicationStateListener, Introspector {
 
     private static final TraceComponent tc = Tr.register(AbstractProviderResolver.class);
 
@@ -410,5 +413,29 @@ public abstract class AbstractProviderResolver extends ConfigProviderResolver im
     }
 
     protected abstract AbstractConfigBuilder newBuilder(ClassLoader classLoader);
+
+    @Override
+    public String getIntrospectorDescription() {
+        return "Introspects the config properties available via MicroProfile Config";
+    }
+
+    @Override
+    public String getIntrospectorName() {
+        return "MicroProfileConfig";
+    }
+
+    @Override
+    public void introspect(PrintWriter pw) throws Exception {
+        Map<String, Set<Config>> appInfos = new HashMap<>();
+        synchronized (this.configCache) {
+            for (ConfigWrapper wrapper : this.configCache.values()) {
+                for (String appName : wrapper.listApplications()) {
+                    appInfos.computeIfAbsent(appName, x -> new HashSet<>())
+                            .add(wrapper.getConfig());
+                }
+            }
+        }
+        ConfigIntrospection.introspect(pw, appInfos);
+    }
 
 }
