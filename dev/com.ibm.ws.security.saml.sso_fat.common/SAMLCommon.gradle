@@ -105,7 +105,7 @@ task copyResolver (dependsOn: [':com.ibm.ws.security.fat.common:assemble', ':com
 
 task copyCommonLogoutServers() {
   doLast {
-    if (project.findProperty('shareLogoutServers') {
+    if (project.findProperty('shareLogoutServers')) {
       println "copy all logout server files"
       copy {
         from new File(project(':com.ibm.ws.security.saml.sso_fat.logout').projectDir, 'publish/servers')
@@ -116,6 +116,15 @@ task copyCommonLogoutServers() {
   }
 }
 
+/**************************************************************************************************************
+ *
+ *        N   N    OO    TTTTT  EEEEE
+ *        NN  N   O  O     T    E
+ *        N N N  O    O    T    EEE
+ *        N  NN   O  O     T    E
+ *        N   N    OO      T    EEEEE
+ *
+ **************************************************************************************************************/
 /**************************************************************************************************************
  *  Please read:                                                                                              *
  *     The next 3 tasks are basically clones of each other - each of our SAML FAT projects                    *
@@ -255,6 +264,7 @@ task copySamlFatServer1(dependsOn: [':com.ibm.ws.security.fat.common:assemble', 
   }
 }  
 
+/** PLEASE read note above copySamlFatServer1 task method before updating this task **/
 task copySamlFatServer2(dependsOn: [':com.ibm.ws.security.fat.common:assemble', ':com.ibm.ws.security.saml.sso_fat.common:assemble']) {
   doLast {
     /*****************************************************************
@@ -378,6 +388,7 @@ task copySamlFatServer2(dependsOn: [':com.ibm.ws.security.fat.common:assemble', 
   }
 }  
 
+/** PLEASE read note above copySamlFatServer1 task method before updating this task **/
 task copySamlFatServer3(dependsOn: [':com.ibm.ws.security.fat.common:assemble', ':com.ibm.ws.security.saml.sso_fat.common:assemble']) {
   doLast {
     /*****************************************************************
