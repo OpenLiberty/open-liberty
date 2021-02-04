@@ -1,3 +1,5 @@
+<div id="${id}_right-div" class="searchPillRight searchPillRightNotSelected"  aria-label="${ariaLabel}"
+	  data-dojo-attach-point="searchPillRightDiv" data-dojo-attach-event="keypress:checkKeyCode" >
 <!--
     Copyright (c) 2016 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
@@ -7,9 +9,7 @@
    
     Contributors:
         IBM Corporation - initial API and implementation
- 	-->
-<div id="${id}_right-div" 	class="searchPillRight searchPillRightNotSelected"  aria-label="${ariaLabel}"
-	  data-dojo-attach-point="searchPillRightDiv" data-dojo-attach-event="keypress:checkKeyCode" >	
+    -->
    <input id="${id}_name-input" type="text" class="searchPillInputAreaVisible" tabindex="0" spellcheck="false"  aria-label="${ariaLabel}" value="${value}"
    			data-dojo-type="dijit/form/ComboBox" data-dojo-attach-point="nameInput" 
    			data-dojo-props="baseClass:'searchPillInputArea inputFont', intermediateChanges:true, searchAttr:'label',
