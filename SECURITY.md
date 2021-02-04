@@ -5,6 +5,7 @@
 | Version    | Supported          |
 | ---------- | ------------------ |
 | 20.x.x.x   | :white_check_mark: |
+| 21.x.x.x   | :white_check_mark: |
 
 ## Reporting a Vulnerability
 
