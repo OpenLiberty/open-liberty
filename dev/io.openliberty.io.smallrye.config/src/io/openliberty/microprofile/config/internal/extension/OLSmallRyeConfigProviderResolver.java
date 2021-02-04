@@ -11,6 +11,7 @@
 package io.openliberty.microprofile.config.internal.extension;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -29,13 +30,15 @@ import com.ibm.ws.container.service.state.ApplicationStateListener;
 import com.ibm.ws.container.service.state.StateChangeException;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
+import com.ibm.wsspi.logging.Introspector;
 
+import io.openliberty.microprofile.config.internal.common.ConfigIntrospection;
 import io.smallrye.config.SmallRyeConfigBuilder;
 import io.smallrye.config.SmallRyeConfigProviderResolver;
 
-@Component(service = { ConfigProviderResolver.class,
-                       ApplicationStateListener.class }, configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM" }, immediate = true)
-public class OLSmallRyeConfigProviderResolver extends SmallRyeConfigProviderResolver implements ApplicationStateListener {
+@Component(service = { ConfigProviderResolver.class, ApplicationStateListener.class, Introspector.class },
+           configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM" }, immediate = true)
+public class OLSmallRyeConfigProviderResolver extends SmallRyeConfigProviderResolver implements ApplicationStateListener, Introspector {
 
     //We try to keep track of which application is using which Config. There are cases where the Config is used by a global component
     //or we just can't work out which app it is. Then we fall back to this global name.
@@ -159,6 +162,30 @@ public class OLSmallRyeConfigProviderResolver extends SmallRyeConfigProviderReso
             applicationName = GLOBAL_CONFIG_APPLICATION_NAME;
         }
         return applicationName;
+    }
+
+    @Override
+    public String getIntrospectorDescription() {
+        return "Lists the config properties available to each application via MicroProfile Config";
+    }
+
+    @Override
+    public String getIntrospectorName() {
+        return "MicroProfileConfig";
+    }
+
+    @Override
+    public void introspect(PrintWriter pw) throws Exception {
+        Map<String, Set<Config>> appInfos = new HashMap<>();
+        synchronized (configCache) {
+            for (ConfigWrapper wrapper : configCache.values()) {
+                for (String appName : wrapper.listApplications()) {
+                    appInfos.computeIfAbsent(appName, x -> new HashSet<>())
+                            .add(wrapper.getConfig());
+                }
+            }
+        }
+        ConfigIntrospection.introspect(pw, appInfos);
     }
 
 }
