@@ -13,7 +13,7 @@ IBM-API-Package: \
 Subsystem-Name: gRPC internal 1.0
 -bundles=\
   io.openliberty.grpc.1.0.internal.common, \
-  io.openliberty.io.grpc.1.0; location:="dev/api/stable/,lib/"; mavenCoordinates="io.grpc:grpc-api:1.31.1"
+  io.openliberty.io.grpc.1.0; location:="dev/api/stable/,lib/"; mavenCoordinates="io.grpc:grpc-api:1.35.0"
 -features=\
   com.ibm.websphere.appserver.artifact-1.0, \
   com.ibm.websphere.appserver.classloading-1.0, \

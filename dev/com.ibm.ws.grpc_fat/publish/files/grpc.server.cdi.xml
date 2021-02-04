@@ -19,14 +19,4 @@
     
     <javaPermission className="java.security.AllPermission"  name="*" actions="*" />
 
-    <logging
-        traceSpecification="*=info=enabled:
-            GRPC=all:
-            com.ibm.ws.webcontainer*=all:
-            com.ibm.wsspi.webcontainer*=all:
-            HTTPChannel=all:
-            HTTPTransport=all:
-            GenericBNF=all"
-        maxFileSize="40" maxFiles="1" traceFormat="BASIC" />
-
 </server>
