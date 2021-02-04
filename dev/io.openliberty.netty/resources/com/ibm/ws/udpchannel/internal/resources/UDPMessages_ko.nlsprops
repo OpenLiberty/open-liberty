@@ -1,0 +1,58 @@
+###############################################################################
+# Copyright (c) 2010 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO Websphere kernel channel framework service: udp channel
+#CMVCPATHNAME com.ibm.ws.channelfw/resources/com/ibm/ws/udpchannel/internal/resources/UDPMessages.nlsprops
+#NLS_ENCODING=UNICODE
+#ISMESSAGEFILE TRUE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+
+### UDP channel will use message numbers 0400-0599
+
+CWUDP0001I=CWWKO0400I: {0} UDP \ucc44\ub110\uc774 \ud638\uc2a4\ud2b8 {1} \ud3ec\ud2b8 {2}\uc5d0\uc11c \uccad\ucde8 \uc911\uc785\ub2c8\ub2e4.
+CWUDP0001I.explanation=UDP \ucc44\ub110\uc774 \uc2dc\uc791\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+CWUDP0001I.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc74c
+
+CWUDP0002I=CWWKO0401I: {0} UDP \ucc44\ub110\uc774 \ud638\uc2a4\ud2b8 {1} \ud3ec\ud2b8 {2}\uc5d0\uc11c \uccad\ucde8\ub97c \uc911\uc9c0\ud588\uc2b5\ub2c8\ub2e4.
+CWUDP0002I.explanation=UDP \ucc44\ub110\uc774 \uc815\uc0c1\uc801\uc73c\ub85c \uc911\uc9c0\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+CWUDP0002I.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc74c
+
+CWUDP0003W=CWWKO0402W: {0} UDP \ucc44\ub110\uc774 \uc62c\ubc14\ub974\uc9c0 \uc54a\uc740 \uad6c\uc131 \ud2b9\uc131 \uac12\uc744 \uc0ac\uc6a9\ud558\uc5ec \uc0dd\uc131\ub418\uc5c8\uc2b5\ub2c8\ub2e4. \uc774\ub984: {1}  \uac12: {2}.
+CWUDP0003W.explanation=UDP \ucc44\ub110\uc774 \uad6c\uc131 \uac12\uc744 \ubb34\uc2dc\ud558\uace0 \uc788\uc2b5\ub2c8\ub2e4.
+CWUDP0003W.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc74c
+
+CWUDP0004E=CWWKO0403E: {0} UDP \ucc44\ub110 \ucd08\uae30\ud654\uac00 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4. {1} \ud638\uc2a4\ud2b8\ub97c \ud574\uc11d\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+CWUDP0004E.explanation=\uc2dc\uc2a4\ud15c\uc774 \uad6c\uc131\ub41c \ud638\uc2a4\ud2b8 \uc774\ub984\uc744 \ud574\uc11d\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+CWUDP0004E.useraction=\ud638\uc2a4\ud2b8 \uc774\ub984 \uad6c\uc131\uc774 \uc62c\ubc14\ub978\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+CWUDP0005E=CWWKO0404E: {0} UDP \ucc44\ub110 \ucd08\uae30\ud654\uac00 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4. \ud638\uc2a4\ud2b8 {1} \ubc0f \ud3ec\ud2b8 {2}\uc5d0 \ub300\ud55c \ub370\uc774\ud130\uadf8\ub7a8 \ubc14\uc778\ub4dc\uc5d0 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4.
+CWUDP0005E.explanation=\uad6c\uc131\ub41c \ud3ec\ud2b8\uac00 \uc774\ubbf8 \uc0ac\uc6a9 \uc911\uc77c \uc218 \uc788\uc2b5\ub2c8\ub2e4.
+CWUDP0005E.useraction=\ud3ec\ud2b8 \uad6c\uc131\uc774 \uc62c\ubc14\ub978\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+CWUDP0006I=CWWKO0405I: UDP \ucc44\ub110\uc5d0\uc11c {0} \ud638\uc2a4\ud2b8\uc5d0 \ub300\ud55c \ub3c4\uba54\uc778 \uc774\ub984 \uc2dc\uc2a4\ud15c(DNS) \uac80\uc0c9\uc5d0 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4. \uc774 \uac80\uc0c9 \uc2e4\ud328\uac00 {1}\ubc88 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+CWUDP0006I.explanation=UDP \ucc44\ub110\uc774 \ud638\uc2a4\ud2b8 \uc774\ub984\uc744 \ud574\uc11d\ud560 \uc218 \uc5c6\ub294 \ud638\uc2a4\ud2b8\ub85c \ud328\ud0b7\uc744 \uc804\uc1a1\ud558\ub824\uace0 \ud588\uc2b5\ub2c8\ub2e4. DNS \uc11c\ubc84\uac00 \uc2e4\ud589 \uc911\uc774 \uc544\ub2c8\uac70\ub098 \uc798\ubabb \uad6c\uc131\ub418\uc5c8\uc744 \uc218 \uc788\uc2b5\ub2c8\ub2e4.
+CWUDP0006I.useraction=\uc11c\ubc84\uc758 DNS \uad6c\uc131\uc774 \uc62c\ubc14\ub978\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+EXECUTOR_SVC_MISSING=CWWKO0406E: \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. Executor \uc11c\ube44\uc2a4\uac00 \ub204\ub77d\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+EXECUTOR_SVC_MISSING.explanation=CMSG0001
+EXECUTOR_SVC_MISSING.useraction=CMSG0002

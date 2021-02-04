@@ -1,0 +1,58 @@
+###############################################################################
+# Copyright (c) 2010 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO Websphere kernel channel framework service: udp channel
+#CMVCPATHNAME com.ibm.ws.channelfw/resources/com/ibm/ws/udpchannel/internal/resources/UDPMessages.nlsprops
+#NLS_ENCODING=UNICODE
+#ISMESSAGEFILE TRUE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+
+### UDP channel will use message numbers 0400-0599
+
+CWUDP0001I=CWWKO0400I: Canalul UDP {0} ascult\u0103 pe gazda {1} portul {2}.
+CWUDP0001I.explanation=Canalul UDP a pornit cu succes.
+CWUDP0001I.useraction=Nicio ac\u0163iune nu este necesar\u0103.
+
+CWUDP0002I=CWWKO0401I: Canalul UDP {0} a oprit ascultarea pe gazda {1} portul {2}.
+CWUDP0002I.explanation=Canalul UDP s-a oprit normal.
+CWUDP0002I.useraction=Nicio ac\u0163iune nu este necesar\u0103.
+
+CWUDP0003W=CWWKO0402W: Canalul UDP {0} a fost construit cu o valoare a propriet\u0103\u0163ii de configurare incorect\u0103. Nume: {1}  Valoare: {2}.
+CWUDP0003W.explanation=Valorile de configurare sunt ignorate de canalul UDP.
+CWUDP0003W.useraction=Nicio ac\u0163iune nu este necesar\u0103.
+
+CWUDP0004E=CWWKO0403E: Ini\u0163ializarea canalului UDP {0} nu a avut succes. Gazda {1} nu a putut fi rezolvat\u0103.
+CWUDP0004E.explanation=Sistemul nu poate rezolva numele gazd\u0103 configurat.
+CWUDP0004E.useraction=Verifica\u0163i c\u0103 este corect\u0103 configura\u0163ia numelui gazd\u0103.
+
+CWUDP0005E=CWWKO0404E: Ini\u0163ializarea canalului UDP {0} nu a avut succes. Legarea socket-ului datagramei nu a avut succes pentru gazda {1} \u015fi portul {2}.
+CWUDP0005E.explanation=Portul configurat s-ar putea s\u0103 fie deja \u00een uz.
+CWUDP0005E.useraction=Verifica\u0163i c\u0103 este corect\u0103 configurarea portului.
+
+CWUDP0006I=CWWKO0405I: Canalul UDP a avut o c\u0103utare Domain Name System (DNS) f\u0103r\u0103 succes pentru gazda {0}. Aceast\u0103 c\u0103utare f\u0103r\u0103 succes a avut loc de {1} ori.
+CWUDP0006I.explanation=Canalul UDP a \u00eencercat s\u0103 trimit\u0103 un pachet la o gazd\u0103 al c\u0103rei nume gazd\u0103 nu poate fi rezolvat. Serverul DNS s-ar putea s\u0103 nu ruleze sau ar putea fi configurat gre\u015fit.
+CWUDP0006I.useraction=Verifica\u0163i c\u0103 este corect\u0103 configura\u0163ia DNS pentru server.
+
+EXECUTOR_SVC_MISSING=CWWKO0406E: A ap\u0103rut o eroare intern\u0103. Lipse\u015fte Serviciul executor.
+EXECUTOR_SVC_MISSING.explanation=CMSG0001
+EXECUTOR_SVC_MISSING.useraction=CMSG0002

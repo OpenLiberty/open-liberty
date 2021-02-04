@@ -1,0 +1,186 @@
+###############################################################################
+# Copyright (c) 2010 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO Websphere kernel channel framework service
+#CMVCPATHNAME com.ibm.ws.channelfw/resources/com/ibm/ws/channelfw/internal/resources/ChannelfwMessages.nlsprops
+#NLS_ENCODING=UNICODE
+#ISMESSAGEFILE TRUE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+
+### CHFW will use message numbers 0000-0199
+
+channel.dir.missing=CWWKO0001W: Falta {0} o no es un directorio.
+channel.dir.missing.explanation=CMSG0001
+channel.dir.missing.useraction=CMSG0002
+
+channel.jar.open.failure=CWWKO0002E: La implementaci\u00f3n de canal {0} no se ha podido abrir: {1}
+channel.jar.open.failure.explanation=CMSG0001
+channel.jar.open.failure.useraction=CMSG0002
+
+channel.descriptor.missing=CWWKO0003E: La implementaci\u00f3n de canal {0} no tiene un descriptor de canal.
+channel.descriptor.missing.explanation=CMSG0001
+channel.descriptor.missing.useraction=CMSG0002
+
+channel.descriptor.parse.failure=CWWKO0004E: Se han generado errores al analizar el descriptor de canal desde {0}: {1}
+channel.descriptor.parse.failure.explanation=CMSG0001
+channel.descriptor.parse.failure.useraction=CMSG0002
+
+channel.descriptor.factory.missing=CWWKO0005E: La implementaci\u00f3n de canal {0} no especifica una clase de tiempo de ejecuci\u00f3n de f\u00e1brica.
+channel.descriptor.factory.missing.explanation=CMSG0001
+channel.descriptor.factory.missing.useraction=CMSG0002
+
+channel.descriptor.channel.missing=CWWKO0006E: La implementaci\u00f3n de canal {0} no especifica una clase de configuraci\u00f3n de canal.
+channel.descriptor.channel.missing.explanation=CMSG0001
+channel.descriptor.channel.missing.useraction=CMSG0002
+
+channel.descriptor.interfaces.missing=CWWKO0007E: La implementaci\u00f3n de canal {0} no especifica interfaces de dispositivo ni de aplicaci\u00f3n.
+channel.descriptor.interfaces.missing.explanation=CMSG0001
+channel.descriptor.interfaces.missing.useraction=CMSG0002
+
+channel.descriptor.weight.invalid=CWWKO0008E: La implementaci\u00f3n de canal {0} especifica una ponderaci\u00f3n por omisi\u00f3n de {1}. Esta ponderaci\u00f3n por omisi\u00f3n no es v\u00e1lida.
+channel.descriptor.weight.invalid.explanation=CMSG0001
+channel.descriptor.weight.invalid.useraction=CMSG0002
+
+chain.channels.empty=CWWKO0009E: La cadena {0} no contiene canales de transporte.
+chain.channels.empty.explanation=Para poder funcionar, las cadenas deben contener canales de transporte.
+chain.channels.empty.useraction=A\u00f1ada canales de transporte a la cadena especificada.
+
+chain.flow.mismatch=CWWKO0010E: Los canales de transporte de la cadena {0} deben fluir en la misma direcci\u00f3n.
+chain.flow.mismatch.explanation=Los canales de transporte pueden fluir hacia un servidor (canales entrantes) o hacia fuera del servidor (canales salientes). Todos los canales de transporte de una cadena deben fluir en la misma direcci\u00f3n.
+chain.flow.mismatch.useraction=Aseg\u00farese de que todos los canales de transporte de la cadena fluyen en la misma direcci\u00f3n. No mezcle los canales entrantes y salientes en la misma cadena.
+
+chain.inbound.first.mismatch=CWWKO0011E: El primer canal de transporte en la cadena {0} no es un canal conector.
+chain.inbound.first.mismatch.explanation=El primer canal de transporte en una cadena entrante debe ser un canal conector.
+chain.inbound.first.mismatch.useraction=Aseg\u00farese de que el primer canal de transporte en la cadena entrante es un canal conector.
+
+chain.inbound.last.mismatch=CWWKO0012E: El \u00faltimo canal de transporte en la cadena {0} no es un canal aceptante.
+chain.inbound.last.mismatch.explanation=El \u00faltimo canal de transporte en una cadena entrante debe ser un canal aceptante.
+chain.inbound.last.mismatch.useraction=Aseg\u00farese de que el \u00faltimo canal de transporte en la cadena entrante es un canal aceptante.
+
+chain.acceptor.determination.failure=CWWKO0013E: El sistema no ha podido determinar el ID aceptante para la cadena {0}.
+chain.acceptor.determination.failure.explanation=CMSG0001
+chain.acceptor.determination.failure.useraction=CMSG0002
+
+channel.descriptor.notfound=CWWKO0014E: El sistema no ha podido encontrar el descriptor de canal para que coincida con el tipo de configuraci\u00f3n de canal {0}.
+channel.descriptor.notfound.explanation=Los canales deben proporcionar un descriptor para correlacionar los tipos de configuraci\u00f3n con los tipos de ejecuci\u00f3n. No se ha podido encontrar ning\u00fan descriptor coincidente.
+channel.descriptor.notfound.useraction=CMSG0002
+
+jndi.context.failure=CWWKO0015E: El sistema no ha podido obtener el siguiente contexto de denominaci\u00f3n inicial: {0}
+jndi.context.failure.explanation=CMSG0001
+jndi.context.failure.useraction=CMSG0002
+
+factory.load.failure=CWWKO0016E: El sistema no ha podido cargar la siguiente f\u00e1brica de canales de transporte: {0}
+factory.load.failure.explanation=CMSG0001
+factory.load.failure.useraction=CMSG0002
+
+channel.load.failure=CWWKO0017E: El sistema no ha podido cargar el siguiente canal de transporte: {0}
+channel.load.failure.explanation=CMSG0001
+channel.load.failure.useraction=CMSG0002
+
+chain.load.failure=CWWKO0018E: El sistema no ha podido cargar la siguiente cadena: {0}
+chain.load.failure.explanation=CMSG0001
+chain.load.failure.useraction=CMSG0002
+
+chain.started=CWWKO0019I: Transport Channel Service ha iniciado la cadena {0}.
+chain.started.explanation=Transport Channel Service ha iniciado la cadena especificada.
+chain.started.useraction=No es necesario realizar ninguna acci\u00f3n.
+
+chain.stopped=CWWKO0020I: Transport Channel Service ha detenido la cadena etiquetada {0}.
+chain.stopped.explanation=Transport Channel Service ha detenido la cadena especificada
+chain.stopped.useraction=No es necesario realizar ninguna acci\u00f3n.
+
+chain.disabled=CWWKO0021I: La cadena entrante {0} se ha marcado como inhabilitada.
+chain.disabled.explanation=Las cadenas entrantes se deben marcar expl\u00edcitamente como habilitadas para poder iniciarse autom\u00e1ticamente. Las cadenas inhabilitadas se pueden iniciar, pero deben iniciarse expl\u00edcitamente por nombre.
+chain.disabled.useraction=No es necesario realizar ninguna acci\u00f3n.
+
+config.load.error=CWWKO0022E: Transport Channel Service no ha podido localizar su configuraci\u00f3n debido a una excepci\u00f3n: {0}
+config.load.error.explanation=Transport Channel Service ha generado una excepci\u00f3n al intentar descubrir y cargar su configuraci\u00f3n. Se iniciar\u00e1 sin configuraci\u00f3n.
+config.load.error.useraction=CMSG0002
+
+boot.no.config=CWWKO0023I: Transport Channel Service no ha podido localizar su configuraci\u00f3n, pero se iniciar\u00e1 sin ella.
+boot.no.config.explanation=Transport Channel Service no ha podido localizar su configuraci\u00f3n. Los detalles de configuraci\u00f3n por omisi\u00f3n para Transport Channel Service se deben a\u00f1adir al archivo de configuraci\u00f3n server.xml.
+boot.no.config.useraction=Utilice la consola administrativa o wsadmin para a\u00f1adir la configuraci\u00f3n por omisi\u00f3n para Transport Channel Service.
+
+framework.disabled=CWWKO0024I: Transport Channel Service se ha inhabilitado expl\u00edcitamente.
+framework.disabled.explanation=Transport Channel Service se ha configurado expl\u00edcitamente para inhabilitarse y no se iniciar\u00e1.
+framework.disabled.useraction=No es necesario realizar ninguna acci\u00f3n.
+
+channel.descriptor.factory.config.missing=CWWKO0025E: La implementaci\u00f3n de canal {0} no especifica una clase de configuraci\u00f3n de f\u00e1brica.
+channel.descriptor.factory.config.missing.explanation=CMSG0001
+channel.descriptor.factory.config.missing.useraction=CMSG0002
+
+factory.descriptor.notfound=CWWKO0026E: El sistema no ha podido encontrar un descriptor de f\u00e1brica de canal que coincida con el tipo de configuraci\u00f3n del canal de transporte {0}.
+factory.descriptor.notfound.explanation=Los canales deben proporcionar un descriptor para correlacionar los tipos de configuraci\u00f3n con los tipos de ejecuci\u00f3n. No se ha podido encontrar ning\u00fan descriptor coincidente.
+factory.descriptor.notfound.useraction=CMSG0002
+
+channel.load.problems=CWWKO0027I: Una o m\u00e1s implementaciones del canal de transporte no se han cargado.
+channel.load.problems.explanation=CMSG0001
+channel.load.problems.useraction=CMSG0002
+
+chain.outbound.last.mismatch=CWWKO0028E: El \u00faltimo canal de transporte en la cadena {0} no es un canal conector.
+chain.outbound.last.mismatch.explanation=El \u00faltimo canal de transporte en una cadena saliente debe ser un canal conector.
+chain.outbound.last.mismatch.useraction=Aseg\u00farese de que el \u00faltimo canal de transporte en la cadena saliente es un canal conector.
+
+chain.initialization.error=CWWKO0029E: Se ha generado una excepci\u00f3n al inicializar la cadena {0} debido a la excepci\u00f3n {1}
+chain.initialization.error.explanation=Se ha generado una excepci\u00f3n en la cadena o los canales subyacentes.
+chain.initialization.error.useraction=Aseg\u00farese de que en la cadena se utilicen los canales correctos.
+
+chain.start.error=CWWKO0030E: Se ha generado una excepci\u00f3n al iniciar la cadena {0} debido a la excepci\u00f3n {1}
+chain.start.error.explanation=Se ha generado una excepci\u00f3n en la cadena o los canales subyacentes.
+chain.start.error.useraction=Aseg\u00farese de que en la cadena se utilicen los canales correctos.
+
+chain.stop.error=CWWKO0031E: Se ha generado una excepci\u00f3n al detener la cadena {0} debido a la excepci\u00f3n {1}
+chain.stop.error.explanation=Se ha generado una excepci\u00f3n en la cadena o los canales subyacentes.
+chain.stop.error.useraction=Aseg\u00farese de que en la cadena se utilicen los canales correctos.
+
+chain.destroy.error=CWWKO0032E: Se ha generado una excepci\u00f3n al destruir la cadena {0} debido a la excepci\u00f3n {1}
+chain.destroy.error.explanation=Se ha generado una excepci\u00f3n en la cadena o los canales subyacentes.
+chain.destroy.error.useraction=Aseg\u00farese de que en la cadena se utilicen los canales correctos.
+
+chain.retrystart.error=CWWKO0033E: Transport Channel Service no ha iniciado la cadena de transporte {0} despu\u00e9s de {1} intentos de iniciarla.
+chain.retrystart.error.explanation=El n\u00famero configurado de reintentos no es suficiente para hacer que la cadena se inicie, o el puerto utilizado por la cadena ya est\u00e1 en uso.
+chain.retrystart.error.useraction=Aseg\u00farese de que el puerto utilizado por la cadena no est\u00e9 todav\u00eda en uso. Defina correctamente las propiedades personalizadas para reiniciar las cadenas.
+
+chain.retrystart.warning=CWWKO0034W: Transport Channel Service ha detectado que la cadena de transporte {0} no se ha iniciado. El servicio intentar\u00e1 iniciar la cadena {0} cada {1} milisegundos hasta un m\u00e1ximo de {2} intentos.
+chain.retrystart.warning.explanation=Ha fallado el intento inicial de iniciar la cadena. Se realizar\u00e1n m\u00e1s intentos para iniciarla.
+chain.retrystart.warning.useraction=Espere a que aparezca un mensaje de error o de auditor\u00eda que indique el resultado de los reintentos.
+
+framework.property.error=CWWKO0035E: Transport Channel Service ha encontrado un valor de {0} para la propiedad {1}. No es un valor v\u00e1lido.
+framework.property.error.explanation=El valor de la propiedad est\u00e1 fuera de los l\u00edmites esperados.
+framework.property.error.useraction=Ajuste la configuraci\u00f3n para establecer la propiedad en un valor v\u00e1lido.
+
+missing.factory=CWWKO0036W: La cadena de configuraci\u00f3n contiene un tipo de f\u00e1brica que falta {0} y no ha podido iniciar una o m\u00e1s cadenas.
+missing.factory.explanation=El entorno de ejecuci\u00f3n no contiene una f\u00e1brica de canales del tipo coincidente y, por lo tanto, no puede iniciar las cadenas que la utilizan.
+missing.factory.useraction=Compruebe si en la lista del conjunto de caracter\u00edsticas de tiempo de ejecuci\u00f3n faltan uno o m\u00e1s elementos necesarios.
+
+DEFAULT_OPTIONS_ERROR_TCP=CWWKO0037E: No se ha podido crear una configuraci\u00f3n de canal TCP por omisi\u00f3n. La excepci\u00f3n es {0}.
+DEFAULT_OPTIONS_ERROR_TCP.explanation=Se ha detectado un error al crear la configuraci\u00f3n por omisi\u00f3n para los canales TCP.
+DEFAULT_OPTIONS_ERROR_TCP.useraction=Revise la excepci\u00f3n para obtener informaci\u00f3n sobre c\u00f3mo ha fallado la creaci\u00f3n.
+
+DEFAULT_OPTIONS_ERROR_UDP=CWWKO0038E: No se ha podido crear la configuraci\u00f3n de canal UDP. La excepci\u00f3n es {0}.
+DEFAULT_OPTIONS_ERROR_UDP.explanation=Se ha detectado un error al crear la configuraci\u00f3n por omisi\u00f3n para los canales UDP.
+DEFAULT_OPTIONS_ERROR_UDP.useraction=Revise la excepci\u00f3n para obtener informaci\u00f3n sobre c\u00f3mo ha fallado la creaci\u00f3n.
+
+channel.shared.warning=CWWKO0039W: Se est\u00e1 compartiendo un canal no compartible {0} entre varias regiones.
+channel.shared.warning.explanation=El canal se ha configurado para ser un canal no compartible. Sin embargo, el canal est\u00e1n siendo compartido entre varias regiones.
+channel.shared.warning.useraction=Revise la configuraci\u00f3n del canal y su uso.

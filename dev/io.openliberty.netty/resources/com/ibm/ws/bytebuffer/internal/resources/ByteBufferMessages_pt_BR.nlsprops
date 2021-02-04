@@ -1,0 +1,40 @@
+###############################################################################
+# Copyright (c) 2010 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO Websphere kernel channel framework service: byte buffer support
+#CMVCPATHNAME com.ibm.ws.channelfw/resources/com/ibm/ws/bytebuffer/internal/resources/ByteBufferMessages.nlsprops
+#NLS_ENCODING=UNICODE
+#
+#ISMESSAGEFILE TRUE
+# NLS_MESSAGEFORMAT_VAR
+
+### WSBB will use message ids from 0600-0799
+
+NOT_VALID_CUSTOM_PROPERTY=CWWKO0600E: A propriedade customizada {0} possui um valor igual a {1}. Esse valor n\u00e3o \u00e9 v\u00e1lido.
+NOT_VALID_CUSTOM_PROPERTY.explanation=Uma propriedade personalizada foi especificada com um valor fora do intervalo de valores v\u00e1lidos.
+NOT_VALID_CUSTOM_PROPERTY.useraction=Corrija o erro de configura\u00e7\u00e3o.
+
+UNRECOGNIZED_CUSTOM_PROPERTY=CWWKO0601W: A propriedade customizada {0} especificada para o componente WsByteBuffer n\u00e3o \u00e9 v\u00e1lida.
+UNRECOGNIZED_CUSTOM_PROPERTY.explanation=Uma propriedade personalizada foi especificada incorretamente.
+UNRECOGNIZED_CUSTOM_PROPERTY.useraction=Corrija o erro de configura\u00e7\u00e3o.
+
+CONFIG_VALUE_NUMBER_EXCEPTION=CWWKO0602E: O componente WsByteBuffer gerou uma exce\u00e7\u00e3o NumberFormatException ao processar a propriedade a seguir: Nome da Propriedade: {0}  Valor: {1}
+CONFIG_VALUE_NUMBER_EXCEPTION.explanation=Um valor da propriedade de configura\u00e7\u00e3o WsByteBuffer n\u00e3o \u00e9 um n\u00famero v\u00e1lido.
+CONFIG_VALUE_NUMBER_EXCEPTION.useraction=Corrija o erro de configura\u00e7\u00e3o.
+
+POOL_MISMATCH=CWWKO0603E: As especifica\u00e7\u00f5es de tamanhos de conjunto e profundidades de conjunto WsByteBuffer n\u00e3o possuem o mesmo n\u00famero de entradas. Tamanhos: {0}  Profundidades: {1}
+POOL_MISMATCH.explanation=Os tamanhos de conjunto ou as profundidades de conjunto foram especificadas incorretamente.
+POOL_MISMATCH.useraction=Corrija o erro de configura\u00e7\u00e3o.
