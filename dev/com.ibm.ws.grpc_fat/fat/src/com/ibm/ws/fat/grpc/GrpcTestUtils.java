@@ -70,7 +70,7 @@ public class GrpcTestUtils {
                                                 String serverXML,
                                                 Set<String> appName,
                                                 Logger logger) throws Exception {
-        return setServerConfiguration(server, null, serverXML, appName, logger, false);
+        return setServerConfiguration(server, originalServerXML, serverXML, appName, logger, false);
     }
 
     /**

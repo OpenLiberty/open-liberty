@@ -5341,6 +5341,19 @@ public class PolicyExecutorServlet extends FATServlet {
         assertTrue(executor.awaitTermination(TIMEOUT_NS, TimeUnit.NANOSECONDS));
     }
 
+    // Register a callback for shutdown. Verify that it gets invoked for both shutdown and shutdownNow methods.
+    @Test
+    public void testShutdownCallback() throws Exception {
+        PolicyExecutor executor1 = provider.create("testShutdownCallback-1");
+        PolicyExecutor executor2 = provider.create("testShutdownCallback-2");
+        AtomicInteger count = new AtomicInteger();
+        executor1.registerShutdownCallback(() -> count.addAndGet(1));
+        executor2.registerShutdownCallback(() -> count.addAndGet(2));
+        executor1.shutdown();
+        executor2.shutdownNow();
+        assertEquals(3, count.get());
+    }
+
     // Submit a task that gets queued but times out (due to startTimeout) before it can run.
     @Test
     public void testStartTimeout() throws Exception {

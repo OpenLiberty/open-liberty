@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.jaxrs20.client.fat.test;
+package io.openliberty.restfulWS30.client.fat.test;
 
 import static org.junit.Assert.fail;
 
@@ -30,30 +30,24 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
-@SkipForRepeat("EE9_FEATURES") // Continue to skip this test for EE9 as Multiple REST servlets are defined for the web module which is not supported by RestEasy. See a new PathParamTest here io.openliberty.restfulWS.3.0.client_fat
 @RunWith(FATRunner.class)
 public class PathParamTest extends AbstractTest {
 
-    @Server("jaxrs20.client.PathParamTest")
+    @Server("PathParamTest")
     public static LibertyServer server;
 
     public static final String moduleName = "pathparam";
     private static final String stringVariable = "abc";
     private static final short shortVariable = (short) 123;
-    private static final long longVariable = 456;
-    private static final double doubleVariable = 789;
+    private static final long longVariable =  -9223372036L;
+    private static final double doubleVariable = 789.123;
 
     @BeforeClass
     public static void setup() throws Exception {
-        WebArchive app = ShrinkHelper.defaultDropinApp(server, moduleName,
-                                                       "com.ibm.ws.jaxrs20.client.fat.pathparam.bigdouble",
-                                                       "com.ibm.ws.jaxrs20.client.fat.pathparam.biglong",
-                                                       "com.ibm.ws.jaxrs20.client.fat.pathparam.smallshort",
-                                                       "com.ibm.ws.jaxrs20.client.fat.pathparam.string");
+        WebArchive app = ShrinkHelper.defaultDropinApp(server, moduleName, "io.openliberty.restfulWS30.client.fat.pathparam");
 
         // Make sure we don't fail because we try to start an
         // already started server
@@ -122,41 +116,41 @@ public class PathParamTest extends AbstractTest {
 
     @Test
     public void testStringResource() throws Exception {
-        runGetMethod("/string/resource/" + stringVariable, 200, "ok", true);
+        runGetMethod("/pathparam/resource/string/" + stringVariable, 200, "ok", true);
     }
 
     @Test
     public void testLongResource() throws Exception {
-        runGetMethod("/biglong/resource/" + longVariable, 200, "ok", true);
+        runGetMethod("/pathparam/resource/biglong/" + longVariable, 200, "ok", true);
     }
 
     @Test
     public void testDoubleResource() throws Exception {
-        runGetMethod("/bigdouble/resource/" + doubleVariable, 200, "ok", true);
+        runGetMethod("/pathparam/resource/bigdouble/" + doubleVariable, 200, "ok", true);
     }
 
     @Test
     public void testShortResource() throws Exception {
-        runGetMethod("/smallshort/resource/" + shortVariable, 200, "ok", true);
+        runGetMethod("/pathparam/resource/smallshort/" + shortVariable, 200, "ok", true);
     }
 
     @Test
     public void testAllResources1() throws Exception {
         server.stopServer();
         server.startServer(true);
-        runGetMethod("/smallshort/resource/" + shortVariable, 200, "ok", true);
-        runGetMethod("/bigdouble/resource/" + doubleVariable, 200, "ok", true);
-        runGetMethod("/biglong/resource/" + longVariable, 200, "ok", true);
-        runGetMethod("/string/resource/" + stringVariable, 200, "ok", true);
+        runGetMethod("/pathparam/resource/smallshort/" + shortVariable, 200, "ok", true);
+        runGetMethod("/pathparam/resource/bigdouble/" + doubleVariable, 200, "ok", true);
+        runGetMethod("/pathparam/resource/biglong/" + longVariable, 200, "ok", true);
+        runGetMethod("/pathparam/resource/string/" + stringVariable, 200, "ok", true);
     }
 
     @Test
     public void testAllResources2() throws Exception {
         server.stopServer();
         server.startServer(true);
-        runGetMethod("/bigdouble/resource/" + doubleVariable, 200, "ok", true);
-        runGetMethod("/biglong/resource/" + longVariable, 200, "ok", true);
-        runGetMethod("/string/resource/" + stringVariable, 200, "ok", true);
-        runGetMethod("/smallshort/resource/" + shortVariable, 200, "ok", true);
+        runGetMethod("/pathparam/resource/bigdouble/" + doubleVariable, 200, "ok", true);
+        runGetMethod("/pathparam/resource/biglong/" + longVariable, 200, "ok", true);
+        runGetMethod("/pathparam/resource/string/" + stringVariable, 200, "ok", true);
+        runGetMethod("/pathparam/resource/smallshort/" + shortVariable, 200, "ok", true);
     }
 }

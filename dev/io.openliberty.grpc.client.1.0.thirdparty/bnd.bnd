@@ -10,8 +10,8 @@
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
-grpcVersion=1.31.1
-nettyVersion=4.1.51
+grpcVersion=1.35.0
+nettyVersion=4.1.52
 
 Bundle-Name: Open Liberty gRPC Client Third Party API
 Bundle-SymbolicName: io.openliberty.grpc.client.1.0.thirdparty
