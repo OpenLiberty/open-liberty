@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -52,7 +52,7 @@ public class SPNEGOConstants {
     public final static String CREATE_WIN_USER_LOCAL_FILE = SLASH_KERBEROS_SLASH + CREATE_WIN_USER_REMOTE_FILE;
     public final static String REMOVE_WIN_USER_REMOTE_FILE = "removeWinUsers.vbs";
     public final static String REMOTE_WIN_USER_LOCAL_FILE = SLASH_KERBEROS_SLASH + REMOVE_WIN_USER_REMOTE_FILE;
-    public final static String CREATE_WIN_KEYTAB_REMOTE_FILE = "createWinKeytabFile.bat";
+    public final static String CREATE_WIN_KEYTAB_REMOTE_FILE = "createWinKeytabFileOL.bat"; // "createWinKeytabFile.bat";
     public final static String CREATE_WIN_KEYTAB_LOCAL_FILE = SLASH_KERBEROS_SLASH + CREATE_WIN_KEYTAB_REMOTE_FILE;
     public final static String CREATE_WIN_USER_SET_SPN_REMOTE_FILE = "createUserAndSetSpn.bat";
     public final static String CREATE_WIN_USER_SET_SPN_LOCAL_FILE = SLASH_KERBEROS_SLASH + CREATE_WIN_USER_SET_SPN_REMOTE_FILE;

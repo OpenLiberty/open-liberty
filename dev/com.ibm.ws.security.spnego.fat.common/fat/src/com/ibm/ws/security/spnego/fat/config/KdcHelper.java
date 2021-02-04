@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2020 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,11 +21,13 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.ConnectException;
 import java.rmi.RemoteException;
+import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import org.apache.sshd.client.SshClient;
 import org.apache.sshd.client.channel.ChannelExec;
@@ -33,6 +35,8 @@ import org.apache.sshd.client.channel.ClientChannelEvent;
 import org.apache.sshd.client.scp.ScpClient;
 import org.apache.sshd.client.scp.ScpClientCreator;
 import org.apache.sshd.client.session.ClientSession;
+import org.apache.sshd.common.channel.Channel;
+import org.apache.sshd.common.channel.ChannelListener;
 import org.junit.Ignore;
 
 import com.ibm.websphere.simplicity.ConnectionInfo;
@@ -878,13 +882,15 @@ public abstract class KdcHelper {
      * @throws IOException If there was an error executing the command.
      */
     protected ProgramOutput executeSshCommand(ClientSession sshSession, String command, int timeout) throws IOException {
-        Log.info(thisClass, "executeSshCommand", "Executing SSH command --> \"{1}\" with a {2}s timeout on session {0}", new Object[] { sshSession, command, timeout });
+        final String methodName = "executeSshCommand";
+        Log.info(thisClass, methodName, "Executing SSH command --> \"{1}\" with a {2}s timeout on session {0}", new Object[] { sshSession, command, timeout });
 
         try (ByteArrayOutputStream stderr = new ByteArrayOutputStream();
                         ByteArrayOutputStream stdout = new ByteArrayOutputStream();
                         ChannelExec channel = sshSession.createExecChannel(command)) {
             channel.setOut(stdout);
             channel.setErr(stderr);
+            channel.addChannelListener(new SshChannelListener());
             try {
                 long remainingTimeoutMs = TimeUnit.SECONDS.toMillis(timeout);
 
@@ -896,7 +902,7 @@ public abstract class KdcHelper {
                 remainingTimeoutMs -= System.currentTimeMillis() - startTimeMs;
 
                 if (remainingTimeoutMs <= 0) {
-                    Log.info(thisClass, "executeSshCommand", "The SSH command timed out.");
+                    Log.info(thisClass, methodName, "The SSH command timed out.");
                     throw new IOException("Timed out trying to open a channel with the host to execute the SSH command. The timeout was " + timeout + " seconds.");
                 }
 
@@ -909,15 +915,66 @@ public abstract class KdcHelper {
                  * Did the command timeout? If so throw an exception.
                  */
                 if (ccEvents.contains(ClientChannelEvent.TIMEOUT)) {
-                    Log.info(thisClass, "executeSshCommand", "The SSH command timed out.");
+                    Log.info(thisClass, methodName, "The SSH command timed out. The timeout was " + timeout + " seconds.");
                     throw new IOException("The SSH command timed out while executing. The timeout was " + timeout + " seconds.");
                 }
-                Log.info(thisClass, "executeSshCommand", "SSH command returned status of {0}", channel.getExitStatus());
+
                 return new ProgramOutput(command, channel.getExitStatus(), new String(stdout.toByteArray()), new String(stderr.toByteArray()));
             } finally {
-                channel.close(false);
+                try {
+                    channel.close(false);
+                } catch (Throwable t) {
+                    // Ignore.
+                }
+
+                logSshOutput(new String(stdout.toByteArray()).trim(), new String(stderr.toByteArray()).trim());
             }
         }
+    }
+
+    /**
+     * Log stdout and stderr from an SSH channel.
+     *
+     * @param stdout Standard output from the channel.
+     * @param stderr Standard input from the channel.
+     */
+    private static void logSshOutput(String stdout, String stderr) {
+        final String methodName = "logSshOutput";
+
+        /*
+         * Process stdout.
+         */
+        if (stdout.isEmpty()) {
+            stdout = "    [STDOUT] <NONE>";
+        } else {
+            /*
+             * Add "    [STDOUT] " to the beginning of each line. The split
+             * method might be resource intensive if we have large strings.
+             */
+            stdout = Arrays.stream(stdout.split("\\r?\\n"))
+                            .filter(line -> true)
+                            .map(line -> "    [STDOUT] " + line + System.lineSeparator())
+                            .collect(Collectors.joining());
+        }
+
+        /*
+         * Process stderr.
+         */
+        if (stderr.isEmpty()) {
+            stderr = "    [STDERR] <NONE>";
+        } else {
+            /*
+             * Add "    [STDERR] " to the beginning of each line. The split
+             * method might be resource intensive if we have large strings.
+             */
+            stderr = Arrays.stream(stderr.split("\\r?\\n"))
+                            .filter(line -> true)
+                            .map(line -> "    [STDERR] " + line + System.lineSeparator())
+                            .collect(Collectors.joining());
+        }
+
+        Log.info(thisClass, methodName, "SSH command standard output: \n{0}", stdout);
+        Log.info(thisClass, methodName, "SSH command standard error: \n{0}", stderr);
     }
 
     /**
@@ -1004,5 +1061,38 @@ public abstract class KdcHelper {
         boolean success = executeSshCommand(sshSession, "rm -f " + remoteFile, 5).getReturnCode() == 0;
         Log.info(thisClass, "deleteRemoteFile", "Delete of remote file was successful? " + success);
         return success;
+    }
+
+    /**
+     * Handler for listenting to SSH channel events.
+     */
+    class SshChannelListener implements ChannelListener {
+        private Class<?> thisClass = SshChannelListener.class;
+
+        @Override
+        public void channelInitialized(Channel channel) {
+            Log.info(thisClass, "channelInitialized", "Channel: " + channel);
+        }
+
+        @Override
+        public void channelOpenSuccess(Channel channel) {
+            Log.info(thisClass, "channelOpenSuccess", "Channel: " + channel);
+        }
+
+        @Override
+        public void channelOpenFailure(Channel channel,
+                                       Throwable reason) {
+            Log.error(thisClass, "channelOpenFailure", reason, "Channel: " + channel);
+        }
+
+        @Override
+        public void channelClosed(Channel channel, Throwable reason) {
+            Log.error(thisClass, "channelClosed", reason, "Channel: " + channel);
+        }
+
+        @Override
+        public void channelStateChanged(Channel channel, String hint) {
+            Log.info(thisClass, "channelStateChanged", "Channel: " + channel + ", hint: " + hint);
+        }
     }
 }
