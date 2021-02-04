@@ -206,11 +206,6 @@ public class PluginGenerator {
         }
     }
 
-    /** Wrapped method for getting the bundle context: required for test */
-    protected BundleContext getBundleContext() {
-        return context;
-    }
-
     private boolean isBundleUninstalled() {
         return bundle.getState() == Bundle.UNINSTALLED;
     }
@@ -245,7 +240,7 @@ public class PluginGenerator {
             return;
         }
 
-        if(getBundleContext() == null){
+        if(context == null){
             if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
                 Tr.exit(tc, "generateXML", "Error creating plugin config xml: BundleContext is null");
             }
