@@ -257,66 +257,70 @@ public class DBRotationTest extends FATServletClient {
     @Test
     public void testLogFailure() throws Exception {
         final String method = "testLogFailure";
+        if (FATSuite.type != DatabaseContainerType.Derby) { // Embedded Derby cannot support tests with concurrent server startup
+            // First server will get loads of FFDCs
+            longLeaseLengthServer1.setFFDCChecking(false);
+            server2.setHttpDefaultPort(cloud2ServerPort);
+            startServers(longLeaseLengthServer1, server2);
 
-        // First server will get loads of FFDCs
-        longLeaseLengthServer1.setFFDCChecking(false);
-        server2.setHttpDefaultPort(cloud2ServerPort);
-        startServers(longLeaseLengthServer1, server2);
+            // server2 does not know that server1 has a much longer leaseTimeout configured so it will prematurely
+            // (from server1's point of view) acquire server1's log and recover it.
 
-        // server2 does not know that server1 has a much longer leaseTimeout configured so it will prematurely
-        // (from server1's point of view) acquire server1's log and recover it.
+            //  Check for key string to see whether peer recovery has succeeded
+            assertNotNull("peer recovery failed", server2.waitForStringInTrace("Performed recovery for cloud001", LOG_SEARCH_TIMEOUT));
+            server2.stopServer();
 
-        //  Check for key string to see whether peer recovery has succeeded
-        assertNotNull("peer recovery failed", server2.waitForStringInTrace("Performed recovery for cloud001", LOG_SEARCH_TIMEOUT));
-        server2.stopServer();
+            // server1 now attempts some 2PC and will fail and terminate because its logs have been taken
+            try {
+                // We expect this to fail since it is gonna crash the server
+                runTestWithResponse(longLeaseLengthServer1, SERVLET_NAME, "setupRecLostLog");
+            } catch (Throwable e) {
+            }
 
-        // server1 now attempts some 2PC and will fail and terminate because its logs have been taken
-        try {
-            // We expect this to fail since it is gonna crash the server
-            runTestWithResponse(longLeaseLengthServer1, SERVLET_NAME, "setupRecLostLog");
-        } catch (Throwable e) {
-        }
-
-        int serverStatus = longLeaseLengthServer1.executeServerScript("status", null).getReturnCode();
-        Log.info(getClass(), method, "Status of " + longLeaseLengthServer1.getServerName() + " is " + serverStatus);
-
-        int retries = 0;
-        while (serverStatus == 0 && retries++ < 50) {
-            Thread.sleep(5000);
-            serverStatus = longLeaseLengthServer1.executeServerScript("status", null).getReturnCode();
+            int serverStatus = longLeaseLengthServer1.executeServerScript("status", null).getReturnCode();
             Log.info(getClass(), method, "Status of " + longLeaseLengthServer1.getServerName() + " is " + serverStatus);
-        }
 
-        // server1 should be stopped
-        assertFalse(longLeaseLengthServer1.getServerName() + " is not stopped (" + serverStatus + ")", 0 == serverStatus);
+            int retries = 0;
+            while (serverStatus == 0 && retries++ < 50) {
+                Thread.sleep(5000);
+                serverStatus = longLeaseLengthServer1.executeServerScript("status", null).getReturnCode();
+                Log.info(getClass(), method, "Status of " + longLeaseLengthServer1.getServerName() + " is " + serverStatus);
+            }
+
+            // server1 should be stopped
+            assertFalse(longLeaseLengthServer1.getServerName() + " is not stopped (" + serverStatus + ")", 0 == serverStatus);
+        }
+        Log.info(this.getClass(), method, "test complete");
     }
 
     @Test
     public void testLogFailureNoShutdown() throws Exception {
         final String method = "testLogFailureNoShutdown";
+        if (FATSuite.type != DatabaseContainerType.Derby) { // Embedded Derby cannot support tests with concurrent server startup
+            // First server will get loads of FFDCs
+            noShutdownServer1.setFFDCChecking(false);
+            server2.setHttpDefaultPort(cloud2ServerPort);
+            startServers(noShutdownServer1, server2);
 
-        // First server will get loads of FFDCs
-        noShutdownServer1.setFFDCChecking(false);
-        server2.setHttpDefaultPort(cloud2ServerPort);
-        startServers(noShutdownServer1, server2);
+            // server2 does not know that server1 has a much longer leaseTimeout configured so it will prematurely
+            // (from server1's point of view) acquire server1's log and recover it.
 
-        // server2 does not know that server1 has a much longer leaseTimeout configured so it will prematurely
-        // (from server1's point of view) acquire server1's log and recover it.
+            //  Check for key string to see whether peer recovery has succeeded
+            assertNotNull("peer recovery failed", server2.waitForStringInTrace("Performed recovery for cloud001", LOG_SEARCH_TIMEOUT));
+            server2.stopServer();
 
-        //  Check for key string to see whether peer recovery has succeeded
-        assertNotNull("peer recovery failed", server2.waitForStringInTrace("Performed recovery for cloud001", LOG_SEARCH_TIMEOUT));
-        server2.stopServer();
+            // server1 now attempts some 2PC which will fail because its logs have been taken but the server will NOT terminate
+            runTestWithResponse(noShutdownServer1, SERVLET_NAME, "setupRecLostLog");
 
-        // server1 now attempts some 2PC which will fail because its logs have been taken but the server will NOT terminate
-        runTestWithResponse(noShutdownServer1, SERVLET_NAME, "setupRecLostLog");
+            int serverStatus = noShutdownServer1.executeServerScript("status", null).getReturnCode();
+            Log.info(getClass(), method, "Status of " + noShutdownServer1.getServerName() + " is " + serverStatus);
 
-        int serverStatus = noShutdownServer1.executeServerScript("status", null).getReturnCode();
-        Log.info(getClass(), method, "Status of " + noShutdownServer1.getServerName() + " is " + serverStatus);
+            assertFalse(noShutdownServer1.getServerName() + " is not stopped", 1 == serverStatus);
 
-        assertFalse(noShutdownServer1.getServerName() + " is not stopped", 1 == serverStatus);
-
-        // If this fails the test failed
-        noShutdownServer1.stopServer("WTRN0029E", "WTRN0000E");
+            // If this fails the test failed
+            noShutdownServer1.stopServer("WTRN0029E", "WTRN0000E");
+        }
+        Log.info(this.getClass(), method, "test complete");
     }
 
     private void startServers(LibertyServer... servers) {
