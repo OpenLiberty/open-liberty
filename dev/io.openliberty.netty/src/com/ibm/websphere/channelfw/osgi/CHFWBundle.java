@@ -82,8 +82,6 @@ public class CHFWBundle implements ServerQuiesceListener {
      */
     private static final AtomicReference<CHFWBundle> instance = new AtomicReference<CHFWBundle>();
 
-    /** Reference to the channel framework */
-    private ChannelFrameworkImpl chfw = null;
     /** Reference to ByteBufferConfiguration */
     private ByteBufferConfiguration wsbbmgr = null;
     /** Reference to the event service */

@@ -11,11 +11,10 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-Bundle-Name: Channel Framework
-Bundle-SymbolicName: com.ibm.ws.channelfw; singleton:=true
-Bundle-Description: Provides the channel framework that allows the creation \
- of channel chains for handling both inbound and outbound traffic. The TCP \
- and UDP connector channels are included, version ${bVersion}
+Bundle-Name: io.openliberty.netty
+Bundle-SymbolicName: io.openliberty.netty; singleton:=true
+Bundle-Description: At the moment, provides the implenentation
+of WsByteBuffer version ${bVersion}
 
 WS-TraceGroup: ChannelFramework
 
@@ -26,42 +25,20 @@ IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 # Append ";provide:=true" if this bundle also provides an implementation
 # for the exported API.
 Export-Package: \
-	com.ibm.wsspi.bytebuffer;provide:=true-split-package:=merge-first, \
+	com.ibm.wsspi.bytebuffer;provide:=true; -split-package:=merge-first, \
 	
-Private-Package: com.ibm.io.async, \
+Private-Package: \
 	com.ibm.ws.bytebuffer.internal, \
-	com.ibm.ws.bytebuffer.internal.resources, \
-	com.ibm.ws.channelfw*, \
-	com.ibm.ws.tcpchannel.internal, \
-	com.ibm.ws.tcpchannel.internal.resources, \
-	com.ibm.ws.udpchannel.internal, \
-	com.ibm.ws.udpchannel.internal.resources
+	com.ibm.ws.bytebuffer.internal.resources
 	
 Include-Resource: \
     OSGI-INF=resources/OSGI-INF
 
--dsannotations: com.ibm.websphere.channelfw.osgi.CHFWBundle,\
+-dsannotations: \
    com.ibm.ws.bytebuffer.internal.ByteBufferConfiguration
 
 Service-Component: \
-    com.ibm.ws.tcpchannel.options; \
-        implementation:=com.ibm.wsspi.channelfw.ChannelConfiguration; \
-        provide:=com.ibm.wsspi.channelfw.ChannelConfiguration; \
-        modified:='modified';\
-        immediate:=true;\
-        properties:="service.vendor=IBM,service.ranking:Integer=0,type:String=TCPChannel", \
-    com.ibm.ws.udpchannel.options; \
-        implementation:=com.ibm.wsspi.channelfw.ChannelConfiguration; \
-        provide:=com.ibm.wsspi.channelfw.ChannelConfiguration; \
-        modified:='modified';\
-        immediate:=true;\
-        properties:="service.vendor=IBM,service.ranking:Integer=0,type:String=UDPChannel", \
-    com.ibm.ws.channelfw.CHFWEventHandler; \
-        implementation:=com.ibm.ws.channelfw.internal.CHFWEventHandler; \
-        configuration-policy:=ignore;\
-        provide:=com.ibm.websphere.event.EventHandler; \
-        properties:="event.topics=com/ibm/websphere/channelfw/*,service.vendor=IBM"
-
+ 
 instrument.disabled: true
 
 -buildpath: \
@@ -75,8 +52,11 @@ instrument.disabled: true
 	com.ibm.ws.timer;version=latest,\
 	com.ibm.ws.kernel.security.thread,\
 	com.ibm.ws.kernel.boot.core;version=latest, \
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest
-
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
+    com.ibm.websphere.channelfw*; version=latest, \
+    com.ibm.wsspi.channelfw*; version=latest
+    
+    
 #  <property name="unittest.prop.com.ibm.ws.logging.exception.log.enabled" value="false" />
 #  file /dev/com.ibm.ws.channelfw/unittestports.properties
 
