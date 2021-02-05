@@ -32,6 +32,7 @@ import com.ibm.ws.wssecurity.fat.cxf.samltoken.TwoServerTests.CxfSSLSAMLBasic2Se
 
 	   //In OL, FATSuiteLite.java is no longer used;
        //instead, using FATSuite.java to combine with FULL and LITE
+	
        //The following 2 tests are run as LITE FAT bucket where total 3 test cases @test are specified for LITE with @Mode(TestMode.LITE)
 	   //It takes about 5 minutes to run the 3 test cases when commenting out the following FULL test classes
 	   

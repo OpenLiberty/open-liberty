@@ -3,7 +3,9 @@
 	<include location="imports/BasicRegistry_withoutIDPUsers.xml" />
 	<include location="imports/misc2.xml" />
 	<include location="imports/goodSSLSettings.xml" />
-	<include location="imports/samlwsstemplates_testApp.xml" />
+	<!-- 2/01/2021 update test app xml  -->
+	<!--  old<include location="imports/samlwsstemplates_testApp.xml" />-->
+	<include location="imports/samlwsstemplateswithep_testApp.xml" />
 	<include location="imports/securityProvider_1_symSignEnc.xml" />
 
 </server>
