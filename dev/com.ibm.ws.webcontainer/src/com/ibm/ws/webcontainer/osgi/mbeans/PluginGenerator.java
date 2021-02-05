@@ -866,18 +866,27 @@ public class PluginGenerator {
                     }
                     return;
                 }
+                
                 // Verify that the temp plugin file exists
                 if (!outFile.exists()) {
                     throw new FileNotFoundException("File " + outFile.asFile().getAbsolutePath() + " could not be found");
                 }
                 // Construct the actual plugin file path
                 File pluginFile = new File(outFile.asFile().getParentFile(), pcd.PluginConfigFileName);
+                
 
                 if (pluginFile.exists()) {
                     FileUtils.forceDelete(pluginFile);
                 }
 
-                outFile.asFile().renameTo(pluginFile);
+                boolean result = outFile.asFile().renameTo(pluginFile);
+
+                //See if rename was unsuccessful. 
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    if(!result){
+                        Tr.debug(tc, "Rename to plugin-cfg.xml failed!");
+                    }
+                }
 
                 // tell the user where the file is - quietly for implicit requests
                 String fullFilePath = pluginFile.getAbsolutePath();
