@@ -16,8 +16,9 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import com.ibm.ws.security.saml20.fat.commonTest.actions.JakartaEE9SAMLRepeatAction;
+
 import componenttest.rules.repeater.EmptyAction;
-import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
@@ -35,6 +36,6 @@ public class FATSuite {
 
     @ClassRule
     public static RepeatTests repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
-            .andWith(new JakartaEE9Action());
+            .andWith(new JakartaEE9SAMLRepeatAction().liteFATOnly());
 
 }

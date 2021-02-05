@@ -25,9 +25,9 @@ import com.ibm.ws.security.saml.fat.SPInitiated.TimeSolicitedSPInitiatedTests;
 import com.ibm.ws.security.saml.fat.SPInitiated.TimeUnsolicitedSPInitiatedTests;
 import com.ibm.ws.security.saml.fat.SPInitiated.TrustedIssuerSolicitedSPInitiatedTests;
 import com.ibm.ws.security.saml.fat.SPInitiated.TrustedIssuerUnsolicitedSPInitiatedTests;
+import com.ibm.ws.security.saml20.fat.commonTest.actions.JakartaEE9SAMLRepeatAction;
 
 import componenttest.rules.repeater.EmptyAction;
-import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
@@ -51,6 +51,6 @@ public class FATSuite {
 
     @ClassRule
     public static RepeatTests repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
-            .andWith(new JakartaEE9Action());
+            .andWith(new JakartaEE9SAMLRepeatAction().liteFATOnly());
 
 }

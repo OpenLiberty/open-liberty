@@ -29,9 +29,9 @@ import com.ibm.ws.security.saml.fat.logout.SPInitiated_Login.UnsolicitedSPInitia
 import com.ibm.ws.security.saml.fat.logout.SPInitiated_Login.UnsolicitedSPInitiatedLogin_2ServerLogout_usingServlets_Tests;
 import com.ibm.ws.security.saml.fat.logout.SPInitiated_Login.UnsolicitedSPInitiatedLogin_Timeout_usingApps_Tests;
 import com.ibm.ws.security.saml.fat.logout.SPInitiated_Login.UnsolicitedSPInitiatedLogin_Timeout_usingServlets_Tests;
+import com.ibm.ws.security.saml20.fat.commonTest.actions.JakartaEE9SAMLRepeatAction;
 
 import componenttest.rules.repeater.EmptyAction;
-import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 
 /**
@@ -71,6 +71,6 @@ public class FATSuite {
 
     @ClassRule
     public static RepeatTests repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
-            .andWith(new JakartaEE9Action());
+            .andWith(new JakartaEE9SAMLRepeatAction().liteFATOnly());
 
 }
