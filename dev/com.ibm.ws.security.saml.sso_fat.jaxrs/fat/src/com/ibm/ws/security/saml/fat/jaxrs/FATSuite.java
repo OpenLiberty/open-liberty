@@ -11,6 +11,7 @@
 
 package com.ibm.ws.security.saml.fat.jaxrs;
 
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -23,6 +24,10 @@ import com.ibm.ws.security.saml.fat.jaxrs.IDPInitiated.RSSamlIDPInitiatedPkixWit
 import com.ibm.ws.security.saml.fat.jaxrs.IDPInitiated.RSSamlIDPInitiatedTrustedIssuers1ServerTests;
 import com.ibm.ws.security.saml.fat.jaxrs.IDPInitiated.RSSamlIDPInitiatedTrustedIssuers2ServerTests;
 import com.ibm.ws.security.saml.fat.jaxrs.SPInitiated.RSSamlSolicitedSPInitiatedAPITests;
+import com.ibm.ws.security.saml20.fat.commonTest.actions.JakartaEE9SAMLRepeatAction;
+
+import componenttest.rules.repeater.EmptyAction;
+import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -41,5 +46,9 @@ import com.ibm.ws.security.saml.fat.jaxrs.SPInitiated.RSSamlSolicitedSPInitiated
  * Purpose: This suite collects and runs all known good test suites.
  */
 public class FATSuite {
+
+    @ClassRule
+    public static RepeatTests repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
+            .andWith(new JakartaEE9SAMLRepeatAction().liteFATOnly());
 
 }

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.security.saml.fat.jaxrs.config;
 
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -17,6 +18,10 @@ import org.junit.runners.Suite.SuiteClasses;
 import com.ibm.ws.security.saml.fat.jaxrs.config.IDPInitiated.RSSamlIDPInitiatedMapToUserRegistryConfigTests;
 import com.ibm.ws.security.saml.fat.jaxrs.config.IDPInitiated.RSSamlIDPInitiatedMiscConfigTests;
 import com.ibm.ws.security.saml.fat.jaxrs.config.IDPInitiated.RSSamlIDPInitiatedSSLConfigTests;
+import com.ibm.ws.security.saml20.fat.commonTest.actions.JakartaEE9SAMLRepeatAction;
+
+import componenttest.rules.repeater.EmptyAction;
+import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -30,5 +35,9 @@ import com.ibm.ws.security.saml.fat.jaxrs.config.IDPInitiated.RSSamlIDPInitiated
  * Purpose: This suite collects and runs all known good test suites.
  */
 public class FATSuite {
+
+    @ClassRule
+    public static RepeatTests repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
+            .andWith(new JakartaEE9SAMLRepeatAction().liteFATOnly());
 
 }

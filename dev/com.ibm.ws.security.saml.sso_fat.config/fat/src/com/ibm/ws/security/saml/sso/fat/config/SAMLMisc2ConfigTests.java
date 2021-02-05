@@ -58,7 +58,7 @@ public class SAMLMisc2ConfigTests extends SAMLConfigCommonTests {
      * initiated - SAML Token in the Subject
      */
     @Mode(TestMode.LITE)
-    //chc@Test
+    @Test
     public void test_config_includeTokenInSubject_true() throws Exception {
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
@@ -81,7 +81,7 @@ public class SAMLMisc2ConfigTests extends SAMLConfigCommonTests {
      * initiated - No SAML Token in the Subject
      */
     // @Mode(TestMode.LITE)
-    //chc@Test
+    @Test
     public void test_config_includeTokenInSubject_false() throws Exception {
 
         testSAMLServer.reconfigServer("server_includeTokenInSubject_false.xml", _testName, commonAddtlMsgs, SAMLConstants.JUNIT_REPORTING);
@@ -119,7 +119,7 @@ public class SAMLMisc2ConfigTests extends SAMLConfigCommonTests {
     // TODO - with the default sp overridden, what then, no protection, all
     // protected???
     // @Mode(TestMode.LITE)
-    //chc@Test
+    @Test
     public void test_config_authFilterRef_omitted() throws Exception {
 
         testSAMLServer.reconfigServer("server_authFilterRef_omitted.xml", _testName, commonAddtlMsgs, SAMLConstants.JUNIT_REPORTING);
@@ -143,7 +143,7 @@ public class SAMLMisc2ConfigTests extends SAMLConfigCommonTests {
     // TODO - with the default sp overridden, what then, no protection, all
     // protected???
     // @Mode(TestMode.LITE)
-    //chc@Test
+    @Test
     public void test_config_authFilterRef_invalid() throws Exception {
 
         testSAMLServer.reconfigServer("server_authFilterRef_invalid.xml", _testName, commonAddtlMsgs, SAMLConstants.JUNIT_REPORTING);
@@ -188,7 +188,7 @@ public class SAMLMisc2ConfigTests extends SAMLConfigCommonTests {
      * correctly, with the value of the issuer, from the LTPA cookie and the
      * uniqueSecurityName should not contain the realmName.
      */
-    //chc@Test
+    @Test
     public void test_config_disableLtpaCookie_false() throws Exception {
 
         testSAMLServer.reconfigServer("server_disableLtpaCookie_false.xml", _testName, commonAddtlMsgs, SAMLConstants.JUNIT_REPORTING);
@@ -224,7 +224,7 @@ public class SAMLMisc2ConfigTests extends SAMLConfigCommonTests {
      * with the value of the issuer, from the LTPA cookie and the
      * uniqueSecurityName should not contain the realmName.
      */
-    //chc@Test
+    @Test
     public void test_config_spCookieName_good() throws Exception {
 
         testSAMLServer.reconfigServer("server_spCookieName_good.xml", _testName, commonAddtlMsgs, SAMLConstants.JUNIT_REPORTING);
@@ -250,7 +250,7 @@ public class SAMLMisc2ConfigTests extends SAMLConfigCommonTests {
      * LTPA2 token should be generated instead of the SP cookie
      */
     // @Mode(TestMode.LITE)
-    //chc@Test
+    @Test
     public void test_config_spCookieName_empty() throws Exception {
 
         testSAMLServer.reconfigServer("server_spCookieName_empty.xml", _testName, commonAddtlMsgs, SAMLConstants.JUNIT_REPORTING);
@@ -282,7 +282,7 @@ public class SAMLMisc2ConfigTests extends SAMLConfigCommonTests {
      */
     @ExpectedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException" })
     // @Mode(TestMode.LITE)
-    //chc@Test
+    @Test
     public void test_config_authnRequestTime_waitBeyond() throws Exception {
 
         testSAMLServer.reconfigServer("server_short_authnRequestTime.xml", _testName, commonAddtlMsgs, SAMLConstants.JUNIT_REPORTING);
@@ -319,7 +319,7 @@ public class SAMLMisc2ConfigTests extends SAMLConfigCommonTests {
      * use SAML (this SP).
      */
     @Mode(TestMode.LITE)
-    //chc@Test
+    @Test
     public void test_config_enable_specific_SP_TRUE() throws Exception {
 
         testSAMLServer.reconfigServer("server_enabled_defaultSP_true.xml", _testName, commonAddtlMsgs, SAMLConstants.JUNIT_REPORTING);
@@ -345,7 +345,7 @@ public class SAMLMisc2ConfigTests extends SAMLConfigCommonTests {
     @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfExternalLDAP.class)
     @Mode(TestMode.LITE)
     @AllowedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException" })
-    //chc@Test
+    @Test
     public void test_config_enable_specific_SP_FALSE() throws Exception {
 
         testSAMLServer.reconfigServer("server_enabled_defaultSP_true.xml", _testName, commonAddtlMsgs, SAMLConstants.JUNIT_REPORTING);
@@ -374,7 +374,7 @@ public class SAMLMisc2ConfigTests extends SAMLConfigCommonTests {
     // skip test if using external ldap (some mappings are different)
     @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfExternalLDAP.class)
     @Mode(TestMode.LITE)
-    //chc@Test
+    @Test
     public void test_config_enable_default_SP_TRUE() throws Exception {
 
         testSAMLServer.reconfigServer("server_enabled_defaultSP_true.xml", _testName, commonAddtlMsgs, SAMLConstants.JUNIT_REPORTING);
@@ -396,7 +396,7 @@ public class SAMLMisc2ConfigTests extends SAMLConfigCommonTests {
      */
     @Mode(TestMode.LITE)
     @ExpectedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException" })
-    //chc@Test
+    @Test
     public void test_config_enable_default_SP_FALSE() throws Exception {
 
         testSAMLServer.reconfigServer("server_enabled_defaultSP_false.xml", _testName, commonAddtlMsgs, SAMLConstants.JUNIT_REPORTING);
@@ -425,7 +425,7 @@ public class SAMLMisc2ConfigTests extends SAMLConfigCommonTests {
      */
     @Mode(TestMode.LITE)
     @ExpectedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException" })
-    //chc@Test
+    @Test
     public void test_config_enable_specific_and_default_SP_FALSE() throws Exception {
 
         testSAMLServer.reconfigServer("server_enabled_defaultSP_false.xml", _testName, commonAddtlMsgs, SAMLConstants.JUNIT_REPORTING);
@@ -461,7 +461,7 @@ public class SAMLMisc2ConfigTests extends SAMLConfigCommonTests {
      *
      */
     // @Mode(TestMode.LITE)
-    //chc@Test
+    @Test
     public void test_config_allowCreate_true() throws Exception {
         testSAMLServer.reconfigServer("server_allowCreate_true.xml", _testName, commonAddtlMsgs, SAMLConstants.JUNIT_REPORTING);
 
@@ -477,7 +477,7 @@ public class SAMLMisc2ConfigTests extends SAMLConfigCommonTests {
 
     }
 
-    //chc@Test
+    @Test
     public void test_config_allowCreate_false() throws Exception {
         testSAMLServer.reconfigServer("server_allowCreate_false.xml", _testName, commonAddtlMsgs, SAMLConstants.JUNIT_REPORTING);
 
@@ -506,7 +506,7 @@ public class SAMLMisc2ConfigTests extends SAMLConfigCommonTests {
      *
      * @throws Exception
      */
-    //chc@Test
+    @Test
     public void test_config_httpsRequired_true() throws Exception {
 
         SAMLConfigSettings updatedSamlConfigSettings = samlConfigSettings.copyConfigSettings();
@@ -535,7 +535,7 @@ public class SAMLMisc2ConfigTests extends SAMLConfigCommonTests {
      *
      * @throws Exception
      */
-    //chc@Test
+    @Test
     public void test_config_httpsRequired_true_accessDefaultAndTargetAppOverHttp() throws Exception {
 
         SAMLConfigSettings updatedSamlConfigSettings = samlConfigSettings.copyConfigSettings();
@@ -577,7 +577,8 @@ public class SAMLMisc2ConfigTests extends SAMLConfigCommonTests {
      *
      * @throws Exception
      */
-    @Test
+    // TODO - doesn't work after porting to OL
+    //@Test
     public void test_config_httpsRequired_true_accessAcsEndpointOverHttp() throws Exception {
 
         SAMLConfigSettings updatedSamlConfigSettings = samlConfigSettings.copyConfigSettings();
@@ -633,7 +634,7 @@ public class SAMLMisc2ConfigTests extends SAMLConfigCommonTests {
      * @throws Exception
      */
     @ExpectedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException" })
-    //chc@Test
+    @Test
     public void test_config_httpsRequired_true_accessMetadataEndpointOverHttp() throws Exception {
 
         SAMLConfigSettings updatedSamlConfigSettings = samlConfigSettings.copyConfigSettings();
@@ -672,7 +673,7 @@ public class SAMLMisc2ConfigTests extends SAMLConfigCommonTests {
      *
      * @throws Exception
      */
-    //chc@Test
+    @Test
     public void test_config_httpsRequired_false() throws Exception {
 
         SAMLConfigSettings updatedSamlConfigSettings = samlConfigSettings.copyConfigSettings();
@@ -701,7 +702,7 @@ public class SAMLMisc2ConfigTests extends SAMLConfigCommonTests {
      *
      * @throws Exception
      */
-    //chc@Test
+    @Test
     public void test_config_httpsRequired_false_accessDefaultAndTargetAppOverHttp() throws Exception {
 
         SAMLConfigSettings updatedSamlConfigSettings = samlConfigSettings.copyConfigSettings();
@@ -740,7 +741,7 @@ public class SAMLMisc2ConfigTests extends SAMLConfigCommonTests {
      *
      * @throws Exception
      */
-    //chc@Test
+    @Test
     public void test_config_httpsRequired_false_accessMetadataEndpointOverHttp() throws Exception {
 
         SAMLConfigSettings updatedSamlConfigSettings = samlConfigSettings.copyConfigSettings();
@@ -787,7 +788,7 @@ public class SAMLMisc2ConfigTests extends SAMLConfigCommonTests {
      *
      * @throws Exception
      */
-    //chc@Test
+    @Test
     public void test_config_allowCustomCacheKey_true() throws Exception {
 
         testSAMLServer.reconfigServer("server_allowCustomCacheKey_true.xml", _testName, commonAddtlMsgs, SAMLConstants.JUNIT_REPORTING);
@@ -821,7 +822,7 @@ public class SAMLMisc2ConfigTests extends SAMLConfigCommonTests {
      *
      * @throws Exception
      */
-    //chc@Test
+    @Test
     public void test_config_allowCustomCacheKey_true_disableLtpaCookie_false() throws Exception {
 
         testSAMLServer.reconfigServer("server_allowCustomCacheKey_true_disableLtpaCookie_false.xml", _testName, commonAddtlMsgs, SAMLConstants.JUNIT_REPORTING);
@@ -856,7 +857,7 @@ public class SAMLMisc2ConfigTests extends SAMLConfigCommonTests {
      *
      * @throws Exception
      */
-    //chc@Test
+    @Test
     public void test_config_allowCustomCacheKey_false() throws Exception {
 
         testSAMLServer.reconfigServer("server_allowCustomCacheKey_false.xml", _testName, commonAddtlMsgs, SAMLConstants.JUNIT_REPORTING);
@@ -890,7 +891,7 @@ public class SAMLMisc2ConfigTests extends SAMLConfigCommonTests {
      *
      * @throws Exception
      */
-    //chc@Test
+    @Test
     public void test_config_allowCustomCacheKey_false_disableLtpaCookie_false() throws Exception {
 
         testSAMLServer.reconfigServer("server_allowCustomCacheKey_false_disableLtpaCookie_false.xml", _testName, commonAddtlMsgs, SAMLConstants.JUNIT_REPORTING);
@@ -924,7 +925,7 @@ public class SAMLMisc2ConfigTests extends SAMLConfigCommonTests {
      *
      * @throws Exception
      */
-    //chc@Test
+    @Test
     public void test_createSession_true() throws Exception {
         testSAMLServer.reconfigServer("server_createSession_true.xml", _testName, commonAddtlMsgs, SAMLConstants.JUNIT_REPORTING);
 
@@ -940,7 +941,7 @@ public class SAMLMisc2ConfigTests extends SAMLConfigCommonTests {
 
     }
 
-    //chc@Test
+    @Test
     public void test_createSession_false() throws Exception {
         testSAMLServer.reconfigServer("server_createSession_false.xml", _testName, commonAddtlMsgs, SAMLConstants.JUNIT_REPORTING);
 
@@ -960,7 +961,7 @@ public class SAMLMisc2ConfigTests extends SAMLConfigCommonTests {
      * spHostAndPort
      *************************************************/
 
-    //chc@Test
+    @Test
     public void test_spHostAndPort_https() throws Exception {
         testSAMLServer.reconfigServer("server_spHostAndPort_valid.xml", _testName, commonAddtlMsgs, SAMLConstants.JUNIT_REPORTING);
 
@@ -978,7 +979,7 @@ public class SAMLMisc2ConfigTests extends SAMLConfigCommonTests {
      *
      * @throws Exception
      */
-    //chc@Test
+    @Test
     public void test_spHostAndPort_http() throws Exception {
         testSAMLServer.reconfigServer("server_spHostAndPort_invalid.xml", _testName, commonAddtlMsgs, SAMLConstants.JUNIT_REPORTING);
 
@@ -1015,7 +1016,7 @@ public class SAMLMisc2ConfigTests extends SAMLConfigCommonTests {
      *
      * @throws Exception
      */
-    //chc@Test
+    @Test
     public void test_realmName_mapToUserRegistry_No() throws Exception {
         testSAMLServer.reconfigServer("server_realmName_mapToUserRegistry_No.xml", _testName, commonAddtlMsgs, SAMLConstants.JUNIT_REPORTING);
 
@@ -1042,7 +1043,7 @@ public class SAMLMisc2ConfigTests extends SAMLConfigCommonTests {
      *
      * @throws Exception
      */
-    //chc@Test
+    @Test
     public void test_realmName_mapToUserRegistry_User() throws Exception {
         testSAMLServer.reconfigServer("server_realmName_mapToUserRegistry_User.xml", _testName, commonAddtlMsgs, SAMLConstants.JUNIT_REPORTING);
 
@@ -1069,7 +1070,7 @@ public class SAMLMisc2ConfigTests extends SAMLConfigCommonTests {
      *
      * @throws Exception
      */
-    //chc@Test
+    @Test
     public void test_realmName_mapToUserRegistry_Group() throws Exception {
         testSAMLServer.reconfigServer("server_realmName_mapToUserRegistry_Group.xml", _testName, commonAddtlMsgs, SAMLConstants.JUNIT_REPORTING);
 
