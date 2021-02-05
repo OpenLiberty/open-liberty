@@ -12,7 +12,6 @@ package com.ibm.ws.cdi12.suite;
 
 import java.nio.file.Paths;
 
-import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
@@ -69,12 +68,8 @@ public class FATSuite {
     @BeforeClass
     public static void generateHelpFile() {
         FatLogHandler.generateHelpFile();
-    }
-
-    @AfterClass
-    public static void transformUserFeatures() {
-        //If we've finished EE8 then transform javax to Jakarta in preperation for EE9
-        if (RepeatTestFilter.isRepeatActionActive("EE8_FEATURES")) {
+        //Transform the bundles for EE9
+        if (RepeatTestFilter.isRepeatActionActive("EE9_FEATURES")) {
             for (String path : PATHS_TO_BUNDLES) {
                 JakartaEE9Action.transformApp(Paths.get(path));
             }

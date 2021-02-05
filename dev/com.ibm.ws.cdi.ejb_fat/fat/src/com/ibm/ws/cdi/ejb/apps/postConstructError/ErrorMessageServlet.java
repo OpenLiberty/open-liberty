@@ -30,11 +30,9 @@ public class ErrorMessageServlet extends HttpServlet {
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-System.out.println("GREP");
         errEjb.doSomething();
         PrintWriter pw = response.getWriter();
         pw.write("Hello World");
-System.out.println("GREP2");
     }
 
 }
