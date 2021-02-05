@@ -40,4 +40,5 @@ tested.features: \
 	com.ibm.ws.jca.cm;version=latest,\
 	com.ibm.ws.jdbc;version=latest,\
 	com.ibm.ws.ejbcontainer.fat_tools;version=latest,\
+	com.ibm.ws.ejbcontainer.fat_tools_rar;version=latest,\
 	io.openliberty.ejbcontainer.jakarta.fat_tools; version=latest
