@@ -150,6 +150,18 @@ task copySamlFatServer1(dependsOn: [':com.ibm.ws.security.fat.common:assemble', 
     if (project.findProperty('serverName1')) {
     def serverName = project.findProperty('serverName1')
     println "serverName1: ${serverName}"
+    if (project.findProperty('shareLogoutServers')) {
+      copy {
+        from new File(project(':com.ibm.ws.security.saml.sso_fat.logout').projectDir, 'publish/files/serversettings')
+        into new File(autoFvtDir, "publish/servers/${serverName}/imports")
+        include '**.**'
+      }
+      copy {
+        from new File(project(':com.ibm.ws.security.saml.sso_fat.logout').projectDir, 'publish/files/serversettings/SAMLServerFiles')
+        into new File(autoFvtDir, "publish/servers/${serverName}/imports")
+        include '*/*.xml.orig'
+      }
+    } 
     copy {  
       from new File(project(':com.ibm.ws.security.saml.sso_fat.common').buildDir, 'test-application/SAML_Demo.ear')
       into new File(autoFvtDir, "publish/servers/${serverName}/dropins")
@@ -273,6 +285,18 @@ task copySamlFatServer2(dependsOn: [':com.ibm.ws.security.fat.common:assemble', 
     println "in copySamlFatServer2"
     if (project.findProperty('serverName2')) {
     def serverName = project.findProperty('serverName2')
+    if (project.findProperty('shareLogoutServers')) {
+      copy {
+        from new File(project(':com.ibm.ws.security.saml.sso_fat.logout').projectDir, 'publish/files/serversettings')
+        into new File(autoFvtDir, "publish/servers/${serverName}/imports")
+        include '**.**'
+      }
+      copy {
+        from new File(project(':com.ibm.ws.security.saml.sso_fat.logout').projectDir, 'publish/files/serversettings/SAMLServerFiles')
+        into new File(autoFvtDir, "publish/servers/${serverName}/imports")
+        include '*/*.xml.orig'
+      }
+    } 
     println "serverName2: ${serverName}"
     copy {  
       from new File(project(':com.ibm.ws.security.saml.sso_fat.common').buildDir, 'test-application/SAML_Demo.ear')
@@ -398,6 +422,18 @@ task copySamlFatServer3(dependsOn: [':com.ibm.ws.security.fat.common:assemble', 
     if (project.findProperty('serverName3')) {
     def serverName = project.findProperty('serverName3')
     println "serverName3: ${serverName}"
+    if (project.findProperty('shareLogoutServers')) {
+      copy {
+        from new File(project(':com.ibm.ws.security.saml.sso_fat.logout').projectDir, 'publish/files/serversettings')
+        into new File(autoFvtDir, "publish/servers/${serverName}/imports")
+        include '**.**'
+      }
+      copy {
+        from new File(project(':com.ibm.ws.security.saml.sso_fat.logout').projectDir, 'publish/files/serversettings/SAMLServerFiles')
+        into new File(autoFvtDir, "publish/servers/${serverName}/imports")
+        include '*/*.xml.orig'
+      }
+    } 
     copy {  
       from new File(project(':com.ibm.ws.security.saml.sso_fat.common').buildDir, 'test-application/SAML_Demo.ear')
       into new File(autoFvtDir, "publish/servers/${serverName}/dropins")

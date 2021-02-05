@@ -51,37 +51,4 @@ public class JakartaEE9SAMLRepeatAction extends JakartaEE9Action {
         return this;
     }
 
-    @Override
-    public JakartaEE9Action fullFATOnly() {
-        testRunMode = TestMode.FULL;
-        return this;
-    }
-
-    @Override
-    public void setup() throws Exception {
-        nameExtension = "default";
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see componenttest.rules.repeater.RepeatTestAction#getID()
-     */
-    @Override
-    public String getID() {
-
-        return nameExtension;
-
-    }
 }
-
-/*
- * To use, insert one of the following into your class - by doing so, each test case will have the string appended to its name
- *
- * @ClassRule
- * public static RepeatTests r = RepeatTests.with(new SecurityTestRepeatAction(<ConstantClassName>.<ConstantName>));
- *
- * @ClassRule
- * public static RepeatTests r = RepeatTests.with(new SecurityTestRepeatAction("someString"));
- *
- */
