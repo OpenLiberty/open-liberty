@@ -49,7 +49,8 @@ import componenttest.topology.utils.FATServletClient;
 
 /*
 
-The following error occurs on EE9. When this is fixed remove the skip for repeat. 
+The following error occurs on EE9 because the hibernate jars we are using in this test are built on javax
+At the time of writing there are no available hibernate release that is built on jakarta.
 
 Caused by: java.lang.NoClassDefFoundError: javax.persistence.spi.PersistenceProvider
 	<java classes>
