@@ -226,7 +226,7 @@ public class SseClientBehaviorTestServlet extends FATServlet {
                                 @Override
                                 public void run() {
                                     _log.info("completion runnable executed");
-                                    _log.log(Level.WARNING, "ANDY completion runnable", new Throwable());
+                                    _log.log(Level.WARNING, "DEBUG completion runnable", new Throwable());
                                     executionLatch.countDown();
                                 }
                             });
