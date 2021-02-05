@@ -9,7 +9,11 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package com.ibm.ws.wssecurity.fat.wsstemplatesclient;
+package com.ibm.ws.wssecurity.fat.wsstemplatesclientwithep;
+//2/01/2021 renamed the package to avoid duplicate class at compile time
+//orig from CL:
+//package com.ibm.ws.wssecurity.fat.wsstemplatesclient
+
 
 import java.io.File;
 import java.io.IOException;

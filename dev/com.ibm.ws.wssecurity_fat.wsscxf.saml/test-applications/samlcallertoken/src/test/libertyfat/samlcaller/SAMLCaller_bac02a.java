@@ -9,15 +9,22 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package test.libertyfat.caller;
+package test.libertyfat.samlcaller;
+//2/01/2021 renamed the package; it's not matched to the actual folder name 'samlcaller'
+//orig from CL:
+//package test.libertyfat.caller;
 
 import javax.xml.ws.WebServiceProvider;
 import javax.xml.soap.SOAPMessage;
 import javax.xml.ws.ServiceMode;
 import javax.xml.ws.Service;
 
-import edu.emory.mathcs.backport.java.util.Arrays;
-import test.libertyfat.caller.SAMLCallerUtil;
+//2/01/2021 comment out; type not resolved
+//import edu.emory.mathcs.backport.java.util.Arrays;
+import test.libertyfat.samlcaller.SAMLCallerUtil;
+//2/01/2021 renamed the package; it's not matched to the actual folder name 'samlcaller'
+//orig from CL:
+//import test.libertyfat.caller.SAMLCallerUtil;
 
 @WebServiceProvider(targetNamespace="http://caller.libertyfat.test/contract",
                     serviceName="FatSamlC02aService", portName="SamlCallerToken02a",

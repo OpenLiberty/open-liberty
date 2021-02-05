@@ -9,7 +9,7 @@
 		<feature>appSecurity-2.0</feature>
         <!-- 1/14/2021 update to use 3.1 on OL -->
 		<!--<feature>servlet-3.0</feature>-->
-        <feature>servlet-3.1</feature>
+		<feature>servlet-3.1</feature>
 		<feature>wsSecuritySaml-1.1</feature>
 		<feature>samlWeb-2.0</feature>
            <!-- 1/19/2021 the user feature is not needed in 3 of 11 tests (Basic1, SSLBasic1, SSLBasic2), with the user feature in server.xml, it's expected to see the feature not found error in messages.log, which can be safely ignored. -->

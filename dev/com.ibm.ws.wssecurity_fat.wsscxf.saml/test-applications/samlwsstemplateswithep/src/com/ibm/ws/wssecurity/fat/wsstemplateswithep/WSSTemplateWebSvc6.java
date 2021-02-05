@@ -9,7 +9,11 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package com.ibm.ws.wssecurity.fat.wsstemplates;
+package com.ibm.ws.wssecurity.fat.wsstemplateswithep;
+//2/01/2021 renamed the package to avoid duplicate class at compile time
+//orig from CL:
+//package com.ibm.ws.wssecurity.fat.wsstemplates;
+
 import java.io.InputStream;
 import java.io.StringReader;
 import javax.xml.soap.MessageFactory;
@@ -23,14 +27,14 @@ import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 
 @WebServiceProvider(targetNamespace="http://wsstemplates.wssecfvt.test",
-    portName="WSSTemplate2",
-    serviceName="WSSTemplatesService2",
+    portName="WSSTemplate6",
+    serviceName="WSSTemplatesService6",
     wsdlLocation = "WEB-INF/WSSSAMLTemplatesTest.wsdl"
 )
 
 @ServiceMode(value = Service.Mode.MESSAGE)
 
-public class WSSTemplateWebSvc2 implements Provider<SOAPMessage> {
+public class WSSTemplateWebSvc6 implements Provider<SOAPMessage> {
 
     public SOAPMessage invoke(SOAPMessage request) {
 
@@ -44,10 +48,10 @@ public class WSSTemplateWebSvc2 implements Provider<SOAPMessage> {
             System.out.println("Incoming SOAP Header:" + hdrText);
 
             StringReader respMsg = new StringReader(
-                    "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\">" +
-                    "<soapenv:Header/>" +
-                    "<soapenv:Body xmlns=\"http://wsstemplates.wssecfvt.test/types\">" +
-                    "<provider>This is WSSTemplateWebSvc2 Web Service.</provider></soapenv:Body></soapenv:Envelope>");
+                "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\">" +
+                "<soapenv:Header/>" +
+                "<soapenv:Body xmlns=\"http://wsstemplates.wssecfvt.test/types\">" +
+                "<provider>This is WSSTemplateWebSvc6 Web Service.</provider></soapenv:Body></soapenv:Envelope>");
             
             Source src = new StreamSource(respMsg);
             MessageFactory factory = MessageFactory.newInstance();
