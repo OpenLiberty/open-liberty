@@ -6,7 +6,4 @@
 
     <include location="../fatTestPorts.xml"/>
 
-    <!-- working around a missing doPriv in the jakarta servlet API at:
-         https://github.com/eclipse-ee4j/servlet-api/blob/890cc6f91084c120da74b117544f542620fd82f8/api/src/main/java/jakarta/servlet/http/Cookie.java#L68 -->
-    <javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
 </server>
