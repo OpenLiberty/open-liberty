@@ -264,7 +264,7 @@ task copySamlFatServer1(dependsOn: [':com.ibm.ws.security.fat.common:assemble', 
         into new File(autoFvtDir, "publish/servers/${serverName}/test-apps")
       }
     }
-    if (project.findProperty('httpServletReuqestAppWar')) {
+    if (project.findProperty('httpServletRequestAppWar')) {
       copy {
         from new File(project(':com.ibm.ws.security.saml.sso_fat.common').buildDir, 'test-application/httpServletRequestApp.war')
         into new File(autoFvtDir, "publish/servers/${serverName}/test-apps")
@@ -400,7 +400,7 @@ task copySamlFatServer2(dependsOn: [':com.ibm.ws.security.fat.common:assemble', 
         into new File(autoFvtDir, "publish/servers/${serverName}/test-apps")
       }
     }
-    if (project.findProperty('httpServletReuqestAppWar')) {
+    if (project.findProperty('httpServletRequestAppWar')) {
       copy {
         from new File(project(':com.ibm.ws.security.saml.sso_fat.common').buildDir, 'test-application/httpServletRequestApp.war')
         into new File(autoFvtDir, "publish/servers/${serverName}/test-apps")
