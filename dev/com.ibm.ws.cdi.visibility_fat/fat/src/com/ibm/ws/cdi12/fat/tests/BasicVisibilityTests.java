@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2020 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -62,6 +62,8 @@ public class BasicVisibilityTests extends FATServletClient {
     public static final String MULTI_MOD4_APP_NAME = "multiModuleAppWeb4";
     public static final String PACKAGE_PRIVATE_APP_NAME = "packagePrivateAccessApp";
 
+    public static final String WAR_LIB_ACCESS_APP_NAME = "warLibAccessBeansInWar";
+
     @Server(SERVER_NAME)
     @TestServlets({
                     @TestServlet(servlet = RunServlet.class, contextRoot = PACKAGE_PRIVATE_APP_NAME), //LITE
@@ -70,7 +72,8 @@ public class BasicVisibilityTests extends FATServletClient {
                     @TestServlet(servlet = Web1Servlet.class, contextRoot = MULTI_MOD3_APP_NAME), //FULL
                     @TestServlet(servlet = Web2Servlet.class, contextRoot = MULTI_MOD4_APP_NAME), //FULL
                     @TestServlet(servlet = ClassLoadPrereqLoggerServlet.class, contextRoot = CLASS_LOAD_APP_NAME), //FULL
-                    @TestServlet(servlet = RootClassLoaderServlet.class, contextRoot = ROOT_CLASSLOADER_APP_NAME) }) //LITE
+                    @TestServlet(servlet = RootClassLoaderServlet.class, contextRoot = ROOT_CLASSLOADER_APP_NAME),
+                    @TestServlet(servlet = com.ibm.ws.cdi12.test.warLibAccessBeansInWar.TestServlet.class, contextRoot = WAR_LIB_ACCESS_APP_NAME) }) //LITE
     public static LibertyServer server;
 
     @BeforeClass
@@ -157,6 +160,33 @@ public class BasicVisibilityTests extends FATServletClient {
         ShrinkHelper.exportDropinAppToServer(server, packagePrivateAccessApp, DeployOptions.SERVER_ONLY);
 
         //////////////////
+
+        //From WarLibsAccessWarBeansTest
+
+        JavaArchive warLibAccessBeansInWarLibJar = ShrinkWrap.create(JavaArchive.class, "warLibAccessBeansInWarJar.jar")
+                                                             .addClass(com.ibm.ws.cdi12.test.warLibAccessBeansInWarJar.TestInjectionClass.class)
+                                                             .addClass(com.ibm.ws.cdi12.test.warLibAccessBeansInWarJar.WarBeanInterface.class)
+                                                             .add(new FileAsset(new File("test-applications/warLibAccessBeansInWarJar.jar/resources/WEB-INF/beans.xml")),
+                                                                  "/WEB-INF/beans.xml");
+
+        JavaArchive warLibAccessBeansInWarJar = ShrinkWrap.create(JavaArchive.class, "warLibAccessBeansInWar2.jar")
+                                                          .addClass(com.ibm.ws.cdi12.test.warLibAccessBeansInWarJar2.TestInjectionClass2.class)
+                                                          .addClass(com.ibm.ws.cdi12.test.warLibAccessBeansInWarJar2.WarBeanInterface2.class);
+
+        WebArchive warLibAccessBeansInWar = ShrinkWrap.create(WebArchive.class, "warLibAccessBeansInWar.war")
+                                                      .addAsManifestResource(new File("test-applications/warLibAccessBeansInWar.war/resources/META-INF/MANIFEST.MF"))
+                                                      .addClass(com.ibm.ws.cdi12.test.warLibAccessBeansInWar.TestServlet.class)
+                                                      .addClass(com.ibm.ws.cdi12.test.warLibAccessBeansInWar.WarBean.class)
+                                                      .add(new FileAsset(new File("test-applications/warLibAccessBeansInWar.war/resources/WEB-INF/beans.xml")),
+                                                           "/WEB-INF/beans.xml")
+                                                      .addAsLibrary(warLibAccessBeansInWarLibJar);
+
+        EnterpriseArchive warLibAccessBeansInWarEAR = ShrinkWrap.create(EnterpriseArchive.class, "warLibAccessBeansInWar.ear")
+                                                                .add(new FileAsset(new File("test-applications/warLibAccessBeansInWar.ear/resources/META-INF/application.xml")),
+                                                                     "/META-INF/application.xml")
+                                                                .addAsModule(warLibAccessBeansInWar)
+                                                                .addAsModule(warLibAccessBeansInWarJar);
+        ShrinkHelper.exportDropinAppToServer(server, warLibAccessBeansInWarEAR, DeployOptions.SERVER_ONLY);
 
         server.startServer();
     }

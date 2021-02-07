@@ -70,7 +70,17 @@ tested.features:\
 	cdi-2.0,\
         servlet-4.0,\
         servlet-5.0,\
-        cdi-3.0
+        cdi-3.0,\
+        restfulwsclient-3.0,\
+        restfulws-3.0,\
+        jsonp-2.0,\
+        appclientsupport-2.0,\
+        enterprisebeans-4.0,\
+        enterprisebeansremote-4.0,\
+        jdbc-4.2,\
+        enterprisebeanshome-4.0,\
+        enterprisebeanslite-4.0,\
+        enterprisebeanspersistenttimer-4.0
 
 -buildpath: \
 	com.ibm.websphere.javaee.ejb.3.2;version=latest,\

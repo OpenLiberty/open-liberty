@@ -73,4 +73,5 @@ addRequiredLibraries {
   dependsOn addDerby
   dependsOn addToDeltaspikeWar
   dependsOn downloadHibernateSearchLibs	
+  dependsOn addJakartaTransformer
 }
