@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2019 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -857,10 +857,13 @@ public class LdapConnection {
                         String[] rdnAttrValues = new String[rdnWIMProps.length];
                         for (int i = 0; i < rdnAttrs.length; i++) {
                             String[] rdnAttr = rdnAttrs[i];
-                            boolean isRDN = true;
+                            boolean isRDN = false;
                             for (int j = 0; j < rdnAttr.length; j++) {
-                                if (!rdnAttr[j].equalsIgnoreCase(rdnName[j])) {
-                                    isRDN = false;
+                                for (int k = 0; k < rdnName.length; k++) {
+                                    if (rdnAttr[j].equalsIgnoreCase(rdnName[k])) {
+                                        isRDN = true;
+                                        break;
+                                    }
                                 }
                             }
                             if (isRDN) {

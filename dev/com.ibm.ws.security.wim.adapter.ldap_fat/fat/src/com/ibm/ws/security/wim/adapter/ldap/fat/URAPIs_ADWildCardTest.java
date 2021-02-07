@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -103,7 +103,7 @@ public class URAPIs_ADWildCardTest {
         String password = "vmmtestuserpwd";
         Log.info(c, "checkPassword", "Checking good credentials");
         assertEquals("Authentication should succeed.",
-                     "cn=vmmtestuser,cn=users,dc=secfvt2,dc=austin,dc=ibm,dc=com", servlet.checkPassword(user, password));
+                     "cn=vmmtestuser,cn=users,dc=secfvt2,dc=austin,dc=ibm,dc=com", servlet.checkPassword(user, password).toLowerCase());
         passwordChecker.checkForPasswordInAnyFormat(password);
     }
 
@@ -139,7 +139,7 @@ public class URAPIs_ADWildCardTest {
         assertTrue("Should not have found, " + msg, errMsgs.isEmpty());
 
         // Filter should look like this
-        msg = "\\(\\&\\(objectClass=group\\)\\(\\|\\(member=cn=persona1,cn=users";
+        msg = "\\(\\&\\(objectClass=group\\)\\(\\|\\(member=CN=persona1,cn=users";
         errMsgs = server.findStringsInLogsAndTrace(msg);
         assertFalse("Should have found, " + msg, errMsgs.isEmpty());
 

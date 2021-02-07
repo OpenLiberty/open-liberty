@@ -270,3 +270,7 @@ KRB5_FILE_NOT_FOUND.useraction=Ensure that the configuration points to a file th
 KRB5_FILE_FOUND=CWIML4516E: The LdapRegistry component is configured to use a {0} file that is located at {1}.
 KRB5_FILE_FOUND.explanation=The configured file was successfully located.
 KRB5_FILE_FOUND.useraction=No action is required.
+
+IDMAP_INVALID_FORMAT=CWIML4518W: The {0} {1} value is malformed. The value must be a series of objectclass:attribute or *:attribute pairs, where each pair is separated by a semi-colon.
+IDMAP_INVALID_FORMAT.explanation=The userIdMap value must be in a valid format so that the objectclass and attribute can be parsed.
+IDMAP_INVALID_FORMAT.useraction=Update the userIdMap value so that it adheres to the specified format.

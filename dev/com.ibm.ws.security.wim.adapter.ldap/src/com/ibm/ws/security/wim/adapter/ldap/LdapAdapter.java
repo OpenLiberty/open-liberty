@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2020 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -2213,8 +2213,16 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
                         String dn = (String) enu.next();
                         //Remove spaces from DN. if DN contain space like in dn, cn=g1-10, ou=users,dc=rtp,dc=raleigh,dc=ibm,dc=com
                         dn = LdapHelper.getValidDN(dn);
-                        if (iLdapConfigMgr.isDummyMember(dn) || !LdapHelper.isUnderBases(dn, bases)
-                            || !startWithSameRDN(dn, mbrTypes, nested)) {
+
+                        Boolean isDummyMember = null, isUnderBases = null, startsWithSameRDN = null;
+                        if ((isDummyMember = iLdapConfigMgr.isDummyMember(dn))
+                            || !(isUnderBases = LdapHelper.isUnderBases(dn, bases))
+                            || !(startsWithSameRDN = startWithSameRDN(dn, mbrTypes, nested))) {
+
+                            if (tc.isDebugEnabled()) {
+                                Tr.debug(tc, METHODNAME + " Excluding group member {0}. isDummyMember? {1}, isUnderBases? {2}, startsWithSameRDN? {3}",
+                                         new Object[] { dn, isDummyMember, isUnderBases, startsWithSameRDN });
+                            }
                             continue;
                         }
                         LdapEntry mbrEntity = null;
@@ -2351,6 +2359,10 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
 
     @Trivial
     private boolean startWithSameRDN(String dn, List<String> mbrTypes, boolean nested) {
+        if (dn == null) {
+            return false;
+        }
+
         dn = dn.toLowerCase();
         boolean containGrp = false;
         for (int i = 0; i < mbrTypes.size(); i++) {
