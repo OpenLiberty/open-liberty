@@ -10,9 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.wsat.fat;
 
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -38,7 +36,6 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.HttpUtils;
 
 @AllowedFFDC(value = { "javax.transaction.SystemException", "javax.transaction.xa.XAException" })
@@ -104,11 +101,9 @@ public class MultiRecoveryTest {
 	
 	private void stopServers(LibertyServer ... servers) {
 		final String method = "stopServers";
-		boolean failed = false;
-		
+
 		for (LibertyServer server : servers) {
 			if (server == null) {
-				failed  = true;
 				Log.info(getClass(), method, "Attempted to stop a null server");
 				continue;
 			}
@@ -116,7 +111,6 @@ public class MultiRecoveryTest {
 			try {
 				final ProgramOutput po = server.stopServer(true, true, "WTRN0046E", "WTRN0048W", "WTRN0049W", "WTRN0094W");
 				if (po == null) {
-					failed = true;
 					Log.info(getClass(), method, "Attempt to stop " + server.getServerName() + " returned null");
 					continue;
 				}
@@ -129,11 +123,8 @@ public class MultiRecoveryTest {
 				}
 			} catch (Exception e) {
 				Log.error(getClass(), method, e);
-				failed = true;
 			}
 		}
-		
-		assertFalse(method + " failed", failed);
 	}
 
 	@After
@@ -484,7 +475,10 @@ public class MultiRecoveryTest {
             // We expect this to fail since it is gonna crash the server
         	result = callSetupServlet(id);
         } catch (Throwable e) {
+            Log.info(this.getClass(), method, "callSetupServlet(" + id + ") crashed as expected");
+            Log.error(this.getClass(), method, e); 
         }
+        Log.info(this.getClass(), method, "callSetupServlet(" + id + ") returned: " + result);
 
         final String str = "Setting state from RECOVERING to ACTIVE";
         //restart server in three modes
@@ -506,7 +500,7 @@ public class MultiRecoveryTest {
             Log.error(getClass(), method, e);
             throw e;
         }
-        Log.info(getClass(), method, "checkRec" + id + " returned: " + result);
+        Log.info(getClass(), method, "callCheckServlet(" + id + ") returned: " + result);
     }
 
 	private String callSetupServlet(String testNumber) throws IOException{
