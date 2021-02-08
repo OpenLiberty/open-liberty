@@ -53,6 +53,8 @@ public class FATArtifactBVT {
     }
 
     public static void tearDownServer() throws Exception {
+        
+        server.deleteFileFromLibertyInstallRoot( "/lib/features/artifactinternals-1.0.mf" );
         server = null;
     }
 
