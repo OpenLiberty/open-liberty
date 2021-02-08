@@ -26657,6 +26657,10 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             Object[] targets = {
                                  100d, 100d, 200d, 200d, 210d, 210d, 210d, 210d, 220d
             };
+            if (isUsingJPA20Feature()) {
+                // Openjpa returns these as Integers instead of Doubles...
+                targets = new Object[] { 100, 100, 200, 200, 210, 210, 210, 210, 220 };
+            }
             validateQueryResult(testName, qStr, rList, targets);
 
             em.clear();
@@ -27379,6 +27383,15 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                                  new Object[] { 210, 19l, 4d, 4l },
                                  new Object[] { 220, 5l, 5d, 1l },
             };
+            if (isUsingJPA20Feature()) {
+                // Openjpa returns these as Integers instead of Doubles...
+                targets = new Object[] {
+                                         new Object[] { 100, 14l, 7, 2l },
+                                         new Object[] { 200, 7l, 3, 2l },
+                                         new Object[] { 210, 19l, 4, 4l },
+                                         new Object[] { 220, 5l, 5, 1l },
+                };
+            }
             validateQueryResult(testName, qStr, rList, targets);
 
             em.clear();
