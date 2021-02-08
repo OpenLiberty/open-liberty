@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019,2020 IBM Corporation and others.
+ * Copyright (c) 2019,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -64,7 +64,7 @@ public class SwitchFromSingleInstanceToFailOverTest extends FATServletClient {
         try {
             if (server.isStarted())
                 server.stopServer(
-                        "CWWKC1503W", // Rolled back task that exceeded missedTaskThreshold. The rollback/abort can lead to further warnings/errors...
+                        "CWWKC1500W", "CWWKC1501W", "CWWKC1502W", "CWWKC1503W", // Rolled back task that exceeded missedTaskThreshold. The rollback/abort can lead to further warnings/errors...
                         "DSRA", "J2CA");
         } finally {
             server.updateServerConfiguration(originalConfig);
@@ -229,7 +229,7 @@ public class SwitchFromSingleInstanceToFailOverTest extends FATServletClient {
                     "testTasksAreRunning&taskId=" + taskIdB + "&taskId=" + taskIdC + "&jndiName=persistent/exec1&test=testEnableFailOverWhileServerIsStopped[4]");
 
             server.stopServer(
-                    "CWWKC1503W", // Rolled back task that exceeded missedTaskThreshold. The rollback/abort can lead to further warnings/errors...
+                    "CWWKC1500W", "CWWKC1501W", "CWWKC1502W", "CWWKC1503W", // Rolled back task that exceeded missedTaskThreshold. The rollback/abort can lead to further warnings/errors...
                     "DSRA", "J2CA");
 
             // Enable fail over
@@ -328,7 +328,7 @@ public class SwitchFromSingleInstanceToFailOverTest extends FATServletClient {
                     "testTasksAreRunning&taskId=" + taskIdA + "&taskId=" + taskIdB + "&jndiName=persistent/exec2&test=testNewFailOverEnabledInstance[3]");
 
             server.stopServer(
-                    "CWWKC1503W", // Rolled back task that exceeded missedTaskThreshold. The rollback/abort can lead to further warnings/errors...
+                    "CWWKC1500W", "CWWKC1501W", "CWWKC1502W", "CWWKC1503W", // Rolled back task that exceeded missedTaskThreshold. The rollback/abort can lead to further warnings/errors...
                     "DSRA", "J2CA");
 
             // Enable fail over on a new instance
@@ -356,7 +356,7 @@ public class SwitchFromSingleInstanceToFailOverTest extends FATServletClient {
             System.out.println("Scheduled third task " + taskIdC);
 
             server.stopServer(
-                    "CWWKC1503W", // Rolled back task that exceeded missedTaskThreshold. The rollback/abort can lead to further warnings/errors...
+                    "CWWKC1500W", "CWWKC1501W", "CWWKC1502W", "CWWKC1503W", // Rolled back task that exceeded missedTaskThreshold. The rollback/abort can lead to further warnings/errors...
                     "DSRA", "J2CA");
 
             // Remove the old instance
@@ -878,7 +878,7 @@ public class SwitchFromSingleInstanceToFailOverTest extends FATServletClient {
                     "testTasksAreRunning&taskId=" + taskIdA + "&taskId=" + taskIdB + "&jndiName=persistent/exec2&test=testReplaceWithNewFailOverEnabledInstanceWhileServerIsStopped[3]");
 
             server.stopServer(
-                    "CWWKC1503W", // Rolled back task that exceeded missedTaskThreshold. The rollback/abort can lead to further warnings/errors...
+                    "CWWKC1500W", "CWWKC1501W", "CWWKC1502W", "CWWKC1503W", // Rolled back task that exceeded missedTaskThreshold. The rollback/abort can lead to further warnings/errors...
                     "DSRA", "J2CA");
 
             // Enable fail over
