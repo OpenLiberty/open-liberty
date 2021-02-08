@@ -2,7 +2,7 @@
   <enterprise-beans>
     <session>
       <ejb-name>EjbInWar2</ejb-name>
-      <ejb-class>com.ibm.ws.cdi.lib.MyEjb</ejb-class>	 
+      <ejb-class>com.ibm.ws.cdi.ejb.apps.multipleWar.embeddedJar.MyEjb</ejb-class>	 
       <session-type>Stateless</session-type>	
   </session>
   </enterprise-beans>

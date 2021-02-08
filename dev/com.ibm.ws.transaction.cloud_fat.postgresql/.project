@@ -22,14 +22,20 @@
 	</natures>
 	<linkedResources>
 		<link>
-			<name>com.ibm.ws.transaction.cloud_fat.1-fatsrc</name>
+			<name>com.ibm.ws.transaction.cloud_fat.base-fatsrc</name>
 			<type>2</type>
-			<locationURI>PARENT-1-PROJECT_LOC/com.ibm.ws.transaction.cloud_fat.1/fat/src</locationURI>
+			<locationURI>copy_PARENT/com.ibm.ws.transaction.cloud_fat.base/fat/src</locationURI>
 		</link>
 		<link>
-			<name>com.ibm.ws.transaction.cloud_fat.1-transaction</name>
+			<name>com.ibm.ws.transaction.cloud_fat.base-transaction</name>
 			<type>2</type>
-			<locationURI>PARENT-1-PROJECT_LOC/com.ibm.ws.transaction.cloud_fat.1/test-applications/transaction/src</locationURI>
+			<locationURI>copy_PARENT/com.ibm.ws.transaction.cloud_fat.base/test-applications/transaction/src</locationURI>
 		</link>
 	</linkedResources>
+	<variableList>
+		<variable>
+			<name>copy_PARENT</name>
+			<value>$%7BPARENT-1-ECLIPSE_HOME%7D/libertyGit/open-liberty/dev</value>
+		</variable>
+	</variableList>
 </projectDescription>

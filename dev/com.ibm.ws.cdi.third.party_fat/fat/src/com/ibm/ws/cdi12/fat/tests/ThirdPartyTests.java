@@ -38,7 +38,6 @@ import com.ibm.ws.fat.util.browser.WebResponse;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.AllowedFFDC;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;

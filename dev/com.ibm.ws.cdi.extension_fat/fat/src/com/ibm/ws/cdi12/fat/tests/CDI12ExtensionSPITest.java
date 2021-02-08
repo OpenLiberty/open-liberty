@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2020 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,7 +31,8 @@ public class CDI12ExtensionSPITest extends LoggingTest {
 
     public static SharedServer EXTENSION_SERVER = new SharedServer("cdi12SPIExtensionServer");
     public static String INSTALL_USERBUNDLE = "cdi.spi.extension";
-    public static String INSTALL_USERFEATURE = "cdi.spi.extension";
+    public static String INSTALL_USERFEATURE_JAVAX = "cdi.spi.extension-1.0";
+    public static String INSTALL_USERFEATURE_JAKARTA = "cdi.spi.extension-3.0";
     private static LibertyServer server;
 
     @Override
@@ -47,7 +48,8 @@ public class CDI12ExtensionSPITest extends LoggingTest {
         server = EXTENSION_SERVER.getLibertyServer();
         System.out.println("Intall the user feature bundle... cdi.spi.extension");
         server.installUserBundle(INSTALL_USERBUNDLE);
-        server.installUserFeature(INSTALL_USERFEATURE);
+        server.installUserFeature(INSTALL_USERFEATURE_JAVAX);
+        server.installUserFeature(INSTALL_USERFEATURE_JAKARTA);
         ShrinkHelper.exportDropinAppToServer(server, ClassSPIExtension);
         server.startServer(true);
         server.waitForStringInLogUsingMark("CWWKZ0001I.*Application SPIExtension started");
@@ -70,6 +72,7 @@ public class CDI12ExtensionSPITest extends LoggingTest {
         }
         Log.info(CDI12ExtensionTest.class, METHOD_NAME, "Removing cdi extension test user feature files.");
         server.uninstallUserBundle(INSTALL_USERBUNDLE);
-        server.uninstallUserFeature(INSTALL_USERFEATURE);
+        server.uninstallUserFeature(INSTALL_USERFEATURE_JAVAX);
+        server.uninstallUserFeature(INSTALL_USERFEATURE_JAKARTA);
     }
 }

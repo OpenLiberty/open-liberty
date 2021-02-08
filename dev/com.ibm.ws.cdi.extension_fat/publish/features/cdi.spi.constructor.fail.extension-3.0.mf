@@ -1,0 +1,10 @@
+Subsystem-ManifestVersion: 1
+IBM-ShortName: cdi.spi.constructor.fail.extension-3.0
+Subsystem-SymbolicName: cdi.spi.constructor.fail.extension-3.0;visibility:=public
+Subsystem-Version: 1.0.0
+Subsystem-Content: 
+  cdi.spi.constructor.fail.extension.jakarta; version="[1.0,1.100)",
+  io.openliberty.cdi-3.0; type="osgi.subsystem.feature"
+Subsystem-Type: osgi.subsystem.feature
+IBM-API-Package: com.ibm.ws.cdi.extension.spi.test.constructor.exception
+IBM-Feature-Version: 2

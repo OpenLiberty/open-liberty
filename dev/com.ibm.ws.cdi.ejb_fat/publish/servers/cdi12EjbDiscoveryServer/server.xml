@@ -6,6 +6,7 @@
         <feature>cdi-1.2</feature>
         <feature>ejb-3.2</feature>
         <feature>servlet-3.1</feature>
+        <feature>componentTest-1.0</feature>
     </featureManager>
 
 </server>
