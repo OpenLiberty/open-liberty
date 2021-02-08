@@ -46,6 +46,7 @@ public class ContainersTest extends FATServletClient {
     public static final String POSTGRES_DB = "test";
     public static final String POSTGRES_USER = "test";
     public static final String POSTGRES_PASSWORD = "test";
+    public static final int POSTGRE_PORT = 5432;
 
     /*
      * When using a generic container you will need to provide all the information needed
@@ -67,7 +68,7 @@ public class ContainersTest extends FATServletClient {
      */
     @ClassRule
     public static GenericContainer<?> container = new GenericContainer<>("postgres:9.6.12")
-                    .withExposedPorts(5432)
+                    .withExposedPorts(POSTGRE_PORT)
                     .withEnv("POSTGRES_DB", POSTGRES_DB)
                     .withEnv("POSTGRES_USER", POSTGRES_USER)
                     .withEnv("POSTGRES_PASSWORD", POSTGRES_PASSWORD)
@@ -93,7 +94,7 @@ public class ContainersTest extends FATServletClient {
          * testcontainers always exposes ports onto RANDOM port numbers to avoid port conflicts.
          */
         server.addEnvVar("PS_URL", "jdbc:postgresql://" + container.getContainerIpAddress() //
-                                   + ":" + container.getMappedPort(5432)
+                                   + ":" + container.getMappedPort(POSTGRE_PORT)
                                    + "/" + POSTGRES_DB);
         server.addEnvVar("PS_USER", POSTGRES_USER);
         server.addEnvVar("PS_PASSWORD", POSTGRES_PASSWORD);
