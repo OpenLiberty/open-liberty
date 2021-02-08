@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2004 IBM Corporation and others.
+ * Copyright (c) 1997, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -581,7 +581,7 @@ public class JSPExtensionFactory extends AbstractJSPExtensionFactory implements 
     protected ExtensionProcessor createProcessor(IServletContext webapp,
                                                  JspXmlExtConfig webAppConfig,
                                                  JspClassloaderContext jspClassloaderContext) throws Exception {
-        JSPExtensionProcessor processor = new JSPExtensionProcessor(webapp, webAppConfig, globalTagLibraryCache, jspClassloaderContext);
+        JSPExtensionProcessor processor = new JSPExtensionProcessor(webapp, webAppConfig, globalTagLibraryCache, jspClassloaderContext, getLoadedPagesSpecLevel() );
         processor.startPreTouch(prepareJspHelperFactory);
         return processor;
     }
