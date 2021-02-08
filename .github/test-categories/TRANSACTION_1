@@ -3,11 +3,9 @@ com.ibm.ws.transaction.HADB_fat
 com.ibm.ws.transaction.cloud_fat.base
 com.ibm.ws.transaction.cloud_fat.db2
 com.ibm.ws.transaction.cloud_fat.derby
-com.ibm.ws.transaction.cloud_fat.dualDB
 com.ibm.ws.transaction.cloud_fat.dualFS
 com.ibm.ws.transaction.cloud_fat.oracle
 com.ibm.ws.transaction.cloud_fat.peerlocking
 com.ibm.ws.transaction.cloud_fat.sqlserver
 com.ibm.ws.transaction.cloud_fat.postgresql
-com.ibm.ws.transaction.cloud_fat.simpleDB
 com.ibm.ws.transaction.cloud_fat.simpleFS
