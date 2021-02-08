@@ -7,5 +7,5 @@ IBM-SPI-Package: com.ibm.wsspi.webservices.handler
 -jars=com.ibm.websphere.appserver.spi.globalhandler.jakarta; location:=dev/spi/ibm/
 -files=dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.globalhandler_1.0-javadoc.zip
 kind=beta
-edition=full
+edition=core
 WLP-Activation-Type: parallel

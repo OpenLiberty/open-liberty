@@ -6,4 +6,4 @@
  -bundles=io.openliberty.restfulWS.internal.globalhandler
  IBM-Install-Policy: when-satisfied
  kind=beta
- edition=full
+ edition=core
