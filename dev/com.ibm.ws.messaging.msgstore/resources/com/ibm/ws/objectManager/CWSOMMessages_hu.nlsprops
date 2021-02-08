@@ -77,7 +77,7 @@ Ha az alkalmaz\u00e1s an\u00e9lk\u00fcl veszti el hivatkoz\u00e1s\u00e1t, hogy r
 # {0} the orphan transaction
 # {1} tick count when this was reported
 # {2} unknown or free
-InternalTransaction_OrphanDiagnostics=CWSOM0101W: Diagnostics: {0} {1} {2}.
+InternalTransaction_OrphanDiagnostics=CWSOM0101W: Diagnosztika: {0} {1} {2}.
 InternalTransaction_OrphanDiagnostics.explanation=Bels\u0151 diagnosztikai \u00fczenet.
 InternalTransaction_OrphanDiagnostics.useraction=n/a.
 

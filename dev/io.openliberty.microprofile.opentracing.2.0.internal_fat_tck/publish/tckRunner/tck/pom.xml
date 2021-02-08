@@ -16,6 +16,8 @@
 
     <properties>
         <microprofile.opentracing.version>2.0</microprofile.opentracing.version>
+        <microprofile.config.version>2.0</microprofile.config.version>
+        <microprofile.rest.client.version>2.0</microprofile.rest.client.version>
         <arquillian.version>1.1.14.Final</arquillian.version>
 
         <!-- the below is used in arquillian.xml -->
@@ -64,19 +66,19 @@
         <dependency>
             <groupId>org.eclipse.microprofile.config</groupId>
             <artifactId>microprofile-config-api</artifactId>
-            <version>2.0-M1</version>
+            <version>${microprofile.config.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.eclipse.microprofile.rest.client</groupId>
             <artifactId>microprofile-rest-client-api</artifactId>
-            <version>1.4.0</version>
+            <version>${microprofile.rest.client.version}</version>
         </dependency>
 
         <dependency>
             <groupId>javax.enterprise</groupId>
             <artifactId>cdi-api</artifactId>
-            <version>1.2</version>
+            <version>2.0</version>
             <scope>provided</scope>
         </dependency>
 

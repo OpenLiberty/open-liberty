@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2020 IBM Corporation and others.
+ * Copyright (c) 2010, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -267,7 +267,7 @@ public abstract class AbstractInjectionEngine implements InternalInjectionEngine
      * If a processor was already registered with the specified annotation, that class will be returned
      * otherwise a null will be returned.
      *
-     * @param processor  The processor class to be registered
+     * @param processor The processor class to be registered
      * @param annotation The annotation class the processor is associated.
      * @throws InjectionException if the provider is already registered
      */
@@ -380,8 +380,8 @@ public abstract class AbstractInjectionEngine implements InternalInjectionEngine
      * Populates the empty cookie map with cookies to be injections.
      *
      * @param injectionTargetMap An empty map to be populated with the injection targets from
-     *                               the merged xml and annotations.
-     * @param compNSConfig       The component configuration information provided by the container.
+     *            the merged xml and annotations.
+     * @param compNSConfig The component configuration information provided by the container.
      * @throws InjectionException if an error occurs processing the injection metadata
      */
     @Override
@@ -420,10 +420,10 @@ public abstract class AbstractInjectionEngine implements InternalInjectionEngine
      * Processes injection metadata using the specified configuration with
      * InjectionProcessorContext already set.
      *
-     * @param compNSConfig     the component configuration with
-     *                             InjectionProcessorContext already set
+     * @param compNSConfig the component configuration with
+     *            InjectionProcessorContext already set
      * @param annotatedClasses the list of classes that should be processed for
-     *                             annotations, or <tt>null</tt> if the list should be determined from {@link ComponentNameSpaceConfiguration#getInjectionClasses}
+     *            annotations, or <tt>null</tt> if the list should be determined from {@link ComponentNameSpaceConfiguration#getInjectionClasses}
      */
     protected void processInjectionMetaData(ComponentNameSpaceConfiguration compNSConfig,
                                             List<Class<?>> annotatedClasses) throws InjectionException {
@@ -621,8 +621,8 @@ public abstract class AbstractInjectionEngine implements InternalInjectionEngine
      * from a map of declared injection targets.
      *
      * @param declaredTargets the result of {@link #getDeclaredInjectionTargets}
-     * @param instanceClass   the class to which injection targets should apply
-     * @param checkAppConfig  true if application configuration should be checked
+     * @param instanceClass the class to which injection targets should apply
+     * @param checkAppConfig true if application configuration should be checked
      * @return the applicable injection targets
      * @throws InjectionException
      */
@@ -655,13 +655,22 @@ public abstract class AbstractInjectionEngine implements InternalInjectionEngine
         }
         Collections.reverse(classHierarchy);
 
-        // Fields must be injected before methods, so we make two passes over
-        // the injection targets: first fields, then methods.
-        for (int memberRound = 0; memberRound < 2; memberRound++) {
+        // Fields must be injected before methods, and then setSessionContext as first method, so we make three passes over
+        // the injection targets: first fields, then setSessionContext, then methods.
+        for (int memberRound = 0; memberRound < 3; memberRound++) {
             boolean wantFields = memberRound == 0;
+            boolean checkSessionContext = memberRound == 1;
 
-            if (isTraceOn && tc.isDebugEnabled())
-                Tr.debug(tc, wantFields ? "collecting fields" : "collecting methods");
+            if (wantFields) {
+                if (isTraceOn && tc.isDebugEnabled())
+                    Tr.debug(tc, "collecting fields");
+            } else if (checkSessionContext) {
+                if (isTraceOn && tc.isDebugEnabled())
+                    Tr.debug(tc, "collecting setSessionContext");
+            } else {
+                if (isTraceOn && tc.isDebugEnabled())
+                    Tr.debug(tc, "collecting methods");
+            }
 
             for (Class<?> superclass : classHierarchy) {
                 List<InjectionTarget> classTargets = declaredTargets.get(superclass);
@@ -677,6 +686,18 @@ public abstract class AbstractInjectionEngine implements InternalInjectionEngine
                     boolean isField = member instanceof Field;
                     if (wantFields != isField) {
                         continue;
+                    }
+
+                    boolean isMethod = member instanceof Method;
+                    if (isMethod) {
+
+                        if (!checkSessionContext && ("setSessionContext".equals(member.getName()) || "setMessageDrivenContext".equals(member.getName()))) {
+                            continue;
+                        }
+
+                        if (checkSessionContext && !("setSessionContext".equals(member.getName()) || "setMessageDrivenContext".equals(member.getName()))) {
+                            continue;
+                        }
                     }
 
                     // Only consider fields and non-overridden methods.  Private
@@ -970,11 +991,11 @@ public abstract class AbstractInjectionEngine implements InternalInjectionEngine
      * will be performed as if the override reference factory did not exist. <p>
      *
      * @param annotation the type of annotation processor the factory is to
-     *                       be registered with.
-     * @param factory    thread safe instance of an override reference factory.
+     *            be registered with.
+     * @param factory thread safe instance of an override reference factory.
      *
-     * @throws InjectionException       if an injection processor has not been
-     *                                      registered for the specified annotation.
+     * @throws InjectionException if an injection processor has not been
+     *             registered for the specified annotation.
      * @throws IllegalArgumentException if any of the parameters are null.
      **/
     // F1339-9050

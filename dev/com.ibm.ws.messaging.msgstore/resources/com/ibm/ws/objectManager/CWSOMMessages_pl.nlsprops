@@ -115,7 +115,7 @@ aplikacji.
 # {2} unknown or free
 InternalTransaction_OrphanDiagnostics=CWSOM0101W: Diagnostyka: {0} {1} {2}.
 InternalTransaction_OrphanDiagnostics.explanation=Wewn\u0119trzny komunikat diagnostyczny.
-InternalTransaction_OrphanDiagnostics.useraction=n/a.
+InternalTransaction_OrphanDiagnostics.useraction=nd.
 
 # ----------------------------------------------------------------------------------------------------
 

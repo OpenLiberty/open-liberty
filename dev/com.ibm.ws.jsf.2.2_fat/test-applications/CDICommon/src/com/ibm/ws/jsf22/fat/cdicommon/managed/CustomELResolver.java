@@ -19,12 +19,12 @@ import javax.el.ELContext;
 import javax.el.ELResolver;
 import javax.inject.Inject;
 
-import  com.ibm.ws.jsf22.fat.cdicommon.beans.TestCustomBean;
-import  com.ibm.ws.jsf22.fat.cdicommon.beans.injected.ConstructorBean;
-import  com.ibm.ws.jsf22.fat.cdicommon.beans.injected.FieldBean;
-import  com.ibm.ws.jsf22.fat.cdicommon.beans.injected.ManagedBeanType;
-import  com.ibm.ws.jsf22.fat.cdicommon.beans.injected.MethodBean;
-import  com.ibm.ws.jsf22.fat.cdicommon.interceptors.TestCustomResolver;
+import com.ibm.ws.jsf22.fat.cdicommon.beans.TestCustomBean;
+import com.ibm.ws.jsf22.fat.cdicommon.beans.injected.ConstructorBean;
+import com.ibm.ws.jsf22.fat.cdicommon.beans.injected.FieldBean;
+import com.ibm.ws.jsf22.fat.cdicommon.beans.injected.ManagedBeanType;
+import com.ibm.ws.jsf22.fat.cdicommon.beans.injected.MethodBean;
+import com.ibm.ws.jsf22.fat.cdicommon.interceptors.TestCustomResolver;
 
 /**
  *
@@ -33,7 +33,7 @@ public class CustomELResolver extends ELResolver {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.el.ELResolver#getValue(javax.el.ELContext, java.lang.Object, java.lang.Object)
      */
     // Field Injected Bean
@@ -116,57 +116,52 @@ public class CustomELResolver extends ELResolver {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.el.ELResolver#getType(javax.el.ELContext, java.lang.Object, java.lang.Object)
      */
     @Override
     public Class<?> getType(ELContext context, Object base, Object property) {
-        // TODO Auto-generated method stub
         //System.out.println("CustomELResolver:getType: " + property.getClass());
         return String.class;
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.el.ELResolver#setValue(javax.el.ELContext, java.lang.Object, java.lang.Object, java.lang.Object)
      */
     @Override
     public void setValue(ELContext context, Object base, Object property, Object value) {
-        // TODO Auto-generated method stub
         System.out.println("CustomELResolver:setValue: " + property.getClass());
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.el.ELResolver#isReadOnly(javax.el.ELContext, java.lang.Object, java.lang.Object)
      */
     @Override
     public boolean isReadOnly(ELContext context, Object base, Object property) {
-        // TODO Auto-generated method stub
         return false;
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.el.ELResolver#getFeatureDescriptors(javax.el.ELContext, java.lang.Object)
      */
     @Override
     public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object base) {
-        // TODO Auto-generated method stub
         return null;
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.el.ELResolver#getCommonPropertyType(javax.el.ELContext, java.lang.Object)
      */
     @Override
     public Class<?> getCommonPropertyType(ELContext context, Object base) {
-        // TODO Auto-generated method stub
         return null;
     }
 

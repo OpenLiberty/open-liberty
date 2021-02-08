@@ -78,6 +78,12 @@ public class PolicyExecutorServlet extends FATServlet {
     // Maximum number of nanoseconds to wait for a task to complete
     static final long TIMEOUT_NS = TimeUnit.MINUTES.toNanos(2);
 
+    /**
+     * When checking that a timer didn't run too soon, it is permitted to be
+     * off by up to this amount.
+     */
+    private static final long TOLERANCE_NS = TimeUnit.MILLISECONDS.toNanos(200);
+
     @Resource(lookup = "test/CompletionStageFactory")
     private CompletionStageFactory completionStageFactory;
 
@@ -4152,6 +4158,84 @@ public class PolicyExecutorServlet extends FATServlet {
     }
 
     /**
+     * Uses ScheduledPolicyExecutorTask to schedule a repeating fixed-rate task
+     * which, when delayed past multiple expected executions, runs just once to catch-up
+     * and thereafter returns to its original scheduled period for fixed-rate execution.
+     */
+    @Test
+    public void testLibertyScheduledExecutorFixedRateExecution() throws Exception {
+        PolicyExecutor executor = provider.create("testLibertyScheduledExecutorFixedRateExecution")
+                        .maxConcurrency(7)
+                        .maxQueueSize(Integer.MAX_VALUE)
+                        .maxWaitForEnqueue(0)
+                        .runIfQueueFull(false);
+
+        LinkedBlockingQueue<Long> startTimes = new LinkedBlockingQueue<Long>();
+
+        Runnable getNanoTime = () -> {
+            startTimes.add(System.nanoTime());
+            System.out.println("testLibertyScheduledExecutorFixedRateExecution task running");
+        };
+
+        Runnable twoSecondDelay = () -> {
+            try {
+                startTimes.add(System.nanoTime());
+                System.out.println("testLibertyScheduledExecutorFixedRateExecution task: start sleeping");
+                TimeUnit.MILLISECONDS.sleep(1100);
+                System.out.println("testLibertyScheduledExecutorFixedRateExecution task: wake up");
+            } catch (InterruptedException x) {
+                throw new CompletionException(x);
+            }
+        };
+
+        try {
+            ScheduledBlockingQueueTask task = new ScheduledBlockingQueueTask(executor, getNanoTime, twoSecondDelay, getNanoTime, getNanoTime, getNanoTime);
+
+            long scheduleAtNanos = System.nanoTime();
+            ScheduledFuture<?> future = libertyScheduledExecutor.scheduleAtFixedRate(task, 400, 500, TimeUnit.MILLISECONDS);
+
+            Long runAtNanos = null;
+            long elapsedNanos;
+
+            // Execution 1 after 400 ms
+            assertNotNull((runAtNanos = startTimes.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS)));
+            elapsedNanos = runAtNanos - scheduleAtNanos;
+            assertTrue("Executed [1] too soon: " + TimeUnit.NANOSECONDS.toMillis(elapsedNanos) + " ms from schedule",
+                       elapsedNanos > TimeUnit.MILLISECONDS.toNanos(400) - TOLERANCE_NS);
+
+            // Execution 2 after 900 ms
+            assertNotNull((runAtNanos = startTimes.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS)));
+            elapsedNanos = runAtNanos - scheduleAtNanos;
+            assertTrue("Executed [2] too soon: " + TimeUnit.NANOSECONDS.toMillis(elapsedNanos) + " ms from schedule",
+                       elapsedNanos > TimeUnit.MILLISECONDS.toNanos(900) - TOLERANCE_NS);
+
+            // [intentionally delayed] Does not execute at 1400 ms
+
+            // [intentionally delayed] Does not execute at 1900 ms
+
+            // Execution 3 after 2000 ms  :  this is the single catch-up execution
+            assertNotNull((runAtNanos = startTimes.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS)));
+            elapsedNanos = runAtNanos - scheduleAtNanos;
+            assertTrue("Executed [3] too soon: " + TimeUnit.NANOSECONDS.toMillis(elapsedNanos) + " ms from schedule",
+                       elapsedNanos > TimeUnit.MILLISECONDS.toNanos(2000) - TOLERANCE_NS);
+
+            // Execution 4 after 2400 ms
+            assertNotNull((runAtNanos = startTimes.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS)));
+            elapsedNanos = runAtNanos - scheduleAtNanos;
+            assertTrue("Executed [4] too soon: " + TimeUnit.NANOSECONDS.toMillis(elapsedNanos) + " ms from schedule",
+                       elapsedNanos > TimeUnit.MILLISECONDS.toNanos(2400) - TOLERANCE_NS);
+
+            // Execution 5 after 2900 ms
+            assertNotNull((runAtNanos = startTimes.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS)));
+            elapsedNanos = runAtNanos - scheduleAtNanos;
+            assertTrue("Executed [5] too soon: " + TimeUnit.NANOSECONDS.toMillis(elapsedNanos) + " ms from schedule",
+                       elapsedNanos > TimeUnit.MILLISECONDS.toNanos(2900) - TOLERANCE_NS);
+        } finally {
+            executor.shutdown();
+        }
+    }
+
+    /**
      * Uses ScheduledPolicyExecutorTask to schedule a one-shot Callable task for the
      * Liberty scheduled executor to run on a policy executor.
      */
@@ -5255,6 +5339,19 @@ public class PolicyExecutorServlet extends FATServlet {
         }
 
         assertTrue(executor.awaitTermination(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+    }
+
+    // Register a callback for shutdown. Verify that it gets invoked for both shutdown and shutdownNow methods.
+    @Test
+    public void testShutdownCallback() throws Exception {
+        PolicyExecutor executor1 = provider.create("testShutdownCallback-1");
+        PolicyExecutor executor2 = provider.create("testShutdownCallback-2");
+        AtomicInteger count = new AtomicInteger();
+        executor1.registerShutdownCallback(() -> count.addAndGet(1));
+        executor2.registerShutdownCallback(() -> count.addAndGet(2));
+        executor1.shutdown();
+        executor2.shutdownNow();
+        assertEquals(3, count.get());
     }
 
     // Submit a task that gets queued but times out (due to startTimeout) before it can run.

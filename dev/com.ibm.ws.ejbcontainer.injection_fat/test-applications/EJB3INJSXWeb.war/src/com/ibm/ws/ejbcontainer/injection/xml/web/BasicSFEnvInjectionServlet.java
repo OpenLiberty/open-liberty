@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2018 IBM Corporation and others.
+ * Copyright (c) 2006, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -125,7 +125,7 @@ public class BasicSFEnvInjectionServlet extends FATServlet {
      * does NOT occur from the cached state. <p>
      */
     @Test
-    public void testSFLEnvObjFldInjection() throws Exception {
+    public void testSFLEnvObjFldInjection_XMLBasicSFEnvInjection() throws Exception {
         // --------------------------------------------------------------------
         // Locate SF Local Home/Factory and execute the test
         // --------------------------------------------------------------------
@@ -184,7 +184,7 @@ public class BasicSFEnvInjectionServlet extends FATServlet {
      * does not occur from the cached state. <p>
      */
     @Test
-    public void testSFLEnvPrimFldInjection() throws Exception {
+    public void testSFLEnvPrimFldInjection_XMLBasicSFEnvInjection() throws Exception {
         // --------------------------------------------------------------------
         // Locate SF Local Home/Factory and execute the test
         // --------------------------------------------------------------------
@@ -247,7 +247,7 @@ public class BasicSFEnvInjectionServlet extends FATServlet {
      * does no occur from the cached state. <p>
      */
     @Test
-    public void testSFLEnvObjMthdInjection() throws Exception {
+    public void testSFLEnvObjMthdInjection_XMLBasicSFEnvInjection() throws Exception {
         // --------------------------------------------------------------------
         // Locate SF Local Home/Factory and execute the test
         // --------------------------------------------------------------------
@@ -307,7 +307,7 @@ public class BasicSFEnvInjectionServlet extends FATServlet {
      * does no occur from the cached state. <p>
      */
     @Test
-    public void testSFLEnvPrimMthdInjection() throws Exception {
+    public void testSFLEnvPrimMthdInjection_XMLBasicSFEnvInjection() throws Exception {
         // --------------------------------------------------------------------
         // Locate SF Local Home/Factory and execute the test
         // --------------------------------------------------------------------
@@ -369,7 +369,7 @@ public class BasicSFEnvInjectionServlet extends FATServlet {
      * does not occur from the cached state. <p>
      */
     @Test
-    public void testSFLCompEnvObjFldInjection_BasicSFEnvInjection() throws Exception {
+    public void testSFLCompEnvObjFldInjection_XMLBasicSFEnvInjection() throws Exception {
         // --------------------------------------------------------------------
         // Locate SF Local Home/Factory and execute the test
         // --------------------------------------------------------------------
@@ -429,7 +429,7 @@ public class BasicSFEnvInjectionServlet extends FATServlet {
      * does not occur from the cached state. <p>
      */
     @Test
-    public void testSFLCompEnvPrimFldInjection_BasicSFEnvInjection() throws Exception {
+    public void testSFLCompEnvPrimFldInjection_XMLBasicSFEnvInjection() throws Exception {
         // --------------------------------------------------------------------
         // Locate SF Local Home/Factory and execute the test
         // --------------------------------------------------------------------
@@ -493,7 +493,7 @@ public class BasicSFEnvInjectionServlet extends FATServlet {
      * does not occur from the cached state. <p>
      */
     @Test
-    public void testSFLCompEnvObjMthdInjection_BasicSFEnvInjection() throws Exception {
+    public void testSFLCompEnvObjMthdInjection_XMLBasicSFEnvInjection() throws Exception {
         // --------------------------------------------------------------------
         // Locate SF Local Home/Factory and execute the test
         // --------------------------------------------------------------------
@@ -554,7 +554,7 @@ public class BasicSFEnvInjectionServlet extends FATServlet {
      * does not occur from the cached state. <p>
      */
     @Test
-    public void testSFLCompEnvPrimMthdInjection_BasicSFEnvInjection() throws Exception {
+    public void testSFLCompEnvPrimMthdInjection_XMLBasicSFEnvInjection() throws Exception {
         // --------------------------------------------------------------------
         // Locate SF Local Home/Factory and execute the test
         // --------------------------------------------------------------------

@@ -272,6 +272,15 @@ public interface PolicyExecutor extends ExecutorService {
     Runnable registerQueueSizeCallback(int minAvailable, Runnable callback);
 
     /**
+     * Registers a one-time callback to be invoked inline when the
+     * policy executor shuts down. This method is intended for optional use
+     * on a newly created policy executor instance.
+     *
+     * @param callback the callback, or null to unregister.
+     */
+    void registerShutdownCallback(Runnable callback);
+
+    /**
      * Applies when using the <code>execute</code> or <code>submit</code> methods. Indicates whether or not to run the task on the
      * caller's thread when the queue is full and the <code>maxWaitForEnqueue</code> has been exceeded.
      * The default value is false, in which case the task submission is rejected after the <code>maxWaitForEnqueue</code> elapses

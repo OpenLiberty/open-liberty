@@ -222,14 +222,14 @@ IBM-API-Package: org.eclipse.persistence.descriptors.changetracking; type="inter
  org.eclipse.persistence.transaction; type="third-party", \
  org.eclipse.persistence; type="third-party"
 IBM-ShortName: persistence-3.0
-IBM-AlsoKnownAs: jpa-3.0
+WLP-AlsoKnownAs: jpa-3.0
 Subsystem-Name: Jakarta Persistence 3.0
 -features=com.ibm.websphere.appserver.eeCompatible-9.0, \
  com.ibm.websphere.appserver.transaction-2.0, \
  com.ibm.websphere.appserver.jdbc-4.2; ibm.tolerates:="4.3", \
  io.openliberty.persistenceContainer-3.0,\
  io.openliberty.jakarta.persistence-3.0
--bundles=com.ibm.websphere.appserver.thirdparty.eclipselink.3.0; location:=dev/api/third-party/; mavenCoordinates="org.eclipse.persistence:eclipselink:3.0.0", \
+-bundles=io.openliberty.jpa.3.0.thirdparty; location:=dev/api/third-party/; mavenCoordinates="org.eclipse.persistence:eclipselink:3.0.0", \
  com.ibm.ws.jpa.container.eclipselink.jakarta
 kind=beta
 edition=core

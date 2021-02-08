@@ -17,13 +17,17 @@ import java.io.IOException;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+import componenttest.annotation.ExpectedFFDC;
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
+@RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class JMSContextTest_118061 {
     private static LibertyServer engineServer =
@@ -438,12 +442,14 @@ public class JMSContextTest_118061 {
     // 118062_2_3 InvalidRuntimeSelectorException - if the message selector is
     // invalid.
 
+    @ExpectedFFDC("com.ibm.wsspi.sib.core.exception.SISelectorSyntaxException")
     @Test
     public void testcreateBrowser_MessageSelector_Invalid_B_SecOff() throws Exception {
         boolean testResult = runInServlet("testcreateBrowser_MessageSelector_Invalid_B_SecOff");
         assertTrue("Test testcreateBrowser_MessageSelector_Invalid_B_SecOff failed", testResult);
     }
 
+    @ExpectedFFDC("com.ibm.wsspi.sib.core.exception.SISelectorSyntaxException")
     @Test
     public void testcreateBrowser_MessageSelector_Invalid_TCP_SecOff() throws Exception {
         boolean testResult = runInServlet("testcreateBrowser_MessageSelector_Invalid_TCP_SecOff");

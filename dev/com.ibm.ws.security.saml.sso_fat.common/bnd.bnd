@@ -11,6 +11,8 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
+-sub: *.bnd
+
 src: \
     src, \
     test-bundles/com.ibm.ws.security.saml.resolver.sample/src, \
@@ -47,4 +49,6 @@ test.project: true
     net.sourceforge.htmlunit:htmlunit;version=2.44.0, \
     com.unboundid:unboundid-ldapsdk;version=5.1.0, \
     com.ibm.ws.com.unboundid;version=latest, \
-    com.ibm.ws.security.token;version=latest
+    com.ibm.ws.security.token;version=latest,\
+    com.ibm.ws.org.osgi.annotation.versioning;version=latest
+    

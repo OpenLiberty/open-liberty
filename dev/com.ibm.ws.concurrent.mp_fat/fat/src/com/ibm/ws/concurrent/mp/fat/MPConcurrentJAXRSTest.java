@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -45,7 +45,7 @@ import componenttest.topology.utils.HttpUtils;
 public class MPConcurrentJAXRSTest extends FATServletClient {
 
     @ClassRule
-    public static RepeatTests r = MPContextPropActions.repeat("MPConcurrentJAXRSTestServer", MPContextPropActions.CTX10, MPContextPropActions.CTX11);
+    public static RepeatTests r = MPContextPropActions.repeat("MPConcurrentJAXRSTestServer", MPContextPropActions.CTX10, MPContextPropActions.CTX12);
 
     private static final String APP_NAME = "MPConcurrentJAXRSApp";
 

@@ -11,7 +11,7 @@
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
-grpcVersion=1.31.1
+grpcVersion=1.35.0
 
 Bundle-SymbolicName: io.openliberty.io.grpc.1.0; singleton:=true
 

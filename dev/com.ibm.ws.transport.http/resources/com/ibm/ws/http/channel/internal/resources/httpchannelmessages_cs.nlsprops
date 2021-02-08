@@ -175,3 +175,11 @@ cookies.samesite.unsupportedWildcard.useraction=Ujist\u011bte se, \u017ee pouze 
 cookies.samesite.knownDuplicateName=CWWKT0037W: N\u00e1zev nebo vzor souboru cookie [{0}], kter\u00fd je ozna\u010den jako duplicitn\u00ed, byl nalezen v konfiguraci SameSite [{1}]. N\u00e1zev nebo vzor souboru cookie [{0}] je ignorov\u00e1n. V\u0161echny n\u00e1zvy nebo vzory soubor\u016f cookie definovan\u00e9 pomoc\u00ed konfigurac\u00ed lax, none a strict mohou b\u00fdt definov\u00e1ny pouze v jedn\u00e9 ze t\u0159\u00ed konfigurac\u00ed.
 cookies.samesite.knownDuplicateName.explanation=Uveden\u00e1 hodnota ji\u017e byla nalezena konfigurac\u00ed a namapov\u00e1na na hodnotu SameSite.
 cookies.samesite.knownDuplicateName.useraction=Ujist\u011bte se, \u017ee n\u00e1zvy a vzory soubor\u016f cookie jsou jedine\u010dn\u00e9 v r\u00e1mci konfigura\u010dn\u00edch seznam\u016f lax, none a strict.
+
+trusted.header.origin.invalid.value=CWWKT0038W: Nakonfigurovan\u00e1 hodnota trustedHeaderOrigin [{0}] je neplatn\u00e1 a nelze ji pou\u017e\u00edt.
+trusted.header.origin.invalid.value.explanation=Ur\u010den\u00e1 hodnota mus\u00ed b\u00fdt \u00fapln\u00e1 adresa IP nebo spr\u00e1vn\u011b naform\u00e1tovan\u00fd n\u00e1zev hostitele.
+trusted.header.origin.invalid.value.useraction=Ujist\u011bte se, \u017ee nakonfigurovan\u00e9 adresy IP obsahuj\u00ed hodnotu pro ka\u017ed\u00fd segment a dan\u00e9 n\u00e1zvy hostitele neobsahuj\u00ed \u017e\u00e1dn\u00e9 neplatn\u00e9 znaky.
+
+trusted.sensitive.header.origin.invalid.value=CWWKT0039W: Nakonfigurovan\u00e1 hodnota trustedHeaderOrigin [{0}] je neplatn\u00e1 a nelze ji pou\u017e\u00edt.
+trusted.sensitive.header.origin.invalid.value.explanation=Ur\u010den\u00e1 hodnota mus\u00ed b\u00fdt \u00fapln\u00e1 adresa IP nebo spr\u00e1vn\u011b naform\u00e1tovan\u00fd n\u00e1zev hostitele.
+trusted.sensitive.header.origin.invalid.value.useraction=Ujist\u011bte se, \u017ee nakonfigurovan\u00e9 adresy IP obsahuj\u00ed hodnotu pro ka\u017ed\u00fd segment a dan\u00e9 n\u00e1zvy hostitele neobsahuj\u00ed \u017e\u00e1dn\u00e9 neplatn\u00e9 znaky.

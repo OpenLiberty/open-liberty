@@ -125,6 +125,7 @@ public class Constants {
     public static final String UNAUTHORIZED_MESSAGE = "Unauthorized";
     public static final String UNAUTHORIZED_EXCEPTION = "401 Unauthorized";
     public static final String HTTP_UNAUTHORIZED_EXCEPTION = "HTTP " + UNAUTHORIZED_EXCEPTION;
+    public static final String CONTEXT_ROOT_NOT_FOUND = "<title [^>]+\"CONTEXT_ROOT_NOT_FOUND\".+</title>";
 
     /********************** Page Values *********************/
     public static final String FORM_LOGIN_HEADING = "Form Login Page";
@@ -138,7 +139,7 @@ public class Constants {
     public static final String BVT_SERVER_2_PORT_NAME_ROOT = "security_2_HTTP_default";
     public static final String BVT_SERVER_3_PORT_NAME_ROOT = "security_3_HTTP_default";
     public static final String BVT_SERVER_4_PORT_NAME_ROOT = "security_4_HTTP_default";
-    
+
     /* Signature contants */
     public static final String SIGALG_NONE = "none";
     public static final String SIGALG_RS256 = "RS256";
@@ -156,6 +157,7 @@ public class Constants {
     public static final String HTTP_UNAUTHORIZED = "HTTP/1.1 401 Unauthorized";
     public static final String HTTP_ERROR_MESSAGE = "HTTP Error Message";
     public static final String NOT_FOUND_ERROR = "Error 404:";
+    public static final String NOT_FOUND_MSG = "Not Found";
     public static final String OK_MESSAGE = "OK";
     public static final String BAD_REQUEST = "Bad Request";
 

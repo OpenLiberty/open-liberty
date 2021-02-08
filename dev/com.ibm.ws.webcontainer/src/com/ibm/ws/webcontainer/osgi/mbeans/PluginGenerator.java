@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2020 IBM Corporation and others.
+ * Copyright (c) 2009, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -206,11 +206,6 @@ public class PluginGenerator {
         }
     }
 
-    /** Wrapped method for getting the bundle context: required for test */
-    protected BundleContext getBundleContext() {
-        return FrameworkUtil.getBundle(PluginGenerator.class).getBundleContext();
-    }
-
     private boolean isBundleUninstalled() {
         return bundle.getState() == Bundle.UNINSTALLED;
     }
@@ -245,7 +240,7 @@ public class PluginGenerator {
             return;
         }
 
-        if(getBundleContext() == null){
+        if(context == null){
             if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
                 Tr.exit(tc, "generateXML", "Error creating plugin config xml: BundleContext is null");
             }
@@ -499,10 +494,18 @@ public class PluginGenerator {
                 // As of 8.5.5.2, we will use only one endpoint, so that a single plugin configuration
                 // will contain only one server definition (which is good because there was only one server id.. )
 
-                buildServerTransportData(appServerName, serverID, httpEndpointInfo, scd.clusterServers, pcd.IPv6Preferred);
+                if (!buildServerTransportData(appServerName, serverID, httpEndpointInfo, scd.clusterServers, pcd.IPv6Preferred, container)) {
+                    // the server is currently shutting down. A final exit message will be logged in the finally().
+                    return;
+                }
 
                 // create a server element for each server in the cluster
                 for (ServerData sd : scd.clusterServers) {
+                    // check to see if the server is shutting down; if it is, bail out. A final exit message will be logged in the finally().
+                    if (pcd == null || FrameworkState.isStopping() || container.isServerStopping()) {
+                        return;
+                    }
+
                     // get the server data
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "Adding the Server definition " + sd.nodeName + "_" + sd.serverName);
@@ -1339,11 +1342,23 @@ public class PluginGenerator {
         return Arrays.asList(property);
     }
 
-    void buildServerTransportData(String appServerName,
+    /**
+     * 
+     * @param appServerName
+     * @param serverID
+     * @param httpEndpointInfo
+     * @param serverDataList
+     * @param preferIPv6
+     * @param container
+     * @return false if server shutdown is detected 
+     * @throws Exception
+     */
+    boolean buildServerTransportData(String appServerName,
                                   String serverID,
                                   HttpEndpointInfo httpEndpointInfo,
                                   List<ServerData> serverDataList,
-                                  boolean preferIPv6) throws Exception {
+                                  boolean preferIPv6,
+                                  WebContainer container) throws Exception {
 
         String defaultHostName = (String) httpEndpointInfo.getProperty("_defaultHostName");
 
@@ -1367,6 +1382,11 @@ public class PluginGenerator {
 
         sd.nodeName = GeneratePluginConfig.DEFAULT_NODE_NAME;
 
+        // check to see if the server is shutting down; if it is, bail out. A final exit message will be logged in the caller.
+        if (pcd == null || FrameworkState.isStopping() || container.isServerStopping()) {
+            return false;
+        }
+
         // hostName is returned in lower case
         sd.hostName = tryDetermineHostName(host, defaultHostName, preferIPv6);
         if (!(utilityRequest) && sd.hostName.equals("localhost"))
@@ -1376,6 +1396,8 @@ public class PluginGenerator {
             sd.addTransportData(sd.hostName, httpPort, false);
         if (httpsPort > 0)
             sd.addTransportData(sd.hostName, httpsPort, true);
+
+        return true;
     }
 
     private static String appendWildCardString(String rootURI) {

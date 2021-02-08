@@ -158,6 +158,32 @@ task samlclient_WAR(type: War, dependsOn: classes) {
 /******************************************************************
  ******************************************************************
  **
+ ** httpServletRequestApp.war
+ **
+ ******************************************************************
+ ******************************************************************/
+task httpServletRequestApp_WAR(type: War, dependsOn: classes) {
+  destinationDir file(appBuildDir)
+  archiveName "httpServletRequestApp.war"
+  classpath = classpath.filter{ false }
+  
+  manifest {
+    attributes("Class-Path": "")
+  }
+  
+  from ('test-applications/httpServletRequestApp.war/resources') {
+    include '**'
+  }
+  from ('build/classes/java/main') {
+    include 'com/ibm/ws/security/saml/apps/**'
+    into 'WEB-INF/classes'
+  }
+}
+
+
+/******************************************************************
+ ******************************************************************
+ **
  ** Copies the IDP WAR and JARs
  **
  ******************************************************************
@@ -197,6 +223,7 @@ task updateIdp_WAR(type: Zip, dependsOn: copy_IDP) {
 assemble.dependsOn SAML_Demo_EAR
 assemble.dependsOn samlclient_WAR
 assemble.dependsOn updateIdp_WAR
+assemble.dependsOn httpServletRequestApp_WAR
 
 
 /*

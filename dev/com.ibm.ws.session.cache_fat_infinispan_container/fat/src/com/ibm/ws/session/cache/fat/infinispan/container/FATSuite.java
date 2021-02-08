@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2019 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,7 +22,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 import org.testcontainers.containers.GenericContainer;
-import org.testcontainers.containers.output.OutputFrame;
 import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy;
 import org.testcontainers.images.builder.ImageFromDockerfile;
 
@@ -31,6 +30,7 @@ import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.containers.ExternalTestServiceDockerClientStrategy;
+import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
@@ -50,6 +50,12 @@ import componenttest.topology.utils.HttpUtils;
 
 public class FATSuite {
 
+    //Required to ensure we calculate the correct strategy each run even when
+    //switching between local and remote docker hosts.
+    static {
+        ExternalTestServiceDockerClientStrategy.setupTestcontainers();
+    }
+
     @ClassRule
     public static RepeatTests repeat = RepeatTests.withoutModification()
                     .andWith(new JakartaEE9Action()
@@ -58,11 +64,6 @@ public class FATSuite {
                                                 "com.ibm.ws.session.cache.fat.infinispan.container.serverB",
                                                 "com.ibm.ws.session.cache.fat.infinispan.container.timeoutServerA",
                                                 "com.ibm.ws.session.cache.fat.infinispan.container.timeoutServerB"));
-
-    // Used in conjunction with fat.test.use.remote.docker property to use a remote docker host for local testing.
-    static {
-        ExternalTestServiceDockerClientStrategy.setupTestcontainers();
-    }
 
     @BeforeClass
     public static void beforeSuite() throws Exception {
@@ -98,7 +99,7 @@ public class FATSuite {
                                     .waitingFor(new LogMessageWaitStrategy()
                                                     .withRegEx(".*ISPN080001: Infinispan Server.*")
                                                     .withStartupTimeout(Duration.ofMinutes(FATRunner.FAT_TEST_LOCALRUN ? 5 : 15)))
-                                    .withLogConsumer(FATSuite::log);
+                                    .withLogConsumer(new SimpleLogConsumer(FATSuite.class, "Infinispan"));
 
     /**
      * Custom runner used by test classes.
@@ -141,13 +142,4 @@ public class FATSuite {
             con.disconnect();
         }
     }
-
-    // Logger used by infinispan container
-    private static void log(Object frame) {
-        String msg = ((OutputFrame) frame).getUtf8String();
-        if (msg.endsWith("\n"))
-            msg = msg.substring(0, msg.length() - 1);
-        Log.info(GenericContainer.class, "infinispan", msg);
-    }
-
 }

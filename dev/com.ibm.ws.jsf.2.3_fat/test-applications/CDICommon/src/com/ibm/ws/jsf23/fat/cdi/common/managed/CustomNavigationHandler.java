@@ -61,8 +61,6 @@ public class CustomNavigationHandler extends NavigationHandler {
      */
     @Override
     public void handleNavigation(FacesContext context, String fromAction, String outcome) {
-        // TODO Auto-generated method stub
-
         System.out.println("handleNavigation() fromAction = " + fromAction + ", outcome = " + outcome);
         String nextPage = "/" + outcome + ".xhtml";
         if (outcome != null) {

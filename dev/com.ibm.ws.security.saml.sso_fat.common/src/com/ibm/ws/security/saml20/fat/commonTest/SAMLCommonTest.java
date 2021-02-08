@@ -34,14 +34,14 @@ import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.CommonIOTools;
 import com.ibm.ws.security.fat.common.CommonTest;
-import com.ibm.ws.security.fat.common.utils.ConditionalIgnoreRule;
-import com.ibm.ws.security.fat.common.utils.MySkipRule;
 import com.ibm.ws.security.fat.common.ShibbolethHelpers;
 import com.ibm.ws.security.fat.common.TestHelpers;
 import com.ibm.ws.security.fat.common.ValidationData;
 import com.ibm.ws.security.fat.common.ValidationData.validationData;
 import com.ibm.ws.security.fat.common.apps.AppConstants;
 import com.ibm.ws.security.fat.common.config.settings.BaseConfigSettings;
+import com.ibm.ws.security.fat.common.utils.ConditionalIgnoreRule;
+import com.ibm.ws.security.fat.common.utils.MySkipRule;
 import com.ibm.ws.security.saml20.fat.commonTest.config.settings.SAMLConfigSettings;
 import com.meterware.httpunit.GetMethodWebRequest;
 import com.meterware.httpunit.WebConversation;
@@ -177,32 +177,33 @@ public class SAMLCommonTest extends CommonTest {
      * Defines some global variables for use by the follow on tests...
      */
     public static SAMLTestServer commonSetUp(String requestedServer,
-            String serverXML, String testType, String serverType,
-            List<String> addtlApps, List<String> addtlMessages) throws Exception {
+                                             String serverXML, String testType, String serverType,
+                                             List<String> addtlApps, List<String> addtlMessages) throws Exception {
 
         return commonSetUp(requestedServer, serverXML, testType, serverType, addtlApps, addtlMessages, true, null, null);
 
     }
 
     public static SAMLTestServer commonSetUp(String requestedServer,
-            String serverXML, String testType, String serverType,
-            List<String> addtlApps, List<String> addtlMessages, String callbackHandler, String feature) throws Exception {
+                                             String serverXML, String testType, String serverType,
+                                             List<String> addtlApps, List<String> addtlMessages, String callbackHandler, String feature) throws Exception {
 
         return commonSetUp(requestedServer, serverXML, testType, serverType, addtlApps, addtlMessages, true, callbackHandler, feature);
 
     }
 
     public static SAMLTestServer commonSetUp(String requestedServer,
-            String serverXML, String testType, String serverType,
-            List<String> addtlApps, List<String> addtlMessages, Boolean checkForSecuityStart) throws Exception {
+                                             String serverXML, String testType, String serverType,
+                                             List<String> addtlApps, List<String> addtlMessages, Boolean checkForSecuityStart) throws Exception {
 
         return commonSetUp(requestedServer, serverXML, testType, serverType, addtlApps, addtlMessages, checkForSecuityStart, null, null);
 
     }
 
     public static SAMLTestServer commonSetUp(String requestedServer,
-            String serverXML, String testType, String serverType,
-            List<String> addtlApps, List<String> addtlMessages, Boolean checkForSecuityStart, String callbackHandler, String feature) throws Exception {
+                                             String serverXML, String testType, String serverType,
+                                             List<String> addtlApps, List<String> addtlMessages, Boolean checkForSecuityStart, String callbackHandler,
+                                             String feature) throws Exception {
 
         String thisMethod = "commonSetUp";
         msgUtils.printMethodName(thisMethod);
@@ -244,14 +245,35 @@ public class SAMLCommonTest extends CommonTest {
                 Log.info(thisClass, "commonSetup", "callbackHandler: " + callbackHandler + " feature: " + feature);
                 aTestServer = new SAMLTestServer(requestedServer, usableServerXml, serverType, callbackHandler, feature);
             }
-            
+
             switch (requestedServer) {
-            case ("com.ibm.ws.security.saml.sso-2.0_fat"):
-            	transformApps(aTestServer.getServer(), "dropins/SAML_Demo.ear", "dropins/testmarker.war", "test-apps/samlclient.war");
-            	break;
-            case ("com.ibm.ws.security.saml.sso-2.0_fat.shibboleth"):
-            	transformApps(aTestServer.getServer(), "dropins/testmarker.war", "test-apps/idp.war");
-            	break;
+                case ("com.ibm.ws.security.saml.sso-2.0_fat.jaxrs.sp"):
+                case ("com.ibm.ws.security.saml.sso-2.0_fat.jaxrs.config.sp"):
+                    Log.info(thisClass, thisMethod, "in sp case");
+                    transformApps(aTestServer.getServer(), "dropins/SAML_Demo.ear", "dropins/testmarker.war", "test-apps/samlclient.war", "test-apps/jaxrsclient.war");
+                    break;
+                case ("com.ibm.ws.security.saml.sso-2.0_fat.jaxrs.rs"):
+                case ("com.ibm.ws.security.saml.sso-2.0_fat.jaxrs.config.rs"):
+                    Log.info(thisClass, thisMethod, "in rs case");
+                    transformApps(aTestServer.getServer(), "dropins/SAML_Demo.ear", "dropins/testmarker.war", "test-apps/samlclient.war", "test-apps/helloworld.war");
+                    break;
+                case ("com.ibm.ws.security.saml.sso-2.0_fat.jaxrs.merged_sp_rs"):
+                    Log.info(thisClass, thisMethod, "in merged case");
+                    transformApps(aTestServer.getServer(), "dropins/SAML_Demo.ear", "dropins/testmarker.war", "test-apps/samlclient.war", "test-apps/jaxrsclient.war",
+                                  "test-apps/helloworld.war");
+                    break;
+                case ("com.ibm.ws.security.saml.sso_fat.logout"):
+                case ("com.ibm.ws.security.saml.sso_fat.logout.server2"):
+                    Log.info(thisClass, thisMethod, "in logout case");
+                    transformApps(aTestServer.getServer(), "dropins/SAML_Demo.ear", "dropins/testmarker.war", "test-apps/samlclient.war", "test-apps/httpServletRequestApp.war");
+                    break;
+                case ("com.ibm.ws.security.saml.sso-2.0_fat.shibboleth"):
+                    transformApps(aTestServer.getServer(), "dropins/testmarker.war", "test-apps/idp.war");
+                    break;
+                default:
+                    Log.info(thisClass, thisMethod, "in default case");
+                    transformApps(aTestServer.getServer(), "dropins/SAML_Demo.ear", "dropins/testmarker.war", "test-apps/samlclient.war");
+                    break;
             }
 
             aTestServer.removeServerConfigFiles();
@@ -306,7 +328,9 @@ public class SAMLCommonTest extends CommonTest {
                 //                int ldapPort = one.getLdapPort();
                 //                int ldapSSLPort = one.getLdapSSLPort();
                 //                Log.info(thisClass, "setupBeforeTest", "ldap Port in Common setup is: " + ldapPort);
-                usingExternalLDAPServer = shibbolethHelpers.updateToUseExternalLDaPIfInMemoryIsBad(aTestServer, Integer.toString(one.getLdapPort()), Integer.toString(one.getLdapSSLPort()), Integer.toString(two.getLdapPort()), Integer.toString(two.getLdapSSLPort()));
+                usingExternalLDAPServer = shibbolethHelpers.updateToUseExternalLDaPIfInMemoryIsBad(aTestServer, Integer.toString(one.getLdapPort()),
+                                                                                                   Integer.toString(one.getLdapSSLPort()), Integer.toString(two.getLdapPort()),
+                                                                                                   Integer.toString(two.getLdapSSLPort()));
                 shibbolethHelpers.setShibbolethPropertiesForTestMachine(aTestServer);
             }
 
@@ -401,8 +425,8 @@ public class SAMLCommonTest extends CommonTest {
             // to the caller the AfterClass method won't have the reference to use to stop the server
             // if we eat the failure, the tests will go on and fail and waste time instead of
             // erroring out...
-            tearDownServer(aTestServer);
             Log.error(thisClass, thisMethod, e);
+            tearDownServer(aTestServer);
             throw e;
         }
         return aTestServer;
@@ -492,14 +516,14 @@ public class SAMLCommonTest extends CommonTest {
 
     // HTMLUNIT flows
     public Object genericSAML(String testcase, WebClient webClient, SAMLTestSettings settings,
-            String[] testActions, List<validationData> expectations) throws Exception {
+                              String[] testActions, List<validationData> expectations) throws Exception {
 
         return genericSAML(testcase, webClient, settings, testActions, expectations, null);
 
     }
 
     public Object genericSAML(String testcase, WebClient webClient, SAMLTestSettings settings,
-            String[] testActions, List<validationData> expectations, Object somePage) throws Exception {
+                              String[] testActions, List<validationData> expectations, Object somePage) throws Exception {
 
         if (webClient == null) {
             webClient = SAMLCommonTestHelpers.getWebClient();
@@ -571,7 +595,8 @@ public class SAMLCommonTest extends CommonTest {
             }
 
             if (cttools.isInList(testActions, SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE_KEEPING_COOKIES)) {
-                somePage = helpers.invokeACSWithSAMLResponse(testcase, webClient, somePage, settings, expectations, SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE_KEEPING_COOKIES, true);
+                somePage = helpers.invokeACSWithSAMLResponse(testcase, webClient, somePage, settings, expectations, SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE_KEEPING_COOKIES,
+                                                             true);
             }
 
             if (cttools.isInList(testActions, SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE_BYPASS_APP)) {
@@ -664,7 +689,7 @@ public class SAMLCommonTest extends CommonTest {
     }
 
     public Object genericSAMLLogout(String testcase, WebClient webClient, SAMLTestSettings settings,
-            String[] testActions, List<validationData> expectations, Object somePage) throws Exception {
+                                    String[] testActions, List<validationData> expectations, Object somePage) throws Exception {
 
         if (webClient == null) {
             webClient = SAMLCommonTestHelpers.getWebClient();
@@ -683,26 +708,26 @@ public class SAMLCommonTest extends CommonTest {
                 Log.info(thisClass, testcase, "Action to be performed: " + action);
 
                 switch (action) {
-                case SAMLConstants.PERFORM_SP_LOGOUT:
-                    somePage = helpers.performSPLogout(testcase, webClient, somePage, settings, expectations);
-                    break;
-                case SAMLConstants.PERFORM_IDP_LOGOUT:
-                    somePage = helpers.performIDPLogout(testcase, webClient, somePage, settings, expectations);
-                    break;
-                case SAMLConstants.PROCESS_LOGOUT_REQUEST:
-                    somePage = helpers.processLogoutRequest(testcase, webClient, (HtmlPage) somePage, settings, expectations);
-                    break;
-                case SAMLConstants.PROCESS_LOGOUT_CONTINUE:
-                    somePage = helpers.processLogoutContinue(testcase, webClient, (HtmlPage) somePage, settings, expectations);
-                    break;
-                case SAMLConstants.PROCESS_LOGOUT_PROPAGATE_YES:
-                    somePage = helpers.processLogoutPropagateYes(testcase, webClient, (HtmlPage) somePage, settings, expectations);
-                    break;
-                case SAMLConstants.PROCESS_LOGOUT_REDIRECT:
-                    somePage = helpers.processLogoutRedirect(testcase, webClient, (HtmlPage) somePage, settings, expectations);
-                    break;
-                default:
-                    Log.info(thisClass, thisMethod, "Skipping action: " + action + " - there is no case to handle it");
+                    case SAMLConstants.PERFORM_SP_LOGOUT:
+                        somePage = helpers.performSPLogout(testcase, webClient, somePage, settings, expectations);
+                        break;
+                    case SAMLConstants.PERFORM_IDP_LOGOUT:
+                        somePage = helpers.performIDPLogout(testcase, webClient, somePage, settings, expectations);
+                        break;
+                    case SAMLConstants.PROCESS_LOGOUT_REQUEST:
+                        somePage = helpers.processLogoutRequest(testcase, webClient, (HtmlPage) somePage, settings, expectations);
+                        break;
+                    case SAMLConstants.PROCESS_LOGOUT_CONTINUE:
+                        somePage = helpers.processLogoutContinue(testcase, webClient, (HtmlPage) somePage, settings, expectations);
+                        break;
+                    case SAMLConstants.PROCESS_LOGOUT_PROPAGATE_YES:
+                        somePage = helpers.processLogoutPropagateYes(testcase, webClient, (HtmlPage) somePage, settings, expectations);
+                        break;
+                    case SAMLConstants.PROCESS_LOGOUT_REDIRECT:
+                        somePage = helpers.processLogoutRedirect(testcase, webClient, (HtmlPage) somePage, settings, expectations);
+                        break;
+                    default:
+                        Log.info(thisClass, thisMethod, "Skipping action: " + action + " - there is no case to handle it");
                 }
 
             }
@@ -1029,13 +1054,14 @@ public class SAMLCommonTest extends CommonTest {
         String[] servletRelatedFileNames = { "saml_only_features", "saml_rs_features", "saml_both_features" };
         Log.info(thisClass, thisMethod, "Choosing which feature group to use");
         if (chosenVersion == null) {
-        	chosenVersion = cttools.chooseRandomEntry(SAMLConstants.SERVLET_31, SAMLConstants.SERVLET_40);
+            chosenVersion = cttools.chooseRandomEntry(SAMLConstants.SERVLET_31, SAMLConstants.SERVLET_40);
         }
         Log.info(thisClass, thisMethod, "Feature group chosen: " + chosenVersion);
         String importsDir = theServer.getServer().getServerRoot() + File.separator + "imports";
         Machine machine = theServer.getServer().getMachine();
         for (String fileBase : servletRelatedFileNames) {
             String builtFilePath = importsDir + File.separator + fileBase + "_" + chosenVersion + ".xml";
+            Log.info(thisClass, thisMethod, "builtFilePath:  " + builtFilePath);
             if (LibertyFileManager.libertyFileExists(machine, builtFilePath)) {
                 LibertyFileManager.copyFileIntoLiberty(machine, importsDir, fileBase + ".xml", builtFilePath);
             }
@@ -1063,7 +1089,8 @@ public class SAMLCommonTest extends CommonTest {
             }
         }
         if (idpProcessLogFile == null) {
-            throw new Exception("Failed to find the " + SAMLConstants.IDP_PROCESS_LOG + " file under the IdP server. The server may not have started correctly or took too long to start.");
+            throw new Exception("Failed to find the " + SAMLConstants.IDP_PROCESS_LOG
+                                + " file under the IdP server. The server may not have started correctly or took too long to start.");
         }
         cipherMayExceed128 = (idpServer.getServer().waitForStringInLog("exceeds Cipher max key length 128", 10 * 1000, idpProcessLogFile) == null);
         if (cipherMayExceed128) {
@@ -1076,18 +1103,22 @@ public class SAMLCommonTest extends CommonTest {
 
     }
 
-    public static void startSPWithIDPServer(String spServer, String spServerCfg, String serverType, List<String> spExtraMsgs, List<String> spExtraApps, Boolean spCopyDataFlag) throws Exception {
+    public static void startSPWithIDPServer(String spServer, String spServerCfg, String serverType, List<String> spExtraMsgs, List<String> spExtraApps,
+                                            Boolean spCopyDataFlag) throws Exception {
         startSPWithIDPServer(spServer, spServerCfg, serverType, spExtraMsgs, spExtraApps, spCopyDataFlag, null, null, null);
     }
 
-    public static void startSPWithIDPServer(String spServer, String spServerCfg, String serverType, List<String> spExtraMsgs, List<String> spExtraApps, Boolean spCopyDataFlag, String callbackHandler, String feature) throws Exception {
+    public static void startSPWithIDPServer(String spServer, String spServerCfg, String serverType, List<String> spExtraMsgs, List<String> spExtraApps, Boolean spCopyDataFlag,
+                                            String callbackHandler, String feature) throws Exception {
         startSPWithIDPServer(spServer, spServerCfg, serverType, spExtraMsgs, spExtraApps, spCopyDataFlag, callbackHandler, feature, null);
     }
 
-    public static void startSPWithIDPServer(String spServer, String spServerCfg, String serverType, List<String> spExtraMsgs, List<String> spExtraApps, Boolean spCopyDataFlag, String callbackHandler, String feature, ShibbolethHelpers.ShibbolethServerVars[] shibbolethVars) throws Exception {
+    public static void startSPWithIDPServer(String spServer, String spServerCfg, String serverType, List<String> spExtraMsgs, List<String> spExtraApps, Boolean spCopyDataFlag,
+                                            String callbackHandler, String feature, ShibbolethHelpers.ShibbolethServerVars[] shibbolethVars) throws Exception {
 
         copyMetaData = false;
-        testIDPServer = commonSetUp("com.ibm.ws.security.saml.sso-2.0_fat.shibboleth", "server_orig.xml", SAMLConstants.SAML_ONLY_SETUP, SAMLConstants.IDP_SERVER_TYPE, null, null, SAMLConstants.SKIP_CHECK_FOR_SECURITY_STARTED);
+        testIDPServer = commonSetUp("com.ibm.ws.security.saml.sso-2.0_fat.shibboleth", "server_orig.xml", SAMLConstants.SAML_ONLY_SETUP, SAMLConstants.IDP_SERVER_TYPE, null, null,
+                                    SAMLConstants.SKIP_CHECK_FOR_SECURITY_STARTED);
         copyMetaData = spCopyDataFlag;
         testSAMLServer = commonSetUp(spServer, spServerCfg, SAMLConstants.SAML_ONLY_SETUP, serverType, spExtraApps, spExtraMsgs, callbackHandler, feature);
 
@@ -1103,14 +1134,18 @@ public class SAMLCommonTest extends CommonTest {
         setActionsForFlowType(flowType);
     }
 
-    public static void start2SPWithIDPServer(String spServer, String spServerCfg, String spServer2, String spServer2Cfg, String serverType, List<String> spExtraMsgs, List<String> spExtraApps, Boolean spCopyDataFlag, String callbackHandler, String feature) throws Exception {
+    public static void start2SPWithIDPServer(String spServer, String spServerCfg, String spServer2, String spServer2Cfg, String serverType, List<String> spExtraMsgs,
+                                             List<String> spExtraApps, Boolean spCopyDataFlag, String callbackHandler, String feature) throws Exception {
         start2SPWithIDPServer(spServer, spServerCfg, spServer2, spServer2Cfg, serverType, spExtraMsgs, spExtraApps, spCopyDataFlag, callbackHandler, feature, null);
     }
 
-    public static void start2SPWithIDPServer(String spServer, String spServerCfg, String spServer2, String spServer2Cfg, String serverType, List<String> spExtraMsgs, List<String> spExtraApps, Boolean spCopyDataFlag, String callbackHandler, String feature, ShibbolethHelpers.ShibbolethServerVars[] shibbolethVars) throws Exception {
+    public static void start2SPWithIDPServer(String spServer, String spServerCfg, String spServer2, String spServer2Cfg, String serverType, List<String> spExtraMsgs,
+                                             List<String> spExtraApps, Boolean spCopyDataFlag, String callbackHandler, String feature,
+                                             ShibbolethHelpers.ShibbolethServerVars[] shibbolethVars) throws Exception {
 
         copyMetaData = false;
-        testIDPServer = commonSetUp("com.ibm.ws.security.saml.sso-2.0_fat.shibboleth", "server_orig.xml", SAMLConstants.SAML_ONLY_SETUP, SAMLConstants.IDP_SERVER_TYPE, null, null, SAMLConstants.SKIP_CHECK_FOR_SECURITY_STARTED);
+        testIDPServer = commonSetUp("com.ibm.ws.security.saml.sso-2.0_fat.shibboleth", "server_orig.xml", SAMLConstants.SAML_ONLY_SETUP, SAMLConstants.IDP_SERVER_TYPE, null, null,
+                                    SAMLConstants.SKIP_CHECK_FOR_SECURITY_STARTED);
         copyMetaData = spCopyDataFlag;
         testSAMLServer = commonSetUp(spServer, spServerCfg, SAMLConstants.SAML_ONLY_SETUP, serverType, spExtraApps, spExtraMsgs, callbackHandler, feature);
         testSAMLServer2 = commonSetUp(spServer2, spServer2Cfg, SAMLConstants.SAML_ONLY_SETUP, serverType, spExtraApps, spExtraMsgs, callbackHandler, feature);
@@ -1165,12 +1200,11 @@ public class SAMLCommonTest extends CommonTest {
         return extraMsgs;
     }
 
-
     /**
      * JakartaEE9 transform a list of applications.
      *
      * @param myServer The server to transform the applications on.
-     * @param apps     The names of the applications to transform. Should include the path from the server root directory.
+     * @param apps The names of the applications to transform. Should include the path from the server root directory.
      */
     private static void transformApps(LibertyServer myServer, String... apps) {
         if (JakartaEE9Action.isActive()) {

@@ -1,1 +1,1 @@
-DROP TABLE ${schemaname}.SimpleExample;
+DROP TABLE SimpleExample;

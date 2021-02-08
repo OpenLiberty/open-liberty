@@ -8,6 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+
 configurations {
   jpaFatTools
 }
@@ -27,7 +28,6 @@ task addJPAFATTools (type: Copy) {
 addRequiredLibraries {
   dependsOn copyJdbcDrivers
   dependsOn copyDatabaseRotationDrivers
-  dependsOn copyFattestDatabases
   dependsOn addJakartaTransformer
   dependsOn addJPAFATTools
 }

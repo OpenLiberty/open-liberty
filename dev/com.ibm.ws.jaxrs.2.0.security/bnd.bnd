@@ -29,7 +29,8 @@ Import-Package: \
   javax.net.ssl.*, \
   com.ibm.wsspi.ssl, \
   com.ibm.wsspi.kernel.service.utils, \
-  com.ibm.ws.jaxrs20.api
+  com.ibm.ws.jaxrs20.api, \
+  com.ibm.ws.ffdc
   
 # If you need use MESSAGE, you must enable this Private-Package, or message will translate wrong
 Private-Package:\

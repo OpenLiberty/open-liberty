@@ -9,122 +9,11 @@ TABLE OF CONTENTS
 THE REMAINDER OF THIS IBM NOTICES FILE CONSISTS OF THE FOLLOWING 
 SECTIONS:
 
-CC-BY-3.0  
-CC-BY-4.0  
-CC-BY-SA-4.0  
-GPL V2  
-SIL OPEN FONT LICENSE 1.1  
-
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-CREATIVE COMMONS ATTRIBUTION 3.0 GENERIC
-
-The Program includes some or all of the following works licensed under
-the Creative Commons.
-The url to the license is https://creativecommons.org/licenses/by/3.0/legalcode
-
-SPDX-EXCEPTIONS
-(https://registry.npmjs.org/spdx-exceptions/-/spdx-exceptions-2.2.0.tgz)
-GODOCS [btoa] (https://github.com/node-browser-compat/btoa/tree/v1.1.2),
-SPDX STANDARD [spdx-expression-parse] (http://registry.npmjs.org/spdx-expression-parse/-/spdx-expression-parse-1.0.4.tgz)
-
-END OF CREATIVE COMMONS ATTRIBUTION 3.0 GENERIC NOTICES AND INFORMATION
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-CREATIVE COMMONS ATTRIBUTION 4.0 GENERIC
-
-The Program includes some or all of the following works licensed under
-the Creative Commons.
-The url to the license is https://creativecommons.org/licenses/by/4.0/legalcode
-
-INLINE-STYLE-PREFIXER DOCUMENTATION [inline-style-prefixer] 
-(http://registry.npmjs.org/inline-style-prefixer/-/inline-style-prefixer-3.0.8.tgz)
-
-END OF CREATIVE COMMONS ATTRIBUTION 4.0 GENERIC NOTICES AND INFORMATION
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-CREATIVE COMMONS ATTRIBUTION SHARE ALIKE 4.0 GENERIC
-
-The Program includes some or all of the following works licensed under
-the Creative Commons.
-The url to the license is https://creativecommons.org/licenses/by-sa/4.0/legalcode
-
-GLOB'S LOGO [Glob] (http://registry.npmjs.org/glob/-/glob-7.1.4.tgz)
-
-END OF CREATIVE COMMONS ATTRIBUTION SHARE ALIKE 4.0 GENERIC NOTICES AND INFORMATION
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-GNU GENERAL PUBLIC LICENSE, VERSION 2
-
-The Program includes some or all of the following licensed to you as
-Separately Licensed Code under the GNU General Public License. For copies
-of the source code for this software, send an email to alanl@us.ibm.com
-identifying the IBM product and the GPL-licensed program for which you
-are requesting the source code
-
-GETPIDS [Arjuna]
-
-END OF GNU GENERAL PUBLIC LICENSE, VERSION 2 NOTICES AND INFORMATION
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-SIL OPEN FONT LICENSE 1.1
-
-The Program includes some or all of the following works licensed under
-the SIL OPEN FONT LICENSE 1.1
-
-FONT-AWESOME [weld]
-IBM PLEX
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of the font software, to use, study, copy, merge, embed, 
-modify, redistribute, and sell modified and unmodified copies of the font software, subject to the following conditions:
-
-1) Neither the font software nor any of its individual components, in original or modified versions, may be sold by itself.
-
-2) Original or modified versions of the font software may be bundled, redistributed and/or sold with any software, provided that each 
-copy contains the above copyright notice and this license. These can be included either as stand-alone text files, human-readable headers 
-or in the appropriate machine-readable metadata fields within text or binary files as long as those fields can be easily viewed by the user.
-
-3) No modified version of the font software may use the Reserved Name(s) or combinations of Reserved Names with other words unless explicit 
-written permission is granted by the ParaType. This restriction only applies to the primary font name as presented to the users.
-
-4) The name of ParaType or the author(s) of the font software shall not be used to promote, endorse or advertise any modified version, except 
-to acknowledge the contribution(s) of ParaType and the author(s) or with explicit written permission of ParaType.
-
-5) The font software, modified or unmodified, in part or in whole, must be distributed entirely under this license, and must not be distributed 
-under any other license. The requirement for fonts to remain under this license does not apply to any document created using the Font Software.
-
-TERMINATION & TERRITORY
-This license has no limits on time and territory, but it becomes null and void if any of the above conditions are not met.
-
-DISCLAIMER
-THE FONT SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO ANY WARRANTIES OF 
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT OF COPYRIGHT, PATENT, TRADEMARK, OR OTHER RIGHT. IN NO EVENT SHALL 
-PARATYPE BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, INCLUDING ANY GENERAL, SPECIAL, INDIRECT, INCIDENTAL, OR CONSEQUENTIAL DAMAGES, 
-WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF THE USE OR INABILITY TO USE THE FONT SOFTWARE OR FROM OTHER DEALINGS 
-IN THE FONT SOFTWARE.
-
-
-END OF SIL OPEN FONT LICENSE 1.1 LICENSE NOTICES AND INFORMATION
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-END OF OPEN LIBERTY NOTICES AND INFORMATION FOR EXCLUDED COMPONENTS
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-Open Liberty @LIBERTY_VERSION@ DOCKER NOTICES AND INFORMATION 
-
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-
-TABLE OF CONTENTS
-
-THE REMAINDER OF THIS IBM NOTICES FILE CONSISTS OF THE FOLLOWING 
-SECTIONS:
-
 APACHE V1.1
 APACHE V2
 BSD  
 BSD + FB PATENTS FILE 
+BSD + GOOGLE PATENTS FILE
 BSD-EQUIVALENT  
 CDDL V1  
 CPL  
@@ -133,7 +22,7 @@ EPL
 EPL V2  
 ISC  
 JDOM
-LGPL V2 
+LGPL V2   
 LGPL V2.1  
 MIT  
 MPL V1.1  
@@ -151,6 +40,10 @@ under the Apache License Version 1.1:
 
 SERVLET-API
 COMMONS-EL
+INTERPOLATORFILTERREADER.JAVA [Plexus-Interpolation]
+ORG.CODEHAUS.PLEXUS.UTIL [Plexus-Utils]
+ORG.CODEHAUS.PLEXUS.UTIL.XML.PULL [Plexus-Utils]
+
 
 This product includes software developed by the Apache Software 
 Foundation (http://www.apache.org/).
@@ -350,6 +243,56 @@ GOOGLEAPIS [grpc-java]
 OKHTTP [grpc-java]
 CHECKSTYLE [grpc-java]
 NETTY [grpc-java]
+OPENSSL.JAVA [Plexus-Cipher]
+PRETTIFY.JS [logback]
+BASE64 [Plexus-Cipher]
+ XML-APIS
+COMMONS-IO, 
+COMMONS-LANG,
+ BZIP2 [bcpkix-jdk15on]
+ NETTY-TCNATIVE-BORINGSSL-STATIC
+ PLEXUS-INTERPOLATION,
+TCNATIVE [netty-all], 
+OPTIONS, COMMONS-LOGGING, 
+PLEXUS-SEC-DISPATCHER,
+BASE64.JAVA [Plexus-Cipher],
+ OKHTTP, LOG4J-OVER-SLF4J 1.7.25 [SLF4J],
+XMLSEC
+PLEXUS-COMPONENT-ANNOTATIONS, BOOTSTRAP V2.3.1
+[retrofit], 
+WOODSTOX-CORE-ASL, 
+JQUERY MAVEN ARTIFACT PLUGIN V1.0.1
+[retrofit], 
+SPRING FRAMEWORK, RETROFIT, 
+OKIO, HTTPCOMPONENTS HTTPCLIENT,
+XERCESIMPL, DOMPURIFY, 
+SPRING-EXTENSIONS,
+ AMQP-CLIENT, GUICE,
+SNAPPY-JAVA, JACKSON-ANNOTATIONS,
+ WAGON, SERIALIZER, 
+BOOTSTRAP [Log4j],
+OPENSAML, 
+LICENSE_HEADER [DOMPurify]
+JACKSON, SWAGGER-CLIENT,
+ HTTP2 [netty-all], 
+JETTY [logback], 
+BASE64CODER [snakeyaml], 
+BYTE64.JAVA [Plexus-Cipher], 
+VELOCITY, 
+SHIBBOLETH-IDENTITY-PROVIDER,
+NETTY-ALL, 
+PLEXUS-CIPHER, 
+APACHE MAVEN, 
+PLEXUS-UTILS,
+ MIMETYPE [Spring
+Framework],
+ XALAN-J, 
+GEOIP2, 
+GUAVA, 
+PLEXUS-CLASSWORLDS, 
+SNAKEYAML,
+SWAGGER-UI
+
 
 Apache License
 Version 2.0, January 2004
@@ -607,6 +550,25 @@ Hamcrest  All rights reserved. )
 PUREJAVACRC32C [Commons-Codec] (Copyright (c) 2004-2006 Intel Corportation)
 STAX2-API (Copyright (c) 2006- Tatu Saloranta, tatu.saloranta@iki.fi)
 JCRAFT JSCH [Spring Framework] (Copyright (c) 2002-2015 Atsuhiko Yamanaka, JCraft,Inc.)
+BUBBLEBABBLE.JAVA. [jruby-core] (Copyright (c) 2010,2011 Damien
+Miller.), HOIST-NON-REACT-STATICS (Copyright (c) 2015  Yahoo! Inc. All
+rights reserved.), OGNL (Copyright (c) 1998-2004, Drew Davidson and Luke
+Blanshard All rights reserved), QS (Copyright (c) 2014  Nathan
+LaFreniere and other
+[contributors](https://github.com/ljharb/qs/graphs/contributors)), ANTLR
+(Copyright (c) 2012 Terence Parr and Sam Harwell),
+WEBSOCKER07FRAMEDECODER.JAVA [netty-all] (Copyright (c) 2011, Joe Walnes
+and contributors. All rights reserved.), REDUX-IMMUTABLE (Copyright (c)
+2016 Gajus Kuizinas (http://gajus.com/)), SHA.JS (Copyright (c)
+2013-2018 sha.js contributorsCopyright (c) 1998 - 2009  Paul Johnston &
+Contributors), JAVOLUTION (BSD 2 CLAUSE) [Plexus-Utils] (Copyright (c)
+2006, Javolution), SNAPPY [Snappy-Java] (Copyright (c) 2004-2006 Intel
+Corportation), JAVOLUTION JAVOLUTION.LICENSE.TXT [Plexus-Utils]
+(Copyright (c) 2006, Javolution), STAX2-API (Copyright (c) 2006- Tatu
+Saloranta, tatu.saloranta@iki.fi), ASM [sisu.inject] (Copyright (c)
+2000-2011 INRIA, France Telecom All rights reserved.), COMMONS-COMPILER
+(Copyright (c) 2016, Arno Unkrig), READLINE (Not Specified), IEEE754
+(Copyright 2008 Fair Oaks Labs  Inc.)
 CRYPTOJS [OpenLiberty] ((c) 2009-2013 by Jeff Mott)
 
 
@@ -736,6 +698,41 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 END OF BSD + FB PATENTS FILE LICENSE NOTICES AND INFORMATION
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+BSD + GOOGLE PATENTS FILE
+
+The Program includes some or all of the following works licensed under
+the BSD + GOOGLE PATENTS FILE
+
+WEB-APP_2_3.DTD [logback]
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are
+met:
+
+   * Redistributions of source code must retain the above copyright
+notice, this list of conditions and the following disclaimer.
+   * Redistributions in binary form must reproduce the above
+copyright notice, this list of conditions and the following disclaimer
+in the documentation and/or other materials provided with the
+distribution.
+   * Neither the name of Google Inc. nor the names of its
+contributors may be used to endorse or promote products derived from
+this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+END OF BSD + GOOGLE PATENTS FILE NOTICES AND INFORMATION INFORMATION
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 BSD-EQUIVALENT
 
 The Program includes ASM taken under the following license
@@ -840,6 +837,12 @@ IMPL
 GLASSFISH [myfaces-impl]
 (https://repo1.maven.org/maven2/org/apache/myfaces/core/myfaces-impl/3.0.0-RC1/)
 
+GMBAL-API-ONLY
+(http://central.maven.org/maven2/org/glassfish/gmbal/gmbal-source/3.0.0-b023/),
+JAVAX.ACTIVATION
+(http://repo1.maven.org/maven2/org/eclipse/jetty/orbit/javax.activation/1.1.0.v201105071233/javax.activation-1.1.0.v201105071233-sources.jar)
+
+
 END OF COMMON DEVELOPMENT AND DISTRIBUTION LICENSE NOTICES AND INFORMATION
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -850,6 +853,8 @@ under the Common Public License (source code available via the indicated
 URL):
 
 WSDL4J [Apache CXF] (https://github.com/apache/cxf/tree/cxf-2.6.2)
+OCSP [jruby-openssl] (http://www.eclipse.org/legal/cpl-v10.html)
+
 
 END OF COMMON PUBLIC LICENSE NOTICES AND INFORMATION
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -1083,7 +1088,19 @@ JBOSS-JAXRS-API_2.1_SPEC
 (https://github.com/jboss/jboss-jakarta-jaxrs-api_spec/releases/tag/jboss-jaxrs-api_2.1_spec-2.0.1.Final),
 JAVA PERSISTENCE API (JPA)
 (https://github.com/eclipse-ee4j/jpa-api/tree/3.0-3.0.0-RELEASE)
-
+SISU.PLEXUS
+(https://github.com/eclipse/sisu.plexus/tree/milestones/0.3.0.M1),
+ADDRESS.JAVA [Hibernate] (Not Required), ECPRIVATEKEYWITHNAME
+[jruby-openssl] (http://www.eclipse.org/legal/epl-v10.html),
+HIBERNATE-JPA-2.1-API (https://github.com/hibernate/hibernate-jpa-api),
+JRUBY-CORE
+(http://central.maven.org/maven2/org/jruby/jruby-core/1.7.26/jruby-core-1.7.26-sources.jar),
+SISU.INJECT
+(central.maven.org/maven2/org/eclipse/sisu/org.eclipse.sisu.inject/0.3.3/org.eclipse.sisu.inject-0.3.3-sources.jar),
+JRUBY-OPENSSL (https://github.com/jruby/jruby-openssl/tree/v0.9.19),
+AETHER (http://mvnrepository.com/artifact/org.eclipse.aether), LOGBACK
+(https://logback.qos.ch/dist/), MCHANGE-COMMONS-JAVA
+(https://github.com/swaldman/mchange-commons-java/archive/mchange-commons-java-0.2.15.zip)
 
 END OF ECLIPSE PUBLIC LICENSE, VERSION 1 NOTICES AND INFORMATION
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -1167,6 +1184,11 @@ SET-BLOCKING (Copyright (c) 2016 Contributors)
 SETPROTOTYPEOF (Copyright (c) 2015 Wes Todd)
 DETECT-NODE (Copyright (c) 2017 Ilya Kantor)
 ANYMATCH (Copyright (c) 2014 Elan Shanker)
+EXT (Copyright (c) 2011-2019, Mariusz Nowak, @medikoo, medikoo.com),
+MEMOIZEE (Copyright (c) 2012-2018 Mariusz Nowak @medikoo medikoo.com),
+NEXT-TICK (Copyright (c) 2012-2020 Mariusz Nowak @medikoo medikoo.com),
+TYPE (Copyright (c) 2019-2020  Mariusz Nowak  @medikoo  medikoo.com)
+es5-ext (Copyright (c) 2011-2019  Mariusz Nowak  @medikoo  medikoo.com)
 
 
 ISC License
@@ -1269,6 +1291,8 @@ LRA-PROXY-API
 LRA-COORDINATOR
 NARAYANA-COMMON
 LRA-CLIENT
+EAGERLOADING.HBM.XML [Hibernate]
+
 
                   GNU LIBRARY GENERAL PUBLIC LICENSE
                        Version 2, June 1991
@@ -1723,6 +1747,13 @@ XMLHTTPREQUEST [Esprima (node)]
 librhsm 
 libdnf
 RESTEASYPROVIDERFACTORYDELEGATE [JBoss RESTEasy]
+
+INFINISPAN [Hibernate]
+CHECKSTYLE-EVENTUAL.XML [Hibernate]
+RESOURCES [Hibernate]
+ HIBERNATE
+ HIBERNATE-OSGI [Hibernate]
+HIBERNATE-COMMONS-ANNOTATIONS
 
                   GNU LESSER GENERAL PUBLIC LICENSE
                        Version 2.1, February 1999
@@ -2682,6 +2713,101 @@ Investigative Reporters & Editors), JSON-EDITOR [wiremock-standalone]
 ((c) 2005, 2012 jQuery Foundation, Inc), BUFFER [wiremock-standalone]
 (Author: Feross Aboukhadijeh <feross@feross.org), ES5-SHIM
 [wiremock-standalone] (Copyright 2009-2015 by contributors)
+REACT-DOM (Copyright (c) 2013-present Facebook Inc.),
+GENERATEDVALUES.HTML [Hibernate] (Not Required), NORMALIZE.CSS
+[swagger-ui] (Copyright © Nicolas Gallagher and Jonathan Neal.), LODASH
+(Copyright OpenJS Foundation and other contributors
+<https://openjsf.org/>Copyright and related rights for sample code are
+waived via CC0. Sample), FORM-DATA (Copyright (c) 2012 Felix
+Geisendörfer (felix@debuggable.com) and contributors),
+INTEUCLIDEANTEST.JAVA [bcprov-jdk15on] (Copyright (c) 2011 Tim Buktu
+(tbuktu@hotmail.com)), IS-DOM (Copyright (c) 2014), REACT [swagger-ui]
+(Copyright (c) Facebook, Inc. and its affiliates.), BTOA (Copyright
+2012-2018 AJ ONeal), REACT V16.8.6. [swagger-ui] (Copyright (c)
+Facebook, Inc. and its affiliates.), UNICODENORMALIZER [es5-ext]
+(Copyright (c) 2008 Matsuza), CROSS-FETCH (Copyright (c) 2017 Leonardo
+Quixadá), VAPORJS [cross-fetch] (Copyright (c) 2010 Thomas Fuchs),
+BABEL-RUNTIME (No copyright), CREATE-REACT-CLASS (Copyright (c)
+2013-present Facebook Inc.), BUFFER (Copyright (c) Feross Aboukhadijeh
+and other contributors.), LODASH-ES (Copyright OpenJS Foundation and
+other contributors <https://openjsf.org/>Copyright and related rights
+for sample code are waived via CC0. Sample), REACT-INSPECTOR (Copyright
+(c) 2017 Xiaoyi Chen), AUTOLINKER.JS 0.28.1 [swagger-ui] (Copyright (c)
+2016 Gregory Jacobs <greg@greg-jacobs.com>), BUFFER.JS [swagger-ui]
+(Copyright (c) Feross Aboukhadijeh, and other contributors.),
+OLY1305-DONNA [bcprov-jdk15on] (by Andrew M (@floodyberry)), RECURSIVE
+OBJECT EXTENDING. [swagger-ui] (Copyright (c) 2013-2018 Viacheslav
+Lotsmanov.), COOKIE (Copyright (c) 2012-2014 Roman Shtylman
+<shtylman@gmail.com>Copyright (c) 2015 Douglas Christopher Wilson
+<doug@somethingdoug.com>), SLF4J (Copyright (c) 2004-2017 QOS.ch All
+rights reserved.), QUERYSTRINGIFY (Copyright (c) 2015 Unshift.io Arnout
+Kazemier the Contributors.), CORE-JS-PURE (Copyright (c) 2014-2021 Denis
+Pushkarev), SIZZLE.JS [Log4j] (Copyright 2011, The Dojo Foundation),
+HTML5 SHIV V3.6.2PRE [retrofit] (Copyright (C) 2012 Square, Inc.),
+ENCODING (Copyright (c) 2012-2014 Andris Reinman), CLASSNAMES
+[swagger-ui] (Copyright (c) 2017 Jed Watson.), JS-FILE-DOWNLOAD
+(Copyright 2017 Kenneth Jiang), ASYNCKIT (Copyright (c) 2016 Alex
+Indigo), NODE-FETCH (Copyright (c) 2016 David Frank), MODERNIZR 3.0.0PRE
+[swagger-ui] (Copyright © 2009-2018.), REGENERATOR-RUNTIME (Copyright
+(c) 2014-present  Facebook  Inc.), REPEAT-STRING [swagger-ui] (Copyright
+(c) 2014-2015, Jon Schlinkert. An Approved license.), LOGGING
+[netty-all] (Copyright (c) 2004-2011 QOS.ch. All rights reserved.),
+OBJECT-ASSIGN [swagger-ui] (Copyright c) Sindre Sorhus), UA-PARSER-JS
+(Copyright (c) 2012-2019 Faisal Salman <<f@faisalman.com>>),
+ISOMORPHIC-FORM-DATA (Copyright (c) 2012 Felix Geisend√∂rfer
+(felix@debuggable.com) and contributors), WEBSOCKETX [netty-all]
+(Copyright (c) 2009 Carl Bystršm), OPERATINGSYSTEMUTILS.JAVA
+[Plexus-Interpolation] (Copyright (c) 2004, The Codehaus),
+UNIXCRYPT.JAVA [Jetty] (Copyright 1996 Aki Yoshida, modified April 2001
+by Iris Van den Broeke, Daniel Deville.), JOPT-SIMPLE (Copyright (c)
+2004-2015 Paul R. Holser, Jr.), @BABEL/RUNTIME-COREJS2 (Copyright (c)
+2014-present Sebastian McKenzie and other contributors),
+REACT-DEBOUNCE-INPUT (Copyright (c) 2016 Nik Butenko), ESCAPE-HTML (*
+Copyright (c) 2012-2013 TJ Holowaychuk * Copyright (c) 2015 Andreas
+Lubbe * Copyright (c) 2015 Tiancheng "Timothy" Gu), NETSCAPECERTREQUEST
+[jruby-openssl] (Copyright (c) 2000-2014 The Legion of the Bouncy Castle
+Inc. (http://www.bouncycastle.org)), JQUERY [Log4j] (Copyright (c) 2011
+John Resig, http://jquery.com/), LOGBACK [SLF4J] (Copyright (c) 2011
+John Resig), IS-WINDOW (Copyright (c) 2016 W.Y.), CORE-JS (Copyright (c)
+2014-2020 Denis Pushkarev), MIME-TYPES (Copyright (c) 2014 Jonathan Ong
+<me@jongleberry.com>Copyright (c) 2015 Douglas Christopher Wilson
+<doug@somethingdoug.com>), @KYLESHOCKEY/XML (Copyright (c) 2011-2017
+Dylan Greene <dylang@gmail.com>), MIME-DB (Copyright (c) 2014 Jonathan
+Ong me@jongleberry.com), MODERNIZR 3.0.0PRE. [swagger-ui] (Copyright (c)
+2009-2018.), RECURSIVE OBJECT EXTENDING (Copyright (c) 2013-2018
+Viacheslav Lotsmanov), SMOOTH SCROLL - V1.4.10 [retrofit] (Copyright (c)
+2013 Karl Swedberg), BASE64-JS (Copyright (c) 2014 Jameson Little),
+OBJECTSUPPORT [jruby-openssl] (Copyright 2014 Karol Bucek),
+@BRAINTREE/SANITIZE-URL (Copyright (c) 2017 Braintree), FPM (Copyright
+(c) 2011,2012,2013 Jordan Sissel and contributors.),
+REACT-IMMUTABLE-PURE-COMPONENT (Copyright (c) 2017 Piotr Tomasz
+Monarski), FAST-JSON-PATCH (Copyright (c) 2013 2014 Joachim Wester),
+MODERNIZR [swagger-ui] (Copyright © 2009-2018.), NODE.JS BUFFER MODULE
+[swagger-ui] (Copyright (c) Feross Aboukhadijeh, and other
+contributors.), NORMALIZE.CSS V7.0.0 [swagger-ui] (Copyright (c) Nicolas
+Gallagher and Jonathan Neal.), JS-YAML (Copyright (C) 2011-2015 by
+Vitaly Puzrin), AUTOLINKER.JS [swagger-ui] (Copyright(c) 2016 Gregory
+Jacobs <greg@greg-jacobs.com>.), ICONV-LITE (Copyright (c) 2011
+Alexander Shtuchkin), JONI (Copyright 2013 enebo), REACT-IS (Copyright
+(c) Facebook  Inc. and its affiliates.), JSDOM/LIVING/BLOB.JS
+[node-fetch] (Copyright (c) 2010 Elijah Insua), RANDOMBYTES (Copyright
+(c) 2017 crypto-browserify), IS-OBJECT (Copyright (c) 2013 Colingo.),
+SPYMEMCACHED (Copyright (c) 2006-2009  Dustin Sallings Copyright (c)
+2009-2011  Couchbase, Inc.), SERIALIZE-ERROR (Copyright (c) Sindre
+Sorhus <sindresorhus@gmail.com> (sindresorhus.com)), READABLE-STREAM
+(Copyright Node.js contributors. All rights reserved.Copyright Joyent 
+Inc. and other Node contributors. All rights reserved.), RESELECT
+(Copyright (c) 2015-2016 Reselect Contributors), BASE CODE SET
+[Readable-stream] (Copyright Joyent, Inc.), WHATWG-FETCH (Copyright (c)
+2014-2016 GitHub Inc.), FAST-DEEP-EQUAL (Copyright (c) 2017 Evgeny
+Poberezkin), UTF8-DECODER [netty-all] (Copyright (c) 2008-2009 Bjoern
+Hoehrmann <bjoern@hoehrmann.de>), UNDERSCORE.JS 1.8.3 [lodash-es]
+(Copyright Jeremy Ashkenas, DocumentCloud and Investigative Reporters),
+IS-PROMISE (Copyright (c) 2014 Forbes Lindesay), JSON-PATCH [swagger-ui]
+(Copyright (c) 2017 Joachim Wester.), YECHT (Copyright (c) 2009-2010 Ola
+Bini), SAFE-BUFFER (Copyright (c) Feross Aboukhadijeh), bcpkix-jdk15on
+(Copyright Bouncy Castle), bcprov-jdk15on (No copyright)
+
 
 Permission is hereby granted, free of charge, to any person obtaining a 
 copy of this software and associated documentation files (the 
@@ -2802,6 +2928,44 @@ PROVIDED that all such works include the notice below. HOWEVER, the
 publication of derivative works of this document for use as a technical
 specification is expressly prohibited.
 
+OASIS [OpenSAML]
+
+ * Copyright [2005] [University Corporation for Advanced Internet Development, Inc.]
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+
+
+package org.codehaus.plexus.util.xml.pull [Plexus-Utils]
+
+XMLPULL API IS FREE
+-------------------
+
+All of the XMLPULL API source code, compiled code, and documentation 
+contained in this distribution *except* for tests (see separate LICENSE_TESTS.txt)
+are in the Public Domain.
+
+XMLPULL API comes with NO WARRANTY or guarantee of fitness for any purpose.
+
+
+ws-policy.xsd [OpenSAML]
+
+ Copyright © 2006 World Wide Web Consortium,
+   (Massachusetts Institute of Technology, European Research Consortium for
+   Informatics and Mathematics, Keio University). All Rights Reserved. This
+   work is distributed under the W3C® Software License [1] in the hope that
+   it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+   warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
 END OF UNIQUE LICENSE NOTICES AND INFORMATION
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -2815,6 +2979,19 @@ WS-ADDR-WSDL.XSD [Apache CXF]
 XENC-SCHEMA [Apache CXF]
 SOAP ENVELOPE [OpenWS]
 XML SCHEMA [xmlsec]
+XMLDSIG-CORE-SCHEMA.DTD (XMLSEC) [xmlsec]
+README.DOM.TXT [XML-APIs],
+DOM [XercesImpl]
+SOAP-ENVELOPE [OpenSAML]
+DOM/* [XML-APIs],
+XMLDSIG-CORE-SCHEMA.DTD [xmlsec]
+ XPATHSTYLESHEETDOM3EXCEPTION. [serializer]
+XPATHSTYLESHEETDOM3EXCEPTION.JAVA [serializer]
+XPATH [serializer]
+SAC [XML-APIs]
+SIMPLE API FOR CSS [XML-APIs]
+XML SCHEMA [xmlsec]
+DOM3 [XercesImpl]
 
 W3C® SOFTWARE NOTICE AND LICENSE
 
@@ -2872,9 +3049,148 @@ holders.
 END OF W3C SOFTWARE LICENSE NOTICES AND INFORMATION
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-END OF OPEN LIBERTY DOCKER NOTICES AND INFORMATION FOR EXCLUDED COMPONENTS
+END OF OPEN LIBERTY @LIBERTY_VERSION@ NOTICES AND INFORMATION 
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+OPEN LIBERTY DOCKER @LIBERTY_VERSION@ NOTICES AND INFORMATION FOR EXCLUDED COMPONENTS
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+TABLE OF CONTENTS
+
+THE REMAINDER OF THIS IBM NOTICES FILE CONSISTS OF THE FOLLOWING 
+SECTIONS:
+
+CC-BY-3.0  
+CC-BY-4.0  
+CC-BY-SA-4.0  
+GPL V2   
+GPL V3   
+REDHAT UNIVERSAL BASE IMAGE v 8.3 (Maipo)
+SIL OPEN FONT LICENSE 1.1  
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+CREATIVE COMMONS ATTRIBUTION 3.0 GENERIC
+
+The Program includes some or all of the following works licensed under
+the Creative Commons.
+The url to the license is https://creativecommons.org/licenses/by/3.0/legalcode
+
+SPDX-EXCEPTIONS
+(https://registry.npmjs.org/spdx-exceptions/-/spdx-exceptions-2.2.0.tgz)
+GODOCS [btoa] (https://github.com/node-browser-compat/btoa/tree/v1.1.2),
+SPDX STANDARD [spdx-expression-parse] (http://registry.npmjs.org/spdx-expression-parse/-/spdx-expression-parse-1.0.4.tgz)
+GODOCS [btoa] (http://registry.npmjs.org/btoa/-/btoa-1.2.1.tgz)
+
+END OF CREATIVE COMMONS ATTRIBUTION 3.0 GENERIC NOTICES AND INFORMATION
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+CREATIVE COMMONS ATTRIBUTION 4.0 GENERIC
+
+The Program includes some or all of the following works licensed under
+the Creative Commons.
+The url to the license is https://creativecommons.org/licenses/by/4.0/legalcode
+
+INLINE-STYLE-PREFIXER DOCUMENTATION [inline-style-prefixer] 
+(http://registry.npmjs.org/inline-style-prefixer/-/inline-style-prefixer-3.0.8.tgz)
+
+END OF CREATIVE COMMONS ATTRIBUTION 4.0 GENERIC NOTICES AND INFORMATION
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+CREATIVE COMMONS ATTRIBUTION SHARE ALIKE 4.0 GENERIC
+
+The Program includes some or all of the following works licensed under
+the Creative Commons.
+The url to the license is https://creativecommons.org/licenses/by-sa/4.0/legalcode
+
+GLOB'S LOGO [Glob] (http://registry.npmjs.org/glob/-/glob-7.1.4.tgz)
+MESSAGE.PROPERTIES [shibboleth-identity-provider]
+(https://shibboleth.net/downloads/identity-provider/latest3/)
+
+
+END OF CREATIVE COMMONS ATTRIBUTION SHARE ALIKE 4.0 GENERIC NOTICES AND INFORMATION
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+GNU GENERAL PUBLIC LICENSE, VERSION 2
+
+The Program includes some or all of the following licensed to you as
+Separately Licensed Code under the GNU General Public License. For copies
+of the source code for this software, send an email to alanl@us.ibm.com
+identifying the IBM product and the GPL-licensed program for which you
+are requesting the source code
+
+GETPIDS [Arjuna]
+
+END OF GNU GENERAL PUBLIC LICENSE, VERSION 2 NOTICES AND INFORMATION
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+GNU GENERAL PUBLIC LICENSE, VERSION 3
+
+The Program includes some or all of the following licensed to you as
+Separately Licensed Code under the GNU General Public License. For copies
+of the source code for this software, send an email to alanl@us.ibm.com
+identifying the IBM product and the GPL-licensed program for which you
+are requesting the source code
+
+Ubuntu (main) 16.04
+AdoptOpenJDK binaries for Eclipse OpenJ9 jdk-11.0.8*
+
+END OF GNU GENERAL PUBLIC LICENSE, VERSION 3 NOTICES AND INFORMATION
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+REDHAT UNIVERSAL BASE IMAGE v 8.3 (Maipo)
+
+RedHAT UBI v8 has been taken under EULA > https://www.redhat.com/licenses/eulas
+
+The Program maybe provided with third party software programs subject to their own
+license terms.  The license terms either accompany the third party software programs or,
+in some instances, maybe viewed at : https://access.redhat.com/containers/
+
+END OF REDHAT UBI LICENSE NOTICES AND INFORMATION
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+SIL OPEN FONT LICENSE 1.1
+
+The Program includes some or all of the following works licensed under
+the SIL OPEN FONT LICENSE 1.1
+
+FONT-AWESOME [weld]
+IBM PLEX
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of the font software, to use, study, copy, merge, embed, 
+modify, redistribute, and sell modified and unmodified copies of the font software, subject to the following conditions:
+
+1) Neither the font software nor any of its individual components, in original or modified versions, may be sold by itself.
+
+2) Original or modified versions of the font software may be bundled, redistributed and/or sold with any software, provided that each 
+copy contains the above copyright notice and this license. These can be included either as stand-alone text files, human-readable headers 
+or in the appropriate machine-readable metadata fields within text or binary files as long as those fields can be easily viewed by the user.
+
+3) No modified version of the font software may use the Reserved Name(s) or combinations of Reserved Names with other words unless explicit 
+written permission is granted by the ParaType. This restriction only applies to the primary font name as presented to the users.
+
+4) The name of ParaType or the author(s) of the font software shall not be used to promote, endorse or advertise any modified version, except 
+to acknowledge the contribution(s) of ParaType and the author(s) or with explicit written permission of ParaType.
+
+5) The font software, modified or unmodified, in part or in whole, must be distributed entirely under this license, and must not be distributed 
+under any other license. The requirement for fonts to remain under this license does not apply to any document created using the Font Software.
+
+TERMINATION & TERRITORY
+This license has no limits on time and territory, but it becomes null and void if any of the above conditions are not met.
+
+DISCLAIMER
+THE FONT SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO ANY WARRANTIES OF 
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT OF COPYRIGHT, PATENT, TRADEMARK, OR OTHER RIGHT. IN NO EVENT SHALL 
+PARATYPE BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, INCLUDING ANY GENERAL, SPECIAL, INDIRECT, INCIDENTAL, OR CONSEQUENTIAL DAMAGES, 
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF THE USE OR INABILITY TO USE THE FONT SOFTWARE OR FROM OTHER DEALINGS 
+IN THE FONT SOFTWARE.
+
+
+END OF SIL OPEN FONT LICENSE 1.1 LICENSE NOTICES AND INFORMATION
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+END OF OPEN LIBERTY DOCKER @LIBERTY_VERSION@ NOTICES AND INFORMATION FOR EXCLUDED COMPONENTS
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 END OF NOTICE FILE
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-

@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 
 import com.ibm.websphere.ras.Tr;
@@ -27,6 +28,9 @@ import com.ibm.websphere.ssl.SSLException;
 
 public class JaxRsSSLManager {
     private static final TraceComponent tc = Tr.register(JaxRsSSLManager.class);
+
+    private static final Map<String, SSLSocketFactory> socketFactories = new HashMap<>();
+    private static final Map<String, SSLContext> sslContexts = new HashMap<>();
 
     /**
      * Get the SSLSocketFactory by sslRef, if could not get the configuration, try use the server's default
@@ -79,7 +83,25 @@ public class JaxRsSSLManager {
                     return null;
             }
 
-            sslSocketFactory = jsseHelper.getSSLSocketFactory(connectionInfo, sslProps);
+            SSLContext sslContext = jsseHelper.getSSLContext(connectionInfo, sslProps);
+
+            boolean recache = false;
+            synchronized (sslContexts) {
+                SSLContext cachedSslContext = sslContexts.get(sslRef);
+                if (sslContext == null || !sslContext.equals(cachedSslContext)) {
+                    // first request or SSL config has changed, re-cache the SSLContext and SSLSocketFactory
+                    sslContexts.put(sslRef, sslContext);
+                    recache = true;
+                }
+            }
+
+            synchronized (socketFactories) {
+                sslSocketFactory = socketFactories.get(sslRef);
+                if (sslSocketFactory == null || recache) {
+                    sslSocketFactory = sslContext.getSocketFactory();
+                    socketFactories.put(sslRef, sslSocketFactory);
+                }
+            }
         } catch (com.ibm.websphere.ssl.SSLException e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "configClientSSL failed to get the SSLSocketFactory with exception: " + e.toString());

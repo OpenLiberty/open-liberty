@@ -56,6 +56,6 @@ public class TimeoutTest extends FATServletClient {
 
     @AfterClass
     public static void afterClass() throws Exception {
-        server.stopServer();
+        server.stopServer("CWMFT0002W");
     }
 }

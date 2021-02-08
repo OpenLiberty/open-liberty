@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,16 +18,9 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 @RequestScoped
 public class ConfigUnnamedMethodInjectionBean {
 
-    private String SIMPLE_KEY6 = null;
-
-    //this will fail
     @Inject
-    public void setSimpleKey6(@ConfigProperty String SIMPLE_KEY6) {
-        this.SIMPLE_KEY6 = SIMPLE_KEY6;
-    }
-
-    public String getSIMPLE_KEY6() {
-        return SIMPLE_KEY6;
+    public void aMethod(@ConfigProperty String aMethodParameter) {
+        //this will fail
     }
 
 }

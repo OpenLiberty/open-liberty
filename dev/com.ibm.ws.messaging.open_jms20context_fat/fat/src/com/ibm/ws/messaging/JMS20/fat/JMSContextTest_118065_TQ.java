@@ -17,13 +17,17 @@ import java.io.IOException;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+import componenttest.annotation.ExpectedFFDC;
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
+@RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class JMSContextTest_118065_TQ {
     private static LibertyServer engineServer =
@@ -107,6 +111,7 @@ public class JMSContextTest_118065_TQ {
         assertTrue("testRollbackNonLocalTransaction_TCP failed ", testResult);
     }
 
+    @ExpectedFFDC("com.ibm.ws.LocalTransaction.RolledbackException")
     @Mode(TestMode.FULL)
     @Test
     public void testRecoverNonLocalTransaction_B() throws Exception {
@@ -114,6 +119,7 @@ public class JMSContextTest_118065_TQ {
         assertTrue("testRecoverNonLocalTransaction_B failed ", testResult);
     }
 
+    @ExpectedFFDC("com.ibm.ws.LocalTransaction.RolledbackException")
     @Mode(TestMode.FULL)
     @Test
     public void testRecoverNonLocalTransaction_TCP() throws Exception {

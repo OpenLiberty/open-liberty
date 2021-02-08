@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -229,7 +229,8 @@ public class MetricResolver {
         else if (SimplyTimed.class.isInstance(annotation))
             return ((SimplyTimed) annotation).name();
         else
-            throw new IllegalArgumentException("Unsupported Metrics forMethod [" + annotation.getClass().getName() + "]");
+            throwIAEUnsupportedMetric(annotation);
+        return null;
     }
 
     private boolean isMetricAbsolute(Annotation annotation) {
@@ -247,7 +248,8 @@ public class MetricResolver {
         else if (SimplyTimed.class.isInstance(annotation))
             return ((SimplyTimed) annotation).absolute();
         else
-            throw new IllegalArgumentException("Unsupported Metrics forMethod [" + annotation.getClass().getName() + "]");
+            throwIAEUnsupportedMetric(annotation);
+        return false;
     }
 
     private String[] getTags(Annotation annotation) {
@@ -264,7 +266,8 @@ public class MetricResolver {
         else if (SimplyTimed.class.isInstance(annotation))
             return ((SimplyTimed) annotation).tags();
         else
-            throw new IllegalArgumentException("Unsupported Metrics forMethod [" + annotation.getClass().getName() + "]");
+            throwIAEUnsupportedMetric(annotation);
+        return null;
 
     }
 
@@ -282,7 +285,8 @@ public class MetricResolver {
         else if (SimplyTimed.class.isInstance(annotation))
             return ((SimplyTimed) annotation).displayName();
         else
-            throw new IllegalArgumentException("Unsupported Metrics forMethod [" + annotation.getClass().getName() + "]");
+            throwIAEUnsupportedMetric(annotation);
+        return null;
 
     }
 
@@ -300,7 +304,8 @@ public class MetricResolver {
         else if (SimplyTimed.class.isInstance(annotation))
             return ((SimplyTimed) annotation).description();
         else
-            throw new IllegalArgumentException("Unsupported Metrics forMethod [" + annotation.getClass().getName() + "]");
+            throwIAEUnsupportedMetric(annotation);
+        return null;
     }
 
     private MetricType getType(Annotation annotation) {
@@ -317,7 +322,8 @@ public class MetricResolver {
         else if (SimplyTimed.class.isInstance(annotation))
             return MetricType.SIMPLE_TIMER;
         else
-            throw new IllegalArgumentException("Unsupported Metrics forMethod [" + annotation.getClass().getName() + "]");
+            throwIAEUnsupportedMetric(annotation);
+        return null;
     }
 
     private String getUnit(Annotation annotation) {
@@ -334,7 +340,21 @@ public class MetricResolver {
         else if (SimplyTimed.class.isInstance(annotation))
             return ((SimplyTimed) annotation).unit();
         else
-            throw new IllegalArgumentException("Unsupported Metrics forMethod [" + annotation.getClass().getName() + "]");
+            throwIAEUnsupportedMetric(annotation);
+        return null;
+    }
+
+    private void throwIAEUnsupportedMetric(Annotation annotation) throws IllegalArgumentException {
+        /*
+         * Try and Catch to force an FFDC since the DefaultExceptionMapper is catching exceptions
+         * which does not result in FFDCs. Caught Exception generates an FFDC. The subsequent
+         * rethrow is caught by the DefaultExceptionMapper where it is printed out.
+         */
+        try {
+            throw new IllegalArgumentException("Unsupported Metrics for Method [" + annotation.getClass().getName() + "]");
+        } catch (IllegalArgumentException exception) {
+            throw exception;
+        }
     }
 
     /**
@@ -359,8 +379,16 @@ public class MetricResolver {
          * Type check is conducted when registering/retrieving metric.
          */
         if ((existingMetadata != null && !existingMetadata.equals(of.metadata()))) {
-            throw new IllegalArgumentException("Cannot reuse metric with MetricID " + metricID.toString() + "with Metadata " + of.metadata().toString()
-                                               + ". There already exists a Metadata fopr tthis metric name with different values: " + existingMetadata.toString());
+            /*
+             * Try and Catch to force an FFDC since the DefaultExceptionMapper is catching exceptions
+             * which does not result in FFDCs.
+             */
+            try {
+                throw new IllegalArgumentException("Cannot reuse metric with MetricID " + metricID.toString() + "with Metadata " + of.metadata().toString()
+                                                   + ". There already exists a Metadata for this metric name with different values: " + existingMetadata.toString());
+            } catch (IllegalArgumentException exception) {
+                throw exception;
+            }
         }
         return true;
 

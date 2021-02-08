@@ -38,12 +38,13 @@ public class ConfigParser {
     private final Path serverXML;
     private final Map<String, String> varMap;
     private final String wlpDir = Utils.getInstallDir().toString();
-    private final String wlpUsrDir = wlpDir + "/usr";
+    private final String wlpUsrDir = Utils.getUserDir().toString();
     private final String userExtensionDir = wlpUsrDir + "/extension";
     private final String sharedAppDir = wlpUsrDir + "/shared/apps";
     private final String sharedConfigDir = wlpUsrDir + "/shared/config";
     private final String sharedResourceDir = wlpUsrDir + "/shared/resources";
     private final String sharedStackGroupsDir = wlpUsrDir + "/shared/stackGroups";
+    private final String serverOutputDir = Utils.getOutputDir().toString();
 
     public ConfigParser(Path serverXML, Map<String, String> varMap) throws IOException {
         this.serverXML = serverXML;
@@ -116,7 +117,7 @@ public class ConfigParser {
         resultMap.put("shared.resource.dir", sharedResourceDir);
         resultMap.put("shared.stackgroup.dir", sharedStackGroupsDir);
         resultMap.put("server.config.dir", wlpUsrDir + "/servers/" + serverName);
-        resultMap.put("server.output.dir", wlpUsrDir + "/servers/" + serverName);
+        resultMap.put("server.output.dir", serverOutputDir + "/" + serverName);
         return resultMap;
     }
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014,2020 IBM Corporation and others.
+ * Copyright (c) 2014,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -46,7 +46,7 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog {
                                                          TraceConstants.TRACE_GROUP, TraceConstants.NLS_FILE);
 
     // Reference to the dedicated non-transactional datasource
-    private DataSource _theDS = null;
+    private DataSource _theDS;
 
     /**
      * A reference to the LogProperties object that defines the identity and physical
@@ -364,7 +364,6 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog {
                     updateStmt.setString(3, recoveryIdentity);
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "Ready to UPDATE using string - " + updateString + " and time: " + Utils.traceTime(fir1));
-                    Tr.audit(tc, "WTRN0108I: Update Lease for server with recovery identity " + recoveryIdentity);
 
                     int ret = updateStmt.executeUpdate();
 

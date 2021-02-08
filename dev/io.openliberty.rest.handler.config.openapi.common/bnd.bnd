@@ -1,0 +1,45 @@
+#*******************************************************************************
+# Copyright (c) 2021 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+
+Bundle-Name: Open API common code for Config REST Endpoint
+Bundle-SymbolicName: io.openliberty.rest.handler.config.openapi.common
+Bundle-Description: Open API information for REST-based config resources; version=${bVersion}
+
+
+WS-TraceGroup: rest.config
+
+Web-ContextPath: openapi/platform
+OL-VirtualHost: ${admin.virtual.host}
+
+IBM-Authorization-Roles: com.ibm.ws.management
+IBM-Web-Extension-Processing-Disabled: true
+
+Include-Resource: \
+    WEB-INF=resources/WEB-INF
+
+Private-Package:\
+  io.openliberty.rest.handler.config.openapi.common.*
+
+-dsannotations:\
+  com.ibm.ws.rest.handler.config.openapi.ConfigSchemaRESTHandler
+
+-buildpath: \
+    com.ibm.websphere.appserver.spi.logging,\
+    com.ibm.websphere.javaee.servlet.3.0;version=latest,\
+    com.ibm.websphere.rest.handler;version=latest,\
+    com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+    com.ibm.ws.rest.handler;version=latest,\
+    com.ibm.wsspi.org.osgi.service.component.annotations,\
+    com.ibm.websphere.org.osgi.service.component,\
+    com.ibm.websphere.org.osgi.core

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015,2020 IBM Corporation and others.
+ * Copyright (c) 2015, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,9 +20,9 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
 
 import componenttest.custom.junit.runner.FATRunner;
@@ -74,7 +74,7 @@ public class JMSContextInjectTest {
         clientServer.startServer("JMSContectInjectClient.log");
     }
 
-    @org.junit.AfterClass
+    @AfterClass
     public static void tearDown() {
         try {
             clientServer.stopServer();

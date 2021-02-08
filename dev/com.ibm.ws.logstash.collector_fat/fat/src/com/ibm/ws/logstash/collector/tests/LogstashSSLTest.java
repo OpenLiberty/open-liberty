@@ -421,7 +421,7 @@ public class LogstashSSLTest extends LogstashCollectorTest {
          * by checking 1. whether the operating system is Mac or linux 2. whether the machine is running IBM JDK
          * if both checks pass, this is the case
          **/
-        Log.info(c, methodName, "os_name: " + os.toLowerCase() + "\t java_jdk: " + System.getProperty("java.vendor"));
+        Log.info(c, methodName, "os_name: " + os + "\t java_jdk: " + System.getProperty("java.vendor"));
         String JAVA_HOME = System.getenv("JAVA_HOME");
         Log.info(c, methodName, "JAVA_HOME: " + JAVA_HOME);
         boolean healthCenterInstalled = false;
@@ -445,12 +445,12 @@ public class LogstashSSLTest extends LogstashCollectorTest {
                 Log.info(c, methodName, " unable to find heathcenter.jar, thus unable to produce gc events. Thus, this check will be by-passed");
             }
         }
-        if (os.toLowerCase().contains("mac") || !System.getProperty("java.vendor").toLowerCase().contains("ibm")
+        if (os.contains("mac") || !System.getProperty("java.vendor").toLowerCase().contains("ibm")
             || System.getProperty("java.vendor.url").toLowerCase().contains("sun") || !healthCenterInstalled) {
             return true;
         }
         // Skip zOS temporary as zOS JDK has a bug that does not return any GC information.
-        if (os.contains("OS/390") || os.contains("z/OS") || os.contains("zOS")) {
+        if (os.contains("os/390") || os.contains("z/os") || os.contains("zos")) {
             return true;
         }
         return false;

@@ -30,7 +30,6 @@ import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-
                 DummyTest.class,
                 JMSContextTest.class,
                 JMSConsumerTest.class,
@@ -41,10 +40,8 @@ import componenttest.rules.repeater.RepeatTests;
                 JMSContextInjectTest.class,
                 JMSDefaultConnectionFactorySecurityTest.class,
                 JMSMDBTest.class
-
 })
 public class FATSuite {
-
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(new JakartaEE9Action()); // run all tests with EE9 features+packages
+    public static RepeatTests r = RepeatTests.with( new JakartaEE9Action() );
 }

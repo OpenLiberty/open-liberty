@@ -61,14 +61,16 @@ public class HandleResponsesTest extends FATServletClient {
     public static void setUp() throws Exception {
         ShrinkHelper.defaultDropinApp(remoteAppServer, "basicRemoteApp", "remoteApp.basic");
         remoteAppServer.startServer();
+        remoteAppServer.waitForStringInLog("CWWKO0219I.*ssl"); // CWWKO0219I: TCP Channel defaultHttpEndpoint-ssl has been started and is now listening for requests on host *  (IPv6) port 8020.
 
         ShrinkHelper.defaultDropinApp(server, appName, "mpRestClient10.handleresponses");
         server.startServer();
+        server.waitForStringInLog("CWWKO0219I.*ssl"); // CWWKO0219I: TCP Channel defaultHttpEndpoint-ssl has been started and is now listening for requests on host *  (IPv6) port 8020.
     }
 
     @AfterClass
     public static void afterClass() throws Exception {
-        server.stopServer();
-        remoteAppServer.stopServer();
+        server.stopServer("CWWKE1102W");  //ignore server quiesce timeouts due to slow test machines
+        remoteAppServer.stopServer("CWWKE1102W");
     }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -115,13 +115,14 @@ public class ClientTestServlet extends HttpServlet {
         ClientBuilder cb = ClientBuilder.newBuilder();
         cb.property("inherit1", "cb");
         Client c = cb.build();
-        String result1 = c.getConfiguration().getProperties().toString();
+        boolean cbValue1  = c.getConfiguration().getProperties().containsValue("cb");
         c.property("inherit2", "c");
         WebTarget t1 = c.target("http://" + serverIP + ":" + serverPort + "/" + moduleName + "/ComplexClientTest/ComplexResource");
         String res1 = t1.path("echo1").path("test").request().get(String.class);
-        String result2 = t1.getConfiguration().getProperties().toString();
+        boolean cbValue2  = t1.getConfiguration().getProperties().containsValue("cb");
+        boolean cValue  = t1.getConfiguration().getProperties().containsValue("c");
         c.close();
-        ret.append(result1 + "," + result2 + "," + res1);
+        ret.append(cbValue1 + "," + cbValue2 + "," + cValue + "," + res1);
     }
 
     public void testClientProviderInherit(Map<String, String> param, StringBuilder ret) {
@@ -156,9 +157,10 @@ public class ClientTestServlet extends HttpServlet {
         c.close();
         c = ClientBuilder.newClient(config1);
         c.property("clientproperty2", "somevalue2");
-        String result = c.getConfiguration().getProperties().toString();
+        boolean cValue1  = c.getConfiguration().getProperties().containsValue("somevalue1");
+        boolean cValue2  = c.getConfiguration().getProperties().containsValue("somevalue2");
         c.close();
-        ret.append(result);
+        ret.append(cValue1 + "," + cValue2);
     }
 
     public void testNewClientWithConfig(Map<String, String> param, StringBuilder ret) {
@@ -169,9 +171,10 @@ public class ClientTestServlet extends HttpServlet {
         ClientBuilder cb = ClientBuilder.newBuilder().withConfig(config1);
         c = cb.build();
         c.property("clientproperty4", "somevalue4");
-        String result = c.getConfiguration().getProperties().toString();
+        boolean cValue1  = c.getConfiguration().getProperties().containsValue("somevalue3");
+        boolean cValue2  = c.getConfiguration().getProperties().containsValue("somevalue4");
         c.close();
-        ret.append(result);
+        ret.append(cValue1 + "," + cValue2);
     }
 
     public void testNewClientHostnameVerifier(Map<String, String> param, StringBuilder ret) {
@@ -298,10 +301,10 @@ public class ClientTestServlet extends HttpServlet {
         Client c = cb.build();
         WebTarget t1 = c.target("http://" + serverIP + ":" + serverPort + "/" + moduleName + "/ComplexClientTest/ComplexResource").register(ClientRequestFilter1.class);
         WebTarget t2 = c.target("http://" + serverIP + ":" + serverPort + "/" + moduleName + "/ComplexClientTest/ComplexResource").register(ClientRequestFilter2.class);
-        t1.path("echo1").path("test1").request().get(String.class);
-        String result1 = c.getConfiguration().getProperties().toString();
-        t2.path("echo2").path("test2").request().get(String.class);
-        String result2 = c.getConfiguration().getProperties().toString();
+        t1.path("echo1").path("test1").request().accept("*/*").get(String.class);
+        String result1 = c.getConfiguration().getProperties().entrySet().toString();
+        t2.path("echo2").path("test2").request().accept("*/*").get(String.class);
+        String result2 = c.getConfiguration().getProperties().entrySet().toString();
         c.close();
         ret.append(result1 + "," + result2);
     }
@@ -315,8 +318,8 @@ public class ClientTestServlet extends HttpServlet {
         c.register(ClientResponseFilter1.class, 200);
         WebTarget t1 = c.target("http://" + serverIP + ":" + serverPort + "/" + moduleName + "/ComplexClientTest/ComplexResource");
         WebTarget t2 = c.target("http://" + serverIP + ":" + serverPort + "/" + moduleName + "/ComplexClientTest/ComplexResource").register(ClientResponseFilter2.class, 100);
-        Response res1 = t1.path("echo1").path("test1").request().get(Response.class);
-        Response res2 = t2.path("echo2").path("test2").request().get(Response.class);
+        Response res1 = t1.path("echo1").path("test1").request().accept("*/*").get(Response.class);
+        Response res2 = t2.path("echo2").path("test2").request().accept("*/*").get(Response.class);
         System.out.println("config: " + c.getConfiguration().getProperties());
         c.close();
         ret.append(res1.getStatus() + "," + res2.getStatus());
@@ -526,6 +529,7 @@ public class ClientTestServlet extends HttpServlet {
                 String uri = ctx.getUri().toASCIIString();
                 Link.Builder builder = Link.fromMethod(Resource.class,
                                                        "consumesAppJson").rel(linkName);
+                builder.baseUri(uri);
                 Link link = builder.build();
                 System.out.println("filter invoke: Link build");
                 Response response = Response.ok(uri).links(link).build();
@@ -542,6 +546,7 @@ public class ClientTestServlet extends HttpServlet {
         result = entity.contains("resource/get") + ",";
 
         // Phase 2, use the link, check the correctness
+        System.out.println("Phase 2, use the link, check the correctness");
         Link link = response.getLink(linkName);
         response = client.invocation(link).post(null);
         entity = response.readEntity(String.class);

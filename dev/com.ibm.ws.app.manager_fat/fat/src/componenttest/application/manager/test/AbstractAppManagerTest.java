@@ -62,6 +62,7 @@ public abstract class AbstractAppManagerTest {
     protected static final String APPS_DIR = "apps";
     protected static final String EXPANDED_DIR = APPS_DIR + "/expanded";
     protected static final String DROPINS_DIR = "dropins";
+    protected static final String TARGET_EXPANDED_DIR = "myApps";
 
     // MBean
     protected static final String APP_MBEAN = "WebSphere:service=com.ibm.websphere.application.ApplicationMBean";

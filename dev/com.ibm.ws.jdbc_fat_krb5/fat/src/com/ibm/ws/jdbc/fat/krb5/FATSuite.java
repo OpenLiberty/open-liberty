@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -38,7 +38,18 @@ public class FATSuite {
     public static Network network;
     public static KerberosContainer krb5;
 
-    public static final boolean REUSE_CONTAINERS = FATRunner.FAT_TEST_LOCALRUN && !ExternalTestServiceDockerClientStrategy.useRemoteDocker();
+    //Required to ensure we calculate the correct strategy each run even when
+    //switching between local and remote docker hosts.
+    static {
+        ExternalTestServiceDockerClientStrategy.setupTestcontainers();
+
+        // Filter out any external docker servers in the 'libhpike' cluster
+        ExternalTestServiceDockerClientStrategy.serviceFilter = (svc) -> {
+            return !svc.getAddress().contains("libhpike-dockerengine");
+        };
+    }
+
+    public static final boolean REUSE_CONTAINERS = FATRunner.FAT_TEST_LOCALRUN && !ExternalTestServiceDockerClientStrategy.USE_REMOTE_DOCKER_HOST;
 
     static {
         // Needed for IBM JDK 8 support.
@@ -51,14 +62,6 @@ public class FATSuite {
             // bucket will not run any tests, skip
             return;
         }
-
-        // Allows local tests to switch between using a local docker client, to using a remote docker client.
-        ExternalTestServiceDockerClientStrategy.setupTestcontainers();
-
-        // Filter out any external docker servers in the 'libhpike' cluster
-        ExternalTestServiceDockerClientStrategy.serviceFilter = (svc) -> {
-            return !svc.getAddress().contains("libhpike-dockerengine");
-        };
 
         network = Network.newNetwork();
         krb5 = new KerberosContainer(network);

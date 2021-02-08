@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,22 +30,22 @@ public class RequestTimingConfigTest {
 	private static final String TIMING_TYPE_B = "typeb";
 	
 	private static final List<Timing> timingListA = Arrays.asList(new Timing[] {
-			new Timing(TIMING_TYPE_A, new String[] {"first", "second"}, 10, false),
-			new Timing(TIMING_TYPE_A, new String[] {"first", "third"}, 20, false),
-			new Timing(TIMING_TYPE_A, new String[] {"first", "*"}, 30, false),
-			new Timing(TIMING_TYPE_A, new String[] {"*", "second"}, 40, false)});
+			new Timing(TIMING_TYPE_A, new String[] {"first", "second"}, 10, false, true),
+			new Timing(TIMING_TYPE_A, new String[] {"first", "third"}, 20, false, true),
+			new Timing(TIMING_TYPE_A, new String[] {"first", "*"}, 30, false, true),
+			new Timing(TIMING_TYPE_A, new String[] {"*", "second"}, 40, false, true)});
 	
 	private static final List<Timing> timingListB = Arrays.asList(new Timing[] {
-			new Timing(TIMING_TYPE_B, new String[] {"*", "*"}, 50, false)});
+			new Timing(TIMING_TYPE_B, new String[] {"*", "*"}, 50, false, true)});
 	
 	private static final List<Timing> timingListB2 = Arrays.asList(new Timing[] {
-			new Timing(TIMING_TYPE_B, new String[] {"*", "*"}, 50, false),
-			new Timing(TIMING_TYPE_B, new String[] {"fourth", "fifth"}, 55, false),
-			new Timing(TIMING_TYPE_B, new String[] {"fourth", "*"}, 56, false),
-			new Timing(TIMING_TYPE_B, new String[] {"*", "fifth"}, 57, false)});
+			new Timing(TIMING_TYPE_B, new String[] {"*", "*"}, 50, false, true),
+			new Timing(TIMING_TYPE_B, new String[] {"fourth", "fifth"}, 55, false, true),
+			new Timing(TIMING_TYPE_B, new String[] {"fourth", "*"}, 56, false, true),
+			new Timing(TIMING_TYPE_B, new String[] {"*", "fifth"}, 57, false, true)});
 
 	private static final List<Timing> defaultList = Arrays.asList(new Timing[] {
-			new Timing(RequestTimingConstants.ALL_TYPES, Timing.ALL_CONTEXT_INFO, 60, false)});
+			new Timing(RequestTimingConstants.ALL_TYPES, Timing.ALL_CONTEXT_INFO, 60, false, true)});
 
 	
 	@Test

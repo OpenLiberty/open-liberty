@@ -697,12 +697,6 @@ public class CommonTests {
         Log.info(thisClass, thisMethod, "Inside setupSSLClient but not calling enableSSLv3()");
         Log.info(thisClass, thisMethod, "Setting up global trust");
 
-        /*
-         * 10/2020 commented out; deprecated in CL and not existing in OL
-         * See https://github.ibm.com/was-liberty/WS-CD-Open/blob/integration/dev/fattest.simplicity/src/componenttest/topology/utils/HttpUtils.java
-         */
-        //HttpUtils.enableSSLv3();
-
         try {
             KeyManager keyManagers[] = null;
 

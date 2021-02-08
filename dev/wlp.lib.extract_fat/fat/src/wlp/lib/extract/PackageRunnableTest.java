@@ -15,12 +15,14 @@ import static org.junit.Assume.*;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.nio.channels.FileChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -54,6 +56,7 @@ public class PackageRunnableTest {
     private static final File extractAndRunDir = new File("publish" + File.separator + "wlpExtractAndRun");
     private static final File extractDirectory3 = new File("publish" + File.separator + "wlpExtract3");
     private static File extractLocation = null;
+    private static File outputAutoFVTDirectory = null;
 
     /*
      * return env as array and add WLP_JAR_EXTRACT_DIR=extractDirectory
@@ -80,13 +83,16 @@ public class PackageRunnableTest {
             File manifest = new File(server.getInstallRoot(), "lib/extract/META-INF/MANIFEST.MF");
             if (!manifest.exists()) {
                 Log.info(c, method, "Manifest did not exist. Sleeping - " + timeout + " seconds elapsed.");
-                Thread.sleep(1);
+                Thread.sleep(1000);
             } else {
                 Log.info(c, method, "Manifest was found in " + server.getInstallRoot() + "/lib/extract/META-INF/MANIFEST.MF with size = " + manifest.length());
                 break;
             }
             timeout++;
         }
+
+        outputAutoFVTDirectory = new File("output/servers/", serverName);
+        Log.info(c, method, "outputAutoFVTDirectory: " + outputAutoFVTDirectory.getAbsolutePath());
     }
 
     @BeforeClass
@@ -132,6 +138,20 @@ public class PackageRunnableTest {
 
         Log.info(c, method, "stdout for package cmd is: \n" + stdout);
 
+        // Validate the package was successful.  If not, log off the manifest.mf contents.
+        boolean rc = validatePackageManifestExists();
+
+        // If we have an invalid package, save off the jar for troubleshooting.
+        if (rc == false) {
+            outputAutoFVTDirectory.mkdirs();
+            Log.info(c, method, "Copying directory from " +
+                                runnableJar.getAbsolutePath() + " to " +
+                                outputAutoFVTDirectory.getAbsolutePath() + "/" + serverName + ".jar");
+
+            File srcDir = new File(runnableJar.getAbsolutePath());
+            copyFile(srcDir, new File(outputAutoFVTDirectory.getAbsolutePath() + "/" + serverName + ".jar"));
+        }
+
         executeTheJar(extractDirectory1, false, true, false);
         checkDirStructure(extractDirectory1, true);
         extractAndExecuteMain();
@@ -156,7 +176,7 @@ public class PackageRunnableTest {
 
         String stdout = server.executeServerScript("package",
                                                    new String[] { "--archive=" + runnableJar.getAbsolutePath(),
-                                                                  "--include=minify,runnable" }).getStdout();
+                                                                  "--include=runnable" }).getStdout();
 
         String searchString = "Server " + serverName + " package complete";
         if (!stdout.contains(searchString)) {
@@ -325,7 +345,7 @@ public class PackageRunnableTest {
         if (!found) {
             Log.info(c, "executeTheJar", "Process is alive: " + proc.isAlive());
             // capture the messages.log for debugging test
-            File messagesLog = new File(extractDirectory, "wlp/usr/servers/" + serverName + "/logs/messages.log").getAbsoluteFile();
+            File messagesLog = new File(server.getInstallRoot(), "/usr/servers/" + serverName + "/logs/messages.log").getAbsoluteFile();
             if (messagesLog.exists()) {
                 Files.lines(messagesLog.toPath()).forEach((l) -> {
                     Log.info(c, "executeTheJar", "MESSAGES LINE: " + l);
@@ -562,5 +582,66 @@ public class PackageRunnableTest {
             Log.info(c, "readJarEntryContent", line);
         }
         r.close();
+    }
+
+    /**
+     * Copies a file from one location to another
+     *
+     * @param fromFile
+     * @param toFile
+     * @throws IOException
+     */
+    private static void copyFile(File fromFile, File toFile) throws IOException {
+        String method = "copyFile";
+        // Open the source file
+        FileInputStream fis = new FileInputStream(fromFile);
+        try {
+            // Open the destination file
+            File destDir = toFile.getParentFile();
+            if (!destDir.exists() && !destDir.mkdirs()) {
+                throw new IOException("Failed to create path: " + destDir.getAbsolutePath());
+            }
+
+            Log.info(c, method, "Copying file from: " + fromFile.getAbsolutePath() + " to: " + toFile.getAbsolutePath());
+
+            FileOutputStream fos = new FileOutputStream(toFile);
+
+            // Perform the transfer using nio channels; this is simpler, and usually
+            // faster, than copying the file a chunk at a time
+            try {
+                FileChannel inChan = fis.getChannel();
+                FileChannel outChan = fos.getChannel();
+                inChan.transferTo(0, inChan.size(), outChan);
+            } finally {
+                fos.close();
+            }
+        } finally {
+            fis.close();
+        }
+    }
+
+    /**
+     * Verifies that the package manifest exists, and logs the manifest.mf contents if found.
+     *
+     * @return
+     * @throws IOException
+     */
+    private boolean validatePackageManifestExists() throws IOException {
+
+        // log the contents of the runnable jar's manifest.mf
+        JarFile jarFile = new JarFile(runnableJar.getAbsolutePath());
+        boolean manifestFound = false;
+
+        for (Enumeration<JarEntry> e = jarFile.entries(); e.hasMoreElements();) {
+            JarEntry je = e.nextElement();
+            if (je.getName().equals("META-INF/MANIFEST.MF")) {
+                Log.info(c, "validatePackage", "=== Start dumping contents of manifest.mf file ===");
+                readJarEntryContent(jarFile, je);
+                manifestFound = true;
+                Log.info(c, "validatePackage", "=== End dumping contents of manifest.mf file ===");
+            }
+        }
+
+        return manifestFound;
     }
 }

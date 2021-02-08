@@ -8,3 +8,7 @@ Bundle-Description: Simple test WAB; version=${bVersion}
 Private-Package: test.wab1
 Web-ContextPath: @WAB1
 
+Include-Resource:\
+    WEB-INF/web.xml=test-bundles/test.wab1/resources/WEB-INF/web.xml, \
+    hello.html=test-bundles/test.wab1/resources/hello.html, \
+    OSGI-INF/internal.txt=test-bundles/test.wab1/resources/OSGI-INF/internal.txt

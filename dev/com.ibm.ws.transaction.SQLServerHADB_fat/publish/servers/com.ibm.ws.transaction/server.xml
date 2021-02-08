@@ -1,0 +1,46 @@
+<server>
+
+    <include location="../fatTestPorts.xml"/>
+    
+    <featureManager>
+       <feature>servlet-4.0</feature>
+       <feature>jdbc-4.2</feature>
+       <feature>jndi-1.0</feature>
+       <feature>componentTest-1.0</feature>
+       <feature>txtest-1.0</feature>
+       <feature>cdi-2.0</feature>
+    </featureManager>
+    
+    <application location="transaction.war">
+        <classloader commonLibraryRef="SQLServerLibAnon"/>
+    </application>
+
+    <jdbcDriver id="SQLServerEmbedded" libraryRef="SQLServerLibAnon" />      
+    <library id="SQLServerLibAnon">
+        <fileset dir="${shared.resource.dir}/sqlserver"
+                 includes="ifxjdbc.jar, anomyous.jar" />
+    </library> 
+       
+    <transaction
+        dataSourceRef="tranlogDataSource"
+        recoverOnStartup="true"
+        waitForRecovery="false"
+        heuristicRetryInterval="10"
+    />
+
+    <dataSource id="tranlogDataSource"
+                jdbcDriverRef="SQLServerEmbedded"
+                jndiName="jdbc/tranlogDataSource" 
+                transactional="false">
+  	<properties user="${env.USER}" password="${env.PASSWORD}" serverName="${env.HOST}"
+  	  url="jdbc:sqlserver://${env.HOST}:${env.PORT};databaseName=${env.DBNAME};" selectMethod="cursor"/>
+    </dataSource>
+    
+    <logging traceSpecification="Transaction=all:com.ibm.ws.jdbc.*=all:RRA=all:logservice=all=enabled:*=info=enabled"/>
+    
+    <javaPermission codebase="${server.config.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+    <javaPermission codebase="${server.config.dir}/apps/transaction.war" className="java.security.AllPermission"/>
+    <javaPermission className="java.lang.RuntimePermission" name="*" actions="*"/>
+    <javaPermission className="java.io.FilePermission" name="ALL FILES" actions="read,write,delete"/>
+
+</server>

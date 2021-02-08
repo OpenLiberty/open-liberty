@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2020, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ src: \
 -sub: *.bnd
 
 fat.project: true
+fat.test.databases: true
 
 # Define additional tested features that are NOT present in any XML files in this bucket.
 # In this case, servlet-4.0 is added programmatically at runtime by the RepeatTests rule.
@@ -34,17 +35,15 @@ tested.features:\
 	com.ibm.tx.core;version=latest,\
 	com.ibm.ws.tx.embeddable;version=latest,\
 	commons-logging:commons-logging;version=1.1.3,\
-	fattest.databases;version=latest,\
-	org.postgresql:postgresql;version=42.2.5,\
-	org.rnorth.duct-tape:duct-tape;version=1.0.7,\
-	org.testcontainers:database-commons;version=1.15.0,\
-	org.testcontainers:jdbc;version=1.15.0,\
-	org.testcontainers:postgresql;version=1.15.0,\
-	org.testcontainers:testcontainers;version=1.15.0,\
+	fattest.simplicity;version=latest,\
+	org.testcontainers:database-commons;version=1.15.1,\
+	org.testcontainers:jdbc;version=1.15.1,\
+	org.testcontainers:testcontainers;version=1.15.1,\
+	org.rnorth.duct-tape:duct-tape;version=1.0.8,\
 	org.slf4j:slf4j-api;version=1.7.7,\
 	com.ibm.ws.logging,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
 	com.ibm.ws.transaction.test.util;version=latest,\
-	com.ibm.ws.transaction.cloud_fat.1;version=latest
+	com.ibm.ws.transaction.cloud_fat.base;version=latest
 	

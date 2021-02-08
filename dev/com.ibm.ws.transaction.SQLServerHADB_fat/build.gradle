@@ -1,0 +1,59 @@
+/*******************************************************************************
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
+
+configurations {
+    sqlserver
+}
+
+// Define G:A:V coordinates of each dependency
+dependencies {
+  requiredLibs project(":com.ibm.ws.tx.embeddable"),
+               'commons-logging:commons-logging:1.1.3',
+               "org.testcontainers:database-commons:${testcontainersVersion}",
+               "org.testcontainers:jdbc:${testcontainersVersion}",
+               "org.testcontainers:mssqlserver:${testcontainersVersion}"
+  sqlserver 'com.microsoft.sqlserver:mssql-jdbc:8.2.1.jre8'
+}
+
+File serverDir1 = new File(autoFvtDir, 'publish/servers/com.ibm.ws.transaction')
+File sharedDir = new File(autoFvtDir, 'publish/shared/resources')
+
+task copySharedSqlServerAnon(type: Copy) {
+  shouldRunAfter jar
+  from configurations.sqlserver
+  into new File(autoFvtDir, 'publish/shared/resources/sqlserver')
+  rename 'mssql-jdbc.*.jar', 'anomyous.jar'
+}
+
+task copyAnonymousSqlServer1(type: Copy) {
+  mustRunAfter jar
+  from configurations.sqlserver
+  into new File(autoFvtDir, 'publish/servers/sqlserver1/jdbc')
+  rename 'mssql-jdbc.*.jar', 'driver.jar'
+}
+
+task copyFeatureBundle(type: Copy) {
+  from buildDir
+  into new File(autoFvtDir, 'publish/shared/resources/sqlserver')
+  include 'ifxjdbc.jar'
+}
+
+autoFVT {
+  dependsOn copyFeatureBundle
+}
+
+addRequiredLibraries.dependsOn copySharedSqlServerAnon
+addRequiredLibraries.dependsOn copyAnonymousSqlServer1
+
+addRequiredLibraries.dependsOn addJakartaTransformer
+
+

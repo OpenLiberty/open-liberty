@@ -158,7 +158,6 @@ public class TestExample_WAR extends JPAFATServletClient {
 
         Assert.assertTrue(introspectorData.contains("JPA Runtime Internal State Information")); // Description
 
-        Assert.assertTrue(introspectorData.contains("JPA Runtime Internal State Information")); // Description
         if (fList.contains("jpa-2.1") || fList.contains("jpaContainer-2.1")) {
             Assert.assertTrue(introspectorData.contains("jpaRuntime = com.ibm.ws.jpa.container.v21.internal.JPA21Runtime"));
         }

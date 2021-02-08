@@ -27,7 +27,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.el.ELException;
-import javax.el.MethodNotFoundException;
+import javax.el.MethodNotFoundException; 
 
 import org.apache.el.lang.ELSupport;
 import org.apache.el.lang.EvaluationContext;
@@ -238,7 +238,7 @@ public class ReflectionUtil {
             // If a method is found where every parameter matches exactly,
             // return it
             if (exactMatch == paramCount) {
-                return getMethod(base.getClass(), m);
+                return getMethod(base.getClass(), base, m);
             }
 
             candidates.put(m, new MatchResult(
@@ -285,7 +285,7 @@ public class ReflectionUtil {
                         paramString(paramTypes)));
         }
 
-        return getMethod(base.getClass(), match);
+        return getMethod(base.getClass(), base, match);
     }
 
     /*
@@ -414,8 +414,9 @@ public class ReflectionUtil {
      * This class duplicates code in javax.el.Util. When making changes keep
      * the code in sync.
      */
-    private static Method getMethod(Class<?> type, Method m) {
-        if (m == null || Modifier.isPublic(type.getModifiers())) {
+    private static Method getMethod(Class<?> type, Object base, Method m) {
+        JreCompat jreCompat = JreCompat.getInstance();
+        if (m == null || (Modifier.isPublic(type.getModifiers()) && jreCompat.canAccess(base, m))) {
             return m;
         }
         Class<?>[] inf = type.getInterfaces();
@@ -423,7 +424,7 @@ public class ReflectionUtil {
         for (int i = 0; i < inf.length; i++) {
             try {
                 mp = inf[i].getMethod(m.getName(), m.getParameterTypes());
-                mp = getMethod(mp.getDeclaringClass(), mp);
+                mp = getMethod(mp.getDeclaringClass(), base, mp);
                 if (mp != null) {
                     return mp;
                 }
@@ -435,7 +436,7 @@ public class ReflectionUtil {
         if (sup != null) {
             try {
                 mp = sup.getMethod(m.getName(), m.getParameterTypes());
-                mp = getMethod(mp.getDeclaringClass(), mp);
+                mp = getMethod(mp.getDeclaringClass(), base, mp);
                 if (mp != null) {
                     return mp;
                 }

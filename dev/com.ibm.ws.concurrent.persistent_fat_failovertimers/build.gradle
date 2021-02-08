@@ -17,5 +17,4 @@ addRequiredLibraries {
 	dependsOn addJakartaTransformer
 	dependsOn copyJdbcDrivers
 	dependsOn copyDatabaseRotationDrivers
-	dependsOn copyFattestDatabases
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2019 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -81,8 +81,18 @@ public class TimedInterceptor {
         MetricResolver.Of<Timed> timed = resolver.timed(bean.getBeanClass(), element);
         MetricID MetricID = new MetricID(timed.metricName(), Utils.tagsToTags(timed.tags()));
         Timer timer = (Timer) registry.getMetric(MetricID);
-        if (timer == null)
-            throw new IllegalStateException("No timer with metricID [" + MetricID + "] found in registry [" + registry + "]");
+        if (timer == null) {
+            /*
+             * Try and Catch to force an FFDC since the DefaultExceptionMapper is catching exceptions
+             * which does not result in FFDCs. Caught Exception generates an FFDC. The subsequent
+             * rethrow is caught by the DefaultExceptionMapper where it is printed out.
+             */
+            try {
+                throw new IllegalStateException("No timer with metricID [" + MetricID + "] found in registry [" + registry + "]");
+            } catch (IllegalStateException exception) {
+                throw exception;
+            }
+        }
 
         Timer.Context time = timer.time();
         try {

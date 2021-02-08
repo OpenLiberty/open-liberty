@@ -77,9 +77,9 @@ InternalTransaction_BackoutOrphan.useraction=\u30a2\u30d7\u30ea\u30b1\u30fc\u30b
 # {0} the orphan transaction
 # {1} tick count when this was reported
 # {2} unknown or free
-InternalTransaction_OrphanDiagnostics=CWSOM0101W: \u8a3a\u65ad: {0} {1} {2}.
-InternalTransaction_OrphanDiagnostics.explanation=\u5185\u90e8\u8a3a\u65ad\u30e1\u30c3\u30bb\u30fc\u30b8.
-InternalTransaction_OrphanDiagnostics.useraction=n/a.
+InternalTransaction_OrphanDiagnostics=CWSOM0101W: \u8a3a\u65ad: {0} {1} {2}\u3002
+InternalTransaction_OrphanDiagnostics.explanation=\u5185\u90e8\u8a3a\u65ad\u30e1\u30c3\u30bb\u30fc\u30b8\u3002
+InternalTransaction_OrphanDiagnostics.useraction=\u3042\u308a\u307e\u305b\u3093\u3002
 
 # ----------------------------------------------------------------------------------------------------
 

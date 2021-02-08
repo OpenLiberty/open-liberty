@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,8 +26,9 @@ public class HungRequestTimingConfig extends RequestTimingConfig {
 	
 	private final boolean keepStatistics;
 	private final boolean interruptHungRequest;
+	private final boolean enableThreadDumps;
 	
-	public HungRequestTimingConfig(int contextInfoRequirement, Map<String, List<Timing>> hungRequestTiming, boolean interruptHungRequest){
+	public HungRequestTimingConfig(int contextInfoRequirement, Map<String, List<Timing>> hungRequestTiming, boolean interruptHungRequest, boolean enableThreadDumps){
 		//Sample is always 1 for hung request detection
 		super(RequestTimingConstants.SAMPLE_RATE, contextInfoRequirement, hungRequestTiming);
 		
@@ -45,6 +46,7 @@ public class HungRequestTimingConfig extends RequestTimingConfig {
 			}
 		}
 		this.interruptHungRequest = isInterruptHungRequest; 
+		this.enableThreadDumps = enableThreadDumps;
 		
 		// See if the configuration contains more than just the default thresholds.  If it does, we'll
 		// be keeping statistics as to which embedded timing configurations are used.
@@ -55,6 +57,7 @@ public class HungRequestTimingConfig extends RequestTimingConfig {
 		super();
 		keepStatistics = false;
 		interruptHungRequest = false;
+		enableThreadDumps = true;
 	}
 
 	/**
@@ -121,9 +124,18 @@ public class HungRequestTimingConfig extends RequestTimingConfig {
 		return interruptHungRequest;
 	}
 	
+	public boolean isThreadDumpsEnabled() {
+		return enableThreadDumps;
+	}
+	
 	@Override
 	public boolean getInterruptRequest(String type, String[] contextInfo) {
 		return getTiming(type, contextInfo).interruptHungRequest();
+	}
+	
+	@Override
+	public boolean getEnableThreadDumps(String type, String[] contextInfo) {
+		return getTiming(type, contextInfo).isThreadDumpsEnabled();
 	}
 	
 	private int countTimingConfigs() {

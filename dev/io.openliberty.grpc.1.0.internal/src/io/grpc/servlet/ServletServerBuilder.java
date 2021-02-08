@@ -18,7 +18,6 @@ package io.grpc.servlet;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
 import static io.grpc.internal.GrpcUtil.DEFAULT_MAX_MESSAGE_SIZE;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -26,17 +25,18 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.ibm.websphere.ras.annotation.Trivial;
 
-import io.grpc.ExperimentalApi;
 import io.grpc.InternalChannelz.SocketStats;
 import io.grpc.InternalInstrumented;
 import io.grpc.InternalLogId;
-import io.grpc.Server;
+import io.grpc.ServerBuilder;
 import io.grpc.ServerStreamTracer;
 import io.grpc.ServerStreamTracer.Factory;
 import io.grpc.Status;
 import io.grpc.internal.AbstractServerImplBuilder;
 import io.grpc.internal.GrpcUtil;
 import io.grpc.internal.InternalServer;
+import io.grpc.internal.ServerImplBuilder;
+import io.grpc.internal.ServerImplBuilder.ClientTransportServersBuilder;
 import io.grpc.internal.ServerListener;
 import io.grpc.internal.ServerTransport;
 import io.grpc.internal.ServerTransportListener;
@@ -46,45 +46,37 @@ import java.io.IOException;
 import java.net.SocketAddress;
 import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
-//import javax.annotation.concurrent.NotThreadSafe;
 
 /**
- * Builder to build a gRPC server that can run as a servlet. This is for advanced custom settings.
- * Normally, users should consider extending the out-of-box {@link GrpcServlet} directly instead.
- *
- * <p>The API is experimental. The authors would like to know more about the real usecases. Users
- * are welcome to provide feedback by commenting on
- * <a href=https://github.com/grpc/grpc-java/issues/5066>the tracking issue</a>.
+ * Builder to build a gRPC server that can run as a servlet.
+ * See https://github.com/grpc/grpc-java/issues/5066
  */
 @Trivial
-@ExperimentalApi("https://github.com/grpc/grpc-java/issues/5066")
-//@NotThreadSafe
 public final class ServletServerBuilder extends AbstractServerImplBuilder<ServletServerBuilder> {
   List<? extends ServerStreamTracer.Factory> streamTracerFactories;
   int maxInboundMessageSize = DEFAULT_MAX_MESSAGE_SIZE;
 
   private ScheduledExecutorService scheduler;
-  private boolean internalCaller;
   private boolean usingCustomScheduler;
   private InternalServerImpl internalServer;
+  private ServerImplBuilder builder;
 
-// TODO uncomment this when the super method is no longer final
-//  /**
-//   * Builds a gRPC server that can run as a servlet.
-//   *
-//   * <p>The returned server will not be started or bound to a port.
-//   *
-//   * <p>Users should not call this method directly. Instead users should call
-//   * {@link #buildServletAdapter()} which internally will call {@code build()} and {@code start()}
-//   * appropriately.
-//   *
-//   * @throws IllegalStateException if this method is called by users directly
-//   */
-//  @Override
-//  public Server build() {
-//    checkState(internalCaller, "build() method should not be called directly by an application");
-//    return super.build();
-//  }
+  public ServletServerBuilder() {
+    builder = new ServerImplBuilder(
+      new ClientTransportServersBuilder() {
+        @Override
+        public List<? extends InternalServer> buildClientTransportServers(
+            List<? extends ServerStreamTracer.Factory> streamTracerFactories) {
+          return buildTransportServers(streamTracerFactories);
+        }
+      }
+    );
+  }
+
+  @Override
+  protected ServerBuilder<?> delegate() {
+    return builder;
+  }
 
   /**
    * Creates a {@link ServletAdapter}.
@@ -95,13 +87,9 @@ public final class ServletServerBuilder extends AbstractServerImplBuilder<Servle
 
   private ServerTransportListener buildAndStart() {
     try {
-      internalCaller = true;
-      build().start();
+      builder.build().start();
     } catch (IOException e) {
-      // actually this should never happen
       throw new RuntimeException(e);
-    } finally {
-      internalCaller = false;
     }
 
     if (!usingCustomScheduler) {
@@ -116,8 +104,7 @@ public final class ServletServerBuilder extends AbstractServerImplBuilder<Servle
     return internalServer.serverListener.transportCreated(serverTransport);
   }
 
-  @Override
-  protected List<? extends InternalServer> buildTransportServers(
+  private List<? extends InternalServer> buildTransportServers(
       List<? extends Factory> streamTracerFactories) {
     checkNotNull(streamTracerFactories, "streamTracerFactories");
     this.streamTracerFactories = streamTracerFactories;

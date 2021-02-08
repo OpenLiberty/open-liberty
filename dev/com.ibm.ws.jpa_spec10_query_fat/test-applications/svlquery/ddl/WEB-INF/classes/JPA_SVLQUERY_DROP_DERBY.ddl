@@ -1,3 +1,5 @@
+DROP TABLE ${schemaname}.OPENJPA_SEQUENCE_TABLE;
+
 DROP TABLE ${schemaname}.Jpa2Address;
 DROP TABLE ${schemaname}.Jpa2Person;
 DROP TABLE ${schemaname}.JPAAddressBean;
@@ -17,4 +19,3 @@ DROP TABLE ${schemaname}.JPATypeTestBean;
 DROP TABLE ${schemaname}.JPAUsagePartTab;
 DROP TABLE ${schemaname}.JPAXYZ;
 DROP TABLE ${schemaname}.Person_residences;
-

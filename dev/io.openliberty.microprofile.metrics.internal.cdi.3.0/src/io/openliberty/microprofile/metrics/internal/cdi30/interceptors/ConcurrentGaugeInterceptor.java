@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -67,9 +67,19 @@ public class ConcurrentGaugeInterceptor {
         MetricResolver.Of<ConcurrentGauge> concurrentGaugeAnno = resolver.concurentGauged(bean.getBeanClass(), element);
         MetricID tmid = new MetricID(concurrentGaugeAnno.metricName(), Utils.tagsToTags(concurrentGaugeAnno.tags()));
         org.eclipse.microprofile.metrics.ConcurrentGauge concurrentGauge = (org.eclipse.microprofile.metrics.ConcurrentGauge) registry.getMetric(tmid);
-        if (concurrentGauge == null)
-            throw new IllegalStateException("No concurrent gauge with metricID [" + tmid + "] found in registry [" + registry + "]");
+        if (concurrentGauge == null) {
 
+            /*
+             * Try and Catch to force an FFDC since the DefaultExceptionMapper is catching exceptions
+             * which does not result in FFDCs. Caught Exception generates an FFDC. The subsequent
+             * rethrow is caught by the DefaultExceptionMapper where it is printed out.
+             */
+            try {
+                throw new IllegalStateException("No concurrent gauge with metricID [" + tmid + "] found in registry [" + registry + "]");
+            } catch (IllegalStateException exception) {
+                throw exception;
+            }
+        }
         concurrentGauge.inc();
         try {
             return context.proceed();
