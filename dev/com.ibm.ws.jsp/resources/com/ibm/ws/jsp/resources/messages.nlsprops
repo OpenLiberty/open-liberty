@@ -1258,3 +1258,7 @@ jsp.parse.tld.exception.useraction=Check the JSP Tag Library Descriptor file for
 system.java.compiler.not.found=JSPG0304W: The JSP attribute, useJDKCompiler, is set to true, but the Java SDK compiler was not found. The JSP container uses the compiler that is embedded in the product to compile the JSP files in web module: {0}.
 system.java.compiler.not.found.explanation=The JSP container was unable to find the system compiler, which usually indicates that the Java SDK jar file, tools.jar, was not found in the class path.
 system.java.compiler.not.found.useraction=Ensure that the Java SDK jar file, tools.jar, is in the class path and verify that the Java SDK supports the Java Compiler API. See Java Specification Request 199 for more information.
+
+jsp.feature.not.loaded.correctly=CWWJS0001: The JSP [Pages] feature did not load with an acceptable version.
+jsp.feature.not.loaded.correctly.explanation=The JSP [Pages] feature is loaded with a version that corresponds to the Java [Jakarta] EE specification of that JSP [Pages] feature. The feature was loaded with no version defined.
+jsp.feature.not.loaded.correctly.useraction=Check the server.xml file for existence of either a JSP [Pages] feature. Only one should be specified.

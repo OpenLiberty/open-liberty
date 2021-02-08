@@ -16,11 +16,14 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -49,6 +52,7 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.javaee.dd.webext.Attribute;
 import com.ibm.ws.javaee.dd.webext.WebExt;
+import com.ibm.ws.javaee.version.PagesVersion;
 import com.ibm.ws.jsp.Constants;
 import com.ibm.ws.jsp.JSPStrBufferFactory;
 import com.ibm.ws.jsp.JSPStrBufferImpl;
@@ -98,11 +102,20 @@ public class JSPExtensionFactory extends AbstractJSPExtensionFactory implements 
     private ElValidatorExtFactory elValidatorExtFactory;
     @Reference
     private GeneratorUtilsExtFactory generatorUtilsExtFactory;
-    @Reference
-    private JspVersionFactory jspVersionFactory;
+
     @Reference
     private ClassLoadingService classLoadingService;
     private BundleContext bundleContext;
+
+    private ServiceReference<PagesVersion> versionRef;
+
+    public static final String SPEC_LEVEL_UNLOADED = "0.0";
+
+    private static final String DEFAULT_VERSION = "2.2";
+
+    private static String loadedSpecLevel = SPEC_LEVEL_UNLOADED;
+
+    protected static volatile CountDownLatch selfInit = new CountDownLatch(1);
     
     /**
      * Active JSPExtensionFactory instance. May be null between deactivate and activate
@@ -159,6 +172,7 @@ public class JSPExtensionFactory extends AbstractJSPExtensionFactory implements 
     protected void deactivate(ComponentContext ctx) {
         // Clear this as the active instance
         instance.compareAndSet(this, null);
+        selfInit = new CountDownLatch(1);
         expressionFactoryService.deactivate(ctx);
     }
 
@@ -176,6 +190,19 @@ public class JSPExtensionFactory extends AbstractJSPExtensionFactory implements 
             if (key != null && value != null)
                 defaultProperties.put(key, value);
         }
+    }
+
+    @Reference(service = PagesVersion.class, cardinality = ReferenceCardinality.MANDATORY, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
+    protected synchronized void setVersion(ServiceReference<PagesVersion> reference) {
+      this.versionRef = reference;
+      JSPExtensionFactory.loadedSpecLevel = (String) reference.getProperty("version");
+    }
+
+    protected synchronized void unsetVersion(ServiceReference<PagesVersion> reference) {
+      if (reference == this.versionRef) {
+        this.versionRef = null;
+        JSPExtensionFactory.loadedSpecLevel = JSPExtensionFactory.DEFAULT_VERSION;
+      }
     }
     
     private final static HashMap<String, String> FullyQualifiedPropertiesMap = new HashMap<String, String>();
@@ -588,15 +615,31 @@ public class JSPExtensionFactory extends AbstractJSPExtensionFactory implements 
     public static GeneratorUtilsExtFactory getGeneratorUtilsExtFactory() {
         JSPExtensionFactory inst = instance.get();
         return inst == null? null: inst.generatorUtilsExtFactory;
-    }
-    
-    public static JspVersionFactory getJspVersionFactory() {
-        JSPExtensionFactory inst = instance.get();
-        return inst == null? null: inst.jspVersionFactory;
-    }    
+    }  
 
     public String resolveString(String x) {
         return locationService.resolveString(x);
+    }
+
+    public static String getLoadedPagesSpecLevel() {
+        if(JSPExtensionFactory.loadedSpecLevel.equals(SPEC_LEVEL_UNLOADED)){
+
+            CountDownLatch currentLatch = selfInit;
+            // wait for activation
+            try {
+                currentLatch.await(5, TimeUnit.SECONDS);
+            } catch (InterruptedException e) {
+                // auto-FFDC
+                Thread.currentThread().interrupt();
+            }
+            currentLatch.countDown(); // don't wait again
+
+            if(JSPExtensionFactory.loadedSpecLevel.equals(SPEC_LEVEL_UNLOADED)){
+              logger.logp(Level.WARNING, CLASS_NAME, "getLoadedPagesSpecLevel", "jsp.feature.not.loaded.correctly");
+              return JSPExtensionFactory.DEFAULT_VERSION;
+            }
+        }
+        return JSPExtensionFactory.loadedSpecLevel;
     }
 }
 
