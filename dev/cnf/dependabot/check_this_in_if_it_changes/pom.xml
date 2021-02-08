@@ -1184,7 +1184,7 @@
     <dependency>
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-transports-http</artifactId>
-      <version>3.4.1-20201002</version>
+      <version>3.4.1</version>
     </dependency>
     <dependency>
       <groupId>org.apache.cxf</groupId>

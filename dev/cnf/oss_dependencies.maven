@@ -232,7 +232,7 @@ org.apache.cxf:cxf-rt-security:3.4.1
 org.apache.cxf:cxf-rt-transports-http-hc:3.4.1
 org.apache.cxf:cxf-rt-transports-http:2.6.2
 org.apache.cxf:cxf-rt-transports-http:3.1.18
-org.apache.cxf:cxf-rt-transports-http:3.4.1-20201002
+org.apache.cxf:cxf-rt-transports-http:3.4.1
 org.apache.cxf:cxf-rt-ws-addr:3.4.1
 org.apache.cxf:cxf-rt-ws-mex:3.4.1
 org.apache.cxf:cxf-rt-ws-policy:3.4.1
