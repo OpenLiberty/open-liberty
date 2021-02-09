@@ -1670,4 +1670,9 @@ public interface WIMMessageKey {
      * CWIML4559E: The bind authentication mechanism on the {0} LdapRegistry is set to GSSAPI, but the required attribute, krb5Principal, is not configured.
      */
     String KRB5_PRINCIPAL_REQUIRED = "KRB5_PRINCIPAL_REQUIRED";
+
+    /**
+     * CWIML4518W: The {0} {1} value is malformed. The value must be a series of objectclass:attribute or *:attribute pairs, where each pair is separated by a semi-colon.
+     */
+    String IDMAP_INVALID_FORMAT = "IDMAP_INVALID_FORMAT";
 }
