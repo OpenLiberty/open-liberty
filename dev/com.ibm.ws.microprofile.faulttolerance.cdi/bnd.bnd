@@ -55,7 +55,6 @@ WS-TraceGroup: FAULTTOLERANCE
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
 	com.ibm.websphere.javaee.annotation.1.2;version=latest,\
-	com.ibm.websphere.javaee.concurrent.1.0;version=latest,\
 	com.ibm.ws.microprofile.faulttolerance.spi;version=latest,\
 	com.ibm.ws.transaction.cdi;version=latest
 	
