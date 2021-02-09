@@ -20,7 +20,7 @@ import io.smallrye.graphql.client.typesafe.api.Header;
 public interface ClientInterface1 extends ClientInterfaceBase {
 
     public static String authHeaderValue() {
-        System.out.println("ANDY 1.authHeaderValue()");
+        System.out.println("DEBUG 1.authHeaderValue()");
         return "Basic " + Base64.getEncoder().encodeToString(("user1:user1pwd").getBytes());
     }
 

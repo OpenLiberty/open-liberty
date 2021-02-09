@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Export-Package: com.ibm.ws.rsuserbundle3.myhandler
+Bundle-Name: RSMessageContextAPITestHandler
+Bundle-Activator: com.ibm.ws.rsuserbundle3.myhandler.RSMessageContextAPITestActivitor
+Bundle-ManifestVersion: 2
+Import-package: com.ibm.wsspi.webservices.handler,javax.servlet.http;resolution:=optional,org.osgi.framework
+DynamicImport-Package: jakarta.servlet.http
+Bundle-SymbolicName: RSMessageContextAPITestHandler
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-Version: 1.0.0

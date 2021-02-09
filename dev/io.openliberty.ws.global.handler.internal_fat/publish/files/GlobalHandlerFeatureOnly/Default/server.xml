@@ -1,0 +1,12 @@
+<server>
+    <featureManager>
+        <feature>jsp-2.3</feature>
+        <feature>jaxrs-2.0</feature>
+    </featureManager>
+
+    <include location="../fatTestPorts.xml"/>
+    
+    <logging traceSpecification="*=info:logservice=all:app.manager=all"/>
+
+    <javaPermission className="java.security.AllPermission"  name="*" actions="*" />
+</server>
