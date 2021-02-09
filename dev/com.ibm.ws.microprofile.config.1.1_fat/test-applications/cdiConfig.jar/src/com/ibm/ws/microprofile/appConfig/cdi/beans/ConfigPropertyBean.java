@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2016, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -50,6 +50,10 @@ public class ConfigPropertyBean {
     @ConfigProperty(name = "providerForOptionalThatDoesNotExist")
     Provider<Optional<String>> optionalNotExists;
 
+    @Inject
+    @ConfigProperty(name = "windowsPath")
+    String windowsPath;
+
     /**
      * @return the nullKey
      */
@@ -79,5 +83,9 @@ public class ConfigPropertyBean {
 
     public String getelseFromOptionalThatExists() {
         return optionalNotExists.get().orElse("passed: should not exist");
+    }
+
+    public String getwindowsPath() {
+        return windowsPath;
     }
 }
