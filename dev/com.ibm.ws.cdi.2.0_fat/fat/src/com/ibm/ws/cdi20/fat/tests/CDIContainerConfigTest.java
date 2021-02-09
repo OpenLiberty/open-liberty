@@ -25,8 +25,11 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
+import com.ibm.ws.cdi20.fat.apps.cdiContainerConfig.explicit.MyExplicitBean;
+import com.ibm.ws.cdi20.fat.apps.cdiContainerConfig.implicit.MyImplicitBean;
+import com.ibm.ws.cdi20.fat.apps.cdiContainerConfig.web.CDIContainerConfigServlet;
+import com.ibm.ws.cdi20.fat.apps.cdiContainerConfig.web.MyBeanCDI20;
 
-import cdiContainerConfigApp.web.CDIContainerConfigServlet;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
@@ -60,16 +63,16 @@ public class CDIContainerConfigTest extends FATServletClient {
     public static void setUp() throws Exception {
 
         WebArchive app = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war");
-        app.addPackages(true, APP_NAME + ".web");
-        app.addAsWebInfResource(new File("test-applications/" + APP_NAME + "/resources/index.jsp"));
+        app.addClass(CDIContainerConfigServlet.class);
+        app.addClass(MyBeanCDI20.class);
         app.addAsWebInfResource(new File("test-applications/" + APP_NAME + "/resources/beans.xml"));
 
         JavaArchive implicitJar = ShrinkWrap.create(JavaArchive.class, "implicit.jar");
-        implicitJar.addPackages(true, APP_NAME + ".implicit");
+        implicitJar.addClass(MyImplicitBean.class);
         app.addAsLibrary(implicitJar);
 
         JavaArchive explicitJar = ShrinkWrap.create(JavaArchive.class, "explicit.jar");
-        explicitJar.addPackages(true, APP_NAME + ".explicit");
+        explicitJar.addClass(MyExplicitBean.class);
         explicitJar.addAsManifestResource(new File("test-applications/" + APP_NAME + "/resources/beans.xml"));
         app.addAsLibrary(explicitJar);
 
