@@ -11,7 +11,7 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 grpcVersion=1.35.0
-nettyVersion=4.1.52
+nettyVersion=4.1.59.Final
 
 src: \
     fat/src,\
