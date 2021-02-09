@@ -27,6 +27,7 @@ import com.ibm.ws.testtooling.testlogic.AbstractTestLogic;
 import com.ibm.ws.testtooling.vehicle.resources.JPAResource;
 import com.ibm.ws.testtooling.vehicle.resources.TestExecutionResources;
 
+@SuppressWarnings("unchecked")
 public class JUBulkUpdateTest extends AbstractTestLogic {
     public void testNamedDeleteQuery(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
                                      Object managedComponentObject) {
@@ -51,11 +52,6 @@ public class JUBulkUpdateTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
-
-        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
-        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
-
-        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -119,11 +115,6 @@ public class JUBulkUpdateTest extends AbstractTestLogic {
             }
         }
 
-        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
-        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
-
-        final String lDbProductName = dbProductName.toLowerCase();
-
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -178,11 +169,6 @@ public class JUBulkUpdateTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
-
-        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
-        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
-
-        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -253,11 +239,6 @@ public class JUBulkUpdateTest extends AbstractTestLogic {
             }
         }
 
-        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
-        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
-
-        final String lDbProductName = dbProductName.toLowerCase();
-
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -317,11 +298,6 @@ public class JUBulkUpdateTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
-
-        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
-        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
-
-        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -383,11 +359,6 @@ public class JUBulkUpdateTest extends AbstractTestLogic {
             }
         }
 
-        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
-        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
-
-        final String lDbProductName = dbProductName.toLowerCase();
-
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -447,11 +418,6 @@ public class JUBulkUpdateTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
-
-        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
-        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
-
-        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
