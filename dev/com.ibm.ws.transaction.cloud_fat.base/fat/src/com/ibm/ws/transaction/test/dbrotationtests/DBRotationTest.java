@@ -210,6 +210,11 @@ public class DBRotationTest extends FATServletClient {
         final String method = "testDBRecoveryCompeteForLog";
         StringBuilder sb = null;
         String id = "001";
+
+        // longLeaseLengthServer1 is shared  with the log failure tests which turn FFDC checking off.
+        // Need to explicitly turn it on here in case those tests ran earlier
+        longLeaseLengthServer1.setFFDCChecking(true);
+        
         startServers(longLeaseLengthServer1);
         try {
             runTestWithResponse(longLeaseLengthServer1, SERVLET_NAME, "modifyLeaseOwner");
