@@ -196,6 +196,7 @@ public class LibertyClient {
     protected Machine machine; // Machine the client is on
 
     protected String clientToUse; // the client to use
+    protected String clientDump;
 
     //An ID given to the client topology that will be used as a reference e.g. JPAFATTestClient
     protected String clientTopologyID;
@@ -274,15 +275,13 @@ public class LibertyClient {
         String keystore = b.getValue("keystore");
         checkingDisabled = false;
 
-        if (clientName != null) {
-            clientToUse = clientName;
-            pathToAutoFVTNamedClient += clientToUse + "/";
-        } else {
-            clientToUse = b.getValue("clientName");
-            if (clientToUse == null || clientToUse.trim().equals("")) {
-                clientToUse = DEFAULT_CLIENT;
-            }
+        if ( clientName == null ) {
+            clientName = b.getValue("clientName");
         }
+        if ( (clientName == null) || clientName.trim().equals("") ) {        
+            clientName = DEFAULT_CLIENT;
+        }
+        setClientName(clientName);
 
         // This is the only case where we will allow the messages.log name to  be changed
         // by the fat framework -- because we want to look at messasges.log for start/stop/blah
@@ -376,23 +375,23 @@ public class LibertyClient {
         installedApplications = new ArrayList<String>();
         machine.connect();
         machine.setWorkDir(installRoot);
-        if (this.clientToUse == null) {
-            this.clientToUse = DEFAULT_CLIENT;
+        if (clientToUse == null) {
+            setClientName(DEFAULT_CLIENT);
         }
-        this.installRoot = LibertyServerUtils.makeJavaCompatible(installRoot);
-        this.userDir = installRoot + "/usr";
-        this.clientRoot = installRoot + "/usr/clients/" + clientToUse;
-        this.clientOutputRoot = this.clientRoot;
-        this.logsRoot = clientOutputRoot + relativeLogsRoot;
-        this.messageAbsPath = logsRoot + messageFileName;
-        this.policyFilePath = installRoot + "/../../com.ibm.ws.kernel.boot/resources/security.policy";
+        installRoot = LibertyServerUtils.makeJavaCompatible(installRoot);
+        userDir = installRoot + "/usr";
+        clientRoot = installRoot + "/usr/clients/" + clientToUse;
+        clientOutputRoot = clientRoot;
+        logsRoot = clientOutputRoot + relativeLogsRoot;
+        messageAbsPath = logsRoot + messageFileName;
+        policyFilePath = installRoot + "/../../com.ibm.ws.kernel.boot/resources/security.policy";
 
-        File installRootfile = new File(this.installRoot);
-        this.installRootParent = installRootfile.getParent();
+        File installRootfile = new File(installRoot);
+        installRootParent = installRootfile.getParent();
 
         // Now it sets all OS specific stuff
         machineOS = machine.getOperatingSystem();
-        this.machineJava = LibertyServerUtils.makeJavaCompatible(machineJava);
+        machineJava = LibertyServerUtils.makeJavaCompatible(machineJava);
         Log.info(c, "setup", "Successfully obtained machine. Operating System is: " + machineOS.name());
         // Continues with setup, we now validate the Java used is a JDK by looking for java and jar files
         String jar = "jar";
@@ -516,7 +515,7 @@ public class LibertyClient {
         MINIFY, ALL, USR;
 
         public String getIncludeString() {
-            return "--include=" + this.toString().toLowerCase();
+            return "--include=" + toString().toLowerCase();
         }
     }
 
@@ -1413,7 +1412,10 @@ public class LibertyClient {
         // to collect them in the archive of every subsequent client run.
         List<String> files = listLibertyClientRoot(null, null);
         for (String name : files) {
-            if (name.startsWith("javacore*") || name.startsWith("heapdump*") || name.startsWith("Snap*") || name.startsWith(clientToUse + ".dump")) {
+            if ( name.startsWith("javacore*") ||
+                 name.startsWith("heapdump*") ||
+                 name.startsWith("Snap*") ||
+                 name.startsWith(clientDump) ) {
                 deleteFileFromLibertyInstallRoot(name);
             }
         }
@@ -1510,32 +1512,33 @@ public class LibertyClient {
             String absPath = toCopy.getAbsolutePath();
 
             if (absPath.endsWith(".log"))
-                LogPolice.measureUsedTrace(toCopy.length());
+                LogPolice.addUsedTrace( absPath, toCopy.length() );
 
             if (toCopy.isDirectory()) {
                 // Recurse
                 recursivelyCopyDirectory(toCopy, toReceive, ignoreFailures, skipArchives, moveFile);
             } else {
                 try {
-                    if (skipArchives
-                        && (absPath.endsWith(".jar")
-                            || absPath.endsWith(".war")
-                            || absPath.endsWith(".ear")
-                            || absPath.endsWith(".rar")
-                            //If we're only getting logs, skip jars, wars, ears, zips, unless they are client dump zips
-                            || (absPath.endsWith(".zip") && !toCopy.getName().contains(clientToUse + ".dump")))) {
+                    if ( skipArchives &&
+                         (absPath.endsWith(".jar") || absPath.endsWith(".war") ||
+                          absPath.endsWith(".ear") || absPath.endsWith(".rar") ||
+                          absPath.endsWith(".zip")) &&
+                         !toCopy.getName().contains(clientDump) ) {
                         continue;
                     }
 
-                    // We're only going to attempt to move log files. Because of ffdc log checking, we
-                    // can't move those. But we should move other log files..
-                    boolean isLog = (absPath.contains("logs") && !absPath.contains("ffdc"))
-                                    || toCopy.getName().contains("javacore")
-                                    || toCopy.getName().contains("heapdump")
-                                    || toCopy.getName().contains("Snap")
-                                    || toCopy.getName().contains(clientToUse + ".dump");
+                    // Log files, except for FFDC logs, are moved.
+                    // FFDC logs cannot be moved because of FFDC checking.
 
-                    if (moveFile && isLog) {
+                    boolean moveLog =
+                        ( moveFile &&
+                          ((absPath.contains("logs") && !absPath.contains("ffdc")) ||
+                           (toCopy.getName().contains("javacore") ||
+                            toCopy.getName().contains("heapdump") ||
+                            toCopy.getName().contains("Snap") ||
+                            toCopy.getName().contains(clientDump))) );
+
+                    if ( moveLog ) {
                         boolean copied = false;
 
                         // If we're local, try to rename the file instead..
@@ -1737,6 +1740,15 @@ public class LibertyClient {
 
     public String getClientName() {
         return clientToUse;
+    }
+
+    protected void setClientName(String clientName) {
+        clientName = clientName.trim();
+
+        clientToUse = clientName;
+        clientDump = clientName + ".dump";
+
+        pathToAutoFVTNamedClient += clientName + "/";
     }
 
     public void deleteFileFromLibertyInstallRoot(String filePath) throws Exception {

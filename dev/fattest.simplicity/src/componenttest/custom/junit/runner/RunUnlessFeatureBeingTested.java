@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,14 +16,18 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation for expressing that a test method or class should *not* run when the named feature is
- * available (ie under test). Availability is determined by looking at system properties, rather than
- * the server configuration. In other words, it's an expression of intent rather than a statement
- * about the exact state of the server.
+ * Annotation for expressing that a test method or class should not be
+ * run when the named feature is present in the target server.
+ * 
+ * Availability is determined by looking at system properties, rather than
+ * the server configuration. Note that a system property only expresses
+ * intent.  The presence of the feature in the server is not tested.
+ * 
+ * Deprecated.  Use instead {@link componenttest.annotation.RunUnlessFeatureBeingTested}. 
  */
+@Deprecated
 @Target({ ElementType.METHOD, ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface RunUnlessFeatureBeingTested {
-
     String value();
 }

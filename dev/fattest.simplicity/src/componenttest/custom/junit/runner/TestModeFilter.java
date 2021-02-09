@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,85 +17,106 @@ import org.junit.runner.manipulation.Filter;
 
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.annotation.Util;
 import componenttest.custom.junit.runner.Mode.TestMode;
 
 /**
- *
+ * Test filter which compares the current test mode against the
+ * test mode which is set for a specific test method.
+ * 
+ * Test must have a test mode which is less than or equal to the
+ * specified test mode.  For example, LITE is less than FULL, which
+ * is less than QUARANTINE, which is less than EXPERIMENTAL.
+ * 
+ * When the test mode is set to LITE, only LITE mode tests are run.
+ * When the test mode is set to FULL, only LITE and FULL mode tests
+ * are run.
+ * 
  */
 public class TestModeFilter extends Filter {
+    private static final Class<? extends TestModeFilter> c = TestModeFilter.class;
 
+    /** The property which is used to specify the current test mode. */
     public static final String FAT_MODE_PROPERTY_NAME = "fat.test.mode";
 
-    //Run levels for various FAT modes
+    /** The default test mode for the framework. */
+    public static TestMode DEFAULT_FRAMEWORK_MODE = TestMode.LITE;
+    
+    /** The default test mode for individual tests. */
+    public static TestMode DEFAULT_TEST_MODE = TestMode.LITE;
+    
     public static final TestMode FRAMEWORK_TEST_MODE;
 
     static {
-        //get and set the framework mode, default to LITE
         String modeProperty = System.getProperty(FAT_MODE_PROPERTY_NAME);
-        FRAMEWORK_TEST_MODE = modeProperty != null ? TestMode.valueOf(modeProperty.toUpperCase(Locale.ROOT)) : TestMode.LITE;
+        
+        FRAMEWORK_TEST_MODE = ((modeProperty != null) ? TestMode.valueOf(modeProperty.toUpperCase(Locale.ROOT)) : DEFAULT_FRAMEWORK_MODE );
 
-        Log.info(TestModeFilter.class, "<clinit>", "System property: " + FAT_MODE_PROPERTY_NAME + " is " + modeProperty + " running in test mode " + FRAMEWORK_TEST_MODE);
+        Log.info(c, "<clinit>",
+            "FAT framework test mode (" + FAT_MODE_PROPERTY_NAME + ") (" + modeProperty + "): " + FRAMEWORK_TEST_MODE);
     }
 
-    /** {@inheritDoc} */
+    //
+
+    /**
+     * Compare a specified test mode with the current test mode,
+     * telling if a test having the specified test mode should be run.
+     * 
+     * The test should be run if the specified test mode is less than
+     * or equal to the current test mode.
+     *
+     * @param testMode The test mode which is to be compared.
+     *
+     * @return True or false telling if the specified test mode
+     *     should be run.
+     */
+    public static boolean shouldRun(TestMode testMode) {
+        return ( FRAMEWORK_TEST_MODE.compareTo(testMode) >= 0 );
+    }
+
+    //
+
+    /**
+     * Answer a print string for this filter.
+     * 
+     * @return A print string for this filter.
+     */
     @Override
-    public String describe() {
-        return null;
+    public String describe() {        
+        return "TestModeFilter(" + FRAMEWORK_TEST_MODE + ")";
     }
 
     /**
-     * Like {@link Description#getTestClass}, but without initializing the class.
+     * Tell if a test method should be run based on it's test mode.
+     * 
+     * Obtain the mode of the test method as a method annotation, then
+     * as a class annotation.  If neither annotation is present, use
+     * the default test mode {@link #DEFAULT_TEST_MODE}.  (The default
+     * is set so that tests with no annotation are always run.)
+     * 
+     * @param desc The description of the test method.
+     *
+     * @return True or false telling if the test method is to be run.
      */
-    private Class<?> getTestClass(Description desc) {
-        try {
-            return Class.forName(desc.getClassName(), false, getClass().getClassLoader());
-        } catch (ClassNotFoundException e) {
-            return null;
-        }
-    }
-
-    /** {@inheritDoc} */
     @Override
     public boolean shouldRun(Description desc) {
-        Mode mode;
-        //check for a method level annotation first
-        mode = desc.getAnnotation(Mode.class);
-        //method level annotations supercede any class level annotation
-        if (mode == null) {
-            //there was no method level annotation
-            //check for a test class level annotation
-            mode = getTestClass(desc).getAnnotation(Mode.class);
-        }
-        //default to lite for unannotated tests
-        TestMode testMode = TestMode.LITE;
-        //if the test was annotated, get the mode from the annotation
-        if (mode != null) {
+        Mode mode = Util.getAnnotation(Mode.class, desc);
+
+        TestMode testMode;
+        if ( mode != null ) {
             testMode = mode.value();
+        } else {
+            testMode = DEFAULT_TEST_MODE;
         }
 
         boolean run = shouldRun(testMode);
-
-        if (!run) {
-            Log.debug(getClass(), "Removing test " + desc.getMethodName() + " with mode " + testMode + " from list to run, because not valid for current mode "
-                                  + FRAMEWORK_TEST_MODE);
+        if ( !run ) {
+            Log.info(c, "shouldRun",
+                "Skipping test " + desc.getMethodName() +
+                "; test mode " + testMode + " is inactive for framework mode " + FRAMEWORK_TEST_MODE);
             return false;
-        } else
+        } else {
             return true;
+        }
     }
-
-    public static boolean shouldRun(TestMode testMode) {
-        //compare the current run level of the framework to the
-        //test annotated run level
-        //exclude the test if the current run mode is lower than the test's
-        //e.g. for a test annotated lite
-        // FRAMEWORK_TEST_MODE | test annotation level | comparison | result | filter result
-        // full                | lite                  | full > lite | > 0 | true, full should run lite tests
-        // lite                | lite | lite = lite | 0 | true, lite should run lite tests
-        // rapid               | lite | rapid < lite | < 0 | false, rapid should not run lite tests
-        if (FRAMEWORK_TEST_MODE.compareTo(testMode) < 0) {
-            return false;
-        } else
-            return true;
-    }
-
 }

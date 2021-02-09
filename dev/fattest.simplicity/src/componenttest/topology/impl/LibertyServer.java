@@ -387,6 +387,7 @@ public class LibertyServer implements LogMonitorClient {
     protected Machine machine; // Machine the server is on
 
     protected String serverToUse; // the server to use
+    protected String serverDump;
 
     //An ID given to the server topology that will be used as a reference e.g. JPAFATTestServer
     protected String serverTopologyID;
@@ -482,21 +483,19 @@ public class LibertyServer implements LogMonitorClient {
      */
     LibertyServer(String serverName, Bootstrap b, boolean deleteServerDirIfExist, boolean usePreviouslyConfigured,
                   LibertyServerFactory.WinServiceOption winServiceOption) throws Exception {
-        final String method = "setup";
+        String method = "setup";
         Log.entering(c, method);
         serverTopologyID = b.getValue("ServerTopologyID");
         hostName = b.getValue("hostName");
         machineJava = b.getValue(hostName + ".JavaHome");
 
-        if (serverName != null) {
-            serverToUse = serverName;
-            pathToAutoFVTNamedServer += serverToUse + "/";
-        } else {
-            serverToUse = b.getValue("serverName");
-            if (serverToUse == null || serverToUse.trim().equals("")) {
-                serverToUse = DEFAULT_SERVER;
-            }
+        if (serverName == null) {
+            serverName = b.getValue("serverName");
         }
+        if ( (serverName == null) || serverName.trim().equals("") ) {
+            serverName = DEFAULT_SERVER;
+        }
+        setServerToUse(serverName);
 
         if (winServiceOption == LibertyServerFactory.WinServiceOption.ON) {
             runAsAWindowService = true;
@@ -622,32 +621,34 @@ public class LibertyServer implements LogMonitorClient {
         Log.exiting(c, METHOD);
     }
 
-    protected void setup(boolean deleteServerDirIfExist, boolean usePreviouslyConfigured) throws Exception {
+    protected void setup(boolean deleteServerDirIfExist, boolean usePreviouslyConfigured)
+        throws Exception {
+
         installedApplications = new HashSet<String>();
         machine.connect();
         machine.setWorkDir(installRoot);
-        if (this.serverToUse == null) {
-            this.serverToUse = DEFAULT_SERVER;
+        if (serverToUse == null) {
+            setServerToUse(DEFAULT_SERVER);
         }
 
         machineOS = machine.getOperatingSystem();
-        this.installRoot = LibertyServerUtils.makeJavaCompatible(installRoot, machine);
+        installRoot = LibertyServerUtils.makeJavaCompatible(installRoot, machine);
         // Set default usr directory if not already set.
-        if (this.userDir == null)
-            this.userDir = installRoot + "/usr";
+        if (userDir == null)
+            userDir = installRoot + "/usr";
         else
             customUserDir = true;
-        this.serverRoot = this.userDir + "/servers/" + serverToUse;
-        this.serverOutputRoot = this.serverRoot;
-        this.logsRoot = serverOutputRoot + relativeLogsRoot;
-        this.messageAbsPath = logsRoot + messageFileName;
-        this.traceAbsPath = logsRoot + traceFileName;
+        serverRoot = userDir + "/servers/" + serverToUse;
+        serverOutputRoot = serverRoot;
+        logsRoot = serverOutputRoot + relativeLogsRoot;
+        messageAbsPath = logsRoot + messageFileName;
+        traceAbsPath = logsRoot + traceFileName;
 
         // delete existing server directory if requested:
         if (deleteServerDirIfExist) {
-            RemoteFile serverDir = new RemoteFile(machine, this.serverRoot);
+            RemoteFile serverDir = new RemoteFile(machine, serverRoot);
             if (serverDir.exists() && !serverDir.delete()) {
-                Exception ex = new TopologyException("Unable to delete pre-existing server directory: " + this.serverRoot);
+                Exception ex = new TopologyException("Unable to delete pre-existing server directory: " + serverRoot);
                 Log.error(c, "setup - User requested that we delete pre-existing server directory, but this operation failed - " + this.serverRoot, ex);
                 throw ex;
             }
@@ -2617,7 +2618,10 @@ public class LibertyServer implements LogMonitorClient {
         // to collect them in the archive of every subsequent server run.
         List<String> files = listLibertyServerRoot(null, null);
         for (String name : files) {
-            if (name.startsWith("javacore*") || name.startsWith("heapdump*") || name.startsWith("Snap*") || name.startsWith(serverToUse + ".dump")) {
+            if (name.startsWith("javacore*") ||
+                name.startsWith("heapdump*") ||
+                name.startsWith("Snap*") ||
+                name.startsWith(serverDump)) {
                 deleteFileFromLibertyInstallRoot(name);
             }
         }
@@ -2672,101 +2676,93 @@ public class LibertyServer implements LogMonitorClient {
         }
     }
 
-    /**
-     * @param remoteFile
-     * @param logFolder
-     * @param b
-     * @param d
-     */
     protected void recursivelyCopyDirectory(RemoteFile remoteFile, LocalFile logFolder, boolean ignoreFailures) throws Exception {
         recursivelyCopyDirectory(remoteFile, logFolder, ignoreFailures, false, false);
-
     }
 
-    /**
-     * @param method
-     * @throws Exception
-     */
     protected void recursivelyCopyDirectory(RemoteFile remoteDirectory, LocalFile destination, boolean ignoreFailures, boolean skipArchives, boolean moveFile) throws Exception {
+        String methodName = "recursivelyCopyDirectory";
+
         destination.mkdirs();
 
-        ArrayList<String> logs = new ArrayList<String>();
-        logs = listDirectoryContents(remoteDirectory);
-        for (String l : logs) {
-            if (remoteDirectory.getName().equals("workarea")) {
-                if (l.equals(OSGI_DIR_NAME) || l.startsWith(".s")) {
-                    // skip the osgi framework cache, and runtime artifacts: too big / too racy
-                    Log.finest(c, "recursivelyCopyDirectory", "Skipping workarea element " + l);
+        ArrayList<String> logs = listDirectoryContents(remoteDirectory);
+
+        for ( String log : logs ) {
+            // skip the osgi framework cache, and runtime artifacts: too big / too racy
+            if ( remoteDirectory.getName().equals("workarea") ) {
+                if ( log.equals(OSGI_DIR_NAME) || log.startsWith(".s") ) {
+                    Log.finest(c, methodName, "Skipping workarea element " + log);
                     continue;
                 }
             }
 
-            if (remoteDirectory.getName().equals("messaging")) {
-                Log.finest(c, "recursivelyCopyDirectory", "Skipping message store element " + l);
+            if ( remoteDirectory.getName().equals("messaging") ) {
+                Log.finest(c, methodName, "Skipping message store element " + log);
                 continue;
             }
 
-            RemoteFile toCopy = new RemoteFile(machine, remoteDirectory, l);
-            LocalFile toReceive = new LocalFile(destination, l);
+            RemoteFile toCopy = new RemoteFile(machine, remoteDirectory, log);
+            LocalFile toReceive = new LocalFile(destination, log);
             String absPath = toCopy.getAbsolutePath();
-            Log.finest(c, "recursivelyCopyDirectory", "Getting: " + absPath);
+            Log.finest(c, methodName, "Getting: " + absPath);
 
-            if (absPath.endsWith(".log"))
-                LogPolice.measureUsedTrace(toCopy.length());
-
-            if (toCopy.isDirectory()) {
-                // Recurse
+            if ( toCopy.isDirectory() ) {
                 recursivelyCopyDirectory(toCopy, toReceive, ignoreFailures, skipArchives, moveFile);
+
             } else {
+                if ( absPath.endsWith(".log") ) {
+                    LogPolice.addUsedTrace(absPath, toCopy.length());
+                }
+
                 try {
-                    if (skipArchives
-                        && (absPath.endsWith(".jar")
-                            || absPath.endsWith(".war")
-                            || absPath.endsWith(".ear")
-                            || absPath.endsWith(".rar")
-                            //If we're only getting logs, skip jars, wars, ears, zips, unless they are server dump zips
-                            || (absPath.endsWith(".zip") && !toCopy.getName().contains(serverToUse + ".dump")))) {
-                        Log.finest(c, "recursivelyCopyDirectory", "Skipping: " + absPath);
+                    if ( skipArchives &&
+                         (absPath.endsWith(".jar") || absPath.endsWith(".war") ||
+                          absPath.endsWith(".ear") || absPath.endsWith(".rar") ||
+                          absPath.endsWith(".zip")) &&
+                          !toCopy.getName().contains(serverDump) ) {
+                        Log.finest(c, methodName, "Skipping non-dump archive: " + absPath);
                         continue;
                     }
 
                     // We're only going to attempt to move log files. Because of ffdc log checking, we
                     // can't move those. But we should move other log files..
-                    boolean isLog = (absPath.contains("logs") && !absPath.contains("ffdc"))
-                                    || toCopy.getName().contains("javacore")
-                                    || toCopy.getName().contains("heapdump")
-                                    || toCopy.getName().contains("Snap")
-                                    || toCopy.getName().contains(serverToUse + ".dump");
+                    boolean moveLog =
+                        ( moveFile &&
+                          (absPath.contains("logs") && !absPath.contains("ffdc")) ||
+                           (toCopy.getName().contains("javacore") ||
+                            toCopy.getName().contains("heapdump") ||
+                            toCopy.getName().contains("Snap") ||
+                            toCopy.getName().contains(serverDump)) );
 
-                    boolean isConfigBackup = absPath.contains("serverConfigBackups");
+                    boolean moveConfigBackup =
+                        ( moveFile && absPath.contains("serverConfigBackups") );
 
-                    if (moveFile && (isLog || isConfigBackup)) {
+                    if ( moveLog || moveConfigBackup ) {
                         boolean copied = false;
 
                         // If we're local, try to rename the file instead..
                         if (machine.isLocal() && toCopy.rename(toReceive)) {
                             copied = true; // well, we moved it, but it counts.
-                            Log.finest(c, "recursivelyCopyDirectory", "MOVE: " + l + " to " + toReceive.getAbsolutePath());
+                            Log.finest(c, methodName, "MOVE: " + log + " to " + toReceive.getAbsolutePath());
                         }
 
                         if (!copied && toReceive.copyFromSource(toCopy)) {
                             // copy was successful, clean up the source log
                             toCopy.delete();
-                            Log.finest(c, "recursivelyCopyDirectory", "MOVE: " + l + " to " + toReceive.getAbsolutePath());
+                            Log.finest(c, methodName, "MOVE: " + log + " to " + toReceive.getAbsolutePath());
                         }
                     } else {
                         toReceive.copyFromSource(toCopy);
-                        Log.finest(c, "recursivelyCopyDirectory", "COPY: " + l + " to " + toReceive.getAbsolutePath());
+                        Log.finest(c, methodName, "COPY: " + log + " to " + toReceive.getAbsolutePath());
                     }
                 } catch (Exception e) {
-                    Log.finest(c, "recursivelyCopyDirectory", "unable to copy or move " + l + " to " + toReceive.getAbsolutePath());
+                    Log.finest(c, methodName, "unable to copy or move " + log + " to " + toReceive.getAbsolutePath());
                     // Ignore on request and carry on copying the rest of the files
                     if (!ignoreFailures) {
                         throw e;
                     }
                 }
             }
-
         }
     }
 
@@ -2958,6 +2954,12 @@ public class LibertyServer implements LogMonitorClient {
         boolean exists = LibertyFileManager.libertyFileExists(machine, fullPath);
         Log.info(c, "libertyFileExists", "File: " + fullPath + " exists " + exists);
         return exists;
+    }
+
+    protected void setServerToUse(String serverName) {
+        serverToUse = serverName;
+        serverDump = serverName + ".dump";
+        pathToAutoFVTNamedServer += serverName + "/";
     }
 
     public String getServerName() {

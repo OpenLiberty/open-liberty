@@ -21,7 +21,9 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.transformer.jakarta.JakartaTransformer;
@@ -104,6 +106,56 @@ public class JakartaEE9Action extends FeatureReplacementAction {
 
     public static final Set<String> EE9_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(EE9_FEATURES_ARRAY)));
 
+    /**
+     * Names of features which change names when moving to Jakarta (EE9).
+     * Keys are JavaEE feature names; values are Jakarta feature names.
+     * 
+     * The keys are prefixes of concrete JavaEE feature names: Version
+     * information is removed.  For example, "servlet-3.0" is stored
+     * as "servlet".
+     */
+    private static final Map<String, String> featuresWithNameChange;
+
+    public static Map<String, String> getFeaturesWithNameChange() {
+        return featuresWithNameChange;
+    }
+
+    static {
+        Map<String, String> featureNameMapping = new HashMap<String, String>(20);
+
+        featureNameMapping.put("ejb", "enterpriseBeans");
+        featureNameMapping.put("ejbHome", "enterpriseBeansHome");
+        featureNameMapping.put("ejbLite", "enterpriseBeansLite");
+        featureNameMapping.put("ejbPersistentTimer", "enterpriseBeansPersistentTimer");
+        featureNameMapping.put("ejbRemote", "enterpriseBeansRemote");
+        featureNameMapping.put("ejbTest", "enterpriseBeansTest");
+        featureNameMapping.put("jacc", "appAuthorization");
+        featureNameMapping.put("jaspic", "appAuthentication");
+        featureNameMapping.put("javaee", "jakartaee");
+        featureNameMapping.put("javaeeClient", "jakartaeeClient");
+        featureNameMapping.put("javaMail", "mail");
+        featureNameMapping.put("jaxrs", "restfulWS");
+        featureNameMapping.put("jaxb", "xmlBinding");
+        featureNameMapping.put("jaxrsClient", "restfulWSClient");
+        featureNameMapping.put("jaxws", "xmlWS");
+        featureNameMapping.put("jaxwsTest", "xmlwsTest");        
+        featureNameMapping.put("jca", "connectors");
+        featureNameMapping.put("jcaInboundSecurity", "connectorsInboundSecurity");
+        featureNameMapping.put("jpa", "persistence");
+        featureNameMapping.put("jpaContainer", "persistenceContainer");
+        featureNameMapping.put("jmsMdb", "mdb");
+        featureNameMapping.put("jms", "messaging");
+        featureNameMapping.put("wasJmsClient", "messagingClient");
+        featureNameMapping.put("wasJmsServer", "messagingServer");
+        featureNameMapping.put("wasJmsSecurity", "messagingSecurity");
+        featureNameMapping.put("jsf", "faces");
+        featureNameMapping.put("jsfContainer", "facesContainer");
+        featureNameMapping.put("jsp", "pages");
+        featureNameMapping.put("el", "expressionLanguage");
+
+        featuresWithNameChange = Collections.unmodifiableMap(featureNameMapping);
+    }
+    
     public JakartaEE9Action() {
         // Remove the EE7 and EE8 features; replace them with the EE9 features
         super(EE9_FEATURE_SET);
