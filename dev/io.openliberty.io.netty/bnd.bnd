@@ -1,9 +1,5 @@
 #*******************************************************************************
-<<<<<<< HEAD
 # Copyright (c) 2021 IBM Corporation and others.
-=======
-# Copyright (c) 2020 IBM Corporation and others.
->>>>>>> renamed io.openliberty.netty.internal to io.openliberty.io.netty
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -15,19 +11,11 @@
 
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
-<<<<<<< HEAD
 nettyVersion=4.1.59.Final
-=======
-nettyVersion=4.1.51.Final
->>>>>>> renamed io.openliberty.netty.internal to io.openliberty.io.netty
 
 Bundle-Name: Netty as an OSGi bundle
 Bundle-SymbolicName: io.openliberty.io.netty
 Bundle-Description: Netty as an OSGi bundle for OpenLiberty, version ${bVersion}
-<<<<<<< HEAD
-publish.wlp.jar.suffix: dev/api/third-party
-=======
->>>>>>> renamed io.openliberty.netty.internal to io.openliberty.io.netty
 
 -includeresource: \
   @${repo;io.netty:netty-buffer;${nettyVersion};EXACT}, \
@@ -42,8 +30,5 @@ publish.wlp.jar.suffix: dev/api/third-party
   @${repo;io.netty:netty-transport;${nettyVersion};EXACT}
 
 Export-Package: \
-<<<<<<< HEAD
   !io.netty.handler.ssl,\
-=======
->>>>>>> renamed io.openliberty.netty.internal to io.openliberty.io.netty
   io.netty.*;version=${nettyVersion}; -split-package:=merge-first
