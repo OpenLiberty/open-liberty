@@ -34,13 +34,6 @@ task copySharedSqlServerAnon(type: Copy) {
   rename 'mssql-jdbc.*.jar', 'anomyous.jar'
 }
 
-task copyAnonymousSqlServer1(type: Copy) {
-  mustRunAfter jar
-  from configurations.sqlserver
-  into new File(autoFvtDir, 'publish/servers/sqlserver1/jdbc')
-  rename 'mssql-jdbc.*.jar', 'driver.jar'
-}
-
 task copyFeatureBundle(type: Copy) {
   from buildDir
   into new File(autoFvtDir, 'publish/shared/resources/sqlserver')
@@ -52,8 +45,6 @@ autoFVT {
 }
 
 addRequiredLibraries.dependsOn copySharedSqlServerAnon
-addRequiredLibraries.dependsOn copyAnonymousSqlServer1
-
 addRequiredLibraries.dependsOn addJakartaTransformer
 
 
