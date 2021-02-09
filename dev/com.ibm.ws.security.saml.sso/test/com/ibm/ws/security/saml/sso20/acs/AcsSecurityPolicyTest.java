@@ -84,7 +84,7 @@ public class AcsSecurityPolicyTest {
         try {
             securityPolicy.evaluate(messageContext);
         } catch (SecurityPolicyException ex) {
-            fail("Unexpected exception was thrown: " + ex.getMessage());
+            fail("Unexpected exception was thrown: " + ex);
         }
     }
 

@@ -1,0 +1,41 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+#COMPONENTPREFIX CWWKT
+#COMPONENTNAMEFOR CWWKT OpenLiberty gRPC
+#CMVCPATHNAME io.openliberty.grpc.1.0.internal/resources/io/openliberty/grpc/internal/resources/grpcmessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+
+service.available=CWWKT0201I: Us\u0142uga gRPC \u015bwiadczona przez {0} jest dost\u0119pna pod adresem: {1}
+service.available.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
+service.available.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+invalid.serverinterceptor=CWWKT0202W: Nie mo\u017cna za\u0142adowa\u0107 przechwytywacza gRPC zdefiniowanego w obiekcie serverInterceptors {0}
+invalid.serverinterceptor.explanation=Za\u0142adowanie przechwytywacza gRPC zdefiniowanego w obiekcie serverInterceptors nie by\u0142o mo\u017cliwe.
+invalid.serverinterceptor.useraction=Sprawd\u017a skonfigurowan\u0105 nazw\u0119 przechwytywacza i \u015bcie\u017ck\u0119 klas aplikacji.
+
+invalid.inbound.msg.size=CWWKT0203E: Maksymalna wielko\u015b\u0107 maxInboundMessageSize {0} jest niepoprawna. Wielko\u015bci musz\u0105 by\u0107 wi\u0119ksze od 0.
+invalid.inbound.msg.size.explanation=Skonfigurowana warto\u015b\u0107 maxInboundMessageSize jest niepoprawna.
+invalid.inbound.msg.size.useraction=Skonfiguruj poprawn\u0105 warto\u015b\u0107 maxInboundMessageSize.
+
+response.already.committed=CWWKT0204E: Nie mo\u017cna kontynuowa\u0107 obs\u0142ugi \u017c\u0105dania gRPC dla {0}. Odpowied\u017a zosta\u0142a ju\u017c zatwierdzona.
+response.already.committed.explanation=\u017b\u0105danie gRPC jest nieprawid\u0142owe, poniewa\u017c odpowied\u017a zosta\u0142a zatwierdzona przed uruchomieniem metod gRPC.
+response.already.committed.useraction=Przeanalizuj dzienniki, zwracaj\u0105c uwag\u0119 na inne ostrze\u017cenia lub komunikaty o b\u0142\u0119dach poprzedzaj\u0105ce niniejszy komunikat. Ten b\u0142\u0105d m\u00f3g\u0142 wyst\u0105pi\u0107 z powodu wcze\u015bniejszego b\u0142\u0119du zabezpiecze\u0144.
+
+authentication.error=CWWKT0205E: \u017b\u0105danie us\u0142ugi gRPC dla {0} nie powiod\u0142o si\u0119. Wyst\u0105pi\u0142 b\u0142\u0105d uwierzytelniania {1}.
+authentication.error.explanation=Uwierzytelnienie \u017c\u0105dania gRPC nie powiod\u0142o si\u0119 przed uruchomieniem metod gRPC.
+authentication.error.useraction=Przeanalizuj dzienniki, zwracaj\u0105c uwag\u0119 na inne ostrze\u017cenia lub komunikaty o b\u0142\u0119dach poprzedzaj\u0105ce niniejszy komunikat. Ten b\u0142\u0105d m\u00f3g\u0142 wyst\u0105pi\u0107 z powodu braku referencji w \u017c\u0105daniu lub podania nieprawid\u0142owych referencji.
+
+authorization.error=CWWKT0206E: \u017b\u0105danie us\u0142ugi gRPC dla {0} nie powiod\u0142o si\u0119. Wyst\u0105pi\u0142 b\u0142\u0105d autoryzacji {1}.
+authorization.error.explanation=Autoryzacja \u017c\u0105dania gRPC nie powiod\u0142o si\u0119 przed uruchomieniem metod gRPC.
+authorization.error.useraction=Przeanalizuj dzienniki, zwracaj\u0105c uwag\u0119 na inne ostrze\u017cenia lub komunikaty o b\u0142\u0119dach poprzedzaj\u0105ce niniejszy komunikat. Ten b\u0142\u0105d m\u00f3g\u0142 wyst\u0105pi\u0107 z powodu braku referencji w \u017c\u0105daniu lub podania nieprawid\u0142owych referencji.

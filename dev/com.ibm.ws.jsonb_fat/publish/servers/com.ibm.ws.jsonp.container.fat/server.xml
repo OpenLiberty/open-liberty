@@ -18,7 +18,7 @@
 	<include location="../fatTestPorts.xml"/>
 
     <library id="json-p-johnzon">
-      <fileset dir="${shared.resource.dir}/johnzon" includes="johnzon-core-*.jar"/>
+      <fileset dir="${shared.resource.dir}/johnzon/1.1.5" includes="johnzon-core-*.jar"/>
     </library>
 
     <bell libraryRef="json-p-johnzon"/>

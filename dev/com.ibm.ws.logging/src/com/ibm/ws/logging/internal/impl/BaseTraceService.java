@@ -48,9 +48,13 @@ import com.ibm.ws.logging.WsLogHandler;
 import com.ibm.ws.logging.WsMessageRouter;
 import com.ibm.ws.logging.WsTraceRouter;
 import com.ibm.ws.logging.collector.CollectorConstants;
+import com.ibm.ws.logging.collector.CollectorJsonHelpers;
+import com.ibm.ws.logging.data.AccessLogConfig;
 import com.ibm.ws.logging.data.AccessLogData;
 import com.ibm.ws.logging.data.AuditData;
 import com.ibm.ws.logging.data.FFDCData;
+import com.ibm.ws.logging.data.JSONObject;
+import com.ibm.ws.logging.data.JSONObject.JSONObjectBuilder;
 import com.ibm.ws.logging.data.LogTraceData;
 import com.ibm.ws.logging.internal.NLSConstants;
 import com.ibm.ws.logging.internal.PackageProcessor;
@@ -182,6 +186,9 @@ public class BaseTraceService implements TrService {
     /** If true, format the date and time format for log entries in messages.log, trace.log, and FFDC files in ISO-8601 format. */
     protected volatile boolean isoDateFormat = false;
 
+    /** If value is logFormat, JSON logs will be formatted to include the fields specified in http access logging's logFormat field */
+    protected volatile String jsonAccessLogFields = LoggingConstants.DEFAULT_JSON_ACCESS_LOG_FIELDS;
+
     /** Writer sending messages to the messages.log file */
     protected volatile TraceWriter messagesLog = null;
 
@@ -219,10 +226,7 @@ public class BaseTraceService implements TrService {
 
     protected volatile String serverName = null;
     protected volatile String wlpUserDir = null;
-
     private static final String OMIT_FIELDS_STRING = "@@@OMIT@@@";
-    private static boolean isServerConfigUpdate = false;
-    private static boolean isServerConfigSetup = true;
 
     /** Flags for suppressing traceback output to the console */
     private static class StackTraceFlags {
@@ -256,7 +260,7 @@ public class BaseTraceService implements TrService {
      * of system properties we expect (for FFDC and logging).
      *
      * @param config a {@link LogProviderConfigImpl} containing TrService configuration
-     *            from bootstrap properties
+     *                   from bootstrap properties
      */
     @Override
     public void init(LogProviderConfig config) {
@@ -282,10 +286,12 @@ public class BaseTraceService implements TrService {
             }
 
             @Override
-            public void flush() {}
+            public void flush() {
+            }
 
             @Override
-            public void close() {}
+            public void close() {
+            }
         });
     }
 
@@ -302,7 +308,7 @@ public class BaseTraceService implements TrService {
      * so values set there are not unset by metatype defaults.
      *
      * @param config a {@link LogProviderConfigImpl} containing dynamic updates from
-     *            the OSGi managed service.
+     *                   the OSGi managed service.
      */
     @Override
     public synchronized void update(LogProviderConfig config) {
@@ -325,6 +331,11 @@ public class BaseTraceService implements TrService {
         isoDateFormat = trConfig.getIsoDateFormat();
         if (isoDateFormat != BaseTraceFormatter.useIsoDateFormat) {
             BaseTraceFormatter.useIsoDateFormat = isoDateFormat;
+        }
+
+        jsonAccessLogFields = trConfig.getjsonAccessLogFields();
+        if (jsonAccessLogFields != AccessLogConfig.jsonAccessLogFieldsConfig) {
+            AccessLogConfig.jsonAccessLogFieldsConfig = jsonAccessLogFields;
         }
 
         initializeWriters(trConfig);
@@ -352,6 +363,8 @@ public class BaseTraceService implements TrService {
         //Conduits
         logConduit = collectorMgrPipelineUtils.getLogConduit();
         traceConduit = collectorMgrPipelineUtils.getTraceConduit();
+
+        Boolean appsWriteJson = trConfig.getAppsWriteJson();
 
         /*
          * Retrieve the format setting for message.log and console
@@ -447,6 +460,7 @@ public class BaseTraceService implements TrService {
         if (messageFormat.toLowerCase().equals(LoggingConstants.JSON_FORMAT)) {
             if (messageLogHandler != null) {
                 messageLogHandler.setFormat(LoggingConstants.JSON_FORMAT);
+                messageLogHandler.setAppsWriteJson(appsWriteJson);
                 //Connect the conduits to the handler as necessary
                 messageLogHandler.modified(filterdMessageSourceList);
                 updateConduitSyncHandlerConnection(messageSourceList, messageLogHandler);
@@ -463,6 +477,7 @@ public class BaseTraceService implements TrService {
         if (consoleFormat.toLowerCase().equals(LoggingConstants.JSON_FORMAT)) {
             if (consoleLogHandler != null) {
                 consoleLogHandler.setFormat(LoggingConstants.JSON_FORMAT);
+                consoleLogHandler.setAppsWriteJson(appsWriteJson);
                 //Connect the conduits to the handler as necessary
                 //if json && messages, trace sourcelist
                 consoleLogHandler.modified(filterdConsoleSourceList);
@@ -470,20 +485,10 @@ public class BaseTraceService implements TrService {
             }
         }
 
-        applyJsonFields(trConfig.getjsonFields(), trConfig.getOmitJsonFields());
+        applyJsonFields(trConfig.getjsonFields());
     }
 
-    public static boolean getIsServerConfigUpdate() {
-        return isServerConfigUpdate;
-    }
-
-    public static void applyJsonFields(String value, Boolean omitJsonFields) {
-
-        if (!isServerConfigSetup)
-            isServerConfigUpdate = true;
-        else
-            isServerConfigSetup = false;
-
+    public static void applyJsonFields(String value) {
         if (value == null || value == "" || value.isEmpty()) { //reset all fields to original when server config has ""
             AccessLogData.resetJsonLoggingNameAliases();
             FFDCData.resetJsonLoggingNameAliases();
@@ -491,6 +496,8 @@ public class BaseTraceService implements TrService {
             LogTraceData.resetJsonLoggingNameAliasesTrace();
             AuditData.resetJsonLoggingNameAliases();
 
+            // Re-initialize the field mappings
+            CollectorJsonHelpers.updateFieldMappings();
             //if no property is set, return
             return;
         }
@@ -503,24 +510,28 @@ public class BaseTraceService implements TrService {
         Map<String, String> ffdcMap = new HashMap<>();
         Map<String, String> accessLogMap = new HashMap<>();
         Map<String, String> auditMap = new HashMap<>();
+        // For access log data
+        Map<String, String> accessLogCookiesMap = new HashMap<>();
+        Map<String, String> accessLogRequestHeaderMap = new HashMap<>();
+        Map<String, String> accessLogResponseHeaderMap = new HashMap<>();
 
-        List<String> LogTraceList = Arrays.asList(LogTraceData.NAMES1_1);
-        List<String> FFDCList = Arrays.asList(FFDCData.NAMES1_1);
-        List<String> AccessLogList = Arrays.asList(AccessLogData.NAMES1_1);
-        List<String> AuditList = Arrays.asList(AuditData.NAMES1_1);
+        List<String> LogTraceList = Arrays.asList(LogTraceData.NAMES_JSON);
+        List<String> FFDCList = Arrays.asList(FFDCData.NAMES_JSON);
+        List<String> AccessLogList = Arrays.asList(AccessLogData.NAMES_JSON);
+        List<String> AuditList = Arrays.asList(AuditData.NAMES_JSON);
 
         String[] keyValuePairs = value.split(","); //split the string to create key-value pairs
         for (String pair : keyValuePairs) //iterate over the pairs
         {
             pair = pair.trim();
-            if (pair.endsWith(":") && omitJsonFields) //omitJsonFields beta guard
+            if (pair.endsWith(":"))
                 pair = pair + OMIT_FIELDS_STRING;
 
             String[] entry = pair.split(":"); //split the pairs to get key and value
             entry[0] = entry[0].trim();
 
             //!pair.endsWith(":") for beta guard for entry length 2 because ie. message:type: will rename message to type
-            if (entry.length == 2 && !pair.endsWith(":")) {//if the mapped value is intended for all event types
+            if (entry.length == 2) {//if the mapped value is intended for all event types
                 entry[1] = entry[1].trim();
                 //add properties to all the hashmaps and trim whitespaces
                 if (LogTraceList.contains(entry[0])) {
@@ -546,6 +557,21 @@ public class BaseTraceService implements TrService {
                     traceMap.put(entry[0], entry[1]);
                     valueFound = true;
                 }
+
+                // headers and cookies are special because there can be multiple instances
+                // only applicable to liberty_accesslog
+                if (entry[0].contains("ibm_cookie_")) {
+                    accessLogCookiesMap.put(entry[0].substring(11), entry[1]);
+                    valueFound = true;
+                } else if (entry[0].contains("ibm_requestHeader_")) {
+                    // headers are NOT case sensitive, so lowercase them all
+                    accessLogRequestHeaderMap.put(entry[0].substring(18).toLowerCase(), entry[1]);
+                    valueFound = true;
+                } else if (entry[0].contains("ibm_responseHeader_")) {
+                    accessLogResponseHeaderMap.put(entry[0].substring(19).toLowerCase(), entry[1]);
+                    valueFound = true;
+                }
+
                 if (!valueFound) {
                     //if the value does not exist in any of the known keys, give a warning
                     Tr.warning(tc, "JSON_FIELDS_NO_MATCH");
@@ -576,6 +602,17 @@ public class BaseTraceService implements TrService {
                         accessLogMap.put(entry[1], entry[2]);
                         valueFound = true;
                     }
+                    // headers and cookies are special because there can be multiple instances
+                    if (entry[1].contains("ibm_cookie_")) {
+                        accessLogCookiesMap.put(entry[1].substring(11), entry[2]);
+                        valueFound = true;
+                    } else if (entry[1].contains("ibm_requestHeader_")) {
+                        accessLogRequestHeaderMap.put(entry[1].substring(18).toLowerCase(), entry[2]);
+                        valueFound = true;
+                    } else if (entry[1].contains("ibm_responseHeader_")) {
+                        accessLogResponseHeaderMap.put(entry[1].substring(19).toLowerCase(), entry[2]);
+                        valueFound = true;
+                    }
                 } else if (CollectorConstants.AUDIT_CONFIG_VAL.equals(entry[0])) {
                     if (AuditList.contains(entry[1])) {
                         auditMap.put(entry[1], entry[2]);
@@ -602,6 +639,11 @@ public class BaseTraceService implements TrService {
         LogTraceData.newJsonLoggingNameAliasesMessage(messageMap);
         LogTraceData.newJsonLoggingNameAliasesTrace(traceMap);
         AuditData.newJsonLoggingNameAliases(auditMap);
+
+        // Renaming/omitting cookie and header access log fields
+        AccessLogData.populateDataMaps(accessLogCookiesMap, accessLogRequestHeaderMap, accessLogResponseHeaderMap);
+
+        CollectorJsonHelpers.updateFieldMappings();
     }
 
     /**
@@ -1001,10 +1043,10 @@ public class BaseTraceService implements TrService {
     /**
      * Publish a trace log record.
      *
-     * @param detailLog the trace writer
+     * @param detailLog           the trace writer
      * @param logRecord
-     * @param id the trace object id
-     * @param formattedMsg the result of {@link BaseTraceFormatter#formatMessage}
+     * @param id                  the trace object id
+     * @param formattedMsg        the result of {@link BaseTraceFormatter#formatMessage}
      * @param formattedVerboseMsg the result of {@link BaseTraceFormatter#formatVerboseMessage}
      */
     protected void publishTraceLogRecord(TraceWriter detailLog, LogRecord logRecord, Object id, String formattedMsg, String formattedVerboseMsg) {
@@ -1151,7 +1193,7 @@ public class BaseTraceService implements TrService {
      * the trace file.
      *
      * @param config a {@link LogProviderConfigImpl} containing TrService configuration
-     *            from bootstrap properties
+     *                   from bootstrap properties
      */
     protected void initializeWriters(LogProviderConfigImpl config) {
         // createFileLog may or may not return the original log holder..
@@ -1203,23 +1245,22 @@ public class BaseTraceService implements TrService {
         String serverName = getServerName(config);
         String datetime = getDatetime();
         String sequenceNumber = getSequenceNumber();
+        //indicate that we're using json fields
+        int jsonKey = CollectorConstants.KEYS_JSON;
         //construct json header
-        StringBuilder sb = new StringBuilder();
-        sb.append("{\"type\":\"liberty_message\"");
-        sb.append(",\"host\":\"");
-        jsonEscape(sb, serverHostName);
-        sb.append("\",\"ibm_userDir\":\"");
-        jsonEscape(sb, wlpUserDir);
-        sb.append("\",\"ibm_serverName\":\"");
-        jsonEscape(sb, serverName);
-        sb.append("\",\"message\":\"");
-        jsonEscape(sb, logHeader);
-        sb.append("\",\"ibm_datetime\":\"");
-        jsonEscape(sb, datetime);
-        sb.append("\",\"ibm_sequence\":\"");
-        jsonEscape(sb, sequenceNumber);
-        sb.append("\"}\n");
-        return sb.toString();
+        JSONObjectBuilder jsonBuilder = new JSONObject.JSONObjectBuilder();
+
+        //@formatter:off
+        jsonBuilder.addField(LogTraceData.getTypeKey(jsonKey, true), "liberty_message", false, false)
+                   .addField(LogTraceData.getHostKey(jsonKey, true), serverHostName, false, true)
+                   .addField(LogTraceData.getUserDirKey(jsonKey, true), wlpUserDir, false, true)
+                   .addField(LogTraceData.getServerNameKey(jsonKey, true), serverName, false, true)
+                   .addField(LogTraceData.getMessageKey(jsonKey, true), logHeader, false, true)
+                   .addField(LogTraceData.getDatetimeKey(jsonKey, true), datetime, false, true)
+                   .addField(LogTraceData.getSequenceKey(jsonKey, true), sequenceNumber, false, true);
+        //@formatter:on
+
+        return jsonBuilder.build().toString().concat("\n");
     }
 
     private String getSequenceNumber() {
@@ -1272,49 +1313,6 @@ public class BaseTraceService implements TrService {
         return serverHostName;
     }
 
-    /**
-     * Escape \b, \f, \n, \r, \t, ", \, / characters and appends to a string builder
-     *
-     * @param sb String builder to append to
-     * @param s String to escape
-     */
-    private void jsonEscape(StringBuilder sb, String s) {
-        if (s == null) {
-            sb.append(s);
-            return;
-        }
-        for (int i = 0; i < s.length(); i++) {
-            char c = s.charAt(i);
-            switch (c) {
-                case '\b':
-                    sb.append("\\b");
-                    break;
-                case '\f':
-                    sb.append("\\f");
-                    break;
-                case '\n':
-                    sb.append("\\n");
-                    break;
-                case '\r':
-                    sb.append("\\r");
-                    break;
-                case '\t':
-                    sb.append("\\t");
-                    break;
-
-                // Fall through because we just need to add \ (escaped) before the character
-                case '\\':
-                case '\"':
-                case '/':
-                    sb.append("\\");
-                    sb.append(c);
-                    break;
-                default:
-                    sb.append(c);
-            }
-        }
-    }
-
     public final static class SystemLogHolder extends Level implements TraceWriter {
         private static final long serialVersionUID = 1L;
         transient final PrintStream originalStream;
@@ -1339,7 +1337,8 @@ public class BaseTraceService implements TrService {
 
         /** {@inheritDoc} */
         @Override
-        public void close() throws IOException {}
+        public void close() throws IOException {
+        }
 
         /**
          * Only allow "off" as a valid value for toggling system.out
@@ -1655,8 +1654,8 @@ public class BaseTraceService implements TrService {
      * Write the text to the associated original stream.
      * This is preserved as a subroutine for extension by other delegates (test, JSR47 logging)
      *
-     * @param tc StreamTraceComponent associated with original stream
-     * @param txt pre-formatted or raw message
+     * @param tc        StreamTraceComponent associated with original stream
+     * @param txt       pre-formatted or raw message
      * @param rawStream if true, this is from direct invocation of System.out or System.err
      */
     protected synchronized void writeStreamOutput(SystemLogHolder holder, String txt, boolean rawStream) {

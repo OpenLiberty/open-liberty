@@ -45,6 +45,11 @@ public class JPATestOLGH8014Logic extends AbstractTestLogic {
                                                           Object managedComponentObject) {
         final String testName = getTestName();
 
+        if (isUsingJPA30Feature()) {
+            System.out.println("testEmptyAggregateFunctionsWithPrimitives is not intended for jpa-3.0");
+            return;
+        }
+
         // Verify parameters
         if (testExecCtx == null || testExecResources == null) {
             Assert.fail(testName + ": Missing context and/or resources.  Cannot execute the test.");
@@ -119,6 +124,11 @@ public class JPATestOLGH8014Logic extends AbstractTestLogic {
                                                         Object managedComponentObject) {
         final String testName = getTestName();
 
+        if (isUsingJPA30Feature()) {
+            System.out.println("testEmptyAggregateFunctionsWithPrimitives is not intended for jpa-3.0");
+            return;
+        }
+
         // Verify parameters
         if (testExecCtx == null || testExecResources == null) {
             Assert.fail(testName + ": Missing context and/or resources.  Cannot execute the test.");
@@ -188,6 +198,11 @@ public class JPATestOLGH8014Logic extends AbstractTestLogic {
                                                      Object managedComponentObject) {
         final String testName = getTestName();
 
+        if (isUsingJPA30Feature()) {
+            System.out.println("testEmptyAggregateFunctionsWithPrimitives is not intended for jpa-3.0");
+            return;
+        }
+
         // Verify parameters
         if (testExecCtx == null || testExecResources == null) {
             Assert.fail(testName + ": Missing context and/or resources.  Cannot execute the test.");
@@ -251,6 +266,11 @@ public class JPATestOLGH8014Logic extends AbstractTestLogic {
     public void testAggregateFunctionsWithWrappers(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
                                                    Object managedComponentObject) {
         final String testName = getTestName();
+
+        if (isUsingJPA30Feature()) {
+            System.out.println("testEmptyAggregateFunctionsWithPrimitives is not intended for jpa-3.0");
+            return;
+        }
 
         // Verify parameters
         if (testExecCtx == null || testExecResources == null) {

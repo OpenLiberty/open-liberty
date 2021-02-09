@@ -322,6 +322,11 @@ POOL_MANAGER_NOT_FOUND_J2CA0695.explanation=Si \u00e8 verificato un errore inter
 POOL_MANAGER_NOT_FOUND_J2CA0695.useraction=CMSG0002
 
 # ---------------------------------
+SPNEGO_XA_RECOVERY_NOT_SUPPORTED_J2CA0695W=J2CA0695W: \u00e8 stata effettuata una richiesta di connessione per la risorsa XA {0} utilizzando l''autenticazione SPNEGO, ma non \u00e8 stato configurato alcun alias dei dati di autenticazione per il ripristino. La risorsa XA non \u00e8 in grado di partecipare al ripristino XA automatizzato a meno che non sia configurato un alias dei dati di autenticazione.
+SPNEGO_XA_RECOVERY_NOT_SUPPORTED_J2CA0695W.explanation=Il ripristino XA \u00e8 un processo in background automatizzato, ma l'autenticazione SPNEGO richiede un input manuale da parte dell'utente. Di conseguenza, l'autenticazione SPNEGO non pu\u00f2 essere utilizzata per il ripristino XA automatico.
+SPNEGO_XA_RECOVERY_NOT_SUPPORTED_J2CA0695W.useraction=Configurare un alias dei dati di autenticazione di ripristino sulla risorsa XA.
+
+# ---------------------------------
 FREEPOOL_GETFREECONNECTION_ERROR_J2CA1002=J2CA1002E: MCWrapper {0} non valido dal pool libero per la risorsa {1}.
 FREEPOOL_GETFREECONNECTION_ERROR_J2CA1002.explanation=Il tentativo di riservare un MCWrapper ha avuto esito negativo.
 FREEPOOL_GETFREECONNECTION_ERROR_J2CA1002.useraction=CMSG0002

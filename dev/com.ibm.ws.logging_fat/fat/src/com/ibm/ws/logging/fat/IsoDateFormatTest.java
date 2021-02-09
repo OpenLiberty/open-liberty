@@ -229,6 +229,47 @@ public class IsoDateFormatTest {
         assertFalse("The date and time is being formatted in ISO-8601 format, instead of the default Locale format.", latestServerUpdateSuccessMsg.matches(ISO_8601_REGEX_PATTERN));
     }
 
+    /*
+     * This test verifies isoDateFormat for date and time when the attribute is set in both bootstrap.properties and server.xml
+     */
+    @Test
+    public void testIsoDateFormatInPropertiesXML() throws Exception {
+
+        // Stop server, if running...
+        if (server != null && server.isStarted()) {
+            server.stopServer();
+        }
+
+        // Get the bootstrap.properties file and store the original content
+        RemoteFile bootstrapFile = server.getServerBootstrapPropertiesFile();
+
+        FileInputStream in = getFileInputStreamForRemoteFile(bootstrapFile);
+        Properties initialBootstrapProps = loadProperties(in);
+
+        try {
+            // Update bootstrap.properties file with isoDateFormat = true
+            Properties newBootstrapProps = new Properties();
+            newBootstrapProps.put("com.ibm.ws.logging.isoDateFormat", "false");
+
+            FileOutputStream out = getFileOutputStreamForRemoteFile(bootstrapFile, true);
+            writeProperties(newBootstrapProps, out);
+
+            // Start server...
+            server.startServer();
+
+            // isoDateFormat=true and traceSpec=off
+            setServerConfiguration(true, false);
+
+            // Check in messages.log file to see if the date and time is formatted in ISO-8601 format
+            List<String> lines = server.findStringsInFileInLibertyServerRoot(ISO_8601_REGEX_PATTERN, MESSAGE_LOG);
+            assertTrue("The date and time was not formatted in ISO-8601 format in messages.log.", lines.size() > 0);
+        } finally {
+            // Restore the initial contents of bootstrap.properties
+            FileOutputStream out = getFileOutputStreamForRemoteFile(bootstrapFile, false);
+            writeProperties(initialBootstrapProps, out);
+        }
+    }
+
     private FileInputStream getFileInputStreamForRemoteFile(RemoteFile bootstrapPropFile) throws Exception {
         FileInputStream input = null;
         try {

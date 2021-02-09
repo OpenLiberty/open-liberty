@@ -64,7 +64,7 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
     public void testIsJoinedToTransaction001(
                                              TestExecutionContext testExecCtx,
                                              TestExecutionResources testExecResources,
-                                             Object managedComponentObject) {
+                                             Object managedComponentObject) throws Throwable {
         // Verify parameters
 
         if (testExecCtx == null || testExecResources == null) {
@@ -130,11 +130,6 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
             Assert.assertFalse("Assert that em.isJoinedToTransaction() returns false.", em.isJoinedToTransaction());
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("TxSynchronizationTestLogic.testIsJoinedToTransaction001(): End");
         }
@@ -164,7 +159,7 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
     public void testIsJoinedToTransaction002(
                                              TestExecutionContext testExecCtx,
                                              TestExecutionResources testExecResources,
-                                             Object managedComponentObject) {
+                                             Object managedComponentObject) throws Throwable {
         // Verify parameters
 
         if (testExecCtx == null || testExecResources == null) {
@@ -238,11 +233,6 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
             Assert.assertFalse("Assert that em.isJoinedToTransaction() returns false.", em.isJoinedToTransaction());
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("TxSynchronizationTestLogic.testIsJoinedToTransaction002(): End");
         }
@@ -264,7 +254,7 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
     public void testCRUD001(
                             TestExecutionContext testExecCtx,
                             TestExecutionResources testExecResources,
-                            Object managedComponentObject) {
+                            Object managedComponentObject) throws Throwable {
         // Verify parameters
 
         if (testExecCtx == null || testExecResources == null) {
@@ -325,12 +315,6 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
             Assert.assertEquals("Assert the String payload is correct.", "Simple String", findEntity.getStrData());
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            t.printStackTrace();
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("TxSynchronizationTestLogic.testCRUD001(): End");
         }
@@ -352,7 +336,7 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
     public void testCRUD001B(
                              TestExecutionContext testExecCtx,
                              TestExecutionResources testExecResources,
-                             Object managedComponentObject) {
+                             Object managedComponentObject) throws Throwable {
         // Verify parameters
 
         if (testExecCtx == null || testExecResources == null) {
@@ -415,11 +399,6 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
             Assert.assertEquals("Assert the String payload is correct.", "Simple String", findEntity.getStrData());
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("TxSynchronizationTestLogic.testCRUD001B(): End");
         }
@@ -442,7 +421,7 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
     public void testCRUD002(
                             TestExecutionContext testExecCtx,
                             TestExecutionResources testExecResources,
-                            Object managedComponentObject) {
+                            Object managedComponentObject) throws Throwable {
         // Verify parameters
 
         if (testExecCtx == null || testExecResources == null) {
@@ -512,11 +491,6 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
             Assert.assertFalse("Assert new entity is not managed.", jpaResource.getEm().contains(newEntity));
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("TxSynchronizationTestLogic.testCRUD002(): End");
         }
@@ -533,7 +507,7 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
     public void testFlush001(
                              TestExecutionContext testExecCtx,
                              TestExecutionResources testExecResources,
-                             Object managedComponentObject) {
+                             Object managedComponentObject) throws Throwable {
         // Verify parameters
 
         if (testExecCtx == null || testExecResources == null) {
@@ -665,11 +639,6 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("TxSynchronizationTestLogic.testFlush001(): End");
         }
@@ -687,7 +656,7 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
     public void testFindWithLock001(
                                     TestExecutionContext testExecCtx,
                                     TestExecutionResources testExecResources,
-                                    Object managedComponentObject) {
+                                    Object managedComponentObject) throws Throwable {
         // Verify parameters
 
         if (testExecCtx == null || testExecResources == null) {
@@ -813,12 +782,6 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            t.printStackTrace();
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("TxSynchronizationTestLogic.testFindWithLock001(): End");
         }
@@ -836,7 +799,7 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
     public void testFindWithLock002(
                                     TestExecutionContext testExecCtx,
                                     TestExecutionResources testExecResources,
-                                    Object managedComponentObject) {
+                                    Object managedComponentObject) throws Throwable {
         // Verify parameters
 
         if (testExecCtx == null || testExecResources == null) {
@@ -971,11 +934,6 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("TxSynchronizationTestLogic.testFindWithLock002(): End");
         }
@@ -993,7 +951,7 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
     public void testFindWithLock003(
                                     TestExecutionContext testExecCtx,
                                     TestExecutionResources testExecResources,
-                                    Object managedComponentObject) {
+                                    Object managedComponentObject) throws Throwable {
         // Verify parameters
 
         if (testExecCtx == null || testExecResources == null) {
@@ -1128,11 +1086,6 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("TxSynchronizationTestLogic.testFindWithLock003(): End");
         }
@@ -1150,7 +1103,7 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
     public void testFindWithLock004(
                                     TestExecutionContext testExecCtx,
                                     TestExecutionResources testExecResources,
-                                    Object managedComponentObject) {
+                                    Object managedComponentObject) throws Throwable {
         // Verify parameters
 
         if (testExecCtx == null || testExecResources == null) {
@@ -1285,11 +1238,6 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("TxSynchronizationTestLogic.testFindWithLock004(): End");
         }
@@ -1307,7 +1255,7 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
     public void testFindWithLock005(
                                     TestExecutionContext testExecCtx,
                                     TestExecutionResources testExecResources,
-                                    Object managedComponentObject) {
+                                    Object managedComponentObject) throws Throwable {
         // Verify parameters
 
         if (testExecCtx == null || testExecResources == null) {
@@ -1442,11 +1390,6 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("TxSynchronizationTestLogic.testFindWithLock005(): End");
         }
@@ -1464,7 +1407,7 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
     public void testFindWithLock006(
                                     TestExecutionContext testExecCtx,
                                     TestExecutionResources testExecResources,
-                                    Object managedComponentObject) {
+                                    Object managedComponentObject) throws Throwable {
         // Verify parameters
 
         if (testExecCtx == null || testExecResources == null) {
@@ -1599,11 +1542,6 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("TxSynchronizationTestLogic.testFindWithLock006(): End");
         }
@@ -1621,7 +1559,7 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
     public void testFindWithLock007(
                                     TestExecutionContext testExecCtx,
                                     TestExecutionResources testExecResources,
-                                    Object managedComponentObject) {
+                                    Object managedComponentObject) throws Throwable {
         // Verify parameters
 
         if (testExecCtx == null || testExecResources == null) {
@@ -1756,11 +1694,6 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("TxSynchronizationTestLogic.testFindWithLock007(): End");
         }
@@ -1778,7 +1711,7 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
     public void testFindWithLock008(
                                     TestExecutionContext testExecCtx,
                                     TestExecutionResources testExecResources,
-                                    Object managedComponentObject) {
+                                    Object managedComponentObject) throws Throwable {
         // Verify parameters
 
         if (testExecCtx == null || testExecResources == null) {
@@ -1913,11 +1846,6 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("TxSynchronizationTestLogic.testFindWithLock008(): End");
         }
@@ -1935,7 +1863,7 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
     public void testEmLock001(
                               TestExecutionContext testExecCtx,
                               TestExecutionResources testExecResources,
-                              Object managedComponentObject) {
+                              Object managedComponentObject) throws Throwable {
         // Verify parameters
 
         if (testExecCtx == null || testExecResources == null) {
@@ -2078,11 +2006,6 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("TxSynchronizationTestLogic.testEmLock001(): End");
         }
@@ -2100,7 +2023,7 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
     public void testEmLock002(
                               TestExecutionContext testExecCtx,
                               TestExecutionResources testExecResources,
-                              Object managedComponentObject) {
+                              Object managedComponentObject) throws Throwable {
         // Verify parameters
 
         if (testExecCtx == null || testExecResources == null) {
@@ -2243,11 +2166,6 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("TxSynchronizationTestLogic.testEmLock002(): End");
         }
@@ -2265,7 +2183,7 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
     public void testEmLock003(
                               TestExecutionContext testExecCtx,
                               TestExecutionResources testExecResources,
-                              Object managedComponentObject) {
+                              Object managedComponentObject) throws Throwable {
         // Verify parameters
 
         if (testExecCtx == null || testExecResources == null) {
@@ -2408,11 +2326,6 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("TxSynchronizationTestLogic.testEmLock003(): End");
         }
@@ -2430,7 +2343,7 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
     public void testEmLock004(
                               TestExecutionContext testExecCtx,
                               TestExecutionResources testExecResources,
-                              Object managedComponentObject) {
+                              Object managedComponentObject) throws Throwable {
         // Verify parameters
 
         if (testExecCtx == null || testExecResources == null) {
@@ -2573,11 +2486,6 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("TxSynchronizationTestLogic.testEmLock004(): End");
         }
@@ -2595,7 +2503,7 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
     public void testEmLock005(
                               TestExecutionContext testExecCtx,
                               TestExecutionResources testExecResources,
-                              Object managedComponentObject) {
+                              Object managedComponentObject) throws Throwable {
         // Verify parameters
 
         if (testExecCtx == null || testExecResources == null) {
@@ -2738,11 +2646,6 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("TxSynchronizationTestLogic.testEmLock005(): End");
         }
@@ -2760,7 +2663,7 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
     public void testEmLock006(
                               TestExecutionContext testExecCtx,
                               TestExecutionResources testExecResources,
-                              Object managedComponentObject) {
+                              Object managedComponentObject) throws Throwable {
         // Verify parameters
 
         if (testExecCtx == null || testExecResources == null) {
@@ -2903,11 +2806,6 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("TxSynchronizationTestLogic.testEmLock006(): End");
         }
@@ -2925,7 +2823,7 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
     public void testEmLock007(
                               TestExecutionContext testExecCtx,
                               TestExecutionResources testExecResources,
-                              Object managedComponentObject) {
+                              Object managedComponentObject) throws Throwable {
         // Verify parameters
 
         if (testExecCtx == null || testExecResources == null) {
@@ -3068,11 +2966,6 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("TxSynchronizationTestLogic.testEmLock007(): End");
         }
@@ -3090,7 +2983,7 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
     public void testEmLock008(
                               TestExecutionContext testExecCtx,
                               TestExecutionResources testExecResources,
-                              Object managedComponentObject) {
+                              Object managedComponentObject) throws Throwable {
         // Verify parameters
 
         if (testExecCtx == null || testExecResources == null) {
@@ -3233,11 +3126,6 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("TxSynchronizationTestLogic.testEmLock008(): End");
         }
@@ -3246,7 +3134,7 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
     public void testTemplate(
                              TestExecutionContext testExecCtx,
                              TestExecutionResources testExecResources,
-                             Object managedComponentObject) {
+                             Object managedComponentObject) throws Throwable {
         // Verify parameters
 
         if (testExecCtx == null || testExecResources == null) {
@@ -3272,11 +3160,6 @@ public class TxSynchronizationTestLogic extends AbstractTxSyncTestLogic {
 //            cleanupDatabase(jpaCleanupResource);
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("TxSynchronizationTestLogic.testTemplate(): End");
         }

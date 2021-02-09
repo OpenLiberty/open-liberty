@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2019 IBM Corporation and others.
+ * Copyright (c) 2009, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -712,8 +712,8 @@ public class ReferenceContextImpl implements ReferenceContext {
      * Merge bindings and resource references.
      *
      * @param masterCompNSConfig the output component
-     * @param compNSConfigs the input components
-     * @param scope the desired scope, or null for all scopes
+     * @param compNSConfigs      the input components
+     * @param scope              the desired scope, or null for all scopes
      */
     static void mergeResRefsAndBindings(ComponentNameSpaceConfiguration masterCompNSConfig,
                                         List<ComponentNameSpaceConfiguration> compNSConfigs,
@@ -799,14 +799,14 @@ public class ReferenceContextImpl implements ReferenceContext {
     /**
      * Merges bindings and places the result in <tt>allBindings</tt>.
      *
-     * @param compNSConfig the component of the bindings being merged
-     * @param scope the desired scope, or null for all scopes
-     * @param whatType the binding element type name
+     * @param compNSConfig  the component of the bindings being merged
+     * @param scope         the desired scope, or null for all scopes
+     * @param whatType      the binding element type name
      * @param whatAttribute the binding element attribute name
-     * @param bindings the new component bindings
-     * @param allBindings the output mapping of reference name to binding
-     * @param allComps the output mapping of reference name to the name of the
-     *            component that provided the reference binding
+     * @param bindings      the new component bindings
+     * @param allBindings   the output mapping of reference name to binding
+     * @param allComps      the output mapping of reference name to the name of the
+     *                          component that provided the reference binding
      * @return <tt>true</tt> if the merge was successful, or <tt>false</tt> if
      *         conflicts were reported
      */
@@ -866,9 +866,9 @@ public class ReferenceContextImpl implements ReferenceContext {
      * not have a reference by that name, the entry will be <tt>null</tt>.
      *
      * @param masterCompNSConfig the output component configuration
-     * @param compNSConfigs the input component configurations
-     * @param totalResRefs mapping of resource reference name to array of
-     *            resources indexed by component index
+     * @param compNSConfigs      the input component configurations
+     * @param totalResRefs       mapping of resource reference name to array of
+     *                               resources indexed by component index
      * @return <tt>true</tt> if the merge was successful, or <tt>false</tt> if
      *         conflicts were reported
      */
@@ -876,7 +876,7 @@ public class ReferenceContextImpl implements ReferenceContext {
                                         List<ComponentNameSpaceConfiguration> compNSConfigs,
                                         Map<String, ResourceRefConfig[]> totalResRefs) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
-        if (isTraceOn && tc.isDebugEnabled())
+        if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "mergeResRefs");
 
         ResourceRefConfigList resRefList = InternalInjectionEngineAccessor.getInstance().createResourceRefConfigList();
@@ -903,7 +903,7 @@ public class ReferenceContextImpl implements ReferenceContext {
             }
         }
 
-        if (isTraceOn && tc.isDebugEnabled())
+        if (isTraceOn && tc.isEntryEnabled())
             Tr.exit(tc, "mergeResRefs: " + success);
         return success;
     }
@@ -976,10 +976,15 @@ public class ReferenceContextImpl implements ReferenceContext {
             // to the list of processed classes.
             if (ivProcessedInjectionClasses.size() <= svInjClassMapCacheSize) {
                 ivProcessedInjectionClasses.addAll(injectionClasses);
+                if (isTraceOn && tc.isDebugEnabled())
+                    Tr.debug(tc, "processDynamic: added to processed classes; size = " + ivProcessedInjectionClasses.size());
+            } else {
+                if (isTraceOn && tc.isDebugEnabled())
+                    Tr.debug(tc, "processDynamic: not added to processed classes; size = " + ivProcessedInjectionClasses.size());
             }
         }
 
-        if (isTraceOn && tc.isDebugEnabled())
+        if (isTraceOn && tc.isEntryEnabled())
             Tr.exit(tc, "processDynamic");
     }
 
@@ -1021,7 +1026,7 @@ public class ReferenceContextImpl implements ReferenceContext {
         // and take advantage of the caching.
 
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
-        if (isTraceOn && tc.isDebugEnabled())
+        if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "getInjectionTargets: " + classToInjectInto + ", " + this);
 
         InjectionTarget[] injectionTargetsForClass = ivInjectionTargetMap.get(classToInjectInto);
@@ -1030,7 +1035,7 @@ public class ReferenceContextImpl implements ReferenceContext {
                 injectionTargetsForClass = ivInjectionTargetMap.get(classToInjectInto);
                 if (injectionTargetsForClass == null) {
                     // If targets were not found in cache from app start, then rebuilding them
-                    // needs to run privileged, as this may run in the context of tha appliation
+                    // needs to run privileged, as this may run in the context of the application
                     try {
                         injectionTargetsForClass = AccessController.doPrivileged(new PrivilegedExceptionAction<InjectionTarget[]>() {
                             @Override
@@ -1050,12 +1055,23 @@ public class ReferenceContextImpl implements ReferenceContext {
                     }
                     if (ivInjectionTargetMap.size() <= svInjTarMapCacheSize || injectionTargetsForClass.length > 0) {
                         ivInjectionTargetMap.put(classToInjectInto, injectionTargetsForClass);
+                        if (isTraceOn && tc.isDebugEnabled())
+                            Tr.debug(tc, "getInjectionTargets: added to cache; size = " + ivInjectionTargetMap.size());
+                    } else {
+                        if (isTraceOn && tc.isDebugEnabled())
+                            Tr.debug(tc, "getInjectionTargets: not added to cache; size = " + ivInjectionTargetMap.size());
                     }
+                } else {
+                    if (isTraceOn && tc.isDebugEnabled())
+                        Tr.debug(tc, "getInjectionTargets: found in cache; size = " + ivInjectionTargetMap.size());
                 }
             }
+        } else {
+            if (isTraceOn && tc.isDebugEnabled())
+                Tr.debug(tc, "getInjectionTargets: found in cache; size = " + ivInjectionTargetMap.size());
         }
 
-        if (isTraceOn && tc.isDebugEnabled())
+        if (isTraceOn && tc.isEntryEnabled())
             Tr.exit(tc, "getInjectionTargets", Arrays.asList(injectionTargetsForClass));
         return injectionTargetsForClass;
     }

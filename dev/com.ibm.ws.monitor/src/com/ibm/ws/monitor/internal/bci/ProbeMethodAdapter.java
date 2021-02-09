@@ -186,7 +186,7 @@ public class ProbeMethodAdapter extends MethodVisitor {
      * @param methodInfo
      */
     ProbeMethodAdapter(MethodVisitor visitor, MethodInfo methodInfo) {
-        super(Opcodes.ASM7, visitor);
+        super(Opcodes.ASM8, visitor);
         this.visitor = visitor;
         this.methodInfo = methodInfo;
     }
@@ -195,7 +195,7 @@ public class ProbeMethodAdapter extends MethodVisitor {
      * Create an instance of a {@code ProbeMethodAdapter}.
      */
     protected ProbeMethodAdapter(ProbeMethodAdapter probeMethodAdapter, MethodInfo methodInfo) {
-        super(Opcodes.ASM7, probeMethodAdapter);
+        super(Opcodes.ASM8, probeMethodAdapter);
         this.probeMethodAdapter = probeMethodAdapter;
         this.visitor = probeMethodAdapter.getVisitor();
         this.methodInfo = methodInfo;

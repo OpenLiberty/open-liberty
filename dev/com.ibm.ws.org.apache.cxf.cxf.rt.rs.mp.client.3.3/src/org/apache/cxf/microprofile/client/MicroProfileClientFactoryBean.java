@@ -31,9 +31,11 @@ import javax.ws.rs.client.ClientResponseFilter;
 import javax.ws.rs.core.Configuration;
 
 import org.apache.cxf.common.util.ClassHelper;
+import org.apache.cxf.common.util.PropertyUtils;
 import org.apache.cxf.configuration.jsse.TLSClientParameters;
 import org.apache.cxf.endpoint.Endpoint;
 import org.apache.cxf.jaxrs.client.AbstractClient;
+import org.apache.cxf.jaxrs.client.ClientProperties;
 import org.apache.cxf.jaxrs.client.ClientProxyImpl;
 import org.apache.cxf.jaxrs.client.ClientState;
 import org.apache.cxf.jaxrs.client.JAXRSClientFactoryBean;
@@ -63,11 +65,12 @@ public class MicroProfileClientFactoryBean extends JAXRSClientFactoryBean {
         super(new MicroProfileServiceFactoryBean());
         this.configuration = configuration.getConfiguration();
         this.comparator = MicroProfileClientProviderFactory.createComparator(this);
-        this.executorService = executorService;
+        this.executorService = (executorService == null) ? Utils.defaultExecutorService() : executorService;
         this.secConfig = secConfig;
         super.setAddress(baseUri);
         super.setServiceClass(aClass);
         super.setProviderComparator(comparator);
+        super.setProperties(this.configuration.getProperties());
         registeredProviders = new ArrayList<>();
         registeredProviders.addAll(processProviders());
         if (!configuration.isDefaultExceptionMapperDisabled()) {
@@ -106,6 +109,17 @@ public class MicroProfileClientFactoryBean extends JAXRSClientFactoryBean {
             || tlsParams.getTrustManagers() != null
             || tlsParams.getHostnameVerifier() != null) {
             client.getConfiguration().getHttpConduit().setTlsClientParameters(tlsParams);
+        }
+
+        if (PropertyUtils.isTrue(configuration.getProperty(ClientProperties.HTTP_AUTOREDIRECT_PROP))) {
+            client.getConfiguration().getHttpConduit().getClient().setAutoRedirect(true);
+        }
+
+        String proxyHost = (String) configuration.getProperty(ClientProperties.HTTP_PROXY_SERVER_PROP);
+        if (proxyHost != null) {
+            client.getConfiguration().getHttpConduit().getClient().setProxyServer(proxyHost);
+            int proxyPort = (int) configuration.getProperty(ClientProperties.HTTP_PROXY_SERVER_PORT_PROP);
+            client.getConfiguration().getHttpConduit().getClient().setProxyServerPort(proxyPort);
         }
 
         MicroProfileClientProviderFactory factory = MicroProfileClientProviderFactory.createInstance(getBus(),

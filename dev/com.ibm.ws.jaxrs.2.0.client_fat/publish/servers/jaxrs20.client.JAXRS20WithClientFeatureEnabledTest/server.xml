@@ -7,6 +7,7 @@
   	<include location="../fatTestPorts.xml"/>
   	<javaPermission className="org.osgi.framework.AdminPermission" name="*" actions="*"/>
   	<javaPermission className="org.osgi.framework.ServicePermission" name="*" actions="get"/>
+  	<javaPermission className="java.lang.RuntimePermission" name="modifyThread"/>
   	<javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
   	<javaPermission className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
   	<javaPermission className="java.net.SocketPermission" name="*" actions="connect,resolve"/>

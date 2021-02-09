@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import java.util.Vector;
 import com.ibm.ejs.ras.TraceNLS;
 import com.ibm.websphere.messaging.mbean.MessagingEngineMBean;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.messaging.security.RuntimeSecurityService;
 import com.ibm.ws.sib.admin.JsConstants;
 import com.ibm.ws.sib.admin.JsEngineComponent;
 import com.ibm.ws.sib.admin.JsMEConfig;
@@ -389,6 +390,11 @@ public class JsMessagingEngineImpl extends BaseMessagingEngineImpl implements Js
     public String getMBeanType() {
 
         return JsConstants.MBEAN_TYPE_ME;
+    }
+
+    @Override
+    public RuntimeSecurityService getRuntimeSecurityservice() {
+        return _mainImpl.getRuntimeSecurityService();
     }
 
 }

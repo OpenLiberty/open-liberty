@@ -1,0 +1,25 @@
+#*******************************************************************************
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0.0
+
+Bundle-Name: CloudFATUtils
+Bundle-SymbolicName: com.ibm.ws.cloudtx.fat.utils
+Bundle-Description: Utility classes for Cloud FATs; version=${bVersion}
+
+WS-TraceGroup: Transaction
+
+Export-Package: com.ibm.ws.cloudtx.ut.util;version=1.0
+
+Import-Package: com.ibm.tx.jta.ut.util,\
+ javax.transaction.xa;version="[1.1,2)",\
+ javax.naming,\
+ javax.sql

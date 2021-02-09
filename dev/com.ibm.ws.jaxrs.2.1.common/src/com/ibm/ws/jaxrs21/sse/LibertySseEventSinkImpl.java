@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -38,7 +38,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.jaxrs21.clientconfig.JAXRSClientCompletionStageFactoryConfig;
 import com.ibm.ws.kernel.service.util.JavaInfo;
-import com.ibm.ws.concurrent.mp.spi.CompletionStageFactory;
+import com.ibm.ws.threading.CompletionStageFactory;
 
 /**
  * This class implements the <code>SseEventSink</code> that is injected into
@@ -187,7 +187,7 @@ public class LibertySseEventSinkImpl implements SseEventSink {
                 return new CompletableFuture<>();
             } 
             // Use Liberty thread pool
-            return completionStageFactory.supplyAsync(null, null).toCompletableFuture();
+            return completionStageFactory.newIncompleteFuture();
         }
         return AccessController.doPrivileged((PrivilegedAction<CompletableFuture<?>>)() -> {
             if (JAVA8 || COMPLETION_STAGE_FACTORY_IS_NULL) {
@@ -197,7 +197,7 @@ public class LibertySseEventSinkImpl implements SseEventSink {
                 return new CompletableFuture<>();
             }
             // Use Liberty thread pool
-            return completionStageFactory.supplyAsync(null, null).toCompletableFuture();
+            return completionStageFactory.newIncompleteFuture();
         });
     }
 }

@@ -16,6 +16,8 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 
 /**
  * 
@@ -49,6 +51,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "DNConstraintsType", propOrder = {
     "regularExpression"
 })
+@Trivial
 public class DNConstraintsType {
 
     @XmlElement(name = "RegularExpression")

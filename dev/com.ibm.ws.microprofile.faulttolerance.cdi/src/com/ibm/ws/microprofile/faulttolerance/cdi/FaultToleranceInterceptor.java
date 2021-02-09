@@ -12,15 +12,13 @@ package com.ibm.ws.microprofile.faulttolerance.cdi;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.Collection;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
 
-import javax.annotation.PreDestroy;
 import javax.annotation.Priority;
-import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Instance;
+import javax.enterprise.inject.Intercepted;
+import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 import javax.interceptor.AroundInvoke;
@@ -35,8 +33,6 @@ import org.eclipse.microprofile.faulttolerance.Fallback;
 import org.eclipse.microprofile.faulttolerance.Retry;
 import org.eclipse.microprofile.faulttolerance.Timeout;
 
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.microprofile.faulttolerance.cdi.config.AnnotationConfigFactory;
@@ -61,14 +57,14 @@ import com.ibm.ws.microprofile.faulttolerance.spi.TimeoutPolicy;
 public class FaultToleranceInterceptor {
 
     @Inject
-    BeanManager beanManager;
-
-    private final ConcurrentHashMap<Method, AggregatedFTPolicy> policyCache = new ConcurrentHashMap<>();
+    private BeanManager beanManager;
 
     @Inject
-    public FaultToleranceInterceptor(ExecutorCleanup executorCleanup) {
-        executorCleanup.setPolicies(policyCache.values());
-    }
+    private PolicyStore policyStore;
+
+    @Inject
+    @Intercepted
+    private Bean<?> bean;
 
     @Inject
     Instance<AsyncRequestContextController> rcInstance;
@@ -90,14 +86,7 @@ public class FaultToleranceInterceptor {
     private AggregatedFTPolicy getFTPolicies(InvocationContext context) {
         AggregatedFTPolicy policy = null;
         Method method = context.getMethod();
-        policy = policyCache.get(method);
-        if (policy == null) {
-            policy = processPolicies(context, beanManager);
-            AggregatedFTPolicy previous = policyCache.putIfAbsent(method, policy);
-            if (previous != null) {
-                policy = previous;
-            }
-        }
+        policy = policyStore.getOrCreate(bean, method, () -> processPolicies(context, beanManager));
         return policy;
     }
 
@@ -256,25 +245,4 @@ public class FaultToleranceInterceptor {
         return method.getName() + "-" + Integer.toHexString(rand);
     }
 
-    @Dependent
-    public static class ExecutorCleanup {
-        private static final TraceComponent tc = Tr.register(ExecutorCleanup.class);
-
-        private Collection<AggregatedFTPolicy> policies;
-
-        public void setPolicies(Collection<AggregatedFTPolicy> policies) {
-            this.policies = policies;
-        }
-
-        @PreDestroy
-        public void cleanUpExecutors() {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Cleaning up executors");
-            }
-
-            policies.forEach((e) -> {
-                e.close();
-            });
-        }
-    }
 }

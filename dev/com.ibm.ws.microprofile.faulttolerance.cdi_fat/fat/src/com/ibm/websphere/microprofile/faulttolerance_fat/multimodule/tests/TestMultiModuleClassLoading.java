@@ -29,12 +29,16 @@ import com.ibm.ws.microprofile.faulttolerance.fat.repeat.RepeatFaultTolerance;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpUtils;
 
 @RunWith(FATRunner.class)
+@Mode(TestMode.FULL)
 public class TestMultiModuleClassLoading extends FATServletClient {
 
     private static final String SERVER_NAME = "FaultToleranceMultiModule";
@@ -44,9 +48,8 @@ public class TestMultiModuleClassLoading extends FATServletClient {
 
     //run against both EE8 and EE7 features
     @ClassRule
-    public static RepeatTests r = RepeatTests
-                    .with(RepeatFaultTolerance.mp13Features(SERVER_NAME))
-                    .andWith(RepeatFaultTolerance.ft20metrics11Features(SERVER_NAME));
+    public static RepeatTests r = RepeatFaultTolerance.repeat(SERVER_NAME, TestMode.LITE, MicroProfileActions.LATEST, MicroProfileActions.MP13,
+                                                              RepeatFaultTolerance.MP21_METRICS20);
 
     @BeforeClass
     public static void setupApp() throws Exception {

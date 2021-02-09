@@ -10,69 +10,81 @@
  *******************************************************************************/
 package com.ibm.ws.cdi12.fat.tests;
 
+import static componenttest.rules.repeater.EERepeatTests.EEVersion.EE7;
+
 import java.io.File;
 
-import org.junit.ClassRule;
-import org.junit.Test;
-
-import com.ibm.ws.fat.util.BuildShrinkWrap;
-import com.ibm.ws.fat.util.LoggingTest;
-import com.ibm.ws.fat.util.ShrinkWrapSharedServer;
-
-import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
-import org.jboss.shrinkwrap.api.importer.ZipImporter;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jboss.shrinkwrap.api.spec.ResourceAdapterArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.ClassRule;
+import org.junit.runner.RunWith;
 
-public class WarLibsAccessWarBeansTest extends LoggingTest {
+import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
+
+import componenttest.annotation.Server;
+import componenttest.annotation.TestServlet;
+import componenttest.annotation.TestServlets;
+import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.EERepeatTests;
+import componenttest.rules.repeater.RepeatTests;
+import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.FATServletClient;
+
+@RunWith(FATRunner.class)
+public class WarLibsAccessWarBeansTest extends FATServletClient {
+
+    public static final String SERVER_NAME = "cdi12WarLibsAccessWarServer";
 
     @ClassRule
-    // Create the server.
-    public static ShrinkWrapSharedServer SHARED_SERVER = new ShrinkWrapSharedServer("cdi12WarLibsAccessWarServer");
+    public static RepeatTests r = EERepeatTests.with(SERVER_NAME, EE7); //This test should be merged into BasicVisibilityTests when jaxrs-3.0 (EE9) is available
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.fat.LoggingTest#getSharedServer()
-     */
-    @Override
-    protected ShrinkWrapSharedServer getSharedServer() {
-        return SHARED_SERVER;
-    }
+    public static final String WAR_LIB_ACCESS_APP_NAME = "warLibAccessBeansInWar";
 
-    @BuildShrinkWrap
-    public static Archive buildShrinkWrap() {
+    @Server(SERVER_NAME)
+    @TestServlets({
+                    @TestServlet(servlet = com.ibm.ws.cdi12.test.warLibAccessBeansInWar.TestServlet.class, contextRoot = WAR_LIB_ACCESS_APP_NAME) }) //LITE
+    public static LibertyServer server;
 
-        JavaArchive warLibAccessBeansInWarLibJar = ShrinkWrap.create(JavaArchive.class,"warLibAccessBeansInWarJar.jar")
-                        .addClass("com.ibm.ws.cdi12.test.warLibAccessBeansInWarJar.TestInjectionClass")
-                        .addClass("com.ibm.ws.cdi12.test.warLibAccessBeansInWarJar.WarBeanInterface")
-                        .add(new FileAsset(new File("test-applications/warLibAccessBeansInWarJar.jar/resources/WEB-INF/beans.xml")), "/WEB-INF/beans.xml");
+    @BeforeClass
+    public static void setup() throws Exception {
 
-        JavaArchive warLibAccessBeansInWarJar = ShrinkWrap.create(JavaArchive.class,"warLibAccessBeansInWar2.jar")
-                        .addClass("com.ibm.ws.cdi12.test.warLibAccessBeansInWarJar2.TestInjectionClass2")
-                        .addClass("com.ibm.ws.cdi12.test.warLibAccessBeansInWarJar2.WarBeanInterface2");
+        JavaArchive warLibAccessBeansInWarLibJar = ShrinkWrap.create(JavaArchive.class, "warLibAccessBeansInWarJar.jar")
+                                                             .addClass(com.ibm.ws.cdi12.test.warLibAccessBeansInWarJar.TestInjectionClass.class)
+                                                             .addClass(com.ibm.ws.cdi12.test.warLibAccessBeansInWarJar.WarBeanInterface.class)
+                                                             .add(new FileAsset(new File("test-applications/warLibAccessBeansInWarJar.jar/resources/WEB-INF/beans.xml")),
+                                                                  "/WEB-INF/beans.xml");
+
+        JavaArchive warLibAccessBeansInWarJar = ShrinkWrap.create(JavaArchive.class, "warLibAccessBeansInWar2.jar")
+                                                          .addClass(com.ibm.ws.cdi12.test.warLibAccessBeansInWarJar2.TestInjectionClass2.class)
+                                                          .addClass(com.ibm.ws.cdi12.test.warLibAccessBeansInWarJar2.WarBeanInterface2.class);
 
         WebArchive warLibAccessBeansInWar = ShrinkWrap.create(WebArchive.class, "warLibAccessBeansInWar.war")
-                        .addAsManifestResource(new File("test-applications/warLibAccessBeansInWar.war/resources/META-INF/MANIFEST.MF"))
-                        .addClass("com.ibm.ws.cdi12.test.warLibAccessBeansInWar.TestServlet")
-                        .addClass("com.ibm.ws.cdi12.test.warLibAccessBeansInWar.WarBean")
-                        .add(new FileAsset(new File("test-applications/warLibAccessBeansInWar.war/resources/WEB-INF/beans.xml")), "/WEB-INF/beans.xml")
-                        .addAsLibrary(warLibAccessBeansInWarLibJar);
+                                                      .addAsManifestResource(new File("test-applications/warLibAccessBeansInWar.war/resources/META-INF/MANIFEST.MF"))
+                                                      .addClass(com.ibm.ws.cdi12.test.warLibAccessBeansInWar.TestServlet.class)
+                                                      .addClass(com.ibm.ws.cdi12.test.warLibAccessBeansInWar.WarBean.class)
+                                                      .add(new FileAsset(new File("test-applications/warLibAccessBeansInWar.war/resources/WEB-INF/beans.xml")),
+                                                           "/WEB-INF/beans.xml")
+                                                      .addAsLibrary(warLibAccessBeansInWarLibJar);
 
-        return ShrinkWrap.create(EnterpriseArchive.class,"warLibAccessBeansInWar.ear")
-                        .add(new FileAsset(new File("test-applications/warLibAccessBeansInWar.ear/resources/META-INF/application.xml")), "/META-INF/application.xml")
-                        .addAsModule(warLibAccessBeansInWar)
-                        .addAsModule(warLibAccessBeansInWarJar);     
+        EnterpriseArchive warLibAccessBeansInWarEAR = ShrinkWrap.create(EnterpriseArchive.class, "warLibAccessBeansInWar.ear")
+                                                                .add(new FileAsset(new File("test-applications/warLibAccessBeansInWar.ear/resources/META-INF/application.xml")),
+                                                                     "/META-INF/application.xml")
+                                                                .addAsModule(warLibAccessBeansInWar)
+                                                                .addAsModule(warLibAccessBeansInWarJar);
+        ShrinkHelper.exportDropinAppToServer(server, warLibAccessBeansInWarEAR, DeployOptions.SERVER_ONLY);
+
+        server.startServer();
     }
 
-    @Test
-    public void testWarLibsCanAccessBeansInWar() throws Exception {
-        this.verifyResponse("/warLibAccessBeansInWar/TestServlet", "TestInjectionClass: WarBean TestInjectionClass2: WarBean");
+    @AfterClass
+    public static void tearDown() throws Exception {
+        server.stopServer();
     }
 
 }

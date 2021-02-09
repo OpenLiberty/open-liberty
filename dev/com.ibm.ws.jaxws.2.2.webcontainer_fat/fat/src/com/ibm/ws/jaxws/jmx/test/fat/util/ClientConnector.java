@@ -39,7 +39,7 @@ public class ClientConnector {
         String thisMethod = "ClientConnector(String, String, int)";
 
         System.setProperty("javax.net.ssl.trustStore", serverRoot + "/resources/security/serverKey.jks");
-        Log.info(thisClass, thisMethod, "@TJJ trustStore location: " + serverRoot + "/resources/security/serverKey.jks");
+
         System.setProperty("javax.net.ssl.trustStorePassword", "passw0rd");
 
         try {
@@ -48,7 +48,7 @@ public class ClientConnector {
             environment.put(JMXConnector.CREDENTIALS, new String[] { "admin", "password" });
 
             JMXServiceURL url = new JMXServiceURL("REST", serverHost, securePort, "/IBMJMXConnectorREST");
-            Log.info(thisClass, thisMethod, "@TJJ URL: " + url.toString());
+
             connector2 = JMXConnectorFactory.connect(url, environment);
             mbsc = connector2.getMBeanServerConnection();
         } catch (Throwable t) {

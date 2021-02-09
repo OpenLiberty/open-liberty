@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2019 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,9 +20,13 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.osgi.framework.BundleContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
+
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.annocache.service.internal.AnnotationCacheServiceImpl_Logging;
-import com.ibm.ws.annocache.service.internal.AnnotationCacheServiceImpl_Service;
 import com.ibm.ws.annocache.targets.cache.TargetCache_ParseError;
 import com.ibm.ws.annocache.targets.internal.TargetsTableAnnotationsImpl;
 import com.ibm.ws.annocache.targets.internal.TargetsTableClassesImpl;
@@ -35,6 +39,7 @@ import com.ibm.wsspi.annocache.targets.cache.TargetCache_Factory;
 import com.ibm.wsspi.annocache.targets.cache.TargetCache_InternalConstants;
 import com.ibm.wsspi.annocache.targets.cache.TargetCache_Options;
 
+@Component(configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM"})
 public class TargetCacheImpl_Factory implements TargetCache_Factory {
     private static final String CLASS_NAME = TargetCacheImpl_Factory.class.getSimpleName();
 
@@ -65,20 +70,6 @@ public class TargetCacheImpl_Factory implements TargetCache_Factory {
     @Trivial
     protected static int getSystemProperty(String propertyName, int defaultValue) {
         return UtilImpl_Utils.getSystemProperty(logger, propertyName, defaultValue);
-    }
-
-    //
-
-    public TargetCacheImpl_Factory(AnnotationCacheServiceImpl_Service annoService) {
-        this.annoService = annoService;
-    }
-
-    //
-
-    protected final AnnotationCacheServiceImpl_Service annoService;
-
-    public AnnotationCacheServiceImpl_Service getAnnotationService() {
-        return annoService;
     }
 
     //
@@ -132,6 +123,61 @@ public class TargetCacheImpl_Factory implements TargetCache_Factory {
 
     private TargetCache_Options options;
     private TargetCacheImpl_DataApps cache;
+
+    @Activate
+    public TargetCacheImpl_Factory(BundleContext bundleContext) {
+        this(createOptionsFromProperties());
+        
+        if ( !options.getDisabled() ) {
+            String workArea = getOsgiWorkArea(bundleContext);
+            if ( workArea != null ) {
+                options.setDir(workArea + File.separatorChar + TargetCache_Options.CACHE_NAME_DEFAULT);
+            }
+        }
+        final String methodName = "TargetCacheImpl_Factory(BundleContext bundleContext)";
+        if ( logger.isLoggable(Level.FINER) ) { // INFO is temporary
+            logger.logp(Level.FINER, CLASS_NAME, methodName,
+                "Cache Disabled [ {0} ]",
+                Boolean.valueOf( options.getDisabled() ));
+            logger.logp(Level.FINER, CLASS_NAME, methodName,
+                "Cache Dir [ {0} ]",
+                options.getDir());
+            logger.logp(Level.FINER, CLASS_NAME, methodName,
+                "Cache Write Threads [ {0} ]",
+                Integer.valueOf(options.getWriteThreads()));
+            logger.logp(Level.FINER, CLASS_NAME, methodName,
+                "Cache Write Limit [ {0} ]",
+                Integer.valueOf(options.getWriteLimit()));
+            logger.logp(Level.FINER, CLASS_NAME, methodName,
+                "Use Jandex Format For Containers [ {0} ]",
+                Boolean.valueOf(options.getUseJandexFormat()));
+            logger.logp(Level.FINER, CLASS_NAME, methodName,
+                "Use Binary Format [ {0} ]",
+                Boolean.valueOf(options.getUseBinaryFormat()));
+            
+        }
+    }
+
+    private String getOsgiWorkArea(BundleContext bundleContext) {
+        String methodName = "getOsgiWorkArea";
+
+        File osgiWorkFile = bundleContext.getDataFile(""); // Empty string obtains the work directory.
+        if ( osgiWorkFile == null ) {
+            if ( logger.isLoggable(Level.FINER)) {
+                logger.logp(Level.FINER, CLASS_NAME, methodName, "OSGi Platform does not have file system support.");
+            }
+            return null;
+        }
+
+        String osgiWorkPath = osgiWorkFile.getAbsolutePath();
+        if ( logger.isLoggable(Level.FINER) ) {
+            logger.logp(Level.FINER, CLASS_NAME, methodName, "OSGi Work Path [ {0} ]", osgiWorkPath);
+        }
+        return osgiWorkPath;
+    }
+    public TargetCacheImpl_Factory(TargetCache_Options options) {
+        setOptions(options);
+    }
 
     @Override
     @Trivial

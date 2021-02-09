@@ -16,6 +16,7 @@
       <feature>jmsMdb-3.2</feature>
       <feature>jms-2.0</feature>
       <feature>concurrent-1.0</feature>
+      <feature>componenttest-1.0</feature>
     </featureManager>
 
     <include optional="true" location="../fatTestPorts.xml"/>
@@ -23,11 +24,12 @@
     <variable name="onError" value="FAIL"/>
 
     <jmsConnectionFactory id="cf1" jndiName="jms/cf1">
-      <connectionManager maxPoolSize="2" connectionTimeout="0"/>
+      <connectionManager maxPoolSize="2" connectionTimeout="0" autoCloseConnections="true"/>
       <properties.FAT1 tableName="cf1tbl" userName="CF1USER"/>
     </jmsConnectionFactory>
+
     <jmsConnectionFactory id="cf6" jndiName="jms/cf6">
-      <connectionManager maxPoolSize="6" connectionTimeout="0" enableSharingForDirectLookups="false"/>
+      <connectionManager maxPoolSize="6" connectionTimeout="0" enableSharingForDirectLookups="false" autoCloseConnections="false"/>
       <properties.FAT1 tableName="cf6tbl" userName="CF6USER"/>
     </jmsConnectionFactory>
     
@@ -84,6 +86,7 @@
 	<javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
 	<javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
 	<javaPermission className="javax.management.MBeanServerPermission" name="createMBeanServer"/>
+	<javaPermission className="java.net.SocketPermission" name="*" actions="connect,resolve"/>
 
     <!-- needed by fake resource adapter -->
     <javaPermission codebase="${server.config.dir}/connectors/JCAFAT1.rar" className="java.lang.RuntimePermission" name="getClassLoader"/>

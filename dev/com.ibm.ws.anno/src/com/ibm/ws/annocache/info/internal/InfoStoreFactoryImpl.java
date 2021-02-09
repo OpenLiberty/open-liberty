@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2019 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,13 +13,18 @@ package com.ibm.ws.annocache.info.internal;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Reference;
+
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.annocache.service.internal.AnnotationCacheServiceImpl_Service;
-import com.ibm.ws.annocache.util.internal.UtilImpl_Factory;
 import com.ibm.wsspi.annocache.classsource.ClassSource_Aggregate;
 import com.ibm.wsspi.annocache.info.InfoStoreException;
 import com.ibm.wsspi.annocache.info.InfoStoreFactory;
+import com.ibm.wsspi.annocache.util.Util_Factory;
 
+@Component(configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM"})
 public class InfoStoreFactoryImpl implements InfoStoreFactory {
     private static final Logger logger = Logger.getLogger("com.ibm.ws.annocache.info");
 
@@ -34,11 +39,9 @@ public class InfoStoreFactoryImpl implements InfoStoreFactory {
         return hashText;
     }
 
-    //
-
+    @Activate
     public InfoStoreFactoryImpl(
-        AnnotationCacheServiceImpl_Service annoService,
-        UtilImpl_Factory utilFactory) {
+        @Reference Util_Factory utilFactory) {
 
         super();
 
@@ -46,7 +49,6 @@ public class InfoStoreFactoryImpl implements InfoStoreFactory {
 
         this.hashText = getClass().getSimpleName() + "@" + Integer.toHexString(hashCode());
 
-        this.annoService = annoService;
         this.utilFactory = utilFactory;
 
         if (logger.isLoggable(Level.FINER)) {
@@ -61,18 +63,10 @@ public class InfoStoreFactoryImpl implements InfoStoreFactory {
 
     //
 
-    protected final AnnotationCacheServiceImpl_Service annoService;
-
-    public AnnotationCacheServiceImpl_Service getAnnotationService() {
-        return annoService;
-    }
-
-    //
-
-    protected final UtilImpl_Factory utilFactory;
+    protected final Util_Factory utilFactory;
 
     @Override
-    public UtilImpl_Factory getUtilFactory() {
+    public Util_Factory getUtilFactory() {
         return utilFactory;
     }
 

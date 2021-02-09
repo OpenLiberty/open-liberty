@@ -20,6 +20,9 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.utils.FatStringUtils;
 import com.ibm.ws.security.fat.common.web.WebResponseUtils;
 
+import componenttest.topology.impl.LibertyFileManager;
+import componenttest.topology.impl.LibertyServer;
+
 public class JwtFatUtils {
 
     protected static Class<?> thisClass = JwtFatUtils.class;
@@ -50,4 +53,13 @@ public class JwtFatUtils {
         }
     }
 
+    public void updateFeatureFile(LibertyServer server, String fileNameBase, String version) throws Exception {
+
+        String loc = server.getServerSharedPath();
+        String toLoc = loc + "config/";
+        String toFile = fileNameBase + ".xml";
+        String fromFile = loc + "config/" + fileNameBase + "_" + version + ".xml";
+        LibertyFileManager.copyFileIntoLiberty(server.getMachine(), toLoc, toFile, fromFile);
+
+    }
 }

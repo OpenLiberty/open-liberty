@@ -1,0 +1,67 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/EISExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+17007=Proprietatea {0} trebuie setat\u0103.
+
+17008=Proprietate {0} invalid\u0103 \u00eent\u00e2lnit\u0103.
+
+17009=Proprietatea {0} sau {1} trebuie setat\u0103.
+
+17010=\u00cenregistrarea de ie\u015fire con\u0163ine un tip de mesaj ce nu este suportat
+
+17011=Nu a fost specificat\u0103 o fabric\u0103 de conexiuni.
+
+17012=InteractionSspec trebuie s\u0103 fie o CciJMSInteractionSpec.
+
+17013=\u00cenregistrarea trebuie s\u0103 fie o CciJMSRecord.
+
+17014=Tip de specifica\u0163ie de interac\u0163iune necunoscut
+
+17015=Intrarea trebuie s\u0103 con\u0163ine un singur element text.
+
+17016=A survenit un timeout - nu a fost primit nici un mesaj.
+
+17017=\u00cenregistrarea de intrare con\u0163ine un tip de mesaj ce nu este suportat.
+
+17018=Nu se poate invoca "begin()" \u00eentr-o sesiune ce nu este tranzac\u0163ionat\u0103.
+
+17019=Problem\u0103 la testarea sesiunii tranzac\u0163ionate: 
+
+17020=InteractionSspec trebuie s\u0103 fie o AQInteractionSpec.
+
+17021=\u00cenregistrarea trebuie s\u0103 fie o AQRecord.
+
+17022=Intrarea trebuie s\u0103 con\u0163in\u0103 un singur element r\u00e2nd.
+
+17023=A survenit o excep\u0163ie la setarea atributelor MQQueueConnectionFactory.
+
+17024=Nu s-a putut \u015fterge fi\u015fierul: {0}
+
+17025=Aceast\u0103 mapare necesit\u0103 un element de grupare cheie extern\u0103, deoarece exist\u0103 mai multe chei externe.
+

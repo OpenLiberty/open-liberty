@@ -40,7 +40,7 @@ import componenttest.topology.utils.LDAPUtils;
 import componenttest.vulnerability.LeakedPasswordChecker;
 
 @RunWith(FATRunner.class)
-@Mode(TestMode.LITE)
+@Mode(TestMode.FULL)
 public class FATTestIDSNoFilters {
     private static LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.security.registry.ldap.fat.ids.nofilters");
     private static final Class<?> c = FATTestIDSNoFilters.class;

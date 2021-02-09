@@ -81,7 +81,8 @@ public class MetricsAuthenticationTest {
         assertNotNull("[/metrics] failed to initialize", server.waitForStringInLogUsingMark("SRVE0242I.*/metrics.*"));
     }
 
-    private void waitForTCPChannels(LibertyServer server) throws Exception {
+    private void waitForSecurityPrerequisites(LibertyServer server) throws Exception {
+        assertNotNull("LTPA keys are not created/ready within timeout period of " + TIMEOUT + "ms.", server.waitForStringInLog("CWWKS4104A.*|CWWKS4105I.*", TIMEOUT));
         assertNotNull("TCP Channel defaultHttpEndpoint has not started", server.waitForStringInLog("CWWKO0219I.*defaultHttpEndpoint"));
         assertNotNull("TCP Channel defaultHttpEndpoint-ssl has not started", server.waitForStringInLog("CWWKO0219I.*defaultHttpEndpoint-ssl"));
     }
@@ -101,7 +102,7 @@ public class MetricsAuthenticationTest {
         // wait for metrics installations to complete before running test
         waitForMetricsFeature(server);
         // wait for TCP Channels to start listening
-        waitForTCPChannels(server);
+        waitForSecurityPrerequisites(server);
 
         //1. When authentication is not explicitly set in server.xml, it defaults to private,
         //  i.e. requires authentication into metrics endpoint

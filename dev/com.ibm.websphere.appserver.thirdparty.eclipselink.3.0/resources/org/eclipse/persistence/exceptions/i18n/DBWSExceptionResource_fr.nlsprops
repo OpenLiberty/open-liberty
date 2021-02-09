@@ -1,0 +1,55 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/DBWSExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+47000=Impossible de localiser le fichier "[{0}]".
+
+47001=Impossible de localiser le descripteur [{0}] pour l''op\u00e9ration [{1}] dans le projet O-R
+
+47002=Impossible de localiser la requ\u00eate [{0}] pour le descripteur [{1}]
+
+47003=Impossible de localiser la requ\u00eate [{0}] pour la session [{1}]
+
+47004=Le type de param\u00e8tre [{0}] pour l''op\u00e9ration [{1}] n''existe pas dans le sch\u00e9ma
+
+47005=Le type de param\u00e8tre [{0}] pour l''op\u00e9ration [{1}] n''a pas de mappage O-X
+
+47006=Le type de r\u00e9sultat [{0}] pour l''op\u00e9ration [{1}] n''existe pas dans le sch\u00e9ma
+
+47007=Le type de r\u00e9sultat [{0}] pour l''op\u00e9ration [{1}] n''a pas de mappage O-X
+
+47008=Seules les requ\u00eates au format XML simple prennent en charge plusieurs arguments de sortie
+
+47009=Les param\u00e8tres de curseur INOUT ne sont pas pris en charge
+
+47010=Impossible de localiser la session O-R pour le service [{0}]
+
+47011=Impossible de localiser la session O-X pour le service [{0}]
+
+47012=Impossible d''analyser syntaxiquement le fichier DBWS
+

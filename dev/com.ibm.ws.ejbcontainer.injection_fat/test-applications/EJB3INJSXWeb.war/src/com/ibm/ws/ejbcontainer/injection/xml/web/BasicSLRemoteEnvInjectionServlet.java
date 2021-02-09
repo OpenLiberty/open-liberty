@@ -27,6 +27,7 @@ import com.ibm.ws.ejbcontainer.injection.xml.ejb.EnvInjectionEJBRemote;
 import com.ibm.ws.ejbcontainer.injection.xml.ejb.EnvInjectionEJBRemoteHome;
 import com.ibm.ws.ejbcontainer.injection.xml.ejb.EnvInjectionRemote;
 
+import componenttest.annotation.ExpectedFFDC;
 import componenttest.app.FATServlet;
 
 /**
@@ -129,6 +130,7 @@ public class BasicSLRemoteEnvInjectionServlet extends FATServlet {
      * does NOT occur from the pooled state. <p>
      */
     @Test
+    @ExpectedFFDC("javax.ejb.EJBException")
     public void testSLREnvObjFldInjection_BasicSLRemoteEnvInjection() throws Exception {
         // --------------------------------------------------------------------
         // Locate SL Remote Home/Factory and execute the test
@@ -198,6 +200,7 @@ public class BasicSLRemoteEnvInjectionServlet extends FATServlet {
      * does NOT occur from the pooled state. <p>
      */
     @Test
+    @ExpectedFFDC("javax.ejb.EJBException")
     public void testSLREnvPrimFldInjection_BasicSLRemoteEnvInjection() throws Exception {
         // --------------------------------------------------------------------
         // Locate SL Remote Home/Factory and execute the test
@@ -271,6 +274,7 @@ public class BasicSLRemoteEnvInjectionServlet extends FATServlet {
      * does NOT occur from the pooled state. <p>
      */
     @Test
+    @ExpectedFFDC("javax.ejb.EJBException")
     public void testSLREnvObjMthdInjection_BasicSLRemoteEnvInjection() throws Exception {
         // --------------------------------------------------------------------
         // Locate SL Remote Home/Factory and execute the test
@@ -341,6 +345,7 @@ public class BasicSLRemoteEnvInjectionServlet extends FATServlet {
      * does NOT occur from the pooled state. <p>
      */
     @Test
+    @ExpectedFFDC("javax.ejb.EJBException")
     public void testSLREnvPrimMthdInjection_BasicSLRemoteEnvInjection() throws Exception {
         // --------------------------------------------------------------------
         // Locate SL Remote Home/Factory and execute the test
@@ -413,6 +418,7 @@ public class BasicSLRemoteEnvInjectionServlet extends FATServlet {
      * does NOT occur from the pooled state. <p>
      */
     @Test
+    @ExpectedFFDC("javax.ejb.EJBException")
     public void testSLRCompEnvObjFldInjection_BasicSLRemoteEnvInjection() throws Exception {
         // --------------------------------------------------------------------
         // Locate SL Remote Home/Factory and execute the test
@@ -485,6 +491,7 @@ public class BasicSLRemoteEnvInjectionServlet extends FATServlet {
      * does NOT occur from the pooled state. <p>
      */
     @Test
+    @ExpectedFFDC("javax.ejb.EJBException")
     public void testSLRCompEnvPrimFldInjection_BasicSLRemoteEnvInjection() throws Exception {
         // --------------------------------------------------------------------
         // Locate SL Remote Home/Factory and execute the test
@@ -561,6 +568,7 @@ public class BasicSLRemoteEnvInjectionServlet extends FATServlet {
      * does NOT occur from the pooled state. <p>
      */
     @Test
+    @ExpectedFFDC("javax.ejb.EJBException")
     public void testSLRCompEnvObjMthdInjection_BasicSLRemoteEnvInjection() throws Exception {
         // --------------------------------------------------------------------
         // Locate SL Remote Home/Factory and execute the test
@@ -634,6 +642,7 @@ public class BasicSLRemoteEnvInjectionServlet extends FATServlet {
      * does NOT occur from the pooled state. <p>
      */
     @Test
+    @ExpectedFFDC("javax.ejb.EJBException")
     public void testSLRCompEnvPrimMthdInjection_BasicSLRemoteEnvInjection() throws Exception {
         // --------------------------------------------------------------------
         // Locate SL Remote Home/Factory and execute the test

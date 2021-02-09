@@ -45,13 +45,13 @@ public class SubResourceTestServlet extends FATServlet {
 
     @Test
     public void testSubResourceMsgBodyWriter(HttpServletRequest req, HttpServletResponse resp) throws Exception {
-        Response response = target(req, "id/1").request().get();
+        Response response = target(req, "id/1").request("application/json").get();
         String result = response.readEntity(String.class);
         assertEquals(200, response.getStatus());
         System.out.println("result=" + result);
         assertEquals("{\"root\":\"1\"}", result);
 
-        response = target(req, "sub/id/1").request().get();
+        response = target(req, "sub/id/1").request("application/json").get();
         result = response.readEntity(String.class);
         assertEquals(200, response.getStatus());
         System.out.println("result=" + result);

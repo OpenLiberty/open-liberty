@@ -21,6 +21,7 @@ import java.util.Properties;
 
 import com.ibm.jbatch.jsl.model.JSLProperties;
 import com.ibm.jbatch.jsl.model.PartitionPlan;
+import com.ibm.jbatch.jsl.model.Property;
 
 
 public class PartitionPlanPropertyResolverImpl extends
@@ -51,7 +52,7 @@ public class PartitionPlanPropertyResolverImpl extends
 		Properties currentProps = parentProps;
         if (partitionPlan.getProperties() != null) {
         	
-        	List<JSLProperties> jslProps = partitionPlan.getProperties();
+        	List<JSLProperties> jslProps = (List<JSLProperties>) partitionPlan.getProperties();
         	
         	if (jslProps != null) {
         		for (JSLProperties jslProp : jslProps) {
@@ -59,7 +60,7 @@ public class PartitionPlanPropertyResolverImpl extends
         		    if (jslProp.getPartition() != null) {
         		        jslProp.setPartition(this.replaceAllProperties(jslProp.getPartition(), submittedProps, parentProps));
         		    }
-                    currentProps = this.resolveElementProperties(jslProp.getPropertyList(), submittedProps, parentProps);            		
+                    currentProps = this.resolveElementProperties((List<Property>) jslProp.getPropertyList(), submittedProps, parentProps);            		
             	}	
         	}
         	

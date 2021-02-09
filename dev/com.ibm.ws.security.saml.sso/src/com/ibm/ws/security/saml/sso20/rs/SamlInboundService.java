@@ -51,10 +51,12 @@ public class SamlInboundService {
     }
 
     @Modified
-    protected void modified(ComponentContext cc, Map<String, Object> props) {}
+    protected void modified(ComponentContext cc, Map<String, Object> props) {
+    }
 
     @Deactivate
-    protected void deactivate(ComponentContext cc) {}
+    protected void deactivate(ComponentContext cc) {
+    }
 
     /*
      * This is merged into SAMLResponeTAI and
@@ -67,7 +69,7 @@ public class SamlInboundService {
         if (ssoSamlService == null) {
             // almost impossible unless during dynamic updating or internal error
             throw new WebTrustAssociationFailedException(SamlException.formatMessage("RS_SAML_SERVER_INTERNAL_LOG_ERROR",
-                                                                                     // RS_SAML_SERVER_INTERNAL_LOG_ERROR=CWWKS5201E: An internal server error occurred while processing SAML Web Single Sign-On (SSO) within JAXRS request [{0}]. 
+                                                                                     // RS_SAML_SERVER_INTERNAL_LOG_ERROR=CWWKS5201E: An internal server error occurred while processing SAML Web Single Sign-On (SSO) within JAXRS request [{0}].
                                                                                      //Cause:[{1}], StackTrace: [{2}].
                                                                                      null,
                                                                                      new Object[] { requestUrl, "", "" }));
@@ -149,7 +151,7 @@ public class SamlInboundService {
     /**
      * Set the WWW-Authenticate header in the response, using the given
      * error, error description, status and scope.
-     * 
+     *
      * @param response
      * @param status
      * @param error

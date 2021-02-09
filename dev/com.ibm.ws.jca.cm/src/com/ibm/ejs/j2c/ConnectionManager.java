@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
@@ -31,13 +32,18 @@ import javax.resource.spi.ManagedConnectionFactory;
 import javax.resource.spi.TransactionSupport;
 import javax.resource.spi.TransactionSupport.TransactionSupportLevel;
 import javax.security.auth.Subject;
+import javax.security.auth.kerberos.KerberosTicket;
 import javax.security.auth.login.LoginException;
 import javax.transaction.xa.XAResource;
 import javax.transaction.xa.Xid;
 
+import org.ietf.jgss.GSSCredential;
+
 import com.ibm.ejs.ras.RasHelper;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.security.WSSecurityException;
+import com.ibm.websphere.security.auth.WSSubject;
 import com.ibm.ws.LocalTransaction.LocalTransactionCoordinator;
 import com.ibm.ws.Transaction.UOWCoordinator;
 import com.ibm.ws.Transaction.UOWCurrent;
@@ -52,7 +58,6 @@ import com.ibm.ws.jca.cm.AppDefinedResource;
 import com.ibm.ws.jca.cm.handle.HandleList;
 import com.ibm.ws.kernel.security.thread.ThreadIdentityManager;
 import com.ibm.ws.resource.ResourceRefInfo;
-import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.security.jca.AuthDataService;
 import com.ibm.ws.tx.embeddable.EmbeddableWebSphereTransactionManager;
 import com.ibm.ws.tx.rrs.RRSXAResourceFactory;
@@ -94,37 +99,24 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
 
     private static final AtomicLong numberOfCMinstancesEverCreated = new AtomicLong(0);
 
-    private String cfDetailsKey = "NameNotSet";
-    protected CMConfigData cmConfig = null;
+    private final String cfDetailsKey;
+    protected final CMConfigData cmConfig;
     protected HashMap<String, Integer> qmidcmConfigMap = null;
 
-    private boolean shareable = false;
+    private final boolean shareable;
 
     private int recoveryToken;
 
     private final transient SecurityHelper securityHelper;
     private final boolean isJDBC;
-    private transient int commitPriority = 0;
+    private final transient int commitPriority;
     private boolean localTranSupportSet = false;
+    private boolean issuedSpnegoRecoveryWarning = false;
 
-    /**
-     * The following is a variable which will tell us whether or not
-     * the RelationalResourceAdapter we are working with (if we are)
-     * is configured to run OnePhase commit even though the RRA's RAR
-     * file always indicates twoPhase support.
-     *
-     * <br><br> A value of "0" indicates not initialized.
-     * <br><br> A value of "1" indicates it supports 1PC.
-     * <br><br> A value of "2" indicates it supports 2PC.
-     */
+    protected final boolean containerManagedAuth;
 
-    protected transient PrivilegedExceptionAction<Boolean> _getADP = null;
-    protected boolean containerManagedAuth = false;
-    protected HashMap<Object, String> handleToThreadMap = null;
-    protected HashMap<Object, ComponentMetaData> handleToCMDMap = null;
-
-    protected transient PoolManager _pm = null;
-    protected J2CGlobalConfigProperties gConfigProps = null;
+    protected final transient PoolManager _pm;
+    protected final J2CGlobalConfigProperties gConfigProps;
 
     /*
      * Indicates if the configured MCF is RRSTransactional. If so,
@@ -137,10 +129,10 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
     private final boolean rrsTransactional;
 
     /**
-     * @param cfSvc connection factory service
+     * @param cfSvc     connection factory service
      * @param mcfXProps MCFExtendedProperties
-     * @param pm pool manager supplied by the lightweight server. Otherwise null.
-     * @param jxri J2CXAResourceInfo
+     * @param pm        pool manager supplied by the lightweight server. Otherwise null.
+     * @param jxri      J2CXAResourceInfo
      *
      * @pre jxri != null
      */
@@ -268,7 +260,7 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
      * This method is called by a resource adapter ConnectionFactory to obtain a Connection each
      * time the application calls getConnection() on the resource adapter ConnectionFactory.
      *
-     * @param factory The managed connection factory for this connection.
+     * @param factory     The managed connection factory for this connection.
      * @param requestInfo The connection specific request info, i.e. userID, Password.
      *
      * @return The newly allocated connection (returned as type object per JCA spec).
@@ -470,8 +462,9 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
 
             }
 
-            if (_pm != null && (!(_pm.gConfigProps.isSmartHandleSupport() && shareable))) {
-                HandleList hl = null;
+            // Add to the HandleList if enabled per configuration and the handle is unsharable or doesn't support DissociatableManagedConnection
+            if (_pm != null && _pm.gConfigProps.getAutoCloseConnections() && (!shareable || !_pm.gConfigProps.isSmartHandleSupport())) {
+                HandleList hl = ConnectionHandleManager.addHandle(new HCMDetails(this, rVal, mcWrapper, subj, requestInfo));
 
                 //  store the handle list in the MCWrapper
                 mcWrapper.addToHandleList(rVal, hl);
@@ -516,7 +509,7 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
         }
 
         if (isTraceOn && tc.isEntryEnabled()) {
-            Tr.exit(this, tc, "allocateConnection", rVal==null?" connection handle is null":Integer.toHexString(rVal.hashCode()));
+            Tr.exit(this, tc, "allocateConnection", rVal == null ? " connection handle is null" : Integer.toHexString(rVal.hashCode()));
         }
 
         return rVal;
@@ -528,8 +521,8 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
      * Used by: allocateConnection, reAssociate, and associateConnection.
      *
      * @param requestInfo The connection specific request info, i.e. userID, Password.
-     * @param subj The subject for this request. Can be null.
-     * @param uowCoord The current UOWCoordinator (transaction) for this request.
+     * @param subj        The subject for this request. Can be null.
+     * @param uowCoord    The current UOWCoordinator (transaction) for this request.
      *
      * @return A MCWrapper appropriate for the Current UOW, and enlisted
      *         as appropriate with the UOW.
@@ -710,7 +703,7 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
      * This method will setup required objects needed for participating in the current UOW
      * and enlist or register them with the appropriate UOW services.
      *
-     * @param mcWrapper The Managed Connection wrapper associated with this request.
+     * @param mcWrapper        The Managed Connection wrapper associated with this request.
      * @param originIsDeferred Deferred enlistment flag.
      */
 
@@ -1087,6 +1080,208 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
 
     }
 
+    // ========================================================
+    // Methods Called on us by the ConnectionHandleManager
+    // ========================================================
+
+    /**
+     * This method will reassociate a handle with an appropriate ManagedConnection
+     * and enlist it appropriately for the current UOW if the CM is configured for
+     * sharable connections. If the CM is configured for unShared connections,
+     * then this method will simply ensure the connection is enlisted with the
+     * current UOW (for Local and XA capable resource adapters).
+     *
+     * If the RA supports smart handles (smartHandlesSupport == true), then
+     * we should not do any re-associating of the connection handles to MCs. This
+     * will be taken care of by the Handle via the CM.associateConnection() method
+     * invocation when they need to shift from the "inactive" state to an "active"
+     * state.
+     *
+     * @param hcmDetails Contains all the required information needed to either
+     *                       find a new or used connection, and/or enlist that connection
+     *                       with the current UOW scope.
+     */
+    public void reAssociate(HCMDetails hcmDetails) throws ResourceException {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.entry(tc, "reAssociate");
+
+        if (shareable) {
+            // CM is configured for sharable connections.
+
+            if (hcmDetails._mcWrapper.pm.gConfigProps.isSmartHandleSupport()) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                    Tr.exit(tc, "reAssociate", "RA supports smart handles.  Nothing to do.");
+                return;
+            } else {
+                UOWCurrent uowCurrent = (UOWCurrent) _pm.connectorSvc.transactionManager;
+                UOWCoordinator uowCoord = uowCurrent == null ? null : uowCurrent.getUOWCoord();
+                MCWrapper mcWrapper = null;
+
+                Object credTokenObj = null;
+                try {
+                    // Begin processing to get connection
+                    // Perform any security setup that may be needed
+                    // before we proceed to get a connection.
+
+                    credTokenObj = securityHelper.beforeGettingConnection(hcmDetails._subject, hcmDetails._cRequestInfo);
+
+                    // Get an appropriate wrapped ManangedConnection.
+                    mcWrapper = allocateMCWrapper(hcmDetails._mcWrapper.get_managedConnectionFactory(),
+                                                  hcmDetails._cRequestInfo,
+                                                  hcmDetails._subject,
+                                                  uowCoord);
+                } finally {
+                    // A "finally" clause is implemented to ensure
+                    // any thread identity pushed to the OS
+                    // thread is removed and the original identity
+                    // is restored.
+                    if (credTokenObj != null) {
+                        securityHelper.afterGettingConnection(hcmDetails._subject, hcmDetails._cRequestInfo, credTokenObj);
+                    }
+                }
+
+                involveMCInTran(mcWrapper, uowCoord, hcmDetails._cm);
+
+                // We need to reassociate the handle which was passed in with the new ManagedConnnection.
+                reassociateConnectionHandle(hcmDetails._handle,
+                                            hcmDetails._mcWrapper,
+                                            mcWrapper,
+                                            uowCoord);
+                // Next update the mc which is in the mcfDetails object so that it is associated with the
+                // new managed connection.
+                hcmDetails._mcWrapper = mcWrapper;
+            }
+        } else {
+            // CM is configured for unsharable connections.
+
+            // We need to check here
+            // to see if the ManagedConnection which was passed into this method
+            // is already associated with the current UOW.  If so, there is
+            // no work to do.  If NOT, then we need to enlist it here.
+            //
+            // NOTE: since this is the unShared connection case we assume a
+            //  1 to 1 mapping between handle and managedConnection.
+            //
+            // Since NoTransaction wrappers will be "involved in a transaction" until all of its
+            // handles are closed, we need to make this special check on the "else" leg.  We do not
+            // want or need to check if the UOW is the still the same as the one saved in the
+            // wrapper when dealing with NoTransaction wrappers (since we no longer register
+            // for synchronization).
+
+            if (!hcmDetails._mcWrapper.involvedInTransaction()) {
+                // The Managed connection for this handle is not currently associated with a UOW.
+                // Associate it with the current UOW if appropriate.
+                // First of all, we need to re-initialize the UOWCoordinator that is presently in the
+                //   wrapper.  This would normally by null, but why check if we always have to update
+                //   it anyway.
+
+                hcmDetails._mcWrapper.updateUOWCoordinator();
+                initializeForUOW(hcmDetails._mcWrapper, false);
+            } else if (hcmDetails._mcWrapper.getTranWrapperId() != MCWrapper.NOTXWRAPPER) {
+                // The Managed connection for this handle is currently associated with a UOW.
+                // Verify that the UOW it's currently associated with is the same as the current UOW
+                // on the thread.
+                UOWCurrent uowCurrent = (UOWCurrent) _pm.connectorSvc.transactionManager;
+                UOWCoordinator uowCoord = uowCurrent == null ? null : uowCurrent.getUOWCoord();
+                if (hcmDetails._mcWrapper.getUOWCoordinator() == uowCoord) {
+                    // Good to go.
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                        Tr.exit(tc, "reAssociate - nothing to do");
+                    return;
+                } else {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc,
+                                 "A nested transaction was started but this application still has a reference to an open connection that in enlisted in the parent transaction which is currently suspended.");
+                        Tr.debug(tc,
+                                 "This is not an error but this connection handle should not be used until the application ends the nested transaction and returns control to the partent transaction.");
+                        Tr.debug(tc, "Open connection information is: ", hcmDetails._mcWrapper);
+                    }
+                }
+            }
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.exit(tc, "reAssociate");
+    }
+
+    /**
+     * This method will "Park" a handle. Parking is only done for Sharable connections.
+     * Parking consisting of getting a connection to park against from the pool,
+     * we plan on using one connection per pool, and associating the handle with that
+     * connection. The idea is that the parked connection will never be used, rather,
+     * a later call to reAssociate will reassign the handle to an appropriate, usable,
+     * connection.
+     *
+     * If the RA supports smart handles (smartHandlesSupport == true), then we should
+     * not be doing any parking of the connection handles. We will leave the handles
+     * associated with the MC and let the cleanup() processing put them into an
+     * "inactive" state. The Handle will then call back via the CM.associateConnection()
+     * method to re-activate the Handle.
+     *
+     * @param hcmdetails Passed in because it contains the handle which we need to park.
+     */
+    public void parkHandle(HCMDetails hcmDetails) throws ResourceException {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.entry(tc, "parkHandle", hcmDetails._handle);
+
+        if (!shareable) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                Tr.exit(tc, "parkHandle: non-sharable connection. Nothing to do.");
+            return;
+        }
+        if (hcmDetails._mcWrapper.gConfigProps.isSmartHandleSupport()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                Tr.exit(tc, "parkHandle: RA supports smart handles. Nothing to do.");
+            return;
+        } else {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "parkHandle: RA doesn't support smart handles. Proceed with parkHandle");
+        }
+
+        MCWrapper parkingMCWrapper = null;
+        MCWrapper fromMCWrapper = hcmDetails._mcWrapper;
+        try {
+            parkingMCWrapper = (MCWrapper) (fromMCWrapper.pm.getParkedConnection());
+
+            if (parkingMCWrapper == null) {
+                Tr.error(tc, "NULL_MANAGED_CONNECTION_J2CA0015", fromMCWrapper.gConfigProps.cfName);
+                throw new ResourceException("PoolManager returned null Parked ManagedConnection");
+            }
+
+            // Need to synchronize here in case a Transaction Timeout may be going on at the same time.
+            parkingMCWrapper.associateConnection(hcmDetails._handle, fromMCWrapper);
+        } catch (ResourceException e) {
+            FFDCFilter.processException(e, "com.ibm.ejs.j2c.ConnectionManager.parkHandle", "966", this);
+            Tr.error(tc, "FAILED_TO_ASSOCIATE_CONNECTION_J2CA0058", new Object[] { hcmDetails._handle, parkingMCWrapper, e, fromMCWrapper.gConfigProps.cfName });
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                Tr.exit(tc, "parkHandle", e);
+            throw e;
+        } catch (Exception e) {
+            FFDCFilter.processException(e, "com.ibm.ejs.j2c.ConnectionManager.parkHandle", "973", this);
+            Tr.error(tc, "FAILED_TO_ASSOCIATE_CONNECTION_J2CA0058", new Object[] { hcmDetails._handle, parkingMCWrapper, e, fromMCWrapper.gConfigProps.cfName });
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                Tr.exit(tc, "parkHandle", e);
+            ResourceException re = new ResourceException("parkHandle: Caught an Exception from mc.associateConnection().");
+            re.initCause(e);
+            throw re;
+        }
+
+        if (fromMCWrapper.getHandleCount() == 0) {
+            if (!fromMCWrapper.involvedInTransaction()) {
+                // The ManagedConnection is not associated with a transactional
+                // context so return it to the pool.
+                fromMCWrapper.releaseToPoolManager();
+            }
+        }
+
+        // Next update the mc which is in the mcfDetails object so that it is associated with the
+        // new managed connection.
+        hcmDetails._mcWrapper = parkingMCWrapper;
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.exit(tc, "parkHandle");
+    }
+
     /**
      *
      * Lazy Transaction Enlistment Optimization (deferred enlistment, CEL.interactionPending())
@@ -1447,7 +1642,7 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
      *      integrity of a managed connection and its pool when an inactive connection
      *      is closed.
      *
-     * @param connection The connection handle that is now closed.
+     * @param connection               The connection handle that is now closed.
      * @param managedConnectionFactory The factory that created the handle.
      */
     @Override
@@ -1618,9 +1813,9 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
     /**
      * Returns the subject for container managed authentication.
      *
-     * @param requestInfo - connection request information
+     * @param requestInfo             - connection request information
      * @param mangedConnectionFactory - managed connection factory
-     * @param CM - connection manager
+     * @param CM                      - connection manager
      * @return subject for container managed authentication.
      * @throws ResourceException
      */
@@ -1659,6 +1854,29 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
                     ResourceException r = new ResourceException(e.getCause());
                     throw r;
                 }
+            } else if (subj == null) {
+                // Check to see if a SPNEGO subject is already passed in by the caller. If so, use it
+                Subject callerSubject = getCallerSubject();
+                if (callerSubject != null) {
+                    boolean isSpnegoSubject = callerSubject.getPrivateCredentials(KerberosTicket.class).size() > 0 ||
+                                              callerSubject.getPrivateCredentials(GSSCredential.class).size() > 0;
+                    if (isSpnegoSubject) {
+                        if (isTraceOn && tc.isDebugEnabled())
+                            Tr.debug(tc, "Found SPNEGO Subject passed in as the caller subject, using it for authentication");
+                        subj = callerSubject;
+
+                        // User is attempting to use an XADataSource with SPNEGO authentication and no alternative recoveryAuthData configured
+                        // Warn the user that this configuration is not fully XA-capable since XA recovery with SPNEGO auth is not possible
+                        if (tc.isWarningEnabled() &&
+                            !issuedSpnegoRecoveryWarning &&
+                            connectionFactorySvc.getTransactionSupport() == TransactionSupportLevel.XATransaction &&
+                            connectionFactorySvc.getRecoveryAuthDataID() == null) {
+                            issuedSpnegoRecoveryWarning = true;
+                            String jndiName = connectionFactorySvc.getJNDIName();
+                            Tr.warning(tc, "SPNEGO_XA_RECOVERY_NOT_SUPPORTED_J2CA0695W", jndiName != null ? jndiName : connectionFactorySvc.getID());
+                        }
+                    }
+                }
             }
 
             subj = this.securityHelper.finalizeSubject(subj, requestInfo, this.cmConfig);
@@ -1685,7 +1903,7 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
     /**
      * Register XA resource information with the transaction manager.
      *
-     * @param tm the transaction manager.
+     * @param tm             the transaction manager.
      * @param xaResourceInfo information necessary for producing an XAResource object using the XAResourceFactory.
      * @param commitPriority priority to use when committing multiple XA resources.
      * @return the recovery ID (or -1 if an error occurs)
@@ -1750,5 +1968,30 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
             }
         }
         return i;
+    }
+
+    private static Subject getCallerSubject() {
+        if (System.getSecurityManager() == null) {
+            try {
+                return WSSubject.getCallerSubject();
+            } catch (WSSecurityException e) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "Unable to obtain caller Subject because of: " + e.getMessage());
+                return null;
+            }
+        } else {
+            return AccessController.doPrivileged(new PrivilegedAction<Subject>() {
+                @Override
+                public Subject run() {
+                    try {
+                        return WSSubject.getCallerSubject();
+                    } catch (WSSecurityException e) {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                            Tr.debug(tc, "Unable to obtain caller Subject because of: " + e.getMessage());
+                        return null;
+                    }
+                }
+            });
+        }
     }
 }

@@ -8,6 +8,8 @@ Bundle-Description: WAS JSF 2.2/2.3 Shared, version ${bVersion}
 WLP-ServerName: IBM WebSphere Application Server
 WLP-ServerVersion: ${liberty.beta.version}
 
+jakartaeeMe:true
+
 Service-Component: 
 
 Export-Package: !com.ibm.ws.jsf.shared.resources, \

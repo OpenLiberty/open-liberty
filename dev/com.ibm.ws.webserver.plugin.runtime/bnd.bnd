@@ -35,6 +35,8 @@ Private-Package: com.ibm.ws.plugin.runtime.resources
 
 instrument.classesExcludes: com/ibm/ws/plugin/runtime/resources/*.class
 
+jakartaeeMe: true
+
 -buildpath: \
 	com.ibm.websphere.appserver.spi.logging;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\

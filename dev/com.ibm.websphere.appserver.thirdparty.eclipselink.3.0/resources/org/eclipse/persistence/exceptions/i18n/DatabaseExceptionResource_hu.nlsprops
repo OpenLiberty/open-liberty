@@ -1,0 +1,61 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/DatabaseExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+4003=Konfigur\u00e1ci\u00f3s hiba.  A(z) [{0}] oszt\u00e1ly nem tal\u00e1lhat\u00f3.
+
+4005=A DatabaseAccessor nincs csatlakoztatva.
+
+4006=Hiba t\u00f6rt\u00e9nt a BLOB adatok beolvas\u00e1sakor a folyamb\u00f3l a getObject() met\u00f3dusban.
+
+4007=Az objektumt\u00edpus nem alak\u00edthat\u00f3 \u00e1t egy bels\u0151 hiba miatt. {0}java.sql.TYPES: [{1}]
+
+4008=Nem jelentkezhet ki, mik\u00f6zben folyamatban van egy tranzakci\u00f3.
+
+4009=A sorrendi t\u00e1bla inform\u00e1ci\u00f3k nem teljesek.
+
+4011=Hiba t\u00f6rt\u00e9nt a sorozatsz\u00e1mok el\u0151zetes lefoglal\u00e1sakor.  A sorrendi t\u00e1bla inform\u00e1ci\u00f3k nem teljesek.
+
+4014=Nem regisztr\u00e1lhat\u00f3 SynchronizationListener.
+
+4015=A szinkroniz\u00e1lt UnitOfWork objektum nem t\u00e1mogatja a commitAndResume() m\u0171veletet.
+
+4016=Konfigur\u00e1ci\u00f3s hiba.  A(z) [{0}] illeszt\u0151program nem p\u00e9ld\u00e1nyos\u00edthat\u00f3.
+
+4017=Konfigur\u00e1ci\u00f3s hiba.  A(z) [{0}] illeszt\u0151program nem \u00e9rhet\u0151 el.
+
+4018=A TransactionManager nincs be\u00e1ll\u00edtva a JTS illeszt\u0151programhoz.
+
+4019=Hiba t\u00f6rt\u00e9nt az inform\u00e1ci\u00f3k beszerz\u00e9sekor az adatb\u00e1zisb\u00f3l. Tov\u00e1bbi r\u00e9szletek\u00e9rt tekintse meg a be\u00e1gyazott kiv\u00e9telt.
+
+4020=Nem tal\u00e1lhat\u00f3 az egyeztetett adatb\u00e1zismez\u0151 a megadott optimista z\u00e1rol\u00e1si mez\u0151h\u00f6z: [{0}]. Vegye figyelembe, hogy az egyeztet\u00e9sn\u00e9l a kis- \u00e9s nagybet\u0171k elt\u00e9r\u0151nek sz\u00e1m\u00edtanak, ez\u00e9rt ha enged\u00e9lyezte, hogy az alap\u00e9rtelmezett oszlopnevek haszn\u00e1lat\u00e1t a lek\u00e9rdez\u0151 met\u00f3dushoz, akkor a nevek nagybet\u0171sre lesznek alak\u00edtva.
+
+4021=Nem szerezhet\u0151 be kapcsolat a(z) [{0}] illeszt\u0151programt\u00f3l, felhaszn\u00e1l\u00f3: [{1}], URL: [{2}].  Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a v\u00e1rt illeszt\u0151program oszt\u00e1lyt \u00e9s URL c\u00edmet \u00e1ll\u00edtotta be.  Ellen\u0151rizze a bejelentkez\u00e9si, a persistence.xml vagy a sessions.xml er\u0151forr\u00e1st.  A jdbc.driver tulajdons\u00e1got egy olyan oszt\u00e1lyra kell be\u00e1ll\u00edtani, amely kompatibilis az adatb\u00e1zis platformmal.
+
+4022=A hozz\u00e1f\u00e9r\u0151 vagy kapcsolata null\u00e9rt\u00e9kre lett be\u00e1ll\u00edtva.  Ez akkor fordulhat el\u0151, ha a ClientSession vagy a UnitOfWork egy k\u00fcl\u00f6n sz\u00e1lban lett felszabad\u00edtva, p\u00e9ld\u00e1ul ha egy id\u0151t\u00fall\u00e9p\u00e9s t\u00f6rt\u00e9nt.
+

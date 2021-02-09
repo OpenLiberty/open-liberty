@@ -1,3 +1,4 @@
+###############################################################################
 # Copyright (c) 2014 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
@@ -6,7 +7,7 @@
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
-# -------------------------------------------------------------------------------------------------
+###############################################################################
 # # {0} description of each insert field
 # MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
 # MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
@@ -44,17 +45,17 @@
 
 50008=Classe de n\u00f3 n\u00e3o suportada {0}.  O m\u00e9todo createBinder(Class) suporta somente a classe org.w3c.dom.Node.
 
-50009=A propriedade ou o campo {0} est\u00e1 anotado para ser tempor\u00e1rio; por isso, n\u00e3o pode ser inclu\u00eddo na anota\u00e7\u00e3o propOrder.
+50009=A propriedade ou o campo {0} na classe {1} est\u00e1 anotado como tempor\u00e1rio, portanto, n\u00e3o pode ser inclu\u00eddo na anota\u00e7\u00e3o propOrder.
 
-50010=A propriedade ou o campo {0} deve ser um atributo, porque outro campo ou propriedade est\u00e1 anotado com XmlValue.
+50010=A propriedade ou o campo {0} na classe {1} deve ser um atributo porque outro campo ou propriedade est\u00e1 anotado com o XmlValue.
 
-50011=A propriedade ou o campo {0} n\u00e3o pode ser anotado com XmlValue, j\u00e1 que \u00e9 uma subclasse de outra classe XML-bound.
+50011=A propriedade ou o campo {0} na classe {1} n\u00e3o pode ser anotado com o XmlValue, pois \u00e9 uma subclasse de outra classe ligada ao XML.
 
-50012=A propriedade ou o campo {0} foi especificado em propOrder, mas n\u00e3o \u00e9 uma propriedade v\u00e1lida.
+50012=A propriedade ou o campo {0} na classe {1} foi especificado no propOrder, mas n\u00e3o \u00e9 uma propriedade v\u00e1lida.
 
 50013=A propriedade ou o campo {0} na classe {1} \u00e9 obrigado a ser inclu\u00eddo no elemento propOrder da anota\u00e7\u00e3o XmlType.
 
-50014=A propriedade ou o campo {0} com a anota\u00e7\u00e3o XmlValue deve ser de um tipo mapeado para um tipo de esquema simples.
+50014=A propriedade ou o campo {0} na classe {1} com a anota\u00e7\u00e3o de XmlValue deve ser de um tipo que mapeia para um tipo de esquema simples.
 
 50015=XmlElementWrapper \u00e9 permitido somente em uma propriedade de cole\u00e7\u00e3o ou matriz, mas [{0}] n\u00e3o \u00e9 uma propriedade de cole\u00e7\u00e3o ou matriz.
 

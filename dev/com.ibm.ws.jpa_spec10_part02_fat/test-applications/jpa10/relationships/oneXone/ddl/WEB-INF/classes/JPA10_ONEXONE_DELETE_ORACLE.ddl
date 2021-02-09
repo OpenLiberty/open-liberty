@@ -21,7 +21,6 @@ DELETE FROM ${schemaname}.OONoOptEntityA;
 DELETE FROM ${schemaname}.OONoOptEntityB;
 DELETE FROM ${schemaname}.OOUniEntA;
 DELETE FROM ${schemaname}.OOUniEntB;
-DELETE FROM ${schemaname}.OPENJPA_SEQUENCE_TABLE;
 DELETE FROM ${schemaname}.PKJoinOOEntityA;
 DELETE FROM ${schemaname}.PKJoinOOEntityB;
 DELETE FROM ${schemaname}.XMLEmbedIDOOEntA;

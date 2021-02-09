@@ -18,8 +18,10 @@ import javax.enterprise.context.Dependent;
 @Dependent
 public class SimpleBean {
 
+    public static final String MSG = "bean exists";
+
     public String test() {
-        return "bean exists";
+        return MSG;
     }
 
 }

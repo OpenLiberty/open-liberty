@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2012 IBM Corporation and others.
+ * Copyright (c) 1997, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,6 +30,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.Transaction.UOWCoordinator;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.j2c.TranWrapper;
+import com.ibm.ws.jca.cm.handle.HandleList;
 
 public final class ConnectionEventListener implements javax.resource.spi.ConnectionEventListener {
     private MCWrapper mcWrapper = null;
@@ -39,7 +40,8 @@ public final class ConnectionEventListener implements javax.resource.spi.Connect
     /**
      * Default constructor provided so that subclasses need not override (implement).
      */
-    ConnectionEventListener() {}
+    ConnectionEventListener() {
+    }
 
     /**
      * ctor
@@ -84,21 +86,14 @@ public final class ConnectionEventListener implements javax.resource.spi.Connect
 
                 ConnectionManager cm = mcWrapper.getConnectionManagerWithoutStateCheck();
 
-                if (cm != null && cm.handleToThreadMap != null) {
-                    cm.handleToThreadMap.clear();
-                }
-                if (cm != null && cm.handleToCMDMap != null) {
-                    cm.handleToCMDMap.clear();
-                }
-
                 if (!(mcWrapper.gConfigProps.isSmartHandleSupport() && (cm != null && cm.shareable()))) {
 
                     Object conHandle = event.getConnectionHandle();
                     if (null == conHandle) {
                         Tr.warning(tc, "CONNECTION_CLOSED_NULL_HANDLE_J2CA0148", event);
                     } else {
-                        mcWrapper.removeFromHandleList(conHandle);
-                        // TODO - need to implement - Notify the CHM to stop tracking the handle because it has been closed.
+                        HandleList hl = mcWrapper.removeFromHandleList(conHandle);
+                        ConnectionHandleManager.removeHandle(conHandle, hl);
                     }
                 }
 

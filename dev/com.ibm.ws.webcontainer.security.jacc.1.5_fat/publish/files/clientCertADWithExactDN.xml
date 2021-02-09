@@ -1,0 +1,69 @@
+<!--
+    Copyright (c) 2020 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server description="com.ibm.ws.webcontainer.security.fat.clientcert">
+
+	<featureManager>
+		<feature>appSecurity-1.0</feature>
+		<feature>jsp-2.2</feature>
+	</featureManager>
+
+	<ssl id="defaultSSLConfig"
+		 keyStoreRef="defaultKeyStore"
+		 trustStoreRef="defaultTrustStore"
+		 clientAuthenticationSupported="true" />
+	<keyStore id="defaultKeyStore"
+			  location="${server.config.dir}/resources/security/DummyServerKeyFile.jks"
+			  type="JKS" password="WebAS" />
+	<keyStore id="defaultTrustStore"
+			  location="${server.config.dir}/resources/security/DummyServerTrustFile.jks"
+			  type="JKS" password="WebAS" />
+			  		  
+	<ldapRegistry id="LDAP" realm="SampleLdapADRealm" host="${ldap.server.2.name}" port="${ldap.server.2.port}" ignoreCase="true"
+		baseDN="cn=users,dc=secfvt2,dc=austin,dc=ibm,dc=com"
+		bindDN="cn=testuser,cn=users,dc=secfvt2,dc=austin,dc=ibm,dc=com"
+		bindPassword="testuserpwd"
+		certificateMapMode="EXACT_DN"		
+		ldapType="Microsoft Active Directory"		
+		searchTimeout="8m"
+		activedFilters="myactivedfilters">
+		<failoverServers name="failoverLdapServers">
+		   <server host="${ldap.server.6.name}" port="${ldap.server.6.port}"/>
+        </failoverServers>		
+	</ldapRegistry>
+	<activedLdapFilterProperties id="myactivedfilters"
+			userFilter="(&amp;(sAMAccountName=%v)(objectcategory=user))"
+			groupFilter="(&amp;(cn=%v)(objectcategory=group))"
+			userIdMap="user:sAMAccountName"
+			groupIdMap="*:cn"
+			groupMemberIdMap="memberof:member">
+	</activedLdapFilterProperties>
+
+	<webAppSecurity allowFailOverToBasicAuth="true" />
+
+	<application type="war" id="clientcert" name="clientcert" location="${server.config.dir}/apps/clientcert.war">
+		<application-bnd>
+			<security-role name="Manager">
+				<user name="LDAPUser2" />
+				<group name="group2" />
+			</security-role>
+			<security-role name="Employee">
+				<user name="LDAPUser1" />
+				<group name="group1" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+
+	<include location="../fatTestPorts.xml"/>
+
+</server>

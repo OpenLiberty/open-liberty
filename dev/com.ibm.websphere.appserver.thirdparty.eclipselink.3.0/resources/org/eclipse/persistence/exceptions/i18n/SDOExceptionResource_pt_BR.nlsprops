@@ -1,0 +1,147 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/SDOExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+45000=N\u00e3o foi poss\u00edvel localizar elemento do ID de tipo com o URI [{0}] e o nome [{1}].
+
+45001=Ocorreu um erro ao processar a importa\u00e7\u00e3o com o schemaLocation [{0}] e o namespace [{1}].
+
+45002=Ocorreu um erro ao processar a inclus\u00e3o com o schemaLocation [{0}].
+
+45003=Uma propriedade referenciada com o URI [{0}] e nome [{1}] n\u00e3o foi localizada.
+
+45004=A sequ\u00eancia antiga n\u00e3o foi localizada no changesummary.
+
+45005=O valor da propriedade com o nome [{0}] deve ser um DataObject
+
+45006=A sequ\u00eancia n\u00e3o pode ser nula quando type.isSequenced() \u00e9 true.
+
+45007=Um tipo n\u00e3o foi configurado na propriedade com o nome [{0}]
+
+45008=Ocorreu uma exce\u00e7\u00e3o de E/S.
+
+45009=Tipo n\u00e3o localizado com o URI [{0}] e nome [{1}]
+
+45010=Um tipo n\u00e3o p\u00f4de ser localizado para a classe de interface [{0}]. Certifique-se de que o tipo tenha sido definido.  Al\u00e9m disso, o carregador de classes de interface deve ser membro da hierarquia de carregador de classes de contexto auxiliar: parece que este \u00e9 [{1}].
+
+45011=N\u00e3o foi poss\u00edvel criar um DataObject para o tipo com o URI [{0}] e nome [{1}] porque type.isAbstract() retorna true.
+
+45012=N\u00e3o foi poss\u00edvel criar um DataObject para a interface [{0}], tentando criar um DataObject para o tipo com o URI [{1}] e nome [{2}] 
+
+45013=N\u00e3o \u00e9 poss\u00edvel consultar informa\u00e7\u00f5es do aplicativo para o argumento nulo.
+
+45014=N\u00e3o foi poss\u00edvel definir o tipo.  Os tipos podem ser definidos somente para DataObjects com o tipo configurado como commonj.sdo.Type
+
+45015=N\u00e3o foi poss\u00edvel definir o tipo com um nome nulo.
+
+45016=Em um objeto modificado no XML changesummary, est\u00e1 faltando um atributo ref ou o valor n\u00e3o foi especificado.
+
+45017=Ocorreu um erro ao processar xpath [{0}].
+
+45018=A inclus\u00e3o de uma entrada duplicada da configura\u00e7\u00e3o \u00fanica complexa [{1}] em uma sequ\u00eancia na posi\u00e7\u00e3o [{0}] n\u00e3o \u00e9 suportada.
+
+45019=A inclus\u00e3o de uma propriedade de atributo [{0}] em uma sequ\u00eancia n\u00e3o \u00e9 suportada.
+
+45020=Nenhuma sequ\u00eancia localizada para o caminho [{0}].
+
+45021=Ocorreu um erro ao tentar instanciar um objeto de sequ\u00eancia com um campo de inst\u00e2ncia dataObject nula.
+
+45022=Nenhuma sequ\u00eancia \u00e9 suportada para a propriedade [{0}].
+
+45023=N\u00e3o foi poss\u00edvel configurar a propriedade do tipo com o URI [{0}] e nome [{1}] para o valor da classe [{2}]
+
+45024=Ocorreu um erro de convers\u00e3o.
+
+45025=N\u00e3o foi poss\u00edvel localizar a propriedade no \u00edndice [{0}]
+
+45026=N\u00e3o \u00e9 poss\u00edvel executar a opera\u00e7\u00e3o [{0}] no par\u00e2metro nulo.
+
+45027=N\u00e3o \u00e9 poss\u00edvel localizar a classe para o tipo com o URI [{0}] e sobrenome [{1}].
+
+45028=Um tipo n\u00e3o pode ser configurado para abrir um tipo de dado.  Erro com o tipo com o URI [{0}] e nome [{1}].
+
+45029=\u00cdndice inv\u00e1lido [{0}] transmitido para o m\u00e9todo [{1}].
+
+45030=Ocorreu um erro ao chamar o construtor com um argumento de sequ\u00eancia na classe [{0}].
+
+45031=N\u00e3o \u00e9 poss\u00edvel configurar o tipo de destino inv\u00e1lido [{0}] na propriedade [{1}] porque type.dataType de destino \u00e9 true.
+
+45032=Um XMLMarshalException ocorreu para a URI [{1}] e nome local [{2}].  Exce\u00e7\u00e3o: [{0}]
+
+45033=Ocorreu um erro ao gerar tipos. O componente de Esquema XML com o nome [{1}] e URI do namespace [{0}] \u00e9 referenciado, mas nunca definido.  Uma importa\u00e7\u00e3o ou inclus\u00e3o para URI do namespace [{0}] pode estar ausente do Esquema XML.
+
+45034=O valor do par\u00e2metro de op\u00e7\u00f5es deve ser um DataObject de Tipo com o URI [{0}] e nome [{1}].
+
+45035=O valor que corresponde \u00e0 propriedade "type" deve ser um objeto de Tipo.
+
+45036=Uma propriedade global correspondente ao n\u00f3 XML que est\u00e1 sendo carregado n\u00e3o foi localizada.
+
+45037=O prefixo [{0}] \u00e9 usado, mas n\u00e3o declarado no esquema XML.
+
+45038=N\u00e3o \u00e9 poss\u00edvel executar a opera\u00e7\u00e3o na propriedade [{0}] porque ela n\u00e3o \u00e9 ating\u00edvel a partir do caminho [{1}]. O caminho \u00e9 inv\u00e1lido, ou um ou mais objetos de dados no caminho s\u00e3o nulos.
+
+45039=Ocorreu um erro ao acessar o campo externalizableDelegator [{0}] no DataObject.
+
+45040=N\u00e3o \u00e9 poss\u00edvel executar a opera\u00e7\u00e3o [{0}] com o par\u00e2metro nulo [{1}].
+
+45041=O valor [{0}] da classe [{1}] \u00e9 inv\u00e1lido para a propriedade [{2}] do tipo [{3}].
+
+45100=Ocorreu um erro ao tentar retornar o SDOHelperContext solicitado.  Em uma inst\u00e2ncia do WebLogic ativa, o nome do aplicativo \u00e9 necess\u00e1rio para consultas do cache de contexto auxiliar.  O nome do aplicativo n\u00e3o p\u00f4de ser determinado porque a consulta de {0} falhou.
+
+45101=Ocorreu um erro ao tentar retornar o SDOHelperContext solicitado.  Em uma inst\u00e2ncia do WebLogic ativa, o nome do aplicativo \u00e9 necess\u00e1rio para consultas do cache de contexto auxiliar.  O nome do aplicativo n\u00e3o p\u00f4de ser determinado porque {0} n\u00e3o p\u00f4de ser chamado refletivamente em {1}.
+
+45102=Ocorreu um erro ao tentar retornar o SDOHelperContext solicitado.  Em uma inst\u00e2ncia do WebLogic ativa, o nome do aplicativo \u00e9 necess\u00e1rio para consultas do cache de contexto auxiliar.  O nome do aplicativo n\u00e3o p\u00f4de ser determinado porque um ObjectName n\u00e3o p\u00f4de ser criado/retornado para {0}.
+
+45103=Ocorreu um erro ao tentar retornar o SDOHelperContext solicitado.  Em uma inst\u00e2ncia do WebLogic ativa, o nome do aplicativo \u00e9 necess\u00e1rio para consultas do cache de contexto auxiliar.  O nome do aplicativo n\u00e3o p\u00f4de ser determinado porque um InitialContext n\u00e3o p\u00f4de ser instanciada.
+
+45200=SDO/JAXB - N\u00e3o foi poss\u00edvel localizar uma descritor OXM que corresponda ao tipo SDO [{0}], assegure-se de que uma classe Java seja mapeada para o tipo XML [{1}].
+
+45201=SDO/JAXB - N\u00e3o foi poss\u00edvel localizar um mapeamento OXM que corresponda \u00e0 propriedade de SDO [{0}], assegure-se de que uma propriedade Java seja mapeada para o n\u00f3 XML [{1}].
+
+45202=SDO/JAXB - N\u00e3o foi poss\u00edvel localizar um tipo SDO que corresponda \u00e0 classe Java [{0}].
+
+45203=SDO/JAXB - Uma refer\u00eancia de esquema deve ser configurada no descritor para a classe Java [{0}].
+
+45204=SDO/JAXB - Um contexto de esquema deve ser configurado na refer\u00eancia de esquema no descritor para a classe Java [{0}].
+
+45205=SDO/JAXB - N\u00e3o foi poss\u00edvel localizar um tipo SDO que corresponda \u00e0 classe Java [{0}], assegure-se de que um tipo SDO corresponda ao tipo XML [{1}].
+
+45206=SDO/JAXB - Ocorreu um erro ao criar um unmarshaller JAXB.
+
+45207=Ocorreu um erro ao tentar resolver um esquema utilizando o SchemaResolver fornecido.
+
+45208=N\u00e3o \u00e9 poss\u00edvel mapear a propriedade {0} do tipo {1}. Os pacotes javax.activation e javax.mail s\u00e3o requeridas para mapear propriedades do tipo DataHandler. Assegure-se de que ambos estejam dispon\u00edveis no caminho de classe.
+
+45209=Foi feita uma tentativa de reconfigurar a inst\u00e2ncia ApplicationResolver no SDOHelperContext.  Somente um conjunto \u00e9 permitido.
+
+45210=O DataObject que est\u00e1 sendo serializado n\u00e3o \u00e9 do mesmo HelperContext que o XMLHelper.
+
+45211=O tipo n\u00e3o p\u00f4de ser definido com o nome [{0}]. O nome n\u00e3o \u00e9 um nome XML v\u00e1lido.
+
+45212=A propriedade n\u00e3o p\u00f4de ser definida com o nome [{0}]. O nome n\u00e3o \u00e9 um nome XML v\u00e1lido.
+

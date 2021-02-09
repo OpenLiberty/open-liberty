@@ -59,6 +59,10 @@ public class ServerAsset implements Comparable<ServerAsset> {
         requiredFeatures = new HashSet<String>();
     }
 
+    public File getServerXmlFile(){
+        return serverInfo;
+    }
+
     public File getServerDirectory() {
         return serverInfo.getParentFile();
     }

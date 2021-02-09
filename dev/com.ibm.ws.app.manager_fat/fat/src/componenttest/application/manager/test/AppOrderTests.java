@@ -20,11 +20,15 @@ import java.net.URL;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
+import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.fat.util.jmx.mbeans.ApplicationMBean;
 import com.ibm.ws.fat.util.jmx.mbeans.ApplicationMBean.ApplicationState;
 
+import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -33,6 +37,7 @@ import componenttest.topology.utils.HttpUtils;
 /**
  * Tests that exercise the 'startAfter' attribute on applications
  */
+@RunWith(FATRunner.class)
 public class AppOrderTests extends AbstractAppManagerTest {
 
     private static final long LONG_TIMEOUT = 120000;
@@ -78,6 +83,7 @@ public class AppOrderTests extends AbstractAppManagerTest {
     }
 
     @Test
+    @Mode(TestMode.FULL)
     public void testAppOrderCycle() throws Exception {
         final String method = testName.getMethodName();
 
@@ -163,12 +169,14 @@ public class AppOrderTests extends AbstractAppManagerTest {
     }
 
     @Test
+    @Mode(TestMode.FULL)
     public void testComplexAppOrder() throws Exception {
         final String method = testName.getMethodName();
 
         server.copyFileToLibertyServerRoot(PUBLISH_FILES, APPS_DIR, SLOW_APP);
         server.copyFileToLibertyServerRoot(PUBLISH_FILES, APPS_DIR, SNOOP_WAR);
         server.copyFileToLibertyServerRoot(PUBLISH_FILES, APPS_DIR, APP_J2EE_EAR);
+        server.copyFileToLibertyServerRoot(PUBLISH_FILES, APPS_DIR, TEST_WAR_APPLICATION);
 
         server.setServerConfigurationFile("/appOrder/complex.xml");
         server.startServer(method + ".log");
@@ -188,6 +196,7 @@ public class AppOrderTests extends AbstractAppManagerTest {
     }
 
     @Test
+    @Mode(TestMode.FULL)
     public void testIndividualAppUpdate() throws Exception {
         final String method = testName.getMethodName();
 

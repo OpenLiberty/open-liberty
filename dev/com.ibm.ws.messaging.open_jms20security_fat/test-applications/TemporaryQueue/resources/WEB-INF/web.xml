@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="3.0"
+    xmlns="http://java.sun.com/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee web-app_3_0.xsd"
+    id="WebApp_ID">
+
+  <display-name>JCABVTWeb</display-name>
+
+  <!-- SERVLET DEFINITIONS -->
+  <servlet id="Default">
+    <servlet-name>JMSContext FAT Servlet</servlet-name>
+    <display-name>JMSContext FAT Servlet</display-name>
+    <servlet-class>web.JMSContextTestServlet</servlet-class>
+   <!-- <load-on-startup></load-on-startup> -->
+  </servlet>
+
+  <!-- SERVLET MAPPINGS -->        
+  <servlet-mapping id="ServletMapping_Default">
+    <servlet-name>JMSContext FAT Servlet</servlet-name>
+    <url-pattern>/*</url-pattern>
+  </servlet-mapping>
+
+  <!-- RESOURCE REFERENCES -->
+  <resource-ref>
+    <res-ref-name>eis/cf1</res-ref-name>
+    <res-type>javax.jms.ConnectionFactory</res-type>
+    <lookup-name>eis/cf1</lookup-name>
+  </resource-ref>
+
+  <resource-ref>
+    <res-ref-name>eis/cf2</res-ref-name>
+    <res-type>javax.jms.ConnectionFactory</res-type>
+    <res-sharing-scope>Unshareable</res-sharing-scope>
+    <lookup-name>eis/cf2</lookup-name>
+  </resource-ref>
+
+   <resource-ref>
+    <res-ref-name>eis/tcf</res-ref-name>
+    <res-type>javax.jms.TopicConnectionFactory</res-type>
+    <lookup-name>eis/tcf</lookup-name>
+  </resource-ref>
+  
+     <resource-ref>
+    <res-ref-name>eis/tcf1</res-ref-name>
+    <res-type>javax.jms.TopicConnectionFactory</res-type>
+    <lookup-name>eis/tcf1</lookup-name>
+  </resource-ref>
+
+   <resource-ref>
+    <res-ref-name>eis/qcf</res-ref-name>
+    <res-type>javax.jms.QueueConnectionFactory</res-type>
+    <lookup-name>eis/qcf</lookup-name>
+  </resource-ref>
+
+   <resource-ref>
+    <res-ref-name>jndi_JMS_BASE_QCF</res-ref-name>
+    <res-type>javax.jms.QueueConnectionFactory</res-type>
+    <lookup-name>jndi_JMS_BASE_QCF</lookup-name>
+  </resource-ref>  
+
+   <resource-ref>
+    <res-ref-name>jndi_JMS_BASE_QCF1</res-ref-name>
+    <res-type>javax.jms.QueueConnectionFactory</res-type>
+    <lookup-name>jndi_JMS_BASE_QCF1</lookup-name>
+  </resource-ref> 
+
+
+  <resource-env-ref>
+    <resource-env-ref-name>eis/queue1</resource-env-ref-name>
+    <resource-env-ref-type>javax.jms.Queue</resource-env-ref-type>
+  </resource-env-ref>
+
+
+  <resource-env-ref>
+    <resource-env-ref-name>jndi_INPUT_Q</resource-env-ref-name>
+    <resource-env-ref-type>javax.jms.Queue</resource-env-ref-type>
+  </resource-env-ref>  
+  
+  <resource-env-ref>
+    <resource-env-ref-name>jndi_INPUT_Q1</resource-env-ref-name>
+    <resource-env-ref-type>javax.jms.Queue</resource-env-ref-type>
+  </resource-env-ref>  
+  
+  <resource-env-ref>
+    <resource-env-ref-name>jndi_EXCEPTION_Q</resource-env-ref-name>
+    <resource-env-ref-type>javax.jms.Queue</resource-env-ref-type>
+  </resource-env-ref>  
+
+   <resource-env-ref>
+    <resource-env-ref-name>eis/topic1</resource-env-ref-name>
+    <resource-env-ref-type>javax.jms.Topic</resource-env-ref-type>
+  </resource-env-ref>
+
+</web-app>

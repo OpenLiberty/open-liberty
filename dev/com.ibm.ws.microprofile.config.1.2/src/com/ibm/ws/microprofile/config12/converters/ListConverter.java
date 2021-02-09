@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -36,9 +36,16 @@ public class ListConverter extends BuiltInConverter implements ExtendedGenericCo
 
     /** {@inheritDoc} */
     @Override
-    public <T> List<T> convert(String rawString, Class<T> genericType, ConversionManager conversionManager, ClassLoader classLoader) {
-        T[] array = conversionManager.convertArray(rawString, genericType);
-        List<T> list = Arrays.asList(array);
+    public <T> List<Object> convert(String rawString, Class<T> genericTypeNullable, ConversionManager conversionManager, ClassLoader classLoader) {
+        // If the generic type is not specified, use String by default.
+        // E.g. if the user called: Config.getConfig().getValue("foo", List.class);
+        Class<?> genericType = genericTypeNullable;
+        if (genericType == null) {
+            genericType = String.class;
+        }
+        Object[] array = conversionManager.convertArray(rawString, genericType);
+        List<Object> list = Arrays.asList(array);
+
         return list;
     }
 }

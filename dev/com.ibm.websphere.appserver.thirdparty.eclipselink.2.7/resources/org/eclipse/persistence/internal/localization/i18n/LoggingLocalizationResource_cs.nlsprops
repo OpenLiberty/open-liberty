@@ -117,8 +117,6 @@ connected_user_database=P\u0159ipojeno: {3}{4}U\u017eivatel: {0}{3}{4}Datab\u00e
 
 connected_user_database_driver=P\u0159ipojeno: {0}{6}U\u017eivatel: {1}{6}Datab\u00e1ze: {2}  Verze: {3}{6}Ovlada\u010d: {4}  Verze: {5}
 
-connecting=p\u0159ipojuje se({0})
-
 corrupted_session_announcement=ID relace: {0}  Spr\u00e1vce zji\u0161\u0165ov\u00e1n\u00ed p\u0159ijal ozn\u00e1men\u00ed o poru\u0161en\u00e9 relaci - ignoruje se.
 
 create_default_dbms_tables_not_supported=Nativn\u00ed nastaven\u00ed WLS CMP "create-default-dbms-tables" EclipseLink CMP p\u0159\u00edmo nepodporuje. Podrobnosti viz dokumentace k migraci.
@@ -158,8 +156,6 @@ deprecated_property=Vlastnost {1} je zam\u00edtnuta, m\u011bli byste m\u00edsto 
 descriptor_named_query_cannot_be_added=Nelze p\u0159idat pojmenovan\u00fd dotaz deskriptoru, jeho\u017e n\u00e1zev koliduje s existuj\u00edc\u00edm dotazem. Dotaz, kter\u00fd se m\u00e1 p\u0159idat: [{0}] je pojmenovan\u00fd: [{1}] s argumenty [{2}].
 
 dir_cleaned_for_mw_files=Soubory a d\u00edl\u010d\u00ed adres\u00e1\u0159e pod adres\u00e1\u0159em {0} byly odstran\u011bny, aby bylo mo\u017en\u00e9 vytvo\u0159it pr\u00e1zdn\u00fd adres\u00e1\u0159 pro nov\u011b vygenerovan\u00e9 soubory projektu EclipseLink Mapping Workbench
-
-disconnect=odpojit
 
 do_select_before_insert_not_supported=Nativn\u00ed funkce Oc4j CMP "do-select-before-insert" nen\u00ed u entity ({0}) p\u0159\u00edmo podporov\u00e1na v EclipseLink CMP. Podrobnosti viz dokumentace k migraci.
 
@@ -332,10 +328,6 @@ locking_mode_not_valid=Re\u017eim uzamyk\u00e1n\u00ed({1}) u entity({0} v soubor
 locking_required_for_database_change_notification=Entita {0} nepou\u017e\u00edv\u00e1 zamyk\u00e1n\u00ed verze, ale m\u00e1 v\u00edce tabulek nebo vztah\u016f a pou\u017e\u00edv\u00e1 oznamov\u00e1n\u00ed zm\u011bn datab\u00e1ze Oracle. Zm\u011bny ve vztaz\u00edch nebo sekund\u00e1rn\u00ed tabulky pravd\u011bpodobn\u011b nezru\u0161\u00ed platnost mezipam\u011bti.
 
 log_file_under_output_dir=Existuje soubor protokolu s n\u00e1zvem ({0}), kter\u00fd najdete pod v\u00fdstupn\u00edm adres\u00e1\u0159em ({1}).
-
-login_successful={0} p\u0159ihl\u00e1\u0161en\u00ed \u00fasp\u011b\u0161n\u00e9
-
-logout_successful={0} odhl\u00e1\u0161en\u00ed \u00fasp\u011b\u0161n\u00e9
 
 mapping_not_supported_by_mw=Mapov\u00e1n\u00ed EclipseLink {0} pracovn\u00ed plocha mapov\u00e1n\u00ed nepodporuje.
 
@@ -655,8 +647,6 @@ received_corrupt_announcement=Varov\u00e1n\u00ed: Spr\u00e1vce zji\u0161\u0165ov
 
 received_unexpected_message_type=P\u0159ijat neo\u010dek\u00e1van\u00fd typ zpr\u00e1vy: {0} z t\u00e9matu: {1}; ignoruje se.
 
-reconnecting=Op\u011btovn\u00e9 p\u0159ipojen\u00ed ({0})
-
 register_new_for_persist=Operace PERSIST byla vol\u00e1na na: {0}.
 
 relational_descriptor_support_only=Gener\u00e1tor v\u00fdchoz\u00ed tabulky moment\u00e1ln\u011b podporuje pouze generov\u00e1n\u00ed sch\u00e9matu v\u00fdchoz\u00ed tabulky z rela\u010dn\u00edho projektu.
@@ -674,6 +664,8 @@ retreived_null_message=Na\u010dtena zpr\u00e1va s hodnotou null z t\u00e9matu: {
 retreived_unknown_message_type=Na\u010dten nezn\u00e1m\u00fd typ zpr\u00e1vy: {0} z t\u00e9matu: {1}; ignoruje se.
 
 sdo_classgenerator_exception={2} Do\u0161lo k v\u00fdjimce [{0}] - zpr\u00e1va je [{1}]
+
+sdo_error_deserialization=Neopr\u00e1vn\u011bn\u00fd pokus o deserializaci se t\u0159\u00eddou {0}.
 
 sdo_error_processing_referenced_schema={0} p\u0159i zpracov\u00e1n\u00ed odkazovan\u00e9ho sch\u00e9matu s identifik\u00e1torem URI {1} a um\u00edst\u011bn\u00edm sch\u00e9matu {2}.
 

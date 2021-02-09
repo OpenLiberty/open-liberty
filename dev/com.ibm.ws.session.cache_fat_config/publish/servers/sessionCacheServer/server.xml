@@ -26,6 +26,7 @@
   <!-- Needed because the application uses Hazelcast directly   -->
   <javaPermission codebase="${server.config.dir}/apps/jcacheApp.war" className="java.io.FilePermission" actions="read" name="${shared.resource.dir}/hazelcast/*"/>
   <javaPermission codebase="${server.config.dir}/apps/jcacheApp.war" className="java.lang.RuntimePermission" name="accessClassInPackage.sun.management"/>
+  <javaPermission codebase="${server.config.dir}/apps/jcacheApp.war" className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.management.internal"/>
   <javaPermission codebase="${server.config.dir}/apps/jcacheApp.war" className="java.lang.RuntimePermission" name="accessClassInPackage.sun.misc"/>
   <javaPermission codebase="${server.config.dir}/apps/jcacheApp.war" className="java.lang.RuntimePermission" name="accessClassInPackage.sun.nio.ch"/>
   <javaPermission codebase="${server.config.dir}/apps/jcacheApp.war" className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
@@ -43,6 +44,7 @@
   <javaPermission codebase="${server.config.dir}/apps/sessionCacheConfigApp.war" className="java.io.FilePermission" actions="read" name="${shared.resource.dir}/hazelcast/*"/>
   <javaPermission codebase="${server.config.dir}/apps/sessionCacheConfigApp.war" className="java.lang.RuntimePermission" name="accessClassInPackage.org.apache.xerces.impl.xpath.regex"/>
   <javaPermission codebase="${server.config.dir}/apps/sessionCacheConfigApp.war" className="java.lang.RuntimePermission" name="accessClassInPackage.sun.management"/>
+  <javaPermission codebase="${server.config.dir}/apps/sessionCacheConfigApp.war" className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.management.internal"/>
   <javaPermission codebase="${server.config.dir}/apps/sessionCacheConfigApp.war" className="java.lang.RuntimePermission" name="accessClassInPackage.sun.misc"/>
   <javaPermission codebase="${server.config.dir}/apps/sessionCacheConfigApp.war" className="java.lang.RuntimePermission" name="accessClassInPackage.sun.nio.ch"/>
   <javaPermission codebase="${server.config.dir}/apps/sessionCacheConfigApp.war" className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
@@ -70,5 +72,4 @@
   <!--  Permissions for application to access mbeans -->
   <javaPermission codebase="${server.config.dir}/apps/sessionCacheConfigApp.war" className="javax.management.MBeanPermission" actions="queryNames,registerMBean" name="*"/>
   <javaPermission codebase="${server.config.dir}/apps/sessionCacheConfigApp.war" className="javax.management.MBeanServerPermission" name="createMBeanServer"/>
-
 </server>

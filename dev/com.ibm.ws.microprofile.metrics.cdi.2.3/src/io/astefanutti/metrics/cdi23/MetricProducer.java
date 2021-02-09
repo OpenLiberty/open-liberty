@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2019 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -60,7 +60,7 @@ import com.ibm.ws.microprofile.metrics.cdi23.helper.Utils;
 
     @Produces
     private static ConcurrentGauge concurrentGauge(InjectionPoint ip, MetricRegistry registry, MetricName metricName, MetricsExtension extension) {
-        Metadata metadata = metricName.metadataOf(ip, Counter.class);
+        Metadata metadata = metricName.metadataOf(ip, ConcurrentGauge.class);
         String[] tags = metricName.tagOf(ip);
         MetricID mid = new MetricID(metadata.getName(), Utils.tagsToTags(tags));
         extension.addMetricID(mid);
@@ -111,7 +111,7 @@ import com.ibm.ws.microprofile.metrics.cdi23.helper.Utils;
 
     @Produces
     private static SimpleTimer simpleTimer(InjectionPoint ip, MetricRegistry registry, MetricName metricName, MetricsExtension extension) {
-        Metadata metadata = metricName.metadataOf(ip, Timer.class);
+        Metadata metadata = metricName.metadataOf(ip, SimpleTimer.class);
         String[] tags = metricName.tagOf(ip);
         MetricID mid = new MetricID(metadata.getName(), Utils.tagsToTags(tags));
         extension.addMetricID(mid);

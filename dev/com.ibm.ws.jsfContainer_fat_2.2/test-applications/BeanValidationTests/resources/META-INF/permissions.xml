@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-   Copyright (c) 2018 IBM Corporation and others.
+   Copyright (c) 2018, 2020 IBM Corporation and others.
    All rights reserved. This program and the accompanying materials
    are made available under the terms of the Eclipse Public License v1.0
    which accompanies this distribution, and is available at
@@ -15,32 +15,31 @@
         http://xmlns.jcp.org/xml/ns/javaee/permissions_7.xsd"
     version="7">
 
-   <permission>
-      <class-name>java.lang.reflect.ReflectPermission</class-name>
-      <name>*</name>
-      <actions>read</actions>
-   </permission>
- 
-   <permission>
-   	  <class-name>java.lang.RuntimePermission</class-name>
-   	  <name>*</name>
-   </permission>
+    <permission>
+        <class-name>java.lang.reflect.ReflectPermission</class-name>
+        <name>suppressAccessChecks</name>
+    </permission>
 
-   <permission>
-   	  <class-name>java.io.FilePermission</class-name>
-   	  <name>ALL FILES</name>
-   	  <actions>read</actions>
-   </permission>
-   
-   <permission>
-   	<class-name>org.osgi.framework.AdminPermission</class-name>
-   	<name>*</name>
-   	<actions>resolve,resource</actions>
-   </permission>
-  
-   <permission>
-   	<class-name>java.util.PropertyPermission</class-name>
-   	<name>*</name>
-   	<actions>read</actions>
-   </permission>
+    <permission>
+        <class-name>java.lang.RuntimePermission</class-name>
+        <name>*</name>
+    </permission>
+
+    <permission>
+      <class-name>java.io.FilePermission</class-name>
+      <name>ALL FILES</name>
+      <actions>read</actions>
+    </permission>
+
+    <permission>
+        <class-name>org.osgi.framework.AdminPermission</class-name>
+        <name>*</name>
+        <actions>resolve,resource</actions>
+    </permission>
+
+    <permission>
+        <class-name>java.util.PropertyPermission</class-name>
+        <name>*</name>
+        <actions>read</actions>
+    </permission>
 </permissions>

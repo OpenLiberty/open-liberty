@@ -1,0 +1,33 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+#COMPONENTPREFIX CWWKT
+#COMPONENTNAMEFOR CWWKT OpenLiberty gRPC Client
+#CMVCPATHNAME io.openliberty.grpc.1.0.internal/resources/io/openliberty/grpc/internal/client/resources/grpcclientmessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+
+invalid.clientinterceptor=CWWKT0301W: Could not load gRPC interceptor defined in clientInterceptors {0}
+invalid.clientinterceptor.explanation=A gRPC interceptor defined in clientInterceptors could not be loaded.
+invalid.clientinterceptor.useraction=Verify the configured interceptor name and the application classpath.
+
+invalid.keepalive.time=CWWKT0302E: The gRPC client keepAliveTime {0} is not valid.  Values must be greater than 0.
+invalid.keepalive.time.explanation=The configured value for the keepAliveTime is not valid.
+invalid.keepalive.time.useraction=Configure a valid value for the keepAliveTime.
+
+invalid.keepalive.timeout=CWWKT0303E: The gRPC client keepAliveTimeout {0} is not valid.  Values must be greater than 0.
+invalid.keepalive.timeout.explanation=The configured value for the keepAliveTimeout is not valid.
+invalid.keepalive.timeout.useraction=Configure a valid value for the keepAliveTimeout.
+
+invalid.client.inbound.msg.size=CWWKT0304E: The gRPC client maxInboundMessageSize {0} is not valid. Values must greater than 0.
+invalid.client.inbound.msg.size.explanation=The configured value for the maxInboundMessageSize is not valid.
+invalid.client.inbound.msg.size.useraction=Configure a valid value for the maxInboundMessageSize.

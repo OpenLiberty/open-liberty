@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2012,2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0" 
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
+                   localization="OSGI-INF/l10n/metatype">
+
+ <Designate factoryPid="test.numeration.context">
+  <Object ocdref="test.numeration.context" />
+ </Designate>
+
+ <OCD id="test.numeration.context" ibm:extendsAlias="!numerationContext" ibm:extends="com.ibm.wsspi.threadcontext.config" name="numerationContext" description="Numeration context">
+  <AD id="radix"                 type="Integer" required="false" max="36" min="0" name="radix" description="Radix"/>
+  <AD id="threadContextProvider" type="String"  default="test.numeration.context.provider" ibm:final="true" name="internal" description="internal use only"/>
+  <AD id="upperCase"             type="Boolean" required="false" name="upperCase" description="Case for digits over 9"/>
+ </OCD>
+
+</metatype:MetaData>

@@ -69,8 +69,8 @@ public class DynamicAttachmentProvider extends AbstractPolicyProvider implements
         return location;
     }
 
-    // @TJJ removed overridde annotation
-    public Policy getEffectivePolicy(BindingFaultInfo bfi) {
+    @Override
+    public Policy getEffectivePolicy(BindingFaultInfo bfi, Message m) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "getEffectivePolicy for BindingFaultInfo", bfi != null ? bfi : null);
         }
@@ -89,8 +89,8 @@ public class DynamicAttachmentProvider extends AbstractPolicyProvider implements
         return p;
     }
 
-    // @TJJ removed overridde annotation
-    public Policy getEffectivePolicy(BindingMessageInfo bmi) {
+    @Override
+    public Policy getEffectivePolicy(BindingMessageInfo bmi, Message m) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "getEffectivePolicy for BindingMessageInfo", bmi != null ? bmi.getMessageInfo() : null);
         }
@@ -109,8 +109,9 @@ public class DynamicAttachmentProvider extends AbstractPolicyProvider implements
         return p;
     }
 
-    // @TJJ removed overridde annotation
-    public Policy getEffectivePolicy(BindingOperationInfo boi) {
+
+    @Override
+    public Policy getEffectivePolicy(BindingOperationInfo boi, Message m) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "getEffectivePolicy for BindingOperationInfo", boi != null ? boi : null);
         }
@@ -129,8 +130,8 @@ public class DynamicAttachmentProvider extends AbstractPolicyProvider implements
         return p;
     }
 
-    // @TJJ removed overridde annotation
-    public Policy getEffectivePolicy(EndpointInfo ei) {
+    @Override
+    public Policy getEffectivePolicy(EndpointInfo ei, Message m) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "getEffectivePolicy for EndpointInfo", ei != null ? ei : null);
         }
@@ -149,8 +150,8 @@ public class DynamicAttachmentProvider extends AbstractPolicyProvider implements
         return p;
     }
 
-    // @TJJ removed overridde annotation
-    public Policy getEffectivePolicy(ServiceInfo si) {
+    @Override
+    public Policy getEffectivePolicy(ServiceInfo si, Message m) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "getEffectivePolicy for ServiceInfo", si != null ? si.getName() : null);
         }
@@ -189,7 +190,7 @@ public class DynamicAttachmentProvider extends AbstractPolicyProvider implements
             if (null == is) {
                 throw new PolicyException(new Exception("Could not open the special policy attachment file because getResourceAsStream is null"));
             }
-            // @TJJ Changed from DOMUtils.readXml(InputStream) to StaxUtils.read(InputStream)
+            // Changed from DOMUtils.readXml(InputStream) to StaxUtils.read(InputStream)
             doc = StaxUtils.read(is);
         } catch (Exception ex) {
             throw new PolicyException(ex);
@@ -323,25 +324,5 @@ public class DynamicAttachmentProvider extends AbstractPolicyProvider implements
             }
 
         });
-    }
-
-    public Policy getEffectivePolicy(BindingFaultInfo bfi, Message m) {
-        return bfi.getExtensor(Policy.class);
-    }
-
-    public Policy getEffectivePolicy(BindingMessageInfo bmi, Message m) {
-        return bmi.getExtensor(Policy.class);
-    }
-
-    public Policy getEffectivePolicy(BindingOperationInfo bi, Message m) {
-        return bi.getExtensor(Policy.class);
-    }
-
-    public Policy getEffectivePolicy(EndpointInfo ei, Message m) {
-        return ei.getExtensor(Policy.class);
-    }
-
-    public Policy getEffectivePolicy(ServiceInfo si, Message m) {
-        return si.getExtensor(Policy.class);
     }
 }

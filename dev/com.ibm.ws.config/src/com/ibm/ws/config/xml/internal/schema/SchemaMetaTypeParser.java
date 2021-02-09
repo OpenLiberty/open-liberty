@@ -38,8 +38,8 @@ import org.osgi.framework.Bundle;
 import org.osgi.service.metatype.AttributeDefinition;
 
 import com.ibm.ws.config.xml.internal.DepthAwareXMLStreamReader;
-import com.ibm.ws.config.xml.internal.MetaTypeHelper;
 import com.ibm.ws.config.xml.internal.XMLConfigConstants;
+import com.ibm.ws.config.xml.internal.metatype.MetaTypeHelper;
 import com.ibm.ws.kernel.service.util.DesignatedXMLInputFactory;
 
 /**

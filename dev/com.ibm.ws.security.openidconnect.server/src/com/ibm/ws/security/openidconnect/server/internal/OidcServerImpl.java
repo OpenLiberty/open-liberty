@@ -52,10 +52,14 @@ public class OidcServerImpl implements OidcServer {
     public static final String REGEX_REGISTRATION = "registration(/\\S*)?";
     public static final String apwPattern = OAuth20Constants.APP_PASSWORD_URI + "|" + OAuth20Constants.APP_PASSWORD_URI + "/.*";
     public static final String atokPattern = OAuth20Constants.APP_TOKEN_URI + "|" + OAuth20Constants.APP_TOKEN_URI + "/.*";
+    public static final String usersTokMgmtPattern = OAuth20Constants.USERS_TOKEN_MGMT_URI + "|" + OAuth20Constants.USERS_TOKEN_MGMT_URI + "/.*";
+    public static final String persTokMgmtPattern = OAuth20Constants.PERS_TOKEN_MGMT_URI + "|" + OAuth20Constants.PERS_TOKEN_MGMT_URI + "/.*";
+    public static final String clientMgmtPattern = OAuth20Constants.CLIENT_MGMT_URI + "|" + OAuth20Constants.CLIENT_MGMT_URI + "/.*";
     private static final Pattern PATH_RE = Pattern.compile("^" + REGEX_COMPONENT_ID + 
                     "(authorize|token|introspect|revoke|.well-known/openid-configuration|userinfo|"
                      + REGEX_REGISTRATION + "|check_session_iframe|end_session|coverage_map"
-                     + "|proxy|"+ apwPattern + "|" + atokPattern + ")$");
+                     + "|proxy|"+ apwPattern + "|" + atokPattern 
+                     + "|" + usersTokMgmtPattern + "|" + persTokMgmtPattern + "|" + clientMgmtPattern +")$");
 
     public static final String CFG_KEY_ID = "id";
     public static final String CFG_KEY_OIDC_SERVER_CONFIG = "oidcServerConfig";

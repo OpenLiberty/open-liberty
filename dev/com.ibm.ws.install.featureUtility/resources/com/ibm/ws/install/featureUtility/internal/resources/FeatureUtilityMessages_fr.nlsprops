@@ -1,0 +1,60 @@
+###############################################################################
+# Copyright (c) 2010, 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.ws.install.featureUtility/resources/com/ibm/ws/install/featureUtility/internal/resources/FeatureUtilityMessages.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+# Messages in the range CWWKF1400 to 1499 are reserved for the install utility.
+
+MSG_FEATUREUTILITY_SETTTINGS=Param\u00e8tres de featureUtility
+MSG_PROPERTIES_FILE_NOT_FOUND=Aucune configuration utilisateur d\u00e9tect\u00e9e. Le r\u00e9f\u00e9rentiel Maven Central est le r\u00e9f\u00e9rentiel d'actifs par d\u00e9faut.
+MSG_PROPERTIES_FILE_NOT_FOUND_EXPLANATION=Pour personnaliser les param\u00e8tres de featureUtility, cr\u00e9ez un fichier featureUtility.properties \u00e0 l''emplacement suivant : {0}
+MSG_PROPERTIES_FILE_NOT_FOUND_ACTION=Utilisez l'exemple ci-apr\u00e8s comme mod\u00e8le pour cr\u00e9er votre propre fichier featureUtility.properties. Annulez la mise en commentaire des lignes marqu\u00e9es d'un seul caract\u00e8re #, et remplacez les valeurs par vos propres valeurs personnalis\u00e9es.
+MSG_PROPS_FILE_NOT_FOUND_EXPLANATION=Pour personnaliser les param\u00e8tres installUtility, cr\u00e9ez un fichier repositories.properties \u00e0 l''emplacement suivant : {0}
+MSG_PROPS_FILE_NOT_FOUND_ACTION=Utilisez l'exemple suivant comme mod\u00e8le pour cr\u00e9er votre propre fichier repositories.properties. Annulez la mise en commentaire des lignes marqu\u00e9es d'un seul caract\u00e8re #, et remplacez les valeurs par vos propres valeurs personnalis\u00e9es.
+MSG_TRUE=True
+MSG_FALSE=False
+MSG_DEFAULT_REPO_USEAGE_LABEL=Utiliser le r\u00e9f\u00e9rentiel par d\u00e9faut :
+MSG_DEFAULT_REPO_NAME_LABEL=R\u00e9f\u00e9rentiel d'actifs par d\u00e9faut :
+MSG_DEFAULT_REPO_NAME=R\u00e9f\u00e9rentiel Maven Central
+MSG_CONFIG_REPO_LABEL=R\u00e9f\u00e9rentiels configur\u00e9s
+MSG_MAVEN_LOCAL_REPO=R\u00e9f\u00e9rentiel Maven local
+MSG_NO_CONFIG_REPO=Aucun r\u00e9f\u00e9rentiel configur\u00e9
+MSG_UNSPECIFIED=<Non sp\u00e9cifi\u00e9>
+MSG_PASSWORD_NOT_ENCODED_PROXY=Le mot de passe de ce proxy n'est pas cod\u00e9. Pour coder le mot de passe, ex\u00e9cutez l'action de codage securityUtility en associant l'option --encoding \u00e0 un type de codage pris en charge. Les types pris en charge sont xor (par d\u00e9faut), aes et hash.
+MSG_PROXY_LABEL=Param\u00e8tres du serveur proxy
+MSG_NO_CONFIG_PROXY=Aucun proxy configur\u00e9
+MSG_REPO_FILE_NOT_FOUND=Aucune configuration utilisateur d\u00e9tect\u00e9e. Le r\u00e9f\u00e9rentiel IBM WebSphere Liberty est le r\u00e9f\u00e9rentiel d'actifs par d\u00e9faut.
+MSG_REPO_FILE_NOT_FOUND_EXPLANATION=Pour personnaliser les param\u00e8tres installUtility, cr\u00e9ez un fichier repositories.properties \u00e0 l''emplacement suivant : {0}
+MSG_REPO_FILE_NOT_FOUND_ACTION=Utilisez l'exemple suivant comme mod\u00e8le pour cr\u00e9er votre propre fichier repositories.properties. Annulez la mise en commentaire des lignes marqu\u00e9es d'un seul caract\u00e8re #, et remplacez les valeurs par vos propres valeurs personnalis\u00e9es.
+MSG_VALIDATION_SUCCESSFUL=Le fichier de propri\u00e9t\u00e9s a r\u00e9ussi la validation.
+MSG_VALIDATION_FAILED_NO_MESSAGES=Le fichier de propri\u00e9t\u00e9s n'a pas r\u00e9ussi la validation. Utilisez l'option --viewValidationMessages pour afficher les messages de validation d\u00e9taill\u00e9s.
+MSG_VALIDATION_NUM_OF_ERRORS=Nombre d''erreurs : {0}
+MSG_VALIDATION_MESSAGES=Validation du fichier de propri\u00e9t\u00e9s
+MSG_VALIDATION_MESSAGE_FORMAT={0}. {1}
+
+FIELD_REPO_NAME=Nom : {0}
+FIELD_REPO_LOCATION=Emplacement : {0}
+FIELD_REPO_STATUS=Statut : {0}
+FIELD_REPO_REASON=Motif : {0}
+FIELD_REPO_WARNING=Avertissement : {0}
+FIELD_NAME=Nom :
+FIELD_PORT=Port :
+FIELD_LOCATION=Emplacement :
+FIELD_PROXY_SERVER=Serveur proxy :
+FIELD_USER=Nom d'utilisateur :
+FIELD_PASS=Mot de passe :
+FIELD_PROPS_FILE=Fichier de propri\u00e9t\u00e9s : {0}
+FIELD_REPO=Serveur de r\u00e9f\u00e9rentiel : {0} ({1})
+FIELD_PROXY=Serveur proxy : {0}
+FIELD_VALIDATION_RESULTS=R\u00e9sultats de la validation : {0}
+FIELD_VALIDATION_LINE=Ligne : {0}

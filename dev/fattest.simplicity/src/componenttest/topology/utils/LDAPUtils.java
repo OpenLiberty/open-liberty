@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 IBM Corporation and others.
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,6 +24,7 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 
+import javax.naming.CommunicationException;
 import javax.naming.Context;
 import javax.naming.NamingException;
 import javax.naming.directory.DirContext;
@@ -528,11 +529,11 @@ public class LDAPUtils {
     /**
      * Get a list of LDAP services from Consul.
      *
-     * @param  count   The number of services requested. If unable to get unique 'count' instances,
-     *                     the returned List will contain duplicate entries.
-     * @param  service The service to return.
-     * @return         A list of services returned. This list may return duplicates if unable to return enough
-     *                 unique service instances.
+     * @param count The number of services requested. If unable to get unique 'count' instances,
+     * the returned List will contain duplicate entries.
+     * @param service The service to return.
+     * @return A list of services returned. This list may return duplicates if unable to return enough
+     * unique service instances.
      */
     private static List<ExternalTestService> getLdapServices(int count, String service) throws Exception {
 
@@ -609,8 +610,8 @@ public class LDAPUtils {
      * <li>ldap.server.13.port - the port of the thirteen LDAP server</li>
      * </ul>
      *
-     * @param  server
-     *                       server for which bootstrap properties file needs updating with LDAP server host/ports
+     * @param server
+     * server for which bootstrap properties file needs updating with LDAP server host/ports
      * @throws Exception
      */
     public static void addLDAPVariables(LibertyServer server) throws Exception {
@@ -620,8 +621,8 @@ public class LDAPUtils {
     /**
      * Adds LDAP variables for various servers and ports to the bootstrap.properties file for use in server.xml.
      *
-     * @param  server
-     * @param  isInMemoryAllowed If false, physical LDAP servers and ports will be used as the property values.
+     * @param server
+     * @param isInMemoryAllowed If false, physical LDAP servers and ports will be used as the property values.
      * @throws Exception
      */
     public static void addLDAPVariables(LibertyServer server, boolean isInMemoryAllowed) throws Exception {
@@ -721,7 +722,7 @@ public class LDAPUtils {
     /**
      * Set the server bootstrap properties for a specified LDAP server.
      *
-     * @param serverNumber      The LDAP server number.
+     * @param serverNumber The LDAP server number.
      * @param props
      * @param isInMemoryAllowed
      */
@@ -743,10 +744,10 @@ public class LDAPUtils {
     /**
      * Set a property value in the Properties instance if the value is not null.
      *
-     * @param  props The Properties instance.
-     * @param  key   The key for the value.
-     * @param  value The value to set.
-     * @return       The previous value if it was set, null if it was not set.
+     * @param props The Properties instance.
+     * @param key The key for the value.
+     * @param value The value to set.
+     * @return The previous value if it was set, null if it was not set.
      */
     private static Object setProp(Properties props, String key, String value) {
         // java.util.Properties does not allow null values, so only set the prop if value is non-null
@@ -792,6 +793,28 @@ public class LDAPUtils {
             Log.info(c, method, "Successfully created context to ldap with hostname " + hostname + " and port " + port);
 
             isLdapServerAvailable = true;
+        } catch (CommunicationException e) {
+            /*
+             * Some of our older servers don't negotiate down from TLSv1.2/3, so try
+             * again with TLSv1. Root failure in these cases is:
+             * - java.net.SocketException: Connection or outbound has closed
+             * - javax.net.ssl.SSLHandshakeException: Remote host terminated the handshake
+             */
+            try {
+                Log.info(c, method, "CommunicationException. Using TLSv1 to retry creating context to " + hostname + " and port " + port);
+                CustomSSLSocketFactory.setProtocol("TLSv1");
+                ctx = new InitialDirContext(env);
+                Log.info(c, method, "Successfully created context to ldap with hostname " + hostname + " and port " + port);
+
+                isLdapServerAvailable = true;
+            } catch (Exception e2) {
+                /* Log original error. */
+                Log.error(c, method, e, "Error while creating context to ldap with hostname " + hostname + " and port " + port);
+                throw new Exception("Error while creating context to ldap with hostname " + hostname + " and port " + port);
+            } finally {
+                /* Don't forget to reset the protocol. */
+                CustomSSLSocketFactory.resetProtocol();
+            }
         } catch (Exception e) {
             Log.error(c, method, e, "Error while creating context to ldap with hostname " + hostname + " and port " + port);
             throw new Exception("Error while creating context to ldap with hostname " + hostname + " and port " + port);
@@ -841,4 +864,3 @@ public class LDAPUtils {
         String bindPwd = null;
     }
 }
-

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2016, 2018 IBM Corporation and others.
+# Copyright (c) 2016, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -128,6 +128,10 @@ INTROSPECT_ERROR_GETTING_USER_INFO.useraction=If the message contains another er
 INTROSPECT_USER_API_INACTIVE=CWWKS5388E: The token introspection request failed because the token that is included in the request is not valid. The full response is {0}.
 INTROSPECT_USER_API_INACTIVE.explanation=The authorization server did not issue the token, the resource owner revoked the token, the token is expired, or another error occurred.
 INTROSPECT_USER_API_INACTIVE.useraction=Check the response that is included in the message. Verify that the correct token introspection endpoint is used. Verify that the token is valid and that the token can be introspected.
+
+USER_API_RESPONSE_NOT_AUTHENTICATED=CWWKS5389E: The user API response indicates that the user API request is not authenticated. Verify that the access token that is included in the user API request is valid and is associated with a known user.
+USER_API_RESPONSE_NOT_AUTHENTICATED.explanation=The access token that is in the user API request might be missing, expired, malformed, or otherwise not valid. The token might not be associated with a user that is known to the user API.
+USER_API_RESPONSE_NOT_AUTHENTICATED.useraction=Verify that an access token is included in the user API request. Ensure that the token is not expired or malformed. Verify that the user that is associated with the access token is known to the user API.
 
 SOCIAL_LOGIN_CONFIG_PROCESSED=CWWKS5400I: The social login configuration [{0}] was successfully processed.
 SOCIAL_LOGIN_CONFIG_PROCESSED.explanation=The indicated social login configuration has been successfully processed.

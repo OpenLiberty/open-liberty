@@ -1,0 +1,60 @@
+###############################################################################
+# Copyright (c) 2010, 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.ws.install.featureUtility/resources/com/ibm/ws/install/featureUtility/internal/resources/FeatureUtilityMessages.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+# Messages in the range CWWKF1400 to 1499 are reserved for the install utility.
+
+MSG_FEATUREUTILITY_SETTTINGS=Set\u0103ri featureUtility
+MSG_PROPERTIES_FILE_NOT_FOUND=Nu s-a detectat nici o configura\u0163ie de utilizatori. Magazia Maven Central este magazia implicit\u0103 de aseturi.
+MSG_PROPERTIES_FILE_NOT_FOUND_EXPLANATION=Pentru a personaliza set\u0103rile featureUtility, crea\u0163i un fi\u015fier featureUtility.properties la urm\u0103toarea loca\u0163ie: {0}
+MSG_PROPERTIES_FILE_NOT_FOUND_ACTION=Utiliza\u0163i urm\u0103torul e\u015fantion ca un \u015fablon pentru a crea propriul fi\u015fier featureUtility.properties. \u015eterge\u0163i comentariile la liniile marcate de un singur caracter # \u015fi \u00eenlocui\u0163i valorile propriile dumneavoastr\u0103 valori personalizate.
+MSG_PROPS_FILE_NOT_FOUND_EXPLANATION=Pentru a personaliza set\u0103rile installUtility, crea\u0163i un fi\u015fier repositories.properties la urm\u0103toarea loca\u0163ie: {0}
+MSG_PROPS_FILE_NOT_FOUND_ACTION=Utiliza\u0163i urm\u0103torul exemplu ca un \u015fablon pentru a crea propriul dumneavoastr\u0103 fi\u015fier repositories.properties. \u015eterge\u0163i comentariile la liniile marcate de un singur caracter # \u015fi \u00eenlocui\u0163i valorile propriile dumneavoastr\u0103 valori personalizate.
+MSG_TRUE=Adev\u0103rat
+MSG_FALSE=Fals
+MSG_DEFAULT_REPO_USEAGE_LABEL=Utilizare magazie implicit\u0103:
+MSG_DEFAULT_REPO_NAME_LABEL=Magazie de aseturi implicit\u0103:
+MSG_DEFAULT_REPO_NAME=Magazie Maven Central
+MSG_CONFIG_REPO_LABEL=Magazii configurate
+MSG_MAVEN_LOCAL_REPO=Magazie local\u0103 Maven
+MSG_NO_CONFIG_REPO=Nu sunt configurate magazii
+MSG_UNSPECIFIED=<Nespecificat>
+MSG_PASSWORD_NOT_ENCODED_PROXY=Parola pentru acest proxy nu este codificat\u0103. Pentru a codifica parola, rula\u0163i ac\u0163iunea securityUtility encode cu op\u0163iunea -- encoding setat\u0103 la un tip de codare suportat. Tipurile suportate sunt xor (implicit), aes, \u015fi hash.
+MSG_PROXY_LABEL=Set\u0103ri proxy
+MSG_NO_CONFIG_PROXY=Nu este configurat proxy
+MSG_REPO_FILE_NOT_FOUND=Nu s-a detectat nici o configura\u0163ie de utilizatori. IBM WebSphere Liberty Repository este magazia de aseturi implicit\u0103.
+MSG_REPO_FILE_NOT_FOUND_EXPLANATION=Pentru a personaliza set\u0103rile installUtility, crea\u0163i un fi\u015fier repositories.properties \u00een urm\u0103toarea loca\u0163ie: {0}
+MSG_REPO_FILE_NOT_FOUND_ACTION=Utiliza\u0163i urm\u0103torul exemplu ca un \u015fablon pentru a crea propriul dumneavoastr\u0103 fi\u015fier repositories.properties. \u015eterge\u0163i comentariile la liniile marcate de un singur caracter # \u015fi \u00eenlocui\u0163i valorile propriile dumneavoastr\u0103 valori personalizate.
+MSG_VALIDATION_SUCCESSFUL=Fi\u015fierul de propriet\u0103\u0163i a transmis cu succes validarea.
+MSG_VALIDATION_FAILED_NO_MESSAGES=Fi\u015fierul de propriet\u0103\u0163i a e\u015fuat validarea. Utiliza\u0163i op\u0163iunea --viewValidationMessages pentru a vizualiza mesajele de validare detaliate.
+MSG_VALIDATION_NUM_OF_ERRORS=Num\u0103rul de erori: {0}
+MSG_VALIDATION_MESSAGES=Validarea fi\u015fierului de propriet\u0103\u0163i
+MSG_VALIDATION_MESSAGE_FORMAT={0}. {1}
+
+FIELD_REPO_NAME=Nume: {0}
+FIELD_REPO_LOCATION=Loca\u0163ie: {0}
+FIELD_REPO_STATUS=Stare: {0}
+FIELD_REPO_REASON=Motiv: {0}
+FIELD_REPO_WARNING=Avertisment: {0}
+FIELD_NAME=Nume:
+FIELD_PORT=Port:
+FIELD_LOCATION=Loca\u0163ie:
+FIELD_PROXY_SERVER=Serverul proxy
+FIELD_USER=Nume utilizator:
+FIELD_PASS=Parol\u0103:
+FIELD_PROPS_FILE=Fi\u015fierul de propriet\u0103\u0163i: {0}
+FIELD_REPO=Server magazie: {0} ({1})
+FIELD_PROXY=Server proxy: {0}
+FIELD_VALIDATION_RESULTS=Rezultate de validare: {0}
+FIELD_VALIDATION_LINE=Linie: {0}

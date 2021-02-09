@@ -1,0 +1,35 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!--
+    Copyright (c) 2014 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<HTML>
+	<h2>Form Logout Page</h2>    
+	<FORM METHOD="POST" ACTION="ibm_security_logout" NAME="logout">
+		<p>
+		<font size="2">  <strong> Click the button below to logout </strong></font> <BR>  
+		<input type="submit" name="logout" value="Logout">
+		</p>
+	</form>
+	<FORM METHOD="POST" ACTION="ibm_security_logout" NAME="logout2">
+		<p>
+		<font size="2">  <strong> Click the button below to logout and get return back to the login page</strong></font> <BR>  
+		<input type="submit" name="logout2" value="Logout2">
+		<INPUT TYPE="HIDDEN" name="logoutExitPage" VALUE="/login.jsp">
+		</p>
+	</form>     
+	<FORM METHOD="POST" ACTION="ibm_security_logout" NAME="logout3">
+		<p>
+		<font size="2">  <strong> Click the button below to logout and go to http://www.ibm.com</strong></font> <BR>  
+		<input type="submit" name="logout3" value="Logout3">
+		<INPUT TYPE="HIDDEN" name="logoutExitPage" VALUE="http://www.w3.org/Protocols/HTTP/AsImplemented.html">
+		</p>
+	</form>     
+</HTML>
+

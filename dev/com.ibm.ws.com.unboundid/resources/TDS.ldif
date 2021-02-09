@@ -1,0 +1,1049 @@
+################################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+################################################################################
+
+dn: o=ibm,c=us
+dc: ibm
+o: ibm
+objectclass: domain
+objectclass: top
+objectclass: extensibleObject
+
+dn: ou=iGroups,o=ibm,c=us
+ou: iGroups
+objectclass: organizationalunit
+objectclass: top
+
+dn: ou=iUsers,o=ibm,c=us
+ou: iUsers
+objectclass: organizationalunit
+objectclass: top
+
+dn: ou=jGroups,o=ibm,c=us
+ou: jGroups
+objectclass: organizationalunit
+objectclass: top
+
+dn: ou=jUsers,o=ibm,c=us
+ou: jUsers
+objectclass: organizationalunit
+objectclass: top
+
+dn: cn=\ vmmgroup6,o=ibm,c=us
+cn:: IHZtbWdyb3VwNg==
+objectClass: top
+objectClass: groupOfNames
+member: cn=\ vmmtestuser5,o=ibm,c=us
+description: Group for testing RDN starting with space.
+
+dn: cn=\ vmmtestuser5,o=ibm,c=us
+sn:: IHZtbXRlc3R1c2VyNQ==
+cn:: IHZtbXRlc3R1c2VyNQ==
+objectClass: top
+objectClass: inetOrgPerson
+objectClass: person
+objectClass: organizationalPerson
+objectClass: ePerson
+description: User for testing RDN starting with space.
+userPassword:: cGFzc3dvcmQ=
+uid:: IHZtbXRlc3R1c2VyNQ==
+
+dn: cn=\#vmmgroup5,o=ibm,c=us
+cn: #vmmgroup5
+objectClass: top
+objectClass: groupOfNames
+member: cn=\#vmmtestuser4,o=ibm,c=us
+description: Group for testing RDN starting with pound sign.
+
+dn: cn=\#vmmtestuser4,o=ibm,c=us
+sn: #vmmtestuser4
+cn: #vmmtestuser4
+objectClass: top
+objectClass: inetOrgPerson
+objectClass: person
+objectClass: organizationalPerson
+objectClass: ePerson
+description: User for testing RDN starting with pound sign.
+userPassword:: cGFzc3dvcmQ=
+uid: #vmmtestuser4
+
+dn: cn=active_vmmGroup,ou=iGroups,o=ibm,c=us
+member: uid=ping_vmmUser,ou=iUsers,o=ibm,c=us
+cn: active_vmmGroup
+objectclass: groupOfNames
+objectclass: top
+description: LDAP group active_vmmGroup for testing
+
+dn: cn=AllAttrsGroup,o=ibm,c=us
+member: cn=AllAttrsVMM,o=ibm,c=us
+cn: AllAttrsGroup
+objectClass: groupOfNames
+objectClass: top
+description: LDAP Group AllAttrsVMMGroup for testing
+
+dn: cn=AllAttrsVMM,o=ibm,c=us
+preferredLanguage: en
+employeeType: Manager
+pager: 1617181920
+mobile: 0123456789
+title: Vice President
+userPassword:: e3NoYX1NZTBTdFl0QjF6ekFZZHVhME9VT01TQkhRcG89
+postOfficeBox: IN
+postalCode: 411033
+mail: AllAttrsVMM@ibm.com
+initials: Mr.
+givenName: vmm
+telephoneNumber: 2122232425
+displayName: All Attrs User
+sn: AllAttrsVMMsn
+cn: AllAttrsVMM
+objectClass: organizationalPerson
+objectClass: person
+objectClass: ePerson
+objectClass: inetOrgPerson
+objectClass: top
+facsimileTelephoneNumber: 1112131415
+street: SB Road
+st: MH
+uid: AllAttrsVMM
+l: Pune
+
+dn: uid=connect_vmmUser,ou=iUsers,o=ibm,c=us
+sn: connect_vmmUser
+cn: connect_vmmUser
+objectclass: organizationalPerson
+objectclass: person
+objectclass: ePerson
+objectclass: inetOrgPerson
+objectclass: top
+userPassword:: Y29ubmVjdF92bW1Vc2Vy
+uid: connect_vmmUser
+
+dn: cn=dynamicGroup1,o=ibm,c=us
+memberURL: ldap:///o=ibm,c=us??sub?(&(objectclass=inetorgperson)(uid=vmm*))
+cn: dynamicGroup1
+objectclass: top
+objectclass: groupOfURLs
+objectclass: groupforapache
+
+dn: uid=eddard_vmmUser,ou=jUsers,o=ibm,c=us
+sn: eddard_vmmUser
+cn: eddard_vmmUser
+objectclass: organizationalPerson
+objectclass: person
+objectclass: ePerson
+objectclass: inetOrgPerson
+objectclass: top
+userPassword:: ZWRkYXJkX3ZtbVVzZXI=
+uid: eddard_vmmUser
+
+dn: cn=embedded_group1,o=ibm,c=us
+cn: embedded_group1
+objectClass: top
+objectClass: groupOfNames
+objectClass: groupforapache
+member: cn=ng_user1,o=ibm,c=us
+member: cn=ng_user3,o=ibm,c=us
+
+dn: cn=embedded_group2,o=ibm,c=us
+cn: embedded_group2
+objectClass: top
+objectClass: groupOfNames
+objectClass: groupforapache
+member: cn=ng_user2,o=ibm,c=us
+member: cn=ng_user4,o=ibm,c=us
+
+dn: cn=group1,o=ibm,c=us
+cn: group1
+objectclass: groupOfNames
+objectclass: top
+objectclass: groupforapache
+member: cn=LDAPUser1,o=ibm,c=us
+member: cn=user1,o=ibm,c=us
+member: cn=user3,o=ibm,c=us
+
+dn: cn=group2,o=ibm,c=us
+cn: group2
+objectclass: groupOfNames
+objectclass: top
+objectclass: groupforapache
+member: cn=LDAPUser2,o=ibm,c=us
+member: cn=user2,o=ibm,c=us
+member: cn=user4,o=ibm,c=us
+
+dn: cn=grp1,o=ibm,c=us
+member: cn=user1g1,o=ibm,c=us
+cn: grp1
+objectclass: groupOfNames
+objectclass: top
+objectclass: groupforapache
+description: LDAP group grp1 for testing
+
+dn: cn=grp2,o=ibm,c=us
+cn: grp2
+owner: cn=user2g2, o=IBM, c=us
+objectclass: groupOfNames
+objectclass: top
+member: cn=user2g2, o=IBM, c=us
+member: cn=user4g2 o=IBM, c=us
+member: cn=user6g2, o=IBM, c=us
+member: cn=user8g2, o=IBM, c=us
+description: LDAP group for testing
+
+dn: cn=grp4,o=ibm,c=us
+cn: grp4
+owner: cn=user1grp4, o=IBM, c=us
+objectclass: groupOfNames
+objectclass: top
+member: cn=user1grp4, o=IBM, c=us
+member: cn=user2grp4, o=IBM, c=us
+description: LDAP group for testing
+
+dn: cn=https://nc135020.tivlab.austin.ibm.com:9443/op/openid1,o=ibm,c=us
+sn: https://nc135020.tivlab.austin.ibm.com:9443/op/openid1
+cn: https://nc135020.tivlab.austin.ibm.com:9443/op/openid1
+objectclass: organizationalPerson
+objectclass: person
+objectclass: inetOrgPerson
+objectclass: top
+objectclass: ePerson
+uid: https://nc135020.tivlab.austin.ibm.com:9443/op/openid1
+
+dn: uid=john_vmmUser,ou=jUsers,o=ibm,c=us
+sn: john_vmmUser
+cn: john_vmmUser
+objectclass: organizationalPerson
+objectclass: person
+objectclass: ePerson
+objectclass: inetOrgPerson
+objectclass: top
+userPassword:: am9obl92bW1Vc2Vy
+uid: john_vmmUser
+
+dn: cn=LDAPUser1,o=ibm,c=us
+mail: LDAPUser1@ibm.com
+initials: LDAPUser1
+telephonenumber: 1 919 555 5555
+sn: LDAPUser1
+cn: LDAPUser1
+objectclass: organizationalPerson
+objectclass: inetOrgPerson
+objectclass: person
+objectclass: top
+objectclass: ePerson
+userPassword:: e1NTSEF9TUQwM2pPeExRLzMydjdjcURhOENXaUdKOTE1TzFJQmlZVzM0aWc9PQ=
+ =
+uid: LDAPUser1
+
+dn: cn=LDAPUser2,o=ibm,c=us
+initials: LDAPUser2
+sn: LDAPUser2
+cn: LDAPUser2
+objectclass: organizationalPerson
+objectclass: person
+objectclass: inetOrgPerson
+objectclass: top
+objectclass: ePerson
+userPassword:: e1NTSEF9VHlyalo1R0RNWHF4OFBmdXpGd3BhWFVESmFUMm1ySUxiRVFrNFE9PQ=
+ =
+uid: LDAPUser2
+
+dn: cn=LDAPUser5,o=ibm,c=us
+initials: LDAPUser5
+sn: LDAPUser5
+cn: LDAPUser5
+objectclass: organizationalPerson
+objectclass: inetOrgPerson
+objectclass: person
+objectclass: top
+objectclass: ePerson
+userPassword:: e1NTSEF9TURRamQrNGdtSDZzM0JsSlRiTTlGUGxUeXJLd1VrVlZaVzdMRHc9PQ=
+ =
+uid: LDAPUser5
+
+dn: cn=nested_g1,o=ibm,c=us
+cn: nested_g1
+objectClass: top
+objectClass: groupOfNames
+objectClass: groupforapache
+objectClass: ibm-nestedGroup
+member: cn=embedded_group1,o=ibm,c=us
+member: cn=embedded_group2,o=ibm,c=us
+member: cn=topng_user1,o=ibm,c=us
+
+dn: cn=ng_user1,o=ibm,c=us
+sn: ng_user1
+cn: ng_user1
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+objectClass: person
+objectClass: top
+objectClass: ePerson
+userPassword:: e1NTSEF9Nys4VFo0YU5ibWxIUUV0aWtqK09GUlFaM3JUeWx5UGNOaU9tOGc9PQ=
+ =
+uid: ng_user1
+
+dn: cn=ng_user2,o=ibm,c=us
+sn: ng_user2
+cn: ng_user2
+objectClass: organizationalPerson
+objectClass: top
+objectClass: person
+objectClass: inetOrgPerson
+objectClass: ePerson
+userPassword:: e1NTSEF9K3cvRnZIaUJaZDhGMndwa3B5NFZuQ3lETlpXd1N5c085NlFDMFE9PQ=
+ =
+uid: ng_user2
+
+dn: cn=ng_user3,o=ibm,c=us
+sn: ng_user3
+cn: ng_user3
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+objectClass: person
+objectClass: top
+objectClass: ePerson
+userPassword:: e1NTSEF9ZFozUjZEczFKZGtzbi9aL2hCZ0hZaTBqZWxhU0U1M2ViZnRWc3c9PQ=
+ =
+uid: ng_user3
+
+dn: cn=ng_user4,o=ibm,c=us
+sn: ng_user4
+cn: ng_user4
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+objectClass: person
+objectClass: top
+objectClass: ePerson
+userPassword:: e1NTSEF9WVVkM25uM1NGRWFzNGZsRXZud2toVG9Cazg2a3hTWHVmTGthUGc9PQ=
+ =
+uid: ng_user4
+
+dn: cn=openid1,o=ibm,c=us
+sn: openid1
+cn: openid1
+objectclass: organizationalPerson
+objectclass: person
+objectclass: inetOrgPerson
+objectclass: top
+objectclass: ePerson
+uid: openid1
+
+dn: cn=openid1.email@acme.com,o=ibm,c=us
+sn: openid1.email@acme.com
+cn: openid1.email@acme.com
+objectclass: organizationalPerson
+objectclass: person
+objectclass: inetOrgPerson
+objectclass: top
+objectclass: ePerson
+userPassword:: e1NTSEF9QVRadERnd1UvL0ZOYXk2VThYVjIwek9IL28rSjdkWDFCVXNCYnc9PQ=
+ =
+uid: openid1.email@acme.com
+
+dn: cn=openid2,o=ibm,c=us
+sn: openid2
+cn: openid2
+objectclass: organizationalPerson
+objectclass: person
+objectclass: inetOrgPerson
+objectclass: top
+objectclass: ePerson
+uid: openid2
+
+dn: cn=openid2.email@acme.com,o=ibm,c=us
+sn: openid2.email@acme.com
+cn: openid2.email@acme.com
+objectclass: organizationalPerson
+objectclass: person
+objectclass: inetOrgPerson
+objectclass: top
+objectclass: ePerson
+userPassword:: e1NTSEF9UFhPWWZPMkRMRVBwSHBDY1ZEbDdsdlJsR2lVMTRQcm5FWWhpdGc9PQ=
+ =
+uid: openid2.email@acme.com
+
+dn: cn=openid3.com,o=ibm,c=us
+sn: openid3
+cn: openid3
+cn: openid3.com
+objectclass: organizationalPerson
+objectclass: person
+objectclass: inetOrgPerson
+objectclass: top
+objectclass: ePerson
+uid: openid3
+
+dn: cn=openid3.email@acme.com,o=ibm,c=us
+sn: openid3.email@acme.com
+cn: openid3.email@acme.com
+objectclass: organizationalPerson
+objectclass: person
+objectclass: inetOrgPerson
+objectclass: top
+objectclass: ePerson
+userPassword:: e1NTSEF9TU8xSzhxRGpsWlhrODdHQWtlKzYvYUlWcjhhc1FUYWdtbC9TNWc9PQ=
+ =
+uid: openid3.email@acme.com
+
+dn: cn=openid4,o=ibm,c=us
+sn: openid4
+cn: openid4
+objectclass: organizationalPerson
+objectclass: person
+objectclass: inetOrgPerson
+objectclass: top
+objectclass: ePerson
+uid: openid4
+
+dn: cn=openid4.email@acme.com,o=ibm,c=us
+sn: openid4.email@acme.com
+cn: openid4.email@acme.com
+objectclass: organizationalPerson
+objectclass: person
+objectclass: inetOrgPerson
+objectclass: top
+objectclass: ePerson
+userPassword:: e1NTSEF9cmNGV2NEMTU0dkdhTnZvakVXQWl4NXZkOUV2bWdqZm1RT2xQR0E9PQ=
+ =
+uid: openid4.email@acme.com
+
+dn: cn=openidg1,o=ibm,c=us
+cn: openidg1
+objectclass: groupOfNames
+objectclass: top
+member: cn=openid1,o=ibm,c=us
+member: cn=openid1.email@acme.com,o=ibm,c=us
+
+dn: cn=openidg2,o=ibm,c=us
+cn: openidg2
+objectclass: groupOfNames
+objectclass: top
+member: cn=openid2,o=ibm,c=us
+member: cn=openid2.email@acme.com,o=ibm,c=us
+
+dn: uid=ping_vmmUser,ou=iUsers,o=ibm,c=us
+sn: ping_vmmUser
+cn: ping_vmmUser
+objectclass: organizationalPerson
+objectclass: person
+objectclass: ePerson
+objectclass: inetOrgPerson
+objectclass: top
+userPassword:: cGluZ192bW1Vc2Vy
+uid: ping_vmmUser
+
+dn: uid=pong_vmmUser,ou=iUsers,o=ibm,c=us
+sn: pong_vmmUser
+cn: pong_vmmUser
+objectclass: organizationalPerson
+objectclass: person
+objectclass: ePerson
+objectclass: inetOrgPerson
+objectclass: top
+userPassword:: cG9uZ192bW1Vc2Vy
+uid: pong_vmmUser
+
+dn: cn=silent_vmmGroup,ou=iGroups,o=ibm,c=us
+member: uid=pong_vmmUser,ou=iUsers,o=ibm,c=us
+cn: silent_vmmGroup
+objectclass: groupOfNames
+objectclass: top
+description: LDAP group silent_vmmGroup for testing
+
+dn: cn=snow_vmmGroup,ou=jGroups,o=ibm,c=us
+member: uid=john_vmmUser,ou=jUsers,o=ibm,c=us
+cn: snow_vmmGroup
+objectclass: groupOfNames
+objectclass: top
+description: LDAP group snow_vmmGroup for testing
+
+dn: cn=stark_vmmGroup,ou=jGroups,o=ibm,c=us
+cn: stark_vmmGroup
+objectClass: groupOfNames
+objectClass: top
+member: uid=eddard_vmmUser,ou=jUsers,o=ibm,c=us
+description: LDAP group stark_vmmGroup for testing
+
+dn: cn=talanted_vmmGroup,ou=iGroups,o=ibm,c=us
+member: uid=connect_vmmUser,ou=iUsers,o=ibm,c=us
+cn: talanted_vmmGroup
+objectclass: groupOfNames
+objectclass: top
+description: LDAP group talanted_vmmGroup for testing
+
+dn: cn=test,o=ibm,c=us
+mail: test@ibm.com
+initials: test
+telephonenumber: 1 919 555 5555
+sn: testsn
+cn: test
+objectclass: organizationalPerson
+objectclass: inetOrgPerson
+objectclass: person
+objectclass: top
+objectclass: ePerson
+userPassword:: e1NIQX1tTzhIV09hcXh2bXA0UmwxU01nWkMzTEpXQjA9
+uid: test
+
+dn: cn=testuser,o=ibm,c=us
+mail: testuser@ibm.com
+initials: testuser
+telephonenumber: 1 919 555 5555
+sn: testuser
+cn: testuser
+objectclass: organizationalPerson
+objectclass: inetOrgPerson
+objectclass: person
+objectclass: top
+objectclass: ePerson
+userPassword:: e1NIQX02blhJZDIvTnk0aTN4Wm0rUDZIRnJpK0VPQU09
+uid: testuser
+
+dn: cn=topng_user1,o=ibm,c=us
+sn: topng_user1
+cn: topng_user1
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+objectClass: person
+objectClass: top
+objectClass: ePerson
+userPassword:: e1NTSEF9Mlhndlp5aUJTaGFUNmFwelVWSmNUM0srb09oVEVuUldBNTJIU3c9PQ=
+ =
+uid: topng_user1
+
+dn: cn=user1,o=ibm,c=us
+initials: user1
+sn: user1
+cn: user1
+objectclass: organizationalPerson
+objectclass: person
+objectclass: inetOrgPerson
+objectclass: top
+objectclass: ePerson
+userPassword:: e1NTSEF9UW1TVWdGM2tuU1dXK3QxRnllWVVsSm9qRTJ2YTdJN01DUUdwNHc9PQ=
+ =
+uid: user1
+
+dn: cn=user1g1,o=ibm,c=us
+mail: user1g1@ibm.com
+initials: user1g1
+telephonenumber: 1 999 555 5555
+sn: user1g1sn
+cn: user1g1
+objectclass: inetOrgPerson
+objectclass: organizationalPerson
+objectclass: person
+objectclass: ePerson
+objectclass: top
+title: Test User
+userPassword:: e1NTSEF9TEIvK0hRRUtKUEZVSVc5TElSWmI2Tk1CbkZMcGI5RjVRSzJXWVE9PQ=
+ =
+uid: user1g1
+
+dn: cn=user1grp4,o=ibm,c=us
+sn: user1grp4
+cn: user1grp4
+objectclass: organizationalPerson
+objectclass: person
+objectclass: inetOrgPerson
+objectclass: top
+objectclass: ePerson
+title: Test User
+uid: user1grp4
+
+dn: cn=user2,o=ibm,c=us
+initials: user2
+sn: user2
+cn: user2
+objectclass: organizationalPerson
+objectclass: person
+objectclass: inetOrgPerson
+objectclass: top
+objectclass: ePerson
+userPassword:: e1NTSEF9TG5mUHJaTkFrMDkweEdaNzloYms4bkw3SXlVNWp5QzlCV29Id2c9PQ=
+ =
+uid: user2
+
+dn: cn=user2g2,o=ibm,c=us
+sn: user2g2
+cn: user2g2
+objectclass: organizationalPerson
+objectclass: person
+objectclass: inetOrgPerson
+objectclass: top
+objectclass: ePerson
+title: Test User
+uid: user2g2
+
+dn: cn=user2grp4,o=ibm,c=us
+sn: user2grp4
+cn: user2grp4
+objectclass: organizationalPerson
+objectclass: person
+objectclass: inetOrgPerson
+objectclass: top
+objectclass: ePerson
+title: Test User
+uid: user2grp4
+
+dn: cn=user3,o=ibm,c=us
+initials: user3
+sn: user3
+cn: user3
+objectclass: organizationalPerson
+objectclass: person
+objectclass: inetOrgPerson
+objectclass: top
+objectclass: ePerson
+userPassword:: e1NTSEF9dGwzTmR2N1RnYnY1VW5EZThzUG81eDJzaVdGUGkwZFdjeURPbnc9PQ=
+ =
+uid: user3
+
+dn: cn=user3g1,o=ibm,c=us
+sn: user3g1
+cn: user3g1
+objectclass: organizationalPerson
+objectclass: person
+objectclass: inetOrgPerson
+objectclass: top
+objectclass: ePerson
+title: Test User
+uid: user3g1
+
+dn: cn=user4,o=ibm,c=us
+initials: user4
+sn: user4
+cn: user4
+objectclass: organizationalPerson
+objectclass: person
+objectclass: inetOrgPerson
+objectclass: top
+objectclass: ePerson
+userPassword:: e1NTSEF9eTR1Q0VoK3cyZVVrSnRPUlBNMHZYOGJtYjlTWGJQRXhvRE1McEE9PQ=
+ =
+uid: user4
+
+dn: cn=user4g2,o=ibm,c=us
+sn: user4g2
+cn: user4g2
+objectclass: organizationalPerson
+objectclass: person
+objectclass: inetOrgPerson
+objectclass: top
+objectclass: ePerson
+title: Test User
+uid: user4g2
+
+dn: cn=user5g1,o=ibm,c=us
+sn: user5g1
+cn: user5g1
+objectclass: organizationalPerson
+objectclass: person
+objectclass: inetOrgPerson
+objectclass: top
+objectclass: ePerson
+title: Test User
+uid: user5g1
+
+dn: cn=user6g2,o=ibm,c=us
+sn: user6g2
+cn: user6g2
+objectclass: organizationalPerson
+objectclass: person
+objectclass: inetOrgPerson
+objectclass: top
+objectclass: ePerson
+title: Test User
+uid: user6g2
+
+dn: cn=user7g1,o=ibm,c=us
+sn: user7g1
+cn: user7g1
+objectclass: organizationalPerson
+objectclass: person
+objectclass: inetOrgPerson
+objectclass: top
+objectclass: ePerson
+title: Test User
+uid: user7g1
+
+dn: cn=user8g2,o=ibm,c=us
+sn: user8g2
+cn: user8g2
+objectclass: organizationalPerson
+objectclass: person
+objectclass: inetOrgPerson
+objectclass: top
+objectclass: ePerson
+title: Test User
+uid: user8g2
+
+dn: cn=vmm_nestedGrp,o=ibm,c=us
+member: cn=vmmgroup1,o=ibm,c=us
+member: cn=vmmgroup2,o=ibm,c=us
+member: cn=vmmgroup3,o=ibm,c=us
+cn: vmm_nestedGrp
+objectclass: groupOfNames
+objectclass: top
+objectclass: groupforapache
+description: LDAP group vmm_nestedGrp for testing
+
+dn: cn=vmmattruser,o=ibm,c=us
+mail: vmmattruser@ibm.com
+initials: vmmattruser
+telephonenumber: 1 919 122 5257
+sn: vmmattrusersn
+cn: vmmattruser
+objectclass: organizationalPerson
+objectclass: person
+objectclass: ePerson
+objectclass: inetOrgPerson
+objectclass: top
+userPassword:: e3NoYX13V0JPd3ZWc1pIa05zNllZQUpuWlV2ck9EMVU9
+postOfficeBox: chinchwad
+uid: vmmattruser
+
+dn: cn=vmmgroup1,o=ibm,c=us
+member: cn=vmmuser1,o=ibm,c=us
+cn: vmmgroup1
+objectclass: groupOfNames
+objectclass: top
+objectclass: groupforapache
+description: LDAP group vmmgroup1 for testing
+
+dn: cn=vmmgroup10\\,o=ibm,c=us
+cn: vmmgroup10\
+objectClass: top
+objectClass: groupOfNames
+member: cn=vmmtestuser9\\,o=ibm,c=us
+description: Group for testing RDN containing slash.
+
+dn: cn=vmmgroup11\<,o=ibm,c=us
+cn: vmmgroup11<
+objectClass: top
+objectClass: groupOfNames
+member: cn=vmmtestuser10\<,o=ibm,c=us
+description: Group for testing RDN containing left-facing guillemet.
+
+dn: cn=vmmgroup12\>,o=ibm,c=us
+cn: vmmgroup12>
+objectClass: top
+objectClass: groupOfNames
+member: cn=vmmtestuser11\>,o=ibm,c=us
+description: Group for testing RDN containing right-facing guillemet.
+
+dn: cn=vmmgroup13\;,o=ibm,c=us
+cn: vmmgroup13;
+objectClass: top
+objectClass: groupOfNames
+member: cn=vmmtestuser12\;,o=ibm,c=us
+description: Group for testing RDN containing semicolon.
+
+dn: cn=vmmgroup2,o=ibm,c=us
+member: cn=vmmuser2,o=ibm,c=us
+cn: vmmgroup2
+objectclass: groupOfNames
+objectclass: top
+objectclass: groupforapache
+description: LDAP group vmmgroup2 for testing
+
+dn: cn=vmmgroup3,o=ibm,c=us
+member: cn=vmmuser3,o=ibm,c=us
+cn: vmmgroup3
+objectclass: groupOfNames
+objectclass: top
+objectclass: groupforapache
+description: LDAP group vmmgroup3 for testing
+
+dn: cn=vmmgroup4    \ ,o=ibm,c=us
+cn:: dm1tZ3JvdXA0ICAgICA=
+objectClass: top
+objectClass: groupOfNames
+member: cn=vmmtestuser3    \ ,o=ibm,c=us
+description: Group for testing RDN with containing trailing spaces.
+
+dn: cn=vmmgroup7\,,o=ibm,c=us
+cn: vmmgroup7,
+objectClass: top
+objectClass: groupOfNames
+member: cn=vmmtestuser6\,,o=ibm,c=us
+description: Group for testing RDN containing comma.
+
+dn: cn=vmmgroup8\+,o=ibm,c=us
+cn: vmmgroup8+
+objectClass: top
+objectClass: groupOfNames
+member: cn=vmmtestuser7\+,o=ibm,c=us
+description: Group for testing RDN containing plus sign.
+
+dn: cn=vmmgroup9\",o=ibm,c=us
+cn: vmmgroup9"
+objectClass: top
+objectClass: groupOfNames
+member: cn=vmmtestuser8\",o=ibm,c=us
+description: Group for testing RDN with containing double quotation mark.
+
+dn: cn=vmmgrp1,o=ibm,c=us
+member: cn=vmmuser1,o=ibm,c=us
+member: cn=vmmuser2,o=ibm,c=us
+member: cn=vmmuser3,o=ibm,c=us
+member: cn=vmmtestuser,o=ibm,c=us
+member: cn=vmmtest,o=ibm,c=us
+member: cn=vmmtestuser$,o=ibm,c=us
+member: cn=vmmgroup1,o=ibm,c=us
+member: cn=vmmgroup2,o=ibm,c=us
+member: cn=vmmgroup3,o=ibm,c=us
+member: cn=vmmgrp2,o=IBM,c=us
+member: cn=vmmgrp3,o=IBM,c=us
+cn: vmmgrp1
+objectclass: groupOfNames
+objectclass: top
+objectclass: groupforapache
+description: LDAP group vmmgr1 for testing
+
+dn: cn=vmmgrp2,o=ibm,c=us
+member: cn=vmmgroup1,o=ibm,c=us
+member: cn=vmmgroup2,o=ibm,c=us
+member: cn=vmmgroup3,o=ibm,c=us
+member: cn=vmmgrp2,o=IBM,c=us
+cn: vmmgrp2
+objectclass: groupOfNames
+objectclass: top
+objectclass: groupforapache
+description: LDAP group vmmgr2 for testing
+
+dn: cn=vmmgrp3,o=ibm,c=us
+member: uid=dummy
+cn: vmmgrp3
+objectclass: groupOfNames
+objectclass: top
+objectclass: groupforapache
+description: LDAP group vmmgr3 for testing
+
+dn: cn=vmmgrp4,o=ibm,c=us
+member: cn=vmmgrp1,o=IBM,c=us
+member: cn=vmmtestuser,o=ibm,c=us
+member: cn=vmmtest,o=ibm,c=us
+member: cn=vmmtestuser$,o=ibm,c=us
+cn: vmmgrp4
+objectclass: groupOfNames
+objectclass: top
+objectclass: groupforapache
+description: LDAP group vmmgr4 for testing
+
+dn: cn=vmmLibertyUser,o=ibm,c=us
+mail: vmmLibertyUser@ibm.com
+initials: vmmLibertyUser
+telephonenumber: 1 919 555 5555
+sn: vmmLibertyUserSN
+cn: vmmLibertyUser
+objectclass: organizationalPerson
+objectclass: person
+objectclass: inetOrgPerson
+objectclass: top
+objectclass: ePerson
+userPassword:: e1NIQX1DejNZTm03Wm51VUE4Z0JKSFhYVXlHNXo0Mnc9
+uid: vmmLibertyUserUID
+
+dn: cn=vmmtest,o=ibm,c=us
+mail: vmmtest@ibm.com
+initials: vmmtest
+telephonenumber: 1 919 555 5555
+sn: vmmtestsn
+cn: vmmtest
+objectclass: organizationalPerson
+objectclass: person
+objectclass: inetOrgPerson
+objectclass: top
+objectclass: ePerson
+userPassword:: e1NIQX1OMC85YnlwQ3pUM0VJSk4rT0hIaHoxYzhFc009
+uid: vmmtest
+
+dn: cn=vmmtestuser,o=ibm,c=us
+mail: vmmtestuser@ibm.com
+initials: vmmtestuser
+telephonenumber: 1 919 555 5555
+sn: vmmtestusersn
+cn: vmmtestuser
+objectclass: organizationalPerson
+objectclass: person
+objectclass: inetOrgPerson
+objectclass: top
+objectclass: ePerson
+userPassword: vmmtestuserpwd
+uid: vmmtestuser
+
+dn: cn=vmmtestuser$,o=ibm,c=us
+mail: vmmtestuser@ibm.com
+initials: vmmtestuser$
+telephonenumber: 1 919 555 5555
+sn: vmmtestusersn$
+cn: vmmtestuser$
+objectclass: organizationalPerson
+objectclass: person
+objectclass: inetOrgPerson
+objectclass: top
+objectclass: ePerson
+userPassword:: e1NIQX1PUUdySkhkaW5BRDU3MVpMeHdPT2M2TFdFQjg9
+uid: vmmtestuser$
+
+dn: cn=vmmtestuser10\<,o=ibm,c=us
+sn: vmmtestuser10<
+cn: vmmtestuser10<
+objectClass: top
+objectClass: inetOrgPerson
+objectClass: person
+objectClass: organizationalPerson
+objectClass: ePerson
+description: User for testing RDN containing left-facing guillemet.
+userPassword:: cGFzc3dvcmQ=
+uid: vmmtestuser10<
+
+dn: cn=vmmtestuser11\>,o=ibm,c=us
+sn: vmmtestuser11>
+cn: vmmtestuser11>
+objectClass: top
+objectClass: inetOrgPerson
+objectClass: person
+objectClass: organizationalPerson
+objectClass: ePerson
+description: User for testing RDN containing right-facing guillemet.
+userPassword:: cGFzc3dvcmQ=
+uid: vmmtestuser11>
+
+dn: cn=vmmtestuser12\;,o=ibm,c=us
+sn: vmmtestuser12;
+cn: vmmtestuser12;
+objectClass: top
+objectClass: inetOrgPerson
+objectClass: person
+objectClass: organizationalPerson
+objectClass: ePerson
+description: User for testing RDN containing semicolon.
+userPassword:: cGFzc3dvcmQ=
+uid: vmmtestuser12;
+
+dn: cn=vmmtestuser2,o=ibm,c=us
+mail: vmmtestuser2@ibm.com
+initials: vmmtestuser2
+telephonenumber: 1 919 555 5555
+sn: vmmtestuser2sn
+cn: vmmtestuser2
+objectclass: organizationalPerson
+objectclass: inetOrgPerson
+objectclass: person
+objectclass: top
+objectclass: ePerson
+userPassword:: e1NIQX1DOFlVWjhlcGY5UlRjK0wzV29RK1U2VHdLb2s9
+uid: vmmtestuser2
+
+dn: cn=vmmtestuser3    \ ,o=ibm,c=us
+sn:: dm1tdGVzdHVzZXIzICAgICA=
+cn:: dm1tdGVzdHVzZXIzICAgICA=
+objectClass: top
+objectClass: inetOrgPerson
+objectClass: person
+objectClass: organizationalPerson
+objectClass: ePerson
+description: User for testing RDN containing multiple trailing spaces.
+userPassword:: cGFzc3dvcmQ=
+uid:: dm1tdGVzdHVzZXIzICAgICA=
+
+dn: cn=vmmtestuser6\,,o=ibm,c=us
+sn: vmmtestuser6,
+cn: vmmtestuser6,
+objectClass: top
+objectClass: inetOrgPerson
+objectClass: person
+objectClass: organizationalPerson
+objectClass: ePerson
+description: User for testing RDN containing comma.
+userPassword:: cGFzc3dvcmQ=
+uid: vmmtestuser6,
+
+dn: cn=vmmtestuser7\+,o=ibm,c=us
+sn: vmmtestuser7+
+cn: vmmtestuser7+
+objectClass: top
+objectClass: inetOrgPerson
+objectClass: person
+objectClass: organizationalPerson
+objectClass: ePerson
+description: User for testing RDN containing plus sign.
+userPassword:: cGFzc3dvcmQ=
+uid: vmmtestuser7+
+
+dn: cn=vmmtestuser8\",o=ibm,c=us
+sn: vmmtestuser8"
+cn: vmmtestuser8"
+objectClass: top
+objectClass: inetOrgPerson
+objectClass: person
+objectClass: organizationalPerson
+objectClass: ePerson
+description: User for testing RDN containing double qoutation mark.
+userPassword:: cGFzc3dvcmQ=
+uid: vmmtestuser8"
+
+dn: cn=vmmtestuser9\\,o=ibm,c=us
+sn: vmmtestuser9\
+cn: vmmtestuser9\
+objectClass: top
+objectClass: inetOrgPerson
+objectClass: person
+objectClass: organizationalPerson
+objectClass: ePerson
+description: User for testing RDN containing slash.
+userPassword:: cGFzc3dvcmQ=
+uid: vmmtestuser9\
+
+dn: cn=vmmuser1,o=ibm,c=us
+mail: vmmuser1@ibm.com
+initials: vmmuser1
+telephonenumber: 1 919 555 5555
+sn: vmmuser1sn
+cn: vmmuser1
+objectclass: organizationalPerson
+objectclass: person
+objectclass: inetOrgPerson
+objectclass: top
+objectclass: ePerson
+userPassword:: e3NoYX11WmNIWW1Qb1UvQzh3c0NYUmdzMFFBT25LYjQ9
+uid: vmmuser1
+
+dn: cn=vmmuser2,o=ibm,c=us
+mail: vmmuser2@ibm.com
+initials: vmmuser2
+telephonenumber: 1 919 555 5555
+sn: vmmuser2sn
+cn: vmmuser2
+objectclass: organizationalPerson
+objectclass: person
+objectclass: inetOrgPerson
+objectclass: top
+objectclass: ePerson
+userPassword:: e3NoYX1uSnlhMTV0dm1jNGpVOG03cDJ0WVJLOGVOcVU9
+uid: vmmuser2
+
+dn: cn=vmmuser3,o=ibm,c=us
+mail: vmmuser3@ibm.com
+initials: vmmuser3
+telephonenumber: 1 919 555 5555
+sn: vmmuser3sn
+cn: vmmuser3
+objectclass: organizationalPerson
+objectclass: person
+objectclass: inetOrgPerson
+objectclass: top
+objectclass: ePerson
+userPassword:: e3NoYX1YdzhndUorTllLbUZSbEQyYldldFlKSzlDVVU9
+uid: vmmuser3
+

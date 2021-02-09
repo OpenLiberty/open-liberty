@@ -25,7 +25,6 @@ import componenttest.topology.impl.LibertyServer;
  *
  **/
 
-@SuppressWarnings("restriction")
 public class JwtBuilderCommonLDAPFat extends CommonSecurityFat {
 
     protected static ServerBootstrapUtils bootstrapUtils = new ServerBootstrapUtils();

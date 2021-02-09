@@ -1,0 +1,15 @@
+<server>
+    <featureManager>
+        <feature>jaxrs-2.1</feature>
+    </featureManager>
+
+    <applicationManager autoExpand="true" />    
+
+    <webApplication location="${server.config.dir}/apps/jaxrs21reactivesample.war" contextRoot="/"/>
+      
+  	<include location="../fatTestPorts.xml"/>
+
+    <javaPermission className="java.util.PropertyPermission" name="*" actions="read,write"/>
+    <javaPermission className="java.lang.RuntimePermission" name="modifyThread"/>
+
+</server>

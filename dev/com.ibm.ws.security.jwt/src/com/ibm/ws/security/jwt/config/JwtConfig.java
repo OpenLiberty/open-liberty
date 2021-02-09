@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2016, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.jwt.config;
 
@@ -18,46 +18,55 @@ import com.ibm.ws.webcontainer.security.jwk.JSONWebKey;
 
 public interface JwtConfig {
 
-	String getId();
+    String getId();
 
-	String getIssuerUrl();
+    String getIssuerUrl();
 
-	boolean isJwkEnabled();
+    boolean isJwkEnabled();
 
-	long getValidTime();
+    long getValidTime();
 
-	List<String> getAudiences();
+    List<String> getAudiences();
 
-	String getSignatureAlgorithm();
+    String getSignatureAlgorithm();
 
-	List<String> getClaims();
+    List<String> getClaims();
 
-	String getScope();
+    String getScope();
 
-	boolean getJti();
+    boolean getJti();
 
-	String getSharedKey();
+    String getSharedKey();
 
-	String getTrustStoreRef();
+    String getTrustStoreRef();
 
-	String getKeyStoreRef();
+    String getKeyStoreRef();
 
-	String getKeyAlias();
+    String getKeyAlias();
 
-	String getTrustedAlias();
+    String getTrustedAlias();
 
-	String getJwkJsonString();
+    String getJwkJsonString();
 
-	JSONWebKey getJSONWebKey();
+    JSONWebKey getJSONWebKey();
 
-	long getJwkRotationTime();
+    long getJwkRotationTime();
 
-	int getJwkSigningKeySize();
+    int getJwkSigningKeySize();
 
-	String getResolvedHostAndPortUrl();
+    String getResolvedHostAndPortUrl();
 
-	PrivateKey getPrivateKey();
+    PrivateKey getPrivateKey();
 
-	PublicKey getPublicKey();
+    PublicKey getPublicKey();
 
+    List<String> getAMRAttributes();
+
+    String getKeyManagementKeyAlgorithm();
+
+    String getKeyManagementKeyAlias();
+
+    String getContentEncryptionAlgorithm();
+
+	long getNbfOffsetTime();
 }

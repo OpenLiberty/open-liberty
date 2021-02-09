@@ -1,0 +1,11 @@
+com.ibm.ws.jca_fat
+com.ibm.ws.jca_fat_bval
+com.ibm.ws.jca_fat_classloading
+com.ibm.ws.jca_fat_configprops
+com.ibm.ws.jca_fat_derbyra
+com.ibm.ws.jca_fat_duplicates
+com.ibm.ws.jca_fat_dynamicConfig
+com.ibm.ws.jca_fat_enterpriseApp
+com.ibm.ws.jca_fat_errorpaths
+com.ibm.ws.jca_fat_example_anno
+com.ibm.ws.jca.1.7_fat

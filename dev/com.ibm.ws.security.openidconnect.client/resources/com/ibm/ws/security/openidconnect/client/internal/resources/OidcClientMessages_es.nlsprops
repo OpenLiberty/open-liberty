@@ -34,10 +34,11 @@ OIDC_CLIENT_CONFIG_MODIFIED.useraction=Ninguna.
 #1702 is used by clients.common bundle, do not use.
 
 # used_by_client_project and clients project IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN THE OTHER BUNDLE!
+# social also uses this and it does not have the enforceHTTPS attribute.
 #do not translate enforceHTTPS
-OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS=CWWKS1703E: El cliente de OpenID Connect requiere SSL (HTTPS), pero el URL del proveedor de OpenID Connect es HTTP: [{0}].  Actualice la configuraci\u00f3n para que el atributo [enforceHTTPS] coincida con el esquema del URL de destino. 
+OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS=CWWKS1703E: El cliente de OpenID Connect requiere SSL (HTTPS), pero el URL del proveedor de OpenID Connect es HTTP: [{0}]. Actualice la configuraci\u00f3n para utilizar un URL HTTPS o utilice la caracter\u00edstica de cliente de OpenID Connect y establezca enforceHTTPS en false (falso). 
 OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS.explanation=El cliente de OpenID Connect (parte dependiente o servidor de recursos) necesita SSL (HTTPS), pero el protocolo del URL del proveedor de OpenID Connect especificado en la configuraci\u00f3n del cliente de OpenID Connect no es HTTPS.
-OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS.useraction=Realice una de las acciones siguientes: 1) Aseg\u00farese de que el proveedor de OpenID Connect da soporte a SSL. 2) Si el proveedor de OpenID Connect no permite utilizar SSL, establezca enforceHTTPS en false en la configuraci\u00f3n del cliente de OpenID Connect.
+OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS.useraction=Realice una de las acciones siguientes: en primer lugar, aseg\u00farese de que el proveedor de OpenID Connect soporta SSL. Si el proveedor de OpenID Connector no soporta SSL, utilice la caracter\u00edstica de cliente de OpenID Connect y establezca enforceHTTPS en false en la configuraci\u00f3n de caracter\u00edstica de cliente de OpenID Connect.
 
 # unused, but present in both bundles.  IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES
 OIDC_CLIENT_RESPONSE_STATE_VERIFY_ERR=CWWKS1704E: El estado actual [{0}] del cliente OpenID Connect [{2}] y el par\u00e1metro de estado [{1}] de la respuesta del proveedor de OpenID Connect no coinciden.  Esta condici\u00f3n no est\u00e1 permitida.
@@ -275,11 +276,11 @@ CONFIG_REQUIRED_ATTRIBUTE_NULL.useraction=Aseg\u00farese de que est\u00e1 config
 
 # do not translate authFilterRef
 CONFIG_AUTHFILTER_NOTUNIQUE=CWWKS1530W: M\u00e1s de una configuraci\u00f3n de cliente de OpenID Connect especifica el mismo filtro de autenticaci\u00f3n [{0}]. Esto puede producir un comportamiento indeterminado.
-CONFIG_AUTHFILTER_NOTUNIQUE.explanation=M\u00e1s de una configuraci\u00f3n de cliente de OpenID Connect contiene un atributo authFilterRef que hace referencia al mismo filtro. Cualquiera de estos clientes puede procesar una solicitud que coincida con el filtro, produciendo un comportamiento indeterminado.
+CONFIG_AUTHFILTER_NOTUNIQUE.explanation=M\u00e1s de una configuraci\u00f3n de cliente de OpenID Connect contiene un atributo authFilterRef que hace referencia al mismo filtro. Cualquiera de estos clientes puede procesar una solicitud que coincida con el filtro, produciendo un comportamiento indeterminado.  
 CONFIG_AUTHFILTER_NOTUNIQUE.useraction=Revise el archivo server.xml y corrija la configuraci\u00f3n.
 
 AUTHFILTER_MULTIPLE_MATCHED=CWWKS1531W: M\u00e1s de un filtro de autenticaci\u00f3n de cliente de OpenID Connect coincide con una solicitud al URL [{0}]. Los filtros coincidentes eran [{1}]. Esto puede producir un comportamiento indeterminado.
-AUTHFILTER_MULTIPLE_MATCHED.explanation=M\u00e1s de un filtro de autenticaci\u00f3n coincide con la solicitud de entrada. Cualquier cliente que utilice uno de estos filtros puede procesar la solicitud, produciendo un comportamiento indeterminado.
+AUTHFILTER_MULTIPLE_MATCHED.explanation=M\u00e1s de un filtro de autenticaci\u00f3n coincide con la solicitud de entrada. Cualquier cliente que utilice uno de estos filtros puede procesar la solicitud, produciendo un comportamiento indeterminado.  
 AUTHFILTER_MULTIPLE_MATCHED.useraction=Revise el archivo server.xml y corrija la configuraci\u00f3n.
 
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

@@ -32,7 +32,7 @@ import com.ibm.ws.testtooling.vehicle.resources.TestExecutionResources;
 public class JPATestOLGH10310Logic extends AbstractTestLogic {
 
     public void testOverrideColumnAggregateObjectMapping(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                                         Object managedComponentObject) {
+                                                         Object managedComponentObject) throws Throwable {
         final String testName = getTestName();
 
         // Verify parameters
@@ -81,11 +81,6 @@ public class JPATestOLGH10310Logic extends AbstractTestLogic {
             if (tj.isTransactionActive()) {
                 tj.commitTransaction();
             }
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testName + ": End");
         }

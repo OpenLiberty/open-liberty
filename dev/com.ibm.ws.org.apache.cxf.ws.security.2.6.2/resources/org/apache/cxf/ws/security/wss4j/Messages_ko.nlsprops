@@ -1,0 +1,45 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# The contents of this file contains messages from the apache cxf project
+# The makers of the file claim this is not a message file - this is correct as it is NOT a file
+# that conforms to the IBM standard error message conventions.
+#
+#CMVCPATHNAME org.apache.cxf.ws.security/resources/extractedpropertyfile
+#ISMESSAGEFILE FALSE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+#
+#
+#    Licensed to the Apache Software Foundation (ASF) under one
+#    or more contributor license agreements. See the NOTICE file
+#    distributed with this work for additional information
+#    regarding copyright ownership. The ASF licenses this file
+#    to you under the Apache License, Version 2.0 (the
+#    "License"); you may not use this file except in compliance
+#    with the License. You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+#    Unless required by applicable law or agreed to in writing,
+#    software distributed under the License is distributed on an
+#    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+#    KIND, either express or implied. See the License for the
+#    specific language governing permissions and limitations
+#    under the License.
+#
+#
+
+# OutInterceptor error messages
+NO_SAAJ_DOC: SOAPMessage DOM\uc744 \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. SAAJInInterceptor\ub97c \uc0ac\uc6a9 \uac00\ub2a5\uc73c\ub85c \uc124\uc815\ud558\uc2ed\uc2dc\uc624.
+NO_ACTION: \ubcf4\uc548 \uc870\uce58\uac00 \uc815\uc758\ub418\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.
+BAD_ACTION: \uc62c\ubc14\ub974\uc9c0 \uc54a\uc740 \uc870\uce58 \uad6c\uc131\uc774 \uc815\uc758\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+NO_USERNAME: \uc9c0\uc815\ub41c \uc870\uce58\uc758 \uc0ac\uc6a9\uc790 \uc774\ub984\uc774 \ube44\uc5b4 \uc788\uc2b5\ub2c8\ub2e4.
+SECURITY_FAILED: \ubcf4\uc548\uc744 \ucc98\ub9ac\ud558\ub294 \ub370 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4.

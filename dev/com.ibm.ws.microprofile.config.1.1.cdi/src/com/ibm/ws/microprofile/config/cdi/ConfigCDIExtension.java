@@ -13,6 +13,8 @@ package com.ibm.ws.microprofile.config.cdi;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Optional;
@@ -60,7 +62,13 @@ public class ConfigCDIExtension implements Extension, WebSphereCDIExtension {
 
     void processInjectionTarget(@Observes ProcessInjectionTarget<?> pit) {
         Class<?> targetClass = pit.getAnnotatedType().getJavaClass();
-        ClassLoader classLoader = targetClass.getClassLoader();
+
+        ClassLoader classLoader = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+            @Override
+            public ClassLoader run() {
+                return targetClass.getClassLoader();
+            }
+        });
 
         for (InjectionPoint injectionPoint : pit.getInjectionTarget().getInjectionPoints()) {
             ConfigProperty configProperty = ConfigProducer.getConfigPropertyAnnotation(injectionPoint);

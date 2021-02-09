@@ -15,6 +15,8 @@ Bundle-Name: Webcontainer Monitor
 Bundle-SymbolicName: com.ibm.ws.webcontainer.monitor
 Bundle-Description: Webcontainer Monitor; version=${bVersion}
 
+jakartaeeMe: true
+
 Import-Package: \
     com.ibm.wsspi.webcontainer.util.*, \
     com.ibm.ws.webcontainer.webapp, \

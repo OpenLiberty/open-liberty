@@ -26,24 +26,20 @@ Web-ContextPath: /openapi
 # packages from Java when using Java 8 or earlier and from the new shipped bundles for Java 9 and later.
 Import-Package: \
     !com.ibm.ws.microprofile.openapi.impl, \
+    io.openliberty.microprofile.openapi.internal.resources, \
+    io.openliberty.microprofile.openapi.internal.resources.validation, \
 	org.eclipse.microprofile.config.*;version="[1.0,2)",\
 	javax.xml.bind.annotation;version=!,\
 	*
     
 Export-Package: \
-	com.ibm.ws.microprofile.openapi,\
+        com.ibm.ws.microprofile.openapi,\
 	com.ibm.ws.microprofile.openapi.utils,\
-    !com.ibm.ws.microprofile.openapi.impl.validation.resources,\
-    com.ibm.ws.microprofile.openapi.impl,\
-    com.ibm.ws.microprofile.openapi.impl.core.*,\
-    com.ibm.ws.microprofile.openapi.impl.jaxrs2.*,\
-    com.ibm.ws.microprofile.openapi.impl.parser.*,\
-    com.ibm.ws.microprofile.openapi.impl.validation
-    
-
-Private-Package: \
-    com.ibm.ws.microprofile.openapi.resources,\
-    com.ibm.ws.microprofile.openapi.impl.validation.resources
+	com.ibm.ws.microprofile.openapi.impl,\
+	com.ibm.ws.microprofile.openapi.impl.core.*,\
+	com.ibm.ws.microprofile.openapi.impl.jaxrs2.*,\
+	com.ibm.ws.microprofile.openapi.impl.parser.*,\
+	com.ibm.ws.microprofile.openapi.impl.validation
         
 Include-Resource: \
     WEB-INF=resources/WEB-INF, \
@@ -88,13 +84,10 @@ instrument.classesExcludes: \
 	com.ibm.ws.org.apache.commons.io;version=latest,\
 	com.ibm.ws.org.apache.commons.lang3;version=latest,\
 	com.ibm.websphere.org.eclipse.microprofile.config.1.2.1;version=latest,\
-	com.fasterxml.jackson.core.jackson-core;version=2.9.1,\
-	com.fasterxml.jackson.core.jackson-annotations;version=2.9.1,\
-	com.fasterxml.jackson.core:jackson-databind;version=2.9.1,\
-	com.fasterxml.jackson.dataformat:jackson-dataformat-yaml;version=2.9.1,\
+	io.openliberty.com.fasterxml.jackson;version=latest,\
 	com.ibm.websphere.javaee.jaxrs.2.0;version=latest,\
-	org.yaml.snakeyaml;version=1.18,\
-	com.ibm.ws.microprofile.openapi.model;version=latest
+	com.ibm.ws.microprofile.openapi.model;version=latest,\
+	io.openliberty.microprofile.openapi.internal.common;version=latest
 
 -testpath: \
         ../build.sharedResources/lib/junit/old/junit.jar;version=file, \

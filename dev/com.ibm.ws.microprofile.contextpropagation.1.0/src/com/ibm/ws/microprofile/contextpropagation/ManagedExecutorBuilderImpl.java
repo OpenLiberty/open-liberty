@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018,2019 IBM Corporation and others.
+ * Copyright (c) 2018,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,6 +26,7 @@ import org.eclipse.microprofile.context.spi.ThreadContextProvider;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.concurrent.mp.spi.ManagedExecutorFactory;
+import com.ibm.ws.microprofile.context.EmptyHandleListContextProvider;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.ws.threading.PolicyExecutor;
@@ -85,9 +86,10 @@ public class ManagedExecutorBuilderImpl implements ManagedExecutor.Builder {
             String contextType = provider.getThreadContextType();
             unknown.remove(contextType);
 
-            ContextOp op = propagated.contains(contextType) ? ContextOp.PROPAGATED //
-                            : cleared.contains(contextType) ? ContextOp.CLEARED //
-                                            : remaining;
+            ContextOp op = EmptyHandleListContextProvider.EMPTY_HANDLE_LIST.contentEquals(contextType) ? ContextOp.CLEARED //
+                            : propagated.contains(contextType) ? ContextOp.PROPAGATED //
+                                            : cleared.contains(contextType) ? ContextOp.CLEARED //
+                                                            : remaining;
             configPerProvider.put(provider, op);
         }
 

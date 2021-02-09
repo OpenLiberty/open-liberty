@@ -25,6 +25,7 @@ import javax.servlet.annotation.WebServlet;
 import org.eclipse.microprofile.faulttolerance.exceptions.TimeoutException;
 import org.junit.Test;
 
+import com.ibm.websphere.microprofile.faulttolerance_fat.suite.BasicTest;
 import com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans.TimeoutBean;
 import com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans.TimeoutBean2;
 import com.ibm.ws.microprofile.faulttolerance_fat.util.ConnectException;
@@ -118,6 +119,7 @@ public class TimeoutServlet extends FATServlet {
 
     }
 
+    @BasicTest
     @Test
     public void testTimeout() throws ConnectException {
         //the default timeout is 1000ms, if it takes 3000ms to fail then there is something wrong

@@ -1,0 +1,439 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/internal/localization/i18n/ExceptionLocalizationResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+CRITERIA_NON_LITERAL_PASSED_TO_IN="in(Expression<?>... values)" foi chamado com um tipo de express\u00e3o: {0} que n\u00e3o era um literal ou um par\u00e2metro.  Esse processo n\u00e3o \u00e9 suportado.
+
+CRITERIA_NO_ROOT_FOR_COMPOUND_QUERY=Tentando criar uma Consulta de crit\u00e9rios sem nenhuma Raiz.
+
+INCORRECT_PARAMETER_TYPE=O par\u00e2metro no \u00edndice: {0} n\u00e3o era do tipo: {1}.
+
+MULTIPLE_SELECTIONS_PASSED_TO_QUERY_WITH_PRIMITIVE_RESULT="multiSelect" foi chamada em um CriteriaQuery com um tipo de resultado primitivo.  O tipo de retorno est\u00e1 incorreto ou "selecionar" dever\u00e1 ser usado no lugar.
+
+NO_PARAMETER_WITH_INDEX=Nenhum par\u00e2metro com o \u00edndice: {0} foi localizado dentro da consulta: {1}.
+
+NO_PARAMETER_WITH_NAME=Nenhum par\u00e2metro com o nome: {0} foi localizado dentro da consulta: {1}.
+
+NO_VALUE_BOUND=Nenhum valor foi ligado ao par\u00e2metro denominado: {0}
+
+NULL_PARAMETER_PASSED_TO_SET_PARAMETER=O par\u00e2metro nulo foi transmitido para "setParameter".  N\u00e3o \u00e9 poss\u00edvel indexar par\u00e2metros por "Null".
+
+PARAMETER_NILL_NOT_FOUND=O par\u00e2metro nulo foi transmitido para getParameterValue()
+
+add_attribute_key_was_null=Ao especificar um AttributeGroup para uma subclasse de um tipo de atributo, o par\u00e2metro de tipo n\u00e3o deve ser nulo
+
+argument_collection_was_null=A cole\u00e7\u00e3o de argumentos era nula
+
+argument_keyed_named_query_with_JPA=V\u00e1rias consultas com o nome: {0} existem mas os nomes devem ser exclusivos ao usar EntityManagerFactory.addNamedQuery()
+
+attribute_is_not_map_with_managed_key=N\u00e3o \u00e9 poss\u00edvel incluir o subgr\u00e1fico em EntityGroup como atributo: {0} na classe: {1} porque ele n\u00e3o \u00e9 um Mapa com uma chave de tipo gerenciado.
+
+bean_definition_vector_arguments_are_of_different_sizes=Os argumentos de vetor de defini\u00e7\u00e3o de bean s\u00e3o de tamanhos diferentes
+
+bean_not_found_on_database=O bean {0} n\u00e3o foi localizado no banco de dados.
+
+bean_validation_constraint_violated=Uma ou mais restri\u00e7\u00f5es de Valida\u00e7\u00e3o de Bean foram violadas ao executar a Valida\u00e7\u00e3o autom\u00e1tica de bean no evento de retorno de chamada: {0} para a classe: {1}. Consulte as viola\u00e7\u00f5es integradas de restri\u00e7\u00e3o para obter detalhes.
+
+cache_descriptor_has_no_cmppolicy_set_cannot_create_primary_key=A classe [{0}] com o descritor [{1}] n\u00e3o tem um conjunto CMPPolicy, n\u00e3o foi poss\u00edvel criar uma inst\u00e2ncia de chave prim\u00e1ria para o tipo de id [{2}].
+
+cache_impl_class_has_no_descriptor_is_not_a_persistent_type=A classe [{0}] n\u00e3o \u00e9 um tipo persistente \u2013 n\u00e3o possui nenhum descritor associado.
+
+cache_impl_object_descriptor_has_no_cmppolicy_set=O objeto [{0}] com o descritor [{1}] n\u00e3o tem um conjunto de CMPPolicy, n\u00e3o foi poss\u00edvel retornar um ID.
+
+cache_impl_object_has_no_descriptor_is_not_a_persistent_type=O objeto [{0}] n\u00e3o \u00e9 de um tipo persistente \u2013 n\u00e3o possui nenhum descritor associado.
+
+called_get_entity_manager_from_non_jta=getEntityManager() est\u00e1 sendo chamado de um n\u00e3o-JTA ativar EntityManagerFactory.  Assegure-se que o JTA est\u00e1 configurado adequadamente no seu EntityManagerFactory.
+
+can_not_create_directory=N\u00e3o foi poss\u00edvel criar o diret\u00f3rio {0}.
+
+can_not_create_file=N\u00e3o foi poss\u00edvel criar o arquivo {0}.
+
+can_not_move_directory=N\u00e3o \u00e9 poss\u00edvel mover diret\u00f3rios.
+
+cannot_get_from_non_correlated_query=getCorrelationParent() chamado em uma de-cl\u00e1usula que n\u00e3o foi obtido por meio de correla\u00e7\u00e3o.
+
+cannot_get_unfetched_attribute=N\u00e3o \u00e9 poss\u00edvel obter o atributo unfetched [{1}] do objeto desconectado {0}.
+
+cannot_merge_removed_entity=N\u00e3o \u00e9 poss\u00edvel mesclar uma entidade que foi removida: {0}
+
+cannot_read_through_txn_for_unsynced_pc=A propriedade foi configurada para unir este contexto de persist\u00eancia para a transa\u00e7\u00e3o ativa no momento, mas este n\u00e3o \u00e9 um contexto de persist\u00eancia SYNCHRONIZED.
+
+cannot_remove_detatched_entity=A entidade deve ser gerenciada para chamar remo\u00e7\u00e3o: {0}, tente mesclar o desconectado e tente a remo\u00e7\u00e3o novamente.
+
+cannot_remove_removed_entity=A entidade j\u00e1 foi removida: {0}
+
+cannot_update_entity_fetch-group=A tentativa de incluir ou remover o atributo [{1}] ao objeto {0} - EntityFetchGroup \u00e9 imut\u00e1vel.
+
+cannot_use_transaction_on_unsynced_pc=N\u00e3o \u00e9 poss\u00edvel chamar m\u00e9todos que requerem uma transa\u00e7\u00e3o se o EntityManager n\u00e3o foi inclu\u00eddo na transa\u00e7\u00e3o atual.
+
+cant_lock_not_managed_object=A entidade deve ser gerenciada para chamar o bloqueio: {0}, tente mesclar o desconectado e tente o bloqueio novamente.
+
+cant_persist_detatched_object=N\u00e3o \u00e9 poss\u00edvel PERSIST o objeto desconectado, poss\u00edvel chave prim\u00e1ria duplicada: {0}.
+
+cant_refresh_not_managed_object=N\u00e3o \u00e9 poss\u00edvel atualizar o objeto n\u00e3o gerenciado: {0}.
+
+create_insertion_failed=A cria\u00e7\u00e3o de inser\u00e7\u00e3o falhou.
+
+criteria_no_constructor_found=Ocorreu uma exce\u00e7\u00e3o ao inspecionar a classe {0} para um construtor usando tipos de crit\u00e9rios de sele\u00e7\u00e3o como argumentos.  Se esse CriteriaQuery n\u00e3o se destinava a ser um construtor de consulta verifique se a sele\u00e7\u00e3o corresponde ao tipo de retorno.
+
+directory_not_exist=O diret\u00f3rio {0} n\u00e3o existe.
+
+ejb30-default-for-unknown-property=N\u00e3o \u00e9 poss\u00edvel retornar o valor padr\u00e3o para a propriedade desconhecida {0}.
+
+ejb30-illegal-property-value=A propriedade {0} possui um valor ilegal {1}.
+
+ejb30-incorrect-parameter-type=Voc\u00ea tentou configurar um valor do tipo {1} para o par\u00e2metro {0} com o tipo esperado de {2} da sequ\u00eancia de consultas {3}.
+
+ejb30-wrong-argument-index=Voc\u00ea tentou configurar um par\u00e2metro na posi\u00e7\u00e3o {0} que n\u00e3o existe nesta sequ\u00eancia de consultas {1}.
+
+ejb30-wrong-argument-name=Voc\u00ea tentou configurar um valor de par\u00e2metro usando um nome de {0} que n\u00e3o existe na sequ\u00eancia de consultas {1}.
+
+ejb30-wrong-lock_called_without_version_locking-index=Tipo de modo de bloqueio inv\u00e1lido para uma entidade que n\u00e3o tem um \u00edndice bloqueio de vers\u00e3o. Apenas um tipo de modo de bloqueio PESSIMISTIC pode ser usado quando n\u00e3o h\u00e1 um \u00edndice de vers\u00e3o de bloqueio.
+
+ejb30-wrong-query-hint-value=Consulta {0}, dica de consulta {1} possui valor ilegal {2}.
+
+ejb30-wrong-type-for-query-hint=Consulta {0}, dica de consulta {1} n\u00e3o \u00e9 v\u00e1lido para este tipo de consulta.
+
+entity_manager_properties_conflict_default_connector_vs_external_transaction_controller=Conflito de propriedades EntityManager: javax.persistence.driver e/ou javax.persistence.url requer DefaultConnector, mas a unidade de persist\u00eancia usa o controlador de transa\u00e7\u00e3o externa; portanto, o JNDIConnector \u00e9 necess\u00e1rio.
+
+entity_manager_properties_conflict_default_connector_vs_jndi_connector=Conflito de propriedades EntityManager: javax.persistence.driver e/ou javax.persistence.url requerem DefaultConnector, mas javax.persistence.jtaDataSource e/ou javax.persistence.nonjtaDataSource requer JNDIConnector.
+
+entity_no_longer_exists_in_db=A entidade n\u00e3o existe mais no banco de dados: {0}.
+
+error_executing_jar_process=Erro ao executar o processo jar
+
+error_invoking_deploy=Erro ao chamar oImplementar
+
+error_loading_resources=Erro ao carregar os recursos {0} do caminho de classe
+
+error_marshalling_arguments=Erro ao serializar os argumentos
+
+error_marshalling_return=Erro ao serializar o retorno
+
+error_parsing_resources=Erro ao analisar os recursos {0}
+
+error_reading_jar_file=Erro ao ler o arquivo jar: {0} entrada: {1}
+
+error_unmarshalling_arguments=Erro ao desserializar os argumentos
+
+error_unmarshalling_return=erro ao desserializar o retorno
+
+file_exists=O arquivo {0} j\u00e1 existe.
+
+file_not_exist=O arquivo {0} n\u00e3o existe.
+
+finder_query_failed=Consulta de localizador falhou:
+
+getpersistenceunitutil_called_on_closed_emf=getPersistenceUnitUtil() foi chamado em um EntityManagerFactory fechado.
+
+illegal_state_while_closing=Tentando fechar um EntityManager com um estado de transa\u00e7\u00e3o diferente de NO_TRANSACTION, COMMITTED, ou ROLLEDBACK.
+
+incorrect_hint=Tipo de objeto incorreto especificado para a sugest\u00e3o: {0}.
+
+incorrect_query_for_get_result_collection=N\u00e3o \u00e9 poss\u00edvel chamar getResultCollection() nesta consulta.  \u00c9 o tipo de consulta incorreta.
+
+incorrect_query_for_get_result_list=N\u00e3o \u00e9 poss\u00edvel chamar getResultList() nesta consulta.  \u00c9 o tipo de consulta incorreta.
+
+incorrect_query_for_get_single_result=N\u00e3o \u00e9 poss\u00edvel chamar getSingleResult() nesta consulta.  \u00c9 o tipo de consulta incorreta.
+
+incorrect_spq_query_for_execute=N\u00e3o \u00e9 poss\u00edvel chamar execute() esta consulta de procedimento armazenado.  \u00c9 o tipo de consulta incorreta.
+
+incorrect_spq_query_for_execute_update=N\u00e3o \u00e9 poss\u00edvel chamar executeUpdate() nesta consulta de procedimento armazenado j\u00e1 que ela retorna um conjunto de resultados e n\u00e3o apenas uma contagem de atualiza\u00e7\u00f5es.
+
+incorrect_spq_query_for_get_result_list=N\u00e3o \u00e9 poss\u00edvel chamar getResultList() nesse consulta de procedimento armazenado j\u00e1 que ela n\u00e3o retorna um conjunto de resultados.
+
+incorrect_spq_query_for_get_single_result=N\u00e3o \u00e9 poss\u00edvel chamar getSingleResult() nesse consulta de procedimento armazenado j\u00e1 que ela n\u00e3o retorna um conjunto de resultados.
+
+input_source_not_found=A Origem de Entrada n\u00e3o foi localizada, ou \u00e9 nula
+
+interface_hash_mismatch=Interface de incompatibilidade hash
+
+invalid_lock_query=Um tipo de bloqueio pode ser usado apenas com uma consulta de sele\u00e7\u00e3o (que permite que o banco de dados seja bloqueado onde necess\u00e1rio).
+
+invalid_method_hash=Hash de m\u00e9todo inv\u00e1lido
+
+invalid_method_number=N\u00famero do m\u00e9todo inv\u00e1lido
+
+invalid_pk_class=Voc\u00ea forneceu uma inst\u00e2ncia de uma classe PK incorreta para esta opera\u00e7\u00e3o de localiza\u00e7\u00e3o.  Classe esperada: {0}, Classe recebida: {1}.
+
+jar_not_exist=O arquivo jar {0} n\u00e3o existe.
+
+jaxb_helper_invalid_binder=O Componente de liga\u00e7\u00e3o fornecido [{0}] n\u00e3o \u00e9 uma JAXBBinder EclipseLink, e, portanto, n\u00e3o p\u00f4de ser convertido.
+
+jaxb_helper_invalid_jaxbcontext=O JAXBContext fornecido [{0}] n\u00e3o \u00e9 um EclipseLink JAXBContext, e, portanto, n\u00e3o p\u00f4de ser convertido.
+
+jaxb_helper_invalid_marshaller=O Marshaller fornecido [{0}] n\u00e3o \u00e9 um EclipseLink JAXBMarshaller, e, portanto, n\u00e3o p\u00f4de ser convertido.
+
+jaxb_helper_invalid_target_for_binder=A Classe de destino fornecida [{0}] deve ser um dos EclipseLink JAXBBinder ou EclipseLink XMLBinder.
+
+jaxb_helper_invalid_target_for_jaxbcontext=A Classe de destino fornecida [{0}] deve ser um dos EclipseLink JAXBContext ou EclipseLink XMLContext.
+
+jaxb_helper_invalid_target_for_marshaller=A Classe de destino fornecida [{0}] deve ser um dos EclipseLink JAXBMarshaller ou EclipseLink XMLMarshaller.
+
+jaxb_helper_invalid_target_for_unmarshaller=A Classe de destino fornecida [{0}] deve ser EclipseLink JAXBUnmarshaller ou EclipseLink XMLUnmarshaller.
+
+jaxb_helper_invalid_unmarshaller=O Desserializador fornecido [{0}] n\u00e3o \u00e9 um EclipseLink JAXBUnmarshaller, e, portanto, n\u00e3o p\u00f4de ser convertido.
+
+jmx_enabled_platform_mbean_runtime_exception=Ocorreu uma exce\u00e7\u00e3o ao chamar uma fun\u00e7\u00e3o de servi\u00e7o de tempo de execu\u00e7\u00e3o do JMX MBean em {0} que exp\u00f5e informa\u00e7\u00f5es de sess\u00e3o EclipseLink, a exce\u00e7\u00e3o \u00e9: {1}
+
+join_trans_called_on_entity_trans=joinTransaction foi chamado em um EntityManager de recursos locais que n\u00e3o consegue se registrar para uma transa\u00e7\u00e3o de JTA.
+
+jpa21-ddl-create-script-target-not-specified=Ao gerar DDL para scripts, um destino de script de cria\u00e7\u00e3o deve ser especificado usando a propriedade [javax.persistence.schema-generation.scripts.create-target].
+
+jpa21-ddl-drop-script-target-not-specified=Ao gerar DDL para scripts, um destino de script de queda deve ser especificado usando a propriedade [javax.persistence.schema-generation.scripts.drop-target].
+
+jpa21-ddl-invalid-source-script-type=O script de origem fornecido {0} \u00e9 de um tipo inv\u00e1lido {0}. Os tipos de script de origem v\u00e1lidos s\u00e3o: java.io.Reader ou uma sequ\u00eancia que designa uma URL de arquivo.
+
+jpa21-ddl-invalid-target-script-type=O script de destino fornecido {0} \u00e9 de um tipo inv\u00e1lido {0}. Os tipos de script de destino v\u00e1lidos s\u00e3o: java.io.Writer ou uma sequ\u00eancia que designa uma URL de arquivo.
+
+jpa21-ddl-source-script-io-exception=Ocorreu um erro de E/S com o script de gera\u00e7\u00e3o de ddl de origem : {0}.
+
+jpa21-ddl-source-script-not-found=O script de origem: {0} para a chamada generateSchema n\u00e3o foi localizado. Assegure-se de que voc\u00ea especificou uma URL de sequ\u00eancia v\u00e1lida que usa o protocolo "file" ou que o nome do arquivo da sequ\u00eancia representa um recurso v\u00e1lido dispon\u00edvel a partir do caminho de classe.
+
+jpa21-ddl-source-script-sql-exception=Ocorreu um erro ao executar {0} do script de gera\u00e7\u00e3o de ddl de origem: {1}.
+
+jpa21_invalid_call_on_un_executed_query=A consulta deve ser executada antes de chamar este m\u00e9todo.
+
+jpa21_invalid_call_with_no_output_parameters=Chamada inv\u00e1lida em uma consulta que n\u00e3o retorna par\u00e2metros OUT.
+
+jpa21_invalid_call_with_no_result_sets_returned=Chamada inv\u00e1lida em uma consulta que n\u00e3o retorna conjuntos de resultados.
+
+jpa21_invalid_parameter_name=Nome inv\u00e1lido do par\u00e2metro de sa\u00edda: {0}. {1}
+
+jpa21_invalid_parameter_position=Posi\u00e7\u00e3o inv\u00e1lida do par\u00e2metro de sa\u00edda: {0}. {1}.
+
+jpa_criteriaapi_alias_reused=Mais de um item de sele\u00e7\u00e3o usa o mesmo nome alternativo.  Nomes duplicados foram usados: {0}
+
+jpa_criteriaapi_illegal_tuple_or_array_value=Tupla ilegal ou item de sele\u00e7\u00e3o matriz de valor localizado. Argumento localizado: {0}
+
+jpa_criteriaapi_invalid_result_index=\u00edndice {0} inv\u00e1lido para a lista de resultados de tamanho {1}.
+
+jpa_criteriaapi_invalid_result_type=Elemento {0} tipo {1} \u00e9 inv\u00e1lido para o resultado {2}.
+
+jpa_criteriaapi_no_corresponding_element_in_result=Os elementos {0} n\u00e3o correspondem a elementos no resultado da consulta.
+
+jpa_criteriaapi_null_literal_value=Valor nulo transmitido para CriteriaBuilder.literal().  Em vez disso, use nullLiteral(Class<T> resultClass).
+
+jpa_helper_invalid_entity_manager_factory=O EntityManagerFactory JPA {0} n\u00e3o \u00e9 um EntityManagerFactory EclipseLink; portanto, n\u00e3o p\u00f4de ser convertido.
+
+jpa_helper_invalid_entity_manager_factory_for_refresh=O EntityManagerFactory JPA {0} n\u00e3o \u00e9 um EntityManagerFactory EclipseLink; portanto, n\u00e3o p\u00f4de ter seus metadados atualizados.
+
+jpa_helper_invalid_query=A consulta do tipo {0} n\u00e3o \u00e9 uma consulta EclipseLink e, portanto, n\u00e3o p\u00f4de ser convertida.
+
+jpa_helper_invalid_read_all_query=A consulta do tipo {0} n\u00e3o \u00e9 uma consulta EclipseLink de leitura total e, portanto, n\u00e3o p\u00f4de ser convertida.
+
+jpa_helper_invalid_report_query=A consulta do tipo {0} n\u00e3o \u00e9 uma consulta de relat\u00f3rio EclipseLink e, portanto, n\u00e3o p\u00f4de ser convertida.
+
+jpa_persistence_util_non_persistent_class=PersistenceUtil.getIdentifier(de entidade) foi chamado com objeto [{0}] que n\u00e3o \u00e9 um objeto persistente.
+
+lock_called_without_version_locking=Chamadas para entityManager.lock(entidade de Objeto, LockModeType lockMode) requerem que a Vers\u00e3o de Bloqueio seja ativada.
+
+managed_component_not_found=Um atributo {1} listado em EntityGraph {0} referencia um subgr\u00e1fico denominado {2} que n\u00e3o pode ser localizado.
+
+may_not_contain_xml_entry={0} pode n\u00e3o conter {1}.
+
+metamodel_class_incorrect_type_instance=O tipo [{2}] n\u00e3o \u00e9 o esperado [{1}] para a classe-chave [{0}].  Verifique se a classe [{2}] foi referida no arquivo persistence.xml usando uma propriedade <class/> espec\u00edfica ou um elemento global <exclude-unlisted-classes>false</exclude-unlisted-classes>.
+
+metamodel_class_null_type_instance=N\u00e3o [{1}] foi localizado para a classe-chave [{0}] no Metamodelo \u2013 verifique se a classe [{2}] foi referida no arquivo persistence.xml usando uma propriedade <class>{0}</class> espec\u00edfica ou um elemento global <exclude-unlisted-classes>false</exclude-unlisted-classes>.
+
+metamodel_class_null_type_instance_for_null_key=N\u00e3o [{0}] foi localizado para o par\u00e2metro de classe-chave nula no Metamodelo \u2013 especifique a classe-chave correta para a classe [{1}] do metamodelo e verifique se a classe-chave foi referenciada no arquivo persistence.xml usando uma propriedade <class/> espec\u00edfica ou um elemento global <exclude-unlisted-classes>false</exclude-unlisted-classes>.
+
+metamodel_identifiable_id_attribute_is_incorrect_idclass=O atributo @Id \u00fanico esperado para o tipo identific\u00e1vel [{0}] faz parte de um @IdClass inesperado.
+
+metamodel_identifiable_id_attribute_type_incorrect=Tipo de atributo id esperado [{2}] no atributo id existente [{0}] no tipo identific\u00e1vel [{1}], mas localizou o tipo de atributo [{3}].
+
+metamodel_identifiable_no_id_attribute_present=Nenhum atributo @Id existe no tipo identific\u00e1vel [{0}].
+
+metamodel_identifiable_no_version_attribute_present=Nenhum atributo @Version existe no tipo identific\u00e1vel [{0}].
+
+metamodel_identifiable_type_has_no_idclass_attribute=Nenhum atributo @IdClass existe no IdentifiableType [{0}].  Ainda pode haver um ou mais @Id ou um @EmbeddedId no tipo.
+
+metamodel_identifiable_version_attribute_type_incorrect=Tipo de atributo de vers\u00e3o esperado [{2}] no atributo de vers\u00e3o existente [{0}] no tipo identific\u00e1vel [{1}], mas localizou tipo de atributo [{3}].
+
+metamodel_incompatible_persistence_config_for_getIdType=Configura\u00e7\u00e3o de persist\u00eancia incompat\u00edvel obtendo um Tipo de ID Metamodelo para o ManagedType [{0}].
+
+metamodel_interface_inheritance_not_supported=O descritor [{0}] que usa heran\u00e7a ({1}) n\u00e3o \u00e9 atualmente suportado durante a gera\u00e7\u00e3o do metamodelo, tente usar a heran\u00e7a Entity ou MappedSuperclass (Classe abstrata).
+
+metamodel_managed_type_attribute_not_present=O atributo [{0}] n\u00e3o est\u00e1 presente no tipo gerenciado [{1}].
+
+metamodel_managed_type_attribute_return_type_incorrect=Atributo do tipo de retorno do esperado [{2}] no atributo existente [{0}] no tipo gerenciado [{1}], mas localizou um atributo do tipo de retorno [{3}].
+
+metamodel_managed_type_attribute_type_incorrect=Tipo de atributo esperado [{2}] no atributo existente [{0}] no tipo gerenciado [{1}], mas localizou um tipo de atributo [{3}].
+
+metamodel_managed_type_declared_attribute_not_present_but_is_on_superclass=O atributo declarado [{0}] do tipo gerenciado [{1}] n\u00e3o est\u00e1 presente \u2013 no entanto, \u00e9 declarado em uma superclasse.
+
+missing_parameter_value=Argumento de consulta {0} n\u00e3o foi localizado na lista de par\u00e2metros fornecida durante a execu\u00e7\u00e3o de consulta.
+
+missing_toplink_bean_definition_for=Faltando a defini\u00e7\u00e3o de bean do TopLink para {0}
+
+named_entity_graph_exists=NamedEntityGraph com nome {0} localizado em {1} j\u00e1 existe nesta unidade de persist\u00eancia.
+
+negative_max_result=MaxResult negativo n\u00e3o \u00e9 permitido.
+
+negative_start_position=Posi\u00e7\u00e3o Inicial Negativa n\u00e3o \u00e9 permitida
+
+new_object_found_during_commit=Durante a sincroniza\u00e7\u00e3o de um novo objeto foi localizado atrav\u00e9s de um relacionamento que n\u00e3o foi marcado como cascata PERSIST: {0}.
+
+no_entities_retrieved_for_get_reference=N\u00e3o foi poss\u00edvel localizar a entidade para o ID: {0}
+
+no_entities_retrieved_for_get_single_result=getSingleResult() n\u00e3o recuperou nenhuma entidade.
+
+no_entity_graph_of_name=Nenhum EntityGraph existe com o nome {0}
+
+not_an_entity=O objeto {0} n\u00e3o \u00e9 um tipo de entidade conhecido.
+
+not_jar_file={0} n\u00e3o \u00e9 um arquivo jar.
+
+not_usable_passed_to_entitygraph_hint=valor {1} transmitido para dica de consulta {0} n\u00e3o \u00e9 apropriado para esta dica de consulta
+
+null_argument_get_attributegroup=O nome de busca para AttributeGroup n\u00e3o deve ser nulo.
+
+null_jar_file_names=Nomes de arquivos jar nulos
+
+null_not_supported_identityweakhashmap=O IdentityWeakHashMap n\u00e3o suporta \u201cnull" como uma chave ou valor.
+
+null_pk=Uma inst\u00e2ncia de um PK nulo foi fornecida incorretamente para esta opera\u00e7\u00e3o de localiza\u00e7\u00e3o.
+
+null_sqlresultsetmapping_in_query=O ResultSetMappingQuery deve ter um conjunto SQLResultSetMapping para ser v\u00e1lido
+
+null_value_for_column_result=O Nome da Coluna deve ser fornecido para um ColumnResult
+
+null_value_for_constructor_result=O nome de Classe de Destino deve ser fornecido para Resultado do Construtor
+
+null_value_for_entity_result=O nome da Classe de Entidade deve ser fornecido para Resultado da Entidade
+
+null_value_in_sqlresultsetmapping=Um nome deve ser fornecido para o SQLResultSetMapping.  Esse nome \u00e9 usado para referenciar o SQLResultSetMapping de uma consulta.
+
+null_values_for_field_result=O Nome do Atributo e o Nome da Coluna devem ser fornecidos para um FieldResult
+
+only_one_root_subgraph=Somente o subgr\u00e1fico de raiz pode ser listado sem um tipo.  Quaisquer subgr\u00e1ficos que representam subclasses deve possuir um conjunto de tipo.
+
+operation_not_supported=Chamando {0} em um {1} n\u00e3o \u00e9 suportado pela especifica\u00e7\u00e3o.
+
+operation_on_closed_entity_manager=Tentando executar uma opera\u00e7\u00e3o em um EntityManager fechado.
+
+operation_on_closed_entity_manager_factory=Tentativa de executar uma opera\u00e7\u00e3o em um EntityManagerFactory fechado.
+
+ora_pessimistic_locking_with_rownum=O bloqueio pessimista com limites de linhas de consulta n\u00e3o \u00e9 suportado.
+
+parsing_error=analisando erro
+
+parsing_fatal_error=analisando erro fatal
+
+parsing_warning=analisando aviso
+
+pathnode_is_primitive_node=A express\u00e3o de crit\u00e9rios \u00e9 do tipo primitivo e n\u00e3o pode ser mais navegada.
+
+pathnode_type_does_not_apply_to_primitive_node=A express\u00e3o de crit\u00e9rios \u00e9 do tipo primitivo e n\u00e3o pode ser mais navegada.  Express\u00f5es primitivas n\u00e3o permitem "type".
+
+pk_class_not_found=N\u00e3o \u00e9 poss\u00edvel carregar Classe da Chave Prim\u00e1ria {0}
+
+position_bound_param_not_found=N\u00e3o havia nenhum par\u00e2metro de limite na posi\u00e7\u00e3o: {0}.
+
+position_param_not_found=N\u00e3o havia nenhum par\u00e2metro na posi\u00e7\u00e3o: {0}.
+
+pu_configured_for_resource_local=N\u00e3o \u00e9 poss\u00edvel criar um EntityManager com SynchronizationType porque PersistenceUnit est\u00e1 configurado com transa\u00e7\u00f5es de recurso local.
+
+remove_deletion_failed=Falha na remo\u00e7\u00e3o de exclus\u00e3o:
+
+rollback_because_of_rollback_only=A transa\u00e7\u00e3o "retrocedida" devido \u00e0 transa\u00e7\u00e3o foi definida para RollbackOnly.
+
+sdo_helper_invalid_changesummary=O ChangeSummary fornecido [{0}] n\u00e3o \u00e9 um EclipseLink SDOChangeSummary e, portanto, n\u00e3o p\u00f4de ser convertido.
+
+sdo_helper_invalid_copyhelper=O CopyHelper fornecido [{0}] n\u00e3o \u00e9 um EclipseLink SDOCopyHelper, e, portanto, n\u00e3o p\u00f4de ser convertido.
+
+sdo_helper_invalid_datafactory=O DataFactory fornecido [{0}] n\u00e3o \u00e9 um EclipseLink SDODataFactory, e, portanto, n\u00e3o p\u00f4de ser convertido.
+
+sdo_helper_invalid_datahelper=O DataHelper fornecido [{0}] n\u00e3o \u00e9 um EclipseLink SDODataHelper, e, portanto, n\u00e3o p\u00f4de ser convertido.
+
+sdo_helper_invalid_dataobject=O DataObject fornecido [{0}] n\u00e3o \u00e9 um EclipseLink SDODataObject, e, portanto, n\u00e3o p\u00f4de ser convertido.
+
+sdo_helper_invalid_equalityhelper=O EqualityHelper fornecido [{0}] n\u00e3o \u00e9 um EclipseLink SDOEqualityHelper, e, portanto, n\u00e3o p\u00f4de ser convertido.
+
+sdo_helper_invalid_helpercontext=O HelperContext fornecido [{0}] n\u00e3o \u00e9 um EclipseLink SDOHelperContext, e, portanto, n\u00e3o p\u00f4de ser convertido.
+
+sdo_helper_invalid_property=A Propriedade fornecida [{0}] n\u00e3o \u00e9 um EclipseLink SDOProperty, e, portanto, n\u00e3o p\u00f4de ser convertido.
+
+sdo_helper_invalid_sequence=A Sequ\u00eancia fornecida [{0}] n\u00e3o \u00e9 um EclipseLink SDOSequence, e, portanto, n\u00e3o p\u00f4de ser convertido.
+
+sdo_helper_invalid_target_for_changesummary=A Classe de destino fornecida [{0}] deve ser a classe EclipseLink SDOChangeSummary.
+
+sdo_helper_invalid_target_for_copyhelper=A Classe de destino fornecida [{0}] deve ser a classe EclipseLink SDOCopyHelper.
+
+sdo_helper_invalid_target_for_datafactory=A Classe de destino fornecida [{0}] deve ser a classe EclipseLink SDODataFactory.
+
+sdo_helper_invalid_target_for_datahelper=A Classe de destino fornecida [{0}] deve ser a classe EclipseLink SDODataHelper.
+
+sdo_helper_invalid_target_for_dataobject=A Classe de destino fornecida [{0}] deve ser a classe EclipseLink SDODataObject.
+
+sdo_helper_invalid_target_for_equalityhelper=A Classe de destino fornecida [{0}] deve ser a classe EclipseLink SDOEqualityHelper.
+
+sdo_helper_invalid_target_for_helpercontext=A Classe de destino fornecida [{0}] deve ser a classe EclipseLink SDOHelperContext.
+
+sdo_helper_invalid_target_for_property=A Classe de destino fornecida [{0}] deve ser a classe EclipseLink SDOProperty.
+
+sdo_helper_invalid_target_for_sequence=A Classe de destino fornecida [{0}] deve ser a classe EclipseLink SDOSequence.
+
+sdo_helper_invalid_target_for_type=A Classe de destino fornecida [{0}] deve ser um dos EclipseLink SDOType, SDOTypeType, SDOPropertyType, SDOChangeSummaryType, SDODataObjectType, SDODataType, SDOOpenSequencedType, SDOObjectType, SDOWrapperType ou SDOXMLHelperLoadOptionsType.
+
+sdo_helper_invalid_target_for_typehelper=A Classe de destino fornecida [{0}] deve ser a classe EclipseLink SDOTypeHelper.
+
+sdo_helper_invalid_target_for_xmlhelper=A Classe de destino fornecida [{0}] deve ser um dos EclipseLink SDOXMLHelper, EclipseLink XMLMarshaller ou EclipseLink XMLUnmarshaller.
+
+sdo_helper_invalid_target_for_xsdhelper=A Classe de destino fornecida [{0}] deve ser a classe EclipseLink SDOXSDHelper.
+
+sdo_helper_invalid_type=O Tipo fornecido [{0}] n\u00e3o \u00e9 um EclipseLink SDOType, e, portanto, n\u00e3o p\u00f4de ser convertido.
+
+sdo_helper_invalid_typehelper=O TypeHelper fornecido [{0}] n\u00e3o \u00e9 um EclipseLink SDOTypeHelper, e, portanto, n\u00e3o p\u00f4de ser convertido.
+
+sdo_helper_invalid_xmlhelper=O XMLHelper fornecido [{0}] n\u00e3o \u00e9 um EclipseLink SDOXMLHelper, e, portanto, n\u00e3o p\u00f4de ser convertido.
+
+sdo_helper_invalid_xsdhelper=O XSDHelper fornecido [{0}] n\u00e3o \u00e9 um EclipseLink SDOXSDHelper, e, portanto, n\u00e3o p\u00f4de ser convertido.
+
+subclass_sought_not_a_managed_type=tipo de subgr\u00e1fico procurado: {0} n\u00e3o \u00e9 um tipo gerenciado para este atributo: {1}.
+
+too_many_results_for_get_single_result=Mais de um resultado foi retornado de Query.getSingleResult()
+
+unable_to_find_named_query=NamedQuery de nome: {0} n\u00e3o localizado.
+
+unable_to_unwrap_jpa=O provedor n\u00e3o suporta desagrupamento {0} para {1}
+
+undeclared_checked_exception=Exce\u00e7\u00e3o verificada n\u00e3o declarada
+
+unexpect_argument=Argumento de entrada inesperado {0}
+
+unknown_bean_class=Classe de bean de entidade desconhecida: {0}; verifique se essa classe foi marcada com a anota\u00e7\u00e3o @Entity.
+
+unknown_entitybean_name=Nome do Bean de Entidade desconhecido: {0}
+
+unsupported_classfile_version=A classe {0} foi compilada com um JDK n\u00e3o suportado. Relate esse  erro ao projeto de software livre do EclipseLink.
+
+wrap_convert_exception=Ocorreu uma exce\u00e7\u00e3o ao chamar {0} na classe do conversor {1} com valor {2}
+
+wrap_ejbql_exception=Uma exce\u00e7\u00e3o ocorreu ao criar uma consulta em EntityManager
+

@@ -1,0 +1,111 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/XMLMarshalExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+25001=\u015eir XPath invalid: {0}
+
+25002=Un index \u00eentreg nu a putut fi parsat din acest \u015fir XPath: {0}
+
+25003=A survenit o eroare la marshalling obiectului
+
+25004=A survenit o eroare la unmarshalling documentului
+
+25005=A survenit o eroare la validarea obiectului
+
+25006=Un element root implicit nu a fost specificat pentru XMLDescriptor mapat la {0}
+
+25007=Un descriptor pentru clasa {0} nu a fost g\u0103sit \u00een proiectul.  Pentru JAXB, dac\u0103 JAXBContext a fost bootstrapped utiliz\u00e2nd TypeMappingInfo[] trebuie s\u0103 apela\u0163i o metod\u0103 marshal ce accept\u0103 TypeMappingInfo ca \u015fi parametru de intrare.
+
+25008=Un descriptor cu elementul root implicit {0} nu a fost g\u0103sit \u00een proiectul
+
+25010=Nu a fost specificat\u0103 o referin\u0163\u0103 de schem\u0103 pentru XMLDescriptor mapat la {0}
+
+25011=A fost \u00eent\u00e2lnit un argument nul
+
+25012=A survenit o eroare la rezolvarea schemei XML.
+
+25013=A survenit o eroare la \u00eencercarea de setare a schemelor.
+
+25014=A survenit o eroare la \u00eencercarea de instan\u0163iere a platformei schem\u0103.
+
+25015=A survenit o eroare la \u00eencercarea de rezolvare a URI spa\u0163iu nume pentru {0}. Un rezolvator de spa\u0163iu nume nu a fost specificat pentru descriptor.
+
+25016=Un spa\u0163iu nume pentru prefix {0} nu a fost g\u0103sit \u0103n rezolvatorul spa\u0163iu nume.
+
+25017=Fie enumClass , fie enumClassName trebuie setat \u00een JAXBTypesafeEnumConverter.
+
+25018=Metoda fromString \u00een clasa enum {0} nu exist\u0103 sau nu a putut fi invocat\u0103.
+
+25019=Clasa enum specificat\u0103 {0} nu a putut fi g\u0103sit\u0103.
+
+25020=Metoda "getResult()" nu trebuie apelat\u0103 \u00eenainte ca evenimentul "endDocument()" s\u0103 fie apelat.
+
+25021=Clasa {0} invalid\u0103 pentru SwaRef. Trebuie s\u0103 fie javax.activation.DataHandler.
+
+25022=Nu se poate marshal Imaginea. Nu este nici un encoder disponibil pentru mimeType {0}.
+
+25023=Nu a fost g\u0103sit un descriptor \u00een timpul unmarshalling elementului mapat la atributul {0}.
+
+25024=A survenit o eroare la instan\u0163ierea clasei UnmappedContentHandler {0}.
+
+25025=Clasa UnmappedContentHandler {0} setat\u0103 \u00een XMLUnmarshaller trebuie s\u0103 implementeze org.eclipse.persistence.oxm.unmapped.UnmappedContentHandler.
+
+25026=Nu se poate actualiza nodul [{0}], obiectul nu a fost g\u0103sit \u00een cache.
+
+25027=Nu se poate extrage ata\u015famentul cu cid {0} deoarece nu a fost setat un AttachmentUnmarshaller.
+
+25028=Nu a fost g\u0103sit un descriptor de referin\u0163\u0103 pentru maparea {1} datorit\u0103 unei valori necunoscute xsi:type: {0}.
+
+25029=Pentru prefixul [{0}] clasa [{1}] a \u00eencercat s\u0103 asigneze URI spa\u0163iu nume [{2}], dar clasa sa p\u0103rinte [{3}] a asignat deja URI spa\u0163iu nume [{4}].
+
+25030=A survenit o eroare la invocarea metodei {0} \u00een NamespacePrefixMapper personalizat: {1}.
+
+25031=A survenit o eroare la procesarea mapatorului de prefix spa\u0163iu nume: {1}. Metoda {0} nu a fost g\u0103sit\u0103.
+
+25032=A survenit o eroare la invocarea metodei {0} \u00eentr-un CharacterEscapeHandler personalizat: {1}.
+
+25033=A survenit o eroare la procesarea CharacterEscapeHandler: {1}. Metoda {0} nu a fost g\u0103sit\u0103.
+
+25034=A survenit o eroare la invocarea metodei {0} \u00een IDResolver personalizat: {1}.
+
+25035=A survenit o eroare la procesarea IDResolver: {1}. Metoda {0} nu a fost g\u0103sit\u0103.
+
+25036=IDResolver {1} personalizat nu suport\u0103 mai multe ID-uri XML {0}.  IDResolvers personaliza\u0163i trebuie s\u0103 fie subclase org.eclipse.persistence.jaxb.IDResolver dac\u0103 sunt utilizate mai multe ID-uri.
+
+25037=Este detectat un ciclu \u00een graficul obiectului.  Aceasta va cauza o bucl\u0103 infinit\u0103: {0}
+
+25038=DOMPlatform nu este suportat\u0103 cu aplica\u0163ia/json de tip media.
+
+25039=A survenit o eroare la unmarshalling de la {0}
+
+25040=Un obiect de tip {0} cu ID {1} nu a fost g\u0103sit.
+
+25041=Grupul de atribute specificat {0} nu este definit pentru clasa {1}.
+
+25042=Valoarea propriet\u0103\u0163ii variabile {0} din clasa {1} nu poate fi nul.
+

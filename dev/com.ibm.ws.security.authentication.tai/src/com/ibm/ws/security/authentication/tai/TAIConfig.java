@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2019 IBM Corporation and others.
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,19 +11,17 @@
 package com.ibm.ws.security.authentication.tai;
 
 /**
- * Represents security configurable options for Trust Association.
+ * Represents security configurable options for Trust Association. Metatype element is trustAssociation
  */
 public interface TAIConfig {
-
-    public static final String KEY_INVOKE_BEFORE_SSO = "invokeBeforeSSO";
-
-    public static final String KEY_INVOKE_AFTER_SSO = "invokeAfterSSO";
-
-    public static final String KEY_ADD_LTPA_TO_RESPONSE = "addLTPACookieToResponse";
 
     public boolean isFailOverToAppAuthType();
 
     public boolean isInvokeForUnprotectedURI();
 
     public boolean isInvokeForFormLogin();
+
+    public boolean isDisableLtpaCookie();
+
+    public boolean isInitializeAtFirstRequest();
 }

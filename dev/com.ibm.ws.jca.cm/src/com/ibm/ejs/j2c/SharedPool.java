@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2012 IBM Corporation and others.
+ * Copyright (c) 1997, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -576,15 +576,16 @@ public final class SharedPool {
 
         final boolean isTracingEnabled = TraceComponent.isAnyTracingEnabled();
 
-        boolean removedSharedConnection = false;
+        //Used to sanity check that the mcWrapperList was reduced by one.
+        int sizeDifference;
 
         if (isTracingEnabled && tc.isEntryEnabled()) {
             Tr.entry(this, tc, "removeSharedConnection");
         }
 
-        //MCWrapper mcw = null;
         synchronized (sharedLockObject) {
 
+            sizeDifference = mcWrapperListSize; //set to the original size
             if (mcWrapperListSize == 1) {
                 /*
                  * If there is only one mcWrapper in the list, the odds of it
@@ -595,7 +596,6 @@ public final class SharedPool {
                  * and need to add back into the list
                  */
                 if (mcWrapper == mcWrapperList[0]) {
-                    removedSharedConnection = true;
                     mcWrapperListSize = 0;
                     mcWrapperList[mcWrapperListSize] = null;
                 }
@@ -610,30 +610,17 @@ public final class SharedPool {
                  * match and remove the mcWrapper from the list and exit.
                  */
                 for (int i = 0; i < mcWrapperListSize; ++i) {
-                    // Look for mcWrapper and remove
-                    if (removedSharedConnection) {
-                        mcWrapperList[i - 1] = mcWrapperList[--mcWrapperListSize]; // shift all remain wrappers up to fill any open location.
-                        // mcWrapperList[i - 1] = mcWrapperList[i];
+                    if (mcWrapper == mcWrapperList[i]) {
+                        mcWrapperList[i] = mcWrapperList[--mcWrapperListSize]; // shift all remain wrappers up to fill any open location.
                         mcWrapperList[mcWrapperListSize] = null; // - For safety, setting the last one to null is good.
-                        break;
-                    } else {
-                        if (mcWrapper == mcWrapperList[i]) {
-                            removedSharedConnection = true;
-                            if (i == mcWrapperListSize) {
-                                // last one in list, remove it.
-                                mcWrapperList[--mcWrapperListSize] = null; // - For safety, setting the last one to null is good.
-                            }
-                        }
                     }
                 }
-//                if (removedSharedConnection) {
-//                    --mcWrapperListSize;
-//                }
             }
+            sizeDifference = sizeDifference - mcWrapperListSize; //take the difference between orginal size and now
 
         }
 
-        if (!removedSharedConnection) {
+        if (sizeDifference != 1) {
             /*
              * We should never throw this exception unless a resource adapter
              * replace the Subject or CRI references. They are not allow to

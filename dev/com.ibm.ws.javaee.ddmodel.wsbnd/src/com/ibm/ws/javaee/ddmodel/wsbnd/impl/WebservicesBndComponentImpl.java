@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -49,7 +49,9 @@ public class WebservicesBndComponentImpl implements WebservicesBnd {
 
     private Map<String, Object> configAdminProperties;
 
-    @Reference(cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC, name = WebservicesBnd.WEBSERVICE_ENDPOINT_PROPERTIES_ELEMENT_NAME,
+    @Reference(cardinality = ReferenceCardinality.OPTIONAL,
+               policy = ReferencePolicy.DYNAMIC,
+               name = WebservicesBnd.WEBSERVICE_ENDPOINT_PROPERTIES_ELEMENT_NAME,
                target = WsBndConstants.ID_UNBOUND)
     protected void setWebserviceEndpointProperties(WebserviceEndpointProperties value) {
         this.webserviceEndpointProperties = value;
@@ -59,7 +61,9 @@ public class WebservicesBndComponentImpl implements WebservicesBnd {
         this.webserviceEndpointProperties = null;
     }
 
-    @Reference(cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC, name = WebservicesBnd.WEBSERVICE_ENDPOINT_ELEMENT_NAME,
+    @Reference(cardinality = ReferenceCardinality.MULTIPLE,
+               policy = ReferencePolicy.DYNAMIC,
+               name = WebservicesBnd.WEBSERVICE_ENDPOINT_ELEMENT_NAME,
                target = WsBndConstants.ID_UNBOUND)
     protected void setWebserviceEndpoint(WebserviceEndpoint value) {
         String portComponentName = value.getPortComponentName();
@@ -76,7 +80,9 @@ public class WebservicesBndComponentImpl implements WebservicesBnd {
         }
     }
 
-    @Reference(cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC, name = WebservicesBnd.WEBSERVICE_DESCRIPTION_ELEMENT_NAME,
+    @Reference(cardinality = ReferenceCardinality.MULTIPLE,
+               policy = ReferencePolicy.DYNAMIC,
+               name = WebservicesBnd.WEBSERVICE_DESCRIPTION_ELEMENT_NAME,
                target = WsBndConstants.ID_UNBOUND)
     protected void setWebserviceDescriptions(WebserviceDescription value) {
         String serviceName = value.getWebserviceDescriptionName();
@@ -93,7 +99,9 @@ public class WebservicesBndComponentImpl implements WebservicesBnd {
         }
     }
 
-    @Reference(cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC, name = WebservicesBnd.HTTP_PUBLISHING_ELEMENT_NAME,
+    @Reference(cardinality = ReferenceCardinality.OPTIONAL,
+               policy = ReferencePolicy.DYNAMIC,
+               name = WebservicesBnd.HTTP_PUBLISHING_ELEMENT_NAME,
                target = WsBndConstants.ID_UNBOUND)
     protected void setHttpPublishing(HttpPublishing value) {
         this.httpPublishing = value;
@@ -103,7 +111,10 @@ public class WebservicesBndComponentImpl implements WebservicesBnd {
         this.httpPublishing = null;
     }
 
-    @Reference(cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC, name = WebservicesBnd.SERVICE_REF_ELEMENT_NAME, target = WsBndConstants.ID_UNBOUND)
+    @Reference(cardinality = ReferenceCardinality.MULTIPLE,
+               policy = ReferencePolicy.DYNAMIC,
+               name = WebservicesBnd.SERVICE_REF_ELEMENT_NAME,
+               target = WsBndConstants.ID_UNBOUND)
     protected void setServiceRef(ServiceRef serviceRefType) {
         String serviceRefName = serviceRefType.getName();
         if (StringUtils.isEmpty(serviceRefName)) {
@@ -139,44 +150,24 @@ public class WebservicesBndComponentImpl implements WebservicesBnd {
         this.configAdminProperties = config;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.javaee.dd.DeploymentDescriptor#getDeploymentDescriptorPath()
-     */
     @Override
     public String getDeploymentDescriptorPath() {
         //FIXME: path determined from container
         return delegate == null ? null : delegate.getDeploymentDescriptorPath();
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.javaee.dd.DeploymentDescriptor#getComponentForId(java.lang.String)
-     */
     @Override
     public Object getComponentForId(String id) {
         // Not used in Liberty
         return null;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.javaee.dd.DeploymentDescriptor#getIdForComponent(java.lang.Object)
-     */
     @Override
     public String getIdForComponent(Object ddComponent) {
         // Not used in Liberty
         return null;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.javaee.ddmodel.wsbnd.WebservicesBnd#getServiceRefs()
-     */
     @Override
     public List<ServiceRef> getServiceRefs() {
         List<ServiceRef> returnValue = delegate == null ? new ArrayList<ServiceRef>() : new ArrayList<ServiceRef>(delegate.getServiceRefs());
@@ -187,19 +178,16 @@ public class WebservicesBndComponentImpl implements WebservicesBnd {
         return returnValue;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.javaee.ddmodel.wsbnd.WebservicesBnd#getServiceRef(java.lang.String, java.lang.String)
-     */
     @Override
     public ServiceRef getServiceRef(String serviceRefName, String componentName) {
         if (StringUtils.isEmpty(serviceRefName)) {
             return null;
         }
 
+        // if component name is not empty, find from ejb service ref map first,
+        // and then try again from web service ref map
+
         ServiceRef serviceRef = null;
-        //if component name is not empty, find from ejb service ref map first, and then try again from web service ref map
         if (!StringUtils.isEmpty(componentName)) {
             String serviceRefKey = StringUtils.getEJBServiceRefKey(serviceRefName, componentName);
             serviceRef = ejbServiceRefTypeMap.get(serviceRefKey);
@@ -214,14 +202,8 @@ public class WebservicesBndComponentImpl implements WebservicesBnd {
         }
 
         return serviceRef;
-
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.javaee.ddmodel.wsbnd.WebservicesBnd#getHttpPublishing()
-     */
     @Override
     public HttpPublishing getHttpPublishing() {
         if (delegate == null) {
@@ -231,11 +213,6 @@ public class WebservicesBndComponentImpl implements WebservicesBnd {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.javaee.ddmodel.wsbnd.WebservicesBnd#getWebserviceDescriptions()
-     */
     @Override
     public List<WebserviceDescription> getWebserviceDescriptions() {
         List<WebserviceDescription> webserviceDescriptionList = delegate == null ? new ArrayList<WebserviceDescription>() : new ArrayList<WebserviceDescription>(delegate.getWebserviceDescriptions());
@@ -244,11 +221,6 @@ public class WebservicesBndComponentImpl implements WebservicesBnd {
         return webserviceDescriptionList;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.javaee.ddmodel.wsbnd.WebservicesBnd#getWebserviceDescription(java.lang.String)
-     */
     @Override
     public WebserviceDescription getWebserviceDescription(String webserviceDescriptionName) {
         if (webserviceDescriptionName == null)
@@ -261,21 +233,11 @@ public class WebservicesBndComponentImpl implements WebservicesBnd {
         return returnValue;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.javaee.ddmodel.wsbnd.WebservicesBnd#getWebserviceEndpointProperties()
-     */
     @Override
     public Map<String, String> getWebserviceEndpointProperties() {
         return webserviceEndpointProperties == null ? null : webserviceEndpointProperties.getAttributes();
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.javaee.ddmodel.wsbnd.WebservicesBnd#getWebserviceEndpoints()
-     */
     @Override
     public List<WebserviceEndpoint> getWebserviceEndpoints() {
         List<WebserviceEndpoint> returnValue = delegate == null ? new ArrayList<WebserviceEndpoint>() : new ArrayList<WebserviceEndpoint>(delegate.getWebserviceEndpoints());
@@ -284,11 +246,6 @@ public class WebservicesBndComponentImpl implements WebservicesBnd {
         return returnValue;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.javaee.ddmodel.wsbnd.WebservicesBnd#getWebserviceEndpoint(java.lang.String)
-     */
     @Override
     public WebserviceEndpoint getWebserviceEndpoint(String portComponentName) {
         if (portComponentName == null)

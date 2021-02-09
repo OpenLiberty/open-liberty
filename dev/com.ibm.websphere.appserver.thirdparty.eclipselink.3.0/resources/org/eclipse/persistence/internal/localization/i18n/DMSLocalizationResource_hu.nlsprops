@@ -1,0 +1,111 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/internal/localization/i18n/DMSLocalizationResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+assigning_sequence_numbers=A sorozatsz\u00e1m-mechanizmus fenntart\u00e1s\u00e1val \u00e9s a sorozatsz\u00e1mnak objektumokon t\u00f6rt\u00e9n\u0151 t\u00e9nyleges be\u00e1ll\u00edt\u00e1s\u00e1val t\u00f6lt\u00f6tt id\u0151t tartalmazza
+
+cache_hits=Azon alkalmak sz\u00e1ma, amikor az objektum megtal\u00e1lhat\u00f3 volt a gyors\u00edt\u00f3t\u00e1rban
+
+cache_misses=Azon alkalmak sz\u00e1ma, amikor az objektum nem volt megtal\u00e1lhat\u00f3 a gyors\u00edt\u00f3t\u00e1rban
+
+caching=A gyors\u00edt\u00f3t\u00e1rban objektumok hozz\u00e1ad\u00e1s\u00e1val, kikeres\u00e9s\u00e9vel \u00e9s elt\u00e1vol\u00edt\u00e1s\u00e1val elt\u00f6lt\u00f6tt id\u0151t tartalmazza
+
+change_set_not_processed=Az ObjectChangeSets sz\u00e1m\u00e1t a rendszer eldobja, mert az objektum NEM tal\u00e1lhat\u00f3 a gyors\u00edt\u00f3t\u00e1rban
+
+change_set_processed=Az ObjectChangeSets sz\u00e1ma megtal\u00e1lhat\u00f3 a gyors\u00edt\u00f3t\u00e1rban
+
+client_session_count=A bejelentkezett ClientSession sz\u00e1m
+
+connect_call=Csatlakoz\u00e1si h\u00edv\u00e1sok teljes sz\u00e1ma
+
+connection=A csatlakoz\u00e1sok kezel\u00e9s\u00e9vel elt\u00f6lt\u00f6tt id\u0151, bele\u00e9rtve a csatlakoz\u00e1st vagy \u00fajracsatlakoz\u00e1st adatforr\u00e1shoz, illetve a csatlakoz\u00e1s megszak\u00edt\u00e1s\u00e1t
+
+connection_in_used=A kiz\u00e1r\u00f3lagos ConnectionPool(Write, ExclusiveRead) felhaszn\u00e1l\u00e1s\u00fa csatlakoz\u00e1sok sz\u00e1ma k\u00e9szletenk\u00e9nt
+
+connection_ping=Az adatb\u00e1zis-kapcsolat haszn\u00e1lhat\u00f3s\u00e1gi tesztel\u00e9s\u00e9re ford\u00edtott id\u0151.
+
+database_execute=A JDBC utas\u00edt\u00e1sok h\u00edv\u00e1s\u00e1ra ford\u00edtott id\u0151, bele\u00e9rtve a close, executeUpdate \u00e9s executeQuery h\u00edv\u00e1sokra ford\u00edtott id\u0151t
+
+deleted_object=Az ObjectChangeSet identityMap lek\u00e9pez\u00e9sb\u0151l elt\u00e1vol\u00edtand\u00f3 objektum
+
+descriptor_event=DescriptorEvent v\u00e9grehajt\u00e1s\u00e1ra ford\u00edtott id\u0151
+
+disconnect_call=A v\u00e9grehajtott megszak\u00edt\u00e1si h\u00edv\u00e1sok teljes sz\u00e1ma
+
+distributed_merge=A t\u00e1voli tranzakci\u00f3m\u00f3dos\u00edt\u00e1soknak a helyi megosztott gyors\u00edt\u00f3t\u00e1rba t\u00f6rt\u00e9n\u0151 \u00f6sszevon\u00e1s\u00e1ra ford\u00edtott id\u0151. A gyors\u00edt\u00f3t\u00e1r szinkroniz\u00e1l\u00e1s haszn\u00e1latakor jelenik meg
+
+jts_aftercompletion=A JTS afterCompletion(objektum\u00e1llapot) met\u00f3dusra ford\u00edtott id\u0151
+
+jts_beforecompletion=A JTS beforeCompletion() met\u00f3dusra ford\u00edtott id\u0151
+
+logging=A TopLink tev\u00e9kenys\u00e9gek napl\u00f3z\u00e1s\u00e1ra ford\u00edtott id\u0151
+
+merge_time=A m\u00f3dos\u00edt\u00e1soknak a megosztott gyors\u00edt\u00f3t\u00e1rban t\u00f6rt\u00e9n\u0151 \u00f6sszevon\u00e1s\u00e1ra ford\u00edtott id\u0151.
+
+object_building=Megmarad\u00f3 objektumok adatb\u00e1zis-sorokb\u00f3l t\u00f6rt\u00e9n\u0151 \u00f6ssze\u00e9p\u00edt\u00e9s\u00e9re ford\u00edtott id\u0151
+
+optimistic_lock=A dobott optimista z\u00e1rol\u00e1s kiv\u00e9telek sz\u00e1ma
+
+query=Egy m\u0171veletre ford\u00edtott teljes id\u0151: {0}
+
+query_misc=Egy m\u0171veletre ford\u00edtott teljes id\u0151: {0}.  Ez a lek\u00e9rdez\u00e9si f\u0151nevekben nem szerepl\u0151 speci\u00e1lis m\u0171veletekre, p\u00e9ld\u00e1ul a k\u00f6tegelt \u00edr\u00e1sra vonatkozik.
+
+query_prepareation=A lek\u00e9rdez\u00e9s el\u0151k\u00e9sz\u00edt\u00e9s\u00e9re ford\u00edtott id\u0151
+
+rcm_message_received=Az RCM-en kereszt\u00fcl kapott \u00fczenetek sz\u00e1ma
+
+rcm_message_sent=Az RCM-en kereszt\u00fcl k\u00fcld\u00f6tt \u00fczenetek sz\u00e1ma
+
+rcm_status=A k\u00f6vetkez\u0151k egyike: [nincs konfigur\u00e1lva, elind\u00edtott, le\u00e1ll\u00edtott]
+
+remote_change_set=A t\u00e1voli g\u00e9pekt\u0151l kapott \u00e9s feldolgozott m\u00f3dos\u00edt\u00e1sk\u00e9szletek sz\u00e1ma
+
+row_fetch=A jdbc eredm\u00e9nyhalmazb\u00f3l Record objektumok \u00f6ssze\u00e9p\u00edt\u00e9s\u00e9hez ig\u00e9nybe vett id\u0151. Norm\u00e1l SQL h\u00edv\u00e1sokat \u00e9s t\u00e1rolt elj\u00e1r\u00e1s h\u00edv\u00e1sokat tartalmaz
+
+session_event=SessionEvent v\u00e9grehajt\u00e1s\u00e1ra ford\u00edtott id\u0151
+
+session_login_time=A munkamenet bejelentkez\u00e9si ideje
+
+session_name=A munkamenet neve
+
+sql_generation=Az SQL el\u0151\u00e1ll\u00edt\u00e1s\u00e1ra ford\u00edtott id\u0151. TopLink kifejez\u00e9sek eset\u00e9n a kifejez\u00e9sek SQL \u00e1talak\u00edt\u00e1s\u00e1ra fordtott id\u0151
+
+sql_prepare=A JDBC-ben az utas\u00edt\u00e1s el\u0151k\u00e9sz\u00edt\u00e9s\u00e9re ford\u00edtott id\u0151. Az EIS-ben egy csatlakoz\u00e1shoz tartoz\u00f3 interakci\u00f3 l\u00e9trehoz\u00e1s\u00e1ra, valamint bemeneti \u00e9s kimeneti Record objektumok l\u00e9trehoz\u00e1s\u00e1ra ford\u00edtott id\u0151t is tartalmazza
+
+unitofwork_commit=A UnitOfWork v\u00e9gleges\u00edt\u00e9si folyamat\u00e1t m\u00e9ri
+
+unitofwork_commits=UnitOfWork v\u00e9gleges\u00edt\u00e9sek sz\u00e1ma
+
+unitofwork_count=A l\u00e9trehozott UnitOfWork objektumok teljes sz\u00e1ma
+
+unitofwork_register=A registerExistingObject, registerNewContainerBean, registerNewContainerBeanForCMP, registerNewObject, registerObject, readIntoWorkingCopy folyamatokra ford\u00edtott id\u0151t tartalmazza)
+
+unitofwork_rollback=A visszag\u00f6rgetett UnitOfWork v\u00e9gleges\u00edt\u00e9sek sz\u00e1ma
+
+wrapping=A CMP \u00e9s BMP komponensek \u00fajrakezd\u00e9s\u00e9re ford\u00edtott id\u0151
+

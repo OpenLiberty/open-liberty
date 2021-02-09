@@ -1,0 +1,47 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/OptimisticLockExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+5001=Es wurde versucht, das Objekt [{0}] zu l\u00f6schen, es hat jedoch keine Versionsnummer in der Identit\u00e4tsmap. {3}Es wurde m\u00f6glicherweise nicht gelesen, bevor der L\u00f6schvorgang versucht wurde. {3}Klasse> {1} Prim\u00e4rer Schl\u00fcssel> {2}
+
+5003=Das Objekt [{0}] kann nicht gel\u00f6scht werden, weil es seit dem letzten Lesevorgang ge\u00e4ndert oder gel\u00f6scht wurde. {3}Klasse> {1} Prim\u00e4rer Schl\u00fcssel> {2}
+
+5004=Es wurde versucht, das Objekt [{0}] zu aktualisieren, es hat jedoch keine Versionsnummer in der Identit\u00e4tsmap. {3}Es wurde m\u00f6glicherweise nicht gelesen, bevor die Aktualisierung versucht wurde. {3}Klasse> {1} Prim\u00e4rer Schl\u00fcssel> {2}
+
+5006=Das Objekt [{0}] kann nicht aktualisiert werden, weil es seit dem letzten Lesevorgang ge\u00e4ndert oder gel\u00f6scht wurde. {3}Klasse> {1} Prim\u00e4rer Schl\u00fcssel> {2}
+
+5007=Das Objekt [{0}] muss eine nicht schreibgesch\u00fctzte Zuordnung zum Versionssperrenfeld haben.
+
+5008=Das Versionssperrenfeld muss java.sql.Timestamp zugeordnet sein, wenn Zeitmarkensperrung verwendet wird.
+
+5009=Das Wrapping des Objekts der Klasse [{1}] mit dem prim\u00e4ren Schl\u00fcssel [{0}] kann nicht aufgehoben werden, weil es seit dem letzten Lesevorgang gel\u00f6scht wurde.
+
+5010=Das Objekt [{0}] kann nicht zusammengef\u00fchrt werden, weil es seit dem letzten Lesevorgang ge\u00e4ndert oder gel\u00f6scht wurde. {2}Klasse> {1}
+
+5011=Mindestens ein Objekt kann nicht aktualisiert werden, weil es seit dem letzten Lesevorgang ge\u00e4ndert oder gel\u00f6scht wurde.
+

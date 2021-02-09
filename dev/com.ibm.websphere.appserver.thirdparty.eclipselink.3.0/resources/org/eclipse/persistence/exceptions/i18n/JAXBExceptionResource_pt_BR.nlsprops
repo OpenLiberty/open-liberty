@@ -1,0 +1,221 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/JAXBExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+50000=O caminho de contexto {0} n\u00e3o cont\u00e9m ObjectFactory ou jaxb.index, nenhum metadado externo foi localizado no mapa de propriedades e sessions.xml foi localizado ou era inv\u00e1lido.
+
+50001=A classe {0} requer um construtor de argumento zero ou um factory method especificado.  Observe que classes internas n\u00e3o est\u00e1ticas n\u00e3o t\u00eam construtores de argumento zero e n\u00e3o s\u00e3o suportadas.
+
+50002=Classe de factory especificada sem factory method na classe {0}.
+
+50003=O factory method denominado {0} n\u00e3o est\u00e1 declarado na classe {1}.
+
+50004=XmlAnyAttribute \u00e9 inv\u00e1lido na propriedade {0}. Deve ser usado com uma propriedade do tipo Mapa.
+
+50005=Somente uma propriedade com XmlAnyAttribute \u00e9 permitida na classe {0}.
+
+50006=XmlElementRef inv\u00e1lido na propriedade {0} na classe {1}. Elemento referenciado n\u00e3o declarado.
+
+50007=Colis\u00e3o de nomes.  Duas classes t\u00eam o tipo XML com uri {0} e nome {1}.
+
+50008=Classe de n\u00f3 n\u00e3o suportada {0}.  O m\u00e9todo createBinder(Class) suporta somente a classe org.w3c.dom.Node.
+
+50009=A propriedade ou o campo {0} na classe {1} est\u00e1 anotado como tempor\u00e1rio, portanto, n\u00e3o pode ser inclu\u00eddo na anota\u00e7\u00e3o propOrder.
+
+50010=A propriedade ou o campo {0} na classe {1} deve ser um atributo porque outro campo ou propriedade est\u00e1 anotado com o XmlValue.
+
+50011=A propriedade ou o campo {0} na classe {1} n\u00e3o pode ser anotado com o XmlValue, pois \u00e9 uma subclasse de outra classe ligada ao XML.
+
+50012=A propriedade ou o campo {0} na classe {1} foi especificado no propOrder, mas n\u00e3o \u00e9 uma propriedade v\u00e1lida.
+
+50013=A propriedade ou o campo {0} na classe {1} \u00e9 obrigado a ser inclu\u00eddo no elemento propOrder da anota\u00e7\u00e3o XmlType.
+
+50014=A propriedade ou o campo {0} na classe {1} com a anota\u00e7\u00e3o de XmlValue deve ser de um tipo que mapeia para um tipo de esquema simples.
+
+50015=XmlElementWrapper \u00e9 permitido somente em uma propriedade de cole\u00e7\u00e3o ou matriz, mas [{0}] n\u00e3o \u00e9 uma propriedade de cole\u00e7\u00e3o ou matriz.
+
+50016=A propriedade [{0}] tem uma anota\u00e7\u00e3o XmlID, mas seu tipo n\u00e3o \u00e9 String.
+
+50017=XmlIDREF inv\u00e1lido na propriedade [{0}].  A classe [{1}] \u00e9 requerida para ter uma propriedade anotada com XmlID.
+
+50018=XmlList \u00e9 permitido somente em uma propriedade de cole\u00e7\u00e3o ou matriz, mas [{0}] n\u00e3o \u00e9 uma propriedade de cole\u00e7\u00e3o ou matriz.
+
+50019=Tipo de par\u00e2metro inv\u00e1lido encontrado durante o processamento de metadados externos por meio do mapa de propriedades.  O valor associado \u00e0 chave [eclipselink-oxm-xml] deve ser um destes [Map<String, Object>, List<Object>, ou Object].  O objeto deve ser um destes [java.io.File, java.io.InputStream, java.io.Reader, java.net.URL, javax.xml.stream.XMLEventReader, javax.xml.stream.XMLStreamReader, javax.xml.transform.Source, org.w3c.dom.Node ou org.xml.sax.InputSource]. No caso de [Map<String, Object>], String \u00e9 o nome do pacote.
+
+50021=Tipo de par\u00e2metro inv\u00e1lido encontrado durante o processamento de metadados externos por meio do mapa de propriedades.  Para [Map<String, Object>], \u00e9 necess\u00e1rio que a chave seja do tipo [String] (indicando o nome do pacote).
+
+50022=Tipo de par\u00e2metro inv\u00e1lido encontrado durante o processamento de metadados externos por meio do mapa de propriedades.  Para [Map<String, Object>], \u00e9 necess\u00e1rio que o valor seja um destes [java.io.File, java.io.InputStream, java.io.Reader, java.net.URL, javax.xml.stream.XMLEventReader, javax.xml.stream.XMLStreamReader, javax.xml.transform.Source, org.w3c.dom.Node ou org.xml.sax.InputSource] (identificador para arquivo de metadados).
+
+50023=Um valor nulo para a chave [{0}] foi encontrado durante o processamento de metadados externos por meio do mapa de propriedades.  \u00c9 necess\u00e1rio que o valor seja n\u00e3o nulo e um destes [java.io.File, java.io.InputStream, java.io.Reader, java.net.URL, javax.xml.stream.XMLEventReader, javax.xml.stream.XMLStreamReader, javax.xml.transform.Source, org.w3c.dom.Node ou org.xml.sax.InputSource] (identificador para arquivo de metadados).
+
+50024=Uma chave nula foi encontrada durante o processamento de metadados externos por meio do mapa de propriedades.  \u00c9 necess\u00e1rio que a chave seja n\u00e3o nula e do tipo [String] (indicando nome do pacote).
+
+50025=N\u00e3o foi poss\u00edvel carregar a classe [{0}] declarada no arquivo de metadados externos.  Assegure-se de que o nome da classe esteja correto e de que o ClassLoader correto tenha sido configurado.
+
+50026=Ocorreu uma exce\u00e7\u00e3o ao tentar criar um JAXBContext para o XmlModel.
+
+50027=Ocorreu uma exce\u00e7\u00e3o ao tentar deserializar arquivo de metadados exteriorizados.
+
+50028=Uma nova inst\u00e2ncia de [{0}] n\u00e3o p\u00f4de ser criada.
+
+50029=A classe [{0}] fornecida no XmlCustomizer n\u00e3o implementa a interface org.eclipse.persistence.config.DescriptorCustomizer.
+
+50030=Foi feita uma tentativa de configurar mais de uma propriedade XmlID na classe [{1}].  A propriedade [{0}] n\u00e3o pode ser configurada como XmlID, porque a propriedade [{2}] j\u00e1 est\u00e1 configurada como XmlID.
+
+50031=Foi feita uma tentativa de configurar mais de uma propriedade XmlValue na classe [{0}].  A propriedade [{1}] n\u00e3o pode ser configurada como XmlValue, porque a propriedade [{2}] j\u00e1 est\u00e1 configurada como XmlValue.
+
+50032=Foi feita uma tentativa de configurar mais de uma propriedade XmlAnyElement na classe [{0}].  A propriedade [{1}] n\u00e3o pode ser configurada como XmlAnyElement, porque a propriedade [{2}] j\u00e1 est\u00e1 configurada como XmlAnyElement.
+
+50033=O DomHandlerConverter para DomHandler [{0}] configurado na propriedade [{1}] n\u00e3o p\u00f4de ser inicializado.
+
+50034=A propriedade ou o campo [{0}] n\u00e3o pode ser anotado com XmlAttachmentRef porque n\u00e3o \u00e9 um DataHandler.
+
+50035=Como a propriedade ou o campo [{0}] est\u00e1 configurado como XmlIDREF, o tipo de destino de cada XmlElement declarado na lista XmlElements deve ter uma propriedade XmlID.  Assegure-se de que o tipo de destino de XmlElement [{1}] contenha uma propriedade XmlID.
+
+50036=O TypeMappingInfo com XmlTagName QName [{0}] precisa ter um Tipo n\u00e3o nulo configurado nele.
+
+50037=O tipo java com o pacote [{0}] n\u00e3o \u00e9 permitido no arquivo de liga\u00e7\u00f5es chaveado no pacote [{1}].
+
+50038=DynamicJAXBContext n\u00e3o pode ser criado a partir de classes concretas.  Use org.eclipse.persistence.jaxb.JAXBContext ou especifique org.eclipse.persistence.jaxb.JAXBContextFactory em seu arquivo jaxb.properties para criar um contexto a partir de classes existentes.
+
+50039=Erro ao criar DynamicJAXBContext: o n\u00f3 deve ser uma inst\u00e2ncia de documento ou elemento.
+
+50040=Erro ao criar DynamicJAXBContext.
+
+50041=Constante de enumera\u00e7\u00e3o [{0}] n\u00e3o localizada.
+
+50042=Erro ao criar DynamicJAXBContext: o nome da sess\u00e3o era nulo.
+
+50043=Erro ao criar DynamicJAXBContext: a origem era nula.
+
+50044=Erro ao criar DynamicJAXBContext: InputStream era nulo.
+
+50045=Erro ao criar DynamicJAXBContext: o n\u00f3 era nulo.
+
+50046=Erro ao criar DynamicJAXBContext: XJC n\u00e3o p\u00f4de gerar um CodeModel.
+
+50047=Classe [{0}] n\u00e3o localizada.
+
+50048=O transformador de leitura especificado para a propriedade [{0}] tem classe e m\u00e9todo. \u00c9 necess\u00e1ria a classe ou o m\u00e9todo, mas n\u00e3o ambos.
+
+50049=O transformador de leitura especificado para a propriedade [{0}] n\u00e3o tem nem classe nem m\u00e9todo. Uma classe ou um m\u00e9todo \u00e9 necess\u00e1rio.
+
+50050=O transformador de grava\u00e7\u00e3o especificado para o caminho xml [{1}] da propriedade [{0}] tem classe e m\u00e9todo. \u00c9 necess\u00e1ria a classe ou o m\u00e9todo, mas n\u00e3o ambos.
+
+50051=O transformador de grava\u00e7\u00e3o especificado para o caminho xml [{1}] da propriedade [{0}] n\u00e3o tem classe nem m\u00e9todo. Uma classe ou um m\u00e9todo \u00e9 necess\u00e1rio.
+
+50052=O transformador de grava\u00e7\u00e3o especificado para a propriedade [{0}] n\u00e3o tem um caminho xml configurado. \u00c9 necess\u00e1rio um caminho xml.
+
+50053=O m\u00e9todo de transforma\u00e7\u00e3o [{0}] com os par\u00e2metros (), (AbstractSession) ou (Sess\u00e3o) n\u00e3o foi localizado.
+
+50054=Classe do transformador [{0}] n\u00e3o localizada. Assegure-se de que o nome da classe esteja correto e de que o ClassLoader correto tenha sido configurado.
+
+50055=Erro ao criar DynamicJAXBContext: eclipselink.oxm.metadata-source (JAXBContextProperties.OXM_METADATA_SOURCE) n\u00e3o localizado no mapa de propriedades, ou o mapa era nulo.
+
+50056=A propriedade [{0}] cont\u00e9m uma declara\u00e7\u00e3o XmlJoinNode, mas a classe referenciada [{1}] n\u00e3o \u00e9 aplic\u00e1vel para esse tipo de relacionamento.
+
+50057=A propriedade [{1}] na classe [{0}] faz refer\u00eancia a uma classe [{2}] que est\u00e1 marcado como tempor\u00e1ria, o que n\u00e3o \u00e9 permitido.
+
+50058=A propriedade [{1}] na classe [{0}] tem uma declara\u00e7\u00e3o XmlJoinNode, mas a classe de destino [{2}] n\u00e3o tem nenhuma propriedade XmlID ou propriedades XmlKey.  \u00c9 necess\u00e1rio que haja uma propriedade XmlID/XmlKey com um XmlPath correspondente na classe de destino para cada referencedXmlPath.
+
+50059=A propriedade [{1}] na classe [{0}] tem uma declara\u00e7\u00e3o XmlJoinNode com referencedXmlPath [{3}], mas n\u00e3o h\u00e1 nenhuma propriedade XmlID ou XmlKey na classe de destino [{2}] com o XmlPath [{3}].  \u00c9 necess\u00e1rio que haja uma propriedade XmlID/XmlKey com um XmlPath correspondente na classe de destino para cada referencedXmlPath.
+
+50060=A propriedade [{1}] na classe [{0}] possui uma declara\u00e7\u00e3o XmlIDREF, mas a classe de destino [{2}] n\u00e3o \u00e9 aplic\u00e1vel para esse tipo de relacionamento.
+
+50061=Ocorreu uma exce\u00e7\u00e3o ao tentar carregar XmlAdapterClass [{0}]. As causas poss\u00edveis s\u00e3o um nome de classe do adaptador incorreto ou o carregador errado foi configurado.
+
+50062=Ocorreu uma exce\u00e7\u00e3o ao tentar acessar os m\u00e9todos declarados de XmlAdapterClass [{0}]. As poss\u00edveis causas s\u00e3o que o SecurityManager negou o acesso aos m\u00e9todos declarados na classe do adaptador, ou o SecuritManager negou acesso ao pacote da classe do adaptador.
+
+50063=Ocorreu uma exce\u00e7\u00e3o ao tentar instanciar XmlAdapterClass [{0}]. Uma poss\u00edvel causa \u00e9 que a classe do adaptador n\u00e3o tem construtor de argumento zero.
+
+50064=XmlAdapterClass [{0}] n\u00e3o estende o "javax.xml.bind.annotation.adapters.XmlAdapter" conforme o esperado.  \u00c9 necess\u00e1rio que a classe do adaptador estenda "javax.xml.bind.annotation.adapters.XmlAdapter" e declare os m\u00e9todos "public abstract BoundType unmarshal(ValueType v)" e "public abstract ValueType marshal(BoundType v)".
+
+50065=Um XmlJavaTypeAdapter inv\u00e1lido [{0}] foi especificado para o pacote [{1}]. As causas poss\u00edveis s\u00e3o um nome de classe do adaptador incorreto ou o carregador errado foi configurado.
+
+50066=Um XmlJavaTypeAdapter inv\u00e1lido [{0}] foi especificado para a classe [{1}]. As causas poss\u00edveis s\u00e3o um nome de classe do adaptador incorreto ou o carregador errado foi configurado.
+
+50067=Um XmlJavaTypeAdapter inv\u00e1lido [{0}] foi especificado para o campo/propriedade [{1}] na classe [{2}]. As causas poss\u00edveis s\u00e3o um nome de classe do adaptador incorreto ou o carregador errado foi configurado.
+
+50068=Um valor nulo foi encontrado ao processar metadados externos via mapa de propriedades.  \u00c9 necess\u00e1rio que o identificador para o arquivo de metadados XML seja n\u00e3o nulo e um destes [java.io.File, java.io.InputStream, java.io.Reader, java.net.URL, javax.xml.stream.XMLEventReader, javax.xml.stream.XMLStreamReader, javax.xml.transform.Source, org.w3c.dom.Node ou org.xml.sax.InputSource].
+
+50069=Um pacote n\u00e3o foi especificado para o arquivo de metadados XML fornecido.  O pacote pode ser especificado pela transmiss\u00e3o de Map<String, Object> (em que String = pacote, Object = identificador para arquivo de metadados XML) ou pela configura\u00e7\u00e3o do atributo package-name no elemento xml-bindings no arquivo de metadados XML.
+
+50070=A propriedade [{0}] na classe [{1}] tem uma declara\u00e7\u00e3o XmlElements que cont\u00e9m uma quantidade desigual de XmlElement/XmlJoinNodes.  \u00c9 necess\u00e1rio que haja um XmlJoinNodes correspondente para cada XmlElement contido na declara\u00e7\u00e3o XmlElements.
+
+50071=A propriedade [{0}] na classe [{1}] tem uma declara\u00e7\u00e3o XmlPaths que cont\u00e9m um XmlPath com um atributo na raiz do caminho [{2}].  No caso de XmlPaths, os atributos devem ser aninhados na XmlPath, isto \u00e9, [foo/{2}].
+
+50072=Propriedade duplicada denominada [{0}] localizada na classe [{1}]
+
+50073=A propriedade [{0}] na classe [{1}] est\u00e1 especificado em v\u00e1rios arquivos de liga\u00e7\u00f5es externas. Cada propriedade pode ser especificada somente em um arquivo
+
+50074=Ocorreu uma exce\u00e7\u00e3o ao acessar o XMLNameTransformer [{0}]
+
+50075=Ocorreu uma exce\u00e7\u00e3o ao tentar transformar o nome [{0}] com o XMLNameTransformer [{1}]
+
+50076=N\u00e3o \u00e9 poss\u00edvel carregar metadados externos do local fornecido: [{0}]. Esse local deve ser uma URL v\u00e1lida ou uma refer\u00eancia de caminho de classe.
+
+50077=N\u00e3o \u00e9 poss\u00edvel atualizar metadados.  Os metadados devem ser fornecidos como um N\u00f3 XML para suportar a atualiza\u00e7\u00e3o.
+
+50078=N\u00e3o \u00e9 poss\u00edvel processar arquivos de liga\u00e7\u00f5es externas (XJB).  Para usar arquivos de liga\u00e7\u00f5es externas, XSD e XJB devem ser fornecidos como javax.xml.transform.Sources.
+
+50079=N\u00e3o \u00e9 poss\u00edvel processar esquemas.  Se estiver usando importa\u00e7\u00f5es de esquema, os XSDs devem ser fornecidos como um javax.xml.transform.Source.
+
+50080=XmlLocation \u00e9 permitido somente em propriedades do tipo org.xml.sax.Locator, mas [{0}] \u00e9 do tipo [{1}].
+
+50081=Ocorreu uma exce\u00e7\u00e3o durante a gera\u00e7\u00e3o do esquema.
+
+50082=Foi feita uma tentativa de gravar um valor {0} sem uma chave especificada.  Tente configurar JSON_VALUE_WRAPPER no JAXBMarshaller
+
+50083=Ocorreu um erro ao tentar instanciar a classe AccessorFactory {0}
+
+50084=A classe especificada AccessorFactory {0} \u00e9 inv\u00e1lida. Ela deve implementar createFieldAccessor(Classe, Campo, booleano) e createPropertyAccessor(Classe, M\u00e9todo, M\u00e9todo).
+
+50085=Ocorreu uma exce\u00e7\u00e3o ao chamar o m\u00e9todo createFieldAccessor no AccessorFactory {0}
+
+50086=Ocorreu uma exce\u00e7\u00e3o ao chamar o m\u00e9todo createPropertyAccessor no AccessorFactory {0}
+
+50087=Ocorreu uma exce\u00e7\u00e3o ao tentar chamar o m\u00e9todo {0} na Acessador {1}
+
+50088=O valor de enumera\u00e7\u00e3o {0} n\u00e3o \u00e9 v\u00e1lido para um XmlEnum com a classe {1}
+
+50089=A interface java {0} n\u00e3o pode ser mapeada por JAXB, j\u00e1 que tem v\u00e1rias interfaces pai mape\u00e1veis. Heran\u00e7a m\u00faltipla n\u00e3o \u00e9 suportada
+
+50090=Valor inv\u00e1lido para o gr\u00e1fico do objeto: {0}. O valor deve ser uma sequ\u00eancia ou uma inst\u00e2ncia de ObjectGraph.
+
+50091=O nome do elemento {0} tem mais de um mapeamento.
+
+50092=Somente uma propriedade XmlElementRef do tipo {0} \u00e9 permitida na classe {1}.
+
+50093=A classe {0} n\u00e3o \u00e9 um tipo mapeado no JAXBContext.
+
+50094=A propriedade {0} especificada na anota\u00e7\u00e3o XmlVariableNode n\u00e3o foi localizada na classe {1}.
+
+50095=A propriedade {0} do tipo {1} na classe {2} n\u00e3o \u00e9 v\u00e1lida para um XmlVariableNode.  Somente propriedades do tipo String ou QName s\u00e3o permitidas.
+
+50096=A propriedade @XmlAttribute {0} no tipo {1} deve referenciar um tipo que seja mapeado para texto em XML.  {2} n\u00e3o pode ser mapeado para um valor de texto.
+

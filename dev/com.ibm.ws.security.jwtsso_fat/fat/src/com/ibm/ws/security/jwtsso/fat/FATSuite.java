@@ -23,4 +23,5 @@ import org.junit.runners.Suite.SuiteClasses;
                 CookieExpirationTests.class,
                 BuilderTests.class,
 })
-public class FATSuite {}
+public class FATSuite {
+}

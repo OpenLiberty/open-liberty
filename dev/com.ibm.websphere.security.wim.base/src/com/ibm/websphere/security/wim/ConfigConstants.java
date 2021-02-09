@@ -388,7 +388,7 @@ public interface ConfigConstants {
     String CONFIG_PROP_AUTHENTICATION = "authentication";
     String CONFIG_PROP_REFERAL = "referal";
     String CONFIG_PROP_REFERRAL = "referral";
-    String CONFIG_PROP_DEREFALIASES = "derefAlias";
+    String CONFIG_PROP_DEREFALIASES = "derefAliases";
     String CONFIG_PROP_SSL_CONFIGURATION = "sslConfiguration";
     String CONFIG_PROP_CONNECTION_POOL = "connectionPool";
 
@@ -401,6 +401,11 @@ public interface ConfigConstants {
      * Define how long will LDAP adapter aborts the read attempt if the connection cannot be established.
      */
     String CONFIG_PROP_READ_TIMEOUT = "readTimeout";
+
+    /**
+     * Define whether JNDI BER packets will be written to the System.out
+     */
+    String CONFIG_PROP_JNDI_OUTPUT_ENABLED = "jndiOutputEnabled";
 
     /**
      * Define whether or not write operations are allowed on secondary servers.

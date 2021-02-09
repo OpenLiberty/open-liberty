@@ -121,7 +121,7 @@ public class RequestInfoTest {
             Assert.fail(e.getMessage());
         }
 
-        Assert.assertEquals(HTTP_SERVLET_REQUEST_REQUEST_URL_WITH_QUERY.toString(), requestInfo.getRequestUrl());
+        Assert.assertEquals(HTTP_SERVLET_REQUEST_REQUEST_URL_WITH_QUERY.toString(), requestInfo.getReqUrl());
         Assert.assertEquals(HTTP_SERVLET_REQUEST_UNKNOWN_METHOD, requestInfo.method); //No getter for method field
         Assert.assertEquals(33, requestInfo.getInResponseToId().length()); //Should be any string with 33 characters
     }
@@ -157,7 +157,7 @@ public class RequestInfoTest {
             Assert.fail(e.getMessage());
         }
 
-        Assert.assertEquals(HTTP_SERVLET_REQUEST_REQUEST_URL_WITH_QUERY.toString(), requestInfo.getRequestUrl());
+        Assert.assertEquals(HTTP_SERVLET_REQUEST_REQUEST_URL_WITH_QUERY.toString(), requestInfo.getReqUrl());
         Assert.assertEquals(ForwardRequestInfo.METHOD_GET, requestInfo.method); //No getter for method field
         Assert.assertEquals(33, requestInfo.getInResponseToId().length()); //Should be any string with 33 characters
     }
@@ -317,7 +317,7 @@ public class RequestInfoTest {
             Assert.assertTrue(requestInfo.parameters == null);
         } catch (Exception e) {
             e.printStackTrace();
-            fail("Unexpected exception was thrown: " + e.getMessage());
+            fail("Unexpected exception was thrown: " + e);
         }
     }
 
@@ -334,7 +334,7 @@ public class RequestInfoTest {
             Assert.assertTrue(requestInfo.parameters.isEmpty());
         } catch (Exception e) {
             e.printStackTrace();
-            fail("Unexpected exception was thrown: " + e.getMessage());
+            fail("Unexpected exception was thrown: " + e);
         }
     }
 
@@ -384,7 +384,7 @@ public class RequestInfoTest {
             Assert.assertArrayEquals(new String[] { "1" }, requestInfo.parameters.get("value"));
         } catch (Exception e) {
             e.printStackTrace();
-            fail("Unexpected exception was thrown: " + e.getMessage());
+            fail("Unexpected exception was thrown: " + e);
         }
     }
 
@@ -414,7 +414,7 @@ public class RequestInfoTest {
             requestInfo.redirectCachedHttpRequest(HTTP_SERVLET_REQUEST_MCK, HTTP_SERVLET_RESPONSE_MCK, null, null);
         } catch (Exception e) {
             e.printStackTrace();
-            fail("Unexpected exception was thrown: " + e.getMessage());
+            fail("Unexpected exception was thrown: " + e);
         }
     }
 
@@ -439,7 +439,7 @@ public class RequestInfoTest {
             requestInfo.redirectGetRequest(HTTP_SERVLET_REQUEST_MCK, HTTP_SERVLET_RESPONSE_MCK, null, null, false);
         } catch (Exception e) {
             e.printStackTrace();
-            fail("Unexpected exception was thrown: " + e.getMessage());
+            fail("Unexpected exception was thrown: " + e);
         }
 
         Assert.assertEquals(ForwardRequestInfo.METHOD_GET, requestInfo.method); //No getter for method field.
@@ -470,7 +470,7 @@ public class RequestInfoTest {
             requestInfo.redirectPostRequest(HTTP_SERVLET_REQUEST_MCK, HTTP_SERVLET_RESPONSE_MCK, null, null);
         } catch (Exception e) {
             e.printStackTrace();
-            fail("Unexpected exception was thrown: " + e.getMessage());
+            fail("Unexpected exception was thrown: " + e);
         }
 
         Assert.assertEquals(ForwardRequestInfo.METHOD_POST, requestInfo.method); //No getter for method field.
@@ -516,7 +516,7 @@ public class RequestInfoTest {
             Assert.assertFalse(ForwardRequestInfo.safeCompare(1, 2));
         } catch (Exception e) {
             e.printStackTrace();
-            fail("Unexpected exception was thrown: " + e.getMessage());
+            fail("Unexpected exception was thrown: " + e);
         }
 
     }
@@ -537,7 +537,7 @@ public class RequestInfoTest {
             Assert.assertTrue(ForwardRequestInfo.safeCompare(value1, value2));
         } catch (Exception e) {
             e.printStackTrace();
-            fail("Unexpected exception was thrown: " + e.getMessage());
+            fail("Unexpected exception was thrown: " + e);
         }
 
     }

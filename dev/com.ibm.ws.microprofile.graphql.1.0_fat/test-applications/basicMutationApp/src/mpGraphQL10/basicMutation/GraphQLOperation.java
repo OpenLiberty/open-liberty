@@ -13,7 +13,7 @@ package mpGraphQL10.basicMutation;
 public class GraphQLOperation {
 
     private String query;
-    private String variables;
+    private Variables variables;
     private String operationName;
 
     public String getQuery() {
@@ -22,10 +22,10 @@ public class GraphQLOperation {
     public void setQuery(String operation) {
         this.query = operation;
     }
-    public String getVariables() {
+    public Variables getVariables() {
         return variables;
     }
-    public void setVariables(String variables) {
+    public void setVariables(Variables variables) {
         this.variables = variables;
     }
     public String getOperationName() {

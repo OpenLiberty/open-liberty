@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,17 +21,13 @@ import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                JPA20Cache_WEB.class,
-                JPA20CriteriaQuery_EJB.class,
-                JPA20CriteriaQuery_WEB.class,
-                JPA20OrderColumn_EJB.class,
-                JPA20OrderColumn_WEB.class,
-                JPA20QueryLockMode_EJB.class,
-                JPA20QueryLockMode_WEB.class,
+                JPA20FATSuite.class,
                 TestOLGH9018_EJB.class,
                 TestOLGH9018_WEB.class,
                 TestOLGH9339_EJB.class,
                 TestOLGH9339_WEB.class,
+                TestOLGH10515_EJB.class,
+                TestOLGH10515_WEB.class,
                 componenttest.custom.junit.runner.AlwaysPassesTest.class
 })
 public class FATSuite {
@@ -41,5 +37,6 @@ public class FATSuite {
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification()
                     .andWith(FeatureReplacementAction.EE7_FEATURES())
-                    .andWith(new RepeatWithJPA20());
+                    .andWith(new RepeatWithJPA20())
+                    .andWith(FeatureReplacementAction.EE9_FEATURES());
 }

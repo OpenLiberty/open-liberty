@@ -54,12 +54,12 @@ DSA_INTERNAL_ERROR.useraction=Visitez le site Web du support IBM pour toute info
 # 0035 deleted
 
 # General purpose template for messages that will not be translated
-WS_INTERNAL_ERROR=DSRA0040E: Erreur WebSphere interne. Contactez le support WebSphere et communiquez-lui les donn\u00e9es suivantes :  {0} {1} {2}
+WS_INTERNAL_ERROR=DSRA0040E: Erreur WebSphere interne. Contactez le support WebSphere et communiquez-lui les donn\u00e9es suivantes : {0} {1} {2}
 WS_INTERNAL_ERROR.explanation=Une erreur s'est produite dans le code WebSphere.
 WS_INTERNAL_ERROR.useraction=Rassemblez tous les journaux de trace et les journaux syst\u00e8me en y joignant une description de l'op\u00e9ration tent\u00e9e. Visitez le site Web du support IBM pour toute information sur l'identification des incidents.
 
 # General purpose template for messages that will not be translated
-DSA_INTERNAL_WARNING=DSRA0050W: Un avertissement interne a \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9 dans Data Store Adapter. Contactez le support WebSphere et communiquez-lui les donn\u00e9es suivantes :  {0} {1} {2}
+DSA_INTERNAL_WARNING=DSRA0050W: Un avertissement interne a \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9 dans Data Store Adapter. Contactez le support WebSphere et communiquez-lui les donn\u00e9es suivantes : {0} {1} {2}
 DSA_INTERNAL_WARNING.explanation=CMSG0001
 DSA_INTERNAL_WARNING.useraction=Visitez le site Web du support IBM pour toute information sur l'identification des incidents.
 
@@ -76,7 +76,7 @@ DSA_ERROR.useraction=Pour les sources possibles de l'erreur, reportez-vous au te
 # 0081-0087 deleted
 
 DSA_GENERIC_MSG=DSRA0086E: Une op\u00e9ration s''est sold\u00e9e par une exception. Il s''agit de l''op\u00e9ration {0}. Exception : {1}.  Cause possible : {2}
-DSA_GENERIC_MSG.explanation=L'op\u00e9ration  a conduit \u00e0 une exception.
+DSA_GENERIC_MSG.explanation=L'op\u00e9ration a conduit \u00e0 une exception.
 DSA_GENERIC_MSG.useraction=Etudiez en d\u00e9tail l'op\u00e9ration et l'exception ainsi que les fichiers journaux de la base de donn\u00e9es.
 
 # 0090 deleted
@@ -88,7 +88,7 @@ UNSUPPORTED_METHOD.useraction=Visitez le site Web du support IBM pour toute info
 #TRANSLATOR Do Not Translate: DataSource
 RESOLVING_DB_IMPLICIT_TRANSACTIONS=DSRA0092I: Une transaction implicite de base de donn\u00e9es a \u00e9t\u00e9 d\u00e9tect\u00e9e. WebSphere va {0} la transaction. Ce message sera consign\u00e9 une fois pour chaque DataSource. Les transactions implicites suivantes seront r\u00e9solues automatiquement. 
 RESOLVING_DB_IMPLICIT_TRANSACTIONS.explanation=Le serveur d'applications a d\u00e9tect\u00e9 que la base de donn\u00e9es avait d\u00e9marr\u00e9 une transaction. Le serveur va tenter de r\u00e9soudre cette transaction selon la configuration d\u00e9finie dans les propri\u00e9t\u00e9s personnalis\u00e9es de la source de donn\u00e9es.
-RESOLVING_DB_IMPLICIT_TRANSACTIONS.useraction=Aucune intervention n'est requise de la part de l'utilisateur. 
+RESOLVING_DB_IMPLICIT_TRANSACTIONS.useraction=Aucune action n'est requise de l'utilisateur. 
 
 #TRANSLATOR Do Not Translate: Datasource, FFDC
 ERROR_RESOLVING_DB_IMPLICIT_TRANSACTIONS=DSRA0093I: Une transaction implicite de base de donn\u00e9es a \u00e9t\u00e9 d\u00e9tect\u00e9e. WebSphere a essay\u00e9 de {0} la transaction mais une erreur s''est produite {1}.
@@ -171,7 +171,7 @@ ORACLE_RAC_RETRY.useraction=Attendez que le gestionnaire des transactions essaie
 #
 # {0}        The datasource JNDI name.
 TBC_NOT_SUPPORTED=DSRA0400W: Datasource {0} : le couplage strict des branches n''est pas pris en charge
-TBC_NOT_SUPPORTED.explanation=La base de donn\u00e9es ou le fournisseur jdbc sp\u00e9cifi\u00e9 par la source de donn\u00e9es  ne prend pas en charge l'option de couplage strict des branches.  Le couplage strict des branches n'est pris en charge qu'avec une base de donn\u00e9es DB2 for z/OS accessible par le pilote DB2 Universal JCC.  L'option par d\u00e9faut de couplage souple des branches sera utilis\u00e9e.  Des d\u00e9lais de verrouillage, des interblocages et/ou des annulations de transaction pourront survenir si l'application est con\u00e7ue pour le couplage strict des branches car les verrous de base de donn\u00e9es ne seront pas partag\u00e9s entre les branches de transaction dans une m\u00eame transaction globale.
+TBC_NOT_SUPPORTED.explanation=La base de donn\u00e9es ou le fournisseur jdbc sp\u00e9cifi\u00e9 par la source de donn\u00e9es ne prend pas en charge l'option de couplage strict des branches.  Le couplage strict des branches n'est pris en charge qu'avec une base de donn\u00e9es DB2 for z/OS accessible par le pilote DB2 Universal JCC.  L'option par d\u00e9faut de couplage souple des branches sera utilis\u00e9e.  Des d\u00e9lais de verrouillage, des interblocages et/ou des annulations de transaction pourront survenir si l'application est con\u00e7ue pour le couplage strict des branches car les verrous de base de donn\u00e9es ne seront pas partag\u00e9s entre les branches de transaction dans une m\u00eame transaction globale.
 TBC_NOT_SUPPORTED.useraction=Vous devez configurer la source de donn\u00e9es en vue de l'utilisation d'un niveau pris en charge de base de donn\u00e9es et de pilote JDBC ou configurer votre application de sorte qu'elle ne requi\u00e8re pas le couplage strict de branches.
 
 # 0401 deleted
@@ -187,7 +187,7 @@ TBC_DB_NOT_SUPPORTED.useraction=Vous devez configurer la source de donn\u00e9es 
 #
 # {0}        The datasource JNDI name.
 TBC_JCC_NOT_SUPPORTED=DSRA0403W: Datasource {0} : couplage strict des branches non pris en charge car le niveau du pilote DB2 JCC n''est pas correct
-TBC_JCC_NOT_SUPPORTED.explanation=Le fournisseur jdbc sp\u00e9cifi\u00e9 par la source de donn\u00e9es  ne prend pas en charge l'option de couplage strict des branches.  Le couplage strict des branches est pris en charge uniquement avec les niveaux minimaux du pilote DB2 Universal JCC version 3.51 ou 3.6, conditionn\u00e9s avec les niveaux de service DB2 9.5 ou 9 ou le pilote JCC4 version 4.1.  L'option par d\u00e9faut de couplage souple des branches sera utilis\u00e9e.  Des d\u00e9lais de verrouillage, des interblocages et/ou des annulations de transaction pourront survenir si l'application est con\u00e7ue pour le couplage strict des branches car les verrous de base de donn\u00e9es ne seront pas partag\u00e9s entre les branches de transaction dans une m\u00eame transaction globale.
+TBC_JCC_NOT_SUPPORTED.explanation=Le fournisseur jdbc sp\u00e9cifi\u00e9 par la source de donn\u00e9es ne prend pas en charge l'option de couplage strict des branches.  Le couplage strict des branches est pris en charge uniquement avec les niveaux minimaux du pilote DB2 Universal JCC version 3.51 ou 3.6, conditionn\u00e9s avec les niveaux de service DB2 9.5 ou 9 ou le pilote JCC4 version 4.1.  L'option par d\u00e9faut de couplage souple des branches sera utilis\u00e9e.  Des d\u00e9lais de verrouillage, des interblocages et/ou des annulations de transaction pourront survenir si l'application est con\u00e7ue pour le couplage strict des branches car les verrous de base de donn\u00e9es ne seront pas partag\u00e9s entre les branches de transaction dans une m\u00eame transaction globale.
 TBC_JCC_NOT_SUPPORTED.useraction=Vous devez configurer la source de donn\u00e9es en vue de l'utilisation d'un niveau pris en charge de base de donn\u00e9es et de pilote JDBC ou configurer votre application de sorte qu'elle ne requi\u00e8re pas le couplage strict de branches.
 
 # ----------------------------------------------------------------------------
@@ -213,7 +213,7 @@ CONN_NEVER_CLOSED.useraction=Modifiez l'application afin qu'elle ferme tous les 
 # {0}        The feature (usually a JDBC API method)
 FEATURE_NOT_IMPLEMENTED=DSRA1300E: La fonction {0} n''a pas \u00e9t\u00e9 impl\u00e9ment\u00e9e.
 FEATURE_NOT_IMPLEMENTED.explanation=La fonction demand\u00e9e n'est pas disponible.
-FEATURE_NOT_IMPLEMENTED.useraction=Evitez d'utiliser cette fonction ou si possible, passez sur une version du pilote qui la prend en charge.
+FEATURE_NOT_IMPLEMENTED.useraction=Evitez d'utiliser cette fonction ou si possible, passez \u00e0 une version du pilote qui la prend en charge.
 
 # 1301 deleted
 # 3000-3020 deleted
@@ -309,14 +309,14 @@ DB2ZOS_CONFIG_INFO.useraction=Il s'agit d'un simple message d'information concer
 # TRANSLATOR Do not translate: DB2ConnectionPoolDatasource, DB2 Universal JDBC
 DB2ZOS_TYPE2_ERROR=DSRA7015E: DB2 ne prend pas en charge le type 2 de pilote avec DB2XADataSource sous DB2 pour z/OS
 DB2ZOS_TYPE2_ERROR.explanation=La valeur 2 a \u00e9t\u00e9 associ\u00e9e \u00e0 la propri\u00e9t\u00e9 personnalis\u00e9e driverType pour la source de donn\u00e9es DB2XA. Or, cette configuration n'est pas prise en charge par DB2 pour z/OS.
-DB2ZOS_TYPE2_ERROR.useraction=Utilisez DB2ConnectionPoolDatasource ou passez sur le pilote JDBC DB2 Universal de type 4 s'il est disponible pour votre configuration.
+DB2ZOS_TYPE2_ERROR.useraction=Utilisez DB2ConnectionPoolDatasource ou passez au pilote JDBC DB2 Universal de type 4 s'il est disponible pour votre configuration.
 
 # 7016 deleted
 
 # DSRA7017I      ORACLE_TRACE_WARNING
 # TRANSLATOR Do not translate: IOException
 ORACLE_TRACE_WARNING=DSRA7017I: Impossible de consigner les donn\u00e9es dans le fichier {0} en raison de l''exception IOException {1}.
-ORACLE_TRACE_WARNING.explanation=Une exception IOException s'est produite alors que le serveur d'applications tentait d'ouvrir le fichier de trace indiqu\u00e9.
+ORACLE_TRACE_WARNING.explanation=Une exception d'E-S s'est produite alors que le serveur d'applications tentait d'ouvrir le fichier de trace indiqu\u00e9.
 ORACLE_TRACE_WARNING.useraction=Reportez-vous \u00e0 l'exception, rem\u00e9diez \u00e0 l'incident d'E-S puis red\u00e9marrez le serveur d'applications.
 
 # DSRA7018I      META_DATA_EXCEPTION
@@ -503,7 +503,7 @@ DEFAULT_MATCH_ORIGINAL.useraction=V\u00e9rifiez que la propri\u00e9t\u00e9 perso
 # 8780 deleted
 
 DSRA8790_SUPPRESS_BEGIN_END_REQUEST=DSRA8790W: Les m\u00e9thodes beginRequest et endRequest ne doivent \u00eatre utilis\u00e9es que par les gestionnaires de connexions. La sp\u00e9cification JDBC ne pr\u00e9voit pas que plusieurs gestionnaires de connexions puissent g\u00e9rer une connexion. L''utilisation des m\u00e9thodes beginRequest et endRequest par d''autres gestionnaires de connexions est bloqu\u00e9e lorsque la gestion des connexions est assur\u00e9e par le serveur d''application lui-m\u00eame. La pile suivante indique le chemin de code sur lequel l''op\u00e9ration beginRequest ou endRequest a \u00e9t\u00e9 appel\u00e9e : {0}.
-DSRA8790_SUPPRESS_BEGIN_END_REQUEST.explanation=Les suggestions (hints) beginRequest et endRequest sont bloqu\u00e9es pour \u00e9viter certains effets de bord qui interf\u00e8rent avec la gestion des connexions.
+DSRA8790_SUPPRESS_BEGIN_END_REQUEST.explanation=Les suggestions beginRequest et endRequest sont bloqu\u00e9es pour \u00e9viter certains effets de bord qui interf\u00e8rent avec la gestion des connexions.
 DSRA8790_SUPPRESS_BEGIN_END_REQUEST.useraction=Pour \u00e9viter cet avertissement, supprimez le code qui appelle les op\u00e9rations beginRequest et endRequest (il est identifi\u00e9 dans la pile fournie).
 
 # ----------------------------------------------------------------------------
@@ -648,5 +648,8 @@ KERBEROS_NOT_SUPPORTED_WARNING.useraction= D\u00e9sactivez Kerberos ou utilisez 
 
 # 9544-9548 deleted
 
+KERBEROS_ORACLE_IBMJDK_NOT_SUPPORTED=DSRA9549E: L'utilisation d'IBM Java 8 SDK avec une base de donn\u00e9es Oracle n'est pas prise en charge. Le pilote JDBC d'Oracle prend uniquement en charge l'authentification Kerberos avec les API de s\u00e9curit\u00e9 par d\u00e9faut disponibles dans OpenJDK, OpenJ9 ou d'autres kits de d\u00e9veloppement Java similaires.
+KERBEROS_ORACLE_IBMJDK_NOT_SUPPORTED.explanation=L'utilisation d'IBM Java 8 SDK avec une base de donn\u00e9es Oracle n'est pas prise en charge. Le pilote JDBC d'Oracle prend uniquement en charge l'authentification Kerberos avec les API de s\u00e9curit\u00e9 par d\u00e9faut disponibles dans OpenJDK, OpenJ9 ou d'autres kits de d\u00e9veloppement Java similaires.
+KERBEROS_ORACLE_IBMJDK_NOT_SUPPORTED.useraction=D\u00e9sactivez l'authentification Kerberos pour la source de donn\u00e9es Oracle ou utilisez un kit de d\u00e9veloppement Java autre qu'IBM Java 8 SDK.
 # 9600-9603 deleted 
 # 9900 deleted

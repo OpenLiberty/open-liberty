@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.Statement;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.annotation.Resource;
 import javax.ejb.MessageDriven;
@@ -25,8 +26,11 @@ import javax.sql.DataSource;
 
 @MessageDriven
 public class DerbyRAMessageDrivenBean implements MessageListener {
-    @Resource(lookup = "eis/ds1")
-    private DataSource ds1;
+    @Resource(lookup = "eis/ds5", shareable = true)
+    private DataSource ds5;
+
+    // Map of test case name to a connection that it intentionally left open
+    private static final AtomicReference<Connection> cachedConnectionRef = new AtomicReference<>();
 
     @Override
     public Record onMessage(Record record) throws ResourceException {
@@ -36,9 +40,21 @@ public class DerbyRAMessageDrivenBean implements MessageListener {
         Object key = m.get("key");
         Object newValue = m.get("newValue");
         Object oldValue = m.get("previousValue");
+
         // Write the previous value to a database table
         try {
-            Connection con = ds1.getConnection();
+            Connection con;
+            if ("UseCachedConnection".equals(newValue)) {
+                con = cachedConnectionRef.get();
+                if (con.isClosed()) {
+                    oldValue = "CachedConnectionIsClosed";
+                    con = ds5.getConnection();
+                } else {
+                    oldValue = "CachedConnectionIsNotClosed";
+                }
+            } else {
+                con = ds5.getConnection();
+            }
             try {
                 Statement stmt = con.createStatement();
                 try {
@@ -48,7 +64,13 @@ public class DerbyRAMessageDrivenBean implements MessageListener {
                 }
                 stmt.close();
             } finally {
-                con.close();
+                if ("CacheConnection".equals(newValue)) {
+                    System.out.println("MDB intentionally caches connection " + con);
+                    cachedConnectionRef.set(con);
+                } else {
+                    cachedConnectionRef.set(null);
+                    con.close();
+                }
             }
         } catch (SQLException x) {
             throw new ResourceException(x);

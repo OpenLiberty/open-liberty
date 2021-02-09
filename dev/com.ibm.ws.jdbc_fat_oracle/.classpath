@@ -9,5 +9,6 @@
 	<classpathentry kind="src" path="fat/src"/>
 	<classpathentry kind="src" path="test-applications/oraclejdbcfat/src"/>
 	<classpathentry kind="src" path="test-applications/oracleucpfat/src"/>
+	<classpathentry kind="src" path="test-applications/oracletracefat/src"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

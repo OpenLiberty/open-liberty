@@ -52,7 +52,7 @@ SPNEGO_NOT_SUPPORTED_ERROR_PAGE.useraction=Configure el navegador cliente para r
 SPNEGO_NTLM_TOKEN_RECEIVED_ERROR_PAGE=CWWKS4307E: <html><head><title>Se ha recibido una se\u00f1al NTLM.\
 </title></head> <body>La configuraci\u00f3n del navegador de cliente es correcta, pero no ha iniciado una sesi\u00f3n en un dominio de Windows soportado.\
 <p> Inicie una sesi\u00f3n en el dominio de Windows soportado.\
-</html>.
+</body></html>.
 SPNEGO_NTLM_TOKEN_RECEIVED_ERROR_PAGE.explanation=La configuraci\u00f3n del navegador cliente es correcta, pero no ha iniciado sesi\u00f3n en un dominio Windows soportado. \
 O bien, la configuraci\u00f3n de SPNEGO no es correcta, por lo que el navegador de cliente no env\u00eda la se\u00f1al SPNEGO o Kerberos.
 SPNEGO_NTLM_TOKEN_RECEIVED_ERROR_PAGE.useraction=Compruebe que ha iniciado sesi\u00f3n en el dominio Windows soportado y tambi\u00e9n la configuraci\u00f3n de SPNEGO en el servidor y en el dominio Windows.
@@ -116,3 +116,17 @@ SPNEGO_CAN_NOT_GET_DELEGATE_SERVICE_SPN.useraction=Compruebe el formato del nomb
 SPNEGO_DELEGATE_SPN_LOGIN_TO_KDC_FAILURE=CWWKS4322E: La delegaci\u00f3n de SPN {0} no puede autenticar el centro de distribuci\u00f3n de claves (KDC) utilizando el archivo de configuraci\u00f3n {1} y el archivo de tabla de claves {2} de Kerberos. Se ha recibido una excepci\u00f3n de inicio de sesi\u00f3n: {3}
 SPNEGO_DELEGATE_SPN_LOGIN_TO_KDC_FAILURE.explanation=No se puede autenticar el centro de distribuci\u00f3n de claves (KDC).
 SPNEGO_DELEGATE_SPN_LOGIN_TO_KDC_FAILURE.useraction=Compruebe el formato del nombre principal del servicio y aseg\u00farese de que exista en el dominio Windows y de que el archivo de tabla de claves de Kerberos contenga el nombre principal del servicio.
+
+SPNEGO_CONFLICTING_SETTINGS_CWWKS4323E=CWWKS4323E: El atributo [{0}] del elemento {1} est\u00e1 en conflicto con el atributo [{2}] del elemento {3}. Especifique un valor s\u00f3lo en el elemento {1} o {3}, no en ambos elementos. Se sugiere especificar el valor s\u00f3lo en el elemento {1}.
+SPNEGO_CONFLICTING_SETTINGS_CWWKS4323E.explanation=Para reconocer cada atributo, es necesario establecer una propiedad de sistema, que es un valor de todo el sistema. No se pueden reconocer valores diferentes para un valor de todo el sistema.
+SPNEGO_CONFLICTING_SETTINGS_CWWKS4323E.useraction=Especifique el atributo s\u00f3lo en uno de los elementos de configuraci\u00f3n.
+
+SPNEGO_AUTHENTICATION_ERROR_PAGE=CWWKS4324E: <html><head><title>La autenticaci\u00f3n de SPNEGO ha fallado.\
+P\u00f3ngase en contacto con el administrador del sistema para resolver el problema.\
+</title></head> <body>El cliente ha enviado la se\u00f1al SPNEGO. \
+El servidor no puede validar la se\u00f1al SPNEGO del cliente. \
+P\u00f3ngase en contacto con el administrador del sistema para resolver el problema.\
+</body></html>.
+SPNEGO_AUTHENTICATION_ERROR_PAGE.explanation=Ha fallado la autenticaci\u00f3n de SPNEGO. Para obtener m\u00e1s informaci\u00f3n, consulte los mensajes de registro de servidor.
+SPNEGO_AUTHENTICATION_ERROR_PAGE.useraction=Verifique la configuraci\u00f3n de servidor y la configuraci\u00f3n de Kerberos y aseg\u00farese de que el reloj de servidor est\u00e1 sincronizado con el Centro de distribuci\u00f3n de claves (KDC).
+

@@ -10,15 +10,17 @@
  *******************************************************************************/
 package com.ibm.ws.http2;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Keep track of gRPC service to application mappings
  */
 public class GrpcServletServices {
 
-    private static Map<String, String> servletGrpcServices;
+    private static final Map<String, ServiceInformation> servletGrpcServices = new HashMap<String, ServiceInformation>();
+
+    public static boolean grpcInUse = false;
 
     /**
      * Register an a gRPC service with its application
@@ -26,14 +28,14 @@ public class GrpcServletServices {
      * @param String gRPC service name
      * @param String contextRoot for the app
      */
-    public static void addServletGrpcService(String service, String contextRoot) {
-        if (servletGrpcServices == null) {
-            servletGrpcServices = new ConcurrentHashMap<String, String>();
-        }
+    public static synchronized void addServletGrpcService(String service, String contextRoot, Class<?> clazz) {
+
+        grpcInUse = true;
+
         if (servletGrpcServices.containsKey(service)) {
             throw new RuntimeException("duplicate gRPC service added: " + service);
         } else {
-            servletGrpcServices.put(service, contextRoot);
+            servletGrpcServices.put(service, new ServiceInformation(contextRoot, clazz));
         }
     }
 
@@ -42,13 +44,8 @@ public class GrpcServletServices {
      *
      * @param String service
      */
-    public static void removeServletGrpcService(String service) {
-        if (servletGrpcServices != null) {
-            servletGrpcServices.remove(service);
-        }
-        if (servletGrpcServices.isEmpty()) {
-            servletGrpcServices = null;
-        }
+    public static synchronized void removeServletGrpcService(String service) {
+        servletGrpcServices.remove(service);
     }
 
     /**
@@ -56,14 +53,32 @@ public class GrpcServletServices {
      *
      * @return HashMap<String service, String contextRoot> or null if the set is empty
      */
-    public static Map<String, String> getServletGrpcServices() {
-        if (servletGrpcServices == null) {
+    public static synchronized Map<String, ServiceInformation> getServletGrpcServices() {
+        if (servletGrpcServices.isEmpty()) {
             return null;
         }
         return servletGrpcServices;
     }
 
     public static void destroy() {
-        servletGrpcServices = null;
+        servletGrpcServices.clear();
+    }
+
+    public static class ServiceInformation {
+        String contextRoot;
+        Class<?> clazz;
+
+        ServiceInformation(String root, Class<?> c) {
+            contextRoot = root;
+            clazz = c;
+        }
+
+        public String getContextRoot() {
+            return contextRoot;
+        }
+
+        public Class<?> getServiceClass() {
+            return clazz;
+        }
     }
 }

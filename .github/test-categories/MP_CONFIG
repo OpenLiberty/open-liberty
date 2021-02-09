@@ -1,0 +1,11 @@
+com.ibm.ws.microprofile.config.1.1_fat
+com.ibm.ws.microprofile.config.1.1_fat_tck
+com.ibm.ws.microprofile.config.1.2_fat
+com.ibm.ws.microprofile.config.1.2_fat_tck
+com.ibm.ws.microprofile.config.1.3_fat
+com.ibm.ws.microprofile.config.1.3_fat_tck
+com.ibm.ws.microprofile.config.1.4_fat
+com.ibm.ws.microprofile.config.1.4_fat_tck
+com.ibm.ws.microprofile.config_git_fat_tck
+io.openliberty.microprofile.config.2.0.internal_fat
+io.openliberty.microprofile.config.2.0.internal_fat_tck

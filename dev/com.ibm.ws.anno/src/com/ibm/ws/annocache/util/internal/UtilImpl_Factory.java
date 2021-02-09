@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2019 IBM Corporation and others.
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,18 +18,25 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Reference;
+
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.annocache.service.internal.AnnotationCacheServiceImpl_Service;
 import com.ibm.ws.annocache.util.delta.internal.UtilImpl_BidirectionalMapDelta;
 import com.ibm.ws.annocache.util.delta.internal.UtilImpl_IdentityMapDelta;
 import com.ibm.ws.annocache.util.delta.internal.UtilImpl_IdentitySetDelta;
+import com.ibm.wsspi.annocache.service.AnnotationCacheService_Service;
+import com.ibm.wsspi.annocache.util.Util_BidirectionalMap;
 import com.ibm.wsspi.annocache.util.Util_Exception;
 import com.ibm.wsspi.annocache.util.Util_Factory;
 import com.ibm.wsspi.annocache.util.Util_InternMap;
 import com.ibm.wsspi.annocache.util.Util_RelativePath;
-import com.ibm.wsspi.anno.util.Util_BidirectionalMap;
 import com.ibm.wsspi.anno.util.Util_InternMap.ValueType;
 
+@Component(configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM"})
 public class UtilImpl_Factory implements Util_Factory {
     private static final Logger logger = Logger.getLogger("com.ibm.ws.annocache.util");
     
@@ -45,32 +52,18 @@ public class UtilImpl_Factory implements Util_Factory {
         return hashText;
     }
 
-    //
-
-    public UtilImpl_Factory(AnnotationCacheServiceImpl_Service annoService) {
+    @Activate
+    public UtilImpl_Factory() {
         super();
 
         String methodName = "<init>";
 
         this.hashText = getClass().getSimpleName() + "@" + Integer.toHexString(hashCode());
 
-        this.annoService = annoService;
-
         if (logger.isLoggable(Level.FINER)) {
             logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] Created", this.hashText);
         }
     }
-
-    //
-
-    protected final AnnotationCacheServiceImpl_Service annoService;
-
-    @Trivial
-    public AnnotationCacheServiceImpl_Service getAnnotationService() {
-        return annoService;
-    }
-
-    //
 
     @Trivial
     public Util_Exception newUtilException(Logger useLogger, String message) {
@@ -130,8 +123,8 @@ public class UtilImpl_Factory implements Util_Factory {
         return createBidirectionalMap(heldTag, heldInternMap, holderTag, holderInternMap);
     }
 
-    public UtilImpl_BidirectionalMap createBidirectionalMap(String holderTag, UtilImpl_InternMap holderInternMap,
-                                                            String heldTag, UtilImpl_InternMap heldInternMap) {
+    public UtilImpl_BidirectionalMap createBidirectionalMap(String holderTag, Util_InternMap holderInternMap,
+                                                            String heldTag, Util_InternMap heldInternMap) {
 
         return new UtilImpl_BidirectionalMap(this,
                                              holderTag, heldTag,

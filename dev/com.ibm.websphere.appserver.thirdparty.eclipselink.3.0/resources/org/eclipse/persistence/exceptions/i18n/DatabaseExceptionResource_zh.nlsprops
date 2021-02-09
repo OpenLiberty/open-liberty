@@ -1,0 +1,61 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/DatabaseExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+4003=\u914d\u7f6e\u9519\u8bef\u3002\u627e\u4e0d\u5230\u7c7b [{0}]\u3002
+
+4005=DatabaseAccessor \u672a\u8fde\u63a5\u3002
+
+4006=\u901a\u8fc7 getObject() \u4ece\u6d41\u4e2d\u8bfb\u53d6 BLOB \u6570\u636e\u65f6\u53d1\u751f\u9519\u8bef\u3002
+
+4007=\u672a\u80fd\u8f6c\u6362\u5bf9\u8c61\u7c7b\u578b\uff0c\u56e0\u4e3a\u53d1\u751f\u4e86\u5185\u90e8\u9519\u8bef\u3002{0}java.sql.TYPES\uff1a[{1}]
+
+4008=\u5f53\u4e8b\u52a1\u6b63\u5728\u8fdb\u884c\u65f6\uff0c\u60a8\u65e0\u6cd5\u6ce8\u9500\u3002
+
+4009=\u5e8f\u5217\u8868\u4fe1\u606f\u4e0d\u5b8c\u6574\u3002
+
+4011=\u9884\u5148\u5206\u914d\u5e8f\u5217\u53f7\u65f6\u53d1\u751f\u9519\u8bef\u3002\u5e8f\u5217\u8868\u4fe1\u606f\u4e0d\u5b8c\u6574\u3002
+
+4014=\u65e0\u6cd5\u6ce8\u518c SynchronizationListener\u3002
+
+4015=\u5df2\u540c\u6b65\u7684 UnitOfWork \u4e0d\u652f\u6301 commitAndResume() \u64cd\u4f5c\u3002
+
+4016=\u914d\u7f6e\u9519\u8bef\u3002\u672a\u80fd\u5b9e\u4f8b\u5316\u9a71\u52a8\u7a0b\u5e8f [{0}]\u3002
+
+4017=\u914d\u7f6e\u9519\u8bef\u3002\u672a\u80fd\u8bbf\u95ee\u9a71\u52a8\u7a0b\u5e8f [{0}]\u3002
+
+4018=\u5c1a\u672a\u9488\u5bf9 JTS \u9a71\u52a8\u7a0b\u5e8f\u8bbe\u7f6e TransactionManager\u3002
+
+4019=\u83b7\u53d6\u6709\u5173\u6570\u636e\u5e93\u7684\u4fe1\u606f\u65f6\u53d1\u751f\u9519\u8bef\u3002\u8bf7\u53c2\u9605\u5d4c\u5957\u5f02\u5e38\uff0c\u4ee5\u83b7\u53d6\u66f4\u591a\u8be6\u7ec6\u4fe1\u606f\u3002
+
+4020=\u627e\u4e0d\u5230\u6307\u5b9a\u7684\u4e50\u89c2\u9501\u5b9a\u5b57\u6bb5 [{0}] \u7684\u5339\u914d\u6570\u636e\u5e93\u5b57\u6bb5\u3002\u8bf7\u6ce8\u610f\uff0c\u5339\u914d\u533a\u5206\u5927\u5c0f\u5199\uff0c\u56e0\u6b64\uff0c\u5982\u679c\u5728 getter \u65b9\u6cd5\u4e0a\u5141\u8bb8\u5217\u540d\u4e3a\u7f3a\u7701\u503c\uff0c\u90a3\u4e48\u8be5\u540d\u79f0\u5c06\u5927\u5199\u3002
+
+4021=\u65e0\u6cd5\u4ece\u9a71\u52a8\u7a0b\u5e8f [{0}] \u83b7\u53d6\u8fde\u63a5\uff0c\u7528\u6237\u4e3a [{1}]\uff0cURL \u4e3a [{2}]\u3002\u8bf7\u9a8c\u8bc1\u60a8\u662f\u5426\u5df2\u8bbe\u7f6e\u9700\u8981\u7684\u9a71\u52a8\u7a0b\u5e8f\u7c7b\u548c URL\u3002\u8bf7\u68c0\u67e5\u767b\u5f55\u3001persistence.xml \u6216 sessions.xml \u8d44\u6e90\u3002jdbc.driver \u5c5e\u6027\u5e94\u8be5\u8bbe\u7f6e\u4e3a\u4e0e\u6570\u636e\u5e93\u5e73\u53f0\u517c\u5bb9\u7684\u7c7b
+
+4022=\u8bbf\u95ee\u8005\u6216\u5176\u8fde\u63a5\u5df2\u8bbe\u7f6e\u4e3a\u7a7a\u9879\u3002\u5982\u679c\u5df2\u5728\u53e6\u4e00\u7ebf\u7a0b\u4e2d\u91ca\u653e ClientSession \u6216 UnitOfWork\uff08\u4f8b\u5982\uff0c\u5982\u679c\u53d1\u751f\u4e86\u8d85\u65f6\uff09\uff0c\u90a3\u4e48\u4f1a\u51fa\u73b0\u6b64\u60c5\u51b5\u3002
+

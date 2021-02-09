@@ -17,6 +17,7 @@ import org.junit.runner.RunWith;
 import com.ibm.ws.beanvalidation.fat.basic.BasicValidation_Common;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.PrivHelper;
@@ -27,6 +28,7 @@ import componenttest.topology.utils.PrivHelper;
  * that everything that worked without CDI works with it as well.
  */
 @RunWith(FATRunner.class)
+@SkipForRepeat(SkipForRepeat.EE9_FEATURES)
 public class BeanValidation11CDITest extends BeanValidationCDI_Common {
 
     @Server("com.ibm.ws.beanvalidation.cdi_1.1.fat")

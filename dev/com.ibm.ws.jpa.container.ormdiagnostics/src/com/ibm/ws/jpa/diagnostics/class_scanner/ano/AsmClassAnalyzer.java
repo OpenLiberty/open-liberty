@@ -46,7 +46,7 @@ import com.ibm.ws.jpa.diagnostics.class_scanner.ano.jaxb.classinfo10.ValueType;
 
 public class AsmClassAnalyzer {
     private final static String JavaLangObject = "java.lang.Object";
-    private final static int ASM_LEVEL = Opcodes.ASM7;
+    private final static int ASM_LEVEL = Opcodes.ASM8;
 
     public static final ClassInfoType analyzeClass(String targetClass, byte[] bytecode, InnerOuterResolver ioResolver) throws ClassScannerException {
         if (bytecode == null || bytecode.length == 0) {

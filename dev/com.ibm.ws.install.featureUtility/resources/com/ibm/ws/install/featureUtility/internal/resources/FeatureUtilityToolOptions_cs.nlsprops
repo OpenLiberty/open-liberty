@@ -1,4 +1,13 @@
-#------------------------------\n at 72 chars -- leading tab-----------\n\#
+###############################################################################
+# Copyright (c) 2010, 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
 #CMVCPATHNAME com.ibm.ws.install.featureUtility/resources/com/ibm/ws/install/featureUtility/internal/resources/FeatureUtilityToolOptions.nlsprops
 #ISMESSAGEFILE FALSE
 #NLS_ENCODING=UNICODE
@@ -46,9 +55,12 @@ installFeature.option-desc.--from=\tPomoc\u00ed t\u00e9to volby m\u016f\u017eete
 installFeature.option-key.--verbose=\ \ \ \ --verbose
 installFeature.option-desc.--verbose=\tZobrazte dal\u0161\u00ed informace o lad\u011bn\u00ed p\u0159i spu\u0161t\u011bn\u00ed akce.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
+installFeature.option-key.--acceptLicense=\ \ \ \ --acceptLicense
+installFeature.option-desc.--acceptLicense=\tAkceptuje licen\u010dn\u00ed smlouvu.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
 installFeature.option-key.--noCache=\ \ \ \ --noCache
 installFeature.option-desc.--noCache=\tFunkce nainstalovan\u00e9 ze vzd\u00e1len\u00e9ho \u00falo\u017ei\u0161t\u011b                          \n\
-\t(nap\u0159. Maven Central) se lok\u00e1ln\u011b neukl\u00e1daj\u00ed do mezipam\u011bti.
+\t(nap\u0159. centr\u00e1ln\u00ed \u00falo\u017ei\u0161t\u011b Maven) se lok\u00e1ln\u011b neukl\u00e1daj\u00ed do mezipam\u011bti.
 #--------- INSTALLSERVERFEATURES ACTION --------------------------------------#
 installServerFeatures.desc=\tNainstalujte po\u017eadovan\u00e9 funkce pro pojmenovan\u00fd server.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
@@ -62,6 +74,22 @@ installServerFeatures.option-desc.--from=\tPomoc\u00ed t\u00e9to volby m\u016f\u
 installServerFeatures.option-key.--verbose=\ \ \ \ --verbose
 installServerFeatures.option-desc.--verbose=\tZobrazte dal\u0161\u00ed informace o lad\u011bn\u00ed p\u0159i spu\u0161t\u011bn\u00ed akce.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
+installServerFeatures.option-key.--acceptLicense=\ \ \ \ --acceptLicense
+installServerFeatures.option-desc.--acceptLicense=\tAkceptuje licen\u010dn\u00ed smlouvu.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
 installServerFeatures.option-key.--noCache=\ \ \ \ --noCache
 installServerFeatures.option-desc.--noCache=\tFunkce nainstalovan\u00e9 ze vzd\u00e1len\u00e9ho \u00falo\u017ei\u0161t\u011b                          \n\
-\t(nap\u0159. Maven Central) se lok\u00e1ln\u011b neukl\u00e1daj\u00ed do mezipam\u011bti.
+\t(nap\u0159. centr\u00e1ln\u00ed \u00falo\u017ei\u0161t\u011b Maven) se lok\u00e1ln\u011b neukl\u00e1daj\u00ed do mezipam\u011bti.
+#--------- FIND ACTION ------------------------------------------------#
+find.desc=\tVyhledejte funkce z \u00falo\u017ei\u0161\u0165.
+#--------- OPTIONS ----------------------------------------------------#
+find.option-key.[searchString]=\ \ \ \ searchString
+find.option-desc.[searchString]=\tPomoc\u00ed hledan\u00e9ho \u0159et\u011bzce najd\u011bte funkce v \u00falo\u017ei\u0161t\u00edch.
+#--------- VIEWSETTINGS ACTION ----------------------------------------#
+viewSettings.desc=\tZobrazte \u00falo\u017ei\u0161t\u011b a nastaven\u00ed serveru proxy.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+viewSettings.option-key.--viewValidationMessages=\ \ \ \ --viewValidationMessages
+viewSettings.option-desc.--viewValidationMessages=\tPomoc\u00ed t\u00e9to volby m\u016f\u017eete zobrazit podrobn\u00e9 zpr\u00e1vy z \n\
+\tov\u011b\u0159en\u00ed platnosti nakonfigurovan\u00e9ho souboru featureUtility.properties.    \n\
+\tKa\u017ed\u00e1 zpr\u00e1va obsahuje k\u00f3d chyby, \u010d\u00edslo \u0159\u00e1dku, kde se tato chyba \n\
+\tvyskytla a jej\u00ed p\u0159\u00ed\u010dinu.

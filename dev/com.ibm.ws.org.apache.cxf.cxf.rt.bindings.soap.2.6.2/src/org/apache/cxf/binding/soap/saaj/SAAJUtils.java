@@ -33,11 +33,16 @@ import javax.xml.soap.SOAPMessage;
 import org.w3c.dom.Element;
 
 import org.apache.cxf.common.util.StringUtils;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.apache.cxf.common.logging.LogUtils;
 
 /**
  *
  */
 public final class SAAJUtils {
+
+    private static final Logger LOG = LogUtils.getL7dLogger(SAAJUtils.class); 
 
     private SAAJUtils() {
         //not constructed
@@ -70,10 +75,19 @@ public final class SAAJUtils {
                 count++;
                 pfx = "fc" + count;
             }
-            f.addNamespaceDeclaration(pfx, code.getNamespaceURI());
+
+	    // if no namespace URI is specified, don't call addNamespaceDeclaration(), it will fail
+	    // with IllegalArgumentException: WSWS3382E
+	    String xmlNS = code.getNamespaceURI();
+	    if (xmlNS == null || xmlNS.length() == 0) {
+	       // Log message and ignore
+	       LOG.log(Level.FINE, "The prefix is: " + pfx + "  but there is no namespace.");
+            }
+	    else {
+                f.addNamespaceDeclaration(pfx, xmlNS);
+	    }
             f.setFaultCode(pfx + ":" + code.getLocalPart());
         }
-        
     }
 
     public static Element adjustPrefix(Element e, String prefix) {

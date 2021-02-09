@@ -83,11 +83,22 @@ public final class URITemplate {
             } else if (chunk instanceof Variable) {
                 Variable var = (Variable) chunk;
                 variables.add(var.getName());
-                if (var.getPattern() != null) {
+                // Liberty change begin
+                String pattern = var.getPattern();
+                if (pattern != null) {
                     customVariables.add(var.getName());
-                    patternBuilder.append('(');
-                    patternBuilder.append(var.getPattern());
-                    patternBuilder.append(')');
+                    // #11893 Add parenthesis to the pattern to identify a regex in the pattern, 
+                    // however do not add them if they already exist since that will cause the Matcher
+                    // to create extraneous values.  Parens identify a group so multiple parens would
+                    // indicate multiple groups.
+                    if (pattern.startsWith("(") && pattern.endsWith(")")) {
+                        patternBuilder.append(pattern);
+                    } else {
+                        patternBuilder.append('(');
+                        patternBuilder.append(pattern);
+                        patternBuilder.append(')');
+                    }
+                    //Liberty change end
                 } else {
                     patternBuilder.append(DEFAULT_PATH_VARIABLE_REGEX);
                 }

@@ -1,0 +1,93 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/EntityManagerSetupExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+28001=\u5617\u8a66\u5efa\u7acb\u968e\u6bb5\u4f5c\u696d [{0}] \u6642\uff0c\u64f2\u51fa ValidationException\u3002\u9019\u500b\u554f\u984c\u6700\u6709\u53ef\u80fd\u7684\u539f\u56e0\u662f\uff0c\u60a8\u7684 [{1}] \u6a94\u6848\u4e0d\u5728\u985e\u5225\u8def\u5f91\u4e0a\uff0c\u6216\u662f\u6c92\u6709\u5305\u542b\u7a31\u70ba [{0}] \u7684\u968e\u6bb5\u4f5c\u696d\u3002
+
+28002=EclipseLink \u6b63\u5728\u5617\u8a66\u5f9e [{1}] \u8f09\u5165\u540d\u70ba [{0}] \u7684 ServerSession\uff0c\u800c\u4e0d\u662f\u53d6\u5f97 ServerSession\u3002
+
+28003=EclipseLink \u5df2\u5f9e [{1}] \u8f09\u5165\u968e\u6bb5\u4f5c\u696d [{0}]\uff0c\u800c\u5b83\u6c92\u6709\u6307\u5b9a\u4f3a\u670d\u5668\u5e73\u53f0\uff0c\u6216\u662f\u6307\u5b9a\u4e86\u672a\u4f7f\u7528\u7684\u4f3a\u670d\u5668\u5e73\u53f0\u548c\u5916\u90e8\u4ea4\u6613\u63a7\u5236\u5668\u3002\u5982\u679c\u60a8\u8a08\u5283\u8981\u4f7f\u7528 JTA\uff0c\u8acb\u6307\u5b9a\u9069\u7576\u7684\u4f3a\u670d\u5668\u5e73\u53f0\u3002
+
+28004=\u8a2d\u5b9a EntityManager Factory \u6642\uff0c\u767c\u751f\u932f\u8aa4\uff1aJavaSECMPInitializer.initializeFromMain \u50b3\u56de false\u3002
+
+28005=\u8a2d\u5b9a EntityManager Factory \u6642\uff0c\u64f2\u51fa\u7570\u5e38\u72c0\u6cc1\u3002
+
+28006=ClassNotFound\uff1a\u6307\u5b9a\u5728 [{1}] \u5167\u5bb9\u4e2d\u7684 [{0}]\u3002
+
+28007=\u7121\u6cd5\u5c07 [{1}] \u5167\u5bb9\u4e2d\u6307\u5b9a\u4e4b\u985e\u578b [{0}] \u7684 ServerPlatform \u5be6\u4f8b\u5316\u3002
+
+28008=\u5728\u8655\u7406\u8a3b\u91cb\u6642\uff0c\u627e\u4e0d\u5230\u985e\u5225 {0}\u3002
+
+28009=\u5df2\u5617\u8a66\u91cd\u65b0\u90e8\u7f72\u540d\u70ba {0} \u7684\u968e\u6bb5\u4f5c\u696d\uff0c\u800c\u6c92\u6709\u5c07\u5b83\u95dc\u9589\u3002
+
+28010=PersistenceUnitInfo {0} \u5177\u6709 transactionType JTA\uff0c\u4f46\u672a\u5b9a\u7fa9 jtaDataSource\u3002
+
+28011=\u5728\u90e8\u7f72\u70ba\u6301\u7e8c\u6027\u55ae\u5143\u5efa\u7f6e\u7684\u968e\u6bb5\u4f5c\u696d [{0}] \u6642\uff0c\u7121\u6cd5\u4f7f\u7528\u8a72\u968e\u6bb5\u4f5c\u696d\u3002\u9019\u8868\u793a\u5728\u90e8\u7f72\u7a0b\u5e8f\u4e2d\u9014\uff0c\u8a72\u968e\u6bb5\u4f5c\u696d\u56e0\u4e0d\u660e\u539f\u56e0\u5f9e\u5132\u5b58\u5668\u4e2d\u79fb\u9664\u4e86\u3002
+
+28012=\u503c [{0}] \u7684\u985e\u578b\u5c0d\u5167\u5bb9 [{2}] \u800c\u8a00\u4e0d\u6b63\u78ba\uff0c\u503c\u985e\u578b\u61c9\u70ba [{1}]\u3002
+
+28013=\u7121\u6cd5\u5728\u7121\u6548\u7684\u72c0\u614b [{1}] \u4e0b\u90e8\u7f72 PersistenceUnit [{0}]\u3002
+
+28014=\u8655\u7406\u503c\u70ba [{1}] \u7684\u5167\u5bb9 [{0}] \u6642\uff0c\u64f2\u51fa\u7570\u5e38\u72c0\u6cc1\u3002
+
+28015=\u7121\u6cd5\u5c07 [{1}] \u5167\u5bb9\u4e2d\u6307\u5b9a\u4e4b\u985e\u578b\u70ba [{0}] \u7684 SessionLog \u5be6\u4f8b\u5316\u3002
+
+28016=\u540d\u70ba [{0}] \u7684\u6301\u7e8c\u6027\u55ae\u5143\u4e0d\u5b58\u5728\u3002
+
+28017=\u7121\u6cd5\u5728\u7121\u6548\u7684\u72c0\u614b [{1}] \u4e0b\u9810\u5148\u90e8\u7f72 PersistenceUnit [{0}]\u3002
+
+28018=\u9810\u5148\u90e8\u7f72 PersistenceUnit [{0}] \u5931\u6557\u3002
+
+28019=\u90e8\u7f72 PersistenceUnit [{0}] \u5931\u6557\u3002\u8acb\u95dc\u9589\u9019\u500b PersistenceUnit \u7684\u6240\u6709 Factory\u3002
+
+28020=\u5f9e [{1}] \u8f09\u5165\u4e14\u540d\u70ba [{0}] \u7684\u968e\u6bb5\u4f5c\u696d\u70ba [{2}]\uff0c\u4f46\u5176\u5fc5\u9808\u70ba ServerSession\u3002
+
+28021=PersistenceUnit [{0}] \u5617\u8a66\u5f9e [{1}] \u8f09\u5165\u968e\u6bb5\u4f5c\u696d\uff0c\u4f46\u672a\u63d0\u4f9b\u968e\u6bb5\u4f5c\u696d\u540d\u7a31\u3002\u61c9\u5b9a\u7fa9 eclipselink.session-name \u5167\u5bb9\u4f86\u63d0\u4f9b\u968e\u6bb5\u4f5c\u696d\u540d\u7a31\u3002
+
+28022=\u7576\u5ee3\u57df\u8a2d\u5099\u6e2c\u8a66\u662f\u7a7a\u503c\u6642\uff0c\u5167\u5bb9 [eclipselink.weaving] \u7684\u503c [true] \u4e0d\u6b63\u78ba\uff0c\u8a72\u503c\u61c9\u70ba\u7a7a\u503c\u3001false \u6216 static\u3002
+
+28023=\u5728\u7269\u4ef6 [{1}]\uff08\u985e\u5225 [{2}]\uff09\u4e0a\u547c\u53eb\u65b9\u6cd5 [{0}] \u5df2\u89f8\u767c\u7570\u5e38\u72c0\u6cc1\u3002
+
+28024=\u7121\u6cd5\u4ee5\u53cd\u5c04\u65b9\u5f0f\u5b58\u53d6\u7269\u4ef6 [{1}]\uff08\u985e\u5225 [{2}]\uff09\u7684\u65b9\u6cd5 [{0}]\u3002
+
+28025=\u540d\u70ba [{0}] \u7684\u6301\u7e8c\u6027\u55ae\u5143\u5df2\u50b3\u56de [null] \u66ab\u6642\u985e\u5225\u8f09\u5165\u5668 - \u5df2\u505c\u7528\u6b64\u968e\u6bb5\u4f5c\u696d\u7684\u7de8\u6392\u3002\u60a8\u53ef\u4ee5\u4f7f\u7528\u975c\u614b\u7de8\u6392\u4f5c\u70ba\u9078\u7528\u7684\u66ab\u884c\u89e3\u6c7a\u65b9\u6cd5\u3002
+
+28026=org.eclipse.persistence.jpa.osgi.PersistenceProvider \u4e0d\u652f\u63f4\u5132\u5b58\u5668\u90e8\u7f72 (createContainerEntityManagerFactory)\u3002\u8acb\u6539\u7528 org.eclipse.persistence.jpa.PersistenceProvider\u3002
+
+28027=\u5617\u8a66\u4f7f\u7528 PersistenceUnit [{0}]\uff0c\u4f46\u6c92\u6709\u53ef\u7528\u4f86\u5b9a\u7fa9\u8a72\u6301\u7e8c\u6027\u55ae\u5143\u7684\u8edf\u9ad4\u7d44\u3002
+
+28028=\u7121\u6cd5\u5c07\u6301\u7e8c\u6027\u55ae\u5143\u5167\u5bb9 [{1}] \u7684\u985e\u5225\u5be6\u4f8b [{0}] \u5be6\u4f8b\u5316\uff0c\u8acb\u78ba\u5b9a\u5efa\u69cb\u5b50\u5b9a\u7fa9\u6b63\u78ba\u3002
+
+28029=PersistenceUnit [{0}] \u5617\u8a66\u4f7f\u7528 sessions.xml\uff08\u6307\u5b9a eclipselink.sessions-xml \u5167\u5bb9\uff09\uff0c\u4e26\u4f5c\u70ba\u8907\u5408\u6210\u54e1\uff08\u4ee5\u503c true \u4f86\u6307\u5b9a eclipselink.composite-unit \u5167\u5bb9\uff09\u3002\u9019\u4e9b\u6a21\u5f0f\u4e0d\u76f8\u5bb9\u3002
+
+28030=PersistenceUnit [{0}] \u4ee5\u503c true \u4f86\u6307\u5b9a eclipselink.composite-unit.member \u5167\u5bb9\u3002\u9019\u8868\u793a\u5176\u7121\u6cd5\u7368\u7acb\u4f7f\u7528\uff0c\u53ea\u80fd\u4f5c\u70ba\u8907\u5408\u6210\u54e1\u3002
+
+28031=\u907a\u6f0f\u5fc5\u8981\u5167\u5bb9 [{0}]\u3002
+
+28032=\u7121\u6cd5\u4ee5 doPrivileged \u5efa\u7acb\u66ab\u6642\u985e\u5225\u8f09\u5165\u5668\u3002
+

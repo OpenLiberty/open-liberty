@@ -23,11 +23,11 @@
 
 
 
-warning.jaxrs.ejb.resource.mismatch=CWWKW1100W: Zasi\u0119g {1} zasobu JAXRS-2.0 {0} nie jest zgodny z zasi\u0119giem komponentu EJB {2}. Profil Liberty pobiera instancje zasob\u00f3w z {3}.
-warning.jaxrs.ejb.resource.mismatch.explanation=Je\u015bli zasi\u0119g zasobu JAXRS-2.0 nie jest zgodny z zasi\u0119giem komponentu EJB, a instancja zasobu istnieje w komponencie EJB, profil Liberty pobiera instancj\u0119 zasobu z komponentu EJB.
+warning.jaxrs.ejb.resource.mismatch=CWWKW1100W: Zasi\u0119g {1} zasobu JAXRS {0} nie jest zgodny z zasi\u0119giem komponentu EJB {2}. Profil Liberty pobiera instancje zasob\u00f3w z {3}.
+warning.jaxrs.ejb.resource.mismatch.explanation=Je\u015bli zasi\u0119g zasobu JAXRS nie jest zgodny z zasi\u0119giem komponentu EJB, a instancja zasobu istnieje w komponencie EJB, profil Liberty pobiera instancj\u0119 zasobu z komponentu EJB.
 warning.jaxrs.ejb.resource.mismatch.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107. 
 
-warning.jaxrs.ejb.provider.mismatch=CWWKW1102W: Zasi\u0119g komponentu EJB dostawcy JAXRS-2.0 {0} ma warto\u015b\u0107 {1}. Profil Liberty pobiera instancj\u0119 dostawcy z {2}.
+warning.jaxrs.ejb.provider.mismatch=CWWKW1102W: Zasi\u0119g komponentu EJB dostawcy JAXRS {0} to {1}. Profil Liberty pobiera instancj\u0119 dostawcy z {2}.
 warning.jaxrs.ejb.provider.mismatch.explanation=Instancja dostawcy jest tylko typu Singleton. Profil Liberty pobiera instancje dostawcy z komponentu EJB, je\u015bli zasi\u0119g komponentu EJB dostawcy ma warto\u015b\u0107 Dependent or ApplicationScoped.
 warning.jaxrs.ejb.provider.mismatch.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
 

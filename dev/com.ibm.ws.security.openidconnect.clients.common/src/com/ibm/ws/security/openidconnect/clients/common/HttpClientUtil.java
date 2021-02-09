@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.clients.common;
 
@@ -47,7 +47,7 @@ public class HttpClientUtil {
             try {
                 sslSocketFactory = sslSupport.getSSLSocketFactory(sslConfigurationName);
             } catch (javax.net.ssl.SSLException e) {
-                throw new SSLException(e.getMessage());
+                throw new SSLException(e);
             }
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "sslSocketFactory (" + ") get: " + sslSocketFactory);

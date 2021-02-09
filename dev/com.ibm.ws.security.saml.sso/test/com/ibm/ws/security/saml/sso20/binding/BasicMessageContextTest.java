@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -58,6 +59,7 @@ import com.ibm.ws.security.saml.SsoRequest;
 import com.ibm.ws.security.saml.SsoSamlService;
 import com.ibm.ws.security.saml.error.SamlException;
 import com.ibm.ws.security.saml.sso20.internal.utils.ForwardRequestInfo;
+import com.ibm.ws.security.saml.sso20.internal.utils.InitialRequestUtil;
 import com.ibm.ws.security.saml.sso20.metadata.AcsDOMMetadataProvider;
 
 import test.common.SharedOutputManager;
@@ -91,6 +93,7 @@ public class BasicMessageContextTest {
     private static final XMLObject xmlObject = mockery.mock(XMLObject.class);
     private static final HttpServletRequestAdapter httpServletRequestAdapter = mockery.mock(HttpServletRequestAdapter.class);
     private static final HttpServletRequest httpServletRequest = mockery.mock(HttpServletRequest.class);
+    private static final HttpServletResponse httpServletResponse = mockery.mock(HttpServletResponse.class);
     private static final Response response = mockery.mock(Response.class);
     private static final Issuer issuer = mockery.mock(Issuer.class);
     private static final EntityDescriptor entityDescriptor = mockery.mock(EntityDescriptor.class);
@@ -100,6 +103,8 @@ public class BasicMessageContextTest {
 
     private static BasicMessageContext instance;
     private static Element finalElement;
+    
+    private static final InitialRequestUtil irutil = mockery.mock(InitialRequestUtil.class);
 
     private final String RELAY_STATE = "RPID%3Dhttps%253A%252F%252Frelyingpartyapp%26wctx%3Dappid%253D45%2526foo%253Dbar";
     private final String CACHE_VALUE = "s%253A%252F%252Frelyingpartyapp%26wctx%3Dappid%253D45%2526foo%253Dbar";
@@ -431,6 +436,7 @@ public class BasicMessageContextTest {
                 will(returnValue(requestInfo));
 
                 one(cache).remove(CACHE_VALUE);
+        
             }
         });
 
@@ -439,6 +445,7 @@ public class BasicMessageContextTest {
 
     @Test(expected = SamlException.class)
     public void setAndRemoveCachedRequestInfoNullTest() throws SamlException {
+        
         mockery.checking(new Expectations() {
             {
                 one(ssoRequest).getProviderName();
@@ -449,9 +456,13 @@ public class BasicMessageContextTest {
 
                 one(cache).get(CACHE_VALUE);
                 will(returnValue(null));
+                
+                one(irutil).recreateHttpRequestInfo(RELAY_STATE, null, null, ssoService);
+                will(throwException(new SamlException("")));
+                             
             }
         });
-
+        instance.irUtil = irutil;
         instance.setAndRemoveCachedRequestInfo(RELAY_STATE, ssoRequest);
     }
 

@@ -219,7 +219,10 @@ public class BootstrapConfigTest {
         file.deleteOnExit();
 
         TestBootstrapConfig bc = new TestBootstrapConfig();
-        bc.findLocations(testName.getMethodName(), file.getAbsolutePath(), null, null, null);
+        BootstrapLocations locations = new BootstrapLocations();
+        locations.setProcessName(testName.getMethodName());
+        locations.setServerDir(file.getAbsolutePath());
+        bc.findLocations(locations);
     }
 
     /**
@@ -232,7 +235,8 @@ public class BootstrapConfigTest {
         try {
 
             bc = new TestBootstrapConfig();
-            bc.findLocations(null, null, null, null, null);
+            BootstrapLocations locations = new BootstrapLocations();
+            bc.findLocations(locations);
 
             bc.printLocations(false); // print locations: no formatting
             assertTrue("Bootstrap lib dir should be a directory (not a jar)", bc.bootstrapLib.isDirectory());
@@ -247,7 +251,9 @@ public class BootstrapConfigTest {
             assertSame("A: outputDir should be same as configDir", bc.configDir, bc.outputDir);
 
             bc = new TestBootstrapConfig();
-            bc.findLocations(testName.getMethodName(), test1.getAbsolutePath(), null, null, null);
+            locations.setProcessName(testName.getMethodName());
+            locations.setUserDir(test1.getAbsolutePath());
+            bc.findLocations(locations);
 
             checkDirs("B", bc);
             assertEquals("B: userRoot should match userDir parameter", test1.getCanonicalFile(), bc.userRoot.getCanonicalFile());
@@ -262,7 +268,10 @@ public class BootstrapConfigTest {
             // Now test for the output dir split: we now have two trees... (one shorter
             // than the other.. )
             bc = new TestBootstrapConfig();
-            bc.findLocations(testName.getMethodName(), null, test1.getAbsolutePath(), null, null);
+            locations = new BootstrapLocations();
+            locations.setProcessName(testName.getMethodName());
+            locations.setServerDir(test1.getAbsolutePath());
+            bc.findLocations(locations);
 
             checkDirs("C", bc);
             assertEquals("C: userRoot should be child of installRoot", bc.installRoot, bc.userRoot.getParentFile());
@@ -278,7 +287,10 @@ public class BootstrapConfigTest {
 
             // Now test for a separate log directory
             bc = new TestBootstrapConfig();
-            bc.findLocations(testName.getMethodName(), null, null, test1.getAbsolutePath(), null);
+            locations = new BootstrapLocations();
+            locations.setProcessName(testName.getMethodName());
+            locations.setLogDir(test1.getAbsolutePath());
+            bc.findLocations(locations);
 
             checkDirs("D", bc);
             assertEquals("D: userRoot should be child of installRoot", bc.installRoot, bc.userRoot.getParentFile());
@@ -298,7 +310,9 @@ public class BootstrapConfigTest {
             System.setProperty(BootstrapConstants.LOC_PROPERTY_INSTANCE_DIR, test1.getAbsolutePath());
             bc = new TestBootstrapConfig();
             // configure(map, userDir, outputDir, logDir)
-            bc.findLocations(testName.getMethodName(), null, null, null, null);
+            locations = new BootstrapLocations();
+            locations.setProcessName(testName.getMethodName());
+            bc.findLocations(locations);
 
             // This set should be identical to the conditions used in A (i.e. the defaults,
             //  as null is passed in as a parameters)
@@ -311,7 +325,10 @@ public class BootstrapConfigTest {
 
             // Embedded workarea for utilities
             bc = new TestBootstrapConfig();
-            bc.findLocations(testName.getMethodName(), null, null, null, null, BootstrapConstants.LOC_AREA_NAME_WORKING_UTILS);
+            locations = new BootstrapLocations();
+            locations.setProcessName(testName.getMethodName());
+            locations.setWorkAreaDir(BootstrapConstants.LOC_AREA_NAME_WORKING_UTILS);
+            bc.findLocations(locations);
             assertTrue("F: workarea should be child of outputDir/workarea: ", new File(bc.outputDir, "workarea").equals(bc.workarea.getParentFile()));
 
         } finally {
@@ -360,7 +377,10 @@ public class BootstrapConfigTest {
         File serverDir = new File(usrDir, "servers" + File.separatorChar + serverName);
         TestUtils.cleanTempFiles(serverDir);
         bc = new BootstrapConfig();
-        bc.findLocations(serverName, Constants.TEST_TMP_ROOT, null, null, null);
+        BootstrapLocations locations = new BootstrapLocations();
+        locations.setProcessName(serverName);
+        locations.setUserDir(Constants.TEST_TMP_ROOT);
+        bc.findLocations(locations);
         return bc;
     }
 
@@ -656,7 +676,10 @@ public class BootstrapConfigTest {
 
             // Find the new server (includes mapping to canonical name, etc.)
             bc = new BootstrapConfig();
-            bc.findLocations("newServer", Constants.TEST_TMP_ROOT, null, null, null);
+            BootstrapLocations locations = new BootstrapLocations();
+            locations.setUserDir(Constants.TEST_TMP_ROOT);
+            locations.setProcessName("newServer");
+            bc.findLocations(locations);
             System.out.println(newServerDir.toURI().toString());
 
             // Invoke configure with property indicating that the server should be created
@@ -692,7 +715,10 @@ public class BootstrapConfigTest {
 
             //Create bootstrap props to make a new server from.
             bc = new ServerEnvTestBootstrapConfig(serverEnv, initProps);
-            bc.findLocations("newEnvServer", Constants.TEST_TMP_ROOT, null, null, null);
+            BootstrapLocations locations = new BootstrapLocations();
+            locations.setProcessName("newEnvServer");
+            locations.setUserDir(Constants.TEST_TMP_ROOT);
+            bc.findLocations(locations);
             System.out.println(newServerDir.toURI().toString());
 
             // Invoke configure with property indicating that the server should be created
@@ -742,7 +768,10 @@ public class BootstrapConfigTest {
 
             //Create bootstrap props to make a new server from.
             bc = new ServerEnvTestBootstrapConfig(serverEnv, initProps);
-            bc.findLocations("newEnvServer", Constants.TEST_TMP_ROOT, null, null, null);
+            BootstrapLocations locations = new BootstrapLocations();
+            locations.setProcessName("newEnvServer");
+            locations.setUserDir(Constants.TEST_TMP_ROOT);
+            bc.findLocations(locations);
             System.out.println(newServerDir.toURI().toString());
 
             // Invoke configure with property indicating that the server should be created
@@ -790,7 +819,10 @@ public class BootstrapConfigTest {
 
             // find locations first
             bc = new BootstrapConfig();
-            bc.findLocations("newServer", Constants.TEST_TMP_ROOT, null, null, null);
+            BootstrapLocations locations = new BootstrapLocations();
+            locations.setProcessName("newServer");
+            locations.setUserDir(Constants.TEST_TMP_ROOT);
+            bc.findLocations(locations);
 
             // configure / create the server
             initProps.clear();
@@ -801,7 +833,10 @@ public class BootstrapConfigTest {
 
             // Configure a server named "newserver".
             bc = new BootstrapConfig();
-            bc.findLocations("newserver", Constants.TEST_TMP_ROOT, null, null, null);
+            locations = new BootstrapLocations();
+            locations.setProcessName("newserver");
+            locations.setUserDir(Constants.TEST_TMP_ROOT);
+            bc.findLocations(locations);
             bc.verifyProcess(VerifyServer.CREATE_DEFAULT, null);
 
             initProps.clear();

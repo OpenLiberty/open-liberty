@@ -1,0 +1,40 @@
+#*******************************************************************************
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/rejar.props
+bVersion=1.0
+
+Bundle-Name: Apache CXF Runtime WS MetadataExchange
+Bundle-Description: Apache CXF Runtime WS MetadataExchange, version 3.3.7
+Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.rt.ws.mex.3.3.7
+Bundle-ActivationPolicy: lazy
+
+cxfVersion=3.3.7
+Export-Package: \
+ org.apache.cxf.*;version=${cxfVersion}
+
+Import-Package: \
+ javax.xml.bind.*, \
+ javax.xml.ws.*, \
+ !org.springframework.*;resolution:=optional, \
+ !org.apache.aries.*, \
+ !org.osgi.service.blueprint.*, \
+ org.apache.cxf.*;version="[3.2.4,4.0)", \
+ *
+
+DynamicImport-Package: org.apache.cxf.bus, \
+ org.apache.cxf.*
+
+Include-Resource:\
+  @${repo;org.apache.cxf:cxf-rt-ws-mex;3.3.7;EXACT}!/META-INF/DEPENDENCIES, \
+  @${repo;org.apache.cxf:cxf-rt-ws-mex;3.3.7;EXACT}!/META-INF/LICENSE, \
+  @${repo;org.apache.cxf:cxf-rt-ws-mex;3.3.7;EXACT}!/META-INF/NOTICE, \
+  @${repo;org.apache.cxf:cxf-rt-ws-mex;3.3.7;EXACT}!/META-INF/cxf/*
+

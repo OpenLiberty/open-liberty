@@ -130,6 +130,9 @@ public class JaxRsFactoryImplicitBeanCDICustomizer implements JaxRsFactoryBeanCu
         if (newContext.containsKey(clazz)) {
             return true;
         }
+        if (cdiService == null) {
+            return false;
+        }
         if (cdiService.isWeldProxy(clazz)) {
             return true;
         }
@@ -250,7 +253,12 @@ public class JaxRsFactoryImplicitBeanCDICustomizer implements JaxRsFactoryBeanCu
         //end temp fix
         Map<Class<?>, ManagedObject<?>> newContext = (Map<Class<?>, ManagedObject<?>>) (context);
 
-        ManagedObject<T> newServiceObject = (ManagedObject<T>) getClassFromServiceObject(clazz, serviceObject);
+        ManagedObject<T> newServiceObject = null;
+        if (cdiService.isWeldProxy(clazz)) {
+            newServiceObject = (ManagedObject<T>) getClassFromServiceObject(clazz, serviceObject);
+        } else {
+            newServiceObject = (ManagedObject<T>) getClassFromManagedObject(clazz);
+        }
         if (newServiceObject != null) {
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {

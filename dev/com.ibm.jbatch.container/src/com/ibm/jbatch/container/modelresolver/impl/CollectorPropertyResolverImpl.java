@@ -16,9 +16,11 @@
  */
 package com.ibm.jbatch.container.modelresolver.impl;
 
+import java.util.List;
 import java.util.Properties;
 
 import com.ibm.jbatch.jsl.model.Collector;
+import com.ibm.jbatch.jsl.model.Property;
 
 
 public class CollectorPropertyResolverImpl extends AbstractPropertyResolver<Collector> {
@@ -46,7 +48,7 @@ public class CollectorPropertyResolverImpl extends AbstractPropertyResolver<Coll
 
         // Resolve all the properties defined for this artifact
         if (collector.getProperties() != null) {
-            this.resolveElementProperties(collector.getProperties().getPropertyList(), submittedProps, parentProps);
+            this.resolveElementProperties((List<Property>) collector.getProperties().getPropertyList(), submittedProps, parentProps);
         }
 
         return collector;

@@ -17,6 +17,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.Socket;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
@@ -79,6 +81,19 @@ public final class WSX509TrustManager extends X509ExtendedTrustManager {
     private final ConsoleWrapper stdin;
     private final PrintStream stdout;
     private TrustManager[] cacertsTM = null;
+
+    private static String getSystemProperty(String propName) {
+        if (System.getSecurityManager() == null) {
+            return System.getProperty(propName);
+        }
+        return AccessController.doPrivileged(new PrivilegedAction<String>() {
+
+            @Override
+            public String run() {
+                return System.getProperty(propName);
+            }
+        });
+    }
 
     /*
      * Constructor for unittesting
@@ -159,7 +174,7 @@ public final class WSX509TrustManager extends X509ExtendedTrustManager {
     private boolean getAutoAccept() {
         boolean acceptCert = false;
 
-        String acceptProperty = System.getProperty("autoAcceptSignerCertificate");
+        String acceptProperty = getSystemProperty("autoAcceptSignerCertificate");
         if (acceptProperty != null) {
             acceptCert = Boolean.valueOf(acceptProperty);
         }
@@ -615,7 +630,7 @@ public final class WSX509TrustManager extends X509ExtendedTrustManager {
             // if client process, get system prop first, global prop second,
             // then sslconfig or keystore prop third (for override compatibility)
             if (!processIsServer) {
-                value = System.getProperty(propertyName);
+                value = getSystemProperty(propertyName);
 
                 if (value == null) {
                     value = SSLConfigManager.getInstance().getGlobalProperty(propertyName);
@@ -626,7 +641,7 @@ public final class WSX509TrustManager extends X509ExtendedTrustManager {
                 value = prop.getProperty(propertyName);
             }
         } else {
-            value = System.getProperty(propertyName);
+            value = getSystemProperty(propertyName);
 
             if (value == null) {
                 value = SSLConfigManager.getInstance().getGlobalProperty(propertyName);

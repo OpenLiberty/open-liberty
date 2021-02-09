@@ -23,17 +23,17 @@ import java.net.URL;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
+import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.HttpUtils;
 import test.utils.TestUtils;
 
-/**
- *
- */
+@RunWith(FATRunner.class)
 public class AutoExtractTest extends AbstractAppManagerTest {
 
     // Our tests delete binaries while they are still defined in server.xml, so we expect this warning.

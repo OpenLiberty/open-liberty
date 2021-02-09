@@ -24,7 +24,7 @@ SUBJECT_MAPPING_MISSING_ATTR=CWWKS6102E: \u017d\u00e1dost o ov\u011b\u0159en\u00
 SUBJECT_MAPPING_MISSING_ATTR.explanation=Informace o ov\u011b\u0159en\u00e9m u\u017eivateli neobsahuj\u00ed uveden\u00fd n\u00e1rok k identifikaci pojmenovan\u00e9ho atributu a b\u011bhov\u00fd modul nem\u016f\u017ee pokra\u010dovat v procesu ov\u011b\u0159en\u00ed.
 SUBJECT_MAPPING_MISSING_ATTR.useraction=Prove\u010fte jednu z n\u00e1sleduj\u00edc\u00edch akc\u00ed: 1) Zkontrolujte, zda konfigurace klienta pro soci\u00e1ln\u00ed p\u0159ihl\u00e1\u0161en\u00ed m\u016f\u017ee ur\u010dit jin\u00fd n\u00e1rok jako atribut. 2) Ov\u011b\u0159te, \u017ee poskytovatel emituje informace o ov\u011b\u0159en\u00e9m u\u017eivateli s uveden\u00fdm n\u00e1rokem.
 
-ERROR_AUTHENTICATE=CWWKS6103E: P\u0159edm\u011bt zabezpe\u010den\u00ed nelze pro u\u017eivatele {0} vytvo\u0159it.
+ERROR_AUTHENTICATE=CWWKS6103E: P\u0159edm\u011bt zabezpe\u010den\u00ed nelze pro u\u017eivatele {0} vytvo\u0159it. {1}
 ERROR_AUTHENTICATE.explanation=U\u017eivatele nelze ov\u011b\u0159it. 
 ERROR_AUTHENTICATE.useraction=Zkontrolujte, zda u\u017eivatel v registru existuje a zda heslo nebo jin\u00e1 pov\u011b\u0159en\u00ed jsou spr\u00e1vn\u00e9.
 

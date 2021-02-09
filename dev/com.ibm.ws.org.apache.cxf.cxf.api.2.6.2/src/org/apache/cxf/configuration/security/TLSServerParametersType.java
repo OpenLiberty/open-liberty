@@ -13,6 +13,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 
 /**
  * <p>Java class for TLSServerParametersType complex type.
@@ -46,6 +48,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "TLSServerParametersType", propOrder = {
 
 })
+@Trivial
 public class TLSServerParametersType {
 
     protected KeyManagersType keyManagers;

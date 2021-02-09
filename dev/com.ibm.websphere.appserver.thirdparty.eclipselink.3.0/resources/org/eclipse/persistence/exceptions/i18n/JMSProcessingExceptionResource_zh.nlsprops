@@ -1,0 +1,37 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/JMSProcessingExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+18001=\u5904\u7406\u5165\u5c40 JMS \u6d88\u606f\u65f6\u53d1\u751f\u9519\u8bef
+
+18002=\u5fc5\u987b\u5728 JMSClusteringService \u4e2d\u8bbe\u7f6e\u7528\u4e8e\u4f1a\u8bdd\u4e92\u8fde\u7684 JMS \u670d\u52a1\u4e2d\u521b\u5efa\u7684\u4e3b\u9898
+
+18003=\u672a\u80fd\u67e5\u627e\u4f1a\u8bdd\u7684\u540d\u79f0\uff08\u5c06\u5176\u5b9a\u4e49\u4e3a\u6d88\u606f\u9a71\u52a8 Bean \u7684 env-entry \u5143\u7d20\uff09
+
+18004=\u6d88\u606f\u9a71\u52a8 Bean (MDB) \u627e\u4e0d\u5230\u8be5\u4f1a\u8bdd\u3002MDB getSession() \u65b9\u6cd5\u5fc5\u987b\u8fd4\u56de\u975e\u7a7a\u4f1a\u8bdd\u3002
+

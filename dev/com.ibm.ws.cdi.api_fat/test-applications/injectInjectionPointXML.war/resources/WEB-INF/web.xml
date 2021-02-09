@@ -6,11 +6,11 @@
 
 	<display-name>Dependency Injection Test</display-name>
 	<servlet>
-		<servlet-name>InjectInjectionPointServlet</servlet-name>
-		<servlet-class>com.ibm.ws.fat.cdi.injectInjectionPointXML.InjectInjectionPointServlet</servlet-class>
+		<servlet-name>InjectInjectionPointXMLServlet</servlet-name>
+		<servlet-class>com.ibm.ws.fat.cdi.injectInjectionPointXML.InjectInjectionPointXMLServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>InjectInjectionPointServlet</servlet-name>
+		<servlet-name>InjectInjectionPointXMLServlet</servlet-name>
 		<url-pattern>/*</url-pattern>
 	</servlet-mapping>
 	<session-config>

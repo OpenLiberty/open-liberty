@@ -16,6 +16,8 @@ Bundle-Name: JAX-WS WebContainer
 Bundle-SymbolicName: com.ibm.ws.jaxws.webcontainer
 Bundle-Description: IBM JAX-WS Web Container; version=${bVersion}
 
+exportVer=2.2
+
 Service-Component: com.ibm.ws.jaxws.webcontainer.jaxWsWebContainerManager; \
      implementation:=com.ibm.ws.jaxws.webcontainer.JaxWsWebContainerManagerImpl; \
      provide:=com.ibm.ws.jaxws.support.JaxWsWebContainerManager; \
@@ -44,11 +46,12 @@ Service-Component: com.ibm.ws.jaxws.webcontainer.jaxWsWebContainerManager; \
   
 
 Export-Package: \
-    com.ibm.ws.jaxws.webcontainer
+    com.ibm.ws.jaxws.webcontainer;version=${exportVer}
 
 Import-Package: \
    javax.xml.ws.*;version="[2.2,3)", \
-   org.apache.cxf.*;version="[2.6.2,2.6.3)", \
+   com.ibm.ws.jaxws;version="[2.0,2.4)", \
+   com.ibm.ws.jaxws.*;version="[2.0,2.4)", \
    *
 
 Private-Package:\
@@ -79,3 +82,6 @@ instrument.classesExcludes: com/ibm/ws/jaxws/webcontainer/internal/resources/*.c
 	com.ibm.ws.managedobject;version=latest,\
 	com.ibm.ws.webcontainer;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+
+jakartaeeMe: true
+	

@@ -68,7 +68,7 @@ public final class ApplicationDependency implements CompletionListener<Boolean> 
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.threading.listeners.CompletionListener#successfulCompletion(java.util.concurrent.Future, java.lang.Object)
      */
     @Override
@@ -78,11 +78,25 @@ public final class ApplicationDependency implements CompletionListener<Boolean> 
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.threading.listeners.CompletionListener#failedCompletion(java.util.concurrent.Future, java.lang.Throwable)
      */
     @Override
     public void failedCompletion(Future<Boolean> future, Throwable t) {
         setResult(t);
+    }
+
+    @Override
+    public int hashCode() {
+        return desc.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        if ((obj != null) && (obj instanceof ApplicationDependency)) {
+            return desc.equals(((ApplicationDependency) obj).desc);
+        }
+        return false;
     }
 }

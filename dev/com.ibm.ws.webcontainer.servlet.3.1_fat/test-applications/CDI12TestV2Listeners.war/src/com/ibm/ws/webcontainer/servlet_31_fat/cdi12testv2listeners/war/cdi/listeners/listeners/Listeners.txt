@@ -1,0 +1,103 @@
+From http://docs.oracle.com/javaee/7/api/javax/servlet/annotation/WebListener.html:
+
+javax.servlet.annotation.WebbListener:
+
+This annotation is used to declare a WebListener. Any class annotated with
+WebListener must implement one or more of the
+
+ServletContextListener, ServletContextAttributeListener,
+ServletRequestListener, ServletRequestAttributeListener,
+HttpSessionListener, HttpSessionAttributeListener, or
+HttpSessionIdListener interfaces.
+
+===
+
+http://docs.oracle.com/cd/B14099_19/web.1012/b14017/filters.htm#i1000654
+
+From Table 3-1 Event Listener Categories and Interfaces
+
+Event
+Category
+Event Descriptions 
+
+---
+
+Servlet context lifecycle changes
+    
+Servlet context creation, at which point the first request can be serviced
+Imminent shutdown of the servlet context
+
+javax.servlet.ServletContextListener 
+
+---
+
+Servlet context attribute changes
+
+Addition of servlet context attributes
+Removal of servlet context attributes
+Replacement of servlet context attributes
+
+javax.servlet.ServletContextAttributeListener 
+
+---
+
+Session lifecycle changes
+
+Session creation
+Session invalidation
+Session timeout
+
+javax.servlet.http.HttpSessionListener 
+
+---
+
+Session attribute changes
+
+Addition of session attributes
+Removal of session attributes
+Replacement of session attributes
+
+javax.servlet.http.HttpSessionAttributeListener
+
+---
+
+javax.servlet.ServletContextListener 
+  com.ibm.ws.webcontainer_fat_servlet31/
+    test-applications/TestServlet31.war/src/
+      listeners/MyServletContextListener.java
+
+javax.servlet.ServletContextAttributeListener 
+  -- none
+
+javax.servlet.http.HttpSessionListener
+  com.ibm.ws.webcontainer_fat_servlet31/
+    test-applications/TestServlet31.war/src/
+      listeners/MySessionListener.java
+
+javax.servlet.http.HttpSessionAttributeListener
+  com.ibm.ws.webcontainer_fat_servlet31/
+    test-applications/TestHttpSessionAttrListener.war/src/
+      sessionListener/MYHSAL.java
+
+---
+
+Other listeners:
+
+javax.servlet.ReadListener
+javax.servlet.WriteListener
+javax.servlet.AsyncListener
+javax.servlet.ServletRequestListener
+
+javax.servlet.AsyncListener
+  com.ibm.ws.webcontainer_fat_servlet31/
+    test-applications/TestServlet31.war/src/
+      listeners/AsyncListenerTest.java
+
+javax.servlet.ServletRequestListener
+  com.ibm.ws.webcontainer_fat_servlet31/
+    test-applications/CDI12TestV2Injection.war/src/
+      cdi/servlets/CDIListener.java
+
+javax.servlet.http.HttpSessionActivationListener
+javax.servlet.http.HttpSessionBindingListener
+javax.servlet.http.HttpSessionIdListener

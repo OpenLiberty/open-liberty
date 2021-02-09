@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2019 IBM Corporation and others.
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -65,6 +65,7 @@ import com.ibm.ws.jpa.JPAComponent;
 import com.ibm.ws.jpa.JPAExPcBindingContextAccessor;
 import com.ibm.ws.jpa.JPAProviderIntegration;
 import com.ibm.ws.jpa.JPAPuId;
+import com.ibm.ws.jpa.JPAVersion;
 import com.ibm.ws.jpa.container.osgi.jndi.JPAJndiLookupInfo;
 import com.ibm.ws.jpa.container.osgi.jndi.JPAJndiLookupInfoRefAddr;
 import com.ibm.ws.jpa.container.osgi.jndi.JPAJndiLookupObjectFactory;
@@ -996,7 +997,7 @@ public class JPAComponentImpl extends AbstractJPAComponent implements Applicatio
 
                 JPAIntrospection.beginApplicationVisit(appName, appl);
                 try {
-                    appl.introspect(out);
+                    appl.introspect();
                 } finally {
                     JPAIntrospection.endApplicationVisit();
                 }
@@ -1005,6 +1006,15 @@ public class JPAComponentImpl extends AbstractJPAComponent implements Applicatio
             JPAIntrospection.executeIntrospectionAnalysis(out);
         } finally {
             JPAIntrospection.endJPAIntrospection();
+        }
+    }
+
+    @Override
+    public JPAVersion getJPAVersion() {
+        try {
+            return getJPARuntime().getJPARuntimeVersion();
+        } catch (Throwable t) {
+            return JPAVersion.UNKNOWN;
         }
     }
 }

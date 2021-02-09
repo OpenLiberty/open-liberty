@@ -31,6 +31,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
+
 public class VirtualHostTest {
 
     @Server("com.ibm.ws.jaxws.virtualhost")

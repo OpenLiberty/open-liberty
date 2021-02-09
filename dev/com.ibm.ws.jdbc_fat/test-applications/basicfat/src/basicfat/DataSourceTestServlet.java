@@ -11,6 +11,7 @@
 package basicfat;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -55,6 +56,8 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 import javax.transaction.HeuristicMixedException;
 import javax.transaction.UserTransaction;
@@ -198,6 +201,12 @@ public class DataSourceTestServlet extends FATServlet {
     @Resource(lookup = "java:comp/env/jdbc/dsValTderbyAnn")
     DataSource dsValTderbyAnn;
 
+    /**
+     * This state is used by certain tests to determine whether a Servlet instance,
+     * and thus the application as a whole, survives a config update.
+     */
+    private String state = "NEW";
+
     @Resource
     private UserTransaction tran;
 
@@ -213,6 +222,9 @@ public class DataSourceTestServlet extends FATServlet {
                                                               Connection.TRANSACTION_SERIALIZABLE,
                                                               Connection.TRANSACTION_READ_UNCOMMITTED
     };
+
+    // For testing autoCloseConnections
+    private static Connection leakedConnection;
 
     @Override
     public void init(ServletConfig c) throws ServletException {
@@ -268,6 +280,24 @@ public class DataSourceTestServlet extends FATServlet {
         // End the current LTC and get a new one, so that test methods start from the correct place
         tran.begin();
         tran.commit();
+    }
+
+    public void requireNewServletInstance(HttpServletRequest request, HttpServletResponse response) throws Throwable {
+        if (!"NEW".equals(state))
+            throw new Exception("It appears that the existing servlet instance was used, meaning the app was not restarted. State: " + state);
+    }
+
+    public void requireServletInstanceStillActive(HttpServletRequest request, HttpServletResponse response) throws Throwable {
+        if (!"SERVLET_INSTANCE_STILL_ACTIVE".equals(state))
+            throw new Exception("It appears that a different servlet instance was used, meaning the app was restarted. State: " + state);
+    }
+
+    public void resetState(HttpServletRequest request, HttpServletResponse response) throws Throwable {
+        state = "NEW";
+    }
+
+    public void setServletInstanceStillActive(HttpServletRequest request, HttpServletResponse response) throws Throwable {
+        state = "SERVLET_INSTANCE_STILL_ACTIVE";
     }
 
     /**
@@ -383,6 +413,44 @@ public class DataSourceTestServlet extends FATServlet {
                 throw new Exception("User name from authData ID:derbyAuth1 was not honored. Expected: dbuser1 Instead: " + user);
         } finally {
             con.close();
+        }
+    }
+
+    /**
+     * Intentionally leave a connection open across the end of a servlet method.
+     */
+    public void testConfigChangeAutoCloseConnectionsLeakConnection() throws Exception {
+        leakedConnection = ds1u.getConnection();
+    }
+
+    /**
+     * Verify that a connection that was previously leaked across the end of a servlet request
+     * has been closed by the container.
+     */
+    public void testConfigChangeAutoCloseConnectionsConnectionClosed() throws Exception {
+        try (Connection con = leakedConnection) {
+            assertTrue(con.isClosed());
+        } finally {
+            leakedConnection = null;
+        }
+    }
+
+    /**
+     * Verify that a connection that was previously leaked across the end of a servlet request
+     * has not been closed by the container. Use the connection to query the database.
+     */
+    public void testConfigChangeAutoCloseConnectionsConnectionNotClosed() throws Exception {
+        try (Connection con = leakedConnection) {
+            assertFalse(con.isClosed());
+            try (PreparedStatement pstmt = con.prepareStatement("select name from cities where population > ?")) {
+                pstmt.setInt(1, 50000);
+                try (ResultSet result = pstmt.executeQuery()) {
+                    if (result.next())
+                        result.getString(1);
+                }
+            }
+        } finally {
+            leakedConnection = null;
         }
     }
 

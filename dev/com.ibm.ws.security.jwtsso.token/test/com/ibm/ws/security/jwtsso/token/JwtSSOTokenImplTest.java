@@ -245,6 +245,7 @@ public class JwtSSOTokenImplTest {
 		props.put(JwtSsoConstants.CFG_KEY_COOKIENAME, "jwtSsoCookieName");
 		props.put(JwtSsoConstants.CFG_USE_LTPA_IF_JWT_ABSENT, value);
 		props.put(JwtSsoConstants.CFG_KEY_INCLUDELTPACOOKIE, value);
+		props.put(JwtSsoConstants.CFG_KEY_DISABLE_JWT_COOKIE, value);
 		props.put(JwtSsoConstants.CFG_KEY_SETCOOKIEPATHTOWEBAPPCONTEXTPATH, value);
 		props.put(JwtSsoConstants.CFG_KEY_COOKIESECUREFLAG, value);
 		props.put(JwtSsoConstants.CFG_KEY_JWTBUILDERREF, "");

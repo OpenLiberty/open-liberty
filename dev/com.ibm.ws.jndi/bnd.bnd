@@ -58,9 +58,12 @@ instrument.classesExcludes: com/ibm/ws/jndi/internal/resources/*.class
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest
 
 -testpath: \
+    com.ibm.ws.org.objenesis:objenesis;version=1.0, \
 	org.hamcrest:hamcrest-all;version=1.3, \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
+	cglib:cglib-nodep;version=3.3.0, \
 	com.ibm.ws.junit.extensions;version=latest, \
 	org.jmock:jmock-junit4;strategy=exact;version=2.5.1, \
 	org.jmock:jmock;strategy=exact;version=2.5.1, \
+	org.jmock:jmock-legacy;version=2.5.0, \
 	com.ibm.ws.kernel.boot;version=latest

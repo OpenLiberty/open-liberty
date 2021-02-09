@@ -13,10 +13,12 @@ package com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
 
 import org.eclipse.microprofile.faulttolerance.ExecutionContext;
 import org.eclipse.microprofile.faulttolerance.Fallback;
+import org.eclipse.microprofile.faulttolerance.FallbackHandler;
 import org.eclipse.microprofile.faulttolerance.Retry;
 
 import com.ibm.ws.microprofile.faulttolerance_fat.util.ConnectException;
@@ -64,6 +66,31 @@ public class ParentFallbackBean {
 
     public int getConnectCountB() {
         return connectCountB;
+    }
+
+    @Fallback(fallbackMethod = "exceptionalFallbackMethod")
+    public void fallbackMethodThrowsException() {
+        throw new RuntimeException("FallbackBean.fallbackMethodThrowsException");
+    }
+
+    @SuppressWarnings("unused")
+    private void exceptionalFallbackMethod() {
+        throw new RuntimeException("FallbackBean.exceptionalFallbackMethod");
+    }
+
+    @Fallback(ExceptionalHandler.class)
+    public Connection fallbackHandlerThrowsException() {
+        throw new RuntimeException("FallbackBean.fallbackHandlerThrowsException");
+    }
+
+    @ApplicationScoped
+    public static class ExceptionalHandler implements FallbackHandler<Connection> {
+
+        @Override
+        public Connection handle(ExecutionContext context) {
+            throw new RuntimeException("ExceptionalHandler.handle");
+        }
+
     }
 
 }

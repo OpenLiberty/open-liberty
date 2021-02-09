@@ -69,7 +69,8 @@ public class AssertionToSubjectTest {
     private static final List<Saml20Attribute> attributes = mockery.mock(List.class, "attributes");
     private static final List<String> newGroups = mockery.mock(List.class, "newGroups");
     private static final ServiceReference<WSSecurityService> wsSecurityServiceRef = mockery.mock(ServiceReference.class, "wsSecurityServiceRef");
-    private static final ConcurrentServiceReferenceMap<String, UserCredentialResolver> activatedUserResolverRef = mockery.mock(ConcurrentServiceReferenceMap.class, "activatedUserResolverRef");
+    private static final ConcurrentServiceReferenceMap<String, UserCredentialResolver> activatedUserResolverRef = mockery.mock(ConcurrentServiceReferenceMap.class,
+                                                                                                                               "activatedUserResolverRef");
     private static final Iterator<UserCredentialResolver> iterator = mockery.mock(Iterator.class, "iterator");
     private static final Iterator<String> group = mockery.mock(Iterator.class, "group");
     private static final ListIterator<String> listIterator = mockery.mock(ListIterator.class, "listIterator");
@@ -140,7 +141,7 @@ public class AssertionToSubjectTest {
             assertTrue("The expected user id '" + USER_ID + "' was not received.", user == USER_ID);
         } catch (SamlException ex) {
             ex.printStackTrace();
-            fail("Unexpected exception was thrown: " + ex.getMessage());
+            fail("Unexpected exception was thrown: " + ex);
         }
     }
 
@@ -241,7 +242,7 @@ public class AssertionToSubjectTest {
             assertTrue("The expected realm '" + REALM + "' was not received.", realm == REALM);
         } catch (SamlException ex) {
             ex.printStackTrace();
-            fail("Unexpected exception was thrown: " + ex.getMessage());
+            fail("Unexpected exception was thrown: " + ex);
         }
     }
 
@@ -263,7 +264,7 @@ public class AssertionToSubjectTest {
             assertTrue("The expected realm '" + REALM + "' was not received.", realm == REALM);
         } catch (SamlException ex) {
             ex.printStackTrace();
-            fail("Unexpected exception was thrown: " + ex.getMessage());
+            fail("Unexpected exception was thrown: " + ex);
         }
     }
 
@@ -368,7 +369,7 @@ public class AssertionToSubjectTest {
             assertTrue("The expected uid '" + UID + "' was not received.", uid == UID);
         } catch (SamlException ex) {
             ex.printStackTrace();
-            fail("Unexpected exception was thrown: " + ex.getMessage());
+            fail("Unexpected exception was thrown: " + ex);
         }
     }
 
@@ -438,7 +439,7 @@ public class AssertionToSubjectTest {
                 one(newGroups).iterator();
                 will(returnValue(group));
                 one(newGroups).toArray(); // called as part of trace
-                will(returnValue(new Object[]{group}));
+                will(returnValue(new Object[] { group }));
 
                 one(group).hasNext();
                 will(returnValue(false));
@@ -450,7 +451,7 @@ public class AssertionToSubjectTest {
             assertTrue("The resulted list is not empty.", list.isEmpty());
         } catch (Exception ex) {
             ex.printStackTrace();
-            fail("Unexpected exception was thrown: " + ex.getMessage());
+            fail("Unexpected exception was thrown: " + ex);
         }
     }
 
@@ -487,7 +488,7 @@ public class AssertionToSubjectTest {
                 one(newGroups).iterator();
                 will(returnValue(group));
                 one(newGroups).toArray(); // called as part of trace
-                will(returnValue(new Object[]{group}));
+                will(returnValue(new Object[] { group }));
 
                 one(group).hasNext();
                 will(returnValue(true));
@@ -528,7 +529,7 @@ public class AssertionToSubjectTest {
             assertTrue("The expected list was not received.", groups.size() > 0 && groups.get(0).contains(GROUP_DN));
         } catch (Exception ex) {
             ex.printStackTrace();
-            fail("Unexpected exception was thrown: " + ex.getMessage());
+            fail("Unexpected exception was thrown: " + ex);
         }
     }
 
@@ -542,7 +543,7 @@ public class AssertionToSubjectTest {
                 will(returnValue(usrCredResolver));
 
                 one(newGroups).toArray(); // called as part of trace
-                will(returnValue(new Object[]{group}));
+                will(returnValue(new Object[] { group }));
 
                 one(usrCredResolver).mapSAMLAssertionToGroups(sso20Token);
                 will(throwException(ue));
@@ -578,7 +579,7 @@ public class AssertionToSubjectTest {
                 one(newGroups).iterator();
                 will(returnValue(group));
                 one(newGroups).toArray(); // called as part of trace
-                will(returnValue(new Object[]{group}));
+                will(returnValue(new Object[] { group }));
 
                 one(group).hasNext();
                 will(returnValue(true));
@@ -594,7 +595,7 @@ public class AssertionToSubjectTest {
             assertTrue("The expected list was not received.", groups.size() > 0 && groups.get(0).contains(GROUP));
         } catch (SamlException ex) {
             ex.printStackTrace();
-            fail("Unexpected exception was thrown: " + ex.getMessage());
+            fail("Unexpected exception was thrown: " + ex);
         }
 
     }
@@ -626,7 +627,7 @@ public class AssertionToSubjectTest {
                 one(newGroups).iterator();
                 will(returnValue(group));
                 one(newGroups).toArray(); // called as part of trace
-                will(returnValue(new Object[]{group}));
+                will(returnValue(new Object[] { group }));
 
                 one(group).hasNext();
                 will(returnValue(true));
@@ -642,7 +643,7 @@ public class AssertionToSubjectTest {
             assertTrue("The expected list was not received.", groups.size() > 0 && groups.get(0).contains(GROUP_DN));
         } catch (SamlException ex) {
             ex.printStackTrace();
-            fail("Unexpected exception was thrown: " + ex.getMessage());
+            fail("Unexpected exception was thrown: " + ex);
         }
     }
 
@@ -656,7 +657,7 @@ public class AssertionToSubjectTest {
                 one(samlRequest).setSpCookieValue(with(any(String.class)));
 
                 one(newGroups).toArray(); // called as part of trace
-                will(returnValue(new Object[]{group}));
+                will(returnValue(new Object[] { group }));
 
                 one(sso20Token).getSAMLAsString();
                 will(returnValue("SAML_string"));

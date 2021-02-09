@@ -68,7 +68,7 @@ public class IntrospectUserApiUtils {
         connection.setDoOutput(true);
         
         OutputStream outputStream = connection.getOutputStream();
-        String postData = "token=" + accessToken;
+        String postData = "token=" + accessToken + "&token_type_hint=" + config.getIntrospectionTokenTypeHint();
         outputStream.write(postData.getBytes());
         outputStream.close();
         connection.connect();

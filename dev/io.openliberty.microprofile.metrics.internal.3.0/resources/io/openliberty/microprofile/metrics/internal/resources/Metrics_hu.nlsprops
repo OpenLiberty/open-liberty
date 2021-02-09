@@ -1,0 +1,140 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMMC
+#COMPONENTNAMEFOR CWMMC MicroProfile Metrics API 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2009, 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by Metrics Impl -  range is 0000-2999, plus 9999 for the emergency message
+#-----------------------------------------------------------------------------------------------------------------------------
+
+#Accept Header not acceptable.
+notAcceptable.info.CWMMC0000I=CWMMC0000I: Az accept fejl\u00e9c {0} form\u00e1tuma helytelen.
+notAcceptable.info.CWMMC0000I.explanation=Az accept fejl\u00e9c nem t\u00e1mogatott form\u00e1tumot haszn\u00e1l.
+notAcceptable.info.CWMMC0000I.useraction=Haszn\u00e1lja a megfelel\u0151 fejl\u00e9ceket.
+
+#Method Not Allowed
+requestType.info.CWMMC0001I=CWMMC0001I: A met\u00f3dusk\u00e9r\u00e9s t\u00edpusa csak GET vagy OPTIONS lehet.
+requestType.info.CWMMC0001I.explanation=A k\u00e9r\u00e9st\u00edpus nem t\u00e1mogatott. A t\u00edpus csak GET vagy OPTIONS lehet.
+requestType.info.CWMMC0001I.useraction=GET vagy OPTIONS k\u00e9r\u00e9seket hajtson v\u00e9gre.
+
+#Metric was not found.
+metricNotFound.info.CWMMC0002I=CWMMC0002I: A m\u00e9r\u0151sz\u00e1mn\u00e9v ({0}) nem tal\u00e1lhat\u00f3.
+metricNotFound.info.CWMMC0002I.explanation=A m\u00e9r\u0151sz\u00e1m nem l\u00e9tezik.
+metricNotFound.info.CWMMC0002I.useraction=Adja meg a helyes m\u00e9r\u0151sz\u00e1mnevet.
+
+#Registry was not found.
+registryNotFound.info.CWMMC0003I=CWMMC0003I: A nyilv\u00e1ntart\u00e1s ({0}) nem tal\u00e1lhat\u00f3.
+registryNotFound.info.CWMMC0003I.explanation=A nyilv\u00e1ntart\u00e1s nem l\u00e9tezik.
+registryNotFound.info.CWMMC0003I.useraction=Adja meg a helyes nyilv\u00e1ntart\u00e1snevet.
+
+#Registry is empty.
+emptyRegistry.info.CWMMC0004I=CWMMC0004I: A nyilv\u00e1ntart\u00e1snak ({0}) nincs tartalma.
+emptyRegistry.info.CWMMC0004I.explanation=A nyilv\u00e1ntart\u00e1s \u00fcres.
+emptyRegistry.info.CWMMC0004I.useraction=T\u00f6ltse fel a nyilv\u00e1ntart\u00e1st m\u00e9r\u0151sz\u00e1mokkal.
+
+#An internal error occurred. The exception is {0}.
+internal.error.CWMMC0005E=CWMMC0005E: Bels\u0151 hiba t\u00f6rt\u00e9nt: {0}
+internal.error.CWMMC0005E.explanation=Az alkalmaz\u00e1skiszolg\u00e1l\u00f3n bels\u0151 hiba t\u00f6rt\u00e9nt.
+internal.error.CWMMC0005E.useraction=Gy\u0171jtse \u00f6ssze a nyomk\u00f6vet\u00e9seket, \u00e9s nyisson meg egy probl\u00e9majelent\u00e9st az alkalmaz\u00e1skiszolg\u00e1l\u00f3val kapcsolatban.
+
+#Generic error for internal failures. 
+internal.error.CWMMC0006E=CWMMC0006E: Bels\u0151 hiba t\u00f6rt\u00e9nt.
+internal.error.CWMMC0006E.explanation=Az alkalmaz\u00e1skiszolg\u00e1l\u00f3n bels\u0151 hiba t\u00f6rt\u00e9nt.
+internal.error.CWMMC0006E.useraction=Gy\u0171jtse \u00f6ssze a nyomk\u00f6vet\u00e9seket, \u00e9s nyisson meg egy probl\u00e9majelent\u00e9st az alkalmaz\u00e1skiszolg\u00e1l\u00f3val kapcsolatban.
+
+#Memory usedHeap message
+memory.usedHeap.description=A haszn\u00e1lt kupacmem\u00f3ria mennyis\u00e9g\u00e9t jelen\u00edti meg byte-ban.
+
+#Memory committedHeap message
+memory.committedHeap.description=A Java virtu\u00e1lis g\u00e9p \u00e1ltali haszn\u00e1lathoz v\u00e9gleges\u00edtett mem\u00f3ria mennyis\u00e9g\u00e9t jelen\u00edti meg (byte-ban). Ezt a mennyis\u00e9get a Java virtu\u00e1lis g\u00e9p garant\u00e1ltan felhaszn\u00e1lhatja.
+
+#Memory maxHeap message
+memory.maxHeap.description=A mem\u00f3riakezel\u00e9shez haszn\u00e1lhat\u00f3 kupacmem\u00f3ria maxim\u00e1lis mennyis\u00e9g\u00e9t jelen\u00edti meg (byte-ban). Az attrib\u00fatum -1 \u00e9rt\u00e9ket jelen\u00edt meg, ha a kupacmem\u00f3ria maxim\u00e1lis m\u00e9rete nincs meghat\u00e1rozva. Ez a mem\u00f3riamennyis\u00e9g garant\u00e1ltan rendelkez\u00e9sre \u00e1ll a mem\u00f3riakezel\u00e9shez, ha nagyobb, mint v\u00e9gleges\u00edtett mem\u00f3ria mennyis\u00e9ge. Lehet, hogy a Java virtu\u00e1lis g\u00e9pnek akkor sem siker\u00fcl mem\u00f3ri\u00e1t lefoglalnia, ha a haszn\u00e1lt mem\u00f3ria mennyis\u00e9ge nem haladja meg ezt a maxim\u00e1lis m\u00e9retet.
+
+#Jvm uptime message
+jvm.uptime.description=A Java virtu\u00e1lis g\u00e9p ind\u00edt\u00e1s\u00e1nak idej\u00e9t jelen\u00edti meg ezredm\u00e1sodpercben. Az attrib\u00fatum a megk\u00f6zel\u00edt\u0151 id\u0151t jelen\u00edti meg, amikor a Java virtu\u00e1lis g\u00e9p elindult.
+
+#Thread count message
+thread.count.description=Az \u00e9l\u0151 sz\u00e1lak aktu\u00e1lis sz\u00e1m\u00e1t jelen\u00edti meg, a d\u00e9mon \u00e9s nem-d\u00e9mon sz\u00e1lakat is bele\u00e9rtve.
+
+#Thread daemon count message
+thread.daemon.count.description=Az \u00e9l\u0151 d\u00e9mon sz\u00e1lak aktu\u00e1lis sz\u00e1m\u00e1t jelen\u00edti meg.
+
+#Thread max count message
+thread.max.count.description=Az \u00e9l\u0151 sz\u00e1lak sz\u00e1m\u00e1nak cs\u00facs\u00e9rt\u00e9k\u00e9t jelen\u00edti meg a Java virtu\u00e1lis g\u00e9p ind\u00edt\u00e1sa vagy a cs\u00facs\u00e9rt\u00e9k alaphelyzetbe \u00e1ll\u00edt\u00e1sa \u00f3ta. Ez a d\u00e9mon \u00e9s nem-d\u00e9mon sz\u00e1lakat egyar\u00e1nt mag\u00e1ban foglalja.
+
+#Classloader currentLoadedClass count message
+classloader.currentLoadedClass.count.description=A Java virtu\u00e1lis g\u00e9pen jelenleg bet\u00f6lt\u00f6tt oszt\u00e1lyok sz\u00e1m\u00e1t jelen\u00edti meg.
+
+#Classloader totalLoadedClass count message
+classloader.totalLoadedClass.count.description=Az oszt\u00e1lyok teljes sz\u00e1m\u00e1t jelen\u00edti meg, amelyek az\u00f3ta lettek bet\u00f6ltve, hogy a Java virtu\u00e1lis g\u00e9p megkezdte a v\u00e9grehajt\u00e1st.
+
+#Classloader totalUnloadedClass count message
+classloader.totalUnloadedClass.count.description=Az oszt\u00e1lyok teljes sz\u00e1m\u00e1t jelen\u00edti meg, amelyek az\u00f3ta lettek ki\u00fcr\u00edtve a mem\u00f3ri\u00e1b\u00f3l, hogy a Java virtu\u00e1lis g\u00e9p megkezdte a v\u00e9grehajt\u00e1st.
+
+#Cpu availableProcessors message
+cpu.availableProcessors.description=A Java virtu\u00e1lis g\u00e9p sz\u00e1m\u00e1ra rendelkez\u00e9sre \u00e1ll\u00f3 processzorok sz\u00e1m\u00e1t jelen\u00edti meg. Ez az \u00e9rt\u00e9k a virtu\u00e1lis g\u00e9p adott h\u00edv\u00e1sa k\u00f6zben v\u00e1ltozhat.
+
+#Cpu systemLoadAverage message
+cpu.systemLoadAverage.description=A rendszer \u00e1tlagos terhel\u00e9s\u00e9t jelen\u00edti meg az utols\u00f3 egy percben. A rendszer \u00e1tlagos terhel\u00e9se az el\u00e9rhet\u0151 processzorokhoz sorba \u00e1ll\u00edtott futtathat\u00f3 entit\u00e1sok sz\u00e1m\u00e1nak \u00e9s az el\u00e9rhet\u0151 processzorokon fut\u00f3 entit\u00e1sok sz\u00e1m\u00e1nak \u00f6sszege adott id\u0151szakra \u00e1tlagolva. Az \u00e1tlagos terhel\u00e9s kisz\u00e1m\u00edt\u00e1s\u00e1nak m\u00f3dja oper\u00e1ci\u00f3s rendszer specifikus, de jellemez\u0151en egy csillap\u00edtatlan id\u0151f\u00fcgg\u0151 \u00e1tlag. Ha az \u00e1tlagos terhel\u00e9s nem \u00e9rhet\u0151 el, akkor negat\u00edv \u00e9rt\u00e9k jelenik meg. Ezt az attrib\u00fatumot arra tervezt\u00e9k, hogy a rendszer terhel\u00e9s\u00e9vel kapcsolatos tippeket biztos\u00edtson, ez\u00e9rt gyakran lek\u00e9rdez\u00e9sre ker\u00fclhet. Lehet, hogy az \u00e1tlagos terhel\u00e9s n\u00e9h\u00e1ny platformon, ahol a met\u00f3dus megval\u00f3s\u00edt\u00e1s k\u00f6lts\u00e9ges, nem lesz el\u00e9rhet\u0151.
+
+#Cpu processCpuLoad message
+cpu.processCpuLoad.description=A Java virtu\u00e1lis g\u00e9p folyamat 'recent cpu usage' \u00e9rt\u00e9k\u00e9t jelen\u00edti meg.
+
+#Cpu processCpuTime message
+cpu.processCpuTime.description=Megjelen\u00edti a Java virtu\u00e1lis g\u00e9pet futtat\u00f3 folyamat \u00e1ltal haszn\u00e1lt CPU id\u0151t.
+
+#Garbage collection count message
+garbageCollectionCount.description=A v\u00e9grehajtott adatgy\u0171jt\u00e9sek teljes sz\u00e1m\u00e1t jelen\u00edti meg. Az attrib\u00fatum -1 \u00e9rt\u00e9ket jelen\u00edt meg, ha az adatgy\u0171jt\u00e9sek sz\u00e1ma ehhez az adatgy\u0171jt\u0151h\u00f6z nincs meghat\u00e1rozva.
+
+#Garbage collection time message
+garbageCollectionTime.description=A halmozott eltelt adatgy\u0171jt\u00e9si id\u0151t jelen\u00edti meg (megk\u00f6zel\u00edt\u0151 pontoss\u00e1ggal) ezredm\u00e1sodpercben. Az attrib\u00fatum -1 \u00e9rt\u00e9ket jelen\u00edt meg, ha az eltelt adatgy\u0171jt\u00e9si id\u0151 ehhez az adatgy\u0171jt\u0151h\u00f6z nincs meghat\u00e1rozva. A Java virtu\u00e1lis g\u00e9p nagy felbont\u00e1s\u00fa id\u0151m\u00e9r\u0151 seg\u00edts\u00e9g\u00e9vel m\u00e9rheti az eltelt id\u0151t. Az attrib\u00fatum ugyanazt az \u00e9rt\u00e9ket jelen\u00edtheti meg annak ellen\u00e9re, hogy az adatgy\u0171jt\u00e9sek sz\u00e1ma n\u00f6vekedett, ha az eltelt adatgy\u0171jt\u00e9si id\u0151 nagyon r\u00f6vid.
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Monitor Metrics messages
+#-----------------------------------------------------------------------------------------------------------------------------
+threadpool.activeThreads.description=A feladatokat futtat\u00f3 sz\u00e1lak sz\u00e1ma.
+threadpool.size.description=A sz\u00e1lt\u00e1rol\u00f3 m\u00e9rete.
+
+servlet.request.total.description=A szervlet l\u00e1togat\u00e1sainak sz\u00e1ma a kiszolg\u00e1l\u00f3 ind\u00edt\u00e1sa \u00f3ta.
+servlet.responseTime.total.description=A szervlet teljes v\u00e1laszideje a kiszolg\u00e1l\u00f3 ind\u00edt\u00e1sa \u00f3ta.
+
+connectionpool.create.total.description=A k\u00e9szlet l\u00e9trehoz\u00e1sa \u00f3ta l\u00e9trehozott fel\u00fcgyelt kapcsolatok sz\u00e1ma \u00f6sszesen.
+connectionpool.destroy.total.description=A k\u00e9szlet l\u00e9trehoz\u00e1sa \u00f3ta megsemmis\u00edtett fel\u00fcgyelt kapcsolatok sz\u00e1ma \u00f6sszesen.
+connectionpool.managedConnections.description=A szabad, megosztott \u00e9s nem megosztott k\u00e9szletekben l\u00e9v\u0151 fel\u00fcgyelt kapcsolatok sz\u00e1ma.
+connectionpool.connectionHandles.description=A haszn\u00e1latban l\u00e9v\u0151 kapcsolatok sz\u00e1ma. A sz\u00e1m tartalmazhat t\u00f6bb kapcsolatot, amelyek egyetlen fel\u00fcgyelt kapcsolatb\u00f3l vannak megosztva.
+connectionpool.freeConnections.description=A szabad k\u00e9szletben l\u00e9v\u0151 fel\u00fcgyelt kapcsolatok sz\u00e1ma.
+
+session.create.total.description=A m\u00e9r\u0151sz\u00e1m enged\u00e9lyez\u00e9se \u00f3ta bejelentkezett munkamenetek sz\u00e1ma.
+session.liveSessions.description=A jelenleg bejelentkezett felhaszn\u00e1l\u00f3k sz\u00e1ma.
+session.activeSessions.description=A jelenleg akt\u00edv munkamenetek sz\u00e1ma. (Egy munkamenet akkor akt\u00edv, ha a term\u00e9k jelenleg feldolgoz egy k\u00e9r\u00e9st, amely az adott felhaszn\u00e1l\u00f3i munkamenetet haszn\u00e1lja).
+session.invalidated.total.description=A m\u00e9r\u0151sz\u00e1m enged\u00e9lyez\u00e9se \u00f3ta kijelentkezett munkamenetek sz\u00e1ma.
+session.invalidatedbyTimeout.total.description=A m\u00e9r\u0151sz\u00e1m enged\u00e9lyez\u00e9se \u00f3ta id\u0151t\u00fall\u00e9p\u00e9s miatt kijelentkeztetett munkamenetek sz\u00e1ma.
+
+
+REST.request.description=Az adott RESTful er\u0151forr\u00e1s met\u00f3dus felh\u00edv\u00e1sainak sz\u00e1ma \u00e9s teljes v\u00e1laszideje a kiszolg\u00e1l\u00f3 ind\u00edt\u00e1sa \u00f3ta.
+#-----------------------------------------------------------------------------------------------------------------------------
+# Emergency Metrics error message
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# A Metrics API error has occurred: {0}
+temporary.CWMMC9999E=CWMMC9999E: Metrics API hiba t\u00f6rt\u00e9nt: {0}
+temporary.CWMMC9999E.explanation=A norm\u00e1l m\u0171k\u00f6d\u00e9st egy Metrics API hiba akad\u00e1lyozza.
+temporary.CWMMC9999E.useraction=Az FFDC napl\u00f3k \u00e9s a kiv\u00e9tel sz\u00f6veg\u00e9nek \u00e1ttekint\u00e9s\u00e9vel azonos\u00edtsa a probl\u00e9m\u00e1t.

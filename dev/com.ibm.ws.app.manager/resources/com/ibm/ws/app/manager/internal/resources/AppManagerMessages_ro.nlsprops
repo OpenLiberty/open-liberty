@@ -103,7 +103,7 @@ APPLICATION_NOT_STARTED.useraction=Verifica\u0163i configura\u0163ia aplica\u016
 
 #{0} the application name
 DUPLICATE_APPLICATION_NAME=CWWKZ0013E: Nu se pot porni dou\u0103 aplica\u0163ii numite {0}.
-DUPLICATE_APPLICATION_NAME.explanation=Numele aplica\u0163iei trebuie s\u0103 fie unic.  Aceasta poate fi deoarece dou\u0103 aplica\u0163ii au fost configurate s\u0103 aib\u0103 acela\u015fi nume sau o singur\u0103 aplica\u0163ie a fost implementat\u0103 at\u00e2t prin configurare \u00een fi\u015fierul server.xml c\u00e2t \u015fi prin plasarea aplica\u0163iei \u00een directorul dropins.
+DUPLICATE_APPLICATION_NAME.explanation=Numele aplica\u0163iei trebuie s\u0103 fie unic.  Cauza poate fi faptul c\u0103 au fost configurate dou\u0103 aplica\u0163ii cu acela\u015fi nume sau o singur\u0103 aplica\u0163ie a fost implementat\u0103 at\u00e2t prin configurare \u00een fi\u015fierul server.xml, c\u00e2t \u015fi prin plasarea aplica\u0163iei \u00een directorul dropins.
 DUPLICATE_APPLICATION_NAME.useraction=Dac\u0103 dou\u0103 aplica\u0163ii au acela\u015fi nume, \u00eenl\u0103tura\u0163i sau redenumi\u0163i una din aplica\u0163ii. Dac\u0103 o singur\u0103 aplica\u0163ie a fost implementat\u0103 \u00een dou\u0103 moduri diferite, modifica\u0163i configura\u0163ia astfel \u00eenc\u00e2t s\u0103 fie folosit\u0103 o singur\u0103 metod\u0103 de implementare.
 
 #{0} the application name
@@ -222,3 +222,6 @@ error.startAfter.cycle=CWWKZ0066E: Urm\u0103toarele aplica\u0163ii nu pot fi por
 error.startAfter.cycle.explanation=Nici una dintre aplica\u0163ii nu poate porni deoarece fiecare depinde de una din celelalte aplica\u0163ii care trebuie pornite mai \u00eent\u00e2i.
 error.startAfter.cycle.useraction=Modifica\u0163i valoarea atributului startAfter pentru aplica\u0163iile implicate \u00een ciclu, astfel \u00eenc\u00e2t s\u0103 nu aib\u0103 dependen\u0163e circulare.
 
+dropins.app.also.configured=CWWKZ0067W: Aplica\u0163ia drop-ins din loca\u0163ia {0} nu poate porni, deoarece este \u015fi configurat\u0103. 
+dropins.app.also.configured.explanation=O aplica\u0163ie din configura\u0163ia serverului specific\u0103 o loca\u0163ie \u00een directorul drop-ins monitorizat. 
+dropins.app.also.configured.useraction=Muta\u0163i aplica\u0163ia \u00een alt\u0103 loca\u0163ie. 

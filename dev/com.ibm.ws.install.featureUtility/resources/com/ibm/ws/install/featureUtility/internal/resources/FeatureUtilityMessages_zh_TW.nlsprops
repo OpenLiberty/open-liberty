@@ -1,0 +1,60 @@
+###############################################################################
+# Copyright (c) 2010, 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.ws.install.featureUtility/resources/com/ibm/ws/install/featureUtility/internal/resources/FeatureUtilityMessages.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+# Messages in the range CWWKF1400 to 1499 are reserved for the install utility.
+
+MSG_FEATUREUTILITY_SETTTINGS=featureUtility \u8a2d\u5b9a
+MSG_PROPERTIES_FILE_NOT_FOUND=\u5075\u6e2c\u4e0d\u5230\u4f7f\u7528\u8005\u914d\u7f6e\u3002\u300cMaven Central \u5132\u5b58\u5eab\u300d\u662f\u9810\u8a2d\u8cc7\u7522\u5132\u5b58\u5eab\u3002
+MSG_PROPERTIES_FILE_NOT_FOUND_EXPLANATION=\u82e5\u8981\u81ea\u8a02 featureUtility \u8a2d\u5b9a\uff0c\u8acb\u5728\u4e0b\u5217\u4f4d\u7f6e\u5efa\u7acb featureUtility.properties \u6a94\uff1a{0}
+MSG_PROPERTIES_FILE_NOT_FOUND_ACTION=\u8acb\u4f7f\u7528\u4e0b\u5217\u7bc4\u4f8b\u4f5c\u70ba\u7bc4\u672c\uff0c\u4f86\u5efa\u7acb\u60a8\u81ea\u5df1\u7684 featureUtility.properties \u6a94\u3002\u8acb\u89e3\u9664\u8a3b\u89e3\u55ae\u4e00 # \u5b57\u5143\u6240\u6a19\u793a\u7684\u5b57\u884c\uff0c\u4e26\u4ee5\u60a8\u81ea\u5df1\u7684\u81ea\u8a02\u503c\u4f86\u53d6\u4ee3\u90a3\u4e9b\u503c\u3002
+MSG_PROPS_FILE_NOT_FOUND_EXPLANATION=\u5982\u679c\u8981\u81ea\u8a02 installUtility \u8a2d\u5b9a\uff0c\u8acb\u5728\u4e0b\u5217\u4f4d\u7f6e\u5efa\u7acb repositories.properties \u6a94\uff1a{0}
+MSG_PROPS_FILE_NOT_FOUND_ACTION=\u8acb\u4f7f\u7528\u4e0b\u5217\u7bc4\u4f8b\u4f5c\u70ba\u7bc4\u672c\uff0c\u4f86\u5efa\u7acb\u60a8\u81ea\u5df1\u7684 repositories.properties \u6a94\u3002\u8acb\u89e3\u9664\u8a3b\u89e3\u55ae\u4e00 # \u5b57\u5143\u6240\u6a19\u793a\u7684\u5b57\u884c\uff0c\u4e26\u4ee5\u60a8\u81ea\u5df1\u7684\u81ea\u8a02\u503c\u4f86\u53d6\u4ee3\u90a3\u4e9b\u503c\u3002
+MSG_TRUE=True
+MSG_FALSE=False
+MSG_DEFAULT_REPO_USEAGE_LABEL=\u4f7f\u7528\u9810\u8a2d\u5132\u5b58\u5eab\uff1a
+MSG_DEFAULT_REPO_NAME_LABEL=\u9810\u8a2d\u8cc7\u7522\u5132\u5b58\u5eab\uff1a
+MSG_DEFAULT_REPO_NAME=Maven Central \u5132\u5b58\u5eab
+MSG_CONFIG_REPO_LABEL=\u6240\u914d\u7f6e\u7684\u5132\u5b58\u5eab
+MSG_MAVEN_LOCAL_REPO=Maven \u672c\u7aef\u5132\u5b58\u5eab
+MSG_NO_CONFIG_REPO=\u672a\u914d\u7f6e\u5132\u5b58\u5eab
+MSG_UNSPECIFIED=<\u672a\u6307\u5b9a>
+MSG_PASSWORD_NOT_ENCODED_PROXY=\u9019\u500b Proxy \u7684\u5bc6\u78bc\u672a\u7de8\u78bc\u3002\u82e5\u8981\u5c07\u5bc6\u78bc\u7de8\u78bc\uff0c\u8acb\u57f7\u884c securityUtility \u7de8\u78bc\u52d5\u4f5c\uff08\u5c07 --encoding \u9078\u9805\u8a2d\u70ba\u652f\u63f4\u7684\u7de8\u78bc\u985e\u578b\uff09\u3002\u652f\u63f4\u7684\u985e\u578b\u70ba xor\uff08\u9810\u8a2d\u503c\uff09\u3001aes \u548c hash\u3002
+MSG_PROXY_LABEL=Proxy \u8a2d\u5b9a
+MSG_NO_CONFIG_PROXY=\u672a\u914d\u7f6e Proxy
+MSG_REPO_FILE_NOT_FOUND=\u5075\u6e2c\u4e0d\u5230\u4f7f\u7528\u8005\u914d\u7f6e\u3002IBM WebSphere Liberty Repository \u662f\u9810\u8a2d\u8cc7\u7522\u5132\u5b58\u5eab\u3002
+MSG_REPO_FILE_NOT_FOUND_EXPLANATION=\u5982\u679c\u8981\u81ea\u8a02 installUtility \u8a2d\u5b9a\uff0c\u8acb\u5728\u4e0b\u5217\u4f4d\u7f6e\u5efa\u7acb repositories.properties \u6a94\uff1a{0}
+MSG_REPO_FILE_NOT_FOUND_ACTION=\u8acb\u4f7f\u7528\u4e0b\u5217\u7bc4\u4f8b\u4f5c\u70ba\u7bc4\u672c\uff0c\u4f86\u5efa\u7acb\u60a8\u81ea\u5df1\u7684 repositories.properties \u6a94\u3002\u8acb\u89e3\u9664\u8a3b\u89e3\u55ae\u4e00 # \u5b57\u5143\u6240\u6a19\u793a\u7684\u5b57\u884c\uff0c\u4e26\u4ee5\u60a8\u81ea\u5df1\u7684\u81ea\u8a02\u503c\u4f86\u53d6\u4ee3\u90a3\u4e9b\u503c\u3002
+MSG_VALIDATION_SUCCESSFUL=\u5167\u5bb9\u6a94\u5df2\u9806\u5229\u901a\u904e\u9a57\u8b49\u3002
+MSG_VALIDATION_FAILED_NO_MESSAGES=\u5167\u5bb9\u6a94\u9a57\u8b49\u5931\u6557\u3002\u8acb\u4f7f\u7528 --viewValidationMessages \u9078\u9805\uff0c\u6aa2\u8996\u8a73\u7d30\u7684\u9a57\u8b49\u8a0a\u606f\u3002
+MSG_VALIDATION_NUM_OF_ERRORS=\u932f\u8aa4\u6578\uff1a{0}
+MSG_VALIDATION_MESSAGES=\u5167\u5bb9\u6a94\u9a57\u8b49
+MSG_VALIDATION_MESSAGE_FORMAT={0}\u3002{1}
+
+FIELD_REPO_NAME=\u540d\u7a31\uff1a{0}
+FIELD_REPO_LOCATION=\u4f4d\u7f6e\uff1a{0}
+FIELD_REPO_STATUS=\u72c0\u614b\uff1a{0}
+FIELD_REPO_REASON=\u539f\u56e0\uff1a{0}
+FIELD_REPO_WARNING=\u8b66\u544a\uff1a{0}
+FIELD_NAME=\u540d\u7a31\uff1a
+FIELD_PORT=\u57e0\uff1a
+FIELD_LOCATION=\u4f4d\u7f6e\uff1a
+FIELD_PROXY_SERVER=Proxy \u4f3a\u670d\u5668\uff1a
+FIELD_USER=\u4f7f\u7528\u8005\u540d\u7a31\uff1a
+FIELD_PASS=\u5bc6\u78bc\uff1a
+FIELD_PROPS_FILE=\u5167\u5bb9\u6a94\uff1a{0}
+FIELD_REPO=\u5132\u5b58\u5eab\u4f3a\u670d\u5668\uff1a{0} ({1})
+FIELD_PROXY=Proxy \u4f3a\u670d\u5668\uff1a{0}
+FIELD_VALIDATION_RESULTS=\u9a57\u8b49\u7d50\u679c\uff1a{0}
+FIELD_VALIDATION_LINE=\u884c\uff1a{0}

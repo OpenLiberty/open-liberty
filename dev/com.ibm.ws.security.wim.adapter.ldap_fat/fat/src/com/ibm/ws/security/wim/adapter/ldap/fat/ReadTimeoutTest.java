@@ -178,7 +178,7 @@ public class ReadTimeoutTest {
         ldap.setId("ldap1");
         ldap.setRealm("LDAPRealm");
         ldap.setHost("localhost");
-        ldap.setPort(String.valueOf(ds.getListenPort()));
+        ldap.setPort(String.valueOf(ds.getLdapPort()));
         ldap.setBaseDN(SUB_DN);
         ldap.setBindDN(InMemoryLDAPServer.getBindDN());
         ldap.setBindPassword(InMemoryLDAPServer.getBindPassword());

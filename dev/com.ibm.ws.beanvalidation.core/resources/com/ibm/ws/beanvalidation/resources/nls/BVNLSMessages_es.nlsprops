@@ -87,3 +87,16 @@ JNDI_NON_JEE_THREAD_CWNBV0006E.explanation=Las operaciones JNDI en un nombre jav
 JNDI_NON_JEE_THREAD_CWNBV0006E.useraction=Modifique la aplicaci\u00f3n, de modo que dicha operaci\u00f3n JNDI se produzca en una hebra asociada con un componente de aplicaci\u00f3n Java EE.
 
 # -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the method with the invalid ValidateOnExecution annotation
+# -----------------------------------------------------------------------
+BVKEY_VALIDATE_ON_EXECUTION_NOT_ALLOWED_CWNBV0007E=CWNBV0007E: No se permite @ValidateOnExecution en m\u00e9todos que alteran temporalmente un m\u00e9todo de superclase o implementan una interfaz. Compruebe la configuraci\u00f3n de {0}
+BVKEY_VALIDATE_ON_EXECUTION_NOT_ALLOWED_CWNBV0007E.explanation= No se permite @ValidateOnExecution en m\u00e9todos que alteran temporalmente un m\u00e9todo de superclase o implementan una interfaz. Un m\u00e9todo que altera temporalmente un m\u00e9todo de superclase o implementa un m\u00e9todo de interfaz hereda el comportamiento del m\u00e9todo que altera temporalmente o implementa.
+BVKEY_VALIDATE_ON_EXECUTION_NOT_ALLOWED_CWNBV0007E.useraction= Elimine @ValidateOnExecution del m\u00e9todo especificado.
+
+# -----------------------------------------------------------------------
+BVKEY_MIXING_IMPLICIT_TYPE_NOT_ALLOWED_CWNBV0008E=CWNBV0008E: No se permite combinar el tipo IMPLICIT con otros tipos ejecutables. Compruebe los tipos ejecutables establecidos para:\n {0}
+BVKEY_MIXING_IMPLICIT_TYPE_NOT_ALLOWED_CWNBV0008E.explanation=De acuerdo con la especificaci\u00f3n de validaci\u00f3n de bean, no se permite la combinaci\u00f3n del tipo IMPLICIT con otros tipos ejecutables para la anotaci\u00f3n @ValidateOnExecution.
+BVKEY_MIXING_IMPLICIT_TYPE_NOT_ALLOWED_CWNBV0008E.useraction=Actualice el m\u00e9todo, la clase o los valores XML globales para los tipos ejecutables a fin de evitar combinar el tipo IMPLICIT con otros tipos ejecutables.
+
+# -----------------------------------------------------------------------

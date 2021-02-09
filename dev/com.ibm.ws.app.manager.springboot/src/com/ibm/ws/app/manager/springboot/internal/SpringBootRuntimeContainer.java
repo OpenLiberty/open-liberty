@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -135,6 +135,7 @@ public class SpringBootRuntimeContainer implements ModuleRuntimeContainer {
                     appArgs = springBootApplication.getAppArgs().toArray(new String[0]);
                 }
                 main.invoke(null, new Object[] { appArgs });
+                springBootApplication.getApplicationReadyLatch().countDown();
                 futureMonitor.setResult(mainInvokeResult, true);
             } catch (InvocationTargetException e) {
                 Throwable target = e.getTargetException();

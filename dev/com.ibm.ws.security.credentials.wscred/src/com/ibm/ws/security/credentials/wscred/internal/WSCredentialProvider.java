@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -153,9 +153,8 @@ public class WSCredentialProvider implements CredentialProvider {
 
         if (customRealm != null) {
             realm = customRealm;
-            String[] parts = accessId.split(realm + "/");
-            if (parts != null && parts.length == 2)
-                uniqueName = parts[1];
+            uniqueName = AccessIdUtil.getUniqueId(accessId, realm);
+
         } else {
             realm = AccessIdUtil.getRealm(accessId);
             uniqueName = AccessIdUtil.getUniqueId(accessId);

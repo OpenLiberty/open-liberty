@@ -1,1 +1,1 @@
-DROP TABLE ${schemaname}.SimpleEntityOLGH9018;
+DROP TABLE SimpleEntityOLGH9018;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,10 +20,12 @@ repositories {
 
 configurations {
   ejbTools
+  enterpriseBeansTools
 }
 
 dependencies {
   ejbTools 'test:com.ibm.ws.ejbcontainer.fat_tools:1.+'
+  enterpriseBeansTools 'test:io.openliberty.ejbcontainer.jakarta.fat_tools:1.+'
   // Dependencies needed for when running on Java 9 (EE-type APIs were removed from JDK)
   requiredLibs 'com.ibm.ws.org.apache.yoko:yoko-spec-corba:1.5.0.31ef0b15cf'
 }
@@ -49,6 +51,19 @@ task addEJBTools {
   }
 }
 
+task addEnterpriseBeansTools {
+  dependsOn ':io.openliberty.ejbcontainer.jakarta.fat_tools:release'
+  doLast {
+    copy {
+      from configurations.enterpriseBeansTools
+      into "${buildDir}/autoFVT/publish/servers/com.ibm.ws.ejbcontainer.remote.fat.RemoteSessionServer/lib/global"
+      rename 'io.openliberty.ejbcontainer.jakarta.fat_tools-(.*).jar', 'io.openliberty.ejbcontainer.jakarta.fat_tools.jar'
+    }
+  }
+}
+
 addRequiredLibraries {
   dependsOn addEJBTools
+  dependsOn addEnterpriseBeansTools
+  dependsOn addJakartaTransformer
 }

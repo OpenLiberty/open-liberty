@@ -39,6 +39,9 @@
         <AD name="%heuristic.retry.limit" description="%heuristic.retry.limit.desc"
             id="heuristicRetryWait" required="false" type="Integer" default="5" />
 
+        <AD name="%heuristic.retry.limit" description="%heuristic.retry.limit.desc"
+            id="heuristicRetryLimit" required="false" type="Integer" default="5" />
+
         <AD name="%max.transaction.timeout" description="%max.transaction.timeout.desc"
             id="propogatedOrBMTTranLifetimeTimeout" required="false" type="String" ibm:type="duration(s)" min="0" default="0" />
 
@@ -53,6 +56,9 @@
 
         <AD name="internal" description="%lease.check.interval.desc"
             id="leaseCheckInterval" required="false" type="String" ibm:type="duration(s)" min="0" default="60s" />
+            
+		<AD name="internal" description="%lease.renewal.time.desc"
+            id="leaseRenewalTime" required="false" type="Integer" min="1" max="100" default="90" />
 
         <AD name="internal" description="%lease.length.desc"
             id="leaseLength" required="false" type="String" ibm:type="duration(s)" min="0" default="60s" />
@@ -67,6 +73,9 @@
             id="recoveryGroup" required="false" type="String" default="" />
 
         <AD name="internal" description="internal use only"
+            id="shutdownOnLogFailure" required="false" type="Boolean" default="true" />
+
+        <AD name="internal" description="internal use only"
             id="enableHADBPeerLocking" required="false" type="Boolean" default="false" />
             
         <AD name="internal" description="internal use only"
@@ -74,7 +83,19 @@
 
         <AD name="internal" description="internal use only"
             id="peerTimeBeforeStale" required="false" type="Integer" default="10" />
-                                    
+
+        <AD name="internal" description="internal use only"
+            id="standardTransientErrorRetryTime" required="false" type="Integer" default="10" />
+
+        <AD name="internal" description="internal use only"
+            id="standardTransientErrorRetryAttempts" required="false" type="Integer" default="180" /> 
+                        
+        <AD name="internal" description="internal use only"
+            id="lightweightTransientErrorRetryTime" required="false" type="Integer" default="1" />
+
+        <AD name="internal" description="internal use only"
+            id="lightweightTransientErrorRetryAttempts" required="false" type="Integer" default="2" /> 
+                                               
         <AD name="%logging.for.heuristic.reporting.enabled" description="%logging.for.heuristic.reporting.enabled.desc" 
             id="enableLoggingForHeuristicReporting" required="false" type="Boolean" default="false" />
         

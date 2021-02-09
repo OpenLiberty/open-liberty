@@ -12,6 +12,7 @@ package com.ibm.ws.security.authentication.tai.internal;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Dictionary;
 import java.util.HashMap;
@@ -39,14 +40,15 @@ import test.common.SharedOutputManager;
 
 @SuppressWarnings("unchecked")
 public class TAIServiceImplTest {
-    private final String KEY_TRUST_ASSOCIATION = "trustAssociation";
-    private final String KEY_INTERCEPTORS = "interceptors";
+    private final String KEY_TRUST_ASSOCIATION_ELEMENT = "trustAssociation";
+    private final String KEY_INTERCEPTORS_ELEMENT = "interceptors";
 
     static final String KEY_ID = "id";
     static final String KEY_CLASS_NAME = "className";
     static final String KEY_ENABLED = "enabled";
     static final String KEY_INVOKE_BEFORE_SSO = "invokeBeforeSSO";
     static final String KEY_INVOKE_AFTER_SSO = "invokeAfterSSO";
+    static final String KEY_DISABLE_LTPA_COOKIE = "disableLtpaCookie";
 
     private final Mockery mock = new JUnit4Mockery() {
         {
@@ -110,12 +112,10 @@ public class TAIServiceImplTest {
         final String methodName = "testInitialize_nothing";
         try {
 
-            final Map<String, Object> taiProps = new Hashtable<String, Object>();
-            String[] noTAIs = {};
-            taiProps.put(KEY_INTERCEPTORS, noTAIs);
-            taiProps.put(TAIConfigImpl.KEY_INVOKE_FOR_UNPROTECTED_URI, false);
-            taiProps.put(TAIConfigImpl.KEY_INVOKE_FOR_FORM_LOGIN, false);
-            taiProps.put(TAIConfigImpl.KEY_FAIL_OVER_TO_APP_AUTH_TYPE, false);
+            Map<String, Object> taiProps = createTrustAssociationPros(false);
+
+            String[] noInterceptors = {};
+            taiProps.put(KEY_INTERCEPTORS_ELEMENT, noInterceptors);
 
             mock.checking(new Expectations() {
                 {
@@ -131,6 +131,7 @@ public class TAIServiceImplTest {
             assertFalse(taiService.isFailOverToAppAuthType());
             assertFalse(taiService.isInvokeForFormLogin());
             assertFalse(taiService.isInvokeForUnprotectedURI());
+            assertFalse(taiService.isDisableLtpaCookie(KEY_ID));
         } catch (Throwable t) {
             outputMgr.failWithThrowable(methodName, t);
         }
@@ -141,22 +142,13 @@ public class TAIServiceImplTest {
         final String methodName = "testActivateCreatesConfiguration";
         try {
             TAIServiceImpl taiService = new TAIServiceImpl();
-            final Map<String, Object> myTAIProps = new Hashtable<String, Object>();
+            Map<String, Object> myTAIProps = createTrustAssociationPros(false);
             String[] myTAI = { "myTAI" };
-            myTAIProps.put(KEY_INTERCEPTORS, myTAI);
-            myTAIProps.put(TAIConfigImpl.KEY_INVOKE_FOR_UNPROTECTED_URI, false);
-            myTAIProps.put(TAIConfigImpl.KEY_INVOKE_FOR_FORM_LOGIN, false);
-            myTAIProps.put(TAIConfigImpl.KEY_FAIL_OVER_TO_APP_AUTH_TYPE, false);
+            myTAIProps.put(KEY_INTERCEPTORS_ELEMENT, myTAI);
 
-            final Dictionary<String, Object> taiProps = new Hashtable<String, Object>();
-            taiProps.put(KEY_TRUST_ASSOCIATION, "trustAssociation");
-            taiProps.put(KEY_ID, "id");
-
-            taiProps.put(KEY_INTERCEPTORS, "interceptors");
-            taiProps.put(KEY_ENABLED, true);
-            taiProps.put(KEY_CLASS_NAME, "className");
-            taiProps.put(KEY_INVOKE_BEFORE_SSO, true);
-            taiProps.put(KEY_INVOKE_AFTER_SSO, true);
+            Dictionary<String, Object> interceptorProps = createInterceptorsProps(true);
+            interceptorProps.put(KEY_ID, "id");
+            myTAIProps.putAll((Map<? extends String, ? extends Object>) interceptorProps);
 
             mock.checking(new Expectations() {
                 {
@@ -164,7 +156,7 @@ public class TAIServiceImplTest {
                     will(returnValue(bundleContext));
 
                     allowing(config).getProperties();
-                    will(returnValue(taiProps));
+                    will(returnValue(interceptorProps));
                 }
             });
             taiServiceRef.activate(cc);
@@ -172,8 +164,36 @@ public class TAIServiceImplTest {
 
             Map<String, TrustAssociationInterceptor> taiInstances = taiService.getTais(true);
             assertNotNull("There must be TAI instance", taiInstances);
+            assertTrue(taiService.isDisableLtpaCookie(KEY_ID));
         } catch (Throwable t) {
             outputMgr.failWithThrowable(methodName, t);
         }
+    }
+
+    /**
+     * @param trustAssociation element configuration attributes
+     */
+    private Map<String, Object> createTrustAssociationPros(boolean value) {
+        final Map<String, Object> taiProps = new Hashtable<String, Object>();
+        taiProps.put(TAIConfigImpl.KEY_INVOKE_FOR_UNPROTECTED_URI, value);
+        taiProps.put(TAIConfigImpl.KEY_INVOKE_FOR_FORM_LOGIN, value);
+        taiProps.put(TAIConfigImpl.KEY_FAIL_OVER_TO_APP_AUTH_TYPE, value);
+        taiProps.put(TAIConfigImpl.KEY_DISABLE_LTPA_COOKIE, value);
+        taiProps.put(TAIConfigImpl.KEY_INITIALIZE_AT_FIRST_REQUEST, value);
+        return taiProps;
+    }
+
+    /**
+     * @param Configuration attributes for shared library interceptor element
+     */
+    private Dictionary<String, Object> createInterceptorsProps(boolean value) {
+        final Dictionary<String, Object> interceptorProps = new Hashtable<String, Object>();
+        interceptorProps.put(KEY_INTERCEPTORS_ELEMENT, "interceptors");
+        interceptorProps.put(KEY_ENABLED, value);
+        interceptorProps.put(KEY_CLASS_NAME, "className");
+        interceptorProps.put(KEY_INVOKE_BEFORE_SSO, value);
+        interceptorProps.put(KEY_INVOKE_AFTER_SSO, value);
+        interceptorProps.put(KEY_DISABLE_LTPA_COOKIE, value);
+        return interceptorProps;
     }
 }

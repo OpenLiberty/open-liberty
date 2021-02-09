@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 IBM Corporation and others.
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,6 +23,7 @@ import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 import com.ibm.wsspi.application.handler.ApplicationHandler;
 import com.ibm.wsspi.application.handler.ApplicationInformation;
 import com.ibm.wsspi.application.handler.ApplicationMonitoringInformation;
+import com.ibm.wsspi.application.lifecycle.ApplicationStartBarrier;
 
 @Component(service = { ApplicationHandler.class },
            property = { "service.vendor=IBM", "type:String=war" })
@@ -61,7 +62,6 @@ public class WARApplicationHandlerImpl implements ApplicationHandler<DeployedApp
 
         WARDeployedAppInfo deployedApp = (WARDeployedAppInfo) applicationInformation.getHandlerInfo();
 
-
         if (!deployedApp.deployApp(result)) {
             futureMonitor.setResult(result, false);
             return result;
@@ -80,5 +80,9 @@ public class WARApplicationHandlerImpl implements ApplicationHandler<DeployedApp
 
         boolean success = deployedApp.uninstallApp();
         return futureMonitor.createFutureWithResult(success);
+    }
+
+    @Reference
+    private void setApplicationStartBarrier(ApplicationStartBarrier applicationStartBarrier) {
     }
 }

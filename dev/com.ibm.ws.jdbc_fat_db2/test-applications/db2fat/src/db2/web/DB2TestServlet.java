@@ -58,6 +58,9 @@ public class DB2TestServlet extends FATServlet {
     @Resource(lookup = "jdbc/db2-using-driver-type")
     private DataSource db2_using_driver_type;
 
+    @Resource(lookup = "jdbc/db2-secure")
+    DataSource db2_secure;
+
     @Resource
     private UserTransaction tran;
 
@@ -77,6 +80,13 @@ public class DB2TestServlet extends FATServlet {
             stmt.close();
         } finally {
             con.close();
+        }
+    }
+
+    @Test
+    public void testDB2SecureConnection() throws Exception {
+        try (Connection con = db2_secure.getConnection()) {
+            System.out.println("got secure connection");
         }
     }
 

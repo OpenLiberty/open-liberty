@@ -32,6 +32,7 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.config.ConfigMonitorElement;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
@@ -65,7 +66,7 @@ public class ServerConfigTest {
     @Test
     public void testRestart() throws Exception {
         LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.config.restart");
-        ShrinkHelper.exportAppToServer(server, restartApp);
+        ShrinkHelper.exportAppToServer(server, restartApp, DeployOptions.DISABLE_VALIDATION);
         server.copyFileToLibertyInstallRoot("lib/features", "internalFeatureForFat/configfatlibertyinternals-1.0.mf");
         server.setServerStartTimeout(SERVER_START_TIMEOUT);
         server.startServer("before.log");
@@ -98,7 +99,7 @@ public class ServerConfigTest {
     @Test
     public void testRefresh() throws Exception {
         LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.config.refresh");
-        ShrinkHelper.exportAppToServer(server, restartApp);
+        ShrinkHelper.exportAppToServer(server, restartApp, DeployOptions.DISABLE_VALIDATION);
         server.copyFileToLibertyInstallRoot("lib/features", "internalFeatureForFat/configfatlibertyinternals-1.0.mf");
         server.setServerStartTimeout(SERVER_START_TIMEOUT);
         server.startServer("refresh.log");
@@ -130,7 +131,7 @@ public class ServerConfigTest {
     @Test
     public void testVariableRestart() throws Exception {
         LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.config.restart.var");
-        ShrinkHelper.exportAppToServer(server, restartApp);
+        ShrinkHelper.exportAppToServer(server, restartApp, DeployOptions.DISABLE_VALIDATION);
         server.copyFileToLibertyInstallRoot("lib/features", "internalFeatureForFat/configfatlibertyinternals-1.0.mf");
         server.setServerStartTimeout(SERVER_START_TIMEOUT);
         server.startServer("restart-var-before.log");
@@ -160,7 +161,7 @@ public class ServerConfigTest {
     @Test
     public void testValidate() throws Exception {
         LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.config.validate");
-        ShrinkHelper.exportAppToServer(server, restartApp);
+        ShrinkHelper.exportAppToServer(server, restartApp, DeployOptions.DISABLE_VALIDATION);
         server.copyFileToLibertyInstallRoot("lib/features", "internalFeatureForFat/configfatlibertyinternals-1.0.mf");
         server.setServerStartTimeout(SERVER_START_TIMEOUT);
 
@@ -181,7 +182,7 @@ public class ServerConfigTest {
     @Test
     public void testValidateUpdateFileTag() throws Exception {
         LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.config.validateConfig");
-        ShrinkHelper.exportAppToServer(server, restartApp);
+        ShrinkHelper.exportAppToServer(server, restartApp, DeployOptions.DISABLE_VALIDATION);
         server.copyFileToLibertyInstallRoot("lib/features", "internalFeatureForFat/configfatlibertyinternals-1.0.mf");
         server.setServerStartTimeout(SERVER_START_TIMEOUT);
         server.startServer();
@@ -196,7 +197,7 @@ public class ServerConfigTest {
     @Test
     public void testRelativeImports() throws Exception {
         LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.config.import");
-        ShrinkHelper.exportAppToServer(server, restartApp);
+        ShrinkHelper.exportAppToServer(server, restartApp, DeployOptions.DISABLE_VALIDATION);
         server.copyFileToLibertyInstallRoot("lib/features", "internalFeatureForFat/configfatlibertyinternals-1.0.mf");
         server.setServerStartTimeout(SERVER_START_TIMEOUT);
         server.startServer("imports.log");
@@ -214,7 +215,7 @@ public class ServerConfigTest {
     @Test
     public void testImportWithVariables() throws Exception {
         LibertyServer server = LibertyServerFactory.getLibertyServer(VARIABLE_IMPORT_SERVER);
-        ShrinkHelper.exportAppToServer(server, restartApp);
+        ShrinkHelper.exportAppToServer(server, restartApp, DeployOptions.DISABLE_VALIDATION);
         server.copyFileToLibertyInstallRoot("lib/features", "internalFeatureForFat/configfatlibertyinternals-1.0.mf");
         server.setServerStartTimeout(SERVER_START_TIMEOUT);
 
@@ -247,7 +248,7 @@ public class ServerConfigTest {
     @Test
     public void testRefreshError() throws Exception {
         LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.config.refresh.error");
-        ShrinkHelper.exportAppToServer(server, restartApp);
+        ShrinkHelper.exportAppToServer(server, restartApp, DeployOptions.DISABLE_VALIDATION);
         server.copyFileToLibertyInstallRoot("lib/features", "internalFeatureForFat/configfatlibertyinternals-1.0.mf");
         server.setServerStartTimeout(SERVER_START_TIMEOUT);
         server.startServer("refresh-error.log");
@@ -295,7 +296,7 @@ public class ServerConfigTest {
     @Test
     public void testServerConfigUpdating() throws Exception {
         LibertyServer server = LibertyServerFactory.getStartedLibertyServer("com.ibm.ws.config.update");
-        ShrinkHelper.exportAppToServer(server, restartApp);
+        ShrinkHelper.exportAppToServer(server, restartApp, DeployOptions.DISABLE_VALIDATION);
 
         try {
             // The server has no update trigger so first set one to polled.  Polled is the default so this change should be picked up
@@ -440,7 +441,7 @@ public class ServerConfigTest {
     @Test
     public void testBadRequiredIncludeFAIL() throws Exception {
         LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.config.import.error");
-        ShrinkHelper.exportAppToServer(server, restartApp);
+        ShrinkHelper.exportAppToServer(server, restartApp, DeployOptions.DISABLE_VALIDATION);
         server.copyFileToLibertyInstallRoot("lib/features", "internalFeatureForFat/configfatlibertyinternals-1.0.mf");
         LibertyFileManager.copyFileIntoLiberty(server.getMachine(), server.getServerRoot(), "bootstrap.properties",
                                                server.pathToAutoFVTTestFiles + "/import.error/bootstrap-onError-FAIL.properties", false,
@@ -500,7 +501,7 @@ public class ServerConfigTest {
     @Test
     public void testBadRequiredIncludeWARN() throws Exception {
         LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.config.import.error");
-        ShrinkHelper.exportAppToServer(server, restartApp);
+        ShrinkHelper.exportAppToServer(server, restartApp, DeployOptions.DISABLE_VALIDATION);
         server.copyFileToLibertyInstallRoot("lib/features", "internalFeatureForFat/configfatlibertyinternals-1.0.mf");
         server.setServerStartTimeout(SERVER_START_TIMEOUT);
 
@@ -561,7 +562,7 @@ public class ServerConfigTest {
     @Test
     public void testBadRequiredIncludeModifyOnError() throws Exception {
         LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.config.import.error");
-        ShrinkHelper.exportAppToServer(server, restartApp);
+        ShrinkHelper.exportAppToServer(server, restartApp, DeployOptions.DISABLE_VALIDATION);
         server.copyFileToLibertyInstallRoot("lib/features", "internalFeatureForFat/configfatlibertyinternals-1.0.mf");
         server.setServerStartTimeout(SERVER_START_TIMEOUT);
 
@@ -620,7 +621,7 @@ public class ServerConfigTest {
     @Test
     public void testVariableMissingName() throws Exception {
         LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.config.import.error");
-        ShrinkHelper.exportAppToServer(server, restartApp);
+        ShrinkHelper.exportAppToServer(server, restartApp, DeployOptions.DISABLE_VALIDATION);
         server.copyFileToLibertyInstallRoot("lib/features", "internalFeatureForFat/configfatlibertyinternals-1.0.mf");
         server.setServerStartTimeout(SERVER_START_TIMEOUT);
 
@@ -672,7 +673,7 @@ public class ServerConfigTest {
     @Test
     public void testVariableMissingValue() throws Exception {
         LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.config.import.error");
-        ShrinkHelper.exportAppToServer(server, restartApp);
+        ShrinkHelper.exportAppToServer(server, restartApp, DeployOptions.DISABLE_VALIDATION);
         server.copyFileToLibertyInstallRoot("lib/features", "internalFeatureForFat/configfatlibertyinternals-1.0.mf");
         server.setServerStartTimeout(SERVER_START_TIMEOUT);
 

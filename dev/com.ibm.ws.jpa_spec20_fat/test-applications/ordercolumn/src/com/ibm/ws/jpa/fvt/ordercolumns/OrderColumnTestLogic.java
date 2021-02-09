@@ -154,7 +154,7 @@ public class OrderColumnTestLogic extends AbstractTestLogic {
     public static final int Expected_TestOrderColumnUni_Points = 77;
 
     public void testOrderColumnUni(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                   Object managedComponentObject) {
+                                   Object managedComponentObject) throws Throwable {
 
         // Verify parameters
         if (testExecCtx == null || testExecResources == null) {
@@ -194,7 +194,7 @@ public class OrderColumnTestLogic extends AbstractTestLogic {
     public static final int Expected_TestOrderColumnBi_Points = 77;
 
     public void testOrderColumnBi(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                  Object managedComponentObject) {
+                                  Object managedComponentObject) throws Throwable {
 
         // Verify parameters
 
@@ -235,7 +235,7 @@ public class OrderColumnTestLogic extends AbstractTestLogic {
     public static final int Expected_TestOrderColumnElement_Points = 77;
 
     public void testOrderColumnElement(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                       Object managedComponentObject) {
+                                       Object managedComponentObject) throws Throwable {
 
         // Verify parameters
 
@@ -279,7 +279,7 @@ public class OrderColumnTestLogic extends AbstractTestLogic {
 
     private <C, E> void doTestOrderColumn(JPAResource jpaRW,
                                           Hashtable<String, java.io.Serializable> testData,
-                                          OrderColumnEntityClasses entityType, Class<E> elementClass) {
+                                          OrderColumnEntityClasses entityType, Class<E> elementClass) throws Throwable {
 
         System.out.println("** Test element modification from @OrderColumn collection using add and remove elements.");
         doTestOrderColumnAddRemoveElement(jpaRW, testData, entityType, elementClass);
@@ -290,7 +290,7 @@ public class OrderColumnTestLogic extends AbstractTestLogic {
     private <C, E> void doTestOrderColumnAddRemoveElement(
                                                           JPAResource jpaRW,
                                                           Hashtable<String, java.io.Serializable> testData,
-                                                          OrderColumnEntityClasses entityType, Class<E> elementClass) {
+                                                          OrderColumnEntityClasses entityType, Class<E> elementClass) throws Throwable {
 
         // Execute the test case within a try block for proper error recovery
         try {
@@ -470,10 +470,13 @@ public class OrderColumnTestLogic extends AbstractTestLogic {
                         removeColumnsMethod.invoke(element, foundEntity);
                     }
                 }
-            } catch (Exception e) {
-                e.printStackTrace(System.out);
-                Assert.fail("Unable to remove element at index 1: " + e);
+            } finally {
+
             }
+//            catch (Exception e) {
+//                e.printStackTrace(System.out);
+//                Assert.fail("Unable to remove element at index 1: " + e);
+//            }
             commitTx(jpaRW);
 
             beginTx(jpaRW);
@@ -511,10 +514,13 @@ public class OrderColumnTestLogic extends AbstractTestLogic {
                         removeColumnsMethod.invoke(element, foundEntity);
                     }
                 }
-            } catch (Exception e) {
-                e.printStackTrace(System.out);
-                Assert.fail("Unable to remove element at index 1: " + e);
+            } finally {
+
             }
+//            catch (Exception e) {
+//                e.printStackTrace(System.out);
+//                Assert.fail("Unable to remove element at index 1: " + e);
+//            }
             commitTx(jpaRW);
 
             beginTx(jpaRW);
@@ -525,18 +531,14 @@ public class OrderColumnTestLogic extends AbstractTestLogic {
                                                   elementClass, elementClassName, getNamesMethod, Element_1_App);
             rollbackTx(jpaRW);
 
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            t.printStackTrace(System.out);
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
+        } finally {
+
         }
     }
 
     private <E> void verifyUOrderNameEntityWithQuery(JPAResource jpaRW,
                                                      Class<?> columnEntityClass,
-                                                     Class<E> elementClass, String colName, String... expectedOrderedStrings) {
+                                                     Class<E> elementClass, String colName, String... expectedOrderedStrings) throws Throwable {
         String columnEntityClassName = columnEntityClass.getName();
         columnEntityClassName = columnEntityClassName
                         .substring(columnEntityClassName.lastIndexOf('.') + 1);
@@ -692,7 +694,7 @@ public class OrderColumnTestLogic extends AbstractTestLogic {
     private <C, E> void doTestOrderColumnSetElements(
                                                      JPAResource jpaRW,
                                                      Hashtable<String, java.io.Serializable> testData,
-                                                     OrderColumnEntityClasses entityType, Class<E> elementClass) {
+                                                     OrderColumnEntityClasses entityType, Class<E> elementClass) throws Throwable {
 
         // Execute the test case within a try block for proper error recovery
         try {
@@ -780,12 +782,8 @@ public class OrderColumnTestLogic extends AbstractTestLogic {
                                                     columnEntityClass, getNamesMethod, setNamesMethod,
                                                     elementClass, elementClassName, setColumnMethod, addColumnsMethod, new4Dog);
 
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            t.printStackTrace(System.out);
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
+        } finally {
+
         }
     }
 }

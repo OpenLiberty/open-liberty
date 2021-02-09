@@ -65,6 +65,8 @@ import org.w3c.dom.ls.LSResourceResolver;
 
 import org.xml.sax.InputSource;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 import org.apache.cxf.Bus;
 import org.apache.cxf.BusFactory;
 import org.apache.cxf.common.WSDLConstants;
@@ -98,6 +100,7 @@ import org.apache.ws.commons.schema.XmlSchema;
 /**
  * Provides utility methods for obtaining endpoint references, wsdl definitions, etc.
  */
+@Trivial
 public final class EndpointReferenceUtils {
 
     /**

@@ -21,6 +21,7 @@ OL-VirtualHost: ${admin.virtual.host}
 IBM-Authorization-Roles: com.ibm.ws.management
 IBM-Web-Extension-Processing-Disabled: true
 
+jakartaeeMe: true
   
 Private-Package: \
   com.ibm.ws.rest.handler.internal, \

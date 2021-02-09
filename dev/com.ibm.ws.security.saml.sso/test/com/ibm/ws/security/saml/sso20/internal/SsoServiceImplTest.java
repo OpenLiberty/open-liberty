@@ -342,7 +342,7 @@ public class SsoServiceImplTest {
         service.activate(cc, SAML_CONFIG_PROPS);
         service.setSslSupport(sslSupportRef);
 
-        String result = service.getDefaultKeyStoreName("com.ibm.ssl.keyStoreName");
+        String result = service.getDefaultKeyStoreProperty("com.ibm.ssl.keyStoreName");
 
         assertEquals(keyStoreName, result);
     }
@@ -538,7 +538,7 @@ public class SsoServiceImplTest {
             assertTrue("The Collection trustAnchors must contain the object x509Certificate.", trustAnchors.contains(x509Certificate));
         } catch (SamlException ex) {
             ex.printStackTrace();
-            fail("Unexpected exception was thrown: " + ex.getMessage());
+            fail("Unexpected exception was thrown: " + ex);
         }
     }
 

@@ -10,6 +10,7 @@
 #*******************************************************************************
 -include= jar:${fileuri;${repo;org.apache.cxf:cxf-rt-bindings-soap;2.6.2;EXACT}}!/META-INF/MANIFEST.MF,bnd.overrides
 
+instrument.disabled: true
 instrument.ffdc: false
 
 cxfVersion=2.6.2

@@ -23,7 +23,7 @@
   <!-- database for scheduled tasks -->
   <dataSource id="DefaultDataSource">
     <jdbcDriver libraryRef="JDBCLib"/>
-    <properties.derby.embedded createDatabase="create" databaseName="${shared.resource.dir}/data/autonomicalpolling1db"/>
+    <properties.derby.embedded createDatabase="create" databaseName="memory:autonomicalpolling1db"/>
   </dataSource>
 
   <library id="JDBCLib">

@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -16,6 +16,15 @@ Bundle-SymbolicName: com.ibm.ws.security.authorization.jacc.web
 Bundle-Description: WAS Security Web support for JACC Service, version=${bVersion}
 Bundle-ActivationPolicy: lazy
 
+#
+# Produce a JakartaEE compliant JAR.
+#
+jakartaeeMe: true
+#jakartaee.transform.jar.name=io.openliberty.security.authorization.internal.jacc.web.jar
+#JakartaEE-Bundle-Name: Web support for Jakarta Authorization 2.0
+#JakartaEE-Bundle-Symbolic-Name: io.openliberty.security.authorization.internal.jacc.web
+#JakartaEE-Bundle-Description: Web support for Jakarta Authorization 2.0
+#JakartaEE-Bundle-Version: 2.0
 
 WS-TraceGroup: Authorization
 

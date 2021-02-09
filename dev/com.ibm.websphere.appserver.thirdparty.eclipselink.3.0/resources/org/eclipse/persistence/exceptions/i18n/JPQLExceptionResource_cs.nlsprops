@@ -1,0 +1,111 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/JPQLExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+8001=Probl\u00e9m rozpozn\u00e1n\u00ed syntaxe p\u0159i syntaktick\u00e9 anal\u00fdze dotazu [{0}]. Syntaktick\u00fd analyz\u00e1tor vr\u00e1til n\u00e1sleduj\u00edc\u00ed [{1}].
+
+8002=Obecn\u00fd probl\u00e9m p\u0159i syntaktick\u00e9 anal\u00fdze dotazu [{0}]. Syntaktick\u00fd analyz\u00e1tor vr\u00e1til n\u00e1sleduj\u00edc\u00ed [{1}].
+
+8003=Nebyla nalezena t\u0159\u00edda [{0}]. Syntaktick\u00fd analyz\u00e1tor vr\u00e1til n\u00e1sleduj\u00edc\u00ed [{1}].
+
+8004=Chyba p\u0159i kompilaci dotazu [{0}], \u0159\u00e1dek {1}, sloupec {2}: Nezn\u00e1m\u00e1 identifika\u010dn\u00ed prom\u011bnn\u00e1 [{3}]. Klauzule FROM dotazu nedeklaruje identifika\u010dn\u00ed prom\u011bnnou [{3}].
+
+8005=Chyba p\u0159i kompilaci dotazu [{0}]. Byl rozpozn\u00e1n probl\u00e9m p\u0159i interpretaci n\u00e1zvu t\u0159\u00eddy - nebyla nalezena t\u0159\u00edda [{1}].
+
+8006=Chyba p\u0159i kompilaci dotazu [{0}]. Byl rozpozn\u00e1n probl\u00e9m p\u0159i interpretaci n\u00e1zvu t\u0159\u00eddy - nebyl nalezen deskriptor pro [{1}].
+
+8007=Chyba p\u0159i kompilaci dotazu [{0}]. Byl rozpozn\u00e1n probl\u00e9m p\u0159i interpretaci n\u00e1zvu t\u0159\u00eddy - nebylo nalezeno mapov\u00e1n\u00ed pro [{1}].
+
+8008=Chyba p\u0159i kompilaci dotazu [{0}]. Byl rozpozn\u00e1n probl\u00e9m p\u0159i sestavov\u00e1n\u00ed v\u00fdrazu dotazu - nebyl nalezen tv\u016frce expressionBuilder pro [{1}].
+
+8009=Probl\u00e9m p\u0159i kompilaci dotazu [{0}]. V\u00fdraz [{1}] nen\u00ed v sou\u010dasn\u00e9 dob\u011b podporov\u00e1n.
+
+8010=Obecn\u00fd probl\u00e9m p\u0159i syntaktick\u00e9 anal\u00fdze dotazu [{0}].
+
+8011=Chyba p\u0159i kompilaci dotazu [{0}], \u0159\u00e1dek {1}, sloupec {2}: Neplatn\u00e1 deklarace \u010dlena kolekce [{3}], bylo o\u010dek\u00e1v\u00e1no pole p\u0159idru\u017een\u00ed s hodnotou kolekce.
+
+8012=Probl\u00e9m p\u0159i kompilaci dotazu [{0}]. Dosud nen\u00ed implementov\u00e1no: {1}.
+
+8013=Chyba p\u0159i kompilaci dotazu [{0}], \u0159\u00e1dek {1}, sloupec {2}: Nebyla nalezena t\u0159\u00edda konstruktoru [{3}].
+
+8014=Chyba p\u0159i kompilaci dotazu [{0}], \u0159\u00e1dek {1}, sloupec {2}: Neplatn\u00fd argument SIZE [{3}], bylo o\u010dek\u00e1v\u00e1no pole p\u0159idru\u017een\u00ed s hodnotou kolekce.
+
+8015=Chyba p\u0159i kompilaci dotazu [{0}], \u0159\u00e1dek {1}, sloupec {2}: Neplatn\u00fd v\u00fd\u010dtov\u00fd liter\u00e1l, typ v\u00fd\u010dtu {3} nem\u00e1 v\u00fd\u010dtov\u00fd liter\u00e1l {4}.
+
+8016=Chyba p\u0159i kompilaci dotazu [{0}], \u0159\u00e1dek {1}, sloupec {2}: Neplatn\u00fd v\u00fdraz SELECT [{3}] pro dotaz se seskupen\u00edm [{4}]. V klauzuli SELECT dotazu GROUP BY jsou povoleny pouze agregace, polo\u017eky GROUP BY nebo jejich v\u00fdrazy konstruktoru.
+
+8017=Chyba p\u0159i kompilaci dotazu [{0}], \u0159\u00e1dek {1}, sloupec {2}: Neplatn\u00fd v\u00fdraz HAVING [{3}] pro dotaz se seskupen\u00edm [{4}]. Klauzule HAVING mus\u00ed ur\u010dovat podm\u00ednky vyhled\u00e1v\u00e1n\u00ed nad polo\u017ekami seskupen\u00ed nebo agrega\u010dn\u00edmi funkcemi, kter\u00e9 plat\u00ed pro polo\u017eky seskupen\u00ed.
+
+8018=Chyba p\u0159i kompilaci dotazu [{0}], \u0159\u00e1dek {1}, sloupec {2}: Neplatn\u00e9 v\u00edcen\u00e1sobn\u00e9 pou\u017eit\u00ed parametru [{3}], kter\u00e9 p\u0159edpokl\u00e1d\u00e1 r\u016fzn\u00e9 typy parametru [{4}] a [{5}].
+
+8019=Chyba p\u0159i kompilaci dotazu [{0}], \u0159\u00e1dek {1}, sloupec {2}: V\u00edcen\u00e1sobn\u00e1 deklarace identifika\u010dn\u00ed prom\u011bnn\u00e9 [{3}], d\u0159\u00edve deklarovan\u00e9 jako [{4} {3}].
+
+8020=Chyba p\u0159i kompilaci dotazu [{0}], \u0159\u00e1dek {1}, sloupec {2}: Neplatn\u00fd argument [{4}] funkce {3}, byl o\u010dek\u00e1v\u00e1n argument typu [{5}].
+
+8021=Chyba p\u0159i kompilaci dotazu [{0}], \u0159\u00e1dek {1}, sloupec {2}: Neplatn\u00e1 polo\u017eka ORDER BY [{3}] typu [{4}], byl o\u010dek\u00e1v\u00e1n v\u00fdraz \u0159aditeln\u00e9ho typu.
+
+8022=Chyba p\u0159i kompilaci dotazu [{0}], \u0159\u00e1dek {1}, sloupec {2}: Neplatn\u00fd argument [{4}] v\u00fdrazu {3}, byl o\u010dek\u00e1v\u00e1n argument typu [{5}].
+
+8023=Chyba syntaxe p\u0159i syntaktick\u00e9 anal\u00fdze dotazu [{0}].
+
+8024=Chyba syntaxe p\u0159i syntaktick\u00e9 anal\u00fdze dotazu [{0}], \u0159\u00e1dek {1}, sloupec {2}: Chyba syntaxe na [{3}].
+
+8025=Chyba syntaxe p\u0159i syntaktick\u00e9 anal\u00fdze dotazu [{0}], \u0159\u00e1dek {1}, sloupec {2}: Neo\u010dek\u00e1van\u00fd token [{3}].
+
+8026=Chyba syntaxe p\u0159i syntaktick\u00e9 anal\u00fdze dotazu [{0}], \u0159\u00e1dek {1}, sloupec {2}: Neo\u010dek\u00e1van\u00fd znak [{3}].
+
+8027=Chyba syntaxe p\u0159i syntaktick\u00e9 anal\u00fdze dotazu [{0}], \u0159\u00e1dek {1}, sloupec {2}: Byl o\u010dek\u00e1v\u00e1n znak [{3}], nalezen znak [{4}].
+
+8028=Chyba syntaxe p\u0159i syntaktick\u00e9 anal\u00fdze dotazu [{0}], \u0159\u00e1dek {1}, sloupec {2}: Neo\u010dek\u00e1van\u00fd konec dotazu.
+
+8029=Chyba p\u0159i kompilaci dotazu [{0}], \u0159\u00e1dek {1}, sloupec {2}: Neplatn\u00fd v\u00fdraz navigace [{3}], nelze proch\u00e1zet v\u00fdraz [{4}] typu [{5}] uvnit\u0159 dotazu.
+
+8030=Chyba p\u0159i kompilaci dotazu [{0}], \u0159\u00e1dek {1}, sloupec {2}: Nezn\u00e1m\u00fd stav nebo pole p\u0159idru\u017een\u00ed [{3}] t\u0159\u00eddy [{4}].
+
+8031=Chyba p\u0159i kompilaci dotazu [{0}], \u0159\u00e1dek {1}, sloupec {2}: {3} vlo\u017een\u00e9 entity {4} nen\u00ed podporov\u00e1no.
+
+8032=Chyba p\u0159i kompilaci dotazu [{0}], \u0159\u00e1dek {1}, sloupec {2}: Neplatn\u00fd p\u0159\u00edstup atributu [{3}] v c\u00edli klauzule SET [{4}], v klauzuli SET mohou b\u00fdt aktualizov\u00e1na pouze pole stavu a pole p\u0159idru\u017een\u00ed s jedinou hodnotou.
+
+8033=Chyba p\u0159i kompilaci dotazu [{0}], \u0159\u00e1dek {1}, sloupec {2}: Neplatn\u00fd v\u00fdraz navigace [{3}], nelze proch\u00e1zet pole p\u0159idru\u017een\u00ed [{4}] v c\u00edli klauzule SET.
+
+8034=Chyba p\u0159i kompilaci dotazu [{0}]. Nezn\u00e1m\u00fd typ entity [{1}].
+
+8035=Chyba p\u0159i kompilaci dotazu [{0}], \u0159\u00e1dek {1}, sloupec {2}: Neplatn\u00fd v\u00fdraz shody v\u00fd\u010dtu, nelze porovn\u00e1vat hodnotu v\u00fd\u010dtov\u00e9ho typu [{3}} s hodnotou nev\u00fd\u010dtov\u00e9ho typu [{4}].
+
+8036=Chyba p\u0159i kompilaci dotazu [{0}], \u0159\u00e1dek {1}, sloupec {2}: Neplatn\u00fd v\u00fdraz navigace [{3}], nelze proch\u00e1zet pole p\u0159idru\u017een\u00ed s hodnotou kolekce [{4}].
+
+8037=Chyba p\u0159i kompilaci dotazu [{0}], \u0159\u00e1dek {1}, sloupec {2}: Nezn\u00e1m\u00fd typ entity [{3}].
+
+8038=Chyba p\u0159i kompilaci dotazu [{0}], \u0159\u00e1dek {1}, sloupec {2}: Byl rozpozn\u00e1n probl\u00e9m p\u0159i interpretaci n\u00e1zvu t\u0159\u00eddy - nebyla nalezena t\u0159\u00edda [{3}].
+
+8039=Chyba p\u0159i kompilaci dotazu [{0}], \u0159\u00e1dek {1}, sloupec {2}: Prom\u011bnn\u00e1 {3} nen\u00ed mapa a je od n\u00ed po\u017eadov\u00e1n kl\u00ed\u010d mapy.
+
+8040=Chyba p\u0159i kompilaci dotazu [{0}], \u0159\u00e1dek {1}, sloupec {2}: V klauzuli ORDER BY se pou\u017e\u00edv\u00e1 alias {3}, ale nen\u00ed definovan\u00fd v dotazu.
+
+8041=Chyba p\u0159i kompilaci dotazu [{0}], \u0159\u00e1dek {1}, sloupec {2}: Index lze pou\u017e\u00edvat pouze na prom\u011bnn\u00e9 a je vol\u00e1n na neprom\u011bnn\u00e9 {3}.
+

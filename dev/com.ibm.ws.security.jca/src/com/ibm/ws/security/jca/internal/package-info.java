@@ -13,5 +13,7 @@
  * @version 1.0
  */
 @org.osgi.annotation.versioning.Version("1.0")
+@TraceOptions(traceGroup = "AuthData")
 package com.ibm.ws.security.jca.internal;
 
+import com.ibm.websphere.ras.annotation.TraceOptions;

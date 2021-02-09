@@ -189,7 +189,8 @@ public class SsoConfigImpl extends PkixTrustEngineConfig implements SsoConfig, F
 
     CommonConfigUtils configUtils = new CommonConfigUtils();
 
-    public SsoConfigImpl() {}
+    public SsoConfigImpl() {
+    }
 
     /*
      * (non-Javadoc)
@@ -391,7 +392,7 @@ public class SsoConfigImpl extends PkixTrustEngineConfig implements SsoConfig, F
                 config = configAdmin.getConfiguration(authFilterRef, null);
         } catch (IOException e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Invalid authFilterRef configuration", e.getMessage());
+                Tr.debug(tc, "Invalid authFilterRef configuration", e);
             }
             return null;
         }

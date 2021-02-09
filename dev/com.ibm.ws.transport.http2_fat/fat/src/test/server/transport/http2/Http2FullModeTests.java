@@ -74,8 +74,11 @@ public class Http2FullModeTests extends FATServletClient {
         if (LOGGER.isLoggable(Level.INFO)) {
             LOGGER.logp(Level.INFO, CLASS_NAME, "after()", "Stopping servers......");
         }
-        server.stopServer(true);
+        // try for an orderly quiet shutdown
+        Thread.sleep(5000);
         runtimeServer.stopServer(true);
+        Thread.sleep(5000);
+        server.stopServer(true);
     }
 
     private void runTest(String servletPath, String testName) throws Exception {
@@ -850,7 +853,7 @@ public class Http2FullModeTests extends FATServletClient {
      *
      * @throws Exception
      */
-    @Test
+    //@Test
     public void testPriorityFrameAfterHeaderFrameNoEndHeaders() throws Exception {
         runTest(defaultServletPath, testName.getMethodName());
     }
@@ -1744,6 +1747,28 @@ public class Http2FullModeTests extends FATServletClient {
     @Test
     public void testSendPostRequestWithBody() throws Exception {
         runTest(defaultServletPath, testName.getMethodName());
+    }
+
+    /**
+     * Test Coverage: Send a DATA frame
+     * Test Outcome: Expect WINDOW_UPDATE frames matching the DATA payload size
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testSimpleWindowUpdatesReceived() throws Exception {
+        runTest(dataServletPath, testName.getMethodName());
+    }
+
+    /**
+     * Test Coverage: Send multiple DATA frames
+     * Test Outcome: Expect WINDOW_UPDATE frames matching the DATA payloads sent
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testMultiStreamWindowUpdatesReceived() throws Exception {
+        runTest(dataServletPath, testName.getMethodName());
     }
 
     /**

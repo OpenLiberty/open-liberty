@@ -1,0 +1,3 @@
+Manifest-Version: 1.0
+Main-Class: com.ibm.ws.security.client.fat.programmaticlogin.ProgrammaticLoginApp
+Class-Path: ProgrammaticLoginWithCallbackHandlerEmptyUser.jar ProgrammaticLoginWithCallbackHandler.jar ProgrammaticLogin.jar BasicCalculatorClient.jar

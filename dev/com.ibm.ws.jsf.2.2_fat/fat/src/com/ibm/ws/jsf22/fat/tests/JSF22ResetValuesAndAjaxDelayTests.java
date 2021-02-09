@@ -149,7 +149,7 @@ public class JSF22ResetValuesAndAjaxDelayTests {
             HtmlTextInput input = (HtmlTextInput) page.getElementById("form1:name");
 
             Log.info(c, name.getMethodName(), "Typing value 'joh'");
-            input.type("joh", false, false, false);
+            input.type("joh");
 
             Log.info(c, name.getMethodName(), "Checking logs for bean call entry");
             int numOfMethodCalls = jsf22TracingServer.waitForMultipleStringsInLogUsingMark(1, "AjaxDelayTest getMatchingEmployees");
@@ -186,7 +186,7 @@ public class JSF22ResetValuesAndAjaxDelayTests {
             HtmlTextInput input = (HtmlTextInput) page.getElementById("form1:name");
 
             Log.info(c, name.getMethodName(), "Typing value 'joh'");
-            input.type("joh", false, false, false);
+            input.type("joh");
 
             Log.info(c, name.getMethodName(), "Checking logs for bean call entry");
             int numOfMethodCalls = jsf22TracingServer.waitForMultipleStringsInLogUsingMark(3, "AjaxDelayTest getMatchingEmployees");

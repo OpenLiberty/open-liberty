@@ -1,0 +1,205 @@
+<html>
+	<!--
+    Copyright (c) 2014 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ 	-->
+ <head>
+ <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Test Program></title>
+    
+    <script src='dojo.js'></script>
+
+    <script language="javascript" type="text/javascript">
+    
+     
+       var websocket;
+       var url;
+       var lastMsg;
+       var verify;
+       var publishCount = 0;
+       var receiveCount = 0;
+       
+       // Wire all the buttons once page is loaded...
+       require(["dojo/dom", "dojo/on", "dojo/domReady!"], function(dom, on){
+         
+            // Make sure buttons are enabled correctly.
+	        setDisconnectedButtons();
+	        
+		    // Check for the various File API support.
+			if (!window.File || !window.FileReader || !window.FileList || !window.Blob) {
+               log("File operations not available on this browser.")
+			}
+
+	        on(dom.byId("connect"), "click", function(){
+	        
+	            
+			     //  Build the URI to connect to
+	             var path = dom.byId("wsocUrl").value;
+	             var path2 = dom.byId("urlField").value;
+	             
+	             var secure = dom.byId("secure").checked;
+	             var prefix = "ws://";	             
+	             if (secure)
+	                prefix = "wss://";
+	             url = prefix + window.document.location.host + path;
+	             if (path2) {
+	                url = path2;
+	             }
+	           
+	             //Connect and setup handlers
+	             websocket = new WebSocket(url);
+	             websocket.onopen = function(evt) { onOpen(evt) };
+                 websocket.onmessage = function(evt) { onMessage(evt) };
+                 websocket.onerror = function(evt) { onError(evt) };
+                 websocket.onclose = function(evt) { onClose(evt) };
+	         });
+	         
+	         on(dom.byId("disconnect"), "click", function(){
+	        	 
+	             websocket.close(1000, "Normal Closure");
+	             log("Disconn from:", url);
+	             setDisconnectedButtons();
+	         });
+	            
+	           	
+	 	 });
+	
+        
+        function onOpen(msg) {
+               log("Connected to:",  url);
+               	require(["dojo/dom"], function(dom){
+			         setConnectedButtons();
+			    });
+               	for (x=1; x<100; x++) {
+               	  websocket.send(":LSKDJF:LSKDJFLKDSJFLKDSJF:LKSDJFLKSDJF");
+               	}
+	   
+        }
+        
+        function onClose(msg) {
+               log("onClose received:", "reason X" + msg.reason + "X code " + msg.code + " wasClean " + msg.wasClean + ", disconnected from " + url);
+               	require(["dojo/dom"], function(dom){
+			         setDisconnectedButtons();
+			    });
+	   
+        }
+
+        function onMessage(msg) {
+             receiveCount++;
+             log("Message recv:",  msg.data);
+           
+            
+        }
+
+        function onError(msg) {
+            log("QQQQError received:",  msg.data);
+        } 
+        
+        
+      
+        
+        
+        function setConnectedButtons() {
+        
+          require(["dojo/dom"], function(dom){
+            dom.byId("connect").disabled = true;
+			dom.byId("disconnect").disabled = false;
+			dom.byId("textSendText").disabled = false;
+		
+			})
+			
+        }
+        
+        function setDisconnectedButtons() {
+           
+           require(["dojo/dom"], function(dom){
+            dom.byId("connect").disabled = false;
+			dom.byId("disconnect").disabled = true;
+			dom.byId("textSendText").disabled = true;
+			
+			})
+        }
+        
+      
+		  
+		  function log(action, data) {	
+		     if (data.length) {
+
+			     if (data.length > 100) {
+			     
+			        data = data.substr(0,100);
+			        data = data + "  .......NOT SHOWING ALL DATA";
+			     }		
+			  }       
+			  require(["dojo/dom"], function(dom){
+		        var newtext = action + "&nbsp;&nbsp;&nbsp;&nbsp" + data;
+		        var last = dom.byId("lastmessage").innerHTML;
+		        dom.byId("lastmessage").innerHTML =  newtext;
+			    dom.byId("content").innerHTML =  last + "<br>" + dom.byId("content").innerHTML;
+		     });   
+			
+			    
+        }
+		            
+     </script> 
+    </head>
+    <body>
+    
+      
+    
+		 <div id="header" >
+	
+		
+		  
+		    <div id="actions" style="height:240px;width:1000px;" align="left">
+			 <form>
+			 
+					<b>Connect:&nbsp;&nbsp;&nbsp;&nbsp;</b>
+					<select size="1" id="wsocUrl">
+						<option value="/miscellaneous/textEcho" selected>Echo | T | textEcho</option>
+					    <option value="/miscellaneous/multiSessionEcho" selected>Echo | T | multiSessionEcho</option>
+					  
+						
+						
+						
+					</select>
+					    or enter URL:<input type="text" id="urlField">
+
+				    <button type="button" id="connect" >Connect</button>
+				    <button type="button"  id="disconnect" disabled>Disconnect</button>
+				 
+				    &nbsp;&nbsp;&nbsp;<input type="checkbox" id="secure">Secure
+				  
+				    <hr>
+
+				    
+					
+				<b>Text Send:&nbsp;&nbsp;&nbsp;</b>
+				<textarea cols="35" rows="3" id="textToSend">Enter text to send....</textarea>
+				<input type="text" cols="15"  id="repetitions">repeat times?</text>
+				<input type="text" cols="15" id="sendDelay">publish delay?</text>
+				<button type="button" id="textSendText">SendText</button>
+				<hr>
+			  
+		    
+			 </form>
+		    <hr>
+		    </div>
+		    
+		     <div id="PublishCount"  style="height:10px;width:1200px;font-family:arial;color:green;font-size:75%">asdfasdf</div>
+		     <div id="ReceiveCount"  style="height:10px;width:1200px;font-family:arial;color:green;font-size:75%">asdfasdf</div>
+			 <br>
+			 <div id="content" style="height:600px;width:1000px;font-family:arial;color:blue;font-size:75%">
+
+			 </div>
+        
+           </div>
+
+    </body>
+</html>

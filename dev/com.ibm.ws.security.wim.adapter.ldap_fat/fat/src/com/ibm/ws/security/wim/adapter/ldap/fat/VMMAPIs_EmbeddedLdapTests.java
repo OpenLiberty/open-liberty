@@ -169,7 +169,7 @@ public class VMMAPIs_EmbeddedLdapTests {
         LdapRegistry ldap = new LdapRegistry();
         ldap.setRealm("LdapCustom");
         ldap.setHost("localhost");
-        ldap.setPort(String.valueOf(ds.getListenPort()));
+        ldap.setPort(String.valueOf(ds.getLdapPort()));
         ldap.setBaseDN(LDAP_BASE_ENTRY);
         ldap.setBindDN(InMemoryLDAPServer.getBindDN());
         ldap.setBindPassword(InMemoryLDAPServer.getBindPassword());

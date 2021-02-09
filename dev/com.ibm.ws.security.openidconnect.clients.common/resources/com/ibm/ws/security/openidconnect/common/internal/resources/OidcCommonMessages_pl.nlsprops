@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2013, 2018 IBM Corporation and others.
+# Copyright (c) 2013, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -128,8 +128,8 @@ JWK_ENDPOINT_MISSING_ERR.useraction=Ustaw atrybut jwkEndpointUrl na adres URL kl
 #OIDC_FAILED_RUN_AS_SUBJCET.explanation=An exception occurred while getting the RunAsSubject.
 #OIDC_FAILED_RUN_AS_SUBJCET.useraction=Make sure the server is configured and started properly.
 
-#0=OIDC client ID, 1=Current clock time, 2=Token expiration time, 3=Token issued at time
-OIDC_JWT_VERIFY_STATE_ERR=CWWKS1773E: Sprawdzanie poprawno\u015bci nie powiod\u0142o si\u0119 dla znacznika za\u017c\u0105danego przez [{0}], poniewa\u017c znacznik nie nale\u017cy do poprawnego zakresu. Powodem wyst\u0105pienia tego problemu m\u00f3g\u0142 by\u0107 fakt, \u017ce bie\u017c\u0105cy czas [{1}] jest p\u00f3\u017aniejszy ni\u017c czas wa\u017cno\u015bci znacznika [{2}] lub o wiele wcze\u015bniejszy ni\u017c czas wystawienia znacznika [{3}].
+#0=OIDC client ID, 1=sub claim of the token, 2=Current clock time, 3=Token expiration time, 4=Token issued at time
+OIDC_JWT_VERIFY_STATE_ERR=CWWKS1773E: Sprawdzanie poprawno\u015bci znacznika za\u017c\u0105danego przez klient [{0}] OpenID Connect dla u\u017cytkownika [{1}] nie powiod\u0142o si\u0119, poniewa\u017c znacznik jest poza poprawnym zakresem. Ten b\u0142\u0105d wyst\u0119puje, poniewa\u017c bie\u017c\u0105cy czas [{2}] przypada po terminie utraty wa\u017cno\u015bci znacznika [{3}] lub poniewa\u017c czas wystawienia [{4}] jest zbyt odleg\u0142y od czasu bie\u017c\u0105cego [{2}].
 OIDC_JWT_VERIFY_STATE_ERR.explanation=Nie mo\u017cna sprawdzi\u0107 poprawno\u015bci znacznika, poniewa\u017c wy\u015bwietlony bie\u017c\u0105cy czas nie zawiera si\u0119 mi\u0119dzy czasem wystawienia znacznika i czasem wa\u017cno\u015bci znacznika.
 OIDC_JWT_VERIFY_STATE_ERR.useraction=Sprawd\u017a, czy zegary systemowe klienta OpenID Connect (strona zale\u017cna) i dostawcy OpenID Connect s\u0105 zsynchronizowane (je\u015bli znajduj\u0105 si\u0119 w r\u00f3\u017cnych systemach).
 
@@ -184,6 +184,6 @@ PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR.explanation=Znacznik nie mo\u017ce 
 PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR.useraction=Uzyskaj nowy znacznik, kt\u00f3ry nie zawiera podanego roszczenia, lub zmie\u0144 warto\u015b\u0107 podanego atrybutu konfiguracji, aby umo\u017cliwi\u0107 umieszczenie roszczenia w znaczniku.
 
 # 0=Client ID, 1=List of invalid parameter names, 2=forwardLoginParameter
-BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED=CWWKS1783W: Klient OpenID Connect [{0}] zawiera element {1} w warto\u015bciach, kt\u00f3re zosta\u0142y okre\u015blone przez atrybut konfiguracji [{2}]. Okre\u015blone warto\u015bci zostan\u0105 zignorowane.
-BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED.explanation=Specyfikacja OAuth 2.0 definiuje zestaw zarezerwowanych parametr\u00f3w \u017c\u0105da\u0144, kt\u00f3re musz\u0105 zosta\u0107 podane przez klienta w przypadku \u017c\u0105da\u0144 autoryzacji. Warto\u015bci tych zarezerwowanych parametr\u00f3w nie mog\u0105 by\u0107 podawane przez u\u017cytkownika.
-BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED.useraction=Usu\u0144 okre\u015blone warto\u015bci z listy warto\u015bci zdefiniowanej w konfiguracji klienta OpenID Connect.
+DISALLOWED_FORWARD_AUTHZ_PARAMS_CONFIGURED=CWWKS1783W: Klient OpenID Connect [{0}] zawiera element {1} w warto\u015bciach, kt\u00f3re zosta\u0142y okre\u015blone przez atrybut konfiguracji [{2}]. Okre\u015blone warto\u015bci zostan\u0105 zignorowane.
+DISALLOWED_FORWARD_AUTHZ_PARAMS_CONFIGURED.explanation=Specyfikacja OAuth 2.0 definiuje zestaw zarezerwowanych parametr\u00f3w \u017c\u0105da\u0144, kt\u00f3re musz\u0105 zosta\u0107 podane przez klienta w przypadku \u017c\u0105da\u0144 autoryzacji. Warto\u015bci tych zarezerwowanych parametr\u00f3w nie mog\u0105 by\u0107 podawane przez u\u017cytkownika.
+DISALLOWED_FORWARD_AUTHZ_PARAMS_CONFIGURED.useraction=Usu\u0144 okre\u015blone warto\u015bci z listy warto\u015bci zdefiniowanej w konfiguracji klienta OpenID Connect.

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,9 +19,6 @@ import com.ibm.ws.javaee.ddmodel.DDParser.Diagnostics;
 import com.ibm.ws.javaee.ddmodel.DDParser.ParseException;
 import com.ibm.ws.javaee.ddmodel.TokenType;
 
-/**
- *
- */
 /*
  * <xsd:element name="permissions">
  * <xsd:complexType>
@@ -58,11 +55,6 @@ public class PermissionsConfigType extends DDParser.ElementContentParsable imple
         this.permissions.add(permission);
     }
 
-/*
- * (non-Javadoc)
- * 
- * @see com.ibm.ws.javaee.ddmodel.DDParser.ParsableElement#handleChild(com.ibm.ws.javaee.ddmodel.DDParser, java.lang.String)
- */
     @Override
     public boolean handleChild(DDParser parser, String localName) throws ParseException {
         if ("permission".equals(localName)) {
@@ -86,75 +78,37 @@ public class PermissionsConfigType extends DDParser.ElementContentParsable imple
         return false;
     }
 
-/*
- * (non-Javadoc)
- * 
- * @see com.ibm.ws.javaee.ddmodel.DDParser.Parsable#describe(com.ibm.ws.javaee.ddmodel.DDParser.Diagnostics)
- */
     @Override
     public void describe(Diagnostics diag) {
-        // TODO Auto-generated method stub
-
         diag.describeIfSet("permissions", permissions);
-
     }
-
-/*
- * (non-Javadoc)
- * 
- * @see com.ibm.ws.javaee.dd.permissions.PermissionsConfig#getPermissions()
- */
-    @SuppressWarnings("unchecked")
+  
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public List getPermissions() {
-        // TODO Auto-generated method stub
         if (this.permissions != null) {
             return this.permissions.getList();
         } else
             return Collections.emptyList();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.ibm.ws.javaee.dd.DeploymentDescriptor#getDeploymentDescriptorPath()
-     */
     @Override
     public String getDeploymentDescriptorPath() {
-        // TODO Auto-generated method stub
         return null;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.ibm.ws.javaee.dd.DeploymentDescriptor#getComponentForId(java.lang.String)
-     */
     @Override
     public Object getComponentForId(String id) {
-        // TODO Auto-generated method stub
         return null;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.ibm.ws.javaee.dd.DeploymentDescriptor#getIdForComponent(java.lang.Object)
-     */
     @Override
     public String getIdForComponent(Object ddComponent) {
-        // TODO Auto-generated method stub
         return null;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.ibm.ws.javaee.ddmodel.DDParser.RootParsable#describe(java.lang.StringBuilder)
-     */
     @Override
     public void describe(StringBuilder sb) {
-        // TODO Auto-generated method stub
-
+        // EMPTY
     }
 }

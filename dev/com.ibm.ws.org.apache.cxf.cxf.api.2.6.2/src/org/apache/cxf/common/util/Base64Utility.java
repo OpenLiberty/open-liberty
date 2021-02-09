@@ -36,6 +36,8 @@ import java.util.logging.Logger;
 import org.apache.cxf.common.i18n.Message;
 import org.apache.cxf.common.logging.LogUtils;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 
 /**
  * This class converts to/from base64. The alternative conversions include:
@@ -52,6 +54,7 @@ import org.apache.cxf.common.logging.LogUtils;
  *    String     into OutStream
  * 
  */
+@Trivial
 public final class Base64Utility {
     
     private static final Logger LOG = LogUtils.getL7dLogger(Base64Utility.class);

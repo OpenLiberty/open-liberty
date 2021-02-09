@@ -107,3 +107,5 @@ instrument.classesExcludes: com/ibm/ws/jmx/connector/server/internal/resources/*
 	org.jmock:jmock-legacy;version=2.5.0, \
 	com.ibm.ws.kernel.boot;version=latest, \
 	com.ibm.json4j;version=latest
+	
+jakartaeeMe: true

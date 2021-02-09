@@ -25,19 +25,18 @@ import java.util.ResourceBundle;
 
 import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Assume;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import test.LoggingTestUtils;
-import test.TestConstants;
-import test.common.SharedOutputManager;
 
 import com.ibm.websphere.ras.SharedTr;
 import com.ibm.websphere.ras.SharedTraceComponent;
 import com.ibm.websphere.ras.TrConfigurator;
 import com.ibm.websphere.ras.TraceComponent;
+
+import test.LoggingTestUtils;
+import test.TestConstants;
+import test.common.SharedOutputManager;
 
 /**
  * Verify behavior of the TraceNLSResolver, and of static TraceNLS methods that
@@ -47,8 +46,6 @@ public class TraceNLSResolverTest {
     static {
         LoggingTestUtils.ensureLogManager();
     }
-
-    private static final String javaVersion = System.getProperty("java.version");
 
     static final Class<?> myClass = TraceNLSResolverTest.class;
     static final String TEST_NLS = "test.resources.Messages";
@@ -78,7 +75,8 @@ public class TraceNLSResolverTest {
     }
 
     @Before
-    public void setUp() {}
+    public void setUp() {
+    }
 
     @After
     public void tearDown() {
@@ -285,15 +283,6 @@ public class TraceNLSResolverTest {
      */
     @Test
     public void getResourceBundle_resolvesToBestMatch_java17() {
-        // I really don't like to conditional on JVM version, but the 1.6 JVM
-        // caches the resolved bundle by the targetLocale, which is the first
-        // Locale in the list. The 1.7 JVM does not do this, and therefore does
-        // look through the list to find a bundle which matches. If we tried to
-        // guess the right Locale, we would be implementing the resource bundle
-        // look-up logic ourselves, which is counter to the whole point of
-        // deferring to ResourceBundle. For now, we'll guard against running
-        // this test on Java 1.6.
-        Assume.assumeTrue(javaVersion.startsWith("1.7"));
 
         TraceNLSResolver instance = TraceNLSResolver.getInstance();
 

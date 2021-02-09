@@ -29,11 +29,9 @@ import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.Future;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -94,12 +92,6 @@ class BundleProcessor implements SynchronousBundleListener, EventHandler, Runtim
     };
     private final Object metatypeChangedLock = new Object() {
     };
-
-    /** The queue of bundles to add on a feature change event */
-    private final Queue<Bundle> addFeatureBundles = new LinkedBlockingQueue<Bundle>();
-
-    /** The queue of bundles to remove on a feature change event */
-    private final Queue<Bundle> removeFeatureBundles = new LinkedBlockingQueue<Bundle>();
 
     /** The registration of this as an EventHandler for MTP changes */
     private final ServiceRegistration<EventHandler> eventHandlerService;
@@ -213,6 +205,8 @@ class BundleProcessor implements SynchronousBundleListener, EventHandler, Runtim
         }
     }
 
+    private final Collection<Bundle> existingBundles = new ArrayList<Bundle>();
+
     void startProcessor(boolean reprocessConfig) {
         synchronized (this) {
             this.reprocessConfig = reprocessConfig;
@@ -227,7 +221,7 @@ class BundleProcessor implements SynchronousBundleListener, EventHandler, Runtim
                         bundlesToProcess.add(b);
                     } else {
                         //add it to the queue for processing later
-                        addFeatureBundles.add(b);
+                        existingBundles.add(b);
                     }
                 }
             }
@@ -254,12 +248,13 @@ class BundleProcessor implements SynchronousBundleListener, EventHandler, Runtim
             Bundle b = event.getBundle();
             boolean isFeatureBundle = b.getLocation().startsWith(XMLConfigConstants.BUNDLE_LOC_FEATURE_TAG);
             if (type == BundleEvent.RESOLVED) {
+
                 if (isFeatureBundle) {
+
                     if (tc.isDebugEnabled()) {
-                        Tr.debug(tc, "Adding feature bundle {0}", b);
+                        Tr.debug(tc, "Bundle resolved event for feature bundle {0}", b);
                     }
-                    //add it to the queue for processing later
-                    addFeatureBundles.add(b);
+
                 } else {
                     if (tc.isDebugEnabled()) {
                         Tr.debug(tc, "Adding bundle {0}", b);
@@ -268,10 +263,7 @@ class BundleProcessor implements SynchronousBundleListener, EventHandler, Runtim
                     addBundles(Arrays.asList(b));
                 }
             } else if (type == BundleEvent.UNRESOLVED) {
-                if (isFeatureBundle) {
-                    //add it to the queue for processing later
-                    removeFeatureBundles.add(b);
-                } else {
+                if (!isFeatureBundle) {
                     //process non-feature bundles immediately
                     removeBundles(Arrays.asList(b));
                 }
@@ -323,7 +315,7 @@ class BundleProcessor implements SynchronousBundleListener, EventHandler, Runtim
     }
 
     @Override
-    public void notificationCreated(final RuntimeUpdateManager updateManager, RuntimeUpdateNotification notification) {
+    public void notificationCreated(final RuntimeUpdateManager updateManager, final RuntimeUpdateNotification notification) {
         if (FrameworkState.isStopping()) {
             // if the framework is stopping, just ignore incoming events
             return;
@@ -331,6 +323,7 @@ class BundleProcessor implements SynchronousBundleListener, EventHandler, Runtim
 
         if (RuntimeUpdateNotification.FEATURE_BUNDLES_RESOLVED.equals(notification.getName())) {
             notification.onCompletion(new CompletionListener<Boolean>() {
+
                 @Override
                 public void successfulCompletion(Future<Boolean> future, Boolean result) {
                     if (FrameworkState.isStopping()) {
@@ -338,24 +331,50 @@ class BundleProcessor implements SynchronousBundleListener, EventHandler, Runtim
                         return;
                     }
 
-                    RuntimeUpdateNotification notification = updateManager.createNotification(RuntimeUpdateNotification.FEATURE_BUNDLES_PROCESSED);
-                    synchronized (BundleProcessor.this) {
-                        List<Bundle> bundlesToProcess = new ArrayList<Bundle>();
-                        Bundle b;
+                    RuntimeUpdateNotification processed = updateManager.createNotification(RuntimeUpdateNotification.FEATURE_BUNDLES_PROCESSED);
+                    Map<String, Object> props = notification.getProperties();
+                    if (props != null) {
+                        @SuppressWarnings("unchecked")
+                        Set<Bundle> addedBundles = (Set<Bundle>) props.get(RuntimeUpdateNotification.INSTALLED_BUNDLES_IN_UPDATE);
+                        @SuppressWarnings("unchecked")
+                        Set<Bundle> removedBundles = (Set<Bundle>) props.get(RuntimeUpdateNotification.REMOVED_BUNDLES_IN_UPDATE);
 
-                        while ((b = removeFeatureBundles.poll()) != null) {
-                            bundlesToProcess.add(b);
+                        synchronized (BundleProcessor.this) {
+                            // We first add from 'existingBundles', which is the list of bundles that
+                            // existed in the cache at startup. We remove bundles after that as a feature
+                            // update may result in a cached bundle being removed. Finally, we add the bundles
+                            // installed in the feature update.
+
+                            if (!existingBundles.isEmpty()) {
+                                if (tc.isDebugEnabled()) {
+                                    for (Bundle bundle : existingBundles) {
+                                        Tr.debug(tc, "Processing cached bundle: " + bundle);
+                                    }
+                                }
+                                addBundles(existingBundles);
+                                existingBundles.clear();
+                            }
+
+                            if (removedBundles != null) {
+                                if (tc.isDebugEnabled()) {
+                                    for (Bundle bundle : removedBundles) {
+                                        Tr.debug(tc, "Processing removed bundle: " + bundle);
+                                    }
+                                }
+                                removeBundles(removedBundles);
+                            }
+                            if (addedBundles != null) {
+                                if (tc.isDebugEnabled()) {
+                                    for (Bundle bundle : addedBundles) {
+                                        Tr.debug(tc, "Processing added bundle: " + bundle);
+                                    }
+                                }
+                                addBundles(addedBundles);
+                            }
                         }
-
-                        removeBundles(bundlesToProcess);
-                        bundlesToProcess.clear();
-
-                        while ((b = addFeatureBundles.poll()) != null) {
-                            bundlesToProcess.add(b);
-                        }
-                        addBundles(bundlesToProcess);
                     }
-                    notification.setResult(true);
+
+                    processed.setResult(true);
 
                 }
 
@@ -447,7 +466,7 @@ class BundleProcessor implements SynchronousBundleListener, EventHandler, Runtim
                 } catch (ConfigUpdateException e) {
                     handleConfigUpdateException(e);
                 }
-// Brent suggested this was what to call                   changeHandler.removeConfigAndCreateInfo(element, true);
+
                 metatypeRegistry.removeMetaType(bundle);
             }
             try {

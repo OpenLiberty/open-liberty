@@ -1,0 +1,221 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/JAXBExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+50000=\u015acie\u017cka kontekstu {0} nie zawiera klasy ObjectFactory ani jaxb.index, nie znaleziono zewn\u0119trznych metadanych w mapie w\u0142a\u015bciwo\u015bci i znaleziono plik sessions.xml lub by\u0142 on niepoprawny.
+
+50001=Klasa {0} wymaga bezargumentowego konstruktora lub okre\u015blonej metody fabrycznej.  Nale\u017cy zauwa\u017cy\u0107, \u017ce niestatyczne klasy wewn\u0119trzne nie maj\u0105 konstruktor\u00f3w bezargumentowych i nie s\u0105 obs\u0142ugiwane.
+
+50002=Okre\u015blono klas\u0119 fabryczn\u0105 bez metody fabrycznej w klasie {0}.
+
+50003=Metoda fabryczna o nazwie {0} nie jest zadeklarowana w klasie {1}.
+
+50004=Atrybut XmlAnyAttribute jest niepoprawny we w\u0142a\u015bciwo\u015bci {0}. Nale\u017cy jej u\u017cywa\u0107 z w\u0142a\u015bciwo\u015bci\u0105 typu Map.
+
+50005=Tylko jedna w\u0142a\u015bciwo\u015b\u0107 z atrybutem XmlAnyAttribute jest dozwolona w klasie {0}.
+
+50006=Niepoprawne odwo\u0142anie XmlElementRef we w\u0142a\u015bciwo\u015bci {0} w klasie {1}. Przywo\u0142ywany element nie jest zadeklarowany.
+
+50007=Kolizja nazw.  Dwie klasy maj\u0105 typ XML o identyfikatorze URI {0} i nazwie {1}.
+
+50008=Nieobs\u0142ugiwana klasa Node {0}.  Metoda createBinder(klasa) obs\u0142uguje tylko klas\u0119 org.w3c.dom.Node.
+
+50009=W\u0142a\u015bciwo\u015b\u0107 lub pole {0} w klasie {1} ma adnotacj\u0119 m\u00f3wi\u0105c\u0105 o przej\u015bciowo\u015bci, dlatego nie mo\u017ce zosta\u0107 uwzgl\u0119dniona/uwzgl\u0119dnione w adnotacji propOrder.
+
+50010=W\u0142a\u015bciwo\u015b\u0107 lub pole {0} w klasie {1} musi by\u0107 atrybutem, poniewa\u017c inne pole lub w\u0142a\u015bciwo\u015b\u0107 ma adnotacj\u0119 XmlValue.
+
+50011=W\u0142a\u015bciwo\u015b\u0107 lub pole {0} w klasie {1} nie mo\u017ce mie\u0107 adnotacji XmlValue z adnotacj\u0105, poniewa\u017c jest podklas\u0105 innej klasy powi\u0105zanej z kodem XML.
+
+50012=W\u0142a\u015bciwo\u015b\u0107 lub pole {0} w klasie {1} jest okre\u015blona/okre\u015blone w klasie propOrder, ale nie jest poprawn\u0105 w\u0142a\u015bciwo\u015bci\u0105.
+
+50013=W\u0142a\u015bciwo\u015b\u0107 lub pole {0} w klasie {1} musi by\u0107 uwzgl\u0119dnione w elemencie propOrder adnotacji XmlType.
+
+50014=W\u0142a\u015bciwo\u015b\u0107 lub pole {0} w klasie {1} z adnotacj\u0105 XmlValue musi mie\u0107 typ, kt\u00f3ry jest odwzorowany na prosty typ schematu.
+
+50015=Element XmlElementWrapper jest dozwolony tylko w przypadku w\u0142a\u015bciwo\u015bci kolekcji lub tablicy, ale w\u0142a\u015bciwo\u015b\u0107 [{0}] nie jest w\u0142a\u015bciwo\u015bci\u0105 kolekcji ani tablicy.
+
+50016=W\u0142a\u015bciwo\u015b\u0107 [{0}] ma adnotacj\u0119 XmlID, ale jej typem nie jest String.
+
+50017=Niepoprawny element XmlIDREF we w\u0142a\u015bciwo\u015bci [{0}].  Klasa [{1}] musi mie\u0107 w\u0142a\u015bciwo\u015b\u0107 z adnotacj\u0105 XmlID.
+
+50018=Element XmlList jest dozwolony tylko w przypadku w\u0142a\u015bciwo\u015bci kolekcji lub tablicy, ale w\u0142a\u015bciwo\u015b\u0107 [{0}] nie jest w\u0142a\u015bciwo\u015bci\u0105 kolekcji ani tablicy.
+
+50019=Niepoprawny typ parametru podczas przetwarzania zewn\u0119trznych metadanych za po\u015brednictwem mapy w\u0142a\u015bciwo\u015bci.  Warto\u015b\u0107 powi\u0105zana z kluczem [eclipselink-oxm-xml] musi by\u0107 jednego z nast\u0119puj\u0105cych typ\u00f3w: [Map<String, Object>, List<Object> lub Object].  Element Object musi mie\u0107 jeden z nast\u0119puj\u0105cych typ\u00f3w: [java.io.File, java.io.InputStream, java.io.Reader, java.net.URL, javax.xml.stream.XMLEventReader, javax.xml.stream.XMLStreamReader, javax.xml.transform.Source, org.w3c.dom.Node lub org.xml.sax.InputSource]. W przypadku typu [Map<String, Object>] element String jest nazw\u0105 pakietu.
+
+50021=Niepoprawny typ parametru podczas przetwarzania zewn\u0119trznych metadanych za po\u015brednictwem mapy w\u0142a\u015bciwo\u015bci.  W przypadku typu [Map<String, Object>] wymagane jest, aby klucz by\u0142 typu [String] (musi wskazywa\u0107 nazw\u0119 pakietu).
+
+50022=Niepoprawny typ parametru podczas przetwarzania zewn\u0119trznych metadanych za po\u015brednictwem mapy w\u0142a\u015bciwo\u015bci.  W przypadku typu [Map<String, Object>] wymagane jest, aby warto\u015b\u0107 mia\u0142a jeden z nast\u0119puj\u0105cych typ\u00f3w [java.io.File, java.io.InputStream, java.io.Reader, java.net.URL, javax.xml.stream.XMLEventReader, javax.xml.stream.XMLStreamReader, javax.xml.transform.Source, org.w3c.dom.Node lub org.xml.sax.InputSource] (uchwyt do pliku metadanych).
+
+50023=Napotkano warto\u015b\u0107 null dla klucza [{0}] podczas przetwarzania metadanych zewn\u0119trznych za po\u015brednictwem mapy w\u0142a\u015bciwo\u015bci.  Wymagane jest, aby warto\u015b\u0107 by\u0142a r\u00f3\u017cna od null i mia\u0142a jeden z nast\u0119puj\u0105cych typ\u00f3w [java.io.File, java.io.InputStream, java.io.Reader, java.net.URL, javax.xml.stream.XMLEventReader, javax.xml.stream.XMLStreamReader, javax.xml.transform.Source, org.w3c.dom.Node lub org.xml.sax.InputSource] (uchwyt do pliku metadanych).
+
+50024=Napotkano klucz o warto\u015bci null podczas przetwarzania metadanych zewn\u0119trznych za po\u015brednictwem mapy w\u0142a\u015bciwo\u015bci.  Wymagane jest, aby klucz mia\u0142 warto\u015b\u0107 r\u00f3\u017cn\u0105 od null i by\u0142 typu [String] (musi wskazywa\u0107 nazw\u0119 pakietu).
+
+50025=Nie mo\u017cna za\u0142adowa\u0107 klasy [{0}] zadeklarowanej w zewn\u0119trznym pliku metadanych.  Sprawd\u017a, czy nazwa klasy jest poprawna oraz czy ustawiono poprawny program \u0142aduj\u0105cy klasy.
+
+50026=Wyst\u0105pi\u0142 wyj\u0105tek podczas pr\u00f3by utworzenia kontekstu JAXBContext dla modelu XmlModel.
+
+50027=Wyst\u0105pi\u0142 wyj\u0105tek podczas pr\u00f3by demarszalingu eksternalizowanego pliku metadanych.
+
+50028=Nie mo\u017cna utworzy\u0107 nowej instancji obiektu [{0}].
+
+50029=Klasa [{0}] podana w adnotacji XmlCustomizer nie implementuje interfejsu org.eclipse.persistence.config.DescriptorCustomizer.
+
+50030=Podj\u0119to pr\u00f3b\u0119 ustawienia wi\u0119cej ni\u017c jednej w\u0142a\u015bciwo\u015bci XmlID dla klasy [{1}].  W\u0142a\u015bciwo\u015bci [{0}] nie mo\u017cna ustawi\u0107 jako XmlID, poniewa\u017c w\u0142a\u015bciwo\u015b\u0107 [{2}] jest ju\u017c ustawiona jako XmlID.
+
+50031=Podj\u0119to pr\u00f3b\u0119 ustawienia wi\u0119cej ni\u017c jednej w\u0142a\u015bciwo\u015bci XmlValue dla klasy [{0}].  W\u0142a\u015bciwo\u015bci [{1}] nie mo\u017cna ustawi\u0107 jako XmlValue, poniewa\u017c w\u0142a\u015bciwo\u015b\u0107 [{2}] jest ju\u017c ustawiona jako XmlValue.
+
+50032=Podj\u0119to pr\u00f3b\u0119 ustawienia wi\u0119cej ni\u017c jednej w\u0142a\u015bciwo\u015bci XmlAnyElement dla klasy [{0}].  W\u0142a\u015bciwo\u015bci [{1}] nie mo\u017cna ustawi\u0107 jako XmlAnyElement, poniewa\u017c w\u0142a\u015bciwo\u015b\u0107 [{2}] jest ju\u017c ustawiona jako XmlAnyElement.
+
+50033=Nie mo\u017cna zainicjowa\u0107 klasy DomHandlerConverter dla interfejsu DomHandler [{0}] ustawionej we w\u0142a\u015bciwo\u015bci [{1}].
+
+50034=W\u0142a\u015bciwo\u015b\u0107 lub pole [{0}] nie mo\u017ce mie\u0107 adnotacji XmlAttachmentRef, poniewa\u017c nie jest to interfejs DataHandler.
+
+50035=Poniewa\u017c w\u0142a\u015bciwo\u015b\u0107 lub pole [{0}] jest ustawiona jako XmlIDREF, typ docelowy ka\u017cdego elementu XmlElement zadeklarowanego na li\u015bcie element\u00f3w XmlElement musi mie\u0107 w\u0142a\u015bciwo\u015b\u0107 XmlID.  Upewnij si\u0119, \u017ce typ docelowy elementu XmlElement [{1}] zawiera w\u0142a\u015bciwo\u015b\u0107 XmlID.
+
+50036=Klasa TypeMappingInfo o w\u0142a\u015bciwo\u015bci XmlTagName o nazwie QName [{0}] musi mie\u0107 ustawiony typ r\u00f3\u017cny od null.
+
+50037=Typ java z pakietem [{0}] jest niedozwolony w pliku powi\u0105za\u0144 o kluczu zwi\u0105zanym z pakietem [{1}].
+
+50038=Kontekstu DynamicJAXBContext nie mo\u017cna utworzy\u0107 z klas konkretnych.  U\u017cyj klasy org.eclipse.persistence.jaxb.JAXBContext lub okre\u015bl klas\u0119 org.eclipse.persistence.jaxb.JAXBContextFactory w pliku jaxb.properties, aby utworzy\u0107 kontekst z istniej\u0105cych klas.
+
+50039=B\u0142\u0105d podczas tworzenia kontekstu DynamicJAXBContext: w\u0119ze\u0142 musi by\u0107 instancj\u0105 klasy Document albo Element.
+
+50040=B\u0142\u0105d podczas tworzenia kontekstu DynamicJAXBContext.
+
+50041=Nie znaleziono sta\u0142ej wyliczeniowej [{0}].
+
+50042=B\u0142\u0105d podczas tworzenia kontekstu DynamicJAXBContext: nazwa sesji ma warto\u015b\u0107 null.
+
+50043=B\u0142\u0105d podczas tworzenia kontekstu DynamicJAXBContext: \u017ar\u00f3d\u0142o ma warto\u015b\u0107 null.
+
+50044=B\u0142\u0105d podczas tworzenia kontekstu DynamicJAXBContext: strumie\u0144 wej\u015bciowy ma warto\u015b\u0107 null.
+
+50045=B\u0142\u0105d podczas tworzenia kontekstu DynamicJAXBContext: w\u0119ze\u0142 ma warto\u015b\u0107 null.
+
+50046=B\u0142\u0105d podczas tworzenia kontekstu DynamicJAXBContext: narz\u0119dzie XJC nie mog\u0142o wygenerowa\u0107 modelu CodeModel.
+
+50047=Nie znaleziono klasy [{0}].
+
+50048=Transformator odczytu okre\u015blony dla w\u0142a\u015bciwo\u015bci [{0}] ma zar\u00f3wno klas\u0119, jak i metod\u0119. Wymagana jest klasa albo metoda, ale nie oba te elementy jednocze\u015bnie.
+
+50049=Transformator odczytu okre\u015blony dla w\u0142a\u015bciwo\u015bci [{0}] nie ma ani klasy, ani metody. Klasa lub metoda jest wymagana.
+
+50050=Transformator zapisu okre\u015blony dla \u015bcie\u017cki xml-path [{1}] w\u0142a\u015bciwo\u015bci [{0}] ma zar\u00f3wno klas\u0119, jak i metod\u0119. Wymagana jest klasa albo metoda, ale nie oba te elementy jednocze\u015bnie.
+
+50051=Transformator zapisu okre\u015blony dla \u015bcie\u017cki xml-path [{1}] w\u0142a\u015bciwo\u015bci [{0}] nie ma ani klasy, ani metody. Klasa lub metoda jest wymagana.
+
+50052=Transformator zapisu okre\u015blony dla w\u0142a\u015bciwo\u015bci [{0}] nie ma ustawionej \u015bcie\u017cki xml-path. \u015acie\u017cka xml-path jest wymagana.
+
+50053=Metoda transformacji [{0}] z parametrami (), (AbstractSession) lub (Session) nie zosta\u0142a znaleziona.
+
+50054=Nie znaleziono klasy transformatora [{0}]. Sprawd\u017a, czy nazwa klasy jest poprawna oraz czy ustawiono poprawny program \u0142aduj\u0105cy klasy.
+
+50055=B\u0142\u0105d podczas tworzenia kontekstu DynamicJAXBContext: nie znaleziono elementu eclipselink.oxm.metadata-source (JAXBContextProperties.OXM_METADATA_SOURCE) w mapie w\u0142a\u015bciwo\u015bci lub mapa ma warto\u015b\u0107 null.
+
+50056=W\u0142a\u015bciwo\u015b\u0107 [{0}] zawiera deklaracj\u0119 XmlJoinNode, ale przywo\u0142ywanej klasy [{1}] nie mo\u017cna zastosowa\u0107 do relacji tego typu.
+
+50057=W\u0142a\u015bciwo\u015b\u0107 [{1}] w klasie [{0}] odwo\u0142uje si\u0119 do klasy [{2}], kt\u00f3ra jest oznaczona jako przej\u015bciowa, co nie jest dozwolone.
+
+50058=W\u0142a\u015bciwo\u015b\u0107 [{1}] w klasie [{0}] ma deklaracj\u0119 XmlJoinNode, ale klasa docelowa [{2}] nie ma w\u0142a\u015bciwo\u015bci XmlID ani XmlKey.  Wymagane jest istnienie w\u0142a\u015bciwo\u015bci XmlID/XmlKey o zgodnej \u015bcie\u017cce XmlPath w klasie docelowej dla ka\u017cdej \u015bcie\u017cki referencedXmlPath.
+
+50059=W\u0142a\u015bciwo\u015b\u0107 [{1}] w klasie [{0}] ma deklaracj\u0119 XmlJoinNode ze \u015bcie\u017ck\u0105 referencedXmlPath [{3}], ale nie ma w\u0142a\u015bciwo\u015bci XmlID ani XmlKey w klasie docelowej [{2}] ze \u015bcie\u017ck\u0105 XmlPath [{3}].  Wymagane jest istnienie w\u0142a\u015bciwo\u015bci XmlID/XmlKey o zgodnej \u015bcie\u017cce XmlPath w klasie docelowej dla ka\u017cdej \u015bcie\u017cki referencedXmlPath.
+
+50060=W\u0142a\u015bciwo\u015b\u0107 [{1}] w klasie [{0}] ma deklaracj\u0119 XmlIDREF, ale klasy docelowej [{2}] nie mo\u017cna zastosowa\u0107 do relacji tego typu.
+
+50061=Wyst\u0105pi\u0142 wyj\u0105tek podczas pr\u00f3by za\u0142adowania klasy XmlAdapterClass [{0}]. Mo\u017cliwe przyczyny to ustawiona niepoprawna nazwa klasy adaptera lub b\u0142\u0119dny program \u0142aduj\u0105cy.
+
+50062=Wyst\u0105pi\u0142 wyj\u0105tek podczas pr\u00f3by uzyskania dost\u0119pu do zadeklarowanych metod klasy XmlAdapterClass [{0}]. Mened\u017cer SecurityManager m\u00f3g\u0142 odm\u00f3wi\u0107 przyznania dost\u0119pu do zadeklarowanych metod w klasie adaptera lub m\u00f3g\u0142 odm\u00f3wi\u0107 przyznania dost\u0119pu do pakietu klasy adaptera.
+
+50063=Wyst\u0105pi\u0142 wyj\u0105tek podczas pr\u00f3by utworzenia instancji klasy XmlAdapterClass [{0}]. Mo\u017cliw\u0105 przyczyn\u0105 jest brak konstruktora bezargumentowego w klasie adaptera.
+
+50064=Klasa XmlAdapterClass [{0}] nie rozszerza klasy javax.xml.bind.annotation.adapters.XmlAdapter, co jest oczekiwane.  Wymagane jest, aby klasa adaptera rozszerza\u0142a klas\u0119 javax.xml.bind.annotation.adapters.XmlAdapter i deklarowa\u0142a metody: public abstract BoundType unmarshal(ValueType v) oraz public abstract ValueType marshal(BoundType v).
+
+50065=Okre\u015blono niepoprawny adapter XmlJavaTypeAdapter [{0}] dla pakietu [{1}]. Mo\u017cliwe przyczyny to ustawiona niepoprawna nazwa klasy adaptera lub b\u0142\u0119dny program \u0142aduj\u0105cy.
+
+50066=Okre\u015blono niepoprawny adapter XmlJavaTypeAdapter [{0}] dla klasy [{1}]. Mo\u017cliwe przyczyny to ustawiona niepoprawna nazwa klasy adaptera lub b\u0142\u0119dny program \u0142aduj\u0105cy.
+
+50067=Okre\u015blono niepoprawny adapter XmlJavaTypeAdapter [{0}] dla pola/w\u0142a\u015bciwo\u015bci [{1}] w klasie [{2}]. Mo\u017cliwe przyczyny to ustawiona niepoprawna nazwa klasy adaptera lub b\u0142\u0119dny program \u0142aduj\u0105cy.
+
+50068=Napotkano warto\u015b\u0107 null podczas przetwarzania metadanych zewn\u0119trznych za po\u015brednictwem mapy w\u0142a\u015bciwo\u015bci.  Wymagane jest, aby uchwyt pliku XML metadanych by\u0142 r\u00f3\u017cny od null i mia\u0142 jeden z nast\u0119puj\u0105cych typ\u00f3w [java.io.File, java.io.InputStream, java.io.Reader, java.net.URL, javax.xml.stream.XMLEventReader, javax.xml.stream.XMLStreamReader, javax.xml.transform.Source, org.w3c.dom.Node lub org.xml.sax.InputSource].
+
+50069=Nie okre\u015blono pakietu dla podanego pliku XML metadanych.  Pakiet mo\u017cna okre\u015bli\u0107 przez przekazanie w parametrze Map<String, Object> (gdzie String = pakiet, Object = uchwyt do pliku XML metadanych) lub przez ustawienie atrybutu package-name w elemencie xml-bindings w pliku XML metadanych.
+
+50070=W\u0142a\u015bciwo\u015b\u0107 [{0}] w klasie [{1}] ma deklaracj\u0119 XmlElements zawieraj\u0105c\u0105 r\u00f3\u017cne ilo\u015bci element\u00f3w XmlElement/XmlJoinNodes.  Wymagane jest, aby istnia\u0142 odpowiedni element XmlJoinNodes dla ka\u017cdego elementu XmlElement zawartego w deklaracji XmlElements.
+
+50071=W\u0142a\u015bciwo\u015b\u0107 [{0}] w klasie [{1}] ma deklaracj\u0119 XmlPaths zawieraj\u0105c\u0105 \u015bcie\u017ck\u0119 XmlPath z atrybutem w katalogu g\u0142\u00f3wnym \u015bcie\u017cki [{2}].  W przypadku deklaracji XmlPaths atrybuty musz\u0105 by\u0107 zagnie\u017cd\u017cone w \u015bcie\u017cce XmlPath, tzn. [foo/{2}].
+
+50072=Znaleziono zduplikowan\u0105 w\u0142a\u015bciwo\u015b\u0107 o nazwie [{0}] w klasie [{1}]
+
+50073=W\u0142a\u015bciwo\u015b\u0107 [{0}] w klasie [{1}] jest okre\u015blona w wielu zewn\u0119trznych plikach powi\u0105za\u0144. Ka\u017cd\u0105 w\u0142a\u015bciwo\u015b\u0107 mo\u017cna okre\u015bli\u0107 tylko w jednym pliku.
+
+50074=Wyst\u0105pi\u0142 wyj\u0105tek podczas uzyskiwania dost\u0119pu do transformatora XMLNameTransformer [{0}]
+
+50075=Wyst\u0105pi\u0142 wyj\u0105tek podczas pr\u00f3by transformacji nazwy [{0}] za pomoc\u0105 transformatora XMLNameTransformer [{1}]
+
+50076=Nie mo\u017cna za\u0142adowa\u0107 zewn\u0119trznych metadanych z podanego po\u0142o\u017cenia: [{0}]. To po\u0142o\u017cenie musi by\u0107 poprawnym adresem URL lub odwo\u0142aniem do \u015bcie\u017cki klas.
+
+50077=Nie mo\u017cna od\u015bwie\u017cy\u0107 metadanych.  Obs\u0142uga od\u015bwie\u017cania wymaga okre\u015blenia metadanych jako w\u0119z\u0142a XML.
+
+50078=Nie mo\u017cna przetworzy\u0107 zewn\u0119trznych plik\u00f3w powi\u0105za\u0144 (XJB).  Aby u\u017cy\u0107 zewn\u0119trznych plik\u00f3w powi\u0105za\u0144, zar\u00f3wno definicje XSD, jak i powi\u0105zania XJB nale\u017cy okre\u015bli\u0107 jako \u017ar\u00f3d\u0142a javax.xml.transform.Source.
+
+50079=Nie mo\u017cna przetworzy\u0107 schemat\u00f3w.  Je\u015bli u\u017cywane s\u0105 importy schemat\u00f3w, definicje XSD nale\u017cy udost\u0119pni\u0107 jako \u017ar\u00f3d\u0142a javax.xml.transform.Source.
+
+50080=Po\u0142o\u017cenie XmlLocation jest dozwolone tylko w przypadku w\u0142a\u015bciwo\u015bci typu org.xml.sax.Locator, ale [{0}] jest typu [{1}].
+
+50081=Wyst\u0105pi\u0142 wyj\u0105tek podczas generowania schematu.
+
+50082=Podj\u0119to pr\u00f3b\u0119 zapisania warto\u015bci {0} bez okre\u015blania klucza.  Spr\u00f3buj ustawi\u0107 warto\u015b\u0107 JSON_VALUE_WRAPPER w klasie JAXBMarshaller.
+
+50083=Wyst\u0105pi\u0142 b\u0142\u0105d podczas pr\u00f3by utworzenia instancji klasy AccessorFactory {0}
+
+50084=Podana klasa AccessorFactory {0} jest niepoprawna. Musi implementowa\u0107 metody createFieldAccessor(klasy, pole, boolean) i createPropertyAccessor(klasa, metoda, metoda).
+
+50085=Wyst\u0105pi\u0142 wyj\u0105tek podczas wywo\u0142ywania metody createFieldAccessor klasy AccessorFactory {0}
+
+50086=Wyst\u0105pi\u0142 wyj\u0105tek podczas wywo\u0142ywania metody createPropertyAccessor klasy AccessorFactory {0}
+
+50087=Wyst\u0105pi\u0142 wyj\u0105tek podczas pr\u00f3by wywo\u0142ania metody {0} klasy Accessor {1}
+
+50088=Warto\u015b\u0107 wyliczeniowa {0} jest niepoprawna w przypadku adnotacji XmlEnum z klas\u0105 {1}
+
+50089=Interfejsu java {0} nie mo\u017cna odwzorowa\u0107 przez JAXB, poniewa\u017c ma wiele mo\u017cliwych do odwzorowania interfejs\u00f3w macierzystych. Wielokrotne dziedziczenie nie jest obs\u0142ugiwane.
+
+50090=Niepoprawna warto\u015b\u0107 wykresu obiektu {0}. Warto\u015b\u0107 musi by\u0107 \u0142a\u0144cuchem lub instancj\u0105 klasy ObjectGraph.
+
+50091=Nazwa elementu {0} ma wi\u0119cej ni\u017c jedno odwzorowanie.
+
+50092=Tylko jedna w\u0142a\u015bciwo\u015b\u0107 XmlElementRef typu {0} jest dozwolona w klasie {1}.
+
+50093=Klasa {0} nie jest odwzorowanym typem w kontek\u015bcie JAXBContext.
+
+50094=W\u0142a\u015bciwo\u015b\u0107 {0} okre\u015blona w adnotacji XmlVariableNode nie zosta\u0142a znaleziona w klasie {1}.
+
+50095=W\u0142a\u015bciwo\u015b\u0107 {0} typu {1} w klasie {2} nie jest poprawna dla XmlVariableNode.  Dozwolone s\u0105 tylko w\u0142a\u015bciwo\u015bci typu String lub QName.
+
+50096=W\u0142a\u015bciwo\u015b\u0107 @XmlAttribute {0} w typie {1} musi odwo\u0142ywa\u0107 si\u0119 do typu, kt\u00f3ry jest odwzorowywany na tekst w XML.  W\u0142a\u015bciwo\u015bci {2} nie mo\u017cna odwzorowa\u0107 na warto\u015b\u0107 tekstow\u0105.
+

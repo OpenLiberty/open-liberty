@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.server.internal;
 
@@ -28,7 +28,7 @@ public class MockJWKProvider extends JWKProvider {
 
     @Override
     protected JWK generateJWK(String alg1, int size) {
-        JWK jwk = Jose4jEllipticCurveJWK.getInstance(256, this.alg, null, "EC");
+        JWK jwk = Jose4jEllipticCurveJWK.getInstance(this.alg, null);
         System.out.println("generateJWK:" + jwk);
         return jwk;
     }

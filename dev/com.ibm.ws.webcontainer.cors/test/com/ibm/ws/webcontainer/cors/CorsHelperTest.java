@@ -52,7 +52,7 @@ public class CorsHelperTest {
     /** Response to preFlight(OPTIONS) or cross-origin. Value can be true */
     private static final String RESPONSE_HEADER_ACCESS_CONTROL_ALLOW_CREDENTIALS = "Access-Control-Allow-Credentials";
 
-    /** Optional. Response to preFlight(OPTIONS) or cross-origin. Whitelist of custom headers that browsers are allowed to access. */
+    /** Optional. Response to preFlight(OPTIONS) or cross-origin. Allowlist of custom headers that browsers are allowed to access. */
     private static final String RESPONSE_HEADER_ACCESS_CONTROL_EXPOSE_HEADERS = "Access-Control-Expose-Headers";
 
     /** Optional. Response to preFlight(OPTIONS). Indicates how long the results of a preFlight request can be cached. */

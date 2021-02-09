@@ -1,0 +1,49 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/ConcurrencyExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+2001=Oczekiwanie zosta\u0142o przerwane. {0}Komunikat: {1}]
+
+2002=Niepowodzenie oczekiwania w metodzie ServerSession.
+
+2003=Niepowodzenie oczekiwania w metodzie ClientSession.
+
+2004=W metodzie ConcurrencyManager podj\u0119to pr\u00f3b\u0119 wys\u0142ania sygna\u0142u przed operacj\u0105 wait(). Zwykle oznacza to, \u017ce podj\u0119to pr\u00f3b\u0119 {0}zatwierdzenia lub wycofania transakcji zanim zosta\u0142a uruchomiona lub pr\u00f3b\u0119 dwukrotnego wycofania transakcji.
+
+2005=Niepowodzenie oczekiwania w klasie SequencingConnectionHandler dla klasy DatabaseSession.
+
+2006=Pr\u00f3ba uzyskania warto\u015bci okre\u015blaj\u0105cych kolejno\u015b\u0107 w jednej operacji Connection({0}) jednocze\u015bnie w wielu w\u0105tkach.
+
+2007=Przekroczono maksymaln\u0105 liczb\u0119 pr\u00f3b zablokowania obiektu: {0}.  Sklonowanie obiektu nie powiod\u0142o si\u0119.
+
+2008=Przekroczono maksymaln\u0105 liczb\u0119 pr\u00f3b zablokowania obiektu: {0}.  Scalenie transakcji nie powiod\u0142o si\u0119.
+
+2009=Przekroczono maksymaln\u0105 liczb\u0119 pr\u00f3b zablokowania obiektu.  Zbudowanie obiektu nie powiod\u0142o si\u0119. W\u0105tek: {0} ustawia blokad\u0119 obiektu, ale w\u0105tek: {1} buduje obiekt.
+
+2010=Nast\u0105pi\u0142o przeniesienie blokady w blokad\u0119 odroczon\u0105.  W\u0105tek: {0} za\u017c\u0105da\u0142 drugiej pr\u00f3by przeniesienia blokady podczas scalania.
+

@@ -476,5 +476,9 @@ error.root.must.be.server=CWWKG0105E: El documento de configuraci\u00f3n {0} deb
 error.root.must.be.server.explanation=La configuraci\u00f3n debe estar contenida en un elemento de servidor o un elemento de cliente. 
 error.root.must.be.server.useraction=A\u00f1ada un elemento de servidor o cliente como la ra\u00edz del archivo de configuraci\u00f3n. 
 
+error.bad.variable.file=CWWKG0106E: No se puede leer el archivo {0}. 
+error.bad.variable.file.explanation=El archivo no se puede cargar como una variable porque no se puede leer. 
+error.bad.variable.file.useraction=Verifique que el archivo tiene contenido de texto y compruebe los permisos de sistema operativo para el archivo.
+
 # Non-TR message
 error.invalidOCDRef=ERROR: PID de metatype [{0}] especifica un ID de definici\u00f3n de clase de objeto no existente [{1}]

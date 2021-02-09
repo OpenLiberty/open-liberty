@@ -52,7 +52,7 @@ public class TimeUtils {
             simpleDateFormat = new SimpleDateFormat(formatString);
         } catch (Exception e) {
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Exception caught setting date format: " + e.getMessage());
+                Tr.debug(tc, "Exception caught setting date format: " + e);
                 Tr.debug(tc, "Date format will not be changed");
             }
         }

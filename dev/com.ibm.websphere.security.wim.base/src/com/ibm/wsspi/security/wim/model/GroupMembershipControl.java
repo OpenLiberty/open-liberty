@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
 
 /**
@@ -87,6 +88,7 @@ import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "GroupMembershipControl")
+@Trivial
 public class GroupMembershipControl
                 extends GroupControl
 {

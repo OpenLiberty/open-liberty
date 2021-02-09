@@ -198,6 +198,13 @@ public class DefaultConfigurationProvider implements ConfigurationProvider {
         return _recoverOnStartup;
     }
 
+    protected static boolean _shutdownOnLogFailure = true;
+
+    @Override
+    public boolean isShutdownOnLogFailure() {
+        return _shutdownOnLogFailure;
+    }
+
     protected static boolean _OnePCOptimization;
 
     @Override
@@ -361,5 +368,50 @@ public class DefaultConfigurationProvider implements ConfigurationProvider {
     public int getPeerTimeBeforeStale() {
         // TODO Auto-generated method stub
         return 10;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.tx.config.ConfigurationProvider#getLightweightTransientErrorRetryTime()
+     */
+    @Override
+    public int getLightweightTransientErrorRetryTime() {
+        return 1;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.tx.config.ConfigurationProvider#getLightweightTransientErrorRetryAttempts()
+     */
+    @Override
+    public int getLightweightTransientErrorRetryAttempts() {
+        return 2;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.tx.config.ConfigurationProvider#getStandardTransientErrorRetryTime()
+     */
+    @Override
+    public int getStandardTransientErrorRetryTime() {
+        return 10;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.tx.config.ConfigurationProvider#getStandardTransientErrorRetryAttempts()
+     */
+    @Override
+    public int getStandardTransientErrorRetryAttempts() {
+        return 180;
+    }
+
+    @Override
+    public int getLeaseRenewalTime() {
+        return 90;
     }
 }

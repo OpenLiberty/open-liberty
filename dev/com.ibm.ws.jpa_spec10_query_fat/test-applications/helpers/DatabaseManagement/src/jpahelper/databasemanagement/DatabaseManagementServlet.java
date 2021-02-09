@@ -175,6 +175,7 @@ public class DatabaseManagementServlet extends HttpServlet {
                     System.out.println("Executing: " + sql);
                     pw.println("Executing: " + sql);
                     if (stmt.execute(sql)) {
+                        System.out.println("Successful execution, Result Set:");
                         pw.println("Successful execution, Result Set:");
 
                         final ResultSet rs = stmt.getResultSet();
@@ -195,6 +196,7 @@ public class DatabaseManagementServlet extends HttpServlet {
                             pw.println(sb);
                         }
                     } else {
+                        System.out.println("Successful execution, update count = " + stmt.getUpdateCount());
                         pw.println("Successful execution, update count = " + stmt.getUpdateCount());
                     }
 
@@ -203,6 +205,11 @@ public class DatabaseManagementServlet extends HttpServlet {
                     if (!swallowErrors) {
                         pw.println("SQL Execution failed: " + e);
                     }
+                    if (!sql.startsWith("DROP")) {
+                        System.out.println("SQL Execution failed: " + e);
+                        e.printStackTrace();
+                    }
+
                 }
             }
 

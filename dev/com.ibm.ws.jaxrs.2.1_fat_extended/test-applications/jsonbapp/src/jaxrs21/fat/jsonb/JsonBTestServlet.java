@@ -12,6 +12,7 @@ package jaxrs21.fat.jsonb;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.StringReader;
 
@@ -156,6 +157,7 @@ public class JsonBTestServlet extends FATServlet {
     }
 
     private void compareJSON(String expected, String actual) throws Exception {
+        System.out.println("compareJSON: \n expected: " + expected + "\n actual: " + actual);
         try {
             JsonReader jsonReader = Json.createReader(new StringReader(expected));
             JsonObject exp = jsonReader.readObject();
@@ -164,11 +166,16 @@ public class JsonBTestServlet extends FATServlet {
             assertTrue("expected=" + expected + ", actual=" + actual, exp.equals(act));
         } catch (JsonParsingException e) {
             // Json failed to parse as an object, try array
-            JsonReader jsonReader = Json.createReader(new StringReader(expected));
-            JsonArray exp = jsonReader.readArray();
-            jsonReader = Json.createReader(new StringReader(actual));
-            JsonArray act = jsonReader.readArray();
-            assertTrue("expected=" + expected + ", actual=" + actual, exp.equals(act));
+            try {
+                JsonReader jsonReader = Json.createReader(new StringReader(expected));
+                JsonArray exp = jsonReader.readArray();
+                jsonReader = Json.createReader(new StringReader(actual));
+                JsonArray act = jsonReader.readArray();
+                assertTrue("expected=" + expected + ", actual=" + actual, exp.equals(act));
+            } catch (JsonParsingException e2) {
+                e2.printStackTrace();
+                fail("Could not parse JSON expected=" + expected + ", actual=" + actual);
+            }
         }
     }
 

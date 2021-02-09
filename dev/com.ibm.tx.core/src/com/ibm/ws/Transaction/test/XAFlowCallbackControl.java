@@ -1,32 +1,27 @@
-package com.ibm.ws.Transaction.test;
-
 /*******************************************************************************
- * Copyright (c) 2003, 2005 IBM Corporation and others.
+ * Copyright (c) 2003, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
+package com.ibm.ws.Transaction.test;
 
-import com.ibm.tx.util.logging.FFDCFilter;
-import com.ibm.tx.util.logging.Tr;
-import com.ibm.tx.util.logging.TraceComponent;
-import com.ibm.ws.Transaction.TranConstants;
+import com.ibm.tx.TranConstants;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 
-public final class XAFlowCallbackControl
-{
+public final class XAFlowCallbackControl {
     private static XAFlowCallback _callback;
 
-    private static boolean _enabled = false;
+    private static boolean _enabled;
 
     private static final TraceComponent tc = Tr.register(XAFlowCallbackControl.class,
                                                          TranConstants.TRACE_GROUP,
                                                          TranConstants.NLS_FILE);
-
-    private static final String _classToLoad = "com.ibm.ws.Transaction.test.impl.XAFlowCallbackImpl";
 
     /**
      * This method will attempt to load the test callback class
@@ -34,91 +29,72 @@ public final class XAFlowCallbackControl
      * "-Dcom.ibm.ws.Transaction.fvt=true" e.g. via setting
      * genericJvmArguments="-Dcom.ibm.ws.Transaction.fvt=true"
      * in server.xml jvmEntries
-     * 
+     *
      * In case of any exceptions or errors we carry on regardless
      * and do not let it affect startup of the server.
      */
-    public static void initialize()
-    {
+    public static void initialize() {
+        if (System.getProperty("com.ibm.ws.Transaction.fvt") != null) {
+            if (!initialize("com.ibm.ws.Transaction.test.impl.XAFlowCallbackImpl")) {
+                initialize("com.ibm.ws.tx.test.impl.XAFlowCallbackImpl");
+            }
+        } else {
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "XAFlowCallbacks not enabled");
+        }
+    }
+
+    @SuppressWarnings("deprecation")
+    private static boolean initialize(String classToLoad) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "initialize");
+            Tr.entry(tc, "initialize", classToLoad);
 
-        if (System.getProperty("com.ibm.ws.Transaction.fvt") != null)
-        {
-            try
-            {
-                // Load using classloader that loaded this class, ie eclipse in case fvt tests in bundle
-                _callback = (XAFlowCallback) Class.forName(_classToLoad).newInstance();
+        try {
+            // Load using classloader that loaded this class, ie eclipse in case fvt tests in bundle
+            _callback = (XAFlowCallback) Class.forName(classToLoad).newInstance();
+            _enabled = true;
+        } catch (Exception e) {
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "Couldn't load " + classToLoad + " using default classloader: " + e.getLocalizedMessage());
+        }
 
+        try {
+            if (!_enabled) {
+                // Load using extension class loader in case fvt tests not in a bundle
+                _callback = (XAFlowCallback) Class.forName(classToLoad, true, Thread.currentThread().getContextClassLoader()).newInstance();
                 _enabled = true;
-            } catch (ClassNotFoundException cnfe)
-            {
-                // No FFDC Code needed.
-                // Normal case is not to load this class - it is only used by test groups
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "Exception caught loading XAFlowCallbackImpl class", cnfe);
-            } catch (Exception e)
-            {
-                FFDCFilter.processException(e, "com.ibm.ws.Transaction.test.XAFlowCallbackControl", "56");
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "Exception caught loading XAFlowCallbackImpl class", e);
             }
-
-            try
-            {
-                if (!_enabled)
-                {
-                    // Load using extension class loader in case fvt tests not in a bundle
-                    _callback = (XAFlowCallback) Class.forName(_classToLoad, true, Thread.currentThread().getContextClassLoader()).newInstance();
-
-                    _enabled = true;
-                }
-            } catch (ClassNotFoundException cnfe)
-            {
-                // No FFDC Code needed.
-                // Normal case is not to load this class - it is only used by test groups
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "Exception caught loading XAFlowCallbackImpl class", cnfe);
-            } catch (Exception e)
-            {
-                FFDCFilter.processException(e, "com.ibm.ws.Transaction.test.XAFlowCallbackControl", "92");
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "Exception caught loading XAFlowCallbackImpl class", e);
-            }
+        } catch (Exception e) {
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "Couldn't load " + classToLoad + " using " + Thread.currentThread().getContextClassLoader() + ": " + e.getLocalizedMessage());
         }
 
         if (tc.isEntryEnabled())
-            Tr.exit(tc, "initialize");
+            Tr.exit(tc, "initialize", _enabled);
+        return _enabled;
     }
 
     /**
      * This method will be used to wrapper any calls to the XAFlow callback mechanism
      * thus hopefully allowing a high performance route for the JIT to optimize when
      * isEnabled returns false.
-     * 
+     *
      * @return Whether the XAFlow callback class is present and therefore whether respective
      *         calls should be made.
      */
-    public static final boolean isEnabled()
-    {
-        if (tc.isEntryEnabled())
-        {
-            Tr.entry(tc, "isEnabled");
-
-            Tr.exit(tc, "isEnabled", new Boolean(_enabled));
+    public static final boolean isEnabled() {
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "isEnabled", _enabled);
         }
 
         return _enabled;
     }
 
-    public static boolean beforeXAFlow(int flowType, int flag)
-    {
-        if (tc.isEntryEnabled())
-        {
+    public static boolean beforeXAFlow(int flowType, int flag) {
+        if (tc.isEntryEnabled()) {
             StringBuffer params = new StringBuffer("Flow type=");
 
-            switch (flowType)
-            {
+            switch (flowType) {
                 case XAFlowCallback.FORGET:
                     params.append("FORGET, Flag=");
                     break;
@@ -135,8 +111,7 @@ public final class XAFlowCallbackControl
                     params.append("UNKNOWN, Flag=");
             }
 
-            switch (flag)
-            {
+            switch (flag) {
                 case XAFlowCallback.FORGET_NORMAL:
                     params.append("FORGET_NORMAL");
                     break;
@@ -172,14 +147,11 @@ public final class XAFlowCallbackControl
         return retval;
     }
 
-    public static boolean afterXAFlow(int flowType, int flag)
-    {
-        if (tc.isEntryEnabled())
-        {
+    public static boolean afterXAFlow(int flowType, int flag) {
+        if (tc.isEntryEnabled()) {
             StringBuffer params = new StringBuffer("Flow type=");
 
-            switch (flowType)
-            {
+            switch (flowType) {
                 case XAFlowCallback.FORGET:
                     params.append("FORGET, Flag=");
                     break;
@@ -196,8 +168,7 @@ public final class XAFlowCallbackControl
                     params.append("UNKNOWN, Flag=");
             }
 
-            switch (flag)
-            {
+            switch (flag) {
                 case XAFlowCallback.AFTER_SUCCESS:
                     params.append("AFTER_SUCCESS");
                     break;

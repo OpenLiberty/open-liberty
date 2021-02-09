@@ -63,16 +63,19 @@ public class SwitchFromSingleInstanceToFailOverTest extends FATServletClient {
     public void tearDownPerTest() throws Exception {
         try {
             if (server.isStarted())
-                server.stopServer();
+                server.stopServer(
+                        "CWWKC1503W", // Rolled back task that exceeded missedTaskThreshold. The rollback/abort can lead to further warnings/errors...
+                        "DSRA", "J2CA");
         } finally {
             server.updateServerConfiguration(originalConfig);
-        }        
+        }
     }
 
     /**
      * testEnableFailOverWhileServerIsRunning - Schedules tasks on an instance where fail over is not enabled.
      * Enables fail over while the server is still running. Then verifies that the previous, as well as new, tasks run.
      */
+    @AllowedFFDC("org.apache.derby.client.am.XaException") // due to roll back & abort due to transaction timeout
     @Test
     public void testEnableFailOverWhileServerIsRunning() throws Exception {
         ServerConfiguration config = originalConfig.clone();
@@ -176,6 +179,7 @@ public class SwitchFromSingleInstanceToFailOverTest extends FATServletClient {
      * testEnableFailOverWhileServerIsStopped - Schedules tasks on an instance where fail over is not enabled.
      * Stops the server and enables fail over. Starts up the server and verifies that the previous, as well as new, tasks run.
      */
+    @AllowedFFDC("org.apache.derby.client.am.XaException") // due to roll back & abort due to transaction timeout
     @Test
     public void testEnableFailOverWhileServerIsStopped() throws Exception {
         ServerConfiguration config = originalConfig.clone();
@@ -224,7 +228,9 @@ public class SwitchFromSingleInstanceToFailOverTest extends FATServletClient {
             runTest(server, APP_NAME + "/Failover1ServerTestServlet",
                     "testTasksAreRunning&taskId=" + taskIdB + "&taskId=" + taskIdC + "&jndiName=persistent/exec1&test=testEnableFailOverWhileServerIsStopped[4]");
 
-            server.stopServer(); // this might need to allow for expected warnings if the server shuts down while a task is running
+            server.stopServer(
+                    "CWWKC1503W", // Rolled back task that exceeded missedTaskThreshold. The rollback/abort can lead to further warnings/errors...
+                    "DSRA", "J2CA");
 
             // Enable fail over
             server.updateServerConfiguration(originalConfig);
@@ -283,6 +289,7 @@ public class SwitchFromSingleInstanceToFailOverTest extends FATServletClient {
      * This is not a recommended way of enabling fail over, because it leaves instances with and without fail over running at
      * the same time. But it is being tested here in case anyone tries it.
      */
+    @AllowedFFDC("org.apache.derby.client.am.XaException") // due to roll back & abort due to transaction timeout
     @Test
     public void testNewFailOverEnabledInstance() throws Exception {
         ServerConfiguration config = originalConfig.clone();
@@ -320,7 +327,9 @@ public class SwitchFromSingleInstanceToFailOverTest extends FATServletClient {
             runTest(server, APP_NAME + "/Failover1ServerTestServlet",
                     "testTasksAreRunning&taskId=" + taskIdA + "&taskId=" + taskIdB + "&jndiName=persistent/exec2&test=testNewFailOverEnabledInstance[3]");
 
-            server.stopServer(); // this might need to allow for expected warnings if the server shuts down while a task is running
+            server.stopServer(
+                    "CWWKC1503W", // Rolled back task that exceeded missedTaskThreshold. The rollback/abort can lead to further warnings/errors...
+                    "DSRA", "J2CA");
 
             // Enable fail over on a new instance
             persistentExec = (PersistentExecutor) persistentExec.clone();
@@ -346,7 +355,9 @@ public class SwitchFromSingleInstanceToFailOverTest extends FATServletClient {
 
             System.out.println("Scheduled third task " + taskIdC);
 
-            server.stopServer(); // this might need to allow for expected warnings if the server shuts down while a task is running
+            server.stopServer(
+                    "CWWKC1503W", // Rolled back task that exceeded missedTaskThreshold. The rollback/abort can lead to further warnings/errors...
+                    "DSRA", "J2CA");
 
             // Remove the old instance
             config.getPersistentExecutors().removeById("persistentExec2");
@@ -403,6 +414,7 @@ public class SwitchFromSingleInstanceToFailOverTest extends FATServletClient {
      * This is not a recommended way of enabling fail over, because it leaves instances with and without fail over running at
      * the same time. But it is being tested here in case anyone tries it.
      */
+    @AllowedFFDC("org.apache.derby.client.am.XaException") // due to roll back & abort due to transaction timeout
     @Test
     public void testNewFailOverEnabledInstanceWhileServerIsRunning() throws Exception {
         ServerConfiguration config = originalConfig.clone();
@@ -521,6 +533,7 @@ public class SwitchFromSingleInstanceToFailOverTest extends FATServletClient {
      * some operations are performed to manually transfer them. Users should not do this. This test is only written
      * to experiment with what would happen and explore how to cope with it.
      */
+    @AllowedFFDC("org.apache.derby.client.am.XaException") // due to roll back & abort due to transaction timeout
     @Test
     public void testRemoveFailOverEnablementWhileServerIsRunning() throws Exception {
         // start with fail over enabled
@@ -624,7 +637,8 @@ public class SwitchFromSingleInstanceToFailOverTest extends FATServletClient {
         "javax.transaction.RollbackException",
         "javax.transaction.xa.XAException",
         "javax.persistence.PersistenceException",
-        "java.lang.IllegalStateException"
+        "java.lang.IllegalStateException",
+        "org.apache.derby.client.am.XaException"
         })
     @Test
     public void testRemoveFailOverEnablementWhileServerIsStopped() throws Exception {
@@ -668,13 +682,12 @@ public class SwitchFromSingleInstanceToFailOverTest extends FATServletClient {
                     "testTasksAreRunning&taskId=" + taskIdA + "&taskId=" + taskIdB + "&jndiName=persistent/execRF&test=testRemoveFailOverEnablementWhileServerIsStopped[3]");
 
             server.stopServer(
-                    // rollback due to transaction timeout
-                    "DSRA0304E.*",
-                    "DSRA0302E.*XA_RBROLLBACK",
-                    "J2CA0079E",
-                    "J2CA0088W",
-                    "CWWKC1503W.*IncTask_testRemoveFailOverEnablementWhileServerIsStopped"
-                     // might also need to allow for expected warnings if the server shuts down while a task is running
+                    "CWWKC1500W.*", // Rolled back task [id or name]. The task is scheduled to retry after ...
+                    "CWWKC1501W.*", // Rolled back task [id or name] due to failure ... The task is scheduled to retry after ...
+                    "CWWKC1502W.*", // Rolled back task [id or name]
+                    "CWWKC1503W.*", // Rolled back task [id or name] due to failure ...
+                    "DSRA*", // various errors possible due to rollback or usage during shutdown
+                    "J2CA*" // various errors possible due to rollback or usage during shutdown
                     );
 
             // Disable fail over
@@ -731,7 +744,10 @@ public class SwitchFromSingleInstanceToFailOverTest extends FATServletClient {
      * While the server is running, removes the original instance, creating a new one with fail over enabled. Then verifies
      * that the previous, as well as new, tasks run.
      */
-    @AllowedFFDC("java.lang.IllegalStateException") // Attempting to execute an operation on a closed EntityManager // possible when task is still attempting to run after executor instance is removed
+    @AllowedFFDC({
+        "java.lang.IllegalStateException", // Attempting to execute an operation on a closed EntityManager // possible when task is still attempting to run after executor instance is removed
+        "org.apache.derby.client.am.XaException" // due to roll back & abort due to transaction timeout
+    })
     @Test
     public void testReplaceWithNewFailOverEnabledInstanceWhileServerIsRunning() throws Exception {
         ServerConfiguration config = originalConfig.clone();
@@ -823,6 +839,7 @@ public class SwitchFromSingleInstanceToFailOverTest extends FATServletClient {
      * Stops the server and removes the original instance, creating a new one with fail over enabled. Starts up the server and verifies
      * that the previous, as well as new, tasks run.
      */
+    @AllowedFFDC("org.apache.derby.client.am.XaException") // due to roll back & abort due to transaction timeout
     @Test
     public void testReplaceWithNewFailOverEnabledInstanceWhileServerIsStopped() throws Exception {
         ServerConfiguration config = originalConfig.clone();
@@ -860,7 +877,9 @@ public class SwitchFromSingleInstanceToFailOverTest extends FATServletClient {
             runTest(server, APP_NAME + "/Failover1ServerTestServlet",
                     "testTasksAreRunning&taskId=" + taskIdA + "&taskId=" + taskIdB + "&jndiName=persistent/exec2&test=testReplaceWithNewFailOverEnabledInstanceWhileServerIsStopped[3]");
 
-            server.stopServer(); // this might need to allow for expected warnings if the server shuts down while a task is running
+            server.stopServer(
+                    "CWWKC1503W", // Rolled back task that exceeded missedTaskThreshold. The rollback/abort can lead to further warnings/errors...
+                    "DSRA", "J2CA");
 
             // Enable fail over
             config.getPersistentExecutors().removeById("persistentExec2");

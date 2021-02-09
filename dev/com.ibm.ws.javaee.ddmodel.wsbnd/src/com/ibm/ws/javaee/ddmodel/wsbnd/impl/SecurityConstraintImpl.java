@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,16 +14,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.ibm.ws.config.xml.internal.nester.Nester;
 import com.ibm.ws.javaee.dd.common.DisplayName;
 import com.ibm.ws.javaee.dd.web.common.AuthConstraint;
 import com.ibm.ws.javaee.dd.web.common.SecurityConstraint;
 import com.ibm.ws.javaee.dd.web.common.UserDataConstraint;
 import com.ibm.ws.javaee.dd.web.common.WebResourceCollection;
+import com.ibm.ws.javaee.ddmodel.wsbnd.internal.NestingUtils;
 
-/**
- *
- */
 public class SecurityConstraintImpl implements SecurityConstraint {
 
     private final List<DisplayName> displayNames = new ArrayList<DisplayName>();
@@ -35,26 +32,26 @@ public class SecurityConstraintImpl implements SecurityConstraint {
      * @param securityConstraintConfig
      */
     public SecurityConstraintImpl(Map<String, Object> config) {
-        List<Map<String, Object>> displayNameConfigs = Nester.nest("display-name", config);
+        List<Map<String, Object>> displayNameConfigs = NestingUtils.nest("display-name", config);
         if (displayNameConfigs != null) {
             for (Map<String, Object> displayNameConfig : displayNameConfigs) {
                 displayNames.add(new DisplayNameImpl(displayNameConfig));
             }
         }
 
-        List<Map<String, Object>> wrcConfigs = Nester.nest("web-resource-collection", config);
+        List<Map<String, Object>> wrcConfigs = NestingUtils.nest("web-resource-collection", config);
         if (wrcConfigs != null) {
             for (Map<String, Object> wrcConfig : wrcConfigs) {
                 webResourceCollections.add(new WebResourceCollectionImpl(wrcConfig));
             }
         }
 
-        List<Map<String, Object>> authConstraintConfigs = Nester.nest("auth-constraint", config);
+        List<Map<String, Object>> authConstraintConfigs = NestingUtils.nest("auth-constraint", config);
         if (authConstraintConfigs != null && !authConstraintConfigs.isEmpty()) {
             authConstraint = new AuthConstraintImpl(authConstraintConfigs.get(0));
         }
 
-        List<Map<String, Object>> userDataConstraintConfigs = Nester.nest("user-data-constraint", config);
+        List<Map<String, Object>> userDataConstraintConfigs = NestingUtils.nest("user-data-constraint", config);
         if (userDataConstraintConfigs != null && !userDataConstraintConfigs.isEmpty()) {
             userDataConstraint = new UserDataConstraintImpl(userDataConstraintConfigs.get(0));
         }

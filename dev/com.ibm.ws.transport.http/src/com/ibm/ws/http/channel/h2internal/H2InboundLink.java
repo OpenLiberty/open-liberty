@@ -36,7 +36,6 @@ import com.ibm.ws.http.channel.internal.inbound.HttpInboundLink;
 import com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
 import com.ibm.ws.http.dispatcher.internal.channel.HttpDispatcherLink;
-import com.ibm.ws.http2.Http2Connection;
 import com.ibm.ws.transport.access.TransportConstants;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.bytebuffer.WsByteBufferPoolManager;
@@ -50,7 +49,7 @@ import com.ibm.wsspi.tcpchannel.TCPWriteRequestContext;
 /**
  *
  */
-public class H2InboundLink extends HttpInboundLink implements Http2Connection {
+public class H2InboundLink extends HttpInboundLink {
 
     /** RAS tracing variable */
     private static final TraceComponent tc = Tr.register(H2InboundLink.class, HttpMessages.HTTP_TRACE_NAME, HttpMessages.HTTP_BUNDLE);
@@ -101,6 +100,8 @@ public class H2InboundLink extends HttpInboundLink implements Http2Connection {
 
     volatile long initialWindowSize = Constants.SPEC_INITIAL_WINDOW_SIZE;
     volatile long connectionReadWindowSize = Constants.SPEC_INITIAL_WINDOW_SIZE; // keep track of how much data the client is allowed to send to the us
+    private final Object readWindowSync = new Object() {
+    };
     volatile long maxReadWindowSize = Constants.SPEC_INITIAL_WINDOW_SIZE; // user-set max window size
 
     FrameReadProcessor frameReadProcessor = null;
@@ -516,7 +517,12 @@ public class H2InboundLink extends HttpInboundLink implements Http2Connection {
                 buf.release();
                 setReadLinkStatusToNotReadingAndNotify();
 
-                throw up;
+                // don't rethrow if we're handling a throwable during a close
+                if ((linkStatus == LINK_STATUS.CLOSING) || (linkStatus == LINK_STATUS.GOAWAY_SENDING)) {
+                    return;
+                } else {
+                    throw up;
+                }
             }
 
         } else {
@@ -1134,7 +1140,7 @@ public class H2InboundLink extends HttpInboundLink implements Http2Connection {
         synchronized (linkStatusSync) {
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "close(vc,e): :linkstatus: is: " + linkStatus + " :close: H2InboundLink hc: " + this.hashCode());
+                Tr.debug(tc, "close(vc,e): :linkstatus: is: " + linkStatus + " :close: H2InboundLink hc: " + this.hashCode() + "exception: " + e);
             }
 
             if ((linkStatus == LINK_STATUS.CLOSING) || (linkStatus == LINK_STATUS.GOAWAY_SENDING)
@@ -1244,18 +1250,22 @@ public class H2InboundLink extends HttpInboundLink implements Http2Connection {
             }
 
             try {
-
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "H2ConnectionTimeout-run: sending GOAWAY Frame" + " :close: H2InboundLink hc: " + hcDebug);
-                }
-                if (e == null) {
-                    streamTable.get(0).sendGOAWAYFrame(new Http2Exception("the http2 connection has timed out"));
-                } else if (e instanceof Http2Exception) {
-                    streamTable.get(0).sendGOAWAYFrame((Http2Exception) e);
+                if (e instanceof IOException) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "H2ConnectionTimeout-run: IOException encountered, close immediately" + " :close: H2InboundLink hc: " + hcDebug);
+                    }
                 } else {
-                    streamTable.get(0).sendGOAWAYFrame(new Http2Exception(e.getMessage()));
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "H2ConnectionTimeout-run: sending GOAWAY Frame" + " :close: H2InboundLink hc: " + hcDebug);
+                    }
+                    if (e == null) {
+                        streamTable.get(0).sendGOAWAYFrame(new Http2Exception("the http2 connection has timed out"));
+                    } else if (e instanceof Http2Exception) {
+                        streamTable.get(0).sendGOAWAYFrame((Http2Exception) e);
+                    } else {
+                        streamTable.get(0).sendGOAWAYFrame(new Http2Exception(e.getMessage()));
+                    }
                 }
-
             } catch (Exception x) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "H2ConnectionTimeout-run: exeception received while sending GOAWAY: " + " :close: H2InboundLink hc: " + hcDebug + " " + x);
@@ -1349,7 +1359,6 @@ public class H2InboundLink extends HttpInboundLink implements Http2Connection {
      *
      * @return authority String
      */
-    @Override
     public String getAuthority() {
         return this.authority;
     }
@@ -1364,8 +1373,10 @@ public class H2InboundLink extends HttpInboundLink implements Http2Connection {
         return configuredInactivityTimeout;
     }
 
-    @Override
-    public int getPort() {
-        return this.myTSC.getLocalPort();
+    /**
+     * @return a sync object used for updating the connection read window
+     */
+    protected Object getReadWindowSync() {
+        return readWindowSync;
     }
 }

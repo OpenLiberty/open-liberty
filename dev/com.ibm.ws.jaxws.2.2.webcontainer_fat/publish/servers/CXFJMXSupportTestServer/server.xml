@@ -11,6 +11,6 @@
     <keyStore id="defaultKeyStore" password="passw0rd" location="serverKey.jks"/>
 	
     <include location="../fatTestPorts.xml"/>
-  	<javaPermission className="java.security.AllPermission"/>
+      	<javaPermission className="java.security.AllPermission"/>
     
 </server>

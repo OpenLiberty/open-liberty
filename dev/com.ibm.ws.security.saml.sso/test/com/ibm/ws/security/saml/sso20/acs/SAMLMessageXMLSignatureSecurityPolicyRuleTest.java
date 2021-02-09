@@ -146,7 +146,7 @@ public class SAMLMessageXMLSignatureSecurityPolicyRuleTest {
         try {
             samlMessageXmlSignature.evaluate(messageContext);
         } catch (SecurityPolicyException ex) {
-            fail("Unexpected exception was thrown: " + ex.getMessage());
+            fail("Unexpected exception was thrown: " + ex);
         }
     }
 
@@ -164,7 +164,7 @@ public class SAMLMessageXMLSignatureSecurityPolicyRuleTest {
 
             samlMessageXmlSignature.evaluate(basicMessageContext);
         } catch (SecurityPolicyException ex) {
-            fail("Unexpected exception was thrown: " + ex.getMessage());
+            fail("Unexpected exception was thrown: " + ex);
         }
     }
 
@@ -190,7 +190,7 @@ public class SAMLMessageXMLSignatureSecurityPolicyRuleTest {
             samlMessageXmlSignature.evaluateProfile(basicMessageContext);
 
         } catch (SecurityPolicyException ex) {
-            fail("Unexpected exception was thrown: " + ex.getMessage());
+            fail("Unexpected exception was thrown: " + ex);
         }
     }
 
@@ -211,7 +211,7 @@ public class SAMLMessageXMLSignatureSecurityPolicyRuleTest {
         try {
             samlMessageXmlSignature.evaluateAssertion(basicMessageContext, assertion);
         } catch (SecurityPolicyException ex) {
-            fail("Unexpected exception was thrown: " + ex.getMessage());
+            fail("Unexpected exception was thrown: " + ex);
         }
     }
 
@@ -232,7 +232,7 @@ public class SAMLMessageXMLSignatureSecurityPolicyRuleTest {
         try {
             samlMessageXmlSignature.evaluateProtocol(basicMessageContext);
         } catch (SecurityPolicyException ex) {
-            fail("Unexpected exception was thrown: " + ex.getMessage());
+            fail("Unexpected exception was thrown: " + ex);
         }
     }
 
@@ -253,7 +253,7 @@ public class SAMLMessageXMLSignatureSecurityPolicyRuleTest {
         try {
             samlMessageXmlSignature.evaluateProtocol(basicMessageContext);
         } catch (SecurityPolicyException ex) {
-            fail("Unexpected exception was thrown: " + ex.getMessage());
+            fail("Unexpected exception was thrown: " + ex);
         }
     }
 
@@ -271,7 +271,7 @@ public class SAMLMessageXMLSignatureSecurityPolicyRuleTest {
         try {
             samlMessageXmlSignature.evaluateResponse(basicMessageContext);
         } catch (SecurityPolicyException ex) {
-            fail("Unexpected exception was thrown: " + ex.getMessage());
+            fail("Unexpected exception was thrown: " + ex);
         }
     }
 
@@ -292,7 +292,7 @@ public class SAMLMessageXMLSignatureSecurityPolicyRuleTest {
         try {
             samlMessageXmlSignature.evaluateResponse(basicMessageContext);
         } catch (SecurityPolicyException ex) {
-            fail("Unexpected exception was thrown: " + ex.getMessage());
+            fail("Unexpected exception was thrown: " + ex);
         }
     }
 
@@ -313,7 +313,7 @@ public class SAMLMessageXMLSignatureSecurityPolicyRuleTest {
         try {
             samlMessageXmlSignature.evaluateResponse(basicMessageContext);
         } catch (SecurityPolicyException ex) {
-            fail("Unexpected exception was thrown: " + ex.getMessage());
+            fail("Unexpected exception was thrown: " + ex);
         }
     }
 

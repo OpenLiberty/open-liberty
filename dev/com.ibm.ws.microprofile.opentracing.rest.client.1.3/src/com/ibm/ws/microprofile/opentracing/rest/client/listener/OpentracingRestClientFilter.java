@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -36,7 +36,9 @@ public class OpentracingRestClientFilter implements ClientRequestFilter, ClientR
     public OpentracingRestClientFilter() {
         OpentracingJaxRsProviderRegister jaxRsProvider = OpentracingJaxRsProviderRegister.getInstance();
         if (jaxRsProvider == null) {
-            Tr.debug(tc, "OpentracingJaxRsProviderRegister.getInstance() returned null");
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "OpentracingJaxRsProviderRegister.getInstance() returned null");
+            }
         } else {
             clientFilter = jaxRsProvider.getClientFilter();
         }
@@ -50,7 +52,9 @@ public class OpentracingRestClientFilter implements ClientRequestFilter, ClientR
             Method method = (Method) invokedMethod;
             Traced traced = method.getAnnotation(Traced.class);
             if ((traced != null) && (!traced.value())) { //@Traced(false)
-                Tr.debug(tc, "@Traced(false) on method " + method.getName());
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "@Traced(false) on method " + method.getName());
+                }
                 return;
             }
         }
@@ -58,7 +62,9 @@ public class OpentracingRestClientFilter implements ClientRequestFilter, ClientR
         if (clientFilter != null) {
             clientFilter.filter(clientRequestContext);
         } else {
-            Tr.debug(tc, "clientFilter is null");
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "clientFilter is null");
+            }
         }
     }
 
@@ -68,7 +74,9 @@ public class OpentracingRestClientFilter implements ClientRequestFilter, ClientR
         if (clientFilter != null) {
             clientFilter.filter(clientRequestContext, clientResponseContext);
         } else {
-            Tr.debug(tc, "clientFilter is null");
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "clientFilter is null");
+            }
         }
     }
 

@@ -1,0 +1,55 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/SessionLoaderExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+9000=Sz\u00e1mos [{0}] SessionLoaderExceptions kiv\u00e9tel t\u00f6rt\u00e9nt:
+
+9001=Ismeretlen [{0}] c\u00edmken\u00e9v a(z) [{1}] XML csom\u00f3pontban.
+
+9002=A(z) [{0}] Project oszt\u00e1ly nem t\u00f6lthet\u0151 be.
+
+9003=Nem dolgozhat\u00f3 fel a(z) [{1}] \u00e9rt\u00e9k\u0171 [{0}] XML c\u00edmke.
+
+9004=A(z) [{0}] project-xml nem tal\u00e1lhat\u00f3 az oszt\u00e1ly\u00fatvonalon, sem a f\u00e1jlrendszeren.
+
+9005=Kiv\u00e9tel t\u00f6rt\u00e9nt a(z) [{0}]  project-xml f\u00e1jl bet\u00f6lt\u00e9sekor.
+
+9006={0} t\u00f6rt\u00e9nt az XML f\u00e1jl \u00e9rtelmez\u00e9se sor\u00e1n.  Az XML dokumentum {1}. sor\u00e1ban \u00e9s {2}. oszlop\u00e1ban fordul el\u0151.
+
+9007=Kiv\u00e9tel t\u00f6rt\u00e9nt az XML f\u00e1jl \u00e9rtelmez\u00e9sekor.
+
+9008=V\u00e1ratlan [{0}] \u00e9rt\u00e9k a(z) [{1}] c\u00edmke eset\u00e9n.
+
+9009=A(z) [{0}] c\u00edmke ismeretlen attrib\u00fatumot tartalmaz.
+
+9010=Egy {0} t\u00f6rt\u00e9nt az XML f\u00e1jl \u00e9rtelmez\u00e9se sor\u00e1n az XML s\u00e9m\u00e1hoz k\u00e9pest.
+
+9011=A(z) {0} kiszolg\u00e1l\u00f3 platform oszt\u00e1ly \u00e1t lett helyezve, \u00e9s a megfelel\u0151 alkalmaz\u00e1skiszolg\u00e1l\u00f3 v\u00e1ltozat m\u00e1r nem t\u00e1mogatott.
+
+9012=Nem lehet bet\u00f6lteni a session-xml f\u00e1jlt, mert az \u00e9rv\u00e9nytelen form\u00e1tumot tartalmaz, vagy az XML form\u00e1tuma nem t\u00e1mogatott.
+

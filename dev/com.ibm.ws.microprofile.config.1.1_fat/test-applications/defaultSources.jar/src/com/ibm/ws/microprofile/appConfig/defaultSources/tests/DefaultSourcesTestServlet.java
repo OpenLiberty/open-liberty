@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2018 IBM Corporation and others.
+ * Copyright (c) 2016, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,10 +9,6 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.microprofile.appConfig.defaultSources.tests;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
 
 import javax.servlet.annotation.WebServlet;
 
@@ -55,7 +51,7 @@ public class DefaultSourcesTestServlet extends FATServlet {
     }
 
     /**
-     * Tests that we can get a builder that will not include the default sources
+     * Tests that we can get a builder that will not include the default sources.
      *
      * @throws Exception
      */
@@ -69,7 +65,9 @@ public class DefaultSourcesTestServlet extends FATServlet {
     }
 
     /**
-     * Tests that a config source can be loaded from within a jar
+     * Tests that a config source can be loaded from within a jar.
+     *
+     * @throws Exception
      */
     @Test
     public void defaultsGetConfigPathJar() throws Exception {
@@ -81,7 +79,9 @@ public class DefaultSourcesTestServlet extends FATServlet {
     }
 
     /**
-     * Tests that a config source can be loaded from within a war
+     * Tests that a config source can be loaded from within a war.
+     *
+     * @throws Exception
      */
     @Test
     public void defaultsGetConfigPathWar() throws Exception {
@@ -96,6 +96,8 @@ public class DefaultSourcesTestServlet extends FATServlet {
     /**
      * Tests that a config source can be loaded from all
      * valid places within a ear
+     *
+     * @throws Exception
      */
     @Test
     public void defaultsGetConfigPathEar() throws Exception {
@@ -107,7 +109,7 @@ public class DefaultSourcesTestServlet extends FATServlet {
     }
 
     /**
-     * Test that the microprofile-config.properties files are sourced ok
+     * Test that the microprofile-config.properties files are sourced ok.
      *
      * @throws Exception
      */
@@ -122,7 +124,7 @@ public class DefaultSourcesTestServlet extends FATServlet {
     }
 
     /**
-     * Test that the WAS server level *.xml, *.properties and *.env files are sourced
+     * Test that the WAS server level *.xml, *.properties and *.env files are sourced.
      *
      * @throws Exception
      */
@@ -149,28 +151,5 @@ public class DefaultSourcesTestServlet extends FATServlet {
         Config config = builder.build();
 
         TestUtils.assertContains(config, "defaultSources.sysProps", "sysPropsValue");
-    }
-
-    /**
-     *
-     * @throws Exception
-     */
-    @Test
-    public void defaultsGetConfigPathProcEnv() throws Exception {
-        Map<String, String> env = new HashMap<>(System.getenv());
-        Properties props = System.getProperties();
-
-        //Properties override environment variables.
-        for (Map.Entry<?, ?> entry : props.entrySet()) {
-            String key = (String) entry.getKey();
-            String value = (String) entry.getValue();
-            env.put(key, value);
-        }
-
-        ConfigBuilder builder = ConfigProviderResolver.instance().getBuilder();
-        builder.addDefaultSources();
-        Config config = builder.build();
-
-        TestUtils.assertContains(config, env);
     }
 }

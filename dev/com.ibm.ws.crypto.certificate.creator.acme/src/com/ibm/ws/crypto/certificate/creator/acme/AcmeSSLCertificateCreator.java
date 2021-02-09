@@ -24,9 +24,9 @@ import org.osgi.service.component.annotations.ReferencePolicy;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.crypto.certificateutil.DefaultSSLCertificateCreator;
-import com.ibm.ws.security.acme.AcmeCaException;
 import com.ibm.ws.security.acme.AcmeProvider;
 
 /**
@@ -36,41 +36,26 @@ import com.ibm.ws.security.acme.AcmeProvider;
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM" })
 public class AcmeSSLCertificateCreator implements DefaultSSLCertificateCreator {
 
-    private final TraceComponent tc = Tr.register(AcmeSSLCertificateCreator.class);
+    private static final TraceComponent tc = Tr.register(AcmeSSLCertificateCreator.class);
 
     /** Reference to the AcmeProvider service. */
     private static final AtomicReference<AcmeProvider> acmeProviderRef = new AtomicReference<AcmeProvider>();
 
     @Override
-    public File createDefaultSSLCertificate(String filePath, String password, int validity, String subjectDN, int keySize, String sigAlg,
+    public File createDefaultSSLCertificate(String filePath, @Sensitive String password, String keyStoreType, String keyStoreProvider, int validity, String subjectDN, int keySize,
+                                            String sigAlg,
                                             List<String> extInfo) throws CertificateException {
-
-        String methodName = "createDefaultSSLCertificate(String,String,int,String,int,String,List<String>)";
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            Tr.entry(tc, methodName, filePath, "******", validity, subjectDN, keySize, sigAlg, extInfo);
-        }
-
-        File file = getAcmeProvider().createDefaultSSLCertificate(filePath, password);
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            Tr.exit(tc, methodName, file);
-        }
-        return file;
+        return getAcmeProvider().createDefaultSSLCertificate(filePath, password, keyStoreType, keyStoreProvider);
     }
 
     @Override
-    public void updateDefaultSSLCertificate(KeyStore keyStore, File keyStoreFile, String password) throws CertificateException {
-
-        String methodName = "updateDefaultSSLCertificate(KeyStore,File,String)";
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            Tr.entry(tc, methodName, keyStore, keyStoreFile, "******");
-        }
-
+    public void updateDefaultSSLCertificate(KeyStore keyStore, File keyStoreFile, @Sensitive String password) throws CertificateException {
         getAcmeProvider().updateDefaultSSLCertificate(keyStore, keyStoreFile, password);
+    }
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            Tr.exit(tc, methodName);
-        }
+    @Override
+    public String getType() {
+        return TYPE_ACME;
     }
 
     /**

@@ -159,7 +159,7 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testPropagation_CMT_SLSB_SYNC_CMTS__To__CMT_SSLSB_SYNC_CMTS__001(
                                                                                  TestExecutionContext testExecCtx,
                                                                                  TestExecutionResources testExecResources,
-                                                                                 Object managedComponentObject) {
+                                                                                 Object managedComponentObject) throws Throwable {
         final String testName = "testPropagation_CMT_SLSB_SYNC_CMTS__To__CMT_SSLSB_SYNC_CMTS__001";
 
         // Verify parameters
@@ -242,11 +242,6 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             getCMTSCMTSLBuddy().doWorkRequestWithTxRequired(bean1Driver, TargetEntityManager.TXSYNC1_SYNCHRONIZED);
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -255,7 +250,7 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testPropagation_CMT_SFSB_SYNC_CMTS__To__CMT_SSLSB_SYNC_CMTS__001(
                                                                                  TestExecutionContext testExecCtx,
                                                                                  TestExecutionResources testExecResources,
-                                                                                 Object managedComponentObject) {
+                                                                                 Object managedComponentObject) throws Throwable {
         final String testName = "testPropagation_CMT_SFSB_SYNC_CMTS__To__CMT_SSLSB_SYNC_CMTS__001";
 
         // Verify parameters
@@ -346,11 +341,6 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -359,7 +349,7 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testPropagation_CMT_SLSB_SYNC_CMTS__To__CMT_SSFSB_SYNC_CMTS__001(
                                                                                  TestExecutionContext testExecCtx,
                                                                                  TestExecutionResources testExecResources,
-                                                                                 Object managedComponentObject) {
+                                                                                 Object managedComponentObject) throws Throwable {
         final String testName = "testPropagation_CMT_SLSB_SYNC_CMTS__To__CMT_SSFSB_SYNC_CMTS__001";
 
         // Verify parameters
@@ -449,11 +439,6 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             getCMTSCMTSLBuddy().doWorkRequestWithTxRequired(bean1Driver, TargetEntityManager.TXSYNC1_SYNCHRONIZED);
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -462,7 +447,7 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testPropagation_CMT_SFSB_SYNC_CMTS__To__CMT_SSFSB_SYNC_CMTS__001(
                                                                                  TestExecutionContext testExecCtx,
                                                                                  TestExecutionResources testExecResources,
-                                                                                 Object managedComponentObject) {
+                                                                                 Object managedComponentObject) throws Throwable {
         final String testName = "testPropagation_CMT_SFSB_SYNC_CMTS__To__CMT_SSFSB_SYNC_CMTS__001";
 
         // Verify parameters
@@ -560,11 +545,6 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -591,7 +571,7 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testPropagation_CMT_SLSB_UNSYNC_CMTS__To__CMT_SSLSB_UNSYNC_CMTS__001(
                                                                                      TestExecutionContext testExecCtx,
                                                                                      TestExecutionResources testExecResources,
-                                                                                     Object managedComponentObject) {
+                                                                                     Object managedComponentObject) throws Throwable {
         final String testName = "testPropagation_CMT_SLSB_UNSYNC_CMTS__To__CMT_SSLSB_UNSYNC_CMTS__001";
 
         // Verify parameters
@@ -698,11 +678,6 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             getCMTSCMTSLBuddy().doWorkRequestWithTxRequired(bean1Driver, TargetEntityManager.TXSYNC1_UNSYNCHRONIZED);
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -711,7 +686,7 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testPropagation_CMT_SLSB_UNSYNC_CMTS__To__CMT_SSFSB_UNSYNC_CMTS__001(
                                                                                      TestExecutionContext testExecCtx,
                                                                                      TestExecutionResources testExecResources,
-                                                                                     Object managedComponentObject) {
+                                                                                     Object managedComponentObject) throws Throwable {
         final String testName = "testPropagation_CMT_SLSB_UNSYNC_CMTS__To__CMT_SSFSB_UNSYNC_CMTS__001";
 
         // Verify parameters
@@ -825,11 +800,6 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             getCMTSCMTSLBuddy().doWorkRequestWithTxRequired(bean1Driver, TargetEntityManager.TXSYNC1_UNSYNCHRONIZED);
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -838,7 +808,7 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testPropagation_CMT_SFSB_UNSYNC_CMTS__To__CMT_SSLSB_UNSYNC_CMTS__001(
                                                                                      TestExecutionContext testExecCtx,
                                                                                      TestExecutionResources testExecResources,
-                                                                                     Object managedComponentObject) {
+                                                                                     Object managedComponentObject) throws Throwable {
         final String testName = "testPropagation_CMT_SFSB_UNSYNC_CMTS__To__CMT_SSLSB_UNSYNC_CMTS__001";
 
         // Verify parameters
@@ -953,11 +923,6 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -966,7 +931,7 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testPropagation_CMT_SFSB_UNSYNC_CMTS__To__CMT_SSFSB_UNSYNC_CMTS__001(
                                                                                      TestExecutionContext testExecCtx,
                                                                                      TestExecutionResources testExecResources,
-                                                                                     Object managedComponentObject) {
+                                                                                     Object managedComponentObject) throws Throwable {
         final String testName = "testPropagation_CMT_SFSB_UNSYNC_CMTS__To__CMT_SSFSB_UNSYNC_CMTS__001";
 
         // Verify parameters
@@ -1088,11 +1053,6 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -1117,7 +1077,7 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testPropagation_CMT_SLSB_SYNC_CMTS__To__CMT_SSLSB_UNSYNC_CMTS__001(
                                                                                    TestExecutionContext testExecCtx,
                                                                                    TestExecutionResources testExecResources,
-                                                                                   Object managedComponentObject) {
+                                                                                   Object managedComponentObject) throws Throwable {
         final String testName = "testPropagation_CMT_SLSB_SYNC_CMTS__To__CMT_SSLSB_UNSYNC_CMTS__001";
 
         // Verify parameters
@@ -1200,11 +1160,6 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             getCMTSCMTSLBuddy().doWorkRequestWithTxRequired(bean1Driver, TargetEntityManager.TXSYNC1_SYNCHRONIZED);
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -1213,7 +1168,7 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testPropagation_CMT_SFSB_SYNC_CMTS__To__CMT_SSLSB_UNSYNC_CMTS__001(
                                                                                    TestExecutionContext testExecCtx,
                                                                                    TestExecutionResources testExecResources,
-                                                                                   Object managedComponentObject) {
+                                                                                   Object managedComponentObject) throws Throwable {
         final String testName = "testPropagation_CMT_SFSB_SYNC_CMTS__To__CMT_SSLSB_UNSYNC_CMTS__001";
 
         // Verify parameters
@@ -1304,11 +1259,6 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -1317,7 +1267,7 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testPropagation_CMT_SLSB_SYNC_CMTS__To__CMT_SSFSB_UNSYNC_CMTS__001(
                                                                                    TestExecutionContext testExecCtx,
                                                                                    TestExecutionResources testExecResources,
-                                                                                   Object managedComponentObject) {
+                                                                                   Object managedComponentObject) throws Throwable {
         final String testName = "testPropagation_CMT_SLSB_SYNC_CMTS__To__CMT_SSFSB_UNSYNC_CMTS__001";
 
         // Verify parameters
@@ -1407,11 +1357,6 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             getCMTSCMTSLBuddy().doWorkRequestWithTxRequired(bean1Driver, TargetEntityManager.TXSYNC1_SYNCHRONIZED);
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -1420,7 +1365,7 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testPropagation_CMT_SFSB_SYNC_CMTS__To__CMT_SSFSB_UNSYNC_CMTS__001(
                                                                                    TestExecutionContext testExecCtx,
                                                                                    TestExecutionResources testExecResources,
-                                                                                   Object managedComponentObject) {
+                                                                                   Object managedComponentObject) throws Throwable {
         final String testName = "testPropagation_CMT_SFSB_SYNC_CMTS__To__CMT_SSFSB_UNSYNC_CMTS__001";
 
         // Verify parameters
@@ -1518,11 +1463,6 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -1550,7 +1490,7 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testPropagation_CMT_SLSB_UNSYNC_CMTS__To__CMT_SSLSB_SYNC_CMTS__001(
                                                                                    TestExecutionContext testExecCtx,
                                                                                    TestExecutionResources testExecResources,
-                                                                                   Object managedComponentObject) {
+                                                                                   Object managedComponentObject) throws Throwable {
         final String testName = "testPropagation_CMT_SLSB_UNSYNC_CMTS__To__CMT_SSLSB_SYNC_CMTS__001";
 
         // Verify parameters
@@ -1656,11 +1596,6 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             getCMTSCMTSLBuddy().doWorkRequestWithTxRequired(bean1Driver, TargetEntityManager.TXSYNC1_UNSYNCHRONIZED);
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -1669,7 +1604,7 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testPropagation_CMT_SFSB_UNSYNC_CMTS__To__CMT_SSLSB_SYNC_CMTS__001(
                                                                                    TestExecutionContext testExecCtx,
                                                                                    TestExecutionResources testExecResources,
-                                                                                   Object managedComponentObject) {
+                                                                                   Object managedComponentObject) throws Throwable {
         final String testName = "testPropagation_CMT_SFSB_UNSYNC_CMTS__To__CMT_SSLSB_SYNC_CMTS__001";
 
         // Verify parameters
@@ -1783,11 +1718,6 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -1796,7 +1726,7 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testPropagation_CMT_SLSB_UNSYNC_CMTS__To__CMT_SSFSB_SYNC_CMTS__001(
                                                                                    TestExecutionContext testExecCtx,
                                                                                    TestExecutionResources testExecResources,
-                                                                                   Object managedComponentObject) {
+                                                                                   Object managedComponentObject) throws Throwable {
         final String testName = "testPropagation_CMT_SLSB_UNSYNC_CMTS__To__CMT_SSFSB_SYNC_CMTS__001";
 
         // Verify parameters
@@ -1909,11 +1839,6 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             getCMTSCMTSLBuddy().doWorkRequestWithTxRequired(bean1Driver, TargetEntityManager.TXSYNC1_UNSYNCHRONIZED);
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -1922,7 +1847,7 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testPropagation_CMT_SFSB_UNSYNC_CMTS__To__CMT_SSFSB_SYNC_CMTS__001(
                                                                                    TestExecutionContext testExecCtx,
                                                                                    TestExecutionResources testExecResources,
-                                                                                   Object managedComponentObject) {
+                                                                                   Object managedComponentObject) throws Throwable {
         final String testName = "testPropagation_CMT_SFSB_UNSYNC_CMTS__To__CMT_SSFSB_SYNC_CMTS__001";
 
         // Verify parameters
@@ -2043,11 +1968,6 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -2071,7 +1991,7 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testPropagation_CMT_SLSB_CMTS__To__CMT_SSLSB_CMTS_DIFFPU__001(
                                                                               TestExecutionContext testExecCtx,
                                                                               TestExecutionResources testExecResources,
-                                                                              Object managedComponentObject) {
+                                                                              Object managedComponentObject) throws Throwable {
         final String testName = "testPropagation_CMT_SLSB_CMTS__To__CMT_SSLSB_CMTS_DIFFPU__001";
 
         // Verify parameters
@@ -2211,11 +2131,6 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
                                                             (em1IsUnsynchronized == true) ? TargetEntityManager.TXSYNC1_UNSYNCHRONIZED : TargetEntityManager.TXSYNC1_SYNCHRONIZED);
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -2224,7 +2139,7 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testPropagation_CMT_SFSB_CMTS__To__CMT_SSLSB_CMTS_DIFFPU__001(
                                                                               TestExecutionContext testExecCtx,
                                                                               TestExecutionResources testExecResources,
-                                                                              Object managedComponentObject) {
+                                                                              Object managedComponentObject) throws Throwable {
         final String testName = "testPropagation_CMT_SFSB_CMTS__To__CMT_SSLSB_CMTS_DIFFPU__001";
 
         // Verify parameters
@@ -2372,11 +2287,6 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -2385,7 +2295,7 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testPropagation_CMT_SLSB_CMTS__To__CMT_SSFSB_CMTS_DIFFPU__001(
                                                                               TestExecutionContext testExecCtx,
                                                                               TestExecutionResources testExecResources,
-                                                                              Object managedComponentObject) {
+                                                                              Object managedComponentObject) throws Throwable {
         final String testName = "testPropagation_CMT_SLSB_CMTS__To__CMT_SSFSB_CMTS_DIFFPU__001";
 
         // Verify parameters
@@ -2532,11 +2442,6 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
                                                             (em1IsUnsynchronized == true) ? TargetEntityManager.TXSYNC1_UNSYNCHRONIZED : TargetEntityManager.TXSYNC1_SYNCHRONIZED);
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -2545,7 +2450,7 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testPropagation_CMT_SFSB_CMTS__To__CMT_SSFSB_CMTS_DIFFPU__001(
                                                                               TestExecutionContext testExecCtx,
                                                                               TestExecutionResources testExecResources,
-                                                                              Object managedComponentObject) {
+                                                                              Object managedComponentObject) throws Throwable {
         final String testName = "testPropagation_CMT_SFSB_CMTS__To__CMT_SSFSB_CMTS_DIFFPU__001";
 
         // Verify parameters
@@ -2700,11 +2605,6 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -2727,7 +2627,7 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testNoPropagation_CMT_SLSB_SYNC_CMTS__To__CMT_SSLSB_SYNC_CMTS__Bean1NoTx_Bean2NoTx(
                                                                                                    TestExecutionContext testExecCtx,
                                                                                                    TestExecutionResources testExecResources,
-                                                                                                   Object managedComponentObject) {
+                                                                                                   Object managedComponentObject) throws Throwable {
         final String testName = "testNoPropagation_CMT_SLSB_SYNC_CMTS__To__CMT_SSLSB_SYNC_CMTS__Bean1NoTx_Bean2NoTx";
 
         // Verify parameters
@@ -2829,11 +2729,6 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             getCMTSCMTSLBuddy().doWorkRequestWithTxNotSupported(bean1Driver, TargetEntityManager.TXSYNC1_SYNCHRONIZED);
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -2842,7 +2737,7 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testNoPropagation_CMT_SLSB_SYNC_CMTS__To__CMT_SSFSB_SYNC_CMTS__Bean1NoTx_Bean2NoTx(
                                                                                                    TestExecutionContext testExecCtx,
                                                                                                    TestExecutionResources testExecResources,
-                                                                                                   Object managedComponentObject) {
+                                                                                                   Object managedComponentObject) throws Throwable {
         final String testName = "testNoPropagation_CMT_SLSB_SYNC_CMTS__To__CMT_SSFSB_SYNC_CMTS__Bean1NoTx_Bean2NoTx";
 
         // Verify parameters
@@ -2951,11 +2846,6 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             getCMTSCMTSLBuddy().doWorkRequestWithTxNotSupported(bean1Driver, TargetEntityManager.TXSYNC1_SYNCHRONIZED);
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -2964,7 +2854,7 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testNoPropagation_CMT_SFSB_SYNC_CMTS__To__CMT_SSLSB_SYNC_CMTS__Bean1NoTx_Bean2NoTx(
                                                                                                    TestExecutionContext testExecCtx,
                                                                                                    TestExecutionResources testExecResources,
-                                                                                                   Object managedComponentObject) {
+                                                                                                   Object managedComponentObject) throws Throwable {
         final String testName = "testNoPropagation_CMT_SLFSB_SYNC_CMTS__To__CMT_SSLSB_SYNC_CMTS__Bean1NoTx_Bean2NoTx";
 
         // Verify parameters
@@ -3074,11 +2964,6 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -3087,7 +2972,7 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testNoPropagation_CMT_SFSB_SYNC_CMTS__To__CMT_SSFSB_SYNC_CMTS__Bean1NoTx_Bean2NoTx(
                                                                                                    TestExecutionContext testExecCtx,
                                                                                                    TestExecutionResources testExecResources,
-                                                                                                   Object managedComponentObject) {
+                                                                                                   Object managedComponentObject) throws Throwable {
         final String testName = "testNoPropagation_CMT_SFSB_SYNC_CMTS__To__CMT_SSFSB_SYNC_CMTS__Bean1NoTx_Bean2NoTx";
 
         // Verify parameters
@@ -3204,11 +3089,6 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -3231,7 +3111,7 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testNoPropagation_CMT_SLSB_UNSYNC_CMTS__To__CMT_SSLSB_UNSYNC_CMTS__Bean1NoTx_Bean2NoTx(
                                                                                                        TestExecutionContext testExecCtx,
                                                                                                        TestExecutionResources testExecResources,
-                                                                                                       Object managedComponentObject) {
+                                                                                                       Object managedComponentObject) throws Throwable {
         final String testName = "testNoPropagation_CMT_SLSB_UNSYNC_CMTS__To__CMT_SSLSB_UNSYNC_CMTS__Bean1NoTx_Bean2NoTx";
 
         // Verify parameters
@@ -3333,11 +3213,6 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             getCMTSCMTSLBuddy().doWorkRequestWithTxNotSupported(bean1Driver, TargetEntityManager.TXSYNC1_UNSYNCHRONIZED);
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -3346,7 +3221,7 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testNoPropagation_CMT_SLSB_UNSYNC_CMTS__To__CMT_SSFSB_UNSYNC_CMTS__Bean1NoTx_Bean2NoTx(
                                                                                                        TestExecutionContext testExecCtx,
                                                                                                        TestExecutionResources testExecResources,
-                                                                                                       Object managedComponentObject) {
+                                                                                                       Object managedComponentObject) throws Throwable {
         final String testName = "testNoPropagation_CMT_SLSB_UNSYNC_CMTS__To__CMT_SSFSB_UNSYNC_CMTS__Bean1NoTx_Bean2NoTx";
 
         // Verify parameters
@@ -3455,11 +3330,6 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             getCMTSCMTSLBuddy().doWorkRequestWithTxNotSupported(bean1Driver, TargetEntityManager.TXSYNC1_UNSYNCHRONIZED);
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -3468,7 +3338,7 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testNoPropagation_CMT_SFSB_UNSYNC_CMTS__To__CMT_SSLSB_UNSYNC_CMTS__Bean1NoTx_Bean2NoTx(
                                                                                                        TestExecutionContext testExecCtx,
                                                                                                        TestExecutionResources testExecResources,
-                                                                                                       Object managedComponentObject) {
+                                                                                                       Object managedComponentObject) throws Throwable {
         final String testName = "testNoPropagation_CMT_SLFSB_UNSYNC_CMTS__To__CMT_SSLSB_UNSYNC_CMTS__Bean1NoTx_Bean2NoTx";
 
         // Verify parameters
@@ -3578,11 +3448,6 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -3591,7 +3456,7 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testNoPropagation_CMT_SFSB_UNSYNC_CMTS__To__CMT_SSFSB_UNSYNC_CMTS__Bean1NoTx_Bean2NoTx(
                                                                                                        TestExecutionContext testExecCtx,
                                                                                                        TestExecutionResources testExecResources,
-                                                                                                       Object managedComponentObject) {
+                                                                                                       Object managedComponentObject) throws Throwable {
         final String testName = "testNoPropagation_CMT_SFSB_UNSYNC_CMTS__To__CMT_SSFSB_UNSYNC_CMTS__Bean1NoTx_Bean2NoTx";
 
         // Verify parameters
@@ -3708,11 +3573,6 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -3737,7 +3597,7 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testNoPropagation_CMT_SLSB_UNSYNC_CMTS__To__CMT_SSLSB_SYNC_CMTS__Bean1NoTx_Bean2NoTx(
                                                                                                      TestExecutionContext testExecCtx,
                                                                                                      TestExecutionResources testExecResources,
-                                                                                                     Object managedComponentObject) {
+                                                                                                     Object managedComponentObject) throws Throwable {
         final String testName = "testNoPropagation_CMT_SLSB_UNSYNC_CMTS__To__CMT_SSLSB_SYNC_CMTS__Bean1NoTx_Bean2NoTx";
 
         // Verify parameters
@@ -3839,11 +3699,6 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             getCMTSCMTSLBuddy().doWorkRequestWithTxNotSupported(bean1Driver, TargetEntityManager.TXSYNC1_UNSYNCHRONIZED);
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -3852,7 +3707,7 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testNoPropagation_CMT_SLSB_UNSYNC_CMTS__To__CMT_SSFSB_SYNC_CMTS__Bean1NoTx_Bean2NoTx(
                                                                                                      TestExecutionContext testExecCtx,
                                                                                                      TestExecutionResources testExecResources,
-                                                                                                     Object managedComponentObject) {
+                                                                                                     Object managedComponentObject) throws Throwable {
         final String testName = "testNoPropagation_CMT_SLSB_UNSYNC_CMTS__To__CMT_SSFSB_SYNC_CMTS__Bean1NoTx_Bean2NoTx";
 
         // Verify parameters
@@ -3961,11 +3816,6 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             getCMTSCMTSLBuddy().doWorkRequestWithTxNotSupported(bean1Driver, TargetEntityManager.TXSYNC1_UNSYNCHRONIZED);
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -3974,7 +3824,7 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testNoPropagation_CMT_SFSB_UNSYNC_CMTS__To__CMT_SSLSB_SYNC_CMTS__Bean1NoTx_Bean2NoTx(
                                                                                                      TestExecutionContext testExecCtx,
                                                                                                      TestExecutionResources testExecResources,
-                                                                                                     Object managedComponentObject) {
+                                                                                                     Object managedComponentObject) throws Throwable {
         final String testName = "testNoPropagation_CMT_SLFSB_UNSYNC_CMTS__To__CMT_SSLSB_SYNC_CMTS__Bean1NoTx_Bean2NoTx";
 
         // Verify parameters
@@ -4084,11 +3934,6 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -4097,7 +3942,7 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testNoPropagation_CMT_SFSB_UNSYNC_CMTS__To__CMT_SSFSB_SYNC_CMTS__Bean1NoTx_Bean2NoTx(
                                                                                                      TestExecutionContext testExecCtx,
                                                                                                      TestExecutionResources testExecResources,
-                                                                                                     Object managedComponentObject) {
+                                                                                                     Object managedComponentObject) throws Throwable {
         final String testName = "testNoPropagation_CMT_SFSB_UNSYNC_CMTS__To__CMT_SSFSB_SYNC_CMTS__Bean1NoTx_Bean2NoTx";
 
         // Verify parameters
@@ -4214,11 +4059,6 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -4242,7 +4082,7 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testNoPropagation_CMT_SLSB_SYNC_CMTS__To__CMT_SSLSB_SYNC_CMTS__Bean1Tx_Bean2NoTx(
                                                                                                  TestExecutionContext testExecCtx,
                                                                                                  TestExecutionResources testExecResources,
-                                                                                                 Object managedComponentObject) {
+                                                                                                 Object managedComponentObject) throws Throwable {
         final String testName = "testNoPropagation_CMT_SLSB_SYNC_CMTS__To__CMT_SSLSB_SYNC_CMTS__Bean1Tx_Bean2NoTx";
 
         // Verify parameters
@@ -4344,11 +4184,6 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             getCMTSCMTSLBuddy().doWorkRequestWithTxRequiresNew(bean1Driver, TargetEntityManager.TXSYNC1_SYNCHRONIZED);
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -4357,7 +4192,7 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testNoPropagation_CMT_SLSB_SYNC_CMTS__To__CMT_SSFSB_SYNC_CMTS__Bean1Tx_Bean2NoTx(
                                                                                                  TestExecutionContext testExecCtx,
                                                                                                  TestExecutionResources testExecResources,
-                                                                                                 Object managedComponentObject) {
+                                                                                                 Object managedComponentObject) throws Throwable {
         final String testName = "testNoPropagation_CMT_SLSB_SYNC_CMTS__To__CMT_SSFSB_SYNC_CMTS__Bean1Tx_Bean2NoTx";
 
         // Verify parameters
@@ -4466,11 +4301,6 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             getCMTSCMTSLBuddy().doWorkRequestWithTxRequiresNew(bean1Driver, TargetEntityManager.TXSYNC1_SYNCHRONIZED);
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -4479,7 +4309,7 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testNoPropagation_CMT_SFSB_SYNC_CMTS__To__CMT_SSLSB_SYNC_CMTS__Bean1Tx_Bean2NoTx(
                                                                                                  TestExecutionContext testExecCtx,
                                                                                                  TestExecutionResources testExecResources,
-                                                                                                 Object managedComponentObject) {
+                                                                                                 Object managedComponentObject) throws Throwable {
         final String testName = "testNoPropagation_CMT_SLFSB_SYNC_CMTS__To__CMT_SSLSB_SYNC_CMTS__Bean1Tx_Bean2NoTx";
 
         // Verify parameters
@@ -4589,11 +4419,6 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -4602,7 +4427,7 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testNoPropagation_CMT_SFSB_SYNC_CMTS__To__CMT_SSFSB_SYNC_CMTS__Bean1Tx_Bean2NoTx(
                                                                                                  TestExecutionContext testExecCtx,
                                                                                                  TestExecutionResources testExecResources,
-                                                                                                 Object managedComponentObject) {
+                                                                                                 Object managedComponentObject) throws Throwable {
         final String testName = "testNoPropagation_CMT_SFSB_SYNC_CMTS__To__CMT_SSFSB_SYNC_CMTS__Bean1Tx_Bean2NoTx";
 
         // Verify parameters
@@ -4719,11 +4544,6 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -4747,7 +4567,7 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testNoPropagation_CMT_SLSB_UNSYNC_CMTS__To__CMT_SSLSB_UNSYNC_CMTS__Bean1Tx_Bean2NoTx(
                                                                                                      TestExecutionContext testExecCtx,
                                                                                                      TestExecutionResources testExecResources,
-                                                                                                     Object managedComponentObject) {
+                                                                                                     Object managedComponentObject) throws Throwable {
         final String testName = "testNoPropagation_CMT_SLSB_UNSYNC_CMTS__To__CMT_SSLSB_UNSYNC_CMTS__Bean1Tx_Bean2NoTx";
 
         // Verify parameters
@@ -4849,11 +4669,6 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             getCMTSCMTSLBuddy().doWorkRequestWithTxRequiresNew(bean1Driver, TargetEntityManager.TXSYNC1_UNSYNCHRONIZED);
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -4862,7 +4677,7 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testNoPropagation_CMT_SLSB_UNSYNC_CMTS__To__CMT_SSFSB_UNSYNC_CMTS__Bean1Tx_Bean2NoTx(
                                                                                                      TestExecutionContext testExecCtx,
                                                                                                      TestExecutionResources testExecResources,
-                                                                                                     Object managedComponentObject) {
+                                                                                                     Object managedComponentObject) throws Throwable {
         final String testName = "testNoPropagation_CMT_SLSB_UNSYNC_CMTS__To__CMT_SSFSB_UNSYNC_CMTS__Bean1Tx_Bean2NoTx";
 
         // Verify parameters
@@ -4971,11 +4786,6 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             getCMTSCMTSLBuddy().doWorkRequestWithTxRequiresNew(bean1Driver, TargetEntityManager.TXSYNC1_UNSYNCHRONIZED);
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -4984,7 +4794,7 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testNoPropagation_CMT_SFSB_UNSYNC_CMTS__To__CMT_SSLSB_UNSYNC_CMTS__Bean1Tx_Bean2NoTx(
                                                                                                      TestExecutionContext testExecCtx,
                                                                                                      TestExecutionResources testExecResources,
-                                                                                                     Object managedComponentObject) {
+                                                                                                     Object managedComponentObject) throws Throwable {
         final String testName = "testNoPropagation_CMT_SLFSB_UNSYNC_CMTS__To__CMT_SSLSB_UNSYNC_CMTS__Bean1Tx_Bean2NoTx";
 
         // Verify parameters
@@ -5094,11 +4904,6 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -5107,7 +4912,7 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testNoPropagation_CMT_SFSB_UNSYNC_CMTS__To__CMT_SSFSB_UNSYNC_CMTS__Bean1Tx_Bean2NoTx(
                                                                                                      TestExecutionContext testExecCtx,
                                                                                                      TestExecutionResources testExecResources,
-                                                                                                     Object managedComponentObject) {
+                                                                                                     Object managedComponentObject) throws Throwable {
         final String testName = "testNoPropagation_CMT_SFSB_UNSYNC_CMTS__To__CMT_SSFSB_UNSYNC_CMTS__Bean1Tx_Bean2NoTx";
 
         // Verify parameters
@@ -5224,11 +5029,6 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -5254,7 +5054,7 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testNoPropagation_CMT_SLSB_UNSYNC_CMTS__To__CMT_SSLSB_SYNC_CMTS__Bean1Tx_Bean2NoTx(
                                                                                                    TestExecutionContext testExecCtx,
                                                                                                    TestExecutionResources testExecResources,
-                                                                                                   Object managedComponentObject) {
+                                                                                                   Object managedComponentObject) throws Throwable {
         final String testName = "testNoPropagation_CMT_SLSB_UNSYNC_CMTS__To__CMT_SSLSB_SYNC_CMTS__Bean1Tx_Bean2NoTx";
 
         // Verify parameters
@@ -5356,11 +5156,6 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             getCMTSCMTSLBuddy().doWorkRequestWithTxRequiresNew(bean1Driver, TargetEntityManager.TXSYNC1_UNSYNCHRONIZED);
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -5369,7 +5164,7 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testNoPropagation_CMT_SLSB_UNSYNC_CMTS__To__CMT_SSFSB_SYNC_CMTS__Bean1Tx_Bean2NoTx(
                                                                                                    TestExecutionContext testExecCtx,
                                                                                                    TestExecutionResources testExecResources,
-                                                                                                   Object managedComponentObject) {
+                                                                                                   Object managedComponentObject) throws Throwable {
         final String testName = "testNoPropagation_CMT_SLSB_UNSYNC_CMTS__To__CMT_SSFSB_SYNC_CMTS__Bean1Tx_Bean2NoTx";
 
         // Verify parameters
@@ -5478,11 +5273,6 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             getCMTSCMTSLBuddy().doWorkRequestWithTxRequiresNew(bean1Driver, TargetEntityManager.TXSYNC1_UNSYNCHRONIZED);
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -5491,7 +5281,7 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testNoPropagation_CMT_SFSB_UNSYNC_CMTS__To__CMT_SSLSB_SYNC_CMTS__Bean1Tx_Bean2NoTx(
                                                                                                    TestExecutionContext testExecCtx,
                                                                                                    TestExecutionResources testExecResources,
-                                                                                                   Object managedComponentObject) {
+                                                                                                   Object managedComponentObject) throws Throwable {
         final String testName = "testNoPropagation_CMT_SLFSB_UNSYNC_CMTS__To__CMT_SSLSB_SYNC_CMTS__Bean1Tx_Bean2NoTx";
 
         // Verify parameters
@@ -5601,11 +5391,6 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -5614,7 +5399,7 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testNoPropagation_CMT_SFSB_UNSYNC_CMTS__To__CMT_SSFSB_SYNC_CMTS__Bean1Tx_Bean2NoTx(
                                                                                                    TestExecutionContext testExecCtx,
                                                                                                    TestExecutionResources testExecResources,
-                                                                                                   Object managedComponentObject) {
+                                                                                                   Object managedComponentObject) throws Throwable {
         final String testName = "testNoPropagation_CMT_SFSB_UNSYNC_CMTS__To__CMT_SSFSB_SYNC_CMTS__Bean1Tx_Bean2NoTx";
 
         // Verify parameters
@@ -5731,11 +5516,6 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -5758,7 +5538,7 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testNoPropagation_CMT_SLSB_SYNC_CMTS__To__CMT_SSLSB_SYNC_CMTS__Bean1NoTx_Bean2Tx(
                                                                                                  TestExecutionContext testExecCtx,
                                                                                                  TestExecutionResources testExecResources,
-                                                                                                 Object managedComponentObject) {
+                                                                                                 Object managedComponentObject) throws Throwable {
         final String testName = "testNoPropagation_CMT_SLSB_SYNC_CMTS__To__CMT_SSLSB_SYNC_CMTS__Bean1NoTx_Bean2Tx";
 
         // Verify parameters
@@ -5860,11 +5640,6 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             getCMTSCMTSLBuddy().doWorkRequestWithTxNotSupported(bean1Driver, TargetEntityManager.TXSYNC1_SYNCHRONIZED);
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -5873,7 +5648,7 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testNoPropagation_CMT_SLSB_SYNC_CMTS__To__CMT_SSFSB_SYNC_CMTS__Bean1NoTx_Bean2Tx(
                                                                                                  TestExecutionContext testExecCtx,
                                                                                                  TestExecutionResources testExecResources,
-                                                                                                 Object managedComponentObject) {
+                                                                                                 Object managedComponentObject) throws Throwable {
         final String testName = "testNoPropagation_CMT_SLSB_SYNC_CMTS__To__CMT_SSFSB_SYNC_CMTS__Bean1NoTx_Bean2Tx";
 
         // Verify parameters
@@ -5982,11 +5757,6 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             getCMTSCMTSLBuddy().doWorkRequestWithTxNotSupported(bean1Driver, TargetEntityManager.TXSYNC1_SYNCHRONIZED);
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -5995,7 +5765,7 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testNoPropagation_CMT_SFSB_SYNC_CMTS__To__CMT_SSLSB_SYNC_CMTS__Bean1NoTx_Bean2Tx(
                                                                                                  TestExecutionContext testExecCtx,
                                                                                                  TestExecutionResources testExecResources,
-                                                                                                 Object managedComponentObject) {
+                                                                                                 Object managedComponentObject) throws Throwable {
         final String testName = "testNoPropagation_CMT_SLFSB_SYNC_CMTS__To__CMT_SSLSB_SYNC_CMTS__Bean1NoTx_Bean2Tx";
 
         // Verify parameters
@@ -6105,11 +5875,6 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -6118,7 +5883,7 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testNoPropagation_CMT_SFSB_SYNC_CMTS__To__CMT_SSFSB_SYNC_CMTS__Bean1NoTx_Bean2Tx(
                                                                                                  TestExecutionContext testExecCtx,
                                                                                                  TestExecutionResources testExecResources,
-                                                                                                 Object managedComponentObject) {
+                                                                                                 Object managedComponentObject) throws Throwable {
         final String testName = "testNoPropagation_CMT_SFSB_SYNC_CMTS__To__CMT_SSFSB_SYNC_CMTS__Bean1NoTx_Bean2Tx";
 
         // Verify parameters
@@ -6235,11 +6000,6 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -6262,7 +6022,7 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testNoPropagation_CMT_SLSB_UNSYNC_CMTS__To__CMT_SSLSB_UNSYNC_CMTS__Bean1NoTx_Bean2Tx(
                                                                                                      TestExecutionContext testExecCtx,
                                                                                                      TestExecutionResources testExecResources,
-                                                                                                     Object managedComponentObject) {
+                                                                                                     Object managedComponentObject) throws Throwable {
         final String testName = "testNoPropagation_CMT_SLSB_UNSYNC_CMTS__To__CMT_SSLSB_UNSYNC_CMTS__Bean1NoTx_Bean2Tx";
 
         // Verify parameters
@@ -6364,11 +6124,6 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             getCMTSCMTSLBuddy().doWorkRequestWithTxNotSupported(bean1Driver, TargetEntityManager.TXSYNC1_UNSYNCHRONIZED);
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -6377,7 +6132,7 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testNoPropagation_CMT_SLSB_UNSYNC_CMTS__To__CMT_SSFSB_UNSYNC_CMTS__Bean1NoTx_Bean2Tx(
                                                                                                      TestExecutionContext testExecCtx,
                                                                                                      TestExecutionResources testExecResources,
-                                                                                                     Object managedComponentObject) {
+                                                                                                     Object managedComponentObject) throws Throwable {
         final String testName = "testNoPropagation_CMT_SLSB_UNSYNC_CMTS__To__CMT_SSFSB_UNSYNC_CMTS__Bean1NoTx_Bean2Tx";
 
         // Verify parameters
@@ -6486,11 +6241,6 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             getCMTSCMTSLBuddy().doWorkRequestWithTxNotSupported(bean1Driver, TargetEntityManager.TXSYNC1_UNSYNCHRONIZED);
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -6499,7 +6249,7 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testNoPropagation_CMT_SFSB_UNSYNC_CMTS__To__CMT_SSLSB_UNSYNC_CMTS__Bean1NoTx_Bean2Tx(
                                                                                                      TestExecutionContext testExecCtx,
                                                                                                      TestExecutionResources testExecResources,
-                                                                                                     Object managedComponentObject) {
+                                                                                                     Object managedComponentObject) throws Throwable {
         final String testName = "testNoPropagation_CMT_SLFSB_UNSYNC_CMTS__To__CMT_SSLSB_UNSYNC_CMTS__Bean1NoTx_Bean2Tx";
 
         // Verify parameters
@@ -6608,11 +6358,6 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -6621,7 +6366,7 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testNoPropagation_CMT_SFSB_UNSYNC_CMTS__To__CMT_SSFSB_UNSYNC_CMTS__Bean1NoTx_Bean2Tx(
                                                                                                      TestExecutionContext testExecCtx,
                                                                                                      TestExecutionResources testExecResources,
-                                                                                                     Object managedComponentObject) {
+                                                                                                     Object managedComponentObject) throws Throwable {
         final String testName = "testNoPropagation_CMT_SFSB_UNSYNC_CMTS__To__CMT_SSFSB_UNSYNC_CMTS__Bean1NoTx_Bean2Tx";
 
         // Verify parameters
@@ -6738,11 +6483,6 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -6801,7 +6541,7 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testTemplate(
                              TestExecutionContext testExecCtx,
                              TestExecutionResources testExecResources,
-                             Object managedComponentObject) {
+                             Object managedComponentObject) throws Throwable {
         final String testName = "testTemplate";
 
         // Verify parameters
@@ -6829,11 +6569,6 @@ public class CMTSAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
 //            cleanupDatabase(jpaCleanupResource);
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }

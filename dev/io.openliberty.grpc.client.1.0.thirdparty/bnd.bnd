@@ -1,0 +1,64 @@
+#*******************************************************************************
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+grpcVersion=1.31.1
+nettyVersion=4.1.51
+
+Bundle-Name: Open Liberty gRPC Client Third Party API
+Bundle-SymbolicName: io.openliberty.grpc.client.1.0.thirdparty
+Bundle-Description: Open Liberty gRPC Client Third Party API
+
+# Using version=! in order to not have a version attached to the import for packages that were removed
+# from Java after Java 8.  Doing this keeps the import like before Java 11 support. It will get the 
+# packages from Java when using Java 8 or earlier and from the new shipped bundles for Java 9 and later.
+Import-Package: \
+  !com.google.code.gson,\
+  !org.checkerframework,\
+  !com.google.protobuf.nano,\
+  !com.jcraft.jzlib,\
+  !com.ning.*,\
+  !com.oracle.svm.core.annotate,\
+  !io.netty.internal.tcnative,\
+  !lzma.*,\
+  !net.jpountz.*,\
+  !org.apache.log4j.*,\
+  !org.apache.logging.*,\
+  !org.bouncycastle.*,\
+  !org.conscrypt,\
+  !org.eclipse.jetty.*,\
+  !org.jboss.*,\
+  !reactor.blockhound.*,\
+  !sun.*,\
+  javax.annotation;version=!,\
+  *
+
+Export-Package:\
+  io.grpc.netty;version=${grpcVersion}, \
+  io.netty.handler.ssl;version=${nettyVersion}
+
+publish.wlp.jar.suffix: dev/api/third-party
+
+-buildpath: \
+  com.google.errorprone:error_prone_annotations;version=2.4.0,\
+  io.grpc:grpc-netty;version=${grpcVersion},\
+  io.netty:netty-buffer;version=${nettyVersion},\
+  io.netty:netty-codec;version=${nettyVersion},\
+  io.netty:netty-codec-http;version=${nettyVersion},\
+  io.netty:netty-codec-http2;version=${nettyVersion},\
+  io.netty:netty-codec-socks;version=${nettyVersion},\
+  io.netty:netty-common;version=${nettyVersion},\
+  io.netty:netty-handler;version=${nettyVersion},\
+  io.netty:netty-handler-proxy;version=${nettyVersion},\
+  io.netty:netty-resolver;version=${nettyVersion},\
+  io.netty:netty-transport;version=${nettyVersion},\
+  io.openliberty.grpc.1.0.internal.common;version=latest
+

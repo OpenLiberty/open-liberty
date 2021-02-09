@@ -50,6 +50,7 @@ public class SelfExtract {
     protected static boolean downloadDependencies = false;
     protected static boolean verbose = false;
     protected static String targetString = null;
+    protected static boolean extractDirPredefined = false;
 
     public static final class VerboseExtractProgress implements ExtractProgress {
         @Override

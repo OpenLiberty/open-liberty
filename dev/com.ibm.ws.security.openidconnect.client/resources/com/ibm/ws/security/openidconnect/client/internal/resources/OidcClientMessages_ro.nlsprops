@@ -34,10 +34,11 @@ OIDC_CLIENT_CONFIG_MODIFIED.useraction=F\u0103r\u0103.
 #1702 is used by clients.common bundle, do not use.
 
 # used_by_client_project and clients project IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN THE OTHER BUNDLE!
+# social also uses this and it does not have the enforceHTTPS attribute.
 #do not translate enforceHTTPS
-OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS=CWWKS1703E: Clientul OpenID Connect necesit\u0103 SSL (HTTPS) dar URL-ul furnizorului OpenID Connect este HTTP: [{0}].  Actualiza\u0163i configura\u0163ia astfel \u00eenc\u00e2t atributul [enforceHTTPS] s\u0103 se potriveasc\u0103 cu schema URL \u0163int\u0103. 
+OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS=CWWKS1703E: Clientul OpenID Connect necesit\u0103 SSL (HTTPS) dar URL-ul furnizorului OpenID Connect este HTTP: [{0}]. Actualiza\u0163i configura\u0163ia pentru a utiliza un URL HTTPS sau utiliza\u0163i caracteristica OpenID Connect Client \u015fi seta\u0163i enforceHTTPS la false. 
 OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS.explanation=Clientul OpenID Connect (partea intermediar\u0103 de \u00eencredere sau serverul de resurse) necesit\u0103 SSL (HTTPS) dar protocolul de URL furnizor de conectare OpenID (OP) specificat \u00een configura\u0163ia OpenID nu este HTTPS.
-OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS.useraction=Face\u0163i una dintre urm\u0103toarele: 1) Asigura\u0163i-v\u0103 c\u0103 furnizorul de conectare OpenID suport\u0103 SSL. 2) Dac\u0103 furnizorul OpenID Connector nu suport\u0103 SSL, seta\u0163i enforceHTTPS din configura\u0163ia clientului OpenID Connect la false.
+OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS.useraction=Face\u0163i una dintre urm\u0103toarele: Mai \u00eent\u00e2i, asigura\u0163i-v\u0103 c\u0103 furnizorul OpenID Connect suport\u0103 SSL. Dac\u0103 furnizorul OpenID Connector nu suport\u0103 SSL, utiliza\u0163i caracteristica OpenID Connect Client \u015fi seta\u0163i enforceHTTPS la false \u00een configura\u0163ia caracteristicii OpenID Connect Client.
 
 # unused, but present in both bundles.  IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES
 OIDC_CLIENT_RESPONSE_STATE_VERIFY_ERR=CWWKS1704E: Starea curent\u0103 [{0}] pentru clientul OpenID Connect [{2}] \u015fi parametrul de stare [{1}] din r\u0103spunsul de la furnizorul OpenID Connect nu se potrivesc.  Aceast\u0103 condi\u0163ie nu este permis\u0103.
@@ -274,12 +275,12 @@ CONFIG_REQUIRED_ATTRIBUTE_NULL.explanation=E posibil ca atributul de configurare
 CONFIG_REQUIRED_ATTRIBUTE_NULL.useraction=Asigura\u0163i-v\u0103 c\u0103 atributul de configurare specificat este configurat, c\u0103 nu este gol \u015fi c\u0103 nu con\u0163ine doar caractere spa\u0163iu. Dac\u0103 este configurat punctul final de descoperire pentru ob\u0163inerea acestei informa\u0163ii, asigura\u0163i-v\u0103 c\u0103 nu exist\u0103 erori privind cererea de descoperire.
 
 # do not translate authFilterRef
-CONFIG_AUTHFILTER_NOTUNIQUE=CWWKS1530W: Mai mult de o configura\u0163ie de client OpenID Connect specific\u0103 acela\u015fi filtru de autentificare [{0}]. Aceasta poate cauza un comportament nedeterminat.
-CONFIG_AUTHFILTER_NOTUNIQUE.explanation=Mai mult de o configura\u0163ie de client OpenID Connect con\u0163ine un atribut authFilterRef care se refer\u0103 la acela\u015fi filtru. Oricare dintre ace\u015fti clien\u0163i ar putea procesa o cerere care se potrive\u015fte cu filtrul, ceea ce duce la un comportament nedeterminat.  
+CONFIG_AUTHFILTER_NOTUNIQUE=CWWKS1530W: Acela\u015fi filtru de autentificare [{0}] este specificat de mai mult de o configura\u0163ie de client OpenID Connect. Aceasta ar putea cauza un comportament nedeterminat.
+CONFIG_AUTHFILTER_NOTUNIQUE.explanation=Mai multe configura\u0163ii de client OpenID Connect con\u0163in un atribut authFilterRef care face referire la acela\u015fi filtru. Oricare dintre ace\u015fti clien\u0163i ar putea procesa o cerere care se potrive\u015fte cu filtrul, ceea ce duce la un comportament nedeterminat.  
 CONFIG_AUTHFILTER_NOTUNIQUE.useraction=Examina\u0163i fi\u015fierul server.xml \u015fi corecta\u0163i configura\u0163ia.
 
-AUTHFILTER_MULTIPLE_MATCHED=CWWKS1531W: Mai mult de un filtru de autentificare client OpenID Connect se potrive\u015fte cu o cerere la URL-ul [{0}]. Filtrele de potrivire au fost [{1}]. Aceasta poate cauza un comportament nedeterminat.
-AUTHFILTER_MULTIPLE_MATCHED.explanation=Mai mult de un filtru de autentificare se potrive\u015fte cu o cerere de intrare. Orice client care utilizeaz\u0103 unul din aceste filtre poate procesa cererea, ceea ce duce la un comportament nedeterminat. 
+AUTHFILTER_MULTIPLE_MATCHED=CWWKS1531W: O cerere pentru URL-ul [{0}] se potrive\u015fte cu filtrul de autentificare al mai multor clien\u0163i OpenID Connect. Filtrele care se potrivesc sunt [{1}]. Aceasta ar putea cauza un comportament nedeterminat.
+AUTHFILTER_MULTIPLE_MATCHED.explanation=O cerere de intrare se potrive\u015fte cu mai mult de un filtru de autentificare. Orice client care utilizeaz\u0103 unul dintre aceste filtre ar putea procesa cererea, ceea ce duce la un comportament nedeterminat.  
 AUTHFILTER_MULTIPLE_MATCHED.useraction=Examina\u0163i fi\u015fierul server.xml \u015fi corecta\u0163i configura\u0163ia.
 
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

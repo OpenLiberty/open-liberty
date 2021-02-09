@@ -1,5 +1,5 @@
 /*******************************************************************************
- * ˇ * Copyright (c) 2018 IBM Corporation and others.
+ * ˇ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -40,7 +40,6 @@ import com.ibm.ws.security.jwtsso.utils.IssuerUtil;
 import com.ibm.ws.security.jwtsso.utils.JwtSsoConstants;
 import com.ibm.ws.security.mp.jwt.MicroProfileJwtConfig;
 import com.ibm.ws.ssl.KeyStoreService;
-import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
 import com.ibm.ws.webcontainer.security.util.WebConfigUtils;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.ssl.SSLSupport;
@@ -71,7 +70,7 @@ public class JwtSsoComponent implements JwtSsoConfig {
     // private String jwtBuilderRef;
     private String mpjwtConsumerRef;
     private String cookieName;
-    private WebAppSecurityConfig webAppSecConfig;
+    private boolean disableJwtCookie;
 
     protected static final String KEY_UNIQUE_ID = "id";
     protected String uniqueId = null;
@@ -241,9 +240,16 @@ public class JwtSsoComponent implements JwtSsoConfig {
         includeLtpaCookie = (Boolean) props.get(JwtSsoConstants.CFG_KEY_INCLUDELTPACOOKIE);
         fallbackToLtpa = (Boolean) props.get(JwtSsoConstants.CFG_USE_LTPA_IF_JWT_ABSENT);
         cookieSecureFlag = (Boolean) props.get(JwtSsoConstants.CFG_KEY_COOKIESECUREFLAG);
+        disableJwtCookie = (Boolean) props.get(JwtSsoConstants.CFG_KEY_DISABLE_JWT_COOKIE);
         // jwtBuilderRef = JwtUtils.trimIt((String)
         // props.get(JwtSsoConstants.CFG_KEY_JWTBUILDERREF));
-        mpjwtConsumerRef = JwtUtils.trimIt((String) props.get(JwtSsoConstants.CFG_KEY_JWTCONSUMERREF)); //hmm, this does not exist in metatype.
+        mpjwtConsumerRef = JwtUtils.trimIt((String) props.get(JwtSsoConstants.CFG_KEY_JWTCONSUMERREF)); // hmm,
+                                                                                                        // this
+                                                                                                        // does
+                                                                                                        // not
+                                                                                                        // exist
+                                                                                                        // in
+                                                                                                        // metatype.
         cookieName = JwtUtils.trimIt((String) props.get(JwtSsoConstants.CFG_KEY_COOKIENAME));
         cookieName = (new ConfigUtils()).validateCookieName(cookieName, true);
         if (mpjwtConsumerRef == null) {
@@ -278,6 +284,11 @@ public class JwtSsoComponent implements JwtSsoConfig {
         return null;
     }
 
+    @Override
+    public boolean ignoreAudClaimIfNotConfigured() {
+        return false;
+    }
+
     /** {@inheritDoc} */
     @Override
     public String getSignatureAlgorithm() {
@@ -296,6 +307,12 @@ public class JwtSsoComponent implements JwtSsoConfig {
     @Override
     public String getTrustStoreRef() {
         // TODO Auto-generated method stub
+        return null;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getKeyStoreRef() {
         return null;
     }
 
@@ -432,6 +449,28 @@ public class JwtSsoComponent implements JwtSsoConfig {
     public String getAuthorizationHeaderScheme() {
         // TODO Auto-generated method stub
         return "Bearer ";
+    }
+
+    @Override
+    public boolean isDisableJwtCookie() {
+        // TODO Auto-generated method stub
+        return disableJwtCookie;
+    }
+
+    @Override
+    public String getTokenHeader() {
+        return null;
+    }
+
+    @Override
+    public List<String> getAMRClaim() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public String getKeyManagementKeyAlias() {
+        return null;
     }
 
 }

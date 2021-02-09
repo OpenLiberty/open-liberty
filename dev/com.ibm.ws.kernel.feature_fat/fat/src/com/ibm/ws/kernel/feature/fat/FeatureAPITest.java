@@ -83,7 +83,7 @@ public class FeatureAPITest {
     public static void uninstallSystemFeature() throws Exception {
         server.uninstallSystemFeature("test.feature.api.internal-1.0");
         server.uninstallSystemFeature("test.feature.api-1.0");
-        server.uninstallSystemBundle("test.feature.api_1.0.0");
+        server.uninstallSystemBundle("test.feature.api");
     }
 
     @After

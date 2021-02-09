@@ -10,19 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.cdi12.suite;
 
-import java.nio.file.Files; 
-import java.nio.file.StandardCopyOption; 
-import java.nio.file.attribute.FileAttribute; 
-import java.io.File;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Logger;
-
-import componenttest.rules.repeater.FeatureReplacementAction;
-import componenttest.rules.repeater.RepeatTests;
-
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
@@ -36,28 +23,33 @@ import com.ibm.ws.cdi12.fat.tests.PassivationBeanTests;
 import com.ibm.ws.cdi12.fat.tests.SessionDestroyTests;
 import com.ibm.ws.fat.util.FatLogHandler;
 
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.RepeatTests;
+
 /**
  * Tests specific to cdi-1.2
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-                BeanLifecycleTest.class, 
+                BeanLifecycleTest.class,
                 EventMetaDataTest.class,
                 ObservesInitializedTest.class,
                 PassivationBeanTests.class,
                 SessionDestroyTests.class
 })
 public class FATSuite {
-    
-     
+
     @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification()
-                    .andWith(FeatureReplacementAction.EE8_FEATURES());
+    public static RepeatTests r = RepeatTests.withoutModification().andWith(FeatureReplacementAction.EE8_FEATURES()) // run all tests as-is (e.g. EE8 features)
+                    .andWith(new JakartaEE9Action());
+
     /**
+     * @throws Exception
      * @see {@link FatLogHandler#generateHelpFile()}
      */
     @BeforeClass
-    public static void generateHelpFile() {
+    public static void generateHelpFile() throws Exception {
         FatLogHandler.generateHelpFile();
     }
 

@@ -1,5 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.transaction-1.1
+WLP-DisableAllFeatures-OnConflict: false
 visibility=protected
 singleton=true
 IBM-API-Package: javax.transaction;  type="spec", \
@@ -17,11 +18,12 @@ IBM-API-Service: com.ibm.wsspi.uow.UOWManager, \
 -features=com.ibm.websphere.appserver.jta-1.1, \
  com.ibm.websphere.appserver.javax.connector.internal-1.6, \
  com.ibm.websphere.appserver.injection-1.0, \
- com.ibm.websphere.appserver.javax.servlet-3.0; ibm.tolerates:=3.1; apiJar=false, \
+ io.openliberty.servlet.api-3.0; ibm.tolerates:=3.1; apiJar=false, \
  com.ibm.websphere.appserver.artifact-1.0, \
  com.ibm.websphere.appserver.javaeedd-1.0, \
  com.ibm.websphere.appserver.containerServices-1.0, \
- com.ibm.websphere.appserver.anno-1.0
+ com.ibm.websphere.appserver.anno-1.0, \
+ com.ibm.websphere.appserver.eeCompatible-6.0; ibm.tolerates:="7.0,8.0"
 -bundles=com.ibm.ws.tx.jta.extensions, \
  com.ibm.ws.transaction; start-phase:=CONTAINER_LATE, \
  com.ibm.tx.jta, \

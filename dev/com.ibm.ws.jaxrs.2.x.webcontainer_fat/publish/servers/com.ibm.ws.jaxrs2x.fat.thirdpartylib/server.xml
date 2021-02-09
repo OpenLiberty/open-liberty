@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<server description="new server">
+
+    <!-- Enable features -->
+    <featureManager>
+		 <feature>jaxrs-2.0</feature> 		
+    </featureManager>
+   <application context-root="/thirdpartylib" type="war" location="thirdpartylib.war">
+        <classloader apiTypeVisibility="spec,ibm-api,third-party"/>
+    </application>
+
+  	<include location="../fatTestPorts.xml"/>
+
+
+</server>

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -224,13 +224,6 @@ public class ProtocolImpl {
             // nothing as regular coordinator recovery retries should take care of it.
             if (TC.isDebugEnabled()) {
                 Tr.debug(TC, "Unsolicited PREPARED received: {0}/{1}. Replaying completion", globalId, partId);
-            }
-
-            if (!tranService.replayCompletion(globalId)) {
-                participant = new WSATParticipant(globalId, partId, fromEpr);
-                final WebClient webClient = WebClient.getWebClient(participant, participant.getCoordinator());
-                webClient.rollback();
-                // Fire & forget
             }
         }
     }

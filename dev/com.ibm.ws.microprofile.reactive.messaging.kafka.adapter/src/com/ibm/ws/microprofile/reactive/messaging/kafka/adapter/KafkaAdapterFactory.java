@@ -21,6 +21,7 @@ import org.eclipse.microprofile.reactive.messaging.Message;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 /**
  *
@@ -49,6 +50,8 @@ public abstract class KafkaAdapterFactory {
 
     private static final String PRODUCER_RECORD_IMPL = "com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.impl.ProducerRecordImpl";
     private static final Class<?>[] PRODUCER_RECORD_ARG_TYPES = { String.class, String.class, Object.class };
+
+    private static final String RETRIABLE_EXCEPTION_IMPL = "org.apache.kafka.common.errors.RetriableException";
 
     /**
      * Class from the Kafka client jar which we use to test whether the client library is present
@@ -137,6 +140,15 @@ public abstract class KafkaAdapterFactory {
     }
 
     /**
+     * Get the {@code Class} for {@value #RETRIABLE_EXCEPTION_IMPL}
+     *
+     * @return the {@code RetriableException} class
+     */
+    public Class<?> getRetryableExceptionClass() {
+        return getImplClass(getClassLoader(), Exception.class, RETRIABLE_EXCEPTION_IMPL);
+    }
+
+    /**
      * Validate that the adapter factory is able to load Kafka classes
      * <p>
      *
@@ -157,13 +169,16 @@ public abstract class KafkaAdapterFactory {
         return instance;
     }
 
+    @FFDCIgnore(InvocationTargetException.class)
     protected static final <T> T getInstance(Class<T> implClass, Class<?>[] parameterTypes, Object[] parameters) {
         Constructor<T> xtor = getConstructor(implClass, parameterTypes);
 
         T instance = null;
         try {
             instance = xtor.newInstance(parameters);
-        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException e) {
+            throw new KafkaAdapterException(e);
+        } catch (InvocationTargetException e) { // Separate catch block to ignore FFDCs
             throw new KafkaAdapterException(e);
         }
         return instance;

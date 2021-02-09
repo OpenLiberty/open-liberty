@@ -1,5 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.jsf-2.3
+WLP-DisableAllFeatures-OnConflict: false
 visibility=public
 singleton=true
 IBM-App-ForceRestart: install, \
@@ -41,7 +42,7 @@ Subsystem-Name: JavaServer Faces 2.3
  com.ibm.websphere.appserver.jsp-2.3, \
  com.ibm.websphere.appserver.internal.optional.jaxb-2.2; ibm.tolerates:=2.3, \
  com.ibm.websphere.appserver.jsfProvider-2.3.0.MyFaces, \
- com.ibm.websphere.appserver.javaeeCompatible-8.0
+ com.ibm.websphere.appserver.eeCompatible-8.0
 -bundles=com.ibm.ws.org.apache.myfaces.2.3, \
  com.ibm.ws.org.apache.commons.beanutils.1.9.4, \
  com.ibm.ws.org.apache.commons.collections, \

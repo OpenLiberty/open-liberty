@@ -17,10 +17,10 @@ import java.io.File;
 import java.io.IOException;
 import java.security.cert.CertPathBuilderException;
 
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
-
-import test.common.SharedOutputManager;
 
 import com.ibm.ws.install.internal.ExceptionUtils;
 import com.ibm.ws.repository.common.enums.ResourceType;
@@ -34,13 +34,25 @@ import com.ibm.ws.repository.resources.internal.SampleResourceImpl;
 import com.ibm.ws.repository.transport.client.RepositoryReadableClient;
 import com.ibm.ws.repository.transport.exceptions.RequestFailureException;
 
+import test.common.SharedOutputManager;
+
 /**
  *
  */
 public class ExceptionUtilsTest {
 
     @Rule
-    public SharedOutputManager outputMgr = SharedOutputManager.getInstance();
+    public static SharedOutputManager outputMgr = SharedOutputManager.getInstance().trace("*=all");
+
+    @BeforeClass
+    public static void setUpBeforeClass() throws Exception {
+        outputMgr.captureStreams();
+    }
+
+    @AfterClass
+    public static void tearDownAfterClass() throws Exception {
+        outputMgr.restoreStreams();
+    }
 
     @Test
     public void testCreateFailedToDownloadIOException() {
@@ -76,7 +88,8 @@ public class ExceptionUtilsTest {
             }
 
             @Override
-            public void checkRepositoryStatus() throws IOException, RequestFailureException {}
+            public void checkRepositoryStatus() throws IOException, RequestFailureException {
+            }
 
             @Override
             public String getRepositoryLocation() {
@@ -106,7 +119,8 @@ public class ExceptionUtilsTest {
             }
 
             @Override
-            public void checkRepositoryStatus() throws IOException, RequestFailureException {}
+            public void checkRepositoryStatus() throws IOException, RequestFailureException {
+            }
 
             @Override
             public String getRepositoryLocation() {
@@ -136,7 +150,8 @@ public class ExceptionUtilsTest {
             }
 
             @Override
-            public void checkRepositoryStatus() throws IOException, RequestFailureException {}
+            public void checkRepositoryStatus() throws IOException, RequestFailureException {
+            }
 
             @Override
             public String getRepositoryLocation() {
@@ -165,7 +180,8 @@ public class ExceptionUtilsTest {
             }
 
             @Override
-            public void checkRepositoryStatus() throws IOException, RequestFailureException {}
+            public void checkRepositoryStatus() throws IOException, RequestFailureException {
+            }
 
             @Override
             public String getRepositoryLocation() {

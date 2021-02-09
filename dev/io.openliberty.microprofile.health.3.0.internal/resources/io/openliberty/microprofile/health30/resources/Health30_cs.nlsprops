@@ -1,0 +1,50 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMMH
+#COMPONENTNAMEFOR CWMMH MicroProfile Health API 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by Health Impl -  range is 0000-0999
+# The range 0000-0049 has been reserved for messages issued above the HealthCheckExecutor within the call stack
+# The range 0050-0099 has been reserved for messages issued at or below the HealthCheckExecutor within the call stack
+#-----------------------------------------------------------------------------------------------------------------------------
+
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Emergency Health error message
+#-----------------------------------------------------------------------------------------------------------------------------
+OSGI_SERVICE_ERROR=CWMMH0000E: Slu\u017eba OSGi {0} je nedostupn\u00e1.
+OSGI_SERVICE_ERROR.explanation=Tato intern\u00ed chyba serveru je generovan\u00e1 v d\u016fsledku nedostupnosti uveden\u00e9 slu\u017eby.
+OSGI_SERVICE_ERROR.useraction=Restartujte server s volbou clean.
+
+# The HealthCheck bean call method had an exception
+healthcheck.bean.call.exception.CWMMH0050E=CWMMH0050E: Metoda HealthCheck {0} v aplikaci {1} z modulu {2} vyvolal v\u00fdjimku {3} s n\u00e1sleduj\u00edc\u00ed zpr\u00e1vou: {4}
+healthcheck.bean.call.exception.CWMMH0050E.explanation=Ur\u010den\u00e1 metoda vol\u00e1n\u00ed vygenerovala v\u00fdjimku.
+healthcheck.bean.call.exception.CWMMH0050E.useraction=P\u0159ezkoumejte metodu vol\u00e1n\u00ed v r\u00e1mci objektu typu HealthCheck bean, abyste identifikovali v\u00fdjimku, ke kter\u00e9 do\u0161lo.
+
+# The HealthCheck bean call method had a DOWN outcome
+healthcheck.application.down.CWMMH0052W=CWMMH0052W: Metoda {0} implementuj\u00edc\u00ed HealthCheckResponse v aplikaci {1} v modulu {2}, nahl\u00e1sila stav {3} s daty {4}.
+healthcheck.application.down.CWMMH0052W.explanation=Stav DOWN m\u016f\u017ee zp\u016fsobit, \u017ee slu\u017eba monitorov\u00e1n\u00ed provede na tomto serveru akci.
+healthcheck.application.down.CWMMH0052W.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce u\u017eivatele. Toto varov\u00e1n\u00ed je z\u00e1znamem stavu DOWN.
+
+# The Readiness HealthCheck had a DOWN outcome, when applications are not started yet
+readiness.healthcheck.applications.not.started.down.CWMMH0053W=CWMMH0053W: Kontrola stavu p\u0159ipravenosti nahl\u00e1sila celkov\u00fd stav DOWN, proto\u017ee n\u00e1sleduj\u00edc\u00ed aplikace je\u0161t\u011b nebyly spu\u0161t\u011bny: {0}
+readiness.healthcheck.applications.not.started.down.CWMMH0053W.explanation=Ur\u010den\u00e9 aplikace je\u0161t\u011b nebyly zcela spu\u0161t\u011bny a nejsou p\u0159ipraveny ke zpracov\u00e1n\u00ed po\u017eadavk\u016f, proto kontrola stavu p\u0159ipravenosti hl\u00e1sila stav DOWN.
+readiness.healthcheck.applications.not.started.down.CWMMH0053W.useraction=Nen\u00ed zapot\u0159eb\u00ed \u017e\u00e1dn\u00e1 akce u\u017eivatele, vy\u010dkejte na spu\u0161t\u011bn\u00ed aplikac\u00ed. Toto varov\u00e1n\u00ed je z\u00e1znamem stavu DOWN.

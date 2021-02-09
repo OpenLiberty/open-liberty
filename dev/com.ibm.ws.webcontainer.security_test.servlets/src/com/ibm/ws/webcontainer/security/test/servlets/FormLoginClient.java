@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -138,7 +138,7 @@ public class FormLoginClient extends ServletClientImpl {
      * is successful and the HTTP protocol version is 1.1. If the HTTP protocol
      * version is 1.0 the default redirect should be the default 302.
      *
-     * @param servletSpec - The Servlet Spec level
+     * @param servletSpec  - The Servlet Spec level
      * @param httpProtocol - The HTTP protocol version
      */
     private void setupRedirectValues(String spec, String protocol) {
@@ -167,7 +167,8 @@ public class FormLoginClient extends ServletClientImpl {
      * {@inheritDoc}
      */
     @Override
-    protected void hookResetClientState() {}
+    protected void hookResetClientState() {
+    }
 
     /**
      * {@inheritDoc}
@@ -190,6 +191,19 @@ public class FormLoginClient extends ServletClientImpl {
                     " expectedStatusCode=" + expectedStatusCode);
 
         return accessPageNoChallenge(client, url, expectedStatusCode);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String access(String urlPattern, int expectedStatusCode, String... dumpSSOCookieName) {
+        if (dumpSSOCookieName != null) {
+            logger.info("access:(urlPattern, expectedStatusCode, dumpSSOCookieName) This version of the method is currently only implemented for BasicAuthClient");
+            return null;
+        } else {
+            return access(urlPattern, expectedStatusCode);
+        }
     }
 
     /**
@@ -220,13 +234,13 @@ public class FormLoginClient extends ServletClientImpl {
      * root. Expected behaviour is dictated by the expected status code.
      *
      * @param url
-     *            Full URL to the requested resource
+     *                               Full URL to the requested resource
      * @param user
-     *            user to authenticate as
+     *                               user to authenticate as
      * @param password
-     *            password to authenticate with
+     *                               password to authenticate with
      * @param expectedStatusCode
-     *            The expected HTTP status code for the request
+     *                               The expected HTTP status code for the request
      * @return servlet response text, null if access not granted
      */
     @Override
@@ -328,7 +342,7 @@ public class FormLoginClient extends ServletClientImpl {
     /**
      * @param urlPattern
      * @param client
-     * @param reqMethod HttpUriRequest object which also include additional header values.
+     * @param reqMethod          HttpUriRequest object which also include additional header values.
      * @param expectedStatusCode
      * @throws IOException
      * @throws HttpException
@@ -591,9 +605,9 @@ public class FormLoginClient extends ServletClientImpl {
      * the form login page.
      *
      * @param urlPattern
-     *            URL pattern that is under of the context root.
+     *                       URL pattern that is under of the context root.
      * @param cookie
-     *            SSO cookie to login with
+     *                       SSO cookie to login with
      * @return true if access was redirected to the form login page
      */
     @Override
@@ -733,6 +747,17 @@ public class FormLoginClient extends ServletClientImpl {
     }
 
     @Override
+    protected String accessWithHeaders(String url, int expectedStatusCode, Map<String, String> headers, Boolean ignoreErrorContent, Boolean handleSSOCookie,
+                                       String... dumpSSOCookieNames) {
+        if (dumpSSOCookieNames != null) {
+            logger.info("accessWithHeaders: This version of the method is currently only implemented for BasicAuthClient");
+            return null;
+        } else {
+            return accessWithHeaders(url, expectedStatusCode, headers, ignoreErrorContent, handleSSOCookie);
+        }
+    }
+
+    @Override
     protected String accessWithHeaders(String url, int expectedStatusCode, Map<String, String> headers, Boolean ignoreErrorContent, Boolean handleSSOCookie) {
         logger.info("accessWithHeaders: url=" + url + " expectedStatusCode=" + expectedStatusCode);
 
@@ -815,6 +840,17 @@ public class FormLoginClient extends ServletClientImpl {
         logger.info("Servlet response: " + content);
         EntityUtils.consume(entity);
         return content;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.ws.webcontainer.security.test.servlets.ServletClientImpl#accessWithException(java.lang.String, java.lang.Class[])
+     */
+    @Override
+    protected String accessWithException(String url, Class<?>[] expectedExceptions) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

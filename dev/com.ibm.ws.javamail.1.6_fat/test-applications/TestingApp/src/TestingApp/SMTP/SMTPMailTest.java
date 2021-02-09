@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -35,8 +35,9 @@ public class SMTPMailTest {
             Context context = new InitialContext();
             session = (javax.mail.Session) context.lookup("SMTPJNDISession");
         } catch (NamingException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            System.out.println("Failed to lookup 'SMTPJNDISession': "+e.getMessage());
+            e.printStackTrace(System.out);
+            throw new RuntimeException(e);
         }
 
         MimeMessage message = new MimeMessage(session);
@@ -53,6 +54,8 @@ public class SMTPMailTest {
             Transport.send(message);
 
         } catch (MessagingException e) {
+            System.out.println("Mail session properties: "+session.getProperties());
+            e.printStackTrace(System.out);
             throw new RuntimeException(e);
         }
     }

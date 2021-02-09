@@ -1,5 +1,5 @@
 /* ============================================================================
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -79,10 +79,11 @@ public class JMS2AsyncSend extends ClientMain {
       producer.send(queueOne_, "testJMS2NoAsync");
       Util.CODEPATH();
 
-      String messageReceived = consumer.receiveBody(String.class, WAIT_TIME).toString();
+      String messageReceived = consumer.receiveBody(String.class, WAIT_TIME);
       Util.TRACE("message=" + messageReceived);
 
-      if (messageReceived.equals("testJMS2NoAsync")
+      if (null != messageReceived
+          && messageReceived.equals("testJMS2NoAsync")
           && completionListener_.completionCount_ == 0
           && completionListener_.exceptionCount_ == 0
          ) {
@@ -112,14 +113,14 @@ public class JMS2AsyncSend extends ClientMain {
 
       Util.TRACE("message sent");
 
-      String messageReceived = consumer.receiveBody(String.class, WAIT_TIME).toString();
+      String messageReceived = consumer.receiveBody(String.class, WAIT_TIME);
 
       Util.TRACE("completionCount="+completionListener_.completionCount_
                 +",exceptionCount="+completionListener_.exceptionCount_
                 +"message="+messageReceived
                 );
 
-      if (messageReceived.equals("testJMS2SetAsync") && conditionMet == true) {
+      if (null!=messageReceived && messageReceived.equals("testJMS2SetAsync") && conditionMet == true) {
         reportSuccess();
       } else {
         reportFailure();

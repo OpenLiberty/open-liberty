@@ -32,7 +32,7 @@ no.such.element.CWMCG0300E=CWMCG0300E: La propri\u00e9t\u00e9 {0} est introuvabl
 no.such.element.CWMCG0300E.explanation=La propri\u00e9t\u00e9 demand\u00e9e n'existe dans aucune des sources de configuration d\u00e9finies.
 no.such.element.CWMCG0300E.useraction=Ajoutez la propri\u00e9t\u00e9 \u00e0 l'une des sources de configuration existantes ou ajoutez une nouvelle source de configuration contenant la propri\u00e9t\u00e9.
 
-failed.to.schedule.cache.invalidation.CWMCG0301E=CWMCG0301E: Echec de la planification de l'invalidation du cache MicroProfile Config. L'exception est {0}.
+failed.to.schedule.cache.invalidation.CWMCG0301E=CWMCG0301E: L'invalidation du cache MicroProfile Config ne peut pas \u00eatre planifi\u00e9e. L'exception est : {0}
 failed.to.schedule.cache.invalidation.CWMCG0301E.explanation=Il se peut que les modifications apport\u00e9es dans MicroProfile Config ne soient pas refl\u00e9t\u00e9es dans l'application.
 failed.to.schedule.cache.invalidation.CWMCG0301E.useraction=Consultez le journal message.log du serveur et les journaux FFDC pour identifier le probl\u00e8me.
 

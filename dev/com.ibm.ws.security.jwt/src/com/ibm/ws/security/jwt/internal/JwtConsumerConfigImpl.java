@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2016, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,8 +10,11 @@
  *******************************************************************************/
 package com.ibm.ws.security.jwt.internal;
 
+import java.security.AccessController;
+import java.security.PrivilegedExceptionAction;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
@@ -25,16 +28,23 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.common.jwk.impl.JWKSet;
 import com.ibm.ws.security.jwt.config.ConsumerUtils;
+import com.ibm.ws.security.jwt.config.JwtConfigUtil;
 import com.ibm.ws.security.jwt.config.JwtConsumerConfig;
 import com.ibm.ws.security.jwt.utils.JwtUtils;
 import com.ibm.ws.ssl.KeyStoreService;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
+import com.ibm.wsspi.ssl.SSLSupport;
 
 @Component(service = JwtConsumerConfig.class, immediate = true, configurationPolicy = ConfigurationPolicy.REQUIRE, configurationPid = "com.ibm.ws.security.jwt.consumer", name = "jwtConsumerConfig", property = "service.vendor=IBM")
 public class JwtConsumerConfigImpl implements JwtConsumerConfig {
+
+    private static final TraceComponent tc = Tr.register(JwtConsumerConfigImpl.class);
 
     private String id;
     private String issuer = null;
@@ -49,6 +59,8 @@ public class JwtConsumerConfigImpl implements JwtConsumerConfig {
     private String jwkEndpointUrl;
     private boolean validationRequired = true;
     private boolean useSystemPropertiesForHttpClientConnections = false;
+    private List<String> amrClaim;
+    private String keyManagementKeyAlias;
     String sslRef;
 
     private ConsumerUtils consumerUtil = null; // init during process(activate and modify)
@@ -100,7 +112,7 @@ public class JwtConsumerConfigImpl implements JwtConsumerConfig {
         issuer = JwtUtils.trimIt((String) props.get(JwtUtils.CFG_KEY_ISSUER));
         sharedKey = JwtConfigUtil.processProtectedString(props, JwtUtils.CFG_KEY_SHARED_KEY);
         audiences = JwtUtils.trimIt((String[]) props.get(JwtUtils.CFG_KEY_AUDIENCES));
-        sigAlg = JwtUtils.trimIt((String) props.get(JwtUtils.CFG_KEY_SIGNATURE_ALGORITHM));
+        sigAlg = JwtConfigUtil.getSignatureAlgorithm(getId(), props, JwtUtils.CFG_KEY_SIGNATURE_ALGORITHM);
         trustStoreRef = JwtUtils.trimIt((String) props.get(JwtUtils.CFG_KEY_TRUSTSTORE_REF));
         trustedAlias = JwtUtils.trimIt((String) props.get(JwtUtils.CFG_KEY_TRUSTED_ALIAS));
         clockSkewMilliSeconds = (Long) props.get(JwtUtils.CFG_KEY_CLOCK_SKEW);
@@ -109,6 +121,8 @@ public class JwtConsumerConfigImpl implements JwtConsumerConfig {
         jwkEndpointUrl = JwtUtils.trimIt((String) props.get(JwtUtils.CFG_KEY_JWK_ENDPOINT_URL)); // internal
         sslRef = JwtUtils.trimIt((String) props.get(JwtUtils.CFG_KEY_SSL_REF));
         useSystemPropertiesForHttpClientConnections = (Boolean) props.get(JwtUtils.CFG_KEY_USE_SYSPROPS_FOR_HTTPCLIENT_CONNECTONS);
+        amrClaim = JwtUtils.trimIt((String[]) props.get(JwtUtils.CFG_AMR_CLAIM));
+        keyManagementKeyAlias = JwtUtils.trimIt((String) props.get(JwtUtils.CFG_KEY_KEY_MANAGEMENT_KEY_ALIAS));
 
         consumerUtil = new ConsumerUtils(keyStoreServiceRef);
         jwkSet = null; // the jwkEndpoint may have been changed during dynamic update
@@ -136,6 +150,11 @@ public class JwtConsumerConfigImpl implements JwtConsumerConfig {
     }
 
     @Override
+    public boolean ignoreAudClaimIfNotConfigured() {
+        return false;
+    }
+
+    @Override
     public String getSignatureAlgorithm() {
         return sigAlg;
     }
@@ -143,6 +162,48 @@ public class JwtConsumerConfigImpl implements JwtConsumerConfig {
     @Override
     public String getTrustStoreRef() {
         return trustStoreRef;
+    }
+
+    @Override
+    public String getKeyStoreRef() {
+        String keyStoreName = null;
+        String sslRef = getSslRef();
+        if (sslRef == null) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "sslRef not configured, so will use server-wide keystore");
+            }
+            return null;
+        }
+        Properties sslConfigProps = getSslConfigProperties(sslRef);
+        if (sslConfigProps != null) {
+            keyStoreName = sslConfigProps.getProperty(com.ibm.websphere.ssl.Constants.SSLPROP_KEY_STORE_NAME);
+        }
+        return keyStoreName;
+    }
+
+    @FFDCIgnore(Exception.class)
+    Properties getSslConfigProperties(String sslRef) {
+        SSLSupport sslSupportService = JwtUtils.getSSLSupportService();
+        if (sslSupportService == null) {
+            return null;
+        }
+        Properties sslConfigProps;
+        try {
+            sslConfigProps = (Properties) AccessController.doPrivileged(
+                    new PrivilegedExceptionAction<Object>() {
+                        @Override
+                        public Object run() throws Exception {
+                            return sslSupportService.getJSSEHelper().getProperties(sslRef);
+
+                        }
+                    });
+        } catch (Exception e) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Caught exception getting SSL properties: " + e);
+            }
+            return null;
+        }
+        return sslConfigProps;
     }
 
     @Override
@@ -203,6 +264,16 @@ public class JwtConsumerConfigImpl implements JwtConsumerConfig {
     @Override
     public boolean getUseSystemPropertiesForHttpClientConnections() {
         return useSystemPropertiesForHttpClientConnections;
+    }
+
+    @Override
+    public List<String> getAMRClaim() {
+        return amrClaim;
+    }
+
+    @Override
+    public String getKeyManagementKeyAlias() {
+        return keyManagementKeyAlias;
     }
 
 }

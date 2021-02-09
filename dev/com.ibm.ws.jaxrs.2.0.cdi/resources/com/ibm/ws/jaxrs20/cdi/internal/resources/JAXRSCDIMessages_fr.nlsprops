@@ -19,15 +19,15 @@
 #
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
-# JAXRS 2.0 CDI Message ------------------------
-warning.jaxrs.cdi.resource=CWWKW1000W: La port\u00e9e de JAXRS-2.0 Resource {0} est {1}. Liberty obtient l''instance de ressource de {2}.
+# JAXRS CDI Message ------------------------
+warning.jaxrs.cdi.resource=CWWKW1000W: La port\u00e9e de la ressource JAXRS {0} est {1}. Liberty obtient l''instance de ressource de {2}.
 warning.jaxrs.cdi.resource.explanation=Liberty obtient l'instance de ressource de JAXRS s'il ne peut pas obtenir l'instance de CDI.
 warning.jaxrs.cdi.resource.useraction=Aucune action n'est requise. 
 
-warning.jaxrs.cdi.resource.mismatch=CWWKW1001W: La port\u00e9e {1} de JAXRS-2.0 Resource {0} ne correspond pas \u00e0 la port\u00e9e CDI {2}. Liberty obtient l''instance de ressource de {3}.
-warning.jaxrs.cdi.resource.mismatch.explanation=Si la port\u00e9e JAXRS-2.0 Resource ne correspond pas \u00e0 la port\u00e9e CDI et si l'instance de ressource existe dans CDI, Liberty obtient l'instance de ressource de CDI. L'instance inclut pas l'injection CDI si elle provient de JAXRS.
+warning.jaxrs.cdi.resource.mismatch=CWWKW1001W: La port\u00e9e {1} de la ressource JAXRS {0} ne correspond pas \u00e0 la port\u00e9e CDI {2}. Liberty obtient l''instance de ressource de {3}.
+warning.jaxrs.cdi.resource.mismatch.explanation=Si la port\u00e9e de la ressource JAXRS ne correspond pas \u00e0 la port\u00e9e CDI et si l'instance de ressource existe dans CDI, Liberty obtient l'instance de ressource de CDI. L'instance inclut pas l'injection CDI si elle provient de JAXRS.
 warning.jaxrs.cdi.resource.mismatch.useraction=Aucune action n'est requise. 
 
-warning.jaxrs.cdi.provider.mismatch=CWWKW1002W: La port\u00e9e CDI de JAXRS-2.0 Provider {0} est {1}. Liberty obtient l''instance de fournisseur de {2}.
+warning.jaxrs.cdi.provider.mismatch=CWWKW1002W: La port\u00e9e CDI du fournisseur JAXRS {0} est {1}. Liberty obtient l''instance de fournisseur de {2}.
 warning.jaxrs.cdi.provider.mismatch.explanation=L'instance de fournisseur est Singleton uniquement. Liberty obtient l'instance de fournisseur de CDI si la port\u00e9e CDI du fournisseur est de type Dependent ou ApplicationScoped. L'instance inclut pas l'injection CDI si elle provient de JAXRS.
 warning.jaxrs.cdi.provider.mismatch.useraction=Aucune action n'est requise.

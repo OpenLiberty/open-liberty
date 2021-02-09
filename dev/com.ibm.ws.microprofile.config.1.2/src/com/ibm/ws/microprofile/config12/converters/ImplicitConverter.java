@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,17 +10,12 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.config12.converters;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
+import java.util.function.Function;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.microprofile.config.converters.BuiltInConverter;
-import com.ibm.ws.microprofile.config.interfaces.ConversionException;
 
 /**
  *
@@ -28,112 +23,64 @@ import com.ibm.ws.microprofile.config.interfaces.ConversionException;
 public class ImplicitConverter extends BuiltInConverter {
 
     private static final TraceComponent tc = Tr.register(ImplicitConverter.class);
-    private Method valueOfMethod;
-    private final Constructor<?> ctor;
-    private Method parseMethod;
+    private final Function<String, ?> implicitFunction;
 
-    @Trivial
     /**
      *
      * @param converterType The class to convert using
      */
+    @Trivial
     public ImplicitConverter(Class<?> converterType) {
         super(converterType);
-        this.ctor = getConstructor(converterType);
-        if (this.ctor == null) {
-            this.valueOfMethod = getValueOfMethod(converterType);
-        }
-        if (this.ctor == null && this.valueOfMethod == null) {
-            this.parseMethod = getParse(converterType);
+        this.implicitFunction = getImplicitFunction(converterType);
+    }
+
+    /**
+     * <p>If no explicit Converter and no built-in Converter could be found for a certain type,
+     * the {@code Config} provides an <em>Implicit Converter</em>, if</p>
+     * <ul>
+     * <li>The target type {@code T} has a public Constructor with a String parameter, or</li>
+     * <li>the target type {@code T} has a {@code public static T valueOf(String)} method, or</li>
+     * <li>the target type {@code T} has a {@code public static T parse(CharSequence)} method</li>
+     * </ul>
+     *
+     * @param converterType The class to convert using
+     */
+    @Trivial
+    protected <X> Function<String, X> getImplicitFunction(Class<X> converterType) {
+        Function<String, X> implicitFunction = ConstructorFunction.getConstructorFunction(converterType);
+
+        if (implicitFunction != null && TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Automatic converter for " + converterType + " using \"constructor\"");
         }
 
-        if (this.ctor == null && this.valueOfMethod == null && this.parseMethod == null) {
+        if (implicitFunction == null) {
+            implicitFunction = MethodFunction.getValueOfFunction(converterType);
+
+            if (implicitFunction != null && TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Automatic converter for " + converterType + " using \"valueOf\"");
+            }
+        }
+
+        if (implicitFunction == null) {
+            implicitFunction = MethodFunction.getParseFunction(converterType);
+
+            if (implicitFunction != null && TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Automatic converter for " + converterType + " using \"parse\"");
+            }
+        }
+
+        if (implicitFunction == null) {
             throw new IllegalArgumentException(Tr.formatMessage(tc, "implicit.string.constructor.method.not.found.CWMCG0017E", converterType));
-        } else {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                if (this.ctor != null) {
-                    Tr.debug(tc, "Automatic converter for {0} using {1}", converterType, this.ctor);
-                } else if (this.valueOfMethod != null) {
-                    Tr.debug(tc, "Automatic converter for {0} using {1}", converterType, this.valueOfMethod);
-                } else if (this.parseMethod != null) {
-                    Tr.debug(tc, "Automatic converter for {0} using {1}", converterType, this.parseMethod);
-                }
-            }
-        }
-    }
-
-    @FFDCIgnore(NoSuchMethodException.class)
-    @Trivial
-    private static <M> Constructor<M> getConstructor(Class<M> reflectionClass) {
-        Constructor<M> ctor = null;
-        try {
-            ctor = reflectionClass.getConstructor(String.class);
-        } catch (NoSuchMethodException e) {
-            //No FFDC
-        }
-        return ctor;
-    }
-
-    @FFDCIgnore(NoSuchMethodException.class)
-    @Trivial
-    private static Method getValueOfMethod(Class<?> reflectionClass) {
-        Method method = null;
-        try {
-            method = reflectionClass.getMethod("valueOf", String.class);
-            if ((method.getModifiers() & Modifier.STATIC) == 0) {
-                method = null;
-            } else if (!reflectionClass.equals(method.getReturnType())) {
-                method = null;
-            }
-        } catch (NoSuchMethodException e) {
-            //No FFDC
         }
 
-        return method;
-    }
-
-    @FFDCIgnore(NoSuchMethodException.class)
-    @Trivial
-    private static Method getParse(Class<?> reflectionClass) {
-        Method method = null;
-        try {
-            method = reflectionClass.getMethod("parse", CharSequence.class);
-            if ((method.getModifiers() & Modifier.STATIC) == 0) {
-                method = null;
-            } else if (!reflectionClass.equals(method.getReturnType())) {
-                method = null;
-            }
-        } catch (NoSuchMethodException e) {
-            //No FFDC
-        }
-        return method;
+        return implicitFunction;
     }
 
     /** {@inheritDoc} */
     @Override
     public Object convert(String value) {
-        Object converted = null;
-        if (value != null) { //if the value is null then we always return null
-            try {
-                if (this.ctor != null) {
-                    converted = this.ctor.newInstance(value);
-                } else if (this.valueOfMethod != null) {
-                    converted = this.valueOfMethod.invoke(null, value);
-                } else if (this.parseMethod != null) {
-                    converted = this.parseMethod.invoke(null, value);
-                }
-            } catch (InvocationTargetException e) {
-                Throwable cause = e.getCause();
-                if (cause instanceof IllegalArgumentException) {
-                    throw (IllegalArgumentException) cause;
-                } else {
-                    throw new ConversionException(cause);
-                }
-            } catch (IllegalAccessException | InstantiationException e) {
-                throw new ConversionException(e);
-            }
-        }
-        return converted;
+        return this.implicitFunction.apply(value);
     }
 
     /** {@inheritDoc} */

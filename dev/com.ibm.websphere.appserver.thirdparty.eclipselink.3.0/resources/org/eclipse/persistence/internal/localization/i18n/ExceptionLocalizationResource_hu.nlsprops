@@ -1,0 +1,439 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/internal/localization/i18n/ExceptionLocalizationResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+CRITERIA_NON_LITERAL_PASSED_TO_IN="in(Expression<?>... values)" ker\u00fclt megh\u00edv\u00e1sra {0} kifejez\u00e9st\u00edpussal, amely nem liter\u00e1l \u00e9s nem param\u00e9ter.  Ez nem t\u00e1mogatott.
+
+CRITERIA_NO_ROOT_FOR_COMPOUND_QUERY=Felt\u00e9tel lek\u00e9rdez\u00e9s l\u00e9trehoz\u00e1s\u00e1nak k\u00eds\u00e9rlete gy\u00f6k\u00e9r n\u00e9lk\u00fcl.
+
+INCORRECT_PARAMETER_TYPE=A(z) {0} indexn\u00e9l a param\u00e9ter nem {1} t\u00edpus\u00fa volt.
+
+MULTIPLE_SELECTIONS_PASSED_TO_QUERY_WITH_PRIMITIVE_RESULT="multiSelect" ker\u00fclt megh\u00edv\u00e1sra egy CriteriaQuery lek\u00e9rdez\u00e9sen primit\u00edv eredm\u00e9nyt\u00edpussal.  A visszat\u00e9r\u00e9si t\u00edpus helytelen, vagy helyette "select" haszn\u00e1lat\u00e1t kellene megval\u00f3s\u00edtani.
+
+NO_PARAMETER_WITH_INDEX=Nem tal\u00e1lhat\u00f3 param\u00e9ter {0} indexszel a lek\u00e9rdez\u00e9sen bel\u00fcl: {1}.
+
+NO_PARAMETER_WITH_NAME=Nem tal\u00e1lhat\u00f3 param\u00e9ter {0} n\u00e9vvel a lek\u00e9rdez\u00e9sen bel\u00fcl: {1}.
+
+NO_VALUE_BOUND=Nem volt \u00e9rt\u00e9k k\u00f6tve a(z) {0} nev\u0171 param\u00e9terhez
+
+NULL_PARAMETER_PASSED_TO_SET_PARAMETER=Null param\u00e9ter volt \u00e1tadva a "setParameter" sz\u00e1m\u00e1ra.  "Null" szerint nem indexhelt\u0151k param\u00e9terek.
+
+PARAMETER_NILL_NOT_FOUND=Null param\u00e9ter volt \u00e1tadva a getParameterValue() sz\u00e1m\u00e1ra
+
+add_attribute_key_was_null=Egy attrib\u00fatumt\u00edpus egyik aloszt\u00e1ly\u00e1hoz egy AttributeGroup megad\u00e1sakor a type param\u00e9ter nem lehet null
+
+argument_collection_was_null=Argumentum gy\u0171jtem\u00e9ny null\u00e9rt\u00e9k\u0171
+
+argument_keyed_named_query_with_JPA=T\u00f6bb lek\u00e9rdez\u00e9s l\u00e9tezik {0} n\u00e9vvel, azonban a neveknek egyedinek kell lenni\u00fck EntityManagerFactory.addNamedQuery() haszn\u00e1latakor
+
+attribute_is_not_map_with_managed_key=Nem adhat\u00f3 hozz\u00e1 kulcs aldiagram az EntityGroup elemhez a(z) {1} oszt\u00e1lyban l\u00e9v\u0151 {0} attrib\u00famk\u00e9nt, mivel az nem egy kezelt t\u00edpus\u00fa kulccsal rendelkez\u0151 lek\u00e9pez\u00e9s.
+
+bean_definition_vector_arguments_are_of_different_sizes=A komponensmeghat\u00e1roz\u00e1si vektor argumentumok elt\u00e9r\u0151 m\u00e9ret\u0171ek
+
+bean_not_found_on_database=A(z) {0} komponens nem tal\u00e1lhat\u00f3 az adatb\u00e1zisban.
+
+bean_validation_constraint_violated=Legal\u00e1bb egy komponens \u00e9rv\u00e9nyes\u00edt\u00e9si megszor\u00edt\u00e1st megs\u00e9rtettek az automatikus komponens \u00e9rv\u00e9nyes\u00edt\u00e9s futtat\u00e1sa k\u00f6zben a k\u00f6vetkez\u0151 visszah\u00edv\u00e1si esem\u00e9nyen: {0} (oszt\u00e1ly: {1}). R\u00e9szletek\u00e9rt tekintse meg a be\u00e1gyazott korl\u00e1ts\u00e9rt\u00e9seket.
+
+cache_descriptor_has_no_cmppolicy_set_cannot_create_primary_key=A(z) [{1}] le\u00edr\u00f3val rendelkez\u0151 [{0}] oszt\u00e1ly eset\u00e9ben nincs be\u00e1ll\u00edtva CMPPolicy, nem hozhat\u00f3 l\u00e9tre els\u0151dleges kulcs p\u00e9ld\u00e1ny a(z) [{2}] azonos\u00edt\u00f3t\u00edpushoz.
+
+cache_impl_class_has_no_descriptor_is_not_a_persistent_type=A(z) [{0}] oszt\u00e1ly nem megmarad\u00f3 t\u00edpus\u00fa - nem rendelkezik t\u00e1rs\u00edtott le\u00edr\u00f3val.
+
+cache_impl_object_descriptor_has_no_cmppolicy_set=A(z) [{1}] le\u00edr\u00f3val rendelkez\u0151 [{0}] objektum eset\u00e9ben nincs be\u00e1ll\u00edtva CMPPolicy, nem adhat\u00f3 vissza azonos\u00edt\u00f3.
+
+cache_impl_object_has_no_descriptor_is_not_a_persistent_type=A(z) [{0}] objektum nem megmarad\u00f3 t\u00edpus\u00fa - nem rendelkezik t\u00e1rs\u00edtott le\u00edr\u00f3val.
+
+called_get_entity_manager_from_non_jta=getEntityManager() ker\u00fclt megh\u00edv\u00e1sra egy nem-JTA t\u00e1mogat\u00e1ssal rendelkez\u0151 EntityManagerFactory objektumb\u00f3l.  Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a JTA megfelel\u0151en be van \u00e1ll\u00edtva a EntityManagerFactory objektumon.
+
+can_not_create_directory=A(z) {0} k\u00f6nyvt\u00e1r nem hozhat\u00f3 l\u00e9tre.
+
+can_not_create_file=A(z) {0} f\u00e1jl nem hozhat\u00f3 l\u00e9tre.
+
+can_not_move_directory=K\u00f6nyvt\u00e1rak nem helyezhet\u0151k \u00e1t.
+
+cannot_get_from_non_correlated_query=getCorrelationParent() ker\u00fclt megh\u00edv\u00e1sra egy from r\u00e9szkifejez\u00e9sen, amely nem lett lek\u00e9rve viszony\u00edt\u00e1son kereszt\u00fcl.
+
+cannot_get_unfetched_attribute=A(z) [{1}] nem leh\u00edvott attrib\u00fatum nem k\u00e9rhet\u0151 le a(z) {0} lev\u00e1lasztott objektumb\u00f3l.
+
+cannot_merge_removed_entity=Nem vonhat\u00f3 \u00f6ssze elt\u00e1vol\u00edtott entit\u00e1s: {0}
+
+cannot_read_through_txn_for_unsynced_pc=A tulajdons\u00e1g be lett \u00e1ll\u00edtva a megmarad\u00e1si kontextus csatlakoztat\u00e1s\u00e1ra a jelenleg akt\u00edv tranzakci\u00f3hoz, azonban ez nem SYNCHRONIZED megmarad\u00e1si kontextus.
+
+cannot_remove_detatched_entity=Az entit\u00e1st az elt\u00e1vol\u00edt\u00e1s megh\u00edv\u00e1s\u00e1ra kell be\u00e1ll\u00edtani: {0}, k\u00eds\u00e9relje meg a lev\u00e1lasztottat \u00f6sszevonni, majd pr\u00f3b\u00e1lkozzon meg \u00fajra az elt\u00e1vol\u00edt\u00e1ssal.
+
+cannot_remove_removed_entity=Az entit\u00e1s mm\u00e1r elt\u00e1vol\u00edt\u00e1sra ker\u00fclt: {0}
+
+cannot_update_entity_fetch-group=K\u00eds\u00e9rlet a(z) [{1}] attrib\u00fatum hozz\u00e1ad\u00e1s\u00e1ra a k\u00f6vetkez\u0151h\u00f6z: {0}, vagy elt\u00e1vol\u00edt\u00e1s\u00e1ra abb\u00f3l - az EntityFetchGroup objektum megv\u00e1ltozhatatlan.
+
+cannot_use_transaction_on_unsynced_pc=Nem h\u00edvhat\u00f3k meg tranzakci\u00f3t ig\u00e9nyl\u0151 met\u00f3dusok, ha az EntityManager nem csatlakozott az aktu\u00e1lis tranzakci\u00f3hoz.
+
+cant_lock_not_managed_object=Az entit\u00e1st z\u00e1rol\u00e1s megh\u00edv\u00e1s\u00e1ra kell be\u00e1ll\u00edtani: {0}, k\u00eds\u00e9relje meg a lev\u00e1lasztottat \u00f6sszevonni, majd pr\u00f3b\u00e1lkozzon meg \u00fajra a z\u00e1rol\u00e1ssal.
+
+cant_persist_detatched_object=PERSIST m\u0171velet lev\u00e1lasztott objektumra nem hajthat\u00f3 v\u00e9gre, lehets\u00e9ges t\u00f6bbsz\u00f6r szerepl\u0151 els\u0151dleges kulcs: {0}.
+
+cant_refresh_not_managed_object=Nem kezelt objektum nem friss\u00edthet\u0151: {0}.
+
+create_insertion_failed=Besz\u00far\u00e1s l\u00e9trehoz\u00e1sa meghi\u00fasult.
+
+criteria_no_constructor_found=Kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {0} oszt\u00e1lyban egy konstruktor keres\u00e9s\u00e9hez v\u00e9gzett vizsg\u00e1lat sor\u00e1n, a kiv\u00e1laszt\u00e1si felt\u00e9telt\u00edpusok mint argumentumok haszn\u00e1lat\u00e1val.  Ha ez a CriteriaQuery nem konstruktor lek\u00e9rdez\u00e9snek lett tervezve, akkor ellen\u0151rizze, hogy a kiv\u00e1laszt\u00e1s megegyezik-e a visszat\u00e9r\u00e9si t\u00edpussal.
+
+directory_not_exist=A(z) {0} k\u00f6nyvt\u00e1r nem l\u00e9tezik.
+
+ejb30-default-for-unknown-property=Nem adhat\u00f3 vissza alap\u00e9rtelmezett \u00e9rt\u00e9k ismeretlen tulajdons\u00e1ghoz: {0}.
+
+ejb30-illegal-property-value=A(z) {0} tulajdons\u00e1g illeg\u00e1lis \u00e9rt\u00e9kkel rendelkezik: {1}.
+
+ejb30-incorrect-parameter-type=Megk\u00eds\u00e9relt be\u00e1ll\u00edtani egy {1} t\u00edpus\u00fa \u00e9rt\u00e9ket a(z) {2} elv\u00e1rt t\u00edpus\u00fa {0} param\u00e9terhez a(z) {3} lek\u00e9rdez\u00e9si karaktersorozatb\u00f3l.
+
+ejb30-wrong-argument-index=Megk\u00eds\u00e9relte egy param\u00e9ter be\u00e1ll\u00edt\u00e1s\u00e1t a(z) {0} poz\u00edci\u00f3ban, amely nem l\u00e9tezik ebben a lek\u00e9rdez\u00e9si karaktersorozatban: {1}.
+
+ejb30-wrong-argument-name=Megk\u00eds\u00e9relt be\u00e1ll\u00edtani egy param\u00e9ter\u00e9rt\u00e9ket {0} n\u00e9v haszn\u00e1lat\u00e1val, amely nem l\u00e9tezik a lek\u00e9rdez\u00e9si karaktersorozatban: {1}.
+
+ejb30-wrong-lock_called_without_version_locking-index=\u00c9rv\u00e9nytelen z\u00e1rol\u00e1si m\u00f3d t\u00edpus egy olyan entit\u00e1s eset\u00e9n, amely nem rendelkezik verzi\u00f3z\u00e1rol\u00e1s indexszel. Csak PESSIMISTIC z\u00e1rol\u00e1si m\u00f3d t\u00edpus haszn\u00e1lhat\u00f3, amikor nincs jelen verzi\u00f3z\u00e1rol\u00e1s index.
+
+ejb30-wrong-query-hint-value=A(z) {0} lek\u00e9rdez\u00e9sben a(z) {1} lek\u00e9rdez\u00e9s-tipp \u00e9rt\u00e9ke illeg\u00e1lis: {2}.
+
+ejb30-wrong-type-for-query-hint=A(z) {0} lek\u00e9rdez\u00e9s eset\u00e9n a(z) {1} lek\u00e9rdez\u00e9s-tipp \u00e9rv\u00e9nytelen ehhez a lek\u00e9rdez\u00e9s-t\u00edpushoz.
+
+entity_manager_properties_conflict_default_connector_vs_external_transaction_controller=EntityManager tulajdons\u00e1gok \u00fctk\u00f6z\u00e9se: a javax.persistence.driver \u00e9s/vagy a javax.persistence.url DefaultConnector alap\u00e9rtelmezett csatol\u00f3t ig\u00e9nyel, de a megmarad\u00e1s egys\u00e9g k\u00fcls\u0151 tranzakci\u00f3vez\u00e9rl\u0151t haszn\u00e1l, ez\u00e9rt JNDIConnector k\u00f6telez\u0151.
+
+entity_manager_properties_conflict_default_connector_vs_jndi_connector=EntityManager tulajdons\u00e1gok \u00fctk\u00f6z\u00e9se: a javax.persistence.driver \u00e9s/vagy a javax.persistence.url DefaultConnector alap\u00e9rtelmezett csatol\u00f3t ig\u00e9nyel, de a javax.persistence.jtaDataSource \u00e9s/vagy a javax.persistence.nonjtaDataSource JNDIConnector csatol\u00f3t ig\u00e9nyel.
+
+entity_no_longer_exists_in_db=Az entit\u00e1s m\u00e1r nem l\u00e9tezik az adatb\u00e1zisban: {0}.
+
+error_executing_jar_process=Hiba t\u00f6rt\u00e9nt jar folyamat v\u00e9grehajt\u00e1sa sor\u00e1n
+
+error_invoking_deploy=Hiba t\u00f6rt\u00e9nt telep\u00edt\u00e9s megh\u00edv\u00e1sa sor\u00e1n
+
+error_loading_resources=Hiba {0} er\u0151forr\u00e1sok bet\u00f6lt\u00e9se sor\u00e1n az oszt\u00e1ly\u00fatvonalr\u00f3l
+
+error_marshalling_arguments=Hiba t\u00f6rt\u00e9nt argumentumok elrendez\u00e9se sor\u00e1n
+
+error_marshalling_return=Hiba t\u00f6rt\u00e9nt v\u00e1lasz elrendez\u00e9se sor\u00e1n
+
+error_parsing_resources=Hiba t\u00f6rt\u00e9nt az er\u0151forr\u00e1sok \u00e9rtelmez\u00e9se sor\u00e1n: {0}
+
+error_reading_jar_file=Hiba a(z) {0} jar f\u00e1jl olvas\u00e1sa sor\u00e1n, bejegyz\u00e9s: {1}
+
+error_unmarshalling_arguments=Hiba t\u00f6rt\u00e9nt argumentumok visszarendez\u00e9se sor\u00e1n
+
+error_unmarshalling_return=hiba t\u00f6rt\u00e9nt v\u00e1lasz visszarendez\u00e9se sor\u00e1n
+
+file_exists=A(z) {0} f\u00e1jl m\u00e1r l\u00e9tezik.
+
+file_not_exist=A(z) {0} f\u00e1jl nem l\u00e9tezik.
+
+finder_query_failed=Keres\u0151 lek\u00e9rdez\u00e9s meghi\u00fasult:
+
+getpersistenceunitutil_called_on_closed_emf=getPersistenceUnitUtil() ker\u00fclt megh\u00edv\u00e1sra z\u00e1rt EntityManagerFactory objektumon.
+
+illegal_state_while_closing=K\u00eds\u00e9rlet egy EntityManager bez\u00e1r\u00e1s\u00e1ra a NO_TRANSACTION, COMMITTED vagy ROLLEDBACK \u00e1llapotokt\u00f3l elt\u00e9r\u0151 tranzakci\u00f3s \u00e1llapottal.
+
+incorrect_hint=Nem megfelel\u0151 objektumt\u00edpus van megadva a tipphez: {0}.
+
+incorrect_query_for_get_result_collection=Ezen a lek\u00e9rdez\u00e9sen nem h\u00edvhat\u00f3 getResultCollection().  Nem megfelel\u0151 lek\u00e9rdez\u00e9si t\u00edpus.
+
+incorrect_query_for_get_result_list=Ezen a lek\u00e9rdez\u00e9sen nem h\u00edvhat\u00f3 getResultList().  Nem megfelel\u0151 lek\u00e9rdez\u00e9si t\u00edpus.
+
+incorrect_query_for_get_single_result=Ezen a lek\u00e9rdez\u00e9sen nem h\u00edvhat\u00f3 getSingleResult().  Nem megfelel\u0151 lek\u00e9rdez\u00e9si t\u00edpus.
+
+incorrect_spq_query_for_execute=Ezen a t\u00e1rolt elj\u00e1r\u00e1s lek\u00e9rdez\u00e9sen nem h\u00edvhat\u00f3 execute().  Nem megfelel\u0151 lek\u00e9rdez\u00e9si t\u00edpus.
+
+incorrect_spq_query_for_execute_update=Ezen a t\u00e1rolt elj\u00e1r\u00e1s lek\u00e9rdez\u00e9sen nem h\u00edvhat\u00f3 executeUpdate(), mivel az egy eredm\u00e9nyhalmazt ad vissza, nem puszt\u00e1n egy friss\u00edt\u00e9si sz\u00e1mot.
+
+incorrect_spq_query_for_get_result_list=Ezen a t\u00e1rolt elj\u00e1r\u00e1s lek\u00e9rdez\u00e9sen nem h\u00edvhat\u00f3 getResultList(), mivel az nem eredm\u00e9nyhalmazt ad vissza.
+
+incorrect_spq_query_for_get_single_result=Ezen a t\u00e1rolt elj\u00e1r\u00e1s lek\u00e9rdez\u00e9sen nem h\u00edvhat\u00f3 getSingleResult(), mivel az nem eredm\u00e9nyhalmazt ad vissza.
+
+input_source_not_found=Bemeneti forr\u00e1s nem tal\u00e1lhat\u00f3 vagy null\u00e9rt\u00e9k\u0171
+
+interface_hash_mismatch=Fel\u00fclet kivonat elt\u00e9r\u00e9se
+
+invalid_lock_query=A z\u00e1rol\u00e1si t\u00edpus csak select lek\u00e9rdez\u00e9ssel haszn\u00e1lhat\u00f3 (ami lehet\u0151v\u00e9 teszi az adatb\u00e1zis z\u00e1rol\u00e1s\u00e1t, ahol sz\u00fcks\u00e9ges).
+
+invalid_method_hash=\u00c9rv\u00e9nytelen met\u00f3dus kivonat
+
+invalid_method_number=\u00c9rv\u00e9nytelen met\u00f3dus sz\u00e1m
+
+invalid_pk_class=Helytelen PK oszt\u00e1ly p\u00e9ld\u00e1nyt adott meg ehhez a keres\u00e9si m\u0171velethez.  Elv\u00e1rt oszt\u00e1ly: {0}, Fogadott oszt\u00e1ly: {1}.
+
+jar_not_exist=A(z) {0} jar f\u00e1jl nem l\u00e9tezik.
+
+jaxb_helper_invalid_binder=A megadott [{0}] Binder nem EclipseLink JAXBBinder, ez\u00e9rt nem alak\u00edthat\u00f3 \u00e1t.
+
+jaxb_helper_invalid_jaxbcontext=A megadott [{0}] JAXBContext nem EclipseLink JAXBContext, ez\u00e9rt nem alak\u00edthat\u00f3 \u00e1t.
+
+jaxb_helper_invalid_marshaller=A megadott [{0}] rendez\u0151 nem EclipseLink JAXBMarshaller, ez\u00e9rt nem alak\u00edthat\u00f3 \u00e1t.
+
+jaxb_helper_invalid_target_for_binder=A megadott [{0}] c\u00e9loszt\u00e1ly csak EclipseLink JAXBBinder vagy EclipseLink XMLBinder lehet.
+
+jaxb_helper_invalid_target_for_jaxbcontext=A megadott [{0}] c\u00e9loszt\u00e1ly csak EclipseLink JAXBContext vagy EclipseLink XMLContext lehet.
+
+jaxb_helper_invalid_target_for_marshaller=A megadott [{0}] c\u00e9loszt\u00e1ly csak EclipseLink JAXBMarshaller vagy EclipseLink XMLMarshaller lehet.
+
+jaxb_helper_invalid_target_for_unmarshaller=A megadott [{0}] c\u00e9loszt\u00e1ly csak EclipseLink JAXBUnmarshaller vagy EclipseLink XMLUnmarshaller lehet.
+
+jaxb_helper_invalid_unmarshaller=A megadott [{0}] visszaalak\u00edt\u00f3 nem EclipseLink JAXBUnmarshaller, ez\u00e9rt nem alak\u00edthat\u00f3 \u00e1t.
+
+jmx_enabled_platform_mbean_runtime_exception=Kiv\u00e9tel t\u00f6rt\u00e9nt egy JMX MBean fut\u00e1si szervizf\u00fcggv\u00e9ny h\u00edv\u00e1sa sor\u00e1n a k\u00f6vetkez\u0151n: {0}, mely EclipseLink munkamenet-inform\u00e1ci\u00f3kat t\u00e1r fel: {1}
+
+join_trans_called_on_entity_trans=joinTransaction ker\u00fclt megh\u00edv\u00e1sra egy resource-local EntityManager eset\u00e9n, amely nem tud regisztr\u00e1lni JTA tranzakci\u00f3hoz.
+
+jpa21-ddl-create-script-target-not-specified=Parancsf\u00e1jlokhoz DDL el\u0151\u00e1ll\u00edt\u00e1sa sor\u00e1n egy parancsf\u00e1jl l\u00e9trehoz\u00e1si c\u00e9lt kell megadni a [javax.persistence.schema-generation.scripts.create-target] tulajdons\u00e1g haszn\u00e1lat\u00e1val.
+
+jpa21-ddl-drop-script-target-not-specified=Parancsf\u00e1jlokhoz DDL el\u0151\u00e1ll\u00edt\u00e1sa sor\u00e1n egy parancsf\u00e1jl megsz\u00fcntet\u00e9si c\u00e9lt kell megadni a [javax.persistence.schema-generation.scripts.drop-target] tulajdons\u00e1g haszn\u00e1lat\u00e1val.
+
+jpa21-ddl-invalid-source-script-type=A megadott {0} forr\u00e1s parancsf\u00e1jl \u00e9rv\u00e9nytelen t\u00edpus\u00fa: {0}. Az \u00e9rv\u00e9nyes forr\u00e1s parancsf\u00e1jl-t\u00edpusok: java.io.Reader vagy egy f\u00e1jl URL c\u00edmet kijel\u00f6l\u0151 karaktersorozat.
+
+jpa21-ddl-invalid-target-script-type=A megadott {0} c\u00e9l parancsf\u00e1jl \u00e9rv\u00e9nytelen t\u00edpus\u00fa: {0}. Az \u00e9rv\u00e9nyes c\u00e9l parancsf\u00e1jl-t\u00edpusok: java.io.Writer vagy egy f\u00e1jl URL c\u00edmet kijel\u00f6l\u0151 karaktersorozat.
+
+jpa21-ddl-source-script-io-exception=IO hiba t\u00f6rt\u00e9nt a forr\u00e1s ddl el\u0151\u00e1ll\u00edt\u00e1s\u00e1si parancsf\u00e1jlban: {0}.
+
+jpa21-ddl-source-script-not-found=A(z) {0} forr\u00e1s parancsf\u00e1jl a generateSchema h\u00edv\u00e1shoz nem tal\u00e1lhat\u00f3. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy \u00e9rv\u00e9nyes karaktersorozat URL c\u00edmet adott meg, amely a "file:" protokollt haszn\u00e1lja, illetve hogy a karaktersorozat f\u00e1jln\u00e9v az oszt\u00e1ly\u00fatvonalr\u00f3l el\u00e9rhet\u0151 \u00e9rv\u00e9nyes er\u0151forr\u00e1st k\u00e9pvisel.
+
+jpa21-ddl-source-script-sql-exception=Hiba t\u00f6rt\u00e9nt a(z) {0} v\u00e9grehajt\u00e1sa sor\u00e1n a forr\u00e1s ddl el\u0151\u00e1ll\u00edt\u00e1si parancsf\u00e1jlb\u00f3l: {1}.
+
+jpa21_invalid_call_on_un_executed_query=A lek\u00e9rdez\u00e9st ezen met\u00f3dus h\u00edv\u00e1sa el\u0151tt v\u00e9gre kell hajtani.
+
+jpa21_invalid_call_with_no_output_parameters=\u00c9rv\u00e9nytelen h\u00edv\u00e1s egy lek\u00e9rdez\u00e9sen, amely nem ad vissza OUT param\u00e9tereket.
+
+jpa21_invalid_call_with_no_result_sets_returned=\u00c9rv\u00e9nytelen h\u00edv\u00e1s egy lek\u00e9rdez\u00e9sen, amely nem ad vissza eredm\u00e9nyhalmazokat.
+
+jpa21_invalid_parameter_name=\u00c9rv\u00e9nytelen kimeneti param\u00e9ter n\u00e9v: {0}. {1}
+
+jpa21_invalid_parameter_position=\u00c9rv\u00e9nytelen kimeneti param\u00e9ter poz\u00edci\u00f3: {0}. {1}.
+
+jpa_criteriaapi_alias_reused=T\u00f6bb kiv\u00e1laszt\u00e1s elem ugyanazt az \u00e1lnevet haszn\u00e1lja.  A haszn\u00e1lt t\u00f6bbsz\u00f6r szerepl\u0151 nevek: {0}
+
+jpa_criteriaapi_illegal_tuple_or_array_value=Illeg\u00e1lis rendezett n-es vagy t\u00f6mb-elem\u0171 kiv\u00e1laszt\u00e1s elem tal\u00e1lhat\u00f3. A tal\u00e1lt argumentum: {0}
+
+jpa_criteriaapi_invalid_result_index=A(z) {0} index \u00e9rv\u00e9nytelen a(z) {1} m\u00e9ret\u0171 eredm\u00e9nylist\u00e1hoz.
+
+jpa_criteriaapi_invalid_result_type=A(z) {1} t\u00edpus\u00fa {0} elem \u00e9rv\u00e9nytelen a(z) {2} eredm\u00e9nyhez.
+
+jpa_criteriaapi_no_corresponding_element_in_result=A(z) {0} elem nem felel meg a lek\u00e9rdez\u00e9si eredm\u00e9ny elem\u00e9nek.
+
+jpa_criteriaapi_null_literal_value=Null\u00e9rt\u00e9k ker\u00fclt \u00e1tad\u00e1sra a CriteriaBuilder.literal() sz\u00e1m\u00e1ra.  Haszn\u00e1lja helyette a k\u00f6vetkez\u0151t: nullLiteral(Class<T> resultClass).
+
+jpa_helper_invalid_entity_manager_factory=A(z) {0} JPA EntityManagerFactory nem egy EclipseLink EntityManagerFactory, \u00e9s ez\u00e9rt nem alak\u00edthat\u00f3 \u00e1t.
+
+jpa_helper_invalid_entity_manager_factory_for_refresh=A(z) {0} JPA EntityManagerFactory nem egy EclipseLink EntityManagerFactory, \u00e9s ez\u00e9rt a metaadatai nem friss\u00edthet\u0151k.
+
+jpa_helper_invalid_query=A(z) {0} t\u00edpus\u00fa lek\u00e9rdez\u00e9s nem EclipseLink lek\u00e9rdez\u00e9s, ez\u00e9rt nem alak\u00edthat\u00f3 \u00e1t.
+
+jpa_helper_invalid_read_all_query=A(z) {0} t\u00edpus\u00fa lek\u00e9rdez\u00e9s nem EclipseLink minden olvas\u00e1s (read all) lek\u00e9rdez\u00e9s, ez\u00e9rt nem alak\u00edthat\u00f3 \u00e1t.
+
+jpa_helper_invalid_report_query=A(z) {0} t\u00edpus\u00fa lek\u00e9rdez\u00e9s nem EclipseLink jelent\u00e9s (report) lek\u00e9rdez\u00e9s, ez\u00e9rt nem alak\u00edthat\u00f3 \u00e1t.
+
+jpa_persistence_util_non_persistent_class=PersistenceUtil.getIdentifier(entity) ker\u00fclt megh\u00edv\u00e1sra a(z) [{0}] objektummal, ami nem megmarad\u00f3 objektum.
+
+lock_called_without_version_locking=Az entityManager.lock(Object entity, LockModeType lockMode) h\u00edv\u00e1sok enged\u00e9lyezett verzi\u00f3z\u00e1rol\u00e1st ig\u00e9nyelnek.
+
+managed_component_not_found=A(z) {0} entit\u00e1sdiagramban felsorolt {1} attrib\u00fatum egy {2} nev\u0171 aldiagramra hivatkozik, amely nem tal\u00e1lhat\u00f3.
+
+may_not_contain_xml_entry=A(z) {0} tal\u00e1n nem tartalmazza a k\u00f6vetkez\u0151t: {1}.
+
+metamodel_class_incorrect_type_instance=A(z) [{2}] t\u00edpus nem az elv\u00e1rt [{1}] a(z) [{0}] kulcs oszt\u00e1lyhoz.  Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a(z) [{2}] oszt\u00e1ly a persistence.xml f\u00e1jlban egy specifikus <class/> tulajdons\u00e1g vagy egy glob\u00e1lis <exclude-unlisted-classes>false</exclude-unlisted-classes> elem haszn\u00e1lat\u00e1val van bejegyezve.
+
+metamodel_class_null_type_instance=Nem tal\u00e1lhat\u00f3 [{1}] a(z) [{0}] kulcs oszt\u00e1lyhoz a metamodellben - gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a(z) [{2}] oszt\u00e1ly a persistence.xml f\u00e1jlban egy specifikus <class>{0}</class> tulajdons\u00e1g vagy egy glob\u00e1lis <exclude-unlisted-classes>false</exclude-unlisted-classes> elem haszn\u00e1lat\u00e1val van bejegyezve.
+
+metamodel_class_null_type_instance_for_null_key=Nem tal\u00e1lhat\u00f3 [{0}] a null kulcs oszt\u00e1ly param\u00e9terhez a metamodellben - adja meg a helyes kulcs oszt\u00e1lyt a(z) [{1}] metamodell oszt\u00e1lyhoz, \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a kulcs oszt\u00e1ly a persistence.xml f\u00e1jlban egy specifikus <class/> tulajdons\u00e1g vagy egy glob\u00e1lis <exclude-unlisted-classes>false</exclude-unlisted-classes> elem haszn\u00e1lat\u00e1val van bejegyezve.
+
+metamodel_identifiable_id_attribute_is_incorrect_idclass=A(z) [{0}] azonos\u00edthat\u00f3 t\u00edpus elv\u00e1rt egyetlen @Id attrib\u00fatuma egy nem v\u00e1rt @IdClass r\u00e9sze.
+
+metamodel_identifiable_id_attribute_type_incorrect=A megl\u00e9v\u0151 [{0}] id attrib\u00fatumon, a(z) [{1}] azonos\u00edthat\u00f3 t\u00edpuson az elv\u00e1rt id attrib\u00fatumt\u00edpus: [{2}], de a megtal\u00e1lhat\u00f3 attrib\u00fatumt\u00edpus: [{3}].
+
+metamodel_identifiable_no_id_attribute_present=Nem l\u00e9tezik @Id attrib\u00fatum a(z) [{0}] azonos\u00edthat\u00f3 t\u00edpuson.
+
+metamodel_identifiable_no_version_attribute_present=Nem l\u00e9tezik @Version attrib\u00fatum a(z) [{0}] azonos\u00edthat\u00f3 t\u00edpuson.
+
+metamodel_identifiable_type_has_no_idclass_attribute=Nem l\u00e9teznek @IdClass attrib\u00fatumok a(z) [{0}] IdentifiableType t\u00edpuson.  M\u00e9g lehets\u00e9ges legal\u00e1bb egy @Id vagy egy @EmbeddedId a t\u00edpuson.
+
+metamodel_identifiable_version_attribute_type_incorrect=A megl\u00e9v\u0151 [{0}] version attrib\u00fatumon, a(z) [{1}] azonos\u00edthat\u00f3 t\u00edpuson az elv\u00e1rt version attrib\u00fatumt\u00edpus: [{2}], de a megtal\u00e1lhat\u00f3 attrib\u00fatumt\u00edpus: [{3}].
+
+metamodel_incompatible_persistence_config_for_getIdType=Nem kompatibilis perzisztencia be\u00e1ll\u00edt\u00e1s a ManagedType [{0}] metamodell azonos\u00edt\u00f3t\u00edpus\u00e1nak lek\u00e9r\u00e9sekor.
+
+metamodel_interface_inheritance_not_supported=A(z) [{0}] le\u00edr\u00f3 ({1}) \u00f6r\u00f6kl\u00e9s haszn\u00e1lat\u00e1val jelenleg nem t\u00e1mogatott a metamodell el\u0151\u00e1ll\u00edt\u00e1s sor\u00e1n. Pr\u00f3b\u00e1lkozzon meg az Entity vagy MappedSuperclass (Abstract class) \u00f6r\u00f6kl\u00e9s haszn\u00e1lat\u00e1val.
+
+metamodel_managed_type_attribute_not_present=A(z) [{0}] attrib\u00fatum nincs jelen a(z) [{1}] kezelt t\u00edpusban.
+
+metamodel_managed_type_attribute_return_type_incorrect=A megl\u00e9v\u0151 [{0}] attrib\u00fatumon, a(z) [{1}] kezelt t\u00edpuson az elv\u00e1rt attrib\u00fatum visszat\u00e9r\u00e9si t\u00edpus: [{2}], de a megtal\u00e1lhat\u00f3 attrib\u00fatum visszat\u00e9r\u00e9si t\u00edpus: [{3}].
+
+metamodel_managed_type_attribute_type_incorrect=A megl\u00e9v\u0151 [{0}] attrib\u00fatumon, a(z) [{1}] kezelt t\u00edpuson az elv\u00e1rt attrib\u00fatumt\u00edpus: [{2}], de a megtal\u00e1lhat\u00f3 attrib\u00fatumt\u00edpus: [{3}].
+
+metamodel_managed_type_declared_attribute_not_present_but_is_on_superclass=A deklar\u00e1lt [{0}] attrib\u00fatum a(z) [{1}] kezelt t\u00edpusb\u00f3l nincs jelen - azonban deklar\u00e1lva van egy sz\u00fcl\u0151oszt\u00e1lyon.
+
+missing_parameter_value=A(z) {0} lek\u00e9rdez\u00e9si argumentum nem tal\u00e1lhat\u00f3 a lek\u00e9rdez\u00e9s v\u00e9grehajt\u00e1sa sor\u00e1n a megadott param\u00e9terlist\u00e1ban.
+
+missing_toplink_bean_definition_for=Hi\u00e1nyz\u00f3 TopLink komponens meghat\u00e1roz\u00e1s a k\u00f6vetkez\u0151h\u00f6z: {0}
+
+named_entity_graph_exists=A k\u00f6vetkez\u0151n: {1} tal\u00e1lhat\u00f3, {0} nev\u0171 NamedEntityGraph m\u00e1r l\u00e9tezik ebben a perzisztencia egys\u00e9gben.
+
+negative_max_result=A negat\u00edv MaxResult nem megengedett.
+
+negative_start_position=A negat\u00edv kezd\u0151 poz\u00edci\u00f3 nem megengedett
+
+new_object_found_during_commit=A szinkroniz\u00e1l\u00e1s sor\u00e1n \u00faj objektum tal\u00e1lhat\u00f3 olyan viszonyon kereszt\u00fcl, amely nem cascade PERSIST jel\u00f6l\u00e9s\u0171: {0}.
+
+no_entities_retrieved_for_get_reference=Nem tal\u00e1lhat\u00f3 entit\u00e1s a k\u00f6vetkez\u0151 azonos\u00edt\u00f3hoz: {0}
+
+no_entities_retrieved_for_get_single_result=A getSingleResult() nem olvasott be entit\u00e1st.
+
+no_entity_graph_of_name=Nem l\u00e9tezik EntityGraph {0} n\u00e9vvel
+
+not_an_entity=Objektum: {0} nem egy ismert entit\u00e1st\u00edpus.
+
+not_jar_file=A(z) {0} nem jar f\u00e1jl.
+
+not_usable_passed_to_entitygraph_hint=a(z) {0} lek\u00e9rdez\u00e9s tipp sz\u00e1m\u00e1ra \u00e1tadott {1} \u00e9rt\u00e9k nem megfelel\u0151 ehhez a lek\u00e9rdez\u00e9s tipphez
+
+null_argument_get_attributegroup=Az AttributeGroup keres\u00e9si neve nem lehet null.
+
+null_jar_file_names=Null jar f\u00e1jlnevek
+
+null_not_supported_identityweakhashmap=Az IdentityWeakHashMap nem t\u00e1mogatja a "null" kifejez\u00e9st kulcsk\u00e9nt vagy \u00e9rt\u00e9kk\u00e9nt.
+
+null_pk=Egy null PK p\u00e9ld\u00e1ny helytelen\u00fcl lett megadva ehhez a keres\u00e9si m\u0171velethez.
+
+null_sqlresultsetmapping_in_query=A ResultSetMappingQuery SQLResultSetMapping be\u00e1ll\u00edt\u00e1s\u00e1nak \u00e9rv\u00e9nyesnek kell lennie
+
+null_value_for_column_result=Oszlopnevet kell megadni egy ColumnResult sz\u00e1m\u00e1ra
+
+null_value_for_constructor_result=C\u00e9loszt\u00e1ly-nevet kell megadni a konstruktor eredm\u00e9ny sz\u00e1m\u00e1ra
+
+null_value_for_entity_result=Entity oszt\u00e1lynevet kell megadni az Entity eredm\u00e9ny sz\u00e1m\u00e1ra
+
+null_value_in_sqlresultsetmapping=Meg kell adni egy nevet az SQLResultSetMapping sz\u00e1m\u00e1ra.  Ez a n\u00e9v ker\u00fcl felhaszn\u00e1l\u00e1sra az SQLResultSetMapping meghivatkoz\u00e1s\u00e1ra egy lek\u00e9rdez\u00e9sb\u0151l.
+
+null_values_for_field_result=Attrib\u00fatumnevet \u00e9s Oszlopnevet is meg kell adni a FieldResult sz\u00e1m\u00e1ra
+
+only_one_root_subgraph=Csak a gy\u00f6k\u00e9r aldiagram list\u00e1zhat\u00f3 t\u00edpus n\u00e9lk\u00fcl.  Az aloszt\u00e1lyokat k\u00e9pvisel\u0151 aldiagramok t\u00edpus\u00e1t be kell \u00e1ll\u00edtani.
+
+operation_not_supported=A specifik\u00e1ci\u00f3 nem t\u00e1mogatja {0} h\u00edv\u00e1s\u00e1t a k\u00f6vetkez\u0151n: {1}.
+
+operation_on_closed_entity_manager=M\u0171velet v\u00e9grehajt\u00e1s\u00e1nak k\u00eds\u00e9rlete z\u00e1rt EntityManager eset\u00e9n.
+
+operation_on_closed_entity_manager_factory=M\u0171velet v\u00e9grehajt\u00e1s\u00e1nak k\u00eds\u00e9rlete z\u00e1rt EntityManagerFactory eset\u00e9n.
+
+ora_pessimistic_locking_with_rownum=A Pessimistic z\u00e1rol\u00e1s lek\u00e9rdez\u00e9si sor korl\u00e1tokkal nem t\u00e1mogatott.
+
+parsing_error=\u00e9rtelmez\u00e9si hiba
+
+parsing_fatal_error=v\u00e9gzetes \u00e9rtelmez\u00e9si hiba
+
+parsing_warning=\u00e9rtelmez\u00e9si figyelmeztet\u00e9s
+
+pathnode_is_primitive_node=A felt\u00e9tel kifejez\u00e9s primit\u00edv t\u00edpus\u00fa, nem navig\u00e1lhat\u00f3 tov\u00e1bb.
+
+pathnode_type_does_not_apply_to_primitive_node=A felt\u00e9tel kifejez\u00e9s primit\u00edv t\u00edpus\u00fa, nem navig\u00e1lhat\u00f3 tov\u00e1bb.  A primit\u00edv kifejez\u00e9sek nem enged\u00e9lyezik a "type" megad\u00e1s\u00e1t.
+
+pk_class_not_found=A(z) {0} els\u0151dleges kulcs oszt\u00e1ly nem t\u00f6lthet\u0151 be
+
+position_bound_param_not_found=Nem tal\u00e1lhat\u00f3 k\u00f6t\u00e9si param\u00e9ter a k\u00f6vetkez\u0151 poz\u00edci\u00f3ban: {0}.
+
+position_param_not_found=Nem tal\u00e1lhat\u00f3 param\u00e9ter a k\u00f6vetkez\u0151 poz\u00edci\u00f3ban: {0}.
+
+pu_configured_for_resource_local=Nem hozhat\u00f3 l\u00e9tre egy EntityManager SynchronizationType t\u00edpussal, mert a PersistenceUnit resource-local tranzakci\u00f3kkal van konfigur\u00e1lva.
+
+remove_deletion_failed=T\u00f6rl\u00e9s elt\u00e1vol\u00edt\u00e1s meghi\u00fasult:
+
+rollback_because_of_rollback_only=A tranzakci\u00f3 visszag\u00f6rget\u00e9sre ker\u00fclt, mert a tranzakci\u00f3 be\u00e1ll\u00edt\u00e1sa RollbackOnly.
+
+sdo_helper_invalid_changesummary=A megadott [{0}] ChangeSummary nem EclipseLink SDOChangeSummary, ez\u00e9rt nem alak\u00edthat\u00f3 \u00e1t.
+
+sdo_helper_invalid_copyhelper=A megadott [{0}] CopyHelper nem EclipseLink SDOCopyHelper, ez\u00e9rt nem alak\u00edthat\u00f3 \u00e1t.
+
+sdo_helper_invalid_datafactory=A megadott [{0}] DataFactory nem EclipseLink SDODataFactory, ez\u00e9rt nem alak\u00edthat\u00f3 \u00e1t.
+
+sdo_helper_invalid_datahelper=A megadott [{0}] DataHelper nem EclipseLink SDODataHelper, ez\u00e9rt nem alak\u00edthat\u00f3 \u00e1t.
+
+sdo_helper_invalid_dataobject=A megadott [{0}] DataObject nem EclipseLink SDODataObject, ez\u00e9rt nem alak\u00edthat\u00f3 \u00e1t.
+
+sdo_helper_invalid_equalityhelper=A megadott [{0}] EqualityHelper nem EclipseLink SDOEqualityHelper, ez\u00e9rt nem alak\u00edthat\u00f3 \u00e1t.
+
+sdo_helper_invalid_helpercontext=A megadott [{0}] HelperContext nem EclipseLink SDOHelperContext, ez\u00e9rt nem alak\u00edthat\u00f3 \u00e1t.
+
+sdo_helper_invalid_property=A megadott [{0}] tulajdons\u00e1g nem EclipseLink SDOProperty, ez\u00e9rt nem alak\u00edthat\u00f3 \u00e1t.
+
+sdo_helper_invalid_sequence=A megadott [{0}] szekvencia nem EclipseLink SDOSequence, ez\u00e9rt nem alak\u00edthat\u00f3 \u00e1t.
+
+sdo_helper_invalid_target_for_changesummary=A megadott [{0}] c\u00e9loszt\u00e1lynak EclipseLink SDOChangeSummary oszt\u00e1lynak kell lennie.
+
+sdo_helper_invalid_target_for_copyhelper=A megadott [{0}] c\u00e9loszt\u00e1lynak EclipseLink SDOCopyHelper oszt\u00e1lynak kell lennie.
+
+sdo_helper_invalid_target_for_datafactory=A megadott [{0}] c\u00e9loszt\u00e1lynak EclipseLink SDODataFactory oszt\u00e1lynak kell lennie.
+
+sdo_helper_invalid_target_for_datahelper=A megadott [{0}] c\u00e9loszt\u00e1lynak EclipseLink SDODataHelper oszt\u00e1lynak kell lennie.
+
+sdo_helper_invalid_target_for_dataobject=A megadott [{0}] c\u00e9loszt\u00e1lynak EclipseLink SDODataObject oszt\u00e1lynak kell lennie.
+
+sdo_helper_invalid_target_for_equalityhelper=A megadott [{0}] c\u00e9loszt\u00e1lynak EclipseLink SDOEqualityHelper oszt\u00e1lynak kell lennie.
+
+sdo_helper_invalid_target_for_helpercontext=A megadott [{0}] c\u00e9loszt\u00e1lynak EclipseLink SDOHelperContext oszt\u00e1lynak kell lennie.
+
+sdo_helper_invalid_target_for_property=A megadott [{0}] c\u00e9loszt\u00e1lynak EclipseLink SDOProperty oszt\u00e1lynak kell lennie.
+
+sdo_helper_invalid_target_for_sequence=A megadott [{0}] c\u00e9loszt\u00e1lynak EclipseLink SDOSequence oszt\u00e1lynak kell lennie.
+
+sdo_helper_invalid_target_for_type=A megadott [{0}] c\u00e9loszt\u00e1ly csak EclipseLink SDOType, SDOTypeType, SDOPropertyType, SDOChangeSummaryType, SDODataObjectType, SDODataType, SDOOpenSequencedType, SDOObjectType, SDOWrapperType vagy SDOXMLHelperLoadOptionsType lehet.
+
+sdo_helper_invalid_target_for_typehelper=A megadott [{0}] c\u00e9loszt\u00e1lynak EclipseLink SDOTypeHelper oszt\u00e1lynak kell lennie.
+
+sdo_helper_invalid_target_for_xmlhelper=A megadott [{0}] c\u00e9loszt\u00e1ly csak EclipseLink SDOXMLHelper, EclipseLink XMLMarshaller vagy EclipseLink XMLUnmarshaller lehet.
+
+sdo_helper_invalid_target_for_xsdhelper=A megadott [{0}] c\u00e9loszt\u00e1lynak EclipseLink SDOXSDHelper oszt\u00e1lynak kell lennie.
+
+sdo_helper_invalid_type=A megadott [{0}] t\u00edpus nem EclipseLink SDOType, ez\u00e9rt nem alak\u00edthat\u00f3 \u00e1t.
+
+sdo_helper_invalid_typehelper=A megadott [{0}] TypeHelper nem EclipseLink SDOTypeHelper, ez\u00e9rt nem alak\u00edthat\u00f3 \u00e1t.
+
+sdo_helper_invalid_xmlhelper=A megadott [{0}] XMLHelper nem EclipseLink SDOXMLHelper, ez\u00e9rt nem alak\u00edthat\u00f3 \u00e1t.
+
+sdo_helper_invalid_xsdhelper=A megadott [{0}] XSDHelper nem EclipseLink SDOXSDHelper, ez\u00e9rt nem alak\u00edthat\u00f3 \u00e1t.
+
+subclass_sought_not_a_managed_type=a keresett {0} aldiagram t\u00edpus nem kezelt t\u00edpus a k\u00f6vetkez\u0151 attrib\u00fatumra: {1}.
+
+too_many_results_for_get_single_result=A Query.getSingleResult() t\u00f6bb eredm\u00e9nyt adott vissza
+
+unable_to_find_named_query=A(z) {0} n\u00e9vhez tartoz\u00f3 NamedQuery nem tal\u00e1lhat\u00f3.
+
+unable_to_unwrap_jpa=A szolg\u00e1ltat\u00f3 nem t\u00e1mogatja a(z) {0} - {1} visszalak\u00edt\u00e1st
+
+undeclared_checked_exception=Nem deklar\u00e1lt ellen\u0151rz\u00f6tt kiv\u00e9tel
+
+unexpect_argument=Nem v\u00e1rt bemeneti argumentum: {0}
+
+unknown_bean_class=Ismeretlen entit\u00e1skomponens oszt\u00e1ly: {0}, ellen\u0151rizze, hogy ez az oszt\u00e1ly meg van-e jel\u00f6lve @Entity feljegyz\u00e9ssel.
+
+unknown_entitybean_name=Ismeretlen entit\u00e1skomponens n\u00e9v: {0}
+
+unsupported_classfile_version=A(z) {0} oszt\u00e1ly nem t\u00e1mogatott JDK seg\u00edts\u00e9g\u00e9vel lett leford\u00edtva. Jelentse ezt a hib\u00e1t az EclipseLink ny\u00edlt forr\u00e1s\u00fa projektnek.
+
+wrap_convert_exception=Kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {0} h\u00edv\u00e1sa sor\u00e1n a(z) {1} \u00e1talak\u00edt\u00f3 oszt\u00e1lyon {2} \u00e9rt\u00e9kkel
+
+wrap_ejbql_exception=Kiv\u00e9tel t\u00f6rt\u00e9nt EntityManager lek\u00e9rdez\u00e9s l\u00e9trehoz\u00e1sa sor\u00e1n
+

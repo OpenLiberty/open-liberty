@@ -1,0 +1,8 @@
+grant codeBase "file:${application}" {
+  permission java.security.SecurityPermission "wssapi.SAMLTokenFactory.newSAMLToken";
+  permission javax.security.auth.AuthPermission "modifyPrivateCredentials";
+
+  permission java.io.FilePermission "${was.install.root}${/}-", "read";
+  permission java.security.AllPermission;
+
+};

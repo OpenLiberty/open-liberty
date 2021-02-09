@@ -11,17 +11,12 @@
 package com.ibm.ws.security.mp.jwt.proxy;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.security.Principal;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.security.auth.Subject;
 
@@ -34,12 +29,9 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
-
-import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 
@@ -52,13 +44,15 @@ public class MpJwtHelperTest {
         }
     };
     private final ComponentContext cc = context.mock(ComponentContext.class);
-    private final ServiceReference<JsonWebTokenUtil> jsonWebTokenUtilRef = context.mock(ServiceReference.class, "jsonWebTokenUtilRef");
+    private final ServiceReference<JsonWebTokenUtil> jsonWebTokenUtilRef = context.mock(ServiceReference.class,
+            "jsonWebTokenUtilRef");
     private final JsonWebTokenUtil jsonWebTokenUtil = context.mock(JsonWebTokenUtil.class, "jsonWebTokenUtil");
     private final JsonWebToken jwt = context.mock(JsonWebToken.class, "jwt");
 
     private MpJwtHelper mpJwtHelper;
 
-    private static SharedOutputManager outputMgr = SharedOutputManager.getInstance().trace("com.ibm.ws.security.mp.jwt.*=all");
+    private static SharedOutputManager outputMgr = SharedOutputManager.getInstance()
+            .trace("com.ibm.ws.security.mp.jwt.*=all");
 
     @Rule
     public final TestName testName = new TestName();
@@ -88,25 +82,7 @@ public class MpJwtHelperTest {
 
     /**************************** getJsonWebTokenPrincipal *************************/
     @Test
-    public void getJsonWebTokenPrincipal_jdk17() {
-        mpJwtHelper = new MpJwtHelper(false);
-        mpJwtHelper.setJsonWebTokenUtil(jsonWebTokenUtilRef);
-        mpJwtHelper.activate(cc);
-        Set<Principal> principals = new HashSet<Principal>();
-        principals.add(jwt);
-        Subject subject = new Subject(true, principals, new HashSet<Object>(), new HashSet<Object>());
-
-        Principal output = mpJwtHelper.getJsonWebTokenPricipal(subject);
-
-        mpJwtHelper.deactivate(cc);
-        mpJwtHelper.unsetJsonWebTokenUtil(jsonWebTokenUtilRef);
-
-        assertNull("principal should be null since JDK is not 1.8 or above", output);
-
-    }
-
-    @Test
-    public void getJsonWebTokenPrincipal_jdk18() {
+    public void getJsonWebTokenPrincipal() {
         Set<Principal> principals = new HashSet<Principal>();
         principals.add(jwt);
         final Subject subject = new Subject(true, principals, new HashSet<Object>(), new HashSet<Object>());
@@ -119,7 +95,7 @@ public class MpJwtHelperTest {
                 will(returnValue(jwt));
             }
         });
-        mpJwtHelper = new MpJwtHelper(true);
+        mpJwtHelper = new MpJwtHelper();
         mpJwtHelper.setJsonWebTokenUtil(jsonWebTokenUtilRef);
         mpJwtHelper.activate(cc);
 
@@ -133,27 +109,7 @@ public class MpJwtHelperTest {
 
     /**************************** addJsonWebToken *************************/
     @Test
-    public void addJsonWebToken_jdk17() {
-        mpJwtHelper = new MpJwtHelper(false);
-        mpJwtHelper.setJsonWebTokenUtil(jsonWebTokenUtilRef);
-        mpJwtHelper.activate(cc);
-        Set<Principal> principals = new HashSet<Principal>();
-        principals.add(jwt);
-        Subject subject = new Subject();
-        String key = "key";
-        Hashtable<String, Object> props = new Hashtable<String, Object>();
-        props.put(key, jwt);
-
-        mpJwtHelper.addJsonWebToken(subject, props, key);
-
-        mpJwtHelper.deactivate(cc);
-        mpJwtHelper.unsetJsonWebTokenUtil(jsonWebTokenUtilRef);
-
-        assertEquals("the subject should not be altered.", new Subject(), subject);
-    }
-
-    @Test
-    public void addJsonWebToken_jdk18_nullCustomProps() {
+    public void addJsonWebToken_nullCustomProps() {
         final Subject subject = new Subject();
         final String key = "key";
         context.checking(new Expectations() {
@@ -163,7 +119,7 @@ public class MpJwtHelperTest {
                 never(jsonWebTokenUtil).addJsonWebToken(subject, null, key);
             }
         });
-        mpJwtHelper = new MpJwtHelper(true);
+        mpJwtHelper = new MpJwtHelper();
         mpJwtHelper.setJsonWebTokenUtil(jsonWebTokenUtilRef);
         mpJwtHelper.activate(cc);
 
@@ -175,7 +131,7 @@ public class MpJwtHelperTest {
     }
 
     @Test
-    public void addJsonWebToken_jdk18_success() {
+    public void addJsonWebToken_success() {
         final Set<Principal> principals = new HashSet<Principal>();
         principals.add(jwt);
         final Subject subject = new Subject();
@@ -189,7 +145,7 @@ public class MpJwtHelperTest {
                 one(jsonWebTokenUtil).addJsonWebToken(subject, props, key);
             }
         });
-        mpJwtHelper = new MpJwtHelper(true);
+        mpJwtHelper = new MpJwtHelper();
         mpJwtHelper.setJsonWebTokenUtil(jsonWebTokenUtilRef);
         mpJwtHelper.activate(cc);
 
@@ -202,22 +158,7 @@ public class MpJwtHelperTest {
 
     /**************************** cloneJsonWebToken *************************/
     @Test
-    public void cloneJsonWebToken_jdk17() {
-        mpJwtHelper = new MpJwtHelper(false);
-        mpJwtHelper.setJsonWebTokenUtil(jsonWebTokenUtilRef);
-        mpJwtHelper.activate(cc);
-        Subject subject = new Subject();
-
-        Principal output = mpJwtHelper.cloneJsonWebToken(subject);
-
-        mpJwtHelper.deactivate(cc);
-        mpJwtHelper.unsetJsonWebTokenUtil(jsonWebTokenUtilRef);
-
-        assertNull("the return value should be null.", output);
-    }
-
-    @Test
-    public void cloneJsonWebToken_jdk18() {
+    public void cloneJsonWebToken() {
         final Subject subject = new Subject();
         context.checking(new Expectations() {
             {
@@ -227,7 +168,7 @@ public class MpJwtHelperTest {
                 will(returnValue(jwt));
             }
         });
-        mpJwtHelper = new MpJwtHelper(true);
+        mpJwtHelper = new MpJwtHelper();
         mpJwtHelper.setJsonWebTokenUtil(jsonWebTokenUtilRef);
         mpJwtHelper.activate(cc);
 
@@ -241,18 +182,8 @@ public class MpJwtHelperTest {
 
     /**************************** setJsonWebTokenUtil *************************/
     @Test
-    public void setJsonWebTokenUtil_jdk17() {
-        mpJwtHelper = new MpJwtHelper(false);
-
-        mpJwtHelper.setJsonWebTokenUtil(jsonWebTokenUtilRef);
-        ServiceReference<JsonWebTokenUtil> output = mpJwtHelper.JsonWebTokenUtilRef.getReference();
-
-        assertNull("the reference should be null.", output);
-    }
-
-    @Test
-    public void setJsonWebTokenUtil_jdk18() {
-        mpJwtHelper = new MpJwtHelper(true);
+    public void setJsonWebTokenUtil() {
+        mpJwtHelper = new MpJwtHelper();
 
         mpJwtHelper.setJsonWebTokenUtil(jsonWebTokenUtilRef);
         ServiceReference<JsonWebTokenUtil> output = mpJwtHelper.JsonWebTokenUtilRef.getReference();
@@ -262,19 +193,8 @@ public class MpJwtHelperTest {
 
     /**************************** unsetJsonWebTokenUtil *************************/
     @Test
-    public void unsetJsonWebTokenUtil_jdk17() {
-        mpJwtHelper = new MpJwtHelper(false);
-
-        mpJwtHelper.JsonWebTokenUtilRef.setReference(jsonWebTokenUtilRef);
-        mpJwtHelper.unsetJsonWebTokenUtil(jsonWebTokenUtilRef);
-        ServiceReference<JsonWebTokenUtil> output = mpJwtHelper.JsonWebTokenUtilRef.getReference();
-
-        assertEquals("the reference should be unchenged.", jsonWebTokenUtilRef, output);
-    }
-
-    @Test
-    public void unsetJsonWebTokenUtil_jdk18() {
-        mpJwtHelper = new MpJwtHelper(true);
+    public void unsetJsonWebTokenUtil() {
+        mpJwtHelper = new MpJwtHelper();
 
         mpJwtHelper.JsonWebTokenUtilRef.setReference(jsonWebTokenUtilRef);
         mpJwtHelper.unsetJsonWebTokenUtil(jsonWebTokenUtilRef);
@@ -285,32 +205,14 @@ public class MpJwtHelperTest {
 
     /**************************** activate *************************/
     @Test
-    public void activate_jdk17() {
-        context.checking(new Expectations() {
-            {
-                never(cc).locateService("JsonWebTokenUtil", jsonWebTokenUtilRef);
-                will(returnValue(jsonWebTokenUtil));
-            }
-        });
-        mpJwtHelper = new MpJwtHelper(false);
-
-        mpJwtHelper.JsonWebTokenUtilRef.setReference(jsonWebTokenUtilRef);
-        mpJwtHelper.activate(cc);
-        mpJwtHelper.JsonWebTokenUtilRef.getService();
-        mpJwtHelper.deactivate(cc);
-        mpJwtHelper.JsonWebTokenUtilRef.unsetReference(jsonWebTokenUtilRef);
-
-    }
-
-    @Test
-    public void activate_jdk18() {
+    public void activate() {
         context.checking(new Expectations() {
             {
                 one(cc).locateService("JsonWebTokenUtil", jsonWebTokenUtilRef);
                 will(returnValue(jsonWebTokenUtil));
             }
         });
-        mpJwtHelper = new MpJwtHelper(true);
+        mpJwtHelper = new MpJwtHelper();
 
         mpJwtHelper.JsonWebTokenUtilRef.setReference(jsonWebTokenUtilRef);
         mpJwtHelper.activate(cc);
@@ -321,39 +223,20 @@ public class MpJwtHelperTest {
 
     /**************************** deactivate *************************/
     @Test
-    public void deactivate_jdk17() {
-        context.checking(new Expectations() {
-            {
-                never(cc).locateService("JsonWebTokenUtil", jsonWebTokenUtilRef);
-                will(returnValue(jsonWebTokenUtil));
-            }
-        });
-        mpJwtHelper = new MpJwtHelper(false);
-
-        mpJwtHelper.JsonWebTokenUtilRef.setReference(jsonWebTokenUtilRef);
-        mpJwtHelper.activate(cc);
-        mpJwtHelper.JsonWebTokenUtilRef.getService();  // this won't invoke locateService.
-        mpJwtHelper.deactivate(cc);
-        mpJwtHelper.JsonWebTokenUtilRef.getService();  // this won't invoke locateService.
-        mpJwtHelper.JsonWebTokenUtilRef.unsetReference(jsonWebTokenUtilRef);
-
-    }
-
-    @Test
-    public void deactivate_jdk18() {
+    public void deactivate() {
         context.checking(new Expectations() {
             {
                 one(cc).locateService("JsonWebTokenUtil", jsonWebTokenUtilRef);
                 will(returnValue(jsonWebTokenUtil));
             }
         });
-        mpJwtHelper = new MpJwtHelper(true);
+        mpJwtHelper = new MpJwtHelper();
 
         mpJwtHelper.JsonWebTokenUtilRef.setReference(jsonWebTokenUtilRef);
         mpJwtHelper.activate(cc);
         mpJwtHelper.JsonWebTokenUtilRef.getService();
         mpJwtHelper.deactivate(cc);
-        mpJwtHelper.JsonWebTokenUtilRef.getService();  // this won't invoke locateService since it is deactivated.
+        mpJwtHelper.JsonWebTokenUtilRef.getService(); // this won't invoke locateService since it is deactivated.
         mpJwtHelper.JsonWebTokenUtilRef.unsetReference(jsonWebTokenUtilRef);
     }
 }

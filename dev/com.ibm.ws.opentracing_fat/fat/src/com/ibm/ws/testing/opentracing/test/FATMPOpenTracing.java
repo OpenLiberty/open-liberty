@@ -21,7 +21,6 @@ import org.junit.Test;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
@@ -38,7 +37,6 @@ import junit.framework.Assert;
  * </ul>
  */
 @Mode(TestMode.FULL)
-@MinimumJavaLevel(javaLevel = 8)
 public class FATMPOpenTracing {
     /**
      * For tracing.

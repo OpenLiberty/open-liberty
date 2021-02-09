@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+    Copyright (c) 2012, 2020 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<connector xmlns="http://websphere.ibm.com/xml/ns/javaee">
+  <resourceadapter>
+    <!-- We don't currently support primitives. -->
+<!--
+    <config-property config-property-name="propInt1RA_WLP" default="10000"/>
+    <config-property config-property-name="propInt1_Anno" default="10000"/>
+    <config-property config-property-name="propInt1_DD" default="10000"/>
+    <config-property config-property-name="propInt1_WLP" default="10000"/>
+-->
+
+    <config-property config-property-name="propInteger2RA_WLP" default="20000"/>
+    <config-property config-property-name="propInteger2_Anno" default="20000"/>
+    <config-property config-property-name="propInteger2_DD" default="20000"/>
+    <config-property config-property-name="propInteger2_WLP" default="20000"/>
+
+    <config-property config-property-name="propStringRA_WLP" default="RA wlp-ra.xml Default Value"/>
+    <config-property config-property-name="propString_Anno" default="RA wlp-ra.xml Default Value"/>
+    <config-property config-property-name="propString_DD" default="RA wlp-ra.xml Default Value"/>
+    <config-property config-property-name="propString_WLP" default="RA wlp-ra.xml Default Value"/>
+
+    <outbound-resourceadapter>
+      <connection-definition connectionfactory-interface="java.util.Map">
+        <!-- We don't currently support primitives. -->
+<!--
+        <config-property config-property-name="propInt1_WLP" default="11111"/>
+-->
+        <config-property config-property-name="propInteger2_WLP" default="22222"/>
+        <config-property config-property-name="propString_WLP" default="MCF wlp-ra.xml Default Value"/>
+      </connection-definition>
+    </outbound-resourceadapter>
+  </resourceadapter>
+</connector>

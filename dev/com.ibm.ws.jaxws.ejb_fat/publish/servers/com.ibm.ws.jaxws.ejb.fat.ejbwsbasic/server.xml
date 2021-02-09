@@ -7,6 +7,7 @@
     </featureManager>
 
     <include location="../fatTestPorts.xml"/>
+    
   	<javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
   	<javaPermission className="java.lang.RuntimePermission" name="createClassLoader"/>
   	<javaPermission className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>

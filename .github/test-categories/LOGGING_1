@@ -1,0 +1,5 @@
+com.ibm.ws.event.logging_fat
+com.ibm.ws.logging.hpel_fat
+com.ibm.ws.logging.json_fat
+com.ibm.ws.logging_fat
+com.ibm.ws.logstash.collector_fat

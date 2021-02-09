@@ -191,7 +191,7 @@ public class WimCoreRegressionTest {
         ldapRegistry.setLdapType("Custom");
         ldapRegistry.setRealm("LdapRealm");
         ldapRegistry.setHost("localhost");
-        ldapRegistry.setPort(String.valueOf(ds.getListenPort()));
+        ldapRegistry.setPort(String.valueOf(ds.getLdapPort()));
         ldapRegistry.setBindDN(InMemoryLDAPServer.getBindDN());
         ldapRegistry.setBindPassword(InMemoryLDAPServer.getBindPassword());
         ldapRegistry.setTimestampFormat("yyyyMMddHHmmss.SSSSZ"); // 20180730202338.850-0000Z

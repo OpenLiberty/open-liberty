@@ -1,0 +1,43 @@
+CREATE TABLE ${schemaname}.OPENJPA_SEQUENCE_TABLE (ID NUMBER NOT NULL, SEQUENCE_VALUE NUMBER, PRIMARY KEY (ID));
+
+CREATE TABLE ${schemaname}.Jpa2Address (street VARCHAR2(30) NOT NULL, city VARCHAR2(255), state VARCHAR2(255), plusFour VARCHAR2(4), zip VARCHAR2(5), PRIMARY KEY (street));
+CREATE TABLE ${schemaname}.Jpa2Person (id NUMBER NOT NULL, age NUMBER, firstName VARCHAR2(20), lastName VARCHAR2(20), PRIMARY KEY (id));
+CREATE TABLE ${schemaname}.JPAAddressBean (street VARCHAR2(40) NOT NULL, city VARCHAR2(30), state VARCHAR2(20), zip VARCHAR2(10), PRIMARY KEY (street));
+CREATE TABLE ${schemaname}.JPACustomerPartTab (id NUMBER NOT NULL, name VARCHAR2(40), rating NUMBER, PRIMARY KEY (id));
+CREATE TABLE ${schemaname}.JPADeptBean (deptno NUMBER NOT NULL, budget REAL, name VARCHAR2(40), charityAmount NUMBER, charityName VARCHAR2(40), MGR_EMPID integer, REPORTSTO_DEPTNO NUMBER, PRIMARY KEY (deptno));
+CREATE TABLE ${schemaname}.JPAEmpBean (empid integer NOT NULL, bonus NUMBER, execLevel CHAR, hireDate DATE, hireTime DATE, hireTimestamp TIMESTAMP, isManager NUMBER, name VARCHAR2(40), rating NUMBER, salary NUMBER, DEPT_DEPTNO NUMBER, HOME_STREET VARCHAR2(40), WORK_STREET VARCHAR2(40), PRIMARY KEY (empid));
+CREATE TABLE ${schemaname}.JPALineItemPartTab (lid NUMBER NOT NULL, cost NUMBER, quantity NUMBER, ORDER_OID NUMBER, PRODUCT_PID NUMBER, PRIMARY KEY (lid));
+CREATE TABLE ${schemaname}.JPAOrderPartTab (oid NUMBER NOT NULL, amount NUMBER, delivered NUMBER, CUSTOMER_ID NUMBER, PRIMARY KEY (oid));
+CREATE TABLE ${schemaname}.JPAPartTab (partno NUMBER NOT NULL, name VARCHAR2(40), PARTTYPE VARCHAR2(31), assemblyCost NUMBER, massIncrement NUMBER, cost NUMBER, mass NUMBER, PRIMARY KEY (partno));
+CREATE TABLE ${schemaname}.JPAProductPartTab (pid NUMBER NOT NULL, backorder NUMBER, description VARCHAR2(40), inventory NUMBER, SUPPLIER_ID NUMBER, PRIMARY KEY (pid));
+CREATE TABLE ${schemaname}.JPAProjectBean (projid integer NOT NULL, budget NUMBER, cost NUMBER, description VARCHAR2(40), durationDays NUMBER, name VARCHAR2(40), personMonths NUMBER, startTime NUMBER, DEPT_DEPTNO NUMBER, PRIMARY KEY (projid));
+CREATE TABLE ${schemaname}.JPASupplierparttab (sid NUMBER NOT NULL, name VARCHAR2(40), PRIMARY KEY (sid));
+CREATE TABLE ${schemaname}.JPASupplierparttab_JPAPartTab (SUPPLIERS_SID NUMBER, SUPPLIES_PARTNO NUMBER);
+CREATE TABLE ${schemaname}.JPATaskBean (taskid NUMBER NOT NULL, cost NUMBER, description VARCHAR2(40), name VARCHAR2(40), PROJECT_PROJID integer, PRIMARY KEY (taskid));
+CREATE TABLE ${schemaname}.JPATaskBean_JPAEmpBean (TASKS_TASKID NUMBER, EMPS_EMPID integer);
+CREATE TABLE ${schemaname}.JPATypeTestBean (id NUMBER NOT NULL, ageofUniverse NUMBER, bigbytes BLOB, busPass BLOB, deficitUSA NUMBER, i1 NUMBER, i2 NUMBER, i4 NUMBER, i8 NUMBER, iboolean NUMBER, ibytes BLOB, ic NUMBER, ichars VARCHAR2(255), idouble NUMBER, ifloat REAL, name VARCHAR2(255), o1 NUMBER, o2 NUMBER, o4 NUMBER, o8 NUMBER, oboolean NUMBER, obytes BLOB, oc NUMBER, ochars VARCHAR2(255), odouble NUMBER, ofloat REAL, payScale VARCHAR2(20), sdate DATE, status NUMBER, stime DATE, stimestamp TIMESTAMP, ucalendar TIMESTAMP, udate TIMESTAMP, PRIMARY KEY (id));
+CREATE TABLE ${schemaname}.JPAUsagePartTab (id NUMBER NOT NULL, quantity NUMBER, CHILD_PARTNO NUMBER, PARENT_PARTNO NUMBER, PRIMARY KEY (id));
+CREATE TABLE ${schemaname}.JPAXYZ (id NUMBER NOT NULL, age NUMBER, firstName VARCHAR2(20), lastName VARCHAR2(20), PRIMARY KEY (id));
+CREATE TABLE ${schemaname}.Person_residences (PERSON_ID NUMBER, street VARCHAR2(30), city VARCHAR2(255), state VARCHAR2(255), plusFour VARCHAR2(4), zip VARCHAR2(5));
+
+CREATE INDEX I_JPDPTBN_MGR ON ${schemaname}.JPADeptBean (MGR_EMPID);
+CREATE INDEX I_JPDPTBN_REPORTSTO ON ${schemaname}.JPADeptBean (REPORTSTO_DEPTNO);
+CREATE INDEX I_JPMPBEN_DEPT ON ${schemaname}.JPAEmpBean (DEPT_DEPTNO);
+CREATE INDEX I_JPMPBEN_HOME ON ${schemaname}.JPAEmpBean (HOME_STREET);
+CREATE INDEX I_JPMPBEN_WORK ON ${schemaname}.JPAEmpBean (WORK_STREET);
+CREATE INDEX I_JPLNTTB_ORDER ON ${schemaname}.JPALineItemPartTab (ORDER_OID);
+CREATE INDEX I_JPLNTTB_PRODUCT ON ${schemaname}.JPALineItemPartTab (PRODUCT_PID);
+CREATE INDEX I_JPRDTTB_CUSTOMER ON ${schemaname}.JPAOrderPartTab (CUSTOMER_ID);
+CREATE INDEX I_JPPRTTB_DTYPE ON ${schemaname}.JPAPartTab (PARTTYPE);
+CREATE INDEX I_JPPRTTB_SUPPLIER ON ${schemaname}.JPAProductPartTab (SUPPLIER_ID);
+CREATE INDEX I_JPPRTBN_DEPT ON ${schemaname}.JPAProjectBean (DEPT_DEPTNO);
+CREATE INDEX I_JPSPTTB_ELEMENT ON ${schemaname}.JPASupplierparttab_JPAPartTab (SUPPLIES_PARTNO);
+CREATE INDEX I_JPSPTTB_SUPPLIERS_SID ON ${schemaname}.JPASupplierparttab_JPAPartTab (SUPPLIERS_SID);
+CREATE INDEX I_JPTSKBN_PROJECT ON ${schemaname}.JPATaskBean (PROJECT_PROJID);
+CREATE INDEX I_JPTSPBN_ELEMENT ON ${schemaname}.JPATaskBean_JPAEmpBean (EMPS_EMPID);
+CREATE INDEX I_JPTSPBN_TASKS_TASKID ON ${schemaname}.JPATaskBean_JPAEmpBean (TASKS_TASKID);
+CREATE INDEX I_JPSGTTB_CHILD ON ${schemaname}.JPAUsagePartTab (CHILD_PARTNO);
+CREATE INDEX I_JPSGTTB_PARENT ON ${schemaname}.JPAUsagePartTab (PARENT_PARTNO);
+CREATE INDEX I_PRSNNCS_PERSON_ID ON ${schemaname}.Person_residences (PERSON_ID);
+
+

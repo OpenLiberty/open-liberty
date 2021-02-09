@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 IBM Corporation and others.
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -91,11 +91,13 @@ public class SubjectHelper {
     /**
      * Gets a Hashtable of values from the Subject.
      *
-     * @param subject {@code null} is not supported.
+     * @param subject    {@code null} is not supported.
      * @param properties The properties to get.
      * @return
      */
     public Hashtable<String, ?> getHashtableFromSubject(final Subject subject, final String[] properties) {
+        if (subject == null)
+            return null;
         return AccessController.doPrivileged(new PrivilegedAction<Hashtable<String, ?>>() {
             @Override
             public Hashtable<String, ?> run() {
@@ -126,7 +128,7 @@ public class SubjectHelper {
      * Given a credential Set and an array of properties, find the Hashtable (if it exists) that has the
      * expected properties.
      *
-     * @param creds {@code null} is not supported.
+     * @param creds      {@code null} is not supported.
      * @param properties {@code null} is not supported.
      * @return The Hashtable with our properties, or null.
      */
@@ -149,7 +151,8 @@ public class SubjectHelper {
     }
 
     /**
-     * Gets a GSSCredential from a Subject
+     * Gets a GSSCredential from a Subject. If the subject does not already have a GSSCredential
+     * associated with it, a new GSSCredential is created using {@link #createGSSCredential(Subject)}
      */
     public static GSSCredential getGSSCredentialFromSubject(final Subject subject) {
         if (subject == null) {
@@ -171,13 +174,26 @@ public class SubjectHelper {
         });
 
         if (gssCredential == null) {
-            KerberosTicket tgt = getKerberosTicketFromSubject(subject, null);
-            if (tgt != null) {
-                gssCredential = createGSSCredential(subject, tgt);
-            }
+            return createGSSCredential(subject);
+        } else {
+            return gssCredential;
         }
+    }
 
-        return gssCredential;
+    /**
+     * Creates a GSSCredential from a given Subject. In order for a GSSCredential to be created,
+     * the subject must already have a KerberosTicket associated with it.
+     *
+     * @return The newly created GSSCredential, or null if no KerberosTicket was associated
+     *         with the provided ticket
+     */
+    public static GSSCredential createGSSCredential(final Subject subject) {
+        KerberosTicket tgt = getKerberosTicketFromSubject(subject, null);
+        if (tgt != null) {
+            return createGSSCredential(subject, tgt);
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -343,7 +359,7 @@ public class SubjectHelper {
     /**
      * Gets a Hashtable of values from the Subject, but do not trace the hashtable
      *
-     * @param subject {@code null} is not supported.
+     * @param subject    {@code null} is not supported.
      * @param properties The properties to get.
      * @return the hashtable containing the properties.
      */
@@ -394,22 +410,5 @@ public class SubjectHelper {
             }
         }
         return null;
-    }
-
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    private static String setSystemProperty(final String propName, final String propValue) {
-
-        String savedPropValue = (String) java.security.AccessController.doPrivileged(new java.security.PrivilegedAction() {
-            @Override
-            public String run() {
-                String oldValue = System.getProperty(propName);
-                System.setProperty(propName, propValue);
-                return oldValue;
-            }
-        });
-        if (tc.isDebugEnabled())
-            Tr.debug(tc, propName + " property previous: " + ((savedPropValue != null) ? savedPropValue : "<null>") + " and now: " + propValue);
-
-        return savedPropValue;
     }
 }

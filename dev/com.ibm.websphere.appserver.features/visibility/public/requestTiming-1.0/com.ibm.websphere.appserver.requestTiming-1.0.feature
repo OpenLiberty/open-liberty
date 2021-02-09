@@ -1,5 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.requestTiming-1.0
+WLP-DisableAllFeatures-OnConflict: false
 visibility=public
 IBM-API-Package: com.ibm.websphere.interrupt;type="internal"
 IBM-ShortName: requestTiming-1.0

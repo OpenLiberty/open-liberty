@@ -346,7 +346,16 @@ public class ThreadContextDescriptorImpl implements ThreadContextDescriptor, Thr
         // java.lang.IllegalStateException exception if the application component is not started or deployed.
         if (!"false".equalsIgnoreCase(execProps.get(WSContextService.REQUIRE_AVAILABLE_APP)) &&
             metaDataIdentifier != null && threadContextMgr.metadataIdentifierService.getMetaData(metaDataIdentifier) == null) {
-            String taskName = execProps.get("javax.enterprise.concurrent.IDENTITY_NAME"); // ManagedTask.IDENTITY_NAME
+            String taskName; // ManagedTask.IDENTITY_NAME
+            if (threadContextMgr.eeVersion < 9) {
+                taskName = execProps.get("javax.enterprise.concurrent.IDENTITY_NAME");
+                if (taskName == null)
+                    taskName = execProps.get("jakarta.enterprise.concurrent.IDENTITY_NAME");
+            } else {
+                taskName = execProps.get("jakarta.enterprise.concurrent.IDENTITY_NAME");
+                if (taskName == null)
+                    taskName = execProps.get("javax.enterprise.concurrent.IDENTITY_NAME");
+            }
             notAvailable(metaDataIdentifier, taskName);
         }
 

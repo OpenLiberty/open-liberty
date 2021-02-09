@@ -57,6 +57,11 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
 
         final String lDbProductName = dbProductName.toLowerCase();
 
+        //TODO: Disable test until EclipseLink 2.7 is updated
+        if (isUsingJPA22Feature() && getJPAProviderImpl(jpaResource).equals(JPAProviderImpl.ECLIPSELINK)) {
+            return;
+        }
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -80,7 +85,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
                 List<String> sql = SQLListener.getAndClear();
                 Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
                 if (isDerby(lDbProductName) || isDB2(dbProductVersion)) {
-                    String expected = "SELECT 1 FROM SIMPLEENTITYOLGH8294 WHERE (ABS(COALESCE(ITEM_INTEGER1,? )) >= ?)";
+                    String expected = "SELECT 1 FROM SIMPLEENTITYOLGH8294 WHERE (ABS(COALESCE(ITEM_INTEGER1, ?)) >= ?)";
                     Assert.assertEquals(expected, sql.get(0));
                 } // TODO: other databases
 
@@ -103,7 +108,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
                 List<String> sql = SQLListener.getAndClear();
                 Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
                 if (isDerby(lDbProductName) || isDB2(dbProductVersion)) {
-                    String expected = "SELECT 1 FROM SIMPLEENTITYOLGH8294 WHERE (ABS(COALESCE(ITEM_INTEGER1,0 )) >= 99)";
+                    String expected = "SELECT 1 FROM SIMPLEENTITYOLGH8294 WHERE (ABS(COALESCE(ITEM_INTEGER1, 0)) >= 99)";
                     Assert.assertEquals(expected, sql.get(0));
                 } // TODO: other databases
 

@@ -10,6 +10,10 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.metrics23.helper;
 
+import java.util.Map;
+
+import org.eclipse.microprofile.metrics.Metric;
+import org.eclipse.microprofile.metrics.MetricID;
 import org.eclipse.microprofile.metrics.MetricUnits;
 import org.eclipse.microprofile.metrics.SimpleTimer;
 
@@ -25,15 +29,16 @@ public class PrometheusBuilder23 extends PrometheusBuilder {
 
     private static final TraceComponent tc = Tr.register(PrometheusBuilder23.class);
 
-    public static void buildSimpleTimer(StringBuilder builder, String name, SimpleTimer simpleTimer, String description, String tags) {
+    public static void buildSimpleTimer(StringBuilder builder, String name, String description, Map<MetricID, Metric> currentMetricMap) {
         double conversionFactor = Constants.NANOSECONDCONVERSION;
 
-        buildCounting(builder, name, simpleTimer, description, tags);
+        buildCounting(builder, name, description, currentMetricMap);
 
         String lineName = name + "_elapsedTime_" + MetricUnits.SECONDS.toString();
         getPromTypeLine(builder, lineName, "gauge");
-
-        getPromValueLine(builder, lineName, simpleTimer.getElapsedTime().toNanos() * conversionFactor, tags);
+        for (MetricID mid : currentMetricMap.keySet()) {
+            getPromValueLine(builder, lineName, ((SimpleTimer) currentMetricMap.get(mid)).getElapsedTime().toNanos() * conversionFactor, mid.getTagsAsString());
+        }
 
     }
 

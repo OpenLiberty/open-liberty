@@ -25,11 +25,14 @@ import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
-import org.osgi.service.cm.ConfigurationEvent;
-import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
+import com.ibm.ws.messaging.security.RuntimeSecurityService;
 import com.ibm.ws.sib.admin.AliasDestination;
 import com.ibm.ws.sib.admin.BaseDestination;
 import com.ibm.ws.sib.admin.InvalidFileStoreConfigurationException;
@@ -58,7 +61,9 @@ import com.ibm.wsspi.sib.core.DestinationType;
 /**
  * A Singleton class to fetch JsAdminServiceImpl
  */
-public class JsMainAdminServiceImpl extends JsMainAdminService {
+@Component(configurationPolicy = ConfigurationPolicy.IGNORE, 
+           property = "service.vendor=IBM")
+public class JsMainAdminServiceImpl implements JsMainAdminService {
 
     /** RAS trace variable */
     private static final TraceComponent tc = SibTr.register(
@@ -74,17 +79,44 @@ public class JsMainAdminServiceImpl extends JsMainAdminService {
 
     private final Set<String> pids = new HashSet<String>();
     private String bundleLocation;
+    
+    private final RuntimeSecurityService runtimeSecurityService;
+    private final ConfigurationAdmin configAdmin;
+    private BundleContext bundleContext;
 
+    @Activate
+    public JsMainAdminServiceImpl( @Reference RuntimeSecurityService runtimeSecurityService,
+                                   @Reference ConfigurationAdmin configAdmin) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            SibTr.entry(tc, "JsMainAdminServiceImpl", new Object[] { this, runtimeSecurityService, configAdmin });
+        
+        this.runtimeSecurityService = runtimeSecurityService;
+        this.configAdmin = configAdmin;
+        
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            SibTr.exit(tc, "JsMainAdminServiceImpl");
+    }
+
+    @Activate
+    public void activate(BundleContext bundleContext) {
+        final String methodName = "activate";
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            SibTr.entry(tc, methodName, new Object[] { this, bundleContext });
+
+        this.bundleContext = bundleContext;
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            SibTr.exit(tc, methodName);           
+    }
+    
     /**
-     * Constructs the JsMEConfig object based upon the Map and Activates various
-     * ME components
+     * Sets ME state to STARTING, then creates and initialises the messaging engine.
      */
     @Override
-    public void activate(ComponentContext context,
-                         Map<String, Object> properties, ConfigurationAdmin configAdmin) {
+    public void start(Map<String, Object> properties) {
+        final String methodName = "start";
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            SibTr.entry(tc, "activate", new Object[] { context, properties,
-                                                      configAdmin });
+            SibTr.entry(tc, methodName, new Object[] { this, properties });
         }
         try {
             // set ME state to starting
@@ -94,10 +126,10 @@ public class JsMainAdminServiceImpl extends JsMainAdminService {
                 SibTr.debug(this, tc, "Starting the JMS server.");
             }
 
-            // initilize config object
-            initialize(context, properties, configAdmin);
+            // Initialize the config object.
+            initialize(properties, configAdmin);
 
-            _jsMainImpl = new JsMainImpl(context.getBundleContext());
+            _jsMainImpl = new JsMainImpl(bundleContext, runtimeSecurityService);
             _jsMainImpl.initialize(jsMEConfig);
             _jsMainImpl.start();
 
@@ -129,28 +161,27 @@ public class JsMainAdminServiceImpl extends JsMainAdminService {
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            SibTr.exit(tc, "activate");
+            SibTr.exit(tc, methodName);
         }
     }
-
+      
+    
     /**
      * Initializes the JsMEConfig Object Creates a defaultQueue and defaultTopic
      * as well.If filestore is not mentioned in server.xml an default filestore
      * is created
      * 
-     * @param context
      * @param properties
      * @throws InvalidFileStoreConfigurationException
      */
-    private void initialize(ComponentContext context,
-                            Map<String, Object> properties, ConfigurationAdmin configAdmin)
+    private void initialize(Map<String, Object> properties, ConfigurationAdmin configAdmin)
                     throws InvalidFileStoreConfigurationException {
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            SibTr.entry(tc, "initialize", new Object[] { context, properties });
+            SibTr.entry(tc, "initialize", new Object[] {this, properties });
         }
         this.properties = properties;
-        this.bundleLocation = context.getBundleContext().getBundle().getLocation();
+        this.bundleLocation = bundleContext.getBundle().getLocation();
         
         // populate filestore
         SIBFileStore filestore = new SIBFileStoreImpl();
@@ -656,26 +687,20 @@ public class JsMainAdminServiceImpl extends JsMainAdminService {
      * 
      * */
     @Override
-    public void modified(ComponentContext context,
-                         Map<String, Object> properties, ConfigurationAdmin configAdmin) {
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            SibTr.entry(tc, "modified", new Object[] { context, properties,
-                                                      configAdmin });
-        }
+    public void modify(Map<String, Object> properties) {
+        final String methodName = "modify";
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            SibTr.entry(tc, methodName, new Object[] {this, properties});
 
         this.properties = properties;
-        internalModify(configAdmin);
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            SibTr.exit(tc, "modified");
-        }
+        internalModify();
+        
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            SibTr.exit(tc, methodName);
 
     }
 
-    /**
-     * @param configAdmin
-     */
-    private synchronized void internalModify(ConfigurationAdmin configAdmin) {
+    private synchronized void internalModify() {
         pids.clear();
         try {
 
@@ -920,11 +945,12 @@ public class JsMainAdminServiceImpl extends JsMainAdminService {
 
     }
 
-    /** {@inheritDoc} */
     @Override
-    public void deactivate(ComponentContext context,
-                           Map<String, Object> properties) {
-
+    public void stop() {
+        final String methodName = "stop";
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            SibTr.exit(tc, methodName, this);
+        
         try {
             _jsMainImpl.stop();
             _jsMainImpl.destroy();
@@ -933,6 +959,8 @@ public class JsMainAdminServiceImpl extends JsMainAdminService {
             SibTr.exception(tc, e);
         }
 
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            SibTr.exit(tc, methodName);
     }
 
     /**
@@ -953,13 +981,6 @@ public class JsMainAdminServiceImpl extends JsMainAdminService {
      */
     public void setMeState(String state) {
         _state = state;
-    }
-
-    @Override
-    public void configurationEvent(ConfigurationEvent event, ConfigurationAdmin configAdmin) {
-        if (event.getType() == ConfigurationEvent.CM_UPDATED && pids.contains(event.getPid())) {
-            internalModify(configAdmin);
-        }
     }
 
 }

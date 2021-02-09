@@ -28,7 +28,6 @@ import javax.xml.namespace.QName;
 import org.apache.cxf.Bus;
 import org.apache.cxf.BusFactory;
 import org.apache.cxf.binding.Binding;
-import org.apache.cxf.common.classloader.ClassLoaderUtils.ClassLoaderHolder;
 import org.apache.cxf.endpoint.Endpoint;
 import org.apache.cxf.helpers.CastUtils;
 import org.apache.cxf.interceptor.Interceptor;
@@ -65,7 +64,7 @@ public class ChainInitiationObserver implements MessageObserver {
     @Override
     public void onMessage(Message m) {
         Bus origBus = BusFactory.getAndSetThreadDefaultBus(bus);
-        ClassLoaderHolder origLoader = null;
+
         try {
             //no need reset TCClassloader as already set to bus
 //            if (loader != null) {

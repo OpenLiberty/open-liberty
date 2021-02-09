@@ -1,0 +1,359 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/QueryExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+6001=A kurzort haszn\u00e1l\u00f3 SQL lek\u00e9rdez\u00e9seknek meg kell adniuk egy tov\u00e1bbi lek\u00e9rdez\u00e9st az eredm\u00e9nyhalmaz m\u00e9ret\u00e9nek lek\u00e9r\u00e9s\u00e9hez.
+
+6002=Az \u00f6sszes\u00edtett objektumok nem \u00edrhat\u00f3k/t\u00f6r\u00f6lhet\u0151k/k\u00e9rdezhet\u0151k le a tulajdonosaikt\u00f3l f\u00fcggetlen\u00fcl. {1}Le\u00edr\u00f3: [{0}]
+
+6003=A lek\u00e9rdez\u00e9s v\u00e9grehajt\u00e1s\u00e1hoz megadott argumentumok sz\u00e1ma nem felel meg a lek\u00e9rdez\u00e9smeghat\u00e1roz\u00e1sban megadott argumentumok sz\u00e1m\u00e1nak.
+
+6004=A(z) [{1}] oszt\u00e1ly\u00fa [{0}] objektum, amelynek azonoss\u00e1g kivonatk\u00f3dja (System.identityHashCode()) [{2}], {3}nem err\u0151l a UnitOfWork objektumter\u00fcletr\u0151l sz\u00e1rmazik, hanem a sz\u00fcl\u0151 munkamenet\u00e9r\u0151l.  Az objektum soha nem lett regisztr\u00e1lva ezen a UnitOfWork objektumter\u00fcleten, {3}hanem a sz\u00fcl\u0151 munkamenetb\u0151l lett beolvasva, \u00e9s a UnitOfWork objektumter\u00fcleten regisztr\u00e1lt objektumra vonatkozik.  Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy megfelel\u0151en {3}regisztr\u00e1lja az objektumokat.  Ha tov\u00e1bbra is probl\u00e9m\u00e1kat tapasztal, akkor haszn\u00e1lhatja a UnitOfWork.validateObjectSpace() met\u00f3dust {3}annak kider\u00edt\u00e9s\u00e9hez, hogy hol t\u00f6rt\u00e9nt a hiba.  Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a k\u00e9zik\u00f6nyvet vagy a gyakori k\u00e9rd\u00e9seket.
+
+6005=A(z) [{1}] oszt\u00e1ly\u00fa [{0}] objektum, amelynek azonoss\u00e1g kivonatk\u00f3dja (System.identityHashCode()) [{2}], {3}egy regisztr\u00e1lt \u00faj objektum eredetije.  A UnitOfWork kl\u00f3nozza a regisztr\u00e1lt \u00faj objektumokat, \u00edgy biztos\u00edtania kell, hogy egy objektum {3}regisztr\u00e1lva legyen, miel\u0151tt egy m\u00e1sik objektum hivatkozna r\u00e1.  Ha nem k\u00edv\u00e1nja kl\u00f3nozni az \u00faj objektumot, akkor haszn\u00e1lja a {3}UnitOfWork.registerNewObject(Object) API-t.  Ha tov\u00e1bbra is probl\u00e9m\u00e1kat tapasztal, akkor haszn\u00e1lhatja a UnitOfWork.validateObjectSpace() {3}met\u00f3dust annak kider\u00edt\u00e9s\u00e9hez, hogy hol t\u00f6rt\u00e9nt a hiba.  Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a k\u00e9zik\u00f6nyvet vagy a gyakori k\u00e9rd\u00e9seket.
+
+6006=A(z) [{0}] lek\u00e9pez\u00e9s nem t\u00e1mogatja a k\u00f6tegelt beolvas\u00e1st.
+
+6007=A(z) [{0}] le\u00edr\u00f3ja hi\u00e1nyzik.
+
+6008=A(z) [{0}] le\u00edr\u00f3ja hi\u00e1nyzik a(z) [{1}] nev\u0171 lek\u00e9rdez\u00e9shez.
+
+6013=Helytelen m\u00e9ret\u0171 lek\u00e9rdez\u00e9s megad\u00e1sa a CursoredStream sz\u00e1m\u00e1ra.
+
+6014=Az objektumok nem \u00edrhat\u00f3k egy UnitOfWork sor\u00e1n, ezeket regisztr\u00e1lni kell.
+
+6015=\u00c9rv\u00e9nytelen [{0}] lek\u00e9rdez\u00e9si kulcs a kifejez\u00e9sben.
+
+6016=Az objektumok vagy az adatb\u00e1zis nem m\u00f3dos\u00edthat\u00f3 egy ServerSession munkameneten kereszt\u00fcl.  Minden m\u00f3dos\u00edt\u00e1st egy ClientSession UnitOfWork munkaegys\u00e9gen kereszt\u00fcl kell elv\u00e9gezni.
+
+6020=A(z) [{0}] sorban nincs megjel\u00f6lve konkr\u00e9t oszt\u00e1ly a t\u00edpushoz.
+
+6021=A kurzorok nem t\u00e1mogatottak a fel\u00fcletle\u00edr\u00f3khoz, vagy kifejez\u00e9seket haszn\u00e1l\u00f3 absztrakt oszt\u00e1lyok t\u00f6bb t\u00e1bl\u00e1ra vonatkoz\u00f3 le\u00edr\u00f3ihoz.  Fontolja meg egy\u00e9ni SQL vagy t\u00f6bb lek\u00e9rdez\u00e9s haszn\u00e1lat\u00e1t.
+
+6023=A(z) [{0}] t\u00e1bl\u00e1ba besz\u00farand\u00f3 mez\u0151k list\u00e1ja \u00fcres.  Meg kell hat\u00e1roznia legal\u00e1bb egy lek\u00e9pez\u00e9st ehhez a t\u00e1bl\u00e1hoz.
+
+6024=A lek\u00e9rdez\u00e9sek m\u00f3dos\u00edt\u00e1sa egy m\u00f3dos\u00edtand\u00f3 objektumot ig\u00e9nyel.
+
+6026=Nincs meghat\u00e1rozva [{0}] nev\u0171 lek\u00e9rdez\u00e9s. Tartom\u00e1ny oszt\u00e1ly: [{1}]
+
+6027=Lek\u00e9rdez\u00e9s k\u00fcld\u00e9se egy deaktiv\u00e1lt UnitOfWork sz\u00e1m\u00e1ra.
+
+6028=K\u00eds\u00e9rlet t\u00f6rtn\u00e9t az adatfolyam v\u00e9g\u00e9n t\u00fali olvas\u00e1sra.
+
+6029=Meg kell adni egy referencia oszt\u00e1lyt.
+
+6030=A friss\u00edt\u00e9s nem lehets\u00e9ges, ha a gyors\u00edt\u00f3t\u00e1raz\u00e1s nincs enged\u00e9lyezve.
+
+6031=A size() csak kifejez\u00e9s lek\u00e9rdez\u00e9sekhez t\u00e1mogatott, kiv\u00e9ve, ha egy m\u00e9ret lek\u00e9rdez\u00e9s van megadva.
+
+6032=Az SQL utas\u00edt\u00e1s nincs megfelel\u0151en be\u00e1ll\u00edtva.
+
+6034=\u00c9rv\u00e9nytelen [{0}] lek\u00e9rdez\u00e9si elem kifejez\u00e9s.
+
+6041=Egy ReadObjectQuery m\u0171veletnek \u00e1tadott kiv\u00e1laszt\u00e1si objektum null volt.
+
+6042=Nem objektum szint\u0171 lek\u00e9rdez\u00e9sekhez meg kell adni egy munkamenetnevet.  L\u00e1sd a setSessionName(String) met\u00f3dus le\u00edr\u00e1s\u00e1t.
+
+6043=Az els\u0151dleges kulcsok n\u00e9lk\u00fcli ReportQueries nem haszn\u00e1lhat readObject() met\u00f3dust. {1}ReportQueryResult: [{0}].
+
+6044=Az els\u0151dleges kulcs beolvas\u00e1sa a(z) [{0}] sorb\u00f3l a lek\u00e9rdez\u00e9s v\u00e9grehajt\u00e1sa sor\u00e1n null volt.  Az els\u0151dleges kulcsok nem tartalmazhatnak null\u00e9rt\u00e9ket.
+
+6045=Az objektum \u00f6ssze\u00e9p\u00edt\u00e9se sor\u00e1n a sorban megjel\u00f6lt [{0}] aloszt\u00e1lyhoz nincs meghat\u00e1rozva le\u00edr\u00f3.
+
+6046=Egy \u00edr\u00e1sv\u00e9dett oszt\u00e1ly objektuma nem t\u00f6r\u00f6lhet\u0151.  A(z) [{0}] oszt\u00e1ly \u00edr\u00e1sv\u00e9dettk\u00e9nt van meghat\u00e1rozva ebben a UnitOfWork objektumban.
+
+6047=\u00c9rv\u00e9nytelen [{0}] oper\u00e1tor a kifejez\u00e9sben.
+
+6048=A getField() [{0}] illeg\u00e1lis haszn\u00e1lata a kifejez\u00e9sben.
+
+6049=A getTable() [{0}] illeg\u00e1lis haszn\u00e1lata a kifejez\u00e9sben.
+
+6050=A ReportQuery eredm\u00e9ny m\u00e9ret nem egyezik.  V\u00e1rt: [{0}], lek\u00e9rt: [{1}]
+
+6051=A r\u00e9szleges objektum lek\u00e9rdez\u00e9sek nem enged\u00e9lyezettek a gyors\u00edt\u00f3t\u00e1r karbantart\u00e1s\u00e1hoz vagy szerkeszt\u00e9shez.  A dontMaintainCache() met\u00f3dust kell haszn\u00e1lnia.
+
+6052=Egy k\u00fcls\u0151 \u00f6sszef\u00e9s\u00fcl\u00e9s (getAllowingNull vagy anyOfAllowingNone) csak OneToOne, OneToMany, ManyToMany, AggregateCollection \u00e9s DirectCollection lek\u00e9pez\u00e9sekhez \u00e9rv\u00e9nyes, \u00e9s nem haszn\u00e1lhat\u00f3 a(z) [{0}] lek\u00e9pez\u00e9shez.
+
+6054=A(z) [{1}] oszt\u00e1ly [{0}] objektuma nem adhat\u00f3 hozz\u00e1 a(z) [{2}] t\u00e1rol\u00f3oszt\u00e1lyhoz a(z) [{3}] ir\u00e1nyelv haszn\u00e1lat\u00e1val.
+
+6055=A(z) [{0}] met\u00f3dus megh\u00edv\u00e1sa a(z) [{2}] oszt\u00e1ly\u00fa [{1}] objektumhoz egy kiv\u00e9telt aktiv\u00e1lt.
+
+6056=Nem hozhat\u00f3 l\u00e9tre egy kl\u00f3n a(z) [{1}] oszt\u00e1ly [{0}] objektum\u00e1b\u00f3l [{2}] haszn\u00e1lat\u00e1val.
+
+6057=A(z) [{0}] met\u00f3dus megh\u00edv\u00e1sa \u00e9rv\u00e9nytelen a(z) [{1}] objektumhoz.
+
+6058=A(z) [{0}] met\u00f3dus nem tal\u00e1lhat\u00f3 a(z) [{1}] oszt\u00e1lyban.
+
+6059=A(z) [{0}] oszt\u00e1ly nem haszn\u00e1lhat\u00f3 t\u00e1rol\u00f3k\u00e9nt egy lek\u00e9rdez\u00e9s eredm\u00e9nyeihez, mivel nem p\u00e9ld\u00e1nyos\u00edthat\u00f3.
+
+6060=A(z) [{1}] t\u00edpus\u00fa [{0}] objektum nem haszn\u00e1lhat\u00f3 kulcsk\u00e9nt a(z) [{3}] t\u00edpus\u00fa [{2}] sz\u00e1m\u00e1ra.  A kulcs nem hasonl\u00edthat\u00f3 \u00f6ssze a t\u00e9rk\u00e9pben jelenleg megtal\u00e1lhat\u00f3 kulcsokkal.
+
+6061=Nem lehet reflekt\u00edven hozz\u00e1f\u00e9rni a(z) [{2}] oszt\u00e1ly\u00fa [{1}] objektum [{0}] met\u00f3dus\u00e1hoz.
+
+6062=A(z) [{1}] objektumhoz reflekt\u00edven megh\u00edvott [{2}] osztlyb\u00f3l sz\u00e1rmaz\u00f3 [{0}] met\u00f3dus egy kiv\u00e9telt aktiv\u00e1lt.
+
+6063=\u00c9rv\u00e9nytele [{0}] m\u0171velet a kurzorhoz.
+
+6064=A(z) [{1}] oszt\u00e1ly\u00fa [{0}] objektum nem t\u00e1vol\u00edthat\u00f3 el a(z) [{2}] t\u00e1rol\u00f3oszt\u00e1lyb\u00f3l a(z) [{3}] ir\u00e1nyelv haszn\u00e1lat\u00e1val.
+
+6065=A(z) [{1}] oszt\u00e1ly [{0}] objektuma nem adhat\u00f3 hozz\u00e1 a(z) [{2}] t\u00e1rol\u00f3hoz.
+
+6066=A(z) [{1}] oszt\u00e1ly\u00fa [{0}] objektum, amelynek azonoss\u00e1g kivonatk\u00f3dja (System.identityHashCode()) [{2}], {3}t\u00f6r\u00f6lve lett, azonban m\u00e9g most is vannak referenci\u00e1i.  A t\u00f6r\u00f6lt objektumokra nem lehet hivatkozni a t\u00f6rl\u00e9s\u00fck ut\u00e1n. {3}Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy megfelel\u0151en regisztr\u00e1lja az objektumokat.  Ha tov\u00e1bbra is probl\u00e9m\u00e1kat tapasztal, akkor haszn\u00e1lhatja a UnitOfWork.validateObjectSpace() {3}met\u00f3dust annak kider\u00edt\u00e9s\u00e9hez, hogy hol t\u00f6rt\u00e9nt a hiba.  Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a k\u00e9zik\u00f6nyvet vagy a gyakori k\u00e9rd\u00e9seket.
+
+6067=Nem lehet reflekt\u00edven hozz\u00e1f\u00e9rni a(z) [{2}] oszt\u00e1ly\u00fa [{1}] objektum [{0}] mez\u0151j\u00e9hez.
+
+6068=T\u00e1bla referencia nem hasonl\u00edthat\u00f3 \u00f6ssze kifejez\u00e9sben l\u00e9v\u0151 [{0}] elemmel.
+
+6069=A kifejez\u00e9sben l\u00e9v\u0151 [{0}] mez\u0151 egy \u00e9rv\u00e9nytelen t\u00e1bl\u00e1t tartalmaz ebben a kontextusban.
+
+6070=Egy kifejez\u00e9sben egy "to-many" viszonyt \u00e1br\u00e1zol\u00f3 [{0}] lek\u00e9rdez\u00e9si kulcs haszn\u00e1lata \u00e9rv\u00e9nytelen.  Az anyOf() haszn\u00e1lata javasolt a get() helyett.
+
+6071=Egy kifejez\u00e9sben egy "to-many" viszonyt \u00e1br\u00e1zol\u00f3 [{0}] lek\u00e9rdez\u00e9si kulcs eset\u00e9n az anyOf() haszn\u00e1lata \u00e9rv\u00e9nytelen.  A get() haszn\u00e1lata javasolt az anyOf() helyett.
+
+6072=A lek\u00e9rdez\u00e9s egy VariableOneToOneMapping m\u0171veleten \u00e1t nem t\u00e1mogatott. {2}Le\u00edr\u00f3: [{0}] {2}Lek\u00e9pez\u00e9s: [{1}]
+
+6073=Helytelen\u00fcl form\u00e1zott kifejez\u00e9s a lek\u00e9rdez\u00e9sben.  K\u00eds\u00e9rlet egy objektumhivatkoz\u00e1s ki\u00edr\u00e1s\u00e1ra egy SQL utas\u00edt\u00e1sba a(z) [{0}] lek\u00e9rdez\u00e9si kulcs eset\u00e9n.
+
+6074=Ez a kifejez\u00e9s nem tudja meg\u00e1llap\u00edtani, hogy az objektum megfelel-e a mem\u00f3ri\u00e1ban l\u00e9v\u0151nek.  A lek\u00e9rdez\u00e9st \u00fagy kell be\u00e1ll\u00edtania, hogy ellen\u0151rizze az adatb\u00e1zist.
+
+6075=Az objektumok \u00f6sszehasonl\u00edt\u00e1sa csak az equal() vagy notEqual() oper\u00e1torokat haszn\u00e1lhatja.  M\u00e1s \u00f6sszehasonl\u00edt\u00e1sok elv\u00e9gezhet\u0151k lek\u00e9rdez\u00e9si kulcsokon vagy k\u00f6zvetlen attrib\u00fatum szint\u0171 \u00f6sszehasonl\u00edt\u00e1sokon kereszt\u00fcl. {1}Kifejez\u00e9s: [{0}]
+
+6076=Az objektumok \u00f6sszehasonl\u00edt\u00e1sa csak a OneToOneMappings lek\u00e9pez\u00e9sekkel haszn\u00e1lhat\u00f3.  M\u00e1s lek\u00e9pez\u00e9s \u00f6sszehasonl\u00edt\u00e1sok elv\u00e9gezhet\u0151k lek\u00e9rdez\u00e9si kulcsokon vagy k\u00f6zvetlen attrib\u00fatum szint\u0171 \u00f6sszehasonl\u00edt\u00e1sokon kereszt\u00fcl. {2}Lek\u00e9pez\u00e9s: [{0}] {2}Kifejez\u00e9s: [{1}]
+
+6077=Az objektumok \u00f6sszehasonl\u00edt\u00e1sa nem haszn\u00e1lhat\u00f3 param\u00e9ter lek\u00e9rdez\u00e9sekben.  A kifejez\u00e9st dinamikusan kell \u00f6ssze\u00e1ll\u00edtania. {1}Kifejez\u00e9s: [{0}]
+
+6078=Az objektum \u00f6sszehasonl\u00edt\u00e1s argumentum\u00e1nak oszt\u00e1lya helytelen. {3}Kifejez\u00e9s: [{0}] {3}Lek\u00e9pez\u00e9s: [{1}] {3}Argumentum: [{2}]
+
+6079=Az objektum \u00f6sszehasonl\u00edt\u00e1sa NULL \u00e9rt\u00e9kkel nem haszn\u00e1lhat\u00f3 c\u00e9l idegen kulcs viszonyokhoz.  K\u00e9rdezze le helyette a forr\u00e1s els\u0151dleges kulcsot. {3}Kifejez\u00e9s: [{0}] {3}Lek\u00e9pez\u00e9s: [{1}] {3}Argumentum: [{2}]
+
+6080=\u00c9rv\u00e9nytelen [{0}] adatb\u00e1zis h\u00edv\u00e1s.  A h\u00edv\u00e1snak a DatabaseCall egy p\u00e9ld\u00e1ny\u00e1nak kell lennie.
+
+6081=\u00c9rv\u00e9nytelen [{0}] adatb\u00e1zis hozz\u00e1f\u00e9r\u0151.  A hozz\u00e1f\u00e9r\u0151nek a DatabaseAccessor egy p\u00e9ld\u00e1ny\u00e1nak kell lennie.
+
+6082=A(z) [{0}] met\u00f3dus a(z) [{1}] argumentumt\u00edpussal nem h\u00edvhat\u00f3 meg kifejez\u00e9shez.
+
+6083=Az in() met\u00f3dust haszn\u00e1l\u00f3 lek\u00e9rdez\u00e9sek nem param\u00e9terzhet\u0151k.  Tiltsa le vagy a lek\u00e9rdez\u00e9s el\u0151k\u00e9sz\u00edt\u00e9st vagy a k\u00f6t\u00e9st.
+
+6084=Az \u00e1tir\u00e1ny\u00edt\u00e1s lek\u00e9rdez\u00e9s nem lett megfelel\u0151en be\u00e1ll\u00edtva.  Az oszt\u00e1ly- vagy met\u00f3dusn\u00e9v nem lett be\u00e1ll\u00edtva.
+
+6085=Az \u00e1tir\u00e1ny\u00edt\u00e1s lek\u00e9rdez\u00e9s met\u00f3dusa nincs meghat\u00e1rozva, vagy helytelen argumentumokkal van meghat\u00e1rozva.  A "public static" min\u0151s\u00edt\u0151vel kell deklar\u00e1lni, \u00e9s a (DatabaseQuery, Record, Session) vagy (Session, Vector) argumentumokkal kell rendelkeznie. {2}Oszt\u00e1ly: [{0}] {2}Met\u00f3dus: [{1}]
+
+6086=Az \u00e1tir\u00e1ny\u00edt\u00e1s lek\u00e9rdez\u00e9s met\u00f3dush\u00edv\u00e1sa aktiv\u00e1lt egy kiv\u00e9telt.
+
+6087=A p\u00e9lda [{0}] objektumoszt\u00e1ly nem felel meg a(z) [{1}] referencia objektumoszt\u00e1lynak.
+
+6088=A ReportQuery nem rendelkezik attrib\u00fatumokkal.
+
+6089=A kifejez\u00e9s nem lett megfelel\u0151en inicializ\u00e1lva.  Csak egyetlen ExpressionBuilder haszn\u00e1lhat\u00f3 egy lek\u00e9rdez\u00e9shez. {1}P\u00e1rhuzamos kifejez\u00e9sek eset\u00e9n a lek\u00e9rdez\u00e9si oszt\u00e1lyt biztos\u00edtani kell az ExpressionBuilder konstruktornak, \u00e9s a lek\u00e9rdez\u00e9s ExpressionBuilder r\u00e9sz\u00e9nek{1}mindig a kifejez\u00e9s bal oldal\u00e1n kell lennie. {1}Kifejez\u00e9s: [{0}]
+
+6090=Nem \u00e1ll\u00edthat\u00f3 be a ReportQuery "check cache only" (csak gyors\u00edt\u00f3t\u00e1r ellen\u0151rz\u00e9se) \u00e9rt\u00e9kre.
+
+6091=A kifejez\u00e9sekben \u00f6sszehasonl\u00edt\u00e1shoz haszn\u00e1lt [{0}] konstans t\u00edpusa nem felel meg a(z) [{1}] attrib\u00fatum t\u00edpus\u00e1nak.
+
+6092=Nem p\u00e9ld\u00e1nyos\u00edtott ValueHolder \u00e9szlel\u00e9se. A mem\u00f3ri\u00e1ban fut\u00f3 lek\u00e9rdez\u00e9s v\u00e9grehajt\u00e1s\u00e1hoz p\u00e9ld\u00e1nyos\u00edtania kell a kapcsol\u00f3d\u00f3 Valueholder oszt\u00e1lyokat.
+
+6093=\u00c9rv\u00e9nytelen t\u00edpus kifejez\u00e9s a k\u00f6vetkez\u0151h\u00f6z: [{0}].  Az oszt\u00e1ly nem rendelkezik le\u00edr\u00f3val, vagy a le\u00edr\u00f3ja nem haszn\u00e1l \u00f6r\u00f6kl\u00e9st, vagy az \u00f6r\u00f6kl\u00e9shez egy ClassExtractor p\u00e9ld\u00e1nyt haszn\u00e1l
+
+6094=A lek\u00e9rdez\u00e9s kiv\u00e1laszt\u00e1si felt\u00e9teleiben l\u00e9v\u0151 [{0}] param\u00e9tern\u00e9v nem felel meg a lek\u00e9rdez\u00e9sben meghat\u00e1rozott egyetlen param\u00e9tern\u00e9vnek sem.
+
+6095=Nyilv\u00e1nos clone met\u00f3dus sz\u00fcks\u00e9ges.
+
+6096=A clone met\u00f3dus nem \u00e9rhet\u0151 el.
+
+6097=A clone met\u00f3dus kiv\u00e9telt dobott: {0}.
+
+6098=V\u00e1ratlan megh\u00edv\u00e1si kiv\u00e9tel: {0}.
+
+6099=Az \u00f6sszef\u00e9s\u00fcl\u00e9s t\u00f6bb t\u00e1bla aloszt\u00e1lyt tartalmaz\u00f3 \u00f6r\u00f6kl\u00e9si oszt\u00e1lyokon kereszt\u00fcl nem t\u00e1mogatott: {0}, {1}
+
+6100=T\u00f6bb \u00e9rt\u00e9k tal\u00e1lhat\u00f3 egy egyetlen objektumot beolvas\u00f3 lek\u00e9rdez\u00e9shez.
+
+6101=A lek\u00e9rdez\u00e9s v\u00e9grehajt\u00e1sa megs\u00e9rten\u00e9 a glob\u00e1lis munkamenet gyors\u00edt\u00f3t\u00e1r integrit\u00e1s\u00e1t, amelynek csak az objektumok legfrissebb v\u00e1ltozatait szabad tartalmaznia.  Egy olyan lek\u00e9rdez\u00e9s v\u00e9grehajt\u00e1s\u00e1hoz, amely r\u00e9gebbi objektumokat ad vissza, pr\u00f3b\u00e1lkozzon a k\u00f6vetkez\u0151vel: Haszn\u00e1ljon egy HistoricalSession (acquireSessionAsOf) met\u00f3dust, minden objektum beolvas\u00e1s\u00e1t gyors\u00edt\u00f3t\u00e1razza, \u00e9s automatikusan a megegyez\u0151 id\u0151pontban v\u00e9gezze a beolvas\u00e1st.  Ez \u00e9rv\u00e9nyes lesz az objektumviszonyok aktiv\u00e1l\u00e1s\u00e1ra is.  \u00c1ll\u00edtsa be a shouldMaintainCache tulajdons\u00e1got false \u00e9rt\u00e9kre.  B\u00e1rmely objektum kifejez\u00e9st m\u00faltidej\u0171v\u00e9 tehet, felt\u00e9ve, hogy a mez\u0151i k\u00f6z\u00fcl egy sincs \u00e1br\u00e1zolva az eredm\u00e9nyhalmazba (vagyis csak a where r\u00e9szkifejez\u00e9sben szerepel).
+
+6102=A jelenlegi t\u00f6rt\u00e9neti lek\u00e9rdez\u00e9sek csak Oracle 9R2 vagy \u00fajabb adatb\u00e1zisokkal m\u0171k\u00f6dnek, mivel ez az Oracle Flashback szolg\u00e1ltat\u00e1s\u00e1t haszn\u00e1lja.
+
+6103=Nem hajthat v\u00e9gre egy WriteQuery m\u0171veletet egy \u00edr\u00e1sv\u00e9dett HistoricalSession munkameneten bel\u00fclr\u0151l.  A r\u00e9gebbi objektumok vissza\u00e1ll\u00edt\u00e1s\u00e1hoz pr\u00f3b\u00e1lkozzon a k\u00f6vetkez\u0151vel: olvassa be ugyanazt az objektumot mostanik\u00e9nt egy UnitOfWork haszn\u00e1lat\u00e1val, majd v\u00e9gleges\u00edtse a UnitOfWork elemet.
+
+6104=A(z) {0} objektum nem l\u00e9tezik a gyors\u00edt\u00f3t\u00e1rban.
+
+6105=A lek\u00e9rdez\u00e9st egy kurzor adatfolyam ir\u00e1nyelvvel kell inicializ\u00e1lni.
+
+6106=A(z) [{1}] els\u0151dleges kulcs\u00fa [{0}] objektumt\u00edpus nem l\u00e9tezik a gyors\u00edt\u00f3t\u00e1rban.
+
+6107=Hi\u00e1nyz\u00f3 friss\u00edt\u00e9si utas\u00edt\u00e1sok az UpdateAllQuery m\u0171velethez.
+
+6108=Az \u00f6sszes lek\u00e9rdez\u00e9s friss\u00edt\u00e9se nem t\u00e1mogatja a t\u00f6bb t\u00e1bl\u00e1s \u00f6r\u00f6kl\u00e9st.
+
+6109=A megnevezett leh\u00edv\u00e1si csoport ({0}) nincs meghat\u00e1rozva le\u00edr\u00f3 szinten.
+
+6110=A munkaegys\u00e9g azonoss\u00e1g t\u00e9rk\u00e9pben a beolvas\u00e1si lek\u00e9rdez\u00e9s nem feleltethet\u0151 meg a r\u00e9szlegesen leh\u00edvott objektum ({0}) le nem h\u00edvott attrib\u00fatum\u00e1nak.
+
+6111=A(z) ({0}) leh\u00edv\u00e1si csoport attrib\u00fatum nincs meghat\u00e1rozva vagy nincs lek\u00e9pezve.
+
+6112=A leh\u00edv\u00e1si csoport nem \u00e1ll\u00edthat\u00f3 be jelent\u00e9s lek\u00e9rdez\u00e9shez.
+
+6113=A leh\u00edv\u00e1si csoport nem haszn\u00e1lhat\u00f3 r\u00e9szleges attrib\u00fatum beolvas\u00e1ssal.
+
+6114=Meg kell hat\u00e1roznia egy leh\u00edv\u00e1si csoportkezel\u0151t a(z) ({0}) le\u00edr\u00f3ban, hogy be\u00e1ll\u00edthasson egy leh\u00edv\u00e1si csoportot a(z) ({1}) lek\u00e9rdez\u00e9sben.
+
+6115=Az elk\u00fcl\u00f6n\u00edtett oszt\u00e1lyok lek\u00e9rdez\u00e9sei vagy a kiz\u00e1r\u00f3lagos kapcsolatok haszn\u00e1lat\u00e1ra be\u00e1ll\u00edtott lek\u00e9rdez\u00e9sek nem hajthat\u00f3k v\u00e9gre egy ServerSession munkamenetben vagy CMP-ben egy tranzakci\u00f3n k\u00edv\u00fcl.
+
+6116=A megk\u00eds\u00e9relt m\u0171velethez nem lett megadva h\u00edv\u00e1s vagy interakci\u00f3.
+
+6117=Gyors\u00edt\u00f3t\u00e1razott lek\u00e9rdez\u00e9si eredm\u00e9nyekhez nem \u00e1ll\u00edthat\u00f3 be olyan lek\u00e9rdez\u00e9s, amely egy kurzoros eredm\u00e9nyt haszn\u00e1l.
+
+6118=Egy elk\u00fcl\u00f6n\u00edtett oszt\u00e1lyon fut\u00f3 lek\u00e9rdez\u00e9s nem haszn\u00e1lhat gyors\u00edt\u00f3t\u00e1razott lek\u00e9rdez\u00e9si eredm\u00e9nyeket a lek\u00e9rdez\u00e9shez.
+
+6119=A(z) {0} \u00f6sszef\u00e9s\u00fcl\u00e9si lek\u00e9rdez\u00e9s \u00e9rv\u00e9nytelen, vagy egy olyan lek\u00e9pez\u00e9st\u00edpushoz van megadva, amely nem t\u00e1mogatja az \u00f6sszef\u00e9s\u00fcl\u00e9st.
+
+6120=A(z) {0} r\u00e9szleges attrib\u00fatum a(z) {1} oszt\u00e1ly egy \u00e9rv\u00e9nytelen attrib\u00fatuma.
+
+6121=a lek\u00e9rdez\u00e9s helytelen\u00fcl lett megadva, a kifejez\u00e9sk\u00e9sz\u00edt\u0151 hi\u00e1nyzik.  R\u00e9sz- \u00e9s p\u00e1rhuzamos lek\u00e9rdez\u00e9sek eset\u00e9n gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a lek\u00e9rdez\u00e9sk\u00e9sz\u00edt\u0151 mindig a bal oldalon van.
+
+6122=A kifejez\u00e9s nem egy \u00e9rv\u00e9nyes kifejez\u00e9s. {0}
+
+6123=A t\u00e1rol\u00f3oszt\u00e1ly \u00e1ltal megadott [{0}] nem haszn\u00e1lhat\u00f3, mert a t\u00e1rol\u00f3nak meg kell val\u00f3s\u00edtania a(z) {1} fel\u00fcletet.
+
+6124=A(z) {0} lek\u00e9rdez\u00e9se sz\u00fcks\u00e9ges, tal\u00e1lt: {1}
+
+6125=A ReadQuery.clearQueryResults() m\u00e1r nem h\u00edvhat\u00f3 meg. A clearQueryResults megh\u00edv\u00e1s\u00e1hoz most meg kell adni a munkamenetet. A clearQueryResults(session) met\u00f3dust kell megh\u00edvni.
+
+6126=Egy olyan lek\u00e9rdez\u00e9s ker\u00fclt v\u00e9grehajt\u00e1sra, amely megfelel\u0151 \u00e9s gyors\u00edt\u00f3t\u00e1razott lek\u00e9rdez\u00e9si eredm\u00e9nyeket is haszn\u00e1l.  Ez a k\u00e9t be\u00e1ll\u00edt\u00e1s nem kompatibilis.
+
+6127=Egy reflekt\u00edv h\u00edv\u00e1s a(z) {0} EclipseLink oszt\u00e1lyhoz meghi\u00fasult, a k\u00f6rnyezetet \u00fagy kell be\u00e1ll\u00edtani, hogy enged\u00e9lyezze a Java Reflection oszt\u00e1ly haszn\u00e1lat\u00e1t.
+
+6128=A k\u00f6tegelt beolvas\u00e1s nem t\u00e1mogatott egy\u00e9ni h\u00edv\u00e1sokat haszn\u00e1l\u00f3 lek\u00e9rdez\u00e9sekhez.
+
+6129=A friss\u00edt\u00e9s nem lehets\u00e9ges, ha a lek\u00e9rdez\u00e9s nem megy az adatb\u00e1zishoz.
+
+6130=Az egy\u00e9ni SQL nem tudta biztos\u00edtani a(z) {0} megk\u00fcl\u00f6nb\u00f6ztet\u0151 oszlopot, ahogy az SQLResultSetMapping elemben meg van hat\u00e1rozva: {1}.
+
+6131=A DeleteAllQuery m\u0171veletnek, amely a t\u00f6rlend\u0151 objektumokat a nem-null argumentum\u00fa setObjects met\u00f3dus haszn\u00e1lat\u00e1val hat\u00e1rozza meg, ugyancsak meg kell hat\u00e1roznia a megfelel\u0151 kiv\u00e1laszt\u00e1si felt\u00e9teleket. {1}Objektumok: [{2}]{1}Le\u00edr\u00f3: [{0}]
+
+6132=A(z) {0} lek\u00e9rdez\u00e9si argumentum nem tal\u00e1lhat\u00f3 a lek\u00e9rdez\u00e9s v\u00e9grehajt\u00e1sa sor\u00e1n a megadott param\u00e9terlist\u00e1ban.
+
+6133=Az addUpdate met\u00f3dus els\u0151 argumentuma meghat\u00e1roz egy mez\u0151t, amelyhez egy \u00faj \u00e9rt\u00e9ket kell hozz\u00e1rendelni - ez nem lehet null.
+
+6134=Az addUpdate met\u00f3dusnak els\u0151 param\u00e9terk\u00e9nt \u00e1tadott attrib\u00fatumn\u00e9v vagy kifejez\u00e9s nem hat\u00e1roz meg egy mez\u0151t. {1}Attrib\u00fatumn\u00e9v vagy kifejez\u00e9s: [{2}]{1}Le\u00edr\u00f3: [{0}]
+
+6135=Az addUpdate met\u00f3dusnak els\u0151 param\u00e9terk\u00e9nt \u00e1tadott attrib\u00fatumn\u00e9v vagy kifejez\u00e9s egy olyan t\u00e1bl\u00e1b\u00f3l hat\u00e1roz meg egy mez\u0151t, amely nincs lek\u00e9pezve a lek\u00e9rdez\u00e9sle\u00edr\u00f3ra. {1}Attrib\u00fatumn\u00e9v vagy kifejez\u00e9s: [{2}]{1}Hib\u00e1s mez\u0151: [{3}]{1}Le\u00edr\u00f3: [{0}]
+
+6136=A t\u00f6bb t\u00e1bl\u00e1s \u00f6r\u00f6kl\u00e9ssel lek\u00e9pzett oszt\u00e1lyok nem lehetnek ReportQuery elemek. Elem: {0}, Kifejez\u00e9s: {1}.
+
+6137=Kiv\u00e9tel t\u00f6rt\u00e9nt egy ReportQuery m\u0171velet v\u00e9grehajt\u00e1sakor egy konstruktor kifejez\u00e9ssel: {0}
+
+6138=A lek\u00e9rdez\u00e9s ideiglenes t\u00e1rol\u00f3t ig\u00e9nyel, azonban a(z) {0} nem t\u00e1mogatja az ideiglenes t\u00e1bl\u00e1kat.
+
+6139=Probl\u00e9ma t\u00f6rt\u00e9nt a lek\u00e9pez\u00e9sek keres\u00e9sekor a(z) {1} nev\u0171 mez\u0151ben meghat\u00e1rozott {0} sz\u00e1m\u00e1ra
+
+6140=Megk\u00eds\u00e9relt hozz\u00e1rendelni \u00f6sszef\u00e9s\u00fcl\u00e9si kifejez\u00e9seket a(z) {0} t\u00edpus\u00fa {1} jelent\u00e9selemhez.  Az \u00f6sszef\u00e9s\u00fcl\u00e9si kifejez\u00e9sek csak perzisztens objektumot visszaad\u00f3 elemekre \u00e9rv\u00e9nyesek.
+
+6141=ClassCastException t\u00f6rt\u00e9nt, amikor a rendszer k\u00eds\u00e9rletet tett a(z) {0} \u00e1talak\u00edt\u00e1s\u00e1ra egy oszt\u00e1lyra egy lek\u00e9rdez\u00e9s tippben.
+
+6142=A(z) {0} lek\u00e9rdez\u00e9s tipphez megadott {1} \u00e9rt\u00e9k egy illeg\u00e1lis viszonyhoz navig\u00e1lt.  A(z) {2} viszony nem egy OneToOne vagy egy OneToMany viszony.
+
+6143=A(z) {0} lek\u00e9rdez\u00e9s tipphez megadott {1} \u00e9rt\u00e9k egy nem l\u00e9tez\u0151 viszonyhoz navig\u00e1lt.  A(z) {2} viszony nem l\u00e9tezik.
+
+6144=A(z) {0} lek\u00e9rdez\u00e9s tipphez megadott {1} \u00e9rt\u00e9k nem tartalmaz elegend\u0151 tokent.  Az \u00f6sszef\u00e9s\u00fcl\u00e9snek a lek\u00e9rdez\u00e9s azonos\u00edt\u00f3 v\u00e1ltoz\u00f3j\u00e1val kell kezd\u0151dnie.  P\u00e9ld\u00e1ul a "SELECT x from X x" lek\u00e9rdez\u00e9sben egy "x"-hez tartoz\u00f3 "y"-ra val\u00f3 hivatkoz\u00e1shoz az "x.y" tipptet kell haszn\u00e1lnia.
+
+6145=Egy [{0}] \u00f6sszetett els\u0151dleges kulcs oszt\u00e1lyhoz a sz\u00e1ml\u00e1l\u00f3 megk\u00fcl\u00f6nb\u00f6ztet\u00e9s nem t\u00e1mogatott. Le\u00edr\u00f3: [{1}] 
+
+6146=A(z) {0} lek\u00e9rdez\u00e9s tipphez biztos\u00edtott {1} \u00e9rt\u00e9k egy \u00e9rv\u00e9nytelen \u00e9rt\u00e9k, az \u00e9rv\u00e9nyes \u00e9rt\u00e9kek eg\u00e9sz sz\u00e1mok vagy eg\u00e9sz sz\u00e1mk\u00e9nt (int) \u00e9rtelmezhet\u0151 karaktersorozatok.
+
+6147=A(z) {0} kifejez\u00e9s nem \u00e9rv\u00e9nyes egy r\u00e9szleges attrib\u00fatum beolvas\u00e1shoz.
+
+6148=A(z) {0} hozz\u00e1ad\u00e1sa a PLSQLStoredProcedureCall m\u0171velethez nem t\u00e1mogatott.
+
+6149=A PLSQLStoredProcedureCall m\u0171velet nem haszn\u00e1lhat n\u00e9vtelen argumentumot.
+
+6150=Egy [{1}] t\u00edpus\u00fa t\u00e1rol\u00f3ban nem haszn\u00e1lhat\u00f3 kulcsk\u00e9nt null\u00e9rt\u00e9k. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a(z) [{0}] t\u00edpus\u00fa objektumok kulcs\u00e9rt\u00e9ke nem lehet null.
+
+6151=Kiv\u00e9tel t\u00f6rt\u00e9nt egy {0} Redirector be\u00e1ll\u00edt\u00e1s\u00e1ra tett k\u00eds\u00e9rlet sor\u00e1n, amely egy {1} JPA lek\u00e9rdez\u00e9si tippen kereszt\u00fcl lett \u00e1tadva.  Ellen\u0151rizze, hogy a megadott Redirector objektum megval\u00f3s\u00edtja-e az org.eclipse.persistence.queries.QueryRedirector fel\u00fcletet.
+
+6152=Kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {1} JPA lek\u00e9rdez\u00e9s tippen kereszt\u00fcl \u00e1tadott {0} oszt\u00e1ly p\u00e9ld\u00e1nyos\u00edt\u00e1s\u00e1ra tett k\u00eds\u00e9rlet sor\u00e1n.  Ellen\u0151rizze, hogy az oszt\u00e1ly rendelkezik-e alap\u00e9rtelmezett konstruktorral.
+
+6153=A CompatibleType elemet egy \u00f6sszetett t\u00edpusra kell be\u00e1ll\u00edtani: {0}.
+
+6154=A TypeName elemet egy \u00f6sszetett t\u00edpusra kell be\u00e1ll\u00edtani: {0}.
+
+6155=Nem tal\u00e1lhat\u00f3 rel\u00e1ci\u00f3s t\u00e1bla a k\u00f6vetkez\u0151ben: {0}. {2}joinCriteria kifejez\u00e9s: [{1}]
+
+6156=Kiv\u00e9tel t\u00f6rt\u00e9nt a(z) [{0}] t\u00e9rk\u00e9pkulcs\u00e1nak beolvasottra t\u00f6rt\u00e9n\u0151 be\u00e1ll\u00edt\u00e1s\u00e1ra tett k\u00eds\u00e9rlet sor\u00e1n: [{1}].
+
+6157=A(z) [{0}] elem hozz\u00e1ad\u00e1sa egy t\u00e9rk\u00e9phez kulcs n\u00e9lk\u00fcl.  Ez \u00e1ltal\u00e1ban azt jelenti, hogy az adatb\u00e1zis nem tartalmaz egy v\u00e1rt kulcsot.
+
+6158=A MapContainerPolicy m\u0171velethez k\u00e9r\u00e9s \u00e9rkezett a(z) [{0}] elem kicsomagol\u00e1s\u00e1ra, ami nem egy t\u00e9rk\u00e9pelem.  Ez azt jelenti, hogy helytelen t\u00e1rol\u00f3 ir\u00e1nyelv van haszn\u00e1latban.
+
+6159=Nem tal\u00e1lhat\u00f3 MapEntryExpression lek\u00e9pez\u00e9s a k\u00f6vetkez\u0151 alappal: [{0}].
+
+6160=A(z) [{0}] alappal rendelkez\u0151 MapEntryExpression a(z) [{1}] lek\u00e9pez\u00e9sre hivatkozik, ami nem egy gy\u0171jtem\u00e9ny lek\u00e9pez\u00e9s.  A t\u00e9rk\u00e9pek csak gy\u0171jtem\u00e9ny lek\u00e9pez\u00e9sekhez l\u00e9tezhetnek.
+
+6161=A(z) [{0}] alappal rendelkez\u0151 MapEntryExpression a(z) [{1}] lek\u00e9pez\u00e9sre hivatkozik, ami nem egy t\u00e9rk\u00e9pre hivatkozik.
+
+6162=A(z) [{0}] listasorrend oszlop helytelen \u00e9rt\u00e9keket tartalmaz: {2}{1}
+
+6163=Az index() met\u00f3dushoz egy QueryKeyExpression sz\u00fcks\u00e9ges, nem alkalmazhat\u00f3 a k\u00f6vetkez\u0151re: [{0}]
+
+6164=A(z) index() met\u00f3dus egy nem-null listasorrend oszloppal rendelkez\u0151 gy\u0171jtem\u00e9nylek\u00e9pez\u00e9st tartalmaz\u00f3 lek\u00e9rdez\u00e9si kulcs kifejez\u00e9st ig\u00e9nyel. A(z) [{1}] nem felel meg ennek a felt\u00e9telnek a k\u00f6vetkez\u0151ben: [{0}]
+
+6165=Az IN haszn\u00e1lat\u00e1val v\u00e9gzett k\u00f6tegelt leh\u00edv\u00e1shoz singleton els\u0151dleges kulcs sz\u00fcks\u00e9ges.
+
+6166=K\u00eds\u00e9rlet t\u00f6rt\u00e9nt t\u00edpusk\u00e9nyszer\u00edt\u00e9sre egy \u00f6r\u00f6kl\u00e9si hierarchi\u00e1n k\u00edv\u00fcl.  \u00dagy t\u0171nik, a(z) [{0}] nem jelenik meg a(z) [{1}] oszt\u00e1lyhierarchi\u00e1j\u00e1ban. Megjegyz\u00e9s: Ez a kiv\u00e9tel jelezheti azt is, hogy egy Table-Per-Class \u00f6r\u00f6kl\u00e9si viszonyon v\u00e9gez t\u00edpusk\u00e9nyszer\u00edt\u00e9st, ami nem t\u00e1mogatott a t\u00edpusk\u00e9nyszer\u00edt\u00e9shez.
+
+6167=T\u00edpusk\u00e9nyszer\u00edt\u00e9s megh\u00edv\u00e1sa egy olyan kifejez\u00e9shez, amely nem haszn\u00e1l \u00f6r\u00f6kl\u00e9st: [{0}].
+
+6168=A lek\u00e9rdez\u00e9s nem k\u00e9sz\u00edthet\u0151 el\u0151, v\u00e1ratlan hiba t\u00f6rt\u00e9nt: [{0}].
+
+6169=Egy lek\u00e9pez\u00e9s \u00fagy lett konfigur\u00e1lva, hogy IN k\u00f6tegelt leh\u00edv\u00e1st haszn\u00e1ljon, azonban az eredeti lek\u00e9rdez\u00e9s nem lett be\u00e1ll\u00edtva IN k\u00f6tegelt leh\u00edv\u00e1s haszn\u00e1lat\u00e1ra, \u00e9s csak a k\u00f6vetkez\u0151 lehet: [{0}].
+
+6171=A(z) [{0}] munkamenett\u00edpushoz nem t\u00e1mogatott a particion\u00e1l\u00e1s. Csak ServerSession \u00e9s ClientSession t\u00e1mogatott.
+
+6172=Hi\u00e1nyz\u00f3 kapcsolatk\u00e9szlet a(z) [{0}] particion\u00e1l\u00e1s eset\u00e9n.
+
+6173=A(z) [{0}] kapcsolatk\u00e9szlet nem tudott \u00e1t\u00e1llni, minden kiszolg\u00e1l\u00f3 halott.
+
+6174=A(z) [{0}] munkamenet tulajdons\u00e1ghoz nem lett megadva \u00e9rt\u00e9k. Ez a kiv\u00e9tel akkor lehets\u00e9ges, amikor tov\u00e1bbi felt\u00e9teleket haszn\u00e1l, vagy b\u00e9rl\u0151 megk\u00fcl\u00f6nb\u00f6ztet\u0151 oszlopokat an\u00e9lk\u00fcl, hogy megadn\u00e1 a t\u00e1rs\u00edtott k\u00f6rnyezetf\u00fcgg\u0151 tulajdons\u00e1gokat. Ezeket a tulajdons\u00e1gokat az EntityManager, EntityManagerFactory vagy perzisztencia egys\u00e9g tulajdons\u00e1gokon kereszt\u00fcl kell be\u00e1ll\u00edtani. A nat\u00edv EclipseLink haszn\u00e1lata eset\u00e9n ezeket a tulajdons\u00e1gokat k\u00f6zvetlen\u00fcl a munkamenethez kell be\u00e1ll\u00edtani.
+
+6175=A nat\u00edv SQL lek\u00e9rdez\u00e9sek le vannak tiltva. Ez az "eclipselink.jdbc.allow-native-sql-queries" perzisztencia egys\u00e9g tulajdons\u00e1g false \u00e9rt\u00e9k\u0171re \u00e1ll\u00edt\u00e1s\u00e1val, vagy a perzisztencia egys\u00e9gben meghat\u00e1rozott legal\u00e1bb egy multitenant entit\u00e1s meghat\u00e1roz\u00e1s\u00e1val v\u00e9gezhet\u0151 el. Ellen\u0151rizze a perzisztencia egys\u00e9g specifik\u00e1ci\u00f3j\u00e1t. A nat\u00edv sql lek\u00e9rdez\u00e9sek enged\u00e9lyez\u00e9s\u00e9hez \u00e1ll\u00edtsa be ezt a tulajdons\u00e1got true \u00e9rt\u00e9kre. Ennek alternat\u00edv\u00e1jak\u00e9nt az egy\u00e9ni lek\u00e9rdez\u00e9sek kihagyhatj\u00e1k ezt a be\u00e1ll\u00edt\u00e1st az "eclipselink.jdbc.allow-native-sql-query" lek\u00e9rdez\u00e9si tipp true \u00e9rt\u00e9kre \u00e1ll\u00edt\u00e1s\u00e1val.
+
+6176=Kiv\u00e9tel t\u00f6rt\u00e9nt a konstruktor inicializ\u00e1l\u00e1sakor a(z) [{0}] oszt\u00e1lyb\u00f3l:  [{1}]
+
+6177=A(z) [{0}] oszlop eredm\u00e9ny nem tal\u00e1lhat\u00f3 a lek\u00e9rdez\u00e9s eredm\u00e9nyeiben.
+
+6178=A true \u00e9rt\u00e9kre be\u00e1ll\u00edtott isResultSetAccessOptimizedQuery tulajdons\u00e1g \u00fctk\u00f6zik m\u00e1s lek\u00e9rdez\u00e9si be\u00e1ll\u00edt\u00e1sokkal.
+
+6179=Az sopObject visszaalak\u00edt\u00e1sa meghi\u00fasult a k\u00f6vetkez\u0151r\u0151l: [{0}] ebben: [{1}]
+
+6180=A soros\u00edtott sopObject nem tal\u00e1lhat\u00f3 a k\u00f6vetkez\u0151ben: [{0}], [{1}]
+
+6181=A sopObject [{0}] verzi\u00f3sz\u00e1ma helytelen a k\u00f6vetkez\u0151ben: [{1}], [{2}]
+
+6182=A sopObject helytelen [{0}] els\u0151dleges kulcsot tartalmaz a k\u00f6vetkez\u0151ben: [{1}], [{2}]
+
+6183=A(z) {0} helyr\u0151l sz\u00e1rmaz\u00f3 {2} attrib\u00fatum {1} lek\u00e9pez\u00e9si t\u00edpusa nem t\u00e1mogatott a Lek\u00e9rdez\u00e9s p\u00e9lda szerint funkci\u00f3val.  Ha az attrib\u00fatum biztons\u00e1gosan figyelmen k\u00edv\u00fcl hagyhat\u00f3, akkor adja hozz\u00e1 a figyelmen k\u00edv\u00fcl hagy\u00e1s list\u00e1hoz, vagy az ir\u00e1nyelvben a p\u00e9lda \u00e9rv\u00e9nyes\u00edt\u00e9st \u00e1ll\u00edtsa be false \u00e9rt\u00e9kre.
+

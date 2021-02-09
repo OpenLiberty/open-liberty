@@ -38,6 +38,7 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -86,7 +87,7 @@ public class JSF22MiscLifecycleTests {
 
             Log.info(c, name.getMethodName(), "Navigating to: /JSF22ActionListener/testActionListener.jsf");
             HtmlTextInput input = (HtmlTextInput) page.getElementById("testForm:value2");
-            input.type("2", false, false, false);
+            input.type("2");
 
             HtmlElement button = (HtmlElement) page.getElementById("testForm:button1");
             page = button.click();
@@ -140,13 +141,21 @@ public class JSF22MiscLifecycleTests {
 
             webClient.setAjaxController(new NicelyResynchronizingAjaxController());
             URL url = JSFUtils.createHttpUrl(jsfTestServer1, contextRoot, "simpleForm.jsf");
-            HtmlPage page = (HtmlPage) webClient.getPage(url);
 
             Log.info(c, name.getMethodName(), "Navigating to: /JSF22ActionListener/simpleForm.jsf");
-            HtmlHiddenInput hidden = (HtmlHiddenInput) page.getElementByName("javax.faces.ViewState");
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
+            Log.info(c, name.getMethodName(), "Page output: " + page.asXml());
 
-            Log.info(c, name.getMethodName(), "The ViewState hidden field has an id of: " + hidden.getAttribute("id"));
-            assertFalse("javax.faces.ViewState".equals(hidden.getAttribute("id")));
+            HtmlHiddenInput hidden;
+            if (JakartaEE9Action.isActive()) {
+                hidden = (HtmlHiddenInput) page.getElementByName("jakarta.faces.ViewState");
+                Log.info(c, name.getMethodName(), "The ViewState hidden field has an id of: " + hidden.getAttribute("id"));
+                assertFalse("jakarta.faces.ViewState".equals(hidden.getAttribute("id")));
+            } else {
+                hidden = (HtmlHiddenInput) page.getElementByName("javax.faces.ViewState");
+                Log.info(c, name.getMethodName(), "The ViewState hidden field has an id of: " + hidden.getAttribute("id"));
+                assertFalse("javax.faces.ViewState".equals(hidden.getAttribute("id")));
+            }
         }
     }
 }

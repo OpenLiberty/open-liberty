@@ -9,13 +9,14 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 //  CHANGE HISTORY
-//      Defect          Date            Modified By             Description
+//    Defect | Issue   Date            Modified By             Description
 //--------------------------------------------------------------------------------------
 //      PM84305         07/10/13        pmdinh                  Prevent OOM which may occur due to application design
 //      PI05845         08/21/14        sartoris                tWAS PM94199 Conditionally enabled default error pages in Servlet 3.0
 //      131004          09/29/14        bitonti                 Unconditionally enable default error pages in Servlet 3.1
 //      148426          10/06/14        bitonti                 Give extension default error page precedence in Servlet 3.0
 //      PI67942         10/21/16        zaroman                 encode URI after dispatch
+//      11909           12/11/20        jimblye                 Allow context-root to be overridden in server.xml
 
 package com.ibm.ws.webcontainer.osgi.container.config;
 
@@ -45,7 +46,6 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.container.ErrorPage;
 import com.ibm.ws.container.service.annotations.WebAnnotations;
-import com.ibm.ws.container.service.annotations.FragmentAnnotations;
 import com.ibm.ws.container.service.annotations.SpecificAnnotations;
 import com.ibm.ws.container.service.app.deploy.WebModuleInfo;
 import com.ibm.ws.container.service.app.deploy.extended.ExtendedApplicationInfo;
@@ -222,7 +222,9 @@ public class WebAppConfiguratorHelper implements ServletConfiguratorHelper {
      */
     public static int getVersionId(String version) throws IllegalStateException {
         int versionID = 0;
-        if ("4.0".equals(version)) {
+        if ("5.0".equals(version)) {
+            versionID = 50;
+        }else if ("4.0".equals(version)) {
             versionID = 40;
         }else if ("3.1".equals(version)) {
             versionID = 31;
@@ -717,8 +719,22 @@ public class WebAppConfiguratorHelper implements ServletConfiguratorHelper {
         }
         configureOrderedLibPaths(orderedLibPaths);
         
+        configureContextRoot();
+        
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.exit(tc, methodName, "WebAppConfiguration [ " + displayName + " ]");
+        }              
+    }
+    
+    /**
+     * Only sets the contextRoot if the context root has been overridden 
+     * by the server.xml in a <web-ext> element of <application>
+     */
+    private void configureContextRoot() {
+
+        String contextRoot = configurator.getContextRootFromServerConfig();
+        if (contextRoot != null) {
+            this.webAppConfiguration.config.setContextRoot(contextRoot);
         }
     }
 

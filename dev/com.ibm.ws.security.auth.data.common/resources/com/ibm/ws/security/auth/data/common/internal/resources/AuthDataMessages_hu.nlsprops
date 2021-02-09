@@ -26,3 +26,9 @@ AUTH_DATA_CONFIG_ERROR_NO_SUCH_ALIAS.useraction=Adja meg egy l\u00e9tez\u0151 fe
 AUTH_DATA_CONFIG_ERROR_INCOMPLETE=CWWKS1301E: Konfigur\u00e1ci\u00f3s hiba t\u00f6rt\u00e9nt. A(z) {0} attrib\u00fatumot meg kell adni.
 AUTH_DATA_CONFIG_ERROR_INCOMPLETE.explanation=Az attrib\u00fatumot meg kell adni.
 AUTH_DATA_CONFIG_ERROR_INCOMPLETE.useraction=Adja meg a hi\u00e1nyz\u00f3 attrib\u00fatum \u00e9rt\u00e9k\u00e9t.
+
+# do not translate 'authData'
+AUTH_DATA_EXCLUSIVE_ATTRS=CWWKS1302E: A(z) {0} \u00e9s a(z) {1} attrib\u00fatum egyar\u00e1nt konfigur\u00e1lva lett a(z) {2} authData elemhez. Csak a(z) {0} vagy a(z) {1} konfigur\u00e1lhat\u00f3, a kett\u0151 egyszerre nem.
+AUTH_DATA_EXCLUSIVE_ATTRS.explanation=A megadott attrib\u00fatumok k\u00f6lcs\u00f6n\u00f6sen kiz\u00e1rj\u00e1k egym\u00e1st.
+AUTH_DATA_EXCLUSIVE_ATTRS.useraction=Csak az attrib\u00fatumok egyik\u00e9t adja meg.
+ 

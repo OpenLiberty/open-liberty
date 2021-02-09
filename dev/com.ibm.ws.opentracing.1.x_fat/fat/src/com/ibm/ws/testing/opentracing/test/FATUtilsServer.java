@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -145,14 +145,23 @@ public class FATUtilsServer implements FATOpentracingConstants {
             connection.setDoOutput(true);
             connection.setUseCaches(false);
             connection.setRequestMethod( requestMethod.toString() ); // 'setRequestMethod' throws ProtocolException
-            InputStream connectionStream = connection.getInputStream(); // throws IOException
-            InputStreamReader rawConnectionReader = new InputStreamReader(connectionStream);
-            BufferedReader connectionReader = new BufferedReader(rawConnectionReader);
+            connection.connect();
+            int responseCode = connection.getResponseCode();
+            if ((responseCode == HttpURLConnection.HTTP_OK) || (responseCode == HttpURLConnection.HTTP_NO_CONTENT)) {
+                InputStream connectionStream = connection.getInputStream(); // throws IOException
+                InputStreamReader rawConnectionReader = new InputStreamReader(connectionStream);
+                BufferedReader connectionReader = new BufferedReader(rawConnectionReader);
 
-            List<String> responseLines = read(connectionReader); // throws IOException
-            info(methodName, "RETURN", "Lines", Integer.valueOf(responseLines.size()));
-            return responseLines;
-
+                List<String> responseLines = read(connectionReader); // throws IOException
+                info(methodName, "RETURN", "Lines", Integer.valueOf(responseLines.size()));
+                return responseLines;
+            } else if (responseCode == HttpURLConnection.HTTP_NOT_FOUND){
+                info(methodName, "RETURN", "response code", responseCode);
+                throw new TestAppException(responseCode);
+            } else {
+                info(methodName, "RETURN", "response code", responseCode);
+                throw new TestAppException(responseCode);
+            }
         } finally {
             connection.disconnect();
         }

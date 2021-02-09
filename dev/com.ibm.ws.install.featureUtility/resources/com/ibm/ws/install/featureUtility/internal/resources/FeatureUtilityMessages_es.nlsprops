@@ -1,0 +1,60 @@
+###############################################################################
+# Copyright (c) 2010, 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.ws.install.featureUtility/resources/com/ibm/ws/install/featureUtility/internal/resources/FeatureUtilityMessages.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+# Messages in the range CWWKF1400 to 1499 are reserved for the install utility.
+
+MSG_FEATUREUTILITY_SETTTINGS=Valores de featureUtility
+MSG_PROPERTIES_FILE_NOT_FOUND=No se ha detectado ninguna configuraci\u00f3n. El repositorio de Maven Central es el repositorio de activos predeterminado.
+MSG_PROPERTIES_FILE_NOT_FOUND_EXPLANATION=Para personalizar los valores de featureUtility, cree un archivo featureUtility.properties en la siguiente ubicaci\u00f3n: {0}
+MSG_PROPERTIES_FILE_NOT_FOUND_ACTION=Utilice el ejemplo siguiente como plantilla para crear su propio archivo featureUtility.properties. Descomente las l\u00edneas marcadas por un solo car\u00e1cter # y sustituya los valores por valores personalizados propios.
+MSG_PROPS_FILE_NOT_FOUND_EXPLANATION=Para personalizar los valores de installUtility, cree un archivo repositories.properties en la siguiente ubicaci\u00f3n: {0}
+MSG_PROPS_FILE_NOT_FOUND_ACTION=Utilice el ejemplo siguiente como plantilla para crear su propio archivo repositories.properties. Descomente las l\u00edneas marcadas por un solo car\u00e1cter # y sustituya los valores por valores personalizados propios.
+MSG_TRUE=Verdadero
+MSG_FALSE=Falso
+MSG_DEFAULT_REPO_USEAGE_LABEL=Utilizar repositorio predeterminado:
+MSG_DEFAULT_REPO_NAME_LABEL=Repositorio de activos predeterminado:
+MSG_DEFAULT_REPO_NAME=Repositorio central de Maven
+MSG_CONFIG_REPO_LABEL=Repositorios configurados
+MSG_MAVEN_LOCAL_REPO=Repositorio local de Maven
+MSG_NO_CONFIG_REPO=No se ha configurado ning\u00fan repositorio
+MSG_UNSPECIFIED=<Sin especificar>
+MSG_PASSWORD_NOT_ENCODED_PROXY=La contrase\u00f1a para este proxy no est\u00e1 codificada. Para codificar la contrase\u00f1a, ejecute la acci\u00f3n de codificaci\u00f3n securityUtility con la opci\u00f3n --encoding establecida en un tipo de codificaci\u00f3n soportado. Los tipos soportados son xor (valor predeterminado), aes y hash.
+MSG_PROXY_LABEL=Valores de proxy
+MSG_NO_CONFIG_PROXY=No se ha configurado ning\u00fan proxy
+MSG_REPO_FILE_NOT_FOUND=No se ha detectado ninguna configuraci\u00f3n. IBM WebSphere Liberty Repository es el repositorio de activos predeterminado.
+MSG_REPO_FILE_NOT_FOUND_EXPLANATION=Para personalizar los valores de installUtility, cree un archivo repositories.properties en la siguiente ubicaci\u00f3n: {0}
+MSG_REPO_FILE_NOT_FOUND_ACTION=Utilice el ejemplo siguiente como plantilla para crear su propio archivo repositories.properties. Descomente las l\u00edneas marcadas por un solo car\u00e1cter # y sustituya los valores por valores personalizados propios.
+MSG_VALIDATION_SUCCESSFUL=El archivo de propiedades ha pasado satisfactoriamente la validaci\u00f3n.
+MSG_VALIDATION_FAILED_NO_MESSAGES=El archivo de propiedades ha fallado la validaci\u00f3n. Utilice la opci\u00f3n --viewValidationMessages para ver mensajes de validaci\u00f3n detallados.
+MSG_VALIDATION_NUM_OF_ERRORS=N\u00famero de errores: {0}
+MSG_VALIDATION_MESSAGES=Validaci\u00f3n de archivo de propiedades
+MSG_VALIDATION_MESSAGE_FORMAT={0}. {1}
+
+FIELD_REPO_NAME=Nombre: {0}
+FIELD_REPO_LOCATION=Ubicaci\u00f3n: {0}
+FIELD_REPO_STATUS=Estado: {0}
+FIELD_REPO_REASON=Motivo: {0}
+FIELD_REPO_WARNING=Aviso: {0}
+FIELD_NAME=Nombre:
+FIELD_PORT=Puerto:
+FIELD_LOCATION=Ubicaci\u00f3n:
+FIELD_PROXY_SERVER=Servidor proxy:
+FIELD_USER=Nombre de usuario:
+FIELD_PASS=Contrase\u00f1a:
+FIELD_PROPS_FILE=Archivo de propiedades: {0}
+FIELD_REPO=Servidor de repositorio: {0} ({1})
+FIELD_PROXY=Servidor proxy: {0}
+FIELD_VALIDATION_RESULTS=Resultados de validaci\u00f3n: {0}
+FIELD_VALIDATION_LINE=L\u00ednea: {0}

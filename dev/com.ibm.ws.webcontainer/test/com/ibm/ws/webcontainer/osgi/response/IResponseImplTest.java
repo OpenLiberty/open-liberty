@@ -62,8 +62,8 @@ public class IResponseImplTest {
                 one(response).addCookie(with(any(HttpCookie.class)));
             }
         });
-        IResponseImpl iRequestImpl = new IResponseImpl(null, conn);
-        iRequestImpl.addCookie(mockCookie);
+        IResponseImpl iResponseImpl = new IResponseImpl(null, conn);
+        iResponseImpl.addCookie(mockCookie);
 
         mock.assertIsSatisfied();
     }

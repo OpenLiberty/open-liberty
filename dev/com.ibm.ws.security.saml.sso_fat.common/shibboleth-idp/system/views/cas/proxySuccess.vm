@@ -1,0 +1,5 @@
+#include("cas/header.vm")
+  <cas:proxySuccess>
+    <cas:proxyTicket>$escapeUtils.escapeXml($proxyTicketResponse.pt)</cas:proxyTicket>
+  </cas:proxySuccess>
+#include("cas/footer.vm")

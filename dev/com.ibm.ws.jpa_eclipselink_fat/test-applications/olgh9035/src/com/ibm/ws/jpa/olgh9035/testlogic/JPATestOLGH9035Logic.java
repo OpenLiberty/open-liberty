@@ -290,7 +290,8 @@ public class JPATestOLGH9035Logic extends AbstractTestLogic {
             }
         }
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
-        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+        final String dbMajorVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbMajorVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbMajorVersion"));
+//        final String dbMinorVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbMinorVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbMinorVersion"));
 
         //Only run this test on Oracle
         if (!isOracle(dbProductName)) {
@@ -313,7 +314,7 @@ public class JPATestOLGH9035Logic extends AbstractTestLogic {
                 //Test that EclipseLink detected the correct OracleXPlatform
                 //Note: At this time, we are not using the Oracle extension bundle, so this test should only
                 // check that we are detecting the core platform packages
-                Assert.assertEquals("org.eclipse.persistence.platform.database.Oracle" + dbProductVersion + "Platform", platform.getClass().getName());
+                Assert.assertEquals("org.eclipse.persistence.platform.database.Oracle" + dbMajorVersion + "Platform", platform.getClass().getName());
             } finally {
                 if (tj.isTransactionActive()) {
                     tj.rollbackTransaction();

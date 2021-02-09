@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2018 IBM Corporation and others.
+ * Copyright (c) 1997, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -134,12 +134,12 @@ public class SSLConnectionLink extends OutboundProtocolLink implements Connectio
 
         // Check to see if http/2 is enabled for this connection and save the result
         if (CHFWBundle.getServletConfiguredHttpVersionSetting() != null) {
-            if (SSLChannelConstants.OPTIONAL_DEFAULT_OFF_20.equalsIgnoreCase(CHFWBundle.getServletConfiguredHttpVersionSetting())) {
+            if (CHFWBundle.isHttp2DisabledByDefault()) {
                 if (getChannel().getUseH2ProtocolAttribute() != null && getChannel().getUseH2ProtocolAttribute()) {
                     http2Enabled = true;
                     this.sslChannel.checkandInitALPN();
                 }
-            } else if (SSLChannelConstants.OPTIONAL_DEFAULT_ON_20.equalsIgnoreCase(CHFWBundle.getServletConfiguredHttpVersionSetting())) {
+            } else if (CHFWBundle.isHttp2EnabledByDefault()) {
                 if (getChannel().getUseH2ProtocolAttribute() == null || getChannel().getUseH2ProtocolAttribute()) {
                     http2Enabled = true;
                     this.sslChannel.checkandInitALPN();
@@ -377,15 +377,17 @@ public class SSLConnectionLink extends OutboundProtocolLink implements Connectio
         private WsByteBuffer encryptedAppBuffer;
         /** Inbound or outbound */
         private final FlowType flowType;
+        /** allow other code to tell this class if they changed netBuffer */
+        private WsByteBuffer updatedNetBuffer = null;
 
         /**
          * Constructor.
          *
-         * @param _connLink SSLConnectionLink associated with this callback.
-         * @param _netBuffer Buffer from the network / device side.
+         * @param _connLink           SSLConnectionLink associated with this callback.
+         * @param _netBuffer          Buffer from the network / device side.
          * @param _decryptedNetBuffer Buffer containing results of decrypting netbuffer
          * @param _encryptedAppBuffer Encrypted buffer to be sent out through network / device side.
-         * @param _flowType inbound or outbound
+         * @param _flowType           inbound or outbound
          */
         public MyHandshakeCompletedCallback(
                                             SSLConnectionLink _connLink,
@@ -399,6 +401,17 @@ public class SSLConnectionLink extends OutboundProtocolLink implements Connectio
             this.decryptedNetBuffer = _decryptedNetBuffer;
             this.encryptedAppBuffer = _encryptedAppBuffer;
             this.flowType = _flowType;
+        }
+
+        @Override
+        public void updateNetBuffer(WsByteBuffer newBuffer) {
+            netBuffer = newBuffer;
+            updatedNetBuffer = newBuffer;
+        }
+
+        @Override
+        public WsByteBuffer getUpdatedNetBuffer() {
+            return updatedNetBuffer;
         }
 
         /*
@@ -575,9 +588,15 @@ public class SSLConnectionLink extends OutboundProtocolLink implements Connectio
             // Continue the SSL handshake. Do this with asynchronous handShake
             result = SSLUtils.handleHandshake(this, netBuffer, decryptedNetBuffer,
                                               encryptedAppBuffer, result, callback, false);
+
             // Check to see if the work was able to be done synchronously.
             if (result != null) {
                 // Handshake is done.
+
+                if ((callback != null) && (callback.getUpdatedNetBuffer() != null)) {
+                    netBuffer = callback.getUpdatedNetBuffer();
+                }
+
                 readyInboundPostHandshake(netBuffer, decryptedNetBuffer,
                                           encryptedAppBuffer, result.getHandshakeStatus());
             } else {
@@ -765,7 +784,7 @@ public class SSLConnectionLink extends OutboundProtocolLink implements Connectio
      * outbound socket has been established. Establish the SSL connection before reporting
      * to the next channel. Note, this method is called in both sync and async flows.
      *
-     * @param inVC virtual connection associated with this request
+     * @param inVC  virtual connection associated with this request
      * @param async flag for asynchronous (true) or synchronous (false)
      * @throws IOException
      */
@@ -800,6 +819,10 @@ public class SSLConnectionLink extends OutboundProtocolLink implements Connectio
             // Check to see if the work was able to be done synchronously.
             if (sslResult != null) {
                 // Handshake was done synchronously.
+                if ((callback != null) && (callback.getUpdatedNetBuffer() != null)) {
+                    netBuffer = callback.getUpdatedNetBuffer();
+                }
+
                 readyOutboundPostHandshake(netBuffer, decryptedNetBuffer,
                                            encryptedAppBuffer, sslResult.getHandshakeStatus(), async);
             }
@@ -847,11 +870,11 @@ public class SSLConnectionLink extends OutboundProtocolLink implements Connectio
      * This method is called to handle the results of an SSL handshake. This may be called
      * by a callback or in the same thread as the connect request.
      *
-     * @param netBuffer buffer for data flowing in fron the net
+     * @param netBuffer          buffer for data flowing in fron the net
      * @param decryptedNetBuffer buffer for decrypted data from the net
      * @param encryptedAppBuffer buffer for encrypted data flowing from the app
-     * @param hsStatus output from the last call to the SSL engine
-     * @param async whether this is for an async (true) or sync (false) request
+     * @param hsStatus           output from the last call to the SSL engine
+     * @param async              whether this is for an async (true) or sync (false) request
      * @throws IOException
      */
     protected void readyOutboundPostHandshake(

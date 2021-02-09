@@ -32,7 +32,7 @@ no.such.element.CWMCG0300E=CWMCG0300E: A(z) {0} tulajdons\u00e1g nem tal\u00e1lh
 no.such.element.CWMCG0300E.explanation=A k\u00e9rt tulajdons\u00e1g egyik konfigur\u00e1lt forr\u00e1sban sem l\u00e9tezik.
 no.such.element.CWMCG0300E.useraction=Adja hozz\u00e1 a tulajdons\u00e1got az egyik l\u00e9tez\u0151 konfigur\u00e1ci\u00f3s forr\u00e1shoz vagy adjon hozz\u00e1 olyan \u00faj konfigur\u00e1ci\u00f3s forr\u00e1st, amely tartalmazza a tulajdons\u00e1got.
 
-failed.to.schedule.cache.invalidation.CWMCG0301E=CWMCG0301E: A MicroProfile konfigur\u00e1ci\u00f3s gyors\u00edt\u00f3t\u00e1r \u00e9rv\u00e9nytelen\u00edt\u00e9se nem \u00fctemezhet\u0151. A kiv\u00e9tel: {0}.
+failed.to.schedule.cache.invalidation.CWMCG0301E=CWMCG0301E: A MicroProfile konfigur\u00e1ci\u00f3s gyors\u00edt\u00f3t\u00e1r \u00e9rv\u00e9nytelen\u00edt\u00e9se nem \u00fctemezhet\u0151. A kiv\u00e9tel: {0}
 failed.to.schedule.cache.invalidation.CWMCG0301E.explanation=A MicroProfile konfigur\u00e1ci\u00f3ban t\u00f6rt\u00e9nt v\u00e1ltoz\u00e1sok lehet, hogy az alkalmaz\u00e1sban nem t\u00fckr\u00f6z\u0151dnek.
 failed.to.schedule.cache.invalidation.CWMCG0301E.useraction=A kiszolg\u00e1l\u00f3 message.log f\u00e1jlj\u00e1t \u00e9s FFDC napl\u00f3it \u00e1ttekintve azonos\u00edtsa be a probl\u00e9m\u00e1t.
 

@@ -12,5 +12,6 @@
 
 -includeresource: \
    @${repo;org.apache.cxf:cxf-rt-rs-service-description;3.3.0}!/!META-INF/*
-
--buildpath: org.apache.cxf:cxf-rt-rs-service-description;version=3.3.0
+   
+-buildpath: \
+	org.apache.cxf:cxf-rt-rs-service-description;version=3.3.0

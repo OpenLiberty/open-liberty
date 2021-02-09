@@ -80,7 +80,8 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
     public static void setUp() throws Exception {
         ShrinkHelper.defaultApp(server, APP_NAME, "session.cache.web");
 
-        if (FATSuite.isMulticastDisabled()) {
+        String osName = System.getProperty("os.name").toLowerCase();
+        if (FATSuite.isMulticastDisabled() || osName.contains("mac os") || osName.contains("macos")) {
             Log.info(SessionCacheErrorPathsTest.class, "setUp", "Disabling multicast in Hazelcast config.");
             hazelcastConfigFile = "hazelcast-localhost-only-multicastDisabled.xml";
         }

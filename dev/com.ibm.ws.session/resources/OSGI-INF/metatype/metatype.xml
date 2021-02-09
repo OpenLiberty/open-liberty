@@ -202,6 +202,13 @@
             description="%debug.crossover.desc" 
             ibmui:group="advanced" 
             required="false" type="Boolean" default="false"/>
+        
+        <AD id="modifyActiveCountOnInvalidatedSession" 
+            name="%modify.active.count.on.invalidated.session.name" 
+            description="%modify.active.count.on.invalidated.session.description" 
+            ibmui:group="advanced" 
+            required="false" type="Boolean" default="true"/>
+            
     </OCD>
   
     <Designate pid="com.ibm.ws.session">

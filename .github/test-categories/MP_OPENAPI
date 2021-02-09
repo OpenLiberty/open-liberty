@@ -1,0 +1,10 @@
+com.ibm.ws.microprofile.openapi.1.1_fat_tck
+com.ibm.ws.microprofile.openapi_fat
+com.ibm.ws.microprofile.openapi_fat_tck
+com.ibm.ws.microprofile.opentracing.1.1_fat_tck
+com.ibm.ws.microprofile.opentracing.1.2_fat_tck
+com.ibm.ws.microprofile.opentracing.1.3_fat_tck
+com.ibm.ws.microprofile.opentracing.jaeger_fat
+com.ibm.ws.microprofile.opentracing_fat_tck
+io.openliberty.microprofile.openapi.2.0.internal_fat
+io.openliberty.microprofile.openapi.2.0.internal_fat_tck

@@ -70,12 +70,18 @@ public class BasicMessageContextBuilder<InboundMessageType extends SAMLObject, O
         return new BasicMessageContext<InboundMessageType, OutboundMessageType, NameIdentifierType>(ssoService);
     }
 
+    BasicMessageContext<InboundMessageType, OutboundMessageType, NameIdentifierType> getBasicMessageContext(SsoSamlService ssoService, HttpServletRequest request,
+                                                                                                            HttpServletResponse response) {
+        return new BasicMessageContext<InboundMessageType, OutboundMessageType, NameIdentifierType>(ssoService, request, response);
+    }
+
     public BasicMessageContext<InboundMessageType, OutboundMessageType, NameIdentifierType> buildAcs(HttpServletRequest req,
                                                                                                      HttpServletResponse res,
                                                                                                      SsoSamlService ssoService,
                                                                                                      String externalRelayState,
                                                                                                      SsoRequest samlRequest) throws SamlException {
-        BasicMessageContext<InboundMessageType, OutboundMessageType, NameIdentifierType> basicMessageContext = getBasicMessageContext(ssoService);
+        BasicMessageContext<InboundMessageType, OutboundMessageType, NameIdentifierType> basicMessageContext = getBasicMessageContext(ssoService, req, res);
+
         basicMessageContext.setAndRemoveCachedRequestInfo(externalRelayState, samlRequest);
         basicMessageContext.setInboundMessageTransport(new HttpServletRequestAdapter(req));
         setIdpMetadaProvider(basicMessageContext);

@@ -12,6 +12,8 @@ package com.ibm.ws.cdi.impl.weld;
 
 import java.io.IOException;
 import java.net.URL;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Collection;
 
 import org.jboss.weld.manager.BeanManagerImpl;
@@ -71,10 +73,16 @@ public class ResourceLoaderImpl implements ResourceLoader
         }
     }
 
+    @FFDCIgnore(ClassNotFoundException.class)
     private Class<?> loadFromWeldBundleCL(String className)
     {
         //use weld bundle classloader to load the class
-        ClassLoader bundleCL = BeanManagerImpl.class.getClassLoader();
+        ClassLoader bundleCL = (ClassLoader) AccessController
+				.doPrivileged(new PrivilegedAction() {
+					public Object run() {
+						return BeanManagerImpl.class.getClassLoader();
+					}
+				});
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
         {
             Tr.debug(tc, "Unable to load class " + className + " using classloader " + delegate + " Try to use the weld bundle classloader "

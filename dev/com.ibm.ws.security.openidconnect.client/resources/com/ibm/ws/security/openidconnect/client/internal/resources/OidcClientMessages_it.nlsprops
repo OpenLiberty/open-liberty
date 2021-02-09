@@ -34,10 +34,11 @@ OIDC_CLIENT_CONFIG_MODIFIED.useraction=Nessuna.
 #1702 is used by clients.common bundle, do not use.
 
 # used_by_client_project and clients project IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN THE OTHER BUNDLE!
+# social also uses this and it does not have the enforceHTTPS attribute.
 #do not translate enforceHTTPS
-OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS=CWWKS1703E: Il client OpenID Connect richiede SSL (HTTPS) ma l''URL del provider OpenID Connect \u00e8 HTTP: [{0}].  Aggiornare la configurazione in modo che l''attributo [enforceHTTPS] corrisponda allo schema URL di destinazione. 
+OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS=CWWKS1703E: Il client OpenID Connect richiede SSL (HTTPS) ma l''URL del provider OpenID Connect \u00e8 HTTP: [{0}]. Aggiornare la configurazione per utilizzare un URL HTTPS oppure utilizzare la funzione OpenID Connect Client e impostare il valore di enforceHTTPS su false. 
 OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS.explanation=Il client OpenID Connect (relying party o server risorse) richiede SSL ma il protocollo URL del provider OpenID Connect (OP) specificato nella configurazione client OpenID Connect non \u00e8 HTTPS.
-OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS.useraction=Eseguire una delle seguenti operazioni: 1) Assicurarsi che il provider OpenID Connect supporti SSL. 2) Se il provider OpenID Connect non supporta SSL, impostare enforceHTTPS nella configurazione client OpenID Connect su false.
+OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS.useraction=Effettuare una delle seguenti operazioni: innanzitutto, assicurarsi che il provider OpenID Connect supporti SSL. Se il provider OpenID Connect non supporta SSL, utilizzare la funzione OpenID Connect Client e impostare enforceHTTPS su false nella configurazione della funzione OpenID Connect Client.
 
 # unused, but present in both bundles.  IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES
 OIDC_CLIENT_RESPONSE_STATE_VERIFY_ERR=CWWKS1704E: Lo stato corrente [{0}] per il client OpenID Connect [{2}] e il parametro di stato [{1}] nella risposta dal provider OpenID Connect non corrispondono.  Questa condizione non \u00e8 consentita.

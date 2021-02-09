@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2008 IBM Corporation and others.
+ * Copyright (c) 1997, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -39,7 +39,9 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ibm.ejs.j2c.HandleList;
 import com.ibm.ejs.ras.TraceNLS;
+import com.ibm.websphere.csi.CSIException;
 import com.ibm.websphere.servlet.error.ServletErrorReport;
 import com.ibm.websphere.servlet.event.ServletErrorEvent;
 import com.ibm.websphere.servlet.event.ServletEvent;
@@ -72,6 +74,7 @@ import com.ibm.wsspi.webcontainer.WebContainerConstants;
 import com.ibm.wsspi.webcontainer.WebContainerRequestState;
 import com.ibm.wsspi.webcontainer.collaborator.CollaboratorInvocationEnum;
 import com.ibm.wsspi.webcontainer.collaborator.ICollaboratorHelper;
+import com.ibm.wsspi.webcontainer.collaborator.IConnectionCollaborator;
 import com.ibm.wsspi.webcontainer.collaborator.IWebAppNameSpaceCollaborator;
 import com.ibm.wsspi.webcontainer.collaborator.IWebAppTransactionCollaborator;
 import com.ibm.wsspi.webcontainer.collaborator.TxCollaboratorConfig;
@@ -150,6 +153,7 @@ public abstract class ServletWrapper extends GenericServlet implements RequestPr
     protected IPlatformHelper platformHelper;
     private IWebAppNameSpaceCollaborator webAppNameSpaceCollab;
     private IWebAppTransactionCollaborator txCollab;
+    private IConnectionCollaborator connCollab;
 
     // PK58806
     private static boolean suppressServletExceptionLogging = WCCustomProperties.SUPPRESS_SERVLET_EXCEPTION_LOGGING;
@@ -195,6 +199,7 @@ public abstract class ServletWrapper extends GenericServlet implements RequestPr
         webAppNameSpaceCollab = collabHelper.getWebAppNameSpaceCollaborator();
         txCollab = collabHelper.getWebAppTransactionCollaborator();
         platformHelper = WebContainer.getWebContainer().getPlatformHelper();
+        connCollab = collabHelper.getWebAppConnectionCollaborator();
     }
 
     public void setParent(IServletContext parent) {
@@ -224,7 +229,7 @@ public abstract class ServletWrapper extends GenericServlet implements RequestPr
         
         //These preInvokes are nested inside other collaborator preInvokes when you are
         //not an init-on-startup servlet. This may or may not be bad, but this is how we have always done it.
-// ALEX TODO        HandleList _connectionHandleList = new HandleList();  // Seems to just be a cookie across pre/postInvoke
+        HandleList _connectionHandleList = connCollab == null ? null : new HandleList();  // Seems to just be a cookie across pre/postInvoke
         try {
             webAppNameSpaceCollab.preInvoke(cmd);
             // 246216
@@ -239,6 +244,8 @@ public abstract class ServletWrapper extends GenericServlet implements RequestPr
             // end LIDB549.21
             txConfig = txCollab.preInvoke(null, servlet23);
 
+            if (connCollab != null)
+                connCollab.preInvoke(_connectionHandleList, true);
         } catch (SecurityViolationException wse) {
             com.ibm.wsspi.webcontainer.util.FFDCWrapper.processException(wse, "com.ibm.ws.webcontainer.servlet.ServletWrapper.init", "227", this);
             logger.logp(Level.SEVERE, CLASS_NAME, "init", "uncaught.init.exception.thrown.by.servlet", new Object[] { getServletName(),
@@ -366,6 +373,15 @@ public abstract class ServletWrapper extends GenericServlet implements RequestPr
 
                 ThreadContextHelper.setClassLoader(fOrigClassLoader);
             }
+            if (connCollab != null)
+                try {
+                    connCollab.postInvoke(_connectionHandleList, true);
+                } catch (CSIException e) {
+                    // It is already added to cache..do we need to throw the
+                    // exception back
+                    com.ibm.wsspi.webcontainer.util.FFDCWrapper.processException(e, "com.ibm.ws.webcontainer.servlet.WebAppServletManager.init",
+                        "260", this);
+                }
             try {
                 txCollab.postInvoke(null, txConfig, servlet23);
             } catch (Exception e) {
@@ -976,7 +992,7 @@ public abstract class ServletWrapper extends GenericServlet implements RequestPr
 
             Object secObject = null;
             TxCollaboratorConfig txConfig = null;
-//            HandleList _connectionHandleList = new HandleList();
+            HandleList _connectionHandleList = connCollab == null ? null : new HandleList();
             try {
                 webAppNameSpaceCollab.preInvoke(cmd);
                 // 246216
@@ -991,6 +1007,8 @@ public abstract class ServletWrapper extends GenericServlet implements RequestPr
                 // end LIDB549.21
                 txConfig = txCollab.preInvoke(null, servlet23);
 
+                if (connCollab != null)
+                    connCollab.preInvoke(_connectionHandleList, true);
                 deregisterMBean();
 
                 ClassLoader origClassLoader = null;
@@ -1064,6 +1082,15 @@ public abstract class ServletWrapper extends GenericServlet implements RequestPr
                 evtSource.onServletDestroyError(new ServletErrorEvent(this, getServletContext(), getServletName(), servletConfig.getClassName(), e));
                 context.log("Error occurred while destroying servlet", e);
             } finally {
+                if (connCollab != null)
+                    try {
+                        connCollab.postInvoke(_connectionHandleList, true);
+                    } catch (CSIException e) {
+                        // It is already added to cache..do we need to throw the
+                        // exception back
+                        com.ibm.wsspi.webcontainer.util.FFDCWrapper.processException(e, "com.ibm.ws.webcontainer.servlet.ServletWrapper.doDestroy",
+                            "260", this);
+                    }
                 try {
                     txCollab.postInvoke(null, txConfig, servlet23);
                 } catch (Exception e) {

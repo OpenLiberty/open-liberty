@@ -263,6 +263,9 @@ public class ProvisionerTest {
                 one(mockBundle).adapt(Module.class);
                 will(returnValue(testModule));
 
+                one(mockBundle).getSymbolicName();
+                will(returnValue("mock.bundle"));
+
                 one(mockBundleRevision).getTypes();
                 will(returnValue(0));
 
@@ -292,7 +295,7 @@ public class ProvisionerTest {
         recordExceptions(iStatus); // print any unexpected exceptions for
         // debug
 
-        assertFalse(m + " C: There should not be an install exception", iStatus.installExceptions());
+        assertFalse(m + " C: There should not be an install exception: " + iStatus.getInstallExceptions(), iStatus.installExceptions());
         assertNull(m + " C: There should not be an exception to trace", iStatus.traceInstallExceptions());
 
         if (iStatus.bundlesToStart())
@@ -328,6 +331,9 @@ public class ProvisionerTest {
                 one(mockBundle).adapt(Module.class);
                 will(returnValue(testModule));
 
+                one(mockBundle).getSymbolicName();
+                will(returnValue("mock.bundle"));
+
                 one(mockBundle).adapt(BundleStartLevel.class);
                 will(returnValue(mockBundleStartLevel));
 
@@ -353,7 +359,7 @@ public class ProvisionerTest {
         recordExceptions(iStatus); // print any unexpected exceptions for
         // debug
 
-        assertFalse(m + " C: There should not be an install exception", iStatus.installExceptions());
+        assertFalse(m + " C: There should not be an install exception: " + iStatus.getInstallExceptions(), iStatus.installExceptions());
         assertNull(m + " C: There should not be an exception to trace", iStatus.traceInstallExceptions());
 
         if (iStatus.bundlesToStart())
@@ -427,6 +433,9 @@ public class ProvisionerTest {
                 will(returnValue(BundleRevision.TYPE_FRAGMENT));
                 one(mockBundle).adapt(Module.class);
                 will(returnValue(testModule));
+
+                one(mockBundle).getSymbolicName();
+                will(returnValue("mock.bundle"));
 
                 never(mockBundle).adapt(BundleStartLevel.class);
                 never(mockBundleStartLevel).getStartLevel();

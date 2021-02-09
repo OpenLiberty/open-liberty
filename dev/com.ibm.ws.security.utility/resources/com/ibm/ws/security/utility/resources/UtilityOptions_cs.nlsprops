@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2019 IBM Corporation and others.
+# Copyright (c) 2010, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -149,6 +149,7 @@ sslCert.option-key.ext=\ \ \ \ Informace o roz\u0161\u00ed\u0159en\u00ed --extIn
 sslCert.option-desc.ext=\tInformace o roz\u0161\u00ed\u0159en\u00ed certifik\u00e1tu p\u0159id\u00e1van\u00e9 k certifik\u00e1tu.\n\
 \tV\u00fdchoz\u00ed p\u0159\u00edpona je polo\u017eka Alternativn\u00ed n\u00e1zev subjektu uv\u00e1d\u011bj\u00edc\u00ed \n\
 \tn\u00e1zev hostitele. Tento p\u0159\u00edznak se shoduje se stejnou syntax\u00ed jako p\u0159\u00edznak -ext \n\
+\t \
 n\u00e1stroje Jave Keytool. Tento p\u0159\u00edznak lze v p\u0159\u00edkazu pou\u017e\u00edt v\u00edcekr\u00e1t \n \ 
 line.
 
@@ -186,3 +187,19 @@ createLTPAKeys.option-desc.password.key=\tUr\u010dete kl\u00ed\u010d, kter\u00fd
 \tserveru definov\u00e1n\u00edm prom\u011bnn\u00e9\n\
 \twlp.password.encryption.key, jej\u00ed\u017e hodnotou bude kl\u00ed\u010d. Nen\u00ed-li tato volba zad\u00e1na,\n\
 \tpou\u017eije se v\u00fdchoz\u00ed kl\u00ed\u010d.
+
+# -------- tlsProfiler OPTIONS ------------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+tlsProfiler.desc=\tOtestujte kompatibilitu c\u00edlov\u00e9ho hostitele a portu s dostupn\u00fdmi protokoly TLS a \u0161ifrovac\u00edmi sadami.
+tlsProfiler.usage.options=\t{0} tlsProfiler [volby]
+tlsProfiler.required-key.port=\ \ \ \ --port
+tlsProfiler.required-desc.port=\tZadejte port.
+tlsProfiler.required-key.host=\ \ \ \ --host
+tlsProfiler.required-desc.host=\tZadejte hostitele.
+tlsProfiler.option-key.verbose=\ \ \ \ --verbose
+tlsProfiler.option-desc.verbose=\tZahr\u0148te dal\u0161\u00ed informace o nezabezpe\u010den\u00fdch protokolech.

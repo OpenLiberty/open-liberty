@@ -24,7 +24,7 @@ SUBJECT_MAPPING_MISSING_ATTR=CWWKS6102E: The authentication request failed becau
 SUBJECT_MAPPING_MISSING_ATTR.explanation=The authenticated user information does not contain the specified claim to identify the named attribute and the runtime cannot continue with the authentication process.
 SUBJECT_MAPPING_MISSING_ATTR.useraction=Do one of the following. 1)Check if the Social login client configuration can specify a different claim as the attribute 2)Verify that the provider emits the authenticated user information with the specified claim.
 
-ERROR_AUTHENTICATE=CWWKS6103E: A security subject cannot be created for the {0} user.
+ERROR_AUTHENTICATE=CWWKS6103E: A security subject cannot be created for the {0} user. {1}
 ERROR_AUTHENTICATE.explanation=The user could not be authenticated. 
 ERROR_AUTHENTICATE.useraction=Check that the user exists in the registry and that the password or other credentials are correct.
 

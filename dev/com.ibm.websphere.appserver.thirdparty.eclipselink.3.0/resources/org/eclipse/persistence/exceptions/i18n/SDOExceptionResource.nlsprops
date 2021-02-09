@@ -1,0 +1,147 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/SDOExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+45000=Could not find ID element of type ID on type with uri [{0}] and name [{1}] .
+
+45001=An error occurred processing the import with schemaLocation [{0}] and namespace [{1}] .
+
+45002=An error occurred processing the include with schemaLocation [{0}] .
+
+45003=A referenced property with uri [{0}] and name [{1}] was not found.
+
+45004=Old sequence was not found in the changesummary.
+
+45005=Value of property named [{0}] must be a DataObject
+
+45006=Sequence cannot be null when type.isSequenced() is true.
+
+45007=A type was not set on the property with name [{0}]
+
+45008=An IOException occurred.
+
+45009=Type not found with uri [{0}] and name [{1}]
+
+45010=A type could not be found for interface class [{0}]. Please make sure that the type has been defined.  In addition,  the interface classloader should be a member of the helper context classloader hierarchy:  it appears as if this is [{1}].
+
+45011=Could not create a DataObject for type with uri [{0}] and name [{1}] because type.isAbstract() returns true.
+
+45012=Could not create a DataObject for interface [{0}], trying to create a DataObject for type with uri [{1}] and name [{2}] 
+
+45013=Cannot look up app info for null argument.
+
+45014=Could not define type.  Types can only be defined for DataObjects with Type set to commonj.sdo.Type
+
+45015=Could not define type with a null name.
+
+45016=A modified object in the changesummary XML is missing a ref attribute or the value is not specified.
+
+45017=An error occurred processing xpath [{0}] .
+
+45018=Adding a duplicate entry for the complex single setting [{1}] into a sequence at position [{0}] is not supported.
+
+45019=Adding an attribute property [{0}] to a sequence is not supported.
+
+45020=No sequence found for path [{0}].
+
+45021=An error occurred attempting to instantiate a Sequence object with a null dataObject instance field.
+
+45022=No sequence is supported for property [{0}].
+
+45023=Could not set property of type with uri [{0}] and name [{1}] to value of class [{2}]
+
+45024=A conversion error occurred.
+
+45025=Could not find property at index [{0}]
+
+45026=Cannot perform operation [{0}] on null parameter.
+
+45027=Cannot find class for type with uri [{0}] and name [{1}].
+
+45028=A type can not be set to open and datatype.  Error with type with uri [{0}] and name [{1}].
+
+45029=Invalid index [{0}] passed to method [{1}].
+
+45030=An error occurred invoking the constructor with a String argument on the class [{0}].
+
+45031=Cannot set invalid target type [{0}] on property [{1}] because target type.dataType is true.
+
+45032=An XMLMarshalException occurred for uri [{1}] and local name [{2}].  Exception: [{0}]
+
+45033=An error occurred generating types. The XML Schema component with name [{1}] and namespace URI [{0}] is referenced but never defined.  An import or include for namespace URI[{0}] might be missing from the XML Schema.
+
+45034=The value of the options parameter must be a DataObject of Type with uri [{0}] and name [{1}].
+
+45035=The value that corresponds to the "type" property must be a Type object.
+
+45036=A global property corresponding to the XML node being loaded was not found.
+
+45037=The prefix [{0}] is used but not declared in the XML schema.
+
+45038=Cannot perform operation on property [{0}] because it is not reachable from the path [{1}]. The path is invalid, or one or more Data Objects on the path are null.
+
+45039=An error occurred accessing the externalizableDelegator field [{0}] on the DataObject.
+
+45040=Cannot perform operation [{0}] with null parameter [{1}].
+
+45041=The value [{0}] of class [{1}] is invalid for property [{2}] of type [{3}].
+
+45100=An error occurred attempting to return the requested SDOHelperContext.  In an active WebLogic instance the application name is required for helper context cache lookups.  The application name could not be determined because {0} lookup failed.
+
+45101=An error occurred attempting to return the requested SDOHelperContext.  In an active WebLogic instance the application name is required for helper context cache lookups.  The application name could not be determined because {0} could not be invoked reflectively on {1}.
+
+45102=An error occurred attempting to return the requested SDOHelperContext.  In an active WebLogic instance the application name is required for helper context cache lookups.  The application name could not be determined because an ObjectName could not be created/returned for {0}.
+
+45103=An error occurred attempting to return the requested SDOHelperContext.  In an active WebLogic instance the application name is required for helper context cache lookups.  The application name could not be determined because an InitialContext could not be instantiated.
+
+45200=SDO/JAXB - An OXM descriptor could not be found that corresponds to the SDO type [{0}], ensure that a Java class is mapped to the XML type [{1}].
+
+45201=SDO/JAXB - An OXM mapping could not be found that corresponds to the SDO property [{0}], ensure that a Java property is mapped to the XML node [{1}].
+
+45202=SDO/JAXB - An SDO type could not be found that corresponds to the Java class [{0}].
+
+45203=SDO/JAXB - A schema reference must be set on the descriptor for the Java class [{0}].
+
+45204=SDO/JAXB - A schema context must be set on the schema reference on the descriptor for the Java class [{0}].
+
+45205=SDO/JAXB - An SDO type could not be found that corresponds to the Java class [{0}], ensure that an SDO type corresponds to the XML type [{1}].
+
+45206=SDO/JAXB - An error occurred creating a JAXB Unmarshaller.
+
+45207=An error occurred attempting to resolve a schema using the provided SchemaResolver.
+
+45208=Unable to map property {0} from type {1}. The javax.activation and javax.mail packages are required to map properties of type DataHandler. Ensure that both of these are available on the classpath.
+
+45209=An attempt was made to reset the ApplicationResolver instance on SDOHelperContext.  Only one set is permitted.
+
+45210=The DataObject being marshalled is not from the same HelperContext as the XMLHelper.
+
+45211=The type could not be defined with the [{0}] name. The name is not a valid XML name.
+
+45212=The property could not be defined with the [{0}] name. The name is not a valid XML name.
+

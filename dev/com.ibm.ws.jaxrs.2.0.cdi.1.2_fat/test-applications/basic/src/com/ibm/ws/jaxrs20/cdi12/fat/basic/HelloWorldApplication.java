@@ -48,6 +48,7 @@ public class HelloWorldApplication extends Application {
         classes.add(HelloWorldResourceForT2.class);
         classes.add(HelloWorldResourceForT3.class);
         classes.add(HelloWorldResource3Child.class);
+        classes.add(CdiConstructorInjectionResource.class);
         return classes;
     }
 

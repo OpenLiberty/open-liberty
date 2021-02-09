@@ -75,7 +75,7 @@ DSA_ERROR.useraction=Versuchen Sie, mit Hilfe des von der Datenbanksoftware geme
 
 # 0081-0087 deleted
 
-DSA_GENERIC_MSG=DSRA0086E: In einer Operation ist eine Ausnahme eingetreten. Die Operation ist {0}. Die Ausnahme ist {1}.  M\u00f6gliche Ursache: {2}.
+DSA_GENERIC_MSG=DSRA0086E: In einer Operation ist eine Ausnahme eingetreten. Die Operation ist {0}. Die Ausnahme ist {1}. M\u00f6gliche Ursache: {2}.
 DSA_GENERIC_MSG.explanation=In der Operation ist eine Ausnahme eingetreten.
 DSA_GENERIC_MSG.useraction=\u00dcberpr\u00fcfen Sie die Operation, die Ausnahme und die Datenbankprotokolldateien.
 
@@ -88,7 +88,7 @@ UNSUPPORTED_METHOD.useraction=Suchen Sie auf der Website der IBM Unterst\u00fctz
 #TRANSLATOR Do Not Translate: DataSource
 RESOLVING_DB_IMPLICIT_TRANSACTIONS=DSRA0092I: Es wurde eine implizite Datenbanktransaktion gefunden. WebSphere f\u00fchrt folgende Aktion f\u00fcr die Transaktion aus: {0}. Diese Nachricht wird einmal f\u00fcr jede DataSource protokolliert. Nachfolgende implizite Transaktionen werden automatisch aufgel\u00f6st. 
 RESOLVING_DB_IMPLICIT_TRANSACTIONS.explanation=Der Anwendungsserver hat festgestellt, dass die Datenbank eine Transaktion gestartet hat. Der Anwendungsserver versucht, die Transaktion gem\u00e4\u00df Konfiguration in den angepassten DataSource-Eigenschaften aufzul\u00f6sen.
-RESOLVING_DB_IMPLICIT_TRANSACTIONS.useraction=Es ist keine Benutzeraktion erforderlich.
+RESOLVING_DB_IMPLICIT_TRANSACTIONS.useraction=Es ist keine Benutzeraktion erforderlich. 
 
 #TRANSLATOR Do Not Translate: Datasource, FFDC
 ERROR_RESOLVING_DB_IMPLICIT_TRANSACTIONS=DSRA0093I: Es wurde eine implizite Datenbanktransaktion gefunden. WebSphere hat versucht, die folgende Operation f\u00fcr die Transaktion auszuf\u00fchren: {0}. Dabei ist ein Fehler auftreten: {1}.
@@ -121,7 +121,7 @@ INVALID_TX_STATE.useraction=F\u00fchren Sie die Operation vor dem Starten der Tr
 #
 INVALID_CONNECTION=DSRA0240E: Ung\u00fcltige Verbindung. Der Verbindungspool wird gel\u00f6scht.
 INVALID_CONNECTION.explanation=Der Benutzer hat eine Anforderung zum Bereinigen des Pools abgesetzt. Diese Anforderung bewirkt, dass vorhandene Verbindungen im Pool ung\u00fcltig gemacht werden.
-INVALID_CONNECTION.useraction=Beenden Sie die Transaktion und die Transaktionsgrenzen, und probieren Sie die Logik mit einer neuen Verbindung erneut aus.
+INVALID_CONNECTION.useraction=Beenden Sie die Transaktion und die Transaktionsgrenzen und probieren Sie die Logik mit einer neuen Verbindung erneut aus.
 
 # 0244 deleted
 
@@ -130,7 +130,7 @@ INVALID_CONNECTION.useraction=Beenden Sie die Transaktion und die Transaktionsgr
 # General purpose template for messages that will not be translated
 WS_ERROR=DSRA0250E: Vom Data Store Adapter wurde eine Ausnahme empfangen. Ziehen Sie die urspr\u00fcngliche Ausnahmenachricht zu Rate: {0}.
 WS_ERROR.explanation=CMSG0001
-WS_ERROR.useraction=CMSG0002                                                   
+WS_ERROR.useraction=CMSG0002
 
 # 0280 deleted
 
@@ -139,15 +139,15 @@ WS_ERROR.useraction=CMSG0002
 # Using 0300-0999 for XA Exceptions and Warnings
 # 
 # 
-THROW_XAEXCEPTION=DSRA0302E: Es ist eine XAException eingetreten. Der Fehlercode ist {0}. Die Ausnahme {1} wurde ausgel\u00f6st.
+THROW_XAEXCEPTION=DSRA0302E:  Es ist eine XAException eingetreten. Der Fehlercode ist {0}. Die Ausnahme {1} wurde ausgel\u00f6st.
 THROW_XAEXCEPTION.explanation=Bei einer zweiphasigen Datenbankoperation ist eine Ausnahme eingetreten. 
-THROW_XAEXCEPTION.useraction=CMSG0002                                                   
+THROW_XAEXCEPTION.useraction=CMSG0002
 
 
 
 DISPLAY_XAEX_CONTENT=DSRA0304E:  Es ist eine Ausnahme vom Typ XAException eingetreten. Der Inhalt der XAException-Ausnahme und die Details sind wie folgt: {0}.
 DISPLAY_XAEX_CONTENT.explanation=Bei der zweiphasigen Datenbankoperation wurde eine Ausnahme ausgel\u00f6st.
-DISPLAY_XAEX_CONTENT.useraction=CMSG0002                                                   
+DISPLAY_XAEX_CONTENT.useraction=CMSG0002
 
 # 0310E      XID_MISMATCH
 # 
@@ -155,8 +155,8 @@ DISPLAY_XAEX_CONTENT.useraction=CMSG0002
 # {1}        An XAResource method name.
 # {2}        The Xid for the above XAResource method.
 XID_MISMATCH=DSRA0310E: XIDs stimmen nicht \u00fcberein.\nXAResource.start: {0}\nXAResource.{1}: {2}
-XID_MISMATCH.explanation=Der Anwendungsserver hat versucht, eine XAResource-Operation mit einer anderen XID als der XID, die f\u00fcr "XAResource.start" verwendet wird, auszuf\u00fchren.
-XID_MISMATCH.useraction=Rufen Sie eine neue Verbindung ab, und wiederholen Sie die Transaktion.
+XID_MISMATCH.explanation=Der Anwendungsserver hat versucht, eine XAResource-Operation mit einer anderen XID als der XID, die f\u00fcr XAResource.start verwendet wird, auszuf\u00fchren.
+XID_MISMATCH.useraction=Rufen Sie eine neue Verbindung ab und wiederholen Sie die Transaktion.
 
 # 0330E      ORACLE_RAC_RETRY
 # 
@@ -164,14 +164,14 @@ XID_MISMATCH.useraction=Rufen Sie eine neue Verbindung ab, und wiederholen Sie d
 # {1}        Number of milliseconds from the last stale connection.
 # {2}        The value (in milliseconds) of the oracleRACXARecoveryDelay.
 ORACLE_RAC_RETRY=DSRA0330E: Der Anwendungsserver verz\u00f6gert die Anforderung {0}, weil die seit der letzten nicht aktuellen Verbindung vergangene Zeit {1} Millisekunden betr\u00e4gt, was innerhalb des oracleRACXARecoveryDelay-Werts liegt, der bei {2} Millisekunden liegt.
-ORACLE_RAC_RETRY.explanation=Die angepasse Datenquelleneigenschaft "oracleRACXARecoveryDelay" bewirkt, dass der Anwendungsserver Operationen vom Typ "xa.commit" und "xa.rollback" f\u00fcr die Dauer des Wiederholungsintervalls verz\u00f6gert.
-ORACLE_RAC_RETRY.useraction=Warten Sie ab, bis der Transaktionsmanager die Operation wiederholt. Sie m\u00fcssen heuristische Wiederholungen im Transaktionsmanager konfigurieren, damit "oracleRACXARecoveryDelay" ordnungsgem\u00e4\u00df funktioniert.
+ORACLE_RAC_RETRY.explanation=Die angepasste Datenquelleneigenschaft oracleRACXARecoveryDelay bewirkt, dass der Anwendungsserver Operationen vom Typ xa.commit und xa.rollback f\u00fcr die Dauer des Wiederholungsintervalls verz\u00f6gert.
+ORACLE_RAC_RETRY.useraction=Warten Sie ab, bis der Transaktionsmanager die Operation wiederholt. Sie m\u00fcssen heuristische Wiederholungen im Transaktionsmanager konfigurieren, damit oracleRACXARecoveryDelay ordnungsgem\u00e4\u00df funktioniert.
 
 # 0400W      TBC_NOT_SUPPORTED
 #
 # {0}        The datasource JNDI name.
 TBC_NOT_SUPPORTED=DSRA0400W: Datasource {0} unterst\u00fctzt die enge Kopplung von Verzweigungen nicht.
-TBC_NOT_SUPPORTED.explanation=Die von DataSource angegebene Datenbank bzw. der angegebene JDBC-Treiber unterst\u00fctzt die enge Kopplung von Verzweigungen nicht. Die enge Kopplung von Verzweigungen wird nur mit einer Datenbank des Typs DB2 for z/OS unter Verwendung des DB2 Universal JCC Driver f\u00fcr den Zugriff unterst\u00fctzt. Es wir die Standardoption mit loser Kopplung von Verzweigungen verwendet. Dies kann zu \u00dcberschreitungen der Sperrzeit, Deadlocks und/oder Transaktions-Rollbacks f\u00fchren, wenn die Anwendung f\u00fcr die enge Kopplung von Verzweigungen entworfen wurde, da Datenbanksperren von den Transaktionsverzweigungen in derselben globalen Transaktion nicht gemeinsam genutzt werden.
+TBC_NOT_SUPPORTED.explanation=Die von DataSource angegebene Datenbank bzw. der angegebene JDBC-Treiber unterst\u00fctzt die enge Kopplung von Verzweigungen nicht. Die enge Kopplung von Verzweigungen wird nur mit einer Datenbank des Typs DB2 for z/OS unter Verwendung des DB2 Universal JCC Driver f\u00fcr den Zugriff unterst\u00fctzt. Es wird die Standardoption mit loser Kopplung von Verzweigungen verwendet. Dies kann zu \u00dcberschreitungen der Sperrzeit, Deadlocks und/oder Transaktions-Rollbacks f\u00fchren, wenn die Anwendung f\u00fcr die enge Kopplung von Verzweigungen entworfen wurde, da Datenbanksperren von den Transaktionsverzweigungen in derselben globalen Transaktion nicht gemeinsam genutzt werden.
 TBC_NOT_SUPPORTED.useraction=Sie m\u00fcssen die Datenquelle so konfigurieren, dass unterst\u00fctzte Versionen von JDBC-Treiber und Datenbank verwendet werden oder dass die Anwendung keine enge Kopplung von Verzweigungen voraussetzt.
 
 # 0401 deleted
@@ -187,7 +187,7 @@ TBC_DB_NOT_SUPPORTED.useraction=Sie m\u00fcssen die Datenquelle so konfigurieren
 #
 # {0}        The datasource JNDI name.
 TBC_JCC_NOT_SUPPORTED=DSRA0403W: Datasource {0} unterst\u00fctzt die enge Kopplung von Verzweigungen nicht, da der DB2-JCC-Treiber eine ung\u00fcltige Version hat.
-TBC_JCC_NOT_SUPPORTED.explanation=Der von DataSource angegebene JDBC-Provider unterst\u00fctzt die enge Kopplung von Verzweigungen nicht. Die enge Kopplung von Verzweigungen wird nur mit den Mindestversionen DB2 Universal JCC Driver Version 3.51 oder 3.6, die mit den Service-Levels DB2 9.5 oder 9 bereitgestellt werden, oder mit dem JCC4-Treiber der Version 4.1 unterst\u00fctzt. Es wir die Standardoption mit loser Kopplung von Verzweigungen verwendet. Dies kann zu \u00dcberschreitungen der Sperrzeit, Deadlocks und/oder Transaktions-Rollbacks f\u00fchren, wenn die Anwendung f\u00fcr die enge Kopplung von Verzweigungen entworfen wurde, da Datenbanksperren von den Transaktionsverzweigungen in derselben globalen Transaktion nicht gemeinsam genutzt werden.
+TBC_JCC_NOT_SUPPORTED.explanation=Der von DataSource angegebene JDBC-Provider unterst\u00fctzt die enge Kopplung von Verzweigungen nicht. Die enge Kopplung von Verzweigungen wird nur mit den Mindestversionen DB2 Universal JCC Driver Version 3.51 oder 3.6, die mit den Service-Levels DB2 9.5 oder 9 bereitgestellt werden, oder mit dem JCC4-Treiber der Version 4.1 unterst\u00fctzt. Es wird die Standardoption mit loser Kopplung von Verzweigungen verwendet. Dies kann zu \u00dcberschreitungen der Sperrzeit, Deadlocks und/oder Transaktions-Rollbacks f\u00fchren, wenn die Anwendung f\u00fcr die enge Kopplung von Verzweigungen entworfen wurde, da Datenbanksperren von den Transaktionsverzweigungen in derselben globalen Transaktion nicht gemeinsam genutzt werden.
 TBC_JCC_NOT_SUPPORTED.useraction=Sie m\u00fcssen die Datenquelle so konfigurieren, dass unterst\u00fctzte Versionen von JDBC-Treiber und Datenbank verwendet werden oder dass die Anwendung keine enge Kopplung von Verzweigungen voraussetzt.
 
 # ----------------------------------------------------------------------------
@@ -213,7 +213,7 @@ CONN_NEVER_CLOSED.useraction=\u00c4ndern Sie die Anwendung so, dass sie stets al
 # {0}        The feature (usually a JDBC API method)
 FEATURE_NOT_IMPLEMENTED=DSRA1300E: Feature nicht implementiert: {0}
 FEATURE_NOT_IMPLEMENTED.explanation=Das angeforderte Feature ist nicht verf\u00fcgbar.
-FEATURE_NOT_IMPLEMENTED.useraction=Verwenden Sie das Feature nicht, oder stellen Sie auf eine Treiberversion um, die das Feature unterst\u00fctzt.
+FEATURE_NOT_IMPLEMENTED.useraction=Verwenden Sie das Feature nicht oder stellen Sie auf eine Treiberversion um, die das Feature unterst\u00fctzt.
 
 # 1301 deleted
 # 3000-3020 deleted
@@ -308,16 +308,16 @@ DB2ZOS_CONFIG_INFO.useraction=Dies ist eine Informationsnachricht f\u00fcr die U
 
 # TRANSLATOR Do not translate: DB2ConnectionPoolDatasource, DB2 Universal JDBC
 DB2ZOS_TYPE2_ERROR=DSRA7015E: DB2 bietet keine Unterst\u00fctzung f\u00fcr den Treibertyp 2 f\u00fcr DB2XADataSource unter DB2 f\u00fcr z/OS
-DB2ZOS_TYPE2_ERROR.explanation=Die angepasste DataSource-Eigenschaft "driverType" f\u00fcr wurde in DB2XADatasource auf den Wert "2" gesetzt. Diese Konfiguration wird von DB2 for z/OS nicht unterst\u00fctzt.
-DB2ZOS_TYPE2_ERROR.useraction=Verwenden Sie "DB2ConnectionPoolDatasource", oder stellen Sie auf den Treibertyp 4 f\u00fcr "DB2 Universal JDBC" um, sofern dieser f\u00fcr Ihre Konfiguration verf\u00fcgbar ist.
+DB2ZOS_TYPE2_ERROR.explanation=Die angepasste DataSource-Eigenschaft driverType f\u00fcr wurde in DB2XADatasource auf den Wert 2 gesetzt. Diese Konfiguration wird von DB2 for z/OS nicht unterst\u00fctzt.
+DB2ZOS_TYPE2_ERROR.useraction=Verwenden Sie DB2ConnectionPoolDatasource oder stellen Sie auf den Treibertyp 4 f\u00fcr DB2 Universal JDBC um, sofern dieser f\u00fcr Ihre Konfiguration verf\u00fcgbar ist.
 
 # 7016 deleted
 
 # DSRA7017I      ORACLE_TRACE_WARNING
 # TRANSLATOR Do not translate: IOException
 ORACLE_TRACE_WARNING=DSRA7017I: Es k\u00f6nnen keine Protokolldaten in der Datei {0} aufgezeichnet werden, weil die E/A-Ausnahme {1} eingetreten ist.
-ORACLE_TRACE_WARNING.explanation=Es ist eine Ausnahme vom Typ "IOException" eingetreten, als der Anwendungsserver versucht hat, die angegebene Tracedatei zu \u00f6ffnen.
-ORACLE_TRACE_WARNING.useraction=Untersuchen Sie die Ausnahme, beheben Sie den E/A-Fehler, und starten Sie den Anwendungsserver erneut.
+ORACLE_TRACE_WARNING.explanation=Es ist eine Ausnahme vom Typ IOException eingetreten, als der Anwendungsserver versucht hat, die angegebene Tracedatei zu \u00f6ffnen.
+ORACLE_TRACE_WARNING.useraction=Untersuchen Sie die Ausnahme, beheben Sie den E/A-Fehler und starten Sie den Anwendungsserver erneut.
 
 # DSRA7018I      META_DATA_EXCEPTION
 # 
@@ -348,7 +348,7 @@ NO_SETTER_METHOD.useraction=Stellen Sie sicher, dass der angegebene Eigenschafts
 # {0}        The DataSource class name.
 # {1}        The property name.
 PROP_NOT_FOUND=DSRA8020E: Warnung: Die Eigenschaft ''{1}'' ist nicht in der DataSource-Klasse {0} enthalten.
-PROP_NOT_FOUND.explanation=Der Anwendungsserver konnte die angegebene Datasource-Eigenschaft nicht finden. Die m\u00f6glichen Ursachen sind: 1) Die Datasource-Eigenschaft ist nicht korrekt bzw. nicht mit der richtigen Gro\u00df-/Kleinschreibung geschrieben. 2) Die angegebene Eigenschaft gilt nicht f\u00fcr die konfigurierte DataSource. 3) Der Anwendungsserver enth\u00e4lt die Standardkonfiguration f\u00fcr eine andere Version des angegebenen JDBC-Treibers, und dies hat zu einer Differenz der Datasource-Eigenschaften gef\u00fchrt.
+PROP_NOT_FOUND.explanation=Der Anwendungsserver konnte die angegebene Datasource-Eigenschaft nicht finden. Die m\u00f6glichen Ursachen sind: 1) Die Datasource-Eigenschaft ist nicht korrekt bzw. nicht mit der richtigen Gro\u00df-/Kleinschreibung geschrieben. 2) Die angegebene Eigenschaft gilt nicht f\u00fcr die konfigurierte DataSource. 3) Der Anwendungsserver enth\u00e4lt die Standardkonfiguration f\u00fcr eine andere Version des angegebenen JDBC-Treibers und dies hat zu einer Differenz der Datasource-Eigenschaften gef\u00fchrt.
 PROP_NOT_FOUND.useraction=Stellen Sie sicher, dass die angegebene DataSource-Eigenschaft g\u00fcltig ist. Korrigieren Sie alle Fehler in der Rechtschreibung und Gro\u00dfschreibung. L\u00f6schen Sie die Eigenschaft, wenn sie f\u00fcr den verwendeten JDBC-Treiber nicht g\u00fcltig bzw. nicht mehr g\u00fcltig ist.
 
 # 8021W      PROP_SET_ERROR
@@ -378,16 +378,16 @@ JAVAX_CONN_ERR.useraction=N\u00e4here Informationen finden Sie in der linkedExce
 # TRANSLATOR Do not translate: enable2Phase, DataSource, ConnectionPoolDataSource, XADataSource.
 # {0}        ClassCastException message.
 NOT_A_1_PHASE_DS=DSRA8101E: Die DataSource-Klasse kann nicht als einphasige Klasse verwendet werden: ClassCastException: {0}
-NOT_A_1_PHASE_DS.explanation=Die Eigenschaft "enable2Phase" kann nur dann auf "false" gesetzt werden, wenn die DataSource-Klasse die Schnittstelle "ConnectionPoolDatasource" implementiert.
-NOT_A_1_PHASE_DS.useraction=Setzen Sie "enable2Phase" f\u00fcr XADataSource auf "true" oder f\u00fcr ConnectionPoolDataSource auf "false".
+NOT_A_1_PHASE_DS.explanation=Die Eigenschaft enable2Phase kann nur dann auf false gesetzt werden, wenn die DataSource-Klasse die Schnittstelle ConnectionPoolDatasource implementiert.
+NOT_A_1_PHASE_DS.useraction=Setzen Sie enable2Phase f\u00fcr XADataSource auf true oder f\u00fcr ConnectionPoolDataSource auf false.
 
 # 8102E      NOT_A_2_PHASE_DS
 # 
 # TRANSLATOR Do not translate: enable2Phase, DataSource, ConnectionPoolDataSource, XADataSource.
 # {0}        ClassCastException message.
 NOT_A_2_PHASE_DS=DSRA8102E: Die DataSource-Klasse kann nicht als zweiphasige Klasse verwendet werden: ClassCastException: {0}
-NOT_A_2_PHASE_DS.explanation=Die Eigenschaft "enable2Phase" kann nur dann auf "true" gesetzt werden, wenn die DataSource-Klasse die Schnittstelle "XADatasource" implementiert.
-NOT_A_2_PHASE_DS.useraction=Setzen Sie "enable2Phase" f\u00fcr XADataSource auf "true" oder f\u00fcr ConnectionPoolDataSource auf "false".
+NOT_A_2_PHASE_DS.explanation=Die Eigenschaft enable2Phase kann nur dann auf true gesetzt werden, wenn die DataSource-Klasse die Schnittstelle XADatasource implementiert.
+NOT_A_2_PHASE_DS.useraction=Setzen Sie enable2Phase f\u00fcr XADataSource auf true oder f\u00fcr ConnectionPoolDataSource auf false.
 
 # 8150 deleted
 # 8160 deleted
@@ -423,7 +423,7 @@ JDBC_DRIVER_VERSION.useraction=Die angegebene Version des JDBC-Treibers wird jet
 # 8207I      ORA_READONLY
 # 
 ORA_READONLY=DSRA8207I: Die Methode "setReadOnly(false)" wird ignoriert. Es wird keine Oracle-Transaktion gestartet.
-ORA_READONLY.explanation=Oracle-Datenbanken implementieren die Methode "setReadOnly" nicht. Mit der Methode "setReadOnly(true)" kann kein Schreibschutz f\u00fcr die Verbindung definiert werden. Die Methode "setReadOnly(false)" ist auch nicht implementiert, und es wird implizit eine Transaktion von einer Oracle-Datenbank gestartet. Der Anwendungsserver ruft die Methode "setReadOnly(false)" f\u00fcr eine Oracle-Datenbank nicht auf, um zu verhindern, dass eine unn\u00f6tige Transaktion gestartet wird.
+ORA_READONLY.explanation=Oracle-Datenbanken implementieren die Methode setReadOnly nicht. Mit der Methode setReadOnly(true) kann kein Schreibschutz f\u00fcr die Verbindung definiert werden. Die Methode setReadOnly(false) ist auch nicht implementiert und es wird implizit eine Transaktion von einer Oracle-Datenbank gestartet. Der Anwendungsserver ruft die Methode setReadOnly(false) f\u00fcr eine Oracle-Datenbank nicht auf, um zu verhindern, dass eine unn\u00f6tige Transaktion gestartet wird.  
 ORA_READONLY.useraction=Vergewissern Sie sich, dass Ihre Anwendung sich nach dem Aufruf der Methode setReadOnly(false) nicht auf eine Transaktion st\u00fctzt.
 
 # 8208-8212 deleted
@@ -440,8 +440,8 @@ PROVIDER_NOT_SUPPORTED.useraction=Verwenden Sie den JDBC-Provider, der im Fehler
 # {0}       The name of the data source property for nontransactional behavior
 # {1}       The name of the data source property for configuring commit or rollback on connection cleanup
 NONTRAN_DATASOURCE_WARNING=DSRA8230W: Der Anwendungsserver kann nicht feststellen, ob eine Transaktion aufgel\u00f6st werden muss, weil zwar die angepasste Datenquelleneigenschaft {0} konfiguriert ist, aber die angepasste Datenquelleneigenschaft {1} nicht.
-NONTRAN_DATASOURCE_WARNING.explanation=Es wurde versucht, eine Verbindung mit dem AutoCommit-Wert "false" in den Pool zu stellen. Der Anwendungsserver kann nicht feststellen, ob eine Transaktion aktiv ist, weil die Datenquelle nicht als transaktionsorientierte Datenquelle konfiguriert ist. Der Anwendungsserver versucht nicht, die Transaktion aufzul\u00e4sen, weil die Datenquelle nicht f\u00fcr automatische COMMIT- und ROLLBACK-Operationen w\u00e4hrend der Verbindungsbereinigung konfiguriert ist.
-NONTRAN_DATASOURCE_WARNING.useraction=Konfigurieren Sie die Datenquelle f\u00fcr automatische COMMIT- und ROLLBACK-Operationen w\u00e4hrend der Verbindungsbereinigung, oder setzen Sie "AutoCommit" auf "true".
+NONTRAN_DATASOURCE_WARNING.explanation=Es wurde versucht, eine Verbindung mit dem AutoCommit-Wert false in den Pool zu stellen. Der Anwendungsserver kann nicht feststellen, ob eine Transaktion aktiv ist, weil die Datenquelle nicht als transaktionsorientierte Datenquelle konfiguriert ist. Der Anwendungsserver versucht nicht, die Transaktion aufzul\u00f6sen, weil die Datenquelle nicht f\u00fcr automatische COMMIT- und ROLLBACK-Operationen w\u00e4hrend der Verbindungsbereinigung konfiguriert ist.
+NONTRAN_DATASOURCE_WARNING.useraction=Konfigurieren Sie die Datenquelle f\u00fcr automatische COMMIT- und ROLLBACK-Operationen w\u00e4hrend der Verbindungsbereinigung oder setzen Sie AutoCommit auf true.
 
 # ----------------------------------------------------------------------------
 # 
@@ -456,7 +456,7 @@ NONTRAN_DATASOURCE_WARNING.useraction=Konfigurieren Sie die Datenquelle f\u00fcr
 # {1}        The error
 ERR_CLOSING_OBJECT=DSRA8600W: Beim Schlie\u00dfen von {0} ist ein Fehler aufgetreten.\n{1}
 ERR_CLOSING_OBJECT.explanation=Beim Schlie\u00dfen des angegebenen JDBC-Objekts ist ein Fehler aufgetreten.
-ERR_CLOSING_OBJECT.useraction=CMSG0002                                                   
+ERR_CLOSING_OBJECT.useraction=CMSG0002
 
 # 8650 deleted
 # 8660 deleted
@@ -472,7 +472,7 @@ ERR_CLOSING_OBJECT.useraction=CMSG0002
 # {2}        The current thread id.
 # {3}        Stack trace of the current thread.
 MULTITHREADED_ACCESS_DETECTED=DSRA8720W: Multithread-Zugriff auf {0}.\nLetzte Verwendung mit Thread-ID:  {1}\nAktuelle Thread-ID:               {2}\nStack-Trace des aktuellen Thread: {3}
-MULTITHREADED_ACCESS_DETECTED.explanation=Die Anwendung hat versucht, \u00fcber einen anderen Thread auf die Verbindung oder die zugeh\u00f6rigen Statements, ResultSets oder Metadaten zuzugreifen. Dieses Verhalten verst\u00f6\u00dft gegen das Programmiermodell f\u00fcr den Anwendungsserver. Das Schlie\u00dfen der Objekte, auf die die Anwendung versucht, \u00fcber eine Methode "finalize()" zuzugreifen, ist ebenfalls ein Versto\u00df gegen das Programmiermodell, weil die Methode "finalize()" von der JVM in einem anderen Thread ausgef\u00fchrt wird.
+MULTITHREADED_ACCESS_DETECTED.explanation=Die Anwendung hat versucht, \u00fcber einen anderen Thread auf die Verbindung oder die zugeh\u00f6rigen Statements, ResultSets oder Metadaten zuzugreifen. Dieses Verhalten verst\u00f6\u00dft gegen das Programmiermodell f\u00fcr den Anwendungsserver. Das Schlie\u00dfen der Objekte, auf die die Anwendung versucht, \u00fcber eine Methode finalize() zuzugreifen, ist ebenfalls ein Versto\u00df gegen das Programmiermodell, weil die Methode finalize() von der JVM in einem anderen Thread ausgef\u00fchrt wird.
 MULTITHREADED_ACCESS_DETECTED.useraction=Passen Sie die Anwendung an, um Multithread-Zugriffe zu vermeiden.
 
 # 8730 deleted
@@ -489,8 +489,8 @@ UNSUPPORTED_JDBC30_METHOD.useraction=Stellen Sie sicher, dass Ihr JDBC-Provider 
 # {0}        The vendor interface requested for the wrapper.
 # {1}        The underlying connection implementation class of the pooled connection.
 VENDOR_IMPL_NOT_FOUND=DSRA8760W: Die Implementierung f\u00fcr die Anbieterschnittstelle {0} wurde nach der Umstellung auf eine andere Poolverbindung nicht gefunden. Die nicht eingeschlossene Verbindungskennung ist nicht mehr verwendbar. Die neue Verbindungsimplementierungsklasse ist {1}.
-VENDOR_IMPL_NOT_FOUND.explanation=Die Verbindungskennung ist jetzt einer anderen Poolverbindung zugeordnet, und diese Verbindung implementiert nicht die Schnittstelle, die f\u00fcr den Wrapper angefordert wurde.
-VENDOR_IMPL_NOT_FOUND.useraction=Es d\u00fcrfen keine Wrapper f\u00fcr die angegebene Schnittstelle verwendet werden, wenn die Methode "Wrapper.isWrapperFor" angibt, dass die Verbindung kein Wrapper der Schnittstelle ist.
+VENDOR_IMPL_NOT_FOUND.explanation=Die Verbindungskennung ist jetzt einer anderen Poolverbindung zugeordnet und diese Verbindung implementiert nicht die Schnittstelle, die f\u00fcr den Wrapper angefordert wurde.
+VENDOR_IMPL_NOT_FOUND.useraction=Es d\u00fcrfen keine Wrapper f\u00fcr die angegebene Schnittstelle verwendet werden, wenn die Methode Wrapper.isWrapperFor angibt, dass die Verbindung kein Wrapper der Schnittstelle ist.
 
 # 8770I      DEFAULT_MATCH_ORIGINAL
 # 
@@ -571,8 +571,8 @@ OPERATION_NOT_PERMITTED.useraction=Verwenden Sie die angegebene Operation nicht.
 # TRANSLATOR Do not translate: Connection, Shareable, Unshareable, setTypeMap, setReadOnly, setCatalog.
 # {0}        The operation being performed (such as setTypeMap, setReadOnly and setCatalog)
 OP_NOT_SHAREABLE=DSRA9250E: Die Operation {0} ist in einer globalen Transaktion f\u00fcr Verbindungen vom Typ "Shareable" nicht zul\u00e4ssig.
-OP_NOT_SHAREABLE.explanation=Application Server l\u00e4sst keine Aufrufe der Methoden "setTypeMap", "setReadOnly" und "setCatalog" in Verbindungen des Typs "Shareable" (gemeinsam nutzbar) nicht zu, wenn eine globale Transaktion aktiv ist.
-OP_NOT_SHAREABLE.useraction=Rufen Sie "setTypeMap", "setReadOnly" und "setCatalog" f\u00fcr Verbindungen vom Typ "Shareable" nicht in einer globalen Transaktion auf, oder verwenden Sie Verbindungen vom Typ "Unshareable" (nicht gemeinsam nutzbar).
+OP_NOT_SHAREABLE.explanation=Application Server l\u00e4sst keine Aufrufe der Methoden setTypeMap, setReadOnly und setCatalog in Verbindungen des Typs Shareable (gemeinsam nutzbar) nicht zu, wenn eine globale Transaktion aktiv ist.
+OP_NOT_SHAREABLE.useraction=Rufen Sie setTypeMap, setReadOnly und setCatalog f\u00fcr Verbindungen vom Typ Shareable nicht in einer globalen Transaktion auf oder verwenden Sie Verbindungen vom Typ Unshareable (nicht gemeinsam nutzbar).
 
 # 9300 deleted
 # 9310 deleted
@@ -587,8 +587,8 @@ OP_NOT_SHAREABLE.useraction=Rufen Sie "setTypeMap", "setReadOnly" und "setCatalo
 # TRANSLATOR Do not translate: Connection, commit, rollback, setSavepoint, releaseSavepoint
 # {0}        The operation being performed (such as Connection.commit)
 OP_NOT_VALID_IN_GT=DSRA9350E: Die Operation {0} ist in einer globalen Transaktion nicht zul\u00e4ssig.
-OP_NOT_VALID_IN_GT.explanation=Application Server l\u00e4sst Aufrufe der Methoden "commit", "rollback", "setSavepoint" und "releaseSavepoint" in der Verbindung nicht zu, wenn eine globale Transaktion aktiv ist.
-OP_NOT_VALID_IN_GT.useraction=Rufen Sie die Methoden "commit", "rollback", "setSavepoint" und "releaseSavepoint" nicht in der Verbindung auf, wenn eine globale Transaktion aktiv ist. Wenn eine nicht transaktionsorientierte Datenquelle (z. B. "non-jta-data-source" f\u00fcr Java Persistence API) verwendet wird, konfigurieren Sie "non-jta-data-source" in der Datei "persistence.xml" und die angepasste Eigenschaft "nonTransactionalDataSource" in der Datenquelle.
+OP_NOT_VALID_IN_GT.explanation=Application Server l\u00e4sst Aufrufe der Methoden commit, rollback, setSavepoint und releaseSavepoint in der Verbindung nicht zu, wenn eine globale Transaktion aktiv ist.
+OP_NOT_VALID_IN_GT.useraction=Rufen Sie die Methoden commit, rollback, setSavepoint und releaseSavepoint nicht in der Verbindung auf, wenn eine globale Transaktion aktiv ist. Wenn eine nicht transaktionsorientierte Datenquelle (z. B. non-jta-data-source f\u00fcr Java Persistence API) verwendet wird, konfigurieren Sie non-jta-data-source in der Datei persistence.xml und die angepasste Eigenschaft nonTransactionalDataSource in der Datenquelle.
 
 # 9360E      INVALID_TRAN_STATE
 # 
@@ -614,14 +614,14 @@ REASSOCIATION_ERR.useraction=Rufen Sie eine neue Connection-Kennung ab.
 # {0}        Current Connection state.
 CANNOT_REASSOCIATE=DSRA9410E: Die erneute Zuordnung der Kennung ist nur im Status INACTIVE zul\u00e4ssig. Der aktuelle Connection-Status ist: {0}.
 CANNOT_REASSOCIATE.explanation=Connection-Kennungen k\u00f6nnen nur im Status INACTIVE erneut zugeordnet werden.
-CANNOT_REASSOCIATE.useraction=Schlie\u00dfen Sie die aktuelle Connection-Kennung, und fordern Sie eine neue an.
+CANNOT_REASSOCIATE.useraction=Schlie\u00dfen Sie die aktuelle Connection-Kennung und fordern Sie eine neue an.
 
 # 9420E      CHILDREN_STILL_OPEN
 # 
 # TRANSLATOR Do not translate: Connection.
 CHILDREN_STILL_OPEN=DSRA9420E: Die Connection kann nicht erneut zugeordnet werden, weil noch untergeordnete Objekte ge\u00f6ffnet sind.
 CHILDREN_STILL_OPEN.explanation=Connection-Kennungen k\u00f6nnen nur erneut zugeordnet werden, wenn alle untergeordneten Objekte geschlossen sind.
-CHILDREN_STILL_OPEN.useraction=Schlie\u00dfen Sie die aktuelle Connection-Kennung, und fordern Sie eine neue an.
+CHILDREN_STILL_OPEN.useraction=Schlie\u00dfen Sie die aktuelle Connection-Kennung und fordern Sie eine neue an.
 
 # 9430E      HANDLE_IN_USE
 # 
@@ -644,9 +644,13 @@ NO_NEGATIVE_FETCH_SIZES.useraction=W\u00e4hlen Sie einen Wert f\u00fcr den Abruf
 # TRANSLATOR Do not translate: Kerberos
 KERBEROS_NOT_SUPPORTED_WARNING=DSRA9543W: Application Server unterst\u00fctzt Kerberos nicht f\u00fcr die verwendete Back-End-Datenbank. Zum Abrufen einer Verbindung wird keine Benutzername/Kennwort-Kombination verwendet.
 KERBEROS_NOT_SUPPORTED_WARNING.explanation= Application Server unterst\u00fctzt keine Kerberos-Authentifizierung f\u00fcr die verwendete Datenbank. Zum Abrufen einer Verbindung wird keine Benutzername/Kennwort-Kombination verwendet.
-KERBEROS_NOT_SUPPORTED_WARNING.useraction= Inaktivieren Sie Kerberos, oder verwenden Sie eine DB2-Back-End-Datenbank mit dem Treiber "DB2 Universal JDBC".
+KERBEROS_NOT_SUPPORTED_WARNING.useraction= Inaktivieren Sie Kerberos oder verwenden Sie eine DB2-Back-End-Datenbank mit dem Treiber DB2 Universal JDBC.
 
 # 9544-9548 deleted
+
+KERBEROS_ORACLE_IBMJDK_NOT_SUPPORTED=DSRA9549E: Die Verwendung des SDK IBM Java 8 mit einer Oracle-Datenbank wird nicht unterst\u00fctzt. Der Oracle-JDBC-Treiber unterst\u00fctzt nur die Kerberos-Authentifizierung mit den Standardberechtigungs-APIs, die in OpenJDK, OpenJ9 oder \u00e4hnlichen SDKs verf\u00fcgbar sind.
+KERBEROS_ORACLE_IBMJDK_NOT_SUPPORTED.explanation=Die Verwendung des SDK IBM Java 8 mit einer Oracle-Datenbank wird nicht unterst\u00fctzt. Der Oracle-JDBC-Treiber unterst\u00fctzt nur die Kerberos-Authentifizierung mit den Standardberechtigungs-APIs, die in OpenJDK, OpenJ9 oder \u00e4hnlichen SDKs verf\u00fcgbar sind.
+KERBEROS_ORACLE_IBMJDK_NOT_SUPPORTED.useraction=Inaktivieren Sie die Kerberos-Authentifizierung f\u00fcr die Oracle-Datenquelle oder wechseln Sie zu einem anderen Java-SDK als dem SDK IBM Java 8.
 
 # 9600-9603 deleted 
 # 9900 deleted

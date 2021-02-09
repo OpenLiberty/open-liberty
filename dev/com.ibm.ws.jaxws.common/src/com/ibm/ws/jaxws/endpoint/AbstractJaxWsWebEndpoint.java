@@ -33,8 +33,6 @@ import org.apache.cxf.endpoint.Server;
 import org.apache.cxf.frontend.WSDLGetInterceptor;
 import org.apache.cxf.frontend.WSDLGetUtils;
 import org.apache.cxf.interceptor.Interceptor;
-import org.apache.cxf.interceptor.LoggingInInterceptor;
-import org.apache.cxf.interceptor.LoggingOutInterceptor;
 import org.apache.cxf.jaxws.support.JaxWsEndpointImpl;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.transport.http.AbstractHTTPDestination;
@@ -48,6 +46,8 @@ import com.ibm.ws.jaxws.metadata.JaxWsModuleMetaData;
 import com.ibm.ws.jaxws.support.JaxWsInstanceManager;
 import com.ibm.ws.jaxws.support.JaxWsInstanceManager.InterceptException;
 import com.ibm.ws.jaxws.support.LibertyJaxWsCompatibleWSDLGetInterceptor;
+import com.ibm.ws.jaxws.support.LibertyLoggingInInterceptor;
+import com.ibm.ws.jaxws.support.LibertyLoggingOutInterceptor;
 import com.ibm.ws.jaxws.utils.JaxWsUtils;
 import com.ibm.ws.jaxws.utils.StringUtils;
 
@@ -150,12 +150,26 @@ public abstract class AbstractJaxWsWebEndpoint implements JaxWsWebEndpoint {
 
     protected void customizeLoggingInOutIntercetptor(EndpointInfo libertyEndpointInfo) {
         Map<String, String> endpointProperties = libertyEndpointInfo.getEndpointProperties();
+
         if (null != endpointProperties && Boolean.valueOf(endpointProperties.get(JaxWsConstants.ENABLE_lOGGINGINOUTINTERCEPTOR))) {
+            // If we're here we know this property is set in the config and is true. We enable pretty logging of the SOAP Message
+            // by LibertyLoggingIn(Out)Interceptors
+            // TODO Create a way of enabling and disabling logging for individual endpoints. 
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, JaxWsConstants.ENABLE_lOGGINGINOUTINTERCEPTOR
+                             + " has been enabled, enabling SOAP Message Logging with the LibertyLoggingInInterceptor and LibertyLoggingOutInterceptor");
+            }
             List<Interceptor<? extends Message>> inInterceptors = server.getEndpoint().getInInterceptors();
-            inInterceptors.add(new LoggingInInterceptor());
+            // Remove LoggingInInterceptor if one already exists
+            inInterceptors.remove(LibertyLoggingInInterceptor.INSTANCE);
+            inInterceptors.add(new LibertyLoggingInInterceptor(true));
+
             List<Interceptor<? extends Message>> outInterceptors = server.getEndpoint().getOutInterceptors();
-            outInterceptors.add(new LoggingOutInterceptor());
+            // Remove LoggingOutInterceptor if one already exists
+            outInterceptors.remove(LibertyLoggingOutInterceptor.INSTANCE);
+            outInterceptors.add(new LibertyLoggingOutInterceptor(true));
         }
+
     }
 
     public AbstractHTTPDestination getDestination() {
@@ -183,6 +197,7 @@ public abstract class AbstractJaxWsWebEndpoint implements JaxWsWebEndpoint {
             final HttpServletResponse resp = response;
             try {
                 AccessController.doPrivileged(new PrivilegedExceptionAction<Void>() {
+                    @Override
                     public Void run() throws IOException {
                         destination.invoke(servletConfig, servletConfig.getServletContext(), req, resp);
                         return null;

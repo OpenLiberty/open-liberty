@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -73,6 +73,11 @@ public class DerbyRAAnnoServlet extends FATServlet {
     // lookup is defined via binding-name in ibm-web-bnd.xml
     @Resource(name = "eis/loginModuleCFRef")
     DataSource loginModuleCF;
+
+    /**
+     * Number of milliseconds been polling for changes to occur.
+     */
+    private static final long POLL_INTERVAL_MS = 200;
 
     /**
      * Maximum number of nanoseconds a test should wait for something to happen
@@ -179,6 +184,45 @@ public class DerbyRAAnnoServlet extends FATServlet {
         try {
             String user = con.getMetaData().getUserName();
             assertEquals("Incorrect user for loginModuleCF", "loginModuleUser", user);
+        } finally {
+            con.close();
+        }
+    }
+
+    /**
+     * Tests that handles cannot be parked across separate global transactions.
+     * When the MDB's global transaction ends, a parked handle is automatically closed by the server.
+     */
+    public void testHandleListClosesParkedHandleWhenMDBTransactionEnds() throws Exception {
+        Connection con = ds1.getConnection();
+        try {
+            Statement stmt = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            // The mock resource adapter triggers a message driven bean when the 'put' method replaces a value
+            assertNull(map1.put("mdbtestHandleListClosesParkedHandleWhenTranEnds", "InitialValue"));
+            assertEquals("InitialValue", map1.put("mdbtestHandleListClosesParkedHandleWhenTranEnds", "CacheConnection"));
+
+            // Wait for message driven bean to write something to the database
+            ResultSet result;
+            long start = System.nanoTime();
+            do {
+                TimeUnit.MILLISECONDS.sleep(POLL_INTERVAL_MS);
+                result = stmt.executeQuery("SELECT oldValue FROM TestActivationSpecTBL WHERE id='mdbtestHandleListClosesParkedHandleWhenTranEnds'");
+            } while (!result.next() && System.nanoTime() - start < TIMEOUT_NS);
+            assertTrue(result.first()); // MDB wrote the expected entry
+
+            // Invoke the MDB to use the cached connection and leave it cached
+            assertEquals("CacheConnection", map1.put("mdbtestHandleListClosesParkedHandleWhenTranEnds", "UseCachedConnection"));
+
+            // Wait for message driven bean to write the result to the database
+            start = System.nanoTime();
+            do {
+                TimeUnit.MILLISECONDS.sleep(POLL_INTERVAL_MS);
+                result = stmt.executeQuery("SELECT oldValue FROM TestActivationSpecTBL WHERE id='mdbtestHandleListClosesParkedHandleWhenTranEnds' AND oldValue LIKE 'CachedConnectionIs%'");
+            } while (!result.next() && System.nanoTime() - start < TIMEOUT_NS);
+            assertTrue(result.first()); // MDB updated the expected entry
+            assertEquals("CachedConnectionIsClosed", result.getString(1));
+
+            stmt.close();
         } finally {
             con.close();
         }

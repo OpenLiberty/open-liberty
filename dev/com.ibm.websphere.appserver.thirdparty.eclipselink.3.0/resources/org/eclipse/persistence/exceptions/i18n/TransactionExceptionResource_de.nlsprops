@@ -1,0 +1,61 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/TransactionExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+23001=Fehler beim Lookup der externen Transaktionsressource unter dem JNDI-Namen [{0}].
+
+23002=Fehler beim Abrufen des Status der momentan extern verwalteten Transaktion.
+
+23003=Fehler beim Abrufen der momentan extern verwalteten Transaktion.
+
+23004=Fehler beim Abrufen des Transaktionsmanagers.
+
+23005=Fehler beim Herstellen einer Bindung zur extern verwalteten Transaktion.
+
+23006=Fehler bei der Initialisierung einer neuen extern verwalteten Transaktion.
+
+23007=Fehler beim Festschreiben der extern verwalteten Transaktion.
+
+23008=Fehler beim Rollback der extern verwalteten Transaktion.
+
+23009=Fehler bei der Kennzeichnung der extern verwalteten Transaktion f\u00fcr den Rollback.
+
+23010=F\u00fcr diesen Thread ist momentan keine extern verwaltete Transaktion aktiv.
+
+23011=Die Arbeitseinheit [{0}] wurde inaktiv, bevor die zugeh\u00f6rige extern verwaltete Transaktion abgeschlossen war.
+
+23012=Es ist momentan keine Transaktion aktiv.
+
+23013=Die Transaktion ist momentan aktiv.
+
+23014=EntityTransaction kann nicht verwendet werden, w\u00e4hrend JTA verwendet wird.
+
+23015=Es k\u00f6nnen nicht mehrere Datenquellen in der Transaktion eingetragen werden.
+
+23016=Ausnahme bei der Proxy-Ausf\u00fchrung.
+

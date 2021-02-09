@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ejb-jar-bnd
+        xmlns="http://websphere.ibm.com/xml/ns/javaee"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-ejb-jar-bnd_1_1.xsd"
+        version="1.1">
+    <message-driven name="ConcurBMTNonJMS">
+        <jca-adapter activation-spec-binding-name="ejb/ConcurBMTNonJMS"/>
+    </message-driven>
+    <message-driven name="ConcurCMTNonJMSRequired">
+        <jca-adapter activation-spec-binding-name="ejb/ConcurCMTNonJMSRequired"/>
+    </message-driven>
+    <message-driven name="ConcurCMTNonJMSNotSupported">
+        <jca-adapter activation-spec-binding-name="ejb/ConcurCMTNonJMSNotSupported"/>
+    </message-driven>
+    <message-driven name="EndpointBMTJMS">
+        <jca-adapter activation-spec-binding-name="ejb/EndpointBMTJMS"/>
+    </message-driven>
+    <message-driven name="EndpointBMTJMSAutoStartFalse">
+        <jca-adapter activation-spec-binding-name="ejb/EndpointBMTJMSAutoStartFalse"/>
+    </message-driven>
+    <message-driven name="EndpointCMTJMSRequired">
+        <jca-adapter activation-spec-binding-name="ejb/EndpointCMTJMSRequired"/>
+    </message-driven>
+    <message-driven name="EndpointCMTJMSNotSupported">
+        <jca-adapter activation-spec-binding-name="ejb/EndpointCMTJMSNotSupported"/>
+    </message-driven>
+    <message-driven name="EndpointBMTNonJMS">
+        <jca-adapter activation-spec-binding-name="ejb/EndpointBMTNonJMS"/>
+    </message-driven>
+    <message-driven name="EndpointBMTNonJMSFalseResume">
+        <jca-adapter activation-spec-binding-name="ejb/EndpointBMTNonJMSFalseResume"/>
+    </message-driven>
+    <message-driven name="EndpointBMTNonJMSNeverStarted">
+        <jca-adapter activation-spec-binding-name="ejb/EndpointBMTNonJMSNeverStarted"/>
+    </message-driven>
+    <message-driven name="EndpointBMTNonJMSAutoStartFalse">
+        <jca-adapter activation-spec-binding-name="ejb/EndpointBMTNonJMSAutoStartFalse"/>
+    </message-driven>
+    <message-driven name="EndpointBMTNonJMSAutoStartFalseDup">
+        <jca-adapter activation-spec-binding-name="ejb/EndpointBMTNonJMSAutoStartFalse"/>
+    </message-driven>
+    <message-driven name="EndpointCMTNonJMSRequired">
+        <jca-adapter activation-spec-binding-name="ejb/EndpointCMTNonJMSRequired"/>
+    </message-driven>
+    <message-driven name="EndpointCMTNonJMSNotSupported">
+        <jca-adapter activation-spec-binding-name="ejb/EndpointCMTNonJMSNotSupported"/>
+    </message-driven>
+    <message-driven name="MDBBean">
+        <jca-adapter activation-spec-binding-name="ejb/MDBBean"/>
+    </message-driven>
+    <message-driven name="MDBTimedCMTBean">
+        <jca-adapter activation-spec-binding-name="ejb/MDBTimedCMTBean"/>
+    </message-driven>
+    <message-driven name="MDBTimedBMTBean">
+        <jca-adapter activation-spec-binding-name="ejb/MDBTimedBMTBean"/>
+    </message-driven>
+    <message-driven name="MDBTimedCMTFailBean">
+        <jca-adapter activation-spec-binding-name="ejb/MDBTimedCMTFailBean"/>
+    </message-driven>
+    <message-driven name="MDBTimedBMTFailBean">
+        <jca-adapter activation-spec-binding-name="ejb/MDBTimedBMTFailBean"/>
+    </message-driven>
+    <message-driven name="ConcurBMTException">
+        <jca-adapter activation-spec-binding-name="ejb/ConcurBMTException"/>
+    </message-driven>
+    <message-driven name="ConcurCMTExceptionRequired">
+        <jca-adapter activation-spec-binding-name="ejb/ConcurCMTExceptionRequired"/>
+    </message-driven>
+    <message-driven name="ConcurCMTExceptionNotSupported">
+        <jca-adapter activation-spec-binding-name="ejb/ConcurCMTExceptionNotSupported"/>
+    </message-driven>
+    <message-driven name="EndpointBMTException">
+        <jca-adapter activation-spec-binding-name="ejb/EndpointBMTException"/>
+    </message-driven>
+    <message-driven name="EndpointCMTExceptionRequired">
+        <jca-adapter activation-spec-binding-name="ejb/EndpointCMTExceptionRequired"/>
+    </message-driven>
+    <message-driven name="EndpointCMTExceptionNotSupported">
+        <jca-adapter activation-spec-binding-name="ejb/EndpointCMTExceptionNotSupported"/>
+    </message-driven>
+    <message-driven name="EndpointCMTRollbackRequired">
+        <jca-adapter activation-spec-binding-name="ejb/EndpointCMTRollbackRequired"/>
+    </message-driven>
+</ejb-jar-bnd>

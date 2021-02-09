@@ -1,8 +1,19 @@
+/*******************************************************************************
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package com.ibm.ws.os.packaging.fat;
 
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -21,7 +32,6 @@ public class InstallRhelTest extends InstallUtilityToolTest {
     @BeforeClass
     public static void beforeClassSetup() throws Exception {
         Assume.assumeTrue(isLinuxRhel());
-        //Assume.assumeTrue(ConnectedToIMRepo);
         if (openLibExists) {
             logger.info("/var/lib/openliberty found. OpenLiberty is Installed");
             setupEnv();
@@ -40,7 +50,7 @@ public class InstallRhelTest extends InstallUtilityToolTest {
                 cleanupEnv();
                 exiting(c, METHOD_NAME);
             } else {
-                logger.info("This machine is not Rhel");
+                logger.info("This machine is not RHEL");
             }
         } else {
             logger.info("OpenLiberty did not install successfully");
@@ -81,16 +91,35 @@ public class InstallRhelTest extends InstallUtilityToolTest {
         ProgramOutput po2b = runCommand(METHOD_NAME, "sudo ", param2b);
 
         // service tests
+        Log.info(c, METHOD_NAME, "Starting defaultServer");
         ProgramOutput po2 = serviceCommand(METHOD_NAME, "start", "defaultServer");
+        TimeUnit.SECONDS.sleep(2);
         ProgramOutput po2a = serviceCommand(METHOD_NAME, "status", "defaultServer");
 
+        Log.info(c, METHOD_NAME, "Stopping defaultServer");
         ProgramOutput po3 = serviceCommand(METHOD_NAME, "stop", "defaultServer");
+        TimeUnit.SECONDS.sleep(2);
         ProgramOutput po3a = serviceCommand(METHOD_NAME, "status", "defaultServer");
+
+        Log.info(c, METHOD_NAME, "Re-starting defaultServer");
         ProgramOutput po4 = serviceCommand(METHOD_NAME, "restart", "defaultServer");
+        TimeUnit.SECONDS.sleep(2);
         ProgramOutput po4a = serviceCommand(METHOD_NAME, "status", "defaultServer");
+
+        Log.info(c, METHOD_NAME, "Stopping defaultServer");
         ProgramOutput po5 = serviceCommand(METHOD_NAME, "stop", "defaultServer");
 
-        Boolean testsPassed = ((po2.getReturnCode() == 0) && (po2a.getReturnCode() == 0) && (po3.getReturnCode() == 0) && (po4.getReturnCode() == 0)
+        Log.info(c, METHOD_NAME, "Test Results Summary:\n"
+                                 + "===================="
+                                 + "start defaultServer.service RC2:" + po2.getReturnCode() + "\n"
+                                 + "status defaultServer.service RC2a:" + po2a.getReturnCode() + "\n"
+                                 + "stop defaultServer.service RC3:" + po3.getReturnCode() + "\n"
+                                 + "status defaultServer.service RC3a:" + po3a.getReturnCode() + "\n"
+                                 + "restart defaultServer.service RC4:" + po4.getReturnCode() + "\n"
+                                 + "status defaultServer.service RC4a:" + po4a.getReturnCode() + "\n"
+                                 + "stop defaultServer.service RC5:" + po5.getReturnCode() + "\n");
+
+        Boolean testsPassed = ((po2.getReturnCode() == 0) && (po3.getReturnCode() == 0) && (po4.getReturnCode() == 0)
                                && (po5.getReturnCode() == 0));
         Assert.assertTrue("Non zero return code in service test case. "
                           + "start defaultServer.service RC2:" + po2.getReturnCode() + "\n"

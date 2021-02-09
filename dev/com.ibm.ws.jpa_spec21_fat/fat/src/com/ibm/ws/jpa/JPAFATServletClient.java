@@ -136,11 +136,11 @@ public class JPAFATServletClient extends FATServletClient {
                 System.out.println("   " + key + " = " + dbProps.getProperty((String) key));
             }
 
-            dbProductName = dbProps.getProperty("dbproduct_name");
-            dbProductVersion = dbProps.getProperty("dbproduct_version");
-            jdbcDriverVersion = dbProps.getProperty("jdbcdriver_version");
-            jdbcURL = dbProps.getProperty("jdbc_url");
-            jdbcUsername = dbProps.getProperty("jdbc_username");
+            dbProductName = dbProps.getProperty("dbproduct_name", "UNKNOWN");
+            dbProductVersion = dbProps.getProperty("dbproduct_version", "UNKNOWN");
+            jdbcDriverVersion = dbProps.getProperty("jdbcdriver_version", "UNKNOWN");
+            jdbcURL = dbProps.getProperty("jdbc_url", "UNKNOWN");
+            jdbcUsername = dbProps.getProperty("jdbc_username", "UNKNOWN");
 
             dbVendor = DatabaseVendor.resolveDBProduct(dbProductName);
         } else {

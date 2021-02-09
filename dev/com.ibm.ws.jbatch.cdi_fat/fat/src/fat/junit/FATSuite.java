@@ -20,5 +20,4 @@ import org.junit.runners.Suite.SuiteClasses;
                 TranTimeoutCleanupTest.class,
 })
 public class FATSuite {
-
 }

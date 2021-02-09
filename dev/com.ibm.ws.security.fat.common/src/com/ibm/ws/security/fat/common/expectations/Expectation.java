@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2019 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@ package com.ibm.ws.security.fat.common.expectations;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.Constants;
 import com.ibm.ws.security.fat.common.Constants.CheckType;
+import com.ibm.ws.security.fat.common.TestServer;
 import com.ibm.ws.security.fat.common.validation.TestValidationUtils;
 
 public abstract class Expectation {
@@ -20,6 +21,7 @@ public abstract class Expectation {
     private static Class<?> thisClass = Expectation.class;
 
     protected String testAction;
+    protected TestServer serverRef;
     protected String searchLocation;
     protected String checkType;
     protected CheckType expCheckType = null;
@@ -27,6 +29,7 @@ public abstract class Expectation {
     protected String validationValue;
     protected String failureMsg;
     protected boolean isExpectationHandled;
+    protected boolean failureMsgAlreadyUpdated = false;
 
     protected TestValidationUtils validationUtils = new TestValidationUtils();
 
@@ -44,12 +47,29 @@ public abstract class Expectation {
         this.validationValue = searchFor;
         this.failureMsg = failureMsg;
         this.isExpectationHandled = false;
+        this.failureMsgAlreadyUpdated = false;
+    }
+    
+    public Expectation(String testAction, TestServer server, String searchLocation, String checkType, String searchKey, String searchFor, String failureMsg) {
+        this.testAction = testAction;
+        this.serverRef = server;
+        this.searchLocation = searchLocation;
+        this.checkType = checkType;
+        this.validationKey = searchKey;
+        this.validationValue = searchFor;
+        this.failureMsg = failureMsg;
+        this.isExpectationHandled = false;
+        this.failureMsgAlreadyUpdated = false;
     }
 
     public String getAction() {
         return testAction;
     };
 
+    public TestServer getServerRef() {
+        return serverRef;
+    }
+    
     public String getSearchLocation() {
         return searchLocation;
     };
@@ -99,7 +119,11 @@ public abstract class Expectation {
         if (printValidationMessage == null || printValidationMessage.equals("true")) {
             Log.info(thisClass, "validate", "Checking " + this);
         } else { // otherwise, only log the Expectation if we hit a failure
-            failureMsg = "Checking " + this.toString() + System.lineSeparator() + "Error message: " + failureMsg;
+            // Only update the msg once to avoid an OOM condition that we hit when the same expectation was reused over and over like inside a loop :)
+            if (!failureMsgAlreadyUpdated) {
+                failureMsgAlreadyUpdated = true;
+                failureMsg = "Checking " + this.toString() + System.lineSeparator() + "Error message: " + failureMsg;
+            }
         }
         validate(contentToValidate);
     }

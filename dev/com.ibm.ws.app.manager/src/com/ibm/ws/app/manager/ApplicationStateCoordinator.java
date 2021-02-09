@@ -31,7 +31,7 @@ import com.ibm.wsspi.kernel.service.utils.FrameworkState;
  */
 public final class ApplicationStateCoordinator {
     public enum AppStatus {
-        FAILED, STOPPED, STARTED, REMOVED, DUP_APP_NAME
+        FAILED, STOPPED, STARTED, REMOVED, DUP_APP_NAME, CYCLE
     };
 
     private static final class LatchAndAppSet {
@@ -142,6 +142,7 @@ public final class ApplicationStateCoordinator {
             } catch (InterruptedException e) {
                 // Auto FFDC
             }
+
             appConfigurator.readyForAppsToStart();
             endTime = System.nanoTime() + unit.toNanos(getApplicationStartTimeout());
             try {
@@ -173,7 +174,9 @@ public final class ApplicationStateCoordinator {
         if (unstarted != null) {
             unstarted.removeAppPid(appPid);
         }
-        appConfigurator.unblockAppStartDependencies(appPid);
+        if (appStatus == AppStatus.STARTED) {
+            appConfigurator.unblockAppStartDependencies(appPid);
+        }
     }
 
     public static String[] getSlowlyStoppingApps() {

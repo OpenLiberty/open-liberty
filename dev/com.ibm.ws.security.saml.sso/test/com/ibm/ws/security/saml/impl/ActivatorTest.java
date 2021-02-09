@@ -51,7 +51,7 @@ public class ActivatorTest {
             assertTrue("Variable 'bInit' must be true.", Activator.bInit);
         } catch (Exception ex) {
             ex.printStackTrace();
-            fail("Unexpected exception was thrown: " + ex.getMessage());
+            fail("Unexpected exception was thrown: " + ex);
         }
     }
 }

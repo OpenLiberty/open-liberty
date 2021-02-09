@@ -1,0 +1,586 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- AtestCatalog metadata in xml -->
+<entity-mappings xmlns="http://java.sun.com/xml/ns/persistence/orm"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
+version="2.0">
+    <package>com.ibm.ws.query.entities.xml</package>
+  
+<!--<schema>jpaquer</schema>-->
+
+<!--        <named-queries>-->
+        <named-query name="findAllDepartmentsLikeName">
+                <query>
+                SELECT d FROM DeptBean d WHERE d.name LIKE :deptName
+                </query>
+        </named-query>
+        <named-query name="joinDeptWithEmps">
+                <query>
+                    SELECT d    FROM DeptBean d JOIN d.emps e   WHERE d.no > ?1 order by d.no asc
+                </query>
+        </named-query>
+        <named-query name="deleteDepartmentsGreaterThan">
+                <query>
+                    delete FROM DeptBean d WHERE d.no > :deptNo
+                </query>
+        </named-query>
+        <named-query name="updateDeptBudget">
+                <query>
+                    update DeptBean d set d.budget = (d.budget + ?1)
+                </query>
+        </named-query>
+        <named-query name="updateDeptBudgetForParent2">
+                <query>
+                    update DeptBean d set d.budget = (d.budget * :factor) where d.reportsTo.no = :reports2
+                </query>
+        </named-query>
+        <named-query name="updateDeptBudgetForParent">
+                <query>
+                    update DeptBean d set d.budget = (d.budget * ?1) where d.reportsTo.no = ?2
+                </query>
+        </named-query>
+<!--// fails due to known issue-->
+<!--                    SELECT d,e    FROM DeptBean d JOIN d.emps e   WHERE d.no > :deptNo order by e.empid desc-->
+        <named-query name="joinDeptWithEmps2">
+                <query>
+                    SELECT d    FROM DeptBean d JOIN d.emps e   WHERE d.no > ?1 order by e.empid desc
+                </query>
+        </named-query>
+<!--        </named-queries>-->
+<!--        <named-native-queries>-->
+        <named-native-query name="nativeFindAllDepartmentNumbersLikeName">
+                <query>
+                    SELECT d.deptno FROM JPADeptBean d WHERE d.name LIKE ?
+                </query>
+                </named-native-query>
+        <named-native-query name="nativeFindAllDepartmentColumns">
+                <query>
+                    SELECT d.*    FROM JPADeptBean d   WHERE d.deptno > ?1 order by d.deptno asc
+                </query>
+            </named-native-query>
+        <named-native-query name="nativeFindAllDepartments"
+                    result-class="com.ibm.ws.query.entities.xml.DeptBean">      
+                <query>
+                    SELECT d.*    FROM JPADeptBean d   WHERE d.deptno > ?1 order by d.deptno asc
+                </query>
+            </named-native-query>
+<!--// fails due to known issue-->
+        <named-native-query name="nativeJoinDeptWithEmps"
+                    result-set-mapping="DeptBeanThenEmpBeanMapping">        
+                <query>
+                    SELECT d.*,e.*    FROM JPAEmpBean e JOIN JPADeptBean d on e.dept_deptno = d.deptno  WHERE d.deptno > ?1 order by e.empid desc
+                </query>
+        </named-native-query>
+<!--not used, should fail -->
+        <named-native-query name="nativeJoinDeptWithEmps2"
+                    result-set-mapping="DeptBeanThenEmpBeanMapping">        
+                <query>
+                    SELECT d.*,e.*    FROM JPAEmpBean e JOIN JPADeptBean d on e.dept_deptno = d.deptno  WHERE d.deptno > :deptNo order by e.empid desc
+                </query>
+        </named-native-query>
+        <named-native-query name="nativeJoinEmpsWithDept"
+                    result-set-mapping="EmpBeanThenDeptBeanMapping">        
+                <query>
+                    SELECT e.*,d.*    FROM JPAEmpBean e JOIN JPADeptBean d on e.dept_deptno = d.deptno  WHERE d.deptno > ?1 order by e.empid desc
+                </query>
+        </named-native-query>
+        <named-native-query name="nativeFindAllDepartments2"
+                    result-set-mapping="DeptBeanMapping"        >
+                <query>
+                    SELECT d.*    FROM JPADeptBean d   WHERE d.deptno > ? order by d.deptno asc
+                </query>
+            </named-native-query>
+<!--not used -->
+        <named-native-query name="nativeDeleteDepartmentsGreaterThan">
+                <query>
+                        delete FROM JPADeptBean WHERE deptno > ?1
+                </query>
+            </named-native-query>
+        <named-native-query name="nativeUpdateDeptBudget">
+                <query>
+                        update JPADeptBean set budget = (budget + ?1)
+                </query>
+                </named-native-query>
+<!--not used, should fail -->
+        <named-native-query name="nativeUpdateDeptBudgetForParent2">
+                <query>
+                        update JPADeptBean set budget = (budget * :factor) where REPORTSTO_DEPTNO = :reports2
+                </query>
+        </named-native-query>
+        <named-native-query name="nativeUpdateDeptBudgetForParent">
+                <query>
+                        update JPADeptBean set budget = (budget * ?1) where REPORTSTO_DEPTNO = ?2
+                </query>
+        </named-native-query>
+<!--        </named-native-queries>-->
+
+<!--    <sql-result-set-mappings>-->
+    <sql-result-set-mapping name="StringMapping">
+            <column-result name="name"/>
+    </sql-result-set-mapping>
+    <sql-result-set-mapping name="DeptBeanMapping">
+            <entity-result entity-class="com.ibm.ws.query.entities.xml.DeptBean"/>
+    </sql-result-set-mapping>
+    <sql-result-set-mapping name="PersonSQLMapping">
+            <entity-result entity-class="com.ibm.ws.query.entities.xml.PersonBean"/>
+    </sql-result-set-mapping>
+
+    <!--  587035 -->
+    <sql-result-set-mapping name="PersonBeanSQLMapping">
+            <entity-result entity-class="com.ibm.ws.query.entities.xml.PersonBean"/>
+    </sql-result-set-mapping>
+
+    <sql-result-set-mapping name="DeptBeanThenEmpBeanMapping">
+            <entity-result entity-class="com.ibm.ws.query.entities.xml.DeptBean"/>
+            <entity-result entity-class="com.ibm.ws.query.entities.xml.EmpBean"/>
+    </sql-result-set-mapping>
+    <sql-result-set-mapping name="EmpBeanThenDeptBeanMapping">
+            <entity-result entity-class="com.ibm.ws.query.entities.xml.EmpBean"/>
+            <entity-result entity-class="com.ibm.ws.query.entities.xml.DeptBean"/>
+    </sql-result-set-mapping>
+    <sql-result-set-mapping name="IntegerThenStringMapping">
+            <entity-result entity-class="java.lang.Integer"/>
+            <entity-result entity-class="java.lang.String"/>
+    </sql-result-set-mapping>
+    <sql-result-set-mapping name="IntegerThenStringMapping2">
+            <column-result name="DEPTNO2"/>
+            <column-result name="NAME2"/>
+    </sql-result-set-mapping>
+    <sql-result-set-mapping name="EntityThenStringMapping">
+            <entity-result entity-class="com.ibm.ws.query.entities.xml.DeptBean"/>
+            <column-result name="name2"/>
+    </sql-result-set-mapping>
+    <sql-result-set-mapping name="EntityThenCountMapping">
+            <entity-result entity-class="com.ibm.ws.query.entities.xml.DeptBean"/>
+            <column-result name="resCount"/>
+    </sql-result-set-mapping>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+<!--     <entity name="DeptBean" class="com.ibm.ws.query.entities.xml.DeptBean" access="PROPERTY">-->
+     <entity name="DeptBean" class="DeptBean" access="FIELD">
+        <table name="JPADeptBean"/>
+        <attributes>
+            <id name="no">
+<!--  fails in derby              <column name="deptno" unique="true" nullable="false" column-definition="integer"/>-->
+<!--                <column name="deptno" nullable="false" column-definition="integer"/>-->
+                <column name="deptno" />
+            </id>
+            <basic name="name" fetch="EAGER">
+                <column length="40" />
+                <!--<column name="cdname" nullable="TRUE" column-definition="varchar(40)" table="deptab"/>-->
+            </basic>
+            <basic name="budget">
+            </basic>
+<!--  DEFINE ALL many-to-one relationships first -->
+<!--            </many-to-one> -->
+<!--@ManyToOne DeptBean getReportsTo() {return reportsTo;}-->
+<!--            <many-to-one name="reportsTo" target-entity="DeptBean" fetch="EAGER">-->
+            <many-to-one name="reportsTo" fetch="EAGER">
+            </many-to-one>
+<!--@ManyToOne  @ForeignKey() EmpBean getMgr() {return mgr;}-->
+<!--            <many-to-one name="mgr" target-entity="EmpBean" fetch="EAGER">-->
+<!--                <foreignKey></foreignKey>-->
+            <many-to-one name="mgr" fetch="EAGER">
+            </many-to-one>
+
+<!-- THEN DEFINE ALL one-to-many relationships -->
+<!--@OneToMany(mappedBy="dept", cascade=CascadeType.REMOVE)  List<EmpBean> getEmps() {return emps;}-->
+<!--            <one-to-many name="emps" target-entity="EmpBean" fetch="LAZY" mapped-by="dept">-->
+            <one-to-many name="emps" fetch="LAZY" mapped-by="dept">
+                <cascade><cascade-remove/></cascade>
+            </one-to-many>
+<!--@OneToMany(mappedBy="dept") List<ProjectBean> getProjects() {return projects;}-->
+<!--            <one-to-many name="projects" target-entity="ProjectBean" fetch="LAZY" mapped-by="dept">-->
+            <one-to-many name="projects" fetch="LAZY" mapped-by="dept">
+            </one-to-many>
+
+<!-- THEN DEFINE ALL one-to-one relationships -->
+
+<!-- DEFINE ALL many-to-many relationships -->
+
+<!-- DEFINE ALL embedded properties -->
+            <embedded name="charityFund"> 
+                <attribute-override name="charityName">
+<!--gfh fails extra foreign key field (CharityFund_deptno) is generated in table-->
+<!--                   <column name="charityName" table="JPADeptBean"/>-->
+                   <column name="charityName" length="40"/>
+                </attribute-override>
+                <attribute-override name="charityAmount">
+                   <column name="charityAmount"/>
+                </attribute-override>
+            </embedded>
+
+
+<!-- DEFINE ALL transient properties -->
+           
+        </attributes>
+    </entity>
+    
+    <entity name="EmpBean" class="EmpBean" access="FIELD">
+        <table name="JPAEmpBean"/>
+<!--        <id-class class="com.ibm.ws.query.entities.xml.EmployeePK"/>-->
+        <attributes>
+            <id name="empid">
+<!--                <column name="empid" unique="true" nullable="false" column-definition="integer" />-->
+                <column name="empid" nullable="false" column-definition="integer" />
+<!--  587035        <generated-value strategy="AUTO"/> -->
+            </id>
+            <basic name="name" fetch="EAGER">
+                <column length="40"/>
+            </basic>
+            <basic name="salary" fetch="EAGER" >
+<!--                <column name="salary" table="empbean"/>       -->
+            </basic>
+            <basic name="bonus" fetch="EAGER">
+<!--                <column name="bonus" table="empbean2"/>-->
+<!--                <column name="bonus"/>   -->
+            </basic>
+             <basic name="isManager" fetch="EAGER">
+             </basic>
+             <basic name="execLevel" fetch="EAGER">
+             </basic>
+            <basic name="hireDate" fetch="EAGER">
+                <temporal>DATE</temporal>
+             </basic>
+            <basic name="hireTime" fetch="EAGER">
+                <temporal>TIME</temporal>
+             </basic>
+            <basic name="hireTimestamp" fetch="EAGER">
+                <temporal>TIMESTAMP</temporal>
+             </basic>
+             
+<!-- @ManyToOne()   @ForeignKey() DeptBean dept;-->
+            <many-to-one name="dept" target-entity="DeptBean" fetch="EAGER">
+<!--                <foreignKey></foreignKey>-->
+            <!--<join-column name="dept_deptno" referenced-column-name="dept_deptno" table="empbean" />-->
+            </many-to-one>
+            
+<!-- @OneToMany(mappedBy="mgr", cascade=CascadeType.REMOVE) List<DeptBean> manages;-->
+            <one-to-many name="manages" target-entity="DeptBean" fetch="LAZY" mapped-by="mgr">
+                <cascade><cascade-remove/></cascade>
+                <!--<join-column name="empid" referenced-column="mgr_empid" table="empbean" />-->
+            </one-to-many>
+
+<!-- @OneToOne() AddressBean home;-->
+            <one-to-one name="home" target-entity="AddressBean" fetch="EAGER">
+           </one-to-one>
+
+<!-- @OneToOne() AddressBean work;-->
+             <one-to-one name="work" target-entity="AddressBean" fetch="EAGER">
+           </one-to-one>
+            
+<!-- @ManyToMany(mappedBy="emps") List<TaskBean>  tasks;-->
+            <many-to-many name="tasks" target-entity="TaskBean" fetch="LAZY" mapped-by="emps">
+            </many-to-many>
+
+        </attributes>        
+    </entity>
+    
+    <entity name="ProjectBean" class="ProjectBean" access="FIELD">
+        <table name="JPAProjectBean"/>
+        <!--<table name="JPAprojtab" catalog="testDB" schema="userid"/>-->
+        <!--<secondary-table name="projtab2" catalog="testDB" schema="userid">-->
+        <!--<primary-key-join-column name="projid2" referenced-column-name="projid" column-definition="integer"/>-->
+        <!--</secondary-table>-->
+
+        <attributes>
+            <id name="projid">
+                <column name="projid" nullable="false" column-definition="integer"/>
+<!--  fails in derby              <column name="projid" unique="true" nullable="false" column-definition="integer"/>-->
+                <!--<column name="projid" unique="true" nullable="false" column-definition="integer" table="projectbean" />-->
+            </id>
+            <basic name="name" fetch="EAGER">
+                        <column length="40" />
+                <!--<column name="prname" nullable="TRUE" column-definition="varchar(40)"  table="projectbean"/>-->
+            </basic>
+            <basic name="description">
+                        <column length="40" />
+            </basic>
+            <basic name="personMonths"/>
+            <basic name="durationDays"/>
+            <basic name="startTime"/>
+            <basic name="cost"/>
+            <basic name="budget"/>
+            
+<!--@ManyToOne() DeptBean dept;-->
+            <many-to-one name="dept" target-entity="DeptBean" fetch="EAGER">
+         <!--<cascade>MERGE</cascade>-->
+             <!--<join-column name="deptno" referenced-column-name="no" table="projtab2" />-->
+            </many-to-one>
+            
+<!--@OneToMany(mappedBy="project") List< TaskBean> tasks;-->
+            <one-to-many name="tasks" target-entity="TaskBean" fetch="LAZY" mapped-by="project">
+                <!--<cascade>MERGE</cascade>-->
+            </one-to-many>
+        </attributes>
+    </entity>
+
+    <entity name="TaskBean" class="TaskBean" access="FIELD">
+        <table name="JPATaskBean"/>
+        <attributes>
+            <id name="taskid">
+                <!--<column name="taskid" unique="TRUE" nullable="FALSE" column-definition="integer" table="taskbean" />-->
+            </id>
+            <basic name="name" fetch="EAGER">
+                <!--<column name="name" nullable="TRUE" column-definition="varchar(40)"  table="taskbean"/>-->
+                        <column length="40" />
+            </basic>
+            <basic name="description">
+                        <column length="40" />
+            </basic>
+            <basic name="cost"/>
+            
+<!--@ManyToOne() ProjectBean project;-->
+            <many-to-one name="project" target-entity="ProjectBean" fetch="EAGER">
+            <!--<join-column name="tid" referenced-column-name="projid" table="tasktab" />-->
+            </many-to-one>
+            
+<!--@ManyToMany()   List<EmpBean> emps;-->
+            <many-to-many name="emps" target-entity="EmpBean" fetch="LAZY">
+            <!--<join-column name="tid" referenced-column-name="projid" table="tasktab" />-->
+            </many-to-many>
+        </attributes>
+    </entity>
+
+    <entity name="AddressBean" class="AddressBean" access="FIELD">
+        <table name="JPAAddressBean"/>
+        <attributes>
+            <embedded-id name="street">
+<!--                        <column name="street" length="40" />-->
+            </embedded-id>
+            <basic name="city">
+                        <column length="30" />
+            </basic>
+            <basic name="state">
+                         <column length="20" />
+            </basic>
+            <basic name="zip">
+                        <column length="10" />
+            </basic>
+        </attributes>
+    </entity>
+
+    <entity name="TypeTestBean" class="TypeTestBean" access="FIELD">
+        <table name="JPATypeTestBean"/>
+        <attributes>
+            <id name="id">
+            </id>
+            <basic name="i4"/>
+            <basic name="o4"/>
+            <basic name="i1"/>
+            <basic name="o1"/>
+            <basic name="i2"/>
+            <basic name="o2"/>
+            <basic name="i8"/>
+            <basic name="o8"/>
+            <basic name="name"/>
+            <basic name="ic"/>
+            <basic name="oc"/>
+            <basic name="ichars"/>
+            <basic name="ochars"/>
+            <basic name="ibytes"/>
+            <basic name="obytes"/>
+            <basic name="bigbytes"/>
+            <basic name="idouble"/>
+            <basic name="odouble"/>
+            <basic name="ifloat"/>
+            <basic name="ofloat"/>
+            <basic name="deficitUSA"/>
+            <basic name="ageofUniverse"/>
+            <basic name="iboolean"/>
+            <basic name="oboolean"/>
+            <basic name="sdate">
+               <temporal>DATE</temporal>
+            </basic>
+            <basic name="stime">
+               <temporal>TIME</temporal>
+            </basic>
+            <basic name="stimestamp">
+               <temporal>TIMESTAMP</temporal>
+            </basic>
+            <basic name="udate">
+               <temporal>TIMESTAMP</temporal>
+            </basic>
+            <basic name="ucalendar">
+               <temporal>TIMESTAMP</temporal>
+            </basic>
+            <basic name="status">
+            <enumerated>ORDINAL
+            </enumerated>
+            </basic>
+            <basic name="payScale">
+            <enumerated>STRING</enumerated>
+            </basic>
+<!--
+            <embedded name="busPass"/> 
+            <lob/>
+-->
+            <basic name="busPass">
+            </basic>
+        </attributes>
+    </entity>
+    
+    <entity name="CustomerBean" class="CustomerBean" access="FIELD">
+    <table name="JPACustomerparttab"/>
+        <attributes>
+            <id name="id">
+            </id>
+            <basic name="name">
+                        <column length="40" />
+            </basic>
+            <basic name="rating"/>
+<!--//  @OneToMany(fetch=FetchType.LAZY, mappedBy="customer")-->
+            <one-to-many name="orders" fetch="LAZY" mapped-by="customer"/>
+<!--//  @OneToMany(fetch=FetchType.LAZY, mapped_by="supplier")-->
+            <one-to-many name="supplies" fetch="LAZY" mapped-by="supplier"/>
+        </attributes>
+    </entity>
+    
+    <entity name="LineItem" class="LineItem" access="FIELD">
+    <table name="JPALineItemparttab"/>
+        <attributes>
+            <id name="lid">
+            </id>
+            <basic name="quantity"/>
+            <basic name="cost"/>
+<!--//  @ManyToOne (fetch=FetchType.EAGER)-->
+            <many-to-one name="product" fetch="EAGER"/>
+<!--//  @ManyToOne (fetch=FetchType.EAGER)-->
+            <many-to-one name="order" fetch="EAGER"/>
+        </attributes>
+    </entity>
+
+    <entity name="OrderBean" class="OrderBean" access="FIELD">
+    <table name="JPAOrderparttab"/>
+        <attributes>
+            <id name="oid">
+            </id>
+            <basic name="amount"/>
+            <basic name="delivered"/>
+<!--//  @ManyToOne-->
+            <many-to-one name="customer"/>
+<!--//  @OneToMany (fetch=FetchType.EAGER , mappedBy="order")-->
+            <one-to-many name="lineitems" fetch="EAGER" mapped-by="order"/>
+        </attributes>
+    </entity>
+
+    <entity name="Part" class="Part" access="FIELD">
+    <table name="JPAparttab"/>
+    <inheritance strategy="SINGLE_TABLE"/>
+    <discriminator-column name="PARTTYPE"/>
+        <attributes>
+            <id name="partno">
+            </id>
+            <basic name="name">
+                        <column length="40" />
+            </basic>
+        </attributes>
+    </entity>
+
+    <entity name="PartBase" class="PartBase" access="FIELD">
+    <inheritance strategy="SINGLE_TABLE"/>
+    <discriminator-value>PartBase</discriminator-value>
+    <discriminator-column name="PARTTYPE" discriminator-type="STRING"/>
+        <attributes>
+            <basic name="cost"/>
+            <basic name="mass"/>
+    
+<!--//  @ManyToMany(mappedBy="supplies") Collection<Supplier> suppliers-->
+<!--            <many-to-many name="suppliers" target-entity="Supplier" fetch="LAZY" mapped-by="supplies"/>-->
+            <many-to-many name="suppliers" fetch="LAZY" mapped-by="supplies"/>
+        </attributes>
+    </entity>
+
+    <entity name="PartComposite" class="PartComposite" access="FIELD">
+    <inheritance strategy="SINGLE_TABLE"/>
+    <discriminator-value>PartComposite</discriminator-value>
+        <attributes>
+            <basic name="assemblyCost"/>
+            <basic name="massIncrement"/>
+<!--//  @OneToMany( mappedBy="parent") Collection<Usage> partsUsed-->
+<!--            <one-to-many name="partsUsed" target-entity="Usage" fetch="LAZY" mapped-by="parent"/>-->
+            <one-to-many name="partsUsed" fetch="LAZY" mapped-by="parent"/>
+        </attributes>
+    </entity>
+
+    <entity name="Product" class="Product" access="FIELD">
+    <table name="JPAProductparttab"/>
+        <attributes>
+            <id name="pid"/>
+            <basic name="description">
+                         <column length="40" />
+            </basic>
+            <basic name="inventory"/>
+            <basic name="backorder"/>
+<!--//  @ManyToOne (fetch=FetchType.EAGER)-->
+            <many-to-one name="supplier" fetch="EAGER" />
+<!--//  @OneToMany (fetch=FetchType.EAGER, mappedBy="product")-->
+            <one-to-many name="lineitems" fetch="EAGER" mapped-by="product"/>
+        </attributes>
+    </entity>
+
+    <entity name="Supplier" class="Supplier" access="FIELD">
+    <table name="JPASupplierparttab"/>
+        <attributes>
+            <id name="sid"/>
+            <basic name="name">
+                        <column length="40" />
+            </basic>
+<!--//  @ManyToMany Collection<PartBase> supplies-->
+<!--            <many-to-many name="supplies" target-entity="PartBase" fetch="LAZY"/>-->
+            <many-to-many name="supplies" fetch="LAZY"/>
+        </attributes>
+    </entity>
+
+    <entity name="Usage" class="Usage" access="FIELD">
+    <table name="JPAUsageparttab"/>
+        <attributes>
+            <id name="id"/>
+            <basic name="quantity"/>
+<!--//  @ManyToOne-->
+            <many-to-one name="child" fetch="EAGER" />
+<!--//  @ManyToOne-->
+            <many-to-one name="parent" fetch="EAGER" />
+        </attributes>
+    </entity>
+
+    <entity name="PersonBean" class="PersonBean" access="FIELD">
+    <table name="JPAXYZ"/>
+        <attributes>
+            <id name="id"/>
+<!--  fails in derby              <column name="id" unique="true" nullable="false" column-definition="integer"/>-->
+            <basic name="age"/>
+            <basic name="first">
+                        <column name="firstName" length="20" />
+            </basic>
+            <basic name="last">
+                        <column name="lastName" length="20" />
+            </basic>
+        </attributes>
+    </entity>
+
+    <embeddable class="AddressPK" access="FIELD">
+        <attributes>
+            <basic name="name">
+                        <column name="street" length="40" />
+            </basic>
+        </attributes>
+    </embeddable>
+
+    <embeddable class="CharityFund" access="FIELD">
+        <attributes>
+            <basic name="charityName">
+                <column length="40" />
+            </basic>
+            <basic name="charityAmount"/>
+        </attributes>
+    </embeddable>
+ 
+</entity-mappings>

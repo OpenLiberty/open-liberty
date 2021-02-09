@@ -13,9 +13,7 @@ package com.ibm.ws.fat.wc.tests;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Logger;
 
 import org.junit.AfterClass;
@@ -39,8 +37,6 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 public class WCAddJspFileTest extends LoggingTest {
 
     private static final Logger LOG = Logger.getLogger(WCAddJspFileTest.class.getName());
-
-    protected static final Map<String, String> testUrlMap = new HashMap<String, String>();
 
     @ClassRule
     public static SharedServer SHARED_SERVER = new SharedServer("servlet40_addJspFileServer");

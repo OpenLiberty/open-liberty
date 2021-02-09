@@ -1,0 +1,763 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/internal/localization/i18n/LoggingLocalizationResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+External_transaction_controller_not_defined_by_server_platform=Datab\u00e1zov\u00e1 relace m\u00e1 extern\u00ed \u0159adi\u010d transakc\u00ed definovan\u00fd n\u011b\u010d\u00edm jin\u00fdm ne\u017e platformou serveru. Odkaz EclipseLink povol\u00ed p\u0159eps\u00e1n\u00ed extern\u00edho \u0159adi\u010de transakc\u00ed, ale doporu\u010dujeme, abyste zv\u00e1\u017eili p\u0159\u00edpadn\u00e9 pou\u017eit\u00ed podt\u0159\u00eddy org.eclipse.persistence.platform.server.ServerPlatformBase a p\u0159epis getExternalTransactionControllerClass().
+
+JDBC_driver_does_not_support_meta_data=P\u0159ipojeno: nezn\u00e1m\u00fd (ovlada\u010d JDBC nepodporuje metadata.)
+
+all_registered_clones=V\u0161echny registrovan\u00e9 klony:
+
+an_error_executing_ejbSelect=Chyba p\u0159i prov\u00e1d\u011bn\u00ed ejbSelect: {0}
+
+an_error_executing_finder=Chyba p\u0159i prov\u00e1d\u011bn\u00ed vyhled\u00e1va\u010de: {0}
+
+an_error_occured_executing_findByPrimaryKey=Chyba p\u0159i prov\u00e1d\u011bn\u00ed findByPrimaryKey: {0}
+
+an_error_occured_initializing_dms_listener=V\u00fdjimka p\u0159i inicializace vestav\u011bn\u00e9ho modulu listener DMS a servletu SPY
+
+an_error_occured_preparing_bean=Chyba p\u0159i p\u0159\u00edprav\u011b objekty typu bean pro vyvol\u00e1n\u00ed: {0}
+
+an_error_occured_trying_to_undeploy_bean=Chyba p\u0159i pokusu odstranit implementaci objektu typu bean (po selh\u00e1n\u00ed implementace): {0}
+
+annotation_warning_ignore_annotation=Ignoruje se anotace [{0}] v prvku [{1}], proto\u017ee pro tuto t\u0159\u00eddu existuje nastaven\u00ed XML metadata-complete na hodnotu true.
+
+annotation_warning_ignore_private_owned=Ignoruje se @PrivateOwned v prvku [{1}] ve t\u0159\u00edd\u011b entit [{0}]. @PrivateOwned lze pou\u017e\u00edvat pouze s @OneToOne, @OneToMany a @VariableOneToOne. Spolu s @BasicCollection a @BasicMap se tak\u00e9 sou\u010dasn\u011b zav\u00e1d\u00ed soukrom\u00e9 vlastnictv\u00ed.
+
+annotation_warning_ignore_return_insert=Ignoruje se @ReturnInsert v prvku [{0}]. @ReturnInsert se podporuje pouze u z\u00e1kladn\u00edho mapov\u00e1n\u00ed.
+
+annotation_warning_ignore_return_update=Ignoruje se @ReturnUpdate v prvku [{0}]. @ReturnUpdate se podporuje pouze u z\u00e1kladn\u00edho mapov\u00e1n\u00ed.
+
+application_server_name_and_version=Server: {0}
+
+archive_not_found_in_input=Archivn\u00ed soubor ({0}) ve vstupn\u00edm adres\u00e1\u0159i ({1}) neexistoval.
+
+associate_using_third_table_not_migrated=Nativn\u00ed funkce Oc4j CMP -DassociateUsingThirdTable=true pro namapov\u00e1n\u00ed 1:m pomoc\u00ed tabulky vztah\u016f nebyla migrov\u00e1na. Po dokon\u010den\u00ed migrace mus\u00edte znovu namapovat pole CMR ({1}) entity ({0}) ve tvaru mapov\u00e1n\u00ed jedna ku n prost\u0159ednictv\u00edm n\u00e1stroje Mapping Workbench.
+
+attempted_to_open_entry_in_url_as_jar={2} byla vyd\u00e1na p\u0159i pokusu otev\u0159\u00edt {0} jako soubor JAR a p\u0159istoupit k polo\u017ece: {1}.
+
+attempted_to_open_file_url_as_directory={2} byla vyd\u00e1na p\u0159i pokusu otev\u0159\u00edt {0} jako adres\u00e1\u0159 a p\u0159istoupit k polo\u017ece: {1}.
+
+attempted_to_open_url_as_directory={1} byla vyd\u00e1na p\u0159i pokusu otev\u0159\u00edt {0} jako adres\u00e1\u0159.
+
+attempted_to_open_url_as_jar={1} byla vyd\u00e1na p\u0159i pokusu otev\u0159\u00edt {0} jako soubor JAR.
+
+automatic_key_generation_not_supported=Nativn\u00ed nastaven\u00ed WLS CMP "automatic-key-generation" u entity ({0}) Eclipse CMP p\u0159\u00edmo nepodporuje. Podrobnosti viz dokumentace k migraci.
+
+bacth_update_not_supported=Nastaven\u00ed d\u00e1vkov\u00e9 aktualizace batch-size s hodnotou ({0}), kter\u00e9 je definovan\u00e9 u objektu typu bean entity ({1}), EclipseLink CMP p\u0159\u00edmo nepodporuje. Podrobnosti viz dokumentace k migraci.
+
+broadcast_connection_already_closed=Varov\u00e1n\u00ed: {0}: pokus zav\u0159\u00edt p\u0159ipojen\u00ed, kter\u00e9 ji\u017e bylo zav\u0159eno. Bude ignorov\u00e1no.
+
+broadcast_connection_already_closing=Varov\u00e1n\u00ed: {0}: pokus zav\u0159\u00edt p\u0159ipojen\u00ed, kter\u00e9 se pr\u00e1v\u011b zav\u00edr\u00e1. Bude ignorov\u00e1no.
+
+broadcast_exception_thrown_when_attempting_to_close_connection=Varov\u00e1n\u00ed: {0}: pokus zav\u0159\u00edt p\u0159ipojen\u00ed zp\u016fsobil v\u00fdjimku {1}
+
+broadcast_ignored_command_while_closing_connection=Varov\u00e1n\u00ed: {0}: ignoruje se po\u017eadavek na publikov\u00e1n\u00ed p\u0159\u00edkazu, zat\u00edmco se p\u0159ipojen\u00ed zav\u00edr\u00e1.
+
+broadcast_listening_sleep_on_error=Varov\u00e1n\u00ed: {0}: byla vyd\u00e1na v\u00fdjimka {1}. Podproces bude sp\u00e1t po dobu {2} ms, a pak znovu za\u010dne naslouchat.
+
+broadcast_remote_command_is_null=Varov\u00e1n\u00ed: {0}: p\u0159ijata zpr\u00e1va {1} obsahuj\u00edc\u00ed hodnotu null m\u00edsto p\u0159\u00edkazu RemoteCommand.
+
+broadcast_remote_command_wrong_type=Varov\u00e1n\u00ed: {0}: p\u0159ijata zpr\u00e1va {1} obsahuj\u00edc\u00ed objekt typu {2} m\u00edsto o\u010dek\u00e1van\u00e9ho typu RemoteCommand.
+
+call_timeout_not_migrated=Pro entitu {0} v souboru orion-ejb-jar.xml je definov\u00e1n parametr call-timeout value={1}, ale v souboru deskriptoru jsou definov\u00e1na do\u010dasn\u00e1 mapov\u00e1n\u00ed, proto nedojde k \u017e\u00e1dn\u00e9 migraci. Pokud pozd\u011bji pou\u017eijete v\u00fdchoz\u00ed mapov\u00e1n\u00ed EclipseLink k vygenerov\u00e1n\u00ed deskriptoru mapov\u00e1n\u00ed EclipseLink, nezapome\u0148te, \u017ee nastaven\u00ed \u010dasov\u00e9ho limitu vol\u00e1n\u00ed bude ztraceno, proto\u017ee v\u00fdchoz\u00ed mapov\u00e1n\u00ed EclipseLink nep\u0159istupuje k nativn\u00edmu souboru deskriptoru. Mus\u00edte pak po vygenerov\u00e1n\u00ed v\u00fdchoz\u00edho mapov\u00e1n\u00ed znovu nastavit \u010dasov\u00fd limit vol\u00e1n\u00ed ru\u010dn\u011b nebo prost\u0159ednictv\u00edm n\u00e1stroje EclipseLink Mapping Workbench.
+
+cannot_get_nested_collection_type=Vno\u0159en\u00fd typ kolekce nelze z\u00edskat.
+
+cannot_get_server_name_and_version=Nelze z\u00edskat n\u00e1zev a verzi serveru kv\u016fli n\u00e1sleduj\u00edc\u00ed v\u00fdjimce. {0}
+
+cannot_unwrap_connection=Nelze rozbalit p\u0159ipojen\u00ed Oracle zabalen\u00e9 aplika\u010dn\u00edm serverem, proto\u017ee do\u0161lo k n\u00e1sleduj\u00edc\u00ed v\u00fdjimce. {0}
+
+cannot_weave_changetracking=T\u0159\u00eddu {0} nelze zakomponovat do sledov\u00e1n\u00ed zm\u011bn, nebo\u0165 nen\u00ed kv\u016fli sv\u00e9mu mapov\u00e1n\u00ed podporov\u00e1na.
+
+cannot_weave_virtual_one_to_one=T\u0159\u00edda {0} m\u00e1 atribut {1}, kter\u00fd pou\u017e\u00edv\u00e1 mapov\u00e1n\u00ed jedna ku jedn\u00e9 nebo slu\u010dovac\u00ed mapov\u00e1n\u00ed u virtu\u00e1ln\u00edho atributu. Zakomponov\u00e1n\u00ed t\u011bchto typ\u016f mapov\u00e1n\u00ed se nepodporuje. Zakomponov\u00e1n\u00ed bude pro {0} zak\u00e1z\u00e1no.
+
+check_exist_on_method_as_true_not_supported=Nativn\u00ed nastaven\u00ed WLS CMP "check-exists-on-method-as-true" u entity ({0}) Eclipse CMP nen\u00ed p\u0159\u00edmo podporov\u00e1no. Podrobnosti viz dokumentace k migraci.
+
+class_list_created_by=Seznam t\u0159\u00edd byl vytvo\u0159en metodou ({0}).({1})().
+
+cmp_and_cmr_field=Polo\u017eka ejb-jar.xml pro [{0}] obsahuje jak polo\u017eku <cmp-field>, tak i polo\u017eku <cmr-field> atributu [{1}]. Polo\u017eka <cmp-field> se bude ignorovat.
+
+column_size_not_migrated=Velikost sloupce DB ({0}) se nebude migrovat. Podrobnosti viz dokumentace k migraci.
+
+communication_failure_attempting_begintransaction_retry=P\u0159i pokusu vytvo\u0159it transakci v datab\u00e1zi bylo zji\u0161t\u011bno selh\u00e1n\u00ed komunikace. Pokus o op\u011btovn\u00e9 zah\u00e1jen\u00ed transakce. Ohl\u00e1\u0161en\u00e1 chyba: {0}.
+
+communication_failure_attempting_query_retry=P\u0159i pokusu prov\u00e9st \u010dtec\u00ed dotaz mimo transakci bylo zji\u0161t\u011bno selh\u00e1n\u00ed komunikace. Pokus o zopakov\u00e1n\u00ed dotazu. Ohl\u00e1\u0161en\u00e1 chyba: {0}.
+
+config_factory=Tov\u00e1rna konfigurace: ({0}) = ({1})
+
+connected_sdk=P\u0159ipojeno: SDK
+
+connected_user_database=P\u0159ipojeno: {3}{4}U\u017eivatel: {0}{3}{4}Datab\u00e1ze: {1} Verze: {2}
+
+connected_user_database_driver=P\u0159ipojeno: {0}{6}U\u017eivatel: {1}{6}Datab\u00e1ze: {2}  Verze: {3}{6}Ovlada\u010d: {4}  Verze: {5}
+
+corrupted_session_announcement=ID relace: {0}  Spr\u00e1vce zji\u0161\u0165ov\u00e1n\u00ed p\u0159ijal ozn\u00e1men\u00ed o poru\u0161en\u00e9 relaci - ignoruje se.
+
+create_default_dbms_tables_not_supported=Nativn\u00ed nastaven\u00ed WLS CMP "create-default-dbms-tables" EclipseLink CMP p\u0159\u00edmo nepodporuje. Podrobnosti viz dokumentace k migraci.
+
+data_sync_on_ejb_create_not_supported=Nastaven\u00ed synchronizace dat data-synchronization-option="ejbCreate" definovan\u00e9 u objektu typu bean entity ({0}) nen\u00ed p\u0159\u00edmo podporov\u00e1no EclipseLink CMP. Podrobnosti viz dokumentace k migraci.
+
+dbPlatformHelper_defaultingPlatform=Nebylo mo\u017en\u00e9 zjistit platformu pro n\u00e1zev dodavatele [{0}]. Nastav\u00ed se p\u0159edvolba na [{1}]. Pou\u017eit\u00fd dialekt datab\u00e1ze se pravd\u011bpodobn\u011b neshoduje s pou\u017e\u00edvanou datab\u00e1z\u00ed. Zadejte platformu explicitn\u011b pomoc\u00ed vlastnosti "eclipselink.target-database".
+
+dbPlatformHelper_noMappingFound=Nelze na\u010d\u00edst prost\u0159edek [{0}], kter\u00fd na\u010d\u00edt\u00e1 mapov\u00e1n\u00ed z n\u00e1zvu dodavatele na datab\u00e1zovou platformu. Automatick\u00e1 detekce datab\u00e1zov\u00e9 platformy nebude fungovat.
+
+dbws_no_wsdl_inline_schema=Vlo\u017een\u00e9 sch\u00e9ma WSDL [{0}] nelze \u010d\u00edst.
+
+dbws_orm_metadata_read_error=Metadata ORM [{0}] nelze \u010d\u00edst.
+
+dbws_oxm_metadata_read_error=Metadata OXM [{0}] nelze \u010d\u00edst.
+
+dbws_xml_schema_read_error=Sch\u00e9ma XML [{0}] nelze \u010d\u00edst.
+
+ddl_generation_unknown_property_value=Nezn\u00e1m\u00e1 hodnota {0} poskytnut\u00e1 [{1}] pro jednotku perzistence [{2}]. Platn\u00e9 volby jsou: [{3}]
+
+default_dbms_tables_ddl_not_supported=Nativn\u00ed nastaven\u00ed WLS CMP "default-dbms-tables-ddl" EclipseLink CMP nen\u00ed p\u0159\u00edmo podporov\u00e1no. Podrobnosti viz dokumentace k migraci.
+
+default_tables_already_existed=Tabulka ({0}) je ji\u017e v datab\u00e1zi a nelze ji znovu vytvo\u0159it.
+
+delay_database_insert_until_ejb_create_not_supported=Nativn\u00ed nastaven\u00ed WLS CMP "delay-database-insert-until-ejbCreate" u entity ({0}) Eclipse CMP nen\u00ed p\u0159\u00edmo podporov\u00e1no. Podrobnosti viz dokumentace k migraci.
+
+delay_database_insert_until_ejb_post_create_not_supported=Nativn\u00ed nastaven\u00ed WLS CMP "delay-database-insert-until-ejbPostCreate" u entity ({0}) nen\u00ed v Eclipse CMP p\u0159\u00edmo podporov\u00e1no. Podrobnosti viz dokumentace k migraci.
+
+delay_updates_until_commit_not_supported=Nativn\u00ed funkce Oc4j CMP "delay-updates-until-commit" u entity ({0}) nen\u00ed v EclipseLink CMP p\u0159\u00edmo podporov\u00e1na. Podrobnosti viz dokumentace k migraci.
+
+deleted_objects=Odstran\u011bn\u00e9 objekty:
+
+deleting_object=Operace odebr\u00e1n\u00ed byla provedena pro: {0}
+
+deprecated_property=Vlastnost {1} je zam\u00edtnuta, m\u011bli byste m\u00edsto n\u00ed pou\u017e\u00edt vlastnost {0}.
+
+descriptor_named_query_cannot_be_added=Nelze p\u0159idat pojmenovan\u00fd dotaz deskriptoru, jeho\u017e n\u00e1zev koliduje s existuj\u00edc\u00edm dotazem. Dotaz, kter\u00fd se m\u00e1 p\u0159idat: [{0}] je pojmenovan\u00fd: [{1}] s argumenty [{2}].
+
+dir_cleaned_for_mw_files=Soubory a d\u00edl\u010d\u00ed adres\u00e1\u0159e pod adres\u00e1\u0159em {0} byly odstran\u011bny, aby bylo mo\u017en\u00e9 vytvo\u0159it pr\u00e1zdn\u00fd adres\u00e1\u0159 pro nov\u011b vygenerovan\u00e9 soubory projektu EclipseLink Mapping Workbench
+
+do_select_before_insert_not_supported=Nativn\u00ed funkce Oc4j CMP "do-select-before-insert" nen\u00ed u entity ({0}) p\u0159\u00edmo podporov\u00e1na v EclipseLink CMP. Podrobnosti viz dokumentace k migraci.
+
+drop_connection_on_error=Varov\u00e1n\u00ed: Zru\u0161en\u00ed p\u0159ipojen\u00ed vzd\u00e1len\u00e9ho p\u0159\u00edkazu k {0} m\u00e1 chybu {1}
+
+ejbSelect2=EjbSelect: {0}
+
+ejb_jar_xml_not_found_in_input=Soubor ejb-jar.xml nen\u00ed ve vstupn\u00edm adres\u00e1\u0159i ({0}) p\u0159\u00edtomen.
+
+elements={0}{1} prvk\u016f
+
+enable_batch_operations_as_true_not_supported=Nativn\u00ed nastaven\u00ed WLS CMP "enable-batch-operations-as-true" EclipseLink CMP p\u0159\u00edmo nepodporuje. Podrobnosti viz dokumentace k migraci.
+
+entity_manager_ignores_jta_data_source=Jednotka perzistence nepou\u017e\u00edv\u00e1 JTA, a proto bude spr\u00e1vce entit ignorovat zdroj dat JTA. 
+
+entity_manager_ignores_nonjta_data_source=Jednotka perzistence pou\u017e\u00edv\u00e1 JTA, a proto spr\u00e1vce entit bude ignorovat v\u0161echny ostatn\u00ed zdroje dat krom\u011b JTA. 
+
+entity_manager_sets_property_while_context_is_active=Vlastnost {0} je nastavena na Spr\u00e1vce entit, p\u0159esto\u017ee ji\u017e existuje aktivn\u00ed kontext perzistence. Bude tedy zpracov\u00e1na a pou\u017e\u00edvat se pouze v p\u0159\u00edpad\u011b, \u017ee se vytvo\u0159\u00ed nov\u00e1 aktivn\u00ed kontext perzistence. Chcete-li vytvo\u0159it nov\u00fd aktivn\u00ed kontext perzistence, m\u011bli byste ten st\u00e1vaj\u00edc\u00ed odebrat. To m\u016f\u017eete prov\u00e9st vol\u00e1n\u00edm metody clear ve Spr\u00e1vci entit.
+
+entity_not_available_during_merge=P\u0159ekro\u010den maxim\u00e1ln\u00ed po\u010det pokus\u016f. Nelze vyhledat hodnotu zam\u010den\u00e9ho kl\u00ed\u010de mezipam\u011bti cacheKey. T\u0159\u00edda [{0}] ID:[{1}] Tento podproces: [{2}] Podproces vlastn\u00edka:[{3}]
+
+error_during_PersistenceManager_setup_for_bean=Chyba b\u011bhem nastaven\u00ed spr\u00e1vce PersistenceManager pro objekt typu bean: {0}
+
+error_executing_ejbHome=Chyba p\u0159i prov\u00e1d\u011bn\u00ed ejbHome: {0}
+
+error_executing_remote_command=P\u0159\u00edkaz {0} se nezda\u0159il kv\u016fli: {1}
+
+error_getting_transaction_status=Chyba p\u0159i z\u00edsk\u00e1v\u00e1n\u00ed stavu transakce. {0}
+
+error_in_codegen=Chyba b\u011bhem generov\u00e1n\u00ed konkr\u00e9tn\u00ed t\u0159\u00eddy objektu typu bean.
+
+error_in_create=Chyba ve vytv\u00e1\u0159en\u00ed.
+
+error_in_remove=Chyba v odeb\u00edr\u00e1n\u00ed.
+
+error_loading_xml_file=V\u00fdjimka p\u0159i zav\u00e1d\u011bn\u00ed souboru ORM xml:  {0}: {1}
+
+exception_loading_entity_class=V\u00fdjimka p\u0159i pokusu inicializovat perzistenci. Do\u0161lo k {1} p\u0159i pokusu na\u010d\u00edst t\u0159\u00eddu entit: {0}.
+
+exception_thrown_when_attempting_to_close_connection=Varov\u00e1n\u00ed: vyd\u00e1na v\u00fdjimka p\u0159i pokusu zav\u0159\u00edt p\u0159ipojen\u00ed
+
+exception_thrown_when_attempting_to_close_listening_topic_connection=Vyd\u00e1na v\u00fdjimka p\u0159i pokusu zav\u0159\u00edt naslouchaj\u00edc\u00ed p\u0159ipojen\u00ed k t\u00e9matu: {0}
+
+exception_thrown_when_attempting_to_shutdown_cache_synch=Vyd\u00e1na v\u00fdjimka p\u0159i pokusu ukon\u010dit synchronizaci mezipam\u011bti: {0}
+
+exception_while_weaving=Modul Weaver narazil na v\u00fdjimku p\u0159i pokusu zakomponovat t\u0159\u00eddu {0}. V\u00fdjimka: {1}
+
+extra_cmp_field=Abstraktn\u00ed metoda getter anebo setter je definov\u00e1na v abstraktn\u00ed t\u0159\u00edd\u011b objekt\u016f typu bean [{0}], ale odpov\u00eddaj\u00edc\u00ed pole cmp [{1}] nen\u00ed definovan\u00e9 v souboru ejb-jar.xml.
+
+extra_ejb_select=V abstraktn\u00ed t\u0159\u00edd\u011b objektu typu bean [{0}] je definovan\u00fd abstraktn\u00ed objekt ejbSelect, ale p\u0159\u00edslu\u0161n\u00e1 polo\u017eka ejbSelect [{1}{2}] nen\u00ed v souboru ejb-jar.xml deklarovan\u00e1.
+
+extra_finder=V domovsk\u00e9m rozhran\u00ed [{0}] je definovan\u00fd vyhled\u00e1va\u010d, ale odpov\u00eddaj\u00edc\u00ed polo\u017eka vyhled\u00e1va\u010de [{1}{2}] nen\u00ed v souboru ejb-jar.xml deklarovan\u00e1.
+
+failed_command_propagation=Chyba: Nezda\u0159il se pokus \u0161\u00ed\u0159it p\u0159\u00edkaz na {0} kv\u016fli {1}
+
+failed_to_find_mbean_server=Nezda\u0159ilo se nal\u00e9zt server MBean Server: {0}
+
+failed_to_propogate_to=Synchronizace mezipam\u011bti: Nezda\u0159ilo se \u0161\u00ed\u0159it na {0}. {1}
+
+field_group_not_supported=Nativn\u00ed nastaven\u00ed WLS CMP "field-group" u entity ({0}) Eclipse CMP p\u0159\u00edmo nepodporuje. Podrobnosti viz dokumentace k migraci.
+
+field_type_set_to_java_lang_string=V\u00fdchoz\u00ed gener\u00e1tor tabulek nem\u016f\u017ee vyhledat nebo p\u0159ev\u00e9st typ Java ({1}) na datab\u00e1zov\u00fd typ pro pole datab\u00e1ze ({0}). Gener\u00e1tor pou\u017e\u00edv\u00e1 "java.lang.String" jako v\u00fdchoz\u00ed typ Java pro dan\u00e9 pole.
+
+force_update_not_supported=Nativn\u00ed funkce Oc4j CMP "force-update" nen\u00ed u entity ({0}) p\u0159\u00edmo podporov\u00e1na v EclipseLink CMP. Podrobnosti viz dokumentace k migraci.
+
+identitymap_for={0}{1} pro: {2}
+
+includes=(zahrnuje: 
+
+input_and_output_dir_be_different=Mus\u00edte nadefinovat v\u00fdstupn\u00ed adres\u00e1\u0159, kter\u00fd se li\u0161\u00ed od vstupn\u00edho adres\u00e1\u0159e.
+
+input_archive_format_not_supported=Program pro migraci podporuje u archivu form\u00e1t .ear a .jar a vstupn\u00ed form\u00e1t archivu. Form\u00e1t vstupn\u00edho souboru ({0}) se nepodporuje.
+
+input_at_least_either_archive_or_xml=Bu\u010f pou\u017eijte -e a zadejte n\u00e1zev migrovan\u00e9ho archivn\u00edho souboru, nebo -x a signalizujte tak, \u017ee se budou migrovat soubory xml deskriptoru pod vstupn\u00edm adres\u00e1\u0159em. Mus\u00edte zadat jen a pouze jednu z t\u011bchto polo\u017eek.
+
+input_minimum_arguments=Vstupn\u00ed argumenty p\u0159\u00edkazov\u00e9ho \u0159\u00e1dku mus\u00ed obsahovat minim\u00e1ln\u011b -s, -a nebo -x a -o.
+
+input_not_both_archive_and_xml=Bu\u010f pomoc\u00ed -e zadejte n\u00e1zev archivn\u00edho souboru, nebo pomoc\u00ed -x signalizujte, \u017ee se budou migrovat soubory deskriptoru pod vstupn\u00edm adres\u00e1\u0159em, ale nepou\u017e\u00edvejte ob\u011b volby.
+
+input_orione_ejb_jar_augmented=Vstupn\u00ed soubor orion-ejb-jar.xml byl roz\u0161\u00ed\u0159en, aby uv\u00e1d\u011bl EclipseLink jako spr\u00e1vce perzistence OC4J
+
+invalid_command_line_argument=Argument p\u0159\u00edkazov\u00e9ho \u0159\u00e1dku ({0}) je neplatn\u00fd
+
+invalid_datasource_property_value={1} nen\u00ed platn\u00fdm objektem, kter\u00fd lze pro vlastnost {0} p\u0159edat. Platn\u00e9 hodnoty jsou \u0159et\u011bzce nebo instance javax.sql.DataSource.
+
+invalid_property_value={1} nen\u00ed platn\u00fdm objektem, kter\u00fd lze pro vlastnost {0} p\u0159edat.
+
+isolation_level_not_supported=Nativn\u00ed nastaven\u00ed Oc4j CMP "isolation-level" u entity ({0}) Eclipse CMP p\u0159\u00edmo nepodporuje. Podrobnosti viz dokumentace k migraci.
+
+jar_entry_has_been_migrated=Nativn\u00ed soubor deskriptoru cmp v polo\u017ece JAR ({0}) ze vstupn\u00edho souboru EAR ({1}) byl migrov\u00e1n.
+
+jar_entry_not_migratable=Polo\u017eka JAR ({0}) ze vstupn\u00edho souboru EAR ({1}) nen\u00ed migrovateln\u00e1.
+
+jar_file_url_exception=V\u00fdjimka p\u0159i anal\u00fdze souboru persistence.xml. Um\u00edst\u011bn\u00ed souboru JAR nebylo nalezeno: {0}
+
+jaxb_metadata_warning_ignoring_java_attribute=Ignoruje se atribut [{0}] u t\u0159\u00eddy [{1}], proto\u017ee pro n\u011bj nebyla vygenerov\u00e1na \u017e\u00e1dn\u00e1 vlastnost.
+
+jaxb_metadata_warning_ignoring_type_on_map=Ignoruje se atribut typu nastaven\u00fd v xml-element, jeliko\u017e je xml-map ur\u010deno ve vlastnosti [{0}].
+
+jaxb_metadata_warning_invalid_bound_type=Typ vazby [{0}] je pro t\u0159\u00eddu adapt\u00e9ru [{1}] neplatn\u00fd a bude se ignorovat.
+
+jaxb_metadata_warning_invalid_java_attribute=Byl zji\u0161t\u011bn nepodporovan\u00fd atribut JavaAttribute [{0}], kter\u00fd se bude ignorovat.
+
+jaxb_metadata_warning_invalid_package_level_xml_java_type_adapter=Neplatn\u00fd adapt\u00e9r XmlJavaTypeAdapter [{0}] byl uveden pro bal\u00edk [{1}]. Bude se ignorovat.
+
+jaxb_metadata_warning_invalid_property_level_xml_java_type_adapter=Neplatn\u00fd adapt\u00e9r XmlJavaTypeAdapter [{0}] byl uveden pro pole/vlastnost [{1}] ve t\u0159\u00edd\u011b [{2}]. Bude se ignorovat.
+
+jaxb_metadata_warning_invalid_type_level_xml_java_type_adapter=Neplatn\u00fd adapt\u00e9r XmlJavaTypeAdapter [{0}] byl uveden pro t\u0159\u00eddu [{1}]. Bude se ignorovat.
+
+jaxb_metadata_warning_no_classes_to_process=K dispozici nejsou \u017e\u00e1dn\u00e9 t\u0159\u00eddy pro bal\u00edk [{0}], kter\u00e9 by bylo mo\u017en\u00e9 zpracovat.
+
+jmx_mbean_runtime_services_failed_toget_initial_context=Nezda\u0159ilo se z\u00edskat InitialContext pro registraci objektu typu MBean: {0}
+
+jmx_mbean_runtime_services_get_executethreadruntime_object_failed=Verze WebLogic nepodporuje executeThreadRuntime - pou\u017e\u00edv\u00e1 se ClassLoader: {0}
+
+jmx_mbean_runtime_services_identity_map_class=Mapa identit [{0}] t\u0159\u00edda = {1}
+
+jmx_mbean_runtime_services_identity_map_empty=Mapa identit [{0}] je pr\u00e1zdn\u00e1.
+
+jmx_mbean_runtime_services_identity_map_initialized=Mapa identit [{0}] je inicializovan\u00e1.
+
+jmx_mbean_runtime_services_identity_map_invalidated=Mapa identit [{0}] je zneplatn\u011bna.
+
+jmx_mbean_runtime_services_identity_map_non_existent=Mapa identit [{0}] neexistuje.
+
+jmx_mbean_runtime_services_mbeanserver_lookup_failed=Nezda\u0159ilo se z\u00edskat InitialContext pro registraci objektu typu MBean: {0}
+
+jmx_mbean_runtime_services_no_classes_in_session=\u017d\u00e1dn\u00e9 t\u0159\u00eddy v relaci.
+
+jmx_mbean_runtime_services_no_connection_pools_available=Nejsou k dispozici \u017e\u00e1dn\u00e9 fondy p\u0159ipojen\u00ed.
+
+jmx_mbean_runtime_services_no_identity_maps_in_session=V t\u00e9to relaci nejsou \u017e\u00e1dn\u00e9 mapy identit.
+
+jmx_mbean_runtime_services_pool_name=N\u00e1zev fondu = {0}
+
+jmx_mbean_runtime_services_print_cache_key_value=Kl\u00ed\u010d [{0}] => Hodnota [{1}]
+
+jmx_mbean_runtime_services_registration_encountered_multiple_mbeanserver_instances=Existuje v\u00edce instanc\u00ed serveru JMX MBeanServer [{0}], bude se pou\u017e\u00edvat server s indexem [{1}] : [{2}].
+
+jmx_mbean_runtime_services_registration_mbeanserver_print=Nalezena instance serveru JMX MBeanServer: [{0}], # objekt\u016f typu bean: [{1}], dom\u00e9na: [{2}] s indexem: [{3}].
+
+jmx_mbean_runtime_services_statement_cache_cleared=Mezipam\u011b\u0165 p\u0159\u00edkaz\u016f vymaz\u00e1na.
+
+jmx_mbean_runtime_services_switching_to_alternate_mbeanserver=Pou\u017e\u00edvan\u00fd server JMX MBeanServer: [{0}] z indexu [{1}] 
+
+jmx_mbean_runtime_services_threadpool_initialize_failed=Nezda\u0159ilo se inicializovat b\u011bhov\u00e9 prost\u0159ed\u00ed MBean threadPoolRuntime: {0}
+
+jmx_unable_to_unregister_mbean=Nelze zru\u0161it registraci objektu typu MBean [{0}], proto\u017ee server MBeanServer m\u00e1 hodnotu null. Ov\u011b\u0159te, \u017ee m\u00e1 va\u0161e platforma serveru povoleno JMX.
+
+jmx_unregistered_mbean=Neregistrovan\u00fd objekt typu MBean [{0}] ze serveru MBeanServer [{1}].
+
+jpars_could_bootstrap_persistence_context=Kontext perzistence: [{0}] nelze zav\u00e9st zav\u00e1d\u011bc\u00edm programem.
+
+jpars_could_not_find_class_in_persistence_unit=Typ: [{0}] nebyl nalezen v jednotce perzistence: [{1}].
+
+jpars_could_not_find_persistence_context=Vol\u00e1n\u00ed JPA-RS po\u017eaduje kontext perzistence: [{0}]. Tento kontext perzistence nebyl nalezen.
+
+jpars_could_not_find_session_bean=Bylo provedeno vol\u00e1n\u00ed na objekt typu bean relace s n\u00e1zvem JNDI: [{0}]. Tento objekt typu bean nebyl nalezen.
+
+jta_cannot_be_disabled_in_cmp=P\u0159i pou\u017eit\u00ed perzistence Container Managed Persistence (CMP) nelze zak\u00e1zat JTA. EclipseLink bude pracovat, jako kdyby bylo JTA povoleno.
+
+key_identity_hash_code_object={0}Kl\u00ed\u010d: {1}{2}Ha\u0161ovac\u00ed k\u00f3d identity: {3}{2}Objekt: {4}
+
+key_object_null={0}Kl\u00ed\u010d: {1}{2}Objekt: null
+
+key_version_identity_hash_code_object={0}Kl\u00ed\u010d: {1}{2}Verze: {5}{2}Ha\u0161ovac\u00ed k\u00f3d identity: {3}{2}Objekt: {4}
+
+locking_mode_not_valid=Re\u017eim uzamyk\u00e1n\u00ed({1}) u entity({0} v souboru orion-ejb-jar.xml nen\u00ed dob\u0159e definovan\u00fd, a proto se nebude migrovat.
+
+locking_required_for_database_change_notification=Entita {0} nepou\u017e\u00edv\u00e1 zamyk\u00e1n\u00ed verze, ale m\u00e1 v\u00edce tabulek nebo vztah\u016f a pou\u017e\u00edv\u00e1 oznamov\u00e1n\u00ed zm\u011bn datab\u00e1ze Oracle. Zm\u011bny ve vztaz\u00edch nebo sekund\u00e1rn\u00ed tabulky pravd\u011bpodobn\u011b nezru\u0161\u00ed platnost mezipam\u011bti.
+
+log_file_under_output_dir=Existuje soubor protokolu s n\u00e1zvem ({0}), kter\u00fd najdete pod v\u00fdstupn\u00edm adres\u00e1\u0159em ({1}).
+
+mapping_not_supported_by_mw=Mapov\u00e1n\u00ed EclipseLink {0} pracovn\u00ed plocha mapov\u00e1n\u00ed nepodporuje.
+
+marshal_warning_null_document_root_element={0}: Nedefinovan\u00fd ko\u0159enov\u00fd prvek dokumentu odkazovan\u00e9ho objektu [{1}] se bude ignorovat p\u0159i za\u0159azov\u00e1n\u00ed do jak\u00e9hokoliv mapov\u00e1n\u00ed kolekce|objektu.
+
+max_instance_not_supported=Nativn\u00ed nastaven\u00ed Oc4j CMP "max-instance" u entity ({0}) Eclipse CMP p\u0159\u00edmo nepodporuje. Podrobnosti viz dokumentace k migraci.
+
+max_tx_retries_not_supported=Nativn\u00ed nastaven\u00ed Oc4j CMP "max-tx-retries" u entity ({0}) Eclipse CMP p\u0159\u00edmo nepodporuje. Podrobnosti viz dokumentace k migraci.
+
+metadata_access_type=Typ p\u0159\u00edstupu t\u0159\u00eddy perzistence [{1}] je nastaven na [{0}].
+
+metadata_default_alias=N\u00e1zev aliasu pro t\u0159\u00eddu entit [{0}] se standardn\u011b nastavil na: {1}.
+
+metadata_default_collection_catalog=N\u00e1zev tabulky kolekc\u00ed pro z\u00e1kladn\u00ed mapov\u00e1n\u00ed kolekc\u00ed/map [{0}] se standardn\u011b nastavil na: {1}.
+
+metadata_default_collection_schema=N\u00e1zev tabulky kolekc\u00ed pro z\u00e1kladn\u00ed mapov\u00e1n\u00ed kolekc\u00ed/map [{0}] se standardn\u011b nastavil na: {1}.
+
+metadata_default_collection_table_name=N\u00e1zev tabulky kolekc\u00ed pro z\u00e1kladn\u00ed mapov\u00e1n\u00ed kolekc\u00ed/map [{0}] se standardn\u011b nastavil na: {1}.
+
+metadata_default_column=N\u00e1zev sloupce prvku [{0}] se standardn\u011b nastavil na: {1}.
+
+metadata_default_converter_data_type=Datov\u00fd typ p\u0159evodn\u00edku s n\u00e1zvem [{2}], kter\u00fd se pou\u017e\u00edv\u00e1 u prvku [{1}] v entit\u011b [{0}], se standardn\u011b nastavil na [{3}].
+
+metadata_default_converter_object_type=Typ objektu p\u0159evodn\u00edku s n\u00e1zvem [{2}], kter\u00fd se pou\u017e\u00edv\u00e1 u prvku [{1}] v entit\u011b [{0}], se standardn\u011b nastavil na [{3}].
+
+metadata_default_element_collection_reference_class=T\u0159\u00edda c\u00edlov\u00e9 t\u0159\u00eddy (odkazu) pro prvek mapov\u00e1n\u00ed kolekce prvku [{0}] se standardn\u011b nastavila na: {1}.
+
+metadata_default_entity_graph_name=N\u00e1zev specifikace grafu jmenovan\u00e9 skupiny EntityGroup ze t\u0159\u00eddy [{1}] se standardn\u011b nastavil na: {0}
+
+metadata_default_fk_column=N\u00e1zev sloupce ciz\u00edho kl\u00ed\u010de pro prvek mapov\u00e1n\u00ed [{0}] se standardn\u011b nastavil na: {1}.
+
+metadata_default_inheritance_discriminator_column=N\u00e1zev sloupce diskrimin\u00e1toru pro ko\u0159enovou t\u0159\u00eddu d\u011bdi\u010dnosti [{0}] se standardn\u011b nastavil na: {1}.
+
+metadata_default_inheritance_fk_column=N\u00e1zev sloupce ciz\u00edho kl\u00ed\u010de pro t\u0159\u00eddu d\u011bdi\u010dnosti [{0}] se standardn\u011b nastavil na: {1}.
+
+metadata_default_inheritance_pk_column=N\u00e1zev sloupce prim\u00e1rn\u00edho kl\u00ed\u010de pro t\u0159\u00eddu d\u011bdi\u010dnosti [{0}] se standardn\u011b nastavil na: {1}.
+
+metadata_default_join_catalog=Katalog tabulky spojen\u00ed pro mapov\u00e1n\u00ed n ku n [{0}] se standardn\u011b nastavil na: {1}.
+
+metadata_default_join_schema=Sch\u00e9ma tabulky spojen\u00ed pro mapov\u00e1n\u00ed n ku n [{0}] se standardn\u011b nastavilo na: {1}.
+
+metadata_default_join_table_name=N\u00e1zev tabulky spojen\u00ed pro mapov\u00e1n\u00ed n ku n [{0}] se standardn\u011b nastavil na: {1}.
+
+metadata_default_key_column=N\u00e1zev sloupce kl\u00ed\u010de pro prvek mapov\u00e1n\u00ed z\u00e1kladn\u00ed mapy [{0}] se standardn\u011b nastavil na: {1}.
+
+metadata_default_many_to_many_reference_class=T\u0159\u00edda c\u00edlov\u00e9 entity (odkazu) pro prvek mapov\u00e1n\u00ed n ku n [{0}] se standardn\u011b nastavila na: {1}.
+
+metadata_default_many_to_one_reference_class=T\u0159\u00edda c\u00edlov\u00e9 entity (odkazu) pro prvek mapov\u00e1n\u00ed n ku jedn\u00e9 [{0}] se standardn\u011b nastavila na: {1}.
+
+metadata_default_map_key_attribute_name=N\u00e1zev atributu kl\u00ed\u010de mapy pro prvek mapov\u00e1n\u00ed [{0}] se standardn\u011b nastavil na: {1}.
+
+metadata_default_one_to_many_mapping=Prvek [{0}] se standardn\u011b nastavil na mapov\u00e1n\u00ed jeden ku n.
+
+metadata_default_one_to_many_reference_class=T\u0159\u00edda c\u00edlov\u00e9 entity (odkazu) pro mapov\u00e1n\u00ed jeden ku n [{0}] se standardn\u011b nastavila na: {1}.
+
+metadata_default_one_to_one_mapping=Prvek [{0}] se standardn\u011b nastavil na mapov\u00e1n\u00ed jeden na jednoho.
+
+metadata_default_one_to_one_reference_class=T\u0159\u00edda c\u00edlov\u00e9 entity (odkazu) pro prvek mapov\u00e1n\u00ed jeden na jednoho [{0}] se standardn\u011b nastavila na: {1}.
+
+metadata_default_order_column=N\u00e1zev sloupce po\u0159ad\u00ed prvku [{0}] se standardn\u011b nastavil na: {1}.
+
+metadata_default_pk_column=N\u00e1zev sloupce prim\u00e1rn\u00edho kl\u00ed\u010de pro prvek mapov\u00e1n\u00ed [{0}] se standardn\u011b nastavil na: {1}.
+
+metadata_default_qk_column=N\u00e1zev kl\u00ed\u010de dotazu pro mapov\u00e1n\u00ed prom\u011bnn\u00e9 jeden na jednoho [{0}] se standardn\u011b nastavil na: {1}.
+
+metadata_default_secondary_catalog=N\u00e1zev sekund\u00e1rn\u00ed tabulky entity [{0}] se standardn\u011b nastavil na: {1}.
+
+metadata_default_secondary_schema=N\u00e1zev sekund\u00e1rn\u00ed tabulky entity [{0}] se standardn\u011b nastavil na: {1}.
+
+metadata_default_secondary_table_fk_column=N\u00e1zev sloupce ciz\u00edho kl\u00ed\u010de sekund\u00e1rn\u00ed tabulky pro prvek [{0}] se standardn\u011b nastavil na: {1}.
+
+metadata_default_secondary_table_name=N\u00e1zev sekund\u00e1rn\u00ed tabulky entity [{0}] se standardn\u011b nastavil na: {1}.
+
+metadata_default_secondary_table_pk_column=N\u00e1zev sloupce prim\u00e1rn\u00edho kl\u00ed\u010de sekund\u00e1rn\u00ed tabulky pro prvek [{0}] se standardn\u011b nastavil na: {1}.
+
+metadata_default_sequence_generator_catalog=Katalog gener\u00e1toru posloupnosti definovan\u00fd v r\u00e1mci [{0}] se standardn\u011b nastavil na: {1}.
+
+metadata_default_sequence_generator_schema=Sch\u00e9ma gener\u00e1toru posloupnosti definovan\u00e9 v r\u00e1mci [{0}] se standardn\u011b nastavilo na: {1}.
+
+metadata_default_sequence_generator_sequence_name=Po\u0159adov\u00e9 \u010d\u00edslo pro gener\u00e1tor posloupnosti s n\u00e1zvem [{0}], definovan\u00e9ho v [{1}] z [{2}], se standardn\u011b nastavilo na: {0}.
+
+metadata_default_source_fk_column=N\u00e1zev sloupce ciz\u00edho kl\u00ed\u010de zdroje pro mapov\u00e1n\u00ed n ku n [{0}] se standardn\u011b nastavil na: {1}.
+
+metadata_default_source_pk_column=N\u00e1zev sloupce prim\u00e1rn\u00edho kl\u00ed\u010de zdroje pro mapov\u00e1n\u00ed n ku n [{0}] se standardn\u011b nastavil na: {1}.
+
+metadata_default_table_catalog=Katalog tabulek pro entitu [{0}] se standardn\u011b nastavil na: {1}.
+
+metadata_default_table_generator_catalog=Katalog gener\u00e1toru tabulek definovan\u00e9ho v r\u00e1mci [{0}] se standardn\u011b nastavil na: {1}.
+
+metadata_default_table_generator_name=N\u00e1zev gener\u00e1toru tabulek definovan\u00e9ho v r\u00e1mci [{0}] se standardn\u011b nastavil na: {1}.
+
+metadata_default_table_generator_pk_column_value=Hodnota sloupce pk pro gener\u00e1tor tabulek s n\u00e1zvem [{0}], definovan\u00fd v [{1}] z [{2}], se standardn\u011b nastavila na: {0}.
+
+metadata_default_table_generator_schema=Sch\u00e9ma gener\u00e1toru tabulek definovan\u00e9ho v r\u00e1mci [{0}] se standardn\u011b nastavilo na: {1}.
+
+metadata_default_table_name=N\u00e1zev tabulky pro entitu [{0}] se standardn\u011b nastavil na: {1}.
+
+metadata_default_table_schema=Sch\u00e9ma tabulky pro entitu [{0}] se standardn\u011b nastavilo na: {1}.
+
+metadata_default_target_fk_column=N\u00e1zev sloupce ciz\u00edho kl\u00ed\u010de c\u00edle pro mapov\u00e1n\u00ed n ku n [{0}] se standardn\u011b nastavil na: {1}.
+
+metadata_default_target_pk_column=N\u00e1zev sloupce prim\u00e1rn\u00edho kl\u00ed\u010de c\u00edle pro mapov\u00e1n\u00ed n ku n [{0}] se standardn\u011b nastavil na: {1}.
+
+metadata_default_tenant_discriminator_column=N\u00e1zev sloupce diskrimin\u00e1toru n\u00e1jemce pro prvek [{0}] se standardn\u011b nastavil na: {1}.
+
+metadata_default_tenant_discriminator_context_property=Vlastnost kontextu diskrimin\u00e1toru n\u00e1jemce pro sloupec diskrimin\u00e1toru n\u00e1jemce [{1}] u prvku [{0}] se standardn\u011b nastavila na: {2}.
+
+metadata_default_tenant_table_discriminator_context_property=Vlastnost kontextu diskrimin\u00e1toru tabulky n\u00e1jemc\u016f pro entitu [{0}] se standardn\u011b nastavila na: {1}.
+
+metadata_default_tenant_table_discriminator_type=Typ diskrimin\u00e1toru tabulky n\u00e1jemc\u016f pro entitu [{0}] se standardn\u011b nastavil na: {1}.
+
+metadata_default_value_column=N\u00e1zev sloupce hodnot pro prvek mapov\u00e1n\u00ed z\u00e1kladn\u00edho prvku mapov\u00e1n\u00ed kolekce/map [{0}] se standardn\u011b nastavil na: {1}.
+
+metadata_default_variable_one_to_one_discriminator_column=N\u00e1zev sloupce diskrimin\u00e1toru pro mapov\u00e1n\u00ed prom\u011bnn\u00e9 jeden na jednoho [{0}] se standardn\u011b nastavil na: {1}.
+
+metadata_default_variable_one_to_one_mapping=Prvek [{0}] se standardn\u011b nastavil na mapov\u00e1n\u00ed prom\u011bnn\u00fdch jeden na jednoho.
+
+metadata_default_variable_one_to_one_reference_class=T\u0159\u00edda c\u00edlov\u00e9ho rozhran\u00ed (odkazu) pro prvek mapov\u00e1n\u00ed prom\u011bnn\u00fdch jeden na jednoho [{0}] se standardn\u011b nastavila na: {1}.
+
+metadata_warning_ignore_association_override=Ignoruje se p\u0159epis p\u0159idru\u017een\u00ed s n\u00e1zvem [{0}] u prvku [{1}] namapovan\u00e9 supert\u0159\u00eddy [{2}], nebo\u0165 ve t\u0159\u00edd\u011b entit [{3}] byl zad\u00e1n p\u0159epis p\u0159idru\u017een\u00ed se stejn\u00fdm n\u00e1zvem.
+
+metadata_warning_ignore_attribute_override=Ignoruje se p\u0159epis atributu s n\u00e1zvem [{0}] u prvku [{1}] namapovan\u00e9 supert\u0159\u00eddy [{2}], nebo\u0165 ve t\u0159\u00edd\u011b entit [{3}] byl zad\u00e1n p\u0159epis atributu se stejn\u00fdm n\u00e1zvem.
+
+metadata_warning_ignore_auto_apply_converter=Ignoruje se p\u0159evodn\u00edk auto-apply u prvku [{1}] ve t\u0159\u00edd\u011b entit [{0}], nebo\u0165 p\u0159evodn\u00edk EclipseLink p\u0159ev\u00e1d\u00ed uveden\u00e1 metadata.
+
+metadata_warning_ignore_cacheable_false=Ignoruje se explicitn\u00ed nastaven\u00ed cacheable=false pro t\u0159\u00eddu entit [{0}], nebo\u0165 v souboru persistence.xml bylo uvedeno ukl\u00e1d\u00e1n\u00ed do mezipam\u011bti typu ALL.
+
+metadata_warning_ignore_cacheable_true=Ignoruje se explicitn\u00ed nastaven\u00ed cacheable=true pro t\u0159\u00eddu entit [{0}], nebo\u0165 v souboru persistence.xml bylo uvedeno ukl\u00e1d\u00e1n\u00ed do mezipam\u011bti typu NONE.
+
+metadata_warning_ignore_converts=Ignoruje se specifikace p\u0159evodu JPA u prvku [{1}] v r\u00e1mci t\u0159\u00eddy entit [{0}], nebo\u0165 jsou uvedena metadata p\u0159evodu EclipseLink.
+
+metadata_warning_ignore_enumerated=Ignoruje se specifikace vy\u010d\u00edslen\u00ed u prvku [{1}] v r\u00e1mci t\u0159\u00eddy entit [{0}], nebo\u0165 jsou uvedena metadata p\u0159evodu EclipseLink.
+
+metadata_warning_ignore_fetch_group=Ignoruje se na\u010dten\u00ed skupin uveden\u00fdch ve t\u0159\u00edd\u011b [{0}] pro entitu [{1}], nebo\u0165 zakomponov\u00e1n\u00ed nen\u00ed povoleno a t\u0159\u00edda entit neimplementuje rozhran\u00ed FetchGroupTracker.
+
+metadata_warning_ignore_inheritance_subclass_cache=Ignoruj\u00ed se metadata mezipam\u011bti u podt\u0159\u00eddy d\u011bdi\u010dnosti [{0}]. Metadata mezipam\u011bti lze zadat pouze v ko\u0159eni hierarchie d\u011bdi\u010dnosti a nelze je p\u0159epsat ve t\u0159\u00edd\u011b d\u011bdi\u010dnosti.
+
+metadata_warning_ignore_inheritance_subclass_cache_interceptor=Ignoruj\u00ed se metadata zachyt\u00e1va\u010de mezipam\u011bti u podt\u0159\u00eddy d\u011bdi\u010dnosti [{0}]. Metadata zachyt\u00e1va\u010de mezipam\u011bti by se m\u011bla zad\u00e1vat pouze v ko\u0159eni hierarchie d\u011bdi\u010dnosti a nelze je p\u0159epsat v podt\u0159\u00edd\u011b d\u011bdi\u010dnosti.
+
+metadata_warning_ignore_inheritance_subclass_default_redirectors=Ignoruj\u00ed se metadata v\u00fdchoz\u00edho p\u0159esm\u011brova\u010de u podt\u0159\u00eddy d\u011bdi\u010dnosti [{0}]. Metadata v\u00fdchoz\u00edho p\u0159esm\u011brova\u010de lze zadat pouze v ko\u0159eni hierarchie d\u011bdi\u010dnosti a nelze je p\u0159epsat ve t\u0159\u00edd\u011b d\u011bdi\u010dnosti.
+
+metadata_warning_ignore_inheritance_subclass_read_only=Ignoruj\u00ed se nastaven\u00ed jen pro \u010dten\u00ed u podt\u0159\u00eddy d\u011bdi\u010dnosti [{0}]. Nastaven\u00ed jen pro \u010dten\u00ed by se m\u011bla zad\u00e1vat pouze v ko\u0159eni hierarchie d\u011bdi\u010dnosti a nelze je p\u0159epsat v podt\u0159\u00edd\u011b d\u011bdi\u010dnosti.
+
+metadata_warning_ignore_inheritance_tenant_discriminator_column=Ignoruj\u00ed se nastaven\u00ed sloupce diskrimin\u00e1toru n\u00e1jemc\u016f u podt\u0159\u00eddy d\u011bdi\u010dnosti [{0}]. Sloupec diskrimin\u00e1toru n\u00e1jemc\u016f by se m\u011bl zad\u00e1vat pouze v ko\u0159eni hierarchie d\u011bdi\u010dnosti a nelze jej p\u0159epsat v podt\u0159\u00edd\u011b d\u011bdi\u010dnosti.
+
+metadata_warning_ignore_inheritance_tenant_table_discriminator=Ignoruj\u00ed se nastaven\u00ed diskrimin\u00e1toru tabulky n\u00e1jemc\u016f u podt\u0159\u00eddy d\u011bdi\u010dnosti [{0}]. Diskrimin\u00e1tor tabulky n\u00e1jemc\u016f by se m\u011bl zad\u00e1vat pouze v ko\u0159eni hierarchie d\u011bdi\u010dnosti a nelze jej p\u0159epsat v podt\u0159\u00edd\u011b d\u011bdi\u010dnosti.
+
+metadata_warning_ignore_is_null_allowed=Parametr isNullAllowed je znovu nastaven v {0} na hodnotu false, proto\u017ee agreg\u00e1t m\u00e1 (pravd\u011bpodobn\u011b vno\u0159en\u00e9) mapov\u00e1n\u00ed ciz\u00edho kl\u00ed\u010de c\u00edle.
+
+metadata_warning_ignore_lazy=Vr\u00e1cen\u00ed nastaven\u00ed lazy zp\u011bt u atributu OneToOne nebo ManyToOne [{0}] pro t\u0159\u00eddu entit [{1}], nebo\u0165 zakomponov\u00e1n\u00ed nen\u00ed povoleno, nebo k n\u011bmu nedo\u0161lo.
+
+metadata_warning_ignore_lob=Ignoruje se specifikace objektu LOB u prvku [{1}] v r\u00e1mci t\u0159\u00eddy entit [{0}], nebo\u0165 jsou uvedena metadata p\u0159evodu EclipseLink.
+
+metadata_warning_ignore_mapped_superclass_additional_criteria=Ignoruj\u00ed se metadata dal\u0161\u00edch krit\u00e9ri\u00ed u mapovan\u00e9 supert\u0159\u00eddy [{1}] pro t\u0159\u00eddu entit [{0}], nebo\u0165 pro tuto entitu byla d\u0159\u00edve zji\u0161t\u011bna metadata dal\u0161\u00edch krit\u00e9ri\u00ed (bu\u010f u vlastn\u00ed entity, nebo u jin\u00e9 mapovan\u00e9 supert\u0159\u00eddy).
+
+metadata_warning_ignore_mapped_superclass_annotation=Ignoruj\u00ed se nastaven\u00ed metadat [{0}] u mapovan\u00e9 supert\u0159\u00eddy [{1}] pro t\u0159\u00eddu entit [{2}], nebo\u0165 pro tuto entitu byla d\u0159\u00edve zji\u0161t\u011bna metadata (bu\u010f u vlastn\u00ed entity, nebo u jin\u00e9 mapovan\u00e9 supert\u0159\u00eddy).
+
+metadata_warning_ignore_mapped_superclass_association_override=Ignoruje se p\u0159epis p\u0159idru\u017een\u00ed s n\u00e1zvem [{0}], definovan\u00e9ho u mapovan\u00e9 supert\u0159\u00eddy [{1}] pro entitu [{2}], nebo\u0165 p\u0159epis p\u0159idru\u017een\u00ed se stejn\u00fdm n\u00e1zvem byl pro tuto entitu ji\u017e d\u0159\u00edve zji\u0161t\u011bn (bu\u010f u vlastn\u00ed entity, nebo u jin\u00e9 mapovan\u00e9 supert\u0159\u00eddy).
+
+metadata_warning_ignore_mapped_superclass_attribute_override=Ignoruje se p\u0159epis atributu s n\u00e1zvem [{0}], definovan\u00e9ho u mapovan\u00e9 supert\u0159\u00eddy [{1}] pro entitu [{2}], nebo\u0165 p\u0159epis atributu se stejn\u00fdm n\u00e1zvem byl pro tuto entitu ji\u017e d\u0159\u00edve zji\u0161t\u011bn (bu\u010f u vlastn\u00ed entity, nebo u jin\u00e9 mapovan\u00e9 supert\u0159\u00eddy).
+
+metadata_warning_ignore_mapped_superclass_cache=Ignoruj\u00ed se metadata mezipam\u011bti u namapovan\u00e9 supert\u0159\u00eddy [{1}] pro t\u0159\u00eddu entit [{0}], nebo\u0165 metadata mezipam\u011bti byla ji\u017e d\u0159\u00edve pro tuto entitu zji\u0161t\u011bna (bu\u010f u vlastn\u00ed entity, nebo u jin\u00e9 mapovan\u00e9 supert\u0159\u00eddy).
+
+metadata_warning_ignore_mapped_superclass_cache_interceptor=Ignoruj\u00ed se metadata zachyt\u00e1va\u010de mezipam\u011bti u namapovan\u00e9 supert\u0159\u00eddy [{1}] pro t\u0159\u00eddu entit [{0}], nebo\u0165 metadata zachyt\u00e1va\u010de mezipam\u011bti byla ji\u017e d\u0159\u00edve pro tuto entitu zji\u0161t\u011bna (bu\u010f u vlastn\u00ed entity, nebo u jin\u00e9 mapovan\u00e9 supert\u0159\u00eddy).
+
+metadata_warning_ignore_mapped_superclass_cacheable=Ignoruj\u00ed se metadata ulo\u017eiteln\u00e1 do mezipam\u011bti u mapovan\u00e9 supert\u0159\u00eddy [{1}] pro t\u0159\u00eddu entit [{0}], nebo\u0165 metadata ulo\u017eiteln\u00e1 do mezipam\u011bti byla ji\u017e d\u0159\u00edve pro tuto entitu zji\u0161t\u011bna (bu\u010f u vlastn\u00ed entity, nebo u jin\u00e9 mapovan\u00e9 supert\u0159\u00eddy).
+
+metadata_warning_ignore_mapped_superclass_change_tracking=Ignoruj\u00ed se metadata sledov\u00e1n\u00ed zm\u011bn u mapovan\u00e9 supert\u0159\u00eddy [{1}] pro t\u0159\u00eddu entit [{0}], nebo\u0165 metadata sledov\u00e1n\u00ed zm\u011bn byla ji\u017e d\u0159\u00edve pro tuto entitu zji\u0161t\u011bna (bu\u010f u vlastn\u00ed entity, nebo u jin\u00e9 mapovan\u00e9 supert\u0159\u00eddy).
+
+metadata_warning_ignore_mapped_superclass_copy_policy=Ignoruj\u00ed se metadata z\u00e1sady kop\u00edrov\u00e1n\u00ed u mapovan\u00e9 supert\u0159\u00eddy [{1}] pro t\u0159\u00eddu entit [{0}], nebo\u0165 metadata z\u00e1sady kop\u00edrov\u00e1n\u00ed byla ji\u017e d\u0159\u00edve pro tuto entitu zji\u0161t\u011bna (bu\u010f u vlastn\u00ed entity, nebo u jin\u00e9 mapovan\u00e9 supert\u0159\u00eddy).
+
+metadata_warning_ignore_mapped_superclass_customizer=Ignoruje se spr\u00e1vce vlastn\u00edho nastaven\u00ed u mapovan\u00e9 supert\u0159\u00eddy [{1}] pro t\u0159\u00eddu entit [{0}], nebo\u0165 metadata spr\u00e1vce vlastn\u00edho nastaven\u00ed byla ji\u017e d\u0159\u00edve pro tuto entitu zji\u0161t\u011bna (bu\u010f u vlastn\u00ed entity, nebo u jin\u00e9 mapovan\u00e9 supert\u0159\u00eddy).
+
+metadata_warning_ignore_mapped_superclass_default_redirectors=Ignoruj\u00ed se metadata v\u00fdchoz\u00edho p\u0159esm\u011brova\u010de u mapovan\u00e9 supert\u0159\u00eddy [{1}] pro t\u0159\u00eddu entit [{0}], nebo\u0165 metadata v\u00fdchoz\u00edho p\u0159esm\u011brova\u010de byla ji\u017e d\u0159\u00edve pro tuto entitu zji\u0161t\u011bna (bu\u010f u vlastn\u00ed entity, nebo u jin\u00e9 mapovan\u00e9 supert\u0159\u00eddy).
+
+metadata_warning_ignore_mapped_superclass_existence_checking=Ignoruj\u00ed se nastaven\u00ed kontroly existence u mapovan\u00e9 supert\u0159\u00eddy [{1}] pro t\u0159\u00eddu entit [{0}], nebo\u0165 metadata kontroly existence byla ji\u017e d\u0159\u00edve pro tuto entitu zji\u0161t\u011bna (bu\u010f u vlastn\u00ed entity, nebo u jin\u00e9 mapovan\u00e9 supert\u0159\u00eddy).
+
+metadata_warning_ignore_mapped_superclass_fetch_group=Ignoruje se skupina na\u010dten\u00ed s n\u00e1zvem [{2}] u mapovan\u00e9 supert\u0159\u00eddy [{1}] pro t\u0159\u00eddu entit [{0}], nebo\u0165 pro tuto entitu byla ji\u017e d\u0159\u00edve zji\u0161t\u011bna skupina na\u010dten\u00ed se stejn\u00fdm n\u00e1zvem (bu\u010f u stejn\u00e9 entity, nebo u jin\u00e9 mapovan\u00e9 supert\u0159\u00eddy).
+
+metadata_warning_ignore_mapped_superclass_id_class=Ignoruje se t\u0159\u00edda ID u mapovan\u00e9 supert\u0159\u00eddy [{1}] pro t\u0159\u00eddu entit [{0}], nebo\u0165 t\u0159\u00edda ID byla ji\u017e d\u0159\u00edve pro tuto entitu zji\u0161t\u011bna (bu\u010f u stejn\u00e9 entity, nebo u jin\u00e9 mapovan\u00e9 supert\u0159\u00eddy).
+
+metadata_warning_ignore_mapped_superclass_multitenant=Ignoruj\u00ed se nastaven\u00ed v\u00edcen\u00e1sobn\u00e9ho n\u00e1jemce u mapovan\u00e9 supert\u0159\u00eddy [{1}] pro t\u0159\u00eddu entit [{0}], nebo\u0165 metadata v\u00edcen\u00e1sobn\u00e9ho n\u00e1jemce byla ji\u017e d\u0159\u00edve pro tuto entitu zji\u0161t\u011bna (bu\u010f u vlastn\u00ed entity, nebo u jin\u00e9 mapovan\u00e9 supert\u0159\u00eddy).
+
+metadata_warning_ignore_mapped_superclass_optimistic_locking=Ignoruj\u00ed se metadata zamyk\u00e1n\u00ed p\u0159ed aktualizac\u00ed u mapovan\u00e9 supert\u0159\u00eddy [{1}] pro t\u0159\u00eddu entit [{0}], nebo\u0165 metadata zamyk\u00e1n\u00ed p\u0159ed aktualizac\u00ed byla ji\u017e d\u0159\u00edve pro tuto entitu zji\u0161t\u011bna (bu\u010f u vlastn\u00ed entity, nebo u jin\u00e9 mapovan\u00e9 supert\u0159\u00eddy).
+
+metadata_warning_ignore_mapped_superclass_primary_key=Ignoruj\u00ed se nastaven\u00ed prim\u00e1rn\u00edho kl\u00ed\u010de u mapovan\u00e9 supert\u0159\u00eddy [{1}] pro t\u0159\u00eddu entit [{0}], nebo\u0165 metadata prim\u00e1rn\u00edho kl\u00ed\u010de byla ji\u017e d\u0159\u00edve pro tuto entitu zji\u0161t\u011bna (bu\u010f u vlastn\u00ed entity, nebo u jin\u00e9 mapovan\u00e9 supert\u0159\u00eddy).
+
+metadata_warning_ignore_mapped_superclass_read_only=Ignoruj\u00ed se nastaven\u00ed pouze pro \u010dten\u00ed u mapovan\u00e9 supert\u0159\u00eddy [{1}] pro t\u0159\u00eddu entit [{0}], nebo\u0165 metadata pouze pro \u010dten\u00ed byla ji\u017e d\u0159\u00edve pro tuto entitu zji\u0161t\u011bna (bu\u010f u vlastn\u00ed entity, nebo u jin\u00e9 mapovan\u00e9 supert\u0159\u00eddy).
+
+metadata_warning_ignore_mapping_metadata=Ignoruj\u00ed se metadata javax.persistence pou\u017eit\u00e1 u atributu [{0}] ze t\u0159\u00eddy [{1}]. Metadata javax.persistence se ignoruj\u00ed u pol\u00ed a vlastnost\u00ed, kter\u00e9 jsou do\u010dasn\u00e9, statick\u00e9 nebo abstraktn\u00ed.
+
+metadata_warning_ignore_serialized=Ignoruje se v\u00fdchoz\u00ed serializace u prvku [{1}] v r\u00e1mci t\u0159\u00eddy entit [{0}], nebo\u0165 jsou uvedena metadata p\u0159evodu EclipseLink.
+
+metadata_warning_ignore_temporal=Ignoruj\u00ed se do\u010dasn\u00e9 specifikace u prvku [{1}] v r\u00e1mci t\u0159\u00eddy entit [{0}], nebo\u0165 jsou uvedena metadata p\u0159evodu EclipseLink.
+
+metadata_warning_ignore_version_locking=Metadata zamyk\u00e1n\u00ed p\u0159ed aktualizac\u00ed jsou ji\u017e pro entitu [{0}] definovan\u00e1 v deskriptoru. Ignoruje se specifikace verze u prvku [{1}].
+
+metadata_warning_integer_discriminator_could_not_be_built=T\u0159\u00edda [{0}] uv\u00e1d\u00ed discriminatorType=INTEGER, a pou\u017e\u00edv\u00e1 [{1}] jako hodnotu discriminatorValue. Tuto hodnotu nelze p\u0159ev\u00e9st na cel\u00e9 \u010d\u00edslo. Pokus\u00edme se pou\u017e\u00edvat tuto hodnotu ve form\u00e1tu \u0159et\u011bzce.
+
+metadata_warning_inverse_access_type_mapping_override=P\u0159episuje se atribut [{1}] mapov\u00e1n\u00ed {2} atributem [{3}] mapov\u00e1n\u00ed {4} ze t\u0159\u00eddy [{0}]. Chcete-li se vyhnout tomuto varov\u00e1n\u00ed, m\u011bli byste atribut [{1}] ozna\u010dit jako do\u010dasn\u00fd.
+
+metadata_warning_multiple_id_fields_without_id_class=Pro t\u0159\u00eddu entit [{0}] jste zadali v\u00edce ID, ani\u017e byste zadali @IdClass. Tak jste ztratili schopnost hledat podle identity, podpory distribuovan\u00e9 mezipam\u011bti atd. Pozn\u00e1mka: P\u0159esto v\u0161ak m\u016f\u017eete pou\u017e\u00edvat operace hled\u00e1n\u00ed spr\u00e1vce entit tak, \u017ee p\u0159ed\u00e1te seznam pol\u00ed prim\u00e1rn\u00edho kl\u00ed\u010de. Nebo m\u016f\u017eete pou\u017e\u00edt dotazy JPQL a p\u0159e\u010d\u00edst sv\u00e9 entity. Dal\u0161\u00ed volby ID viz @PrimaryKey.
+
+metadata_warning_override_annotation_with_xml=Ignoruje se anotace [{0}] z [{1}], nebo\u0165 prvek XML je definovan\u00fd v souboru mapov\u00e1n\u00ed [{2}].
+
+metadata_warning_override_named_annotation_with_xml=Ignoruje se anotace [{0}] z [{2}], nebo\u0165 v souboru mapov\u00e1n\u00ed [{3}] je definovan\u00fd prvek XML se stejn\u00fdm n\u00e1zvem [{1}].
+
+metadata_warning_override_named_xml_with_eclipselink_xml=Ignoruje se prvek [{0}] s n\u00e1zvem [{1}], definovan\u00fd v souboru mapov\u00e1n\u00ed [{2}], proto\u017ee v souboru mapov\u00e1n\u00ed eclipselink-orm [{3}] je definovan\u00fd prvek se stejn\u00fdm n\u00e1zvem.
+
+metadata_warning_override_xml_with_eclipselink_xml=Ignoruje se prvek [{0}] z [{1}], definovan\u00fd v souboru mapov\u00e1n\u00ed [{2}], proto\u017ee v souboru mapov\u00e1n\u00ed eclipselink-orm [{3}] je tento prvek definovan\u00fd.
+
+metadata_warning_partitioned_not_set=U prvku {1} t\u0159\u00eddy {0} byla nalezena anotace @Partitioning, ale ne @Partitioned. Pomoc\u00ed anotace @Partitioned mus\u00edte nastavit z\u00e1sadu rozd\u011blen\u00ed na oblasti, anotace @Partitioning tuto z\u00e1sadu pouze definuje, ale nenastavuje.
+
+metadata_warning_reference_column_not_found=N\u00e1zev sloupce odkaz\u016f [{0}], mapovan\u00e9ho u prvku [{1}], neodpov\u00edd\u00e1 platn\u00e9mu ID nebo z\u00e1kladn\u00edmu poli/sloupci v odkazu mapov\u00e1n\u00ed. Bude se pou\u017e\u00edvat uveden\u00fd n\u00e1zev sloupce.
+
+metamodel_print_type_header=Vytisknut\u00fd seznam typ\u016f metamodelu [{0}] n\u00e1sleduje:
+
+metamodel_print_type_value=Typ metamodelu: [{0}]}
+
+metamodel_type_collection_empty=Kolekce typ\u016f metamodelu je pr\u00e1zdn\u00e1. T\u0159\u00eddy modelu pravd\u011bpodobn\u011b nebyly nalezeny b\u011bhem hled\u00e1n\u00ed jednotek perzistence \u0159\u00edzen\u00fdch kontejnerem Java SE a n\u011bkter\u00fdm kontejnerem Java EE. Ov\u011b\u0159te, \u017ee jsou va\u0161e t\u0159\u00eddy entit uvedeny v souboru persistence.xml pomoc\u00ed prvk\u016f <class>, nebo pomoc\u00ed glob\u00e1ln\u00edho prvku <exclude-unlisted-classes>false</exclude-unlisted-classes>.
+
+metamodel_type_collection_empty_during_lookup=Kolekce typ\u016f metamodelu [{1}] je pr\u00e1zdn\u00e1. T\u0159\u00eddy modelu pravd\u011bpodobn\u011b nebyly nalezeny b\u011bhem hled\u00e1n\u00ed jednotek perzistence \u0159\u00edzen\u00fdch kontejnerem Java SE a n\u011bkter\u00fdm kontejnerem Java EE. Ov\u011b\u0159te, \u017ee jsou va\u0161e t\u0159\u00eddy entit uvedeny v souboru persistence.xml pomoc\u00ed prvk\u016f <class>, nebo pomoc\u00ed glob\u00e1ln\u00edho prvku <exclude-unlisted-classes>false</exclude-unlisted-classes>. Vyhled\u00e1n\u00ed [{0}] vr\u00e1t\u00ed hodnotu null.
+
+migration_failed=Migrace se nezda\u0159ila.
+
+migration_input_dir_not_valid=V\u00e1mi definovan\u00fd vstupn\u00ed adres\u00e1\u0159 ({0}) je neplatn\u00fd.
+
+migration_output_dir_not_valid=V\u00e1mi definovan\u00fd v\u00fdstupn\u00ed adres\u00e1\u0159 ({0}) je neplatn\u00fd.
+
+migration_successful=Migrace byla \u00fasp\u011b\u0161n\u00e1!
+
+min_instance_not_supported=Nativn\u00ed nastaven\u00ed Oc4j CMP "min-instance" u entity ({0}) Eclipse CMP p\u0159\u00edmo nepodporuje. Podrobnosti viz dokumentace k migraci.
+
+missing_converter=Varov\u00e1n\u00ed: Nelze p\u0159ev\u00e9st p\u0159\u00edkaz {0}, nebo\u0165 chyb\u00ed CommandConverter - p\u0159\u00edkaz se ignoruje
+
+multiple_ds_not_supported=EclipseLink CMP nepodporuje v\u00edce zdroj\u016f dat a bude pou\u017e\u00edvat pouze jeden ze jmenovan\u00fdch ({0}), uveden\u00fd v souboru orion-ejb-jar.xml a p\u0159idru\u017een\u00fd k objektu typu bean entity definovan\u00e9mu jako posledn\u00ed v p\u0159\u00edslu\u0161n\u00e9m souboru ejb-jar.xml.
+
+must_define_migration_output_dir=Mus\u00edte nadefinovat v\u00fdstupn\u00ed adres\u00e1\u0159 pro n\u00e1stroj migrace.
+
+mw_project_generated_and_under=Migrovan\u00e9 soubory projektu EclipseLink Workbench se nach\u00e1z\u00ed pod ({0}).
+
+named_argument_not_found_in_query_parameters=Chyb\u00ed parametr dotazu pro jmenovan\u00fd argument: {0} Nahrad\u00ed se hodnotou "null".
+
+nested_entity_manager_flush_not_executed_pre_query_changes_may_be_pending=T\u0159\u00edda {0} se ji\u017e vyprazd\u0148uje. Dotaz se provede, ani\u017e by se dal\u0161\u00ed zm\u011bny zapsaly do datab\u00e1ze. Pokud dotaz obsahuje podm\u00ednky pro zm\u011bn\u011bn\u00e1 data, zm\u011bny nemus\u00ed b\u00fdt ve v\u00fdsledc\u00edch odra\u017eeny. U\u017eivatel\u00e9 by m\u011bli po dokon\u010den\u00ed z\u00e1visl\u00fdch zm\u011bn i p\u0159ed t\u00edmto vol\u00e1n\u00edm flush () pou\u017e\u00edt vol\u00e1n\u00ed flush(), aby zajistili spr\u00e1vn\u00e9 v\u00fdsledky.
+
+new_objects=Nov\u00e9 objekty:
+
+no_exclusive_write_access_not_supported=Nativn\u00ed funkce Oc4j CMP "no-exclusive-write-access" nen\u00ed u entity ({0}) p\u0159\u00edmo podporov\u00e1na v EclipseLink CMP. Podrobnosti viz dokumentace k migraci.
+
+no_jar_entry_migratable_in_ear=\u017d\u00e1dn\u00e1 z polo\u017eek JAR ve vstupn\u00edm souboru EAR ({0}) nen\u00ed migrovateln\u00e1.
+
+no_session_found=Nelze naj\u00edt relaci s n\u00e1zvem [{0}] v souboru session.xml [{1}]
+
+non_jpa_allowed_type_used_for_collection_using_lazy_access=Prvek [{1}] v r\u00e1mci t\u0159\u00eddy entit [{0}] pou\u017e\u00edv\u00e1 typ kolekce [{2}], zat\u00edmco specifikace JPA nepodporuje pouze java.util.Collection, java.util.Set, java.util.List nebo java.util.Map. Tento typ podporuje urychlen\u00e9 zav\u00e1d\u011bn\u00ed. Pou\u017eit\u00ed pomal\u00e9ho zav\u00e1d\u011bn\u00ed u tohoto typu kolekce vy\u017eaduje dal\u0161\u00ed konfiguraci a implementaci IndirectContainer, kter\u00e1 roz\u0161i\u0159uje [{2}], nebo nastaven\u00ed mapov\u00e1n\u00ed na pou\u017eit\u00ed z\u00e1kladn\u00edho sm\u011brov\u00e1n\u00ed a typu na ValueholderInterface.
+
+objectchangepolicy_turned_off=Sledov\u00e1n\u00ed zm\u011bn vypnuto pro: {0}
+
+oc4j_native_migration_start=Migrace OC4J-Native CMP -> OC4J EclipseLink CMP ZA\u010cALA......
+
+old_pessimistic_locking_not_supported=Nativn\u00ed nastaven\u00ed Oc4j CMP "old-pessimistic-locking" u entity ({0}) Eclipse CMP p\u0159\u00edmo nepodporuje. Podrobnosti viz dokumentace k migraci.
+
+one_to_one_join_outer_migrated=Vn\u011bj\u0161\u00ed spojen\u00ed jedna ku jedn\u00e9 definovan\u00e9 pro pole cmr ({0}) objektu typu bean entity ({1}) nen\u00ed p\u0159\u00edmo podporovan\u00e9 v EclipseLink CMP. Podrobnosti viz dokumentace k migraci.
+
+optimistic_locking_not_supported=Nativn\u00ed nastaven\u00ed Oc4j CMP locking-mode="optimistic" u entity ({0}) Eclipse CMP p\u0159\u00edmo nepodporuje. Podrobnosti viz dokumentace k migraci.
+
+orion_ejb_jar_xml_not_found_in_input=orion-ejb-jar.xml ve v\u00e1mi uveden\u00e9m vstupn\u00edm adres\u00e1\u0159i ({0}) neexistuje.
+
+osgi_initializer=Pou\u017eit\u00ed inicializ\u00e1toru OSGi: [{0}].
+
+osgi_initializer_failed=Konstrukce inicializ\u00e1toru OSGi [{0}] specifick\u00e9ho pro dan\u00e9 prost\u0159ed\u00ed se nezda\u0159ilo se zpr\u00e1vou: [{1}].
+
+overriding_cache_isolation=Nad\u0159\u00edzen\u00e1 entita {0} m\u00e1 \u00farove\u0148 izolace: {1}, co\u017e je v\u00edce chr\u00e1n\u00edc\u00ed ne\u017e u podt\u0159\u00eddy {2} s izolac\u00ed: {3}. Podt\u0159\u00edda se tedy nastav\u00ed na \u00farove\u0148 izolace {1}.
+
+ox_lowering_global_logging_from_default_info_to_warning= {0} Sni\u017euje se glob\u00e1ln\u00ed protokolov\u00e1n\u00ed z v\u00fdchoz\u00edho nastaven\u00ed INFO na \u00farove\u0148 WARNING.
+
+ox_lowering_session_logging_from_default_info_to_warning= {0} Sni\u017euje se protokolov\u00e1n\u00ed relace z v\u00fdchoz\u00edho nastaven\u00ed INFO na \u00farove\u0148 WARNING.
+
+ox_turn_global_logging_off= {0} Vyp\u00edn\u00e1n\u00ed protokolov\u00e1n\u00ed glob\u00e1ln\u00ed relace.
+
+ox_turn_session_logging_off= {0} Vyp\u00edn\u00e1 se protokolov\u00e1n\u00ed relace.
+
+parse_ejb_jar_with_validation_fails=Anal\u00fdza ejb-jar.xml s ov\u011b\u0159en\u00edm se nezda\u0159ila, chyba ({0}). N\u00e1stroj migrace provede anal\u00fdzu souboru xml bez ov\u011b\u0159en\u00ed.
+
+persistence_unit_ignores_statments_cache_setting=Mezipam\u011b\u0165 p\u0159\u00edkaz\u016f nelze povolit, proto\u017ee nen\u00ed nakonfigurovan\u00fd \u017e\u00e1dn\u00fd fond p\u0159ipojen\u00ed.
+
+persistence_unit_processor_error_in_class_forname_weaving_disabled=classLoader [{0}]: nezda\u0159ilo se na\u010d\u00edst t\u0159\u00eddu [{1}]. Zakomponov\u00e1n\u00ed bylo pro tuto relaci vypnuto. EclipseLink pravd\u011bpodobn\u011b nez\u00edskal zavad\u011b\u010d speci\u00e1ln\u00ed povinn\u00e9 do\u010dasn\u00e9 t\u0159\u00eddy od server. Jako do\u010dasn\u00e9 \u0159e\u0161en\u00ed byste mohli pou\u017e\u00edt statick\u00e9 propl\u00e9t\u00e1n\u00ed. 
+
+persistence_unit_processor_error_loading_class={0}: {1} byla vyd\u00e1na p\u0159i pokusu PersistenceLoadProcessor o na\u010dten\u00ed t\u0159\u00eddy {2}. T\u0159\u00edda se ignoruje.
+
+persistence_unit_processor_error_loading_class_weaving_disabled=classLoader [{0}]: pro PersistenceLoadProcessor [{1}] se nezda\u0159ilo na\u010d\u00edst t\u0159\u00eddu [{2}]. Zakomponov\u00e1n\u00ed bylo pro tuto relaci vypnuto. EclipseLink pravd\u011bpodobn\u011b nez\u00edskal zavad\u011b\u010d speci\u00e1ln\u00ed povinn\u00e9 do\u010dasn\u00e9 t\u0159\u00eddy od server. Jako do\u010dasn\u00e9 \u0159e\u0161en\u00ed byste mohli pou\u017e\u00edt statick\u00e9 propl\u00e9t\u00e1n\u00ed. 
+
+persistence_unit_processor_jboss_temp_classloader_bypassed=Do\u010dasn\u00fd zavad\u011b\u010d classLoader nen\u00ed pro procesor PersistenceLoadProcessor [{0}] k dispozici. P\u0159epnut\u00ed zavad\u011b\u010de classLoader na [{1}]. Zakomponov\u00e1n\u00ed bylo pro tuto relaci vypnuto. EclipseLink pravd\u011bpodobn\u011b nez\u00edskal zavad\u011b\u010d speci\u00e1ln\u00ed povinn\u00e9 do\u010dasn\u00e9 t\u0159\u00eddy od server. Jako do\u010dasn\u00e9 \u0159e\u0161en\u00ed byste mohli pou\u017e\u00edt statick\u00e9 propl\u00e9t\u00e1n\u00ed. 
+
+persistence_unit_processor_npe_temp_classloader=Zavad\u011b\u010d classLoader [{0}] pro procesor PersistenceLoadProcessor [{1}] zp\u016fsobil NPE u loadClass. P\u0159epnut\u00ed zavad\u011b\u010de classLoader na [{2}]. Zakomponov\u00e1n\u00ed bylo pro tuto relaci vypnuto. EclipseLink pravd\u011bpodobn\u011b nez\u00edskal zavad\u011b\u010d speci\u00e1ln\u00ed povinn\u00e9 do\u010dasn\u00e9 t\u0159\u00eddy od server. Jako do\u010dasn\u00e9 \u0159e\u0161en\u00ed byste mohli pou\u017e\u00edt statick\u00e9 propl\u00e9t\u00e1n\u00ed. 
+
+persistence_unit_processor_null_temp_classloader=Zavad\u011b\u010d classLoader pro procesor PersistenceLoadProcessor [{0}] m\u00e1 hodnotu null. Zakomponov\u00e1n\u00ed bylo pro tuto relaci vypnuto. EclipseLink pravd\u011bpodobn\u011b nez\u00edskal zavad\u011b\u010d speci\u00e1ln\u00ed povinn\u00e9 do\u010dasn\u00e9 t\u0159\u00eddy od server. Jako do\u010dasn\u00e9 \u0159e\u0161en\u00ed byste mohli pou\u017e\u00edt statick\u00e9 propl\u00e9t\u00e1n\u00ed. 
+
+persistence_unit_processor_sap_temp_classloader_bypassed=Do\u010dasn\u00fd zavad\u011b\u010d classLoader nen\u00ed pro procesor PersistenceLoadProcessor [{0}] k dispozici. P\u0159epnut\u00ed zavad\u011b\u010de classLoader na [{1}]. Zakomponov\u00e1n\u00ed bylo pro tuto relaci vypnuto. EclipseLink pravd\u011bpodobn\u011b nez\u00edskal zavad\u011b\u010d speci\u00e1ln\u00ed povinn\u00e9 do\u010dasn\u00e9 t\u0159\u00eddy od server. Jako do\u010dasn\u00e9 \u0159e\u0161en\u00ed byste mohli pou\u017e\u00edt statick\u00e9 propl\u00e9t\u00e1n\u00ed. 
+
+problem_adding_connection=Nelze p\u0159idat vzd\u00e1len\u00e9 p\u0159ipojen\u00ed z {0} kv\u016fli chyb\u011b: {1}
+
+problem_adding_remote_connection=Probl\u00e9m p\u0159i p\u0159id\u00e1v\u00e1n\u00ed vzd\u00e1len\u00e9ho p\u0159ipojen\u00ed: {0}
+
+problem_reconnect_to_jms=Nelze se znovu p\u0159ipojit k n\u00e1zvu t\u00e9matu JMS {0} kv\u016fli chyb\u011b: {1}
+
+problem_registering_mbean=Probl\u00e9m p\u0159i registraci objektu typu MBean: {0}
+
+problem_unregistering_mbean=Probl\u00e9m p\u0159i ru\u0161en\u00ed registrace objektu typu MBean: {0}
+
+problem_while_registering=Probl\u00e9m p\u0159i registraci: {0}
+
+query_has_both_join_attributes_and_partial_attributes={0} s n\u00e1zvem {1} m\u00e1 jak atributy spojen\u00ed, tak i \u010d\u00e1ste\u010dn\u00e9 atributy. Tyto dv\u011b technologie nejsou navr\u017eeny tak, aby mohly fungovat sou\u010dasn\u011b. V\u00fdsledky mohou b\u00fdt nep\u0159edv\u00eddateln\u00e9.
+
+query_has_joined_attribute_outside_fetch_group={0}: atribut slou\u010den\u00ed [{1}] nen\u00ed sou\u010d\u00e1st\u00ed skupiny na\u010dten\u00ed. Data atributu slou\u010den\u00ed (prost\u0159ednictv\u00edm \u010dten\u00ed z datab\u00e1ze) se budou ignorovat. Provede se nov\u00fd dotaz SQL, kter\u00fd znovu p\u0159e\u010dte objekt uveden\u00fd v atributu slou\u010den\u00ed. A je\u0161t\u011b dal\u0161\u00ed p\u0159\u00edkaz SQL, kter\u00fd p\u0159e\u010dte cel\u00fd hlavn\u00ed objekt (kv\u016fli nastaven\u00ed hodnoty na atribut mimo skupinu na\u010dten\u00ed). Bu\u010f zahr\u0148te na\u010dten\u00fd atribut do skupina na\u010dten\u00ed, nebo ho odeberte.
+
+received_corrupt_announcement=Varov\u00e1n\u00ed: Spr\u00e1vce zji\u0161\u0165ov\u00e1n\u00ed nemohl zpracovat ozn\u00e1men\u00ed slu\u017eby kv\u016fli {0} - ozn\u00e1men\u00ed se bude ignorovat.
+
+received_unexpected_message_type=P\u0159ijat neo\u010dek\u00e1van\u00fd typ zpr\u00e1vy: {0} z t\u00e9matu: {1}; ignoruje se.
+
+register_new_for_persist=Operace PERSIST byla vol\u00e1na na: {0}.
+
+relational_descriptor_support_only=V\u00fdchoz\u00ed gener\u00e1tor tabulek moment\u00e1ln\u011b podporuje pouze generov\u00e1n\u00ed sch\u00e9matu v\u00fdchoz\u00ed tabulky z rela\u010dn\u00edho projektu.
+
+relationship_cacheing_not_supported=Nativn\u00ed nastaven\u00ed WLS CMP "relationship-caching" u entity ({0}) Eclipse CMP p\u0159\u00edmo nepodporuje. Podrobnosti viz dokumentace k migraci.
+
+removeEJB_return=N\u00e1vrat removeEJB: {0}
+
+removing_unique_constraint=Odebr\u00e1n\u00ed definice omezen\u00ed UNIQUE z [{0}], nebo\u0165 jde tak\u00e9 o prim\u00e1rn\u00ed kl\u00ed\u010d.
+
+resource_local_persistence_init_info_ignores_jta_data_source=PersistenceUnitInfo {0} m\u00e1 typ transakce nastaven na RESOURCE_LOCAL, a proto se bude zdroj dat jtaDataSource ignorovat.
+
+retreived_null_message=Na\u010dtena zpr\u00e1va s hodnotou null z t\u00e9matu: {0}; ignoruje se.
+
+retreived_unknown_message_type=Na\u010dten nezn\u00e1m\u00fd typ zpr\u00e1vy: {0} z t\u00e9matu: {1}; ignoruje se.
+
+sdo_classgenerator_exception={2} Do\u0161lo k v\u00fdjimce [{0}] - zpr\u00e1va je [{1}]
+
+sdo_error_deserialization=Neopr\u00e1vn\u011bn\u00fd pokus o deserializaci se t\u0159\u00eddou {0}.
+
+sdo_error_processing_referenced_schema={0} p\u0159i zpracov\u00e1n\u00ed odkazovan\u00e9ho sch\u00e9matu s identifik\u00e1torem URI {1} a um\u00edst\u011bn\u00edm sch\u00e9matu {2}.
+
+sdo_invalid_schemaLocation=Nelze vytvo\u0159it um\u00edst\u011bn\u00ed sch\u00e9matu [{0}] s identifik\u00e1torem URI [{1}] pro import.
+
+sdo_missing_schemaLocation=Odkazovan\u00e9 sch\u00e9ma s identifik\u00e1torem URI {0} nelze zpracovat, proto\u017ee byl uveden atribut schemaLocation.
+
+sdo_type_generation_modified_class_naming_format_to={0}: Vygenerovan\u00fd n\u00e1zev t\u0159\u00eddy java typu [{1}] se zm\u011bnil na [{2}], aby byl v souladu s konvencemi pojmenov\u00e1n\u00ed t\u0159\u00edd.
+
+sdo_type_generation_modified_function_naming_format_to={0}: Vygenerovan\u00fd n\u00e1zev metody java get/set typu [{1}] se zm\u011bnil na [{2}], aby byl v souladu s konvencemi pojmenov\u00e1n\u00ed t\u0159\u00edd.
+
+sdo_type_generation_warning_class_name_violates_java_spec={0}: Vygenerovan\u00fd typ [{1}] koliduje s pravidly pojmenov\u00e1n\u00ed specifikace Java pro [{2}] a m\u011bl by b\u00fdt p\u0159ejmenov\u00e1n.
+
+sdo_type_generation_warning_class_name_violates_sdo_spec={0}: Vygenerovan\u00fd typ [{1}] koliduje s pravidly pojmenov\u00e1n\u00ed specifikace SDO pro [{2}] a m\u011bl by b\u00fdt p\u0159ejmenov\u00e1n.
+
+sequence_cachekey_improper_format=Nativn\u00ed nastaven\u00ed WLS CMP "key-cache-size" u entity ({0}) obsahuj\u00ed nespr\u00e1vn\u011b naform\u00e1tovanou hodnotu ({1})
+
+session_key_for_mbean_name_is_null=N\u00e1zev relace pou\u017eit\u00fd pro registraci objektu typu MBean nem\u016f\u017ee m\u00edt hodnotu null.
+
+session_manager_no_partition=K aktu\u00e1ln\u00ed instanci oblasti nen\u00ed p\u0159idru\u017eena \u017e\u00e1dn\u00e1 instance zavad\u011b\u010de t\u0159\u00edd.
+
+sessions_xml_path_where_session_load_from=Informace o relaci se na\u010detly z [{0}].
+
+sop_object_deserialze_failed=Nezda\u0159ilo se deserializovat objekt sopObject z [{0}] v [{1}]
+
+sop_object_not_found=Serializovan\u00fd objekt sopObject nebyl nalezen v [{0}] v [{1}]
+
+sop_object_wrong_pk=Odebr\u00e1n\u00ed serializovan\u00e9ho objektu sopObject z \u0159\u00e1dku, proto\u017ee m\u00e1 \u0161patn\u00fd prim\u00e1rn\u00ed kl\u00ed\u010d [{0}] v [{1}] v [{2}]
+
+sop_object_wrong_version=Odebr\u00e1n\u00ed serializovan\u00e9ho objektu sopObject z \u0159\u00e1dku, proto\u017ee m\u00e1 \u0161patnou verzi [{0}] v [{1}] v [{2}]
+
+src_pm_name_first_argument=Mus\u00edte zadat n\u00e1zev zdrojov\u00e9ho PM jako prvn\u00ed vstupn\u00ed argument. Bu\u010f jako: -sOc4j-native, nebo jako -sWeblogic.
+
+table_existed_during_creation=Vytvo\u0159en\u00ed tabulky se nezda\u0159ilo. Pokud ji\u017e existuje, mus\u00edte ji nejprve zru\u0161it. To provedete ru\u010dn\u011b nebo nastaven\u00edm atributu db-table-gen v souboru orion-ejb-jar.xml.
+
+template_orion_ejb_jar_created=Byl vytvo\u0159en \u0161ablonovit\u00fd soubor orion-ejb-jar.xml.
+
+topLink_version=EclipseLink, verze: {0}
+
+toplink=[EL]: 
+
+toplink_cmp_bean_name_xml_deprecated=Podpora toplink-cmp-bean_name.xml je zastaral\u00e1. Prohl\u00e9dn\u011bte si dokumentaci a vyhledejte informace o pou\u017eit\u00ed toplink-ejb-jar.xml
+
+toplink_config=[Konfigurace EL]: 
+
+toplink_ejb_jar_in_jar=toplink-ejb-jar.xml je sou\u010d\u00e1st\u00ed souboru jar({0}), proto se pro tento JAR neprovede \u017e\u00e1dn\u00e1 migrace.
+
+toplink_ejb_jar_xml_found_in_input=toplink-ejb-jar.xml se nach\u00e1z\u00ed ve vstupn\u00edm adres\u00e1\u0159i ({0}). Mus\u00edte odebrat deskriptor toplink ze vstupn\u00edho adres\u00e1\u0159e, abyste mohli prov\u00e9st migraci.
+
+toplink_fine=[EL dobr\u00fd]: 
+
+toplink_finer=[EL lep\u0161\u00ed]: 
+
+toplink_finest=[EL nejlep\u0161\u00ed]: 
+
+toplink_info=[EL Info]: 
+
+toplink_severe=[EL z\u00e1va\u017en\u00fd]: 
+
+toplink_warning=[EL varov\u00e1n\u00ed]: 
+
+unitofwork_identity_hashcode={0}Ha\u0161ovac\u00ed k\u00f3d identity UnitOfWork: {1}
+
+update_all_fields_not_supported=Nativn\u00ed funkce Oc4j CMP "update-all-fields" nen\u00ed u entity ({0}) p\u0159\u00edmo podporov\u00e1na v EclipseLink CMP. Podrobnosti viz dokumentace k migraci.
+
+update_all_query_cannot_use_binding_on_this_platform=UpdateAllQuery nem\u016f\u017ee pou\u017e\u00edvat vazbu na t\u00e9to datab\u00e1zov\u00e9 platform\u011b. Zm\u011bn\u011bno nastaven\u00ed dotazu, aby ho bylo mo\u017en\u00e9 prov\u00e9st bez vazby.
+
+validate_db_schema_with_not_supported=Nativn\u00ed nastaven\u00ed WLS CMP "validate-db-schema-with" EclipseLink CMP p\u0159\u00edmo nepodporuje. Podrobnosti viz dokumentace k migraci.
+
+validate_ejb_jar=Ov\u011b\u0159ov\u00e1n\u00ed ejb-jar.xml za\u010dalo, m\u016f\u017ee to trvat ur\u010ditou dobu...
+
+validity_timeout_not_supported=Nativn\u00ed nastaven\u00ed Oc4j CMP "validity-timeout" u entity ({0}) Eclipse CMP p\u0159\u00edmo nepodporuje. Podrobnosti viz dokumentace k migraci.
+
+verifiy_columns_read_locking_not_supported=Optimistick\u00e9 nastaven\u00ed "Read" parametru "verify-columns" v entit\u011b ({0}) EclipseLink CMP p\u0159\u00edmo nepodporuje. Podrobnosti viz dokumentace k migraci.
+
+verifiy_rows_read_locking_not_supported=Optimistick\u00e9 nastaven\u00ed "Read" parametru "verify-rows" v entit\u011b ({0}) EclipseLink CMP p\u0159\u00edmo nepodporuje. Podrobnosti viz dokumentace k migraci.
+
+weaver_class_not_in_project=Modul weaver nalezl t\u0159\u00eddu, kter\u00e1 nen\u00ed sou\u010d\u00e1st\u00ed projektu: {0}.
+
+weaver_could_not_write=Modul weaver narazil p\u0159i pokusu zapsat t\u0159\u00eddu {0} do syst\u00e9mu soubor\u016f na v\u00fdjimku. V\u00fdjimka: {1}
+
+weaver_disable_by_system_property=Zakomponov\u00e1n\u00ed zak\u00e1z\u00e1no syst\u00e9movou vlastnost\u00ed {0}
+
+weaver_not_overwriting=Modul weaver nep\u0159ep\u00ed\u0161e t\u0159\u00eddu {0}, proto\u017ee nen\u00ed nastavena na p\u0159epis.
+
+weaver_null_project=Projekt relace modulu weaver nem\u016f\u017ee m\u00edt hodnotu null.
+
+weblogic_ejb_jar_xml_not_found_in_input=weblogic-ejb-jar.xml neexistuje ve v\u00e1mi zadan\u00e9m vstupn\u00edm adres\u00e1\u0159i ({0}).
+
+weblogic_native_migration_start=Migrace WebLogic-Native CMP -> OC4J EclipseLink CMP ZA\u010cALA......
+
+weblogic_ql_not_supported=WebLogic-QL({0}) metody ({1} entity ({2}) se nemigroval, nebo\u0165 EclipseLink nepodporuje jazyk WebLogic QL.
+
+weblogic_query_not_supported=Nativn\u00ed nastaven\u00ed WLS CMP "weblogic-query" u entity ({0}) Eclipse CMP p\u0159\u00edmo nepodporuje. Podrobnosti viz dokumentace k migraci.
+

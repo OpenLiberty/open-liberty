@@ -834,6 +834,7 @@ public class OidcClientConfigImplTest extends CommonTestClass {
         props.put(OidcClientConfigImpl.CFG_KEY_AUTO_AUTHORIZE_PARAM, AUTO_AUTHORIZE_PARAM);
         props.put(OidcClientConfigImpl.CFG_KEY_HOST_NAME_VERIFICATION_ENABLED, value);
         props.put(OidcClientConfigImpl.CFG_KEY_INCLUDE_CUSTOM_CACHE_KEY_IN_SUBJECT, value);
+        props.put(OidcClientConfigImpl.CFG_KEY_ALLOW_CUSTOM_CACHE_KEY , value);
         props.put(OidcClientConfigImpl.CFG_KEY_INCLUDE_ID_TOKEN_IN_SUBJECT, value);
         props.put(OidcClientConfigImpl.CFG_KEY_AUTH_CONTEXT_CLASS_REFERENCE, ACR_VALUES);
         props.put(OidcClientConfigImpl.CFG_KEY_AUTH_FILTER_REF, authFilterId);

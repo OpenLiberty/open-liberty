@@ -54,7 +54,7 @@ public final class SparseIndexReader {
     /**
      * Create a reader on an input stream.
      * 
-     * Read the triple of ( jandex magix bytes, index version, index ) from the input
+     * Read the triple of ( jandex magic bytes, index version, index ) from the input
      * stream.
      * 
      * Store the index version and index.

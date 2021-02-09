@@ -1,5 +1,3 @@
-package com.ibm.tx.jta.impl;
-
 /*******************************************************************************
  * Copyright (c) 2002, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
@@ -10,6 +8,7 @@ package com.ibm.tx.jta.impl;
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+package com.ibm.tx.jta.impl;
 
 import java.io.File;
 import java.net.URISyntaxException;
@@ -22,7 +21,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import javax.transaction.SystemException;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
@@ -32,11 +30,11 @@ import com.ibm.tx.config.ConfigurationProvider;
 import com.ibm.tx.config.ConfigurationProviderManager;
 import com.ibm.tx.jta.config.DefaultConfigurationProvider;
 import com.ibm.tx.jta.util.TranLogConfiguration;
-import com.ibm.tx.util.logging.FFDCFilter;
-import com.ibm.tx.util.logging.Tr;
-import com.ibm.tx.util.logging.TraceComponent;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.Transaction.JTA.Util;
 import com.ibm.ws.Transaction.JTS.Configuration;
+import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.recoverylog.spi.ClientId;
 import com.ibm.ws.recoverylog.spi.CustomLogProperties;
 import com.ibm.ws.recoverylog.spi.FailureScope;
@@ -69,11 +67,12 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
     private static final int TRANSACTION_RECOVERYLOG_FORMAT_VERSION = 1;
 
     protected RecoveryDirector _recoveryDirector;
+    private RecoveryManager _recoveryManager;
 
     protected final HashMap<String, FailureScopeController> failureScopeControllerTable = new HashMap<String, FailureScopeController>();
 
-    private RecoveryLog _transactionLog = null;
-    private RecoveryLog _partnerLog = null;
+    private RecoveryLog _transactionLog;
+    private RecoveryLog _partnerLog;
     // In the special case where we are operating in the cloud, we'll also work with a "lease" log
     SharedServerLeaseLog _leaseLog;
 
@@ -84,7 +83,12 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
 
     private ClassLoadingService clService;
 
-    protected TxRecoveryAgentImpl() {}
+    private boolean _checkingLeases = true;
+
+    protected TxRecoveryAgentImpl() {
+    }
+
+    private static ThreadLocal<Boolean> _replayThread = new ThreadLocal<Boolean>();
 
     public TxRecoveryAgentImpl(RecoveryDirector rd) throws Exception {
         _recoveryDirector = rd;
@@ -108,6 +112,9 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
         // RTC 179941
         ConfigurationProvider cp = ConfigurationProviderManager.getConfigurationProvider();
 
+        // Set the default value of the ThreadLocal to false. It will be set to true in the thread driving replay.
+        _replayThread.set(false);
+
         // In the normal Liberty runtime the Applid will have been set into the JTMConfigurationProvider by the
         // TransactionManagerService. We additionally can set the applid here for the benefit of the unittest framework.
         if (cp.getApplId() == null) {
@@ -123,7 +130,8 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
     }
 
     @Override
-    public void agentReportedFailure(int clientId, FailureScope failureScope) {}
+    public void agentReportedFailure(int clientId, FailureScope failureScope) {
+    }
 
     @Override
     public int clientIdentifier() {
@@ -219,8 +227,8 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                 }
             } else {
                 try {
-                    fsc = new FailureScopeController(fs);
-                } catch (SystemException exc) {
+                    fsc = createFailureScopeController(fs);
+                } catch (Exception exc) {
                     FFDCFilter.processException(exc, "com.ibm.ws.runtime.component.TxServiceImpl.initiateRecovery", "1177", this);
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "Exception caught whist creating FailureScopeController", exc);
@@ -276,10 +284,26 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                 //
                 _transactionLog = rlm.getRecoveryLog(fs, transactionLogProps);
 
+                // Configure the SQL HADB Retry parameters
+                if (_transactionLog != null && _transactionLog instanceof HeartbeatLog) {
+                    HeartbeatLog heartbeatLog = (HeartbeatLog) _transactionLog;
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "The transaction log is a Heartbeatlog, configure SQL HADB retry parameters");
+                    configureSQLHADBRetryParameters(heartbeatLog, cp);
+                }
+
                 //
                 // Create the Partner (XAResources) log
                 //
                 _partnerLog = rlm.getRecoveryLog(fs, partnerLogProps);
+
+                // Configure the SQL HADB Retry parameters
+                if (_partnerLog != null && _partnerLog instanceof HeartbeatLog) {
+                    HeartbeatLog heartbeatLog = (HeartbeatLog) _partnerLog;
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "The partner log is a Heartbeatlog, configure SQL HADB retry parameters");
+                    configureSQLHADBRetryParameters(heartbeatLog, cp);
+                }
 
                 // In the special case where we support tx peer recovery (eg for operating in the cloud), we'll also work with a "lease" log
                 if (tc.isDebugEnabled())
@@ -306,7 +330,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
             // default thread pool, nor do we want to create recovery pools that may never get used and
             // just absorb resource.
 
-            final RecoveryManager rm = fsc.getRecoveryManager();
+            _recoveryManager = fsc.getRecoveryManager();
             final boolean localRecovery = recoveredServerIdentity.equals(localRecoveryIdentity);
 
             // If we have a lease log then we need to set it into the recovery manager, so that it too will be processed.
@@ -324,7 +348,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                         Tr.info(tc, "CWRLS0009_RECOVERY_LOG_FAILED_DETAIL", rex);
 
                         // Drive recovery failure processing
-                        rm.recoveryFailed(rex);
+                        _recoveryManager.recoveryFailed(rex);
 
                         // Check the system property but by default we want the server to be shutdown if we, the server
                         // that owns the logs is not able to recover them. The System Property supports the tWAS style
@@ -342,15 +366,15 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                     }
                 }
 
-                rm.setLeaseLog(_leaseLog);
-                rm.setRecoveryGroup(_recoveryGroup);
-                rm.setLocalRecoveryIdentity(localRecoveryIdentity);
+                _recoveryManager.setLeaseLog(_leaseLog);
+                _recoveryManager.setRecoveryGroup(_recoveryGroup);
+                _recoveryManager.setLocalRecoveryIdentity(localRecoveryIdentity);
             }
 
             final Thread t = AccessController.doPrivileged(new PrivilegedAction<Thread>() {
                 @Override
                 public Thread run() {
-                    return new Thread(rm, "Recovery Thread");
+                    return new Thread(_recoveryManager, "Recovery Thread");
                 }
             });
 
@@ -436,7 +460,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                                                     _recoveryGroup,
                                                     this,
                                                     _recoveryDirector,
-                                                    cp.getLeaseLength(),
+                                                    cp.getLeaseLength() * cp.getLeaseRenewalTime() / 100,
                                                     cp.getLeaseCheckInterval());
                 }
             }
@@ -508,19 +532,6 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
 
         return impl;
     }
-
-    @Override
-    public boolean isSnapshotSafe() {
-        return false;
-    }
-
-    @Override
-    public String[] logDirectories(FailureScope failureScope) {
-        return null;
-    }
-
-    @Override
-    public void prepareForRecovery(FailureScope failureScope) {}
 
     /**
      * @param fs
@@ -904,20 +915,19 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                         if (tc.isDebugEnabled())
                             Tr.debug(tc, "Custom PartnerLog is set - ", partnerLog);
 
-                        if (partnerLog instanceof HeartbeatLog) {
+                        if (partnerLog != null && partnerLog instanceof HeartbeatLog) {
                             if (tc.isDebugEnabled())
                                 Tr.debug(tc, "The log is a Heartbeatlog");
                             heartbeatLog = (HeartbeatLog) partnerLog;
                             // Configure the log
                             ConfigurationProvider cp = ConfigurationProviderManager.getConfigurationProvider();
-                            int peerLockTimeBeforeStale = cp.getPeerTimeBeforeStale();
-                            if (tc.isEntryEnabled())
-                                Tr.debug(tc, "peerLockTimeBeforeStale - ", peerLockTimeBeforeStale);
-                            heartbeatLog.setTimeBeforeLogStale(peerLockTimeBeforeStale);
-                            int timeBetweenHeartbeats = cp.getTimeBetweenHeartbeats();
-                            if (tc.isEntryEnabled())
-                                Tr.debug(tc, "timeBetweenHeartbeats - ", timeBetweenHeartbeats);
-                            heartbeatLog.setTimeBetweenHeartbeats(timeBetweenHeartbeats);
+
+                            // SQL Peer Locking parameters
+                            configureSQLPeerLockParameters(heartbeatLog, cp);
+
+                            // SQL HADB Retry parameters
+                            configureSQLHADBRetryParameters(heartbeatLog, cp);
+                            configureSQLHADBLightweightRetryParameters(heartbeatLog, cp);
                         }
                     }
                 }
@@ -945,5 +955,130 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
         if (tc.isEntryEnabled())
             Tr.exit(tc, "isDBTXLogPeerLocking", enableLocking);
         return enableLocking;
+    }
+
+    /**
+     * Configure the SQL Peer Locking parameters
+     *
+     * @param recLog
+     * @param cp
+     */
+    private void configureSQLPeerLockParameters(HeartbeatLog heartbeatLog, ConfigurationProvider cp) {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "configureSQLPeerLockParameters", new java.lang.Object[] { heartbeatLog, cp, this });
+
+        // The optional SQL Peer Lock parameters
+        int peerLockTimeBeforeStale = cp.getPeerTimeBeforeStale();
+        if (tc.isEntryEnabled())
+            Tr.debug(tc, "peerLockTimeBeforeStale - ", peerLockTimeBeforeStale);
+        heartbeatLog.setTimeBeforeLogStale(peerLockTimeBeforeStale);
+        int timeBetweenHeartbeats = cp.getTimeBetweenHeartbeats();
+        if (tc.isEntryEnabled())
+            Tr.debug(tc, "timeBetweenHeartbeats - ", timeBetweenHeartbeats);
+        heartbeatLog.setTimeBetweenHeartbeats(timeBetweenHeartbeats);
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "configureSQLPeerLockParameters");
+    }
+
+    /**
+     * Configure the SQL HADB Retry parameters
+     *
+     * @param recLog
+     * @param cp
+     */
+    private void configureSQLHADBRetryParameters(HeartbeatLog heartbeatLog, ConfigurationProvider cp) {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "configureSQLHADBRetryParameters", new java.lang.Object[] { heartbeatLog, cp, this });
+
+        // The optional SQL HADB Retry parameters
+        int standardTransientErrorRetryTime = cp.getStandardTransientErrorRetryTime();
+        if (tc.isEntryEnabled())
+            Tr.debug(tc, "standardTransientErrorRetryTime - ", standardTransientErrorRetryTime);
+        heartbeatLog.setStandardTransientErrorRetryTime(standardTransientErrorRetryTime);
+        int standardTransientErrorRetryAttempts = cp.getStandardTransientErrorRetryAttempts();
+        if (tc.isEntryEnabled())
+            Tr.debug(tc, "standardTransientErrorRetryAttempts - ", standardTransientErrorRetryAttempts);
+        heartbeatLog.setStandardTransientErrorRetryAttempts(standardTransientErrorRetryAttempts);
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "configureSQLHADBRetryParameters");
+    }
+
+    /**
+     * Configure the Lightweight SQL HADB Retry parameters
+     *
+     * @param recLog
+     * @param cp
+     */
+    private void configureSQLHADBLightweightRetryParameters(HeartbeatLog heartbeatLog, ConfigurationProvider cp) {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "configureSQLHADBLightweightRetryParameters", new java.lang.Object[] { heartbeatLog, cp, this });
+
+        // The optional SQL HADB Retry parameters
+        int lightweightTransientErrorRetryTime = cp.getLightweightTransientErrorRetryTime();
+        if (tc.isEntryEnabled())
+            Tr.debug(tc, "lightweightTransientErrorRetryTime - ", lightweightTransientErrorRetryTime);
+        heartbeatLog.setLightweightTransientErrorRetryTime(lightweightTransientErrorRetryTime);
+        int lightweightTransientErrorRetryAttempts = cp.getLightweightTransientErrorRetryAttempts();
+        if (tc.isEntryEnabled())
+            Tr.debug(tc, "lightweightTransientErrorRetryAttempts - ", lightweightTransientErrorRetryAttempts);
+        heartbeatLog.setLightweightTransientErrorRetryAttempts(lightweightTransientErrorRetryAttempts);
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "configureSQLHADBLightweightRetryParameters");
+    }
+
+    /**
+     * @return the _recoveryManager
+     */
+    public RecoveryManager getRecoveryManager() {
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "getRecoveryManager", _recoveryManager);
+        return _recoveryManager;
+    }
+
+    @Override
+    public boolean isReplayThread() {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "isReplayThread");
+
+        boolean isReplayThread = false;
+        if (_replayThread.get() != null)
+            isReplayThread = _replayThread.get();
+
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "isReplayThread", isReplayThread);
+        return isReplayThread;
+    }
+
+    @Override
+    public void setReplayThread() {
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "setReplayThread");
+        _replayThread.set(Boolean.TRUE);
+    }
+
+    @Override
+    public boolean checkingLeases() {
+        return _checkingLeases;
+    }
+
+    @Override
+    public void setCheckingLeases(boolean b) {
+        if (tc.isDebugEnabled()) {
+            if (b != _checkingLeases) {
+                if (b) {
+                    Tr.debug(tc, "Enabling lease checking");
+                } else {
+                    Tr.debug(tc, "Disabling lease checking");
+                }
+            }
+        }
+        _checkingLeases = b;
+    }
+
+    @Override
+    public void terminateServer() {
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "terminateServer");
+        ConfigurationProviderManager.getConfigurationProvider().shutDownFramework();
     }
 }

@@ -26,7 +26,8 @@ task assembleBinaryDependencies() {
         // task of every FAT bucket, effectively making all of fattest.simplicty's dependencies transitive
         sourceSets.main.runtimeClasspath.each {
             def path = it.getAbsolutePath()
-            if((path.contains('.m2') || path.contains('.ibmartifactory')) && !(new File(buildDirLib, it.getName()).exists())) {
+            if((path.contains('.m2') || path.contains('.ibmartifactory') || path.contains('.ibmdhe')) && 
+               !(new File(buildDirLib, it.getName()).exists())) {
                 copy {
                     from path
                     into buildDirLib

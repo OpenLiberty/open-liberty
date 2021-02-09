@@ -31,6 +31,10 @@ import com.ibm.websphere.simplicity.config.dsprops.Properties_oracle;
 import com.ibm.websphere.simplicity.config.dsprops.Properties_oracle_ucp;
 import com.ibm.websphere.simplicity.config.dsprops.Properties_postgresql;
 import com.ibm.websphere.simplicity.config.dsprops.Properties_sybase;
+import com.ibm.websphere.simplicity.log.Log;
+
+import componenttest.common.apiservices.Bootstrap;
+import componenttest.common.apiservices.BootstrapProperty;
 
 /**
  * Defines a data source in the server configuration
@@ -39,6 +43,9 @@ import com.ibm.websphere.simplicity.config.dsprops.Properties_sybase;
  *
  */
 public class DataSource extends ConfigElement {
+
+    private static final Class<DataSource> c = DataSource.class;
+
     private String jndiName;
     private String jdbcDriverRef;
     private String connectionManagerRef;
@@ -618,6 +625,185 @@ public class DataSource extends ConfigElement {
             buf.append(recoveryAuthDatas).append(' ');
         buf.append("}");
         return buf.toString();
+    }
+
+    /**
+     * Update <dataSource> from bootstrapping.properties.
+     * <ul>
+     * <li>Update nested <jdbcDriver>.
+     * <li>Remove the existing <dataSource> nested properties entries.
+     * <li>Create a <dataSource> nested <properties> entry based on bootstrapping.properties
+     * and add it to the <dataSource>.
+     *
+     */
+    public void updateDataSourceFromBootstrap(ServerConfiguration config) throws Exception {
+        Log.entering(c, "updateDataSourceFromBootstrap");
+        Bootstrap bs = Bootstrap.getInstance();
+        if (bs.getValue(BootstrapProperty.DB_DRIVERNAME.getPropertyName()) == null) {
+            return;
+        }
+
+        Log.info(c, "updateDataSourceFromBootstrap", "Updating dataSource " + getId());
+        for (JdbcDriver jdbcDriver : getJdbcDrivers()) {
+            Log.info(c, "updateDataSourceFromBootstrap", "Update nested JDBC Driver");
+            if (!"false".equalsIgnoreCase(jdbcDriver.getFatModify()))
+                jdbcDriver.updateJdbcDriverFromBootstrap(config);
+        }
+
+        Log.info(c, "updateDataSourceFromBootstrap", "Delete properties and create new one");
+
+        DataSourceProperties dsp = getDataSourceProperties().iterator().next();
+        boolean hasUser = (dsp.getUser() != null);
+        boolean hasPass = (dsp.getPassword() != null);
+
+        String database_hostname = bs.getValue(BootstrapProperty.DB_HOSTNAME.getPropertyName());
+        String database_port = bs.getValue(BootstrapProperty.DB_PORT.getPropertyName());
+        String database_name = bs.getValue(BootstrapProperty.DB_NAME.getPropertyName());
+        String database_user1 = (hasUser ? bs.getValue(BootstrapProperty.DB_USER1.getPropertyName()) : null);
+        String database_password1 = (hasPass ? bs.getValue(BootstrapProperty.DB_PASSWORD1.getPropertyName()) : null);
+        String database_drivername = bs.getValue(BootstrapProperty.DB_DRIVERNAME.getPropertyName());
+        String database_vendorname = bs.getValue(BootstrapProperty.DB_VENDORNAME.getPropertyName());
+        String database_servername = bs.getValue(BootstrapProperty.DB_IFXSERVERNAME.getPropertyName());
+
+        clearDataSourceDBProperties();
+
+        if (database_vendorname.equalsIgnoreCase(BootstrapProperty.DB_DERBYEMB.getPropertyName())
+            && (database_drivername.equalsIgnoreCase(BootstrapProperty.DB_DERBY_EMBEDDED_DRIVER.getPropertyName())
+                || database_drivername.equalsIgnoreCase(BootstrapProperty.DB_DERBY_EMBEDDED_DRIVER_40.getPropertyName()))) {
+            // TODO Derby Embedded is not yet supported as a specified database
+            Properties_derby_embedded properties = new Properties_derby_embedded();
+            properties.setCreateDatabase("create");
+            properties.setDatabaseName("${shared.resource.dir}/data/" + database_name);
+            properties.setPassword(database_password1);
+            properties.setPortNumber(database_port); // may not need this
+            properties.setUser(database_user1);
+            properties.setServerName(database_hostname);
+            derbyEmbeddedProps = new ConfigElementList<Properties_derby_embedded>();
+            derbyEmbeddedProps.add(properties);
+            throw new Exception("Database or driver not yet supported");
+        } else if (database_vendorname.equalsIgnoreCase(BootstrapProperty.DB_DERBYNET.getPropertyName())
+                   && (database_drivername.equalsIgnoreCase(BootstrapProperty.DB_DERBY_NETWORK_CLIENT_DRIVER.getPropertyName())
+                       || database_drivername.equalsIgnoreCase(BootstrapProperty.DB_DERBY_NETWORK_CLIENT_DRIVER_40.getPropertyName()))) {
+            // TODO Derby Network is not yet supported as a specified database
+            Properties_derby_client properties = new Properties_derby_client();
+            properties.setCreateDatabase("create");
+            properties.setDatabaseName("${shared.resource.dir}/data/" + database_name);
+            properties.setPassword(database_password1);
+            properties.setPortNumber(database_port);
+            properties.setUser(database_user1);
+            properties.setServerName(database_hostname);
+            derbyNetClientProps = new ConfigElementList<Properties_derby_client>();
+            derbyNetClientProps.add(properties);
+            throw new Exception("Database or driver not yet supported");
+        } else if (database_vendorname.equalsIgnoreCase(BootstrapProperty.DB_DB2.getPropertyName())
+                   && database_drivername.equalsIgnoreCase(BootstrapProperty.DB_DB2_JCC_DRIVER.getPropertyName())) {
+            Properties_db2_jcc properties = new Properties_db2_jcc();
+            properties.setDatabaseName(database_name);
+            properties.setPassword(database_password1);
+            properties.setPortNumber(database_port);
+            properties.setUser(database_user1);
+            properties.setServerName(database_hostname);
+            db2JccProps = new ConfigElementList<Properties_db2_jcc>();
+            db2JccProps.add(properties);
+        } else if (database_vendorname.equalsIgnoreCase(BootstrapProperty.DB_DB2_ISERIES.getPropertyName())
+                   && database_drivername.equalsIgnoreCase(BootstrapProperty.DB_DB2_INATIVE_DRIVER.getPropertyName())) {
+            // TODO iSeries is not yet supported as a specified database
+            Properties_db2_i_native properties = new Properties_db2_i_native();
+            // TODO finish setting the properties
+            db2iNativeProps = new ConfigElementList<Properties_db2_i_native>();
+            db2iNativeProps.add(properties);
+            throw new Exception("Database or driver not yet supported");
+        } else if (database_vendorname.equalsIgnoreCase(BootstrapProperty.DB_DB2_ISERIES.getPropertyName())
+                   && database_drivername.equalsIgnoreCase(BootstrapProperty.DB_DB2_ITOOLBOX_DRIVER.getPropertyName())) {
+            // TODO iSeries is not yet supported as a specified database
+            Properties_db2_i_toolbox properties = new Properties_db2_i_toolbox();
+            // TODO finish setting the properties
+            db2iToolboxProps = new ConfigElementList<Properties_db2_i_toolbox>();
+            db2iToolboxProps.add(properties);
+            throw new Exception("Database or driver not yet supported");
+        } else if (database_vendorname.equalsIgnoreCase(BootstrapProperty.DB_DB2_ZOS.getPropertyName())
+                   && database_drivername.equalsIgnoreCase(BootstrapProperty.DB_DB2_JCC_DRIVER.getPropertyName())) {
+            // TODO zOS is not yet supported as a specified database
+            Properties_db2_jcc properties = new Properties_db2_jcc();
+            // TODO finish setting the properties
+            db2JccProps = new ConfigElementList<Properties_db2_jcc>();
+            db2JccProps.add(properties);
+            throw new Exception("Database or driver not yet supported");
+        } else if (database_vendorname.equalsIgnoreCase(BootstrapProperty.DB_INFORMIX.getPropertyName())
+                   && database_drivername.equalsIgnoreCase(BootstrapProperty.DB_DB2_JCC_DRIVER.getPropertyName())) {
+            Properties_informix_jcc properties = new Properties_informix_jcc();
+            properties.setDatabaseName(database_name);
+            properties.setPassword(database_password1);
+            properties.setPortNumber(database_port);
+            properties.setUser(database_user1);
+            properties.setServerName(database_hostname);
+            informixJccProps = new ConfigElementList<Properties_informix_jcc>();
+            informixJccProps.add(properties);
+        } else if (database_vendorname.equalsIgnoreCase(BootstrapProperty.DB_INFORMIX.getPropertyName())
+                   && database_drivername.equalsIgnoreCase(BootstrapProperty.DB_INFORMIX_DRIVER.getPropertyName())) {
+            Properties_informix properties = new Properties_informix();
+            properties.setDatabaseName(database_name);
+            properties.setPassword(database_password1);
+            properties.setPortNumber(database_port);
+            properties.setUser(database_user1);
+            properties.setServerName(database_servername);
+            properties.setIfxIFXHOST(database_hostname);
+            informixJdbcProps = new ConfigElementList<Properties_informix>();
+            informixJdbcProps.add(properties);
+        } else if (database_vendorname.equalsIgnoreCase(BootstrapProperty.DB_ORACLE.getPropertyName())
+                   && database_drivername.equalsIgnoreCase(BootstrapProperty.DB_ORACLE_DRIVER.getPropertyName())) {
+            Properties_oracle properties = new Properties_oracle();
+            String URL = "jdbc:oracle:thin:@//" + database_hostname + ":" + database_port + "/" + database_name;
+            properties.setPassword(database_password1);
+            properties.setUser(database_user1);
+            properties.setURL(URL);
+            oracleProps = new ConfigElementList<Properties_oracle>();
+            oracleProps.add(properties);
+        } else if (database_vendorname.equalsIgnoreCase(BootstrapProperty.DB_ORACLE.getPropertyName())
+                   && database_drivername.equalsIgnoreCase("OracleUCP ???")) {
+            // TODO add processing for Oracle UCP at some point in the future
+            Properties_oracle_ucp properties = new Properties_oracle_ucp();
+            String URL = "jdbc:oracle:thin:@//" + database_hostname + ":" + database_port + "/" + database_name;
+            properties.setPassword(database_password1);
+            properties.setUser(database_user1);
+            properties.setURL(URL);
+            oracleUcpProps = new ConfigElementList<Properties_oracle_ucp>();
+            oracleUcpProps.add(properties);
+        } else if (database_vendorname.equalsIgnoreCase(BootstrapProperty.DB_SQLSERVER.getPropertyName())
+                   && database_drivername.equalsIgnoreCase(BootstrapProperty.DB_SQLSERVER_DRIVER.getPropertyName())) {
+            Properties_microsoft_sqlserver properties = new Properties_microsoft_sqlserver();
+            properties.setDatabaseName(database_name);
+            properties.setPassword(database_password1);
+            properties.setPortNumber(database_port);
+            properties.setUser(database_user1);
+            properties.setServerName(database_hostname);
+            sqlServerProps = new ConfigElementList<Properties_microsoft_sqlserver>();
+            sqlServerProps.add(properties);
+        } else if (database_vendorname.equalsIgnoreCase(BootstrapProperty.DB_SQLSERVER.getPropertyName())
+                   && database_drivername.equalsIgnoreCase(BootstrapProperty.DB_DATADIRECT_DRIVER.getPropertyName())) {
+            Properties_datadirect_sqlserver properties = new Properties_datadirect_sqlserver();
+            properties.setDatabaseName(database_name);
+            properties.setPassword(database_password1);
+            properties.setPortNumber(database_port);
+            properties.setUser(database_user1);
+            properties.setServerName(database_hostname);
+            sqlServerDataDirectProps = new ConfigElementList<Properties_datadirect_sqlserver>();
+            sqlServerDataDirectProps.add(properties);
+        } else if (database_vendorname.equalsIgnoreCase(BootstrapProperty.DB_SYBASE.getPropertyName())
+                   && (database_drivername.equalsIgnoreCase(BootstrapProperty.DB_SYBASE_DRIVER6.getPropertyName())
+                       || database_drivername.equalsIgnoreCase(BootstrapProperty.DB_SYBASE_DRIVER7.getPropertyName()))) {
+            Properties_sybase properties = new Properties_sybase();
+            properties.setDatabaseName(database_name);
+            properties.setPassword(database_password1);
+            properties.setPortNumber(database_port);
+            properties.setUser(database_user1);
+            properties.setServerName(database_hostname);
+            sybaseProps = new ConfigElementList<Properties_sybase>();
+            sybaseProps.add(properties);
+        } else {
+            throw new Exception("Database or driver not supported");
+        }
+        Log.exiting(c, "updateDataSourceFromBootstrap");
     }
 
 }

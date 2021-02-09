@@ -1,0 +1,7 @@
+This folder should contain classes that provide common methods for each of the MP Jwt release FATs.
+ie:
+	There are mp config properties that were supported in 1.1 that are also used and supported in 1.2 and will be supported in future releases.
+	The MPJwt11MpConfigTests class contains methods to create/update the 1.1 mp config properties files, env vars and system properties for those attributes/properties.
+	The MPJwt12MpConfigTests class contains methods to create/update the 1.2 mp config properties files, env vars and system properties for those attributes/properties.  Those methods
+		only work on the 1.2 attributes/properties and then call the 1.1 methods to process the 1.1 properties.
+I put these methods in a common project so all future releases can build upon these methods (and metehods like them).

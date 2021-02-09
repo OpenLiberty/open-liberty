@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012-2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,6 +25,7 @@ import com.ibm.ws.kernel.boot.archive.ArchiveFactory;
 import com.ibm.ws.kernel.boot.archive.DirEntryConfig;
 import com.ibm.ws.kernel.boot.archive.DirPattern.PatternStrategy;
 import com.ibm.ws.kernel.boot.archive.FileEntryConfig;
+import com.ibm.ws.kernel.boot.archive.FilteredDirEntryConfig;
 import com.ibm.ws.kernel.boot.cmdline.Utils;
 import com.ibm.ws.kernel.boot.internal.BootstrapConstants;
 
@@ -78,6 +79,20 @@ public class DumpProcessor implements ArchiveProcessor {
          * Add server config directory
          */
         File serverConfigDir = new File(bootProps.getUserRoot(), "servers/" + serverName);
+
+        // Add filtered server.xml
+        FilteredDirEntryConfig configFiles = new FilteredDirEntryConfig(serverConfigDir, false, PatternStrategy.ExcludePreference);
+        entryConfigs.add(configFiles);
+        configFiles.include(Pattern.compile(REGEX_SEPARATOR + regexServerName + REGEX_SEPARATOR + ".*\\.xml"));
+        configFiles.include(Pattern.compile(REGEX_SEPARATOR + regexServerName + REGEX_SEPARATOR + ".*\\.properties"));
+
+        // Include filtered configDropins
+        configFiles.include(Pattern.compile(REGEX_SEPARATOR + regexServerName + REGEX_SEPARATOR + "configDropins"));
+
+        // Exclude dump directory
+        configFiles.exclude(Pattern.compile(REGEX_SEPARATOR + regexServerName + REGEX_SEPARATOR + "dump_" + REGEX_TIMESTAMP));
+        configFiles.exclude(Pattern.compile(REGEX_SEPARATOR + regexServerName + REGEX_SEPARATOR + "autopd"));
+
         DirEntryConfig serverConfigDirConfig = new DirEntryConfig("", serverConfigDir, true, PatternStrategy.ExcludePreference);
         entryConfigs.add(serverConfigDirConfig);
 
@@ -120,7 +135,7 @@ public class DumpProcessor implements ArchiveProcessor {
         serverOutputDirConfig.include(Pattern.compile(REGEX_SEPARATOR + regexServerName + REGEX_SEPARATOR + "workarea"));
         serverOutputDirConfig.exclude(Pattern.compile(REGEX_SEPARATOR + regexServerName + REGEX_SEPARATOR + "workarea" + REGEX_SEPARATOR + "\\.sLock$"));
         serverOutputDirConfig.exclude(Pattern.compile(REGEX_SEPARATOR + regexServerName + REGEX_SEPARATOR + "workarea" + REGEX_SEPARATOR + "\\.sCommand$"));
-        // As the sub-osgi system will also create some locked files under .manager directory, 
+        // As the sub-osgi system will also create some locked files under .manager directory,
         // exclude all the org.eclipse.osgi/.manager/*.*
         serverOutputDirConfig.exclude(Pattern.compile(REGEX_SEPARATOR + regexServerName + REGEX_SEPARATOR + "workarea" + REGEX_SEPARATOR
                                                       + ".*" + "org\\.eclipse\\.osgi"

@@ -67,7 +67,7 @@ SAML20_SP_BAD_SAML_RESPONSE_ERROR.explanation=Dostawca to\u017csamo\u015bci ma p
 SAML20_SP_BAD_SAML_RESPONSE_ERROR.useraction=Sprawd\u017a kod statusu oraz komunikaty opcjonalne i upewnij si\u0119, \u017ce dostawca to\u017csamo\u015bci oraz dostawca us\u0142ug s\u0105 poprawnie skonfigurowani.
 
 SAML20_SP_NO_ASSERTION_ERROR=CWWKS5009E: Odpowied\u017a SAML od dostawcy to\u017csamo\u015bci [{0}] nie zawiera asercji.
-SAML20_SP_NO_ASSERTION_ERROR.explanation=Odpowied\u017a SAML wys\u0142ana przez wskazanego dostawc\u0119 to\u017csamo\u015bci musi zawiera\u0107 asercj\u0119.   Odpowied\u017a SAML otrzymana od dostawcy to\u017csamo\u015bci nie zawiera asercji.  Ten warunek jest niedozwolony.
+SAML20_SP_NO_ASSERTION_ERROR.explanation=Odpowied\u017a SAML wys\u0142ana przez wskazanego dostawc\u0119 to\u017csamo\u015bci musi zawiera\u0107 asercj\u0119.   Odpowied\u017a SAML otrzymana od dostawcy to\u017csamo\u015bci nie zawiera asercji.  Taka sytuacja nie jest dozwolona.
 SAML20_SP_NO_ASSERTION_ERROR.useraction=Upewnij si\u0119, \u017ce dostawca to\u017csamo\u015bci jest poprawnie skonfigurowany, a u\u017cytkownik jest poprawnie zalogowany do dostawcy to\u017csamo\u015bci.
 
 SAML20_SP_BAD_VERSION_ERROR=CWWKS5010E: Odpowied\u017a SAML zawiera wersj\u0119 asercji SAML [{0}], kt\u00f3ra nie jest obs\u0142ugiwana przez \u015brodowisko wykonawcze. Wymagana jest wersja 2.0.
@@ -147,7 +147,7 @@ SAML20_IDP_METADATA_FILE_CHANGED.explanation=Plik metadanych dostawcy to\u017csa
 SAML20_IDP_METADATA_FILE_CHANGED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
 
 SAML20_SP_UNSOLICITED_WITH_IN_RESPONSE_TO=CWWKS5040E: Atrybut InResponseTo [{0}] nie jest dozwolony w niezamawianej odpowiedzi SAML.
-SAML20_SP_UNSOLICITED_WITH_IN_RESPONSE_TO.explanation=Niezamawiana odpowied\u017a SAML zawiera atrybut InResponseTo.  Ten warunek jest niedozwolony.
+SAML20_SP_UNSOLICITED_WITH_IN_RESPONSE_TO.explanation=Niezamawiana odpowied\u017a SAML zawiera atrybut InResponseTo.  Taka sytuacja nie jest dozwolona.
 SAML20_SP_UNSOLICITED_WITH_IN_RESPONSE_TO.useraction=Skontaktuj si\u0119 z administratorem dostawcy to\u017csamo\u015bci, aby upewni\u0107 si\u0119, \u017ce dostawca to\u017csamo\u015bci jest skonfigurowany poprawnie.
 
 SAML20_NO_PROTECTED_RESOURCE_ENDPOINT_ERR=CWWKS5041E: Oczekiwany parametr RelayState nie zosta\u0142 do\u0142\u0105czony do komunikatu odpowiedzi SAML od dostawcy to\u017csamo\u015bci.
@@ -193,7 +193,7 @@ SAML20_ELEMENT_ATTR_ERR.useraction=Wymagany atrybut nale\u017cy doda\u0107 do as
 
 SAML20_SUBJECT_NOTONAFTER_ERR=CWWKS5053E: Atrybut NotOnOrAfter [{0}] w elemencie SubjectConfirmationData jest spoza zakresu.  Bie\u017c\u0105cy czas: \
 [{1}]. Bie\u017c\u0105ce ustawienie przesuni\u0119cia zegara wynosi {2} s.
-SAML20_SUBJECT_NOTONAFTER_ERR.explanation=Asercja SAML zosta\u0142a odebrana o godzinie, kt\u00f3ra jest taka sama lub p\u00f3\u017aniejsza ni\u017c ustawienie NotOnOrAfter w elemencie SubjectConfirmationData w asercji.  Ten warunek jest niedozwolony. Mo\u017cliw\u0105 przyczyn\u0105 b\u0142\u0119du jest brak synchronizacji zegara odbiorcy z zegarem tw\u00f3rcy asercji.
+SAML20_SUBJECT_NOTONAFTER_ERR.explanation=Asercja SAML zosta\u0142a odebrana o godzinie, kt\u00f3ra jest taka sama lub p\u00f3\u017aniejsza ni\u017c ustawienie NotOnOrAfter w elemencie SubjectConfirmationData w asercji.  Taka sytuacja nie jest dozwolona. Mo\u017cliw\u0105 przyczyn\u0105 b\u0142\u0119du jest brak synchronizacji zegara odbiorcy z zegarem tw\u00f3rcy asercji.
 SAML20_SUBJECT_NOTONAFTER_ERR.useraction=Zsynchronizuj zegary dostawcy us\u0142ug i dostawcy to\u017csamo\u015bci SAML lub zwi\u0119ksz ustawienie przesuni\u0119cia zegara.
 
 SAML20_SUBJECT_NO_REC_MATCH_ERR=CWWKS5055E: Odbiorca [{0}] w asercji SAML jest niezgodny z adresem URL us\u0142ugi AssertionConsumerService (ACS): [{1}].
@@ -202,19 +202,19 @@ SAML20_SUBJECT_NO_REC_MATCH_ERR.useraction=Skontaktuj si\u0119 z administratorem
 
 SAML20_SUBJECT_NOBEFORE_ERR=CWWKS5057E: Atrybut NotBefore [{0}] jest poza zakresem. Bie\u017c\u0105cy czas: \
 [{1}]. Bie\u017c\u0105ce ustawienie przesuni\u0119cia zegara wynosi {2} s.
-SAML20_SUBJECT_NOBEFORE_ERR.explanation=Asercja SAML zosta\u0142a odebrana o godzinie, kt\u00f3ra jest wcze\u015bniejsza ni\u017c ustawienie NotBefore w asercji.  Ten warunek jest niedozwolony. Mo\u017cliw\u0105 przyczyn\u0105 b\u0142\u0119du jest brak synchronizacji zegara odbiorcy z zegarem \
+SAML20_SUBJECT_NOBEFORE_ERR.explanation=Asercja SAML zosta\u0142a odebrana o godzinie, kt\u00f3ra jest wcze\u015bniejsza ni\u017c ustawienie NotBefore w asercji.  Taka sytuacja nie jest dozwolona. Mo\u017cliw\u0105 przyczyn\u0105 b\u0142\u0119du jest brak synchronizacji zegara odbiorcy z zegarem \
 tw\u00f3rcy asercji.
 SAML20_SUBJECT_NOBEFORE_ERR.useraction=Zsynchronizuj zegary dostawcy us\u0142ug i dostawcy to\u017csamo\u015bci SAML lub zwi\u0119ksz ustawienie przesuni\u0119cia zegara.
 
 SAML20_SUBJECT_NOAFTER_ERR=CWWKS5058E: Warunek NotOnOrAfter [{0}] jest poza zakresem. Bie\u017c\u0105cy czas: \
 [{1}]. Bie\u017c\u0105ce ustawienie przesuni\u0119cia zegara: \
 {2} min.
-SAML20_SUBJECT_NOAFTER_ERR.explanation=Asercja SAML zosta\u0142a odebrana o godzinie, kt\u00f3ra jest taka sama lub p\u00f3\u017aniejsza ni\u017c ustawienie NotOnOrAfter w asercji.  Ten warunek jest niedozwolony. Mo\u017cliwe przyczyny b\u0142\u0119du: brak synchronizacji zegara odbiorcy z zegarem tw\u00f3rcy asercji lub asercja zosta\u0142a uzyskana i ponownie wys\u0142ana przez nieautoryzowan\u0105 \
+SAML20_SUBJECT_NOAFTER_ERR.explanation=Asercja SAML zosta\u0142a odebrana o godzinie, kt\u00f3ra jest taka sama lub p\u00f3\u017aniejsza ni\u017c ustawienie NotOnOrAfter w asercji.  Taka sytuacja nie jest dozwolona. Mo\u017cliwe przyczyny b\u0142\u0119du: brak synchronizacji zegara odbiorcy z zegarem tw\u00f3rcy asercji lub asercja zosta\u0142a uzyskana i ponownie wys\u0142ana przez nieautoryzowan\u0105 \
 aplikacj\u0119.
 SAML20_SUBJECT_NOAFTER_ERR.useraction=Zsynchronizuj zegary dostawcy us\u0142ug i dostawcy to\u017csamo\u015bci SAML lub zwi\u0119ksz ustawienie przesuni\u0119cia zegara.
 
 SAML20_CONDITION_UNKNOWN_ERR=CWWKS5059E: Element Conditions w asercji SAML zawiera atrybut [{0}], kt\u00f3ry nie jest obs\u0142ugiwany.
-SAML20_CONDITION_UNKNOWN_ERR.explanation=Element Conditions w asercji SAML zawiera atrybut, kt\u00f3ry nie jest obs\u0142ugiwany przez \u015brodowisko wykonawcze.  Ten warunek jest niedozwolony.
+SAML20_CONDITION_UNKNOWN_ERR.explanation=Element Conditions w asercji SAML zawiera atrybut, kt\u00f3ry nie jest obs\u0142ugiwany przez \u015brodowisko wykonawcze.  Taka sytuacja nie jest dozwolona.
 SAML20_CONDITION_UNKNOWN_ERR.useraction=Skontaktuj si\u0119 z administratorem dostawcy to\u017csamo\u015bci, aby upewni\u0107 si\u0119, \u017ce dostawca to\u017csamo\u015bci jest skonfigurowany poprawnie.
 
 SAML20_AUDIENCE_UNKNOWN_ERR=CWWKS5060E: Warto\u015b\u0107 [{0}] elementu Audience w asercji SAML jest niepoprawna. Oczekiwan\u0105 warto\u015bci\u0105 elementu Audience jest [{1}].
@@ -223,7 +223,7 @@ SAML20_AUDIENCE_UNKNOWN_ERR.useraction=Skontaktuj si\u0119 z administratorem dos
 
 SAML20_SESSION_ERR=CWWKS5062E: Atrybut SessionNotOnOrAfter [{0}] jest poza zakresem. Bie\u017c\u0105cy czas: \
 [{1}]. Bie\u017c\u0105ce ustawienie przesuni\u0119cia zegara wynosi {2} s.
-SAML20_SESSION_ERR.explanation=Asercja SAML zosta\u0142a odebrana o godzinie, kt\u00f3ra jest taka sama lub p\u00f3\u017aniejsza ni\u017c ustawienie SessionNotOnOrAfter w elemencie AuthnStatement w asercji.  Ten warunek jest niedozwolony. Mo\u017cliwe przyczyny b\u0142\u0119du: brak synchronizacji zegara odbiorcy z zegarem tw\u00f3rcy asercji lub asercja zosta\u0142a uzyskana i ponownie wys\u0142ana przez nieautoryzowan\u0105 \
+SAML20_SESSION_ERR.explanation=Asercja SAML zosta\u0142a odebrana o godzinie, kt\u00f3ra jest taka sama lub p\u00f3\u017aniejsza ni\u017c ustawienie SessionNotOnOrAfter w elemencie AuthnStatement w asercji.  Taka sytuacja nie jest dozwolona. Mo\u017cliwe przyczyny b\u0142\u0119du: brak synchronizacji zegara odbiorcy z zegarem tw\u00f3rcy asercji lub asercja zosta\u0142a uzyskana i ponownie wys\u0142ana przez nieautoryzowan\u0105 \
 aplikacj\u0119.
 SAML20_SESSION_ERR.useraction=Zsynchronizuj zegary dostawcy us\u0142ug i dostawcy to\u017csamo\u015bci SAML lub zwi\u0119ksz ustawienie przesuni\u0119cia zegara.
 
@@ -242,7 +242,7 @@ SAML20_NO_INRESPONSETO.useraction=Skontaktuj si\u0119 z administratorem dostawcy
 
 # similar to the tWas messages
 # Example: {0} = realm
-SAML20_ATTRIBUTE_ERR=CWWKS5068E: Asercja SAML nie zawiera atrybutu [{0}].  Atrybut [{0}] jest wymagany.  
+SAML20_ATTRIBUTE_ERR=CWWKS5068E: Asercja SAML nie zawiera elementu [{0}].  Element [{0}] jest wymagany.  
 SAML20_ATTRIBUTE_ERR.explanation=W asercji SAML brakuje atrybutu wymaganego przez \u015brodowisko wykonawcze.
 SAML20_ATTRIBUTE_ERR.useraction=Wymagany atrybut nale\u017cy doda\u0107 do asercji SAML.  Skontaktuj si\u0119 z administratorem dostawcy to\u017csamo\u015bci, aby sprawdzi\u0107, czy dostawca to\u017csamo\u015bci jest poprawnie skonfigurowany, lub skonfiguruj dostawc\u0119 us\u0142ug lub modu\u0142 TAI tak, aby zdefiniowa\u0107 warto\u015b\u0107 atrybutu.
 

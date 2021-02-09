@@ -24,7 +24,7 @@ SUBJECT_MAPPING_MISSING_ATTR=CWWKS6102E: \u017b\u0105danie uwierzytelnienia nie 
 SUBJECT_MAPPING_MISSING_ATTR.explanation=Informacje o uwierzytelnianym u\u017cytkowniku nie zawieraj\u0105 okre\u015blonego \u017c\u0105dania na potrzeby identyfikacji nazwanego atrybutu i \u015brodowisko wykonawcze nie mo\u017ce kontynuowa\u0107 procesu uwierzytelniania.
 SUBJECT_MAPPING_MISSING_ATTR.useraction=Wykonaj jedn\u0105 z nast\u0119puj\u0105cych czynno\u015bci. 1) Sprawd\u017a, czy konfiguracja klienta logowania w serwisach spo\u0142eczno\u015bciowych mo\u017ce okre\u015bla\u0107 inne \u017c\u0105danie jako atrybut. 2) Sprawd\u017a, czy dostawca emituje informacje o uwierzytelnianym u\u017cytkowniku z okre\u015blonym \u017c\u0105daniem.
 
-ERROR_AUTHENTICATE=CWWKS6103E: Nie mo\u017cna utworzy\u0107 podmiotu zabezpiecze\u0144 dla u\u017cytkownika {0}.
+ERROR_AUTHENTICATE=CWWKS6103E: Nie mo\u017cna utworzy\u0107 podmiotu zabezpiecze\u0144 dla u\u017cytkownika {0}. {1}
 ERROR_AUTHENTICATE.explanation=Nie mo\u017cna uwierzytelni\u0107 u\u017cytkownika. 
 ERROR_AUTHENTICATE.useraction=Sprawd\u017a, czy u\u017cytkownik istnieje w rejestrze, a has\u0142o lub inne referencje s\u0105 poprawne.
 

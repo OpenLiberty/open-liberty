@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,11 +13,11 @@ package com.ibm.ws.feature.utils;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
+import com.ibm.ws.feature.tasks.FeatureBnd;
 import com.ibm.ws.feature.tasks.FeatureBuilder;
 
 import aQute.bnd.header.Attrs;
@@ -37,12 +37,21 @@ public class FeatureInfo {
 	private String kind;
 
 	private boolean isInit = false;
-	private File feature;
+	private final File feature;
 	private String name;
-
+	private boolean isAutoFeature = false;
+	private boolean isParallelActivationEnabled = false;
+	private boolean isDisableOnConflictEnabled = true;
+	private boolean isSingleton = false;
+    private String visibility = "private";
+    private String shortName;
 
 	public FeatureInfo(File feature) {
 		this.feature = feature;
+	}
+
+	public File getFeatureFile() {
+	    return feature;
 	}
 
 	public String[] getAutoFeatures() {
@@ -59,8 +68,42 @@ public class FeatureInfo {
 		return this.name;
 	}
 
+	public boolean isAutoFeature() {
+        if (!isInit)
+            populateInfo();
 
-	//Activating autofeature just means "I'm an autofeature, and i *might* activate this other feature
+        return this.isAutoFeature;
+	}
+
+    public boolean isParallelActivationEnabled() {
+        if (!isInit)
+            populateInfo();
+
+        return this.isParallelActivationEnabled;
+    }
+
+    public boolean isDisableOnConflictEnabled() {
+        if (!isInit)
+            populateInfo();
+
+        return this.isDisableOnConflictEnabled;
+    }
+
+    public boolean isSingleton() {
+        if (!isInit)
+            populateInfo();
+
+        return this.isSingleton;
+    }
+
+    public String getVisibility() {
+        if (!isInit)
+            populateInfo();
+
+        return this.visibility;
+    }
+
+    //Activating autofeature just means "I'm an autofeature, and i *might* activate this other feature
 	//So it's like a "Sometimes" dependency, but is potentially useful for figuring out a superset of
 	//potential provisioned features.
 	protected void addActivatingAutoFeature(String featureName) {
@@ -111,6 +154,12 @@ public class FeatureInfo {
 		return this.kind;
 	}
 
+	public String getShortName() {
+	    if (!isInit)
+	        populateInfo();
+
+	    return this.shortName;
+	}
 
 	private synchronized void populateInfo() {
 		if (isInit)
@@ -124,6 +173,18 @@ public class FeatureInfo {
             String edition = builder.getProperty("edition");
             String kind = builder.getProperty("kind");
             this.name = builder.getProperty("symbolicName");
+            this.isAutoFeature = builder.getProperty(FeatureBnd.IBM_PROVISION_CAPABILITY) != null;
+            String activationType = builder.getProperty("WLP-Activation-Type");
+            this.isParallelActivationEnabled = activationType != null && "parallel".equals(activationType.trim());
+            String disableOnConflict = builder.getProperty("WLP-DisableAllFeatures-OnConflict");
+            this.isDisableOnConflictEnabled = disableOnConflict == null || "true".equals(disableOnConflict);
+            String singleton = builder.getProperty("singleton");
+            this.isSingleton = singleton != null && "true".equals(singleton.trim());
+            String vis = builder.getProperty("visibility");
+            if (vis != null) {
+                visibility = vis.trim();
+            }
+            this.shortName = builder.getProperty(FeatureBnd.IBM_SHORT_NAME);
 
             this.edition = edition;
             this.kind = kind;

@@ -2,7 +2,7 @@
  * Copyright (c) 2004, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * which accompanies this distribution,  and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
@@ -50,6 +50,7 @@ import com.ibm.ws.http.channel.h2internal.hpack.HpackConstants.LiteralIndexType;
 import com.ibm.ws.http.channel.internal.inbound.HttpInboundLink;
 import com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
+import com.ibm.ws.http2.GrpcServletServices;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.bytebuffer.WsByteBufferUtils;
 import com.ibm.wsspi.channelfw.InterChannelCallback;
@@ -316,6 +317,9 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
      *
      */
     private void setBodyComplete() {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "setBodyComplete() called");
+        }
         this.msgParsedState = STATE_FULL_MESSAGE;
     }
 
@@ -2852,7 +2856,18 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 }
 
             } else if (msg.isChunkedEncodingSet()) {
-                createEndOfBodyChunk();
+                HttpInboundServiceContextImpl localHisc = null;
+                if (this instanceof HttpInboundServiceContextImpl) {
+                    localHisc = (HttpInboundServiceContextImpl) this;
+                }
+                if (localHisc != null && localHisc.getSuppress0ByteChunk()) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Suppressing Zero Byte Chunk and setting persistence to false.");
+                    }
+                    localHisc.setPersistent(false);
+                } else {
+                    createEndOfBodyChunk();
+                }
             }
         }
         setMessageSent();
@@ -2892,7 +2907,15 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 hisc = (HttpInboundServiceContextImpl) this;
             }
             if (hisc != null && !(hisc.getLink() instanceof H2HttpInboundLinkWrap)) {
-                createEndOfBodyChunk();
+                if (hisc.getSuppress0ByteChunk()) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Suppressing Zero Byte Chunk and setting persistence to false.");
+                    }
+                    hisc.setPersistent(false);
+                } else {
+                    createEndOfBodyChunk();
+                }
+
             }
         }
         setMessageSent();
@@ -5051,7 +5074,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
      *
      * @param buffer
      */
-    private void storeBuffer(WsByteBuffer buffer) {
+    public void storeBuffer(WsByteBuffer buffer) {
         this.storage.add(buffer);
     }
 
@@ -5665,6 +5688,55 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             Tr.exit(tc, "handleH2LinkPreload()");
         }
 
+    }
+
+    // differentiate if grpc has been pass through the normal request path already or is streaming
+    private boolean firstGrpcReadComplete = false;
+
+    // return:
+    // 0 - GRPC not being used,
+    // 1 - GRPC using request path first time through,
+    // 2 - GRPC has finished first path and is now in streaming mode for this H2 stream
+    public int getGRPCEndStream() {
+        int ret = 0;
+        H2HttpInboundLinkWrap link = null;
+
+        if (GrpcServletServices.grpcInUse == false) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "getGRPCEndStream(): returning: 0 - GrpcServletServices.grpcInUse is false");
+            }
+            return 0;
+        }
+
+        HttpInboundServiceContextImpl context = (HttpInboundServiceContextImpl) this;
+        if (context.getLink() instanceof H2HttpInboundLinkWrap) {
+            link = (H2HttpInboundLinkWrap) context.getLink();
+        } else {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "getGRPCEndStream(): returning: 0 - LinkWrap not detected");
+            }
+            return 0;
+        }
+
+        if (link instanceof H2HttpInboundLinkWrap) {
+            int streamId = link.getStreamId();
+            H2StreamProcessor hsp = link.muxLink.getStreamProcessor(streamId);
+            if (hsp.getEndStream()) {
+                if (!firstGrpcReadComplete) {
+                    firstGrpcReadComplete = true;
+                    ret = 1;
+                } else {
+                    ret = 2;
+                }
+            } else {
+                ret = 1;
+            }
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "getGRPCEndStream(): returning: " + ret);
+        }
+        return ret;
     }
 
 }

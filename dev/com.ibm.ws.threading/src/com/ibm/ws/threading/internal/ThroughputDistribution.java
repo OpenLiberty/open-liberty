@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -231,9 +231,9 @@ class ThroughputDistribution {
         StringBuilder sb = new StringBuilder();
         double stddev = (ewmaStddev == Double.NEGATIVE_INFINITY) ? 0.0 : ewmaStddev;
 
-        sb.append(" ewma=").append(String.format("%16.6f", Double.valueOf(ewma)));
-        sb.append(" stddev=").append(String.format("%16.6f", Double.valueOf(stddev)));
-        sb.append(" updated= ").append(String.format("%10d", Integer.valueOf(lastUpdate)));
+        sb.append(" ewma=").append(String.format("%10.0f", Double.valueOf(ewma)));
+        sb.append(" stddev=").append(String.format("%10.0f", Double.valueOf(stddev)));
+        sb.append(" updated= ").append(String.format("%12d", Integer.valueOf(lastUpdate)));
         if (consecutiveOutliers > 0)
             sb.append(" consecutiveOutliers=").append(String.format("%2d", Integer.valueOf(consecutiveOutliers)));
 

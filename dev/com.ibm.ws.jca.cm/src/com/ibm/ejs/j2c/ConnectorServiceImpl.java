@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 IBM Corporation and others.
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 
+import com.ibm.tx.jta.embeddable.EmbeddableTransactionManagerFactory;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.classloading.ClassLoaderIdentifierService;
@@ -94,6 +95,8 @@ public class ConnectorServiceImpl extends ConnectorService {
         nonDeferrableSchedXSvcRef.activate(context);
         rrsXAResFactorySvcRef.activate(context);
         variableRegistrySvcRef.activate(context);
+
+        EmbeddableTransactionManagerFactory.getUOWCurrent().registerLTCCallback(ConnectionHandleManager.ltcHandleCollaborator); // TODO is there a way to unregister?
     }
 
     /**

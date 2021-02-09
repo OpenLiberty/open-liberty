@@ -1,0 +1,28 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+
+#ISMESSAGEFILE true
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#COMPONENTPREFIX CWMRX
+
+# LRA is currently using the message prefix CWMRX in the range 5000-5999
+# This is temporary and should be fixed with a proper prefix before GA.
+
+LRA_INVALID_COORDINATOR_URI.CWMRX5000E=CWMRX5000E: LRA \uc870\uc815\uc790 URI\uac00 \uc62c\ubc14\ub974\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+LRA_INVALID_COORDINATOR_URI.CWMRX5000E.explanation=LRA \ucc38\uac00\uc790\uac00 \uc870\uc815\uc790\uc5d0 \uc5f0\uacb0\ud560 \uc218 \uc788\uc5b4\uc57c \ud569\ub2c8\ub2e4.
+LRA_INVALID_COORDINATOR_URI.CWMRX5000E.useraction=server.xml \ud30c\uc77c\uc5d0\uc11c LRA \uc870\uc815\uc790 \uad6c\uc131\uc744 \uc815\uc815\ud558\uc2ed\uc2dc\uc624.
+
+
+LRA_CANT_REGISTER_FILTERS.CWMRX5001E=CWMRX5001E: mpLRA-1.0 \uae30\ub2a5\uc758 \ucd08\uae30\ud654 \uc911\uc5d0 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \uc624\ub958\ub294 {0}\uc785\ub2c8\ub2e4.
+LRA_CANT_REGISTER_FILTERS.CWMRX5001E.explanation=\uc815\uc0c1 \uc870\uc791\uc744 \ubc29\ud574\ud558\ub294 LRA \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+LRA_CANT_REGISTER_FILTERS.CWMRX5001E.useraction=\uc624\ub958 \uba54\uc2dc\uc9c0, \uc11c\ubc84\uc758 messages.log \ud30c\uc77c \ubc0f FFDC \ub85c\uadf8\ub97c \uac80\ud1a0\ud558\uc5ec \ubb38\uc81c\uc810\uc744 \uc2dd\ubcc4\ud558\uc2ed\uc2dc\uc624.

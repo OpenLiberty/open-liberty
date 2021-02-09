@@ -16,7 +16,7 @@
     <name>MicroProfile Metrics TCK Runner 2.2 TCK Module</name>
 
     <properties>
-        <microprofile.metrics.version>2.2</microprofile.metrics.version>
+        <microprofile.metrics.version>2.2.2</microprofile.metrics.version>
         <arquillian.version>1.1.13.Final</arquillian.version>
 
         <!-- the below is used in arquillian.xml -->

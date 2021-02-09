@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,7 +29,7 @@ public class OAuthClient {
         this.providerId = providerId;
         this.clientId = clientId;
         this.clientSecret = clientSecret;
-        this.displayName = displayName;
+        this.displayName = (displayName == null || displayName.isEmpty()) ? clientId : displayName;
         this.enabled = enabled;
         this.clientMetadata = clientMetadata;
     }

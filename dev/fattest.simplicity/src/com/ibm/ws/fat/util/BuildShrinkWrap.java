@@ -18,6 +18,7 @@ import java.lang.annotation.Target;
 /**
  * @see ShrinkWrapSharedServer#ShrinkWrapSharedServer(String, Class)
  */
+@Deprecated
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface BuildShrinkWrap {

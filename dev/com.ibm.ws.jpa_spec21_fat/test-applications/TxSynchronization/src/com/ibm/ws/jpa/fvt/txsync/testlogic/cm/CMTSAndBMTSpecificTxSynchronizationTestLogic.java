@@ -171,7 +171,7 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testCMTSEntityManagerScope001(
                                               TestExecutionContext testExecCtx,
                                               TestExecutionResources testExecResources,
-                                              Object managedComponentObject) {
+                                              Object managedComponentObject) throws Throwable {
         final String testName = "testCMTSEntityManagerScope001";
 
         // Verify parameters
@@ -252,11 +252,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -286,7 +281,7 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testCMTSEntityManagerScope002(
                                               TestExecutionContext testExecCtx,
                                               TestExecutionResources testExecResources,
-                                              Object managedComponentObject) {
+                                              Object managedComponentObject) throws Throwable {
         final String testName = "testCMTSEntityManagerScope002";
 
         // Verify parameters
@@ -415,11 +410,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -442,7 +432,7 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testCMTSPersistContract001(
                                            TestExecutionContext testExecCtx,
                                            TestExecutionResources testExecResources,
-                                           Object managedComponentObject) {
+                                           Object managedComponentObject) throws Throwable {
         final String testName = "testCMTSPersistContract001";
 
         // Verify parameters
@@ -501,11 +491,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -529,7 +514,7 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testCMTSPersistContract002(
                                            TestExecutionContext testExecCtx,
                                            TestExecutionResources testExecResources,
-                                           Object managedComponentObject) {
+                                           Object managedComponentObject) throws Throwable {
         final String testName = "testCMTSPersistContract002";
 
         // Verify parameters
@@ -619,11 +604,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -646,7 +626,7 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testCMTSPersistContract003(
                                            TestExecutionContext testExecCtx,
                                            TestExecutionResources testExecResources,
-                                           Object managedComponentObject) {
+                                           Object managedComponentObject) throws Throwable {
         final String testName = "testCMTSPersistContract003";
 
         // Verify parameters
@@ -741,11 +721,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -768,7 +743,7 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testCMTSPersistContract004(
                                            TestExecutionContext testExecCtx,
                                            TestExecutionResources testExecResources,
-                                           Object managedComponentObject) {
+                                           Object managedComponentObject) throws Throwable {
         final String testName = "testCMTSPersistContract004";
 
         // Verify parameters
@@ -863,11 +838,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -888,7 +858,7 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testCMTSMergeContract001(
                                          TestExecutionContext testExecCtx,
                                          TestExecutionResources testExecResources,
-                                         Object managedComponentObject) {
+                                         Object managedComponentObject) throws Throwable {
         final String testName = "testCMTSMergeContract001";
 
         // Verify parameters
@@ -1089,11 +1059,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -1114,7 +1079,7 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testCMTSMergeContract002(
                                          TestExecutionContext testExecCtx,
                                          TestExecutionResources testExecResources,
-                                         Object managedComponentObject) {
+                                         Object managedComponentObject) throws Throwable {
         final String testName = "testCMTSMergeContract002";
 
         // Verify parameters
@@ -1315,11 +1280,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -1340,7 +1300,7 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testCMTSRemoveContract001(
                                           TestExecutionContext testExecCtx,
                                           TestExecutionResources testExecResources,
-                                          Object managedComponentObject) {
+                                          Object managedComponentObject) throws Throwable {
         final String testName = "testCMTSRemoveContract001";
 
         // Verify parameters
@@ -1499,11 +1459,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -1524,7 +1479,7 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testCMTSRemoveContract002(
                                           TestExecutionContext testExecCtx,
                                           TestExecutionResources testExecResources,
-                                          Object managedComponentObject) {
+                                          Object managedComponentObject) throws Throwable {
         final String testName = "testCMTSRemoveContract002";
 
         // Verify parameters
@@ -1683,11 +1638,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -1708,7 +1658,7 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testCMTSRefreshContract001(
                                            TestExecutionContext testExecCtx,
                                            TestExecutionResources testExecResources,
-                                           Object managedComponentObject) {
+                                           Object managedComponentObject) throws Throwable {
         final String testName = "testCMTSRefreshContract001";
 
         // Verify parameters
@@ -1817,11 +1767,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -1874,7 +1819,7 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testPropagationNoPropagation001(
                                                 TestExecutionContext testExecCtx,
                                                 TestExecutionResources testExecResources,
-                                                Object managedComponentObject) {
+                                                Object managedComponentObject) throws Throwable {
         final String testName = "testPropagationNoPropagation001";
 
         // Verify parameters
@@ -1971,11 +1916,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -1997,7 +1937,7 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testPropagationNoPropagation001A(
                                                  TestExecutionContext testExecCtx,
                                                  TestExecutionResources testExecResources,
-                                                 Object managedComponentObject) {
+                                                 Object managedComponentObject) throws Throwable {
         final String testName = "testPropagationNoPropagation001A";
 
         // Verify parameters
@@ -2094,11 +2034,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -2120,7 +2055,7 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testPropagationNoPropagation001B(
                                                  TestExecutionContext testExecCtx,
                                                  TestExecutionResources testExecResources,
-                                                 Object managedComponentObject) {
+                                                 Object managedComponentObject) throws Throwable {
         final String testName = "testPropagationNoPropagation001B";
 
         // Verify parameters
@@ -2217,11 +2152,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -2243,7 +2173,7 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testPropagationNoPropagation001C(
                                                  TestExecutionContext testExecCtx,
                                                  TestExecutionResources testExecResources,
-                                                 Object managedComponentObject) {
+                                                 Object managedComponentObject) throws Throwable {
         final String testName = "testPropagationNoPropagation001C";
 
         // Verify parameters
@@ -2340,11 +2270,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -2366,7 +2291,7 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testPropagationNoPropagation002(
                                                 TestExecutionContext testExecCtx,
                                                 TestExecutionResources testExecResources,
-                                                Object managedComponentObject) {
+                                                Object managedComponentObject) throws Throwable {
         final String testName = "testPropagationNoPropagation002";
 
         // Verify parameters
@@ -2463,11 +2388,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -2488,7 +2408,7 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testPropagationNoPropagation002A(
                                                  TestExecutionContext testExecCtx,
                                                  TestExecutionResources testExecResources,
-                                                 Object managedComponentObject) {
+                                                 Object managedComponentObject) throws Throwable {
         final String testName = "testPropagationNoPropagation002A";
 
         // Verify parameters
@@ -2585,11 +2505,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -2615,7 +2530,7 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testPropagationNoPropagation003(
                                                 TestExecutionContext testExecCtx,
                                                 TestExecutionResources testExecResources,
-                                                Object managedComponentObject) {
+                                                Object managedComponentObject) throws Throwable {
         final String testName = "testPropagationNoPropagation003";
 
         // Verify parameters
@@ -2742,11 +2657,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             tj.rollbackTransaction();
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -2773,7 +2683,7 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testPropagationNoPropagation003A(
                                                  TestExecutionContext testExecCtx,
                                                  TestExecutionResources testExecResources,
-                                                 Object managedComponentObject) {
+                                                 Object managedComponentObject) throws Throwable {
         final String testName = "testPropagationNoPropagation003A";
 
         // Verify parameters
@@ -2900,11 +2810,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             tj.rollbackTransaction();
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -2931,7 +2836,7 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testPropagationNoPropagation003B(
                                                  TestExecutionContext testExecCtx,
                                                  TestExecutionResources testExecResources,
-                                                 Object managedComponentObject) {
+                                                 Object managedComponentObject) throws Throwable {
         final String testName = "testPropagationNoPropagation003B";
 
         // Verify parameters
@@ -3076,11 +2981,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             tj.rollbackTransaction();
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -3107,7 +3007,7 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testPropagationNoPropagation003C(
                                                  TestExecutionContext testExecCtx,
                                                  TestExecutionResources testExecResources,
-                                                 Object managedComponentObject) {
+                                                 Object managedComponentObject) throws Throwable {
         final String testName = "testPropagationNoPropagation003C";
 
         // Verify parameters
@@ -3252,11 +3152,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             tj.rollbackTransaction();
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -3283,7 +3178,7 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testPropagationNoPropagation004(
                                                 TestExecutionContext testExecCtx,
                                                 TestExecutionResources testExecResources,
-                                                Object managedComponentObject) {
+                                                Object managedComponentObject) throws Throwable {
         final String testName = "testPropagationNoPropagation004";
 
         // Verify parameters
@@ -3415,11 +3310,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             tj.rollbackTransaction();
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -3446,7 +3336,7 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testPropagationNoPropagation004A(
                                                  TestExecutionContext testExecCtx,
                                                  TestExecutionResources testExecResources,
-                                                 Object managedComponentObject) {
+                                                 Object managedComponentObject) throws Throwable {
         final String testName = "testPropagationNoPropagation004A";
 
         // Verify parameters
@@ -3578,11 +3468,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             tj.rollbackTransaction();
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -3608,7 +3493,7 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testPropagation001(
                                    TestExecutionContext testExecCtx,
                                    TestExecutionResources testExecResources,
-                                   Object managedComponentObject) {
+                                   Object managedComponentObject) throws Throwable {
         final String testName = "testPropagation001";
 
         // Verify parameters
@@ -3742,12 +3627,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             tj.rollbackTransaction();
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            t.printStackTrace(System.out);
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -3773,7 +3652,7 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testPropagation001A(
                                     TestExecutionContext testExecCtx,
                                     TestExecutionResources testExecResources,
-                                    Object managedComponentObject) {
+                                    Object managedComponentObject) throws Throwable {
         final String testName = "testPropagation001A";
 
         // Verify parameters
@@ -3907,11 +3786,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             tj.rollbackTransaction();
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -3940,7 +3814,7 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testPropagation002(
                                    TestExecutionContext testExecCtx,
                                    TestExecutionResources testExecResources,
-                                   Object managedComponentObject) {
+                                   Object managedComponentObject) throws Throwable {
         final String testName = "testPropagation002";
 
         // Verify parameters
@@ -4071,11 +3945,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -4104,7 +3973,7 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testPropagation002A(
                                     TestExecutionContext testExecCtx,
                                     TestExecutionResources testExecResources,
-                                    Object managedComponentObject) {
+                                    Object managedComponentObject) throws Throwable {
         final String testName = "testPropagation002A";
 
         // Verify parameters
@@ -4235,11 +4104,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -4266,7 +4130,7 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testPropagation003(
                                    TestExecutionContext testExecCtx,
                                    TestExecutionResources testExecResources,
-                                   Object managedComponentObject) {
+                                   Object managedComponentObject) throws Throwable {
         final String testName = "testPropagation003";
 
         // Verify parameters
@@ -4375,11 +4239,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             tj.rollbackTransaction();
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -4400,7 +4259,7 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testPropagation004(
                                    TestExecutionContext testExecCtx,
                                    TestExecutionResources testExecResources,
-                                   Object managedComponentObject) {
+                                   Object managedComponentObject) throws Throwable {
         final String testName = "testPropagation004";
 
         // Verify parameters
@@ -4547,11 +4406,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             tj.rollbackTransaction();
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -4576,7 +4430,7 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testPropagation005(
                                    TestExecutionContext testExecCtx,
                                    TestExecutionResources testExecResources,
-                                   Object managedComponentObject) {
+                                   Object managedComponentObject) throws Throwable {
         final String testName = "testPropagation005";
 
         // Verify parameters
@@ -4708,11 +4562,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             if (ic != null) {
                 try {
@@ -4752,7 +4601,7 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testPropagation005A(
                                     TestExecutionContext testExecCtx,
                                     TestExecutionResources testExecResources,
-                                    Object managedComponentObject) {
+                                    Object managedComponentObject) throws Throwable {
         final String testName = "testPropagation005A";
 
         // Verify parameters
@@ -4884,11 +4733,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             if (ic != null) {
                 try {
@@ -4979,7 +4823,7 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testTemplate(
                              TestExecutionContext testExecCtx,
                              TestExecutionResources testExecResources,
-                             Object managedComponentObject) {
+                             Object managedComponentObject) throws Throwable {
         final String testName = "testTemplate";
 
         // Verify parameters
@@ -5007,11 +4851,6 @@ public class CMTSAndBMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
 //            cleanupDatabase(jpaCleanupResource);
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }

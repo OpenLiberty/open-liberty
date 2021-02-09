@@ -14,6 +14,8 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 
 /**
  * 
@@ -44,6 +46,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "CipherSuites", propOrder = {
     "cipherSuite"
 })
+@Trivial
 public class CipherSuites {
 
     protected List<String> cipherSuite;

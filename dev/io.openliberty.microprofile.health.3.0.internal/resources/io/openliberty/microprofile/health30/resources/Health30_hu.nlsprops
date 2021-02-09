@@ -1,0 +1,50 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMMH
+#COMPONENTNAMEFOR CWMMH MicroProfile Health API 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by Health Impl -  range is 0000-0999
+# The range 0000-0049 has been reserved for messages issued above the HealthCheckExecutor within the call stack
+# The range 0050-0099 has been reserved for messages issued at or below the HealthCheckExecutor within the call stack
+#-----------------------------------------------------------------------------------------------------------------------------
+
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Emergency Health error message
+#-----------------------------------------------------------------------------------------------------------------------------
+OSGI_SERVICE_ERROR=CWMMH0000E: A(z) {0} OSGi szolg\u00e1ltat\u00e1s nem \u00e9rhet\u0151 el.
+OSGI_SERVICE_ERROR.explanation=Ezt a bels\u0151 kiszolg\u00e1l\u00f3hib\u00e1t az\u00e9rt dobja a rendszer, mert a megadott szolg\u00e1ltat\u00e1s nem \u00e9rhet\u0151 el.
+OSGI_SERVICE_ERROR.useraction=Ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t a clean param\u00e9terrel.
+
+# The HealthCheck bean call method had an exception
+healthcheck.bean.call.exception.CWMMH0050E=CWMMH0050E: A(z) {0} HealthCheck met\u00f3dus a(z) {1} alkalmaz\u00e1s {2} modulj\u00e1b\u00f3l {3} kiv\u00e9telt dobott a k\u00f6vetkez\u0151 \u00fczenetben: {4}
+healthcheck.bean.call.exception.CWMMH0050E.explanation=A megadott h\u00edv\u00e1si met\u00f3dus kiv\u00e9telt okozott.
+healthcheck.bean.call.exception.CWMMH0050E.useraction=A kiv\u00e9tel azonos\u00edt\u00e1s\u00e1hoz tekintse \u00e1t a h\u00edv\u00e1si met\u00f3dust a HealthCheck komponensen bel\u00fcl.
+
+# The HealthCheck bean call method had a DOWN outcome
+healthcheck.application.down.CWMMH0052W=CWMMH0052W: A HealthCheckResponse met\u00f3dust megval\u00f3s\u00edt\u00f3 {0} a(z) {1} alkalmaz\u00e1s {2} modulj\u00e1ban ({3}) \u00e1llapotot jelentett a k\u00f6vetkez\u0151 adatokkal: {4}.
+healthcheck.application.down.CWMMH0052W.explanation=A DOWN \u00e1llapot azt eredm\u00e9nyezheti, hogy egy megfigyel\u00e9si szolg\u00e1ltat\u00e1s m\u0171veletet v\u00e9gez az adott kiszolg\u00e1l\u00f3n.
+healthcheck.application.down.CWMMH0052W.useraction=Semmit sem kell tennie.  Ez a figyelmeztet\u00e9s a DOWN \u00e1llapot r\u00f6gz\u00edt\u00e9se.
+
+# The Readiness HealthCheck had a DOWN outcome, when applications are not started yet
+readiness.healthcheck.applications.not.started.down.CWMMH0053W=CWMMH0053W: A k\u00e9szenl\u00e9ti \u00e1llapot ellen\u0151rz\u00e9se DOWN \u00e1ltal\u00e1nos \u00e1llapotot jelentett, mert az al\u00e1bbi alkalmaz\u00e1sok m\u00e9g nem indultak el: {0}
+readiness.healthcheck.applications.not.started.down.CWMMH0053W.explanation=A megadott alkalmaz\u00e1sok m\u00e9g nem indultak el marad\u00e9ktalanul, \u00e9s nem \u00e1llnak k\u00e9szen a k\u00e9r\u00e9sek feldolgoz\u00e1s\u00e1ra, ez\u00e9rt a k\u00e9szenl\u00e9ti\u00e1llapot-ellen\u0151rz\u00e9s le\u00e1ll\u00e1sr\u00f3l (DOWN \u00e1llapot) sz\u00e1molt be.
+readiness.healthcheck.applications.not.started.down.CWMMH0053W.useraction=Nincs sz\u00fcks\u00e9g felhaszn\u00e1l\u00f3i m\u0171veletre, v\u00e1rja meg, am\u00edg az alkalmaz\u00e1sok elindulnak. Ez a figyelmeztet\u00e9s a DOWN \u00e1llapot r\u00f6gz\u00edt\u00e9se.

@@ -15,6 +15,7 @@ Export-Package: com.ibm.ws.jpa.*
 
 publish.wlp.jar.disabled: true
 
+jakartaeeMe: true
 instrument.disabled: true
 
 -buildpath: \

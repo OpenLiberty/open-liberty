@@ -30,7 +30,6 @@ import com.ibm.ws.config.admin.SystemConfigSupport;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.wsspi.kernel.service.location.VariableRegistry;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
-import com.ibm.wsspi.kernel.service.utils.OnErrorUtil;
 import com.ibm.wsspi.kernel.service.utils.OnErrorUtil.OnError;
 
 /**
@@ -97,7 +96,7 @@ public class WSConfigXMLActivator implements BundleActivator {
             bc.registerService(MetaTypeRegistry.class.getName(), metaTypeRegistry, properties);
 
             // Create SystemConfiguration and start
-            systemConfiguration = new SystemConfiguration(bc, systemConfigSupport, configAdmin, this.getOnError());
+            systemConfiguration = new SystemConfiguration(bc, systemConfigSupport, configAdmin);
             systemConfiguration.start();
             bc.registerService(SystemConfiguration.class.getName(), systemConfiguration, properties);
 
@@ -107,7 +106,7 @@ public class WSConfigXMLActivator implements BundleActivator {
             // Always fail
             quit(bc, e);
         } catch (ConfigUpdateException e) {
-            if (this.getOnError().equals(OnError.FAIL)) {
+            if (ErrorHandler.INSTANCE.getOnError().equals(OnError.FAIL)) {
                 quit(bc, e);
             }
         } catch (ConfigParserTolerableException e) {
@@ -175,34 +174,4 @@ public class WSConfigXMLActivator implements BundleActivator {
         }
     }
 
-    /**
-     * @return
-     */
-    private OnError getOnError() {
-
-        VariableRegistry variableRegistry = variableRegistryTracker.getService();
-
-        OnError onError;
-        String onErrorVar = "${" + OnErrorUtil.CFG_KEY_ON_ERROR + "}";
-        String onErrorVal = variableRegistry.resolveString(onErrorVar);
-
-        if ((onErrorVal.equals(onErrorVar))) {
-            onError = OnErrorUtil.OnError.WARN; // Default value if not set
-        } else {
-            String onErrorFormatted = onErrorVal.trim().toUpperCase();
-            try {
-                onError = Enum.valueOf(OnErrorUtil.OnError.class, onErrorFormatted);
-                // Correct the variable registry with a validated entry if needed
-                if (!onErrorVal.equals(onErrorFormatted))
-                    variableRegistry.replaceVariable(OnErrorUtil.CFG_KEY_ON_ERROR, onErrorFormatted);
-            } catch (IllegalArgumentException err) {
-                if (tc.isWarningEnabled()) {
-                    Tr.warning(tc, "warn.config.invalid.value", OnErrorUtil.CFG_KEY_ON_ERROR, onErrorVal, OnErrorUtil.CFG_VALID_OPTIONS);
-                }
-                onError = OnErrorUtil.OnError.WARN; // Default value if error
-                variableRegistry.replaceVariable(OnErrorUtil.CFG_KEY_ON_ERROR, OnErrorUtil.OnError.WARN.toString());
-            }
-        }
-        return onError;
-    }
 }

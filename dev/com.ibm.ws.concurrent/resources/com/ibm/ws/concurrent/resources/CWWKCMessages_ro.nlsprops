@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2014 IBM Corporation and others.
+# Copyright (c) 2012, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -22,7 +22,7 @@
 #   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
 #   (single quote must be coded as one single quote '). 
 
-# All messages must use the range CWWCK1100 to CWWCK1149 except those specifically identified as moved
+# All messages must use the range CWWCK1100 to CWWCK1199 except those specifically identified as moved
 
 # Moved from com.ibm.ws.context
 CWWKC1000.unrecognized.property=CWWKC1000E: Elementul de configurare {0} con\u0163ine un atribut nerecunoscut {1}.
@@ -79,3 +79,7 @@ CWWKC1120.future.get.rejected.useraction=Actualiza\u0163i aplica\u0163ia pentru 
 CWWKC1130.xprop.value.invalid=CWWKC1130E: Un task lansat la executorul gestionat {0} con\u0163ine o proprietate de execu\u0163ie {1} cu valoarea {2} care nu este valid\u0103 pentru executorii gestiona\u0163i.
 CWWKC1130.xprop.value.invalid.explanation=Unele valori de propriet\u0103\u0163i de execu\u0163ie nu sunt valide pentru executori gestiona\u0163i, dar ar putea fi valide pentru alte tipuri de resurse ca serviciul de context sau fabrica de fire de execu\u0163ie gestionate.
 CWWKC1130.xprop.value.invalid.useraction=Actualiza\u0163i aplica\u0163ia pentru a omite proprietatea de execu\u0163ie sau seta\u0163i-o la o valoare valid\u0103.
+
+CWWKC1156.not.supported=CWWKC1156E: Opera\u0163ia cerut\u0103 nu este disponibil ca o metod\u0103 static\u0103 pentru implementarea de executor de executor gestionat CompletableFuture. Utiliza\u0163i \u00een loc urm\u0103toarea opera\u0163ie: {0}.
+CWWKC1156.not.supported.explanation=Implementarea de executor gestionat CompletableFuture nu furnizeaz\u0103 echivalente pentru metodele statice ale CompletableFuture.
+CWWKC1156.not.supported.useraction=Actualiza\u0163i aplica\u0163ia pentru a utiliza metoda recomandat\u0103 \u00een mesaj \u00een locul opera\u0163iei cerute.

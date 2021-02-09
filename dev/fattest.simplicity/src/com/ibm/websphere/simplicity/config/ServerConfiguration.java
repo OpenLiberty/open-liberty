@@ -171,6 +171,9 @@ public class ServerConfiguration implements Cloneable {
     @XmlElement(name = "applicationMonitor")
     private ApplicationMonitorElement applicationMonitor;
 
+    @XmlElement(name = "applicationManager")
+    private ApplicationManagerElement applicationManager;
+
     @XmlElement(name = "executor")
     private ExecutorElement executor;
 
@@ -185,6 +188,9 @@ public class ServerConfiguration implements Cloneable {
 
     @XmlElement(name = "ssl")
     private ConfigElementList<SSL> ssls;
+
+    @XmlElement(name = "kerberos")
+    private Kerberos kerberos;
 
     @XmlElement(name = "keyStore")
     private ConfigElementList<KeyStore> keyStores;
@@ -263,6 +269,9 @@ public class ServerConfiguration implements Cloneable {
 
     @XmlElement(name = "samesite")
     private ConfigElementList<SameSite> samesites;
+
+    @XmlElement(name = "javaPermission")
+    private ConfigElementList<JavaPermission> javaPermissions;
 
     public ServerConfiguration() {
         this.description = "Generation date: " + new Date();
@@ -569,6 +578,12 @@ public class ServerConfiguration implements Cloneable {
         return this.webContainer;
     }
 
+    public Kerberos getKerberos() {
+        if (kerberos == null)
+            kerberos = new Kerberos();
+        return kerberos;
+    }
+
     /**
      * @return the KeyStore configurations for this server
      */
@@ -702,6 +717,16 @@ public class ServerConfiguration implements Cloneable {
             this.classLoading = new ClassloadingElement();
 
         return this.classLoading;
+    }
+
+    /**
+     * @return the applicationManager
+     */
+    public ApplicationManagerElement getApplicationManager() {
+        if (this.applicationManager == null)
+            this.applicationManager = new ApplicationManagerElement();
+
+        return this.applicationManager;
     }
 
     /**
@@ -1233,5 +1258,15 @@ public class ServerConfiguration implements Cloneable {
             this.acmeCA = new AcmeCA();
         }
         return this.acmeCA;
+    }
+
+    /**
+     * @return the javaPermission configurations for this server
+     */
+    public ConfigElementList<JavaPermission> getJavaPermissions() {
+        if (this.javaPermissions == null) {
+            this.javaPermissions = new ConfigElementList<JavaPermission>();
+        }
+        return this.javaPermissions;
     }
 }

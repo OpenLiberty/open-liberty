@@ -76,7 +76,11 @@ public class DatabaseIdentityStore implements IdentityStore {
          * Get the password hashing implementation.
          */
         Class<? extends PasswordHash> hashAlgorithm = this.idStoreDefinition.getHashAlgorithm();
-        Instance<? extends PasswordHash> p2phi = CDI.current().select(hashAlgorithm);
+        Instance<? extends PasswordHash> p2phi = null;
+        CDI cdi = CDIHelper.getCDI();
+        if (cdi != null) {
+            p2phi = cdi.select(hashAlgorithm);
+        }
         if (p2phi != null) {
             if (p2phi.isUnsatisfied() == false && p2phi.isAmbiguous() == false) {
                 passwordHash = p2phi.get();

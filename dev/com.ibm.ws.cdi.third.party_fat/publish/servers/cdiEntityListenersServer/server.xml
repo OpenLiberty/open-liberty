@@ -19,7 +19,7 @@
 
   <dataSource jndiName="jdbc/jpaDataSource" id="jpaDataSource">
       <jdbcDriver libraryRef="derbyJDBCLib" />
-      <properties.derby.embedded databaseName="TestDB" createDatabase="create"/>
+      <properties.derby.embedded databaseName="memory:TestDB" createDatabase="create"/>
   </dataSource> 
 
     <SSLDefault/>

@@ -29,9 +29,11 @@ OIDC_CLIENT_AUTHORIZE_ERR.useraction=Pon\u00f3w \u017c\u0105danie z innymi atryb
 #do not translate enforceHTTPS
 
 # used_by_client_project and clients project IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN THE OTHER BUNDLE!
-OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS=CWWKS1703E: Klient OpenID Connect wymaga protoko\u0142u SSL (HTTPS), ale adres URL dostawcy OpenID Connect to adres HTTP: [{0}].  Zaktualizuj konfiguracj\u0119 tak, aby atrybut [enforceHTTPS] by\u0142 zgodny ze schematem URL elementu docelowego. 
+# social also uses this and it does not have the enforceHTTPS attribute.
+#do not translate enforceHTTPS
+OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS=CWWKS1703E: Klient OpenID Connect wymaga protoko\u0142u SSL (HTTPS), ale adres URL dostawcy OpenID Connect to adres HTTP: [{0}]. Zaktualizuj konfiguracj\u0119 tak, aby u\u017cywa\u0142a adresu URL HTTPS, lub u\u017cyj funkcji klienta OpenID Connect i ustaw w\u0142a\u015bciwo\u015b\u0107 enforceHTTPS na warto\u015b\u0107 false. 
 OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS.explanation=Klient OpenID Connect (strona zale\u017cna lub serwer zasob\u00f3w) wymaga protoko\u0142u SSL (HTTPS), ale protok\u00f3\u0142 adresu URL dostawcy OpenID Connect okre\u015blony w konfiguracji klienta OpenID Connect nie jest protoko\u0142em HTTPS.
-OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS.useraction=Wykonaj jedn\u0105 z nast\u0119puj\u0105cych czynno\u015bci: 1) Upewnij si\u0119, \u017ce dostawca OpenID Connect obs\u0142uguje protok\u00f3\u0142 SSL. 2) Je\u015bli dostawca OpenID Connect nie obs\u0142uguje protoko\u0142u SSL, ustaw atrybut enforceHTTPS w konfiguracji klienta OpenID Connect na warto\u015b\u0107 false.
+OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS.useraction=Wykonaj jedn\u0105 z nast\u0119puj\u0105cych czynno\u015bci: najpierw upewnij si\u0119, \u017ce dostawca OpenID Connect obs\u0142uguje protok\u00f3\u0142 SSL. Je\u015bli dostawca OpenID Connect nie obs\u0142uguje protoko\u0142u SSL, u\u017cyj sk\u0142adnika klienta OpenID Connect i ustaw w\u0142a\u015bciwo\u015b\u0107 enforceHTTPS na warto\u015b\u0107 false w konfiguracji sk\u0142adnika klienta OpenID Connect.
 
 # unused, but present in both bundles.  IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES
 OIDC_CLIENT_RESPONSE_STATE_VERIFY_ERR=CWWKS1704E: Bie\u017c\u0105cy stan [{0}] dla klienta OpenID Connect [{2}] i parametr stanu [{1}] w odpowiedzi dostawcy OpenID Connect s\u0105 niezgodne.  Ten warunek jest niedozwolony.

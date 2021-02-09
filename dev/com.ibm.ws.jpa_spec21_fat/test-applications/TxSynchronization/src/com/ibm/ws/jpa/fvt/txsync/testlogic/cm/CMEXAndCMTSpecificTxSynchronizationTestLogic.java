@@ -174,7 +174,7 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testExtendedScopeInheritance001(
                                                 TestExecutionContext testExecCtx,
                                                 TestExecutionResources testExecResources,
-                                                Object managedComponentObject) {
+                                                Object managedComponentObject) throws Throwable {
         final String testName = "testExtendedScopeInheritance001";
 
         // Verify parameters
@@ -188,7 +188,7 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
 //        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
 //        if (jpaCleanupResource == null) {
 //           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-            //return;
+        //return;
 //        }
 
         // Permit a test variable drive-able by the XML definition on whether the EntityManager should join the tx.
@@ -331,11 +331,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -364,7 +359,7 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testExtendedScopeInheritance002(
                                                 TestExecutionContext testExecCtx,
                                                 TestExecutionResources testExecResources,
-                                                Object managedComponentObject) {
+                                                Object managedComponentObject) throws Throwable {
         final String testName = "testExtendedScopeInheritance002";
 
         // Verify parameters
@@ -378,7 +373,7 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
 //        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
 //        if (jpaCleanupResource == null) {
 //           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-            //return;
+        //return;
 //        }
 
         // Permit a test variable drive-able by the XML definition on whether the EntityManager should join the tx.
@@ -521,11 +516,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -554,7 +544,7 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testExtendedScopeInheritance003(
                                                 TestExecutionContext testExecCtx,
                                                 TestExecutionResources testExecResources,
-                                                Object managedComponentObject) {
+                                                Object managedComponentObject) throws Throwable {
         final String testName = "testExtendedScopeInheritance003";
 
         // Verify parameters
@@ -568,7 +558,7 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
 //        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
 //        if (jpaCleanupResource == null) {
 //           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-            //return;
+        //return;
 //        }
 
         // Permit a test variable drive-able by the XML definition on whether the EntityManager should join the tx.
@@ -710,11 +700,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -743,7 +728,7 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testExtendedScopeInheritance004(
                                                 TestExecutionContext testExecCtx,
                                                 TestExecutionResources testExecResources,
-                                                Object managedComponentObject) {
+                                                Object managedComponentObject) throws Throwable {
         final String testName = "testExtendedScopeInheritance004";
 
         // Verify parameters
@@ -757,7 +742,7 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
 //        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
 //        if (jpaCleanupResource == null) {
 //           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-            //return;
+        //return;
 //        }
 
         // Permit a test variable drive-able by the XML definition on whether the EntityManager should join the tx.
@@ -900,11 +885,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -934,7 +914,7 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testExtendedScopeInheritance005(
                                                 TestExecutionContext testExecCtx,
                                                 TestExecutionResources testExecResources,
-                                                Object managedComponentObject) {
+                                                Object managedComponentObject) throws Throwable {
         final String testName = "testExtendedScopeInheritance005";
 
         // Verify parameters
@@ -948,7 +928,7 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
 //        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
 //        if (jpaCleanupResource == null) {
 //           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-            //return;
+        //return;
 //        }
 
         // Permit a test variable drive-able by the XML definition on whether the EntityManager should join the tx.
@@ -1091,11 +1071,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -1126,7 +1101,7 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testExtendedScopeInheritance006(
                                                 TestExecutionContext testExecCtx,
                                                 TestExecutionResources testExecResources,
-                                                Object managedComponentObject) {
+                                                Object managedComponentObject) throws Throwable {
         final String testName = "testExtendedScopeInheritance006";
 
         // Verify parameters
@@ -1140,7 +1115,7 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
 //        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
 //        if (jpaCleanupResource == null) {
 //           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-            //return;
+        //return;
 //        }
 
         // Permit a test variable drive-able by the XML definition on whether the EntityManager should join the tx.
@@ -1267,11 +1242,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -1302,7 +1272,7 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testExtendedScopeInheritance007(
                                                 TestExecutionContext testExecCtx,
                                                 TestExecutionResources testExecResources,
-                                                Object managedComponentObject) {
+                                                Object managedComponentObject) throws Throwable {
         final String testName = "testExtendedScopeInheritance007";
 
         // Verify parameters
@@ -1316,7 +1286,7 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
 //        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
 //        if (jpaCleanupResource == null) {
 //           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-            //return;
+        //return;
 //        }
 
         // Permit a test variable drive-able by the XML definition on whether the EntityManager should join the tx.
@@ -1443,11 +1413,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -1478,7 +1443,7 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testExtendedScopeInheritance008(
                                                 TestExecutionContext testExecCtx,
                                                 TestExecutionResources testExecResources,
-                                                Object managedComponentObject) {
+                                                Object managedComponentObject) throws Throwable {
         final String testName = "testExtendedScopeInheritance008";
 
         // Verify parameters
@@ -1492,7 +1457,7 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
 //        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
 //        if (jpaCleanupResource == null) {
 //           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-            //return;
+        //return;
 //        }
 
         // Permit a test variable drive-able by the XML definition on whether the EntityManager should join the tx.
@@ -1618,11 +1583,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -1653,7 +1613,7 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testExtendedScopeInheritance009(
                                                 TestExecutionContext testExecCtx,
                                                 TestExecutionResources testExecResources,
-                                                Object managedComponentObject) {
+                                                Object managedComponentObject) throws Throwable {
         final String testName = "testExtendedScopeInheritance009";
 
         // Verify parameters
@@ -1667,7 +1627,7 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
 //        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
 //        if (jpaCleanupResource == null) {
 //           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-            //return;
+        //return;
 //        }
 
         // Permit a test variable drive-able by the XML definition on whether the EntityManager should join the tx.
@@ -1793,11 +1753,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -1820,7 +1775,7 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testNoPersistenceContextPropagation001(
                                                        TestExecutionContext testExecCtx,
                                                        TestExecutionResources testExecResources,
-                                                       Object managedComponentObject) {
+                                                       Object managedComponentObject) throws Throwable {
         final String testName = "testNoPersistenceContextPropagation001";
 
         // Verify parameters
@@ -1834,7 +1789,7 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
 //        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
 //        if (jpaCleanupResource == null) {
 //           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-            //return;
+        //return;
 //        }
 
         // Permit a test variable drive-able by the XML definition on whether the EntityManager should join the tx.
@@ -1975,11 +1930,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -2002,7 +1952,7 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testNoPersistenceContextPropagation001A(
                                                         TestExecutionContext testExecCtx,
                                                         TestExecutionResources testExecResources,
-                                                        Object managedComponentObject) {
+                                                        Object managedComponentObject) throws Throwable {
         final String testName = "testNoPersistenceContextPropagation001A";
 
         // Verify parameters
@@ -2016,7 +1966,7 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
 //        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
 //        if (jpaCleanupResource == null) {
 //           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-            //return;
+        //return;
 //        }
 
         // Permit a test variable drive-able by the XML definition on whether the EntityManager should join the tx.
@@ -2174,11 +2124,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -2201,7 +2146,7 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testNoPersistenceContextPropagation001B(
                                                         TestExecutionContext testExecCtx,
                                                         TestExecutionResources testExecResources,
-                                                        Object managedComponentObject) {
+                                                        Object managedComponentObject) throws Throwable {
         final String testName = "testNoPersistenceContextPropagation001B";
 
         // Verify parameters
@@ -2215,7 +2160,7 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
 //        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
 //        if (jpaCleanupResource == null) {
 //           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-            //return;
+        //return;
 //        }
 
         // Permit a test variable drive-able by the XML definition on whether the EntityManager should join the tx.
@@ -2378,11 +2323,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -2405,7 +2345,7 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testNoPersistenceContextPropagation002(
                                                        TestExecutionContext testExecCtx,
                                                        TestExecutionResources testExecResources,
-                                                       Object managedComponentObject) {
+                                                       Object managedComponentObject) throws Throwable {
         final String testName = "testNoPersistenceContextPropagation002";
 
         // Verify parameters
@@ -2419,7 +2359,7 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
 //        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
 //        if (jpaCleanupResource == null) {
 //           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-            //return;
+        //return;
 //        }
 
         // Permit a test variable drive-able by the XML definition on whether the EntityManager should join the tx.
@@ -2560,11 +2500,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -2587,7 +2522,7 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testNoPersistenceContextPropagation002A(
                                                         TestExecutionContext testExecCtx,
                                                         TestExecutionResources testExecResources,
-                                                        Object managedComponentObject) {
+                                                        Object managedComponentObject) throws Throwable {
         final String testName = "testNoPersistenceContextPropagation002A";
 
         // Verify parameters
@@ -2601,7 +2536,7 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
 //        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
 //        if (jpaCleanupResource == null) {
 //           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-            //return;
+        //return;
 //        }
 
         // Permit a test variable drive-able by the XML definition on whether the EntityManager should join the tx.
@@ -2759,11 +2694,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -2786,7 +2716,7 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testNoPersistenceContextPropagation002B(
                                                         TestExecutionContext testExecCtx,
                                                         TestExecutionResources testExecResources,
-                                                        Object managedComponentObject) {
+                                                        Object managedComponentObject) throws Throwable {
         final String testName = "testNoPersistenceContextPropagation002B";
 
         // Verify parameters
@@ -2800,7 +2730,7 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
 //        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
 //        if (jpaCleanupResource == null) {
 //           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-            //return;
+        //return;
 //        }
 
         // Permit a test variable drive-able by the XML definition on whether the EntityManager should join the tx.
@@ -2963,11 +2893,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -2991,7 +2916,7 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testNoPersistenceContextPropagation003(
                                                        TestExecutionContext testExecCtx,
                                                        TestExecutionResources testExecResources,
-                                                       Object managedComponentObject) {
+                                                       Object managedComponentObject) throws Throwable {
         final String testName = "testNoPersistenceContextPropagation003";
 
         // Verify parameters
@@ -3005,7 +2930,7 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
 //        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
 //        if (jpaCleanupResource == null) {
 //           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-            //return;
+        //return;
 //        }
 
         // Permit a test variable drive-able by the XML definition on whether the EntityManager should join the tx.
@@ -3144,11 +3069,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -3172,7 +3092,7 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testNoPersistenceContextPropagation003A(
                                                         TestExecutionContext testExecCtx,
                                                         TestExecutionResources testExecResources,
-                                                        Object managedComponentObject) {
+                                                        Object managedComponentObject) throws Throwable {
         final String testName = "testNoPersistenceContextPropagation003A";
 
         // Verify parameters
@@ -3186,7 +3106,7 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
 //        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
 //        if (jpaCleanupResource == null) {
 //           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-            //return;
+        //return;
 //        }
 
         // Permit a test variable drive-able by the XML definition on whether the EntityManager should join the tx.
@@ -3343,11 +3263,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -3371,7 +3286,7 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testNoPersistenceContextPropagation003B(
                                                         TestExecutionContext testExecCtx,
                                                         TestExecutionResources testExecResources,
-                                                        Object managedComponentObject) {
+                                                        Object managedComponentObject) throws Throwable {
         final String testName = "testNoPersistenceContextPropagation003B";
 
         // Verify parameters
@@ -3385,7 +3300,7 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
 //        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
 //        if (jpaCleanupResource == null) {
 //           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-            //return;
+        //return;
 //        }
 
         // Permit a test variable drive-able by the XML definition on whether the EntityManager should join the tx.
@@ -3547,11 +3462,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -3575,7 +3485,7 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testNoPersistenceContextPropagation004(
                                                        TestExecutionContext testExecCtx,
                                                        TestExecutionResources testExecResources,
-                                                       Object managedComponentObject) {
+                                                       Object managedComponentObject) throws Throwable {
         final String testName = "testNoPersistenceContextPropagation004";
 
         // Verify parameters
@@ -3589,7 +3499,7 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
 //        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
 //        if (jpaCleanupResource == null) {
 //           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-            //return;
+        //return;
 //        }
 
         // Permit a test variable drive-able by the XML definition on whether the EntityManager should join the tx.
@@ -3729,11 +3639,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -3757,7 +3662,7 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testNoPersistenceContextPropagation004A(
                                                         TestExecutionContext testExecCtx,
                                                         TestExecutionResources testExecResources,
-                                                        Object managedComponentObject) {
+                                                        Object managedComponentObject) throws Throwable {
         final String testName = "testNoPersistenceContextPropagation004A";
 
         // Verify parameters
@@ -3771,7 +3676,7 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
 //        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
 //        if (jpaCleanupResource == null) {
 //           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-            //return;
+        //return;
 //        }
 
         // Permit a test variable drive-able by the XML definition on whether the EntityManager should join the tx.
@@ -3927,11 +3832,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -3955,7 +3855,7 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testNoPersistenceContextPropagation004B(
                                                         TestExecutionContext testExecCtx,
                                                         TestExecutionResources testExecResources,
-                                                        Object managedComponentObject) {
+                                                        Object managedComponentObject) throws Throwable {
         final String testName = "testNoPersistenceContextPropagation004B";
 
         // Verify parameters
@@ -3969,7 +3869,7 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
 //        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
 //        if (jpaCleanupResource == null) {
 //           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-            //return;
+        //return;
 //        }
 
         // Permit a test variable drive-able by the XML definition on whether the EntityManager should join the tx.
@@ -4130,11 +4030,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -4165,7 +4060,7 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testPersistenceContextPropagation001(
                                                      TestExecutionContext testExecCtx,
                                                      TestExecutionResources testExecResources,
-                                                     Object managedComponentObject) {
+                                                     Object managedComponentObject) throws Throwable {
         final String testName = "testPersistenceContextPropagation001";
 
         // Verify parameters
@@ -4179,7 +4074,7 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
 //        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
 //        if (jpaCleanupResource == null) {
 //           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-            //return;
+        //return;
 //        }
 
         // Permit a test variable drive-able by the XML definition on whether the EntityManager should join the tx.
@@ -4325,11 +4220,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -4354,7 +4244,7 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testPersistenceContextPropagation001A(
                                                       TestExecutionContext testExecCtx,
                                                       TestExecutionResources testExecResources,
-                                                      Object managedComponentObject) {
+                                                      Object managedComponentObject) throws Throwable {
         final String testName = "testPersistenceContextPropagation001A";
 
         // Verify parameters
@@ -4368,7 +4258,7 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
 //        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
 //        if (jpaCleanupResource == null) {
 //           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-            //return;
+        //return;
 //        }
 
         // Permit a test variable drive-able by the XML definition on whether the EntityManager should join the tx.
@@ -4505,11 +4395,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -4537,7 +4422,7 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testPersistenceContextPropagation002(
                                                      TestExecutionContext testExecCtx,
                                                      TestExecutionResources testExecResources,
-                                                     Object managedComponentObject) {
+                                                     Object managedComponentObject) throws Throwable {
         final String testName = "testPersistenceContextPropagation002";
 
         // Verify parameters
@@ -4551,7 +4436,7 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
 //        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
 //        if (jpaCleanupResource == null) {
 //           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-            //return;
+        //return;
 //        }
 
         // Permit a test variable drive-able by the XML definition on whether the EntityManager should join the tx.
@@ -4686,11 +4571,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -4718,7 +4598,7 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testPersistenceContextPropagation002A(
                                                       TestExecutionContext testExecCtx,
                                                       TestExecutionResources testExecResources,
-                                                      Object managedComponentObject) {
+                                                      Object managedComponentObject) throws Throwable {
         final String testName = "testPersistenceContextPropagation002A";
 
         // Verify parameters
@@ -4732,7 +4612,7 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
 //        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
 //        if (jpaCleanupResource == null) {
 //           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-            //return;
+        //return;
 //        }
 
         // Permit a test variable drive-able by the XML definition on whether the EntityManager should join the tx.
@@ -4858,11 +4738,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -4888,7 +4763,7 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testPersistenceContextPropagation003(
                                                      TestExecutionContext testExecCtx,
                                                      TestExecutionResources testExecResources,
-                                                     Object managedComponentObject) {
+                                                     Object managedComponentObject) throws Throwable {
         final String testName = "testPersistenceContextPropagation003";
 
         // Verify parameters
@@ -4902,7 +4777,7 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
 //        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
 //        if (jpaCleanupResource == null) {
 //           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-            //return;
+        //return;
 //        }
 
         // Permit a test variable drive-able by the XML definition on whether the EntityManager should join the tx.
@@ -5038,11 +4913,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -5068,7 +4938,7 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testPersistenceContextPropagation003A(
                                                       TestExecutionContext testExecCtx,
                                                       TestExecutionResources testExecResources,
-                                                      Object managedComponentObject) {
+                                                      Object managedComponentObject) throws Throwable {
         final String testName = "testPersistenceContextPropagation0023A";
 
         // Verify parameters
@@ -5082,7 +4952,7 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
 //        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
 //        if (jpaCleanupResource == null) {
 //           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-            //return;
+        //return;
 //        }
 
         // Permit a test variable drive-able by the XML definition on whether the EntityManager should join the tx.
@@ -5210,11 +5080,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }
@@ -5406,7 +5271,7 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
     public void testTemplate(
                              TestExecutionContext testExecCtx,
                              TestExecutionResources testExecResources,
-                             Object managedComponentObject) {
+                             Object managedComponentObject) throws Throwable {
         final String testName = "testTemplate";
 
         // Verify parameters
@@ -5420,7 +5285,7 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
 //        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
 //        if (jpaCleanupResource == null) {
 //           Assert.fail("Missing JPAResource 'cleanup'.  Cannot execute the test.");
-            //return;
+        //return;
 //        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
@@ -5434,11 +5299,6 @@ public class CMEXAndCMTSpecificTxSynchronizationTestLogic extends AbstractTxSync
 //            cleanupDatabase(jpaCleanupResource);
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testBucketName + "." + testName + ": End");
         }

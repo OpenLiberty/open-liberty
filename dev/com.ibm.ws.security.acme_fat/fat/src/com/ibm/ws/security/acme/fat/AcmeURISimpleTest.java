@@ -10,16 +10,18 @@
  *******************************************************************************/
 package com.ibm.ws.security.acme.fat;
 
-import org.junit.runner.RunWith;
-import org.testcontainers.shaded.org.bouncycastle.util.test.SimpleTest;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-import com.ibm.websphere.simplicity.config.ServerConfiguration;
+import org.junit.runner.RunWith;
+
 import com.ibm.ws.security.acme.utils.AcmeFatUtils;
 
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.impl.JavaInfo;
 
 /**
  * Same as {@link SimpleTest}, but uses the acme://* URI instead of an HTTPS
@@ -30,11 +32,23 @@ import componenttest.topology.impl.LibertyServer;
 public class AcmeURISimpleTest extends AcmeSimpleTest {
 
 	@Override
-	protected void configureAcmeCA(LibertyServer server, ServerConfiguration originalConfig, String... domains)
-			throws Exception {
-		/*
-		 * Always request an acme://* URI.
-		 */
-		AcmeFatUtils.configureAcmeCA(server, originalConfig, true, domains);
+	protected boolean useAcmeURIs() {
+		return true;
+	}
+
+	@Override
+	protected void stopServer(String... msgs) throws Exception {
+		String os = System.getProperty("os.name").toLowerCase();
+		if (JavaInfo.JAVA_VERSION > 8 && !os.startsWith("z/os")) {
+			AcmeFatUtils.stopServer(server, msgs);
+		} else {
+			/*
+			 * HttpConnector.config runs oddly slow on Java 8 and z/OS and can trigger the update
+			 * timeout warning
+			 */
+			List<String> tempList = new ArrayList<String>(Arrays.asList(msgs));
+			tempList.add("CWWKG0027W");
+			AcmeFatUtils.stopServer(server, tempList.toArray(new String[tempList.size()]));
+		}
 	}
 }

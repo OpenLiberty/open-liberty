@@ -20,6 +20,7 @@
  </Designate>
 
 <OCD id="com.ibm.ws.cache" ibm:alias="distributedMap" name="%cache.config" description="%cache.config.desc" ibm:supportExtensions="true">
+  <AD id="id"                                 name="%cacheId"     				 description="%cacheId.desc"     			required="true"  type="String"  ibm:unique="cacheId" />
   <AD id="jndiName"                           name="%jndiName"     				 description="%jndiName.desc"     			required="false" type="String"  ibm:unique="jndiName" default="${id}" />
   <AD id="memorySizeInEntries"				  name="%memorySizeInEntries"		 description="%memorySizeInEntries.desc"	required="false" type="Integer" min="0"	default="2000"/>
   <AD id="memorySizeInMB"					  name="%memorySizeInMB"			 description="%memorySizeInMB.desc"			required="false" type="Integer" min="-1" default="-1"/>

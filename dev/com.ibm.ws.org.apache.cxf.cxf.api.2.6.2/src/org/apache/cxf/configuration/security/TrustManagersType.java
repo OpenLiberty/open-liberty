@@ -13,6 +13,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 
 /**
  * 
@@ -47,6 +49,7 @@ import javax.xml.bind.annotation.XmlType;
     "keyStore",
     "certStore"
 })
+@Trivial
 public class TrustManagersType {
 
     protected KeyStoreType keyStore;

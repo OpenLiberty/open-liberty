@@ -1,0 +1,111 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/XMLMarshalExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+25001=Serie de XPath no v\u00e1lida: {0}
+
+25002=No se ha podido analizar un \u00edndice de enteros desde esta serie de XPath: {0}
+
+25003=Se ha producido un error al ordenar el objeto
+
+25004=Se ha producido un error al desordenar el documento
+
+25005=Se ha producido un error al validar el objeto
+
+25006=No se ha especificado un elemento ra\u00edz para el XMLDescriptor correlacionado con {0}
+
+25007=No se ha encontrado un descriptor para la clase {0} en el proyecto.  Para JAXB, si el JAXBContext se ha arrancado utilizando TypeMappingInfo[], debe invocar un m\u00e9todo de ordenaci\u00f3n que acepte TypeMappingInfo como par\u00e1metro de entrada.
+
+25008=No se ha encontrado un descriptor con el elemento ra\u00edz predeterminado {0} en el proyecto
+
+25010=No se ha especificado una referencia de esquema para el XMLDescriptor correlacionado con {0}
+
+25011=Se ha encontrado un argumento nulo
+
+25012=Se ha producido un error al resolver el esquema XML.
+
+25013=Se ha producido un error al intentar establecer los esquemas.
+
+25014=Se ha producido un error al intentar crear una instancia de la plataforma de esquema.
+
+25015=Se ha producido un error al intentar resolver el URI de espacio de nombre para {0}. No se ha especificado un programa de resoluci\u00f3n de espacios de nombres en el descriptor.
+
+25016=No se ha encontrado un espacio de nombres para el prefijo {0} en el programa de resoluci\u00f3n de espacios de nombres.
+
+25017=Debe establecerse enumClass o enumClassName en el JAXBTypesafeEnumConverter.
+
+25018=El m\u00e9todo fromString en la clase de enumeraci\u00f3n {0} no existe o no se ha podido invocar.
+
+25019=No se ha encontrado la clase de enumeraci\u00f3n especificada {0}.
+
+25020=El m\u00e9todo "getResult()" no debe invocarse antes que el suceso "endDocument()".
+
+25021=La clase {0} no es v\u00e1lida para SwaRef. Debe ser javax.activation.DataHandler.
+
+25022=No se ha podido ordenar la imagen. No hay ning\u00fan codificador disponible para mimeType {0}.
+
+25023=No se ha encontrado ning\u00fan descriptor al desordenar el elemento correlacionado con el atributo {0}.
+
+25024=Se ha producido un error al crear una instancia de la clase UnmappedContentHandler {0}.
+
+25025=La clase UnmappedContentHandler {0} establecida en el XMLUnmarshaller debe implementar org.eclipse.persistence.oxm.unmapped.UnmappedContentHandler.
+
+25026=No se puede actualizar el nodo [{0}]; no se ha encontrado el nodo en la cach\u00e9.
+
+25027=No se ha podido recuperar la conexi\u00f3n con el cid {0} porque no se ha establecido ning\u00fan AttachmentUnmarshaller.
+
+25028=No se ha encontrado ning\u00fan descriptor de referencia para la correlaci\u00f3n {1} debido a un valor xsi:type desconocido: {0}.
+
+25029=Para el prefijo [{0}], la clase [{1}] ha intentado asignar el URI de espacio de nombres [{2}], pero su clase padre [{3}] ya ha asignado el URI de espacio de nombres [{4}].
+
+25030=Se ha producido un error al invocar el m\u00e9todo {0} en el NamespacePrefixMapper personalizado: {1}.
+
+25031=Se ha producido un error al procesar el correlacionador de prefijos de espacios de nombres: {1}. No se ha encontrado el m\u00e9todo {0}.
+
+25032=Se ha producido un error al invocar el m\u00e9todo {0} en el CharacterEscapeHandler personalizado: {1}.
+
+25033=Se ha producido un error al procesar el CharacterEscapeHandler: {1}. No se ha encontrado el m\u00e9todo {0}.
+
+25034=Se ha producido un error al invocar el m\u00e9todo {0} en el IDResolver personalizado: {1}.
+
+25035=Se ha producido un error al procesar el IDResolver: {1}. No se ha encontrado el m\u00e9todo {0}.
+
+25036=El IDResolver personalizado {1} no da soporte a varios ID XML {0}.  Los IDResolvers personalizados deben ser subclases org.eclipse.persistence.jaxb.IDResolver si se utilizan varios ID.
+
+25037=Se ha detectado un ciclo en el gr\u00e1fico del objeto.  Esto provocar\u00e1 un bucle infinito: {0}
+
+25038=La DOMPlatform no est\u00e1 soportada con json/aplicaci\u00f3n de tipo de soporte.
+
+25039=Se ha producido un error al desordenar en {0}
+
+25040=No se ha encontrado el objeto de tipo {0} con el ID {1}.
+
+25041=El grupo de atributos especificado {0} no est\u00e1 definido para la clase {1}.
+
+25042=El valor de la propiedad de variable {0} en la clase {1} no puede ser nulo.
+

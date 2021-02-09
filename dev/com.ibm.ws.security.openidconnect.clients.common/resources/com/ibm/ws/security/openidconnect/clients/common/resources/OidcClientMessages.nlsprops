@@ -29,9 +29,11 @@ OIDC_CLIENT_AUTHORIZE_ERR.useraction=Retry the request with different OpenID Con
 #do not translate enforceHTTPS
 
 # used_by_client_project and clients project IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN THE OTHER BUNDLE!
-OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS=CWWKS1703E: The OpenID Connect client requires SSL (HTTPS) but the OpenID Connect provider URL is HTTP: [{0}].  Update the configuration so that [enforceHTTPS] attribute matches the target URL scheme. 
+# social also uses this and it does not have the enforceHTTPS attribute.
+#do not translate enforceHTTPS
+OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS=CWWKS1703E: The OpenID Connect client requires SSL (HTTPS) but the OpenID Connect provider URL is HTTP: [{0}]. Update the configuration to use an HTTPS URL, or use the OpenID Connect Client feature and set enforceHTTPS to false. 
 OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS.explanation=The OpenID Connect client (relying party or resource server) requires SSL (HTTPS) but the OpenID Connect provider (OP) URL protocol specified in the OpenID Connect client configuration is not HTTPS.
-OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS.useraction=Do one of the following: 1) Ensure that OpenID Connect provider supports SSL. 2) If the OpenID Connector provider does not support SSL, set enforceHTTPS in the OpenID Connect client configuration to false.
+OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS.useraction=Do one of the following: First, ensure that the OpenID Connect provider supports SSL. If the OpenID Connector provider does not support SSL, use the OpenID Connect Client feature and set enforceHTTPS to false in the OpenID Connect Client feature configuration.
 
 # unused, but present in both bundles.  IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES
 OIDC_CLIENT_RESPONSE_STATE_VERIFY_ERR=CWWKS1704E: The current state [{0}] for the OpenID Connect client [{2}] and the state parameter [{1}] in the response from the OpenID Connect provider do not match.  This condition is not allowed.

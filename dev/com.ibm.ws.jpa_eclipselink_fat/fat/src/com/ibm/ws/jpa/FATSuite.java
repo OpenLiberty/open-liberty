@@ -11,13 +11,18 @@
 
 package com.ibm.ws.jpa;
 
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
+import org.testcontainers.containers.JdbcDatabaseContainer;
 
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
+import componenttest.topology.database.container.DatabaseContainerFactory;
+import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -35,13 +40,35 @@ import componenttest.rules.repeater.RepeatTests;
                 TestOLGH9018_Web.class,
                 TestOLGH9035_EJB.class,
                 TestOLGH9035_Web.class,
+                TestOLGH10068_EJB.class,
+                TestOLGH10068_Web.class,
+                TestOLGH14426_EJB.class,
+                TestOLGH14426_Web.class,
+                TestOLGH14457_EJB.class,
+                TestOLGH14457_Web.class,
                 componenttest.custom.junit.runner.AlwaysPassesTest.class
 })
 public class FATSuite {
     public final static String[] JAXB_PERMS = { "permission java.lang.RuntimePermission \"accessClassInPackage.com.sun.xml.internal.bind.v2.runtime.reflect\";",
                                                 "permission java.lang.RuntimePermission \"accessClassInPackage.com.sun.xml.internal.bind\";" };
 
+    public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.create();
+
+    @BeforeClass
+    public static void beforeSuite() throws Exception {
+        //Allows local tests to switch between using a local docker client, to using a remote docker client.
+        ExternalTestServiceDockerClientStrategy.clearTestcontainersConfig();
+
+        testContainer.start();
+    }
+
+    @AfterClass
+    public static void afterSuite() {
+        testContainer.stop();
+    }
+
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification()
-                    .andWith(FeatureReplacementAction.EE7_FEATURES());
+                    .andWith(FeatureReplacementAction.EE7_FEATURES())
+                    .andWith(FeatureReplacementAction.EE9_FEATURES());
 }

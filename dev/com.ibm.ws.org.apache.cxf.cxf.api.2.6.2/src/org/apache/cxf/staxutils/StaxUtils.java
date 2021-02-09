@@ -87,6 +87,8 @@ import org.apache.cxf.helpers.CastUtils;
 import org.apache.cxf.helpers.DOMUtils;
 import org.apache.cxf.helpers.XMLUtils;
 
+//Liberty Change
+@Trivial 
 public final class StaxUtils {
     private static final String INNER_ELEMENT_COUNT_SYSTEM_PROP = 
         "org.apache.cxf.staxutils.innerElementCountThreshold";

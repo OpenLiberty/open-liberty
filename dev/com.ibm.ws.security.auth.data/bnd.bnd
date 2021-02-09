@@ -11,9 +11,20 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-Bundle-Name: Example Project
+Bundle-Name: WAS Security Auth Data APIs
 Bundle-SymbolicName: com.ibm.ws.security.auth.data
 Bundle-Description: WAS Security Auth Data APIs; version=${bVersion}
+
+#
+# Generate an Jakarta EE compliant JAR for the bundle.
+#
+jakartaeeMe: true
+#jakartaee.transform.jar.name=io.openliberty.security.auth.internal.data.jar
+#JakartaEE-Bundle-Name: WAS Security Auth Data APIs
+#JakartaEE-Bundle-Symbolic-Name: io.openliberty.security.auth.internal.data
+#JakartaEE-Bundle-Description: WAS Security Auth Data APIs
+#JakartaEE-Bundle-Version: 2.0
+
 
 WS-TraceGroup: AuthData
 

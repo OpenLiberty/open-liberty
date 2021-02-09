@@ -14,7 +14,7 @@ Bundle-Name: com.ibm.ws.cdi.2.0.jsf
 Bundle-SymbolicName: com.ibm.ws.cdi.2.0.jsf
 Bundle-Description: CDI 2.0 JSF, version ${bVersion}
 
-
+jakartaeeMe:true
 
 -dsannotations: com.ibm.ws.cdi.jsf.CDIJSFInitializerImpl
 

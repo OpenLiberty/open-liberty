@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2011 IBM Corporation and others.
+    Copyright (c) 2011, 2020 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -25,7 +25,11 @@
         <AD id="interceptors" ibm:type="pid" ibm:reference="com.ibm.ws.security.authentication.tai.interceptor"
             required="false" type="String" cardinality="2147483647" />
         <AD id="continueAfterUnprotectedURI" name="%continueAfterUnprotectedURI" description="%continueAfterUnprotectedURI.desc"
-            required="true" type="Boolean" default="false" />            
+            required="true" type="Boolean" default="false" />  
+        <AD id="disableLtpaCookie" name="%disableLtpaCookie" description="%disableLtpaCookie.desc"
+            required="false" type="Boolean" default="false"/> 
+        <AD id="initializeAtFirstRequest" name="%initializeAtFirstRequest" description="%initializeAtFirstRequest.desc"
+            required="false" type="Boolean" default="false"/>          
     </OCD>
 
     <Designate factoryPid="com.ibm.ws.security.authentication.tai">
@@ -45,8 +49,7 @@
         <AD id="invokeAfterSSO" name="%invokeAfterSSO" description="%invokeAfterSSO.desc"
             required="true" type="Boolean"
             default="true" />
-
-       <AD id="libraryRef" name="%libraryRef" description="%libraryRef.desc"
+        <AD id="libraryRef" name="%libraryRef" description="%libraryRef.desc"
             ibm:type="pid" ibm:reference="com.ibm.ws.classloading.sharedlibrary"
             required="true" type="String" />            
 

@@ -1,0 +1,5 @@
+com.ibm.ws.opentracing.1.x_fat
+com.ibm.ws.opentracing_fat
+io.openliberty.microprofile.opentracing.2.0.internal.jaeger_fat
+io.openliberty.microprofile.opentracing.2.0.internal_fat_tck
+io.openliberty.opentracing.2.x_fat

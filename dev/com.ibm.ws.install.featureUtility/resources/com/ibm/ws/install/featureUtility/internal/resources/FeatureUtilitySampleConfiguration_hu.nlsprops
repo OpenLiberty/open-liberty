@@ -1,0 +1,75 @@
+###############################################################################
+# Copyright (c) 2010, 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.ws.install.featureUtility/resources/com/ibm/ws/install/featureUtility/internal/resources/FeatureUtilitySampleConfiguration.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+# Only need to translate the commented lines (lines that start with '##') below.
+# The following keywords do not need to be translated.
+
+SAMPLE_CONFIG=######################################################################\n\
+## ## A Maven k\u00f6zponti t\u00fck\u00f6r lerakat meghat\u00e1roz\u00e1sa##\n\
+## Alap\u00e9rtelmez\u00e9sben a featureUtility a Maven k\u00f6zpontb\u00f3l ker\u00fcl let\u00f6lt\u00e9sre. A felhaszn\u00e1l\u00f3k\n\
+## be\u00e1ll\u00edthatnak egy Maven k\u00f6zponti lerakat t\u00fckr\u00f6t, \u00e9s \n\
+## fel\u00fclb\u00edr\u00e1lhatj\u00e1k a featureUtility alap\u00e9rtelmezett Maven k\u00f6zpont kapcsolat\u00e1t\n\
+## a t\u00fck\u00f6r lerakattal. \n\
+## -------------------------------------------------------------------\n\
+#mavenCentralMirror.url=http://w3.mycompany.com/pub/maven2\n\
+\n\
+## Sz\u00fcks\u00e9g szerint adja meg a Maven k\u00f6zponti t\u00fck\u00f6r hiteles\u00edt\u00e9si adatait. \n\
+## A kiterjesztett biztons\u00e1g \u00e9rdek\u00e9ben k\u00f3dolja a .password tulajdons\u00e1g\n\
+## \u00e9rt\u00e9k\u00e9t a securityUtility encode m\u0171velettel.\n\
+## Ha nem \u00e1ll\u00edtja be a felhaszn\u00e1l\u00f3nevet \u00e9s jelsz\u00f3t, a rendszer\n\
+## felsz\u00f3l\u00edtja azok megad\u00e1s\u00e1ra.\n\
+## -------------------------------------------------------------------\n\
+#mavenCentralMirror.user=username\n\
+#mavenCentralMirror.password=myPassword\n\
+\n\
+######################################################################\n\
+## ## Egy\u00e9ni t\u00e1voli lerakatok haszn\u00e1lata ##\n\
+## A featureUtility t\u00e1voli Maven helysz\u00edni lerakatokat is telep\u00edthet. Adjon meg \n\
+## minden Maven helysz\u00edni lerakathoz egy nevet \u00e9s egy URL-c\u00edmet,\n\
+## amely Liberty \u00f6sszetev\u0151 m\u0171term\u00e9keket tartalmaz. \n\
+## A lerakatokat a rendszer azok megad\u00e1si sorrendj\u00e9ben \u00e9ri el.        \n\
+## -------------------------------------------------------------------\n\
+#remoteRepositoryName1.url=http://w3.mycompany.com/repository\n\
+#remoteRepositoryName2.url=http://w3.mycompany.com/secure/repository\n\
+\n\
+## Sz\u00fcks\u00e9g szerint adja meg az egyes lerakatok hiteles\u00edt\u00e9si adatait.\n\
+## A kiterjesztett biztons\u00e1g \u00e9rdek\u00e9ben k\u00f3dolja a .password tulajdons\u00e1g\n\
+## \u00e9rt\u00e9k\u00e9t a securityUtility encode m\u0171velettel.\n\
+## Ha nem \u00e1ll\u00edtja be a felhaszn\u00e1l\u00f3nevet \u00e9s jelsz\u00f3t, a rendszer\n\
+## felsz\u00f3l\u00edtja azok megad\u00e1s\u00e1ra.\n\
+## -------------------------------------------------------------------\n\
+#remoteRepositoryName2.user=username\n\
+#remoteRepositoryName2.password=myPassword\n\
+\n\
+######################################################################\n\
+## ## Proxykiszolg\u00e1l\u00f3 haszn\u00e1lata (elhagyhat\u00f3) ##\n\
+## Ha proxykiszolg\u00e1l\u00f3 seg\u00edts\u00e9g\u00e9vel \u00e9ri el az internetet, akkor\n\
+## adja meg a proxybe\u00e1ll\u00edt\u00e1sok tulajdons\u00e1g\u00e9rt\u00e9keit.\n\
+## A kiterjesztett biztons\u00e1g \u00e9rdek\u00e9ben k\u00f3dolja a proxyPassword\n\
+## tulajdons\u00e1g \u00e9rt\u00e9k\u00e9t a securityUtility encode m\u0171velettel.\n\
+## Ha nem \u00e1ll\u00edt be proxyUser \u00e9s proxyPassword \u00e9rt\u00e9ket, \n\
+## akkor a rendszer felsz\u00f3l\u00edtja ezek megad\u00e1s\u00e1ra. \n\
+## -------------------------------------------------------------------\n\
+#proxyHost=hostName\n\
+#proxyPort=3128\n\
+#proxyUser=proxyUsername\n\
+#proxyPassword=myProxyPassword\n\
+\n\
+######################################################################\n\
+## ## Maven helyi lerakat meghat\u00e1roz\u00e1sa ##\n\
+## Az alap\u00e9rtelmezett Maven helyi lerakat helye, ami m\u00f3dos\u00edthat\u00f3. \n\
+## Az alap\u00e9rtelmezett hely ${user.home}/.m2/repository/.\n\
+## -------------------------------------------------------------------\n\
+#featureLocalRepo=/home/my_local/repository

@@ -1,0 +1,182 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/internal/localization/i18n/ToStringLocalizationResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+begin_profile_of=\u5f00\u59cb\u6982\u8981\u6587\u4ef6
+
+class=\u7c7b
+
+commit_depth=\uff08\u843d\u5b9e\u6df1\u5ea6 = {0}\uff09
+
+connected=\u5df2\u8fde\u63a5
+
+connector=\u8fde\u63a5\u5668
+
+context=\u4e0a\u4e0b\u6587\uff1a
+
+database_name=\u6570\u636e\u5e93\u540d\u79f0
+
+datasource=\u6570\u636e\u6e90
+
+datasource_URL=\u6570\u636e\u6e90 URL
+
+datasource_name=\u6570\u636e\u6e90\u540d\u79f0
+
+depth_reset_key=\uff08\u6df1\u5ea6 = {0}\uff0c\u91cd\u7f6e\u952e = {1}\uff0c\u91cd\u7f6e\u7248\u672c = {2}\uff09
+
+disconnected=\u5df2\u65ad\u5f00\u8fde\u63a5
+
+empty_commit_order_dependency_node=\u7a7a CommitOrderDependencyNode
+
+end_profile=\u7ed3\u675f\u6982\u8981\u6587\u4ef6
+
+error_printing_expression=\u663e\u793a\u8868\u8fbe\u5f0f\u65f6\u51fa\u9519
+
+lazy=\u6d88\u6781
+
+local_time=\u5f53\u5730\u65f6\u95f4
+
+login=\u767b\u5f55
+longestTime=\u6700\u957f\u65f6\u95f4
+
+min_max=\uff08\u6700\u5c11\u8fde\u63a5\u6570 = {0}\uff0c\u6700\u5927\u8fde\u63a5\u6570 = {1}\uff09
+
+mulitple_files=\u591a\u4e2a\u6587\u4ef6
+
+multiple_readers=\u591a\u4e2a\u9605\u8bfb\u5668
+
+name=\u540d\u79f0\uff1a
+
+
+nest_level=\uff08\u5d4c\u5957\u7ea7\u522b = {0}\uff09
+
+no_files=\u6ca1\u6709\u6587\u4ef6
+
+no_streams=\u6ca1\u6709\u6d41
+
+node=\u8282\u70b9 ({0})
+
+non_lazy=\u975e\u6d88\u6781
+
+not_instantiated=\u672a\u5b9e\u4f8b\u5316
+
+number_of_objects=\u5bf9\u8c61\u6570
+
+objects_second=\u5bf9\u8c61\u6570/\u79d2
+
+platform=\u5e73\u53f0
+
+pooled=\u5408\u7528
+profile=\u6982\u8981\u6587\u4ef6
+
+profiling_time=\u6982\u8981\u5206\u6790\u65f6\u95f4
+
+reader=\u9605\u8bfb\u5668
+
+schema=\u6a21\u5f0f\uff1a
+
+sdo_classgenerator_usage_help_1of8={0} \u7528\u6cd5\uff1aorg.eclipse.persistence.sdo.helper.{0} [-options]
+
+sdo_classgenerator_usage_help_2of8=\u9009\u9879\uff1a
+
+sdo_classgenerator_usage_help_3of8=    -help                        \u663e\u793a\u5e2e\u52a9\u6d88\u606f\u6587\u672c
+
+sdo_classgenerator_usage_help_4of8=    -sourceFile <FileName>       \u8f93\u5165\u6a21\u5f0f\u6587\u4ef6\uff08\u5fc5\u9700\uff09
+
+sdo_classgenerator_usage_help_5of8=    -targetDirectory <DirName>   \u7528\u4e8e\u751f\u6210 Java \u6e90\u7684\u76ee\u5f55\uff08\u53ef\u9009\uff09
+
+sdo_classgenerator_usage_help_6of8=    -logLevel <level int>        \u6307\u5b9a\u65e5\u5fd7\u8bb0\u5f55\u7ea7\u522b\u7684\u6574\u6570\u503c\uff088=OFF\uff0c7=SEVERE\uff0c6=WARNING\uff0c5=INFO\uff0c4=CONFIG\uff0c3=FINE\uff0c2=FINER\uff08\u7f3a\u7701\u503c\uff09\uff0c1=FINEST\uff0c0=ALL\uff09\u3002
+
+sdo_classgenerator_usage_help_7of8=    -noInterfaces                \u4e0d\u751f\u6210\u63a5\u53e3\u7c7b
+
+sdo_classgenerator_usage_help_8of8=    -noImpls                     \u4e0d\u751f\u6210\u5b9e\u73b0\u7c7b
+
+sdo_classgenerator_usage_missing_sourcefile={0}\u672a\u6307\u5b9a -sourceFile \u53c2\u6570\uff0c\u6b64\u53c2\u6570\u662f\u5fc5\u9700\u7684\u3002
+
+sdo_classgenerator_usage_missing_sourcefile_value={0} \u672a\u6307\u5b9a -sourceFile \u7684\u503c\u3002
+
+sdo_classgenerator_usage_missing_targetdir={0} \u672a\u6307\u5b9a -targetDirectory \u7684\u503c\u3002
+
+server_name=\u670d\u52a1\u5668\u540d\u79f0
+
+shortestTime=\u6700\u77ed\u65f6\u95f4
+
+staticweave_commandline_help_message_10of19=    -log
+
+staticweave_commandline_help_message_11of19=           \u6307\u5b9a\u65e5\u5fd7\u8bb0\u5f55\u6587\u4ef6\u3002
+
+staticweave_commandline_help_message_12of19=    -loglevel
+
+staticweave_commandline_help_message_13of19=           \u6307\u5b9a\u65e5\u5fd7\u8bb0\u5f55\u7ea7\u522b\u7684\u6574\u6570\u503c\uff088=OFF\uff0c7=SEVERE\uff0c6=WARNING\uff0c5=INFO\uff0c4=CONFIG\uff0c3=FINE\uff0c2=FINER\uff08\u7f3a\u7701\u503c\uff09\uff0c1=FINEST\uff0c0=ALL\uff09\u3002
+
+staticweave_commandline_help_message_14of19=    \u6b64\u7c7b\u8def\u5f84\u5fc5\u987b\u5305\u542b\u5728\u6e90\u4e2d\u88c5\u5165\u8fd9\u4e9b\u7c7b\u65f6\u6240\u9700\u7684\u6240\u6709\u7c7b\u3002
+
+staticweave_commandline_help_message_15of19=    \u5982\u679c\u6e90\u548c\u76ee\u6807\u6307\u5411\u540c\u4e00\u4f4d\u7f6e\uff0c\u90a3\u4e48\u5c06\u5c31\u5730\u6267\u884c\u7f16\u6392\u3002\u5c31\u5730\u6267\u884c\u7f16\u6392\u4ec5\u9002\u7528\u4e8e\u57fa\u4e8e\u76ee\u5f55\u7684\u6e90\u3002
+
+staticweave_commandline_help_message_16of19=  \u793a\u4f8b\uff1a
+
+staticweave_commandline_help_message_17of19=    \u8981\u5bf9 C:\\foo-source.jar\uff08\u5176 persistence.xml \u5305\u542b\u5728 C:\\foo-containing-persistence-xml.jar \u5185\uff09\u4e2d\u5305\u542b\u7684\u6240\u6709\u5b9e\u4f53\u6267\u884c\u7f16\u6392\uff0c
+
+staticweave_commandline_help_message_18of19=    \u5e76\u8f93\u51fa\u81f3 C:\\foo-target.jar\uff1a
+
+staticweave_commandline_help_message_19of19=    StaticWeave -persistenceinfo C:\\foo-containing-persistence-xml.jar -classpath C:\\classpath1;C:\\classpath2 C:\\foo-source.jar C:\\foo-target.jar
+
+staticweave_commandline_help_message_1of19=  \u7528\u6cd5\uff1aStaticWeave [\u9009\u9879] \u6e90\u76ee\u6807
+
+staticweave_commandline_help_message_2of19=  \u9009\u9879\uff1a
+
+staticweave_commandline_help_message_3of19=    -classpath classpath
+
+staticweave_commandline_help_message_4of19=           \u8bbe\u7f6e\u7528\u6237\u7c7b\u8def\u5f84\u3002\u5728 Windows \u4e2d\uff0c\u4f7f\u7528\u201c;\u201d\u4f5c\u4e3a\u5b9a\u754c\u7b26\uff0c\u5728 Unix \u4e2d\uff0c\u4f7f\u7528\u201c:\u201d\u4f5c\u4e3a\u5b9a\u754c\u7b26\u3002
+
+staticweave_commandline_help_message_5of19=    -persistenceinfo
+
+staticweave_commandline_help_message_6of19=           \u663e\u5f0f\u6807\u8bc6 META-INF/persistence.xml \u7684\u5b58\u50a8\u4f4d\u7f6e\u3002\u5b83\u5fc5\u987b\u662f META-INF/persistence.xml \u7684\u6839\u4f4d\u7f6e\u3002
+
+staticweave_commandline_help_message_7of19=           \u7f16\u6392 persistence.xml \u4e2d\u7684 <jar-file> \u5f15\u7528\u7684\u6587\u4ef6\u65f6\uff0c\u901a\u5e38\u4f1a\u4f7f\u7528\u6b64\u9009\u9879\u6307\u5b9a\u4e3b JAR \u6587\u4ef6\u3002
+
+staticweave_commandline_help_message_8of19=    -persistencexml
+
+staticweave_commandline_help_message_9of19=           \u6807\u8bc6 persistence.xml \u76f8\u5bf9\u4e8e\u6301\u4e45\u6027\u5355\u5143\u7684\u6839\u7684\u4f4d\u7f6e\uff08\u5982\u679c\u5b83\u4e0d\u5728 META-INF/persistence.xml \u4e2d\uff09
+
+staticweave_processor_dir_not_created=\u65e0\u6cd5\u521b\u5efa {0} \u76ee\u5f55\u3002
+
+staticweave_processor_file_not_created=\u65e0\u6cd5\u521b\u5efa {0} \u6587\u4ef6\u3002
+
+staticweave_processor_unknown_outcome=\u7f16\u6392\u5b58\u50a8\u5728\u67d0\u4e2a\u76ee\u5f55\u4e2d\u7684\u7c7b\u5e76\u5c06\u5176\u8f93\u51fa\u81f3 JAR \u901a\u5e38\u4f1a\u5bfc\u81f4\u610f\u5916\u7ed3\u679c\u3002
+
+time_object=\u65f6\u95f4/\u5bf9\u8c61
+
+total_time=\u603b\u65f6\u95f4
+
+unknown=\u672a\u77e5
+
+user_name=\u7528\u6237\u540d
+
+writer=\u5199\u7a0b\u5e8f
+

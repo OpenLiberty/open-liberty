@@ -34,10 +34,11 @@ OIDC_CLIENT_CONFIG_MODIFIED.useraction=Brak.
 #1702 is used by clients.common bundle, do not use.
 
 # used_by_client_project and clients project IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN THE OTHER BUNDLE!
+# social also uses this and it does not have the enforceHTTPS attribute.
 #do not translate enforceHTTPS
-OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS=CWWKS1703E: Klient OpenID Connect wymaga protoko\u0142u SSL (HTTPS), ale adres URL dostawcy OpenID Connect to adres HTTP: [{0}].  Zaktualizuj konfiguracj\u0119 tak, aby atrybut [enforceHTTPS] by\u0142 zgodny ze schematem URL elementu docelowego. 
+OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS=CWWKS1703E: Klient OpenID Connect wymaga protoko\u0142u SSL (HTTPS), ale adres URL dostawcy OpenID Connect to adres HTTP: [{0}]. Zaktualizuj konfiguracj\u0119 tak, aby u\u017cywa\u0142a adresu URL HTTPS, lub u\u017cyj funkcji klienta OpenID Connect i ustaw w\u0142a\u015bciwo\u015b\u0107 enforceHTTPS na warto\u015b\u0107 false. 
 OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS.explanation=Klient OpenID Connect (strona zale\u017cna lub serwer zasob\u00f3w) wymaga protoko\u0142u SSL (HTTPS), ale protok\u00f3\u0142 adresu URL dostawcy OpenID Connect okre\u015blony w konfiguracji klienta OpenID Connect nie jest protoko\u0142em HTTPS.
-OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS.useraction=Wykonaj jedn\u0105 z nast\u0119puj\u0105cych czynno\u015bci: 1) Upewnij si\u0119, \u017ce dostawca OpenID Connect obs\u0142uguje protok\u00f3\u0142 SSL. 2) Je\u015bli dostawca OpenID Connect nie obs\u0142uguje protoko\u0142u SSL, ustaw atrybut enforceHTTPS w konfiguracji klienta OpenID Connect na warto\u015b\u0107 false.
+OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS.useraction=Wykonaj jedn\u0105 z nast\u0119puj\u0105cych czynno\u015bci: najpierw upewnij si\u0119, \u017ce dostawca OpenID Connect obs\u0142uguje protok\u00f3\u0142 SSL. Je\u015bli dostawca OpenID Connect nie obs\u0142uguje protoko\u0142u SSL, u\u017cyj sk\u0142adnika klienta OpenID Connect i ustaw w\u0142a\u015bciwo\u015b\u0107 enforceHTTPS na warto\u015b\u0107 false w konfiguracji sk\u0142adnika klienta OpenID Connect.
 
 # unused, but present in both bundles.  IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES
 OIDC_CLIENT_RESPONSE_STATE_VERIFY_ERR=CWWKS1704E: Bie\u017c\u0105cy stan [{0}] dla klienta OpenID Connect [{2}] i parametr stanu [{1}] w odpowiedzi dostawcy OpenID Connect s\u0105 niezgodne.  Ten warunek jest niedozwolony.
@@ -279,7 +280,7 @@ CONFIG_AUTHFILTER_NOTUNIQUE.explanation=Wi\u0119cej ni\u017c jedna konfiguracja 
 CONFIG_AUTHFILTER_NOTUNIQUE.useraction=Przejrzyj plik server.xml i popraw konfiguracj\u0119.
 
 AUTHFILTER_MULTIPLE_MATCHED=CWWKS1531W: Wi\u0119cej ni\u017c jeden filtr uwierzytelniania klienta OpenID Connect jest zgodny z \u017c\u0105daniem do adresu URL [{0}]. Zgodne filtry: [{1}]. Mo\u017ce to powodowa\u0107 nieokre\u015blone zachowanie.
-AUTHFILTER_MULTIPLE_MATCHED.explanation=Wi\u0119cej ni\u017c jeden filtr uwierzytelniania jest zgodny z \u017c\u0105daniem przychodz\u0105cym. Ka\u017cdy klient u\u017cywaj\u0105cy jednego z tych filtr\u00f3w m\u00f3g\u0142by przetworzy\u0107 \u017c\u0105danie, co doprowadzi\u0142oby do nieokre\u015blonego zachowania. 
+AUTHFILTER_MULTIPLE_MATCHED.explanation=Wi\u0119cej ni\u017c jeden filtr uwierzytelniania jest zgodny z \u017c\u0105daniem przychodz\u0105cym. Ka\u017cdy klient u\u017cywaj\u0105cy jednego z tych filtr\u00f3w m\u00f3g\u0142by przetworzy\u0107 \u017c\u0105danie, co doprowadzi\u0142oby do nieokre\u015blonego zachowania.  
 AUTHFILTER_MULTIPLE_MATCHED.useraction=Przejrzyj plik server.xml i popraw konfiguracj\u0119.
 
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

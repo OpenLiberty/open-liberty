@@ -37,9 +37,9 @@ KRB_S4U2PROXY_IS_NOT_SUPPORT=CWWKS4344E: Funkcja ograniczonego delegowania proto
 KRB_S4U2PROXY_IS_NOT_SUPPORT.explanation=Nie mo\u017cna w\u0142\u0105czy\u0107 funkcji ograniczonego delegowania protoko\u0142u Kerberos w przypadku tych warto\u015bci dostawcy i wersji \u015brodowiska Java.
 KRB_S4U2PROXY_IS_NOT_SUPPORT.useraction=U\u017cyj dostawcy i wersji \u015brodowiska Java obs\u0142ugiwanych przez funkcj\u0119 ograniczonego delegowania protoko\u0142u Kerberos.
 
+# CWWKS4345E is used by the com.ibm.ws.security.kerberos.auth bundle
 
-
-
+# CWWKS4346I is used by the com.ibm.ws.security.kerberos.auth bundle
 
 
 

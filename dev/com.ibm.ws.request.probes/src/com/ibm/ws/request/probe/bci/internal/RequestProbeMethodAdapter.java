@@ -36,7 +36,7 @@ public class RequestProbeMethodAdapter extends AdviceAdapter {
 
     protected RequestProbeMethodAdapter(MethodVisitor visitor, MethodInfo mInfo, String timedOpsType, String classname, 
     			String td, AnalyzerAdapter aa) {
-        super(ASM5, visitor, mInfo.getAccessFlags(), mInfo.getMethodName(), mInfo.getDescriptor());
+        super(ASM8, visitor, mInfo.getAccessFlags(), mInfo.getMethodName(), mInfo.getDescriptor());
         this.visitor = visitor;
         this.methodInfo = mInfo;
         this._classname = classname;

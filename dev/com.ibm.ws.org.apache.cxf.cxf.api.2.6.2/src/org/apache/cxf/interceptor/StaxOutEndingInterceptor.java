@@ -31,6 +31,9 @@ import org.apache.cxf.phase.AbstractPhaseInterceptor;
 import org.apache.cxf.phase.Phase;
 import org.apache.cxf.staxutils.StaxUtils;
 
+import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.websphere.ras.annotation.Trivial;
+
 public class StaxOutEndingInterceptor extends AbstractPhaseInterceptor<Message> {
 
     private static final ResourceBundle BUNDLE = BundleUtils.getBundle(StaxOutEndingInterceptor.class);
@@ -38,9 +41,12 @@ public class StaxOutEndingInterceptor extends AbstractPhaseInterceptor<Message> 
     private String outStreamHolder;
     private String writerHolder;
     
+    @Trivial
     public StaxOutEndingInterceptor(String outStreamHolder) {
         this(outStreamHolder, null);
     }
+    
+    @Trivial
     public StaxOutEndingInterceptor(String outStreamHolder, String writerHolder) {
         super(Phase.PRE_STREAM_ENDING);
         getAfter().add(AttachmentOutInterceptor.AttachmentOutEndingInterceptor.class.getName());
@@ -48,7 +54,7 @@ public class StaxOutEndingInterceptor extends AbstractPhaseInterceptor<Message> 
         this.writerHolder = writerHolder;
     }
 
-    public void handleMessage(Message message) throws Fault {
+    public void handleMessage(@Sensitive Message message) throws Fault {
         try {
             XMLStreamWriter xtw = message.getContent(XMLStreamWriter.class);
             if (xtw != null) {

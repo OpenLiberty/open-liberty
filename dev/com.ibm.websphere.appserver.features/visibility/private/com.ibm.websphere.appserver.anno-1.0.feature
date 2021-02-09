@@ -1,5 +1,7 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.anno-1.0
+singleton=true
+WLP-DisableAllFeatures-OnConflict: false
 IBM-API-Package: javax.annotation; type="spec", \
  javax.annotation.security; type="spec", \
  javax.annotation.sql; type="spec"

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2018 IBM Corporation and others.
+ * Copyright (c) 2016, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,49 +16,41 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.fat.util.FatLogHandler;
+import com.ibm.ws.microprofile.config.fat.tests.BasicConfigTests;
 import com.ibm.ws.microprofile.config.fat.tests.CDIBrokenInjectionTest;
-import com.ibm.ws.microprofile.config.fat.tests.CDIBuiltInConverterTest;
-import com.ibm.ws.microprofile.config.fat.tests.CDIConfigPropertyTest;
-import com.ibm.ws.microprofile.config.fat.tests.CDIFieldInjectionTest;
-import com.ibm.ws.microprofile.config.fat.tests.CDIXtorInjectionTest;
 import com.ibm.ws.microprofile.config.fat.tests.ClassLoaderCacheTest;
 import com.ibm.ws.microprofile.config.fat.tests.ClassLoadersTest;
-import com.ibm.ws.microprofile.config.fat.tests.ConverterPriorityTest;
-import com.ibm.ws.microprofile.config.fat.tests.ConvertersTest;
-import com.ibm.ws.microprofile.config.fat.tests.CustomSourcesTest;
 import com.ibm.ws.microprofile.config.fat.tests.DefaultSourcesTest;
 import com.ibm.ws.microprofile.config.fat.tests.DynamicSourcesTest;
+import com.ibm.ws.microprofile.config.fat.tests.LibertySpecificConfigTests;
 import com.ibm.ws.microprofile.config.fat.tests.OrdinalsForDefaultsTest;
 import com.ibm.ws.microprofile.config.fat.tests.SharedLibTest;
-import com.ibm.ws.microprofile.config.fat.tests.SimpleScopeTest;
 import com.ibm.ws.microprofile.config.fat.tests.SimultaneousRequestsTest;
 import com.ibm.ws.microprofile.config.fat.tests.StressTest;
-import com.ibm.ws.microprofile.config.fat.tests.TypesTest;
 
 /**
  * Tests specific to appConfig
+ *
+ * BasicConfigTests repeats across all MP Config versions (EE8)
+ * the rest repeat against the lastest version of MP Config (where appropriate) and then one other combination of MP Config and EE version
+ * the aim is that each combination is used to test at least once, across all of the MP Config FAT buckets
+ * some classes do not repeat against the latest due to functional changes between MP Config 1.4 -> 2.0
  */
 @RunWith(Suite.class)
 @SuiteClasses({
+                BasicConfigTests.class, //LITE
+                ClassLoadersTest.class, //FULL
+                DefaultSourcesTest.class, //FULL
+                OrdinalsForDefaultsTest.class, //FULL
+                SimultaneousRequestsTest.class, //FULL
+                SharedLibTest.class, //FULL
+                StressTest.class, //FULL
 
-                CDIBrokenInjectionTest.class,
-                CDIBuiltInConverterTest.class,
-                CDIConfigPropertyTest.class,
-                CDIFieldInjectionTest.class,
-                CDIXtorInjectionTest.class,
-                ClassLoaderCacheTest.class,
-                ClassLoadersTest.class,
-                ConverterPriorityTest.class,
-                ConvertersTest.class,
-                CustomSourcesTest.class,
-                DefaultSourcesTest.class,
-                DynamicSourcesTest.class,
-                OrdinalsForDefaultsTest.class,
-                SimpleScopeTest.class,
-                SimultaneousRequestsTest.class,
-                SharedLibTest.class,
-                StressTest.class,
-                TypesTest.class,
+                // The following don't repeat against mpConfig > 1.4. See classes for why.
+                LibertySpecificConfigTests.class, //FULL
+                CDIBrokenInjectionTest.class, //FULL
+                ClassLoaderCacheTest.class, //FULL
+                DynamicSourcesTest.class //FULL
 
 })
 

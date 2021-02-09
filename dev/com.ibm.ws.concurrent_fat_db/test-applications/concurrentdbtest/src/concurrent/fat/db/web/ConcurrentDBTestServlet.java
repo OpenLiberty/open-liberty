@@ -10,30 +10,37 @@
  *******************************************************************************/
 package concurrent.fat.db.web;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Collections;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import javax.annotation.Resource;
-import javax.enterprise.concurrent.ContextService;
-import javax.enterprise.concurrent.ManagedExecutorService;
-import javax.enterprise.concurrent.ManagedExecutors;
-import javax.enterprise.concurrent.ManagedScheduledExecutorService;
-import javax.enterprise.concurrent.ManagedTask;
-import javax.enterprise.concurrent.ManagedTaskListener;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
+import jakarta.annotation.Resource;
+import jakarta.enterprise.concurrent.ContextService;
+import jakarta.enterprise.concurrent.ManagedExecutorService;
+import jakarta.enterprise.concurrent.ManagedExecutors;
+import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
+import jakarta.enterprise.concurrent.ManagedTask;
+import jakarta.enterprise.concurrent.ManagedTaskListener;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.transaction.NotSupportedException;
+import jakarta.transaction.SystemException;
+import jakarta.transaction.UserTransaction;
+
 import javax.sql.DataSource;
-import javax.transaction.NotSupportedException;
-import javax.transaction.SystemException;
-import javax.transaction.UserTransaction;
 
 import org.junit.Test;
 
@@ -112,6 +119,55 @@ public class ConcurrentDBTestServlet extends FATDatabaseServlet {
             ResultSet result = stmt.executeQuery("SELECT MYVALUE FROM MYTABLE WHERE MYKEY = 'testGlobalTranSuspendAndResume'");
             if (result.next())
                 throw new Exception("Should have been rolled back. Instead: " + result.getInt(1));
+        } finally {
+            con.close();
+        }
+    }
+
+    /**
+     * Obtain connections within a contextual task and leave them open.
+     * When HandleList is enabled, the connection handle is automatically closed.
+     * When HandleList is disabled, the connection handle is left open and remains usable.
+     */
+    @Test
+    public void testHandleListClosesConnectionLeakedFromInlineTask() throws Exception {
+        Connection[] con = (Connection[]) contextService.createContextualProxy(() -> {
+            Connection[] c = new Connection[] {
+                                                unsharedXADataSource.getConnection(), // handle list enabled
+                                                unshared1PCDataSource.getConnection() // handle list disabled
+            };
+            return c;
+        }, Callable.class).call();
+
+        try {
+            assertTrue(con[0].isClosed());
+            assertFalse(con[1].isClosed());
+
+            con[1].createStatement().executeUpdate("INSERT INTO MYTABLE VALUES ('testHandleListClosesConnectionLeakedFromInlineTask', 29)");
+        } finally {
+            con[0].close();
+            con[1].close();
+        }
+    }
+
+    /**
+     * Obtains a connection prior to a contextual task, uses the connection within the contextual task,
+     * and leaves the connection open. It must remain usable afterward, because the connection handle
+     * belongs to the servlet's HandleList, not the contextual tasks.
+     */
+    @Test
+    public void testHandleListDoesNotClosePreexistingConnectionAfterInlineTask() throws Exception {
+        final Connection con = unsharedXADataSource.getConnection(); // handle list enabled
+        try {
+            Statement stmt = (Statement) contextService.createContextualProxy(() -> {
+                Statement s = con.createStatement();
+                s.execute("INSERT INTO MYTABLE VALUES ('testHandleListDoesNotClosePreexistingConnectionAfterInlineTask', 30)");
+                return s;
+            }, Callable.class).call();
+
+            assertFalse(stmt.isClosed());
+
+            assertEquals(1, stmt.executeUpdate("DELETE FROM MYTABLE WHERE MYKEY='testHandleListDoesNotClosePreexistingConnectionAfterInlineTask'"));
         } finally {
             con.close();
         }
@@ -351,6 +407,58 @@ public class ConcurrentDBTestServlet extends FATDatabaseServlet {
                 throw new Exception("Updates should have been rolled back");
         } finally {
             con.commit();
+            con.close();
+        }
+    }
+
+    /**
+     * If the user specifies the ManagedtTask.TRANSACTION constant from both specs with conflicting values,
+     * the one from Jakarta Concurrency must take precedence when Jakarta Concurrency is enabled.
+     */
+    @Test
+    public void testPrecedenceOfTransactionConstant() throws Exception {
+        Map<String, String> execProps = new TreeMap<String, String>();
+        execProps.put(ManagedTask.TRANSACTION.replace("jakarta", "javax"), ManagedTask.SUSPEND);
+        execProps.put(ManagedTask.TRANSACTION, ManagedTask.USE_TRANSACTION_OF_EXECUTION_THREAD); // enabled spec must take precedence
+
+        Connection con = dataSource.getConnection();
+        try {
+            con.setAutoCommit(false);
+            con.createStatement().executeUpdate("INSERT INTO MYTABLE VALUES ('testPrecedenceOfTransactionConstant', 27)");
+        } finally {
+            // don't commit or roll back yet
+            con.close();
+        }
+
+        // In order for the following update of the same entry to be permitted, the same transaction must be used,
+        // showing that USE_TRANSACTION_OF_EXECUTION_THREAD is honored rather than SUSPEND.
+        int count = (Integer) contextService.createContextualProxy(new Callable<Integer>() {
+            @Override
+            public Integer call() throws Exception {
+                Connection con = dataSource.getConnection();
+                try {
+                    return con.createStatement().executeUpdate("UPDATE MYTABLE SET MYVALUE = 28 where MYKEY = 'testPrecedenceOfTransactionConstant'");
+                } finally {
+                    // don't commit or roll back yet
+                    con.close();
+                }
+            }
+        }, execProps, Callable.class)
+                        .call();
+
+        if (count != 1)
+            throw new Exception("Update was not visible to contextual proxy. Count: " + count);
+
+        // roll back both updates
+        con = dataSource.getConnection();
+        con.rollback();
+        con.setAutoCommit(true);
+
+        try {
+            ResultSet result = con.createStatement().executeQuery("SELECT MYVALUE FROM MYTABLE WHERE MYKEY = 'testPrecedenceOfTransactionConstant'");
+            if (result.next())
+                throw new Exception("Should have been rolled back. " + result.getInt(1));
+        } finally {
             con.close();
         }
     }

@@ -10,16 +10,34 @@
  *******************************************************************************/
 package componenttest.rules.repeater;
 
+import com.ibm.websphere.simplicity.log.Log;
+
+import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.custom.junit.runner.TestModeFilter;
+
 public class EmptyAction implements RepeatTestAction {
 
+    private static final Class<?> c = EmptyAction.class;
+
     public static final String ID = "NO_MODIFICATION_ACTION";
+    private TestMode testRunMode = TestMode.LITE;
 
     @Override
     public void setup() {}
 
     @Override
     public boolean isEnabled() {
-        return true;
+      if (TestModeFilter.FRAMEWORK_TEST_MODE.compareTo(testRunMode) < 0) {
+          Log.info(c, "isEnabled", "Skipping action '" + toString() + "' because the test mode " + testRunMode +
+                                   " is not valid for current mode " + TestModeFilter.FRAMEWORK_TEST_MODE);
+          return false;
+      }
+      return true;
+    }
+
+    public RepeatTestAction fullFATOnly() {
+        this.testRunMode = TestMode.FULL;
+        return this;
     }
 
     @Override

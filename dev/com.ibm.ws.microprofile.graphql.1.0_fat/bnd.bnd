@@ -20,16 +20,19 @@ src: \
   test-applications/graphQLInterfaceApp/src,\
   test-applications/ifaceApp/src,\
   test-applications/ignoreApp/src,\
+  test-applications/jarInWarApp/src,\
   test-applications/metricsApp/src,\
   test-applications/inputFieldsApp/src,\
   test-applications/outputFieldsApp/src,\
+  test-applications/rolesAuthApp/src,\
   test-applications/typesApp/src,\
+  test-applications/uiApp/src,\
   test-applications/voidQueryApp/src
 
 fat.project: true
 
 
-tested.features: mpMetrics-2.0
+tested.features: mpMetrics-2.0, mpConfig-2.0, mpMetrics-3.0, mpRestClient-2.0
 
 -buildpath: \
   com.ibm.websphere.javaee.annotation.1.2;version=latest,\
@@ -39,4 +42,5 @@ tested.features: mpMetrics-2.0
   com.ibm.websphere.org.eclipse.microprofile.graphql.1.0;version=latest,\
   com.ibm.websphere.org.eclipse.microprofile.rest.client.1.1;version=latest,\
   com.ibm.websphere.javaee.jsonp.1.1;version=latest,\
-  com.ibm.websphere.javaee.jsonb.1.0;version=latest
+  com.ibm.websphere.javaee.jsonb.1.0;version=latest,\
+  com.ibm.ws.io.smallrye.graphql;version=latest,\

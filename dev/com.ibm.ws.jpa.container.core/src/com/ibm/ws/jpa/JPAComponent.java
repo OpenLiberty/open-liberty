@@ -64,6 +64,8 @@ public interface JPAComponent {
 
     public JPAProviderIntegration getJPAProviderIntegration();
 
+    public JPAVersion getJPAVersion();
+
     /**
      * Returns the EntityManagerFactory defines by the application/module/persistence unit spcified.
      * This is used by the resolver and naming object factory to retrieve the factory for
@@ -71,12 +73,12 @@ public interface JPAComponent {
      * @PersistenceUnit.
      *
      * @param puId
-     *            Persistence unit id
+     *                          Persistence unit id
      * @param j2eeName
-     *            JavaEE unique identifier for the component, identifying the
-     *            java:comp/env context used.
+     *                          JavaEE unique identifier for the component, identifying the
+     *                          java:comp/env context used.
      * @param getEmfWrapper
-     *            return a serializable EntityManagerFactory wrapper
+     *                          return a serializable EntityManagerFactory wrapper
      * @return EntityManagerFactory for the specified or null if none is found.
      */
     public EntityManagerFactory getEntityManagerFactory(JPAPuId puId,
@@ -90,16 +92,16 @@ public interface JPAComponent {
      * @PersistenceContext.
      *
      * @param puId
-     *            Persistence unit id
+     *                                  Persistence unit id
      * @param j2eeName
-     *            JavaEE unique identifier for the component, identifying the
-     *            java:comp/env context used.
+     *                                  JavaEE unique identifier for the component, identifying the
+     *                                  java:comp/env context used.
      * @param refName
-     *            Name of the PersistenceContext reference.
+     *                                  Name of the PersistenceContext reference.
      * @param isExtendedContextType
-     *            is the EntityManager extended scope.
+     *                                  is the EntityManager extended scope.
      * @param properties
-     *            additional properties to create the EntityManager
+     *                                  additional properties to create the EntityManager
      *
      * @return EntityManager for the specified or null if none is found.
      */
@@ -120,17 +122,17 @@ public interface JPAComponent {
      * </ul>
      *
      * @param injectionBindings
-     *            InjectionBindings to retrieve PuIds from.
+     *                                InjectionBindings to retrieve PuIds from.
      * @param ejbName
-     *            The EJB name.
+     *                                The EJB name.
      * @param persistenceRefNames
-     *            The set of persistence unit and context reference names to be
-     *            updated, or <tt>null</tt> if not needed
+     *                                The set of persistence unit and context reference names to be
+     *                                updated, or <tt>null</tt> if not needed
      * @param bindingList
-     *            A return-value List containing JPAPCtxtInjectionBinding objects.
-     *            If bindingList is not null, then for each @PersistenceContext associated with each
-     *            InjectionBinding, it will insert an JPAPCtxtInjectionBinding type entry to the List.
-     *            If null, this data will not be returned.
+     *                                A return-value List containing JPAPCtxtInjectionBinding objects.
+     *                                If bindingList is not null, then for each @PersistenceContext associated with each
+     *                                InjectionBinding, it will insert an JPAPCtxtInjectionBinding type entry to the List.
+     *                                If null, this data will not be returned.
      * @return Returns array of JPAPuId with container-managed extend-scoped persistence contexts;
      *         or JPAPuId[0] if none is found; updates bindingMap with JNDI -> JPAPCtxtInjectionBinding
      *         entries.
@@ -158,12 +160,12 @@ public interface JPAComponent {
      * This is determined by the existence of a PersistenceUnit annotation or xml ref.
      *
      * @param injectionBindings
-     *            to search for extend-scoped PersistenceUnit.
+     *                                to search for extend-scoped PersistenceUnit.
      * @param ejbName
-     *            The EJB name.
+     *                                The EJB name.
      * @param persistenceRefNames
-     *            The set of persistence unit and context reference names to be
-     *            updated, or <tt>null</tt> if not needed
+     *                                The set of persistence unit and context reference names to be
+     *                                updated, or <tt>null</tt> if not needed
      * @return boolean - indicating if a PersistenceUnit is found.
      */
     // d465813                        // switch to 'bindings' d511673
@@ -185,7 +187,7 @@ public interface JPAComponent {
      * @param isBMT
      * @param puIds
      * @param unsynchronizedJPAPuIdSet is a Set of JPAPuId associated UNSYNCHRONIZED Container Managed
-     *            Extended Scoped persistence contexts which are SynchronizationType.UNSYNCHRONIZED.
+     *                                     Extended Scoped persistence contexts which are SynchronizationType.UNSYNCHRONIZED.
      */
     public JPAExPcBindingContext onCreate(String j2eeName,
                                           boolean isBMT,

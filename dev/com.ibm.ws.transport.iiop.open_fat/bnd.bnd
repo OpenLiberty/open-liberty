@@ -1,0 +1,37 @@
+#*******************************************************************************
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+src: \
+    fat/src,\
+    test-applications/TestCorbaEjb.jar/src,\
+    test-applications/TestCorbaWeb.war/src,\
+    test-applications/Interfaces.jar/src
+
+fat.project: true
+
+tested.features: \
+	ejbRemote-3.2
+
+-buildpath: \
+    com.ibm.wsspi.org.osgi.core;version=latest,\
+    com.ibm.wsspi.org.osgi.service.component;version=latest, \
+    com.ibm.wsspi.org.osgi.service.component.annotations;version=latest, \
+    com.ibm.ws.org.apache.yoko.corba.spec.1.5;version=latest,\
+    com.ibm.ws.org.apache.yoko.core.1.5;version=latest,\
+    com.ibm.ws.org.apache.yoko.osgi.1.5;version=latest,\
+    com.ibm.ws.org.apache.yoko.rmi.impl.1.5;version=latest,\
+    com.ibm.ws.org.apache.yoko.rmi.spec.1.5;version=latest,\
+    com.ibm.ws.org.apache.yoko.util.1.5;version=latest,\
+    com.ibm.ws.transport.iiop;version=latest,\
+    com.ibm.websphere.javaee.ejb.3.1;version=latest,\
+    com.ibm.websphere.javaee.servlet.3.1;version=latest

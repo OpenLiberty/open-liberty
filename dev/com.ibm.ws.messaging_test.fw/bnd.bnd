@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2019 IBM Corporation and others.
+# Copyright (c) 2017, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -28,6 +28,7 @@ Export-Package: com.ibm.js.test, \
 	com.ibm.ws.logging;version=latest,\
 	com.ibm.ws.messaging.common;version=latest,\
 	com.ibm.ws.messaging.runtime;version=latest, \
+	com.ibm.ws.messaging.security.common;version=latest,\
 	com.ibm.websphere.javaee.connector.1.6;version=latest, \
 	com.ibm.websphere.javaee.transaction.1.1;version=latest, \
 	com.ibm.ws.messaging.jms.2.0;version=latest, \

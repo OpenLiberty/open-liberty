@@ -17,4 +17,5 @@ dependencies {
 
 addRequiredLibraries {
   dependsOn addDerby
+  dependsOn addJakartaTransformer
 }

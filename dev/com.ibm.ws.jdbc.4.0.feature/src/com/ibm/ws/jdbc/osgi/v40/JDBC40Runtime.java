@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2017 IBM Corporation and others.
+ * Copyright (c) 2015, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,7 +21,6 @@ import java.sql.SQLFeatureNotSupportedException;
 import java.sql.Statement;
 import java.util.concurrent.Executor;
 
-import javax.resource.spi.ConnectionManager;
 import javax.sql.ConnectionPoolDataSource;
 import javax.sql.DataSource;
 import javax.sql.PooledConnection;
@@ -32,6 +31,7 @@ import org.osgi.framework.Version;
 import org.osgi.service.component.annotations.Component;
 
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.jca.adapter.WSConnectionManager;
 import com.ibm.ws.jdbc.osgi.JDBCRuntimeVersion;
 import com.ibm.ws.rsadapter.impl.StatementCacheKey;
 import com.ibm.ws.rsadapter.impl.WSConnectionRequestInfoImpl;
@@ -66,7 +66,7 @@ public class JDBC40Runtime implements JDBCRuntimeVersion {
     }
 
     @Override
-    public WSJdbcDataSource newDataSource(WSManagedConnectionFactoryImpl mcf, ConnectionManager connMgr) {
+    public WSJdbcDataSource newDataSource(WSManagedConnectionFactoryImpl mcf, WSConnectionManager connMgr) {
         return new WSJdbcDataSource(mcf, connMgr);
     }
 
@@ -162,8 +162,10 @@ public class JDBC40Runtime implements JDBCRuntimeVersion {
     }
 
     @Override
-    public void beginRequest(Connection con) {}
+    public void beginRequest(Connection con) {
+    }
 
     @Override
-    public void endRequest(Connection con) {}
+    public void endRequest(Connection con) {
+    }
 }

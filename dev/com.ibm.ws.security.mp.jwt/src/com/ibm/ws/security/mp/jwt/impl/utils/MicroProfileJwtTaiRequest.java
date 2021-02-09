@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2016, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.security.jwt.config.MpConfigProperties;
 import com.ibm.ws.security.mp.jwt.MicroProfileJwtConfig;
 import com.ibm.ws.security.mp.jwt.TraceConstants;
 import com.ibm.ws.security.mp.jwt.error.MpJwtProcessingException;
@@ -44,6 +45,7 @@ public class MicroProfileJwtTaiRequest {
     MicroProfileJwtConfig microProfileJwtConfig = null;
     MicroProfileJwtConfig jwtssoConfig = null;
     MpJwtProcessingException taiException = null;
+    MpConfigProperties mpConfigProps = new MpConfigProperties();
 
     TAIRequestHelper taiRequestHelper = new TAIRequestHelper();
 
@@ -54,6 +56,16 @@ public class MicroProfileJwtTaiRequest {
      */
     public MicroProfileJwtTaiRequest(HttpServletRequest request) {
         this.request = request;
+    }
+
+    public void setMpConfigProps(MpConfigProperties mpConfigProps) {
+        if (mpConfigProps != null) {
+            this.mpConfigProps = new MpConfigProperties(mpConfigProps);
+        }
+    }
+
+    public MpConfigProperties getMpConfigProps() {
+        return mpConfigProps;
     }
 
     /**
@@ -208,7 +220,7 @@ public class MicroProfileJwtTaiRequest {
             }
         } else if (this.genericConfigs != null) {
             if (this.genericConfigs.size() < 2) {
-                this.microProfileJwtConfig = this.genericConfigs.get(0); 
+                this.microProfileJwtConfig = this.genericConfigs.get(0);
             } else if (this.genericConfigs.size() <= 3) {
                 if (!handleMultipleConfigurations()) {
                     // if we have two jwtsso or two mpjwt configurations, then we cannot process
@@ -234,7 +246,7 @@ public class MicroProfileJwtTaiRequest {
         boolean jwtsso = false;
         boolean mpjwt = false;
         boolean defaultmpjwt = true;
-   
+
         while (it.hasNext()) {
             MicroProfileJwtConfig mpJwtConfig = (MicroProfileJwtConfig) it.next();
             if (taiRequestHelper.isJwtSsoFeatureActive(mpJwtConfig)) {
@@ -246,36 +258,35 @@ public class MicroProfileJwtTaiRequest {
         }
         return jwtsso && mpjwt;
     }
-    
+
     private boolean handleMultipleConfigurations() {
 
         Iterator it = this.genericConfigs.iterator();
         int jwtsso = 0;
         int mpjwt = 0;
-        
+
         MicroProfileJwtConfig mpjwtConfiguration = null;
-        
+
         while (it.hasNext()) {
             MicroProfileJwtConfig mpJwtConfig = (MicroProfileJwtConfig) it.next();
             if (taiRequestHelper.isJwtSsoFeatureActive(mpJwtConfig)) {
-                jwtsso ++;
+                jwtsso++;
                 this.microProfileJwtConfig = mpJwtConfig;
                 this.jwtssoConfig = mpJwtConfig;
             } else if (!taiRequestHelper.isMpJwtDefaultConfig(mpJwtConfig)) {
-                mpjwt ++;
+                mpjwt++;
                 mpjwtConfiguration = mpJwtConfig;
             }
         }
         if (jwtsso <= 1 && mpjwt == 1) {
-            this.microProfileJwtConfig = mpjwtConfiguration; 
+            this.microProfileJwtConfig = mpjwtConfiguration;
         }
         return jwtsso <= 1 && mpjwt <= 1;
     }
-    
+
     public MicroProfileJwtConfig getJwtSsoConfig() {
         return this.jwtssoConfig;
     }
-    
 
     void handleTooManyConfigurations() throws MpJwtProcessingException {
         // error handling -- multiple mpJwtConfig qualified and we do not know how to select

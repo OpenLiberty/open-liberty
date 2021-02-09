@@ -176,7 +176,7 @@ public interface NameSpaceBinder<T> {
      * @param bindingObject the EJBBinding
      * @param hr the bean home record
      */
-    void bindDefaultEJBLocal(T bindingObject, HomeRecord hr);
+    void bindDefaultEJBLocal(T bindingObject, HomeRecord hr) throws NamingException;
 
     /**
      * Adds the default remote legacy bindings to root
@@ -184,7 +184,7 @@ public interface NameSpaceBinder<T> {
      * @param bindingObject the EJB Binding information
      * @param hr the HomeRecord of the EJB
      */
-    void bindDefaultEJBRemote(T bindingObject, HomeRecord hr);
+    void bindDefaultEJBRemote(T bindingObject, HomeRecord hr) throws NamingException;
 
     /**
      * Undoes the bindings from ejblocal namespace.
@@ -197,8 +197,12 @@ public interface NameSpaceBinder<T> {
      * @param bindingObject - the EJBBinding
      * @param hr - the bean home record
      * @param local - if it is a local bean
+     * @param generateDisambiguatedSimpleBindingNames - A boolean, which when true
+     *            will cause any generated simple binding names to be
+     *            constructed to include "#<interfaceName>" at the end
+     *            of the binding name.
      */
-    void bindSimpleBindingName(T bindingObject, HomeRecord hr, boolean local);
+    void bindSimpleBindingName(T bindingObject, HomeRecord hr, boolean local, boolean generateDisambiguatedSimpleBindingNames) throws NamingException;
 
     /**
      * Binds the localHomeBindingName custom binding
@@ -206,7 +210,7 @@ public interface NameSpaceBinder<T> {
      * @param bindingObject - the EJBBinding
      * @param hr - the bean home record
      */
-    void bindLocalHomeBindingName(T bindingObject, HomeRecord hr);
+    void bindLocalHomeBindingName(T bindingObject, HomeRecord hr) throws NamingException;
 
     /**
      * Binds the interface binding-name custom binding for local
@@ -214,7 +218,7 @@ public interface NameSpaceBinder<T> {
      * @param bindingObject - the EJBBinding
      * @param hr - the bean home record
      */
-    void bindLocalBusinessInterface(T bindingObject, HomeRecord hr);
+    void bindLocalBusinessInterface(T bindingObject, HomeRecord hr) throws NamingException;
 
     /**
      * Undoes the bindings from local namespace.

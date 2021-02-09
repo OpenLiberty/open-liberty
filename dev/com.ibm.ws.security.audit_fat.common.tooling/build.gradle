@@ -1,0 +1,136 @@
+/*******************************************************************************
+ * Copyright (c) 2020 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+apply plugin: 'war'
+
+/* 
+ * This is where all application ZIP and WARs will be built.
+ */
+def appBuildDir = "${buildDir}/test-application"
+
+configurations { 
+    collectedDeps
+    collectedDeps.transitive = false  /* Don't copy transitive dependencies. */
+}
+
+dependencies {
+
+    /*
+     * These JARs will be copied into $buildDir/collectedJars
+     * for eash of retrieval by other projects.
+     */
+    collectedDeps 'org.apache.httpcomponents:httpclient:4.1.2',
+                  'org.apache.httpcomponents:httpcore:4.1.2',
+                  project(':com.ibm.json4j')
+}
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** AuditBase.jar
+ **
+ ******************************************************************
+ ******************************************************************/
+task AuditBase_JAR(type: Jar, dependsOn: classes) { 
+  destinationDir file("${appBuildDir}")
+  archiveName "AuditBase.jar"
+
+  from ('build/classes/java/main') { 
+    include 'web/FlexibleBaseServlet*.class'
+  }
+}
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** AuditBasicAuthServlet.war
+ **
+ ******************************************************************
+ ******************************************************************/
+task AuditBasicAuthServlet_WAR(type: War, dependsOn: AuditBase_JAR) {
+  destinationDir file("${appBuildDir}")
+  archiveName "AuditBasicAuthServlet.war"
+  classpath = classpath.filter{ false }
+
+  from ('test-applications/AuditBasicAuthServlet.war/resources') { 
+  	include 'META-INF/*'
+  	include 'WEB-INF/*'
+  }
+  from ('build/classes/java/main') { 
+    include 'web/AuditBasicAuthServlet.class'
+    into 'WEB-INF/classes'
+  }
+  from ('build/libs/test-application') { 
+    include "AuditBase.jar"
+    into 'WEB-INF/lib'
+  }
+}
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** AuditFormLoginServlet.war
+ **
+ ******************************************************************
+ ******************************************************************/
+task AuditFormLoginServlet_WAR(type: War, dependsOn: AuditBase_JAR) {
+  destinationDir file("${appBuildDir}")
+  archiveName "AuditFormLoginServlet.war"
+  classpath = classpath.filter{ false }
+
+  from ('test-applications/AuditFormLoginServlet.war/resources') { 
+  	include 'META-INF/*'
+  	include 'WEB-INF/*'
+  }
+  from ('test-applications/AuditFormLoginServlet.war/resources') { 
+  	include '*.jsp'
+  	include '*.html'
+  }
+  from ('build/classes/java/main') { 
+    include 'web/AuditFormLoginServlet.class'
+    into 'WEB-INF/classes'
+  }
+  from ('build/libs/test-application') { 
+    include "AuditBase.jar"
+    into 'WEB-INF/lib'
+  }
+}
+ 
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** Assemble all of the custom build artifacts.
+ **
+ ******************************************************************
+ ******************************************************************/
+assemble { 
+  dependsOn \
+    AuditBasicAuthServlet_WAR,
+    AuditFormLoginServlet_WAR
+    
+  /* 
+   * Collect all the required jars and put them in one uniform place
+   * so that we don't need to keep adding them in each external
+   * project.
+   */
+  copy { 
+    from configurations.collectedDeps
+    into "${buildDir}/collectedJars"
+  }
+  
+}
+
+// We aren't making a war for the entire project
+war { enabled false }

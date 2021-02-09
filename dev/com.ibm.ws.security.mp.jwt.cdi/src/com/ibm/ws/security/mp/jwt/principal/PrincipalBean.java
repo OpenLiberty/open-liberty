@@ -25,6 +25,8 @@ import org.eclipse.microprofile.jwt.JsonWebToken;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.security.cred.WSCredential;
+import com.ibm.ws.security.authentication.utility.SubjectHelper;
 import com.ibm.ws.security.context.SubjectManager;
 
 /**
@@ -40,13 +42,26 @@ public class PrincipalBean implements JsonWebToken {
     private static final TraceComponent tc = Tr.register(PrincipalBean.class);
     Principal principal = null;
     JsonWebToken jsonWebToken = null;
+    String wsPrincipalName = null;
 
     public PrincipalBean() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.entry(tc, "PrincipalBean");
         }
 
-        Subject subject = getCallerSubject();
+        Subject subject = null;
+        try {
+            subject = (Subject) java.security.AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
+                @Override
+                public Object run() throws Exception {
+                    return new SubjectManager().getCallerSubject();
+                }
+            });
+        } catch (PrivilegedActionException pae) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "getCallerSubject() Exception caught: " + pae);
+            }
+        }
         if (subject != null) {
             Set<JsonWebToken> jsonWebTokens = subject.getPrincipals(JsonWebToken.class);
             if (!jsonWebTokens.isEmpty()) {
@@ -57,6 +72,9 @@ public class PrincipalBean implements JsonWebToken {
                 Set<Principal> principals = subject.getPrincipals(Principal.class);
                 if (!principals.isEmpty()) {
                     principal = principals.iterator().next();
+                }
+                if (principal != null) {
+                    wsPrincipalName = getSecurityNameFromCredential(subject); // do this if JsonWebToken is not present, so we can match the behavior of server running w/ javaee-8.0 features
                 }
             }
         }
@@ -70,6 +88,34 @@ public class PrincipalBean implements JsonWebToken {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.exit(tc, "PrincipalBean", principal);
         }
+    }
+
+    /**
+     * @param subject
+     * @param principalName
+     * @return
+     */
+    private String getSecurityNameFromCredential(Subject subject) {
+        String securityName = null;
+        WSCredential wsCredential = null;
+        wsCredential = getWSCredential(subject);
+        if (wsCredential != null) {
+            try {
+                securityName = wsCredential.getSecurityName();
+            } catch (Exception e) {
+
+            }
+        }
+        return securityName;
+    }
+
+    /**
+     * @param subject
+     * @return
+     */
+    private WSCredential getWSCredential(Subject subject) {
+        SubjectHelper subjectHelper = new SubjectHelper();
+        return subjectHelper.getWSCredential(subject);
     }
 
     /** {@inheritDoc} */
@@ -98,8 +144,13 @@ public class PrincipalBean implements JsonWebToken {
     /** {@inheritDoc} */
     @Override
     public String getName() {
-        if (principal != null)
-            return principal.getName();
+        if (principal != null) {
+            if (jsonWebToken != null) {
+                return principal.getName();
+            } else {
+                return wsPrincipalName;
+            }
+        }
         return null;
     }
 
@@ -128,26 +179,5 @@ public class PrincipalBean implements JsonWebToken {
             return principal.toString();
         return null;
     }
-
-    @SuppressWarnings("unchecked")
-    private Subject getCallerSubject() {
-        Subject s = null;
-        try {
-            s = (Subject) java.security.AccessController.doPrivileged(getCallerSubjectAction);
-        } catch (PrivilegedActionException pae) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(tc, "getCallerSubject(PrivilegedAction) Exception caught: " + pae);
-        }
-
-        return s;
-    }
-
-    @SuppressWarnings("rawtypes")
-    private final PrivilegedExceptionAction getCallerSubjectAction = new PrivilegedExceptionAction() {
-        @Override
-        public Object run() throws Exception {
-            return new SubjectManager().getCallerSubject();
-        }
-    };
 
 }

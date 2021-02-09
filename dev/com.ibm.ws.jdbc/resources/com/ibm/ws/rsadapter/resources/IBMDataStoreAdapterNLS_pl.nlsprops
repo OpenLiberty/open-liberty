@@ -54,12 +54,12 @@ DSA_INTERNAL_ERROR.useraction=Odwied\u017a serwis WWW wsparcia IBM, aby pozna\u0
 # 0035 deleted
 
 # General purpose template for messages that will not be translated
-WS_INTERNAL_ERROR=DSRA0040E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny produktu WebSphere. Skontaktuj si\u0119 z dzia\u0142em wsparcia produktu WebSphere, podaj\u0105c nast\u0119puj\u0105ce dane:  {0} {1} {2}
+WS_INTERNAL_ERROR=DSRA0040E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny produktu WebSphere. Skontaktuj si\u0119 z dzia\u0142em wsparcia produktu WebSphere, podaj\u0105c nast\u0119puj\u0105ce dane: {0} {1} {2}
 WS_INTERNAL_ERROR.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d w kodzie produktu WebSphere.
 WS_INTERNAL_ERROR.useraction=Zbierz wszystkie dzienniki \u015bledzenia i dzienniki systemowe, razem z opisem wykonywanych operacji. Odwied\u017a serwis WWW wsparcia IBM, aby pozna\u0107 informacje dotycz\u0105ce sposob\u00f3w okre\u015blania problemu.
 
 # General purpose template for messages that will not be translated
-DSA_INTERNAL_WARNING=DSRA0050W: Wyst\u0105pi\u0142o wewn\u0119trzne ostrze\u017cenie adaptera sk\u0142adnicy danych. Skontaktuj si\u0119 z dzia\u0142em wsparcia produktu WebSphere, podaj\u0105c nast\u0119puj\u0105ce dane:  {0} {1} {2}
+DSA_INTERNAL_WARNING=DSRA0050W: Wyst\u0105pi\u0142o wewn\u0119trzne ostrze\u017cenie adaptera sk\u0142adnicy danych. Skontaktuj si\u0119 z dzia\u0142em wsparcia produktu WebSphere, podaj\u0105c nast\u0119puj\u0105ce dane: {0} {1} {2}
 DSA_INTERNAL_WARNING.explanation=CMSG0001
 DSA_INTERNAL_WARNING.useraction=Odwied\u017a serwis WWW wsparcia IBM, aby pozna\u0107 informacje dotycz\u0105ce sposob\u00f3w okre\u015blania problemu.
 
@@ -88,7 +88,7 @@ UNSUPPORTED_METHOD.useraction=Odwied\u017a serwis WWW wsparcia IBM, aby pozna\u0
 #TRANSLATOR Do Not Translate: DataSource
 RESOLVING_DB_IMPLICIT_TRANSACTIONS=DSRA0092I: Wykryto niejawn\u0105 transakcj\u0119 bazy danych. Produkt WebSphere wykona na tej transakcji nast\u0119puj\u0105c\u0105 operacj\u0119: {0}. Ten komunikat zostanie zarejestrowany raz dla ka\u017cdego \u017ar\u00f3d\u0142a danych. Kolejne transakcje niejawne b\u0119d\u0105 rozstrzygane automatycznie. 
 RESOLVING_DB_IMPLICIT_TRANSACTIONS.explanation=Serwer aplikacji wykry\u0142 rozpocz\u0119cie transakcji przez baz\u0119 danych. Serwer aplikacji podejmie pr\u00f3b\u0119 rozwi\u0105zania transakcji zgodnie z w\u0142a\u015bciwo\u015bciami niestandardowymi skonfigurowanymi dla \u017ar\u00f3d\u0142a danych.
-RESOLVING_DB_IMPLICIT_TRANSACTIONS.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107. 
+RESOLVING_DB_IMPLICIT_TRANSACTIONS.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107 u\u017cytkownika. 
 
 #TRANSLATOR Do Not Translate: Datasource, FFDC
 ERROR_RESOLVING_DB_IMPLICIT_TRANSACTIONS=DSRA0093I: Wykryto niejawn\u0105 transakcj\u0119 bazy danych. Produkt WebSphere pr\u00f3bowa\u0142 wykona\u0107 nast\u0119puj\u0105c\u0105 operacj\u0119: {0}, ale wyst\u0105pi\u0142 b\u0142\u0105d {1}.
@@ -248,12 +248,12 @@ DSRA4004.onconnect.sql.useraction=Przejrzyj komunikat wyj\u0105tku, aby znale\u0
 # {0} name of the DataSource
 DSRA4005.invalid.logintimeout=DSRA4005E: Serwer nie obs\u0142uguje w\u0142a\u015bciwo\u015bci loginTimeout, kt\u00f3ra zosta\u0142a podana w adresie URL lub we w\u0142a\u015bciwo\u015bciach \u017ar\u00f3d\u0142a danych {0}.
 DSRA4005.invalid.logintimeout.explanation=W\u0142a\u015bciwo\u015b\u0107 loginTimeout nie jest obs\u0142ugiwana, je\u015bli zosta\u0142a podana dla \u017ar\u00f3d\u0142a danych bazuj\u0105cego na implementacji java.sql.Driver, poniewa\u017c serwer nie mo\u017ce wywo\u0142a\u0107 metody getLoginTimeout w klasie java.sql.Driver.
-DSRA4005.invalid.logintimeout.useraction=Zmodyfikuj konfiguracj\u0119 \u017ar\u00f3d\u0142a danych, aby u\u017cy\u0107 implementacji \u017ar\u00f3d\u0142a danych zamiast implementacji java.sql.Driver, lub usu\u0144 w\u0142a\u015bciwo\u015b\u0107 loginTimeout. 
+DSRA4005.invalid.logintimeout.useraction=Zmodyfikuj konfiguracj\u0119 \u017ar\u00f3d\u0142a danych, aby u\u017cy\u0107 implementacji \u017ar\u00f3d\u0142a danych zamiast implementacji java.sql.Driver, lub usu\u0144 w\u0142a\u015bciwo\u015b\u0107 loginTimeout.
 
 # {0} name of the DataSource, {1} the vendor class name, {2} the start of the JDBC URL
 DSRA4006.null.connection=DSRA4006E: \u0179r\u00f3d\u0142o danych {0} nie mo\u017ce nawi\u0105za\u0107 po\u0142\u0105czenia z baz\u0105 danych, poniewa\u017c klasa {1} zwr\u00f3ci\u0142a po\u0142\u0105czenie o warto\u015bci NULL dla adresu URL rozpoczynaj\u0105cego si\u0119 od {2}. Oznacza to, \u017ce sterownik JDBC jest niezgodny ze specyfikacj\u0105 JDBC.
 DSRA4006.null.connection.explanation=Chocia\u017c interfejs java.sql.Driver wskaza\u0142, \u017ce zaakceptowa\u0142 podany adres URL, zwr\u00f3ci\u0142 po\u0142\u0105czenie o warto\u015bci NULL. Ten b\u0142\u0105d wskazuje na defekt w sterowniku JDBC.
-DSRA4006.null.connection.useraction=Zg\u0142o\u015b b\u0142\u0105d do dostawcy sterownika JDBC i upewnij si\u0119, \u017ce sterownik JDBC i konfiguracja \u017ar\u00f3d\u0142a danych s\u0105 poprawne. 
+DSRA4006.null.connection.useraction=Zg\u0142o\u015b b\u0142\u0105d do dostawcy sterownika JDBC i upewnij si\u0119, \u017ce sterownik JDBC i konfiguracja \u017ar\u00f3d\u0142a danych s\u0105 poprawne.
 
 DSRA4008.tran.none.unsupported=DSRA4008E: Sterownik JDBC nie obs\u0142uguje poziomu odseparowania TRANSACTION_NONE, kt\u00f3ry zosta\u0142 skonfigurowany w \u017ar\u00f3dle danych {0}.
 DSRA4008.tran.none.unsupported.explanation=Poziom odseparowania TRANSACTION_NONE, kt\u00f3ry zosta\u0142 skonfigurowany w \u017ar\u00f3dle danych, nie jest obs\u0142ugiwany przez sterownik JDBC.
@@ -261,15 +261,15 @@ DSRA4008.tran.none.unsupported.useraction=Zaktualizuj konfiguracj\u0119 \u017ar\
 
 DSRA4009.tran.none.transactional.unsupported=DSRA4009E: Nie mo\u017cna skonfigurowa\u0107 \u017ar\u00f3d\u0142a danych {0} z poziomem odseparowania TRANSACTION_NONE i parametrem transactional=true.
 DSRA4009.tran.none.transactional.unsupported.explanation=Sterownik JDBC skonfigurowany z poziomem odseparowania TRANSACTION_NONE nie b\u0119dzie obs\u0142ugiwa\u0107 transakcji.
-DSRA4009.tran.none.transactional.unsupported.useraction=Ustaw parametr transactional=false w \u017ar\u00f3dle danych. 
+DSRA4009.tran.none.transactional.unsupported.useraction=Ustaw parametr transactional=false w \u017ar\u00f3dle danych.
 
 DSRA4010.tran.none.autocommit.required=DSRA4010E: W przypadku u\u017cycia poziomu odseparowania TRANSACTION_NONE skonfigurowanego w \u017ar\u00f3dle danych {0} wymagane jest automatyczne zatwierdzanie.
 DSRA4010.tran.none.autocommit.required.explanation=Sterownik JDBC zosta\u0142 skonfigurowany z poziomem odseparowania TRANSACTION_NONE i wymaga u\u017cycia automatycznego zatwierdzania.
-DSRA4010.tran.none.autocommit.required.useraction=Ustaw automatyczne zatwierdzanie na warto\u015b\u0107 true. 
+DSRA4010.tran.none.autocommit.required.useraction=Ustaw automatyczne zatwierdzanie na warto\u015b\u0107 true.
 
 DSRA4011.tran.none.iso.switch.unsupported=DSRA4011E: Sterownik JDBC nie obs\u0142uguje prze\u0142\u0105czania na poziom odseparowania TRANSACTION_NONE w \u017ar\u00f3dle danych {0}.
 DSRA4011.tran.none.iso.switch.unsupported.explanation=Specyfikacja JDBC nie obs\u0142uguje prze\u0142\u0105czania na poziom odseparowania TRANSACTION_NONE.
-DSRA4011.tran.none.iso.switch.unsupported.useraction=Unikaj prze\u0142\u0105czania na poziom odseparowania TRANSACTION_NONE. 
+DSRA4011.tran.none.iso.switch.unsupported.useraction=Unikaj prze\u0142\u0105czania na poziom odseparowania TRANSACTION_NONE.
 
 DSRA4012.ignored.datasource.config.used=DSRA4012I: W przypadku korzystania z produktu Oracle UCP nast\u0119puj\u0105ce w\u0142a\u015bciwo\u015bci \u017ar\u00f3d\u0142a danych s\u0105 ignorowane: {0}.
 DSRA4012.ignored.datasource.config.used.explanation=Podane w\u0142a\u015bciwo\u015bci \u017ar\u00f3d\u0142a danych nie s\u0105 poprawne, je\u015bli u\u017cywany jest produkt Oracle UCP.
@@ -648,5 +648,8 @@ KERBEROS_NOT_SUPPORTED_WARNING.useraction= Wy\u0142\u0105cz uwierzytelnianie Ker
 
 # 9544-9548 deleted
 
+KERBEROS_ORACLE_IBMJDK_NOT_SUPPORTED=DSRA9549E: Nie mo\u017cna u\u017cywa\u0107 pakietu IBM Java 8 SDK z baz\u0105 danych Oracle. Sterownik JDBC Oracle obs\u0142uguje uwierzytelnianie Kerberos wy\u0142\u0105cznie przy u\u017cyciu domy\u015blnych interfejs\u00f3w API zabezpiecze\u0144 dost\u0119pnych w pakietach OpenJDK, OpenJ9 lub podobnych pakietach SDK.
+KERBEROS_ORACLE_IBMJDK_NOT_SUPPORTED.explanation=Nie mo\u017cna u\u017cywa\u0107 pakietu IBM Java 8 SDK z baz\u0105 danych Oracle. Sterownik JDBC Oracle obs\u0142uguje uwierzytelnianie Kerberos wy\u0142\u0105cznie przy u\u017cyciu domy\u015blnych interfejs\u00f3w API zabezpiecze\u0144 dost\u0119pnych w pakietach OpenJDK, OpenJ9 lub podobnych pakietach SDK.
+KERBEROS_ORACLE_IBMJDK_NOT_SUPPORTED.useraction=Wy\u0142\u0105cz uwierzytelnianie Kerberos dla \u017ar\u00f3d\u0142a danych Oracle lub skorzystaj z pakietu Java SDK innego ni\u017c IBM Java 8 SDK.
 # 9600-9603 deleted 
 # 9900 deleted

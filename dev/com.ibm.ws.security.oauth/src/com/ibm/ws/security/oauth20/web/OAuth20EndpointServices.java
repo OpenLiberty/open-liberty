@@ -213,9 +213,9 @@ public class OAuth20EndpointServices {
         }
         if (tc.isDebugEnabled()) {
             if (oauth20Provider != null) {
-                Tr.debug(tc, "OAUTH20 _SSO OP WILL NOT PROCESS THE REQUEST");
-            } else {
                 Tr.debug(tc, "OAUTH20 _SSO OP PROCESS HAS ENDED.");
+            } else {
+                Tr.debug(tc, "OAUTH20 _SSO OP WILL NOT PROCESS THE REQUEST");
             }
         }
     }
@@ -268,7 +268,7 @@ public class OAuth20EndpointServices {
                     revoke(oauth20Provider, request, response);
                 }
                 break;
-            case coverage_map:
+            case coverage_map: // non-spec extension
                 coverageMapServices.handleEndpointRequest(oauth20Provider, request, response);
                 break;
             case registration:
@@ -280,15 +280,9 @@ public class OAuth20EndpointServices {
                 logout(oauth20Provider, request, response);
                 break;
             case app_password:
-                if (isJava7(request.getRequestURI())) { // emit error message
-                    break;
-                }
                 tokenExchange.processAppPassword(oauth20Provider, request, response);
                 break;
             case app_token:
-                if (isJava7(request.getRequestURI())) { // emit error message
-                    break;
-                }
                 tokenExchange.processAppToken(oauth20Provider, request, response);
                 break;
 
@@ -357,23 +351,12 @@ public class OAuth20EndpointServices {
             ServletContext servletContext, OAuth20Provider provider, AttributeList options, String requiredRole)
             throws ServletException, IOException, OidcServerException {
 
-        if (isJava7(request.getRequestURI())) { // emit error message if < java8
-            return false;
-        }
         OAuthResult result = handleUIUserAuthentication(request, response, servletContext, provider, options);
         if (!isUIAuthenticationComplete(request, response, provider, result, requiredRole)) {
             return false;
         }
 
         return true;
-    }
-
-    private boolean isJava7(String uri) {
-        if (OAuth20Constants.JAVA_VERSION_7 || OAuth20Constants.JAVA_VERSION_6) {
-            Tr.warning(tc2, "JAVA8_REQUIRED", new Object[] { uri }); // CWWKS1495W
-            return true;
-        }
-        return false;
     }
 
     private boolean isUIAuthenticationComplete(HttpServletRequest request, HttpServletResponse response, OAuth20Provider provider, OAuthResult result, String requiredRole) throws OidcServerException {
@@ -709,7 +692,7 @@ public class OAuth20EndpointServices {
             reducedScopes = clientAuthorization.getReducedScopes(provider, request, clientId, true);
         } catch (Exception e1) {
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Caught exception, so setting reduced scopes to null. Exception was: " + e1.getMessage());
+                Tr.debug(tc, "Caught exception, so setting reduced scopes to null. Exception was: " + e1);
             }
             reducedScopes = null;
         }
@@ -743,7 +726,7 @@ public class OAuth20EndpointServices {
             return createTokenLimitResult(attrs, request, clientId);
         }
 
-        if (request.getAttribute("OidcRequest") != null) {
+        if (request.getAttribute(OAuth20Constants.OIDC_REQUEST_OBJECT_ATTR_NAME) != null) {
             // Ensure that the reduced scopes list is not empty
             oauthResult = clientAuthorization.checkForEmptyScopeSetAfterConsent(reducedScopes, oauthResult, request, provider, clientId);
             if (oauthResult != null && oauthResult.getStatus() != OAuthResult.STATUS_OK) {
@@ -767,9 +750,9 @@ public class OAuth20EndpointServices {
             options.setAttribute(OAuth20Constants.SCOPE, OAuth20Constants.ATTRTYPE_RESPONSE_ATTRIBUTE, reducedScopes);
         }
 
-        if (provider.isTrackRelyingParties()) {
-            RelyingPartyTracker rpTracker = new RelyingPartyTracker(request, response, provider);
-            rpTracker.trackRelyingParty(clientId);
+        if (provider.isTrackOAuthClients()) {
+            OAuthClientTracker clientTracker = new OAuthClientTracker(request, response, provider);
+            clientTracker.trackOAuthClient(clientId);
         }
 
         consent.handleConsent(provider, request, prompt, clientId);
@@ -823,6 +806,7 @@ public class OAuth20EndpointServices {
         OAuthResult result = clientAuthorization.validateAndHandle2LegsScope(provider, request, response, clientId);
         if (result.getStatus() == OAuthResult.STATUS_OK) {
             result = provider.processTokenRequest(clientId, request, response);
+
         }
         if (result.getStatus() != OAuthResult.STATUS_OK) {
             OAuth20TokenRequestExceptionHandler handler = new OAuth20TokenRequestExceptionHandler();
@@ -1046,12 +1030,12 @@ public class OAuth20EndpointServices {
     }
 
     private OAuth20Request getAuth20Request(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        OAuth20Request oauth20Request = (OAuth20Request) request.getAttribute("OAuth20Request");
+        OAuth20Request oauth20Request = (OAuth20Request) request.getAttribute(OAuth20Constants.OAUTH_REQUEST_OBJECT_ATTR_NAME);
         if (oauth20Request == null) {
             String errorMsg = TraceNLS.getFormattedMessage(this.getClass(),
                     MESSAGE_BUNDLE,
                     "OAUTH_REQUEST_ATTRIBUTE_MISSING",
-                    new Object[] { request.getRequestURI(), "OAuth20Request" },
+                    new Object[] { request.getRequestURI(), OAuth20Constants.OAUTH_REQUEST_OBJECT_ATTR_NAME },
                     "CWWKS1412E: The request endpoint {0} does not have attribute {1}.");
             Tr.error(tc, errorMsg);
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
@@ -1065,7 +1049,7 @@ public class OAuth20EndpointServices {
             String errorMsg = TraceNLS.getFormattedMessage(this.getClass(),
                     MESSAGE_BUNDLE,
                     "OAUTH_PROVIDER_OBJECT_NULL",
-                    new Object[] { oauth20Request.getProviderName(), "OAuth20Request" },
+                    new Object[] { oauth20Request.getProviderName(), OAuth20Constants.OAUTH_REQUEST_OBJECT_ATTR_NAME },
                     "CWWKS1413E: The OAuth20Provider object is null for OAuth provider {0}.");
             Tr.error(tc, errorMsg);
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
@@ -1141,7 +1125,7 @@ public class OAuth20EndpointServices {
             }
         } catch (WSSecurityException e) {
             if (tc.isDebugEnabled())
-                Tr.debug(tc, methodName + " failed. Nothing changed. WSSecurityException:" + e.getMessage());
+                Tr.debug(tc, methodName + " failed. Nothing changed. WSSecurityException:" + e);
         }
         return null;
     }
@@ -1176,7 +1160,7 @@ public class OAuth20EndpointServices {
 
         } catch (Exception e) {
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Unable to match predefined cache key." + e.getMessage());
+                Tr.debug(tc, "Unable to match predefined cache key." + e);
             }
         }
         return obj;

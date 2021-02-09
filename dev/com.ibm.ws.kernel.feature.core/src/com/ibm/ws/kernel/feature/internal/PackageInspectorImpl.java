@@ -192,7 +192,7 @@ public class PackageInspectorImpl implements SharedPackageInspector, Introspecto
     static class PackageInfo implements PackageType {
         final EnumSet<PkgType> types;
         final ArrayList<String> productRepo;
-        private final boolean kernelBlackList = false;
+
         // Keep track of what type of feature(s) have exported this package
         private boolean isKernelExport = false;
         private boolean isCoreExport = false;
@@ -310,7 +310,7 @@ public class PackageInspectorImpl implements SharedPackageInspector, Introspecto
             return types.contains(PkgType.API_Stable);
         }
 
-        public boolean isKernelExportBlacklistedPackage() {
+        public boolean isKernelExportBlockedPackage() {
 
             if ((isKernelExport && isCoreExport && !isSpecOsgiApi() && !isSpi())) {
                 return true;
@@ -472,13 +472,13 @@ public class PackageInspectorImpl implements SharedPackageInspector, Introspecto
      *
      * @see com.ibm.ws.kernel.provisioning.packages.SharedPackageInspector#listKernelApiPackages()
      */
-    public Iterator<String> listKernelBlackListApiPackages() {
+    public Iterator<String> listKernelBlockedApiPackages() {
         ProductPackages index = packageIndex;
         if (index != null) {
             return index.packageIterator(new Filter<PackageInfo>() {
                 @Override
                 public boolean includeValue(String packageName, PackageInfo value) {
-                    return value.isApi() && value.isKernelExportBlacklistedPackage();
+                    return value.isApi() && value.isKernelExportBlockedPackage();
                 }
 
             });

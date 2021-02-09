@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2017 IBM Corporation and others.
+ * Copyright (c) 1997, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -99,6 +99,7 @@ import com.ibm.websphere.servlet.event.ServletErrorEvent;
 import com.ibm.websphere.servlet.event.ServletErrorListener;
 import com.ibm.websphere.servlet.event.ServletInvocationListener;
 import com.ibm.websphere.servlet.event.ServletListener;
+import com.ibm.websphere.servlet.request.extended.IRequestExtended;
 import com.ibm.websphere.webcontainer.async.AsyncRequestDispatcher;
 import com.ibm.ws.container.Container;
 import com.ibm.ws.container.DeployedModule;
@@ -108,6 +109,7 @@ import com.ibm.ws.container.service.annotations.WebAnnotations;
 import com.ibm.ws.container.service.annocache.AnnotationsBetaHelper;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.http.dispatcher.internal.channel.HttpDispatcherLink;
 import com.ibm.ws.managedobject.ManagedObject;
 import com.ibm.ws.session.SessionCookieConfigImpl;
 import com.ibm.ws.session.utils.IDGeneratorImpl;
@@ -141,6 +143,7 @@ import com.ibm.ws.webcontainer.servlet.ServletWrapper;
 import com.ibm.ws.webcontainer.servlet.exception.NoTargetForURIException;
 import com.ibm.ws.webcontainer.session.IHttpSessionContext;
 import com.ibm.ws.webcontainer.spiadapter.collaborator.IInvocationCollaborator;
+import com.ibm.ws.webcontainer.srt.SRTServletRequest;
 import com.ibm.ws.webcontainer.util.DocumentRootUtils;
 import com.ibm.ws.webcontainer.util.EmptyEnumeration;
 import com.ibm.ws.webcontainer.util.IteratorEnumerator;
@@ -150,6 +153,7 @@ import com.ibm.wsspi.adaptable.module.Entry;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 import com.ibm.wsspi.anno.targets.AnnotationTargets_Targets;
 import com.ibm.wsspi.http.HttpInboundConnection;
+import com.ibm.wsspi.http.ee7.HttpInboundConnectionExtended;
 import com.ibm.wsspi.injectionengine.InjectionException;
 import com.ibm.wsspi.webcontainer.ClosedConnectionException;
 import com.ibm.wsspi.webcontainer.RequestProcessor;
@@ -1038,12 +1042,28 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
             } catch (Throwable th) {
                 // pk435011
                 logger.logp(Level.SEVERE, CLASS_NAME, "initialize", "error.notifying.listeners.of.WebApp.start", new Object[] { th });
-                if (WCCustomProperties.STOP_APP_STARTUP_ON_LISTENER_EXCEPTION) {          //PI58875
+                if (WCCustomProperties.STOP_APP_STARTUP_ON_LISTENER_EXCEPTION) { //PI58875
                     if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE))
                         logger.logp(Level.FINE, CLASS_NAME, "initialize", "rethrowing exception due to stopAppStartupOnListenerException");
+
+                    if (moduleConfig instanceof com.ibm.ws.webcontainer.osgi.container.DeployedModule) {
+                        // complete the notification here for app manager
+                        ((com.ibm.ws.webcontainer.osgi.container.DeployedModule) moduleConfig).initTaskFailed();
+                    }
+
                     throw th;
                 }
             }
+
+            if (moduleConfig instanceof com.ibm.ws.webcontainer.osgi.container.DeployedModule) {
+                // complete the notification here for app manager
+                ((com.ibm.ws.webcontainer.osgi.container.DeployedModule) moduleConfig).initTaskComplete();
+                
+                if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
+                    logger.logp(Level.FINE, CLASS_NAME, "initialize", "set future done for deployedModule -->" + moduleConfig);
+                }
+            }
+            
             commonInitializationFinally(extensionFactories); // NEVER INVOKED BY
             // WEBSPHERE
             // APPLICATION
@@ -4079,8 +4099,24 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
         WebContainerRequestState reqState = WebContainerRequestState.getInstance(true);   //PI80786
 
         // PK82794
-        if (WCCustomProperties.SUPPRESS_LAST_ZERO_BYTE_PACKAGE)
-            reqState.setAttribute("com.ibm.ws.webcontainer.suppresslastzerobytepackage", "true");
+        if (WCCustomProperties.SUPPRESS_LAST_ZERO_BYTE_PACKAGE) {
+           // reqState.setAttribute("com.ibm.ws.webcontainer.suppresslastzerobytepackage", "true");
+            if (req instanceof SRTServletRequest) {
+                SRTServletRequest srtReq = (SRTServletRequest) req;
+                IRequestExtended iReq = (IRequestExtended)srtReq.getIRequest();
+                if (iReq != null) {
+                    HttpInboundConnection httpInboundConnection = iReq.getHttpInboundConnection();
+                    HttpInboundConnectionExtended extendedConnection= (HttpInboundConnectionExtended) httpInboundConnection;
+                    if(extendedConnection!=null) {
+                        HttpDispatcherLink dispatcherLink=(HttpDispatcherLink) extendedConnection.getHttpDispatcherLink();
+			if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
+				logger.logp(Level.FINE, CLASS_NAME, "sendError", "Setting SuppressZeroByteChunk");
+			}
+                        dispatcherLink.setSuppressZeroByteChunk(true);
+                        }
+                }
+            }
+        }
         // PK82794
 
         if (!res.isCommitted())

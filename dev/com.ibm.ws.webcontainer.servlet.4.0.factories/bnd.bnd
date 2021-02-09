@@ -66,6 +66,8 @@ Import-Package: \
     *
 
 
+jakartaeeMe: true
+
 -buildpath: \
     com.ibm.ws.webcontainer.servlet.3.1;version=latest,\
     com.ibm.ws.webcontainer;version=latest,\

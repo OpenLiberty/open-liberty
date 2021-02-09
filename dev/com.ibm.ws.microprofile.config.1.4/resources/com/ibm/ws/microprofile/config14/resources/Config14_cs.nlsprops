@@ -32,7 +32,7 @@ no.such.element.CWMCG0300E=CWMCG0300E: Vlastnost {0} nebyla v konfiguraci naleze
 no.such.element.CWMCG0300E.explanation=Po\u017eadovan\u00e1 vlastnost neexistovala v \u017e\u00e1dn\u00e9m z nakonfigurovan\u00fdch zdroj\u016f konfigurace.
 no.such.element.CWMCG0300E.useraction=P\u0159idejte vlastnost do jednoho z existuj\u00edc\u00edch zdroj\u016f konfigurace nebo p\u0159idejte nov\u00fd zdroj konfigurace, kter\u00fd obsahuje vlastnost.
 
-failed.to.schedule.cache.invalidation.CWMCG0301E=CWMCG0301E: Nezda\u0159ilo se napl\u00e1novat zneplatn\u011bn\u00ed mezipam\u011bti konfigurace MicroProfile. V\u00fdjimka: {0}.
+failed.to.schedule.cache.invalidation.CWMCG0301E=CWMCG0301E: Zneplatn\u011bn\u00ed mezipam\u011bti konfigurace MicroProfile nelze napl\u00e1novat. V\u00fdjimka: {0}
 failed.to.schedule.cache.invalidation.CWMCG0301E.explanation=Zm\u011bny v konfiguraci MicroProfile se nemusej\u00ed v aplikaci projevit.
 failed.to.schedule.cache.invalidation.CWMCG0301E.useraction=Zkontrolujte protokol zpr\u00e1v message.log a identifikujte probl\u00e9m.
 

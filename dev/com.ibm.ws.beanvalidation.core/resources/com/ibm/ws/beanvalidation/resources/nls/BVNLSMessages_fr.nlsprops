@@ -87,3 +87,16 @@ JNDI_NON_JEE_THREAD_CWNBV0006E.explanation=Les op\u00e9rations JNDI sur un nom j
 JNDI_NON_JEE_THREAD_CWNBV0006E.useraction=Modifiez l'application de sorte que l'op\u00e9ration JNDI se produise sur une unit\u00e9 d'ex\u00e9cution associ\u00e9e \u00e0 un composant d'application Java EE.
 
 # -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the method with the invalid ValidateOnExecution annotation
+# -----------------------------------------------------------------------
+BVKEY_VALIDATE_ON_EXECUTION_NOT_ALLOWED_CWNBV0007E=CWNBV0007E: @ValidateOnExecution n''est pas admis dans les m\u00e9thodes qui remplacent une m\u00e9thode de superclasse ou qui impl\u00e9mentent une interface. V\u00e9rifiez la configuration pour {0}
+BVKEY_VALIDATE_ON_EXECUTION_NOT_ALLOWED_CWNBV0007E.explanation= @ValidateOnExecution n'est pas admis dans les m\u00e9thodes qui remplacent une m\u00e9thode de superclasse ou qui impl\u00e9mentent une interface. Une m\u00e9thode qui remplace une m\u00e9thode de superclasse ou qui impl\u00e9mente une m\u00e9thode d'interface h\u00e9rite du comportement de la m\u00e9thode qu'elle remplace ou impl\u00e9mente.
+BVKEY_VALIDATE_ON_EXECUTION_NOT_ALLOWED_CWNBV0007E.useraction= Retirez @ValidateOnExecution de la m\u00e9thode sp\u00e9cifi\u00e9e.
+
+# -----------------------------------------------------------------------
+BVKEY_MIXING_IMPLICIT_TYPE_NOT_ALLOWED_CWNBV0008E=CWNBV0008E: Le m\u00e9lange du type IMPLICIT avec d''autres types d''ex\u00e9cutable n''est pas admis. V\u00e9rifiez les types d''ex\u00e9cutable d\u00e9finis pour : \n {0}
+BVKEY_MIXING_IMPLICIT_TYPE_NOT_ALLOWED_CWNBV0008E.explanation=Selon la sp\u00e9cification de validation de bean, le m\u00e9lange du type IMPLICIT avec d'autres types d'ex\u00e9cutable n'est pas admis pour l'annotation @ValidateOnExecution.
+BVKEY_MIXING_IMPLICIT_TYPE_NOT_ALLOWED_CWNBV0008E.useraction=Mettez \u00e0 jour la m\u00e9thode, la classe ou les param\u00e8tres XML globaux pour les types d'ex\u00e9cutable afin d'\u00e9viter le m\u00e9lange du type IMPLICT avec d'autres types d'ex\u00e9cutable.
+
+# -----------------------------------------------------------------------

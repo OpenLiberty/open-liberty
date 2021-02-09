@@ -1,0 +1,441 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/DescriptorExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+1=Atrybut [{0}] nie jest zadeklarowany jako typ ValueHolderInterface, ale jego odwzorowanie u\u017cywa elementu po\u015bredniego.
+
+10=W tym odwzorowaniu nie ustawiono nazwy pola.
+
+100=Metoda wyzwoli\u0142a wyj\u0105tek.
+
+101=Metoda bazowa wyzwoli\u0142a wyj\u0105tek.
+
+102=Metoda [{0}] wyzwoli\u0142a wyj\u0105tek.
+
+103=Wyst\u0105pi\u0142 problem podczas wyodr\u0119bniania klasy z wiersza [{0}] z u\u017cyciem metody statycznej {1}] z parametrem (DatabaseRow).  Zosta\u0142 wyzwolony wyj\u0105tek.
+
+104=Wyst\u0105pi\u0142 problem podczas tworzenia nowej instancji za pomoc\u0105 metody tworzenia [{0}].  Metoda tworzenia wyzwoli\u0142a wyj\u0105tek.
+
+105=Bazowa metoda wywo\u0142ania zwrotnego deskryptora [{0}] z parametrem (Session) wyzwoli\u0142a wyj\u0105tek.
+
+106=Metoda [{0}] na obiekcie zg\u0142asza wyj\u0105tek. {2}Argument: [{1}]
+
+108=Nie mo\u017cna znale\u017a\u0107 warto\u015bci w odwzorowaniu indykatora klasy w deskryptorze macierzystym [{0}].
+
+109=Ten deskryptor nie powinien mie\u0107 zdefiniowanego pola blokady zapisu, poniewa\u017c jest deskryptorem potomnym. Dziedziczy on pole blokady zapisu swojego deskryptora macierzystego.
+
+11=Informacje klucza obcego dla tego odwzorowania s\u0105 zdefiniowane niepoprawnie.
+
+110=Brak deskryptora dla klasy [{0}].
+
+111=Nazwy p\u00f3l kluczy podstawowych wielu tabel musz\u0105 by\u0107 pe\u0142ne.
+
+112=Za pomoc\u0105 metody setTableName(String) mo\u017ce zosta\u0107 dodana tylko jedna tabela. Aby doda\u0107 wiele tabel do deskryptora, u\u017cyj metody addTableName(String).
+
+113=Konstruktor by\u0142 niedost\u0119pny.
+
+114=Wyst\u0105pi\u0142 problem podczas tworzenia nowej instancji za pomoc\u0105 metody tworzenia [{0}].  Metoda tworzenia nie jest dost\u0119pna.
+
+115=Nie podano warto\u015bci konwersji dla atrybutu [{0}].
+
+116=Nie podano warto\u015bci konwersji dla warto\u015bci [{0}] w polu [{1}].
+
+118=Obiekt [{0}] nie mo\u017ce mie\u0107 odwzorowa\u0144 tylko do odczytu na swoje pola blokady zapisu.
+
+119=Odwzorowania obiektu [{0}] na jego pola blokady zapisu musz\u0105 by\u0107 tylko do odczytu.
+
+12=Deskryptory musz\u0105 u\u017cy\u0107 odwzorowania to\u017csamo\u015bci, aby skorzysta\u0107 z opcji sprawdzania istnienia Check Cache (Sprawd\u017a pami\u0119\u0107 podr\u0119czn\u0105).
+
+120=Klucz zapytania [{0}] jest zdefiniowany w deskryptorze macierzystym [{1}], ale nie w deskryptorze potomnym [{2}].
+
+122=Metoda setExistenceCheck() z argumentem [{0}] nie zosta\u0142a rozpoznana.
+
+125=Odwzorowanie dla atrybutu [{0}] u\u017cywa elementu po\u015bredniego, a wi\u0119c musi zosta\u0107 zainicjowane do nowej klasy ValueHolder.  Obecnie warto\u015b\u0107 wynosi: [{1}].
+
+126=\u017badna podklasa nie jest zgodna z t\u0105 klas\u0105 [{0}] dla tej klasy AggregateMapping z dziedziczeniem.
+
+127=Metoda get dla atrybutu [{0}] nie zwraca obiektu ValueHolderInterface, ale odwzorowanie u\u017cywa elementu po\u015bredniego.
+
+128=Metoda get dla atrybutu [{0}] zwraca obiekt ValueHolderInterface, ale odwzorowanie nie u\u017cywa elementu po\u015bredniego.
+
+129=Metoda set dla atrybutu [{0}] nie przyjmuje obiektu ValueHolderInterface jako parametru, ale odwzorowanie u\u017cywa elementu po\u015bredniego.
+
+13=Zmienna instancji [{0}] w obiekcie [{1}] jest niedost\u0119pna.
+
+130=Metoda set dla atrybutu [{0}] przyjmuje obiekt ValueHolderInterface jako parametr, ale odwzorowanie nie u\u017cywa elementu po\u015bredniego.
+
+131=Metoda get dla atrybutu [{0}] powinna zwraca\u0107 typ Vector (lub typ, kt\u00f3ry implementuje odwzorowanie albo kolekcj\u0119, w przypadku u\u017cywania Java 2).
+
+133=Metoda set dla atrybutu [{0}] powinna przyjmowa\u0107 typ Vector jako parametr (lub typ, kt\u00f3ry implementuje odwzorowanie albo kolekcj\u0119, w przypadku u\u017cywania Java 2).
+
+135=Relacja klucza obcego wielu tabel odwo\u0142uje si\u0119 do nieznanej tabeli [{0}].
+
+138=Atrybut [{0}] jest typu [{1}], ale odwzorowanie u\u017cywa przezroczystego elementu po\u015bredniego (\u0142adowanie op\u00f3\u017anione), a to wymaga, aby by\u0142o nadklas\u0105 [{2}].
+
+139=Metoda get dla atrybutu [{0}] zwraca [{1}], ale odwzorowanie u\u017cywa przezroczystego elementu po\u015bredniego (\u0142adowanie op\u00f3\u017anione), a to wymaga, aby by\u0142o nadklas\u0105 [{2}].
+
+14=Wyst\u0105pi\u0142 problem podczas klonowania obiektu [{0}].  Metoda klonowania [{1}] jest niedost\u0119pna.
+
+140=Metoda set dla atrybutu [{0}] przyjmuje [{1}], ale odwzorowanie u\u017cywa przezroczystego elementu po\u015bredniego (\u0142adowanie op\u00f3\u017anione), a to wymaga, aby by\u0142o nadklas\u0105 [{2}].
+
+141=Pole [{0}] nie znajduje si\u0119 w tabeli [{1}] w bazie danych.
+
+142=Tabela [{0}] nie znajduje si\u0119 w bazie danych.
+
+143=Podano typ Vector pola multipleTableInsertOrder, [{0}], kt\u00f3ry ma wi\u0119cej lub mniej tabel ni\u017c podano w deskryptorze. {2}W typie Vector operacji insert order musz\u0105 zosta\u0107 uwzgl\u0119dnione wszystkie tabele [{1}].
+
+144=Przezroczystego elementu po\u015bredniego mo\u017cna u\u017cy\u0107 tylko z odwzorowaniami CollectionMappings.
+
+145=Klasa kontenera po\u015bredniego [{0}] musi implementowa\u0107 konstruktor [{1}] z parametrem (ValueHolderInterface).
+
+146=Nie mo\u017cna utworzy\u0107 instancji klasy kontenera po\u015bredniego [{0}] z u\u017cyciem konstruktora {1}(ValueHolderInterface).
+
+147=Strategia kontenera [{0}] powinna by\u0107 u\u017cywana tylko w pakiecie JDK 1.1.x.  Utworzono jej instancj\u0119 dla [{1}].
+
+148=Strategia kontenera [{0}] nie jest zgodna z przezroczystym elementem po\u015brednim.
+
+149=Obiekty NoIndirectionPolicy nie powinny otrzymywa\u0107 tego komunikatu.
+
+15=Ta klasa nie definiuje konstruktora domy\u015blnego, co jest wymagane przez EclipseLink.
+
+150=Odwzorowanie dla atrybutu [{0}] u\u017cywa przezroczystego elementu po\u015bredniego, dlatego atrybut [{0}] musi zosta\u0107 zainicjowany w odpowiednim kontenerze.  Obecnie warto\u015b\u0107 wynosi [{1}]. {2} - musi by\u0107 instancj\u0105 implementatora kolekcji lub odwzorowania.
+
+151=Operacja [{0}] jest niepoprawna dla tego odwzorowania.
+
+152=Operacja [{1}] jest niepoprawna dla tej strategii adresowania po\u015bredniego [{0}].
+
+153=Deskryptor odwo\u0142ania dla [{0}] powinien by\u0107 ustawiony jako deskryptor agregowania kolekcji.
+
+154=Klasa kontenera elementu po\u015bredniego [{0}] nie implementuje klasy IndirectContainer.
+
+155=To odwzorowanie nie zawiera pola klucza obcego dowi\u0105zanego do pola klucza podstawowego [{0}].
+
+156=Dla tego odwzorowania nie ustawiono nazwy struktury.
+
+157=Normalne deskryptory nie obs\u0142uguj\u0105 nierelacyjnych rozszerze\u0144.
+
+158=Klasa macierzysta tego deskryptora zosta\u0142a ustawiona na sam\u0105 siebie.
+
+159=Element po\u015bredni proxy jest dost\u0119pny tylko na maszynach wirtualnych zgodnych z pakietem JDK 1.3 lub nowszych.
+
+16=Metoda wywo\u0142ania zwrotnego deskryptora [{0}] z parametrem (DescriptorEvent) jest niedost\u0119pna.
+
+160=Atrybut [{0}] klasy [{1}] jest typu [{2}], kt\u00f3ry nie zosta\u0142 okre\u015blony na li\u015bcie interfejs\u00f3w przekazanej do metody useProxyIndirection(). {4}Poprawne s\u0105 interfejsy: [{3}].
+
+161=Metoda [{0}] w klasie [{1}] zwraca warto\u015b\u0107 typu [{2}], kt\u00f3ry nie zosta\u0142 okre\u015blony na li\u015bcie interfejs\u00f3w przekazanej do metody useProxyIndirection(). {4}Poprawne s\u0105 interfejsy: [{3}].
+
+162=Metoda [{0}] w klasie [{1}] przyjmuje parametr typu [{2}], kt\u00f3ry nie zosta\u0142 okre\u015blony na li\u015bcie interfejs\u00f3w przekazanej do metody useProxyIndirection().{4}Poprawne s\u0105 interfejsy: [{3}].
+
+163=Klasa atrybut\u00f3w tego odwzorowania nie jest zgodna z klas\u0105 kolekcji.  Nie mo\u017cna przypisa\u0107 [{1}] do [{0}].
+
+164=Metoda poprawki [{1}] w klasie poprawki [{0}] jest niepoprawna, nie jest publiczna lub nie mo\u017cna jej znale\u017a\u0107. {2}Metody poprawki deskryptora musz\u0105 mie\u0107 deklaracj\u0119 public static void z pojedynczym parametrem (ClassDescriptor).
+
+165=Metoda poprawki tego deskryptora [{1}] w klasie poprawki [{0}] wyzwoli\u0142a wyj\u0105tek.
+
+166=Brak odwzorowania dla atrybutu [{0}].
+
+167=Nie znaleziono poprawnego konstruktora dla klasy kontenera elementu po\u015bredniego [{0}].
+
+168=Wyst\u0105pi\u0142 problem podczas tworzenia nowej instancji za pomoc\u0105 konstruktora domy\u015blnego.  Konstruktor domy\u015blny wyzwoli\u0142 wyj\u0105tek.
+
+169=Wyst\u0105pi\u0142 problem podczas tworzenia nowej instancji fabryki za pomoc\u0105 konstruktora domy\u015blnego.  Konstruktor domy\u015blny wyzwoli\u0142 wyj\u0105tek.
+
+17=Podejmowana jest pr\u00f3ba uzyskania dost\u0119pu do metody [{0}] w obiekcie [{1}].  Metoda bazowa jest niedost\u0119pna.
+
+170=Wyst\u0105pi\u0142 problem (niedozwolony dost\u0119p) podczas tworzenia nowej instancji fabryki przy u\u017cyciu konstruktora domy\u015blnego.
+
+171=Klasa fabryki nie definiuje publicznego konstruktora domy\u015blnego lub konstruktor zg\u0142osi\u0142 wyj\u0105tek.
+
+172=Nie znaleziono konstruktora fabryki.
+
+173=Konstruktor fabryki by\u0142 niedost\u0119pny.
+
+174=Wyst\u0105pi\u0142 problem podczas tworzenia fabryki.  Metoda tworzenia [{0}] jest niedost\u0119pna.
+
+175=Wyst\u0105pi\u0142 problem podczas tworzenia fabryki za pomoc\u0105 metody tworzenia [{0}].  Metoda tworzenia wyzwoli\u0142a wyj\u0105tek.
+
+176=Wyst\u0105pi\u0142 problem podczas tworzenia fabryki za pomoc\u0105 metody tworzenia [{0}].  Metoda tworzenia nie jest dost\u0119pna.
+
+177=Brak odwzorowania dla atrybutu: [{0}].
+
+178=Nie mo\u017cna znale\u017a\u0107 odwzorowania dla atrybutu [{0}] w komponencie bean obiektu [{1}]. Atrybut musi by\u0107 odwzorowany.
+
+179=Atrybut [{0}] u\u017cywa konserwacji relacji dwukierunkowych, ale ma klas\u0119 ContainerPolicy [{1}], kt\u00f3ra tego nie obs\u0142uguje.  Atrybut powinien zosta\u0107 odwzorowany z innym typem kolekcji.
+
+18=Niedozwolony dost\u0119p do metody w odwzorowaniu transformacji przy u\u017cyciu obiektu ValueHolder.
+
+181=Nie mo\u017cna znale\u017a\u0107 klasy AttributeTransformer [{0}].
+
+182=Nie mo\u017cna znale\u017a\u0107 klasy FieldTransformer [{0}].
+
+183=Klasy [{0}] nie mo\u017cna u\u017cy\u0107 jako klasy AttributeTransformer.
+
+184=Klasy [{0}] nie mo\u017cna u\u017cy\u0107 jako klasy FieldTransformer.
+
+185=Klasa ReturningPolicy zawiera pole [{0}] o dw\u00f3ch r\u00f3\u017cnych typach: [{1}] i [{2}].
+
+186=Klasa ReturningPolicy zawiera pole [{0}] dodane dwukrotnie: za pomoc\u0105 wywo\u0142a\u0144 addInsertField i addInsertFieldReturnOnly.
+
+187=Klasa ReturningPolicy zawiera pole [{0}] typu [{1}], ale to samo pole w deskryptorze ma typ [{2}].
+
+188=Klasa ReturningPolicy zawiera nieodwzorowane pole [{0}], kt\u00f3re wymaga typu.
+
+189=Klasa ReturningPolicy zawiera odwzorowane pole [{0}], kt\u00f3re wymaga typu.
+
+19=Niedozwolony dost\u0119p podczas wywo\u0142ywania metody atrybutu w odwzorowaniu transformacji.  Metoda bazowa jest niedost\u0119pna.
+
+190=Klasa ReturningPolicy zawiera pole [{0}] odwzorowane z [{1}], kt\u00f3rego odwzorowanie nie jest obs\u0142ugiwane.
+
+191=Klasa ReturningPolicy zawiera pole [{0}], kt\u00f3re nie jest obs\u0142ugiwane: jest to albo pole sekwencji, albo indykator typu klasy lub jest u\u017cywane do blokowania.
+
+192=Klasa ReturningPolicy zawiera pole [{0}], ale niestandardowe zapytanie [{1}] nie przekazuje go na wyj\u015bcie.
+
+193=Nie ustawiono niestandardowego zapytania [{0}], ale klasa ReturningPolicy zawiera pola, kt\u00f3re maj\u0105 zosta\u0107 zwr\u00f3cone i [{1}] nie obs\u0142uguje generowania wywo\u0142a\u0144 ze zwracaniem.
+
+194=Metoda wyodr\u0119bniania klasy [{0}] musi by\u0107 metod\u0105 statyczn\u0105 w klasie deskryptora.
+
+195=Wsp\u00f3\u0142u\u017cytkowana klasa {1} nie mo\u017ce odwo\u0142ywa\u0107 si\u0119 do izolowanej klasy {0}.
+
+196=W\u0142a\u015bciwo\u015b\u0107 UpdateAllFields nie zosta\u0142a ustawiona lub zosta\u0142a ustawiona na warto\u015b\u0107 false.  Je\u015bli u\u017cywana jest metoda CMPPolicy.setForceUpdate(true), nale\u017cy r\u00f3wnie\u017c wywo\u0142a\u0107 metod\u0119 CMPPolicy.setUpdateAllFields(true)
+
+197=Odwzorowanie [{0}] nie jest odpowiedniego typu dla tego deskryptora
+
+198=Aby u\u017cy\u0107 klasy ObjectChangeTrackingPolicy lub AttributeChangeTrackingPolicy, klasa {0} musi zaimplementowa\u0107 interfejs ChangeTracker.
+
+199=Aby u\u017cy\u0107 klasy FetchGroup, klasa domeny ({0}) musi implementowa\u0107 interfejs FetchGroupTracker.
+
+2=Atrybut [{0}] jest zadeklarowany jako typ ValueHolderInterface, ale jego odwzorowanie nie u\u017cywa elementu po\u015bredniego.
+
+20=Metoda [{0}] jest niedost\u0119pna.
+
+200=Podj\u0119to pr\u00f3b\u0119 zarejestrowania jako nowy obiektu z wygas\u0142ym elementem po\u015brednim.  By\u0107 mo\u017ce obiekt zosta\u0142 usuni\u0119ty lub usuni\u0119ty z pami\u0119ci podr\u0119cznej podczas scalania klona przekszta\u0142conego do postaci szeregowej.  Jest to naruszenie wsp\u00f3\u0142bie\u017cno\u015bci, sprawd\u017a strategi\u0119 blokowania.
+
+201=Podj\u0119to pr\u00f3b\u0119 zbudowania obiektu w pami\u0119ci podr\u0119cznej sesji, ale deskryptor jest oznaczony jako izolowany w jednostce pracy, dlatego nigdy nie powinien by\u0107 dost\u0119pny spoza jednostki pracy.
+
+202=Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny podczas uzyskiwania dost\u0119pu do obiektu klucza podstawowego [{0}].
+
+203=Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny podczas uzyskiwania dost\u0119pu do metody [{1}] w klasie [{0}].
+
+204=Operacja insertTableOrder jest sprzeczna z kluczami obcymi wielu tabel - zgodnie z tym ostatnim tabela [{0}] powinna zosta\u0107 wstawiona przed tabel\u0105 [{1}].
+
+205=Operacja insertTableOrder ma zale\u017cno\u015b\u0107 cykliczn\u0105 mi\u0119dzy tabelami [{0}] i [{1}].
+
+206=Operacja insertTableOrder ma zale\u017cno\u015b\u0107 cykliczn\u0105 mi\u0119dzy co najmniej trzema tabelami.
+
+207=Niepoprawna operacja insertTableOrder: okre\u015blono wstawienie tabeli [{0}] odwzorowanej na element macierzysty po tabeli [{1}] odwzorowanej na element potomny.
+
+208=Pr\u00f3bujesz ustawi\u0107 konwerter o nazwie klasy [{1}] na odwzorowanie inne ni\u017c bezpo\u015brednie [{0}].  Tylko bezpo\u015brednie odwzorowania mog\u0105 mie\u0107 konwertery.  Dzieje si\u0119 tak zwykle przy pr\u00f3bie ustawienia klucza konwertera na klas\u0119 DirectMapMapping z kluczem innym ni\u017c bezpo\u015bredni.
+
+209=Ten deskryptor zawiera odwzorowanie z klas\u0105 DirectMapMapping i nie ustawiono pola klucza.
+
+21=Wyst\u0105pi\u0142 problem podczas wyodr\u0119bniania klasy z wiersza [{0}].  Metoda statyczna [{1}] z parametrem (DatabaseRow) jest niedost\u0119pna.
+
+210=Atrybut [{0}] ma ustawione pole listOrderField, ale nie implementuje listy.
+
+211=Atrybut [{0}] ma ustawione pole listOrderField i tryb sprawdzania poprawno\u015bci pola listOrderField ma warto\u015b\u0107 CORRECTION, a to wymaga, aby mo\u017cna by\u0142o przypisa\u0107 metod\u0119 IndirectList do tego atrybutu.
+
+212=Pole listOrderField podane dla atrybutu [{0}] zawiera niepoprawn\u0105 tabel\u0119 [{1}]. Zamiast niej nale\u017cy u\u017cy\u0107 {2}.
+
+213={0} wymaga, aby wszystkie docelowe klucze obce nale\u017ca\u0142y do tej samej tabeli, ale znaleziono kilka: {1}.
+
+214={0} okre\u015bla tabel\u0119 relacji, kt\u00f3ra nie jest zgodna z metod\u0105 addForeignKey(Name) lub u\u017cywa zamiast niej metod addSourceRelationKeyField(Name) i addTargetRelationKeyFieldName.
+
+215={0} musi mie\u0107 obiekt RelationTableMechanism inny ni\u017c NULL.
+
+216=Typem CacheKeyType nie mo\u017ce by\u0107 ID_VALUE dla z\u0142o\u017conego klucza podstawowego.
+
+217=Niepoprawne wyra\u017cenie XPath dla klasy XMLDirectMapping/XMLCompositeDirectCollectionMapping. Wyra\u017cenie XPath musi zawiera\u0107 symbol @ dla atrybut\u00f3w lub zosta\u0107 zako\u0144czone /text() dla w\u0119z\u0142\u00f3w tekstowych. Na przyk\u0142ad: "@name" lub "name/text()"
+
+218=Wyst\u0105pi\u0142 wyj\u0105tek NullPointerException podczas uzyskiwania dost\u0119pu do nieistniej\u0105cej metody _vh_ z przeplotem [{0}].  Klasa nie zosta\u0142a poprawnie przepleciona, w przypadku wdro\u017ce\u0144 EE sprawd\u017a kolejno\u015b\u0107 modu\u0142\u00f3w w deskryptorze wdra\u017cania application.xml i zweryfikuj, czy modu\u0142 zawieraj\u0105cy jednostk\u0119 trwa\u0142o\u015bci znajduje si\u0119 przed wszystkimi pozosta\u0142ymi modu\u0142ami, kt\u00f3re jej u\u017cywaj\u0105.
+
+219=Dodatkowe kryterium z [{1}] nie jest dozwolone w obr\u0119bie hierarchii dziedziczenia z u\u017cyciem widok\u00f3w.
+
+22=Wyst\u0105pi\u0142 problem podczas tworzenia nowej instancji.  Metoda tworzenia [{0}] jest niedost\u0119pna.
+
+220=Brak strategii partycjonowania dla nazwy [{0}].
+
+221=Nie ustawiono pola SerializedObjectPolicy.
+
+222=Zg\u0142oszono wyj\u0105tek podczas pr\u00f3by uzyskania instancji klasy klucza podstawowego.
+
+23=Metoda wywo\u0142ania zwrotnego deskryptora [{0}] z parametrem (Session) jest niedost\u0119pna.
+
+24=Zmienna instancji [{0}] w obiekcie [{1}] jest niedost\u0119pna. {3}Argument: [{2}]
+
+25=Metoda [{0}] z argumentem [{1}] jest niedost\u0119pna.
+
+26=Podejmowana jest pr\u00f3ba pobrania warto\u015bci ze zmiennej instancji [{0}] typu [{1}] z obiektu [{2}].  Podany obiekt nie jest instancj\u0105 klasy lub interfejsu deklaruj\u0105cych bazowe pole.
+
+27=Podejmowana jest pr\u00f3ba wywo\u0142ania metody [{0}] na obiekcie [{1}].  Liczba parametr\u00f3w aktualnych i formalnych r\u00f3\u017cni si\u0119 lub konwersja odpakowuj\u0105ca zako\u0144czy\u0142a si\u0119 niepowodzeniem.
+
+28=Niedozwolony argument podczas tworzenia instancji proxy opartego na metodzie w odwzorowaniu transformacji.
+
+29=Liczba parametr\u00f3w aktualnych i formalnych r\u00f3\u017cni si\u0119 lub konwersja odpakowuj\u0105ca zako\u0144czy\u0142a si\u0119 niepowodzeniem.
+
+30=Liczba parametr\u00f3w aktualnych i formalnych r\u00f3\u017cni si\u0119 dla metody [{0}] lub konwersja odpakowuj\u0105ca zako\u0144czy\u0142a si\u0119 niepowodzeniem.
+
+31=Liczba parametr\u00f3w aktualnych i formalnych dla metody wywo\u0142ania zwrotnego deskryptora [{0}] r\u00f3\u017cni si\u0119 lub konwersja odpakowuj\u0105ca zako\u0144czy\u0142a si\u0119 niepowodzeniem.
+
+32=Podj\u0119to pr\u00f3b\u0119 ustawienia warto\u015bci [{0}] dla zmiennej instancji [{1}] typu [{2}] w obiekcie.  Podany obiekt nie jest instancj\u0105 klasy lub interfejsu deklaruj\u0105cych bazowe pole albo konwersja odpakowuj\u0105ca zako\u0144czy\u0142a si\u0119 niepowodzeniem.
+
+33=Podejmowana jest pr\u00f3ba wywo\u0142ania [{0}] na obiekcie o warto\u015bci [{1}].  Liczba parametr\u00f3w aktualnych i formalnych r\u00f3\u017cni si\u0119 lub konwersja odpakowuj\u0105ca zako\u0144czy\u0142a si\u0119 niepowodzeniem.
+
+34=Ta klasa nie definiuje publicznego konstruktora domy\u015blnego lub konstruktor zg\u0142osi\u0142 wyj\u0105tek.
+
+35=Niepoprawne zdarzenie.
+
+36=Niepoprawny kod zdarzenia [{0}].
+
+37=Niepoprawny kod zdarzenia deskryptora [{0}].
+
+38=Konstruktor odwzorowania to\u017csamo\u015bci zako\u0144czy\u0142 si\u0119 niepowodzeniem, poniewa\u017c podano niepoprawne odwzorowanie to\u017csamo\u015bci.
+
+39=Ten deskryptor nie okre\u015bla klasy Java.
+
+40=Brak deskryptora dla [{0}].  Prawdopodobnie nie zosta\u0142 dodany do sesji.
+
+41=Dla pola numeru kolejnego musi zosta\u0107 zdefiniowane odwzorowanie nie tylko do odczytu.
+
+43=Brak klasy dla warto\u015bci pola indykatora [{0}] typu [{1}].
+
+44=Brak pola indykatora klasy w wierszu bazy danych [{0}].
+
+45=Brak odwzorowania dla pola [{0}].
+
+46=Dla pola klucza podstawowego [{0}] powinno istnie\u0107 jedno odwzorowanie nie tylko do odczytu.
+
+47=Je\u015bli u\u017cywane jest niestandardowe \u0142\u0105czenie wielu tabel, konieczne jest podanie odwzorowania kluczy podstawowych wielu tabel.
+
+48=Dla pola [{0}] istnieje wiele mo\u017cliwych do zapisania odwzorowa\u0144.  Tylko jedno mo\u017ce by\u0107 zdefiniowane jako mo\u017cliwe do zapisania, wszystkie pozosta\u0142e nale\u017cy okre\u015bli\u0107 jako tylko do odczytu.
+
+49=Nie okre\u015blono nazwy metody transformacji atrybutu dla tego odwzorowania.
+
+50=Dla tego odwzorowania nie ustawiono nazwy pola.
+
+51=Dla tego odwzorowania nie okre\u015blono kluczy obcych.
+
+52=Dla tego odwzorowania nie okre\u015blono klucza odwo\u0142ania.
+
+53=Dla tego odwzorowania nie ustawiono nazwy tabeli relacji.
+
+54=Dla tego odwzorowania nie okre\u015blono \u017ar\u00f3d\u0142owych kluczy relacji.
+
+55=Nie mo\u017cna znale\u017a\u0107 metody wywo\u0142ania zwrotnego deskryptora [{0}].  Musi ona przyjmowa\u0107 jako argument obiekt Session lub DescriptorEvent.
+
+56=Nie znaleziono metody [{0}] z parametrami (Record) lub (Record, Session).
+
+57=Konstruktor jest niedost\u0119pny.
+
+58=Nie znaleziono metody [{0}] z parametrami () lub (Session).
+
+59=Zmienna instancji [{0}] nie jest zdefiniowana w klasie domeny [{1}] lub nie jest dost\u0119pna.
+
+6=Brak nazwy atrybutu.
+
+60=Nie zdefiniowano metody [{0}] lub [{1}] w obiekcie [{2}].
+
+61=Metoda wyodr\u0119bniania klasy statycznej [{0}] z parametrem (Rekord) nie istnieje lub jest niedost\u0119pna.
+
+62=Metoda klonowania [{0}] bez \u017cadnych parametr\u00f3w nie istnieje lub jest niedost\u0119pna.
+
+63=Metoda tworzenia instancji [{0}] bez \u017cadnych parametr\u00f3w nie istnieje lub jest niedost\u0119pna.
+
+64=Dla tego odwzorowania nie okre\u015blono docelowych kluczy obcych.
+
+65=Dla tego odwzorowania nie okre\u015blono docelowych kluczy relacji.
+
+66=Nie mo\u017cna przekszta\u0142ci\u0107 obiektu z postaci szeregowej z tablicy bajtowej.
+
+67=Nie mo\u017cna przekszta\u0142ci\u0107 obiektu do postaci szeregowej do tablicy bajtowej.
+
+68=Warto\u015b\u0107 agregatu w obiekcie [{0}] wynosi NULL.  Warto\u015bci NULL nie s\u0105 dozwolone dla klas AggregateMapping, o ile nie podano warto\u015bci Allow Null (Zezw\u00f3l na warto\u015bci NULL).
+
+69=Podczas wyodr\u0119bniania warto\u015bci ze zmiennej instancji [{0}] w obiekcie [{1}] zosta\u0142 zg\u0142oszony wyj\u0105tek NullPointerException.
+
+7=Atrybut [{0}] powinien by\u0107 typem z implementacj\u0105 {1}.
+
+70=Podczas wyodr\u0119bniania warto\u015bci za pomoc\u0105 metody [{0}] w obiekcie [{1}] zosta\u0142 zg\u0142oszony wyj\u0105tek NullPointerException.
+
+71=Podczas ustawiania warto\u015bci zmiennej instancji [{0}] na warto\u015b\u0107 [{1}] zosta\u0142 zg\u0142oszony wyj\u0105tek NullPointerException.
+
+72=Podczas ustawiania warto\u015bci za pomoc\u0105 metody [{0}] z argumentem [{1}] zosta\u0142 zg\u0142oszony wyj\u0105tek NullPointerException.
+
+73=Nie mo\u017cna znale\u017a\u0107 deskryptora dla klasy macierzystej [{0}].
+
+74=Dla tego deskryptora nie ustawiono p\u00f3l klucza podstawowego.
+
+75=Nie podano klasy odwo\u0142ania dla tego deskryptora.
+
+77=Deskryptor odwo\u0142ania dla [{0}] powinien by\u0107 ustawiony jako deskryptor agregowania.
+
+78=Pole odwo\u0142ania [{0}] dla tego odwzorowania musi istnie\u0107 w tabeli odwo\u0142a\u0144.
+
+79=Nie podano tabeli odwo\u0142a\u0144 dla tego odwzorowania.
+
+8=Deskryptor [{0}] zosta\u0142 skonfigurowany do u\u017cycia dziedziczenia, ale pole indykatora klasy nie zosta\u0142o zdefiniowane. {2}Je\u015bli u\u017cywane jest dziedziczenie, konieczne jest ustawienia pola indykatora klasy lub metody ekstrakcji klasy. {2}Deskryptor macierzysty: [{1}]
+
+80=Pole kluczowe relacji [{0}] dla tego odwzorowania musi istnie\u0107 w tabeli relacji.
+
+81=Metoda [{0}] powinna zwr\u00f3ci\u0107 typ odwzorowanego atrybutu, a nie typ void.
+
+82=Metoda wywo\u0142ania zwrotnego deskryptora [{0}] z parametrem (DescriptorEvent) nie jest dost\u0119pna.
+
+83=Metoda wywo\u0142ania zwrotnego deskryptora [{0}] z parametrem (Session) nie jest dost\u0119pna.
+
+84=Metoda [{0}] z parametrami (Record) lub (Record, Session) nie jest dost\u0119pna.
+
+85=Metoda [{0}] z parametrami () lub (Session) nie jest dost\u0119pna.
+
+86=Zmienna instancji [{0}] w klasie [{1}] nie jest dost\u0119pna.
+
+87=Metody [{0}], [{1}] w obiekcie [{2}] nie s\u0105 dost\u0119pne.
+
+88=Metoda wyodr\u0119bniania klasy statycznej [{0}] z parametrem (Rekord) jest niedost\u0119pna.
+
+89=Metoda klonowania [{0}] bez \u017cadnych parametr\u00f3w jest niedost\u0119pna.
+
+9=W tym odwzorowaniu nie ustawiono nazwy pola bezpo\u015bredniego.
+
+90=Metoda tworzenia instancji [{0}] bez \u017cadnych parametr\u00f3w jest niedost\u0119pna.
+
+91=Aby u\u017cy\u0107 kolejno generowanych identyfikator\u00f3w, dla tego deskryptora nale\u017cy ustawi\u0107 obie w\u0142a\u015bciwo\u015bci, "Sequence Number Name" (nazwa numeru kolejnego) i "Sequence Number Field Name" (nazwa pola numeru kolejnego).
+
+92=Wielko\u015b\u0107 docelowego klucza podstawowego nie jest zgodna z wielko\u015bci\u0105 klucza obcego.
+
+93=Tabela [{0}] nie znajduje si\u0119 w tym deskryptorze.
+
+94=Deskryptory musz\u0105 mie\u0107 zdefiniowan\u0105 nazw\u0119 tabeli.
+
+96=Liczba kluczy docelowych jest niezgodna z liczb\u0105 kluczy \u017ar\u00f3d\u0142owych.
+
+97=Wyst\u0105pi\u0142 problem podczas klonowania obiektu [{0}].  Metoda klonowania [{1}] wyzwoli\u0142a wyj\u0105tek.
+
+98=Bazowa metoda wywo\u0142ania zwrotnego deskryptora [{0}] z parametrem (DescriptorEvent) wyzwoli\u0142a wyj\u0105tek.
+
+99=Metoda [{0}] na obiekcie [{1}] wyzwoli\u0142a wyj\u0105tek.
+

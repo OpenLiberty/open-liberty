@@ -15,24 +15,27 @@ import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.SQLFeatureNotSupportedException; 
-import java.sql.SQLInvalidAuthorizationSpecException; 
+import java.sql.SQLFeatureNotSupportedException;
+import java.sql.SQLInvalidAuthorizationSpecException;
 import java.sql.SQLNonTransientConnectionException;
 import java.sql.SQLRecoverableException;
 import java.sql.SQLTransientConnectionException;
-import java.sql.ResultSet; 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList; 
-import java.util.Map; 
+import java.util.LinkedList;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
-import java.sql.PreparedStatement; 
 
-import javax.naming.Context; 
+import javax.naming.Context;
+import javax.resource.ResourceException;
 import javax.sql.CommonDataSource;
 import javax.sql.ConnectionPoolDataSource;
+import javax.sql.DataSource;
 import javax.sql.PooledConnection;
 import javax.sql.XADataSource;
 import javax.transaction.xa.XAException;
@@ -40,9 +43,6 @@ import javax.transaction.xa.XAException;
 import org.ietf.jgss.GSSCredential;
 
 import com.ibm.ejs.cm.logger.TraceWriter;
-
-import javax.resource.ResourceException;
-
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
@@ -51,7 +51,10 @@ import com.ibm.ws.jca.cm.AbstractConnectionFactoryService;
 import com.ibm.ws.resource.ResourceRefInfo;
 import com.ibm.ws.rsadapter.AdapterUtil;
 import com.ibm.ws.rsadapter.DSConfig;
+import com.ibm.ws.rsadapter.DSConfig.IdentifyException;
+import com.ibm.ws.rsadapter.DSConfig.IdentifyException.Target;
 import com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException;
+import com.ibm.ws.rsadapter.impl.WSManagedConnectionFactoryImpl.KerbUsage;
 import com.ibm.ws.rsadapter.jdbc.WSJdbcStatement;
 
 /**
@@ -87,7 +90,7 @@ public class DatabaseHelper {
     protected boolean holdabilitySupported = true; 
 
     private boolean setCursorNameSupported = true;
-
+    
     /**
      * SQLException error codes that indicate a stale connection.
      */
@@ -97,7 +100,19 @@ public class DatabaseHelper {
      * SQLException SQL States that indicate a stale connection.
      */
     final Set<String> staleSQLStates = new HashSet<String>();
-
+    
+    /**
+     * Pairs of SQLException error codes and SQL states that indicate a stale exception.
+     * This differs from staleErrorCodes and staleSQLStates because here both items must
+     * match in order to be considered stale.
+     * The entries are of the format: SQLSTATE/SQLCODE created by {@link #createStaleMapKey(String, Integer)}
+     * If any SQLState or SQLCode matches, then a start (*) is used.
+     * Examples:
+     * - match state=E1234 && code 456 has key E1234/456
+     * - match state=E1234 and any code has key E1234/*
+     */
+    private final Map<String,IdentifyException.Target> userDefinedStales = new HashMap<>();
+    
     /**
      * Indicates if the JDBC driver alters the autocommit value upon XAResource.end.
      */
@@ -133,8 +148,26 @@ public class DatabaseHelper {
                            "40003",
                            "55032",
                            "S1000");
+        
+        customizeStaleStates();
+        
+        // Process user-defined error mappings from the <identifyException> config elements
+        for (IdentifyException mapping : mcf.dsConfig.get().identifyExceptions) {
+            String key = createStaleMapKey(mapping.sqlState, mapping.errorCode);
+            userDefinedStales.put(key, mapping.as);
+        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Stale error codes are:  " + staleErrorCodes);
+            Tr.debug(tc, "Stale SQL states are: " + staleSQLStates);
+        }
     }
-
+    
+    /**
+     * Override this method to customize vendor-specific SQL States and SQL Codes that should map to stale
+     */
+    void customizeStaleStates() {
+    }
+    
     /**
      * Indicates if setAutoCommit requests should always be sent to the JDBC driver, even
      * if the same as the current value.
@@ -392,7 +425,7 @@ public class DatabaseHelper {
 
         // Maintain a set in order to check for cycles
         Set<Throwable> chain = new HashSet<Throwable>();
-
+        
         boolean stale = false;
         for (Throwable t = ex; t != null && !stale && chain.add(t); t = t.getCause()) {
             SQLException sqlX = t instanceof SQLException ? (SQLException) t : null;
@@ -400,14 +433,30 @@ public class DatabaseHelper {
                 Tr.debug(this, tc, "checking " + t,
                          sqlX == null ? null : sqlX.getSQLState(),
                          sqlX == null ? null : sqlX.getErrorCode());
-            if (sqlX != null)
-                stale |= sqlX instanceof SQLRecoverableException ||
-                         sqlX instanceof SQLNonTransientConnectionException ||
-                         sqlX instanceof SQLTransientConnectionException && failoverOccurred(sqlX) ||
-                         staleErrorCodes.contains(sqlX.getErrorCode()) ||
-                         staleSQLStates.contains(sqlX.getSQLState());
+            
+            if (sqlX != null) {
+                // first check user-defined mappings
+                IdentifyException.Target target = userDefinedStales.get(createStaleMapKey(sqlX.getSQLState(), sqlX.getErrorCode()));
+                if (target == null)
+                    target = userDefinedStales.get(createStaleMapKey(null, sqlX.getErrorCode()));
+                if (target == null)
+                    target = userDefinedStales.get(createStaleMapKey(sqlX.getSQLState(), null));
+                
+                if (target == Target.None) {
+                    stale = false;
+                } else if (target == Target.StaleConnection) {
+                    stale = true;
+                } else {
+                    // No user-defined mappings, use default handling
+                    stale |= sqlX instanceof SQLRecoverableException ||
+                             sqlX instanceof SQLNonTransientConnectionException ||
+                             sqlX instanceof SQLTransientConnectionException && failoverOccurred(sqlX) ||
+                             staleErrorCodes.contains(sqlX.getErrorCode()) ||
+                             staleSQLStates.contains(sqlX.getSQLState());
+                }
+            }
         }
-
+        
         if (isTraceOn && tc.isEntryEnabled())
             Tr.exit(this, tc, "isConnectionError", stale);
 
@@ -911,6 +960,10 @@ public class DatabaseHelper {
         Tr.info(tc, "UNSUPPORTED_METHOD", "isInDatabaseUnitOfWork");
         throw new SQLException("method not supported for this backend database");
     }
+    
+    public Connection getConnectionFromDatasource(DataSource ds, KerbUsage useKerb, Object gssCredential) throws SQLException {
+        return ds.getConnection();
+    }
 
     /**
      * Get a Pooled or XA Connection from the specified DataSource.
@@ -929,15 +982,14 @@ public class DatabaseHelper {
      *             not match the DataSource type.
      */
     public ConnectionResults getPooledConnection(final CommonDataSource ds, String userName, String password, final boolean is2Phase, 
-                                                 final WSConnectionRequestInfoImpl cri, boolean useKerberos, Object gssCredential) throws ResourceException {
+                                                 final WSConnectionRequestInfoImpl cri, KerbUsage useKerberos, Object gssCredential) throws ResourceException {
         if (tc.isEntryEnabled())
             Tr.entry(this, tc, "getPooledConnection",
                      AdapterUtil.toString(ds), userName, "******", is2Phase ? "two-phase" : "one-phase", cri, useKerberos, gssCredential);
 
-        // if kerberose is set then issue a warning that no special APIs are used instead, 
-        // a getConnection() without username/password will be used.
-        // to get a connection.
-        if (useKerberos) {
+        // if Kerberos is set then issue a warning that no special APIs are used instead,
+        // a getConnection() without username/password will be used to get a connection.
+        if (useKerberos == KerbUsage.USE_CREDENTIAL) { 
             Tr.warning(tc, "KERBEROS_NOT_SUPPORTED_WARNING");
         }
 
@@ -945,7 +997,7 @@ public class DatabaseHelper {
             final String user = userName == null ? null : userName.trim();
             final String pwd = password == null ? null : password.trim();
 
-            PooledConnection pConn = AccessController.doPrivileged(new PrivilegedExceptionAction<PooledConnection>() {
+            PooledConnection pConn = AccessController.doPrivilegedWithCombiner(new PrivilegedExceptionAction<PooledConnection>() {
                 public PooledConnection run() throws SQLException {
                     boolean buildConnection = cri.ivShardingKey != null || cri.ivSuperShardingKey != null;
                     if (is2Phase)
@@ -1159,5 +1211,11 @@ public class DatabaseHelper {
      */
     public boolean supportsSubjectDoAsForKerberos() {
         return false;
+    }
+    
+    private static String createStaleMapKey(String sqlState, Integer sqlCode) {
+        return (sqlState == null ? "*" : sqlState) + 
+               "/" + 
+               (sqlCode == null ? "*" : sqlCode);
     }
 }

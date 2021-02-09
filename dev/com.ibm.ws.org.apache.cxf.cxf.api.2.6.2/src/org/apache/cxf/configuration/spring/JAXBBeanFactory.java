@@ -29,9 +29,12 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.apache.cxf.staxutils.StaxUtils;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 /**
  * 
  */
+@Trivial
 public final class JAXBBeanFactory {
     private JAXBBeanFactory() {
         //nothing

@@ -71,14 +71,11 @@ public class JandexTestUtils {
         InputStream inputStream = openStream(indexPath);
 
         org.jboss.jandex.Index fullIndex;
-
         try {
         	fullIndex = readFullIndex(indexPath, inputStream);
-
         } finally {
         	closeStream(indexPath, inputStream);
         }
-
         return fullIndex;
     }
 
@@ -95,14 +92,11 @@ public class JandexTestUtils {
         InputStream inputStream = openStream(indexPath);
 
         SparseIndex sparseIndex;
-
         try {
         	sparseIndex = readSparseIndex(indexPath, inputStream);
-
         } finally {
         	closeStream(indexPath, inputStream);
         }
-
         return sparseIndex;
     }
 

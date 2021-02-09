@@ -12,6 +12,8 @@ import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlEnumValue;
 import javax.xml.bind.annotation.XmlType;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 
 /**
  * <p>Java class for AnonymousType.
@@ -31,6 +33,7 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlType(name = "AnonymousType")
 @XmlEnum
+@Trivial
 public enum AnonymousType {
 
     @XmlEnumValue("optional")

@@ -13,3 +13,5 @@
 dependencies {
   requiredLibs 'commons-logging:commons-logging:1.1.3'
 }
+
+addRequiredLibraries.dependsOn addJakartaTransformer

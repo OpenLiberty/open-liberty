@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,6 +25,8 @@ import javax.servlet.annotation.WebServlet;
 
 import org.junit.Test;
 
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import configuratorApp.web.ConfiguratorTestBase;
 
 @SuppressWarnings("serial")
@@ -54,12 +56,14 @@ public class ObserverMethodConfiguratorTest extends ConfiguratorTestBase {
     BeanManager bm;
 
     @Test
+    @Mode(TestMode.FULL)
     public void sniffObserverMethodConfigurator() {
         Set<ObserverMethod<? super Triangle>> observers = bm.resolveObserverMethods(new Triangle(), Any.Literal.INSTANCE);
         assertEquals(observers.iterator().next().getPriority(), ObserverMethod.DEFAULT_PRIORITY + 1);
     }
 
     @Test
+    @Mode(TestMode.FULL)
     public void testObserverMethodCanBeVetoed() {
         Set<ObserverMethod<? super Dodecagon>> observers = bm.resolveObserverMethods(new Dodecagon(), Any.Literal.INSTANCE);
         assertEquals(observers.size(), 0);
@@ -76,6 +80,7 @@ public class ObserverMethodConfiguratorTest extends ConfiguratorTestBase {
      * This test method checks that order of execution recorded in the squareObservations ArrayList matches the random priorities in the squareObserverPriorities array.
      */
     @Test
+    @Mode(TestMode.FULL)
     public void testSquareObserverOrdering() {
 
         squareEvent.fire(new Square());
@@ -102,6 +107,7 @@ public class ObserverMethodConfiguratorTest extends ConfiguratorTestBase {
      * This test method checks that the order of execution recorded in the circleObservations ArrayList matches the order represented by the circleObserverOrder array.
      */
     @Test
+    @Mode(TestMode.FULL)
     public void testCircleObserverOrdering() {
 
         circleEvent.fire(new Circle());

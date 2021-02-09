@@ -1,0 +1,221 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/JAXBExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+50000=Le chemin de contexte {0} ne contient aucun ObjectFactory ou jaxb.index, aucune m\u00e9tadonn\u00e9e externe n''a \u00e9t\u00e9 trouv\u00e9e dans la mappe de propri\u00e9t\u00e9s et sessions.xml a \u00e9t\u00e9 d\u00e9tect\u00e9 ou n''\u00e9tait pas valide.
+
+50001=La classe {0} requiert un constructeur d''argument z\u00e9ro ou une m\u00e9thode de fabrique sp\u00e9cifique.  Notez que les classes int\u00e9rieures non statiques n''ont pas de constructeurs d''argument z\u00e9ro et ne sont pas prises en charge.
+
+50002=Classe de fabrique sp\u00e9cifi\u00e9e sans m\u00e9thode de fabrique sur la classe {0}.
+
+50003=La m\u00e9thode de fabrique nomm\u00e9e {0} n''est pas d\u00e9clar\u00e9e sur la classe {1}.
+
+50004=XmlAnyAttribute n''est pas valide sur la propri\u00e9t\u00e9 {0}. Il doit \u00eatre utilis\u00e9 avec une propri\u00e9t\u00e9 de type Map.
+
+50005=Une seule propri\u00e9t\u00e9 avec XmlAnyAttribute est autoris\u00e9e sur la classe {0}.
+
+50006=XmlElementRef non valide sur la propri\u00e9t\u00e9 {0} sur la classe {1}. El\u00e9ment r\u00e9f\u00e9renc\u00e9 non d\u00e9clar\u00e9.
+
+50007=Conflit de noms.  Deux classes ont le type XML avec l''URI {0} et le nom {1}.
+
+50008=Classe de noeud non prise en charge {0}.  La m\u00e9thode createBinder(Class) prend uniquement en charge la classe org.w3c.dom.Node.
+
+50009=La propri\u00e9t\u00e9 ou la zone {0} dans la classe {1} est annot\u00e9e comme \u00e9tant transitoire ; par cons\u00e9quent, elle ne peut pas \u00eatre incluse dans l''annotation propOrder.
+
+50010=La propri\u00e9t\u00e9 ou la zone {0} dans la classe {1} doit \u00eatre un attribut car une autre zone ou propri\u00e9t\u00e9 est annot\u00e9e avec la valeur XmlValue.
+
+50011=La propri\u00e9t\u00e9 ou la zone {0} dans la classe {1} ne peut pas \u00eatre annot\u00e9e avec XmlValue car il s''agit d''une sous-classe d''une autre classe li\u00e9e \u00e0 XML.
+
+50012=La propri\u00e9t\u00e9 ou la zone {0} dans la classe {1} a \u00e9t\u00e9 sp\u00e9cifi\u00e9e dans propOrder mais il ne s''agit pas d''une propri\u00e9t\u00e9 valide.
+
+50013=La propri\u00e9t\u00e9 ou la zone {0} sur la classe {1} doit obligatoirement \u00eatre incluse dans l''\u00e9l\u00e9ment propOrder de l''annotation XmlType.
+
+50014=La propri\u00e9t\u00e9 ou la zone {0} dans la classe {1} avec l''annotation XmlValue doit \u00eatre d''un type pouvant \u00eatre mapp\u00e9 \u00e0 un type de sch\u00e9ma simple.
+
+50015=XmlElementWrapper est uniquement autoris\u00e9 sur une propri\u00e9t\u00e9 de collection ou de tableau mais [{0}] n''est pas une propri\u00e9t\u00e9 de collection ou de tableau.
+
+50016=La propri\u00e9t\u00e9 [{0}] comporte une annotation XmlID mais elle n''est pas de type Cha\u00eene.
+
+50017=XmlIDREF non valide sur la propri\u00e9t\u00e9 [{0}].  La classe [{1}] doit obligatoirement avoir une propri\u00e9t\u00e9 annot\u00e9e avec XmlID.
+
+50018=XmlList est uniquement autoris\u00e9 sur une propri\u00e9t\u00e9 de collection ou de tableau mais [{0}] n''est pas une propri\u00e9t\u00e9 de collection ou de tableau.
+
+50019=Type de param\u00e8tre non valide d\u00e9tect\u00e9 lors du traitement des m\u00e9tadonn\u00e9es externes via la mappe de propri\u00e9t\u00e9s.  La valeur associ\u00e9e \u00e0 la cl\u00e9 [eclipselink-oxm-xml] doit obligatoirement \u00eatre l''une des suivantes : [Map<String, Object>, List<Object> ou Object].  L''objet doit \u00eatre l''un des suivants : [java.io.File, java.io.InputStream, java.io.Reader, java.net.URL, javax.xml.stream.XMLEventReader, javax.xml.stream.XMLStreamReader, javax.xml.transform.Source, org.w3c.dom.Node ou org.xml.sax.InputSource], Si [Map<String, Object>], String est le nom de package.
+
+50021=Type de param\u00e8tre non valide d\u00e9tect\u00e9 lors du traitement des m\u00e9tadonn\u00e9es externes via la mappe de propri\u00e9t\u00e9s.  Pour [Map<String, Object>], il est obligatoire que la cl\u00e9 soit de type [String] (indiquant le nom de package).
+
+50022=Type de param\u00e8tre non valide d\u00e9tect\u00e9 lors du traitement des m\u00e9tadonn\u00e9es externes via la mappe de propri\u00e9t\u00e9s.  Pour [Map<String, Object>], il est obligatoire que la valeur soit l''une des suivantes :[java.io.File, java.io.InputStream, java.io.Reader, java.net.URL, javax.xml.stream.XMLEventReader, javax.xml.stream.XMLStreamReader, javax.xml.transform.Source, org.w3c.dom.Node ou org.xml.sax.InputSource] (descripteur du fichier de m\u00e9tadonn\u00e9es).
+
+50023=Une valeur nulle pour la cl\u00e9 [{0}] a \u00e9t\u00e9 d\u00e9tect\u00e9e lors du traitement des m\u00e9tadonn\u00e9es externes via la mappe de propri\u00e9t\u00e9s.  Il est obligatoire que la valeur soit une valeur non nulle et l''une des valeurs suivantes :[java.io.File, java.io.InputStream, java.io.Reader, java.net.URL, javax.xml.stream.XMLEventReader, javax.xml.stream.XMLStreamReader, javax.xml.transform.Source, org.w3c.dom.Node ou org.xml.sax.InputSource] (descripteur du fichier de m\u00e9tadonn\u00e9es).
+
+50024=Une valeur nulle a \u00e9t\u00e9 d\u00e9tect\u00e9e lors du traitement des m\u00e9tadonn\u00e9es externes via la mappe de propri\u00e9t\u00e9s.  Il est obligatoire que la cl\u00e9 soit une cl\u00e9 non nulle et qu''elle soit de type [String] (indiquant le nom de package).
+
+50025=Impossible de charger la classe [{0}] d\u00e9clar\u00e9e dans le fichier de m\u00e9tadonn\u00e9es externe.  Assurez-vous que le nom de classe est correct, et que le chargeur de classe correct a \u00e9t\u00e9 d\u00e9fini.
+
+50026=Une exception est survenue lors de la tentative de cr\u00e9ation d''un JAXBContext pour l''\u00e9l\u00e9ment XmlModel.
+
+50027=Une exception est survenue lors de la tentative de d\u00e9sordonnancement d''un fichier de m\u00e9tadonn\u00e9es externalis\u00e9.
+
+50028=Une nouvelle instance de [{0}] n''a pas pu \u00eatre cr\u00e9\u00e9e.
+
+50029=La classe [{0}] fournie sur l''\u00e9l\u00e9ment XmlCustomizer n''impl\u00e9mente pas l''interface org.eclipse.persistence.config.DescriptorCustomizer.
+
+50030=Une tentative a \u00e9t\u00e9 effectu\u00e9e pour d\u00e9finir plusieurs propri\u00e9t\u00e9s XmlID sur la classe [{1}].  La propri\u00e9t\u00e9 [{0}] ne peut pas \u00eatre d\u00e9finie comme XmlID, car la propri\u00e9t\u00e9 [{2}] est d\u00e9j\u00e0 d\u00e9finie comme XmlID.
+
+50031=Une tentative a \u00e9t\u00e9 effectu\u00e9e pour d\u00e9finir plusieurs propri\u00e9t\u00e9s XmlValue sur la classe [{0}].  La propri\u00e9t\u00e9 [{1}] ne peut pas \u00eatre d\u00e9finie comme XmlValue, car la propri\u00e9t\u00e9 [{2}] est d\u00e9j\u00e0 d\u00e9finie comme XmlValue.
+
+50032=Une tentative a \u00e9t\u00e9 effectu\u00e9e pour d\u00e9finir plusieurs propri\u00e9t\u00e9s XmlAnyElement sur la classe [{0}].  La propri\u00e9t\u00e9 [{1}] ne peut pas \u00eatre d\u00e9finie comme XmlAnyElement, car la propri\u00e9t\u00e9 [{2}] est d\u00e9j\u00e0 d\u00e9finie comme XmlAnyElement.
+
+50033=L''\u00e9l\u00e9ment DomHandlerConverter de DomHandler [{0}] d\u00e9fini sur la propri\u00e9t\u00e9 [{1}] n''a pas pu \u00eatre initialis\u00e9.
+
+50034=La propri\u00e9t\u00e9 ou la zone [{0}] ne peut pas \u00eatre annot\u00e9e avec XmlAttachmentRef car il ne s''agit pas d''un \u00e9l\u00e9ment DataHandler.
+
+50035=Etant donn\u00e9 que la propri\u00e9t\u00e9 ou la zone [{0}] est d\u00e9finie comme XmlIDREF, le type cible de chaque \u00e9l\u00e9ment XmlElement d\u00e9clar\u00e9 dans la liste XmlElements doit avoir une propri\u00e9t\u00e9 XmlID.  Assurez-vous que le type cible de l''\u00e9l\u00e9ment XmlElement [{1}] contient une propri\u00e9t\u00e9 XmlID.
+
+50036=Un type non nul doit \u00eatre d\u00e9fini sur l''\u00e9l\u00e9ment TypeMappingInfo avec le QName XmlTagName [{0}].
+
+50037=Le type java avec le package [{0}] n''est pas autoris\u00e9 dans le fichier de liaison saisi sur le package [{1}].
+
+50038=DynamicJAXBContext ne peut pas \u00eatre cr\u00e9\u00e9 \u00e0 partir de classes concr\u00e8tes.  Utilisez org.eclipse.persistence.jaxb.JAXBContext, ou sp\u00e9cifiez org.eclipse.persistence.jaxb.JAXBContextFactory dans votre fichier jaxb.properties, afin de cr\u00e9er un contexte \u00e0 partir des classes existantes.
+
+50039=Erreur lors de la cr\u00e9ation de l''\u00e9l\u00e9ment DynamicJAXBContext : le noeud doit \u00eatre une instance d''un document ou d''un \u00e9l\u00e9ment.
+
+50040=Erreur lors de la cr\u00e9ation de DynamicJAXBContext.
+
+50041=Constante d''\u00e9num\u00e9ration [{0}] non trouv\u00e9e.
+
+50042=Erreur lors de la cr\u00e9ation de DynamicJAXBContext : nom de session nul.
+
+50043=Erreur lors de la cr\u00e9ation de DynamicJAXBContext : source nulle.
+
+50044=Erreur lors de la cr\u00e9ation de DynamicJAXBContext : flot d''entr\u00e9e nul.
+
+50045=Erreur lors de la cr\u00e9ation de DynamicJAXBContext : noeud nul.
+
+50046=Erreur lors de la cr\u00e9ation de DynamicJAXBContext : XJC n''a pas pu g\u00e9n\u00e9rer un mod\u00e8le de code.
+
+50047=Classe [{0}] non trouv\u00e9e.
+
+50048=Le transformateur de lecture sp\u00e9cifi\u00e9 pour la propri\u00e9t\u00e9 [{0}] comporte une classe et une m\u00e9thode. La classe ou la m\u00e9thode sont obligatoires mais pas les deux.
+
+50049=Le transformateur de lecture sp\u00e9cifi\u00e9 pour la propri\u00e9t\u00e9 [{0}] ne comporte ni classe ni m\u00e9thode. Une classe ou une m\u00e9thode sont obligatoires.
+
+50050=Le transformateur d''\u00e9criture sp\u00e9cifi\u00e9 pour l''\u00e9l\u00e9ment xml-path [{1}] de la propri\u00e9t\u00e9 [{0}] comporte une classe et une m\u00e9thode. La classe ou la m\u00e9thode sont obligatoires mais pas les deux.
+
+50051=Le transformateur d''\u00e9criture sp\u00e9cifi\u00e9 pour l''\u00e9l\u00e9ment xml-path [{1}] de la propri\u00e9t\u00e9 [{0}] ne comporte ni classe ni m\u00e9thode. Une classe ou une m\u00e9thode sont obligatoires.
+
+50052=Le transformateur d''\u00e9criture sp\u00e9cifi\u00e9 pour la propri\u00e9t\u00e9 [{0}] ne comporte aucun \u00e9l\u00e9ment xml-path d\u00e9fini. Un \u00e9l\u00e9ment xml-path est obligatoire.
+
+50053=La m\u00e9thode de transformation [{0}] avec les param\u00e8tres (), (AbstractSession) ou (Session) est introuvable.
+
+50054=Classe de transformateur [{0}] non trouv\u00e9e. Assurez-vous que le nom de classe est correct, et que le chargeur de classe correct a \u00e9t\u00e9 d\u00e9fini.
+
+50055=Erreur lors de la cr\u00e9ation de DynamicJAXBContext : eclipselink.oxm.metadata-source (JAXBContextProperties.OXM_METADATA_SOURCE) non trouv\u00e9 dans la mappe de propri\u00e9t\u00e9s ou la mappe \u00e9tait nulle.
+
+50056=La propri\u00e9t\u00e9 [{0}] contient une d\u00e9claration XmlJoinNode, mais la classe r\u00e9f\u00e9renc\u00e9e [{1}] n''est pas applicable pour ce type de relation.
+
+50057=La propri\u00e9t\u00e9 [{1}] de la classe [{0}] fait r\u00e9f\u00e9rence \u00e0 une classe [{2}] qui est marqu\u00e9e comme transitoire, ce qui n''est pas autoris\u00e9.
+
+50058=La propri\u00e9t\u00e9 [{1}] de la classe [{0}] comporte une d\u00e9claration XmlJoinNod, mais la classe cible [{2}] n''a pas de propri\u00e9t\u00e9 XmlID ou de propri\u00e9t\u00e9s XmlKey.  Il doit obligatoirement y avoir une propri\u00e9t\u00e9 XmlID/XmlKey avec un \u00e9l\u00e9ment XmlPath correspondant sur la classe cible pour chaque \u00e9l\u00e9ment referencedXmlPath.
+
+50059=La propri\u00e9t\u00e9 [{1}] de la classe [{0}] comporte une d\u00e9claration XmlJoinNode avec l''\u00e9l\u00e9ment referencedXmlPath [{3}], mais il n''y a pas de propri\u00e9t\u00e9 XmlID ou XmlKey property sur la classe cible [{2}] avec l''\u00e9l\u00e9ment XmlPath [{3}].  Il doit obligatoirement y avoir une propri\u00e9t\u00e9 XmlID/XmlKey avec un \u00e9l\u00e9ment XmlPath correspondant sur la classe cible pour chaque \u00e9l\u00e9ment referencedXmlPath.
+
+50060=La propri\u00e9t\u00e9 [{1}] de la classe [{0}] comporte une d\u00e9claration XmlIDREF, mais la classe cible [{2}] n''est pas applicable pour ce type de relation.
+
+50061=Une exception est survenue lors de la tentative de chargement de l''\u00e9l\u00e9ment XmlAdapterClass [{0}]. Causes possible : nom de classe adaptateur incorrect ou chargeur erron\u00e9 d\u00e9fini.
+
+50062=Une exception est survenue lors de la tentative d''acc\u00e8s aux m\u00e9thodes d\u00e9clar\u00e9e de l''\u00e9l\u00e9ment XmlAdapterClass [{0}]. Causes possibles :le gestionnaire de s\u00e9curit\u00e9 a refus\u00e9 l''acc\u00e8s aux m\u00e9thodes d\u00e9clar\u00e9es dans la classe d''adaptateur, ou le gestionnaire de s\u00e9curit\u00e9 a refus\u00e9 l''acc\u00e8s au package de la classe d''adaptateur.
+
+50063=Une exception est survenue lors de la tentative d''instanciation de l''\u00e9l\u00e9ment XmlAdapterClass [{0}]. Cause possible : la classe d''adaptateur n''a aucun constructeur d''argument z\u00e9ro.
+
+50064=XmlAdapterClass [{0}] n''\u00e9tend pas "javax.xml.bind.annotation.adapters.XmlAdapter" comme pr\u00e9vu.  Il est obligatoire que la classe adaptateur \u00e9tendre "javax.xml.bind.annotation.adapters.XmlAdapter", et d\u00e9clare les m\u00e9thodes "public abstract BoundType unmarshal(ValueType v)" et "public abstract ValueType marshal(BoundType v)".
+
+50065=Un XmlJavaTypeAdapter non valide [{0}] a \u00e9t\u00e9 sp\u00e9cifi\u00e9 pour le package [{1}]. Causes possible : nom de classe adaptateur incorrect ou chargeur erron\u00e9 d\u00e9fini.
+
+50066=Un XmlJavaTypeAdapter non valide [{0}] a \u00e9t\u00e9 sp\u00e9cifi\u00e9 pour la classe [{1}]. Causes possible : nom de classe adaptateur incorrect ou chargeur erron\u00e9 d\u00e9fini.
+
+50067=Un objet XmlJavaTypeAdapter [{0}] non valide a \u00e9t\u00e9 sp\u00e9cifi\u00e9 pour la zone/propri\u00e9t\u00e9[{1}] sur la classe [{2}]. Causes possible : nom de classe adaptateur incorrect ou chargeur erron\u00e9 d\u00e9fini.
+
+50068=Une valeur nulle a \u00e9t\u00e9 d\u00e9tect\u00e9e lors du traitement des m\u00e9tadonn\u00e9es externes via la mappe de propri\u00e9t\u00e9s.  Il est obligatoire que le descripteur du fichier de m\u00e9tadonn\u00e9es XML ne soit pas une valeur nulle et qu''il s''agisse de l''une des valeurs suivantes :[java.io.File, java.io.InputStream, java.io.Reader, java.net.URL, javax.xml.stream.XMLEventReader, javax.xml.stream.XMLStreamReader, javax.xml.transform.Source, org.w3c.dom.Node ou org.xml.sax.InputSource].
+
+50069=Aucun package n''a \u00e9t\u00e9 sp\u00e9cifi\u00e9 pour le fichier de m\u00e9tadonn\u00e9es XML sp\u00e9cifi\u00e9.  Le package peut \u00eatre sp\u00e9cifi\u00e9 en transmettant Map<String, Object> (o\u00f9 String = package, Object = descripteur du fichier de m\u00e9tadonn\u00e9es XML) ou en d\u00e9finissant l''attribut de nom de package sur l''\u00e9l\u00e9ment xml-bindings dans le fichier de m\u00e9tadonn\u00e9es XML.
+
+50070=La propri\u00e9t\u00e9 [{0}] sur la classe [{1}] comporte une d\u00e9claration XmlElements contenant un nombre in\u00e9gal de XmlElement/XmlJoinNodes.  Il doit obligatoirement y avoir un XmlJoinNodes correspondant pour chaque XmlElement contenu dans la d\u00e9claration XmlElements.
+
+50071=La propri\u00e9t\u00e9 [{0}] sur la classe [{1}] comporte une d\u00e9claration XmlPaths contenant un XmlPath avec un attribut \u00e0 la racine du chemin [{2}].  Dans le cas de XmlPaths, les attributs doivent \u00eatre imbriqu\u00e9s dans le XmlPath, par exemple, [foo/{2}].
+
+50072=Nom de propri\u00e9t\u00e9 en double [{0}] d\u00e9tect\u00e9 dans la classe[{1}]
+
+50073=La propri\u00e9t\u00e9 [{0}] sur la classe [{1}] est sp\u00e9cifi\u00e9e dans plusieurs fichiers de liaison externes. Chaque propri\u00e9t\u00e9 peut uniquement \u00eatre sp\u00e9cifi\u00e9e dans un fichier
+
+50074=Une exception s''est produite lors de l''acc\u00e8s \u00e0 XMLNameTransformer [{0}]
+
+50075=Une exception s''est produite lors de la tentative de transformation du nom [{0}] avec XMLNameTransformer [{1}]
+
+50076=Impossible de charger les m\u00e9tadonn\u00e9es externes depuis l''emplacement fourni : [{0}]. Cet emplacement doit \u00eatre une URL valide ou une r\u00e9f\u00e9rence de chemin d''acc\u00e8s aux classes.
+
+50077=Impossible d''actualiser les m\u00e9tadonn\u00e9es.  Les m\u00e9tadonn\u00e9es doivent \u00eatre fournies sous la forme d''un noeud XML pour la prise en charge de l''actualisation.
+
+50078=Impossible de traiter les fichiers de liaison externes(XJB).  Pour utiliser des fichiers de liaison externes,XSD et XJB must doivent \u00eatre fournis sous la forme javax.xml.transform.Sources.
+
+50079=Impossible de traiter les sch\u00e9mas.  Si vous utilisez des importations de sch\u00e9ma, les XSD doivent \u00eatre fournis sous la forme javax.xml.transform.Source.
+
+50080=XmlLocation est uniquement autoris\u00e9 dans les propri\u00e9t\u00e9s de type org.xml.sax.Locator, mais [{0}] est de type [{1}].
+
+50081=Une exception s''est produite lors de la g\u00e9n\u00e9ration du sch\u00e9ma.
+
+50082=Une tentative a \u00e9t\u00e9 effectu\u00e9e pour \u00e9crire une valeur {0} sans cl\u00e9 sp\u00e9cifi\u00e9e.  Essayez de d\u00e9finir JSON_VALUE_WRAPPER sur JAXBMarshaller
+
+50083=Une erreur s''est produite lors d''une tentative d''instancier la classe AccessorFactory {0}
+
+50084=La classe AccessorFactory class sp\u00e9cifi\u00e9 {0} n''est pas valide. Elle doit impl\u00e9menter createFieldAccessor(Class, Field, boolean) et createPropertyAccessor(Class, Method, Method).
+
+50085=Une exception s''est produite lors de l''appel de la m\u00e9thode createFieldAccessor sur l''\u00e9l\u00e9ment AccessorFactory {0}
+
+50086=Une exception s''est produite lors de l''appel de la m\u00e9thode createPropertyAccessor sur l''\u00e9l\u00e9ment AccessorFactory {0}
+
+50087=Une exception s''est produite lors de la tentative d''appel de la m\u00e9thode {0} sur l''accesseur {1}
+
+50088=La valeur Enum {0} n''est pas valide pour un \u00e9l\u00e9ment XmlEnum avec la classe {1}
+
+50089=L''interface Java {0} ne peut pas \u00eatre mapp\u00e9e par JAXB car elle comporte plusieurs interfaces parent pouvant \u00eatre mapp\u00e9es. L''h\u00e9ritage multiple n''est pas pris en charge
+
+50090=Valeur non valide pour le graphique d''objets : {0}. La valeur doit \u00eatre une cha\u00eene ou une instance de ObjectGraph.
+
+50091=Le nom d''\u00e9l\u00e9ment {0} a plusieurs mappages.
+
+50092=Une seule propri\u00e9t\u00e9 XmlElementRef de type {0} est autoris\u00e9e sur la classe {1}.
+
+50093=La classe {0} n''est pas de type mapp\u00e9 dans l''\u00e9l\u00e9ment JAXBContext.
+
+50094=La propri\u00e9t\u00e9 {0} sp\u00e9cifi\u00e9e sur l''annotation XmlVariableNode est introuvable sur la classe {1}.
+
+50095=La propri\u00e9t\u00e9 {0} de type {1} sur la classe {2} n''est pas valide pour un \u00e9l\u00e9ment XmlVariableNode.  Seules les propri\u00e9t\u00e9s de typeString ou QName sont autoris\u00e9es.
+
+50096=La propri\u00e9t\u00e9 @XmlAttribute {0} du type {1} doit faire r\u00e9f\u00e9rence \u00e0 un type qui mappe au texte au format XML.  {2} ne peut pas \u00eatre mapp\u00e9 \u00e0 une valeur textuelle.
+

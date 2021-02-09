@@ -22,30 +22,27 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.kernel.service.util.SecureAction;
 import com.ibm.ws.microprofile.config.interfaces.ConfigConstants;
 
+import io.openliberty.microprofile.config.internal.common.InternalConfigSource;
+
 /**
  *
  */
-public class SystemConfig14Source implements ExtendedConfigSource {
+public class SystemConfig14Source extends InternalConfigSource implements ExtendedConfigSource {
 
     private static final TraceComponent tc = Tr.register(SystemConfig14Source.class);
     static final SecureAction priv = AccessController.doPrivileged(SecureAction.get());
 
-    private final int ordinal;
-    private final String name;
-
-    public SystemConfig14Source() {
-        ordinal = getSystemOrdinal();
-        name = Tr.formatMessage(tc, "system.properties.config.source");
-    }
-
     @Override
+    @Trivial
     public String getName() {
-        return name;
+        return Tr.formatMessage(tc, "system.properties.config.source");
     }
 
+    /** {@inheritDoc} */
     @Override
-    public int getOrdinal() {
-        return ordinal;
+    @Trivial
+    protected int getDefaultOrdinal() {
+        return ConfigConstants.ORDINAL_SYSTEM_PROPERTIES;
     }
 
     @Override
@@ -62,6 +59,9 @@ public class SystemConfig14Source implements ExtendedConfigSource {
         return getProperties().keySet();
     }
 
+    /*
+     * Overridden for performance to avoid calling getProperties which would make a copy of the map
+     */
     @Override
     public String getValue(String key) {
         return priv.getProperty(key);
@@ -85,26 +85,6 @@ public class SystemConfig14Source implements ExtendedConfigSource {
         }
 
         return result;
-    }
-
-    @Trivial
-    public static int getSystemOrdinal() {
-        String ordinalProp = getOrdinalSystemProperty();
-        int ordinal = ConfigConstants.ORDINAL_SYSTEM_PROPERTIES;
-        if (ordinalProp != null) {
-            ordinal = Integer.parseInt(ordinalProp);
-        }
-        return ordinal;
-    }
-
-    @Trivial
-    private static String getOrdinalSystemProperty() {
-        return priv.getProperty(ConfigConstants.ORDINAL_PROPERTY);
-    }
-
-    @Override
-    public String toString() {
-        return "System Properties Config Source";
     }
 
 }

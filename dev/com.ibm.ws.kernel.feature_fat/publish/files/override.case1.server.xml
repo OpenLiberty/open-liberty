@@ -4,7 +4,7 @@
     
        <!-- Enable features -->
     <featureManager>
-        <feature>override.systemFeature.requiresJavaxRMI-1.0</feature>
+        <feature>override.systemFeature.requiresSwing-1.0</feature>
     </featureManager>
     
 </server>

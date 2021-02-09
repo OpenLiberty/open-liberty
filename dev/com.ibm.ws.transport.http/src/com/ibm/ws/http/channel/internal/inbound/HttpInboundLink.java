@@ -80,7 +80,8 @@ public class HttpInboundLink extends InboundProtocolLink implements InterChannel
     protected List<ConnectionReadyCallback> appSides = null;
     /** Flag on whether this link has been marked for HTTP/2 */
     private boolean alreadyH2Upgraded = false;
-    protected final String HTTP2_HANDLER_SELECTED = "h2handler";
+    /** Flag on whether grpc is being used for this link */
+    private boolean isGrpc = false;
 
     /**
      * Constructor for an HTTP inbound link object.
@@ -113,6 +114,7 @@ public class HttpInboundLink extends InboundProtocolLink implements InterChannel
 
         getVirtualConnection().getStateMap().put(CallbackIDs.CALLBACK_HTTPICL, this);
         this.bIsActive = true;
+        this.isGrpc = false;
     }
 
     VirtualConnection switchedVC = null;
@@ -288,6 +290,13 @@ public class HttpInboundLink extends InboundProtocolLink implements InterChannel
         return false;
     }
 
+    public final void setIsGrpcInParentLink(boolean x) {
+        isGrpc = x;
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "set isGprc: " + isGrpc);
+        }
+    }
+
     /**
      * @return true if SSL is in use and "h2" was chosen via ALPN
      */
@@ -343,7 +352,16 @@ public class HttpInboundLink extends InboundProtocolLink implements InterChannel
                 // with information after this call because it may go all the way
                 // from the channel above us back to the persist read, must exit
                 // this callstack immediately
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "processRequest calling handleNewRequest()");
+                }
+
                 handleNewRequest();
+
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "processRequest return from handleNewRequest()");
+                }
+
                 return;
             }
             rc = this.myTSC.getReadInterface().read(1, callback, false, timeout);
@@ -478,11 +496,7 @@ public class HttpInboundLink extends InboundProtocolLink implements InterChannel
                 return;
             }
         }
-        // TODO: HTTP/2 handlers should get picked up during the discrimination process.
-        // for now we skip that if any handler has been registered.
-        if (!vc.getStateMap().containsKey(HTTP2_HANDLER_SELECTED)) {
-            handleDiscrimination();
-        }
+        handleDiscrimination();
     }
 
     /**

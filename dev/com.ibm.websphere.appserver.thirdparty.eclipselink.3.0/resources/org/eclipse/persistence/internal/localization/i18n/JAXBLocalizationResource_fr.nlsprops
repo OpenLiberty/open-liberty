@@ -1,0 +1,71 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/internal/localization/i18n/JAXBLocalizationResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+add_namespace_resolvers=Ajout de programmes de r\u00e9solution d''espaces de nom
+
+create_descriptors=Cr\u00e9ation de descripteurs
+
+create_mappings=Ajout de mappages au descripteur {0}
+
+error=Erreur : 
+
+generate_files=\u00c9criture de la configuration XML de d\u00e9ploiement et de session
+
+generate_source=G\u00e9n\u00e9ration de classes d''impl\u00e9mentation
+
+impl_package_missing=Le nom du package de classe d''impl\u00e9mentation est manquant
+
+io_exception_error=Erreur : Exception d''entr\u00e9e-sortie inattendue
+
+malformed_url_error=Erreur : MalformedURLException inattendu
+
+missing_customization=Le fichier de personnalisation en entr\u00e9e est manquant
+
+missing_output_dir=Le nom de r\u00e9pertoire de sortie TopLink est manquant
+
+missing_project_dir=Le nom de r\u00e9pertoire de projet TopLink Workbench est manquant
+
+missing_schema_file=Le fichier de sch\u00e9ma d''entr\u00e9e est manquant
+
+missing_src_dir=Le nom de r\u00e9pertoire de sortie source est manquant
+
+missing_target_package=Le nom de package cible est manquant
+
+read_customization=Lecture du fichier de personnalisation
+
+setup_inheritance=Configuration de l''h\u00e9ritage
+
+start_mw_project=Cr\u00e9ation du projet de session de mappage
+
+start_orajaxb=Appel de orajaxb
+
+start_toplink=Appel de g\u00e9n\u00e9ration TopLink
+
+version=Version : 
+

@@ -10,6 +10,8 @@
  */
 package com.ibm.ws.jsf22.fat.tests;
 
+import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
+import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
@@ -47,6 +49,7 @@ import junit.framework.Assert;
  * As a result, these tests were modified to run in the JSF 2.3 FAT bucket without constructor injection.
  */
 @RunWith(FATRunner.class)
+@SkipForRepeat({ EE8_FEATURES, EE9_FEATURES })
 public class CDITests extends CDITestBase {
     @Rule
     public TestName name = new TestName();
@@ -85,7 +88,6 @@ public class CDITests extends CDITestBase {
      * @throws Exception. Content of the response should show if a specific injection failed.
      *
      */
-    @SkipForRepeat("JSF-2.3")
     @Test
     public void testActionListenerInjection_CDITests() throws Exception {
         testActionListenerInjectionByApp("CDITests", jsfCDIServer);
@@ -99,7 +101,6 @@ public class CDITests extends CDITestBase {
      * @throws Exception. Content of the response should show if a specific injection failed.
      *
      */
-    @SkipForRepeat("JSF-2.3")
     @Test
     public void testNavigationHandlerInjection_CDITests() throws Exception {
         testNavigationHandlerInjectionByApp("CDITests", jsfCDIServer);
@@ -113,7 +114,6 @@ public class CDITests extends CDITestBase {
      * @throws Exception. Content of the response should show if a specific injection failed.
      *
      */
-    @SkipForRepeat("JSF-2.3")
     @Test
     public void testELResolverInjection_CDITests() throws Exception {
         testELResolverInjectionByApp("CDITests", jsfCDIServer);
@@ -126,7 +126,6 @@ public class CDITests extends CDITestBase {
      *
      * @throws Exception
      */
-    @SkipForRepeat("JSF-2.3")
     @Test
     public void testCustomResourceHandlerInjections_CDITests() throws Exception {
         testCustomResourceHandlerInjectionsByApp("CDITests", jsfCDIServer);
@@ -140,7 +139,6 @@ public class CDITests extends CDITestBase {
      *
      * @throws Exception
      */
-    @SkipForRepeat("JSF-2.3")
     @Test
     public void testCustomStateManagerInjections_CDITests() throws Exception {
         testCustomStateManagerInjectionsByApp("CDITests", jsfCDIServer);
@@ -153,7 +151,6 @@ public class CDITests extends CDITestBase {
      *
      * @throws Exception
      */
-    @SkipForRepeat("JSF-2.3")
     @Test
     public void testFactoryAndOtherScopeInjections_CDITests() throws Exception {
         testFactoryAndOtherAppScopedInjectionsByApp("CDITests", jsfCDIServer);
@@ -168,13 +165,11 @@ public class CDITests extends CDITestBase {
      *
      * @throws Exception
      */
-    @SkipForRepeat("JSF-2.3")
     @Test
     public void testInjectionProvider() throws Exception {
         String msgToSearchFor1 = "Using InjectionProvider com.ibm.ws.jsf.spi.impl.WASCDIAnnotationDelegateInjectionProvider";
         String msgToSearchFor2 = "MyFaces CDI support enabled";
 
-        // Use the SharedServer to verify a response.
         this.verifyResponse("CDITests", "index.xhtml", jsfCDIServer, "Hello Worldy world");
 
         // Check the trace.log to see if the proper InjectionProvider is being used.
@@ -201,10 +196,8 @@ public class CDITests extends CDITestBase {
      * @throws Exception. Content of the response should show if a specific injection failed.
      *
      */
-    @SkipForRepeat("JSF-2.3")
     @Test
     public void testBeanInjection() throws Exception {
-        // Use the SharedServer to verify a response.
         this.verifyResponse("CDITests", "TestBean.jsf", jsfCDIServer,
                             ":TestBean:", "class com.ibm.ws.jsf22.fat.cdicommon.beans.injected.TestBeanFieldBean",
                             "class com.ibm.ws.jsf22.fat.cdicommon.beans.injected.ConstructorBean",
@@ -218,7 +211,6 @@ public class CDITests extends CDITestBase {
      * Test CDI injections on CDI ViewScope. Tests constructor, field, and method injections with app, session, request, and dependent scopes.
      * Does some simple verifications of the 4 scopes and instances ( through hashcode) are what is expected for multiple requests.
      */
-    @SkipForRepeat("JSF-2.3")
     @Test
     public void testViewScopeInjections() throws Exception {
         try (WebClient webClient = new WebClient(); WebClient webClient2 = new WebClient()) {
@@ -289,7 +281,6 @@ public class CDITests extends CDITestBase {
         return retValue;
     }
 
-    @SkipForRepeat("JSF-2.3")
     @Test
     public void testPreDestroyInjection() throws Exception {
         // Drive requests to ensure all injected objected are created.
@@ -301,7 +292,7 @@ public class CDITests extends CDITestBase {
         // Restart the app so that preDestory gets called;
         // make sure we reset log offsets correctly
         jsfCDIServer.setMarkToEndOfLog();
-        jsfCDIServer.restartDropinsApplication("CDITests.war");
+        Assert.assertTrue("The CDITests.war application was not restarted.", jsfCDIServer.restartDropinsApplication("CDITests.war"));
         jsfCDIServer.resetLogOffsets();
 
         // Now check the preDestoys

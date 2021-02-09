@@ -1,0 +1,9 @@
+com.ibm.ws.ejbcontainer.async_fat
+com.ibm.ws.ejbcontainer.bindings_fat
+com.ibm.ws.ejbcontainer.cdi_fat
+com.ibm.ws.ejbcontainer.exception_fat
+com.ibm.ws.ejbcontainer.injection_fat
+com.ibm.ws.ejbcontainer.interceptor.v32_fat
+com.ibm.ws.ejbcontainer.interceptor_fat
+com.ibm.ws.ejbcontainer.legacy_fat
+com.ibm.ws.ejbcontainer.mdb.ra_fat

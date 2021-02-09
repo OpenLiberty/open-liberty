@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2019 IBM Corporation and others.
+# Copyright (c) 2011, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -143,6 +143,7 @@ JSON_FIELDS_FORMAT_WARNING.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a JSON n
 JSON_FIELDS_FORMAT_WARNING_2=TRAS3008W: A JSON napl\u00f3z\u00e1si mez\u0151n\u00e9v megfeleltet\u00e9s tulajdons\u00e1g egy bejegyz\u00e9sben t\u00fal sok vagy t\u00fal kev\u00e9s tokent tartalmaz.
 JSON_FIELDS_FORMAT_WARNING_2.explanation=A JSON napl\u00f3z\u00e1si mez\u0151n\u00e9v megfeleltet\u00e9si tulajdons\u00e1g form\u00e1z\u00e1sa a k\u00f6vetkez\u0151: Alap\u00e9rtelmezettMez\u0151n\u00e9v:\u00dajMez\u0151n\u00e9v vagy forr\u00e1s:Alap\u00e9rtelmezettMez\u0151n\u00e9v:\u00dajMez\u0151n\u00e9v.
 JSON_FIELDS_FORMAT_WARNING_2.useraction=A JSON napl\u00f3z\u00e1si mez\u0151n\u00e9v megfeleltet\u00e9si tulajdons\u00e1g form\u00e1z\u00e1sa a k\u00f6vetkez\u0151: Alap\u00e9rtelmezettMez\u0151n\u00e9v:\u00dajMez\u0151n\u00e9v vagy forr\u00e1s:Alap\u00e9rtelmezettMez\u0151n\u00e9v:\u00dajMez\u0151n\u00e9v. 
+
 JSON_FIELDS_NO_MATCH=TRAS3009W: A megadott JSON napl\u00f3z\u00e1si mez\u0151n\u00e9v nem felel meg a megadott forr\u00e1s(ok) egyik ismert mez\u0151nev\u00e9nek sem
 JSON_FIELDS_NO_MATCH.explanation=A megadott JSON napl\u00f3z\u00e1si mez\u0151n\u00e9v nem felel meg egyik ismert mez\u0151nev\u00e9nek sem
 JSON_FIELDS_NO_MATCH.useraction=Adjon meg olyan JSON napl\u00f3z\u00e1si mez\u0151nevet, amely megfelel valamelyik ismert mez\u0151n\u00e9vnek (p\u00e9ld\u00e1ul:  message, ibm_datetime, ibm_sequence)
@@ -154,6 +155,10 @@ JSON_FIELDS_INCORRECT_EVENT_TYPE.useraction=Az elfogadott forr\u00e1sok: message
 JSON_FIELDS_INVALID_CHARACHTER=TRAS3011W: \u00c9rv\u00e9nytelen karakter lett megadva a JSON napl\u00f3z\u00e1si mez\u0151n\u00e9v megfeleltet\u00e9s tulajdons\u00e1gban
 JSON_FIELDS_INVALID_CHARACHTER.explanation= Csak bet\u0171k, sz\u00e1mok \u00e9s : elfogadott a JSON napl\u00f3z\u00e1si mez\u0151n\u00e9v megfeleltet\u00e9s tulajdons\u00e1gban
 JSON_FIELDS_INVALID_CHARACHTER.useraction= M\u00f3dos\u00edtsa a JSON napl\u00f3z\u00e1si mez\u0151n\u00e9v megfeleltet\u00e9s tulajdons\u00e1g \u00e9rt\u00e9k\u00e9t az \u00e9rv\u00e9nytelen karakterek elt\u00e1vol\u00edt\u00e1s\u00e1val
+
+JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED=TRAS3012W: Legal\u00e1bb egy accessLogging logFormat mez\u0151 eset\u00e9n hi\u00e1nyzik a fejl\u00e9c neve: {0}.
+JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED.explanation=A JSON napl\u00f3z\u00e1s a logFormat attrib\u00fatumot haszn\u00e1lja az accessLogging sor\u00e1n, amikor kiv\u00e1lasztja a szerepeltetett http_access.log \u00fczenetmez\u0151ket. A(z) %i vagy %o mez\u0151k haszn\u00e1latakor az accessLogging logFormat attrib\u00fatumban meg kell adni egy fejl\u00e9cnevet.
+JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED.useraction=Adjon meg a mez\u0151h\u00f6z egy fejl\u00e9cnevet az accessLogging logFormat attrib\u00fatumban.
 
 # Note: no 9999 message kept here because saving footprint space is more important
 

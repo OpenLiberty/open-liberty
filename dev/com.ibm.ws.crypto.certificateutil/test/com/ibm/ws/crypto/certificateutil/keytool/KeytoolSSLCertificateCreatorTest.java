@@ -51,6 +51,8 @@ public class KeytoolSSLCertificateCreatorTest {
     @Test(expected = IllegalArgumentException.class)
     public void createKeytoolCommand_nullLocation() throws Exception {
         creator.createDefaultSSLCertificate(null, "Liberty",
+                                            DefaultSSLCertificateCreator.DEFAULT_KEYSTORE_TYPE,
+                                            null,
                                             DefaultSSLCertificateCreator.DEFAULT_VALIDITY,
                                             new DefaultSubjectDN().getSubjectDN(),
                                             DefaultSSLCertificateCreator.DEFAULT_SIZE,
@@ -64,6 +66,8 @@ public class KeytoolSSLCertificateCreatorTest {
     @Test(expected = IllegalArgumentException.class)
     public void createKeytoolCommand_emptyLocation() throws Exception {
         creator.createDefaultSSLCertificate("", "Liberty",
+                                            DefaultSSLCertificateCreator.DEFAULT_KEYSTORE_TYPE,
+                                            null,
                                             DefaultSSLCertificateCreator.DEFAULT_VALIDITY,
                                             new DefaultSubjectDN().getSubjectDN(),
                                             DefaultSSLCertificateCreator.DEFAULT_SIZE,
@@ -77,6 +81,8 @@ public class KeytoolSSLCertificateCreatorTest {
     @Test(expected = IllegalArgumentException.class)
     public void createKeytoolCommand_nullPassword() throws Exception {
         creator.createDefaultSSLCertificate("/", null,
+                                            DefaultSSLCertificateCreator.DEFAULT_KEYSTORE_TYPE,
+                                            null,
                                             DefaultSSLCertificateCreator.DEFAULT_VALIDITY,
                                             new DefaultSubjectDN().getSubjectDN(),
                                             DefaultSSLCertificateCreator.DEFAULT_SIZE,
@@ -90,6 +96,8 @@ public class KeytoolSSLCertificateCreatorTest {
     @Test(expected = IllegalArgumentException.class)
     public void createKeytoolCommand_emptyPassword() throws Exception {
         creator.createDefaultSSLCertificate("/", "",
+                                            DefaultSSLCertificateCreator.DEFAULT_KEYSTORE_TYPE,
+                                            null,
                                             DefaultSSLCertificateCreator.DEFAULT_VALIDITY,
                                             new DefaultSubjectDN().getSubjectDN(),
                                             DefaultSSLCertificateCreator.DEFAULT_SIZE,
@@ -103,6 +111,8 @@ public class KeytoolSSLCertificateCreatorTest {
     @Test(expected = IllegalArgumentException.class)
     public void createKeytoolCommand_passwordTooShort() throws Exception {
         creator.createDefaultSSLCertificate("/", "WebAS",
+                                            DefaultSSLCertificateCreator.DEFAULT_KEYSTORE_TYPE,
+                                            null,
                                             DefaultSSLCertificateCreator.DEFAULT_VALIDITY,
                                             new DefaultSubjectDN().getSubjectDN(),
                                             DefaultSSLCertificateCreator.DEFAULT_SIZE,
@@ -115,7 +125,10 @@ public class KeytoolSSLCertificateCreatorTest {
      */
     @Test(expected = IllegalArgumentException.class)
     public void createKeytoolCommand_negativeValidity() throws Exception {
-        creator.createDefaultSSLCertificate("/", null, -1,
+        creator.createDefaultSSLCertificate("/", null,
+                                            DefaultSSLCertificateCreator.DEFAULT_KEYSTORE_TYPE,
+                                            null,
+                                            -1,
                                             new DefaultSubjectDN().getSubjectDN(),
                                             DefaultSSLCertificateCreator.DEFAULT_SIZE,
                                             DefaultSSLCertificateCreator.KEYALG,
@@ -127,7 +140,10 @@ public class KeytoolSSLCertificateCreatorTest {
      */
     @Test(expected = IllegalArgumentException.class)
     public void createKeytoolCommand_zeroValidity() throws Exception {
-        creator.createDefaultSSLCertificate("/", "Liberty", 0,
+        creator.createDefaultSSLCertificate("/", "Liberty",
+                                            DefaultSSLCertificateCreator.DEFAULT_KEYSTORE_TYPE,
+                                            null,
+                                            0,
                                             new DefaultSubjectDN().getSubjectDN(),
                                             DefaultSSLCertificateCreator.DEFAULT_SIZE,
                                             DefaultSSLCertificateCreator.KEYALG,
@@ -140,6 +156,8 @@ public class KeytoolSSLCertificateCreatorTest {
     @Test(expected = IllegalArgumentException.class)
     public void createKeytoolCommand_belowMinimumValidity() throws Exception {
         creator.createDefaultSSLCertificate("/", "Liberty",
+                                            DefaultSSLCertificateCreator.DEFAULT_KEYSTORE_TYPE,
+                                            null,
                                             DefaultSSLCertificateCreator.MINIMUM_VALIDITY - 1,
                                             new DefaultSubjectDN().getSubjectDN(),
                                             DefaultSSLCertificateCreator.DEFAULT_SIZE,
@@ -153,6 +171,8 @@ public class KeytoolSSLCertificateCreatorTest {
     @Test(expected = IllegalArgumentException.class)
     public void createKeytoolCommand_nullSubjectDN() throws Exception {
         File ks = creator.createDefaultSSLCertificate(location, "Liberty",
+                                                      DefaultSSLCertificateCreator.DEFAULT_KEYSTORE_TYPE,
+                                                      null,
                                                       DefaultSSLCertificateCreator.DEFAULT_VALIDITY,
                                                       null,
                                                       DefaultSSLCertificateCreator.DEFAULT_SIZE,
@@ -168,6 +188,8 @@ public class KeytoolSSLCertificateCreatorTest {
     @Test(expected = IllegalArgumentException.class)
     public void createKeytoolCommand_emptySubjectDN() throws Exception {
         File ks = creator.createDefaultSSLCertificate(location, "Liberty",
+                                                      DefaultSSLCertificateCreator.DEFAULT_KEYSTORE_TYPE,
+                                                      null,
                                                       DefaultSSLCertificateCreator.DEFAULT_VALIDITY,
                                                       "",
                                                       DefaultSSLCertificateCreator.DEFAULT_SIZE,
@@ -183,6 +205,8 @@ public class KeytoolSSLCertificateCreatorTest {
     @Test(expected = IllegalArgumentException.class)
     public void createKeytoolCommand_invalidDN() throws Exception {
         creator.createDefaultSSLCertificate("/", "Liberty",
+                                            DefaultSSLCertificateCreator.DEFAULT_KEYSTORE_TYPE,
+                                            null,
                                             DefaultSSLCertificateCreator.DEFAULT_VALIDITY,
                                             "invalidDN",
                                             DefaultSSLCertificateCreator.DEFAULT_SIZE,
@@ -196,6 +220,8 @@ public class KeytoolSSLCertificateCreatorTest {
     @Test(expected = IllegalArgumentException.class)
     public void createKeytoolCommand_invalidSigAlg() throws Exception {
         creator.createDefaultSSLCertificate("/", "Liberty",
+                                            DefaultSSLCertificateCreator.DEFAULT_KEYSTORE_TYPE,
+                                            null,
                                             DefaultSSLCertificateCreator.DEFAULT_VALIDITY,
                                             null,
                                             DefaultSSLCertificateCreator.DEFAULT_SIZE,
@@ -209,6 +235,8 @@ public class KeytoolSSLCertificateCreatorTest {
     @Test(expected = IllegalArgumentException.class)
     public void createKeytoolCommand_SigAlgWrongSize() throws Exception {
         creator.createDefaultSSLCertificate("/", "Liberty",
+                                            DefaultSSLCertificateCreator.DEFAULT_KEYSTORE_TYPE,
+                                            null,
                                             DefaultSSLCertificateCreator.DEFAULT_VALIDITY,
                                             null,
                                             DefaultSSLCertificateCreator.DEFAULT_SIZE,
@@ -222,6 +250,8 @@ public class KeytoolSSLCertificateCreatorTest {
     @Test
     public void createKeytoolCommand_defaultValidity() throws Exception {
         File ks = creator.createDefaultSSLCertificate(location, "Liberty",
+                                                      DefaultSSLCertificateCreator.DEFAULT_KEYSTORE_TYPE,
+                                                      null,
                                                       DefaultSSLCertificateCreator.DEFAULT_VALIDITY,
                                                       "CN=localhost",
                                                       DefaultSSLCertificateCreator.DEFAULT_SIZE,
@@ -237,6 +267,8 @@ public class KeytoolSSLCertificateCreatorTest {
     @Test(expected = CertificateException.class)
     public void createKeytoolCommand_doubleCallTriggersException() throws Exception {
         File ks = creator.createDefaultSSLCertificate(location, "Liberty",
+                                                      DefaultSSLCertificateCreator.DEFAULT_KEYSTORE_TYPE,
+                                                      null,
                                                       DefaultSSLCertificateCreator.DEFAULT_VALIDITY,
                                                       "CN=localhost",
                                                       DefaultSSLCertificateCreator.DEFAULT_SIZE,
@@ -245,6 +277,8 @@ public class KeytoolSSLCertificateCreatorTest {
         assertNotNull("keystore was not created", ks);
         assertTrue("keystore was not created", ks.exists());
         creator.createDefaultSSLCertificate(location, "Liberty",
+                                            DefaultSSLCertificateCreator.DEFAULT_KEYSTORE_TYPE,
+                                            null,
                                             DefaultSSLCertificateCreator.DEFAULT_VALIDITY,
                                             "CN=localhost",
                                             DefaultSSLCertificateCreator.DEFAULT_SIZE,

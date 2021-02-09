@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2019 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,19 +16,15 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import com.ibm.ws.microprofile.faulttolerance.impl.policy.FallbackPolicyImpl;
-import com.ibm.ws.microprofile.faulttolerance.spi.MetricRecorder;
-import com.ibm.ws.microprofile.faulttolerance.utils.DummyMetricRecorder;
 import com.ibm.ws.microprofile.faulttolerance20.impl.MethodResult;
 
 @SuppressWarnings("restriction") // Unit test accesses non-exported *PolicyImpl classes
 public class FallbackStateImplTest {
 
-    private static MetricRecorder dummyMetrics = DummyMetricRecorder.get();
-
     @Test
     public <R> void testFallback() throws InterruptedException, InstantiationException, IllegalAccessException {
         FallbackPolicyImpl policy = new FallbackPolicyImpl();
-        FallbackStateImpl state = new FallbackStateImpl(policy, dummyMetrics);
+        FallbackStateImpl state = new FallbackStateImpl(policy);
 
         MethodResult<R> resultWithException = MethodResult.failure(new RuntimeException());
         assertTrue("Fallback should be applied if an exception is thrown",
@@ -44,7 +40,7 @@ public class FallbackStateImplTest {
     public <R> void testFallbackApplyOn() throws InterruptedException, InstantiationException, IllegalAccessException {
         FallbackPolicyImpl policy = new FallbackPolicyImpl();
         policy.setApplyOn(TestExceptionA.class);
-        FallbackStateImpl state = new FallbackStateImpl(policy, dummyMetrics);
+        FallbackStateImpl state = new FallbackStateImpl(policy);
 
         MethodResult<R> resultExceptionA = MethodResult.failure(new TestExceptionA());
         assertTrue("Fallback should be applied since the exception thrown is found in the list of applyOn() exceptions",
@@ -65,7 +61,7 @@ public class FallbackStateImplTest {
     public <R> void testFallbackSkipOn() throws InterruptedException, InstantiationException, IllegalAccessException {
         FallbackPolicyImpl policy = new FallbackPolicyImpl();
         policy.setSkipOn(TestExceptionA.class);
-        FallbackStateImpl state = new FallbackStateImpl(policy, dummyMetrics);
+        FallbackStateImpl state = new FallbackStateImpl(policy);
 
         MethodResult<R> resultExceptionA = MethodResult.failure(new TestExceptionA());
         assertFalse("Fallback should NOT be applied since the exception thrown is found in the list of skipOn() exceptions",
@@ -86,7 +82,7 @@ public class FallbackStateImplTest {
         FallbackPolicyImpl policy = new FallbackPolicyImpl();
         policy.setApplyOn(TestExceptionA.class, TestExceptionBextended.class);
         policy.setSkipOn(TestExceptionB.class, TestExceptionAextended.class);
-        FallbackStateImpl state = new FallbackStateImpl(policy, dummyMetrics);
+        FallbackStateImpl state = new FallbackStateImpl(policy);
 
         // Summary:
         // * NOTE: from the Fallback.java specification, skipOn() takes priority over applyOn() *

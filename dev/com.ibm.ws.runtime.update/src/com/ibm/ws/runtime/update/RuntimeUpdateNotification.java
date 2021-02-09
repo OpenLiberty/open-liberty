@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014-2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.runtime.update;
 
+import java.util.Map;
 import java.util.concurrent.Future;
 
 import com.ibm.ws.threading.listeners.CompletionListener;
@@ -32,6 +33,8 @@ public interface RuntimeUpdateNotification {
     public final String FEATURE_BUNDLES_RESOLVED = "FeatureBundlesResolved";
     public final String FEATURE_BUNDLES_PROCESSED = "FeatureBundlesProcessed";
     public final String FEATURE_UPDATES_COMPLETED = "FeatureUpdatesCompleted";
+    public final String INSTALLED_BUNDLES_IN_UPDATE = "InstalledBundles";
+    public final String REMOVED_BUNDLES_IN_UPDATE = "RemovedBundles";
     public final String CONFIG_UPDATES_DELIVERED = "ConfigUpdatesDelivered";
     public final String APPLICATIONS_STOPPED = "ApplicationsStopped";
     public final String APPLICATIONS_STARTING = "ApplicationsStarting";
@@ -70,7 +73,7 @@ public interface RuntimeUpdateNotification {
      * Set a completion listener to be called when the future completes
      *
      * @param completionListener the completion listener to be registered
-     *            with the future
+     *                               with the future
      */
     public void onCompletion(CompletionListener<Boolean> completionListener);
 
@@ -92,4 +95,8 @@ public interface RuntimeUpdateNotification {
      * @return boolean
      */
     public boolean ignoreOnQuiesce();
+
+    public Map<String, Object> getProperties();
+
+    public void setProperties(Map<String, Object> props);
 }

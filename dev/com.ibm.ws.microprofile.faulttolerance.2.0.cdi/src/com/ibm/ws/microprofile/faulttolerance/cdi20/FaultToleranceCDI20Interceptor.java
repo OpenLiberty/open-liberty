@@ -79,6 +79,7 @@ public class FaultToleranceCDI20Interceptor implements Interceptor<FaultToleranc
     @Override
     public FaultToleranceInterceptor create(CreationalContext<FaultToleranceInterceptor> cc) {
         FaultToleranceInterceptor instance = injectionTarget.produce(cc);
+        cc.push(instance);
         injectionTarget.inject(instance, cc);
         injectionTarget.postConstruct(instance);
         return instance;
@@ -88,6 +89,7 @@ public class FaultToleranceCDI20Interceptor implements Interceptor<FaultToleranc
     public void destroy(FaultToleranceInterceptor instance, CreationalContext<FaultToleranceInterceptor> cc) {
         injectionTarget.preDestroy(instance);
         injectionTarget.dispose(instance);
+        cc.release();
     }
 
     @Override

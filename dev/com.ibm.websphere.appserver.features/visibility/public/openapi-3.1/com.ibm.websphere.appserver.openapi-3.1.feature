@@ -1,5 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.openapi-3.1
+WLP-DisableAllFeatures-OnConflict: false
 visibility=public
 singleton=true
 IBM-App-ForceRestart: install, uninstall
@@ -23,8 +24,7 @@ Subsystem-Name: OpenAPI 3.1
  com.ibm.ws.openapi.ui, \
  com.ibm.ws.openapi.ui.private, \
  com.ibm.ws.org.apache.commons.io; location:=lib/, \
- com.ibm.ws.org.apache.commons.lang3; location:=lib/, \
- com.ibm.ws.require.java8
+ com.ibm.ws.org.apache.commons.lang3; location:=lib/
 
 -jars= \
  com.ibm.websphere.appserver.spi.openapi.3.1; location:=dev/spi/ibm/

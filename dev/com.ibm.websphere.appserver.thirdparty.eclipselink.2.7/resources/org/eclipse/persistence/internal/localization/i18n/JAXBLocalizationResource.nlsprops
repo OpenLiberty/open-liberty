@@ -31,7 +31,7 @@ add_namespace_resolvers=Adding namespace resolvers
 
 create_descriptors=Creating Descriptors
 
-create_mappings=Adding mappings to descriptors
+create_mappings=Adding mappings to descriptor {0}
 
 error=Error: 
 

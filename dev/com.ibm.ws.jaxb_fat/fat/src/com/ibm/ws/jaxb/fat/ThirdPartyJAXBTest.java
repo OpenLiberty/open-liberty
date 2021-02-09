@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,7 +30,7 @@ import componenttest.topology.utils.FATServletClient;
 import jaxb.thirdparty.web.ThirdPartyJAXBTestServlet;
 
 @RunWith(FATRunner.class)
-@SkipForRepeat("JAXB-2.3")
+@SkipForRepeat({ "JAXB-2.3", SkipForRepeat.EE9_FEATURES })
 @MaximumJavaLevel(javaLevel = 8) // Do not run these tests on JDK 9+ where there is no JAX-B api/impl in the JDK
 public class ThirdPartyJAXBTest extends FATServletClient {
 
@@ -50,7 +50,7 @@ public class ThirdPartyJAXBTest extends FATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
         ShrinkHelper.defaultDropinApp(server, APP_NAME, "jaxb.thirdparty.web");
-        server.startServer(RepeatTestFilter.CURRENT_REPEAT_ACTION + ".log");
+        server.startServer(RepeatTestFilter.getRepeatActionsAsString() + ".log");
     }
 
     @AfterClass

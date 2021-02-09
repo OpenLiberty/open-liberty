@@ -37,7 +37,9 @@ KRB_S4U2PROXY_IS_NOT_SUPPORT=CWWKS4344E: The Kerberos constrained delegation fea
 KRB_S4U2PROXY_IS_NOT_SUPPORT.explanation=The Kerberos constrained delegation feature cannot be enabled due to the Java runtime vendor and version.
 KRB_S4U2PROXY_IS_NOT_SUPPORT.useraction=Use the Java vendor and version that is supported by the Kerberos constrained delegation feature.
 
+# CWWKS4345E is used by the com.ibm.ws.security.kerberos.auth bundle
 
+# CWWKS4346I is used by the com.ibm.ws.security.kerberos.auth bundle
 
 
 

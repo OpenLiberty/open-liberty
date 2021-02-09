@@ -1,0 +1,12 @@
+INSERT INTO ${schemaname}.SimpleEntityOLGH10515 (CAR_ID, CAR_VER) VALUES ('One', 1);
+INSERT INTO ${schemaname}.SimpleEntityOLGH10515 (CAR_ID, CAR_VER) VALUES ('Two', 1);
+INSERT INTO ${schemaname}.SimpleEntityOLGH10515 (CAR_ID, CAR_VER) VALUES ('Three', 1);
+INSERT INTO ${schemaname}.SimpleEntityOLGH10515 (CAR_ID, CAR_VER) VALUES ('Four', 1);
+INSERT INTO ${schemaname}.criteria_car_origin (CAR_ID, CAR_VER, component, origin) VALUES ('One', 1, 'American', 'Mustang');
+INSERT INTO ${schemaname}.criteria_car_origin (CAR_ID, CAR_VER, component, origin) VALUES ('One', 1, 'German', 'Volkswagen');
+INSERT INTO ${schemaname}.criteria_car_origin (CAR_ID, CAR_VER, component, origin) VALUES ('Two', 1, 'American', 'Mustang');
+INSERT INTO ${schemaname}.criteria_car_origin (CAR_ID, CAR_VER, component, origin) VALUES ('Two', 1, 'German', 'Volkswagen');
+INSERT INTO ${schemaname}.criteria_car_origin (CAR_ID, CAR_VER, component, origin) VALUES ('Three', 1, 'American', 'Mustang');
+INSERT INTO ${schemaname}.criteria_car_origin (CAR_ID, CAR_VER, component, origin) VALUES ('Three', 1, 'German', 'Volkswagen');
+INSERT INTO ${schemaname}.criteria_car_origin (CAR_ID, CAR_VER, component, origin) VALUES ('Four', 1, 'American', 'Mustang');
+INSERT INTO ${schemaname}.criteria_car_origin (CAR_ID, CAR_VER, component, origin) VALUES ('Four', 1, 'German', 'Volkswagen');

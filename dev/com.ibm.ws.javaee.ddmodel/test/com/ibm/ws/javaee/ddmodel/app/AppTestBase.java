@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -48,14 +48,13 @@ public class AppTestBase extends DDTestBase {
 
         // Mock up the JavaEEVersion reference, which carries the application feature version:
         @SuppressWarnings("unchecked")
-        final ServiceReference<JavaEEVersion> versionRef =
-            mockery.mock(ServiceReference.class, "sr" + mockId++);
+        final ServiceReference<JavaEEVersion> versionRef = mockery.mock(ServiceReference.class, "sr" + mockId++);
 
         // Teach the mock objects their expectations.  These are determined by
         // examination of the application adapter code.
 
         // containerToAdapt3.getEntry("META-INF/application.xml")
-        
+
         mockery.checking(new Expectations() {
             {
                 // Required by calls to getFromNonPersistentCache and addToNonPersistentCache.
@@ -105,19 +104,20 @@ public class AppTestBase extends DDTestBase {
     // 6,   http://java.sun.com/xml/ns/javaee
     // 7,   http://xmlns.jcp.org/xml/ns/javaee
     // 8,   http://xmlns.jcp.org/xml/ns/javaee
-    
+    // 9,   https://jakarta.ee/xml/ns/jakartaee
+
     // 1.2 and 1.3 are DD based:
 
     protected static String app12() {
         return "<!DOCTYPE application PUBLIC" +
-               " \"-//Sun Microsystems, Inc.//DTD J2EE Application 1.2//EN\"" + 
+               " \"-//Sun Microsystems, Inc.//DTD J2EE Application 1.2//EN\"" +
                " \"http://java.sun.com/j2ee/dtds/application_1_2.dtd\">" +
                "<application>";
     }
 
     protected static String app13() {
         return "<!DOCTYPE application PUBLIC" +
-               " \"-//Sun Microsystems, Inc.//DTD J2EE Application 1.3//EN\"" + 
+               " \"-//Sun Microsystems, Inc.//DTD J2EE Application 1.3//EN\"" +
                " \"http://java.sun.com/j2ee/dtds/application_1_3.dtd\">" +
                "<application>";
     }
@@ -129,7 +129,7 @@ public class AppTestBase extends DDTestBase {
                " xmlns=\"http://java.sun.com/xml/ns/j2ee\"" +
                " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
                " xsi:schemaLocation=\"http://java.sun.com/xml/ns/j2ee" +
-                 " http://java.sun.com/xml/ns/j2ee/application_1_4.xsd\"" +
+               " http://java.sun.com/xml/ns/j2ee/application_1_4.xsd\"" +
                " version=\"1.4\"" +
                " id=\"Application_ID\"" +
                ">";
@@ -137,49 +137,60 @@ public class AppTestBase extends DDTestBase {
 
     protected static String app50() {
         return "<application" +
-                " xmlns=\"http://java.sun.com/xml/ns/javaee\"" +
-                " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
-                " xsi:schemaLocation=\"http://java.sun.com/xml/ns/javaee" +
-                  " http://java.sun.com/xml/ns/javaee/application_5.xsd\"" +
-                " version=\"5\"" +
-                " id=\"Application_ID\"" +
-                ">";
+               " xmlns=\"http://java.sun.com/xml/ns/javaee\"" +
+               " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
+               " xsi:schemaLocation=\"http://java.sun.com/xml/ns/javaee" +
+               " http://java.sun.com/xml/ns/javaee/application_5.xsd\"" +
+               " version=\"5\"" +
+               " id=\"Application_ID\"" +
+               ">";
     }
 
     protected static String app60() {
         return "<application" +
-                " xmlns=\"http://java.sun.com/xml/ns/javaee\"" +
-                " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
-                " xsi:schemaLocation=\"http://java.sun.com/xml/ns/javaee" +
-                  " http://java.sun.com/xml/ns/javaee/application_6.xsd\"" +
-                " version=\"6\"" +
-                " id=\"Application_ID\"" +
-                ">";
+               " xmlns=\"http://java.sun.com/xml/ns/javaee\"" +
+               " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
+               " xsi:schemaLocation=\"http://java.sun.com/xml/ns/javaee" +
+               " http://java.sun.com/xml/ns/javaee/application_6.xsd\"" +
+               " version=\"6\"" +
+               " id=\"Application_ID\"" +
+               ">";
     }
 
     protected static String app70() {
         return "<application" +
-                " xmlns=\"http://xmlns.jcp.org/xml/ns/javaee\"" +
-                " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
-                " xsi:schemaLocation=\"http://xmlns.jcp.org/xml/ns/javaee" +
-                  " http://xmlns.jcp.org/xml/ns/javaee/application_7.xsd\"" +
-                " version=\"7\"" +
-                " id=\"Application_ID\"" +
-                ">";
+               " xmlns=\"http://xmlns.jcp.org/xml/ns/javaee\"" +
+               " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
+               " xsi:schemaLocation=\"http://xmlns.jcp.org/xml/ns/javaee" +
+               " http://xmlns.jcp.org/xml/ns/javaee/application_7.xsd\"" +
+               " version=\"7\"" +
+               " id=\"Application_ID\"" +
+               ">";
     }
 
     protected static String app80() {
         return "<application" +
-                " xmlns=\"http://xmlns.jcp.org/xml/ns/javaee\"" +
-                " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
-                " xsi:schemaLocation=\"http://xmlns.jcp.org/xml/ns/javaee" +
-                  " http://xmlns.jcp.org/xml/ns/javaee/application_8.xsd\"" +
-                " version=\"8\"" +
-                " id=\"Application_ID\"" +
-                ">";
+               " xmlns=\"http://xmlns.jcp.org/xml/ns/javaee\"" +
+               " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
+               " xsi:schemaLocation=\"http://xmlns.jcp.org/xml/ns/javaee" +
+               " http://xmlns.jcp.org/xml/ns/javaee/application_8.xsd\"" +
+               " version=\"8\"" +
+               " id=\"Application_ID\"" +
+               ">";
+    }
+
+    protected static String app90() {
+        return "<application" +
+               " xmlns=\"https://jakarta.ee/xml/ns/jakartaee\"" +
+               " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
+               " xsi:schemaLocation=\"https://jakarta.ee/xml/ns/jakartaee" +
+               " https://jakarta.ee/xml/ns/jakartaee/application_9.xsd\"" +
+               " version=\"9\"" +
+               " id=\"Application_ID\"" +
+               ">";
     }
 
     protected static String appTail() {
         return "</application>";
-   }
+    }
 }

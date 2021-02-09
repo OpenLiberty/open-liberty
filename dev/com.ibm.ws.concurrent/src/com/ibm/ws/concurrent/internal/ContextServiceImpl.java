@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2019 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,12 +30,21 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executor;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 import javax.enterprise.concurrent.ContextService;
 import javax.enterprise.concurrent.ManagedTask;
 
+import org.eclipse.microprofile.context.ThreadContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
@@ -52,11 +61,11 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.context.service.serializable.ContextualCallable;
+import com.ibm.ws.concurrent.ContextualAction;
 import com.ibm.ws.context.service.serializable.ContextualInvocationHandler;
 import com.ibm.ws.context.service.serializable.ContextualObject;
-import com.ibm.ws.context.service.serializable.ContextualRunnable;
 import com.ibm.ws.context.service.serializable.ThreadContextManager;
+import com.ibm.ws.javaee.version.JavaEEVersion;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleComponent;
@@ -70,18 +79,14 @@ import com.ibm.wsspi.threadcontext.WSContextService;
 
 /**
  * Captures and propagates thread context.
- *
- * All declarative services annotations on this class are ignored.
- * The annotations on
- * com.ibm.ws.concurrent.ee.ContextServiceImpl and
- * com.ibm.ws.concurrent.mp.ThreadContextImpl
- * apply instead.
  */
 @Component(name = "com.ibm.ws.context.service",
            configurationPolicy = ConfigurationPolicy.REQUIRE,
-           service = { ResourceFactory.class, ContextService.class, WSContextService.class, ApplicationRecycleComponent.class },
-           property = { "creates.objectClass=javax.enterprise.concurrent.ContextService" })
-public class ContextServiceImpl implements ContextService, ResourceFactory, WSContextService, ApplicationRecycleComponent {
+           service = { ResourceFactory.class, ContextService.class, ThreadContext.class, WSContextService.class, ApplicationRecycleComponent.class },
+           property = { "creates.objectClass=javax.enterprise.concurrent.ContextService",
+                        "creates.objectClass=org.eclipse.microprofile.context.ThreadContext" })
+public class ContextServiceImpl implements ContextService, //
+                ResourceFactory, ThreadContext, WSContextService, ApplicationRecycleComponent {
     private static final TraceComponent tc = Tr.register(ContextServiceImpl.class);
 
     // Names of references
@@ -108,6 +113,16 @@ public class ContextServiceImpl implements ContextService, ResourceFactory, WSCo
      * Component context for this contextService instance.
      */
     private ComponentContext componentContext;
+
+    /**
+     * Jakarta EE version if Jakarta EE 9 or higher. If 0, assume a lesser EE spec version.
+     */
+    private volatile int eeVersion;
+
+    /**
+     * Tracks the most recently bound EE version service reference. Only use this within the set/unsetEEVersion methods.
+     */
+    private ServiceReference<JavaEEVersion> eeVersionRef;
 
     /**
      * Lock for reading and updating configuration.
@@ -214,9 +229,10 @@ public class ContextServiceImpl implements ContextService, ResourceFactory, WSCo
     /**
      * Capture thread context.
      *
-     * @param execProps execution properties. Custom property keys must not begin with "javax.enterprise.concurrent."
-     * @param task the task for which we are capturing context. This is optional and is used to compute a default value for the IDENTITY_NAME execution property.
-     * @param internalNames list to be updated with names of internally added execution properties. Null if this information should not be tracked.
+     * @param execProps                     execution properties. Custom property keys must not begin with "javax.enterprise.concurrent."
+     * @param task                          the task for which we are capturing context. This is optional and is used to compute a default value for the IDENTITY_NAME execution
+     *                                          property.
+     * @param internalNames                 list to be updated with names of internally added execution properties. Null if this information should not be tracked.
      * @param additionalThreadContextConfig list of additional thread context configurations to use when capturing thread context.
      * @return captured thread context.
      */
@@ -228,10 +244,13 @@ public class ContextServiceImpl implements ContextService, ResourceFactory, WSCo
             if (internalNames != null)
                 internalNames.add(TASK_OWNER);
         }
-        if (task != null && (internalNames == null || !execProps.containsKey(ManagedTask.IDENTITY_NAME))) {
-            execProps.put(ManagedTask.IDENTITY_NAME, task.getClass().getName());
+        if (task != null && (internalNames == null ||
+                             !(execProps.containsKey("jakarta.enterprise.concurrent.IDENTITY_NAME") ||
+                               execProps.containsKey("javax.enterprise.concurrent.IDENTITY_NAME")))) {
+            String key = eeVersion < 9 ? "javax.enterprise.concurrent.IDENTITY_NAME" : "jakarta.enterprise.concurrent.IDENTITY_NAME";
+            execProps.put(key, task.getClass().getName());
             if (internalNames != null)
-                internalNames.add(ManagedTask.IDENTITY_NAME);
+                internalNames.add(key);
         }
 
         lock.readLock().lock();
@@ -267,6 +286,76 @@ public class ContextServiceImpl implements ContextService, ResourceFactory, WSCo
         }
     }
 
+    @Override
+    public <R> Callable<R> contextualCallable(Callable<R> callable) {
+        if (callable instanceof ContextualCallable)
+            throw new IllegalArgumentException(ContextualCallable.class.getSimpleName());
+
+        @SuppressWarnings("unchecked")
+        ThreadContextDescriptor contextDescriptor = captureThreadContext(Collections.emptyMap());
+        return new ContextualCallable<R>(contextDescriptor, callable);
+    }
+
+    @Override
+    public <T, U> BiConsumer<T, U> contextualConsumer(BiConsumer<T, U> consumer) {
+        if (consumer instanceof ContextualBiConsumer)
+            throw new IllegalArgumentException(ContextualBiConsumer.class.getSimpleName());
+
+        @SuppressWarnings("unchecked")
+        ThreadContextDescriptor contextDescriptor = captureThreadContext(Collections.emptyMap());
+        return new ContextualBiConsumer<T, U>(contextDescriptor, consumer);
+    }
+
+    @Override
+    public <T> Consumer<T> contextualConsumer(Consumer<T> consumer) {
+        if (consumer instanceof ContextualConsumer)
+            throw new IllegalArgumentException(ContextualConsumer.class.getSimpleName());
+
+        @SuppressWarnings("unchecked")
+        ThreadContextDescriptor contextDescriptor = captureThreadContext(Collections.emptyMap());
+        return new ContextualConsumer<T>(contextDescriptor, consumer);
+    }
+
+    @Override
+    public <T, U, R> BiFunction<T, U, R> contextualFunction(BiFunction<T, U, R> function) {
+        if (function instanceof ContextualBiFunction)
+            throw new IllegalArgumentException(ContextualBiFunction.class.getSimpleName());
+
+        @SuppressWarnings("unchecked")
+        ThreadContextDescriptor contextDescriptor = captureThreadContext(Collections.emptyMap());
+        return new ContextualBiFunction<T, U, R>(contextDescriptor, function);
+    }
+
+    @Override
+    public <T, R> Function<T, R> contextualFunction(Function<T, R> function) {
+        if (function instanceof ContextualFunction)
+            throw new IllegalArgumentException(ContextualFunction.class.getSimpleName());
+
+        @SuppressWarnings("unchecked")
+        ThreadContextDescriptor contextDescriptor = captureThreadContext(Collections.emptyMap());
+        return new ContextualFunction<T, R>(contextDescriptor, function);
+    }
+
+    @Override
+    public Runnable contextualRunnable(Runnable runnable) {
+        if (runnable instanceof ContextualRunnable)
+            throw new IllegalArgumentException(ContextualRunnable.class.getSimpleName());
+
+        @SuppressWarnings("unchecked")
+        ThreadContextDescriptor contextDescriptor = captureThreadContext(Collections.emptyMap());
+        return new ContextualRunnable(contextDescriptor, runnable);
+    }
+
+    @Override
+    public <R> Supplier<R> contextualSupplier(Supplier<R> supplier) {
+        if (supplier instanceof ContextualSupplier)
+            throw new IllegalArgumentException(ContextualSupplier.class.getSimpleName());
+
+        @SuppressWarnings("unchecked")
+        ThreadContextDescriptor contextDescriptor = captureThreadContext(Collections.emptyMap());
+        return new ContextualSupplier<R>(contextDescriptor, supplier);
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -281,6 +370,9 @@ public class ContextServiceImpl implements ContextService, ResourceFactory, WSCo
     @Override
     @Trivial
     public Object createContextualProxy(Object instance, Class<?>... interfaces) {
+        if (instance instanceof ContextualAction)
+            throw new IllegalArgumentException(instance.getClass().getSimpleName());
+
         return createContextualProxy(instance, null, interfaces);
     }
 
@@ -289,6 +381,9 @@ public class ContextServiceImpl implements ContextService, ResourceFactory, WSCo
      */
     @Override
     public Object createContextualProxy(final Object instance, Map<String, String> executionProperties, final Class<?>... interfaces) {
+        if (instance instanceof ContextualAction)
+            throw new IllegalArgumentException(instance.getClass().getSimpleName());
+
         // validation
         if (interfaces == null || interfaces.length == 0)
             throw new IllegalArgumentException(interfaces == null ? null : Arrays.asList(interfaces).toString());
@@ -304,9 +399,9 @@ public class ContextServiceImpl implements ContextService, ResourceFactory, WSCo
         // optimization for Callable/Runnable
         if (interfaces.length == 1)
             if (Callable.class.equals(interfaces[0]))
-                proxy = new ContextualCallable<Object>(threadContextDescriptor, (Callable<Object>) instance, internalPropNames);
+                proxy = new com.ibm.ws.context.service.serializable.ContextualCallable<Object>(threadContextDescriptor, (Callable<Object>) instance, internalPropNames);
             else if (Runnable.class.equals(interfaces[0]))
-                proxy = new ContextualRunnable(threadContextDescriptor, (Runnable) instance, internalPropNames);
+                proxy = new com.ibm.ws.context.service.serializable.ContextualRunnable(threadContextDescriptor, (Runnable) instance, internalPropNames);
 
         if (proxy == null) {
             final InvocationHandler handler = new ContextualInvocationHandler(threadContextDescriptor, instance, internalPropNames);
@@ -326,6 +421,9 @@ public class ContextServiceImpl implements ContextService, ResourceFactory, WSCo
      */
     @Override
     public <T> T createContextualProxy(T instance, Class<T> intf) {
+        if (instance instanceof ContextualAction)
+            throw new IllegalArgumentException(instance.getClass().getSimpleName());
+
         @SuppressWarnings("unchecked")
         ThreadContextDescriptor threadContextDescriptor = captureThreadContext(null, instance, null);
         return threadContextMgr.createContextualProxy(threadContextDescriptor, instance, intf);
@@ -336,6 +434,9 @@ public class ContextServiceImpl implements ContextService, ResourceFactory, WSCo
      */
     @Override
     public <T> T createContextualProxy(T instance, Map<String, String> executionProperties, final Class<T> intf) {
+        if (instance instanceof ContextualAction)
+            throw new IllegalArgumentException(instance.getClass().getSimpleName());
+
         Set<String> internalPropNames = executionProperties == null ? null : new HashSet<String>();
         @SuppressWarnings("unchecked")
         ThreadContextDescriptor threadContextDescriptor = captureThreadContext(executionProperties, instance, internalPropNames);
@@ -347,9 +448,9 @@ public class ContextServiceImpl implements ContextService, ResourceFactory, WSCo
         if (Callable.class.equals(intf)) {
             @SuppressWarnings("unchecked")
             Callable<Object> callable = (Callable<Object>) instance;
-            proxy = intf.cast(new ContextualCallable<Object>(threadContextDescriptor, callable, internalPropNames));
+            proxy = intf.cast(new com.ibm.ws.context.service.serializable.ContextualCallable<Object>(threadContextDescriptor, callable, internalPropNames));
         } else if (Runnable.class.equals(intf)) {
-            proxy = intf.cast(new ContextualRunnable(threadContextDescriptor, (Runnable) instance, internalPropNames));
+            proxy = intf.cast(new com.ibm.ws.context.service.serializable.ContextualRunnable(threadContextDescriptor, (Runnable) instance, internalPropNames));
         } else {
             final InvocationHandler handler = new ContextualInvocationHandler(threadContextDescriptor, instance, internalPropNames);
             proxy = AccessController.doPrivileged(new PrivilegedAction<T>() {
@@ -372,6 +473,13 @@ public class ContextServiceImpl implements ContextService, ResourceFactory, WSCo
             applications.add(cData.getJ2EEName().getApplication());
 
         return this;
+    }
+
+    @Override
+    public Executor currentContextExecutor() {
+        @SuppressWarnings("unchecked")
+        ThreadContextDescriptor contextDescriptor = captureThreadContext(Collections.emptyMap());
+        return new ContextualExecutor(contextDescriptor);
     }
 
     /**
@@ -491,10 +599,10 @@ public class ContextServiceImpl implements ContextService, ResourceFactory, WSCo
      * override with the Liberty ignore/warn/fail setting.
      * Precondition: invoker must have lock on this context service, in order to read the onError property.
      *
-     * @param throwable an already created Throwable object, which can be used if the desired action is fail.
+     * @param throwable             an already created Throwable object, which can be used if the desired action is fail.
      * @param exceptionClassToRaise the class of the Throwable object to return
-     * @param msgKey the NLS message key
-     * @param objs list of objects to substitute in the NLS message
+     * @param msgKey                the NLS message key
+     * @param objs                  list of objects to substitute in the NLS message
      * @return either null or the Throwable object
      */
     private <T extends Throwable> T ignoreWarnOrFail(Throwable throwable, final Class<T> exceptionClassToRaise, String msgKey, Object... objs) {
@@ -635,18 +743,39 @@ public class ContextServiceImpl implements ContextService, ResourceFactory, WSCo
      * @param ref reference to the service
      */
     @Reference(name = BASE_INSTANCE,
-               service = ContextService.class,
+               service = WSContextService.class,
                cardinality = ReferenceCardinality.OPTIONAL,
                policy = ReferencePolicy.DYNAMIC,
                policyOption = ReferencePolicyOption.GREEDY,
                target = "(id=unbound)")
-    protected void setBaseInstance(ServiceReference<ContextService> ref) {
+    protected void setBaseInstance(ServiceReference<WSContextService> ref) {
         lock.writeLock().lock();
         try {
             threadContextConfigurations = null;
         } finally {
             lock.writeLock().unlock();
         }
+    }
+
+    /**
+     * Declarative Services method for setting the Jakarta/Java EE version
+     *
+     * @param ref reference to the service
+     */
+    @Reference(service = JavaEEVersion.class,
+               cardinality = ReferenceCardinality.OPTIONAL,
+               policy = ReferencePolicy.DYNAMIC,
+               policyOption = ReferencePolicyOption.GREEDY)
+    protected void setEEVersion(ServiceReference<JavaEEVersion> ref) {
+        String version = (String) ref.getProperty("version");
+        if (version == null) {
+            eeVersion = 0;
+        } else {
+            int dot = version.indexOf('.');
+            String major = dot > 0 ? version.substring(0, dot) : version;
+            eeVersion = Integer.parseInt(major);
+        }
+        eeVersionRef = ref;
     }
 
     /**
@@ -668,12 +797,24 @@ public class ContextServiceImpl implements ContextService, ResourceFactory, WSCo
      *
      * @param ref reference to the service
      */
-    protected void unsetBaseInstance(ServiceReference<ContextService> ref) {
+    protected void unsetBaseInstance(ServiceReference<WSContextService> ref) {
         lock.writeLock().lock();
         try {
             threadContextConfigurations = null;
         } finally {
             lock.writeLock().unlock();
+        }
+    }
+
+    /**
+     * Declarative Services method for unsetting the Jakarta/Java EE version
+     *
+     * @param ref reference to the service
+     */
+    protected void unsetEEVersion(ServiceReference<JavaEEVersion> ref) {
+        if (eeVersionRef == ref) {
+            eeVersionRef = null;
+            eeVersion = 0;
         }
     }
 
@@ -684,5 +825,55 @@ public class ContextServiceImpl implements ContextService, ResourceFactory, WSCo
      */
     protected void unsetThreadContextManager(WSContextService svc) {
         threadContextMgr = null;
+    }
+
+    @Override
+    public <T> CompletableFuture<T> withContextCapture(CompletableFuture<T> stage) {
+        CompletableFuture<T> newCompletableFuture;
+
+        Executor executor = MPContextPropagationVersion.atLeast(MPContextPropagationVersion.V1_1) //
+                        ? new ContextualDefaultExecutor(this) //
+                        : new UnusableExecutor(this);
+
+        if (ManagedCompletableFuture.JAVA8)
+            newCompletableFuture = new ManagedCompletableFuture<T>(new CompletableFuture<T>(), executor, null);
+        else
+            newCompletableFuture = new ManagedCompletableFuture<T>(executor, null);
+
+        stage.whenComplete((result, failure) -> {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(this, tc, "whenComplete", result, failure);
+            if (failure == null)
+                newCompletableFuture.complete(result);
+            else
+                newCompletableFuture.completeExceptionally(failure);
+        });
+
+        return newCompletableFuture;
+    }
+
+    @Override
+    public <T> CompletionStage<T> withContextCapture(CompletionStage<T> stage) {
+        ManagedCompletionStage<T> newStage;
+
+        Executor executor = MPContextPropagationVersion.atLeast(MPContextPropagationVersion.V1_1) //
+                        ? new ContextualDefaultExecutor(this) //
+                        : new UnusableExecutor(this);
+
+        if (ManagedCompletableFuture.JAVA8)
+            newStage = new ManagedCompletionStage<T>(new CompletableFuture<T>(), executor, null);
+        else
+            newStage = new ManagedCompletionStage<T>(executor);
+
+        stage.whenComplete((result, failure) -> {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(this, tc, "whenComplete", result, failure);
+            if (failure == null)
+                newStage.super_complete(result);
+            else
+                newStage.super_completeExceptionally(failure);
+        });
+
+        return newStage;
     }
 }

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2016, 2018 IBM Corporation and others.
+# Copyright (c) 2016, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -128,6 +128,10 @@ INTROSPECT_ERROR_GETTING_USER_INFO.useraction=Se il messaggio contiene un altro 
 INTROSPECT_USER_API_INACTIVE=CWWKS5388E: La richiesta di introspezione token non \u00e8 riuscita perch\u00e9 il token incluso nella richiesta non \u00e8 valido. La risposta completa \u00e8 {0}.
 INTROSPECT_USER_API_INACTIVE.explanation=Il server di autorizzazione non ha emesso il token, il proprietario della risorsa ha revocato il token, il token \u00e8 scaduto o si \u00e8 verificato un altro errore.
 INTROSPECT_USER_API_INACTIVE.useraction=Controllare la risposta inclusa nel messaggio. Verificare che venga utilizzato l'endpoint di introspezione token corretto. Verificare che il token sia valido e che se ne possa fare l'introspezione.
+
+USER_API_RESPONSE_NOT_AUTHENTICATED=CWWKS5389E: La risposta API utente indica che la richiesta API utente non \u00e8 autenticata. Verificare che il token di accesso incluso nella richiesta API utente sia valido e sia associato ad un utente noto.
+USER_API_RESPONSE_NOT_AUTHENTICATED.explanation=Il token di accesso che si trova nella richiesta API utente potrebbe essere mancante, scaduto, malformato o non valido. Il token potrebbe non essere associato ad un utente noto all'API utente.
+USER_API_RESPONSE_NOT_AUTHENTICATED.useraction=Verificare che un token di accesso sia incluso nella richiesta API utente. Assicurarsi che il token non sia scaduto o malformato. Verificare che l'utente associato al token di accesso sia noto all'API utente.
 
 SOCIAL_LOGIN_CONFIG_PROCESSED=CWWKS5400I: La configurazione del login social [{0}] \u00e8 stata elaborata correttamente.
 SOCIAL_LOGIN_CONFIG_PROCESSED.explanation=La configurazione del login social indicata \u00e8 stata elaborata correttamente.

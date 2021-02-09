@@ -62,4 +62,6 @@ public interface SsoSamlService {
     public boolean isEnabled();
 
     public boolean isInboundPropagation();
+    
+    public String getDefaultKeyStorePassword();
 }

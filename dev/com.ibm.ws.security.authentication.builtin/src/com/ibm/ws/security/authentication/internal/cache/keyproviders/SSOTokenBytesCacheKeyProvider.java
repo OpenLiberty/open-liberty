@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 IBM Corporation and others.
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,7 +28,8 @@ import com.ibm.wsspi.security.token.SingleSignonToken;
  * Provides the SSO token bytes as the cache key.
  */
 public class SSOTokenBytesCacheKeyProvider implements CacheKeyProvider {
-    private static final String[] disableLtpaSSOCache = new String[] { AuthenticationConstants.INTERNAL_DISABLE_LTPA_SSO_CACHE };
+    private static final String[] disableLtpaSSOCache = new String[] { AuthenticationConstants.INTERNAL_DISABLE_SSO_LTPA_COOKIE,
+                                                                       AuthenticationConstants.INTERNAL_DISABLE_SSO_LTPA_CACHE };
 
     /** {@inheritDoc} */
     @Override
@@ -57,11 +58,15 @@ public class SSOTokenBytesCacheKeyProvider implements CacheKeyProvider {
 
     private boolean isDisableLtpaSSOCache(final Subject subject) {
         SubjectHelper subjectHelper = new SubjectHelper();
-        //No need to check for value true or false.
         Hashtable<String, ?> hashtable = subjectHelper.getHashtableFromSubject(subject, disableLtpaSSOCache);
-        if (hashtable != null)
-            return true;
-        else
-            return false;
+        if (hashtable != null) {
+            Boolean dlCookie = (Boolean) hashtable.get(AuthenticationConstants.INTERNAL_DISABLE_SSO_LTPA_COOKIE);
+            Boolean dlCache = (Boolean) hashtable.get(AuthenticationConstants.INTERNAL_DISABLE_SSO_LTPA_CACHE);
+            if (dlCookie != null && dlCache != null &&
+                dlCookie.booleanValue() && dlCache.booleanValue()) {
+                return true;
+            }
+        }
+        return false;
     }
 }

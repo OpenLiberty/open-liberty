@@ -23,7 +23,6 @@ import org.junit.Test;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -41,7 +40,6 @@ import componenttest.topology.impl.LibertyServerFactory;
  * </ul>
  */
 @Mode(TestMode.LITE)
-@MinimumJavaLevel(javaLevel = 8)
 public class JaegerConfigTest {
 	
     private static final Class<?> CLASS = JaegerConfigTest.class;

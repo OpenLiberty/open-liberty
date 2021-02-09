@@ -1,0 +1,43 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/StaticWeaveExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+40001=URL\uc5d0\uc11c \uc544\uce74\uc774\ube0c\ub97c \uc5ec\ub294 \uc911\uc5d0 \uc608\uc678\uac00 \ubc1c\uc0dd\ud568: {0}
+
+40002=\uc704\ube59\uc5d0 \ub300\ud55c \uc18c\uc2a4\uac00 \uc9c0\uc815\ub418\uc9c0 \uc54a\uc74c
+
+40003=\uc704\ube59\uc5d0 \ub300\ud55c \ub300\uc0c1\uc774 \uc9c0\uc815\ub418\uc9c0 \uc54a\uc74c
+
+40004=JAR \ud30c\uc77c\uc744 \uc704\ud574 \uc900\ube44\ub41c \uc704\ube59 \uc218\ud589\uc774 \ud5c8\uc6a9\ub418\uc9c0 \uc54a\uc74c
+
+40005=\ub85c\uae45 \ud30c\uc77c\uc744 \uc5ec\ub294 \uc911\uc5d0 \uc608\uc678\uac00 \ubc1c\uc0dd\ud568: {0}
+
+40006=\ub85c\uae45 \ub808\ubca8\uc774 \uc798\ubabb\ub41c \uac12\uc73c\ub85c \uc9c0\uc815\ub418\uc5c8\uc2b5\ub2c8\ub2e4. (OFF,SEVERE,WARNING,INFO,CONFIG,FINE,FINER,FINEST) \uc911 \ud558\ub098\uc5ec\uc57c \ud569\ub2c8\ub2e4.
+
+40007=\uc704\ube59 \uc911\uc5d0 \uc608\uc678\uac00 \ubc1c\uc0dd\ud568: {0}
+

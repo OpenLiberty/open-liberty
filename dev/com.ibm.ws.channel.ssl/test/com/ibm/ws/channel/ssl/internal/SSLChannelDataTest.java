@@ -25,11 +25,11 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import test.common.SharedOutputManager;
-
 import com.ibm.websphere.channelfw.ChannelData;
 import com.ibm.websphere.channelfw.FlowType;
 import com.ibm.wsspi.channelfw.exception.ChannelException;
+
+import test.common.SharedOutputManager;
 
 /**
  * Test channel config object.
@@ -41,7 +41,7 @@ public class SSLChannelDataTest {
 
     /**
      * Capture stdout/stderr output to the manager.
-     * 
+     *
      * @throws Exception
      */
     @BeforeClass
@@ -52,7 +52,7 @@ public class SSLChannelDataTest {
 
     /**
      * Final teardown work when class is exiting.
-     * 
+     *
      * @throws Exception
      */
     @AfterClass
@@ -63,7 +63,7 @@ public class SSLChannelDataTest {
 
     /**
      * Individual teardown after each test.
-     * 
+     *
      * @throws Exception
      */
     @After
@@ -84,8 +84,7 @@ public class SSLChannelDataTest {
             configMap.put("SSLSessionCacheSize", "10");
             configMap.put("SSLSessionTimeout", "1000");
             configMap.put("testvalue", "false");
-            mocker.checking(new Expectations()
-            {
+            mocker.checking(new Expectations() {
                 {
                     allowing(fakeData).getName();
                     will(returnValue("testname"));
@@ -104,7 +103,7 @@ public class SSLChannelDataTest {
             assertTrue(config.getDecryptBuffersDirect());
             assertTrue(config.getEncryptBuffersDirect());
             assertTrue(10 == config.getSSLSessionCacheSize());
-            assertTrue(1000 == config.getSSLSessionTimeout());
+            assertTrue(1 == config.getSSLSessionTimeout());
             assertEquals(FlowType.INBOUND, config.getFlowType());
             assertTrue(config.getBooleanProperty("encryptBuffersDirect"));
             assertFalse(config.getBooleanProperty("testvalue"));
@@ -112,8 +111,7 @@ public class SSLChannelDataTest {
             // test invalid config now
             configMap.clear();
             configMap.put("encryptBuffersDirect", "blue");
-            mocker.checking(new Expectations()
-            {
+            mocker.checking(new Expectations() {
                 {
                     allowing(fakeData).getName();
                     will(returnValue("testname2"));

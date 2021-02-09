@@ -18,6 +18,8 @@ import static org.junit.Assume.assumeTrue;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashSet;
@@ -34,7 +36,6 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -372,6 +373,10 @@ public class PackageCommandTest {
 
             server.getFileFromLibertyInstallRoot("lib/extract");
 
+            // Ensure the usr/shared dir exists
+            Path sharedPath = Paths.get(server.getServerSharedPath());
+            sharedPath.toFile().mkdirs();
+
             String[] cmd = new String[] { "--archive=" + archivePackage,
                                           "--include=usr",
                                           "--server-root=MyRoot" };
@@ -621,7 +626,6 @@ public class PackageCommandTest {
      * the feature cache of the packaged (target) server.
      */
     @Test
-    @MinimumJavaLevel(javaLevel = 8)
     public void testMinifyDoesNotCorruptServerFeatureCache() throws Exception {
 
         LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.kernel.bootstrap.fat");

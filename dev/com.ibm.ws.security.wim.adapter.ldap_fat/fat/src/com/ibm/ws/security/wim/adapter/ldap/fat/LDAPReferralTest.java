@@ -242,7 +242,7 @@ public class LDAPReferralTest {
         entry = new Entry(SUBORDINATE_DN);
         entry.addAttribute("objectclass", "referral", "extensibleobject");
         entry.addAttribute("ou", "subtree");
-        entry.addAttribute("ref", "ldap://localhost:" + dsSubordinate.getListenPort() + "/" + SUBORDINATE_DN);
+        entry.addAttribute("ref", "ldap://localhost:" + dsSubordinate.getLdapPort() + "/" + SUBORDINATE_DN);
         dsDelegate.add(entry);
     }
 
@@ -261,7 +261,7 @@ public class LDAPReferralTest {
 
         ldap.setRealm("LDAPRealm");
         ldap.setHost("localhost");
-        ldap.setPort(String.valueOf(dsDelegate.getListenPort()));
+        ldap.setPort(String.valueOf(dsDelegate.getLdapPort()));
         ldap.setBaseDN(SUBORDINATE_DN);
         ldap.setBindDN(InMemoryLDAPServer.getBindDN());
         ldap.setBindPassword(InMemoryLDAPServer.getBindPassword());

@@ -19,15 +19,15 @@
 #
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
-# JAXRS 2.0 CDI Message ------------------------
-warning.jaxrs.cdi.resource=CWWKW1000W: El \u00e1mbito del recurso JAXRS-2.0 {0} es {1}. Liberty obtiene la instancia de recursos de {2}.
+# JAXRS CDI Message ------------------------
+warning.jaxrs.cdi.resource=CWWKW1000W: El \u00e1mbito del recurso JAXRS {0} es {1}. Liberty obtiene la instancia de recursos de {2}.
 warning.jaxrs.cdi.resource.explanation=Liberty obtiene la instancia de recursos de JAXRS si no puede obtenerla de CDI.
 warning.jaxrs.cdi.resource.useraction=No se requiere ninguna acci\u00f3n. 
 
-warning.jaxrs.cdi.resource.mismatch=CWWKW1001W: El \u00e1mbito {1} del recurso JAXRS-2.0 {0} no coincide con el \u00e1mbito de CDI {2}. Liberty obtiene la instancia de recursos de {3}.
-warning.jaxrs.cdi.resource.mismatch.explanation=Si el \u00e1mbito del recurso JAXRS-2.0 no coincide con el \u00e1mbito de CDI y la instancia de recursos existe en CDI, Liberty obtiene la instancia de recursos de CDI. La instancia no incluye la inyecci\u00f3n de CDI si proviene de JAXRS.
+warning.jaxrs.cdi.resource.mismatch=CWWKW1001W: El \u00e1mbito {1} del recurso JAXRS {0} no coincide con el \u00e1mbito de CDI {2}. Liberty obtiene la instancia de recursos de {3}.
+warning.jaxrs.cdi.resource.mismatch.explanation=Si el \u00e1mbito del recurso JAXRS no coincide con el \u00e1mbito de CDI y la instancia de recursos existe en CDI, Liberty obtiene la instancia de recursos de CDI. La instancia no incluye la inyecci\u00f3n de CDI si proviene de JAXRS.
 warning.jaxrs.cdi.resource.mismatch.useraction=No se requiere ninguna acci\u00f3n. 
 
-warning.jaxrs.cdi.provider.mismatch=CWWKW1002W: El \u00e1mbito de CDI del proveedor JAXRS-2.0 {0} es {1}. Liberty obtiene la instancia de proveedor de {2}.
+warning.jaxrs.cdi.provider.mismatch=CWWKW1002W: El \u00e1mbito de CDI del Proveedor de JAXRS {0} es {1}. Liberty obtiene la instancia de proveedor de {2}.
 warning.jaxrs.cdi.provider.mismatch.explanation=La instancia de Proveedor es Singleton solamente. Liberty obtiene la instancia de proveedor de CDI si el \u00e1mbito de CDI del proveedor es Dependent o ApplicationScoped. La instancia no incluye la inyecci\u00f3n de CDI si proviene de JAXRS.
 warning.jaxrs.cdi.provider.mismatch.useraction=No se requiere ninguna acci\u00f3n. 

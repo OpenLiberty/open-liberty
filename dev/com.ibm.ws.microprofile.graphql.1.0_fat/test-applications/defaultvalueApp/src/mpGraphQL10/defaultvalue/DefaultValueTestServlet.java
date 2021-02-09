@@ -75,18 +75,18 @@ public class DefaultValueTestServlet extends FATServlet {
     }
 
     @Test
-    public void testSchemaContainsDeprecationEntityInfo(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+    public void testSchemaContainsDefaultValueInfo(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         GraphQLClient client = builder.build(GraphQLClient.class);
         String schema = client.schema();
         System.out.println("Schema: " + System.lineSeparator() + schema);
         assertNotNull(schema);
-        assertTrue(schema.contains("\"Widget(Oven,12,120.1,36.2,3.3,14.0)\""));
-        assertTrue(schema.contains("\"Crockpot\""));
-        assertTrue(schema.contains("5"));
-        assertTrue(schema.contains("10.0"));
-        assertTrue(schema.contains("30.1"));
-        assertTrue(schema.contains("20.4"));
-        assertFalse(schema.contains("SHOULD BE IGNORED"));
+        assertTrue(schema.contains("\"Widget(Oven,12,120.1,36.2,3.3,14.0)\"")); // on MyGraphQLEndpoint
+        assertTrue(schema.contains("\"Crockpot\"")); // on WidgetInput
+        assertTrue(schema.contains("5"));    // on WidgetInput
+        assertTrue(schema.contains("10.0")); // on WidgetInput
+        assertTrue(schema.contains("30.1")); // on WidgetInput
+        assertTrue(schema.contains("20.4")); // on WidgetInput
+        assertFalse(schema.contains("SHOULD BE IGNORED")); // on Widget
     }
 
     @Test
@@ -144,9 +144,7 @@ public class DefaultValueTestServlet extends FATServlet {
                                   "    weight," + System.lineSeparator() +
                                   "  }" + System.lineSeparator() +
                                   "}");
-        graphQLOperation.setVariables("{" + System.lineSeparator() +
-                                      "    \"widgetString\": \"Widget(Chess boards,25,12.6,14.0,3.3,14.0)\"" + System.lineSeparator() +
-                                      "}");
+        graphQLOperation.setVariables(VariablesAsString.newVars("Widget(Chess boards,25,12.6,14.0,3.3,14.0)"));
         WidgetQueryResponse response = client.allWidgets(graphQLOperation);
         System.out.println("Mutation Response: " + response);
         Widget widget = response.getData().getCreateWidgetByString();
@@ -192,16 +190,7 @@ public class DefaultValueTestServlet extends FATServlet {
                                   "    depth" + System.lineSeparator() +
                                   "  }" + System.lineSeparator() +
                                   "}");
-        graphQLOperation.setVariables("{" + System.lineSeparator() +
-                                      "  \"widget\": {" + System.lineSeparator() +
-                                      "    \"name\": \"Earbuds\"," + System.lineSeparator() +
-                                      "    \"quantity\": 20," + System.lineSeparator() +
-                                      "    \"weight\": 1.2," + System.lineSeparator() +
-                                      "    \"length\": 1.0," + System.lineSeparator() +
-                                      "    \"height\": 0.8," + System.lineSeparator() +
-                                      "    \"depth\": 0.6" + System.lineSeparator() +
-                                      "  }" + System.lineSeparator() +
-                                      "}");
+        graphQLOperation.setVariables(VariablesIndividualProps.newVars("Earbuds", 20, 1.2, 1.0, 0.8, 0.6));
         WidgetQueryResponse response = client.allWidgets(graphQLOperation);
         System.out.println("Mutation Response: " + response);
         Widget widget = response.getData().getCreateWidget();
@@ -226,12 +215,7 @@ public class DefaultValueTestServlet extends FATServlet {
                                   "    depth" + System.lineSeparator() +
                                   "  }" + System.lineSeparator() +
                                   "}");
-        graphQLOperation.setVariables("{" + System.lineSeparator() +
-                                      "  \"widget\": {" + System.lineSeparator() +
-                                      // weight is the only required field
-                                      "    \"weight\": 2.4" + System.lineSeparator() +
-                                      "  }" + System.lineSeparator() +
-                                      "}");
+        graphQLOperation.setVariables(VariablesWeightOnly.newVars(2.4));
         response = client.allWidgets(graphQLOperation);
         System.out.println("Mutation Response: " + response);
         widget = response.getData().getCreateWidget();

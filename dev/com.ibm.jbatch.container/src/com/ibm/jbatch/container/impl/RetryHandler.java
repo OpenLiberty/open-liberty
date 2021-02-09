@@ -146,7 +146,7 @@ public class RetryHandler {
 
         if (chunk.getRetryableExceptionClasses() != null) {
             if (chunk.getRetryableExceptionClasses().getIncludeList() != null) {
-                List<ExceptionClassFilter.Include> includes = chunk.getRetryableExceptionClasses().getIncludeList();
+                List<ExceptionClassFilter.Include> includes = (List<ExceptionClassFilter.Include>) chunk.getRetryableExceptionClasses().getIncludeList();
                 for (ExceptionClassFilter.Include include : includes) {
                     _retryIncludeExceptions.add(include.getClazz().trim());
                     logger.finer("RETRYHANDLE: include: " + include.getClazz().trim());
@@ -158,7 +158,7 @@ public class RetryHandler {
                 }
             }
             if (chunk.getRetryableExceptionClasses().getExcludeList() != null) {
-                List<ExceptionClassFilter.Exclude> excludes = chunk.getRetryableExceptionClasses().getExcludeList();
+                List<ExceptionClassFilter.Exclude> excludes = (List<ExceptionClassFilter.Exclude>) chunk.getRetryableExceptionClasses().getExcludeList();
                 for (ExceptionClassFilter.Exclude exclude : excludes) {
                     _retryExcludeExceptions.add(exclude.getClazz().trim());
                     logger.finer("SKIPHANDLE: exclude: " + exclude.getClazz().trim());
@@ -173,7 +173,7 @@ public class RetryHandler {
 
         if (chunk.getNoRollbackExceptionClasses() != null) {
             if (chunk.getNoRollbackExceptionClasses().getIncludeList() != null) {
-                List<ExceptionClassFilter.Include> includes = chunk.getNoRollbackExceptionClasses().getIncludeList();
+                List<ExceptionClassFilter.Include> includes = (List<ExceptionClassFilter.Include>) chunk.getNoRollbackExceptionClasses().getIncludeList();
                 for (ExceptionClassFilter.Include include : includes) {
                     _retryNoRBIncludeExceptions.add(include.getClazz().trim());
                     logger.finer("RETRYHANDLE: include: " + include.getClazz().trim());
@@ -185,7 +185,7 @@ public class RetryHandler {
                 }
             }
             if (chunk.getNoRollbackExceptionClasses().getExcludeList() != null) {
-                List<ExceptionClassFilter.Exclude> excludes = chunk.getNoRollbackExceptionClasses().getExcludeList();
+                List<ExceptionClassFilter.Exclude> excludes = (List<ExceptionClassFilter.Exclude>) chunk.getNoRollbackExceptionClasses().getExcludeList();
                 for (ExceptionClassFilter.Exclude exclude : excludes) {
                     _retryNoRBExcludeExceptions.add(exclude.getClazz().trim());
                     logger.finer("SKIPHANDLE: exclude: " + exclude.getClazz().trim());

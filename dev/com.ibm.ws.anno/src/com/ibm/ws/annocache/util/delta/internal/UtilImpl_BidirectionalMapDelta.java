@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2019 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,9 +18,9 @@ import java.util.logging.Logger;
 
 import com.ibm.ws.annocache.util.internal.UtilImpl_BidirectionalMap;
 import com.ibm.ws.annocache.util.internal.UtilImpl_Factory;
-import com.ibm.ws.annocache.util.internal.UtilImpl_InternMap;
 import com.ibm.wsspi.annocache.util.Util_BidirectionalMap;
 import com.ibm.wsspi.annocache.util.Util_BidirectionalMapDelta;
+import com.ibm.wsspi.annocache.util.Util_Factory;
 import com.ibm.wsspi.annocache.util.Util_InternMap;
 import com.ibm.wsspi.annocache.util.Util_PrintLogger;
 
@@ -38,11 +38,11 @@ public class UtilImpl_BidirectionalMapDelta implements Util_BidirectionalMapDelt
     //
 
     public UtilImpl_BidirectionalMapDelta(
-        UtilImpl_Factory factory,
+        Util_Factory factory,
         boolean recordAdded, boolean recordRemoved, boolean recordStill,
-        UtilImpl_InternMap holderMap, UtilImpl_InternMap heldMap) {
+        Util_InternMap holderMap, Util_InternMap heldMap) {
 
-        this.factory = factory;
+        this.factory = (UtilImpl_Factory) factory;
 
         //
 
@@ -53,9 +53,9 @@ public class UtilImpl_BidirectionalMapDelta implements Util_BidirectionalMapDelt
 
         //
 
-        this.addedMap = ( recordAdded ? factory.createBidirectionalMap(holderTag, holderMap, heldTag, heldMap) : null );
-        this.removedMap = ( recordRemoved ? factory.createBidirectionalMap(holderTag, holderMap, heldTag, heldMap) : null );
-        this.stillMap = ( recordStill ? factory.createBidirectionalMap(holderTag, holderMap, heldTag, heldMap) : null );
+        this.addedMap = (UtilImpl_BidirectionalMap) ( recordAdded ? this.factory.createBidirectionalMap(holderTag, holderMap, heldTag, heldMap) : null );
+        this.removedMap = (UtilImpl_BidirectionalMap)  ( recordRemoved ? this.factory.createBidirectionalMap(holderTag, holderMap, heldTag, heldMap) : null );
+        this.stillMap = (UtilImpl_BidirectionalMap)  ( recordStill ? this.factory.createBidirectionalMap(holderTag, holderMap, heldTag, heldMap) : null );
     }
 
     //
@@ -88,7 +88,7 @@ public class UtilImpl_BidirectionalMapDelta implements Util_BidirectionalMapDelt
     protected final UtilImpl_BidirectionalMap addedMap;
 
     @Override
-    public UtilImpl_BidirectionalMap getAddedMap() {
+    public Util_BidirectionalMap getAddedMap() {
         return addedMap;
     }
 
@@ -289,7 +289,7 @@ public class UtilImpl_BidirectionalMapDelta implements Util_BidirectionalMapDelt
 
     public void logAddedAnnotations(Util_PrintLogger useLogger) {
         String methodName = "logAddedAnnotations";
-        UtilImpl_BidirectionalMap useAddedMap = getAddedMap();
+        Util_BidirectionalMap useAddedMap = getAddedMap();
         if ( useAddedMap == null ) {
             useLogger.logp(Level.FINER, CLASS_NAME, methodName, "Added Entries: ** NOT RECORDED **");
             return;
@@ -328,7 +328,7 @@ public class UtilImpl_BidirectionalMapDelta implements Util_BidirectionalMapDelt
         useLogger.logp(Level.FINER, CLASS_NAME, methodName, "Still Entries: END");
     }
 
-    protected void logMap(Util_PrintLogger useLogger, UtilImpl_BidirectionalMap map) {
+    protected void logMap(Util_PrintLogger useLogger, Util_BidirectionalMap map) {
         String methodName = "logMap";
         Set<String> useHolderSet = map.getHolderSet();
         if ( useHolderSet.isEmpty() ) {

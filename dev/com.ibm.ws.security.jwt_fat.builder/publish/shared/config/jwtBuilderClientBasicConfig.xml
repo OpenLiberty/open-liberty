@@ -17,5 +17,25 @@
 	<jwtBuilder
 		id="jwKEnabled"
 		jwkEnabled="true"/>
-
+        
+	<jwtBuilder
+		id="encryptJwtRS256"
+		signatureAlgorithm="RS256"
+		keyStoreRef="key_allSigAlg"
+		trustStoreRef="trust_allSigAlg"
+		keyAlias="rs256"
+		keyManagementKeyAlgorithm="RSA-OAEP"
+		keyManagementKeyAlias="rs256"
+        contentEncryptionAlgorithm="A256GCM" />
+     
+	<jwtBuilder
+		id="encryptJwtRS384"
+		signatureAlgorithm="RS384"
+		keyStoreRef="key_allSigAlg"
+		trustStoreRef="trust_allSigAlg"
+		keyAlias="rs384"
+		keyManagementKeyAlgorithm="RSA-OAEP"
+		keyManagementKeyAlias="rs384"
+        contentEncryptionAlgorithm="A256GCM" />
+                        
 </server>

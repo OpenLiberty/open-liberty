@@ -1,0 +1,61 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/DatabaseExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+4003=Konfigurationsfehler. Die Klasse [{0}] wurde nicht gefunden.
+
+4005=DatabaseAccessor ist nicht verbunden.
+
+4006=Fehler beim Lesen von BLOB-Daten aus dem Datenstrom in getObject().
+
+4007=Aufgrund eines internen Fehlers konnte der Objekttyp nicht konvertiert werden. {0}java.sql.TYPES: [{1}]
+
+4008=Sie k\u00f6nnen sich nicht abmelden, solange eine Transaktion in Bearbeitung ist.
+
+4009=Die Sortiertabelleninformationen sind nicht vollst\u00e4ndig.
+
+4011=Fehler bei der Vorabzuordnung von Folgenummern. Die Sortiertabelleninformationen sind nicht vollst\u00e4ndig.
+
+4014=SynchronizationListener kann nicht registriert werden.
+
+4015=Das synchronisierte Objekt UnitOfWork unterst\u00fctzt nicht die Operation commitAndResume().
+
+4016=Konfigurationsfehler. Der Treiber [{0}] konnte nicht instanziiert werden.
+
+4017=Konfigurationsfehler. Auf den Treiber [{0}] konnte nicht zugegriffen werden.
+
+4018=Der Transaktionsmanager wurde nicht f\u00fcr den JTS-Treiber definiert.
+
+4019=Fehler beim Abrufen von Informationen zur Datenbank. Suchen Sie in der verschachtelten Ausnahme nach weiteren Einzelheiten.
+
+4020=Das passende Datenbankfeld f\u00fcr das angegebene Feld f\u00fcr optimistisches Sperren wurde nicht gefunden [{0}]. Beachten Sie, dass beim Abgleich die Gro\u00df-/Kleinschreibung ber\u00fccksichtigt wird. Wenn Sie zulassen, dass der Spaltenname standardm\u00e4\u00dfig der Getter-Methode folgt, wird der Name in Gro\u00dfbuchstaben geschrieben.
+
+4021=Das Anfordern einer Verbindung vom Treiber [{0}], Benutzer [{1}] und der URL [{2}] ist nicht m\u00f6glich. \u00dcberpr\u00fcfen Sie, dass die erwartete Treiberklasse und die URL definiert sind. Pr\u00fcfen Sie Ihre Anmeldung, die Datei persistence.xml oder die Datei sessions.xml. Die Eigenschaft jdbc.driver sollte auf eine Klasse gesetzt sein, die mit Ihrer Datenbankplattform kompatibel ist.
+
+4022=Der Zugriffsberechtigte oder die zugeh\u00f6rige Verbindung wurde auf null gesetzt. Dies kann auftreten, wenn ClientSession oder UnitOfWork in einem separaten Thread freigegeben wurde, wie beispielsweise nach einer Zeitlimit\u00fcberschreitung.
+

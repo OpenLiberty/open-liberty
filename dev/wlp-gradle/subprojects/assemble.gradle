@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,44 +18,82 @@
  */
 task publishWLPJars(type: Copy) {
     dependsOn jar
+    dependsOn jakartaeeTransform
     def publishWlpJarDefault = parseBoolean(bnd('test.project', 'false')) ? 'true' : 'false'
     enabled bnd('publish.tool.jar', '').empty && !parseBoolean(bnd('publish.wlp.jar.disabled', publishWlpJarDefault))
     from project.buildDir
     into buildImage.file('wlp/' + bnd('publish.wlp.jar.suffix', 'lib'))
     include bnd('publish.wlp.jar.include', '*.jar')
+    def hasIFIXHeaders = [:]
+    def fullVersions = [:]
     if (parseBoolean(bnd('publish.wlp.jar.rename', 'true'))) {
-        // iFixed jars should get renamed with a qualifier so they can exist in the filesystem
-        // next to the base version of the jar, *except* for jars that are directly
-        // referenced in a tool script's classpath...
-        if (((bnd('IBM-Interim-Fixes', '').empty) && (bnd('IBM-Test-Fixes', '').empty))
-                || (project.name.equals("com.ibm.ws.kernel.boot"))
-                || (project.name.equals("com.ibm.ws.kernel.boot.archive"))
-                || (project.name.equals("com.ibm.ws.appclient.boot"))
-                || (project.name.equals("com.ibm.ws.kernel.boot.cmdline"))) {
-            rename '(.*).jar', '$1' + "_${bnd.bFullVersion}.jar"
-        }
-        else {
-            rename '(.*).jar', '$1' + "_${bnd.bFullVersion}.${qualifier}.jar"
-        }
-    }
-    if (!bnd('-sub', '').empty) {
-        def hasIFIXHeaders = [:]
-        fileTree(dir: projectDir, include: bnd('-sub', '')).each { subBndFile ->
-            Properties subBndProperties = new Properties()
-            subBndFile.withInputStream { subBndProperties.load(it) }
-            if (subBndProperties.getProperty("IBM-Interim-Fixes") != null
-                    || subBndProperties.getProperty("IBM-Test-Fixes") != null) {
-                hasIFIXHeaders.put(subBndProperties.getProperty("Bundle-SymbolicName"), true)
+        def outerSymbolicName = bnd('Bundle-SymbolicName', project.name)
+        if (outerSymbolicName != null) {
+            int index = outerSymbolicName.indexOf(";")
+            if (index != -1) {
+                outerSymbolicName = outerSymbolicName.substring(0, index).trim()
             }
         }
 
+        // store the full version information for the outer project from
+        // the projects bnd.bnd file.  
+        def outerVersion = bnd('bVersion')
+        def outerFullVersion = bnd('bFullVersion')
+        fullVersions.put(outerSymbolicName, outerFullVersion)
+
+        // iFixed jars should get renamed with a qualifier so they can exist in the filesystem
+        // next to the base version of the jar, *except* for jars that are directly
+        // referenced in a tool script's classpath...
+        if (((!bnd('IBM-Interim-Fixes', '').empty) || (!bnd('IBM-Test-Fixes', '').empty))
+                && (!project.name.equals("com.ibm.ws.kernel.boot"))
+                && (!project.name.equals("com.ibm.ws.kernel.boot.archive"))
+                && (!project.name.equals("com.ibm.ws.appclient.boot"))
+                && (!project.name.equals("com.ibm.ws.kernel.boot.cmdline"))) {
+            hasIFIXHeaders.put(outerSymbolicName, true)
+        }
+
+        if (!bnd('-sub', '').empty) {
+            fileTree(dir: projectDir, include: bnd('-sub', '')).each { subBndFile ->
+                Properties subBndProperties = new Properties()
+                subBndFile.withInputStream { subBndProperties.load(it) }
+                def symbolicName = subBndProperties.getProperty("Bundle-SymbolicName")
+                if (symbolicName != null) {
+                    int index = symbolicName.indexOf(";")
+                    if (index != -1) {
+                        symbolicName = symbolicName.substring(0, index).trim()
+                    }
+
+                    if (subBndProperties.getProperty("IBM-Interim-Fixes") != null
+                        || subBndProperties.getProperty("IBM-Test-Fixes") != null) {
+                        hasIFIXHeaders.put(symbolicName, true)
+                    }
+
+                    // Sub bundles in a project can have a different bundle
+                    // version number than the outer project's bnd.bnd file
+                    // This logic stores the correctly full bundle version
+                    // for sub bundles in a project.
+                    def subBVersion = subBndProperties.getProperty('bVersion')
+                    if (outerVersion.equals(subBVersion)) {
+                        fullVersions.put(symbolicName, outerFullVersion)
+                    } else {
+                        fullVersions.put(symbolicName, subBVersion + outerFullVersion.substring(outerVersion.length()))
+                    }
+                }
+            }
+        }
+
+        // Update each published bundle to have the full version suffix.
         eachFile {
             // If the sub.bnd that built this jar contains iFix headers, rename it with a qualifer.
             def symbolicName = it.getSourceName().substring(0, it.getSourceName().lastIndexOf("."))
+            def fullVersion = fullVersions.get(symbolicName)
+            if (fullVersion == null) {
+                fullVersion = outerFullVersion
+            }
             if (!hasIFIXHeaders.get(symbolicName)) {
-                it.setName(symbolicName + "_${bnd.bFullVersion}.jar")
+                it.setName(symbolicName + "_" + fullVersion + ".jar")
             } else {
-                it.setName(symbolicName + "_${bnd.bFullVersion}.${qualifier}.jar")
+                it.setName(symbolicName + "_" + fullVersion + ".${qualifier}.jar")
             }
         }
     }

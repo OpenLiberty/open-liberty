@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,10 +22,14 @@ import test.common.SharedOutputManager;
 import com.ibm.ws.anno.classsource.internal.ClassSourceImpl_Factory;
 import com.ibm.ws.anno.info.internal.InfoStoreFactoryImpl;
 import com.ibm.ws.anno.service.internal.AnnotationServiceImpl_Service;
+import com.ibm.ws.anno.targets.internal.AnnotationTargetsImpl_Factory;
+import com.ibm.ws.anno.util.internal.UtilImpl_Factory;
 import com.ibm.wsspi.anno.classsource.ClassSource_Aggregate;
+import com.ibm.wsspi.anno.classsource.ClassSource_Factory;
 import com.ibm.wsspi.anno.info.AnnotationInfo;
 import com.ibm.wsspi.anno.info.ClassInfo;
 import com.ibm.wsspi.anno.info.InfoStore;
+import com.ibm.wsspi.anno.info.InfoStoreFactory;
 
 // Abstract: Runs tests using the test environment class loader.
 // The subclass API is to implement test methods.
@@ -77,14 +81,19 @@ public abstract class AnnotationTest_BaseDirectClass {
     }
 
     private void setUpAnnotationService() throws Exception {
-        annotationService = new AnnotationServiceImpl_Service();
+        UtilImpl_Factory utilFactory = new UtilImpl_Factory();
+        ClassSourceImpl_Factory classSourceFactory = new ClassSourceImpl_Factory(utilFactory);
+        AnnotationTargetsImpl_Factory annotationTargetsFactory = new AnnotationTargetsImpl_Factory(utilFactory, classSourceFactory);
+        InfoStoreFactoryImpl infoStoreFactory = new InfoStoreFactoryImpl(utilFactory);
+        annotationService = new AnnotationServiceImpl_Service(null, utilFactory, classSourceFactory, annotationTargetsFactory, infoStoreFactory);
+
     }
 
     private void tearDownAnnotationService() throws Exception {
         annotationService = null;
     }
 
-    public ClassSourceImpl_Factory getClassSourceFactory() {
+    public ClassSource_Factory getClassSourceFactory() {
         return getAnnotationService().getClassSourceFactory();
     }
 
@@ -92,7 +101,7 @@ public abstract class AnnotationTest_BaseDirectClass {
     //        return getAnnotationService().getAnnotationTargetsFactory();
     //    }
 
-    public InfoStoreFactoryImpl getInfoStoreFactory() {
+    public InfoStoreFactory getInfoStoreFactory() {
         return getAnnotationService().getInfoStoreFactory();
     }
 
@@ -122,7 +131,7 @@ public abstract class AnnotationTest_BaseDirectClass {
     private void setUpClassSource() throws Exception {
         classSource = getClassSourceFactory().createAggregateClassSource("RootClassSource");
 
-        getClassSourceFactory().addClassLoaderClassSource(classSource, "RootClassLoaderClassSource", getTestClassLoader());
+        ((ClassSourceImpl_Factory) getClassSourceFactory()).addClassLoaderClassSource(classSource, "RootClassLoaderClassSource", getTestClassLoader());
 
         classSource.open();
     }

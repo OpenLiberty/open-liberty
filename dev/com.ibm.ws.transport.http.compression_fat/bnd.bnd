@@ -18,7 +18,7 @@ src: \
 fat.project: true
 
 # Define additional tested features that are NOT present in any XML files in this bucket.
-# In this case, Java EE 8 features are added programatically at runtime by the RepeatTests rule.
+# In this case, Java EE 8 features are added programmatically at runtime by the RepeatTests rule.
 tested.features:\
 	servlet-4.0
 
@@ -33,6 +33,5 @@ tested.features:\
 -buildpath: \
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
 	commons-logging:commons-logging;version=1.1.3,\
-	org.apache.httpcomponents:httpclient;version=4.5.4,\
-	org.apache.httpcomponents:httpcore;version=4.4.9
+	com.ibm.ws.org.apache.httpcomponents;version=latest
 	

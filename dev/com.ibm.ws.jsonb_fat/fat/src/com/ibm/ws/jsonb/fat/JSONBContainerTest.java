@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@ package com.ibm.ws.jsonb.fat;
 import static com.ibm.ws.jsonb.fat.FATSuite.CDI_APP;
 import static com.ibm.ws.jsonb.fat.FATSuite.JSONB_APP;
 import static com.ibm.ws.jsonb.fat.FATSuite.PROVIDER_JOHNZON;
+import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -26,9 +27,13 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import jsonb.cdi.web.JsonbCDITestServlet;
@@ -36,6 +41,7 @@ import web.jsonbtest.JSONBTestServlet;
 import web.jsonbtest.JohnzonTestServlet;
 
 @RunWith(FATRunner.class)
+@Mode(TestMode.FULL)
 public class JSONBContainerTest extends FATServletClient {
 
     @Server("com.ibm.ws.jsonb.container.fat")
@@ -62,6 +68,9 @@ public class JSONBContainerTest extends FATServletClient {
     // as a declarative service. Validate the expected provider is used, and that it can succesfully
     // marshall/unmarshall to/from classes from the bundle.
     @Test
+    @SkipForRepeat(EE9_FEATURES)
+    //Skipping the test for jakartaee testing since it is beyond the scope of what is needed
+    //TODO for jakartaee testing: Transform the johnzon jars in AUTO_FVT/publish/shared/resources folder, solve the classloader problems with yasson and jonhzon provider impls
     public void testUserFeature() throws Exception {
         String found;
         server.resetLogMarks();
@@ -76,11 +85,15 @@ public class JSONBContainerTest extends FATServletClient {
     }
 
     @Test
-    // Verify that the jsonb-1.0 and jsonbContainer-1.0 features can be used together to to specify Yasson
+    // Verify that the jsonb-1.0 and jsonbContainer-1.0/ jsonb-2.0 and jsonbContainer-2.0 features can be used together to to specify Yasson
     public void testJsonAndYasson() throws Exception {
-        // Add the jsonb-1.0 feature to server.xml
+        // Add the jsonb-1.0 for ee8 and jsonb-2.0 for ee9 feature to server.xml
         ServerConfiguration config = server.getServerConfiguration();
-        config.getFeatureManager().getFeatures().add("jsonb-1.0");
+        if (JakartaEE9Action.isActive()) {
+            config.getFeatureManager().getFeatures().add("jsonb-2.0");
+        } else {
+            config.getFeatureManager().getFeatures().add("jsonb-1.0");
+        }
         server.updateServerConfiguration(config);
         server.waitForConfigUpdateInLogUsingMark(Collections.singleton(JSONB_APP));
 

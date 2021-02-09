@@ -1,0 +1,71 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/internal/localization/i18n/JAXBLocalizationResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+add_namespace_resolvers=Incluindo resolvedores de namespace
+
+create_descriptors=Criando Descritores
+
+create_mappings=Incluindo mapeamentos no descritor {0}
+
+error=Erro: 
+
+generate_files=Gravando Implementa\u00e7\u00e3o XML e Configura\u00e7\u00e3o de Sess\u00e3o
+
+generate_source=Gerando Classes de Implementa\u00e7\u00e3o
+
+impl_package_missing=O Nome do Pacote da Classe de Implementa\u00e7\u00e3o est\u00e1 ausente
+
+io_exception_error=Erro: IOException Inesperado
+
+malformed_url_error=Erro: MalformedURLException inesperado
+
+missing_customization=O Arquivo de customiza\u00e7\u00e3o de entrada est\u00e1 ausente
+
+missing_output_dir=O Nome do Diret\u00f3rio de Sa\u00edda TopLink est\u00e1 ausente
+
+missing_project_dir=O nome do diret\u00f3rio do projeto do TopLink Workbench est\u00e1 ausente
+
+missing_schema_file=O Arquivo de Esquema de Entrada est\u00e1 ausente
+
+missing_src_dir=O nome do diret\u00f3rio de sa\u00edda de origem est\u00e1 ausente
+
+missing_target_package=O Nome do Pacote de Destino est\u00e1 ausente
+
+read_customization=Lendo o Arquivo de Customiza\u00e7\u00e3o
+
+setup_inheritance=Configurando a heran\u00e7a
+
+start_mw_project=Criando Mapeamento do Projeto do Workbench
+
+start_orajaxb=Chamando orajaxb
+
+start_toplink=Chamando Gera\u00e7\u00e3o TopLink
+
+version=Vers\u00e3o: 
+

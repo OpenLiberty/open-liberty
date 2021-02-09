@@ -13,6 +13,7 @@ package jaxrs21.fat.form;
 
 import java.util.logging.Logger;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
@@ -26,6 +27,7 @@ import javax.ws.rs.core.Response;
 
 @ApplicationPath("/")
 @Path("/form")
+@ApplicationScoped
 public class FormResource extends Application {
     private static final Logger LOG = Logger.getLogger(FormResource.class.getName());
 

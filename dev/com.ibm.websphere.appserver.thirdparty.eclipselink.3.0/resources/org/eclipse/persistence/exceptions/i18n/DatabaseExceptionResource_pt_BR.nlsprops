@@ -1,0 +1,61 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/DatabaseExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+4003=Erro de configura\u00e7\u00e3o.  Classe [{0}] n\u00e3o localizada.
+
+4005=DatabaseAccessor n\u00e3o conectado.
+
+4006=Erro ao ler dados BLOB do fluxo em getObject().
+
+4007=N\u00e3o foi poss\u00edvel converter o tipo de objeto devido a um erro interno. {0}java.sql.TYPES: [{1}]
+
+4008=N\u00e3o \u00e9 poss\u00edvel efetuar logout enquanto uma transa\u00e7\u00e3o est\u00e1 em progresso.
+
+4009=As informa\u00e7\u00f5es da tabela de sequ\u00eancia n\u00e3o est\u00e3o completas.
+
+4011=Erro ao pr\u00e9-alocar n\u00fameros de sequ\u00eancia.  As informa\u00e7\u00f5es da tabela de sequ\u00eancia n\u00e3o est\u00e3o completas.
+
+4014=N\u00e3o \u00e9 poss\u00edvel registrar SynchronizationListener.
+
+4015=UnitOfWork sincronizada n\u00e3o suporta a opera\u00e7\u00e3o commitAndResume().
+
+4016=Erro de configura\u00e7\u00e3o.  N\u00e3o foi poss\u00edvel instanciar o driver [{0}].
+
+4017=Erro de configura\u00e7\u00e3o.  N\u00e3o foi poss\u00edvel acessar o driver [{0}].
+
+4018=O TransactionManager n\u00e3o foi configurado para o driver JTS.
+
+4019=Erro ao obter informa\u00e7\u00f5es sobre o banco de dados. Consulte a exce\u00e7\u00e3o aninhada para obter mais detalhes.
+
+4020=N\u00e3o foi poss\u00edvel localizar o campo do banco de dados correspondente para o campo de bloqueio otimista especificado [{0}]. Observe que a correspond\u00eancia faz distin\u00e7\u00e3o entre mai\u00fasculas e min\u00fasculas; portanto, se voc\u00ea permitiu que o nome da coluna aceite o padr\u00e3o no m\u00e9todo getter, o nome ficar\u00e1 em letras mai\u00fasculas.
+
+4021=N\u00e3o \u00e9 poss\u00edvel adquirir uma conex\u00e3o do driver [{0}], usu\u00e1rio [{1}] e URL [{2}].  Verifique se voc\u00ea definiu a classe do driver e a URL esperadas.  Verifique seu recurso de login, persistence.xml ou sessions.xml.  A propriedade jdbc.driver deve ser configurada como uma classe compat\u00edvel com sua plataforma de banco de dados
+
+4022=O acessador ou sua conex\u00e3o foi configurado como nulo.  Isso poder\u00e1 ocorrer se ClientSession ou UnitOfWork foi liberada em um encadeamento separado, por exemplo, se um tempo limite ocorreu.
+

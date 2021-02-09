@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2020 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,8 +13,10 @@ package com.ibm.ws.security.openidconnect.client.web;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.Cookie;
@@ -33,6 +35,7 @@ import org.junit.rules.TestName;
 import org.junit.rules.TestRule;
 
 import com.ibm.oauth.core.api.error.oauth20.OAuth20Exception;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.security.openidconnect.client.Cache;
 import com.ibm.ws.security.openidconnect.client.internal.OidcClientConfigImpl;
 import com.ibm.ws.security.openidconnect.client.internal.OidcClientImpl;
@@ -43,6 +46,7 @@ import com.ibm.ws.security.openidconnect.clients.common.OidcUtil;
 import com.ibm.ws.security.openidconnect.common.Constants;
 import com.ibm.ws.webcontainer.security.ReferrerURLCookieHandler;
 import com.ibm.ws.webcontainer.security.SSOCookieHelperImpl;
+import com.ibm.ws.webcontainer.security.WebAppSecurityCollaboratorImpl;
 import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
 
 import test.common.SharedOutputManager;
@@ -74,17 +78,20 @@ public class OidcRedirectServletTest {
     private final OidcClientConfigImpl oidcClientConfigImpl = mock.mock(OidcClientConfigImpl.class, "oidcClientConfigImpl");
     private final Cache cache = mock.mock(Cache.class, "cache");
 
-    private final String REQUEST_URL = "https://1.2.3.4:9080/snoop";
+    private final String REQUEST_URL = "https://localhost:9080/snoop";
+    private final String MODIFIED_REQUEST_URL = "https://modified:9080/snoop";
     private final String OIDC_CODE = "2Zqff6lzUTkEm956JROBcFCdC0T0mI";
     private final String OIDC_ID_TOKEN = "{\"iss\":\"iss_value\",\"aud\":\"client01\"}";
-    private final String OIDC_STATE = "RVNnQ0BKKjVxOnlKz7Behttps://1.2.3.4:9080/snoop";
+    private final String OIDC_STATE = "RVNnQ0BKKjVxOnlKz7Behttps://localhost:9080/snoop";
     private final String OIDC_STATE_SHORT = "RVNnQ0BKKjVxO";
     private final String OIDC_SESSION_STATE = "9JVoiH3nocnNDoPH3nfnp1NfpNF3=.NMFainCN0ngoi";
 
     @Before
     public void setUp() throws Exception {
-        OidcClientUtil.setReferrerURLCookieHandler(null);// reset the ReferrerURLCookieHandler which was set in previous tests
-        OidcClientUtil.setWebAppSecurityConfig(webAppSecurityConfig);
+        // Beta Fence
+        System.setProperty(ProductInfo.BETA_EDITION_JVM_PROPERTY, "true");
+
+        WebAppSecurityCollaboratorImpl.setGlobalWebAppSecurityConfig(webAppSecurityConfig);
         mock.checking(new Expectations() {
             {
                 allowing(webAppSecurityConfig).getSSORequiresSSL();
@@ -107,10 +114,16 @@ public class OidcRedirectServletTest {
 
             }
         });
+
+        OidcClientUtil.setWebAppSecurityConfig(webAppSecurityConfig);
+        OidcClientUtil.setReferrerURLCookieHandler(null);// reset the ReferrerURLCookieHandler which was set in previous tests
     }
 
     @After
     public void tearDown() {
+        // Beta Fence
+        System.setProperty(ProductInfo.BETA_EDITION_JVM_PROPERTY, "false");
+        WebAppSecurityCollaboratorImpl.setGlobalWebAppSecurityConfig(null);
         mock.assertIsSatisfied();
         outputMgr.resetStreams();
     }
@@ -199,6 +212,9 @@ public class OidcRedirectServletTest {
     public void testDoPost_nullCode_accessDenied() {
         OidcRedirectServlet redirectServlet = new OidcRedirectServlet();
         final String errorMsg = "CWWKS1711E: The request has been denied by the user, or another error occurred that resulted in denial of the request.";
+        final List<String> wasReqURLRedirectDomainNames = new ArrayList<String>();
+        wasReqURLRedirectDomainNames.add("localhost");
+
         try {
             mockParamValue(Constants.CODE, null);
             mockParamValue(Constants.ID_TOKEN, null);
@@ -211,6 +227,8 @@ public class OidcRedirectServletTest {
                     will(returnValue(REQUEST_URL));
                     allowing(resp).addCookie(with(any(Cookie.class)));
                     allowing(resp).sendError(HttpServletResponse.SC_FORBIDDEN, errorMsg);
+                    allowing(webAppSecurityConfig).getWASReqURLRedirectDomainNames();
+                    will(returnValue(wasReqURLRedirectDomainNames));
                 }
             });
             redirectServlet.doPost(req, resp);
@@ -225,6 +243,9 @@ public class OidcRedirectServletTest {
         OidcRedirectServlet redirectServlet = new OidcRedirectServlet();
         String error = OAuth20Exception.INVALID_SCOPE;
         final String query = Constants.ERROR + "=" + error;
+        final List<String> wasReqURLRedirectDomainNames = new ArrayList<String>();
+        wasReqURLRedirectDomainNames.add("localhost");
+
         try {
             mockParamValue(Constants.CODE, null);
             mockParamValue(Constants.ID_TOKEN, null);
@@ -237,6 +258,8 @@ public class OidcRedirectServletTest {
                     will(returnValue(REQUEST_URL));
                     allowing(resp).addCookie(with(any(Cookie.class)));
                     allowing(resp).sendError(HttpServletResponse.SC_FORBIDDEN, query);
+                    allowing(webAppSecurityConfig).getWASReqURLRedirectDomainNames();
+                    will(returnValue(wasReqURLRedirectDomainNames));
                 }
             });
             redirectServlet.doPost(req, resp);
@@ -251,6 +274,9 @@ public class OidcRedirectServletTest {
         OidcRedirectServlet redirectServlet = new OidcRedirectServlet();
         String error = OAuth20Exception.INVALID_GRANT;
         final String query = Constants.ERROR + "=" + OAuth20Exception.ACCESS_DENIED;
+        final List<String> wasReqURLRedirectDomainNames = new ArrayList<String>();
+        wasReqURLRedirectDomainNames.add("localhost");
+
         try {
             mockParamValue(Constants.CODE, null);
             mockParamValue(Constants.ID_TOKEN, null);
@@ -264,6 +290,8 @@ public class OidcRedirectServletTest {
                     will(returnValue(REQUEST_URL));
                     allowing(resp).addCookie(with(any(Cookie.class)));
                     allowing(resp).sendError(HttpServletResponse.SC_FORBIDDEN, query);
+                    allowing(webAppSecurityConfig).getWASReqURLRedirectDomainNames();
+                    will(returnValue(wasReqURLRedirectDomainNames));
                 }
             });
             redirectServlet.doPost(req, resp);
@@ -277,6 +305,8 @@ public class OidcRedirectServletTest {
     public void testDoPost_nullCode_nullError() {
         OidcRedirectServlet redirectServlet = new OidcRedirectServlet();
         final String query = Constants.ERROR + "=" + OAuth20Exception.ACCESS_DENIED;
+        final List<String> wasReqURLRedirectDomainNames = new ArrayList<String>();
+        wasReqURLRedirectDomainNames.add("localhost");
 
         try {
             mockParamValue(Constants.CODE, null);
@@ -290,6 +320,8 @@ public class OidcRedirectServletTest {
                     will(returnValue(REQUEST_URL));
                     allowing(resp).addCookie(with(any(Cookie.class)));
                     allowing(resp).sendError(HttpServletResponse.SC_FORBIDDEN, query);
+                    allowing(webAppSecurityConfig).getWASReqURLRedirectDomainNames();
+                    will(returnValue(wasReqURLRedirectDomainNames));
                 }
             });
             redirectServlet.doPost(req, resp);
@@ -305,6 +337,8 @@ public class OidcRedirectServletTest {
         redirectServlet.activatedOidcClientImpl = oidcClientImpl;
 
         final String OIDC_CLIENT_ID = "snoop";
+        final List<String> wasReqURLRedirectDomainNames = new ArrayList<String>();
+        wasReqURLRedirectDomainNames.add("localhost");
 
         try {
             final Map<String, String[]> map = new HashMap<String, String[]>();
@@ -338,6 +372,8 @@ public class OidcRedirectServletTest {
                     will(returnValue(REQUEST_URL));
                     allowing(resp).addCookie(with(any(Cookie.class)));
                     allowing(mockInterface).mockCacheRequestParameter();
+                    allowing(webAppSecurityConfig).getWASReqURLRedirectDomainNames();
+                    will(returnValue(wasReqURLRedirectDomainNames));
                 }
             });
             mockPostToWASReqURL();
@@ -355,6 +391,8 @@ public class OidcRedirectServletTest {
         redirectServlet.activatedOidcClientImpl = oidcClientImpl;
 
         final String OIDC_CLIENT_ID = "snoop";
+        final List<String> wasReqURLRedirectDomainNames = new ArrayList<String>();
+        wasReqURLRedirectDomainNames.add("localhost");
 
         try {
             final Map<String, String[]> map = new HashMap<String, String[]>();
@@ -388,9 +426,61 @@ public class OidcRedirectServletTest {
                     will(returnValue(REQUEST_URL));
                     allowing(resp).addCookie(with(any(Cookie.class)));
                     allowing(mockInterface).mockCacheRequestParameter();
+                    allowing(webAppSecurityConfig).getWASReqURLRedirectDomainNames();
+                    will(returnValue(wasReqURLRedirectDomainNames));
                 }
             });
             mockPostToWASReqURL();
+
+            redirectServlet.doPost(req, resp);
+
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void testDoPost_validIdToken_malformedWasReqURLOidcCookieValue() {
+        OidcRedirectServlet redirectServlet = new OidcRedirectServlet();
+        redirectServlet.activatedOidcClientImpl = oidcClientImpl;
+
+        final String OIDC_CLIENT_ID = "snoop";
+        final List<String> wasReqURLRedirectDomainNames = new ArrayList<String>();
+        wasReqURLRedirectDomainNames.add("localhost");
+
+        try {
+            final Map<String, String[]> map = new HashMap<String, String[]>();
+            map.put("requestUrl", new String[] { REQUEST_URL });
+            final Hashtable<String, String> table = new Hashtable<String, String>();
+            table.put("requestUrl", REQUEST_URL);
+
+            mockParamValue(Constants.STATE, OIDC_STATE);
+            mockParamValue(Constants.SESSION_STATE, OIDC_SESSION_STATE);
+            mockParamValue(Constants.CODE, null);
+            mockParamValue(Constants.ID_TOKEN, OIDC_ID_TOKEN);
+            mockParamValue(Constants.ACCESS_TOKEN, null);
+
+            mock.checking(new Expectations() {
+                {
+                    allowing(req).getScheme();
+                    will(returnValue("https"));
+                    allowing(req).getParameterMap();
+                    will(returnValue(map));
+                    allowing(oidcClientImpl).getOidcClientConfig(req, OIDC_CLIENT_ID);
+                    will(returnValue(oidcClientConfigImpl));
+                    allowing(oidcClientConfigImpl).getClientSecret(); //
+                    will(returnValue("clientsecret")); //
+                    allowing(oidcClientConfigImpl).isHttpsRequired();
+                    will(returnValue(true));
+                    allowing(cache).put(OidcUtil.encode(OIDC_STATE), table);
+                    will(returnValue(new StringBuffer("https://austin.ibm.com:8020/a/b")));//
+                    allowing(req).getCookies();
+                    will(returnValue(new Cookie[] { new Cookie(ClientConstants.WAS_REQ_URL_OIDC + HashUtils.getStrHashCode(OIDC_STATE), MODIFIED_REQUEST_URL) }));
+                    one(resp).sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                    allowing(webAppSecurityConfig).getWASReqURLRedirectDomainNames();
+                    will(returnValue(wasReqURLRedirectDomainNames));
+                }
+            });
 
             redirectServlet.doPost(req, resp);
 
@@ -405,6 +495,8 @@ public class OidcRedirectServletTest {
         redirectServlet.activatedOidcClientImpl = oidcClientImpl;
 
         final String OIDC_CLIENT_ID = "snoop";
+        final List<String> wasReqURLRedirectDomainNames = new ArrayList<String>();
+        wasReqURLRedirectDomainNames.add("localhost");
 
         try {
             final Map<String, String[]> map = new HashMap<String, String[]>();
@@ -440,6 +532,8 @@ public class OidcRedirectServletTest {
                     allowing(resp).addCookie(with(any(Cookie.class)));
                     allowing(mockInterface).mockCacheRequestParameter();
                     //allowing(resp).sendRedirect(REQUEST_URL);
+                    allowing(webAppSecurityConfig).getWASReqURLRedirectDomainNames();
+                    will(returnValue(wasReqURLRedirectDomainNames));
                 }
             });
 

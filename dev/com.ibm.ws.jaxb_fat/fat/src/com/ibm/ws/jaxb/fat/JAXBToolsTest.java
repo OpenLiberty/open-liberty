@@ -58,6 +58,7 @@ public class JAXBToolsTest extends FATServletClient {
 
     @BeforeClass
     public static void setup() throws Exception {
+
         String serverRoot = server.getServerRoot();
         xjcSourceDir = new File(serverRoot + "/temp/xjcSourceDir");
         xjcTargetDir = new File(serverRoot + "/temp/xjcTargetDir");

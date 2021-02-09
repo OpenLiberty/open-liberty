@@ -5,6 +5,7 @@
 		<feature>timedexit-1.0</feature>
 		<feature>jwt-1.0</feature>
 		<feature>jaxrs-2.0</feature>
+		<feature>jsonp-1.0</feature>
 		
 	</featureManager>
 

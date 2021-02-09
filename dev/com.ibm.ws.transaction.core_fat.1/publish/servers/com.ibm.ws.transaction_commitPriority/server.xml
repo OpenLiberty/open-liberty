@@ -1,0 +1,146 @@
+<server>
+
+    <include location="../fatTestPorts.xml"/>
+    
+    <featureManager>
+      <feature>servlet-3.1</feature>
+      <feature>componentTest-1.0</feature>
+      <feature>txtest-1.0</feature>
+      <feature>osgiconsole-1.0</feature>
+      <feature>jndi-1.0</feature>
+      <feature>microprofile-1.2</feature>
+      <feature>ejb-3.2</feature>
+    </featureManager>
+
+    <sslDefault outboundSSLRef="mySSLConfig" />
+     
+    <!-- Server SSL configuration -->
+    <ssl id="defaultSSLConfig" keyStoreRef="defaultKeyStore" trustStoreRef="defaultTrustStore" /> 
+    <keyStore id="defaultKeyStore" location="defaultKey.jks" type="JKS" password="passw0rd" /> 
+    <keyStore id="defaultTrustStore" location="defaultTrust.jks" type="JKS" password="passw0rd" /> 
+    
+    <jdbcDriver id="DerbyEmbedded" libraryRef="DerbyLib" />
+    <library id="DerbyLib" filesetRef="DerbyFileset" />
+    <fileset id="DerbyFileset"
+             dir="${shared.resource.dir}derby"
+             includes="derby.jar" />
+    
+    <transaction
+        recoverOnStartup="true"
+        waitForRecovery="false"
+        heuristicRetryInterval="10"
+    />
+
+    <dataSource jndiName="jdbc/derby1" jdbcDriverRef="DerbyEmbedded" type="javax.sql.XADataSource">
+      <properties
+        databaseName="${shared.resource.dir}/data/derby1"
+        createDatabase="create"
+        user="dbuser1"
+        password="{xor}Oz0vKDtu"
+      />  <!-- password="dbpwd1" -->
+    </dataSource>
+
+    <dataSource jndiName="jdbc/derby2" jdbcDriverRef="DerbyEmbedded" type="javax.sql.XADataSource">
+      <properties
+        databaseName="${shared.resource.dir}/data/derby2"
+        createDatabase="create"
+        user="dbuser1"
+        password="{xor}Oz0vKDtu"
+      />  <!-- password="dbpwd1" -->
+    </dataSource>
+
+    <dataSource jndiName="jdbc/derby3" jdbcDriverRef="DerbyEmbedded" type="javax.sql.XADataSource">
+      <properties
+        databaseName="${shared.resource.dir}/data/derby3"
+        createDatabase="create"
+        user="dbuser1"
+        password="{xor}Oz0vKDtu"
+      />  <!-- password="dbpwd1" -->
+    </dataSource>
+
+    <dataSource jndiName="jdbc/derby4" jdbcDriverRef="DerbyEmbedded" type="javax.sql.XADataSource">
+      <properties
+        databaseName="${shared.resource.dir}/data/derby4"
+        createDatabase="create"
+        user="dbuser1"
+        password="{xor}Oz0vKDtu"
+      />  <!-- password="dbpwd1" -->
+    </dataSource>
+
+    <dataSource jndiName="jdbc/derby5" jdbcDriverRef="DerbyEmbedded" type="javax.sql.XADataSource">
+      <properties
+        databaseName="${shared.resource.dir}/data/derby5"
+        createDatabase="create"
+        user="dbuser1"
+        password="{xor}Oz0vKDtu"
+      />  <!-- password="dbpwd1" -->
+    </dataSource>
+
+    <dataSource jndiName="jdbc/derby6" jdbcDriverRef="DerbyEmbedded" type="javax.sql.XADataSource">
+      <properties
+        databaseName="${shared.resource.dir}/data/derby6"
+        createDatabase="create"
+        user="dbuser1"
+        password="{xor}Oz0vKDtu"
+      />  <!-- password="dbpwd1" -->
+    </dataSource>
+
+    <dataSource jndiName="jdbc/derby7" jdbcDriverRef="DerbyEmbedded" type="javax.sql.XADataSource">
+      <properties
+        databaseName="${shared.resource.dir}/data/derby7"
+        createDatabase="create"
+        user="dbuser1"
+        password="{xor}Oz0vKDtu"
+      />  <!-- password="dbpwd1" -->
+    </dataSource>
+
+    <dataSource jndiName="jdbc/derby8" jdbcDriverRef="DerbyEmbedded" type="javax.sql.XADataSource">
+      <properties
+        databaseName="${shared.resource.dir}/data/derby8"
+        createDatabase="create"
+        user="dbuser1"
+        password="{xor}Oz0vKDtu"
+      />  <!-- password="dbpwd1" -->
+    </dataSource>
+
+    <dataSource jndiName="jdbc/derby9" jdbcDriverRef="DerbyEmbedded" type="javax.sql.XADataSource">
+      <properties
+        databaseName="${shared.resource.dir}/data/derby9"
+        createDatabase="create"
+        user="dbuser1"
+        password="{xor}Oz0vKDtu"
+      />  <!-- password="dbpwd1" -->
+    </dataSource>
+    
+    <dataSource jndiName="jdbc/derby10" jdbcDriverRef="DerbyEmbedded" type="javax.sql.XADataSource">
+      <properties
+        databaseName="${shared.resource.dir}/data/derby10"
+        createDatabase="create"
+        user="dbuser1"
+        password="{xor}Oz0vKDtu"
+      />  <!-- password="dbpwd1" -->
+    </dataSource>
+    
+    <dataSource jndiName="jdbc/derby11" jdbcDriverRef="DerbyEmbedded" type="javax.sql.XADataSource">
+      <properties
+        databaseName="${shared.resource.dir}/data/derby11"
+        createDatabase="create"
+        user="dbuser1"
+        password="{xor}Oz0vKDtu"
+      />  <!-- password="dbpwd1" -->
+    </dataSource>
+    
+    <dataSource jndiName="jdbc/derby12" jdbcDriverRef="DerbyEmbedded" type="javax.sql.XADataSource">
+      <properties
+        databaseName="${shared.resource.dir}/data/derby12"
+        createDatabase="create"
+        user="dbuser1"
+        password="{xor}Oz0vKDtu"
+      />  <!-- password="dbpwd1" -->
+    </dataSource>
+    
+    <logging traceSpecification="TransactionSummary=all:Transaction=all:com.ibm.ws.jdbc.*=all:RRA=all:logservice=all=enabled:*=info=enabled"/>
+    <javaPermission codebase="${shared.resource.dir}derby/derby.jar" className="java.security.AllPermission"/>
+    <javaPermission codebase="${server.config.dir}/dropins/transaction.war" className="java.security.AllPermission"/>
+     
+</server>

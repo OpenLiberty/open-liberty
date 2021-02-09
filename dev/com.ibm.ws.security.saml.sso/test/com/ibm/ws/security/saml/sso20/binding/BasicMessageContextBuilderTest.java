@@ -117,6 +117,11 @@ public class BasicMessageContextBuilderTest {
             BasicMessageContext<?, ?, ?> getBasicMessageContext(SsoSamlService ssoService) {
                 return mockInterface.getBasicMessageContext();
             }
+            
+            @Override
+            BasicMessageContext<?, ?, ?> getBasicMessageContext(SsoSamlService ssoService, HttpServletRequest req, HttpServletResponse res) {
+                return mockInterface.getBasicMessageContext();
+            }
 
             @Override
             HTTPPostDecoder getSamlHttpPostDecoder(String acsUrl) {
@@ -148,7 +153,7 @@ public class BasicMessageContextBuilderTest {
 
                 one(ssoService).getProviderId();
                 will(returnValue("sp1"));
-
+               
                 one(ssoConfig).getSpHostAndPort();
                 will(returnValue("http://www.ibm.com"));
 

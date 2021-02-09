@@ -41,25 +41,23 @@ public class FileInfo {
         FileInfo fileInfo = null;
         try {
             fileInfo = (FileInfo) AccessController.doPrivileged(
-                            new PrivilegedExceptionAction<Object>() {
-                                @Override
-                                public Object run() throws Exception {
-                                    FileInfo fileInfo = new FileInfo(file);
-                                    fileInfo.path = file.getPath();
-                                    fileInfo.bExists = file.exists();
-                                    fileInfo.lLength = file.length();
-                                    fileInfo.lLastModified = file.lastModified();
-                                    return fileInfo;
-                                }
-                            }
-                            );
+                                                                new PrivilegedExceptionAction<Object>() {
+                                                                    @Override
+                                                                    public Object run() throws Exception {
+                                                                        FileInfo fileInfo = new FileInfo(file);
+                                                                        fileInfo.path = file.getPath();
+                                                                        fileInfo.bExists = file.exists();
+                                                                        fileInfo.lLength = file.length();
+                                                                        fileInfo.lLastModified = file.lastModified();
+                                                                        return fileInfo;
+                                                                    }
+                                                                });
         } catch (PrivilegedActionException e) {
             throw new SamlException("ACCESS_FILE_INFO_ERROR",
                             //"CWWKS5036E: Get an exception [" + e.getMessage() +
                             //                "] while accessing the information of the file [" + file.getPath() +
                             //                "]",
-                            e.getException(),
-                            new Object[] { file.getPath(), e.getMessage() });
+                            e.getException(), new Object[] { file.getPath(), e });
         }
         return fileInfo;
     }
@@ -93,19 +91,18 @@ public class FileInfo {
 
     /**
      * Get the host name.
-     * 
+     *
      * @return String value of the host name or "localhost" if not able to resolve
      */
     public static String getHostName() {
         try {
             String hostName = (String) AccessController.doPrivileged(
-                            new PrivilegedExceptionAction<Object>() {
-                                @Override
-                                public Object run() throws Exception {
-                                    return java.net.InetAddress.getLocalHost().getCanonicalHostName().toLowerCase();
-                                }
-                            }
-                            );
+                                                                     new PrivilegedExceptionAction<Object>() {
+                                                                         @Override
+                                                                         public Object run() throws Exception {
+                                                                             return java.net.InetAddress.getLocalHost().getCanonicalHostName().toLowerCase();
+                                                                         }
+                                                                     });
             return hostName;
         } catch (PrivilegedActionException e) {
             return "localhost";

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -58,25 +58,33 @@ public class EJBJarDDParser extends DDParser {
                 eePlatformVersion = 14;
                 return new EJBJarType(getDeploymentDescriptorPath());
             }
-        }
-        else if ("3.0".equals(vers)) {
+        } else if ("3.0".equals(vers)) {
             if ("http://java.sun.com/xml/ns/javaee".equals(namespace)) {
                 version = EJBJar.VERSION_3_0;
                 eePlatformVersion = 50;
                 return new EJBJarType(getDeploymentDescriptorPath());
             }
-        }
-        else if ("3.1".equals(vers)) {
+        } else if ("3.1".equals(vers)) {
             if ("http://java.sun.com/xml/ns/javaee".equals(namespace)) {
                 version = EJBJar.VERSION_3_1;
                 eePlatformVersion = 60;
                 return new EJBJarType(getDeploymentDescriptorPath());
             }
-        }
-        else if (maxVersion >= EJBJar.VERSION_3_2 && "3.2".equals(vers)) {
+            /*
+             * Ensure ejb-jar.xml version level is not above feature level version
+             * lowest feature level for Open Liberty is ejb-3.1 so the check is only needed
+             * from now on.
+             */
+        } else if (maxVersion >= EJBJar.VERSION_3_2 && "3.2".equals(vers)) {
             if ("http://xmlns.jcp.org/xml/ns/javaee".equals(namespace)) {
                 version = EJBJar.VERSION_3_2;
                 eePlatformVersion = 70;
+                return new EJBJarType(getDeploymentDescriptorPath());
+            }
+        } else if (maxVersion >= EJBJar.VERSION_4_0 && "4.0".equals(vers)) {
+            if ("https://jakarta.ee/xml/ns/jakartaee".equals(namespace)) {
+                version = EJBJar.VERSION_4_0;
+                eePlatformVersion = 90;
                 return new EJBJarType(getDeploymentDescriptorPath());
             }
         }

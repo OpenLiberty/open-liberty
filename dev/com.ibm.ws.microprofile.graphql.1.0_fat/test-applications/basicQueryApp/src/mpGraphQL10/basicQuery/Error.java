@@ -6,7 +6,7 @@ package mpGraphQL10.basicQuery;
 public class Error {
 
     private String message;
-    private String path;
+    private Object[] path;
     private String extensions;
 
     public String getMessage() {
@@ -17,11 +17,11 @@ public class Error {
         this.message = message;
     }
 
-    public String getPath() {
+    public Object[] getPath() {
         return path;
     }
 
-    public void setPath(String path) {
+    public void setPath(Object[] path) {
         this.path = path;
     }
 

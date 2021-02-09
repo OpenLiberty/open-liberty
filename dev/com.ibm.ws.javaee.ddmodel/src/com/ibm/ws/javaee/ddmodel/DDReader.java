@@ -93,6 +93,7 @@ public class DDReader {
             try {
                 input.close();
             } catch (IOException e) {
+                // IGNORE
             }
         }
     }

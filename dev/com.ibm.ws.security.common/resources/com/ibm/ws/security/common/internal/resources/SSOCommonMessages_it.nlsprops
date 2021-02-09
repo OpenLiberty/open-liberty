@@ -24,7 +24,7 @@ SUBJECT_MAPPING_MISSING_ATTR=CWWKS6102E: La richiesta di autenticazione non \u00
 SUBJECT_MAPPING_MISSING_ATTR.explanation=Le informazioni dell'utente autenticato non contengono la richiesta specificata per identificare l'attributo indicato e il runtime non pu\u00f2 continuare con il processo di autenticazione.
 SUBJECT_MAPPING_MISSING_ATTR.useraction=Effettuare una delle seguenti operazioni. 1)Controllare se la configurazione del client login social pu\u00f2 specificare una richiesta diversa come attributo 2)Verificare che il provider emetta le informazioni dell'utente autenticato con la richiesta specificata.
 
-ERROR_AUTHENTICATE=CWWKS6103E: Impossibile creare un soggetto sicurezza per l''utente {0}.
+ERROR_AUTHENTICATE=CWWKS6103E: Impossibile creare un soggetto sicurezza per l''utente {0}. {1}
 ERROR_AUTHENTICATE.explanation=Impossibile autenticare l'utente. 
 ERROR_AUTHENTICATE.useraction=Verificare che l'utente esista nel registro e che la password o altre credenziali siano corrette.
 

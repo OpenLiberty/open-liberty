@@ -1,0 +1,96 @@
+<server>
+  <featureManager>
+    <feature>servlet-3.1</feature>
+    <feature>jndi-1.0</feature>
+    <feature>wasJmsServer-1.0</feature>
+    <feature>testjmsinternals-1.0</feature>
+  </featureManager>
+
+  <include optional="true" location="../fatTestPorts.xml"/>
+
+  <variable name="onError" value="FAIL"/>
+
+  <logging 
+    traceSpecification="com.ibm.ws.sib.processor.impl.JSLocalConsumerPoint=all: com.ibm.ws.sib.processor.impl.RemoteConsumerDispatcher=all: com.ibm.ws.sib.processor.impl.ConsumerDispatcher=all: com.ibm.ws.sib.comms.client.ConsumerSessionProxy=all: com.ibm.ws.sib.api.jms.impl.JmsMsgConsumerImpl=all: SIBMessageTrace=all"
+    traceFileName="trace.log"
+    maxFileSize="100"
+    maxFiles="2"/> 
+
+  <messagingEngine>
+    <queue id="QUEUE1"/>
+    <queue id="QUEUE2"/>
+    <queue id="QUEUE3"/>
+    <topicSpace id="NewTopic1"/>
+    <topicSpace id="NewTopic2"/>
+    <topicSpace id="NewTopic3"/>
+    <topicSpace id="NewTopic4"/>	
+    <topicSpace id="NewTopic5"/>
+  </messagingEngine>
+
+  <jmsQueueConnectionFactory jndiName="jndi_JMS_BASE_QCF" connectionManagerRef="ConMgr6">
+    <properties.wasJms/> 
+  </jmsQueueConnectionFactory>
+  <connectionManager id="ConMgr6" maxPoolSize="2"/>
+
+  <jmsQueueConnectionFactory jndiName="jndi_JMS_BASE_CF" connectionManagerRef="ConMgr9">
+    <properties.wasJms/> 
+  </jmsQueueConnectionFactory>
+  <connectionManager id="ConMgr9" maxPoolSize="2"/>
+
+  <jmsQueueConnectionFactory jndiName="jndi_JMS_BASE_QCF1" connectionManagerRef="ConMgr1">
+    <properties.wasJms remoteServerAddress="localhost:${bvt.prop.jms.1}:BootstrapBasicMessaging"/>
+  </jmsQueueConnectionFactory>
+  <connectionManager id="ConMgr1" maxPoolSize="2"/>
+
+  <jmsQueue jndiName="jndi_INPUT_Q">
+    <properties.wasJms 	queueName="QUEUE1"/>
+  </jmsQueue>
+
+  <jmsQueue jndiName="jndi_INPUT_Q1">
+    <properties.wasJms 	queueName="QUEUE2"/>
+  </jmsQueue>
+
+  <jmsQueue jndiName="jndi_INPUT_Q2">
+    <properties.wasJms 	queueName="QUEUE3"/>
+  </jmsQueue>
+
+  <jmsQueue jndiName="jndi_INPUT_Q3">
+    <properties.wasJms 	queueName="QUEUE4"/>
+  </jmsQueue>
+
+  <jmsTopic jndiName="eis/topic1">
+    <properties.wasJms topicSpace="NewTopic1" topicName="testTopic"/>
+  </jmsTopic>
+
+  <jmsTopic jndiName="eis/topic2">
+    <properties.wasJms topicSpace="NewTopic2" topicName="testTopic" timeToLive="1000"/>
+  </jmsTopic>
+
+  <jmsTopic jndiName="eis/topic3">
+    <properties.wasJms topicSpace="NewTopic3" topicName="testTopic"/>
+  </jmsTopic>
+
+  <jmsTopic jndiName="eis/topic4">
+    <properties.wasJms topicSpace="NewTopic4" topicName="testTopic"/>
+  </jmsTopic>
+
+  <jmsTopic jndiName="eis/topic5">
+    <properties.wasJms topicSpace="NewTopic5" topicName="testTopic"/>
+  </jmsTopic>
+
+  <jmsTopicConnectionFactory jndiName="eis/tcf" connectionManagerRef="ConMgr2">
+    <properties.wasJms/> 
+  </jmsTopicConnectionFactory>
+  <connectionManager id="ConMgr2" maxPoolSize="2"/>
+
+  <jmsTopicConnectionFactory jndiName="eis/tcf1" connectionManagerRef="ConMgr3">
+    <properties.wasJms remoteServerAddress="localhost:${bvt.prop.jms.1}:BootstrapBasicMessaging"/> 
+  </jmsTopicConnectionFactory>
+  <connectionManager id="ConMgr3" maxPoolSize="2"/>
+
+  <jmsTopicConnectionFactory jndiName="eis/tcf2" connectionManagerRef="ConMgr5">
+    <properties.wasJms clientID=""/> 
+  </jmsTopicConnectionFactory>
+  <connectionManager id="ConMgr5" maxPoolSize="2"/>
+
+</server>

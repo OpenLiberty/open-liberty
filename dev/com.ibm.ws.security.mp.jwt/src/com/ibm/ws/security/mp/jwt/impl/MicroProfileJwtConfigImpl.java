@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 - 2018 IBM Corporation and others.
+ * Copyright (c) 2017 - 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 
 import org.osgi.framework.ServiceReference;
+import org.osgi.framework.Version;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -36,6 +37,7 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.common.config.CommonConfigUtils;
 import com.ibm.ws.security.common.jwk.impl.JWKSet;
 import com.ibm.ws.security.jwt.config.ConsumerUtils;
+import com.ibm.ws.security.jwt.config.JwtConfigUtil;
 import com.ibm.ws.security.jwt.config.JwtConsumerConfig;
 import com.ibm.ws.security.jwt.utils.JwtUtils;
 import com.ibm.ws.security.mp.jwt.MicroProfileJwtConfig;
@@ -45,6 +47,8 @@ import com.ibm.ws.security.mp.jwt.TraceConstants;
 import com.ibm.ws.security.mp.jwt.error.MpJwtProcessingException;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.ssl.SSLSupport;
+
+import io.openliberty.security.mp.jwt.osgi.MpJwtRuntimeVersion;
 
 /**
  *
@@ -80,6 +84,8 @@ public class MicroProfileJwtConfigImpl implements MicroProfileJwtConfig {
     public static final String KEY_AUDIENCE = "audiences";
     String[] audience = null;
 
+    boolean ignoreAudClaimIfNotConfigured = false;
+
     public static final String CFG_KEY_HOST_NAME_VERIFICATION_ENABLED = "hostNameVerificationEnabled";
     protected boolean hostNameVerificationEnabled = false;
 
@@ -109,13 +115,22 @@ public class MicroProfileJwtConfigImpl implements MicroProfileJwtConfig {
 
     public static final String CFG_KEY_SIGALG = "signatureAlgorithm";
 
-    String signatureAlgorithm = "RS256";
+    String signatureAlgorithm = null;
 
     public static final String KEY_authFilterRef = "authFilterRef";
     protected String authFilterRef;
 
     public static final String CFG_KEY_USE_SYSPROPS_FOR_HTTPCLIENT_CONNECTONS = "useSystemPropertiesForHttpClientConnections";
     private boolean useSystemPropertiesForHttpClientConnections = false;
+
+    public static final String KEY_TOKEN_HEADER = "tokenHeader";
+    protected String tokenHeader;
+
+    public static final String KEY_COOKIE_NAME = "cookieName";
+    protected String cookieName;
+
+    public static final String KEY_KEY_MANAGEMENT_KEY_ALIAS = "keyManagementKeyAlias";
+    protected String keyManagementKeyAlias;
 
     @com.ibm.websphere.ras.annotation.Sensitive
     private String sharedKey;
@@ -183,13 +198,50 @@ public class MicroProfileJwtConfigImpl implements MicroProfileJwtConfig {
         this.mapToUserRegistry = configUtils.getBooleanConfigAttribute(props, CFG_KEY_mapToUserRegistry, mapToUserRegistry);
         jwkSet = null; // the jwkEndpoint may have been changed during dynamic update
         consumerUtils = null; // the parameters in consumerUtils may have been changed during dynamic changing
-        this.signatureAlgorithm = configUtils.getConfigAttribute(props, CFG_KEY_SIGALG);
+        this.signatureAlgorithm = JwtConfigUtil.getSignatureAlgorithm(getUniqueId(), props, CFG_KEY_SIGALG);
         sharedKey = JwtUtils.processProtectedString(props, JwtUtils.CFG_KEY_SHARED_KEY);
+
+        loadConfigValuesForHigherVersions(cc, props);
 
         debug();
         if (tc.isDebugEnabled()) {
             Tr.exit(tc, methodName);
         }
+    }
+
+    void loadConfigValuesForHigherVersions(ComponentContext cc, Map<String, Object> props) {
+        if (!isRuntimeVersionAtLeast(MpJwtRuntimeVersion.VERSION_1_2)) {
+            return;
+        }
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "Loading additional properties for runtime version " + MpJwtRuntimeVersion.VERSION_1_2 + " and above");
+        }
+        tokenHeader = configUtils.getConfigAttribute(props, KEY_TOKEN_HEADER);
+        cookieName = configUtils.getConfigAttribute(props, KEY_COOKIE_NAME);
+        keyManagementKeyAlias = configUtils.getConfigAttribute(props, KEY_KEY_MANAGEMENT_KEY_ALIAS);
+        // Ensure that for MP JWT 1.2 and above that "aud" claim is allowed in tokens even if audiences or
+        // mp.jwt.verify.audiences are not configured
+        ignoreAudClaimIfNotConfigured = true;
+    }
+
+    boolean isRuntimeVersionAtLeast(Version minimumVersionRequired) {
+        MpJwtRuntimeVersion mpJwtRuntimeVersion = getMpJwtRuntimeVersion();
+        if (mpJwtRuntimeVersion == null) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Failed to find runtime version");
+            }
+            return false;
+        }
+        Version runtimeVersion = mpJwtRuntimeVersion.getVersion();
+        return (runtimeVersion.compareTo(minimumVersionRequired) >= 0);
+    }
+
+    MpJwtRuntimeVersion getMpJwtRuntimeVersion() {
+        MicroProfileJwtService mpJwtService = mpJwtServiceRef.getService();
+        if (mpJwtService == null) {
+            return null;
+        }
+        return mpJwtService.getMpJwtRuntimeVersion();
     }
 
     protected void debug() {
@@ -249,6 +301,11 @@ public class MicroProfileJwtConfigImpl implements MicroProfileJwtConfig {
         }
     }
 
+    @Override
+    public boolean ignoreAudClaimIfNotConfigured() {
+        return ignoreAudClaimIfNotConfigured;
+    }
+
     /** {@inheritDoc} */
     @Override
     public String getSignatureAlgorithm() {
@@ -260,14 +317,10 @@ public class MicroProfileJwtConfigImpl implements MicroProfileJwtConfig {
     @FFDCIgnore(MpJwtProcessingException.class)
     public String getTrustStoreRef() {
         if (this.sslRefInfo == null) {
-            MicroProfileJwtService service = mpJwtServiceRef.getService();
-            if (service == null) {
-                if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "MP JWT service is not available");
-                }
+            sslRefInfo = initializeSslRefInfo();
+            if (sslRefInfo == null) {
                 return null;
             }
-            sslRefInfo = new SslRefInfoImpl(service.getSslSupport(), service.getKeyStoreServiceRef(), sslRef, trustAliasName);
         }
         try {
             return sslRefInfo.getTrustStoreName();
@@ -275,6 +328,35 @@ public class MicroProfileJwtConfigImpl implements MicroProfileJwtConfig {
             // We already logged the error
         }
         return null;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    @FFDCIgnore(MpJwtProcessingException.class)
+    public String getKeyStoreRef() {
+        if (this.sslRefInfo == null) {
+            sslRefInfo = initializeSslRefInfo();
+            if (sslRefInfo == null) {
+                return null;
+            }
+        }
+        try {
+            return sslRefInfo.getKeyStoreName();
+        } catch (MpJwtProcessingException e) {
+            // We already logged the error
+        }
+        return null;
+    }
+
+    SslRefInfo initializeSslRefInfo() {
+        MicroProfileJwtService service = mpJwtServiceRef.getService();
+        if (service == null) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "MP JWT service is not available");
+            }
+            return null;
+        }
+        return new SslRefInfoImpl(service.getSslSupport(), service.getKeyStoreServiceRef(), sslRef, trustAliasName);
     }
 
     /** {@inheritDoc} */
@@ -511,6 +593,26 @@ public class MicroProfileJwtConfigImpl implements MicroProfileJwtConfig {
     @Override
     public boolean getUseSystemPropertiesForHttpClientConnections() {
         return this.useSystemPropertiesForHttpClientConnections;
+    }
+
+    @Override
+    public String getTokenHeader() {
+        return tokenHeader;
+    }
+
+    @Override
+    public String getCookieName() {
+        return cookieName;
+    }
+
+    @Override
+    public List<String> getAMRClaim() {
+        return null;
+    }
+
+    @Override
+    public String getKeyManagementKeyAlias() {
+        return keyManagementKeyAlias;
     }
 
 }

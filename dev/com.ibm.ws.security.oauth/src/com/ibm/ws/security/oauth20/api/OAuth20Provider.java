@@ -21,6 +21,8 @@ import com.ibm.oauth.core.api.oauth20.OAuth20Component;
 import com.ibm.oauth.core.internal.oauth20.config.OAuth20ConfigProvider;
 import com.ibm.ws.security.SecurityService;
 
+import io.openliberty.security.oauth20.internal.config.OAuthEndpointSettings;
+
 public interface OAuth20Provider extends OAuth20ConfigProvider, OAuthComponentInstance {
 
     public OAuth20Component getComponent();
@@ -161,6 +163,8 @@ public interface OAuth20Provider extends OAuth20ConfigProvider, OAuthComponentIn
 
     public boolean isROPCPreferUserSecurityName();
 
-    public boolean isTrackRelyingParties();
+    public boolean isTrackOAuthClients();
+
+    public OAuthEndpointSettings getOAuthEndpointSettings();
 
 }

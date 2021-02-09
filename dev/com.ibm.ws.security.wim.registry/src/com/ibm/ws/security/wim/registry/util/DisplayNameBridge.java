@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2019 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -223,9 +223,9 @@ public class DisplayNameBridge {
                             if (!this.mappingUtils.isIdentifierTypeProperty(outputUserPrincipalAttr)) {
                                 Object value = personAccount.get(outputUserPrincipalAttr);
                                 if (value instanceof List<?>) {
-                                    returnValue = String.valueOf(((List<?>) value).get(0));
+                                    returnValue = BridgeUtils.getStringValue(((List<?>) value).get(0));
                                 } else {
-                                    returnValue = String.valueOf(value);
+                                    returnValue = BridgeUtils.getStringValue(value);
                                 }
                             } else {
                                 returnValue = (String) personAccount.getIdentifier().get(outputUserPrincipalAttr);
@@ -233,13 +233,13 @@ public class DisplayNameBridge {
                         } else {
                             Object value = personAccount.get(mappedProp);
                             if (value instanceof List<?>) {
-                                returnValue = String.valueOf(((List<?>) value).get(0));
+                                returnValue = BridgeUtils.getStringValue(((List<?>) value).get(0));
                             } else {
-                                returnValue = String.valueOf(value);
+                                returnValue = BridgeUtils.getStringValue(value);
                             }
                         }
                     } else {
-                        returnValue = String.valueOf(personAccount.getIdentifier().get(outputAttrName));
+                        returnValue = BridgeUtils.getStringValue(personAccount.getIdentifier().get(outputAttrName));
                     }
                 } else {
                     if (tc.isDebugEnabled()) {
@@ -351,13 +351,13 @@ public class DisplayNameBridge {
                     // get the property to return
                     Object value = group.get(outputAttrName);
                     if (value instanceof List<?>) {
-                        returnValue = String.valueOf(((List<?>) value).get(0));
+                        returnValue = BridgeUtils.getStringValue(((List<?>) value).get(0));
                     } else {
-                        returnValue = String.valueOf(value);
+                        returnValue = BridgeUtils.getStringValue(value);
                     }
                 } else {
                     // get the identifier to return
-                    returnValue = String.valueOf(group.getIdentifier().get(outputAttrName));
+                    returnValue = BridgeUtils.getStringValue(group.getIdentifier().get(outputAttrName));
                 }
             }
         } catch (WIMException toCatch) {

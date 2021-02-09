@@ -26,3 +26,9 @@ AUTH_DATA_CONFIG_ERROR_NO_SUCH_ALIAS.useraction=Sp\u00e9cifiez un alias de donn\
 AUTH_DATA_CONFIG_ERROR_INCOMPLETE=CWWKS1301E: Une erreur de configuration s''est produite. L''attribut {0} doit \u00eatre d\u00e9fini.
 AUTH_DATA_CONFIG_ERROR_INCOMPLETE.explanation=L'attribut indiqu\u00e9 doit \u00eatre d\u00e9fini.
 AUTH_DATA_CONFIG_ERROR_INCOMPLETE.useraction=Sp\u00e9cifiez la valeur de l'attribut manquant.
+
+# do not translate 'authData'
+AUTH_DATA_EXCLUSIVE_ATTRS=CWWKS1302E: Les attributs {0} et {1} ont tous les deux \u00e9t\u00e9 configur\u00e9s dans l''\u00e9l\u00e9ment authData {2}. Seul l''un des deux attributs, {0} ou {1} peut \u00eatre configur\u00e9, pas les deux.
+AUTH_DATA_EXCLUSIVE_ATTRS.explanation=Les attributs sp\u00e9cifi\u00e9s sont mutuellement exclusifs.
+AUTH_DATA_EXCLUSIVE_ATTRS.useraction=Ne sp\u00e9cifiez qu'un seul des deux attributs.
+ 

@@ -1,0 +1,17 @@
+<server>
+
+	<include location="${shared.config.dir}/rsFeatures.xml" />
+
+	<include location="${shared.config.dir}/goodBasicRegistry.xml" />
+
+	<include location="${shared.config.dir}/goodSSLSettings.xml" />
+
+        <include location="${shared.config.dir}/microProfileMP12ConfigApps.xml"/>
+
+	<include location="${shared.config.dir}/rs_fatTestPorts.xml"/>
+
+	<include location="${shared.config.dir}/microProfileAppJava2Settings.xml"/>
+
+	<include location="${shared.config.dir}/mpJwt_good_audiences.xml"/>
+
+</server>

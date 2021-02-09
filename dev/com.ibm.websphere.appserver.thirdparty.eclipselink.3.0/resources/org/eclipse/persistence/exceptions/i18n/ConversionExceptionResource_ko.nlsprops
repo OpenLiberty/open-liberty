@@ -1,0 +1,47 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/ConversionExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+3001=[{1}] \ud074\ub798\uc2a4\uc758 [{0}] \uc624\ube0c\uc81d\ud2b8\ub97c [{2}](\uc73c)\ub85c \ubcc0\ud658\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+
+3002=[{3}] \ub514\uc2a4\ud06c\ub9bd\ud130\ub97c \uc0ac\uc6a9\ud55c [{2}] \ub9f5\ud551\uc5d0\uc11c [{1}] \ud074\ub798\uc2a4\uc758 [{0}] \uc624\ube0c\uc81d\ud2b8\ub97c [{4}](\uc73c)\ub85c \ubcc0\ud658\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+
+3003=\uc62c\ubc14\ub974\uc9c0 \uc54a\uc740 \ub0a0\uc9dc \ud615\uc2dd: [{0}]([YYYY-MM-DD] \uc608\uc0c1)
+
+3004=\uc62c\ubc14\ub974\uc9c0 \uc54a\uc740 \uc2dc\uac04 \ud615\uc2dd: [{0}]([HH:MM:SS] \uc608\uc0c1)
+
+3005=\uc62c\ubc14\ub974\uc9c0 \uc54a\uc740 \uc2dc\uac04\uc18c\uc778 \ud615\uc2dd: [{0}]([YYYY-MM-DD HH:MM:SS.NNNNNNNNN] \uc608\uc0c1)
+
+3006=[{0}]\uc740(\ub294) \ubc14\uc774\ud2b8 \ubc30\uc5f4\ub85c \ubcc0\ud658\ub420 \uc218 \uc788\ub294 \ub3d9\uc77c\ud55c \uae38\uc774\uc5ec\uc57c \ud569\ub2c8\ub2e4.
+
+3007=[{1}] \ud074\ub798\uc2a4\uc758 [{0}] \uc624\ube0c\uc81d\ud2b8\ub97c [{2}](\uc73c)\ub85c \ubcc0\ud658\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. [{2}] \ud074\ub798\uc2a4\uac00 CLASSPATH\uc5d0 \uc788\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624. \ud544\uc694\ud55c \uacbd\uc6b0, \ub300\uccb4 API\ub97c \uc0ac\uc6a9\ud558\uc5ec \uc801\uc808\ud55c \ud074\ub798\uc2a4 \ub85c\ub354\uc5d0\uc11c \uc804\ub2ec\ud558\uac70\ub098 \uae30\ubcf8 ConversionManager\uc5d0\uc11c \uc124\uc815\ud558\ub3c4\ub85d \ud574\uc57c \ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4.
+
+3008=\uc62c\ubc14\ub974\uc9c0 \uc54a\uc740 \ub0a0\uc9dc-\uc2dc\uac04 \ud615\uc2dd: [{0}]([YYYY-MM-DD''T''HH:MM:SS] \uc608\uc0c1)
+
+3009={0}\uac1c\uc758 \ud2b9\uc131\uc744 [{1}]\uc5d0\uc11c [{2}](\uc73c)\ub85c \uc124\uc815\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+

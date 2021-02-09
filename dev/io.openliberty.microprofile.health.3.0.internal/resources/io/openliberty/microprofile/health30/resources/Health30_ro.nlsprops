@@ -1,0 +1,50 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMMH
+#COMPONENTNAMEFOR CWMMH MicroProfile Health API 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by Health Impl -  range is 0000-0999
+# The range 0000-0049 has been reserved for messages issued above the HealthCheckExecutor within the call stack
+# The range 0050-0099 has been reserved for messages issued at or below the HealthCheckExecutor within the call stack
+#-----------------------------------------------------------------------------------------------------------------------------
+
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Emergency Health error message
+#-----------------------------------------------------------------------------------------------------------------------------
+OSGI_SERVICE_ERROR=CWMMH0000E: Serviciul {0} OSGi nu este disponibil.
+OSGI_SERVICE_ERROR.explanation=Aceast\u0103 eroare intern\u0103 de server este aruncat\u0103 pentru c\u0103 serviciul specificat nu este disponibil.
+OSGI_SERVICE_ERROR.useraction=Reporni\u0163i serverul cu op\u0163iunea de cur\u0103\u0163are.
+
+# The HealthCheck bean call method had an exception
+healthcheck.bean.call.exception.CWMMH0050E=CWMMH0050E: Metoda HealthCheck {0} din aplica\u0163ia {1} din modulul {2} a aruncat excep\u0163ia {3} cu urm\u0103torul mesaj: {4}
+healthcheck.bean.call.exception.CWMMH0050E.explanation=Metoda de apelare specificat\u0103 a produs o excep\u0163ie.
+healthcheck.bean.call.exception.CWMMH0050E.useraction=Examina\u0163i-v\u0103 metoda de apelare din bean-ul HealthCheck pentru a identifica excep\u0163ia care a survenit.
+
+# The HealthCheck bean call method had a DOWN outcome
+healthcheck.application.down.CWMMH0052W=CWMMH0052W: {0} care implementeaz\u0103 HealthCheckResponse \u00een aplica\u0163ia {1} din modulul {2}, a raportat o stare {3} cu datele {4}.
+healthcheck.application.down.CWMMH0052W.explanation=Starea DOWN poate duce la o ac\u0163iune a serviciului de monitorizare pe acest server.
+healthcheck.application.down.CWMMH0052W.useraction=Nu este necesar\u0103 nici-o ac\u0163iune din partea utilizatorului.  Acest avertisment este o \u00eenregistrare a st\u0103rii DOWN.
+
+# The Readiness HealthCheck had a DOWN outcome, when applications are not started yet
+readiness.healthcheck.applications.not.started.down.CWMMH0053W=CWMMH0053W: Verificarea de s\u0103n\u0103tate a preg\u0103tirii a raportat o stare general\u0103 DOWN deoarece urm\u0103toarele aplica\u0163ii nu au pornit \u00eenc\u0103: {0}
+readiness.healthcheck.applications.not.started.down.CWMMH0053W.explanation=Aplica\u0163iile specificate nu au pornit complet \u00eenc\u0103 \u015fi nu sunt gata s\u0103 proceseze cereri, a\u015fa c\u0103 verificarea de s\u0103n\u0103tate a preg\u0103tirii a raportat o stare DOWN.
+readiness.healthcheck.applications.not.started.down.CWMMH0053W.useraction=Nu este necesar\u0103 nicio ac\u0163iune a utilizatorului. Acest avertisment este o \u00eenregistrare a st\u0103rii DOWN.

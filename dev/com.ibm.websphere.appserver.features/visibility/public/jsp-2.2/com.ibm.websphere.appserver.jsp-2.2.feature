@@ -1,5 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.jsp-2.2
+WLP-DisableAllFeatures-OnConflict: false
 visibility=public
 singleton=true
 IBM-App-ForceRestart: install, \
@@ -36,13 +37,13 @@ Subsystem-Name: JavaServer Pages 2.2
 -features=com.ibm.websphere.appserver.javax.jsp-2.2, \
  com.ibm.websphere.appserver.javax.el-2.2, \
  com.ibm.websphere.appserver.servlet-3.0; ibm.tolerates:=3.1, \
- com.ibm.websphere.appserver.javaeeCompatible-6.0
+ com.ibm.websphere.appserver.eeCompatible-6.0
 -bundles=com.ibm.ws.org.eclipse.jdt.core.3.10.2.v20160712-0000, \
  com.ibm.ws.jsp.factories, \
  com.ibm.websphere.javaee.jstl.1.2; location:="dev/api/spec/,lib/"; mavenCoordinates="javax.servlet:jstl:1.2", \
  com.ibm.ws.jsp.jasper, \
  com.ibm.ws.jsp, \
- com.ibm.ws.jsp.jstl.facade, \
+ com.ibm.ws.jsp.jstl.facade; start-phase:=CONTAINER_EARLY, \
  com.ibm.ws.org.apache.jasper.el.2.2
 -jars=com.ibm.websphere.appserver.spi.jsp; location:=dev/spi/ibm/, \
  com.ibm.websphere.javaee.jsp.tld.2.2; location:=dev/api/spec/

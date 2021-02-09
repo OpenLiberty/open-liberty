@@ -89,13 +89,13 @@ public class SPIIsolationTest {
         //copy the isolation test runtime feature into the server features location
         server.deleteFileFromLibertyInstallRoot("lib/features/isolation.Runtime.Test.Feature-1.0.mf");
         //copy the isolation test runtime bundles into the server lib location
-        server.deleteFileFromLibertyInstallRoot("lib/bundles/test.feature.isolation.L1_1.0.0.jar");
-        server.deleteFileFromLibertyInstallRoot("lib/bundles/test.feature.isolation.L2_1.0.0.jar");
-        server.deleteFileFromLibertyInstallRoot("lib/bundles/test.feature.isolation.L3_1.0.0.jar");
+        server.deleteFileFromLibertyInstallRoot("lib/test.feature.isolation.L1_1.0.0.jar");
+        server.deleteFileFromLibertyInstallRoot("lib/test.feature.isolation.L2_1.0.0.jar");
+        server.deleteFileFromLibertyInstallRoot("lib/test.feature.isolation.L3_1.0.0.jar");
 
         //copy the negative runtime feature and bundle
         server.deleteFileFromLibertyInstallRoot("lib/features/isolation.Runtime.Test.Feature.Negative-1.0.mf");
-        server.deleteFileFromLibertyInstallRoot("lib/bundles/test.feature.isolation.L8_1.0.0.jar");
+        server.deleteFileFromLibertyInstallRoot("lib/test.feature.isolation.L8_1.0.0.jar");
 
         //install the user (different product isolation space) feature and bundles
         server.uninstallUserFeature("isolation.Product.Test.Feature-1.0");

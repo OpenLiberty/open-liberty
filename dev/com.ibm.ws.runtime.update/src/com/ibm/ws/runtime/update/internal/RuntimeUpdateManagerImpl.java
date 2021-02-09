@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -179,6 +179,7 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
         private final FutureMonitor futureMonitor;
         private final AtomicBoolean waitForPendingNotifications;
         private final boolean ignoreOnQuiesce;
+        private Map<String, Object> properties;
 
         NotificationImpl(String name, Future<Boolean> future, FutureMonitor futureMonitor, AtomicBoolean waitForPendingNotifications, boolean ignoreQuiesce) {
             this.name = name;
@@ -255,6 +256,16 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
         @Override
         public boolean ignoreOnQuiesce() {
             return ignoreOnQuiesce;
+        }
+
+        @Override
+        public Map<String, Object> getProperties() {
+            return this.properties;
+        }
+
+        @Override
+        public void setProperties(Map<String, Object> props) {
+            this.properties = Collections.unmodifiableMap(props);
         }
     }
 

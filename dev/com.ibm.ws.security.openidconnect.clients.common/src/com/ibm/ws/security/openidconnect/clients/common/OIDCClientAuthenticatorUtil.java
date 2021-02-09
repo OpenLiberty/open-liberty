@@ -380,7 +380,7 @@ public class OIDCClientAuthenticatorUtil {
             } catch (Exception e) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "the value of redirectToRPHostAndPort might not valid. Please verify that the format is <protocol>://<host>:<port> " + redirectToRPHostAndPort
-                            + "\n" + e.getMessage());
+                            + "\n" + e);
                 }
             }
         }

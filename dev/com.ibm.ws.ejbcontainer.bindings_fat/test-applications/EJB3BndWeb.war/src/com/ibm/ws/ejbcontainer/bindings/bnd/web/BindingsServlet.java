@@ -18,6 +18,7 @@ import static org.junit.Assert.fail;
 import javax.annotation.PostConstruct;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.rmi.PortableRemoteObject;
 import javax.servlet.annotation.WebServlet;
 
 import org.junit.Test;
@@ -155,12 +156,13 @@ public class BindingsServlet extends FATServlet {
      *
      * Test Remote Business Interface binding
      */
-    //@Test
+    @Test
     public void testTargetOneRBIBND() throws Exception {
         RemoteTargetOneBiz rto1 = null;
 
         try {
-            rto1 = (RemoteTargetOneBiz) ctx.lookup("ejb/RemoteTargetOneBiz");
+            Object lookup = ctx.lookup("ejb/RemoteTargetOneBiz");
+            rto1 = (RemoteTargetOneBiz) PortableRemoteObject.narrow(lookup, RemoteTargetOneBiz.class);
         } catch (Exception e) {
             e.printStackTrace(System.out);
             fail("1 ---> Check RemoteTargetOne lookup failed");
@@ -196,12 +198,13 @@ public class BindingsServlet extends FATServlet {
      *
      * Test Remote Home Interface binding
      */
-    //@Test
+    @Test
     public void testTargetOneRHIBND() throws Exception {
         RemoteTargetOneHome rtoh1 = null;
 
         try {
-            rtoh1 = (RemoteTargetOneHome) ctx.lookup("ejb/RemoteTargetOneHome");
+            Object lookup = ctx.lookup("ejb/RemoteTargetOneHome");
+            rtoh1 = (RemoteTargetOneHome) PortableRemoteObject.narrow(lookup, RemoteTargetOneHome.class);
         } catch (Exception e) {
             e.printStackTrace(System.out);
             fail("1 ---> Check RemoteTargetOneHome lookup failed");
@@ -218,12 +221,13 @@ public class BindingsServlet extends FATServlet {
      *
      * Test Remote Business Interface binding 1 for TargetBeanTwo
      */
-    //@Test
+    @Test
     public void testTargetTwoRBIBND1() throws Exception {
         RemoteTargetTwoBiz1 rt2b1 = null;
 
         try {
-            rt2b1 = (RemoteTargetTwoBiz1) ctx.lookup("ejb/RemoteTargetTwoBiz1");
+            Object lookup = ctx.lookup("ejb/RemoteTargetTwoBiz1");
+            rt2b1 = (RemoteTargetTwoBiz1) PortableRemoteObject.narrow(lookup, RemoteTargetTwoBiz1.class);
         } catch (Exception e) {
             e.printStackTrace(System.out);
             fail("1 ---> Check RemoteTargetTwoBiz1 lookup failed");
@@ -237,12 +241,13 @@ public class BindingsServlet extends FATServlet {
      *
      * Test Remote Business Interface binding 2 for TargetBeanTwo
      */
-    //@Test
+    @Test
     public void testTargetTwoRBIBND2() throws Exception {
         RemoteTargetTwoBiz2 rt2b2 = null;
 
         try {
-            rt2b2 = (RemoteTargetTwoBiz2) ctx.lookup("ejb/RemoteTargetTwoBiz2");
+            Object lookup = ctx.lookup("ejb/RemoteTargetTwoBiz2");
+            rt2b2 = (RemoteTargetTwoBiz2) PortableRemoteObject.narrow(lookup, RemoteTargetTwoBiz2.class);
         } catch (Exception e) {
             e.printStackTrace(System.out);
             fail("1 ---> Check RemoteTargetTwoBiz2 lookup failed");
@@ -256,12 +261,13 @@ public class BindingsServlet extends FATServlet {
      *
      * Test Remote Business Interface binding 3 for TargetBeanTwo
      */
-    //@Test
+    @Test
     public void testTargetTwoRBIBND3() throws Exception {
         RemoteTargetTwoBiz3 rt2b3 = null;
 
         try {
-            rt2b3 = (RemoteTargetTwoBiz3) ctx.lookup("ejb/RemoteTargetTwoBiz3");
+            Object lookup = ctx.lookup("ejb/RemoteTargetTwoBiz3");
+            rt2b3 = (RemoteTargetTwoBiz3) PortableRemoteObject.narrow(lookup, RemoteTargetTwoBiz3.class);
         } catch (Exception e) {
             e.printStackTrace(System.out);
             fail("1 ---> Check RemoteTargetTwoBiz3 lookup failed");
@@ -332,12 +338,13 @@ public class BindingsServlet extends FATServlet {
      *
      * Test Remote Business Interface binding 1 for TargetBeanFour
      */
-    //@Test
+    @Test
     public void testTargetFourRBIBND1() throws Exception {
         RemoteTargetFourBiz1 rt4b1 = null;
 
         try {
-            rt4b1 = (RemoteTargetFourBiz1) ctx.lookup("ejb/RemoteTargetFourBiz1");
+            Object lookup = ctx.lookup("ejb/RemoteTargetFourBiz1");
+            rt4b1 = (RemoteTargetFourBiz1) PortableRemoteObject.narrow(lookup, RemoteTargetFourBiz1.class);
         } catch (Exception e) {
             e.printStackTrace(System.out);
             fail("1 ---> Check RemoteTargetFourBiz1 lookup failed");
@@ -351,12 +358,13 @@ public class BindingsServlet extends FATServlet {
      *
      * Test Remote Business Interface binding 2 for TargetBeanFour
      */
-    //@Test
+    @Test
     public void testTargetFourRBIBND2() throws Exception {
         RemoteTargetFourBiz2 rt2b4 = null;
 
         try {
-            rt2b4 = (RemoteTargetFourBiz2) ctx.lookup("ejb/RemoteTargetFourBiz2");
+            Object lookup = ctx.lookup("ejb/RemoteTargetFourBiz2");
+            rt2b4 = (RemoteTargetFourBiz2) PortableRemoteObject.narrow(lookup, RemoteTargetFourBiz2.class);
         } catch (Exception e) {
             e.printStackTrace(System.out);
             fail("1 ---> Check RemoteTargetFourBiz2 lookup failed");
@@ -430,12 +438,13 @@ public class BindingsServlet extends FATServlet {
      *
      * Test Remote Home Interface binding for SubBean
      */
-    //@Test
+    @Test
     public void testSubBeanRHIBND() throws Exception {
         SubRemoteHome srh = null;
 
         try {
-            srh = (SubRemoteHome) ctx.lookup("ejb/SubRemoteHome");
+            Object lookup = ctx.lookup("ejb/SubRemoteHome");
+            srh = (SubRemoteHome) PortableRemoteObject.narrow(lookup, SubRemoteHome.class);
         } catch (Exception e) {
             e.printStackTrace(System.out);
             fail("1 ---> Check SubRemoteHome lookup failed");
@@ -474,12 +483,13 @@ public class BindingsServlet extends FATServlet {
      *
      * Test Remote Home Interface binding for SupBean
      */
-    //@Test
+    @Test
     public void testSupBeanRHIBND() throws Exception {
         SupRemoteHome srh = null;
 
         try {
-            srh = (SupRemoteHome) ctx.lookup("ejb/SupRemoteHome");
+            Object lookup = ctx.lookup("ejb/SupRemoteHome");
+            srh = (SupRemoteHome) PortableRemoteObject.narrow(lookup, SupRemoteHome.class);
         } catch (Exception e) {
             e.printStackTrace(System.out);
             fail("1 ---> Check SupRemoteHome lookup failed");

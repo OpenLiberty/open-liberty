@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.jaxws;
 
-// @TJJ 5/7/19
 /**
  * This class is implemented by the JaxWsClientHandlerResolver, where the destroy() cleans handler instances.
  * It's also used by JaxwsIntanceManager.destroyIntsance() to clean-up instances of Destroyable objects

@@ -24,24 +24,6 @@ Export-Package: \
 Import-Package: \
  com.ibm.ws.jaxrs20.client; resolution:=optional, \
  *
-
-app-resources= \
-  META-INF/services/javax.ws.rs.client.ClientBuilder | \
-  META-INF/services/javax.ws.rs.sse.SseEventSource\$Builder | \
-  META-INF/services/javax.ws.rs.sse.SseEventSource.Builder | \
-  META-INF/services/javax.ws.rs.ext.RuntimeDelegate
-
-Service-Component: \
-  com.ibm.ws.jaxrs21.client.ResourceProvider; \
-    implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
-    provide:=com.ibm.wsspi.classloading.ResourceProvider; \
-    configuration-policy:=optional; \
-    properties:="resources=${app-resources}"
-
-Include-Resource:\
- META-INF/services/javax.ws.rs.client.ClientBuilder=resources/META-INF/services/javax.ws.rs.client.ClientBuilder,\
- META-INF/services/javax.ws.rs.ext.RuntimeDelegate=resources/META-INF/services/javax.ws.rs.ext.RuntimeDelegate,\
- META-INF/services/javax.ws.rs.sse.SseEventSource$Builder=resources/META-INF/services/javax.ws.rs.sse.SseEventSource$Builder
  
 instrument.disabled: true
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -76,6 +76,7 @@ public class WebClientImpl extends WebClient {
             public EndpointReferenceType call() throws Exception {
                 RegistrationService regService = new RegistrationService();
                 RegistrationPortType port = getPort(regService, RegistrationPortType.class);
+                setTimeouts(port);
 
                 RegisterType regParm = new RegisterType();
                 regParm.setParticipantProtocolService(participant);
@@ -96,6 +97,7 @@ public class WebClientImpl extends WebClient {
             public Object call() throws Exception {
                 ParticipantService partService = new ParticipantService();
                 ParticipantPortType port = getPort(partService, ParticipantPortType.class);
+                setTimeouts(port);
 
                 Notification parm = new Notification();
                 port.prepareOperation(parm);
@@ -111,6 +113,7 @@ public class WebClientImpl extends WebClient {
             public Object call() throws Exception {
                 ParticipantService partService = new ParticipantService();
                 ParticipantPortType port = getPort(partService, ParticipantPortType.class);
+                setTimeouts(port);
 
                 Notification parm = new Notification();
 
@@ -127,6 +130,7 @@ public class WebClientImpl extends WebClient {
             public Object call() throws Exception {
                 ParticipantService partService = new ParticipantService();
                 ParticipantPortType port = getPort(partService, ParticipantPortType.class);
+                setTimeouts(port);
 
                 Notification parm = new Notification();
                 port.commitOperation(parm);
@@ -145,6 +149,7 @@ public class WebClientImpl extends WebClient {
             public Object call() throws Exception {
                 CoordinatorService coordService = new CoordinatorService();
                 CoordinatorPortType port = getPort(coordService, CoordinatorPortType.class);
+                setTimeouts(port);
 
                 Notification parm = new Notification();
                 port.preparedOperation(parm);
@@ -160,6 +165,7 @@ public class WebClientImpl extends WebClient {
             public Object call() throws Exception {
                 CoordinatorService coordService = new CoordinatorService();
                 CoordinatorPortType port = getPort(coordService, CoordinatorPortType.class);
+                setTimeouts(port);
 
                 Notification parm = new Notification();
                 port.readOnlyOperation(parm);
@@ -175,6 +181,7 @@ public class WebClientImpl extends WebClient {
             public Object call() throws Exception {
                 CoordinatorService coordService = new CoordinatorService();
                 CoordinatorPortType port = getPort(coordService, CoordinatorPortType.class);
+                setTimeouts(port);
 
                 Notification parm = new Notification();
                 port.abortedOperation(parm);
@@ -190,6 +197,7 @@ public class WebClientImpl extends WebClient {
             public Object call() throws Exception {
                 CoordinatorService coordService = new CoordinatorService();
                 CoordinatorPortType port = getPort(coordService, CoordinatorPortType.class);
+                setTimeouts(port);
 
                 Notification parm = new Notification();
                 port.committedOperation(parm);
@@ -200,7 +208,7 @@ public class WebClientImpl extends WebClient {
 
     // Invoke the web service call in a wrapper that sets the thread context class loader
     // to something that seems to keep jaxws/apache CXF happy.  Not sure why we need to do
-    // this but it seems some threads (maybe worker threads processing inbound web service 
+    // this but it seems some threads (maybe worker threads processing inbound web service
     // calls?) do not get all the necessary jaxws classes on their classpath.
     private <T> T invoke(final Callable<T> action) throws WSATException {
         try {
@@ -230,7 +238,7 @@ public class WebClientImpl extends WebClient {
         T port = service.getPort(toEpr.getWsEpr(), portType, wsAddrFeat);
 
         if (fromEpr != null) {
-            // TODO: According to the WS-AT spec, section 8 we should set the wsa:From header to 
+            // TODO: According to the WS-AT spec, section 8 we should set the wsa:From header to
             // indicate the sender and the wsa:replyTo should be http://www.w3.org/2005/08/addressing/none.
             // However, tWAS seems to expect the replyTo to be set (and it uses it when sending protocol
             // responses), so we had better set replyTo, as inter-op with tWAS is our prime use-case.

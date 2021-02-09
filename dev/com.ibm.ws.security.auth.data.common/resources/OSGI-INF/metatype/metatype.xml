@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2012 IBM Corporation and others.
+    Copyright (c) 2012, 2020 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -15,10 +15,12 @@
 
     <OCD id="com.ibm.ws.security.jca.internal.authdata.config" name="%authdata.config" description="%authdata.config.desc"
          ibm:alias="authData">
-        <AD id="user" name="%userName" description="%userName.desc"
-            required="true" type="String" />
-        <AD id="password" name="%userPassword" description="%userPassword.desc"
-            required="true" type="String" ibm:type="password" />	 	    	
+        <AD id="user"     name="%userName"     description="%userName.desc"     required="false" type="String" />
+        <AD id="password" name="%userPassword" description="%userPassword.desc" required="false" type="String" ibm:type="password" />
+            
+        <!-- Kerberos settings -->
+        <AD id="krb5Principal"   name="%krb5Principal"   description="%krb5Principal.desc"   required="false" type="String"/>
+        <AD id="krb5TicketCache" name="%krb5TicketCache" description="%krb5TicketCache.desc" required="false" type="String" ibm:type="location(file)"/>
     </OCD>
 
     <Designate factoryPid="com.ibm.ws.security.jca.internal.authdata.config">

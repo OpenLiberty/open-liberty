@@ -562,8 +562,10 @@ public abstract class WebAppDispatcherContext implements Cloneable, IWebAppDispa
 //		}
 
             response.resetBuffer();
-
-            location = convertRelativeURIToURL(location);
+            
+            if (!WCCustomProperties.REDIRECT_TO_RELATIVE_URL) {
+                location = convertRelativeURIToURL(location);
+            }
 
             // 115010 - begin - make header name begin with upper case
             response.setHeader("Location", location);
@@ -668,13 +670,14 @@ public abstract class WebAppDispatcherContext implements Cloneable, IWebAppDispa
      */
     private String convertRelativeURIToURL(String relativeURI)
     {
-
+        String location = null;
         if (relativeURI == null)
         {
             throw new IllegalStateException();
         }
         else
         {
+            location = relativeURI;
             relativeURI = relativeURI.trim();
         }
 
@@ -826,7 +829,8 @@ public abstract class WebAppDispatcherContext implements Cloneable, IWebAppDispa
         }
 
         // Could not convert
-        return relativeURI;
+        logger.logp(Level.FINE, CLASS_NAME,"convertRelativeURIToURL", "could not convert [" + location + "]");
+        return location;
     }
 
     public void callPage(String fileName, javax.servlet.http.HttpServletRequest hreq) throws IOException, ServletException

@@ -7,4 +7,9 @@
 
   	<include location="../fatTestPorts.xml"/>
   	<javaPermission className="java.util.PropertyPermission" name="bvt.prop.HTTP_default" actions="read"/>
+  	
+  	<!-- temporary until PR https://github.com/resteasy/Resteasy/pull/2467 is integrated -->
+  	<javaPermission className="java.util.PropertyPermission" name="org.jboss.resteasy.max_mediatype_cache_size" actions="read"/>
+    <!-- JDK bug? CompleteableFuture.<clinit> needs to read a property... -->
+    <javaPermission className="java.util.PropertyPermission" name="java.util.concurrent.ForkJoinPool.common.maximumSpares" actions="read"/>
 </server>

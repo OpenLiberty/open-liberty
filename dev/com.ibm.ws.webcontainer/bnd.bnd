@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -50,6 +50,10 @@ Service-Component: \
      optional:="webAppConnectionCollaborator,webAppSecurityCollaborator,webAppTransactionCollaborator,webAppInvocationCollaborator,webAppInitializationCollaborator"; \
      multiple:="webAppSecurityCollaborator,webAppInvocationCollaborator,webAppInitializationCollaborator"; \
 	 dynamic:="webAppConnectionCollaborator,webAppSecurityCollaborator,webAppTransactionCollaborator,webAppInvocationCollaborator,webAppInitializationCollaborator", \
+   com.ibm.ws.webcontainer.collaborator.ConnectionHandleCollaborator;\
+     implementation:=com.ibm.ws.webcontainer.collaborator.ConnectionHandleCollaborator;\
+     provide:=com.ibm.wsspi.webcontainer.collaborator.IConnectionCollaborator;\
+     configuration-policy:=ignore,\
    com.ibm.ws.generatePluginConfig;\
      implementation:=com.ibm.ws.webcontainer.osgi.mbeans.GeneratePluginConfigMBean;\
      provide:='javax.management.DynamicMBean,com.ibm.wsspi.webcontainer.osgi.mbeans.GeneratePluginConfig,com.ibm.ws.webserver.plugin.runtime.interfaces.PluginUtilityConfigGenerator,com.ibm.wsspi.kernel.service.utils.ServerQuiesceListener';\
@@ -124,6 +128,7 @@ Import-Package: \
    	com.ibm.ws.javaee.dd.jsp; version=1.0, \
    	com.ibm.ws.javaee.dd.web; version=1.0, \
    	com.ibm.ws.javaee.dd.web.common; version=1.0, \
+	com.ibm.ws.jca.cm.handle, \
 	com.ibm.ws.util, \
 	com.ibm.wsspi.injectionengine, \
 	com.ibm.ws.runtime.metadata, \
@@ -138,6 +143,7 @@ Import-Package: \
      !com.ibm.wsspi.buffermgmt, \
      !com.ibm.ejs.sm.client.ui, \
      !com.ibm.websphere.monitor.jmx, \
+     !com.ibm.ws.jca.cm, \
     *
     
  
@@ -159,6 +165,8 @@ Include-Resource: \
 IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 
 instrument.disabled: true
+
+jakartaeeMe: true
 
 -buildpath: \
 	com.ibm.ws.kernel.service,\
@@ -182,6 +190,7 @@ instrument.disabled: true
 	com.ibm.ws.artifact.overlay;version=latest,\
 	com.ibm.ws.resource;version=latest,\
 	com.ibm.ws.javaee.dd.common;version=latest,\
+	com.ibm.ws.javaee.ddmodel;version=latest,\
 	com.ibm.ws.injection;version=latest,\
 	com.ibm.ws.managedobject;version=latest,\
 	com.ibm.websphere.security;version=latest,\

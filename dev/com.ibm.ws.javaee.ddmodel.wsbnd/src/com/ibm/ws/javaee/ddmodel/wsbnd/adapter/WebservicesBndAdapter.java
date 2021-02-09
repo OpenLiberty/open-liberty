@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -51,7 +51,6 @@ import com.ibm.wsspi.artifact.overlay.OverlayContainer;
            property = { "service.vendor=IBM", "toType=com.ibm.ws.javaee.ddmodel.wsbnd.WebservicesBnd" })
 public final class WebservicesBndAdapter implements ContainerAdapter<WebservicesBnd> {
 
-    /**  */
     private static final String WEBSERVICES_BND_ELEMENT_NAME = "webservices-bnd";
     private static final String MODULE_NAME_INVALID = "module.name.invalid";
     private static final String MODULE_NAME_NOT_SPECIFIED = "module.name.not.specified";
@@ -148,6 +147,8 @@ public final class WebservicesBndAdapter implements ContainerAdapter<Webservices
         if (moduleInfo != null && !configuredModuleNames.isEmpty()) {
             if (rootOverlay.getFromNonPersistentCache(MODULE_NAME_INVALID, WebservicesBndAdapter.class) == null) {
                 HashSet<String> moduleNames = new HashSet<String>();
+                // TODO: Based on the '(appInfo != null)' test, above, the
+                //       appInfo could be null here.
                 Application app = appInfo.getContainer().adapt(Application.class);
                 for (Module m : app.getModules()) {
                     moduleNames.add(stripExtension(m.getModulePath()));
@@ -174,7 +175,7 @@ public final class WebservicesBndAdapter implements ContainerAdapter<Webservices
     }
 
     protected void deactivate(ComponentContext cc) {
-
+        // EMPTY
     }
 
     /**
@@ -182,11 +183,6 @@ public final class WebservicesBndAdapter implements ContainerAdapter<Webservices
      */
     private static final class WsClientBindingParser extends DDParser {
 
-        /**
-         * @param ddRootContainer
-         * @param ddEntry
-         * @throws ParseException
-         */
         public WsClientBindingParser(Container ddRootContainer, Entry ddEntry) throws ParseException {
             super(ddRootContainer, ddEntry);
         }
@@ -215,6 +211,5 @@ public final class WebservicesBndAdapter implements ContainerAdapter<Webservices
                 throw new ParseException(unknownDeploymentDescriptorVersion());
             }
         }
-
     }
 }

@@ -1,17 +1,18 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2016, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.common.jwk.impl;
 
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.security.interfaces.ECPublicKey;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -22,6 +23,7 @@ import java.util.TimerTask;
 import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.security.common.crypto.KeyAlgorithmChecker;
 import com.ibm.ws.security.common.jwk.constants.TraceConstants;
 import com.ibm.ws.security.common.jwk.interfaces.JWK;
 import com.ibm.ws.webcontainer.security.jwk.JSONWebKey;
@@ -50,8 +52,10 @@ public class JWKProvider {
 
     protected PublicKey publicKey = null;
     protected PrivateKey privateKey = null;
-    
+
     protected String publicKeyKid = null;
+
+    private KeyAlgorithmChecker keyAlgChecker = new KeyAlgorithmChecker();
 
     protected JWKProvider() {
         this(DEFAULT_KEY_SIZE, RS256, DEFAULT_ROTATION_TIME);
@@ -102,7 +106,7 @@ public class JWKProvider {
             Tr.debug(tc, "kid = " + this.publicKeyKid);
         }
     }
-    
+
     private String buildKidFromPublicKey(PublicKey cert) {
         JwkKidBuilder kidbuilder = new JwkKidBuilder();
         return kidbuilder.buildKeyId(cert);
@@ -113,7 +117,7 @@ public class JWKProvider {
         while (jwks.size() < JWKS_TO_GENERATE) {
             generateJWKs();
         }
-        jwk = jwks.get(JWKS_TO_GENERATE-1);
+        jwk = jwks.get(JWKS_TO_GENERATE - 1);
         return jwk;
     }
 
@@ -127,13 +131,53 @@ public class JWKProvider {
 
     protected JWK generateJWK(String alg, int size) {
         JWK jwk = null;
-        if (RS256.equals(alg)) {
+        if (isValidJwkAlgorithm(alg)) {
             if (publicKey != null && privateKey != null) {
-                jwk = Jose4jRsaJWK.getInstance(alg, use, publicKey, privateKey, publicKeyKid);
-                jwk.generateKey();
+                jwk = generateJwkForValidAlgorithmWithExistingKeys(alg, size, publicKey, privateKey);
             } else {
-                jwk = generateRsaJWK(alg, size);
+                jwk = generateJwkForValidAlgorithm(alg, size);
             }
+        }
+        return jwk;
+    }
+
+    boolean isValidJwkAlgorithm(String alg) {
+        return keyAlgChecker.isRSAlgorithm(alg) || keyAlgChecker.isESAlgorithm(alg);
+    }
+
+    JWK generateJwkForValidAlgorithmWithExistingKeys(String alg, int size, PublicKey publicKey, PrivateKey privateKey) {
+        JWK jwk = null;
+        if (keyAlgChecker.isRSAlgorithm(alg)) {
+            jwk = generateRsaJwkWithExistingKeys(alg, publicKey, privateKey);
+        } else if (keyAlgChecker.isESAlgorithm(alg)) {
+            jwk = generateEcJwkWithExistingKeys(alg, publicKey, privateKey);
+        }
+        if (jwk != null) {
+            jwk.generateKey();
+        }
+        return jwk;
+    }
+
+    JWK generateRsaJwkWithExistingKeys(String alg, PublicKey publicKey, PrivateKey privateKey) {
+        return Jose4jRsaJWK.getInstance(alg, use, publicKey, privateKey, publicKeyKid);
+    }
+
+    JWK generateEcJwkWithExistingKeys(String alg, PublicKey publicKey, PrivateKey privateKey) {
+        Jose4jEllipticCurveJWK jwk = null;
+        if (publicKey instanceof ECPublicKey) {
+            jwk = Jose4jEllipticCurveJWK.getInstance((ECPublicKey) publicKey, alg, null);
+            jwk.setPrivateKey(privateKey);
+            jwk.setKeyId(publicKeyKid);
+        }
+        return jwk;
+    }
+
+    JWK generateJwkForValidAlgorithm(String alg, int size) {
+        JWK jwk = null;
+        if (keyAlgChecker.isRSAlgorithm(alg)) {
+            jwk = generateRsaJWK(alg, size);
+        } else if (keyAlgChecker.isESAlgorithm(alg)) {
+            jwk = generateEcJwk(alg);
         }
         return jwk;
     }
@@ -142,6 +186,12 @@ public class JWKProvider {
         JWK jwk = Jose4jRsaJWK.getInstance(size, alg, null, RSA);
         jwk.generateKey();
 
+        return jwk;
+    }
+
+    protected JWK generateEcJwk(String alg) {
+        JWK jwk = Jose4jEllipticCurveJWK.getInstance(alg, null);
+        jwk.generateKey();
         return jwk;
     }
 

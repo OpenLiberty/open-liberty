@@ -21,6 +21,7 @@ import java.lang.annotation.Retention;
 public @interface AllowedFFDC {
 
     public static final String ALL_FFDC = "ALL_FFDC";
+    public static final String ALL_REPEAT_ACTIONS = "ALL_REPEAT_ACTIONS";
 
     /**
      * A string array fully-qualified FFDC exception class names.
@@ -28,4 +29,9 @@ public @interface AllowedFFDC {
      */
     String[] value() default { ALL_FFDC };
 
+    /**
+     * A string array of RepeatTestAction IDs to check if the allowed list of FFDCs apply to
+     * that specific repeated test run
+     */
+    String[] repeatAction() default ALL_REPEAT_ACTIONS;
 }

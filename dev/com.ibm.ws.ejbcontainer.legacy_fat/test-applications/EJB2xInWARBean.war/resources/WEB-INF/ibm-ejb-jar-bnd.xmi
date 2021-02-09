@@ -9,23 +9,23 @@
 >
   <ejbJar href="WEB-INF/ejb-jar.xml#EJBJar_ID"/>
 
-  <ejbBindings jndiName="ejblocal:com/ibm/ejb2x/ejbinwar/webejb2x/Stateless2xLocalHome">
+  <ejbBindings jndiName="com/ibm/ejb2x/ejbinwar/webejb2x/Stateless2xLocalHome">
     <enterpriseBean xmi:type="ejb:Session" href="WEB-INF/ejb-jar.xml#Stateless2xLocalBean_ID"/>
   </ejbBindings>
 
   <ejbBindings jndiName="ejb/com/ibm/ejb2x/ejbinwar/intf/Stateless2xRemoteHome">
     <enterpriseBean xmi:type="ejb:Session" href="WEB-INF/ejb-jar.xml#Stateless2xRemoteBean_ID"/>
 
-    <ejbRefBindings jndiName="ejblocal:com/ibm/ejb2x/ejbinwar/webejb2x/Stateless2xLocalHome">
+    <ejbRefBindings jndiName="com/ibm/ejb2x/ejbinwar/webejb2x/Stateless2xLocalHome">
       <bindingEjbRef xmi:type="common:EJBLocalRef" href="WEB-INF/ejb-jar.xml#EJBLocalRef_Stateless2xRemoteBean_Stateless2xLocal_ID"/>
     </ejbRefBindings>
 
-    <ejbRefBindings jndiName="ejblocal:com/ibm/ejb2x/ejbinwar/webejb2x/Stateful2xLocalHome">
+    <ejbRefBindings jndiName="com/ibm/ejb2x/ejbinwar/webejb2x/Stateful2xLocalHome">
       <bindingEjbRef xmi:type="common:EJBLocalRef" href="WEB-INF/ejb-jar.xml#EJBLocalRef_Stateless2xRemoteBean_Stateful2xLocal_ID"/>
     </ejbRefBindings>
   </ejbBindings>
 
-  <ejbBindings jndiName="ejblocal:com/ibm/ejb2x/ejbinwar/webejb2x/Stateful2xLocalHome">
+  <ejbBindings jndiName="com/ibm/ejb2x/ejbinwar/webejb2x/Stateful2xLocalHome">
     <enterpriseBean xmi:type="ejb:Session" href="WEB-INF/ejb-jar.xml#Stateful2xLocalBean_ID"/>
   </ejbBindings>
 

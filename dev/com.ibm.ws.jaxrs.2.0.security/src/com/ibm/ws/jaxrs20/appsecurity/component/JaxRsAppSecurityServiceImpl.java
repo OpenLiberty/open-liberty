@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,9 +12,7 @@ package com.ibm.ws.jaxrs20.appsecurity.component;
 
 import java.security.AccessController;
 import java.security.PrivilegedExceptionAction;
-import java.util.Map;
 
-import javax.net.ssl.SSLSocketFactory;
 import javax.servlet.http.Cookie;
 import javax.ws.rs.ProcessingException;
 
@@ -22,7 +20,6 @@ import org.osgi.service.component.annotations.Component;
 
 import com.ibm.websphere.security.web.WebSecurityHelper;
 import com.ibm.ws.jaxrs20.api.JaxRsAppSecurityService;
-import com.ibm.ws.jaxrs20.appsecurity.security.JaxRsSSLManager;
 
 @Component(name = "com.ibm.ws.jaxrs20.JaxRsAppSecurityServiceImpl", property = { "service.vendor=IBM" })
 public class JaxRsAppSecurityServiceImpl implements JaxRsAppSecurityService {
@@ -45,12 +42,4 @@ public class JaxRsAppSecurityServiceImpl implements JaxRsAppSecurityService {
 
         return ssoCookie;
     }
-
-    @Override
-    public SSLSocketFactory getSSLSocketFactory(String sslRef, Map<String, Object> props) {
-
-        SSLSocketFactory sslSocketFactory = JaxRsSSLManager.getProxySSLSocketFactoryBySSLRef(sslRef, null);
-        return sslSocketFactory;
-    }
-
 }

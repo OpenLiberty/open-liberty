@@ -17,7 +17,7 @@ src: \
 fat.project: true
 
 # Define additional tested features that are NOT present in any XML files in this bucket.
-# In this case, servlet-4.0 is added programatically at runtime by the RepeatTests rule.
+# In this case, servlet-4.0 is added programmatically at runtime by the RepeatTests rule.
 #tested.features:\
 #	servlet-4.0
 

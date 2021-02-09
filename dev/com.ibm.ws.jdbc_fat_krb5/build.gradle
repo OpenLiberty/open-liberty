@@ -1,0 +1,57 @@
+/*******************************************************************************
+ * Copyright (c) 2019 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
+
+configurations {
+  db2
+  oracle
+  postgres
+}
+
+dependencies {
+  requiredLibs "org.testcontainers:database-commons:${testcontainersVersion}",
+               "org.testcontainers:db2:${testcontainersVersion}",
+               "org.testcontainers:oracle-xe:${testcontainersVersion}",
+               "org.testcontainers:postgresql:${testcontainersVersion}",
+               "org.testcontainers:jdbc:${testcontainersVersion}"
+  db2 'com.ibm.db2:jcc:11.1.4.4'
+  oracle 'com.oracle.database.jdbc:ojdbc8:19.8.0.0'
+  postgres 'org.postgresql:postgresql:42.2.5'
+}
+
+task copyDB2(type: Copy) {
+  shouldRunAfter jar
+  from configurations.db2
+  into new File(autoFvtDir, 'publish/servers/com.ibm.ws.jdbc.fat.krb5/db2')
+  rename 'jcc.*.jar', 'jcc.jar'
+}
+
+task copyOracle(type: Copy) {
+  shouldRunAfter jar
+  from configurations.oracle
+  into new File(autoFvtDir, 'publish/servers/com.ibm.ws.jdbc.fat.krb5.oracle/oracle')
+  rename "ojdbc8_g-.*.", "ojdbc8_g.jar"
+}
+
+task copyPostgresql(type: Copy) {
+  shouldRunAfter jar
+  from configurations.postgres
+  into new File(autoFvtDir, 'publish/servers/com.ibm.ws.jdbc.fat.krb5.postgresql/postgresql')
+  rename 'postgresql-.*.jar', 'postgresql.jar'
+}
+
+addRequiredLibraries {
+  dependsOn copyDB2
+  dependsOn copyOracle
+  dependsOn copyPostgresql
+  dependsOn addJakartaTransformer
+  dependsOn addTestcontainers
+}

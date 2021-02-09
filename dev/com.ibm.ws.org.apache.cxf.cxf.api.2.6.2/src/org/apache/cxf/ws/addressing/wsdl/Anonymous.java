@@ -18,6 +18,8 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlValue;
 import javax.xml.namespace.QName;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 
 /**
  * <p>Java class for anonymous complex type.
@@ -41,6 +43,7 @@ import javax.xml.namespace.QName;
     "value"
 })
 @XmlRootElement(name = "Anonymous")
+@Trivial
 public class Anonymous {
 
     @XmlValue

@@ -1,0 +1,47 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/OptimisticLockExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+5001=Foi feita uma tentativa de excluir o objeto [{0}], mas ele n\u00e3o tem n\u00famero de vers\u00e3o no mapa de identidade. {3}Ele pode n\u00e3o ter sido lido antes da tentativa de exclus\u00e3o. {3}Classe> {1} Chave prim\u00e1ria> {2}
+
+5003=O objeto [{0}] n\u00e3o pode ser exclu\u00eddo porque foi alterado ou exclu\u00eddo desde que foi lido pela \u00faltima vez. {3}Classe> {1} Chave prim\u00e1ria> {2}
+
+5004=Foi feita uma tentativa de atualizar o objeto [{0}], mas ele n\u00e3o tem n\u00famero de vers\u00e3o no mapa de identidade. {3}Ele pode n\u00e3o ter sido lido antes da tentativa de atualiza\u00e7\u00e3o. {3}Classe> {1} Chave prim\u00e1ria> {2}
+
+5006=O objeto [{0}] n\u00e3o pode ser atualizado porque foi alterado ou exclu\u00eddo desde que foi lido pela \u00faltima vez. {3}Classe> {1} Chave prim\u00e1ria> {2}
+
+5007=O objeto [{0}] deve ter um mapeamento que n\u00e3o seja somente leitura para o campo de bloqueio de vers\u00e3o.
+
+5008=Deve-se mapear o campo de bloqueio de vers\u00e3o para java.sql.Timestamp ao usar Bloqueio de registro de data e hora
+
+5009=O objeto da classe [{1}] com a chave prim\u00e1ria [{0}] n\u00e3o pode ser desagrupado porque foi exclu\u00eddo desde que foi lido pela \u00faltima vez.
+
+5010=O objeto [{0}] n\u00e3o pode ser mesclado porque foi alterado ou exclu\u00eddo desde que foi lido pela \u00faltima vez. {2}Classe> {1}
+
+5011=Um ou mais objetos n\u00e3o podem ser atualizados porque foi alterado ou exclu\u00eddo desde que foi lido pela \u00faltima vez
+

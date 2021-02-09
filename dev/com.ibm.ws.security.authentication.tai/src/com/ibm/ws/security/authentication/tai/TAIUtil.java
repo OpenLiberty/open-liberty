@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,48 +14,52 @@ import org.osgi.framework.ServiceReference;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.security.authentication.tai.internal.InterceptorConfigImpl;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
 import com.ibm.wsspi.security.tai.TrustAssociationInterceptor;
 
 /**
- * This class process the attribute invokeBeforeSSO and invokeAfterSSO and other attributes
- * from the inerceptor user features
+ * This class process the TAI's properties as a Liberty feature.
+ * Support properties are invokeBeforeSSO, invokeAfterSSO and disableLtpaCookie
  */
 public class TAIUtil {
     private static final TraceComponent tc = Tr.register(TAIUtil.class);
-
+    public static final String KEY_DISABLE_LTPA_COOKIE = "disableLtpaCookie";
     private boolean invokeBeforeSSO = false;
     private boolean invokeAfterSSO = false;
-    private boolean addLtpaCookieToResponse = true;
+    private Object disableLtpaCookie = null;
+
+    public TAIUtil(ConcurrentServiceReferenceMap<String, TrustAssociationInterceptor> interceptorServiceRef,
+                   String interceptorId) {
+        processUserFeatureTaiProps(interceptorServiceRef, interceptorId);
+    }
 
     /**
-     * This method will process the TAI user feature properties and determine
-     * whether this TAI will be invoked before or after the SSO authentication. Because
-     * we do not have a direct access to the TAI user feature configuration if any.
+     * This method will process the TAI's properties as a Liberty feature.
+     * We do not have a direct access to the TAI as a Liberty feature configuration.
      *
      * @param interceptorServiceRef
      * @param interceptorId
      */
-    public void processTAIUserFeatureProps(ConcurrentServiceReferenceMap<String, TrustAssociationInterceptor> interceptorServiceRef,
+    public void processUserFeatureTaiProps(ConcurrentServiceReferenceMap<String, TrustAssociationInterceptor> interceptorServiceRef,
                                            String interceptorId) {
         invokeBeforeSSO = false;
         invokeAfterSSO = false;
-        addLtpaCookieToResponse = true;
+        disableLtpaCookie = false;
 
         ServiceReference<TrustAssociationInterceptor> taiServiceRef = interceptorServiceRef.getReference(interceptorId);
-        Object beforeSsoProp = taiServiceRef.getProperty(TAIConfig.KEY_INVOKE_BEFORE_SSO);
-        Object afterSsoProp = taiServiceRef.getProperty(TAIConfig.KEY_INVOKE_AFTER_SSO);
-        if (taiServiceRef.getProperty(TAIConfig.KEY_ADD_LTPA_TO_RESPONSE) != null) {
-            addLtpaCookieToResponse = (Boolean) taiServiceRef.getProperty(TAIConfig.KEY_ADD_LTPA_TO_RESPONSE);
-        }
+
+        Object beforeSsoProp = taiServiceRef.getProperty(InterceptorConfigImpl.KEY_INVOKE_BEFORE_SSO);
+        Object afterSsoProp = taiServiceRef.getProperty(InterceptorConfigImpl.KEY_INVOKE_AFTER_SSO);
+        disableLtpaCookie = taiServiceRef.getProperty(KEY_DISABLE_LTPA_COOKIE);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "user feature have properties,  beforeSsoProp=" + beforeSsoProp + " invokeAfterSSO=" + afterSsoProp +
-                         " addLtpaCookieToResponse=" + addLtpaCookieToResponse);
+            Tr.debug(tc, "User feature interceptor properties of " + interceptorId);
+            Tr.debug(tc, "     beforeSsoProp=" + beforeSsoProp + " afterSsoProp=" + afterSsoProp + " disableLtpaCookie=" + disableLtpaCookie);
         }
 
         /*
-         * The interceptor user defined feature may have the following:
+         * The user feature TAI may have one the following attributes:
          * 1) Do not specified invokeBeforeSSO and invokeAfterSSO attributes.
          * 2) Specified only invokeAfterSSO attribute.
          * 3) Specified only invokeBeforeSSO attribute.
@@ -72,13 +76,13 @@ public class TAIUtil {
             invokeAfterSSO = (Boolean) afterSsoProp;
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "resolve user feature have,  invokeBeforeSSO=" + invokeBeforeSSO + " invokeAfterSSO=" + invokeAfterSSO +
-                         " addLtpaCookieToResponse=" + addLtpaCookieToResponse);
+            Tr.debug(tc, "User feature interceptor properties " + interceptorId);
+            Tr.debug(tc, "     invokeBeforeSSO=" + invokeBeforeSSO + " invokeAfterSSO=" + invokeAfterSSO + " disableLtpaCookie=" + disableLtpaCookie);
         }
     }
 
     /**
-     * If inbokeBeforeSSO is false, then this TAI will be invoked after SSO authentication
+     * If invokeBeforeSSO is false, then this TAI will be invoked after SSO authentication
      *
      * @param beforeSSO
      * @return
@@ -111,7 +115,7 @@ public class TAIUtil {
         return invokeAfterSSO;
     }
 
-    public boolean addLtpaCookieToResponse() {
-        return addLtpaCookieToResponse;
+    public Object isDisableLtpaCookie() {
+        return disableLtpaCookie;
     }
 }

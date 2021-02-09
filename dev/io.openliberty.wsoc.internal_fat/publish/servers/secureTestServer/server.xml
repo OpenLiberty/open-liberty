@@ -1,0 +1,44 @@
+<!--
+    Copyright (c) 2013 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+    <featureManager>
+        <feature>websocket-1.0</feature>
+        <feature>localConnector-1.0</feature>
+        <feature>timedexit-1.0</feature>
+    </featureManager>
+   
+
+    <!-- include location="../fatTestPorts.xml"/ -->
+        <httpEndpoint id="defaultHttpEndpoint"
+                  host="*"
+                  httpPort="${bvt.prop.HTTP_default}"
+                  httpsPort="${bvt.prop.HTTP_default.secure}">
+                  <httpOptions persistTimeout="5"/>
+        </httpEndpoint>          
+
+    <iiopEndpoint id="defaultIiopEndpoint" iiopPort="${bvt.prop.IIOP}">
+        <iiopsOptions  iiopsPort="${bvt.prop.IIOP.secure}" sslRef="defaultSSLConfig"/>
+    </iiopEndpoint>
+
+    <wasJmsEndpoint host="localhost" wasJmsPort="${bvt.prop.jms}" wasJmsSSLPort="${bvt.prop.jms.ssl}" />
+
+    <applicationMonitor dropinsEnabled="false" locationMonitoringEnabled="false" updateTrigger="disabled"/>
+
+    <javaPermission className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
+    <javaPermission className="java.lang.RuntimePermission" name="modifyThread"/>  
+    <javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/> 
+    <javaPermission className="java.lang.RuntimePermission" name="setContextClassLoader"/>
+    <javaPermission className="java.net.SocketPermission" name="*" actions="resolve,accept,listen"/>
+    <javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
+    
+    <webContainer deferServletLoad="false"/>
+    
+</server>

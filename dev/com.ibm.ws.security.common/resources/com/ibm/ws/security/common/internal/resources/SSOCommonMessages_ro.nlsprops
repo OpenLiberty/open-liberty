@@ -24,7 +24,7 @@ SUBJECT_MAPPING_MISSING_ATTR=CWWKS6102E: Cererea de autentificare a e\u015fuat d
 SUBJECT_MAPPING_MISSING_ATTR.explanation=Informa\u0163iile utilizatorului autentificat nu con\u0163in revendicarea specificat\u0103 pentru a identifica atributul denumit \u015fi runtime-ul nu poate continua procesul de autentificare.
 SUBJECT_MAPPING_MISSING_ATTR.useraction=Face\u0163i una din urm\u0103toarele. 1)Verifica\u0163i dac\u0103 configura\u0163ia de logare client Social poate specifica o revendicare diferit\u0103 ca atribut 2)Verifica\u0163i c\u0103 furnizorul emite informa\u0163iile utilizatorului autentificat cu revendicarea specificat\u0103.
 
-ERROR_AUTHENTICATE=CWWKS6103E: Nu poate fi creat un subiect de securitate pentru utilizatorul {0}.
+ERROR_AUTHENTICATE=CWWKS6103E: Nu poate fi creat un subiect de securitate pentru utilizatorul {0}. {1}
 ERROR_AUTHENTICATE.explanation=Utilizatorul nu a putut fi autentificat. 
 ERROR_AUTHENTICATE.useraction=Verifica\u0163i c\u0103 utilizatorul exist\u0103 \u00een registru \u015fi c\u0103 parola sau alte acredit\u0103ri sunt corecte.
 

@@ -1,5 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.acmeCA-2.0
+WLP-DisableAllFeatures-OnConflict: false
 visibility=public
 singleton=true
 IBM-ShortName: acmeCA-2.0
@@ -13,6 +14,6 @@ Subsystem-Name: Automatic Certificate Management Environment (ACME) Support 2.0
   com.ibm.websphere.appserver.certificateCreator-2.0, \
   com.ibm.websphere.appserver.restHandler-1.0
 -bundles=\
-  com.ibm.ws.security.acme; start-phase:=APPLICATION_EARLY
-kind=noship
-edition=full
+  com.ibm.ws.security.acme
+kind=ga
+edition=base

@@ -56,6 +56,7 @@ public class EmbeddableConfigurationProviderImpl implements ConfigurationProvide
     private static boolean _enableLoggingForHeuristicReporting;
     private static boolean _acceptHeuristicHazard;
     private static boolean _recoverOnStartup;
+    private static boolean _shutdownOnLogFailure = true;
     private static boolean _OnePCOptimization;
     private static boolean _waitForRecovery;
     private static int _totalTranLifetimeTimeout;
@@ -245,6 +246,13 @@ public class EmbeddableConfigurationProviderImpl implements ConfigurationProvide
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "isRecoverOnStartup", _recoverOnStartup);
         return _recoverOnStartup;
+    }
+
+    @Override
+    public boolean isShutdownOnLogFailure() {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(tc, "isRecoverOnStartup", _shutdownOnLogFailure);
+        return _shutdownOnLogFailure;
     }
 
     @Override
@@ -478,4 +486,48 @@ public class EmbeddableConfigurationProviderImpl implements ConfigurationProvide
         return 10;
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.tx.config.ConfigurationProvider#getLightweightTransientErrorRetryTime()
+     */
+    @Override
+    public int getLightweightTransientErrorRetryTime() {
+        return 1;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.tx.config.ConfigurationProvider#getLightweightTransientErrorRetryAttempts()
+     */
+    @Override
+    public int getLightweightTransientErrorRetryAttempts() {
+        return 2;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.tx.config.ConfigurationProvider#getStandardTransientErrorRetryTime()
+     */
+    @Override
+    public int getStandardTransientErrorRetryTime() {
+        return 10;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.tx.config.ConfigurationProvider#getStandardTransientErrorRetryAttempts()
+     */
+    @Override
+    public int getStandardTransientErrorRetryAttempts() {
+        return 180;
+    }
+
+    @Override
+    public int getLeaseRenewalTime() {
+        return 90;
+    }
 }

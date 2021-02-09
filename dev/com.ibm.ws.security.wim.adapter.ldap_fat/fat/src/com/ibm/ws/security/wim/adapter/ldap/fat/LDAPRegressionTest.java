@@ -208,7 +208,7 @@ public class LDAPRegressionTest {
         ldapRegistry.setLdapType("Custom");
         ldapRegistry.setRealm("LdapRealm");
         ldapRegistry.setHost("localhost");
-        ldapRegistry.setPort(String.valueOf(ds.getListenPort()));
+        ldapRegistry.setPort(String.valueOf(ds.getLdapPort()));
         ldapRegistry.setBindDN(ds.getBindDN());
         ldapRegistry.setBindPassword(ds.getBindPassword());
         ldapRegistry.setCustomFilters(new LdapFilters("(&(uid=%v)(objectclass=wiminetorgperson))", "(&(cn=%v)(objectclass=groupofnames))", null, null, null));

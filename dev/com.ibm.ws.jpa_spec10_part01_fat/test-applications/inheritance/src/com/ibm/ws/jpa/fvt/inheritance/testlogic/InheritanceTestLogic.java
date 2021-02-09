@@ -31,7 +31,7 @@ public class InheritanceTestLogic extends AbstractTestLogic {
      * Points: 13
      */
     public void testInheritance001(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                   Object managedComponentObject) {
+                                   Object managedComponentObject) throws Throwable {
         // Verify parameters
         if (testExecCtx == null || testExecResources == null) {
             Assert.fail("InheritanceTestLogic.testInheritance001: Missing context and/or resources.  Cannot execute the test.");
@@ -250,11 +250,6 @@ public class InheritanceTestLogic extends AbstractTestLogic {
             Assert.assertNull("Assert that the find operation did return null", removed_entity);
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("InheritanceTestLogic.testInheritance001(): End");
         }
@@ -266,7 +261,7 @@ public class InheritanceTestLogic extends AbstractTestLogic {
      * Points: 13
      */
     public void testMSCInheritance001(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                      Object managedComponentObject) {
+                                      Object managedComponentObject) throws Throwable {
         // Verify parameters
         if (testExecCtx == null || testExecResources == null) {
             Assert.fail("InheritanceTestLogic.testMSCInheritance001: Missing context and/or resources.  Cannot execute the test.");
@@ -441,11 +436,6 @@ public class InheritanceTestLogic extends AbstractTestLogic {
             Assert.assertNull("Assert that the find operation did return null", removed_entity);
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("InheritanceTestLogic.testMSCInheritance001(): End");
         }

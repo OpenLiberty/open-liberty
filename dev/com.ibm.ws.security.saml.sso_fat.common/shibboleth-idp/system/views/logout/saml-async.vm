@@ -1,0 +1,20 @@
+##
+## Velocity Template for terminating a SAML2 LogoutRequest profile request containing the Async extension
+##
+## Velocity context will contain the following properties
+## profileRequestContext - root of context tree
+## encoder - HTMLEncoder class
+## request - HttpServletRequest
+## response - HttpServletResponse
+## environment - Spring Environment object for property resolution
+## custom - arbitrary object injected by deployer
+##
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Logout Complete</title>
+</head>
+<body>
+    Logout complete. Service provider requested no response.
+</body>
+</html>

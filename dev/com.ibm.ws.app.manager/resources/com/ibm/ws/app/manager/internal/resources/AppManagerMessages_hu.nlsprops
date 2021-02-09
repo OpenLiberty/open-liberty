@@ -36,7 +36,7 @@
 #{0} is application name
 APPLICATION_START_SUCCESSFUL=CWWKZ0001I: A(z) {0} alkalmaz\u00e1s {1} m\u00e1sodperc alatt elindult.
 APPLICATION_START_SUCCESSFUL.explanation=A kiszolg\u00e1l\u00f3 sikeresen elind\u00edtotta az alkalmaz\u00e1st.
-APPLICATION_START_SUCCESSFUL.useraction=Semmit sem kell tennie.
+APPLICATION_START_SUCCESSFUL.useraction=Nincs teend\u0151.
 
 #{0} is application name
 #{1} is exception message
@@ -47,7 +47,7 @@ APPLICATION_START_FAILED.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt o
 #{0} is application name
 APPLICATION_UPDATE_SUCCESSFUL=CWWKZ0003I: A(z) {0} alkalmaz\u00e1s {1} m\u00e1sodperc alatt friss\u00fclt.
 APPLICATION_UPDATE_SUCCESSFUL.explanation=A kiszolg\u00e1l\u00f3 sikeresen friss\u00edtette az alkalmaz\u00e1st.
-APPLICATION_UPDATE_SUCCESSFUL.useraction=Semmit sem kell tennie.
+APPLICATION_UPDATE_SUCCESSFUL.useraction=Nincs teend\u0151.
 
 #{0} is application name
 #{1} is exception message
@@ -81,7 +81,7 @@ LOCATION_SERVICE_NOT_FOUND.useraction=CMSG0002
 #{0} is application name
 APPLICATION_STOPPED=CWWKZ0009I: A(z) {0} alkalmaz\u00e1s sikeresen le\u00e1llt.
 APPLICATION_STOPPED.explanation=A kiszolg\u00e1l\u00f3 sikeresen le\u00e1ll\u00edtotta az alkalmaz\u00e1st.
-APPLICATION_STOPPED.useraction=Semmit sem kell tennie.
+APPLICATION_STOPPED.useraction=Nincs teend\u0151.
 
 #{0} is application name
 #{1} is excaption message
@@ -126,7 +126,7 @@ APPLICATION_NO_TYPE.useraction=T\u00edpus hozz\u00e1ad\u00e1s\u00e1hoz friss\u00
 
 STARTING_APPLICATION=CWWKZ0018I: A(z) {0} alkalmaz\u00e1s ind\u00edt\u00e1sa.
 STARTING_APPLICATION.explanation=Az alkalmaz\u00e1s elindul.
-STARTING_APPLICATION.useraction=Semmit sem kell tennie.
+STARTING_APPLICATION.useraction=Nincs teend\u0151.
 
 PARTIAL_START=CWWKZ0019I: A(z) {0} alkalmaz\u00e1s {1} m\u00e1sodperc alatt r\u00e9szlegesen elindult. A kiszolg\u00e1l\u00f3 folytatja a h\u00e1tt\u00e9rben az alkalmaz\u00e1s ind\u00edt\u00e1s\u00e1t.
 PARTIAL_START.explanation=A teljes alkalmaz\u00e1s nem tudott elindulni. Ez el\u0151fordulhat olyan ear f\u00e1jl eset\u00e9n, amely k\u00e9t war f\u00e1jlt tartalmaz, \u00e9s csak egy war f\u00e1jl indul el.
@@ -150,7 +150,7 @@ APPLICATION_SLOW_STARTUP.useraction=Ha az alkalmaz\u00e1s indul\u00e1sa sok id\u
 #{0} is application name
 MONITOR_APP_STOP_FAIL=CWWKZ0053E: Kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {0} alkalmas automatikus le\u00e1ll\u00edt\u00e1s\u00e1ra tett k\u00eds\u00e9rlet sor\u00e1n.
 MONITOR_APP_STOP_FAIL.explanation=Az alkalmaz\u00e1sfigyel\u0151 nem tal\u00e1lta a fut\u00f3 alkalmaz\u00e1st a kiszolg\u00e1l\u00f3n.
-MONITOR_APP_STOP_FAIL.useraction=Semmit sem kell tennie.
+MONITOR_APP_STOP_FAIL.useraction=Nincs teend\u0151.
 
 #{0} is application name
 INVALID_FILE_NAME=CWWKZ0054E: Az alkalmaz\u00e1sfigyel\u0151 szolg\u00e1ltat\u00e1s nem tal\u00e1lt megfelel\u0151 nevet a(z) {0} alkalmaz\u00e1shoz.
@@ -165,7 +165,7 @@ UNABLE_TO_DETERMINE_APPLICATION_TYPE.useraction=Biztos\u00edtsa, hogy az alkalma
 #{0} is application name
 MONITOR_APP_START_FAIL=CWWKZ0056E: Kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {0} alkalmaz\u00e1s automatikus elind\u00edt\u00e1s\u00e1ra tett k\u00eds\u00e9rlet sor\u00e1n.
 MONITOR_APP_START_FAIL.explanation=Az alkalmaz\u00e1sfigyel\u0151 nem tudta elind\u00edtani az alkalmaz\u00e1st.
-MONITOR_APP_START_FAIL.useraction=Semmit sem kell tennie.
+MONITOR_APP_START_FAIL.useraction=Nincs teend\u0151.
 
 #{0} is file name
 #{1} is line number
@@ -177,7 +177,7 @@ MONITOR_INVALID_CACHE_FILE_ENTRY.useraction=Ind\u00edtsa el a kiszolg\u00e1l\u00
 #{0} is the start time in seconds
 APPLICATION_MONITOR_STARTED=CWWKZ0058I: {0} megfigyel\u00e9se alkalmaz\u00e1sok eset\u00e9ben.
 APPLICATION_MONITOR_STARTED.explanation=A kiszolg\u00e1l\u00f3 megfigyeli a telep\u00edtend\u0151 alkalmaz\u00e1sok egy k\u00f6nyvt\u00e1r\u00e1t.
-APPLICATION_MONITOR_STARTED.useraction=Semmit sem kell tennie.
+APPLICATION_MONITOR_STARTED.useraction=Nincs teend\u0151.
 
 #{0} is application name
 #{1} is application location
@@ -201,24 +201,27 @@ APPLICATION_LOCATION_INSIDE_DROPINS.useraction=Jav\u00edtsa az alkalmaz\u00e1sel
 
 APPLICATION_UPDATED=CWWKZ0062I: A(z) {0} alkalmaz\u00e1s friss\u00edt\u00e9sre ker\u00fclt, de nem lett \u00fajraind\u00edtva.
 APPLICATION_UPDATED.explanation=Kisebb m\u00f3dos\u00edt\u00e1s t\u00f6rt\u00e9nt a megadott alkalmaz\u00e1sban, ami nem ig\u00e9nyli az alkalmaz\u00e1s \u00fajraind\u00edt\u00e1s\u00e1t.
-APPLICATION_UPDATED.useraction=Semmit sem kell tennie.
+APPLICATION_UPDATED.useraction=Nincs teend\u0151.
 
 APPLICATION_JANDEX_ENABLED_ALL=CWWKZ0063I: A Jandex haszn\u00e1lat\u00e1nak alap\u00e9rtelmezett be\u00e1ll\u00edt\u00e1sa minden alkalmaz\u00e1s eset\u00e9ben true \u00e9rt\u00e9kre lett m\u00f3dos\u00edtva.
 APPLICATION_JANDEX_ENABLED_ALL.explanation=Minden alkalmaz\u00e1s eset\u00e9n, amikor a Jandex indexek el\u00e9rhet\u0151k, az oszt\u00e1ly \u00e9s annot\u00e1ci\u00f3 adatok a Jandex indexekb\u0151l ker\u00fclnek beszerz\u00e9sre, kiv\u00e9ve, ha a Jandex haszn\u00e1lat kifejezetten le van tiltva az alkalmaz\u00e1shoz.
-APPLICATION_JANDEX_ENABLED_ALL.useraction=Semmit sem kell tennie.
+APPLICATION_JANDEX_ENABLED_ALL.useraction=Nincs teend\u0151.
 
 #{0} is application name
 APPLICATION_JANDEX_ENABLED=CWWKZ0064I: A Jandex haszn\u00e1lat enged\u00e9lyezve van a(z) {0} alkalmaz\u00e1shoz.
-APPLICATION_JANDEX_ENABLED.explanation=A megadott alkalmaz\u00e1s eset\u00e9n, amikor a Jandex indexek el\u00e9rhet\u0151k, az osz\u00e1ly \u00e9s annot\u00e1ci\u00f3 adatok a Jandex indexekb\u0151l ker\u00fclnek beszerz\u00e9sre.
-APPLICATION_JANDEX_ENABLED.useraction=Semmit sem kell tennie.
+APPLICATION_JANDEX_ENABLED.explanation=A megadott alkalmaz\u00e1s eset\u00e9n, amikor a Jandex indexek el\u00e9rhet\u0151k, az oszt\u00e1ly \u00e9s annot\u00e1ci\u00f3 adatok a Jandex indexekb\u0151l ker\u00fclnek beszerz\u00e9sre.
+APPLICATION_JANDEX_ENABLED.useraction=Nincs teend\u0151.
 
 #{0} is application name
 APPLICATION_JANDEX_DISABLED=CWWKZ0065I: A Jandex haszn\u00e1lat le van tiltva a(z) {0} alkalmaz\u00e1shoz.
 APPLICATION_JANDEX_DISABLED.explanation=A Jandex index le van tiltva a megadott alkalmaz\u00e1shoz.
-APPLICATION_JANDEX_DISABLED.useraction=Semmit sem kell tennie.
+APPLICATION_JANDEX_DISABLED.useraction=Nincs teend\u0151.
 
 #{0} is the application name
 error.startAfter.cycle=CWWKZ0066E: A k\u00f6vetkez\u0151 alkalmaz\u00e1sok nem tudnak elindulni, mert a startAfter attrib\u00fatumuk \u00e9rt\u00e9ke v\u00e9gtelen ciklust eredm\u00e9nyez: {0} 
 error.startAfter.cycle.explanation=Egyik alkalmaz\u00e1s sem ind\u00edthat\u00f3 el, mivel mindegyik alkalmaz\u00e1s f\u00fcgg egy, \u0151t megel\u0151z\u0151en elind\u00edtand\u00f3 m\u00e1sik alkalmaz\u00e1st\u00f3l.
-error.startAfter.cycle.useraction=M\u00f3dos\u00edtsa a startAfter attrib\u00fatum \u00e9rt\u00e9k\u00e9t a ciklusban \u00e9rintett alkalmaz\u00e1sokra vonatkoz\u00f3an, hogy ne rendelkezzenek k\u00f6rk\u00f6r\u00f6s f\u00fcgg\u0151s\u00e9ggel. 
+error.startAfter.cycle.useraction=M\u00f3dos\u00edtsa a startAfter attrib\u00fatum \u00e9rt\u00e9k\u00e9t a ciklusban \u00e9rintett alkalmaz\u00e1sokra vonatkoz\u00f3an, hogy ne rendelkezzenek k\u00f6rk\u00f6r\u00f6s f\u00fcgg\u0151s\u00e9ggel.
 
+dropins.app.also.configured=CWWKZ0067W: A dropins (helyettes\u00edt\u0151) alkalmaz\u00e1s a(z) {0} helyen nem indulhat el, mert ez is be van \u00e1ll\u00edtva. 
+dropins.app.also.configured.explanation=Egy alkalmaz\u00e1s a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3ban megad egy helyet a megfigyelt dropins (helyettes\u00edt\u0151k) k\u00f6nyvt\u00e1rban. 
+dropins.app.also.configured.useraction=Helyezze \u00e1t az alkalmaz\u00e1st m\u00e1sik helyre. 

@@ -3,7 +3,7 @@ IBM-ShortName: concurrenttest-1.0
 Subsystem-SymbolicName: test.concurrenttest-1.0;visibility:=public
 Subsystem-Version: 1.0.0
 Subsystem-Content: com.ibm.websphere.appserver.osgiConsole-1.0; type="osgi.subsystem.feature",
-  com.ibm.websphere.appserver.transaction-1.1; type="osgi.subsystem.feature",
+  com.ibm.websphere.appserver.transaction-1.1; ibm.tolerates:="1.2, 2.0"; type="osgi.subsystem.feature",
   test.resource.testresource; version="[1,1.0.100)"
 Subsystem-Type: osgi.subsystem.feature
 IBM-Test-Feature: true

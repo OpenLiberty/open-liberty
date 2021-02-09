@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2019 IBM Corporation and others.
+ * Copyright (c) 2002, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -35,6 +35,7 @@ import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -42,7 +43,7 @@ import componenttest.topology.utils.FATServletClient;
 @RunWith(FATRunner.class)
 public class SLLocalTest extends FATServletClient {
 
-    @Server("com.ibm.ws.ejbcontainer.legacy.server")
+    @Server("com.ibm.ws.ejbcontainer.legacy.server.sll")
     @TestServlets({ @TestServlet(servlet = SLLocalHomeCreateServlet.class, contextRoot = "EJB2XLocalSpecWeb"),
                     @TestServlet(servlet = SLLocalHomeRemoveServlet.class, contextRoot = "EJB2XLocalSpecWeb"),
                     @TestServlet(servlet = SLLocalImplContextServlet.class, contextRoot = "EJB2XLocalSpecWeb"),
@@ -55,7 +56,7 @@ public class SLLocalTest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.legacy.server")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.legacy.server"));
+    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.legacy.server.sll")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.legacy.server.sll")).andWith(new JakartaEE9Action().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.legacy.server.sll"));
 
     @BeforeClass
     public static void setUp() throws Exception {

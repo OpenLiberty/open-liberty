@@ -24,7 +24,7 @@ SUBJECT_MAPPING_MISSING_ATTR=CWWKS6102E: A hiteles\u00edt\u00e9si k\u00e9r\u00e9
 SUBJECT_MAPPING_MISSING_ATTR.explanation=A hiteles\u00edtett felhaszn\u00e1l\u00f3i inform\u00e1ci\u00f3k nem tartalmazz\u00e1k a megnevezett attrib\u00fatum azonos\u00edt\u00e1s\u00e1ra szolg\u00e1l\u00f3 adott ig\u00e9nyl\u00e9st, \u00e9s a fut\u00e1si k\u00f6rnyezet nem tudja folytatni a hiteles\u00edt\u00e9si folyamatot.
 SUBJECT_MAPPING_MISSING_ATTR.useraction=Tegye a k\u00f6vetkez\u0151k egyik\u00e9t. 1)Ellen\u0151rizze, hogy a k\u00f6z\u00f6ss\u00e9gi bejelentkez\u00e9s konfigur\u00e1ci\u00f3ja megadhat-e az attrib\u00fatumt\u00f3l elt\u00e9r\u0151 ig\u00e9nyl\u00e9st 2)Ellen\u0151rizze, hogy a szolg\u00e1ltat\u00f3 kibocs\u00e1tja-e a hiteles\u00edtett felhaszn\u00e1l\u00f3i inform\u00e1ci\u00f3kat a megadott ig\u00e9nnyel.
 
-ERROR_AUTHENTICATE=CWWKS6103E: Egy biztons\u00e1gi t\u00e1rgy nem hozhat\u00f3 l\u00e9tre a(z) {0} felhaszn\u00e1l\u00f3hoz.
+ERROR_AUTHENTICATE=CWWKS6103E: Egy biztons\u00e1gi t\u00e1rgy nem hozhat\u00f3 l\u00e9tre a(z) {0} felhaszn\u00e1l\u00f3hoz. {1}
 ERROR_AUTHENTICATE.explanation=A felhaszn\u00e1l\u00f3 nem hiteles\u00edthet\u0151. 
 ERROR_AUTHENTICATE.useraction=Ellen\u0151rizze, hogy a felhaszn\u00e1l\u00f3 l\u00e9tezik-e a nyilv\u00e1ntart\u00e1sban, \u00e9s hogy a jelsz\u00f3 vagy a hiteles\u00edt\u00e9si adatok helyesek-e.
 

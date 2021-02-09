@@ -70,7 +70,10 @@ public class JSF22BeanValidationTests extends FATServletClient {
 
     @AfterClass
     public static void testCleanup() throws Exception {
+      // Stop the server
+      if (server != null && server.isStarted()) {
         server.stopServer();
+      }
     }
 
     @Test

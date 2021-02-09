@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 IBM Corporation and others.
+ * Copyright (c) 2009, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,9 +11,11 @@
 package com.ibm.ws.webcontainer.osgi.container;
 
 import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.threading.listeners.CompletionListener;
 import com.ibm.ws.webcontainer.VirtualHost;
 import com.ibm.ws.webcontainer.osgi.osgi.WebContainerConstants;
 import com.ibm.ws.webcontainer.osgi.webapp.WebApp;
@@ -41,6 +43,8 @@ public class DeployedModule extends com.ibm.ws.container.DeployedModule
   private Future<Boolean> contextRootAdded;
   private String properContextRoot;
   private String mappingContextRoot;
+  private AtomicInteger initTaskCount = new AtomicInteger(2);
+  private CompletionListener<Boolean> initTasksDoneListener;
   
   public DeployedModule(Container webAppContainer,
                         WebAppConfiguration webAppConfig,
@@ -79,6 +83,35 @@ public class DeployedModule extends com.ibm.ws.container.DeployedModule
   {
     return loader;
   }
+
+    /**
+     * @param contextRootAdded
+     * @param listener
+     */
+    public void addStartupListener(Future<Boolean> contextRootAdded, CompletionListener<Boolean> listener) {
+        this.contextRootAdded = contextRootAdded;
+        this.initTasksDoneListener = listener;
+    }
+
+    /**
+     * This will complete the future returned to appmanager
+     * with successful application initialization
+     */
+    public void initTaskComplete() {
+        if (initTaskCount.decrementAndGet() == 0 && initTasksDoneListener != null) {
+            initTasksDoneListener.successfulCompletion(contextRootAdded, true);
+        }
+    }
+
+    /**
+     * This will complete the future returned to appmanager
+     * with fail application initialization
+     */
+    public void initTaskFailed() {
+        if (initTasksDoneListener != null) {
+            initTasksDoneListener.successfulCompletion(contextRootAdded, false);
+        }
+    }
 
   /*
    * @see com.ibm.ws.container.DeployedModule#getContextRoot()

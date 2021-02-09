@@ -31,8 +31,8 @@ public abstract class PriorityConverter {
      */
     @Trivial
     public PriorityConverter(Type type, int priority) {
-        this.type = type;
         this.priority = priority;
+        this.type = type;
     }
 
     /**
@@ -40,7 +40,7 @@ public abstract class PriorityConverter {
      */
     @Trivial
     public int getPriority() {
-        return priority;
+        return this.priority;
     }
 
     /**

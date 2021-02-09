@@ -1,0 +1,16 @@
+<server description="jaegerServerImproperConfig">
+
+    <featureManager>
+        <feature>mpOpenTracing-2.0</feature>
+    </featureManager>
+
+    <include location="../fatTestPorts.xml" />
+
+    <application location="mpOpenTracing.war">
+        <classloader apiTypeVisibility="+third-party" />
+    </application>
+
+    <javaPermission
+        codebase="${server.config.dir}/lib/slf4j-api-1.7.30.jar"
+        className="java.security.AllPermission" />
+</server>

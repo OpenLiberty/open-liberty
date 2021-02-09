@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -61,13 +61,13 @@ public class JDBC41Test extends FATServletClient {
      */
     @Test
     public void testAbortedConnectionDestroyed() throws Exception {
-        FATServletClient.runTest(server, appName + '/' + "BasicTestServlet", testName.getMethodName());
+        FATServletClient.runTest(server, appName + '/' + "BasicTestServlet", "testAbortedConnectionDestroyed");
         FATServletClient.runTest(server, appName + '/' + "BasicTestServlet", "getSingleConnectionAfterAbort");
     }
 
     @Test
     public void testJDBCVersionLimiting() throws Exception {
-        FATServletClient.runTest(server, appName + '/' + "BasicTestServlet", testName.getMethodName() + "&expectedVersion=4.1");
+        FATServletClient.runTest(server, appName + '/' + "BasicTestServlet", "testJDBCVersionLimiting&expectedVersion=4.1");
     }
 
 }

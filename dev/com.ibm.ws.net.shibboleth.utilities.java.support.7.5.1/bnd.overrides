@@ -1,0 +1,52 @@
+#*******************************************************************************
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/rejar.props
+bVersion=1.0
+
+Bundle-Name: java-support
+Bundle-Description: shibboleth java-support utilities; version=7.5.1
+Bundle-SymbolicName: com.ibm.ws.net.shibboleth.utilities.java.support.7.5.1
+
+WS-TraceGroup: SAML20
+
+Export-Package: \
+  net.shibboleth.utilities.java.support;version="7.5.1", \
+  net.shibboleth.utilities.java.support.*;version="7.5.1", \
+  net.shibboleth.utilities.java.support.annotation;version="7.5.1", \
+  net.shibboleth.utilities.java.support.collection;version="7.5.1", \
+  net.shibboleth.utilities.java.support.codec;version="7.5.1", \
+  net.shibboleth.utilities.java.support.component;version="7.5.1", \
+  net.shibboleth.utilities.java.support.logic;version="7.5.1", \
+  net.shibboleth.utilities.java.support.net;version="7.5.1", \
+  net.shibboleth.utilities.java.support.primitive;version="7.5.1", \
+  net.shibboleth.utilities.java.support.resolver;version="7.5.1", \
+  net.shibboleth.utilities.java.support.resource;version="7.5.1", \
+  net.shibboleth.utilities.java.support.security;version="7.5.1", \
+  net.shibboleth.utilities.java.support.xml;version="7.5.1"
+
+Import-Package: \
+ !com.beust.jcommander, \
+ !com.beust.jcommander.converters,\
+ !org.apache.http.client.cache, \
+ !org.apache.http.impl.client.cache, \
+ !org.apache.velocity.*,\
+ !org.bouncycastle.*,\
+ !org.bouncycastle.asn1,\
+ !org.bouncycastle.asn1.x500,\
+ !org.bouncycastle.asn1.x509,\
+ !org.checkerframework.checker.nullness.compatqual,\
+ *
+ 
+ Include-Resource: \
+  @${repo;net.shibboleth.utilities:java-support;7.5.1}!/!META-INF/MANIFEST.MF|META-INF/maven/*, \
+  @${repo;org.bouncycastle:bcprov-jdk15on;1.61;EXACT}, \
+  @${repo;org.bouncycastle:bcpkix-jdk15on;1.61;EXACT}
+

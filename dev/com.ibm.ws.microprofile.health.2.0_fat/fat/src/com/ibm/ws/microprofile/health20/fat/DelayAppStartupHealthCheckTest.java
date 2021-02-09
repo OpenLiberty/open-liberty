@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,6 +18,7 @@ import static org.junit.Assert.fail;
 import java.io.BufferedReader;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
+import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
@@ -28,24 +29,29 @@ import javax.json.JsonObject;
 
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
+import org.junit.Assume;
 import org.junit.Before;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 
 @RunWith(FATRunner.class)
 public class DelayAppStartupHealthCheckTest {
 
-    private static final String[] EXPECTED_FAILURES = { "CWWKE1102W", "CWWKE1105W", "CWMH0052W", "CWMH0053W" };
+    private static final String[] EXPECTED_FAILURES = { "CWWKE1102W", "CWWKE1105W", "CWMH0052W", "CWMH0053W", "CWMMH0052W", "CWMMH0053W", "CWWKE1106W", "CWWKE1107W" };
 
     public static final String APP_NAME = "DelayedHealthCheckApp";
     private static final String MESSAGE_LOG = "logs/messages.log";
@@ -58,7 +64,17 @@ public class DelayAppStartupHealthCheckTest {
     private final int SUCCESS_RESPONSE_CODE = 200;
     private final int FAILED_RESPONSE_CODE = 503; // Response when port is open but Application is not ready
 
-    @Server("DelayedHealthCheck")
+    final static String SERVER_NAME = "DelayedHealthCheck";
+
+    @ClassRule
+    public static RepeatTests r = RepeatTests.withoutModification()
+                    .andWith(new FeatureReplacementAction()
+                                    .withID("mpHealth-3.0")
+                                    .addFeature("mpHealth-3.0")
+                                    .removeFeature("mpHealth-2.0")
+                                    .forServers(SERVER_NAME));
+
+    @Server(SERVER_NAME)
     public static LibertyServer server1;
 
     @Before
@@ -66,7 +82,8 @@ public class DelayAppStartupHealthCheckTest {
         log("deployApplicatonIntoDropins", "Deploying the Delayed App into the dropins directory.");
 
         WebArchive app = ShrinkHelper.buildDefaultApp(APP_NAME, "com.ibm.ws.microprofile.health20.delayed.health.check.app");
-        ShrinkHelper.exportAppToServer(server1, app);
+        //This test expects to hit the server before the app is started so we disable validation to prevent the test framework waiting for the app to start.
+        ShrinkHelper.exportAppToServer(server1, app, DeployOptions.DISABLE_VALIDATION);
 
         if (!server1.isStarted())
             server1.startServer();
@@ -76,7 +93,9 @@ public class DelayAppStartupHealthCheckTest {
 
     @After
     public void cleanUp() throws Exception {
-        server1.stopServer(EXPECTED_FAILURES);
+        if (server1.isStarted()) {
+            server1.stopServer(EXPECTED_FAILURES);
+        }
     }
 
     @Test
@@ -96,61 +115,99 @@ public class DelayAppStartupHealthCheckTest {
             }
         }
 
-        // Need to ensure the server is not finish starting when readiness endpoint is hit so start the server on a separate thread
-        // Note: this does not guarantee that we hit the endpoint during server startup, but it is highly likely that it will
-        StartServerOnThread startServerThread = new StartServerOnThread();
-        log("testReadinessEndpointOnServerStart", "Starting DelayedHealthCheck server on separate thread.");
-        startServerThread.start();
+        StartServerOnThread startServerThread;
+        HttpURLConnection conReady = null;
+        int num_of_attempts = 0;
+        int max_num_of_attempts = 5;
+        int responseCode = -1;
+        long start_time = System.currentTimeMillis();
+        long time_out = 180000; // 180000ms = 3min
+        boolean connectionExceptionEncountered = false;
+        boolean first_time = true;
+        boolean app_ready = false;
+        boolean repeat = true;
+        boolean runTest = true;
 
-        try {
-            HttpURLConnection conReady = null;
-            int responseCode = -1;
-            boolean connectionExceptionEncountered = false;
-            boolean first_time = true;
-            boolean app_ready = false;
-            long start_time = System.currentTimeMillis();
-            long time_out = 180000; // 180000ms = 3min
+        while (repeat) {
+            Assume.assumeTrue(runTest); // Skip the test, if runTest is false.
 
-            // Repeatedly hit the readiness endpoint until a response of 200 is received
-            while (!app_ready) {
-                try {
-                    conReady = HttpUtils.getHttpConnectionWithAnyResponseCode(server1, READY_ENDPOINT);
-                    responseCode = conReady.getResponseCode();
-                } catch (ConnectException e) {
-                    if (e.getMessage().contains("Connection refused")) {
-                        connectionExceptionEncountered = true;
+            num_of_attempts += 1;
+
+            // Need to ensure the server is not finish starting when readiness endpoint is hit so start the server on a separate thread
+            // Note: this does not guarantee that we hit the endpoint during server startup, but it is highly likely that it will
+            startServerThread = new StartServerOnThread();
+            log("testReadinessEndpointOnServerStart", "Starting DelayedHealthCheck server on separate thread.");
+            startServerThread.start();
+
+            try {
+                conReady = null;
+                responseCode = -1;
+                connectionExceptionEncountered = false;
+                first_time = true;
+                app_ready = false;
+                start_time = System.currentTimeMillis();
+
+                // Repeatedly hit the readiness endpoint until a response of 200 is received
+                while (!app_ready) {
+                    try {
+                        conReady = HttpUtils.getHttpConnectionWithAnyResponseCode(server1, READY_ENDPOINT);
+                        responseCode = conReady.getResponseCode();
+                    } catch (ConnectException ce) {
+                        if (ce.getMessage().contains("Connection refused")) {
+                            connectionExceptionEncountered = true;
+                        }
+                    } catch (SocketTimeoutException ste) {
+                        log("testReadinessEndpointOnServerStart", "Encountered a SocketTimeoutException. Retrying connection. Exception: " + ste.getMessage());
+                        continue;
+                    } catch (SocketException se) {
+                        log("testReadinessEndpointOnServerStart", "Encountered a SocketException. Retrying connection. Exception: " + se.getMessage());
+                        continue;
                     }
-                } catch (SocketTimeoutException exception) {
-                    log("testReadinessEndpointOnServerStart", "Encountered a SocketTimeoutException. Retrying connection.");
-                    continue;
-                }
 
-                // We need to ensure we get a connection refused in the case of the server not finished starting up
-                // We expect a connection refused as the ports are not open until server is fully started
-                if (first_time) {
-                    log("testReadinessEndpointOnServerStart", "Testing the /health/ready endpoint as the server is still starting up.");
-                    String failure_message = "The connection was not refused as required, but instead completed with response code: " + responseCode +
-                                             " This is likely due to a rare timing issue where the server starts faster than we can hit the readiness endpoint."
-                                             + "In that case there are no issues with the feature and this failure may be disregarded.";
-                    assertTrue(failure_message, conReady == null && connectionExceptionEncountered);
-                    first_time = false;
-                } else {
-                    if (responseCode == 200) {
-                        app_ready = true;
-                    } else if (System.currentTimeMillis() - start_time > time_out) {
-                        throw new TimeoutException("Timed out waiting for server and app to be ready. Timeout set to " + time_out + "ms.");
+                    // We need to ensure we get a connection refused in the case of the server not finished starting up
+                    // We expect a connection refused as the ports are not open until server is fully started
+                    if (first_time) {
+                        log("testReadinessEndpointOnServerStart", "Testing the /health/ready endpoint as the server is still starting up.");
+                        String message = "The connection was not refused as required, but instead completed with response code: " + responseCode +
+                                         " This is likely due to a rare timing issue where the server starts faster than we can hit the readiness endpoint.";
+
+                        if (conReady == null && connectionExceptionEncountered) {
+                            first_time = false;
+                        } else {
+                            if (num_of_attempts == max_num_of_attempts) {
+                                log("testReadinessEndpointOnServerStart",
+                                    message + " Skipping test case due to multiple failed attempts in hitting the readiness endpoint faster than the server can start.");
+                                startServerThread.join();
+                                runTest = false; // Skip the test.
+                                break;
+                            }
+
+                            log("testReadinessEndpointOnServerStart", message + " At this point the test will be re-run. Number of current attempts ---> " + num_of_attempts);
+                            startServerThread.join();
+                            cleanUp();
+                            break; // We repeat the test case
+                        }
+                    } else {
+                        if (responseCode == 200) {
+                            app_ready = true;
+                            repeat = false;
+                            startServerThread.join();
+                        } else if (System.currentTimeMillis() - start_time > time_out) {
+                            throw new TimeoutException("Timed out waiting for server and app to be ready. Timeout set to " + time_out + "ms.");
+                        }
                     }
-                }
 
+                }
+            } catch (Exception e) {
+                startServerThread.join();
+                fail("Encountered an issue while Testing the /health/ready endpoint as the server and/or application(s) are starting up ---> " + e);
             }
-        } catch (Exception e) {
-            startServerThread.join();
-            fail("Encountered an issue while Testing the /health/ready endpoint as the server and/or application(s) are starting up ---> " + e);
+
         }
 
         // Access an application endpoint to verify the application is actually ready
         log("testReadinessEndpointOnServerStart", "Testing an application endpoint, after server and application has started.");
-        HttpURLConnection conReady = HttpUtils.getHttpConnectionWithAnyResponseCode(server1, APP_ENDPOINT);
+        conReady = HttpUtils.getHttpConnectionWithAnyResponseCode(server1, APP_ENDPOINT);
         assertEquals("The Response Code was not 200 for the following endpoint: " + conReady.getURL().toString(), SUCCESS_RESPONSE_CODE,
                      conReady.getResponseCode());
         HttpUtils.findStringInUrl(server1, APP_ENDPOINT, "Testing Delayed Servlet initialization.");
@@ -170,8 +227,8 @@ public class DelayAppStartupHealthCheckTest {
 
         server1.setMarkToEndOfLog();
 
-        List<String> lines = server1.findStringsInFileInLibertyServerRoot("CWMH0053W:", MESSAGE_LOG);
-        assertEquals("The CWMH0053W warning did not appear in messages.log", 1, lines.size());
+        List<String> lines = server1.findStringsInFileInLibertyServerRoot("CWM*H0053W:", MESSAGE_LOG);
+        assertEquals("The CWM*H0053W warning did not appear in messages.log", 1, lines.size());
 
         String line = server1.waitForStringInLogUsingMark("(CWWKZ0001I: Application DelayedHealthCheckApp started)+", 60000);
         log("testDelayedAppStartUpHealthCheck", "Application Started message found: " + line);
@@ -202,8 +259,8 @@ public class DelayAppStartupHealthCheckTest {
 
         server1.setMarkToEndOfLog();
 
-        List<String> lines = server1.findStringsInFileInLibertyServerRoot("CWMH0053W:", MESSAGE_LOG);
-        assertEquals("The CWMH0053W warning did not appear in messages.log", 0, lines.size());
+        List<String> lines = server1.findStringsInFileInLibertyServerRoot("CWM*H0053W:", MESSAGE_LOG);
+        assertEquals("The CWM*H0053W warning did not appear in messages.log", 0, lines.size());
 
         String line = server1.waitForStringInLogUsingMark("(CWWKZ0001I: Application DelayedHealthCheckApp started)+", 60000);
         log("testDelayedAppStartUpHealthCheck", "Application Started message found: " + line);
@@ -233,8 +290,8 @@ public class DelayAppStartupHealthCheckTest {
 
         server1.setMarkToEndOfLog();
 
-        List<String> lines = server1.findStringsInFileInLibertyServerRoot("CWMH0053W:", MESSAGE_LOG);
-        assertEquals("The CWMH0053W warning did not appear in messages.log", 1, lines.size());
+        List<String> lines = server1.findStringsInFileInLibertyServerRoot("CWM*H0053W:", MESSAGE_LOG);
+        assertEquals("The CWM*H0053W warning did not appear in messages.log", 1, lines.size());
 
         String line = server1.waitForStringInLogUsingMark("(CWWKZ0001I: Application DelayedHealthCheckApp started)+", 60000);
         log("testDelayedAppStartUpHealthCheck", "Application Started message found: " + line);

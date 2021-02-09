@@ -97,7 +97,7 @@ public class ListenerFactory {
 
         String id = listener.getRef();
 
-        List<Property> propList = (listener.getProperties() == null) ? null : listener.getProperties().getPropertyList();
+        List<Property> propList = (listener.getProperties() == null) ? null : (List<Property>) listener.getProperties().getPropertyList();
 
         injectionRefs.setProps(propList);
         Object listenerArtifact = ProxyFactory.loadArtifact(id, injectionRefs);

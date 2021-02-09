@@ -43,10 +43,10 @@ public class DatabaseManagementServlet extends HttpServlet {
     @Resource
     private UserTransaction tx;
 
-    @Resource(lookup = "jdbc/JPA_DS")
+    @Resource(lookup = "jdbc/JPA_JTA_DS")
     private DataSource dsJta;
 
-    @Resource(lookup = "jdbc/JPA_NJTADS")
+    @Resource(lookup = "jdbc/JPA_NJTA_DS")
     private DataSource dsRl;
 
     /*
@@ -175,6 +175,7 @@ public class DatabaseManagementServlet extends HttpServlet {
                     System.out.println("Executing: " + sql);
                     pw.println("Executing: " + sql);
                     if (stmt.execute(sql)) {
+                        System.out.println("Successful execution, Result Set:");
                         pw.println("Successful execution, Result Set:");
 
                         final ResultSet rs = stmt.getResultSet();
@@ -193,23 +194,34 @@ public class DatabaseManagementServlet extends HttpServlet {
                             }
 
                             pw.println(sb);
+                            System.out.println(sb);
                         }
                     } else {
+                        System.out.println("Successful execution, update count = " + stmt.getUpdateCount());
                         pw.println("Successful execution, update count = " + stmt.getUpdateCount());
                     }
 
                     successCount++;
                 } catch (Exception e) {
+                    System.out.println("SQL Execution failed: " + e);
                     if (!swallowErrors) {
+                        e.printStackTrace();
                         pw.println("SQL Execution failed: " + e);
                     }
                 }
             }
 
             System.out.println("SQL Executed: Total = " + totalCount + " Successful = " + successCount);
+            pw.println("SQL Executed: Total = " + totalCount + " Successful = " + successCount);
 
             tx.commit();
         } catch (Exception e) {
+            try {
+                tx.rollback();
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
+
             throw new ServletException(e);
         } finally {
             pw.close();

@@ -28,7 +28,7 @@
     <dataSource id="batchDB" type="javax.sql.XADataSource">
         <jdbcDriver libraryRef="DerbyLib"/>
         <!-- The 'derby.url' databaseName is set in bootstrap.properties -->
-        <properties.derby.embedded createDatabase="create" databaseName="${derby.url}" user="user" password="pass" />
+        <properties.derby.embedded createDatabase="create" databaseName="memory:${derby.url}" user="user" password="pass" />
     </dataSource>
 
     <!--  In this sample we'll use the same database (as the runtime DB) but use a different DS to access it.
@@ -37,7 +37,7 @@
     -->
     <dataSource id="appDB" jndiName="jdbc/batch" type="javax.sql.XADataSource">
         <jdbcDriver libraryRef="DerbyLib"/>
-        <properties.derby.embedded createDatabase="create" databaseName="${derby.url}" user="user" password="pass"/>
+        <properties.derby.embedded createDatabase="create" databaseName="memory:${derby.url}" user="user" password="pass"/>
     </dataSource>
 
     <!-- 
@@ -49,7 +49,7 @@
            <dataSource id="appReadOnlyDB" jndiName="jdbc/ReadOnlyDS">
          -->
         <jdbcDriver libraryRef="DerbyLib"/>
-        <properties.derby.embedded createDatabase="create" databaseName="${derby.url}" user="user" password="pass"/>
+        <properties.derby.embedded createDatabase="create" databaseName="memory:${derby.url}" user="user" password="pass"/>
         <connectionManager enableSharingForDirectLookups="false"/>
     </dataSource>
 

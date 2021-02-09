@@ -15,6 +15,6 @@ package com.ibm.ws.security.acme.internal;
  * for trace to use in package-info
  */
 public interface TraceConstants {
-    String TRACE_GROUP = "ACME";
+	String TRACE_GROUP = "ACMECA";
     String MESSAGE_BUNDLE = "com.ibm.ws.security.acme.resources.AcmeMessages";
 }

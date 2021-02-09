@@ -19,15 +19,15 @@
 #
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
-# JAXRS 2.0 CDI Message ------------------------
-warning.jaxrs.cdi.resource=CWWKW1000W: A(z) {0} JAXRS-2.0 er\u0151forr\u00e1s hat\u00f3k\u00f6re: {1}. A Liberty a k\u00f6vetkez\u0151t\u0151l k\u00e9r le er\u0151forr\u00e1sp\u00e9ld\u00e1nyt: {2}.
+# JAXRS CDI Message ------------------------
+warning.jaxrs.cdi.resource=CWWKW1000W: A(z) {0} JAXRS er\u0151forr\u00e1s hat\u00f3k\u00f6re: {1}. A Liberty a k\u00f6vetkez\u0151t\u0151l k\u00e9r le er\u0151forr\u00e1sp\u00e9ld\u00e1nyt: {2}.
 warning.jaxrs.cdi.resource.explanation=A Liberty JAXRS-t\u0151l k\u00e9r le er\u0151forr\u00e1sp\u00e9ld\u00e1nyt, ha nem tud CDI-t\u0151l p\u00e9ld\u00e1nyt lek\u00e9rni.
 warning.jaxrs.cdi.resource.useraction=Nincs teend\u0151. 
 
-warning.jaxrs.cdi.resource.mismatch=CWWKW1001W: A(z) {0} JAXRS-2.0 er\u0151forr\u00e1s {1} hat\u00f3k\u00f6re nem felel meg a(z) {2} CDI hat\u00f3k\u00f6rnek. A Liberty a k\u00f6vetkez\u0151t\u0151l k\u00e9r le er\u0151forr\u00e1sp\u00e9ld\u00e1nyt: {3}.
-warning.jaxrs.cdi.resource.mismatch.explanation=Ha a JAXRS-2.0 er\u0151forr\u00e1s hat\u00f3k\u00f6r nem felel meg a CDI hat\u00f3k\u00f6rnek, \u00e9s az er\u0151forr\u00e1sp\u00e9ld\u00e1ny l\u00e9tezik CDI-ben, akkor a Liberty az er\u0151forr\u00e1sp\u00e9ld\u00e1nyt CDI-t\u0151l k\u00e9ri le. A p\u00e9ld\u00e1ny nem tartalmaz CDI besz\u00far\u00e1st, ha az JAXRS-t\u0151l sz\u00e1rmazik.
+warning.jaxrs.cdi.resource.mismatch=CWWKW1001W: A(z) {0} JAXRS er\u0151forr\u00e1s {1} hat\u00f3k\u00f6re nem felel meg a(z) {2} CDI hat\u00f3k\u00f6rnek. A Liberty a k\u00f6vetkez\u0151t\u0151l k\u00e9r le er\u0151forr\u00e1sp\u00e9ld\u00e1nyt: {3}.
+warning.jaxrs.cdi.resource.mismatch.explanation=Ha a JAXRS er\u0151forr\u00e1s hat\u00f3k\u00f6re nem felel meg a CDI hat\u00f3k\u00f6rnek, \u00e9s az er\u0151forr\u00e1sp\u00e9ld\u00e1ny l\u00e9tezik CDI-ben, akkor a Liberty az er\u0151forr\u00e1sp\u00e9ld\u00e1nyt CDI-t\u0151l k\u00e9ri le. A p\u00e9ld\u00e1ny nem tartalmaz CDI besz\u00far\u00e1st, ha az JAXRS-t\u0151l sz\u00e1rmazik.
 warning.jaxrs.cdi.resource.mismatch.useraction=Nincs teend\u0151. 
 
-warning.jaxrs.cdi.provider.mismatch=CWWKW1002W: A(z) {0} JAXRS-2.0 szolg\u00e1ltat\u00f3 CDI hat\u00f3k\u00f6re: {1}. A Liberty a szolg\u00e1ltat\u00f3p\u00e9ld\u00e1nyt a k\u00f6vetkez\u0151t\u0151l k\u00e9ri le: {2}.
+warning.jaxrs.cdi.provider.mismatch=CWWKW1002W: A(z) {0} JAXRS szolg\u00e1ltat\u00f3 CDI hat\u00f3k\u00f6re: {1}. A Liberty a szolg\u00e1ltat\u00f3p\u00e9ld\u00e1nyt a k\u00f6vetkez\u0151t\u0151l k\u00e9ri le: {2}.
 warning.jaxrs.cdi.provider.mismatch.explanation=A szolg\u00e1ltat\u00f3p\u00e9ld\u00e1ny csak Singleton. A Liberty CDI-t\u0151l k\u00e9r le szolg\u00e1ltat\u00f3p\u00e9ld\u00e1nyt, ha a szolg\u00e1ltat\u00f3 CDI hat\u00f3k\u00f6re Dependent vagy ApplicationScoped. A p\u00e9ld\u00e1ny nem tartalmaz CDI besz\u00far\u00e1st, ha az JAXRS-t\u0151l sz\u00e1rmazik.
 warning.jaxrs.cdi.provider.mismatch.useraction=Nincs teend\u0151. 

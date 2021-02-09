@@ -16,6 +16,7 @@ Bundle-Name: JCA validator
 Bundle-SymbolicName: com.ibm.ws.rest.handler.validator.jca
 Bundle-Description: Validator for JCA connection factories; version=${bVersion}
 
+jakartaeeMe: true
 
 WS-TraceGroup: rest.validation
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,8 @@ import javax.servlet.annotation.WebServlet;
 
 import org.junit.Test;
 
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import configuratorApp.web.ConfiguratorTestBase;
 
 @SuppressWarnings("serial")
@@ -32,6 +34,7 @@ public class AnnotatedTypeConfiguratorTest extends ConfiguratorTestBase {
     BeanManager bm;
 
     @Test
+    @Mode(TestMode.FULL)
     public void sniffAnnotatedTypeConfigurator() {
         Bean<Pen> penBean = getBean(Pen.class);
         CreationalContext<Pen> cc = bm.createCreationalContext(penBean);

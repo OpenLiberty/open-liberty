@@ -34,7 +34,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
  * 1. Test the dynamic add servlet after the dynamic filter, which adds a servlet-filter name mapping for that servlet, to make sure no NPE.
  * Also verify that the filter mapping flow is not breaking (i.e continue to the next filter mapping during filter chain build up)
  *
- * 2. Verify the new WARNING message:
+ * 2. If (1) is successful, verify the new WARNING message:
  *
  * [WARNING ] CWWWC0002W: No servlet definition is found for the servlet name {0} for filter mapping {1}
  */
@@ -85,13 +85,15 @@ public class WCServletContainerInitializerFilterServletNameMappingTest extends L
      */
     @Test
     public void testDynamicAddServletAfterFilter() throws Exception {
-        LOG.info("Testing testDynamicAddServletAfterFilter");
-        this.verifyResponse("/SCIFilterServletNameMapping/Test2ServletFilterNameMapping", "SharedFilter.doFilter | Hello World from TestServlet2");
-    }
+        LOG.info("Testing testDynamicAddServletAfterFilter 1/2");
+        try {
+            this.verifyResponse("/SCIFilterServletNameMapping/Test2ServletFilterNameMapping", "SharedFilter.doFilter | Hello World from TestServlet2");
+        } catch (Exception e) {
+            LOG.info("Testing testDynamicAddServletAfterFilter failed.  Skip the checking for Warning message");
+            throw e;
+        }
 
-    @Test
-    public void testWarningMessage() throws Exception {
-        LOG.info("Testing testWarningMessage check existing of WARNING CWWWC0002W");
+        LOG.info("Testing testDynamicAddServletAfterFilter 2/2 : Checking the expected Warning message CWWWC0002W.");
         org.junit.Assert.assertTrue("CWWWC0002W: No servlet definition is found for the servlet name",
                                     !SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWWC0002W.*").isEmpty());
     }

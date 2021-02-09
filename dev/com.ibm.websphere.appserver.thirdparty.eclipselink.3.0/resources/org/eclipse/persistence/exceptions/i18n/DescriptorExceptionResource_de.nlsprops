@@ -1,0 +1,441 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/DescriptorExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+1=Das Attribut [{0}] ist noch nicht als Typ ValueHolderInterface deklariert, aber die zugeh\u00f6rige Zuordnung verwendet Dereferenzierung.
+
+10=Bei dieser Zuordnung ist kein Feldname definiert.
+
+100=Eine Methode hat eine Ausnahme ausgel\u00f6st.
+
+101=Die zugrunde liegende Methode hat eine Ausnahme ausgel\u00f6st.
+
+102=Die Methode [{0}] hat eine Ausnahme ausgel\u00f6st.
+
+103=Problem beim Extrahieren der Klasse aus der Zeile [{0}] mit der statischen Methode [{1}] mit dem Parameter (DatabaseRow). Es wurde eine Ausnahme ausgel\u00f6st.
+
+104=Problem beim Erstellen einer neuen Instanz mithilfe der Erstellungsmethode [{0}]. Die Erstellungsmethode hat eine Ausnahme ausgel\u00f6st.
+
+105=Die zugrunde liegende Deskriptor-Callback-Methode [{0}] mit dem Parameter (Session) hat eine Ausnahme ausgel\u00f6st.
+
+106=Die Methode [{0}] f\u00fcr das Objekt hat eine Ausnahme ausgel\u00f6st. {2}Argument: [{1}]
+
+108=In der Klassenindikatorzuordnung im \u00fcbergeordneten Deskriptor [{0}] wurde kein Wert gefunden.
+
+109=F\u00fcr diesen Deskriptor darf kein Schreibsperrenfeld definiert sein, weil es sich um einen untergeordneten Deskriptor handelt. Er \u00fcbernimmt das Schreibsperrenfeld des zugeh\u00f6rigen \u00fcbergeordneten Deskriptors.
+
+11=Die Fremdschl\u00fcsselinformationen f\u00fcr diese Zuordnung sind nicht ordnungsgem\u00e4\u00df definiert.
+
+110=Der Deskriptor fehlt f\u00fcr die Klasse [{0}].
+
+111=Prim\u00e4rschl\u00fcsselfeldnamen f\u00fcr mehrere Tabellen m\u00fcssen vollst\u00e4ndig qualifiziert sein.
+
+112=Es kann nur eine Tabelle mit setTableName(String) hinzugef\u00fcgt werden. Verwenden Sie addTableName(String), um einem Deskriptor mehrere Tabellen hinzuzuf\u00fcgen.
+
+113=Es war kein Zugriff auf den Konstruktor m\u00f6glich.
+
+114=Problem beim Erstellen einer neuen Instanz mithilfe der Erstellungsmethode [{0}]. Auf die Erstellungsmethode kann nicht zugegriffen werden.
+
+115=Es wurde kein Konvertierungswert f\u00fcr das Attribut [{0}] angegeben.
+
+116=Es wurde kein Konervertierungswert f\u00fcr den Wert [{0}] im Feld [{1}] angegeben.
+
+118=Das Objekt [{0}] darf keine schreibgesch\u00fctzten Zuordnungen zu den zugeh\u00f6rigen Schreibsperrenfeldern haben.
+
+119=Die [{0}]-Zuordnungen des Objekts zu den zugeh\u00f6rigen Schreibsperrenfeldern m\u00fcssen schreibgesch\u00fctzt sein.
+
+12=Deskriptoren m\u00fcssen eine Identit\u00e4tsmap verwenden, um die Option f\u00fcr die Pr\u00fcfung auf Vorhandensein eines Cache zu verwenden.
+
+120=Der Abfrageschl\u00fcssel [{0}] ist im \u00fcbergeordneten Deskriptor [{1}] definiert, aber nicht im untergeordneten Deskriptor [{2}].
+
+122=setExistenceCheck() mit dem Argument [{0}] wurde nicht akzeptiert.
+
+125=Die Zuordnung f\u00fcr das Attribut [{0}] verwendet Dereferenzierung und muss daher mit einem neuen ValueHolder initialisiert werden. Der aktuelle Wert ist: [{1}].
+
+126=Es gibt keine Unterklasse, die mit dieser Klasse [{0}] f\u00fcr diese Aggregatzuordnung mit Vererbung \u00fcbereinstimmt.
+
+127=Die Methode get f\u00fcr das Attribut [{0}] gibt kein ValueHolderInterface zur\u00fcck, aber die Zuordnung verwendet Dereferenzierung.
+
+128=Die Methode get f\u00fcr das Attribut [{0}] gibt ein ValueHolderInterface zur\u00fcck, aber die Zuordnung verwendet keine Dereferenzierung.
+
+129=Die Methode set f\u00fcr das Attribut [{0}] verwendet als zugeh\u00f6rigen Parameter nicht ValueHolderInterface, aber die Zuordnung verwendet Dereferenzierung.
+
+13=Auf die Instanzvariable [{0}] im Objekt [{1}] kann nicht zugegriffen werden.
+
+130=Die Methode set f\u00fcr das Attribut [{0}] \u00fcbernimmt ein ValueHolderInterface als zugeh\u00f6rigen Parameter, aber die Zuordnung verwendet keine Dereferenzierung.
+
+131=Die Methode get f\u00fcr das Attribut [{0}] muss ein Vector-Objekt zur\u00fcckgeben (oder einen Typ, der Map oder Collection implemementiert, wenn Java 2 verwendet wird).
+
+133=Die Methode set f\u00fcr das Attribut [{0}] muss ein Vector-Objekt als zugeh\u00f6rigen Parameter annehmen (oder einen Typ, der Map oder Collection implementiert, wenn Java 2 verwendet wird).
+
+135=Die Fremdschl\u00fcsselbeziehung f\u00fcr mehrere Tabellen bezieht sich auf eine unbekannte Tabelle [{0}].
+
+138=Das Attribut [{0}] hat den Typ [{1}], aber die Zuordnung verwendet transparente Dereferenzierung (verz\u00f6gertes Laden), sodass es eine Oberklasse von [{2}] sein muss.
+
+139=Die Methode get f\u00fcr das Attribut [{0}] gibt [{1}] zur\u00fcck, aber die Zuordnung verwendet transparente Dereferenzierung (verz\u00f6gertes Laden), sodass es eine Oberklasse von [{2}] sein muss.
+
+14=Problem beim Klonen des Objekts [{0}]. Auf die Klonmethode [{1}] kann nicht zugegriffen werden.
+
+140=Die Methode set f\u00fcr das Attribut [{0}] \u00fcbernimmt [{1}], aber die Zuordnung verwendet transparente Dereferenzierung (verz\u00f6gertes Laden), sodass es eine Oberklasse von [{2}] sein muss.
+
+141=Das Feld [{0}] ist in der Tabelle [{1}] in der Datenbank nicht vorhanden.
+
+142=Die Tabelle [{0}] ist in der Datenbank nicht vorhanden.
+
+143=Der angegebene Vektor f\u00fcr die Einf\u00fcgereihenfolge mehrerer Tabellen, [{0}], hat mehr oder weniger Tabellen als im Deskriptor angegeben ist. {2} Alle Tabellen [{1}] m\u00fcssen im Vektor f\u00fcr die Einf\u00fcgereihenfolge eingeschlossen sein.
+
+144=Transparente Dereferenzierung kann nur mit CollectionMappings verwendet werden.
+
+145=Die indirekte Containerklasse [{0}] muss den Konstruktor [{1}] mit dem Parameter (ValueHolderInterface) implementieren.
+
+146=Die indirekte Containerklasse [{0}] konnte mit dem Konstruktor {1}(ValueHolderInterface) nicht instanziiert werden.
+
+147=Die Containerrichtlinie [{0}] sollte nur in JDK 1.1.x verwendet werden. Sie wurde f\u00fcr [{1}] instanziiert.
+
+148=Die Containerrichtlinie [{0}] ist nicht mit der transparenten Dereferenzierung kompatibel.
+
+149=NoIndirectionPolicy-Objekte sollten diese Nachricht nicht empfangen.
+
+15=Diese Klasse definiert keinen f\u00fcr EclipseLink erforderlichen Standardkonstruktor.
+
+150=Die Zuordnung f\u00fcr das Attribut [{0}] verwendet transparente Dereferenzierung, daher muss das Attribut [{0}] mit einem entsprechenden Container initialisiert werden. Der aktuelle Wert ist [{1}]. {2} -  Muss eine Instanz eines Implementierungselements von Collection oder Map sein.
+
+151=Die Operation [{0}] ist f\u00fcr diese Zuordnung ung\u00fcltig.
+
+152=Die Operation [{1}] ist f\u00fcr die Dereferenzierungsrichtlinie [{0}] ung\u00fcltig.
+
+153=Der Referenzdeskriptor f\u00fcr [{0}] sollte auf einen Aggregate-Collection-Deskriptor gesetzt werden.
+
+154=Die Dereferenzierungscontainerklasse [{0}] implementiert IndirectContainer nicht.
+
+155=Diese Zuordnung enth\u00e4lt kein Fremdschl\u00fcsselfeld, das mit dem prim\u00e4ren Schl\u00fcsselfeld [{0}] verkn\u00fcpft ist.
+
+156=Der Strukturname ist f\u00fcr diese Zuordnung nicht definiert.
+
+157=Normale Deskriptoren unterst\u00fctzen keine nicht relationalen Erweiterungen.
+
+158=Die \u00fcbergeordnete Klasse dieses Deskriptors wurde auf seine eigene Klasse gesetzt.
+
+159=Proxy-Dereferenzierung ist nur in virtuellen Maschinen verf\u00fcgbar, die mit JDK 1.3 oder h\u00f6her kompatibel sind.
+
+16=Auf die Deskriptor-Callback-Methode [{0}] mit dem Parameter (DescriptorEvent) kann nicht zugegriffen werden.
+
+160=Das Attribut [{0}] der Klasse [{1}] wurde als [{2}] typisiert. Dies ist nicht in der Schnittstellenliste angegeben, die an die Methode useProxyIndirection() \u00fcbergeben wurde. {4}G\u00fcltige Schnittstellen sind: [{3}].
+
+161=Die Methode [{0}] in der Klasse [{1}] gibt einen Wert des Typs [{2}] zur\u00fcck. Dies ist nicht in der Schnittstellenliste angegeben, die an die Methode useProxyIndirection() \u00fcbergeben wurde. {4}G\u00fcltige Schnittstellen sind: [{3}].
+
+162=Die Methode [{0}] in der Klasse [{1}] \u00fcbernimmt einen Parameter des Typs [{2}]. Dies ist nicht in der Schnittstellenliste angegeben, die an die Methode useProxyIndirection() \u00fcbergeben wurde. {4}G\u00fcltige Schnittstellen sind: {3}].
+
+163=Die Attributklasse dieser Zuordnung stimmt nicht mit der Collectionklasse \u00fcberein. [{1}] kann [{0}] nicht zugeordnet werden.
+
+164=Die \u00c4nderungsmethode [{1}] in der \u00c4nderungsklasse [{0}] ist ung\u00fcltig, nicht \u00f6ffentlich oder wurde nicht gefunden. {2}Deskriptor\u00e4nderungsmethoden m\u00fcssen als "public static void" mit (ClassDescriptor) als einzigem Parameter deklariert werden.
+
+165=Diese Deskriptor\u00e4nderungsmethode [{1}] in der \u00c4nderungsklasse [{0}] hat eine Ausnahme ausgel\u00f6st.
+
+166=F\u00fcr das Attribut [{0}] ist keine Zuordnung vorhanden.
+
+167=Es wurde kein g\u00fcltiger Konstruktor f\u00fcr die Dereferenzierungscontainerklasse [{0}] gefunden.
+
+168=Problem beim Erstellen einer neuen Instanz mit dem Standardkonstruktor. Der Standardkonstruktor hat eine Ausnahme ausgel\u00f6st.
+
+169=Problem beim Erstellen einer neuen Factory-Instanz mit dem Standardkonstruktor. Der Standardkonstruktor hat eine Ausnahme ausgel\u00f6st.
+
+17=Es wurde versucht, auf die Methode [{0}] von Objekt [{1}] zuzugreifen. Es ist kein Zugriff auf die zugrunde liegende Methode m\u00f6glich.
+
+170=Problem (nicht zul\u00e4ssiger Zugriff) beim Erstellen einer neuen Factory-Instanz mit dem Standardkonstruktor.
+
+171=Die Factory-Klasse definiert keinen \u00f6ffentlichen Standardkonstruktor oder der Konstruktor hat eine Ausnahme ausgel\u00f6st.
+
+172=Der Factory-Konstruktor wurde nicht gefunden.
+
+173=Auf den Factory-Konstruktor konnte nicht zugegriffen werden.
+
+174=Problem beim Erstellen einer Factory. Auf die Erstellungsmethode [{0}] kann nicht zugegriffen werden.
+
+175=Problem beim Erstellen einer Factory mit der Erstellungsmethode [{0}]. Die Erstellungsmethode hat eine Ausnahme ausgel\u00f6st.
+
+176=Problem beim Erstellen einer Factory mit der Erstellungsmethode [{0}]. Auf die Erstellungsmethode kann nicht zugegriffen werden.
+
+177=Die Zuordnung f\u00fcr das Attribut [{0}] fehlt.
+
+178=Es wurde keine Zuordnung f\u00fcr das Attribut [{0}] in der Entity-Bean [{1}] gefunden. Das Attribut muss zugeordnet werden.
+
+179=Das Attribut [{0}] verwendet Bidirectional Relationship Maintenance mit ContainerPolicy [{1}], die diese Funktion nicht unterst\u00fctzt. Das Attribut sollte einem anderen Datensammlungstyp zugeordnet werden.
+
+18=Unzul\u00e4ssiger Methodenzugriff in einer Transformationszuordnung mit einem ValueHolder.
+
+181=Die AttributeTransformer-Klasse [{0}] wurde nicht gefunden.
+
+182=Die FieldTransformer-Klasse [{0}] wurde nicht gefunden.
+
+183=Die Klasse [{0}] kann nicht als AttributeTransformer verwendet werden.
+
+184=Die Klasse [{0}] kann nicht als FieldTransformer verwendet werden.
+
+185=ReturningPolicy enth\u00e4lt ein Feld [{0}] mit zwei verschiedenen Typen: [{1}] und [{2}].
+
+186=ReturningPolicy enth\u00e4lt ein Feld [{0}], das zweimal hinzugef\u00fcgt wurde: einmal mit addInsertField und einmal mit addInsertFieldReturnOnly.
+
+187=ReturningPolicy enth\u00e4lt ein Feld [{0}] mit dem Typ [{1}], aber dasselbe Feld im Deskriptor hat den Typ [{2}].
+
+188=ReturningPolicy enth\u00e4lt ein nicht zugeordnetes Feld [{0}], f\u00fcr das die Angabe des Typs erforderlich ist.
+
+189=ReturningPolicy enth\u00e4lt ein zugeordnetes Feld [{0}], f\u00fcr das die Angabe des Typs erforderlich ist.
+
+19=Unzul\u00e4ssiger Zugriff beim Aufruf der Attributmethode bei einer Transformationszuordnung. Es ist kein Zugriff auf die zugrunde liegende Methode m\u00f6glich.
+
+190=ReturningPolicy enth\u00e4lt ein Feld [{0}] mit einer zugeordneten [{1}]-Zuordnung, die nicht unterst\u00fctzt wird.
+
+191=ReturningPolicy enth\u00e4lt ein Feld [{0}], das nicht unterst\u00fctzt wird: es ist entweder ein Folgefeld, ein Klassentypindikator oder es wird zum Sperren verwendet.
+
+192=ReturningPolicy enth\u00e4lt ein Feld [{0}], aber die angepasste Abfrage [{1}] erzeugt keine Ausgabe.
+
+193=Es wurde keine angepasste Abfrage [{0}] definiert, aber ReturningPolicy enth\u00e4lt zur\u00fcckzugebende Felder und [{1}] unterst\u00fctzt nicht das Generieren eines Aufrufs mit R\u00fcckgabe.
+
+194=Die Klassenextraktionsmethode [{0}] muss eine statische Methode der Deskriptorklasse sein.
+
+195=Die gemeinsam genutzte Klasse {1} darf nicht die isolierte Klasse {0} referenzieren.
+
+196=UpdateAllFields wurde nicht definiert oder auf ''false'' gesetzt. Wenn Sie CMPPolicy.setForceUpdate(true) verwenden, m\u00fcssen Sie auch CMPPolicy.setUpdateAllFields(true) aufrufen.
+
+197=Die Zuordnung [{0}] ist nicht der richtige Typ f\u00fcr diesen Deskriptor.
+
+198=Um die ObjectChangeTrackingPolicy oder AttributeChangeTrackingPolicy verwenden zu k\u00f6nnen, muss {0} die ChangeTracker-Schnittstelle implementieren.
+
+199=Um die Abrufgruppe verwenden zu k\u00f6nnen, muss die Dom\u00e4nenklasse ({0}) die FetchGroupTracker-Schnittstelle implementieren.
+
+2=Das Attribut [{0}] ist als Typ ValueHolderInterface deklariert, aber die zugeh\u00f6rige Zuordnung verwendet keine Dereferenzierung.
+
+20=Auf die Methode [{0}] kann nicht zugegriffen werden.
+
+200=Es wurde versucht, ein Objekt mit inaktiver Dereferenzierung als neues Objekt zu registrieren. M\u00f6glicherweise wurde das Objekt gel\u00f6scht oder w\u00e4hrend einer Zusammenf\u00fchrung eines serialisierten Klons aus dem Cache entfernt. Dies ist ein Parallelit\u00e4tsversto\u00df. Sie sollten eine Sperrstrategie in Betracht ziehen.
+
+201=Es wurde versucht, ein Objekt im Sitzungscache zu erstellen, aber der Deskriptor ist in der Arbeitseinheit als isoliert gekennzeichnet. Daher darf kein Zugriff au\u00dferhalb einer Arbeitseinheit erfolgen.
+
+202=Beim Zugriff auf das Prim\u00e4rschl\u00fcsselobjekt [{0}] ist ein interner Fehler aufgetreten.
+
+203=Beim Zugriff auf die Methode [{1}] der Klasse [{0}] ist ein interner Fehler aufgetreten.
+
+204=Die Tabelleneinf\u00fcgereihenfolge ist unvereinbar mit den Fremdschl\u00fcsseln mehrerer Tabellen. Gem\u00e4\u00df letzteren muss Tabelle [{0}] vor der Tabelle [{1}] eingef\u00fcgt werden.
+
+205=Die Tabelleneinf\u00fcgereihenfolge hat eine zyklische Abh\u00e4ngigkeit zwischen den Tabellen [{0}] und [{1}].
+
+206=Die Tabelleneinf\u00fcgereihenfolge hat eine zyklische Abh\u00e4ngigkeit zwischen drei oder mehr Tabellen.
+
+207=Die Tabelleneinf\u00fcgereihenfolge ist falsch: Es wurde angegeben, dass die Tabelle [{0}], die der \u00fcbergeordneten Tabelle zugeordnet ist, hinter der Tabelle [{1}] eingef\u00fcgt werden soll, die einer untergeordneten Tabelle zugeordnet ist.
+
+208=Sie versuchen, einen Converter mit dem Klassennamen [{1}] einer nicht direkten Zuordnung [{0}] zuzuordnen. Nur direkte Zuordnungen d\u00fcrfen Converter haben. Dieser Fall tritt in der Regel ein, wenn versucht wird, einen Schl\u00fcsselconverter f\u00fcr DirectMapMapping mit einem nicht direkten Schl\u00fcssel zu definieren.
+
+209=Dieser Deskriptor enth\u00e4lt eine Zuordnung mit DirectMapMapping und es ist kein Schl\u00fcsselfeld definiert.
+
+21=Problem beim Extrahieren der Klasse aus der Zeile [{0}]. Auf die statische Methode [{1}] mit dem Parameter (DatabaseRow) kann nicht zugegriffen werden.
+
+210=F\u00fcr [{0}] ist das Listensortierfeld definiert, aber das Attribut implementiert die Liste nicht.
+
+211=F\u00fcr [{0}] ist das Listensortierfeld definiert und der Validierungsmodus f\u00fcr das Listensortierfeld ist CORRECTION. Dies erfordert, dass eine Zuordnung von IndirectList zum Attribut m\u00f6glich ist.
+
+212=Das f\u00fcr [{0}] angegebene Listensortierfeld hat eine falsche Tabelle [{1}]. {2} muss stattdessen verwendet werden.
+
+213={0} erfordert, dass alle Felder f\u00fcr die Zielfremdschl\u00fcssel zu derselben Tabelle geh\u00f6ren, es wurden jedoch mehrere gefunden: {1}.
+
+214={0} gibt eine Beziehungstabelle an, die nicht kompatibel ist mit der Methode addForeignKey(Name). Verwenden Sie alternativ die Methoden addSourceRelationKeyField(Name) und addTargetRelationKeyFieldName.
+
+215={0} muss RelationTableMechanism mit einem Wert ungleich null haben.
+
+216=CacheKeyType darf f\u00fcr einen Verbundprim\u00e4rschl\u00fcssel nicht ID_VALUE haben.
+
+217=Ung\u00fcltige XPath f\u00fcr XMLDirectMapping/XMLCompositeDirectCollectionMapping. XPath muss entweder das Symbol @ f\u00fcr Attribute enthalten oder Textknoten m\u00fcssen mit /text() enden. Beispiel: "@name" oder "name/text()"
+
+218=Eine Nullzeigerausnahme (NullPointerException) tritt bei Zugriff auf eine nicht vorhandene gewebte _vh_-Methode [{0}] ein. Das Weaving f\u00fcr die Klasse wurde nicht ordnungsgem\u00e4\u00df durchgef\u00fchrt. Pr\u00fcfen Sie f\u00fcr EE-Implementierungen die Modulreihenfolge im Implementierungsdeskriptor der Datei application.xml und stellen Sie sicher, dass das Modul, das die Persistenzeinheit enth\u00e4lt, sich vor allen anderen Modulen befindet, die sie verwenden.
+
+219=Die zus\u00e4tzlichen Bedingungen aus [{1}] sind innerhalb einer Vererbungshierarchie, die Ansichten verwendet, nicht zul\u00e4ssig.
+
+22=Problem beim Erstellen einer neuen Instanz. Auf die Erstellungsmethode [{0}] kann nicht zugegriffen werden.
+
+220=Fehlende Partitionierungsrichtlinie f\u00fcr Name [{0}].
+
+221=Das SerializedObjectPolicy-Feld ist nicht festgelegt.
+
+222=Beim Abrufen einer Prim\u00e4rschl\u00fcsselklasseninstanz wurde eine Ausnahme ausgel\u00f6st.
+
+23=Auf die Deskriptor-Callback-Methode [{0}] mit dem Parameter (Session) kann nicht zugegriffen werden.
+
+24=Auf die Instanzvariable [{0}] im Objekt [{1}] kann nicht zugegriffen werden. {3}Argument: [{2}]
+
+25=Auf die Methode [{0}] mit dem Argument [{1}] kann nicht zugegriffen werden.
+
+26=Es wird versucht, den Wert f\u00fcr die Instanzvariable [{0}] mit dem Typ [{1}] aus dem Objekt [{2}] abzurufen. Das angegebene Objekt ist keine Instanz der Klasse oder Schnittstelle, die das zugrunde liegende Feld deklariert.
+
+27=Es wurde versucht, die Methode [{0}] f\u00fcr das Objekt [{1}] aufzurufen. Die Anzahl der tats\u00e4chlichen und formalen Parameter ist unterschiedlich oder das Aufheben einer verschachtelten Umwandlung ist fehlgeschlagen.
+
+28=Unzul\u00e4ssiges Argument beim Instanziieren eines methodenbasierten Proxy in einer Transformationszuordnung.
+
+29=Die Anzahl der tats\u00e4chlichen und formalen Parameter ist unterschiedlich oder das Aufheben einer verschachtelten Umwandlung ist fehlgeschlagen.
+
+30=Die Anzahl der tats\u00e4chlichen und formalen Parameter f\u00fcr die Methode [{0}] ist unterschiedlich oder das Aufheben einer verschachtelten Umwandlung ist fehlgeschlagen.
+
+31=Die Anzahl der tats\u00e4chlichen und formalen Parameter f\u00fcr die Deskriptor-Callback-Methode [{0}] ist unterschiedlich oder das Aufheben einer verschachtelten Umwandlung ist fehlgeschlagen.
+
+32=Es wird versucht, den Wert [{0}] f\u00fcr die Instanzvariable [{1}] mit dem Typ [{2}] im Objekt festzulegen. Das angegebene Objekt ist keine Instanz der Klasse oder Schnittstelle, die das zugrunde liegende Feld deklariert oder das Aufheben einer verschachtelten Umwandlung ist fehlgeschlagen.
+
+33=Es wurde versucht, die Methode [{0}] f\u00fcr das Objekt mit dem Wert [{1}] aufzurufen. Die Anzahl der tats\u00e4chlichen und formalen Parameter ist unterschiedlich oder das Aufheben einer verschachtelten Umwandlung ist fehlgeschlagen.
+
+34=Diese Klasse definiert keinen \u00f6ffentlichen Standardkonstruktor oder der Konstruktor hat eine Ausnahme ausgel\u00f6st.
+
+35=Ung\u00fcltiges Ereignis.
+
+36=Ung\u00fcltiger Ereigniscode [{0}].
+
+37=Ung\u00fcltiger Deskriptorereigniscode [{0}].
+
+38=Der Identit\u00e4tszuordnungskonstruktor ist fehlgeschlagen, weil eine ung\u00fcltige Identit\u00e4tszuordnung angegeben wurde.
+
+39=Dieser Deskriptor gibt keine Java-Klasse an.
+
+40=Der Deskriptor f\u00fcr [{0}] fehlt. Er wurde m\u00f6glicherweise nicht zur Sitzung hinzugef\u00fcgt.
+
+41=F\u00fcr das Folgenummernfeld muss eine nicht schreibgesch\u00fctzte Zuordnung definiert sein.
+
+43=Fehlende Klasse f\u00fcr den Indikatorfeldwert [{0}] des Typs [{1}].
+
+44=Fehlende Klassenindikatorfeld der Datenbankzeile [{0}].
+
+45=Fehlende Zuordnung f\u00fcr das Feld [{0}].
+
+46=F\u00fcr das Prim\u00e4rschl\u00fcsselfeld [{0}] muss eine nicht schreibgesch\u00fctzte Zuordnung definiert sein.
+
+47=Die Prim\u00e4rschl\u00fcsselzuordnung f\u00fcr mehrere Tabellen muss angegeben werden, wenn eine angepasste Zusammenf\u00fchrung aus mehreren Tabellen (Join) verwendet wird.
+
+48=Es sind mehrere beschreibbare Zuordnungen f\u00fcr das Feld [{0}] vorhanden. Es darf nur eine als beschreibbar definiert sein. Alle anderen m\u00fcssen schreibgesch\u00fctzt sein.
+
+49=F\u00fcr diese Zuordnung wurde kein Methodenname f\u00fcr Attributtransformation angegeben.
+
+50=F\u00fcr diese Zuordnung wurde kein Feldname festgelegt.
+
+51=F\u00fcr diese Zuordnung wurden keine Fremdschl\u00fcssel angegeben.
+
+52=F\u00fcr diese Zuordnung wurde kein Referenzschl\u00fcssel angegeben.
+
+53=F\u00fcr diese Zuordnung wurde kein Beziehungstabellenname definiert.
+
+54=F\u00fcr diese Zuordnung wurden keine Quellenbeziehungsschl\u00fcssel angegeben.
+
+55=Die Deskriptor-Callback-Methode [{0}] wurde nicht gefunden. Als Argument muss eine Session oder ein DescriptorEvent angegeben werden.
+
+56=Die Methode [{0}] mit den Parametern (Record) oder (Record, Session) wurde nicht gefunden.
+
+57=Nicht zug\u00e4nglicher Konstruktor.
+
+58=Die Methode [{0}] mit den Parametern () oder (Session) wurde nicht gefunden.
+
+59=Die Instanzvariable [{0}] ist nicht in der Dom\u00e4nenklasse [{1}] definiert oder sie ist nicht zug\u00e4nglich.
+
+6=Der Attributname fehlt.
+
+60=Die Methode [{0}] oder [{1}] ist im Objekt [{2}] nicht definiert.
+
+61=Die Extraktionsmethode [{0}] f\u00fcr statische Klassen mit dem Parameter (Record) ist nicht vorhanden oder nicht zug\u00e4nglich.
+
+62=Es ist keine Klonmethode [{0}] ohne Parameter vorhanden oder sie ist nicht zug\u00e4nglich.
+
+63=Es ist keine Instanzerstellungsmethode [{0}] ohne Parameter vorhanden oder sie ist nicht zug\u00e4nglich.
+
+64=F\u00fcr diese Zuordnung wurden keine Zielfremdschl\u00fcssel angegeben.
+
+65=F\u00fcr diese Zuordnung wurden keine Zielbeziehungsschl\u00fcssel angegeben.
+
+66=Das Objekt konnte nicht aus dem Byte-Array deserialisiert werden.
+
+67=Das Objekt konnte nicht in das Byte-Array serialisiert werden.
+
+68=Der Wert eines Aggregats im Objekt [{0}] ist null. Nullwerte sind bei Aggregatzuordnungen nur bei Angabe von "Allow Null" zul\u00e4ssig.
+
+69=Beim Extrahieren eines Werts aus der Instanzvariablen [{0}] im Objekt [{1}] wurde eine Nullzeigerausnahme ausgel\u00f6st.
+
+7=Das Attribut [{0}] muss ein Typ sein, der {1} implementiert.
+
+70=Beim Extrahieren eines Werts \u00fcber die Methode [{0}] im Objekt [{1}] wurde eine Nullzeigerausnahme ausgel\u00f6st.
+
+71=Beim Festlegen des Werts f\u00fcr die Instanzvariable [{0}] auf den Wert [{1}] wurde eine Nullzeigerausnahme ausgel\u00f6st.
+
+72=Beim Festlegen eines Werts \u00fcber die Methode [{0}] mit dem Argument [{1}] wurde eine Nullzeigerausnahme ausgel\u00f6st.
+
+73=Der Deskriptor f\u00fcr die \u00fcbergeordnete Klasse [{0}] wurde nicht gefunden.
+
+74=Die Prim\u00e4rschl\u00fcsselfelder sind f\u00fcr diesen Deskriptor nicht definiert.
+
+75=Die Referenzklasse ist f\u00fcr diesen Deskriptor nicht definiert.
+
+77=Der Referenzdeskriptor f\u00fcr [{0}] muss als Aggregatdeskriptor gesetzt werden.
+
+78=Das Referenzfeld [{0}] f\u00fcr diese Zuordnung muss in der Referenztabelle vorhanden sein.
+
+79=Die Referenztabelle wurde f\u00fcr diese Zuordnung nicht angegeben.
+
+8=Der Deskriptor [{0}] wurde f\u00fcr die Verwendung von Vererbung definiert, aber es wurde kein Klassenindikatorfeld definiert. {2}Bei der Verwendung von Vererbung muss ein Klassenindikatorfeld oder eine Klassenextraktionsmethode definiert sein. {2}\u00dcbergeordneter Deskriptor: [{1}]
+
+80=Das Beziehungsschl\u00fcsselfeld [{0}] f\u00fcr diese Zuordnung muss in der Beziehungstabelle vorhanden sein.
+
+81=Die Methode [{0}] muss den Typ des zugeordneten Attributs zur\u00fcckgeben, nicht void.
+
+82=Auf die Deskriptor-Callback-Methode [{0}] mit dem Parameter (DescriptorEvent) kann nicht zugegriffen werden.
+
+83=Auf die Deskriptor-Callback-Methode [{0}] mit dem Parameter (Session) kann nicht zugegriffen werden.
+
+84=Auf die Methode [{0}] mit den Parametern (Record) oder (Record, Session) kann nicht zugegriffen werden.
+
+85=Auf die Methode [{0}] mit den Parametern () oder (Session) kann nicht zugegriffen werden.
+
+86=Auf die Instanzvariable [{0}] in der Klasse [{1}] kann nicht zugegriffen werden.
+
+87=Auf die Methoden [{0}], [{1}] im Objekt [{2}] kann nicht zugegriffen werden.
+
+88=Auf die Extraktionsmethode [{0}] f\u00fcr statische Klassen mit dem Parameter (Record) kann nicht zugegriffen werden.
+
+89=Auf die Klonmethode [{0}] ohne Parameter kann nicht zugegriffen werden.
+
+9=Bei dieser Zuordnung ist kein direkter Feldname definiert.
+
+90=Auf die Instanzerstellungsmethode [{0}] ohne Parameter kann nicht zugegriffen werden.
+
+91=F\u00fcr die Verwendung von generierten Folgenummern-IDs m\u00fcssen die Eigenschaften "Sequence Number Name" und "Sequence Number Field Name" f\u00fcr diesen Deskriptor definiert sein.
+
+92=Die Gr\u00f6\u00dfe des Prim\u00e4rschl\u00fcssels des Ziels stimmt nicht mit der Gr\u00f6\u00dfe des Fremdschl\u00fcssels \u00fcberein.
+
+93=Die Tabelle [{0}] ist in diesem Deskriptor nicht vorhanden.
+
+94=F\u00fcr Deskriptoren muss ein Tabellenname definiert sein.
+
+96=Die Anzahl der Zielschl\u00fcssel stimmt nicht mit der Anzahl der Quellenschl\u00fcssel \u00fcberein.
+
+97=Problem beim Klonen des Objekts [{0}]. Die Klonmethode [{1}] hat eine Ausnahme ausgel\u00f6st.
+
+98=Die zugrunde liegende Deskriptor-Callback-Methode [{0}] mit dem Parameter (DescriptorEvent) hat eine Ausnahme ausgel\u00f6st.
+
+99=Die Methode [{0}] des Objekts [{1}] hat eine Ausnahme ausgel\u00f6st.
+

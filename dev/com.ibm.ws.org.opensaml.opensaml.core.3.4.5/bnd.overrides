@@ -1,0 +1,171 @@
+#*******************************************************************************
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/rejar.props
+bVersion=1.0
+
+Bundle-Name: org.opensaml.core
+Bundle-Description: org.opensaml opensaml core; version=3.4.5
+Bundle-SymbolicName: com.ibm.ws.org.opensaml.opensaml.core.3.4.5
+
+WS-TraceGroup: SAML20
+
+Export-Package: \
+  org.opensaml.core;version="3.4.5", \
+  org.opensaml.core.config.*;version="3.4.5", \
+  org.opensaml.core.criterion.*;version="1.0.16", \
+  org.opensaml.core.metrics.*;version="3.4.5", \
+  org.opensaml.core.metrics.impl.*;version="3.4.5", \
+  org.opensaml.core.xml.*;version="3.4.5", \
+  org.opensaml.core.xml.config.*;version="3.4.5", \
+  org.opensaml.core.xml.io.*;version="3.4.5", \
+  org.opensaml.core.xml.persist.*;version="3.4.5", \
+  org.opensaml.core.xml.schema.*;version="3.4.5", \
+  org.opensaml.core.xml.schema.impl.*;version="3.4.5", \
+  org.opensaml.core.xml.util.*;version="3.4.5", \
+  org.opensaml.profile.action;version="3.4.5", \
+  org.opensaml.profile.context.*;version="3.4.5", \
+  org.opensaml.profile.logic;version="3.4.5", \
+  org.opensaml.saml.common;version="3.4.5", \
+  org.opensaml.saml.common.*;version="3.4.5", \
+  org.opensaml.saml.common.assertion;version="3.4.5", \
+  org.opensaml.saml.common.binding;version="3.4.5", \
+  org.opensaml.saml.common.messaging;version="3.4.5", \
+  org.opensaml.saml.common.messaging.context;version="3.4.5", \
+  org.opensaml.saml.common.messaging.context.navigate;version="3.4.5", \
+  org.opensaml.saml.common.binding.decoding;version="3.4.5", \
+  org.opensaml.saml.common.messaging.logic;version="3.4.5", \
+  org.opensaml.saml.common.messaging.soap;version="3.4.5", \
+  org.opensaml.saml.common.profile;version="3.4.5", \
+  org.opensaml.saml.common.profile.logic;version="3.4.5", \
+  org.opensaml.saml.common.xml;version="3.4.5", \
+  org.opensaml.saml.config;version="3.4.5", \
+  org.opensaml.saml.criterion;version="3.4.5", \
+  org.opensaml.saml.ext.*;version="3.4.5", \
+  org.opensaml.saml.metadata;version="3.4.5", \
+  org.opensaml.saml.metadata.*;version="3.4.5", \
+  org.opensaml.saml.metadata.resolver;version="3.4.5", \
+  org.opensaml.saml.metadata.support;version="3.4.5", \
+  org.opensaml.saml.saml1.*;version="3.4.5", \
+  org.opensaml.saml.saml2.*;version="3.4.5", \
+  org.opensaml.saml.saml2.metadata;version="3.4.5", \
+  org.opensaml.saml.common.binding.security.impl;version="3.4.5", \
+  org.opensaml.saml.metadata.resolver.impl;version="3.4.5", \
+  org.opensaml.saml.config.impl;version="3.4.5", \
+  org.opensaml.saml.saml2.binding.decoding.impl;version="3.4.5", \
+  org.opensaml.saml.saml2.core.impl;version="3.4.5", \
+  org.opensaml.saml.saml2.metadata.impl;version="3.4.5", \
+  org.opensaml.saml.security.impl;version="3.4.5", \
+  org.opensaml.xacml.*;version="3.4.5", \
+  org.opensaml.xmlsec;version="3.4.5", \
+  org.opensaml.xmlsec.algorithm;version="3.4.5", \
+  org.opensaml.xmlsec.config;version="3.4.5", \
+  org.opensaml.xmlsec.context;version="3.4.5", \
+  org.opensaml.xmlsec.criterion;version="3.4.5", \
+  org.opensaml.xmlsec.crypto;version="3.4.5", \
+  org.opensaml.xmlsec.encryption;version="3.4.5", \
+  org.opensaml.xmlsec.encryption.support;version="3.4.5", \
+  org.opensaml.xmlsec.keyinfo;version="3.4.5", \
+  org.opensaml.xmlsec.signature;version="3.4.5", \
+  org.opensaml.xmlsec.signature.support;version="3.4.5", \
+  org.opensaml.xmlsec.config.impl;version="3.4.5", \
+  org.opensaml.xmlsec.keyinfo.impl;version="3.4.5", \
+  org.opensaml.xmlsec.keyinfo.impl.provider;version="3.4.5", \
+  org.opensaml.xmlsec.signature.impl;version="3.4.5", \
+  org.opensaml.xmlsec.signature.support.impl;version="3.4.5", \
+  org.opensaml.xmlsec.encryption.impl;version="3.4.5", \
+  org.opensaml.xmlsec.impl;version="3.4.5", \
+  org.opensaml.security;version="3.4.5", \
+  org.opensaml.security.credential;version="3.4.5", \
+  org.opensaml.security.criteria;version="3.4.5", \
+  org.opensaml.security.crypto;version="3.4.5", \
+  org.opensaml.security.httpclient;version="3.4.5", \
+  org.opensaml.security.messaging;version="3.4.5", \
+  org.opensaml.security.trust;version="3.4.5", \
+  org.opensaml.security.x509;version="3.4.5", \
+  org.opensaml.security.x509.impl;version="3.4.5", \
+  org.opensaml.security.credential.impl;version="3.4.5", \
+  org.opensaml.security.messaging.impl;version="3.4.5", \
+  org.opensaml.soap.client;version="3.4.5", \
+  org.opensaml.soap.client.security;version="3.4.5", \
+  org.opensaml.soap.common;version="3.4.5", \
+  org.opensaml.soap.messaging;version="3.4.5", \
+  org.opensaml.soap.messaging.context;version="3.4.5", \
+  org.opensaml.soap.soap11;version="3.4.5", \
+  org.opensaml.soap.util;version="3.4.5", \
+  org.opensaml.soap.wssecurity;version="3.4.5", \
+  org.opensaml.soap.wssecurity.messaging;version="3.4.5", \
+  org.opensaml.soap.client.soap11.decoder.http.impl;version="3.4.5", \
+  org.opensaml.soap.client.soap11.encoder.http.impl;version="3.4.5", \
+  org.opensaml.soap.soap11.decoder.http.impl;version="3.4.5", \
+  org.opensaml.soap.soap11.encoder.http.impl;version="3.4.5"
+
+Private-Package: templates,schema
+ 
+
+
+Import-Package: \
+ !sun.*,\
+ !sun.misc,\
+ !javax.inject,\
+ javax.annotation,\
+ javax.xml.namespace,\
+ org.apache.commons.*;resolution:=optional,\
+ org.apache.http,\
+ com.codahale.metrics.*; version="[4.0.0,4.1.5)",\
+ com.ibm.websphere.ras, \
+ com.ibm.websphere.ras.annotation, \
+ com.ibm.ws.ffdc, \
+ org.joda.time, \
+ org.joda.time.chrono,\
+ org.joda.time.format,\
+ !com.beust.jcommander, \
+ !com.beust.jcommander.converters,\
+ !com.google.appengine.api,\
+ !com.google.apphosting.api,\
+ !com.google.common.util.concurrent.internal,\
+ !com.google.errorprone.annotations,\
+ !com.google.errorprone.annotations.concurrent,\
+ !org.apache.http.client.cache,\
+ !org.apache.http.impl.client.cache,\
+ !org.apache.velocity.*,\
+ !org.bouncycastle.*,\
+ !org.bouncycastle.asn1,\
+ !org.bouncycastle.asn1.x500,\
+ !org.bouncycastle.asn1.x509,\
+ !org.checkerframework.checker.nullness.compatqual,\
+ org.opensaml.storage;resolution:=optional, \
+ org.opensaml.messaging.*;resolution:=optional, \
+ *
+
+Include-Resource: \
+ @${repo;org.opensaml:opensaml-core;3.4.5}!/!META-INF/MANIFEST.MF|META-INF/maven/*, \
+ @${repo;org.opensaml:opensaml-xmlsec-api;3.4.5}!/!META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/services/*, \
+ @${repo;org.opensaml:opensaml-xmlsec-impl;3.4.5}!/!META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/services/*, \
+ @${repo;org.opensaml:opensaml-security-api;3.4.5}!/!META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/services/*, \
+ @${repo;org.opensaml:opensaml-saml-api;3.4.5}!/!META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/services/*, \
+ @${repo;org.opensaml:opensaml-profile-api;3.4.5}!/!META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/services/*, \
+ @${repo;org.opensaml:opensaml-soap-api;3.4.5}!/!META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/services/*, \
+ @${repo;org.opensaml:opensaml-soap-impl;3.4.5}!/!META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/services/*, \
+ @${repo;org.opensaml:opensaml-saml-impl;3.4.5}!/!META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/services/*, \
+ @${repo;org.opensaml:opensaml-security-impl;3.4.5}!/!META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/services/*, \
+ @${repo;org.opensaml:opensaml-xacml-impl;3.4.5}!/!META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/services/*, \
+ @${repo;org.opensaml:opensaml-xacml-saml-api;3.4.5}!/!META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/services/*, \
+ @${repo;org.opensaml:opensaml-xacml-api;3.4.5}!/!META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/services/*, \
+ @${repo;org.opensaml:opensaml-xacml-saml-impl;3.4.5}!/!META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/services/*, \
+ @${repo;io.dropwizard.metrics:metrics-core;4.1.5}!/!META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/services/*, \
+ @${repo;org.bouncycastle:bcprov-jdk15on;1.61;EXACT},\
+ @${repo;org.bouncycastle:bcpkix-jdk15on;1.61;EXACT},\
+ META-INF=resources/META-INF
+
+Archiver-Version:
+Build-Jdk:
+Built-By:
+Main-Class:

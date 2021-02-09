@@ -165,7 +165,7 @@ public class PluginGenerator {
             CHANGE_TRANSFORMER = false;
         } else {
             int majorVersion = JavaInfo.majorVersion();
-            CHANGE_TRANSFORMER = majorVersion == 7 || majorVersion == 8;
+            CHANGE_TRANSFORMER = majorVersion == 8;
         }
     }
 
@@ -197,7 +197,7 @@ public class PluginGenerator {
 
         if (cachedFile.exists()) {
             try {
-                
+
                 PluginConfigQuickPeek quickPeek = new PluginConfigQuickPeek(new FileInputStream(cachedFile));
                 previousConfigHash = quickPeek.getHashValue();
             } catch (Exception e) {
@@ -249,7 +249,7 @@ public class PluginGenerator {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
                 Tr.exit(tc, "generateXML", "Error creating plugin config xml: BundleContext is null");
             }
-            return; 
+            return;
         }
 
         utilityRequest = utilityReq;
@@ -363,8 +363,15 @@ public class PluginGenerator {
             esiProp5.setAttribute("Value", root);
             rootElement.appendChild(esiProp5);
 
-            // Reference to http endpoint the plugin should use
-            HttpEndpointInfo httpEndpointInfo = new HttpEndpointInfo(context, output, pcd.httpEndpointPid);
+            HttpEndpointInfo httpEndpointInfo;
+            try {
+                httpEndpointInfo = new HttpEndpointInfo(context, output, pcd.httpEndpointPid);
+            } catch(IllegalStateException e) { //  BundleContext is no longer valid
+                if(!this.isBundleUninstalled()){
+                    throw e; // Missing for some other reason
+                }
+                return;
+            }
 
             // Map of virtual host name to the list of alias data being collected...
             Map<String, List<VHostData>> vhostAliasData = new HashMap<String, List<VHostData>>();
@@ -476,6 +483,11 @@ public class PluginGenerator {
                 bServersElem = output.createElement("BackupServers");
             }
 
+            // check to see if the server is shutting down; if it is, bail out. A final exit message will be logged in the finally().
+            if (pcd == null || FrameworkState.isStopping() || container.isServerStopping()) {
+                return;
+            }
+
             if (!httpEndpointInfo.isValid()) {
                 // We couldn't find a matching endpoint -- there will be bits missing from
                 // the generated plugin config as a result
@@ -538,7 +550,6 @@ public class PluginGenerator {
                             tElem.setAttribute("Hostname", hostname);
                             String transportPort = Integer.toString(currentTransport.port);
                             tElem.setAttribute("Port", transportPort);
-
                             if (currentTransport.isSslEnabled) {
                                 tElem.setAttribute("Protocol", "https");
 
@@ -745,6 +756,11 @@ public class PluginGenerator {
             // The <RequestMetrics> and the sub elements <filters> are not processed yet
             // bunch of PMI stuff?
 
+            // check to see if the server is shutting down; if it is, bail out. A final exit message will be logged in the finally().
+            if (pcd == null || FrameworkState.isStopping() || container.isServerStopping()) {
+                return;
+            }
+
             // create the plugin config output file
             // Location of plugin-cfg.xml is the server.output.dir/logs/state for implicit requests, server.output.dir for direct mbean requests
 
@@ -808,9 +824,9 @@ public class PluginGenerator {
                         serializer.transform(new DOMSource(output), new StreamResult(pluginCfgWriter));
                     }
                 } catch(IOException e){
-                    //path to the cachedFile is broken when bundle was uninstalled 
-                    if(!this.isBundleUninstalled()){ 
-                        throw e; // Missing for some other reason 
+                    //path to the cachedFile is broken when bundle was uninstalled
+                    if(!this.isBundleUninstalled()){
+                        throw e; // Missing for some other reason
                     }
                 } finally {
                     if (pluginCfgWriter != null) {
@@ -822,11 +838,11 @@ public class PluginGenerator {
                     try {
                         copyFile(cachedFile, outFile.asFile());
                     } catch (IOException e){
-                        //cachedFile no longer exists if the bundle was uninstalled 
+                        //cachedFile no longer exists if the bundle was uninstalled
                         if(!this.isBundleUninstalled()){
-                            throw e; // Missing for some other reason 
+                            throw e; // Missing for some other reason
                         }
-                    }    
+                    }
                 }
             } else {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -840,7 +856,13 @@ public class PluginGenerator {
             }
         } finally {
             try {
-
+                // check to see if the server is shutting down; if it is, bail out
+                if (pcd == null || FrameworkState.isStopping() || container.isServerStopping()) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                        Tr.exit(tc, "generateXML", ((FrameworkState.isStopping() || container.isServerStopping()) ? "Server is stopping" : "pcd is null"));
+                    }
+                    return;
+                }
                 // Verify that the temp plugin file exists
                 if (!outFile.exists()) {
                     throw new FileNotFoundException("File " + outFile.asFile().getAbsolutePath() + " could not be found");
@@ -870,9 +892,9 @@ public class PluginGenerator {
             Tr.exit(tc, "generateXML");
         }
     }
-    
+
     @FFDCIgnore(IOException.class)
-    public static void copyFile(File in, File out) 
+    public static void copyFile(File in, File out)
                     throws IOException
                 {
                     FileChannel inChannel = new
@@ -882,7 +904,7 @@ public class PluginGenerator {
                     try {
                         inChannel.transferTo(0, inChannel.size(),
                                 outChannel);
-                    } 
+                    }
                     catch (IOException e) {
                         throw e;
                     }
@@ -973,7 +995,7 @@ public class PluginGenerator {
     /**
      * Check to see if the current config has the same information as the previously
      * written config. If this config has no new information, return false.
-     * 
+     *
      * @param newConfig the current config information document to be compared
      * @return true if there is new or updated config information
      */
@@ -1373,7 +1395,7 @@ protected class XMLRootHandler extends DefaultHandler implements LexicalHandler 
         /**
          * An exception indicating that the parsing should stop. This is usually
          * triggered when the top-level element has been found.
-         * 
+         *
          */
         private class StopParsingException extends SAXException {
                 /**
@@ -1419,7 +1441,7 @@ protected class XMLRootHandler extends DefaultHandler implements LexicalHandler 
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see org.xml.sax.ext.LexicalHandler#comment(char[], int, int)
          */
         public final void comment(final char[] ch, final int start, final int length) {
@@ -1428,9 +1450,9 @@ protected class XMLRootHandler extends DefaultHandler implements LexicalHandler 
 
         /**
          * Creates a new SAX parser for use within this instance.
-         * 
+         *
          * @return The newly created parser.
-         * 
+         *
          * @throws ParserConfigurationException
          *             If a parser of the given configuration cannot be created.
          * @throws SAXException
@@ -1462,7 +1484,7 @@ protected class XMLRootHandler extends DefaultHandler implements LexicalHandler 
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see org.xml.sax.ext.LexicalHandler#endCDATA()
          */
         public final void endCDATA() {
@@ -1471,7 +1493,7 @@ protected class XMLRootHandler extends DefaultHandler implements LexicalHandler 
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see org.xml.sax.ext.LexicalHandler#endDTD()
          */
         public final void endDTD() {
@@ -1480,7 +1502,7 @@ protected class XMLRootHandler extends DefaultHandler implements LexicalHandler 
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see org.xml.sax.ext.LexicalHandler#endEntity(java.lang.String)
          */
         public final void endEntity(final String name) {
@@ -1506,7 +1528,7 @@ protected class XMLRootHandler extends DefaultHandler implements LexicalHandler 
          * Resolve external entity definitions to an empty string. This is to speed
          * up processing of files with external DTDs. Not resolving the contents of
          * the DTD is ok, as only the System ID of the DTD declaration is used.
-         * 
+         *
          * @see org.xml.sax.helpers.DefaultHandler#resolveEntity(java.lang.String,
          *      java.lang.String)
          */
@@ -1517,7 +1539,7 @@ protected class XMLRootHandler extends DefaultHandler implements LexicalHandler 
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see org.xml.sax.ext.LexicalHandler#startCDATA()
          */
         public final void startCDATA() {
@@ -1526,7 +1548,7 @@ protected class XMLRootHandler extends DefaultHandler implements LexicalHandler 
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see org.xml.sax.ext.LexicalHandler#startDTD(java.lang.String,
          *      java.lang.String, java.lang.String)
          */
@@ -1536,7 +1558,7 @@ protected class XMLRootHandler extends DefaultHandler implements LexicalHandler 
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see org.xml.sax.ContentHandler#startElement(java.lang.String,
          *      java.lang.String, java.lang.String, org.xml.sax.Attributes)
          */
@@ -1552,7 +1574,7 @@ protected class XMLRootHandler extends DefaultHandler implements LexicalHandler 
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see org.xml.sax.ext.LexicalHandler#startEntity(java.lang.String)
          */
         public final void startEntity(final String name) {
@@ -1563,7 +1585,7 @@ protected class XMLRootHandler extends DefaultHandler implements LexicalHandler 
          * @return
          */
         public int getHashValue() {
-            
+
             String hash = attributesFound.getValue("ConfigHash");
             if (hash != null)
                 return new Integer(hash);
@@ -1572,7 +1594,7 @@ protected class XMLRootHandler extends DefaultHandler implements LexicalHandler 
 
 }
 
-    
+
     protected class PluginConfigQuickPeek  {
 
             private static final int UNSET = -2;
@@ -1580,7 +1602,7 @@ protected class XMLRootHandler extends DefaultHandler implements LexicalHandler 
             private static final int UNKNOWN = -1;
 
             private XMLRootHandler handler = null;
-            
+
             private int hash = UNSET;
 
             public PluginConfigQuickPeek(InputStream in) {
@@ -1605,13 +1627,13 @@ protected class XMLRootHandler extends DefaultHandler implements LexicalHandler 
 
             /**
              * Returns the hash value
-             * 
+             *
              * @return
              */
             public int getHashValue() {
                     if (hash == UNSET) {
                             hash = handler.getHashValue();
-                                                     
+
                             if (hash == UNSET) {
                                     hash = UNKNOWN;
                             }
@@ -1624,7 +1646,7 @@ protected class XMLRootHandler extends DefaultHandler implements LexicalHandler 
                     this.hash = hashValue;
             }
 
-            
+
 
     }
 
@@ -1866,6 +1888,7 @@ protected class XMLRootHandler extends DefaultHandler implements LexicalHandler 
             if (config.get("ESIEnableToPassCookies") != null) {
                 ESIEnableToPassCookies = (Boolean) config.get("ESIEnableToPassCookies");
             } // PI76699 End
+
             TrustedProxyEnable = (Boolean) config.get("trustedProxyEnable");
             String proxyList = (String) config.get("trustedProxyGroup");
             if (proxyList != null) {
@@ -2042,7 +2065,7 @@ protected class XMLRootHandler extends DefaultHandler implements LexicalHandler 
 
     /**
      * Returns a File.pathSeparator if the input String does not end in / or \\
-     * 
+     *
      * @param input - The String to test
      * @return A String containing a File.pathSeparator if the input String doesn't end in / or \\
      */

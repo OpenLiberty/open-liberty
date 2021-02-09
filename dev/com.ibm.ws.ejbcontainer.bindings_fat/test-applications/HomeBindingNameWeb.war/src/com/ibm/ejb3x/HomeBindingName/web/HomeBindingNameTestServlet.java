@@ -15,11 +15,14 @@ import static org.junit.Assert.fail;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.rmi.PortableRemoteObject;
 import javax.servlet.annotation.WebServlet;
 
 import org.junit.Test;
 
+import com.ibm.ejb3x.HomeBindingName.ejb.LocalHomeBindingName;
 import com.ibm.ejb3x.HomeBindingName.ejb.LocalHomeBindingNameHome;
+import com.ibm.ejb3x.HomeBindingName.ejb.RemoteHomeBindingName;
 import com.ibm.ejb3x.HomeBindingName.ejb.RemoteHomeBindingNameHome;
 
 import componenttest.app.FATServlet;
@@ -55,12 +58,12 @@ public class HomeBindingNameTestServlet extends FATServlet {
      * Tests that the remote default binding should not have been bound because we
      * have custom bindings.
      */
-    //@Test
+    @Test
     public void testDefaultDisabledRemoteHomeBinding() {
         try {
             Object bean = new InitialContext().lookup("ejb/HomeBindingNameTestApp/HomeBindingNameEJB.jar/HomeBindingName3#com.ibm.ejb3x.HomeBindingName.ejb.RemoteHomeBindingNameHome");
             if (bean != null) {
-                fail("EJBLocal default bindings lookup should not have worked because we have custom bindings");
+                fail("Remote default bindings lookup should not have worked because we have custom bindings");
             }
         } catch (NamingException e) {
             // expected to not work
@@ -336,8 +339,13 @@ public class HomeBindingNameTestServlet extends FATServlet {
                     fail("lookup " + lookupName + " should have worked for " + homeBindingName + " and context " + contextString);
                 }
                 try {
+                    LocalHomeBindingName bean = beanHome.create();
                     if (beanHome.create() == null) {
                         fail("home.create() for lookup " + lookupName + " should have worked for " + homeBindingName + " and context " + contextString);
+                    }
+                    System.out.println("Got bean, calling method");
+                    if (bean.foo() == null) {
+                        fail("bean.method() for lookup " + lookupName + " should have worked for " + homeBindingName + " and context " + contextString);
                     }
                 } catch (Exception e) {
                     e.printStackTrace(System.out);
@@ -355,20 +363,35 @@ public class HomeBindingNameTestServlet extends FATServlet {
             } else {
                 // expected to fail in other cases
             }
+        } catch (ClassCastException cce) {
+            // For the hybrid beans they might have a remote bound in the lookup string, so we'll get a class cast
+            // since we try all the lookup combinations, just ignore it.
+            if (passingCases.contains(beanNum)) {
+                cce.printStackTrace();
+                fail("ClassCastException While performing lookup " + lookupName + " for " + homeBindingName + " and context " + contextString);
+            } else {
+                // expected to fail in other cases
+            }
         }
     }
 
     private void testLookupCombinationsHelperRemote(Context context, String contextString, String lookupName, String homeBindingName, String beanNum, String passingCases) {
         try {
             System.out.println("Testing " + lookupName + " with context " + contextString + " against " + homeBindingName);
-            RemoteHomeBindingNameHome beanHome = (RemoteHomeBindingNameHome) context.lookup(lookupName);
+            Object lookup = context.lookup(lookupName);
+            RemoteHomeBindingNameHome beanHome = (RemoteHomeBindingNameHome) PortableRemoteObject.narrow(lookup, RemoteHomeBindingNameHome.class);
             if (passingCases.contains(beanNum)) {
                 if (beanHome == null) {
                     fail("lookup " + lookupName + " should have worked for " + homeBindingName + " and context " + contextString);
                 }
                 try {
+                    RemoteHomeBindingName bean = beanHome.create();
                     if (beanHome.create() == null) {
                         fail("home.create() for lookup " + lookupName + " should have worked for " + homeBindingName + " and context " + contextString);
+                    }
+                    System.out.println("Got bean, calling method");
+                    if (bean.foo() == null) {
+                        fail("bean.method() for lookup " + lookupName + " should have worked for " + homeBindingName + " and context " + contextString);
                     }
                 } catch (Exception e) {
                     e.printStackTrace(System.out);
@@ -378,6 +401,13 @@ public class HomeBindingNameTestServlet extends FATServlet {
                 if (beanHome != null) {
                     fail("lookup " + lookupName + " should have failed for " + homeBindingName + " and context " + contextString);
                 }
+            }
+        } catch (ClassCastException cce) {
+            if (passingCases.contains(beanNum)) {
+                cce.printStackTrace();
+                fail("ClassCastException While narrowing lookup " + lookupName + " for " + homeBindingName + " and context " + contextString);
+            } else {
+                // expected to fail in other cases
             }
         } catch (NamingException e) {
             if (passingCases.contains(beanNum)) {
@@ -401,13 +431,13 @@ public class HomeBindingNameTestServlet extends FATServlet {
         testLookupCombinations(false, "local-home-binding-name=\"ejblocal:ejb/com/ibm/ejb3x/HomeBindingName/ejb/HomeBindingNameHome2\"", 2);
     }
 
-    //@Test
+    @Test
     public void testRemoteHomeBindingNameStartsWithCom() throws Exception {
         // remote-home-binding-name="com/ibm/ejb3x/HomeBindingName/ejb/HomeBindingNameHome3"/>
         testLookupCombinations(true, "remote-home-binding-name=\"com/ibm/ejb3x/HomeBindingName/ejb/HomeBindingNameHome3\"", 3);
     }
 
-    //@Test
+    @Test
     public void testRemoteHomeBindingNameStartsWithEJB() throws Exception {
         // remote-home-binding-name="ejb/com/ibm/ejb3x/HomeBindingName/ejb/HomeBindingNameHome4"/>
         testLookupCombinations(true, "remote-home-binding-name=\"ejb/com/ibm/ejb3x/HomeBindingName/ejb/HomeBindingNameHome4\"", 4);

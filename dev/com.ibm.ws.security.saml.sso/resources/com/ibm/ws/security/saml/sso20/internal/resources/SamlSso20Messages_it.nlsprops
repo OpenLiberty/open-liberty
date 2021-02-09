@@ -221,7 +221,7 @@ SAML20_NO_INRESPONSETO.useraction=Contattare l'amministratore IdP per assicurars
 
 # similar to the tWas messages
 # Example: {0} = realm
-SAML20_ATTRIBUTE_ERR=CWWKS5068E: L''asserzione SAML non contiene un attributo [{0}].  Un attributo [{0}] \u00e8 obbligatorio.  
+SAML20_ATTRIBUTE_ERR=CWWKS5068E: L''asserzione SAML non contiene un elemento [{0}].  Un elemento [{0}] \u00e8 obbligatorio.  
 SAML20_ATTRIBUTE_ERR.explanation=Nell'asserzione SAML manca un attributo richiesto dal runtime.
 SAML20_ATTRIBUTE_ERR.useraction=L'attributo richiesto deve essere aggiunto all'asserzione SAML.  Contattare l'amministratore del provider di identit\u00e0 (IdP) per assicurarsi che l'IdP sia configurato correttamente o configurare il provider del servizio (SP) o il TAI per definire un valore per l'attributo.
 

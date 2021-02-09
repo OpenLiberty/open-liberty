@@ -1,0 +1,10 @@
+dropins/
+key.jks
+sslClientDefault.jks
+sslServerTrust.jks
+x509ClientDefault.jks
+x509ClientDefaultE.properties
+x509ClientDefaultS.properties
+x509ServerDefault.jks
+x509client.war
+/*.jceks

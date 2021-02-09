@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2019 IBM Corporation and others.
+ * Copyright (c) 2016, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 
 package com.ibm.websphere.security.jwt;
@@ -347,6 +347,25 @@ public class JwtBuilder {
         return this;
     }
 
+    /**
+     * Sets token encryption information for creating JSON Web Encryption tokens.
+     *
+     * @param keyManagementAlg
+     *            Specifies the encryption algorithm that is used to encrypt the Content Encryption Key.
+     * @param keyManagementKey
+     *            Key used to encrypt the Content Encryption Key, which is then used to encrypt the JWT plaintext to produce
+     *            the JWE ciphertext.
+     * @param contentEncryptionAlg
+     *            Specifies the encryption algorithm that is used to encrypt the JWT plaintext to produce the JWE ciphertext.
+     * @return {@code JwtBuilder} object
+     * @throws KeyException
+     *             Thrown if an error is encountered using the provided key and encryption information
+     */
+    public JwtBuilder encryptWith(String keyManagementAlg, Key keyManagementKey, String contentEncryptionAlg) throws KeyException {
+        builder = builder.encryptWith(keyManagementAlg, keyManagementKey, contentEncryptionAlg);
+        return this;
+    }
+
     // add claims with the given name and value
     /**
      * Sets the specified claim.
@@ -356,7 +375,7 @@ public class JwtBuilder {
      * @param value
      *            This is an Object and represents the value of the claim. Object can be a string, number, boolean, map, or list.
      *            Other object types will have their toString method called, which might not produce valid JSON
-     *  @return {@code JwtBuilder} object
+     * @return {@code JwtBuilder} object
      * @throws InvalidClaimException
      *             Thrown if the claim is {@code null}, or the value is {@code null} or the value is not the correct type for the
      *             claim
@@ -528,11 +547,12 @@ public class JwtBuilder {
     // fetch claim from json or jwt. The jwt can be base 64 encoded or
     // decoded.
     /**
-     * Retrieves the specified claim from the given json or jwt string.
+     * Retrieves the specified claim from the given json or jwt string. JWT strings in JSON Web Encryption (JWE) format are not
+     * supported.
      *
      * @param jsonOrJwt
-     *            This is a String and represents either base 64 encoded or decoded JWT payload in the json format or base 64
-     *            encoded JWT
+     *            This is a string that represents either a JWT payload in JSON format or a JWT in JWS format. The string may or
+     *            may not be base64 encoded. Strings that are in JWE format are not supported.
      *
      * @return {@code JwtBuilder} object
      * @throws InvalidClaimException
@@ -587,11 +607,12 @@ public class JwtBuilder {
     // fetch all claim from json or jwt. The jwt can be base 64 encoded or
     // decoded
     /**
-     * Retrieves all the claims from the given json or jwt string.
+     * Retrieves all the claims from the given json or jwt string. JWT strings in JSON Web Encryption (JWE) format are not
+     * supported.
      *
      * @param jsonOrJwt
-     *            This is a String and represents either base 64 encoded or decoded JWT payload in the json format or base 64
-     *            encoded JWT
+     *            This is a string that represents either a JWT payload in JSON format or a JWT in JWS format. The string may or
+     *            may not be base64 encoded. Strings that are in JWE format are not supported.
      *
      * @return {@code JwtBuilder} object
      *

@@ -1,5 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.internal.jca-1.6
+WLP-DisableAllFeatures-OnConflict: false
 IBM-API-Package: \
   com.ibm.ws.jca.service; type="internal", \
   javax.resource; type="spec", \
@@ -22,3 +23,4 @@ IBM-API-Package: \
   com.ibm.ws.jca.feature
 kind=ga
 edition=base
+WLP-Activation-Type: parallel

@@ -1,0 +1,75 @@
+###############################################################################
+# Copyright (c) 2010, 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.ws.install.featureUtility/resources/com/ibm/ws/install/featureUtility/internal/resources/FeatureUtilitySampleConfiguration.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+# Only need to translate the commented lines (lines that start with '##') below.
+# The following keywords do not need to be translated.
+
+SAMPLE_CONFIG=######################################################################\n\
+## ## Definir el repositorio espejo de Maven Central  ##\n\
+## De forma predeterminada, featureUtility se descarga de Maven Central. Los usuarios\n\
+## pueden configurar un espejo del repositorio de Maven Central y\n\
+## alterar temporalmente la conexi\u00f3n de Maven Central predeterminada de featureUtility\n\
+## con el repositorio espejo.\n\
+## -------------------------------------------------------------------\n\
+#mavenCentralMirror.url=http://w3.mycompany.com/pub/maven2\n\
+\n\
+## Especifique las credenciales del repositorio espejo de Maven Central, si es necesario.\n\
+## Para obtener una mayor seguridad, codifique el valor de la propiedad .password\n\
+## utilizando la acci\u00f3n de codificaci\u00f3n securityUtility.\n\
+## Si no establece el usuario y la contrase\u00f1a, recibir\u00e1 una solicitud\n\
+## para que los proporcione.\n\
+## -------------------------------------------------------------------\n\
+#mavenCentralMirror.user=username\n\
+#mavenCentralMirror.password=myPassword\n\
+\n\
+######################################################################\n\
+## ## Utilizando repositorios remotos personalizados ##\n\
+## featureUtility puede instalar repositorios locales Maven remotos. Proporcione\n\
+## un nombre de repositorio y el URL para cada repositorio local de Maven remoto\n\
+## que contiene artefactos de caracter\u00edsticas de Liberty.\n\
+## El acceso a los repositorios se realiza en el orden en que est\u00e1n especificados.\n\
+## -------------------------------------------------------------------\n\
+#remoteRepositoryName1.url=http://w3.mycompany.com/repository\n\
+#remoteRepositoryName2.url=http://w3.mycompany.com/secure/repository\n\
+\n\
+## Especifique las credenciales de cada repositorio, si es necesario.\n\
+## Para obtener una mayor seguridad, codifique el valor de la propiedad .password\n\
+## utilizando la acci\u00f3n de codificaci\u00f3n securityUtility.\n\
+## Si no establece el usuario y la contrase\u00f1a, recibir\u00e1 una solicitud\n\
+## para que los proporcione.\n\
+## -------------------------------------------------------------------\n\
+#remoteRepositoryName2.user=username\n\
+#remoteRepositoryName2.password=myPassword\n\
+\n\
+######################################################################\n\
+## ## Utilizaci\u00f3n de un servidor proxy (opcional) ##\n\
+## Si utiliza un servidor proxy para acceder a internet,\n\
+## especifique valores para las propiedades de valores de proxy.\n\
+## Para obtener una mayor seguridad, codifique el valor de la propiedad proxyPassword\n\
+## utilizando la acci\u00f3n de codificaci\u00f3n securityUtility.\n\
+## Si no establece las propiedades proxyUser y proxyPassword,\n\
+## recibir\u00e1 una solicitud para que las proporcione.\n\
+## -------------------------------------------------------------------\n\
+#proxyHost=hostName\n\
+#proxyPort=3128\n\
+#proxyUser=proxyUsername\n\
+#proxyPassword=myProxyPassword\n\
+\n\
+######################################################################\n\
+## ## Definir el repositorio local de Maven ##\n\
+## La ubicaci\u00f3n del repositorio local de Maven predeterminado se puede cambiar.\n\
+## La ubicaci\u00f3n predeterminada es ${user.home}/.m2/repository/.\n\
+## -------------------------------------------------------------------\n\
+#featureLocalRepo=/home/my_local/repository

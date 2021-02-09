@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ejb-jar id="ejb-jar_ID" version="3.0"
+         xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_0.xsd"
+         metadata-complete="false">
+   <enterprise-beans>
+      <session id="StatefulInterceptorInjectionBean">
+         <ejb-name>StatefulInterceptorInjectionBean</ejb-name>
+         <env-entry>
+            <description>ENV Entry</description>
+            <env-entry-name>env/StringVal</env-entry-name>
+            <env-entry-type>java.lang.String</env-entry-type>
+            <env-entry-value>Hello!</env-entry-value>
+            <injection-target>
+               <injection-target-class>com.ibm.ejblite.interceptor.v32.mix.ejb.XMLInjectionInterceptor2</injection-target-class>
+               <injection-target-name>envEntry</injection-target-name>
+            </injection-target>
+            <injection-target>
+               <injection-target-class>com.ibm.ejblite.interceptor.v32.mix.ejb.AnnotationInjectionInterceptor</injection-target-class>
+               <injection-target-name>envEntry</injection-target-name>
+            </injection-target>
+         </env-entry>
+         <ejb-local-ref id="EJBLocalRef_101">
+            <description>EJB local reference</description>
+            <ejb-ref-name>ejb/MixedSFLocal</ejb-ref-name>
+            <ejb-ref-type>Session</ejb-ref-type>
+            <local>com.ibm.ejblite.interceptor.v32.mix.ejb.MixedSFLocal</local>
+            <ejb-link>MixedSFInterceptorBean</ejb-link>
+            <injection-target>
+               <injection-target-class>com.ibm.ejblite.interceptor.v32.mix.ejb.XMLInjectionInterceptor2</injection-target-class>
+               <injection-target-name>ejbLocalRef</injection-target-name>
+            </injection-target>
+            <injection-target>
+               <injection-target-class>com.ibm.ejblite.interceptor.v32.mix.ejb.AnnotationInjectionInterceptor</injection-target-class>
+               <injection-target-name>ejbLocalRef</injection-target-name>
+            </injection-target>
+         </ejb-local-ref>
+      </session>
+      <session id="MixedSFInterceptor1Bean">
+         <ejb-name>MixedSFInterceptor1Bean</ejb-name>
+         <ejb-class>com.ibm.ejblite.interceptor.v32.mix.ejb.MixedSFInterceptor1Bean</ejb-class>
+         <session-type>Stateful</session-type>
+         <transaction-type>Container</transaction-type>
+         <pre-destroy>
+            <lifecycle-callback-method>preDestroy</lifecycle-callback-method>
+         </pre-destroy>
+      </session>
+      <session id="SFUnspecifiedLocal">
+         <ejb-name>SFUnspecifiedContextBean</ejb-name>
+         <ejb-class>com.ibm.ejblite.interceptor.v32.mix.ejb.SFUnspecifiedContextBean</ejb-class>
+         <session-type>Stateful</session-type>
+         <transaction-type>Container</transaction-type>
+      </session>
+      <session id="CompStatefulLocal">
+         <ejb-name>CompStatefulLocalBean</ejb-name>
+         <local-home>com.ibm.ejblite.interceptor.v32.mix.ejb.CompStatefulEJBLocalHome</local-home>
+         <local>com.ibm.ejblite.interceptor.v32.mix.ejb.CompStatefulLocal</local>
+         <ejb-class>com.ibm.ejblite.interceptor.v32.mix.ejb.CompStatefulLocalBean</ejb-class>
+         <session-type>Stateful</session-type>
+         <transaction-type>Container</transaction-type>
+      </session>
+      <session id="CompStatelessLocal">
+         <ejb-name>CompStatelessLocalBean</ejb-name>
+         <local-home>com.ibm.ejblite.interceptor.v32.mix.ejb.CompStatelessEJBLocalHome</local-home>
+         <local>com.ibm.ejblite.interceptor.v32.mix.ejb.CompStatelessLocal</local>
+         <ejb-class>com.ibm.ejblite.interceptor.v32.mix.ejb.CompStatelessLocalBean</ejb-class>
+         <session-type>Stateless</session-type>
+         <transaction-type>Container</transaction-type>
+      </session>
+      <session id="ResultsLocal">
+         <ejb-name>ResultsLocalBean</ejb-name>
+         <business-local>com.ibm.ejblite.interceptor.v32.mix.ejb.ResultsLocal</business-local>
+         <ejb-class>com.ibm.ejblite.interceptor.v32.mix.ejb.ResultsLocalBean</ejb-class>
+         <session-type>Stateful</session-type>
+         <remove-method>
+            <bean-method>
+               <method-name>remove</method-name>
+               <method-params></method-params>
+            </bean-method>
+         </remove-method>
+         <transaction-type>Container</transaction-type>
+         <post-construct>
+            <lifecycle-callback-method>ejbCreate</lifecycle-callback-method>
+         </post-construct>
+         <post-activate>
+            <lifecycle-callback-method>ejbActivate</lifecycle-callback-method>
+         </post-activate>
+         <pre-passivate>
+            <lifecycle-callback-method>ejbPassivate</lifecycle-callback-method>
+         </pre-passivate>
+      </session>
+   </enterprise-beans>
+
+   <interceptors id="interceptors_id">
+      <interceptor id="XMLInjectionInterceptor">
+         <interceptor-class>com.ibm.ejblite.interceptor.v32.mix.ejb.XMLInjectionInterceptor</interceptor-class>
+         <around-invoke>
+            <method-name>aroundInvoke</method-name>
+         </around-invoke>
+         <env-entry id="EnvEntry_2">
+            <description>ENV Entry</description>
+            <env-entry-name>env/StringVal</env-entry-name>
+            <env-entry-type>java.lang.String</env-entry-type>
+            <env-entry-value>Hello!</env-entry-value>
+            <injection-target>
+               <injection-target-class>com.ibm.ejblite.interceptor.v32.mix.ejb.XMLInjectionInterceptor</injection-target-class>
+               <injection-target-name>envEntry</injection-target-name>
+            </injection-target>
+         </env-entry>
+         <ejb-local-ref id="EJBLocalRef_101_2">
+            <description>EJB local reference</description>
+            <ejb-ref-name>ejb/MixedSFLocal</ejb-ref-name>
+            <ejb-ref-type>Session</ejb-ref-type>
+            <local>com.ibm.ejblite.interceptor.v32.mix.ejb.MixedSFLocal</local>
+            <ejb-link>MixedSFInterceptorBean</ejb-link>
+            <injection-target>
+               <injection-target-class>com.ibm.ejblite.interceptor.v32.mix.ejb.XMLInjectionInterceptor</injection-target-class>
+               <injection-target-name>ejbLocalRef</injection-target-name>
+            </injection-target>
+         </ejb-local-ref>
+      </interceptor>
+
+      <interceptor id="interceptor_id_1">
+         <interceptor-class>com.ibm.ejblite.interceptor.v32.mix.ejb.MixedInterceptor</interceptor-class>
+         <around-invoke>
+            <method-name>aroundInvoke</method-name>
+         </around-invoke>
+         <post-construct>
+            <lifecycle-callback-method>postConstruct</lifecycle-callback-method>
+         </post-construct>
+         <!--  pre-destroy def'd via annotation -->
+         <!--  pre-destroy>
+            <lifecycle-callback-method>preDestroy</lifecycle-callback-method>
+         </pre-destroy -->
+         <post-activate>
+            <lifecycle-callback-method>postActivate</lifecycle-callback-method>
+         </post-activate>
+         <pre-passivate>
+            <lifecycle-callback-method>prePassivate</lifecycle-callback-method>
+         </pre-passivate>
+      </interceptor>
+   </interceptors>
+   <assembly-descriptor id="AssemblyDescriptor_1">
+      <container-transaction id="MethodTransaction_1">
+         <method id="MethodElement_1">
+            <ejb-name>ResultsLocalBean</ejb-name>
+            <method-intf>Local</method-intf>
+            <method-name>*</method-name>
+         </method>
+         <trans-attribute>RequiresNew</trans-attribute>
+      </container-transaction>
+      <interceptor-binding id="interceptor_binding_id_0">
+         <ejb-name>*</ejb-name>
+         <interceptor-class>com.ibm.ejblite.interceptor.v32.mix.ejb.Default1</interceptor-class>
+         <interceptor-class>com.ibm.ejblite.interceptor.v32.mix.ejb.Default2</interceptor-class>
+      </interceptor-binding>
+      <interceptor-binding id="interceptor_binding_id_4">
+         <ejb-name>ResultsLocalBean</ejb-name>
+         <exclude-default-interceptors>true</exclude-default-interceptors>
+      </interceptor-binding>
+      <interceptor-binding id="interceptor_binding_id_3">
+         <ejb-name>MixedSFInterceptor1Bean</ejb-name>
+         <interceptor-class>com.ibm.ejblite.interceptor.v32.mix.ejb.MLInterceptor2</interceptor-class>
+         <method>
+            <method-name>destroy</method-name>
+         </method>
+      </interceptor-binding>
+   </assembly-descriptor>
+</ejb-jar>

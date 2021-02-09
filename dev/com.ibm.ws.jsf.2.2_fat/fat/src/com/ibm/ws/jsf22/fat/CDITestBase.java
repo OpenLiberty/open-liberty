@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015, 2019 IBM Corporation and others.
+ * Copyright (c) 2015, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,14 +16,15 @@ import static org.junit.Assert.assertTrue;
 import java.net.URL;
 import java.util.logging.Logger;
 
+import org.junit.AfterClass;
+
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
-import org.junit.AfterClass;
-
 import componenttest.topology.impl.LibertyServer;
 import junit.framework.Assert;
+
 /**
  * This is the base class which is extended by the other JSF 2.3 CDI tests.
  * The methods here are executed by those other test classes with their various configurations.
@@ -38,79 +39,78 @@ public abstract class CDITestBase {
 
     protected void verifyResponse(String contextRoot, String resource, String expectedResponse, LibertyServer server) throws Exception {
         //return server.verifyResponse(createWebBrowserForTestCase(), resource, expectedResponse);
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
 
-        URL url = JSFUtils.createHttpUrl(server, contextRoot, resource);
-        HtmlPage page = (HtmlPage) webClient.getPage(url);
+            URL url = JSFUtils.createHttpUrl(server, contextRoot, resource);
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
 
-        if (page == null) {
-            Assert.fail(resource + " did not render properly.");
-        }
+            if (page == null) {
+                Assert.fail(resource + " did not render properly.");
+            }
 
-        if (!page.asText().contains(expectedResponse)) {
-            Assert.fail("The page did not contain the following expected response: " + expectedResponse);
-        }
-
-    }
-
-    protected void verifyResponse(String contextRoot, String resource, LibertyServer server, String... expectedResponseStrings) throws Exception {
-        //return server.verifyResponse(createWebBrowserForTestCase(), resource, expectedResponseStrings);
-        WebClient webClient = new WebClient();
-
-        URL url = JSFUtils.createHttpUrl(server, contextRoot, resource);
-        HtmlPage page = (HtmlPage) webClient.getPage(url);
-
-        if (page == null) {
-            Assert.fail(resource + " did not render properly.");
-        }
-
-        for (String expectedResponse : expectedResponseStrings) {
             if (!page.asText().contains(expectedResponse)) {
                 Assert.fail("The page did not contain the following expected response: " + expectedResponse);
             }
         }
+    }
 
+    protected void verifyResponse(String contextRoot, String resource, LibertyServer server, String... expectedResponseStrings) throws Exception {
+        try (WebClient webClient = new WebClient()) {
+
+            URL url = JSFUtils.createHttpUrl(server, contextRoot, resource);
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
+
+            if (page == null) {
+                Assert.fail(resource + " did not render properly.");
+            }
+
+            for (String expectedResponse : expectedResponseStrings) {
+                if (!page.asText().contains(expectedResponse)) {
+                    Assert.fail("The page did not contain the following expected response: " + expectedResponse);
+                }
+            }
+        }
     }
 
     protected void verifyStatusCode(String contextRoot, String resource, int statusCode, LibertyServer server) throws Exception {
-        //sharedServer.verifyStatusCode(createWebBrowserForTestCase(), resource, statusCode);
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
 
-        // Construct the URL for the test
-        URL url = JSFUtils.createHttpUrl(server, contextRoot, resource);
-        HtmlPage page = (HtmlPage) webClient.getPage(url);
+            // Construct the URL for the test
+            URL url = JSFUtils.createHttpUrl(server, contextRoot, resource);
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
 
-        if (page == null) {
-            Assert.fail(resource + " did not render properly.");
+            if (page == null) {
+                Assert.fail(resource + " did not render properly.");
+            }
+
+            int responseStatusCode = page.getWebResponse().getStatusCode();
+
+            assertTrue("Status code received: " + responseStatusCode + ", expected : " + statusCode, responseStatusCode == statusCode);
         }
-
-        int responseStatusCode = page.getWebResponse().getStatusCode();
-
-        assertTrue("Status code received: " + responseStatusCode + ", expected : " + statusCode, responseStatusCode == statusCode);
     }
 
     protected void verifyStatusCode(String contextRoot, String resource, String buttonID, int statusCode, LibertyServer server) throws Exception {
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
 
-        // Construct the URL for the test
-        URL url = JSFUtils.createHttpUrl(server, contextRoot, resource);
-        HtmlPage page = (HtmlPage) webClient.getPage(url);
+            // Construct the URL for the test
+            URL url = JSFUtils.createHttpUrl(server, contextRoot, resource);
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
 
-        if (page == null) {
-            Assert.fail(resource + " did not render properly.");
+            if (page == null) {
+                Assert.fail(resource + " did not render properly.");
+            }
+
+            // Click link to execute the methods and update the page
+            HtmlElement button = (HtmlElement) page.getElementById(buttonID);
+            page = button.click();
+
+            //Small wait to make sure the call happens.
+            Thread.sleep(2000);
+
+            int responseStatusCode = page.getWebResponse().getStatusCode();
+
+            assertTrue("Status code received: " + responseStatusCode + ", expected : " + statusCode, responseStatusCode == statusCode);
         }
-
-        // Click link to execute the methods and update the page
-        HtmlElement button = (HtmlElement) page.getElementById(buttonID);
-        page = button.click();
-
-        //Small wait to make sure the call happens.
-        Thread.sleep(2000);
-
-        int responseStatusCode = page.getWebResponse().getStatusCode();
-
-        assertTrue("Status code received: " + responseStatusCode + ", expected : " + statusCode, responseStatusCode == statusCode);
-
     }
 
     /**
@@ -123,36 +123,36 @@ public abstract class CDITestBase {
      */
     protected void testActionListenerInjectionByApp(String contextRoot, LibertyServer server) throws Exception {
 
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
 
-        URL url = JSFUtils.createHttpUrl(server, contextRoot, "ActionListener.jsf");
-        HtmlPage page = (HtmlPage) webClient.getPage(url);
+            URL url = JSFUtils.createHttpUrl(server, contextRoot, "ActionListener.jsf");
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
 
-        if (page == null) {
-            Assert.fail("ActionListener.jsf did not render properly.");
+            if (page == null) {
+                Assert.fail("ActionListener.jsf did not render properly.");
+            }
+
+            // Click link to execute the methods and update the page
+            HtmlElement button = (HtmlElement) page.getElementById("form:submitButton");
+            page = button.click();
+
+            //Small wait to make sure the call happens.
+            Thread.sleep(2000);
+
+            HtmlElement testBeanValue = (HtmlElement) page.getElementById("actionListenerBeanValue");
+
+            assertNotNull(testBeanValue);
+
+            LOG.info("Bean Value = " + testBeanValue.asText());
+
+            assertTrue(testBeanValue.asText().contains(":ActionListenerBean:"));
+            assertTrue(testBeanValue.asText().contains(":ActionListener:"));
+            assertTrue(testBeanValue.asText().contains("com.ibm.ws.jsf22.fat.cdicommon.beans.injected.ManagedBeanFieldBean"));
+            assertTrue(testBeanValue.asText().contains("com.ibm.ws.jsf22.fat.cdicommon.beans.injected.ConstructorBean"));
+            assertTrue(testBeanValue.asText().contains("com.ibm.ws.jsf22.fat.cdicommon.beans.injected.MethodBean"));
+            assertTrue(testBeanValue.asText().contains(":TestActionListenerInterceptor:"));
+            assertTrue(testBeanValue.asText().contains(":PostConstructCalled:"));
         }
-
-        // Click link to execute the methods and update the page
-        HtmlElement button = (HtmlElement) page.getElementById("form:submitButton");
-        page = button.click();
-
-        //Small wait to make sure the call happens.
-        Thread.sleep(2000);
-
-        HtmlElement testBeanValue = (HtmlElement) page.getElementById("actionListenerBeanValue");
-
-        assertNotNull(testBeanValue);
-
-        LOG.info("Bean Value = " + testBeanValue.asText());
-
-
-        assertTrue(testBeanValue.asText().contains(":ActionListenerBean:"));
-        assertTrue(testBeanValue.asText().contains(":ActionListener:"));
-        assertTrue(testBeanValue.asText().contains("com.ibm.ws.jsf22.fat.cdicommon.beans.injected.ManagedBeanFieldBean"));
-        assertTrue(testBeanValue.asText().contains("com.ibm.ws.jsf22.fat.cdicommon.beans.injected.ConstructorBean"));
-        assertTrue(testBeanValue.asText().contains("com.ibm.ws.jsf22.fat.cdicommon.beans.injected.MethodBean"));
-        assertTrue(testBeanValue.asText().contains(":TestActionListenerInterceptor:"));
-        assertTrue(testBeanValue.asText().contains(":PostConstructCalled:"));
     }
 
     /**
@@ -165,36 +165,36 @@ public abstract class CDITestBase {
      */
     protected void testNavigationHandlerInjectionByApp(String contextRoot, LibertyServer server) throws Exception {
 
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
 
-        URL url = JSFUtils.createHttpUrl(server, contextRoot, "NavigationHandler.jsf");
-        HtmlPage page = (HtmlPage) webClient.getPage(url);
+            URL url = JSFUtils.createHttpUrl(server, contextRoot, "NavigationHandler.jsf");
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
 
-        if (page == null) {
-            Assert.fail("NavigationHandler.jsf did not render properly.");
+            if (page == null) {
+                Assert.fail("NavigationHandler.jsf did not render properly.");
+            }
+
+            // Click link to execute the methods and update the page
+            HtmlElement button = (HtmlElement) page.getElementById("form:submitButton");
+            page = button.click();
+
+            //Small wait to make sure the call happens.
+            Thread.sleep(2000);
+
+            HtmlElement testBeanValue = (HtmlElement) page.getElementById("navigationHandlerBeanValue");
+
+            assertNotNull(testBeanValue);
+
+            LOG.info("Bean Value = " + testBeanValue.asText());
+
+            assertTrue(testBeanValue.asText().contains(":NavigationHandlerBean:"));
+            assertTrue(testBeanValue.asText().contains(":NavigationHandler:"));
+            assertTrue(testBeanValue.asText().contains("com.ibm.ws.jsf22.fat.cdicommon.beans.injected.ManagedBeanFieldBean"));
+            assertTrue(testBeanValue.asText().contains("com.ibm.ws.jsf22.fat.cdicommon.beans.injected.ConstructorBean"));
+            assertTrue(testBeanValue.asText().contains("com.ibm.ws.jsf22.fat.cdicommon.beans.injected.MethodBean"));
+            assertTrue(testBeanValue.asText().contains(":TestNavigationHandlerInterceptor:"));
+            assertTrue(testBeanValue.asText().contains(":PostConstructCalled:"));
         }
-
-        // Click link to execute the methods and update the page
-        HtmlElement button = (HtmlElement) page.getElementById("form:submitButton");
-        page = button.click();
-
-        //Small wait to make sure the call happens.
-        Thread.sleep(2000);
-
-        HtmlElement testBeanValue = (HtmlElement) page.getElementById("navigationHandlerBeanValue");
-
-        assertNotNull(testBeanValue);
-
-        LOG.info("Bean Value = " + testBeanValue.asText());
-
-        assertTrue(testBeanValue.asText().contains(":NavigationHandlerBean:"));
-        assertTrue(testBeanValue.asText().contains(":NavigationHandler:"));
-        assertTrue(testBeanValue.asText().contains("com.ibm.ws.jsf22.fat.cdicommon.beans.injected.ManagedBeanFieldBean"));
-        assertTrue(testBeanValue.asText().contains("com.ibm.ws.jsf22.fat.cdicommon.beans.injected.ConstructorBean"));
-        assertTrue(testBeanValue.asText().contains("com.ibm.ws.jsf22.fat.cdicommon.beans.injected.MethodBean"));
-        assertTrue(testBeanValue.asText().contains(":TestNavigationHandlerInterceptor:"));
-        assertTrue(testBeanValue.asText().contains(":PostConstructCalled:"));
-
     }
 
     /**
@@ -207,14 +207,13 @@ public abstract class CDITestBase {
      */
     protected void testELResolverInjectionByApp(String contextRoot, LibertyServer server) throws Exception {
 
-        // Use the SharedServer to verify a response.
         verifyResponse(contextRoot, "TestResolver.jsf", server,
-                        ":TestCustomBean:", ":CustomELResolver:",
-                        "com.ibm.ws.jsf22.fat.cdicommon.beans.injected.ManagedBeanFieldBean",
-                        "com.ibm.ws.jsf22.fat.cdicommon.beans.injected.ConstructorBean",
-                        "com.ibm.ws.jsf22.fat.cdicommon.beans.injected.MethodBean",
-                        ":TestCustomResolverInterceptor:",
-                        ":PostConstructCalled:");
+                       ":TestCustomBean:", ":CustomELResolver:",
+                       "com.ibm.ws.jsf22.fat.cdicommon.beans.injected.ManagedBeanFieldBean",
+                       "com.ibm.ws.jsf22.fat.cdicommon.beans.injected.ConstructorBean",
+                       "com.ibm.ws.jsf22.fat.cdicommon.beans.injected.MethodBean",
+                       ":TestCustomResolverInterceptor:",
+                       ":PostConstructCalled:");
     }
 
     /**
@@ -230,38 +229,38 @@ public abstract class CDITestBase {
      */
     protected void testFactoryAndOtherAppScopedInjectionsByApp(String contextRoot, LibertyServer server) throws Exception {
 
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
 
-        // Construct the URL for the test
-        URL url = JSFUtils.createHttpUrl(server, contextRoot, "FactoryInfo.jsf");
-        HtmlPage page = (HtmlPage) webClient.getPage(url);
+            // Construct the URL for the test
+            URL url = JSFUtils.createHttpUrl(server, contextRoot, "FactoryInfo.jsf");
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
 
-        if (page == null) {
-            Assert.fail("FactoryInfo.jsf did not render properly.");
+            if (page == null) {
+                Assert.fail("FactoryInfo.jsf did not render properly.");
+            }
+
+            String output = page.asText();
+
+            LOG.info("Factory output value: " + output);
+
+            // Verify we are matching each of the factories configured in faces-config.xml ( or Annotated configuration populator config)
+            assertTrue("Did not find FactoryCount:11 in response.", output.contains("FactoryCount:12"));
+
+            // Format:  Class | Method | Method injected class: Field injected class : <option> constructor injected class
+
+            findInResponse(output, "CustomApplicationFactory|getApplication|FactoryDepBean:FactoryAppBean:PostConstructCalled");
+            findInResponse(output, "CustomLifecycleFactory|getLifecycle|FactoryDepBean:FactoryAppBean:PostConstructCalled");
+            findInResponse(output, "CustomExceptionHandlerFactory|getExceptionHandler|FactoryDepBean:FactoryAppBean:PostConstructCalled");
+            findInResponse(output, "CustomExternalContextFactory|getExternalContext|FactoryDepBean:FactoryAppBean:PostConstructCalled");
+            findInResponse(output, "CustomFacesContextFactory|getFacesContext|FactoryDepBean:FactoryAppBean:PostConstructCalled");
+            findInResponse(output, "CustomRenderKitFactory|getRenderKit|FactoryDepBean:FactoryAppBean:PostConstructCalled");
+            findInResponse(output, "CustomViewDeclarationLanguageFactory|getViewDeclarationLanguage|FactoryDepBean:FactoryAppBean:PostConstructCalled");
+            findInResponse(output, "CustomTagHandlerDelegateFactory|createComponentHandlerDelegate|FactoryDepBean:FactoryAppBean:PostConstructCalled");
+            findInResponse(output, "CustomPartialViewContextFactory|getPartialViewContext|FactoryDepBean:FactoryAppBean:PostConstructCalled");
+            findInResponse(output, "CustomVisitContextFactory|getVisitContext|FactoryDepBean:FactoryAppBean:PostConstructCalled");
+            findInResponse(output, "CustomPhaseListener|beforePhase|FactoryDepBean:FactoryAppBean:FactoryAppBean:PostConstructCalled");
+            findInResponse(output, "CustomSystemEventListener|processEvent|FactoryDepBean:FactoryAppBean:FactoryAppBean:PostConstructCalled");
         }
-
-        String output = page.asText();
-
-        LOG.info("Factory output value: " + output);
-
-        // Verify we are matching each of the factories configured in faces-config.xml ( or Annotated configuration populator config)
-        assertTrue("Did not find FactoryCount:11 in response.", output.contains("FactoryCount:12"));
-
-        // Format:  Class | Method | Method injected class: Field injected class : <option> constructor injected class
-
-        findInResponse(output, "CustomApplicationFactory|getApplication|FactoryDepBean:FactoryAppBean:PostConstructCalled");
-        findInResponse(output, "CustomLifecycleFactory|getLifecycle|FactoryDepBean:FactoryAppBean:PostConstructCalled");
-        findInResponse(output, "CustomExceptionHandlerFactory|getExceptionHandler|FactoryDepBean:FactoryAppBean:PostConstructCalled");
-        findInResponse(output, "CustomExternalContextFactory|getExternalContext|FactoryDepBean:FactoryAppBean:PostConstructCalled");
-        findInResponse(output, "CustomFacesContextFactory|getFacesContext|FactoryDepBean:FactoryAppBean:PostConstructCalled");
-        findInResponse(output, "CustomRenderKitFactory|getRenderKit|FactoryDepBean:FactoryAppBean:PostConstructCalled");
-        findInResponse(output, "CustomViewDeclarationLanguageFactory|getViewDeclarationLanguage|FactoryDepBean:FactoryAppBean:PostConstructCalled");
-        findInResponse(output, "CustomTagHandlerDelegateFactory|createComponentHandlerDelegate|FactoryDepBean:FactoryAppBean:PostConstructCalled");
-        findInResponse(output, "CustomPartialViewContextFactory|getPartialViewContext|FactoryDepBean:FactoryAppBean:PostConstructCalled");
-        findInResponse(output, "CustomVisitContextFactory|getVisitContext|FactoryDepBean:FactoryAppBean:PostConstructCalled");
-        findInResponse(output, "CustomPhaseListener|beforePhase|FactoryDepBean:FactoryAppBean:FactoryAppBean:PostConstructCalled");
-        findInResponse(output, "CustomSystemEventListener|processEvent|FactoryDepBean:FactoryAppBean:FactoryAppBean:PostConstructCalled");
-
     }
 
     private void findInResponse(String content, String key) throws Exception {
@@ -279,7 +278,6 @@ public abstract class CDITestBase {
      */
     protected void testCustomResourceHandlerInjectionsByApp(String contextRoot, LibertyServer server) throws Exception {
 
-        // Use the SharedServer to verify a response.
         this.verifyResponse(contextRoot, "index.jsf", "Hello Worldy world", server);
 
         String msg = "JSF22: CustomResourceHandler libraryExists called: result- class com.ibm.ws.jsf22.fat.cdicommon.beans.injected.MethodBean::class com.ibm.ws.jsf22.fat.cdicommon.beans.injected.ManagedBeanFieldBean::PostConstructCalled:/"
@@ -303,27 +301,27 @@ public abstract class CDITestBase {
      */
     protected void testCustomStateManagerInjectionsByApp(String contextRoot, LibertyServer server) throws Exception {
 
-        WebClient webClient = new WebClient();
+        try (WebClient webClient = new WebClient()) {
 
-        // Construct the URL for the test
-        URL url = JSFUtils.createHttpUrl(server, contextRoot, "NavigationHandler.jsf");
-        HtmlPage page = (HtmlPage) webClient.getPage(url);
+            // Construct the URL for the test
+            URL url = JSFUtils.createHttpUrl(server, contextRoot, "NavigationHandler.jsf");
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
 
-        if (page == null) {
-            Assert.fail("NavigationHandler.jsf did not render properly.");
+            if (page == null) {
+                Assert.fail("NavigationHandler.jsf did not render properly.");
+            }
+
+            // The above request should cause the message below to be output in the log
+            String msg = "JSF22: CustomStateManager isSavingStateInClient called: result- class com.ibm.ws.jsf22.fat.cdicommon.beans.injected.MethodBean::class com.ibm.ws.jsf22.fat.cdicommon.beans.injected.ManagedBeanFieldBean::PostConstructCalled:/"
+                         + contextRoot;
+
+            // Check the trace.log to see if the proper InjectionProvider is being used.
+            String isStateManagerMessage = server.waitForStringInLog(msg);
+
+            // There should be a match so fail if there is not.
+            assertNotNull("The following message was not found in the trace logs: " + msg,
+                          isStateManagerMessage);
         }
-
-        // The above request should cause the message below to be output in the log
-        String msg = "JSF22: CustomStateManager isSavingStateInClient called: result- class com.ibm.ws.jsf22.fat.cdicommon.beans.injected.MethodBean::class com.ibm.ws.jsf22.fat.cdicommon.beans.injected.ManagedBeanFieldBean::PostConstructCalled:/"
-                     + contextRoot;
-
-        // Check the trace.log to see if the proper InjectionProvider is being used.
-        String isStateManagerMessage = server.waitForStringInLog(msg);
-
-        // There should be a match so fail if there is not.
-        assertNotNull("The following message was not found in the trace logs: " + msg,
-                      isStateManagerMessage);
-
     }
 
 }

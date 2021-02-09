@@ -771,7 +771,7 @@ public class DataModelSerializer {
         }
     }
 
-    public static <T> List<T> deserializeList(InputStream i, Class<? extends T> listElementType) throws IOException {
+    public static synchronized <T> List<T> deserializeList(InputStream i, Class<? extends T> listElementType) throws IOException {
         List<T> newT = new ArrayList<T>();
 
         try {

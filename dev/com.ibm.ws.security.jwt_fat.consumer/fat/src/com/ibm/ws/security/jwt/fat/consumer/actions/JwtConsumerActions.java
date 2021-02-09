@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,13 +17,14 @@ import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.util.NameValuePair;
 import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.security.fat.common.actions.TestActions;
+import com.ibm.ws.security.fat.common.jwt.actions.JwtTokenActions;
 import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 import com.ibm.ws.security.jwt.fat.consumer.JwtConsumerConstants;
 
 import componenttest.topology.impl.LibertyServer;
 
-public class JwtConsumerActions extends TestActions {
+@SuppressWarnings("restriction")
+public class JwtConsumerActions extends JwtTokenActions {
     protected static Class<?> thisClass = JwtConsumerActions.class;
 
     public static final String ACTION_INVOKE_JWT_CONSUMER = "invokeJwtConsumer";
@@ -47,6 +48,8 @@ public class JwtConsumerActions extends TestActions {
         } catch (Exception e) {
             Log.info(thisClass, "invokeJwtConsumer", e.getMessage());
             throw e;
+        } finally {
+            destroyWebClient(webClient);
         }
 
     }

@@ -1,0 +1,26 @@
+###############################################################################
+# Copyright (c) 1997, 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+# Format:
+# name:passwd:uid:gids:display name
+# where name   = userId/userName of the user
+#       passwd = password of the user
+#       uid    = uniqueId of the user
+#       gid    = groupIds of the groups that the user belongs to
+#       display name = a (optional) display name for the user.
+# For this setup, users start from UID 500.
+user0:user0pwd:500:001:user0
+user1:user1pwd:501:001:user1
+user2:user2pwd:502:002:user2
+user3:user3pwd:503:003:user3
+user4:user4 pwd:504:004:user4
+user5:user5pwd:505:005:user5
+user6:user6pwd:506:002:user6

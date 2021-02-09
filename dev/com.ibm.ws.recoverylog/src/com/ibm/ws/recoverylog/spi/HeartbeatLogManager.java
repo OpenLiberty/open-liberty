@@ -17,6 +17,7 @@ import com.ibm.tx.util.alarm.AlarmListener;
 import com.ibm.tx.util.alarm.AlarmManager;
 import com.ibm.tx.util.logging.Tr;
 import com.ibm.tx.util.logging.TraceComponent;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 /**
  * Manage the HA DB Log Availability timer. Based on other timers in the codebase.
@@ -52,7 +53,7 @@ public class HeartbeatLogManager {
 
         private Alarm _alarm;
 
-        private boolean _isHeartbeating = true;
+        private volatile boolean _isHeartbeating = true;
 
         private final AlarmManager _alarmManager = ConfigurationProviderManager.getConfigurationProvider().getAlarmManager();
 
@@ -78,12 +79,12 @@ public class HeartbeatLogManager {
          * the transaction completion code.
          */
         @Override
+        @FFDCIgnore({ LogClosedException.class })
         public void alarm(Object alarmContext) {
             if (tc.isEntryEnabled())
                 Tr.entry(tc, "alarm");
 
-            _isHeartbeating = true;
-            if (_heartbeatLog != null) {
+            if (_heartbeatLog != null && _isHeartbeating) {
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "Update the HADB timestamp");
                 try {
@@ -93,7 +94,7 @@ public class HeartbeatLogManager {
                 }
             } else {
                 if (tc.isDebugEnabled())
-                    Tr.debug(tc, "NULL heartbeatLog");
+                    Tr.debug(tc, "NULL heartbeatLog or heartbeating cancelled");
                 _isHeartbeating = false;
             }
 

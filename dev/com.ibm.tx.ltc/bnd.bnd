@@ -46,3 +46,5 @@ instrument.disabled: true
 	com.ibm.tx.core;version=latest,\
 	com.ibm.websphere.appserver.spi.logging;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+
+jakartaeeMe: true

@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.client.internal;
 
@@ -28,9 +28,9 @@ import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.conn.ssl.AllowAllHostnameVerifier;
+import org.apache.http.conn.ssl.DefaultHostnameVerifier;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.conn.ssl.StrictHostnameVerifier;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
@@ -48,7 +48,6 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 
 import com.ibm.ejs.ras.TraceNLS;
-import com.ibm.json.java.JSONArray;
 import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.crypto.PasswordUtil;
 import com.ibm.websphere.ras.Tr;
@@ -91,6 +90,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     public static final String CFG_KEY_CLIENT_SECRET = "clientSecret";
     public static final String CFG_KEY_REDIRECT_TO_RP_HOST_AND_PORT = "redirectToRPHostAndPort";
     public static final String CFG_KEY_USER_IDENTIFIER = "userIdentifier";
+    public static final String CFG_KEY_INTROSPECTION_TOKEN_TYPE_HINT = "introspectionTokenTypeHint";
     public static final String CFG_KEY_GROUP_IDENTIFIER = "groupIdentifier";
     public static final String CFG_KEY_REALM_IDENTIFIER = "realmIdentifier";
     public static final String CFG_KEY_REALM_NAME = "realmName";
@@ -123,6 +123,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     public static final String CFG_KEY_HOST_NAME_VERIFICATION_ENABLED = "hostNameVerificationEnabled";
     public static final String CFG_KEY_INCLUDE_ID_TOKEN_IN_SUBJECT = "includeIdTokenInSubject";
     public static final String CFG_KEY_INCLUDE_CUSTOM_CACHE_KEY_IN_SUBJECT = "includeCustomCacheKeyInSubject";
+    public static final String CFG_KEY_ALLOW_CUSTOM_CACHE_KEY = "allowCustomCacheKey";
     public static final String CFG_KEY_AUTH_CONTEXT_CLASS_REFERENCE = "authContextClassReference";
     public static final String CFG_KEY_AUTH_FILTER_REF = "authFilterRef";
     public static final String CFG_KEY_JSON_WEB_KEY = "jsonWebKey";
@@ -155,6 +156,8 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     public static final String CFG_KEY_DISCOVERY_POLLING_RATE = "discoveryPollingRate";
     public static final String CFG_KEY_USE_SYSPROPS_FOR_HTTPCLIENT_CONNECTONS = "useSystemPropertiesForHttpClientConnections";
     public static final String CFG_KEY_FORWARD_LOGIN_PARAMETER = "forwardLoginParameter";
+    public static final String CFG_KEY_REQUIRE_EXP_CLAIM = "requireExpClaimForIntrospection";
+    public static final String CFG_KEY_REQUIRE_IAT_CLAIM = "requireIatClaimForIntrospection";
 
     public static final String OPDISCOVERY_AUTHZ_EP_URL = "authorization_endpoint";
     public static final String OPDISCOVERY_TOKEN_EP_URL = "token_endpoint";
@@ -188,6 +191,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     private String clientSecret;
     private String redirectToRPHostAndPort;
     private String userIdentifier;
+    private String introspectionTokenTypeHint;
     private String groupIdentifier;
     private String realmIdentifier;
     private String realmName;
@@ -220,6 +224,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     private boolean hostNameVerificationEnabled;
     private boolean includeIdTokenInSubject;
     private boolean includeCustomCacheKeyInSubject;
+    private boolean allowCustomCacheKey;
     private String authenticationContextClassReferenceValue; // acr_values separated by space
     private String authFilterRef;
     private String authFilterId;
@@ -241,6 +246,8 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     private String[] resources;
     private boolean useAccessTokenAsIdToken;
     private List<String> forwardLoginParameter;
+    private boolean requireExpClaimForIntrospection = true;
+    private boolean requireIatClaimForIntrospection = true;
 
     private String oidcClientCookieName;
     private boolean authnSessionDisabled;
@@ -391,6 +398,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
             }
         }
         userIdentifier = trimIt((String) props.get(CFG_KEY_USER_IDENTIFIER));
+        introspectionTokenTypeHint = trimIt((String) props.get(CFG_KEY_INTROSPECTION_TOKEN_TYPE_HINT));
         groupIdentifier = trimIt((String) props.get(CFG_KEY_GROUP_IDENTIFIER));
         realmIdentifier = trimIt((String) props.get(CFG_KEY_REALM_IDENTIFIER));
         realmName = trimIt((String) props.get(CFG_KEY_REALM_NAME));
@@ -446,6 +454,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
         hostNameVerificationEnabled = (Boolean) props.get(CFG_KEY_HOST_NAME_VERIFICATION_ENABLED);
         includeIdTokenInSubject = (Boolean) props.get(CFG_KEY_INCLUDE_ID_TOKEN_IN_SUBJECT);
         includeCustomCacheKeyInSubject = (Boolean) props.get(CFG_KEY_INCLUDE_CUSTOM_CACHE_KEY_IN_SUBJECT);
+        allowCustomCacheKey = (Boolean) props.get(CFG_KEY_ALLOW_CUSTOM_CACHE_KEY);
         authenticationContextClassReferenceValue = trimIt((String) props.get(CFG_KEY_AUTH_CONTEXT_CLASS_REFERENCE));
         if (authenticationContextClassReferenceValue == null)
             authenticationContextClassReferenceValue = "";
@@ -504,6 +513,8 @@ public class OidcClientConfigImpl implements OidcClientConfig {
         useAccessTokenAsIdToken = configUtils.getBooleanConfigAttribute(props, CFG_KEY_USE_ACCESS_TOKEN_AS_ID_TOKEN, useAccessTokenAsIdToken);
         tokenReuse = configUtils.getBooleanConfigAttribute(props, CFG_KEY_TOKEN_REUSE, tokenReuse);
         forwardLoginParameter = oidcConfigUtils.readAndSanitizeForwardLoginParameter(props, id, CFG_KEY_FORWARD_LOGIN_PARAMETER);
+        requireExpClaimForIntrospection = configUtils.getBooleanConfigAttribute(props, CFG_KEY_REQUIRE_EXP_CLAIM, requireExpClaimForIntrospection);
+        requireIatClaimForIntrospection = configUtils.getBooleanConfigAttribute(props, CFG_KEY_REQUIRE_IAT_CLAIM, requireIatClaimForIntrospection);
         // TODO - 3Q16: Check the validationEndpointUrl to make sure it is valid
         // before continuing to process this config
         // checkValidationEndpointUrl();
@@ -522,6 +533,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
             Tr.debug(tc, "clientId: " + clientId);
             Tr.debug(tc, "redirectToRPHostAndPort: " + redirectToRPHostAndPort);
             Tr.debug(tc, "userIdentifier: " + userIdentifier);
+            Tr.debug(tc, "introspectionTokenTypeHint: " + introspectionTokenTypeHint);
             Tr.debug(tc, "groupIdentifier: " + groupIdentifier);
             Tr.debug(tc, "realmIdentifier: " + realmIdentifier);
             Tr.debug(tc, "realmName: " + realmName);
@@ -1001,7 +1013,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
             this.discoveryjson = JSONObject.parse(jsonString);
         } catch (Exception e) {
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Caught exception parsing JSON string [" + jsonString + "]: " + e.getMessage());
+                Tr.debug(tc, "Caught exception parsing JSON string [" + jsonString + "]: " + e);
             }
         }
     }
@@ -1083,9 +1095,9 @@ public class OidcClientConfigImpl implements OidcClientConfig {
         if (isSecure) {
             SSLConnectionSocketFactory connectionFactory = null;
             if (!isHostnameVerification) {
-                connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new AllowAllHostnameVerifier());
+                connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new NoopHostnameVerifier());
             } else {
-                connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new StrictHostnameVerifier());
+                connectionFactory = new SSLConnectionSocketFactory(sslSocketFactory, new DefaultHostnameVerifier());
             }
             if (addBasicAuthHeader) {
                 client = HttpClientBuilder.create().setDefaultCredentialsProvider(credentialsProvider).setSSLSocketFactory(connectionFactory).build();
@@ -1460,7 +1472,10 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     /** {@inheritDoc} */
     @Override
     public boolean isIncludeCustomCacheKeyInSubject() {
-        return includeCustomCacheKeyInSubject;
+        if (!includeCustomCacheKeyInSubject || !allowCustomCacheKey) {
+            return false;
+        }
+        return true;
     }
 
     /** {@inheritDoc} */
@@ -1485,7 +1500,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
                 config = configAdmin.getConfiguration(authFilterRef, null);
         } catch (IOException e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Invalid authFilterRef configuration", e.getMessage());
+                Tr.debug(tc, "Invalid authFilterRef configuration", e);
             }
             return null;
         }
@@ -1546,6 +1561,13 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     public String getUserIdentifier() {
         // TODO Auto-generated method stub
         return userIdentifier;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getIntrospectionTokenTypeHint() {
+        // TODO Auto-generated method stub
+        return introspectionTokenTypeHint;
     }
 
     /*
@@ -1835,6 +1857,16 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     @Override
     public HashMap<String, String> getJwkRequestParams() {
         return jwkRequestParamMap;
+    }
+
+    @Override
+    public boolean requireExpClaimForIntrospection() {
+        return requireExpClaimForIntrospection;
+    }
+
+    @Override
+    public boolean requireIatClaimForIntrospection() {
+        return requireIatClaimForIntrospection;
     }
 
 }

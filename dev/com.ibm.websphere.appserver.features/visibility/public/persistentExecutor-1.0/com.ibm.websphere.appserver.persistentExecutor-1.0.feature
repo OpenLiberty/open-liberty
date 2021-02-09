@@ -3,6 +3,7 @@ IBM-ShortName: persistentExecutor-1.0
 Subsystem-Name: Persistent Scheduled Executor 1.0
 symbolicName=com.ibm.websphere.appserver.persistentExecutor-1.0
 visibility=public
+singleton=true
 IBM-API-Package: \
   com.ibm.websphere.concurrent.persistent; type="ibm-api", \
   com.ibm.websphere.concurrent.persistent.mbean; type="ibm-api"

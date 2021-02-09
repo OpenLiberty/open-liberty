@@ -70,8 +70,11 @@ public class Http2LiteModeTests extends FATServletClient {
         if (LOGGER.isLoggable(Level.INFO)) {
             LOGGER.logp(Level.INFO, CLASS_NAME, "after()", "Stopping servers......");
         }
-        server.stopServer(true);
+        // try for an orderly quiet shutdown
+        Thread.sleep(5000);
         runtimeServer.stopServer(true);
+        Thread.sleep(5000);
+        server.stopServer(true);
     }
 
     private void runTest() throws Exception {
@@ -296,7 +299,7 @@ public class Http2LiteModeTests extends FATServletClient {
      *
      * @throws Exception
      */
-    @Test
+    //@Test Move to trace bucket
     public void testInvalidStreamIdSequence() throws Exception {
         runTest(genericServletPath, testName.getMethodName());
     }
@@ -403,7 +406,7 @@ public class Http2LiteModeTests extends FATServletClient {
      *
      * @throws Exception
      */
-    @Test
+    //@Test moved to trace
     public void testConnectMethod() throws Exception {
         runTest(methodServletPath, testName.getMethodName());
     }
@@ -417,7 +420,7 @@ public class Http2LiteModeTests extends FATServletClient {
      *
      * @throws Exception
      */
-    @Test
+    //@Test moved to trace
     public void testConnectMethodError() throws Exception {
         runTest(methodServletPath, testName.getMethodName());
     }

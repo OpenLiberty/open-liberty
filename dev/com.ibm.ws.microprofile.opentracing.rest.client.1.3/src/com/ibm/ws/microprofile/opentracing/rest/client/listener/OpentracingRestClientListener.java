@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,7 +30,9 @@ public class OpentracingRestClientListener implements RestClientListener {
         Traced traced = serviceInterface.getAnnotation(Traced.class);
         if (traced != null && !traced.value()) {
             // tracing is disabled
-            Tr.debug(tc, "@Traced(false) specified on service interface");
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "@Traced(false) specified on service interface");
+            }
             return;
         }
         builder.register(OpentracingRestClientFilter.class);

@@ -1,0 +1,28 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+
+#ISMESSAGEFILE true
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#COMPONENTPREFIX CWMRX
+
+# LRA is currently using the message prefix CWMRX in the range 5000-5999
+# This is temporary and should be fixed with a proper prefix before GA.
+
+LRA_INVALID_COORDINATOR_URI.CWMRX5000E=CWMRX5000E: L'URI del coordinatore LRA non \u00e8 valido.
+LRA_INVALID_COORDINATOR_URI.CWMRX5000E.explanation=I partecipanti LRA devono essere in grado di contattare il coordinatore.
+LRA_INVALID_COORDINATOR_URI.CWMRX5000E.useraction=Correggere la configurazione del coordinatore LRA nel file server.xml.
+
+
+LRA_CANT_REGISTER_FILTERS.CWMRX5001E=CWMRX5001E: Si \u00e8 verificato un errore durante l'inizializzazione della funzione mpLRA-1.0. Errore: {0}.
+LRA_CANT_REGISTER_FILTERS.CWMRX5001E.explanation=Si \u00e8 verificato un errore LRA che impedisce la regolare elaborazione.
+LRA_CANT_REGISTER_FILTERS.CWMRX5001E.useraction=Esaminare il messaggio di errore, il file messages.log sul server e i log FFDC per identificare il problema.

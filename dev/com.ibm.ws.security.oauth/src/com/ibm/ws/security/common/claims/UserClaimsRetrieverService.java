@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -71,11 +71,15 @@ public class UserClaimsRetrieverService {
         ConfigUtils.setUserClaimsRetrieverService(null);
     }
 
-    @FFDCIgnore(Exception.class)
     public UserClaims getUserClaims(String username, String groupIdentifier) {
+        return getUserClaims(username, groupIdentifier, null);
+    }
+
+    @FFDCIgnore(Exception.class)
+    public UserClaims getUserClaims(String username, String groupIdentifier, String cacheKey) {
         try {
             UserClaimsRetriever userClaimsRetriever = getUserClaimsRetriever();
-            return userClaimsRetriever.getUserClaims(username, groupIdentifier);
+            return userClaimsRetriever.getUserClaims(username, groupIdentifier, cacheKey);
         } catch (Exception e) {
             // TODO: Use static empty user claims
             return new UserClaims((String) null, groupIdentifier);

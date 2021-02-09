@@ -74,7 +74,7 @@ public class DecisionControllerImpl implements IExecutionElementController {
     public ExecutionStatus execute() {
 
         String deciderId = decision.getRef();
-        List<Property> propList = (decision.getProperties() == null) ? null : decision.getProperties().getPropertyList();
+        List<Property> propList = (decision.getProperties() == null) ? null : (List<Property>) decision.getProperties().getPropertyList();
 
         DeciderProxy deciderProxy;
 

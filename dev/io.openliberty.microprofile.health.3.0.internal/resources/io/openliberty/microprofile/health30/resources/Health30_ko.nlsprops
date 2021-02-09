@@ -1,0 +1,50 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMMH
+#COMPONENTNAMEFOR CWMMH MicroProfile Health API 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by Health Impl -  range is 0000-0999
+# The range 0000-0049 has been reserved for messages issued above the HealthCheckExecutor within the call stack
+# The range 0050-0099 has been reserved for messages issued at or below the HealthCheckExecutor within the call stack
+#-----------------------------------------------------------------------------------------------------------------------------
+
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Emergency Health error message
+#-----------------------------------------------------------------------------------------------------------------------------
+OSGI_SERVICE_ERROR=CWMMH0000E: OSGi \uc11c\ube44\uc2a4 {0}\uc744(\ub97c) \uc0ac\uc6a9\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+OSGI_SERVICE_ERROR.explanation=\uc9c0\uc815\ub41c \uc11c\ube44\uc2a4\ub97c \uc0ac\uc6a9\ud560 \uc218 \uc5c6\uc73c\ubbc0\ub85c \ub0b4\ubd80 \uc11c\ubc84 \uc624\ub958\uac00 \ucc98\ub9ac\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+OSGI_SERVICE_ERROR.useraction=\uc815\ub9ac \uc635\uc158\uc73c\ub85c \uc11c\ubc84\ub97c \ub2e4\uc2dc \uc2dc\uc791\ud558\uc2ed\uc2dc\uc624.
+
+# The HealthCheck bean call method had an exception
+healthcheck.bean.call.exception.CWMMH0050E=CWMMH0050E: {2} \ubaa8\ub4c8\uc758 {1} \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc5d0 \uc788\ub294 {0} HealthCheck \uba54\uc18c\ub4dc\uc5d0 \ub2e4\uc74c \uba54\uc2dc\uc9c0\uc640 \ud568\uaed8 \uc608\uc678 {3}\uc774(\uac00) \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4: {4}
+healthcheck.bean.call.exception.CWMMH0050E.explanation=\uc9c0\uc815\ub41c \ud638\ucd9c \uba54\uc18c\ub4dc\uc5d0\uc11c \uc608\uc678\uac00 \uc0dd\uc131\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+healthcheck.bean.call.exception.CWMMH0050E.useraction=HealthCheck Bean \ub0b4\uc5d0\uc11c \ud638\ucd9c \uba54\uc18c\ub4dc\ub97c \uac80\ud1a0\ud558\uc5ec \ubc1c\uc0dd\ud55c \uc608\uc678\ub97c \uc2dd\ubcc4\ud558\uc2ed\uc2dc\uc624.
+
+# The HealthCheck bean call method had a DOWN outcome
+healthcheck.application.down.CWMMH0052W=CWMMH0052W: {2} \ubaa8\ub4c8\uc758 {1} \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc5d0\uc11c HealthCheckResponse\ub97c \uad6c\ud604\ud558\ub294 {0}\uc774(\uac00) {4} \ub370\uc774\ud130\uc758 {3} \uc0c1\ud0dc\ub97c \ubcf4\uace0\ud588\uc2b5\ub2c8\ub2e4.
+healthcheck.application.down.CWMMH0052W.explanation=DOWN \uc0c1\ud0dc\ub85c \uc778\ud574 \ubaa8\ub2c8\ud130\ub9c1 \uc11c\ube44\uc2a4\uac00 \uc774 \uc11c\ubc84\uc5d0\uc11c \uc870\uce58\ub97c \ucde8\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4.
+healthcheck.application.down.CWMMH0052W.useraction=\uc0ac\uc6a9\uc790 \uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \uc774 \uacbd\uace0\ub294 DOWN \uc0c1\ud0dc\uc758 \ub808\ucf54\ub4dc\uc785\ub2c8\ub2e4.
+
+# The Readiness HealthCheck had a DOWN outcome, when applications are not started yet
+readiness.healthcheck.applications.not.started.down.CWMMH0053W=CWMMH0053W: \ub2e4\uc74c \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc774 \uc544\uc9c1 \uc2dc\uc791\ub418\uc9c0 \uc54a\uc558\uc73c\ubbc0\ub85c \uc900\ube44 \uc0c1\ud0dc \ud655\uc778\uc5d0\uc11c DOWN \uc804\uccb4 \uc0c1\ud0dc\ub97c \ubcf4\uace0\ud568: {0}
+readiness.healthcheck.applications.not.started.down.CWMMH0053W.explanation=\uc9c0\uc815\ub41c \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc774 \uc544\uc9c1 \uc644\uc804\ud788 \uc2dc\uc791\ub418\uc9c0 \uc54a\uc558\uc73c\uba70 \uc694\uccad\uc744 \ucc98\ub9ac\ud560 \uc900\ube44\uac00 \ub418\uc9c0 \uc54a\uc558\uc73c\ubbc0\ub85c \uc900\ube44 \uc0c1\ud0dc \ud655\uc778\uc5d0\uc11c DOWN \uc0c1\ud0dc\ub97c \ubcf4\uace0\ud588\uc2b5\ub2c8\ub2e4.
+readiness.healthcheck.applications.not.started.down.CWMMH0053W.useraction=\uc0ac\uc6a9\uc790 \uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc774 \uc2dc\uc791\ub420 \ub54c\uae4c\uc9c0 \ub300\uae30\ud558\uc2ed\uc2dc\uc624. \uc774 \uacbd\uace0\ub294 DOWN \uc0c1\ud0dc\uc758 \ub808\ucf54\ub4dc\uc785\ub2c8\ub2e4.

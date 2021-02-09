@@ -24,19 +24,19 @@ import javax.ws.rs.core.Response;
 @ApplicationScoped
 public class TestClient {
 
-    final static String URI_CONTEXT_ROOT = "http://localhost:" + Integer.getInteger("bvt.prop.HTTP_default") + "/uriInfo/";
+    final static String URI_CONTEXT_ROOT = "http://localhost:" + Integer.getInteger("bvt.prop.HTTP_default", 9080) + "/uriInfo/";
 
     private Client client;
     private WebTarget target;
 
     @PostConstruct
-    private void initClient() {
+    void initClient() {
         client = ClientBuilder.newClient().register(TestClientRequestResponseFilter.class);
         target = client.target(URI_CONTEXT_ROOT);
     }
 
     @PreDestroy
-    private void closeClient() {
+    void closeClient() {
         client.close();
     }
 

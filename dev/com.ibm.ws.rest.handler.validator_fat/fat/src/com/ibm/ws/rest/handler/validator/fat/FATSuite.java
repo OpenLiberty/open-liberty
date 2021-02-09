@@ -27,6 +27,10 @@ import componenttest.topology.utils.HttpUtils;
 })
 
 public class FATSuite {
+// TODO: Enable this once mpopenapi-2.0 (jakarta enabled) is available
+//    @ClassRule
+//    public static RepeatTests r = RepeatTests.with(new EmptyAction())
+//                    .andWith(FeatureReplacementAction.EE9_FEATURES());
 
     @BeforeClass
     public static void setup() throws Exception {

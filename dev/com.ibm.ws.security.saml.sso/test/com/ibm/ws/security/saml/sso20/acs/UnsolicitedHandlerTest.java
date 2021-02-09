@@ -188,7 +188,7 @@ public class UnsolicitedHandlerTest {
             unsolicitedHandler.handleRequest(SP_INITAL);
         } catch (SamlException ex) {
             ex.printStackTrace();
-            fail("Unexpected exception was thrown: " + ex.getMessage());
+            fail("Unexpected exception was thrown: " + ex);
         }
     }
 
@@ -266,7 +266,7 @@ public class UnsolicitedHandlerTest {
             HttpRequestInfo requestInfo = unsolicitedHandler.getUnsolicitedRequestInfo(basicMessageContext, relayState, cache);
             if (requestInfo != null) {
                 assertEquals("Expected to receive the message '" + relayState + "' but it was not received.",
-                             relayState, requestInfo.getRequestUrl());
+                             relayState, requestInfo.getReqUrl());
                 assertEquals("Expected to receive an empty String but it was not received.",
                              "", requestInfo.getQueryString());
             } else {
@@ -275,7 +275,7 @@ public class UnsolicitedHandlerTest {
 
         } catch (SamlException ex) {
             ex.printStackTrace();
-            fail("Unexpected exception was thrown: " + ex.getMessage());
+            fail("Unexpected exception was thrown: " + ex);
         }
     }
 }

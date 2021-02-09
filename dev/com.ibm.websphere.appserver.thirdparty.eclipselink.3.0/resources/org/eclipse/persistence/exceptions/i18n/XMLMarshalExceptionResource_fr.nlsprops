@@ -1,0 +1,111 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/XMLMarshalExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+25001=Cha\u00eene XPath non valide : {0}
+
+25002=Un index d''entiers n''a pas pu \u00eatre analys\u00e9 syntaxiquement depuis la cha\u00eene cette cha\u00eene XPath : {0}
+
+25003=Une erreur s''est produite lors de la g\u00e9n\u00e9ration de l''objet
+
+25004=Une erreur s''est produite lors de la d\u00e9conversion de param\u00e8tres du document
+
+25005=Une erreur s''est produite lors de la validation de l''objet
+
+25006=Aucun \u00e9l\u00e9ment racine par d\u00e9faut n''a \u00e9t\u00e9 sp\u00e9cifi\u00e9 pour l''\u00e9l\u00e9ment XMLDescriptor mapp\u00e9 \u00e0 {0}
+
+25007=Aucun descripteur pour la classe {0} n''a \u00e9t\u00e9 trouv\u00e9 dans le projet.  Pour JAXB, si l''\u00e9l\u00e9ment JAXBContext a \u00e9t\u00e9 amorc\u00e9 avec TypeMappingInfo[], vous devez appeler une m\u00e9thode de g\u00e9n\u00e9ration qui accepte TypeMappingInfo comme param\u00e8tre en entr\u00e9e.
+
+25008=Aucun descripteur avec l''\u00e9l\u00e9ment racine par d\u00e9faut {0} n''a \u00e9t\u00e9 trouv\u00e9 dans le projet.
+
+25010=Aucune r\u00e9f\u00e9rence de sch\u00e9ma n''a \u00e9t\u00e9 sp\u00e9cifi\u00e9e pour l''\u00e9l\u00e9ment XMLDescriptor mapp\u00e9 \u00e0 {0}
+
+25011=Un argument nul a \u00e9t\u00e9 d\u00e9tect\u00e9
+
+25012=Une erreur s''est produite lors de la r\u00e9solution du sch\u00e9ma XML.
+
+25013=Une erreur s''est produite lors de la tentative de d\u00e9finition des sch\u00e9mas.
+
+25014=Une erreur s''est produite lors de la tentative d''instanciation de la plateforme de sch\u00e9ma.
+
+25015=Une erreur s''est produite lors de la tentative de r\u00e9solution de l''URI espace de nom pour {0}. Aucun programme de r\u00e9solution d''espace-noms n''a \u00e9t\u00e9 sp\u00e9cifi\u00e9 sur le descripteur.
+
+25016=Aucun espace-noms pour le pr\u00e9fixe {0} n''a \u00e9t\u00e9 trouv\u00e9 dans le programme de r\u00e9solution de l''espace-noms.
+
+25017=L''\u00e9l\u00e9ment enumClass ou enumClassName doit \u00eatre d\u00e9fini sur JAXBTypesafeEnumConverter.
+
+25018=La m\u00e9thode fromString sur la classe enum {0} n''existe pas ou n''a pas pu \u00eatre appel\u00e9e.
+
+25019=La classe enum sp\u00e9cifi\u00e9e {0} n''a pas pu \u00eatre trouv\u00e9e.
+
+25020=La m\u00e9thode "getResult()" ne doit pas \u00eatre appel\u00e9e avant l''appel de l''\u00e9v\u00e9nement "endDocument()".
+
+25021=Classe {0} non valide pour SwaRef. Doit \u00eatre javax.activation.DataHandler.
+
+25022=Impossible de g\u00e9n\u00e9rer l''image. Aucun codeur disponible pour l''\u00e9l\u00e9ment mimeType {0}.
+
+25023=Aucun descripteur n''a \u00e9t\u00e9 trouv\u00e9 lors de la d\u00e9conversion de l''\u00e9l\u00e9ment mapp\u00e9 \u00e0 l''attribut {0}.
+
+25024=Une erreur s''est produite lors de l''instanciation de la classe UnmappedContentHandler {0}.
+
+25025=La classe UnmappedContentHandler {0} d\u00e9finie sur l''\u00e9l\u00e9ment XMLUnmarshaller doit impl\u00e9menter org.eclipse.persistence.oxm.unmapped.UnmappedContentHandler.
+
+25026=Impossible de mettre \u00e0 jour le noeud [{0}], objet non trouv\u00e9 dans le cache.
+
+25027=Impossible d''extraire la pi\u00e8ce jointe avec le CID {0} car aucun \u00e9l\u00e9ment AttachmentUnmarshaller n''a \u00e9t\u00e9 d\u00e9fini.
+
+25028=Aucun descripteur de r\u00e9f\u00e9rence n''a \u00e9t\u00e9 trouv\u00e9 pour le mappage {1} en raison d''une valeur xsi:type inconnue : {0}.
+
+25029=Pour le pr\u00e9fixe [{0}], la classe [{1}] a tent\u00e9 d''affecter l''URI d''espace-noms [{2}], mais sa classe parente [{3}] a d\u00e9j\u00e0 \u00e9t\u00e9 affect\u00e9e \u00e0 l''URI d''espace-noms [{4}].
+
+25030=Une erreur s''est produite lors de l''appel de la m\u00e9thode {0} sur l''\u00e9l\u00e9ment NamespacePrefixMapper personnalis\u00e9 : {1}.
+
+25031=Une erreur s''est produite lors du traitement de l''associateur de pr\u00e9fixe d''espace-noms : {1}. La m\u00e9thode {0} est introuvable.
+
+25032=Une erreur s''est produite lors de l''appel de la m\u00e9thode {0} sur l''\u00e9l\u00e9ment CharacterEscapeHandler personnalis\u00e9 : {1}.
+
+25033=Une erreur s''est produite lors du traitement de l''\u00e9l\u00e9ment CharacterEscapeHandler : {1}. La m\u00e9thode {0} est introuvable.
+
+25034=Une erreur s''est produite lors de l''appel de la m\u00e9thode {0} sur l''\u00e9l\u00e9ment IDResolver personnalis\u00e9 : {1}.
+
+25035=Une erreur s''est produite lors du traitement de l''\u00e9l\u00e9ment IDResolver : {1}. La m\u00e9thode {0} est introuvable.
+
+25036=L''\u00e9l\u00e9ment IDResolver {1} personnalis\u00e9 ne prend pas en charge plusieurs ID XML {0}.  Les \u00e9l\u00e9ments IDResolvers personnalis\u00e9s doivent \u00eatre les sous-classes org.eclipse.persistence.jaxb.IDResolver si plusieurs ID sont utilis\u00e9s.
+
+25037=Un cycle est d\u00e9tect\u00e9 dans l''objet graphique.  Cela va causer une boucle sans fin : {0}
+
+25038=L''\u00e9l\u00e9ment DOMPlatform n''est pas pris en charge avec l''application de type de support/json.
+
+25039=Une erreur s''est produite lors de la d\u00e9conversion depuis {0}
+
+25040=Un objet de type {0} avec l''ID {1} n''a pas \u00e9t\u00e9 trouv\u00e9.
+
+25041=Le groupe d''attributs sp\u00e9cifi\u00e9 {0} n''est pas d\u00e9fini pour la classe {1}.
+
+25042=La valeur de la propri\u00e9t\u00e9 de variable {0} sur la classe {1} ne peut pas \u00eatre nulle.
+

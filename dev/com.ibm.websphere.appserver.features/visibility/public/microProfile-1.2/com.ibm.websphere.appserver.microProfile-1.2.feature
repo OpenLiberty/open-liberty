@@ -1,5 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.microProfile-1.2
+WLP-DisableAllFeatures-OnConflict: false
 visibility=public
 singleton=true
 IBM-App-ForceRestart: install, \
@@ -16,7 +17,7 @@ Subsystem-Name: MicroProfile 1.2
  com.ibm.websphere.appserver.mpFaultTolerance-1.0, \
  com.ibm.websphere.appserver.mpHealth-1.0, \
  com.ibm.websphere.appserver.mpJwt-1.0, \
- com.ibm.websphere.appserver.mpMetrics-1.0
--bundles=com.ibm.ws.require.java8
+ com.ibm.websphere.appserver.mpMetrics-1.0, \
+  io.openliberty.mpCompatible-0.0
 kind=ga
 edition=core

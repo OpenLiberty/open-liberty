@@ -1,0 +1,2 @@
+Main-Class: com.ibm.ws.security.client.fat.programmaticlogin.ProgrammaticJaasLoginApp
+Class-Path: ProgrammaticJaasLogin.jar BasicCalculatorClient.jar

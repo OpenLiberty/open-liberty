@@ -1,0 +1,67 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/PersistenceUnitLoadingExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+30001=Zg\u0142oszono wyj\u0105tek podczas pr\u00f3by za\u0142adowania jednostki trwa\u0142o\u015bci dla katalogu: {0}
+
+30002=Zg\u0142oszono wyj\u0105tek podczas pr\u00f3by za\u0142adowania jednostki trwa\u0142o\u015bci dla pliku jar: {0}
+
+30003=Zg\u0142oszono wyj\u0105tek podczas przetwarzania jednostki trwa\u0142o\u015bci pod adresem URL: {0}
+
+30004=Zg\u0142oszono wyj\u0105tek podczas przetwarzania pliku persistence.xml z adresu URL: {0}
+
+30005=Zg\u0142oszono wyj\u0105tek podczas wyszukiwania archiw\u00f3w trwa\u0142o\u015bci przy u\u017cyciu programu \u0142aduj\u0105cego klasy: {0}
+
+30006=Zg\u0142oszono wyj\u0105tek podczas wyszukiwania encji pod adresem URL: {0}
+
+30007=Zg\u0142oszono wyj\u0105tek podczas \u0142adowania klasy {0} w celu sprawdzenia, czy implementuje ona adnotacje @Entity, @Embeddable lub @MappedSuperclass.
+
+30008=Zwr\u00f3cona \u015bcie\u017cka do pliku jest pusta lub ma warto\u015b\u0107 null.
+
+30009=Zg\u0142oszono wyj\u0105tek podczas pr\u00f3by za\u0142adowania jednostki trwa\u0142o\u015bci pod adresem URL: {0}
+
+30010=Zg\u0142oszono wyj\u0105tek podczas \u0142adowania pliku XML ORM: {0}
+
+30011=Projekt EclipseLink nie m\u00f3g\u0142 pobra\u0107 klas z adresu URL: {0}.  Projekt EclipseLink pr\u00f3bowa\u0142 odczyta\u0107 ten adres URL jako plik jar i jako katalog, ale nie m\u00f3g\u0142 go przetworzy\u0107.
+
+30012=Projekt EclipseLink nie m\u00f3g\u0142 pobra\u0107 informacji o jednostce trwa\u0142o\u015bci z adresu URL:{0}
+
+30013=Zg\u0142oszono wyj\u0105tek podczas pr\u00f3by zbudowania nazwy jednostki trwa\u0142o\u015bci dla jednostki trwa\u0142o\u015bci [{1}] z adresu URL: {0}.
+
+30014=Jednostka trwa\u0142o\u015bci okre\u015bla tryb sprawdzania poprawno\u015bci CALLBACK, ale nie mo\u017cna by\u0142o zainicjowa\u0107 fabryki ValidatorFactory sprawdzania poprawno\u015bci komponent\u00f3w bean. Szczeg\u00f3\u0142owe informacje na ten temat zawiera wyj\u0105tek zagnie\u017cd\u017cony. Upewnij si\u0119, \u017ce w \u015bcie\u017cce klas dost\u0119pny jest interfejs API sprawdzania poprawno\u015bci komponent\u00f3w bean oraz dostawca sprawdzania poprawno\u015bci komponent\u00f3w bean.
+
+30015=Zg\u0142oszono wyj\u0105tek podczas \u0142adowania klasy grupy sprawdzania poprawno\u015bci: {0}.
+
+30016=Nazwa sesji {0} nie mo\u017ce zosta\u0107 u\u017cyta przez jednostk\u0119 trwa\u0142o\u015bci {1}, poniewa\u017c jest ju\u017c u\u017cywana przez jednostk\u0119 trwa\u0142o\u015bci {2}
+
+30017=Jednostka trwa\u0142o\u015bci {0} jest zdefiniowana zar\u00f3wno w adresie obu URL{1}, jak i w adresie URL:{2}. Ten sam program \u0142aduj\u0105cy klasy nie mo\u017ce \u0142adowa\u0107 kilku jednostek trwa\u0142o\u015bci o tej samej nazwie.
+
+30018=Wyj\u0105tek {1} wyst\u0105pi\u0142 podczas pr\u00f3by utworzenia instancji okre\u015blonej przez u\u017cytkownika fabryki ArchiveFactory: {0}.
+
+30019=Wywo\u0142ywana jest metoda refreshMetadata na fabryce EntityManagerFactory dla jednostki trwa\u0142o\u015bci {0}.  Nie mo\u017cna od\u015bwie\u017cy\u0107 metadanych, poniewa\u017c ta fabryka EntityManagerFactory zosta\u0142a utworzona z obiektu sesji, a nie pochodzi od jednostki trwa\u0142o\u015bci.
+

@@ -188,7 +188,7 @@ public class CreateSSLCertificateTask extends BaseCommandTask {
             String key = getArgumentValue(ARG_KEY, args, null);
             stdout.println(getMessage("sslCert.createKeyStore", location));
             String encodedPassword = PasswordUtil.encode(password, encoding, key);
-            creator.createDefaultSSLCertificate(location, password, validity, subjectDN, keySize, sigAlg, extInfo);
+            creator.createDefaultSSLCertificate(location, password, keyType, null, validity, subjectDN, keySize, sigAlg, extInfo);
             String xmlSnippet = null;
             if (serverName != null) {
                 stdout.println(getMessage("sslCert.serverXML", serverName, subjectDN));

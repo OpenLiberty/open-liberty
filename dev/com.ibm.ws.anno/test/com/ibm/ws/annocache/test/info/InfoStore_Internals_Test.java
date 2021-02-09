@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2018 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -35,10 +35,8 @@ import com.ibm.ws.annocache.info.internal.DelayedClassInfoImpl;
 import com.ibm.ws.annocache.info.internal.InfoStoreFactoryImpl;
 import com.ibm.ws.annocache.info.internal.InfoStoreImpl;
 import com.ibm.ws.annocache.info.internal.NonDelayedClassInfoImpl;
-import com.ibm.ws.annocache.service.internal.AnnotationCacheServiceImpl_Service;
-import com.ibm.ws.annocache.targets.cache.internal.TargetCacheImpl_Factory;
-import com.ibm.ws.annocache.targets.cache.internal.TargetCacheImpl_Options;
 import com.ibm.ws.annocache.test.utils.TestLocalization;
+import com.ibm.ws.annocache.util.internal.UtilImpl_Factory;
 import com.ibm.wsspi.anno.classsource.ClassSource_Aggregate.ScanPolicy;
 import com.ibm.wsspi.anno.classsource.ClassSource_ScanCounts;
 import com.ibm.wsspi.anno.classsource.ClassSource_ScanCounts.ResultField;
@@ -68,12 +66,8 @@ public class InfoStore_Internals_Test {
 
     @BeforeClass
     public static void setup() throws ClassSource_Exception, InfoStoreException {
-        AnnotationCacheServiceImpl_Service annoService = new AnnotationCacheServiceImpl_Service();
-
-        TargetCacheImpl_Options cacheOptions = TargetCacheImpl_Factory.createOptionsFromDefaults();
-        annoService.activate(cacheOptions);
-
-        ClassSourceImpl_Factory factory = annoService.getClassSourceFactory();
+        UtilImpl_Factory utilImplFactory = new UtilImpl_Factory();
+        ClassSourceImpl_Factory factory = new ClassSourceImpl_Factory(utilImplFactory);
 
         ClassSourceImpl_Aggregate useRootClassSource =
             factory.createAggregateClassSource("TestEar", "TestMod", ClassSource_Factory.UNSET_CATEGORY_NAME, factory.createOptions() );
@@ -89,7 +83,7 @@ public class InfoStore_Internals_Test {
 
         rootClassSource = useRootClassSource;
 
-        InfoStoreFactoryImpl infoStoreFactory = annoService.getInfoStoreFactory();
+        InfoStoreFactoryImpl infoStoreFactory = new InfoStoreFactoryImpl(utilImplFactory);
         infoStore = infoStoreFactory.createInfoStore(rootClassSource);
     }
 

@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -168,8 +169,9 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
             cl.cancel();
         }
         final boolean checkForUnprocessedConfigChange = _nextAppConfig.getAndSet(appConfig) != null;
+
         addAppStartingFutures(appStartingFutures);
-        addStartAfterFutures(startAfterFutures);
+        updateStartAfterFutures(startAfterFutures);
         if (notifyAppStopped != null) {
             _notifyAppStopped.add(notifyAppStopped);
         }
@@ -205,6 +207,7 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
         if (_tc.isEventEnabled()) {
             Tr.event(_tc, asmLabel() + "recycle: interruptible=" + isInterruptible());
         }
+
         CancelableCompletionListenerWrapper<Boolean> cl = completionListener.getAndSet(null);
         if (cl != null) {
             cl.cancel();
@@ -269,8 +272,17 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
         sb.append(getInternalState());
         sb.append("\nCallback State: ");
         sb.append(_callbackState.get());
+
+        if (!startAfterFutures.isEmpty()) {
+            sb.append("\n\nStart After Dependencies: ");
+            for (ApplicationDependency ad : startAfterFutures) {
+                sb.append("\n");
+                sb.append(ad.toString());
+            }
+        }
+
         if (!_notifyAppStopped.isEmpty()) {
-            sb.append("\nApp Stopped Dependencies: ");
+            sb.append("\n\nApp Stopped Dependencies: ");
             for (ApplicationDependency ad : _notifyAppStopped) {
                 sb.append("\n");
                 sb.append(ad.toString());
@@ -278,7 +290,7 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
         }
 
         if (!_notifyAppInstallCalled.isEmpty()) {
-            sb.append("\nApp Install Called Dependencies: ");
+            sb.append("\n\nApp Install Called Dependencies: ");
             for (ApplicationDependency ad : _notifyAppInstallCalled) {
                 sb.append("\n");
                 sb.append(ad.toString());
@@ -286,7 +298,7 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
         }
 
         if (!_notifyAppStarting.isEmpty()) {
-            sb.append("\nApp Starting Dependencies: ");
+            sb.append("\n\nApp Starting Dependencies: ");
             for (ApplicationDependency ad : _notifyAppStarting) {
                 sb.append("\n");
                 sb.append(ad.toString());
@@ -294,7 +306,7 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
         }
 
         if (!_notifyAppStarted.isEmpty()) {
-            sb.append("\nApp Started Dependencies: ");
+            sb.append("\n\nApp Started Dependencies: ");
             for (ApplicationDependency ad : _notifyAppStarted) {
                 sb.append("\n");
                 sb.append(ad.toString());
@@ -302,7 +314,7 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
         }
 
         if (!_notifyAppRemoved.isEmpty()) {
-            sb.append("\nApp Removed Dependencies: ");
+            sb.append("\n\nApp Removed Dependencies: ");
             for (ApplicationDependency ad : _notifyAppRemoved) {
                 sb.append("\n");
                 sb.append(ad.toString());
@@ -310,12 +322,12 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
         }
 
         if (waitingForAppHandlerFuture.get() != null) {
-            sb.append("\nWaiting for App Handler: ");
+            sb.append("\n\nWaiting for App Handler: ");
             sb.append(waitingForAppHandlerFuture.get());
         }
 
         if (waitingForExplicitStartFuture.get() != null) {
-            sb.append("\nWaiting for Explicit Start: ");
+            sb.append("\n\nWaiting for Explicit Start: ");
             sb.append(waitingForExplicitStartFuture.get());
         }
 
@@ -419,9 +431,7 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
                 }
                 return null;
             } else {
-                if (_currentAction.getAndSet(null) == null) {
-                    return null;
-                }
+                _currentAction.getAndSet(null);
                 return immediateCallbackResult.getAndSet(null);
             }
         }
@@ -875,6 +885,9 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
                         }
                         setNonInterruptible();
                         queuedAction = _queuedActions.poll();
+                        if (_tc.isDebugEnabled()) {
+                            Tr.debug(_tc, asmLabel() + "run: next queued action: " + queuedAction);
+                        }
                     }
                 }
                 if (callbackReceivedState != null) {
@@ -912,8 +925,13 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
             Tr.event(_tc, asmLabel() + "queueStateChange: interruptible=" + isInterruptible());
         }
         synchronized (_interruptibleLock) {
-            _queuedActions.add(new QueuedStateChangeAction(action, _qscaCounter.getAndIncrement()));
+            QueuedStateChangeAction qa = new QueuedStateChangeAction(action, _qscaCounter.getAndIncrement());
+            _queuedActions.add(qa);
+            if (_tc.isDebugEnabled()) {
+                Tr.debug(_tc, asmLabel() + "queueStateChange: added action " + qa);
+            }
         }
+
         _executorService.execute(this);
     }
 
@@ -1000,10 +1018,19 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
         blockAppStartingFutures.addAll(appStartingFutures);
     }
 
-    private void addStartAfterFutures(Collection<ApplicationDependency> startAfters) {
+    private void updateStartAfterFutures(Collection<ApplicationDependency> startAfters) {
         if (_tc.isEventEnabled()) {
-            Tr.event(_tc, asmLabel() + "addSTartAfterFutures: interruptible=" + isInterruptible());
+            Tr.event(_tc, asmLabel() + "updateStartAfterFutures: interruptible=" + isInterruptible());
         }
+        Iterator<ApplicationDependency> iter = startAfterFutures.iterator();
+        while (iter.hasNext()) {
+            ApplicationDependency ad = iter.next();
+            if (!startAfters.contains(ad)) {
+                blockAppStartingFutures.remove(ad);
+                iter.remove();
+            }
+        }
+
         startAfterFutures.addAll(startAfters);
         blockAppStartingFutures.addAll(startAfters);
     }
@@ -1116,6 +1143,7 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
     }
 
     private void performAction(StateChangeAction action) {
+
         assertNonInterruptible();
         final InternalState currentState = getInternalState();
 
@@ -1170,6 +1198,7 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
             default:
                 throw new IllegalStateException("currentState");
         }
+
     }
 
     private void cleanupActions() {
@@ -1232,16 +1261,18 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
                             break;
                         }
                         if (_handler.get() == null) {
-                            if (!_asmHelper.appTypeSupported()) {
-                                Tr.error(_tc, "NO_APPLICATION_HANDLER", _appConfig.get().getLocation());
-                            }
                             CancelableCompletionListenerWrapper<Boolean> cl = completionListener.getAndSet(null);
                             if (cl != null) {
                                 cl.cancel();
                             }
+                            // wait for the app handler to arrive, note this is done even if we know the type is not supported.
                             addAppHandlerFuture();
-                            for (ApplicationDependency startingFuture; (startingFuture = _notifyAppStarting.poll()) != null;) {
-                                failedDependency(startingFuture, null);
+                            if (!_asmHelper.appTypeSupported()) {
+                                Tr.error(_tc, "NO_APPLICATION_HANDLER", _appConfig.get().getLocation());
+                                // we only fail here if the app type is not supported; otherwise we assume the handler is coming
+                                for (ApplicationDependency startingFuture; (startingFuture = _notifyAppStarting.poll()) != null;) {
+                                    failedDependency(startingFuture, null);
+                                }
                             }
                             break;
                         }
@@ -1336,6 +1367,7 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
                         return;
                     case REMOVED:
                         _asmHelper.switchApplicationState(_appConfig.get(), ApplicationState.INSTALLED);
+                        _appMonitor.removeApplication(_appConfig.get().getConfigPid());
                         ApplicationDependency removedFuture = null;
                         while ((removedFuture = _notifyAppRemoved.poll()) != null) {
                             resolveDependency(removedFuture);

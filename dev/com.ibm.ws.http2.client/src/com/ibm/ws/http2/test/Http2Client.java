@@ -452,6 +452,8 @@ public class Http2Client {
                         LOGGER.logp(Level.INFO, CLASS_NAME + "$FATFramesListener", "receivedLastFrame", "caught exception: " + e);
                     }
                 }
+                isTestDone.set(true);
+                blockUntilConnectionIsDone.countDown();
             }
         }
 

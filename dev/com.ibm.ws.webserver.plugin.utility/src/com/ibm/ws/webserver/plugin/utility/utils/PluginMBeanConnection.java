@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -110,7 +110,7 @@ public class PluginMBeanConnection extends CommonMBeanConnection {
 	        }
 	        
 	        serverRoot = serverRoot.replaceAll("\\\\", "/");
-	        String connectorFile = serverRoot + "workarea"+ File.separator + CONNECTOR_ADDRESS_FILE_NAME;
+	        String connectorFile = serverRoot + "logs"+ File.separator + "state"+ File.separator + CONNECTOR_ADDRESS_FILE_NAME;
 
 	        File file = new File(connectorFile);
 	        if (file.exists()) {

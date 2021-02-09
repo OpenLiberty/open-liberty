@@ -55,16 +55,20 @@ import org.apache.cxf.service.model.MessagePartInfo;
 import org.apache.cxf.service.model.OperationInfo;
 import org.apache.cxf.service.model.ServiceModelUtil;
 
+import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.websphere.ras.annotation.Trivial;
+
 public class URIMappingInterceptor extends AbstractInDatabindingInterceptor {
     public static final String URIMAPPING_SKIP = URIMappingInterceptor.class.getName() + ".skip";
     
     private static final Logger LOG = LogUtils.getL7dLogger(URIMappingInterceptor.class);
     
+    @Trivial
     public URIMappingInterceptor() {
         super(Phase.UNMARSHAL);
     }
 
-    public void handleMessage(Message message) throws Fault {
+    public void handleMessage(@Sensitive Message message) throws Fault {
         String method = (String)message.get(Message.HTTP_REQUEST_METHOD);
         if (LOG.isLoggable(Level.FINE)) {
             LOG.fine("Invoking HTTP method " + method);
@@ -109,6 +113,7 @@ public class URIMappingInterceptor extends AbstractInDatabindingInterceptor {
         }
     }
 
+    @Trivial
     private BindingOperationInfo findAnyOp(Exchange exchange) {
         Endpoint ep = exchange.get(Endpoint.class);
         BindingInfo service = ep.getEndpointInfo().getBinding();
@@ -124,18 +129,21 @@ public class URIMappingInterceptor extends AbstractInDatabindingInterceptor {
         return null;
     }
 
+    @Trivial
     private Method getMethod(Message message, BindingOperationInfo operation) {        
         MethodDispatcher md = (MethodDispatcher) message.getExchange().
             get(Service.class).get(MethodDispatcher.class.getName());
         return md.getMethod(operation);
     }
        
+    @Trivial
     private boolean isFixedParameterOrder(Message message) {
         // Default value is false
         Boolean order = (Boolean)message.get(Message.FIXED_PARAMETER_ORDER);        
         return order != null && order;
     }
     
+    @Trivial
     protected Map<String, String> keepInOrder(Map<String, String> params, 
                                               OperationInfo operation,
                                               List<String> order) {
@@ -165,7 +173,8 @@ public class URIMappingInterceptor extends AbstractInDatabindingInterceptor {
         return orderedParameters;
     }
     
-    protected MessageContentsList getParameters(Message message, BindingOperationInfo operation) {
+    
+    protected MessageContentsList getParameters(@Sensitive Message message, @Sensitive BindingOperationInfo operation) {
         MessageContentsList parameters = new MessageContentsList();
         Map<String, String> queries = getQueries(message);
         
@@ -238,6 +247,7 @@ public class URIMappingInterceptor extends AbstractInDatabindingInterceptor {
         return parameters;
     }
 
+    @Trivial
     private Date parseDate(String value, Class<?> type) {
         SimpleDateFormat sdf;
 
@@ -265,6 +275,7 @@ public class URIMappingInterceptor extends AbstractInDatabindingInterceptor {
         }
     }
 
+    @Trivial
     private Object readType(String value, Class<?> type) {
         Object ret = value;
 
@@ -304,6 +315,7 @@ public class URIMappingInterceptor extends AbstractInDatabindingInterceptor {
         }
         return ret;
     }
+    @Trivial
     private String uriDecode(String query) {
         try {
             query = URLDecoder.decode(query, "UTF-8");
@@ -313,6 +325,7 @@ public class URIMappingInterceptor extends AbstractInDatabindingInterceptor {
         return query;
     }
 
+    @Trivial
     protected Map<String, String> getQueries(Message message) {
         Map<String, String> queries = new LinkedHashMap<String, String>();
         String query = (String)message.get(Message.QUERY_STRING);
@@ -342,6 +355,7 @@ public class URIMappingInterceptor extends AbstractInDatabindingInterceptor {
         return queries;
     }
     
+    @Trivial
     private String getRest(Message message) {
         String path = (String)message.get(Message.PATH_INFO);
         String basePath = (String)message.get(Message.BASE_PATH);
@@ -351,6 +365,7 @@ public class URIMappingInterceptor extends AbstractInDatabindingInterceptor {
         return StringUtils.diff(path, basePath);        
     }
     
+    @Trivial
     protected String getOperationName(Message message) {
         String rest = getRest(message);        
         String opName = StringUtils.getFirstNotEmpty(rest, "/");

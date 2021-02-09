@@ -32,7 +32,7 @@ no.such.element.CWMCG0300E=CWMCG0300E: A propriedade {0} n\u00e3o foi localizada
 no.such.element.CWMCG0300E.explanation=A propriedade solicitada n\u00e3o existia em nenhuma das Origens de Configura\u00e7\u00e3o configuradas.
 no.such.element.CWMCG0300E.useraction=Inclua a propriedade em uma das Origens de Configura\u00e7\u00e3o existentes ou inclua uma Origem de Configura\u00e7\u00e3o que contenha a propriedade.
 
-failed.to.schedule.cache.invalidation.CWMCG0301E=CWMCG0301E: Falha ao planejar a invalida\u00e7\u00e3o de cache do MicroProfile Config. A exce\u00e7\u00e3o foi {0}.
+failed.to.schedule.cache.invalidation.CWMCG0301E=CWMCG0301E: A invalida\u00e7\u00e3o de cache do MicroProfile Config n\u00e3o pode ser agendada. A exce\u00e7\u00e3o  {0}
 failed.to.schedule.cache.invalidation.CWMCG0301E.explanation=As mudan\u00e7as no MicroProfile Config podem n\u00e3o ser refletidas no aplicativo.
 failed.to.schedule.cache.invalidation.CWMCG0301E.useraction=Revise os logs message.log e FFDC do servidor para identificar o problema.
 

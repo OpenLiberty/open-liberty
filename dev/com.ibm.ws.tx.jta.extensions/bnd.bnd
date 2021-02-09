@@ -36,3 +36,5 @@ instrument.disabled: true
 	com.ibm.tx.jta;version=latest,\
 	com.ibm.ws.container.service;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+
+jakartaeeMe: true

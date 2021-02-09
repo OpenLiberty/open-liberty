@@ -27,6 +27,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
+
 public class JAXRSClientServerValidationTest extends AbstractTest {
 
     private static final String bvwar = "beanvalidation";
@@ -73,6 +74,16 @@ public class JAXRSClientServerValidationTest extends AbstractTest {
     @Test
     public void testThatNotNullValidationFails() throws Exception {
         this.runTestOnServer(target, "testThatNotNullValidationFails", null, "OK");
+    }
+
+    @Test
+    public void testThatNotNullValidationSkipped() throws Exception {
+        this.runTestOnServer(target, "testThatNotNullValidationSkipped", null, "OK");
+    }
+
+    @Test
+    public void testThatNotNullValidationNotSkipped() throws Exception {
+        this.runTestOnServer(target, "testThatNotNullValidationNotSkipped", null, "OK");
     }
 
     @Test

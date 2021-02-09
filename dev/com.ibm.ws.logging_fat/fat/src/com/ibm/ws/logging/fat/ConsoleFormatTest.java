@@ -118,7 +118,7 @@ public class ConsoleFormatTest {
         assertTrue("The console log is not in dev format.", lines.size() > 0);
 
         // Set the consoleFormat="simple" and traceSpec=off in server.xml
-        setServerConfiguration(SIMPLE_FORMAT, false, false, consoleLogFile);
+        setServerConfiguration(server, SIMPLE_FORMAT, false, false, consoleLogFile);
 
         // Verify if the server was successfully updated
         String line = server.waitForStringInLogUsingMark("CWWKG0017I", consoleLogFile);
@@ -129,7 +129,7 @@ public class ConsoleFormatTest {
         assertTrue("The console.log file was not formatted to the simple format.", isStringinSimpleFormat(line));
 
         // Set the consoleFormat="dev" and traceSpec=off in server.xml
-        setServerConfiguration(DEV_FORMAT, false, false, consoleLogFile);
+        setServerConfiguration(server, DEV_FORMAT, false, false, consoleLogFile);
 
         // Verify if the server was successfully updated again.
         line = server.waitForStringInLogUsingMark("CWWKG0017I", consoleLogFile);
@@ -144,13 +144,13 @@ public class ConsoleFormatTest {
      * This test sets the "consoleFormat" attribute to an invalid value and verifies if the appropriate warning message is displayed
      * and checks that the default format is applied.
      */
-    //@Test
+    @Test
     public void testInvalidConsoleFormat() throws Exception {
         // Retrieve the consoleLogFile RemoteFile
         RemoteFile consoleLogFile = server.getConsoleLogFile();
 
         // Set the consoleFormat="simples" and traceSpec=off in server.xml
-        setServerConfiguration(INVALID_CONSOLE_FORMAT, false, false, consoleLogFile);
+        setServerConfiguration(server, INVALID_CONSOLE_FORMAT, false, false, consoleLogFile);
 
         // Verify if the WARNING message appeared in the logs.
         String line = server.waitForStringInLogUsingMark("CWWKG0032W", consoleLogFile);
@@ -169,13 +169,13 @@ public class ConsoleFormatTest {
      * This test sets the "consoleFormat" attribute to the deprecated basic console format and verifies if the appropriate warning message is displayed
      * and checks that the default format is applied.
      */
-    //@Test
+    @Test
     public void testDeprecatedBasicConsoleFormat() throws Exception {
         // Retrieve the consoleLogFile RemoteFile
         RemoteFile consoleLogFile = server.getConsoleLogFile();
 
         // Set the consoleFormat="basic" and traceSpec=off in server.xml
-        setServerConfiguration(DEPRECATED_BASIC_FORMAT, false, false, consoleLogFile);
+        setServerConfiguration(server, DEPRECATED_BASIC_FORMAT, false, false, consoleLogFile);
 
         // Verify if the WARNING message appeared in the logs.
         String line = server.waitForStringInLogUsingMark("CWWKG0032W", consoleLogFile);
@@ -202,7 +202,7 @@ public class ConsoleFormatTest {
 
         try {
             // Set the consoleFormat to simple in bootstrap.properties
-            setInBootstrapPropertiesFile(bootstrapFile, "com.ibm.ws.logging.console.format", SIMPLE_FORMAT);
+            setInBootstrapPropertiesFile(server, bootstrapFile, "com.ibm.ws.logging.console.format", SIMPLE_FORMAT);
 
             // Retrieve the consoleLogFile RemoteFile
             RemoteFile consoleLogFile = server.getConsoleLogFile();
@@ -223,7 +223,7 @@ public class ConsoleFormatTest {
      * This test sets the "consoleFormat" attribute to an invalid format in the bootstrap.properties and starts the server and verifies the correct default dev format in the
      * console.log file.
      */
-    //@Test
+    @Test
     public void testInvalidConsoleFormatSetInBootstrapProperties() throws Exception {
         // Get the bootstrap.properties file and store the original content
         RemoteFile bootstrapFile = server.getServerBootstrapPropertiesFile();
@@ -232,7 +232,7 @@ public class ConsoleFormatTest {
 
         try {
             // Set the consoleFormat to simples in bootstrap.properties
-            setInBootstrapPropertiesFile(bootstrapFile, "com.ibm.ws.logging.console.format", INVALID_CONSOLE_FORMAT);
+            setInBootstrapPropertiesFile(server, bootstrapFile, "com.ibm.ws.logging.console.format", INVALID_CONSOLE_FORMAT);
 
             // Retrieve the consoleLogFile RemoteFile
             RemoteFile consoleLogFile = server.getConsoleLogFile();
@@ -240,10 +240,6 @@ public class ConsoleFormatTest {
             // Verify if the WARNING message appeared in the logs.
             String line = server.waitForStringInLogUsingMark("CWWKG0032W", consoleLogFile);
             assertNotNull("Warning CWWKG0032W did not appear in console.log", line);
-
-            // Verify if the WARNING message appeared in the logs.
-            line = server.waitForStringInLogUsingMark("CWWKG0075E", consoleLogFile);
-            assertNotNull("Error CWWKG0075E did not appear in console.log", line);
 
             // Check in console.log file to see if the message is formatted in the default dev console format
             List<String> lines = server.findStringsInLogs(DEV_FORMAT_REGEX_PATTERN, consoleLogFile);
@@ -266,7 +262,7 @@ public class ConsoleFormatTest {
         RemoteFile consoleLogFile = server.getConsoleLogFile();
 
         // Set the consoleFormat="simple", traceSpec=off, isoDateFormat=true in server.xml
-        setServerConfiguration(SIMPLE_FORMAT, false, true, consoleLogFile);
+        setServerConfiguration(server, SIMPLE_FORMAT, false, true, consoleLogFile);
 
         // Verify if the server was successfully updated
         String line = server.waitForStringInLogUsingMark("CWWKG0017I", consoleLogFile);
@@ -288,7 +284,7 @@ public class ConsoleFormatTest {
         RemoteFile consoleLogFile = server.getConsoleLogFile();
 
         // Set the consoleFormat="simple", traceSpec=off, isoDateFormat=false in server.xml
-        setServerConfiguration(SIMPLE_FORMAT, false, false, consoleLogFile);
+        setServerConfiguration(server, SIMPLE_FORMAT, false, false, consoleLogFile);
 
         // Verify if the server was successfully updated
         String line = server.waitForStringInLogUsingMark("CWWKG0017I", consoleLogFile);
@@ -321,7 +317,7 @@ public class ConsoleFormatTest {
         RemoteFile consoleLogFile = server.getConsoleLogFile();
 
         // Set the consoleFormat="simple", traceSpec=off, isoDateFormat=false in server.xml
-        setServerConfiguration(SIMPLE_FORMAT, false, false, consoleLogFile);
+        setServerConfiguration(server, SIMPLE_FORMAT, false, false, consoleLogFile);
 
         // Verify if the server was successfully updated
         String line = server.waitForStringInLogUsingMark("CWWKG0017I", consoleLogFile);
@@ -360,6 +356,61 @@ public class ConsoleFormatTest {
         // Verify if the console logging format is not in the default dev format, and is in the simple format
         List<String> lines = serverEnv.findStringsInLogs(SIMPLE_FORMAT_REGEX_PATTERN, consoleLogFile);
         assertTrue("The console log is not in simple format.", lines.size() > 0);
+
+        // Stop the serverEnv
+        if (serverEnv != null && serverEnv.isStarted()) {
+            serverEnv.stopServer(EXPECTED_FAILURES);
+        }
+    }
+
+    /*
+     * This test verifies consoleFormat when the attribute is set in server.env, bootstrap.properties and server.xml
+     * server.env: WLP_LOGGING_CONSOLE_FORMAT=simple
+     * bootstrap.properties: com.ibm.ws.logging.console.format=dev
+     * server.xml: <logging consoleFormat="simple"/>
+     */
+    @Test
+    public void testConsoleFormatInEnvPropertiesXML() throws Exception {
+
+        // Stop the default server, if running...
+        if (server != null && server.isStarted()) {
+            server.stopServer(EXPECTED_FAILURES);
+        }
+
+        // Start the server with the server.env file configured with the consoleFormat=simple
+        serverEnv.startServer();
+
+        // Get the bootstrap.properties file and store the original content
+        RemoteFile bootstrapFile = serverEnv.getServerBootstrapPropertiesFile();
+        FileInputStream in = getFileInputStreamForRemoteFile(bootstrapFile);
+        Properties initialBootstrapProps = loadProperties(in);
+
+        try {
+
+            // Set the messageFormat to basic in bootstrap.properties
+            // Start the server with the server.env file configured with the consoleFormat=simple
+            setInBootstrapPropertiesFile(serverEnv, bootstrapFile, "com.ibm.ws.logging.console.format", DEV_FORMAT);
+
+            RemoteFile consoleLogFile = serverEnv.getConsoleLogFile();
+
+            // Check in console.log file to see if the message is formatted in the simple console format
+            List<String> lines = serverEnv.findStringsInLogs(DEV_FORMAT_REGEX_PATTERN, consoleLogFile);
+            Log.info(c, "testConsoleFormatInEnvPropertiesXML", "The dev console formatted lines : " + lines);
+            assertTrue("The console log is not in dev format.", lines.size() > 0);
+
+            // Set the consoleFormat="simple" and traceSpec=off in server.xml
+            setServerConfiguration(serverEnv, SIMPLE_FORMAT, false, false, consoleLogFile);
+
+            // Verify if the console.log file is in the simple format
+            String line = serverEnv.waitForStringInLogUsingMark("CWWKG0017I", consoleLogFile);
+            Log.info(c, "testBootstrapServerXMLConsoleFormat", "The simple console formatted line : " + line);
+            assertTrue("The console.log file was not formatted to the simple format.", isStringinSimpleFormat(line));
+
+        } finally {
+            // Restore the initial contents of bootstrap.properties
+            FileOutputStream out = getFileOutputStreamForRemoteFile(bootstrapFile, false);
+            writeProperties(initialBootstrapProps, out);
+        }
 
         // Stop the serverEnv
         if (serverEnv != null && serverEnv.isStarted()) {
@@ -420,9 +471,10 @@ public class ConsoleFormatTest {
         }
     }
 
-    private static void setServerConfiguration(String consoleFormat, boolean useTraceSpec, boolean useIsoDateFormat, RemoteFile consoleLogFile) throws Exception {
+    private static void setServerConfiguration(LibertyServer libertyServer, String consoleFormat, boolean useTraceSpec, boolean useIsoDateFormat,
+                                               RemoteFile consoleLogFile) throws Exception {
         Logging loggingObj;
-        ServerConfiguration serverConfig = server.getServerConfiguration();
+        ServerConfiguration serverConfig = libertyServer.getServerConfiguration();
         loggingObj = serverConfig.getLogging();
         if (useTraceSpec) {
             loggingObj.setTraceSpecification(TRACE_SPEC);
@@ -431,9 +483,9 @@ public class ConsoleFormatTest {
             loggingObj.setIsoDateFormat(useIsoDateFormat);
         }
         loggingObj.setConsoleFormat(consoleFormat);
-        server.setMarkToEndOfLog(consoleLogFile);
-        server.updateServerConfiguration(serverConfig);
-        server.waitForConfigUpdateInLogUsingMark(null);
+        libertyServer.setMarkToEndOfLog(consoleLogFile);
+        libertyServer.updateServerConfiguration(serverConfig);
+        libertyServer.waitForConfigUpdateInLogUsingMark(null);
     }
 
     private static boolean isStringinDevFormat(String text) {
@@ -444,10 +496,10 @@ public class ConsoleFormatTest {
         return Pattern.compile(SIMPLE_FORMAT_REGEX_PATTERN).matcher(text).find();
     }
 
-    private void setInBootstrapPropertiesFile(RemoteFile bootstrapFile, String key, String value) throws Exception {
+    private void setInBootstrapPropertiesFile(LibertyServer libertyServer, RemoteFile bootstrapFile, String key, String value) throws Exception {
         // Stop server, if running...
-        if (server != null && server.isStarted()) {
-            server.stopServer(EXPECTED_FAILURES);
+        if (libertyServer != null && libertyServer.isStarted()) {
+            libertyServer.stopServer(EXPECTED_FAILURES);
         }
 
         // Update bootstrap.properties file with consoleFormat=simple
@@ -458,7 +510,7 @@ public class ConsoleFormatTest {
         writeProperties(newBootstrapProps, out);
 
         // Start server...
-        server.startServer();
+        libertyServer.startServer();
     }
 
     private static void hitWebPage(String contextRoot, String servletName, boolean failureAllowed, String params) throws MalformedURLException, IOException, ProtocolException {

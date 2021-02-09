@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -209,7 +209,7 @@ public class OAuth20AuthenticatorImpl implements OAuth20Authenticator {
         String user_name = token.getUser();
         UserClaimsRetrieverService ucrService = ConfigUtils.getUserClaimsRetrieverService();
         if (ucrService != null) {
-            UserClaims userClaims = ucrService.getUserClaims(user_name, DEFAULT_GROUP_IDENTIFIER);
+            UserClaims userClaims = ucrService.getUserClaims(user_name, DEFAULT_GROUP_IDENTIFIER, cacheKey);
             if (userClaims != null) {
                 Map<String, Object> claimsMap = userClaims.asMap();
                 List<String> groups = (List<String>) claimsMap.get(DEFAULT_GROUP_IDENTIFIER);

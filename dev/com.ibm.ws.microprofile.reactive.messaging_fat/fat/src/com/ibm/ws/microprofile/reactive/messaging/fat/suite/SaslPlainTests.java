@@ -24,7 +24,7 @@ import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.liberty_login.specia
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.liberty_login.xor.LibertyLoginModuleXorTest;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.sasl_plain.KafkaSaslPlainTest;
 
-import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
+import componenttest.containers.ExternalTestServiceDockerClientStrategy;
 
 /**
  * Suite for tests which run against a TLS enabled kafka broker
@@ -45,7 +45,7 @@ public class SaslPlainTests {
 
     @BeforeClass
     public static void beforeSuite() throws Exception {
-        ExternalTestServiceDockerClientStrategy.clearTestcontainersConfig();
+        ExternalTestServiceDockerClientStrategy.setupTestcontainers();
     }
 
 }

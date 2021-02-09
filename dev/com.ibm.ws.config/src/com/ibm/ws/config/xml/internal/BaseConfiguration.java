@@ -23,8 +23,11 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.config.admin.ConfigID;
+import com.ibm.ws.config.xml.LibertyVariable;
 import com.ibm.ws.config.xml.internal.XMLConfigParser.MergeBehavior;
+import com.ibm.ws.config.xml.internal.variables.ConfigVariable;
 import com.ibm.wsspi.kernel.service.location.WsResource;
 
 class BaseConfiguration {
@@ -320,8 +323,15 @@ class BaseConfiguration {
 
                 if (!defaultElements.isEmpty()) {
                     FactoryElement merged = new FactoryElement(defaultElements, pid, elementId.getId());
-                    // Remove the ID from the list of attributes. If it's specified, it will be added back by the configured values.
-                    merged.attributes.remove(XMLConfigConstants.CFG_INSTANCE_ID);
+                    // Remove the ID from the list of attributes if its using the non-default ID and
+                    // the element its merging with is using a default ID.
+                    // If it's specified, it will be added back by the configured values.
+                    if (defaultElements.get(0).isUsingNonDefaultId() == true && entry.getValue().get(0).isUsingNonDefaultId() == false) {
+                        merged.attributes.remove(XMLConfigConstants.CFG_INSTANCE_ID);
+                        if (tc.isDebugEnabled()) {
+                            Tr.debug(tc, "Removing default id from list of attributes");
+                        }
+                    }
                     merged.merge(entry.getValue());
                     mergedMap.put(elementId, merged);
                 } else {
@@ -356,7 +366,7 @@ class BaseConfiguration {
         return Collections.emptyMap();
     }
 
-    public void addVariable(ConfigVariable variable) {
+    public void addVariable(@Sensitive ConfigVariable variable) {
         getVariableEntry(variable.getName()).add(variable);
     }
 
@@ -369,8 +379,9 @@ class BaseConfiguration {
         return variableList;
     }
 
-    public Map<String, ConfigVariable> getVariables() {
-        HashMap<String, ConfigVariable> variableMap = new HashMap<String, ConfigVariable>();
+    @Sensitive
+    public Map<String, LibertyVariable> getVariables() {
+        HashMap<String, LibertyVariable> variableMap = new HashMap<String, LibertyVariable>();
         for (Map.Entry<String, List<ConfigVariable>> entry : variables.entrySet()) {
             String variableName = entry.getKey();
             List<ConfigVariable> variableList = entry.getValue();

@@ -21,6 +21,7 @@ public class EJBTimerServiceElement extends ConfigElement {
     private Long nonPersistentRetryInterval;
     private Integer nonPersistentMaxRetries;
     private String missedPersistentTimerAction;
+    private String nonPersistentContextServiceRef;
 
     public Long getLateTimerThreshold() {
         return lateTimerThreshold;
@@ -58,6 +59,15 @@ public class EJBTimerServiceElement extends ConfigElement {
         this.missedPersistentTimerAction = missedPersistentTimerAction;
     }
 
+    public String getNonPersistentContextServiceRef() {
+        return nonPersistentContextServiceRef;
+    }
+
+    @XmlAttribute(name = "nonPersistentContextServiceRef")
+    public void setNonPersistentContextServiceRef(String contextServiceRef) {
+        this.nonPersistentContextServiceRef = contextServiceRef;
+    }
+
     @Override
     public String toString() {
         StringBuffer buf = new StringBuffer("EJBTimerServiceElement {");
@@ -73,6 +83,9 @@ public class EJBTimerServiceElement extends ConfigElement {
         }
         if (missedPersistentTimerAction != null) {
             buf.append("missedPersistentTimerAction=\"" + missedPersistentTimerAction + "\" ");
+        }
+        if (nonPersistentContextServiceRef != null) {
+            buf.append("contextServiceRef=\"" + nonPersistentContextServiceRef + "\" ");
         }
 
         buf.append("}");

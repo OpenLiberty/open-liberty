@@ -1,4 +1,13 @@
-#------------------------------\n at 72 chars -- leading tab-----------\n\#
+###############################################################################
+# Copyright (c) 2010, 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
 #CMVCPATHNAME com.ibm.ws.install.featureUtility/resources/com/ibm/ws/install/featureUtility/internal/resources/FeatureUtilityToolOptions.nlsprops
 #ISMESSAGEFILE FALSE
 #NLS_ENCODING=UNICODE
@@ -21,7 +30,7 @@ task.unknown=Ac\u0163iune necunoscut\u0103: {0}
 help.desc=\tTip\u0103ri\u0163i informa\u0163iile de ajutor pentru ac\u0163iunea specificat\u0103.
 
 #--------- INSTALLFEATURE ACTION ---------------------------------------------#
-installFeature.desc=\tInstala\u0163i o catracteristic\u0103 sau o list\u0103 de caracteristici separate prin virgul\u0103.
+installFeature.desc=\tInstala\u0163i o caracteristic\u0103 sau o list\u0103 de caracteristici separate prin spa\u0163iu.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 installFeature.option-key.name...=\ \ \ \ nume ...
 installFeature.option-desc.name...=\tUna sau mai multe caracteristici care sunt separate de un spa\u0163iu. Pentru caracteristici,    \n\
@@ -46,6 +55,9 @@ installFeature.option-desc.--from=\tUtiliza\u0163i aceast\u0103 op\u0163iune pen
 installFeature.option-key.--verbose=\ \ \ \ --verbose
 installFeature.option-desc.--verbose=\tAfi\u015fa\u0163i informa\u0163ii de depanare suplimentare \u00een timp ce ruleaz\u0103 ac\u0163iunea.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
+installFeature.option-key.--acceptLicense=\ \ \ \ --acceptLicense
+installFeature.option-desc.--acceptLicense=\tAccept\u0103 acordul de licen\u0163\u0103.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
 installFeature.option-key.--noCache=\ \ \ \ --noCache
 installFeature.option-desc.--noCache=\tCaracteristicile instalate de la o magazie de la distan\u0163\u0103                          \n\
 \t(de exemplu, Maven Central) nu sunt memorate local \u00een cache.
@@ -62,6 +74,22 @@ installServerFeatures.option-desc.--from=\tUtiliza\u0163i aceast\u0103 op\u0163i
 installServerFeatures.option-key.--verbose=\ \ \ \ --verbose
 installServerFeatures.option-desc.--verbose=\tAfi\u015fa\u0163i informa\u0163ii de depanare suplimentare \u00een timp ce ruleaz\u0103 ac\u0163iunea.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
+installServerFeatures.option-key.--acceptLicense=\ \ \ \ --acceptLicense
+installServerFeatures.option-desc.--acceptLicense=\tAccept\u0103 acordul de licen\u0163\u0103.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
 installServerFeatures.option-key.--noCache=\ \ \ \ --noCache
 installServerFeatures.option-desc.--noCache=\tCaracteristicile instalate de la o magazie de la distan\u0163\u0103                          \n\
 \t(de exemplu, Maven Central) nu sunt memorate local \u00een cache.
+#--------- FIND ACTION ------------------------------------------------#
+find.desc=\tG\u0103sire caracteristici din magazii.
+#--------- OPTIONS ----------------------------------------------------#
+find.option-key.[searchString]=\ \ \ \ searchString
+find.option-desc.[searchString]=\tUtiliza\u0163i \u015firul de c\u0103utare pentru a g\u0103si caracteristici \u00een magazii.
+#--------- VIEWSETTINGS ACTION ----------------------------------------#
+viewSettings.desc=\tVizualizarea set\u0103rilor proxy-ului \u015fi ale magaziilor.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+viewSettings.option-key.--viewValidationMessages=\ \ \ \ --viewValidationMessages
+viewSettings.option-desc.--viewValidationMessages=\tUtiliza\u0163i aceast\u0103 op\u0163iune pentru a afi\u015fa mesajele detaliate de la \n\
+\tvalidarea fi\u015fierului featureUtility.properties configurat.           \n\
+\tFiecare mesaj con\u0163ine un cod de eroare, num\u0103rul liniei unde a fost g\u0103sit\u0103 eroarea \n\
+\t\u015fi cauza erorii.

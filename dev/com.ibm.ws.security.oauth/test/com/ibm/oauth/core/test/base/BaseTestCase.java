@@ -61,7 +61,7 @@ public abstract class BaseTestCase extends TestCase {
         request.setParameter(OAuth20Constants.CLIENT_ID, "key");
         request.setParameter(OAuth20Constants.CLIENT_SECRET, "secret");
         request.setParameter(OAuth20Constants.GRANT_TYPE,
-                             OAuth20Constants.GRANT_TYPE_CLIENT_CREDENTIALS);
+                OAuth20Constants.GRANT_TYPE_CLIENT_CREDENTIALS);
 
         StringWriter responseBuffer = new StringWriter();
         response.setWriter(responseBuffer);

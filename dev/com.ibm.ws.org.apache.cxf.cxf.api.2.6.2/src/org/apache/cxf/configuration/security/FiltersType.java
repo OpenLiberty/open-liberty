@@ -14,6 +14,8 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 
 /**
  * <p>Java class for FiltersType complex type.
@@ -40,6 +42,7 @@ import javax.xml.bind.annotation.XmlType;
     "include",
     "exclude"
 })
+@Trivial
 public class FiltersType {
 
     protected List<String> include;

@@ -197,7 +197,7 @@ public class JAXRSOutInterceptor extends AbstractOutDatabindingInterceptor {
 
         Object ignoreWritersProp = exchange.get(JAXRSUtils.IGNORE_MESSAGE_WRITERS);
         boolean ignoreWriters =
-            ignoreWritersProp == null ? false : Boolean.valueOf(ignoreWritersProp.toString());
+            ignoreWritersProp != null && Boolean.valueOf(ignoreWritersProp.toString());
         if (ignoreWriters) {
             writeResponseToStream(message.getContent(OutputStream.class), entity);
             return;
@@ -245,7 +245,7 @@ public class JAXRSOutInterceptor extends AbstractOutDatabindingInterceptor {
         boolean enabled = checkBufferingMode(message, writers, firstTry);
         try {
 
-            try {
+            try {       // NOPMD
                 JAXRSUtils.writeMessageBody(writers,
                         entity,
                         targetType,
@@ -334,7 +334,7 @@ public class JAXRSOutInterceptor extends AbstractOutDatabindingInterceptor {
         }
         if (enabled) {
             boolean streamingOn = configurableProvider
-                ? ((AbstractConfigurableProvider)w).getEnableStreaming() : false;
+                && ((AbstractConfigurableProvider)w).getEnableStreaming();
             if (streamingOn) {
                 m.setContent(XMLStreamWriter.class, new CachingXmlEventWriter());
             } else {

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2013, 2018 IBM Corporation and others.
+# Copyright (c) 2013, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -128,8 +128,8 @@ JWK_ENDPOINT_MISSING_ERR.useraction=Impostare l'attributo jwkEndpointUrl sull'UR
 #OIDC_FAILED_RUN_AS_SUBJCET.explanation=An exception occurred while getting the RunAsSubject.
 #OIDC_FAILED_RUN_AS_SUBJCET.useraction=Make sure the server is configured and started properly.
 
-#0=OIDC client ID, 1=Current clock time, 2=Token expiration time, 3=Token issued at time
-OIDC_JWT_VERIFY_STATE_ERR=CWWKS1773E: La convalida ha avuto esito negativo per il token richiesto da [{0}] perch\u00e9 il token \u00e8 esterno al relativo intervallo valido. Una possibile causa \u00e8 che l''ora corrente [{1}] sia successiva all''ora di scadenza del token [{2}] o che l''ora di emissione [{3}] \u00e8 troppo lontana dall''ora corrente [{1}].
+#0=OIDC client ID, 1=sub claim of the token, 2=Current clock time, 3=Token expiration time, 4=Token issued at time
+OIDC_JWT_VERIFY_STATE_ERR=CWWKS1773E: La convalida ha avuto esito negativo per il token richiesto dal client OpenID Connect [{0}] per l''utente [{1}] perch\u00e9 il token \u00e8 esterno al relativo intervallo valido. Questo errore si verifica perch\u00e9 l''ora corrente di [{2}] \u00e8 successiva all''ora di scadenza del token [{3}] o perch\u00e9 l''ora di emissione di [{4}] \u00e8 troppo lontana dall''ora corrente di [{2}].
 OIDC_JWT_VERIFY_STATE_ERR.explanation=Non \u00e8 stato possibile convalidare un token poich\u00e9 l'ora corrente indicata non rientra tra l'ora di emissione del token e quella di scadenza.
 OIDC_JWT_VERIFY_STATE_ERR.useraction=Assicurarsi che gli orologi di sistema del client OpenID Connect (RP-relying party) e del provider OpenID Connect (OP) siano sincronizzati (se si trovano su due sistemi).
 
@@ -184,6 +184,6 @@ PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR.explanation=Il token non pu\u00f2 c
 PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR.useraction=Ottenere un nuovo token che non contienga l'asserzione specificata o modificare il valore attributo di configurazione specificato per consentire l'inclusione dell'asserzione nel token.
 
 # 0=Client ID, 1=List of invalid parameter names, 2=forwardLoginParameter
-BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED=CWWKS1783W: Il client OpenID Connect  [{0}] include {1} nei valori specificati dall''attributo di configurazione [{2}]. I valori specificati verranno ignorati.
-BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED.explanation=La specifica OAuth 2.0 definisce una serie di parametri di richiesta riservati che devono essere forniti dal client per le richieste di autorizzazione. I valori per tali parametri riservati non possono essere forniti dall'utente.
-BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED.useraction=Rimuovere i valori specificati dall'elenco di valori definiti nella configurazione client OpenID Connect.
+DISALLOWED_FORWARD_AUTHZ_PARAMS_CONFIGURED=CWWKS1783W: Il client OpenID Connect  [{0}] include {1} nei valori specificati dall''attributo di configurazione [{2}]. I valori specificati verranno ignorati.
+DISALLOWED_FORWARD_AUTHZ_PARAMS_CONFIGURED.explanation=La specifica OAuth 2.0 definisce una serie di parametri di richiesta riservati che devono essere forniti dal client per le richieste di autorizzazione. I valori per tali parametri riservati non possono essere forniti dall'utente.
+DISALLOWED_FORWARD_AUTHZ_PARAMS_CONFIGURED.useraction=Rimuovere i valori specificati dall'elenco di valori definiti nella configurazione client OpenID Connect.

@@ -27,6 +27,7 @@ import org.apache.tools.ant.types.FileSet;
 import com.ibm.ws.ras.instrument.internal.bci.InstrumentationException;
 import com.ibm.ws.ras.instrument.internal.main.AbstractInstrumentation;
 
+@SuppressWarnings("restriction")
 public abstract class AbstractInstrumentationTask extends Task {
 
     protected File file = null;

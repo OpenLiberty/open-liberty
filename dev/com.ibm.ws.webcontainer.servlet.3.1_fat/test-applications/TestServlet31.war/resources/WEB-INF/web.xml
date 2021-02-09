@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2013 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<web-app
+    version="3.1"
+    xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
+
+  <display-name>TestServlet31</display-name>
+    
+  <session-config>
+  	<!-- if reuse session id is set, and you access the session after the session-timeout, but before
+  	the cookie maxAge, then you should re-use the id.  If the cookie maxAge has passed, a new id should be used. -->
+    <session-timeout>2</session-timeout>
+    <cookie-config>
+      <comment>CookieComment</comment>
+      <name>JSESSIONID1</name>
+      <!-- <domain></domain> -->
+      <path>/</path>
+      <max-age>60</max-age>
+      <http-only>false</http-only>
+      <secure>false</secure>
+    </cookie-config>
+    <tracking-mode>COOKIE</tracking-mode>
+    <tracking-mode>URL</tracking-mode>
+  </session-config>
+  
+  <error-page>
+    <location>/WebErrorPage.html</location>
+  </error-page>
+    
+</web-app>

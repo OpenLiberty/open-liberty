@@ -1,0 +1,63 @@
+<!--
+    Copyright (c) 2020 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server description="com.ibm.ws.webcontainer.security.fat.basicauth">
+
+	<featureManager>
+		<feature>appSecurity-2.0</feature>
+		<feature>jsp-2.2</feature>
+		<feature>servlet-3.1</feature>
+	    <feature>usr:jaccTestProvider-1.0</feature>
+	</featureManager>
+
+	<keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty, expires 1/4/2099 -->
+
+	<basicRegistry id="basic" realm="BasicRealm">
+		<user name="user0" password="user0pwd" />
+		<user name="user1" password="user1pwd" />
+		<group name="group1">
+			<member name="user0" />
+			<member name="user1" />
+		</group>
+		<user name="user2" password="user2pwd" />
+		<group name="group2">
+			<member name="user2" />
+			<member name="user6" />
+		</group>
+		<user name="user3" password="user3pwd" />
+		<group name="group3">
+			<member name="user3" />
+		</group>
+		<user name="user4" password="user4 pwd" />
+		<group name="group4">
+			<member name="user4" />
+		</group>
+		<user name="user5" password="user5pwd " />
+		<group name="group5">
+			<member name="user5" />
+		</group>
+		<user name="user6" password="user6pwd" />
+	</basicRegistry>
+
+	<application type="war" id="basicauth" name="basicauth" location="${server.config.dir}/apps/basicauth.war">
+
+	</application>
+
+<!-- 
+	<application type="ear" id="basicauthXML" name="basicauthXML" location="basicauthXML.ear">
+	</application>
+
+	<application type="ear" id="basicauthXMI" name="basicauthXMI" location="basicauthXMI.ear" >
+	</application>
+-->
+
+	<include location="../fatTestPorts.xml" />
+
+</server>

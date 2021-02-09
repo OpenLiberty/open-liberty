@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2014 IBM Corporation and others.
+# Copyright (c) 2012, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -22,7 +22,7 @@
 #   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
 #   (single quote must be coded as one single quote '). 
 
-# All messages must use the range CWWCK1100 to CWWCK1149 except those specifically identified as moved
+# All messages must use the range CWWCK1100 to CWWCK1199 except those specifically identified as moved
 
 # Moved from com.ibm.ws.context
 CWWKC1000.unrecognized.property=CWWKC1000E: \u914d\u7f6e\u5143\u7d20 {0} \u5305\u542b\u65e0\u6cd5\u8bc6\u522b\u7684\u5c5e\u6027 {1}\u3002
@@ -31,8 +31,8 @@ CWWKC1000.unrecognized.property.useraction=\u8bf7\u9664\u53bb\u6216\u66f4\u6b63\
 
 # Moved from com.ibm.ws.context
 CWWKC1001.context.providers.unavailable=CWWKC1001E: \u6240\u914d\u7f6e\u7ebf\u7a0b\u4e0a\u4e0b\u6587 {0} \u5bf9\u914d\u7f6e\u5143\u7d20 {1} \u4e0d\u53ef\u7528\u3002
-CWWKC1001.context.providers.unavailable.explanation=\u5e94\u7528\u7a0b\u5e8f\u670d\u52a1\u5668\u627e\u4e0d\u5230\u6240\u6307\u5b9a\u7c7b\u578b\u7684\u7ebf\u7a0b\u4e0a\u4e0b\u6587\u7684\u63d0\u4f9b\u8005\u3002
-CWWKC1001.context.providers.unavailable.useraction=\u8bf7\u786e\u4fdd\u5df2\u542f\u7528\u6240\u8bf7\u6c42\u7ebf\u7a0b\u4e0a\u4e0b\u6587\u7684\u63d0\u4f9b\u8005\u3002
+CWWKC1001.context.providers.unavailable.explanation=\u5e94\u7528\u7a0b\u5e8f\u670d\u52a1\u5668\u627e\u4e0d\u5230\u6240\u6307\u5b9a\u7c7b\u578b\u7684\u7ebf\u7a0b\u4e0a\u4e0b\u6587\u7684\u63d0\u4f9b\u7a0b\u5e8f\u3002
+CWWKC1001.context.providers.unavailable.useraction=\u8bf7\u786e\u4fdd\u5df2\u542f\u7528\u6240\u8bf7\u6c42\u7ebf\u7a0b\u4e0a\u4e0b\u6587\u7684\u63d0\u4f9b\u7a0b\u5e8f\u3002
 
 # Moved from com.ibm.ws.context
 CWWKC1002.provider.cardinality.violation=CWWKC1002E: \u914d\u7f6e\u5143\u7d20 {0} \u4e0d\u80fd\u6709\u591a\u4e2a\u7c7b\u578b\u4e3a {1} \u7684\u5b50\u5143\u7d20\u3002
@@ -78,3 +78,7 @@ CWWKC1120.future.get.rejected.useraction=\u8bf7\u66f4\u65b0\u5e94\u7528\u7a0b\u5
 CWWKC1130.xprop.value.invalid=CWWKC1130E: \u5df2\u5411\u53d7\u7ba1\u6267\u884c\u8005 {0} \u63d0\u4ea4\u7684\u4efb\u52a1\u5305\u542b\u503c\u4e3a {2} \u7684\u6267\u884c\u5c5e\u6027 {1}\uff0c\u8be5\u503c\u5bf9\u4e8e\u53d7\u7ba1\u6267\u884c\u8005\u65e0\u6548\u3002
 CWWKC1130.xprop.value.invalid.explanation=\u4e00\u4e9b\u6267\u884c\u5c5e\u6027\u503c\u5bf9\u4e8e\u53d7\u7ba1\u6267\u884c\u8005\u65e0\u6548\uff0c\u4f46\u5bf9\u4e8e\u5176\u4ed6\u8d44\u6e90\u7c7b\u578b\uff08\u4f8b\u5982\u4e0a\u4e0b\u6587\u670d\u52a1\u6216\u53d7\u7ba1\u7ebf\u7a0b\u5de5\u5382\uff09\u53ef\u80fd\u6709\u6548\u3002
 CWWKC1130.xprop.value.invalid.useraction=\u8bf7\u66f4\u65b0\u5e94\u7528\u7a0b\u5e8f\uff0c\u4ee5\u7701\u7565\u8be5\u6267\u884c\u5c5e\u6027\u6216\u5c06\u5b83\u8bbe\u7f6e\u4e3a\u6709\u6548\u503c\u3002
+
+CWWKC1156.not.supported=CWWKC1156E: \u8bf7\u6c42\u7684\u64cd\u4f5c\u4e0d\u53ef\u7528\u4f5c CompletableFuture \u7684\u53d7\u7ba1\u6267\u884c\u7a0b\u5e8f\u5b9e\u73b0\u4e0a\u7684\u9759\u6001\u65b9\u6cd5\u3002\u8bf7\u6539\u4e3a\u4f7f\u7528\u4ee5\u4e0b\u64cd\u4f5c\uff1a{0}\u3002
+CWWKC1156.not.supported.explanation=CompletableFuture \u7684\u53d7\u7ba1\u6267\u884c\u7a0b\u5e8f\u5b9e\u73b0\u672a\u63d0\u4f9b\u4e0e CompletableFuture \u7684\u9759\u6001\u65b9\u6cd5\u7b49\u6548\u7684\u9759\u6001\u65b9\u6cd5\u3002
+CWWKC1156.not.supported.useraction=\u8bf7\u66f4\u65b0\u5e94\u7528\u7a0b\u5e8f\uff0c\u4ee5\u4f7f\u7528\u6d88\u606f\u4e2d\u5efa\u8bae\u7684\u65b9\u6cd5\u4ee3\u66ff\u6240\u8bf7\u6c42\u7684\u64cd\u4f5c\u3002

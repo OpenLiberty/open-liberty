@@ -549,9 +549,13 @@ ssl.create.certificate.end=CWPKI0803A: SSL certificate created in {0} seconds. S
 ssl.create.certificate.end.explanation=The SSL certificate was generated in the amount of time specified.
 ssl.create.certificate.end.useraction=No action is required.
 #--------------------------------------------------------------------------------------------------
-ssl.create.certificate.error=CWPKI0804E: SSL certificate creation error. Unable to create SSL key file: {0}
+ssl.create.certificate.error=CWPKI0804E: SSL certificate creation error. {0}
 ssl.create.certificate.error.explanation=The SSL certificate could not be created at the specified location.
-ssl.create.certificate.error.useraction=Ensure the location is accessible by the server process. Any FFDCs may indicate a fatal error in generating or loading the keys.
+ssl.create.certificate.error.useraction=Ensure the location is accessible by the server process. Review the FFDC logs for additional errors that are associated with generating or loading the keys.
+
+# Messages for the CWPKI0804E message descriptor {0}.
+ssl.create.certificate.error.reason1=Unable to create SSL key file: {0}
+ssl.create.certificate.error.reason2=The error is: {0}
 #--------------------------------------------------------------------------------------------------
 ssl.default.keystore.config.error=CWPKI0805E: A password is required for the default keystore is missing.
 ssl.default.keystore.config.error.explanation=The keystore configuration does not specify a password for the default keystore.
@@ -648,4 +652,12 @@ ssl.using.cacerts.CWPKI0827I.useraction=No action is required.
 ssl.client.handshake.cacerts.error.CWPKI0828E=CWPKI0828E: The trustDefaultCerts attribute is enabled but trust was not established by using the default truststore. The extended error message from the SSL handshake exception is: {0}.
 ssl.client.handshake.cacerts.error.CWPKI0828E.explanation=The default truststore is not properly configured to establish trust.  
 ssl.client.handshake.cacerts.error.CWPKI0828E.useraction=Review the extended error message to determine what to change in the configuration.
+# -------------------------------------------------------------------------------------------------
+ssl.update.certificate.error=CWPKI0829E: SSL certificate update error. {0}
+ssl.update.certificate.error.explanation=The SSL certificate could not be updated at the specified location.
+ssl.update.certificate.error.useraction=Ensure the location is accessible by the server process.  Review the FFDC logs for additional errors that are associated with generating or loading the keys.
+# -------------------------------------------------------------------------------------------------
+ssl.certificate.add.CWPKI0830I=CWPKI0830I: Certificate with the {0} SubjectDN from the {1} environment variable is being added to the {2} keystore.
+ssl.certificate.add.CWPKI0830I.explanation=A certificate was retrieved from an environment variable in the configuration and is being added to the keystore file.
+ssl.certificate.add.CWPKI0830I.useraction=No action is required.
 # -------------------------------------------------------------------------------------------------

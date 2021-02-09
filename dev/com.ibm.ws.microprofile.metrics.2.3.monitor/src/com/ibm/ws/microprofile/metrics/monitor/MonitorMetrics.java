@@ -11,6 +11,7 @@
 package com.ibm.ws.microprofile.metrics.monitor;
 
 import java.lang.management.ManagementFactory;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -142,12 +143,22 @@ public class MonitorMetrics {
 		for (String subString : objectName.split(",")) {
 			subString = subString.trim();
 			
-			//Example of expected Mbean property name=ApplicationName/fully.qualified.class.name/methodSignature(java.lang.String)
 			if (subString.contains("name=")) {
 				mbeanNameProperty = subString.split("/");
+				//Expected Mbean property in EAR files name=(<application_name>)/<module_name>/<fully_qualified_class_name>/<method_signature>
+				if (mbeanNameProperty.length == 4) {
+					mbeanNameProperty = Arrays.copyOfRange(mbeanNameProperty,mbeanNameProperty.length-3,mbeanNameProperty.length);
+				
+				}
+				//Example of expected Mbean property in WAR files name=<resolved_application_name>/<fully_qualified_class_name>/<method_signature>
+				else if (mbeanNameProperty.length == 3) {
+					mbeanNameProperty[0] = mbeanNameProperty[0].substring(mbeanNameProperty[0].indexOf("=") + 1,
+							mbeanNameProperty[0].length());
 
-				mbeanNameProperty[0] = mbeanNameProperty[0].substring(mbeanNameProperty[0].indexOf("=") + 1,
-						mbeanNameProperty[0].length());
+				} else {
+		            throw new IllegalArgumentException("Mbean Name Property should be of length 3 or 4");
+
+				}
 
 				// blank method
 				mbeanNameProperty[2] = mbeanNameProperty[2].replaceAll("\\(\\)", "");
@@ -155,8 +166,8 @@ public class MonitorMetrics {
 				mbeanNameProperty[2] = mbeanNameProperty[2].replaceAll("\\(", "_");
 				// second bracket is removed
 				mbeanNameProperty[2] = mbeanNameProperty[2].replaceAll("\\)", "");
-
 				break;
+				
 			}
 		}
 		return mbeanNameProperty;

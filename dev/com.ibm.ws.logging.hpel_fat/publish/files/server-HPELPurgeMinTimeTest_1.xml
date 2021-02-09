@@ -1,0 +1,14 @@
+<server>
+    <featureManager>
+        <feature>jsp-2.2</feature>
+    </featureManager>
+
+    <include location="../fatTestPorts.xml"/>
+    
+    <logging>
+    	<binaryLog purgeMaxSize="0" />
+    	<binaryTrace purgeMaxSize="0" />
+    	
+    </logging>
+    <!-- TESTING THE UPLOAD! -->
+</server>

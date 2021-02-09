@@ -304,7 +304,10 @@ public class BasicSseResource extends Application {
     @POST
     @Path("/postName")
     public void postName(String myName) {
-        BasicSseResource.names.add(myName);
+        synchronized(names) {
+            BasicSseResource.names.add(myName);
+        }
+        System.out.print("BasicSseResource.postName: " + myName);
     }
 
     @GET

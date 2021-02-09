@@ -322,6 +322,11 @@ POOL_MANAGER_NOT_FOUND_J2CA0695.explanation=A ap\u0103rut o eroare intern\u0103 
 POOL_MANAGER_NOT_FOUND_J2CA0695.useraction=-CMSG0002
 
 # ---------------------------------
+SPNEGO_XA_RECOVERY_NOT_SUPPORTED_J2CA0695W=J2CA0695W: A fost f\u0103cut\u0103 o cerere de conexiune pentru resursa XA {0} utiliz\u00e2nd autentificarea SPNEGO, dau nu a fost configurat niciun alias de date de autentificare pentru recuperare. Resursa XA nu poate participa la recuperarea XA automat\u0103 dec\u00e2t \u00een cazul \u00een care este configurat un alias de date de autentificare pentru recuperare.
+SPNEGO_XA_RECOVERY_NOT_SUPPORTED_J2CA0695W.explanation=Recuperarea XA este un proces automat \u00een fundal, dar autentificarea SPNEGO necesit\u0103 ca utilizatorul s\u0103 realizeze o introducere manual\u0103. Ca urmare, autentificarea SPNEGO nu poate fi utilizat\u0103 pentru recuperarea XA automat\u0103.
+SPNEGO_XA_RECOVERY_NOT_SUPPORTED_J2CA0695W.useraction=Configura\u0163i pentru resursa XA un alias de date de autentificare pentru recuperare.
+
+# ---------------------------------
 FREEPOOL_GETFREECONNECTION_ERROR_J2CA1002=J2CA1002E: MCWrapper invalid {0} de la pool-ul liber pentru resursa {1}.
 FREEPOOL_GETFREECONNECTION_ERROR_J2CA1002.explanation=\u00cencercarea de a rezerva un MCWrapper a e\u015fuat.
 FREEPOOL_GETFREECONNECTION_ERROR_J2CA1002.useraction=-CMSG0002

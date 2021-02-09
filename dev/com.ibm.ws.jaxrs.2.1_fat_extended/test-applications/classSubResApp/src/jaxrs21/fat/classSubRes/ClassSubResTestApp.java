@@ -10,11 +10,13 @@
  *******************************************************************************/
 package jaxrs21.fat.classSubRes;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Application;
 
+@ApplicationScoped
 @ApplicationPath("/rest")
 @Path("/test")
 public class ClassSubResTestApp extends Application {

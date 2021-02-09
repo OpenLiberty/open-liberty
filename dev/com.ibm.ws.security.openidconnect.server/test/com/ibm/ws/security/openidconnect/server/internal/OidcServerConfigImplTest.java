@@ -39,7 +39,6 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.component.ComponentContext;
 
-import com.ibm.ws.security.openidconnect.server.ServerConstants;
 import com.ibm.ws.ssl.KeyStoreService;
 import com.ibm.ws.webcontainer.security.jwk.JSONWebKey;
 
@@ -63,7 +62,6 @@ public class OidcServerConfigImplTest {
 
     private static final Object TEST_SCOPE = "authorization_code";
 
-    private static final String RSA = "RSA";
     private static final String HS256 = "HS256";
     private static final String RS256 = "RS256";
     private static final String OP_KEYSTORE = OidcServerConfigImpl.CFG_KEYSTORE_REF_DEFAULT;
@@ -300,9 +298,6 @@ public class OidcServerConfigImplTest {
         JSONWebKey jwk = oidcServerConfig.getJSONWebKey();
         assertNotNull("Expected a good value for Jwk but received a null value.", jwk);
         String alg = "RS256";
-        if (ServerConstants.JAVA_VERSION_6) {
-            alg = RSA;
-        }
         assertEquals("Invalid algorithm, expected: " + alg + " but received: " + jwk.getAlgorithm() + ".", alg, jwk.getAlgorithm());
 
         // get JsonWebKey as String

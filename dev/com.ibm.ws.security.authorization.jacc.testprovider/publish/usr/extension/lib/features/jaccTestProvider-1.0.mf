@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+IBM-Test-Feature: true
+IBM-Feature-Version: 2
+IBM-ShortName: jaccTestProvider-1.0
+Subsystem-Type: osgi.subsystem.feature
+Subsystem-Version: 1.0.0
+Subsystem-ManifestVersion: 1.0
+Subsystem-SymbolicName: jaccTestProvider-1.0;visibility:=public
+IBM-App-ForceRestart: install,uninstall
+Subsystem-Content: com.ibm.websphere.appserver.jacc-1.5;version="[1,1.0.100)"; type="osgi.subsystem.feature",
+ com.ibm.ws.security.authorization.jacc.testprovider; version="[1,1.0.100)"
+

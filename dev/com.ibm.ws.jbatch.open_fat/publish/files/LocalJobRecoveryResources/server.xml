@@ -1,0 +1,50 @@
+<server>
+
+    <include location="../fatTestPorts.xml" />
+
+	<featureManager>
+		<feature>componentTest-1.0</feature>
+		<feature>osgiconsole-1.0</feature>
+		<feature>batch-1.0</feature>
+		<feature>servlet-3.1</feature>
+	</featureManager>
+
+    <batchPersistence jobStoreRef="BatchDatabaseStore" />
+
+    <databaseStore id="BatchDatabaseStore" dataSourceRef="batchDB" schema="JBATCH" tablePrefix="" />
+
+	<logging traceSpecification="com.ibm.ws.jbatch.open_fat=all=enabled:com.ibm.jbatch.*=all=enabled:jsr352.test.servlet.*=all=enabled" />
+
+	<!-- Increased 3x due to filesystem access on our poor build/test infrastructure taking more than the default 2 minutes -->
+	<transaction totalTranLifetimeTimeout="6m"/>
+
+	<library id="DerbyLib">
+	    <file name="${shared.resource.dir}/derby/derby.jar"/>
+	</library>
+
+	<dataSource id="batchDB" jndiName="jdbc/batch" type="javax.sql.XADataSource">
+		<jdbcDriver libraryRef="DerbyLib" />
+        <properties.derby.embedded databaseName="${server.config.dir}/../resources/LocalRecoveryDB"
+			createDatabase="create" user="user" password="pass" />
+	</dataSource>
+	
+	<!-- ssl keystore to enable SSL port for batch rest connector -->
+    <keyStore id="defaultKeyStore" location="${server.config.dir}/resources/security/key.p12" type="PKCS12" password="{xor}EzY9Oi0rJg==" />
+
+    <!-- users authorized to the batch rest connector (ibm/api realm) -->
+    <basicRegistry id="basic" realm="ibm/api">
+        <user name="bob" password="bobpwd" />
+        <user name="jane" password="janepwd" />    
+    </basicRegistry>
+    
+    <!-- Everyone is a batch admin for non security related tests -->
+	<authorization-roles id="com.ibm.ws.batch">
+		<security-role name="batchAdmin">
+			<user name="bob" />
+			<user name="jane" />
+		</security-role>
+	</authorization-roles>
+	
+	<javaPermission className="java.security.AllPermission" codebase="${shared.resource.dir}/derby/derby.jar"/>
+
+</server>

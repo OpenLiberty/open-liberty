@@ -1,0 +1,60 @@
+###############################################################################
+# Copyright (c) 2010, 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.ws.install.featureUtility/resources/com/ibm/ws/install/featureUtility/internal/resources/FeatureUtilityMessages.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+# Messages in the range CWWKF1400 to 1499 are reserved for the install utility.
+
+MSG_FEATUREUTILITY_SETTTINGS=featureUtility be\u00e1ll\u00edt\u00e1sok
+MSG_PROPERTIES_FILE_NOT_FOUND=Nem tal\u00e1lhat\u00f3 felhaszn\u00e1l\u00f3konfigur\u00e1ci\u00f3. A Maven k\u00f6zponti lerakata az alap\u00e9rtelmezett eszk\u00f6zlerakat.
+MSG_PROPERTIES_FILE_NOT_FOUND_EXPLANATION=A featureUtility be\u00e1ll\u00edt\u00e1sainak szem\u00e9lyre szab\u00e1s\u00e1hoz hozza l\u00e9tre a featureUtility.properties f\u00e1jlt a k\u00f6vetkez\u0151 helyen: {0}
+MSG_PROPERTIES_FILE_NOT_FOUND_ACTION=Saj\u00e1t featureUtility.properties f\u00e1jlj\u00e1nak l\u00e9trehoz\u00e1s\u00e1hoz haszn\u00e1lja az al\u00e1bbi mint\u00e1t sablonk\u00e9nt. Sz\u00fcntesse meg az egyetlen # karakterrel jel\u00f6lt sorok megjegyz\u00e9ss\u00e9 alak\u00edt\u00e1s\u00e1t, majd az \u00e9rt\u00e9keket cser\u00e9lje saj\u00e1t egy\u00e9ni \u00e9rt\u00e9keire.
+MSG_PROPS_FILE_NOT_FOUND_EXPLANATION=Az installUtility be\u00e1ll\u00edt\u00e1sainak szem\u00e9lyre szab\u00e1s\u00e1hoz hozza l\u00e9tre a repositories.properties f\u00e1jlt a k\u00f6vetkez\u0151 helyen: {0}
+MSG_PROPS_FILE_NOT_FOUND_ACTION=Saj\u00e1t repositories.properties f\u00e1jlj\u00e1nak l\u00e9trehoz\u00e1s\u00e1hoz haszn\u00e1lja az al\u00e1bbi mint\u00e1t sablonk\u00e9nt. Sz\u00fcntesse meg az egyetlen # karakterrel jel\u00f6lt sorok megjegyz\u00e9ss\u00e9 alak\u00edt\u00e1s\u00e1t, majd az \u00e9rt\u00e9keket cser\u00e9lje saj\u00e1t egy\u00e9ni \u00e9rt\u00e9keire.
+MSG_TRUE=True
+MSG_FALSE=False
+MSG_DEFAULT_REPO_USEAGE_LABEL=Alap\u00e9rtelmezett lerakat haszn\u00e1lata:
+MSG_DEFAULT_REPO_NAME_LABEL=Alap\u00e9rtelmezett eszk\u00f6zlerakat:
+MSG_DEFAULT_REPO_NAME=Maven k\u00f6zponti lerakat
+MSG_CONFIG_REPO_LABEL=Konfigur\u00e1lt lerakatok
+MSG_MAVEN_LOCAL_REPO=Maven helyi lerakat
+MSG_NO_CONFIG_REPO=Nincs be\u00e1ll\u00edtott lerakat
+MSG_UNSPECIFIED=<Nincs megadva>
+MSG_PASSWORD_NOT_ENCODED_PROXY=A proxy jelszava nincs k\u00f3dolva. A jelsz\u00f3 k\u00f3dol\u00e1s\u00e1hoz futtassa a securityUtility k\u00f3dol\u00e1si m\u0171veletet a --encoding param\u00e9terrel, amelyet egy t\u00e1mogatott k\u00f3dol\u00e1si t\u00edpusra \u00e1ll\u00edt be. A t\u00e1mogatott t\u00edpusok: xor (alap\u00e9rtelmez\u00e9s), aes \u00e9s hash.
+MSG_PROXY_LABEL=Proxybe\u00e1ll\u00edt\u00e1sok
+MSG_NO_CONFIG_PROXY=Nincs be\u00e1ll\u00edtott proxy
+MSG_REPO_FILE_NOT_FOUND=Nem tal\u00e1lhat\u00f3 felhaszn\u00e1l\u00f3konfigur\u00e1ci\u00f3. Az IBM WebSphere Liberty Repository az alap\u00e9rtelmezett eszk\u00f6zlerakat.
+MSG_REPO_FILE_NOT_FOUND_EXPLANATION=Az installUtility be\u00e1ll\u00edt\u00e1sainak szem\u00e9lyre szab\u00e1s\u00e1hoz hozza l\u00e9tre a repositories.properties f\u00e1jlt a k\u00f6vetkez\u0151 helyen: {0}
+MSG_REPO_FILE_NOT_FOUND_ACTION=Saj\u00e1t repositories.properties f\u00e1jlj\u00e1nak l\u00e9trehoz\u00e1s\u00e1hoz haszn\u00e1lja az al\u00e1bbi mint\u00e1t sablonk\u00e9nt. Sz\u00fcntesse meg az egyetlen # karakterrel jel\u00f6lt sorok megjegyz\u00e9ss\u00e9 alak\u00edt\u00e1s\u00e1t, majd az \u00e9rt\u00e9keket cser\u00e9lje saj\u00e1t egy\u00e9ni \u00e9rt\u00e9keire.
+MSG_VALIDATION_SUCCESSFUL=A tulajdons\u00e1gf\u00e1jl sikeresen \u00e1tesett az \u00e9rv\u00e9nyes\u00edt\u00e9sen.
+MSG_VALIDATION_FAILED_NO_MESSAGES=A tulajdons\u00e1gf\u00e1jl \u00e9rv\u00e9nyes\u00edt\u00e9se sikertelen. A r\u00e9szletes \u00e9rv\u00e9nyes\u00edt\u00e9si \u00fczenetek megjelen\u00edt\u00e9s\u00e9hez haszn\u00e1lja a --viewValidationMessages param\u00e9tert.
+MSG_VALIDATION_NUM_OF_ERRORS=Hib\u00e1k sz\u00e1ma: {0}
+MSG_VALIDATION_MESSAGES=Tulajdons\u00e1gf\u00e1jl-\u00e9rv\u00e9nyes\u00edt\u00e9s
+MSG_VALIDATION_MESSAGE_FORMAT={0}. {1}
+
+FIELD_REPO_NAME=N\u00e9v: {0}
+FIELD_REPO_LOCATION=Hely: {0}
+FIELD_REPO_STATUS=\u00c1llapot: {0}
+FIELD_REPO_REASON=Ok: {0}
+FIELD_REPO_WARNING=Figyelmeztet\u00e9s: {0}
+FIELD_NAME=N\u00e9v:
+FIELD_PORT=Port:
+FIELD_LOCATION=Helysz\u00edn:
+FIELD_PROXY_SERVER=Proxykiszolg\u00e1l\u00f3:
+FIELD_USER=Felhaszn\u00e1l\u00f3n\u00e9v:
+FIELD_PASS=Jelsz\u00f3:
+FIELD_PROPS_FILE=Tulajdons\u00e1gf\u00e1jl: {0}
+FIELD_REPO=Lerakatkiszolg\u00e1l\u00f3: {0} ({1})
+FIELD_PROXY=Proxykiszolg\u00e1l\u00f3: {0}
+FIELD_VALIDATION_RESULTS=\u00c9rv\u00e9nyes\u00edt\u00e9si eredm\u00e9nyek: {0}
+FIELD_VALIDATION_LINE=Sor: {0}

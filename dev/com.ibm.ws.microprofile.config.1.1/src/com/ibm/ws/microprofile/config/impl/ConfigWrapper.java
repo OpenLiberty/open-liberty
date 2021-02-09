@@ -18,8 +18,9 @@ import org.eclipse.microprofile.config.Config;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.microprofile.config.interfaces.ConfigException;
 import com.ibm.ws.microprofile.config.interfaces.WebSphereConfig;
+
+import io.openliberty.microprofile.config.internal.common.ConfigException;
 
 /**
  * Wrapper to record which applications are using a Config.
@@ -44,7 +45,7 @@ class ConfigWrapper {
     boolean removeApplication(String appName) {
         boolean close = false;
         boolean removed = this.applications.remove(appName);
-        if (removed && this.applications.size() == 0) {
+        if (removed && (this.applications.size() == 0)) {
             close = true;
         }
         return close;
@@ -63,13 +64,13 @@ class ConfigWrapper {
      * @return
      */
     Set<String> getApplications() {
-        return applications;
+        return this.applications;
     }
 
     /**
      * @return
      */
     Config getConfig() {
-        return config;
+        return this.config;
     }
 }

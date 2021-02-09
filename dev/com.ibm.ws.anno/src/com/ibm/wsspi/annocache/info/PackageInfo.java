@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2019 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,24 +16,31 @@ package com.ibm.wsspi.annocache.info;
  * <p>The name and qualified name of a package info object are the same.</p>
  */
 public interface PackageInfo extends Info, com.ibm.wsspi.anno.info.PackageInfo {
+    // jakarta review: No longer used.
+    // See com.ibm.ws.annocache.info.internal.ClassInfoImpl.isJavaClass(String)
     /**
      * <p>Naming constant: The prefix for the <code>java</code> package,
      * (with a trailing ".").</p>
      */
     String JAVA_CLASS_PREFIX = "java.";
 
+    // jakarta review: no current uses
     /**
      * <p>Naming constant: The prefix for the <code>javax</code> package,
      * (with a trailing ".").</p>
      */
     String JAVAX_CLASS_PREFIX = "javax.";
 
+    // jakarta review: No longer used.
+    // See com.ibm.ws.annocache.info.internal.ClassInfoImpl.isJavaClass(String)
     /**
      * <p>Naming constant: The prefix for the <code>javax.ejb</code> package,
      * (with a trailing ".").</p>
      */
     String JAVAX_EJB_CLASS_PREFIX = "javax.ejb.";
 
+    // jakarta review: No longer used.
+    // See com.ibm.ws.annocache.info.internal.ClassInfoImpl.isJavaClass(String)
     /**
      * <p>Naming constant: The prefix for the <code>javax.servlet</code> package,
      * (with a trailing ".").</p>

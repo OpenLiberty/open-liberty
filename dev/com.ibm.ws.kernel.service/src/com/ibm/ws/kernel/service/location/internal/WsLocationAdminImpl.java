@@ -323,6 +323,8 @@ public class WsLocationAdminImpl implements WsLocationAdmin {
         SymbolRegistry.getRegistry().addStringSymbol(WsLocationConstants.LOC_SERVER_UUID, getServerId().toString());
 
         addResourcePath(bootstrapLib.getNormalizedPath());
+
+        SymbolRegistry.getRegistry().addStringSymbol(WsLocationConstants.LOC_SERVICE_BINDING_ROOT, (String) config.get(WsLocationConstants.LOC_SERVICE_BINDING_ROOT));
     }
 
     private final void throwInitializationException(RuntimeException t) {

@@ -17,11 +17,11 @@ import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.gargoylesoftware.htmlunit.Page;
+import com.gargoylesoftware.htmlunit.WebClient;
 import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.CommonSecurityFat;
@@ -32,22 +32,24 @@ import com.ibm.ws.security.fat.common.expectations.ResponseMessageExpectation;
 import com.ibm.ws.security.fat.common.expectations.ResponseStatusExpectation;
 import com.ibm.ws.security.fat.common.expectations.ResponseUrlExpectation;
 import com.ibm.ws.security.fat.common.expectations.ServerMessageExpectation;
-import com.ibm.ws.security.fat.common.jwt.JwtMessageConstants;
 import com.ibm.ws.security.fat.common.jwt.PayloadConstants;
-import com.ibm.ws.security.fat.common.servers.ServerInstanceUtils;
+import com.ibm.ws.security.fat.common.jwt.servers.JwtServerInstanceUtils;
+import com.ibm.ws.security.fat.common.jwt.utils.JwtKeyTools;
 import com.ibm.ws.security.fat.common.utils.CommonExpectations;
 import com.ibm.ws.security.fat.common.utils.CommonWaitForAppChecks;
 import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 import com.ibm.ws.security.fat.common.web.WebResponseUtils;
 import com.ibm.ws.security.jwt.fat.builder.actions.JwtBuilderActions;
 import com.ibm.ws.security.jwt.fat.builder.utils.BuilderHelpers;
+import com.ibm.ws.security.jwt.fat.builder.utils.JwtBuilderMessageConstants;
 import com.ibm.ws.security.jwt.fat.builder.validation.BuilderTestValidationUtils;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.RepeatTests;
+import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -55,17 +57,16 @@ import componenttest.topology.impl.LibertyServer;
  *
  **/
 
-@SuppressWarnings("restriction")
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
+@SkipForRepeat(SkipForRepeat.EE9_FEATURES) // TODO openidConnectClient-1.0 has not been transformed.
 public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
 
     @Server("com.ibm.ws.security.jwt_fat.builder")
     public static LibertyServer builderServer;
+
     @Server("com.ibm.ws.security.jwt_fat.builder.rs")
     public static LibertyServer rsServer;
-    @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification();
 
     private static final JwtBuilderActions actions = new JwtBuilderActions();
     public static final BuilderTestValidationUtils validationUtils = new BuilderTestValidationUtils();
@@ -79,18 +80,24 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
 
     @BeforeClass
     public static void setUp() throws Exception {
+        FATSuite.transformApps(builderServer, "test-apps/jwtbuilder.war", "test-apps/jwtbuilderclient.war", "dropins/testmarker.war");
+        FATSuite.transformApps(rsServer, "test-apps/helloworld.war", "dropins/testmarker.war");
 
         serverTracker.addServer(builderServer);
+        skipRestoreServerTracker.addServer(builderServer);
         builderServer.addInstalledAppForValidation(JWTBuilderConstants.JWT_BUILDER_SERVLET);
         builderServer.startServerUsingExpandedConfiguration("server_configTests.xml", CommonWaitForAppChecks.getSecurityReadyMsgs());
         SecurityFatHttpUtils.saveServerPorts(builderServer, JWTBuilderConstants.BVT_SERVER_1_PORT_NAME_ROOT);
 
-        // the server's default config contains an invalid value (on purpose), tell the fat framework to ignore it!
-        builderServer.addIgnoredErrors(Arrays.asList(JwtMessageConstants.CWWKG0032W_CONFIG_INVALID_VALUE));
+        // the server's default config contains an invalid value (on purpose),
+        // tell the fat framework to ignore it!
+        builderServer.addIgnoredErrors(Arrays.asList(JwtBuilderMessageConstants.CWWKG0032W_CONFIG_INVALID_VALUE, JwtBuilderMessageConstants.CWWKS6055W_BETA_SIGNATURE_ALGORITHM_USED, JwtBuilderMessageConstants.CWWKS6059W_KEY_MANAGEMENT_KEY_ALIAS_MISSING));
 
-        // start server to run protected app - make sure we can use the JWT Token that we produce
+        // start server to run protected app - make sure we can use the JWT
+        // Token that we produce
         serverTracker.addServer(rsServer);
-        ServerInstanceUtils.addHostNameAndAddrToBootstrap(rsServer);
+        skipRestoreServerTracker.addServer(rsServer);
+        JwtServerInstanceUtils.addHostNameAndAddrToBootstrap(rsServer);
         rsServer.addInstalledAppForValidation(JWTBuilderConstants.HELLOWORLD_APP);
         rsServer.startServerUsingExpandedConfiguration("rs_server_orig.xml", CommonWaitForAppChecks.getSecurityReadyMsgs());
         SecurityFatHttpUtils.saveServerPorts(rsServer, JWTBuilderConstants.BVT_SERVER_2_PORT_NAME_ROOT);
@@ -103,8 +110,10 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
      * <OL>
      * <LI>Create a JWT token with JWK.
      * <LI>Validate the token contents
-     * <LI>Invoke the protected app HelloWorld using the token (under the covers, the RS will invoke the jwkEndpointUrl)
-     * <LI>Invoke the JwkEnpointUrl (using http) and validate the contents of the response.
+     * <LI>Invoke the protected app HelloWorld using the token (under the
+     * covers, the RS will invoke the jwkEndpointUrl)
+     * <LI>Invoke the JwkEnpointUrl (using http) and validate the contents of
+     * the response.
      * </OL>
      * <p>
      * All calls should succeed
@@ -129,14 +138,16 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
         // extra validation - make sure that the signature size is correct
         validationUtils.validateSignatureSize(validateResponse, defaultKeySize);
 
-        // use the token to access the protected app - one last check to ensure that the token is valid
+        // use the token to access the protected app - one last check to ensure
+        // that the token is valid
         invokeAndValidateProtectedApp(UseTokenInHeader, builderResponse, builderId);
 
     }
 
     /**
      * <p>
-     * Invoke the JwkEnpointUrl (using http) and an invalid configId (it doesn't exist)
+     * Invoke the JwkEnpointUrl (using http) and an invalid configId (it doesn't
+     * exist)
      * <p>
      * The call should receive a not found http status response.
      *
@@ -148,8 +159,8 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
         String builderId = "badConfig";
         Expectations validateExpectations = new Expectations();
         validateExpectations.addExpectation(new ResponseStatusExpectation(HttpServletResponse.SC_NOT_FOUND));
-        validateExpectations.addExpectation(new ResponseFullExpectation(JWTBuilderConstants.STRING_MATCHES, JwtMessageConstants.CWWKS6005E_CONFIG_NOT_AVAILABLE + ".*badConfig.*", "Response did not show the expected failure."));
-        validateExpectations.addExpectation(new ServerMessageExpectation(builderServer, JwtMessageConstants.CWWKS6005E_CONFIG_NOT_AVAILABLE + ".*badConfig.*", "Message log did not contain an error indicating a problem with the signing key."));
+        validateExpectations.addExpectation(new ResponseFullExpectation(JWTBuilderConstants.STRING_MATCHES, JwtBuilderMessageConstants.CWWKS6005E_CONFIG_NOT_AVAILABLE + ".*badConfig.*", "Response did not show the expected failure."));
+        validateExpectations.addExpectation(new ServerMessageExpectation(builderServer, JwtBuilderMessageConstants.CWWKS6005E_CONFIG_NOT_AVAILABLE + ".*badConfig.*", "Message log did not contain an error indicating a problem with the signing key."));
 
         String url = buildEndpointUrl_http(builderId, urlJwkPart);
         Page validateResponse = actions.invokeUrl(_testName, url);
@@ -161,10 +172,11 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
      * <p>
      * Invoke the genericBuilder to:
      * <OL>
-     * <LI>Create a JWT token with JWK created from the server default X509 certificate (jwkEnabled is false on the jwt builder
-     * server).
+     * <LI>Create a JWT token with JWK created from the server default X509
+     * certificate (jwkEnabled is false on the jwt builder server).
      * <LI>Validate the token contents
-     * <LI>Invoke the protected app HelloWorld using the token (under the covers, the RS will invoke the jwkEndpointUrl)
+     * <LI>Invoke the protected app HelloWorld using the token (under the
+     * covers, the RS will invoke the jwkEndpointUrl)
      * <LI>Invoke the JwkEnpointUrl (using http).
      * </OL>
      * <p>
@@ -188,7 +200,8 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
         validationUtils.validateResult(validateResponse, validateExpectations);
         // extra validation - make sure that the signature size is correct
         validationUtils.validateSignatureSize(validateResponse, defaultKeySize);
-        // use the token to access the protected app - one last check to ensure that the token is valid
+        // use the token to access the protected app - one last check to ensure
+        // that the token is valid
         invokeAndValidateProtectedApp(UseTokenAsParm, builderResponse, builderId);
 
     }
@@ -197,10 +210,11 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
      * <p>
      * Invoke the genericBuilder to:
      * <OL>
-     * <LI>Create a JWT token with JWK created from the X509 certificate from the specified keystore (jwkEnabled is false on the
-     * jwt builder server).
+     * <LI>Create a JWT token with JWK created from the X509 certificate from
+     * the specified keystore (jwkEnabled is false on the jwt builder server).
      * <LI>Validate the token contents
-     * <LI>Invoke the protected app HelloWorld using the token (under the covers, the RS will invoke the jwkEndpointUrl)
+     * <LI>Invoke the protected app HelloWorld using the token (under the
+     * covers, the RS will invoke the jwkEndpointUrl)
      * <LI>Invoke the JwkEnpointUrl (using http).
      * </OL>
      * <p>
@@ -225,7 +239,8 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
         // extra validation - make sure that the signature size is correct
         validationUtils.validateSignatureSize(validateResponse, defaultKeySize);
 
-        // use the token to access the protected app - one last check to ensure that the token is valid
+        // use the token to access the protected app - one last check to ensure
+        // that the token is valid
         invokeAndValidateProtectedApp(UseTokenInHeader, builderResponse, builderId);
 
     }
@@ -236,8 +251,10 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
      * <OL>
      * <LI>Create a JWT token with JWK.
      * <LI>Validate the token contents
-     * <LI>Invoke the protected app HelloWorld using the token (under the covers, the RS will invoke the jwkEndpointUrl)
-     * <LI>Invoke the JwkEnpointUrl (using https) and validate the contents of the response.
+     * <LI>Invoke the protected app HelloWorld using the token (under the
+     * covers, the RS will invoke the jwkEndpointUrl)
+     * <LI>Invoke the JwkEnpointUrl (using https) and validate the contents of
+     * the response.
      * </OL>
      * <p>
      * All calls should succeed
@@ -261,15 +278,17 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
         // extra validation - make sure that the signature size is correct
         validationUtils.validateSignatureSize(validateResponse, defaultKeySize);
 
-        // use the token to access the protected app - one last check to ensure that the token is valid
+        // use the token to access the protected app - one last check to ensure
+        // that the token is valid
         invokeAndValidateProtectedApp(UseTokenAsParm, builderResponse, builderId);
 
     }
 
     /**
-     * Invoke the jwt feature's token endpoint at h:p/jwt/ibm/api/<configid>/token
-     * A token should be generated with the creds of the user supplied during the call.
-     * Then use that token to access a protected resource and verify that works.
+     * Invoke the jwt feature's token endpoint at
+     * h:p/jwt/ibm/api/<configid>/token A token should be generated with the
+     * creds of the user supplied during the call. Then use that token to access
+     * a protected resource and verify that works.
      *
      * To see the details of how this endpoint gets invoked see
      * JwtBuilderTestUtils.genericBuilder and
@@ -292,10 +311,12 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
         Page tokenResponse = actions.invokeUrlWithBasicAuth(_testName, url, "testuser", "testuserpwd");
         validationUtils.validateResult(tokenResponse, tokenExpectations);
 
-        // use the token to access the protected app - one last check to ensure that the token is valid
+        // use the token to access the protected app - one last check to ensure
+        // that the token is valid
         String protectedApp = SecurityFatHttpUtils.getServerUrlBase(rsServer) + "helloworld/rest/helloworld_jwkEnabled";
 
-        String tokenEndpointOutput = WebResponseUtils.getResponseText(tokenResponse); //  {"token": "mess"}
+        String tokenEndpointOutput = WebResponseUtils.getResponseText(tokenResponse); // {"token":
+                                                                                      // "mess"}
         Log.info(thisClass, _testName, "*** RESPONSE TEXT: " + tokenEndpointOutput);
         String jwtToken = tokenEndpointOutput.replace("{", "").replace("}", "").replace("token", "").replace("\"", "").replace(" ", "").replace(":", "");
         Log.info(thisClass, _testName, "*** RESPONSE TOKEN: " + jwtToken);
@@ -310,8 +331,9 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
     }
 
     /**
-     * Invoke the jwt feature's token endpoint at h:p/jwt/ibm/api/<configid>/token over http
-     * Expect a 404 because https is required.
+     * Invoke the jwt feature's token endpoint at
+     * h:p/jwt/ibm/api/<configid>/token over http Expect a 404 because https is
+     * required.
      */
     @Mode(TestMode.LITE)
     @Test
@@ -323,8 +345,8 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
 
         Expectations tokenExpectations = new Expectations();
         tokenExpectations.addExpectation(new ResponseStatusExpectation(HttpServletResponse.SC_NOT_FOUND));
-        tokenExpectations.addExpectation(new ResponseFullExpectation(JWTBuilderConstants.STRING_MATCHES, JwtMessageConstants.CWWKS6052E_JWT_TRUSTED_ISSUERS_NULL + ".*" + url + ".*", "Response did not show the expected failure."));
-        tokenExpectations.addExpectation(new ServerMessageExpectation(builderServer, JwtMessageConstants.CWWKS6052E_JWT_TRUSTED_ISSUERS_NULL + ".*" + url + ".*", "Message log did not contain an error indicating a problem with the signing key."));
+        tokenExpectations.addExpectation(new ResponseFullExpectation(JWTBuilderConstants.STRING_MATCHES, JwtBuilderMessageConstants.CWWKS6052E_JWT_TRUSTED_ISSUERS_NULL + ".*" + url + ".*", "Response did not show the expected failure."));
+        tokenExpectations.addExpectation(new ServerMessageExpectation(builderServer, JwtBuilderMessageConstants.CWWKS6052E_JWT_TRUSTED_ISSUERS_NULL + ".*" + url + ".*", "Message log did not contain an error indicating a problem with the signing key."));
 
         Page tokenResponse = actions.invokeUrlWithBasicAuth(_testName, url, "testuser", "testuserpwd");
         validationUtils.validateResult(tokenResponse, tokenExpectations);
@@ -332,12 +354,14 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
     }
 
     /**
-     * Invoke the jwt feature's token endpoint at h:p/jwt/ibm/api/<configid>/token over http
-     * Http should be disallowed, unless an x-forwarded-proto header is present
-     * (which indicates it has been forward from a proxy which initially received it as https)
+     * Invoke the jwt feature's token endpoint at
+     * h:p/jwt/ibm/api/<configid>/token over http Http should be disallowed,
+     * unless an x-forwarded-proto header is present (which indicates it has
+     * been forward from a proxy which initially received it as https)
      *
-     * Expect a 401 because we have added the x-forward header, so should move past
-     * the http check and fail with 401 because there is no auth header in the request.
+     * Expect a 401 because we have added the x-forward header, so should move
+     * past the http check and fail with 401 because there is no auth header in
+     * the request.
      *
      */
     @Mode(TestMode.LITE)
@@ -356,8 +380,10 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
         tokenExpectations.addExpectation(new ResponseUrlExpectation(null, Constants.STRING_EQUALS, url, "Did not reach the expected URL."));
         tokenExpectations.addExpectation(new ResponseMessageExpectation(Constants.STRING_CONTAINS, Constants.UNAUTHORIZED_MESSAGE, "Did not find \"Unauthorized\" in the response message field"));
 
-        Page tokenResponse = actions.invokeUrlWithParametersAndHeaders(_testName, actions.createWebClient(), url, null, extraHeaders);
+        WebClient webClient = actions.createWebClient();
+        Page tokenResponse = actions.invokeUrlWithParametersAndHeaders(_testName, webClient, url, null, extraHeaders);
         validationUtils.validateResult(tokenResponse, tokenExpectations);
+        actions.destroyWebClient(webClient);
 
     }
 
@@ -367,8 +393,10 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
      * <OL>
      * <LI>Create a JWT token with JWK (signing size is 1024)
      * <LI>Validate the token contents
-     * <LI>Invoke the protected app HelloWorld using the token (under the covers, the RS will invoke the jwkEndpointUrl)
-     * <LI>Invoke the JwkEnpointUrl (using http) and validate the contents of the response.
+     * <LI>Invoke the protected app HelloWorld using the token (under the
+     * covers, the RS will invoke the jwkEndpointUrl)
+     * <LI>Invoke the JwkEnpointUrl (using http) and validate the contents of
+     * the response.
      * </OL>
      * <p>
      * All calls should succeed
@@ -392,7 +420,8 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
         // extra validation - make sure that the signature size is correct
         validationUtils.validateSignatureSize(validateResponse, 1024);
 
-        // use the token to access the protected app - one last check to ensure that the token is valid
+        // use the token to access the protected app - one last check to ensure
+        // that the token is valid
         invokeAndValidateProtectedApp(UseTokenAsParm, builderResponse, builderId.replace("jwkEnabled_", ""));
 
     }
@@ -403,8 +432,10 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
      * <OL>
      * <LI>Create a JWT token with JWK (signing size is 2048).
      * <LI>Validate the token contents
-     * <LI>Invoke the protected app HelloWorld using the token (under the covers, the RS will invoke the jwkEndpointUrl)
-     * <LI>Invoke the JwkEnpointUrl (using http) and validate the contents of the response.
+     * <LI>Invoke the protected app HelloWorld using the token (under the
+     * covers, the RS will invoke the jwkEndpointUrl)
+     * <LI>Invoke the JwkEnpointUrl (using http) and validate the contents of
+     * the response.
      * </OL>
      * <p>
      * All calls should succeed
@@ -428,7 +459,8 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
         // extra validation - make sure that the signature size is correct
         validationUtils.validateSignatureSize(validateResponse, defaultKeySize);
 
-        // use the token to access the protected app - one last check to ensure that the token is valid
+        // use the token to access the protected app - one last check to ensure
+        // that the token is valid
         invokeAndValidateProtectedApp(UseTokenInHeader, builderResponse, builderId.replace("jwkEnabled_", ""));
 
     }
@@ -439,8 +471,10 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
      * <OL>
      * <LI>Create a JWT token with JWK (signing size is 4096).
      * <LI>Validate the token contents
-     * <LI>Invoke the protected app HelloWorld using the token (under the covers, the RS will invoke the jwkEndpointUrl)
-     * <LI>Invoke the JwkEnpointUrl (using http) and validate the contents of the response.
+     * <LI>Invoke the protected app HelloWorld using the token (under the
+     * covers, the RS will invoke the jwkEndpointUrl)
+     * <LI>Invoke the JwkEnpointUrl (using http) and validate the contents of
+     * the response.
      * </OL>
      * <p>
      * All calls should succeed
@@ -464,7 +498,8 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
         // extra validation - make sure that the signature size is correct
         validationUtils.validateSignatureSize(validateResponse, 4096);
 
-        // use the token to access the protected app - one last check to ensure that the token is valid
+        // use the token to access the protected app - one last check to ensure
+        // that the token is valid
         invokeAndValidateProtectedApp(UseTokenInHeader, builderResponse, builderId.replace("jwkEnabled_", ""));
 
     }
@@ -475,8 +510,10 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
      * <OL>
      * <LI>Create a JWT token with JWK.
      * <LI>Validate the token contents
-     * <LI>Invoke the protected app HelloWorld using the token (under the covers, the RS will invoke the jwkEndpointUrl)
-     * <LI>Invoke the JwkEnpointUrl (using http) and validate the contents of the response.
+     * <LI>Invoke the protected app HelloWorld using the token (under the
+     * covers, the RS will invoke the jwkEndpointUrl)
+     * <LI>Invoke the JwkEnpointUrl (using http) and validate the contents of
+     * the response.
      * </OL>
      * <p>
      * All calls should succeed - default size will be used
@@ -500,7 +537,8 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
         // extra validation - make sure that the signature size is correct
         validationUtils.validateSignatureSize(validateResponse, defaultKeySize);
 
-        // use the token to access the protected app - one last check to ensure that the token is valid
+        // use the token to access the protected app - one last check to ensure
+        // that the token is valid
         invokeAndValidateProtectedApp(UseTokenAsParm, builderResponse, builderId.replace("jwkEnabled_", ""));
 
     }
@@ -521,8 +559,8 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
 
         Expectations validateExpectations = new Expectations();
         validateExpectations.addExpectation(new ResponseStatusExpectation(HttpServletResponse.SC_BAD_REQUEST));
-        validateExpectations.addExpectation(new ResponseFullExpectation(JWTBuilderConstants.STRING_MATCHES, JwtMessageConstants.CWWKS6039E_JWK_BAD_SIG_ALG, "Output did NOT state that the builder can not be used because the signature algorithm is HS256"));
-        validateExpectations.addExpectation(new ServerMessageExpectation(builderServer, JwtMessageConstants.CWWKS6039E_JWK_BAD_SIG_ALG, "Message log did NOT contain an exception indicating that the builder can not be used because the signature algorithm is HS256"));
+        validateExpectations.addExpectation(new ResponseFullExpectation(JWTBuilderConstants.STRING_MATCHES, JwtBuilderMessageConstants.CWWKS6039E_JWK_BAD_SIG_ALG, "Output did NOT state that the builder can not be used because the signature algorithm is HS256"));
+        validateExpectations.addExpectation(new ServerMessageExpectation(builderServer, JwtBuilderMessageConstants.CWWKS6039E_JWK_BAD_SIG_ALG, "Message log did NOT contain an exception indicating that the builder can not be used because the signature algorithm is HS256"));
 
         String url = buildEndpointUrl_http(builderId, urlJwkPart);
 
@@ -533,9 +571,63 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
 
     /**
      * <p>
-     * Invoke the JwkEnpointUrl (using http) and specifying a config that does NOT have jwkEnabled set to true
+     * Invoke the JwkEnpointUrl (using http) and specifying a config that uses HS384
      * <p>
-     * The request should not fail because jwk now will be created from x509 certificate.
+     * The request should fail because of the incorrect signature algorithm
+     *
+     * @throws Exception
+     */
+    @Mode(TestMode.LITE)
+    @Test
+    public void JwkEndpointValidationUrlTests_sigAlg_HS384() throws Exception {
+
+        String builderId = "jwkEnabled_HS384";
+
+        Expectations validateExpectations = new Expectations();
+        validateExpectations.addExpectation(new ResponseStatusExpectation(HttpServletResponse.SC_BAD_REQUEST));
+        validateExpectations.addExpectation(new ResponseFullExpectation(JWTBuilderConstants.STRING_MATCHES, JwtBuilderMessageConstants.CWWKS6039E_JWK_BAD_SIG_ALG, "Output did NOT state that the builder can not be used because the signature algorithm is HS384"));
+        validateExpectations.addExpectation(new ServerMessageExpectation(builderServer, JwtBuilderMessageConstants.CWWKS6039E_JWK_BAD_SIG_ALG, "Message log did NOT contain an exception indicating that the builder can not be used because the signature algorithm is HS384"));
+
+        String url = buildEndpointUrl_http(builderId, urlJwkPart);
+
+        Page validateResponse = actions.invokeUrl(_testName, url);
+        validationUtils.validateResult(validateResponse, validateExpectations);
+
+    }
+
+    /**
+     * <p>
+     * Invoke the JwkEnpointUrl (using http) and specifying a config that uses HS512
+     * <p>
+     * The request should fail because of the incorrect signature algorithm
+     *
+     * @throws Exception
+     */
+    @Mode(TestMode.LITE)
+    @Test
+    public void JwkEndpointValidationUrlTests_sigAlg_HS512() throws Exception {
+
+        String builderId = "jwkEnabled_HS512";
+
+        Expectations validateExpectations = new Expectations();
+        validateExpectations.addExpectation(new ResponseStatusExpectation(HttpServletResponse.SC_BAD_REQUEST));
+        validateExpectations.addExpectation(new ResponseFullExpectation(JWTBuilderConstants.STRING_MATCHES, JwtBuilderMessageConstants.CWWKS6039E_JWK_BAD_SIG_ALG, "Output did NOT state that the builder can not be used because the signature algorithm is HS512"));
+        validateExpectations.addExpectation(new ServerMessageExpectation(builderServer, JwtBuilderMessageConstants.CWWKS6039E_JWK_BAD_SIG_ALG, "Message log did NOT contain an exception indicating that the builder can not be used because the signature algorithm is HS512"));
+
+        String url = buildEndpointUrl_http(builderId, urlJwkPart);
+
+        Page validateResponse = actions.invokeUrl(_testName, url);
+        validationUtils.validateResult(validateResponse, validateExpectations);
+
+    }
+
+    /**
+     * <p>
+     * Invoke the JwkEnpointUrl (using http) and specifying a config that does
+     * NOT have jwkEnabled set to true
+     * <p>
+     * The request should not fail because jwk now will be created from x509
+     * certificate.
      *
      * @throws Exception
      */
@@ -553,10 +645,351 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
         validationUtils.validateSignatureSize(validateResponse, defaultKeySize);
     }
 
+    /**
+     * <p>
+     * Invoke the JwkEnpointUrl (using http) and specifying a config has the signature algorithm set to RS384 and jwkEnabled set
+     * to true
+     * <p>
+     * The request should succeed - the RS384 alg should be set and the size should be 2048
+     *
+     * @throws Exception
+     */
+    @Test
+    public void JwkEndpointValidationUrlTests_sigAlg_RS384() throws Exception {
+
+        String builderId = "jwkEnabled_RS384";
+
+        // build a jwt token with the "default" test claims
+        Page builderResponse = buildJwtForEndpointValidationTests(builderId, JWTBuilderConstants.SIGALG_RS384);
+
+        String url = buildEndpointUrl_http(builderId, urlJwkPart);
+        // create validation endpoint expectations from the built token
+        Expectations validateExpectations = BuilderHelpers.createGoodValidationEndpointExpectations(BuilderHelpers.extractJwtTokenFromResponse(builderResponse, JWTBuilderConstants.BUILT_JWT_TOKEN), url);
+
+        Page validateResponse = actions.invokeUrl(_testName, url);
+        validationUtils.validateResult(validateResponse, validateExpectations);
+        // extra validation - make sure that the signature size is correct
+        validationUtils.validateSignatureSize(validateResponse, defaultKeySize);
+
+        // TODO
+        //        // use the token to access the protected app - one last check to ensure that the token is valid
+        //        invokeAndValidateProtectedApp(UseTokenInHeader, builderResponse, builderId.replace("jwkEnabled_", ""));
+
+    }
+
+    /**
+     * <p>
+     * Invoke the JwkEnpointUrl (using http) and specifying a config has the signature algorithm set to RS512 and jwkEnabled set
+     * to true
+     * <p>
+     * The request should succeed - the RS512 alg should be set and the size should be 2048
+     *
+     * @throws Exception
+     */
+    @Test
+    public void JwkEndpointValidationUrlTests_sigAlg_RS512() throws Exception {
+
+        String builderId = "jwkEnabled_RS512";
+
+        // build a jwt token with the "default" test claims
+        Page builderResponse = buildJwtForEndpointValidationTests(builderId, JWTBuilderConstants.SIGALG_RS512);
+
+        String url = buildEndpointUrl_http(builderId, urlJwkPart);
+        // create validation endpoint expectations from the built token
+        Expectations validateExpectations = BuilderHelpers.createGoodValidationEndpointExpectations(BuilderHelpers.extractJwtTokenFromResponse(builderResponse, JWTBuilderConstants.BUILT_JWT_TOKEN), url);
+
+        Page validateResponse = actions.invokeUrl(_testName, url);
+        validationUtils.validateResult(validateResponse, validateExpectations);
+        // extra validation - make sure that the signature size is correct
+        validationUtils.validateSignatureSize(validateResponse, defaultKeySize);
+
+        // TODO
+        //        // use the token to access the protected app - one last check to ensure that the token is valid
+        //        invokeAndValidateProtectedApp(UseTokenInHeader, builderResponse, builderId.replace("jwkEnabled_", ""));
+
+    }
+
+    /**
+     * <p>
+     * Invoke the JwkEnpointUrl (using http) and specifying a config has the signature algorithm set to ES256 and jwkEnabled set
+     * to true
+     * <p>
+     * The request should succeed - the ES256 alg should be set and the crv should be P-256
+     *
+     * @throws Exception
+     */
+    @Test
+    public void JwkEndpointValidationUrlTests_sigAlg_ES256() throws Exception {
+
+        String builderId = "jwkEnabled_ES256";
+
+        // build a jwt token with the "default" test claims
+        Page builderResponse = buildJwtForEndpointValidationTests(builderId, JWTBuilderConstants.SIGALG_ES256);
+
+        String url = buildEndpointUrl_http(builderId, urlJwkPart);
+        // create validation endpoint expectations from the built token
+        Expectations validateExpectations = BuilderHelpers.createGoodValidationEndpointExpectations(BuilderHelpers.extractJwtTokenFromResponse(builderResponse, JWTBuilderConstants.BUILT_JWT_TOKEN), url);
+
+        Page validateResponse = actions.invokeUrl(_testName, url);
+        validationUtils.validateResult(validateResponse, validateExpectations);
+        // extra validation - make sure that the crv is correct
+        validationUtils.validateCurve(validateResponse, "P-256");
+        // extra validation - make sure that the signature algorithm is correct
+        validationUtils.validateSigAlg(validateResponse, JWTBuilderConstants.SIGALG_ES256);
+
+        // TODO
+        //        // use the token to access the protected app - one last check to ensure that the token is valid
+        //        invokeAndValidateProtectedApp(UseTokenInHeader, builderResponse, builderId.replace("jwkEnabled_", ""));
+
+    }
+
+    /**
+     * <p>
+     * Invoke the JwkEnpointUrl (using http) and specifying a config has the signature algorithm set to ES384 and jwkEnabled set
+     * to true
+     * <p>
+     * The request should succeed - the ES384 alg should be set and the crv should be P-384
+     *
+     * @throws Exception
+     */
+    @Test
+    public void JwkEndpointValidationUrlTests_sigAlg_ES384() throws Exception {
+
+        String builderId = "jwkEnabled_ES384";
+
+        // build a jwt token with the "default" test claims
+        Page builderResponse = buildJwtForEndpointValidationTests(builderId, JWTBuilderConstants.SIGALG_ES384);
+
+        String url = buildEndpointUrl_http(builderId, urlJwkPart);
+        // create validation endpoint expectations from the built token
+        Expectations validateExpectations = BuilderHelpers.createGoodValidationEndpointExpectations(BuilderHelpers.extractJwtTokenFromResponse(builderResponse, JWTBuilderConstants.BUILT_JWT_TOKEN), url);
+
+        Page validateResponse = actions.invokeUrl(_testName, url);
+        validationUtils.validateResult(validateResponse, validateExpectations);
+        // extra validation - make sure that the crv is correct
+        validationUtils.validateCurve(validateResponse, "P-384");
+        // extra validation - make sure that the signature algorithm is correct
+        validationUtils.validateSigAlg(validateResponse, JWTBuilderConstants.SIGALG_ES384);
+
+        // TODO
+        //        // use the token to access the protected app - one last check to ensure that the token is valid
+        //        invokeAndValidateProtectedApp(UseTokenInHeader, builderResponse, builderId.replace("jwkEnabled_", ""));
+
+    }
+
+    /**
+     * <p>
+     * Invoke the JwkEnpointUrl (using http) and specifying a config has the signature algorithm set to ES512 and jwkEnabled set
+     * to true
+     * <p>
+     * The request should succeed - the ES512 alg should be set and the crv should be P-521
+     *
+     * @throws Exception
+     */
+    @Test
+    public void JwkEndpointValidationUrlTests_sigAlg_ES512() throws Exception {
+
+        String builderId = "jwkEnabled_ES512";
+
+        // build a jwt token with the "default" test claims
+        Page builderResponse = buildJwtForEndpointValidationTests(builderId, JWTBuilderConstants.SIGALG_ES512);
+
+        String url = buildEndpointUrl_http(builderId, urlJwkPart);
+        // create validation endpoint expectations from the built token
+        Expectations validateExpectations = BuilderHelpers.createGoodValidationEndpointExpectations(BuilderHelpers.extractJwtTokenFromResponse(builderResponse, JWTBuilderConstants.BUILT_JWT_TOKEN), url);
+
+        Page validateResponse = actions.invokeUrl(_testName, url);
+        validationUtils.validateResult(validateResponse, validateExpectations);
+        // extra validation - make sure that the crv is correct
+        validationUtils.validateCurve(validateResponse, "P-521");
+        // extra validation - make sure that the signature algorithm is correct
+        validationUtils.validateSigAlg(validateResponse, JWTBuilderConstants.SIGALG_ES512);
+
+        // TODO
+        //        // use the token to access the protected app - one last check to ensure that the token is valid
+        //        invokeAndValidateProtectedApp(UseTokenInHeader, builderResponse, builderId.replace("jwkEnabled_", ""));
+
+    }
+
+    //    @Test
+    public void JwkEndpointValidationUrlTests_sigAlg_PS256() throws Exception {
+
+        String builderId = "jwkEnabled_PS256";
+        String url = buildEndpointUrl_http(builderId, urlJwkPart);
+
+        // PS sig alg only valid with java 11 or above
+        if (JavaInfo.JAVA_VERSION >= 11) {
+
+            // build a jwt token with the "default" test claims
+            Page builderResponse = buildJwtForEndpointValidationTests(builderId, JWTBuilderConstants.SIGALG_PS256);
+
+            // create validation endpoint expectations from the built token
+            Expectations validateExpectations = BuilderHelpers.createGoodValidationEndpointExpectations(BuilderHelpers.extractJwtTokenFromResponse(builderResponse, JWTBuilderConstants.BUILT_JWT_TOKEN), url);
+
+            Page validateResponse = actions.invokeUrl(_testName, url);
+            validationUtils.validateResult(validateResponse, validateExpectations);
+            // TODO - what specifically needs to be validated?
+            // extra validation - make sure that the signature size is correct
+            validationUtils.validateSignatureSize(validateResponse, defaultKeySize);
+
+            // TODO
+            //        // use the token to access the protected app - one last check to ensure that the token is valid
+            //        invokeAndValidateProtectedApp(UseTokenInHeader, builderResponse, builderId.replace("jwkEnabled_", ""));
+
+        } else {
+            // TODO check for the proper error message about PS sig alg and less than java 11
+            Page validateResponse = actions.invokeUrl(_testName, url);
+            // check for messages
+        }
+    }
+
+    //    @Test
+    public void JwkEndpointValidationUrlTests_sigAlg_PS384() throws Exception {
+
+        String builderId = "jwkEnabled_PS384";
+        String url = buildEndpointUrl_http(builderId, urlJwkPart);
+
+        // PS sig alg only valid with java 11 or above
+        if (JavaInfo.JAVA_VERSION >= 11) {
+
+            // build a jwt token with the "default" test claims
+            Page builderResponse = buildJwtForEndpointValidationTests(builderId, JWTBuilderConstants.SIGALG_PS384);
+
+            // create validation endpoint expectations from the built token
+            Expectations validateExpectations = BuilderHelpers.createGoodValidationEndpointExpectations(BuilderHelpers.extractJwtTokenFromResponse(builderResponse, JWTBuilderConstants.BUILT_JWT_TOKEN), url);
+
+            Page validateResponse = actions.invokeUrl(_testName, url);
+            validationUtils.validateResult(validateResponse, validateExpectations);
+            // extra validation - make sure that the signature size is correct
+            validationUtils.validateSignatureSize(validateResponse, defaultKeySize);
+
+            // TODO
+            //        // use the token to access the protected app - one last check to ensure that the token is valid
+            //        invokeAndValidateProtectedApp(UseTokenInHeader, builderResponse, builderId.replace("jwkEnabled_", ""));
+
+        } else {
+            // TODO check for the proper error message about PS sig alg and less than java 11
+            Page validateResponse = actions.invokeUrl(_testName, url);
+            // check for messages
+        }
+
+    }
+
+    //    @Test
+    public void JwkEndpointValidationUrlTests_sigAlg_PS512() throws Exception {
+
+        String builderId = "jwkEnabled_PS512";
+        String url = buildEndpointUrl_http(builderId, urlJwkPart);
+
+        // PS sig alg only valid with java 11 or above
+        if (JavaInfo.JAVA_VERSION >= 11) {
+
+            // build a jwt token with the "default" test claims
+            Page builderResponse = buildJwtForEndpointValidationTests(builderId, JWTBuilderConstants.SIGALG_PS512);
+
+            // create validation endpoint expectations from the built token
+            Expectations validateExpectations = BuilderHelpers.createGoodValidationEndpointExpectations(BuilderHelpers.extractJwtTokenFromResponse(builderResponse, JWTBuilderConstants.BUILT_JWT_TOKEN), url);
+
+            Page validateResponse = actions.invokeUrl(_testName, url);
+            validationUtils.validateResult(validateResponse, validateExpectations);
+            // extra validation - make sure that the signature size is correct
+            validationUtils.validateSignatureSize(validateResponse, defaultKeySize);
+
+            // TODO
+            //        // use the token to access the protected app - one last check to ensure that the token is valid
+            //        invokeAndValidateProtectedApp(UseTokenInHeader, builderResponse, builderId.replace("jwkEnabled_", ""));
+
+        } else {
+            // TODO check for the proper error message about PS sig alg and less than java 11
+            Page validateResponse = actions.invokeUrl(_testName, url);
+            // check for messages
+        }
+
+    }
+
+    /**
+     * <p>
+     * Invoke the JwkEnpointUrl (using http) and specifying a config that has encryption enabled using an RS256 key
+     *
+     * <p>
+     * The request should succeed -
+     *
+     * @throws Exception
+     */
+    @Test
+    public void JwkEndpointValidationUrlTests_encrypt_RS256() throws Exception {
+
+        String builderId = "key_encrypt_good_RS256";
+        String url = buildEndpointUrl_http(builderId, urlJwkPart);
+
+        // build a jwt token with the "default" test claims (need to validate different info for an encrypted token)
+        Page builderResponse = buildEncryptedJwtForEndpointValidationTests(builderId, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+
+        // create validation endpoint expectations from the built token
+        Expectations validateExpectations = BuilderHelpers.createGoodValidationEndpointExpectations(BuilderHelpers.extractJwtTokenFromResponse(builderResponse, JWTBuilderConstants.BUILT_JWT_TOKEN), url, JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256));
+
+        Page validateResponse = actions.invokeUrl(_testName, url);
+        validationUtils.validateResult(validateResponse, validateExpectations);
+        // extra validation - make sure that the signature size is correct
+        validationUtils.validateSignatureSize(validateResponse, 4096);
+
+        // TODO
+        //        // use the token to access the protected app - one last check to ensure that the token is valid
+        //        invokeAndValidateProtectedApp(UseTokenInHeader, builderResponse, builderId.replace("jwkEnabled_", ""));
+
+    }
+
+    @Test
+    public void JwkEndpointValidationUrlTests_encrypt_RS384() throws Exception {
+
+        String builderId = "key_encrypt_good_RS384";
+        String url = buildEndpointUrl_http(builderId, urlJwkPart);
+
+        // build a jwt token with the "default" test claims (need to validate different info for an encrypted token)
+        Page builderResponse = buildEncryptedJwtForEndpointValidationTests(builderId, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+
+        // create validation endpoint expectations from the built token
+        Expectations validateExpectations = BuilderHelpers.createGoodValidationEndpointExpectations(BuilderHelpers.extractJwtTokenFromResponse(builderResponse, JWTBuilderConstants.BUILT_JWT_TOKEN), url, JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS384));
+
+        Page validateResponse = actions.invokeUrl(_testName, url);
+        validationUtils.validateResult(validateResponse, validateExpectations);
+        // extra validation - make sure that the signature size is correct
+        validationUtils.validateSignatureSize(validateResponse, 4096);
+
+        // TODO
+        //        // use the token to access the protected app - one last check to ensure that the token is valid
+        //        invokeAndValidateProtectedApp(UseTokenInHeader, builderResponse, builderId.replace("jwkEnabled_", ""));
+
+    }
+
+    @Test
+    public void JwkEndpointValidationUrlTests_encrypt_RS512() throws Exception {
+
+        String builderId = "key_encrypt_good_RS512";
+        String url = buildEndpointUrl_http(builderId, urlJwkPart);
+
+        // build a jwt token with the "default" test claims (need to validate different info for an encrypted token)
+        Page builderResponse = buildEncryptedJwtForEndpointValidationTests(builderId, JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+
+        // create validation endpoint expectations from the built token
+        Expectations validateExpectations = BuilderHelpers.createGoodValidationEndpointExpectations(BuilderHelpers.extractJwtTokenFromResponse(builderResponse, JWTBuilderConstants.BUILT_JWT_TOKEN), url, JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS512));
+
+        Page validateResponse = actions.invokeUrl(_testName, url);
+        validationUtils.validateResult(validateResponse, validateExpectations);
+        // extra validation - make sure that the signature size is correct
+        validationUtils.validateSignatureSize(validateResponse, 4096);
+
+        // TODO
+        //        // use the token to access the protected app - one last check to ensure that the token is valid
+        //        invokeAndValidateProtectedApp(UseTokenInHeader, builderResponse, builderId.replace("jwkEnabled_", ""));
+
+    }
+
     /**************************************************************************/
     /**
      * <p>
-     * Build the requested http url - use the http port, the build id and the endpoint passed in
+     * Build the requested http url - use the http port, the build id and the
+     * endpoint passed in
      *
      * @param builderId
      *            - the config id to use to build the request
@@ -571,7 +1004,8 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
 
     /**
      * <p>
-     * Build the requested http url - use the http port, the build id and the endpoint passed in
+     * Build the requested http url - use the http port, the build id and the
+     * endpoint passed in
      *
      * @param builderId
      *            - the config id to use to build the request
@@ -600,7 +1034,8 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
     }
 
     /**
-     * Many of the tests build a token with all of the same data - this is a helper method to do that for them
+     * Many of the tests build a token with all of the same data - this is a
+     * helper method to do that for them
      *
      * @param builderId
      *            - the id/config to use to build a token
@@ -608,8 +1043,30 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
      * @throws Exception
      */
     public Page buildJwtForEndpointValidationTests(String builderId) throws Exception {
+        return buildJwtForEndpointValidationTests(builderId, JWTBuilderConstants.SIGALG_RS256);
+    }
+
+    public Page buildJwtForEndpointValidationTests(String builderId, String alg) throws Exception {
 
         JSONObject expectationSettings = BuilderHelpers.setDefaultClaims(builderId);
+        JSONObject testSettings = new JSONObject();
+        testSettings.put(PayloadConstants.SUBJECT, "testuser");
+        expectationSettings.put("overrideSettings", testSettings);
+        if (alg != null) {
+            expectationSettings.put("alg", alg);
+        }
+
+        Expectations builderExpectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
+
+        Page builderResponse = actions.invokeJwtBuilder_setApis(_testName, builderServer, builderId, testSettings);
+        validationUtils.validateResult(builderResponse, builderExpectations);
+
+        return builderResponse;
+    }
+
+    public Page buildEncryptedJwtForEndpointValidationTests(String builderId, String keyMgmtKeyAlg, String contentEncryptAlg) throws Exception {
+
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaimsWithEncryption(builderId, keyMgmtKeyAlg, contentEncryptAlg);
         JSONObject testSettings = new JSONObject();
         testSettings.put(PayloadConstants.SUBJECT, "testuser");
         expectationSettings.put("overrideSettings", testSettings);
@@ -621,4 +1078,5 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
 
         return builderResponse;
     }
+
 }

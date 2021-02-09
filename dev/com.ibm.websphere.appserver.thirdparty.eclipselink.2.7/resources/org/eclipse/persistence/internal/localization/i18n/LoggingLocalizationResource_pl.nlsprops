@@ -117,8 +117,6 @@ connected_user_database=Nawi\u0105zano po\u0142\u0105czenie: {3}{4} U\u017cytkow
 
 connected_user_database_driver=Nawi\u0105zano po\u0142\u0105czenie: {0}{6} U\u017cytkownik: {1}{6} Baza danych: {2} Wersja: {3}{6} Sterownik: {4} Wersja: {5}
 
-connecting=nawi\u0105zywanie po\u0142\u0105czenia ({0})
-
 corrupted_session_announcement=Identyfikator sesji: {0} mened\u017cer wykrywania odebra\u0142 uszkodzone og\u0142oszenie sesji \u2013 zignorowano.
 
 create_default_dbms_tables_not_supported=Ustawienie komponentu CMP rodzime dla produktu WLS create-default-dbms-tables nie jest bezpo\u015brednio obs\u0142ugiwane w komponencie CMP produktu EclipseLink. Szczeg\u00f3\u0142owe informacje zawiera dokumentacja migrowania.
@@ -158,8 +156,6 @@ deprecated_property=W\u0142a\u015bciwo\u015b\u0107 {1} jest nieaktualna, zamiast
 descriptor_named_query_cannot_be_added=Nie mo\u017cna doda\u0107 zapytania z nazw\u0105 deskryptora, kt\u00f3rego nazwa powoduje konflikt z istniej\u0105cym zapytaniem. Zapytanie do dodania: [{0}] ma nazw\u0119: [{1}] i argumenty [{2}].
 
 dir_cleaned_for_mw_files=Pliki i podkatalogi w katalogu {0} zosta\u0142y usuni\u0119te, aby utworzy\u0107 pusty katalog na potrzeby nowo generowanych plik\u00f3w projektu \u015brodowiska roboczego odwzorowywania produktu EclipseLink.
-
-disconnect=roz\u0142\u0105cz
 
 do_select_before_insert_not_supported=Sk\u0142adnik komponentu CMP rodzimy dla produktu Oc4j do-select-before-insert dotycz\u0105cy jednostki ({0}) nie jest bezpo\u015brednio obs\u0142ugiwany w komponencie CMP produktu EclipseLink. Szczeg\u00f3\u0142owe informacje zawiera dokumentacja migrowania.
 
@@ -332,10 +328,6 @@ locking_mode_not_valid=Tryb blokowania ({1}) dla jednostki ({0}) w pliku orion-e
 locking_required_for_database_change_notification=Jednostka {0} nie u\u017cywa blokowania wersji, ale ma wiele tabel relacji i u\u017cywa powiadomie\u0144 o zmianach bazy danych Oracle; zmiany relacji lub tabele dodatkowe nie mog\u0105 uniewa\u017cnia\u0107 pami\u0119ci podr\u0119cznej.
 
 log_file_under_output_dir=Istnieje plik dziennika o nazwie ({0}) w katalogu wyj\u015bciowym ({1}).
-
-login_successful={0} \u2013 zalogowano pomy\u015blnie
-
-logout_successful={0} \u2013 wylogowano pomy\u015blnie
 
 mapping_not_supported_by_mw=Odwzorowanie produktu EclipseLink {0} nie jest obs\u0142ugiwane przez \u015brodowisko robocze odwzorowywania
 
@@ -655,8 +647,6 @@ received_corrupt_announcement=Ostrze\u017cenie: mened\u017cer wykrywania nie m\u
 
 received_unexpected_message_type=Otrzymano nieoczekiwany typ komunikatu: {0} z tematu: {1}; zostanie on zignorowany.
 
-reconnecting=ponowne nawi\u0105zywanie po\u0142\u0105czenia ({0})
-
 register_new_for_persist=Wywo\u0142ano operacj\u0119 PERSIST dla: {0}.
 
 relational_descriptor_support_only=Domy\u015blny generator tabel aktualnie obs\u0142uguje tylko generowanie domy\u015blnego schematu tabeli na podstawie projektu relacyjnego.
@@ -674,6 +664,8 @@ retreived_null_message=Otrzymano komunikat o warto\u015bci NULL z tematu: {0}; z
 retreived_unknown_message_type=Otrzymano nieznany typ komunikatu: {0} z tematu: {1}; zostanie on zignorowany.
 
 sdo_classgenerator_exception={2} Wyst\u0105pi\u0142 wyj\u0105tek [{0}] \u2013 komunikat: [{1}]
+
+sdo_error_deserialization=Nieautoryzowana pr\u00f3ba deserializacji z klas\u0105 {0}.
 
 sdo_error_processing_referenced_schema=Wyst\u0105pi\u0142 wyj\u0105tek {0} podczas przetwarzania przywo\u0142ywanego schematu z identyfikatorem URI {1} i po\u0142o\u017ceniem schematu {2}.
 

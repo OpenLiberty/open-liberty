@@ -125,7 +125,7 @@ public class SpnGssCredential {
         GSSCredential spnGSSCred;
         String previousSpn = null;
 
-        if (Krb5Common.isIBMJdk18OrLower || Krb5Common.isOtherSupportJDKs) {
+        if (Krb5Common.isIBMJdk18 || Krb5Common.isOtherSupportJDKs) {
             if (Krb5Common.isOtherSupportJDKs) {// We support multiple SPNs so switch to the right one
                 previousSpn = Krb5Common.getSystemProperty(Krb5Common.KRB5_PRINCIPAL);
                 Krb5Common.setPropertyAsNeeded(Krb5Common.KRB5_PRINCIPAL, spn);

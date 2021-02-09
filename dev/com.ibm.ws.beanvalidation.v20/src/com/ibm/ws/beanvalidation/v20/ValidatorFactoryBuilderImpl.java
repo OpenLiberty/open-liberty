@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,6 +32,7 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 import com.ibm.ejs.util.dopriv.SetContextClassLoaderPrivileged;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.beanvalidation.AbstractBeanValidation.ClassLoaderTuple;
 import com.ibm.ws.beanvalidation.service.BvalManagedObjectBuilder;
 import com.ibm.ws.beanvalidation.service.Validation20ClassLoader;
 import com.ibm.ws.beanvalidation.service.ValidatorFactoryBuilder;
@@ -59,11 +60,12 @@ public class ValidatorFactoryBuilderImpl implements ValidatorFactoryBuilder {
 
     @Override
     public ValidatorFactory buildValidatorFactory(final ClassLoader appClassLoader, final String containerPath) {
-        ClassLoader tcclClassLoader = null;
         SetContextClassLoaderPrivileged setClassLoader = null;
         ClassLoader oldClassLoader = null;
+        ClassLoaderTuple tuple = null;
         try {
-            ClassLoader tcclClassLoaderTmp = tcclClassLoader = configureBvalClassloader(appClassLoader);
+            tuple = configureBvalClassloader(appClassLoader);
+            ClassLoader tcclClassLoaderTmp = tuple.classLoader;
 
             ClassLoader bvalClassLoader = AccessController.doPrivileged((PrivilegedAction<ClassLoader>) () -> new Validation20ClassLoader(tcclClassLoaderTmp, containerPath));
 
@@ -96,24 +98,24 @@ public class ValidatorFactoryBuilderImpl implements ValidatorFactoryBuilder {
                     Tr.debug(tc, "Set Class loader back to " + oldClassLoader);
                 }
             }
-            if (setClassLoader != null && setClassLoader.wasChanged) {
-                releaseLoader(tcclClassLoader);
+            if (tuple != null && tuple.wasCreatedViaClassLoadingService) {
+                releaseLoader(tuple.classLoader);
             }
         }
     }
 
-    private ClassLoader configureBvalClassloader(ClassLoader cl) {
+    private ClassLoaderTuple configureBvalClassloader(ClassLoader cl) {
         if (cl == null) {
             cl = AccessController.doPrivileged((PrivilegedAction<ClassLoader>) () -> Thread.currentThread().getContextClassLoader());
         }
         if (cl != null) {
             if (classLoadingService.isThreadContextClassLoader(cl)) {
-                return cl;
+                return ClassLoaderTuple.of(cl, false);
             } else if (classLoadingService.isAppClassLoader(cl)) {
-                return createTCCL(cl);
+                return ClassLoaderTuple.of(createTCCL(cl), true);
             }
         }
-        return createTCCL(ValidatorFactoryBuilderImpl.class.getClassLoader());
+        return ClassLoaderTuple.of(createTCCL(ValidatorFactoryBuilderImpl.class.getClassLoader()), true);
     }
 
     private ClassLoader createTCCL(ClassLoader parentCL) {

@@ -19,10 +19,14 @@ import org.springframework.core.env.ConfigurableEnvironment;
 import com.ibm.ws.app.manager.springboot.container.SpringBootConfigFactory;
 
 public class ApplicationContextCloser implements EnvironmentPostProcessor {
-    private static final Object token = new Object() {};
+    private static final Object token = new Object() {
+    };
 
     @Override
     public void postProcessEnvironment(ConfigurableEnvironment env, SpringApplication app) {
+        if (env.getPropertySources().contains("bootstrap")) {
+            return;
+        }
         final SpringBootConfigFactory factory = SpringBootConfigFactory.findFactory(token);
         app.addInitializers((c) -> {
             factory.addShutdownHook(() -> {

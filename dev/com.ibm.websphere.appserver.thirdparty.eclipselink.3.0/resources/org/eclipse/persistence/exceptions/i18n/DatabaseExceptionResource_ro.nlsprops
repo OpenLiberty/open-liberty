@@ -1,0 +1,61 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/DatabaseExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+4003=Eroare de configurare.  Clasa [{0}] nu a fost g\u0103sit\u0103.
+
+4005=DatabaseAccessor nu este conectat.
+
+4006=Eroare la citirea datelor BLOB din fluxul din getObject().
+
+4007=Nu s-a putut converti tipul de obiect datorit\u0103 unei erori interne. {0}java.sql.TYPES: [{1}]
+
+4008=Nu pute\u0163i s\u0103 v\u0103 \u00eenregistra\u0163i la ie\u015fire \u00een timp ce tranzac\u0163ie este \u00een curs.
+
+4009=Informa\u0163iile din tabelul secven\u0163\u0103 nu sunt complete.
+
+4011=Eroare la pre-alocarea numerelor de secven\u0163\u0103.  Informa\u0163iile din tabelul secven\u0163\u0103 nu sunt complete.
+
+4014=Nu se poate \u00eenregistra SynchronizationListener.
+
+4015=UnitOfWork sincronizat nu suport\u0103 opera\u0163ia commitAndResume().
+
+4016=Eroare de configurare.  Nu s-a putut instan\u0163ia driver-ul [{0}].
+
+4017=Eroare de configurare.  Nu s-a putut accesa dirver-ul [{0}].
+
+4018=TransactionManager nu a fost setat pentru driver-ul JTS.
+
+4019=Eroare la ob\u0163inerea informa\u0163iilor despre baza de date. Face\u0163i referire la excep\u0163ia imbricat\u0103 pentru detalii suplimentare.
+
+4020=Nu s-a putut g\u0103si c\u00e2mpul bazei de date potrivit pentru c\u00e2mpul de blocare optimist\u0103 specificat[{0}]. Re\u0163ine\u0163i, potrivirea este sensibil\u0103 la majuscule, prin urmare, dac\u0103 a\u0163i permis numele coloanei la valoarea implicit\u0103 \u00een metoda de aducere, numele va fi trecut cu majuscule.
+
+4021=Nu se poate ob\u0163ine o conexiune de la driver-ul [{0}], utilizator [{1}] \u015fi URL [{2}].  Verifica\u0163i dac\u0103 a\u0163i setat clasa de driver a\u015fteptat \u015fi URL.  Verifica\u0163i-v\u0103 \u00eenregistrarea la intrare, resursele persistence.xml sau sessions.xml.  Proprietatea jdbc.driver ar trebui setat\u0103 la o clas\u0103 compatibil\u0103 cu platforma dumneavoastr\u0103 de baz\u0103 de date
+
+4022=Accesatorul sau conexiunile acestuia au fost setate pe null.  Aceasta poate s\u0103 apar\u0103 dac\u0103 ClientSession sau UnitOfWork a fost eliberat \u00eentr-un fir de execu\u0163ie separat, de exemplu dac\u0103 a survenit un Timeout.
+

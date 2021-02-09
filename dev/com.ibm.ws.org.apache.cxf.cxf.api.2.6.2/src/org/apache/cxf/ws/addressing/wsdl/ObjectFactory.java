@@ -13,6 +13,8 @@ import javax.xml.bind.annotation.XmlElementDecl;
 import javax.xml.bind.annotation.XmlRegistry;
 import javax.xml.namespace.QName;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 
 /**
  * This object contains factory methods for each 
@@ -29,6 +31,7 @@ import javax.xml.namespace.QName;
  * 
  */
 @XmlRegistry
+@Trivial
 public class ObjectFactory {
 
     private final static QName _InterfaceName_QNAME = new QName("http://www.w3.org/2006/05/addressing/wsdl", "InterfaceName");

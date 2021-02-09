@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,6 +23,7 @@ import javax.json.JsonObject;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -31,6 +32,8 @@ import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 
@@ -48,7 +51,17 @@ public class MultipleHealthCheckTest {
     private final int FAILED_RESPONSE_CODE = 503;
     private final int NOT_FOUND_RESPONSE_CODE = 404;
 
-    @Server("MultipleHealthCheck")
+    final static String SERVER_NAME = "MultipleHealthCheck";
+
+    @ClassRule
+    public static RepeatTests r = RepeatTests.withoutModification()
+                    .andWith(new FeatureReplacementAction()
+                                    .withID("mpHealth-3.0")
+                                    .addFeature("mpHealth-3.0")
+                                    .removeFeature("mpHealth-2.0")
+                                    .forServers(SERVER_NAME));
+
+    @Server(SERVER_NAME)
     public static LibertyServer server1;
 
     @BeforeClass
@@ -60,7 +73,7 @@ public class MultipleHealthCheckTest {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server1.stopServer("CWWKE1102W", "CWWKE1105W", "CWMH0052W", "CWMH0053W", "SRVE0190E");
+        server1.stopServer("CWWKE1102W", "CWWKE1105W", "CWMH0052W", "CWMH0053W", "CWMMH0052W", "CWMMH0053W", "SRVE0190E");
     }
 
     @Test

@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
     <classpathentry kind="src" path="fat/src"/>
+    <classpathentry kind="src" path="test-applications/EJB1XSFRemoteSpecEJB.jar/src"/>
+    <classpathentry kind="src" path="test-applications/EJB1XSLRemoteSpecEJB.jar/src"/>
+    <classpathentry kind="src" path="test-applications/EJB1XRemoteSpecWeb.war/src"/>
     <classpathentry kind="src" path="test-applications/EJB2xInWARBean.war/src"/>
     <classpathentry kind="src" path="test-applications/EJB2XSFLocalSpecEJB.jar/src"/>
     <classpathentry kind="src" path="test-applications/EJB2XSLLocalSpecEJB.jar/src"/>

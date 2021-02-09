@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2018 IBM Corporation and others.
+ * Copyright (c) 2017,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,6 +9,13 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.microprofile.faulttolerance.executor.impl;
+
+import static com.ibm.ws.microprofile.faulttolerance.spi.MetricRecorder.FallbackOccurred.NO_FALLBACK;
+import static com.ibm.ws.microprofile.faulttolerance.spi.MetricRecorder.FallbackOccurred.WITH_FALLBACK;
+import static com.ibm.ws.microprofile.faulttolerance.spi.MetricRecorder.RetriesOccurred.NO_RETRIES;
+import static com.ibm.ws.microprofile.faulttolerance.spi.MetricRecorder.RetriesOccurred.WITH_RETRIES;
+import static com.ibm.ws.microprofile.faulttolerance.spi.RetryResultCategory.MAX_RETRIES_REACHED;
+import static com.ibm.ws.microprofile.faulttolerance.spi.RetryResultCategory.NO_EXCEPTION;
 
 import java.lang.reflect.Method;
 import java.util.concurrent.TimeUnit;
@@ -23,6 +30,7 @@ import com.ibm.ws.microprofile.faulttolerance.spi.Executor;
 import com.ibm.ws.microprofile.faulttolerance.spi.FTExecutionContext;
 import com.ibm.ws.microprofile.faulttolerance.spi.FallbackPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.MetricRecorder;
+import com.ibm.ws.microprofile.faulttolerance.spi.MetricRecorder.FallbackOccurred;
 import com.ibm.ws.microprofile.faulttolerance.utils.FTDebug;
 
 import net.jodah.failsafe.CircuitBreakerOpenException;
@@ -72,6 +80,11 @@ public class ExecutionContextImpl implements FTExecutionContext {
      * The time that the execution task was added to the bulkhead queue
      */
     private volatile long queueStartTime;
+
+    /**
+     * Whether or not a fallback has occurred
+     */
+    private volatile FallbackOccurred fallbackOccurred = NO_FALLBACK;
 
     /**
      * Anything thrown by the user's method - used for getFailure()
@@ -230,13 +243,14 @@ public class ExecutionContextImpl implements FTExecutionContext {
             if (retry != null) {
                 if (retry.canRetryFor(null, t)) {
                     // This is a retryable failure
-                    metricRecorder.incrementRetryCallsFailureCount();
+                    // Note in FT 1.x, we don't record the reason for stopping retrying
+                    // so just assume we reached the max retries
+                    metricRecorder.incrementRetryCalls(MAX_RETRIES_REACHED, WITH_RETRIES);
                 } else {
-                    // Not a retryable failure
                     if (retries > 0) {
-                        metricRecorder.incrementRetryCallsSuccessRetriesCount();
+                        metricRecorder.incrementRetryCalls(NO_EXCEPTION, WITH_RETRIES);
                     } else {
-                        metricRecorder.incrementRetryCallsSuccessImmediateCount();
+                        metricRecorder.incrementRetryCalls(NO_EXCEPTION, NO_RETRIES);
                     }
                 }
             }
@@ -252,9 +266,10 @@ public class ExecutionContextImpl implements FTExecutionContext {
      * Called when all processing (including fallback) has occurred
      */
     public void onFullExecutionComplete(Throwable t) {
-        metricRecorder.incrementInvocationCount();
-        if (t != null) {
-            metricRecorder.incrementInvocationFailedCount();
+        if (t == null) {
+            metricRecorder.incrementInvocationSuccessCount(fallbackOccurred);
+        } else {
+            metricRecorder.incrementInvocationFailedCount(fallbackOccurred);
         }
     }
 
@@ -289,7 +304,7 @@ public class ExecutionContextImpl implements FTExecutionContext {
      * Called just before the fallback method or handler is run
      */
     public void onFallback() {
-        metricRecorder.incrementFallbackCalls();
+        fallbackOccurred = WITH_FALLBACK;
     }
 
     public RetryImpl getRetry() {

@@ -1,0 +1,11 @@
+com.ibm.ws.concurrent.persistent_fat_execdisabled
+com.ibm.ws.concurrent.persistent_fat_failover1serv
+com.ibm.ws.concurrent.persistent_fat_failovertimers
+com.ibm.ws.concurrent.persistent_fat_feature
+com.ibm.ws.concurrent.persistent_fat_initial_polling
+com.ibm.ws.concurrent.persistent_fat_jca
+com.ibm.ws.concurrent.persistent_fat_locking
+com.ibm.ws.concurrent.persistent_fat_mbean
+com.ibm.ws.concurrent.persistent_fat_multiple
+com.ibm.ws.concurrent.persistent_fat_multiserver
+com.ibm.ws.concurrent.persistent_fat_oneexec

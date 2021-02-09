@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014,2015 IBM Corporation and others.
+ * Copyright (c) 2014,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -78,14 +78,15 @@ public class RAAnnotationProcessor {
     /**
      * Sort the resource adapter classes into lists for each type of annotation and a catch all list
      * for classes that don't have the resource adapter annotations.
-     * 
-     * @param adapterName A name the resource adapter can be identified with
-     * @param dd The deployment descriptor is represented by a RaConnector constructed from ra.xml connector entry or null if there is no ra.xml
+     *
+     * @param adapterName   A name the resource adapter can be identified with
+     * @param dd            The deployment descriptor is represented by a RaConnector constructed from ra.xml connector entry or null if there is no ra.xml
      * @param raClassLoader Class loader provided by caller to load the resource adapter classes
-     * @param raClassNames List of all the classes provided with the resource adapter
+     * @param raClassNames  List of all the classes provided with the resource adapter
      * @throws ResourceAdapterInternalException
      */
-    public RAAnnotationProcessor(String adapterName, RaConnector dd, ClassLoader raClassLoader, ModuleAnnotations raAnnotations, List<String> raClassNames) throws ResourceAdapterInternalException {
+    public RAAnnotationProcessor(String adapterName, RaConnector dd, ClassLoader raClassLoader, ModuleAnnotations raAnnotations,
+                                 List<String> raClassNames) throws ResourceAdapterInternalException {
         this.deploymentDescriptor = dd;
         this.adapterName = adapterName;
         this.raClassLoader = raClassLoader;
@@ -156,8 +157,7 @@ public class RAAnnotationProcessor {
 
     private void findAnnotatedClassesUsingTargets(AnnotationTargets_Targets targets,
                                                   Class<? extends Annotation> annoClass,
-                                                  List<Class<?>> classes)
-                    throws ResourceAdapterInternalException {
+                                                  List<Class<?>> classes) throws ResourceAdapterInternalException {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
 
         Set<String> classNames = targets.getAnnotatedClasses(annoClass.getName());
@@ -176,7 +176,7 @@ public class RAAnnotationProcessor {
      * Create a RaConnector xml object and all its associated xml objects
      * that represents the combined ra.xml, wlp-ra.xml, and annotations, if any
      * that are present in the rar file.
-     * 
+     *
      * @return RaConnector that represents the resource adapter instance
      * @throws ResourceAdapterInternalException if any JCA spec violations are detected
      */
@@ -208,13 +208,13 @@ public class RAAnnotationProcessor {
         //   Connector annotation.
         //
         // If the descriptor has a resource adapter descriptor that has the name of the resource adapter class
-        // then 
-        //   If there are one or more @Connector, 
+        // then
+        //   If there are one or more @Connector,
         //     then need to verify the class is annotated by only one of them or none of them
         //   If no classes are annotated with @Connector, then verify the class can be loaded
-        // If there isn't a resource adapter class specified in the descriptor or there isn't a ra.xml, 
+        // If there isn't a resource adapter class specified in the descriptor or there isn't a ra.xml,
         //   then verify there is only one class annotated with @Connector
-        // 
+        //
         // It is not necessary to locate a JavaBean that implements the ResourceAdapter interface.
 
         Class<?> resourceAdapterClass = null;
@@ -284,10 +284,10 @@ public class RAAnnotationProcessor {
     /**
      * Process all the metatype information provided by the rar file to create
      * xml objects that can be processed to create the Liberty metatype.
-     * 
+     *
      * @param connectorClass - the class from <resourceadapter-class> or null if <resourceadapter-class> was not specified
-     * @param rxConnector - can be null if there wasn't an ra.xml in the rar file.
-     *            This rxConnector is the combined ra.xml and wlp-ra.xml, if any.
+     * @param rxConnector    - can be null if there wasn't an ra.xml in the rar file.
+     *                           This rxConnector is the combined ra.xml and wlp-ra.xml, if any.
      * @return RaConnector representing all processed and combined metatype information
      * @throws ResourceAdapterInternalException
      */
@@ -588,10 +588,10 @@ public class RAAnnotationProcessor {
         }
 
         // Check for supported JCA versions
-        if ((!jcaVersion.equals("1.7")) && (!jcaVersion.equals("1.6"))
+        if ((!jcaVersion.equals("2.0")) && (!jcaVersion.equals("1.7")) && (!jcaVersion.equals("1.6"))
             && (!jcaVersion.equals("1.5") && (!jcaVersion.equals("1.0"))))
             throw new ResourceAdapterInternalException(Tr.formatMessage(tc, "J2CA9934.not.a.valid.option",
-                                                                        jcaVersion, "<version>, <spec-version>", "1.7, 1.6, 1.5, 1.0"));
+                                                                        jcaVersion, "<version>, <spec-version>", "2.0, 1.7, 1.6, 1.5, 1.0"));
 
         return jcaVersion;
     }
@@ -599,14 +599,14 @@ public class RAAnnotationProcessor {
     private boolean checkProcessAnnotations(RaConnector rxConnector, String jcaVersion) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
 
-        // JCA 1.6 & 1.7 allows for rar to not have an ra.xml, in which case annotations should be processed
+        // JCA 1.6+ allows for rar to not have an ra.xml, in which case annotations should be processed
         // Earlier JCA versions require an ra.xml, and annotation should not be processed
-        // JCA 1.6 & 1.7 metadata-complete set to true means to not process annotations
+        // JCA 1.6+ metadata-complete set to true means to not process annotations
         boolean processAnno = true;
         if (rxConnector != null) {
             if (trace && tc.isDebugEnabled())
                 Tr.debug(this, tc, "connector jee version", jcaVersion);
-            processAnno = (jcaVersion.equals("1.6") || jcaVersion.equals("1.7")) ? true : false;
+            processAnno = !jcaVersion.equals("1.5") && !jcaVersion.equals("1.0");
             if (trace && tc.isDebugEnabled())
                 Tr.debug(this, tc, "processAnno based on version", processAnno);
             processAnno = processAnno ? (rxConnector.getMetadataComplete() ? false : true) : false;
@@ -622,10 +622,10 @@ public class RAAnnotationProcessor {
      * Combine the fields from @Connector with the matching areas in the ra.xml.
      * At a minimum a RaConnector with a RaResourceAdapter will be returned if none of these
      * fields have been specified.
-     * 
+     *
      * Note that only fields that are being used to create the metatype are processed.
-     * 
-     * @param rxConnector - must be specified and contain a RaResourceAdapter
+     *
+     * @param rxConnector   - must be specified and contain a RaResourceAdapter
      * @param annoConnector - null or a class that is annotated with @Connector
      * @return RaConnector - the merged RaConnector. It may contain an RaOutboundResourceAdapter
      */
@@ -674,8 +674,7 @@ public class RAAnnotationProcessor {
             if (trace && tc.isDebugEnabled())
                 Tr.debug(this, tc, "rar.xml description", rxConnector.getDescription());
             connector.setDescription(rxConnector.getDescription());
-        }
-        else if (useAnno && !annoConnector.getDescription().isEmpty()) {
+        } else if (useAnno && !annoConnector.getDescription().isEmpty()) {
             if (trace && tc.isDebugEnabled())
                 Tr.debug(this, tc, "@Connector description", annoConnector.getDescription());
             connector.setDescription(annoConnector.getDescription());
@@ -685,8 +684,7 @@ public class RAAnnotationProcessor {
             if (trace && tc.isDebugEnabled())
                 Tr.debug(this, tc, "rar.xml display name", rxConnector.getDisplayName());
             connector.setDisplayName(rxConnector.getDisplayName());
-        }
-        else if (useAnno && !annoConnector.getDisplayName().isEmpty()) {
+        } else if (useAnno && !annoConnector.getDisplayName().isEmpty()) {
             if (trace && tc.isDebugEnabled())
                 Tr.debug(this, tc, "@Connector display name", annoConnector.getDisplayName());
             connector.setDisplayName(annoConnector.getDisplayName());
@@ -696,8 +694,7 @@ public class RAAnnotationProcessor {
             if (trace && tc.isDebugEnabled())
                 Tr.debug(this, tc, "rar.xml resource adapter version", rxConnector.getResourceAdapterVersion());
             connector.setResourceAdapterVersion(rxConnector.getResourceAdapterVersion());
-        }
-        else if (useAnno && annoConnector.getResourceAdapterVersion() != null) {
+        } else if (useAnno && annoConnector.getResourceAdapterVersion() != null) {
             if (trace && tc.isDebugEnabled())
                 Tr.debug(this, tc, "@Connector resource adapter version", annoConnector.getResourceAdapterVersion());
             connector.setResourceAdapterVersion(annoConnector.getResourceAdapterVersion());
@@ -709,8 +706,7 @@ public class RAAnnotationProcessor {
             if (trace && tc.isDebugEnabled())
                 Tr.debug(this, tc, "rar.xml resource adapter security permissions", rxRa.getSecurityPermissions());
             connector.getResourceAdapter().setSecurityPermissions(rxRa.getSecurityPermissions());
-        }
-        else if (useAnno && !annoRa.getSecurityPermissions().isEmpty()) {
+        } else if (useAnno && !annoRa.getSecurityPermissions().isEmpty()) {
             if (trace && tc.isDebugEnabled())
                 Tr.debug(this, tc, "@Connector resource adapter security permissions", annoRa.getSecurityPermissions());
             connector.getResourceAdapter().setSecurityPermissions(annoRa.getSecurityPermissions());
@@ -792,18 +788,18 @@ public class RAAnnotationProcessor {
 
     /**
      * Merge admin objects
-     * 
+     *
      * Descriptor parsing creates one admin object class/interface pair
      * for each <admin-object> in the ra.xml/wlp-ra.xml.
-     * 
+     *
      * getAdminObjects creates one admin object class/anno_interface pair
      * for each annotated admin object class and the interfaces listed in the annotation.
-     * 
+     *
      * getAdminObjects creates one admin object class/class interfaces (zero or more) pair
      * for each annotated admin object class that has implemented interfaces listed on the class but
      * no interfaces listed in the @AdministereObject annotation.
-     * 
-     * @param rxAdminObjects admin objects from ra.xml
+     *
+     * @param rxAdminObjects   admin objects from ra.xml
      * @param annoAdminObjects admin objects from annotations
      * @return a list of merged admin objects
      */
@@ -828,7 +824,7 @@ public class RAAnnotationProcessor {
         //     administered object either through the adminObjectInterfaces annotation
         //     element or through the deployment descriptor. It is an error if the resource
         //     adapter provider does not use either of the two schemes to specify the Java types
-        //     of the interfaces supported by the administered object.        
+        //     of the interfaces supported by the administered object.
 
         LinkedList<RaAdminObject> adminObjects = new LinkedList<RaAdminObject>();
 
@@ -913,18 +909,18 @@ public class RAAnnotationProcessor {
 
     /**
      * Merge message listeners
-     * 
+     *
      * Create a RaMessageListener for each <messagelistener-type> in the ra.xml
      * and for each message listener type specified in messageListeners field in any classes annotated
      * with @Activation.
-     * 
+     *
      * A set of RaMessageListeners was created by getAnnotatedMessageListeners from the classes annotated with @Activation
      * There should be one RaMessageListener for each message listener type that was specified in the @Activation.
      * Message listeners specified in the ra.xml override those specified on classes annotated with @Activation.
      * Combine all matching listeners from the @Activation annotations with those in the ra.xml,
      * by combining the properties.
-     * 
-     * @param rxListeners message listeners from ra.xml
+     *
+     * @param rxListeners   message listeners from ra.xml
      * @param annoListeners message listeners from annotations
      * @return a list of merged message listeners
      */
@@ -957,14 +953,15 @@ public class RAAnnotationProcessor {
                     }
 
                     // remove the message listener from the list so we know at the end if
-                    // there are any additional annotated-only listeners that we need to 
+                    // there are any additional annotated-only listeners that we need to
                     // copy into the master
                     copyAnnoListeners.remove(aListener);
 
                     // ra.xml overrides @Activation, but still process the config properties
                     if (trace && tc.isDebugEnabled())
                         Tr.debug(this, tc, "ra.xml already contains a message listener with type '" + rxListener.getMessageListenerType()
-                                           + "'.  Combining the properties from class with @Activation annotation '" + aListener.getActivationSpec().getActivationSpecClass() + "'");
+                                           + "'.  Combining the properties from class with @Activation annotation '" + aListener.getActivationSpec().getActivationSpecClass()
+                                           + "'");
 
                     RaActivationSpec rxActivationSpec = rxListener.getActivationSpec();
                     RaActivationSpec annoActivationSpec = aListener.getActivationSpec();
@@ -1013,8 +1010,8 @@ public class RAAnnotationProcessor {
 
     /**
      * Merge connection definitions
-     * 
-     * @param rxDefinitions connection definitions from ra.xml
+     *
+     * @param rxDefinitions   connection definitions from ra.xml
      * @param annoDefinitions connection definitions from annotations
      * @return a list of the merged connection definitions
      */
@@ -1027,13 +1024,13 @@ public class RAAnnotationProcessor {
             if (trace && tc.isDebugEnabled())
                 Tr.debug(this, tc,
                          "Merging ra.xml connection definition with connection factory interface " +
-                                         rxDef.getConnectionFactoryInterface());
+                                   rxDef.getConnectionFactoryInterface());
             RaConnectionDefinition annoDef = null;
             for (RaConnectionDefinition def : annoDefinitions) {
                 if (trace && tc.isDebugEnabled())
                     Tr.debug(this, tc,
                              "Compare with connection definition annotation " +
-                                             def.getConnectionFactoryInterface());
+                                       def.getConnectionFactoryInterface());
                 if (rxDef.getConnectionFactoryInterface().equals(def.getConnectionFactoryInterface())) {
                     annoDef = def;
                     break;
@@ -1046,11 +1043,11 @@ public class RAAnnotationProcessor {
                 // copy into the master
                 annoDefinitions.remove(annoDef);
 
-                // ra.xml overrides @ConnectionDefinition, but still process the config properties                
+                // ra.xml overrides @ConnectionDefinition, but still process the config properties
                 if (trace && tc.isDebugEnabled())
                     Tr.debug(this, tc,
                              "ra.xml already contains a connection definition with the connection factory interface of '" + rxDef.getConnectionFactoryInterface()
-                                             + "' thus ignoring the @ConnectionDefinition annotation on class '" + annoDef.getManagedConnectionFactoryClass());
+                                       + "' thus ignoring the @ConnectionDefinition annotation on class '" + annoDef.getManagedConnectionFactoryClass());
 
                 RaConnectionDefinition definition = new RaConnectionDefinition();
                 definition.setConnectionFactoryImplClass(rxDef.getConnectionFactoryImplClass());
@@ -1064,7 +1061,8 @@ public class RAAnnotationProcessor {
                 // just add the ra.xml connection definition
                 try {
                     List<RaConfigProperty> properties = mergeConfigProperties(rxDef.getConfigProperties(),
-                                                                              getAnnotatedConfigProperties(raClassLoader.loadClass(rxDef.getManagedConnectionFactoryClass()), false));
+                                                                              getAnnotatedConfigProperties(raClassLoader.loadClass(rxDef.getManagedConnectionFactoryClass()),
+                                                                                                           false));
                     rxDef.getConfigProperties().clear();
                     rxDef.getConfigProperties().addAll(properties);
                 } catch (Exception e) {
@@ -1097,8 +1095,8 @@ public class RAAnnotationProcessor {
 
     /**
      * Merge config properties
-     * 
-     * @param rxConfigProperties config properties from ra.xml
+     *
+     * @param rxConfigProperties   config properties from ra.xml
      * @param annoConfigProperties config properties from annotations
      * @return a list of the merged config properties
      */
@@ -1448,7 +1446,7 @@ public class RAAnnotationProcessor {
     }
 
     /**
-     * @param clazz the class to inspect for {@code @ConfigProperty} annotations
+     * @param clazz           the class to inspect for {@code @ConfigProperty} annotations
      * @param processDefaults true if java bean property default values should be merged for resource adapters
      */
     @SuppressWarnings("unchecked")

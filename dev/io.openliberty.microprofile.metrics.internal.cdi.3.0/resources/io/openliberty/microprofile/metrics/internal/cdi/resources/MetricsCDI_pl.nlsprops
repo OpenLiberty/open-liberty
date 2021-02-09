@@ -1,0 +1,30 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMMC
+#COMPONENTNAMEFOR CWMMC MicroProfile Metrics API 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2009, 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by Metrics CDI Impl -  range is 3000-4999
+#-----------------------------------------------------------------------------------------------------------------------------
+
+#Cannot resolve forwarding gauge.
+cannot.resolve.metric.warning.CWMMC3000W=CWMMC3000W: Warto\u015b\u0107 pomiaru wska\u017anika warto\u015bci {0} nie mo\u017ce zosta\u0107 rozstrzygni\u0119ta.
+cannot.resolve.metric.warning.CWMMC3000W.explanation=Bazowa metoda dla wska\u017anika warto\u015bci nie mo\u017ce zosta\u0107 rozstrzygni\u0119ta. Jest to zwykle spowodowane przez dost\u0119p do pomiaru, gdy aplikacja zosta\u0142a usuni\u0119ta z pami\u0119ci.
+cannot.resolve.metric.warning.CWMMC3000W.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107. Wska\u017anik warto\u015bci zostanie automatycznie wyrejestrowany.

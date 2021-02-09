@@ -27,25 +27,19 @@ public class KeytoolSSLCertificateCreator implements DefaultSSLCertificateCreato
 
     /** {@inheritDoc} */
     @Override
-    public File createDefaultSSLCertificate(String filePath, String password, int validity, String subjectDN, int keySize, String sigAlg,
+    public File createDefaultSSLCertificate(String filePath, String password, String keyStoreType, String keyStoreProvider, int validity, String subjectDN, int keySize,
+                                            String sigAlg,
                                             List<String> extInfo) throws CertificateException {
 
-        String setKeyStoreType = null;
         KeytoolCommand keytoolCmd = null;
 
         validateParameters(filePath, password, validity, subjectDN, keySize, sigAlg);
 
         String keyType = getKeyFromSigAlg(sigAlg);
 
-        if (filePath.lastIndexOf(".") != -1) {
-            setKeyStoreType = filePath.substring(filePath.lastIndexOf(".") + 1, filePath.length());
-        }
+        keyStoreType = (keyStoreType == null) ? DEFAULT_KEYSTORE_TYPE : keyStoreType;
 
-        if (!setKeyStoreType.equals("p12") && (!setKeyStoreType.equals(DEFAULT_KEYSTORE_TYPE))) {
-            keytoolCmd = new KeytoolCommand(filePath, password, validity, subjectDN, keySize, keyType, sigAlg, setKeyStoreType, extInfo);
-        } else {
-            keytoolCmd = new KeytoolCommand(filePath, password, validity, subjectDN, keySize, keyType, sigAlg, DEFAULT_KEYSTORE_TYPE, extInfo);
-        }
+        keytoolCmd = new KeytoolCommand(filePath, password, validity, subjectDN, keySize, keyType, sigAlg, keyStoreType, extInfo);
 
         keytoolCmd.executeCommand();
         File f = new File(filePath);
@@ -151,5 +145,10 @@ public class KeytoolSSLCertificateCreator implements DefaultSSLCertificateCreato
         /*
          * Will not be updating self-signed certificates at this time.
          */
+    }
+
+    @Override
+    public String getType() {
+        return TYPE_SELF_SIGNED;
     }
 }

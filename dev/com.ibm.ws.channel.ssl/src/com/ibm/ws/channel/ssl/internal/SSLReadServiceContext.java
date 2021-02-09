@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2008 IBM Corporation and others.
+ * Copyright (c) 2003, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1387,6 +1387,8 @@ public class SSLReadServiceContext extends SSLBaseServiceContext implements TCPR
         private WsByteBuffer decryptedNetBuffer;
         /** Buffer used in handshake wrap calls */
         private WsByteBuffer encryptedAppBuffer;
+        /** allow other code to tell this class if they changed netBuffer */
+        private WsByteBuffer updatedNetBuffer = null;
 
         /**
          * Internal callback used for handshake exchanges.
@@ -1408,6 +1410,17 @@ public class SSLReadServiceContext extends SSLBaseServiceContext implements TCPR
             this.hsNetBuffer = _netBuffer;
             this.decryptedNetBuffer = _decryptedNetBuffer;
             this.encryptedAppBuffer = _encryptedAppBuffer;
+        }
+
+        @Override
+        public void updateNetBuffer(WsByteBuffer newBuffer) {
+            netBuffer = newBuffer;
+            updatedNetBuffer = newBuffer;
+        }
+
+        @Override
+        public WsByteBuffer getUpdatedNetBuffer() {
+            return updatedNetBuffer;
         }
 
         /*
@@ -1515,7 +1528,15 @@ public class SSLReadServiceContext extends SSLBaseServiceContext implements TCPR
                                                  null,
                                                  handshakeCallback,
                                                  false);
+
+            if ((handshakeCallback != null) && (handshakeCallback.getUpdatedNetBuffer() != null)) {
+                localNetBuffer = handshakeCallback.getUpdatedNetBuffer();
+            }
+
         } catch (IOException e) {
+            if ((handshakeCallback != null) && (handshakeCallback.getUpdatedNetBuffer() != null)) {
+                localNetBuffer = handshakeCallback.getUpdatedNetBuffer();
+            }
             // Release buffers used in the handshake.
             localNetBuffer.release();
             localNetBuffer = null;

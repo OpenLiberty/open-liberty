@@ -1,0 +1,47 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/OptimisticLockExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+5001=Do\u0161lo k pokusu o odstran\u011bn\u00ed objektu [{0}], ten v\u0161ak nem\u00e1 v map\u011b identit \u017e\u00e1dn\u00e9 \u010d\u00edslo verze. {3}Je mo\u017en\u00e9, \u017ee p\u0159ed t\u00edm, ne\u017e do\u0161lo k pokusu o odstran\u011bn\u00ed, nebyl na\u010dten. {3}T\u0159\u00edda> {1} Prim\u00e1rn\u00ed kl\u00ed\u010d> {2}
+
+5003=Objekt [{0}] nelze odstranit, proto\u017ee se od posledn\u00edho na\u010dten\u00ed zm\u011bnil nebo byl odstran\u011bn. {3}T\u0159\u00edda> {1} Prim\u00e1rn\u00ed kl\u00ed\u010d> {2}
+
+5004=Do\u0161lo k pokusu o aktualizaci objektu [{0}], ten v\u0161ak nem\u00e1 v map\u011b identit \u017e\u00e1dn\u00e9 \u010d\u00edslo verze. {3}Je mo\u017en\u00e9, \u017ee p\u0159ed t\u00edm, ne\u017e do\u0161lo k pokusu o aktualizaci, nebyl na\u010dten. {3}T\u0159\u00edda> {1} Prim\u00e1rn\u00ed kl\u00ed\u010d> {2}
+
+5006=Objekt [{0}] nelze aktualizovat, proto\u017ee se od posledn\u00edho na\u010dten\u00ed zm\u011bnil nebo byl odstran\u011bn. {3}T\u0159\u00edda> {1} Prim\u00e1rn\u00ed kl\u00ed\u010d> {2}
+
+5007=Objekt [{0}] mus\u00ed m\u00edt mapov\u00e1n\u00ed neur\u010den\u00e9 jen pro \u010dten\u00ed na pole z\u00e1mku verze.
+
+5008=P\u0159i pou\u017eit\u00ed zamyk\u00e1n\u00ed s \u010dasovou zna\u010dkou je t\u0159eba pole z\u00e1mku verze mapovat na java.sql.Timestamp.
+
+5009=Objekt t\u0159\u00eddy [{1}] s prim\u00e1rn\u00edm kl\u00ed\u010dem [{0}] nelze rozbalit, proto\u017ee byl od posledn\u00edho na\u010dten\u00ed odstran\u011bn.
+
+5010=Objekt [{0}] nelze slou\u010dit, proto\u017ee se od posledn\u00edho na\u010dten\u00ed zm\u011bnil nebo byl odstran\u011bn. {2}T\u0159\u00edda> {1}
+
+5011=Minim\u00e1ln\u011b jeden objekt nelze aktualizovat, proto\u017ee se od posledn\u00edho na\u010dten\u00ed zm\u011bnil nebo byl odstran\u011bn.
+

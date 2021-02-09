@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 IBM Corporation and others.
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,8 +21,7 @@ import com.ibm.ws.javaee.dd.common.SecurityRole;
 /**
  *
  */
-public interface Application
-                extends DeploymentDescriptor, DescriptionGroup, JNDIEnvironmentRefs {
+public interface Application extends DeploymentDescriptor, DescriptionGroup, JNDIEnvironmentRefs {
     static final String DD_NAME = "META-INF/application.xml";
 
     /**
@@ -54,15 +53,20 @@ public interface Application
      * Integer value of "7" for {@link #getVersion}.
      */
     int VERSION_7 = 70;
-    
+
     /**
      * Integer value of "8" for {@link #getVersion}.
      */
     int VERSION_8 = 80;
-    
+
+    /**
+     * Integer value of "9" for {@link #getVersion}.
+     */
+    int VERSION_9 = 90;
+
     /**
      * @return the version
-     */    
+     */
     String getVersion();
 
     /**

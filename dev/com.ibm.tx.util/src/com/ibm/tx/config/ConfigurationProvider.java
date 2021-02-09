@@ -218,11 +218,15 @@ public interface ConfigurationProvider {
 
     public String getRecoveryGroup();
 
+    public boolean isShutdownOnLogFailure();
+
     public String getLeaseCheckStrategy();
 
     public int getLeaseCheckInterval();
 
     public int getLeaseLength();
+
+    public int getLeaseRenewalTime();
 
     /**
      * Sets the applId of the server.
@@ -275,4 +279,32 @@ public interface ConfigurationProvider {
      * @return
      */
     public int getPeerTimeBeforeStale();
+
+    /**
+     * Configures the length of time between retries for HADB transient errors for standard operations where the Tran recovery logs are stored in a database.
+     *
+     * @return
+     */
+    public int getStandardTransientErrorRetryTime();
+
+    /**
+     * Configures the number of retries for HADB transient errors for standard operations where the Tran recovery logs are stored in a database.
+     *
+     * @return
+     */
+    public int getStandardTransientErrorRetryAttempts();
+
+    /**
+     * Configures the length of time between retries for HADB transient errors for lightweight operations where the Tran recovery logs are stored in a database.
+     *
+     * @return
+     */
+    public int getLightweightTransientErrorRetryTime();
+
+    /**
+     * Configures the number of retries for HADB transient errors for lightweight operations where the Tran recovery logs are stored in a database.
+     *
+     * @return
+     */
+    public int getLightweightTransientErrorRetryAttempts();
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -41,9 +41,16 @@ public interface AuthenticationConstants {
     /**
      * This key maps to a boolean property in a Subject's private credentials
      * hashtable. When the property is true, the authentication service will
-     * not put a LTPA cookie in the response and will not use the LTPA SSO cache key to cache the subject.
+     * not put a LTPA cookie in the response.
      */
-    String INTERNAL_DISABLE_LTPA_SSO_CACHE = "com.ibm.ws.authentication.internal.disable.ltpa.sso.cache";
+    String INTERNAL_DISABLE_SSO_LTPA_COOKIE = "com.ibm.ws.authentication.internal.sso.disable.ltpa.cookie";
+
+    /**
+     * This key maps to a boolean property in a Subject's private credentials
+     * hashtable. When the property is true, the authentication service will
+     * not use the SSO LTPA cache key to cache the subject.
+     */
+    String INTERNAL_DISABLE_SSO_LTPA_CACHE = "com.ibm.ws.authentication.internal.sso.disable.ltpa.cache";
 
     /**
      * This key maps to a JWT Web Token object in a Subject's private credentials

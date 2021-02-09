@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2018 IBM Corporation and others.
+ * Copyright (c) 2016, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,13 +25,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.ws.microprofile.config.fat.repeat.RepeatConfigActions;
-import com.ibm.ws.microprofile.config.fat.suite.SharedShrinkWrapApps;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -42,8 +41,9 @@ public class CDIBrokenInjectionTest extends FATServletClient {
 
     public static final String APP_NAME = "brokenCDIConfig";
 
+    // Don't repeat against mpConfig > 1.4 since the error messages changed. New similar tests are in io.openliberty.microprofile.config.2.0.internal_fat bucket
     @ClassRule
-    public static RepeatTests r = RepeatConfigActions.repeatConfig11("brokenCDIConfigServer");
+    public static RepeatTests r = MicroProfileActions.repeat("brokenCDIConfigServer", MicroProfileActions.MP12, MicroProfileActions.MP33);
 
     @Server("brokenCDIConfigServer")
     public static LibertyServer server;
@@ -53,7 +53,9 @@ public class CDIBrokenInjectionTest extends FATServletClient {
         WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                                    .addPackages(true, "com.ibm.ws.microprofile.appConfig.cdi.broken")
                                    .addAsManifestResource(new File("test-applications/" + APP_NAME + ".war/resources/META-INF/permissions.xml"), "permissions.xml")
-                                   .addAsLibrary(SharedShrinkWrapApps.cdiConfigJar());
+                                   .addAsManifestResource(new File("test-applications/" + APP_NAME
+                                                                   + ".war/resources/META-INF/services/org.eclipse.microprofile.config.spi.Converter"),
+                                                          "services/org.eclipse.microprofile.config.spi.Converter");
 
         ShrinkHelper.exportDropinAppToServer(server, war);
 
@@ -100,14 +102,21 @@ public class CDIBrokenInjectionTest extends FATServletClient {
 
     @Test
     public void testNonExistantKey() throws Exception {
-        List<String> errors = server.findStringsInLogs("CWMCG5003E.*PIZZA_MISSING_PROP.*CWMCG0014E: A Converter could not be found for type com.ibm.ws.microprofile.appConfig.cdi.test.Pizza");
+        List<String> errors = server.findStringsInLogs("CWMCG5003E.*nonExistantKey.*CWMCG0015E: The property com.ibm.ws.microprofile.appConfig.cdi.broken.beans.MissingConfigPropertyBean.nonExistantKey was not found in the configuration.");
         assertNotNull(errors);
         assertTrue(errors.size() > 0);
     }
 
     @Test
-    public void testDogConverterMissing() throws Exception {
-        List<String> errors = server.findStringsInLogs("CWMCG5003E.*DOG_KEY.*CWMCG0014E: A Converter could not be found for type com.ibm.ws.microprofile.appConfig.cdi.test.Dog");
+    public void testNonExistantKeyWithCustomConverter() throws Exception {
+        List<String> errors = server.findStringsInLogs("CWMCG5003E.*undefinedKeyWithConverter.*CWMCG0015E: The property com.ibm.ws.microprofile.appConfig.cdi.broken.beans.MissingConfigPropertyBean.undefinedKeyWithConverter was not found in the configuration.");
+        assertNotNull(errors);
+        assertTrue(errors.size() > 0);
+    }
+
+    @Test
+    public void testConverterMissing() throws Exception {
+        List<String> errors = server.findStringsInLogs("CWMCG5003E.*noConverterProp.*CWMCG0014E: A Converter could not be found for type com.ibm.ws.microprofile.appConfig.cdi.broken.test.TypeWithNoConverter.");
         assertNotNull(errors);
         assertTrue(errors.size() > 0);
     }

@@ -178,9 +178,8 @@ public class OAuthClientUtil {
     public Map<String, Object> getUserApi(String userApi, @Sensitive String accessToken, SSLSocketFactory sslSocketFactory,
             boolean isHostnameVerification, boolean needsSpecialHeader, boolean useJvmProps) throws Exception {
         List<NameValuePair> params = new ArrayList<NameValuePair>();
-        boolean isLinkedIn = userApi != null && userApi.contains("https://api.linkedin.com");
-        if (accessToken != null && !isLinkedIn) { //linkedin v2 api won't tolerate this param.
-            params.add(new BasicNameValuePair("access_token", accessToken));
+        if (accessToken != null && isAccessTokenQueryParameterAccepted(userApi)) {
+           params.add(new BasicNameValuePair("access_token", accessToken));
         }
 
         Map<String, Object> getResponseMap = getFromUserApiEndpoint(userApi, params, accessToken, sslSocketFactory, isHostnameVerification, needsSpecialHeader, useJvmProps);
@@ -189,6 +188,18 @@ public class OAuthClientUtil {
         // httpUtil.extractTokensFromResponse(getResponseMap);
 
         // return userApiResponse;
+    }
+
+    public boolean isAccessTokenQueryParameterAccepted(String userApi) {
+        if(userApi != null) {
+            if(userApi.contains("https://api.linkedin.com")) {
+              return false; 
+            }
+            if(userApi.contains("https://api.github.com")) {
+              return false;
+            }
+        }
+        return true;
     }
 
     public String getUserApiResponse(String userApi, @Sensitive String accessToken, SSLSocketFactory sslSocketFactory, boolean isHostnameVerification, boolean needsSpecialHeader, boolean useJvmProps) throws Exception {

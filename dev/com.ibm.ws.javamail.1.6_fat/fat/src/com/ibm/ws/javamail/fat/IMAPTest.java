@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -169,6 +169,7 @@ public class IMAPTest {
         // which is then used to create the actual GreenMail server.
         int imapPort = Integer.getInteger("imap_port"); // As per server.xml
         // Need to add -D to the start of the property name
+        System.out.println("Starting IMAP server on port "+imapPort);
         ServerSetup imapSetup = new ServerSetup(imapPort, "localhost", "imap");
         imapServer = new GreenMail(imapSetup);
         // Start the imapServer, the GreenMail server is now listening for connections
@@ -191,8 +192,7 @@ public class IMAPTest {
             message.setSubject("Sent from Liberty JavaMail");
             message.setText("Test mail sent by GreenMail");
         } catch (MessagingException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            e.printStackTrace(System.out);
         }
 
         // Now that the MimeMessage is created the user delivers it to imapServer

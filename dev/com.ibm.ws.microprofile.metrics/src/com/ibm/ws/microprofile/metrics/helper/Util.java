@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018, 2019 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -65,16 +65,17 @@ public class Util {
         return metricMetadataMap;
     }
 
-    public static Map<String, Metadata> getMetricsMetadataAsMap(String registryName, String metric) throws NoSuchRegistryException, EmptyRegistryException, NoSuchMetricException {
+    public static Map<String, Metadata> getMetricsMetadataAsMap(String registryName,
+                                                                String metricName) throws NoSuchRegistryException, EmptyRegistryException, NoSuchMetricException {
         MetricRegistry registry = getRegistry(registryName);
         Map<String, Metadata> metricMetadataMap = registry.getMetadata();
         Map<String, Metadata> returnMap = new HashMap<String, Metadata>();
         if (metricMetadataMap.isEmpty()) {
             throw new EmptyRegistryException();
-        } else if (!(metricMetadataMap.containsKey(metric))) {
+        } else if (!(metricMetadataMap.containsKey(metricName))) {
             throw new NoSuchMetricException();
         } else {
-            returnMap.put(metric, metricMetadataMap.get(metric));
+            returnMap.put(metricName, metricMetadataMap.get(metricName));
         }
         return returnMap;
     }

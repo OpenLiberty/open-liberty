@@ -1,0 +1,10 @@
+com.ibm.ws.jta_fat
+com.ibm.ws.transaction.HADB_fat
+com.ibm.ws.transaction.cloud_fat.1
+com.ibm.ws.transaction.cloud_fat.6
+com.ibm.ws.transaction.cloud_fat.dualDB
+com.ibm.ws.transaction.cloud_fat.dualFS
+com.ibm.ws.transaction.cloud_fat.mssqlserver
+com.ibm.ws.transaction.cloud_fat.postgresql
+com.ibm.ws.transaction.cloud_fat.simpleDB
+com.ibm.ws.transaction.cloud_fat.simpleFS

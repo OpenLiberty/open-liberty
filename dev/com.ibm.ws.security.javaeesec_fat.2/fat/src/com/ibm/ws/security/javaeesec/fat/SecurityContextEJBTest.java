@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,7 +29,6 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.javaeesec.fat_helper.JavaEESecTestBase;
 import com.ibm.ws.security.javaeesec.fat_helper.WCApplicationHelper;
 
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -39,7 +38,6 @@ import componenttest.topology.impl.LibertyServerFactory;
 /**
  *
  */
-@MinimumJavaLevel(javaLevel = 8, runSyntheticTest = false)
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class SecurityContextEJBTest extends JavaEESecTestBase {
@@ -51,7 +49,7 @@ public class SecurityContextEJBTest extends JavaEESecTestBase {
     protected static String EJB_SERVLET_NAME = "SecurityContextEJBBaseServlet";
     protected static String EJB_WAR_NAME = "securityContextEJBInWar.war";
     protected static String EJB_EAR_NAME = "securitycontextejbinwar.ear";
-    protected static String EJB_APP_NAME = "securitycontextejbinwar.ear";
+    protected static String EJB_APP_NAME = "securitycontextejbinwar";
 
     protected DefaultHttpClient httpclient;
 
@@ -105,8 +103,8 @@ public class SecurityContextEJBTest extends JavaEESecTestBase {
     protected static void startServer(String config, String appName) throws Exception {
         if (config != null)
             myServer.setServerConfigurationFile(config);
-        myServer.startServer(true);
         myServer.addInstalledAppForValidation(appName);
+        myServer.startServer(true);
         urlBase = "http://" + myServer.getHostname() + ":" + myServer.getHttpDefaultPort();
     }
 

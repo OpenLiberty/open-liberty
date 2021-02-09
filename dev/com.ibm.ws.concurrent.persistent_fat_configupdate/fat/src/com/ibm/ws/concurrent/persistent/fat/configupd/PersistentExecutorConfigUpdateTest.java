@@ -273,12 +273,11 @@ public class PersistentExecutorConfigUpdateTest {
      */
     @Test
     public void testMPContextPropagationDisabled() throws Exception {
+        String taskId;
         try {
             // Enable MicroProfile Context Propagation
             ServerConfiguration config = originalConfig.clone();
             config.getFeatureManager().getFeatures().add("mpContextPropagation-1.0");
-            config.getFeatureManager().getFeatures().add("servlet-4.0"); // EE 8 or higher is required for the above
-            config.getFeatureManager().getFeatures().remove("servlet-3.1");
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(config);
             server.waitForConfigUpdateInLogUsingMark(appNames);
@@ -289,24 +288,18 @@ public class PersistentExecutorConfigUpdateTest {
             int start = output.indexOf(TASK_ID_SEARCH_TEXT);
             if (start < 0)
                 throw new Exception("Task id of scheduled task not found in servlet output: " + output);
-            String taskId = output.substring(start += TASK_ID_SEARCH_TEXT.length(), output.indexOf(".", start));
-
-            // Disable MicroProfile Context Propagation
-            config.getFeatureManager().getFeatures().remove("mpContextPropagation-1.0");
-            server.setMarkToEndOfLog();
-            server.updateServerConfiguration(config);
-            server.waitForConfigUpdateInLogUsingMark(appNames);
-
-            // Verify that the task still executes
-            runInServlet("test=testTaskIsRunning&jndiName=concurrent/MyExecutor&taskId=" + taskId + "&invokedBy=testMPContextPropagationDisabled");
-
-            runInServlet("test=testRemoveTask&jndiName=concurrent/MyExecutor&taskId=" + taskId + "&invokedBy=testMPContextPropagationDisabled");
+            taskId = output.substring(start += TASK_ID_SEARCH_TEXT.length(), output.indexOf(".", start));
         } finally {
-            // restore original configuration
+            // Disable MicroProfile Context Propagation by restoring original configuration
             server.setMarkToEndOfLog();
             server.updateServerConfiguration(originalConfig);
             server.waitForConfigUpdateInLogUsingMark(appNames);
         }
+
+        // Verify that the task still executes
+        runInServlet("test=testTaskIsRunning&jndiName=concurrent/MyExecutor&taskId=" + taskId + "&invokedBy=testMPContextPropagationDisabled");
+
+        runInServlet("test=testRemoveTask&jndiName=concurrent/MyExecutor&taskId=" + taskId + "&invokedBy=testMPContextPropagationDisabled");
     }
 
     /**

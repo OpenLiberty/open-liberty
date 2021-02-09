@@ -87,3 +87,15 @@ JNDI_NON_JEE_THREAD_CWNBV0006E.explanation=Opera\u0163iile JNDI pe un nume java:
 JNDI_NON_JEE_THREAD_CWNBV0006E.useraction=Modifica\u0163i aplica\u0163ia, astfel \u00eenc\u00e2t opera\u0163ia JNDI s\u0103 aib\u0103 loc pe un fir de execu\u0163ie asociat cu o component\u0103 de aplica\u0163ie Java EE.
 
 # -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the method with the invalid ValidateOnExecution annotation
+# -----------------------------------------------------------------------
+BVKEY_VALIDATE_ON_EXECUTION_NOT_ALLOWED_CWNBV0007E=CWNBV0007E: @ValidateOnExecution nu este permis pe metode care s\u0103 \u00eenlocuiasc\u0103 o metod\u0103 superclas\u0103 sau s\u0103 implementeze o interfa\u0163\u0103. Verifica\u0163i configura\u0163ia pentru {0}
+BVKEY_VALIDATE_ON_EXECUTION_NOT_ALLOWED_CWNBV0007E.explanation= @ValidateOnExecution nu este permis pe metode care s\u0103 \u00eenlocuiasc\u0103 o metod\u0103 superclas\u0103 sau s\u0103 implementeze o interfa\u0163\u0103. O metod\u0103 care \u00eenlocuie\u015fte o metod\u0103 superclas\u0103 sau implementeaz\u0103 o metod\u0103 de interfa\u0163\u0103 mo\u015ftene\u015fte comportamentul metodei pe care o \u00eenlocuie\u015fte sau o implementeaz\u0103.
+BVKEY_VALIDATE_ON_EXECUTION_NOT_ALLOWED_CWNBV0007E.useraction= \u00cenl\u0103tura\u0163i @ValidateOnExecution din metoda specificat\u0103.
+
+# -----------------------------------------------------------------------
+BVKEY_MIXING_IMPLICIT_TYPE_NOT_ALLOWED_CWNBV0008E=CWNBV0008E: Amestecarea tipului IMPLICIT cu alte tipuri executabile nu este permis\u0103. Verifica\u0163i tipurile executabile setate pentru: \n {0}
+BVKEY_MIXING_IMPLICIT_TYPE_NOT_ALLOWED_CWNBV0008E.explanation=Conform specifica\u0163iei de validare bean, amestecarea tipului IMPLICIT cu alte tipuri executabile nu este permis\u0103 pentru adnotarea @ValidateOnExecution.
+BVKEY_MIXING_IMPLICIT_TYPE_NOT_ALLOWED_CWNBV0008E.useraction=Actualiza\u0163i metoda, clasa sau set\u0103rile XML globale pentru tipurile executabile pentru a preveni amestecarea tipului IMPLICIT cu alte tipuri executabile.
+# -----------------------------------------------------------------------

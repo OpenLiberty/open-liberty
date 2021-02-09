@@ -48,6 +48,7 @@ import org.apache.cxf.staxutils.DepthXMLStreamReader;
 import org.apache.cxf.staxutils.StaxUtils;
 import org.apache.ws.commons.schema.XmlSchemaElement;
 
+import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.ras.annotation.Trivial;
 
 public class DocLiteralInInterceptor extends AbstractInDatabindingInterceptor {
@@ -62,8 +63,7 @@ public class DocLiteralInInterceptor extends AbstractInDatabindingInterceptor {
         addAfter(URIMappingInterceptor.class.getName());
     }
 
-    @Trivial
-    public void handleMessage(Message message) {
+    public void handleMessage(@Sensitive Message message) {
         LOG.entering("DocLiteralInInterceptor", "handleMessage");
         if (isGET(message) && message.getContent(List.class) != null) {
             LOG.fine("DocLiteralInInterceptor skipped in HTTP GET method");
@@ -235,6 +235,7 @@ public class DocLiteralInInterceptor extends AbstractInDatabindingInterceptor {
         LOG.exiting("DocLiteralInInterceptor", "handleMessage");
     }
 
+    @Trivial
     private MessageContentsList checkValidSoap(MessageContentsList parameters, MessagePartInfo p, Object o) {
         String temp = System.getProperty(IGNORE_PARAMETER);
         boolean ignoreValidSoap = Boolean.parseBoolean(temp);
@@ -246,6 +247,7 @@ public class DocLiteralInInterceptor extends AbstractInDatabindingInterceptor {
         return parameters;
     }
 
+    @Trivial
     private void validatePart(MessagePartInfo p, QName elName, Message m) {
         if (p == null) {
             String temp = System.getProperty(IGNORE_PARAMETER);
@@ -293,6 +295,7 @@ public class DocLiteralInInterceptor extends AbstractInDatabindingInterceptor {
         }
     }
     
+    @Trivial
     private void getPara(DepthXMLStreamReader xmlReader,
                          DataReader<XMLStreamReader> dr,
                          MessageContentsList parameters,
@@ -334,13 +337,14 @@ public class DocLiteralInInterceptor extends AbstractInDatabindingInterceptor {
     }
 
 
+    @Trivial
     private MessageInfo setMessage(Message message, BindingOperationInfo operation,
                                    boolean requestor, ServiceInfo si) {
         MessageInfo msgInfo = getMessageInfo(message, operation, requestor);
         return setMessage(message, operation, requestor, si, msgInfo);
     }
 
-    
+    @Trivial
     protected BindingOperationInfo getBindingOperationInfo(Exchange exchange, QName name,
                                                            boolean client) {
         BindingOperationInfo bop = ServiceModelUtil.getOperationForWrapperElement(exchange, name, client);
@@ -355,6 +359,7 @@ public class DocLiteralInInterceptor extends AbstractInDatabindingInterceptor {
         return bop;
     }
     
+    @Trivial
     protected boolean shouldWrapParameters(MessageInfo msgInfo, Message message) {
         Object keepParametersWrapperFlag = message.get(KEEP_PARAMETERS_WRAPPER);
         if (keepParametersWrapperFlag == null) {

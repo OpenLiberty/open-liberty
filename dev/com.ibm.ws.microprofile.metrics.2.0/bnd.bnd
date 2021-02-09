@@ -28,7 +28,7 @@ Private-Package: \
 	com.ibm.ws.microprofile.metrics.exceptions,\
 	com.ibm.ws.microprofile.metrics.helper,\
 	com.ibm.ws.microprofile.metrics.writer,\
-	com.ibm.ws.microprofile.metrics.resources
+	io.openliberty.microprofile.metrics.internal.resources
 
 Export-Package: \
 	com.ibm.ws.microprofile.metrics,\
@@ -41,6 +41,7 @@ Export-Package: \
 -dsannotations-inherit: true
 -dsannotations: \
 	com.ibm.ws.microprofile.metrics.MetricsConfig,\
+	com.ibm.ws.microprofile.metrics.BaseMetrics,\
 	com.ibm.ws.microprofile.metrics.impl.SharedMetricRegistries,\
 	com.ibm.ws.microprofile.metrics.helper.WriterFactoryImpl20,\
 	com.ibm.ws.microprofile.metrics.config.MetricAppNameConfigSource,\

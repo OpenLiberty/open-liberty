@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,6 +28,8 @@ import javax.servlet.annotation.WebServlet;
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/asyncevents")
@@ -47,6 +49,7 @@ public class AsyncEventsServlet extends FATServlet {
      * @throws Exception
      */
     @Test
+    @Mode(TestMode.FULL)
     public void testSyncObserver() throws Exception {
 
         long myTid = Thread.currentThread().getId();
@@ -75,6 +78,7 @@ public class AsyncEventsServlet extends FATServlet {
      * @throws Exception
      */
     @Test
+    @Mode(TestMode.FULL)
     public void testAsyncObserver() throws Exception {
         long myTid = Thread.currentThread().getId();
         CakeArrival newCake = new CakeArrival();
@@ -106,6 +110,7 @@ public class AsyncEventsServlet extends FATServlet {
      * @throws Exception
      */
     @Test
+    @Mode(TestMode.FULL)
     public void testGetTimerExecutor() throws Exception {
         CakeArrival newCake = new CakeArrival();
         cakeEvent.fireAsync(newCake, NotificationOptions.of("weld.async.notification.timeout", 1000));

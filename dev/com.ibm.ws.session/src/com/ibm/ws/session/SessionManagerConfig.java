@@ -1061,6 +1061,7 @@ public class SessionManagerConfig implements Cloneable {
             msg.append("sessionCookiePath=").append(this.getSessionCookiePath()).append("\n");
             msg.append("sessionCookieSecure=").append(this.getSessionCookieSecure()).append("\n");
             msg.append("sessionCookieSameSite=").append(this.getSessionCookieSameSite().getSameSiteCookieValue()).append("\n");
+            msg.append("sessionCookieHttpOnly=").append(this.getSessionCookieHttpOnly()).append("\n");
             msg.append("inMemorySize=").append(inMemorySize).append("\n");
             msg.append("enableOverflow=").append(enableOverflow).append("\n");
             msg.append("sessionInvalidationTime=").append(sessionInvalidationTime).append("\n");

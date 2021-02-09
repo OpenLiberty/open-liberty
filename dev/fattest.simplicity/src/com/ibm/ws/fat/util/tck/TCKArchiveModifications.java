@@ -27,6 +27,13 @@ public enum TCKArchiveModifications implements ArchiveModification {
             extensionBuilder.service(ApplicationArchiveProcessor.class, HamcrestArchiveProcessor.class);
         }
     },
+    JETTY {
+        @Override
+        public void applyModification(ExtensionBuilder extensionBuilder) {
+            LOG.log(Level.INFO, "WLP: Adding Extension com.ibm.ws.fat.util.tck.JettyArchivesProcessor");
+            extensionBuilder.service(ApplicationArchiveProcessor.class, JettyArchivesProcessor.class);
+        }
+    },
     ORG_JSON {
         @Override
         public void applyModification(ExtensionBuilder extensionBuilder) {

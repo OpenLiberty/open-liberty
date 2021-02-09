@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,6 +25,8 @@ import com.ibm.ws.springboot.support.fat.utility.SpringBootUtilityThinTest;
                 CommonWebFluxTests20.class,
                 CommonWebFluxTests20Servlet40.class,
                 CommonWebServerTests21.class,
+                CommonWebServerTests22.class,
+                CommonWebServerTests23.class,
                 WebFluxWrongSpringBootVersionTests.class,
                 UnsupportedConfigWarningTest15.class,
                 UnsupportedConfigWarningTest20.class,
@@ -71,7 +73,8 @@ import com.ibm.ws.springboot.support.fat.utility.SpringBootUtilityThinTest;
                 JavaeeFeatureTests20.class,
                 TemplateTests.class,
                 NonZipExtensionFilesInBootInfLibTests20.class,
-                MultiModuleProjectTests20.class
+                MultiModuleProjectTests20.class,
+                ApplicationStartedEventTests.class
 })
 
 public class FATSuite {

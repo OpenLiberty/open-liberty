@@ -53,6 +53,9 @@ instrument.taskInjection: false
 -releaserepo: Release
 -baselinerepo: Release
 -buildrepo: Local
+
+jakartaeeMe: false
+
 # Don't upload sources or javadoc unless bundle overrides
 -maven-release: ${if;${driver;gradle};remote;local}, sources;path=NONE, javadoc;path=NONE
 -maven-dependencies:

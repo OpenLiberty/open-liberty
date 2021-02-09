@@ -34,6 +34,7 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import junit.framework.Assert;
 
@@ -88,7 +89,6 @@ public class JSFCompELTests {
     }
 
     protected void verifyXmlResponse(String contextRoot, String resource, String expectedResponse) throws Exception {
-        //return server.verifyResponse(createWebBrowserForTestCase(), resource, expectedResponse);
         try (WebClient webClient = new WebClient()) {
 
             URL url = JSFUtils.createHttpUrl(jsfTestServer2, contextRoot, resource);
@@ -105,7 +105,6 @@ public class JSFCompELTests {
     }
 
     protected void verifyResponse(String contextRoot, String resource, String... expectedResponseStrings) throws Exception {
-        //return server.verifyResponse(createWebBrowserForTestCase(), resource, expectedResponseStrings);
         try (WebClient webClient = new WebClient()) {
 
             URL url = JSFUtils.createHttpUrl(jsfTestServer2, contextRoot, resource);
@@ -127,7 +126,6 @@ public class JSFCompELTests {
     ///Jira http://java.net/jira/browse/JAVASERVERFACES_SPEC_PUBLIC-1043
     @Test
     public void testELResolverOrderAndComponentSystemEvent() throws Exception {
-        // Use the SharedServer to verify a response.
         String[] expectedInResponse = {
                                         "The order and number of ELResolvers from the CompositeELResolver are correct!",
                                         "Invoked JSF 2.2 new methods in ComponentSystemEvent, isAppropriateListener() and processListener()"
@@ -159,7 +157,8 @@ public class JSFCompELTests {
             }
 
             //Test case on the server, which is ELExceptionBean intentionally throws exception for valueChangeListener. Hence check if it's in the log
-            String msgToSearchFor = "javax.servlet.ServletException: javax.el.ELException: java.lang.NullPointerException";
+            String msgToSearchFor = (JakartaEE9Action.isActive() ? "jakarta." : "javax.") + "servlet.ServletException: " + (JakartaEE9Action.isActive() ? "jakarta." : "javax.")
+                                    + "el.ELException: java.lang.NullPointerException";
             List<String> msgs = jsfTestServer2.findStringsInLogs(msgToSearchFor);
 
             //There should be a match so fail if there is not.
@@ -232,7 +231,7 @@ public class JSFCompELTests {
                                         "64",
                                         "12",
         };
-        // Use the SharedServer to verify a response.
+
         this.verifyResponse(contextRoot, "EL30Lambda.xhtml", expectedInResponse);
     }
 

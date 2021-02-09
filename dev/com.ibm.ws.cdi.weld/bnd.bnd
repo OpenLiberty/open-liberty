@@ -94,6 +94,8 @@ Import-Package: !org.scannotation.archiveiterator, \
  
 WS-TraceGroup: JCDI
 
+jakartaeeMe: true
+
 -buildpath: \
 	com.ibm.websphere.javaee.annotation.1.2;version=latest,\
 	com.ibm.websphere.javaee.jaxws.2.2;version=latest,\

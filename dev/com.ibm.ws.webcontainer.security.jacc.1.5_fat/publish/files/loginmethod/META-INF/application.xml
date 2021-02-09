@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*******************************************************************************
+ * Copyright (c) 2020 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+-->
+<application id="Application_ID" version="6" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/application_6.xsd">
+  <description>loginmethod.ear</description>
+  <display-name>loginmethod.ear</display-name>
+  <module id="WebModule_1">
+    <web>
+      <web-uri>basicauth.war</web-uri>
+      <context-root>/basicauth</context-root>
+    </web>
+  </module>            
+  <module id="WebModule_1a">
+    <web>
+      <web-uri>basicauth-altVhost.war</web-uri>
+      <context-root>/basicauth</context-root>
+    </web>
+  </module>            
+  <module id="WebModule_1b">
+    <web>
+      <web-uri>basicauth-httpOnlyVhost.war</web-uri>
+      <context-root>/basicauth</context-root>
+    </web>
+  </module>            
+  <module id="WebModule_1c">
+    <web>
+      <web-uri>basicauth-httpsOnlyVhost.war</web-uri>
+      <context-root>/basicauth</context-root>
+    </web>
+  </module>            
+  <module id="WebModule_2">
+    <web>
+      <web-uri>formlogin.war</web-uri>
+      <context-root>/formlogin</context-root>
+    </web>
+  </module>
+  <module id="WebModule_2a">
+    <web>
+      <web-uri>formlogin-altVhost.war</web-uri>
+      <context-root>/formlogin</context-root>
+    </web>
+  </module>
+  <module id="WebModule_2b">
+    <web>
+      <web-uri>formlogin-httpOnlyVhost.war</web-uri>
+      <context-root>/formlogin</context-root>
+    </web>
+  </module>
+  <module id="WebModule_2c">
+    <web>
+      <web-uri>formlogin-httpsOnlyVhost.war</web-uri>
+      <context-root>/formlogin</context-root>
+    </web>
+  </module>
+  <module id="WebModule_3">
+    <web>
+      <web-uri>loginConfigNone.war</web-uri>
+      <context-root>/loginConfigNone</context-root>
+    </web>
+  </module>
+  <module id="WebModule_4">
+    <web>
+      <web-uri>loginConfigInvalid.war</web-uri>
+      <context-root>/loginConfigInvalid</context-root>
+    </web>
+  </module>
+  <module id="WebModule_5">
+    <web>
+      <web-uri>loginConfigNoRealmName.war</web-uri>
+      <context-root>/loginConfigNoRealmName</context-root>
+    </web>
+  </module>    
+  <module id="WebModule_6">
+    <web>
+      <web-uri>clientcert.war</web-uri>
+      <context-root>/clientcert</context-root>
+    </web>
+  </module>  
+  <module id="WebModule_7">
+    <web>
+      <web-uri>staticAnnotationPure.war</web-uri>
+      <context-root>/staticAnnotationPure</context-root>
+    </web>
+  </module>  
+  <module id="WebModule_8">
+    <web>
+      <web-uri>staticAnnotationWebXML.war</web-uri>
+      <context-root>/staticAnnotationWebXML</context-root>
+    </web>
+  </module>  
+  <module id="WebModule_9">
+    <web>
+      <web-uri>staticAnnotationMixed.war</web-uri>
+      <context-root>/staticAnnotationMixed</context-root>
+    </web>
+  </module>  
+  <module id="WebModule_10">
+    <web>
+      <web-uri>dynamicAnnotationPure.war</web-uri>
+      <context-root>/dynamicAnnotationPure</context-root>
+    </web>
+  </module>
+  <module id="WebModule_11">
+    <web>
+      <web-uri>dynamicAnnotationConflict.war</web-uri>
+      <context-root>/dynamicAnnotationConflict</context-root>
+    </web>
+  </module>
+  <module id="WebModule_12">
+    <web>
+      <web-uri>inheritance.war</web-uri>
+      <context-root>/inheritance</context-root>
+    </web>
+  </module>  
+  <module id="WebModule_13">
+    <web>
+      <web-uri>metadataCompleteTrueWebXML.war</web-uri>
+      <context-root>/metadataCompleteTrueWebXML</context-root>
+    </web>
+  </module>
+  <module id="WebModule_14">
+    <web>
+      <web-uri>metadataCompleteTrueWebFragment.war</web-uri>
+      <context-root>/metadataCompleteTrueWebFragment</context-root>
+    </web>
+  </module>
+</application>

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,8 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.anno.test.cases;
 
-import java.util.Set;
 import java.util.HashSet;
+import java.util.Set;
 
 import javax.annotation.Resource;
 import javax.persistence.Id;
@@ -22,7 +22,7 @@ import org.junit.Test;
 import org.junit.rules.TestRule;
 
 import com.ibm.ws.anno.classsource.internal.ClassSourceImpl_Factory;
-import com.ibm.ws.anno.service.internal.AnnotationServiceImpl_Service;
+import com.ibm.ws.anno.targets.internal.AnnotationTargetsImpl_Factory;
 import com.ibm.ws.anno.targets.internal.AnnotationTargetsImpl_Targets;
 import com.ibm.ws.anno.test.data.BClass;
 import com.ibm.ws.anno.test.data.CIntf;
@@ -31,6 +31,7 @@ import com.ibm.ws.anno.test.data.DerivedNoInherit;
 import com.ibm.ws.anno.test.data.sub.BaseNoInheritAnno;
 import com.ibm.ws.anno.test.data.sub.InheritAnno;
 import com.ibm.ws.anno.test.data.sub.SubBase;
+import com.ibm.ws.anno.util.internal.UtilImpl_Factory;
 import com.ibm.wsspi.anno.classsource.ClassSource_Aggregate;
 import com.ibm.wsspi.anno.classsource.ClassSource_Aggregate.ScanPolicy;
 import com.ibm.wsspi.anno.classsource.ClassSource_Exception;
@@ -43,7 +44,6 @@ import test.common.SharedOutputManager;
 /**
  *
  */
-@SuppressWarnings("deprecation")
 public class AnnotationTargetsTest {
     static AnnotationTargetsImpl_Targets targets;
 
@@ -54,9 +54,9 @@ public class AnnotationTargetsTest {
 
     @BeforeClass
     public static void setup() throws ClassSource_Exception, AnnotationTargets_Exception {
-        AnnotationServiceImpl_Service annoService = new AnnotationServiceImpl_Service();
 
-        ClassSourceImpl_Factory factory = annoService.getClassSourceFactory();
+        UtilImpl_Factory utilFactory = new UtilImpl_Factory();
+        ClassSourceImpl_Factory factory = new ClassSourceImpl_Factory(utilFactory);
 
         ClassSource_Aggregate classSource = factory.createAggregateClassSource("AnnoInfoTest");
 
@@ -67,7 +67,7 @@ public class AnnotationTargetsTest {
 
         //ClassSource test = factory.createContainerClassSource(classSource, "testSource", null);
 
-        AnnotationTargets_Factory annoFactory = annoService.getAnnotationTargetsFactory();
+        AnnotationTargets_Factory annoFactory = new AnnotationTargetsImpl_Factory(utilFactory, factory);
         targets = (AnnotationTargetsImpl_Targets) annoFactory.createTargets();
         targets.scan(classSource, true);
     }

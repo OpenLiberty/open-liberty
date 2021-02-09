@@ -1,0 +1,13 @@
+<server>
+    <featureManager>
+        <feature>jaxrs-2.1</feature>
+        <feature>jaxb-2.2</feature>
+    </featureManager>
+   
+    <include location="../fatTestPorts.xml"/>
+
+  	<javaPermission className="java.lang.RuntimePermission" name="modifyThread"/>
+    <javaPermission className="java.util.PropertyPermission" name="*" actions="read" />
+
+
+</server>

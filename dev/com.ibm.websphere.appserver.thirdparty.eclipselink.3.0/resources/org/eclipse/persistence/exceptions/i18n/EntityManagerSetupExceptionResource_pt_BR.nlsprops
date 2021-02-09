@@ -1,0 +1,93 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/EntityManagerSetupExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+28001=Um ValidationException foi lan\u00e7ado ao tentar criar a sess\u00e3o: [{0}]. As causas mais prov\u00e1veis desse problema s\u00e3o que o arquivo [{1}] n\u00e3o est\u00e1 dispon\u00edvel no caminho de classe ou ele n\u00e3o cont\u00e9m uma sess\u00e3o chamada: [{0}].
+
+28002=O EclipseLink est\u00e1 tentando carregar um ServerSession denominado [{0}] de [{1}] e n\u00e3o est\u00e1 obtendo um ServerSession.
+
+28003=O EclipseLink carregou a Sess\u00e3o [{0}] de [{1}] e n\u00e3o tem uma plataforma de servidor especificada ou especifica uma plataforma de servidor que n\u00e3o usa um controlador de transa\u00e7\u00e3o externa.  Especifique uma plataforma de servidor apropriada se voc\u00ea planeja usar JTA.
+
+28004=Erro na configura\u00e7\u00e3o do factory de EntityManager: JavaSECMPInitializer.initializeFromMain retornou false.
+
+28005=Uma exce\u00e7\u00e3o foi lan\u00e7ada na configura\u00e7\u00e3o do factory de EntityManager.
+
+28006=ClassNotFound: [{0}] especificado na propriedade [{1}].
+
+28007=Falha ao instanciar ServerPlatform do tipo [{0}] especificado na propriedade [{1}].
+
+28008=A classe {0} n\u00e3o foi localizada ao processar anota\u00e7\u00f5es.
+
+28009=Tentativa de reimplementar uma sess\u00e3o denominada {0} sem fech\u00e1-la.
+
+28010=PersistenceUnitInfo {0} tem JTA transactionType, mas n\u00e3o tem um jtaDataSource definido.
+
+28011=A sess\u00e3o, [{0}], constru\u00edda para uma unidade de persist\u00eancia n\u00e3o estava dispon\u00edvel no momento em que foi implementada.  Isso significa que de alguma forma a sess\u00e3o foi removida do cont\u00eainer no meio do processo de implementa\u00e7\u00e3o.
+
+28012=O valor [{0}] \u00e9 do tipo incorreto para a propriedade [{2}]; o tipo de valor deve ser [{1}].
+
+28013=N\u00e3o \u00e9 poss\u00edvel implementar PersistenceUnit [{0}] no estado inv\u00e1lido [{1}].
+
+28014=Uma exce\u00e7\u00e3o foi lan\u00e7ada ao processar a propriedade [{0}] com o valor [{1}].
+
+28015=Falha ao instanciar SessionLog do tipo [{0}] especificado na propriedade [{1}].
+
+28016=A unidade de persist\u00eancia com o nome [{0}] n\u00e3o existe.
+
+28017=N\u00e3o \u00e9 poss\u00edvel pr\u00e9-implementar PersistenceUnit [{0}] no estado inv\u00e1lido [{1}].
+
+28018=A pr\u00e9-implementa\u00e7\u00e3o de PersistenceUnit [{0}] falhou.
+
+28019=A implementa\u00e7\u00e3o de PersistenceUnit [{0}] falhou. Feche todos os factories para este PersistenceUnit.
+
+28020=A sess\u00e3o com o nome [{0}] carregado de [{1}] \u00e9 [{2}], mas deve ser ServerSession.
+
+28021=PersistenceUnit [{0}] tenta carregar uma sess\u00e3o de [{1}] sem fornecer um nome de sess\u00e3o.  Um nome de sess\u00e3o deve ser fornecido definindo a propriedade eclipselink.session-name.
+
+28022=O valor [true] para a propriedade [eclipselink.weaving] est\u00e1 incorreto quando a instrumenta\u00e7\u00e3o global \u00e9 nula; o valor deveria ser nulo, falso ou est\u00e1tico.
+
+28023=A chamada de m\u00e9todo do m\u00e9todo [{0}] no objeto [{1}], de classe [{2}], acionou uma exce\u00e7\u00e3o.
+
+28024=N\u00e3o \u00e9 poss\u00edvel acessar refletivamente o m\u00e9todo [{0}] para o objeto [{1}], da classe [{2}].
+
+28025=A unidade de persist\u00eancia com o nome [{0}] retornou um classLoader tempor\u00e1rio [null] - o entrela\u00e7amento foi desativado para esta sess\u00e3o.  Voc\u00ea pode usar o entrela\u00e7amento est\u00e1tico como solu\u00e7\u00e3o alternativa.
+
+28026=org.eclipse.persistence.jpa.osgi.PersistenceProvider n\u00e3o suporta implementa\u00e7\u00e3o de cont\u00eainer (createContainerEntityManagerFactory).  Use org.eclipse.persistence.jpa.PersistenceProvider em seu lugar.
+
+28027=Foi feita uma tentativa de usar PersistenceUnit [{0}], mas nenhum pacote configur\u00e1vel que defina essa unidade de persist\u00eancia est\u00e1 dispon\u00edvel.
+
+28028=Falha ao instanciar a inst\u00e2ncia de classe [{0}] para a propriedade de unidade de persist\u00eancia [{1}]; certifique-se de que o construtor esteja definido corretamente.
+
+28029=PersistenceUnit [{0}] tenta usar sessions.xml (especifica a propriedade eclipselink.sessions-xml) e ser um composto (especifica a propriedade eclipselink.composite-unit com o valor true). Esses modos s\u00e3o incompat\u00edveis.
+
+28030=PersistenceUnit [{0}] especifica a propriedade eclipselink.composite-unit.member com o valor true. Isso significa que ele n\u00e3o pode ser usado independente, mas somente como membro composto.
+
+28031=Falta a propriedade obrigat\u00f3ria [{0}].
+
+28032=Falha ao criar o carregador de classes provis\u00f3rio com doPrivileged.
+

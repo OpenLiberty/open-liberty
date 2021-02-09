@@ -1,5 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.wsSecuritySaml-1.1
+WLP-DisableAllFeatures-OnConflict: false
 visibility=public
 IBM-ShortName: wsSecuritySaml-1.1
 Subsystem-Name: WSSecurity SAML 1.1

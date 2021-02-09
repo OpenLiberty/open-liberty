@@ -22,6 +22,8 @@ import org.osgi.service.cm.ManagedService;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.config.xml.internal.variables.ConfigVariableRegistry;
+import com.ibm.ws.config.xml.internal.variables.VariableMonitor;
 import com.ibm.wsspi.kernel.filemonitor.FileMonitor;
 import com.ibm.wsspi.kernel.service.utils.OnErrorUtil;
 import com.ibm.wsspi.kernel.service.utils.OnErrorUtil.OnError;
@@ -52,13 +54,19 @@ class ConfigurationMonitor implements ManagedService {
 
     private ServiceRegistration<ManagedService> managedServiceRegistration;
 
+    private boolean isFirstUpdate = true;
+
     /** Configuration file monitor */
     private ConfigFileMonitor fileMonitor;
+    private VariableMonitor variableMonitor;
 
-    public ConfigurationMonitor(BundleContext bc, ServerXMLConfiguration serverXMLConfig, ConfigRefresher configRefresher) {
+    private final ConfigVariableRegistry variableRegistry;
+
+    public ConfigurationMonitor(BundleContext bc, ServerXMLConfiguration serverXMLConfig, ConfigRefresher configRefresher, ConfigVariableRegistry variableRegistry) {
         this.bundleContext = bc;
         this.serverXMLConfig = serverXMLConfig;
         this.configRefresher = configRefresher;
+        this.variableRegistry = variableRegistry;
     }
 
     public void registerService() {
@@ -75,7 +83,7 @@ class ConfigurationMonitor implements ManagedService {
 
     @Override
     public void updated(Dictionary<String, ?> properties) throws ConfigurationException {
-        // The monitor interval can only be null when the element has not been metatype processed. 
+        // The monitor interval can only be null when the element has not been metatype processed.
         // update() should only run with the processed properties
         if ((properties == null) || (properties.get(MONITOR_INTERVAL) == null))
             return;
@@ -116,13 +124,28 @@ class ConfigurationMonitor implements ManagedService {
         }
 
         resetConfigurationMonitoring(monitorConfiguration, monitorInterval, fileMonitorType);
+        isFirstUpdate = false;
     }
 
     synchronized void resetConfigurationMonitoring(boolean monitorConfiguration, Long monitorInterval, String fileMonitorType) {
+
+        if (variableMonitor == null) {
+            if (monitorConfiguration) {
+                variableMonitor = new VariableMonitor(bundleContext, monitorInterval, fileMonitorType, configRefresher, variableRegistry);
+                variableMonitor.register();
+            }
+        } else {
+            if (monitorConfiguration) {
+                variableMonitor.update(monitorInterval, fileMonitorType);
+            } else {
+                variableMonitor.unregister();
+                variableMonitor = null;
+            }
+        }
         if (fileMonitor == null) {
             if (monitorConfiguration) {
                 // check if configuration was changed when monitoring was disabled
-                boolean modified = serverXMLConfig.isModified();
+                boolean modified = isFirstUpdate ? false : serverXMLConfig.isModified();
                 Collection<String> filesToMonitor = serverXMLConfig.getFilesToMonitor();
                 Collection<String> directoriesToMonitor = serverXMLConfig.getDirectoriesToMonitor();
                 fileMonitor = new ConfigFileMonitor(bundleContext, filesToMonitor, directoriesToMonitor, monitorInterval, modified, fileMonitorType, configRefresher);
@@ -136,6 +159,7 @@ class ConfigurationMonitor implements ManagedService {
                 fileMonitor = null;
             }
         }
+
     }
 
     public synchronized void stopConfigurationMonitoring() {

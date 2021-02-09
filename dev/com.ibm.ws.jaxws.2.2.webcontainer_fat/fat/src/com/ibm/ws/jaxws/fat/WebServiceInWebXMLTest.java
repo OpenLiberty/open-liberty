@@ -33,6 +33,7 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 
 public class WebServiceInWebXMLTest extends WebServiceInWebXMLTest_Lite {
+
     private final Class<?> c = WebServiceInWebXMLTest.class;
 
     @Server("WebServiceInWebXMLTestServerWithSharedLib")

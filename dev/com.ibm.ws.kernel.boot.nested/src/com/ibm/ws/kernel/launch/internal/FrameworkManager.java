@@ -187,11 +187,11 @@ public class FrameworkManager {
      * Create and launch the OSGi framework
      *
      * @param config
-     *            BootstrapConfig object encapsulating active initial framework
-     *            properties
+     *                        BootstrapConfig object encapsulating active initial framework
+     *                        properties
      * @param logProvider
-     *            The initialized/active log provider that must be included in
-     *            framework management activities (start/stop/.. ), or null
+     *                        The initialized/active log provider that must be included in
+     *                        framework management activities (start/stop/.. ), or null
      * @param callback
      */
     public void launchFramework(BootstrapConfig config, LogProvider logProvider) {
@@ -259,8 +259,8 @@ public class FrameworkManager {
 
             }
 
-            // Start the framework.
-            Framework fwk = startFramework(config);
+            // Init the framework.
+            Framework fwk = initFramework(config);
 
             if (fwk == null) {
                 Tr.error(tc, "error.unableToLaunch");
@@ -348,13 +348,6 @@ public class FrameworkManager {
                 frameworkShutdownLatch.countDown();
             }
         }
-    }
-
-    /**
-     * @return
-     */
-    private boolean isJava6() {
-        return "1.6".equals(System.getProperty("java.specification.version"));
     }
 
     private void launchClient() {
@@ -472,9 +465,9 @@ public class FrameworkManager {
      * launch the platform/runtime.
      *
      * @param systemBundleCtx
-     *            The framework system bundle context
+     *                            The framework system bundle context
      * @param config
-     *            The active bootstrap config
+     *                            The active bootstrap config
      */
     private void registerLibertyProcessService(BundleContext systemBundleCtx, BootstrapConfig config) {
         List<String> cmds = config.getCmdArgs();
@@ -489,7 +482,7 @@ public class FrameworkManager {
      * Register the instrumentation class as a service in the OSGi registry
      *
      * @param systemBundleCtx
-     *            The framework system bundle context
+     *                            The framework system bundle context
      */
     protected void registerInstrumentationService(BundleContext systemContext) {
         Instrumentation inst = config.getInstrumentation();
@@ -507,7 +500,7 @@ public class FrameworkManager {
      * Register the PauseableComponentController class as a service in the OSGi registry
      *
      * @param systemBundleCtx
-     *            The framework system bundle context
+     *                            The framework system bundle context
      */
     protected void registerPauseableComponentController(BundleContext systemContext) {
         PauseableComponentControllerImpl pauseableComponentController = new PauseableComponentControllerImpl(systemContext);
@@ -548,7 +541,7 @@ public class FrameworkManager {
      * Create and start a new instance of an OSGi framework using the provided
      * properties as framework properties.
      */
-    protected Framework startFramework(BootstrapConfig config) throws BundleException {
+    protected Framework initFramework(BootstrapConfig config) throws BundleException {
         // Set the default startlevel of the framework. We want the framework to
         // start at our bootstrap level (i.e. Framework bundle itself will start, and
         // it will pre-load and re-start any previously known bundles in the
@@ -567,7 +560,7 @@ public class FrameworkManager {
             Framework fwk = fwkFactory.newFramework(config.getFrameworkProperties());
             if (fwk == null)
                 return null;
-            fwk.start();
+            fwk.init();
             return fwk;
         } catch (BundleException ex) {
             throw ex;
@@ -890,11 +883,11 @@ public class FrameworkManager {
      * the elapsed time, in milliseconds, to format
      *
      * @param factor
-     *            If true, the elapsed time will be factored into more detailed
-     *            units: days/hours/minutes/seconds
-     *            The decimal format of the seconds is #.### or #.## or #.# or # or 0
-     *            If false it will be returned as the total of seconds
-     *            The decimal format of the seconds is #.### or #.## or #.# or # or 0
+     *                   If true, the elapsed time will be factored into more detailed
+     *                   units: days/hours/minutes/seconds
+     *                   The decimal format of the seconds is #.### or #.## or #.# or # or 0
+     *                   If false it will be returned as the total of seconds
+     *                   The decimal format of the seconds is #.### or #.## or #.# or # or 0
      *
      * @return A String containing the formatted elapsed time.
      *         Examples when the English language 'en' is the 'Locale':
@@ -1071,9 +1064,9 @@ public class FrameworkManager {
      * server status from them.
      *
      * @param timestamp
-     *            Create a unique dump folder based on the time stamp string.
+     *                            Create a unique dump folder based on the time stamp string.
      * @param javaDumpActions
-     *            The java dumps to create, or null for the default set.
+     *                            The java dumps to create, or null for the default set.
      */
     public void introspectFramework(String timestamp, Set<JavaDumpAction> javaDumpActions) {
         Tr.audit(tc, "info.introspect.request.received");

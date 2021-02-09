@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2016 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.beanvalidation;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
@@ -33,12 +35,11 @@ import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 
 /**
  * Common BeanValidation container integration service functions. <p>
- * 
+ *
  * Primarily, this provides a common mechanism for accessing the
  * platform specific implementations indirectly. <p>
  */
-public abstract class AbstractBeanValidation implements BeanValidation
-{
+public abstract class AbstractBeanValidation implements BeanValidation {
     private static final TraceComponent tc = Tr.register(AbstractBeanValidation.class,
                                                          "BeanValidation",
                                                          BVNLSConstants.BV_RESOURCE_BUNDLE);
@@ -49,13 +50,11 @@ public abstract class AbstractBeanValidation implements BeanValidation
 
     protected Map<ModuleMetaData, URL> moduleValidationXMLs = new HashMap<ModuleMetaData, URL>();
 
-    public static AbstractBeanValidation instance()
-    {
+    public static AbstractBeanValidation instance() {
         return svInstance;
     }
 
-    static void setInstance(AbstractBeanValidation instance)
-    {
+    static void setInstance(AbstractBeanValidation instance) {
         if (svInstance != null && instance != null) {
             throw new IllegalStateException("instance already set");
         }
@@ -65,8 +64,7 @@ public abstract class AbstractBeanValidation implements BeanValidation
     }
 
     @Override
-    public ValidatorFactory getValidatorFactory(ComponentMetaData cmd)
-    {
+    public ValidatorFactory getValidatorFactory(ComponentMetaData cmd) {
         if (cmd == null) {
             throw new ValidationException(nls.getString("JNDI_NON_JEE_THREAD_CWNBV0006E"));
         }
@@ -77,10 +75,8 @@ public abstract class AbstractBeanValidation implements BeanValidation
     }
 
     @Override
-    public ValidatorFactory getValidatorFactoryOrDefault(ComponentMetaData cmd)
-    {
-        if (cmd == null)
-        {
+    public ValidatorFactory getValidatorFactoryOrDefault(ComponentMetaData cmd) {
+        if (cmd == null) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(tc, "getValidatorFactoryOrDefault : (passed null cmd)" + null);
             return ValidatorFactoryAccessor.getValidatorFactory();
@@ -92,14 +88,13 @@ public abstract class AbstractBeanValidation implements BeanValidation
     /**
      * Internal method that returns the container managed ValidatorFactory that
      * has been configured for the current Java EE application module. <p>
-     * 
+     *
      * For EJB and Web modules, this is equivalent to calling {@link #getValidatorFactory(ComponentMetaData)}. <p>
-     * 
+     *
      * For Client modules, {@link Validation#buildDefaultValidatorFactory()}.
      */
     //  d728128
-    static ValidatorFactory getValidatorFactory()
-    {
+    static ValidatorFactory getValidatorFactory() {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "getValidatorFactory");
@@ -107,18 +102,14 @@ public abstract class AbstractBeanValidation implements BeanValidation
         ValidatorFactory validatorFactory;
         ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
 
-        if (svInstance != null)
-        {
+        if (svInstance != null) {
             validatorFactory = svInstance.getValidatorFactory(cmd);
-        }
-        else
-        {
+        } else {
             // This method is called from java:comp ObjectFactory.  If the CMD on the
             // thread is DefaultComponentMetaData (with no ModuleMetaData), then we must be
             // in the client container.  We support that crudely by returning a default
             // ValidatorFactory.
-            if (cmd != null && cmd.getModuleMetaData() == null)
-            {
+            if (cmd != null && cmd.getModuleMetaData() == null) {
                 if (isTraceOn && tc.isDebugEnabled())
                     Tr.debug(tc, "No BeanValidation service; Client Container : getting default ValidatorFactory");
 
@@ -128,9 +119,7 @@ public abstract class AbstractBeanValidation implements BeanValidation
                         return Validation.buildDefaultValidatorFactory();
                     }
                 });
-            }
-            else
-            {
+            } else {
                 throw new IllegalStateException("BeanValidation service is not available.");
             }
         }
@@ -145,12 +134,30 @@ public abstract class AbstractBeanValidation implements BeanValidation
         return moduleValidationXMLs.get(mmd);
     }
 
-    public abstract ClassLoader configureBvalClassloader(ClassLoader cl);
+    public abstract ClassLoaderTuple configureBvalClassloader(ClassLoader cl);
 
-    public abstract void releaseLoader(ClassLoader cl);
+    public abstract void releaseLoader(ClassLoaderTuple tuple);
 
     @Override
     public abstract void registerValidatorFactory(ModuleMetaData mmd, ClassLoader cl, ValidatorFactory validatorFactory);
 
     public abstract ConstraintValidatorFactory getConstraintValidatorFactory(Configuration<?> config);
+
+    public static class ClassLoaderTuple {
+        public ClassLoader classLoader;
+        public boolean wasCreatedViaClassLoadingService;
+
+        public static ClassLoaderTuple of(ClassLoader classLoader, boolean wasCreatedViaClassLoadingService) {
+            ClassLoaderTuple tuple = new ClassLoaderTuple();
+            tuple.classLoader = classLoader;
+            tuple.wasCreatedViaClassLoadingService = wasCreatedViaClassLoadingService;
+            return tuple;
+        }
+    }
+
+    @Override
+    public abstract boolean isMethodConstrained(Method method);
+
+    @Override
+    public abstract boolean isConstructorConstrained(Constructor<?> constructor);
 }

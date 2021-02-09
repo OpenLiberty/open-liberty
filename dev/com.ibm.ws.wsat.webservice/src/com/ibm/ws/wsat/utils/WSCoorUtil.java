@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -62,7 +62,10 @@ public class WSCoorUtil {
 
     public static void checkHandlerServiceReady() {
         if (WSATOSGIService.getInstance().getHandlerService() == null) {
-            throw new RuntimeException("com.ibm.ws.wsat.common.Handler is null");
+            final RuntimeException re = new RuntimeException("Handler service is not ready");
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "Handler service is not ready", re);
+            throw re;
         }
     }
 
@@ -132,7 +135,7 @@ public class WSCoorUtil {
      * <wsp:ExactlyOne>
      * ( <wsp:All ( <Assertion...> ... </Assertion> )* </wsp:All> )*
      * </wsp:ExactlyOne>
-     * 
+     *
      * We are only interested in checking for <wsat:ATTransaction> assertions
      * within the <wsp:All> wrapper. 'optional' is indicated by an empty
      * <wsp:All></wsp:All> element, in addition to the WSAT assertion.
@@ -235,8 +238,7 @@ public class WSCoorUtil {
                      "Checking if there's any ATAssertion present in the AssertionInfoMap",
                      aim);
         if (aim != null) {
-            Collection<AssertionInfo> ais = aim
-                            .get(WSCoorConstants.AT_ASSERTION_QNAME);
+            Collection<AssertionInfo> ais = aim.get(WSCoorConstants.AT_ASSERTION_QNAME);
             if (ais != null) {
                 for (AssertionInfo a : ais) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())

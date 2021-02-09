@@ -43,7 +43,7 @@ public class CallbackTestLogic extends AbstractTestLogic {
      * Points: 10
      */
     public void testCallback001(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                Object managedComponentObject) {
+                                Object managedComponentObject) throws Throwable {
         // Verify parameters
         if (testExecCtx == null || testExecResources == null) {
             Assert.fail("testCallback001: Missing context and/or resources.  Cannot execute the test.");
@@ -190,11 +190,6 @@ public class CallbackTestLogic extends AbstractTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("CallbackTestLogic.testCallback001(): End");
             AbstractCallbackListener.resetGlobalCallbackEventList();
@@ -207,7 +202,7 @@ public class CallbackTestLogic extends AbstractTestLogic {
      * Points: 34
      */
     public void testCallback002(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                Object managedComponentObject) {
+                                Object managedComponentObject) throws Throwable {
         // Verify parameters
         if (testExecCtx == null || testExecResources == null) {
             Assert.fail("testCallback002: Missing context and/or resources.  Cannot execute the test.");
@@ -493,11 +488,6 @@ public class CallbackTestLogic extends AbstractTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("CallbackTestLogic.testCallback002(): End");
             AbstractCallbackListener.resetGlobalCallbackEventList();
@@ -510,7 +500,7 @@ public class CallbackTestLogic extends AbstractTestLogic {
      * Points: 34
      */
     public void testCallback003(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                Object managedComponentObject) {
+                                Object managedComponentObject) throws Throwable {
         // Verify parameters
         if (testExecCtx == null || testExecResources == null) {
             Assert.fail("testCallback003: Missing context and/or resources.  Cannot execute the test.");
@@ -796,11 +786,6 @@ public class CallbackTestLogic extends AbstractTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("CallbackTestLogic.testCallback003(): End");
             AbstractCallbackListener.resetGlobalCallbackEventList();
@@ -813,7 +798,7 @@ public class CallbackTestLogic extends AbstractTestLogic {
      * Points: 34
      */
     public void testCallback004(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                Object managedComponentObject) {
+                                Object managedComponentObject) throws Throwable {
         // Verify parameters
         if (testExecCtx == null || testExecResources == null) {
             Assert.fail("testCallback004: Missing context and/or resources.  Cannot execute the test.");
@@ -1118,11 +1103,6 @@ public class CallbackTestLogic extends AbstractTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("CallbackTestLogic.testCallback004(): End");
             AbstractCallbackListener.resetGlobalCallbackEventList();
@@ -1135,7 +1115,7 @@ public class CallbackTestLogic extends AbstractTestLogic {
      * Points: 34
      */
     public void testCallback005(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                Object managedComponentObject) {
+                                Object managedComponentObject) throws Throwable {
         // Verify parameters
         if (testExecCtx == null || testExecResources == null) {
             Assert.fail("testCallback005: Missing context and/or resources.  Cannot execute the test.");
@@ -1440,11 +1420,6 @@ public class CallbackTestLogic extends AbstractTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("CallbackTestLogic.testCallback005(): End");
             AbstractCallbackListener.resetGlobalCallbackEventList();
@@ -1452,7 +1427,7 @@ public class CallbackTestLogic extends AbstractTestLogic {
     }
 
     public void testTemplate(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                             Object managedComponentObject) {
+                             Object managedComponentObject) throws Throwable {
         // Verify parameters
         if (testExecCtx == null || testExecResources == null) {
             Assert.fail("testTemplate: Missing context and/or resources.  Cannot execute the test.");
@@ -1471,11 +1446,6 @@ public class CallbackTestLogic extends AbstractTestLogic {
             System.out.println("CallbackTestLogic.testTemplate(): Begin");
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("CallbackTestLogic.testTemplate(): End");
         }

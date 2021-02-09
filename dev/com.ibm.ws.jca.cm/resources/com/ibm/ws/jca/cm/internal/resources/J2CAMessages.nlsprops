@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011 IBM Corporation and others.
+# Copyright (c) 2011,2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -73,3 +73,7 @@ INVALID_MBEAN_INVOKE_ACTION_J2CA8061.useraction=Change the action being invoked 
 MBEAN_ATTRIBUTE_NOT_FOUND_J2CA8062=J2CA8062E: The {0} attribute is not valid for the {1} MBean.
 MBEAN_ATTRIBUTE_NOT_FOUND_J2CA8062.explanation=An attempt was made to get or set an attribute that was not available for the specified MBean.
 MBEAN_ATTRIBUTE_NOT_FOUND_J2CA8062.useraction=Change the attribute specified to one of the available attributes for this MBean.
+
+CONNECTION_LEAK_DETECTED_J2CA8070=J2CA8070I: A connection that was obtained from {0} was not closed. The following stack identifies the code that obtained the connection: {1}
+CONNECTION_LEAK_DETECTED_J2CA8070.explanation=A connection was not closed by the code that obtained it. The stack identifies one area of the code where an unclosed connection occurs, but other instances might exist elsewhere. To avoid cluttering the logs and minimize the impact of collecting stacks, only one occurrence is reported per server start.
+CONNECTION_LEAK_DETECTED_J2CA8070.useraction=Using the stack as a guide, locate the code that requests the connection and update it to close the connection.

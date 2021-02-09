@@ -11,7 +11,6 @@
 package com.ibm.ws.logging.json.fat;
 
 import org.junit.AfterClass;
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
@@ -47,7 +46,6 @@ public class ConsoleLogTest extends JSONEventsTest {
     public static void setUpClass() throws Exception {
         ShrinkHelper.defaultApp(server, APP_NAME, "com.ibm.logs");
         server.startServer();
-        Assert.assertNotNull("Test app LogstashApp does not appear to have started.", server.waitForStringInLog("CWWKT0016I:.*LogstashApp"));
     }
 
     @AfterClass

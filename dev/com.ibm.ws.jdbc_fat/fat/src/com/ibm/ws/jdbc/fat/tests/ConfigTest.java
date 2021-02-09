@@ -294,6 +294,59 @@ public class ConfigTest extends FATServletClient {
     }
 
     /**
+     * Update the autoCloseConnections attribute of a connectionManager element while the server is running.
+     * Verify that the updated value is honored.
+     */
+    @Test
+    public void testConfigChangeAutoCloseConnections() throws Throwable {
+        String method = "testConfigChangeAutoCloseConnections";
+        Log.info(c, method, "Executing " + method);
+
+        // Locate the connectionManager that we will be reconfiguring
+        ServerConfiguration config = server.getServerConfiguration();
+        ConnectionManager conMgr1 = null;
+        for (ConnectionManager connectionManager : config.getConnectionManagers())
+            if ("conMgr1".equals(connectionManager.getId()))
+                conMgr1 = connectionManager;
+        // Fail if we cannot find it
+        if (conMgr1 == null) {
+            System.out.println("Failure during " + method + " with the following config:");
+            System.out.println(config);
+            fail("Did not find connectionManager with id=conMgr1");
+        }
+
+        // First verify the default behavior
+        runTest(basicfat, "testConfigChangeAutoCloseConnectionsLeakConnection");
+        runTest(basicfat, "testConfigChangeAutoCloseConnectionsConnectionNotClosed"); // TODO update when the default switches
+
+        // TODO after the change to the default, swap the order of the next two blocks:
+
+        conMgr1.setAutoCloseConnections("true");
+        try {
+            updateServerConfig(config, EMPTY_EXPR_LIST);
+            runTest(basicfat, "testConfigChangeAutoCloseConnectionsLeakConnection");
+            runTest(basicfat, "testConfigChangeAutoCloseConnectionsConnectionClosed");
+        } catch (Throwable x) {
+            System.out.println("Failure during " + method + " with the following config:");
+            System.out.println(config);
+            throw x;
+        }
+
+        conMgr1.setAutoCloseConnections("false");
+        try {
+            updateServerConfig(config, EMPTY_EXPR_LIST);
+            runTest(basicfat, "testConfigChangeAutoCloseConnectionsLeakConnection");
+            runTest(basicfat, "testConfigChangeAutoCloseConnectionsConnectionNotClosed");
+        } catch (Throwable x) {
+            System.out.println("Failure during " + method + " with the following config:");
+            System.out.println(config);
+            throw x;
+        }
+
+        cleanUpExprs = EMPTY_EXPR_LIST;
+    }
+
+    /**
      * Update the data source configuration
      * from commitOrRollbackOnCleanup unspecified,
      * to commitOrRollbackOnCleanup=commit
@@ -371,6 +424,25 @@ public class ConfigTest extends FATServletClient {
             System.out.println(config);
             throw x;
         }
+
+        runTest(basicfat, "setServletInstanceStillActive");
+
+        // Increase maxPoolSize to 2
+        conMgr2.setMaxPoolSize("2");
+
+        try {
+            updateServerConfig(config, EMPTY_EXPR_LIST);
+            // Behavior should now reflect the new setting of 2 for maxPoolSize
+            runTest(basicfat, "testMaxPoolSize2");
+        } catch (Throwable x) {
+            System.out.println("Failure during " + method + " with the following config:");
+            System.out.println(config);
+            throw x;
+        }
+
+        runTest(basicfat, "requireServletInstanceStillActive");
+
+        runTest(basicfat, "resetState");
 
         cleanUpExprs = EMPTY_EXPR_LIST;
     }
@@ -764,6 +836,8 @@ public class ConfigTest extends FATServletClient {
             throw x;
         }
 
+        runTest(basicfat, "setServletInstanceStillActive");
+
         // Modify the nested config after it has been used
         conMgr2.setMaxPoolSize("2");
         conMgr2.setPurgePolicy("ValidateAllConnections"); // just to change the file size
@@ -777,6 +851,9 @@ public class ConfigTest extends FATServletClient {
             System.out.println(config);
             throw x;
         }
+
+        runTest(basicfat, "requireServletInstanceStillActive");
+        runTest(basicfat, "resetState");
 
         // Move the connectionManager back to top level config.
         dsfat2.setConnectionManagerRef("conMgr2");

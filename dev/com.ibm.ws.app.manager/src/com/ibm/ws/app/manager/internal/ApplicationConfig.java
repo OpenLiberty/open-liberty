@@ -202,6 +202,9 @@ public final class ApplicationConfig {
         String[] resultPids = null;
         if (_config != null) {
             resultPids = (String[]) _config.get(AppManagerConstants.START_AFTER);
+            if (resultPids == null) {
+                resultPids = (String[]) _config.get(AppManagerConstants.START_AFTER_REF);
+            }
         }
 
         if (resultPids == null)

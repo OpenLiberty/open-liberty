@@ -11,7 +11,7 @@
             <property name="eclipselink.logging.parameters" value="true"/>
 
             <property name="openjpa.jdbc.DBDictionary" value="StoreCharsAsNumbers=false"/>
-            <property name="openjpa.ConnectionFactoryProperties" value="PrintParameters=true" />
+            <property name="openjpa.ConnectionFactoryProperties" value="PrintParameters=True, PrettyPrint=true, PrettyPrintLineLength=72"/>
         </properties>
     </persistence-unit>
 
@@ -21,7 +21,7 @@
             <property name="eclipselink.logging.parameters" value="true"/>
 
             <property name="openjpa.jdbc.DBDictionary" value="StoreCharsAsNumbers=false"/>
-            <property name="openjpa.ConnectionFactoryProperties" value="PrintParameters=true" />
+            <property name="openjpa.ConnectionFactoryProperties" value="PrintParameters=True, PrettyPrint=true, PrettyPrintLineLength=72"/>
         </properties>
     </persistence-unit>
 </persistence>

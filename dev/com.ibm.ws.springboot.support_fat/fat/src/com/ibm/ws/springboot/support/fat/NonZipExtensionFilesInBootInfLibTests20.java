@@ -132,30 +132,31 @@ public class NonZipExtensionFilesInBootInfLibTests20 extends AbstractSpringTests
      */
     @SuppressWarnings("resource")
     private void putANonZipEntry(File appFile, File tempFile) throws IOException {
-        JarFile appJar = new JarFile(appFile);
-        byte[] buffer = new byte[4096];
-        int len;
-        String newEntry = "BOOT-INF/lib/test.txt";
-        HashSet<String> zipEntries = new HashSet<>();
-        try (JarOutputStream jos = new JarOutputStream(new FileOutputStream(tempFile))) {
-            for (Enumeration<JarEntry> entries = appJar.entries(); entries.hasMoreElements();) {
-                JarEntry entry = entries.nextElement();
-                String entryName = entry.getName();
-                if (!entryName.equals(newEntry) && !zipEntries.contains(entryName)) {
-                    zipEntries.add(entryName);
-                    jos.putNextEntry(entry);
-                    try (InputStream entryStream = appJar.getInputStream(entry)) {
-                        while ((len = entryStream.read(buffer)) != -1) {
-                            jos.write(buffer, 0, len);
+        try (JarFile appJar = new JarFile(appFile)) {
+            byte[] buffer = new byte[4096];
+            int len;
+            String newEntry = "BOOT-INF/lib/test.txt";
+            HashSet<String> zipEntries = new HashSet<>();
+            try (JarOutputStream jos = new JarOutputStream(new FileOutputStream(tempFile))) {
+                for (Enumeration<JarEntry> entries = appJar.entries(); entries.hasMoreElements();) {
+                    JarEntry entry = entries.nextElement();
+                    String entryName = entry.getName();
+                    if (!entryName.equals(newEntry) && !zipEntries.contains(entryName)) {
+                        zipEntries.add(entryName);
+                        jos.putNextEntry(entry);
+                        try (InputStream entryStream = appJar.getInputStream(entry)) {
+                            while ((len = entryStream.read(buffer)) != -1) {
+                                jos.write(buffer, 0, len);
+                            }
                         }
                     }
                 }
-            }
-            //Add a non zip entry BOOT-INF/lib/test.txt
-            jos.putNextEntry(new ZipEntry(newEntry));
-            try (ByteArrayInputStream bis = new ByteArrayInputStream(new byte[] { 't', 'e', 's', 't' })) {
-                while ((len = bis.read(buffer)) != -1) {
-                    jos.write(buffer, 0, len);
+                //Add a non zip entry BOOT-INF/lib/test.txt
+                jos.putNextEntry(new ZipEntry(newEntry));
+                try (ByteArrayInputStream bis = new ByteArrayInputStream(new byte[] { 't', 'e', 's', 't' })) {
+                    while ((len = bis.read(buffer)) != -1) {
+                        jos.write(buffer, 0, len);
+                    }
                 }
             }
         }
@@ -171,28 +172,29 @@ public class NonZipExtensionFilesInBootInfLibTests20 extends AbstractSpringTests
      */
     @SuppressWarnings("resource")
     private void putAZipEntryWithNonZipExtension(File appFile, File tempFile) throws IOException {
-        JarFile appJar = new JarFile(appFile);
-        byte[] buffer = new byte[4096];
-        int len;
-        HashSet<String> zipEntries = new HashSet<>();
-        try (JarOutputStream jos = new JarOutputStream(new FileOutputStream(tempFile))) {
-            for (Enumeration<JarEntry> entries = appJar.entries(); entries.hasMoreElements();) {
-                JarEntry entry = entries.nextElement();
-                String entryName = entry.getName();
+        try (JarFile appJar = new JarFile(appFile)) {
+            byte[] buffer = new byte[4096];
+            int len;
+            HashSet<String> zipEntries = new HashSet<>();
+            try (JarOutputStream jos = new JarOutputStream(new FileOutputStream(tempFile))) {
+                for (Enumeration<JarEntry> entries = appJar.entries(); entries.hasMoreElements();) {
+                    JarEntry entry = entries.nextElement();
+                    String entryName = entry.getName();
 
-                if (!zipEntries.contains(entryName)) {
-                    zipEntries.add(entryName);
-                    if (entryName.equals("BOOT-INF/lib/spring-boot-starter-web-2.0.0.RELEASE.jar")) {
-                        //change the extension of the library jar
-                        JarEntry entryWithDiffExt = new JarEntry("BOOT-INF/lib/" + entryName + ".xyz");
-                        jos.putNextEntry(entryWithDiffExt);
-                    } else {
-                        jos.putNextEntry(entry);
-                    }
+                    if (!zipEntries.contains(entryName)) {
+                        zipEntries.add(entryName);
+                        if (entryName.equals("BOOT-INF/lib/spring-boot-starter-web-2.0.0.RELEASE.jar")) {
+                            //change the extension of the library jar
+                            JarEntry entryWithDiffExt = new JarEntry("BOOT-INF/lib/" + entryName + ".xyz");
+                            jos.putNextEntry(entryWithDiffExt);
+                        } else {
+                            jos.putNextEntry(entry);
+                        }
 
-                    try (InputStream entryStream = appJar.getInputStream(entry)) {
-                        while ((len = entryStream.read(buffer)) != -1) {
-                            jos.write(buffer, 0, len);
+                        try (InputStream entryStream = appJar.getInputStream(entry)) {
+                            while ((len = entryStream.read(buffer)) != -1) {
+                                jos.write(buffer, 0, len);
+                            }
                         }
                     }
                 }

@@ -36,6 +36,7 @@ Export-Package: \
     com.ibm.ws.transport.access*;provide:=true, \
     com.ibm.ws.genericbnf, \
     com.ibm.ws.http.dispatcher.classify, \
+    com.ibm.ws.http.dispatcher.internal.channel, \
     com.ibm.ws.http.channel.outstream, \
     com.ibm.ws.http.channel.inputstream, \
     com.ibm.ws.http.logging.source, \

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2016, 2018 IBM Corporation and others.
+# Copyright (c) 2016, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -128,6 +128,10 @@ INTROSPECT_ERROR_GETTING_USER_INFO.useraction=Pokud zpr\u00e1va obsahuje jinou c
 INTROSPECT_USER_API_INACTIVE=CWWKS5388E: Po\u017eadavek na introspekci tokenu se nezda\u0159il, proto\u017ee token, kter\u00fd je sou\u010d\u00e1st\u00ed po\u017eadavku, nen\u00ed platn\u00fd. \u00dapln\u00e1 odezva je {0}.
 INTROSPECT_USER_API_INACTIVE.explanation=Autoriza\u010dn\u00ed server nevyvolal token, vlastn\u00edk prost\u0159edku odvolal token, vypr\u0161ela platnost tokenu nebo do\u0161lo k jin\u00e9 chyb\u011b.
 INTROSPECT_USER_API_INACTIVE.useraction=Zkontrolujte odezvu, kter\u00e1 je sou\u010d\u00e1st\u00ed zpr\u00e1vy. Ov\u011b\u0159te, \u017ee je pou\u017eit spr\u00e1vn\u00fd koncov\u00fd bod introspekce tokenu. Ov\u011b\u0159te, \u017ee token je platn\u00fd a \u017ee tokenu m\u016f\u017ee b\u00fdt provedena introspekce.
+
+USER_API_RESPONSE_NOT_AUTHENTICATED=CWWKS5389E: Odezva API u\u017eivatele ozna\u010duje, \u017ee po\u017eadavek na rozhran\u00ed API u\u017eivatele nen\u00ed ov\u011b\u0159en. Ov\u011b\u0159te, zda je p\u0159\u00edstupov\u00fd token, kter\u00fd je sou\u010d\u00e1st\u00ed po\u017eadavku na u\u017eivatelsk\u00e9ho rozhran\u00ed API, platn\u00fd a je p\u0159idru\u017een ke zn\u00e1m\u00e9mu u\u017eivateli.
+USER_API_RESPONSE_NOT_AUTHENTICATED.explanation=P\u0159\u00edstupov\u00fd token, kter\u00fd je v po\u017eadavku u\u017eivatelsk\u00e9ho rozhran\u00ed API, m\u016f\u017ee chyb\u011bt, vypr\u0161el, je chybn\u00fd nebo jinak neplatn\u00fd. Token nemus\u00ed b\u00fdt p\u0159idru\u017een k u\u017eivateli zn\u00e1m\u00e9mu pro u\u017eivatelsk\u00e9 rozhran\u00ed API.
+USER_API_RESPONSE_NOT_AUTHENTICATED.useraction=Ov\u011b\u0159te, \u017ee je p\u0159\u00edstupov\u00fd token sou\u010d\u00e1st\u00ed po\u017eadavku u\u017eivatelsk\u00e9ho rozhran\u00ed API. Ujist\u011bte se, \u017ee token nevypr\u0161el nebo nen\u00ed chybn\u00fd. Ov\u011b\u0159te, \u017ee je u\u017eivatel p\u0159idru\u017een k p\u0159\u00edstupov\u00e9mu tokenu, kter\u00fd je zn\u00e1m u\u017eivatelsk\u00e9mu rozhran\u00ed API.
 
 SOCIAL_LOGIN_CONFIG_PROCESSED=CWWKS5400I: Konfigurace soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed [{0}] byla \u00fasp\u011b\u0161n\u011b zpracov\u00e1na.
 SOCIAL_LOGIN_CONFIG_PROCESSED.explanation=Uveden\u00e1 konfigurace soci\u00e1ln\u00edho p\u0159ihl\u00e1\u0161en\u00ed byla \u00fasp\u011b\u0161n\u011b zpracov\u00e1na.

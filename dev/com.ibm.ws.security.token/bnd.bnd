@@ -46,7 +46,14 @@ Service-Component: \
     dynamic:='tokenService'; \
     optional:='tokenService'; \
     multiple:='tokenService'; \
-    properties:='service.vendor=IBM'
+    properties:='service.vendor=IBM', \
+  com.ibm.wsspi.security.token.WSSecurityPropagationHelper;\
+    implementation:=com.ibm.wsspi.security.token.WSSecurityPropagationHelper;\
+    configuration-policy:=ignore;\
+    activate:=activate;\
+    deactivate:=deactivate;\
+    tokenManager=com.ibm.ws.security.token.TokenManager;\
+    properties:="service.vendor=IBM"     
 
 instrument.classesExcludes: com/ibm/ws/security/token/internal/resources/*.class
 

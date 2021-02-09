@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -32,11 +34,21 @@ import test.common.SharedOutputManager;
 public class InstallUtilsTest {
 
     @Rule
-    public SharedOutputManager outputMgr = SharedOutputManager.getInstance();
+    public static SharedOutputManager outputMgr = SharedOutputManager.getInstance().trace("*=all");
+
+    @BeforeClass
+    public static void setUpBeforeClass() throws Exception {
+        outputMgr.captureStreams();
+    }
+
+    @AfterClass
+    public static void tearDownAfterClass() throws Exception {
+        outputMgr.restoreStreams();
+    }
 
     @Test
     public void testGetEditionName() {
-        assertEquals("Expected empty string", "", InstallUtils.getEditionName("BASE"));
+        assertEquals("Expected Base", "Base", InstallUtils.getEditionName("BASE"));
         assertEquals("Expected (ILAN)", "(ILAN)", InstallUtils.getEditionName("BASE_ILAN"));
         assertEquals("Expected for Developers", "for Developers", InstallUtils.getEditionName("DEVELOPERS"));
         assertEquals("Expected - Express", "- Express", InstallUtils.getEditionName("EXPRESS"));

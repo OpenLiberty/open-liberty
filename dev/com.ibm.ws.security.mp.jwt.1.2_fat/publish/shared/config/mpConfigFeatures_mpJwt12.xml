@@ -1,0 +1,12 @@
+<server>
+
+	<featureManager>
+		<feature>timedexit-1.0</feature>
+		<feature>jsp-2.3</feature>
+		<feature>ssl-1.0</feature>
+		<feature>jaxrs-2.1</feature>
+		<feature>mpJwt-1.2</feature> 
+	</featureManager>
+
+</server>
+    

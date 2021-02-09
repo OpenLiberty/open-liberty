@@ -345,10 +345,7 @@ public class KeyStoreServiceImpl implements KeyStoreService {
                 throw new KeyStoreException("The keystore [" + keyStoreName + "] is not present in the configuration");
             } else {
                 wks.setCertificateEntry(alias, certificate);
-                wks.store();
             }
-        } catch (CertificateException e) {
-            throw e;
         } catch (KeyStoreException e) {
             throw e;
         } catch (Exception e) {
@@ -365,10 +362,7 @@ public class KeyStoreServiceImpl implements KeyStoreService {
                 throw new KeyStoreException("The keystore [" + keyStoreName + "] is not present in the configuration");
             } else {
                 wks.setKeyEntry(alias, key, chain);
-                wks.store();
             }
-        } catch (CertificateException e) {
-            throw e;
         } catch (KeyStoreException e) {
             throw e;
         } catch (Exception e) {
@@ -425,5 +419,17 @@ public class KeyStoreServiceImpl implements KeyStoreService {
             }
         }
         return null;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public KeyStore getKeyStore(String keyStoreName) throws KeyStoreException {
+        KeyStore ks = null;
+        try {
+            ks = ksMgr.getJavaKeyStore(keyStoreName);
+        } catch (Exception e) {
+            throw new KeyStoreException("Unexpected error while loading the keystore [" + keyStoreName + "]", e);
+        }
+        return ks;
     }
 }

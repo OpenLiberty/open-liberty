@@ -53,7 +53,7 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
      * 9 POINTS
      */
     public void testOneXOneUni001(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                  Object managedComponentObject) {
+                                  Object managedComponentObject) throws Throwable {
         // Verify parameters
         if (testExecCtx == null || testExecResources == null) {
             Assert.fail("OneXOneUnidirectionalTestLogic.testOneXOneUni001(): Missing context and/or resources.  Cannot execute the test.");
@@ -61,11 +61,6 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
         }
 
         // Fetch JPA Resources
-        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-        if (jpaCleanupResource == null) {
-            Assert.fail("Missing JPAResource 'cleanup').  Cannot execute the test.");
-            return;
-        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
@@ -92,7 +87,6 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
         // Execute Test Case
         try {
             System.out.println("OneXOneUnidirectionalTestLogic.testOneXOneUni001(): Begin");
-            //cleanupDatabase(jpaCleanupResource);
 
             System.out.println("Beginning new transaction...");
             jpaResource.getTj().beginTransaction();
@@ -147,11 +141,6 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
 
             // Verify that em.find() returned an object. (1 point)
             Assert.assertNotNull("Assert that the find operation did not return null", find_entityA);
-            if (find_entityA == null) {
-                // If the find returned null, then terminate the remainder of the test.
-                Assert.fail("Find returned null, cancelling the remainder of the test.");
-                return;
-            }
 
             //  Perform basic verifications (3 points)
             Assert.assertNotSame(
@@ -198,11 +187,6 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
             jpaResource.getTj().rollbackTransaction();
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("OneXOneUnidirectionalTestLogic.testOneXOneUni001(): End");
         }
@@ -224,7 +208,7 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
      * field used is marked with a column-name override in the JoinColumn annotation.
      */
     public void testOneXOneUni002(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                  Object managedComponentObject) {
+                                  Object managedComponentObject) throws Throwable {
         // Verify parameters
         if (testExecCtx == null || testExecResources == null) {
             Assert.fail("OneXOneUnidirectionalTestLogic.testOneXOneUni002(): Missing context and/or resources.  Cannot execute the test.");
@@ -232,11 +216,6 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
         }
 
         // Fetch JPA Resources
-        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-        if (jpaCleanupResource == null) {
-            Assert.fail("Missing JPAResource 'cleanup').  Cannot execute the test.");
-            return;
-        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
@@ -263,7 +242,6 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
         // Execute Test Case
         try {
             System.out.println("OneXOneUnidirectionalTestLogic.testOneXOneUni002(): Begin");
-            //cleanupDatabase(jpaCleanupResource);
 
             System.out.println("Beginning new transaction...");
             jpaResource.getTj().beginTransaction();
@@ -318,11 +296,6 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
 
             // Verify that em.find() returned an object. (1 point)
             Assert.assertNotNull("Assert that the find operation did not return null", find_entityA);
-            if (find_entityA == null) {
-                // If the find returned null, then terminate the remainder of the test.
-                Assert.fail("Find returned null, cancelling the remainder of the test.");
-                return;
-            }
 
             //  Perform basic verifications (3 points)
             Assert.assertNotSame(
@@ -369,11 +342,6 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
             jpaResource.getTj().rollbackTransaction();
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("OneXOneUnidirectionalTestLogic.testOneXOneUni002(): End");
         }
@@ -406,7 +374,7 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
      * 3 POINTS
      */
     public void testOneXOneUni003(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                  Object managedComponentObject) {
+                                  Object managedComponentObject) throws Throwable {
         // Verify parameters
         if (testExecCtx == null || testExecResources == null) {
             Assert.fail("OneXOneUnidirectionalTestLogic.testOneXOneUni003(): Missing context and/or resources.  Cannot execute the test.");
@@ -414,11 +382,6 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
         }
 
         // Fetch JPA Resources
-        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-        if (jpaCleanupResource == null) {
-            Assert.fail("Missing JPAResource 'cleanup').  Cannot execute the test.");
-            return;
-        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
@@ -445,7 +408,6 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
         // Execute Test Case
         try {
             System.out.println("OneXOneUnidirectionalTestLogic.testOneXOneUni003(): Begin");
-            //cleanupDatabase(jpaCleanupResource);
 
             {
                 System.out.println("Verify that an entity with a non-optional relationship cannot be persisted.");
@@ -571,11 +533,6 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("OneXOneUnidirectionalTestLogic.testOneXOneUni003(): End");
         }
@@ -610,7 +567,7 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
      * 9 POINTS
      */
     public void testOneXOneUni004(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                  Object managedComponentObject) {
+                                  Object managedComponentObject) throws Throwable {
         // Verify parameters
         if (testExecCtx == null || testExecResources == null) {
             Assert.fail("OneXOneUnidirectionalTestLogic.testOneXOneUni004(): Missing context and/or resources.  Cannot execute the test.");
@@ -618,11 +575,6 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
         }
 
         // Fetch JPA Resources
-        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-        if (jpaCleanupResource == null) {
-            Assert.fail("Missing JPAResource 'cleanup').  Cannot execute the test.");
-            return;
-        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
@@ -649,7 +601,6 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
         // Execute Test Case
         try {
             System.out.println("OneXOneUnidirectionalTestLogic.testOneXOneUni004(): Begin");
-            //cleanupDatabase(jpaCleanupResource);
 
             System.out.println("Beginning new transaction...");
             jpaResource.getTj().beginTransaction();
@@ -767,11 +718,6 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
             jpaResource.getEm().clear();
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("OneXOneUnidirectionalTestLogic.testOneXOneUni004(): End");
         }
@@ -882,7 +828,7 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
      * 29 POINTS
      */
     public void testOneXOneUni005(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                  Object managedComponentObject) {
+                                  Object managedComponentObject) throws Throwable {
         // Verify parameters
         if (testExecCtx == null || testExecResources == null) {
             Assert.fail("OneXOneUnidirectionalTestLogic.testOneXOneUni005(): Missing context and/or resources.  Cannot execute the test.");
@@ -890,11 +836,6 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
         }
 
         // Fetch JPA Resources
-        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-        if (jpaCleanupResource == null) {
-            Assert.fail("Missing JPAResource 'cleanup').  Cannot execute the test.");
-            return;
-        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
@@ -921,7 +862,6 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
         // Execute Test Case
         try {
             System.out.println("OneXOneUnidirectionalTestLogic.testOneXOneUni005(): Begin");
-            //cleanupDatabase(jpaCleanupResource);
 
             // ----------------------------------------------------------------------------------------------------
             // Verify Default Persist Cascade Behavior (1 POINT)
@@ -1478,11 +1418,6 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("OneXOneUnidirectionalTestLogic.testOneXOneUni005(): End");
         }
@@ -1553,7 +1488,7 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
      * 32 POINTS
      */
     public void testOneXOneUni006(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                  Object managedComponentObject) {
+                                  Object managedComponentObject) throws Throwable {
         // Verify parameters
         if (testExecCtx == null || testExecResources == null) {
             Assert.fail("OneXOneUnidirectionalTestLogic.testOneXOneUni006(): Missing context and/or resources.  Cannot execute the test.");
@@ -1561,11 +1496,6 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
         }
 
         // Fetch JPA Resources
-        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-        if (jpaCleanupResource == null) {
-            Assert.fail("Missing JPAResource 'cleanup').  Cannot execute the test.");
-            return;
-        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
@@ -1592,7 +1522,6 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
         // Execute Test Case
         try {
             System.out.println("OneXOneUnidirectionalTestLogic.testOneXOneUni006(): Begin");
-            //cleanupDatabase(jpaCleanupResource);
 
             // ----------------------------------------------------------------------------------------------------
             // Verify Cascade: ALL Persist Behavior (6 POINTS)
@@ -2078,11 +2007,6 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("OneXOneUnidirectionalTestLogic.testOneXOneUni006(): End");
         }
@@ -2113,7 +2037,7 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
      * 6 POINTS
      */
     public void testOneXOneUni007(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                  Object managedComponentObject) {
+                                  Object managedComponentObject) throws Throwable {
         // Verify parameters
         if (testExecCtx == null || testExecResources == null) {
             Assert.fail("OneXOneUnidirectionalTestLogic.testOneXOneUni007(): Missing context and/or resources.  Cannot execute the test.");
@@ -2121,11 +2045,6 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
         }
 
         // Fetch JPA Resources
-        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-        if (jpaCleanupResource == null) {
-            Assert.fail("Missing JPAResource 'cleanup').  Cannot execute the test.");
-            return;
-        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
@@ -2152,7 +2071,6 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
         // Execute Test Case
         try {
             System.out.println("OneXOneUnidirectionalTestLogic.testOneXOneUni007(): Begin");
-            //cleanupDatabase(jpaCleanupResource);
 
             // ----------------------------------------------------------------------------------------------------
             // Verify Cascade: PERSIST Persist Behavior (6 POINTS)
@@ -2254,11 +2172,6 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("OneXOneUnidirectionalTestLogic.testOneXOneUni007(): End");
         }
@@ -2283,7 +2196,7 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
      * 4 POINTS
      */
     public void testOneXOneUni008(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                  Object managedComponentObject) {
+                                  Object managedComponentObject) throws Throwable {
         // Verify parameters
         if (testExecCtx == null || testExecResources == null) {
             Assert.fail("OneXOneUnidirectionalTestLogic.testOneXOneUni008(): Missing context and/or resources.  Cannot execute the test.");
@@ -2291,11 +2204,6 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
         }
 
         // Fetch JPA Resources
-        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-        if (jpaCleanupResource == null) {
-            Assert.fail("Missing JPAResource 'cleanup').  Cannot execute the test.");
-            return;
-        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
@@ -2322,7 +2230,6 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
         // Execute Test Case
         try {
             System.out.println("OneXOneUnidirectionalTestLogic.testOneXOneUni008(): Begin");
-            //cleanupDatabase(jpaCleanupResource);
 
             // ----------------------------------------------------------------------------------------------------
             // Verify Cascade: REMOVE Remove Behavior (4 POINTS)
@@ -2442,11 +2349,6 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("OneXOneUnidirectionalTestLogic.testOneXOneUni008(): End");
         }
@@ -2474,7 +2376,7 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
      * 12 POINTS
      */
     public void testOneXOneUni009(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                  Object managedComponentObject) {
+                                  Object managedComponentObject) throws Throwable {
         // Verify parameters
         if (testExecCtx == null || testExecResources == null) {
             Assert.fail("OneXOneUnidirectionalTestLogic.testOneXOneUni009(): Missing context and/or resources.  Cannot execute the test.");
@@ -2482,11 +2384,6 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
         }
 
         // Fetch JPA Resources
-        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-        if (jpaCleanupResource == null) {
-            Assert.fail("Missing JPAResource 'cleanup').  Cannot execute the test.");
-            return;
-        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
@@ -2513,7 +2410,6 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
         // Execute Test Case
         try {
             System.out.println("OneXOneUnidirectionalTestLogic.testOneXOneUni009(): Begin");
-            //cleanupDatabase(jpaCleanupResource);
 
             // ----------------------------------------------------------------------------------------------------
             // Verify Cascade: MERGE Merge Behavior (12 POINTS)
@@ -2655,11 +2551,6 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("OneXOneUnidirectionalTestLogic.testOneXOneUni009(): End");
         }
@@ -2687,7 +2578,7 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
      * 10 POINTS
      */
     public void testOneXOneUni010(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                  Object managedComponentObject) {
+                                  Object managedComponentObject) throws Throwable {
         // Verify parameters
         if (testExecCtx == null || testExecResources == null) {
             Assert.fail("OneXOneUnidirectionalTestLogic.testOneXOneUni010(): Missing context and/or resources.  Cannot execute the test.");
@@ -2695,11 +2586,6 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
         }
 
         // Fetch JPA Resources
-        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-        if (jpaCleanupResource == null) {
-            Assert.fail("Missing JPAResource 'cleanup').  Cannot execute the test.");
-            return;
-        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
@@ -2726,7 +2612,6 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
         // Execute Test Case
         try {
             System.out.println("OneXOneUnidirectionalTestLogic.testOneXOneUni010(): Begin");
-            //cleanupDatabase(jpaCleanupResource);
 
             // ----------------------------------------------------------------------------------------------------
             // Verify Cascade: REFRESH Refresh Behavior (10 POINTS)
@@ -2857,11 +2742,6 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("OneXOneUnidirectionalTestLogic.testOneXOneUni010(): End");
         }
@@ -2878,9 +2758,8 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
      *
      * 1 POINT
      */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
     public void testCardinality001(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                   Object managedComponentObject) {
+                                   Object managedComponentObject) throws Throwable {
         // Verify parameters
         if (testExecCtx == null || testExecResources == null) {
             Assert.fail("OneXOneUnidirectionalTestLogic.testCardinality001(): Missing context and/or resources.  Cannot execute the test.");
@@ -2888,11 +2767,6 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
         }
 
         // Fetch JPA Resources
-        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-        if (jpaCleanupResource == null) {
-            Assert.fail("Missing JPAResource 'cleanup').  Cannot execute the test.");
-            return;
-        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
@@ -2919,7 +2793,6 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
         // Execute Test Case
         try {
             System.out.println("OneXOneUnidirectionalTestLogic.testCardinality001(): Begin");
-            //cleanupDatabase(jpaCleanupResource);
 
             System.out.println("Beginning new transaction...");
             jpaResource.getTj().beginTransaction();
@@ -3000,11 +2873,6 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("OneXOneUnidirectionalTestLogic.testCardinality001(): End");
         }
@@ -3043,7 +2911,7 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
      * 8 POINTS
      */
     public void testOneXOneBi001(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                 Object managedComponentObject) {
+                                 Object managedComponentObject) throws Throwable {
         // Verify parameters
         if (testExecCtx == null || testExecResources == null) {
             Assert.fail("OneXOneBidirectionalTestLogic.testOneXOneBi001(): Missing context and/or resources.  Cannot execute the test.");
@@ -3051,11 +2919,6 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
         }
 
         // Fetch JPA Resources
-        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-        if (jpaCleanupResource == null) {
-            Assert.fail("Missing JPAResource 'cleanup').  Cannot execute the test.");
-            return;
-        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
@@ -3082,7 +2945,6 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
         // Execute Test Case
         try {
             System.out.println("OneXOneBidirectionalTestLogic.testOneXOneBi001(): Begin");
-            //cleanupDatabase(jpaCleanupResource);
 
             System.out.println("Beginning new transaction...");
             jpaResource.getTj().beginTransaction();
@@ -3137,11 +2999,6 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
 
             // Verify that em.find() returned an object. (1 point)
             Assert.assertNotNull("Assert that the find operation did not return null", find_entityB);
-            if (find_entityB == null) {
-                // If the find returned null, then terminate the remainder of the test.
-                Assert.fail("Find returned null, cancelling the remainder of the test.");
-                return;
-            }
 
             //  Perform basic verifications (3 points)
             Assert.assertNotSame(
@@ -3172,11 +3029,6 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
             jpaResource.getTj().rollbackTransaction();
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("OneXOneBidirectionalTestLogic.testOneXOneBi001(): End");
         }
@@ -3260,9 +3112,8 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
      * 7) Verify that BiEntityA(id=1) still has the new value
      *
      */
-    @SuppressWarnings("rawtypes")
     public void testOneXOneBi002(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                 Object managedComponentObject) {
+                                 Object managedComponentObject) throws Throwable {
         // Verify parameters
         if (testExecCtx == null || testExecResources == null) {
             Assert.fail("OneXOneBidirectionalTestLogic.testOneXOneBi002(): Missing context and/or resources.  Cannot execute the test.");
@@ -3270,11 +3121,6 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
         }
 
         // Fetch JPA Resources
-        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-        if (jpaCleanupResource == null) {
-            Assert.fail("Missing JPAResource 'cleanup').  Cannot execute the test.");
-            return;
-        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
@@ -3301,7 +3147,6 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
         // Execute Test Case
         try {
             System.out.println("OneXOneBidirectionalTestLogic.testOneXOneBi002(): Begin");
-            //cleanupDatabase(jpaCleanupResource);
 
             // ----------------------------------------------------------------------------------------------------
             // Verify Default Default Persist Cascade Behavior (1 POINT)
@@ -3746,11 +3591,6 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("OneXOneBidirectionalTestLogic.testOneXOneBi002(): End");
         }
@@ -3822,16 +3662,10 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
      * 7) Verify that BiEntityA(id=1) still has the new value
      *
      */
-    @SuppressWarnings("rawtypes")
     public void testOneXOneBi003(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                 Object managedComponentObject) {
+                                 Object managedComponentObject) throws Throwable {
         // Verify parameters
         // Fetch JPA Resources
-        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-        if (jpaCleanupResource == null) {
-            Assert.fail("Missing JPAResource 'cleanup').  Cannot execute the test.");
-            return;
-        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
@@ -3858,7 +3692,6 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
         // Execute Test Case
         try {
             System.out.println("OneXOneBidirectionalTestLogic.testOneXOneBi003(): Begin");
-            //cleanupDatabase(jpaCleanupResource);
 
             // ----------------------------------------------------------------------------------------------------
             // Verify Cascade: ALL Persist Behavior (1 POINTS)
@@ -4329,11 +4162,6 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("OneXOneBidirectionalTestLogic.testOneXOneBi003(): End");
         }
@@ -4363,7 +4191,7 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
      * the EntityA in BiEntityB_CP is an entity that is not managed and does not exist on the database.
      */
     public void testOneXOneBi004(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                 Object managedComponentObject) {
+                                 Object managedComponentObject) throws Throwable {
         // Verify parameters
         if (testExecCtx == null || testExecResources == null) {
             Assert.fail("OneXOneBidirectionalTestLogic.testOneXOneBi004(): Missing context and/or resources.  Cannot execute the test.");
@@ -4371,11 +4199,6 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
         }
 
         // Fetch JPA Resources
-        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-        if (jpaCleanupResource == null) {
-            Assert.fail("Missing JPAResource 'cleanup').  Cannot execute the test.");
-            return;
-        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
@@ -4402,7 +4225,6 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
         // Execute Test Case
         try {
             System.out.println("OneXOneBidirectionalTestLogic.testOneXOneBi004(): Begin");
-            //cleanupDatabase(jpaCleanupResource);
 
             // ----------------------------------------------------------------------------------------------------
             // Verify Cascade: ALL Persist Behavior (1 POINTS)
@@ -4482,11 +4304,6 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("OneXOneBidirectionalTestLogic.testOneXOneBi004(): End");
         }
@@ -4512,9 +4329,8 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
      * 2) Create new BiEntityA(id=1), add BiEntityA(id=1) to BiEntityB_CRM(id=1)'s EntityA Collection.
      * 3) Remove BiEntityB_CRM(id=1)), verify that BiEntityA(id=1) still exists. Test point passes if it does.
      */
-    @SuppressWarnings("rawtypes")
     public void testOneXOneBi005(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                 Object managedComponentObject) {
+                                 Object managedComponentObject) throws Throwable {
         // Verify parameters
         if (testExecCtx == null || testExecResources == null) {
             Assert.fail("OneXOneBidirectionalTestLogic.testOneXOneBi005(): Missing context and/or resources.  Cannot execute the test.");
@@ -4522,11 +4338,6 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
         }
 
         // Fetch JPA Resources
-        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-        if (jpaCleanupResource == null) {
-            Assert.fail("Missing JPAResource 'cleanup').  Cannot execute the test.");
-            return;
-        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
@@ -4553,7 +4364,6 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
         // Execute Test Case
         try {
             System.out.println("OneXOneBidirectionalTestLogic.testOneXOneBi005(): Begin");
-            //cleanupDatabase(jpaCleanupResource);
 
             // ----------------------------------------------------------------------------------------------------
             // Verify Cascade: REMOVE Remove Behavior (3 POINTS)
@@ -4673,11 +4483,6 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("OneXOneBidirectionalTestLogic.testOneXOneBi005(): End");
         }
@@ -4712,9 +4517,8 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
      * on it directly, and merge by default does not cascade across entity relationships.
      *
      */
-    @SuppressWarnings("rawtypes")
     public void testOneXOneBi006(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                 Object managedComponentObject) {
+                                 Object managedComponentObject) throws Throwable {
         // Verify parameters
         if (testExecCtx == null || testExecResources == null) {
             Assert.fail("OneXOneBidirectionalTestLogic.testOneXOneBi006(): Missing context and/or resources.  Cannot execute the test.");
@@ -4722,11 +4526,6 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
         }
 
         // Fetch JPA Resources
-        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-        if (jpaCleanupResource == null) {
-            Assert.fail("Missing JPAResource 'cleanup').  Cannot execute the test.");
-            return;
-        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
@@ -4753,7 +4552,6 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
         // Execute Test Case
         try {
             System.out.println("OneXOneBidirectionalTestLogic.testOneXOneBi006(): Begin");
-            //cleanupDatabase(jpaCleanupResource);
 
             // ----------------------------------------------------------------------------------------------------
             // Verify CASCADE:MERGE Merge Cascade Behavior (12 POINTS)
@@ -4891,11 +4689,6 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("OneXOneBidirectionalTestLogic.testOneXOneBi006(): End");
         }
@@ -4925,9 +4718,8 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
      * 6) Verify that BiEntityB_CRF(id=1)'s name field has been reverted to the value it had when it was created.
      * 7) Verify that BiEntityA(id=1) still has the new value
      */
-    @SuppressWarnings("rawtypes")
     public void testOneXOneBi007(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                 Object managedComponentObject) {
+                                 Object managedComponentObject) throws Throwable {
         // Verify parameters
         if (testExecCtx == null || testExecResources == null) {
             Assert.fail("OneXOneBidirectionalTestLogic.testOneXOneBi007(): Missing context and/or resources.  Cannot execute the test.");
@@ -4935,11 +4727,6 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
         }
 
         // Fetch JPA Resources
-        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-        if (jpaCleanupResource == null) {
-            Assert.fail("Missing JPAResource 'cleanup').  Cannot execute the test.");
-            return;
-        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
@@ -4966,7 +4753,6 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
         // Execute Test Case
         try {
             System.out.println("OneXOneBidirectionalTestLogic.testOneXOneBi007(): Begin");
-            //cleanupDatabase(jpaCleanupResource);
 
             // ----------------------------------------------------------------------------------------------------
             // Verify CASCADE:REFRESH Refresh Cascade Behavior (10 POINTS)
@@ -5092,11 +4878,6 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("OneXOneBidirectionalTestLogic.testOneXOneBi007(): End");
         }
@@ -5114,9 +4895,8 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
      *
      * (1 POINT) - INVALID TEST CASE
      */
-    @SuppressWarnings({ "unchecked" })
     public void testBiCardinality001(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                     Object managedComponentObject) {
+                                     Object managedComponentObject) throws Throwable {
         // Verify parameters
         if (testExecCtx == null || testExecResources == null) {
             Assert.fail("OneXOneUnidirectionalTestLogic.testCardinality001(): Missing context and/or resources.  Cannot execute the test.");
@@ -5124,11 +4904,6 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
         }
 
         // Fetch JPA Resources
-        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-        if (jpaCleanupResource == null) {
-            Assert.fail("Missing JPAResource 'cleanup').  Cannot execute the test.");
-            return;
-        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
@@ -5155,7 +4930,6 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
         // Execute Test Case
         try {
             System.out.println("OneXOneUnidirectionalTestLogic.testCardinality001(): Begin");
-            //cleanupDatabase(jpaCleanupResource);
 
             System.out.println("Beginning new transaction...");
             jpaResource.getTj().beginTransaction();
@@ -5237,11 +5011,6 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
             }
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("OneXOneUnidirectionalTestLogic.testCardinality001(): End");
         }
@@ -5273,7 +5042,7 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
      * 5 POINTS
      */
     public void testOneXOneBi008(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                 Object managedComponentObject) {
+                                 Object managedComponentObject) throws Throwable {
         // Verify parameters
         if (testExecCtx == null || testExecResources == null) {
             Assert.fail("OneXOneUnidirectionalTestLogic.testOneXOneBi008(): Missing context and/or resources.  Cannot execute the test.");
@@ -5281,11 +5050,6 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
         }
 
         // Fetch JPA Resources
-        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
-        if (jpaCleanupResource == null) {
-            Assert.fail("Missing JPAResource 'cleanup').  Cannot execute the test.");
-            return;
-        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
@@ -5312,7 +5076,6 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
         // Execute Test Case
         try {
             System.out.println("OneXOneUnidirectionalTestLogic.testOneXOneBi008(): Begin");
-            //cleanupDatabase(jpaCleanupResource);
 
             System.out.println("Beginning new transaction...");
             jpaResource.getTj().beginTransaction();
@@ -5384,20 +5147,8 @@ public class OneXOneBidirectionalTestLogic extends AbstractTestLogic {
 //            jpaResource.getTj().rollbackTransaction();
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("OneXOneUnidirectionalTestLogic.testOneXOneBi008(): End");
         }
-    }
-
-    protected void cleanupDatabase(JPAResource jpaResource) {
-        // Cleanup the database for executing the test
-        System.out.println("Cleaning up database before executing test...");
-        cleanupDatabase(jpaResource.getEm(), jpaResource.getTj(), OneXOneBidirectionalEntityEnum.values());
-        System.out.println("Database cleanup complete.\n");
     }
 }

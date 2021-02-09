@@ -161,6 +161,40 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
     };
 
     /**
+     * Constant for ManagedTask.IDENTITY_NAME in whichever of Jakarta vs Java EE is NOT enabled
+     */
+    private static final String OTHER_SPEC_IDENTITY_NAME;
+
+    /**
+     * Constant for ManagedTask.LONGRUNNING_HINT in whichever of Jakarta vs Java EE is NOT enabled
+     */
+    private static final String OTHER_SPEC_LONGRUNNING_HINT;
+
+    /**
+     * Constant for ManagedTask.TRANSACTION in whichever of Jakarta vs Java EE is NOT enabled
+     */
+    private static final String OTHER_SPEC_TRANSACTION_CONSTANT;
+
+    static {
+        boolean jakarta = ManagedTask.IDENTITY_NAME.charAt(7) == '.';
+
+        OTHER_SPEC_IDENTITY_NAME = new StringBuilder(jakarta ? 41 : 43) //
+                        .append(jakarta ? "javax" : "jakarta") //
+                        .append(".enterprise.concurrent.IDENTITY_NAME") //
+                        .toString();
+
+        OTHER_SPEC_LONGRUNNING_HINT = new StringBuilder(jakarta ? 44 : 46) //
+                        .append(jakarta ? "javax" : "jakarta") //
+                        .append(".enterprise.concurrent.LONGRUNNING_HINT") //
+                        .toString();
+
+        OTHER_SPEC_TRANSACTION_CONSTANT = new StringBuilder(jakarta ? 39 : 41) //
+                        .append(jakarta ? "javax" : "jakarta") //
+                        .append(".enterprise.concurrent.TRANSACTION") //
+                        .toString();
+    }
+
+    /**
      * Names of applications using this ResourceFactory
      */
     private final Set<String> applications = Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>());
@@ -717,7 +751,14 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
         if (execProps == null)
             execProps = defaultExecProps;
         else {
-            Map<String, String> mergedProps = new TreeMap<String, String>(defaultExecProps);
+            Map<String, String> mergedProps;
+            if (execProps.containsKey(ManagedTask.TRANSACTION) || execProps.containsKey(OTHER_SPEC_TRANSACTION_CONSTANT)) {
+                mergedProps = new TreeMap<String, String>();
+                mergedProps.put(WSContextService.DEFAULT_CONTEXT, WSContextService.UNCONFIGURED_CONTEXT_TYPES);
+                mergedProps.put(WSContextService.TASK_OWNER, name);
+            } else {
+                mergedProps = new TreeMap<String, String>(defaultExecProps);
+            }
             mergedProps.putAll(execProps);
             execProps = mergedProps;
         }
@@ -1206,12 +1247,19 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
 
         Map<String, String> execProps = getExecutionProperties(task);
 
+        // ManagedTask.IDENTITY_NAME
         String name = execProps.get(ManagedTask.IDENTITY_NAME);
+        if (name == null)
+            name = execProps.get(OTHER_SPEC_IDENTITY_NAME);
         record.setName(Utils.normalizeString(name));
 
-        String longRunningHint = execProps.get(ManagedTask.LONGRUNNING_HINT);
+        // ManagedTask.LONGRUNNING_HINT
+        String key;
+        String longRunningHint = execProps.get(key = ManagedTask.LONGRUNNING_HINT);
+        if (longRunningHint == null)
+            longRunningHint = execProps.get(key = OTHER_SPEC_LONGRUNNING_HINT);
         if (Boolean.parseBoolean(longRunningHint))
-            throw new RejectedExecutionException(ManagedTask.LONGRUNNING_HINT + ": " + longRunningHint);
+            throw new RejectedExecutionException(key + ": " + longRunningHint);
 
         int txTimeout;
         String txTimeoutString = execProps.get(PersistentExecutor.TRANSACTION_TIMEOUT);
@@ -1227,6 +1275,11 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
             }
         record.setTransactionTimeout(txTimeout);
 
+        // ManagedTask.TRANSACTION
+        String transaction = execProps.get(ManagedTask.TRANSACTION);
+        if (transaction == null)
+            transaction = execProps.get(OTHER_SPEC_TRANSACTION_CONSTANT);
+
         short flags = 0;
         String autoPurge = execProps.get(AutoPurge.PROPERTY_NAME);
         if (autoPurge == null || AutoPurge.ON_SUCCESS.toString().equals(autoPurge))
@@ -1239,7 +1292,7 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
             flags |= TaskRecord.Flags.EJB_TIMER.bit;
         if (taskInfo.getInterval() == -1 && taskInfo.getInitialDelay() != -1)
             flags |= TaskRecord.Flags.ONE_SHOT_TASK.bit;
-        if (config.missedTaskThreshold > 0 || ManagedTask.SUSPEND.equals(execProps.get(ManagedTask.TRANSACTION)))
+        if (config.missedTaskThreshold > 0 || "SUSPEND".equals(transaction)) // ManagedTask.SUSPEND
             flags |= TaskRecord.Flags.SUSPEND_TRAN_OF_EXECUTOR_THREAD.bit;
 
         record.setMiscBinaryFlags(flags);

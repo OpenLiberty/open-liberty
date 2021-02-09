@@ -228,5 +228,10 @@ public class Basic12Test extends AbstractTest {
         assertTrue(result.indexOf(str) == result.lastIndexOf(str));
     }
 
-
+    @Test
+    public void testCdiConstructorInjectionInResource() throws IOException {
+        String result = runGetMethod("/rest/cdiresource/get", 200, "", false).toString();
+        System.out.println("testCdiConstructorInjectionInResource Result: " + result);
+        assertTrue(result.contains("Hello World!"));
+    } 
 }

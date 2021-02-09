@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2019 IBM Corporation and others.
+ * Copyright (c) 2014, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -40,7 +40,6 @@ import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
-import com.ibm.websphere.simplicity.Machine;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
@@ -75,7 +74,8 @@ public class HungRequestTiming {
         if (server != null && !server.isStarted()) {
             server.startServer();
         }
-        // Need to ensure the configuration is finished updating before starting a test
+        
+        // Allow the configuration to change back to the original and ensure the update is finished before starting a test
         server.setServerConfigurationFile("server_original.xml");
         server.waitForStringInLog("CWWKG0017I", 90000);
         server.setMarkToEndOfLog();
@@ -90,17 +90,17 @@ public class HungRequestTiming {
 
     @Test
     public void testParallelMultipleRequests() throws Exception {
-        CommonTasks.writeLogMsg(Level.INFO, "Setting hung threshold as 6s");
-        server.setServerConfigurationFile("server_hungRequestThreshold6.xml");
+        CommonTasks.writeLogMsg(Level.INFO, "Setting hung threshold as 2s");
+        server.setServerConfigurationFile("server_hungRequestThreshold2.xml");
         String srvConfigCompletedMsg = server.waitForStringInLog("CWWKG0017I", 90000);
 
         assertNotNull("The server configuration was successfully updated message was not found!", srvConfigCompletedMsg);
 
         CommonTasks.writeLogMsg(Level.INFO, "************ Thread 1 - Runs 10s  ************");
-        CommonTasks.writeLogMsg(Level.INFO, "************ Thread 2 - Runs 12s ************");
+        CommonTasks.writeLogMsg(Level.INFO, "************ Thread 2 - Runs 14s ************");
 
         HungRequestThread request1 = new HungRequestThread(10000);
-        HungRequestThread request2 = new HungRequestThread(12000);
+        HungRequestThread request2 = new HungRequestThread(14000);
 
         request1.start();
         request2.start();
@@ -125,7 +125,7 @@ public class HungRequestTiming {
 
         assertNotNull("The server configuration was successfully updated message was not found!", srvConfigCompletedMsg);
 
-        URL url = new URL("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/TestWebApp/TestServlet?sleepTime=6500");
+        URL url = new URL("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/TestWebApp/TestServlet?sleepTime=4500");
         CommonTasks.writeLogMsg(Level.INFO, "Calling TestWebApp Application with URL=" + url.toString());
         HttpURLConnection con = getHttpConnection(url);
         BufferedReader br = getConnectionStream(con);
@@ -235,12 +235,12 @@ public class HungRequestTiming {
 
     @Test
     public void testHungDynamicThresholdUpdate() throws Exception {
-        CommonTasks.writeLogMsg(Level.INFO, "Setting hung threshold as 6s");
-        server.setServerConfigurationFile("server_hungRequestThreshold6.xml");
+        CommonTasks.writeLogMsg(Level.INFO, "Setting hung threshold as 2s");
+        server.setServerConfigurationFile("server_hungRequestThreshold2.xml");
 
         server.waitForStringInLog("CWWKG0017I", 90000);
 
-        URL url = new URL("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/TestWebApp/TestServlet?sleepTime=9000");
+        URL url = new URL("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/TestWebApp/TestServlet?sleepTime=4000");
         CommonTasks.writeLogMsg(Level.INFO, "Calling TestWebApp Application with URL=" + url.toString());
         HttpURLConnection con = getHttpConnection(url);
         BufferedReader br = getConnectionStream(con);
@@ -256,11 +256,11 @@ public class HungRequestTiming {
         String line1 = lines.get(previous - 1);
         assertTrue("No Hung detection warning found!!!", (previous > 0));
         CommonTasks.writeLogMsg(Level.INFO, "----> Hung Request Warning 1 : " + line1);
-        assertTrue("Hung warning does not show that request was hung for 6s as expected..", isCorrectDuration(line1, 6000));
+        assertTrue("Hung warning does not show that request was hung for 2s as expected..", isCorrectDuration(line1, 2000));
 
-        CommonTasks.writeLogMsg(Level.INFO, "Setting hung threshold as 7s");
-        server.setServerConfigurationFile("server_hungRequestThreshold7.xml");
-        server.waitForStringInLog("CWWKG0017I", 90000);
+        CommonTasks.writeLogMsg(Level.INFO, "Setting hung threshold as 3s");
+        server.setServerConfigurationFile("server_hungRequestThreshold3.xml");
+        server.waitForStringInLogUsingMark("CWWKG0017I", 90000);
 
         CommonTasks.writeLogMsg(Level.INFO, "Calling TestWebApp Application with URL=" + url.toString());
         con = getHttpConnection(url);
@@ -269,7 +269,7 @@ public class HungRequestTiming {
 
         CommonTasks.writeLogMsg(Level.INFO, "Waiting for hung detection warning");
         CommonTasks.writeLogMsg(Level.INFO, "----> Hung Request Warning 1 : " + line1);
-        server.waitForStringInLog("TRAS0114W", 30000);
+        server.waitForStringInLogUsingMark("TRAS0114W", 30000);
 
         lines = server.findStringsInFileInLibertyServerRoot("TRAS0114W", MESSAGE_LOG);
         int current = lines.size();
@@ -279,7 +279,7 @@ public class HungRequestTiming {
         String line2 = lines.get(current - 1);
         CommonTasks.writeLogMsg(Level.INFO, "----> Hung RequestWarning 2 : " + line2);
 
-        assertTrue("Hung warning does not show that request was hung for 7s as expected..", isCorrectDuration(line2, 7000));
+        assertTrue("Hung warning does not show that request was hung for 3s as expected..", isCorrectDuration(line2, 3000));
 
         CommonTasks.writeLogMsg(Level.INFO, "***** Dynamic Update of HungRequestThreshold works as expected! *****");
     }
@@ -287,16 +287,14 @@ public class HungRequestTiming {
     @Test
     @Mode(TestMode.FULL)
     public void testHungRequestDynamicEnable() throws Exception {
-        server.setMarkToEndOfLog();
         CommonTasks.writeLogMsg(Level.INFO, "Starting server without Request Timing Feature..");
         server.setServerConfigurationFile("server_withOutReqTiming.xml");
-        server.waitForStringInLogUsingMark("CWWKF0007I", 90000); // feature update started message
-        server.waitForStringInLogUsingMark("CWWKF0013I", 90000); // feature removed message
-        server.waitForStringInLogUsingMark("CWWKF0008I", 90000); // feature update completed message
+        server.waitForStringInLog("CWWKF0007I", 90000); // feature update started message
+        String temp = server.waitForStringInLog("CWWKF0013I", 90000); // feature removed message
+        assertNotNull("Could not find message - Server removed Request Timing and Request Probe Features.", temp);
+        server.waitForStringInLog("CWWKF0008I", 90000); // feature update completed message
 
-        List<String> lines = server.findStringsInFileInLibertyServerRoot("CWWKF0013I", MESSAGE_LOG);
-        assertTrue("Could not find message - Server removed Request Timing and Request Probe Features.", lines.size() == 1);
-        CommonTasks.writeLogMsg(Level.INFO, " ------ > Request Timing feature removed : " + lines.get(0));
+        CommonTasks.writeLogMsg(Level.INFO, " ------> Request Timing feature removed : " + temp);
 
         server.setMarkToEndOfLog();
         CommonTasks.writeLogMsg(Level.INFO, "-----> Updating server configuration to ADD Request Timing feature..");
@@ -304,7 +302,7 @@ public class HungRequestTiming {
 
         server.waitForStringInLogUsingMark("CWWKF0012I", 30000);
 
-        lines = server.findStringsInFileInLibertyServerRoot("CWWKF0012I", MESSAGE_LOG);
+        List<String> lines = server.findStringsInFileInLibertyServerRoot("CWWKF0012I", MESSAGE_LOG);
         boolean featureFound = false;
         for (String line : lines) {
             CommonTasks.writeLogMsg(Level.INFO, " ------> Config Update Warning : " + line);
@@ -317,14 +315,15 @@ public class HungRequestTiming {
         CommonTasks.writeLogMsg(Level.INFO, "********* Added Request Timing Feature..! *********");
 
         server.setMarkToEndOfLog();
-        CommonTasks.writeLogMsg(Level.INFO, "Setting hung threshold as 6s");
-        server.setServerConfigurationFile("server_hungRequestThreshold6.xml");
+        CommonTasks.writeLogMsg(Level.INFO, "Setting hung threshold as 2s");
+        server.setServerConfigurationFile("server_hungRequestThreshold2.xml");
 
         server.waitForStringInLogUsingMark("CWWKG0017I", 50000);
         server.waitForStringInLogUsingMark("CWWKZ0018I", 10000);
         server.waitForStringInLogUsingMark("CWWKT0016I", 10000);
 
-        createRequest(9000);
+        createRequest(3000);
+        server.waitForStringInLogUsingMark("TRAS0114W", 90000);
         lines = server.findStringsInFileInLibertyServerRoot("TRAS0114W", MESSAGE_LOG);
         CommonTasks.writeLogMsg(Level.INFO, "---> No. of Hung warnings : " + lines.size());
         assertTrue("Hung detection warning found!!!", (lines.size() > 0));
@@ -335,14 +334,13 @@ public class HungRequestTiming {
     @Test
     @Mode(TestMode.FULL)
     public void testHungRequestDynamicDisable() throws Exception {
-        server.setMarkToEndOfLog();
-        CommonTasks.writeLogMsg(Level.INFO, "Setting hung threshold as 6s");
-        server.setServerConfigurationFile("server_hungRequestThreshold6.xml");
+        CommonTasks.writeLogMsg(Level.INFO, "Setting hung threshold as 2s");
+        server.setServerConfigurationFile("server_hungRequestThreshold2.xml");
         String srvConfigCompletedMsg = server.waitForStringInLog("CWWKG0017I|CWWKG0018I", 90000);
 
         assertNotNull("The server configuration was successfully updated message was not found!", srvConfigCompletedMsg);
 
-        createRequest(9000);
+        createRequest(3000);
 
         CommonTasks.writeLogMsg(Level.INFO, "Waiting for hung detection warning");
         server.waitForStringInLog("TRAS0114W", 30000);
@@ -357,28 +355,29 @@ public class HungRequestTiming {
 
         CommonTasks.writeLogMsg(Level.INFO, "***** Removing Threshold Configuration  *****");
         server.setServerConfigurationFile("server_original.xml");
-        server.waitForStringInLog("CWWKG0017I", 90000);
+        server.waitForStringInLogUsingMark("CWWKG0017I", 90000);
 
-        createRequest(9000);
+        createRequest(3000);
 
         lines = server.findStringsInFileInLibertyServerRoot("TRAS0114W", MESSAGE_LOG);
         CommonTasks.writeLogMsg(Level.INFO, "---> No of Hung detection warnings found : " + lines.size());
-        assertTrue("Hung detection warning found!!!", ((lines.size() - previous) == 0));
+        assertTrue("Hung detection warning found when none was expected!!!", ((lines.size() - previous) == 0));
 
         CommonTasks.writeLogMsg(Level.INFO, "***** Removing Request Timing Feature  *****");
         server.setServerConfigurationFile("server_withOutReqTiming.xml");
-        server.waitForStringInLog("CWWKF0013I", 30000);
+        server.waitForStringInLogUsingMark("CWWKF0013I", 30000);
 
         lines = server.findStringsInFileInLibertyServerRoot("CWWKF0013I", MESSAGE_LOG);
 
-        assertTrue("Request timing feature is not disabled..", (lines.size() > 0));
-        server.setMarkToEndOfLog();
-
-        if (lines.size() > 0) {
-            if (lines.get(0).contains("requestTiming")) {
+        boolean requestTimingFeatureRemoved = false;
+        for (int index = 0; index < lines.size(); index++) {
+            if (lines.get(index).contains("requestTiming")) {
                 CommonTasks.writeLogMsg(Level.INFO, "------> Request Timing feature disabled!" + "\n Message found  : " + lines.get(0));
+                requestTimingFeatureRemoved = true;
             }
         }
+
+        assertTrue("Request timing feature is not disabled..", requestTimingFeatureRemoved);
 
         CommonTasks.writeLogMsg(Level.INFO, "********* Removed Request Timing Feature..! *********");
     }
@@ -386,14 +385,18 @@ public class HungRequestTiming {
     @Test
     @Mode(TestMode.FULL)
     public void testSequentialHungMultipleRequests() throws Exception {
-        server.setMarkToEndOfLog();
-        CommonTasks.writeLogMsg(Level.INFO, "Setting hung threshold as 6s");
-        server.setServerConfigurationFile("server_hungRequestThreshold6.xml");
+        CommonTasks.writeLogMsg(Level.INFO, "Setting hung threshold as 2s");
+        server.setServerConfigurationFile("server_hungRequestThreshold2.xml");
 
-        server.waitForStringInLogUsingMark("CWWKG0017I|CWWKG0018I", 90000);
+        server.waitForStringInLog("CWWKG0017I|CWWKG0018I", 90000);
 
-        createRequest(9000);
+        createRequest(3000);
 
+        // The next request will have 59secs to complete before the next Java core gets generated
+        // The Java cores get generated 1min apart from each other
+        long finishTimeOfFirstRequest = System.currentTimeMillis();
+
+        server.waitForStringInLog("TRAS0114W", 90000);
         List<String> lines = server.findStringsInFileInLibertyServerRoot("TRAS0114W", MESSAGE_LOG);
         int previous = lines.size();
         CommonTasks.writeLogMsg(Level.INFO, "---> No. of Hung warnings : " + previous);
@@ -402,13 +405,16 @@ public class HungRequestTiming {
             CommonTasks.writeLogMsg(Level.INFO, "---> Hung warning : " + line);
         }
 
-        //wait for request 1 to complete
+        // wait for request 1 to complete
         server.waitForStringInLog("TRAS0115W", 30000);
+
+        server.setMarkToEndOfLog();
 
         CommonTasks.writeLogMsg(Level.INFO, "****** Request 2 ******");
 
-        createRequest(9000);
+        createRequest(3000);
 
+        server.waitForStringInLogUsingMark("TRAS0114W", 90000);
         lines = server.findStringsInFileInLibertyServerRoot("TRAS0114W", MESSAGE_LOG);
         int current = lines.size();
         CommonTasks.writeLogMsg(Level.INFO, "---> No. of Hung warnings : " + current);
@@ -421,7 +427,12 @@ public class HungRequestTiming {
         lines = server.findStringsInFileInLibertyServerRoot("CWWKE0068I", MESSAGE_LOG);
         int cores = lines.size();
         CommonTasks.writeLogMsg(Level.INFO, "---> No. of java cores created : " + cores);
-        assertTrue("Expected 1 Java core.. But found : " + cores, (cores == 1));
+        if (System.currentTimeMillis() - finishTimeOfFirstRequest > 59000) {
+            fail("Test case testSequentialHungMultipleRequests is inconclusive as the second request was not able to complete within"
+                 + "one minute, thus allowing the possibility of another Java core to be generated");
+        } else {
+            assertTrue("Expected 1 Java core.. But found : " + cores, (cores == 1));
+        }
 
         CommonTasks.writeLogMsg(Level.INFO, "****** Hung Request Multiple Requests works as expected! ******");
     }
@@ -429,25 +440,25 @@ public class HungRequestTiming {
     @Test
     @Mode(TestMode.FULL)
     public void testHungRequestTiming() throws Exception {
-        server.setMarkToEndOfLog();
-        CommonTasks.writeLogMsg(Level.INFO, "Setting hung threshold as 6s");
-        server.setServerConfigurationFile("server_hungRequestThreshold6.xml");
+        CommonTasks.writeLogMsg(Level.INFO, "Setting hung threshold as 2s");
+        server.setServerConfigurationFile("server_hungRequestThreshold2.xml");
         String srvConfigCompletedMsg = server.waitForStringInLog("CWWKG0017I|CWWKG0018I", 90000);
 
         assertNotNull("The server configuration was successfully updated message was not found!", srvConfigCompletedMsg);
 
-        createRequest(290000);
+        createRequest(290000); // We must wait this long to see if more than 3 java cores are generated (we expect only 3)
 
         CommonTasks.writeLogMsg(Level.INFO, "Waiting for hung detection warning");
-        server.waitForStringInLogUsingMark("TRAS0114W", 90000);
+        server.waitForStringInLog("TRAS0114W", 90000);
 
         List<String> lines = server.findStringsInFileInLibertyServerRoot("TRAS0114W", MESSAGE_LOG);
         assertTrue("No Hung detection warning found!!!", (lines.size() > 0));
 
         CommonTasks.writeLogMsg(Level.INFO, "----> Hung Request Warning : \n" + lines.get(0));
         CommonTasks.writeLogMsg(Level.INFO, "Waiting for Java cores to be generated");
-        server.waitForStringInLogUsingMark("CWWKE0067I", 30000);
-        server.waitForStringInLogUsingMark("TRAS0115W", 30000);
+        // Waiting for just one of the Java core request message is enough since we already make the request sleep for about 4.83min
+        server.waitForStringInLog("CWWKE0067I", 30000);
+        server.waitForStringInLog("TRAS0115W", 30000);
 
         lines = server.findStringsInFileInLibertyServerRoot("TRAS0115W", MESSAGE_LOG);
         assertTrue("Hung completion message not found!!", (lines.size() > 0));
@@ -517,7 +528,6 @@ public class HungRequestTiming {
         }
         CommonTasks.writeLogMsg(Level.INFO, "----> Java cores are generated 1 min apart");
 
-        lines = server.findStringsInFileInLibertyServerRoot("TRAS0114W", MESSAGE_LOG);
         assertTrue("Expected 3 Hung detection warnings but found : " + javaCoreCount, (javaCoreCount == 3));
 
         CommonTasks.writeLogMsg(Level.INFO, "****** Hung Request Timing is works as expected ******");

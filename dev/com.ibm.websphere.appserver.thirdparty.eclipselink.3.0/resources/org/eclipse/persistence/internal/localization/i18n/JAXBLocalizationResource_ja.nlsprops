@@ -1,0 +1,71 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/internal/localization/i18n/JAXBLocalizationResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+add_namespace_resolvers=\u540d\u524d\u7a7a\u9593\u30ea\u30be\u30eb\u30d0\u30fc\u3092\u8ffd\u52a0\u3057\u3066\u3044\u307e\u3059
+
+create_descriptors=\u8a18\u8ff0\u5b50\u3092\u4f5c\u6210\u3057\u3066\u3044\u307e\u3059
+
+create_mappings=\u30de\u30c3\u30d4\u30f3\u30b0\u3092\u8a18\u8ff0\u5b50 {0} \u306b\u8ffd\u52a0\u3057\u3066\u3044\u307e\u3059
+
+error=\u30a8\u30e9\u30fc:  
+
+generate_files=\u30c7\u30d7\u30ed\u30a4\u30e1\u30f3\u30c8 XML \u304a\u3088\u3073\u30bb\u30c3\u30b7\u30e7\u30f3\u69cb\u6210\u3092\u4f5c\u6210\u3057\u3066\u3044\u307e\u3059
+
+generate_source=\u5b9f\u88c5\u30af\u30e9\u30b9\u3092\u751f\u6210\u3057\u3066\u3044\u307e\u3059
+
+impl_package_missing=\u5b9f\u88c5\u30af\u30e9\u30b9\u30fb\u30d1\u30c3\u30b1\u30fc\u30b8\u540d\u304c\u6b20\u843d\u3057\u3066\u3044\u307e\u3059
+
+io_exception_error=\u30a8\u30e9\u30fc: \u4e88\u671f\u3057\u306a\u3044 IOException
+
+malformed_url_error=\u30a8\u30e9\u30fc: \u4e88\u671f\u3057\u306a\u3044 MalformedURLException
+
+missing_customization=\u5165\u529b\u30ab\u30b9\u30bf\u30de\u30a4\u30ba\u30fb\u30d5\u30a1\u30a4\u30eb\u304c\u6b20\u843d\u3057\u3066\u3044\u307e\u3059
+
+missing_output_dir=TopLink \u51fa\u529b\u30c7\u30a3\u30ec\u30af\u30c8\u30ea\u30fc\u540d\u304c\u6b20\u843d\u3057\u3066\u3044\u307e\u3059
+
+missing_project_dir=TopLink Workbench \u30d7\u30ed\u30b8\u30a7\u30af\u30c8\u306e\u30c7\u30a3\u30ec\u30af\u30c8\u30ea\u30fc\u540d\u304c\u6b20\u843d\u3057\u3066\u3044\u307e\u3059
+
+missing_schema_file=\u5165\u529b\u30b9\u30ad\u30fc\u30de\u30fb\u30d5\u30a1\u30a4\u30eb\u304c\u6b20\u843d\u3057\u3066\u3044\u307e\u3059
+
+missing_src_dir=\u30bd\u30fc\u30b9\u51fa\u529b\u30c7\u30a3\u30ec\u30af\u30c8\u30ea\u30fc\u540d\u304c\u6b20\u843d\u3057\u3066\u3044\u307e\u3059
+
+missing_target_package=\u30bf\u30fc\u30b2\u30c3\u30c8\u30fb\u30d1\u30c3\u30b1\u30fc\u30b8\u540d\u304c\u6b20\u843d\u3057\u3066\u3044\u307e\u3059
+
+read_customization=\u30ab\u30b9\u30bf\u30de\u30a4\u30ba\u30fb\u30d5\u30a1\u30a4\u30eb\u3092\u8aad\u307f\u53d6\u3063\u3066\u3044\u307e\u3059
+
+setup_inheritance=\u7d99\u627f\u306e\u6e96\u5099\u3092\u3057\u3066\u3044\u307e\u3059
+
+start_mw_project=Mapping Workbench \u30d7\u30ed\u30b8\u30a7\u30af\u30c8\u3092\u4f5c\u6210\u3057\u3066\u3044\u307e\u3059
+
+start_orajaxb=orajaxb \u3092\u8d77\u52d5\u3057\u3066\u3044\u307e\u3059
+
+start_toplink=TopLink \u751f\u6210\u3092\u8d77\u52d5\u3057\u3066\u3044\u307e\u3059
+
+version=\u30d0\u30fc\u30b8\u30e7\u30f3: 
+

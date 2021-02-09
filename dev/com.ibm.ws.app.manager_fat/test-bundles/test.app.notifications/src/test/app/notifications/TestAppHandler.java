@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,6 +32,7 @@ import com.ibm.wsspi.application.handler.ApplicationHandler;
 import com.ibm.wsspi.application.handler.ApplicationInformation;
 import com.ibm.wsspi.application.handler.ApplicationMonitoringInformation;
 import com.ibm.wsspi.application.handler.ApplicationTypeSupported;
+import com.ibm.wsspi.application.lifecycle.ApplicationStartBarrier;
 import com.ibm.wsspi.artifact.ArtifactContainer;
 import com.ibm.wsspi.artifact.ArtifactEntry;
 import com.ibm.wsspi.artifact.ArtifactNotifier;
@@ -206,10 +207,12 @@ public class TestAppHandler implements ApplicationHandler<String>, RuntimeUpdate
                 }
 
                 @Override
-                public void useFastMode() {}
+                public void useFastMode() {
+                }
 
                 @Override
-                public void stopUsingFastMode() {}
+                public void stopUsingFastMode() {
+                }
 
                 @Override
                 public boolean isRoot() {
@@ -267,4 +270,7 @@ public class TestAppHandler implements ApplicationHandler<String>, RuntimeUpdate
         return null;
     }
 
+    @Reference
+    private void setApplicationStartBarrier(ApplicationStartBarrier applicationStartBarrier) {
+    }
 }

@@ -1,0 +1,55 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/DBWSExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+47000="[{0}]" \ud30c\uc77c\uc744 \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+
+47001=O-R \ud504\ub85c\uc81d\ud2b8\uc5d0\uc11c [{1}] \uc870\uc791\uc5d0 \ub300\ud55c [{0}] \ub514\uc2a4\ud06c\ub9bd\ud130\ub97c \ucc3e\uc744 \uc218 \uc5c6\uc74c
+
+47002=[{1}] \ub514\uc2a4\ud06c\ub9bd\ud130\uc5d0 \ub300\ud55c [{0}] \uc870\ud68c\ub97c \ucc3e\uc744 \uc218 \uc5c6\uc74c
+
+47003=[{1}] \uc138\uc158\uc5d0 \ub300\ud55c [{0}] \uc870\ud68c\ub97c \ucc3e\uc744 \uc218 \uc5c6\uc74c
+
+47004=[{1}] \uc870\uc791\uc5d0 \ub300\ud55c \ub9e4\uac1c\ubcc0\uc218 \uc720\ud615 [{0}]\uc774(\uac00) \uc2a4\ud0a4\ub9c8\uc5d0 \uc874\uc7ac\ud558\uc9c0 \uc54a\uc74c
+
+47005=[{1}] \uc870\uc791\uc5d0 \ub300\ud55c \ub9e4\uac1c\ubcc0\uc218 \uc720\ud615 [{0}]\uc5d0 O-X \ub9f5\ud551\uc774 \uc5c6\uc74c
+
+47006=[{1}] \uc870\uc791\uc5d0 \ub300\ud55c \uacb0\uacfc \uc720\ud615 [{0}]\uc774(\uac00) \uc2a4\ud0a4\ub9c8\uc5d0 \uc874\uc7ac\ud558\uc9c0 \uc54a\uc74c
+
+47007=[{1}] \uc870\uc791\uc5d0 \ub300\ud55c \uacb0\uacfc \uc720\ud615 [{0}]\uc5d0 O-X \ub9f5\ud551\uc774 \uc5c6\uc74c
+
+47008=\ub2e8\uc21c XML \ud615\uc2dd \uc870\ud68c\ub9cc \ub2e4\uc911 \ucd9c\ub825 \uc778\uc218\ub97c \uc9c0\uc6d0\ud568
+
+47009=INOUT \ucee4\uc11c \ub9e4\uac1c\ubcc0\uc218\ub294 \uc9c0\uc6d0\ub418\uc9c0 \uc54a\uc74c
+
+47010=[{0}] \uc11c\ube44\uc2a4\uc5d0 \ub300\ud55c O-R \uc138\uc158\uc744 \ucc3e\uc744 \uc218 \uc5c6\uc74c
+
+47011=[{0}] \uc11c\ube44\uc2a4\uc5d0 \ub300\ud55c O-X \uc138\uc158\uc744 \ucc3e\uc744 \uc218 \uc5c6\uc74c
+
+47012=DBWS \ud30c\uc77c\uc744 \uad6c\ubd84 \ubd84\uc11d\ud560 \uc218 \uc5c6\uc74c
+

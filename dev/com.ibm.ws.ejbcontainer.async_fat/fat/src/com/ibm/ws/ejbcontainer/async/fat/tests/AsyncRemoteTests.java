@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,7 @@ import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.ws.ejbcontainer.async.fat.cancel.web.FutureCancelLocalTestServlet;
 import com.ibm.ws.ejbcontainer.async.fat.cancel.web.FutureCancelRemoteTestServlet;
 import com.ibm.ws.ejbcontainer.async.fat.fafRemote.web.AsyncFireAndForgetRemoteServlet;
@@ -30,6 +31,7 @@ import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 
@@ -49,10 +51,14 @@ public class AsyncRemoteTests extends AbstractTest {
     }
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.async.fat.AsyncRemoteServer")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.async.fat.AsyncRemoteServer"));
+    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.async.fat.AsyncRemoteServer")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.async.fat.AsyncRemoteServer")).andWith(new JakartaEE9Action().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.async.fat.AsyncRemoteServer"));
 
     @BeforeClass
     public static void beforeClass() throws Exception {
+        // cleanup from prior repeat actions
+        server.deleteAllDropinApplications();
+        server.removeAllInstalledAppsForValidation();
+
         // Use ShrinkHelper to build the Ears & Wars
 
         //#################### InitTxRecoveryLogApp.ear (Automatically initializes transaction recovery logs)
@@ -61,7 +67,7 @@ public class AsyncRemoteTests extends AbstractTest {
         EnterpriseArchive InitTxRecoveryLogApp = ShrinkWrap.create(EnterpriseArchive.class, "InitTxRecoveryLogApp.ear");
         InitTxRecoveryLogApp.addAsModule(InitTxRecoveryLogEJBJar);
 
-        ShrinkHelper.exportDropinAppToServer(server, InitTxRecoveryLogApp);
+        ShrinkHelper.exportDropinAppToServer(server, InitTxRecoveryLogApp, DeployOptions.SERVER_ONLY);
 
         //#################### AsyncFafRemoteApp.ear
         JavaArchive AsyncFafRemoteEJB = ShrinkHelper.buildJavaArchive("AsyncFafRemoteEJB.jar", "com.ibm.ws.ejbcontainer.async.fat.fafRemote.ejb.");
@@ -70,7 +76,7 @@ public class AsyncRemoteTests extends AbstractTest {
         AsyncFafRemoteApp.addAsModule(AsyncFafRemoteEJB).addAsModule(AsyncFafRemoteWeb);
         AsyncFafRemoteApp = (EnterpriseArchive) ShrinkHelper.addDirectory(AsyncFafRemoteApp, "test-applications/AsyncFafRemoteApp.ear/resources");
 
-        ShrinkHelper.exportDropinAppToServer(server, AsyncFafRemoteApp);
+        ShrinkHelper.exportDropinAppToServer(server, AsyncFafRemoteApp, DeployOptions.SERVER_ONLY);
 
         //#################### AsyncFarRemoteTest.ear
         JavaArchive AsyncFarRemoteEJB = ShrinkHelper.buildJavaArchive("AsyncFarRemoteEJB.jar", "com.ibm.ws.ejbcontainer.async.fat.farRemote.ejb.");
@@ -79,13 +85,13 @@ public class AsyncRemoteTests extends AbstractTest {
         AsyncFarRemoteTest.addAsModule(AsyncFarRemoteEJB).addAsModule(AsyncFarRemoteWeb);
         AsyncFarRemoteTest = (EnterpriseArchive) ShrinkHelper.addDirectory(AsyncFarRemoteTest, "test-applications/AsyncFarRemoteTest.ear/resources");
 
-        ShrinkHelper.exportDropinAppToServer(server, AsyncFarRemoteTest);
+        ShrinkHelper.exportDropinAppToServer(server, AsyncFarRemoteTest, DeployOptions.SERVER_ONLY);
 
         //#################### AsyncFutureCancelTest.war
         WebArchive AsyncFutureCancelTest = ShrinkHelper.buildDefaultApp("AsyncFutureCancelTest.war", "com.ibm.ws.ejbcontainer.async.fat.cancel.web.");
         AsyncFutureCancelTest = (WebArchive) ShrinkHelper.addDirectory(AsyncFutureCancelTest, "test-applications/AsyncFutureCancelTest.war/resources");
 
-        ShrinkHelper.exportDropinAppToServer(server, AsyncFutureCancelTest);
+        ShrinkHelper.exportDropinAppToServer(server, AsyncFutureCancelTest, DeployOptions.SERVER_ONLY);
 
         // Finally, start server
         server.startServer();

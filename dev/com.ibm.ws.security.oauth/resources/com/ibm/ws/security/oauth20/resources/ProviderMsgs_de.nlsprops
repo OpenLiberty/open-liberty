@@ -322,7 +322,7 @@ security.oauth20.front.end.error=CWOAU0073E: Es ist ein Authentifizierungsfehler
 security.oauth20.front.end.error.explanation=Es ist m\u00f6glich, dass in der Anforderung Informationen fehlen, dass ein interner Fehler im Server aufgetreten ist oder dass ein anderer Fehler die erfolgreiche Authentifizierung des Benutzers verhindert.
 security.oauth20.front.end.error.useraction=Bitten Sie Ihren Systemadministrator, das Problem zu beheben.
 
-security.oauth20.endpoint.resowner.apppassword.error=CWOAU0074E: Die Austauschanforderung f\u00fcr das Anwendungskennwort f\u00fcr den Benutzer {0} konnte nicht ausgef\u00fchrt werden, weil das Anwendungskennwort nicht best\u00e4tigt werden konnte. Das Anwendungskennwort ist entweder falsch, abgelaufen oder wurde widerrufen, oder die angegebene Client-ID ist nicht g\u00fcltig.
+security.oauth20.endpoint.resowner.apppassword.error=CWOAU0074E: Die Austauschanforderung f\u00fcr das Anwendungskennwort f\u00fcr den Benutzer {0} konnte nicht ausgef\u00fchrt werden, weil der OAuth-Provider das Anwendungskennwort nicht verifizieren konnte. Das Anwendungskennwort ist entweder falsch, abgelaufen oder wurde widerrufen, oder die angegebene Client-ID oder Benutzer-ID ist nicht g\u00fcltig.
 security.oauth20.endpoint.resowner.apppassword.error.explanation=Der OAuth-Provider konnte das Anwendungskennwort nicht best\u00e4tigen.
 security.oauth20.endpoint.resowner.apppassword.error.useraction=Vergewissern Sie sich, dass das Anwendungskennwort g\u00fcltig und nicht abgelaufen ist und nicht widerrufen wurde. \u00dcberpr\u00fcfen Sie au\u00dferdem, dass die Client-ID im Zugriffstoken mit der Client-ID im Berechtigungsheader \u00fcbereinstimmt.
 
@@ -353,3 +353,8 @@ security.oauth20.pkce.codeverifier.length.error.useraction=Senden Sie die Berech
 security.oauth20.pkce.error.mismatch.codeverifier=CWOAU0081E: code_challenge [{0}] und code_verifier [{1}] stimmen nicht \u00fcberein. 
 security.oauth20.pkce.error.mismatch.codeverifier.explanation=Der OAuth-Provider verwendet die code_challenge_method-Angabe in der Berechtigungsanforderung und transformiert den code_verifier, sofern f\u00fcr code_challenge_method 'plain' angegeben wurde. Der transformierte Wert muss der code_challenge-Angabe in der Berechtigungsanforderung entsprechen.
 security.oauth20.pkce.error.mismatch.codeverifier.useraction=Vergewissern Sie sich, dass Sie mit den Berechtigungs- und Tokenanforderungen die entsprechenden code_challenge- und code_verifier-Angaben sowie den richtigen Transformationsalgorithmus senden.
+
+# 0=User name, 1=OAuth client ID, 2=Maximum number of tokens allowed
+security.oauth20.refreshed.access.token.limit.reached=CWOAU0082E: Der Benutzer [{0}] und der OAuth-Client [{1}] haben die maximal zul\u00e4ssige Anzahl von Zugriffstokens ([{2}]) erreicht, die mithilfe von Aktualisierungstokens erstellt werden k\u00f6nnen. Ein neues Zugriffstoken kann nicht mit dem bereitgestellten Aktualisierungstoken erstellt werden.
+security.oauth20.refreshed.access.token.limit.reached.explanation=Eine Kombination aus OAuth-Client und Benutzer kann eine begrenzte Anzahl von Zugriffstokens mithilfe von Aktualisierungstokens anfordern. Es kann kein neuer Zugriffstoken erstellt werden.
+security.oauth20.refreshed.access.token.limit.reached.useraction=Erh\u00f6hen Sie die Anzahl der Zugriffstokens, die \u00fcber Aktualisierungstokens ausgegeben werden k\u00f6nnen. Alternativ k\u00f6nnen Sie einige der vorhandenen Zugriffstoken f\u00fcr den Benutzer und den OAuth-Client, die in der Nachricht angegeben sind, widerrufen.

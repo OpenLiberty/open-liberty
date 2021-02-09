@@ -84,7 +84,7 @@ public class CallbackOrderOfInvocationTestLogic extends AbstractTestLogic {
     public void testOrderOfInvocation001(
                                          TestExecutionContext testExecCtx,
                                          TestExecutionResources testExecResources,
-                                         Object managedComponentObject) {
+                                         Object managedComponentObject) throws Throwable {
         // Verify parameters
         if (testExecCtx == null || testExecResources == null) {
             Assert.fail("testOrderOfInvocation001: Missing context and/or resources.  Cannot execute the test.");
@@ -130,11 +130,6 @@ public class CallbackOrderOfInvocationTestLogic extends AbstractTestLogic {
             testPostRemoveLifecycle(targetEntityType, jpaResource, listenerProtectionType); // 13 points
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("CallbackTestLogic.testOrderOfInvocation001(): End");
             AbstractCallbackListener.resetGlobalCallbackEventList();
@@ -152,7 +147,7 @@ public class CallbackOrderOfInvocationTestLogic extends AbstractTestLogic {
     private void testPrePersistLifecycle(
                                          CallbackOOIEntityEnum targetEntityType,
                                          JPAResource jpaResource,
-                                         ProtectionType protectionType) {
+                                         ProtectionType protectionType) throws Throwable {
         System.out.println("Testing @PrePersist Order of Invocation behavior...");
         resetListeners();
         AbstractCallbackListener.setGlobalCallbackEventFilter(CallbackLifeCycle.PrePersist);
@@ -215,11 +210,6 @@ public class CallbackOrderOfInvocationTestLogic extends AbstractTestLogic {
                                        (expectedCR.getCallerMethodName().equals(actualCR.getCallerMethodName()))));
                 }
             }
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             // Cleanup
             resetListeners();
@@ -243,7 +233,7 @@ public class CallbackOrderOfInvocationTestLogic extends AbstractTestLogic {
     private void testPostPersistLifecycle(
                                           CallbackOOIEntityEnum targetEntityType,
                                           JPAResource jpaResource,
-                                          ProtectionType protectionType) {
+                                          ProtectionType protectionType) throws Throwable {
         System.out.println("Testing @PostPersist Order of Invocation behavior...");
         resetListeners();
         AbstractCallbackListener.setGlobalCallbackEventFilter(CallbackLifeCycle.PostPersist);
@@ -311,11 +301,6 @@ public class CallbackOrderOfInvocationTestLogic extends AbstractTestLogic {
                                        (expectedCR.getCallerMethodName().equals(actualCR.getCallerMethodName()))));
                 }
             }
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             // Cleanup
             resetListeners();
@@ -339,7 +324,7 @@ public class CallbackOrderOfInvocationTestLogic extends AbstractTestLogic {
     private void testPostLoadLifecycle(
                                        CallbackOOIEntityEnum targetEntityType,
                                        JPAResource jpaResource,
-                                       ProtectionType protectionType) {
+                                       ProtectionType protectionType) throws Throwable {
         System.out.println("Testing @PostLoad Order of Invocation behavior...");
         resetListeners();
         AbstractCallbackListener.setGlobalCallbackEventFilter(CallbackLifeCycle.PostLoad);
@@ -398,11 +383,6 @@ public class CallbackOrderOfInvocationTestLogic extends AbstractTestLogic {
                                        (expectedCR.getCallerMethodName().equals(actualCR.getCallerMethodName()))));
                 }
             }
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             // Cleanup
             resetListeners();
@@ -426,7 +406,7 @@ public class CallbackOrderOfInvocationTestLogic extends AbstractTestLogic {
     private void testPreUpdateLifecycle(
                                         CallbackOOIEntityEnum targetEntityType,
                                         JPAResource jpaResource,
-                                        ProtectionType protectionType) {
+                                        ProtectionType protectionType) throws Throwable {
         System.out.println("Testing @PreUpdate Order of Invocation behavior...");
         resetListeners();
         AbstractCallbackListener.setGlobalCallbackEventFilter(CallbackLifeCycle.PreUpdate);
@@ -493,11 +473,6 @@ public class CallbackOrderOfInvocationTestLogic extends AbstractTestLogic {
                                        (expectedCR.getCallerMethodName().equals(actualCR.getCallerMethodName()))));
                 }
             }
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             // Cleanup
             resetListeners();
@@ -521,7 +496,7 @@ public class CallbackOrderOfInvocationTestLogic extends AbstractTestLogic {
     private void testPostUpdateLifecycle(
                                          CallbackOOIEntityEnum targetEntityType,
                                          JPAResource jpaResource,
-                                         ProtectionType protectionType) {
+                                         ProtectionType protectionType) throws Throwable {
         System.out.println("Testing @PostUpdate Order of Invocation behavior...");
         resetListeners();
         AbstractCallbackListener.setGlobalCallbackEventFilter(CallbackLifeCycle.PostUpdate);
@@ -588,11 +563,6 @@ public class CallbackOrderOfInvocationTestLogic extends AbstractTestLogic {
                                        (expectedCR.getCallerMethodName().equals(actualCR.getCallerMethodName()))));
                 }
             }
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             // Cleanup
             resetListeners();
@@ -616,7 +586,7 @@ public class CallbackOrderOfInvocationTestLogic extends AbstractTestLogic {
     private void testPreRemoveLifecycle(
                                         CallbackOOIEntityEnum targetEntityType,
                                         JPAResource jpaResource,
-                                        ProtectionType protectionType) {
+                                        ProtectionType protectionType) throws Throwable {
         System.out.println("Testing @PreRemove Order of Invocation behavior...");
         resetListeners();
         AbstractCallbackListener.setGlobalCallbackEventFilter(CallbackLifeCycle.PreRemove);
@@ -678,11 +648,6 @@ public class CallbackOrderOfInvocationTestLogic extends AbstractTestLogic {
                                        (expectedCR.getCallerMethodName().equals(actualCR.getCallerMethodName()))));
                 }
             }
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             // Cleanup
             resetListeners();
@@ -706,7 +671,7 @@ public class CallbackOrderOfInvocationTestLogic extends AbstractTestLogic {
     private void testPostRemoveLifecycle(
                                          CallbackOOIEntityEnum targetEntityType,
                                          JPAResource jpaResource,
-                                         ProtectionType protectionType) {
+                                         ProtectionType protectionType) throws Throwable {
         System.out.println("Testing @PostRemove Order of Invocation behavior...");
         resetListeners();
         AbstractCallbackListener.setGlobalCallbackEventFilter(CallbackLifeCycle.PostRemove);
@@ -773,11 +738,6 @@ public class CallbackOrderOfInvocationTestLogic extends AbstractTestLogic {
                                        (expectedCR.getCallerMethodName().equals(actualCR.getCallerMethodName()))));
                 }
             }
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             // Cleanup
             resetListeners();

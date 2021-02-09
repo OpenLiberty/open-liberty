@@ -1,0 +1,47 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/OptimisticLockExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+5001=K\u00eds\u00e9rlet t\u00f6rt\u00e9nt a(z) [{0}] objektum t\u00f6rl\u00e9s\u00e9re, azonban annak nincs verzi\u00f3sz\u00e1ma az azonoss\u00e1gt\u00e9rk\u00e9pben. {3}Lehets\u00e9ges, hogy nem lett beolvasva a t\u00f6rl\u00e9s megk\u00eds\u00e9rl\u00e9se el\u0151tt. {3}Oszt\u00e1ly> {1} Els\u0151dleges kulcs> {2}
+
+5003=A(z) [{0}] objektum nem t\u00f6r\u00f6lhet\u0151, mivel a legut\u00f3bbi beolvas\u00e1sa \u00f3ta megv\u00e1ltozott vagy t\u00f6r\u00f6lve lett. {3}Oszt\u00e1ly> {1} Els\u0151dleges kulcs> {2}
+
+5004=K\u00eds\u00e9rlet t\u00f6rt\u00e9nt a(z) [{0}] objektum friss\u00edt\u00e9s\u00e9re, azonban annak nincs verzi\u00f3sz\u00e1ma az azonoss\u00e1gt\u00e9rk\u00e9pben. {3}Lehets\u00e9ges, hogy nem lett beolvasva a friss\u00edt\u00e9s megk\u00eds\u00e9rl\u00e9se el\u0151tt. {3}Oszt\u00e1ly> {1} Els\u0151dleges kulcs> {2}
+
+5006=A(z) [{0}] objektum nem friss\u00edthet\u0151, mivel a legut\u00f3bbi beolvas\u00e1sa \u00f3ta megv\u00e1ltozott vagy t\u00f6r\u00f6lve lett. {3}Oszt\u00e1ly> {1} Els\u0151dleges kulcs> {2}
+
+5007=A(z) [{0}] objektumnak egy nem \u00edr\u00e1sv\u00e9dett lek\u00e9pez\u00e9ssel kell rendelkeznie a verzi\u00f3z\u00e1rol\u00e1si mez\u0151re.
+
+5008=Id\u0151pecs\u00e9tes z\u00e1rol\u00e1s haszn\u00e1latakor a verzi\u00f3z\u00e1rol\u00e1si mez\u0151t le kell k\u00e9pezni a java.sql.Timestamp oszt\u00e1lyra
+
+5009=A(z) [{0}] els\u0151dleges kulcs\u00fa [{1}] oszt\u00e1ly objektuma nem csomagolhat\u00f3 ki, mert t\u00f6r\u00f6lve lett a legut\u00f3bbi beolvas\u00e1sa \u00f3ta.
+
+5010=A(z) [{0}] objektum nem f\u00e9s\u00fclhet\u0151 \u00f6ssze, mivel a legut\u00f3bbi beolvas\u00e1sa \u00f3ta megv\u00e1ltozott vagy t\u00f6r\u00f6lve lett. {2}Oszt\u00e1ly> {1}
+
+5011=N\u00e9h\u00e1ny objektum nem friss\u00edthet\u0151, mivel a legut\u00f3bbi beolvas\u00e1suk \u00f3ta megv\u00e1ltoztak vagy t\u00f6r\u00f6lve lettek.
+

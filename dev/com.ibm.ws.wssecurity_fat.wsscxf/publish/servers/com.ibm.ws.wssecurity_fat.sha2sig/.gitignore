@@ -1,0 +1,12 @@
+/dropins/
+dsig-receiver-2048.ks
+dsig-receiver.ks
+dsig-sender-2048.ks
+dsig-sender.ks
+x509ClientDefault.jks
+x509ClientSecond.jks
+x509ClientThird.jks
+x509ServerDefault.jks
+x509ServerSecond.jks
+x509ServerThird.jks
+/*.jceks

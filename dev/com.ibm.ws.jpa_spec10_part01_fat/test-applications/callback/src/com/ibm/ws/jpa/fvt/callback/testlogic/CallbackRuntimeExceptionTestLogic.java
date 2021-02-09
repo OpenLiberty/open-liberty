@@ -45,7 +45,7 @@ public class CallbackRuntimeExceptionTestLogic extends AbstractTestLogic {
     public void testCallbackRuntimeException001(
                                                 TestExecutionContext testExecCtx,
                                                 TestExecutionResources testExecResources,
-                                                Object managedComponentObject) {
+                                                Object managedComponentObject) throws Throwable {
         // Verify parameters
         if (testExecCtx == null || testExecResources == null) {
             Assert.fail("testCallbackRuntimeException001: Missing context and/or resources.  Cannot execute the test.");
@@ -98,11 +98,6 @@ public class CallbackRuntimeExceptionTestLogic extends AbstractTestLogic {
             testPostLoadLifecycle(targetEntityType, jpaResource, false, null); // 3 points
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("CallbackTestLogic.testCallbackRuntimeException001(): End");
             AbstractCallbackListener.resetGlobalCallbackEventList();
@@ -117,7 +112,7 @@ public class CallbackRuntimeExceptionTestLogic extends AbstractTestLogic {
     public void testCallbackRuntimeException002(
                                                 TestExecutionContext testExecCtx,
                                                 TestExecutionResources testExecResources,
-                                                Object managedComponentObject) {
+                                                Object managedComponentObject) throws Throwable {
         // Verify parameters
         if (testExecCtx == null || testExecResources == null) {
             Assert.fail("testCallbackRuntimeException002: Missing context and/or resources.  Cannot execute the test.");
@@ -180,11 +175,6 @@ public class CallbackRuntimeExceptionTestLogic extends AbstractTestLogic {
             testPostLoadLifecycle(targetEntityType, jpaResource, true, listenerProtectionType); // 3 points
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("CallbackTestLogic.testCallbackRuntimeException002(): End");
             AbstractCallbackListener.resetGlobalCallbackEventList();
@@ -199,7 +189,7 @@ public class CallbackRuntimeExceptionTestLogic extends AbstractTestLogic {
     public void testCallbackRuntimeException003(
                                                 TestExecutionContext testExecCtx,
                                                 TestExecutionResources testExecResources,
-                                                Object managedComponentObject) {
+                                                Object managedComponentObject) throws Throwable {
         // Verify parameters
         if (testExecCtx == null || testExecResources == null) {
             Assert.fail("testCallbackRuntimeException003: Missing context and/or resources.  Cannot execute the test.");
@@ -262,11 +252,6 @@ public class CallbackRuntimeExceptionTestLogic extends AbstractTestLogic {
             testPostLoadLifecycle(targetEntityType, jpaResource, false, listenerProtectionType); // 3 points
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("CallbackTestLogic.testCallbackRuntimeException003(): End");
             AbstractCallbackListener.resetGlobalCallbackEventList();
@@ -365,7 +350,7 @@ public class CallbackRuntimeExceptionTestLogic extends AbstractTestLogic {
                                          CallbackEntityEnum targetEntityType,
                                          JPAResource jpaResource,
                                          boolean targetDefaultListener,
-                                         ProtectionType listenerProtectionType) {
+                                         ProtectionType listenerProtectionType) throws Throwable {
         System.out.println("Testing @PrePersist Exception behavior...");
         resetListeners();
 
@@ -435,11 +420,6 @@ public class CallbackRuntimeExceptionTestLogic extends AbstractTestLogic {
 
             // 5) Check if transaction is marked for rollback
             Assert.assertTrue("5) Assert transaction is marked for rollback.", jpaResource.getTj().isTransactionMarkedForRollback());
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             // Cleanup
             resetListeners();
@@ -469,7 +449,7 @@ public class CallbackRuntimeExceptionTestLogic extends AbstractTestLogic {
                                           CallbackEntityEnum targetEntityType,
                                           JPAResource jpaResource,
                                           boolean targetDefaultListener,
-                                          ProtectionType listenerProtectionType) {
+                                          ProtectionType listenerProtectionType) throws Throwable {
         System.out.println("Testing @PostPersist Exception behavior...");
         resetListeners();
 
@@ -553,11 +533,6 @@ public class CallbackRuntimeExceptionTestLogic extends AbstractTestLogic {
                     Assert.fail("One or both of the criteria failed.");
                 }
             }
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             // Cleanup
             resetListeners();
@@ -587,7 +562,7 @@ public class CallbackRuntimeExceptionTestLogic extends AbstractTestLogic {
                                         CallbackEntityEnum targetEntityType,
                                         JPAResource jpaResource,
                                         boolean targetDefaultListener,
-                                        ProtectionType listenerProtectionType) {
+                                        ProtectionType listenerProtectionType) throws Throwable {
         System.out.println("Testing @PreUpdate Exception behavior...");
         resetListeners();
 
@@ -669,11 +644,6 @@ public class CallbackRuntimeExceptionTestLogic extends AbstractTestLogic {
                     Assert.fail("One or both of the criteria failed.");
                 }
             }
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             // Cleanup
             resetListeners();
@@ -703,7 +673,7 @@ public class CallbackRuntimeExceptionTestLogic extends AbstractTestLogic {
                                          CallbackEntityEnum targetEntityType,
                                          JPAResource jpaResource,
                                          boolean targetDefaultListener,
-                                         ProtectionType listenerProtectionType) {
+                                         ProtectionType listenerProtectionType) throws Throwable {
         System.out.println("Testing @PostUpdate Exception behavior...");
         resetListeners();
 
@@ -767,11 +737,6 @@ public class CallbackRuntimeExceptionTestLogic extends AbstractTestLogic {
                 System.out.println("Transaction commit did throw an Exception.  Searching Exception Chain for CallbackRuntimeException...");
                 assertExceptionIsInChain(CallbackRuntimeException.class, t);
             }
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             // Cleanup
             resetListeners();
@@ -801,7 +766,7 @@ public class CallbackRuntimeExceptionTestLogic extends AbstractTestLogic {
                                         CallbackEntityEnum targetEntityType,
                                         JPAResource jpaResource,
                                         boolean targetDefaultListener,
-                                        ProtectionType listenerProtectionType) {
+                                        ProtectionType listenerProtectionType) throws Throwable {
         System.out.println("Testing @PreRemove Exception behavior...");
         resetListeners();
 
@@ -883,11 +848,6 @@ public class CallbackRuntimeExceptionTestLogic extends AbstractTestLogic {
                     Assert.fail("One or both of the criteria failed.");
                 }
             }
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             // Cleanup
             resetListeners();
@@ -917,7 +877,7 @@ public class CallbackRuntimeExceptionTestLogic extends AbstractTestLogic {
                                          CallbackEntityEnum targetEntityType,
                                          JPAResource jpaResource,
                                          boolean targetDefaultListener,
-                                         ProtectionType listenerProtectionType) {
+                                         ProtectionType listenerProtectionType) throws Throwable {
         System.out.println("Testing @PostRemove Exception behavior...");
         resetListeners();
 
@@ -981,11 +941,6 @@ public class CallbackRuntimeExceptionTestLogic extends AbstractTestLogic {
                 System.out.println("Transaction commit did throw an Exception.  Searching Exception Chain for CallbackRuntimeException...");
                 assertExceptionIsInChain(CallbackRuntimeException.class, t);
             }
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             // Cleanup
             resetListeners();
@@ -1009,7 +964,7 @@ public class CallbackRuntimeExceptionTestLogic extends AbstractTestLogic {
                                        CallbackEntityEnum targetEntityType,
                                        JPAResource jpaResource,
                                        boolean targetDefaultListener,
-                                       ProtectionType listenerProtectionType) {
+                                       ProtectionType listenerProtectionType) throws Throwable {
         System.out.println("Testing @PostLoad Exception behavior...");
         resetListeners();
 
@@ -1055,11 +1010,6 @@ public class CallbackRuntimeExceptionTestLogic extends AbstractTestLogic {
 
             // 4) Check if transaction is marked for rollback
             Assert.assertTrue("4) Assert transaction is marked for rollback.", jpaResource.getTj().isTransactionMarkedForRollback());
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             AbstractCallbackListener.setTargetPostLoadLifeCycleWithRuntimeException(null);
 

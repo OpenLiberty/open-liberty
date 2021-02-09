@@ -322,7 +322,7 @@ security.oauth20.front.end.error=CWOAU0073E: An authentication error occurred. T
 security.oauth20.front.end.error.explanation=The request might be missing information, the server might have encountered an internal error, or some other error may have prevented the server from successfully authenticating the user.
 security.oauth20.front.end.error.useraction=Contact the system administrator to resolve the problem.
 
-security.oauth20.endpoint.resowner.apppassword.error=CWOAU0074E: The application password exchange request for the {0} user was not completed because the application password was not able to be verified. The application password is either incorrect, expired, or revoked, or the provided client ID is not valid.
+security.oauth20.endpoint.resowner.apppassword.error=CWOAU0074E: The application password exchange request for the {0} user was not completed because the OAuth provider could not verify the application password. The application password is either incorrect, expired, or revoked, or the provided client ID or user ID is not valid.
 security.oauth20.endpoint.resowner.apppassword.error.explanation=The OAuth provider was not able to verify the application password.
 security.oauth20.endpoint.resowner.apppassword.error.useraction=Confirm that the application password is valid, is not expired, and was not revoked. Also, confirm that the client ID in the access token is the same as the client ID in the Authorization header.
 
@@ -353,3 +353,8 @@ security.oauth20.pkce.codeverifier.length.error.useraction=Send the authorizatio
 security.oauth20.pkce.error.mismatch.codeverifier=CWOAU0081E: The code_challenge [{0}] and code_verifier [{1}] do not match. 
 security.oauth20.pkce.error.mismatch.codeverifier.explanation=The OAuth provider uses the code_challenge_method specified in the authorization request and transforms the code_verifier unless the code_challenge_method is plain. The transformed value should match with the code_challenge in the authorization request.
 security.oauth20.pkce.error.mismatch.codeverifier.useraction=Make sure to send the matching code_challenge and code_verifier and the correct transformation algorithm with the authorization and token requests.
+
+# 0=User name, 1=OAuth client ID, 2=Maximum number of tokens allowed
+security.oauth20.refreshed.access.token.limit.reached=CWOAU0082E: The [{0}] user and [{1}] OAuth client reached the maximum number ([{2}]) of access tokens that can be created by using refresh tokens. A new access token cannot be created with the provided refresh token.
+security.oauth20.refreshed.access.token.limit.reached.explanation=An OAuth client and user combination can request a limited number of access tokens using refresh tokens. A new access token cannot be created.
+security.oauth20.refreshed.access.token.limit.reached.useraction=Increase the number of access tokens that can be issued through refresh tokens. Alternatively, revoke some of the existing access tokens for the user and OAuth client that is specified in the message.

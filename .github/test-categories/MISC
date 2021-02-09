@@ -1,0 +1,5 @@
+com.ibm.ws.cloudant_fat
+com.ibm.ws.couchdb_fat
+com.ibm.ws.jmx_fat
+com.ibm.ws.springboot.support_fat
+io.openliberty.mail.2.0.internal_fat

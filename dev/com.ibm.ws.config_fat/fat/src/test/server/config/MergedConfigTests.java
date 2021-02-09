@@ -11,6 +11,7 @@
 package test.server.config;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
@@ -19,6 +20,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
@@ -35,6 +37,7 @@ public class MergedConfigTests extends ServletRunner {
     private static final String IGNORE_REPLACE_SERVER = "merge/ignoreReplace.xml";
     private static final String FOUR_LEVEL_REPLACE_SERVER = "merge/fourLevelReplace.xml";
     private static final String FOUR_LEVEL_IGNORE_SERVER = "merge/fourLevelIgnore.xml";
+    private static final String IGNORE_ONCONFLICT_SERVER = "merge/parent.xml";
 
     @Override
     protected String getContextRoot() {
@@ -131,6 +134,15 @@ public class MergedConfigTests extends ServletRunner {
         test(server);
     }
 
+    @Test
+    public void testOnConflictIGNORE() throws Exception {
+        server.setMarkToEndOfLog();
+        server.setServerConfigurationFile(IGNORE_ONCONFLICT_SERVER);
+        server.waitForConfigUpdateInLogUsingMark(null);
+
+        assertNull(server.verifyStringNotInLogUsingMark("CWWKL0004E.*", 20));
+    }
+
     @BeforeClass
     public static void setUpForMergedConfigTests() throws Exception {
         //copy the feature into the server features location
@@ -141,7 +153,7 @@ public class MergedConfigTests extends ServletRunner {
         server.copyFileToLibertyInstallRoot("lib", "bundles/test.merged.config.jar");
 
         WebArchive mergedconfigApp = ShrinkHelper.buildDefaultApp("mergedconfig", "test.config.merged");
-        ShrinkHelper.exportAppToServer(server, mergedconfigApp);
+        ShrinkHelper.exportAppToServer(server, mergedconfigApp, DeployOptions.DISABLE_VALIDATION);
 
         server.startServer("mergedConfig.log");
         //make sure the URL is available

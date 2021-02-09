@@ -1,0 +1,45 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/XMLConversionExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+25501=[{0}] \ud30c\uc77c\uc758 URL\uc744 \uc791\uc131\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+
+25502=\uc62c\ubc14\ub974\uc9c0 \uc54a\uc740 gDay \ud615\uc2dd: [{0}]([----DD] \uc608\uc0c1)
+
+25503=\uc62c\ubc14\ub974\uc9c0 \uc54a\uc740 gMonth \ud615\uc2dd: [{0}]([--MM--] \uc608\uc0c1)
+
+25504=\uc62c\ubc14\ub974\uc9c0 \uc54a\uc740 gMonthDay \ud615\uc2dd: [{0}]([--MM-DD] \uc608\uc0c1)
+
+25505=\uc62c\ubc14\ub974\uc9c0 \uc54a\uc740 gYear \ud615\uc2dd: [{0}]([YYYY] \uc608\uc0c1)
+
+25506=\uc62c\ubc14\ub974\uc9c0 \uc54a\uc740 gYearMonth \ud615\uc2dd: [{0}]([YYYY-MM] \uc608\uc0c1)
+
+25507=\uc62c\ubc14\ub974\uc9c0 \uc54a\uc740 \uc2dc\uac04\uc18c\uc778 dateTime \ud615\uc2dd: [{0}]([YYYY-MM-DD''T''HH:MM:SS.NNNNNNNNN] \uc608\uc0c1)
+
+25508=\uc62c\ubc14\ub974\uc9c0 \uc54a\uc740 \uc2dc\uac04\uc18c\uc778 time \ud615\uc2dd: [{0}]([HH:MM:SS.NNNNNNNNN] \uc608\uc0c1)
+

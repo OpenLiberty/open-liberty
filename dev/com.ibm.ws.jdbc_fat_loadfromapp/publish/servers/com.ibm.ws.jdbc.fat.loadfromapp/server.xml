@@ -27,6 +27,7 @@
     <application id="otherApp" location="otherApp.ear"/>
 
     <dataSource id="DefaultDataSource" ibm.internal.nonship.function="true">
+      <connectionManager autoCloseConnections="true"/>
       <jdbcDriver javax.sql.DataSource="jdbc.driver.proxy.ProxyDataSource" libraryRef="ibm.internal.simulate.no.library.do.not.ship" ibm.internal.nonship.function="true"/> <!-- TODO remove libraryRef -->
       <properties databaseName="memory:ds1"/>
     </dataSource>
@@ -37,6 +38,7 @@
     </dataSource>
 
     <dataSource id="sharedLibDataSource" jndiName="jdbc/sharedLibDataSource">
+      <connectionManager autoCloseConnections="false"/>
       <!-- loads its JDBC driver from a shared library, NOT from the app like the other data sources in this server -->
       <jdbcDriver>
         <library>
@@ -96,6 +98,7 @@
     <!-- permissions for Derby in the app -->
     <javaPermission codeBase="${server.config.dir}apps/derbyApp.war" className="java.io.FilePermission" name="derby.log" actions="read,write"/>
     <javaPermission codeBase="${server.config.dir}apps/derbyApp.war" className="java.io.FilePermission" name="derby.properties" actions="read"/>
+    <javaPermission codeBase="${server.config.dir}apps/derbyApp.war" className="java.lang.RuntimePermission" name="createClassLoader"/>
     <javaPermission codeBase="${server.config.dir}apps/derbyApp.war" className="java.lang.RuntimePermission" name="getClassLoader"/>
     <javaPermission codeBase="${server.config.dir}apps/derbyApp.war" className="java.lang.RuntimePermission" name="getProtectionDomain"/>
     <javaPermission codeBase="${server.config.dir}apps/derbyApp.war" className="java.lang.RuntimePermission" name="setContextClassLoader"/>
@@ -134,10 +137,12 @@
     <!-- permissions for login modules -->
     <javaPermission codebase="${server.config.dir}/apps/derbyApp.war" className="javax.security.auth.AuthPermission" name="createLoginContext.system.WEB_INBOUND"/>
     <javaPermission codebase="${server.config.dir}/apps/derbyApp.war" className="javax.security.auth.AuthPermission" name="modifyPrivateCredentials"/>
+    <javaPermission codebase="${server.config.dir}/apps/derbyApp.war" className="javax.security.auth.PrivateCredentialPermission" name='jakarta.resource.spi.security.PasswordCredential org.test.NoPrincipalClass "*"' actions="read"/>
     <javaPermission codebase="${server.config.dir}/apps/derbyApp.war" className="javax.security.auth.PrivateCredentialPermission" name='javax.resource.spi.security.PasswordCredential org.test.NoPrincipalClass "*"' actions="read"/>
 
     <javaPermission codebase="${server.config.dir}/apps/otherApp.ear" className="javax.security.auth.AuthPermission" name="createLoginContext.system.WEB_INBOUND"/>
     <javaPermission codebase="${server.config.dir}/apps/otherApp.ear" className="javax.security.auth.AuthPermission" name="modifyPrivateCredentials"/>
+    <javaPermission codebase="${server.config.dir}/apps/otherApp.ear" className="javax.security.auth.PrivateCredentialPermission" name='jakarta.resource.spi.security.PasswordCredential org.test.NoPrincipalClass "*"' actions="read"/>
     <javaPermission codebase="${server.config.dir}/apps/otherApp.ear" className="javax.security.auth.PrivateCredentialPermission" name='javax.resource.spi.security.PasswordCredential org.test.NoPrincipalClass "*"' actions="read"/>
 
     <variable name="onError" value="FAIL"/>

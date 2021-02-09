@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,7 @@ import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.ws.ejbcontainer.async.fat.nested.web.NestedAsyncServlet;
 import com.ibm.ws.ejbcontainer.async.fat.web.AsyncInheritanceMixServlet;
 import com.ibm.ws.ejbcontainer.async.fat.web.BasicMixServlet;
@@ -35,6 +36,7 @@ import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 
@@ -59,10 +61,14 @@ public class AsyncCoreTests extends AbstractTest {
     }
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().forServers("com.ibm.ws.ejbcontainer.async.fat.AsyncCoreServer")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.async.fat.AsyncCoreServer"));
+    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().forServers("com.ibm.ws.ejbcontainer.async.fat.AsyncCoreServer")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.async.fat.AsyncCoreServer")).andWith(new JakartaEE9Action().forServers("com.ibm.ws.ejbcontainer.async.fat.AsyncCoreServer"));
 
     @BeforeClass
     public static void beforeClass() throws Exception {
+        // cleanup from prior repeat actions
+        server.deleteAllDropinApplications();
+        server.removeAllInstalledAppsForValidation();
+
         // Use ShrinkHelper to build the Ears & Wars
 
         //#################### InitTxRecoveryLogApp.ear (Automatically initializes transaction recovery logs)
@@ -71,7 +77,7 @@ public class AsyncCoreTests extends AbstractTest {
         EnterpriseArchive InitTxRecoveryLogApp = ShrinkWrap.create(EnterpriseArchive.class, "InitTxRecoveryLogApp.ear");
         InitTxRecoveryLogApp.addAsModule(InitTxRecoveryLogEJBJar);
 
-        ShrinkHelper.exportDropinAppToServer(server, InitTxRecoveryLogApp);
+        ShrinkHelper.exportDropinAppToServer(server, InitTxRecoveryLogApp, DeployOptions.SERVER_ONLY);
 
         //#################### AsyncTestApp.ear
         JavaArchive AsyncTestEJB_Ann = ShrinkHelper.buildJavaArchive("AsyncTestEJB-Ann.jar", "com.ibm.ws.ejbcontainer.async.fat.ann.ejb.");
@@ -90,7 +96,7 @@ public class AsyncCoreTests extends AbstractTest {
         AsyncTestApp.addAsModule(AsyncTestEJB_Ann).addAsModule(AsyncTestEJB_Mix).addAsModule(AsyncTestEJB_Xml).addAsModule(AsyncTestEJB30_Mix).addAsModule(MetaDataAsyncBean).addAsModule(AsyncTestWeb);
         AsyncTestApp = (EnterpriseArchive) ShrinkHelper.addDirectory(AsyncTestApp, "test-applications/AsyncTestApp.ear/resources");
 
-        ShrinkHelper.exportDropinAppToServer(server, AsyncTestApp);
+        ShrinkHelper.exportDropinAppToServer(server, AsyncTestApp, DeployOptions.SERVER_ONLY);
 
         //#################### NestedAsyncTestApp.ear
         JavaArchive NestedAsyncEJB = ShrinkHelper.buildJavaArchive("NestedAsyncEJB.jar", "com.ibm.ws.ejbcontainer.async.fat.nested.ejb.");
@@ -99,7 +105,7 @@ public class AsyncCoreTests extends AbstractTest {
         EnterpriseArchive NestedAsyncTestApp = ShrinkWrap.create(EnterpriseArchive.class, "NestedAsyncTestApp.ear");
         NestedAsyncTestApp.addAsModule(NestedAsyncEJB).addAsModule(NestedAsyncTest);
 
-        ShrinkHelper.exportDropinAppToServer(server, NestedAsyncTestApp);
+        ShrinkHelper.exportDropinAppToServer(server, NestedAsyncTestApp, DeployOptions.SERVER_ONLY);
 
         // Finally, start server
         server.startServer();

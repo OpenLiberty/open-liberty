@@ -24,7 +24,7 @@ SUBJECT_MAPPING_MISSING_ATTR=CWWKS6102E: La solicitud de autenticaci\u00f3n ha f
 SUBJECT_MAPPING_MISSING_ATTR.explanation=La informaci\u00f3n del usuario autenticado no contiene la reclamaci\u00f3n especificada para identificar el atributo indicado y el tiempo de ejecuci\u00f3n no puede continuar con el proceso de autenticaci\u00f3n.
 SUBJECT_MAPPING_MISSING_ATTR.useraction=Haga lo siguiente. 1)Compruebe si la configuraci\u00f3n de cliente de Social Login puede especificar otra reclamaci\u00f3n como el atributo 2)Verifique que el proveedor emite la informaci\u00f3n del usuario autenticado con la reclamaci\u00f3n especificada.
 
-ERROR_AUTHENTICATE=CWWKS6103E: Se puede crear un asunto de seguridad para el usuario {0}.
+ERROR_AUTHENTICATE=CWWKS6103E: Se puede crear un asunto de seguridad para el usuario {0}. {1}
 ERROR_AUTHENTICATE.explanation=El usuario no se ha podido autenticar.  
 ERROR_AUTHENTICATE.useraction=Compruebe que el usuario existe en el registro y que la contrase\u00f1a u otras credenciales son correctas.
 

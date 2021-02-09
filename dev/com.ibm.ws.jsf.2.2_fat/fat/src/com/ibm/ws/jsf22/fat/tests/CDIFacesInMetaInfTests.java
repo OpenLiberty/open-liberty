@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015, 2019 IBM Corporation and others.
+ * Copyright (c) 2015, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,6 +9,9 @@
  *     IBM Corporation - initial API and implementation
  */
 package com.ibm.ws.jsf22.fat.tests;
+
+import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
+import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -37,7 +40,7 @@ import componenttest.topology.impl.LibertyServer;
  * As a result, these tests were modified to run in the JSF 2.3 FAT bucket without constructor injection.
  */
 @Mode(TestMode.FULL)
-@SkipForRepeat("JSF-2.3")
+@SkipForRepeat({ EE8_FEATURES, EE9_FEATURES })
 @RunWith(FATRunner.class)
 public class CDIFacesInMetaInfTests extends CDITestBase {
     @Rule

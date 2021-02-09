@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -45,8 +45,8 @@ public class FileUtils {
     /**
      * Copies the contents of a source file into a destination file
      *
-     * @param sourceFile
-     * @param destFile
+     * @param  sourceFile
+     * @param  destFile
      * @throws IOException
      */
     public static void copyFile(File sourceFile, File destFile) throws IOException {
@@ -75,6 +75,22 @@ public class FileUtils {
                 } catch (IOException e) {
                 }
             }
+        }
+    }
+
+    public static void copyDirectory(File source, File target) throws IOException {
+        if (source.isDirectory()) {
+            if (!target.exists()) {
+                target.mkdir();
+            }
+
+            String[] children = source.list();
+            for (int i = 0; i < children.length; i++) {
+                copyDirectory(new File(source, children[i]),
+                              new File(target, children[i]));
+            }
+        } else {
+            copyFile(source, target);
         }
     }
 

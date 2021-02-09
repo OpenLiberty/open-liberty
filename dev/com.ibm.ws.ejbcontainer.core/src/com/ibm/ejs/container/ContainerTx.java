@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2014 IBM Corporation and others.
+ * Copyright (c) 1997, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -49,28 +49,22 @@ import com.ibm.ws.util.ThreadContextAccessor;
 /**
  * A <code>ContainerTx</code> manages all container
  * resources associated with a given global transaction. <p>
- * 
+ *
  * Note, the lifecycle of this object guarantees that there will be
  * exactly one instance in a container for each JTS transaction the
  * container is associated with. This means that the default Object
  * hashCode() and equals() method implementations work correctly for
  * instances of <code>ContainerTx</code>. <p>
- * 
+ *
  * Note also that a transaction can be active on at most 1 thread, so
  * access to this class' HashMap data structures do not need to be
  * guarded by synchronization blocks.
- * 
+ *
  */
 
-public class ContainerTx
-                implements Locker,
-                Synchronization,
-                com.ibm.websphere.cpi.PersisterTx, //90194
-                ContainerSynchronization //d126930.3
-{
-    private static final TraceComponent tc =
-                    Tr.register(ContainerTx.class, "EJBContainer",
-                                "com.ibm.ejs.container.container");
+public class ContainerTx implements Locker, Synchronization, com.ibm.websphere.cpi.PersisterTx, ContainerSynchronization {
+    private static final TraceComponent tc = Tr.register(ContainerTx.class, "EJBContainer",
+                                                         "com.ibm.ejs.container.container");
 
     private static final String CLASS_NAME = "com.ibm.ejs.container.ContainerTx";
 
@@ -83,7 +77,7 @@ public class ContainerTx
     private static final int ROLLEDBACK = 3;
 
     private static final String[] stateStrs = { "Active", "Preparing",
-                                               "Committed", "Rolledback" };
+                                                "Committed", "Rolledback" };
 
     /**
      * The maximum number of times to loop before failing if
@@ -162,12 +156,12 @@ public class ContainerTx
     /**
      * Reference to the BeanO that should be removed during afterCompletion
      * processing in support of EJB 3.0 Remove Methods (@Remove). <p>
-     * 
+     *
      * When a remove method has completed successfully, the corresponding
      * BeanO will be set in ContainerTx to insure the SessionSynchronization
      * callbacks are not called, and the bean is removed after the
      * transaction completes (afterCompletion). <p>
-     * 
+     *
      * This field must be reset when the bean is removed, otherwise a
      * RemoveException will be thrown. Normally, this will occur if
      * a remove method is called, and the transaction does NOT complete. <p>
@@ -290,8 +284,7 @@ public class ContainerTx
     /**
      * Transition to the PREPARING state
      */
-    private final/* synchronized */void becomePreparing() //d173022.2
-    {
+    private final/* synchronized */void becomePreparing() {
         if (state != ACTIVE) {
             throw new IllegalStateException(stateStrs[state]);
         }
@@ -302,11 +295,9 @@ public class ContainerTx
      * Initialize BeanO vectors if require, lazy initialization
      */
     // d111555
-    private final void initialize_beanO_vectors() //d173022.2
-    {
+    private final void initialize_beanO_vectors() {
         // ensure allocation not just done in another thread via an enlist call
-        if (ivBeanOsEnlistedInTx == false)
-        {
+        if (ivBeanOsEnlistedInTx == false) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
                 Tr.event(tc, "Lazy beanOs vector creation");
 
@@ -324,8 +315,7 @@ public class ContainerTx
     /**
      * Transition to the COMMITTED state
      */
-    private final/* synchronized */void becomeCommitted() //d173022.2
-    {
+    private final/* synchronized */void becomeCommitted() {
         if (state != PREPARING) {
             throw new IllegalStateException(stateStrs[state]);
         }
@@ -335,8 +325,7 @@ public class ContainerTx
     /**
      * Transition to the ROLLEDBACK state
      */
-    private final/* synchronized */void becomeRolledback() //d173022.2
-    {
+    private final/* synchronized */void becomeRolledback() {
         state = ROLLEDBACK;
     }
 
@@ -344,8 +333,7 @@ public class ContainerTx
      * Check to make sure that this ContainerTx is in the ACTIVE state
      */
     private final/* synchronized */void ensureActive() //d173022.2
-    throws TransactionRolledbackException
-    {
+                    throws TransactionRolledbackException {
         switch (state) {
 
             case ACTIVE:
@@ -364,8 +352,7 @@ public class ContainerTx
      * Create a new <code>ContainerTx</code> instance. <p>
      */
     public ContainerTx(EJSContainer container, boolean isTransactionGlobal,
-                       SynchronizationRegistryUOWScope txKey, UOWControl UOWCtrl) //110762.1
-    {
+                       SynchronizationRegistryUOWScope txKey, UOWControl UOWCtrl) {
         ivContainer = container;
         ivIsolationLevel = java.sql.Connection.TRANSACTION_NONE; // d107762
         ivTxKey = txKey;
@@ -389,8 +376,7 @@ public class ContainerTx
     /**
      * This method returns true if associated transaction is global
      */
-    public boolean isTransactionGlobal()
-    {
+    public boolean isTransactionGlobal() {
         return globalTransaction;
     }
 
@@ -398,8 +384,7 @@ public class ContainerTx
      * Returns true if the associated transaction is active AND global.
      **/
     // d303100
-    public final boolean isActiveGlobal()
-    {
+    public final boolean isActiveGlobal() {
         return (globalTransaction && (state == ACTIVE));
     }
 
@@ -409,48 +394,37 @@ public class ContainerTx
      * (rolled back or committed). <p>
      */
     @Override
-    public void beforeCompletion()
-    {
+    public void beforeCompletion() {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled(); // d532639.2
 
-        if (isTraceOn) // d527372
-        {
+        if (isTraceOn) {
             if (tc.isEntryEnabled())
                 Tr.entry(tc, "beforeCompletion",
-                         new Object[]
-                         { Boolean.valueOf(globalTransaction),
-                          this,
-                          Boolean.valueOf(isActivitySessionCompleting) });
+                         new Object[] { Boolean.valueOf(globalTransaction),
+                                        this,
+                                        Boolean.valueOf(isActivitySessionCompleting) });
 
-            if (TETxLifeCycleInfo.isTraceEnabled()) // PQ74774
-            { // PQ74774
+            if (TETxLifeCycleInfo.isTraceEnabled()) {
                 String tid = getTxId();
-                if (tid != null)
-                {
-                    if (globalTransaction)
-                    {
-                        TETxLifeCycleInfo.traceGlobalTxBeforeCompletion
-                                        (tid, "Global/User Tx BeforeCompletion");
-                    } else
-                    {
-                        TETxLifeCycleInfo.traceLocalTxBeforeCompletion
-                                        (tid, "Local Tx BeforeCompletion");
+                if (tid != null) {
+                    if (globalTransaction) {
+                        TETxLifeCycleInfo.traceGlobalTxBeforeCompletion(tid, "Global/User Tx BeforeCompletion");
+                    } else {
+                        TETxLifeCycleInfo.traceLocalTxBeforeCompletion(tid, "Local Tx BeforeCompletion");
                     }
                 }
             } // PQ74774
         }
 
         //d139562.11
-        if (finderSyncList != null) // d173022.12
-        { // d173022.12
+        if (finderSyncList != null) {
             int numberofCallers = finderSyncList.size();
             for (int i = 0; i < numberofCallers; ++i) {
                 finderSyncList.get(i).beforeCompletion();
             }
         } // d173022.12
 
-        if (ivBeanOsEnlistedInTx)
-        {
+        if (ivBeanOsEnlistedInTx) {
             //d173022.2
             origLock = true;//d115597 set the origLock flag to true because beforeCompletion entered
 
@@ -462,16 +436,13 @@ public class ContainerTx
             ClassLoader prevClassLoader = null;
             Object origClassLoader = ThreadContextAccessor.UNCHANGED;
 
-            try
-            {
+            try {
                 // Process beans in a loop to allow beforeCompletion callbacks to
                 // enlist additional beans.  We limit the number of iterations to
                 // detect infinite loops.                                      d115597
                 int iterationCount = 0;
-                for (ArrayList<BeanO> iterationBeanOs = beanOList; iterationBeanOs != null; iterationBeanOs = tempList, tempList = null)
-                {
-                    if (iterationCount++ > MAX_ENLISTMENT_ITERATIONS)
-                    {
+                for (ArrayList<BeanO> iterationBeanOs = beanOList; iterationBeanOs != null; iterationBeanOs = tempList, tempList = null) {
+                    if (iterationCount++ > MAX_ENLISTMENT_ITERATIONS) {
                         beanO = null;
                         throw new RuntimeException("Exceeded " + MAX_ENLISTMENT_ITERATIONS + " enlistment iterations in beforeCompletion");
                     }
@@ -486,8 +457,7 @@ public class ContainerTx
                     // d115597
                     //--------------------------------------------------------------
 
-                    for (int i = 0, size = iterationBeanOs.size(); i < size; i++)
-                    {
+                    for (int i = 0, size = iterationBeanOs.size(); i < size; i++) {
                         beanO = iterationBeanOs.get(i);
                         BeanMetaData bmd = beanO.home.beanMetaData;
 
@@ -498,18 +468,15 @@ public class ContainerTx
                         // By default isActivitySessionCompleting is set to true even if there
                         // is no activitySession present.  This simply means we follow the normal
                         // ContainerTx logic for ending a transaction.
-                        if (isActivitySessionCompleting || bmd.isEntityBean())
-                        {
+                        if (isActivitySessionCompleting || bmd.isEntityBean()) {
                             // Update the thread callback bean.
                             threadData.pushCallbackBeanO(beanO); // d168509, d630940
                             popCallbackBeanO = true;
 
                             // Update the thread CMD if it's not the same as the
                             // previous bean.
-                            if (bmd != prevCMD)
-                            {
-                                if (resetCMD)
-                                {
+                            if (bmd != prevCMD) {
+                                if (resetCMD) {
                                     cmdAccessor.endContext();
                                 }
 
@@ -520,8 +487,7 @@ public class ContainerTx
                                 // Update the class loader if it's not the same as the
                                 // previous bean.                         PK51366, PK83186
                                 ClassLoader classLoader = bmd.ivContextClassLoader; // F85059
-                                if (classLoader != prevClassLoader)
-                                {
+                                if (classLoader != prevClassLoader) {
                                     prevClassLoader = classLoader;
                                     origClassLoader = EJBThreadData.svThreadContextAccessor.repushContextClassLoaderForUnprivileged(origClassLoader, classLoader);
                                 }
@@ -536,21 +502,14 @@ public class ContainerTx
                             // by a check in BeanMetaData
                             if (isActivitySessionCompleting &&
                                 (globalTransaction ||
-                                bmd._localTran.getBoundary() == LocalTransactionSettings.BOUNDARY_ACTIVITY_SESSION))
-                            {
+                                 bmd._localTran.getBoundary() == LocalTransactionSettings.BOUNDARY_ACTIVITY_SESSION)) {
                                 beanO.beforeCompletion();
-                            }
-                            else
-                            {
+                            } else {
                                 TxContextChange changedContext = uowCtrl.setupLocalTxContext(beanO.getId());
-                                try
-                                {
-                                    if (isActivitySessionCompleting)
-                                    {
+                                try {
+                                    if (isActivitySessionCompleting) {
                                         beanO.beforeCompletion();
-                                    }
-                                    else
-                                    {
+                                    } else {
                                         //-------------------------------------------------------------
                                         // Special case added for mid-activitySession checkpoint.
                                         // Entity beans enlisted in local transactions must be stored
@@ -565,8 +524,7 @@ public class ContainerTx
                                         // ------------------------------------------------------------
                                         beanO.store();
                                     }
-                                } finally
-                                {
+                                } finally {
                                     uowCtrl.teardownLocalTxContext(changedContext);
                                 }
                             }
@@ -576,8 +534,7 @@ public class ContainerTx
                         }
                     }
                 }
-            } catch (Throwable t)
-            {
+            } catch (Throwable t) {
 
                 FFDCFilter.processException(t, CLASS_NAME + ".beforeCompletion",
                                             "562", this);
@@ -607,24 +564,20 @@ public class ContainerTx
                 // beforeCompletion callbacks on other participants
                 throw new RuntimeException("", t); //253963
 
-            } finally
-            {
+            } finally {
                 EJBThreadData.svThreadContextAccessor.popContextClassLoaderForUnprivileged(origClassLoader);
 
-                if (resetCMD)
-                {
+                if (resetCMD) {
                     cmdAccessor.endContext();
                 }
 
-                if (popCallbackBeanO)
-                {
+                if (popCallbackBeanO) {
                     threadData.popCallbackBeanO();
                 }
             }
         }
 
-        if (isActivitySessionCompleting)
-        {
+        if (isActivitySessionCompleting) {
             //--------------------------------------------------------------
             // The before completion callbacks on the beans may result
             // in more beans getting enlisted in this transaction, so we don't
@@ -660,13 +613,12 @@ public class ContainerTx
      * This method is called after the transaction associated with this
      * <code>ContainerTx</code> has completed (rolled back
      * or committed). <p>
-     * 
+     *
      * @param status a <code>boolean</code> indicating whether the
-     *            transaction committed (true) or rolled back (false) <p>
+     *                   transaction committed (true) or rolled back (false) <p>
      */
     @Override
-    public void afterCompletion(int status)
-    {
+    public void afterCompletion(int status) {
 
         boolean committed = true;
         boolean reLoad = false;
@@ -676,24 +628,19 @@ public class ContainerTx
             committed = false;
         }
 
-        if (isTraceOn && TETxLifeCycleInfo.isTraceEnabled()) // PQ74774
-        { // PQ74774
+        if (isTraceOn && TETxLifeCycleInfo.isTraceEnabled()) {
             String tid = getTxId();
-            if (tid != null)
-            {
-                if (globalTransaction)
-                {
+            if (tid != null) {
+                if (globalTransaction) {
                     TETxLifeCycleInfo.traceGlobalTxAfterCompletion(tid, "Global/User Tx AfterCompletion");
-                } else
-                {
+                } else {
                     TETxLifeCycleInfo.traceLocalTxAfterCompletion(tid, "Local Tx AfterCompletion");
                 }
             }
         } // PQ74774
 
         //d139562.11
-        if (finderSyncList != null) // d173022.12
-        { // d173022.12
+        if (finderSyncList != null) {
             int numberofCallers = finderSyncList.size();
             for (int i = 0; i < numberofCallers; ++i) {
                 finderSyncList.get(i).afterCompletion(status);
@@ -701,11 +648,9 @@ public class ContainerTx
         } // d173022.12
 
         if (isTraceOn && tc.isEntryEnabled()) // d144064
-            Tr.entry(tc, "afterCompletion"
-                     , new Object[] { Boolean.valueOf(globalTransaction), this,
-                                     Boolean.valueOf(committed),
-                                     Boolean.valueOf(isActivitySessionCompleting) }
-                            ); //123293
+            Tr.entry(tc, "afterCompletion", new Object[] { Boolean.valueOf(globalTransaction), this,
+                                                           Boolean.valueOf(committed),
+                                                           Boolean.valueOf(isActivitySessionCompleting) }); //123293
 
         // When an EJB method ends, we need to remove bean-specific contexts from
         // the thread.  Those contexts need to be present for beforeCompletion for
@@ -716,8 +661,7 @@ public class ContainerTx
         // another thread while other transaction callbacks are running on this
         // thread.  To avoid that, pop the contexts now if this transaction is
         // being completed because an EJB method is ending.              RTC107108
-        if (ivPostInvokeContext != null)
-        {
+        if (ivPostInvokeContext != null) {
             ivContainer.postInvokePopCallbackContexts(ivPostInvokeContext);
             ivPostInvokeContext = null;
         }
@@ -757,8 +701,7 @@ public class ContainerTx
                     if (ivBeanOsEnlistedInTx) {
                         //115597 changed to use afterList
                         int afterListSize = afterList.size(); // d122418-5
-                        for (int i = 0; i < afterListSize; i++) // d122418-5
-                        {
+                        for (int i = 0; i < afterListSize; i++) {
                             BeanO beanO = afterList.get(i); // d122418-5
                             try {
                                 beanO.commit(this);
@@ -781,7 +724,7 @@ public class ContainerTx
                                 } catch (Throwable ex) {
                                     FFDCFilter.processException(ex,
                                                                 CLASS_NAME +
-                                                                                ".afterCompletion",
+                                                                    ".afterCompletion",
                                                                 "811", this);
                                     if (isTraceOn && tc.isEventEnabled())
                                         Tr.event(tc, "Exception thrown in commitBean()",
@@ -842,8 +785,7 @@ public class ContainerTx
                     if (ivBeanOsEnlistedInTx) { // d111555
                         int afterListSize = afterList.size(); // d122418-5
                         //d115597 changed to use afterList
-                        for (int i = 0; i < afterListSize; i++) // d122418-5
-                        {
+                        for (int i = 0; i < afterListSize; i++) {
                             BeanO beanO = afterList.get(i); // d122418-5
                             try {
                                 beanO.rollback(this);
@@ -866,7 +808,7 @@ public class ContainerTx
                                 } catch (Throwable ex) {
                                     FFDCFilter.processException(ex,
                                                                 CLASS_NAME +
-                                                                                ".afterCompletion",
+                                                                    ".afterCompletion",
                                                                 "879", this);
                                     if (isTraceOn && tc.isEventEnabled())
                                         Tr.event(tc, "Exception thrown in rollbackBean()",
@@ -944,19 +886,15 @@ public class ContainerTx
             ClassLoader prevClassLoader = null;
             Object origClassLoader = ThreadContextAccessor.UNCHANGED;
 
-            try
-            {
+            try {
                 int afterListSize = afterList.size();
-                for (int i = 0; i < afterListSize; i++)
-                {
+                for (int i = 0; i < afterListSize; i++) {
                     BeanO beanO = afterList.get(i);
-                    try
-                    {
+                    try {
                         BeanMetaData bmd = beanO.home.beanMetaData;
 
                         if (bmd.type == InternalConstants.TYPE_CONTAINER_MANAGED_ENTITY ||
-                            bmd.type == InternalConstants.TYPE_BEAN_MANAGED_ENTITY)
-                        {
+                            bmd.type == InternalConstants.TYPE_BEAN_MANAGED_ENTITY) {
                             attachListener();
                             if (txListener != null) {
                                 txListener.afterBegin();
@@ -977,24 +915,19 @@ public class ContainerTx
                             // and local transaction context is on the thread before
                             // loading the bean.
                             if (bmd.optionACommitOption ||
-                                bmd.ivCacheReloadType != BeanMetaData.CACHE_RELOAD_NONE)
-                            {
+                                bmd.ivCacheReloadType != BeanMetaData.CACHE_RELOAD_NONE) {
                                 // Bean is not re-loaded, but PM needs to be informed
                                 // the bean is enlisted with the tran.               LI3408
                                 ((EntityBeanO) beanO).enlistForOptionA(this);
-                            }
-                            else
-                            {
+                            } else {
                                 threadData.pushCallbackBeanO(beanO); // d168509, d630940
                                 popCallbackBeanO = true;
 
                                 // Update the thread CMD if it's not the same as the
                                 // previous bean and this is a bean-managed bean.
                                 if (bmd != prevCMD &&
-                                    bmd.type == InternalConstants.TYPE_BEAN_MANAGED_ENTITY)
-                                {
-                                    if (resetCMD)
-                                    {
+                                    bmd.type == InternalConstants.TYPE_BEAN_MANAGED_ENTITY) {
+                                    if (resetCMD) {
                                         cmdAccessor.endContext();
                                     }
 
@@ -1005,8 +938,7 @@ public class ContainerTx
                                     // Update the class loader if it's not the same as the
                                     // previous bean.                         PK51366, PK83186
                                     ClassLoader classLoader = bmd.ivContextClassLoader; // F85059
-                                    if (classLoader != prevClassLoader)
-                                    {
+                                    if (classLoader != prevClassLoader) {
                                         prevClassLoader = classLoader;
                                         origClassLoader = EJBThreadData.svThreadContextAccessor.repushContextClassLoaderForUnprivileged(origClassLoader, classLoader);
                                     }
@@ -1060,17 +992,14 @@ public class ContainerTx
 
                     }
                 } // end for loop
-            } finally
-            {
+            } finally {
                 EJBThreadData.svThreadContextAccessor.popContextClassLoaderForUnprivileged(origClassLoader);
 
-                if (resetCMD)
-                {
+                if (resetCMD) {
                     cmdAccessor.endContext();
                 }
 
-                if (popCallbackBeanO)
-                {
+                if (popCallbackBeanO) {
                     threadData.popCallbackBeanO();
                 }
             }
@@ -1082,8 +1011,7 @@ public class ContainerTx
 
     } // afterCompletion
 
-    protected void attachListener()
-    {
+    protected void attachListener() {
         // This method is overridden in WASContainerTx to allow for Persistence
         // Manager logic to be moved out of shared logic and into specific
         // traditional WAS logic.
@@ -1095,13 +1023,19 @@ public class ContainerTx
      * of timers to be started upon commit of the global
      * transaction. If not in a global transaction,
      * start the timer immediately.
-     * 
+     *
      * Called by each of the BeanO.createXxxTimer methods
      * immediately after creating a non-persistent timer.
      */
     public void queueTimerToStart(TimerNpImpl timer) { // F743-13022
 
         if (globalTransaction) {
+            // If this is a calendar-based timer with no expirations, don't queue to start
+            if (timer.getIvExpiration() == 0) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.exit(tc, "queueTimerToStart: not queued - created with no expiration");
+                return;
+            }
 
             if (timersQueuedToStart == null) { // F743-425.CodRev
                 // Lazy creation of HashMap
@@ -1110,8 +1044,7 @@ public class ContainerTx
 
             timersQueuedToStart.put(timer.getTaskId(), timer);
 
-        }
-        else {
+        } else {
 
             timer.start();
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -1127,40 +1060,34 @@ public class ContainerTx
     /**
      * Returns the bean instance corresponding to the specified beanid,
      * if the bean is enlisted in this Transaction. <p>
-     * 
+     *
      * This method enables the ContainerTx to behave as a Transaction
      * scoped bean cache for the Activation Strategies, improving performance
      * by avoiding EJB Cache lookups. <p>
-     * 
+     *
      * @param beanId identifier of bean instance to be found
-     * 
+     *
      * @return bean instance, if enlisted in the Transaction;
      *         otherwise null.
      **/
     // d173022.4
-    public BeanO find(BeanId beanId)
-    {
+    public BeanO find(BeanId beanId) {
         BeanO bean = null;
 
-        if (beanOs != null)
-        {
+        if (beanOs != null) {
             bean = beanOs.get(beanId);
         }
 
         // If debug is enabled, go ahead and calculate some hit rate
         // metrics and print out whether found or not.
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-        {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             ivTxCacheSearch++;
 
-            if (bean != null)
-            {
+            if (bean != null) {
                 ivTxCacheHits++;
                 Tr.debug(tc, "Bean found in Transaction cache (Hit Rate:" +
                              ivTxCacheHits + "/" + ivTxCacheSearch + ")");
-            }
-            else
-            {
+            } else {
                 Tr.debug(tc, "Bean not in Transaction cache (Hit Rate:" +
                              ivTxCacheHits + "/" + ivTxCacheSearch + ")");
             }
@@ -1172,20 +1099,15 @@ public class ContainerTx
     /**
      * Enlist the given <code>BeanO</code> in this container transaction.
      */
-    protected boolean enlist(BeanO beanO)
-                    throws TransactionRolledbackException
-    {
+    protected boolean enlist(BeanO beanO) throws TransactionRolledbackException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled(); // d532639.2
 
         if (isTraceOn && tc.isEntryEnabled()) // d144064
-            Tr.entry(tc, "enlist"
-                     , new Object[] { Boolean.valueOf(globalTransaction), this, beanO }
-                            ); //123293
+            Tr.entry(tc, "enlist", new Object[] { Boolean.valueOf(globalTransaction), this, beanO }); //123293
 
         ensureActive();
 
-        if (ivBeanOsEnlistedInTx == false) // d532639.2
-        {
+        if (ivBeanOsEnlistedInTx == false) {
             initialize_beanO_vectors(); // d111555
         }
 
@@ -1204,8 +1126,7 @@ public class ContainerTx
             // never need to be included in pre-find flush.               LI3408
             BeanMetaData bmd = beanO.home.beanMetaData;
             if (bmd.cmpVersion == InternalConstants.CMP_VERSION_2_X &&
-                bmd.ivCacheReloadType == BeanMetaData.CACHE_RELOAD_NONE)
-            {
+                bmd.ivCacheReloadType == BeanMetaData.CACHE_RELOAD_NONE) {
                 ArrayList<BeanO> bundle = homesForPMManagedBeans.get(beanO.home);
 
                 if (bundle == null) { // here, value of null indicates no bundle in map
@@ -1233,7 +1154,7 @@ public class ContainerTx
 
             wasEnlisted = true;//d132828 avoid multiple returns
 
-        }//new beanO
+        } //new beanO
         else {
             // d115597 this bean is already in the tran, need to determine if this is a reenlistment
             if (origLock == true) {
@@ -1251,14 +1172,14 @@ public class ContainerTx
 
                     // d115597 is this in the current list if not add?
                     tempList.add(beanO);
-                }// d115597 not in current tran list
+                } // d115597 not in current tran list
 
                 // d115597 should return false
-            }// d115597 not in original list of beanos (2nd or greater run through
+            } // d115597 not in original list of beanos (2nd or greater run through
 
-        }// old beanO
-         //d115597 end
-         //}//synch end
+        } // old beanO
+          //d115597 end
+          //}//synch end
 
         if (isTraceOn && tc.isEntryEnabled()) // d144064
             Tr.exit(tc, "enlist : " + wasEnlisted); // d144064
@@ -1269,8 +1190,7 @@ public class ContainerTx
     /*
      * d132828 added this method to set up templists in one spot
      */
-    private void setupTempLists()
-    {
+    private void setupTempLists() {
         //synchronized(this){   //d173022.2
         //d115597 if necessary create a new tempList
         // and list of currentBeanOs.  Always delay this until actually needed
@@ -1284,9 +1204,7 @@ public class ContainerTx
     }
 
     @Override
-    public void registerSynchronization(Synchronization s)
-                    throws CPIException
-    {
+    public void registerSynchronization(Synchronization s) throws CPIException {
         try {
             ivContainer.uowCtrl.enlistWithTransaction(s);
         } catch (CSIException e) {
@@ -1298,13 +1216,11 @@ public class ContainerTx
 
     /**
      * Remove the given <code>BeanO</code> in this container transaction.
-     * 
+     *
      * @return true if the specified BeanO was successfully removed from the
      *         transaction; returns false if the bean was not enlisted.
      */
-    public boolean delist(BeanO beanO)
-                    throws TransactionRolledbackException
-    {
+    public boolean delist(BeanO beanO) throws TransactionRolledbackException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled(); // d532639.2
 
         if (isTraceOn && tc.isEntryEnabled())
@@ -1340,10 +1256,8 @@ public class ContainerTx
 
                 // If CMP 2.0 bean, remove from CMP 2.0 list that is sorted
                 // by home.... used for intelligent flush.             d140003.22
-                if (beanO.home.beanMetaData.cmpVersion == InternalConstants.CMP_VERSION_2_X)
-                {
-                    ArrayList<BeanO> bundle =
-                                    homesForPMManagedBeans.get(beanO.home);
+                if (beanO.home.beanMetaData.cmpVersion == InternalConstants.CMP_VERSION_2_X) {
+                    ArrayList<BeanO> bundle = homesForPMManagedBeans.get(beanO.home);
 
                     bundle.remove(bundle.lastIndexOf(beanO));
                 }
@@ -1364,8 +1278,7 @@ public class ContainerTx
      * causes a recursive call to this method (this is probably
      * bad, but at least we won't hang in the recursive call).
      */
-    protected BeanO[] getAllEnlistedBeanOs()
-    {
+    protected BeanO[] getAllEnlistedBeanOs() {
         if (beanOs == null)
             return null; // d111555
 
@@ -1379,9 +1292,7 @@ public class ContainerTx
         return result;
     } // getBeanOs
 
-    protected final void preInvoke(EJSDeployedSupport s)
-                    throws TransactionRolledbackException
-    {
+    protected final void preInvoke(EJSDeployedSupport s) throws TransactionRolledbackException {
         ensureActive();
 
         // Save previous method's tx 'began' indication, to be restored in
@@ -1401,11 +1312,8 @@ public class ContainerTx
      * Set the isolation level for the current transacion and ensure
      * that it has not changed within the transaction.
      */
-    protected void setIsolationLevel(int isolationLevel)
-                    throws IsolationLevelChangeException
-    {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
-        {
+    protected void setIsolationLevel(int isolationLevel) throws IsolationLevelChangeException {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(tc, "current isolation level = "
                          + MethodAttribUtils.getIsolationLevelString(ivIsolationLevel)
                          + ", attempting to change to = "
@@ -1427,21 +1335,18 @@ public class ContainerTx
     /**
      * Perform postinvoke processing for this global transaction. <p>
      */
-    protected final void postInvoke(EJSDeployedSupport s)
-    {
+    protected final void postInvoke(EJSDeployedSupport s) {
         began = s.previousBegan;
     } // postInvoke
 
     /**
      * Call flush on each beanO, first failure terminates. <p>
-     * 
-     * @param theBeanOs the BeanOs to flush
+     *
+     * @param theBeanOs         the BeanOs to flush
      * @param cmp2xBeansToFlush null to flush all beans, or non-null to only
-     *            flush a bean if it can be removed from the Set
+     *                              flush a bean if it can be removed from the Set
      */
-    protected void flush(BeanO[] theBeanOs, HashSet<BeanInstanceInfo> cmp2xBeansToFlush)
-                    throws CSIException
-    {
+    protected void flush(BeanO[] theBeanOs, HashSet<BeanInstanceInfo> cmp2xBeansToFlush) throws CSIException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isDebugEnabled())
             Tr.entry(tc, "flush: num=" + (theBeanOs == null ? null : theBeanOs.length) +
@@ -1459,26 +1364,22 @@ public class ContainerTx
             ClassLoader prevClassLoader = null;
             Object origClassLoader = ThreadContextAccessor.UNCHANGED;
 
-            try
-            {
+            try {
                 for (int i = 0; i < theBeanOs.length; i++) {
                     BeanO beanO = theBeanOs[i];
                     BeanMetaData bmd = beanO.home.beanMetaData;
 
                     if (bmd.cmpVersion != InternalConstants.CMP_VERSION_2_X ||
                         cmp2xBeansToFlush == null ||
-                        cmp2xBeansToFlush.remove(beanO))
-                    {
+                        cmp2xBeansToFlush.remove(beanO)) {
                         threadData.pushCallbackBeanO(beanO); // d168509, d630940
                         popCallbackBeanO = true;
 
                         // Update the thread CMD if it's not the same as the
                         // previous bean and this is a bean-managed bean.
                         if (bmd != prevCMD &&
-                            bmd.type == InternalConstants.TYPE_BEAN_MANAGED_ENTITY)
-                        {
-                            if (resetCMD)
-                            {
+                            bmd.type == InternalConstants.TYPE_BEAN_MANAGED_ENTITY) {
+                            if (resetCMD) {
                                 cmdAccessor.endContext();
                             }
 
@@ -1489,8 +1390,7 @@ public class ContainerTx
                             // Update the class loader if it's not the same as the
                             // previous bean.                         PK51366, PK83186
                             ClassLoader classLoader = bmd.ivContextClassLoader; // F85059
-                            if (classLoader != prevClassLoader)
-                            {
+                            if (classLoader != prevClassLoader) {
                                 prevClassLoader = classLoader;
                                 origClassLoader = EJBThreadData.svThreadContextAccessor.repushContextClassLoaderForUnprivileged(origClassLoader, classLoader);
                             }
@@ -1505,24 +1405,19 @@ public class ContainerTx
 
                         popCallbackBeanO = false;
                         threadData.popCallbackBeanO();
-                    }
-                    else
-                    {
+                    } else {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                             Tr.debug(tc, "Excluded from flush: " + beanO);
                     }
                 }
-            } finally
-            {
+            } finally {
                 EJBThreadData.svThreadContextAccessor.popContextClassLoaderForUnprivileged(origClassLoader);
 
-                if (resetCMD)
-                {
+                if (resetCMD) {
                     cmdAccessor.endContext();
                 }
 
-                if (popCallbackBeanO)
-                {
+                if (popCallbackBeanO) {
                     threadData.popCallbackBeanO();
                 }
             }
@@ -1536,9 +1431,7 @@ public class ContainerTx
      * Flush the persistent state of all entity beans enlisted
      * in this transaction. <p>
      */
-    protected void flush()
-                    throws CSIException
-    {
+    protected void flush() throws CSIException {
         // This method is overridden in WASContainerTx to allow for Persistence
         // Manager logic to be moved out of shared logic and into specific
         // traditional WAS logic.
@@ -1549,8 +1442,7 @@ public class ContainerTx
      * the bean method call currenly in progress arrived.
      */
     @Override
-    public final boolean beganInThisScope()
-    {
+    public final boolean beganInThisScope() {
         return began;
     }
 
@@ -1567,8 +1459,7 @@ public class ContainerTx
      * This method only marks the transaction for rollback, the actual
      * rollback will be driven in the beforeCompletion callback
      */
-    public final void setRollbackOnly()
-    {
+    public final void setRollbackOnly() {
         markedRollbackOnly = true;
         ivContainer.uowCtrl.setRollbackOnly(); //LIDB1673.2.1.5
     }
@@ -1578,8 +1469,7 @@ public class ContainerTx
      * already been rolled back (returns true iff setRollbackOnly was
      * called on this ContainerTx instance)
      */
-    public final boolean getRollbackOnly()
-    {
+    public final boolean getRollbackOnly() {
         return markedRollbackOnly;
     }
 
@@ -1587,8 +1477,7 @@ public class ContainerTx
      * Return true iff this transaction is marked for rollback or has
      * already been rolled back (queries JTS for the answer)
      */
-    protected final boolean getGlobalRollbackOnly()
-    {
+    protected final boolean getGlobalRollbackOnly() {
         return ivContainer.uowCtrl.getRollbackOnly();
     }
 
@@ -1602,38 +1491,35 @@ public class ContainerTx
      * A ContainerTx is not a real lock implementation.
      */
     @Override
-    public boolean isLock()
-    {
+    public boolean isLock() {
         return false;
     } // isLock
 
     /**
      * Return the lock mode for the given lock. The lock name is the
      * bean id of a bean enlisted with this transaction. <p>
-     * 
+     *
      * To satisfy this request, find the EntityBeanO in this transaction
      * associated with the given bean id and delegate the call to it. <p>
-     * 
+     *
      * Do not try to activate bean here, this transaction may already have
      * been enlisted by a beanO. The beanO should be active in this
      * situation. Problems will arise if the activation tries to reenlist
      * in this transaction since its state is unknown.
-     * 
+     *
      * This call is made when the lock needs to be upgraded from a proxy
      * to a full Lock object. At that point a determination needs to be
      * made on the locking mode of the holder of the proxy lock. No
      * assumptions can be made on the holder's state.
      */
     @Override
-    public int getLockMode(Object lockName)
-    {
+    public int getLockMode(Object lockName) {
         BeanId beanId = (BeanId) lockName;
 
         // When the number of bean instances is limited, a lock will be
         // obtained for the home bean id to block creation of additional
         // instances... this is an EXCLUSIVE lock.                         PK20648
-        if (beanId.isHome())
-        {
+        if (beanId.isHome()) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
                 Tr.event(tc, "getLockMode: locking home bean: EXCLUSIVE");
             return LockManager.EXCLUSIVE;
@@ -1658,21 +1544,17 @@ public class ContainerTx
      * Get the container's activity session
      */
     //139562-5.EJBC - made final and moved code to CTOR.
-    final public ContainerAS getContainerAS()
-    {
+    final public ContainerAS getContainerAS() {
         return containerAS;
     }
 
     // d425046 allow containerAS to be set separately
-    final protected void setContainerAS(ContainerAS cas)
-    {
+    final protected void setContainerAS(ContainerAS cas) {
         containerAS = cas;
     }
 
     //110799
-    public ContainerTx getCurrentTx()
-                    throws CSITransactionRolledbackException
-    {
+    public ContainerTx getCurrentTx() throws CSITransactionRolledbackException {
         return ivContainer.getCurrentTx(false);//d171654
     }
 
@@ -1680,15 +1562,13 @@ public class ContainerTx
 
     //d126930.3
     @Override
-    public void setCompleting(boolean isCompleting)
-    {
+    public void setCompleting(boolean isCompleting) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "setCompleting= " + isCompleting);
 
         isActivitySessionCompleting = isCompleting;
         //d138562.11
-        if (finderSyncList != null) // d173022.12
-        { // d173022.12
+        if (finderSyncList != null) {
             int numberofCallers = finderSyncList.size();
             for (int i = 0; i < numberofCallers; ++i) {
                 ((ContainerSynchronization) finderSyncList.get(i)).setCompleting(isCompleting);
@@ -1710,14 +1590,11 @@ public class ContainerTx
      * Pre-condition: The Synchronization object being enlisted
      * must implement ContainerSynchronization interface
      *///d139562.11
-    public void enlistContainerSync(Synchronization s)
-                    throws CPIException
-    {
+    public void enlistContainerSync(Synchronization s) throws CPIException {
         if (!(s instanceof ContainerSynchronization)) {
             throw new CPIException("Must implement ContainerSynchronization interface");
         }
-        if (finderSyncList == null) // d173022.12
-        { // d173022.12
+        if (finderSyncList == null) {
             finderSyncList = new ArrayList<Synchronization>(); // d173022.12
         } // d173022.12
         finderSyncList.add(s);
@@ -1725,12 +1602,11 @@ public class ContainerTx
 
     /**
      * d112604.1
-     * 
+     *
      * Returns a boolean representing the fast that a CMP11 BeanO flush in progress. <p>
-     * 
+     *
      */
-    public boolean getCMP11FlushActive()
-    {
+    public boolean getCMP11FlushActive() {
         return (ivCMP11FlushActive);
     }
 
@@ -1738,14 +1614,13 @@ public class ContainerTx
      * Called when the object is no longer in use. This is a way to clear
      * the internal state, so it does not hold too many resources in case
      * a reference is held to it beyond the life fo the transaction. <p>
-     * 
+     *
      * Formerly called 'OnReturnToPool', but pooling this object did not
      * provice a benifit, so it has been renamed not that it clears the
      * state rather than re-initializing it. <p>
      */
     // d154342.10 d215317
-    protected void releaseResources()
-    {
+    protected void releaseResources() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "releaseResources : State = " + stateStrs[state]);
 
@@ -1753,8 +1628,7 @@ public class ContainerTx
         // be cleared, and should not be returned to the pool.  This is common
         // for BMT, where a method may begin the tx, but not complete it
         // until a subsequent method call.                                 d157262
-        if (state != COMMITTED && state != ROLLEDBACK)
-        {
+        if (state != COMMITTED && state != ROLLEDBACK) {
             return;
         }
 
@@ -1781,26 +1655,24 @@ public class ContainerTx
 
     /**
      * Returns void and instead writes directly to IncidentStream to avoid large string buffers.<p>
-     * 
+     *
      * Used by the EJBContainerDiagnosticModule instead of toString().
      * The information returned is way too much information for toString(),
      * which is used by trace. <p>
      */
     // d137957 PK98076
-    public void ffdcDump(IncidentStream is) //PK98076
-    {
+    public void ffdcDump(IncidentStream is) {
         introspect(new IncidentStreamWriter(is));
     }
 
     /**
      * Writes the important state data of this class, in a readable format,
      * to the specified output writer. <p>
-     * 
+     *
      * @param writer output resource for the introspection data
      */
     // F86406
-    public void introspect(IntrospectionWriter writer)
-    {
+    public void introspect(IntrospectionWriter writer) {
         // -----------------------------------------------------------------------
         // Indicate the start of the dump, and include the toString()
         // of ContainerTx, so this can easily be matched to a trace.
@@ -1847,8 +1719,7 @@ public class ContainerTx
         writer.end();
     }
 
-    protected void introspectAccessIntent(IntrospectionWriter writer)
-    {
+    protected void introspectAccessIntent(IntrospectionWriter writer) {
         // This method is overridden in WASContainerTx to allow for AccessIntent
         // logic to be moved out of shared logic and into specific
         // traditional WAS logic.
@@ -1857,22 +1728,14 @@ public class ContainerTx
     // d165585 Begins
     /**
     */
-    protected String getTxId()
-    {
+    protected String getTxId() {
         String rtnStr = null;
-        if (ivTxKey != null)
-        {
-            if (globalTransaction)
-            {
+        if (ivTxKey != null) {
+            if (globalTransaction) {
                 int idx;
                 rtnStr = ivTxKey.toString();
-                rtnStr = (rtnStr != null)
-                                ? (((idx = rtnStr.indexOf("#")) != -1)
-                                                ? rtnStr.substring(idx + 5)
-                                                : rtnStr)
-                                : "NoTx";
-            } else
-            {
+                rtnStr = (rtnStr != null) ? (((idx = rtnStr.indexOf("#")) != -1) ? rtnStr.substring(idx + 5) : rtnStr) : "NoTx";
+            } else {
                 rtnStr = Integer.toHexString(System.identityHashCode(ivTxKey));
             }
         }
@@ -1883,24 +1746,19 @@ public class ContainerTx
 
     /**
      * Returns the UOW ID in a String format suitable for tracing. <p>
-     * 
+     *
      * This method is provided so that tx id trace points will be
      * consistent throughout EJB Container. <p>
-     * 
+     *
      * @param uowId The Unit Of Work Identififer (i.e. tx id).
      **/
     // LI3795-56
-    protected static String uowIdToString(Object uowId)
-    {
+    protected static String uowIdToString(Object uowId) {
         String tidStr = null;
-        if (uowId != null)
-        {
-            if (uowId instanceof LocalTransactionCoordinator)
-            {
+        if (uowId != null) {
+            if (uowId instanceof LocalTransactionCoordinator) {
                 tidStr = "tid=" + Integer.toHexString(uowId.hashCode()) + "(LTC)";
-            }
-            else
-            {
+            } else {
                 int idx;
                 tidStr = uowId.toString();
                 if ((idx = tidStr.lastIndexOf("#")) != -1)
@@ -1915,8 +1773,7 @@ public class ContainerTx
      * currently associated with the calling thread.
      */
     // d167937 - added entire method
-    boolean isBmtActive(EJBMethodInfoImpl methodInfo)
-    {
+    boolean isBmtActive(EJBMethodInfoImpl methodInfo) {
         return uowCtrl.isBmtActive(methodInfo);
     }
 
@@ -1925,24 +1782,20 @@ public class ContainerTx
      **/
     // LI3795-56
     @Override
-    public String toString()
-    {
+    public String toString() {
         String toString = "ContainerTx@" + Integer.toHexString(hashCode());
-        if (ivTxKey != null)
-        {
+        if (ivTxKey != null) {
             if (globalTransaction)
                 toString += "#tid=" + getTxId();
             else
                 toString += "#tid=" + getTxId() + "(LTC)";
-        }
-        else
+        } else
             toString += "#NoTx";
 
         return toString;
     }
 
-    public boolean isFlushRequired()
-    {
+    public boolean isFlushRequired() {
         return ivFlushRequired;
     }
 

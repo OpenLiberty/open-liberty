@@ -534,27 +534,31 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
             }
 
             String searchExpr = "@xsi:type=" + quote + qName + quote + " and "
-                                + SchemaConstants.PROP_PRINCIPAL_NAME + "=" + quote + principalName + quote;
+                            + SchemaConstants.PROP_PRINCIPAL_NAME + "=" + quote + principalName + quote;
 
             loginCtrl.setExpression(searchExpr);
             srchCtrl = getLdapSearchControl(loginCtrl, false, false);
             String[] searchBases = srchCtrl.getBases();
-            String sFilter = srchCtrl.getFilter();
+            String sFilter = null;
 
-            if (iLdapConfigMgr.getUseEncodingInSearchExpression() != null)
-                sFilter = LdapHelper.encodeAttribute(sFilter, iLdapConfigMgr.getUseEncodingInSearchExpression());
-
-            //Check is input principalName is DN, if it is DN use the same for login otherwise use userFilter
-            String principalNameDN = null;
-            try {
-                principalNameDN = new LdapName(principalName).toString();
-            } catch (InvalidNameException e) {
-                e.getMessage();
+            if (!iLdapConfigMgr.loginPropertyDefined()) {
+                //Check is input principalName is DN, if it is DN use the same for login otherwise use userFilter
+                String principalNameDN = null;
+                try {
+                    principalNameDN = new LdapName(principalName).toString();
+                } catch (InvalidNameException e) {
+                }
+                Filter userFilter = iLdapConfigMgr.getUserFilter();
+                if (principalNameDN == null && userFilter != null) {
+                    sFilter = userFilter.prepare(principalName);
+                    sFilter = setAttributeNamesInFilter(sFilter, SchemaConstants.DO_PERSON_ACCOUNT);
+                }
             }
-            Filter userFilter = iLdapConfigMgr.getUserFilter();
-            if (principalNameDN == null && userFilter != null) {
-                sFilter = userFilter.prepare(principalName);
-                sFilter = setAttributeNamesInFilter(sFilter, SchemaConstants.DO_PERSON_ACCOUNT);
+            if (sFilter == null) {
+                sFilter = srchCtrl.getFilter();
+                if (iLdapConfigMgr.getUseEncodingInSearchExpression() != null) {
+                    sFilter = LdapHelper.encodeAttribute(sFilter, iLdapConfigMgr.getUseEncodingInSearchExpression());
+                }
             }
 
             int countLimit = srchCtrl.getCountLimit();
@@ -902,8 +906,12 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
      * @return
      * @throws WIMException
      */
+    @Trivial // parentDO can be very large, override entry / exit to avoid printing out such a large object to trace
     private Entity createEntityFromLdapEntry(Object parentDO, String propName, LdapEntry ldapEntry, List<String> propNames) throws WIMException {
         final String METHODNAME = "createEntityFromLdapEntry";
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.entry(tc, METHODNAME, (parentDO == null) ? "null" : parentDO.getClass(), propName, ldapEntry, propNames);
+        }
 
         String outEntityType = ldapEntry.getType();
         Entity outEntity = null;
@@ -961,6 +969,10 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
             }
         } else {
             populateEntity(outEntity, propNames, ldapEntry.getAttributes());
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.exit(tc, METHODNAME, outEntity);
         }
         return outEntity;
     }
@@ -1459,8 +1471,10 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
                     while (groups.hasMore()) {
                         if (entity != null) {
                             String groupDN = String.valueOf(groups.next());
-                            LdapEntry grpEntry = iLdapConn.getEntityByIdentifier(groupDN, null, null, iLdapConfigMgr.getGroupTypes(), propNames, false, false);
-                            createEntityFromLdapEntry(entity, SchemaConstants.DO_GROUP, grpEntry, supportedProps);
+                            if (LdapHelper.isUnderBases(groupDN, bases)) {
+                                LdapEntry grpEntry = iLdapConn.getEntityByIdentifier(groupDN, null, null, iLdapConfigMgr.getGroupTypes(), propNames, false, false);
+                                createEntityFromLdapEntry(entity, SchemaConstants.DO_GROUP, grpEntry, supportedProps);
+                            }
                         }
                     }
                 } catch (NamingException e) {
@@ -1714,7 +1728,7 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
                                     //grpEntry = iLdapConn.getEntityByIdentifier(grpDn, null, null, groupTypes, supportedProps,nested, false);
                                 } catch (EntityNotFoundException e) {
                                     if (tc.isDebugEnabled()) {
-                                        Tr.debug(tc, METHODNAME + " Group " + grpDn + " is not found and ingored.");
+                                        Tr.debug(tc, METHODNAME + " Group " + grpDn + " is not found and ignored.");
                                     }
                                     continue;
                                 }

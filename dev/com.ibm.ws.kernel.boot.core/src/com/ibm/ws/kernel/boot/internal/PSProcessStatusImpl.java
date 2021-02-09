@@ -29,7 +29,7 @@ public class PSProcessStatusImpl implements ProcessStatus {
 
     /**
      * @param pid the pid, or the empty string if {@link #isPossiblyRunning} should
-     *                always return true
+     *            always return true
      */
     public PSProcessStatusImpl(String pid) {
         this.pid = pid;
@@ -68,15 +68,21 @@ public class PSProcessStatusImpl implements ProcessStatus {
             }
 
             p.waitFor();
+            Debug.println("Exit code for 'ps' command: " + p.exitValue());
             if (p.exitValue() == 0)
                 return State.YES;
             else
                 return State.NO;
         } catch (IOException e) {
-            if (e.getMessage().contains("Cannot run program \"ps\"")) // "ps" doesn't exist on this machine.
+            if (e.getMessage().contains("Cannot run program \"ps\"")) {
+                // "ps" doesn't exist on this machine.
+                Debug.println("Unable to execute the 'ps' command.  Returning UNDETERMINED.");
                 // Return Undetermined since we can't poll the process
                 return State.UNDETERMINED;
+            }
+
             Debug.printStackTrace(e);
+
         } catch (InterruptedException e) {
             Debug.printStackTrace(e);
         } finally {

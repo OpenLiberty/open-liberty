@@ -34,6 +34,7 @@ import componenttest.topology.utils.HttpUtils;
 
 @RunWith(FATRunner.class)
 public class WsBndServiceRefOverrideTest_Lite {
+
     public static final int CONN_TIMEOUT = 5;
 
     @Server("WsBndServiceRefOverrideTestServer")

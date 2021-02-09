@@ -322,7 +322,7 @@ security.oauth20.front.end.error=CWOAU0073E: Si \u00e8 verificato un errore di a
 security.oauth20.front.end.error.explanation=Nella richiesta potrebbero mancare informazioni, il server potrebbe aver riscontrato un errore interno o qualche altro errore potrebbe aver impedito al server di autenticare correttamente l'utente.
 security.oauth20.front.end.error.useraction=Contattare l'amministratore di sistema per risolvere il problema.
 
-security.oauth20.endpoint.resowner.apppassword.error=CWOAU0074E: Non \u00e8 stata completata la richiesta di scambio password dell''applicazione per l''utente {0} perch\u00e9 non \u00e8 stato possibile verificare la password dell''applicazione. La password dell''applicazione \u00e8 errata, scaduta o revocata, oppure l''ID client fornito non \u00e8 valido.
+security.oauth20.endpoint.resowner.apppassword.error=CWOAU0074E: La richiesta di scambio password dell''applicazione per l''utente {0} non \u00e8 stata completata perch\u00e9 il provider OAuth non ha potuto verificare la password dell''applicazione. La password dell''applicazione \u00e8 errata, scaduta o revocata, oppure l''ID client o ID utente fornito non \u00e8 valido.
 security.oauth20.endpoint.resowner.apppassword.error.explanation=Il provider OAuth non \u00e8 stato in grado di verificare la password dell'applicazione.
 security.oauth20.endpoint.resowner.apppassword.error.useraction=Controllare che la password dell'applicazione sia valida, non sia scaduta e non sia stata revocata. Inoltre, verificare che l'ID client nel token di accesso sia uguale all'ID client nell'intestazione Autorizzazione.
 
@@ -353,3 +353,8 @@ security.oauth20.pkce.codeverifier.length.error.useraction=Inviare nuovamente le
 security.oauth20.pkce.error.mismatch.codeverifier=CWOAU0081E: code_challenge [{0}] e code_verifier [{1}] non corrispondono. 
 security.oauth20.pkce.error.mismatch.codeverifier.explanation=Il provider OAuth utilizza il code_challenge_method specificato nella richiesta di autorizzazione e trasforma il code_verifier a meno che il code_challenge_method non sia in testo chiaro. Il valore trasformato deve corrispondere con il code_challenge nella richiesta di autorizzazione.
 security.oauth20.pkce.error.mismatch.codeverifier.useraction=Assicurarsi di inviare il code_challenge e il code_verifier corrispondenti e il corretto algoritmo di trasformazione con le richieste di autorizzazione e token.
+
+# 0=User name, 1=OAuth client ID, 2=Maximum number of tokens allowed
+security.oauth20.refreshed.access.token.limit.reached=CWOAU0082E: L''utente [{0}] e il client OAuth [{1}] hanno raggiunto il numero massimo ([{2}]) di token di accesso che \u00e8 possibile creare utilizzando i token di aggiornamento. Non \u00e8 possibile creare un nuovo token di accesso con il token di aggiornamento fornito.
+security.oauth20.refreshed.access.token.limit.reached.explanation=Una combinazione di client OAuth e utente pu\u00f2 richiedere un numero limitato di token di accesso utilizzando i token di aggiornamento. Non \u00e8 possibile creare un nuovo token di accesso.
+security.oauth20.refreshed.access.token.limit.reached.useraction=Aumentare il numero di token di accesso che \u00e8 possibile emettere tramite i token di accesso. In alternativa, revocare alcuni dei token di accesso esistenti per l'utente e il client OAuth specificati nel messaggio.

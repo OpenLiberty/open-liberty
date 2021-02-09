@@ -28,7 +28,7 @@ import com.ibm.ws.testtooling.vehicle.resources.TestExecutionResources;
 public class JPATestOLGH10240Logic extends AbstractTestLogic {
 
     public void testCursorStoredProcedureIndexParameters(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                                         Object managedComponentObject) {
+                                                         Object managedComponentObject) throws Throwable {
         final String testName = getTestName();
 
         // Verify parameters
@@ -86,7 +86,7 @@ public class JPATestOLGH10240Logic extends AbstractTestLogic {
     }
 
     public void testCursorStoredProcedureNamedParameters(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                                         Object managedComponentObject) {
+                                                         Object managedComponentObject) throws Throwable {
         final String testName = getTestName();
 
         // Verify parameters

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 IBM Corporation and others.
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,6 +26,7 @@ import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.managedobject.ManagedObjectService;
 import com.ibm.ws.session.SessionManager;
 import com.ibm.ws.webcontainer.osgi.webapp.WebAppConfiguration;
+import com.ibm.ws.webcontainer.osgi.WebContainer;
 import com.ibm.ws.webcontainer.webapp.WebApp;
 import com.ibm.ws.webcontainer.webapp.WebAppDispatcherContext;
 import com.ibm.ws.webcontainer.webapp.WebAppRequestDispatcher;
@@ -72,7 +73,7 @@ public class WebApp40 extends com.ibm.ws.webcontainer31.osgi.webapp.WebApp31 imp
      */
     @Override
     public int getMajorVersion() {
-        return 4;
+        return WebContainer.getServletContainerSpecLevel() == WebContainer.SPEC_LEVEL_50 ? 5 : 4;
     }
 
     /*

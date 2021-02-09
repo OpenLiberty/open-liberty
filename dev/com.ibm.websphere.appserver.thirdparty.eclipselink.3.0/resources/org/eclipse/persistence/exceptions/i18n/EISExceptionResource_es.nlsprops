@@ -1,0 +1,67 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/EISExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+17007=La propiedad {0} debe establecerse.
+
+17008=Se ha encontrado una propiedad {0} no v\u00e1lida.
+
+17009=Debe establecerse la propiedad {0} o {1}.
+
+17010=El registro de salida contiene un tipo de mensaje no soportado
+
+17011=No se ha especificado ninguna f\u00e1brica de conexiones.
+
+17012=La InteractionSspec debe ser una CciJMSInteractionSpec.
+
+17013=El registro debe ser un CciJMSRecord.
+
+17014=Tipo de especificaci\u00f3n de interacci\u00f3n desconocido
+
+17015=La entrada debe contener un \u00fanico elemento de texto.
+
+17016=Se ha excedido el tiempo de espera; no se ha recibido ning\u00fan mensaje.
+
+17017=El registro de entrada contiene un tipo de mensaje no soportado.
+
+17018=No se puede invocar "begin()" en una sesi\u00f3n no transaccionada.
+
+17019=Problema al probar la sesi\u00f3n transaccionada: 
+
+17020=La InteractionSspec debe ser una AQInteractionSpec.
+
+17021=El registro debe ser un AQRecord.
+
+17022=La entrada debe contener un \u00fanico elemento sin formato.
+
+17023=Se ha producido una excepci\u00f3n al establecer los atributos de MQQueueConnectionFactory.
+
+17024=No se ha podido suprimir el archivo: {0}
+
+17025=Esta correlaci\u00f3n requiere un elemento de agrupaci\u00f3n de claves for\u00e1neas, ya que existen varias claves for\u00e1neas.
+

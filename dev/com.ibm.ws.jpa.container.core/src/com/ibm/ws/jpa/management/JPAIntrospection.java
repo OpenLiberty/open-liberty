@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -37,9 +37,6 @@ import com.ibm.ws.jpa.diagnostics.OpenJPAIntrospection;
 import com.ibm.ws.jpa.diagnostics.class_scanner.ano.jaxb.classinfo10.ClassInfoType;
 import com.ibm.ws.jpa.diagnostics.puscanner.PersistenceUnitScannerResults;
 
-/**
- *
- */
 public class JPAIntrospection {
     private static final TraceComponent tc = Tr.register(JPAIntrospection.class,
                                                          "JPAORM",
@@ -305,7 +302,9 @@ public class JPAIntrospection {
             // Get the persistence.xml associated with each persistence unit root.
             for (URL url : puRootURL_PUInfo_Map.keySet()) {
                 String pxml = resolvePersistenceXML(url);
-                puRootURL_pxml_Map.put(url, pxml);
+                if (pxml != null) {
+                    puRootURL_pxml_Map.put(url, pxml);
+                }
             }
 
             if (isIntrospectorDump) {
@@ -492,9 +491,11 @@ public class JPAIntrospection {
 
     private String resolvePersistenceXML(final URL puRootURL) {
         final String pxmlPath = "META-INF/persistence.xml";
-        final String urlPtcol = puRootURL.getProtocol();
+        final String urlPtcol = puRootURL.getProtocol().toLowerCase();
 
-        if (urlPtcol.toLowerCase().contains("wsjpa")) {
+        Tr.debug(tc, JPAIntrospection.class.getName() + ".resolvePersistenceXML: parsing URL", puRootURL);
+
+        if ("wsjpa".equals(urlPtcol)) {
             // WSJPA: zip-format InputStream
             try {
                 try (ZipInputStream zis = new ZipInputStream(puRootURL.openStream())) {
@@ -516,7 +517,7 @@ public class JPAIntrospection {
             } catch (Exception e) {
                 FFDCFilter.processException(e, JPAIntrospection.class.getName() + ".resolvePersistenceXML", "wsjpa");
             }
-        } else if (urlPtcol.toLowerCase().contains("jar")) {
+        } else if ("jar".equals(urlPtcol)) {
             // Jar file URL
             try {
                 String urlStr = puRootURL.toString();
@@ -525,8 +526,15 @@ public class JPAIntrospection {
             } catch (Exception e) {
                 FFDCFilter.processException(e, JPAIntrospection.class.getName() + ".resolvePersistenceXML", "jar");
             }
-        } else if (urlPtcol.toLowerCase().contains("file")) {
+        } else if ("file".equals(urlPtcol)) {
             // File URL (possibly exploded jar)
+            try {
+                String urlStr = puRootURL.toString();
+                URL pxmlURL = (urlStr.endsWith("/")) ? new URL(urlStr + pxmlPath) : new URL(urlStr + "/" + pxmlPath);
+                return readData(pxmlURL);
+            } catch (Exception e) {
+                FFDCFilter.processException(e, JPAIntrospection.class.getName() + ".resolvePersistenceXML", "file");
+            }
         }
 
         return null;

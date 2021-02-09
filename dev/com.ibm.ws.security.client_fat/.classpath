@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" output="bin" path="fat/src"/>
+	<classpathentry kind="src" output="bin" path="test-applications/BasicCalculatorClient.jar/src"/>
+	<classpathentry kind="src" output="bin" path="test-applications/BasicCalculatorEJB.jar/src"/>
+	<classpathentry kind="src" output="bin" path="test-applications/SSLHttpsClient.jar/src"/>
+	<classpathentry kind="src" output="bin" path="test-applications/FileMonitorClient.jar/src"/>
+	<classpathentry kind="src" output="bin" path="test-applications/ProgrammaticLogin.jar/src"/>
+	<classpathentry kind="src" output="bin" path="test-applications/ProgrammaticLoginWithCallbackHandler.jar/src"/>
+	<classpathentry kind="src" output="bin" path="test-applications/Java2Client.jar/src"/>
+	<classpathentry kind="src" output="bin" path="test-applications/JavaColonInjectionAppClient.jar/src"/>
+	<classpathentry kind="src" output="bin" path="test-applications/JavaColonInjectionAppEJB.jar/src"/>
+	<classpathentry kind="src" output="bin" path="test-applications/ProgrammaticJaasLogin.jar/src"/>
+	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

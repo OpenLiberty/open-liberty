@@ -109,6 +109,9 @@ public class BeanValidationProvider {
 
     public <T> void validateParameters(final T instance, final Method method, final Object[] arguments) {
 
+        if (BeanValidationService.instance() != null && !BeanValidationService.instance().isMethodConstrained(method)) {
+            return;
+        }
         final ExecutableValidator methodValidator = getExecutableValidator();
         final Set<ConstraintViolation<T>> violations = methodValidator.validateParameters(instance,
                                                                                           method, arguments);
@@ -119,6 +122,10 @@ public class BeanValidationProvider {
     }
 
     public <T> void validateReturnValue(final T instance, final Method method, final Object returnValue) {
+
+        if (BeanValidationService.instance() != null && !BeanValidationService.instance().isMethodConstrained(method)) {
+            return;
+        }
         final ExecutableValidator methodValidator = getExecutableValidator();
         final Set<ConstraintViolation<T>> violations = methodValidator.validateReturnValue(instance,
                                                                                            method, returnValue);

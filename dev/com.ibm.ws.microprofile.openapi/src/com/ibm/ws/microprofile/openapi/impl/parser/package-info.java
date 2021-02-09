@@ -12,7 +12,7 @@
  * @version 1.0
  */
 @org.osgi.annotation.versioning.Version("1.0")
-@TraceOptions(traceGroup = "MPOPENAPI", messageBundle = "com.ibm.ws.microprofile.openapi.resources.OpenAPI")
+@TraceOptions(traceGroup = "MPOPENAPI", messageBundle = "io.openliberty.microprofile.openapi.internal.resources.OpenAPI")
 package com.ibm.ws.microprofile.openapi.impl.parser;
 
 import com.ibm.websphere.ras.annotation.TraceOptions;

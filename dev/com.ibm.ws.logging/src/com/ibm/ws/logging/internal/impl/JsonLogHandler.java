@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,13 +17,11 @@ import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.logging.collector.CollectorConstants;
+import com.ibm.ws.logging.collector.CollectorJsonHelpers;
 import com.ibm.ws.logging.collector.CollectorJsonUtils;
 import com.ibm.ws.logging.collector.Formatter;
 import com.ibm.ws.logging.data.GenericData;
-import com.ibm.ws.logging.internal.NLSConstants;
 import com.ibm.wsspi.collector.manager.BufferManager;
 import com.ibm.wsspi.collector.manager.CollectorManager;
 import com.ibm.wsspi.collector.manager.SynchronousHandler;
@@ -32,9 +30,6 @@ import com.ibm.wsspi.collector.manager.SynchronousHandler;
  * An abstract class that defines the common functionality of a json handler services
  */
 public abstract class JsonLogHandler implements SynchronousHandler, Formatter {
-
-    private static final TraceComponent tc = Tr.register(JsonLogHandler.class, NLSConstants.GROUP, NLSConstants.LOGGING_NLS);
-
     protected String serverHostName = null;
     protected String serverName = null;
     protected String wlpUserDir = null;
@@ -45,6 +40,8 @@ public abstract class JsonLogHandler implements SynchronousHandler, Formatter {
 
     protected static final String ENV_VAR_CONTAINERHOST = "CONTAINER_HOST";
     protected static final String ENV_VAR_CONTAINERNAME = "CONTAINER_NAME";
+
+    protected static volatile boolean appsWriteJson = false;
 
     List<String> sourcesList = new ArrayList<String>();
 
@@ -65,8 +62,8 @@ public abstract class JsonLogHandler implements SynchronousHandler, Formatter {
      * Constructor for the JsonLoghandler which will establish server information needed
      * to fill in the fields of the JSON data object
      *
-     * @param serverName  The wlp servername
-     * @param wlpUserDir  The wlp user directory
+     * @param serverName The wlp servername
+     * @param wlpUserDir The wlp user directory
      * @param sourcesList The first sourceList to subscribe to collectorManager with
      */
     public JsonLogHandler(String serverName, String wlpUserDir, List<String> sourcesList) {
@@ -102,6 +99,10 @@ public abstract class JsonLogHandler implements SynchronousHandler, Formatter {
         } else {
             serverHostName = containerHost;
         }
+
+        CollectorJsonHelpers.setHostName(serverHostName);
+        CollectorJsonHelpers.setServerName(this.serverName);
+        CollectorJsonHelpers.setWlpUserDir(wlpUserDir);
 
     }
 
@@ -228,6 +229,20 @@ public abstract class JsonLogHandler implements SynchronousHandler, Formatter {
         } else {
             return "";
         }
+    }
+
+    protected static boolean isJSON(String message) {
+        return message != null && message.startsWith("{") && message.endsWith("}");
+
+    }
+
+    /**
+     * Set apps that write json to true or false
+     *
+     * @param appsWriteJson Allow apps to write JSON to System.out/System.err
+     */
+    public void setAppsWriteJson(boolean appsWriteJson) {
+        JsonLogHandler.appsWriteJson = appsWriteJson;
     }
 
 }

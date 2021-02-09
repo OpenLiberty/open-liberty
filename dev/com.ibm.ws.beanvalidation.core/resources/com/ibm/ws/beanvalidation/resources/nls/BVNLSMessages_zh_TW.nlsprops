@@ -87,3 +87,16 @@ JNDI_NON_JEE_THREAD_CWNBV0006E.explanation=\u53ea\u6709\u5728\u8207 Java EE \u61
 JNDI_NON_JEE_THREAD_CWNBV0006E.useraction=\u8acb\u4fee\u6539\u61c9\u7528\u7a0b\u5f0f\uff0c\u5728\u8207 Java EE \u61c9\u7528\u7a0b\u5f0f\u5143\u4ef6\u76f8\u95dc\u806f\u7684\u57f7\u884c\u7dd2\u4e2d\u9032\u884c JNDI \u4f5c\u696d\u3002
 
 # -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the method with the invalid ValidateOnExecution annotation
+# -----------------------------------------------------------------------
+BVKEY_VALIDATE_ON_EXECUTION_NOT_ALLOWED_CWNBV0007E=CWNBV0007E: \u5728\u7528\u65bc\u7f6e\u63db\u8d85\u985e\u5225\u65b9\u6cd5\u6216\u5be6\u4f5c\u4ecb\u9762\u7684\u65b9\u6cd5\u4e0a\uff0c\u4e0d\u5bb9\u8a31\u4f7f\u7528 @ValidateOnExecution\u3002\u8acb\u6aa2\u67e5 {0} \u7684\u914d\u7f6e
+BVKEY_VALIDATE_ON_EXECUTION_NOT_ALLOWED_CWNBV0007E.explanation= \u5728\u7528\u65bc\u7f6e\u63db\u8d85\u985e\u5225\u65b9\u6cd5\u6216\u5be6\u4f5c\u4ecb\u9762\u7684\u65b9\u6cd5\u4e0a\uff0c\u4e0d\u5bb9\u8a31\u4f7f\u7528 @ValidateOnExecution\u3002\u7528\u65bc\u7f6e\u63db\u8d85\u985e\u5225\u65b9\u6cd5\u6216\u5be6\u4f5c\u4ecb\u9762\u65b9\u6cd5\u7684\u67d0\u500b\u65b9\u6cd5\uff0c\u7e7c\u627f\u4e86\u5b83\u6240\u7f6e\u63db\u6216\u5be6\u4f5c\u4e4b\u65b9\u6cd5\u7684\u884c\u70ba\u3002
+BVKEY_VALIDATE_ON_EXECUTION_NOT_ALLOWED_CWNBV0007E.useraction= \u8acb\u5f9e\u6307\u5b9a\u7684\u65b9\u6cd5\u4e2d\u79fb\u9664 @ValidateOnExecution\u3002
+
+# -----------------------------------------------------------------------
+BVKEY_MIXING_IMPLICIT_TYPE_NOT_ALLOWED_CWNBV0008E=CWNBV0008E: \u4e0d\u5bb9\u8a31\u5c07 IMPLICIT \u985e\u578b\u8207\u5176\u4ed6\u57f7\u884c\u6a94\u985e\u578b\u6df7\u5408\u4f7f\u7528\u3002\u8acb\u6aa2\u67e5\u4e0b\u5217\u9805\u76ee\u7684\u57f7\u884c\u6a94\u985e\u578b\u8a2d\u5b9a\uff1a\n {0}
+BVKEY_MIXING_IMPLICIT_TYPE_NOT_ALLOWED_CWNBV0008E.explanation=\u6839\u64da\u300cBean \u9a57\u8b49\u898f\u683c\u300d\uff0c@ValidateOnExecution \u8a3b\u91cb\u4e0d\u5bb9\u8a31\u5c07 IMPLICIT \u985e\u578b\u8207\u5176\u4ed6\u57f7\u884c\u6a94\u985e\u578b\u6df7\u5408\u4f7f\u7528\u3002
+BVKEY_MIXING_IMPLICIT_TYPE_NOT_ALLOWED_CWNBV0008E.useraction=\u8acb\u66f4\u65b0\u57f7\u884c\u6a94\u985e\u578b\u7684\u65b9\u6cd5\u3001\u985e\u5225\u6216\u5ee3\u57df XML \u8a2d\u5b9a\uff0c\u4ee5\u9632\u6b62\u5c07 IMPLICIT \u985e\u578b\u8207\u5176\u4ed6\u57f7\u884c\u6a94\u985e\u578b\u6df7\u5408\u4f7f\u7528\u3002
+
+# -----------------------------------------------------------------------

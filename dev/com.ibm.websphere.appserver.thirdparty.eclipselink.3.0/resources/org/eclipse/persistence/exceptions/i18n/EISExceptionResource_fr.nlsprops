@@ -1,0 +1,67 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/EISExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+17007=La propri\u00e9t\u00e9 {0} doit \u00eatre d\u00e9finie.
+
+17008=Propri\u00e9t\u00e9 {0} d\u00e9tect\u00e9e incorrecte.
+
+17009=La propri\u00e9t\u00e9 {0} ou {1} doit \u00eatre d\u00e9finie.
+
+17010=L''enregistrement en sortie contient un type de message non pris en charge
+
+17011=Aucune fabrique de connexions n''a \u00e9t\u00e9 sp\u00e9cifi\u00e9e.
+
+17012=InteractionSspec doit \u00eatre un CciJMSInteractionSpec.
+
+17013=L''enregistrement doit \u00eatre un CciJMSRecord.
+
+17014=Type de sp\u00e9cification d''interaction inconnue
+
+17015=L''entr\u00e9e doit contenir un seul \u00e9l\u00e9ment de texte.
+
+17016=Un d\u00e9passement de d\u00e9lai s''est produit. Aucun message n''a \u00e9t\u00e9 re\u00e7u.
+
+17017=L''enregistrement d''entr\u00e9e contient un type de message non pris en charge.
+
+17018=Impossible d''appeler "begin()" sur une session non trait\u00e9e.
+
+17019=Probl\u00e8me lors du test pour une session trait\u00e9e : 
+
+17020=InteractionSspec doit \u00eatre un AQInteractionSpec.
+
+17021=L''enregistrement doit \u00eatre un AQRecord.
+
+17022=L''entr\u00e9e doit contenir un seul \u00e9l\u00e9ment brut.
+
+17023=Une exception s''est produite lors de la d\u00e9finition d''attributs MQQueueConnectionFactory.
+
+17024=Impossible de supprimer le fichier : {0}
+
+17025=ce mappage requiert un \u00e9l\u00e9ment de regroupement de cl\u00e9 externe, car il existe plusieurs cl\u00e9s externes.
+

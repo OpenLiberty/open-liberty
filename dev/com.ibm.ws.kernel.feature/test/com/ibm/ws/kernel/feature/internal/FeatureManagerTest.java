@@ -239,7 +239,7 @@ public class FeatureManagerTest {
 
                     allowing(runtimeUpdateManager).createNotification(RuntimeUpdateNotification.FEATURE_UPDATES_COMPLETED);
                     will(returnValue(featureUpdatesCompleted));
-                    allowing(runtimeUpdateManager).createNotification(RuntimeUpdateNotification.APP_FORCE_RESTART);
+                    allowing(runtimeUpdateManager).createNotification(RuntimeUpdateNotification.APP_FORCE_RESTART, true);
                     will(returnValue(appForceRestart));
                     allowing(runtimeUpdateManager).createNotification(RuntimeUpdateNotification.FEATURE_BUNDLES_RESOLVED);
                     will(returnValue(featureBundlesResolved));
@@ -255,6 +255,8 @@ public class FeatureManagerTest {
 
                     allowing(mockBundleContext).getDataFile("feature.fix.cache");
                     will(returnValue(File.createTempFile("feature.fix.cache", null)));
+
+                    allowing(featureBundlesResolved).setProperties(with(any(Map.class)));
                 }
             });
             fm.activate(mockComponentContext, new HashMap<String, Object>());

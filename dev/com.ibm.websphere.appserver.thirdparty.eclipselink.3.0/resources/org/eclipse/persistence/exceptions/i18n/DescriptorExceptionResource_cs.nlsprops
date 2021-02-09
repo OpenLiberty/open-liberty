@@ -1,0 +1,441 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/DescriptorExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+1=Atribut [{0}] nen\u00ed deklarovan\u00fd jako typ ValueHolderInterface, ale jeho mapov\u00e1n\u00ed pou\u017e\u00edv\u00e1 nep\u0159\u00edm\u00fd odkaz.
+
+10=Toto mapov\u00e1n\u00ed nem\u00e1 nastaven\u00fd n\u00e1zev pole.
+
+100=Metoda spustila v\u00fdjimku.
+
+101=Z\u00e1kladn\u00ed metoda spustila v\u00fdjimku.
+
+102=Metoda [{0}] spustila v\u00fdjimku.
+
+103=Probl\u00e9m p\u0159i extrahov\u00e1n\u00ed t\u0159\u00eddy z \u0159\u00e1dku [{0}] pomoc\u00ed statick\u00e9 metody [{1}] s parametrem (DatabaseRow). Byla spu\u0161t\u011bna v\u00fdjimka.
+
+104=Probl\u00e9m p\u0159i vytv\u00e1\u0159en\u00ed nov\u00e9 instance pomoc\u00ed metody vytvo\u0159en\u00ed [{0}]. Metoda vytvo\u0159en\u00ed spustila v\u00fdjimku.
+
+105=Z\u00e1kladn\u00ed metoda zp\u011btn\u00e9ho vol\u00e1n\u00ed deskriptoru [{0}] s parametrem (Session) spustila v\u00fdjimku.
+
+106=Metoda [{0}] na objektu spou\u0161t\u00ed v\u00fdjimku. {2}Argument: [{1}]
+
+108=Nelze naj\u00edt hodnotu v mapov\u00e1n\u00ed indik\u00e1toru t\u0159\u00eddy v nad\u0159\u00edzen\u00e9m deskriptoru [{0}].
+
+109=Tento deskriptor by nem\u011bl m\u00edt definovan\u00e9 pole z\u00e1mku pro z\u00e1pis, proto\u017ee se jedn\u00e1 o pod\u0159\u00edzen\u00fd deskriptor. Zd\u011bd\u00ed pole z\u00e1mku pro z\u00e1pis od sv\u00e9ho nad\u0159\u00edzen\u00e9ho deskriptoru.
+
+11=Informace o ciz\u00edm kl\u00ed\u010di pro toto mapov\u00e1n\u00ed jsou definov\u00e1ny chybn\u011b.
+
+110=Chyb\u00ed deskriptor pro t\u0159\u00eddu [{0}].
+
+111=V\u00edce n\u00e1zv\u016f pole prim\u00e1rn\u00edho kl\u00ed\u010de tabulky mus\u00ed b\u00fdt uvedeno v\u010detn\u011b \u00fapln\u00e9 cesty.
+
+112=Pomoc\u00ed metody setTableName(String) lze p\u0159idat pouze jednu tabulku. Chcete-li do deskriptoru p\u0159idat v\u00edce tabulek, pou\u017eijte metodu addTableName(String).
+
+113=Konstruktor nebyl dostupn\u00fd.
+
+114=Probl\u00e9m p\u0159i vytv\u00e1\u0159en\u00ed nov\u00e9 instance pomoc\u00ed metody vytvo\u0159en\u00ed [{0}]. Metoda vytvo\u0159en\u00ed nen\u00ed p\u0159\u00edstupn\u00e1.
+
+115=Nen\u00ed poskytnuta \u017e\u00e1dn\u00e1 hodnota konverze pro atribut [{0}].
+
+116=Nen\u00ed poskytnuta \u017e\u00e1dn\u00e1 hodnota konverze pro hodnotu [{0}] v poli [{1}].
+
+118=Objekt [{0}] nesm\u00ed m\u00edt na sv\u00fdch pol\u00edch z\u00e1mku pro z\u00e1pis mapov\u00e1n\u00ed jen pro \u010dten\u00ed.
+
+119=Mapov\u00e1n\u00ed objektu [{0}] na jeho pole z\u00e1mku pro z\u00e1pis mus\u00ed b\u00fdt jen pro \u010dten\u00ed.
+
+12=Deskriptory mus\u00ed pou\u017e\u00edvat mapu identit, aby bylo mo\u017en\u00e9 pou\u017e\u00edvat volbu kontroly existence "Kontrolovat mezipam\u011b\u0165".
+
+120=Kl\u00ed\u010d dotazu [{0}] je definovan\u00fd v nad\u0159\u00edzen\u00e9m deskriptoru [{1}], nikoli v\u0161ak v pod\u0159\u00edzen\u00e9m deskriptoru [{2}].
+
+122=Metodu setExistenceCheck() s argumentem [{0}] se nezda\u0159ilo interpretovat.
+
+125=Mapov\u00e1n\u00ed pro atribut [{0}] pou\u017e\u00edv\u00e1 nep\u0159\u00edm\u00fd odkaz, a proto mus\u00ed b\u00fdt inicializov\u00e1no na nov\u00fd objekt ValueHolder. Aktu\u00e1ln\u00ed hodnota je: [{1}].
+
+126=T\u00e9to t\u0159\u00edd\u011b [{0}] pro toto agregovan\u00e9 mapov\u00e1n\u00ed s d\u011bdi\u010dnost\u00ed neodpov\u00edd\u00e1 \u017e\u00e1dn\u00e1 podt\u0159\u00edda.
+
+127=Metoda get pro atribut [{0}] nevrac\u00ed rozhran\u00ed ValueHolderInterface, ale mapov\u00e1n\u00ed pou\u017e\u00edv\u00e1 nep\u0159\u00edm\u00fd odkaz.
+
+128=Metoda get pro atribut [{0}] vrac\u00ed rozhran\u00ed ValueHolderInterface, ale mapov\u00e1n\u00ed nepou\u017e\u00edv\u00e1 nep\u0159\u00edm\u00fd odkaz.
+
+129=Metoda set pro atribut [{0}] nep\u0159ij\u00edm\u00e1 jako parametr rozhran\u00ed ValueHolderInterface, ale mapov\u00e1n\u00ed pou\u017e\u00edv\u00e1 nep\u0159\u00edm\u00fd odkaz.
+
+13=Prom\u011bnn\u00e1 instance [{0}] v objektu [{1}] je nep\u0159\u00edstupn\u00e1.
+
+130=Metoda set pro atribut [{0}] p\u0159ij\u00edm\u00e1 jako parametr rozhran\u00ed ValueHolderInterface, ale mapov\u00e1n\u00ed nepou\u017e\u00edv\u00e1 nep\u0159\u00edm\u00fd odkaz.
+
+131=Metoda get pro atribut [{0}] by m\u011bla vracet vektor (resp. typ, kter\u00fd implementuje mapu nebo kolekci p\u0159i pou\u017eit\u00ed jazyka Java 2).
+
+133=Metoda set pro atribut [{0}] by m\u011bla jako parametr p\u0159ij\u00edmat vektor (resp. typ, kter\u00fd implementuje mapu nebo kolekci p\u0159i pou\u017eit\u00ed jazyka Java 2).
+
+135=V\u00edcen\u00e1sobn\u00fd vztah s ciz\u00edm kl\u00ed\u010dem tabulky odkazuje na nezn\u00e1mou tabulku [{0}].
+
+138=Atribut [{0}] je typu [{1}], ale mapov\u00e1n\u00ed pou\u017e\u00edv\u00e1 transparentn\u00ed nep\u0159\u00edm\u00fd odkaz (pomal\u00e9 na\u010d\u00edt\u00e1n\u00ed), co\u017e vy\u017eaduje, aby se jednalo o supert\u0159\u00eddu [{2}].
+
+139=Metoda get pro atribut [{0}] vrac\u00ed [{1}], ale mapov\u00e1n\u00ed pou\u017e\u00edv\u00e1 transparentn\u00ed nep\u0159\u00edm\u00fd odkaz (pomal\u00e9 na\u010d\u00edt\u00e1n\u00ed), co\u017e vy\u017eaduje, aby se jednalo o supert\u0159\u00eddu [{2}].
+
+14=Probl\u00e9m p\u0159i klonov\u00e1n\u00ed objektu [{0}]. Metoda klonov\u00e1n\u00ed [{1}] nen\u00ed p\u0159\u00edstupn\u00e1.
+
+140=Metoda set pro atribut [{0}] p\u0159ij\u00edm\u00e1 [{1}], ale mapov\u00e1n\u00ed pou\u017e\u00edv\u00e1 transparentn\u00ed nep\u0159\u00edm\u00fd odkaz (pomal\u00e9 na\u010d\u00edt\u00e1n\u00ed), co\u017e vy\u017eaduje, aby se jednalo o supert\u0159\u00eddu [{2}].
+
+141=Pole [{0}] se v tabulce [{1}] v datab\u00e1zi nevyskytuje.
+
+142=Tabulka [{0}] se v datab\u00e1zi nevyskytuje.
+
+143=Ur\u010den\u00fd vektor p\u0159\u00edkazu vlo\u017een\u00ed v\u00edce tabulek [{0}] obsahuje v\u00edce nebo m\u00e9n\u011b tabulek, ne\u017e kolik jich je uvedeno v deskriptoru. {2}Vektor p\u0159\u00edkazu vlo\u017een\u00ed mus\u00ed zahrnovat v\u0161echny tabulky [{1}].
+
+144=Transparentn\u00ed nep\u0159\u00edm\u00fd odkaz lze pou\u017e\u00edt pouze s t\u0159\u00eddou CollectionMappings.
+
+145=T\u0159\u00edda nep\u0159\u00edm\u00e9ho kontejneru [{0}] mus\u00ed implementovat konstruktor [{1}] s parametrem (ValueHolderInterface).
+
+146=T\u0159\u00eddu nep\u0159\u00edm\u00e9ho kontejneru [{0}] nelze p\u0159ev\u00e9st na instanci pomoc\u00ed konstruktoru {1}(ValueHolderInterface).
+
+147=Z\u00e1sada kontejneru [{0}] by se m\u011bla pou\u017e\u00edvat pouze v JDK 1.1.x. Pro [{1}] byla p\u0159evedena na instanci.
+
+148=Z\u00e1sada kontejneru [{0}] nen\u00ed kompatibiln\u00ed s transparentn\u00edm nep\u0159\u00edm\u00fdm odkazem.
+
+149=Objekty NoIndirectionPolicy by nem\u011bly obdr\u017eet tuto zpr\u00e1vu.
+
+15=Tato t\u0159\u00edda nedefinuje v\u00fdchoz\u00ed konstruktor, co\u017e EclipseLink vy\u017eaduje.
+
+150=Mapov\u00e1n\u00ed pro atribut [{0}] pou\u017e\u00edv\u00e1 transparentn\u00ed nep\u0159\u00edm\u00fd odkaz, tak\u017ee atribut [{0}] mus\u00ed b\u00fdt inicializovan\u00fd na p\u0159\u00edslu\u0161n\u00fd kontejner. Aktu\u00e1ln\u00ed hodnota je [{1}]. {2} -  Mus\u00ed b\u00fdt instanc\u00ed implement\u00e1toru kolekce nebo mapy.
+
+151=Operace [{0}] je pro toto mapov\u00e1n\u00ed neplatn\u00e1.
+
+152=Operace [{1}] je pro tuto z\u00e1sadu nep\u0159\u00edm\u00e9ho odkazu [{0}] neplatn\u00e1.
+
+153=Deskriptor odkazu pro [{0}] by m\u011bl b\u00fdt nastaven tak, aby se jednalo o deskriptor agregovan\u00e9 kolekce.
+
+154=T\u0159\u00edda kontejneru nep\u0159\u00edm\u00e9ho odkazu [{0}] neimplementuje IndirectContainer.
+
+155=Toto mapov\u00e1n\u00ed neobsahuje pole ciz\u00edho kl\u00ed\u010de propojen\u00e9 s polem prim\u00e1rn\u00edho kl\u00ed\u010de [{0}].
+
+156=Pro toto mapov\u00e1n\u00ed nen\u00ed nastaven\u00fd n\u00e1zev struktury.
+
+157=B\u011b\u017en\u00e9 deskriptory nepodporuj\u00ed nerela\u010dn\u00ed roz\u0161\u00ed\u0159en\u00ed.
+
+158=Nad\u0159\u00edzen\u00e1 t\u0159\u00edda tohoto deskriptoru byla nastavena sama na sebe.
+
+159=Nep\u0159\u00edm\u00fd odkaz serveru proxy je dostupn\u00fd pouze na virtu\u00e1ln\u00edch po\u010d\u00edta\u010d\u00edch kompatibiln\u00edch se sadou JDK 1.3 nebo vy\u0161\u0161\u00ed.
+
+16=Metoda zp\u011btn\u00e9ho vol\u00e1n\u00ed deskriptoru [{0}] s parametrem (DescriptorEvent) je nep\u0159\u00edstupn\u00e1.
+
+160=Atribut [{0}] t\u0159\u00eddy [{1}] je typovan\u00fd jako [{2}], co\u017e nebylo uvedeno v seznamu rozhran\u00ed p\u0159edan\u00e9m metod\u011b useProxyIndirection(). {4}Platn\u00e1 rozhran\u00ed jsou: [{3}].
+
+161=Metoda [{0}] ve t\u0159\u00edd\u011b [{1}] vrac\u00ed hodnotu typu [{2}], co\u017e nebylo uvedeno v seznamu rozhran\u00ed p\u0159edan\u00e9m metod\u011b useProxyIndirection(). {4}Platn\u00e1 rozhran\u00ed jsou: [{3}].
+
+162=Metoda [{0}] ve t\u0159\u00edd\u011b [{1}] p\u0159ij\u00edm\u00e1 parametr typu [{2}], co\u017e nebylo uvedeno v seznamu rozhran\u00ed p\u0159edan\u00e9m metod\u011b useProxyIndirection().{4}Platn\u00e1 rozhran\u00ed jsou: [{3}].
+
+163=T\u0159\u00edda atributu tohoto mapov\u00e1n\u00ed neodpov\u00edd\u00e1 t\u0159\u00edd\u011b kolekce. [{1}] nelze p\u0159i\u0159adit [{0}].
+
+164=Metoda dopln\u011bn\u00ed [{1}] ve t\u0159\u00edd\u011b dopln\u011bn\u00ed [{0}] je neplatn\u00e1, neve\u0159ejn\u00e1, nebo ji nelze naj\u00edt. {2}Metody dopln\u011bn\u00ed deskriptoru mus\u00ed b\u00fdt deklarov\u00e1ny jako "public static void" s jedin\u00fdm parametrem (ClassDescriptor).
+
+165=Metoda dopln\u011bn\u00ed tohoto deskriptoru [{1}] ve t\u0159\u00edd\u011b dopln\u011bn\u00ed [{0}] spustila v\u00fdjimku.
+
+166=Pro atribut [{0}] neexistuje \u017e\u00e1dn\u00e9 mapov\u00e1n\u00ed.
+
+167=Nebyl nalezen platn\u00fd konstruktor pro t\u0159\u00eddu kontejneru nep\u0159\u00edm\u00e9ho odkazu [{0}].
+
+168=Probl\u00e9m p\u0159i vytv\u00e1\u0159en\u00ed nov\u00e9 instance pomoc\u00ed v\u00fdchoz\u00edho konstruktoru. V\u00fdchoz\u00ed konstruktor spustil v\u00fdjimku.
+
+169=Probl\u00e9m p\u0159i vytv\u00e1\u0159en\u00ed nov\u00e9 instance tov\u00e1rny pomoc\u00ed v\u00fdchoz\u00edho konstruktoru. V\u00fdchoz\u00ed konstruktor spustil v\u00fdjimku.
+
+17=Prob\u00edh\u00e1 pokus o p\u0159\u00edstup k metod\u011b [{0}] na objektu [{1}]. Z\u00e1kladn\u00ed metoda je nep\u0159\u00edstupn\u00e1.
+
+170=Probl\u00e9m (nepovolen\u00fd p\u0159\u00edstup) p\u0159i vytv\u00e1\u0159en\u00ed nov\u00e9 instance tov\u00e1rny pomoc\u00ed v\u00fdchoz\u00edho konstruktoru.
+
+171=T\u0159\u00edda tov\u00e1rny nedefinuje ve\u0159ejn\u00fd v\u00fdchoz\u00ed konstruktor nebo konstruktor vyvolal v\u00fdjimku.
+
+172=Nebyl nalezen konstruktor tov\u00e1rny.
+
+173=Konstruktor tov\u00e1rny byl nep\u0159\u00edstupn\u00fd.
+
+174=Probl\u00e9m p\u0159i vytv\u00e1\u0159en\u00ed tov\u00e1rny. Metoda vytvo\u0159en\u00ed [{0}] nen\u00ed p\u0159\u00edstupn\u00e1.
+
+175=Probl\u00e9m p\u0159i vytv\u00e1\u0159en\u00ed tov\u00e1rny pomoc\u00ed metody vytvo\u0159en\u00ed [{0}]. Metoda vytvo\u0159en\u00ed spustila v\u00fdjimku.
+
+176=Probl\u00e9m p\u0159i vytv\u00e1\u0159en\u00ed tov\u00e1rny pomoc\u00ed metody vytvo\u0159en\u00ed [{0}]. Metoda vytvo\u0159en\u00ed nen\u00ed p\u0159\u00edstupn\u00e1.
+
+177=Chyb\u00ed mapov\u00e1n\u00ed pro atribut: [{0}].
+
+178=Nelze naj\u00edt mapov\u00e1n\u00ed pro atribut [{0}] v objektu entity bean [{1}]. Atribut mus\u00ed b\u00fdt mapovan\u00fd.
+
+179=Atribut [{0}] pou\u017e\u00edv\u00e1 obousm\u011brnou \u00fadr\u017ebu vztahu, ale m\u00e1 t\u0159\u00eddu ContainerPolicy [{1}], kter\u00e1 ji nepodporuje. Atribut by m\u011bl b\u00fdt namapov\u00e1n s jin\u00fdm typem kolekce.
+
+18=Nepovolen\u00fd p\u0159\u00edstup k metod\u011b v mapov\u00e1n\u00ed transformace pomoc\u00ed objektu ValueHolder.
+
+181=Nelze naj\u00edt t\u0159\u00eddu AttributeTransformer [{0}].
+
+182=Nelze naj\u00edt t\u0159\u00eddu FieldTransformer [{0}].
+
+183=T\u0159\u00eddu [{0}] nelze pou\u017e\u00edt jako AttributeTransformer.
+
+184=T\u0159\u00eddu [{0}] nelze pou\u017e\u00edt jako FieldTransformer.
+
+185=T\u0159\u00edda ReturningPolicy obsahuje pole [{0}] se dv\u011bma r\u016fzn\u00fdmi typy: [{1}] a [{2}].
+
+186=T\u0159\u00edda ReturningPolicy obsahuje pole [{0}], kter\u00e9 je p\u0159id\u00e1no dvakr\u00e1t: pomoc\u00ed addInsertField a addInsertFieldReturnOnly.
+
+187=T\u0159\u00edda ReturningPolicy obsahuje pole [{0}] s typem [{1}], ale v deskriptoru m\u00e1 tot\u00e9\u017e pole typ [{2}].
+
+188=T\u0159\u00edda ReturningPolicy obsahuje nemapovan\u00e9 pole [{0}], kter\u00e9 vy\u017eaduje typ.
+
+189=T\u0159\u00edda ReturningPolicy obsahuje mapovan\u00e9 pole [{0}], kter\u00e9 vy\u017eaduje typ.
+
+19=Nepovolen\u00fd p\u0159\u00edstup b\u011bhem vyvol\u00e1n\u00ed metody atributu na mapov\u00e1n\u00ed transformace. Z\u00e1kladn\u00ed metoda je nep\u0159\u00edstupn\u00e1.
+
+190=T\u0159\u00edda ReturningPolicy obsahuje pole [{0}] mapovan\u00e9 pomoc\u00ed mapov\u00e1n\u00ed [{1}], kter\u00e9 nen\u00ed podporov\u00e1no.
+
+191=T\u0159\u00edda ReturningPolicy obsahuje pole [{0}], kter\u00e9 nen\u00ed podporov\u00e1no: jedn\u00e1 se o pole posloupnosti \u010di indik\u00e1tor typu t\u0159\u00eddy, p\u0159\u00edpadn\u011b slou\u017e\u00ed k zamyk\u00e1n\u00ed.
+
+192=T\u0159\u00edda ReturningPolicy obsahuje pole [{0}], ale vlastn\u00ed [{1}] ho neodes\u00edl\u00e1 na v\u00fdstup.
+
+193=Nen\u00ed nastaveno \u017e\u00e1dn\u00e9 vlastn\u00ed [{0}], ale t\u0159\u00edda ReturningPolicy obsahuje pole, kter\u00e1 maj\u00ed b\u00fdt vr\u00e1cena a [{1}] nepodporuje generov\u00e1n\u00ed vol\u00e1n\u00ed s n\u00e1vratem.
+
+194=Metoda extrakce t\u0159\u00eddy [{0}] mus\u00ed b\u00fdt statick\u00e1 metoda na t\u0159\u00edd\u011b deskriptoru.
+
+195=Sd\u00edlen\u00e1 t\u0159\u00edda {1} nesm\u00ed odkazovat na izolovanou t\u0159\u00eddu {0}.
+
+196=Hodnota UpdateAllFields nebyla nastavena nebo byla nastavena na hodnotu false. P\u0159i pou\u017eit\u00ed metody CMPPolicy.setForceUpdate(true) mus\u00edte volat tak\u00e9 metodu CMPPolicy.setUpdateAllFields(true).
+
+197=Mapov\u00e1n\u00ed [{0}] nen\u00ed p\u0159\u00edslu\u0161n\u00fdm typem pro tento deskriptor.
+
+198=Aby bylo mo\u017en\u00e9 pou\u017e\u00edvat t\u0159\u00eddu ObjectChangeTrackingPolicy nebo AttributeChangeTrackingPolicy, {0} mus\u00ed implementovat rozhran\u00ed ChangeTracker.
+
+199=Aby bylo mo\u017en\u00e9 pou\u017e\u00edvat skupinu na\u010dten\u00ed, t\u0159\u00edda dom\u00e9ny ({0}) mus\u00ed implementovat rozhran\u00ed FetchGroupTracker.
+
+2=Atribut [{0}] je deklarovan\u00fd jako typ ValueHolderInterface, ale jeho mapov\u00e1n\u00ed nepou\u017e\u00edv\u00e1 nep\u0159\u00edm\u00fd odkaz.
+
+20=Metoda [{0}] je nep\u0159\u00edstupn\u00e1.
+
+200=Pokus o registraci objektu s neaktivn\u00edm nep\u0159\u00edm\u00fdm odkazem jako nov\u00e9ho objektu. Tento objekt byl pravd\u011bpodobn\u011b odstran\u011bn nebo odebr\u00e1n z mezipam\u011bti b\u011bhem slou\u010den\u00ed serializovan\u00e9ho klonu. Jedn\u00e1 se o poru\u0161en\u00ed soub\u011b\u017enosti, zva\u017ete strategii zamyk\u00e1n\u00ed.
+
+201=Do\u0161lo k pokusu o sestaven\u00ed objektu v mezipam\u011bti relace, ale deskriptor je v jednotce pr\u00e1ce ozna\u010den\u00fd jako izolovan\u00fd, tak\u017ee by se k n\u011bmu nem\u011blo nikdy p\u0159istupovat mimo jednotku pr\u00e1ce.
+
+202=Do\u0161lo k intern\u00ed chyb\u011b p\u0159i p\u0159\u00edstupu k objektu prim\u00e1rn\u00edho kl\u00ed\u010de [{0}].
+
+203=Do\u0161lo k intern\u00ed chyb\u011b p\u0159i p\u0159\u00edstupu k metod\u011b [{1}] na t\u0159\u00edd\u011b [{0}].
+
+204=Po\u0159ad\u00ed vlo\u017een\u00ed tabulky je v rozporu s ciz\u00edmi kl\u00ed\u010di v\u00edce tabulek - podle nich by tabulka [{0}] m\u011bla b\u00fdt vlo\u017eena p\u0159ed tabulku [{1}].
+
+205=Po\u0159ad\u00ed vlo\u017een\u00ed tabulky m\u00e1 cyklickou z\u00e1vislost mezi tabulkami [{0}] a [{1}].
+
+206=Po\u0159ad\u00ed vlo\u017een\u00ed tabulky m\u00e1 cyklickou z\u00e1vislost mezi t\u0159emi nebo v\u00edce tabulkami.
+
+207=Po\u0159ad\u00ed vlo\u017een\u00ed tabulky je chybn\u00e9: tabulka [{0}] mapovan\u00e1 na nad\u0159\u00edzen\u00fd prvek m\u00e1 b\u00fdt vlo\u017eena za tabulku [{1}] mapovanou na pod\u0159\u00edzen\u00fd prvek.
+
+208=Pokou\u0161\u00edte se nastavit p\u0159evodn\u00edk s n\u00e1zvem t\u0159\u00eddy [{1}] na nep\u0159\u00edm\u00e9m mapov\u00e1n\u00ed [{0}]. P\u0159evodn\u00edky mohou m\u00edt pouze p\u0159\u00edm\u00e1 mapov\u00e1n\u00ed. K tomu obvykle dojde p\u0159i pokusu o nastaven\u00ed p\u0159evodn\u00edku kl\u00ed\u010de na t\u0159\u00edd\u011b DirectMapMapping s nep\u0159\u00edm\u00fdm kl\u00ed\u010dem.
+
+209=Tento deskriptor obsahuje mapov\u00e1n\u00ed s t\u0159\u00eddou DirectMapMapping a bez nastaven\u00e9ho pole kl\u00ed\u010de.
+
+21=Probl\u00e9m p\u0159i extrahov\u00e1n\u00ed t\u0159\u00eddy z \u0159\u00e1dku [{0}]. Statick\u00e1 metoda [{1}] s parametrem (DatabaseRow) nen\u00ed p\u0159\u00edstupn\u00e1.
+
+210=[{0}] m\u00e1 nastaven\u00e9 pole po\u0159ad\u00ed seznamu, ale atribut neimplementuje seznam.
+
+211=[{0}] m\u00e1 nastaven\u00e9 pole po\u0159ad\u00ed seznamu a re\u017eim ov\u011b\u0159en\u00ed pole po\u0159ad\u00ed seznamu je CORRECTION, co\u017e vy\u017eaduje, aby byla t\u0159\u00edda IndirectList p\u0159i\u0159aditeln\u00e1 atributu.
+
+212=Pole po\u0159ad\u00ed seznamu ur\u010den\u00e9 pro [{0}] m\u00e1 chybnou tabulku [{1}]. Nam\u00edsto n\u00ed mus\u00ed pou\u017e\u00edvat {2}.
+
+213={0} vy\u017eaduje, aby v\u0161echna c\u00edlov\u00e1 pole ciz\u00edho kl\u00ed\u010de pat\u0159ila do stejn\u00e9 tabulky, bylo jich v\u0161ak nalezeno n\u011bkolik: {1}.
+
+214={0} ur\u010duje tabulku vztah\u016f, kter\u00e1 nen\u00ed kompatibiln\u00ed s metodou addForeignKey(Name), p\u0159\u00edpadn\u011b nam\u00edsto toho pou\u017eijte metody addSourceRelationKeyField(Name) a addTargetRelationKeyFieldName.
+
+215={0} mus\u00ed m\u00edt nenulov\u00fd RelationTableMechanism.
+
+216=CacheKeyType pro slo\u017een\u00fd prim\u00e1rn\u00ed kl\u00ed\u010d nem\u016f\u017ee b\u00fdt ID_VALUE.
+
+217=Neplatn\u00fd v\u00fdraz XPath pro XMLDirectMapping/XMLCompositeDirectCollectionMapping. V\u00fdraz XPath mus\u00ed bu\u010f obsahovat symbol @ v p\u0159\u00edpad\u011b atribut\u016f, nebo v p\u0159\u00edpad\u011b textov\u00fdch uzl\u016f kon\u010dit takto: /text(). Nap\u0159\u00edklad: "@name" nebo "name/text()"
+
+218=P\u0159i p\u0159\u00edstupu k neexistuj\u00edc\u00ed zakomponovan\u00e9 t\u0159\u00edd\u011b _vh_ method [{0}] by do\u0161lo k v\u00fdjimce NullPointerException. T\u0159\u00edda nebyla spr\u00e1vn\u011b zakomponovan\u00e1 - u implementac\u00ed EE zkontrolujte po\u0159ad\u00ed modul\u016f v deskriptoru implementace application.xml a ov\u011b\u0159te, zda modul obsahuj\u00edc\u00ed jednotku perzistence p\u0159edch\u00e1z\u00ed v\u0161em dal\u0161\u00edm modul\u016fm, kter\u00e9 ho pou\u017e\u00edvaj\u00ed.
+
+219=V r\u00e1mci hierarchie d\u011bdi\u010dnosti pou\u017e\u00edvaj\u00edc\u00ed pohledy nejsou povolena dal\u0161\u00ed krit\u00e9ria z [{1}].
+
+22=Probl\u00e9m p\u0159i vytv\u00e1\u0159en\u00ed nov\u00e9 instance. Metoda vytvo\u0159en\u00ed [{0}] nen\u00ed p\u0159\u00edstupn\u00e1.
+
+220=Chyb\u00ed z\u00e1sada rozd\u011blen\u00ed na oblasti pro n\u00e1zev [{0}].
+
+221=Nen\u00ed nastaveno pole SerializedObjectPolicy.
+
+222=Do\u0161lo k v\u00fdjimce p\u0159i pokusu o z\u00edsk\u00e1n\u00ed instance t\u0159\u00eddy prim\u00e1rn\u00edho kl\u00ed\u010de.
+
+23=Metoda zp\u011btn\u00e9ho vol\u00e1n\u00ed deskriptoru [{0}] s parametrem (Session) je nep\u0159\u00edstupn\u00e1.
+
+24=Prom\u011bnn\u00e1 instance [{0}] v objektu [{1}] je nep\u0159\u00edstupn\u00e1. {3}Argument: [{2}]
+
+25=Metoda [{0}] s argumentem [{1}] je nep\u0159\u00edstupn\u00e1.
+
+26=Prob\u00edh\u00e1 pokus o z\u00edsk\u00e1n\u00ed hodnoty pro prom\u011bnnou instance [{0}] typu [{1}] z objektu [{2}]. Ur\u010den\u00fd objekt nen\u00ed instance t\u0159\u00eddy nebo rozhran\u00ed deklaruj\u00edc\u00ed z\u00e1kladn\u00ed pole.
+
+27=Prob\u00edh\u00e1 pokus o vyvol\u00e1n\u00ed metody [{0}] na objektu [{1}]. Li\u0161\u00ed se po\u010det skute\u010dn\u00fdch a form\u00e1ln\u00edch parametr\u016f, nebo se nezda\u0159il p\u0159evod rozbalen\u00ed.
+
+28=Nepovolen\u00fd argument b\u011bhem vytv\u00e1\u0159en\u00ed instance serveru proxy zalo\u017een\u00e9ho na metod\u011b v mapov\u00e1n\u00ed transformace.
+
+29=Li\u0161\u00ed se po\u010det skute\u010dn\u00fdch a form\u00e1ln\u00edch parametr\u016f, nebo se nezda\u0159il p\u0159evod rozbalen\u00ed.
+
+30=Li\u0161\u00ed se po\u010det skute\u010dn\u00fdch a form\u00e1ln\u00edch parametr\u016f pro metodu [{0}], nebo se nezda\u0159il p\u0159evod rozbalen\u00ed.
+
+31=Li\u0161\u00ed se po\u010det skute\u010dn\u00fdch a form\u00e1ln\u00edch parametr\u016f pro metodu zp\u011btn\u00e9ho vol\u00e1n\u00ed deskriptoru [{0}], nebo se nezda\u0159il p\u0159evod rozbalen\u00ed.
+
+32=Prob\u00edh\u00e1 pokus o nastaven\u00ed hodnoty [{0}] pro prom\u011bnnou instance [{1}] typu [{2}] v objektu. Ur\u010den\u00fd objekt nen\u00ed instance t\u0159\u00eddy nebo rozhran\u00ed deklaruj\u00edc\u00ed z\u00e1kladn\u00ed pole nebo se nezda\u0159il p\u0159evod rozbalen\u00ed.
+
+33=Prob\u00edh\u00e1 pokus o vyvol\u00e1n\u00ed [{0}] na objektu s hodnotou [{1}]. Li\u0161\u00ed se po\u010det skute\u010dn\u00fdch a form\u00e1ln\u00edch parametr\u016f, nebo se nezda\u0159il p\u0159evod rozbalen\u00ed.
+
+34=Tato t\u0159\u00edda nedefinuje ve\u0159ejn\u00fd v\u00fdchoz\u00ed konstruktor nebo konstruktor vyvolal v\u00fdjimku.
+
+35=Neplatn\u00e1 ud\u00e1lost.
+
+36=Neplatn\u00fd k\u00f3d ud\u00e1losti [{0}].
+
+37=Neplatn\u00fd k\u00f3d ud\u00e1losti deskriptoru [{0}].
+
+38=Konstruktor mapy identit se nezda\u0159il, proto\u017ee byla ur\u010dena neplatn\u00e1 mapa identit.
+
+39=Tento deskriptor neur\u010duje t\u0159\u00eddu Java.
+
+40=Chyb\u00ed deskriptor pro [{0}]. Pravd\u011bpodobn\u011b nebyl p\u0159id\u00e1n do relace.
+
+41=Pro pole po\u0159adov\u00e9ho \u010d\u00edsla mus\u00ed b\u00fdt definov\u00e1no mapov\u00e1n\u00ed neur\u010den\u00e9 jen pro \u010dten\u00ed.
+
+43=Chyb\u00ed t\u0159\u00edda pro hodnotu pole indik\u00e1toru [{0}] typu [{1}].
+
+44=Na \u0159\u00e1dku datab\u00e1ze [{0}] chyb\u00ed pole indik\u00e1toru t\u0159\u00eddy.
+
+45=Chyb\u00ed mapov\u00e1n\u00ed pro pole [{0}].
+
+46=Pro pole prim\u00e1rn\u00edho kl\u00ed\u010de [{0}] by m\u011blo b\u00fdt definov\u00e1no jedno mapov\u00e1n\u00ed neur\u010den\u00e9 jen pro \u010dten\u00ed.
+
+47=P\u0159i pou\u017eit\u00ed spojen\u00ed v\u00edce vlastn\u00edch tabulek mus\u00ed b\u00fdt ur\u010deno mapov\u00e1n\u00ed prim\u00e1rn\u00edho kl\u00ed\u010de v\u00edce tabulek.
+
+48=Pro pole [{0}] existuje v\u00edce mapov\u00e1n\u00ed schopn\u00fdch z\u00e1pisu. Pouze jedno z nich m\u016f\u017ee b\u00fdt definov\u00e1no jako schopn\u00e9 z\u00e1pisu, v\u0161echna ostatn\u00ed mus\u00ed b\u00fdt ur\u010dena jako jen pro \u010dten\u00ed.
+
+49=Pro toto mapov\u00e1n\u00ed nen\u00ed ur\u010den n\u00e1zev metody transformace atributu.
+
+50=Pro toto mapov\u00e1n\u00ed nen\u00ed nastaven n\u00e1zev pole.
+
+51=Pro toto mapov\u00e1n\u00ed nejsou ur\u010deny \u017e\u00e1dn\u00e9 ciz\u00ed kl\u00ed\u010de.
+
+52=Pro toto mapov\u00e1n\u00ed nen\u00ed ur\u010den\u00fd \u017e\u00e1dn\u00fd kl\u00ed\u010d odkazu.
+
+53=Pro toto mapov\u00e1n\u00ed nen\u00ed nastaven n\u00e1zev tabulky vztah\u016f.
+
+54=Pro toto mapov\u00e1n\u00ed nejsou ur\u010deny \u017e\u00e1dn\u00e9 kl\u00ed\u010de vztahu zdroje.
+
+55=Nelze naj\u00edt metodu zp\u011btn\u00e9ho vol\u00e1n\u00ed deskriptoru [{0}]. Jako argument mus\u00ed p\u0159ij\u00edmat t\u0159\u00eddu DescriptorEvent nebo Session.
+
+56=Nebyla nalezena metoda [{0}] s parametry (Record) nebo (Record, Session).
+
+57=Nep\u0159\u00edstupn\u00fd konstruktor.
+
+58=Nebyla nalezena metoda [{0}] s parametry () nebo (Session).
+
+59=Prom\u011bnn\u00e1 instance [{0}] nen\u00ed definov\u00e1na ve t\u0159\u00edd\u011b dom\u00e9ny [{1}] nebo nen\u00ed p\u0159\u00edstupn\u00e1.
+
+6=Chyb\u00ed n\u00e1zev atributu.
+
+60=V objektu [{2}] nen\u00ed definov\u00e1na metoda [{0}] nebo [{1}].
+
+61=Metoda extrakce statick\u00e9 t\u0159\u00eddy [{0}] s parametrem (Record) neexistuje nebo nen\u00ed p\u0159\u00edstupn\u00e1.
+
+62=Metoda klonov\u00e1n\u00ed [{0}] bez parametr\u016f neexistuje nebo nen\u00ed p\u0159\u00edstupn\u00e1.
+
+63=Metoda vytvo\u0159en\u00ed instance [{0}] bez parametr\u016f neexistuje nebo nen\u00ed p\u0159\u00edstupn\u00e1.
+
+64=Pro toto mapov\u00e1n\u00ed nejsou ur\u010deny \u017e\u00e1dn\u00e9 c\u00edlov\u00e9 ciz\u00ed kl\u00ed\u010de.
+
+65=Pro toto mapov\u00e1n\u00ed nejsou ur\u010deny \u017e\u00e1dn\u00e9 c\u00edlov\u00e9 kl\u00ed\u010de vztahu.
+
+66=Nelze deserializovat objekt z bajtov\u00e9ho pole.
+
+67=Nelze serializovat objekt do bajtov\u00e9ho pole.
+
+68=Hodnota agregace v objektu [{0}] je null. Hodnoty null nejsou pro agregovan\u00e1 mapov\u00e1n\u00ed povoleny, pokud nen\u00ed zad\u00e1na volba "Povolit hodnotu null".
+
+69=P\u0159i extrakci hodnoty z prom\u011bnn\u00e9 instance [{0}] v objektu [{1}] do\u0161lo k v\u00fdjimce NullPointerException.
+
+7=Atribut [{0}] by m\u011bl b\u00fdt typem, kter\u00fd implementuje {1}.
+
+70=P\u0159i extrakci hodnoty prost\u0159ednictv\u00edm metody [{0}] v objektu [{1}] do\u0161lo k v\u00fdjimce NullPointerException.
+
+71=P\u0159i nastaven\u00ed hodnoty prom\u011bnn\u00e9 instance [{0}] na hodnotu [{1}] do\u0161lo k v\u00fdjimce NullPointerException.
+
+72=P\u0159i nastaven\u00ed hodnoty prost\u0159ednictv\u00edm metody [{0}] s argumentem [{1}] do\u0161lo k v\u00fdjimce NullPointerException.
+
+73=Nelze naj\u00edt deskriptor pro nad\u0159\u00edzenou t\u0159\u00eddu [{0}].
+
+74=Pro tento deskriptor nejsou nastavena pole prim\u00e1rn\u00edho kl\u00ed\u010de.
+
+75=Pro tento deskriptor nen\u00ed ur\u010dena t\u0159\u00edda odkazu.
+
+77=Deskriptor odkazu pro [{0}] by m\u011bl b\u00fdt nastaven jako agrega\u010dn\u00ed deskriptor.
+
+78=V referen\u010dn\u00ed tabulce mus\u00ed existovat pole odkazu [{0}] pro toto mapov\u00e1n\u00ed.
+
+79=Pro toto mapov\u00e1n\u00ed nen\u00ed ur\u010dena referen\u010dn\u00ed tabulka.
+
+8=Deskriptor [{0}] je nastaven na pou\u017eit\u00ed d\u011bdi\u010dnosti, nen\u00ed v\u0161ak definov\u00e1no pole indik\u00e1toru t\u0159\u00eddy. {2}P\u0159i pou\u017eit\u00ed d\u011bdi\u010dnosti je t\u0159eba nastavit pole indik\u00e1toru t\u0159\u00eddy nebo metodu extrakce t\u0159\u00eddy. {2}Nad\u0159\u00edzen\u00fd deskriptor: [{1}]
+
+80=V tabulce vztah\u016f mus\u00ed existovat pole kl\u00ed\u010de vztahu [{0}] pro toto mapov\u00e1n\u00ed.
+
+81=Metoda [{0}] by m\u011bla vr\u00e1tit typ mapovan\u00e9ho atributu, nikoli pr\u00e1zdnou hodnotu.
+
+82=Metoda zp\u011btn\u00e9ho vol\u00e1n\u00ed deskriptoru [{0}] s parametrem (DescriptorEvent) nen\u00ed p\u0159\u00edstupn\u00e1.
+
+83=Metoda zp\u011btn\u00e9ho vol\u00e1n\u00ed deskriptoru [{0}] s parametrem (Session) nen\u00ed p\u0159\u00edstupn\u00e1.
+
+84=Metoda [{0}] s parametry (Record) nebo (Record, Session) nen\u00ed p\u0159\u00edstupn\u00e1.
+
+85=Metoda [{0}] s parametry () nebo (Session) nen\u00ed p\u0159\u00edstupn\u00e1.
+
+86=Prom\u011bnn\u00e1 instance [{0}] ve t\u0159\u00edd\u011b [{1}] nen\u00ed p\u0159\u00edstupn\u00e1.
+
+87=Metody [{0}], [{1}] v objektu [{2}] nejsou p\u0159\u00edstupn\u00e9.
+
+88=Metoda extrakce statick\u00e9 t\u0159\u00eddy [{0}] s parametrem (Record) nen\u00ed p\u0159\u00edstupn\u00e1.
+
+89=Metoda klonov\u00e1n\u00ed [{0}] bez parametr\u016f nen\u00ed p\u0159\u00edstupn\u00e1.
+
+9=Toto mapov\u00e1n\u00ed nem\u00e1 nastaven\u00fd p\u0159\u00edm\u00fd n\u00e1zev pole.
+
+90=Metoda vytvo\u0159en\u00ed instance [{0}] bez parametr\u016f nen\u00ed p\u0159\u00edstupn\u00e1.
+
+91=Chcete-li pou\u017e\u00edt ID generovan\u00e1 posloupnost\u00ed, mus\u00ed b\u00fdt pro tento deskriptor nastaveny vlastnosti "N\u00e1zev po\u0159adov\u00e9ho \u010d\u00edsla" a "N\u00e1zev pole po\u0159adov\u00e9ho \u010d\u00edsla".
+
+92=Velikost prim\u00e1rn\u00edho kl\u00ed\u010de c\u00edle neodpov\u00edd\u00e1 velikosti ciz\u00edho kl\u00ed\u010de.
+
+93=Tabulka [{0}] nen\u00ed v tomto deskriptoru p\u0159\u00edtomn\u00e1.
+
+94=Deskriptory mus\u00ed m\u00edt definovan\u00fd n\u00e1zev tabulky.
+
+96=Po\u010det c\u00edlov\u00fdch kl\u00ed\u010d\u016f neodpov\u00edd\u00e1 po\u010dtu zdrojov\u00fdch kl\u00ed\u010d\u016f.
+
+97=Probl\u00e9m p\u0159i klonov\u00e1n\u00ed objektu [{0}]. Metoda klonov\u00e1n\u00ed [{1}] spustila v\u00fdjimku.
+
+98=Z\u00e1kladn\u00ed metoda zp\u011btn\u00e9ho vol\u00e1n\u00ed deskriptoru [{0}] s parametrem (DescriptorEvent) spustila v\u00fdjimku.
+
+99=Metoda [{0}] na objektu [{1}] spustila v\u00fdjimku.
+

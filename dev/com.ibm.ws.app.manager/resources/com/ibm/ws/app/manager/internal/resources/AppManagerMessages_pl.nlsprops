@@ -222,3 +222,6 @@ error.startAfter.cycle=CWWKZ0066E: Uruchomienie nast\u0119puj\u0105cych aplikacj
 error.startAfter.cycle.explanation=Nie mo\u017cna uruchomi\u0107 \u017cadnej z aplikacji, poniewa\u017c uruchomienie ka\u017cdej z nich zale\u017cy od uruchomienia jednej z pozosta\u0142ych.
 error.startAfter.cycle.useraction=Zmie\u0144 warto\u015b\u0107 atrybutu startAfter aplikacji uczestnicz\u0105cych w tym cyklu, aby wyeliminowa\u0107 zale\u017cno\u015b\u0107 cykliczn\u0105.
 
+dropins.app.also.configured=CWWKZ0067W: Nie mo\u017cna uruchomi\u0107 aplikacji docelowej w lokalizacji {0}, poniewa\u017c jest dla niej skonfigurowana ta sama lokalizacja. 
+dropins.app.also.configured.explanation=Aplikacja okre\u015blona w konfiguracji serwera okre\u015bla po\u0142o\u017cenie w monitorowanym katalogu docelowym. 
+dropins.app.also.configured.useraction=Przenie\u015b aplikacj\u0119 do innego po\u0142o\u017cenia. 

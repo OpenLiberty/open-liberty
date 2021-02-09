@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corpo<ration and others.
+ * Copyright (c) 2017, 2020 IBM Corpo<ration and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,12 +16,12 @@ import java.util.List;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
@@ -38,7 +38,6 @@ import junit.framework.Assert;
  * </ul>
  */
 @Mode(TestMode.FULL)
-@MinimumJavaLevel(javaLevel = 8)
 public class FATMPOpenTracing {
     /**
      * For tracing.
@@ -73,7 +72,12 @@ public class FATMPOpenTracing {
      */
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer();
+        server.stopServer("CWMOT0009W");
+    }
+    
+    @Before
+    public void clearTracer() throws Exception {
+    	executeWebService(FATUtilsServer.HttpRequestMethod.DELETE, "reset");
     }
 
     /**
@@ -99,22 +103,57 @@ public class FATMPOpenTracing {
             tracerState += actualResponseLine;
         }
 
-        int expectedSpans = 2;
+        int expectedSpans = 3;
         int spanCount = getSpanCount(tracerState);
         if (spanCount != expectedSpans) {
             Assert.assertEquals("Expected " + expectedSpans + " spans but found " + spanCount + ":", tracerState);
         }
     }
+    
+    @Test
+    public void testNotFoundException() throws Exception {
+    	String methodName = "testNotFoundException";
+
+        try {
+            
+            executeWebService("notFound");
+        } catch (TestAppException tae) {
+            FATLogging.info(CLASS, methodName, "Expected exception", tae);
+            Assert.assertEquals("Unexpected HTTP response code", 404, tae.getHttpStatusCode());
+        } catch (Exception ex) {
+            FATLogging.info(CLASS, methodName, "Unexpected exception", ex);
+            ex.printStackTrace();
+            Assert.fail("Unexpected exception caught:" + ex);
+        }
+
+        List<String> actualResponseLines = executeWebService("getTracerState");
+        
+        String tracerState = "";
+        for (String actualResponseLine : actualResponseLines) {
+            tracerState += actualResponseLine;
+        }
+
+        int expectedSpans = 2;
+        int spanCount = getSpanCount(tracerState);
+        if (spanCount != expectedSpans) {
+            Assert.assertEquals("Expected " + expectedSpans + " spans but found " + spanCount + ":", tracerState);
+        }
+
+    }
 
     protected List<String> executeWebService(String method) throws Exception {
+        return executeWebService(FATUtilsServer.HttpRequestMethod.GET, method);
+    }
+    
+    protected List<String> executeWebService(FATUtilsServer.HttpRequestMethod requestMethod, String method) throws Exception {
         String requestUrl = "http://" +
                             server.getHostname() + ":" +
                             server.getHttpDefaultPort() +
                             "/mpOpenTracing/rest/ws/" + method;
 
-        return FATUtilsServer.gatherHttpRequest(FATUtilsServer.HttpRequestMethod.GET, requestUrl);
+        return FATUtilsServer.gatherHttpRequest(requestMethod, requestUrl);
     }
-    
+
     protected int getSpanCount(String tracerState) {
         int result = 0;
         int i = 0;

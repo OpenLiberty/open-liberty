@@ -23,11 +23,11 @@
 
 
 
-warning.jaxrs.ejb.resource.mismatch=CWWKW1100W: A(z) {0} JAXRS-2.0 er\u0151forr\u00e1s {1} hat\u00f3k\u00f6re nem felel meg a(z) {2} EJB hat\u00f3k\u00f6rnek. A Liberty a k\u00f6vetkez\u0151t\u0151l k\u00e9r le er\u0151forr\u00e1sp\u00e9ld\u00e1nyt: {3}.
-warning.jaxrs.ejb.resource.mismatch.explanation=Ha a JAXRS-2.0 er\u0151forr\u00e1s hat\u00f3k\u00f6r nem felel meg az EJB hat\u00f3k\u00f6rnek, \u00e9s az er\u0151forr\u00e1sp\u00e9ld\u00e1ny l\u00e9tezik EJB-ben, akkor a Liberty az er\u0151forr\u00e1sp\u00e9ld\u00e1nyt EJB-t\u0151l k\u00e9ri le.
+warning.jaxrs.ejb.resource.mismatch=CWWKW1100W: A(z) {0} JAXRS er\u0151forr\u00e1s {1} hat\u00f3k\u00f6re nem felel meg a(z) {2} EJB hat\u00f3k\u00f6rnek. A Liberty a k\u00f6vetkez\u0151t\u0151l k\u00e9r le er\u0151forr\u00e1sp\u00e9ld\u00e1nyt: {3}.
+warning.jaxrs.ejb.resource.mismatch.explanation=Ha a JAXRS er\u0151forr\u00e1s hat\u00f3k\u00f6re nem felel meg az EJB hat\u00f3k\u00f6rnek, \u00e9s az er\u0151forr\u00e1sp\u00e9ld\u00e1ny l\u00e9tezik EJB-ben, akkor a Liberty az er\u0151forr\u00e1sp\u00e9ld\u00e1nyt EJB-t\u0151l k\u00e9ri le.
 warning.jaxrs.ejb.resource.mismatch.useraction=Nem kell semmit tennie. 
 
-warning.jaxrs.ejb.provider.mismatch=CWWKW1102W: A(z) {0} JAXRS-2.0 szolg\u00e1ltat\u00f3 EJB hat\u00f3k\u00f6re: {1}. A Liberty a szolg\u00e1ltat\u00f3p\u00e9ld\u00e1nyt a k\u00f6vetkez\u0151t\u0151l k\u00e9ri le: {2}.
+warning.jaxrs.ejb.provider.mismatch=CWWKW1102W: A(z) {0} JAXRS szolg\u00e1ltat\u00f3 EJB hat\u00f3k\u00f6re: {1}. A Liberty a szolg\u00e1ltat\u00f3p\u00e9ld\u00e1nyt a k\u00f6vetkez\u0151t\u0151l k\u00e9ri le: {2}.
 warning.jaxrs.ejb.provider.mismatch.explanation=A szolg\u00e1ltat\u00f3p\u00e9ld\u00e1ny csak Singleton. A Liberty EJB-t\u0151l k\u00e9r le szolg\u00e1ltat\u00f3p\u00e9ld\u00e1nyokat, ha a szolg\u00e1ltat\u00f3 EJB hat\u00f3k\u00f6re Dependent vagy ApplicationScoped.
 warning.jaxrs.ejb.provider.mismatch.useraction=Nem kell semmit tennie.
 

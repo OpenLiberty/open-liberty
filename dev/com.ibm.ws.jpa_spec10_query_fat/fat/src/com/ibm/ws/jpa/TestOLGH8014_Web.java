@@ -22,6 +22,7 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
+import org.testcontainers.containers.JdbcDatabaseContainer;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.Application;
@@ -36,12 +37,15 @@ import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.topology.database.container.DatabaseContainerType;
+import componenttest.topology.database.container.DatabaseContainerUtil;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.PrivHelper;
 
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class TestOLGH8014_Web extends JPAFATServletClient {
+    private final static String CONTEXT_ROOT = "olgh8014Web";
     private final static String RESOURCE_ROOT = "test-applications/olgh8014/";
     private final static String appFolder = "web";
     private final static String appName = "olgh8014Web";
@@ -61,9 +65,11 @@ public class TestOLGH8014_Web extends JPAFATServletClient {
 
     @Server("JPA10QueryServer")
     @TestServlets({
-                    @TestServlet(servlet = TestOLGH8014Servlet.class, path = "olgh8014" + "/" + "TestOLGH8014Servlet"),
+                    @TestServlet(servlet = TestOLGH8014Servlet.class, path = CONTEXT_ROOT + "/" + "TestOLGH8014Servlet"),
     })
     public static LibertyServer server;
+
+    public static final JdbcDatabaseContainer<?> testContainer = FATSuite.testContainer;
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -80,6 +86,12 @@ public class TestOLGH8014_Web extends JPAFATServletClient {
         if (configUpdateTimeout < (120 * 1000)) {
             server.setConfigUpdateTimeout(120 * 1000);
         }
+
+        //Get driver name
+        server.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
+
+        //Setup server DataSource properties
+        DatabaseContainerUtil.setupDataSourceProperties(server, testContainer);
 
         server.startServer();
 

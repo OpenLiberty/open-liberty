@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 
 import org.jose4j.base64url.SimplePEMEncoder;
+import org.jose4j.jwe.JsonWebEncryption;
 import org.jose4j.jwk.RsaJsonWebKey;
 import org.jose4j.jwk.RsaJwkGenerator;
 import org.jose4j.jws.JsonWebSignature;
@@ -29,6 +30,8 @@ import org.jose4j.jwt.MalformedClaimException;
 import org.jose4j.jwt.NumericDate;
 import org.jose4j.keys.HmacKey;
 import org.jose4j.lang.JoseException;
+
+import com.ibm.websphere.simplicity.log.Log;
 
 /**
  * Convenience class to build jwt tokens to test consumption of them by WebSphere.
@@ -54,8 +57,11 @@ import org.jose4j.lang.JoseException;
  *
  */
 public class JWTTokenBuilder {
+
+    protected static Class<?> thisClass = JWTTokenBuilder.class;
     JwtClaims _claims = null;
     JsonWebSignature _jws = null;
+    JsonWebEncryption _jwe = null;
     RsaJsonWebKey _rsajwk = null;
     String _jwt = null;
 //    private final Key _signingKey = null;
@@ -74,6 +80,8 @@ public class JWTTokenBuilder {
     public JWTTokenBuilder() {
         _claims = new JwtClaims();
         _jws = new JsonWebSignature();
+        _jwe = new JsonWebEncryption();
+
         try {
             _rsajwk = RsaJwkGenerator.generateJwk(2048); // this generates new pub and private key pair but we will replace them.
             _rsajwk.setKeyId("keyid");
@@ -110,10 +118,12 @@ public class JWTTokenBuilder {
     }
 
     private PrivateKey fromPemEncoded(String pem) throws JoseException, InvalidKeySpecException, NoSuchAlgorithmException {
+
+        String thisMethod = "fromPemEncoded";
         int beginIndex = pem.indexOf(BEGIN_PRIV_KEY) + BEGIN_PRIV_KEY.length();
         int endIndex = pem.indexOf(END_PRIV_KEY);
         String base64 = pem.substring(beginIndex, endIndex).trim();
-        System.out.println("base64: " + base64 + " end");
+        Log.info(thisClass, thisMethod, "base64: " + base64 + " end");
         byte[] decode = SimplePEMEncoder.decode(base64);
 
         PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(decode);
@@ -255,13 +265,15 @@ public class JWTTokenBuilder {
 //    }
 
     public JWTTokenBuilder setRSAKey(String keyFile) {
+
+        String thisMethod = "setRSAKey";
         try {
             if (keyFile == null) {
 //                return setRSAKey();
                 throw new IOException("Can not load a key file that was not specified...");
             }
             String key = readKeyFromFile(keyFile);
-            System.out.println("Read from file: " + keyFile + " key is: " + key);
+            Log.info(thisClass, thisMethod, "Read from file: " + keyFile + " key is: " + key);
             _jws.setKey(this.fromPemEncoded(key));
         } catch (Exception e) {
             e.printStackTrace(System.out);
@@ -280,7 +292,33 @@ public class JWTTokenBuilder {
         return this;
     }
 
+    public JWTTokenBuilder setKeyManagementKey(Key key) {
+        _jwe.setKey(key);
+        return this;
+    }
+
+    public JWTTokenBuilder setContentEncryptionAlg(String alg) {
+        _jwe.setEncryptionMethodHeaderParameter(alg);
+        return this;
+    }
+
+    public JWTTokenBuilder setKeyManagementKeyAlg(String alg) {
+        _jwe.setAlgorithmHeaderValue(alg);
+        return this;
+    }
+
+    public JWTTokenBuilder setPayload(String payload) {
+        _jwe.setPayload(payload);
+        return this;
+    }
+
+    // does not currently support building JWE's
+    // The tests have been using the built in builder (with encryptWith)
+    // to generate encrypted tokens
+    // Use apps such as JwtBuilderSetApisClient and JwtBuilderServlet
     public String build() {
+        String thisMethod = "build";
+
         try {
             if (_claims.getIssuedAt() == null) {
                 _claims.setIssuedAtToNow();
@@ -290,7 +328,7 @@ public class JWTTokenBuilder {
         }
         try {
             _jws.setPayload(_claims.toJson());
-            System.out.println("after setPayload");
+            Log.info(thisClass, thisMethod, "after setPayload");
         } catch (Exception e) {
             e.printStackTrace(System.out);
             return null;
@@ -299,12 +337,71 @@ public class JWTTokenBuilder {
         // kidheadervalue may have already been set
         // algoheadervalue may have already been set
         try {
-            System.out.println("jwt: " + _jwt);
-            System.out.println("jws: " + _jws);
-            System.out.println("jws: " + _jws.getKey());
+            Log.info(thisClass, thisMethod, "jwt: " + _jwt);
+            Log.info(thisClass, thisMethod, "jws: " + _jws);
+            Log.info(thisClass, thisMethod, "jws: " + _jws.getKey());
 //            _jws.setKey(this.fromPemEncoded(privKey));
             _jwt = _jws.getCompactSerialization();
-            System.out.println("after compact");
+            Log.info(thisClass, thisMethod, "after compact");
+            return _jwt;
+        } catch (Exception e) {
+            e.printStackTrace(System.out);
+            return null;
+        }
+
+    }
+
+    public String buildJWE(String type, String contentType) {
+
+        String jwsPart = build();
+        String thisMethod = "buildJWE";
+        try {
+            if (type != null) {
+                _jwe.setHeader("typ", type);
+            }
+            if (contentType != null) {
+                _jwe.setHeader("cty", contentType);
+            }
+            _jwe.setPayload(jwsPart);
+            Log.info(thisClass, thisMethod, "after setPayload");
+        } catch (Exception e) {
+            e.printStackTrace(System.out);
+            return null;
+        }
+
+        try {
+            _jwt = _jwe.getCompactSerialization();
+            Log.info(thisClass, thisMethod, "after compact");
+            return _jwt;
+        } catch (Exception e) {
+            e.printStackTrace(System.out);
+            return null;
+        }
+
+    }
+
+    // builds a JWE with a simple payload
+    // caller needs to have already used the set methods to
+    // set:  keyManagementKeyAlgorithm, keyManagementKeyAlias,
+    // contentEncryptionAlgorithm and payload
+    public String buildAlternateJWE() {
+
+        return buildAlternateJWESetJWEHeaderValues("JOSE", "jwt");
+
+    }
+
+    public String buildAlternateJWESetJWEHeaderValues(String type, String contentType) {
+        String thisMethod = "buildAlternateJWESetJWEHeaderValues";
+
+        try {
+            if (type != null) {
+                _jwe.setHeader("typ", type);
+            }
+            if (contentType != null) {
+                _jwe.setHeader("cty", contentType);
+            }
+            _jwt = _jwe.getCompactSerialization();
+            Log.info(thisClass, thisMethod, "after compact");
             return _jwt;
         } catch (Exception e) {
             e.printStackTrace(System.out);

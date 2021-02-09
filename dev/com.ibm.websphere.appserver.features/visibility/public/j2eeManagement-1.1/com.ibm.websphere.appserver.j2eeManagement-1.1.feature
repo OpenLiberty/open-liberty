@@ -1,5 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.j2eeManagement-1.1
+WLP-DisableAllFeatures-OnConflict: false
 visibility=public
 IBM-API-Package: com.ibm.websphere.management.j2ee; type="ibm-api", \
  javax.management.j2ee; type="spec", \

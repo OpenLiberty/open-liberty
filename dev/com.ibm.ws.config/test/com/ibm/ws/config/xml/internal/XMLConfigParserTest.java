@@ -20,9 +20,9 @@ import static org.junit.Assert.fail;
 
 import java.io.StringReader;
 import java.net.URI;
-import java.util.Collections;
 import java.util.Dictionary;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import org.junit.After;
@@ -34,6 +34,7 @@ import org.junit.Test;
 import com.ibm.websphere.config.ConfigEvaluatorException;
 import com.ibm.websphere.config.ConfigParserException;
 import com.ibm.ws.config.admin.ConfigID;
+import com.ibm.ws.config.xml.internal.variables.ConfigVariableRegistry;
 import com.ibm.ws.kernel.service.location.internal.SymbolRegistry;
 import com.ibm.ws.kernel.service.location.internal.VariableRegistryHelper;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
@@ -59,7 +60,6 @@ public class XMLConfigParserTest {
         outputMgr = SharedOutputManager.getInstance();
         outputMgr.captureStreams();
 
-        variableRegistry = new ConfigVariableRegistry(new VariableRegistryHelper(), new String[0], null);
     }
 
     @AfterClass
@@ -88,6 +88,7 @@ public class XMLConfigParserTest {
         wsLocation = (WsLocationAdmin) SharedLocationManager.getLocationInstance();
 
         configParser = new XMLConfigParser(wsLocation, variableRegistry);
+        variableRegistry = new ConfigVariableRegistry(new VariableRegistryHelper(), new String[0], null, wsLocation);
     }
 
     private Dictionary<String, Object> evaluateToDictionary(ConfigElement entry) throws ConfigEvaluatorException {
@@ -601,6 +602,32 @@ public class XMLConfigParserTest {
         assertEquals(description, serverConfig.getDescription());
     }
 
+    private static final boolean isWindows = System.getProperty("os.name", "unknown").toUpperCase(Locale.ENGLISH).contains("WINDOWS");
+
+    @Test
+    public void testIncludesWithVariables() throws Exception {
+        changeLocationSettings("default");
+        String base;
+        WsResource resource;
+        base = CONFIG_ROOT;
+
+        // Just sanity checking that the include process isn't doing anything crazy with the path
+        XMLConfigParser parser = new XMLConfigParser(wsLocation, variableRegistry);
+        resource = parser.resolveInclude("${wlp.user.dir}/server.xml", base, wsLocation);
+        String expected = "file:" + variableRegistry.resolveString("${wlp.user.dir}/server.xml");
+        assertEquals(new URI(expected), resource.toExternalURI());
+
+        if (isWindows) {
+
+            // Only run on windows because unix platforms will mangle `c:\` style paths
+            SymbolRegistry.getRegistry().addStringSymbol("myHome", "C:\\users\\fernando");
+
+            resource = parser.resolveInclude("${myHome}/server.xml", base, wsLocation);
+            expected = "file:" + variableRegistry.resolveString("${myHome}/server.xml");
+            assertEquals(new URI(expected), resource.toExternalURI());
+        }
+    }
+
     @Test
     public void testRemoteIncludeResolution() throws Exception {
         changeLocationSettings("default");
@@ -611,7 +638,6 @@ public class XMLConfigParserTest {
         // test absolute
         base = CONFIG_ROOT;
 
-        Map<String, ConfigVariable> vars = Collections.emptyMap();
         XMLConfigParser parser = new XMLConfigParser(wsLocation, variableRegistry);
         resource = parser.resolveInclude("http://localhost/xml/server.xml", base, wsLocation);
         assertEquals(new URI("http://localhost/xml/server.xml"), resource.toExternalURI());

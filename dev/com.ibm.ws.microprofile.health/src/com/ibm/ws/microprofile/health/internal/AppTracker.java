@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2019 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017, 2020 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -67,6 +67,13 @@ public interface AppTracker {
     Set<String> getAppNames();
 
     /**
+     * Gets a set of the names of all applications
+     *
+     * @return
+     */
+    Set<String> getAllAppNames();
+
+    /**
      * Gets a set of module names for a given application
      *
      * @param appName
@@ -81,6 +88,22 @@ public interface AppTracker {
      * @return true if the application with the specified name is started, otherwise false.
      */
     boolean isStarted(String appName);
+
+    /**
+     * Returns true if the application with the specified name is installed, otherwise false.
+     *
+     * @param appName
+     * @return true if the application with the specified name is installed, otherwise false.
+     */
+    boolean isInstalled(String appName);
+
+    /**
+     * Returns true if the application with the specified name is uninstalled, otherwise false.
+     *
+     * @param appName
+     * @return true if the application with the specified name is uninstalled, otherwise false.
+     */
+    boolean isUninstalled(String appName);
 
     /**
      * Sets the HealthCheckService associated with this AppTracker.

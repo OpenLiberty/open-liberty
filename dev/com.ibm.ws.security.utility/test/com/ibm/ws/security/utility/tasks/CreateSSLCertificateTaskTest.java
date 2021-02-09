@@ -419,6 +419,8 @@ public class CreateSSLCertificateTaskTest {
                 will(returnValue(true));
                 one(creator).createDefaultSSLCertificate(EXPECTED_KEYSTORE_PATH,
                                                          PLAINTEXT,
+                                                         "PKCS12",
+                                                         null,
                                                          DefaultSSLCertificateCreator.DEFAULT_VALIDITY,
                                                          new DefaultSubjectDN(null, SERVER_NAME).getSubjectDN(),
                                                          DefaultSSLCertificateCreator.DEFAULT_SIZE,
@@ -454,6 +456,8 @@ public class CreateSSLCertificateTaskTest {
                 will(returnValue(true));
                 one(creator).createDefaultSSLCertificate(EXPECTED_CLIENT_KEYSTORE_PATH,
                                                          PLAINTEXT,
+                                                         "PKCS12",
+                                                         null,
                                                          DefaultSSLCertificateCreator.DEFAULT_VALIDITY,
                                                          new DefaultSubjectDN(null, CLIENT_NAME).getSubjectDN(),
                                                          DefaultSSLCertificateCreator.DEFAULT_SIZE,
@@ -525,6 +529,8 @@ public class CreateSSLCertificateTaskTest {
 
                 one(creator).createDefaultSSLCertificate(EXPECTED_KEYSTORE_PATH,
                                                          PLAINTEXT,
+                                                         "PKCS12",
+                                                         null,
                                                          DefaultSSLCertificateCreator.DEFAULT_VALIDITY,
                                                          new DefaultSubjectDN(null, SERVER_NAME).getSubjectDN(),
                                                          DefaultSSLCertificateCreator.DEFAULT_SIZE,
@@ -561,6 +567,8 @@ public class CreateSSLCertificateTaskTest {
                 will(returnValue(true));
                 one(creator).createDefaultSSLCertificate(EXPECTED_KEYSTORE_PATH,
                                                          PLAINTEXT,
+                                                         "PKCS12",
+                                                         null,
                                                          Integer.valueOf(VALIDITY),
                                                          new DefaultSubjectDN(null, SERVER_NAME).getSubjectDN(),
                                                          DefaultSSLCertificateCreator.DEFAULT_SIZE,
@@ -597,6 +605,8 @@ public class CreateSSLCertificateTaskTest {
                 will(returnValue(true));
                 one(creator).createDefaultSSLCertificate(EXPECTED_KEYSTORE_PATH,
                                                          PLAINTEXT,
+                                                         "PKCS12",
+                                                         null,
                                                          DefaultSSLCertificateCreator.DEFAULT_VALIDITY,
                                                          SUBJECT_DN,
                                                          DefaultSSLCertificateCreator.DEFAULT_SIZE,
@@ -633,6 +643,8 @@ public class CreateSSLCertificateTaskTest {
                 will(returnValue(true));
                 one(creator).createDefaultSSLCertificate(EXPECTED_KEYSTORE_PATH,
                                                          PLAINTEXT,
+                                                         "PKCS12",
+                                                         null,
                                                          DefaultSSLCertificateCreator.DEFAULT_VALIDITY,
                                                          LONG_SUBJECT_DN,
                                                          DefaultSSLCertificateCreator.DEFAULT_SIZE,
@@ -670,6 +682,8 @@ public class CreateSSLCertificateTaskTest {
                 will(returnValue(true));
                 one(creator).createDefaultSSLCertificate(EXPECTED_KEYSTORE_PATH,
                                                          PLAINTEXT,
+                                                         "PKCS12",
+                                                         null,
                                                          Integer.valueOf(VALIDITY),
                                                          SUBJECT_DN,
                                                          DefaultSSLCertificateCreator.DEFAULT_SIZE,
@@ -707,6 +721,8 @@ public class CreateSSLCertificateTaskTest {
                 will(returnValue(true));
                 one(creator).createDefaultSSLCertificate(EXPECTED_KEYSTORE_PATH,
                                                          PLAINTEXT,
+                                                         "PKCS12",
+                                                         null,
                                                          Integer.valueOf(VALIDITY),
                                                          SUBJECT_DN,
                                                          DefaultSSLCertificateCreator.DEFAULT_SIZE,
@@ -749,6 +765,8 @@ public class CreateSSLCertificateTaskTest {
                 will(returnValue(true));
                 one(creator).createDefaultSSLCertificate(EXPECTED_KEYSTORE_PATH,
                                                          PLAINTEXT,
+                                                         "PKCS12",
+                                                         null,
                                                          Integer.valueOf(VALIDITY),
                                                          SUBJECT_DN,
                                                          DefaultSSLCertificateCreator.DEFAULT_SIZE,
@@ -880,6 +898,8 @@ public class CreateSSLCertificateTaskTest {
                 will(returnValue(true));
                 one(creator).createDefaultSSLCertificate(EXPECTED_KEYSTORE_PATH,
                                                          PLAINTEXT,
+                                                         "PKCS12",
+                                                         null,
                                                          Integer.valueOf(VALIDITY),
                                                          SUBJECT_DN,
                                                          DefaultSSLCertificateCreator.DEFAULT_SIZE,

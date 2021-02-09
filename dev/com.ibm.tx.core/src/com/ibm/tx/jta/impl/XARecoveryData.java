@@ -1,7 +1,7 @@
 package com.ibm.tx.jta.impl;
 
 /*******************************************************************************
- * Copyright (c) 2002, 2013 IBM Corporation and others.
+ * Copyright (c) 2002, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -39,7 +39,7 @@ import com.ibm.ws.recoverylog.spi.RecoveryLog;
 
 /**
  * XARecoveryData is a specialization of PartnerLogData
- * 
+ *
  * The log data object is an XARecoveryWrapper and this class provides
  * methods to support the use of this particular data type.
  */
@@ -76,7 +76,7 @@ public class XARecoveryData extends PartnerLogData {
 
     /**
      * Ctor when called from registration of an XAResource
-     * 
+     *
      * @param failureScopeController
      * @param logData
      */
@@ -93,7 +93,7 @@ public class XARecoveryData extends PartnerLogData {
 
     /**
      * Ctor when called for recovery or registration of an XAResource for z/OS HA recovery
-     * 
+     *
      * @param partnerLog
      * @param logData
      * @param id
@@ -185,12 +185,12 @@ public class XARecoveryData extends PartnerLogData {
      * matter as both copies of the same xid will match the same JTAXAResource. XARminst will
      * cope with a JTAXAResource from an apparent different ressource manager (rmid) - the rmid is
      * mainly used to determine if we are not able to contact a resource manager on recovery.
-     * 
+     *
      * deserialize is also called various times on z/OS when reading a partner log record. Note:
      * on z/OS many SRs may be running and each has its own cached PartnerLogTable which may not be
      * in step with the recovery log. At certain points, the log is re-read and entries deserialized
      * to compare with the cached table.
-     * 
+     *
      * @param parentClassLoader
      */
     public void deserialize(ClassLoader parentClassLoader) {
@@ -246,7 +246,7 @@ public class XARecoveryData extends PartnerLogData {
      * Create a XAResourceFactory and obtain an XAResource.
      * The factory and resource are returned in an XARMinst object which can be
      * used for xa_recover calls and closeConnection when complete.
-     * 
+     *
      * This call is made from this.recover and from JTAXAResourceImpl.reconnectRM
      * either during recovery or retry of a failed XAResource. Care is needed when
      * considering the recoveryClassLoader (RCL). We need to use it for xa_recover
@@ -455,6 +455,10 @@ public class XARecoveryData extends PartnerLogData {
         } catch (Throwable t) {
             // FFDC and messages logged in xarm.recover()
             FFDCFilter.processException(t, "com.ibm.tx.jta.impl.XARecoveryData.recover", "564", this);
+
+            // Issue #11556, need to close connection prior to method exit to avoid a connection leak.
+            xarm.closeConnection();
+
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "recover", false);
             return false;
@@ -559,7 +563,7 @@ public class XARecoveryData extends PartnerLogData {
     /**
      * Removes all non-WAS Xids from an array of Xids, and puts them
      * in an ArrayList structure.
-     * 
+     *
      * @param xidArray An array of generic Xids.
      * @return An ArrayList of XidImpl objects.
      */
@@ -627,7 +631,7 @@ public class XARecoveryData extends PartnerLogData {
     /**
      * Removes all Xids from an ArrayList that don't have our cruuid in
      * their bqual. Assumes that all Xids are XidImpls.
-     * 
+     *
      * @param xidList A list of XidImpls.
      * @param cruuid The cruuid to filter.
      * @param epoch The epoch number to filter.
@@ -638,9 +642,9 @@ public class XARecoveryData extends PartnerLogData {
                                                    int epoch) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "filterXidsByCruuidAndEpoch", new Object[] {
-                                                                     xidList,
-                                                                     cruuid,
-                                                                     epoch });
+                                                                      xidList,
+                                                                      cruuid,
+                                                                      epoch });
 
         for (int x = xidList.size() - 1; x >= 0; x--) {
             final XidImpl ourXid = (XidImpl) xidList.get(x);
@@ -675,7 +679,7 @@ public class XARecoveryData extends PartnerLogData {
      * Iterates over the list of known Xids retrieved from transaction
      * service, and tries to match the given javax.transaction.xa.Xid
      * with one of them.
-     * 
+     *
      * @param ourXid The javax.transaction.xa.Xid we are trying to match.
      * @param knownXids The array of Xids that are possible matches.
      * @return true if we find a match, false if not.
@@ -683,8 +687,8 @@ public class XARecoveryData extends PartnerLogData {
     protected boolean canWeForgetXid(XidImpl ourXid, Xid[] knownXids) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "canWeForgetXid", new Object[] {
-                                                         ourXid,
-                                                         knownXids });
+                                                          ourXid,
+                                                          knownXids });
 
         if (tc.isDebugEnabled()) {
             // We are only called if knownXids != null
@@ -780,7 +784,7 @@ public class XARecoveryData extends PartnerLogData {
 
     /**
      * Retrieves the recovery classloader
-     * 
+     *
      * @return The recovery classloader
      */
     public ClassLoader getRecoveryClassLoader() /* @369064.2A */

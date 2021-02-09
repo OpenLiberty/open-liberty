@@ -28,6 +28,7 @@ public class ConversationActiveState {
         try {
             active = beanManager.getContext(ConversationScoped.class).isActive();
         } catch (ContextNotActiveException expected) {
+            System.out.println("Context Not Active");
             active = false;
         }
     }

@@ -84,6 +84,7 @@ public class TypesTestServlet extends FATServlet {
         GraphQLClient client = builder.build(GraphQLClient.class);
         GraphQLOperation graphQLOperation = new GraphQLOperation();
         graphQLOperation.setOperationName("createWidget");
+        /*
         graphQLOperation.setQuery("mutation createWidget ($widget: WidgetInput) {" + System.lineSeparator() +
                                   "  createWidget(widget: $widget) {" + System.lineSeparator() +
                                   "    name," + System.lineSeparator() +
@@ -97,7 +98,18 @@ public class TypesTestServlet extends FATServlet {
                                       "    \"quantity\": 20," + System.lineSeparator() +
                                       "    \"weight\": 1.2" + System.lineSeparator() +
                                       "  }" + System.lineSeparator() +
-                                      "}");
+                                      "}");*/
+        graphQLOperation.setQuery("mutation createWidget {" + System.lineSeparator() +
+                                  "  createWidget(widget:{" + System.lineSeparator() +
+                                  "    name: \"Earbuds\"" + System.lineSeparator() +
+                                  "    quantity: 20" + System.lineSeparator() +
+                                  "    weight: 1.2" + System.lineSeparator() +
+                                  "  }) {" + System.lineSeparator() +
+                                  "    name," + System.lineSeparator() +
+                                  "    weight," + System.lineSeparator() +
+                                  "    widgetId" + System.lineSeparator() +
+                                  "  }" + System.lineSeparator() +
+                                  "}");
         WidgetQueryResponse response = client.allWidgets(graphQLOperation);
         System.out.println("Mutation Response: " + response);
         Widget widget = response.getData().getCreateWidget();

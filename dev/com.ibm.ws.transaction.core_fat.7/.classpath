@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="fat/src" including="com/ibm/ws/transaction/test/FATSuite.java"/>
+	<classpathentry kind="src" path="com.ibm.ws.transaction.core_fat.1-fatsrc" excluding="com/ibm/ws/transaction/test/FATSuite.java"/>
+	<classpathentry kind="src" path="com.ibm.ws.transaction.core_fat.1-eventlistener"/>
+	<classpathentry kind="src" path="com.ibm.ws.transaction.core_fat.1-com.ibm.ws.transaction.fat.eventListener"/>
+	<classpathentry kind="src" path="com.ibm.ws.transaction.core_fat.1-utdecorator"/>
+	<classpathentry kind="src" path="com.ibm.ws.transaction.core_fat.1-com.ibm.ws.transaction.fat.remoteTester"/>
+	<classpathentry kind="src" path="com.ibm.ws.transaction.core_fat.1-transactionalEJB"/>
+	<classpathentry kind="src" path="com.ibm.ws.transaction.core_fat.1-commitPriority"/>
+	<classpathentry kind="src" path="com.ibm.ws.transaction.core_fat.1-transaction"/>
+	<classpathentry kind="src" path="com.ibm.ws.transaction.core_fat.1-transactional"/>
+	<classpathentry kind="src" path="com.ibm.ws.transaction.core_fat.1-transactionscoped"/>
+	<classpathentry exported="true" kind="con" path="aQute.bnd.classpath.container"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

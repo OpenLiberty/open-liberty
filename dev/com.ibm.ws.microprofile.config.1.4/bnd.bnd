@@ -37,6 +37,8 @@ WS-TraceGroup: APPCONFIG
 
 
 -buildpath: \
+    io.openliberty.microprofile.config.internal.common;version=latest, \
+    io.openliberty.microprofile.config.internal.serverxml;version=latest, \
 	com.ibm.websphere.org.eclipse.microprofile.config.1.4;version=latest, \
 	com.ibm.ws.org.apache.commons.lang3;version=latest, \
 	com.ibm.ws.logging;version=latest, \

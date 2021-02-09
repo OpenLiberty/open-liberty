@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2015 IBM Corporation and others.
+ * Copyright (c) 2010, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -37,6 +37,7 @@ import com.ibm.websphere.config.ConfigRetrieverException;
 import com.ibm.websphere.metatype.MetaTypeFactory;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.config.admin.ConfigID;
 import com.ibm.ws.config.admin.ConfigurationDictionary;
 import com.ibm.ws.config.admin.ExtendedConfiguration;
@@ -44,6 +45,8 @@ import com.ibm.ws.config.xml.internal.EvaluationContext.NestedInfo;
 import com.ibm.ws.config.xml.internal.MetaTypeRegistry.EntryAction;
 import com.ibm.ws.config.xml.internal.MetaTypeRegistry.RegistryEntry;
 import com.ibm.ws.config.xml.internal.metatype.ExtendedAttributeDefinition;
+import com.ibm.ws.config.xml.internal.metatype.MetaTypeHelper;
+import com.ibm.ws.config.xml.internal.variables.ConfigVariableRegistry;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.wsspi.kernel.service.utils.FilterUtils;
 import com.ibm.wsspi.kernel.service.utils.MetatypeUtils;
@@ -59,7 +62,6 @@ class ConfigEvaluator {
 
     private final ConfigRetriever configRetriever;
     private final MetaTypeRegistry metatypeRegistry;
-//    private final ConfigVariableRegistry variableRegistry;
     private final ServerXMLConfiguration serverXMLConfig;
 
     private final VariableEvaluator variableEvaluator;
@@ -71,6 +73,7 @@ class ConfigEvaluator {
         this.variableEvaluator = new VariableEvaluator(variableRegistry, this);
     }
 
+    @Trivial
     private Object evaluateSimple(Object rawValue, EvaluationContext context, boolean ignoreWarnings) throws ConfigEvaluatorException {
         if (rawValue instanceof String) {
             return convertObjectToSingleValue(rawValue, null, context, -1, ignoreWarnings);
@@ -158,7 +161,9 @@ class ConfigEvaluator {
                     String attributeName = entry.getKey();
                     if (XMLConfigConstants.CFG_INSTANCE_ID.equals(attributeName)) {
                         rawValue = config.getAttribute(XMLConfigConstants.CFG_INSTANCE_ID);
-                        if (!attributeDef.getDefaultValue()[0].equals(rawValue)) {
+                        String defaultValue = attributeDef.getDefaultValue()[0];
+                        // defaultValue == null is an error condition that should be caught in metatype validation
+                        if (defaultValue != null && !defaultValue.equals(rawValue)) {
                             // User has overridden a ibm:final value in server.xml
                             if (rawValue != null) {
                                 Tr.warning(tc, "warning.supplied.config.not.valid", attributeName, rawValue);
@@ -250,6 +255,7 @@ class ConfigEvaluator {
         return false;
     }
 
+    @Trivial
     protected Object evaluateSimpleAttribute(String attributeName, Object attributeValue, EvaluationContext context, String flatPrefix,
                                              boolean ignoreWarnings) throws ConfigEvaluatorException {
         context.setAttributeName(attributeName);
@@ -498,8 +504,13 @@ class ConfigEvaluator {
                         }
 
                         String defaultString = "";
-                        if (rawValue != null)
+
+                        if (rawValue != null) {
+                            if (badValue != null && rawValue.equals(badValue)) {
+                                rawValue = setRawToDefaultValue(rawValue, attributeDef);
+                            }
                             defaultString = Tr.formatMessage(tc, "default.value.in.use", rawValue);
+                        }
                         Tr.warning(tc, "warn.config.invalid.value", attributeDef.getID(), badValue, strBuffer.toString(), defaultString);
 
                     }
@@ -583,21 +594,44 @@ class ConfigEvaluator {
             return;
         }
         @SuppressWarnings("unchecked")
-        List<Object> rawList = (List<Object>) rawValue;
+        List<ConfigElement> rawList = (List<ConfigElement>) rawValue;
         int cardinality = context.getAttributeDefinition(attributeName).getCardinality();
         if ((rawList.size()) > 1 && (-1 <= cardinality) && (cardinality <= 1)) {
             SimpleElement element = mergeConfigElementValues(rawList, context);
             flattenConfigElement(element, flatPrefix, i, attributeName, elementName, context, nestedRegistryEntry, ignoreWarnings);
         } else {
-            for (Object o : rawList) {
-                if (!(o instanceof ConfigElement)) {
-                    //TODO error
-                    continue;
-                }
-                flattenConfigElement((ConfigElement) o, flatPrefix, i, attributeName, elementName, context, nestedRegistryEntry, ignoreWarnings);
+            List<ConfigElement> mergedElementList = mergeConfigElementsById(rawList);
+            for (ConfigElement element : mergedElementList) {
+                flattenConfigElement(element, flatPrefix, i, attributeName, elementName, context, nestedRegistryEntry, ignoreWarnings);
             }
         }
         return;
+    }
+
+    /**
+     * @param rawList
+     * @return
+     */
+    private List<ConfigElement> mergeConfigElementsById(List<ConfigElement> rawList) {
+        List<ConfigElement> returnVal = new ArrayList<ConfigElement>();
+        Set<String> visited = new HashSet<String>();
+        for (ConfigElement ce : rawList) {
+
+            if (ce.getId() == null) {
+                returnVal.add(ce);
+            } else {
+                if (visited.add(ce.getId())) {
+                    for (ConfigElement other : rawList) {
+                        if (!other.equals(ce) && ce.getId().equals(other.getId())) {
+                            ce.override(other);
+                        }
+                    }
+                    returnVal.add(ce);
+                }
+            }
+
+        }
+        return returnVal;
     }
 
     private void flattenConfigElement(ConfigElement nestedElement, String flatPrefix, AtomicInteger i, String attributeName, String elementName, EvaluationContext context,
@@ -722,6 +756,16 @@ class ConfigEvaluator {
             if (defaultValues != null) {
                 rawValue = Arrays.asList(defaultValues);
             }
+        }
+
+        return rawValue;
+    }
+
+    private Object setRawToDefaultValue(Object rawValue, ExtendedAttributeDefinition attributeDef) throws ConfigEvaluatorException {
+
+        String[] defaultValues = attributeDef.getDefaultValue();
+        if (defaultValues != null) {
+            rawValue = Arrays.asList(defaultValues);
         }
 
         return rawValue;
@@ -903,6 +947,7 @@ class ConfigEvaluator {
      *
      * @return the converted value, or null if the value was unresolved
      */
+    @Trivial
     private Object convertObjectToSingleValue(Object rawValue, ExtendedAttributeDefinition attrDef, EvaluationContext context, int index,
                                               boolean ignoreWarnings) throws ConfigEvaluatorException {
         if (rawValue instanceof String) {
@@ -939,6 +984,7 @@ class ConfigEvaluator {
     /**
      * Process and evaluate a raw String value.
      */
+    @Trivial
     private Object convertStringToSingleValue(String rawValue, ExtendedAttributeDefinition attrDef, EvaluationContext context,
                                               boolean ignoreWarnings) throws ConfigEvaluatorException {
         String value = processString(rawValue, attrDef, context, ignoreWarnings);
@@ -950,6 +996,7 @@ class ConfigEvaluator {
      *
      * @see #convertListToArray
      */
+    @Trivial
     private Object evaluateString(String strVal, ExtendedAttributeDefinition attrDef, EvaluationContext context) throws ConfigEvaluatorException {
         if (attrDef == null) {
             return strVal;
@@ -1280,6 +1327,7 @@ class ConfigEvaluator {
      * @param attrDef the attribute definition, or null if this is a simple evaluation
      */
     @FFDCIgnore(URISyntaxException.class)
+    @Trivial
     private String processString(String value, ExtendedAttributeDefinition attrDef, EvaluationContext context, boolean ignoreWarnings) throws ConfigEvaluatorException {
 
         if (attrDef == null) {

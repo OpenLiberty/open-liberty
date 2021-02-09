@@ -197,7 +197,7 @@ APPLICATION_MONITORING_FAIL.useraction=Ao atualizar arquivos neste aplicativo, o
 
 APPLICATION_LOCATION_INSIDE_DROPINS=CWWKZ0061E: O aplicativo {0} no local {1} est\u00e1 dentro do diret\u00f3rio monitorado {2}. O elemento do aplicativo ser\u00e1 ignorado.
 APPLICATION_LOCATION_INSIDE_DROPINS.explanation=Um elemento do aplicativo na configura\u00e7\u00e3o do servidor definiu o local do aplicativo para estar dentro do diret\u00f3rio que \u00e9 monitorado para aplicativos. Consequentemente, o elemento do aplicativo ser\u00e1 ignorado e o aplicativo ser\u00e1 iniciado usando o conte\u00fado do diret\u00f3rio monitorado se o aplicativo estiver presente nesse diret\u00f3rio monitorado.
-APPLICATION_LOCATION_INSIDE_DROPINS.useraction=Corrija o elemento do aplicativo ou altere o local do diret\u00f3rio monitorado. 
+APPLICATION_LOCATION_INSIDE_DROPINS.useraction=Corrija o elemento do aplicativo ou altere o local do diret\u00f3rio monitorado.
 
 APPLICATION_UPDATED=CWWKZ0062I: O aplicativo {0} foi atualizado, mas n\u00e3o reiniciado.
 APPLICATION_UPDATED.explanation=Ocorreu uma pequena mudan\u00e7a no aplicativo especificado e a  mudan\u00e7a foi considerada pequena o suficiente, de modo que n\u00e3o h\u00e1 necessidade de reiniciar o aplicativo.
@@ -222,3 +222,6 @@ error.startAfter.cycle=CWWKZ0066E: Os seguintes aplicativos n\u00e3o podem ser i
 error.startAfter.cycle.explanation=Nenhum dos aplicativos pode ser iniciado porque cada um depende de um dos outros aplicativos a serem iniciados primeiro.
 error.startAfter.cycle.useraction=Mude o valor do atributo startAfter para aplicativos envolvidos no ciclo para que eles n\u00e3o tenham depend\u00eancias circulares.
 
+dropins.app.also.configured=CWWKZ0067W: O aplicativo de entrega no local {0} n\u00e3o pode ser iniciado porque tamb\u00e9m est\u00e1 configurado. 
+dropins.app.also.configured.explanation=Um aplicativo na configura\u00e7\u00e3o do servidor especifica um local no diret\u00f3rio de entrega monitorado. 
+dropins.app.also.configured.useraction=Mova o aplicativo para um local diferente. 

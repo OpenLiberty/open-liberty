@@ -1,10 +1,11 @@
 -include= ~../cnf/resources/bnd/rejar.props
+
 bVersion=1.0
 
 Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.3.2
 Bundle-Activator: com.ibm.ws.cxf.transports.http.NoOpActivator
 
-exportVer=3.3.0
+exportVer=3.4.1
 
 Export-Package: \
   com.ibm.ws.cxf.transports.http,\
@@ -14,14 +15,15 @@ Export-Package: \
   org.apache.cxf.transport.https;version=${exportVer},\
   org.apache.cxf.transport.servlet;version=${exportVer},\
   org.apache.cxf.transports.http;version=${exportVer},\
-  org.apache.cxf.transports.http.configuration;version=${exportVer}
+  org.apache.cxf.transports.http.configuration;version=${exportVer},\
+  com.ibm.ws.cxf.exceptions;version=${exportVer}
   
 Import-Package: \
   !org.apache.aries.*,\
   !org.springframework.*,\
-  !javax.wsdl.*,\
-  !org.apache.cxf.ws.policy.*,\
-  !org.apache.cxf.wsdl,\
+  javax.wsdl.*;resolution:=optional, \
+  org.apache.cxf.ws.policy.*;resolution:=optional, \
+  org.apache.cxf.wsdl;resolution:=optional, \
   !org.osgi.service.blueprint.*,\
   com.ibm.ws.cxf.client.*,\
   *

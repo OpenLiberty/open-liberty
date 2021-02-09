@@ -13,7 +13,7 @@ package com.ibm.ws.microprofile.reactive.messaging.kafka;
 /**
  * General exception for problems which originate in the Kafka connector
  */
-public class KafkaConnectorException extends Exception {
+public class KafkaConnectorException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
 
