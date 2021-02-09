@@ -1,1 +1,1 @@
-DELETE FROM ${schemaname}.JPA20QueryUnwrapEntity;
+DELETE FROM JPA20QueryUnwrapEntity;

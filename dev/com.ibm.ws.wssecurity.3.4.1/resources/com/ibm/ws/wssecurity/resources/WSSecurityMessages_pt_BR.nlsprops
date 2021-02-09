@@ -41,12 +41,12 @@
 
 # Message logged once during server startup
 # {0} is the exception
-error.policy.notloaded=CWWKW0202E: O WS-Security n\u00e3o pode ser aplicado a qualquer servi\u00e7o da web. Ocorreu um erro ao tentar registrar o carregador de pol\u00edtica WS-Security com a estrutura CXF: [{0}]
-error.policy.notloaded.explanation=O carregador de pol\u00edtica WS-Security n\u00e3o p\u00f4de ser registrado com a estrutura CXF durante a inicializa\u00e7\u00e3o do servidor. Devido ao erro, o tempo de execu\u00e7\u00e3o WS-Security n\u00e3o ser\u00e1 chamado para qualquer mensagem SOAP e as restri\u00e7\u00f5es WS-Security n\u00e3o ser\u00e3o inclu\u00eddas.
+error.policy.notloaded=CWWKW0202E: O WS-Security n\u00e3o pode ser aplicado a qualquer servi\u00e7o da web.  Ocorreu um erro ao tentar registrar o carregador de pol\u00edtica WS-Security com a estrutura CXF: [{0}]
+error.policy.notloaded.explanation=O carregador de pol\u00edtica WS-Security n\u00e3o p\u00f4de ser registrado com a estrutura CXF durante a inicializa\u00e7\u00e3o do servidor.  Devido ao erro, o tempo de execu\u00e7\u00e3o WS-Security n\u00e3o ser\u00e1 chamado para qualquer mensagem SOAP e as restri\u00e7\u00f5es WS-Security n\u00e3o ser\u00e3o inclu\u00eddas.
 error.policy.notloaded.useraction=Enderece o erro descrito na mensagem.
 
 # Message logged once during server startup
-WSSECURITY_NO_CONFIG_DEFINED=CWWKW0203I: WS-Security n\u00e3o pode ser aplicado a qualquer aplicativo cliente de servi\u00e7o da web. O elemento de configura\u00e7\u00e3o do cliente WS-Security, wsSecurityClient, n\u00e3o existe em server.xml.
+WSSECURITY_NO_CONFIG_DEFINED=CWWKW0203I: WS-Security n\u00e3o pode ser aplicado a qualquer aplicativo cliente de servi\u00e7o da web.  O elemento de configura\u00e7\u00e3o do cliente WS-Security, wsSecurityClient, n\u00e3o existe em server.xml.
 WSSECURITY_NO_CONFIG_DEFINED.explanation=O recurso wsSecurity-1.1 est\u00e1 ativado, mas o componente WS-Security n\u00e3o pode localizar o elemento wsSecurityClient em server.xml.
 WSSECURITY_NO_CONFIG_DEFINED.useraction=Se as restri\u00e7\u00f5es WS-Security s\u00e3o necess\u00e1rias para um aplicativo de servi\u00e7o da web do cliente, inclua o elemento de configura\u00e7\u00e3o wsSecurityClient necess\u00e1rio em server.xml.
 
@@ -68,8 +68,8 @@ UNKNOWN_CALLER_TOKEN_NAME.explanation=O nome especificado para o elemento caller
 UNKNOWN_CALLER_TOKEN_NAME.useraction=Verifique o arquivo server.xml para assegurar que um valor suportado esteja especificado para o elemento callerToken. Os valores v\u00e1lidos s\u00e3o exibidos na mensagem de erro.
 
 # Message logged at runtime for each errant inbound SOAP request
-multiple_unt_exist_err=CWWKW0206E: Um assunto de seguran\u00e7a n\u00e3o pode ser criado para o servi\u00e7o da web. O callerToken n\u00e3o pode ser identificado na mensagem de entrada porque existe mais de um UsernameToken no cabe\u00e7alho de Seguran\u00e7a SOAP.
-multiple_unt_exist_err.explanation=O callerToken em security.xml \u00e9 configurado para UsernameToken e o cabe\u00e7alho de Seguran\u00e7a na mensagem SOAP de entrada cont\u00e9m mais de um UsernameToken. Por isso, o tempo de execu\u00e7\u00e3o WS-Security n\u00e3o pode determinar qual UsernameToken usar para o token do respons\u00e1vel pela chamada.
+multiple_unt_exist_err=CWWKW0206E: Um assunto de seguran\u00e7a n\u00e3o pode ser criado para o servi\u00e7o da web.  O callerToken n\u00e3o pode ser identificado na mensagem de entrada porque existe mais de um UsernameToken no cabe\u00e7alho de Seguran\u00e7a SOAP.
+multiple_unt_exist_err.explanation=O callerToken no server.xml \u00e9 configurado como UsernameToken e o cabe\u00e7alho de Seguran\u00e7a na mensagem SOAP de entrada cont\u00e9m mais de um UsernameToken.  Por isso, o tempo de execu\u00e7\u00e3o WS-Security n\u00e3o pode determinar qual UsernameToken usar para o token do respons\u00e1vel pela chamada.
 multiple_unt_exist_err.useraction=Execute um dos seguintes: 1) Altere a configura\u00e7\u00e3o do cliente para enviar apenas um UsernameToken 2) Remova a configura\u00e7\u00e3o callerToken em server.xml
 
 # TO BE DELETED
@@ -84,7 +84,7 @@ multiple_unt_exist_err.useraction=Execute um dos seguintes: 1) Altere a configur
 
 # Message logged at runtime for each errant inbound SOAP request
 # {0} is a token type, ex: X509, UsernameToken ({0} is supposed to be used twice)
-no_caller_exist_err=CWWKW0207E: Um assunto de seguran\u00e7a n\u00e3o pode ser criado para o servi\u00e7o da web. Um {0} callerToken est\u00e1 configurado, mas n\u00e3o existe nenhum token {0} no cabe\u00e7alho de Seguran\u00e7a SOAP de entrada. Um token do respons\u00e1vel pela chamada n\u00e3o p\u00f4de ser selecionado.
+no_caller_exist_err=CWWKW0207E: Um assunto de seguran\u00e7a n\u00e3o pode ser criado para o servi\u00e7o da web.  Um {0} callerToken est\u00e1 configurado, mas n\u00e3o existe nenhum token {0} no cabe\u00e7alho de Seguran\u00e7a SOAP de entrada.  Um token do respons\u00e1vel pela chamada n\u00e3o p\u00f4de ser selecionado.
 no_caller_exist_err.explanation=O callerToken configurado no server.xml n\u00e3o est\u00e1 presente no cabe\u00e7alho do SOAP Security. 
 no_caller_exist_err.useraction=Execute uma das seguintes a\u00e7\u00f5es: 1) Altere a configura\u00e7\u00e3o do cliente para enviar o token do respons\u00e1vel pela chamada correto 2) Remova a configura\u00e7\u00e3o do callerToken no server.xml
 
@@ -96,7 +96,7 @@ no_caller_exist_err.useraction=Execute uma das seguintes a\u00e7\u00f5es: 1) Alt
 # Message logged at runtime for each errant inbound SOAP request.
 # {0} is the error message received from base security
 error_authenticate=CWWKW0210E: Um assunto de seguran\u00e7a n\u00e3o pode ser criado para o servi\u00e7o da web devido a [{0}].
-error_authenticate.explanation=Um assunto de seguran\u00e7a para o token do respons\u00e1vel pela chamada recuperado do cabe\u00e7alho de Seguran\u00e7a SOAP n\u00e3o p\u00f4de ser criado. A raz\u00e3o para o erro \u00e9 descrita na mensagem.
+error_authenticate.explanation=Um assunto de seguran\u00e7a para o token do respons\u00e1vel pela chamada recuperado do cabe\u00e7alho de Seguran\u00e7a SOAP n\u00e3o p\u00f4de ser criado.  A raz\u00e3o para o erro \u00e9 descrita na mensagem.
 error_authenticate.useraction=Enderece o erro descrito na mensagem.
 
 # TO BE DELETED

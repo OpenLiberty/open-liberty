@@ -195,7 +195,7 @@ error.no.wsdl.find.useraction=Okre\u015bl istniej\u0105cy plik WSDL w us\u0142ud
 #{0}=the specified binding type
 #{1}=the port component name
 #{2}=the WSDL document
-error.endpointinfo.validation.bindingtype.and.wsdl.mismatch=CWWKW0058E: Okre\u015blony typ powi\u0105zania {0} nie jest zgodny z typem powi\u0105zania w dokumencie WSDL {1}.
+error.endpointinfo.validation.bindingtype.and.wsdl.mismatch=CWWKW0058E: Okre\u015blony typ powi\u0105zania {0} dla komponentu portu {1} jest niezgodny z definicj\u0105 w dokumencie WSDL {2}.
 error.endpointinfo.validation.bindingtype.and.wsdl.mismatch.explanation=Je\u015bli typ powi\u0105zania jest okre\u015blony za pomoc\u0105 adnotacji BindingType lub deskryptora wdra\u017cania, jego warto\u015b\u0107 musi by\u0107 zgodna z warto\u015bci\u0105 w dokumencie WSDL.
 error.endpointinfo.validation.bindingtype.and.wsdl.mismatch.useraction=Zaktualizuj warto\u015b\u0107 typu powi\u0105zania, aby by\u0142a zgodna z warto\u015bci\u0105 w dokumencie WSDL.
 

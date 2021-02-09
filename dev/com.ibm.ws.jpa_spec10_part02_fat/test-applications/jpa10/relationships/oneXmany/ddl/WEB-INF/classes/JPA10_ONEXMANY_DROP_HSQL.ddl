@@ -32,7 +32,6 @@ DROP TABLE ${schemaname}.OMEntB_CRF;
 DROP TABLE ${schemaname}.OMEntB_CRM;
 DROP TABLE ${schemaname}.OMEntB_DR;
 DROP TABLE ${schemaname}.OneXManyDRUniJoinTABLE;
-DROP TABLE ${schemaname}.OPENJPA_SEQUENCE_TABLE;
 DROP TABLE ${schemaname}.XMLEmbedIDOMEntityA;
 DROP TABLE ${schemaname}.XMLRELOM_EIDOMENTA;
 DROP TABLE ${schemaname}.XMLEmbedIDOMEntityA_XMLEmbedIDOMEntityB;

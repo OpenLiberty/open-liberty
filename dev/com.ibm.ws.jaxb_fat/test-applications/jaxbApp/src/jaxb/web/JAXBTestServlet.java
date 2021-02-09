@@ -62,7 +62,7 @@ public class JAXBTestServlet extends FATServlet {
     }
 
     @Test
-    @SkipForRepeat({ SkipForRepeat.EE9_FEATURES, "JAXB-2.3" })
+    @SkipForRepeat({ SkipForRepeat.EE9_FEATURES })
     public void testJaxbImplLoadedFromLiberty() throws Exception {
         JAXBContext ctx = JAXBContext.newInstance("jaxb.web", ObjectFactory.class.getClassLoader());
         ClassLoader implLoader = ctx.getClass().getClassLoader();
@@ -78,8 +78,24 @@ public class JAXBTestServlet extends FATServlet {
     }
 
     @Test
-    @SkipForRepeat({ SkipForRepeat.NO_MODIFICATION, "JAXB-2.3", SkipForRepeat.EE9_FEATURES })
-    public void testActivationLoaded_jaxb22() throws Exception {
+    @SkipForRepeat({ SkipForRepeat.NO_MODIFICATION, "JAXB-2.3" })
+    public void testXMLBindingImplLoadedFromLiberty() throws Exception {
+        JAXBContext ctx = JAXBContext.newInstance("jaxb.web", ObjectFactory.class.getClassLoader());
+        ClassLoader implLoader = ctx.getClass().getClassLoader();
+        CodeSource implSrc = ctx.getClass().getProtectionDomain().getCodeSource();
+        String implLocation = implSrc == null ? null : implSrc.getLocation().toString();
+        System.out.println("XML Binding impl is: " + ctx.getClass());
+        System.out.println("Got XML Binding impl from loader=  " + implLoader);
+        System.out.println("Got XML Binding impl from location=" + implLocation);
+        assertTrue("Expected XML Binding impl to come from JDK classloader, but it came from: " + implLoader,
+                   implLoader != null && implLoader.toString().contains("io.openliberty."));
+        assertTrue("Expected XML Binding impl to come from JDK, but it came from: " + implLocation,
+                   implLocation != null && implLocation.contains("io.openliberty."));
+    }
+
+    @Test
+    @SkipForRepeat({ SkipForRepeat.EE9_FEATURES })
+    public void testActivationLoaded() throws Exception {
         // Verify Activation API came from the JDK
         ClassLoader apiLoader = javax.activation.DataHandler.class.getClassLoader();
         CodeSource apiSrc = javax.activation.DataHandler.class.getProtectionDomain().getCodeSource();
@@ -100,18 +116,18 @@ public class JAXBTestServlet extends FATServlet {
     }
 
     @Test
-    @SkipForRepeat({ SkipForRepeat.NO_MODIFICATION, SkipForRepeat.EE9_FEATURES })
-    public void testActivationLoaded_jaxb23() throws Exception {
+    @SkipForRepeat({ SkipForRepeat.NO_MODIFICATION, "JAXB-2.3" })
+    public void testJakartaActivationLoaded() throws Exception {
         // Verify Activation API came from the JDK
-        ClassLoader apiLoader = javax.activation.DataHandler.class.getClassLoader();
-        CodeSource apiSrc = javax.activation.DataHandler.class.getProtectionDomain().getCodeSource();
+        ClassLoader apiLoader = jakarta.activation.DataHandler.class.getClassLoader();
+        CodeSource apiSrc = jakarta.activation.DataHandler.class.getProtectionDomain().getCodeSource();
         String apiLocation = apiSrc == null ? null : apiSrc.getLocation().toString();
-        System.out.println("Got javax.activation from loader=  " + apiLoader);
-        System.out.println("Got javax.activation from location=" + apiLocation);
+        System.out.println("Got jakarta.activation from loader=  " + apiLoader);
+        System.out.println("Got jakarta.activation from location=" + apiLocation);
 
-        assertTrue("Expected javax.activation to come from Liberty JDK classloader, but it came from: " + apiLoader,
-                   apiLoader != null && apiLoader.toString().contains("com.ibm.websphere.javaee.activation.1.1"));
-        assertTrue("Expected javax.activation to come from Liberty, but it came from: " + apiLocation,
-                   apiLocation != null && apiLocation.contains("com.ibm.websphere.javaee.activation.1.1"));
+        assertTrue("Expected jakarta.activation to come from Liberty JDK classloader, but it came from: " + apiLoader,
+                   apiLoader != null && apiLoader.toString().contains("io.openliberty.jakarta.activation.2.0"));
+        assertTrue("Expected jakarta.activation to come from Liberty, but it came from: " + apiLocation,
+                   apiLocation != null && apiLocation.contains("io.openliberty.jakarta.activation.2.0"));
     }
 }

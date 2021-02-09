@@ -31,13 +31,16 @@ jobs:
     - uses: actions/checkout@v2
       with:
         fetch-depth: 50
+    # - name: Validate rebase onto integration
+    #   if: "github.event_name == 'pull_request'"
+    #   run: .github/workflow-scripts/validate-rebase-integration.sh
     - name: Validate copyright headers
       if: "github.event_name == 'pull_request'"
       run: .github/workflow-scripts/validate-copyright-headers.sh
-    - name: Validate new tests
+    - name: Validate tests
       # Probably should only do this for PRs.  But for now always run so we can catch tests suites that get merged incorrectly
       # if: "github.event_name == 'pull_request'"
-      run: .github/workflow-scripts/validate-new-tests.sh
+      run: .github/workflow-scripts/validate-tests.sh
   build: #Main build always done on linix run in parallel to setup and unit-test
     name: Build Open Liberty
     needs: validate
@@ -111,7 +114,9 @@ jobs:
           github.event.pull_request.state != 'closed'
         )"
     steps:
-    - uses: actions/checkout@v2 
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 50
     - name: Set up Java
       uses: joschi/setup-jdk@v2
       with:

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.jdbc.fat.postgresql;
 
-import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -24,9 +23,9 @@ import componenttest.containers.ExternalTestServiceDockerClientStrategy;
 })
 public class FATSuite {
 
-    @BeforeClass
-    public static void setupBukcet() throws Exception {
+    //Required to ensure we calculate the correct strategy each run even when
+    //switching between local and remote docker hosts.
+    static {
         ExternalTestServiceDockerClientStrategy.setupTestcontainers();
     }
-
 }

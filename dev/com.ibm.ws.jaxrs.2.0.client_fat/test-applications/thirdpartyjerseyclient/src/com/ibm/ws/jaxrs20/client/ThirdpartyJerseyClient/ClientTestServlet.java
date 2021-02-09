@@ -125,7 +125,7 @@ public class ClientTestServlet extends HttpServlet {
 
         Client c = cb.build();
         String res = c.target("http://" + serverIP + ":" + serverPort + "/" + param.get("context")
-                              + "/Test/BasicResource").path("echo").path(param.get("param")).request().get(String.class);
+                              + "/Test/BasicResource").path("echo").path(param.get("param")).request().get().readEntity(String.class);
         c.close();
         ret.append(res);
     }

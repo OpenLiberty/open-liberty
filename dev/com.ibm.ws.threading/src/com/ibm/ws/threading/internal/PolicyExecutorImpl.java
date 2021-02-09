@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2019 IBM Corporation and others.
+ * Copyright (c) 2017,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -70,6 +70,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
     private final AtomicReference<Callback> cbConcurrency = new AtomicReference<Callback>();
     private final AtomicReference<Callback> cbLateStart = new AtomicReference<Callback>();
     private final AtomicReference<Callback> cbQueueSize = new AtomicReference<Callback>();
+    private Runnable cbShutdown;
 
     /**
      * Use this lock to make a consistent update to both expedite and expeditesAvailable,
@@ -244,13 +245,13 @@ public class PolicyExecutorImpl implements PolicyExecutor {
     /**
      * This constructor is used by PolicyExecutorProvider.
      *
-     * @param globalExecutor the Liberty global executor, which was obtained by the PolicyExecutorProvider via declarative services.
-     * @param identifier unique identifier for this instance, to be used for monitoring and problem determination.
-     * @param owner application that owns the policy executor instance. Null if not owned by a single application.
+     * @param globalExecutor  the Liberty global executor, which was obtained by the PolicyExecutorProvider via declarative services.
+     * @param identifier      unique identifier for this instance, to be used for monitoring and problem determination.
+     * @param owner           application that owns the policy executor instance. Null if not owned by a single application.
      * @param policyExecutors list of policy executor instances created by the PolicyExecutorProvider.
-     *            Each instance is responsible for adding and removing itself from the list per its life cycle.
+     *                            Each instance is responsible for adding and removing itself from the list per its life cycle.
      * @throws IllegalStateException if an instance with the specified unique identifier already exists and has not been shut down.
-     * @throws NullPointerException if the specified identifier is null
+     * @throws NullPointerException  if the specified identifier is null
      */
     public PolicyExecutorImpl(ExecutorServiceImpl globalExecutor, String identifier, String owner,
                               ConcurrentHashMap<String, PolicyExecutorImpl> policyExecutors) {
@@ -411,16 +412,16 @@ public class PolicyExecutorImpl implements PolicyExecutor {
      * As needed, ensure that tasks are submitted to the global executor to process
      * the queued up tasks.
      *
-     * @param policyTaskFuture submitted task and its Future.
-     * @param wait amount of time to wait for a queue position.
+     * @param policyTaskFuture       submitted task and its Future.
+     * @param wait                   amount of time to wait for a queue position.
      * @param runIfQueueFullOverride indicates if a task should always or may never run on the current thread
-     *            if no queue positions are available. A value of null means the runIfQueueFull configuration will determine.
-     *            A value of true must only be specified if the caller already has a permit or doesn't need one.
+     *                                   if no queue positions are available. A value of null means the runIfQueueFull configuration will determine.
+     *                                   A value of true must only be specified if the caller already has a permit or doesn't need one.
      * @return true if the task was enqueued for later execution by the global thread pool.
      *         If the task instead ran on the current thread, then returns false.
      * @throws RejectedExecutionException if the task is rejected rather than being queued.
-     *             If this method runs the task on the current thread and the task raises InterruptedException,
-     *             the InterruptedException is chained to the RejectedExecutionException.
+     *                                        If this method runs the task on the current thread and the task raises InterruptedException,
+     *                                        the InterruptedException is chained to the RejectedExecutionException.
      */
     @FFDCIgnore(value = { InterruptedException.class, RejectedExecutionException.class }) // these are raised directly to invoker, who decides how to handle
     private boolean enqueue(PolicyTaskFutureImpl<?> policyTaskFuture, long wait, Boolean runIfQueueFullOverride) {
@@ -601,6 +602,15 @@ public class PolicyExecutorImpl implements PolicyExecutor {
     @Trivial
     public String getIdentifier() {
         return identifier;
+    }
+
+    @Override
+    public int getMaxConcurrency() {
+        int max;
+        synchronized (configLock) {
+            max = maxConcurrency;
+        }
+        return max;
     }
 
     @Override
@@ -927,6 +937,14 @@ public class PolicyExecutorImpl implements PolicyExecutor {
     }
 
     @Override
+    public boolean isSuspended() {
+        // If tasks are running while suspended, the maxConcurrencyConstraint will have a negative number of permits
+        // and will not allow an acquire -- even an acquire of 0 permits -- until the permits for the running tasks
+        // are released.  This gives us a convenient way to check for running tasks.
+        return maxConcurrencyConstraint.tryAcquire(0) && getMaxConcurrency() == 0 && state.get() == State.ACTIVE;
+    }
+
+    @Override
     public boolean isTerminated() {
         State currentState = state.get();
         switch (currentState) {
@@ -1092,6 +1110,11 @@ public class PolicyExecutorImpl implements PolicyExecutor {
     }
 
     @Override
+    public void registerShutdownCallback(Runnable callback) {
+        cbShutdown = callback;
+    }
+
+    @Override
     public PolicyExecutor runIfQueueFull(boolean runIfFull) {
         if (state.get() != State.ACTIVE)
             throw new IllegalStateException(Tr.formatMessage(tc, "CWWKE1203.config.update.after.shutdown", "runIfQueueFull", identifier));
@@ -1178,6 +1201,9 @@ public class PolicyExecutorImpl implements PolicyExecutor {
             policyExecutors.remove(identifier); // remove tracking of this instance and allow identifier to be reused
 
             shutdownLatch.countDown();
+
+            if (cbShutdown != null)
+                cbShutdown.run();
         } else
             while (state.get() == State.ENQUEUE_STOPPING)
                 try { // Await completion of other thread that concurrently invokes shutdown.

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2018 IBM Corporation and others.
+ * Copyright (c) 1997, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -85,7 +85,7 @@ protected static final Logger logger = LoggerFactory.getInstance().getLogger("co
                     // more filters to go...invoke the next one
                 	 FilterInstanceWrapper wrapper = ((FilterInstanceWrapper) _filters.get(_currentFilterIndex));
                 	 if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)){  //306998.15
-                	 	logger.logp(Level.FINE, CLASS_NAME,"doFilter", "executing filter -->" + wrapper.getFilterName());
+                	     logger.logp(Level.FINE, CLASS_NAME,"doFilter", "executing filter [" + wrapper.getFilterName() + "] request [" + request + "] response [" + response + "]");
                 	 }
                      wrapper.doFilter(request, response, this);
                 }

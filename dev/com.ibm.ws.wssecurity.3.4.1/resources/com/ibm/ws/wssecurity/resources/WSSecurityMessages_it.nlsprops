@@ -41,7 +41,7 @@
 
 # Message logged once during server startup
 # {0} is the exception
-error.policy.notloaded=CWWKW0202E: Impossibile applicare WS-Security a qualsiasi servizio Web.  Si \u00e8 verificato un errore durante il tentativo di registrare il WS-Security policy loader con il framework CXF: [{0}]
+error.policy.notloaded=CWWKW0202E: Impossibile applicare WS-Security a qualsiasi servizio Web.  Si \u00e8 verificato un errore durante il tentativo di registrare il programma di caricamento politiche WS-Security con il framework CXF: [{0}]
 error.policy.notloaded.explanation=Impossibile registrare il il programma di caricamento politiche WS-Security con il framework CXF durante l'avvio del server.  A causa dell'errore, il runtime WS-Security non sar\u00e0 richiamato per eventuali messaggi SOAP e non saranno aggiunti vincoli WS-Security.
 error.policy.notloaded.useraction=Risolvere l'errore descritto nel messaggio.
 
@@ -68,7 +68,7 @@ UNKNOWN_CALLER_TOKEN_NAME.explanation=Il nome specificato per l'elemento callerT
 UNKNOWN_CALLER_TOKEN_NAME.useraction=Controllare il file server.xml per assicurarsi che sia specificato un valore supportato per l'elemento callerToken. I valori validi sono visualizzati nel messaggio di errore.
 
 # Message logged at runtime for each errant inbound SOAP request
-multiple_unt_exist_err=CWWKW0206E: Impossible creare un soggetto sicurezza per il servizio web.  Impossibile identificare il callerToken nel messaggio in entrata perch\u00e9 \u00e8 presente pi\u00f9 di un UsernameToken nell'intestazione di sicurezza SOAP.
+multiple_unt_exist_err=CWWKW0206E: Impossibile creare un soggetto sicurezza per il servizio web.  Impossibile identificare il callerToken nel messaggio in entrata perch\u00e9 \u00e8 presente pi\u00f9 di un UsernameToken nell'intestazione di sicurezza SOAP.
 multiple_unt_exist_err.explanation=Il callerToken nel file server.xml \u00e8 impostato su UsernameToken e l'intestazione di sicurezza nel messaggio SOAP in entrata contiene pi\u00f9 di un UsernameToken.  Per questo motivo, il runtime WS - Security non pu\u00f2 determinare quale UsernameToken utilizzare per il token chiamante.
 multiple_unt_exist_err.useraction=Eseguire una delle seguenti operazioni: 1) Modificare la configurazione del client per inviare solo un UsernameToken 2) Rimuovere la configurazione callerToken in server.xml
 
@@ -84,7 +84,7 @@ multiple_unt_exist_err.useraction=Eseguire una delle seguenti operazioni: 1) Mod
 
 # Message logged at runtime for each errant inbound SOAP request
 # {0} is a token type, ex: X509, UsernameToken ({0} is supposed to be used twice)
-no_caller_exist_err=CWWKW0207E: Impossible creare un soggetto sicurezza per il servizio Web.  Un callerToken {0} \u00e8 stato configurato, ma non \u00e8 presente un token {0} nell''intestazione di sicurezza SOAP in entrata.  Non \u00e8 stato possibile selezionare un token chiamante.
+no_caller_exist_err=CWWKW0207E: Impossibile creare un soggetto sicurezza per il servizio Web.  Un callerToken {0} \u00e8 stato configurato, ma non \u00e8 presente un token {0} nell''intestazione di sicurezza SOAP in entrata.  Non \u00e8 stato possibile selezionare un token chiamante.
 no_caller_exist_err.explanation=Il callerToken configurato in server.xml non \u00e8 presente nell'intestazione di sicurezza SOAP. 
 no_caller_exist_err.useraction=Eseguire una delle seguenti operazioni: 1) Modificare la configurazione del client per inviare il token chiamante corretto 2) Rimuovere la configurazione callerToken in server.xml
 
@@ -95,7 +95,7 @@ no_caller_exist_err.useraction=Eseguire una delle seguenti operazioni: 1) Modifi
 
 # Message logged at runtime for each errant inbound SOAP request.
 # {0} is the error message received from base security
-error_authenticate=CWWKW0210E: Impossible creare un soggetto di sicurezza per il servizio Web a causa di [{0}].
+error_authenticate=CWWKW0210E: Impossibile creare un soggetto di sicurezza per il servizio Web a causa di [{0}].
 error_authenticate.explanation=Impossibile creare un oggetto di sicurezza per il token chiamante richiamato dall'intestazione di sicurezza SOAP.  Il motivo dell'errore \u00e8 descritto nel messaggio.
 error_authenticate.useraction=Risolvere l'errore descritto nel messaggio.
 
@@ -140,7 +140,7 @@ failed_to_extract_saml_element.explanation=Si \u00e8 verificata un'eccezione dur
 failed_to_extract_saml_element.useraction=Verificare i log del server per ulteriori informazioni sull'errore.
 
 failed_to_extract_saml_token_from_subject=CWWKW0219W: Si \u00e8 verificata una eccezione nel tentativo di estrarre il token SAML dal soggetto. L''eccezione era: [{0}]
-failed_to_extract_saml_token_from_subject.explanation=Si \u00e8 verificata un'eccezione durante l'estrazione del token SAML dal soggetto.
+failed_to_extract_saml_token_from_subject.explanation=Si \u00e8 verificata una eccezione nel tentativo di estrarre il token SAML dal soggetto.
 failed_to_extract_saml_token_from_subject.useraction=Verificare i log del server per ulteriori informazioni sull'errore.
 
 failed_to_obtain_subject_info=CWWKW0220E: Autenticazione non riuscita a  causa di un''eccezione durante il richiamo delle informazioni sul soggetto dall''asserzione SAML. L''eccezione era: [{0}]

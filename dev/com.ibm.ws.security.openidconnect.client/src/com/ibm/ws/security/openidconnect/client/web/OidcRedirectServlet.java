@@ -33,7 +33,6 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.common.internal.encoder.Base64Coder;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.security.oauth20.web.WebUtils;
 import com.ibm.ws.security.openidconnect.client.internal.OidcClientConfigImpl;
 import com.ibm.ws.security.openidconnect.client.internal.OidcClientImpl;
@@ -54,9 +53,6 @@ public class OidcRedirectServlet extends HttpServlet {
     private static TraceComponent tc = Tr.register(OidcRedirectServlet.class,
             TraceConstants.TRACE_GROUP,
             TraceConstants.MESSAGE_BUNDLE);
-
-    // Flag tells us if the message for a call to a beta method has been issued
-    private static boolean issuedBetaMessage = false;
 
     private static final long serialVersionUID = 1L;
     public static final String METHOD_GET = "GET";
@@ -180,28 +176,8 @@ public class OidcRedirectServlet extends HttpServlet {
         }
     }
 
-    @Deprecated
     public boolean isRedirectionUrlValid(HttpServletRequest request, @Sensitive String requestUrl) {
-        if (betaFenceCheck()) {
-            return OidcClientUtil.isReferrerHostValid(request, requestUrl);
-        }
-        return true;
-    }
-
-    private boolean betaFenceCheck() throws UnsupportedOperationException {
-        // Not running beta edition
-        if (!ProductInfo.getBetaEdition()) {
-            // Do not throw an exception since it will break the RP flow in non beta configurations.
-            // throw new UnsupportedOperationException("This method is beta and is not available.");
-            return false;
-        } else {
-            // Running beta exception, issue message if we haven't already issued one for this class
-            if (!issuedBetaMessage) {
-                Tr.info(tc, "BETA: A beta method has been invoked for the class " + this.getClass().getName() + " for the first time.");
-                issuedBetaMessage = !issuedBetaMessage;
-            }
-            return true;
-        }
+        return OidcClientUtil.isReferrerHostValid(request, requestUrl);
     }
 
     // todo: converge w social in oidcutils class?

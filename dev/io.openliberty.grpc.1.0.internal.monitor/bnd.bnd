@@ -50,12 +50,12 @@ instrument.disabled: true
 	com.ibm.ws.monitor;version=latest,\
     com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
     com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
-    com.google.api.grpc:proto-google-common-protos;version=1.17.0, \
+    com.google.api.grpc:proto-google-common-protos;version=2.0.1, \
     com.google.code.findbugs:jsr305;version=3.0.2,\
     com.google.guava:failureaccess;version=1.0.1,\
     com.google.guava:guava;version=27.0.1, \
     com.google.j2objc:j2objc-annotations;version=1.1, \
-    com.google.protobuf:protobuf-java;version=3.11.1, \
+    com.google.protobuf:protobuf-java;version=3.13.0, \
     org.checkerframework:checker-compat-qual;version=2.5.2,\
     io.openliberty.grpc.1.0.internal.common;version=latest,\
     io.openliberty.grpc.1.0.internal.client;version=latest,\

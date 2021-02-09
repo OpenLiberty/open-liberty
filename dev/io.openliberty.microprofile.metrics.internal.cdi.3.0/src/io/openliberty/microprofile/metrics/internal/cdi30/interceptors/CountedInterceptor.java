@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2019 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -81,9 +81,18 @@ public class CountedInterceptor {
         MetricResolver.Of<Counted> counted = resolver.counted(bean.getBeanClass(), element);
         MetricID tmid = new MetricID(counted.metricName(), Utils.tagsToTags(counted.tags()));
         Counter counter = (Counter) registry.getMetric(tmid);
-        if (counter == null)
-            throw new IllegalStateException("No counter with metricID [" + tmid + "] found in registry [" + registry + "]");
-
+        if (counter == null) {
+            /*
+             * Try and Catch to force an FFDC since the DefaultExceptionMapper is catching exceptions
+             * which does not result in FFDCs. Caught Exception generates an FFDC. The subsequent
+             * rethrow is caught by the DefaultExceptionMapper where it is printed out.
+             */
+            try {
+                throw new IllegalStateException("No counter with metricID [" + tmid + "] found in registry [" + registry + "]");
+            } catch (IllegalStateException exception) {
+                throw exception;
+            }
+        }
         counter.inc();
         return context.proceed();
     }

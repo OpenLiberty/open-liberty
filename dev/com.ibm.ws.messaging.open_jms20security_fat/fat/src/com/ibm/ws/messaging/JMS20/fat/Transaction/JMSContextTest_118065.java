@@ -20,17 +20,21 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import com.ibm.ws.messaging.JMS20security.fat.TestUtils;
+import org.junit.runner.RunWith;
 
 import componenttest.annotation.ExpectedFFDC;
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
+import com.ibm.ws.messaging.JMS20security.fat.TestUtils;
+
+@RunWith(FATRunner.class)
 public class JMSContextTest_118065 {
 
     private static LibertyServer server = LibertyServerFactory.getLibertyServer("TestServer");
@@ -200,7 +204,7 @@ public class JMSContextTest_118065 {
 
     // ------------------------------------
 
-    @org.junit.AfterClass
+    @AfterClass
     public static void tearDown() {
         try {
             System.out.println("Stopping client server");

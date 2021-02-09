@@ -30,7 +30,7 @@ public class ArtifactoryImageNameSubstitutor extends ImageNameSubstitutor {
     public DockerImageName apply(DockerImageName original) {
         // If we are using local docker, or a programmatically built image, or a registry was explicitly set,
         // we don't want to perform any substitution -- just return the original
-        if (!ExternalTestServiceDockerClientStrategy.useRemoteDocker() ||
+        if (!ExternalTestServiceDockerClientStrategy.USE_REMOTE_DOCKER_HOST ||
             isSyntheticImage(original) ||
             (original.getRegistry() != null && !original.getRegistry().isEmpty())) {
             return original;

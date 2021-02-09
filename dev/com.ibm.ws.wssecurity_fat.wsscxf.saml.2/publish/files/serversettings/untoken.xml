@@ -1,0 +1,29 @@
+<server>
+	<wsSecurityClient
+		id="default"
+		ws-security.username="fimuser"
+		ws-security.password="fimuser"
+	>
+	</wsSecurityClient>
+
+	<!--imports/samlTestApplication.xml -->
+	<application
+		type="war"
+		id="untsslclient"
+		name="untsslclient"
+		location="${server.config.dir}/dropins/untsslclient.war"
+	>
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+
+</server>

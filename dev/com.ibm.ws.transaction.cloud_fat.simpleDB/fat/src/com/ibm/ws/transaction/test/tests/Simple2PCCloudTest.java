@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -222,19 +222,19 @@ public class Simple2PCCloudTest extends FATServletClient {
         String id = "001";
 
         // Start Server1
-        server1.startServer();
+        longLeaseLengthServer1.startServer();
 
         try {
-            sb = runTestWithResponse(server1, SERVLET_NAME, "modifyLeaseOwner");
+            sb = runTestWithResponse(longLeaseLengthServer1, SERVLET_NAME, "modifyLeaseOwner");
 
             // We expect this to fail since it is gonna crash the server
-            sb = runTestWithResponse(server1, SERVLET_NAME, "setupRec" + id);
+            sb = runTestWithResponse(longLeaseLengthServer1, SERVLET_NAME, "setupRec" + id);
         } catch (Throwable e) {
         }
         Log.info(this.getClass(), method, "setupRec" + id + " returned: " + sb);
 
-        server1.waitForStringInLog("Dump State:");
-
+        longLeaseLengthServer1.waitForStringInLog("Dump State:");
+        longLeaseLengthServer1.postStopServerArchive(); // must explicitly collect since crashed server
         // Pull in a new server.xml file that ensures that we have a long (5 minute) timeout
         // for the lease, otherwise we may decide that we CAN delete and renew our own lease.
 
@@ -253,7 +253,7 @@ public class Simple2PCCloudTest extends FATServletClient {
             Log.error(this.getClass(), "recoveryTestCompeteForLock", ex);
             throw ex;
         }
-
+        longLeaseLengthServer1.postStopServerArchive(); // must explicitly collect since server start failed
         // defect 210055: Now start cloud2 so that we can tidy up the environment, otherwise cloud1
         // is unstartable because its lease is owned by cloud2.
         ProgramOutput po = server2.startServerAndValidate(false, true, true);

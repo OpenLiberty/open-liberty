@@ -11,15 +11,15 @@
 
 # NLS_MESSAGEFORMAT_ALL
 #
-#CMVCPATHNAME io.openliberty.jaxb.3.0.internal.tools/resources/io/openliberty/jaxb/tools/internal/resources/JaxbToolsMessages.nlsprops
+#CMVCPATHNAME io.openliberty.xmlbinding.3.0.internal.tools/resources/io/openliberty/jaxb/tools/internal/resources/JaxbToolsMessages.nlsprops
 #ISMESSAGEFILE TRUE
 #COMPONENTPREFIX CWWKW
-#COMPONENTNAMEFOR CWWKW WebSphere JAXB Tools Code
+#COMPONENTNAMEFOR CWWKW WebSphere XML Binding Tools Code
 #RANGE 0700 - 0799
 #
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
 
 error.parameter.target.missed=CWWKW0700E: No se ha especificado el par\u00e1metro de destino obligatorio.
-error.parameter.target.missed.explanation=Si se especifica el par\u00e1metro de destino, las aplicaciones existentes pueden volver a generarse sin cambiar su comportamiento cuando el nivel de especificaci\u00f3n JAXB que soporta Liberty Profile se actualiza.
-error.parameter.target.missed.useraction=Especifique el nivel de especificaci\u00f3n JAXB al que se ajusta el c\u00f3digo generado. El valor v\u00e1lido es 3.0
+error.parameter.target.missed.explanation=Si se especifica el par\u00e1metro de destino, las aplicaciones existentes pueden volver a generarse sin cambiar su comportamiento cuando el nivel de especificaci\u00f3n XML Binding al que da soporte Liberty Profile se actualiza.
+error.parameter.target.missed.useraction=Especifique el nivel de especificaci\u00f3n de XML Binding al que se ajusta el c\u00f3digo generado. El valor v\u00e1lido es 3.0

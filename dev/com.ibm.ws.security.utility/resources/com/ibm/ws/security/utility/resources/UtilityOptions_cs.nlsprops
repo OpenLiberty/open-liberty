@@ -201,5 +201,8 @@ tlsProfiler.required-key.port=\ \ \ \ --port
 tlsProfiler.required-desc.port=\tZadejte port.
 tlsProfiler.required-key.host=\ \ \ \ --host
 tlsProfiler.required-desc.host=\tZadejte hostitele.
+tlsProfiler.option-key.file=\ \ \ \ --file
+tlsProfiler.option-desc.file=\tVoliteln\u00e9. V\u00fdsledek se zap\u00ed\u0161e do ur\u010den\u00e9ho souboru \n\
+\tnam\u00edsto obrazovky konzoly.
 tlsProfiler.option-key.verbose=\ \ \ \ --verbose
 tlsProfiler.option-desc.verbose=\tZahr\u0148te dal\u0161\u00ed informace o nezabezpe\u010den\u00fdch protokolech.

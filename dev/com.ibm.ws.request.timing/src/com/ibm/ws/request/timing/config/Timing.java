@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -62,6 +62,11 @@ public class Timing {
     private final boolean interruptHungRequest;
     
     /**
+     * Controls whether thread dumps are created (for hung requests only).
+     */
+    private final boolean enableThreadDumps;
+    
+    /**
      * The PID which generated this timing, if generated from a sub-type.
      */
     private final String timingPid;
@@ -81,18 +86,19 @@ public class Timing {
     transient private String[] historicalRequestData = new String[HISTORICAL_REQUEST_LIMIT];
     
     public Timing(String type, long requestThreshold){
-    	this(type, null, requestThreshold, false);
+    	this(type, null, requestThreshold, false, true);
 	}
     
-    public Timing(String type, String[] contextInfo, long requestThreshold, boolean interruptHungRequest){
-		this(null, type, contextInfo, requestThreshold, interruptHungRequest);
+    public Timing(String type, String[] contextInfo, long requestThreshold, boolean interruptHungRequest, boolean enableThreadDumps){
+		this(null, type, contextInfo, requestThreshold, interruptHungRequest, enableThreadDumps);
 	}
 
-    public Timing(String timingPid, String type, String[] contextInfo, long requestThreshold, boolean interruptHungRequest){
+    public Timing(String timingPid, String type, String[] contextInfo, long requestThreshold, boolean interruptHungRequest, boolean enableThreadDumps){
     	this.timingPid = timingPid;
 		this.type = type;
 		this.requestThreshold = requestThreshold;
 		this.interruptHungRequest = interruptHungRequest;
+		this.enableThreadDumps = enableThreadDumps;
 
 		if (contextInfo == null) {
 			this.contextInfo = null;
@@ -188,6 +194,10 @@ public class Timing {
 	
 	public boolean interruptHungRequest() {
 		return interruptHungRequest;
+	}
+	
+	public boolean isThreadDumpsEnabled() {
+		return enableThreadDumps;
 	}
 	
 	public void incrementCount(String requestContextInfo) {

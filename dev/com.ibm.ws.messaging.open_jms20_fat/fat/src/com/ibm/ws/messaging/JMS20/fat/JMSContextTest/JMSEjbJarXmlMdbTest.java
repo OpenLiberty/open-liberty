@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015,2020 IBM Corporation and others.
+ * Copyright (c) 2015, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,14 +15,19 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import componenttest.custom.junit.runner.FATRunner;
 
 import com.ibm.ws.messaging.JMS20.fat.TestUtils;
 
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
+@RunWith(FATRunner.class)
 public class JMSEjbJarXmlMdbTest {
 
     private static LibertyServer server = LibertyServerFactory.getLibertyServer("JMSRedeliveryServer");
@@ -63,7 +68,7 @@ public class JMSEjbJarXmlMdbTest {
         server.startServer("EJBMDB.log");
     }
 
-    @org.junit.AfterClass
+    @AfterClass
     public static void tearDown() {
         try {
             server.stopServer();

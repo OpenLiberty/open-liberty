@@ -1,0 +1,58 @@
+#*******************************************************************************
+# Copyright (c) 2021 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+ 
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+src: \
+  fat/src
+  
+
+fat.project: true
+
+tested.features: jsp-2.3, jdbc-4.1, el-3.0
+
+# Dependencies may be local bundles (e.g. com.ibm.websphere.javaee.servlet.3.1)
+#      or binaries from Artifactory (e.g. commons-logging:commons-logging)
+# For all project names that match the pattern "*_fat*", dependencies for junit,
+# fattest.simplicity, and componenttest-1.0 will be automatically added to the buildpath
+
+# net.sourceforge.htmlunit:htmlunit for com.gargoylesoftware.htmlunit
+# not used com.ibm.ws.security_fat.common.tooling;version=latest,\
+#'commons-codec:commons-codec:1.6',
+	
+-buildpath: \
+  com.ibm.ws.wssecurity.fat.utils.common;version=latest,\
+  com.ibm.ws.security.fat.common;version=latest,\
+  com.ibm.ws.security.saml.sso_fat.common;version=latest, \
+  com.ibm.websphere.javaee.servlet.3.0;version=latest,\
+  httpunit:httpunit;version=1.5.4,\
+  com.ibm.ws.org.apache.ws.security.wss4j.1.6.7;version=latest,\
+  com.ibm.ws.org.apache.cxf.ws.security.2.6.2;version=latest,\
+  com.ibm.websphere.security;version=latest,\
+  com.ibm.ws.wssecurity;version=latest,\
+  com.ibm.ws.org.apache.commons.codec.1.4;version=latest,\
+  com.ibm.ws.org.apache.commons.lang3;version=latest,\
+  com.ibm.ws.org.apache.commons.logging.1.0.3;version=latest,\
+  com.ibm.ws.org.apache.cxf.cxf.api.2.6.2;version=latest,\
+  com.ibm.ws.org.apache.cxf.cxf.rt.bindings.soap.2.6.2;version=latest,\
+  com.ibm.ws.org.apache.cxf.cxf.rt.core.2.6.2;version=latest,\
+  com.ibm.ws.org.apache.cxf.cxf.rt.ws.policy.2.6.2;version=latest,\
+  com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
+  com.ibm.websphere.appserver.spi.logging;version=latest,\
+  com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
+  com.ibm.websphere.javaee.jaxws.2.2;version=latest,\
+  com.ibm.websphere.javaee.jsp.2.2;version=latest,\
+  com.ibm.websphere.javaee.wsdl4j.1.2;version=latest,\
+  com.ibm.websphere.org.osgi.core;version=latest,\
+  com.ibm.websphere.org.osgi.service.component;version=latest,\
+  net.sourceforge.htmlunit:htmlunit;version=2.44.0
+  

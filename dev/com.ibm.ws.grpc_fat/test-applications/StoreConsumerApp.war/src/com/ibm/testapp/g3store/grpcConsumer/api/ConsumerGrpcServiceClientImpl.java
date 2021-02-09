@@ -50,7 +50,7 @@ public class ConsumerGrpcServiceClientImpl extends ConsumerGrpcServiceClient {
 
     private static Logger log = Logger.getLogger(ConsumerGrpcServiceClientImpl.class.getName());
 
-    private final int deadlineMs = 30 * 1000;
+    private final int deadlineMs = 60 * 1000;
 
     // gRPC client implementation(s)
 

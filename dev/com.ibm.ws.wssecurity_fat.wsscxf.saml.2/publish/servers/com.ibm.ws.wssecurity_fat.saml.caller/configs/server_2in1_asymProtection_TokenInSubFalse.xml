@@ -1,0 +1,14 @@
+<server>
+	<include location="imports/saml_cxf_features.xml" />
+	<include location="imports/BasicRegistry_withoutIDPUsers.xml" />
+	<include location="imports/misc.xml" />
+	<include location="imports/samlProvider1_caller.xml" />
+	<include location="imports/goodSSLSettings.xml" />
+	<include location="imports/securityClient_1_AsymSignEnc.xml" />
+	<include location="imports/securityProvider_1_AsymSignEnc.xml" />
+	<include location="imports/caller_1_NotIncludeTokenInSub.xml" />
+	<include location="imports/samlcallertoken_testApp.xml" />
+	<include location="imports/samlcallerclient_testApp.xml" />
+
+</server>
+

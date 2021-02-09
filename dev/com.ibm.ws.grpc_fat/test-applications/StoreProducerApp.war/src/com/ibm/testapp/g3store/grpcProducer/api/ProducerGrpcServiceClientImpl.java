@@ -58,7 +58,7 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
 
     private static Logger log = Logger.getLogger(ProducerGrpcServiceClientImpl.class.getName());
 
-    private final int deadlineMs = 30 * 1000;
+    private final int deadlineMs = 60 * 1000;
 
     private static boolean CONCURRENT_TEST_ON = false;
 
@@ -877,7 +877,8 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
         String lastTwoWayMessageReceived = null;
         String errorMessage = null;
         CountDownLatch latch = null;
-        Object messageSync = new Object() {};
+        Object messageSync = new Object() {
+        };
 
         public TwoWayStreamClass(CountDownLatch inLatch) {
             latch = inLatch;

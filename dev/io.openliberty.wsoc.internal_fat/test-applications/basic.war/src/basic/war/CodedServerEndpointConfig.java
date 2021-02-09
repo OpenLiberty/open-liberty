@@ -21,11 +21,10 @@ import javax.websocket.Extension;
 import javax.websocket.Extension.Parameter;
 import javax.websocket.server.ServerEndpointConfig;
 
-import io.openliberty.wsoc.common.ExtensionExt;
-import io.openliberty.wsoc.common.ParameterExt;
-
 import basic.war.coding.DecoderOne;
 import basic.war.coding.EncoderOne;
+import io.openliberty.wsoc.common.ExtensionExt;
+import io.openliberty.wsoc.common.ParameterExt;
 
 public class CodedServerEndpointConfig implements ServerEndpointConfig {
 
@@ -365,7 +364,6 @@ public class CodedServerEndpointConfig implements ServerEndpointConfig {
      */
     @Override
     public Class<?> getEndpointClass() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -376,7 +374,6 @@ public class CodedServerEndpointConfig implements ServerEndpointConfig {
      */
     @Override
     public String getPath() {
-        // TODO Auto-generated method stub
         return null;
     }
 

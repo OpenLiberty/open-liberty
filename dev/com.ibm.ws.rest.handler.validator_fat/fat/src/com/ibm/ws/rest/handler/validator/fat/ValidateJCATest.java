@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.rest.handler.validator.fat;
 
+import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
+import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -35,12 +37,14 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpsRequest;
 
 @RunWith(FATRunner.class)
+@SkipForRepeat(EE9_FEATURES) // TODO: Enable this once mpopenapi-2.0 (jakarta enabled) is available
 public class ValidateJCATest extends FATServletClient {
     @Server("com.ibm.ws.rest.handler.validator.jca.fat")
     public static LibertyServer server;
@@ -50,11 +54,11 @@ public class ValidateJCATest extends FATServletClient {
         ResourceAdapterArchive rar = ShrinkWrap.create(ResourceAdapterArchive.class, "TestValidationAdapter.rar")
                         .addAsLibraries(ShrinkWrap.create(JavaArchive.class)
                                         .addPackage("org.test.validator.adapter"));
-        ShrinkHelper.exportToServer(server, "dropins", rar);
+        ShrinkHelper.exportToServer(server, "dropins", rar, SERVER_ONLY);
 
         JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "customLoginModule.jar");
         jar.addPackage("com.ibm.ws.rest.handler.validator.loginmodule");
-        ShrinkHelper.exportToServer(server, "/", jar);
+        ShrinkHelper.exportToServer(server, "/", jar, SERVER_ONLY);
 
         server.startServer();
 

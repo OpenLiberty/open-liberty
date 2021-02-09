@@ -34,7 +34,7 @@ import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
-@SkipForRepeat("EE9_FEATURES") // currently broken due to multiple issues
+@SkipForRepeat("EE9_FEATURES") // Continue to skip this test for EE9 as Multiple REST servlets are defined for the web module which is not supported by RestEasy. See a new PathParamTest here io.openliberty.restfulWS.3.0.client_fat
 @RunWith(FATRunner.class)
 public class PathParamTest extends AbstractTest {
 

@@ -28,8 +28,8 @@
 		<class>com.ibm.ws.jpa.fvt.injection.entities.earroot.EARROOTEntityB</class>
 		<class>com.ibm.ws.jpa.fvt.injection.entities.ejb.EJBEntityA</class>
 		<class>com.ibm.ws.jpa.fvt.injection.entities.ejb.EJBEntityB</class>
-		<class>com.ibm.ws.jpa.fvt.injection.entities.WAREntityA</class>
-		<class>com.ibm.ws.jpa.fvt.injection.entities.WAREntityB</class>
+		<class>com.ibm.ws.jpa.fvt.injection.entities.war.WAREntityA</class>
+		<class>com.ibm.ws.jpa.fvt.injection.entities.war.WAREntityB</class>
 		<exclude-unlisted-classes>true</exclude-unlisted-classes>
         <properties>
             <!-- Hibernate Support Properties -->
@@ -51,8 +51,8 @@
         <class>com.ibm.ws.jpa.fvt.injection.entities.earroot.EARROOTEntityB</class>
         <class>com.ibm.ws.jpa.fvt.injection.entities.ejb.EJBEntityA</class>
         <class>com.ibm.ws.jpa.fvt.injection.entities.ejb.EJBEntityB</class>
-        <class>com.ibm.ws.jpa.fvt.injection.entities.WAREntityA</class>
-        <class>com.ibm.ws.jpa.fvt.injection.entities.WAREntityB</class>
+        <class>com.ibm.ws.jpa.fvt.injection.entities.war.WAREntityA</class>
+        <class>com.ibm.ws.jpa.fvt.injection.entities.war.WAREntityB</class>
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
         <properties>
             <!-- Hibernate Support Properties -->

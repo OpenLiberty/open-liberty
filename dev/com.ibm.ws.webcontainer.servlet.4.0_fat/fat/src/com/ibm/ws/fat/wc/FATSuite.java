@@ -62,7 +62,6 @@ import componenttest.rules.repeater.RepeatTests;
                 WCPushBuilderTest.class,
                 WCServletClarificationTest.class,
                 WCContextRootPrecedence.class,
-                WCEncodingTest.class,
                 WCTrailersTest.class,
                 // TFB:
                 // Locally, WCTrailersTest fails unless I add '-Dglobal.debug.java2.sec=false' to
@@ -74,6 +73,7 @@ import componenttest.rules.repeater.RepeatTests;
                 WCServletContainerInitializerFilterServletNameMappingTest.class,
                 WCApplicationMBeanStatusTest.class,
                 // @Server Annotations
+                WCEncodingTest.class,
                 WCServerTest.class,
                 WC5JakartaServletTest.class,
                 WCGetMappingTest.class,

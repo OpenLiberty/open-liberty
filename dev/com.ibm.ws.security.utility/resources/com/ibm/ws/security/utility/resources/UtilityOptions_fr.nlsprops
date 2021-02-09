@@ -207,5 +207,8 @@ tlsProfiler.required-key.port=\ \ \ \ --port
 tlsProfiler.required-desc.port=\tSp\u00e9cifiez le port.
 tlsProfiler.required-key.host=\ \ \ \ --host
 tlsProfiler.required-desc.host=\tSp\u00e9cifiez l''h\u00f4te.
+tlsProfiler.option-key.file=\ \ \ \ --file
+tlsProfiler.option-desc.file=\tFacultatif. Le r\u00e9sultat sera \u00e9crit dans le fichier sp\u00e9cifi\u00e9 \n\
+\tau lieu d''\u00eatre affich\u00e9 sur l''\u00e9cran de la console.
 tlsProfiler.option-key.verbose=\ \ \ \ --verbose
 tlsProfiler.option-desc.verbose=\tIncluez des informations suppl\u00e9mentaires sur les protocoles non s\u00e9curis\u00e9s.

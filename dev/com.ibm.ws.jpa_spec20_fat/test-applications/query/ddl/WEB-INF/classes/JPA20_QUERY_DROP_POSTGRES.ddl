@@ -1,1 +1,1 @@
-DROP TABLE ${schemaname}.JPA20QueryUnwrapEntity;
+DROP TABLE JPA20QueryUnwrapEntity;

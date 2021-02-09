@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -35,7 +35,16 @@ def appBuildDir = "${buildDir}/test-application"
 autoFVT.dependsOn ':com.ibm.ws.security.spnego.fat.common:SPNEGOTokenHelperFVT_EAR'
 autoFVT.dependsOn ':com.ibm.ws.webcontainer.security_test.servlets:war'
 autoFVT.doLast {
-  
+
+  /******************************************************************
+   * Copy spnego_fat files.
+   ******************************************************************/
+  copy {
+    from new File(project(':com.ibm.ws.security.spnego_fat').projectDir, 'publish/files')
+    into new File(autoFvtDir, 'lib/LibertyFATTestFiles')
+    include '**'
+  }
+
 
   /******************************************************************
    * Setup server: BackendServer
@@ -46,8 +55,8 @@ autoFVT.doLast {
     into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
     rename 'basicauth.zip', 'basicauth.war'
   }
-  copy { 
-    from 'publish/files/resources/security'
+  copy {
+    from new File(project(':com.ibm.ws.security.spnego_fat').projectDir, 'publish/files/resources/security')
     into new File(autoFvtDir, 'publish/servers/' + server + '/resources/security')
     include '**'
   }
@@ -58,7 +67,7 @@ autoFVT.doLast {
    ******************************************************************/
   server = 'com.ibm.ws.security.spnego.fat.setup'
   copy { 
-    from 'publish/files/resources/security'
+    from new File(project(':com.ibm.ws.security.spnego_fat').projectDir, 'publish/files/resources/security')
     into new File(autoFvtDir, 'publish/servers/' + server + '/resources/security')
     include '**'
   }
@@ -74,7 +83,7 @@ autoFVT.doLast {
     rename 'basicauth.zip', 'basicauth.war'
   }
   copy { 
-    from 'publish/files/server_modules/'
+    from new File(project(':com.ibm.ws.security.spnego_fat').projectDir, 'publish/files/server_modules')
     into new File(autoFvtDir, 'publish/servers/' + server + '/imports')
     include 'application_definition/**.xml'
     include 'configs/**.xml'
@@ -84,7 +93,7 @@ autoFVT.doLast {
     include 'spnego/serversettings/**.xml'
   }
   copy { 
-    from 'publish/files/resources/security'
+    from new File(project(':com.ibm.ws.security.spnego_fat').projectDir, 'publish/files/resources/security')
     into new File(autoFvtDir, 'publish/servers/' + server + '/resources/security')
     include '**'
   }
@@ -109,7 +118,7 @@ autoFVT.doLast {
     rename 'com.ibm.ws.security.spnego_fat.jar', 'CustomLoginModule.jar'
   }
   copy { 
-    from 'publish/files/server_modules/'
+    from new File(project(':com.ibm.ws.security.spnego_fat').projectDir, 'publish/files/server_modules')
     into new File(autoFvtDir, 'publish/servers/' + server + '/imports')
     include 'application_definition/spnegoTokenHelperFvt_location.xml'
     include 'configs/**.xml'
@@ -121,7 +130,7 @@ autoFVT.doLast {
     include 'spnego/serversettings/**.xml'
   }
   copy { 
-    from 'publish/files/resources/security'
+    from new File(project(':com.ibm.ws.security.spnego_fat').projectDir, 'publish/files/resources/security')
     into new File(autoFvtDir, 'publish/servers/' + server + '/resources/security')
     include '**'
   }
@@ -139,8 +148,8 @@ autoFVT.doLast {
     into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
     rename 'basicauth.zip', 'basicauth.war'
   }
-  copy { 
-    from 'publish/files/server_modules/'
+  copy {
+    from new File(project(':com.ibm.ws.security.spnego_fat').projectDir, 'publish/files/server_modules')
     into new File(autoFvtDir, 'publish/servers/' + server + '/imports')
     include 'application_definition/**.xml'
     include 'configs/**.xml'
@@ -151,13 +160,13 @@ autoFVT.doLast {
     include 'spnego/authfilters/**.xml'
     include 'spnego/serversettings/**.xml'
   }
-  copy { 
-    from 'publish/files/server_modules/constrained_delegation/s4u2self_servers/config/'
+  copy {
+    from new File(project(':com.ibm.ws.security.spnego_fat').projectDir, 'publish/files/server_modules/constrained_delegation/s4u2self_servers/config')
     into new File(autoFvtDir, 'publish/servers/' + server + '/imports/constrained_delegation/config')
     include '**.xml'
   }
   copy { 
-    from 'publish/files/resources/security'
+    from new File(project(':com.ibm.ws.security.spnego_fat').projectDir, 'publish/files/resources/security')
     into new File(autoFvtDir, 'publish/servers/' + server + '/resources/security')
     include '**'
   }

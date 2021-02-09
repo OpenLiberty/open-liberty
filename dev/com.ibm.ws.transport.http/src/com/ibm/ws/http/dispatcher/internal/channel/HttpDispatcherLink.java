@@ -13,6 +13,7 @@ package com.ibm.ws.http.dispatcher.internal.channel;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.InetAddress;
 import java.nio.charset.Charset;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
@@ -101,6 +102,8 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
     private SSLContext sslinfo = null;
     /** Reference to the HTTP channel context object */
     private HttpInboundServiceContextImpl isc = null;
+    /** Reference remote InetAddress object */
+    private InetAddress remoteAddress = null;
     /** Cached local host name */
     private String localCanonicalHostName = null;
     /** Cached local host:port alias */
@@ -291,6 +294,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
 
         super.destroy();
         this.isc = null;
+        this.remoteAddress = null;
         this.request = null;
         this.response = null;
         this.sslinfo = null;
@@ -324,6 +328,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         this.myChannel.incrementActiveConns();
         init(inVC);
         this.isc = (HttpInboundServiceContextImpl) getDeviceLink().getChannelAccessor();
+        this.remoteAddress = isc.getRemoteAddr();
 
         // if this is an http/2 link, process via that ready
         if (this.getHttpInboundLink2().isDirectHttp2Link(inVC)) {
@@ -728,7 +733,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
      * It is the value of the part before ":" in the Host header value, if any,
      * or the resolved server name, or the server IP address.
      *
-     * @param request the inbound request
+     * @param request        the inbound request
      * @param remoteHostAddr the requesting client IP address
      */
     @Override
@@ -759,8 +764,8 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
      * the part after ":" in the Host header value, if any, or the server port
      * where the client connection was accepted on.
      *
-     * @param request the inbound request
-     * @param localPort the server port where the client connection was accepted on.
+     * @param request        the inbound request
+     * @param localPort      the server port where the client connection was accepted on.
      * @param remoteHostAddr the requesting client IP address
      */
     @Override
@@ -812,8 +817,8 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         // We can avoid reprocessing as long as the HttpDispatcher (or WebContainer) configuration
         // hasn't been updated, in which case, we should try again.
         int lastUpdate = HttpDispatcher.getConfigUpdate();
-        if (useHeaders == UsePrivateHeaders.unknown || configUpdate != lastUpdate) {
-            useHeaders = usePrivateHeaders = UsePrivateHeaders.set(HttpDispatcher.usePrivateHeaders(contextRemoteHostAddress()));
+        if ((useHeaders == UsePrivateHeaders.unknown || configUpdate != lastUpdate) && remoteAddress != null) {
+            useHeaders = usePrivateHeaders = UsePrivateHeaders.set(HttpDispatcher.usePrivateHeaders(remoteAddress));
             configUpdate = lastUpdate;
         }
         return useHeaders.asBoolean();

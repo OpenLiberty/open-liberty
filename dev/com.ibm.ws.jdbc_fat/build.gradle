@@ -56,5 +56,4 @@ task copyDB2(type: Copy) {
   dependsOn copyJdbcDrivers
   //Database Rotation
   dependsOn copyDatabaseRotationDrivers
-  dependsOn copyFattestDatabases
 }

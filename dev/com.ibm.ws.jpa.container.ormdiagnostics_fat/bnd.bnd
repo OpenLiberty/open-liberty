@@ -17,8 +17,7 @@ src: \
     test-applications/enhancementerror/src,\
     test-applications/example/src,\
     test-applications/looseconfig/src,\
-    test-applications/helpers/DatabaseManagement/src,\
-    test-framework/src
+    test-applications/helpers/DatabaseManagement/src
 
 fat.project: true
 tested.features: jdbc-4.0, beanvalidation-1.1, jpa-2.0, el-3.0

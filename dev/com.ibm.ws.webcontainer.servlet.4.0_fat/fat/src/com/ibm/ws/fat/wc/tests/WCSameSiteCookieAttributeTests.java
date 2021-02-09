@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -4041,8 +4041,10 @@ public class WCSameSiteCookieAttributeTests {
         sameSiteServer.setMarkToEndOfLog();
         sameSiteServer.setServerConfigurationFile("serverConfigs/SameSiteSecurityServer.xml");
         sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE_SECURITY), true, "CWWKT0016I:.*SameSiteSecurityTest.*");
+        // Wait for LTPA key to be available to avoid CWWKS4000E
         // CWWKS4105I: LTPA configuration is ready after x seconds
-        sameSiteServer.waitForStringInLogUsingMark("CWWKS4105I");
+        assertNotNull("CWWKS4105I LTPA configuration message not found.",
+                      sameSiteServer.waitForStringInLogUsingMark("CWWKS4105I.*"));
         configuration = sameSiteServer.getServerConfiguration();
         LOG.info("Updated server configuration: " + configuration);
 

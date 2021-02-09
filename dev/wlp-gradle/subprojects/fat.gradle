@@ -15,7 +15,7 @@
 // Global vars
 ext.autoFvtDir = new File(project.buildDir, 'autoFVT')
 
-ext.testcontainersVersion = '1.15.0'
+ext.testcontainersVersion = '1.15.1'
 
 // Local vars
 File publishDir = new File(autoFvtDir, 'publish')
@@ -74,9 +74,9 @@ dependencies {
 
   testcontainers "org.testcontainers:testcontainers:${testcontainersVersion}",
        'com.fasterxml.jackson.core:jackson-annotations:2.10.3',
-       'com.github.docker-java:docker-java-api:3.2.5',
-       'com.github.docker-java:docker-java-transport:3.2.5',
-       'com.github.docker-java:docker-java-transport-zerodep:3.2.5',
+       'com.github.docker-java:docker-java-api:3.2.7',
+       'com.github.docker-java:docker-java-transport:3.2.7',
+       'com.github.docker-java:docker-java-transport-zerodep:3.2.7',
        'net.java.dev.jna:jna:5.5.0',
        'org.apache.commons:commons-compress:1.20',
        'org.rnorth.duct-tape:duct-tape:1.0.8',
@@ -137,18 +137,6 @@ task copyDatabaseRotationDrivers(type: Copy) {
   dependsOn addTestcontainers
   from configurations.databaseRotationDrivers
   into new File(autoFvtDir, 'lib')
-}
-
-if (findProject(':fattest.databases') != null) {
-  // Not all projects include fattest.databases, so we must conditionally define the task
-  // otherwise project(':fattest.databases') will not be found and raise an error
-  task copyFattestDatabases(type: Copy) {
-    mustRunAfter jar
-    dependsOn ':fattest.databases:assemble'
-    from new File(project(':fattest.databases').buildDir, 'libs')
-    include 'fattest.databases.jar'
-    into new File(autoFvtDir, 'lib')
-  }
 }
 
 task copyFeatureBundles {

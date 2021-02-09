@@ -11,15 +11,15 @@
 
 # NLS_MESSAGEFORMAT_ALL
 #
-#CMVCPATHNAME io.openliberty.jaxb.3.0.internal.tools/resources/io/openliberty/jaxb/tools/internal/resources/JaxbToolsMessages.nlsprops
+#CMVCPATHNAME io.openliberty.xmlbinding.3.0.internal.tools/resources/io/openliberty/jaxb/tools/internal/resources/JaxbToolsMessages.nlsprops
 #ISMESSAGEFILE TRUE
 #COMPONENTPREFIX CWWKW
-#COMPONENTNAMEFOR CWWKW WebSphere JAXB Tools Code
+#COMPONENTNAMEFOR CWWKW WebSphere XML Binding Tools Code
 #RANGE 0700 - 0799
 #
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
 
 error.parameter.target.missed=CWWKW0700E: Destina\u0163ia parametrilor ceru\u0163i nu a fost specificat\u0103.
-error.parameter.target.missed.explanation=Dac\u0103 parametrul \u0163int\u0103 este specificat, aplica\u0163iile existente pot fi regenerate f\u0103r\u0103 modificarea comportamentului lor c\u00e2nd nivelul de specifica\u0163ie JAXB suportat de Liberty Profile este actualizat.
-error.parameter.target.missed.useraction=Specifica\u0163i nivelul specifica\u0163iei JAXB cu care este \u00een concordan\u0163\u0103 codul generat. Valoarea valid\u0103 este 3.0.
+error.parameter.target.missed.explanation=Dac\u0103 parametrul \u0163int\u0103 este specificat, aplica\u0163iile existente pot fi regenerate f\u0103r\u0103 modificarea comportamentului lor c\u00e2nd este actualizat nivelul de specifica\u0163ie XML suportat de c\u0103tre Liberty Profile.
+error.parameter.target.missed.useraction=Specifica\u0163i nivelul de specifica\u0163ie XML pe care-l respect\u0103 codul generat. Valoarea valid\u0103 este 3.0.

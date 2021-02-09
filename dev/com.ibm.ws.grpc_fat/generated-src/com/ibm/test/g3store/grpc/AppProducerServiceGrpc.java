@@ -1,19 +1,6 @@
 package com.ibm.test.g3store.grpc;
 
 import static io.grpc.MethodDescriptor.generateFullMethodName;
-import static io.grpc.stub.ClientCalls.asyncBidiStreamingCall;
-import static io.grpc.stub.ClientCalls.asyncClientStreamingCall;
-import static io.grpc.stub.ClientCalls.asyncServerStreamingCall;
-import static io.grpc.stub.ClientCalls.asyncUnaryCall;
-import static io.grpc.stub.ClientCalls.blockingServerStreamingCall;
-import static io.grpc.stub.ClientCalls.blockingUnaryCall;
-import static io.grpc.stub.ClientCalls.futureUnaryCall;
-import static io.grpc.stub.ServerCalls.asyncBidiStreamingCall;
-import static io.grpc.stub.ServerCalls.asyncClientStreamingCall;
-import static io.grpc.stub.ServerCalls.asyncServerStreamingCall;
-import static io.grpc.stub.ServerCalls.asyncUnaryCall;
-import static io.grpc.stub.ServerCalls.asyncUnimplementedStreamingCall;
-import static io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall;
 
 /**
  * <pre>
@@ -21,7 +8,7 @@ import static io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall;
  * </pre>
  */
 @javax.annotation.Generated(
-    value = "by gRPC proto compiler (version 1.31.1)",
+    value = "by gRPC proto compiler (version 1.35.0)",
     comments = "Source: ProducerStore.proto")
 public final class AppProducerServiceGrpc {
 
@@ -338,7 +325,7 @@ public final class AppProducerServiceGrpc {
      */
     public void createApp(com.ibm.test.g3store.grpc.AppRequest request,
         io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.AppResponse> responseObserver) {
-      asyncUnimplementedUnaryCall(getCreateAppMethod(), responseObserver);
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getCreateAppMethod(), responseObserver);
     }
 
     /**
@@ -350,7 +337,7 @@ public final class AppProducerServiceGrpc {
      */
     public void deleteApp(com.ibm.test.g3store.grpc.DeleteRequest request,
         io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.DeleteResponse> responseObserver) {
-      asyncUnimplementedUnaryCall(getDeleteAppMethod(), responseObserver);
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getDeleteAppMethod(), responseObserver);
     }
 
     /**
@@ -362,7 +349,7 @@ public final class AppProducerServiceGrpc {
      */
     public void deleteAllApps(com.google.protobuf.Empty request,
         io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.DeleteResponse> responseObserver) {
-      asyncUnimplementedUnaryCall(getDeleteAllAppsMethod(), responseObserver);
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getDeleteAllAppsMethod(), responseObserver);
     }
 
     /**
@@ -375,7 +362,7 @@ public final class AppProducerServiceGrpc {
      */
     public io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.AppRequest> createApps(
         io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.MultiCreateResponse> responseObserver) {
-      return asyncUnimplementedStreamingCall(getCreateAppsMethod(), responseObserver);
+      return io.grpc.stub.ServerCalls.asyncUnimplementedStreamingCall(getCreateAppsMethod(), responseObserver);
     }
 
     /**
@@ -388,84 +375,84 @@ public final class AppProducerServiceGrpc {
      */
     public io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.StreamRequestA> clientStreamA(
         io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.StreamReplyA> responseObserver) {
-      return asyncUnimplementedStreamingCall(getClientStreamAMethod(), responseObserver);
+      return io.grpc.stub.ServerCalls.asyncUnimplementedStreamingCall(getClientStreamAMethod(), responseObserver);
     }
 
     /**
      */
     public void serverStreamA(com.ibm.test.g3store.grpc.StreamRequestA request,
         io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.StreamReplyA> responseObserver) {
-      asyncUnimplementedUnaryCall(getServerStreamAMethod(), responseObserver);
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getServerStreamAMethod(), responseObserver);
     }
 
     /**
      */
     public io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.StreamRequestA> twoWayStreamA(
         io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.StreamReplyA> responseObserver) {
-      return asyncUnimplementedStreamingCall(getTwoWayStreamAMethod(), responseObserver);
+      return io.grpc.stub.ServerCalls.asyncUnimplementedStreamingCall(getTwoWayStreamAMethod(), responseObserver);
     }
 
     /**
      */
     public io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.StreamRequestA> twoWayStreamAsyncThread(
         io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.StreamReplyA> responseObserver) {
-      return asyncUnimplementedStreamingCall(getTwoWayStreamAsyncThreadMethod(), responseObserver);
+      return io.grpc.stub.ServerCalls.asyncUnimplementedStreamingCall(getTwoWayStreamAsyncThreadMethod(), responseObserver);
     }
 
     @java.lang.Override public final io.grpc.ServerServiceDefinition bindService() {
       return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
           .addMethod(
             getCreateAppMethod(),
-            asyncUnaryCall(
+            io.grpc.stub.ServerCalls.asyncUnaryCall(
               new MethodHandlers<
                 com.ibm.test.g3store.grpc.AppRequest,
                 com.ibm.test.g3store.grpc.AppResponse>(
                   this, METHODID_CREATE_APP)))
           .addMethod(
             getDeleteAppMethod(),
-            asyncUnaryCall(
+            io.grpc.stub.ServerCalls.asyncUnaryCall(
               new MethodHandlers<
                 com.ibm.test.g3store.grpc.DeleteRequest,
                 com.ibm.test.g3store.grpc.DeleteResponse>(
                   this, METHODID_DELETE_APP)))
           .addMethod(
             getDeleteAllAppsMethod(),
-            asyncServerStreamingCall(
+            io.grpc.stub.ServerCalls.asyncServerStreamingCall(
               new MethodHandlers<
                 com.google.protobuf.Empty,
                 com.ibm.test.g3store.grpc.DeleteResponse>(
                   this, METHODID_DELETE_ALL_APPS)))
           .addMethod(
             getCreateAppsMethod(),
-            asyncClientStreamingCall(
+            io.grpc.stub.ServerCalls.asyncClientStreamingCall(
               new MethodHandlers<
                 com.ibm.test.g3store.grpc.AppRequest,
                 com.ibm.test.g3store.grpc.MultiCreateResponse>(
                   this, METHODID_CREATE_APPS)))
           .addMethod(
             getClientStreamAMethod(),
-            asyncClientStreamingCall(
+            io.grpc.stub.ServerCalls.asyncClientStreamingCall(
               new MethodHandlers<
                 com.ibm.test.g3store.grpc.StreamRequestA,
                 com.ibm.test.g3store.grpc.StreamReplyA>(
                   this, METHODID_CLIENT_STREAM_A)))
           .addMethod(
             getServerStreamAMethod(),
-            asyncServerStreamingCall(
+            io.grpc.stub.ServerCalls.asyncServerStreamingCall(
               new MethodHandlers<
                 com.ibm.test.g3store.grpc.StreamRequestA,
                 com.ibm.test.g3store.grpc.StreamReplyA>(
                   this, METHODID_SERVER_STREAM_A)))
           .addMethod(
             getTwoWayStreamAMethod(),
-            asyncBidiStreamingCall(
+            io.grpc.stub.ServerCalls.asyncBidiStreamingCall(
               new MethodHandlers<
                 com.ibm.test.g3store.grpc.StreamRequestA,
                 com.ibm.test.g3store.grpc.StreamReplyA>(
                   this, METHODID_TWO_WAY_STREAM_A)))
           .addMethod(
             getTwoWayStreamAsyncThreadMethod(),
-            asyncBidiStreamingCall(
+            io.grpc.stub.ServerCalls.asyncBidiStreamingCall(
               new MethodHandlers<
                 com.ibm.test.g3store.grpc.StreamRequestA,
                 com.ibm.test.g3store.grpc.StreamReplyA>(
@@ -500,7 +487,7 @@ public final class AppProducerServiceGrpc {
      */
     public void createApp(com.ibm.test.g3store.grpc.AppRequest request,
         io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.AppResponse> responseObserver) {
-      asyncUnaryCall(
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getCreateAppMethod(), getCallOptions()), request, responseObserver);
     }
 
@@ -513,7 +500,7 @@ public final class AppProducerServiceGrpc {
      */
     public void deleteApp(com.ibm.test.g3store.grpc.DeleteRequest request,
         io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.DeleteResponse> responseObserver) {
-      asyncUnaryCall(
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getDeleteAppMethod(), getCallOptions()), request, responseObserver);
     }
 
@@ -526,7 +513,7 @@ public final class AppProducerServiceGrpc {
      */
     public void deleteAllApps(com.google.protobuf.Empty request,
         io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.DeleteResponse> responseObserver) {
-      asyncServerStreamingCall(
+      io.grpc.stub.ClientCalls.asyncServerStreamingCall(
           getChannel().newCall(getDeleteAllAppsMethod(), getCallOptions()), request, responseObserver);
     }
 
@@ -540,7 +527,7 @@ public final class AppProducerServiceGrpc {
      */
     public io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.AppRequest> createApps(
         io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.MultiCreateResponse> responseObserver) {
-      return asyncClientStreamingCall(
+      return io.grpc.stub.ClientCalls.asyncClientStreamingCall(
           getChannel().newCall(getCreateAppsMethod(), getCallOptions()), responseObserver);
     }
 
@@ -554,7 +541,7 @@ public final class AppProducerServiceGrpc {
      */
     public io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.StreamRequestA> clientStreamA(
         io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.StreamReplyA> responseObserver) {
-      return asyncClientStreamingCall(
+      return io.grpc.stub.ClientCalls.asyncClientStreamingCall(
           getChannel().newCall(getClientStreamAMethod(), getCallOptions()), responseObserver);
     }
 
@@ -562,7 +549,7 @@ public final class AppProducerServiceGrpc {
      */
     public void serverStreamA(com.ibm.test.g3store.grpc.StreamRequestA request,
         io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.StreamReplyA> responseObserver) {
-      asyncServerStreamingCall(
+      io.grpc.stub.ClientCalls.asyncServerStreamingCall(
           getChannel().newCall(getServerStreamAMethod(), getCallOptions()), request, responseObserver);
     }
 
@@ -570,7 +557,7 @@ public final class AppProducerServiceGrpc {
      */
     public io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.StreamRequestA> twoWayStreamA(
         io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.StreamReplyA> responseObserver) {
-      return asyncBidiStreamingCall(
+      return io.grpc.stub.ClientCalls.asyncBidiStreamingCall(
           getChannel().newCall(getTwoWayStreamAMethod(), getCallOptions()), responseObserver);
     }
 
@@ -578,7 +565,7 @@ public final class AppProducerServiceGrpc {
      */
     public io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.StreamRequestA> twoWayStreamAsyncThread(
         io.grpc.stub.StreamObserver<com.ibm.test.g3store.grpc.StreamReplyA> responseObserver) {
-      return asyncBidiStreamingCall(
+      return io.grpc.stub.ClientCalls.asyncBidiStreamingCall(
           getChannel().newCall(getTwoWayStreamAsyncThreadMethod(), getCallOptions()), responseObserver);
     }
   }
@@ -608,7 +595,7 @@ public final class AppProducerServiceGrpc {
      * </pre>
      */
     public com.ibm.test.g3store.grpc.AppResponse createApp(com.ibm.test.g3store.grpc.AppRequest request) {
-      return blockingUnaryCall(
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getCreateAppMethod(), getCallOptions(), request);
     }
 
@@ -620,7 +607,7 @@ public final class AppProducerServiceGrpc {
      * </pre>
      */
     public com.ibm.test.g3store.grpc.DeleteResponse deleteApp(com.ibm.test.g3store.grpc.DeleteRequest request) {
-      return blockingUnaryCall(
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getDeleteAppMethod(), getCallOptions(), request);
     }
 
@@ -633,7 +620,7 @@ public final class AppProducerServiceGrpc {
      */
     public java.util.Iterator<com.ibm.test.g3store.grpc.DeleteResponse> deleteAllApps(
         com.google.protobuf.Empty request) {
-      return blockingServerStreamingCall(
+      return io.grpc.stub.ClientCalls.blockingServerStreamingCall(
           getChannel(), getDeleteAllAppsMethod(), getCallOptions(), request);
     }
 
@@ -641,7 +628,7 @@ public final class AppProducerServiceGrpc {
      */
     public java.util.Iterator<com.ibm.test.g3store.grpc.StreamReplyA> serverStreamA(
         com.ibm.test.g3store.grpc.StreamRequestA request) {
-      return blockingServerStreamingCall(
+      return io.grpc.stub.ClientCalls.blockingServerStreamingCall(
           getChannel(), getServerStreamAMethod(), getCallOptions(), request);
     }
   }
@@ -672,7 +659,7 @@ public final class AppProducerServiceGrpc {
      */
     public com.google.common.util.concurrent.ListenableFuture<com.ibm.test.g3store.grpc.AppResponse> createApp(
         com.ibm.test.g3store.grpc.AppRequest request) {
-      return futureUnaryCall(
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getCreateAppMethod(), getCallOptions()), request);
     }
 
@@ -685,7 +672,7 @@ public final class AppProducerServiceGrpc {
      */
     public com.google.common.util.concurrent.ListenableFuture<com.ibm.test.g3store.grpc.DeleteResponse> deleteApp(
         com.ibm.test.g3store.grpc.DeleteRequest request) {
-      return futureUnaryCall(
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getDeleteAppMethod(), getCallOptions()), request);
     }
   }

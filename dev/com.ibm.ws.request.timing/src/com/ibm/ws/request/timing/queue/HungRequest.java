@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,11 +21,14 @@ public class HungRequest extends QueueableRequest {
 	
 	private final boolean interruptRequest;
 	
-	public HungRequest(RequestContext requestContext, long delay, long hungRequestThreshold, boolean includeContextInfo, boolean interruptRequest){
+	private final boolean enableThreadDumps;
+	
+	public HungRequest(RequestContext requestContext, long delay, long hungRequestThreshold, boolean includeContextInfo, boolean interruptRequest, boolean enableThreadDumps){
 		super(requestContext, delay);
 		this.hungRequestThreshold = hungRequestThreshold;
 		this.includeContextInfo = includeContextInfo;
 		this.interruptRequest = interruptRequest;
+		this.enableThreadDumps = enableThreadDumps;
 	}
 	
 	public long getHungRequestThreshold() {
@@ -39,6 +42,11 @@ public class HungRequest extends QueueableRequest {
 	@Override
 	public boolean interruptRequest() {
 		return interruptRequest;
+	}
+	
+	@Override
+	public boolean isThreadDumpsEnabled() {
+		return enableThreadDumps;
 	}
 
 	@Override

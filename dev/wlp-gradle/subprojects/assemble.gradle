@@ -90,7 +90,14 @@ task publishWLPJars(type: Copy) {
             if (fullVersion == null) {
                 fullVersion = outerFullVersion
             }
-            if (!hasIFIXHeaders.get(symbolicName)) {
+
+            def selectedSymbolicName = symbolicName
+            // If the jar is jakartaee transformed, then see if the pre-transformed bundle has iFix headers.
+            if (it.getSourceName().equals(bnd('jakartaee.transform.jar.name', '')) || symbolicName.endsWith(".jakarta")) {
+                selectedSymbolicName = outerSymbolicName
+            }
+                
+            if (!hasIFIXHeaders.get(selectedSymbolicName)) {
                 it.setName(symbolicName + "_" + fullVersion + ".jar")
             } else {
                 it.setName(symbolicName + "_" + fullVersion + ".${qualifier}.jar")

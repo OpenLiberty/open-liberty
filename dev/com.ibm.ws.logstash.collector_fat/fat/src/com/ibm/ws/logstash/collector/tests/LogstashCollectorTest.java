@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -67,7 +67,7 @@ public abstract class LogstashCollectorTest {
     protected abstract LibertyServer getServer();
 
     private static String APP_URL = null;
-
+    private static String buffer;
     private static CopyOnWriteArrayList<String> logstashOutput = new CopyOnWriteArrayList<String>();
 
     protected void setConfig(String conf) throws Exception {
@@ -194,11 +194,27 @@ public abstract class LogstashCollectorTest {
     // use to pipe container output to our standard FAT output logs (output.txt)
     private static void log(OutputFrame frame) {
         String msg = frame.getUtf8String();
-        if (msg.endsWith("\n"))
+        if (msg.endsWith("\n")) {
             msg = msg.substring(0, msg.length() - 1);
-        logstashOutput.add(msg);
+        }
 
-        Log.info(c, "logstashContainer", msg);
+        boolean isComplete = false;
+        if (msg.startsWith("{") && msg.endsWith("}")) {
+            buffer = msg;
+            isComplete = true;
+        } else if (msg.startsWith("{")) {
+            buffer = msg;
+        } else if (msg.endsWith("}")) {
+            buffer = buffer + msg;
+            isComplete = true;
+        } else {
+            buffer = buffer + msg;
+        }
+        if (isComplete) {
+            logstashOutput.add(buffer);
+            Log.info(c, "logstashContainer", buffer);
+            buffer = null;
+        }
     }
 
     protected static void clearContainerOutput() {

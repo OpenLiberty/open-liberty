@@ -46,7 +46,7 @@ public class LibertyCdiInjectorFactory extends CdiInjectorFactory {
         try {
             return super.lookupBeanManager();
         } catch (Exception ex) {
-            return null;
+            throw new RuntimeException("Cannot load bean manager for module " + (cmd == null ? "unknown" :cmd.getJ2EEName()));
         }
     }
 

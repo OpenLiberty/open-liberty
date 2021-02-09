@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011 IBM Corporation and others.
+# Copyright (c) 2011,2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -73,3 +73,7 @@ INVALID_MBEAN_INVOKE_ACTION_J2CA8061.useraction=Cambie la acci\u00f3n que se inv
 MBEAN_ATTRIBUTE_NOT_FOUND_J2CA8062=J2CA8062E: El atributo {0} no es v\u00e1lido para el MBean {1}.
 MBEAN_ATTRIBUTE_NOT_FOUND_J2CA8062.explanation=Se ha intentado obtener o establecer un atributo que no estaba disponible para el MBean especificado.
 MBEAN_ATTRIBUTE_NOT_FOUND_J2CA8062.useraction=Cambie el atributo especificado por uno de los atributos disponibles para este MBean.
+
+CONNECTION_LEAK_DETECTED_J2CA8070=J2CA8070I: No se ha cerrado una conexi\u00f3n que se ha obtenido de {0}. La siguiente pila identifica el c\u00f3digo que ha obtenido la conexi\u00f3n: {1}
+CONNECTION_LEAK_DETECTED_J2CA8070.explanation=No ha cerrado una conexi\u00f3n el c\u00f3digo que la ha obtenido. La pila identifica un \u00e1rea del c\u00f3digo en la que se produce una conexi\u00f3n sin cerrar, pero pueden existir otras instancias en otro lugar. Para evitar la acumulaci\u00f3n de registros y minimizar el impacto de la recopilaci\u00f3n de pilas, solo se informa de una aparici\u00f3n por inicio de servidor.
+CONNECTION_LEAK_DETECTED_J2CA8070.useraction=Utilizando la pila como gu\u00eda, localice el c\u00f3digo que solicita la conexi\u00f3n y actual\u00edcelo para cerrar la conexi\u00f3n.

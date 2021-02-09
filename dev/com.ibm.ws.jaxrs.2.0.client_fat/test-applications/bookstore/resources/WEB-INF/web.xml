@@ -16,6 +16,7 @@
   		<param-name>javax.ws.rs.Application</param-name>
   		<param-value>com.ibm.ws.jaxrs20.fat.bookstore.BookApplication</param-value>
   	</init-param>
+  	<async-supported>true</async-supported>
   </servlet>
 
   <!-- SERVLET MAPPINGS -->        

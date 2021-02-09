@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -43,50 +43,27 @@ public class FailoverServlet extends FATServlet {
     @Resource(name = "jdbc/tranlogDataSource", shareable = true, authenticationType = AuthenticationType.APPLICATION)
     DataSource ds;
 
-    public void testControlSetup(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        System.out.println("FAILOVERSERVLET: drive testControlSetup");
-
-        Connection con = ds.getConnection();
-        try {
-            // Statement used to drop table
-            Statement stmt = con.createStatement();
-
-            try {
-                System.out.println("FAILOVERSERVLET: drop hatable");
-                stmt.executeUpdate("drop table hatable");
-            } catch (SQLException x) {
-                // didn't exist
-            }
-
-            System.out.println("FAILOVERSERVLET: commit changes to database");
-            con.commit();
-        } catch (Exception ex) {
-            System.out.println("FAILOVERSERVLET: caught exception in testSetup: " + ex);
-        }
-        System.out.println("FAILOVERSERVLET: testControlSetup complete");
+    public void setupForRecoverableFailover(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        System.out.println("FAILOVERSERVLET: drive setupForRecoverableFailover");
+        setupTestParameters(request, response, TestType.RUNTIME, -4498, 12);
+        System.out.println("FAILOVERSERVLET: setupForRecoverableFailover complete");
     }
 
-    public void testSetupKnownSqlcode(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        System.out.println("FAILOVERSERVLET: drive testSetupKnownSqlcode");
-        testSetupWithSqlcode(request, response, TestType.RUNTIME, -4498, 12);
-        System.out.println("FAILOVERSERVLET: testSetupWithSqlcode complete");
+    public void setupForNonRecoverableFailover(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        System.out.println("FAILOVERSERVLET: drive setupForNonRecoverableFailover");
+        setupTestParameters(request, response, TestType.RUNTIME, -3, 12);
+        System.out.println("FAILOVERSERVLET: setupForNonRecoverableFailover complete");
     }
 
-    public void testSetupUnKnownSqlcode(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        System.out.println("FAILOVERSERVLET: drive testSetupUnKnownSqlcode");
-        testSetupWithSqlcode(request, response, TestType.RUNTIME, -3, 12);
-        System.out.println("FAILOVERSERVLET: testSetupUnKnownSqlcode complete");
+    public void setupForStartupFailover(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        System.out.println("FAILOVERSERVLET: drive setupForStartupFailover");
+        setupTestParameters(request, response, TestType.STARTUP, -4498, 999);
+        System.out.println("FAILOVERSERVLET: setupForStartupFailover complete");
     }
 
-    public void testStartupSetup(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        System.out.println("FAILOVERSERVLET: drive testStartupSetup");
-        testSetupWithSqlcode(request, response, TestType.STARTUP, -4498, 999);
-        System.out.println("FAILOVERSERVLET: testStartupSetup complete");
-    }
-
-    private void testSetupWithSqlcode(HttpServletRequest request, HttpServletResponse response, TestType testType,
+    private void setupTestParameters(HttpServletRequest request, HttpServletResponse response, TestType testType,
                                       int thesqlcode, int operationToFail) throws Exception {
-        System.out.println("FAILOVERSERVLET: drive testSetupWithSqlcode");
+        System.out.println("FAILOVERSERVLET: drive setupTestParameters");
 
         Connection con = ds.getConnection();
         try {
@@ -128,8 +105,8 @@ public class FailoverServlet extends FATServlet {
      * @throws Exception
      *             if an error occurs.
      */
-    public void testDriveTransactions(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        System.out.println("FAILOVERSERVLET: drive testDriveTransactions");
+    public void driveTransactions(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        System.out.println("FAILOVERSERVLET: driveTransactions");
 
         // Get the test parameters
         _batchSize = 10;
@@ -149,8 +126,8 @@ public class FailoverServlet extends FATServlet {
 
     }
 
-    public void testDriveTransactionsWithFailure(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        System.out.println("FAILOVERSERVLET: drive testDriveTransactionsWithFailure");
+    public void driveTransactionsWithFailure(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        System.out.println("FAILOVERSERVLET: driveTransactionsWithFailure");
 
         // Get the test parameters
         _batchSize = 10;
@@ -158,7 +135,7 @@ public class FailoverServlet extends FATServlet {
 
         try {
             // Drive the transactions
-            System.out.println("FAILOVERSERVLET: drive the Performance Test, resources: " + _resources + ", batchSize: "
+            System.out.println("FAILOVERSERVLET: drive a batch of transactions, resources: " + _resources + ", batchSize: "
                                + _batchSize);
 
             simulateTransactions(request, response);
@@ -203,7 +180,7 @@ public class FailoverServlet extends FATServlet {
             }
             tm.commit();
         }
-        System.out.println("FAILOVERSERVLET: simulateTransactions main test has completed successfully");
+        System.out.println("FAILOVERSERVLET: simulateTransactions main loop has completed successfully");
 
     }
 }

@@ -1,0 +1,51 @@
+<!-- 
+/*******************************************************************************
+ * Copyright (c) 2021 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+-->
+<server>
+
+	<samlWebSso20
+		id="sp1"
+		authFilterRef="myAuthFilter1"
+		wantAssertionsSigned="true"
+		signatureMethodAlgorithm="SHA1"
+		authnRequestsSigned="true"
+		forceAuthn="false"
+		isPassive="false"
+		nameIDPolicy="default-null"
+		idpMetadata="${server.config.dir}/imports/${tfimIdpServer}/Fed1MetaData.xml"
+		keyStoreRef="samlNoKeyStore"
+		keyAlias="sslspservercert"
+		trustStoreRef="serverStore"
+		clockSkew="300s"
+		tokenReplayTimeout="30m"
+		includeTokenInSubject="true"
+		mapToUserRegistry="No"
+		nameIDFormat="unspecified"
+	>
+	</samlWebSso20>
+
+	<!-- userIdentifier="" groupIdentifier="" userUniqueIdentifier="" realmIdentifier="" -->
+
+	<authFilter id="myAuthFilter1">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="/samlclient/fat/sp1/"
+			matchType="contains" />
+	</authFilter>
+
+	<keyStore
+		id="samlNoKeyStore"
+		password="Liberty"
+		type="jks"
+		location="${server.config.dir}/noKey.jks" />
+
+</server>    

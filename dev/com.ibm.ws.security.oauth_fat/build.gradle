@@ -33,7 +33,7 @@ dependencies {
   mongoJavaDriver 'org.mongodb:mongo-java-driver:2.13.3'
   
   requiredLibs    'jtidy:jtidy:4aug2000r7-dev',
-                  'httpunit:httpunit:1.6.2',     // 1.7 causes refresh token failures
+                  project(':com.ibm.ws.com.meterware.httpunit.1.6.2'),     // 1.7 causes refresh token failures
                   files('lib/jsse.jar'),
                   'rhino:js:1.6R5',
                   project(':com.ibm.ws.mongo_fat')

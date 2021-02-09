@@ -1,0 +1,59 @@
+<server>
+
+	<featureManager>
+		<feature>ssl-1.0</feature>
+		<feature>jdbc-4.0</feature>
+		<feature>jsp-2.2</feature>
+		<feature>jndi-1.0</feature>
+		<feature>jaxws-2.2</feature>
+		<feature>appSecurity-2.0</feature>
+        <!-- 1/14/2021 update to use 3.1 on OL -->
+		<!--<feature>servlet-3.0</feature>-->
+        <feature>servlet-3.1</feature>
+		<feature>wsSecuritySaml-1.1</feature>
+		<feature>samlWeb-2.0</feature>
+           <!-- 1/19/2021 the user feature is not needed in 3 of 11 tests (Basic1, SSLBasic1, SSLBasic2), with the user feature in server.xml, it's expected to see the feature not found error in messages.log, which can be safely ignored. -->
+		<feature>usr:wsseccbh-1.0</feature>
+	</featureManager>
+
+    <!-- Added 1/24/2021 -->
+        <javaPermission className="java.io.FilePermission" name="ALL FILES" actions="read"/>
+        <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.soap"/>
+        <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.soap.ver1_1"/>
+        <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.util"/>
+        <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.soap.name"/>
+        <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.soap.impl"/>
+        <javaPermission className="javax.security.auth.PrivateCredentialPermission" signedBy="com.ibm.ws.security.saml.sso20.token.Saml20TokenImpl" principalType="com.ibm.ws.security.authentication.principals.WSPrincipal" principalName="*" actions="read"/>
+        <javaPermission className="javax.security.auth.PrivateCredentialPermission" signedBy="com.ibm.ws.security.token.internal.SingleSignonTokenImpl" principalType="com.ibm.ws.security.authentication.principals.WSPrincipal" principalName="*" actions="read"/>
+        <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.org.apache.xml.serializer.dom3"/>
+        <javaPermission className="javax.security.auth.AuthPermission" name="wssecurity.getRunAsSubject"/>
+        <javaPermission className="java.net.URLPermission" name="http://localhost:8030/samltoken/SAMLSOAPService2" actions="POST:AcceptSOAPActionUser-Agent"/>
+        <javaPermission className="java.net.URLPermission" name="https://localhost:8040/samltoken/SamlTokenTransportSecure" actions="POST:AcceptSOAPActionUser-Agent"/>
+        <javaPermission className="java.net.URLPermission" name="http://localhost:8030/samltoken/SAMLSymSignService" actions="POST:AcceptSOAPActionUser-Agent"/>
+        <javaPermission className="java.net.URLPermission" name="http://localhost:8030/samltoken/SAMLAsymSignService" actions="POST:AcceptSOAPActionUser-Agent"/>
+        <javaPermission className="java.net.URLPermission" name="https://localhost:8040/samlwsstemplates/WSSTemplatesService2" actions="POST:AcceptSOAPActionUser-Agent"/>
+        <javaPermission className="java.net.URLPermission" name="https://localhost:8020/samltoken/SAMLSOAPService2" actions="POST:AcceptSOAPActionUser-Agent"/>
+        <javaPermission className="java.net.URLPermission" name="https://localhost:8020/samltoken/SamlTokenTransportSecure" actions="POST:AcceptSOAPActionUser-Agent"/>
+        <javaPermission className="java.net.URLPermission" name="http://localhost:8010/samltoken/SAMLSymSignService" actions="POST:AcceptSOAPActionUser-Agent"/>
+        <javaPermission className="java.net.URLPermission" name="http://localhost:8010/samltoken/SAMLAsymSignService" actions="POST:AcceptSOAPActionUser-Agent"/>
+        <javaPermission className="java.net.URLPermission" name="https://localhost:8020/samlwsstemplates/WSSTemplatesService2" actions="POST:AcceptSOAPActionUser-Agent"/>
+        <javaPermission className="java.net.URLPermission" name="https://localhost:8020/samlwsstemplates/WSSTemplatesService2" actions="POST:AcceptSOAPActionUser-Agent"/>
+        <javaPermission className="java.net.URLPermission" name="http://localhost:8010/samltoken/SAMLSOAPService2" actions="POST:AcceptSOAPActionUser-Agent"/>
+        <javaPermission className="java.net.URLPermission" name="http://localhost:8010/samltoken/SAMLSymEncrService" actions="POST:AcceptSOAPActionUser-Agent"/>
+        <javaPermission className="java.net.URLPermission" name="http://localhost:8010/samltoken/SAMLAsymEncrService" actions="POST:AcceptSOAPActionUser-Agent"/>
+        <javaPermission className="java.net.URLPermission" name="http://localhost:8010/samlwsstemplates/WSSTemplatesService4" actions="POST:AcceptSOAPActionUser-Agent"/>
+        <javaPermission className="java.net.URLPermission" name="http://localhost:8030/samlwsstemplates/WSSTemplatesService4" actions="POST:AcceptSOAPActionUser-Agent"/>
+        <javaPermission className="java.net.URLPermission" name="https://localhost:8040/samltoken/SAMLSOAPService2" actions="POST:AcceptSOAPActionUser-Agent"/>
+        <javaPermission className="java.net.URLPermission" name="http://localhost:8030/samltoken/SAMLSymEncrService" actions="POST:AcceptSOAPActionUser-Agent"/>
+        <javaPermission className="java.net.URLPermission" name="http://localhost:8030/samltoken/SAMLSymSignEncrService" actions="POST:AcceptSOAPActionUser-Agent"/>
+        <javaPermission className="java.net.URLPermission" name="http://localhost:8030/samltoken/SAMLAsymEncrService" actions="POST:AcceptSOAPActionUser-Agent"/>
+        <javaPermission className="java.net.URLPermission" name="http://localhost:8030/samlwsstemplates/WSSTemplatesService6" actions="POST:AcceptSOAPActionUser-Agent"/>
+        <javaPermission className="java.net.URLPermission" name="http://localhost:8010/samltoken/SAMLSymSignEncrService" actions="POST:AcceptSOAPActionUser-Agent"/>
+        <javaPermission className="java.net.URLPermission" name="http://localhost:8010/samltoken/SAMLAsymSignEncrService" actions="POST:AcceptSOAPActionUser-Agent"/>
+        <javaPermission className="java.net.URLPermission" name="http://localhost:8010/samlwsstemplates/WSSTemplatesService6" actions="POST:AcceptSOAPActionUser-Agent"/>
+        <javaPermission className="java.net.URLPermission" name="http://localhost:8030/samltoken/SAMLAsymSignEncrService" actions="POST:AcceptSOAPActionUser-Agent"/>
+        <javaPermission className="java.net.URLPermission" name="http://localhost:8010/samltoken/SAMLAsyncX509Service" actions="POST:AcceptSOAPActionUser-Agent"/>
+        <javaPermission className="java.net.URLPermission" name="http://localhost:8030/samltoken/SAMLAsyncX509Service" actions="POST:AcceptSOAPActionUser-Agent"/>
+        <javaPermission className="javax.security.auth.PrivateCredentialPermission" signedBy="java.util.Hashtable" principalType="*" principalName="*" actions="read"/>
+        
+</server>

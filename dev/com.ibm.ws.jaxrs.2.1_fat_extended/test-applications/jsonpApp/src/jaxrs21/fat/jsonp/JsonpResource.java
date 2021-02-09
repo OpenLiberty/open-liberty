@@ -12,6 +12,7 @@ package jaxrs21.fat.jsonp;
 
 import javax.json.Json;
 import javax.json.JsonNumber;
+import javax.json.JsonString;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -28,5 +29,14 @@ public class JsonpResource {
         int input = num.intValue();
         JsonNumber jsonNum = Json.createValue(input + 1);
         return jsonNum;
+    }
+
+    @POST
+    @Path("/string/addBar")
+    @Consumes("application/json")
+    @Produces("application/json")
+    public JsonString addBar(JsonString jsonString) {
+        JsonString newString = Json.createValue(jsonString.getString() + "Bar");
+        return newString;
     }
 }

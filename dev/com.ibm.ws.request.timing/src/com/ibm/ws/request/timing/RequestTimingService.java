@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2020 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -237,6 +237,7 @@ public class RequestTimingService  implements ServerQuiesceListener {
 		int sampleRate = RequestTimingConstants.SAMPLE_RATE;
 		int contextInfoRequirement = ContextInfoRequirement.ALL_EVENTS;;
 		boolean interruptHungRequest = false;
+		boolean enableThreadDumps = true;
 		Map<String, List<Timing>> slowRequestTiming = new HashMap<String, List<Timing>>();
 		Map<String, List<Timing>> hungRequestTiming = new HashMap<String, List<Timing>>();
 
@@ -269,10 +270,13 @@ public class RequestTimingService  implements ServerQuiesceListener {
 
 		if(configuration.containsKey(RequestTimingConstants.RT_INTERRUPT_HUNG_REQUEST)) 
 			interruptHungRequest = Boolean.parseBoolean(configuration.get(RequestTimingConstants.RT_INTERRUPT_HUNG_REQUEST).toString());
+		
+		if(configuration.containsKey(RequestTimingConstants.RT_ENABLE_THREAD_DUMPS)) 
+			enableThreadDumps = Boolean.parseBoolean(configuration.get(RequestTimingConstants.RT_ENABLE_THREAD_DUMPS).toString());
 
 		//Add the global settings to map.
-		addToTimingSet(new Timing(RequestTimingConstants.ALL_TYPES, Timing.ALL_CONTEXT_INFO, slowRequestThreshold, false), slowRequestTiming);		
-		addToTimingSet(new Timing(RequestTimingConstants.ALL_TYPES, Timing.ALL_CONTEXT_INFO, hungRequestThreshold, interruptHungRequest), hungRequestTiming);
+		addToTimingSet(new Timing(RequestTimingConstants.ALL_TYPES, Timing.ALL_CONTEXT_INFO, slowRequestThreshold, false, true), slowRequestTiming);		
+		addToTimingSet(new Timing(RequestTimingConstants.ALL_TYPES, Timing.ALL_CONTEXT_INFO, hungRequestThreshold, interruptHungRequest, enableThreadDumps), hungRequestTiming);
 
 		// Contact subtypes to add timing elements
 		for (RequestTimingConfigParser parser : configParsers) {
@@ -301,7 +305,7 @@ public class RequestTimingService  implements ServerQuiesceListener {
 					}
 				}
 
-				TimingConfigGroup groupConfig = parser.parseConfiguration(configElementList, slowRequestThreshold, hungRequestThreshold, interruptHungRequest);
+				TimingConfigGroup groupConfig = parser.parseConfiguration(configElementList, slowRequestThreshold, hungRequestThreshold, interruptHungRequest, enableThreadDumps);
 				List<String> conflictPids = new ArrayList<String>();
 				for (Timing t : groupConfig.getSlowRequestTimings()) {
 					checkForContextInfoConflict(conflictPids, contextInfoRequirement, t);
@@ -316,7 +320,7 @@ public class RequestTimingService  implements ServerQuiesceListener {
 
 		// Make the timing configuration read-only 
 		SlowRequestTimingConfig slowReqTimingConfig = new SlowRequestTimingConfig(sampleRate, contextInfoRequirement, makeReadOnlyMap(slowRequestTiming));
-		HungRequestTimingConfig hungReqTimingConfig = new HungRequestTimingConfig(contextInfoRequirement, makeReadOnlyMap(hungRequestTiming), interruptHungRequest);
+		HungRequestTimingConfig hungReqTimingConfig = new HungRequestTimingConfig(contextInfoRequirement, makeReadOnlyMap(hungRequestTiming), interruptHungRequest, enableThreadDumps);
 
 		if(TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
 			Tr.debug(tc, "Request timing configuration", slowReqTimingConfig, hungReqTimingConfig);

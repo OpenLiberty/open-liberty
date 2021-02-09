@@ -202,5 +202,8 @@ tlsProfiler.required-key.port=\ \ \ \ --port
 tlsProfiler.required-desc.port=\tMegadja a portot.
 tlsProfiler.required-key.host=\ \ \ \ --host
 tlsProfiler.required-desc.host=\tMegadja a hosztot.
+tlsProfiler.option-key.file=\ \ \ \ --file
+tlsProfiler.option-desc.file=\tNem k\u00f6telez\u0151. Az eredm\u00e9ny a megadott f\u00e1jlba ker\u00fcl ki\u00edr\u00e1sra\n\
+\ta konzolk\u00e9perny\u0151 helyett.
 tlsProfiler.option-key.verbose=\ \ \ \ --verbose
 tlsProfiler.option-desc.verbose=\tTov\u00e1bbi inform\u00e1ci\u00f3k a nem biztons\u00e1gos protokollokr\u00f3l.
