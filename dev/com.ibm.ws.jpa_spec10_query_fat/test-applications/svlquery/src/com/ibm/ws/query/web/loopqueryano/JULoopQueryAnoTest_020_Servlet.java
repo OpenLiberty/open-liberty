@@ -12,9 +12,7 @@
 package com.ibm.ws.query.web.loopqueryano;
 
 import javax.annotation.PostConstruct;
-import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceUnit;
 import javax.servlet.annotation.WebServlet;
 
@@ -30,17 +28,9 @@ import com.ibm.ws.testtooling.vehicle.web.JPATestServlet;
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/JULoopQueryAnoTest_020_Servlet")
 public class JULoopQueryAnoTest_020_Servlet extends JPATestServlet {
-    // Container Managed Transaction Scope
-    @PersistenceContext(unitName = "QUERY_JTA")
-    private EntityManager cmtsEm;
-
     // Application Managed JTA
     @PersistenceUnit(unitName = "QUERY_JTA")
     private EntityManagerFactory amjtaEmf;
-
-    // Application Managed Resource-Local
-    @PersistenceUnit(unitName = "QUERY_RL")
-    private EntityManagerFactory amrlEmf;
 
     private SetupQueryTestCase setup = null;
 
