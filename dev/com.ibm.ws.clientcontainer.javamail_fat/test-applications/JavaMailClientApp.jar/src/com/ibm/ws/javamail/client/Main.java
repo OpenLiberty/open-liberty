@@ -61,6 +61,7 @@ public class Main {
         //set user and password like this until defect on storing password in MailSession definition is fixed.
         mailSessionDefinitionAnnotation.getProperties().setProperty("my.bypass.user", "user@testserver.com");
         mailSessionDefinitionAnnotation.getProperties().setProperty("my.bypass.password", "userPass");
+        mailSessionDefinitionAnnotation.setDebug(true);
         new SendReceiveMailFromClientTest().sendReceive(mailSessionDefinitionAnnotation,
                                                         "testInjectionFromAnnotationDefinition");
 
@@ -71,6 +72,7 @@ public class Main {
         //set user and password like this until defect on storing password in MailSession definition is fixed.
         mailSessionDefinitionDescriptor.getProperties().setProperty("my.bypass.user", "user@testserver.com");
         mailSessionDefinitionDescriptor.getProperties().setProperty("my.bypass.password", "userPass");
+        mailSessionDefinitionDescriptor.setDebug(true);
         new SendReceiveMailFromClientTest().sendReceive(mailSessionDefinitionDescriptor,
                                                         "testInjectionFromDescriptorDefinition");
         System.out.println("Exit client app main");
