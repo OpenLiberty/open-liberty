@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -102,5 +102,17 @@ public class JAXRSClientStandaloneTest extends AbstractTest {
         this.runTestOnServer(target, "testFlowProgram_ClientStandalone", p, "[Basic Resource]:alex");
     }
 
+    /**
+     * This test validates new function in the JAXRS 2.0 and 2.1 function for a memory leak
+     * condition that is possible.  It looks like RESTEasy does not have similar issues.
+     * It handles things and outputs a warning to the user as:  RESTEASY004687: Closing a class 
+     * org.jboss.resteasy.client.jaxrs.engines.ApacheHttpClient43Engine instance for you. 
+     * Please close clients yourself.
+     */
+    @Test
+    public void testMemoryLeak_ClientStandalone() throws Exception {
+        this.runTestOnServer(target, "testMemoryLeak_ClientStandalone", null, "OK");
+    }
+    
     //TODO: we should also migrate more jaxrs-1.1 cases here
 }

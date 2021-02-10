@@ -63,6 +63,8 @@ public class EARDeployedAppInfoFactoryImpl extends AbstractDeployedAppInfoFactor
 
     private ApplicationManager applicationManager;
 
+    private final String DEFAULT_APP_LOCATION = "${server.config.dir}/apps/expanded/";
+
     @Reference(service = JavaEEVersion.class,
                cardinality = ReferenceCardinality.OPTIONAL,
                policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
@@ -142,10 +144,26 @@ public class EARDeployedAppInfoFactoryImpl extends AbstractDeployedAppInfoFactor
     }
 
     // Application expansion ...
+    protected void prepareExpansion(String earName) throws IOException {
+        WsResource expansionResource;
+        try {
+            expansionResource = deployedAppServices.getLocationAdmin().resolveResource(applicationManager.getExpandLocation());
+            if (expansionResource != null) {
+                expansionResource.create();
+            } else {
+                // if we cant resolve the expandLocation value default it and warn the user
+                Tr.warning(_tc, "warning.could.not.expand.app.loc", earName, applicationManager.getExpandLocation());
+                expansionResource = null;
+                expansionResource = deployedAppServices.getLocationAdmin().resolveResource(DEFAULT_APP_LOCATION);
+                expansionResource.create();
 
-    protected void prepareExpansion() throws IOException {
-        WsResource expansionResource = deployedAppServices.getLocationAdmin().resolveResource(applicationManager.getExpandLocation());
-        expansionResource.create();
+            }
+        } catch (Exception e) {
+            Tr.warning(_tc, "warning.could.not.expand.app.loc", earName, applicationManager.getExpandLocation());
+            expansionResource = null;
+            expansionResource = deployedAppServices.getLocationAdmin().resolveResource(DEFAULT_APP_LOCATION);
+            expansionResource.create();
+        }
     }
 
     protected WsResource resolveExpansion(String appName) {
@@ -219,7 +237,7 @@ public class EARDeployedAppInfoFactoryImpl extends AbstractDeployedAppInfoFactor
         } else if (applicationManager.getExpandApps()) {
 
             try {
-                prepareExpansion();
+                prepareExpansion(appName);
 
                 WsResource expandedResource = resolveExpansion(appName);
                 File expandedFile = expandedResource.asFile();

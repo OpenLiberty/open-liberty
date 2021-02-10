@@ -370,6 +370,10 @@ public abstract class AbstractTestLogic {
         return containsIgnoreCase(lDbProductName, "oracle");
     }
 
+    protected boolean isPostgresql(String lDbProductName) {
+        return containsIgnoreCase(lDbProductName, "postgresql");
+    }
+
     protected boolean isMySQL(String lDbProductName) {
         return containsIgnoreCase(lDbProductName, "mysql");
     }

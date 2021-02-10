@@ -443,7 +443,7 @@ public class MsKdcHelper extends KdcHelper {
                 }
 
                 Log.info(thisClass, methodName, "Executing command --> " + command);
-                output = executeSshCommand(sshSession, command, 60);
+                output = executeSshCommand(sshSession, command, 120);
 
                 if (retryUponFailure && output.getReturnCode() != 0) {
                     Log.info(thisClass, methodName, "Remote command failed with return code " + output.getReturnCode());
