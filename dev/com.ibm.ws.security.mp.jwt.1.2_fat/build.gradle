@@ -56,6 +56,8 @@ def servers = [
 	'com.ibm.ws.security.mp.jwt.1.2.fat.jvmOptions',
 	'com.ibm.ws.security.mp.jwt.1.2.fat.builder'
 	]
+
+addRequiredLibraries.dependsOn ':com.ibm.ws.security.fat.common.mp.jwt:autoFVT'
 	
 task copyServerFiles_sharedConfig { 
  doLast {
