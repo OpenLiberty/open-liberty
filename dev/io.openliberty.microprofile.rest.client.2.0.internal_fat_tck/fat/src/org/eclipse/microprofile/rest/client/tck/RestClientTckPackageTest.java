@@ -10,9 +10,17 @@
  *******************************************************************************/
 package org.eclipse.microprofile.rest.client.tck;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+
 import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
@@ -29,6 +37,20 @@ public class RestClientTckPackageTest {
 
     @Server("FATServer")
     public static LibertyServer server;
+
+    @BeforeClass
+    public static void setup() throws Exception {
+    	String javaVersion = System.getProperty("java.version");
+    	Log.info(RestClientTckPackageTest.class, "setup", "javaVersion: " + javaVersion);
+    	System.out.println("java.version = " + javaVersion);
+    	if (javaVersion.startsWith("1.8")) {
+    		Path cwd = Paths.get(".");
+    		Log.info(RestClientTckPackageTest.class, "setup", "cwd = " +  cwd.toAbsolutePath());
+    		Path java8File = Paths.get("publish/tckRunner/tck/tck-suite.xml-java8");
+    	    Path tckSuiteFile = Paths.get("publish/tckRunner/tck/tck-suite.xml");
+    	    Files.copy(java8File, tckSuiteFile, StandardCopyOption.REPLACE_EXISTING);
+    	}
+    }
 
     @AfterClass
     public static void tearDown() throws Exception {
