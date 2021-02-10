@@ -284,7 +284,7 @@ org.apache.johnzon:johnzon-mapper:1.1.5
 org.apache.johnzon:johnzon-mapper:1.1.8
 org.apache.maven:maven-model:3.5.0
 org.apache.myfaces.core:myfaces-api:2.2.12
-org.apache.myfaces.core:myfaces-api:2.3.7
+org.apache.myfaces.core:myfaces-api:2.3.8
 org.apache.myfaces.core:myfaces-api:3.0.0
 org.apache.myfaces.core:myfaces-impl:2.2.12
 org.apache.myfaces.core:myfaces-impl:2.3.7
