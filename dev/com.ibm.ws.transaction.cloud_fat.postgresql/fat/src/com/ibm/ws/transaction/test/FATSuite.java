@@ -24,11 +24,12 @@ import com.ibm.ws.transaction.test.dbrotationtests.DBRotationTest;
 import com.ibm.ws.transaction.test.dbrotationtests.DualServerDynamicDBRotationTest;
 
 import componenttest.containers.ExternalTestServiceDockerClientStrategy;
+import componenttest.containers.SimpleLogConsumer;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
-import componenttest.topology.database.container.DatabaseContainerFactory;
 import componenttest.topology.database.container.DatabaseContainerType;
+import componenttest.topology.database.container.PostgreSQLContainer;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -36,6 +37,9 @@ import componenttest.topology.database.container.DatabaseContainerType;
                 DBRotationTest.class,
 })
 public class FATSuite {
+    private static final String POSTGRES_DB = "testdb";
+    private static final String POSTGRES_USER = "postgresUser";
+    private static final String POSTGRES_PASS = "superSecret";
 
     // Using the RepeatTests @ClassRule will cause all tests to be run three times.
     // First without any modifications, then again with all features upgraded to
@@ -56,7 +60,17 @@ public class FATSuite {
     public static void beforeSuite() throws Exception {
         //Allows local tests to switch between using a local docker client, to using a remote docker client.
         ExternalTestServiceDockerClientStrategy.setupTestcontainers();
-        testContainer = DatabaseContainerFactory.createType(type);
+        /*
+            The image here is generated using the Dockerfile in com.ibm.ws.jdbc_fat_postgresql/publish/files/postgresql-ssl
+            The command used in that directory was: docker build -t jonhawkes/postgresql-ssl:1.0 .
+            With the resulting image being pushed to docker hub.
+         */
+        testContainer = new PostgreSQLContainer("jonhawkes/postgresql-ssl:1.0")
+                        .withDatabaseName(POSTGRES_DB)
+                        .withUsername(POSTGRES_USER)
+                        .withPassword(POSTGRES_PASS)
+                        .withSSL()
+                        .withLogConsumer(new SimpleLogConsumer(FATSuite.class, "postgre-ssl"));
         Log.info(FATSuite.class, "beforeSuite", "start test container of type: " + type);
         testContainer.start();
     }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -44,8 +44,8 @@ public class SSLRecoveryTest extends FATServletClient {
     @TestServlet(servlet = SSLRecoveryServlet.class, contextRoot = APP_NAME)
     public static LibertyServer serverLibertySSL;
 
-    // The Dockerfile for 'aguibert/postgresql-ssl:1.0' can be found in the com.ibm.ws.jdbc_fat_postgresql project
-    public static PostgreSQLContainer postgre = new PostgreSQLContainer("aguibert/postgresql-ssl:1.0")
+    // The Dockerfile for 'jonhawkes/postgresql-ssl:1.0' can be found in the com.ibm.ws.jdbc_fat_postgresql project
+    public static PostgreSQLContainer postgre = new PostgreSQLContainer("jonhawkes/postgresql-ssl:1.0")
                     .withDatabaseName(POSTGRES_DB)
                     .withUsername(POSTGRES_USER)
                     .withPassword(POSTGRES_PASS)
