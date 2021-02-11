@@ -35,7 +35,8 @@ IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
   
 -ds-felix-extensions=true
 -dsannotations=com.ibm.ws.security.registry.internal.UserRegistryServiceImpl, \
-  com.ibm.ws.security.registry.internal.CustomUserRegistryFactory
+  com.ibm.ws.security.registry.internal.CustomUserRegistryFactory, \
+  com.ibm.ws.security.registry.internal.NullUserRegistry
 
 instrument.classesExcludes: com/ibm/ws/security/registry/internal/resources/*.class
 
