@@ -18,11 +18,31 @@ Bundle-SymbolicName: io.openliberty.io.netty.ssl
 Bundle-Description: Netty SSL classes as an OSGi bundle for OpenLiberty, version ${bVersion}
 
 Import-Package: \
+  !com.google.code.gson,\
+  !org.checkerframework,\
+  !com.google.protobuf.nano,\
+  !com.jcraft.jzlib,\
+  !com.ning.*,\
+  !com.oracle.svm.core.annotate,\
+  !io.netty.internal.tcnative,\
+  !lzma.*,\
+  !net.jpountz.*,\
+  !org.apache.log4j.*,\
+  !org.apache.logging.*,\
+  !org.bouncycastle.*,\
+  !org.conscrypt,\
+  !org.eclipse.jetty.*,\
+  !org.jboss.*,\
+  !reactor.blockhound.*,\
+  !sun.*,\
+  javax.annotation;version=!,\
   *
 
 Export-Package:\
-  io.netty.handler.ssl;version=${nettyVersion}; -split-package:=merge-first
-
+  io.netty.handler.ssl.*;version=${nettyVersion}; -split-package:=merge-first
+  
+instrument.disabled: true
+-fixupmessages.missingexport: "Used bundle version * for exported package";is:=ignore
 publish.wlp.jar.suffix: dev/api/third-party
 
 # These have been verified as the minimal set for the
