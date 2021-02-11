@@ -36,12 +36,12 @@ Export-Package: \
 Service-Component= \
   com.ibm.ws.logging.internal.ffdcjanitor; \
     scheduler=java.util.concurrent.ScheduledExecutorService; \
-    implementation:=com.ibm.ws.logging.internal.osgi.FFDCJanitor \
+    implementation:=com.ibm.ws.logging.internal.osgi.FFDCJanitor, \
   com.ibm.ws.logging.internal.osgi.stackjoiner.ThrowableProxyComponent; \
     implementation:="com.ibm.ws.logging.internal.osgi.stackjoiner.ThrowableProxyComponent"; \
     instrumentation=java.lang.instrument.Instrumentation; \
     properties:="service.vendor=IBM"; \
-    version:=1.1, \
+    version:=1.1 \
    
 IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 
