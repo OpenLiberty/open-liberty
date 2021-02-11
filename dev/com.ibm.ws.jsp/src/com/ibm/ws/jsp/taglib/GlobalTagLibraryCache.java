@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2004 IBM Corporation and others.
+ * Copyright (c) 1997, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -127,7 +127,22 @@ public class GlobalTagLibraryCache extends Hashtable implements JspCoreContext,
             tldParser = new TldParser(this, configManager, false);
             
             TagLibCacheConfigParser tagLibCacheConfigParser = new TagLibCacheConfigParser();
-            tagLibCacheConfigParser.parse(this.getClass().getResourceAsStream("/com/ibm/ws/jsp/resources/taglibcacheconfig.xml"));
+
+            String pagesVersion = com.ibm.ws.jsp.webcontainerext.JSPExtensionFactory.getLoadedPagesSpecLevel();
+            switch(pagesVersion){
+                case "3.0":
+                    if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINE)){
+                        logger.logp(Level.FINE, CLASS_NAME, "GlobalTagLibraryCache", "Loading taglibcacheconfig.jstl.2.0.xml for pages version " + pagesVersion);
+                    }
+                    tagLibCacheConfigParser.parse(this.getClass().getResourceAsStream("/com/ibm/ws/jsp/resources/taglibcacheconfig.jstl.2.0.xml"));
+                    break;
+                default:
+                    if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINE)){
+                        logger.logp(Level.FINE, CLASS_NAME, "GlobalTagLibraryCache", "Loaded taglibcacheconfig.xml for pages version " + pagesVersion);
+                    }
+                    tagLibCacheConfigParser.parse(this.getClass().getResourceAsStream("/com/ibm/ws/jsp/resources/taglibcacheconfig.xml"));
+            }   
+
             if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINE)){
                 logger.logp(Level.FINE, CLASS_NAME, "GlobalTagLibraryCache", "tagLibCacheConfigParser.getImplicitTagLibList(): ["+tagLibCacheConfigParser.getImplicitTagLibList()+"]");
             }
