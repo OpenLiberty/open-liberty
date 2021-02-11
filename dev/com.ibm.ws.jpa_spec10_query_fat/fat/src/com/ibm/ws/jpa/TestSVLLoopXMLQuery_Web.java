@@ -29,27 +29,27 @@ import com.ibm.websphere.simplicity.config.Application;
 import com.ibm.websphere.simplicity.config.ClassloaderElement;
 import com.ibm.websphere.simplicity.config.ConfigElementList;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
-import com.ibm.ws.query.web.loopqueryano.JULoopQueryAnoTest_001_Servlet;
-import com.ibm.ws.query.web.loopqueryano.JULoopQueryAnoTest_002_Servlet;
-import com.ibm.ws.query.web.loopqueryano.JULoopQueryAnoTest_003_Servlet;
-import com.ibm.ws.query.web.loopqueryano.JULoopQueryAnoTest_004_Servlet;
-import com.ibm.ws.query.web.loopqueryano.JULoopQueryAnoTest_005_Servlet;
-import com.ibm.ws.query.web.loopqueryano.JULoopQueryAnoTest_006_Servlet;
-import com.ibm.ws.query.web.loopqueryano.JULoopQueryAnoTest_007_Servlet;
-import com.ibm.ws.query.web.loopqueryano.JULoopQueryAnoTest_008_Servlet;
-import com.ibm.ws.query.web.loopqueryano.JULoopQueryAnoTest_009_Servlet;
-import com.ibm.ws.query.web.loopqueryano.JULoopQueryAnoTest_010_Servlet;
-import com.ibm.ws.query.web.loopqueryano.JULoopQueryAnoTest_011_Servlet;
-import com.ibm.ws.query.web.loopqueryano.JULoopQueryAnoTest_012_Servlet;
-import com.ibm.ws.query.web.loopqueryano.JULoopQueryAnoTest_013_Servlet;
-import com.ibm.ws.query.web.loopqueryano.JULoopQueryAnoTest_014_Servlet;
-import com.ibm.ws.query.web.loopqueryano.JULoopQueryAnoTest_015_Servlet;
-import com.ibm.ws.query.web.loopqueryano.JULoopQueryAnoTest_016_Servlet;
-import com.ibm.ws.query.web.loopqueryano.JULoopQueryAnoTest_017_Servlet;
-import com.ibm.ws.query.web.loopqueryano.JULoopQueryAnoTest_018_Servlet;
-import com.ibm.ws.query.web.loopqueryano.JULoopQueryAnoTest_019_Servlet;
-import com.ibm.ws.query.web.loopqueryano.JULoopQueryAnoTest_020_Servlet;
-import com.ibm.ws.query.web.loopqueryano.JULoopQueryAnoTest_021_Servlet;
+import com.ibm.ws.query.web.loopqueryxml.JULoopQueryXMLTest_001_Servlet;
+import com.ibm.ws.query.web.loopqueryxml.JULoopQueryXMLTest_002_Servlet;
+import com.ibm.ws.query.web.loopqueryxml.JULoopQueryXMLTest_003_Servlet;
+import com.ibm.ws.query.web.loopqueryxml.JULoopQueryXMLTest_004_Servlet;
+import com.ibm.ws.query.web.loopqueryxml.JULoopQueryXMLTest_005_Servlet;
+import com.ibm.ws.query.web.loopqueryxml.JULoopQueryXMLTest_006_Servlet;
+import com.ibm.ws.query.web.loopqueryxml.JULoopQueryXMLTest_007_Servlet;
+import com.ibm.ws.query.web.loopqueryxml.JULoopQueryXMLTest_008_Servlet;
+import com.ibm.ws.query.web.loopqueryxml.JULoopQueryXMLTest_009_Servlet;
+import com.ibm.ws.query.web.loopqueryxml.JULoopQueryXMLTest_010_Servlet;
+import com.ibm.ws.query.web.loopqueryxml.JULoopQueryXMLTest_011_Servlet;
+import com.ibm.ws.query.web.loopqueryxml.JULoopQueryXMLTest_012_Servlet;
+import com.ibm.ws.query.web.loopqueryxml.JULoopQueryXMLTest_013_Servlet;
+import com.ibm.ws.query.web.loopqueryxml.JULoopQueryXMLTest_014_Servlet;
+import com.ibm.ws.query.web.loopqueryxml.JULoopQueryXMLTest_015_Servlet;
+import com.ibm.ws.query.web.loopqueryxml.JULoopQueryXMLTest_016_Servlet;
+import com.ibm.ws.query.web.loopqueryxml.JULoopQueryXMLTest_017_Servlet;
+import com.ibm.ws.query.web.loopqueryxml.JULoopQueryXMLTest_018_Servlet;
+import com.ibm.ws.query.web.loopqueryxml.JULoopQueryXMLTest_019_Servlet;
+import com.ibm.ws.query.web.loopqueryxml.JULoopQueryXMLTest_020_Servlet;
+import com.ibm.ws.query.web.loopqueryxml.JULoopQueryXMLTest_021_Servlet;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
@@ -64,7 +64,7 @@ import componenttest.topology.utils.PrivHelper;
 
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
-public class TestSVLLoopAnoQuery_Web extends JPAFATServletClient {
+public class TestSVLLoopXMLQuery_Web extends JPAFATServletClient {
     private final static String RESOURCE_ROOT = "test-applications/svlquery/";
     private final static String appFolder = "web";
     private final static String appName = "svlquery";
@@ -84,28 +84,29 @@ public class TestSVLLoopAnoQuery_Web extends JPAFATServletClient {
 
     @Server("JPA10SVLQueryLoopServer")
     @TestServlets({
-                    // Annotated
-                    @TestServlet(servlet = JULoopQueryAnoTest_001_Servlet.class, path = "svlquery" + "/" + "JULoopQueryAnoTest_001_Servlet"),
-                    @TestServlet(servlet = JULoopQueryAnoTest_002_Servlet.class, path = "svlquery" + "/" + "JULoopQueryAnoTest_002_Servlet"),
-                    @TestServlet(servlet = JULoopQueryAnoTest_003_Servlet.class, path = "svlquery" + "/" + "JULoopQueryAnoTest_003_Servlet"),
-                    @TestServlet(servlet = JULoopQueryAnoTest_004_Servlet.class, path = "svlquery" + "/" + "JULoopQueryAnoTest_004_Servlet"),
-                    @TestServlet(servlet = JULoopQueryAnoTest_005_Servlet.class, path = "svlquery" + "/" + "JULoopQueryAnoTest_005_Servlet"),
-                    @TestServlet(servlet = JULoopQueryAnoTest_006_Servlet.class, path = "svlquery" + "/" + "JULoopQueryAnoTest_006_Servlet"),
-                    @TestServlet(servlet = JULoopQueryAnoTest_007_Servlet.class, path = "svlquery" + "/" + "JULoopQueryAnoTest_007_Servlet"),
-                    @TestServlet(servlet = JULoopQueryAnoTest_008_Servlet.class, path = "svlquery" + "/" + "JULoopQueryAnoTest_008_Servlet"),
-                    @TestServlet(servlet = JULoopQueryAnoTest_009_Servlet.class, path = "svlquery" + "/" + "JULoopQueryAnoTest_009_Servlet"),
-                    @TestServlet(servlet = JULoopQueryAnoTest_010_Servlet.class, path = "svlquery" + "/" + "JULoopQueryAnoTest_010_Servlet"),
-                    @TestServlet(servlet = JULoopQueryAnoTest_011_Servlet.class, path = "svlquery" + "/" + "JULoopQueryAnoTest_011_Servlet"),
-                    @TestServlet(servlet = JULoopQueryAnoTest_012_Servlet.class, path = "svlquery" + "/" + "JULoopQueryAnoTest_012_Servlet"),
-                    @TestServlet(servlet = JULoopQueryAnoTest_013_Servlet.class, path = "svlquery" + "/" + "JULoopQueryAnoTest_013_Servlet"),
-                    @TestServlet(servlet = JULoopQueryAnoTest_014_Servlet.class, path = "svlquery" + "/" + "JULoopQueryAnoTest_014_Servlet"),
-                    @TestServlet(servlet = JULoopQueryAnoTest_015_Servlet.class, path = "svlquery" + "/" + "JULoopQueryAnoTest_015_Servlet"),
-                    @TestServlet(servlet = JULoopQueryAnoTest_016_Servlet.class, path = "svlquery" + "/" + "JULoopQueryAnoTest_016_Servlet"),
-                    @TestServlet(servlet = JULoopQueryAnoTest_017_Servlet.class, path = "svlquery" + "/" + "JULoopQueryAnoTest_017_Servlet"),
-                    @TestServlet(servlet = JULoopQueryAnoTest_018_Servlet.class, path = "svlquery" + "/" + "JULoopQueryAnoTest_018_Servlet"),
-                    @TestServlet(servlet = JULoopQueryAnoTest_019_Servlet.class, path = "svlquery" + "/" + "JULoopQueryAnoTest_019_Servlet"),
-                    @TestServlet(servlet = JULoopQueryAnoTest_020_Servlet.class, path = "svlquery" + "/" + "JULoopQueryAnoTest_020_Servlet"),
-                    @TestServlet(servlet = JULoopQueryAnoTest_021_Servlet.class, path = "svlquery" + "/" + "JULoopQueryAnoTest_021_Servlet"),
+
+                    // XML
+                    @TestServlet(servlet = JULoopQueryXMLTest_001_Servlet.class, path = "svlquery" + "/" + "JULoopQueryXMLTest_001_Servlet"),
+                    @TestServlet(servlet = JULoopQueryXMLTest_002_Servlet.class, path = "svlquery" + "/" + "JULoopQueryXMLTest_002_Servlet"),
+                    @TestServlet(servlet = JULoopQueryXMLTest_003_Servlet.class, path = "svlquery" + "/" + "JULoopQueryXMLTest_003_Servlet"),
+                    @TestServlet(servlet = JULoopQueryXMLTest_004_Servlet.class, path = "svlquery" + "/" + "JULoopQueryXMLTest_004_Servlet"),
+                    @TestServlet(servlet = JULoopQueryXMLTest_005_Servlet.class, path = "svlquery" + "/" + "JULoopQueryXMLTest_005_Servlet"),
+                    @TestServlet(servlet = JULoopQueryXMLTest_006_Servlet.class, path = "svlquery" + "/" + "JULoopQueryXMLTest_006_Servlet"),
+                    @TestServlet(servlet = JULoopQueryXMLTest_007_Servlet.class, path = "svlquery" + "/" + "JULoopQueryXMLTest_007_Servlet"),
+                    @TestServlet(servlet = JULoopQueryXMLTest_008_Servlet.class, path = "svlquery" + "/" + "JULoopQueryXMLTest_008_Servlet"),
+                    @TestServlet(servlet = JULoopQueryXMLTest_009_Servlet.class, path = "svlquery" + "/" + "JULoopQueryXMLTest_009_Servlet"),
+                    @TestServlet(servlet = JULoopQueryXMLTest_010_Servlet.class, path = "svlquery" + "/" + "JULoopQueryXMLTest_010_Servlet"),
+                    @TestServlet(servlet = JULoopQueryXMLTest_011_Servlet.class, path = "svlquery" + "/" + "JULoopQueryXMLTest_011_Servlet"),
+                    @TestServlet(servlet = JULoopQueryXMLTest_012_Servlet.class, path = "svlquery" + "/" + "JULoopQueryXMLTest_012_Servlet"),
+                    @TestServlet(servlet = JULoopQueryXMLTest_013_Servlet.class, path = "svlquery" + "/" + "JULoopQueryXMLTest_013_Servlet"),
+                    @TestServlet(servlet = JULoopQueryXMLTest_014_Servlet.class, path = "svlquery" + "/" + "JULoopQueryXMLTest_014_Servlet"),
+                    @TestServlet(servlet = JULoopQueryXMLTest_015_Servlet.class, path = "svlquery" + "/" + "JULoopQueryXMLTest_015_Servlet"),
+                    @TestServlet(servlet = JULoopQueryXMLTest_016_Servlet.class, path = "svlquery" + "/" + "JULoopQueryXMLTest_016_Servlet"),
+                    @TestServlet(servlet = JULoopQueryXMLTest_017_Servlet.class, path = "svlquery" + "/" + "JULoopQueryXMLTest_017_Servlet"),
+                    @TestServlet(servlet = JULoopQueryXMLTest_018_Servlet.class, path = "svlquery" + "/" + "JULoopQueryXMLTest_018_Servlet"),
+                    @TestServlet(servlet = JULoopQueryXMLTest_019_Servlet.class, path = "svlquery" + "/" + "JULoopQueryXMLTest_019_Servlet"),
+                    @TestServlet(servlet = JULoopQueryXMLTest_020_Servlet.class, path = "svlquery" + "/" + "JULoopQueryXMLTest_020_Servlet"),
+                    @TestServlet(servlet = JULoopQueryXMLTest_021_Servlet.class, path = "svlquery" + "/" + "JULoopQueryXMLTest_021_Servlet"),
     })
     public static LibertyServer server;
 
@@ -114,7 +115,7 @@ public class TestSVLLoopAnoQuery_Web extends JPAFATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
         PrivHelper.generateCustomPolicy(server, FATSuite.JAXB_PERMS);
-        bannerStart(TestSVLLoopAnoQuery_Web.class);
+        bannerStart(TestSVLLoopXMLQuery_Web.class);
         timestart = System.currentTimeMillis();
 
         int appStartTimeout = server.getAppStartTimeout();
@@ -139,7 +140,7 @@ public class TestSVLLoopAnoQuery_Web extends JPAFATServletClient {
 
         final Set<String> ddlSet = new HashSet<String>();
 
-        System.out.println(TestSVLLoopAnoQuery_Web.class.getName() + " Setting up database tables...");
+        System.out.println(TestSVLLoopXMLQuery_Web.class.getName() + " Setting up database tables...");
 
         ddlSet.clear();
         for (String ddlName : dropSet) {
@@ -246,7 +247,7 @@ public class TestSVLLoopAnoQuery_Web extends JPAFATServletClient {
             } catch (Throwable t) {
                 t.printStackTrace();
             }
-            bannerEnd(TestSVLLoopAnoQuery_Web.class, timestart);
+            bannerEnd(TestSVLLoopXMLQuery_Web.class, timestart);
         }
     }
 }

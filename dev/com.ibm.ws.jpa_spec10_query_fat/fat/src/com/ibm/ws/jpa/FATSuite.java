@@ -31,6 +31,7 @@ import componenttest.topology.database.container.DatabaseContainerFactory;
                 TestSVLQuery_Web.class,
                 TestSVLQuery_Bulkupdate_Web.class,
                 TestSVLLoopAnoQuery_Web.class,
+                TestSVLLoopXMLQuery_Web.class,
                 componenttest.custom.junit.runner.AlwaysPassesTest.class
 })
 public class FATSuite {
