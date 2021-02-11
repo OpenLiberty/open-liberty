@@ -13,6 +13,13 @@ cat .github/modified_files.diff
 MATRIX_RESULT=$(java .github/workflow-scripts/GenerateCategories.java .github/pull_request_body.txt)
 echo "MATRIX_RESULT is $MATRIX_RESULT"
 
+# Report if we have modified files or not
+if [ -f .github/test-categories/MODIFIED_* ]; then
+    echo "::set-output name=modified-categories::true"
+else
+    echo "::set-output name=modified-categories::false"
+fi
+
 # Output results
 echo "::set-output name=test-os::ubuntu-18.04"
 echo "::set-output name=test-java::11"

@@ -49,6 +49,7 @@ jobs:
       test-matrix: ${{ steps.gen-params.outputs.test-matrix }}
       test-os: ${{ steps.gen-params.outputs.test-os }}
       test-java: ${{ steps.gen-params.outputs.test-java }}
+      modified-categories: ${{ steps.gen-params.outputs.modified-categories }}
     # Do not run on draft PRs
     # Do not run scheduled builds on forked repos
     if: |
@@ -105,6 +106,7 @@ jobs:
         path: openliberty-image.zip
     - name: Upload Modified Categories
       uses: actions/upload-artifact@v2
+      if: steps.gen-params.outputs.modified-categories == 'true'
       with:
         name: modified-categories
         if-no-files-found: ignore
@@ -220,6 +222,7 @@ jobs:
     - name: Download modified categories
       uses: actions/download-artifact@v2
       id: modified-categories
+      if: needs.build.outputs.modified-categories == 'true'
       with:
         name: modified-categories
         path: .github/test-categories
