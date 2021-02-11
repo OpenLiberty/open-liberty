@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.jsf.extprocessor;
+package com.ibm.ws.jsf.taglibconfig;
 
 import java.net.URL;
 import java.security.AccessController;
