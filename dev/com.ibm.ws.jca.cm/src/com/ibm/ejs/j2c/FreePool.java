@@ -245,17 +245,19 @@ public final class FreePool implements JCAPMIHelper {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.entry(this, tc, "returnToFreePool", gConfigProps.cfName);
         }
-        if (mcWrapper.shouldBeDestroyed() || mcWrapper.hasFatalErrorNotificationOccurred(fatalErrorNotificationTime)
+        boolean hasAgedTimedOut = mcWrapper.hasAgedTimedOut(pm.agedTimeoutMillis);
+        boolean hasFatalErrorNotificationOccurred = mcWrapper.hasFatalErrorNotificationOccurred(fatalErrorNotificationTime);
+        if (mcWrapper.shouldBeDestroyed() || hasFatalErrorNotificationOccurred
             || ((pm.agedTimeout != -1)
-                && (mcWrapper.hasAgedTimedOut(pm.agedTimeoutMillis)))) {
+                && hasAgedTimedOut)) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 if (mcWrapper.shouldBeDestroyed()) {
                     Tr.debug(this, tc, "Connection destroy flag is set, removing connection " + mcWrapper);
                 }
-                if (mcWrapper.hasFatalErrorNotificationOccurred(fatalErrorNotificationTime)) {
+                if (hasFatalErrorNotificationOccurred) {
                     Tr.debug(this, tc, "Fatal error occurred, removing connection " + mcWrapper);
                 }
-                if (((pm.agedTimeout != -1) && (mcWrapper.hasAgedTimedOut(pm.agedTimeoutMillis)))) {
+                if (((pm.agedTimeout != -1) && hasAgedTimedOut)) {
                     Tr.debug(this, tc, "Aged timeout exceeded, removing connection " + mcWrapper);
                 }
                 if (mcWrapper.isDestroyState()) {

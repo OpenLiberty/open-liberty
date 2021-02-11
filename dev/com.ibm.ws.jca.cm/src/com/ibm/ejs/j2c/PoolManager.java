@@ -55,6 +55,8 @@ import com.ibm.websphere.ce.j2c.ConnectionWaitTimeoutException;
 import com.ibm.websphere.jca.pmi.JCAPMIHelper;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.Transaction.UOWCoordinator; // JMS2019
+import com.ibm.ws.ffdc.FFDCSelfIntrospectable; // JMS2019
 import com.ibm.ws.j2c.MCWrapper;
 import com.ibm.ws.jca.adapter.PurgePolicy;
 import com.ibm.ws.jca.adapter.WSManagedConnection;
@@ -63,7 +65,7 @@ import com.ibm.ws.jca.cm.AbstractConnectionFactoryService;
 import com.ibm.ws.resource.ResourceRefInfo;
 import com.ibm.ws.util.WSThreadLocal;
 
-public final class PoolManager implements Runnable, PropertyChangeListener, VetoableChangeListener, JCAPMIHelper {
+public final class PoolManager implements Runnable, PropertyChangeListener, VetoableChangeListener, JCAPMIHelper, FFDCSelfIntrospectable { // JMS2019
 
     private static final TraceComponent tc = Tr.register(PoolManager.class,
                                                          J2CConstants.traceSpec,
@@ -302,7 +304,7 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
      * pool manager's connection pools.
      *
      * @param Managed connection wrapper
-     * @param object affinity
+     * @param object  affinity
      *
      * @concurrency concurrent
      */
@@ -788,7 +790,7 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
      * with the affinity, it is registered as unused. Otherwise it is prepared
      * for reuse (using <code>cleanup</code> method and then registered as unused.
      *
-     * @param managed ManagedConnection A connection to release
+     * @param managed  ManagedConnection A connection to release
      * @param affinity Object, an affinity, can be represented using <code>Identifier</code> interface.
      *
      * @concurrency concurrent
@@ -938,6 +940,7 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
                 com.ibm.ws.ffdc.FFDCFilter.processException(exn2, "com.ibm.ejs.j2c.poolmanager.PoolManager.release", "1144", this);
             }
             synchronized (waiterFreePoolLock) {
+                (com.ibm.ejs.MCWrapper)mcWrapper.
                 this.totalConnectionCount.decrementAndGet();
                 if (waiterCount > 0)
                     waiterFreePoolLock.notify();
@@ -1015,12 +1018,12 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
      * This method reserves connection. If unused connection exists, it is returned,
      * otherwise new connection is created using ManagedConnectionFactory.
      *
-     * @param Subject connection security context
+     * @param Subject               connection security context
      * @param ConnectionRequestInfo requestInfo
-     * @param Object affinity
-     * @param boolean connectionSharing
-     * @param boolean enforceSerialReuse
-     * @param int commitPriority
+     * @param Object                affinity
+     * @param                       boolean connectionSharing
+     * @param                       boolean enforceSerialReuse
+     * @param                       int commitPriority
      *
      * @return MCWrapper
      * @concurrency concurrent
@@ -2344,8 +2347,8 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
      * will be remove when they are being returned to the free pool.
      *
      * @param value "immediate" will result an immediate purge of the pool.
-     *            value "abort" will result in purging the pool via Connection.abort()
-     *            Any other value will call purgePoolContents().
+     *                  value "abort" will result in purging the pool via Connection.abort()
+     *                  Any other value will call purgePoolContents().
      * @throws ResourceException
      */
     public void purgePoolContents(String value) throws ResourceException {
@@ -2445,7 +2448,18 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
                     if (mcwl[j].getManagedConnection() instanceof WSManagedConnection) {
                         ((WSManagedConnection) mcwl[j].getManagedConnection()).markStale();
                     }
+                    ((com.ibm.ejs.j2c.MCWrapper) mcwl[j]).removedFromTotal.set(true); // PH19059
                     this.totalConnectionCount.decrementAndGet();
+                }
+            } else {
+                // if the customer used purgePoolContents immediate, the connection
+                // was removed from the total connection count and may still be waiting
+                // for a responses from the network or database.
+                if (((com.ibm.ejs.j2c.MCWrapper) mcwl[j]).removedFromTotal.get()
+                    && purgeWithAbort
+                    && mcwl[j] instanceof com.ibm.ejs.j2c.MCWrapper
+                    && ((com.ibm.ejs.j2c.MCWrapper) mcwl[j]).abortMC()) {
+                    // The MCW aborted the connection sucessfully
                 }
             }
         } // end for loop
@@ -4841,5 +4855,226 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
      */
     protected AtomicInteger getTotalConnectionCount() {
         return totalConnectionCount;
+    }
+
+    /**
+     * @return relevant FFDC information for this class, formatted as a String array.
+     */
+    @Override
+    public String[] introspectSelf() { // JMS2019
+        final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
+
+        if (isTraceOn && tc.isEntryEnabled())
+            Tr.entry(this, tc, "introspectSelf");
+
+        com.ibm.ejs.j2c.FFDCLogger info = new com.ibm.ejs.j2c.FFDCLogger(this);
+        info.appendWithEOLN("JMS20190315PoolManagera-introspectSelf - Start of introspectSelf A dump");
+
+        boolean is2Phase = true;
+        info.append(is2Phase ? "TWO PHASE ENABLED" : "ONE PHASE ENABLED");
+
+        Object connectionSharing = "This is a test 20190314a";
+        info.append("Connection sharing: ", connectionSharing);
+        info.append("Transaction State:");
+        info.introspect("Shared Pool", this.sharedPool);
+        info.append("Pool info:", this.toString2(0));
+
+        info.appendWithEOLN("JMS20190315PoolManagera-introspectSelf - End of introspectSelf A dump");
+
+        moreffdc(info);
+        if (isTraceOn && tc.isEntryEnabled())
+            Tr.exit(this, tc, "introspectSelf");
+
+        return info.toStringArray();
+    }
+
+    protected void moreffdc(FFDCLogger info) { // JMS2019
+        final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
+
+        if (isTraceOn && tc.isEntryEnabled())
+            Tr.entry(this, tc, "moreffdc");
+
+        //com.ibm.ejs.j2c.FFDCLogger info = new com.ibm.ejs.j2c.FFDCLogger(this);
+
+        info.appendWithEOLN("JMS20190315PoolManagera-moreffdc - Start of introspectSelf A dump");
+        boolean is2Phase = true;
+        info.appendWithEOLN(is2Phase ? "TWO PHASE ENABLED" : "ONE PHASE ENABLED");
+
+        Object connectionSharing = "This is a test 20190314a";
+        info.appendWithEOLN("Connection sharing: ", connectionSharing);
+        info.appendWithEOLN("Transaction State:");
+        info.introspect("Shared Pool", this.sharedPool);
+        info.appendWithEOLN("Pool info:", this.toString2(0));
+        info.appendWithEOLN("JMS20190315PoolManagera - End of introspectSelf A dump");
+
+        info.appendWithEOLN("JMS20190315PoolManagera - Start of introspectSelf B dump");
+        info.append("JMS20190314 - Maximum number of connections has been reached, and the connection request has been waiting longer than", "");
+        info.append("ConnectionWaitTime.  Two possible solutions  : increase the max number of connections, or increase the", "");
+        info.appendWithEOLN("ConnectionWaitTime.", "");
+
+        // Now we are called from ConnectionManager.
+        try {
+
+            PoolManager pm = this;
+
+            //LI3162-5 start
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) { //Defect 736528 737787
+
+                long now = System.currentTimeMillis();
+                SharedPool[] p = pm.getSharedPool();
+                Tr.debug(tc, "Dumping initial request stack traces");
+                com.ibm.ws.j2c.MCWrapper[] wrappers = null;
+                for (int i = 0; i < p.length; i++) {
+                    if (p[i] == null)
+                        continue;
+                    wrappers = p[i].getMCWrapperList();
+                    for (int j = 0; j < wrappers.length; j++) {
+                        if (wrappers[j] == null)
+                            continue;
+                        Throwable t = ((com.ibm.ejs.j2c.MCWrapper) wrappers[j]).getInitialRequestStackTrace();
+                        if (t != null) {
+                            long timestamp = wrappers[j].getCreatedTimeStamp();
+                            Tr.debug(tc, wrappers[j].toString() + " in-use for " + (now - timestamp) + "ms", t);
+                        }
+                    }
+                }
+                // Start new code for defect 196608
+                wrappers = pm.getUnSharedPoolConnections(); // 207305
+                for (int j = 0; j < wrappers.length; j++) {
+                    if (wrappers[j] == null)
+                        continue;
+                    Throwable t = ((com.ibm.ejs.j2c.MCWrapper) wrappers[j]).getInitialRequestStackTrace();
+                    if (t != null) {
+                        long timestamp = wrappers[j].getCreatedTimeStamp();
+                        Tr.debug(tc, wrappers[j].toString() + " in-use for " +
+                                     (now - timestamp) + "ms",
+                                 t);
+                    }
+                }
+                // End new code for defect 196608
+
+            }
+            //LI3162-5 end
+
+            info.appendWithEOLN("   Maximum Connections           = ", pm.maxConnections);
+            info.appendWithEOLN("   Current number of connections = ", pm.totalConnectionCount.get());//  getConnectionCount());
+            info.appendWithEOLN("   Connection Wait Timout        = ", pm.connectionTimeout);
+            info.append("If the current number of connections is not greater than or equal to max connections, ", "");
+            info.appendWithEOLN("there has been a WebSphere internal error.", "");
+
+            //PK25981 remove info.appendWithEOLN("Dumping the list of J2EEComponents and their corresponding handle count", "");
+            //PK25981 remove info.appendWithEOLN(ConnectionHandleManager.getConnectionHandleManager().dumpComponentListWithHandlesToString(), "" );
+        } catch (ClassCastException cce) {
+            info.appendWithEOLN("Internal J2C FFDC Diagnostic Module error", "");
+            info.appendWithEOLN("ClassCastException in ffdcDumpMaxConnectionsReached", "");
+            info.appendWithEOLN("Object this was not of type ConnectionManager when ffdcDumpMaxConnectionsReached was called - introspecting the object: ", "");
+
+            // silly statement to appease Eclipse warning about unused vars
+            // if ((th != th) && (o != o) && (sourceId != sourceId));// 188900
+        } catch (Exception e) {
+            // don't let anything "ripple" up.
+            info.appendWithEOLN("Internal J2C FFDC Diagnostic Module error", "");
+            info.appendWithEOLN("Exception ", e);
+        } finally {
+            //is.introspectAndWriteLine("This = ", this);
+            info.appendWithEOLN("--------------------------------Pool Contents-------------------------------", ""); // PI11713
+            info.append(this.toString(), ""); // PI11713
+
+        }
+        info.appendWithEOLN("JMS20190315PoolManagera-moreffdc - End of introspectSelf B dump");
+
+//        String[] sa = info.toStringArray();
+//        StringBuffer sba = new StringBuffer();
+//        sba.append(sa);
+//        int saLenght = sa.length;
+//        System.out.println("sa lenght 11= " + saLenght + "sa =(" + sa[--saLenght] + ")");
+//
+//        System.out.println("sa lenght 12= " + saLenght + "sa =(" + lines.get(0) + ")");
+//
+//        for (String s : lines) {
+//            ++saLenght;
+//            System.out.println("sa lenght 21= " + saLenght + "sa =(" + sa[saLenght] + ")");
+//            sa[saLenght] = s;
+//            System.out.println("sa lenght 31= " + saLenght + "sa =(" + sa[saLenght] + ")");
+//
+//        }
+
+        if (isTraceOn && tc.isEntryEnabled())
+            Tr.exit(this, tc, "moreffdc");
+
+        //return info;
+
+    }
+
+    /**
+     * Return the shared pool for ffdc
+     *
+     * @return
+     */
+    protected SharedPool[] getSharedPool() { // JMS2019
+        return sharedPool;
+    }
+
+    /**
+     * Return the Wrappers by transaction for ffdc
+     *
+     * @param uowCoord
+     * @return
+     */
+    protected Vector<com.ibm.ejs.j2c.MCWrapper> getMCWrappersByTran(UOWCoordinator uowCoord) { // JMS2019
+        java.util.Vector<com.ibm.ejs.j2c.MCWrapper> rtVal = new Vector<com.ibm.ejs.j2c.MCWrapper>();
+        com.ibm.ejs.j2c.MCWrapper wrapper = null;
+
+// TODO - get list of all pools
+        //Since this is a diagnostic method it only requires a snap shot in time, of the hash map,I am
+        //making a  deep copy to avoid locking hash map.
+        HashMap<PoolManager, PoolManager> copyCfkeyToPm = null;
+
+//        synchronized(ConnectionFactoryDetailsImpl.LOCKOBJECT){
+//         copyCfkeyToPm = new  HashMap(ConnectionFactoryDetailsImpl.cfKeyToPm);
+//        }
+        copyCfkeyToPm = new HashMap<PoolManager, PoolManager>(); // TODO - remove temp code
+        copyCfkeyToPm.put(this, this); // TODO - remove temp code
+// TODO - end of temp code and code that needs to be updated
+
+        //check all pools for connections in this transaction
+        Iterator<PoolManager> it = copyCfkeyToPm.keySet().iterator();
+        if (it != null) {
+            PoolManager currentPM = null;
+            while (it.hasNext()) {
+                currentPM = copyCfkeyToPm.get(it.next());
+
+                /*
+                 * The following code will check in use unshared and shared connection.
+                 */
+                currentPM.mcToMCWMapWrite.lock();
+                try {
+                    int mcToMCWMapSize = currentPM.mcToMCWMap.size();
+                    if (mcToMCWMapSize > 0) {
+                        Object[] o = currentPM.mcToMCWMap.values().toArray();
+                        for (int i = 0; i < mcToMCWMapSize; i++) {
+                            wrapper = (com.ibm.ejs.j2c.MCWrapper) o[i];
+                            if (!rtVal.contains(wrapper)) {
+                                int poolState = wrapper.getPoolState(); // 2 = in use shared connection,
+                                // 3 = inuse unshared connection.
+                                if (poolState == 2) {
+                                    if (uowCoord.equals(wrapper.getUOWCoordinator())) {
+                                        rtVal.add(wrapper);
+                                    }
+                                } else if (poolState == 3) {
+                                    if (uowCoord.equals(wrapper.getUnSharedPoolCoordinator())) {
+                                        rtVal.add(wrapper);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } finally {
+                    currentPM.mcToMCWMapWrite.unlock();
+                }
+            }
+        }
+
+        return rtVal;
     }
 }

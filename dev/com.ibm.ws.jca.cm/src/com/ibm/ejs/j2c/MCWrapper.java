@@ -400,6 +400,7 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
     protected long totalHoldTime = 0;
     private boolean pretestThisConnection = false;
     private boolean aborted = false;
+    protected AtomicBoolean removedFromTotal = new AtomicBoolean(); // PH19059
     private boolean qmidenabled = true;
 
     /**
@@ -2381,7 +2382,7 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
         } else {
 
             if (isTracingEnabled && tc.isDebugEnabled()) {
-                Tr.debug(this, tc, "hasFatalErrorNotificationOccurred is true");
+                Tr.debug(this, tc, "MCWrapper id " + mcWrapperObject_hexString + " hasFatalErrorNotificationOccurred is true");
             }
 
             return true;

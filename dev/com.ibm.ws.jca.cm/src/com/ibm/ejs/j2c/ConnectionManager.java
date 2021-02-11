@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2019 IBM Corporation and others.
+ * Copyright (c) 1997, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,8 +14,6 @@ package com.ibm.ejs.j2c;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
-import java.security.AccessController;
-import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -52,7 +50,6 @@ import com.ibm.ws.jca.cm.AppDefinedResource;
 import com.ibm.ws.kernel.security.thread.ThreadIdentityManager;
 import com.ibm.ws.resource.ResourceRefInfo;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
-import com.ibm.ws.security.jca.AuthDataService;
 import com.ibm.ws.tx.embeddable.EmbeddableWebSphereTransactionManager;
 import com.ibm.ws.tx.rrs.RRSXAResourceFactory;
 import com.ibm.wsspi.kernel.service.utils.FilterUtils;
@@ -136,10 +133,10 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
     private final boolean rrsTransactional;
 
     /**
-     * @param cfSvc connection factory service
+     * @param cfSvc     connection factory service
      * @param mcfXProps MCFExtendedProperties
-     * @param pm pool manager supplied by the lightweight server. Otherwise null.
-     * @param jxri J2CXAResourceInfo
+     * @param pm        pool manager supplied by the lightweight server. Otherwise null.
+     * @param jxri      J2CXAResourceInfo
      *
      * @pre jxri != null
      */
@@ -268,7 +265,7 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
      * This method is called by a resource adapter ConnectionFactory to obtain a Connection each
      * time the application calls getConnection() on the resource adapter ConnectionFactory.
      *
-     * @param factory The managed connection factory for this connection.
+     * @param factory     The managed connection factory for this connection.
      * @param requestInfo The connection specific request info, i.e. userID, Password.
      *
      * @return The newly allocated connection (returned as type object per JCA spec).
@@ -480,7 +477,7 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
 
             boolean connLeakOrmaxNumThreads = ((isTraceOn && ConnLeakLogic.isDebugEnabled()) || (_pm != null && _pm.maxNumberOfMCsAllowableInThread > 0));
             boolean usingTLS = ((isTraceOn && tc.isDebugEnabled()) && (_pm != null && _pm.maxCapacity > 0));
-            if (connLeakOrmaxNumThreads || usingTLS) {
+            if (tc.isDebugEnabled() || connLeakOrmaxNumThreads || usingTLS) {
                 // add thread information to mcWrapper
                 Thread myThread = Thread.currentThread();
                 mcWrapper.setThreadID(RasHelper.getThreadId());
@@ -516,7 +513,7 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
         }
 
         if (isTraceOn && tc.isEntryEnabled()) {
-            Tr.exit(this, tc, "allocateConnection", rVal==null?" connection handle is null":Integer.toHexString(rVal.hashCode()));
+            Tr.exit(this, tc, "allocateConnection", rVal == null ? " connection handle is null" : Integer.toHexString(rVal.hashCode()));
         }
 
         return rVal;
@@ -528,8 +525,8 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
      * Used by: allocateConnection, reAssociate, and associateConnection.
      *
      * @param requestInfo The connection specific request info, i.e. userID, Password.
-     * @param subj The subject for this request. Can be null.
-     * @param uowCoord The current UOWCoordinator (transaction) for this request.
+     * @param subj        The subject for this request. Can be null.
+     * @param uowCoord    The current UOWCoordinator (transaction) for this request.
      *
      * @return A MCWrapper appropriate for the Current UOW, and enlisted
      *         as appropriate with the UOW.
@@ -710,7 +707,7 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
      * This method will setup required objects needed for participating in the current UOW
      * and enlist or register them with the appropriate UOW services.
      *
-     * @param mcWrapper The Managed Connection wrapper associated with this request.
+     * @param mcWrapper        The Managed Connection wrapper associated with this request.
      * @param originIsDeferred Deferred enlistment flag.
      */
 
@@ -1447,7 +1444,7 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
      *      integrity of a managed connection and its pool when an inactive connection
      *      is closed.
      *
-     * @param connection The connection handle that is now closed.
+     * @param connection               The connection handle that is now closed.
      * @param managedConnectionFactory The factory that created the handle.
      */
     @Override
@@ -1618,26 +1615,29 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
     /**
      * Returns the subject for container managed authentication.
      *
-     * @param requestInfo - connection request information
+     * @param requestInfo             - connection request information
      * @param mangedConnectionFactory - managed connection factory
-     * @param CM - connection manager
+     * @param CM                      - connection manager
      * @return subject for container managed authentication.
      * @throws ResourceException
      */
     private final Subject getFinalSubject(ConnectionRequestInfo requestInfo,
-                                          final ManagedConnectionFactory mangedConnectionFactory, Object CM) throws ResourceException {
+                                          ManagedConnectionFactory mangedConnectionFactory, Object CM) throws ResourceException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         Subject subj = null;
         if (this.containerManagedAuth) {
-            final Map<String, Object> loginConfigProps = (Map<String, Object>) this.cmConfig.getLoginConfigProperties().clone();
-            String name = this.cmConfig.getLoginConfigurationName();
-            final String loginConfigurationName = name == null ? connectionFactorySvc.getJaasLoginContextEntryName() : name;
+            Map<String, Object> loginConfigProps = (Map<String, Object>) this.cmConfig.getLoginConfigProperties().clone();
+            String loginConfigurationName = this.cmConfig.getLoginConfigurationName();
 
             String authDataID = (String) loginConfigProps.get("DefaultPrincipalMapping");
 
             // If no authentication-alias is found in the bindings, then use the default container managed auth alias (if any)
             if (authDataID == null)
                 authDataID = connectionFactorySvc.getContainerAuthDataID();
+
+            if (loginConfigurationName == null) {
+                loginConfigurationName = connectionFactorySvc.getJaasLoginContextEntryName();
+            }
 
             if (isTraceOn && tc.isDebugEnabled()) {
                 Tr.debug(this, tc, "login configuration name", loginConfigurationName);
@@ -1646,17 +1646,11 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
 
             if (authDataID != null || loginConfigurationName != null) {
                 loginConfigProps.put("com.ibm.mapping.authDataAlias", authDataID);
-                final AuthDataService authSvc = _pm.connectorSvc.authDataServiceRef.getServiceWithException();
                 try {
-                    subj = AccessController.doPrivileged(new PrivilegedExceptionAction<Subject>() {
-                        @Override
-                        public Subject run() throws LoginException {
-                            return authSvc.getSubject(mangedConnectionFactory, loginConfigurationName, loginConfigProps);
-                        }
-                    });
-                } catch (PrivilegedActionException e) {
-                    FFDCFilter.processException(e.getCause(), getClass().getName(), "3070", this, new Object[] { this });
-                    ResourceException r = new ResourceException(e.getCause());
+                    subj = _pm.connectorSvc.authDataServiceRef.getServiceWithException().getSubject(mangedConnectionFactory, loginConfigurationName, loginConfigProps);
+                } catch (LoginException e) {
+                    FFDCFilter.processException(e, getClass().getName(), "3070", this, new Object[] { this });
+                    ResourceException r = new ResourceException(e);
                     throw r;
                 }
             }
@@ -1685,7 +1679,7 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
     /**
      * Register XA resource information with the transaction manager.
      *
-     * @param tm the transaction manager.
+     * @param tm             the transaction manager.
      * @param xaResourceInfo information necessary for producing an XAResource object using the XAResourceFactory.
      * @param commitPriority priority to use when committing multiple XA resources.
      * @return the recovery ID (or -1 if an error occurs)

@@ -33,6 +33,7 @@ import org.osgi.service.component.ComponentContext;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.FFDC;  // JMS2019
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.j2c.poolmanager.ConnectionPoolProperties;
 import com.ibm.ws.javaee.dd.common.ResourceRef;
@@ -44,6 +45,44 @@ import com.ibm.ws.kernel.service.util.SecureAction;
 import com.ibm.ws.resource.ResourceRefInfo;
 import com.ibm.wsspi.kernel.service.utils.MetatypeUtils;
 import com.ibm.wsspi.resource.ResourceInfo;
+
+final class ffdcHelper { // JMS2019
+
+    private static final TraceComponent tc = Tr.register(ffdcHelper.class, J2CConstants.traceSpec, J2CConstants.NLS_FILE);
+
+    public static DiagnosticModuleForJ2C registerFFDC() {
+        boolean isAnyTraceOn = TraceComponent.isAnyTracingEnabled();
+        if (isAnyTraceOn && tc.isEntryEnabled()) {
+            Tr.entry(tc, "registerFFDC");
+        }
+        DiagnosticModuleForJ2C rVal = new DiagnosticModuleForJ2C();
+        int check = FFDC.registerDiagnosticModule(rVal, "com.ibm.ejs.j2c");
+        if (isAnyTraceOn && tc.isDebugEnabled()) {
+            // if (FFDC.registerDiagnosticModule(dm,"com.ibm.ejs.j2c") != 0) {
+            // Diagnostic module failed to meet the criteria described above
+            // Return codes :
+            //    0 - DM was registered
+            //    1 - A DM has already been registered with the package name
+            //    2 - The DM did not meet the criteria to contain a single dump method
+            //    3 - An unknown failure occured during the registration
+            if (check != 0) {
+                if (check == 1) {
+                    Tr.debug(tc, "A DM has already been registered with the package name");
+                } else {
+                    Tr.debug(tc, "Error registering DiagnosticModule");
+                    Tr.debug(tc, "Value returned from attempt to register DM = " + check);
+                }
+            }
+        }
+
+        if (isAnyTraceOn && tc.isEntryEnabled()) {
+            Tr.exit(tc, "registerFFDC");
+        }
+
+        return rVal;
+
+    }
+}
 
 /**
  * Connection manager/pool configuration.
@@ -57,6 +96,13 @@ public class ConnectionManagerServiceImpl extends ConnectionManagerService {
      * Mapping of connection factory key to connection manager.
      */
     private final Map<String, ConnectionManager> cfKeyToCM = new ConcurrentHashMap<String, ConnectionManager>();
+
+    /**
+     * @return the cfKeyToCM
+     */
+    public Map<String, ConnectionManager> getCfKeyToCM() { // JMS2019
+        return cfKeyToCM;
+    }
 
     /**
      * Utility that collects various core services needed by connection management.
@@ -103,6 +149,15 @@ public class ConnectionManagerServiceImpl extends ConnectionManagerService {
      * Whether the Liberty connection pool has been disabled
      */
     private boolean disableLibertyConnectionPool;
+
+    /**
+     * The following is required. DO NOT DELETE! Even if Eclipse says that dm is an unused variable!!!
+     *
+     * This registers our package (com.ibm.ejs.j2c) with FFDC.
+	 * TODO - JMS20190405 - May use this, but not sure, tagging it to find it easier in the code
+     */
+//    @SuppressWarnings("unused") // JMS2019
+//    private static DiagnosticModuleForJ2C dm = ffdcHelper.registerFFDC();
 
     /**
      * Default constructor for declarative services to use before activating the service.
