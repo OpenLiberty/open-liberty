@@ -131,8 +131,15 @@ public class FailoverTest extends FATServletClient {
                         Log.info(FailoverTest.class, "initDatabase", "maxed out retries");
                         // rethrow exception
                         throw sqlex;
-                    } else
+                    } else {
+                        try {
+                            Thread.sleep((count * 2 + 1) * 1000);
+                        } catch (InterruptedException e) {
+                            Log.info(FailoverTest.class, "initDatabase", "interrupted, break");
+                            break;
+                        }
                         Log.info(FailoverTest.class, "initDatabase", "retrying...");
+                    }
                 }
             }
         }
