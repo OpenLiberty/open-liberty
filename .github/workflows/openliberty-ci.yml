@@ -7,7 +7,9 @@ on:
   - cron: '0 0 * * 1-5'
   pull_request:
     branches: 
+    #TODO remove integration once main branch is adopted.
     - integration
+    - main
     types: [opened, synchronize, reopened, ready_for_review]
     paths-ignore:
       - '.gitignore'
