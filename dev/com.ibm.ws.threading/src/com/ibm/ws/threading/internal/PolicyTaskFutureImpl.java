@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2019 IBM Corporation and others.
+ * Copyright (c) 2017,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -39,12 +39,6 @@ import com.ibm.ws.threading.StartTimeoutException;
  */
 public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
     private static final TraceComponent tc = Tr.register(PolicyTaskFutureImpl.class, "concurrencyPolicy", "com.ibm.ws.threading.internal.resources.ThreadingMessages");
-
-    // state constants
-    static final int PRESUBMIT = 0, SUBMITTED = 1, RUNNING = 2, ABORTED = 3, CANCELING = 4, CANCELED = 5, FAILED = 6, SUCCESSFUL = 7;
-
-    // timeout constant
-    private static final int TIMEOUT = -1;
 
     /**
      * The task, if a Callable. It is wrapped with interceptors, if any.
@@ -170,13 +164,13 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
          * Await completion of the latch and return the result of one of the futures.
          *
          * @param timeoutNS maximum number of nanoseconds to wait. -1 to wait without applying a timeout.
-         * @param futures list of futures for tasks submitted to invokeAny
+         * @param futures   list of futures for tasks submitted to invokeAny
          * @return result of one of the futures if any are successful before the timeout elapses.
-         * @throws CancellationException if all tasks were canceled.
-         * @throws ExecutionException if all tasks completed, at least one exceptionally or aborted, and none were successful.
-         * @throws InterruptedException if interrupted.
+         * @throws CancellationException      if all tasks were canceled.
+         * @throws ExecutionException         if all tasks completed, at least one exceptionally or aborted, and none were successful.
+         * @throws InterruptedException       if interrupted.
          * @throws RejectedExecutionException if all tasks completed, at least one aborted, and none were successful.
-         * @throws TimeoutException if the timeout elapses before all tasks complete and no task has completed successfully.
+         * @throws TimeoutException           if the timeout elapses before all tasks complete and no task has completed successfully.
          */
         @SuppressWarnings("unchecked")
         <T> T await(long timeoutNS, List<PolicyTaskFutureImpl<T>> futures) throws ExecutionException, InterruptedException, TimeoutException {
@@ -388,7 +382,7 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
      * Invoked to abort a task.
      *
      * @param removeFromQueue indicates whether we should first remove the task from the executor's queue.
-     * @param cause the cause of the abort.
+     * @param cause           the cause of the abort.
      * @return true if the future transitioned to ABORTED state.
      */
     final boolean abort(boolean removeFromQueue, Throwable cause) {
@@ -441,7 +435,8 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
      *
      * @return state of the task after awaiting completion.
      */
-    int await() throws InterruptedException {
+    @Override
+    public int await() throws InterruptedException {
         int s = state.get();
         if (s == SUBMITTED || s == RUNNING && thread != Thread.currentThread()) {
             if (s == RUNNING || nsStartBy == nsAcceptBegin - 1) { // already started or no start timeout
@@ -475,7 +470,8 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
      *
      * @return either the state of the task after awaiting completion, or, if a TimeoutException would be raised by Future.get then the TIMEOUT constant.
      */
-    int await(long time, TimeUnit unit) throws InterruptedException {
+    @Override
+    public int await(long time, TimeUnit unit) throws InterruptedException {
         int s = state.get();
         if (s == SUBMITTED || s == RUNNING && thread != Thread.currentThread()) {
             long nsGetBegin, maxWaitNS = unit.toNanos(time);
