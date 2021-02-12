@@ -24,8 +24,20 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
+import com.ibm.ws.cdi20.fat.apps.beanManagerLookup.BeanManagerLookupServlet;
+import com.ibm.ws.cdi20.fat.apps.beanManagerLookup.MyBeanCDI20;
+import com.ibm.ws.cdi20.fat.apps.configurator.ConfiguratorTestBase;
+import com.ibm.ws.cdi20.fat.apps.configurator.annotatedTypeConfigurator.AnnotatedTypeConfiguratorTest;
+import com.ibm.ws.cdi20.fat.apps.configurator.bean.BeanConfiguratorTest;
+import com.ibm.ws.cdi20.fat.apps.configurator.beanAttributes.BeanAttributesConfiguratorTest;
+import com.ibm.ws.cdi20.fat.apps.configurator.injectionPoint.InjectionPointConfiguratorTest;
+import com.ibm.ws.cdi20.fat.apps.configurator.observerMethod.ObserverMethodConfiguratorTest;
+import com.ibm.ws.cdi20.fat.apps.configurator.producer.ProducerConfiguratorTest;
+import com.ibm.ws.cdi20.fat.apps.helloWorld.HelloBeanCDI20;
+import com.ibm.ws.cdi20.fat.apps.helloWorld.HelloServlet;
+import com.ibm.ws.cdi20.fat.apps.interceptionFactory.InterceptionFactoryServlet;
+import com.ibm.ws.cdi20.fat.apps.trimTest.TrimTestServlet;
 
-import beanManagerLookupApp.web.BeanManagerLookupServlet;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
@@ -37,15 +49,6 @@ import componenttest.rules.repeater.EERepeatTests;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
-import configuratorApp.web.annotatedTypeConfigurator.AnnotatedTypeConfiguratorTest;
-import configuratorApp.web.bean.BeanConfiguratorTest;
-import configuratorApp.web.beanAttributes.BeanAttributesConfiguratorTest;
-import configuratorApp.web.injectionPoint.InjectionPointConfiguratorTest;
-import configuratorApp.web.observerMethod.ObserverMethodConfiguratorTest;
-import configuratorApp.web.producer.ProducerConfiguratorTest;
-import helloworldApp.web.HelloServlet;
-import interceptionFactoryApp.web.InterceptionFactoryServlet;
-import trimTestApp.web.TrimTestServlet;
 
 /**
  * A collection of tests from different servlets which all use cdi20BasicServer
@@ -84,34 +87,34 @@ public class BasicCdi20Tests extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        
+
         WebArchive app1 = ShrinkWrap.create(WebArchive.class, BEAN_MANAGER_LOOKUP_APP_NAME + ".war")
-                        .addPackages(true, BEAN_MANAGER_LOOKUP_APP_NAME + ".web","helloworldApp.web")
-                        .addAsWebInfResource(new File("test-applications/" + BEAN_MANAGER_LOOKUP_APP_NAME + "/resources/index.jsp"));
-        
+                                    .addClass(BeanManagerLookupServlet.class)
+                                    .addClass(MyBeanCDI20.class)
+                                    .addClass(HelloBeanCDI20.class)
+                                    .addClass(HelloServlet.class);
+
         ShrinkHelper.exportDropinAppToServer(server, app1, DeployOptions.SERVER_ONLY);
-        
+
         if (TestModeFilter.shouldRun(TestMode.FULL)) {
 
-            WebArchive app2 = ShrinkWrap.create(WebArchive.class, CONFIGURATION_APP_NAME+ ".war")
-                                        .addPackages(true, CONFIGURATION_APP_NAME+ ".web")
-                                        .addAsManifestResource(new File("test-applications/" + CONFIGURATION_APP_NAME + "/resources/META-INF/services/javax.enterprise.inject.spi.Extension")
-                                                  , "services/javax.enterprise.inject.spi.Extension")
-                                        .addAsWebInfResource(new File("test-applications/" + CONFIGURATION_APP_NAME + "/resources/META-INF/beans.xml"), "beans.xml") // NEEDS TO GO IN WEB-INF in a war
-                                        .addAsWebInfResource(new File("test-applications/" + CONFIGURATION_APP_NAME + "/resources/index.jsp"));
+            WebArchive app2 = ShrinkWrap.create(WebArchive.class, CONFIGURATION_APP_NAME + ".war")
+                                        .addPackages(true, ConfiguratorTestBase.class.getPackage())
+                                        .addAsManifestResource(new File("test-applications/" + CONFIGURATION_APP_NAME
+                                                                        + "/resources/META-INF/services/javax.enterprise.inject.spi.Extension"),
+                                                               "services/javax.enterprise.inject.spi.Extension")
+                                        .addAsWebInfResource(new File("test-applications/" + CONFIGURATION_APP_NAME + "/resources/META-INF/beans.xml"), "beans.xml"); // NEEDS TO GO IN WEB-INF in a war
 
             WebArchive app3 = ShrinkWrap.create(WebArchive.class, INTERCEPTION_FACTORY_APP_NAME + ".war")
-                                        .addPackages(true, INTERCEPTION_FACTORY_APP_NAME + ".web")
-                                        .addAsWebInfResource(new File("test-applications/" + INTERCEPTION_FACTORY_APP_NAME + "/resources/index.jsp"));
+                                        .addPackages(true, InterceptionFactoryServlet.class.getPackage());
 
             WebArchive app4 = ShrinkWrap.create(WebArchive.class, TRIM_TEST_APP_NAME + ".war")
-                                        .addPackages(true, TRIM_TEST_APP_NAME + ".web")
-                                        .addAsManifestResource(new File("test-applications/" + TRIM_TEST_APP_NAME + "/resources/META-INF/services/javax.enterprise.inject.spi.Extension")
-                                                               , "services/javax.enterprise.inject.spi.Extension")
-                                        .addAsWebInfResource(new File("test-applications/" + TRIM_TEST_APP_NAME + "/resources/META-INF/beans.xml"), "beans.xml") // NEEDS TO GO IN WEB-INF in a war
-                                        .addAsWebInfResource(new File("test-applications/" + TRIM_TEST_APP_NAME + "/resources/index.jsp"));
+                                        .addPackages(true, TrimTestServlet.class.getPackage())
+                                        .addAsManifestResource(new File("test-applications/" + TRIM_TEST_APP_NAME
+                                                                        + "/resources/META-INF/services/javax.enterprise.inject.spi.Extension"),
+                                                               "services/javax.enterprise.inject.spi.Extension")
+                                        .addAsWebInfResource(new File("test-applications/" + TRIM_TEST_APP_NAME + "/resources/META-INF/beans.xml"), "beans.xml"); // NEEDS TO GO IN WEB-INF in a war
 
-            
             ShrinkHelper.exportDropinAppToServer(server, app2, DeployOptions.SERVER_ONLY);
             ShrinkHelper.exportDropinAppToServer(server, app3, DeployOptions.SERVER_ONLY);
             ShrinkHelper.exportDropinAppToServer(server, app4, DeployOptions.SERVER_ONLY);

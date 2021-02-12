@@ -15,7 +15,7 @@ import static componenttest.rules.repeater.EERepeatTests.EEVersion.EE9;
 
 import java.io.File;
 
-import org.jboss.shrinkwrap.api.ShrinkWrap;  
+import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
@@ -25,8 +25,8 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
+import com.ibm.ws.cdi20.fat.apps.builtinAnno.BuiltinAnnoServlet;
 
-import builtinAnnoApp.web.BuiltinAnnoServlet;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
@@ -34,7 +34,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.EERepeatTests;
-import componenttest.rules.repeater.RepeatTests; 
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -44,7 +44,7 @@ import componenttest.topology.utils.FATServletClient;
 @RunWith(FATRunner.class)
 @Mode(TestMode.LITE)
 public class BuiltinAnnoLiteralsTest extends FATServletClient {
-    
+
     public static final String SERVER_NAME = "cdi20BuiltinAnnoServer";
 
     @ClassRule
@@ -54,20 +54,19 @@ public class BuiltinAnnoLiteralsTest extends FATServletClient {
 
     @Server(SERVER_NAME)
     @TestServlets({ @TestServlet(servlet = BuiltinAnnoServlet.class, contextRoot = APP_NAME) }) //LITE
-    
+
     public static LibertyServer server;
 
     @BeforeClass
     public static void setUp() throws Exception {
-            
+
         WebArchive app = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
-                                    .addPackages(true, "builtinAnnoApp.web")
-                                    .add(new FileAsset(new File("test-applications/" + APP_NAME + "/resources/META-INF/permissions.xml")), "/META-INF/permissions.xml")
-                                    .addAsManifestResource(new File("test-applications/" + APP_NAME + "/resources/META-INF/services/javax.enterprise.inject.spi.Extension"),
-                                                           "services/javax.enterprise.inject.spi.Extension")
-                                    .addAsWebInfResource(new File("test-applications/" + APP_NAME + "/resources/META-INF/beans.xml"),"beans.xml") // NEEDS TO GO IN WEB-INF in a war
-                                    .addAsWebInfResource(new File("test-applications/" + APP_NAME + "/resources/index.jsp"));
-        
+                                   .addPackages(true, BuiltinAnnoServlet.class.getPackage())
+                                   .add(new FileAsset(new File("test-applications/" + APP_NAME + "/resources/META-INF/permissions.xml")), "/META-INF/permissions.xml")
+                                   .addAsManifestResource(new File("test-applications/" + APP_NAME + "/resources/META-INF/services/javax.enterprise.inject.spi.Extension"),
+                                                          "services/javax.enterprise.inject.spi.Extension")
+                                   .addAsWebInfResource(new File("test-applications/" + APP_NAME + "/resources/META-INF/beans.xml"), "beans.xml"); // NEEDS TO GO IN WEB-INF in a war
+
         ShrinkHelper.exportAppToServer(server, app, DeployOptions.SERVER_ONLY);
 
         server.startServer();
