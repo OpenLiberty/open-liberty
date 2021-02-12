@@ -8,7 +8,6 @@ on:
   pull_request:
     branches: 
     - integration
-    - gh-actions
     types: [opened, synchronize, reopened, ready_for_review]
     paths-ignore:
       - '.gitignore'
@@ -27,19 +26,20 @@ jobs:
   validate: #Perform validation before any other jobs run.  If we fail validation, don't run anything else.
     name: Validation
     runs-on: ubuntu-18.04
+    # Do not run on draft PRs
+    # Do not run scheduled builds on forked repos
+    if: |
+      github.event_name == 'pull_request' && (github.event.pull_request.draft == false && github.event.pull_request.state != 'closed') ||
+      github.event_name == 'schedule' && github.repository == 'OpenLiberty/open-liberty'
     steps:
     - uses: actions/checkout@v2
       with:
         fetch-depth: 50
-    # - name: Validate rebase onto integration
-    #   if: "github.event_name == 'pull_request'"
-    #   run: .github/workflow-scripts/validate-rebase-integration.sh
     - name: Validate copyright headers
+      # Only validate copyright headers on Pull Requests
       if: "github.event_name == 'pull_request'"
       run: .github/workflow-scripts/validate-copyright-headers.sh
     - name: Validate tests
-      # Probably should only do this for PRs.  But for now always run so we can catch tests suites that get merged incorrectly
-      # if: "github.event_name == 'pull_request'"
       run: .github/workflow-scripts/validate-tests.sh
   build: #Main build always done on linix run in parallel to setup and unit-test
     name: Build Open Liberty
@@ -49,11 +49,12 @@ jobs:
       test-matrix: ${{ steps.gen-params.outputs.test-matrix }}
       test-os: ${{ steps.gen-params.outputs.test-os }}
       test-java: ${{ steps.gen-params.outputs.test-java }}
+      modified-categories: ${{ steps.gen-params.outputs.modified-categories }}
     # Do not run on draft PRs
-    if: "github.event_name != 'pull_request' || ( \
-          github.event.pull_request.draft == false && \
-          github.event.pull_request.state != 'closed'
-        )"
+    # Do not run scheduled builds on forked repos
+    if: |
+      github.event_name == 'pull_request' && (github.event.pull_request.draft == false && github.event.pull_request.state != 'closed') ||
+      github.event_name == 'schedule' && github.repository == 'OpenLiberty/open-liberty'
     steps:
     - uses: actions/checkout@v2
       with:
@@ -103,16 +104,25 @@ jobs:
         name: openliberty-image
         if-no-files-found: error
         path: openliberty-image.zip
+    - name: Upload Modified Categories
+      uses: actions/upload-artifact@v2
+      if: steps.gen-params.outputs.modified-categories == 'true'
+      with:
+        name: modified-categories
+        if-no-files-found: ignore
+        path: |
+          .github/test-categories/MODIFIED_LITE_MODE
+          .github/test-categories/MODIFIED_FULL_MODE*
   unit_tests: #Unit tests always run linux and java 11
     name: Unit Tests
     needs: validate
     runs-on: ubuntu-18.04
     timeout-minutes: 60
     # Do not run on draft PRs
-    if: "github.event_name != 'pull_request' || ( \
-          github.event.pull_request.draft == false && \
-          github.event.pull_request.state != 'closed'
-        )"
+    # Do not run scheduled builds on forked repos
+    if: |
+      github.event_name == 'pull_request' && (github.event.pull_request.draft == false && github.event.pull_request.state != 'closed') ||
+      github.event_name == 'schedule' && github.repository == 'OpenLiberty/open-liberty'
     steps:
     - uses: actions/checkout@v2
       with:
@@ -165,10 +175,10 @@ jobs:
     needs: [validate, build]
     runs-on: ${{ needs.build.outputs.test-os }}
     # Do not run on draft PRs
-    if: "github.event_name != 'pull_request' || ( \
-          github.event.pull_request.draft == false && \
-          github.event.pull_request.state != 'closed'
-        )"
+    # Do not run scheduled builds on forked repos
+    if: |
+      github.event_name == 'pull_request' && (github.event.pull_request.draft == false && github.event.pull_request.state != 'closed') ||
+      github.event_name == 'schedule' && github.repository == 'OpenLiberty/open-liberty'
     strategy:
       fail-fast: false
       max-parallel: 19
@@ -209,6 +219,13 @@ jobs:
       uses: actions/download-artifact@v2
       with:
         name: openliberty-image
+    - name: Download modified categories
+      uses: actions/download-artifact@v2
+      id: modified-categories
+      if: needs.build.outputs.modified-categories == 'true'
+      with:
+        name: modified-categories
+        path: .github/test-categories
     - name: Run FAT buckets
       timeout-minutes: 150
       shell: bash
