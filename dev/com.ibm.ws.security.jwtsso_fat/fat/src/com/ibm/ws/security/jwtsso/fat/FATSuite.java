@@ -16,12 +16,12 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-//                FeatureOnlyTest.class,
-//                ConfigAttributeTests.class,
-//                CookieProcessingTests.class,
-//                ReplayCookieTests.class,
-//                CookieExpirationTests.class,
-//                BuilderTests.class,
+                FeatureOnlyTest.class,
+                ConfigAttributeTests.class,
+                CookieProcessingTests.class,
+                ReplayCookieTests.class,
+                CookieExpirationTests.class,
+                BuilderTests.class,
                 SigAlgTests.class
 })
 public class FATSuite {
