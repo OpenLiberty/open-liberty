@@ -1007,7 +1007,7 @@ public class AutoExtractTest extends AbstractAppManagerTest {
      * @throws Exception
      */
     @Test
-    @AllowedFFDC({ "java.net.UnknownHostException", "java.lang.UnsupportedOperationException", "java.lang.UnsupportedOperationException" })
+    @AllowedFFDC({ "java.net.UnknownHostException", "java.lang.UnsupportedOperationException", "java.lang.UnsupportedOperationException", "java.io.IOException" })
     public void testExpandLocationSetToURL() throws Exception {
         final String method = testName.getMethodName();
         try {
