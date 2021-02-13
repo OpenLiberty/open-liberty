@@ -34,8 +34,12 @@ import javax.xml.ws.Dispatch;
 import javax.xml.ws.Service.Mode;
 import javax.xml.ws.soap.SOAPBinding;
 
-import org.apache.ws.security.components.crypto.Crypto;
-import org.apache.ws.security.components.crypto.CryptoFactory;
+//Mei:
+import org.apache.wss4j.common.crypto.Crypto;
+import org.apache.wss4j.common.crypto.CryptoFactory;
+//Aruna's change can't be saved:
+//import org.apache.wss4j.common.util.Loader;
+//import org.apache.wss4j.common.crypto.*;
 
 import test.wssecfvt.basicplcy.FVTVersionBAXService;
 
@@ -155,10 +159,10 @@ public class CxfX509SvcClient extends HttpServlet {
  * // Let set up some SSL attribute. This is a bug-to-be-fixed, customers do not need to do so.
  * String strServerDir = System.getProperty("server.config.dir").replace('\\', '/');
  * String strJksLocation = strServerDir + "/sslServerTrust.jks";
- * 
+ *
  * System.setProperty("javax.net.ssl.trustStore" , strJksLocation);
  * System.setProperty("javax.net.ssl.trustStorePassword", "LibertyServer");
- * 
+ *
  * System.out.println("set javax.net.ssl.trustStore to " + strJksLocation);
  * System.out.println("set javax.net.ssl.trustStorePassword to " + "LibertyClient");
  * }
@@ -263,13 +267,13 @@ public class CxfX509SvcClient extends HttpServlet {
         /*
          * KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
          * ClassLoader loader = Loader.getClassLoader(this.getClass());
-         * 
-         * 
+         *
+         *
          * String signKS = strServerDir.concat("/x509ClientDefault.jks");
          * InputStream input = Merlin.loadInputStream(loader, signKS);
          * keyStore.load(input, "LibertyX509Client".toCharArray());
          * ((Merlin)crypto).setKeyStore(keyStore);
-         * 
+         *
          * // Load the truststore
          * Crypto processCrypto = new Merlin();
          * KeyStore keystore2 = KeyStore.getInstance(KeyStore.getDefaultType());

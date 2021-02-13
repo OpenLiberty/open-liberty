@@ -32,6 +32,7 @@ import javax.xml.ws.Service;
 import javax.xml.ws.Service.Mode;
 import javax.xml.ws.soap.SOAPBinding;
 
+//End
 import test.libertyfat.caller.contract.FatBAC01Service;
 import test.libertyfat.caller.contract.FatBAC02Service;
 import test.libertyfat.caller.contract.FatBAC03Service;
@@ -121,10 +122,10 @@ public class CxfCallerSvcClient extends HttpServlet {
  * // Let set up some SSL attribute. This is a bug-to-be-fixed, customers do not need to do so.
  * String strServerDir = System.getProperty("server.config.dir").replace('\\', '/');
  * String strJksLocation = strServerDir + "/sslServerTrust.jks";
- * 
+ *
  * System.setProperty("javax.net.ssl.trustStore" , strJksLocation);
  * System.setProperty("javax.net.ssl.trustStorePassword", "LibertyServer");
- * 
+ *
  * System.out.println("set javax.net.ssl.trustStore to " + strJksLocation);
  * System.out.println("set javax.net.ssl.trustStorePassword to " + "LibertyServer");
  * }
@@ -138,6 +139,9 @@ public class CxfCallerSvcClient extends HttpServlet {
             Service service = null;
             String strExpect = null;
             String strSubErrMsg = "Not known what error message yet";
+            //Mei:
+            String newErrMsg = null;
+            //End
             if (thisMethod.equals("testCxfCallerHttpPolicy")) {
                 service = new FatBAC01Service(wsdlURL, serviceName);
                 strExpect = "Liberty Fat Caller bac01(" + untID + ")";
@@ -145,6 +149,9 @@ public class CxfCallerSvcClient extends HttpServlet {
                 service = new FatBAC02Service(wsdlURL, serviceName);
                 strExpect = "Liberty Fat Caller bac02(" + untID + ")";
                 strSubErrMsg = "The security token could not be authenticated or authorized (Unexpected number of certificates: 0)";
+                //Mei:
+                newErrMsg = "Unexpected number of certificates: 0";
+                //End
             } else if (thisMethod.equals("testCxfCallerNoPolicy")) {
                 service = new FatBAC03Service(wsdlURL, serviceName);
                 strExpect = "Liberty Fat Caller bac03(" + untID + ")";
@@ -153,12 +160,17 @@ public class CxfCallerSvcClient extends HttpServlet {
                 strExpect = "Liberty Fat Caller bac04(" + untID + ")";
                 //strSubErrMsg = "There is no Username token in the message to process caller.";
                 strSubErrMsg = "The security token could not be authenticated or authorized (UsernameToken is missing)";
-
+                //Mei:
+                newErrMsg = "UsernameToken is missing";
+                //End
                 // msg is There is no username token in the message to process the caller
                 //    in nlsprops
                 if (!thisMethod.equals(methodFull)) { // Test this test in x509 Caller
                     //strSubErrMsg = "There is no Asymmetric signature token exists in the message";
                     strSubErrMsg = "The security token could not be authenticated or authorized (Unexpected number of certificates: 0)";
+                    //Mei:
+                    newErrMsg = "Unexpected number of certificates: 0";
+                    //End
                 }
             } else if (thisMethod.equals("testCxfCallerX509TokenPolicy")) {
                 service = new FatBAC05Service(wsdlURL, serviceName);
@@ -176,7 +188,11 @@ public class CxfCallerSvcClient extends HttpServlet {
             if (service == null) {
                 throw new Exception("thisMethod '" + thisMethod + "' did not get a Service. Test cases error.");
             }
-            testCxfService(request, response, service, strExpect, strSubErrMsg);
+            //Orig:
+            //testCxfService(request, response, service, strExpect, strSubErrMsg);
+            //Mei:
+            testCxfService(request, response, service, strExpect, strSubErrMsg, newErrMsg);
+            //End
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -192,7 +208,11 @@ public class CxfCallerSvcClient extends HttpServlet {
                                   HttpServletResponse response,
                                   javax.xml.ws.Service service,
                                   String strExpect) throws ServletException, IOException {
-        testCxfService(request, response, service, strExpect, (String) null);
+        //Orig:
+        //testCxfService(request, response, service, strExpect, (String) null);
+        //Mei:
+        testCxfService(request, response, service, strExpect, (String) null, null);
+        //End
         return;
     }
 
@@ -203,11 +223,20 @@ public class CxfCallerSvcClient extends HttpServlet {
     protected void testCxfService(HttpServletRequest request,
                                   HttpServletResponse response,
                                   javax.xml.ws.Service service,
-                                  String strExpect, String strSubErrMsg) throws ServletException, IOException {
+                                  //Orig:
+                                  //String strExpect, String strSubErrMsg) throws ServletException, IOException {
+                                  //Mei:
+                                  String strExpect, String strSubErrMsg, String newErrMsg) throws ServletException, IOException {
+        //End
+
         if (testMode.startsWith("positive")) {
             testCxfPositiveMigService(request, response, service, strExpect, strSubErrMsg);
         } else {
-            testCxfNegativeMigService(request, response, service, strSubErrMsg);
+            //Orig:
+            //testCxfNegativeMigService(request, response, service, strSubErrMsg);
+            //Mei:
+            testCxfNegativeMigService(request, response, service, strSubErrMsg, newErrMsg);
+            //End
         }
 
         return;
@@ -258,7 +287,11 @@ public class CxfCallerSvcClient extends HttpServlet {
                     printUnexpectingResult(response, answer);
                 } catch (Exception ex) {
                     ex.printStackTrace();
-                    printExpectingException(response, ex, strSubErrMsg);
+                    //Orig:
+                    //printExpectingException(response, ex, strSubErrMsg);
+                    //Mei:
+                    printExpectingException(response, ex, strSubErrMsg, null);
+                    //End
                 }
             } else {
                 printExpectingResult(response, answer, strExpect);
@@ -278,7 +311,11 @@ public class CxfCallerSvcClient extends HttpServlet {
     protected void testCxfNegativeMigService(HttpServletRequest request,
                                              HttpServletResponse response,
                                              javax.xml.ws.Service service,
-                                             String strSubErrMsg) throws ServletException, IOException {
+                                             //Orig:
+                                             //String strSubErrMsg) throws ServletException, IOException {
+                                             //Mei:
+                                             String strSubErrMsg, String newErrMsg) throws ServletException, IOException {
+        //End
 
         try {
 
@@ -309,7 +346,16 @@ public class CxfCallerSvcClient extends HttpServlet {
 
         } catch (Exception ex) {
             ex.printStackTrace();
-            printExpectingException(response, ex, strSubErrMsg);
+            //Orig:
+            //printExpectingException(response, ex, strSubErrMsg);
+            //Mei:
+            if (ex instanceof javax.xml.ws.soap.SOAPFaultException) {
+                javax.xml.soap.SOAPFault sf = ((javax.xml.ws.soap.SOAPFaultException) ex).getFault();
+
+                System.out.println(thisMethod + "@AV999 : fault code:" + sf.getFaultCode());
+            }
+            printExpectingException(response, ex, strSubErrMsg, newErrMsg);
+            //End
         }
 
         return;
@@ -357,7 +403,7 @@ public class CxfCallerSvcClient extends HttpServlet {
             String strSoapEnv = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\">" +
                                 "<soapenv:Header></soapenv:Header>" +
                                 "<soapenv:Body xmlns=\"http://caller.liberty.test/types\"><invoke>" +
-                                callerPolicy + ":" + testMode + ":" + methodFull + // add the callerPolicy, testMode and methodFull for easier debugging 
+                                callerPolicy + ":" + testMode + ":" + methodFull + // add the callerPolicy, testMode and methodFull for easier debugging
                                 "</invoke></soapenv:Body></soapenv:Envelope>";
             reqMsg = new StringReader(strSoapEnv);
             Source src = new StreamSource(reqMsg);
@@ -400,12 +446,22 @@ public class CxfCallerSvcClient extends HttpServlet {
     // print results
     // when we expect service-provider throws an Exception.
     // But double check the exception to have some specified sub-message
-    void printExpectingException(HttpServletResponse response, Exception ex, String strSubErrMsg) throws IOException {
+    //Orig:
+    //void printExpectingException(HttpServletResponse response, Exception ex, String strSubErrMsg) throws IOException {
+    //Mei:
+    void printExpectingException(HttpServletResponse response, Exception ex, String strSubErrMsg, String newErrMsg) throws IOException {
+        //End
+
         PrintWriter rsp = getPrintWriter(response);
         String strMsg = ex.getMessage();
         if (strMsg == null)
             strMsg = "";
-        rsp.print("<p>pass:" + strMsg.contains(strSubErrMsg));
+        //Orig:
+        //rsp.print("<p>pass:" + strMsg.contains(strSubErrMsg));
+        //Mei
+        boolean result = newErrMsg != null ? strMsg.contains(newErrMsg) : strMsg.contains(strSubErrMsg);
+        rsp.print("<p>pass:" + result);
+        //End
         rsp.print("::" + rawServiceName + "</p>");
         rsp.print("<p>Exception:ClassName:" + ex.getClass().getName() + "</p>");
         rsp.print("<p>Message:" + ex.getMessage() + "</p>");

@@ -12,6 +12,7 @@
 package com.ibm.ws.wssecurity.fat.cxf.x509token;
 
 import java.io.File;
+import java.util.Set;
 
 import org.junit.After;
 import org.junit.BeforeClass;
@@ -21,6 +22,7 @@ import org.junit.runner.RunWith;
 
 //Added 11/2020
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.wssecurity.fat.utils.common.CommonTests;
 //Added 11/2020
@@ -28,11 +30,16 @@ import com.ibm.ws.wssecurity.fat.utils.common.PrepCommonSetup;
 import com.ibm.ws.wssecurity.fat.utils.common.UpdateWSDLPortNum;
 
 import componenttest.annotation.AllowedFFDC;
+//Mei:
+import componenttest.annotation.ExpectedFFDC;
+//End
 //Added 11/2020
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
 //Added 11/2020
@@ -53,11 +60,22 @@ public class CxfX509SigTests extends CommonTests {
     @BeforeClass
     public static void setUp() throws Exception {
 
+        //2/2021
+        ServerConfiguration config = server.getServerConfiguration();
+        Set<String> features = config.getFeatureManager().getFeatures();
+        if (features.contains("usr:wsseccbh-1.0")) {
+            server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbh.jar");
+            server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-1.0.mf");
+        }
+        if (features.contains("usr:wsseccbh-2.0")) {
+            server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
+            server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-2.0.mf");
+            copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
+        }
+
         //Added 11/2020
         ShrinkHelper.defaultDropinApp(server, "x509sigclient", "com.ibm.ws.wssecurity.fat.x509sigclient", "test.wssecfvt.x509sig", "test.wssecfvt.x509sig.types");
         ShrinkHelper.defaultDropinApp(server, "x509sig", "com.ibm.ws.wssecurity.fat.x509sig");
-        server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbh.jar");
-        server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-1.0.mf");
         PrepCommonSetup serverObject = new PrepCommonSetup();
         serverObject.prepareSetup(server);
 
@@ -94,16 +112,25 @@ public class CxfX509SigTests extends CommonTests {
 
     }
 
+    //2/2021 to test with EE7, then the corresponding message can be expected
     @Test
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
+    //Orig:
     @AllowedFFDC("org.apache.ws.security.WSSecurityException")
-    public void testCxfBodyNotSigned() throws Exception {
+    //Mei:need to open
+    //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
+    //@ExpectedFFDC("org.apache.wss4j.common.ext.WSSecurityException") //@AV999
+    //End
+    //Orig:
+    //public void testCxfBodyNotSigned() throws Exception {
+    public void testCxfBodyNotSignedEE7Only() throws Exception {
 
         newClientWsdl = updateClientWsdl(defaultClientWsdlLoc + "X509XmlSigNoClientSig.wsdl",
                                          defaultClientWsdlLoc + "X509XmlSigNoClientSigUpdated.wsdl");
         Log.info(thisClass, "testCxfBodyNotSigned", "Using " + newClientWsdl);
         genericTest(
                     // test name for logging
-                    "testCxfBodyNotSigned",
+                    "testCxfBodyNotSignedEE7Only",
                     // Svc Client Url that generic test code should use
                     clientHttpUrl,
                     // Port that svc client code should use
@@ -121,7 +148,42 @@ public class CxfX509SigTests extends CommonTests {
                     // msg to send from svc client to server
                     "",
                     // expected response from server
+                    //Orig:
                     "Body not SIGNED",
+                    // msg to issue if do NOT get the expected result
+                    "The test expected a succesful message from the server.");
+
+    }
+
+    //2/2021 to test with EE8, then the corresponding message can be expected
+    @Test
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    public void testCxfBodyNotSignedEE8Only() throws Exception {
+
+        newClientWsdl = updateClientWsdl(defaultClientWsdlLoc + "X509XmlSigNoClientSig.wsdl",
+                                         defaultClientWsdlLoc + "X509XmlSigNoClientSigUpdated.wsdl");
+        Log.info(thisClass, "testCxfBodyNotSigned", "Using " + newClientWsdl);
+        genericTest(
+                    // test name for logging
+                    "testCxfBodyNotSignedEE8Only",
+                    // Svc Client Url that generic test code should use
+                    clientHttpUrl,
+                    // Port that svc client code should use
+                    "",
+                    // user that svc client code should use
+                    "user1",
+                    // pw that svc client code should use
+                    "security",
+                    // wsdl sevice that svc client code should use
+                    "X509XmlSigService1",
+                    // wsdl that the svc client code should use
+                    newClientWsdl,
+                    // wsdl port that svc client code should use
+                    "UrnX509Sig",
+                    // msg to send from svc client to server
+                    "",
+                    // expected response from server
+                    "Soap Body is not SIGNED", //@AV999
                     // msg to issue if do NOT get the expected result
                     "The test expected a succesful message from the server.");
 
@@ -255,9 +317,18 @@ public class CxfX509SigTests extends CommonTests {
 
     }
 
+    //2/2021 to test with EE7, then the corresponding message can be expected and server_expcert.xml can be used
     @Test
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
+    //Orig:
     @AllowedFFDC("org.apache.ws.security.WSSecurityException")
-    public void testCxfClientSignWithExpKey() throws Exception {
+    //Mei:
+    //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
+    //@ExpectedFFDC("org.apache.wss4j.common.ext.WSSecurityException") //@AV999
+    //End
+    //Orig:
+    //public void testCxfClientSignWithExpKey() throws Exception {
+    public void testCxfClientSignWithExpKeyEE7Only() throws Exception {
 
         // use server config with expired cert
         //reconfigServer(server.getInstallRoot().replace('\\', '/') + "/usr/servers/" + serverName + "/server_expcert.xml") ;
@@ -265,7 +336,7 @@ public class CxfX509SigTests extends CommonTests {
 
         genericTest(
                     // test name for logging
-                    "testCxfClientSignWithExpKey",
+                    "testCxfClientSignWithExpKeyEE7Only",
                     // Svc Client Url that generic test code should use
                     clientHttpUrl,
                     // Port that svc client code should use
@@ -283,15 +354,65 @@ public class CxfX509SigTests extends CommonTests {
                     // msg to send from svc client to server
                     "",
                     // expected response from server
+                    //Orig:
                     "cannot create instance",
                     // msg to issue if do NOT get the expected result
                     "The test expected a succesful message from the server.");
 
     }
 
+    //2/2021 to test with EE8, then the corresponding message can be expected and server_expcert_wss4j.xml can be used
     @Test
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    //Orig:
+    //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
+    //Mei:
+    //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
+    //@ExpectedFFDC("org.apache.wss4j.common.ext.WSSecurityException") //@AV999
+    //End
+    public void testCxfClientSignWithExpKeyEE8Only() throws Exception {
+
+        // use server config with expired cert
+        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_expcert_wss4j.xml");
+
+        genericTest(
+                    // test name for logging
+                    "testCxfClientSignWithExpKeyEE8Only",
+                    // Svc Client Url that generic test code should use
+                    clientHttpUrl,
+                    // Port that svc client code should use
+                    "",
+                    // user that svc client code should use
+                    "user1",
+                    // pw that svc client code should use
+                    "security",
+                    // wsdl sevice that svc client code should use
+                    "X509XmlSigService4",
+                    // wsdl that the svc client code should use
+                    "",
+                    // wsdl port that svc client code should use
+                    "UrnX509Sig4",
+                    // msg to send from svc client to server
+                    "",
+                    // expected response from server
+                    "Cannot create Crypto class", //@AV999
+                    // msg to issue if do NOT get the expected result
+                    "The test expected a succesful message from the server.");
+
+    }
+
+    //2/2021 to test with EE7, then the corresponding message can be expected and server_badclpwd.xml can be used
+    @Test
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
+    //Orig:
     @AllowedFFDC("org.apache.ws.security.WSSecurityException")
-    public void testCxfClientBadClKeyStorePswd() throws Exception {
+    //Mei:
+    //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
+    //@ExpectedFFDC("org.apache.wss4j.common.ext.WSSecurityException") //@AV999
+    //End
+    //Orig:
+    //public void testCxfClientBadClKeyStorePswd() throws Exception {
+    public void testCxfClientBadClKeyStorePswdEE7Only() throws Exception {
 
         // use server config with bad client pw
         //reconfigServer(server.getInstallRoot().replace('\\', '/') + "/usr/servers/" + serverName + "/server_badclpwd.xml") ;
@@ -299,7 +420,7 @@ public class CxfX509SigTests extends CommonTests {
 
         genericTest(
                     // test name for logging
-                    "testCxfClientBadClKeyStorePswd",
+                    "testCxfClientBadClKeyStorePswdEE7Only",
                     // Svc Client Url that generic test code should use
                     clientHttpUrl,
                     // Port that svc client code should use
@@ -317,6 +438,7 @@ public class CxfX509SigTests extends CommonTests {
                     // msg to send from svc client to server
                     "",
                     // expected response from server
+                    //Orig:
                     "cannot create instance",
                     // msg to issue if do NOT get the expected result
                     "The test expected a succesful message from the server.");
@@ -327,9 +449,61 @@ public class CxfX509SigTests extends CommonTests {
 
     }
 
+    //2/2021 to test with EE8, then the corresponding message can be expected and server_badclpwd_wss4j.xml can be used
     @Test
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    //Orig:
+    //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
+    //Mei:
+    //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
+    //@ExpectedFFDC("org.apache.wss4j.common.ext.WSSecurityException") //@AV999
+    //End
+    public void testCxfClientBadClKeyStorePswdEE8Only() throws Exception {
+
+        // use server config with bad client pwd
+        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_badclpwd_wss4j.xml");
+
+        genericTest(
+                    // test name for logging
+                    "testCxfClientBadClKeyStorePswdEE8Only",
+                    // Svc Client Url that generic test code should use
+                    clientHttpUrl,
+                    // Port that svc client code should use
+                    "",
+                    // user that svc client code should use
+                    "user1",
+                    // pw that svc client code should use
+                    "security",
+                    // wsdl sevice that svc client code should use
+                    "X509XmlSigService1",
+                    // wsdl that the svc client code should use
+                    "",
+                    // wsdl port that svc client code should use
+                    "UrnX509Sig",
+                    // msg to send from svc client to server
+                    "",
+                    // expected response from server
+                    "Cannot create Crypto class", //@AV999
+                    // msg to issue if do NOT get the expected result
+                    "The test expected a succesful message from the server.");
+
+        // restore original server config
+        //reconfigServer(server.getInstallRoot().replace('\\', '/') + "/usr/servers/" + serverName + "/server_orig.xml") ;
+        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig_wss4j.xml");
+
+    }
+
+    //2/2021 to test with EE7, then the corresponding message can be expected and server_badsvrpwd.xml can be used
+    @Test
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
+    //Orig:
     @AllowedFFDC("org.apache.ws.security.WSSecurityException")
-    public void testCxfClientBadSrvKeyStorePswd() throws Exception {
+    //Mei:not for ee7
+    //@ExpectedFFDC("org.apache.wss4j.common.ext.WSSecurityException") //@AV999
+    //End
+    //Orig:
+    //public void testCxfClientBadSrvKeyStorePswd() throws Exception {
+    public void testCxfClientBadSrvKeyStorePswdEE7Only() throws Exception {
 
         // use server config with bad server pw
 
@@ -338,7 +512,7 @@ public class CxfX509SigTests extends CommonTests {
 
         genericTest(
                     // test name for logging
-                    "testCxfClientBadSrvKeyStorePswd",
+                    "testCxfClientBadSrvKeyStorePswdEE7Only",
                     // Svc Client Url that generic test code should use
                     clientHttpUrl,
                     // Port that svc client code should use
@@ -356,6 +530,7 @@ public class CxfX509SigTests extends CommonTests {
                     // msg to send from svc client to server
                     "",
                     // expected response from server
+                    //Orig:
                     "cannot create instance",
                     // msg to issue if do NOT get the expected result
                     "The test expected a succesful message from the server.");
@@ -363,6 +538,49 @@ public class CxfX509SigTests extends CommonTests {
         // restore original server config
         //reconfigServer(server.getInstallRoot().replace('\\', '/') + "/usr/servers/" + serverName + "/server_orig.xml") ;
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
+
+    }
+
+    //2/2021 to test with EE8, then the corresponding message can be expected and server_badsvrpwd_wss4j.xml can be used
+    @Test
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    //Orig:
+    //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
+    //Mei:
+    @ExpectedFFDC("org.apache.wss4j.common.ext.WSSecurityException") //@AV999
+    //End
+    public void testCxfClientBadSrvKeyStorePswdEE8Only() throws Exception {
+
+        // use server config with bad server pwd
+        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_badsvrpwd_wss4j.xml");
+
+        genericTest(
+                    // test name for logging
+                    "testCxfClientBadSrvKeyStorePswdEE8Only",
+                    // Svc Client Url that generic test code should use
+                    clientHttpUrl,
+                    // Port that svc client code should use
+                    "",
+                    // user that svc client code should use
+                    "user1",
+                    // pw that svc client code should use
+                    "security",
+                    // wsdl sevice that svc client code should use
+                    "X509XmlSigService1",
+                    // wsdl that the svc client code should use
+                    "",
+                    // wsdl port that svc client code should use
+                    "UrnX509Sig",
+                    // msg to send from svc client to server
+                    "",
+                    // expected response from server
+                    "Cannot create Crypto class", //@AV999
+                    // msg to issue if do NOT get the expected result
+                    "The test expected a succesful message from the server.");
+
+        // restore original server config
+        //reconfigServer(server.getInstallRoot().replace('\\', '/') + "/usr/servers/" + serverName + "/server_orig.xml") ;
+        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig_wss4j.xml");
 
     }
 
@@ -402,4 +620,19 @@ public class CxfX509SigTests extends CommonTests {
             e.printStackTrace(System.out);
         }
     }
+
+    //2/2021
+    public static void copyServerXml(String copyFromFile) throws Exception {
+
+        try {
+            String serverFileLoc = (new File(server.getServerConfigurationPath().replace('\\', '/'))).getParent();
+            Log.info(thisClass, "copyServerXml", "Copying: " + copyFromFile
+                                                 + " to " + serverFileLoc);
+            LibertyFileManager.copyFileIntoLiberty(server.getMachine(),
+                                                   serverFileLoc, "server.xml", copyFromFile);
+        } catch (Exception ex) {
+            ex.printStackTrace(System.out);
+        }
+    }
+
 }

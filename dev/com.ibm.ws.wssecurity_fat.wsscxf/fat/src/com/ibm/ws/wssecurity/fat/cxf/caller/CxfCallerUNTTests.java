@@ -14,6 +14,9 @@ package com.ibm.ws.wssecurity.fat.cxf.caller;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
+import java.util.Set;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -22,7 +25,9 @@ import org.junit.runner.RunWith;
 
 //Added 10/2020
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
+//2/2021
 import com.ibm.ws.wssecurity.fat.utils.common.SharedTools;
 import com.meterware.httpunit.GetMethodWebRequest;
 import com.meterware.httpunit.WebConversation;
@@ -32,6 +37,7 @@ import com.meterware.httpunit.WebResponse;
 //Added 10/2020
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
 //12/2020 Setting this test class for LITE bucket
@@ -79,15 +85,27 @@ public class CxfCallerUNTTests {
         //orig from CL:
         //SharedTools.installCallbackHandler(server);
 
+        //2/2021
+        ServerConfiguration config = server.getServerConfiguration();
+        Set<String> features = config.getFeatureManager().getFeatures();
+        if (features.contains("usr:wsseccbh-1.0")) {
+            server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbh.jar");
+            server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-1.0.mf");
+        }
+        if (features.contains("usr:wsseccbh-2.0")) {
+            server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
+            server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-2.0.mf");
+            copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
+        }
+
         //Added 11/2020
         ShrinkHelper.defaultDropinApp(server, "callerclient", "com.ibm.ws.wssecurity.fat.callerclient", "test.libertyfat.caller.contract", "test.libertyfat.caller.types");
         ShrinkHelper.defaultDropinApp(server, "callertoken", "test.libertyfat.caller");
-        server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbh.jar");
-        server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-1.0.mf");
         server.addInstalledAppForValidation("callerclient");
         server.addInstalledAppForValidation("callertoken");
 
         server.startServer(); // check CWWKS0008I: The security service is ready.
+
         SharedTools.waitForMessageInLog(server, "CWWKS0008I");
         portNumber = "" + server.getHttpDefaultPort();
         portNumberSecure = "" + server.getHttpDefaultSecurePort();
@@ -393,6 +411,12 @@ public class CxfCallerUNTTests {
         }
         //orig from CL
         //SharedTools.unInstallCallbackHandler(server);
+
+        //2/2021
+        server.deleteFileFromLibertyInstallRoot("usr/extension/lib/bundles/com.ibm.ws.wssecurity.example.cbh.jar");
+        server.deleteFileFromLibertyInstallRoot("usr/extension/lib/features/wsseccbh-1.0.mf");
+        server.deleteFileFromLibertyInstallRoot("usr/extension/lib/bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
+        server.deleteFileFromLibertyInstallRoot("usr/extension/lib/features/wsseccbh-2.0.mf");
     }
 
     private static void printMethodName(String strMethod) {
@@ -400,4 +424,19 @@ public class CxfCallerUNTTests {
                                        + strMethod);
         System.err.println("*****************************" + strMethod);
     }
+
+    //2/2021
+    public static void copyServerXml(String copyFromFile) throws Exception {
+
+        try {
+            String serverFileLoc = (new File(server.getServerConfigurationPath().replace('\\', '/'))).getParent();
+            Log.info(thisClass, "copyServerXml", "Copying: " + copyFromFile
+                                                 + " to " + serverFileLoc);
+            LibertyFileManager.copyFileIntoLiberty(server.getMachine(),
+                                                   serverFileLoc, "server.xml", copyFromFile);
+        } catch (Exception ex) {
+            ex.printStackTrace(System.out);
+        }
+    }
+
 }

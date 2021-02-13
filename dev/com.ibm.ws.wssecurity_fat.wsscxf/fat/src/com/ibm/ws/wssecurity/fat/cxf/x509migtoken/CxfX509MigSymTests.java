@@ -15,6 +15,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.util.Set;
 
 import javax.crypto.Cipher;
 
@@ -26,6 +27,7 @@ import org.junit.runner.RunWith;
 
 //Added 11/2020
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.wssecurity.fat.utils.common.SharedTools;
 import com.meterware.httpunit.GetMethodWebRequest;
@@ -82,20 +84,33 @@ public class CxfX509MigSymTests {
     @BeforeClass
     public static void setUp() throws Exception {
 
-        copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sha512.xml");
+        //Orig:
+        //copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sha512.xml");
 
         String thisMethod = "setup";
 
         //orig from CL
         //SharedTools.installCallbackHandler(server);
 
+        //2/2021
+        ServerConfiguration config = server.getServerConfiguration();
+        Set<String> features = config.getFeatureManager().getFeatures();
+        if (features.contains("usr:wsseccbh-1.0")) {
+            server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbh.jar");
+            server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-1.0.mf");
+            copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sha512.xml");
+        }
+        if (features.contains("usr:wsseccbh-2.0")) {
+            server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
+            server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-2.0.mf");
+            copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sha512_wss4j.xml");
+        }
+
         //Added 11/2020
         ShrinkHelper.defaultDropinApp(server, "x509migclient", "com.ibm.ws.wssecurity.fat.x509migclient", "test.libertyfat.x509mig.contract", "test.libertyfat.x509mig.types");
         ShrinkHelper.defaultDropinApp(server, "x509migbadclient", "com.ibm.ws.wssecurity.fat.x509migbadclient", "test.libertyfat.x509mig.contract",
                                       "test.libertyfat.x509mig.types");
         ShrinkHelper.defaultDropinApp(server, "x509migtoken", "basicplcy.wssecfvt.test");
-        server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbh.jar");
-        server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-1.0.mf");
 
         server.startServer(); // check CWWKS0008I: The security service is ready.
         SharedTools.waitForMessageInLog(server, "CWWKS0008I");
@@ -312,7 +327,9 @@ public class CxfX509MigSymTests {
     @Test
     @AllowedFFDC(value = { "java.lang.Exception" })
     public void testCxfX509KeyIdMigSymServiceHttps() throws Exception {
-        String thisMethod = "testCxfX509KeyIdMigSymService";
+        //2/2021 Orig:
+        //String thisMethod = "testCxfX509KeyIdMigSymService";
+        String thisMethod = "testCxfX509KeyIdMigSymServiceHttps";
         methodFull = "testCxfX509KeyIdMigSymServiceHttps";
 
         try {
@@ -1446,7 +1463,11 @@ public class CxfX509MigSymTests {
      * Once it's implemented, the test become positive and test in here is set to negative on regular tests
      **/
     @Test
-    @AllowedFFDC("org.apache.ws.security.WSSecurityException")
+    //Orig:
+    //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
+    //Mei:
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException" })
+    //End
     public void testBasic192Service() throws Exception {
         String thisMethod = "testBasic192Service";
         methodFull = "testBasic192Service";
@@ -1959,7 +1980,11 @@ public class CxfX509MigSymTests {
      *
      **/
     @Test
-    @AllowedFFDC("org.apache.ws.security.WSSecurityException")
+    //Orig:
+    //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
+    //Mei:
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException" })
+    //End
     public void testBadSymEncSignService() throws Exception {
         String thisMethod = "testBadSymEncSignService";
         methodFull = "testBadSymEncSignService";
@@ -2022,7 +2047,11 @@ public class CxfX509MigSymTests {
      **/
 
     @Test
-    @AllowedFFDC("org.apache.ws.security.WSSecurityException")
+    //Orig:
+    //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
+    //Mei:
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException" })
+    //End
     public void testBadBasic192Service() throws Exception {
         String thisMethod = "testBadBasic192Service";
         methodFull = "testBadBasic192Service";
@@ -2063,7 +2092,11 @@ public class CxfX509MigSymTests {
     //      </ds:SignedInfo>
     //  in tcpmon
     @Test
-    @AllowedFFDC("org.apache.ws.security.WSSecurityException")
+    //Orig:
+    //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
+    //Mei:
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException" })
+    //End
     public void testBadInclusiveC14NService() throws Exception {
         String thisMethod = "testBadInclusiveC14NService";
         methodFull = "testBadInclusiveC14NService";
@@ -2276,6 +2309,12 @@ public class CxfX509MigSymTests {
         }
         //orig from CL:
         //SharedTools.unInstallCallbackHandler(server);
+        //2/2021
+        server.deleteFileFromLibertyInstallRoot("usr/extension/lib/bundles/com.ibm.ws.wssecurity.example.cbh.jar");
+        server.deleteFileFromLibertyInstallRoot("usr/extension/lib/features/wsseccbh-1.0.mf");
+        server.deleteFileFromLibertyInstallRoot("usr/extension/lib/bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
+        server.deleteFileFromLibertyInstallRoot("usr/extension/lib/features/wsseccbh-2.0.mf");
+
     }
 
     private static void printMethodName(String strMethod) {

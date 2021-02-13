@@ -15,6 +15,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.util.Set;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -24,6 +25,7 @@ import org.junit.runner.RunWith;
 
 //Added 11/2020
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.wssecurity.fat.utils.common.SharedTools;
 import com.meterware.httpunit.GetMethodWebRequest;
@@ -72,19 +74,32 @@ public class CxfInteropX509Tests {
     @BeforeClass
     public static void setUp() throws Exception {
 
-        copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_x509.xml");
+        //Orig:
+        //copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_x509.xml");
         // rename_webcontent(server);
         String thisMethod = "setup";
 
         //orig from CL
         //SharedTools.installCallbackHandler(server);
 
+        //2/2021
+        ServerConfiguration config = server.getServerConfiguration();
+        Set<String> features = config.getFeatureManager().getFeatures();
+        if (features.contains("usr:wsseccbh-1.0")) {
+            server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbh.jar");
+            server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-1.0.mf");
+            copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_x509.xml");
+        }
+        if (features.contains("usr:wsseccbh-2.0")) {
+            server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
+            server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-2.0.mf");
+            copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_x509_wss4j.xml");
+        }
+
         //Added 11/2020
         //apps/webcontent and apps/WSSampleSeiClient are checked in the repo publish/server folder
         ShrinkHelper.defaultDropinApp(server, "WSSampleSei", "com.ibm.was.wssample.sei.echo");
         ShrinkHelper.defaultDropinApp(server, "webcontentprovider", "com.ibm.was.cxfsample.sei.echo");
-        server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbh.jar");
-        server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-1.0.mf");
 
         server.addInstalledAppForValidation("WSSampleSei");
         server.addInstalledAppForValidation("webcontentprovider");
@@ -308,6 +323,12 @@ public class CxfInteropX509Tests {
         }
         //orig from CL
         //SharedTools.unInstallCallbackHandler(server);
+
+        //2/2021
+        server.deleteFileFromLibertyInstallRoot("usr/extension/lib/bundles/com.ibm.ws.wssecurity.example.cbh.jar");
+        server.deleteFileFromLibertyInstallRoot("usr/extension/lib/features/wsseccbh-1.0.mf");
+        server.deleteFileFromLibertyInstallRoot("usr/extension/lib/bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
+        server.deleteFileFromLibertyInstallRoot("usr/extension/lib/features/wsseccbh-2.0.mf");
     }
 
     private static void printMethodName(String strMethod) {

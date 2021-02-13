@@ -11,6 +11,9 @@
 
 package com.ibm.ws.wssecurity.fat.cxf.usernametoken;
 
+import java.io.File;
+import java.util.Set;
+
 import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -19,6 +22,7 @@ import org.junit.runner.RunWith;
 
 //Added 10/2020
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.wssecurity.fat.utils.common.CommonTests;
 import com.ibm.ws.wssecurity.fat.utils.common.PrepCommonSetup;
@@ -30,6 +34,7 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
 //Added 11/2020
@@ -50,11 +55,22 @@ public class CxfDeriveKeyTests extends CommonTests {
     @BeforeClass
     public static void setUp() throws Exception {
 
+        //2/2021
+        ServerConfiguration config = server.getServerConfiguration();
+        Set<String> features = config.getFeatureManager().getFeatures();
+        if (features.contains("usr:wsseccbh-1.0")) {
+            server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbh.jar");
+            server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-1.0.mf");
+        }
+        if (features.contains("usr:wsseccbh-2.0")) {
+            server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
+            server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-2.0.mf");
+            copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
+        }
+
         //Added 11/2020
         ShrinkHelper.defaultDropinApp(server, "derivekeyclient", "com.ibm.ws.wssecurity.fat.derivekeyclient", "test.wssecfvt.derivekey", "test.wssecfvt.derivekey.types");
         ShrinkHelper.defaultDropinApp(server, "derivekey", "com.ibm.ws.wssecurity.fat.derivekey");
-        server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbh.jar");
-        server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-1.0.mf");
         PrepCommonSetup serverObject = new PrepCommonSetup();
         serverObject.prepareSetup(server);
 
@@ -116,7 +132,11 @@ public class CxfDeriveKeyTests extends CommonTests {
      *
      */
     @Test
-    @AllowedFFDC("org.apache.ws.security.WSSecurityException")
+    //Orig:
+    //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
+    //Mei:
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException" })
+    //End
     public void testCXFDeriveKey1WrongPw() throws Exception {
 
         String thisMethod = "testCXFDeriveKey1WrongPw";
@@ -425,6 +445,9 @@ public class CxfDeriveKeyTests extends CommonTests {
      * This is a positive scenario.
      *
      */
+    //Mei:
+    @AllowedFFDC("java.util.MissingResourceException") //@AV999 TODO
+    //End
     @Test
     public void testCXFDeriveKey4() throws Exception {
 
@@ -1206,6 +1229,20 @@ public class CxfDeriveKeyTests extends CommonTests {
             restoreServer();
         } catch (Exception e) {
             e.printStackTrace(System.out);
+        }
+    }
+
+    //2/2021
+    public static void copyServerXml(String copyFromFile) throws Exception {
+
+        try {
+            String serverFileLoc = (new File(server.getServerConfigurationPath().replace('\\', '/'))).getParent();
+            Log.info(thisClass, "copyServerXml", "Copying: " + copyFromFile
+                                                 + " to " + serverFileLoc);
+            LibertyFileManager.copyFileIntoLiberty(server.getMachine(),
+                                                   serverFileLoc, "server.xml", copyFromFile);
+        } catch (Exception ex) {
+            ex.printStackTrace(System.out);
         }
     }
 

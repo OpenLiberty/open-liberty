@@ -63,6 +63,9 @@ public class CxfSSLUNTNonceTimeOutTests extends SSLTestCommon {
 
         try {
             String serverFileLoc = (new File(server.getServerConfigurationPath().replace('\\', '/'))).getParent();
+            //Mei: from Aruna's changes, but the line already matched
+            //String serverFileLoc = (new File(server.getServerConfigurationPath().replace('\\', '/'))).getParent();
+
             Log.info(thisClass, "reconfigServer", "Copying: " + copyFromFile
                                                   + " to " + serverFileLoc);
             LibertyFileManager.copyFileIntoLiberty(server.getMachine(),
@@ -89,6 +92,9 @@ public class CxfSSLUNTNonceTimeOutTests extends SSLTestCommon {
      *
      */
     @Test
+    //Mei:
+    @AllowedFFDC("java.util.MissingResourceException") //@AV999
+    //End
     public void testCxfUntHardcodedReplayOneAndMoreMinutesSSL() throws Exception {
 
         //reconfigAndRestartServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_customize.xml");
@@ -116,7 +122,12 @@ public class CxfSSLUNTNonceTimeOutTests extends SSLTestCommon {
      * exception
      */
     @Test
-    @AllowedFFDC("org.apache.ws.security.WSSecurityException")
+    //Orig:
+    //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
+    //Mei:
+    //@AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "java.util.MissingResourceException" }) //@AV999
+    @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "java.util.MissingResourceException", "org.apache.ws.security.WSSecurityException" })
+    //End
     public void testCxfUntHardcodedReplayTwoAndMoreMinutesSSL() throws Exception {
         // Make sure the server.xml is set to server_customize.xml
         // This was done by previous test: OneAndMoreMinutes

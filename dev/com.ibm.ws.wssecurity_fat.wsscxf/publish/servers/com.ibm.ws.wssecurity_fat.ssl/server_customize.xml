@@ -70,8 +70,11 @@
 	<wsSecurityProvider
 		id="default"
 		ws-security.timestamp.timeToLive="120"
+		ws-security.usernametoken.timeToLive="60"
 		ws-security.cache.config.file="${server.config.dir}/cxf-ehcache.xml"
 	>
+	<!-- 2/2021 added for EE8 testing: ws-security.usernametoken.timeToLive="60" -->
+	
 	</wsSecurityProvider>
 	<wsSecurityClient
 		id="default"
@@ -91,5 +94,7 @@
         <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.util"/>
         <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.soap.name"/>
         <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.soap.impl"/>
+        <!-- 2/03/2021 this is detected when running with jaxws-2.3 -->
+        <javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
        
 </server>
