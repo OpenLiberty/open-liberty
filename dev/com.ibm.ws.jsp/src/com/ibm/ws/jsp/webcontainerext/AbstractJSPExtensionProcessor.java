@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997,2019 IBM Corporation and others.
+ * Copyright (c) 1997, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,6 +34,7 @@
 // APAR PK87901   When PrepareJsp requests are processed we must allow access to WEB-INF dir - Jay Sartoris 07/30/2009
 // APAR PM10362   Provide option for tolerateLocaleMismatchForServingFiles in PK81387 code - Anup Aggarwal 04/26/2010
 // APAR PI87565   Avoid creating a ServletConfig if one already exist for a particular jsp - Harold Padilla 09/27/2017
+// OLGH 12387     Add PagesVersion 
 
 package com.ibm.ws.jsp.webcontainerext;
 
@@ -135,6 +136,8 @@ public abstract class AbstractJSPExtensionProcessor extends com.ibm.ws.webcontai
     protected JspClassloaderContext jspClassloaderContext = null;
     protected JspCompilerFactory jspCompilerFactory = null;
     protected IServletContextExtended webapp = null;
+    
+    protected final String loadedPagesVersion;
 
     // defect 238792: begin list of JSP mapped servlets.
     protected HashMap jspFileMappings = new HashMap();
@@ -143,11 +146,12 @@ public abstract class AbstractJSPExtensionProcessor extends com.ibm.ws.webcontai
     public AbstractJSPExtensionProcessor(IServletContext webapp, 
                                          JspXmlExtConfig webAppConfig, 
                                          GlobalTagLibraryCache globalTagLibraryCache,
-                                         JspClassloaderContext jspClassloaderContext) throws Exception {
+                                         JspClassloaderContext jspClassloaderContext, String loadedPagesVersion) throws Exception {
         super(webapp);
         final boolean isAnyTraceEnabled = com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled();
         this.webapp = (IServletContextExtended) webapp;
         this.jspOptions = webAppConfig.getJspOptions();
+        this.loadedPagesVersion = loadedPagesVersion;
         //497716.2
         //always adding the lifecycle listener so we can cleanup the AnnotationHandler
         //doing logic for using ThreadTagPool within listener
@@ -330,7 +334,7 @@ public abstract class AbstractJSPExtensionProcessor extends com.ibm.ws.webcontai
                                                                                       tlc,
                                                                                       context,
                                                                                       codeSource);
-        jspServletWrapper.initialize(config);
+        jspServletWrapper.initialize(config, this.loadedPagesVersion);
         if (isAnyTraceEnabled && logger.isLoggable(Level.FINER))
             logger.exiting(CLASS_NAME, "createServletWrapper"); //d651265
         return jspServletWrapper;
