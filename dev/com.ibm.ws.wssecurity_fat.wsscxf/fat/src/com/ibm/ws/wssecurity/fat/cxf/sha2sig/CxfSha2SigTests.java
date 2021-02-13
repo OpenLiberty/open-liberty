@@ -12,6 +12,7 @@
 package com.ibm.ws.wssecurity.fat.cxf.sha2sig;
 
 import java.io.File;
+import java.util.Set;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -20,15 +21,19 @@ import org.junit.runner.RunWith;
 
 //Added 10/2020
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
+import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.wssecurity.fat.utils.common.CommonTests;
 import com.ibm.ws.wssecurity.fat.utils.common.PrepCommonSetup;
 
 import componenttest.annotation.AllowedFFDC;
 //Added 10/2020
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
 //Added 11/2020
@@ -40,6 +45,9 @@ public class CxfSha2SigTests extends CommonTests {
 //    static private UpdateWSDLPortNum newWsdl = null;
     static final private String serverName = "com.ibm.ws.wssecurity_fat.sha2sig";
 
+    //2/2021
+    static private final Class<?> thisClass = CxfSha2SigTests.class;
+
     //Added 10/2020
     @Server(serverName)
     public static LibertyServer server;
@@ -47,11 +55,23 @@ public class CxfSha2SigTests extends CommonTests {
     @BeforeClass
     public static void setUp() throws Exception {
 
+        //2/2021
+        ServerConfiguration config = server.getServerConfiguration();
+        Set<String> features = config.getFeatureManager().getFeatures();
+        if (features.contains("usr:wsseccbh-1.0")) {
+            server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbh.jar");
+            server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-1.0.mf");
+        }
+        if (features.contains("usr:wsseccbh-2.0")) {
+            server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
+            server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-2.0.mf");
+            copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
+        }
+
         //Added 11/2020
         ShrinkHelper.defaultDropinApp(server, "sha2sigclient", "com.ibm.ws.wssecurity.fat.sha2sigclient", "test.wssecfvt.sha2sig", "test.wssecfvt.sha2sig.types");
         ShrinkHelper.defaultDropinApp(server, "sha2sig", "com.ibm.ws.wssecurity.fat.sha2sig");
-        server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbh.jar");
-        server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-1.0.mf");
+
         PrepCommonSetup serverObject = new PrepCommonSetup();
         serverObject.prepareSetup(server);
 
@@ -68,11 +88,52 @@ public class CxfSha2SigTests extends CommonTests {
      * in this test. This is a positive scenario.
      *
      */
+    //2/2021 to test with EE7, then the corresponding server_orig.xml can be used
     @Test
-    public void testCxfSha2SignSoapBody() throws Exception {
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
+    //Orig:
+    //public void testCxfSha2SignSoapBody() throws Exception {
+    public void testCxfSha2SignSoapBodyEE7Only() throws Exception {
 
-        String thisMethod = "testCxfSha2SignSoapBody";
+        //Orig:
+        //String thisMethod = "testCxfSha2SignSoapBody";
+        String thisMethod = "testCxfSha2SignSoapBodyEE7Only";
+
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
+        genericTest(
+                    // test name for logging
+                    thisMethod,
+                    // Svc Client Url that generic test code should use
+                    clientHttpUrl,
+                    // Port that svc client code should use
+                    "",
+                    // user that svc client code should use
+                    "user1",
+                    // pw that svc client code should use
+                    "security",
+                    // wsdl sevice that svc client code should use
+                    "Sha2SigService1",
+                    // wsdl that the svc client code should use
+                    //newClientWsdl,
+                    "",
+                    // wsdl port that svc client code should use
+                    "UrnSha2Sig1",
+                    // msg to send from svc client to server
+                    "",
+                    // expected response from server
+                    "Response: This is WSSECFVT SHA2 Web Service.",
+                    // msg to issue if do NOT get the expected result
+                    "The test expected a succesful message from the server.");
+
+    }
+
+    //2/2021 to test with EE8, then the corresponding server_orig_wss4j.xml can be used
+    @Test
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    public void testCxfSha2SignSoapBodyEE8Only() throws Exception {
+
+        String thisMethod = "testCxfSha2SignSoapBodyEE8Only";
+        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig_wss4j.xml");
         genericTest(
                     // test name for logging
                     thisMethod,
@@ -109,12 +170,53 @@ public class CxfSha2SigTests extends CommonTests {
      * in the algorithm suite. This is a positive scenario.
      *
      */
+    //2/2021 to test with EE7, then the corresponding server_orig.xml can be used
     @Test
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @AllowedFFDC("org.apache.ws.security.WSSecurityException")
-    public void testCxfSha2DigestAlgorithm() throws Exception {
+    //Orig:
+    //public void testCxfSha2DigestAlgorithm() throws Exception {
+    public void testCxfSha2DigestAlgorithmEE7Only() throws Exception {
 
-        String thisMethod = "testCxfSha2DigestAlgorithm";
+        //Orig:
+        //String thisMethod = "testCxfSha2DigestAlgorithm";
+        String thisMethod = "testCxfSha2DigestAlgorithmEE7Only";
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
+        genericTest(
+                    // test name for logging
+                    thisMethod,
+                    // Svc Client Url that generic test code should use
+                    clientHttpUrl,
+                    // Port that svc client code should use
+                    "",
+                    // user that svc client code should use
+                    "user1",
+                    // pw that svc client code should use
+                    "security",
+                    // wsdl sevice that svc client code should use
+                    "Sha2SigService2",
+                    // wsdl that the svc client code should use
+                    //newClientWsdl,
+                    "",
+                    // wsdl port that svc client code should use
+                    "UrnSha2Sig2",
+                    // msg to send from svc client to server
+                    "",
+                    // expected response from server
+                    "This is WSSECFVT SHA256 Digest Web Service.",
+                    // msg to issue if do NOT get the expected result
+                    "The test expected a succesful message from the server.");
+
+    }
+
+    //2/2021 to test with EE8, then the corresponding server_orig_wss4j.xml can be used
+    @Test
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @AllowedFFDC("org.apache.ws.security.WSSecurityException")
+    public void testCxfSha2DigestAlgorithmEE8Only() throws Exception {
+
+        String thisMethod = "testCxfSha2DigestAlgorithmEE8Only";
+        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig_wss4j.xml");
         genericTest(
                     // test name for logging
                     thisMethod,
@@ -151,11 +253,51 @@ public class CxfSha2SigTests extends CommonTests {
      * in this test. This is a positive scenario.
      *
      */
+    //2/2021 to test with EE7, then the corresponding server_sha384.xml can be used
     @Test
-    public void testCxfSha384SigAlgorithm() throws Exception {
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
+    //Orig:
+    //public void testCxfSha384SigAlgorithm() throws Exception {
+    public void testCxfSha384SigAlgorithmEE7Only() throws Exception {
 
-        String thisMethod = "testTwasSha384SigAlgorithm";
+        //Orig:
+        //String thisMethod = "testTwasSha384SigAlgorithm";
+        String thisMethod = "testCxfSha384SigAlgorithmEE7Only";
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sha384.xml");
+        genericTest(
+                    // test name for logging
+                    thisMethod,
+                    // Svc Client Url that generic test code should use
+                    clientHttpUrl,
+                    // Port that svc client code should use
+                    "",
+                    // user that svc client code should use
+                    "user1",
+                    // pw that svc client code should use
+                    "security",
+                    // wsdl sevice that svc client code should use
+                    "Sha2SigService3",
+                    // wsdl that the svc client code should use
+                    //newClientWsdl,
+                    "",
+                    // wsdl port that svc client code should use
+                    "UrnSha2Sig3",
+                    // msg to send from svc client to server
+                    "",
+                    // expected response from server
+                    "Response: This is WSSECFVT SHA384 Web Service.",
+                    // msg to issue if do NOT get the expected result
+                    "The test expected a succesful message from the server.");
+
+    }
+
+    //2/2021 to test with EE8, then the corresponding server_sha384_wss4j.xml can be used
+    @Test
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    public void testCxfSha384SigAlgorithmEE8Only() throws Exception {
+
+        String thisMethod = "testCxfSha384SigAlgorithmEE8Only";
+        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sha384_wss4j.xml");
         genericTest(
                     // test name for logging
                     thisMethod,
@@ -192,11 +334,51 @@ public class CxfSha2SigTests extends CommonTests {
      * in this test. This is a positive scenario.
      *
      */
+    //2/2021 to test with EE7, then the corresponding server_sha512.xml can be used
     @Test
-    public void testCxfSha512SigAlgorithm() throws Exception {
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
+    //Orig:
+    //public void testCxfSha512SigAlgorithm() throws Exception {
+    public void testCxfSha512SigAlgorithmEE7Only() throws Exception {
 
-        String thisMethod = "testTwasSha512SigAlgorithm";
+        //Orig:
+        //String thisMethod = "testTwasSha512SigAlgorithm";
+        String thisMethod = "testCxfSha512SigAlgorithmEE7Only";
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sha512.xml");
+        genericTest(
+                    // test name for logging
+                    thisMethod,
+                    // Svc Client Url that generic test code should use
+                    clientHttpUrl,
+                    // Port that svc client code should use
+                    "",
+                    // user that svc client code should use
+                    "user1",
+                    // pw that svc client code should use
+                    "security",
+                    // wsdl sevice that svc client code should use
+                    "Sha2SigService4",
+                    // wsdl that the svc client code should use
+                    //newClientWsdl,
+                    "",
+                    // wsdl port that svc client code should use
+                    "UrnSha2Sig4",
+                    // msg to send from svc client to server
+                    "",
+                    // expected response from server
+                    "Response: This is WSSECFVT SHA512 Web Service.",
+                    // msg to issue if do NOT get the expected result
+                    "The test expected a succesful message from the server.");
+
+    }
+
+    //2/2021 to test with EE8, then the corresponding server_sha512_wss4j.xml can be used
+    @Test
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    public void testCxfSha512SigAlgorithmEE8Only() throws Exception {
+
+        String thisMethod = "testCxfSha512SigAlgorithmEE8Only";
+        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sha512_wss4j.xml");
         genericTest(
                     // test name for logging
                     thisMethod,
@@ -236,12 +418,32 @@ public class CxfSha2SigTests extends CommonTests {
      *
      */
 
+    //2/2021 to test with EE7, then the corresponding server_sha2.xml can be used
     @Test
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
+    //Orig:
     @AllowedFFDC("org.apache.ws.security.WSSecurityException")
-    public void testCxfSha1ToSha2SigAlgorithm() throws Exception {
+    //Mei:
+    //@AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException" })
+    //End
+    //Orig:
+    //public void testCxfSha1ToSha2SigAlgorithm() throws Exception {
+    public void testCxfSha1ToSha2SigAlgorithmEE7Only() throws Exception {
 
-        String thisMethod = "testCxfSha1ToSha2SigAlgorithm";
+        //Orig:
+        //String thisMethod = "testCxfSha1ToSha2SigAlgorithm";
+        String thisMethod = "testCxfSha1ToSha2SigAlgorithmEE7Only";
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sha2.xml");
+        //Mei:
+        //server.is //@AV999 TODO
+        boolean jaxws23feature = false;
+        String messagetoexpect = "The signature method does not match the requirement"; //existing
+        //if (server.hasjasws23feature) then jaxws23feature=true //@AV999 TODO
+        jaxws23feature = true;
+        if (jaxws23feature) {
+            messagetoexpect = "An error was discovered processing the <wsse:Security> header";
+        }
+        //End
         genericTest(
                     // test name for logging
                     thisMethod,
@@ -264,7 +466,61 @@ public class CxfSha2SigTests extends CommonTests {
                     "",
                     "Response: javax.xml.ws.soap.SOAPFaultException",
                     // expected response from server
+                    //Orig:
                     "The signature method does not match the requirement",
+
+                    // msg to issue if do NOT get the expected result
+                    "The test did not receive the expected exception from the server.");
+
+    }
+
+    //2/2021 to test with EE8, then the corresponding server_sha2_wss4j.xml can be used
+    @Test
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    //Orig:
+    //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
+    //Mei:
+    //@AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException" })
+    @AllowedFFDC("org.apache.wss4j.common.ext.WSSecurityException")
+    //End
+    public void testCxfSha1ToSha2SigAlgorithmEE8Only() throws Exception {
+
+        String thisMethod = "testCxfSha1ToSha2SigAlgorithmEE8Only";
+        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sha2_wss4j.xml");
+        //Mei:
+        //server.is //@AV999 TODO
+        boolean jaxws23feature = false;
+        String messagetoexpect = "The signature method does not match the requirement"; //existing
+        //if (server.hasjasws23feature) then jaxws23feature=true //@AV999 TODO
+        jaxws23feature = true;
+        if (jaxws23feature) {
+            messagetoexpect = "An error was discovered processing the <wsse:Security> header";
+        }
+        //End
+        genericTest(
+                    // test name for logging
+                    thisMethod,
+                    // Svc Client Url that generic test code should use
+                    clientHttpUrl,
+                    // Port that svc client code should use
+                    "",
+                    // user that svc client code should use
+                    "user1",
+                    // pw that svc client code should use
+                    "security",
+                    // wsdl sevice that svc client code should use
+                    "Sha2SigService5",
+                    // wsdl that the svc client code should use
+                    // newClientWsdl,
+                    "",
+                    // wsdl port that svc client code should use
+                    "UrnSha2Sig5",
+                    // msg to send from svc client to server
+                    "",
+                    "Response: javax.xml.ws.soap.SOAPFaultException",
+                    // expected response from server
+                    //2/2021
+                    "An error was discovered processing the <wsse:Security> header",
                     // msg to issue if do NOT get the expected result
                     "The test did not receive the expected exception from the server.");
 
@@ -281,11 +537,51 @@ public class CxfSha2SigTests extends CommonTests {
      *
      */
 
+    //2/2021 to test with EE7, then the corresponding server_2048.xml can be used
     @Test
-    public void testCxfSha256SigAlg2048Keylen() throws Exception {
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
+    //Orig:
+    //public void testCxfSha256SigAlg2048Keylen() throws Exception {
+    public void testCxfSha256SigAlg2048KeylenEE7Only() throws Exception {
 
-        String thisMethod = "testCxfSha256SigAlg2048Keylen";
+        //Orig:
+        //String thisMethod = "testCxfSha256SigAlg2048Keylen";
+        String thisMethod = "testCxfSha256SigAlg2048KeylenEE7Only";
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_2048.xml");
+        genericTest(
+                    // test name for logging
+                    thisMethod,
+                    // Svc Client Url that generic test code should use
+                    clientHttpUrl,
+                    // Port that svc client code should use
+                    "",
+                    // user that svc client code should use
+                    "user1",
+                    // pw that svc client code should use
+                    "security",
+                    // wsdl sevice that svc client code should use
+                    "Sha2SigService7",
+                    // wsdl that the svc client code should use
+                    //newClientWsdl,
+                    "",
+                    // wsdl port that svc client code should use
+                    "UrnSha2Sig7",
+                    // msg to send from svc client to server
+                    "",
+                    // expected response from server
+                    "Response: This is WSSECFVT SHA2-2048 Web Service.",
+                    // msg to issue if do NOT get the expected result
+                    "The test did not receive the expected exception from the server.");
+
+    }
+
+    //2/2021 to test with EE8, then the corresponding server_2048_wss4j.xml can be used
+    @Test
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    public void testCxfSha256SigAlg2048KeylenEE8Only() throws Exception {
+
+        String thisMethod = "testCxfSha256SigAlg2048KeylenEE8Only";
+        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_2048_wss4j.xml");
         genericTest(
                     // test name for logging
                     thisMethod,
@@ -324,11 +620,51 @@ public class CxfSha2SigTests extends CommonTests {
      *
      */
 
+    //2/2021 to test with EE7, then the corresponding server_sha3sym.xml can be used
     @Test
-    public void testCxfSha384SymBinding() throws Exception {
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
+    //Orig:
+    //public void testCxfSha384SymBinding() throws Exception {
+    public void testCxfSha384SymBindingEE7Only() throws Exception {
 
-        String thisMethod = "testCxfSha384SymBinding";
+        //Orig:
+        //String thisMethod = "testCxfSha384SymBinding";
+        String thisMethod = "testCxfSha384SymBindingEE7Only";
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sha3sym.xml");
+        genericTest(
+                    // test name for logging
+                    thisMethod,
+                    // Svc Client Url that generic test code should use
+                    clientHttpUrl,
+                    // Port that svc client code should use
+                    "",
+                    // user that svc client code should use
+                    "user1",
+                    // pw that svc client code should use
+                    "security",
+                    // wsdl sevice that svc client code should use
+                    "Sha2SigService8",
+                    // wsdl that the svc client code should use
+                    //newClientWsdl,
+                    "",
+                    // wsdl port that svc client code should use
+                    "UrnSha2Sig8",
+                    // msg to send from svc client to server
+                    "",
+                    // expected response from server
+                    "Response: This is WSSECFVT SHA2 SYM Web Service.",
+                    // msg to issue if do NOT get the expected result
+                    "The test did not receive the expected exception from the server.");
+
+    }
+
+    //2/2021 to test with EE8, then the corresponding server_sha3sym_wss4j.xml can be used
+    @Test
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    public void testCxfSha384SymBindingEE8Only() throws Exception {
+
+        String thisMethod = "testCxfSha384SymBindingEE8Only";
+        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sha3sym_wss4j.xml");
         genericTest(
                     // test name for logging
                     thisMethod,
@@ -367,11 +703,48 @@ public class CxfSha2SigTests extends CommonTests {
      *
      */
 
+    //2/2021 to test with EE7, then the corresponding server_sha5sym.xml can be used
     @Test
-    public void testCxfSha512SymBinding() throws Exception {
-
-        String thisMethod = "testCxfSha512SymBinding";
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
+    //Orig:
+    //public void testCxfSha512SymBinding() throws Exception {
+    public void testCxfSha512SymBindingEE7Only() throws Exception {
+        String thisMethod = "testCxfSha512SymBindingEE7Only";
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sha5sym.xml");
+        genericTest(
+                    // test name for logging
+                    thisMethod,
+                    // Svc Client Url that generic test code should use
+                    clientHttpUrl,
+                    // Port that svc client code should use
+                    "",
+                    // user that svc client code should use
+                    "user1",
+                    // pw that svc client code should use
+                    "security",
+                    // wsdl sevice that svc client code should use
+                    "Sha2SigService8",
+                    // wsdl that the svc client code should use
+                    //newClientWsdl,
+                    "",
+                    // wsdl port that svc client code should use
+                    "UrnSha2Sig8",
+                    // msg to send from svc client to server
+                    "",
+                    // expected response from server
+                    "Response: This is WSSECFVT SHA2 SYM Web Service.",
+                    // msg to issue if do NOT get the expected result
+                    "The test did not receive the expected exception from the server.");
+
+    }
+
+    //2/2021 to test with EE8, then the corresponding server_sha5sym_wss4j.xml can be used
+    @Test
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    public void testCxfSha512SymBindingEE8Only() throws Exception {
+
+        String thisMethod = "testCxfSha512SymBindingEE8Only";
+        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sha5sym_wss4j.xml");
         genericTest(
                     // test name for logging
                     thisMethod,
@@ -411,4 +784,19 @@ public class CxfSha2SigTests extends CommonTests {
 //            e.printStackTrace(System.out);
 //        }
 //    }
+
+    //2/2021
+    public static void copyServerXml(String copyFromFile) throws Exception {
+
+        try {
+            String serverFileLoc = (new File(server.getServerConfigurationPath().replace('\\', '/'))).getParent();
+            Log.info(thisClass, "copyServerXml", "Copying: " + copyFromFile
+                                                 + " to " + serverFileLoc);
+            LibertyFileManager.copyFileIntoLiberty(server.getMachine(),
+                                                   serverFileLoc, "server.xml", copyFromFile);
+        } catch (Exception ex) {
+            ex.printStackTrace(System.out);
+        }
+    }
+
 }

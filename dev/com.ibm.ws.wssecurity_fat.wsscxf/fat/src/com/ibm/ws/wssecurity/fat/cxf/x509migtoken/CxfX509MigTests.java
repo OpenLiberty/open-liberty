@@ -14,6 +14,9 @@ package com.ibm.ws.wssecurity.fat.cxf.x509migtoken;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
+import java.util.Set;
+
 import javax.crypto.Cipher;
 
 import org.junit.AfterClass;
@@ -24,6 +27,7 @@ import org.junit.runner.RunWith;
 
 //Added 11/2020
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.wssecurity.fat.utils.common.SharedTools;
 import com.meterware.httpunit.GetMethodWebRequest;
@@ -35,6 +39,7 @@ import componenttest.annotation.AllowedFFDC;
 //Added 11/2020
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
 //12/2020 Setting this test class for LITE bucket
@@ -84,13 +89,24 @@ public class CxfX509MigTests {
         //orig from CL:
         //SharedTools.installCallbackHandler(server);
 
+        //2/2021
+        ServerConfiguration config = server.getServerConfiguration();
+        Set<String> features = config.getFeatureManager().getFeatures();
+        if (features.contains("usr:wsseccbh-1.0")) {
+            server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbh.jar");
+            server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-1.0.mf");
+        }
+        if (features.contains("usr:wsseccbh-2.0")) {
+            server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
+            server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-2.0.mf");
+            copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
+        }
+
         //Added 11/2020
         ShrinkHelper.defaultDropinApp(server, "x509migclient", "com.ibm.ws.wssecurity.fat.x509migclient", "test.libertyfat.x509mig.contract", "test.libertyfat.x509mig.types");
         ShrinkHelper.defaultDropinApp(server, "x509migbadclient", "com.ibm.ws.wssecurity.fat.x509migbadclient", "test.libertyfat.x509mig.contract",
                                       "test.libertyfat.x509mig.types");
         ShrinkHelper.defaultDropinApp(server, "x509migtoken", "basicplcy.wssecfvt.test");
-        server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbh.jar");
-        server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-1.0.mf");
 
         server.startServer();// check CWWKS0008I: The security service is ready.
         SharedTools.waitForMessageInLog(server, "CWWKS0008I");
@@ -2163,7 +2179,11 @@ public class CxfX509MigTests {
      */
 
     @Test
-    @AllowedFFDC("org.apache.ws.security.WSSecurityException")
+    //Orig:
+    //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
+    //Mei:
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException" })
+    //End
     public void testCxfX509AsymmetricSignatureReplayMigService() throws Exception {
         // This is a negative test case.
         // It ought to fail at the second request.
@@ -2887,7 +2907,11 @@ public class CxfX509MigTests {
      */
 
     @Test
-    @AllowedFFDC("org.apache.ws.security.WSSecurityException")
+    //Orig:
+    //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
+    //Mei:
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException" })
+    //End
     public void testBadCxfX509AsymIssuerSerialMigService() throws Exception {
         String thisMethod = "testBadCxfX509AsymIssuerSerialMigService";
         methodFull = "testBadCxfX509AsymIssuerSerialMigService";
@@ -3445,7 +3469,11 @@ public class CxfX509MigTests {
      * It expects to fail
      **/
     @Test
-    @AllowedFFDC("org.apache.ws.security.WSSecurityException")
+    //Orig:
+    //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
+    //Mei:
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException" })
+    //End
     public void testBadAsymEndSignService() throws Exception {
         String thisMethod = "testBadAsymEncSignService";
         methodFull = "testBadAsymEncSignService";
@@ -3506,7 +3534,11 @@ public class CxfX509MigTests {
      *
      */
     @Test
-    @AllowedFFDC("org.apache.ws.security.WSSecurityException")
+    //Orig:
+    //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
+    //Mei:
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException" })
+    //End
     public void testBadTripleDesService() throws Exception {
         String thisMethod = "testBadTripleDesService";
         methodFull = "testBadTripleDesService";
@@ -3556,6 +3588,9 @@ public class CxfX509MigTests {
      *
      */
     @Test
+    //Mei:
+    @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" })
+    //End
     public void testBadBasic128Service() throws Exception {
         String thisMethod = "testBadBasic128Service";
         methodFull = "testBadBasic128Service";
@@ -3680,6 +3715,13 @@ public class CxfX509MigTests {
         }
         //orig from CL:
         //SharedTools.unInstallCallbackHandler(server);
+
+        //2/2021
+        server.deleteFileFromLibertyInstallRoot("usr/extension/lib/bundles/com.ibm.ws.wssecurity.example.cbh.jar");
+        server.deleteFileFromLibertyInstallRoot("usr/extension/lib/features/wsseccbh-1.0.mf");
+        server.deleteFileFromLibertyInstallRoot("usr/extension/lib/bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
+        server.deleteFileFromLibertyInstallRoot("usr/extension/lib/features/wsseccbh-2.0.mf");
+
     }
 
     private static void printMethodName(String strMethod) {
@@ -3687,4 +3729,19 @@ public class CxfX509MigTests {
                                        + strMethod);
         System.err.println("*****************************" + strMethod);
     }
+
+    //2/2021
+    public static void copyServerXml(String copyFromFile) throws Exception {
+
+        try {
+            String serverFileLoc = (new File(server.getServerConfigurationPath().replace('\\', '/'))).getParent();
+            Log.info(thisClass, "copyServerXml", "Copying: " + copyFromFile
+                                                 + " to " + serverFileLoc);
+            LibertyFileManager.copyFileIntoLiberty(server.getMachine(),
+                                                   serverFileLoc, "server.xml", copyFromFile);
+        } catch (Exception ex) {
+            ex.printStackTrace(System.out);
+        }
+    }
+
 }

@@ -144,10 +144,10 @@ public class CxfX509MigBadSvcClient extends HttpServlet {
  * // Let set up some SSL attribute. This is a bug-to-be-fixed, customers do not need to do so.
  * String strServerDir = System.getProperty("server.config.dir").replace('\\', '/');
  * String strJksLocation = strServerDir + "/sslServerTrust.jks";
- * 
+ *
  * System.setProperty("javax.net.ssl.trustStore" , strJksLocation);
  * System.setProperty("javax.net.ssl.trustStorePassword", "LibertyServer");
- * 
+ *
  * System.out.println("set javax.net.ssl.trustStore to " + strJksLocation);
  * System.out.println("set javax.net.ssl.trustStorePassword to " + "LibertyServer");
  * }
@@ -161,6 +161,9 @@ public class CxfX509MigBadSvcClient extends HttpServlet {
             Service service = null;
             String strExpect = null;
             String strSubErrMsg = "Not known what error message yet";
+            //Mei:
+            String newErrMsg = null;
+            //End
             if (thisMethod.equals("testCxfX509KeyIdMigSymEncryptBeforeSigningService")) {
                 service = new FatBAX01Service();
                 strExpect = "LIBERTYFAT X509 bax01";
@@ -172,6 +175,9 @@ public class CxfX509MigBadSvcClient extends HttpServlet {
                 if (unlimitCryptoKeyLength) {
                     strSubErrMsg = "These policy alternatives can not be satisfied";
                 }
+                //Mei:
+                newErrMsg = "An error was discovered processing the <wsse:Security> header";
+                //End
             } else if (thisMethod.equals("testCxfX509IssuerSerialMigSymNoEncryptSignatureService")) {
                 service = new FatBAX03Service();
                 strExpect = "LIBERTYFAT X509 bax03";
@@ -195,14 +201,23 @@ public class CxfX509MigBadSvcClient extends HttpServlet {
                 service = new FatBAX08Service();
                 strExpect = "LIBERTYFAT X509 bax08";
                 strSubErrMsg = "Body not ENCRYPTED"; //
+                //Mei:
+                newErrMsg = "EncryptedParts: Soap Body is not ENCRYPTED";
+                //End
             } else if (thisMethod.equals("testCxfX509ProtectTokensMigSymService")) {
                 service = new FatBAX09Service();
                 strExpect = "LIBERTYFAT X509 bax09";
                 strSubErrMsg = "SignedParts: {http://schemas.xmlsoap.org/soap/envelope/}Body not SIGNED";
+                //Mei:
+                newErrMsg = "SignedParts: Soap Body is not SIGNED";
+                //End
             } else if (thisMethod.equals("testCxfX509TransportEndorsingMigService")) {
                 service = new FatBAX10Service();
                 strExpect = "LIBERTYFAT X509 bax10";
                 strSubErrMsg = "Signature creation failed"; //"Assertion of type {http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702}HttpsToken could not be asserted";
+                //Mei:
+                newErrMsg = "list of references must contain at least one entry";
+                //End
             } else if (thisMethod.equals("testCxfX509TransportEndorsingSP11MigService")) {
                 service = new FatBAX11Service();
                 strExpect = "LIBERTYFAT X509 bax11";
@@ -215,6 +230,9 @@ public class CxfX509MigBadSvcClient extends HttpServlet {
                 service = new FatBAX13Service();
                 strExpect = "LIBERTYFAT X509 bax13";
                 strSubErrMsg = "Signature creation failed"; //"Assertion of type {http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702}HttpsToken could not be asserted";
+                //Mei:
+                newErrMsg = "list of references must contain at least one entry";
+                //End
             } else if (thisMethod.equals("testCxfX509TransportSignedEndorsingEncryptedMigService")) {
                 service = new FatBAX14Service();
                 strExpect = "LIBERTYFAT X509 bax14";
@@ -227,6 +245,9 @@ public class CxfX509MigBadSvcClient extends HttpServlet {
                 service = new FatBAX16Service();
                 strExpect = "LIBERTYFAT X509 bax16";
                 strSubErrMsg = "Signature creation failed"; // "Assertion of type {http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702}HttpsToken could not be asserted";
+                //Mei:
+                newErrMsg = "Received Timestamp does not match the requirements";
+                //End
             } else if (thisMethod.equals("testCxfX509AsymmetricSignatureMigService")) {
                 service = new FatBAX17Service();
                 strExpect = "LIBERTYFAT X509 bax17";
@@ -247,6 +268,9 @@ public class CxfX509MigBadSvcClient extends HttpServlet {
                 service = new FatBAX21Service();
                 strExpect = "LIBERTYFAT X509 bax21";
                 strSubErrMsg = "Not signed before encrypted";
+                //Mei:
+                newErrMsg = "Not encrypted before signed";
+                //End
             } else if (thisMethod.equals("testBadX509KeyIdentifierUNTService")) {
                 service = new FatBAX24Service();
                 strExpect = "LIBERTYFAT X509 bax24";
@@ -279,17 +303,30 @@ public class CxfX509MigBadSvcClient extends HttpServlet {
                 service = new FatBAX31Service();
                 strExpect = "LIBERTYFAT X509 bax31";
                 strSubErrMsg = "The symmetric key length does not match the requirement"; // Test basic128 against Basic192
+                //Mei:
+                newErrMsg = "An error was discovered processing the <wsse:Security> header";
+                //End
             } else if (thisMethod.equals("testBadTripleDesService")) {
                 service = new FatBAX32Service();
                 strExpect = "LIBERTYFAT X509 bax32";
                 strSubErrMsg = "AsymmetricBinding: The encryption algorithm does not match the requirement";
+                //Mei:
+                newErrMsg = "An error was discovered processing the <wsse:Security> header";
+                //End
             } else if (thisMethod.equals("testBadInclusiveC14NService")) {
                 service = new FatBAX33Service();
                 strExpect = "LIBERTYFAT X509 bax33";
                 strSubErrMsg = "SignedSupportingTokens: The received token does not match the signed supporting token requirement";
+                //Mei:
+                newErrMsg = "BSP:R5404: Any CANONICALIZATION_METHOD Algorithm attribute MUST have a value of \"http://www.w3.org/2001/10/xml-exc-c14n#\" indicating that it uses Exclusive C14N without comments for canonicalization";
+                //End
             } else if (thisMethod.equals("testBadBasic128Service")) {
                 service = new FatBAX34Service();
                 strExpect = "LIBERTYFAT X509 bax34";
+                //Mei:
+                testMode = "negative";
+                newErrMsg = "BSP:R5404: Any CANONICALIZATION_METHOD Algorithm attribute MUST have a value of \"http://www.w3.org/2001/10/xml-exc-c14n#\" indicating that it uses Exclusive C14N without comments for canonicalization";
+                //End
             } else if (thisMethod.equals("testBadSymmetricEndorsingUNTPolicy")) {
                 service = new FatBAX35Service();
                 strExpect = "LIBERTYFAT X509 bax35";
@@ -298,7 +335,11 @@ public class CxfX509MigBadSvcClient extends HttpServlet {
             if (service == null) {
                 throw new Exception("thisMethod '" + thisMethod + "' did not get a Service. Test cases error.");
             }
-            testCxfX509MigService(request, response, service, strExpect, strSubErrMsg);
+            //Orig:
+            //testCxfX509MigService(request, response, service, strExpect, strSubErrMsg);
+            //Mei:
+            testCxfX509MigService(request, response, service, strExpect, strSubErrMsg, newErrMsg);
+            //End
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -314,7 +355,11 @@ public class CxfX509MigBadSvcClient extends HttpServlet {
                                          HttpServletResponse response,
                                          javax.xml.ws.Service service,
                                          String strExpect) throws ServletException, IOException {
-        testCxfX509MigService(request, response, service, strExpect, (String) null);
+        //Orig:
+        //testCxfX509MigService(request, response, service, strExpect, (String) null);
+        //Mei:
+        testCxfX509MigService(request, response, service, strExpect, (String) null, null);
+        //End
         return;
     }
 
@@ -325,11 +370,24 @@ public class CxfX509MigBadSvcClient extends HttpServlet {
     protected void testCxfX509MigService(HttpServletRequest request,
                                          HttpServletResponse response,
                                          javax.xml.ws.Service service,
-                                         String strExpect, String strSubErrMsg) throws ServletException, IOException {
+                                         //Orig:
+                                         //String strExpect, String strSubErrMsg) throws ServletException, IOException {
+                                         //Mei:
+                                         String strExpect, String strSubErrMsg, String newErrMsg) throws ServletException, IOException {
+        //End
+
         if (testMode.startsWith("positive")) {
-            testCxfX509PositiveMigService(request, response, service, strExpect, strSubErrMsg);
+            //Orig:
+            //testCxfX509PositiveMigService(request, response, service, strExpect, strSubErrMsg);
+            //Mei:
+            testCxfX509PositiveMigService(request, response, service, strExpect, strSubErrMsg, newErrMsg);
+            //End
         } else {
-            testCxfX509NegativeMigService(request, response, service, strSubErrMsg);
+            //Orig:
+            //testCxfX509NegativeMigService(request, response, service, strSubErrMsg);
+            //Mei:
+            testCxfX509NegativeMigService(request, response, service, strSubErrMsg, newErrMsg);
+            //End
         }
 
         return;
@@ -343,7 +401,11 @@ public class CxfX509MigBadSvcClient extends HttpServlet {
                                                  HttpServletResponse response,
                                                  javax.xml.ws.Service service,
                                                  String strExpect,
-                                                 String strSubErrMsg) throws ServletException, IOException {
+                                                 //Orig:
+                                                 //String strSubErrMsg) throws ServletException, IOException {
+                                                 //Mei:
+                                                 String strSubErrMsg, String newErrMsg) throws ServletException, IOException {
+        //End
 
         try {
 
@@ -374,7 +436,11 @@ public class CxfX509MigBadSvcClient extends HttpServlet {
                     printUnexpectingResult(response, answer);
                 } catch (Exception ex) {
                     ex.printStackTrace();
-                    printExpectingException(response, ex, strSubErrMsg);
+                    //Orig:
+                    //printExpectingException(response, ex, strSubErrMsg);
+                    //Mei:
+                    printExpectingException(response, ex, strSubErrMsg, newErrMsg);
+                    //End
                 }
             } else {
                 printExpectingResult(response, answer, strExpect);
@@ -394,7 +460,11 @@ public class CxfX509MigBadSvcClient extends HttpServlet {
     protected void testCxfX509NegativeMigService(HttpServletRequest request,
                                                  HttpServletResponse response,
                                                  javax.xml.ws.Service service,
-                                                 String strSubErrMsg) throws ServletException, IOException {
+                                                 //Orig:
+                                                 //String strSubErrMsg) throws ServletException, IOException {
+                                                 //Mei:
+                                                 String strSubErrMsg, String newErrMsg) throws ServletException, IOException {
+        //End
 
         try {
             // This piece of code is needed since we are using client wsdl instead
@@ -418,7 +488,11 @@ public class CxfX509MigBadSvcClient extends HttpServlet {
 
         } catch (Exception ex) {
             ex.printStackTrace();
-            printExpectingException(response, ex, strSubErrMsg);
+            //Orig:
+            //printExpectingException(response, ex, strSubErrMsg);
+            //Mei:
+            printExpectingException(response, ex, strSubErrMsg, newErrMsg);
+            //End
         }
 
         return;
@@ -460,7 +534,7 @@ public class CxfX509MigBadSvcClient extends HttpServlet {
             String strSoapEnv = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\">" +
                                 "<soapenv:Header></soapenv:Header>" +
                                 "<soapenv:Body xmlns=\"http://x509mig.liberty.test/types\"><invoke>" +
-                                x509Policy + ":" + testMode + ":" + methodFull + // add the x509Policy, testMode and methodFull for easier debugging 
+                                x509Policy + ":" + testMode + ":" + methodFull + // add the x509Policy, testMode and methodFull for easier debugging
                                 "</invoke></soapenv:Body></soapenv:Envelope>";
             reqMsg = new StringReader(strSoapEnv);
             Source src = new StreamSource(reqMsg);
@@ -503,12 +577,24 @@ public class CxfX509MigBadSvcClient extends HttpServlet {
     // print results
     // when we expect service-provider throws an Exception.
     // But double check the exception to have some specified sub-message
-    void printExpectingException(HttpServletResponse response, Exception ex, String strSubErrMsg) throws IOException {
+    //Orig:
+    //void printExpectingException(HttpServletResponse response, Exception ex, String strSubErrMsg)
+    //Mei:
+    void printExpectingException(HttpServletResponse response, Exception ex, String strSubErrMsg, String newErrMsg)
+                    //End
+                    throws IOException {
         PrintWriter rsp = getPrintWriter(response);
         String strMsg = ex.getMessage();
         if (strMsg == null)
             strMsg = "";
-        rsp.print("<p>pass:" + strMsg.contains(strSubErrMsg));
+        //Mei:
+        boolean result = newErrMsg != null ? strMsg.contains(newErrMsg) : strMsg.contains(strSubErrMsg);
+        //End
+        //Orig:
+        //rsp.print("<p>pass:" + strMsg.contains(strSubErrMsg));
+        //Mei:
+        rsp.print("<p>pass:" + result);
+        //End
         rsp.print("::" + rawServiceName + "</p>");
         rsp.print("<p>Exception:ClassName:" + ex.getClass().getName() + "</p>");
         rsp.print("<p>Message:" + ex.getMessage() + "</p>");
