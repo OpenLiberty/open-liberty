@@ -11,6 +11,7 @@
 
 package com.ibm.ws.wssecurity.fat.cxf;
 
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -26,6 +27,7 @@ import com.ibm.ws.wssecurity.fat.cxf.sample.CxfSymSampleTests;
 import com.ibm.ws.wssecurity.fat.cxf.sha2sig.CxfSha2SigTests;
 import com.ibm.ws.wssecurity.fat.cxf.usernametoken.CxfDeriveKeyTests;
 import com.ibm.ws.wssecurity.fat.cxf.usernametoken.CxfPasswordDigestTests;
+import com.ibm.ws.wssecurity.fat.cxf.usernametoken.CxfSSLUNTBasicTests;
 import com.ibm.ws.wssecurity.fat.cxf.usernametoken.CxfSSLUNTNonceTests;
 import com.ibm.ws.wssecurity.fat.cxf.usernametoken.CxfSSLUNTNonceTimeOutTests;
 import com.ibm.ws.wssecurity.fat.cxf.usernametoken.CxfUNTBasicTests;
@@ -49,6 +51,10 @@ import com.ibm.ws.wssecurity.fat.cxf.x509token.CxfX509OverRideTests;
 import com.ibm.ws.wssecurity.fat.cxf.x509token.CxfX509SigTests;
 import com.ibm.ws.wssecurity.fat.cxf.x509token.CxfX509StrTypeTests;
 
+import componenttest.rules.repeater.EmptyAction;
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.RepeatTests;
+
 @RunWith(Suite.class)
 @SuiteClasses({
 
@@ -63,10 +69,10 @@ import com.ibm.ws.wssecurity.fat.cxf.x509token.CxfX509StrTypeTests;
                 CxfSampleTests.class,
                 CxfSymSampleTests.class,
 
-                //The following are run as FULL FAT bucket, where full mode annotation @Mode(TestMode.FULL) is specified in the java file
+                //The following 27 are run as FULL FAT bucket, where full mode annotation @Mode(TestMode.FULL) is specified in the java file
                 CxfSSLUNTNonceTimeOutTests.class,
                 CxfPasswordDigestTests.class,
-                CxfUNTBasicTests.class,
+                CxfSSLUNTBasicTests.class,
                 CxfUNTNonceTests.class,
                 CxfUntNoPassTests.class,
                 CxfWssTemplatesTestsWithWSDL.class,
@@ -86,22 +92,30 @@ import com.ibm.ws.wssecurity.fat.cxf.x509token.CxfX509StrTypeTests;
                 CxfDeriveKeyTests.class,
                 CxfEndSupTokensAsymTests.class,
                 CxfEndSupTokensSymTests.class,
+                CxfCallerX509AsymTests.class,
+                CxfCallerX509SymTests.class,
+                CxfSha2SigTests.class,
+                CxfBspTests.class,
+                CxfInteropX509Tests.class
                 //orig from CL as commented out,
                 //but attempted in OL with failure "The signature or decryption was invalid (Unsupported key identification:..."
                 //CxfEndSupTokensSym2Tests.class,
                 //orig from CL as commented out, but not sure why test class name is used here although CL has CxfX509MustUnderstandTests.java
                 //CxfMustUnderstandTests.class,
                 //CxfX509MustUnderstandTests.class,
-                CxfCallerX509AsymTests.class,
-                CxfCallerX509SymTests.class,
-                CxfSha2SigTests.class,
-                CxfBspTests.class,
-                CxfInteropX509Tests.class
 
 })
 /**
  * Purpose: This suite collects and runs all known good test suites.
  */
+
 public class FATSuite {
+    //For Lite
+    //@ClassRule
+    //public static RepeatTests r = RepeatTests.withoutModification().andWith(FeatureReplacementAction.EE8_FEATURES().removeFeature("jsp-2.2").removeFeature("jaxws-2.2").removeFeature("servlet-3.1").removeFeature("usr:wsseccbh-1.0").addFeature("jsp-2.3").addFeature("jaxws-2.3").addFeature("servlet-4.0").addFeature("usr:wsseccbh-2.0"));
+
+    //For Full
+    @ClassRule
+    public static RepeatTests r = RepeatTests.with(new EmptyAction().fullFATOnly()).andWith(FeatureReplacementAction.EE8_FEATURES().removeFeature("jsp-2.2").removeFeature("jaxws-2.2").removeFeature("servlet-3.1").removeFeature("usr:wsseccbh-1.0").addFeature("jsp-2.3").addFeature("jaxws-2.3").addFeature("servlet-4.0").addFeature("usr:wsseccbh-2.0"));
 
 }

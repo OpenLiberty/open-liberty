@@ -81,8 +81,13 @@ public class SSLTestCommon {
     final static String badHttpsToken = "HttpsToken could not be asserted";
     final static String badHttpsClientCert = "Could not send Message.";
     final static String replayAttack = "An error happened processing a Username Token \"A replay attack has been detected\"";
+    //Mei:
+    final static String replayAttackNew = "An error happened processing a Username Token: \"A replay attack has been detected\""; //@AV999
+    //End
     final static String timestampReqButMissing = "An invalid security token was provided (WSSecurityEngine: Invalid timestamp";
-
+    //Mei:
+    final static String morethanOneTimestamp = "BSP:R3227: A SECURITY_HEADER MUST NOT contain more than one TIMESTAMP"; //@AV999
+    //End
     // "RequireClientCertificate is set, but no local certificates were negotiated.";
 
     public SSLTestCommon() {

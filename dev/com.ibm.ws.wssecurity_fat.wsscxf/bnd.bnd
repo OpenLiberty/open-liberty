@@ -15,6 +15,7 @@ bVersion=1.0
 src: \
   fat/src,\
   test-bundles/com.ibm.ws.wssecurity.cbh/src,\
+  test-bundles/com.ibm.ws.wssecurity.cbhwss4j/src,\
   test-applications/callerclient/src,\
   test-applications/callertoken/src,\
   test-applications/cxfclient/src,\
@@ -44,14 +45,14 @@ src: \
   test-applications/wsstemplateswithep/src,\
   test-applications/x509aSync/src,\
   test-applications/x509aSyncclient/src,\
-  test-applications/x509client/src,\
-  test-applications/x509token/src,\
   test-applications/x509crl/src,\
   test-applications/x509crlclient/src,\
   test-applications/x509enc/src,\
   test-applications/x509encclient/src,\
   test-applications/endsuptokens/src,\
   test-applications/endsuptokensclient/src,\
+  test-applications/x509client/src,\
+  test-applications/x509token/src,\
   test-applications/x509migbadclient/src,\
   test-applications/x509migclient/src,\
   test-applications/x509migtoken/src,\
@@ -63,34 +64,47 @@ src: \
 
 fat.project: true
 
-
-# Dependencies may be local bundles (e.g. com.ibm.websphere.javaee.servlet.3.1)
-#      or binaries from Artifactory (e.g. commons-logging:commons-logging)
-# For all project names that match the pattern "*_fat*", dependencies for junit,
-# fattest.simplicity, and componenttest-1.0 will be automatically added to the buildpath
-
+tested.features: jaxws-2.3, \
+  jsp-2.3, \
+  servlet-4.0, \
+  appSecurity-3.0, \
+  cdi-2.0, \
+  axb-2.3, \
+  el-3.0
+	
 	
 -buildpath: \
-  com.ibm.ws.wssecurity.fat.utils.common;version=latest,\
-  com.ibm.ws.security.fat.common;version=latest,\
-  com.ibm.websphere.javaee.servlet.3.0;version=latest,\
-  httpunit:httpunit;version=1.5.4,\
-  com.ibm.ws.org.apache.ws.security.wss4j.1.6.7;version=latest,\
-  com.ibm.ws.org.apache.cxf.ws.security.2.6.2;version=latest,\
-  com.ibm.websphere.security;version=latest,\
-  com.ibm.ws.wssecurity;version=latest,\
-  io.openliberty.org.apache.commons.codec;version=latest,\
-  com.ibm.ws.org.apache.commons.lang3;version=latest,\
-  io.openliberty.org.apache.commons.logging;version=latest,\
-  com.ibm.ws.org.apache.cxf.cxf.api.2.6.2;version=latest,\
-  com.ibm.ws.org.apache.cxf.cxf.rt.bindings.soap.2.6.2;version=latest,\
-  com.ibm.ws.org.apache.cxf.cxf.rt.core.2.6.2;version=latest,\
-  com.ibm.ws.org.apache.cxf.cxf.rt.ws.policy.2.6.2;version=latest,\
-  com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
-  com.ibm.websphere.appserver.spi.logging;version=latest,\
-  com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
-  com.ibm.websphere.javaee.jaxws.2.2;version=latest,\
-  com.ibm.websphere.javaee.jsp.2.2;version=latest,\
-  com.ibm.websphere.javaee.wsdl4j.1.2;version=latest,\
-  com.ibm.websphere.org.osgi.core;version=latest,\
-  com.ibm.websphere.org.osgi.service.component;version=latest
+	com.ibm.ws.wssecurity.fat.utils.common;version=latest,\
+	com.ibm.ws.security.fat.common;version=latest,\
+	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
+	httpunit:httpunit;version=1.5.4,\
+	com.ibm.websphere.security;version=latest,\
+      io.openliberty.org.apache.commons.codec;version=latest,\
+	com.ibm.ws.org.apache.commons.lang3;version=latest,\
+	io.openliberty.org.apache.commons.logging;version=latest,\
+	com.ibm.ws.org.apache.ws.security.wss4j.1.6.7;version=latest,\
+	com.ibm.ws.org.apache.cxf.cxf.api.2.6.2;version=latest,\
+	com.ibm.ws.org.apache.cxf.cxf.rt.core.2.6.2;version=latest,\
+	com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
+	com.ibm.websphere.appserver.spi.logging;version=latest,\
+	com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
+	com.ibm.websphere.javaee.jaxws.2.2;version=latest,\
+	com.ibm.websphere.javaee.jsp.2.2;version=latest,\
+	com.ibm.websphere.javaee.wsdl4j.1.2;version=latest,\
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.websphere.org.osgi.service.component;version=latest,\
+	org.apache.wss4j.wss4j-ws-security-common;version=2.3.0,\
+	com.ibm.ws.org.apache.cxf.cxf.rt.ws.policy.3.2;version=latest,\
+	com.ibm.ws.org.apache.cxf.cxf.rt.bindings.soap.3.2;version=latest,\
+	com.ibm.ws.org.apache.cxf.rt.security.3.3.6;version=latest,\
+	com.ibm.ws.org.apache.cxf.rt.ws.security.3.3.6;version=latest,\
+	com.ibm.ws.org.apache.wss4j.bindings.2.3.0;version=latest,\
+	com.ibm.ws.org.apache.wss4j.policy.2.3.0;version=latest,\
+	com.ibm.ws.org.apache.wss4j.ws.security.common.2.3.0;version=latest,\
+	com.ibm.ws.org.apache.wss4j.ws.security.dom.2.3.0;version=latest,\
+	com.ibm.ws.org.apache.wss4j.ws.security.policy.stax.2.3.0;version=latest,\
+	com.ibm.ws.org.apache.wss4j.ws.security.stax.2.3.0;version=latest,\
+	com.ibm.ws.org.apache.wss4j.ws.security.web.2.3.0;version=latest,\
+	com.ibm.ws.org.apache.santuario.xmlsec.2.2.0;version=latest,\
+	com.ibm.ws.wssecurity.3.4.1;version=latest,\
+	com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest
