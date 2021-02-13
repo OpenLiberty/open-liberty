@@ -12,6 +12,7 @@
 package com.ibm.ws.wssecurity.fat.cxf.x509token;
 
 import java.io.File;
+import java.util.Set;
 
 import org.junit.After;
 import org.junit.BeforeClass;
@@ -21,17 +22,23 @@ import org.junit.runner.RunWith;
 
 //Added 10/2020
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.wssecurity.fat.utils.common.CommonTests;
 import com.ibm.ws.wssecurity.fat.utils.common.PrepCommonSetup;
 import com.ibm.ws.wssecurity.fat.utils.common.UpdateWSDLPortNum;
 
 import componenttest.annotation.AllowedFFDC;
+//Mei:
+import componenttest.annotation.ExpectedFFDC;
+//End
 //Added 10/2020
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
 //Added 11/2020
@@ -65,11 +72,22 @@ public class CxfX509EncTests extends CommonTests {
         //commonSetUp(serverName, false,
         //            "/x509encclient/CxfX509EncSvcClient");
 
+        //2/2021
+        ServerConfiguration config = server.getServerConfiguration();
+        Set<String> features = config.getFeatureManager().getFeatures();
+        if (features.contains("usr:wsseccbh-1.0")) {
+            server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbh.jar");
+            server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-1.0.mf");
+        }
+        if (features.contains("usr:wsseccbh-2.0")) {
+            server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
+            server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-2.0.mf");
+            copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
+        }
+
         //Added 10/2020
         ShrinkHelper.defaultDropinApp(server, "x509encclient", "com.ibm.ws.wssecurity.fat.x509encclient", "test.wssecfvt.x509enc", "test.wssecfvt.x509enc.types");
         ShrinkHelper.defaultDropinApp(server, "x509enc", "com.ibm.ws.wssecurity.fat.x509enc");
-        server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbh.jar");
-        server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-1.0.mf");
 
         PrepCommonSetup serverObject = new PrepCommonSetup();
         serverObject.prepareSetup(server);
@@ -377,11 +395,21 @@ public class CxfX509EncTests extends CommonTests {
      * This is a negative scenario.
      *
      */
+    //2/2021 to test with EE7, then the corresponding message can be expected
     @Test
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
+    //Orig:
     @AllowedFFDC("org.apache.ws.security.WSSecurityException")
-    public void testCXFClientWrongEncKeyAlgorithm() throws Exception {
+    //Mei:
+    //@ExpectedFFDC("org.apache.wss4j.common.ext.WSSecurityException") //@AV999
+    //End
+    //Orig:
+    //public void testCXFClientWrongEncKeyAlgorithm() throws Exception {
+    public void testCXFClientWrongEncKeyAlgorithmEE7Only() throws Exception {
 
-        String thisMethod = "testCXFClientWrongEncKeyAlgorithm";
+        //Orig:
+        //String thisMethod = "testCXFClientWrongEncKeyAlgorithm";
+        String thisMethod = "testCXFClientWrongEncKeyAlgorithmEE7Only";
         printMethodName(thisMethod, "Start Prep for " + thisMethod);
         newClientWsdl = updateClientWsdl(defaultClientWsdlLoc + "X509XmlEnc2.wsdl",
                                          defaultClientWsdlLoc + "X509XmlEnc2Updated.wsdl");
@@ -407,7 +435,46 @@ public class CxfX509EncTests extends CommonTests {
                     // msg to send from svc client to server
                     "",
                     // expected response from server
+                    //Orig:
                     "AsymmetricBinding: The Key transport method does not match the requirement",
+                    // msg to issue if do NOT get the expected result
+                    "The test expected a succesful message from the server.");
+
+    }
+
+    //2/2021 to test with EE8, then the corresponding message can be expected
+    @Test
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @ExpectedFFDC("org.apache.wss4j.common.ext.WSSecurityException") //@AV999
+    public void testCXFClientWrongEncKeyAlgorithmEE8Only() throws Exception {
+
+        String thisMethod = "testCXFClientWrongEncKeyAlgorithmEE8Only";
+        printMethodName(thisMethod, "Start Prep for " + thisMethod);
+        newClientWsdl = updateClientWsdl(defaultClientWsdlLoc + "X509XmlEnc2.wsdl",
+                                         defaultClientWsdlLoc + "X509XmlEnc2Updated.wsdl");
+        Log.info(thisClass, thisMethod, "Using " + newClientWsdl);
+        printMethodName(thisMethod, "End Prep for " + thisMethod);
+        genericTest(
+                    // test name for logging
+                    thisMethod,
+                    // Svc Client Url that generic test code should use
+                    clientHttpUrl,
+                    // Port that svc client code should use
+                    "",
+                    // user that svc client code should use
+                    "user1",
+                    // pw that svc client code should use
+                    "security",
+                    // wsdl sevice that svc client code should use
+                    "X509XmlEncService7",
+                    // wsdl that the svc client code should use
+                    newClientWsdl,
+                    // wsdl port that svc client code should use
+                    "UrnX509Enc7",
+                    // msg to send from svc client to server
+                    "",
+                    // expected response from server
+                    "An error was discovered processing the <wsse:Security> header", //@AV999
                     // msg to issue if do NOT get the expected result
                     "The test expected a succesful message from the server.");
 
@@ -423,11 +490,17 @@ public class CxfX509EncTests extends CommonTests {
      * This is a negative scenario.
      *
      */
+    //2/2021 to test with EE7, then the corresponding message can be expected
     @Test
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
+    //Orig:
     @AllowedFFDC("org.apache.ws.security.WSSecurityException")
-    public void testCXFClientWrongDataEncAlgorithm() throws Exception {
-
-        String thisMethod = "testCXFClientWrongDataEncAlgorithm";
+    //Orig:
+    //public void testCXFClientWrongDataEncAlgorithm() throws Exception {
+    public void testCXFClientWrongDataEncAlgorithmEE7Only() throws Exception {
+        //Orig:
+        //String thisMethod = "testCXFClientWrongDataEncAlgorithm";
+        String thisMethod = "testCXFClientWrongDataEncAlgorithmEE7Only";
         printMethodName(thisMethod, "Start Prep for " + thisMethod);
         newClientWsdl = updateClientWsdl(defaultClientWsdlLoc + "X509XmlEnc2.wsdl",
                                          defaultClientWsdlLoc + "X509XmlEnc2Updated.wsdl");
@@ -453,7 +526,46 @@ public class CxfX509EncTests extends CommonTests {
                     // msg to send from svc client to server
                     "",
                     // expected response from server
+                    //Orig:
                     "AsymmetricBinding: The encryption algorithm does not match the requirement",
+                    // msg to issue if do NOT get the expected result
+                    "The test expected a succesful message from the server.");
+
+    }
+
+    //2/2021 to test with EE8, then the corresponding message can be expected
+    @Test
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @ExpectedFFDC("org.apache.wss4j.common.ext.WSSecurityException") //@AV999
+    public void testCXFClientWrongDataEncAlgorithmEE8Only() throws Exception {
+
+        String thisMethod = "testCXFClientWrongDataEncAlgorithmEE8Only";
+        printMethodName(thisMethod, "Start Prep for " + thisMethod);
+        newClientWsdl = updateClientWsdl(defaultClientWsdlLoc + "X509XmlEnc2.wsdl",
+                                         defaultClientWsdlLoc + "X509XmlEnc2Updated.wsdl");
+        Log.info(thisClass, thisMethod, "Using " + newClientWsdl);
+        printMethodName(thisMethod, "End Prep for " + thisMethod);
+        genericTest(
+                    // test name for logging
+                    "testCXFClientWrongDataEncAlgorithm",
+                    // Svc Client Url that generic test code should use
+                    clientHttpUrl,
+                    // Port that svc client code should use
+                    "",
+                    // user that svc client code should use
+                    "user1",
+                    // pw that svc client code should use
+                    "security",
+                    // wsdl sevice that svc client code should use
+                    "X509XmlEncService8",
+                    // wsdl that the svc client code should use
+                    newClientWsdl,
+                    // wsdl port that svc client code should use
+                    "UrnX509Enc8",
+                    // msg to send from svc client to server
+                    "",
+                    // expected response from server
+                    "An error was discovered processing the <wsse:Security> header", //@AV999
                     // msg to issue if do NOT get the expected result
                     "The test expected a succesful message from the server.");
 
@@ -469,11 +581,21 @@ public class CxfX509EncTests extends CommonTests {
      * This is a negative scenario.
      *
      */
+    //2/2021 to test with EE7, then the corresponding server_sym.xml can be used
     @Test
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
+    //Orig:
     @AllowedFFDC("org.apache.ws.security.WSSecurityException")
-    public void testCXFClientWrongEncryptionKey() throws Exception {
+    //Mei:
+    //@ExpectedFFDC("org.apache.wss4j.common.ext.WSSecurityException") //@AV999
+    //End
+    //Orig:
+    //public void testCXFClientWrongEncryptionKey() throws Exception {
+    public void testCXFClientWrongEncryptionKeyEE7Only() throws Exception {
 
-        String thisMethod = "testCXFClientWrongEncryptionKey";
+        //Orig:
+        //String thisMethod = "testCXFClientWrongEncryptionKey";
+        String thisMethod = "testCXFClientWrongEncryptionKeyEE7Only";
         printMethodName(thisMethod, "Start Prep for " + thisMethod);
         //orig:
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wrongEnc.xml");
@@ -504,6 +626,7 @@ public class CxfX509EncTests extends CommonTests {
                     // msg to send from svc client to server
                     "",
                     // expected response from server
+                    //Orig:
                     "The signature or decryption was invalid",
                     // msg to issue if do NOT get the expected result
                     "The test expected an exception from the server.");
@@ -511,6 +634,56 @@ public class CxfX509EncTests extends CommonTests {
         printMethodName(thisMethod, "Start Cleanup for " + thisMethod);
         //orig:
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
+        //Added 11/2020
+        //reconfigServerObj.reconfigServer(server, System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
+        printMethodName(thisMethod, "End Cleanup for " + thisMethod);
+
+    }
+
+    //2/2021 to test with EE8, then the corresponding message can be expected
+    @Test
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @ExpectedFFDC("org.apache.wss4j.common.ext.WSSecurityException") //@AV999
+    public void testCXFClientWrongEncryptionKeyEE8Only() throws Exception {
+
+        String thisMethod = "testCXFClientWrongEncryptionKeyEE8Only";
+        printMethodName(thisMethod, "Start Prep for " + thisMethod);
+        //orig:
+        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wrongEnc_wss4j.xml");
+        //Added 11/2020
+        //UpdateServerXml reconfigServerObj = new UpdateServerXml();
+        //reconfigServerObj.reconfigServer(server, System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wrongEnc.xml");
+        //Added 11/2020
+        //newReconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wrongEnc.xml");
+        printMethodName(thisMethod, "End Prep for " + thisMethod);
+
+        genericTest(
+                    // test name for logging
+                    thisMethod,
+                    // Svc Client Url that generic test code should use
+                    clientHttpUrl,
+                    // Port that svc client code should use
+                    "",
+                    // user that svc client code should use
+                    "user1",
+                    // pw that svc client code should use
+                    "security",
+                    // wsdl sevice that svc client code should use
+                    "X509XmlEncService9",
+                    // wsdl that the svc client code should use
+                    "",
+                    // wsdl port that svc client code should use
+                    "UrnX509Enc9",
+                    // msg to send from svc client to server
+                    "",
+                    // expected response from server
+                    "Cannot find key for alias: [alice]", //@AV999
+                    // msg to issue if do NOT get the expected result
+                    "The test expected an exception from the server.");
+
+        printMethodName(thisMethod, "Start Cleanup for " + thisMethod);
+        //orig:
+        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig_wss4j.xml");
         //Added 11/2020
         //reconfigServerObj.reconfigServer(server, System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
         printMethodName(thisMethod, "End Cleanup for " + thisMethod);
@@ -591,4 +764,19 @@ public class CxfX509EncTests extends CommonTests {
             e.printStackTrace(System.out);
         }
     }
+
+    //2/2021
+    public static void copyServerXml(String copyFromFile) throws Exception {
+
+        try {
+            String serverFileLoc = (new File(server.getServerConfigurationPath().replace('\\', '/'))).getParent();
+            Log.info(thisClass, "copyServerXml", "Copying: " + copyFromFile
+                                                 + " to " + serverFileLoc);
+            LibertyFileManager.copyFileIntoLiberty(server.getMachine(),
+                                                   serverFileLoc, "server.xml", copyFromFile);
+        } catch (Exception ex) {
+            ex.printStackTrace(System.out);
+        }
+    }
+
 }

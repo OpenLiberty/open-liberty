@@ -15,7 +15,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import componenttest.annotation.AllowedFFDC;
-import componenttest.annotation.ExpectedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -48,6 +47,9 @@ public class CxfSSLUNTBasicTests extends SSLTestCommon {
     @Test
     //Added 11/2020
     //@Mode(TestMode.FULL)
+    //Mei:
+    @AllowedFFDC("java.util.MissingResourceException") //@AV999
+    //End
     public void testUntWssecSvcClientSSL() throws Exception {
 
         genericTest("testUntWssecSvcClientSSL", untSSLClientUrl,
@@ -69,6 +71,9 @@ public class CxfSSLUNTBasicTests extends SSLTestCommon {
     @Test
     //Added 11/2020
     //@Mode(TestMode.FULL)
+    //Mei:
+    @AllowedFFDC("java.util.MissingResourceException")
+    //End
     public void testUntWssecSvcClientOverrideUserSSL() throws Exception {
 
         genericTest("testUntWssecSvcClientOverrideDefUserSSL", untSSLClientUrl,
@@ -90,6 +95,9 @@ public class CxfSSLUNTBasicTests extends SSLTestCommon {
     @Test
     //Added 11/2020
     //@Mode(TestMode.FULL)
+    //Mei:
+    @AllowedFFDC("java.util.MissingResourceException") //@AV999
+    //End
     public void testUntNoUserNoPasswordSSL() throws Exception {
 
         genericTest("testUntNoUserNoPasswordSSL", untSSLClientUrl,
@@ -111,7 +119,12 @@ public class CxfSSLUNTBasicTests extends SSLTestCommon {
     @Test
     //Added 11/2020
     //@Mode(TestMode.FULL)
-    @ExpectedFFDC("org.apache.ws.security.WSSecurityException")
+
+    //Orig:
+    //@ExpectedFFDC("org.apache.ws.security.WSSecurityException")
+    //Mei:
+    @AllowedFFDC(value = { "java.util.MissingResourceException", "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException" })
+    //End
     public void testUntCxfBadPswdSSL() throws Exception {
 
         genericTest("testUntCxfBadPswdSSL", untSSLClientUrl,
@@ -133,7 +146,13 @@ public class CxfSSLUNTBasicTests extends SSLTestCommon {
     @Test
     //Added 11/2020
     //@Mode(TestMode.FULL)
-    @AllowedFFDC("org.apache.ws.security.WSSecurityException")
+    //Orig:
+    //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
+    //Mei:
+    //@AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "java.util.MissingResourceException" })
+    //EE7 needs the old exception
+    @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "java.util.MissingResourceException", "org.apache.ws.security.WSSecurityException" })
+    //End
     public void testUntCxfBadPUserSSL() throws Exception {
 
         genericTest("testUntCxfBadPUserSSL", untSSLClientUrl,
@@ -155,6 +174,9 @@ public class CxfSSLUNTBasicTests extends SSLTestCommon {
     @Test
     //Added 11/2020
     //@Mode(TestMode.FULL)
+    //Mei:
+    @AllowedFFDC("java.util.MissingResourceException")
+    //End
     public void testUntCxfNoSSL() throws Exception {
 
         genericTest("testUntCxfNoSSL", untClientUrl,
@@ -176,6 +198,9 @@ public class CxfSSLUNTBasicTests extends SSLTestCommon {
     @Test
     //Added 11/2020
     //@Mode(TestMode.FULL)
+    //Mei:
+    @AllowedFFDC("java.util.MissingResourceException")
+    //End
     public void testUntWssecSvcClientSSLManaged() throws Exception {
 
         genericTest("testUntWssecSvcClientSSLManaged", untSSLClientUrl,
@@ -197,6 +222,9 @@ public class CxfSSLUNTBasicTests extends SSLTestCommon {
     @Test
     //Added 11/2020
     //@Mode(TestMode.FULL)
+    //Mei:
+    @AllowedFFDC("java.util.MissingResourceException")
+    //End
     public void testUntCxfSSL() throws Exception {
 
         genericTest("testUntCxfSSL", untSSLClientUrl,
@@ -218,6 +246,9 @@ public class CxfSSLUNTBasicTests extends SSLTestCommon {
     @Test
     //Added 11/2020
     //@Mode(TestMode.FULL)
+    //Mei:
+    @AllowedFFDC("java.util.MissingResourceException")
+    //End
     public void testUntCxfSSLManaged() throws Exception {
 
         genericTest("testUntCxfSSLManaged", untSSLClientUrl,

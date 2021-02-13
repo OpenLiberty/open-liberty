@@ -12,6 +12,7 @@
 package com.ibm.ws.wssecurity.fat.cxf.x509migtoken;
 
 import java.io.File;
+import java.util.Set;
 
 import org.junit.After;
 import org.junit.BeforeClass;
@@ -21,12 +22,16 @@ import org.junit.runner.RunWith;
 
 //Added 11/2020
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.wssecurity.fat.utils.common.CommonTests;
 //Added 11/2020
 import com.ibm.ws.wssecurity.fat.utils.common.PrepCommonSetup;
 import com.ibm.ws.wssecurity.fat.utils.common.UpdateWSDLPortNum;
 
+//Mei:
+import componenttest.annotation.AllowedFFDC;
+//End
 //Added 11/2020
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -56,12 +61,23 @@ public class CxfEndSupTokensAsymTests extends CommonTests {
     @BeforeClass
     public static void setUp() throws Exception {
 
+        //2/2021
+        ServerConfiguration config = server.getServerConfiguration();
+        Set<String> features = config.getFeatureManager().getFeatures();
+        if (features.contains("usr:wsseccbh-1.0")) {
+            server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbh.jar");
+            server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-1.0.mf");
+        }
+        if (features.contains("usr:wsseccbh-2.0")) {
+            server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
+            server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-2.0.mf");
+            copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
+        }
+
         //Added 11/2020
         ShrinkHelper.defaultDropinApp(server, "endsuptokensclient", "com.ibm.ws.wssecurity.fat.endsuptokensclient", "test.wssecfvt.endsuptokens",
                                       "test.wssecfvt.endsuptokens.types");
         ShrinkHelper.defaultDropinApp(server, "endsuptokens", "com.ibm.ws.wssecurity.fat.endsuptokens");
-        server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbh.jar");
-        server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-1.0.mf");
         PrepCommonSetup serverObject = new PrepCommonSetup();
         serverObject.prepareSetup(server);
 
@@ -81,6 +97,9 @@ public class CxfEndSupTokensAsymTests extends CommonTests {
      *
      */
     @Test
+    //Mei:
+    @AllowedFFDC("java.util.MissingResourceException") //@AV999
+    //End
     public void testCXFEndSupTokens0() throws Exception {
 
         String thisMethod = "testCXFEndSupTokens0";
@@ -125,8 +144,9 @@ public class CxfEndSupTokensAsymTests extends CommonTests {
     //@Test
     public void testCXFEndSupTokens0AddEncrypted() throws Exception {
 
-        String thisMethod = "testCXFEndSupTokens0";
-
+        //2/2021 Orig:
+        //String thisMethod = "testCXFEndSupTokens0";
+        String thisMethod = "testCXFEndSupTokens0AddEncrypte";
         newClientWsdl = updateClientWsdl(defaultClientWsdlLoc + "EndSupTokens/EndSupTokens0AddEncrypted.wsdl", defaultClientWsdlLoc
                                                                                                                + "EndSupTokens/EndSupTokens0AddEncryptedUpdated.wsdl");
         genericTest(
@@ -167,6 +187,9 @@ public class CxfEndSupTokensAsymTests extends CommonTests {
      *
      */
     @Test
+    //Mei
+    @AllowedFFDC("java.util.MissingResourceException") //@AV999
+    //End
     public void testCXFEndSupTokens0Body() throws Exception {
 
         String thisMethod = "testCXFEndSupTokens0Body";
@@ -209,6 +232,9 @@ public class CxfEndSupTokensAsymTests extends CommonTests {
      *
      */
     @Test
+    //Mei:
+    @AllowedFFDC("java.util.MissingResourceException") //@AV999
+    //End
     public void testCXFEndSupTokens0BodyElement() throws Exception {
 
         String thisMethod = "testCXFEndSupTokens0BodyElement";
@@ -293,6 +319,9 @@ public class CxfEndSupTokensAsymTests extends CommonTests {
      *
      */
     @Test
+    //Mei:
+    @AllowedFFDC("java.util.MissingResourceException") //@AV999
+    //End
     public void testCXFEndSupTokens1() throws Exception {
 
         String thisMethod = "testCXFEndSupTokens1";

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+S * Copyright (c) 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import org.junit.runner.RunWith;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 
 //12/2020 Setting this test class for LITE bucket
@@ -39,6 +40,9 @@ public class CxfSSLUNTNonceTests extends SSLTestCommon {
     @Test
     //Added 11/2020
     //@Mode(TestMode.FULL)
+    //Mei:
+    @AllowedFFDC("java.util.MissingResourceException") //@AV999
+    //End
     public void testCxfUntNonceOnlySSL() throws Exception {
 
         genericTest("testCxfUntNonceOnlySSL", untSSLClientUrl,
@@ -62,6 +66,9 @@ public class CxfSSLUNTNonceTests extends SSLTestCommon {
     @Test
     //Added 11/2020
     //@Mode(TestMode.FULL)
+    //Mei:
+    @AllowedFFDC("java.util.MissingResourceException") //@AV999
+    //End
     public void testCxfUntNonceAndCreatedSSL() throws Exception {
 
         genericTest("testCxfUntNonceAndCreatedSSL", untSSLClientUrl,
@@ -86,6 +93,9 @@ public class CxfSSLUNTNonceTests extends SSLTestCommon {
     @Test
     //Added 11/2020
     //@Mode(TestMode.FULL)
+    //Mei:
+    @AllowedFFDC("java.util.MissingResourceException") //@AV999
+    //End
     public void testCxfUntNonceAndCreatedNoIdSSL() throws Exception {
 
         genericTest("testCxfUntNonceAndCreatedNoIdSSL", untSSLClientUrl,
@@ -113,7 +123,13 @@ public class CxfSSLUNTNonceTests extends SSLTestCommon {
     @Test
     //Added 11/2020
     //@Mode(TestMode.FULL)
-    @ExpectedFFDC("org.apache.ws.security.WSSecurityException")
+    //Orig: this will trigger failure although test passed
+    //@ExpectedFFDC("org.apache.ws.security.WSSecurityException")
+    //Mei:
+    //@AllowedFFDC(value = { "java.util.MissingResourceException", "org.apache.wss4j.common.ext.WSSecurityException" }) //@AV999
+    //this will be better for both features:
+    @AllowedFFDC(value = { "java.util.MissingResourceException", "org.apache.wss4j.common.ext.WSSecurityException", "org.apache.ws.security.WSSecurityException" })
+    //End
     public void testCxfUntExpiredMsgSSL() throws Exception {
 
         genericTest("testCxfUntExpiredMsgSSL", untSSLClientUrl, portNumberSecure,
@@ -131,17 +147,21 @@ public class CxfSSLUNTNonceTests extends SSLTestCommon {
      * is made using https. The call to the server is also made using https.
      * TransportBinding, Nonce and Created are specified in the wsdl. A
      * hard-coded message containing a timestamp that is in the future. The
-     * request should fail as the message is set in th future.
+     * request should fail as the message is set in the future.
      *
      */
+
+    //2/2021 run with EE7
     @Test
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     //Added 11/2020
     //@Mode(TestMode.FULL)
+    //Orig: need to work on old feature
     @AllowedFFDC("org.apache.ws.security.WSSecurityException")
-    public void testCxfUntOldExtFutureTimestampSSL() throws Exception {
+    public void testCxfUntOldExtFutureTimestampSSLEE7Only() throws Exception {
 
         genericTest(
-                    "testSslCxfWebService07OldExtFutureTimestampNegative",
+                    "testCxfUntOldExtFutureTimestampSSLEE7Only",
                     untSSLClientUrl,
                     portNumberSecure,
                     "user1",
@@ -151,6 +171,34 @@ public class CxfSSLUNTNonceTests extends SSLTestCommon {
                     "",
                     "futureTime",
                     "The message has expired (WSSecurityEngine: Invalid timestamp The security semantics of the message have expired)",
+                    "A future time stamp in WS request did not fail");
+
+    }
+
+    //2/2021 to run with EE8
+    @Test
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    //Added 11/2020
+    //@Mode(TestMode.FULL)
+    //Mei:
+    @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "java.util.MissingResourceException" })
+    //End
+    public void testCxfUntOldExtFutureTimestampSSLEE8Only() throws Exception {
+
+        genericTest(
+                    "testCxfUntOldExtFutureTimestampSSLEE8Only",
+                    untSSLClientUrl,
+                    portNumberSecure,
+                    "user1",
+                    "security",
+                    "FVTVersionBA7Service",
+                    "UrnBasicPlcyBA7",
+                    "",
+                    "futureTime",
+                    //Mei: this works for jaxws-2.2 only
+                    //"The message has expired (WSSecurityEngine: Invalid timestamp The security semantics of the message have expired)",
+                    "Invalid timestamp: The message timestamp is out of range", //@AV999 new message
+                    //End
                     "A future time stamp in WS request did not fail");
 
     }
@@ -168,6 +216,9 @@ public class CxfSSLUNTNonceTests extends SSLTestCommon {
     @Test
     //Added 11/2020
     //@Mode(TestMode.FULL)
+    //Mei:
+    @AllowedFFDC("java.util.MissingResourceException") //@AV999
+    //End
     public void testCxfUntReqTimestampSSL() throws Exception {
 
         genericTest("testCxfUntReqTimestampSSL", untSSLClientUrl,
@@ -188,14 +239,18 @@ public class CxfSSLUNTNonceTests extends SSLTestCommon {
      * expects a failure as the timestamp content is missing.
      *
      */
+
+    //2/2021 run with EE7
     @Test
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     //Added 11/2020
     //@Mode(TestMode.FULL)
+    //Orig:
     @ExpectedFFDC("org.apache.ws.security.WSSecurityException")
-    public void testCxfUntReqTimestampMissingSSL() throws Exception {
+    public void testCxfUntReqTimestampMissingSSLEE7Only() throws Exception {
 
         genericTest(
-                    "testCxfUntReqTimestampMissingSSL",
+                    "testCxfUntReqTimestampMissingSSLEE7Only",
                     untSSLClientUrl,
                     portNumberSecure,
                     "user1",
@@ -204,7 +259,34 @@ public class CxfSSLUNTNonceTests extends SSLTestCommon {
                     "UrnBasicPlcyBA5",
                     "",
                     "missingTimestamp",
+                    //orig:
                     timestampReqButMissing,
+                    "The test expected an exception from the server because the timestamp was missing.");
+
+    }
+
+    //2/2021 run with EE8
+    @Test
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    //Added 11/2020
+    //@Mode(TestMode.FULL)
+    @AllowedFFDC(value = { "java.util.MissingResourceException", "org.apache.wss4j.common.ext.WSSecurityException" }) //@AV999
+    //End
+    public void testCxfUntReqTimestampMissingSSLEE8Only() throws Exception {
+
+        genericTest(
+                    "testCxfUntReqTimestampMissingSSLEE8Only",
+                    untSSLClientUrl,
+                    portNumberSecure,
+                    "user1",
+                    "security",
+                    "FVTVersionBA5Service",
+                    "UrnBasicPlcyBA5",
+                    "",
+                    "missingTimestamp",
+                    //Mei:
+                    morethanOneTimestamp,
+                    //End
                     "The test expected an exception from the server because the timestamp was missing.");
 
     }
@@ -264,14 +346,36 @@ public class CxfSSLUNTNonceTests extends SSLTestCommon {
      * exception.
      *
      */
+
+    //2/2021 run with EE7
     @Test
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     //Added 11/2020
     //@Mode(TestMode.FULL)
+    //Orig: also needs the old variable replayAttack to work on old feature
     @ExpectedFFDC("org.apache.ws.security.WSSecurityException")
-    public void testCxfUntReplaySSL() throws Exception {
-        genericTest("testCxfUntReplaySSL", untSSLClientUrl, portNumberSecure,
+    public void testCxfUntReplaySSLEE7Only() throws Exception {
+
+        genericTest("testCxfUntReplaySSLEE7Only", untSSLClientUrl, portNumberSecure,
                     "user1", "security", "FVTVersionBA7Service", "UrnBasicPlcyBA7",
+                    //Orig: only works for jaxws-2.2
                     "true", "", replayAttack,
+                    "Second call to FVTVersionBA7Service should have failed");
+    }
+
+    // 2/2021 run with EE8
+    @Test
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    //Added 11/2020
+    //@Mode(TestMode.FULL)
+    //Mei:
+    @AllowedFFDC(value = { "java.util.MissingResourceException", "org.apache.wss4j.common.ext.WSSecurityException" }) //@AV999
+    //End
+    public void testCxfUntReplaySSLEE8Only() throws Exception {
+
+        genericTest("testCxfUntReplaySSLEE8Only", untSSLClientUrl, portNumberSecure,
+                    "user1", "security", "FVTVersionBA7Service", "UrnBasicPlcyBA7",
+                    "true", "", replayAttackNew, //@AV999
                     "Second call to FVTVersionBA7Service should have failed");
     }
 
@@ -286,14 +390,40 @@ public class CxfSSLUNTNonceTests extends SSLTestCommon {
      * a replay exception.
      *
      */
+
+    //2/2021 run with EE7
     @Test
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     //Added 11/2020
     //@Mode(TestMode.FULL)
+    //Orig:
     @ExpectedFFDC("org.apache.ws.security.WSSecurityException")
-    public void testCxfUntHardcodedReplaySSL() throws Exception {
-        genericTest("testCxfUntReplaySSL", untSSLClientUrl, portNumberSecure,
+    public void testCxfUntHardcodedReplaySSLEE7Only() throws Exception {
+
+        genericTest("testCxfUntHardcodedReplaySSLEE7Only", untSSLClientUrl, portNumberSecure,
                     "user1", "security", "FVTVersionBA7Service", "UrnBasicPlcyBA7",
+                    //orig:
                     "true", "strReplayNonce", replayAttack,
+                    "Second call to FVTVersionBA7Service should have failed");
+    }
+
+    //2/2021 run with EE8
+    @Test
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    //Added 11/2020
+    //@Mode(TestMode.FULL)
+    //Mei:
+    @AllowedFFDC(value = { "java.util.MissingResourceException", "org.apache.wss4j.common.ext.WSSecurityException" }) //@AV999
+    //End
+    public void testCxfUntHardcodedReplaySSLEE8Only() throws Exception {
+
+        genericTest("testCxfUntHardcodedReplaySSLEE8Only", untSSLClientUrl, portNumberSecure,
+                    "user1", "security", "FVTVersionBA7Service", "UrnBasicPlcyBA7",
+                    //orig:
+                    //"true", "strReplayNonce", replayAttack,
+                    //Mei:
+                    "true", "strReplayNonce", replayAttackNew, //@AV999
+                    //End
                     "Second call to FVTVersionBA7Service should have failed");
     }
 

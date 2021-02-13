@@ -15,6 +15,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.util.Set;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -24,6 +25,7 @@ import org.junit.runner.RunWith;
 
 //Added 11/2020
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.wssecurity.fat.utils.common.SharedTools;
 import com.meterware.httpunit.GetMethodWebRequest;
@@ -80,20 +82,33 @@ public class CxfX509MigSymSha2NegativeTests {
     @BeforeClass
     public static void setUp() throws Exception {
 
-        copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_badsha2.xml");
+        //Orig:
+        //copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_badsha2.xml");
 
         String thisMethod = "setup";
 
         //orig from CL:
         //SharedTools.installCallbackHandler(server);
 
+        //2/2021
+        ServerConfiguration config = server.getServerConfiguration();
+        Set<String> features = config.getFeatureManager().getFeatures();
+        if (features.contains("usr:wsseccbh-1.0")) {
+            server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbh.jar");
+            server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-1.0.mf");
+            copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_badsha2.xml");
+        }
+        if (features.contains("usr:wsseccbh-2.0")) {
+            server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
+            server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-2.0.mf");
+            copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_badsha2_wss4j.xml");
+        }
+
         //Added 11/2020
         ShrinkHelper.defaultDropinApp(server, "x509migclient", "com.ibm.ws.wssecurity.fat.x509migclient", "test.libertyfat.x509mig.contract", "test.libertyfat.x509mig.types");
         ShrinkHelper.defaultDropinApp(server, "x509migbadclient", "com.ibm.ws.wssecurity.fat.x509migbadclient", "test.libertyfat.x509mig.contract",
                                       "test.libertyfat.x509mig.types");
         ShrinkHelper.defaultDropinApp(server, "x509migtoken", "basicplcy.wssecfvt.test");
-        server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbh.jar");
-        server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-1.0.mf");
 
         server.startServer();// check CWWKS0008I: The security service is ready.
         SharedTools.waitForMessageInLog(server, "CWWKS0008I");
@@ -133,9 +148,16 @@ public class CxfX509MigSymSha2NegativeTests {
      */
 
     @Test
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.lang.Exception" })
+    //Orig:
+    //@AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.lang.Exception" })
+    //Mei:
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.lang.Exception", "org.apache.wss4j.common.ext.WSSecurityException" })
+    //End
     public void testCxfX509KeyIdMigSymServiceSha1ToSha512() throws Exception {
-        String thisMethod = "testCxfX509KeyIdMigSymService";
+
+        //2/2021 Orig:
+        //String thisMethod = "testCxfX509KeyIdMigSymService";
+        String thisMethod = "testCxfX509KeyIdMigSymServiceSha1ToSha512";
         methodFull = "testCxfX509KeyIdMigSymServiceSha1ToSha512";
 
         try {
@@ -165,9 +187,16 @@ public class CxfX509MigSymSha2NegativeTests {
      */
 
     @Test
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.lang.Exception" })
+    //Orig:
+    //@AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.lang.Exception" })
+    //Mei:
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.lang.Exception", "org.apache.wss4j.common.ext.WSSecurityException" })
+    //End
     public void testCxfX509KeyIdMigSymServiceHttpsSha1ToSha512() throws Exception {
-        String thisMethod = "testCxfX509KeyIdMigSymService";
+
+        //2/2021 Orig:
+        //String thisMethod = "testCxfX509KeyIdMigSymService";
+        String thisMethod = "testCxfX509KeyIdMigSymServiceHttpsSha1ToSha512";
         methodFull = "testCxfX509KeyIdMigSymServiceHttpsSh1ToSha512";
 
         try {
@@ -197,9 +226,16 @@ public class CxfX509MigSymSha2NegativeTests {
      */
 
     @Test
-    @AllowedFFDC("org.apache.ws.security.WSSecurityException")
+    //Orig:
+    //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
+    //Mei:
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException" })
+    //End
     public void testCxfX509IssuerSerialMigSymServiceSha1ToSha512() throws Exception {
-        String thisMethod = "testCxfX509IssuerSerialMigSymService";
+
+        //2/2021 Orig:
+        //String thisMethod = "testCxfX509IssuerSerialMigSymService";
+        String thisMethod = "testCxfX509IssuerSerialMigSymServiceSha1ToSha512";
         methodFull = "testCxfX509IssuerSerialMigSymServiceSha1ToSha512";
 
         try {
@@ -363,6 +399,12 @@ public class CxfX509MigSymSha2NegativeTests {
         }
         //orig from CL:
         //SharedTools.unInstallCallbackHandler(server);
+        //2/2021
+        server.deleteFileFromLibertyInstallRoot("usr/extension/lib/bundles/com.ibm.ws.wssecurity.example.cbh.jar");
+        server.deleteFileFromLibertyInstallRoot("usr/extension/lib/features/wsseccbh-1.0.mf");
+        server.deleteFileFromLibertyInstallRoot("usr/extension/lib/bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
+        server.deleteFileFromLibertyInstallRoot("usr/extension/lib/features/wsseccbh-2.0.mf");
+
     }
 
     private static void printMethodName(String strMethod) {
