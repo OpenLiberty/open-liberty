@@ -84,7 +84,7 @@ public class PermissionManagerTest {
     private final Collection<BundleCapability> matchingCapabilities = new HashSet<BundleCapability>();
 
     @Before
-    public void setup() throws IOException, ClassNotFoundException  {
+    public void setup() throws IOException {
         inServerProcess();
         withSharedLibraryProtectionDomains();
         withSystemBundleAndCapabilities();
@@ -96,7 +96,7 @@ public class PermissionManagerTest {
         permissionManager.activate(componentContext);
     }
 
-    private void inServerProcess() throws ClassNotFoundException {
+    private void inServerProcess() {
         mock.checking(new Expectations() {
             {
                 allowing(componentContext).getBundleContext();
@@ -105,13 +105,10 @@ public class PermissionManagerTest {
                 will(returnValue("server"));
             }
         });
-
-
     }
 
     @SuppressWarnings("unchecked")
     private void withSharedLibraryProtectionDomains() {
-
         mock.checking(new Expectations() {
             {
                 one(classLoadingService).setSharedLibraryProtectionDomains(with(any(Map.class)));
@@ -149,7 +146,7 @@ public class PermissionManagerTest {
     }
 
     @Test
-    public void restrictablePermissionsWithExitVMGrant()  throws ClassNotFoundException {
+    public void restrictablePermissionsWithExitVMGrant() {
         withSharedLibraryProtectionDomains();
         grantExitVM();
         ArrayList<Permission> permissions = permissionManager.getRestrictablePermissions();
@@ -158,7 +155,7 @@ public class PermissionManagerTest {
     }
 
     @Test
-    public void restrictablePermissionsWithReadPropertyRestrict()  throws ClassNotFoundException {
+    public void restrictablePermissionsWithReadPropertyRestrict() {
         withSharedLibraryProtectionDomains();
         grantReadProperty(null, true);
         ArrayList<Permission> permissions = permissionManager.getRestrictablePermissions();
@@ -167,7 +164,7 @@ public class PermissionManagerTest {
     }
 
     @Test
-    public void restrictablePermissionsWithReadPropertyGrantAndRestrict()  throws ClassNotFoundException {
+    public void restrictablePermissionsWithReadPropertyGrantAndRestrict() {
         withSharedLibraryProtectionDomains();
         grantAndRestrictReadProperty();
         ArrayList<Permission> permissions = permissionManager.getRestrictablePermissions();
@@ -179,7 +176,7 @@ public class PermissionManagerTest {
     }
 
     @Test
-    public void restrictablePermissionsWithReadpropertyGrant()  throws ClassNotFoundException {
+    public void restrictablePermissionsWithReadpropertyGrant() {
         withSharedLibraryProtectionDomains();
         grantReadProperty(null, false);
         ArrayList<Permission> permissions = permissionManager.getRestrictablePermissions();
@@ -253,7 +250,8 @@ public class PermissionManagerTest {
                     }
 
                     @Override
-                    public void describeTo(Description arg0) {}
+                    public void describeTo(Description arg0) {
+                    }
                 }));
             }
         });
@@ -323,28 +321,26 @@ public class PermissionManagerTest {
         usesBundleClassLoaderToLoadPermissionClass(bundlePermissionClassName);
 
         setupPermission(bundlePermissionClassName, "someName", null, false, null);
-
     }
 
-    private void grantExitVM()  throws ClassNotFoundException {
+    private void grantExitVM() {
         setupPermission("java.lang.RuntimePermission", "exitVM", null, false, null);
     }
 
-    private void grantReadProperty(String codeBase, boolean restrict)  throws ClassNotFoundException {
+    private void grantReadProperty(String codeBase, boolean restrict) {
         setupPermission("java.util.PropertyPermission", "os.name", "read", restrict, codeBase);
     }
 
     @SuppressWarnings("unchecked")
-    private void grantAndRestrictReadProperty()  throws ClassNotFoundException {
+    private void grantAndRestrictReadProperty() {
         ServiceReference<JavaPermissionsConfiguration> permissionRef = createPermissionRef("java.util.PropertyPermission", "os.name", "read", false, null);
         ServiceReference<JavaPermissionsConfiguration> permission1Ref = createPermissionRef("java.util.PropertyPermission", "os.name", "read", true, null);
         setPermissions(permissionRef, permission1Ref);
     }
 
     @SuppressWarnings("unchecked")
-    private void setupPermission(String className, String name, String actions, boolean restrict, String codeBase)  throws ClassNotFoundException {
+    private void setupPermission(String className, String name, String actions, boolean restrict, String codeBase) {
         ServiceReference<JavaPermissionsConfiguration> permissionRef = createPermissionRef(className, name, actions, restrict, codeBase);
-
         setPermissions(permissionRef);
     }
 
@@ -385,15 +381,13 @@ public class PermissionManagerTest {
     }
 
     @SuppressWarnings("unchecked")
-    private void setPermissions(ServiceReference<JavaPermissionsConfiguration>... permissionRefs) throws ClassNotFoundException {
-
+    private void setPermissions(ServiceReference<JavaPermissionsConfiguration>... permissionRefs) {
         for (ServiceReference<JavaPermissionsConfiguration> permissionRef : permissionRefs) {
             permissionManager.setPermission(permissionRef);
         }
 
         permissionManager.deactivate(componentContext);
         permissionManager.activate(componentContext);
-
     }
 
     private void usesBundleClassLoaderToLoadPermissionClass(final String bundlePermissionClassName) throws ClassNotFoundException {
@@ -405,14 +399,13 @@ public class PermissionManagerTest {
 
         mock.checking(new Expectations() {
             {
-                allowing(bundleCapability).getRevision();
+                one(bundleCapability).getRevision();
                 will(returnValue(bundleRevision));
-                allowing(bundleRevision).getWiring();
+                one(bundleRevision).getWiring();
                 will(returnValue(providerBundleWiring));
-                allowing(providerBundleWiring).getClassLoader();
+                one(providerBundleWiring).getClassLoader();
                 will(returnValue(classloader));
-                allowing(classloader).loadClass(with(any(String.class)));
-                allowing(classloader).loadClass(bundlePermissionClassName);
+                one(classloader).loadClass(bundlePermissionClassName);
                 will(returnValue(TestBundlePermission.class));
             }
         });
