@@ -77,7 +77,6 @@ public class TestCallbackException_EJB_SFEX_Servlet extends EJBTestVehicleServle
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", CallbackPackageEntity.class.getSimpleName());
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -91,7 +90,6 @@ public class TestCallbackException_EJB_SFEX_Servlet extends EJBTestVehicleServle
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLCallbackPackageEntity.class.getSimpleName());
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -107,7 +105,6 @@ public class TestCallbackException_EJB_SFEX_Servlet extends EJBTestVehicleServle
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", CallbackPrivateEntity.class.getSimpleName());
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -121,7 +118,6 @@ public class TestCallbackException_EJB_SFEX_Servlet extends EJBTestVehicleServle
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLCallbackPrivateEntity.class.getSimpleName());
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -137,7 +133,6 @@ public class TestCallbackException_EJB_SFEX_Servlet extends EJBTestVehicleServle
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", CallbackProtectedEntity.class.getSimpleName());
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -151,7 +146,6 @@ public class TestCallbackException_EJB_SFEX_Servlet extends EJBTestVehicleServle
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLCallbackProtectedEntity.class.getSimpleName());
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -167,7 +161,6 @@ public class TestCallbackException_EJB_SFEX_Servlet extends EJBTestVehicleServle
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", CallbackPublicEntity.class.getSimpleName());
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -181,7 +174,6 @@ public class TestCallbackException_EJB_SFEX_Servlet extends EJBTestVehicleServle
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLCallbackPublicEntity.class.getSimpleName());
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -207,7 +199,6 @@ public class TestCallbackException_EJB_SFEX_Servlet extends EJBTestVehicleServle
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", CallbackPackageMSCEntity.class.getSimpleName());
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -221,7 +212,6 @@ public class TestCallbackException_EJB_SFEX_Servlet extends EJBTestVehicleServle
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLCallbackPackageMSCEntity.class.getSimpleName());
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -237,7 +227,6 @@ public class TestCallbackException_EJB_SFEX_Servlet extends EJBTestVehicleServle
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", CallbackPrivateMSCEntity.class.getSimpleName());
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -251,7 +240,6 @@ public class TestCallbackException_EJB_SFEX_Servlet extends EJBTestVehicleServle
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLCallbackPrivateMSCEntity.class.getSimpleName());
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -267,7 +255,6 @@ public class TestCallbackException_EJB_SFEX_Servlet extends EJBTestVehicleServle
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", CallbackProtectedMSCEntity.class.getSimpleName());
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -281,7 +268,6 @@ public class TestCallbackException_EJB_SFEX_Servlet extends EJBTestVehicleServle
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLCallbackProtectedMSCEntity.class.getSimpleName());
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -297,7 +283,6 @@ public class TestCallbackException_EJB_SFEX_Servlet extends EJBTestVehicleServle
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", CallbackPublicMSCEntity.class.getSimpleName());
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -311,7 +296,6 @@ public class TestCallbackException_EJB_SFEX_Servlet extends EJBTestVehicleServle
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLCallbackPublicMSCEntity.class.getSimpleName());
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 }

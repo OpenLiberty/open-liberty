@@ -35,11 +35,12 @@ import com.ibm.ws.testtooling.vehicle.resources.JPAResource;
 import com.ibm.ws.testtooling.vehicle.resources.TestExecutionResources;
 
 public class CallbackTestLogic extends AbstractTestLogic {
+
     /**
      * Test callback methods on entity classes. Supports testing of entities declared by annotation and
      * XML, and supports stand-alone entity classes and entities that gain callback methods from
      * mapped superclasses.
-     *
+     * <p>
      * Points: 10
      */
     public void testCallback001(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
@@ -66,6 +67,8 @@ public class CallbackTestLogic extends AbstractTestLogic {
             return;
         }
 
+        int id = 1;
+
         // Execute Test Case
         try {
             System.out.println("CallbackTestLogic.testCallback001(): Begin");
@@ -87,8 +90,8 @@ public class CallbackTestLogic extends AbstractTestLogic {
 
             System.out.println("Creating new object instance of " + targetEntityType.getEntityName() + "...");
             ICallbackEntity entity_persist = (ICallbackEntity) constructNewEntityObject(targetEntityType);
-            entity_persist.setId(1);
-            entity_persist.setName("CallbackEntity-1");
+            entity_persist.setId(id);
+            entity_persist.setName("testCallback001-CallbackEntity-" + id);
             Assert.assertEquals("Assert no lifecycle callbacks have been fired yet.",
                                 0, ((AbstractCallbackListener) entity_persist).getFiredLifeCycleSet().size());
 
@@ -121,8 +124,8 @@ public class CallbackTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().joinTransaction();
             }
 
-            System.out.println("Finding " + targetEntityType.getEntityName() + "(id=1)...");
-            ICallbackEntity entity_find = (ICallbackEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), 1);
+            System.out.println("Finding " + targetEntityType.getEntityName() + "(id=" + id + ")...");
+            ICallbackEntity entity_find = (ICallbackEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), id);
             Assert.assertNotNull("Assert find() did not return null.", entity_find);
             Assert.assertTrue("Assert @PostLoad has fired.",
                               (((AbstractCallbackListener) entity_find).getFiredLifeCycleSet().contains(CallbackLifeCycle.PostLoad)));
@@ -136,7 +139,7 @@ public class CallbackTestLogic extends AbstractTestLogic {
             // Note when @PreUpdate fires is vendor specific, it could fire each time the object's persistent fields
             // are changed, or it could be fired when the transaction is in the process of committing.
             System.out.println("3) Test @PreUpdate and @PostUpdate");
-            System.out.println("Updating " + targetEntityType.getEntityName() + "(id=1)'s name field...");
+            System.out.println("Updating " + targetEntityType.getEntityName() + "(id=" + id + ")'s name field...");
             entity_find.setName("Mutated Name");
 
             System.out.println("Committing transaction...");
@@ -165,11 +168,11 @@ public class CallbackTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().joinTransaction();
             }
 
-            System.out.println("Finding " + targetEntityType.getEntityName() + "(id=1)...");
-            ICallbackEntity entity_remove = (ICallbackEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), 1);
+            System.out.println("Finding " + targetEntityType.getEntityName() + "(id=" + id + ")...");
+            ICallbackEntity entity_remove = (ICallbackEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), id);
             Assert.assertNotNull("Assert find() did not return null.", entity_remove);
 
-            System.out.println("Calling remove() on " + targetEntityType.getEntityName() + "(id=1) ...");
+            System.out.println("Calling remove() on " + targetEntityType.getEntityName() + "(id=" + id + ") ...");
             jpaResource.getEm().remove(entity_remove);
             Assert.assertTrue("Assert @PreRemove has fired.",
                               (((AbstractCallbackListener) entity_remove).getFiredLifeCycleSet().contains(CallbackLifeCycle.PreRemove)));
@@ -198,7 +201,7 @@ public class CallbackTestLogic extends AbstractTestLogic {
 
     /**
      * Test callback methods on default listener classes.
-     *
+     * <p>
      * Points: 34
      */
     public void testCallback002(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
@@ -225,6 +228,8 @@ public class CallbackTestLogic extends AbstractTestLogic {
             return;
         }
 
+        int id = 2;
+
         // Execute Test Case
         try {
             System.out.println("CallbackTestLogic.testCallback002(): Begin");
@@ -247,8 +252,8 @@ public class CallbackTestLogic extends AbstractTestLogic {
 
             System.out.println("Creating new object instance of " + targetEntityType.getEntityName() + "...");
             ICallbackEntity entity_persist = (ICallbackEntity) constructNewEntityObject(targetEntityType);
-            entity_persist.setId(1);
-            entity_persist.setName("CallbackEntity-1");
+            entity_persist.setId(id);
+            entity_persist.setName("testCallback002-CallbackEntity-" + id);
 
             // Assert no lifecycle callbacks have been fired yet (4 points)
             Assert.assertEquals("Assert no lifecycle callbacks have been fired yet for DefaultCallbackListenerPackage",
@@ -320,8 +325,8 @@ public class CallbackTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().joinTransaction();
             }
 
-            System.out.println("Finding " + targetEntityType.getEntityName() + "(id=1)...");
-            ICallbackEntity entity_find = (ICallbackEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), 1);
+            System.out.println("Finding " + targetEntityType.getEntityName() + "(id=" + id + ")...");
+            ICallbackEntity entity_find = (ICallbackEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), id);
             Assert.assertNotNull("Assert find() did not return null.", entity_find);
 
             // Assert @PostLoad has fired (4 points)
@@ -359,7 +364,7 @@ public class CallbackTestLogic extends AbstractTestLogic {
             System.out.println("3) Test @PreUpdate and @PostUpdate");
             resetDefaultListeners();
 
-            System.out.println("Updating " + targetEntityType.getEntityName() + "(id=1)'s name field...");
+            System.out.println("Updating " + targetEntityType.getEntityName() + "(id=" + id + ")'s name field...");
             entity_find.setName("Mutated Name");
 
             System.out.println("Committing transaction...");
@@ -419,8 +424,8 @@ public class CallbackTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().joinTransaction();
             }
 
-            System.out.println("Finding " + targetEntityType.getEntityName() + "(id=1)...");
-            ICallbackEntity entity_remove = (ICallbackEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), 1);
+            System.out.println("Finding " + targetEntityType.getEntityName() + "(id=" + id + ")...");
+            ICallbackEntity entity_remove = (ICallbackEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), 2);
             Assert.assertNotNull("Assert find() did not return null.", entity_remove);
 
             System.out.println("Calling remove() on " + targetEntityType.getEntityName() + "(id=1) ...");
@@ -496,7 +501,7 @@ public class CallbackTestLogic extends AbstractTestLogic {
 
     /**
      * Verify that default listener classes will not fire for entities that request exclusion.
-     *
+     * <p>
      * Points: 34
      */
     public void testCallback003(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
@@ -523,6 +528,8 @@ public class CallbackTestLogic extends AbstractTestLogic {
             return;
         }
 
+        int id = 3;
+
         // Execute Test Case
         try {
             System.out.println("CallbackTestLogic.testCallback003(): Begin");
@@ -545,8 +552,8 @@ public class CallbackTestLogic extends AbstractTestLogic {
 
             System.out.println("Creating new object instance of " + targetEntityType.getEntityName() + "...");
             ICallbackEntity entity_persist = (ICallbackEntity) constructNewEntityObject(targetEntityType);
-            entity_persist.setId(1);
-            entity_persist.setName("CallbackEntity-1");
+            entity_persist.setId(id);
+            entity_persist.setName("testCallback003-CallbackEntity-" + id);
 
             // Assert no lifecycle callbacks have been fired yet (4 points)
             Assert.assertEquals("Assert no lifecycle callbacks have been fired yet for DefaultCallbackListenerPackage",
@@ -618,8 +625,8 @@ public class CallbackTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().joinTransaction();
             }
 
-            System.out.println("Finding " + targetEntityType.getEntityName() + "(id=1)...");
-            ICallbackEntity entity_find = (ICallbackEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), 1);
+            System.out.println("Finding " + targetEntityType.getEntityName() + "(id=" + id + ")...");
+            ICallbackEntity entity_find = (ICallbackEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), id);
             Assert.assertNotNull("Assert find() did not return null.", entity_find);
 
             // Assert @PostLoad has NOT fired (4 points)
@@ -657,7 +664,7 @@ public class CallbackTestLogic extends AbstractTestLogic {
             System.out.println("3) Test @PreUpdate and @PostUpdate");
             resetDefaultListeners();
 
-            System.out.println("Updating " + targetEntityType.getEntityName() + "(id=1)'s name field...");
+            System.out.println("Updating " + targetEntityType.getEntityName() + "(id=" + id + ")'s name field...");
             entity_find.setName("Mutated Name");
 
             System.out.println("Committing transaction...");
@@ -717,11 +724,11 @@ public class CallbackTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().joinTransaction();
             }
 
-            System.out.println("Finding " + targetEntityType.getEntityName() + "(id=1)...");
-            ICallbackEntity entity_remove = (ICallbackEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), 1);
+            System.out.println("Finding " + targetEntityType.getEntityName() + "(id=" + id + ")...");
+            ICallbackEntity entity_remove = (ICallbackEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), id);
             Assert.assertNotNull("Assert find() did not return null.", entity_remove);
 
-            System.out.println("Calling remove() on " + targetEntityType.getEntityName() + "(id=1) ...");
+            System.out.println("Calling remove() on " + targetEntityType.getEntityName() + "(id=" + id + ") ...");
             jpaResource.getEm().remove(entity_remove);
 
             // Assert @PreRemove has NOT fired (4 points)
@@ -794,7 +801,7 @@ public class CallbackTestLogic extends AbstractTestLogic {
 
     /**
      * Test callback methods on entity/msc-declared listener classes.
-     *
+     * <p>
      * Points: 34
      */
     public void testCallback004(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
@@ -840,6 +847,8 @@ public class CallbackTestLogic extends AbstractTestLogic {
             callbackListenerPublic = XMLCallbackListenerPublic.getSingleton();
         }
 
+        int id = 4;
+
         // Execute Test Case
         try {
             System.out.println("CallbackTestLogic.testCallback004(): Begin");
@@ -862,8 +871,8 @@ public class CallbackTestLogic extends AbstractTestLogic {
 
             System.out.println("Creating new object instance of " + targetEntityType.getEntityName() + "...");
             ICallbackEntity entity_persist = (ICallbackEntity) constructNewEntityObject(targetEntityType);
-            entity_persist.setId(1);
-            entity_persist.setName("CallbackEntity-1");
+            entity_persist.setId(id);
+            entity_persist.setName("testCallback004-CallbackEntity-" + id);
 
             // Assert no lifecycle callbacks have been fired yet (4 points)
             Assert.assertEquals("Assert no lifecycle callbacks have been fired yet for " + callbackListenerPackage.getClass().getSimpleName(),
@@ -935,8 +944,8 @@ public class CallbackTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().joinTransaction();
             }
 
-            System.out.println("Finding " + targetEntityType.getEntityName() + "(id=1)...");
-            ICallbackEntity entity_find = (ICallbackEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), 1);
+            System.out.println("Finding " + targetEntityType.getEntityName() + "(id=" + id + ")...");
+            ICallbackEntity entity_find = (ICallbackEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), id);
             Assert.assertNotNull("Assert find() did not return null.", entity_find);
 
             // Assert @PostLoad has fired (4 points)
@@ -974,7 +983,7 @@ public class CallbackTestLogic extends AbstractTestLogic {
             System.out.println("3) Test @PreUpdate and @PostUpdate");
             resetEntityListeners();
 
-            System.out.println("Updating " + targetEntityType.getEntityName() + "(id=1)'s name field...");
+            System.out.println("Updating " + targetEntityType.getEntityName() + "(id=" + id + ")'s name field...");
             entity_find.setName("Mutated Name");
 
             System.out.println("Committing transaction...");
@@ -1034,11 +1043,11 @@ public class CallbackTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().joinTransaction();
             }
 
-            System.out.println("Finding " + targetEntityType.getEntityName() + "(id=1)...");
-            ICallbackEntity entity_remove = (ICallbackEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), 1);
+            System.out.println("Finding " + targetEntityType.getEntityName() + "(id=" + id + ")...");
+            ICallbackEntity entity_remove = (ICallbackEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), id);
             Assert.assertNotNull("Assert find() did not return null.", entity_remove);
 
-            System.out.println("Calling remove() on " + targetEntityType.getEntityName() + "(id=1) ...");
+            System.out.println("Calling remove() on " + targetEntityType.getEntityName() + "(id=" + id + ") ...");
             jpaResource.getEm().remove(entity_remove);
 
             // Assert @PreRemove has fired (4 points)
@@ -1111,7 +1120,7 @@ public class CallbackTestLogic extends AbstractTestLogic {
 
     /**
      * Verify that mapped-superclass defined listener classes will not fire for entities that request exclusion.
-     *
+     * <p>
      * Points: 34
      */
     public void testCallback005(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
@@ -1157,6 +1166,8 @@ public class CallbackTestLogic extends AbstractTestLogic {
             callbackListenerPublic = XMLCallbackListenerPublic.getSingleton();
         }
 
+        int id = 5;
+
         // Execute Test Case
         try {
             System.out.println("CallbackTestLogic.testCallback005(): Begin");
@@ -1179,8 +1190,8 @@ public class CallbackTestLogic extends AbstractTestLogic {
 
             System.out.println("Creating new object instance of " + targetEntityType.getEntityName() + "...");
             ICallbackEntity entity_persist = (ICallbackEntity) constructNewEntityObject(targetEntityType);
-            entity_persist.setId(1);
-            entity_persist.setName("CallbackEntity-1");
+            entity_persist.setId(id);
+            entity_persist.setName("testCallback005-CallbackEntity-" + id);
 
             // Assert no lifecycle callbacks have been fired yet (4 points)
             Assert.assertEquals("Assert no lifecycle callbacks have been fired yet for " + callbackListenerPackage.getClass().getSimpleName(),
@@ -1252,8 +1263,8 @@ public class CallbackTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().joinTransaction();
             }
 
-            System.out.println("Finding " + targetEntityType.getEntityName() + "(id=1)...");
-            ICallbackEntity entity_find = (ICallbackEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), 1);
+            System.out.println("Finding " + targetEntityType.getEntityName() + "(id=" + id + ")...");
+            ICallbackEntity entity_find = (ICallbackEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), id);
             Assert.assertNotNull("Assert find() did not return null.", entity_find);
 
             // Assert @PostLoad has NOT fired (4 points)
@@ -1291,7 +1302,7 @@ public class CallbackTestLogic extends AbstractTestLogic {
             System.out.println("3) Test @PreUpdate and @PostUpdate");
             resetEntityListeners();
 
-            System.out.println("Updating " + targetEntityType.getEntityName() + "(id=1)'s name field...");
+            System.out.println("Updating " + targetEntityType.getEntityName() + "(id=" + id + ")'s name field...");
             entity_find.setName("Mutated Name");
 
             System.out.println("Committing transaction...");
@@ -1351,11 +1362,11 @@ public class CallbackTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().joinTransaction();
             }
 
-            System.out.println("Finding " + targetEntityType.getEntityName() + "(id=1)...");
-            ICallbackEntity entity_remove = (ICallbackEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), 1);
+            System.out.println("Finding " + targetEntityType.getEntityName() + "(id=" + id + ")...");
+            ICallbackEntity entity_remove = (ICallbackEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), id);
             Assert.assertNotNull("Assert find() did not return null.", entity_remove);
 
-            System.out.println("Calling remove() on " + targetEntityType.getEntityName() + "(id=1) ...");
+            System.out.println("Calling remove() on " + targetEntityType.getEntityName() + "(id=" + id + ") ...");
             jpaResource.getEm().remove(entity_remove);
 
             // Assert @PreRemove has NOT fired (4 points)
@@ -1423,31 +1434,6 @@ public class CallbackTestLogic extends AbstractTestLogic {
         } finally {
             System.out.println("CallbackTestLogic.testCallback005(): End");
             AbstractCallbackListener.resetGlobalCallbackEventList();
-        }
-    }
-
-    public void testTemplate(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                             Object managedComponentObject) throws Throwable {
-        // Verify parameters
-        if (testExecCtx == null || testExecResources == null) {
-            Assert.fail("testTemplate: Missing context and/or resources.  Cannot execute the test.");
-            return;
-        }
-
-        // Fetch JPA Resources
-        JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
-        if (jpaResource == null) {
-            Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
-            return;
-        }
-
-        // Execute Test Case
-        try {
-            System.out.println("CallbackTestLogic.testTemplate(): Begin");
-
-            System.out.println("Ending test.");
-        } finally {
-            System.out.println("CallbackTestLogic.testTemplate(): End");
         }
     }
 

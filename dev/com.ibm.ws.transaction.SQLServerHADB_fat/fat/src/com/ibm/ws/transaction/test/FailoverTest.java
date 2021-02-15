@@ -64,7 +64,7 @@ import componenttest.topology.utils.FATServletClient;
  * with a specific sqlcode value.
  *
  * -> Each test starts by (re)creating HATable and inserting a row to specify the test characteristics.
- * 
+ *
  * ->The tests will drive a batch of 2PC transactions using artificial XAResourceImpl resources. The jdbc driver will
  * generate a SQLException at a point defined in the HATABLE row.
  */
@@ -106,21 +106,41 @@ public class FailoverTest extends FATServletClient {
     //Helper method
     private static void initDatabase(JdbcDatabaseContainer<?> cont, String dbName) throws NoDriverFoundException, SQLException {
         // Create Database
-        try (Connection conn = cont.createConnection("")) {
-            Statement stmt = conn.createStatement();
-            stmt.execute("CREATE DATABASE [" + dbName + "];");
-            stmt.close();
-        } catch (SQLException sqlex) {
-            // Specifically don't barf if the db exists already
-            if (sqlex.getErrorCode() == 1801) {
-                Log.info(FailoverTest.class, "initDatabase", "database exists already");
-            } else {
-                Log.info(FailoverTest.class, "initDatabase", "create database returned sqlexception: " + sqlex);
-                Log.info(FailoverTest.class, "initDatabase", "Message: " + sqlex.getMessage());
-                Log.info(FailoverTest.class, "initDatabase", "SQLSTATE: " + sqlex.getSQLState());
-                Log.info(FailoverTest.class, "initDatabase", "Error code: " + sqlex.getErrorCode());
-                // rethrow exception
-                throw sqlex;
+        boolean dbCreated = false;
+        int count = 0;
+        final int maxRetries = 3;
+        while (!dbCreated && count < maxRetries) {
+            try (Connection conn = cont.createConnection("")) {
+                createDatabase(conn, dbName);
+                Log.info(FailoverTest.class, "initDatabase", "database created");
+                dbCreated = true;
+            } catch (SQLException sqlex) {
+                // Specifically don't barf if the db exists already
+                if (sqlex.getErrorCode() == 1801) {
+                    Log.info(FailoverTest.class, "initDatabase", "database exists already");
+                    dbCreated = true;
+                } else {
+                    Log.info(FailoverTest.class, "initDatabase", "create database returned sqlexception: " + sqlex);
+                    Log.info(FailoverTest.class, "initDatabase", "Message: " + sqlex.getMessage());
+                    Log.info(FailoverTest.class, "initDatabase", "SQLSTATE: " + sqlex.getSQLState());
+                    Log.info(FailoverTest.class, "initDatabase", "Error code: " + sqlex.getErrorCode());
+                }
+
+                if (!dbCreated) {
+                    if (++count >= maxRetries) {
+                        Log.info(FailoverTest.class, "initDatabase", "maxed out retries");
+                        // rethrow exception
+                        throw sqlex;
+                    } else {
+                        try {
+                            Thread.sleep((count * 2 + 1) * 1000);
+                        } catch (InterruptedException e) {
+                            Log.info(FailoverTest.class, "initDatabase", "interrupted, break");
+                            break;
+                        }
+                        Log.info(FailoverTest.class, "initDatabase", "retrying...");
+                    }
+                }
             }
         }
 
@@ -130,6 +150,13 @@ public class FailoverTest extends FATServletClient {
             stmt.execute("EXEC sp_sqljdbc_xa_install");
             stmt.close();
         }
+    }
+
+    private static void createDatabase(Connection conn, String dbName) throws NoDriverFoundException, SQLException {
+        // Create Database
+        Statement stmt = conn.createStatement();
+        stmt.execute("CREATE DATABASE [" + dbName + "];");
+        stmt.close();
     }
 
     @Before

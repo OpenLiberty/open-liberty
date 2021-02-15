@@ -19,6 +19,7 @@ import javax.persistence.Query;
 
 import org.junit.Assert;
 
+import com.ibm.ws.testtooling.database.DatabaseVendor;
 import com.ibm.ws.testtooling.testinfo.TestExecutionContext;
 import com.ibm.ws.testtooling.testlogic.AbstractTestLogic;
 import com.ibm.ws.testtooling.vehicle.resources.JPAResource;
@@ -51,9 +52,11 @@ public class JPATestOLGH9339Logic extends AbstractTestLogic {
         }
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
 
+        final boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DERBY);
+
         //Derby does not support NULL values in COALESCE?
         //  Exception: java.sql.SQLSyntaxErrorException: Syntax error: Encountered "NULL"
-        if (isDerby(dbProductName)) {
+        if (isDerby) {
             return;
         }
 

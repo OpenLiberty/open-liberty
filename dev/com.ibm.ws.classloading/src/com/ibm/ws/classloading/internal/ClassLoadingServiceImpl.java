@@ -472,15 +472,6 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService, Clas
             return null;
         }
 
-        if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "path: " + path);
-            Tr.debug(tc, "protectionDomainMap.size = " + protectionDomainMap.size());
-            for (Map.Entry<String, ProtectionDomain> entry : protectionDomainMap.entrySet()) {
-                
-                Tr.debug(tc, "Key (codeBase)= " + entry.getKey() + ", Value (protectionDomain) = " + entry.getValue());
-            }
-        }
-        
         if (protectionDomainMap.containsKey(path)) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "protectionDomainMap is not null, returning path: " + path);
@@ -491,7 +482,6 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService, Clas
         for (String codebase : protectionDomainMap.keySet()) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "codebase = " + codebase);
-                Tr.debug(tc, "path = " + path);
             }
             if (codebase.endsWith("-")) {
                 if (path.startsWith(codebase.substring(0, codebase.indexOf('-'))))
@@ -508,7 +498,6 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService, Clas
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "nothing matched in the protectionDomainMap, returning null");
         }
-        
         return null;
     }
 
@@ -739,15 +728,6 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService, Clas
     @Override
     @Trivial // injected trace calls ProtectedDomain.toString() which requires privileged access
     public void setSharedLibraryProtectionDomains(Map<String, ProtectionDomain> protectionDomainMap) {
-        
-        if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "protectionDomainMap.size = " + protectionDomainMap.size());
-            for (Map.Entry<String, ProtectionDomain> entry : protectionDomainMap.entrySet()) {
-                Tr.debug(tc, "Key (codeBase)= " + entry.getKey() + ", Value (protectionDomain) = " + entry.getValue());
-            }
-
-        }
-        
         this.protectionDomainMap = protectionDomainMap;
     }
 
