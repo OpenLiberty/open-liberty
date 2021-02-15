@@ -10,11 +10,13 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
@@ -34,9 +36,12 @@ public class KafkaTestClientProvider {
 
     public static final String CONNECTION_PROPERTIES_KEY = "kafka-connection-properties";
 
-    @Inject
-    @ConfigProperty(name = CONNECTION_PROPERTIES_KEY, defaultValue = "")
     private List<String> connectionProps;
+
+    @Inject
+    private void setConnectionProps(@ConfigProperty(name = CONNECTION_PROPERTIES_KEY) Optional<List<String>> connectionProps) {
+        this.connectionProps = connectionProps.orElse(Collections.emptyList());
+    }
 
     @Produces
     @RequestScoped

@@ -15,7 +15,8 @@ src: \
 	fat/src
 
 
-tested.features: mpReactiveMessaging-1.0
+tested.features: mpReactiveMessaging-1.0, \
+                 mpConfig-2.0
 
 fat.project: true
 

@@ -10,6 +10,10 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.reactive.messaging.fat.suite;
 
+import static componenttest.rules.repeater.MicroProfileActions.MP20;
+import static componenttest.rules.repeater.MicroProfileActions.MP40;
+
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -19,6 +23,9 @@ import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.tests.Kafk
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.invalid.badconfig.KafkaBadConfigTest;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.invalid.nolib.KafkaNoLibTest;
 import com.ibm.ws.microprofile.reactive.messaging.fat.loginModuleClassloading.LoginModuleClassloadingTest;
+
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -33,5 +40,8 @@ import com.ibm.ws.microprofile.reactive.messaging.fat.loginModuleClassloading.Lo
 })
 
 public class FATSuite {
+
+    @ClassRule
+    public static RepeatTests r = MicroProfileActions.repeat(null, MP20, MP40);
 
 }
