@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,9 @@
 package com.ibm.ws.microprofile.config.cdi;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.enterprise.inject.spi.Annotated;
@@ -33,22 +35,43 @@ public class ConfigProducer {
 
     private static final TraceComponent tc = Tr.register(ConfigProducer.class);
 
-    public static Object newValue(Config config, InjectionPoint injectionPoint, Type type, boolean optional) {
+    public static Object newValue(Config config, InjectionPoint injectionPoint) {
+
+        Type ipType = injectionPoint.getType();
         ConfigProperty qualifier = getConfigPropertyAnnotation(injectionPoint);
         String defaultValue = qualifier.defaultValue();
         String propertyName = getPropertyName(injectionPoint, qualifier);
-        Object value = newValue(config, propertyName, defaultValue, type, optional);
+
+        Object value = newValue(config, propertyName, defaultValue, ipType);
+
         return value;
     }
 
-    public static Object newValue(Config config, String propertyName, String defaultValue, Type type, boolean optional) {
+    public static Object newValue(Config config, String propertyName, String defaultValue, Type type) {
         Object value = null;
+        Type propertyType = type;
+
+        boolean optional = false;
+        if (type instanceof ParameterizedType) {
+            ParameterizedType pType = (ParameterizedType) type;
+            Type rType = pType.getRawType();
+            optional = (rType == Optional.class);
+            if (optional) {
+                propertyType = pType.getActualTypeArguments()[0];
+            }
+        }
+
         WebSphereConfig wConfig = (WebSphereConfig) config;
         if (ConfigProperty.UNCONFIGURED_VALUE.equals(defaultValue)) {
-            value = wConfig.getValue(propertyName, type, optional);
+            value = wConfig.getValue(propertyName, propertyType, optional);
         } else {
-            value = wConfig.getValue(propertyName, type, defaultValue);
+            value = wConfig.getValue(propertyName, propertyType, defaultValue);
         }
+
+        if (optional) {
+            value = Optional.ofNullable(value);
+        }
+
         return value;
     }
 
