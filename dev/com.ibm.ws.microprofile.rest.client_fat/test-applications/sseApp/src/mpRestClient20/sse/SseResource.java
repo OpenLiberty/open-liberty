@@ -37,10 +37,13 @@ public class SseResource extends Application {
         Executors.newSingleThreadExecutor().submit(() -> {
             try (SseEventSink s = sink) {
                 sink.send(sse.newEvent("foo"));
-                try {Thread.sleep(100);} catch (InterruptedException ex) {}
+                System.out.println("SseResource sent foo");
+                try {Thread.sleep(100);} catch (InterruptedException ex) { ex.printStackTrace(); }
                 sink.send(sse.newEvent("bar"));
-                try {Thread.sleep(100);} catch (InterruptedException ex) {}
+                System.out.println("SseResource sent bar");
+                try {Thread.sleep(100);} catch (InterruptedException ex) { ex.printStackTrace(); }
                 sink.send(sse.newEvent("baz"));
+                System.out.println("SseResource sent baz");
             }
         });
     }
@@ -52,9 +55,9 @@ public class SseResource extends Application {
         Executors.newSingleThreadExecutor().submit(() -> {
             try (SseEventSink s = sink) {
                 sink.send(sse.newEvent("" + startingAt));
-                try {Thread.sleep(100);} catch (InterruptedException ex) {}
+                try {Thread.sleep(100);} catch (InterruptedException ex) { ex.printStackTrace(); }
                 sink.send(sse.newEvent("" + (startingAt + 1)));
-                try {Thread.sleep(100);} catch (InterruptedException ex) {}
+                try {Thread.sleep(100);} catch (InterruptedException ex) { ex.printStackTrace(); }
                 sink.send(sse.newEvent("" + (startingAt + 2)));
             }
         });
@@ -69,32 +72,32 @@ public class SseResource extends Application {
                           .data(new SomeObject("obj1", 17, 30.5, new BigInteger("123"), Color.RED))
                           .mediaType(MediaType.APPLICATION_JSON_TYPE)
                           .build());
-                try {Thread.sleep(50);} catch (InterruptedException ex) {}
+                try {Thread.sleep(50);} catch (InterruptedException ex) { ex.printStackTrace(); }
                 sink.send(sse.newEventBuilder()
                           .data(new SomeObject("obj2", 18, 30.5, new BigInteger("123"), Color.RED))
                           .mediaType(MediaType.APPLICATION_JSON_TYPE)
                           .build());
-                try {Thread.sleep(50);} catch (InterruptedException ex) {}
+                try {Thread.sleep(50);} catch (InterruptedException ex) { ex.printStackTrace(); }
                 sink.send(sse.newEventBuilder()
                           .data(new SomeObject("obj3", 19, 30.5, new BigInteger("123"), Color.RED))
                           .mediaType(MediaType.APPLICATION_JSON_TYPE)
                           .build());
-                try {Thread.sleep(50);} catch (InterruptedException ex) {}
+                try {Thread.sleep(50);} catch (InterruptedException ex) { ex.printStackTrace(); }
                 sink.send(sse.newEventBuilder()
                           .data(new SomeObject("obj4", 20, 30.5, new BigInteger("123"), Color.RED))
                           .mediaType(MediaType.APPLICATION_JSON_TYPE)
                           .build());
-                try {Thread.sleep(50);} catch (InterruptedException ex) {}
+                try {Thread.sleep(50);} catch (InterruptedException ex) { ex.printStackTrace(); }
                 sink.send(sse.newEventBuilder()
                           .data(new SomeObject("obj5", 21, 30.5, new BigInteger("123"), Color.RED))
                           .mediaType(MediaType.APPLICATION_JSON_TYPE)
                           .build());
-                try {Thread.sleep(50);} catch (InterruptedException ex) {}
+                try {Thread.sleep(50);} catch (InterruptedException ex) { ex.printStackTrace(); }
                 sink.send(sse.newEventBuilder()
                           .data(new SomeObject("obj6", 22, 30.5, new BigInteger("123"), Color.RED))
                           .mediaType(MediaType.APPLICATION_JSON_TYPE)
                           .build());
-                try {Thread.sleep(50);} catch (InterruptedException ex) {}
+                try {Thread.sleep(50);} catch (InterruptedException ex) { ex.printStackTrace(); }
                 sink.send(sse.newEventBuilder()
                           .data(new SomeObject("obj7", 23, 30.5, new BigInteger("123"), Color.BRIGHT_RED))
                           .mediaType(MediaType.APPLICATION_JSON_TYPE)

@@ -14,6 +14,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
+import javax.ws.rs.core.Response;
+import javax.ws.rs.sse.InboundSseEvent;
+
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 
@@ -45,7 +48,12 @@ public class GenericSubscriber<T> implements Subscriber<T> {
 
     @Override
     public void onNext(T t) {
-        System.out.println("GenericSubscriber onNext " + t);
+        if (t instanceof InboundSseEvent) {
+            InboundSseEvent ise = (InboundSseEvent) t;
+            System.out.println("GenericSubscriber onNext ResponseImpl(" + ise.readData() + ")");
+        } else {
+            System.out.println("GenericSubscriber onNext " + t);
+        }
         onNexts.add(t);
         latch.countDown();
     }
