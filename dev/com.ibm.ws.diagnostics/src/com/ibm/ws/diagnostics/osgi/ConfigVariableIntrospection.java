@@ -71,7 +71,14 @@ public class ConfigVariableIntrospection implements Introspector {
             if (lv.getSource() == Source.XML_CONFIG) {
                 writer.print(lv.getName());
                 writer.print("=");
-                writer.println(lv.getObscuredValue().replaceAll("\\\n", "<nl>"));
+
+                if (lv.getObscuredValue() != null) {
+                    writer.println(lv.getObscuredValue().replaceAll("\\\n", "<nl>"));
+                } else if (lv.getDefaultValue() != null) {
+                    writer.println(lv.getDefaultValue().replaceAll("\\\n", "<nl>"));
+                } else {
+                    writer.println("[NO VALUE DEFINED]");
+                }
             }
         }
         writer.println("---------------------\n");
