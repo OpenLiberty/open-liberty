@@ -14,7 +14,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import com.ibm.ws.ejbcontainer.injection.fat.tests.InjectionMIXTest;
 import com.ibm.ws.ejbcontainer.injection.fat.tests.InjectionMiscTest;
 import com.ibm.ws.ejbcontainer.injection.fat.tests.InjectionXMLTest;
 import com.ibm.ws.ejbcontainer.injection.fat.tests.RemoteInjectionTest;
@@ -22,7 +21,6 @@ import com.ibm.ws.ejbcontainer.injection.fat.tests.RemoteInjectionTest;
 @RunWith(Suite.class)
 @SuiteClasses({
                 InjectionMiscTest.class,
-                InjectionMIXTest.class,
                 InjectionXMLTest.class,
                 RemoteInjectionTest.class
 })
