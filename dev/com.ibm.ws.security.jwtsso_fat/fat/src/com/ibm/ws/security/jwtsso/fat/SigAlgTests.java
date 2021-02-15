@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2021 IBM Corporation and others.
+ * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -37,15 +37,23 @@ import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 
+/**
+ * Test jwtSso with builders that create tokens using a variety of signature algorithms. Also use
+ * mpJwt configs to consume tokens created with different signature algorithms.
+ * We test all possible signature algorithms in the jwtBuilder and mpJwt FATS. Will not
+ * test all possible signature algorithms in this FAT since that's already done.
+ */
+
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
-public class BuilderTests extends CommonJwtssoFat {
+public class SigAlgTests extends CommonJwtssoFat {
 
-    protected static Class<?> thisClass = BuilderTests.class;
+    protected static Class<?> thisClass = SigAlgTests.class;
 
+    // can't run without mpJwt configured for these tests, but we should be testing with
+    // all available mpJwt versions
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(new RunWithMpJwtVersion(JwtFatConstants.NO_MPJWT))
-                    .andWith(new RunWithMpJwtVersion(JwtFatConstants.MPJWT_VERSION_11))
+    public static RepeatTests r = RepeatTests.with(new RunWithMpJwtVersion(JwtFatConstants.MPJWT_VERSION_11))
                     .andWith(new RunWithMpJwtVersion(JwtFatConstants.MPJWT_VERSION_12));
 
     @Server("com.ibm.ws.security.jwtsso.fat")
@@ -67,22 +75,23 @@ public class BuilderTests extends CommonJwtssoFat {
         server.addInstalledAppForValidation(JwtFatConstants.APP_FORMLOGIN);
         serverTracker.addServer(server);
         server.startServerUsingExpandedConfiguration("server_withFeature.xml", CommonWaitForAppChecks.getSSLChannelReadyMsgs());
+
     }
 
     /**
      * Tests:
-     * - Log into a protected resource with the jwtSso element pointing to a jwtBuilder that has JWK enabled
+     * - Log into a protected resource with the jwtSso element pointing to a jwtBuilder that RS384 configured as the signature algorithm
      * Expects:
      * - Should successfully reach protected resource
-     * - JWT cookie header should include a "kid" entry for the JWK ID
+     * - JWT cookie header should include a "kid" entry and alg set to RS384
      */
     @Test
-    public void test_jwkEnabled() throws Exception {
-        server.reconfigureServerUsingExpandedConfiguration(_testName, "server_builder_jwkEnabled.xml");
+    public void SigAlgTests_signWithRS384() throws Exception {
+        server.reconfigureServerUsingExpandedConfiguration(_testName, "server_signRS384.xml");
 
         WebClient webClient = actions.createWebClient();
 
-        String builderId = "builder_jwkEnabled";
+        String builderId = "sigAlgRS384Builder";
 
         String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
 
@@ -97,7 +106,7 @@ public class BuilderTests extends CommonJwtssoFat {
         String expectedIssuer = "https://[^/]+/jwt/" + builderId;
         expectations.addExpectations(CommonExpectations.successfullyReachedProtectedResourceWithJwtCookie(currentAction, protectedUrl, defaultUser, expectedIssuer));
         expectations.addExpectations(CommonExpectations.responseTextMissingCookie(currentAction, JwtFatConstants.LTPA_COOKIE_NAME));
-        expectations.addExpectations(CommonExpectations.jwtCookieExists(currentAction, webClient, JwtFatConstants.JWT_COOKIE_NAME, JwtFatConstants.SECURE,
+        expectations.addExpectations(CommonExpectations.jwtCookieExists(currentAction, webClient, JwtFatConstants.JWT_COOKIE_NAME, JwtFatConstants.NOT_SECURE,
                                                                         JwtFatConstants.HTTPONLY));
 
         response = actions.doFormLogin(response, defaultUser, defaultPassword);
@@ -105,23 +114,26 @@ public class BuilderTests extends CommonJwtssoFat {
 
         Cookie jwtCookie = webClient.getCookieManager().getCookie(JwtFatConstants.JWT_COOKIE_NAME);
         verifyJwtHeaderContainsKey(jwtCookie.getValue(), "kid");
+        verifyJwtHeaderContainsKeyAndValue(jwtCookie.getValue(), "alg", JwtFatConstants.SIGALG_RS384);
         actions.destroyWebClient(webClient);
 
     }
 
     /**
      * Tests:
-     * - Log into a protected resource with the jwtSso element not pointing to a jwtBuilder
-     * - MP JWT consumer configuration specifies the jwksUri attribute
+     * - Log into a protected resource with the jwtSso element pointing to a jwtBuilder that ES512 configured as the signature algorithm
      * Expects:
      * - Should successfully reach protected resource
-     * - JWT cookie should be signed by a certificate from the keystore, and its header should NOT include a "kid" entry
+     * - JWT cookie header should include a "kid" entry and alg set to ES512
      */
+    @Mode(TestMode.LITE)
     @Test
-    public void test_noBuilderRef_mpJwtJwksUriConfigured() throws Exception {
-        server.reconfigureServerUsingExpandedConfiguration(_testName, "server_noBuilder_jwksUriConfigured.xml");
+    public void SigAlgTests_signWithES512() throws Exception {
+        server.reconfigureServerUsingExpandedConfiguration(_testName, "server_signES512.xml");
 
         WebClient webClient = actions.createWebClient();
+
+        String builderId = "sigAlgES512Builder";
 
         String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
 
@@ -133,17 +145,19 @@ public class BuilderTests extends CommonJwtssoFat {
 
         currentAction = TestActions.ACTION_SUBMIT_LOGIN_CREDENTIALS;
 
-        expectations.addExpectations(CommonExpectations.successfullyReachedProtectedResourceWithJwtCookie(currentAction, protectedUrl, defaultUser));
+        String expectedIssuer = "https://[^/]+/jwt/" + builderId;
+        expectations.addExpectations(CommonExpectations.successfullyReachedProtectedResourceWithJwtCookie(currentAction, protectedUrl, defaultUser, expectedIssuer));
         expectations.addExpectations(CommonExpectations.responseTextMissingCookie(currentAction, JwtFatConstants.LTPA_COOKIE_NAME));
+        expectations.addExpectations(CommonExpectations.jwtCookieExists(currentAction, webClient, JwtFatConstants.JWT_COOKIE_NAME, JwtFatConstants.NOT_SECURE,
+                                                                        JwtFatConstants.HTTPONLY));
 
         response = actions.doFormLogin(response, defaultUser, defaultPassword);
         validationUtils.validateResult(response, currentAction, expectations);
 
-        //Cookie jwtCookie = webClient.getCookieManager().getCookie(JwtFatConstants.JWT_COOKIE_NAME);
-        //verifyJwtHeaderDoesNotContainKey(jwtCookie.getValue(), "kid");
-
+        Cookie jwtCookie = webClient.getCookieManager().getCookie(JwtFatConstants.JWT_COOKIE_NAME);
+        verifyJwtHeaderContainsKey(jwtCookie.getValue(), "kid");
+        verifyJwtHeaderContainsKeyAndValue(jwtCookie.getValue(), "alg", JwtFatConstants.SIGALG_ES512);
         actions.destroyWebClient(webClient);
 
     }
-
 }
