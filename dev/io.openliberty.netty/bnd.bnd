@@ -13,10 +13,10 @@ bVersion=1.0
 
 Bundle-Name: io.openliberty.netty
 Bundle-SymbolicName: io.openliberty.netty; singleton:=true
-Bundle-Description: At the moment, provides the implenentation
+Bundle-Description: At the moment, provides the implementation
 of WsByteBuffer version ${bVersion}
 
-WS-TraceGroup: ChannelFramework
+WS-TraceGroup: Netty
 
 IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 
@@ -25,7 +25,8 @@ IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 # Append ";provide:=true" if this bundle also provides an implementation
 # for the exported API.
 Export-Package: \
-	com.ibm.wsspi.bytebuffer;provide:=true; -split-package:=merge-first, \
+	io.openliberty.netty*; version=1.0; provide:=true, \
+	com.ibm.wsspi.bytebuffer; version=1.0; provide:=true; -split-package:=merge-first
 	
 Private-Package: \
 	com.ibm.ws.bytebuffer.internal, \
@@ -35,9 +36,16 @@ Include-Resource: \
     OSGI-INF=resources/OSGI-INF
 
 -dsannotations: \
+   io.openliberty.netty.osgi.Bundle, \
    com.ibm.ws.bytebuffer.internal.ByteBufferConfiguration
 
+#   com.ibm.ws.channelfw.CHFWEventHandler; \
 Service-Component: \
+    io.openliberty.netty.EventHandler; \
+        implementation:=io.openliberty.netty.internal.OsgiEventHandler; \
+        configuration-policy:=ignore;\
+        provide:=com.ibm.websphere.event.EventHandler; \
+        properties:="event.topics=io.openliberty/netty/*,service.vendor=IBM"
  
 instrument.disabled: true
 
@@ -52,7 +60,7 @@ instrument.disabled: true
 	com.ibm.ws.timer;version=latest,\
 	com.ibm.ws.kernel.security.thread,\
 	com.ibm.ws.kernel.boot.core;version=latest, \
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest
 #  <property name="unittest.prop.com.ibm.ws.logging.exception.log.enabled" value="false" />
 #  file /dev/com.ibm.ws.channelfw/unittestports.properties
 

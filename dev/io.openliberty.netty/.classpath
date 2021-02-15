@@ -4,5 +4,116 @@
 	<classpathentry kind="src" output="bin_test" path="test"/>
 	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry kind="src" path="/com.ibm.ws.logging.core"/>
+	<classpathentry kind="src" path="/com.ibm.ws.kernel.service"/>
+	<classpathentry kind="src" path="/com.ibm.ws.kernel.feature.core"/>
+	<classpathentry kind="src" path="/com.ibm.ws.event"/>
+	<classpathentry kind="lib" path="/com.ibm.websphere.org.osgi.service.component/generated/com.ibm.websphere.org.osgi.service.component.jar">
+		<attributes>
+			<attribute name="bsn" value="com.ibm.websphere.org.osgi.service.component.jar"/>
+			<attribute name="type" value="PROJECT"/>
+			<attribute name="project" value="com.ibm.websphere.org.osgi.service.component"/>
+			<attribute name="version" value="latest"/>
+			<attribute name="index_location" value="platform:/plugin/bndtools.builder/org/bndtools/builder/classpath/empty.index"/>
+		</attributes>
+		<accessrules>
+			<accessrule kind="accessible" pattern="org/osgi/service/component/*"/>
+			<accessrule kind="accessible" pattern="org/osgi/service/component/propertytypes/*"/>
+			<accessrule kind="accessible" pattern="org/osgi/service/component/runtime/*"/>
+			<accessrule kind="accessible" pattern="org/osgi/service/component/runtime/dto/*"/>
+			<accessrule ignoreifbetter="true" kind="discouraged" pattern="**"/>
+		</accessrules>
+	</classpathentry>
+	<classpathentry kind="lib" path="/Users/hutchig/.m2/repository/org/osgi/org.osgi.service.component.annotations/1.4.0/org.osgi.service.component.annotations-1.4.0.jar" sourcepath="/Users/hutchig/.m2/repository/org/osgi/org.osgi.service.component.annotations/1.4.0/org.osgi.service.component.annotations-1.4.0.jar">
+		<attributes>
+			<attribute name="bsn" value="org.osgi.service.component.annotations"/>
+			<attribute name="type" value="REPO"/>
+			<attribute name="project" value="com.ibm.ws.concurrent.persistent_fat_failover1serv"/>
+			<attribute name="version" value="latest"/>
+		</attributes>
+		<accessrules>
+			<accessrule kind="accessible" pattern="org/osgi/service/component/annotations/*"/>
+			<accessrule ignoreifbetter="true" kind="discouraged" pattern="**"/>
+		</accessrules>
+	</classpathentry>
+	<classpathentry kind="lib" path="/org.eclipse.osgi/generated/org.eclipse.osgi.jar">
+		<attributes>
+			<attribute name="bsn" value="org.eclipse.osgi.jar"/>
+			<attribute name="type" value="PROJECT"/>
+			<attribute name="project" value="org.eclipse.osgi"/>
+			<attribute name="version" value="latest"/>
+			<attribute name="index_location" value="platform:/plugin/bndtools.builder/org/bndtools/builder/classpath/empty.index"/>
+		</attributes>
+		<accessrules>
+			<accessrule kind="accessible" pattern="org/eclipse/core/runtime/adaptor/*"/>
+			<accessrule kind="accessible" pattern="org/eclipse/core/runtime/internal/adaptor/*"/>
+			<accessrule kind="accessible" pattern="org/eclipse/equinox/log/*"/>
+			<accessrule kind="accessible" pattern="org/eclipse/osgi/container/*"/>
+			<accessrule kind="accessible" pattern="org/eclipse/osgi/container/builders/*"/>
+			<accessrule kind="accessible" pattern="org/eclipse/osgi/container/namespaces/*"/>
+			<accessrule kind="accessible" pattern="org/eclipse/osgi/framework/console/*"/>
+			<accessrule kind="accessible" pattern="org/eclipse/osgi/framework/eventmgr/*"/>
+			<accessrule kind="accessible" pattern="org/eclipse/osgi/framework/internal/reliablefile/*"/>
+			<accessrule kind="accessible" pattern="org/eclipse/osgi/framework/log/*"/>
+			<accessrule kind="accessible" pattern="org/eclipse/osgi/framework/util/*"/>
+			<accessrule kind="accessible" pattern="org/eclipse/osgi/internal/debug/*"/>
+			<accessrule kind="accessible" pattern="org/eclipse/osgi/internal/framework/*"/>
+			<accessrule kind="accessible" pattern="org/eclipse/osgi/internal/hookregistry/*"/>
+			<accessrule kind="accessible" pattern="org/eclipse/osgi/internal/loader/*"/>
+			<accessrule kind="accessible" pattern="org/eclipse/osgi/internal/loader/buddy/*"/>
+			<accessrule kind="accessible" pattern="org/eclipse/osgi/internal/loader/classpath/*"/>
+			<accessrule kind="accessible" pattern="org/eclipse/osgi/internal/loader/sources/*"/>
+			<accessrule kind="accessible" pattern="org/eclipse/osgi/internal/location/*"/>
+			<accessrule kind="accessible" pattern="org/eclipse/osgi/internal/messages/*"/>
+			<accessrule kind="accessible" pattern="org/eclipse/osgi/internal/provisional/service/security/*"/>
+			<accessrule kind="accessible" pattern="org/eclipse/osgi/internal/provisional/verifier/*"/>
+			<accessrule kind="accessible" pattern="org/eclipse/osgi/internal/service/security/*"/>
+			<accessrule kind="accessible" pattern="org/eclipse/osgi/internal/serviceregistry/*"/>
+			<accessrule kind="accessible" pattern="org/eclipse/osgi/internal/signedcontent/*"/>
+			<accessrule kind="accessible" pattern="org/eclipse/osgi/internal/url/*"/>
+			<accessrule kind="accessible" pattern="org/eclipse/osgi/launch/*"/>
+			<accessrule kind="accessible" pattern="org/eclipse/osgi/report/resolution/*"/>
+			<accessrule kind="accessible" pattern="org/eclipse/osgi/service/datalocation/*"/>
+			<accessrule kind="accessible" pattern="org/eclipse/osgi/service/debug/*"/>
+			<accessrule kind="accessible" pattern="org/eclipse/osgi/service/environment/*"/>
+			<accessrule kind="accessible" pattern="org/eclipse/osgi/service/localization/*"/>
+			<accessrule kind="accessible" pattern="org/eclipse/osgi/service/pluginconversion/*"/>
+			<accessrule kind="accessible" pattern="org/eclipse/osgi/service/resolver/*"/>
+			<accessrule kind="accessible" pattern="org/eclipse/osgi/service/runnable/*"/>
+			<accessrule kind="accessible" pattern="org/eclipse/osgi/service/security/*"/>
+			<accessrule kind="accessible" pattern="org/eclipse/osgi/service/urlconversion/*"/>
+			<accessrule kind="accessible" pattern="org/eclipse/osgi/signedcontent/*"/>
+			<accessrule kind="accessible" pattern="org/eclipse/osgi/storage/*"/>
+			<accessrule kind="accessible" pattern="org/eclipse/osgi/storage/bundlefile/*"/>
+			<accessrule kind="accessible" pattern="org/eclipse/osgi/storage/url/reference/*"/>
+			<accessrule kind="accessible" pattern="org/eclipse/osgi/storagemanager/*"/>
+			<accessrule kind="accessible" pattern="org/eclipse/osgi/util/*"/>
+			<accessrule kind="accessible" pattern="org/osgi/dto/*"/>
+			<accessrule kind="accessible" pattern="org/osgi/framework/*"/>
+			<accessrule kind="accessible" pattern="org/osgi/framework/dto/*"/>
+			<accessrule kind="accessible" pattern="org/osgi/framework/hooks/bundle/*"/>
+			<accessrule kind="accessible" pattern="org/osgi/framework/hooks/resolver/*"/>
+			<accessrule kind="accessible" pattern="org/osgi/framework/hooks/service/*"/>
+			<accessrule kind="accessible" pattern="org/osgi/framework/hooks/weaving/*"/>
+			<accessrule kind="accessible" pattern="org/osgi/framework/launch/*"/>
+			<accessrule kind="accessible" pattern="org/osgi/framework/namespace/*"/>
+			<accessrule kind="accessible" pattern="org/osgi/framework/startlevel/*"/>
+			<accessrule kind="accessible" pattern="org/osgi/framework/startlevel/dto/*"/>
+			<accessrule kind="accessible" pattern="org/osgi/framework/wiring/*"/>
+			<accessrule kind="accessible" pattern="org/osgi/framework/wiring/dto/*"/>
+			<accessrule kind="accessible" pattern="org/osgi/resource/*"/>
+			<accessrule kind="accessible" pattern="org/osgi/resource/dto/*"/>
+			<accessrule kind="accessible" pattern="org/osgi/service/condpermadmin/*"/>
+			<accessrule kind="accessible" pattern="org/osgi/service/log/*"/>
+			<accessrule kind="accessible" pattern="org/osgi/service/log/admin/*"/>
+			<accessrule kind="accessible" pattern="org/osgi/service/packageadmin/*"/>
+			<accessrule kind="accessible" pattern="org/osgi/service/permissionadmin/*"/>
+			<accessrule kind="accessible" pattern="org/osgi/service/resolver/*"/>
+			<accessrule kind="accessible" pattern="org/osgi/service/startlevel/*"/>
+			<accessrule kind="accessible" pattern="org/osgi/service/url/*"/>
+			<accessrule kind="accessible" pattern="org/osgi/util/tracker/*"/>
+			<accessrule ignoreifbetter="true" kind="discouraged" pattern="**"/>
+		</accessrules>
+	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
