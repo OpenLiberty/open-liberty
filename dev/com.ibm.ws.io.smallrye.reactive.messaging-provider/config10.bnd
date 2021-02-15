@@ -1,0 +1,30 @@
+#*******************************************************************************
+# Copyright (c) 2021 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/rejar.props
+
+bVersion=1.0
+
+Bundle-SymbolicName: com.ibm.ws.io.smallrye.reactive.messaging-provider.config10; singleton:=true
+
+-dsannotations-inherit: true
+-dsannotations: com.ibm.ws.microprofile.reactive.messaging.OLReactiveMessagingExtension
+
+Import-Package: \
+	!io.vertx.*,\
+	javax.enterprise.*;version='[1.1,3)',\
+	org.eclipse.microprofile.config.*;version='[1,2)',\
+	*
+	
+Include-Resource: META-INF=resources/META-INF, \
+    @${repo;io.smallrye.reactive:smallrye-reactive-messaging-provider;1.0.8;EXACT}!/!META-INF/*
+
+Private-Package: \
+	com.ibm.ws.microprofile.reactive.messaging

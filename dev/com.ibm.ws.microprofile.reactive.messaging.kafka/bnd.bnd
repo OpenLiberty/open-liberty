@@ -34,7 +34,8 @@ Export-Package: com.ibm.ws.microprofile.reactive.messaging.kafka,\
 
 Private-Package: com.ibm.ws.microprofile.reactive.messaging.kafka.classloader
 
-Import-Package: *
+Import-Package: org.eclipse.microprofile.config;version='[1.0,3.0)', \
+                *
 
 Include-Resource: \
     META-INF=resources/META-INF
