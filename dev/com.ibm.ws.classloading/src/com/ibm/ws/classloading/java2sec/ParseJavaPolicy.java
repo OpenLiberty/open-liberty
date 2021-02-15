@@ -355,35 +355,75 @@ public class ParseJavaPolicy {
 
             StringBuffer buf = new StringBuffer(strLen + 25);
             for (int index = 0, last = 0; last < strLen; ) {
-                index = str.indexOf("${", last);
+                // look for file:${{ first
+                index = str.indexOf("${{", last);
                 if (index == -1) {
-                    buf.append(str.substring(last));
-                    break;
-                }
-                buf.append(str.substring(last, index));
-                last = str.indexOf("}", index);
-                if (last == -1) {
-                    buf.append(str.substring(index));
-                    break;
-                }
-                String key = str.substring(index + 2, last);
-                if (key.equals("/")) {
-                    buf.append(File.separator);
-                } else {
-                    String value = System.getProperty(key);
-                    if (value != null) {
-                        if (encodeValue == true) {
-                            value = FilePathUtil.encodeFilePath(value);
-                        }
-                        buf.append(value);
-                    } else {
-                        StringBuffer errBuf = new StringBuffer(32);
-                        errBuf.append("line ").append(parser.getLineNumber()).append(": ");
-                        errBuf.append("unable to expand \"").append(key).append("\"");
-                        String errStr = errBuf.toString();
-                        throw new ParserException(errStr);
+                    // we didn't find a {{, so look for a {
+                    index = str.indexOf("${", last);
+                    if (index == -1) {
+                        buf.append(str.substring(last));
+                        break;
                     }
+                    buf.append(str.substring(last, index));
+                    last = str.indexOf("}", index);
+                    if (last == -1) {
+                        buf.append(str.substring(index));
+                        break;
+                    }
+                    String key = str.substring(index + 2, last);
+                    if (tc.isDebugEnabled()) {
+                        Tr.debug(tc, "key: " + key);
+                    }
+                    if (key.equals("/")) {
+                        buf.append(File.separator);
+                    } else {
+                        String value = System.getProperty(key);
+                        if (value != null) {
+                            if (encodeValue == true) {
+                                value = FilePathUtil.encodeFilePath(value);
+                            }
+                            buf.append(value);
+                        } else {
+                            StringBuffer errBuf = new StringBuffer(32);
+                            errBuf.append("line ").append(parser.getLineNumber()).append(": ");
+                            errBuf.append("unable to expand \"").append(key).append("\"");
+                            String errStr = errBuf.toString();
+                            throw new ParserException(errStr);
+                        }
+                    }
+                } else {
+                    buf.append(str.substring(last, index));
+                    last = str.indexOf("}", index);
+                    if (last == -1) {
+                        buf.append(str.substring(index));
+                        break;
+                    }
+                    String key = str.substring(index + 3, last);
+                    if (tc.isDebugEnabled()) {
+                        Tr.debug(tc, "key: " + key);
+                    }
+
+                    if (key.equals("/")) {
+                        buf.append(File.separator);
+                    } else {
+                        String value = System.getProperty(key);
+                        if (value != null) {
+                            if (encodeValue == true) {
+                                value = FilePathUtil.encodeFilePath(value);
+                            }
+                            buf.append(value);
+                        } else {
+                            StringBuffer errBuf = new StringBuffer(32);
+                            errBuf.append("line ").append(parser.getLineNumber()).append(": ");
+                            errBuf.append("unable to expand \"").append(key).append("\"");
+                            String errStr = errBuf.toString();
+                            throw new ParserException(errStr);
+                        }
+                    }
+ 
                 }
+                
+
                 last += 1;
             }
             return buf.toString();
@@ -396,3 +436,4 @@ public class ParseJavaPolicy {
 
 
 }
+
