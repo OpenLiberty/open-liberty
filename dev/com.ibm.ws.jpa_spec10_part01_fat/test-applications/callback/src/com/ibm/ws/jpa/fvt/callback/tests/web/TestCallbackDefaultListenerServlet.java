@@ -78,7 +78,6 @@ public class TestCallbackDefaultListenerServlet extends JPATestServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", EntitySupportingDefaultCallbacks.class.getSimpleName());
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -91,7 +90,6 @@ public class TestCallbackDefaultListenerServlet extends JPATestServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLEntitySupportingDefaultCallbacks.class.getSimpleName());
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -104,7 +102,6 @@ public class TestCallbackDefaultListenerServlet extends JPATestServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", EntitySupportingDefaultCallbacks.class.getSimpleName());
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -117,7 +114,6 @@ public class TestCallbackDefaultListenerServlet extends JPATestServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLEntitySupportingDefaultCallbacks.class.getSimpleName());
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -130,7 +126,6 @@ public class TestCallbackDefaultListenerServlet extends JPATestServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", EntitySupportingDefaultCallbacks.class.getSimpleName());
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -143,7 +138,6 @@ public class TestCallbackDefaultListenerServlet extends JPATestServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLEntitySupportingDefaultCallbacks.class.getSimpleName());
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -167,7 +161,6 @@ public class TestCallbackDefaultListenerServlet extends JPATestServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", EntityNotSupportingDefaultCallbacks.class.getSimpleName());
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -180,7 +173,6 @@ public class TestCallbackDefaultListenerServlet extends JPATestServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLEntityNotSupportingDefaultCallbacks.class.getSimpleName());
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -193,7 +185,6 @@ public class TestCallbackDefaultListenerServlet extends JPATestServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", EntityNotSupportingDefaultCallbacks.class.getSimpleName());
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -206,7 +197,6 @@ public class TestCallbackDefaultListenerServlet extends JPATestServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLEntityNotSupportingDefaultCallbacks.class.getSimpleName());
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -219,7 +209,6 @@ public class TestCallbackDefaultListenerServlet extends JPATestServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", EntityNotSupportingDefaultCallbacks.class.getSimpleName());
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -232,7 +221,6 @@ public class TestCallbackDefaultListenerServlet extends JPATestServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLEntityNotSupportingDefaultCallbacks.class.getSimpleName());
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 

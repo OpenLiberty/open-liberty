@@ -16,8 +16,13 @@ package com.ibm.ws.testtooling.database;
  */
 public enum DatabaseVendor {
     DB2("DB2"),
+    DB2I("DB2I"),
+    DB2LUW("DB2LUW"),
+    DB2VMVSE("DB2VMVSE"),
+    DB2ZOS("DB2ZOS"),
     DERBY("DERBY"),
     INFORMIX("INFORMIX"),
+    HANA("HANA"),
     HSQL("HSQL"),
     MYSQL("MYSQL"),
     ORACLE("ORACLE"),
@@ -52,6 +57,9 @@ public enum DatabaseVendor {
         if (toLower.contains("informix")) {
             return INFORMIX;
         }
+        if (toLower.contains("hdb")) {
+            return HANA;
+        }
         if (toLower.contains("hsql")) {
             return HSQL;
         }
@@ -72,6 +80,53 @@ public enum DatabaseVendor {
         }
 
         return UNKNOWN;
+    }
+
+    /**
+     * Checks if the given database product name matches on the given DatabaseVendors
+     */
+    public static boolean checkDBProductName(String dbProductName, DatabaseVendor vendor) {
+        if (dbProductName == null || "".equals(dbProductName.trim())) {
+            return false;
+        }
+
+        final String toLower = dbProductName.toLowerCase();
+        switch (vendor) {
+            // Basing determination off product version using
+            // info from https://www.ibm.com/support/knowledgecenter/en/SSEPEK_11.0.0/java/src/tpc/imjcc_c0053013.html
+            case DB2:
+                return toLower.contains("db2");
+            case DB2I:
+                return toLower.contains("qsq");
+            case DB2LUW:
+                return toLower.contains("sql");
+            case DB2VMVSE:
+                return toLower.contains("ari");
+            case DB2ZOS:
+                return toLower.contains("dsn");
+            case DERBY:
+                return toLower.contains("derby");
+            case INFORMIX:
+                return toLower.contains("informix");
+            case HANA:
+                return toLower.contains("hdb");
+            case HSQL:
+                return toLower.contains("hsql");
+            case MYSQL:
+                return toLower.contains("mysql");
+            case ORACLE:
+                return toLower.contains("oracle");
+            case POSTGRES:
+                return toLower.contains("postgres");
+            case SQLSERVER:
+                return toLower.contains("sqlserver") || toLower.contains("microsoft sql server");
+            case SYBASE:
+                return toLower.contains("sybase");
+            case UNKNOWN:
+                return false;
+        }
+
+        return false;
     }
 
     @Override

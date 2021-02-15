@@ -41,44 +41,44 @@ import com.ibm.ws.testtooling.vehicle.resources.JPAResource;
 import com.ibm.ws.testtooling.vehicle.resources.TestExecutionResources;
 
 public class CallbackOrderOfInvocationTestLogic extends AbstractTestLogic {
+
     /**
      * Verify that the order of invocation of callback methods, as defined by the JPA Specification
      * section 3.5.4, is demonstrated:
-     *
+     * <p>
      * Default Listener, invoked in the order they are defined in the XML Mapping File
      * Entity Listeners defined by the EntityListener annotation on an Entity class or Mapped Superclass (in the order of appearance in the annotation).
      * With inheritance, the order of invocation starts at the highest superclass defining an EntityListener, moving down to the leaf entity class.
      * Lifecycle methods defined by entity classes and mapped superclasses are invoked in the order from highest superclass to the leaf entity class
-     *
+     * <p>
      * To verify this, the test will execute in the following environment:
-     *
-     * Default Entity Listener: DefaultListener1 and DefaultListener2, defined in that order in the XML Mapping File
-     * Abstract Entity using Table-Per-Class inheritance methodology, with the following:
-     * EntityListenerA1, EntityListenerA2, defined in that order
-     * Callback methods for each lifecycle type (A_PrePersist, A_PostPersist, etc.)
-     * Mapped Superclass with the following:
-     * EntityListenerB1, EntityListenerB2, defined in that order
-     * Callback methods for each lifecycle type (B_PrePersist, B_PostPersist, etc.)
-     * Leaf entity with the following:
-     * EntityListenerC1, EntityListenerC2, defined in that order
-     * Callback methods for each lifecycle type (C_PrePersist, C_PostPersist, etc.)
+     * <p><ul>
+     * <li>Default Entity Listener: DefaultListener1 and DefaultListener2, defined in that order in the XML Mapping File
+     * <li>Abstract Entity using Table-Per-Class inheritance methodology, with the following: EntityListenerA1, EntityListenerA2, defined in that order
+     * <li>Callback methods for each lifecycle type (A_PrePersist, A_PostPersist, etc.)
+     * <li>Mapped Superclass with the following: EntityListenerB1, EntityListenerB2, defined in that order
+     * <li>Callback methods for each lifecycle type (B_PrePersist, B_PostPersist, etc.)
+     * <li>Leaf entity with the following: EntityListenerC1, EntityListenerC2, defined in that order
+     * <li>Callback methods for each lifecycle type (C_PrePersist, C_PostPersist, etc.)
+     * </ul><p>
      *
      * For each callback type, the following invocation order is expected:
-     * DefaultCallbackListener[ProtType]G1
-     * DefaultCallbackListener[ProtType]G2
-     * [EntType]CallbackListener[ProtType]A1
-     * [EntType]CallbackListener[ProtType]A2
-     * [EntType]CallbackListener[ProtType]B1
-     * [EntType]CallbackListener[ProtType]B2
-     * [EntType]CallbackListener[ProtType]C1
-     * [EntType]CallbackListener[ProtType]C2
-     * [EntType]OOIRoot[ProtType]Entity
-     * [EntType]OOIMSC[ProtType]Entity
-     * [EntType]OOILeaf[ProtType]Entity
-     *
+     * <p><ul>
+     * <li>DefaultCallbackListener[ProtType]G1
+     * <li>DefaultCallbackListener[ProtType]G2
+     * <li>[EntType]CallbackListener[ProtType]A1
+     * <li>[EntType]CallbackListener[ProtType]A2
+     * <li>[EntType]CallbackListener[ProtType]B1
+     * <li>[EntType]CallbackListener[ProtType]B2
+     * <li>[EntType]CallbackListener[ProtType]C1
+     * <li>[EntType]CallbackListener[ProtType]C2
+     * <li>[EntType]OOIRoot[ProtType]Entity
+     * <li>[EntType]OOIMSC[ProtType]Entity
+     * <li>[EntType]OOILeaf[ProtType]Entity
+     * </ul><p>
      * Where [ProtType] = Package|Private|Protected|Public
      * Where [EntType] = Ano|XML
-     *
+     * <p>
      * Points: 88
      */
     public void testOrderOfInvocation001(
@@ -136,12 +136,13 @@ public class CallbackOrderOfInvocationTestLogic extends AbstractTestLogic {
         }
     }
 
-    /*
+    /**
      * Test Strategy:
-     * - Start Transaction
-     * - Create Unpersisted Callback Entity
-     * - Verify Callback ordering matches expectations.
-     *
+     * <p><ul>
+     * <li>Start Transaction
+     * <li>Create Unpersisted Callback Entity
+     * <li>Verify Callback ordering matches expectations.
+     * </ul><p>
      * Sub-Points: 12
      */
     private void testPrePersistLifecycle(
@@ -149,7 +150,7 @@ public class CallbackOrderOfInvocationTestLogic extends AbstractTestLogic {
                                          JPAResource jpaResource,
                                          ProtectionType protectionType) throws Throwable {
         System.out.println("Testing @PrePersist Order of Invocation behavior...");
-        resetListeners();
+
         AbstractCallbackListener.setGlobalCallbackEventFilter(CallbackLifeCycle.PrePersist);
         AbstractCallbackListener.setGlobalCallbackProtectionTypeFilter(protectionType);
 
@@ -161,6 +162,8 @@ public class CallbackOrderOfInvocationTestLogic extends AbstractTestLogic {
         // Clear persistence context
         System.out.println("Clearing persistence context...");
         jpaResource.getEm().clear();
+
+        int id = 1;
 
         try {
             // 1) Create Unpersisted Callback Entity
@@ -176,10 +179,10 @@ public class CallbackOrderOfInvocationTestLogic extends AbstractTestLogic {
 
             System.out.println("Creating new object instance of " + targetEntityType.getEntityName() + "...");
             ICallbackEntity entity_persist = (ICallbackEntity) constructNewEntityObject(targetEntityType);
-            entity_persist.setId(1);
-            entity_persist.setName("CallbackEntity-1");
+            entity_persist.setId(id);
+            entity_persist.setName("PrePersist-CallbackEntity-" + id);
 
-            System.out.println("3) Calling em.persist on " + targetEntityType.getEntityName() + "(id=1) ...");
+            System.out.println("3) Calling em.persist on " + targetEntityType.getEntityName() + "(id=" + id + ") ...");
             jpaResource.getEm().persist(entity_persist);
 
             // @PrePersist should have fired, examine the callback invocation order
@@ -221,13 +224,14 @@ public class CallbackOrderOfInvocationTestLogic extends AbstractTestLogic {
         }
     }
 
-    /*
+    /**
      * Test Strategy:
-     * - Start Transaction
-     * - Create Unpersisted Callback Entity
-     * - Commit Transaction
-     * - Verify Callback ordering matches expectations.
-     *
+     * <p><ul>
+     * <li>Start Transaction
+     * <li>Create Unpersisted Callback Entity
+     * <li>Commit Transaction
+     * <li>Verify Callback ordering matches expectations.
+     * </ul><p>
      * Sub-Points: 12
      */
     private void testPostPersistLifecycle(
@@ -235,7 +239,7 @@ public class CallbackOrderOfInvocationTestLogic extends AbstractTestLogic {
                                           JPAResource jpaResource,
                                           ProtectionType protectionType) throws Throwable {
         System.out.println("Testing @PostPersist Order of Invocation behavior...");
-        resetListeners();
+
         AbstractCallbackListener.setGlobalCallbackEventFilter(CallbackLifeCycle.PostPersist);
         AbstractCallbackListener.setGlobalCallbackProtectionTypeFilter(protectionType);
 
@@ -247,6 +251,8 @@ public class CallbackOrderOfInvocationTestLogic extends AbstractTestLogic {
         // Clear persistence context
         System.out.println("Clearing persistence context...");
         jpaResource.getEm().clear();
+
+        int id = 2;
 
         try {
             // 1) Create Unpersisted Callback Entity
@@ -262,10 +268,10 @@ public class CallbackOrderOfInvocationTestLogic extends AbstractTestLogic {
 
             System.out.println("Creating new object instance of " + targetEntityType.getEntityName() + "...");
             ICallbackEntity entity_persist = (ICallbackEntity) constructNewEntityObject(targetEntityType);
-            entity_persist.setId(1);
-            entity_persist.setName("CallbackEntity-1");
+            entity_persist.setId(id);
+            entity_persist.setName("PostPersist-CallbackEntity-" + id);
 
-            System.out.println("3) Calling em.persist on " + targetEntityType.getEntityName() + "(id=1) ...");
+            System.out.println("3) Calling em.persist on " + targetEntityType.getEntityName() + "(id=" + id + ") ...");
             jpaResource.getEm().persist(entity_persist);
 
             System.out.println("Committing transaction...");
@@ -312,13 +318,14 @@ public class CallbackOrderOfInvocationTestLogic extends AbstractTestLogic {
         }
     }
 
-    /*
+    /**
      * Test Strategy:
-     * - Start Transaction
-     * - Find Entity
-     * - Verify Callback ordering matches expectations.
-     * - Rollback Transaction
-     *
+     * <p><ul>
+     * <li>Start Transaction
+     * <li>Find Entity
+     * <li>Verify Callback ordering matches expectations.
+     * <li>Rollback Transaction
+     * </ul><p>
      * Sub-Points: 12
      */
     private void testPostLoadLifecycle(
@@ -326,7 +333,7 @@ public class CallbackOrderOfInvocationTestLogic extends AbstractTestLogic {
                                        JPAResource jpaResource,
                                        ProtectionType protectionType) throws Throwable {
         System.out.println("Testing @PostLoad Order of Invocation behavior...");
-        resetListeners();
+
         AbstractCallbackListener.setGlobalCallbackEventFilter(CallbackLifeCycle.PostLoad);
         AbstractCallbackListener.setGlobalCallbackProtectionTypeFilter(protectionType);
 
@@ -338,6 +345,8 @@ public class CallbackOrderOfInvocationTestLogic extends AbstractTestLogic {
         // Clear persistence context
         System.out.println("Clearing persistence context...");
         jpaResource.getEm().clear();
+
+        int id = 2;
 
         try {
             // 1) Find Callback Entity
@@ -351,9 +360,9 @@ public class CallbackOrderOfInvocationTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().joinTransaction();
             }
 
-            System.out.println("Performing find operation on " + targetEntityType.getEntityName() + "(id=1) ...");
-            @SuppressWarnings("unused")
-            ICallbackEntity entity = (ICallbackEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), 1);
+            System.out.println("Performing find operation on " + targetEntityType.getEntityName() + "(id=" + id + ") ...");
+            ICallbackEntity entity = (ICallbackEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), id);
+            Assert.assertNotNull("Assert find() did not return null.", entity);
 
             // @PostLoad should have fired, examine the callback invocation order
             System.out.println("@PostLoad should have fired, examining the callback invocation order...");
@@ -394,13 +403,14 @@ public class CallbackOrderOfInvocationTestLogic extends AbstractTestLogic {
         }
     }
 
-    /*
+    /**
      * Test Strategy:
-     * - Start Transaction
-     * - Find and Dirty Entity
-     * - Verify Callback ordering matches expectations.
-     * - Rollback Transaction
-     *
+     * <p><ul>
+     * <li>Start Transaction
+     * <li>Find and Dirty Entity
+     * <li>Verify Callback ordering matches expectations.
+     * <li>Rollback Transaction
+     * </ul><p>
      * Sub-Points: 13
      */
     private void testPreUpdateLifecycle(
@@ -421,6 +431,8 @@ public class CallbackOrderOfInvocationTestLogic extends AbstractTestLogic {
         System.out.println("Clearing persistence context...");
         jpaResource.getEm().clear();
 
+        int id = 2;
+
         try {
             // 1) Find Callback Entity
             System.out.println("1) Find Callback Entity");
@@ -433,12 +445,12 @@ public class CallbackOrderOfInvocationTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().joinTransaction();
             }
 
-            System.out.println("Performing find operation on " + targetEntityType.getEntityName() + "(id=1) ...");
-            ICallbackEntity entity = (ICallbackEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), 1);
+            System.out.println("Performing find operation on " + targetEntityType.getEntityName() + "(id=" + id + ") ...");
+            ICallbackEntity entity = (ICallbackEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), id);
             Assert.assertNotNull("Assert find() did not return null.", entity);
 
             System.out.println("2) Dirty the entity....");
-            entity.setName("Dirty Name");
+            entity.setName("PreUpdate-CallbackEntity-" + id);
 
             System.out.println("3) Committing transaction...");
             if (jpaResource.getTj().isTransactionActive()) {
@@ -484,13 +496,14 @@ public class CallbackOrderOfInvocationTestLogic extends AbstractTestLogic {
         }
     }
 
-    /*
+    /**
      * Test Strategy:
-     * - Start Transaction
-     * - Find and Dirty Entity
-     * - Verify Callback ordering matches expectations.
-     * - Rollback Transaction
-     *
+     * <p><ul>
+     * <li>Start Transaction
+     * <li>Find and Dirty Entity
+     * <li>Verify Callback ordering matches expectations.
+     * <li>Rollback Transaction
+     * </ul><p>
      * Sub-Points: 13
      */
     private void testPostUpdateLifecycle(
@@ -511,6 +524,8 @@ public class CallbackOrderOfInvocationTestLogic extends AbstractTestLogic {
         System.out.println("Clearing persistence context...");
         jpaResource.getEm().clear();
 
+        int id = 2;
+
         try {
             // 1) Find Callback Entity
             System.out.println("1) Find Callback Entity");
@@ -523,12 +538,12 @@ public class CallbackOrderOfInvocationTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().joinTransaction();
             }
 
-            System.out.println("Performing find operation on " + targetEntityType.getEntityName() + "(id=1) ...");
-            ICallbackEntity entity = (ICallbackEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), 1);
+            System.out.println("Performing find operation on " + targetEntityType.getEntityName() + "(id=" + id + ") ...");
+            ICallbackEntity entity = (ICallbackEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), id);
             Assert.assertNotNull("Assert find() did not return null.", entity);
 
             System.out.println("2) Dirty the entity....");
-            entity.setName("Another Dirty Name");
+            entity.setName("PostUpdate-CallbackEntity-" + id);
 
             System.out.println("3) Committing transaction...");
             if (jpaResource.getTj().isTransactionActive()) {
@@ -574,13 +589,14 @@ public class CallbackOrderOfInvocationTestLogic extends AbstractTestLogic {
         }
     }
 
-    /*
+    /**
      * Test Strategy:
-     * - Start Transaction
-     * - Find and mark entity for removal
-     * - Verify Callback ordering matches expectations.
-     * - Rollback Transaction
-     *
+     * <p><ul>
+     * <li>Start Transaction
+     * <li>Find and mark entity for removal
+     * <li>Verify Callback ordering matches expectations.
+     * <li>Rollback Transaction
+     * </ul><p>
      * Sub-Points: 13
      */
     private void testPreRemoveLifecycle(
@@ -601,6 +617,8 @@ public class CallbackOrderOfInvocationTestLogic extends AbstractTestLogic {
         System.out.println("Clearing persistence context...");
         jpaResource.getEm().clear();
 
+        int id = 2;
+
         try {
             // 1) Find Callback Entity
             System.out.println("1) Find Callback Entity");
@@ -613,8 +631,8 @@ public class CallbackOrderOfInvocationTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().joinTransaction();
             }
 
-            System.out.println("Performing find operation on " + targetEntityType.getEntityName() + "(id=1) ...");
-            ICallbackEntity entity = (ICallbackEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), 1);
+            System.out.println("Performing find operation on " + targetEntityType.getEntityName() + "(id=" + id + ") ...");
+            ICallbackEntity entity = (ICallbackEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), id);
             Assert.assertNotNull("Assert find() did not return null.", entity);
 
             System.out.println("2) Removing the entity....");
@@ -659,13 +677,14 @@ public class CallbackOrderOfInvocationTestLogic extends AbstractTestLogic {
         }
     }
 
-    /*
+    /**
      * Test Strategy:
-     * - Start Transaction
-     * - Find and mark entity for removal
-     * - Commit Transaction
-     * - Verify Callback ordering matches expectations.
-     *
+     * <p><ul>
+     * <li>Start Transaction
+     * <li>Find and mark entity for removal
+     * <li>Commit Transaction
+     * <li>Verify Callback ordering matches expectations.
+     * </ul><p>
      * Sub-Points: 13
      */
     private void testPostRemoveLifecycle(
@@ -686,6 +705,8 @@ public class CallbackOrderOfInvocationTestLogic extends AbstractTestLogic {
         System.out.println("Clearing persistence context...");
         jpaResource.getEm().clear();
 
+        int id = 2;
+
         try {
             // 1) Find Callback Entity
             System.out.println("1) Find Callback Entity");
@@ -698,8 +719,8 @@ public class CallbackOrderOfInvocationTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().joinTransaction();
             }
 
-            System.out.println("Performing find operation on " + targetEntityType.getEntityName() + "(id=1) ...");
-            ICallbackEntity entity = (ICallbackEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), 1);
+            System.out.println("Performing find operation on " + targetEntityType.getEntityName() + "(id=" + id + ") ...");
+            ICallbackEntity entity = (ICallbackEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), id);
             Assert.assertNotNull("Assert find() did not return null.", entity);
 
             System.out.println("2) Removing the entity....");
@@ -772,6 +793,7 @@ public class CallbackOrderOfInvocationTestLogic extends AbstractTestLogic {
         AnoCallbackListenerPackageC2.getSingleton().resetCallbackData();
     }
 
+    @SuppressWarnings("incomplete-switch")
     private List<CallbackRecord> generateExpectedOrderOfInvocationList(CallbackOOIEntityEnum targetEntityType,
                                                                        ProtectionType protectionType, CallbackLifeCycle lifecycleType) {
         final String basePackageName = "com.ibm.ws.jpa.fvt.callback.";

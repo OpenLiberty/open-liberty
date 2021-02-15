@@ -63,6 +63,7 @@
         <properties>
             <!-- Eclipselink Support Properties -->
             <property name="eclipselink.cache.shared.default" value="false"/>
+            <property name="eclipselink.logging.parameters" value="true"/>
 
             <!-- Hibernate Support Properties -->
             <property name="hibernate.temp.use_jdbc_metadata_defaults" value="false"/>
@@ -120,6 +121,7 @@
         <properties>
             <!-- Eclipselink Support Properties -->
             <property name="eclipselink.cache.shared.default" value="false"/>
+            <property name="eclipselink.logging.parameters" value="true"/>
 
             <!-- Hibernate Support Properties -->
             <property name="hibernate.temp.use_jdbc_metadata_defaults" value="false"/>
@@ -164,6 +166,7 @@
         <properties>
             <!-- Eclipselink Support Properties -->
             <property name="eclipselink.cache.shared.default" value="false"/>
+            <property name="eclipselink.logging.parameters" value="true"/>
 
             <!-- Hibernate Support Properties -->
             <property name="hibernate.temp.use_jdbc_metadata_defaults" value="false"/>
@@ -214,6 +217,7 @@
         <properties>
             <!-- Eclipselink Support Properties -->
             <property name="eclipselink.cache.shared.default" value="false"/>
+            <property name="eclipselink.logging.parameters" value="true"/>
 
             <!-- Hibernate Support Properties -->
             <property name="hibernate.temp.use_jdbc_metadata_defaults" value="false"/>
@@ -266,6 +270,7 @@
         <properties>
             <!-- Eclipselink Support Properties -->
             <property name="eclipselink.cache.shared.default" value="false"/>
+            <property name="eclipselink.logging.parameters" value="true"/>
 
             <!-- Hibernate Support Properties -->
             <property name="hibernate.temp.use_jdbc_metadata_defaults" value="false"/>

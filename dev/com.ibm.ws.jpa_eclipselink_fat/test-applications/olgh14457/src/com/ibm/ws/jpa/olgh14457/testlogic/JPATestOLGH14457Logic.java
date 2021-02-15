@@ -22,7 +22,6 @@ import org.junit.Assert;
 
 import com.ibm.ws.testtooling.testinfo.TestExecutionContext;
 import com.ibm.ws.testtooling.testlogic.AbstractTestLogic;
-import com.ibm.ws.testtooling.testlogic.AbstractTestLogic.JPAProviderImpl;
 import com.ibm.ws.testtooling.vehicle.resources.JPAResource;
 import com.ibm.ws.testtooling.vehicle.resources.TestExecutionResources;
 
@@ -53,7 +52,7 @@ public class JPATestOLGH14457Logic extends AbstractTestLogic {
         }
 
         //TODO: Disable test until EclipseLink 3.0 is updated to include the fix
-        if ((isUsingJPA30Feature()) && getJPAProviderImpl(jpaResource).equals(JPAProviderImpl.ECLIPSELINK)) {
+        if ((isUsingJPA30Feature()) && JPAProviderImpl.ECLIPSELINK.equals(getJPAProviderImpl(jpaResource))) {
             return;
         }
 

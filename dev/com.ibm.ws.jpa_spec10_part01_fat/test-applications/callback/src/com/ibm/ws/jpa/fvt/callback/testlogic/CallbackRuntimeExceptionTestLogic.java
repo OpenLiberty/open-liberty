@@ -39,7 +39,7 @@ public class CallbackRuntimeExceptionTestLogic extends AbstractTestLogic {
      * Supports testing of entities declared by annotation and
      * XML, and supports stand-alone entity classes and entities that gain callback methods from
      * mapped superclasses.
-     *
+     * <p>
      * Points: 15
      */
     public void testCallbackRuntimeException001(
@@ -73,29 +73,49 @@ public class CallbackRuntimeExceptionTestLogic extends AbstractTestLogic {
             System.out.println("CallbackTestLogic.testCallbackRuntimeException001(): Begin");
             AbstractCallbackListener.setTargetPostLoadLifeCycleWithRuntimeException(null);
 
-            // Create an instance of CallbackEntity for update and remove lifecycle tests
-            jpaResource.getTj().beginTransaction();
-            if (jpaResource.getTj().isApplicationManaged()) {
-                jpaResource.getEm().joinTransaction();
-            }
-            ICallbackEntity testEntity = (ICallbackEntity) constructNewEntityObject(targetEntityType);
-            testEntity.setId(1);
-            testEntity.setName("CallbackEntity-1");
-            jpaResource.getEm().persist(testEntity);
-            jpaResource.getTj().commitTransaction();
-            jpaResource.getEm().clear();
-
-            System.out.println("Testing JPA Life Cycle Methods...");
+            System.out.println("Testing JPA Persist Life Cycle Methods...");
             testPrePersistLifecycle(targetEntityType, jpaResource, false, null); // 3 points
             testPostPersistLifecycle(targetEntityType, jpaResource, false, null); // 1 point
 
-            testPreUpdateLifecycle(targetEntityType, jpaResource, false, null); // 2 points
-            testPostUpdateLifecycle(targetEntityType, jpaResource, false, null); // 2 points
+            ICallbackEntity testEntity = (ICallbackEntity) constructNewEntityObject(targetEntityType);
+            testEntity.setId(3);
+            testEntity.setName("Update-Remove-CallbackEntity-3");
+            try {
+                // Create an instance of CallbackEntity for update and remove lifecycle tests
+                jpaResource.getTj().beginTransaction();
+                if (jpaResource.getTj().isApplicationManaged()) {
+                    jpaResource.getEm().joinTransaction();
+                }
 
-            testPreRemoveLifecycle(targetEntityType, jpaResource, false, null); // 2 points
-            testPostRemoveLifecycle(targetEntityType, jpaResource, false, null); // 2 points
+                System.out.println("Populating for Update and Remove tests...");
+                jpaResource.getEm().persist(testEntity);
+                jpaResource.getTj().commitTransaction();
+                jpaResource.getEm().clear();
 
-            testPostLoadLifecycle(targetEntityType, jpaResource, false, null); // 3 points
+                System.out.println("Testing JPA Update Life Cycle Methods...");
+                testPreUpdateLifecycle(targetEntityType, jpaResource, false, null); // 2 points
+                testPostUpdateLifecycle(targetEntityType, jpaResource, false, null); // 2 points
+
+                System.out.println("Testing JPA Remove Life Cycle Methods...");
+                testPreRemoveLifecycle(targetEntityType, jpaResource, false, null); // 2 points
+                testPostRemoveLifecycle(targetEntityType, jpaResource, false, null); // 2 points
+
+                System.out.println("Testing JPA Load Life Cycle Methods...");
+                testPostLoadLifecycle(targetEntityType, jpaResource, false, null); // 3 points
+            } finally {
+                System.out.println("Beginning new transaction...");
+                jpaResource.getTj().beginTransaction();
+                if (jpaResource.getTj().isApplicationManaged()) {
+                    System.out.println("Joining entitymanager to JTA transaction...");
+                    jpaResource.getEm().joinTransaction();
+                }
+
+                System.out.println("Removing " + testEntity + " to clean up test");
+                testEntity = jpaResource.getEm().merge(testEntity);
+                jpaResource.getEm().remove(testEntity);
+                jpaResource.getTj().commitTransaction();
+                jpaResource.getEm().clear();
+            }
 
             System.out.println("Ending test.");
         } finally {
@@ -106,7 +126,7 @@ public class CallbackRuntimeExceptionTestLogic extends AbstractTestLogic {
 
     /**
      * Test when a RuntimeException is thrown by a callback method on default listener classes.
-     *
+     * <p>
      * Points: 15
      */
     public void testCallbackRuntimeException002(
@@ -148,31 +168,50 @@ public class CallbackRuntimeExceptionTestLogic extends AbstractTestLogic {
         try {
             System.out.println("CallbackTestLogic.testCallbackRuntimeException002(): Begin");
             AbstractCallbackListener.setTargetPostLoadLifeCycleWithRuntimeException(null);
-            resetListeners();
 
-            // Create an instance of CallbackEntity for update and remove lifecycle tests
-            jpaResource.getTj().beginTransaction();
-            if (jpaResource.getTj().isApplicationManaged()) {
-                jpaResource.getEm().joinTransaction();
-            }
-            ICallbackEntity testEntity = (ICallbackEntity) constructNewEntityObject(targetEntityType);
-            testEntity.setId(1);
-            testEntity.setName("CallbackEntity-1");
-            jpaResource.getEm().persist(testEntity);
-            jpaResource.getTj().commitTransaction();
-            jpaResource.getEm().clear();
-
-            System.out.println("Testing JPA Life Cycle Methods...");
+            System.out.println("Testing JPA Persist Life Cycle Methods...");
             testPrePersistLifecycle(targetEntityType, jpaResource, true, listenerProtectionType); // 3 points
             testPostPersistLifecycle(targetEntityType, jpaResource, true, listenerProtectionType); // 1 point
 
-            testPreUpdateLifecycle(targetEntityType, jpaResource, true, listenerProtectionType); // 2 points
-            testPostUpdateLifecycle(targetEntityType, jpaResource, true, listenerProtectionType); // 2 points
+            ICallbackEntity testEntity = (ICallbackEntity) constructNewEntityObject(targetEntityType);
+            testEntity.setId(3);
+            testEntity.setName("Update-Remove-CallbackEntity-3");
+            try {
+                // Create an instance of CallbackEntity for update and remove lifecycle tests
+                jpaResource.getTj().beginTransaction();
+                if (jpaResource.getTj().isApplicationManaged()) {
+                    jpaResource.getEm().joinTransaction();
+                }
 
-            testPreRemoveLifecycle(targetEntityType, jpaResource, true, listenerProtectionType); // 2 points
-            testPostRemoveLifecycle(targetEntityType, jpaResource, true, listenerProtectionType); // 2 points
+                System.out.println("Populating for Update and Remove tests...");
+                jpaResource.getEm().persist(testEntity);
+                jpaResource.getTj().commitTransaction();
+                jpaResource.getEm().clear();
 
-            testPostLoadLifecycle(targetEntityType, jpaResource, true, listenerProtectionType); // 3 points
+                System.out.println("Testing JPA Update Life Cycle Methods...");
+                testPreUpdateLifecycle(targetEntityType, jpaResource, true, listenerProtectionType); // 2 points
+                testPostUpdateLifecycle(targetEntityType, jpaResource, true, listenerProtectionType); // 2 points
+
+                System.out.println("Testing JPA Remove Life Cycle Methods...");
+                testPreRemoveLifecycle(targetEntityType, jpaResource, true, listenerProtectionType); // 2 points
+                testPostRemoveLifecycle(targetEntityType, jpaResource, true, listenerProtectionType); // 2 points
+
+                System.out.println("Testing JPA Load Life Cycle Methods...");
+                testPostLoadLifecycle(targetEntityType, jpaResource, true, listenerProtectionType); // 3 points
+            } finally {
+                System.out.println("Beginning new transaction...");
+                jpaResource.getTj().beginTransaction();
+                if (jpaResource.getTj().isApplicationManaged()) {
+                    System.out.println("Joining entitymanager to JTA transaction...");
+                    jpaResource.getEm().joinTransaction();
+                }
+
+                System.out.println("Removing " + testEntity + " to clean up test");
+                testEntity = jpaResource.getEm().merge(testEntity);
+                jpaResource.getEm().remove(testEntity);
+                jpaResource.getTj().commitTransaction();
+                jpaResource.getEm().clear();
+            }
 
             System.out.println("Ending test.");
         } finally {
@@ -183,7 +222,7 @@ public class CallbackRuntimeExceptionTestLogic extends AbstractTestLogic {
 
     /**
      * Test when a RuntimeException is thrown by a callback method on entity-defined listener classes.
-     *
+     * <p>
      * Points: 15
      */
     public void testCallbackRuntimeException003(
@@ -225,32 +264,51 @@ public class CallbackRuntimeExceptionTestLogic extends AbstractTestLogic {
         try {
             System.out.println("CallbackTestLogic.testCallbackRuntimeException003(): Begin");
             AbstractCallbackListener.setTargetPostLoadLifeCycleWithRuntimeException(null);
-            resetListeners();
 
-            // Create an instance of CallbackEntity for update and remove lifecycle tests
-            jpaResource.getTj().beginTransaction();
-            if (jpaResource.getTj().isApplicationManaged()) {
-                jpaResource.getEm().joinTransaction();
-            }
-            ICallbackEntity testEntity = (ICallbackEntity) constructNewEntityObject(targetEntityType);
-            testEntity.setId(1);
-            testEntity.setName("CallbackEntity-1");
-            jpaResource.getEm().persist(testEntity);
-            jpaResource.getTj().commitTransaction();
-            jpaResource.getEm().clear();
-
-            System.out.println("Testing JPA Life Cycle Methods...");
+            System.out.println("Testing JPA Persist Life Cycle Methods...");
             testPrePersistLifecycle(targetEntityType, jpaResource, false, listenerProtectionType); // 3 points
             testPostPersistLifecycle(targetEntityType, jpaResource, false, listenerProtectionType); // 1 point
 
-            testPreUpdateLifecycle(targetEntityType, jpaResource, false, listenerProtectionType); // 2 points
-            testPostUpdateLifecycle(targetEntityType, jpaResource, false, listenerProtectionType); // 2 points
+            ICallbackEntity testEntity = (ICallbackEntity) constructNewEntityObject(targetEntityType);
+            testEntity.setId(3);
+            testEntity.setName("Update-Remove-CallbackEntity-3");
 
-            testPreRemoveLifecycle(targetEntityType, jpaResource, false, listenerProtectionType); // 2 points
-            testPostRemoveLifecycle(targetEntityType, jpaResource, false, listenerProtectionType); // 2 points
+            try {
+                // Create an instance of CallbackEntity for update and remove lifecycle tests
+                jpaResource.getTj().beginTransaction();
+                if (jpaResource.getTj().isApplicationManaged()) {
+                    jpaResource.getEm().joinTransaction();
+                }
 
-            testPostLoadLifecycle(targetEntityType, jpaResource, false, listenerProtectionType); // 3 points
+                System.out.println("Populating for Update and Remove tests...");
+                jpaResource.getEm().persist(testEntity);
+                jpaResource.getTj().commitTransaction();
+                jpaResource.getEm().clear();
 
+                System.out.println("Testing JPA Update Life Cycle Methods...");
+                testPreUpdateLifecycle(targetEntityType, jpaResource, false, listenerProtectionType); // 2 points
+                testPostUpdateLifecycle(targetEntityType, jpaResource, false, listenerProtectionType); // 2 points
+
+                System.out.println("Testing JPA Remove Life Cycle Methods...");
+                testPreRemoveLifecycle(targetEntityType, jpaResource, false, listenerProtectionType); // 2 points
+                testPostRemoveLifecycle(targetEntityType, jpaResource, false, listenerProtectionType); // 2 points
+
+                System.out.println("Testing JPA Load Life Cycle Methods...");
+                testPostLoadLifecycle(targetEntityType, jpaResource, false, listenerProtectionType); // 3 points
+            } finally {
+                System.out.println("Beginning new transaction...");
+                jpaResource.getTj().beginTransaction();
+                if (jpaResource.getTj().isApplicationManaged()) {
+                    System.out.println("Joining entitymanager to JTA transaction...");
+                    jpaResource.getEm().joinTransaction();
+                }
+
+                System.out.println("Removing " + testEntity + " to clean up test");
+                testEntity = jpaResource.getEm().merge(testEntity);
+                jpaResource.getEm().remove(testEntity);
+                jpaResource.getTj().commitTransaction();
+                jpaResource.getEm().clear();
+            }
             System.out.println("Ending test.");
         } finally {
             System.out.println("CallbackTestLogic.testCallbackRuntimeException003(): End");
@@ -329,21 +387,22 @@ public class CallbackRuntimeExceptionTestLogic extends AbstractTestLogic {
         }
     }
 
-    /*
+    /**
      * Test Strategy:
-     * - Start Transaction
-     * - Create Unpersisted Callback Entity
-     * - Mark the new Entity object to throw a CallbackRuntimeException when the PrePersist
-     * callback lifecycle method is invoked.
-     * - Call em.persist() to try persist the new entity
-     * - This should throw a CallbackRuntime Exception and mark the transaction for rollback
-     * - Catch the Exception, make sure it is CallbackRuntimeException
-     * - Check the Transaction and make sure it is marked for rollback
-     * - Roll back the Transaction (cleanup)
-     *
+     * <p><ul>
+     * <li>Start Transaction
+     * <li>Create Unmanaged Callback Entity
+     * <li>Mark the new Entity object to throw a CallbackRuntimeException when the PrePersist callback lifecycle method is invoked.
+     * <li>Call em.persist() to try persist the new entity
+     * <li>This should throw a CallbackRuntime Exception and mark the transaction for rollback
+     * <li>Catch the Exception, make sure it is CallbackRuntimeException
+     * <li>Check the Transaction and make sure it is marked for rollback
+     * <li>Roll back the Transaction (cleanup)
+     * <li>
+     * </ul><p>
      * Sub-Test passes if the persist operation throws a CallbackRuntimeException, the transaction remains
      * active, and is marked for rollback.
-     *
+     * <p>
      * Sub-Points: 3
      */
     private void testPrePersistLifecycle(
@@ -352,7 +411,6 @@ public class CallbackRuntimeExceptionTestLogic extends AbstractTestLogic {
                                          boolean targetDefaultListener,
                                          ProtectionType listenerProtectionType) throws Throwable {
         System.out.println("Testing @PrePersist Exception behavior...");
-        resetListeners();
 
         // Roll back any active transaction
         if (jpaResource.getTj().isTransactionActive()) {
@@ -365,6 +423,7 @@ public class CallbackRuntimeExceptionTestLogic extends AbstractTestLogic {
 
         AbstractCallbackListener targetListener = null;
         String targetListenerName = "";
+        int id = 1;
 
         try {
             if (listenerProtectionType != null) {
@@ -376,9 +435,6 @@ public class CallbackRuntimeExceptionTestLogic extends AbstractTestLogic {
                 targetListenerName = targetListener.getClass().getSimpleName();
             }
 
-            // 1) Create Unpersisted Callback Entity
-            System.out.println("1) Create Unpersisted Callback Entity");
-
             // Begin new transaction
             System.out.println("Beginning new transaction...");
             jpaResource.getTj().beginTransaction();
@@ -387,10 +443,10 @@ public class CallbackRuntimeExceptionTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().joinTransaction();
             }
 
-            System.out.println("Creating new object instance of " + targetEntityType.getEntityName() + "...");
+            System.out.println("1) Creating new object instance of " + targetEntityType.getEntityName() + "...");
             ICallbackEntity entity_persist = (ICallbackEntity) constructNewEntityObject(targetEntityType);
-            entity_persist.setId(100);
-            entity_persist.setName("CallbackEntity-1");
+            entity_persist.setId(id);
+            entity_persist.setName("PrePersist-CallbackEntity-" + id);
 
             // Configure to throw a CallbackRuntimeException during the @PrePersist callback.
             if (targetListener == null) {
@@ -406,6 +462,8 @@ public class CallbackRuntimeExceptionTestLogic extends AbstractTestLogic {
                 System.out.println("3) Calling em.persist (should fail with a CallbackRuntimeException.");
                 jpaResource.getEm().persist(entity_persist);
 
+                // Remove the managed instance so that it doesn't get committed to the database
+                jpaResource.getEm().remove(entity_persist);
                 Assert.fail("No Exception was thrown by the em.persist() operation.");
             } catch (java.lang.AssertionError ae) {
                 throw ae;
@@ -431,18 +489,17 @@ public class CallbackRuntimeExceptionTestLogic extends AbstractTestLogic {
         }
     }
 
-    /*
+    /**
      * Test Strategy:
-     * - Start Transaction
-     * - Create Unpersisted Callback Entity
-     * - Mark the new Entity object to throw a CallbackRuntimeException when the PostPersist
-     * callback lifecycle method is invoked.
-     * - Call em.persist() to try persist the new entity
-     * - Depending on the JPA implementation, the postpersist method may be called by the persist() operation,
-     * or it may be called when the transaction is being committed.
-     *
+     * <p><ul>
+     * <li>Start Transaction
+     * <li>Create Unmanaged Callback Entity
+     * <li>Mark the new Entity object to throw a CallbackRuntimeException when the PostPersist callback lifecycle method is invoked.
+     * <li>Call em.persist() to try persist the new entity
+     * <li>Depending on the JPA implementation, the postpersist method may be called by the persist() operation, or it may be called when the transaction is being committed.
+     * </ul><p>
      * Sub-Test passes if the persist operation (or transaction commit) throws a CallbackRuntimeException.
-     *
+     * <p>
      * Sub-Points: 1
      */
     private void testPostPersistLifecycle(
@@ -451,7 +508,6 @@ public class CallbackRuntimeExceptionTestLogic extends AbstractTestLogic {
                                           boolean targetDefaultListener,
                                           ProtectionType listenerProtectionType) throws Throwable {
         System.out.println("Testing @PostPersist Exception behavior...");
-        resetListeners();
 
         // Roll back any active transaction
         if (jpaResource.getTj().isTransactionActive()) {
@@ -464,6 +520,8 @@ public class CallbackRuntimeExceptionTestLogic extends AbstractTestLogic {
 
         AbstractCallbackListener targetListener = null;
         String targetListenerName = "";
+        int id = 2;
+
         try {
             if (listenerProtectionType != null) {
                 if (targetDefaultListener) {
@@ -474,9 +532,6 @@ public class CallbackRuntimeExceptionTestLogic extends AbstractTestLogic {
                 targetListenerName = targetListener.getClass().getSimpleName();
             }
 
-            // 1) Create Unpersisted Callback Entity
-            System.out.println("1) Create Unpersisted Callback Entity");
-
             // Begin new transaction
             System.out.println("Beginning new transaction...");
             jpaResource.getTj().beginTransaction();
@@ -485,10 +540,10 @@ public class CallbackRuntimeExceptionTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().joinTransaction();
             }
 
-            System.out.println("Creating new object instance of " + targetEntityType.getEntityName() + "...");
+            System.out.println("1) Creating new object instance of " + targetEntityType.getEntityName() + "...");
             ICallbackEntity entity_persist = (ICallbackEntity) constructNewEntityObject(targetEntityType);
-            entity_persist.setId(100);
-            entity_persist.setName("CallbackEntity-1");
+            entity_persist.setId(id);
+            entity_persist.setName("PostPersist-CallbackEntity-" + id);
 
             // Configure the entity object to throw a CallbackRuntimeException during the @PostPersist callback.
             if (targetListener == null) {
@@ -536,6 +591,7 @@ public class CallbackRuntimeExceptionTestLogic extends AbstractTestLogic {
         } finally {
             // Cleanup
             resetListeners();
+
             if (jpaResource.getTj().isTransactionActive()) {
                 System.out.println("Rolling back transaction...");
                 jpaResource.getTj().rollbackTransaction();
@@ -543,18 +599,16 @@ public class CallbackRuntimeExceptionTestLogic extends AbstractTestLogic {
         }
     }
 
-    /*
+    /**
      * Test Strategy:
-     * - Start Transaction
-     * - Find CallbackEntity(id=1)
-     * - Dirty the CallbackEntity - this may fire the @PreUpdate callback on some JPA implementations.
-     * - (If not fired by the update) Commit the transaction, this should fire the @PreUpdate callback
-     *
-     * - Check that the Exception thrown by the update or transaction commit operation contains
-     * CallbackRuntimeException in its chain.
-     *
-     * - If the CallbackRuntimeException was thrown by the update operation, check that the transaction is
-     * still active and marked for rollback.
+     * <p><ul>
+     * <li>Start Transaction
+     * <li>Find CallbackEntity(id=3)
+     * <li>Dirty the CallbackEntity - this may fire the @PreUpdate callback on some JPA implementations.
+     * <li>(If not fired by the update) Commit the transaction, this should fire the @PreUpdate callback
+     * <li>Check that the Exception thrown by the update or transaction commit operation contains CallbackRuntimeException in its chain.
+     * <li>If the CallbackRuntimeException was thrown by the update operation, check that the transaction is still active and marked for rollback.
+     * </ul><p>
      *
      * Sub-Points: 2
      */
@@ -564,7 +618,6 @@ public class CallbackRuntimeExceptionTestLogic extends AbstractTestLogic {
                                         boolean targetDefaultListener,
                                         ProtectionType listenerProtectionType) throws Throwable {
         System.out.println("Testing @PreUpdate Exception behavior...");
-        resetListeners();
 
         // Roll back any active transaction
         if (jpaResource.getTj().isTransactionActive()) {
@@ -577,6 +630,8 @@ public class CallbackRuntimeExceptionTestLogic extends AbstractTestLogic {
 
         AbstractCallbackListener targetListener = null;
         String targetListenerName = "";
+        int id = 3;
+
         try {
             if (listenerProtectionType != null) {
                 if (targetDefaultListener) {
@@ -587,9 +642,6 @@ public class CallbackRuntimeExceptionTestLogic extends AbstractTestLogic {
                 targetListenerName = targetListener.getClass().getSimpleName();
             }
 
-            // 1) Load Callback Entity
-            System.out.println("1) Load " + targetEntityType.getEntityName() + "(id=1)...");
-
             // Begin new transaction
             System.out.println("Beginning new transaction...");
             jpaResource.getTj().beginTransaction();
@@ -598,7 +650,9 @@ public class CallbackRuntimeExceptionTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().joinTransaction();
             }
 
-            ICallbackEntity entity = (ICallbackEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), 1);
+            // 1) Load Callback Entity
+            System.out.println("1) Load " + targetEntityType.getEntityName() + "(id=" + id + ")...");
+            ICallbackEntity entity = (ICallbackEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), id);
             Assert.assertNotNull("Assert find() did not return null.", entity);
 
             // Configure the entity object to throw a CallbackRuntimeException during the @PreUpdate callback.
@@ -647,6 +701,7 @@ public class CallbackRuntimeExceptionTestLogic extends AbstractTestLogic {
         } finally {
             // Cleanup
             resetListeners();
+
             if (jpaResource.getTj().isTransactionActive()) {
                 System.out.println("Rolling back transaction...");
                 jpaResource.getTj().rollbackTransaction();
@@ -654,18 +709,16 @@ public class CallbackRuntimeExceptionTestLogic extends AbstractTestLogic {
         }
     }
 
-    /*
+    /**
      * Test Strategy:
-     * - Start Transaction
-     * - Find CallbackEntity(id=1)
-     * - Dirty the CallbackEntity.
-     * - Commit the transaction, this should fire the @PostUpdate callback
-     *
-     * - Check that the Exception thrown by the update or transaction commit operation contains
-     * CallbackRuntimeException in its chain.
-     *
-     * - If the CallbackRuntimeException was thrown by the update operation, check that the transaction is
-     * still active and marked for rollback.
+     * <p><ul>
+     * <li>Start Transaction
+     * <li>Find CallbackEntity(id=3)
+     * <li>Dirty the CallbackEntity.
+     * <li>Commit the transaction, this should fire the @PostUpdate callback
+     * <li>Check that the Exception thrown by the update or transaction commit operation contains CallbackRuntimeException in its chain.
+     * <li>If the CallbackRuntimeException was thrown by the update operation, check that the transaction is still active and marked for rollback.
+     * </ul><p>
      *
      * Sub-Points: 2
      */
@@ -675,7 +728,6 @@ public class CallbackRuntimeExceptionTestLogic extends AbstractTestLogic {
                                          boolean targetDefaultListener,
                                          ProtectionType listenerProtectionType) throws Throwable {
         System.out.println("Testing @PostUpdate Exception behavior...");
-        resetListeners();
 
         // Roll back any active transaction
         if (jpaResource.getTj().isTransactionActive()) {
@@ -688,6 +740,8 @@ public class CallbackRuntimeExceptionTestLogic extends AbstractTestLogic {
 
         AbstractCallbackListener targetListener = null;
         String targetListenerName = "";
+        int id = 3;
+
         try {
             if (listenerProtectionType != null) {
                 if (targetDefaultListener) {
@@ -698,9 +752,6 @@ public class CallbackRuntimeExceptionTestLogic extends AbstractTestLogic {
                 targetListenerName = targetListener.getClass().getSimpleName();
             }
 
-            // 1) Load Callback Entity
-            System.out.println("1) Load " + targetEntityType.getEntityName() + "(id=1)...");
-
             // Begin new transaction
             System.out.println("Beginning new transaction...");
             jpaResource.getTj().beginTransaction();
@@ -709,7 +760,9 @@ public class CallbackRuntimeExceptionTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().joinTransaction();
             }
 
-            ICallbackEntity entity = (ICallbackEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), 1);
+            // 1) Load Callback Entity
+            System.out.println("1) Load " + targetEntityType.getEntityName() + "(id=" + id + ")...");
+            ICallbackEntity entity = (ICallbackEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), id);
             Assert.assertNotNull("Assert find() did not return null.", entity);
 
             // Configure the entity object to throw a CallbackRuntimeException during the @PostUpdate callback.
@@ -740,6 +793,7 @@ public class CallbackRuntimeExceptionTestLogic extends AbstractTestLogic {
         } finally {
             // Cleanup
             resetListeners();
+
             if (jpaResource.getTj().isTransactionActive()) {
                 System.out.println("Rolling back transaction...");
                 jpaResource.getTj().rollbackTransaction();
@@ -747,18 +801,16 @@ public class CallbackRuntimeExceptionTestLogic extends AbstractTestLogic {
         }
     }
 
-    /*
+    /**
      * Test Strategy:
-     * - Start Transaction
-     * - Find CallbackEntity(id=1)
-     * - Mark the CallbackEntity for removal - this may fire the @PreRemove callback on some JPA implementations.
-     * - (If not fired by the remove op) Commit the transaction, this should fire the @PreRemove callback
-     *
-     * - Check that the Exception thrown by the update or transaction commit operation contains
-     * CallbackRuntimeException in its chain.
-     *
-     * - If the CallbackRuntimeException was thrown by the remove operation, check that the transaction is
-     * still active and marked for rollback.
+     * <p><ul>
+     * <li>Start Transaction
+     * <li>Find CallbackEntity(id=3)
+     * <li>Mark the CallbackEntity for removal - this may fire the @PreRemove callback on some JPA implementations.
+     * <li>(If not fired by the remove op) Commit the transaction, this should fire the @PreRemove callback
+     * <li>Check that the Exception thrown by the update or transaction commit operation contains CallbackRuntimeException in its chain.
+     * <li>If the CallbackRuntimeException was thrown by the remove operation, check that the transaction is still active and marked for rollback.
+     * </ul><p>
      *
      * Sub-Points: 2
      */
@@ -768,7 +820,6 @@ public class CallbackRuntimeExceptionTestLogic extends AbstractTestLogic {
                                         boolean targetDefaultListener,
                                         ProtectionType listenerProtectionType) throws Throwable {
         System.out.println("Testing @PreRemove Exception behavior...");
-        resetListeners();
 
         // Roll back any active transaction
         if (jpaResource.getTj().isTransactionActive()) {
@@ -781,6 +832,8 @@ public class CallbackRuntimeExceptionTestLogic extends AbstractTestLogic {
 
         AbstractCallbackListener targetListener = null;
         String targetListenerName = "";
+        int id = 3;
+
         try {
             if (listenerProtectionType != null) {
                 if (targetDefaultListener) {
@@ -791,9 +844,6 @@ public class CallbackRuntimeExceptionTestLogic extends AbstractTestLogic {
                 targetListenerName = targetListener.getClass().getSimpleName();
             }
 
-            // 1) Load Callback Entity
-            System.out.println("1) Load " + targetEntityType.getEntityName() + "(id=1)...");
-
             // Begin new transaction
             System.out.println("Beginning new transaction...");
             jpaResource.getTj().beginTransaction();
@@ -802,7 +852,9 @@ public class CallbackRuntimeExceptionTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().joinTransaction();
             }
 
-            ICallbackEntity entity = (ICallbackEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), 1);
+            // 1) Load Callback Entity
+            System.out.println("1) Load " + targetEntityType.getEntityName() + "(id=" + id + ")...");
+            ICallbackEntity entity = (ICallbackEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), id);
             Assert.assertNotNull("Assert find() did not return null.", entity);
 
             // Configure the entity object to throw a CallbackRuntimeException during the @PreRemove callback.
@@ -851,6 +903,7 @@ public class CallbackRuntimeExceptionTestLogic extends AbstractTestLogic {
         } finally {
             // Cleanup
             resetListeners();
+
             if (jpaResource.getTj().isTransactionActive()) {
                 System.out.println("Rolling back transaction...");
                 jpaResource.getTj().rollbackTransaction();
@@ -858,18 +911,16 @@ public class CallbackRuntimeExceptionTestLogic extends AbstractTestLogic {
         }
     }
 
-    /*
+    /**
      * Test Strategy:
-     * - Start Transaction
-     * - Find CallbackEntity(id=1)
-     * - Mark the CallbackEntity for removal
-     * - Commit the transaction, this should fire the @PreRemove callback
-     *
-     * - Check that the Exception thrown by the transaction commit operation contains
-     * CallbackRuntimeException in its chain.
-     *
-     * - If the CallbackRuntimeException was thrown by the update operation, check that the transaction is
-     * still active and marked for rollback.
+     * <p><ul>
+     * <li>Start Transaction
+     * <li>Find CallbackEntity(id=3)
+     * <li>Mark the CallbackEntity for removal
+     * <li>Commit the transaction, this should fire the @PostRemove callback
+     * <li>Check that the Exception thrown by the transaction commit operation contains CallbackRuntimeException in its chain.
+     * <li>If the CallbackRuntimeException was thrown by the update operation, check that the transaction is still active and marked for rollback.
+     * </ul><p>
      *
      * Sub-Points: 2
      */
@@ -879,7 +930,6 @@ public class CallbackRuntimeExceptionTestLogic extends AbstractTestLogic {
                                          boolean targetDefaultListener,
                                          ProtectionType listenerProtectionType) throws Throwable {
         System.out.println("Testing @PostRemove Exception behavior...");
-        resetListeners();
 
         // Roll back any active transaction
         if (jpaResource.getTj().isTransactionActive()) {
@@ -892,6 +942,8 @@ public class CallbackRuntimeExceptionTestLogic extends AbstractTestLogic {
 
         AbstractCallbackListener targetListener = null;
         String targetListenerName = "";
+        int id = 3;
+
         try {
             if (listenerProtectionType != null) {
                 if (targetDefaultListener) {
@@ -903,7 +955,7 @@ public class CallbackRuntimeExceptionTestLogic extends AbstractTestLogic {
             }
 
             // 1) Load Callback Entity
-            System.out.println("1) Load " + targetEntityType.getEntityName() + "(id=1)...");
+            System.out.println("1) Load " + targetEntityType.getEntityName() + "(id=" + id + ")...");
 
             // Begin new transaction
             System.out.println("Beginning new transaction...");
@@ -913,7 +965,7 @@ public class CallbackRuntimeExceptionTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().joinTransaction();
             }
 
-            ICallbackEntity entity = (ICallbackEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), 1);
+            ICallbackEntity entity = (ICallbackEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), id);
             Assert.assertNotNull("Assert find() did not return null.", entity);
 
             // Configure the entity object to throw a CallbackRuntimeException during the @PostRemove callback.
@@ -944,6 +996,7 @@ public class CallbackRuntimeExceptionTestLogic extends AbstractTestLogic {
         } finally {
             // Cleanup
             resetListeners();
+
             if (jpaResource.getTj().isTransactionActive()) {
                 System.out.println("Rolling back transaction...");
                 jpaResource.getTj().rollbackTransaction();
@@ -951,12 +1004,14 @@ public class CallbackRuntimeExceptionTestLogic extends AbstractTestLogic {
         }
     }
 
-    /*
+    /**
      * Test Strategy:
-     * - Set AbstractCallbackListener to throw Exception on PostLoad events
-     * - Start Transaction
-     * - Find CallbackEntity(id=1) - should trigger the Exception
-     * - Verify that the transaction is active and marked for rollback.
+     * <p><ul>
+     * <li>Set AbstractCallbackListener to throw Exception on PostLoad events
+     * <li>Start Transaction
+     * <li>Find CallbackEntity(id=3) - should trigger the Exception
+     * <li>Verify that the transaction is active and marked for rollback.
+     * </ul><p>
      *
      * Sub-Points: 3
      */
@@ -966,7 +1021,6 @@ public class CallbackRuntimeExceptionTestLogic extends AbstractTestLogic {
                                        boolean targetDefaultListener,
                                        ProtectionType listenerProtectionType) throws Throwable {
         System.out.println("Testing @PostLoad Exception behavior...");
-        resetListeners();
 
         // Roll back any active transaction
         if (jpaResource.getTj().isTransactionActive()) {
@@ -977,6 +1031,8 @@ public class CallbackRuntimeExceptionTestLogic extends AbstractTestLogic {
         System.out.println("Clearing persistence context...");
         jpaResource.getEm().clear();
 
+        int id = 3;
+
         try {
             // 1) Set CallbackListener to throw CallbackRuntimeException on PostLoad callback invocation
             System.out.println("1) Set CallbackListener to throw CallbackRuntimeException on PostLoad callback invocation");
@@ -985,7 +1041,7 @@ public class CallbackRuntimeExceptionTestLogic extends AbstractTestLogic {
 
             try {
                 // 2) Load Callback Entity
-                System.out.println("2) Load " + targetEntityType.getEntityName() + "(id=1) (should throw Exception) ...");
+                System.out.println("2) Load " + targetEntityType.getEntityName() + "(id=" + id + ") (should throw Exception) ...");
 
                 // Begin new transaction
                 System.out.println("Beginning new transaction...");
@@ -995,7 +1051,9 @@ public class CallbackRuntimeExceptionTestLogic extends AbstractTestLogic {
                     jpaResource.getEm().joinTransaction();
                 }
 
-                ICallbackEntity entity = (ICallbackEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), 1);
+                ICallbackEntity entity = (ICallbackEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), id);
+                Assert.assertNotNull("Assert find() did not return null.", entity);
+
                 Assert.fail("No Exception was thrown by find operation.");
             } catch (java.lang.AssertionError ae) {
                 throw ae;
@@ -1012,6 +1070,8 @@ public class CallbackRuntimeExceptionTestLogic extends AbstractTestLogic {
             Assert.assertTrue("4) Assert transaction is marked for rollback.", jpaResource.getTj().isTransactionMarkedForRollback());
         } finally {
             AbstractCallbackListener.setTargetPostLoadLifeCycleWithRuntimeException(null);
+
+            resetListeners();
 
             // Cleanup
             if (jpaResource.getTj().isTransactionActive()) {
