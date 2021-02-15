@@ -33,7 +33,8 @@ public class ServerConfiguration extends BaseConfiguration {
 
     protected BaseConfiguration defaultConfiguration;
 
-    public ServerConfiguration() {}
+    public ServerConfiguration() {
+    }
 
     public void setDefaultConfiguration(BaseConfiguration defaultConfiguration) {
         this.defaultConfiguration = defaultConfiguration;
