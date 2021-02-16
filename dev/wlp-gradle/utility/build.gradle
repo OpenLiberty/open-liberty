@@ -67,26 +67,3 @@ task sortWlpBundleManifests {
         }
     }
 }
-
-gradle.taskGraph.afterTask { task ->
-  StringBuffer taskDetails = new StringBuffer()
-
-  taskDetails << """"-------------
-  name:$task.name group:$task.group : $task.description
-  conv:$task.convention.plugins
-  inputs:
-"""
-
-  task.inputs.files.each {
-    taskDetails << "${it.absolutePath}\n"
-  }
-
-  taskDetails << "outputs:\n"
-
-  task.outputs.files.each {
-    taskDetails << "${it.absolutePath}\n"
-  }
-
-  taskDetails << "-------------"
-  logger.info(taskDetails)
-}

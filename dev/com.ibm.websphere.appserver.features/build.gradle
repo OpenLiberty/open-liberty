@@ -67,7 +67,7 @@ rootProject.ext.betaFeatures = {
     betaFeatures
 }
 
-copyPiiFiles {
+task copyFeaturePiiFiles {
   doLast {
     Map<String,Properties> map = getFeatureMap()
     map.keySet().each { featureName ->
@@ -82,6 +82,8 @@ copyPiiFiles {
     }
   }
 }
+
+copyPiiFiles.dependsOn copyFeaturePiiFiles
 
 Set<String> obtain(Map<String, Set<String>> featureToEditions, String edition) {
   Set<String> features = featureToEditions.get(edition)
