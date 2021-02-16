@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,7 +17,6 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 
 import javax.enterprise.event.Observes;
@@ -98,7 +97,7 @@ public class ConfigCDIExtension implements Extension, WebSphereCDIExtension {
             ParameterizedType pType = (ParameterizedType) type;
             configException = processParameterizedType(propertyName, defaultValue, pType, classLoader);
         } else {
-            configException = processConversionType(propertyName, defaultValue, type, classLoader, false);
+            configException = processConversionType(propertyName, defaultValue, type, classLoader);
         }
         return configException;
     }
@@ -135,32 +134,19 @@ public class ConfigCDIExtension implements Extension, WebSphereCDIExtension {
             //instance must have exactly one type arg
             Type type = aTypes[0];
             //Check if the Provider provides an optional property.
-            if (type instanceof ParameterizedType) {
-                ParameterizedType maybeOptionalType = (ParameterizedType) type;
-                if (Optional.class.isAssignableFrom((Class<?>) maybeOptionalType.getRawType())) {
-                    configException = processConversionType(propertyName, defaultValue, type, classLoader, true);
-                } else {
-                    configException = processConversionType(propertyName, defaultValue, type, classLoader, false);
-                }
-            } else {
-                configException = processConversionType(propertyName, defaultValue, type, classLoader, false);
-            }
-        } else if (Optional.class.isAssignableFrom((Class<?>) rType)) {
-            //property is optional
-            configException = processConversionType(propertyName, defaultValue, pType, classLoader, true);
+            configException = processConversionType(propertyName, defaultValue, type, classLoader);
         } else {
-            configException = processConversionType(propertyName, defaultValue, pType, classLoader, false);
+            configException = processConversionType(propertyName, defaultValue, pType, classLoader);
         }
         return configException;
     }
 
-    protected Throwable processConversionType(String propertyName, String defaultValue, Type injectionType, ClassLoader classLoader,
-                                              boolean optional) {
+    protected Throwable processConversionType(String propertyName, String defaultValue, Type injectionType, ClassLoader classLoader) {
         Throwable configException = null;
 
         Config config = ConfigProvider.getConfig(classLoader);
         try {
-            ConfigProducer.newValue(config, propertyName, defaultValue, injectionType, optional);
+            ConfigProducer.newValue(config, propertyName, defaultValue, injectionType);
             validInjectionTypes.add(injectionType);
         } catch (Throwable e) {
             configException = e;
