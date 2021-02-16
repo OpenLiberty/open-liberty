@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -41,8 +41,8 @@ dependencies {
     requiredLibs 'xml-apis:xml-apis:1.4.01'
     mojarra 'org.glassfish:javax.faces:2.3.3',
       'javax.faces:javax.faces-api:2.3'
-    myfaces 'org.apache.myfaces.core:myfaces-api:2.3.7',
-      'org.apache.myfaces.core:myfaces-impl:2.3.7'
+    myfaces 'org.apache.myfaces.core:myfaces-api:2.3.8',
+      'org.apache.myfaces.core:myfaces-impl:2.3.8'
     myfacesLibs 'commons-digester:commons-digester:1.8',
       'commons-collections:commons-collections:3.2.1',
       'commons-logging:commons-logging:1.1.1',
