@@ -18,6 +18,8 @@ instrument.disabled: true
 
 feature.project: true
 
+copy.pii: false
+
 -dependson: \
 	com.ibm.ws.repository.generator;version=latest, \
 	wlp-bndPlugins;version=latest, \
