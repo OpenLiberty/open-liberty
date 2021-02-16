@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -69,6 +69,9 @@ public class LdapRegistry extends ConfigElement {
     private String certificateMapperId;
     private String timestampFormat;
     private ConfigElementList<LoginProperty> loginProperties;
+    private String bindAuthMechanism;
+    private String krb5PrincipalName;
+    private String krb5TicketCache;
 
     /**
      * @return the activedFilters
@@ -369,6 +372,27 @@ public class LdapRegistry extends ConfigElement {
      */
     public String getTimestampFormat() {
         return timestampFormat;
+    }
+
+    /**
+     * @return the bindAuthMechanism
+     */
+    public String getBindAuthMechanism() {
+        return bindAuthMechanism;
+    }
+
+    /**
+     * @return the krb5PrincipalName
+     */
+    public String getKrb5PrincipalName() {
+        return krb5PrincipalName;
+    }
+
+    /**
+     * @return the krb5TicketCache
+     */
+    public String getKrb5TicketCache() {
+        return krb5TicketCache;
     }
 
     /**
@@ -747,6 +771,30 @@ public class LdapRegistry extends ConfigElement {
         this.timestampFormat = timestampFormat;
     }
 
+    /**
+     * @param bindAuthMechanism the bindAuthMechanism to set
+     */
+    @XmlAttribute(name = "bindAuthMechanism")
+    public void setBindAuthMechanism(String bindAuthMechanism) {
+        this.bindAuthMechanism = bindAuthMechanism;
+    }
+
+    /**
+     * @param krb5PrincipalName the krb5PrincipalName to set
+     */
+    @XmlAttribute(name = "krb5PrincipalName")
+    public void setKrb5PrincipalName(String krb5PrincipalName) {
+        this.krb5PrincipalName = krb5PrincipalName;
+    }
+
+    /**
+     * @param TicketCache the TicketCache to set
+     */
+    @XmlAttribute(name = "TicketCache")
+    public void setKrb5TicketCache(String krb5TicketCache) {
+        this.krb5TicketCache = krb5TicketCache;
+    }
+
     @Override
     public String toString() {
         StringBuffer sb = new StringBuffer();
@@ -878,6 +926,15 @@ public class LdapRegistry extends ConfigElement {
         }
         if (loginProperties != null) {
             sb.append("loginProperty=\"").append(loginProperties).append("\" ");
+        }
+        if (bindAuthMechanism != null) {
+            sb.append("bindAuthMechanism=\"").append(bindAuthMechanism).append("\" ");
+        }
+        if (krb5PrincipalName != null) {
+            sb.append("krb5PrincipalName=\"").append(krb5PrincipalName).append("\" ");
+        }
+        if (krb5TicketCache != null) {
+            sb.append("krb5TicketCache=\"").append(krb5TicketCache).append("\" ");
         }
 
         sb.append("}");

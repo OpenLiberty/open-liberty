@@ -81,6 +81,7 @@ import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
+import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -93,6 +94,7 @@ import com.ibm.websphere.security.wim.Service;
 import com.ibm.websphere.security.wim.ras.WIMMessageHelper;
 import com.ibm.websphere.security.wim.ras.WIMMessageKey;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.security.kerberos.auth.KerberosService;
 import com.ibm.ws.security.wim.BaseRepository;
 import com.ibm.ws.security.wim.ConfiguredRepository;
 import com.ibm.ws.security.wim.adapter.ldap.change.ChangeHandlerFactory;
@@ -207,6 +209,45 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
      */
     private final AtomicReference<X509CertificateMapper> iCertificateMapperRef = new AtomicReference<X509CertificateMapper>();
 
+    private static final String KERB_SERVICE = "kerberosService";
+
+    private KerberosService kerberosService = null;
+
+    /**
+     * Set the KerberosService reference, Load the general Kerberos configuration so we can use the KerberosService and
+     * load the keytab/config attributes, if needed.
+     *
+     * @param ref
+     */
+    @Reference(name = KERB_SERVICE, service = KerberosService.class, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
+    protected void setKerberosService(KerberosService ref) {
+        kerberosService = ref;
+    }
+
+    /**
+     * Unset the KerberosService reference
+     *
+     * @param ref
+     */
+    protected void unsetKerberosService(KerberosService ref) {
+        if (kerberosService == ref) {
+            kerberosService = null;
+        }
+    }
+
+    /**
+     * Called when KerberosService configuration is modified. Push the modify down
+     * to ContextManager to recycle the context pool.
+     *
+     * @param ref
+     */
+    protected void updatedKerberosService(KerberosService ref) {
+        kerberosService = ref;
+        if (iLdapConn != null) {
+            iLdapConn.updateKerberosService(ref);
+        }
+    }
+
     @Activate
     protected void activated(Map<String, Object> properties, ComponentContext cc) throws WIMException {
         super.activate(properties, cc);
@@ -243,7 +284,7 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
         iLdapConfigMgr = new LdapConfigManager();
         iLdapConfigMgr.initialize(configProps);
 
-        iLdapConn = new LdapConnection(iLdapConfigMgr);
+        iLdapConn = new LdapConnection(iLdapConfigMgr, kerberosService);
         iLdapConn.initialize(configProps);
 
         isActiveDirectory = iLdapConfigMgr.isActiveDirectory();

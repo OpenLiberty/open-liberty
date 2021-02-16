@@ -76,11 +76,14 @@ import javax.naming.ldap.PagedResultsResponseControl;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.websphere.security.wim.ConfigConstants;
 import com.ibm.websphere.security.wim.ras.WIMMessageHelper;
 import com.ibm.websphere.security.wim.ras.WIMMessageKey;
 import com.ibm.websphere.security.wim.ras.WIMTraceHelper;
 import com.ibm.ws.config.xml.internal.nester.Nester;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
+import com.ibm.ws.security.kerberos.auth.KerberosService;
 import com.ibm.ws.security.wim.FactoryManager;
 import com.ibm.ws.security.wim.adapter.ldap.context.ContextManager;
 import com.ibm.ws.security.wim.adapter.ldap.context.ContextManager.InitializeResult;
@@ -199,6 +202,9 @@ public class LdapConnection {
     /** ContextManager to use for managing LDAP contexts. */
     private ContextManager iContextManager;
 
+    /** The KerberosService for use when bindAuthMechanism is GSSAPI (Kerberos), also loads the keytab/config if configured in the <kerberos> element */
+    private KerberosService kerberosService = null;
+
     /**
      * Returns a hash key for the name|filter|cons tuple used in the search
      * query-results cache.
@@ -296,9 +302,11 @@ public class LdapConnection {
      * Construct a new {@link LdapConnection} instance.
      *
      * @param ldapConfigMgr The {@link LdapConfigManager} to get configuration from.
+     * @param ks            The {@link KerberosService} to get KRB5 configuration from (can be null).
      */
-    public LdapConnection(LdapConfigManager ldapConfigMgr) {
+    public LdapConnection(LdapConfigManager ldapConfigMgr, KerberosService ks) {
         iLdapConfigMgr = ldapConfigMgr;
+        kerberosService = ks;
     }
 
     /**
@@ -362,6 +370,54 @@ public class LdapConnection {
         initializeCaches(configProps);
     }
 
+    // Flag tells us if the message for a call to a beta method has been issued
+    // Can be removed when bindAuthMechanism/KRB5 is GA
+    private static boolean issuedBetaMessage = false;
+
+    /**
+     * Beta fence check -- can be removed when bindAuthMechanism/KRB5 is GA
+     *
+     * To run with FATs, create a jvm.options file in your server directory and add the following argument: -Dcom.ibm.ws.beta.edition=true
+     *
+     * @throws UnsupportedOperationException
+     */
+    private static void betaFenceCheck() throws UnsupportedOperationException {
+        // Not running beta edition, throw exception
+        if (!ProductInfo.getBetaEdition()) {
+            throw new UnsupportedOperationException("The bindAuthMechanism attribute is beta and is not available.");
+        } else {
+            // Running beta exception, issue message if we haven't already issued one for this class
+            if (!issuedBetaMessage) {
+                Tr.info(tc, "BETA: A beta attribute, bindAuthMechanism, has been set for LdapRegistry for the first time.");
+                issuedBetaMessage = !issuedBetaMessage;
+            }
+        }
+    }
+
+    // Flag tells us if the message for a call to a beta method has been issued
+    // Can be removed when bindAuthMechanism/KRB5 is GA
+    private static boolean issuedBetaMessageKrb5 = false;
+
+    /**
+     * Beta fence check -- can be removed when bindAuthMechanism/KRB5 is GA
+     *
+     * To run with FATs, create a jvm.options file in your server directory and add the following argument: -Dcom.ibm.ws.beta.edition=true
+     *
+     * @throws UnsupportedOperationException
+     */
+    private static void betaFenceCheckKrb5() throws UnsupportedOperationException {
+        // Not running beta edition, throw exception
+        if (!ProductInfo.getBetaEdition()) {
+            throw new UnsupportedOperationException("The krb5Principal and krb5TicketCache attributes are beta and are not available.");
+        } else {
+            // Running beta exception, issue message if we haven't already issued one for this class
+            if (!issuedBetaMessageKrb5) {
+                Tr.info(tc, "BETA: Beta attributes, krb5Principal and krb5TicketCache, have been set for LdapRegistry for the first time.");
+                issuedBetaMessageKrb5 = !issuedBetaMessageKrb5;
+            }
+        }
+    }
+
     /**
      * Initialize the {@link ContextManager} to manage LDAP connections.
      *
@@ -396,10 +452,26 @@ public class LdapConnection {
         iContextManager.setReturnToPrimary((Boolean) configProps.get(CONFIG_PROP_RETURN_TO_PRIMARY_SERVER));
         iContextManager.setQueryInterval((Integer) configProps.get(CONFIG_PROP_PRIMARY_SERVER_QUERY_TIME_INTERVAL) * 60);
 
-        /*
-         * Set the simple authentication credentials.
-         */
-        iContextManager.setSimpleCredentials((String) configProps.get(CONFIG_PROP_BIND_DN), (SerializableProtectedString) configProps.get(CONFIG_PROP_BIND_PASSWORD));
+        String bindAuthMech = ((String) configProps.get(ConfigConstants.CONFIG_PROP_BIND_AUTH_MECH));
+        if (bindAuthMech != null) {
+            /*
+             * Beta fence check -- will fail unless beta edition is enabled.
+             */
+            betaFenceCheck();
+            iContextManager.setBindAuthMechanism(bindAuthMech);
+        }
+
+        if (bindAuthMech == null || !bindAuthMech.equals(ConfigConstants.CONFIG_BIND_AUTH_KRB5)) {
+            /*
+             * Set the simple authentication credentials.
+             */
+            iContextManager.setSimpleCredentials((String) configProps.get(CONFIG_PROP_BIND_DN), (SerializableProtectedString) configProps.get(CONFIG_PROP_BIND_PASSWORD));
+        } else {
+            betaFenceCheckKrb5();
+
+            iContextManager.setKerberosCredentials(iReposId, kerberosService, (String) configProps.get(ConfigConstants.CONFIG_PROP_KRB5_PRINCIPAL),
+                                                   (String) configProps.get(ConfigConstants.CONFIG_PROP_KRB5_TICKET_CACHE));
+        }
 
         /*
          * Set the connection timeout.
@@ -517,6 +589,9 @@ public class LdapConnection {
         InitializeResult result = iContextManager.initialize();
         if (result == InitializeResult.MISSING_PASSWORD) {
             String msg = Tr.formatMessage(tc, WIMMessageKey.MISSING_INI_PROPERTY, WIMMessageHelper.generateMsgParms(CONFIG_PROP_BIND_PASSWORD));
+            throw new MissingInitPropertyException(WIMMessageKey.MISSING_INI_PROPERTY, msg);
+        } else if (result == InitializeResult.MISSING_KRB5_PRINCIPAL_NAME) {
+            String msg = Tr.formatMessage(tc, WIMMessageKey.MISSING_INI_PROPERTY, WIMMessageHelper.generateMsgParms(ConfigConstants.CONFIG_PROP_KRB5_PRINCIPAL));
             throw new MissingInitPropertyException(WIMMessageKey.MISSING_INI_PROPERTY, msg);
         }
     }
@@ -2321,5 +2396,15 @@ public class LdapConnection {
      */
     public ContextManager getContextManager() {
         return this.iContextManager;
+    }
+
+    /**
+     * Pass along the updated KerberosService
+     *
+     * @param ks
+     */
+    protected void updateKerberosService(KerberosService ks) {
+        kerberosService = ks;
+        iContextManager.updateKerberosService(ks);
     }
 }
