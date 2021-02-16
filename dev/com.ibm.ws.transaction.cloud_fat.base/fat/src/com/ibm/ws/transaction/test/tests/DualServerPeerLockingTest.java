@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -302,7 +302,7 @@ public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
                 }
 
                 // wait for 2nd server to attempt (but fail) to perform peer recovery
-                int numStringOccurrences = longPeerStaleTimeServer2.waitForMultipleStringsInLog(2, "PEER RECOVER server with recovery identity cloud001", 60000);
+                int numStringOccurrences = longPeerStaleTimeServer2.waitForMultipleStringsInLog(2, "CWRLS0011I.*cloud001", 60000);
                 if (numStringOccurrences < 2) {
                     testFailed = true;
                     testFailureString = "Second server did not attempt peer recovery at least 2 times, attempted " + numStringOccurrences;
