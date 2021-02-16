@@ -31,7 +31,13 @@ fat.project: true
 tested.features: \
   jaxrs-2.1,\
   cdi-2.0,\
-  beanvalidation-2.0
+  beanvalidation-2.0, \
+  restfulwsclient-3.0, \
+  restfulws-3.0, \
+  beanvalidation-3.0, \
+  jsonp-2.0, \
+  concurrent-2.0, \
+  enterprisebeanslite-4.0
 
 -buildpath: \
 	com.ibm.websphere.javaee.annotation.1.1;version=latest,\
