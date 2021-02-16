@@ -5,9 +5,9 @@
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
- //PM70911  follow section 1.8.2 of el spec    sartoris/pmdinh     10/12/2012
- 
+//PM70911  follow section 1.8.2 of el spec    sartoris/pmdinh     10/12/2012
+
 package org.apache.el.lang;
 
 import java.beans.PropertyEditor;
@@ -24,15 +24,15 @@ import java.beans.PropertyEditorManager;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+import javax.el.ELContext;
 import javax.el.ELException;
 import javax.el.PropertyNotFoundException;
 
 import org.apache.el.util.MessageFactory;
 
-
 /**
  * A helper class that implements the EL Specification
- * 
+ *
  * @author Jacob Hookom [jacob@hookom.net]
  * @version $Id$
  */
@@ -40,53 +40,56 @@ public class ELSupport {
 
     private final static Long ZERO = new Long(0L);
 
-	// PM70911 switch to EL 2.1 and 2.2 spec (section 1.8.2)
+    // PM70911 switch to EL 2.1 and 2.2 spec (section 1.8.2)
     protected static final boolean ENHANCE_EL_SUPPORT = Boolean.valueOf((String) java.security.AccessController.doPrivileged(
-        new java.security.PrivilegedAction<Object>() 
-        {public Object run() {return System.getProperty("com.ibm.ws.jsp.ENHANCE_EL_SUPPORT", "false");}})).booleanValue();    
-		
-    public final static void throwUnhandled(Object base, Object property)
-            throws ELException {
+                                                                                                                             new java.security.PrivilegedAction<Object>() {
+                                                                                                                                 @Override
+                                                                                                                                 public Object run() {
+                                                                                                                                     return System.getProperty("com.ibm.ws.jsp.ENHANCE_EL_SUPPORT",
+                                                                                                                                                               "false");
+                                                                                                                                 }
+                                                                                                                             })).booleanValue();
+
+    public final static void throwUnhandled(Object base, Object property) throws ELException {
         if (base == null) {
             throw new PropertyNotFoundException(MessageFactory.get(
-                    "error.resolver.unhandled.null", property));
+                                                                   "error.resolver.unhandled.null", property));
         } else {
             throw new PropertyNotFoundException(MessageFactory.get(
-                    "error.resolver.unhandled", base.getClass(), property));
+                                                                   "error.resolver.unhandled", base.getClass(), property));
         }
     }
 
     /**
      * Compare two objects, after coercing to the same type if appropriate.
-     * 
-     * If the objects are identical, or they are equal according to 
+     *
+     * If the objects are identical, or they are equal according to
      * {@link #equals(Object, Object)} then return 0.
-     * 
+     *
      * If either object is a BigDecimal, then coerce both to BigDecimal first.
      * Similarly for Double(Float), BigInteger, and Long(Integer, Char, Short, Byte).
-     *  
+     *
      * Otherwise, check that the first object is an instance of Comparable, and compare
      * against the second object. If that is null, return 1, otherwise
      * return the result of comparing against the second object.
-     * 
+     *
      * Similarly, if the second object is Comparable, if the first is null, return -1,
      * else return the result of comparing against the first object.
-     * 
+     *
      * A null object is considered as:
      * <ul>
      * <li>ZERO when compared with Numbers</li>
      * <li>the empty string for String compares</li>
      * <li>Otherwise null is considered to be lower than anything else.</li>
      * </ul>
-     * 
+     *
      * @param obj0 first object
      * @param obj1 second object
      * @return -1, 0, or 1 if this object is less than, equal to, or greater than val.
-     * @throws ELException if neither object is Comparable
+     * @throws ELException        if neither object is Comparable
      * @throws ClassCastException if the objects are not mutually comparable
      */
-    public final static int compare(final Object obj0, final Object obj1)
-            throws ELException {
+    public final static int compare(final Object obj0, final Object obj1) throws ELException {
         if (obj0 == obj1 || equals(obj0, obj1)) {
             return 0;
         }
@@ -128,65 +131,64 @@ public class ELSupport {
 
     /**
      * Compare two objects for equality, after coercing to the same type if appropriate.
-     * 
+     *
      * If the objects are identical (including both null) return true.
      * If either object is null, return false.
      * If either object is Boolean, coerce both to Boolean and check equality.
      * Similarly for Enum, String, BigDecimal, Double(Float), Long(Integer, Short, Byte, Character)
      * Otherwise default to using Object.equals().
-     * 
+     *
      * @param obj0 the first object
      * @param obj1 the second object
      * @return true if the objects are equal
      * @throws ELException
      */
-    public final static boolean equals(final Object obj0, final Object obj1)
-            throws ELException {
-			
-		if (!ENHANCE_EL_SUPPORT){   //PM70911	
-			if (obj0 == obj1) {
-				return true;
-			} else if (obj0 == null || obj1 == null) {
-				return false;
-			} else if (obj0 instanceof Boolean || obj1 instanceof Boolean) {
-				return coerceToBoolean(obj0).equals(coerceToBoolean(obj1));
-			} else if (obj0.getClass().isEnum()) {
-				return obj0.equals(coerceToEnum(obj1, obj0.getClass()));
-			} else if (obj1.getClass().isEnum()) {
-				return obj1.equals(coerceToEnum(obj0, obj1.getClass()));
-			} else if (obj0 instanceof String || obj1 instanceof String) {
-				int lexCompare = coerceToString(obj0).compareTo(coerceToString(obj1));
-				return (lexCompare == 0) ? true : false;
-			}
-			if (isBigDecimalOp(obj0, obj1)) {
-				BigDecimal bd0 = (BigDecimal) coerceToNumber(obj0, BigDecimal.class);
-				BigDecimal bd1 = (BigDecimal) coerceToNumber(obj1, BigDecimal.class);
-				return bd0.equals(bd1);
-			}
-			if (isDoubleOp(obj0, obj1)) {
-				Double d0 = (Double) coerceToNumber(obj0, Double.class);
-				Double d1 = (Double) coerceToNumber(obj1, Double.class);
-				return d0.equals(d1);
-			}
-			if (isBigIntegerOp(obj0, obj1)) {
-				BigInteger bi0 = (BigInteger) coerceToNumber(obj0, BigInteger.class);
-				BigInteger bi1 = (BigInteger) coerceToNumber(obj1, BigInteger.class);
-				return bi0.equals(bi1);
-			}
-			if (isLongOp(obj0, obj1)) {
-				Long l0 = (Long) coerceToNumber(obj0, Long.class);
-				Long l1 = (Long) coerceToNumber(obj1, Long.class);
-				return l0.equals(l1);
-			} else {
-				return obj0.equals(obj1);
-			}
-		} //PM70911 - start
-		else {
-			if (obj0 == obj1) {
-				return true;
-			} else if (obj0 == null || obj1 == null) {
-				return false;
-			} else if (isBigDecimalOp(obj0, obj1)) {
+    public final static boolean equals(final Object obj0, final Object obj1) throws ELException {
+
+        if (!ENHANCE_EL_SUPPORT) { //PM70911
+            if (obj0 == obj1) {
+                return true;
+            } else if (obj0 == null || obj1 == null) {
+                return false;
+            } else if (obj0 instanceof Boolean || obj1 instanceof Boolean) {
+                return coerceToBoolean(obj0).equals(coerceToBoolean(obj1));
+            } else if (obj0.getClass().isEnum()) {
+                return obj0.equals(coerceToEnum(obj1, obj0.getClass()));
+            } else if (obj1.getClass().isEnum()) {
+                return obj1.equals(coerceToEnum(obj0, obj1.getClass()));
+            } else if (obj0 instanceof String || obj1 instanceof String) {
+                int lexCompare = coerceToString(obj0).compareTo(coerceToString(obj1));
+                return (lexCompare == 0) ? true : false;
+            }
+            if (isBigDecimalOp(obj0, obj1)) {
+                BigDecimal bd0 = (BigDecimal) coerceToNumber(obj0, BigDecimal.class);
+                BigDecimal bd1 = (BigDecimal) coerceToNumber(obj1, BigDecimal.class);
+                return bd0.equals(bd1);
+            }
+            if (isDoubleOp(obj0, obj1)) {
+                Double d0 = (Double) coerceToNumber(obj0, Double.class);
+                Double d1 = (Double) coerceToNumber(obj1, Double.class);
+                return d0.equals(d1);
+            }
+            if (isBigIntegerOp(obj0, obj1)) {
+                BigInteger bi0 = (BigInteger) coerceToNumber(obj0, BigInteger.class);
+                BigInteger bi1 = (BigInteger) coerceToNumber(obj1, BigInteger.class);
+                return bi0.equals(bi1);
+            }
+            if (isLongOp(obj0, obj1)) {
+                Long l0 = (Long) coerceToNumber(obj0, Long.class);
+                Long l1 = (Long) coerceToNumber(obj1, Long.class);
+                return l0.equals(l1);
+            } else {
+                return obj0.equals(obj1);
+            }
+        } //PM70911 - start
+        else {
+            if (obj0 == obj1) {
+                return true;
+            } else if (obj0 == null || obj1 == null) {
+                return false;
+            } else if (isBigDecimalOp(obj0, obj1)) {
                 BigDecimal bd0 = (BigDecimal) coerceToNumber(obj0, BigDecimal.class);
                 BigDecimal bd1 = (BigDecimal) coerceToNumber(obj1, BigDecimal.class);
                 return bd0.equals(bd1);
@@ -214,41 +216,102 @@ public class ELSupport {
             } else {
                 return obj0.equals(obj1);
             }
-    	} //PM70911 - end
-	}
+        } //PM70911 - end
+    }
 
-    public final static Enum<?> coerceToEnum(final Object obj, Class type) {
+    // Going to have to have some casts /raw types somewhere so doing it here
+    // keeps them all in one place. There might be a neater / better solution
+    // but I couldn't find it
+    /**
+     * Don't remove this method, it is used by:
+     * com.ibm.ws.jsp.translator.visitor.validator.ValidateVisitor.java
+     *
+     * In the Expression Language 3.0+ this method exists and actually uses the ELContext
+     * in the following way:
+     * ctx.getELResolver().convertToType(ctx, obj, String.class);
+     *
+     * However Expression Language 2.2 does not have convertToType on the ELResolver as that is new to
+     * Expression Language 3.0.
+     *
+     * This coerce method is just being added so that ValidateVisitor can call the same method across
+     * Expression Language implementations and versions. It also allows us to use the Expression Language 3.0+ implementation
+     * as written and not have to add back the methods that don't take an ELContext.
+     *
+     *
+     * @param ctx
+     * @param obj
+     * @param type
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    public static final Enum<?> coerceToEnum(final ELContext ctx, final Object obj,
+                                             @SuppressWarnings("rawtypes") Class type) {
+        return coerceToEnum(obj, type);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static final Enum<?> coerceToEnum(final Object obj,
+                                             @SuppressWarnings("rawtypes") Class type) {
         if (obj == null || "".equals(obj)) {
             return null;
         }
         if (type.isAssignableFrom(obj.getClass())) {
             return (Enum<?>) obj;
         }
-        
+
         if (!(obj instanceof String)) {
             throw new ELException(MessageFactory.get("error.convert",
-                    obj, obj.getClass(), type));
+                                                     obj, obj.getClass(), type));
         }
 
         Enum<?> result;
         try {
-             result = Enum.valueOf(type, (String) obj);
+            result = Enum.valueOf(type, (String) obj);
         } catch (IllegalArgumentException iae) {
             throw new ELException(MessageFactory.get("error.convert",
-                    obj, obj.getClass(), type));
+                                                     obj, obj.getClass(), type));
         }
         return result;
     }
 
     /**
+     * Don't remove this method, it is used by:
+     * com.ibm.ws.jsp.translator.visitor.validator.ValidateVisitor.java
+     *
+     * In the Expression Language 3.0+ this method exists and actually uses the ELContext
+     * in the following way:
+     * ctx.getELResolver().convertToType(ctx, obj, String.class);
+     *
+     * However Expression Language 2.2 does not have convertToType on the ELResolver as that is new to
+     * Expression Language 3.0.
+     *
+     * This coerce method is just being added so that ValidateVisitor can call the same method across
+     * Expression Language implementations and versions. It also allows us to use the Expression Language 3.0+ implementation
+     * as written and not have to add back the methods that don't take an ELContext.
+     *
      * Convert an object to Boolean.
      * Null and empty string are false.
+     *
+     * @param ctx       the context in which this conversion is taking place
+     * @param obj       the object to convert
+     * @param primitive is the target a primitive in which case coercion to null
+     *                      is not permitted
+     * @return the Boolean value of the object
+     * @throws ELException if object is not Boolean or String
+     */
+    public static final Boolean coerceToBoolean(final ELContext ctx, final Object obj, boolean primitive) {
+        return coerceToBoolean(obj);
+    }
+
+    /**
+     * Convert an object to Boolean.
+     * Null and empty string are false.
+     *
      * @param obj the object to convert
      * @return the Boolean value of the object
      * @throws ELException if object is not Boolean or String
      */
-    public final static Boolean coerceToBoolean(final Object obj)
-            throws ELException {
+    public final static Boolean coerceToBoolean(final Object obj) throws ELException {
         if (obj == null || "".equals(obj)) {
             return Boolean.FALSE;
         }
@@ -260,11 +323,34 @@ public class ELSupport {
         }
 
         throw new ELException(MessageFactory.get("error.convert",
-                obj, obj.getClass(), Boolean.class));
+                                                 obj, obj.getClass(), Boolean.class));
     }
 
-    public final static Character coerceToCharacter(final Object obj)
-            throws ELException {
+    /**
+     * Don't remove this method, it is used by:
+     * com.ibm.ws.jsp.translator.visitor.validator.ValidateVisitor.java
+     *
+     * In the Expression Language 3.0+ this method exists and actually uses the ELContext
+     * in the following way:
+     * ctx.getELResolver().convertToType(ctx, obj, String.class);
+     *
+     * However Expression Language 2.2 does not have convertToType on the ELResolver as that is new to
+     * Expression Language 3.0.
+     *
+     * This coerce method is just being added so that ValidateVisitor can call the same method across
+     * Expression Language implementations and versions. It also allows us to use the Expression Language 3.0+ implementation
+     * as written and not have to add back the methods that don't take an ELContext.
+     *
+     * @param ctx
+     * @param obj
+     * @return
+     * @throws ELException
+     */
+    public static final Character coerceToCharacter(final ELContext ctx, final Object obj) throws ELException {
+        return coerceToCharacter(obj);
+    }
+
+    public final static Character coerceToCharacter(final Object obj) throws ELException {
         if (obj == null || "".equals(obj)) {
             return new Character((char) 0);
         }
@@ -280,7 +366,7 @@ public class ELSupport {
         }
 
         throw new ELException(MessageFactory.get("error.convert",
-                obj, objType, Character.class));
+                                                 obj, objType, Character.class));
     }
 
     public final static Number coerceToNumber(final Object obj) {
@@ -299,7 +385,7 @@ public class ELSupport {
     }
 
     protected final static Number coerceToNumber(final Number number,
-            final Class<?> type) throws ELException {
+                                                 final Class<?> type) throws ELException {
         if (Long.TYPE == type || Long.class.equals(type)) {
             return new Long(number.longValue());
         }
@@ -341,11 +427,37 @@ public class ELSupport {
         }
 
         throw new ELException(MessageFactory.get("error.convert",
-                number, number.getClass(), type));
+                                                 number, number.getClass(), type));
+    }
+
+    /**
+     * Don't remove this method, it is used by:
+     * com.ibm.ws.jsp.translator.visitor.validator.ValidateVisitor.java
+     *
+     * In the Expression Language 3.0+ this method exists and actually uses the ELContext
+     * in the following way:
+     * ctx.getELResolver().convertToType(ctx, obj, String.class);
+     *
+     * However Expression Language 2.2 does not have convertToType on the ELResolver as that is new to
+     * Expression Language 3.0.
+     *
+     * This coerce method is just being added so that ValidateVisitor can call the same method across
+     * Expression Language implementations and versions. It also allows us to use the Expression Language 3.0+ implementation
+     * as written and not have to add back the methods that don't take an ELContext.
+     *
+     * @param ctx
+     * @param obj
+     * @param type
+     * @return
+     * @throws ELException
+     */
+    public static final Number coerceToNumber(final ELContext ctx, final Object obj,
+                                              final Class<?> type) throws ELException {
+        return coerceToNumber(obj, type);
     }
 
     public final static Number coerceToNumber(final Object obj,
-            final Class<?> type) throws ELException {
+                                              final Class<?> type) throws ELException {
         if (obj == null || "".equals(obj)) {
             return coerceToNumber(ZERO, type);
         }
@@ -357,22 +469,21 @@ public class ELSupport {
         }
 
         if (obj instanceof Character) {
-            return coerceToNumber(new Short((short) ((Character) obj)
-                    .charValue()), type);
+            return coerceToNumber(new Short((short) ((Character) obj).charValue()), type);
         }
 
         throw new ELException(MessageFactory.get("error.convert",
-                obj, obj.getClass(), type));
+                                                 obj, obj.getClass(), type));
     }
 
     protected final static Number coerceToNumber(final String val,
-            final Class<?> type) throws ELException {
+                                                 final Class<?> type) throws ELException {
         if (Long.TYPE == type || Long.class.equals(type)) {
             try {
                 return Long.valueOf(val);
             } catch (NumberFormatException nfe) {
                 throw new ELException(MessageFactory.get("error.convert",
-                        val, String.class, type));
+                                                         val, String.class, type));
             }
         }
         if (Integer.TYPE == type || Integer.class.equals(type)) {
@@ -380,7 +491,7 @@ public class ELSupport {
                 return Integer.valueOf(val);
             } catch (NumberFormatException nfe) {
                 throw new ELException(MessageFactory.get("error.convert",
-                        val, String.class, type));
+                                                         val, String.class, type));
             }
         }
         if (Double.TYPE == type || Double.class.equals(type)) {
@@ -388,7 +499,7 @@ public class ELSupport {
                 return Double.valueOf(val);
             } catch (NumberFormatException nfe) {
                 throw new ELException(MessageFactory.get("error.convert",
-                        val, String.class, type));
+                                                         val, String.class, type));
             }
         }
         if (BigInteger.class.equals(type)) {
@@ -396,7 +507,7 @@ public class ELSupport {
                 return new BigInteger(val);
             } catch (NumberFormatException nfe) {
                 throw new ELException(MessageFactory.get("error.convert",
-                        val, String.class, type));
+                                                         val, String.class, type));
             }
         }
         if (BigDecimal.class.equals(type)) {
@@ -404,7 +515,7 @@ public class ELSupport {
                 return new BigDecimal(val);
             } catch (NumberFormatException nfe) {
                 throw new ELException(MessageFactory.get("error.convert",
-                        val, String.class, type));
+                                                         val, String.class, type));
             }
         }
         if (Byte.TYPE == type || Byte.class.equals(type)) {
@@ -412,7 +523,7 @@ public class ELSupport {
                 return Byte.valueOf(val);
             } catch (NumberFormatException nfe) {
                 throw new ELException(MessageFactory.get("error.convert",
-                        val, String.class, type));
+                                                         val, String.class, type));
             }
         }
         if (Short.TYPE == type || Short.class.equals(type)) {
@@ -420,7 +531,7 @@ public class ELSupport {
                 return Short.valueOf(val);
             } catch (NumberFormatException nfe) {
                 throw new ELException(MessageFactory.get("error.convert",
-                        val, String.class, type));
+                                                         val, String.class, type));
             }
         }
         if (Float.TYPE == type || Float.class.equals(type)) {
@@ -428,16 +539,42 @@ public class ELSupport {
                 return Float.valueOf(val);
             } catch (NumberFormatException nfe) {
                 throw new ELException(MessageFactory.get("error.convert",
-                        val, String.class, type));
+                                                         val, String.class, type));
             }
         }
 
         throw new ELException(MessageFactory.get("error.convert",
-                val, String.class, type));
+                                                 val, String.class, type));
+    }
+
+    /**
+     * Don't remove this method, it is used by:
+     * com.ibm.ws.jsp.translator.visitor.validator.ValidateVisitor.java
+     *
+     * In the Expression Language 3.0+ this method exists and actually uses the ELContext
+     * in the following way:
+     * ctx.getELResolver().convertToType(ctx, obj, String.class);
+     *
+     * However Expression Language 2.2 does not have convertToType on the ELResolver as that is new to
+     * Expression Language 3.0.
+     *
+     * This coerce method is just being added so that ValidateVisitor can call the same method across
+     * Expression Language implementations and versions. It also allows us to use the Expression Language 3.0+ implementation
+     * as written and not have to add back the methods that don't take an ELContext.
+     *
+     * Coerce an object to a string.
+     *
+     * @param ctx the context in which this conversion is taking place
+     * @param obj the object to convert
+     * @return the String value of the object
+     */
+    public static final String coerceToString(final ELContext ctx, final Object obj) {
+        return coerceToString(obj);
     }
 
     /**
      * Coerce an object to a string
+     *
      * @param obj
      * @return the String value of the object
      */
@@ -454,9 +591,9 @@ public class ELSupport {
     }
 
     public final static Object coerceToType(final Object obj,
-            final Class<?> type) throws ELException {
+                                            final Class<?> type) throws ELException {
         if (type == null || Object.class.equals(type) ||
-                (obj != null && type.isAssignableFrom(obj.getClass()))) {
+            (obj != null && type.isAssignableFrom(obj.getClass()))) {
             return obj;
         }
         if (String.class.equals(type)) {
@@ -488,11 +625,12 @@ public class ELSupport {
             }
         }
         throw new ELException(MessageFactory.get("error.convert",
-                obj, obj.getClass(), type));
+                                                 obj, obj.getClass(), type));
     }
 
     /**
      * Check if an array contains any {@code null} entries.
+     *
      * @param obj array to be checked
      * @return true if the array contains a {@code null}
      */
@@ -506,12 +644,12 @@ public class ELSupport {
     }
 
     public final static boolean isBigDecimalOp(final Object obj0,
-            final Object obj1) {
+                                               final Object obj1) {
         return (obj0 instanceof BigDecimal || obj1 instanceof BigDecimal);
     }
 
     public final static boolean isBigIntegerOp(final Object obj0,
-            final Object obj1) {
+                                               final Object obj1) {
         return (obj0 instanceof BigInteger || obj1 instanceof BigInteger);
     }
 
@@ -523,7 +661,7 @@ public class ELSupport {
     }
 
     public final static boolean isDoubleStringOp(final Object obj0,
-            final Object obj1) {
+                                                 final Object obj1) {
         return (isDoubleOp(obj0, obj1)
                 || (obj0 instanceof String && isStringFloat((String) obj0)) || (obj1 instanceof String && isStringFloat((String) obj1)));
     }
@@ -546,12 +684,12 @@ public class ELSupport {
         if (len > 1) {
             for (int i = 0; i < len; i++) {
                 switch (str.charAt(i)) {
-                case 'E':
-                    return true;
-                case 'e':
-                    return true;
-                case '.':
-                    return true;
+                    case 'E':
+                        return true;
+                    case 'e':
+                        return true;
+                    case '.':
+                        return true;
                 }
             }
         }
@@ -583,7 +721,7 @@ public class ELSupport {
     }
 
     /**
-     * 
+     *
      */
     public ELSupport() {
         super();
