@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2009 IBM Corporation and others.
+ * Copyright (c) 2008, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -620,6 +620,7 @@ public abstract class MessageParser
 			try {
 				// diligent parsing ensures buffer is returned to pool
 				header.parse();
+				validateRequiredHeaders(header, dest);
 			}
 			catch (Exception e) {
 				// even if failed to parse header,
@@ -642,6 +643,23 @@ public abstract class MessageParser
 			dest.addHeader(header, false);
 		}
 		return true;
+	}
+	
+	/**
+	 * Called after parsing a required header field. 
+	 * @param header the header field to validate 
+	 * @param dest a SIP message 
+	 * @throws SipParseException if the given header id malformed 
+	 */
+	private void validateRequiredHeaders(HeaderImpl header, Message dest) throws SipParseException {
+		if (header instanceof CSeqHeader && dest instanceof Request) {
+			// check if the method name matches the Request URI
+			CSeqHeader cseq = (CSeqHeader) header;
+			if (!cseq.getMethod().equals(((Request) dest).getMethod())) {
+				// the method does not match the Request URI
+				throw new SipParseException("Bad CSeq", "");
+			}
+		}
 	}
 
 	/**

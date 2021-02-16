@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2009 IBM Corporation and others.
+ * Copyright (c) 2008, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,29 +10,20 @@
  *******************************************************************************/
 package com.ibm.ws.sip.stack.transaction.transport;
 
-import jain.protocol.ip.sip.ListeningPoint;
-
 import java.io.IOException;
 import java.net.InetAddress;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
-import com.ibm.sip.util.log.Log;
-import com.ibm.sip.util.log.LogMgr;
-import com.ibm.sip.util.log.Situation;
+import com.ibm.sip.util.log.*;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.jain.protocol.ip.sip.ListeningPointImpl;
 import com.ibm.ws.sip.parser.util.InetAddressCache;
-import com.ibm.ws.sip.stack.transaction.transport.connections.SIPConnection;
-import com.ibm.ws.sip.stack.transaction.transport.connections.SIPConnectionFactory;
-import com.ibm.ws.sip.stack.transaction.transport.connections.SIPListenningConnection;
+import com.ibm.ws.sip.stack.transaction.transport.connections.*;
+import com.ibm.ws.sip.stack.transaction.util.SIPStackUtil;
 import com.ibm.ws.sip.stack.transport.sip.SIPConnectionFactoryImplWs;
+
+import jain.protocol.ip.sip.ListeningPoint;
 
 public class SIPConnectionsModel 
  {
@@ -180,6 +171,33 @@ public class SIPConnectionsModel
         	
         }
         return (ListeningPointImpl)retVal;
+	}
+	
+	/**
+	 * get default listening point for transport and IP address type
+	 * 
+	 * @param transport
+	 * @param inetAddress
+	 * @return
+	 */
+	public ListeningPointImpl getDefaultListenningPoint( String transport, String inetAddress )
+	{
+		// the default listening point for transport 
+		ListeningPointImpl retVal = getDefaultListenningPoint(transport);
+		
+		Set keys =  m_listeningConnections.keySet();
+		for (Iterator iter = keys.iterator(); iter.hasNext(); ) 
+		{
+        	ListeningPointImpl lp = (ListeningPointImpl) iter.next();
+        	if( lp.getTransport().equalsIgnoreCase(transport) &&
+        			SIPStackUtil.isSameInetAddressType(inetAddress, lp.getHost()))
+        	{
+				retVal = lp;
+				break;
+        	}
+        	
+        }
+        return retVal;
 	}
 	
 	/**

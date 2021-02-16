@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2009 IBM Corporation and others.
+ * Copyright (c) 2008, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -132,7 +132,7 @@ public class StreamMessageParser extends MessageParser
 			if (m_startLineHuntingMode) {
 				// Ignores any error until a start line is found or no line is left in the buffer.
 				// Note that any parse error in this case is not counted per the connection.
-				while ( (m_message == null) && (getErrorCode() != 0) ) {
+				while ( /*(m_message == null) &&*/ (getErrorCode() != 0) ) {
 					m_message = parseStartLine(m_buffer, line);
 				}
 			}
@@ -155,6 +155,10 @@ public class StreamMessageParser extends MessageParser
 				}
 				CharsBuffersPool.putBufferBack(line);
 				return null;
+			}
+			else {
+				// a SIP start-line is found
+				m_checkRemainingBytesInBuffer = false;
 			}
 			m_state = STATE_HEADERS;
 		}
