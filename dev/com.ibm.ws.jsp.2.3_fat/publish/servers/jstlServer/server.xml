@@ -20,6 +20,4 @@
 
      <javaPermission className="java.util.PropertyPermission" name="user.dir" actions="read"/>
 
-    <logging traceSpecification="*=info=enabled:com.ibm.ws.webcontainer*=all:com.ibm.wsspi.webcontainer*=all:HTTPChannel=all:TCPChannel=all:GenericBNF=all:com.ibm.ws.jsp*=all" maxFileSize="32" maxFiles="24" traceFormat="BASIC"/>
-
 </server>

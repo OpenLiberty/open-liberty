@@ -19,12 +19,14 @@
 
     <p> Testing fmt:parseDate, fmt:formatDate </p>
 
+    <fmt:setLocale value = "en_US"/>
+    <c:set var="timeZone" value="GMT-5"/>
+
     <c:set var="date" value="02-17-2021" />  
-    <fmt:parseDate value="${date}" var="parsedDate"  pattern="dd-MM-yyyy" />  
-    <p>
-        <c:out value="${parsedDate}" />
-    </p>  
-    <fmt:formatDate type="both" dateStyle="long" timeStyle="long"  value="${date}" />
+    <fmt:parseDate value="${date}" var="parsedDate"  pattern="MM-dd-yyyy"/>  
+    <fmt:timeZone value="${timeZone}">
+        <fmt:formatDate dateStyle="medium" value="${parsedDate}" />
+    </fmt:timeZone>
     
 </body>
 </html>
