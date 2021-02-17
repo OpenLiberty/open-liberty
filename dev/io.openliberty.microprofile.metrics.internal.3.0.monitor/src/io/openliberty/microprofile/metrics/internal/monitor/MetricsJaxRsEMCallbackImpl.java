@@ -41,6 +41,8 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
 				"service.vendor=IBM" })
 public class MetricsJaxRsEMCallbackImpl  implements DefaultExceptionMapperCallback {
 
+	private static final TraceComponent tc = Tr.register(MetricsJaxRsEMCallbackImpl.class);
+
 	public static final String EXCEPTION_KEY = MetricsJaxRsEMCallbackImpl.class.getName() + ".Exception";
 	private static final String[] metricCDIBundles = {"io.astefanutti.metrics.cdi30", "io.openliberty.microprofile.metrics.internal.cdi30.interceptors"};
 	
@@ -78,8 +80,8 @@ public class MetricsJaxRsEMCallbackImpl  implements DefaultExceptionMapperCallba
 			registerOrRetrieveRESTUnmappedExceptionMetric(classXmethod.getKey() ,classXmethod.getValue()).inc();
 		}
 
-		throwable.printStackTrace();
-		
+		Tr.warning(tc, "METRICS_UNHANDLED_JAXRS_EXCEPTION", throwable);
+
 		return Collections.singletonMap(EXCEPTION_KEY, throwable);
 	}
 
