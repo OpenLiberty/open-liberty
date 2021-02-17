@@ -28,4 +28,4 @@ FEATURE_UNREGISTERED.useraction=No user action is required.
 
 METRICS_UNHANDLED_JAXRS_EXCEPTION=CWPMI2005W: The MicroProfile Metrics exception mapper detected and is handling an unhandled exception from the JAX-RS application.
 METRICS_UNHANDLED_JAXRS_EXCEPTION.explanation=The JAX-RS-based application experienced an exception that is not handled within the application. The MicroProfile code handles it by logging the exception stack trace and returning a 500 Internal Server Error response.
-METRICS_UNHANDLED_JAXRS_EXCEPTION.useraction=This behavior might be acceptable. To handle the exception differently, the application developer can add an ExceptionMapper interface that handles the exception and maps it to a different response.
+METRICS_UNHANDLED_JAXRS_EXCEPTION.useraction=This behavior might be acceptable. To handle the exception differently, add an ExceptionMapper interface that handles the exception and maps it to a different response.
