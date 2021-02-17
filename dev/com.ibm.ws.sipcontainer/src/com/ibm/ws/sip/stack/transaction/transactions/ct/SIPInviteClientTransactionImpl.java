@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2009 IBM Corporation and others.
+ * Copyright (c) 2008, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,17 +9,6 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.sip.stack.transaction.transactions.ct;
-
-import jain.protocol.ip.sip.SipParseException;
-import jain.protocol.ip.sip.SipProvider;
-import jain.protocol.ip.sip.header.CSeqHeader;
-import jain.protocol.ip.sip.header.Header;
-import jain.protocol.ip.sip.header.HeaderIterator;
-import jain.protocol.ip.sip.header.HeaderParseException;
-import jain.protocol.ip.sip.header.MaxForwardsHeader;
-import jain.protocol.ip.sip.header.ViaHeader;
-import jain.protocol.ip.sip.message.Request;
-import jain.protocol.ip.sip.message.Response;
 
 import com.ibm.sip.util.log.Log;
 import com.ibm.sip.util.log.LogMgr;
@@ -37,6 +26,12 @@ import com.ibm.ws.sip.stack.transaction.transport.SIPTransportException;
 import com.ibm.ws.sip.stack.transaction.util.ApplicationProperties;
 import com.ibm.ws.sip.stack.util.SipStackUtil;
 
+import jain.protocol.ip.sip.SipParseException;
+import jain.protocol.ip.sip.SipProvider;
+import jain.protocol.ip.sip.header.*;
+import jain.protocol.ip.sip.message.Request;
+import jain.protocol.ip.sip.message.Response;
+
 public class SIPInviteClientTransactionImpl
 	extends SIPClientTransactionImpl
 {
@@ -51,7 +46,7 @@ public class SIPInviteClientTransactionImpl
 	private TimerA m_timerA;
 	
 	/**
-	 * timer for all transport types , controlls transaction timeouts
+	 * timer for all transport types , controls transaction timeouts
 	 */
 	private TimerB m_timerB;
 	
@@ -114,6 +109,10 @@ public class SIPInviteClientTransactionImpl
 			// jlawwill (PI62617)
 			//   Pull the IBM_PO_HEADER from the original packet.   We may have to reuse it later.
 			_ibmPO = req.getHeader(IBM_PO_HEADER, true);
+			if (c_logger.isTraceDebugEnabled()) {
+				c_logger.traceDebug(this, "SIPInviteClientTransactionImpl",
+						"extracted the IBM-PO header: " + _ibmPO);
+			}
 		} 
 		catch (HeaderParseException e) {
 			if (c_logger.isTraceDebugEnabled()) {
@@ -361,11 +360,22 @@ public class SIPInviteClientTransactionImpl
 		if (getState() == STATE_CALLING) {
 			m_timerAvalue *= 2;
 			try {
+				if (c_logger.isTraceDebugEnabled()) {
+					c_logger.traceDebug(this, "timerAfired",
+							"IBM-PO header: " + _ibmPO);
+				}
+				if (getFirstRequest().getHeader(IBM_PO_HEADER, true) == null && _ibmPO != null && outboundEnable) {
+					getFirstRequest().addHeader(_ibmPO, true);
+					if (c_logger.isTraceDebugEnabled()) {
+						c_logger.traceDebug(this, "timerAfired",
+								"add IBM-PO header: " + _ibmPO);
+					}
+				}	
 				sendRequestToTransport(getFirstRequest());
 				m_timerA = new TimerA(this, getCallId());
 				addTimerTask(m_timerA, m_timerAvalue);
 			}
-			catch (SIPTransportException e) {
+			catch (Exception e) {
 				if (c_logger.isTraceDebugEnabled()) {
 					c_logger.traceDebug(this, "timerAfired", "", e);
 				}

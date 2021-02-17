@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003,2009 IBM Corporation and others.
+ * Copyright (c) 2003, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -430,6 +430,9 @@ public abstract class HeaderImpl implements Header, Separators
 		case SipConstants.REFER_TO_SHORT:
 		case SipConstants.REFER_TO_SHORT_CAP:
 			return SipConstants.REFER_TO; // no Refer-To header defined by JAIN
+		case SipConstants.SESSION_EXPIRES_SHORT:
+		case SipConstants.SESSION_EXPIRES_CAP:
+			return SipConstants.SESSION_EXPIRES; 
         default:
         	return name;
         }
