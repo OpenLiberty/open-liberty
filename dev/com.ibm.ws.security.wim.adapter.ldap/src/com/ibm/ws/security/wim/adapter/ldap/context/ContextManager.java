@@ -498,7 +498,8 @@ public class ContextManager {
         if (isKerberosBindAuth()) {
             try {
                 Subject subject = handleKerberos();
-                env.put(javax.security.sasl.Sasl.CREDENTIALS, SubjectHelper.getGSSCredentialFromSubject(subject));
+                // Using javax.security.sasl.Sasl.CREDENTIALS caused intermittent compile failures on Java 8
+                env.put("javax.security.sasl.credentials", SubjectHelper.getGSSCredentialFromSubject(subject));
             } catch (LoginException e) {
                 NamingException ne = new NamingException(e.getMessage());
                 ne.setRootCause(e);
