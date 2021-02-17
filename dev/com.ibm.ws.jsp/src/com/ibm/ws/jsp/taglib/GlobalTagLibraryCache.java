@@ -132,13 +132,13 @@ public class GlobalTagLibraryCache extends Hashtable implements JspCoreContext,
             switch(pagesVersion){
                 case "3.0":
                     if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINE)){
-                        logger.logp(Level.FINE, CLASS_NAME, "GlobalTagLibraryCache", "Loading taglibcacheconfig.jstl.2.0.xml for pages version " + pagesVersion);
+                        logger.logp(Level.FINE, CLASS_NAME, "GlobalTagLibraryCache", "Parsing taglibcacheconfig.jstl.2.0.xml for pages version " + pagesVersion);
                     }
                     tagLibCacheConfigParser.parse(this.getClass().getResourceAsStream("/com/ibm/ws/jsp/resources/taglibcacheconfig.jstl.2.0.xml"));
                     break;
                 default:
                     if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINE)){
-                        logger.logp(Level.FINE, CLASS_NAME, "GlobalTagLibraryCache", "Loaded taglibcacheconfig.xml for pages version " + pagesVersion);
+                        logger.logp(Level.FINE, CLASS_NAME, "GlobalTagLibraryCache", "Parsing taglibcacheconfig.xml for pages version " + pagesVersion);
                     }
                     tagLibCacheConfigParser.parse(this.getClass().getResourceAsStream("/com/ibm/ws/jsp/resources/taglibcacheconfig.xml"));
             }   

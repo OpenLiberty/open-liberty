@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.concurrent.CountDownLatch;
@@ -116,6 +117,10 @@ public class JSPExtensionFactory extends AbstractJSPExtensionFactory implements 
     private static String loadedSpecLevel = SPEC_LEVEL_UNLOADED;
 
     protected static volatile CountDownLatch selfInit = new CountDownLatch(1);
+
+    // Add OL Issue # Here If This Approach is Accepted
+    private boolean isPagesVersionLoaded = false;
+    ArrayList<GlobalTagLibConfig> storedGlobalTagLibConfigs = new ArrayList<GlobalTagLibConfig>();
     
     /**
      * Active JSPExtensionFactory instance. May be null between deactivate and activate
@@ -196,6 +201,11 @@ public class JSPExtensionFactory extends AbstractJSPExtensionFactory implements 
     protected synchronized void setVersion(ServiceReference<PagesVersion> reference) {
       this.versionRef = reference;
       JSPExtensionFactory.loadedSpecLevel = (String) reference.getProperty("version");
+      isPagesVersionLoaded = true;
+      if(!storedGlobalTagLibConfigs.isEmpty()){
+        storedGlobalTagLibConfigs.forEach(tagConfig ->  getGlobalTagLibraryCache().addGlobalTagLibConfig(tagConfig));
+        storedGlobalTagLibConfigs.clear();
+      }
     }
 
     protected synchronized void unsetVersion(ServiceReference<PagesVersion> reference) {
@@ -598,7 +608,12 @@ public class JSPExtensionFactory extends AbstractJSPExtensionFactory implements 
      */
     @Reference(cardinality=ReferenceCardinality.MULTIPLE, policy=ReferencePolicy.DYNAMIC)
     protected void setGlobalTagLibConfig(GlobalTagLibConfig globalTagLibConfig) {
-            getGlobalTagLibraryCache().addGlobalTagLibConfig(globalTagLibConfig);
+            // Wait for pages version to be loaded first before calling getGlobalTagLibraryCache
+            if(!isPagesVersionLoaded){
+                storedGlobalTagLibConfigs.add(globalTagLibConfig);
+            } else {
+                getGlobalTagLibraryCache().addGlobalTagLibConfig(globalTagLibConfig);
+            }
     }
 
     /**
@@ -640,6 +655,14 @@ public class JSPExtensionFactory extends AbstractJSPExtensionFactory implements 
             }
         }
         return JSPExtensionFactory.loadedSpecLevel;
+    }
+    
+    public static boolean isPages30orHigher(){
+        String version = getLoadedPagesSpecLevel();
+        if(version == "2.2" || version == "2.3"){
+            return false;
+        }
+        return true;
     }
 }
 
