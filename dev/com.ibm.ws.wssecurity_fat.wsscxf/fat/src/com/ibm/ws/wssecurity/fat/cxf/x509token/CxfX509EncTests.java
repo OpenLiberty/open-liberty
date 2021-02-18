@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import java.util.Set;
 
 import org.junit.After;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 //Added 10/2020
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,6 +39,8 @@ import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
@@ -64,6 +67,10 @@ public class CxfX509EncTests extends CommonTests {
     protected static String clientHttpsUrl = "";
     protected static String ENDPOINT_BASE = "";
     protected static String NAMESPACE_URI = "";
+
+    //2/2021
+    @ClassRule
+    public static RepeatTests r = RepeatTests.withoutModification().andWith(FeatureReplacementAction.EE8_FEATURES().forServers(serverName).removeFeature("jsp-2.2").removeFeature("jaxws-2.2").removeFeature("servlet-3.1").removeFeature("usr:wsseccbh-1.0").addFeature("jsp-2.3").addFeature("jaxws-2.3").addFeature("servlet-4.0").addFeature("usr:wsseccbh-2.0"));
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -400,9 +407,6 @@ public class CxfX509EncTests extends CommonTests {
     @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     //Orig:
     @AllowedFFDC("org.apache.ws.security.WSSecurityException")
-    //Mei:
-    //@ExpectedFFDC("org.apache.wss4j.common.ext.WSSecurityException") //@AV999
-    //End
     //Orig:
     //public void testCXFClientWrongEncKeyAlgorithm() throws Exception {
     public void testCXFClientWrongEncKeyAlgorithmEE7Only() throws Exception {
@@ -586,9 +590,6 @@ public class CxfX509EncTests extends CommonTests {
     @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     //Orig:
     @AllowedFFDC("org.apache.ws.security.WSSecurityException")
-    //Mei:
-    //@ExpectedFFDC("org.apache.wss4j.common.ext.WSSecurityException") //@AV999
-    //End
     //Orig:
     //public void testCXFClientWrongEncryptionKey() throws Exception {
     public void testCXFClientWrongEncryptionKeyEE7Only() throws Exception {
@@ -699,9 +700,44 @@ public class CxfX509EncTests extends CommonTests {
      * This is a negative scenario.
      *
      */
+    //2/2021 run with EE7
     @Test
-    public void testCXFClientEncryptionBeforeSign() throws Exception {
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
+    //Orig:
+    //public void testCXFClientEncryptionBeforeSign() throws Exception {
+    public void testCXFClientEncryptionBeforeSignEE7Only() throws Exception {
+        genericTest(
+                    // test name for logging
+                    "testCXFClientEncryptionBeforeSign",
+                    // Svc Client Url that generic test code should use
+                    clientHttpUrl,
+                    // Port that svc client code should use
+                    "",
+                    // user that svc client code should use
+                    "user1",
+                    // pw that svc client code should use
+                    "security",
+                    // wsdl sevice that svc client code should use
+                    "X509XmlEncService10",
+                    // wsdl that the svc client code should use
+                    "",
+                    // wsdl port that svc client code should use
+                    "UrnX509Enc10",
+                    // msg to send from svc client to server
+                    "",
+                    // expected response from server
+                    "Response: This is X509EncWebSvc10 Web Service",
+                    // msg to issue if do NOT get the expected result
+                    "The test expected a succesful message from the server.");
 
+    }
+
+    //2/2021 run with EE8 and the corresponding server_wss4j.xml can be used
+    @Test
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    public void testCXFClientEncryptionBeforeSignEE8Only() throws Exception {
+
+        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
         genericTest(
                     // test name for logging
                     "testCXFClientEncryptionBeforeSign",

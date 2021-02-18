@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,8 @@ import java.util.Set;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+//2/2021
+import org.junit.ClassRule;
 import org.junit.Test;
 //Added 10/2020
 import org.junit.runner.RunWith;
@@ -28,8 +30,6 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.wssecurity.fat.utils.common.SharedTools;
-//2/2021
-import com.ibm.ws.wssecurity.fat.utils.common.UpdateServerXml;
 import com.meterware.httpunit.GetMethodWebRequest;
 import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebRequest;
@@ -37,11 +37,13 @@ import com.meterware.httpunit.WebResponse;
 
 //Added 10/2020
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 //Added 11/2020
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+//2/2021
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
@@ -61,6 +63,10 @@ public class CxfCallerX509AsymTests {
 
     static private final Class<?> thisClass = CxfCallerX509AsymTests.class;
 
+    //2/2021 to use EE7 or EE8 error messages in CxfCallerSvcClient
+    private static String errMsgVersion = "";
+    private static String errMsgVersionInX509 = "";
+
     static boolean debugOnHttp = true;
 
     private static String portNumber = "";
@@ -75,6 +81,10 @@ public class CxfCallerX509AsymTests {
     final static String msgExpires = "The message has expired";
     final static String badHttpsToken = "HttpsToken could not be asserted";
     final static String badHttpsClientCert = "Could not send Message.";
+
+    //2/2021
+    @ClassRule
+    public static RepeatTests r = RepeatTests.withoutModification().andWith(FeatureReplacementAction.EE8_FEATURES().forServers(serverName).removeFeature("jsp-2.2").removeFeature("jaxws-2.2").removeFeature("servlet-3.1").removeFeature("usr:wsseccbh-1.0").addFeature("jsp-2.3").addFeature("jaxws-2.3").addFeature("servlet-4.0").addFeature("usr:wsseccbh-2.0"));
 
     /**
      * Sets up any configuration required for running the OAuth tests.
@@ -95,11 +105,15 @@ public class CxfCallerX509AsymTests {
         if (features.contains("usr:wsseccbh-1.0")) {
             server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbh.jar");
             server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-1.0.mf");
+            errMsgVersion = "EE7";
+            errMsgVersionInX509 = "EE7";
         }
         if (features.contains("usr:wsseccbh-2.0")) {
             server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
             server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-2.0.mf");
             copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
+            errMsgVersion = "EE8";
+            errMsgVersionInX509 = "EE8";
         }
 
         //Added 11/2020
@@ -127,9 +141,12 @@ public class CxfCallerX509AsymTests {
         // using the original port to send the parameters
         callerUNTClientUrl = "http://localhost:" + portNumber +
                              "/callerclient/CxfCallerSvcClient";
+
+        //2/2021 Orig: from CL, CxfCallerBadUNTClient doesn't exist
         // using the original port to send the parameters
-        callerBadUNTClientUrl = "http://localhost:" + portNumber +
-                                "/callerclient/CxfCallerBadUNTClient";
+        //callerBadUNTClientUrl = "http://localhost:" + portNumber +
+        //                        "/callerclient/CxfCallerBadUNTClient";
+
         // portNumber = "9085";                // for debugging
         Log.info(thisClass, thisMethod, "****portNumber is(2):" + portNumber);
         Log.info(thisClass, thisMethod, "****portNumberSecure is(2):" + portNumberSecure);
@@ -143,47 +160,11 @@ public class CxfCallerX509AsymTests {
      * Test a Caller X509 Token
      *
      */
-    //2/2021 to test with EE7, then the corresponding server_x509_asym.xml can be used
-    @Test
-    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
-    //Orig:
-    //public void testCxfCallerX509TokenPolicy() throws Exception {
-    public void testCxfCallerX509TokenPolicyEE7Only() throws Exception {
 
-        //Orig:
+    @Test
+    public void testCxfCallerX509TokenPolicy() throws Exception {
+
         //UpdateServerXml.reconfigServer(server, System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_x509_asym.xml");
-        //2/2021
-        UpdateServerXml.reconfigServer(server, System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_x509_asym.xml");
-
-        String thisMethod = "testCxfCallerX509TokenPolicy";
-        methodFull = "testCxfCallerX509TokenPolicy";
-
-        try {
-            testRoutine(
-                        thisMethod, //String thisMethod,
-                        "X509TokenPolicy", // Testing policy name
-                        "positive", // Positive, positive-1, negative or negative-1... etc
-                        portNumber, //String portNumber,
-                        "", //String portNumberSecure
-                        "FatBAC05Service", //String strServiceName,
-                        "UrnCallerToken05", //String strServicePort
-                        "test3", // Expecting User ID
-                        "x509TokenInUse" // Password (Bad... Testing X509 userID only)
-            );
-        } catch (Exception e) {
-            throw e;
-        }
-
-        return;
-    }
-
-    //2/2021 to test with EE8, then the corresponding server_x509_asym_wss4j.xml can be used
-    @Test
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    public void testCxfCallerX509TokenPolicyEE8Only() throws Exception {
-
-        //2/2021
-        UpdateServerXml.reconfigServer(server, System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_x509_asym_wss4j.xml");
 
         String thisMethod = "testCxfCallerX509TokenPolicy";
         methodFull = "testCxfCallerX509TokenPolicy";
@@ -212,50 +193,13 @@ public class CxfCallerX509AsymTests {
      * Test a Caller X509 Token
      *
      */
-    //2/2021 to test with EE7, then the corresponding server_x509_asym.xml can be used
-    @Test
-    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
-    //Orig:
-    //public void testCxfCallerX509TransportEndorsingPolicy() throws Exception {
-    public void testCxfCallerX509TransportEndorsingPolicyEE7Only() throws Exception {
 
+    @Test
+    public void testCxfCallerX509TransportEndorsingPolicy() throws Exception {
         // In case, the sequence on test cases are random... then need to unmark next line
         //UpdateServerXml.reconfigServer(server, System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_x509_asym.xml");
 
-        //2/2021
-        UpdateServerXml.reconfigServer(server, System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_x509_asym.xml");
-
-        String thisMethod = "testCxfCallerX509TransportEndorsingPolicyEE7Only";
-        methodFull = "testCxfCallerX509TransportEndorsingPolicy";
-
-        try {
-            testRoutine(
-                        thisMethod, //String thisMethod,
-                        "X509TransportEndorsingPolicy", // Testing policy name
-                        "positive", // Positive, positive-1, negative or negative-1... etc
-                        portNumber, //String portNumber,
-                        portNumberSecure, //String portNumberSecure
-                        "FatBAC06Service", //String strServiceName,
-                        "UrnCallerToken06", //String strServicePort
-                        "test3", // Expecting User ID
-                        "BadPassword" // Password
-            );
-        } catch (Exception e) {
-            throw e;
-        }
-
-        return;
-    }
-
-    //2/2021 to test with EE8, then the corresponding server_x509_asym_wss4j.xml can be used
-    @Test
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    public void testCxfCallerX509TransportEndorsingPolicyEE8Only() throws Exception {
-
-        //2/2021
-        UpdateServerXml.reconfigServer(server, System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_x509_asym_wss4j.xml");
-
-        String thisMethod = "testCxfCallerX509TransportEndorsingPolicyEE8Only";
+        String thisMethod = "testCxfCallerX509TransportEndorsingPolicy";
         methodFull = "testCxfCallerX509TransportEndorsingPolicy";
 
         try {
@@ -282,22 +226,14 @@ public class CxfCallerX509AsymTests {
      * Test a Caller UsernameToken
      *
      */
-    //2/2021 to test with EE7, then the corresponding server_x509_asym.xml can be used
+
     @Test
-    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
-    //Orig:
-    //public void testCxfCallerHttpPolicyInX509() throws Exception {
-    public void testCxfCallerHttpPolicyInX509EE7Only() throws Exception {
+    public void testCxfCallerHttpPolicyInX509() throws Exception {
 
         // In case, the sequence on test cases are random... then need to unmark next line
         //UpdateServerXml.reconfigServer(server, System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_x509_asym.xml");
 
-        //2/2021
-        UpdateServerXml.reconfigServer(server, System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_x509_asym.xml");
-
-        //Orig:
-        //String thisMethod = "testCxfCallerHttpPolicy";
-        String thisMethod = "testCxfCallerHttpPolicyInX509EE7Only";
+        String thisMethod = "testCxfCallerHttpPolicy";
         methodFull = "testCxfCallerHttpPolicyInx509";
 
         try {
@@ -310,37 +246,8 @@ public class CxfCallerX509AsymTests {
                         "FatBAC01Service", //String strServiceName,
                         "UrnCallerToken01", //String strServicePort
                         "test3", // Expecting User ID
-                        "test3" // Password for UserNameToken
-            );
-        } catch (Exception e) {
-            throw e;
-        }
-
-        return;
-    }
-
-    //2/2021 to test with EE8, then the corresponding server_x509_asym_wss4j.xml can be used
-    @Test
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    public void testCxfCallerHttpPolicyInX509EE8Only() throws Exception {
-
-        //2/2021
-        UpdateServerXml.reconfigServer(server, System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_x509_asym_wss4j.xml");
-
-        String thisMethod = "testCxfCallerHttpPolicyInX509EE8Only";
-        methodFull = "testCxfCallerHttpPolicyInx509";
-
-        try {
-            testRoutine(
-                        thisMethod, //String thisMethod,
-                        "CallerHttpPolicy", // Testing policy name
-                        "positive", // Positive, positive-1, negative or negative-1... etc
-                        portNumber, //String portNumber,
-                        "", //String portNumberSecure
-                        "FatBAC01Service", //String strServiceName,
-                        "UrnCallerToken01", //String strServicePort
-                        "test3", // Expecting User ID
-                        "test3" // Password for UserNameToken
+                        "test3", // Password for UserNameToken
+                        errMsgVersionInX509 //2/2021
             );
         } catch (Exception e) {
             throw e;
@@ -354,21 +261,14 @@ public class CxfCallerX509AsymTests {
      * Test a Caller X509Token with https
      *
      */
-    //2/2021 to test with EE7, then the corresponding server_x509_asym.xml can be used
+
     @Test
-    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
-    //Orig:
-    //public void testCxfCallerHttpsPolicyInx509() throws Exception {
-    public void testCxfCallerHttpsPolicyInx509EE7Only() throws Exception {
+    public void testCxfCallerHttpsPolicyInx509() throws Exception {
+
         // In case, the sequence on test cases are random... then need to unmark next line
         //UpdateServerXml.reconfigServer(server, System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_x509_asym.xml");
 
-        //2/2021
-        UpdateServerXml.reconfigServer(server, System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_x509_asym.xml");
-
-        //Orig:
-        //String thisMethod = "testCxfCallerHttpsPolicy";
-        String thisMethod = "testCxfCallerHttpsPolicyInx509EE8Only";
+        String thisMethod = "testCxfCallerHttpsPolicy";
         methodFull = "testCxfCallerHttpsPolicyInX509";
 
         try {
@@ -381,37 +281,9 @@ public class CxfCallerX509AsymTests {
                         "FatBAC02Service", //String strServiceName,
                         "UrnCallerToken02", //String strServicePort
                         "test2", // Expecting User ID
-                        "test2" // Password
-            );
-        } catch (Exception e) {
-            throw e;
-        }
-
-        return;
-    }
-
-    //2/2021 to test with EE8, then the corresponding server_x509_asym_wss4j.xml can be used
-    @Test
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    public void testCxfCallerHttpsPolicyInx509EE8Only() throws Exception {
-
-        //2/2021
-        UpdateServerXml.reconfigServer(server, System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_x509_asym_wss4j.xml");
-
-        String thisMethod = "testCxfCallerHttpsPolicyInx509EE8Only";
-        methodFull = "testCxfCallerHttpsPolicyInX509";
-
-        try {
-            testRoutine(
-                        thisMethod, //String thisMethod,
-                        "CallerHttpsPolicy", // Testing policy name
-                        "negative", // Positive, positive-1, negative or negative-1... etc
-                        portNumber, //String portNumber,
-                        portNumberSecure, //String portNumberSecure
-                        "FatBAC02Service", //String strServiceName,
-                        "UrnCallerToken02", //String strServicePort
-                        "test2", // Expecting User ID
-                        "test2" // Password
+                        "test2", // Password
+                        errMsgVersion, //2/2021
+                        errMsgVersionInX509 //2/2021
             );
         } catch (Exception e) {
             throw e;
@@ -426,22 +298,13 @@ public class CxfCallerX509AsymTests {
      *
      */
 
-    //2/2021 to test with EE7, then the corresponding server_x509_asym.xml can be used
     @Test
-    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
-    //Orig:
-    //public void testCxfCallerNoPolicyInX509() throws Exception {
-    public void testCxfCallerNoPolicyInX509EE7Only() throws Exception {
+    public void testCxfCallerNoPolicyInX509() throws Exception {
 
         // In case, the sequence on test cases are random... then need to unmark next line
         //UpdateServerXml.reconfigServer(server, System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_x509_asym.xml");
 
-        //2/2021
-        UpdateServerXml.reconfigServer(server, System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_x509_asym.xml");
-
-        //Orig:
-        //String thisMethod = "testCxfCallerNoPolicy";
-        String thisMethod = "testCxfCallerNoPolicyInX509EE7Only";
+        String thisMethod = "testCxfCallerNoPolicy";
         methodFull = "testCxfCallerNoPolicyInX509";
 
         try {
@@ -454,37 +317,8 @@ public class CxfCallerX509AsymTests {
                         "FatBAC03Service", //String strServiceName,
                         "UrnCallerToken03", //String strServicePort
                         "UNAUTHENTICATED", // Expecting User ID
-                        "UserIDForVerifyOnly" // Password
-            );
-        } catch (Exception e) {
-            throw e;
-        }
-
-        return;
-    }
-
-    //2/2021 to test with EE8, then the corresponding server_x509_asym_wss4j.xml can be used
-    @Test
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    public void testCxfCallerNoPolicyInX509EE8Only() throws Exception {
-
-        //2/2021
-        UpdateServerXml.reconfigServer(server, System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_x509_asym_wss4j.xml");
-
-        String thisMethod = "testCxfCallerNoPolicyInX509EE8Only";
-        methodFull = "testCxfCallerNoPolicyInX509";
-
-        try {
-            testRoutine(
-                        thisMethod, //String thisMethod,
-                        "CallerNoPolicy", // Testing policy name
-                        "positive", // Positive, positive-1, negative or negative-1... etc
-                        portNumber, //String portNumber,
-                        "", //String portNumberSecure
-                        "FatBAC03Service", //String strServiceName,
-                        "UrnCallerToken03", //String strServicePort
-                        "UNAUTHENTICATED", // Expecting User ID
-                        "UserIDForVerifyOnly" // Password
+                        "UserIDForVerifyOnly", // Password
+                        errMsgVersionInX509 //2/2021
             );
         } catch (Exception e) {
             throw e;
@@ -499,21 +333,13 @@ public class CxfCallerX509AsymTests {
      *
      */
 
-    //2/2021 to test with EE7, then the corresponding server_x509_asym.xml can be used
     @Test
-    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
-    //Orig:
-    //public void testCxfCallerHttpsNoUntPolicyInX509() throws Exception {
-    public void testCxfCallerHttpsNoUntPolicyInX509EE7Only() throws Exception {
+    public void testCxfCallerHttpsNoUntPolicyInX509() throws Exception {
+
         // In case, the sequence on test cases are random... then need to unmark next line
         //UpdateServerXml.reconfigServer(server, System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_x509_asym.xml");
 
-        //2/2021
-        UpdateServerXml.reconfigServer(server, System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_x509_asym.xml");
-
-        //Orig:
-        //String thisMethod = "testCxfCallerHttpsNoUntPolicy";
-        String thisMethod = "testCxfCallerHttpsNoUntPolicyInX509EE7Only";
+        String thisMethod = "testCxfCallerHttpsNoUntPolicy";
         methodFull = "testCxfCallerHttpsNoUntPolicyInX509";
 
         try {
@@ -526,37 +352,9 @@ public class CxfCallerX509AsymTests {
                         "FatBAC04Service", //String strServiceName,
                         "UrnCallerToken04", //String strServicePort
                         "test4", // Expecting User ID
-                        "test4" // Password
-            );
-        } catch (Exception e) {
-            throw e;
-        }
-
-        return;
-    }
-
-    //2/2021 to test with EE8, then the corresponding server_x509_asym_wss4j.xml can be used
-    @Test
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    public void testCxfCallerHttpsNoUntPolicyInX509EE8Only() throws Exception {
-
-        //2/2021
-        UpdateServerXml.reconfigServer(server, System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_x509_asym_wss4j.xml");
-
-        String thisMethod = "testCxfCallerHttpsNoUntPolicyInX509EE8Only";
-        methodFull = "testCxfCallerHttpsNoUntPolicyInX509";
-
-        try {
-            testRoutine(
-                        thisMethod, //String thisMethod,
-                        "CallerHttpsNoUntPolicy", // Testing policy name
-                        "negative", // Positive, positive-1, negative or negative-1... etc
-                        portNumber, //String portNumber,
-                        portNumberSecure, //String portNumberSecure
-                        "FatBAC04Service", //String strServiceName,
-                        "UrnCallerToken04", //String strServicePort
-                        "test4", // Expecting User ID
-                        "test4" // Password
+                        "test4", // Password
+                        errMsgVersion, //2/2021
+                        errMsgVersionInX509 //2/2021
             );
         } catch (Exception e) {
             throw e;
@@ -574,6 +372,35 @@ public class CxfCallerX509AsymTests {
      * Though this test is not enforced it yet.
      *
      */
+
+    //2/2021 Orig:
+    //protected void testRoutine(
+    //                           String thisMethod,
+    //                           String callerPolicy,
+    //                           String testMode, // Positive, positive-1, negative or negative-1... etc
+    //                           String portNumber,
+    //                           String portNumberSecure,
+    //                           String strServiceName,
+    //                           String strServicePort,
+    //                           String untID,
+    //                           String untPassword) throws Exception {
+    //    testSubRoutine(
+    //                   thisMethod,
+    //                   callerPolicy,
+    //                   testMode, // Positive, positive-1, negative or negative-1... etc
+    //                   portNumber,
+    //                   portNumberSecure,
+    //                   strServiceName,
+    //                   strServicePort,
+    //                   callerUNTClientUrl,
+    //                   "",
+    //                   untID,
+    //                   untPassword);
+
+    //    return;
+    //}
+
+    //2/2021
     protected void testRoutine(
                                String thisMethod,
                                String callerPolicy,
@@ -584,6 +411,7 @@ public class CxfCallerX509AsymTests {
                                String strServicePort,
                                String untID,
                                String untPassword) throws Exception {
+
         testSubRoutine(
                        thisMethod,
                        callerPolicy,
@@ -595,7 +423,72 @@ public class CxfCallerX509AsymTests {
                        callerUNTClientUrl,
                        "",
                        untID,
-                       untPassword);
+                       untPassword,
+                       null, //2/2021
+                       null);//2/2021
+
+        return;
+    }
+
+    //2/2021
+    protected void testRoutine(
+                               String thisMethod,
+                               String callerPolicy,
+                               String testMode, // Positive, positive-1, negative or negative-1... etc
+                               String portNumber,
+                               String portNumberSecure,
+                               String strServiceName,
+                               String strServicePort,
+                               String untID,
+                               String untPassword,
+                               String errMsgVersion) throws Exception {
+        //2/2021
+        testSubRoutine(
+                       thisMethod,
+                       callerPolicy,
+                       testMode, // Positive, positive-1, negative or negative-1... etc
+                       portNumber,
+                       portNumberSecure,
+                       strServiceName,
+                       strServicePort,
+                       callerUNTClientUrl,
+                       "",
+                       untID,
+                       untPassword,
+                       errMsgVersion, //2/2021
+                       null); //2/2021
+
+        return;
+    }
+
+    //2/2021
+    protected void testRoutine(
+                               String thisMethod,
+                               String callerPolicy,
+                               String testMode, // Positive, positive-1, negative or negative-1... etc
+                               String portNumber,
+                               String portNumberSecure,
+                               String strServiceName,
+                               String strServicePort,
+                               String untID,
+                               String untPassword,
+                               String errMsgVersion,
+                               String errMsgVersionInX509) throws Exception {
+        //2/2021
+        testSubRoutine(
+                       thisMethod,
+                       callerPolicy,
+                       testMode, // Positive, positive-1, negative or negative-1... etc
+                       portNumber,
+                       portNumberSecure,
+                       strServiceName,
+                       strServicePort,
+                       callerUNTClientUrl,
+                       "",
+                       untID,
+                       untPassword,
+                       errMsgVersion, //2/2021
+                       errMsgVersionInX509); //2/2021
 
         return;
     }
@@ -630,7 +523,72 @@ public class CxfCallerX509AsymTests {
                        callerBadUNTClientUrl,
                        "Bad",
                        untID,
-                       untPassword);
+                       untPassword,
+                       null,
+                       null); //2/2021
+
+        return;
+    }
+
+    //2/2021
+    protected void testBadRoutine(
+                                  String thisMethod,
+                                  String callerPolicy,
+                                  String testMode, // Positive, positive-1, negative or negative-1... etc
+                                  String portNumber,
+                                  String portNumberSecure,
+                                  String strServiceName,
+                                  String strServicePort,
+                                  String untID,
+                                  String untPassword,
+                                  String errMsgVersionInX509) throws Exception {
+        testSubRoutine(
+                       thisMethod,
+                       callerPolicy,
+                       testMode, // Positive, positive-1, negative or negative-1... etc
+                       portNumber,
+                       portNumberSecure,
+                       strServiceName,
+                       strServicePort,
+                       callerBadUNTClientUrl,
+                       "Bad",
+                       untID,
+                       untPassword,
+                       null,
+                       errMsgVersionInX509); //2/2021
+
+        return;
+    }
+
+    //2/2021
+    protected void testBadRoutine(
+                                  String thisMethod,
+                                  String callerPolicy,
+                                  String testMode, // Positive, positive-1, negative or negative-1... etc
+                                  String portNumber,
+                                  String portNumberSecure,
+                                  String strServiceName,
+                                  String strServicePort,
+                                  String untID,
+                                  String untPassword,
+                                  String errMsgVersion,
+                                  String errMsgVersionInX509) throws Exception {
+        //2/2021
+        testSubRoutine(
+                       thisMethod,
+                       callerPolicy,
+                       testMode, // Positive, positive-1, negative or negative-1... etc
+                       portNumber,
+                       portNumberSecure,
+                       strServiceName,
+                       strServicePort,
+                       callerBadUNTClientUrl,
+                       "Bad",
+                       untID,
+                       untPassword,
+                       errMsgVersion,
+                       errMsgVersionInX509);
+        //2/2021
 
         return;
     }
@@ -655,7 +613,10 @@ public class CxfCallerX509AsymTests {
                                   String strClientUrl,
                                   String strBadOrGood,
                                   String untID,
-                                  String untPassword) throws Exception {
+                                  String untPassword,
+                                  String errMsgVersion,
+                                  String errMsgVersionInX509) throws Exception {
+        //2/2021
         try {
 
             WebRequest request = null;
@@ -679,6 +640,9 @@ public class CxfCallerX509AsymTests {
             request.setParameter("methodFull", methodFull);
             request.setParameter("untID", untID);
             request.setParameter("untPassword", untPassword);
+            //2/2021
+            request.setParameter("errorMsgVersion", errMsgVersion);
+            request.setParameter("errorMsgVersionInX509", errMsgVersionInX509);
 
             // Invoke the client
             response = wc.getResponse(request);
@@ -727,7 +691,7 @@ public class CxfCallerX509AsymTests {
 
     }
 
-    //2/2021 Mei:
+    //2/2021
     private static void printMethodName(String strMethod) {
         Log.info(thisClass, strMethod, "*****************************"
                                        + strMethod);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,6 +18,7 @@ import java.util.Set;
 
 import org.junit.After;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 //Added 10/2020
 import org.junit.runner.RunWith;
@@ -37,6 +38,8 @@ import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
@@ -54,6 +57,10 @@ public class CxfWss11SigTests extends CommonTests {
     //Added 10/2020
     @Server(serverName)
     public static LibertyServer server;
+
+    //2/2021
+    @ClassRule
+    public static RepeatTests r = RepeatTests.withoutModification().andWith(FeatureReplacementAction.EE8_FEATURES().forServers(serverName).removeFeature("jsp-2.2").removeFeature("jaxws-2.2").removeFeature("servlet-3.1").removeFeature("usr:wsseccbh-1.0").addFeature("jsp-2.3").addFeature("jaxws-2.3").addFeature("servlet-4.0").addFeature("usr:wsseccbh-2.0"));
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -335,7 +342,8 @@ public class CxfWss11SigTests extends CommonTests {
     //Orig:
     //@ExpectedFFDC("org.apache.ws.security.WSSecurityException")
     //Mei:
-    @AllowedFFDC("org.apache.ws.security.WSSecurityException") //@AV999
+    //not working? @AllowedFFDC("org.apache.ws.security.WSSecurityException") //@AV999
+    @AllowedFFDC("org.apache.wss4j.common.ext.WSSecurityException")
     //End
     public void testCXFClientBasicEncryptedElementMisMatchEE8Only() throws Exception {
 
@@ -545,7 +553,7 @@ public class CxfWss11SigTests extends CommonTests {
 
     }
 
-    //2/2021 to test with EE8, then the corresponding message can be expected
+    //2/2021 to test with EE8, then the corresponding message can be expected and server_wss4j.xml can be used
     @Test
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
     @AllowedFFDC("org.apache.ws.security.WSSecurityException")
@@ -567,6 +575,7 @@ public class CxfWss11SigTests extends CommonTests {
             messagetoexpect = "Soap Body is not SIGNED";
         }
         //End
+        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
         genericTest(
                     // test name for logging
                     thisMethod,
@@ -611,10 +620,47 @@ public class CxfWss11SigTests extends CommonTests {
      * This is a positive scenario.
      */
 
+    //2/2021 run with EE7
     @Test
-    public void testCXFClientBasicSigSignedElement() throws Exception {
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
+    //Orig:
+    //public void testCXFClientBasicSigSignedElement() throws Exception {
+    public void testCXFClientBasicSigSignedElementEE7Only() throws Exception {
 
         String thisMethod = "testCXFClientBasicSigSignedElement";
+        genericTest(
+                    // test name for logging
+                    thisMethod,
+                    // Svc Client Url that generic test code should use
+                    clientHttpUrl,
+                    // Port that svc client code should use
+                    "",
+                    // user that svc client code should use
+                    "user1",
+                    // pw that svc client code should use
+                    "security",
+                    // wsdl sevice that svc client code should use
+                    "WSS11SigService7a",
+                    // wsdl that the svc client code should use
+                    "",
+                    // wsdl port that svc client code should use
+                    "WSS11Sig7a",
+                    // msg to send from svc client to server
+                    "",
+                    // expected response from server
+                    "Response: This is Wss11SigWebSvc7a Web Service.",
+                    // msg to issue if do NOT get the expected result
+                    "The test expected a succesful message from the server.");
+
+    }
+
+    //2/2021 run with EE8
+    @Test
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    public void testCXFClientBasicSigSignedElementEE8Only() throws Exception {
+
+        String thisMethod = "testCXFClientBasicSigSignedElement";
+        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
         genericTest(
                     // test name for logging
                     thisMethod,
@@ -650,8 +696,12 @@ public class CxfWss11SigTests extends CommonTests {
      * response is missing the signature confirmation that it expects.
      * This is a negative scenario.
      */
+    //2/2021 run with EE7
     @Test
-    public void testCXFClientBasicSigClNoSignConfSrvNoSignNoConf() throws Exception {
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
+    //Orig:
+    //public void testCXFClientBasicSigClNoSignConfSrvNoSignNoConf() throws Exception {
+    public void testCXFClientBasicSigClNoSignConfSrvNoSignNoConfEE7Only() throws Exception {
 
         String thisMethod = "testCXFClientBasicSigClNoSignConfSrvNoSignNoConf";
         printMethodName(thisMethod, "Start Prep for " + thisMethod);
@@ -659,6 +709,44 @@ public class CxfWss11SigTests extends CommonTests {
                                          defaultClientWsdlLoc + "WSS11Signature_sigConfMissingInServerUpdated.wsdl");
         Log.info(thisClass, thisMethod, "Using " + newClientWsdl);
         printMethodName(thisMethod, "End Prep for " + thisMethod);
+        genericTest(
+                    // test name for logging
+                    thisMethod,
+                    // Svc Client Url that generic test code should use
+                    clientHttpUrl,
+                    // Port that svc client code should use
+                    "",
+                    // user that svc client code should use
+                    "user1",
+                    // pw that svc client code should use
+                    "security",
+                    // wsdl sevice that svc client code should use
+                    "WSS11SigService8",
+                    // wsdl that the svc client code should use
+                    newClientWsdl,
+                    // wsdl port that svc client code should use
+                    "WSS11Sig8",
+                    // msg to send from svc client to server
+                    "",
+                    // expected response from server
+                    "Wss11: Signature Confirmation policy validation failed",
+                    // msg to issue if do NOT get the expected result
+                    "The test expected a succesful message from the server.");
+
+    }
+
+    //2/2021 run with EE8
+    @Test
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    public void testCXFClientBasicSigClNoSignConfSrvNoSignNoConfEE8Only() throws Exception {
+
+        String thisMethod = "testCXFClientBasicSigClNoSignConfSrvNoSignNoConf";
+        printMethodName(thisMethod, "Start Prep for " + thisMethod);
+        newClientWsdl = updateClientWsdl(defaultClientWsdlLoc + "WSS11Signature_sigConfMissingInServer.wsdl",
+                                         defaultClientWsdlLoc + "WSS11Signature_sigConfMissingInServerUpdated.wsdl");
+        Log.info(thisClass, thisMethod, "Using " + newClientWsdl);
+        printMethodName(thisMethod, "End Prep for " + thisMethod);
+        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
         genericTest(
                     // test name for logging
                     thisMethod,

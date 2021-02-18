@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import java.util.Set;
 
 import org.junit.After;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 //Added 11/2020
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,6 +40,8 @@ import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
@@ -56,6 +59,10 @@ public class CxfX509SigTests extends CommonTests {
     //Added 11/2020
     @Server(serverName)
     public static LibertyServer server;
+
+    //2/2021
+    @ClassRule
+    public static RepeatTests r = RepeatTests.withoutModification().andWith(FeatureReplacementAction.EE8_FEATURES().forServers(serverName).removeFeature("jsp-2.2").removeFeature("jaxws-2.2").removeFeature("servlet-3.1").removeFeature("usr:wsseccbh-1.0").addFeature("jsp-2.3").addFeature("jaxws-2.3").addFeature("servlet-4.0").addFeature("usr:wsseccbh-2.0"));
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -117,10 +124,6 @@ public class CxfX509SigTests extends CommonTests {
     @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     //Orig:
     @AllowedFFDC("org.apache.ws.security.WSSecurityException")
-    //Mei:need to open
-    //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
-    //@ExpectedFFDC("org.apache.wss4j.common.ext.WSSecurityException") //@AV999
-    //End
     //Orig:
     //public void testCxfBodyNotSigned() throws Exception {
     public void testCxfBodyNotSignedEE7Only() throws Exception {
@@ -322,10 +325,6 @@ public class CxfX509SigTests extends CommonTests {
     @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     //Orig:
     @AllowedFFDC("org.apache.ws.security.WSSecurityException")
-    //Mei:
-    //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
-    //@ExpectedFFDC("org.apache.wss4j.common.ext.WSSecurityException") //@AV999
-    //End
     //Orig:
     //public void testCxfClientSignWithExpKey() throws Exception {
     public void testCxfClientSignWithExpKeyEE7Only() throws Exception {
@@ -364,12 +363,9 @@ public class CxfX509SigTests extends CommonTests {
     //2/2021 to test with EE8, then the corresponding message can be expected and server_expcert_wss4j.xml can be used
     @Test
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    //Orig:
-    //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
-    //Mei:
+    //2/2021 the change is not needed
     //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
     //@ExpectedFFDC("org.apache.wss4j.common.ext.WSSecurityException") //@AV999
-    //End
     public void testCxfClientSignWithExpKeyEE8Only() throws Exception {
 
         // use server config with expired cert
@@ -406,10 +402,6 @@ public class CxfX509SigTests extends CommonTests {
     @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     //Orig:
     @AllowedFFDC("org.apache.ws.security.WSSecurityException")
-    //Mei:
-    //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
-    //@ExpectedFFDC("org.apache.wss4j.common.ext.WSSecurityException") //@AV999
-    //End
     //Orig:
     //public void testCxfClientBadClKeyStorePswd() throws Exception {
     public void testCxfClientBadClKeyStorePswdEE7Only() throws Exception {
@@ -454,10 +446,9 @@ public class CxfX509SigTests extends CommonTests {
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
     //Orig:
     //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
-    //Mei:
+    //2/2021 the change is not needed
     //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
     //@ExpectedFFDC("org.apache.wss4j.common.ext.WSSecurityException") //@AV999
-    //End
     public void testCxfClientBadClKeyStorePswdEE8Only() throws Exception {
 
         // use server config with bad client pwd
@@ -498,9 +489,6 @@ public class CxfX509SigTests extends CommonTests {
     @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     //Orig:
     @AllowedFFDC("org.apache.ws.security.WSSecurityException")
-    //Mei:not for ee7
-    //@ExpectedFFDC("org.apache.wss4j.common.ext.WSSecurityException") //@AV999
-    //End
     //Orig:
     //public void testCxfClientBadSrvKeyStorePswd() throws Exception {
     public void testCxfClientBadSrvKeyStorePswdEE7Only() throws Exception {
@@ -544,11 +532,8 @@ public class CxfX509SigTests extends CommonTests {
     //2/2021 to test with EE8, then the corresponding message can be expected and server_badsvrpwd_wss4j.xml can be used
     @Test
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    //Orig:
-    //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
-    //Mei:
+    //2/2021
     @ExpectedFFDC("org.apache.wss4j.common.ext.WSSecurityException") //@AV999
-    //End
     public void testCxfClientBadSrvKeyStorePswdEE8Only() throws Exception {
 
         // use server config with bad server pwd

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ package com.ibm.ws.wssecurity.fat.cxf.usernametoken;
 import java.io.File;
 
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 //Added 10/2020
 import org.junit.runner.RunWith;
@@ -29,6 +30,8 @@ import componenttest.custom.junit.runner.FATRunner;
 //Added 11/2020
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
@@ -44,6 +47,10 @@ public class CxfSSLUNTNonceTimeOutTests extends SSLTestCommon {
     static final private String serverName = "com.ibm.ws.wssecurity_fat.ssl";
     @Server(serverName)
     public static LibertyServer server;
+
+    //2/2021
+    @ClassRule
+    public static RepeatTests r = RepeatTests.withoutModification().andWith(FeatureReplacementAction.EE8_FEATURES().forServers(serverName).removeFeature("jsp-2.2").removeFeature("jaxws-2.2").removeFeature("servlet-3.1").addFeature("jsp-2.3").addFeature("jaxws-2.3").addFeature("servlet-4.0"));
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -92,9 +99,8 @@ public class CxfSSLUNTNonceTimeOutTests extends SSLTestCommon {
      *
      */
     @Test
-    //Mei:
+    //2/2021
     @AllowedFFDC("java.util.MissingResourceException") //@AV999
-    //End
     public void testCxfUntHardcodedReplayOneAndMoreMinutesSSL() throws Exception {
 
         //reconfigAndRestartServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_customize.xml");
@@ -124,10 +130,9 @@ public class CxfSSLUNTNonceTimeOutTests extends SSLTestCommon {
     @Test
     //Orig:
     //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
-    //Mei:
+    //2/2021
     //@AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "java.util.MissingResourceException" }) //@AV999
     @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "java.util.MissingResourceException", "org.apache.ws.security.WSSecurityException" })
-    //End
     public void testCxfUntHardcodedReplayTwoAndMoreMinutesSSL() throws Exception {
         // Make sure the server.xml is set to server_customize.xml
         // This was done by previous test: OneAndMoreMinutes

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,6 +26,7 @@ import javax.net.ssl.X509TrustManager;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 //Added 10/2020
 import org.junit.runner.RunWith;
 
@@ -44,6 +45,8 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 
 //Added 11/2020
@@ -81,13 +84,13 @@ public class SSLTestCommon {
     final static String badHttpsToken = "HttpsToken could not be asserted";
     final static String badHttpsClientCert = "Could not send Message.";
     final static String replayAttack = "An error happened processing a Username Token \"A replay attack has been detected\"";
-    //Mei:
+    //2/2021
     final static String replayAttackNew = "An error happened processing a Username Token: \"A replay attack has been detected\""; //@AV999
-    //End
+
     final static String timestampReqButMissing = "An invalid security token was provided (WSSecurityEngine: Invalid timestamp";
-    //Mei:
+    //2/2021
     final static String morethanOneTimestamp = "BSP:R3227: A SECURITY_HEADER MUST NOT contain more than one TIMESTAMP"; //@AV999
-    //End
+
     // "RequireClientCertificate is set, but no local certificates were negotiated.";
 
     public SSLTestCommon() {
@@ -99,6 +102,10 @@ public class SSLTestCommon {
         }
 
     }
+
+    //2/2021
+    @ClassRule
+    public static RepeatTests r = RepeatTests.withoutModification().andWith(FeatureReplacementAction.EE8_FEATURES().forServers(serverName).removeFeature("jsp-2.2").removeFeature("jaxws-2.2").removeFeature("servlet-3.1").addFeature("jsp-2.3").addFeature("jaxws-2.3").addFeature("servlet-4.0"));
 
     /**
      * Sets up any configuration required for running the OAuth tests.

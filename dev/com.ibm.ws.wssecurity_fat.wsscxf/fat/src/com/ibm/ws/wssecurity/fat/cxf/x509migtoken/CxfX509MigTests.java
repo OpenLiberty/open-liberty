@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,7 @@ import javax.crypto.Cipher;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 //Added 11/2020
 import org.junit.runner.RunWith;
@@ -39,11 +40,12 @@ import componenttest.annotation.AllowedFFDC;
 //Added 11/2020
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
 //12/2020 Setting this test class for LITE bucket
-//@Mode(TestMode.FULL)
 //Added 11/2020
 @RunWith(FATRunner.class)
 public class CxfX509MigTests {
@@ -75,6 +77,10 @@ public class CxfX509MigTests {
     final static String badHttpsClientCert = "Could not send Message.";
 
     static boolean unlimitCryptoKeyLength = false;
+
+    //2/2021
+    @ClassRule
+    public static RepeatTests r = RepeatTests.withoutModification().andWith(FeatureReplacementAction.EE8_FEATURES().forServers(serverName).removeFeature("jsp-2.2").removeFeature("jaxws-2.2").removeFeature("servlet-3.1").removeFeature("usr:wsseccbh-1.0").addFeature("jsp-2.3").addFeature("jaxws-2.3").addFeature("servlet-4.0").addFeature("usr:wsseccbh-2.0"));
 
     /**
      * Sets up any configuration required for running the OAuth tests.
@@ -2181,9 +2187,8 @@ public class CxfX509MigTests {
     @Test
     //Orig:
     //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
-    //Mei:
+    //2/2021
     @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException" })
-    //End
     public void testCxfX509AsymmetricSignatureReplayMigService() throws Exception {
         // This is a negative test case.
         // It ought to fail at the second request.
@@ -2909,9 +2914,8 @@ public class CxfX509MigTests {
     @Test
     //Orig:
     //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
-    //Mei:
+    //2/2021
     @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException" })
-    //End
     public void testBadCxfX509AsymIssuerSerialMigService() throws Exception {
         String thisMethod = "testBadCxfX509AsymIssuerSerialMigService";
         methodFull = "testBadCxfX509AsymIssuerSerialMigService";
@@ -3471,9 +3475,8 @@ public class CxfX509MigTests {
     @Test
     //Orig:
     //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
-    //Mei:
+    //2/2021
     @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException" })
-    //End
     public void testBadAsymEndSignService() throws Exception {
         String thisMethod = "testBadAsymEncSignService";
         methodFull = "testBadAsymEncSignService";
@@ -3536,9 +3539,8 @@ public class CxfX509MigTests {
     @Test
     //Orig:
     //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
-    //Mei:
+    //2/2021
     @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException" })
-    //End
     public void testBadTripleDesService() throws Exception {
         String thisMethod = "testBadTripleDesService";
         methodFull = "testBadTripleDesService";
@@ -3588,9 +3590,8 @@ public class CxfX509MigTests {
      *
      */
     @Test
-    //Mei:
+    //2/2021
     @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" })
-    //End
     public void testBadBasic128Service() throws Exception {
         String thisMethod = "testBadBasic128Service";
         methodFull = "testBadBasic128Service";

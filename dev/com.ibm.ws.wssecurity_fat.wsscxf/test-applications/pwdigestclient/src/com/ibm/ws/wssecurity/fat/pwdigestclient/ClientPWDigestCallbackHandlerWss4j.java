@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,7 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package com.ibm.ws.wssecurity.fat.pwdigest;
+package com.ibm.ws.wssecurity.fat.pwdigestclient;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -19,13 +19,14 @@ import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.callback.UnsupportedCallbackException;
 
-import org.apache.ws.security.WSPasswordCallback;
+import org.apache.wss4j.common.ext.WSPasswordCallback;
 
-public class PWDigestCallbackHandler implements CallbackHandler {
+//2/2021 created
+public class ClientPWDigestCallbackHandlerWss4j implements CallbackHandler {
 
     private final Map<String, String> passwords = new HashMap<String, String>();
 
-    public PWDigestCallbackHandler() {
+    public ClientPWDigestCallbackHandlerWss4j() {
         passwords.put("user1", "security");
         passwords.put("user2", "security");
         passwords.put("user3", "badPW3");
@@ -33,14 +34,14 @@ public class PWDigestCallbackHandler implements CallbackHandler {
         passwords.put("user5", "security");
         passwords.put("user6", "badPw6");
         passwords.put("user22", "security");
-        passwords.put("user77", "security");
+        passwords.put("user88", "security");
     }
 
     @Override
     public void handle(Callback[] callbacks) throws IOException, UnsupportedCallbackException {
-        System.out.println("in Handle of server callback");
+        System.out.println("in Handle of client callback");
         for (int i = 0; i < callbacks.length; i++) {
-            System.out.println("Server Callback processing");
+            System.out.println("Client Callback processing");
             WSPasswordCallback pc = (WSPasswordCallback) callbacks[i];
 
             String pass = passwords.get(pc.getIdentifier());

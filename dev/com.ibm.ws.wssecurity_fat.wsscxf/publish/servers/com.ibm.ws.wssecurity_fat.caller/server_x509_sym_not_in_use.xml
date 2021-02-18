@@ -72,37 +72,41 @@
 		id="default"
 		ws-security.password="security"
 		ws-security.username="user1"
-		ws-security.callback-handler="com.ibm.ws.wssecurity.example.cbhwss4j.CommonPasswordCallbackWss4j"
+		ws-security.callback-handler="com.ibm.ws.wssecurity.example.cbh.CommonPasswordCallback"
 	>
-	<!-- 2/2021 EE8 Callbackhandler -->
+	<!-- EE7 -->
+	<!-- ws-security.callback-handler="com.ibm.ws.wssecurity.example.cbh.CommonPasswordCallback" -->
+	
 		<signatureProperties
 			org.apache.ws.security.crypto.merlin.keystore.type="jks"
 			org.apache.ws.security.crypto.merlin.keystore.password="LibertyX509Client3"
 			org.apache.ws.security.crypto.merlin.keystore.alias="x509ClientThird"
 			org.apache.ws.security.crypto.merlin.file="${server.config.dir}/x509ClientThird.jks" />
 		<encryptionProperties
-			org.apache.ws.security.crypto.merlin.keystore.type="jks"
-			org.apache.ws.security.crypto.merlin.keystore.password="LibertyX509Client"
-			org.apache.ws.security.crypto.merlin.keystore.alias="x509ServerDefaultCert"
-			org.apache.ws.security.crypto.merlin.file="${server.config.dir}/x509ClientDefault.jks" />
+			org.apache.ws.security.crypto.merlin.keystore.alias="x509ServerSecondCert"
+			org.apache.ws.security.crypto.merlin.truststore.type="jks"
+			org.apache.ws.security.crypto.merlin.truststore.password="LibertyX509Client2"
+			org.apache.ws.security.crypto.merlin.truststore.file="${server.config.dir}/x509ClientSecond.jks" />
 	</wsSecurityClient>
 
 	<wsSecurityProvider
 		id="default"
-		ws-security.callback-handler="com.ibm.ws.wssecurity.example.cbhwss4j.CommonPasswordCallbackWss4j"
+		ws-security.callback-handler="com.ibm.ws.wssecurity.example.cbh.CommonPasswordCallback"
 	>
-	<!-- 2/2021 EE8 Callbackhandler -->
+	<!-- EE7 -->
+	<!-- ws-security.callback-handler="com.ibm.ws.wssecurity.example.cbh.CommonPasswordCallback" -->
+	
 		<callerToken name="X509Token" />
 		<signatureProperties
-			org.apache.ws.security.crypto.merlin.keystore.type="jks"
-			org.apache.ws.security.crypto.merlin.keystore.password="LibertyX509Server"
-			org.apache.ws.security.crypto.merlin.keystore.alias="x509ServerDefault"
-			org.apache.ws.security.crypto.merlin.file="${server.config.dir}/x509ServerDefault.jks" />
-		<encryptionProperties
 			org.apache.ws.security.crypto.merlin.keystore.type="jks"
 			org.apache.ws.security.crypto.merlin.keystore.password="LibertyX509Server3"
 			org.apache.ws.security.crypto.merlin.keystore.alias="x509ClientThirdCert"
 			org.apache.ws.security.crypto.merlin.file="${server.config.dir}/x509ServerThird.jks" />
+		<encryptionProperties
+			org.apache.ws.security.crypto.merlin.keystore.type="jks"
+			org.apache.ws.security.crypto.merlin.keystore.password="LibertyX509Server2"
+			org.apache.ws.security.crypto.merlin.keystore.alias="x509ServerSecond"
+			org.apache.ws.security.crypto.merlin.file="${server.config.dir}/x509ServerSecond.jks" />
 	</wsSecurityProvider>
 
     <!-- added 12/2020  -->
@@ -119,7 +123,7 @@
         <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.soap.impl"/>
         <javaPermission className="java.util.PropertyPermission" name="javax.xml.soap.MessageFactory" actions="read"/>
         <javaPermission className="java.util.PropertyPermission" name="javax.xml.soap.MetaFactory" actions="read"/>
-        <javaPermission className="java.util.PropertyPermission" name="java.home" actions="read"/>
+        <javaPermission className="java.util.PropertyPermission" name="java.home" actions="read"/>      
         <javaPermission className="javax.security.auth.PrivateCredentialPermission" signedBy="com.ibm.ws.security.token.internal.SingleSignonTokenImpl" principalType="com.ibm.ws.security.authentication.principals.WSPrincipal" principalName="*" actions="read"/>
         <javaPermission className="javax.security.auth.PrivateCredentialPermission" signedBy="java.util.Hashtable" principalType="*" principalName="*" actions="read"/>
     
