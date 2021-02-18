@@ -22,9 +22,7 @@ import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.callback.UnsupportedCallbackException;
 
-//import org.apache.ws.security.WSPasswordCallback;
-//Mei:
-import org.apache.wss4j.common.ext.WSPasswordCallback;
+import org.apache.ws.security.WSPasswordCallback;
 
 public class ClientPWDigestCallbackHandler implements CallbackHandler {
 

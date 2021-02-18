@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,13 +19,14 @@ import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.callback.UnsupportedCallbackException;
 
-import org.apache.ws.security.WSPasswordCallback;
+import org.apache.wss4j.common.ext.WSPasswordCallback;
 
-public class PWDigestCallbackHandler implements CallbackHandler {
+//2/2021 created
+public class PWDigestCallbackHandlerWss4j implements CallbackHandler {
 
     private final Map<String, String> passwords = new HashMap<String, String>();
 
-    public PWDigestCallbackHandler() {
+    public PWDigestCallbackHandlerWss4j() {
         passwords.put("user1", "security");
         passwords.put("user2", "security");
         passwords.put("user3", "badPW3");

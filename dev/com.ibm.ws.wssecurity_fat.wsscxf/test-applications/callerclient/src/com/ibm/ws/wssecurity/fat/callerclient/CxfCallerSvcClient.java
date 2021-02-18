@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,7 +32,10 @@ import javax.xml.ws.Service;
 import javax.xml.ws.Service.Mode;
 import javax.xml.ws.soap.SOAPBinding;
 
-//End
+//2/2021 Aruna's change can't be saved - '..never used'
+//import javax.xml.ws.soap.SOAPFaultException;
+//import javax.xml.soap.SOAPFault;
+
 import test.libertyfat.caller.contract.FatBAC01Service;
 import test.libertyfat.caller.contract.FatBAC02Service;
 import test.libertyfat.caller.contract.FatBAC03Service;
@@ -72,6 +75,9 @@ public class CxfCallerSvcClient extends HttpServlet {
 
     String untID = "";
     String untPassword = "";
+    //2/2021
+    String errMsgVersion = "";
+    String errMsgVersionInX509 = "";
 
     private StringReader reqMsg = null;
     static boolean unlimitCryptoKeyLength = false;
@@ -114,7 +120,8 @@ public class CxfCallerSvcClient extends HttpServlet {
                            " untPassword:" + untPassword +
                            " serviceName:" + serviceName +
                            " servicePort:" + servicePort +
-                           " servername:" + serverName);
+                           " servername:" + serverName +
+                           "errorMsgVersion:" + errMsgVersion); //2/2021
 
         // This piece of code is a work-around for a bug defect 89493
 /*
@@ -139,19 +146,21 @@ public class CxfCallerSvcClient extends HttpServlet {
             Service service = null;
             String strExpect = null;
             String strSubErrMsg = "Not known what error message yet";
-            //Mei:
-            String newErrMsg = null;
-            //End
             if (thisMethod.equals("testCxfCallerHttpPolicy")) {
                 service = new FatBAC01Service(wsdlURL, serviceName);
                 strExpect = "Liberty Fat Caller bac01(" + untID + ")";
             } else if (thisMethod.equals("testCxfCallerHttpsPolicy")) {
                 service = new FatBAC02Service(wsdlURL, serviceName);
                 strExpect = "Liberty Fat Caller bac02(" + untID + ")";
-                strSubErrMsg = "The security token could not be authenticated or authorized (Unexpected number of certificates: 0)";
-                //Mei:
-                newErrMsg = "Unexpected number of certificates: 0";
-                //End
+
+                //2/2021
+                if (errMsgVersion.equals("EE7")) {
+                    strSubErrMsg = "The security token could not be authenticated or authorized (Unexpected number of certificates: 0)";
+                }
+                if (errMsgVersion.equals("EE8")) {
+                    strSubErrMsg = "Unexpected number of certificates: 0";
+                } //End 2/2021
+
             } else if (thisMethod.equals("testCxfCallerNoPolicy")) {
                 service = new FatBAC03Service(wsdlURL, serviceName);
                 strExpect = "Liberty Fat Caller bac03(" + untID + ")";
@@ -159,18 +168,26 @@ public class CxfCallerSvcClient extends HttpServlet {
                 service = new FatBAC04Service(wsdlURL, serviceName);
                 strExpect = "Liberty Fat Caller bac04(" + untID + ")";
                 //strSubErrMsg = "There is no Username token in the message to process caller.";
-                strSubErrMsg = "The security token could not be authenticated or authorized (UsernameToken is missing)";
-                //Mei:
-                newErrMsg = "UsernameToken is missing";
-                //End
+
+                //2/2021
+                if (errMsgVersion.equals("EE7")) {
+                    strSubErrMsg = "The security token could not be authenticated or authorized (UsernameToken is missing)";
+                }
+                if (errMsgVersion.equals("EE8")) {
+                    strSubErrMsg = "UsernameToken is missing";
+                } //End 2/2021
+
                 // msg is There is no username token in the message to process the caller
                 //    in nlsprops
                 if (!thisMethod.equals(methodFull)) { // Test this test in x509 Caller
                     //strSubErrMsg = "There is no Asymmetric signature token exists in the message";
-                    strSubErrMsg = "The security token could not be authenticated or authorized (Unexpected number of certificates: 0)";
-                    //Mei:
-                    newErrMsg = "Unexpected number of certificates: 0";
-                    //End
+                    //2/2021
+                    if (errMsgVersionInX509.equals("EE7")) {
+                        strSubErrMsg = "The security token could not be authenticated or authorized (Unexpected number of certificates: 0)";
+                    }
+                    if (errMsgVersionInX509.equals("EE8")) {
+                        strSubErrMsg = "Unexpected number of certificates: 0";
+                    } //End 2/2021
                 }
             } else if (thisMethod.equals("testCxfCallerX509TokenPolicy")) {
                 service = new FatBAC05Service(wsdlURL, serviceName);
@@ -188,11 +205,7 @@ public class CxfCallerSvcClient extends HttpServlet {
             if (service == null) {
                 throw new Exception("thisMethod '" + thisMethod + "' did not get a Service. Test cases error.");
             }
-            //Orig:
-            //testCxfService(request, response, service, strExpect, strSubErrMsg);
-            //Mei:
-            testCxfService(request, response, service, strExpect, strSubErrMsg, newErrMsg);
-            //End
+            testCxfService(request, response, service, strExpect, strSubErrMsg);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -208,11 +221,8 @@ public class CxfCallerSvcClient extends HttpServlet {
                                   HttpServletResponse response,
                                   javax.xml.ws.Service service,
                                   String strExpect) throws ServletException, IOException {
-        //Orig:
-        //testCxfService(request, response, service, strExpect, (String) null);
-        //Mei:
-        testCxfService(request, response, service, strExpect, (String) null, null);
-        //End
+
+        testCxfService(request, response, service, strExpect, (String) null);
         return;
     }
 
@@ -223,20 +233,13 @@ public class CxfCallerSvcClient extends HttpServlet {
     protected void testCxfService(HttpServletRequest request,
                                   HttpServletResponse response,
                                   javax.xml.ws.Service service,
-                                  //Orig:
-                                  //String strExpect, String strSubErrMsg) throws ServletException, IOException {
-                                  //Mei:
-                                  String strExpect, String strSubErrMsg, String newErrMsg) throws ServletException, IOException {
-        //End
+                                  String strExpect, String strSubErrMsg) throws ServletException, IOException {
 
         if (testMode.startsWith("positive")) {
             testCxfPositiveMigService(request, response, service, strExpect, strSubErrMsg);
         } else {
-            //Orig:
-            //testCxfNegativeMigService(request, response, service, strSubErrMsg);
-            //Mei:
-            testCxfNegativeMigService(request, response, service, strSubErrMsg, newErrMsg);
-            //End
+            testCxfNegativeMigService(request, response, service, strSubErrMsg);
+
         }
 
         return;
@@ -287,11 +290,7 @@ public class CxfCallerSvcClient extends HttpServlet {
                     printUnexpectingResult(response, answer);
                 } catch (Exception ex) {
                     ex.printStackTrace();
-                    //Orig:
-                    //printExpectingException(response, ex, strSubErrMsg);
-                    //Mei:
-                    printExpectingException(response, ex, strSubErrMsg, null);
-                    //End
+                    printExpectingException(response, ex, strSubErrMsg);
                 }
             } else {
                 printExpectingResult(response, answer, strExpect);
@@ -311,11 +310,7 @@ public class CxfCallerSvcClient extends HttpServlet {
     protected void testCxfNegativeMigService(HttpServletRequest request,
                                              HttpServletResponse response,
                                              javax.xml.ws.Service service,
-                                             //Orig:
-                                             //String strSubErrMsg) throws ServletException, IOException {
-                                             //Mei:
-                                             String strSubErrMsg, String newErrMsg) throws ServletException, IOException {
-        //End
+                                             String strSubErrMsg) throws ServletException, IOException {
 
         try {
 
@@ -346,16 +341,14 @@ public class CxfCallerSvcClient extends HttpServlet {
 
         } catch (Exception ex) {
             ex.printStackTrace();
-            //Orig:
-            //printExpectingException(response, ex, strSubErrMsg);
-            //Mei:
+            //2/2021
             if (ex instanceof javax.xml.ws.soap.SOAPFaultException) {
                 javax.xml.soap.SOAPFault sf = ((javax.xml.ws.soap.SOAPFaultException) ex).getFault();
 
                 System.out.println(thisMethod + "@AV999 : fault code:" + sf.getFaultCode());
-            }
-            printExpectingException(response, ex, strSubErrMsg, newErrMsg);
-            //End
+            } //End 2/2021
+            printExpectingException(response, ex, strSubErrMsg);
+
         }
 
         return;
@@ -363,7 +356,7 @@ public class CxfCallerSvcClient extends HttpServlet {
 
     // get the parameters from test-client request
     void getTestParameters(HttpServletRequest request) {
-        // Extract valuse sent by the client
+        // Extract value sent by the client
         try {
             serverName = request.getParameter("serverName");
             System.out.println("gkuo: servername:" + serverName);
@@ -378,6 +371,9 @@ public class CxfCallerSvcClient extends HttpServlet {
             methodFull = request.getParameter("methodFull");
             serviceName = new QName(SERVICE_NS, rawServiceName);
             servicePort = new QName(SERVICE_NS, request.getParameter("servicePort"));
+            //2/2021
+            errMsgVersion = request.getParameter("errorMsgVersion");
+            errMsgVersionInX509 = request.getParameter("errorMsgVersionInX509");
 
             untID = request.getParameter("untID");
             if (untID == null)
@@ -446,22 +442,14 @@ public class CxfCallerSvcClient extends HttpServlet {
     // print results
     // when we expect service-provider throws an Exception.
     // But double check the exception to have some specified sub-message
-    //Orig:
-    //void printExpectingException(HttpServletResponse response, Exception ex, String strSubErrMsg) throws IOException {
-    //Mei:
-    void printExpectingException(HttpServletResponse response, Exception ex, String strSubErrMsg, String newErrMsg) throws IOException {
-        //End
+
+    void printExpectingException(HttpServletResponse response, Exception ex, String strSubErrMsg) throws IOException {
 
         PrintWriter rsp = getPrintWriter(response);
         String strMsg = ex.getMessage();
         if (strMsg == null)
             strMsg = "";
-        //Orig:
-        //rsp.print("<p>pass:" + strMsg.contains(strSubErrMsg));
-        //Mei
-        boolean result = newErrMsg != null ? strMsg.contains(newErrMsg) : strMsg.contains(strSubErrMsg);
-        rsp.print("<p>pass:" + result);
-        //End
+        rsp.print("<p>pass:" + strMsg.contains(strSubErrMsg));
         rsp.print("::" + rawServiceName + "</p>");
         rsp.print("<p>Exception:ClassName:" + ex.getClass().getName() + "</p>");
         rsp.print("<p>Message:" + ex.getMessage() + "</p>");
