@@ -56,6 +56,8 @@ task addEJBTools {
 }
 
 task addTestResourceAdapter {
+  outputs.upToDateWhen { false }
+  enabled = true;
   dependsOn ':com.ibm.ws.ejbcontainer.fat_tools_rar:build' 
   doLast{
       copy {
@@ -72,12 +74,11 @@ task addTestResourceAdapter {
   }       
 }
 
-buildfat {
- dependsOn cleanFat
- dependsOn addTestResourceAdapter
- dependsOn assemble
- dependsOn build
- dependsOn zipProjectFVT
+
+assemble {
+    outputs.upToDateWhen { false }
+    enabled = true;
+    dependsOn addTestResourceAdapter
 }
 
 addRequiredLibraries {
