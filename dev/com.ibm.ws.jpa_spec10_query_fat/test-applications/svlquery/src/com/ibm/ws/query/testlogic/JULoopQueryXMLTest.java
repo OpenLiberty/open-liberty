@@ -37,6 +37,7 @@ import com.ibm.ws.query.entities.xml.TaskBean;
 import com.ibm.ws.query.utils.DeptEmpListView;
 import com.ibm.ws.query.utils.DeptEmpView;
 import com.ibm.ws.query.utils.SimpleDeptEmpView;
+import com.ibm.ws.testtooling.database.DatabaseVendor;
 import com.ibm.ws.testtooling.testinfo.TestExecutionContext;
 import com.ibm.ws.testtooling.testlogic.AbstractTestLogic;
 import com.ibm.ws.testtooling.vehicle.resources.JPAResource;
@@ -274,18 +275,18 @@ public class JULoopQueryXMLTest extends AbstractTestLogic {
             List<Object[]> rList = q.getResultList();
 
             // SQLServer treats null as lower value
-            Object[] targets[] = (!isSQLServer(lDbProductName)) ? new Object[][] {
-                                                                                   // e.empid   e.name    d. no
-                                                                                   new Object[] { 1, "david", 210 },
-                                                                                   new Object[] { 2, "andrew", 210 },
-                                                                                   new Object[] { 3, "minmei", 200 },
-                                                                                   new Object[] { 4, "george", 200 },
-                                                                                   new Object[] { 5, "ritika", 220 },
-                                                                                   new Object[] { 6, "ahmad", 100 },
-                                                                                   new Object[] { 7, "charlene", 210 },
-                                                                                   new Object[] { 8, "Tom Rayburn", 100 },
-                                                                                   new Object[] { 9, "harry", 210 },
-                                                                                   new Object[] { null, null, 300 }
+            Object[] targets[] = (!DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.SQLSERVER)) ? new Object[][] {
+                                                                                                                                  // e.empid   e.name    d. no
+                                                                                                                                  new Object[] { 1, "david", 210 },
+                                                                                                                                  new Object[] { 2, "andrew", 210 },
+                                                                                                                                  new Object[] { 3, "minmei", 200 },
+                                                                                                                                  new Object[] { 4, "george", 200 },
+                                                                                                                                  new Object[] { 5, "ritika", 220 },
+                                                                                                                                  new Object[] { 6, "ahmad", 100 },
+                                                                                                                                  new Object[] { 7, "charlene", 210 },
+                                                                                                                                  new Object[] { 8, "Tom Rayburn", 100 },
+                                                                                                                                  new Object[] { 9, "harry", 210 },
+                                                                                                                                  new Object[] { null, null, 300 }
             } : new Object[][] {
                                  // e.empid   e.name    d. no
                                  new Object[] { null, null, 300 },
@@ -11614,7 +11615,7 @@ public class JULoopQueryXMLTest extends AbstractTestLogic {
 //
 //            Generated Results:
 //              0  EmpBean [empid=10, name=Catalina Wei]
-        if (isSQLServer(lDbProductName)) {
+        if (DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.SQLSERVER)) {
             System.out.println("Test has been excluded from SQLServer.");
             return;
         }
@@ -15497,7 +15498,7 @@ public class JULoopQueryXMLTest extends AbstractTestLogic {
 //
 //            Generated Results:
 //              0  EmpBean [empid=10, name=Catalina Wei]
-        if (isSQLServer(lDbProductName)) {
+        if (DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.SQLSERVER)) {
             System.out.println("Test has been excluded from SQLServer.");
             return;
         }
@@ -23436,7 +23437,7 @@ public class JULoopQueryXMLTest extends AbstractTestLogic {
             Object[] targets = {
                                  emp1, emp2, emp3, emp4, emp5, emp6, emp7, emp8, emp9
             };
-            if (isOracle(lDbProductName)) {
+            if (DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.ORACLE)) {
                 targets = new Object[] {};
             }
             validateQueryResult(testName, qStr, rList, targets);
@@ -23663,7 +23664,7 @@ public class JULoopQueryXMLTest extends AbstractTestLogic {
 //            Generated Results:
 //              0  ( DeptBean: no=200 name =Admin)
 //              1  ( DeptBean: no=300 name =Sales)
-        if (isSQLServer(lDbProductName)) {
+        if (DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.SQLSERVER)) {
             System.out.println("This test has been disabled on sqlserver.");
             return;
         }
@@ -26435,7 +26436,7 @@ public class JULoopQueryXMLTest extends AbstractTestLogic {
          * 4 1
          *
          */
-        if (isPostgresql(lDbProductName)) {
+        if (DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.POSTGRES)) {
             System.out.println("Test is marked excluded against PostgreSQL.");
             return;
         }
@@ -26473,7 +26474,7 @@ public class JULoopQueryXMLTest extends AbstractTestLogic {
             Object[] targets = {
                                  1, 2, 3, 4
             };
-            if (isOracle(lDbProductName)) {
+            if (DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.ORACLE)) {
                 targets = new Object[] {
                                          1, 2, 3, 4, 5
                 };
@@ -27341,7 +27342,7 @@ public class JULoopQueryXMLTest extends AbstractTestLogic {
          * 2 210 19 4.75 4
          * 3 220 5 5.0 1
          */
-        if (isOracle(lDbProductName)) {
+        if (DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.ORACLE)) {
             System.out.println("Skipping test on Oracle platform. ");
             return;
         }
@@ -27354,7 +27355,7 @@ public class JULoopQueryXMLTest extends AbstractTestLogic {
          * 2 200 7 3.5 2
          * 3 210 19 4.75 4
          */
-        if (isPostgresql(lDbProductName)) {
+        if (DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.POSTGRES)) {
             System.out.println("Skipping test on Postgresql platform. ");
             return;
         }
