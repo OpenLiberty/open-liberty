@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -35,16 +35,24 @@ import javax.xml.ws.Service.Mode;
 import javax.xml.ws.soap.SOAPBinding;
 
 //Orig:
-import org.apache.ws.security.components.crypto.Crypto;
-import org.apache.ws.security.components.crypto.CryptoFactory;
+//import org.apache.ws.security.components.crypto.Crypto;
+//import org.apache.ws.security.components.crypto.CryptoFactory;
+
+//Mei:
+import org.apache.wss4j.common.crypto.Crypto;
+import org.apache.wss4j.common.crypto.CryptoFactory;
+//Aruna's change can't be saved:
+//import org.apache.wss4j.common.util.Loader;
+//import org.apache.wss4j.common.crypto.*;
 
 import test.wssecfvt.basicplcy.FVTVersionBAXService;
 
 /**
  * Servlet implementation class CxfX509SvcClient
  */
-@WebServlet("/CxfX509SvcClient")
-public class CxfX509SvcClient extends HttpServlet {
+//2/2021 created
+@WebServlet("/CxfX509SvcClientWss4j")
+public class CxfX509SvcClientWss4j extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
     private static final String SERVICE_NS = "http://basicplcy.wssecfvt.test";
@@ -70,7 +78,7 @@ public class CxfX509SvcClient extends HttpServlet {
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public CxfX509SvcClient() {
+    public CxfX509SvcClientWss4j() {
         super();
     }
 
@@ -96,7 +104,6 @@ public class CxfX509SvcClient extends HttpServlet {
             servicePort = new QName(SERVICE_NS, request.getParameter("servicePort"));
             if (httpSecurePortNum == null || httpSecurePortNum.length() == 0) {
                 thePort = httpPortNum;
-                httpProtocal = "http:";
             } else {
                 thePort = httpSecurePortNum;
                 httpProtocal = "https:";
@@ -248,7 +255,7 @@ public class CxfX509SvcClient extends HttpServlet {
 
         // Load the keystore
         //Crypto crypto = new Merlin();
-        requestContext.put("ws-security.callback-handler", "com.ibm.ws.wssecurity.example.cbh.CommonPasswordCallback");
+        requestContext.put("ws-security.callback-handler", "com.ibm.ws.wssecurity.example.cbhwss4j.CommonPasswordCallbackWss4j");
         String strServerDir = System.getProperty("server.config.dir").replace('\\', '/');
         String strX509JksSignLocation = strServerDir + "x509ClientDefaultS.properties";
 
@@ -289,7 +296,7 @@ public class CxfX509SvcClient extends HttpServlet {
         strServerDir = strServerDir.replace('\\', '/');
         String strX509JksSignLocation = strServerDir + "/x509ClientDefaultS.properties";
         String strX509JksEncrLocation = strServerDir + "/x509ClientSecondE.properties"; // do the server.xml on purpose
-        requestContext.put("ws-security.callback-handler", "com.ibm.ws.wssecurity.example.cbh.CommonPasswordCallback"); // The callback
+        requestContext.put("ws-security.callback-handler", "com.ibm.ws.wssecurity.example.cbhwss4j.CommonPasswordCallbackWss4j"); // The callback
         requestContext.put("ws-security.signature.properties", getProperties(strX509JksSignLocation, strServerDir));
         requestContext.put("ws-security.encryption.properties", getProperties(strX509JksEncrLocation, strServerDir));
     }

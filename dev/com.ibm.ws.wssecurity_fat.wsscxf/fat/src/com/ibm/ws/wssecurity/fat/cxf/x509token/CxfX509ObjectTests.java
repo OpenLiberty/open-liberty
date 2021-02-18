@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,7 @@ import java.util.Set;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 //Added 11/2020
 import org.junit.runner.RunWith;
@@ -40,6 +41,8 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
@@ -70,6 +73,10 @@ public class CxfX509ObjectTests {
     final static String msgExpires = "The message has expired";
     final static String badHttpsToken = "HttpsToken could not be asserted";
     final static String badHttpsClientCert = "Could not send Message.";
+
+    //2/2021
+    @ClassRule
+    public static RepeatTests r = RepeatTests.withoutModification().andWith(FeatureReplacementAction.EE8_FEATURES().forServers(serverName).removeFeature("jsp-2.2").removeFeature("jaxws-2.2").removeFeature("servlet-3.1").removeFeature("usr:wsseccbh-1.0").addFeature("jsp-2.3").addFeature("jaxws-2.3").addFeature("servlet-4.0").addFeature("usr:wsseccbh-2.0"));
 
     /**
      * Sets up any configuration required for running the ws-security tests.
@@ -120,8 +127,19 @@ public class CxfX509ObjectTests {
         assertNotNull("defaultHttpEndpoint SSL port may not be started at:" + portNumberSecure,
                       server.waitForStringInLog("CWWKO0219I.*" + portNumberSecure));
 
-        x509ClientUrl = "http://localhost:" + portNumber
-                        + "/x509client/CxfX509SvcClient";
+        //2/2021 Orig:
+        //x509ClientUrl = "http://localhost:" + portNumber
+        //                + "/x509client/CxfX509SvcClient";
+
+        //2/2021
+        if (features.contains("jaxws-2.2")) {
+            x509ClientUrl = "http://localhost:" + portNumber
+                            + "/x509client/CxfX509SvcClient";
+        }
+        if (features.contains("jaxws-2.3")) {
+            x509ClientUrl = "http://localhost:" + portNumber
+                            + "/x509client/CxfX509SvcClientWss4j";
+        }
 
         Log.info(thisClass, thisMethod, "****portNumber is(2):" + portNumber);
         Log.info(thisClass, thisMethod, "****portNumberSecure is(2):" + portNumberSecure);
@@ -141,6 +159,7 @@ public class CxfX509ObjectTests {
 
     @Test
     public void testCxfX509Service() throws Exception {
+
         String thisMethod = "testCxfX509Service";
 
         try {
@@ -226,6 +245,11 @@ public class CxfX509ObjectTests {
         }
         //orig from CL:
         //SharedTools.unInstallCallbackHandler(server);
+        //2/2021
+        server.deleteFileFromLibertyInstallRoot("usr/extension/lib/bundles/com.ibm.ws.wssecurity.example.cbh.jar");
+        server.deleteFileFromLibertyInstallRoot("usr/extension/lib/features/wsseccbh-1.0.mf");
+        server.deleteFileFromLibertyInstallRoot("usr/extension/lib/bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
+        server.deleteFileFromLibertyInstallRoot("usr/extension/lib/features/wsseccbh-2.0.mf");
     }
 
     private static void printMethodName(String strMethod) {

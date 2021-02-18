@@ -72,8 +72,10 @@
 		id="default"
 		ws-security.password="security"
 		ws-security.username="user1"
-		ws-security.callback-handler="com.ibm.ws.wssecurity.example.cbh.CommonPasswordCallback"
+		ws-security.callback-handler="com.ibm.ws.wssecurity.example.cbhwss4j.CommonPasswordCallbackWss4j"
 	>
+	<!--  EE8 Callbackhandler -->
+	
 		<signatureProperties
 			org.apache.ws.security.crypto.merlin.keystore.type="jks"
 			org.apache.ws.security.crypto.merlin.keystore.password="LibertyX509Client3"
@@ -88,8 +90,10 @@
 
 	<wsSecurityProvider
 		id="default"
-		ws-security.callback-handler="com.ibm.ws.wssecurity.example.cbh.CommonPasswordCallback"
+		ws-security.callback-handler="com.ibm.ws.wssecurity.example.cbhwss4j.CommonPasswordCallbackWss4j"
 	>
+	<!--  EE8 Callbackhandler -->
+	
 		<callerToken name="X509Token" />
 		<signatureProperties
 			org.apache.ws.security.crypto.merlin.keystore.type="jks"
@@ -103,23 +107,21 @@
 			org.apache.ws.security.crypto.merlin.file="${server.config.dir}/x509ServerSecond.jks" />
 	</wsSecurityProvider>
 
-    <!-- added 12/2020  -->
-        <javaPermission className="java.io.FilePermission" name="ALL FILES" actions="read"/>
-        <javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
-        <javaPermission className="java.net.URLPermission" name="https://localhost:8020/callertoken/FatBAC04Service" actions="POST:AcceptSOAPActionUser-Agent"/>
-        <javaPermission className="java.net.URLPermission" name="http://localhost:8010/callertoken/FatBAC01Service" actions="POST:AcceptSOAPActionUser-Agent"/>
-        <javaPermission className="java.net.URLPermission" name="https://localhost:8020/callertoken/FatBAC02Service" actions="POST:AcceptSOAPActionUser-Agent"/>
-        <javaPermission className="java.net.URLPermission" name="http://localhost:8010/callertoken/FatBAC03Service" actions="POST:AcceptSOAPActionUser-Agent"/>
-        <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.soap"/>
-        <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.soap.ver1_1"/>
-        <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.util"/>
-        <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.soap.name"/>
-        <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.soap.impl"/>
-        <javaPermission className="java.util.PropertyPermission" name="javax.xml.soap.MessageFactory" actions="read"/>
-        <javaPermission className="java.util.PropertyPermission" name="javax.xml.soap.MetaFactory" actions="read"/>
-        <javaPermission className="java.util.PropertyPermission" name="java.home" actions="read"/>      
-        <javaPermission className="javax.security.auth.PrivateCredentialPermission" signedBy="com.ibm.ws.security.token.internal.SingleSignonTokenImpl" principalType="com.ibm.ws.security.authentication.principals.WSPrincipal" principalName="*" actions="read"/>
-        <javaPermission className="javax.security.auth.PrivateCredentialPermission" signedBy="java.util.Hashtable" principalType="*" principalName="*" actions="read"/>
+	<!-- This is in use by CxfCallerX509SymTests -->
+	
+	<!-- added 12/2020 -->
+	<javaPermission className="java.io.FilePermission" name="ALL FILES" actions="read"/>
+	<javaPermission className="java.util.PropertyPermission" name="javax.xml.soap.MessageFactory" actions="read"/>
+    <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.soap"/>
+    <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.soap.ver1_1"/>
+    <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.util"/>
+    <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.soap.name"/>
+    <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.soap.impl"/>
+    <javaPermission className="java.net.URLPermission" name="http://localhost:8010/callertoken/FatBAC07Service" actions="POST:AcceptSOAPActionUser-Agent"/>
+    <javaPermission className="java.net.URLPermission" name="https://localhost:8020/callertoken/FatBAC07Service" actions="POST:AcceptSOAPActionUser-Agent"/>
+    <javaPermission className="javax.security.auth.PrivateCredentialPermission" signedBy="com.ibm.ws.security.token.internal.SingleSignonTokenImpl" principalType="com.ibm.ws.security.authentication.principals.WSPrincipal" principalName="*" actions="read"/>
+    <javaPermission className="java.util.PropertyPermission" name="java.home" actions="read"/>
+    <javaPermission className="java.util.PropertyPermission" name="javax.xml.soap.MetaFactory" actions="read"/>
     
 </server>
 

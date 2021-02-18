@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@ import java.io.File;
 import java.util.Set;
 
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 //Added 10/2020
 import org.junit.runner.RunWith;
@@ -33,6 +34,8 @@ import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
@@ -51,6 +54,10 @@ public class CxfSha2SigTests extends CommonTests {
     //Added 10/2020
     @Server(serverName)
     public static LibertyServer server;
+
+    //2/2021
+    @ClassRule
+    public static RepeatTests r = RepeatTests.withoutModification().andWith(FeatureReplacementAction.EE8_FEATURES().forServers(serverName).removeFeature("jsp-2.2").removeFeature("jaxws-2.2").removeFeature("servlet-3.1").removeFeature("usr:wsseccbh-1.0").addFeature("jsp-2.3").addFeature("jaxws-2.3").addFeature("servlet-4.0").addFeature("usr:wsseccbh-2.0"));
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -95,10 +102,7 @@ public class CxfSha2SigTests extends CommonTests {
     //public void testCxfSha2SignSoapBody() throws Exception {
     public void testCxfSha2SignSoapBodyEE7Only() throws Exception {
 
-        //Orig:
-        //String thisMethod = "testCxfSha2SignSoapBody";
-        String thisMethod = "testCxfSha2SignSoapBodyEE7Only";
-
+        String thisMethod = "testCxfSha2SignSoapBody";
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
         genericTest(
                     // test name for logging
@@ -132,7 +136,7 @@ public class CxfSha2SigTests extends CommonTests {
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
     public void testCxfSha2SignSoapBodyEE8Only() throws Exception {
 
-        String thisMethod = "testCxfSha2SignSoapBodyEE8Only";
+        String thisMethod = "testCxfSha2SignSoapBody";
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig_wss4j.xml");
         genericTest(
                     // test name for logging
@@ -178,9 +182,7 @@ public class CxfSha2SigTests extends CommonTests {
     //public void testCxfSha2DigestAlgorithm() throws Exception {
     public void testCxfSha2DigestAlgorithmEE7Only() throws Exception {
 
-        //Orig:
-        //String thisMethod = "testCxfSha2DigestAlgorithm";
-        String thisMethod = "testCxfSha2DigestAlgorithmEE7Only";
+        String thisMethod = "testCxfSha2DigestAlgorithm";
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
         genericTest(
                     // test name for logging
@@ -215,7 +217,7 @@ public class CxfSha2SigTests extends CommonTests {
     @AllowedFFDC("org.apache.ws.security.WSSecurityException")
     public void testCxfSha2DigestAlgorithmEE8Only() throws Exception {
 
-        String thisMethod = "testCxfSha2DigestAlgorithmEE8Only";
+        String thisMethod = "testCxfSha2DigestAlgorithm";
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig_wss4j.xml");
         genericTest(
                     // test name for logging
@@ -260,9 +262,7 @@ public class CxfSha2SigTests extends CommonTests {
     //public void testCxfSha384SigAlgorithm() throws Exception {
     public void testCxfSha384SigAlgorithmEE7Only() throws Exception {
 
-        //Orig:
-        //String thisMethod = "testTwasSha384SigAlgorithm";
-        String thisMethod = "testCxfSha384SigAlgorithmEE7Only";
+        String thisMethod = "testTwasSha384SigAlgorithm";
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sha384.xml");
         genericTest(
                     // test name for logging
@@ -296,7 +296,7 @@ public class CxfSha2SigTests extends CommonTests {
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
     public void testCxfSha384SigAlgorithmEE8Only() throws Exception {
 
-        String thisMethod = "testCxfSha384SigAlgorithmEE8Only";
+        String thisMethod = "testCxfSha384SigAlgorithm";
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sha384_wss4j.xml");
         genericTest(
                     // test name for logging
@@ -341,9 +341,7 @@ public class CxfSha2SigTests extends CommonTests {
     //public void testCxfSha512SigAlgorithm() throws Exception {
     public void testCxfSha512SigAlgorithmEE7Only() throws Exception {
 
-        //Orig:
-        //String thisMethod = "testTwasSha512SigAlgorithm";
-        String thisMethod = "testCxfSha512SigAlgorithmEE7Only";
+        String thisMethod = "testTwasSha512SigAlgorithm";
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sha512.xml");
         genericTest(
                     // test name for logging
@@ -377,7 +375,7 @@ public class CxfSha2SigTests extends CommonTests {
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
     public void testCxfSha512SigAlgorithmEE8Only() throws Exception {
 
-        String thisMethod = "testCxfSha512SigAlgorithmEE8Only";
+        String thisMethod = "testCxfSha512SigAlgorithm";
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sha512_wss4j.xml");
         genericTest(
                     // test name for logging
@@ -423,27 +421,12 @@ public class CxfSha2SigTests extends CommonTests {
     @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     //Orig:
     @AllowedFFDC("org.apache.ws.security.WSSecurityException")
-    //Mei:
-    //@AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException" })
-    //End
-    //Orig:
     //public void testCxfSha1ToSha2SigAlgorithm() throws Exception {
     public void testCxfSha1ToSha2SigAlgorithmEE7Only() throws Exception {
 
-        //Orig:
-        //String thisMethod = "testCxfSha1ToSha2SigAlgorithm";
-        String thisMethod = "testCxfSha1ToSha2SigAlgorithmEE7Only";
+        String thisMethod = "testCxfSha1ToSha2SigAlgorithm";
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sha2.xml");
-        //Mei:
-        //server.is //@AV999 TODO
-        boolean jaxws23feature = false;
-        String messagetoexpect = "The signature method does not match the requirement"; //existing
-        //if (server.hasjasws23feature) then jaxws23feature=true //@AV999 TODO
-        jaxws23feature = true;
-        if (jaxws23feature) {
-            messagetoexpect = "An error was discovered processing the <wsse:Security> header";
-        }
-        //End
+
         genericTest(
                     // test name for logging
                     thisMethod,
@@ -477,26 +460,13 @@ public class CxfSha2SigTests extends CommonTests {
     //2/2021 to test with EE8, then the corresponding server_sha2_wss4j.xml can be used
     @Test
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    //Orig:
-    //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
-    //Mei:
-    //@AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException" })
+    //2/2021
     @AllowedFFDC("org.apache.wss4j.common.ext.WSSecurityException")
-    //End
     public void testCxfSha1ToSha2SigAlgorithmEE8Only() throws Exception {
 
-        String thisMethod = "testCxfSha1ToSha2SigAlgorithmEE8Only";
+        String thisMethod = "testCxfSha1ToSha2SigAlgorithm";
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sha2_wss4j.xml");
-        //Mei:
-        //server.is //@AV999 TODO
-        boolean jaxws23feature = false;
-        String messagetoexpect = "The signature method does not match the requirement"; //existing
-        //if (server.hasjasws23feature) then jaxws23feature=true //@AV999 TODO
-        jaxws23feature = true;
-        if (jaxws23feature) {
-            messagetoexpect = "An error was discovered processing the <wsse:Security> header";
-        }
-        //End
+
         genericTest(
                     // test name for logging
                     thisMethod,
@@ -544,9 +514,7 @@ public class CxfSha2SigTests extends CommonTests {
     //public void testCxfSha256SigAlg2048Keylen() throws Exception {
     public void testCxfSha256SigAlg2048KeylenEE7Only() throws Exception {
 
-        //Orig:
-        //String thisMethod = "testCxfSha256SigAlg2048Keylen";
-        String thisMethod = "testCxfSha256SigAlg2048KeylenEE7Only";
+        String thisMethod = "testCxfSha256SigAlg2048Keylen";
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_2048.xml");
         genericTest(
                     // test name for logging
@@ -580,7 +548,7 @@ public class CxfSha2SigTests extends CommonTests {
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
     public void testCxfSha256SigAlg2048KeylenEE8Only() throws Exception {
 
-        String thisMethod = "testCxfSha256SigAlg2048KeylenEE8Only";
+        String thisMethod = "testCxfSha256SigAlg2048Keylen";
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_2048_wss4j.xml");
         genericTest(
                     // test name for logging
@@ -627,9 +595,7 @@ public class CxfSha2SigTests extends CommonTests {
     //public void testCxfSha384SymBinding() throws Exception {
     public void testCxfSha384SymBindingEE7Only() throws Exception {
 
-        //Orig:
-        //String thisMethod = "testCxfSha384SymBinding";
-        String thisMethod = "testCxfSha384SymBindingEE7Only";
+        String thisMethod = "testCxfSha384SymBinding";
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sha3sym.xml");
         genericTest(
                     // test name for logging
@@ -663,7 +629,7 @@ public class CxfSha2SigTests extends CommonTests {
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
     public void testCxfSha384SymBindingEE8Only() throws Exception {
 
-        String thisMethod = "testCxfSha384SymBindingEE8Only";
+        String thisMethod = "testCxfSha384SymBinding";
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sha3sym_wss4j.xml");
         genericTest(
                     // test name for logging
@@ -709,7 +675,7 @@ public class CxfSha2SigTests extends CommonTests {
     //Orig:
     //public void testCxfSha512SymBinding() throws Exception {
     public void testCxfSha512SymBindingEE7Only() throws Exception {
-        String thisMethod = "testCxfSha512SymBindingEE7Only";
+        String thisMethod = "testCxfSha512SymBinding";
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sha5sym.xml");
         genericTest(
                     // test name for logging
@@ -743,7 +709,7 @@ public class CxfSha2SigTests extends CommonTests {
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
     public void testCxfSha512SymBindingEE8Only() throws Exception {
 
-        String thisMethod = "testCxfSha512SymBindingEE8Only";
+        String thisMethod = "testCxfSha512SymBinding";
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sha5sym_wss4j.xml");
         genericTest(
                     // test name for logging

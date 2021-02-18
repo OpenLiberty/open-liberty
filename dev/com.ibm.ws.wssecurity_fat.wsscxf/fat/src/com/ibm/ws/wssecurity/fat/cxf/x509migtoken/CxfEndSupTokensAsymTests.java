@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import java.util.Set;
 
 import org.junit.After;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 //Added 11/2020
 import org.junit.runner.RunWith;
@@ -37,6 +38,8 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
@@ -58,21 +61,12 @@ public class CxfEndSupTokensAsymTests extends CommonTests {
     @Server(serverName)
     public static LibertyServer server;
 
+    //2/2021
+    @ClassRule
+    public static RepeatTests r = RepeatTests.withoutModification().andWith(FeatureReplacementAction.EE8_FEATURES().forServers(serverName).removeFeature("jsp-2.2").removeFeature("jaxws-2.2").removeFeature("servlet-3.1").removeFeature("usr:wsseccbh-1.0").addFeature("jsp-2.3").addFeature("jaxws-2.3").addFeature("servlet-4.0").addFeature("usr:wsseccbh-2.0"));
+
     @BeforeClass
     public static void setUp() throws Exception {
-
-        //2/2021
-        ServerConfiguration config = server.getServerConfiguration();
-        Set<String> features = config.getFeatureManager().getFeatures();
-        if (features.contains("usr:wsseccbh-1.0")) {
-            server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbh.jar");
-            server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-1.0.mf");
-        }
-        if (features.contains("usr:wsseccbh-2.0")) {
-            server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
-            server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-2.0.mf");
-            copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
-        }
 
         //Added 11/2020
         ShrinkHelper.defaultDropinApp(server, "endsuptokensclient", "com.ibm.ws.wssecurity.fat.endsuptokensclient", "test.wssecfvt.endsuptokens",
@@ -82,7 +76,22 @@ public class CxfEndSupTokensAsymTests extends CommonTests {
         serverObject.prepareSetup(server);
 
         //orig from CL
-        commonSetUp(serverName, "server_asym.xml", true, "/endsuptokensclient/CxfEndSupTokensSvcClient");
+        //commonSetUp(serverName, "server_asym.xml", true, "/endsuptokensclient/CxfEndSupTokensSvcClient");
+
+        //2/2021
+        ServerConfiguration config = server.getServerConfiguration();
+        Set<String> features = config.getFeatureManager().getFeatures();
+        if (features.contains("usr:wsseccbh-1.0")) {
+            server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbh.jar");
+            server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-1.0.mf");
+            commonSetUp(serverName, "server_asym.xml", true, "/endsuptokensclient/CxfEndSupTokensSvcClient");
+        }
+        if (features.contains("usr:wsseccbh-2.0")) {
+            server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
+            server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-2.0.mf");
+            commonSetUp(serverName, "server_asym_wss4j.xml", true, "/endsuptokensclient/CxfEndSupTokensSvcClient");
+            //copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
+        } //End 2/2021
 
     }
 
@@ -97,9 +106,8 @@ public class CxfEndSupTokensAsymTests extends CommonTests {
      *
      */
     @Test
-    //Mei:
+    //2/2021
     @AllowedFFDC("java.util.MissingResourceException") //@AV999
-    //End
     public void testCXFEndSupTokens0() throws Exception {
 
         String thisMethod = "testCXFEndSupTokens0";
@@ -144,9 +152,7 @@ public class CxfEndSupTokensAsymTests extends CommonTests {
     //@Test
     public void testCXFEndSupTokens0AddEncrypted() throws Exception {
 
-        //2/2021 Orig:
-        //String thisMethod = "testCXFEndSupTokens0";
-        String thisMethod = "testCXFEndSupTokens0AddEncrypte";
+        String thisMethod = "testCXFEndSupTokens0";
         newClientWsdl = updateClientWsdl(defaultClientWsdlLoc + "EndSupTokens/EndSupTokens0AddEncrypted.wsdl", defaultClientWsdlLoc
                                                                                                                + "EndSupTokens/EndSupTokens0AddEncryptedUpdated.wsdl");
         genericTest(
@@ -187,9 +193,8 @@ public class CxfEndSupTokensAsymTests extends CommonTests {
      *
      */
     @Test
-    //Mei
+    //2/2021
     @AllowedFFDC("java.util.MissingResourceException") //@AV999
-    //End
     public void testCXFEndSupTokens0Body() throws Exception {
 
         String thisMethod = "testCXFEndSupTokens0Body";
@@ -232,9 +237,8 @@ public class CxfEndSupTokensAsymTests extends CommonTests {
      *
      */
     @Test
-    //Mei:
+    //2/2021
     @AllowedFFDC("java.util.MissingResourceException") //@AV999
-    //End
     public void testCXFEndSupTokens0BodyElement() throws Exception {
 
         String thisMethod = "testCXFEndSupTokens0BodyElement";
@@ -319,9 +323,8 @@ public class CxfEndSupTokensAsymTests extends CommonTests {
      *
      */
     @Test
-    //Mei:
+    //2/2021
     @AllowedFFDC("java.util.MissingResourceException") //@AV999
-    //End
     public void testCXFEndSupTokens1() throws Exception {
 
         String thisMethod = "testCXFEndSupTokens1";
