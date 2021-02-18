@@ -27,6 +27,7 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -38,6 +39,11 @@ public class AutoExtractTest extends AbstractAppManagerTest {
 
     // Our tests delete binaries while they are still defined in server.xml, so we expect this warning.
     private static final String COULD_NOT_FIND_APP_WARNING = "CWWKZ0014W";
+
+    private static final String EXPAND_LOCATION_WARNING = "CWWKZ0137W";
+    private static final String EXPAND_LOCATION_DOES_NOT_EXIST = "CWWKZ0131W";
+    private static final String EXPAND_LOG_TEXT = "is being expanded to the";
+    private static final String APP_FAIL_INSTALL = "CWWKZ0002E";
 
     private final Class<?> c = AutoExtractTest.class;
 
@@ -700,7 +706,7 @@ public class AutoExtractTest extends AbstractAppManagerTest {
             assertNotNull("The server never reported that it was ready to install web apps.",
                           server.waitForStringInLog("CWWKZ0058I:"));
 
-            //install file
+            // Install file
 
             // Pause for application to start properly and server to say it's listening on ports
             final int httpDefaultPort = server.getHttpDefaultPort();
@@ -713,16 +719,18 @@ public class AutoExtractTest extends AbstractAppManagerTest {
             assertNotNull("The server did not report that the app was being extracted",
                           extractMsg);
             Log.info(c, method, "Extract message is = " + extractMsg);
+            String extractLoc = extractMsg.substring(extractMsg.lastIndexOf("is being expanded to the") + "is being expanded to the".length());
 
-            // verify targetDir info
-            assertNotNull("The targetDir path does not contain /myApps: " + extractMsg, extractMsg.contains(TARGET_EXPANDED_DIR));
+            // Verify expandLocation info
+            assertNotNull("The expandLocation path does not contain /myApps: " + extractMsg, extractMsg.contains(TARGET_EXPANDED_DIR));
             String pathToApp = server.getServerRoot() + "/" + TARGET_EXPANDED_DIR;
             File appFile = new File(pathToApp);
-            assertTrue("Path to expanded app folder was incorrect: " + pathToApp, appFile.isDirectory());
+            assertTrue("Path to expandLocation folder actual is : " + extractLoc + " but was expected to be : " + pathToApp, appFile.isDirectory());
 
             URL url = new URL("http://" + server.getHostname() + ":" + httpDefaultPort + "/testWarApplication/TestServlet");
             Log.info(c, method, "Calling test Application with URL=" + url.toString());
-            //check application is installed
+
+            // Check application is installed
             HttpURLConnection con = HttpUtils.getHttpConnection(url, HttpURLConnection.HTTP_OK, CONN_TIMEOUT);
             BufferedReader br = HttpUtils.getConnectionStream(con);
             String line = br.readLine();
@@ -730,14 +738,14 @@ public class AutoExtractTest extends AbstractAppManagerTest {
                        line.contains("test servlet is running."));
             con.disconnect();
 
-            //replace original application with new version to test that it updates
+            // Replace original application with new version to test that it updates
             server.copyFileToLibertyServerRoot(PUBLISH_UPDATED, APPS_DIR, TEST_WAR_APPLICATION);
 
-            //make sure the application is claiming to have been updated
+            // Make sure the application is claiming to have been updated
             assertNotNull("The application testWarApplication did not appear to have been updated.",
                           server.waitForStringInLog("CWWKZ0003I.* testWarApplication"));
 
-            //get the message from the application to make sure it is the new appication contents
+            // Get the message from the application to make sure it is the new appication contents
             con = HttpUtils.getHttpConnection(url, HttpURLConnection.HTTP_OK, CONN_TIMEOUT);
             br = HttpUtils.getConnectionStream(con);
             line = br.readLine();
@@ -757,7 +765,7 @@ public class AutoExtractTest extends AbstractAppManagerTest {
             assertNotNull("The application testWarApplication did not appear to have been updated.",
                           server.waitForStringInLog("CWWKZ0003I.* testWarApplication"));
 
-            //get the message from the application to make sure it is the new application contents
+            // Get the message from the application to make sure it is the new application contents
             con = HttpUtils.getHttpConnection(url, HttpURLConnection.HTTP_OK, CONN_TIMEOUT);
             br = HttpUtils.getConnectionStream(con);
             line = br.readLine();
@@ -766,7 +774,7 @@ public class AutoExtractTest extends AbstractAppManagerTest {
                        line.contains("test servlet is running."));
             con.disconnect();
 
-            // remove file
+            // Remove file
             boolean deleted = deleteFile(server.getMachine(),
                                          server.getServerRoot() + "/" + APPS_DIR + "/testWarApplication.war");
 
@@ -809,7 +817,7 @@ public class AutoExtractTest extends AbstractAppManagerTest {
         try {
             final String method = testName.getMethodName();
 
-            //install file
+            // Install file
 
             server.copyFileToLibertyServerRoot(PUBLISH_FILES, APPS_DIR, APP_J2EE_EAR);
 
@@ -832,7 +840,7 @@ public class AutoExtractTest extends AbstractAppManagerTest {
                           extractMsg);
             Log.info(c, method, "Extract message is = " + extractMsg);
 
-            // verify targetDir info
+            // Verify expandLocation info
             assertNotNull("The targetDir path does not contain /myApps: " + extractMsg, extractMsg.contains(TARGET_EXPANDED_DIR));
             String pathToApp = server.getServerRoot() + "/" + TARGET_EXPANDED_DIR;
             File appFile = new File(pathToApp);
@@ -842,7 +850,7 @@ public class AutoExtractTest extends AbstractAppManagerTest {
             URL url1 = new URL("http://" + server.getHostname() + ":" + httpDefaultPort + "/test-web1/DummyServlet");
             Log.info(c, method, "Calling test Application with URL=" + url.toString());
 
-            //check application is installed
+            // Check application is installed
             HttpURLConnection con = HttpUtils.getHttpConnection(url, HttpURLConnection.HTTP_OK, CONN_TIMEOUT);
             BufferedReader br = HttpUtils.getConnectionStream(con);
             String line = br.readLine();
@@ -930,6 +938,165 @@ public class AutoExtractTest extends AbstractAppManagerTest {
             pathsToCleanup.add(server.getServerRoot() + "/" + APPS_DIR);
             server.removeAllInstalledAppsForValidation();
             server.stopServer(COULD_NOT_FIND_APP_WARNING);
+        }
+    }
+
+    /**
+     * Tests that when the expandLocation is set to an empty string that it takes the default location
+     * of ${server.config.dir}/apps/expanded/
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testExpandLocationSetToEmptyString() throws Exception {
+        final String method = testName.getMethodName();
+        try {
+            // Setup server
+            server.copyFileToLibertyServerRoot(PUBLISH_FILES, APPS_DIR, TEST_WAR_APPLICATION);
+            server.setServerConfigurationFile("/autoExpand/ExpandLocationSetToEmptyString.xml");
+            server.startServer(method + ".log");
+
+            // Pause to make sure the server is ready to install apps
+            assertNotNull("The server never reported that it was ready to install web apps.",
+                          server.waitForStringInLog("CWWKZ0058I:"));
+
+            // Pause for application to start properly and server to say it's listening on ports
+            final int httpDefaultPort = server.getHttpDefaultPort();
+            assertNotNull("The server never reported that it was listening on port " + httpDefaultPort,
+                          server.waitForStringInLog("CWWKO0219I.*" + httpDefaultPort));
+            assertNotNull("The application testWarApplication did not appear to have started.",
+                          server.waitForStringInLog("CWWKZ0001I.* testWarApplication"));
+
+            // Make sure the app is extracted
+            String extractMsg = server.waitForStringInLog("CWWKZ0133I.* testWarApplication");
+            assertNotNull("The server did not report that the app was being extracted",
+                          extractMsg);
+            Log.info(c, method, "Extract message is = " + extractMsg);
+            String extractLoc = extractMsg.substring(extractMsg.lastIndexOf(EXPAND_LOG_TEXT) + EXPAND_LOG_TEXT.length());
+
+            // Verify expandLocation info
+            assertNotNull("The expandLocation path does should have been defaulted: " + extractMsg, extractMsg.contains(TARGET_EXPANDED_DIR));
+            String pathToApp = server.getServerRoot() + "/" + EXPANDED_DIR;
+            File appFile = new File(pathToApp);
+            assertTrue("Path to expandLocation folder actual is : " + extractLoc + " but was expected to be : " + pathToApp, appFile.isDirectory());
+            assertNotNull("Expected a warning for " + EXPAND_LOCATION_WARNING + " to exist in the logs but it was not found",
+                          server.waitForStringInLog(EXPAND_LOCATION_WARNING + ".* testWarApplication"));
+
+            // Check application is installed
+            URL url = new URL("http://" + server.getHostname() + ":" + httpDefaultPort + "/testWarApplication/TestServlet");
+            Log.info(c, method, "Calling test Application with URL=" + url.toString());
+            HttpURLConnection con = HttpUtils.getHttpConnection(url, HttpURLConnection.HTTP_OK, CONN_TIMEOUT);
+            BufferedReader br = HttpUtils.getConnectionStream(con);
+            String line = br.readLine();
+            assertTrue("The response did not contain the \'Test servlet\'",
+                       line.contains("test servlet is running."));
+            con.disconnect();
+
+        } finally {
+            //if we failed to delete file before, try to delete it now.
+            pathsToCleanup.add(server.getServerRoot() + "/" + APPS_DIR);
+            server.removeAllInstalledAppsForValidation();
+            server.stopServer(EXPAND_LOCATION_WARNING);
+        }
+    }
+
+    /**
+     * Tests when a URL (not allowed) is used vs a file path, that a warning is issued regarding the application
+     * not being able to expand, and does not start.
+     *
+     * @throws Exception
+     */
+    @Test
+    @AllowedFFDC({ "java.net.UnknownHostException", "java.lang.UnsupportedOperationException", "java.lang.UnsupportedOperationException", "java.io.IOException" })
+    public void testExpandLocationSetToURL() throws Exception {
+        final String method = testName.getMethodName();
+        try {
+
+            server.copyFileToLibertyServerRoot(PUBLISH_FILES, APPS_DIR, TEST_WAR_APPLICATION);
+
+            server.setServerConfigurationFile("/autoExpand/ExpandLocationSetToURL.xml");
+            server.startServer(method + ".log");
+
+            // Pause to make sure the server is ready to install apps
+            assertNotNull("The server never reported that it was ready to install web apps.",
+                          server.waitForStringInLog("CWWKZ0058I:"));
+
+            // Pause for application to start properly and server to say it's listening on ports
+            final int httpDefaultPort = server.getHttpDefaultPort();
+            assertNotNull("The server never reported that it was listening on port " + httpDefaultPort,
+                          server.waitForStringInLog("CWWKO0219I.*" + httpDefaultPort));
+
+            // Make sure we issue the could not expand warning
+            assertNotNull("Expected a warning for " + EXPAND_LOCATION_WARNING + " to exist in the logs but it was not found",
+                          server.waitForStringInLog(EXPAND_LOCATION_WARNING + ".* testWarApplication"));
+
+            // This case gets caught as a UnsupportedOperationException exception else where.
+            assertNotNull("The application testWarApplication did not appear to have started.",
+                          server.waitForStringInLog(APP_FAIL_INSTALL + ".* testWarApplication"));
+
+        } finally {
+            //if we failed to delete file before, try to delete it now.
+            pathsToCleanup.add(server.getServerRoot() + "/" + APPS_DIR);
+            server.removeAllInstalledAppsForValidation();
+            server.stopServer(APP_FAIL_INSTALL, EXPAND_LOCATION_WARNING);
+        }
+
+    }
+
+    /**
+     * Tests that the application can be expanded outside of the ${server.config.dir} area
+     * and also tests that the expandLocation variable handles liberty properties variables.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testExpandLocationSetToOutsideConfigDir() throws Exception {
+        final String method = testName.getMethodName();
+        try {
+
+            server.copyFileToLibertyServerRoot(PUBLISH_FILES, APPS_DIR, TEST_WAR_APPLICATION);
+
+            server.setServerConfigurationFile("/autoExpand/ExpandLocationSetToOutsideConfigDir.xml");
+            server.startServer(method + ".log");
+
+            // Pause to make sure the server is ready to install apps
+            assertNotNull("The server never reported that it was ready to install web apps.",
+                          server.waitForStringInLog("CWWKZ0058I:"));
+
+            // Pause for application to start properly and server to say it's listening on ports
+            final int httpDefaultPort = server.getHttpDefaultPort();
+            assertNotNull("The server never reported that it was listening on port " + httpDefaultPort,
+                          server.waitForStringInLog("CWWKO0219I.*" + httpDefaultPort));
+            assertNotNull("The application testWarApplication did not appear to have started.",
+                          server.waitForStringInLog("CWWKZ0001I.* testWarApplication"));
+
+            String extractMsg = server.waitForStringInLog("CWWKZ0133I.* testWarApplication");
+            assertNotNull("The server did not report that the app was being extracted",
+                          extractMsg);
+            Log.info(c, method, "Extract message is = " + extractMsg);
+
+            // verify expandLocation info
+            String pathToApp = server.getInstallRoot() + "/myApps/";
+            assertNotNull("The expandLocation path should be defaulted since it was set to empty string: " + extractMsg, extractMsg.contains(pathToApp));
+
+            File appFile = new File(pathToApp);
+            assertTrue("Path to expanded app folder was incorrect: " + pathToApp, appFile.isDirectory());
+
+            // Check application is installed
+            URL url = new URL("http://" + server.getHostname() + ":" + httpDefaultPort + "/testWarApplication/TestServlet");
+            Log.info(c, method, "Calling test Application with URL=" + url.toString());
+            HttpURLConnection con = HttpUtils.getHttpConnection(url, HttpURLConnection.HTTP_OK, CONN_TIMEOUT);
+            BufferedReader br = HttpUtils.getConnectionStream(con);
+            String line = br.readLine();
+            assertTrue("The response did not contain the \'Test servlet\'",
+                       line.contains("test servlet is running."));
+            con.disconnect();
+
+        } finally {
+            //if we failed to delete file before, try to delete it now.
+            pathsToCleanup.add(server.getServerRoot() + "/" + APPS_DIR);
+            server.removeAllInstalledAppsForValidation();
+            server.stopServer();
         }
     }
 

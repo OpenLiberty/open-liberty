@@ -15,3 +15,5 @@ dependencies {
   requiredLibs project(':com.ibm.ws.microprofile.openapi')
   requiredLibs project(path: ':com.ibm.websphere.org.eclipse.microprofile', configuration: 'openapi10')
 }
+
+addRequiredLibraries.dependsOn addJakartaTransformer

@@ -247,11 +247,32 @@ public class SAMLCommonTest extends CommonTest {
             }
 
             switch (requestedServer) {
-                case ("com.ibm.ws.security.saml.sso-2.0_fat"):
-                    transformApps(aTestServer.getServer(), "dropins/SAML_Demo.ear", "dropins/testmarker.war", "test-apps/samlclient.war");
+                case ("com.ibm.ws.security.saml.sso-2.0_fat.jaxrs.sp"):
+                case ("com.ibm.ws.security.saml.sso-2.0_fat.jaxrs.config.sp"):
+                    Log.info(thisClass, thisMethod, "in sp case");
+                    transformApps(aTestServer.getServer(), "dropins/SAML_Demo.ear", "dropins/testmarker.war", "test-apps/samlclient.war", "test-apps/jaxrsclient.war");
+                    break;
+                case ("com.ibm.ws.security.saml.sso-2.0_fat.jaxrs.rs"):
+                case ("com.ibm.ws.security.saml.sso-2.0_fat.jaxrs.config.rs"):
+                    Log.info(thisClass, thisMethod, "in rs case");
+                    transformApps(aTestServer.getServer(), "dropins/SAML_Demo.ear", "dropins/testmarker.war", "test-apps/samlclient.war", "test-apps/helloworld.war");
+                    break;
+                case ("com.ibm.ws.security.saml.sso-2.0_fat.jaxrs.merged_sp_rs"):
+                    Log.info(thisClass, thisMethod, "in merged case");
+                    transformApps(aTestServer.getServer(), "dropins/SAML_Demo.ear", "dropins/testmarker.war", "test-apps/samlclient.war", "test-apps/jaxrsclient.war",
+                                  "test-apps/helloworld.war");
+                    break;
+                case ("com.ibm.ws.security.saml.sso_fat.logout"):
+                case ("com.ibm.ws.security.saml.sso_fat.logout.server2"):
+                    Log.info(thisClass, thisMethod, "in logout case");
+                    transformApps(aTestServer.getServer(), "dropins/SAML_Demo.ear", "dropins/testmarker.war", "test-apps/samlclient.war", "test-apps/httpServletRequestApp.war");
                     break;
                 case ("com.ibm.ws.security.saml.sso-2.0_fat.shibboleth"):
                     transformApps(aTestServer.getServer(), "dropins/testmarker.war", "test-apps/idp.war");
+                    break;
+                default:
+                    Log.info(thisClass, thisMethod, "in default case");
+                    transformApps(aTestServer.getServer(), "dropins/SAML_Demo.ear", "dropins/testmarker.war", "test-apps/samlclient.war");
                     break;
             }
 

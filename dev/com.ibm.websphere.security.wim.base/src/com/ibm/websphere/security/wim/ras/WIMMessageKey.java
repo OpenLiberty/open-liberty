@@ -1667,7 +1667,23 @@ public interface WIMMessageKey {
     String CANNOT_READ_KRB5_FILE = "CANNOT_READ_KRB5_FILE";
 
     /**
-     * CWIML4559E: The bind authentication mechanism on the {0} LdapRegistry is set to GSSAPI, but the required attribute, krb5Principal, is not configured.
+     * CWIML4560E: The [{0}] attribute from the {1} element is configured to a file that does not exist at: {2}
      */
-    String KRB5_PRINCIPAL_REQUIRED = "KRB5_PRINCIPAL_REQUIRED";
+    String KRB5_FILE_NOT_FOUND = "KRB5_FILE_NOT_FOUND";
+
+    /**
+     * CWIML4561I: The LdapRegistry component is configured to use a {0} file located at {1}
+     */
+    String KRB5_FILE_FOUND = "KRB5_FILE_FOUND";
+
+    /**
+     * CWIML4518W: The {0} {1} value is malformed. The value must be a series of objectclass:attribute or *:attribute pairs, where each pair is separated by a semi-colon.
+     */
+    String IDMAP_INVALID_FORMAT = "IDMAP_INVALID_FORMAT";
+
+    /**
+     * KRB5_SERVICE_NOT_AVAILABLE=CWIML4521E: The {0} LdapRegistry attempted to bind to the Ldap server using Kerberos credentials for {1} principal name, but the KerberosService
+     * is not available. The bind authentication mechanism is {2}.
+     */
+    String KRB5_SERVICE_NOT_AVAILABLE = "KRB5_SERVICE_NOT_AVAILABLE";
 }

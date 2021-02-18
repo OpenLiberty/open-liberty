@@ -70,7 +70,6 @@ public class TestCallbackListenerException_EJB_SF_Servlet extends EJBTestVehicle
         properties.put("EntityName", AnoListenerEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PACKAGE");
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -85,7 +84,6 @@ public class TestCallbackListenerException_EJB_SF_Servlet extends EJBTestVehicle
         properties.put("EntityName", XMLListenerEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PACKAGE");
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -99,7 +97,6 @@ public class TestCallbackListenerException_EJB_SF_Servlet extends EJBTestVehicle
         properties.put("EntityName", AnoListenerEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PACKAGE");
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -113,7 +110,6 @@ public class TestCallbackListenerException_EJB_SF_Servlet extends EJBTestVehicle
         properties.put("EntityName", XMLListenerEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PACKAGE");
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -128,7 +124,6 @@ public class TestCallbackListenerException_EJB_SF_Servlet extends EJBTestVehicle
         properties.put("EntityName", AnoListenerEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PACKAGE");
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -143,7 +138,6 @@ public class TestCallbackListenerException_EJB_SF_Servlet extends EJBTestVehicle
         properties.put("EntityName", XMLListenerEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PACKAGE");
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -160,7 +154,6 @@ public class TestCallbackListenerException_EJB_SF_Servlet extends EJBTestVehicle
         properties.put("EntityName", AnoListenerEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PRIVATE");
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -175,7 +168,6 @@ public class TestCallbackListenerException_EJB_SF_Servlet extends EJBTestVehicle
         properties.put("EntityName", XMLListenerEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PRIVATE");
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -189,7 +181,6 @@ public class TestCallbackListenerException_EJB_SF_Servlet extends EJBTestVehicle
         properties.put("EntityName", AnoListenerEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PRIVATE");
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -203,7 +194,6 @@ public class TestCallbackListenerException_EJB_SF_Servlet extends EJBTestVehicle
         properties.put("EntityName", XMLListenerEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PRIVATE");
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -218,7 +208,6 @@ public class TestCallbackListenerException_EJB_SF_Servlet extends EJBTestVehicle
         properties.put("EntityName", AnoListenerEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PRIVATE");
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -233,7 +222,6 @@ public class TestCallbackListenerException_EJB_SF_Servlet extends EJBTestVehicle
         properties.put("EntityName", XMLListenerEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PRIVATE");
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -250,7 +238,6 @@ public class TestCallbackListenerException_EJB_SF_Servlet extends EJBTestVehicle
         properties.put("EntityName", AnoListenerEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PROTECTED");
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -265,7 +252,6 @@ public class TestCallbackListenerException_EJB_SF_Servlet extends EJBTestVehicle
         properties.put("EntityName", XMLListenerEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PROTECTED");
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -279,7 +265,6 @@ public class TestCallbackListenerException_EJB_SF_Servlet extends EJBTestVehicle
         properties.put("EntityName", AnoListenerEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PROTECTED");
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -293,7 +278,6 @@ public class TestCallbackListenerException_EJB_SF_Servlet extends EJBTestVehicle
         properties.put("EntityName", XMLListenerEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PROTECTED");
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -308,7 +292,6 @@ public class TestCallbackListenerException_EJB_SF_Servlet extends EJBTestVehicle
         properties.put("EntityName", AnoListenerEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PROTECTED");
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -323,7 +306,6 @@ public class TestCallbackListenerException_EJB_SF_Servlet extends EJBTestVehicle
         properties.put("EntityName", XMLListenerEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PROTECTED");
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -340,7 +322,6 @@ public class TestCallbackListenerException_EJB_SF_Servlet extends EJBTestVehicle
         properties.put("EntityName", AnoListenerEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PUBLIC");
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -355,7 +336,6 @@ public class TestCallbackListenerException_EJB_SF_Servlet extends EJBTestVehicle
         properties.put("EntityName", XMLListenerEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PUBLIC");
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -369,7 +349,6 @@ public class TestCallbackListenerException_EJB_SF_Servlet extends EJBTestVehicle
         properties.put("EntityName", AnoListenerEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PUBLIC");
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -383,7 +362,6 @@ public class TestCallbackListenerException_EJB_SF_Servlet extends EJBTestVehicle
         properties.put("EntityName", XMLListenerEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PUBLIC");
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -398,7 +376,6 @@ public class TestCallbackListenerException_EJB_SF_Servlet extends EJBTestVehicle
         properties.put("EntityName", AnoListenerEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PUBLIC");
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -413,7 +390,6 @@ public class TestCallbackListenerException_EJB_SF_Servlet extends EJBTestVehicle
         properties.put("EntityName", XMLListenerEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PUBLIC");
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -430,7 +406,6 @@ public class TestCallbackListenerException_EJB_SF_Servlet extends EJBTestVehicle
         properties.put("EntityName", AnoListenerMSCEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PACKAGE");
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -445,7 +420,6 @@ public class TestCallbackListenerException_EJB_SF_Servlet extends EJBTestVehicle
         properties.put("EntityName", XMLListenerMSCEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PACKAGE");
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -459,7 +433,6 @@ public class TestCallbackListenerException_EJB_SF_Servlet extends EJBTestVehicle
         properties.put("EntityName", AnoListenerMSCEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PACKAGE");
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -473,7 +446,6 @@ public class TestCallbackListenerException_EJB_SF_Servlet extends EJBTestVehicle
         properties.put("EntityName", XMLListenerMSCEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PACKAGE");
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -488,7 +460,6 @@ public class TestCallbackListenerException_EJB_SF_Servlet extends EJBTestVehicle
         properties.put("EntityName", AnoListenerMSCEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PACKAGE");
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -503,7 +474,6 @@ public class TestCallbackListenerException_EJB_SF_Servlet extends EJBTestVehicle
         properties.put("EntityName", XMLListenerMSCEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PACKAGE");
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -520,7 +490,6 @@ public class TestCallbackListenerException_EJB_SF_Servlet extends EJBTestVehicle
         properties.put("EntityName", AnoListenerMSCEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PRIVATE");
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -535,7 +504,6 @@ public class TestCallbackListenerException_EJB_SF_Servlet extends EJBTestVehicle
         properties.put("EntityName", XMLListenerMSCEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PRIVATE");
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -549,7 +517,6 @@ public class TestCallbackListenerException_EJB_SF_Servlet extends EJBTestVehicle
         properties.put("EntityName", AnoListenerMSCEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PRIVATE");
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -563,7 +530,6 @@ public class TestCallbackListenerException_EJB_SF_Servlet extends EJBTestVehicle
         properties.put("EntityName", XMLListenerMSCEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PRIVATE");
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -578,7 +544,6 @@ public class TestCallbackListenerException_EJB_SF_Servlet extends EJBTestVehicle
         properties.put("EntityName", AnoListenerMSCEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PRIVATE");
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -593,7 +558,6 @@ public class TestCallbackListenerException_EJB_SF_Servlet extends EJBTestVehicle
         properties.put("EntityName", XMLListenerMSCEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PRIVATE");
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -610,7 +574,6 @@ public class TestCallbackListenerException_EJB_SF_Servlet extends EJBTestVehicle
         properties.put("EntityName", AnoListenerMSCEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PROTECTED");
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -625,7 +588,6 @@ public class TestCallbackListenerException_EJB_SF_Servlet extends EJBTestVehicle
         properties.put("EntityName", XMLListenerMSCEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PROTECTED");
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -639,7 +601,6 @@ public class TestCallbackListenerException_EJB_SF_Servlet extends EJBTestVehicle
         properties.put("EntityName", AnoListenerMSCEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PROTECTED");
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -653,7 +614,6 @@ public class TestCallbackListenerException_EJB_SF_Servlet extends EJBTestVehicle
         properties.put("EntityName", XMLListenerMSCEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PROTECTED");
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -668,7 +628,6 @@ public class TestCallbackListenerException_EJB_SF_Servlet extends EJBTestVehicle
         properties.put("EntityName", AnoListenerMSCEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PROTECTED");
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -683,7 +642,6 @@ public class TestCallbackListenerException_EJB_SF_Servlet extends EJBTestVehicle
         properties.put("EntityName", XMLListenerMSCEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PROTECTED");
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -700,7 +658,6 @@ public class TestCallbackListenerException_EJB_SF_Servlet extends EJBTestVehicle
         properties.put("EntityName", AnoListenerMSCEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PUBLIC");
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -715,7 +672,6 @@ public class TestCallbackListenerException_EJB_SF_Servlet extends EJBTestVehicle
         properties.put("EntityName", XMLListenerMSCEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PUBLIC");
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -729,7 +685,6 @@ public class TestCallbackListenerException_EJB_SF_Servlet extends EJBTestVehicle
         properties.put("EntityName", AnoListenerMSCEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PUBLIC");
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -743,7 +698,6 @@ public class TestCallbackListenerException_EJB_SF_Servlet extends EJBTestVehicle
         properties.put("EntityName", XMLListenerMSCEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PUBLIC");
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -758,7 +712,6 @@ public class TestCallbackListenerException_EJB_SF_Servlet extends EJBTestVehicle
         properties.put("EntityName", AnoListenerMSCEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PUBLIC");
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -773,7 +726,6 @@ public class TestCallbackListenerException_EJB_SF_Servlet extends EJBTestVehicle
         properties.put("EntityName", XMLListenerMSCEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PUBLIC");
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 

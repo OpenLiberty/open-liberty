@@ -38,8 +38,14 @@
     
     <logging traceSpecification="Transaction=all:com.ibm.ws.jdbc.*=all:RRA=all:logservice=all=enabled:*=info=enabled"/>
     
-    <javaPermission codebase="${server.config.dir}/derby/derby.jar" className="java.security.AllPermission"/>
     <javaPermission codebase="${server.config.dir}/apps/transaction.war" className="java.security.AllPermission"/>
+    
+	<javaPermission codebase="${shared.resource.dir}/sqlserver/anomyous.jar" className="java.security.AllPermission"/>
+	<javaPermission codebase="${shared.resource.dir}/sqlserver/ifxjdbc.jar" className="java.security.AllPermission"/>
+    <!-- SQLServer JDBC test requirement -->
+    <javaPermission className="java.util.PropertyPermission" name="java.specification.version" actions="read"/>
+    <javaPermission className="java.net.SocketPermission" name="*" actions="connect,resolve"/>
+    
     <javaPermission className="java.lang.RuntimePermission" name="*" actions="*"/>
     <javaPermission className="java.io.FilePermission" name="ALL FILES" actions="read,write,delete"/>
 

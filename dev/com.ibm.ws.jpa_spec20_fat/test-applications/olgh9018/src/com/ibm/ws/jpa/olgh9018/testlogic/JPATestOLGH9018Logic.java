@@ -65,7 +65,7 @@ public class JPATestOLGH9018Logic extends AbstractTestLogic {
             EntityManager em = jpaResource.getEm();
 
             Connection c = em.unwrap(Connection.class);
-            if (getJPAProviderImpl(jpaResource).equals(JPAProviderImpl.OPENJPA)) {
+            if (JPAProviderImpl.OPENJPA.equals(getJPAProviderImpl(jpaResource))) {
                 //OpenJPA will return a Connection even when outside of a transaction boundary
                 Assert.assertNotNull(c);
             } else {
@@ -119,7 +119,7 @@ public class JPATestOLGH9018Logic extends AbstractTestLogic {
 
             // Assert that it is no longer available when tx is done.
             c = em.unwrap(Connection.class);
-            if (getJPAProviderImpl(jpaResource).equals(JPAProviderImpl.OPENJPA)) {
+            if (JPAProviderImpl.OPENJPA.equals(getJPAProviderImpl(jpaResource))) {
                 //OpenJPA will return a Connection even when outside of a transaction boundary
                 Assert.assertNotNull(c);
             } else {
@@ -175,7 +175,7 @@ public class JPATestOLGH9018Logic extends AbstractTestLogic {
 
             // Assert that it is no longer available when tx is done.
             c = em.unwrap(Connection.class);
-            if (getJPAProviderImpl(jpaResource).equals(JPAProviderImpl.OPENJPA)) {
+            if (JPAProviderImpl.OPENJPA.equals(getJPAProviderImpl(jpaResource))) {
                 //OpenJPA will return a Connection even when outside of a transaction boundary
                 Assert.assertNotNull(c);
             } else {

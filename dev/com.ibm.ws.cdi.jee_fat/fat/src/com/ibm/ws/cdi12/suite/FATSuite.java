@@ -53,7 +53,8 @@ public class FATSuite {
     
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification()
-                    .andWith(FeatureReplacementAction.EE8_FEATURES());
+                    .andWith(FeatureReplacementAction.EE8_FEATURES())
+                    .andWith(FeatureReplacementAction.EE9_FEATURES());
     /**
      * @see {@link FatLogHandler#generateHelpFile()}
      */

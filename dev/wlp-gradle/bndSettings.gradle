@@ -157,8 +157,9 @@ projectNames.each { projectName ->
     }
 }
 
-// A non-standared project. Just include it all the time
-include ':com.ibm.ws.springboot.support.version20.test.war.app:module'
+if (allBndProjects.contains('com.ibm.ws.springboot.support.version20.test.war.app')) {
+    include ':com.ibm.ws.springboot.support.version20.test.war.app:module'
+}
 
 private boolean parseBoolean(String value) {
     return 'on'.equalsIgnoreCase(value) || 'true'.equalsIgnoreCase(value)

@@ -10,7 +10,7 @@
         <feature>jndi-1.0</feature> 
         <feature>localConnector-1.0</feature>
         <feature>ejbLite-3.2</feature>
-        <feature>usr:cdi.spi.constructor.fail.extension</feature>
+        <feature>usr:cdi.spi.constructor.fail.extension-1.0</feature>
     </featureManager>
 
 </server>

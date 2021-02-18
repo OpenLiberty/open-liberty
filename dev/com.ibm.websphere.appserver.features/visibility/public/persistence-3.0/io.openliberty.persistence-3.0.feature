@@ -222,7 +222,7 @@ IBM-API-Package: org.eclipse.persistence.descriptors.changetracking; type="inter
  org.eclipse.persistence.transaction; type="third-party", \
  org.eclipse.persistence; type="third-party"
 IBM-ShortName: persistence-3.0
-IBM-AlsoKnownAs: jpa-3.0
+WLP-AlsoKnownAs: jpa-3.0
 Subsystem-Name: Jakarta Persistence 3.0
 -features=com.ibm.websphere.appserver.eeCompatible-9.0, \
  com.ibm.websphere.appserver.transaction-2.0, \

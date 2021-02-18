@@ -76,10 +76,10 @@ dependencies {
     //
     implementation 'com.google.protobuf:protobuf-java-util:3.13.0'
     // @jar is needed since some of the dependencies of java-util were overwritten
-    providedCompile 'io.grpc:grpc-protobuf:1.31.1@jar'
-    compileOnly 'io.grpc:grpc-stub:1.31.1'
-    providedCompile 'io.grpc:grpc-services:1.31.1@jar'
-    providedCompile 'io.grpc:grpc-netty:1.31.1@jar'
+    providedCompile 'io.grpc:grpc-protobuf:1.35.0@jar'
+    compileOnly 'io.grpc:grpc-stub:1.35.0'
+    providedCompile 'io.grpc:grpc-services:1.35.0@jar'
+    providedCompile 'io.grpc:grpc-netty:1.35.0@jar'
     //dynamic caching map
     implementation 'com.ibm.websphere.appserver.api:com.ibm.websphere.appserver.api.distributedMap:2.0.37'
 	
@@ -107,10 +107,10 @@ dependencies {
       'commons-codec:commons-codec:1.6',
       'commons-logging:commons-logging:1.1.3',
       'xml-apis:xml-apis:1.4.01',
-      'io.grpc:grpc-core:1.31.1',
-      'io.grpc:grpc-stub:1.31.1',
-      'io.grpc:grpc-protobuf:1.31.1',
-      'io.grpc:grpc-netty:1.31.1',
+      'io.grpc:grpc-core:1.35.0',
+      'io.grpc:grpc-stub:1.35.0',
+      'io.grpc:grpc-protobuf:1.35.0',
+      'io.grpc:grpc-netty:1.35.0',
       'com.google.protobuf:protobuf-java:3.13.0',
       'com.google.protobuf:protobuf-java-util:3.13.0'
 }
@@ -119,7 +119,7 @@ protobuf {
 	
     protoc { artifact = "com.google.protobuf:protoc:3.13.0" }
     plugins {
-        grpc { artifact = "io.grpc:protoc-gen-grpc-java:1.31.1" }
+        grpc { artifact = "io.grpc:protoc-gen-grpc-java:1.35.0" }
     }
     generateProtoTasks {
         all()*.plugins { 

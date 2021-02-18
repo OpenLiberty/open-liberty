@@ -103,7 +103,6 @@ public class TestCallbackOrderOfInvocation_EJB_SFEX_Servlet extends EJBTestVehic
         properties.put("EntityName", AnoOOILeafPackageEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PACKAGE");
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -117,7 +116,6 @@ public class TestCallbackOrderOfInvocation_EJB_SFEX_Servlet extends EJBTestVehic
         properties.put("EntityName", XMLOOILeafPackageEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PACKAGE");
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -133,7 +131,6 @@ public class TestCallbackOrderOfInvocation_EJB_SFEX_Servlet extends EJBTestVehic
         properties.put("EntityName", AnoOOILeafPrivateEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PRIVATE");
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -147,7 +144,6 @@ public class TestCallbackOrderOfInvocation_EJB_SFEX_Servlet extends EJBTestVehic
         properties.put("EntityName", XMLOOILeafPrivateEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PRIVATE");
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -163,7 +159,6 @@ public class TestCallbackOrderOfInvocation_EJB_SFEX_Servlet extends EJBTestVehic
         properties.put("EntityName", AnoOOILeafProtectedEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PROTECTED");
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -177,7 +172,6 @@ public class TestCallbackOrderOfInvocation_EJB_SFEX_Servlet extends EJBTestVehic
         properties.put("EntityName", XMLOOILeafProtectedEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PROTECTED");
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -193,7 +187,6 @@ public class TestCallbackOrderOfInvocation_EJB_SFEX_Servlet extends EJBTestVehic
         properties.put("EntityName", AnoOOILeafPublicEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PUBLIC");
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -207,7 +200,6 @@ public class TestCallbackOrderOfInvocation_EJB_SFEX_Servlet extends EJBTestVehic
         properties.put("EntityName", XMLOOILeafPublicEntity.class.getSimpleName());
         properties.put("ListenerMethodProtectionType", "PT_PUBLIC");
 
-        executeDDL("JPA10_CALLBACK_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 

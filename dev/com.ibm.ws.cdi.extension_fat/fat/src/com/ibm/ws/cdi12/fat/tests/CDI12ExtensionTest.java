@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2018 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -46,9 +46,11 @@ public class CDI12ExtensionTest extends LoggingTest {
     // Create the server.
     public static SharedServer EXTENSION_SERVER = new SharedServer("cdi12RuntimeExtensionServer");
     public static String INSTALL_USERBUNDLE = "cdi.helloworld.extension";
-    public static String INSTALL_USERFEATURE = "cdi.helloworld.extension";
+    public static String INSTALL_USERFEATURE_JAVAX = "cdi.helloworld.extension-1.0";
+    public static String INSTALL_USERFEATURE_JAKARTA = "cdi.helloworld.extension-3.0";
 
-    public static String EXPOSE_INTERNAL_CDI_EXTENSION_API_FEATURE = "cdi12.internals-1.0";
+    public static String EXPOSE_INTERNAL_CDI_EXTENSION_API_FEATURE_JAVAX = "cdi.internals-1.0";
+    public static String EXPOSE_INTERNAL_CDI_EXTENSION_API_FEATURE_JAKARTA = "cdi.internals-3.0";
     private static LibertyServer server;
 
 
@@ -101,8 +103,10 @@ public class CDI12ExtensionTest extends LoggingTest {
         ShrinkHelper.exportDropinAppToServer(server, helloWorldExension);
         System.out.println("Intall the user feature bundle... cdi.helloworld.extension");
         server.installUserBundle(INSTALL_USERBUNDLE);
-        server.installUserFeature(INSTALL_USERFEATURE);
-        server.installSystemFeature(EXPOSE_INTERNAL_CDI_EXTENSION_API_FEATURE);
+        server.installUserFeature(INSTALL_USERFEATURE_JAVAX);
+        server.installUserFeature(INSTALL_USERFEATURE_JAKARTA);
+        server.installSystemFeature(EXPOSE_INTERNAL_CDI_EXTENSION_API_FEATURE_JAVAX);
+        server.installSystemFeature(EXPOSE_INTERNAL_CDI_EXTENSION_API_FEATURE_JAKARTA);
         server.startServer(true);
         server.waitForStringInLogUsingMark("CWWKZ0001I.*Application helloWorldExension started");
     }
@@ -123,9 +127,9 @@ public class CDI12ExtensionTest extends LoggingTest {
         Assert.assertFalse("Test for extension loadded",
                            server.findStringsInLogs("Hello World! scanning class").isEmpty());
         Assert.assertFalse("Test for extension loadded",
-                           server.findStringsInLogs("Hello World! scanning class javax.validation.ValidatorFactory").isEmpty());
+                           server.findStringsInLogs("Hello World! scanning class (javax|jakarta).validation.ValidatorFactory").isEmpty());
         Assert.assertFalse("Test for extension loadded",
-                           server.findStringsInLogs("Hello World! scanning class javax.validation.Validator").isEmpty());
+                           server.findStringsInLogs("Hello World! scanning class (javax|jakarta).validation.Validator").isEmpty());
         Assert.assertFalse("Test for extension loadded",
                            server.findStringsInLogs("Hello World! We are almost finished with the CDI container boot now...").isEmpty());
     }
@@ -151,8 +155,10 @@ public class CDI12ExtensionTest extends LoggingTest {
             server.stopServer();
         }
         Log.info(CDI12ExtensionTest.class, METHOD_NAME, "Removing cdi extension test user feature files.");
-        server.uninstallSystemFeature(EXPOSE_INTERNAL_CDI_EXTENSION_API_FEATURE);
+        server.uninstallSystemFeature(EXPOSE_INTERNAL_CDI_EXTENSION_API_FEATURE_JAVAX);
+        server.uninstallSystemFeature(EXPOSE_INTERNAL_CDI_EXTENSION_API_FEATURE_JAKARTA);
         server.uninstallUserBundle(INSTALL_USERBUNDLE);
-        server.uninstallUserFeature(INSTALL_USERFEATURE);
+        server.uninstallUserFeature(INSTALL_USERFEATURE_JAVAX);
+        server.uninstallUserFeature(INSTALL_USERFEATURE_JAKARTA);
     }
 }

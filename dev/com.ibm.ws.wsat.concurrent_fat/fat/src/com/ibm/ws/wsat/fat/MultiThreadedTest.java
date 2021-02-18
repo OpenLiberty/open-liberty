@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -71,7 +71,7 @@ public class MultiThreadedTest extends WSATTest {
   }
 	
 	@Test
-	@AllowedFFDC(value = {"javax.transaction.RollbackException", "javax.transaction.SystemException", "javax.transaction.xa.XAException", "com.ibm.ws.wsat.service.WSATException", "java.lang.IllegalStateException", "com.ibm.ws.wsat.service.WSATFaultException"})
+	@AllowedFFDC(value = {"javax.transaction.InvalidTransactionException", "javax.transaction.RollbackException", "javax.transaction.SystemException", "javax.transaction.xa.XAException", "com.ibm.ws.wsat.service.WSATException", "java.lang.IllegalStateException", "com.ibm.ws.wsat.service.WSATFaultException"})
 	public void testWSATMT001FVT() {
 		int count = 100;
 		String result;

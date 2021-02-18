@@ -36,6 +36,7 @@ import com.ibm.ws.testtooling.vehicle.resources.TestExecutionResources;
 /**
  *
  */
+@SuppressWarnings({ "unchecked", "rawtypes" })
 public class JUConstraintTest extends AbstractTestLogic {
     public void testSelectAllParts(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
                                    Object managedComponentObject) {
@@ -60,11 +61,6 @@ public class JUConstraintTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
-
-        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
-        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
-
-        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -207,11 +203,6 @@ public class JUConstraintTest extends AbstractTestLogic {
             }
         }
 
-        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
-        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
-
-        final String lDbProductName = dbProductName.toLowerCase();
-
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -332,11 +323,6 @@ public class JUConstraintTest extends AbstractTestLogic {
             }
         }
 
-        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
-        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
-
-        final String lDbProductName = dbProductName.toLowerCase();
-
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -347,13 +333,11 @@ public class JUConstraintTest extends AbstractTestLogic {
             System.err.println("EJBQL:" + q);
             Query query = em.createQuery(q);
             List<PartComposite> l = query.getResultList();
-            boolean continu = true;
             for (PartComposite p : l) {
                 String cycleMsg = null;
                 if (checkCycle(p)) {
                     System.err.println("Error; cycle involving part:" + p.getPartno());
                     cycleMsg = "Error; cycle involving part:" + p.getPartno();
-                    continu = false;
                 } else {
                     System.err.println("No cycle in part:" + p.getPartno());
                     cycleMsg = "No cycle in part:" + p.getPartno();
@@ -399,11 +383,6 @@ public class JUConstraintTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
-
-        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
-        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
-
-        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {

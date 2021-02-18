@@ -1,5 +1,5 @@
 /**
- * Copyright 2015 Netflix, Inc.
+ * Copyright 2015, 2021 Netflix, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,8 +51,6 @@ public class DefaultConverters {
 
     static {
         defaultConverters.addConverter(new IdentityConverter()); // v -> v
-
-        defaultConverters.addConverter(new OptionalConverter());
 
         defaultConverters.addConverter(new BooleanConverter());
         defaultConverters.addConverter(new AutomaticConverter(Integer.class));

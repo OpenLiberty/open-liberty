@@ -25,6 +25,7 @@ import com.ibm.ws.security.saml20.fat.commonTest.utils.RSCommonUtils;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServerWrapper;
@@ -213,13 +214,14 @@ public class RSSamlAPITests extends SAMLCommonTest {
      * Set the client property "com.ibm.ws.jaxrs.client.saml.sendToken" to "true" and then
      * Invoke another test app on the RS server via the client that we just added this property to
      * 1) if this test is run in the IDP Initiated flow, the runtime will pass no saml assertion to the RS
-     * server and we will NOT beable to access the next test app
+     * server and we will NOT be able to access the next test app
      * 2) if this test is run in the Solicted SP Initated flow, the runtime will pass the current saml
      * assertion and will be able to access the next test app
      *
      * @throws Exception
      */
     @Mode(TestMode.LITE)
+    @SkipForRepeat(SkipForRepeat.EE9_FEATURES) // TODO - figure out if we can re-enable
     @AllowedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.ws.message.decoder.MessageDecodingException", "org.opensaml.xml.parse.XMLParserException" })
     @Test
     public void RSSamlAPITests_useJaxRSCLientServlet_runtimePropagateToken_setStringTrue() throws Exception {
@@ -256,6 +258,7 @@ public class RSSamlAPITests extends SAMLCommonTest {
      * @throws Exception
      */
     @Mode(TestMode.LITE)
+    @SkipForRepeat(SkipForRepeat.EE9_FEATURES) // TODO - figure out if we can re-enable
     @AllowedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.ws.message.decoder.MessageDecodingException", "org.opensaml.xml.parse.XMLParserException" })
     @Test
     public void RSSamlAPITests_useJaxRSCLientServlet_runtimePropagateToken_setBooleanTrue() throws Exception {

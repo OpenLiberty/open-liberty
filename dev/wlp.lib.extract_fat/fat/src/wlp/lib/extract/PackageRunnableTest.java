@@ -176,7 +176,7 @@ public class PackageRunnableTest {
 
         String stdout = server.executeServerScript("package",
                                                    new String[] { "--archive=" + runnableJar.getAbsolutePath(),
-                                                                  "--include=minify,runnable" }).getStdout();
+                                                                  "--include=runnable" }).getStdout();
 
         String searchString = "Server " + serverName + " package complete";
         if (!stdout.contains(searchString)) {

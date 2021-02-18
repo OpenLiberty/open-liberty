@@ -17,8 +17,18 @@
     <version>2.0</version>
     <name>MicroProfile RestClient 2.0 TCK Runner TCK Module</name>
 
+    <repositories>
+    	<repository>
+    		<id>ibmdhe</id>
+    		<name>IBM_DHE File Server</name>
+    		<url>http://public.dhe.ibm.com/ibmdl/export/pub/software/olrepo</url>
+    		<releases><enabled>true</enabled><updatePolicy>always</updatePolicy></releases>
+            <snapshots><enabled>true</enabled><updatePolicy>always</updatePolicy></snapshots>
+    	</repository>
+    </repositories>
+
     <properties>
-        <microprofile.rest.client.version>2.0</microprofile.rest.client.version>
+        <microprofile.rest.client.version>2.0.1-20210208</microprofile.rest.client.version>
         <arquillian.version>1.1.13.Final</arquillian.version>
 
         <!-- the below is used in arquillian.xml -->
@@ -132,6 +142,14 @@
             <version>1.0</version>
             <scope>system</scope>
             <systemPath>${com.ibm.ws.jaxrs.2.0.cdi_}</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>com.ibm.ws</groupId>
+            <artifactId>jaxrs21.common</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${com.ibm.ws.jaxrs.2.1.common_}</systemPath>
         </dependency>
 
         <dependency>

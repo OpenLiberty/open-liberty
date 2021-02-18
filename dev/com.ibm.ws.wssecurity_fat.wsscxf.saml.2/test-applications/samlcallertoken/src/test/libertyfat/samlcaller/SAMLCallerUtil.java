@@ -9,7 +9,10 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package test.libertyfat.caller;
+package test.libertyfat.samlcaller;
+//2/01/2021 renamed the package; it's not matched to the actual folder name 'samlcaller'
+//orig from CL:
+//package test.libertyfat.caller;
 
 import java.util.Hashtable;
 import java.util.Iterator;

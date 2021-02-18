@@ -35,6 +35,8 @@ public class WARDeployedAppInfoFactoryImpl extends AbstractDeployedAppInfoFactor
 
     private static final TraceComponent tc = Tr.register(WARDeployedAppInfoFactoryImpl.class);
 
+    private static final String DEFAULT_APP_LOCATION = "${server.config.dir}/apps/expanded/";
+
     @Reference
     protected DeployedAppServices deployedAppServices;
     @Reference(target = "(type=web)")
@@ -43,10 +45,25 @@ public class WARDeployedAppInfoFactoryImpl extends AbstractDeployedAppInfoFactor
     protected ApplicationManager applicationManager;
 
     // WAR expansion ...
-
-    protected void prepareExpansion() throws IOException {
-        WsResource expansionResource = expansionResource = deployedAppServices.getLocationAdmin().resolveResource(applicationManager.getExpandLocation());
-        expansionResource.create();
+    protected void prepareExpansion(String warName) throws IOException {
+        WsResource expansionResource;
+        try {
+            expansionResource = deployedAppServices.getLocationAdmin().resolveResource(applicationManager.getExpandLocation());
+            if (expansionResource != null && expansionResource.isType(WsResource.Type.DIRECTORY)) {
+                expansionResource.create();
+            } else {
+                // if we cant resolve the expandLocation value default it and warn the user
+                Tr.warning(tc, "warning.could.not.expand.app.loc", warName, applicationManager.getExpandLocation());
+                expansionResource = null;
+                expansionResource = deployedAppServices.getLocationAdmin().resolveResource(DEFAULT_APP_LOCATION);
+                expansionResource.create();
+            }
+        } catch (Exception ex) {
+            Tr.warning(tc, "warning.could.not.expand.app.loc", warName, applicationManager.getExpandLocation());
+            expansionResource = null;
+            expansionResource = deployedAppServices.getLocationAdmin().resolveResource(DEFAULT_APP_LOCATION);
+            expansionResource.create();
+        }
     }
 
     protected WsResource resolveExpansion(String appName) {
@@ -95,7 +112,7 @@ public class WARDeployedAppInfoFactoryImpl extends AbstractDeployedAppInfoFactor
         } else if (applicationManager.getExpandApps()) {
 
             try {
-                prepareExpansion();
+                prepareExpansion(warName);
 
                 WsResource expandedResource = resolveExpansion(warName);
                 File expandedFile = expandedResource.asFile();

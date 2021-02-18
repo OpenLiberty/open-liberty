@@ -23,6 +23,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Iterator;
+import java.util.Objects;
 
 /**
  * @since EL 3.0
@@ -31,10 +32,7 @@ public class StaticFieldELResolver extends ELResolver {
 
     @Override
     public Object getValue(ELContext context, Object base, Object property) {
-
-        if (context == null) {
-            throw new NullPointerException();
-        }
+        Objects.requireNonNull(context);
 
         if (base instanceof ELClass && property instanceof String) {
             context.setPropertyResolved(base, property);
@@ -45,8 +43,10 @@ public class StaticFieldELResolver extends ELResolver {
             try {
                 Field field = clazz.getField(name);
                 int modifiers = field.getModifiers();
+                JreCompat jreCompat = JreCompat.getInstance();
                 if (Modifier.isStatic(modifiers) &&
-                        Modifier.isPublic(modifiers)) {
+                        Modifier.isPublic(modifiers) &&
+                        jreCompat.canAccess(null, field)) {
                     return field.get(null);
                 }
             } catch (IllegalArgumentException | IllegalAccessException
@@ -68,10 +68,7 @@ public class StaticFieldELResolver extends ELResolver {
     @Override
     public void setValue(ELContext context, Object base, Object property,
             Object value) {
-
-        if (context == null) {
-            throw new NullPointerException();
-        }
+        Objects.requireNonNull(context);
 
         if (base instanceof ELClass && property instanceof String) {
             Class<?> clazz = ((ELClass) base).getKlass();
@@ -87,10 +84,7 @@ public class StaticFieldELResolver extends ELResolver {
     @Override
     public Object invoke(ELContext context, Object base, Object method,
             Class<?>[] paramTypes, Object[] params) {
-
-        if (context == null) {
-            throw new NullPointerException();
-        }
+        Objects.requireNonNull(context);
 
         if (base instanceof ELClass && method instanceof String) {
             context.setPropertyResolved(base, method);
@@ -116,15 +110,19 @@ public class StaticFieldELResolver extends ELResolver {
                     Throwable cause = e.getCause();
                     Util.handleThrowable(cause);
                     throw new ELException(cause);
+                } catch (ReflectiveOperationException e) {
+                    throw new ELException(e);
                 }
                 return result;
 
             } else {
-                Method match =
-                        Util.findMethod(clazz, methodName, paramTypes, params);
+                // Static method so base should be null
+                Method match = Util.findMethod(clazz, null, methodName, paramTypes, params);
 
-                int modifiers = match.getModifiers();
-                if (!Modifier.isStatic(modifiers)) {
+                // Note: On Java 9 and above, the isStatic check becomes
+                // unnecessary because the canAccess() call in Util.findMethod()
+                // effectively performs the same check
+                if (match == null || !Modifier.isStatic(match.getModifiers())) {
                     throw new MethodNotFoundException(Util.message(context,
                             "staticFieldELResolver.methodNotFound", methodName,
                             clazz.getName()));
@@ -151,9 +149,7 @@ public class StaticFieldELResolver extends ELResolver {
 
     @Override
     public Class<?> getType(ELContext context, Object base, Object property) {
-        if (context == null) {
-            throw new NullPointerException();
-        }
+        Objects.requireNonNull(context);
 
         if (base instanceof ELClass && property instanceof String) {
             context.setPropertyResolved(base, property);
@@ -164,8 +160,10 @@ public class StaticFieldELResolver extends ELResolver {
             try {
                 Field field = clazz.getField(name);
                 int modifiers = field.getModifiers();
+                JreCompat jreCompat = JreCompat.getInstance();
                 if (Modifier.isStatic(modifiers) &&
-                        Modifier.isPublic(modifiers)) {
+                        Modifier.isPublic(modifiers) &&
+                        jreCompat.canAccess(null, field)) {
                     return field.getType();
                 }
             } catch (IllegalArgumentException | NoSuchFieldException |
@@ -186,9 +184,7 @@ public class StaticFieldELResolver extends ELResolver {
 
     @Override
     public boolean isReadOnly(ELContext context, Object base, Object property) {
-        if (context == null) {
-            throw new NullPointerException();
-        }
+        Objects.requireNonNull(context);
 
         if (base instanceof ELClass && property instanceof String) {
             context.setPropertyResolved(base, property);

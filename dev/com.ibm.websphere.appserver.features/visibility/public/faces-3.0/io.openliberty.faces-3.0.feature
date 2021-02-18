@@ -54,7 +54,7 @@ Subsystem-Name: Jakarta Server Faces 3.0
  com.ibm.ws.org.apache.commons.digester.1.8, \
  io.openliberty.jakarta.websocket.2.0; apiJar=false; location:="dev/api/spec/,lib/"; mavenCoordinates="jakarta.websocket:jakarta.websocket-api:2.0.0", \
  io.openliberty.jakarta.jstl.2.0; location:="dev/api/spec/,lib/"; mavenCoordinates="jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:2.0.0", \
- io.openliberty.thirdparty.faces-3.0; location:="dev/api/third-party/"
+ io.openliberty.faces.3.0.thirdparty; location:="dev/api/third-party/"
 kind=beta
 edition=core
 WLP-Activation-Type: parallel

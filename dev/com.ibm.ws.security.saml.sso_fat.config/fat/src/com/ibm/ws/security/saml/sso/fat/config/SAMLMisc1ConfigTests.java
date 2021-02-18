@@ -959,6 +959,7 @@ public class SAMLMisc1ConfigTests extends SAMLConfigCommonTests {
      * value (non existant url) Test shows that we get a decent
      */
     @ExpectedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.ws.security.SecurityPolicyException" })
+    @AllowedFFDC(value = { "com.ibm.ws.jsp.webcontainerext.JSPErrorReport" })
     // @Mode(TestMode.LITE)
     @Test
     public void test_config_errorPageURL_invalid() throws Exception {

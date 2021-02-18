@@ -20,6 +20,7 @@ import javax.persistence.StoredProcedureQuery;
 
 import org.junit.Assert;
 
+import com.ibm.ws.testtooling.database.DatabaseVendor;
 import com.ibm.ws.testtooling.testinfo.TestExecutionContext;
 import com.ibm.ws.testtooling.testlogic.AbstractTestLogic;
 import com.ibm.ws.testtooling.vehicle.resources.JPAResource;
@@ -52,8 +53,12 @@ public class JPATestOLGH10240Logic extends AbstractTestLogic {
         }
 
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+
+        final boolean isOracle = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.ORACLE);
+        final boolean isDB2LUW = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2LUW);
+
         // TODO: Add support for more database platforms
-        if (!isOracle(dbProductName) || !isDB2ForLUW(dbProductName)) {
+        if (!isOracle || !isDB2LUW) {
             System.out.println("This test does not support database platform " + dbProductName);
             return;
         }
@@ -110,8 +115,12 @@ public class JPATestOLGH10240Logic extends AbstractTestLogic {
         }
 
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+
+        final boolean isOracle = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.ORACLE);
+        final boolean isDB2LUW = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2LUW);
+
         // TODO: Add support for more database platforms
-        if (!isOracle(dbProductName) || !isDB2ForLUW(dbProductName)) {
+        if (!isOracle || !isDB2LUW) {
             System.out.println("This test does not support database platform " + dbProductName);
             return;
         }

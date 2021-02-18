@@ -37,6 +37,7 @@ import com.ibm.ws.fat.util.browser.WebBrowserFactory;
 import com.ibm.ws.fat.util.browser.WebResponse;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
@@ -46,7 +47,26 @@ import componenttest.rules.repeater.RepeatTests;
 import componenttest.rules.repeater.EERepeatTests;
 import componenttest.topology.utils.FATServletClient;
 
+/*
+
+The following error occurs on EE9 because the hibernate jars we are using in this test are built on javax
+At the time of writing there are no available hibernate release that is built on jakarta.
+
+Caused by: java.lang.NoClassDefFoundError: javax.persistence.spi.PersistenceProvider
+	<java classes>
+	at com.ibm.ws.jpa.management.JPAPUnitInfo.createEMFactory(JPAPUnitInfo.java:914)
+	at com.ibm.ws.jpa.management.JPAPUnitInfo.initialize(JPAPUnitInfo.java:766)
+	at com.ibm.ws.jpa.management.JPAPxmlInfo.extractPersistenceUnits(JPAPxmlInfo.java:182)
+	at com.ibm.ws.jpa.management.JPAScopeInfo.processPersistenceUnit(JPAScopeInfo.java:88)
+	at com.ibm.ws.jpa.management.JPAApplInfo.addPersistenceUnits(JPAApplInfo.java:119)
+	at com.ibm.ws.jpa.container.osgi.internal.JPAComponentImpl.processWebModulePersistenceXml(JPAComponentImpl.java:518)
+	at com.ibm.ws.jpa.container.osgi.internal.JPAComponentImpl.applicationStarting(JPAComponentImpl.java:305)
+	at com.ibm.ws.container.service.state.internal.ApplicationStateManager.fireStarting(ApplicationStateManager.java:51)
+
+*/
+
 @RunWith(FATRunner.class)
+@SkipForRepeat(SkipForRepeat.EE9_FEATURES)
 public class HibernateSearchTest extends FATServletClient {
 
     public static final String HIBERNATE_SEARCH_APP_NAME = "hibernateSearchTest";
@@ -57,9 +77,6 @@ public class HibernateSearchTest extends FATServletClient {
                     @TestServlet(servlet = cdi.hibernate.test.web.SimpleTestServlet.class, contextRoot = HIBERNATE_SEARCH_APP_NAME) 
     })
     public static LibertyServer server;
-
-    @ClassRule
-    public static RepeatTests r = EERepeatTests.with(SERVER_NAME, EE8);
 
     @BeforeClass
     public static void setUp() throws Exception {

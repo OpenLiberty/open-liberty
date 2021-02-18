@@ -1,5 +1,0 @@
-set USER=%1
-set SERVICE_NAME=%2
-set HOSTNAME=%3
-
-setspn -A %SERVICE_NAME%/%HOSTNAME% %USER%

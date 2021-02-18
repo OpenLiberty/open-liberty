@@ -31,7 +31,8 @@ public class CDI12ExtensionSPIConstructorExceptionTest extends LoggingTest {
 
     public static SharedServer EXTENSION_SERVER = new SharedServer("cdi12SPIConstructorExceptionExtensionServer");
     public static String INSTALL_USERBUNDLE = "cdi.spi.constructor.fail.extension";
-    public static String INSTALL_USERFEATURE = "cdi.spi.constructor.fail.extension";
+    public static String INSTALL_USERFEATURE_JAVAX = "cdi.spi.constructor.fail.extension-1.0";
+    public static String INSTALL_USERFEATURE_JAKARTA = "cdi.spi.constructor.fail.extension-3.0";
     private static LibertyServer server;
 
     @Override
@@ -48,7 +49,8 @@ public class CDI12ExtensionSPIConstructorExceptionTest extends LoggingTest {
         server = EXTENSION_SERVER.getLibertyServer();
         System.out.println("Intall the user feature bundle... cdi.spi.extension");
         server.installUserBundle(INSTALL_USERBUNDLE);
-        server.installUserFeature(INSTALL_USERFEATURE);
+        server.installUserFeature(INSTALL_USERFEATURE_JAVAX);
+        server.installUserFeature(INSTALL_USERFEATURE_JAKARTA);
         ShrinkHelper.exportDropinAppToServer(server, extensionConstructorExceptionApp);
         server.startServer(true);
         server.waitForStringInLogUsingMark("CWWKZ0001I.*Application ExtensionConstructorExceptionApp started");
@@ -71,6 +73,7 @@ public class CDI12ExtensionSPIConstructorExceptionTest extends LoggingTest {
         }
         Log.info(CDI12ExtensionTest.class, METHOD_NAME, "Removing cdi extension test user feature files.");
         server.uninstallUserBundle(INSTALL_USERBUNDLE);
-        server.uninstallUserFeature(INSTALL_USERFEATURE);
+        server.uninstallUserFeature(INSTALL_USERFEATURE_JAVAX);
+        server.uninstallUserFeature(INSTALL_USERFEATURE_JAKARTA);
     }
 }

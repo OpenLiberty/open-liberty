@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2018 IBM Corporation and others.
+ * Copyright (c) 2016, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -63,5 +63,19 @@ public class ConfigPropertyTestServlet extends AbstractBeanServlet {
     @Test
     public void testOptionalThatDoesNotExist() throws Exception {
         test("elseFromOptionalThatExists", "passed: should not exist");
+    }
+
+    /**
+     * Test that escape characters in config values do not impact the config value.
+     *
+     * Also test that special characters such as \t, \b, and \n do not impact the value.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testEscapeCharacterInConfigValue() throws Exception {
+
+        test("windowsPath", "C:\\test\\bad\\nasty\\Path");
+
     }
 }

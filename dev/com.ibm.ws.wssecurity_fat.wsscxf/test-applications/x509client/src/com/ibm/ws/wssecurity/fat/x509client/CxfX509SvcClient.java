@@ -34,12 +34,8 @@ import javax.xml.ws.Dispatch;
 import javax.xml.ws.Service.Mode;
 import javax.xml.ws.soap.SOAPBinding;
 
-//Mei:
-import org.apache.wss4j.common.crypto.Crypto;
-import org.apache.wss4j.common.crypto.CryptoFactory;
-//Aruna's change can't be saved:
-//import org.apache.wss4j.common.util.Loader;
-//import org.apache.wss4j.common.crypto.*;
+import org.apache.ws.security.components.crypto.Crypto;
+import org.apache.ws.security.components.crypto.CryptoFactory;
 
 import test.wssecfvt.basicplcy.FVTVersionBAXService;
 
@@ -269,7 +265,7 @@ public class CxfX509SvcClient extends HttpServlet {
          *
          *
          * String signKS = strServerDir.concat("/x509ClientDefault.jks");
-         * InputStream input = Merlin.loadInputStream(loader, signKS);
+         * InputStream input = Merlin.loadInputStream(loader, signKS);s
          * keyStore.load(input, "LibertyX509Client".toCharArray());
          * ((Merlin)crypto).setKeyStore(keyStore);
          *

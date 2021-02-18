@@ -98,7 +98,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", AnoConcreteTreeLeaf1Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -111,7 +110,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", AnoConcreteTreeLeaf2Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -124,7 +122,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", AnoConcreteTreeLeaf3Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -137,7 +134,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLConcreteTreeLeaf1Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -150,7 +146,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLConcreteTreeLeaf2Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -163,7 +158,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLConcreteTreeLeaf3Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -178,7 +172,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", AnoJTCDTreeLeaf1Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -191,7 +184,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", AnoJTCDTreeLeaf2Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -204,7 +196,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", AnoJTCDTreeLeaf3Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -217,7 +208,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLJTCDTreeLeaf1Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -230,7 +220,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLJTCDTreeLeaf2Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -243,7 +232,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLJTCDTreeLeaf3Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -258,7 +246,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", AnoJTIDTreeLeaf1Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -271,7 +258,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", AnoJTIDTreeLeaf2Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -284,7 +270,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", AnoJTIDTreeLeaf3Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -297,7 +282,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLJTIDTreeLeaf1Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -310,7 +294,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLJTIDTreeLeaf2Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -323,7 +306,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLJTIDTreeLeaf3Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -338,7 +320,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", AnoJTSDTreeLeaf1Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -351,7 +332,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", AnoJTSDTreeLeaf2Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -364,7 +344,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", AnoJTSDTreeLeaf3Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -377,7 +356,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLJTSDTreeLeaf1Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -390,7 +368,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLJTSDTreeLeaf2Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -403,7 +380,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLJTSDTreeLeaf3Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -418,7 +394,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", AnoSTCDTreeLeaf1Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -431,7 +406,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", AnoSTCDTreeLeaf2Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -444,7 +418,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", AnoSTCDTreeLeaf3Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -457,7 +430,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLSTCDTreeLeaf1Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -470,7 +442,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLSTCDTreeLeaf2Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -483,7 +454,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLSTCDTreeLeaf3Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -498,7 +468,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", AnoSTIDTreeLeaf1Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -511,7 +480,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", AnoSTIDTreeLeaf2Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -524,7 +492,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", AnoSTIDTreeLeaf3Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -537,7 +504,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLSTIDTreeLeaf1Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -550,7 +516,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLSTIDTreeLeaf2Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -563,7 +528,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLSTIDTreeLeaf3Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -578,7 +542,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", AnoSTSDTreeLeaf1Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -591,7 +554,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", AnoSTSDTreeLeaf1Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -604,7 +566,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", AnoSTSDTreeLeaf1Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -617,7 +578,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLSTSDTreeLeaf1Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -630,7 +590,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLSTSDTreeLeaf1Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -643,7 +602,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLSTSDTreeLeaf1Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -658,7 +616,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", AnoAnoMSCEntity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -671,7 +628,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLAnoMSCEntity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -684,7 +640,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", AnoXMLMSCEntity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -697,7 +652,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLXMLMSCEntity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -716,7 +670,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", AnoConcreteTreeLeaf1Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -729,7 +682,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", AnoConcreteTreeLeaf2Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -742,7 +694,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", AnoConcreteTreeLeaf3Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -755,7 +706,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLConcreteTreeLeaf1Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -768,7 +718,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLConcreteTreeLeaf2Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -781,7 +730,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLConcreteTreeLeaf3Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -796,7 +744,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", AnoJTCDTreeLeaf1Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -809,7 +756,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", AnoJTCDTreeLeaf2Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -822,7 +768,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", AnoJTCDTreeLeaf3Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -835,7 +780,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLJTCDTreeLeaf1Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -848,7 +792,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLJTCDTreeLeaf2Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -861,7 +804,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLJTCDTreeLeaf3Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -876,7 +818,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", AnoJTIDTreeLeaf1Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -889,7 +830,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", AnoJTIDTreeLeaf2Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -902,7 +842,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", AnoJTIDTreeLeaf3Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -915,7 +854,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLJTIDTreeLeaf1Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -928,7 +866,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLJTIDTreeLeaf2Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -941,7 +878,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLJTIDTreeLeaf3Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -956,7 +892,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", AnoJTSDTreeLeaf1Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -969,7 +904,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", AnoJTSDTreeLeaf2Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -982,7 +916,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", AnoJTSDTreeLeaf3Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -995,7 +928,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLJTSDTreeLeaf1Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -1008,7 +940,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLJTSDTreeLeaf2Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -1021,7 +952,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLJTSDTreeLeaf3Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -1036,7 +966,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", AnoSTCDTreeLeaf1Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -1049,7 +978,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", AnoSTCDTreeLeaf2Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -1062,7 +990,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", AnoSTCDTreeLeaf3Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -1075,7 +1002,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLSTCDTreeLeaf1Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -1088,7 +1014,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLSTCDTreeLeaf2Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -1101,7 +1026,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLSTCDTreeLeaf3Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -1116,7 +1040,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", AnoSTIDTreeLeaf1Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -1129,7 +1052,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", AnoSTIDTreeLeaf2Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -1142,7 +1064,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", AnoSTIDTreeLeaf3Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -1155,7 +1076,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLSTIDTreeLeaf1Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -1168,7 +1088,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLSTIDTreeLeaf2Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -1181,7 +1100,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLSTIDTreeLeaf3Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -1196,7 +1114,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", AnoSTSDTreeLeaf1Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -1209,7 +1126,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", AnoSTSDTreeLeaf1Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -1222,7 +1138,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", AnoSTSDTreeLeaf1Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -1235,7 +1150,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLSTSDTreeLeaf1Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -1248,7 +1162,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLSTSDTreeLeaf1Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -1261,7 +1174,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLSTSDTreeLeaf1Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -1276,7 +1188,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", AnoAnoMSCEntity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -1289,7 +1200,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLAnoMSCEntity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -1302,7 +1212,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", AnoXMLMSCEntity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -1315,7 +1224,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLXMLMSCEntity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -1334,7 +1242,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", AnoConcreteTreeLeaf1Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -1347,7 +1254,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", AnoConcreteTreeLeaf2Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -1360,7 +1266,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", AnoConcreteTreeLeaf3Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -1373,7 +1278,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLConcreteTreeLeaf1Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -1386,7 +1290,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLConcreteTreeLeaf2Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -1399,7 +1302,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLConcreteTreeLeaf3Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -1414,7 +1316,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", AnoJTCDTreeLeaf1Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -1427,7 +1328,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", AnoJTCDTreeLeaf2Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -1440,7 +1340,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", AnoJTCDTreeLeaf3Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -1453,7 +1352,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLJTCDTreeLeaf1Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -1466,7 +1364,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLJTCDTreeLeaf2Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -1479,7 +1376,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLJTCDTreeLeaf3Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -1494,7 +1390,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", AnoJTIDTreeLeaf1Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -1507,7 +1402,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", AnoJTIDTreeLeaf2Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -1520,7 +1414,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", AnoJTIDTreeLeaf3Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -1533,7 +1426,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLJTIDTreeLeaf1Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -1546,7 +1438,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLJTIDTreeLeaf2Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -1559,7 +1450,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLJTIDTreeLeaf3Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -1574,7 +1464,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", AnoJTSDTreeLeaf1Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -1587,7 +1476,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", AnoJTSDTreeLeaf2Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -1600,7 +1488,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", AnoJTSDTreeLeaf3Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -1613,7 +1500,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLJTSDTreeLeaf1Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -1626,7 +1512,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLJTSDTreeLeaf2Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -1639,7 +1524,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLJTSDTreeLeaf3Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -1654,7 +1538,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", AnoSTCDTreeLeaf1Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -1667,7 +1550,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", AnoSTCDTreeLeaf2Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -1680,7 +1562,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", AnoSTCDTreeLeaf3Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -1693,7 +1574,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLSTCDTreeLeaf1Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -1706,7 +1586,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLSTCDTreeLeaf2Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -1719,7 +1598,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLSTCDTreeLeaf3Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -1734,7 +1612,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", AnoSTIDTreeLeaf1Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -1747,7 +1624,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", AnoSTIDTreeLeaf2Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -1760,7 +1636,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", AnoSTIDTreeLeaf3Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -1773,7 +1648,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLSTIDTreeLeaf1Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -1786,7 +1660,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLSTIDTreeLeaf2Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -1799,7 +1672,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLSTIDTreeLeaf3Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -1814,7 +1686,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", AnoSTSDTreeLeaf1Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -1827,7 +1698,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", AnoSTSDTreeLeaf1Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -1840,7 +1710,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", AnoSTSDTreeLeaf1Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -1853,7 +1722,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLSTSDTreeLeaf1Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -1866,7 +1734,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLSTSDTreeLeaf1Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -1879,7 +1746,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLSTSDTreeLeaf1Entity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -1894,7 +1760,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", AnoAnoMSCEntity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -1907,7 +1772,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLAnoMSCEntity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -1920,7 +1784,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", AnoXMLMSCEntity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 
@@ -1933,7 +1796,6 @@ public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
         HashMap<String, java.io.Serializable> properties = new HashMap<String, java.io.Serializable>();
         properties.put("EntityName", XMLXMLMSCEntity.class.getSimpleName());
 
-        executeDDL("JPA10_INHERITANCE_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
     }
 }

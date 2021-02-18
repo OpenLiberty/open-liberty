@@ -26,6 +26,7 @@ import com.ibm.ws.security.saml20.fat.commonTest.utils.RSCommonUtils;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServerWrapper;
@@ -416,6 +417,7 @@ public class RSSamlBasicTests extends SAMLCommonTest {
      * @throws Exception
      */
     //	@Mode(TestMode.LITE)
+    @SkipForRepeat(SkipForRepeat.EE9_FEATURES)
     @Test
     public void RSSamlBasicTests_unprotectedApp() throws Exception {
 

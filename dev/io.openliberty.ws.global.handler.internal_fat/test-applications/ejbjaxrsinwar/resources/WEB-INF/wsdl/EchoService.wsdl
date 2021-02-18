@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<definitions xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" 
+    xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" 
+    xmlns:s="http://www.w3.org/2001/XMLSchema" 
+    xmlns:s0="http://nointerfaceview.ejbjaxrsinwar.fat.jaxrs.ws.ibm.com/provider"
+    xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" 
+    xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" 
+    xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" 
+    targetNamespace="http://nointerfaceview.ejbjaxrsinwar.fat.jaxrs.ws.ibm.com/provider" 
+    xmlns="http://schemas.xmlsoap.org/wsdl/">
+  <types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://nointerfaceview.ejbjaxrsinwar.fat.jaxrs.ws.ibm.com/provider">
+      <s:element name="echoString">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="inarg" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="echoStringResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="echoStringResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+    </s:schema>
+  </types>
+
+  <message name="emptyMessage"/>
+  <message name="echoStringSoapIn">
+    <part name="parameters" element="s0:echoString" />
+  </message>
+  <message name="echoStringSoapOut">
+    <part name="parameters" element="s0:echoStringResponse" />
+  </message>
+
+  <portType name="EchoServiceInterface">
+    <operation name="invoke">
+      <input message="s0:echoStringSoapIn" />
+      <output message="s0:echoStringSoapOut" />
+    </operation>  
+  </portType>
+
+  <binding name="EchoServiceSoap" type="s0:EchoServiceInterface">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document" />
+    <operation name="invoke">
+      <soap:operation soapAction="echoString" style="document" />
+      <input>
+        <soap:body use="literal" />
+      </input>
+      <output>
+        <soap:body use="literal" />
+      </output>
+    </operation>
+  </binding>
+
+  <service name="EchoService">
+    <port name="EchoServicePort" binding="s0:EchoServiceSoap">
+      <soap:address location="http://localhost:9080/wiwar/services/EchoService" />
+    </port>
+  </service>
+
+</definitions>

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,17 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.security.jwtsso.fat;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import java.io.StringReader;
-import java.io.UnsupportedEncodingException;
-import java.util.Base64;
-
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
-
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -29,8 +18,6 @@ import org.junit.runner.RunWith;
 import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.util.Cookie;
-import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.security.fat.common.CommonSecurityFat;
 import com.ibm.ws.security.fat.common.actions.TestActions;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
 import com.ibm.ws.security.fat.common.utils.CommonWaitForAppChecks;
@@ -39,6 +26,7 @@ import com.ibm.ws.security.fat.common.validation.TestValidationUtils;
 import com.ibm.ws.security.jwtsso.fat.actions.JwtFatActions;
 import com.ibm.ws.security.jwtsso.fat.actions.RunWithMpJwtVersion;
 import com.ibm.ws.security.jwtsso.fat.utils.CommonExpectations;
+import com.ibm.ws.security.jwtsso.fat.utils.CommonJwtssoFat;
 import com.ibm.ws.security.jwtsso.fat.utils.JwtFatConstants;
 
 import componenttest.annotation.Server;
@@ -51,7 +39,7 @@ import componenttest.topology.impl.LibertyServer;
 
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
-public class BuilderTests extends CommonSecurityFat {
+public class BuilderTests extends CommonJwtssoFat {
 
     protected static Class<?> thisClass = BuilderTests.class;
 
@@ -156,30 +144,6 @@ public class BuilderTests extends CommonSecurityFat {
 
         actions.destroyWebClient(webClient);
 
-    }
-
-    private void verifyJwtHeaderContainsKey(String jwt, String key) throws UnsupportedEncodingException {
-        Log.info(thisClass, "verifyJwtHeaderContainsKey", "Verifying that JWT header contains key \"" + key + "\". JWT: " + jwt);
-        String jwtHeader = extractAndDecodeJwtHeader(jwt);
-        JsonObject header = convertStringToJsonObject(jwtHeader);
-        assertTrue("JWT cookie header should have included a \"" + key + "\" entry but did not. Header was: " + header, header.containsKey(key));
-    }
-
-    private void verifyJwtHeaderDoesNotContainKey(String jwt, String key) throws UnsupportedEncodingException {
-        Log.info(thisClass, "verifyJwtHeaderDoesNotContainKey", "Verifying that JWT header does not contain key \"" + key + "\". JWT: " + jwt);
-        String jwtHeader = extractAndDecodeJwtHeader(jwt);
-        JsonObject header = convertStringToJsonObject(jwtHeader);
-        assertFalse("JWT cookie header should NOT have included a \"" + key + "\" entry but did. Header was: " + header, header.containsKey(key));
-    }
-
-    private String extractAndDecodeJwtHeader(String jwt) throws UnsupportedEncodingException {
-        String encodedJwtHeader = jwt.substring(0, jwt.indexOf("."));
-        return new String(Base64.getDecoder().decode(encodedJwtHeader), "UTF-8");
-    }
-
-    private JsonObject convertStringToJsonObject(String jsonObjectString) {
-        JsonReader reader = Json.createReader(new StringReader(jsonObjectString));
-        return reader.readObject();
     }
 
 }

@@ -5,12 +5,12 @@
 	<enterprise-beans>
 		<session>
 			<ejb-name>SimpleEJB1</ejb-name>
-			<ejb-class>com.ibm.ws.cdi12.test.multipleNamedEJBs.SimpleEJBImpl</ejb-class>
+			<ejb-class>com.ibm.ws.cdi.ejb.apps.multipleNamedEJBs.SimpleEJBImpl</ejb-class>
 			<session-type>Stateful</session-type>
 		</session>
 		<session>
 			<ejb-name>SimpleEJB2</ejb-name>
-			<ejb-class>com.ibm.ws.cdi12.test.multipleNamedEJBs.SimpleEJBImpl</ejb-class>
+			<ejb-class>com.ibm.ws.cdi.ejb.apps.multipleNamedEJBs.SimpleEJBImpl</ejb-class>
 			<session-type>Stateful</session-type>
 		</session>
 	</enterprise-beans>

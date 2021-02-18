@@ -282,6 +282,9 @@ public class HungRequestEnableThreadDumps {
         CommonTasks.writeLogMsg(Level.INFO, "----> Waiting for Thread dump request received message...");
         server.waitForStringInLog("CWWKE0067I", 30000);
         List<String> threadDumpRequestlines = server.findStringsInLogsUsingMark("CWWKE0067I", MESSAGE_LOG);
+
+        CommonTasks.writeLogMsg(Level.INFO, "----> Waiting for Thread dump created message...");
+        server.waitForStringInLog("CWWKE0068I", 30000);
         List<String> threadDumpCreationlines = server.findStringsInLogsUsingMark("CWWKE0068I", MESSAGE_LOG);
 
         CommonTasks.writeLogMsg(Level.INFO, "----> No. of thread dumps requested : " + threadDumpRequestlines.size());

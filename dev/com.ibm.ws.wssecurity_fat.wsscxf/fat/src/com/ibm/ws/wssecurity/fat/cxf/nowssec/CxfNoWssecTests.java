@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ import java.io.StringReader;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 //Added 10/2020
 import org.junit.runner.RunWith;
@@ -33,6 +34,8 @@ import com.meterware.httpunit.WebResponse;
 //Added 10/2020
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 
 //Note the potential collided factor in testCxfClientNoWsse(), when full mode annotation is used
@@ -42,8 +45,10 @@ import componenttest.topology.impl.LibertyServer;
 @RunWith(FATRunner.class)
 public class CxfNoWssecTests {
 
-    //Added 10/2020
-    @Server("com.ibm.ws.wssecurity_fat")
+    //2/2021
+    static final private String serverName = "com.ibm.ws.wssecurity_fat";
+    @Server(serverName)
+
     public static LibertyServer server;
 
     //Orig from CL
@@ -64,6 +69,10 @@ public class CxfNoWssecTests {
     private static String serviceClientUrl = "";
     private static String httpPortNumber = "";
     private static final StringReader reqMsg = new StringReader("<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\"><soapenv:Body xmlns=\"http://wssec.basic.cxf.fats/types\"><invoke>WSSECFVT Version: 2.0</invoke></soapenv:Body></soapenv:Envelope>");
+
+    //2/2021
+    @ClassRule
+    public static RepeatTests r = RepeatTests.withoutModification().andWith(FeatureReplacementAction.EE8_FEATURES().forServers(serverName).removeFeature("jsp-2.2").removeFeature("jaxws-2.2").removeFeature("servlet-3.1").addFeature("jsp-2.3").addFeature("jaxws-2.3").addFeature("servlet-4.0"));
 
     /**
      * Sets up any configuration required for running the OAuth tests.

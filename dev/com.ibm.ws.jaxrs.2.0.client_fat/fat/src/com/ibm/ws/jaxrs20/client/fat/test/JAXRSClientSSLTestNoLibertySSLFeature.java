@@ -18,7 +18,7 @@ import org.junit.runner.RunWith;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 
-@SkipForRepeat("EE9_FEATURES") // currently broken due to multiple issues
+@SkipForRepeat("EE9_FEATURES") // Continue to skip this test for EE9 as Default SSL is not supported yet
 @RunWith(FATRunner.class)
 public class JAXRSClientSSLTestNoLibertySSLFeature extends JAXRSClientSSLTestNoLibertySSLCfg {
 

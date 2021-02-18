@@ -70,6 +70,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
     private final AtomicReference<Callback> cbConcurrency = new AtomicReference<Callback>();
     private final AtomicReference<Callback> cbLateStart = new AtomicReference<Callback>();
     private final AtomicReference<Callback> cbQueueSize = new AtomicReference<Callback>();
+    private Runnable cbShutdown;
 
     /**
      * Use this lock to make a consistent update to both expedite and expeditesAvailable,
@@ -1109,6 +1110,11 @@ public class PolicyExecutorImpl implements PolicyExecutor {
     }
 
     @Override
+    public void registerShutdownCallback(Runnable callback) {
+        cbShutdown = callback;
+    }
+
+    @Override
     public PolicyExecutor runIfQueueFull(boolean runIfFull) {
         if (state.get() != State.ACTIVE)
             throw new IllegalStateException(Tr.formatMessage(tc, "CWWKE1203.config.update.after.shutdown", "runIfQueueFull", identifier));
@@ -1195,6 +1201,9 @@ public class PolicyExecutorImpl implements PolicyExecutor {
             policyExecutors.remove(identifier); // remove tracking of this instance and allow identifier to be reused
 
             shutdownLatch.countDown();
+
+            if (cbShutdown != null)
+                cbShutdown.run();
         } else
             while (state.get() == State.ENQUEUE_STOPPING)
                 try { // Await completion of other thread that concurrently invokes shutdown.

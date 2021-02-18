@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -85,7 +85,8 @@ public class LDAPRegressionTest {
     public static void teardownClass() throws Exception {
         try {
             if (libertyServer != null) {
-                libertyServer.stopServer();
+                /* Temporarily allow CWWKE0701E for testBetaFenceForBindAuthMech */
+                libertyServer.stopServer("CWWKE0701E");
             }
         } finally {
             if (ds != null) {
@@ -374,5 +375,27 @@ public class LDAPRegressionTest {
         listResults = VmmServiceServletConnection.convertToList("searchWithExpression", results);
         assertEquals(1, listResults.size());
         assertEquals("uid=Bob (Contractor),o=ibm,c=us", listResults.get(0));
+    }
+
+    /**
+     * Temporary fat test to ensure our Beta fence for bindAuthmechanism/GSSPI/Kerberos is working as expected.
+     *
+     * Can be removed when betaFence code is removed from LdapConnection
+     *
+     * Also remove CWWKE0701E from teardownClass
+     */
+    @Test
+    public void testBetaFenceForBindAuthMech() throws Exception {
+        final String methodName = "testBetaFenceForBindAuthMech";
+        ServerConfiguration clone = basicConfiguration.clone();
+        LdapRegistry ldap = createLdapRegistry(clone);
+        ldap.setBindAuthMechanism("simple");
+
+        updateConfigDynamically(libertyServer, clone);
+
+        Log.info(c, methodName, "Finished Liberty server update");
+
+        assertFalse("Did not find CWWKE0701E for beta fence in log", libertyServer.findStringsInLogs("CWWKE0701E").isEmpty());
+
     }
 }

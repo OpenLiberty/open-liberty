@@ -22,7 +22,4 @@
     <include location="../fatTestPorts.xml"/>
     
     <javaPermission className="java.security.AllPermission"  name="*" actions="*" />
-	<logging
-		traceSpecification="*=info=enabled:io.openliberty.grpc*=all"
-		maxFileSize="40" maxFiles="1" traceFormat="BASIC" />
 </server>

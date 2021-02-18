@@ -35,7 +35,6 @@ import org.junit.rules.TestName;
 import org.junit.rules.TestRule;
 
 import com.ibm.oauth.core.api.error.oauth20.OAuth20Exception;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.security.openidconnect.client.Cache;
 import com.ibm.ws.security.openidconnect.client.internal.OidcClientConfigImpl;
 import com.ibm.ws.security.openidconnect.client.internal.OidcClientImpl;
@@ -88,9 +87,6 @@ public class OidcRedirectServletTest {
 
     @Before
     public void setUp() throws Exception {
-        // Beta Fence
-        System.setProperty(ProductInfo.BETA_EDITION_JVM_PROPERTY, "true");
-
         WebAppSecurityCollaboratorImpl.setGlobalWebAppSecurityConfig(webAppSecurityConfig);
         mock.checking(new Expectations() {
             {
@@ -121,8 +117,6 @@ public class OidcRedirectServletTest {
 
     @After
     public void tearDown() {
-        // Beta Fence
-        System.setProperty(ProductInfo.BETA_EDITION_JVM_PROPERTY, "false");
         WebAppSecurityCollaboratorImpl.setGlobalWebAppSecurityConfig(null);
         mock.assertIsSatisfied();
         outputMgr.resetStreams();

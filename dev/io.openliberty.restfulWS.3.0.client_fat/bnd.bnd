@@ -12,7 +12,8 @@
 bVersion=1.0
 
 src: \
-  fat/src
+  fat/src,\
+  test-applications/pathparam/src
 
 	
 fat.project: true

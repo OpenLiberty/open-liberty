@@ -3,25 +3,12 @@ set +e
 
 echo "Done running all FAT buckets. Checking for failures now."
 
-# If this is the special 'MODIFIED_*_MODE' job, figure out which buckets
-# were directly modfied so we can check for their results
-if [[ $CATEGORY =~ MODIFIED_.*_MODE ]]; then
-  git diff --name-only HEAD^...HEAD^2 >> modified_files.diff
-  echo "Modified files are:"
-  cat modified_files.diff
-  FAT_BUCKETS=$(sed -n "s/^dev\/\([^\/]*_fat[^\/]*\)\/.*$/\1/p" modified_files.diff | uniq)
-  if [[ -z $FAT_BUCKETS ]]; then
-    echo "No FATs were directly modfied. Skipping this job."
-    exit 0
-  fi
-else
-  # This is a regular category defined in .github/test-categories/
-  if [[ ! -f .github/test-categories/$CATEGORY ]]; then
-    echo "::error::Test category $CATEGORY does not exist. A file containing a list of FAT buckets was not found at .github/test-categories/$CATEGORY";
-    exit 1;
-  fi
-  FAT_BUCKETS=$(awk '!/^ *#/ && NF' .github/test-categories/$CATEGORY) #ignore comments starting with # and empty lines
+# This is a regular category defined in .github/test-categories/
+if [[ ! -f .github/test-categories/$CATEGORY ]]; then
+  echo "::error::Test category $CATEGORY does not exist. A file containing a list of FAT buckets was not found at .github/test-categories/$CATEGORY";
+  exit 1;
 fi
+FAT_BUCKETS=$(awk '!/^ *#/ && NF' .github/test-categories/$CATEGORY) #ignore comments starting with # and empty lines
 
 cd dev
 mkdir failing_buckets

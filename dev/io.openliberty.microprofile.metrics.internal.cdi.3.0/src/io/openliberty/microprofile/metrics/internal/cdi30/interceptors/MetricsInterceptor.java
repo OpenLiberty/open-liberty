@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -178,7 +178,7 @@ public class MetricsInterceptor {
         public Object getValue() {
             try {
                 return invokeMethod(method, object);
-            } catch (IllegalStateException e) {
+            } catch (IllegalStateException exception) {
                 // This is likely due to an Application being unloaded, we need to unregister the invalid metric
                 // Need to use Factory to get registry.
                 MetricRegistryFactory.getApplicationRegistry().removeMatching(new MetricFilter() {
@@ -192,7 +192,7 @@ public class MetricsInterceptor {
                         return false;
                     }
                 });
-                throw e;
+                throw exception;
             }
         }
     }

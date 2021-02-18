@@ -20,7 +20,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.regex.Pattern;
 
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
@@ -239,7 +238,6 @@ public abstract class AbstractTestLogic {
         return prefix + Character.toUpperCase(fieldName.charAt(0)) + fieldName.substring(1, fieldName.length());
     }
 
-    @SuppressWarnings("unused")
     protected void beginTx(JPAResource jpaRW) {
         System.out.println("Begin a Tx");
         jpaRW.getTj().beginTransaction();
@@ -249,13 +247,11 @@ public abstract class AbstractTestLogic {
         }
     }
 
-    @SuppressWarnings("unused")
     protected void commitTx(JPAResource jpaRW) {
         System.out.println("Commit current Tx");
         jpaRW.getTj().commitTransaction();
     }
 
-    @SuppressWarnings("unused")
     protected void rollbackTx(JPAResource jpaRW) {
         System.out.println("Rollback current Tx");
         jpaRW.getTj().rollbackTransaction();
@@ -338,53 +334,6 @@ public abstract class AbstractTestLogic {
         }
 
         return this.getClass().getSimpleName() + "." + methodName;
-    }
-
-    // Basing determination off product version using
-    // info from https://www.ibm.com/support/knowledgecenter/en/SSEPEK_11.0.0/java/src/tpc/imjcc_c0053013.html
-    protected boolean isDB2ForZOS(String prodVersion) {
-        return containsIgnoreCase(prodVersion, "dsn");
-    }
-
-    protected boolean isDB2ForLUW(String prodVersion) {
-        return containsIgnoreCase(prodVersion, "sql");
-    }
-
-    protected boolean isDB2ForISeries(String prodVersion) {
-        return containsIgnoreCase(prodVersion, "qsq");
-    }
-
-    protected boolean isDB2ForVM_VSE(String prodVersion) {
-        return containsIgnoreCase(prodVersion, "ari");
-    }
-
-    protected boolean isDB2(String prodVersion) {
-        return isDB2ForLUW(prodVersion) || isDB2ForZOS(prodVersion) || isDB2ForISeries(prodVersion);
-    }
-
-    protected boolean isDerby(String lDbProductName) {
-        return containsIgnoreCase(lDbProductName, "derby");
-    }
-
-    protected boolean isOracle(String lDbProductName) {
-        return containsIgnoreCase(lDbProductName, "oracle");
-    }
-
-    protected boolean isMySQL(String lDbProductName) {
-        return containsIgnoreCase(lDbProductName, "mysql");
-    }
-
-    protected boolean isSQLServer(String lDbProductName) {
-        return containsIgnoreCase(lDbProductName, "sql server") || containsIgnoreCase(lDbProductName, "sqlserver");
-    }
-
-    protected boolean isHana(String lDbProductName) {
-        return containsIgnoreCase(lDbProductName, "hdb");
-    }
-
-    private boolean containsIgnoreCase(String input, String regex) {
-        return input != null
-               && Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(input).find();
     }
 
     protected Set<String> getInstalledFeatures() {

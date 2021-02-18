@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2020 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -720,7 +720,17 @@ public class LdapConfigManager {
                     List<String> objClsList = new ArrayList<String>();
                     while (strtok.hasMoreTokens()) {
                         String objectClass = strtok.nextToken();
+
+                        /*
+						 *  Ensure that the attribute is included. If not, issue warning and skip.
+						 */
+                        if (!strtok.hasMoreTokens()) {
+                            Tr.warning(tc, WIMMessageKey.IDMAP_INVALID_FORMAT, iUserIdMap, "userIdMap");
+                            break;
+                        }
+
                         String attribute = strtok.nextToken();
+
                         // Handle samAccountName.
                         Set<String> propNames = null;
 
@@ -730,10 +740,13 @@ public class LdapConfigManager {
                         } else
                             propNames = getPropertyName(ldapEntity, attribute);
 
-                        rdnPropList.add(propNames.iterator().next());
+                        rdnPropList.addAll(propNames);
 
-                        if (!SchemaConstants.VALUE_ALL_PROPERTIES.equalsIgnoreCase(objectClass))
-                            objClsList.add(objectClass);
+                        if (!SchemaConstants.VALUE_ALL_PROPERTIES.equalsIgnoreCase(objectClass)) {
+                            for (int idx = 0; idx < propNames.size(); idx++) {
+                                objClsList.add(objectClass);
+                            }
+                        }
                     }
                     if (rdnPropList.size() > 0) {
                         String[][] rdnProps = new String[rdnPropList.size()][];
@@ -754,12 +767,16 @@ public class LdapConfigManager {
                                 rdnObjCls[j][0] = objCls[j];
                             }
                         }
-                        ldapEntity.setRDNProperties(rdnProps, rdnAttrs);
+
                         if (isVMMRdnPropertiesDefined) {
                             String updatedRdnAttrs[][] = null;
                             String updatedRdnObjCls[][] = null;
-                            if (ldapEntity.getRDNAttributes().length > 0) {
-                                String orgRdnAttr[][] = ldapEntity.getRDNAttributes();
+
+                            /*
+                             * Merge RDN attributes.
+                             */
+                            String orgRdnAttr[][] = ldapEntity.getRDNAttributes();
+                            if (orgRdnAttr != null && orgRdnAttr.length > 0) {
                                 updatedRdnAttrs = new String[orgRdnAttr.length + rdnAttrs.length][];
                                 for (int i = 0; i < orgRdnAttr.length; i++) {
                                     updatedRdnAttrs[i] = new String[orgRdnAttr[i].length];
@@ -774,8 +791,12 @@ public class LdapConfigManager {
                                     len++;
                                 }
                             }
-                            if (ldapEntity.getRDNObjectclasses().length > 0) {
-                                String orgRdnObjCls[][] = ldapEntity.getRDNObjectclasses();
+
+                            /*
+                             * Merge the RDN objectclasses.
+                             */
+                            String[][] orgRdnObjCls = ldapEntity.getRDNObjectclasses();
+                            if (orgRdnObjCls != null && orgRdnObjCls.length > 0) {
                                 updatedRdnObjCls = new String[orgRdnObjCls.length + rdnObjCls.length][];
                                 for (int i = 0; i < orgRdnObjCls.length; i++) {
                                     updatedRdnObjCls[i] = new String[orgRdnObjCls[i].length];
@@ -789,9 +810,13 @@ public class LdapConfigManager {
                                         updatedRdnObjCls[len][j] = rdnObjCls[i][j];
                                     len++;
                                 }
-
                             }
                             ldapEntity.setRDNAttributes(updatedRdnAttrs, updatedRdnObjCls);
+
+                            /*
+                             * Call this last as it sets the translate RDN flag based on the RDN attributes.
+                             */
+                            ldapEntity.setRDNProperties(rdnProps, updatedRdnAttrs);
                         } else {
                             ldapEntity.setRDNAttributes(rdnAttrs, rdnObjCls);
                         }
@@ -801,7 +826,7 @@ public class LdapConfigManager {
                     }
                 } else {
                     if (tc.isDebugEnabled())
-                        Tr.debug(tc, "Could not find entity for person account!!");
+                        Tr.debug(tc, "Could not find entity for PersonAccount!!");
                 }
             }
 
@@ -814,6 +839,15 @@ public class LdapConfigManager {
                     Set<String> objClsSet = new HashSet<String>();
                     while (strtok.hasMoreTokens()) {
                         String objectClass = strtok.nextToken();
+
+                        /*
+						 *  Ensure that the attribute is included. If not, issue warning and skip.
+						 */
+                        if (!strtok.hasMoreTokens()) {
+                            Tr.warning(tc, WIMMessageKey.IDMAP_INVALID_FORMAT, iGroupIdMap, "groupIdMap");
+                            break;
+                        }
+
                         String attribute = strtok.nextToken();
 
                         Set<String> propNames = getPropertyName(ldapEntity, attribute);

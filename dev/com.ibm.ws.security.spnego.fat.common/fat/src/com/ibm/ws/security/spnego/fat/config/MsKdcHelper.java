@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2020 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -221,8 +221,6 @@ public class MsKdcHelper extends KdcHelper {
         String setUserSpnCommand = "./" + remoteScriptName + " " + user + " HTTP " + spnHost;
         ProgramOutput output = executeRemoteCommand(remoteScriptName, setUserSpnCommand, true);
 
-        Log.info(thisClass, methodName, "command stdout: " + output.getStdout());
-        Log.info(thisClass, methodName, "command stderr: " + output.getStderr());
         if (output.getReturnCode() != 0) {
             throw new RemoteException("Setting SPN for user failed with return code " + output.getReturnCode());
         }
@@ -273,8 +271,6 @@ public class MsKdcHelper extends KdcHelper {
         String setUserSpnCommand = "./" + remoteScriptName + " " + user + " HTTP " + spn;
         ProgramOutput output = executeRemoteCommand(remoteScriptName, setUserSpnCommand, true);
 
-        Log.info(thisClass, methodName, "command stdout: " + output.getStdout());
-        Log.info(thisClass, methodName, "command stderr: " + output.getStderr());
         if (output.getReturnCode() != 0) {
             throw new RemoteException("Deleting SPN for user failed with return code " + output.getReturnCode());
         }
@@ -303,8 +299,6 @@ public class MsKdcHelper extends KdcHelper {
         ProgramOutput output = executeRemoteCommand(remoteScriptName, addSpnToKeytabCommand, true);
         InitClass.needToPushaddSPNKeytab = false;
 
-        Log.info(thisClass, methodName, "command stdout: " + output.getStdout());
-        Log.info(thisClass, methodName, "command stderr: " + output.getStderr());
         if (output.getReturnCode() != 0) {
             throw new RemoteException("Adding SPN to keytab failed with return code " + output.getReturnCode());
         }
@@ -444,19 +438,15 @@ public class MsKdcHelper extends KdcHelper {
 
                     Log.info(thisClass, methodName, "Call chmod 777 on script using command: " + chmodCMD);
                     output = executeSshCommand(sshSession, chmodCMD, 30);
-                    Log.info(thisClass, methodName, "chmod command output: " + output.getStdout());
-                    Log.info(thisClass, methodName, "chmod command error:" + output.getStderr());
                 } else {
                     Log.info(thisClass, methodName, "The following command will not be run for: " + chmodCMD + " for the script file: " + scriptFile);
                 }
 
                 Log.info(thisClass, methodName, "Executing command --> " + command);
-                output = executeSshCommand(sshSession, command, 300);
+                output = executeSshCommand(sshSession, command, 120);
 
                 if (retryUponFailure && output.getReturnCode() != 0) {
                     Log.info(thisClass, methodName, "Remote command failed with return code " + output.getReturnCode());
-                    Log.info(thisClass, methodName, "command output: " + output.getStdout());
-                    Log.info(thisClass, methodName, "command error:" + output.getStderr());
                     Log.info(thisClass, methodName, "Sleeping for a few seconds to see if that helps resolve any problems encountered");
                     Thread.sleep(15 * 1000);
                     Log.info(thisClass, methodName, "Attempting to retry the command");

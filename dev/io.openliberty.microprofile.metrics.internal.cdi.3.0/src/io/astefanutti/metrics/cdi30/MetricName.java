@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2019 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -56,8 +56,18 @@ public class MetricName {
             return of((AnnotatedMember<?>) annotated);
         else if (annotated instanceof AnnotatedParameter)
             return of((AnnotatedParameter<?>) annotated);
-        else
-            throw new IllegalArgumentException("Unable to retrieve metric name for injection point [" + ip + "], only members and parameters are supported");
+        else {
+            /*
+             * Try and Catch to force an FFDC since the DefaultExceptionMapper is catching exceptions
+             * which does not result in FFDCs. Caught Exception generates an FFDC. The subsequent
+             * re-throw is caught by the DefaultExceptionMapper where it is printed out.
+             */
+            try {
+                throw new IllegalArgumentException("Unable to retrieve metric name for injection point [" + ip + "], only members and parameters are supported");
+            } catch (IllegalArgumentException exception) {
+                throw exception;
+            }
+        }
     }
 
     public String of(AnnotatedMember<?> member) {
@@ -104,8 +114,24 @@ public class MetricName {
                 throw new UnsupportedOperationException("Unable to retrieve name for parameter [" + parameter
                                                         + "], activate the -parameters compiler argument or annotate the injected parameter with the @Metric annotation");
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | ClassNotFoundException cause) {
-            throw new UnsupportedOperationException("Unable to retrieve name for parameter [" + parameter
-                                                    + "], @Metric annotation on injected parameter is required before Java 8");
+            /*
+             * Try and Catch to force an FFDC since the DefaultExceptionMapper is catching exceptions
+             * which does not result in FFDCs. Caught Exception generates an FFDC. The subsequent
+             * rethrow is caught by the DefaultExceptionMapper where it is printed out.
+             */
+            try {
+                throw new UnsupportedOperationException("Unable to retrieve name for parameter [" + parameter
+                                                        + "], @Metric annotation on injected parameter is required before Java 8");
+            } catch (UnsupportedOperationException exception) {
+                throw exception;
+            }
+        } catch (UnsupportedOperationException exception) {
+            /*
+             * This is to catch UnsupportedOperationException from above try block.
+             * Caught Exception here will generate an FFDC.
+             * Thrown Exception here will be caught by DefaultExceptionMapper to be printed out.
+             */
+            throw exception;
         }
     }
 
