@@ -58,7 +58,7 @@ public class ContainersTest extends FATServletClient {
      * Constructor: accepts image name in form user/container:version
      * - withExposedPorts: what ports does that container use that need to be exposed
      * - withEnv: evironment variables that can be set on the container
-     * - withCommand: execute a command on the container after it has started, but before tests have begun.
+     * - withCommand: replace docker CMD with a custom command
      * - withLogConsumer: redirect stout/sterr from container to a log consumer
      * Use the SimpleLogConsumer from fattest.simplicity to redirect those logs to output.txt
      * - waitingFor: defines a wait strategy to know when container has started
