@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.microprofile.config.internal_fat.apps.brokenPropertyExpression;
+package io.openliberty.microprofile.config.internal_fat.apps.brokenInjection;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -16,8 +16,12 @@ import javax.inject.Inject;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 @RequestScoped
-public class MissingPropertyExpressionBean2 {
+public class MissingPropertyExpressionBean {
 
+    @Inject
+    @ConfigProperty(name = "keyFromVariableInServerXML")
+    String nonExistantPropertyExpressionVariable;
+    
     @Inject
     @ConfigProperty(name = "keyFromAppPropertyInServerXML")
     String nonExistantPropertyExpressionAppProperty;
