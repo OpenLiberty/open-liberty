@@ -396,7 +396,8 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
 
         // Notify the executor service that we are quiescing
 
-        if (tq.quiesceThreads() && quiesceListenerFutures.isComplete()) {
+        long startTime = System.currentTimeMillis();
+        if (tq.quiesceThreads() && quiesceListenerFutures.isComplete(startTime)) {
             if (isServer())
                 Tr.info(tc, "quiesce.end");
             else
@@ -462,9 +463,11 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
             quiesceListenerFutures.add(f);
         }
 
-        boolean isComplete() {
+        boolean isComplete(long startTime) {
+            // We will wait 30 seconds past the start time for tasks to complete
+            long endTime = startTime + 30000;
             for (Future<?> f : quiesceListenerFutures) {
-                if (!f.isDone())
+                if (!f.isDone() && (System.currentTimeMillis() > endTime))
                     return false;
             }
             return true;
