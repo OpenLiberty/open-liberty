@@ -322,8 +322,6 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
     /** Indicates whether catalog, typeMap, readOnly, schema, sharding key, super sharding key, or networkTimeout has been changed. */
     private boolean connectionPropertyChanged;
 
-    private final DataStoreHelperMetaData mData;
-
     /** current cursor holdability */
     private int currentHoldability; 
 
@@ -479,8 +477,6 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
         // Record the current thread id, for use in multithreaded access detection. 
         DSConfig config = dsConfig.get();
         threadID = config.enableMultithreadedAccessDetection ? Thread.currentThread() : threadID; 
-
-        mData = mcf1.dataStoreHelper.getMetaData();
 
         rrsTransactional = helper.getRRSTransactional(); 
 
@@ -658,7 +654,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
                                 cri.ivUserName,
                                 cri.ivPassword,
                                 isolationChanged ? currentTransactionIsolation : cri.ivIsoLevel,
-                                connectionPropertyChanged && mData.supportsGetCatalog() ? getCatalog() : cri.ivCatalog,
+                                connectionPropertyChanged && mcf.supportsGetCatalog ? getCatalog() : cri.ivCatalog,
                                 connectionPropertyChanged && mcf.supportsIsReadOnly ? Boolean.valueOf(isReadOnly()) : cri.ivReadOnly,
                                 connectionPropertyChanged ? currentShardingKey : cri.ivShardingKey,
                                 connectionPropertyChanged ? currentSuperShardingKey : cri.ivSuperShardingKey,
@@ -996,7 +992,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
                     Tr.debug(this, tc, "MCF is NOT rrsTransactional:  setting currentAutoCommit and defaultAutoCommit to " + defaultAutoCommit + " from underlying Connection"); 
                 } 
             } 
-            defaultCatalog = mData.supportsGetCatalog() ? sqlConn.getCatalog() : null;
+            defaultCatalog = mcf.supportsGetCatalog ? sqlConn.getCatalog() : null;
             defaultReadOnly = mcf.supportsIsReadOnly ? sqlConn.isReadOnly() : false;
             defaultTypeMap = getTypeMapSafely();
             currentShardingKey = initialShardingKey = cri.ivShardingKey;
@@ -2069,7 +2065,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
                 setTransactionIsolation(cri.ivIsoLevel);
             }
 
-            if (cri.ivCatalog != null && !cri.ivCatalog.equals(defaultCatalog) && mData.supportsGetCatalog()) {
+            if (cri.ivCatalog != null && !cri.ivCatalog.equals(defaultCatalog) && mcf.supportsGetCatalog) {
                 setCatalog(cri.ivCatalog);
             }
 
@@ -2868,7 +2864,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
                 }
             }
 
-            if (mData.supportsGetCatalog())
+            if (mcf.supportsGetCatalog)
             {
                 try {
                     setCatalog(defaultCatalog);

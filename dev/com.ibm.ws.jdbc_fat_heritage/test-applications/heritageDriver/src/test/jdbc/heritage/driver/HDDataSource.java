@@ -17,6 +17,10 @@ import javax.sql.DataSource;
 
 public class HDDataSource extends org.apache.derby.jdbc.EmbeddedDataSource implements DataSource {
     boolean supportsCatalog = true;
+    boolean supportsNetworkTimeout = true;
+    boolean supportsReadOnly = true;
+    boolean supportsSchema = true;
+    boolean supportsTypeMap = true;
 
     @Override
     public Connection getConnection() throws SQLException {
@@ -32,7 +36,39 @@ public class HDDataSource extends org.apache.derby.jdbc.EmbeddedDataSource imple
         return supportsCatalog;
     }
 
+    public boolean getSupportsNetworkTimeout() {
+        return supportsNetworkTimeout;
+    }
+
+    public boolean getSupportsReadOnly() {
+        return supportsReadOnly;
+    }
+
+    public boolean getSupportsSchema() {
+        return supportsSchema;
+    }
+
+    public boolean getSupportsTypeMap() {
+        return supportsTypeMap;
+    }
+
     public void setSupportsCatalog(boolean supports) {
         supportsCatalog = supports;
+    }
+
+    public void setSupportsNetworkTimeout(boolean supports) {
+        supportsNetworkTimeout = supports;
+    }
+
+    public void setSupportsReadOnly(boolean supports) {
+        supportsReadOnly = supports;
+    }
+
+    public void setSupportsSchema(boolean supports) {
+        supportsSchema = supports;
+    }
+
+    public void setSupportsTypeMap(boolean supports) {
+        supportsTypeMap = supports;
     }
 }

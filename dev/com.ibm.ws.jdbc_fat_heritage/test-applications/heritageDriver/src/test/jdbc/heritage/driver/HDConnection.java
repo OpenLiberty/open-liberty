@@ -138,12 +138,18 @@ public class HDConnection implements Connection {
 
     @Override
     public int getNetworkTimeout() throws SQLException {
-        return derbycon.getNetworkTimeout();
+        if (ds.supportsNetworkTimeout)
+            return derbycon.getNetworkTimeout();
+        else
+            throw new SQLException("You disabled the ability to get the network timeout.");
     }
 
     @Override
     public String getSchema() throws SQLException {
-        return derbycon.getSchema();
+        if (ds.supportsSchema)
+            return derbycon.getSchema();
+        else
+            throw new SQLException("You disabled the ability to get the schema.");
     }
 
     @Override
@@ -153,7 +159,10 @@ public class HDConnection implements Connection {
 
     @Override
     public Map<String, Class<?>> getTypeMap() throws SQLException {
-        return derbycon.getTypeMap();
+        if (ds.supportsTypeMap)
+            return derbycon.getTypeMap();
+        else
+            throw new SQLException("You disabled support for type map.");
     }
 
     @Override
@@ -168,7 +177,10 @@ public class HDConnection implements Connection {
 
     @Override
     public boolean isReadOnly() throws SQLException {
-        return derbycon.isReadOnly();
+        if (ds.supportsReadOnly)
+            return derbycon.isReadOnly();
+        else
+            throw new SQLException("You disabled support for read only.");
     }
 
     @Override
@@ -276,12 +288,18 @@ public class HDConnection implements Connection {
 
     @Override
     public void setNetworkTimeout(Executor executor, int milliseconds) throws SQLException {
-        derbycon.setNetworkTimeout(executor, milliseconds);
+        if (ds.supportsNetworkTimeout)
+            derbycon.setNetworkTimeout(executor, milliseconds);
+        else
+            throw new SQLException("You disabled the ability to set the network timeout.");
     }
 
     @Override
     public void setReadOnly(boolean readOnly) throws SQLException {
-        derbycon.setReadOnly(readOnly);
+        if (ds.supportsReadOnly)
+            derbycon.setReadOnly(readOnly);
+        else
+            throw new SQLException("You disabled support for read only.");
     }
 
     @Override
@@ -296,7 +314,10 @@ public class HDConnection implements Connection {
 
     @Override
     public void setSchema(String schema) throws SQLException {
-        derbycon.setSchema(schema);
+        if (ds.supportsSchema)
+            derbycon.setSchema(schema);
+        else
+            throw new SQLException("You disabled the ability to set the schema.");
     }
 
     @Override
@@ -306,7 +327,10 @@ public class HDConnection implements Connection {
 
     @Override
     public void setTypeMap(Map<String, Class<?>> map) throws SQLException {
-        derbycon.setTypeMap(map);
+        if (ds.supportsTypeMap)
+            derbycon.setTypeMap(map);
+        else
+            throw new SQLException("You disabled support for type map.");
     }
 
     @Override

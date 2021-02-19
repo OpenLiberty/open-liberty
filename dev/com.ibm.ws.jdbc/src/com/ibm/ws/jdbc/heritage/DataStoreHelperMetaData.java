@@ -20,4 +20,33 @@ public interface DataStoreHelperMetaData {
      * @return true if the operation is supported, otherwise false.
      */
     boolean supportsGetCatalog();
+
+    /**
+     * Indicates whether the JDBC driver supports <code>java.sql.Connection.getNetworkTimeout</code>.
+     *
+     * @return true if the operation is supported, otherwise false.
+     */
+    boolean supportsGetNetworkTimeout();
+
+    /**
+     * Indicates whether the JDBC driver supports <code>java.sql.Connection.getSchema</code>.
+     *
+     * @return true if the operation is supported, otherwise false.
+     */
+    boolean supportsGetSchema();
+
+    /**
+     * Indicates whether the JDBC driver supports <code>java.sql.Connection.getTypeMap</code>.
+     *
+     * @return true if the operation is supported, otherwise false.
+     */
+    boolean supportsGetTypeMap();
+
+    /**
+     * Indicates whether the JDBC driver supports <code>java.sql.Connection.isReadOnly</code>.
+     *
+     * @return true if the operation is supported, otherwise false.
+     */
+    boolean supportsIsReadOnly();
+
 }

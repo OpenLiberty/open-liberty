@@ -1212,7 +1212,27 @@ public class DatabaseHelper implements DataStoreHelper, DataStoreHelperMetaData 
 
     @Override
     public boolean supportsGetCatalog() {
-        return true;
+        return mcf.supportsGetCatalog;
+    }
+
+    @Override
+    public boolean supportsGetNetworkTimeout() {
+        return mcf.supportsGetNetworkTimeout;
+    }
+
+    @Override
+    public boolean supportsGetSchema() {
+        return mcf.supportsGetSchema;
+    }
+
+    @Override
+    public boolean supportsGetTypeMap() {
+        return mcf.supportsGetTypeMap;
+    }
+
+    @Override
+    public boolean supportsIsReadOnly() {
+        return mcf.supportsIsReadOnly;
     }
 
     /**
