@@ -8,19 +8,19 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+package test.jdbc.heritage.driver.helper;
 
-dependencies {
-  requiredLibs project(':com.ibm.ws.jdbc')
-}
+import com.ibm.ws.jdbc.heritage.DataStoreHelper;
+import com.ibm.ws.jdbc.heritage.DataStoreHelperMetaData;
 
-addRequiredLibraries.dependsOn addDerby
+/**
+ * Data store helper for the test JDBC driver.
+ */
+public class HDDataStoreHelper implements DataStoreHelper {
+    private final HDDataStoreHelperMetaData metadata = new HDDataStoreHelperMetaData();
 
-task copyFeatureBundle_jdbcHeritage(type: Copy) {
-  from buildDir
-  into new File(autoFvtDir, 'lib/LibertyFATTestFiles/bundles')
-  include 'jdbcHeritage.jar'
-}
-
-autoFVT {
-  dependsOn copyFeatureBundle_jdbcHeritage
+    @Override
+    public DataStoreHelperMetaData getMetaData() {
+        return metadata;
+    }
 }

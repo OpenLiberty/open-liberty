@@ -32,6 +32,9 @@ public class FATSuite {
         // Install user feature
         server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/jdbcHeritage-1.0.mf");
         server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/jdbcHeritage.jar");
+
+        // Install internal feature that allows access to DataStoreHelper as though it were API
+        server.copyFileToLibertyInstallRoot("lib/features", "internalFeatures/dataStoreHelper-1.0.mf");
     }
 
     /**
@@ -41,5 +44,8 @@ public class FATSuite {
     public static void cleanUpSuite() throws Exception {
         // Remove the user extension added during the build process.
         server.deleteDirectoryFromLibertyInstallRoot("usr/extension/");
+
+        // Remove the internal feature
+        server.deleteFileFromLibertyInstallRoot("lib/features/dataStoreHelper-1.0.mf");
     }
 }

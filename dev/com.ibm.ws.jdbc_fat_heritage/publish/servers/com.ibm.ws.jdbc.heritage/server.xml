@@ -13,24 +13,27 @@
 
   <featureManager>
     <feature>componenttest-1.0</feature>
+    <feature>dataStoreHelper-1.0</feature> <!-- exposes the DataStoreHelper interfaces as API -->
     <feature>jdbc-4.2</feature>
-    <feature>usr:jdbcHeritage-1.0</feature>
+    <feature>usr:jdbcHeritage-1.0</feature> <!-- provides the heritageSettings configuration -->
     <feature>osgiConsole-1.0</feature>
     <feature>servlet-3.1</feature>
   </featureManager>
 
   <variable name="onError" value="FAIL"/>
 
-  <library id="DerbyLib" fat.modify="true">
+  <library id="JDBCLib">
+    <file name="${server.config.dir}/jdbc/HeritageDriver.jar"/>
     <fileset dir="${shared.resource.dir}/derby"/>
   </library>
 
-  <authData id="derbyAuth" user="dbuser" password="{xor}Oz0vKDs=" />
+  <authData id="dbAuth" user="dbuser" password="{xor}Oz0vKDs=" />
 
-  <dataSource id="DefaultDataSource" containerAuthDataRef="derbyAuth">
-    <jdbcDriver libraryRef="DerbyLib"/>
-    <properties.derby.embedded databaseName="memory:testdb" createDatabase="create"/>
-    <heritageSettings replaceExceptions="true"/>
+  <dataSource id="DefaultDataSource" containerAuthDataRef="dbAuth" type="javax.sql.DataSource">
+    <jdbcDriver libraryRef="JDBCLib" javax.sql.DataSource="test.jdbc.heritage.driver.HDDataSource"/>
+    <properties databaseName="memory:testdb" createDatabase="create"
+                supportsCatalog="false"/>
+    <heritageSettings helperClass="test.jdbc.heritage.driver.helper.HDDataStoreHelper"/>
   </dataSource>
 
   <javaPermission codeBase="${shared.resource.dir}derby/derby.jar" className="java.security.AllPermission"/>

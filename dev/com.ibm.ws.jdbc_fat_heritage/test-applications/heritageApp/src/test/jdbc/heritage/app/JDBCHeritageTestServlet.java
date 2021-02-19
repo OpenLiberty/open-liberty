@@ -12,6 +12,8 @@ package test.jdbc.heritage.app;
 
 import static org.junit.Assert.assertNotNull;
 
+import java.sql.Connection;
+
 import javax.annotation.Resource;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -20,16 +22,11 @@ import javax.sql.DataSource;
 
 import org.junit.Test;
 
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
-
 import componenttest.app.FATServlet;
 
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/JDBCHeritageTestServlet")
 public class JDBCHeritageTestServlet extends FATServlet {
-    TraceComponent tc = Tr.register(JDBCHeritageTestServlet.class);
-
     @Resource
     private DataSource defaultDataSource;
 
@@ -49,5 +46,8 @@ public class JDBCHeritageTestServlet extends FATServlet {
     @Test
     public void testInjection() throws Exception {
         assertNotNull(defaultDataSource);
+        try (Connection con = defaultDataSource.getConnection()) {
+            con.createStatement().close();
+        }
     }
 }

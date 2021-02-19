@@ -11,6 +11,7 @@
 package test.jdbc.heritage;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -33,6 +34,15 @@ public class HeritageJDBCTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
+        // Fake JDBC driver (a layer on top of Derby)
+        JavaArchive jdbcDriver = ShrinkWrap
+                        .create(JavaArchive.class, "HeritageDriver.jar")
+                        .addPackage("test.jdbc.heritage.driver")
+                        .addPackage("test.jdbc.heritage.driver.helper");
+
+        ShrinkHelper.exportToServer(server, "jdbc", jdbcDriver);
+
+        // Test application
         WebArchive heritageApp = ShrinkWrap.create(WebArchive.class, "heritageApp.war")
                         .addPackage("test.jdbc.heritage.app");
         ShrinkHelper.exportDropinAppToServer(server, heritageApp);
