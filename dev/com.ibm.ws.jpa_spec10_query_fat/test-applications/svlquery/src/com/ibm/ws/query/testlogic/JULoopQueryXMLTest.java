@@ -27,13 +27,13 @@ import javax.persistence.Query;
 
 import org.junit.Assert;
 
-import com.ibm.ws.query.entities.ano.AddressBean;
-import com.ibm.ws.query.entities.ano.AddressPK;
-import com.ibm.ws.query.entities.ano.DeptBean;
-import com.ibm.ws.query.entities.ano.EmbAddress;
-import com.ibm.ws.query.entities.ano.EmpBean;
-import com.ibm.ws.query.entities.ano.ProjectBean;
-import com.ibm.ws.query.entities.ano.TaskBean;
+import com.ibm.ws.query.entities.xml.AddressBean;
+import com.ibm.ws.query.entities.xml.AddressPK;
+import com.ibm.ws.query.entities.xml.DeptBean;
+import com.ibm.ws.query.entities.xml.EmbAddress;
+import com.ibm.ws.query.entities.xml.EmpBean;
+import com.ibm.ws.query.entities.xml.ProjectBean;
+import com.ibm.ws.query.entities.xml.TaskBean;
 import com.ibm.ws.query.utils.DeptEmpListView;
 import com.ibm.ws.query.utils.DeptEmpView;
 import com.ibm.ws.query.utils.SimpleDeptEmpView;
@@ -43,8 +43,7 @@ import com.ibm.ws.testtooling.testlogic.AbstractTestLogic;
 import com.ibm.ws.testtooling.vehicle.resources.JPAResource;
 import com.ibm.ws.testtooling.vehicle.resources.TestExecutionResources;
 
-@SuppressWarnings({ "rawtypes", "unchecked" })
-public class JULoopQueryAnoTest extends AbstractTestLogic {
+public class JULoopQueryXMLTest extends AbstractTestLogic {
     final EntityValue dep100 = new EntityValue(DeptBean.class, "no", 100);
     final EntityValue dep200 = new EntityValue(DeptBean.class, "no", 200);
     final EntityValue dep210 = new EntityValue(DeptBean.class, "no", 210);
@@ -96,6 +95,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -161,6 +165,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -236,8 +245,9 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
         }
 
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        final boolean isSQLServer = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.SQLSERVER);
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -265,18 +275,18 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             List<Object[]> rList = q.getResultList();
 
             // SQLServer treats null as lower value
-            Object[] targets[] = (!isSQLServer) ? new Object[][] {
-                                                                   // e.empid   e.name    d. no
-                                                                   new Object[] { 1, "david", 210 },
-                                                                   new Object[] { 2, "andrew", 210 },
-                                                                   new Object[] { 3, "minmei", 200 },
-                                                                   new Object[] { 4, "george", 200 },
-                                                                   new Object[] { 5, "ritika", 220 },
-                                                                   new Object[] { 6, "ahmad", 100 },
-                                                                   new Object[] { 7, "charlene", 210 },
-                                                                   new Object[] { 8, "Tom Rayburn", 100 },
-                                                                   new Object[] { 9, "harry", 210 },
-                                                                   new Object[] { null, null, 300 }
+            Object[] targets[] = (!DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.SQLSERVER)) ? new Object[][] {
+                                                                                                                                  // e.empid   e.name    d. no
+                                                                                                                                  new Object[] { 1, "david", 210 },
+                                                                                                                                  new Object[] { 2, "andrew", 210 },
+                                                                                                                                  new Object[] { 3, "minmei", 200 },
+                                                                                                                                  new Object[] { 4, "george", 200 },
+                                                                                                                                  new Object[] { 5, "ritika", 220 },
+                                                                                                                                  new Object[] { 6, "ahmad", 100 },
+                                                                                                                                  new Object[] { 7, "charlene", 210 },
+                                                                                                                                  new Object[] { 8, "Tom Rayburn", 100 },
+                                                                                                                                  new Object[] { 9, "harry", 210 },
+                                                                                                                                  new Object[] { null, null, 300 }
             } : new Object[][] {
                                  // e.empid   e.name    d. no
                                  new Object[] { null, null, 300 },
@@ -329,6 +339,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -424,6 +439,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -482,6 +502,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -556,6 +581,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -606,6 +636,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -660,6 +695,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -712,6 +752,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -766,6 +811,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -818,6 +868,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -883,6 +938,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -942,6 +1002,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -1006,6 +1071,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -1066,6 +1136,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -1124,6 +1199,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -1186,6 +1266,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -1247,6 +1332,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -1303,6 +1393,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -1353,6 +1448,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -1402,6 +1502,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -1458,6 +1563,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -1520,6 +1630,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -1580,6 +1695,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -1629,6 +1749,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -1680,6 +1805,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -1729,6 +1859,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -1787,6 +1922,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -1836,6 +1976,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -1894,6 +2039,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -1951,6 +2101,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -2006,6 +2161,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -2074,6 +2234,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -2123,6 +2288,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -2190,6 +2360,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -2260,6 +2435,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -2310,6 +2490,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -2359,6 +2544,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -2457,6 +2647,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -2506,6 +2701,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -2559,6 +2759,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -2656,6 +2861,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -2705,6 +2915,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -2756,6 +2971,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -2805,6 +3025,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -2856,6 +3081,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -2905,6 +3135,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -2956,6 +3191,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -3005,6 +3245,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -3056,6 +3301,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -3105,6 +3355,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -3183,6 +3438,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -3258,6 +3518,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -3307,6 +3572,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -3386,6 +3656,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -3435,6 +3710,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -3507,6 +3787,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -3556,6 +3841,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -3659,6 +3949,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -3709,6 +4004,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -3758,6 +4058,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -3866,6 +4171,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -3915,6 +4225,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -3969,6 +4284,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -4019,6 +4339,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -4068,6 +4393,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -4141,6 +4471,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -4209,6 +4544,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -4258,6 +4598,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -4323,6 +4668,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -4372,6 +4722,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -4444,6 +4799,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -4520,6 +4880,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -4547,7 +4912,7 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             Assert.assertNotNull(rList);
             Assert.assertEquals(10, rList.size());
 
-//            boolean found[] = { false, false, false, false, false, false, false, false, false, false };
+            boolean found[] = { false, false, false, false, false, false, false, false, false, false };
             String[] targets[] = {
                                    //             d.name      e.name
                                    new String[] { "CEO", "ahmad" },
@@ -4597,6 +4962,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -4728,6 +5098,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -4812,6 +5187,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -4883,6 +5263,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -4953,6 +5338,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -5037,6 +5427,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -5104,6 +5499,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -5153,6 +5553,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -5215,6 +5620,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -5274,6 +5684,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -5340,6 +5755,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -5415,6 +5835,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -5488,6 +5913,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -5565,6 +5995,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -5613,6 +6048,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -5664,6 +6104,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -5714,6 +6159,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -5763,6 +6213,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -5840,6 +6295,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -5889,6 +6349,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -5940,6 +6405,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -5990,6 +6460,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -6039,6 +6514,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -6116,6 +6596,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -6166,6 +6651,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -6215,6 +6705,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -6292,6 +6787,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -6365,6 +6865,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -6442,6 +6947,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -6516,6 +7026,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -6576,6 +7091,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -6625,6 +7145,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -6676,6 +7201,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -6725,6 +7255,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -6792,6 +7327,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -6852,6 +7392,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -6911,6 +7456,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -6984,6 +7534,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -7033,6 +7588,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -7094,6 +7654,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -7153,6 +7718,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -7216,6 +7786,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -7266,6 +7841,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -7315,6 +7895,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -7386,6 +7971,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -7435,6 +8025,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -7486,6 +8081,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -7536,6 +8136,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -7585,6 +8190,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -7646,6 +8256,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -7705,6 +8320,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -7780,6 +8400,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -7841,6 +8466,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -7904,6 +8534,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -7965,6 +8600,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -8040,6 +8680,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -8109,6 +8754,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -8186,6 +8836,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -8236,6 +8891,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -8285,6 +8945,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -8342,6 +9007,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -8397,6 +9067,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -8454,6 +9129,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -8502,6 +9182,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -8566,6 +9251,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -8634,6 +9324,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -8800,6 +9495,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -8875,6 +9575,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -8954,6 +9659,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -9003,6 +9713,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -9077,6 +9792,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -9154,6 +9874,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -9212,6 +9937,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -9262,6 +9992,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -9311,6 +10046,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -9386,6 +10126,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -9435,6 +10180,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -9486,6 +10236,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -9535,6 +10290,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -9586,6 +10346,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -9635,6 +10400,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -9686,6 +10456,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -9735,6 +10510,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -9786,6 +10566,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -9835,6 +10620,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -9908,6 +10698,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -9983,6 +10778,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -10055,6 +10855,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -10104,6 +10909,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -10177,6 +10987,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -10249,6 +11064,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -10298,6 +11118,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -10349,6 +11174,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -10399,6 +11229,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -10448,6 +11283,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -10521,6 +11361,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -10570,6 +11415,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -10643,6 +11493,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -10692,6 +11547,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -10744,8 +11604,9 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
         }
 
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        final boolean isSQLServer = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.SQLSERVER);
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // TODO: This test doesn't pass on SQLServer on Eclipselink, its output does not match the answer file
 //        Validate Output for test "JULoopQueryAnoTest.testLoop174":
@@ -10754,7 +11615,7 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
 //
 //            Generated Results:
 //              0  EmpBean [empid=10, name=Catalina Wei]
-        if (isSQLServer) {
+        if (DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.SQLSERVER)) {
             System.out.println("Test has been excluded from SQLServer.");
             return;
         }
@@ -10809,6 +11670,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -10859,6 +11725,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -10908,6 +11779,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -10969,6 +11845,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -11042,6 +11923,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -11102,6 +11988,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -11164,6 +12055,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -11214,6 +12110,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -11263,6 +12164,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -11338,6 +12244,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -11412,6 +12323,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -11480,6 +12396,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -11550,6 +12471,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -11600,6 +12526,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -11649,6 +12580,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -11722,6 +12658,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -11771,6 +12712,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -11844,6 +12790,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -11901,6 +12852,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -11967,6 +12923,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -12042,6 +13003,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -12098,6 +13064,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -12149,6 +13120,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -12223,6 +13199,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -12274,6 +13255,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -12327,6 +13313,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -12378,6 +13369,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -12433,6 +13429,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -12507,6 +13508,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -12523,12 +13529,12 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             JPAProviderImpl pvdr = getJPAProviderImpl(em);
             try {
                 Query q = em.createQuery(qStr);
-                q.getResultList();
+                List rList = q.getResultList();
                 Assert.fail("Expected Exception was not thrown.");
             } catch (RuntimeException e) {
                 String eStr = e.getMessage();
                 if (pvdr == JPAProviderImpl.ECLIPSELINK) {
-                    String lookFor = "The object [0], of class [class java.lang.Integer], from mapping [org.eclipse.persistence.mappings.DirectToFieldMapping[hireDate-->JPAEmpBean.HIREDATE]] with descriptor [RelationalDescriptor(com.ibm.ws.query.entities.ano.EmpBean --> [DatabaseTable(JPAEmpBean)])], could not be converted to [class java.sql.Date]";
+                    String lookFor = "The object [0], of class [class java.lang.Integer], from mapping [org.eclipse.persistence.mappings.DirectToFieldMapping[hireDate-->JPAEmpBean.HIREDATE]] with descriptor [RelationalDescriptor(com.ibm.ws.query.entities.xml.EmpBean --> [DatabaseTable(JPAEmpBean)])], could not be converted to [class java.sql.Date]";
                     System.out.println("eStr = " + eStr);
                     System.out.println("lookFor = " + lookFor);
                     boolean result = eStr.contains(lookFor);
@@ -12574,6 +13580,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -12591,12 +13602,12 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             JPAProviderImpl pvdr = getJPAProviderImpl(em);
             try {
                 Query q = em.createQuery(qStr);
-                q.getResultList();
+                List rList = q.getResultList();
                 Assert.fail("Expected Exception was not thrown.");
             } catch (RuntimeException e) {
                 String eStr = e.getMessage();
                 if (pvdr == JPAProviderImpl.ECLIPSELINK) {
-                    String lookFor = "The object [0], of class [class java.lang.Integer], from mapping [org.eclipse.persistence.mappings.DirectToFieldMapping[hireTime-->JPAEmpBean.HIRETIME]] with descriptor [RelationalDescriptor(com.ibm.ws.query.entities.ano.EmpBean --> [DatabaseTable(JPAEmpBean)])], could not be converted to [class java.sql.Time].";
+                    String lookFor = "The object [0], of class [class java.lang.Integer], from mapping [org.eclipse.persistence.mappings.DirectToFieldMapping[hireTime-->JPAEmpBean.HIRETIME]] with descriptor [RelationalDescriptor(com.ibm.ws.query.entities.xml.EmpBean --> [DatabaseTable(JPAEmpBean)])], could not be converted to [class java.sql.Time].";
                     System.out.println("eStr = " + eStr);
                     System.out.println("lookFor = " + lookFor);
                     boolean result = eStr.contains(lookFor);
@@ -12642,6 +13653,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -12659,12 +13675,12 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             JPAProviderImpl pvdr = getJPAProviderImpl(em);
             try {
                 Query q = em.createQuery(qStr);
-                q.getResultList();
+                List rList = q.getResultList();
                 Assert.fail("Expected Exception was not thrown.");
             } catch (RuntimeException e) {
                 String eStr = e.getMessage();
                 if (pvdr == JPAProviderImpl.ECLIPSELINK) {
-                    String lookFor = "The object [0], of class [class java.lang.Integer], from mapping [org.eclipse.persistence.mappings.DirectToFieldMapping[hireTimestamp-->JPAEmpBean.HIRETIMESTAMP]] with descriptor [RelationalDescriptor(com.ibm.ws.query.entities.ano.EmpBean --> [DatabaseTable(JPAEmpBean)])], could not be converted to [class java.sql.Timestamp].";
+                    String lookFor = "The object [0], of class [class java.lang.Integer], from mapping [org.eclipse.persistence.mappings.DirectToFieldMapping[hireTimestamp-->JPAEmpBean.HIRETIMESTAMP]] with descriptor [RelationalDescriptor(com.ibm.ws.query.entities.xml.EmpBean --> [DatabaseTable(JPAEmpBean)])], could not be converted to [class java.sql.Timestamp].";
                     System.out.println("eStr = " + eStr);
                     System.out.println("lookFor = " + lookFor);
                     boolean result = eStr.contains(lookFor);
@@ -12709,6 +13725,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -12779,6 +13800,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -12830,6 +13856,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -12880,6 +13911,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -12948,6 +13984,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -13007,6 +14048,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -13061,6 +14107,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -13118,6 +14169,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -13178,6 +14234,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -13236,6 +14297,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -13296,6 +14362,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -13347,6 +14418,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -13397,6 +14473,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -13456,6 +14537,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -13528,6 +14614,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -13578,6 +14669,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -13641,6 +14737,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -13729,6 +14830,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -13794,6 +14900,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -13861,6 +14972,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -13927,6 +15043,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -13977,6 +15098,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -14046,6 +15172,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -14100,6 +15231,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -14167,6 +15303,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -14217,6 +15358,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -14284,6 +15430,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -14336,8 +15487,9 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
         }
 
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        final boolean isSQLServer = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.SQLSERVER);
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // TODO: This test doesn't pass on SQLServer on Eclipselink, its output does not match the answer file
 //        Validate Output for test "JULoopQueryAnoTest.testLoop233":
@@ -14346,7 +15498,7 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
 //
 //            Generated Results:
 //              0  EmpBean [empid=10, name=Catalina Wei]
-        if (isSQLServer) {
+        if (DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.SQLSERVER)) {
             System.out.println("Test has been excluded from SQLServer.");
             return;
         }
@@ -14401,6 +15553,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -14470,6 +15627,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -14521,6 +15683,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -14571,6 +15738,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -14638,6 +15810,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -14693,6 +15870,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -14743,6 +15925,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -14795,6 +15982,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -14845,6 +16037,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -14897,6 +16094,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -14947,6 +16149,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -15019,6 +16226,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -15089,6 +16301,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -15163,6 +16380,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -15235,6 +16457,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -15309,6 +16536,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -15380,6 +16612,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -15432,6 +16669,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -15483,6 +16725,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -15551,6 +16798,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -15602,6 +16854,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -15655,6 +16912,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -15706,6 +16968,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -15759,6 +17026,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -15810,6 +17082,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -15863,6 +17140,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -15914,6 +17196,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -15967,6 +17254,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -16019,6 +17311,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -16070,6 +17367,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -16129,6 +17431,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -16201,6 +17508,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -16271,6 +17583,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -16345,6 +17662,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -16395,6 +17717,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -16467,6 +17794,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -16518,6 +17850,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -16578,6 +17915,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -16635,6 +17977,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -16685,6 +18032,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -16740,6 +18092,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -16799,6 +18156,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -16850,6 +18212,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -16900,6 +18267,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -16974,6 +18346,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -17037,6 +18414,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -17087,6 +18469,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -17151,6 +18538,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -17213,6 +18605,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -17282,6 +18679,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -17333,6 +18735,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -17407,6 +18814,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -17480,6 +18892,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -17534,6 +18951,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -17606,6 +19028,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -17665,6 +19092,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -17715,6 +19147,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -17775,6 +19212,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -17825,6 +19267,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -17885,6 +19332,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -17935,6 +19387,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -18000,6 +19457,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -18063,6 +19525,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -18128,6 +19595,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -18187,6 +19659,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -18245,6 +19722,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -18312,6 +19794,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -18386,6 +19873,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -18440,6 +19932,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -18504,6 +20001,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -18563,6 +20065,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -18613,6 +20120,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -18677,6 +20189,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -18728,6 +20245,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -18778,6 +20300,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -18843,6 +20370,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -18893,6 +20425,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -18958,6 +20495,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -19008,6 +20550,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -19060,6 +20607,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -19111,6 +20663,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -19161,6 +20718,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -19235,6 +20797,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -19286,6 +20853,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -19336,6 +20908,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -19401,6 +20978,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -19451,6 +21033,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -19516,6 +21103,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -19579,6 +21171,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -19644,6 +21241,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -19708,6 +21310,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -19765,6 +21372,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -19820,6 +21432,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -19877,6 +21494,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -19932,6 +21554,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -19982,6 +21609,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -20038,6 +21670,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -20092,6 +21729,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -20148,6 +21790,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -20203,6 +21850,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -20253,6 +21905,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -20308,6 +21965,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -20366,6 +22028,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -20422,6 +22089,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -20472,6 +22144,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -20530,6 +22207,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -20586,6 +22268,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -20648,6 +22335,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -20703,6 +22395,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -20760,6 +22457,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -20810,6 +22512,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -20868,6 +22575,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -20918,6 +22630,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -20980,6 +22697,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -21031,6 +22753,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -21081,6 +22808,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -21141,6 +22873,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -21200,6 +22937,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -21250,6 +22992,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -21310,6 +23057,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -21369,6 +23121,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -21419,6 +23176,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -21471,6 +23233,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -21522,6 +23289,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -21572,6 +23344,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -21625,8 +23402,9 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
         }
 
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        final boolean isOracle = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.ORACLE);
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -21659,7 +23437,7 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             Object[] targets = {
                                  emp1, emp2, emp3, emp4, emp5, emp6, emp7, emp8, emp9
             };
-            if (isOracle) {
+            if (DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.ORACLE)) {
                 targets = new Object[] {};
             }
             validateQueryResult(testName, qStr, rList, targets);
@@ -21697,6 +23475,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -21748,6 +23531,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -21805,6 +23593,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -21857,8 +23650,9 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
         }
 
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        final boolean isSQLServer = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.SQLSERVER);
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // TODO: Fails on SQLServer, does not match the answer file:
         // Likely a server config regarding the processing of case sensitivity.
@@ -21870,7 +23664,7 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
 //            Generated Results:
 //              0  ( DeptBean: no=200 name =Admin)
 //              1  ( DeptBean: no=300 name =Sales)
-        if (isSQLServer) {
+        if (DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.SQLSERVER)) {
             System.out.println("This test has been disabled on sqlserver.");
             return;
         }
@@ -21926,6 +23720,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -21976,6 +23775,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -22028,6 +23832,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -22078,6 +23887,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -22142,6 +23956,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -22192,6 +24011,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -22257,6 +24081,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -22321,6 +24150,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -22371,6 +24205,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -22445,6 +24284,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -22505,6 +24349,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -22579,6 +24428,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -22643,6 +24497,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -22693,6 +24552,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -22745,6 +24609,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -22795,6 +24664,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -22850,6 +24724,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -22907,6 +24786,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -22961,6 +24845,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -23026,6 +24915,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -23090,6 +24984,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -23141,6 +25040,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -23191,6 +25095,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -23249,6 +25158,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -23305,6 +25219,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -23363,6 +25282,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -23419,6 +25343,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -23477,6 +25406,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -23534,6 +25468,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -23584,6 +25523,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -23636,6 +25580,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -23686,6 +25635,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -23744,6 +25698,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -23800,6 +25759,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -23858,6 +25822,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -23915,6 +25884,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -23965,6 +25939,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -24017,6 +25996,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -24067,6 +26051,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -24123,6 +26112,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -24178,6 +26172,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -24228,6 +26227,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -24286,6 +26290,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -24343,6 +26352,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -24399,9 +26413,9 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
         }
 
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        final boolean isOracle = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.ORACLE);
-        final boolean isPostgres = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.POSTGRES);
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // TODO: Address postgresql result
         /*
@@ -24422,7 +26436,7 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
          * 4 1
          *
          */
-        if (isPostgres) {
+        if (DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.POSTGRES)) {
             System.out.println("Test is marked excluded against PostgreSQL.");
             return;
         }
@@ -24460,7 +26474,7 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             Object[] targets = {
                                  1, 2, 3, 4
             };
-            if (isOracle) {
+            if (DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.ORACLE)) {
                 targets = new Object[] {
                                          1, 2, 3, 4, 5
                 };
@@ -24500,6 +26514,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -24552,6 +26571,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -24602,6 +26626,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -24670,6 +26699,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -24724,6 +26758,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -24780,6 +26819,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -24834,6 +26878,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -24890,6 +26939,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -24945,6 +26999,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -24999,6 +27058,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -25064,6 +27128,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -25128,6 +27197,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -25188,6 +27262,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -25251,9 +27330,9 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
         }
 
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        final boolean isOracle = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.ORACLE);
-        final boolean isPostgres = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.POSTGRES);
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // TODO: Skip with Oracle, as it produces output that differs from the original answer file for Oracle:
         /*
@@ -25263,7 +27342,7 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
          * 2 210 19 4.75 4
          * 3 220 5 5.0 1
          */
-        if (isOracle) {
+        if (DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.ORACLE)) {
             System.out.println("Skipping test on Oracle platform. ");
             return;
         }
@@ -25276,7 +27355,7 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
          * 2 200 7 3.5 2
          * 3 210 19 4.75 4
          */
-        if (isPostgres) {
+        if (DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.POSTGRES)) {
             System.out.println("Skipping test on Postgresql platform. ");
             return;
         }
@@ -25351,6 +27430,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -25411,6 +27495,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -25473,6 +27562,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -25533,6 +27627,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -25596,6 +27695,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -25663,6 +27767,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -25737,6 +27846,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -25809,6 +27923,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -25883,6 +28002,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -25933,6 +28057,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -26007,6 +28136,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -26063,6 +28197,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -26118,6 +28257,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -26168,6 +28312,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -26240,6 +28389,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -26290,6 +28444,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -26350,6 +28509,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -26401,6 +28565,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -26451,6 +28620,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -26515,6 +28689,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -26569,6 +28748,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -26634,6 +28818,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -26697,6 +28886,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -26752,6 +28946,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -26802,6 +29001,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -26867,6 +29071,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -26927,6 +29136,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -26977,6 +29191,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -27029,6 +29248,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -27080,6 +29304,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -27130,6 +29359,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -27202,6 +29436,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -27273,6 +29512,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -27323,6 +29567,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -27388,6 +29637,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -27439,6 +29693,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -27489,6 +29748,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -27547,6 +29811,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -27604,6 +29873,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -27655,6 +29929,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -27705,6 +29984,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -27769,6 +30053,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -27820,6 +30109,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -27870,6 +30164,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -27930,6 +30229,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -27981,6 +30285,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -28031,6 +30340,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -28096,6 +30410,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -28146,6 +30465,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -28201,6 +30525,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -28266,6 +30595,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -28330,6 +30664,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -28380,6 +30719,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -28445,6 +30789,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -28508,6 +30857,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -28559,6 +30913,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -28576,7 +30935,7 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             JPAProviderImpl pvdr = getJPAProviderImpl(em);
             try {
                 Query q = em.createQuery(qStr);
-                q.getResultList();
+                List rList = q.getResultList();
                 Assert.fail("Expected Exception was not thrown.");
             } catch (RuntimeException e) {
                 String eStr = e.getMessage();
@@ -28631,6 +30990,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -28648,7 +31012,7 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             JPAProviderImpl pvdr = getJPAProviderImpl(em);
             try {
                 Query q = em.createQuery(qStr);
-                q.getResultList();
+                List rList = q.getResultList();
                 Assert.fail("Expected Exception was not thrown.");
             } catch (RuntimeException e) {
                 String eStr = e.getMessage();
@@ -28702,6 +31066,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -28760,6 +31129,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -28770,14 +31144,14 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
 //            TEST481; select new com.ibm.ws.query.utils.SimpleDeptEmpView (d.deptno, d.name) from DeptBean d
 //            new com.ibm.ws.query.utils.SimpleDeptEmpView (d.deptno
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//An error occurred while parsing the query filter "select new com.ibm.ws.query.utils.SimpleDeptEmpView (d.deptno, d.name) from DeptBean d". Error message: No field named "deptno" in "DeptBean". Did you mean "no"? Expected one of the available field names in "com.ibm.ws.query.entities.ano.DeptBean": "[budget, charityFund, emps, mgr, name, no, projects, reportsTo]".
+//An error occurred while parsing the query filter "select new com.ibm.ws.query.utils.SimpleDeptEmpView (d.deptno, d.name) from DeptBean d". Error message: No field named "deptno" in "DeptBean". Did you mean "no"? Expected one of the available field names in "com.ibm.ws.query.entities.xml.DeptBean": "[budget, charityFund, emps, mgr, name, no, projects, reportsTo]".
 //TEST481; 1 tuple
 
             // Expect an Exception
             JPAProviderImpl pvdr = getJPAProviderImpl(em);
             try {
                 Query q = em.createQuery(qStr);
-                q.getResultList();
+                List rList = q.getResultList();
                 Assert.fail("Expected Exception was not thrown.");
             } catch (RuntimeException e) {
                 String eStr = e.getMessage();
@@ -28831,6 +31205,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -28895,6 +31274,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -28925,7 +31309,7 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
         }
     }
 
-    // TEST484; select new com.ibm.ws.query.entities.ano.DeptBean (d) from DeptBean d where d.no=100
+    // TEST484; select new com.ibm.ws.query.entities.xml.DeptBean (d) from DeptBean d where d.no=100
     public void testLoop484(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
                             Object managedComponentObject) {
         final String testName = getTestName();
@@ -28950,16 +31334,21 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
             em.clear();
 
-            String qStr = "select new com.ibm.ws.query.entities.ano.DeptBean (d) from DeptBean d where d.no=100";
+            String qStr = "select new com.ibm.ws.query.entities.xml.DeptBean (d) from DeptBean d where d.no=100";
             Query q = em.createQuery(qStr);
 
-//            TEST484; select new com.ibm.ws.query.entities.ano.DeptBean (d) from DeptBean d where d.no=100
-//                            new com.ibm.ws.query.entities.ano.DeptBean (d)
+//            TEST484; select new com.ibm.ws.query.entities.xml.DeptBean (d) from DeptBean d where d.no=100
+//                            new com.ibm.ws.query.entities.xml.DeptBean (d)
 //                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //                                    ( DeptBean: no=100 name =CEO)
 //                             TEST484; 1 tuple
@@ -29004,6 +31393,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                 System.out.println("Test Property: " + key + " = " + testProps.get(key));
             }
         }
+
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
 
         // Execute Test Case
         try {
@@ -29074,6 +31468,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -29142,6 +31541,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -29159,7 +31563,7 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             JPAProviderImpl pvdr = getJPAProviderImpl(em);
             try {
                 Query q = em.createQuery(qStr);
-                q.getResultList();
+                List rList = q.getResultList();
                 Assert.fail("Expected Exception was not thrown.");
             } catch (RuntimeException e) {
                 String eStr = e.getMessage();
@@ -29214,6 +31618,11 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
@@ -29257,7 +31666,7 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
         }
     }
 
-//  TEST489; select new com.ibm.ws.query.entities.ano.EmbAddress (e.home.street.name,e.home.city,e.home.state,e.home.zip,'1234') from EmpBean e where e.empid=1
+//  TEST489; select new com.ibm.ws.query.entities.xml.EmbAddress (e.home.street.name,e.home.city,e.home.state,e.home.zip,'1234') from EmpBean e where e.empid=1
     public void testLoop489(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
                             Object managedComponentObject) {
         final String testName = getTestName();
@@ -29282,16 +31691,21 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
             em.clear();
 
-            String qStr = "select new com.ibm.ws.query.entities.ano.EmbAddress (e.home.street.name,e.home.city,e.home.state,e.home.zip,'1234') from EmpBean e where e.empid=1";
+            String qStr = "select new com.ibm.ws.query.entities.xml.EmbAddress (e.home.street.name,e.home.city,e.home.state,e.home.zip,'1234') from EmpBean e where e.empid=1";
             Query q = em.createQuery(qStr);
 
-//            TEST489; select new com.ibm.ws.query.entities.ano.EmbAddress (e.home.street.name,e.home.city,e.home.state,e.home.zip,'1234') from EmpBean e where e.empid=1
-//                            new com.ibm.ws.query.entities.ano.EmbAddress (e.home.street.name
+//            TEST489; select new com.ibm.ws.query.entities.xml.EmbAddress (e.home.street.name,e.home.city,e.home.state,e.home.zip,'1234') from EmpBean e where e.empid=1
+//                            new com.ibm.ws.query.entities.xml.EmbAddress (e.home.street.name
 //                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //                    ( EmbAddress: Street=1780 Mercury Way City =Morgan Hill State =CA Zipcode =95037)
 //                     TEST489; 1 tuple
@@ -29313,7 +31727,7 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
         }
     }
 
-//  TEST490; select new com.ibm.ws.query.entities.ano.DeptBean (d), d, new com.ibm.ws.query.utils.SimpleDeptEmpView (d.no, d.name) from DeptBean d where d.no=100
+//  TEST490; select new com.ibm.ws.query.entities.xml.DeptBean (d), d, new com.ibm.ws.query.utils.SimpleDeptEmpView (d.no, d.name) from DeptBean d where d.no=100
     public void testLoop490(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
                             Object managedComponentObject) {
         final String testName = getTestName();
@@ -29338,16 +31752,21 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             }
         }
 
+        final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
+
+        final String lDbProductName = dbProductName.toLowerCase();
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
             em.clear();
 
-            String qStr = "select new com.ibm.ws.query.entities.ano.DeptBean (d), d, new com.ibm.ws.query.utils.SimpleDeptEmpView (d.no, d.name) from DeptBean d where d.no=100";
+            String qStr = "select new com.ibm.ws.query.entities.xml.DeptBean (d), d, new com.ibm.ws.query.utils.SimpleDeptEmpView (d.no, d.name) from DeptBean d where d.no=100";
             Query q = em.createQuery(qStr);
 
-//            TEST490; select new com.ibm.ws.query.entities.ano.DeptBean (d), d, new com.ibm.ws.query.utils.SimpleDeptEmpView (d.no, d.name) from DeptBean d where d.no=100
-//                            new com.ibm.ws.query.entities.ano.DeptBean (d) DeptBean       new com.ibm.ws.query.utils.SimpleDeptEmpView (d.no
+//            TEST490; select new com.ibm.ws.query.entities.xml.DeptBean (d), d, new com.ibm.ws.query.utils.SimpleDeptEmpView (d.no, d.name) from DeptBean d where d.no=100
+//                            new com.ibm.ws.query.entities.xml.DeptBean (d) DeptBean       new com.ibm.ws.query.utils.SimpleDeptEmpView (d.no
 //                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //                                    ( DeptBean: no=100 name =CEO)           [100]   ( SimpleDeptEmpView: no=100 name =CEO budget =2.1 empid =null)
 //                             TEST490; 1 tuple
@@ -29403,17 +31822,17 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
             this.pValue = pValue;
         }
 
-//        public Class getEntityType() {
-//            return entityType;
-//        }
-//
-//        public Field getpField() {
-//            return pField;
-//        }
-//
-//        public Object getpValue() {
-//            return pValue;
-//        }
+        public Class getEntityType() {
+            return entityType;
+        }
+
+        public Field getpField() {
+            return pField;
+        }
+
+        public Object getpValue() {
+            return pValue;
+        }
 
         @Override
         public String toString() {
