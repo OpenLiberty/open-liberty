@@ -1,0 +1,41 @@
+<!--
+    Copyright (c) 2021 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+  <include location="../fatTestPorts.xml"/>
+
+  <featureManager>
+    <feature>componenttest-1.0</feature>
+    <feature>dataStoreHelper-1.0</feature> <!-- exposes the DataStoreHelper interfaces as API -->
+    <feature>jdbc-4.2</feature>
+    <feature>usr:jdbcHeritage-1.0</feature> <!-- provides the heritageSettings configuration -->
+    <feature>osgiConsole-1.0</feature>
+    <feature>servlet-3.1</feature>
+  </featureManager>
+
+  <variable name="onError" value="FAIL"/>
+
+  <library id="JDBCLib">
+    <file name="${server.config.dir}/jdbc/HeritageDriver.jar"/>
+    <fileset dir="${shared.resource.dir}/derby"/>
+  </library>
+
+  <authData id="dbAuth" user="dbuser" password="{xor}Oz0vKDs=" />
+
+  <dataSource id="DefaultDataSource" containerAuthDataRef="dbAuth" type="javax.sql.DataSource">
+    <jdbcDriver libraryRef="JDBCLib" javax.sql.DataSource="test.jdbc.heritage.driver.HDDataSource"/>
+    <properties databaseName="memory:testdb" createDatabase="create"
+                supportsCatalog="false"/>
+    <heritageSettings helperClass="test.jdbc.heritage.driver.helper.HDDataStoreHelper"/>
+  </dataSource>
+
+  <javaPermission codeBase="${shared.resource.dir}derby/derby.jar" className="java.security.AllPermission"/>
+
+</server>
