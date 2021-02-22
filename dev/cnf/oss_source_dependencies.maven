@@ -102,6 +102,7 @@ org.apache.cxf:cxf-tools-common:3.3.0
 org.apache.cxf:cxf-tools-validator:3.3.3
 org.apache.cxf:cxf-tools-wadlto-jaxrs:3.3.0
 org.apache.felix:org.apache.felix.gogo.command:0.16.0
+org.apache.felix:org.apache.felix.scr:2.1.26
 org.apache.geronimo.specs:geronimo-jta_1.1_spec:1.1.1
 org.apache.geronimo.specs:geronimo-osgi-registry:1.1
 org.apache.geronimo.specs:geronimo-validation_1.0_spec:1.1
