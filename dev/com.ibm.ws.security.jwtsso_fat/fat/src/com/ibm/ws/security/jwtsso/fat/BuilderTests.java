@@ -66,7 +66,7 @@ public class BuilderTests extends CommonJwtssoFat {
 
         server.addInstalledAppForValidation(JwtFatConstants.APP_FORMLOGIN);
         serverTracker.addServer(server);
-        server.startServerUsingExpandedConfiguration("server_withFeature.xml", CommonWaitForAppChecks.getSSLChannelReadyMsgs());
+        server.startServerUsingExpandedConfiguration("server_withFeature.xml", CommonWaitForAppChecks.getLTPAReadyMsgs(CommonWaitForAppChecks.getSSLChannelReadyMsgs()));
     }
 
     /**
