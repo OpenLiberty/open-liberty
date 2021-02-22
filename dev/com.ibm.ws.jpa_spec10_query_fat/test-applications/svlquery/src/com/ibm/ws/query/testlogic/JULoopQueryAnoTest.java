@@ -20,6 +20,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -29373,7 +29374,9 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
      */
 
     private static Calendar calendar = new GregorianCalendar();
-    private static long pdtOffset = -(calendar.get(Calendar.ZONE_OFFSET)) - 8 * (60 * 60 * 1000);
+    private static TimeZone currentTZ = calendar.getTimeZone();
+    private static long pdtOffset = -(calendar.get(calendar.ZONE_OFFSET)) -
+                                    (7 + (currentTZ.observesDaylightTime() ? 1 : 0)) * (60 * 60 * 1000);
     private static java.sql.Date hireDate = new java.sql.Date(0 + pdtOffset);
     private static java.sql.Time hireTime = new Time(0 + pdtOffset);
     private static Timestamp hireTimestamp = new Timestamp(0 + pdtOffset);

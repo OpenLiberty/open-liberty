@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2018 IBM Corporation and others.
+ * Copyright (c) 2003, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -48,6 +48,8 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.jca.adapter.WSConnectionManager;
 import com.ibm.ws.jca.cm.AbstractConnectionFactoryService;
+import com.ibm.ws.jdbc.heritage.DataStoreHelper;
+import com.ibm.ws.jdbc.heritage.DataStoreHelperMetaData;
 import com.ibm.ws.resource.ResourceRefInfo;
 import com.ibm.ws.rsadapter.AdapterUtil;
 import com.ibm.ws.rsadapter.DSConfig;
@@ -61,7 +63,7 @@ import com.ibm.ws.rsadapter.jdbc.WSJdbcStatement;
  * Helper for generic relational databases, coded to the most common cases.
  * This class may be subclassed as needed for databases requiring different behavior.
  */
-public class DatabaseHelper {
+public class DatabaseHelper implements DataStoreHelper, DataStoreHelperMetaData {
     // register the generic database trace needed for enabling database jdbc logging/tracing
     @SuppressWarnings("deprecation")
     private static final com.ibm.ejs.ras.TraceComponent databaseTc = com.ibm.ejs.ras.Tr.register("com.ibm.ws.database.logwriter", "WAS.database", null); 
@@ -316,6 +318,11 @@ public class DatabaseHelper {
      */
     public int getDefaultIsolationLevel() {
         return Connection.TRANSACTION_READ_COMMITTED;
+    }
+
+    @Override
+    public final DataStoreHelperMetaData getMetaData() {
+        return this;
     }
 
     /**
@@ -1201,6 +1208,11 @@ public class DatabaseHelper {
      */
     public boolean doConnectionVendorPropertyReset(Connection sqlConn, Map<String, Object> props) throws SQLException {
         return false;
+    }
+
+    @Override
+    public boolean supportsGetCatalog() {
+        return true;
     }
 
     /**

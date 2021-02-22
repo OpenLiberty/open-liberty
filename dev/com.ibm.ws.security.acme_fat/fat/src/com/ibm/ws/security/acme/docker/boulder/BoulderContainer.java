@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@ import org.testcontainers.Testcontainers;
 import org.testcontainers.containers.ContainerLaunchException;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
+import org.testcontainers.containers.output.OutputFrame;
 
 import com.github.dockerjava.api.model.Container;
 import com.github.dockerjava.api.model.ContainerNetwork;
@@ -91,6 +92,19 @@ public class BoulderContainer extends CAContainer {
 	private static final String DOCKER_IMAGE = "ryanesch/acme-boulder:1.1";
 
 	/**
+	 * Log the output from this testcontainer.
+	 * 
+	 * @param frame
+	 *                  The frame containing log data.
+	 */
+	public static void log(OutputFrame frame) {
+		String msg = frame.getUtf8String();
+		if (msg.endsWith("\n"))
+			msg = msg.substring(0, msg.length() - 1);
+		Log.info(BoulderContainer.class, "boulder", msg);
+	}
+
+	/**
 	 * Create and start a BoulderContainer. Use a custom docker image built on
 	 * top of boulder-tools-go.
 	 */
@@ -138,7 +152,7 @@ public class BoulderContainer extends CAContainer {
 				.withCommand("/go/src/github.com/letsencrypt/boulder/test/entrypoint.sh").withNetworkAliases("boulder")
 				.withCreateContainerCmdModifier(cmd -> cmd.withHostName("boulder"))
 				.withExposedPorts(getDnsManagementPort(), getAcmeListenPort(), OCSP_PORT)
-				.withLogConsumer(o -> System.out.print("[BOL] " + o.getUtf8String()))
+				.withLogConsumer(BoulderContainer::log)
 				.withStartupTimeout(Duration.ofMinutes(10));
 	}
 

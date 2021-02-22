@@ -10,6 +10,7 @@
  *******************************************************************************/
 package componenttest.application.manager.test;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -1098,6 +1099,69 @@ public class AutoExtractTest extends AbstractAppManagerTest {
             server.removeAllInstalledAppsForValidation();
             server.stopServer();
         }
+    }
+
+    /**
+     * Tests the scenario where the expandLocation exists, but there is a conflict when writing the application to that location.
+     * In this case, there is no warning issued, but an FFDC and fail to start app error since testWarApplication is a file instead
+     * of a directory.
+     *
+     * @throws Exception
+     */
+    @Test
+    @AllowedFFDC({ "java.lang.IllegalArgumentException" })
+    public void testExpandLocationUnableToWriteOutFile() throws Exception {
+        final String method = testName.getMethodName();
+
+        try {
+
+            // Make sure things were deleted from prior test cases
+            File warFile = new File(server.getServerRoot() + "/myApps/testWarApplication.war");
+            if (warFile.exists()) {
+                Log.info(c, method, "/myApps/testWarApplication.war exists = " + warFile.exists() + " is file = " + warFile.isFile());
+                if (warFile.isDirectory()) {
+                    server.deleteDirectoryFromLibertyServerRoot(TARGET_EXPANDED_DIR);
+                } else {
+                    warFile.delete();
+                }
+            }
+
+            assertFalse("The /myApps/testWarApplication.war file or directory should have been deleted", warFile.exists());
+
+            // Add an empty file to the expandLocation so there is a conflict (file vs directory)
+            server.copyFileToLibertyServerRoot(server.pathToAutoFVTTestFiles + "/autoExpand/", "myApps", "testWarApplication.war");
+
+            Log.info(c, method, "file is = " + warFile.getAbsolutePath());
+            assertTrue("The copy of testWarApplication.war as a file failed.  File exists = " + warFile.exists() + " Is a File = " + warFile.isFile(),
+                       warFile.exists() && warFile.isFile());
+
+            // server.copyFileToLibertyServerRoot();
+            server.copyFileToLibertyServerRoot(PUBLISH_FILES, APPS_DIR, TEST_WAR_APPLICATION);
+
+            server.setServerConfigurationFile("/autoExpand/definedWarServerExpandLocation.xml");
+            server.startServer(method + ".log");
+
+            // Pause to make sure the server is ready to install apps
+            assertNotNull("The server never reported that it was ready to install web apps.",
+                          server.waitForStringInLog("CWWKZ0058I:"));
+
+            // Pause for application to start properly and server to say it's listening on ports
+            final int httpDefaultPort = server.getHttpDefaultPort();
+            assertNotNull("The server never reported that it was listening on port " + httpDefaultPort,
+                          server.waitForStringInLog("CWWKO0219I.*" + httpDefaultPort));
+
+            // This case gets caught as an IllegalArgumentException exception else where.
+            assertNotNull("The application testWarApplication should have failed to start.",
+                          server.waitForStringInLog(APP_FAIL_INSTALL + ".* testWarApplication"));
+
+        } finally {
+            //if we failed to delete file before, try to delete it now.
+            pathsToCleanup.add(server.getServerRoot() + "/" + APPS_DIR);
+            pathsToCleanup.add(server.getServerRoot() + "/" + TARGET_EXPANDED_DIR);
+            server.removeAllInstalledAppsForValidation();
+            server.stopServer(APP_FAIL_INSTALL);
+        }
+
     }
 
     /*

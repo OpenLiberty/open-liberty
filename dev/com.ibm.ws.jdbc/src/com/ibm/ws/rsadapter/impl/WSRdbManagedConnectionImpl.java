@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2001, 2019 IBM Corporation and others.
+ * Copyright (c) 2001, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.rsadapter.impl;
 
-import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.security.AccessController;
@@ -62,6 +61,7 @@ import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.FFDCSelfIntrospectable;
 import com.ibm.ws.jca.adapter.WSConnectionManager;
 import com.ibm.ws.jca.adapter.WSManagedConnection;
+import com.ibm.ws.jdbc.heritage.DataStoreHelperMetaData;
 import com.ibm.ws.jdbc.internal.DataSourceDef;
 import com.ibm.ws.jdbc.osgi.JDBCRuntimeVersion;
 import com.ibm.ws.rsadapter.AdapterUtil;
@@ -322,6 +322,8 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
     /** Indicates whether catalog, typeMap, readOnly, schema, sharding key, super sharding key, or networkTimeout has been changed. */
     private boolean connectionPropertyChanged;
 
+    private final DataStoreHelperMetaData mData;
+
     /** current cursor holdability */
     private int currentHoldability; 
 
@@ -477,6 +479,8 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
         // Record the current thread id, for use in multithreaded access detection. 
         DSConfig config = dsConfig.get();
         threadID = config.enableMultithreadedAccessDetection ? Thread.currentThread() : threadID; 
+
+        mData = mcf1.dataStoreHelper.getMetaData();
 
         rrsTransactional = helper.getRRSTransactional(); 
 
@@ -654,7 +658,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
                                 cri.ivUserName,
                                 cri.ivPassword,
                                 isolationChanged ? currentTransactionIsolation : cri.ivIsoLevel,
-                                connectionPropertyChanged ? getCatalog() : cri.ivCatalog,
+                                connectionPropertyChanged && mData.supportsGetCatalog() ? getCatalog() : cri.ivCatalog,
                                 connectionPropertyChanged && mcf.supportsIsReadOnly ? Boolean.valueOf(isReadOnly()) : cri.ivReadOnly,
                                 connectionPropertyChanged ? currentShardingKey : cri.ivShardingKey,
                                 connectionPropertyChanged ? currentSuperShardingKey : cri.ivSuperShardingKey,
@@ -992,7 +996,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
                     Tr.debug(this, tc, "MCF is NOT rrsTransactional:  setting currentAutoCommit and defaultAutoCommit to " + defaultAutoCommit + " from underlying Connection"); 
                 } 
             } 
-            defaultCatalog = sqlConn.getCatalog();
+            defaultCatalog = mData.supportsGetCatalog() ? sqlConn.getCatalog() : null;
             defaultReadOnly = mcf.supportsIsReadOnly ? sqlConn.isReadOnly() : false;
             defaultTypeMap = getTypeMapSafely();
             currentShardingKey = initialShardingKey = cri.ivShardingKey;
@@ -2065,7 +2069,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
                 setTransactionIsolation(cri.ivIsoLevel);
             }
 
-            if (cri.ivCatalog != null && !cri.ivCatalog.equals(defaultCatalog)) {
+            if (cri.ivCatalog != null && !cri.ivCatalog.equals(defaultCatalog) && mData.supportsGetCatalog()) {
                 setCatalog(cri.ivCatalog);
             }
 
@@ -2864,22 +2868,25 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
                 }
             }
 
-            try {
-                setCatalog(defaultCatalog);
+            if (mData.supportsGetCatalog())
+            {
+                try {
+                    setCatalog(defaultCatalog);
 
-                // Update the connection request information after switching back to the
-                // default catalog.
-                if (connectionSharing == ConnectionSharing.MatchCurrentState)
-                {
-                    if (!cri.isCRIChangable()) // create a changable CRI if existing one is not
-                        setCRI(WSConnectionRequestInfoImpl.createChangableCRIFromNon(cri));
+                    // Update the connection request information after switching back to the
+                    // default catalog.
+                    if (connectionSharing == ConnectionSharing.MatchCurrentState)
+                    {
+                        if (!cri.isCRIChangable()) // create a changable CRI if existing one is not
+                            setCRI(WSConnectionRequestInfoImpl.createChangableCRIFromNon(cri));
 
-                    cri.setCatalog(defaultCatalog);
+                        cri.setCatalog(defaultCatalog);
+                    }
+                } catch (SQLException sqle) {
+                    FFDCFilter.processException(sqle, getClass().getName() + ".cleanupStates",
+                                                "1227", this);
+                    throw new DataStoreAdapterException("DSA_ERROR", sqle, getClass());
                 }
-            } catch (SQLException sqle) {
-                FFDCFilter.processException(sqle, getClass().getName() + ".cleanupStates",
-                                            "1227", this);
-                throw new DataStoreAdapterException("DSA_ERROR", sqle, getClass());
             }
 
             if (mcf.supportsGetTypeMap) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -408,10 +408,10 @@ public class AcmeValidityAndRenewTest {
 			Log.info(this.getClass(), testName.getMethodName(),
 					"Waiting for " + waitTime + " while checking for new certificate");
 
-			AcmeFatUtils.waitForNewCert(server, caContainer, startingCertificateChain, waitTime);
-
 			assertNotNull("Should log message that the certificate was renewed",
-					server.waitForStringInLogUsingMark("CWPKI2052I"));
+					server.waitForStringInLogUsingMark("CWPKI2052I", waitTime));
+
+			AcmeFatUtils.waitForNewCert(server, caContainer, startingCertificateChain, waitTime);
 
 			/**
 			 * Run "load" while the certificate checkers runs in the background and renews the cert
@@ -858,10 +858,10 @@ public class AcmeValidityAndRenewTest {
 			Log.info(this.getClass(), testName.getMethodName(),
 					"Waiting for " + waitTime + " while checking for new certificate");
 
-			AcmeFatUtils.waitForNewCert(server, caContainer, startingCertificateChain, waitTime);
-
 			assertNotNull("Should log message that the certificate was renewed",
-					server.waitForStringInLogUsingMark("CWPKI2052I"));
+					server.waitForStringInLogUsingMark("CWPKI2052I", waitTime));
+
+			AcmeFatUtils.waitForNewCert(server, caContainer, startingCertificateChain, waitTime);
 
 			assertNotNull("Should log message that the certificate was renewed after restarting Pebble",
 					server.waitForStringInLogUsingMark("CWPKI2007I"));

@@ -22,7 +22,8 @@ import org.junit.runners.Suite.SuiteClasses;
                 ReplayCookieTests.class,
                 CookieExpirationTests.class,
                 BuilderTests.class,
-                SigAlgTests.class
+                SigAlgTests.class,
+//                EncryptionTests.class
 })
 public class FATSuite {
 }

@@ -154,7 +154,11 @@ class ServerXMLConfiguration {
     }
 
     public void setConfigReadTime() {
-        long time = getLastResourceModifiedTime(); //serverConfiguration.getLastModified();
+        setConfigReadTime(getLastResourceModifiedTime());
+
+    }
+
+    public void setConfigReadTime(long time) {
         // Update time stamp for configReadTime on next run.
         TimestampUtils.writeTimeToFile(bundleContext.getDataFile("configStamp"), time);
         configReadTime = time;

@@ -1,0 +1,42 @@
+<!--
+    Copyright (c) 2021 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+    <include location="${shared.config.dir}/jwtSsoFeatures.xml" />
+    <include location="${shared.config.dir}/basicRegistry.xml" />
+    <include location="${shared.config.dir}/ssl.xml" />
+    <include location="${shared.config.dir}/allAlgSSLSettings.xml"/>
+    <include location="${shared.config.dir}/formloginApp.xml" />
+    <include location="../fatTestPorts.xml"/>
+
+    <jwtSso setCookieSecureFlag="false" jwtBuilderRef="sigAlgES384EncryptRS256Builder" />
+
+    <jwtBuilder  id="sigAlgES384EncryptRS256Builder" 
+         keyStoreRef="key_allSigAlg"
+         keyAlias="es384"
+         signatureAlgorithm="ES384"
+         trustStoreRef="trust_allSigAlg"
+         keyManagementKeyAlgorithm="RSA-OAEP"
+         keyManagementKeyAlias="RS256"
+         contentEncryptionAlgorithm="A256GCM"
+         />
+
+    <authentication cacheEnabled="false"/>
+
+    <mpJwt id="sigAlgES384EncryptRS256MpJwt"
+                sslRef="ssl_allSigAlg"
+                keyName="es384"
+                signatureAlgorithm="ES384"
+                issuer="ALL_ISSUERS"
+                keyManagementKeyAlias="RS256">
+    </mpJwt>
+
+</server>

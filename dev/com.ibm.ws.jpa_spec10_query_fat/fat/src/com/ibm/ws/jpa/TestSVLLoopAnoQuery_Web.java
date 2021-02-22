@@ -84,6 +84,7 @@ public class TestSVLLoopAnoQuery_Web extends JPAFATServletClient {
 
     @Server("JPA10SVLQueryLoopServer")
     @TestServlets({
+                    // Annotated
                     @TestServlet(servlet = JULoopQueryAnoTest_001_Servlet.class, path = "svlquery" + "/" + "JULoopQueryAnoTest_001_Servlet"),
                     @TestServlet(servlet = JULoopQueryAnoTest_002_Servlet.class, path = "svlquery" + "/" + "JULoopQueryAnoTest_002_Servlet"),
                     @TestServlet(servlet = JULoopQueryAnoTest_003_Servlet.class, path = "svlquery" + "/" + "JULoopQueryAnoTest_003_Servlet"),
@@ -105,7 +106,6 @@ public class TestSVLLoopAnoQuery_Web extends JPAFATServletClient {
                     @TestServlet(servlet = JULoopQueryAnoTest_019_Servlet.class, path = "svlquery" + "/" + "JULoopQueryAnoTest_019_Servlet"),
                     @TestServlet(servlet = JULoopQueryAnoTest_020_Servlet.class, path = "svlquery" + "/" + "JULoopQueryAnoTest_020_Servlet"),
                     @TestServlet(servlet = JULoopQueryAnoTest_021_Servlet.class, path = "svlquery" + "/" + "JULoopQueryAnoTest_021_Servlet"),
-
     })
     public static LibertyServer server;
 
@@ -175,6 +175,7 @@ public class TestSVLLoopAnoQuery_Web extends JPAFATServletClient {
         webApp.addPackages(true, "com.ibm.ws.query.utils");
         webApp.addPackages(true, "com.ibm.ws.query.web");
         webApp.addPackages(true, "com.ibm.ws.query.web.loopqueryano");
+        webApp.addPackages(true, "com.ibm.ws.query.web.loopqueryxml");
 
         ShrinkHelper.addDirectory(webApp, RESOURCE_ROOT + appFolder + "/" + appName + ".war");
 

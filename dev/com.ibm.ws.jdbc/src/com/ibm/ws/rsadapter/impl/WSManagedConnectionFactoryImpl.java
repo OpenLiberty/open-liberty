@@ -70,6 +70,7 @@ import com.ibm.ws.jca.adapter.WSConnectionManager;
 import com.ibm.ws.jca.adapter.WSManagedConnectionFactory;
 import com.ibm.ws.jca.cm.AbstractConnectionFactoryService;
 import com.ibm.ws.jca.cm.ConnectorService;
+import com.ibm.ws.jdbc.heritage.DataStoreHelper;
 import com.ibm.ws.jdbc.internal.PropertyService;
 import com.ibm.ws.jdbc.osgi.JDBCRuntimeVersion;
 import com.ibm.ws.kernel.service.util.SecureAction;
@@ -133,6 +134,14 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
      */
     final Class<?> type;
 
+    /**
+     * Same as the DatabaseHelper unless overridden via the heritage helperClass.
+     */
+    transient DataStoreHelper dataStoreHelper;
+
+    /**
+     * Helps cope with differences between databases/JDBC drivers.
+     */
     transient DatabaseHelper helper;
 
     /**
@@ -326,6 +335,9 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
         isUCP = implClassName.charAt(2) == 'a' && implClassName.startsWith("oracle.ucp.jdbc."); // 3rd char distinguishes from common names like: com, org, java
 
         createDatabaseHelper(config.vendorProps instanceof PropertyService ? ((PropertyService) config.vendorProps).getFactoryPID() : PropertyService.FACTORY_PID);
+
+        dataStoreHelper = config.heritageHelperClass == null ? helper : AccessController.doPrivileged((PrivilegedExceptionAction<DataStoreHelper>) () ->
+                          (DataStoreHelper) jdbcDriverLoader.loadClass(config.heritageHelperClass).getConstructor().newInstance());
 
         if (config.supplementalJDBCTrace == null || config.supplementalJDBCTrace) {
             TraceComponent tracer = helper.getTracer();

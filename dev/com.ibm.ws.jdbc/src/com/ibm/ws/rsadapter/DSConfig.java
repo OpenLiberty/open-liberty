@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 IBM Corporation and others.
+ * Copyright (c) 2011, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,8 +21,6 @@ import java.util.NavigableMap;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
-import javax.resource.spi.IllegalStateException;
-
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCSelfIntrospectable;
@@ -30,7 +28,6 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.jca.cm.ConnectorService;
 import com.ibm.ws.jdbc.internal.DataSourceDef;
 import com.ibm.ws.jdbc.internal.PropertyService;
-import com.ibm.ws.rsadapter.impl.WSManagedConnectionFactoryImpl;
 import com.ibm.wsspi.kernel.service.utils.MetatypeUtils;
 import com.ibm.wsspi.resource.ResourceFactory;
 
@@ -96,11 +93,14 @@ public class DSConfig implements FFDCSelfIntrospectable {
                     ENABLE_BEGIN_END_REQUEST = "enableBeginEndRequest", // Not a supported property. Only for internal testing/experimentation.
                     ENABLE_CONNECTION_CASTING = "enableConnectionCasting",
                     ENABLE_MULTITHREADED_ACCESS_DETECTION = "enableMultithreadedAccessDetection", // currently disabled in liberty profile
+                    HELPER_CLASS = "heritage.0.helperClass", // from flattened heritage config
+                    HERITAGE = "heritage", // flattened config
                     JDBC_DRIVER_REF = "jdbcDriverRef",
-                    IDENTIFY_EXCEPTION = "identifyException",
+                    IDENTIFY_EXCEPTION = "identifyException", // flattened config
                     ON_CONNECT = "onConnect",
                     QUERY_TIMEOUT = "queryTimeout",
                     RECOVERY_AUTH_DATA_REF = "recoveryAuthDataRef",
+                    REPLACE_EXCEPTIONS = "heritage.0.replaceExceptions", // from flattened heritage config
                     STATEMENT_CACHE_SIZE = "statementCacheSize",
                     SUPPLEMENTAL_JDBC_TRACE = "supplementalJDBCTrace",
                     SYNC_QUERY_TIMEOUT_WITH_TRAN_TIMEOUT = "syncQueryTimeoutWithTransactionTimeout",
@@ -232,6 +232,16 @@ public class DSConfig implements FFDCSelfIntrospectable {
     private Map.Entry<String, Object> entry;
 
     /**
+     * Data store helper class name. Null if none.
+     */
+    public final String heritageHelperClass;
+
+    /**
+     * Indicates whether to replace exceptions or only identify them.
+     */
+    public final boolean heritageReplaceExceptions;
+
+    /**
      * config.displayId of the data source.
      */
     public final String id;
@@ -340,6 +350,8 @@ public class DSConfig implements FFDCSelfIntrospectable {
         enableBeginEndRequest = remove(ENABLE_BEGIN_END_REQUEST, false); // Not a supported property. Only for internal testing/experimentation.
         enableConnectionCasting = remove(ENABLE_CONNECTION_CASTING, false);
         enableMultithreadedAccessDetection = false;
+        heritageHelperClass = remove(HELPER_CLASS, (String) null);
+        heritageReplaceExceptions = remove(REPLACE_EXCEPTIONS, false);
         identifyExceptions = new ArrayList<>(remove(IDENTIFY_EXCEPTION, Collections.emptyMap()).values());
         isolationLevel = remove(DataSourceDef.isolationLevel.name(), -1, -1, null, -1, 0, 1, 2, 4, 8, 16, 4096);
         onConnect = remove(ON_CONNECT, (String[]) null);
@@ -555,6 +567,32 @@ public class DSConfig implements FFDCSelfIntrospectable {
         for (int diff; value == null && entry != null && (diff = entry.getKey().compareTo(name)) <= 0; entry = entries.pollFirstEntry()) {
             if (diff == 0) // matched
                 value = (Map) entry.getValue();
+            else {
+                // TODO: when we have a stricter variant of onError, apply it to unrecognized attributes
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "unrecognized attribute: " + entry.getKey());
+                //SQLException ex = AdapterUtil.ignoreWarnOrFail(tc, null, SQLException.class, "PROP_NOT_FOUND", jndiName == null ? id : jndiName, entry.getKey());
+                //if (ex != null)
+                //    throw ex;
+            }
+        }
+
+        return value == null ? defaultValue : value;
+    }
+
+    /**
+     * Remove properties up to and including the specified property. Return the property if found.
+     *
+     * @param name name of the property.
+     * @param defaultValue default value to use if not found.
+     * @return value of the property if found. Otherwise the default value.
+     */
+    private String remove(String name, String defaultValue) throws SQLException {
+        String value = null;
+
+        for (int diff; value == null && entry != null && (diff = entry.getKey().compareTo(name)) <= 0; entry = entries.pollFirstEntry()) {
+            if (diff == 0) // matched
+                value = (String) entry.getValue();
             else {
                 // TODO: when we have a stricter variant of onError, apply it to unrecognized attributes
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
