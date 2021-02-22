@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2018 IBM Corporation and others.
+ * Copyright (c) 2003, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -71,6 +71,7 @@ public class DB2Helper extends DatabaseHelper {
     DB2Helper(WSManagedConnectionFactoryImpl mcf) throws Exception {
         super(mcf);
 
+        mcf.doesStatementCacheIsoLevel = true;
         mcf.supportsGetTypeMap = false;
 
         Properties props = mcf.dsConfig.get().vendorProps;
@@ -186,11 +187,6 @@ public class DB2Helper extends DatabaseHelper {
 
         if (isTraceOn && tc.isEntryEnabled())
             Tr.exit(this, tc, "doConnectionSetup");
-    }
-
-    @Override
-    public final boolean doesStatementCacheIsoLevel() {
-        return true;
     }
 
     @Override

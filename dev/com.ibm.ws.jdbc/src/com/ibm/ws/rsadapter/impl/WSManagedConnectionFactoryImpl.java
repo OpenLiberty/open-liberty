@@ -250,6 +250,12 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
     public boolean doXMLCleanup = true;
 
     /**
+     * Indicates if statements retain their isolation level once created,
+     * versus using whatever is currently on the connection when they run.
+     */
+    public boolean doesStatementCacheIsoLevel;
+
+    /**
      * This reference should always be used when accessing configuration data,
      * in order to allow for our future implementation of dynamic updates.
      */
@@ -348,6 +354,7 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
             dataStoreHelper = AccessController.doPrivileged((PrivilegedExceptionAction<DataStoreHelper>) () ->
                 (DataStoreHelper) jdbcDriverLoader.loadClass(config.heritageHelperClass).getConstructor().newInstance());
             DataStoreHelperMetaData metadata = dataStoreHelper.getMetaData();
+            doesStatementCacheIsoLevel = metadata.doesStatementCacheIsoLevel();
             supportsGetCatalog = metadata.supportsGetCatalog();
             supportsGetNetworkTimeout = metadata.supportsGetNetworkTimeout();
             supportsGetSchema = metadata.supportsGetSchema();
@@ -1333,6 +1340,8 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
             // This accounts for the scenario where the first connection attempt is bad.
             // The information needs to be read again on the second attempt.
             helper.gatherAndDisplayMetaDataInfo(conn, this);
+            if (dataStoreHelper != null)
+                supportsUOWDetection = dataStoreHelper.getMetaData().supportsUOWDetection();
             wasUsedToGetAConnection = true;
         }
     }
