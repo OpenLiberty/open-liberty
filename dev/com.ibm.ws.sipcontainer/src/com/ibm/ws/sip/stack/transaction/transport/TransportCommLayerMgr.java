@@ -689,29 +689,29 @@ public class TransportCommLayerMgr
 							"getHopConnection",
 							"creating connection to [" + hop + ']');
 					}
-					if(ApplicationProperties.getProperties().getBoolean(StackProperties.CREATE_CONNECTION_USE_LP_FROM_OUTBOUND)){
-						
-						if(listeningPoint == null){
-							listeningPoint = provider.getListeningPoint();
+					ListeningPoint lp = null;
+					if(ApplicationProperties.getProperties().getBoolean(StackProperties.CREATE_CONNECTION_USE_LP_FROM_OUTBOUND)) {
+						lp = listeningPoint;
+						if(lp == null) {
+							lp = provider.getListeningPoint();
 							if (c_logger.isTraceDebugEnabled()) {
 								c_logger.traceDebug(
 									this,
 									"getHopConnection",
-									"replace NULL LP with LP from Provider  " + provider);
+									"replace NULL LP with LP from Provider " + provider);
 							}	
 						}
-						if (c_logger.isTraceDebugEnabled()) {
-							c_logger.traceDebug(
-								this,
-								"getHopConnection",
-								"creating connection from  [" + listeningPoint + ']' + " to [" + hop + ']');
-						}
-						connection = createConnection(hop, listeningPoint );
 					}
-					else{
-						ListeningPoint lp = provider.getListeningPoint();
-						connection = createConnection(hop, lp );
+					else {
+						lp = provider.getListeningPoint();
 					}
+					if (c_logger.isTraceDebugEnabled()) {
+						c_logger.traceDebug(
+							this,
+							"getHopConnection",
+							"creating connection from [" + lp + ']' + " to [" + hop + ']');
+					}
+					connection = createConnection(hop, lp );
 					//if there is no exception here, the connection was created
 				}
 			}
