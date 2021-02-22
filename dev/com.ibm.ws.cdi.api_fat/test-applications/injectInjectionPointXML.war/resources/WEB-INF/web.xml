@@ -7,7 +7,7 @@
 	<display-name>Dependency Injection Test</display-name>
 	<servlet>
 		<servlet-name>InjectInjectionPointXMLServlet</servlet-name>
-		<servlet-class>com.ibm.ws.fat.cdi.injectInjectionPointXML.InjectInjectionPointXMLServlet</servlet-class>
+		<servlet-class>com.ibm.ws.cdi.api.fat.apps.injectInjectionPointXML.InjectInjectionPointXMLServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>InjectInjectionPointXMLServlet</servlet-name>

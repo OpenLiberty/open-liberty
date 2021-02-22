@@ -3,7 +3,7 @@
 	<display-name>appConversationFilter</display-name>
 	<filter>
 		<filter-name>FirstFilter</filter-name> 
-		<filter-class>test.conversation.filter.FirstFilter</filter-class> 
+		<filter-class>com.ibm.ws.cdi.api.fat.apps.conversationfilter.FirstFilter</filter-class> 
 	</filter>
 	<filter-mapping>
 	  <filter-name>FirstFilter</filter-name> 
