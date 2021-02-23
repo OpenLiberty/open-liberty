@@ -71,6 +71,7 @@ import com.ibm.ws.jca.adapter.WSManagedConnectionFactory;
 import com.ibm.ws.jca.cm.AbstractConnectionFactoryService;
 import com.ibm.ws.jca.cm.ConnectorService;
 import com.ibm.ws.jdbc.heritage.DataStoreHelper;
+import com.ibm.ws.jdbc.heritage.DataStoreHelperMetaData;
 import com.ibm.ws.jdbc.internal.PropertyService;
 import com.ibm.ws.jdbc.osgi.JDBCRuntimeVersion;
 import com.ibm.ws.kernel.service.util.SecureAction;
@@ -255,6 +256,11 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
     public final AtomicReference<DSConfig> dsConfig;
 
     /**
+     * Indicates whether or not the JDBC driver supports <code>java.sql.Connection.getCatalog()</code>.
+     */
+    public boolean supportsGetCatalog = true;
+
+    /**
      * Indicates whether or not the JDBC driver supports <code>java.sql.Connection.getNetworkTimeout()</code>.
      */
     public boolean supportsGetNetworkTimeout;
@@ -329,15 +335,25 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
         vendorImplClass = vendorImpl.getClass();
         type = ifc;
         jdbcDriverLoader = priv.getClassLoader(vendorImplClass);
-        supportsGetNetworkTimeout = supportsGetSchema = atLeastJDBCVersion(JDBCRuntimeVersion.VERSION_4_1);
 
         String implClassName = vendorImplClass.getName();
         isUCP = implClassName.charAt(2) == 'a' && implClassName.startsWith("oracle.ucp.jdbc."); // 3rd char distinguishes from common names like: com, org, java
 
         createDatabaseHelper(config.vendorProps instanceof PropertyService ? ((PropertyService) config.vendorProps).getFactoryPID() : PropertyService.FACTORY_PID);
 
-        dataStoreHelper = config.heritageHelperClass == null ? helper : AccessController.doPrivileged((PrivilegedExceptionAction<DataStoreHelper>) () ->
-                          (DataStoreHelper) jdbcDriverLoader.loadClass(config.heritageHelperClass).getConstructor().newInstance());
+        if (config.heritageHelperClass == null) {
+            dataStoreHelper = helper;
+            supportsGetNetworkTimeout = supportsGetSchema = atLeastJDBCVersion(JDBCRuntimeVersion.VERSION_4_1);
+        } else {
+            dataStoreHelper = AccessController.doPrivileged((PrivilegedExceptionAction<DataStoreHelper>) () ->
+                (DataStoreHelper) jdbcDriverLoader.loadClass(config.heritageHelperClass).getConstructor().newInstance());
+            DataStoreHelperMetaData metadata = dataStoreHelper.getMetaData();
+            supportsGetCatalog = metadata.supportsGetCatalog();
+            supportsGetNetworkTimeout = metadata.supportsGetNetworkTimeout();
+            supportsGetSchema = metadata.supportsGetSchema();
+            supportsGetTypeMap = metadata.supportsGetTypeMap();
+            supportsIsReadOnly = metadata.supportsIsReadOnly();
+        }
 
         if (config.supplementalJDBCTrace == null || config.supplementalJDBCTrace) {
             TraceComponent tracer = helper.getTracer();
