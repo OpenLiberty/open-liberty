@@ -21,7 +21,6 @@ import javax.crypto.Cipher;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Test;
 //Added 11/2020
 import org.junit.runner.RunWith;
@@ -39,9 +38,8 @@ import com.meterware.httpunit.WebResponse;
 import componenttest.annotation.AllowedFFDC;
 //Added 11/2020
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.FeatureReplacementAction;
-import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
@@ -61,6 +59,9 @@ public class CxfX509MigTests {
 
     static private final Class<?> thisClass = CxfX509MigTests.class;
 
+    //2/2021 to use EE7 or EE8 error messages in CxfX509MigSvcClient or CxfX509MigBadSvcClient
+    private static String errMsgVersion = "";
+
     static boolean debugOnHttp = true;
 
     private static String portNumber = "";
@@ -77,10 +78,6 @@ public class CxfX509MigTests {
     final static String badHttpsClientCert = "Could not send Message.";
 
     static boolean unlimitCryptoKeyLength = false;
-
-    //2/2021
-    @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification().andWith(FeatureReplacementAction.EE8_FEATURES().forServers(serverName).removeFeature("jsp-2.2").removeFeature("jaxws-2.2").removeFeature("servlet-3.1").removeFeature("usr:wsseccbh-1.0").addFeature("jsp-2.3").addFeature("jaxws-2.3").addFeature("servlet-4.0").addFeature("usr:wsseccbh-2.0"));
 
     /**
      * Sets up any configuration required for running the OAuth tests.
@@ -101,11 +98,13 @@ public class CxfX509MigTests {
         if (features.contains("usr:wsseccbh-1.0")) {
             server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbh.jar");
             server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-1.0.mf");
+            errMsgVersion = "EE7";
         }
         if (features.contains("usr:wsseccbh-2.0")) {
             server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
             server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-2.0.mf");
             copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
+            errMsgVersion = "EE8";
         }
 
         //Added 11/2020
@@ -141,6 +140,7 @@ public class CxfX509MigTests {
         // Check the JDK supports crypto key length > 128
         try {
             unlimitCryptoKeyLength = Cipher.getMaxAllowedKeyLength("RC5") > 128;
+            Log.info(thisClass, thisMethod, "From CxfX509MigTests, unlimitCryptoKeyLength is: " + unlimitCryptoKeyLength);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -759,7 +759,7 @@ public class CxfX509MigTests {
      *
      * This is a negative test.
      * Test TransportEndorsingPolicy. See the policy in testCxfX509TransportEndrosingMigServiceHttps
-     * But this does not request in Https, whcih is required
+     * But this does not request in Https, which is required
      * Expect it to throws Exception in the service-client
      *
      */
@@ -946,7 +946,8 @@ public class CxfX509MigTests {
                         portNumber, //String portNumber,
                         "", //String portNumberSecure
                         "FatBAX11Service", //String strServiceName,
-                        "UrnX509Token11" //String strServicePort
+                        "UrnX509Token11", //String strServicePort
+                        errMsgVersion //2/2021 CxfX509MigSvcClient
             );
         } catch (Exception e) {
             throw e;
@@ -1099,7 +1100,8 @@ public class CxfX509MigTests {
                         portNumber, //String portNumber,
                         portNumberSecure, //String portNumberSecure
                         "FatBAX11Service", //String strServiceName,
-                        "UrnX509Token11" //String strServicePort
+                        "UrnX509Token11", //String strServicePort
+                        errMsgVersion //2/2021 CxfX509MigSvcClient
             );
         } catch (Exception e) {
             throw e;
@@ -1297,7 +1299,8 @@ public class CxfX509MigTests {
                         portNumber, //String portNumber,
                         "", //String portNumberSecure
                         "FatBAX13Service", //String strServiceName,
-                        "UrnX509Token13" //String strServicePort
+                        "UrnX509Token13", //String strServicePort
+                        errMsgVersion //2/2021 CxfX509MigBadSvcClient
             );
         } catch (Exception e) {
             throw e;
@@ -1858,7 +1861,8 @@ public class CxfX509MigTests {
                         portNumber, //String portNumber,
                         "", //String portNumberSecure
                         "FatBAX16Service", //String strServiceName,
-                        "UrnX509Token16" //String strServicePort
+                        "UrnX509Token16", //String strServicePort
+                        errMsgVersion //2/2021 CxfX509MigBadSvcClient
             );
         } catch (Exception e) {
             throw e;
@@ -2205,7 +2209,8 @@ public class CxfX509MigTests {
                         portNumber, //String portNumber,
                         "", //String portNumberSecure
                         "FatBAX17Service", //String strServiceName,
-                        "UrnX509Token17" //String strServicePort
+                        "UrnX509Token17", //String strServicePort
+                        errMsgVersion //2/2021 CxfX509MigSvcClient
             );
         } catch (Exception e) {
             throw e;
@@ -2911,6 +2916,7 @@ public class CxfX509MigTests {
      *
      */
 
+    //2/2021 run with EE7 (passed)
     @Test
     //Orig:
     //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
@@ -2928,7 +2934,8 @@ public class CxfX509MigTests {
                            portNumber, //String portNumber,
                            "", //String portNumberSecure
                            "FatBAX02Service", //String strServiceName,
-                           "UrnX509Token02" //String strServicePort
+                           "UrnX509Token02", //String strServicePort
+                           errMsgVersion //2/2021 CxfX509MigBadSvcClient
             );
         } catch (Exception e) {
             throw e;
@@ -2980,6 +2987,7 @@ public class CxfX509MigTests {
      */
 
     @Test
+    //2/2021 FFDC exception exists in EE7 but not in EE8
     @AllowedFFDC("org.apache.ws.security.WSSecurityException")
     public void testBadCxfX509AsymProtectTokensMigService() throws Exception {
         String thisMethod = "testCxfX509AsymProtectTokensMigService";
@@ -2993,7 +3001,8 @@ public class CxfX509MigTests {
                            portNumber, //String portNumber,
                            "", //String portNumberSecure
                            "FatBAX08Service", //String strServiceName,
-                           "UrnX509Token08" //String strServicePort
+                           "UrnX509Token08", //String strServicePort
+                           errMsgVersion //2/2021 CxfX509MigBadSvcClient
             );
         } catch (Exception e) {
             throw e;
@@ -3011,6 +3020,8 @@ public class CxfX509MigTests {
      */
 
     @Test
+    //2/2021
+    //@AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException" })
     public void testBadCxfX509TransportEndrosingMigServiceHttps() throws Exception {
         String thisMethod = "testCxfX509TransportEndorsingMigService";
         methodFull = "testBadCxfX509TransportEndorsingMigServiceHttps";
@@ -3023,7 +3034,8 @@ public class CxfX509MigTests {
                            portNumber, //String portNumber,
                            portNumberSecure, //String portNumberSecure
                            "FatBAX10Service", //String strServiceName,
-                           "UrnX509Token10" //String strServicePort
+                           "UrnX509Token10", //String strServicePort
+                           errMsgVersion //2/2021  CxfX509MigBadSvcClient
             );
         } catch (Exception e) {
             throw e;
@@ -3112,7 +3124,8 @@ public class CxfX509MigTests {
                            portNumber, //String portNumber,
                            portNumberSecure, //String portNumberSecure
                            "FatBAX13Service", //String strServiceName,
-                           "UrnX509Token13" //String strServicePort
+                           "UrnX509Token13", //String strServicePort
+                           errMsgVersion //2/2021 CxfX509MigBadSvcClient
             );
         } catch (Exception e) {
             throw e;
@@ -3200,7 +3213,8 @@ public class CxfX509MigTests {
                            portNumber, //String portNumber,
                            portNumberSecure, //String portNumberSecure
                            "FatBAX16Service", //String strServiceName,
-                           "UrnX509Token16" //String strServicePort
+                           "UrnX509Token16", //String strServicePort
+                           errMsgVersion //2/2021 CxfX509MigBadSvcClient
             );
         } catch (Exception e) {
             throw e;
@@ -3339,7 +3353,8 @@ public class CxfX509MigTests {
                            portNumber, //String portNumber,
                            "", //String portNumberSecure
                            "FatBAX21Service", //String strServiceName,
-                           "UrnX509Token21" //String strServicePort
+                           "UrnX509Token21", //String strServicePort
+                           errMsgVersion //2/2021 CxfX509MigBadSvcClient
             );
         } catch (Exception e) {
             throw e;
@@ -3390,6 +3405,29 @@ public class CxfX509MigTests {
      * Though this test is not enforced it yet.
      *
      */
+    //2/2021 Orig:
+    //   protected void testRoutine(
+    //                              String thisMethod,
+    //                              String x509Policy,
+    //                              String testMode, // Positive, positive-1, negative or negative-1... etc
+    //                              String portNumber,
+    //                              String portNumberSecure,
+    //                              String strServiceName,
+    //                              String strServicePort) throws Exception {
+    //       testSubRoutine(
+    //                      thisMethod,
+    //                      x509Policy,
+    //                      testMode, // Positive, positive-1, negative or negative-1... etc
+    //                      portNumber,
+    //                      portNumberSecure,
+    //                      strServiceName,
+    //                      strServicePort,
+    //                      x509MigClientUrl);
+    //
+    //       return;
+    //  }
+
+    //2/2021
     protected void testRoutine(
                                String thisMethod,
                                String x509Policy,
@@ -3406,7 +3444,32 @@ public class CxfX509MigTests {
                        portNumberSecure,
                        strServiceName,
                        strServicePort,
-                       x509MigClientUrl);
+                       x509MigClientUrl,
+                       null);
+
+        return;
+    }
+
+    //2/2021
+    protected void testRoutine(
+                               String thisMethod,
+                               String x509Policy,
+                               String testMode, // Positive, positive-1, negative or negative-1... etc
+                               String portNumber,
+                               String portNumberSecure,
+                               String strServiceName,
+                               String strServicePort,
+                               String errMsgVersion) throws Exception {
+        testSubRoutine(
+                       thisMethod,
+                       x509Policy,
+                       testMode, // Positive, positive-1, negative or negative-1... etc
+                       portNumber,
+                       portNumberSecure,
+                       strServiceName,
+                       strServicePort,
+                       x509MigClientUrl,
+                       errMsgVersion);
 
         return;
     }
@@ -3553,7 +3616,8 @@ public class CxfX509MigTests {
                            portNumber, //String portNumber,
                            "", //String portNumberSecure
                            "FatBAX32Service", //String strServiceName,
-                           "UrnX509Token32" //String strServicePort
+                           "UrnX509Token32", //String strServicePort
+                           errMsgVersion //2/2021 CxfX509MigBadSvcClient
             );
         } catch (Exception e) {
             throw e;
@@ -3589,10 +3653,12 @@ public class CxfX509MigTests {
      * The test passes, since <sp:InclusiveC14N/> is ignored.
      *
      */
-    @Test
-    //2/2021
-    @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" })
-    public void testBadBasic128Service() throws Exception {
+    //2/2021 to run with EE7 as positive
+    //@Test not valid test?
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
+    //Orig:
+    //public void testBadBasic128Service() throws Exception {
+    public void testBadBasic128ServiceEE7Only() throws Exception {
         String thisMethod = "testBadBasic128Service";
         methodFull = "testBadBasic128Service";
 
@@ -3600,11 +3666,38 @@ public class CxfX509MigTests {
             testBadRoutine(
                            thisMethod, //String thisMethod,
                            "BadAsymEncSignInclusiveC14NPolicy", // Testing policy name
-                           "positive", // Positive, positive-1, negative or negative-1... etc
+                           "positive", // Positive, positive-1, negative or negative-1... etc  //2/2021 The method works as positive right now on EE7
                            portNumber, //String portNumber,
                            "", //String portNumberSecure
                            "FatBAX34Service", //String strServiceName,
                            "UrnX509Token34" //String strServicePort
+            );
+        } catch (Exception e) {
+            throw e;
+        }
+
+        return;
+    }
+
+    //2/2021 to run with EE8 as negative (failed)
+    @Test
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    //2/2021
+    @AllowedFFDC("org.apache.wss4j.common.ext.WSSecurityException")
+    public void testBadBasic128ServiceEE8Only() throws Exception {
+        String thisMethod = "testBadBasic128Service";
+        methodFull = "testBadBasic128Service";
+
+        try {
+            testBadRoutine(
+                           thisMethod, //String thisMethod,
+                           "BadAsymEncSignInclusiveC14NPolicy", // Testing policy name
+                           "negative", // Positive, positive-1, negative or negative-1... etc
+                           portNumber, //String portNumber,
+                           "", //String portNumberSecure
+                           "FatBAX34Service", //String strServiceName,
+                           "UrnX509Token34", //String strServicePort
+                           errMsgVersion //2/2021 CxfX509MigBadSvcClient
             );
         } catch (Exception e) {
             throw e;
@@ -3638,7 +3731,32 @@ public class CxfX509MigTests {
                        portNumberSecure,
                        strServiceName,
                        strServicePort,
-                       x509MigBadClientUrl);
+                       x509MigBadClientUrl,
+                       null); //2/2021
+
+        return;
+    }
+
+    //2/2021
+    protected void testBadRoutine(
+                                  String thisMethod,
+                                  String x509Policy,
+                                  String testMode, // Positive, positive-1, negative or negative-1... etc
+                                  String portNumber,
+                                  String portNumberSecure,
+                                  String strServiceName,
+                                  String strServicePort,
+                                  String errMsgVersion) throws Exception {
+        testSubRoutine(
+                       thisMethod,
+                       x509Policy,
+                       testMode, // Positive, positive-1, negative or negative-1... etc
+                       portNumber,
+                       portNumberSecure,
+                       strServiceName,
+                       strServicePort,
+                       x509MigBadClientUrl,
+                       errMsgVersion); //2/2021
 
         return;
     }
@@ -3660,7 +3778,8 @@ public class CxfX509MigTests {
                                   String portNumberSecure,
                                   String strServiceName,
                                   String strServicePort,
-                                  String strClientUrl) throws Exception {
+                                  String strClientUrl,
+                                  String errMsgVersion) throws Exception { //2/2021
         try {
 
             WebRequest request = null;
@@ -3682,6 +3801,8 @@ public class CxfX509MigTests {
             request.setParameter("serviceName", strServiceName);
             request.setParameter("servicePort", strServicePort);
             request.setParameter("methodFull", methodFull);
+            //2/2021
+            request.setParameter("errorMsgVersion", errMsgVersion);
 
             // Invoke the client
             response = wc.getResponse(request);

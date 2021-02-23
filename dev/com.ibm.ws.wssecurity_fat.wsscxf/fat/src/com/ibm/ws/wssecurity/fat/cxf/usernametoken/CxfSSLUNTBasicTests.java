@@ -27,6 +27,10 @@ public class CxfSSLUNTBasicTests extends SSLTestCommon {
 
     static private final Class<?> thisClass = CxfSSLUNTBasicTests.class;
 
+    //2/2021
+    //@ClassRule
+    //public static RepeatTests r = RepeatTests.with(new EmptyAction().fullFATOnly()).andWith(FeatureReplacementAction.EE8_FEATURES().forServers(serverName).removeFeature("jsp-2.2").removeFeature("jaxws-2.2").removeFeature("servlet-3.1").addFeature("jsp-2.3").addFeature("jaxws-2.3").addFeature("servlet-4.0"));
+
     /**
      * TestDescription:
      *

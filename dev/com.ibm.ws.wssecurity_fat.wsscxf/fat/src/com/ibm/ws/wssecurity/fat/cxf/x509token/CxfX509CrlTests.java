@@ -17,7 +17,6 @@ import java.util.Set;
 //Added 11/2020
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Test;
 //Added 11/2020
 import org.junit.runner.RunWith;
@@ -39,8 +38,6 @@ import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.FeatureReplacementAction;
-import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
@@ -59,10 +56,6 @@ public class CxfX509CrlTests extends CommonTests {
     public static LibertyServer server;
     //2/2021
     static private final Class<?> thisClass = CxfX509CrlTests.class;
-
-    //2/2021
-    @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification().andWith(FeatureReplacementAction.EE8_FEATURES().forServers(serverName).removeFeature("jsp-2.2").removeFeature("jaxws-2.2").removeFeature("servlet-3.1").removeFeature("usr:wsseccbh-1.0").addFeature("jsp-2.3").addFeature("jaxws-2.3").addFeature("servlet-4.0").addFeature("usr:wsseccbh-2.0"));
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -118,9 +111,7 @@ public class CxfX509CrlTests extends CommonTests {
     //public void testCXFClientCRLPNotInList() throws Exception {
     public void testCXFClientCRLPNotInListEE7Only() throws Exception {
 
-        //Orig:
-        //String thisMethod = "testCXFClientCRLPNotInList";
-        String thisMethod = "testCXFClientCRLPNotInListEE7Only";
+        String thisMethod = "testCXFClientCRLPNotInList";
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_certp.xml");
         genericTest(
                     // test name for logging
@@ -154,7 +145,7 @@ public class CxfX509CrlTests extends CommonTests {
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
     public void testCXFClientCRLPNotInListEE8Only() throws Exception {
 
-        String thisMethod = "testCXFClientCRLPNotInListEE8Only";
+        String thisMethod = "testCXFClientCRLPNotInList";
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_certp_wss4j.xml");
         genericTest(
                     // test name for logging
@@ -199,16 +190,13 @@ public class CxfX509CrlTests extends CommonTests {
     @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     //Orig:
     @AllowedFFDC("org.apache.ws.security.WSSecurityException")
-    //Mei:
+    //2/2021:
     //@ExpectedFFDC("org.apache.wss4j.common.ext.WSSecurityException") //@AV999
-    //End
     //Orig:
     //public void testCXFClientCRLNInList() throws Exception {
     public void testCXFClientCRLNInListEE7Only() throws Exception {
 
-        //Orig:
-        //String thisMethod = "testCXFClientCRLNInList";
-        String thisMethod = "testCXFClientCRLNInListEE7Only";
+        String thisMethod = "testCXFClientCRLNInList";
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_certn.xml");
         genericTest(
                     // test name for logging
@@ -245,7 +233,7 @@ public class CxfX509CrlTests extends CommonTests {
     @ExpectedFFDC("org.apache.wss4j.common.ext.WSSecurityException") //@AV999
     public void testCXFClientCRLNInListEE8Only() throws Exception {
 
-        String thisMethod = "testCXFClientCRLNInListEE8Only";
+        String thisMethod = "testCXFClientCRLNInList";
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_certn_wss4j.xml");
         genericTest(
                     // test name for logging

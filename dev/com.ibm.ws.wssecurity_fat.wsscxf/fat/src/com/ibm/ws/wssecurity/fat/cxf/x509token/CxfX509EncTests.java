@@ -16,7 +16,6 @@ import java.util.Set;
 
 import org.junit.After;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 //Added 10/2020
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,8 +38,6 @@ import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.FeatureReplacementAction;
-import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
@@ -67,10 +64,6 @@ public class CxfX509EncTests extends CommonTests {
     protected static String clientHttpsUrl = "";
     protected static String ENDPOINT_BASE = "";
     protected static String NAMESPACE_URI = "";
-
-    //2/2021
-    @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification().andWith(FeatureReplacementAction.EE8_FEATURES().forServers(serverName).removeFeature("jsp-2.2").removeFeature("jaxws-2.2").removeFeature("servlet-3.1").removeFeature("usr:wsseccbh-1.0").addFeature("jsp-2.3").addFeature("jaxws-2.3").addFeature("servlet-4.0").addFeature("usr:wsseccbh-2.0"));
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -411,9 +404,7 @@ public class CxfX509EncTests extends CommonTests {
     //public void testCXFClientWrongEncKeyAlgorithm() throws Exception {
     public void testCXFClientWrongEncKeyAlgorithmEE7Only() throws Exception {
 
-        //Orig:
-        //String thisMethod = "testCXFClientWrongEncKeyAlgorithm";
-        String thisMethod = "testCXFClientWrongEncKeyAlgorithmEE7Only";
+        String thisMethod = "testCXFClientWrongEncKeyAlgorithm";
         printMethodName(thisMethod, "Start Prep for " + thisMethod);
         newClientWsdl = updateClientWsdl(defaultClientWsdlLoc + "X509XmlEnc2.wsdl",
                                          defaultClientWsdlLoc + "X509XmlEnc2Updated.wsdl");
@@ -439,7 +430,6 @@ public class CxfX509EncTests extends CommonTests {
                     // msg to send from svc client to server
                     "",
                     // expected response from server
-                    //Orig:
                     "AsymmetricBinding: The Key transport method does not match the requirement",
                     // msg to issue if do NOT get the expected result
                     "The test expected a succesful message from the server.");
@@ -452,7 +442,7 @@ public class CxfX509EncTests extends CommonTests {
     @ExpectedFFDC("org.apache.wss4j.common.ext.WSSecurityException") //@AV999
     public void testCXFClientWrongEncKeyAlgorithmEE8Only() throws Exception {
 
-        String thisMethod = "testCXFClientWrongEncKeyAlgorithmEE8Only";
+        String thisMethod = "testCXFClientWrongEncKeyAlgorithm";
         printMethodName(thisMethod, "Start Prep for " + thisMethod);
         newClientWsdl = updateClientWsdl(defaultClientWsdlLoc + "X509XmlEnc2.wsdl",
                                          defaultClientWsdlLoc + "X509XmlEnc2Updated.wsdl");
@@ -502,9 +492,8 @@ public class CxfX509EncTests extends CommonTests {
     //Orig:
     //public void testCXFClientWrongDataEncAlgorithm() throws Exception {
     public void testCXFClientWrongDataEncAlgorithmEE7Only() throws Exception {
-        //Orig:
-        //String thisMethod = "testCXFClientWrongDataEncAlgorithm";
-        String thisMethod = "testCXFClientWrongDataEncAlgorithmEE7Only";
+
+        String thisMethod = "testCXFClientWrongDataEncAlgorithm";
         printMethodName(thisMethod, "Start Prep for " + thisMethod);
         newClientWsdl = updateClientWsdl(defaultClientWsdlLoc + "X509XmlEnc2.wsdl",
                                          defaultClientWsdlLoc + "X509XmlEnc2Updated.wsdl");
@@ -543,7 +532,7 @@ public class CxfX509EncTests extends CommonTests {
     @ExpectedFFDC("org.apache.wss4j.common.ext.WSSecurityException") //@AV999
     public void testCXFClientWrongDataEncAlgorithmEE8Only() throws Exception {
 
-        String thisMethod = "testCXFClientWrongDataEncAlgorithmEE8Only";
+        String thisMethod = "testCXFClientWrongDataEncAlgorithm";
         printMethodName(thisMethod, "Start Prep for " + thisMethod);
         newClientWsdl = updateClientWsdl(defaultClientWsdlLoc + "X509XmlEnc2.wsdl",
                                          defaultClientWsdlLoc + "X509XmlEnc2Updated.wsdl");
@@ -594,9 +583,7 @@ public class CxfX509EncTests extends CommonTests {
     //public void testCXFClientWrongEncryptionKey() throws Exception {
     public void testCXFClientWrongEncryptionKeyEE7Only() throws Exception {
 
-        //Orig:
-        //String thisMethod = "testCXFClientWrongEncryptionKey";
-        String thisMethod = "testCXFClientWrongEncryptionKeyEE7Only";
+        String thisMethod = "testCXFClientWrongEncryptionKey";
         printMethodName(thisMethod, "Start Prep for " + thisMethod);
         //orig:
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wrongEnc.xml");
@@ -627,7 +614,6 @@ public class CxfX509EncTests extends CommonTests {
                     // msg to send from svc client to server
                     "",
                     // expected response from server
-                    //Orig:
                     "The signature or decryption was invalid",
                     // msg to issue if do NOT get the expected result
                     "The test expected an exception from the server.");
@@ -647,9 +633,9 @@ public class CxfX509EncTests extends CommonTests {
     @ExpectedFFDC("org.apache.wss4j.common.ext.WSSecurityException") //@AV999
     public void testCXFClientWrongEncryptionKeyEE8Only() throws Exception {
 
-        String thisMethod = "testCXFClientWrongEncryptionKeyEE8Only";
+        String thisMethod = "testCXFClientWrongEncryptionKey";
         printMethodName(thisMethod, "Start Prep for " + thisMethod);
-        //orig:
+
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wrongEnc_wss4j.xml");
         //Added 11/2020
         //UpdateServerXml reconfigServerObj = new UpdateServerXml();
