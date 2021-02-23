@@ -14,6 +14,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.Field;
 import java.security.AccessController;
@@ -21,6 +22,8 @@ import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
 
 import javax.annotation.Resource;
 import javax.servlet.ServletConfig;
@@ -67,6 +70,19 @@ public class JDBCHeritageTestServlet extends FATServlet {
                 }
             throw new NoSuchFieldException("Unable to find pstmtImpl on prepared statement wrapper. If the field has been renamed, you will need to update this test.");
         });
+    }
+
+    /**
+     * Verifies that doConnectionSetup was performed on a new connection.
+     */
+    public void testConnectionSetup() throws Exception {
+        try (Connection con = defaultDataSource.getConnection("testConnectionSetupUser", "PASSWORD")) {
+            Statement stmt = con.createStatement();
+            ResultSet result = stmt.executeQuery("VALUES SYSCS_UTIL.SYSCS_GET_RUNTIMESTATISTICS()");
+            assertTrue(result.next());
+            assertEquals(1, result.getInt(1));
+            stmt.close();
+        }
     }
 
     /**

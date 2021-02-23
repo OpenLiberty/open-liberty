@@ -10,7 +10,9 @@
  *******************************************************************************/
 package test.jdbc.heritage.driver.helper;
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
+import java.sql.SQLException;
 
 import com.ibm.ws.jdbc.heritage.AccessIntent;
 import com.ibm.ws.jdbc.heritage.DataStoreHelper;
@@ -21,6 +23,14 @@ import com.ibm.ws.jdbc.heritage.DataStoreHelperMetaData;
  */
 public class HDDataStoreHelper implements DataStoreHelper {
     private final HDDataStoreHelperMetaData metadata = new HDDataStoreHelperMetaData();
+
+    @Override
+    public void doConnectionSetup(Connection con) throws SQLException {
+        try (CallableStatement stmt = con.prepareCall("CALL SYSCS_UTIL.SYSCS_SET_RUNTIMESTATISTICS(1)")) {
+            stmt.setPoolable(false);
+            stmt.execute();
+        }
+    }
 
     @Override
     public int getIsolationLevel(AccessIntent unused) {
