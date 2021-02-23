@@ -6,7 +6,7 @@ singleton=true
 -features=\
   com.ibm.websphere.appserver.org.eclipse.microprofile.reactive.streams.operators-1.0,\
   com.ibm.websphere.appserver.javax.cdi-2.0,\
-  io.openliberty.mpCompatible-0.0
+  io.openliberty.mpCompatible-0.0; ibm.tolerates:="4.0"
 kind=ga
 edition=core
 WLP-Activation-Type: parallel

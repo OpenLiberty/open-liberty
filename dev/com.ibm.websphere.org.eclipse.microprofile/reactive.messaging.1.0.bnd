@@ -15,7 +15,7 @@ Bundle-SymbolicName: com.ibm.websphere.org.eclipse.microprofile.reactive.messagi
 
 Import-Package: \
   javax.enterprise.util; version="[2.0,3)",\
-  org.eclipse.microprofile.config; version="[1.0,2)",\
+  org.eclipse.microprofile.config; version="[1.0,3)",\
   org.eclipse.microprofile.reactive.streams.operators; version="[1.0,2)",\
   *
 

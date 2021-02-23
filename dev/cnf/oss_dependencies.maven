@@ -103,6 +103,7 @@ io.smallrye.common:smallrye-common-function:1.5.0
 io.smallrye.config:smallrye-config-common:2.0.2
 io.smallrye.config:smallrye-config-core:2.0.2
 io.smallrye.config:smallrye-config:2.0.2
+io.smallrye.reactive:smallrye-reactive-messaging-provider:1.0.9-SNAPSHOT
 io.smallrye:smallrye-graphql-client-api:1.0.9
 io.smallrye:smallrye-graphql-client:1.0.9
 io.smallrye:smallrye-graphql-schema-model:1.0.9
