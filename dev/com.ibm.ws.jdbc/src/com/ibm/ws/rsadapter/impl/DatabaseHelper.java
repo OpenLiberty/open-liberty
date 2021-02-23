@@ -48,6 +48,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.jca.adapter.WSConnectionManager;
 import com.ibm.ws.jca.cm.AbstractConnectionFactoryService;
+import com.ibm.ws.jdbc.heritage.AccessIntent;
 import com.ibm.ws.jdbc.heritage.DataStoreHelper;
 import com.ibm.ws.jdbc.heritage.DataStoreHelperMetaData;
 import com.ibm.ws.resource.ResourceRefInfo;
@@ -304,10 +305,11 @@ public class DatabaseHelper implements DataStoreHelper {
 
     /**
      * This method returns a default isolation level based on the database backend.
-     * 
+     *
+     * @param unused
      * @return default isolation level
      */
-    public int getDefaultIsolationLevel() {
+    public int getIsolationLevel(AccessIntent unused) {
         return Connection.TRANSACTION_READ_COMMITTED;
     }
 

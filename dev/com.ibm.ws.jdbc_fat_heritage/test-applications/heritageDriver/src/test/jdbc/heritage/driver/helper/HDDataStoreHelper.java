@@ -10,6 +10,9 @@
  *******************************************************************************/
 package test.jdbc.heritage.driver.helper;
 
+import java.sql.Connection;
+
+import com.ibm.ws.jdbc.heritage.AccessIntent;
 import com.ibm.ws.jdbc.heritage.DataStoreHelper;
 import com.ibm.ws.jdbc.heritage.DataStoreHelperMetaData;
 
@@ -18,6 +21,11 @@ import com.ibm.ws.jdbc.heritage.DataStoreHelperMetaData;
  */
 public class HDDataStoreHelper implements DataStoreHelper {
     private final HDDataStoreHelperMetaData metadata = new HDDataStoreHelperMetaData();
+
+    @Override
+    public int getIsolationLevel(AccessIntent unused) {
+        return Connection.TRANSACTION_SERIALIZABLE;
+    }
 
     @Override
     public DataStoreHelperMetaData getMetaData() {

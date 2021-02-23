@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2001, 2017 IBM Corporation and others.
+ * Copyright (c) 2001, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,6 +26,7 @@ import javax.resource.ResourceException;
 import com.ibm.ejs.cm.logger.TraceWriter;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.jdbc.heritage.AccessIntent;
 import com.ibm.ws.rsadapter.AdapterUtil;
 import com.ibm.ws.rsadapter.jdbc.WSJdbcTracer;
 
@@ -141,7 +142,7 @@ public class MicrosoftSQLServerHelper extends DatabaseHelper {
     }
 
     @Override
-    public int getDefaultIsolationLevel() {
+    public int getIsolationLevel(AccessIntent unused) {
         return Connection.TRANSACTION_REPEATABLE_READ;
     }
 

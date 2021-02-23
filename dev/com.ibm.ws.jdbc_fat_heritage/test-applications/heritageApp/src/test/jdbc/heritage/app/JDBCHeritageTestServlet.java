@@ -10,6 +10,7 @@
  *******************************************************************************/
 package test.jdbc.heritage.app;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
@@ -69,13 +70,14 @@ public class JDBCHeritageTestServlet extends FATServlet {
     }
 
     /**
-     * Confirm that a dataSource that is configured with heritageSettings can be injected.
+     * Confirm that a dataSource that is configured with heritageSettings can be injected
+     * and has the transaction isolation level that is assigned as default by the DataStoreHelper.
      */
     @Test
-    public void testInjection() throws Exception {
+    public void testDefaultIsolationLevel() throws Exception {
         assertNotNull(defaultDataSource);
         try (Connection con = defaultDataSource.getConnection()) {
-            con.createStatement().close();
+            assertEquals(Connection.TRANSACTION_SERIALIZABLE, con.getTransactionIsolation());
         }
     }
 

@@ -31,6 +31,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.Transaction.UOWCoordinator;
 import com.ibm.ws.Transaction.UOWCurrent;
 import com.ibm.ws.jca.cm.AbstractConnectionFactoryService;
+import com.ibm.ws.jdbc.heritage.AccessIntent;
 import com.ibm.ws.resource.ResourceRefInfo;
 import com.ibm.ws.rsadapter.AdapterUtil;
 import com.ibm.ws.rsadapter.DSConfig;
@@ -190,7 +191,7 @@ public class DB2Helper extends DatabaseHelper {
     }
 
     @Override
-    public int getDefaultIsolationLevel() {
+    public int getIsolationLevel(AccessIntent unused) {
         return Connection.TRANSACTION_REPEATABLE_READ;
     }
 

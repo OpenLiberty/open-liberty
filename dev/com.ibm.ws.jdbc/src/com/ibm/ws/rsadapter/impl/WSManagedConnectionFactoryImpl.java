@@ -1340,8 +1340,11 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
             // This accounts for the scenario where the first connection attempt is bad.
             // The information needs to be read again on the second attempt.
             helper.gatherAndDisplayMetaDataInfo(conn, this);
-            if (dataStoreHelper != null)
+
+            // If a legacy data store helper is used, allow it to determine the unit-of-work detection support:
+            if (dataStoreHelper != helper)
                 supportsUOWDetection = dataStoreHelper.getMetaData().supportsUOWDetection();
+
             wasUsedToGetAConnection = true;
         }
     }
@@ -1482,11 +1485,18 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
     }
 
     /**
+     * This method returns the legacy DataStoreHelper for the database/JDBC driver.
+     */
+    public final DataStoreHelper getDataStoreHelper() {
+        return dataStoreHelper;
+    }
+
+    /**
      * This method returns the helper for the database/JDBC driver.
      * 
      * @return the instance of the helper class.
      */
-    public DatabaseHelper getHelper() {
+    public final DatabaseHelper getHelper() {
         return helper;
     }
 
