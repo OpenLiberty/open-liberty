@@ -77,6 +77,8 @@
     <javaPermission className="java.net.URLPermission" name="http://localhost:8010/xmlsig/X509XmlSigService1" actions="POST:AcceptSOAPActionUser-Agent"/>
     <javaPermission className="java.net.URLPermission" name="http://localhost:8010/x509sig/X509XmlStrService2" actions="POST:AcceptSOAPActionUser-Agent"/>
     <javaPermission className="java.util.PropertyPermission" name="javax.xml.soap.MessageFactory" actions="read"/>
-    
+    <!-- 2/2021 EE8 -->
+    <javaPermission className="org.osgi.framework.AdminPermission" name="*" actions="*"/>
+    <javaPermission className="java.security.SecurityPermission" name="org.apache.xml.security.register"/>
     
 </server>

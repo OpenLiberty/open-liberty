@@ -146,9 +146,6 @@ public class CxfCallerSvcClient extends HttpServlet {
             Service service = null;
             String strExpect = null;
             String strSubErrMsg = "Not known what error message yet";
-            //Mei:
-            String newErrMsg = null;
-            //End
             if (thisMethod.equals("testCxfCallerHttpPolicy")) {
                 service = new FatBAC01Service(wsdlURL, serviceName);
                 strExpect = "Liberty Fat Caller bac01(" + untID + ")";
@@ -191,7 +188,6 @@ public class CxfCallerSvcClient extends HttpServlet {
                     if (errMsgVersionInX509.equals("EE8")) {
                         strSubErrMsg = "Unexpected number of certificates: 0";
                     } //End 2/2021
-
                 }
             } else if (thisMethod.equals("testCxfCallerX509TokenPolicy")) {
                 service = new FatBAC05Service(wsdlURL, serviceName);

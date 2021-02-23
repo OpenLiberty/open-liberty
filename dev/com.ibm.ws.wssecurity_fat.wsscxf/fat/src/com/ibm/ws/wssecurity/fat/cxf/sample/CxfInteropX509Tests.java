@@ -19,7 +19,6 @@ import java.util.Set;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Test;
 //Added 11/2020
 import org.junit.runner.RunWith;
@@ -39,8 +38,6 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.FeatureReplacementAction;
-import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
@@ -70,10 +67,6 @@ public class CxfInteropX509Tests {
 
     static String hostName = "localhost";
     static boolean debug = false;
-
-    //2/2021
-    @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification().andWith(FeatureReplacementAction.EE8_FEATURES().forServers(serverName).removeFeature("jsp-2.2").removeFeature("jaxws-2.2").removeFeature("servlet-3.1").removeFeature("usr:wsseccbh-1.0").addFeature("jsp-2.3").addFeature("jaxws-2.3").addFeature("servlet-4.0").addFeature("usr:wsseccbh-2.0"));
 
     /**
      * Sets up any configuration required for running the tests.
@@ -167,7 +160,7 @@ public class CxfInteropX509Tests {
                         thisMethod, // String thisMethod,
                         WSSampleClientUrl,
                         serviceClientUrl + "/WSSampleSei/Echo21Service", // the serviceURL of the WebServiceProvider. This needs to be updated in the Echo wsdl files
-                        "Echo21Service", // Secnerio name. For distinguish the testing scenario
+                        "Echo21Service", // Scenario name. For distinguish the testing scenario
                         "echo", // testing type: ping, echo, async
                         "1", // msgcount: how many times to run the test from service-client to  service-provider
                         "soap11", // options: soap11 or soap12 or else (will be added soap11 to its end)
@@ -196,7 +189,7 @@ public class CxfInteropX509Tests {
                         thisMethod, // String thisMethod,
                         WSSampleClientUrl,
                         serviceClientUrl + "/WSSampleSei/Echo22Service", // the serviceURL of the WebServiceProvider. This needs to be updated in the Echo wsdl files
-                        "Echo22Service", // Secnerio name. For distinguish the testing scenario
+                        "Echo22Service", // Scenario name. For distinguish the testing scenario
                         "echo", // testing type: ping, echo, async
                         "1", // msgcount: how many times to run the test from service-client to  service-provider
                         "soap11", // options: soap11 or soap12 or else (will be added soap11 to its end)
@@ -225,7 +218,7 @@ public class CxfInteropX509Tests {
                         thisMethod, // String thisMethod,
                         WSSampleClientUrl,
                         serviceClientUrl + "/WSSampleSei/Echo23Service", // the serviceURL of the WebServiceProvider. This needs to be updated in the Echo wsdl files
-                        "Echo23Service", // Secnerio name. For distinguish the testing scenario
+                        "Echo23Service", // Scenario name. For distinguish the testing scenario
                         "echo", // testing type: ping, echo, async
                         "1", // msgcount: how many times to run the test from service-client to  service-provider
                         "soap11", // options: soap11 or soap12 or else (will be added soap11 to its end)
@@ -251,7 +244,7 @@ public class CxfInteropX509Tests {
                                String thisMethod, // thisMethod testing Method
                                String clientUrl, // The serviceClient URL
                                String uriString, // serviceURL the serviceURL of the WebServiceProvider. This needs to be updated in the Echo wsdl files
-                               String scenarioString, // scenario   Secnerio name. For distinguish the testing scenario
+                               String scenarioString, // scenario   Scenario name. For distinguish the testing scenario
                                String testString, // test       testing type: ping, echo, async
                                String cntString, // msgcount   msgcount: how many times to run the test from service-client to  service-provider
                                String optionsString, // options    options: soap11 or soap12 or else (will be added soap11 to its end)
@@ -274,7 +267,7 @@ public class CxfInteropX509Tests {
             request = new GetMethodWebRequest(clientUrl);
 
             request.setParameter("serviceURL", uriString); // serviceURL the serviceURL of the WebServiceProvider. This needs to be updated in the Echo wsdl files
-            request.setParameter("scenario", scenarioString); // scenario   Secnerio name. For distinguish the testing scenario
+            request.setParameter("scenario", scenarioString); // scenario   Scenario name. For distinguish the testing scenario
             request.setParameter("test", testString); // test       testing type: ping, echo, async
             request.setParameter("msgcount", cntString); // msgcount   msgcount: how many times to run the test from service-client to  service-provider
             request.setParameter("options", optionsString); // options    options: soap11 or soap12 or else (will be added soap11 to its end)
