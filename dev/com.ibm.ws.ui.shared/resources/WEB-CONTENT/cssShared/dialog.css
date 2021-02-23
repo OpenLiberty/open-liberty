@@ -1,0 +1,387 @@
+/*******************************************************************************
+ * Copyright (c) 2014 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+.label {float: left; width: 20%; text-align: left; margin: 5px}
+.input {float: right; width: 75%; text-align: left;}
+
+.dijitDialogUnderlay {
+  background: #000000;
+  opacity: 0.5
+}
+
+.acDialog {
+  min-width: 370px !important;
+  min-height: 180px !important;
+  width: 370px;
+  background: #f4f4f1 !important;
+  border: none !important;
+  overflow: visible !important;
+  border-radius: 0px !important;
+}
+
+.acDialogNoTitle {
+  min-height: 120px !important;
+}
+
+.yesNoDialog{
+	padding-bottom: 23px !important;
+}
+
+.helpLink {
+  display:inline-block;
+  width:18px;
+  height:18px;
+  float:right;
+  padding-left: 15px;
+}
+
+.confirmDialog{
+  padding-top: 10px !important;
+	padding-bottom: 10px !important;
+}
+.acDialog_title {
+  font-size: 24px !important;
+  color: #222 !important;
+}
+
+.acDialogTitleBar {
+  text-align: center !important;
+  color: #2f3030 !important;
+  margin: 25px 0 20px 0 !important;
+  padding: 0 !important;
+  border: none !important;
+}
+
+.acDialogContentPane {
+  padding: 0 !important;
+}
+
+.acDialogPaneActionBar {
+  height: 40px;
+  border: none;
+  padding: 0;
+}
+
+.yesNoDescriptionIcon {
+  margin: 0 15px 0px 30px;
+}
+
+svg.yesNoDescriptionIcon {
+    height: 32px;
+    width: 32px;
+}
+
+.yesNoDescription,.yesNoMessage {
+  font-size: 14px;
+  text-align: left;
+  color: #2f3030;
+  border: none;
+}
+
+.yesNoDescription {
+  padding-bottom: 16px;
+  word-wrap: break-word;
+}
+
+.yesNoMessage {
+  margin: 0px 0px 20px 0px;
+}
+
+.yesNoButtonDiv {
+  border: none;
+}
+
+.yesNoButton {
+  font-size: 18px;
+  text-align: center;
+  color: #ffffff;
+  width: 181px;
+  height: 40px;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor:pointer;
+}
+
+.yesNoButton:focus {
+  box-shadow:  0px 0px 0px 1px #ffffff inset;
+}
+
+.yesNoYesButton {
+  float: left;
+}
+
+.yesNoYesButton:hover,.yesNoNoButton:hover {
+  box-shadow: #7CC7FF 0 0 2px 2px;
+  cursor: pointer;
+}
+
+.yesNoNoButton {
+  float: right;
+}
+
+.yesNoDefaultAction {
+  background-color: #4178BE; /* blue */
+}
+
+.yesNoDefaultAction:focus {
+  border: 3px solid #4178BE !important;
+}
+
+.yesNoDestructiveAction {
+  background-color: #a90f22; /* red */
+}
+
+
+.yesNoDestructiveAction:focus {
+  border: 3px solid #a90f22 !important;
+}
+
+.yesNoNeutralAction {
+  background-color: #58595b; /* grey */
+}
+
+.yesNoNeutralAction:focus {
+  border: 3px solid #58595b !important;
+}
+
+.confirmDescriptionIconDiv {
+  display:inline-block;
+  width:77px;
+  vertical-align: middle;
+}
+
+.confirmDescriptionIcon {
+  margin: 0 15px 20px 30px;
+  word-wrap: break-word;
+  height: 32px;
+  width: 32px;
+}
+
+.confirmDescription {
+  display:inline-block;
+  width:263px;
+  font-size: 14px;
+  text-align: left;
+  color: #2f3030;
+  margin: 0px 0px 20px 0px;
+  padding: 0;
+  border: none;
+  word-wrap: break-word;
+  vertical-align: middle;
+}
+
+.confirmDescriptionText {
+    display: inline-block;
+    box-sizing: border-box; 
+}
+
+.confirmOkButton {
+  font-size: 18px;
+  text-align: center;
+  color: #ffffff;
+  background-color: #4178BE;
+  width: 100%;
+  height: 40px;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+}
+
+.confirmOkButton:hover {
+  box-shadow: #7CC7FF 0 0 2px 2px;
+  cursor: pointer;
+}
+
+.confirmOkButton:focus {
+  box-shadow: 0px 0px 0px 1px #ffffff inset;
+  border: 3px solid #5AAAFA !important;
+}
+
+.messageDialog {
+  min-width: 370px !important;
+  width: 370px;
+  max-width: 370px;
+  min-height: 180px; /*280px; */
+  background-color: #f4f4f1 !important;
+  position: absolute !important;
+  top: 108px !important;
+  border: none !important;
+  overflow: visible !important;
+  -webkit-box-shadow: none !important;
+  border-radius: 0 !important;
+}
+
+.messageDialog .messageOKButton {
+  padding: 0px;
+  height: 40px;
+}
+
+.messageDialog .dijitDialogTitleBar {
+  padding: 25px 0 0 0 !important;
+  text-align: center;
+  border-bottom: none !important;
+}
+
+.messageDialog .dijitDialogTitle {
+  color: #2f3030;
+  font-size: 30px;
+}
+
+.messageDialog .dijitDialogPaneContent {
+  padding: 0;
+}
+
+.messageDialog .dijitDialogPaneContentArea {
+  padding: 20px 30px 35px 30px;
+}
+
+.messageDialog .dijitDialogPaneActionBar {
+  padding-top: 0;
+  margin-bottom: 23px;
+  border-top: none;
+}
+
+.messageOKButton {
+  width: 100%;
+  background-color: #4178BE;
+  color: #ffffff;
+  font-size: 18px;
+  text-align: center;
+  border: none;
+}
+
+.messageOKButton:hover {
+  box-shadow: #7CC7FF 0 0 2px 2px;
+  cursor: pointer;
+}
+
+.messageDialogIcon {
+  display:inline-block; 
+  vertical-align: middle;
+}
+
+.messageDialogIcon svg {
+  width: 32px;
+  height: 32px; 
+}
+
+.messageDialogText {
+  padding-left: 30px;
+  font-size: 15px;
+  color: #000000;
+  text-align: left;
+  display: inline-block;
+  max-width: 230px;
+  vertical-align: middle;
+  word-wrap: break-word;
+}
+
+.messageDialogAdditionalText {
+  padding-top: 5px;
+  padding-left: 62px;
+  font-size: 15px;
+  color: #000000;
+  text-align: left;
+  display: inline-block;
+  max-width: 230px;
+  vertical-align: middle;
+  word-wrap: break-word;
+}
+
+.messageOKButton:focus {
+  box-shadow: inset #7CC7FF 0 0 2px 1px
+}
+
+.messageDialog .dijitDialogCloseIcon,
+.confirmDialog .dijitDialogCloseIcon {
+       background-image: url(../imagesShared/close-T.png);
+       background-repeat: no-repeat;
+       background-color: transparent;
+       display: block;
+       position: absolute;
+       margin-top: -14px;
+       margin-right: -14px;
+       height: 40px;
+       width: 40px;
+       padding: 0;
+       overflow: visible;
+       top: 5px;
+       right: 5px;
+}
+
+.dijitDialogCloseIcon:hover{
+    box-shadow: #7CC7FF 0 0 2px 1px;
+    border-radius: 40px;
+    cursor: pointer;
+}
+.messageDialog.disableX .dijitDialogCloseIcon,
+.confirmDialog.disableX .dijitDialogCloseIcon {
+  display: none;
+}
+
+/** Operation failure pop-up CSS **/
+.oneui .dijitDialog {
+  border: 1px;
+}
+
+.oneui .dijitDialogTitleBar {
+  border: none;
+  padding-top: 10px;
+  overflow: visible;
+}
+
+/** TODO: Split these files into different includes **/
+@media screen and (max-device-width: 480px) {
+  .acDialog {
+    min-width: 270px;
+    width: 270px;
+  }
+  .acDialog_title {
+    font-size: 17px;
+  }
+  .acDialogContentPane {
+    margin: 0px 0px 10px 0px;
+  }
+  .acDialogPaneActionBar {
+    margin-bottom: 15px;
+  }
+  .acDialogTitleBar {
+    margin: 15px 0 15px 0;
+  }
+  .confirmDescriptionIcon,.yesNoDescriptionIcon {
+    margin: 0 8px 0px 12px;
+  }
+  .confirmDescription {
+    margin: 0px 0px 10px 0px;
+  }
+  .confirmOkButton {
+    font-size: 17px;
+  }
+  .yesNoDescription,.yesNoMessage {
+    margin: 0px 0px 10px 0px;
+  }
+  .yesNoMessage {
+    margin: 0px 0px 25px 0px;
+  }
+  .yesNoButtonDiv {
+    border: none;
+  }
+  .yesNoYesButton,.yesNoNoButton {
+    width: 133px;
+    font-size: 17px;
+  }
+  .confirmDescription {
+    max-width: 280px;
+    font-size: 14px;
+    display: inline-block;
+  }
+}

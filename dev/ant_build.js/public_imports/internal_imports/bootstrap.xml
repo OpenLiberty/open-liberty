@@ -1,0 +1,46 @@
+<!--
+    Copyright (c) 2020 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<project name="bootstrap" default="get-bootstrap-lib">
+    
+    <property name="bootstrap.project.destination" location="${basedir}/lib/bootstrap" />
+    <property name="bootstrap.version" value="3.4.1" />	
+	<property name="bootstrap.home" location="${basedir}/../ant_build.js/lib/bootstrap" />
+    <property name="bootstrap.src" location="${bootstrap.home}/bootstrap-${bootstrap.version}" />
+	<property name="bootstrap.src.jar" value="${bootstrap.src}.jar" />
+	
+	<target name="bootstrap-pre">
+	 <echo>Unzipping bootstrap to ${bootstrap.src}</echo>
+        <delete includeEmptyDirs="true">
+            <fileset dir="${bootstrap.home}" includes="**/bootstrap-*/**" excludes="bootstrap-*.jar" defaultexcludes="no" />
+        </delete>
+        <mkdir dir="${bootstrap.src}" />
+        <unzip src="${bootstrap.src.jar}" dest="${bootstrap.src}" />
+    </target>
+    
+    <!-- Common 'bootstrap build' process-->
+    <target name="get-bootstrap-lib" depends="bootstrap-pre">
+        <echo>Getting bootstrap!</echo>
+        <echo>bootstrap.project.destination: ${bootstrap.project.destination}</echo>
+        <echo>bootstrap.home: ${bootstrap.src}</echo>
+        <delete dir="${bootstrap.project.destination}" failonerror="false" />
+        <mkdir dir="${bootstrap.project.destination}" />
+		<mkdir dir="${bootstrap.project.destination}/js" />
+		<mkdir dir="${bootstrap.project.destination}/fonts" />
+		<mkdir dir="${bootstrap.project.destination}/css" />
+		<copy file="${bootstrap.src}/META-INF/resources/webjars/bootstrap/${bootstrap.version}/js/bootstrap.min.js" tofile="${bootstrap.project.destination}/js/bootstrap.min.js" />
+		<copy file="${bootstrap.src}/META-INF/resources/webjars/bootstrap/${bootstrap.version}/css/bootstrap-theme.min.css" tofile="${bootstrap.project.destination}/css/bootstrap-theme.min.css" />
+		<copy file="${bootstrap.src}/META-INF/resources/webjars/bootstrap/${bootstrap.version}/css/bootstrap.min.css" tofile="${bootstrap.project.destination}/css/bootstrap.min.css" />
+        <copy todir="${bootstrap.project.destination}/fonts">
+            <fileset dir="${bootstrap.src}/META-INF/resources/webjars/bootstrap/${bootstrap.version}/fonts">
+            </fileset>
+        </copy>
+    </target>
+</project>

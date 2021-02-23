@@ -1,0 +1,244 @@
+/*******************************************************************************
+ * Copyright (c) 2016 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+@font-face {
+    font-family: 'HelvNeueRoman';
+    src: url('../fonts/helvetica-neue-roman.woff');
+}
+
+* {
+    font-family: 'HelvNeueRoman', Helvetica, Arial, sans-serif;
+    font-weight: lighter;
+    text-shadow: none;
+}
+
+body {
+    height: 100%;
+    width: 100%; /* Body takes up whole display */
+    margin: 0; /* The CSS margin properties define the space around elements. */
+    padding: 0; /* The CSS padding properties define the space between the element border and the element content. */
+    color: white;
+    font-family: "HelvNeueLight", helvetica, sans-serif;
+    font-size: 15px;
+    font-weight: lighter;
+}
+
+noscript {
+    text-align: center;
+}
+
+.bg {
+    background-image: url(../login/images/unsplash_lightblur_background_compressed.jpg);
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    -webkit-background-size: cover;
+    background-size: cover;
+    height: 100%;
+    left: 0px;
+    position: absolute;
+    top: 0px;
+    width: 100%;
+}
+
+.bg-fill-color {
+    background-color: #4178BE;
+    background: #4178BE;
+    background: -moz-linear-gradient(top right, #4178BE, #24418B);
+    background: -o-linear-gradient(top right, #4178BE, #24418B);
+    background: -webkit-linear-gradient(top right, #4178BE, #24418B);
+    background: linear-gradient(to top right, #4178BE, #24418B);
+    height: 100%;
+    left: 0px;
+    opacity: 0.90;
+    position: fixed;
+    top: 0px;
+    width: 100%;
+}
+
+/* Submit button definition */
+.submit-btn {
+    background-color: white;
+    border: none;
+    color: #4178BE;
+    font-family: "HelvNeueLight", helvetica, sans-serif;
+    font-size: 20px;
+    height: 50px;
+    margin-top: 30px;
+    padding-top: 4px;
+    text-align: center;
+    width: 100%;
+    -moz-transition: all ease-in-out 0.12s;
+    -o-transition: all ease-in-out 0.12s;
+    -webkit-transition: all ease-in-out 0.12s;;
+    transition: all ease-in-out 0.12s;
+}
+
+.submit-btn:hover {
+    background-color: rgba(255, 255, 255, 0.75);
+    cursor: pointer;
+}
+
+.submit-btn:focus {
+    outline: 2px solid #F5CF3E;
+    outline-style: double;
+    background-color: #1d3649;
+    color: white;
+}
+
+.button-bar .mblButton {
+    display: block;
+    width: 100%;
+    font-size: 20px;
+    padding: 0;
+    margin-left: 0;
+    margin-bottom: 10px;
+    background-image: none;
+    -webkit-user-select: none;
+}
+
+.button-bar .mblButton:last-child {
+    margin-bottom: 0
+}
+
+.mblButton:focus {
+    outline: 2px solid #F5CF3E;
+    outline-style: double;
+    background-color: #1d3649;
+    color: white;
+}
+
+.mblButton:hover {
+    background-color: rgba(255, 255, 255, 0.75);
+    cursor: pointer;
+}
+
+.liberty-logo {
+    height: auto;
+    width: 80px;
+}
+
+#login {
+    position: absolute;
+    width: 380px;
+    top: 40%;
+    left: 50%;
+    margin-top: -200px;
+    margin-left: -190px;
+    padding-bottom: 170px;
+    overflow: auto;
+}
+
+.login-panel {
+    text-align: center;
+    padding-bottom: 20px;
+}
+
+.login-header {
+    margin: 25px 0 10px 0;
+}
+
+.login-panel .login-header h1 {
+    font-size: 30px;
+    margin: 0;
+    color: #ffffff;
+}
+
+.login-panel .login-form {
+    width: 375px;
+    margin: 0 auto
+}
+
+.login-label {
+    opacity: 0;
+    text-align: left; margin-left : -10px;
+    margin-bottom: 0px;
+    margin-top: 30px;
+    line-height: 16px;
+    visibility: hidden;
+    -webkit-transition: all ease-in-out 0.2s;
+    -moz-transition: all ease-in-out 0.2s;
+    -o-transition: all ease-in-out 0.2s;
+    transition: all ease-in-out 0.2s;
+    margin-left: -10px;
+}
+
+.login-label-visible {
+    margin-left: 0px;
+    visibility: visible;
+    opacity: 1;
+    padding: 0px;
+}
+
+.loginTextBox {
+    background-color: transparent;
+    border: 0px;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.5);
+    color: white;
+    font-family: "HelvNeueLight", helvetica, sans-serif;
+    font-size: 20px;
+    height: 40px;
+    width: 100%;
+    -moz-transition: all ease-in-out 0.3s;
+    -o-transition: all ease-in-out 0.3s;
+    -webkit-transition: all ease-in-out 0.3s;;
+    transition: all ease-in-out 0.3s;
+}
+
+.loginTextBox:focus {
+    border-bottom: 2px solid #F5CF3E;
+}
+
+.login-footer {
+    font-size: 14px;
+    color: #F5CF3E;
+    margin: 10px 0 0 0;
+}
+
+footer {
+    background-color: #1d3649;
+    min-height: 150px;
+    text-align: center;
+    width: 100%;
+    bottom: 0;
+    left: 0;
+    position: fixed;
+}
+
+.login-ibm-logo {
+    display: inline-block;
+    width: 70px;
+    margin-top: 30px;
+}
+
+.login-legal-copy {
+    display: inline-block;
+    font-size: 14px;
+    margin-left: 20px;
+    margin-top: 30px;
+    opacity: 0.5;
+    width: 325px;
+    text-align: left;
+    vertical-align: top;
+    white-space: pre-wrap;
+}
+/* Phone Overrides - UX Style */
+/* Minimum supported phone width is 320px */
+.phone#login {
+    width: 320px;
+    margin-left: -160px;
+}
+
+.phone .login-panel .login-header h1 {
+    font-size: 30px;
+}
+
+.phone .login-panel .login-form {
+    width: 280px;
+}

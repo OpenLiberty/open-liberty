@@ -1,0 +1,149 @@
+/*******************************************************************************
+ * Copyright (c) 2014 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+@media screen and (max-device-width : 480px) {
+    .headerIcon {
+        background-repeat: no-repeat;
+        width: 45px;
+        height: 45px;
+        text-align: center;
+        background-position: center;
+        border: none;
+        padding: 0px;
+        margin: 0px !important;
+    }
+    .headerIcon.menuListIcon {
+        background-image: url(../images/hamburgerIcon-S.png);
+    }
+    .headerIcon.pencilEditIcon {
+        background-image: url(../images/editMenu-S.png);
+    }
+    .headerIcon.backIcon {
+        background-image: url(../images/back-S.png);
+    }
+    .headerIcon.doneIcon {
+        background-image: url(../images/done-S.png);
+    }
+    .headerIcon.plusIcon {
+        background-image: url(../images/addMenu-S.png);
+    }
+    .headerIcon.profileIcon {
+        background-image: url(../images/profile-S.png);
+    }
+    .headerIcon.toolboxIcon {
+        background-image: url(../images/toolbox-S.png);
+    }
+    .addedTool {
+        background-image: url(../images/addedTool-S.png);
+    }
+    .addTool {
+        background-image: url(../images/addTool-S.png);
+    }
+
+    /* Use almost same style rules for Dialog cancel icon shown above,
+       but use the smartphone PNG file 
+    .oneui .dijitDialogCloseIcon {
+        background-image: url(../images/close-S.png);
+        height: 32px;
+        width: 32px;
+        background-repeat: no-repeat;
+        background-color: transparent;
+        margin-top: -7px;
+        margin-right: -7px;
+        overflow: visible;
+    }*/
+
+    /* For pencil/edit icon and its containers to flush left */
+    /* when smartphone oriented horizontally (landscape)
+    /* does not override inline style */
+    #editHeaderWidgetTrailingDiv {
+        width: 100%;
+    }
+
+    /* Already has an inline style so won't bother to add any 
+       alignment rules, but keeping selector for future reference */
+    #editButtonWidgetDiv {
+        height: 45px;
+    }
+
+    /* To right-justify the done button. This rule affects the span with 
+       widgetid="doneButtonWidget". 
+       TODO: Unfortunately, this is also affecting the "Add" button! */
+    .oneui .dijitButton {
+        float: right;
+    }
+
+    /* Remove border around images/remove-S.png */
+    /* The important directive retains border around .mblImageIcon */
+    .mblIconItemDeleteIcon {
+        border: none !important;
+        top: -5px;
+        right: -0px !important;
+        left: initial;
+    }
+
+    /* Instead of "Done" label button, display checkbox icon 
+       The toggled value of 'displayMode' attribute of dijit.form.Button  
+       determines whether text or icon is displayed */
+    /* #doneButtonWidget */
+}
+
+@media screen and (min-width: 599px) {
+    .desktop.headerIcon {
+        background-repeat: no-repeat;
+        width: 68px;
+        height: 68px;
+        background-position: center;
+        text-align: center;
+        border: none;
+        padding: 0px;
+        margin: 0px !important;
+    }
+    .desktop.headerIcon.pencilEditIcon {
+        background-image: url(../images/editMenu-T.png);
+    }
+    .desktop.headerIcon.backIcon {
+        background-image: url(../images/back-T.png);
+    }
+    .desktop.headerIcon.plusIcon {
+        background-image: url(../images/addMenu-T.png);
+    }
+    .desktop.addedTool {
+        background-image: url(../images/addedTool-T.png);
+    }
+    .desktop.addTool {
+        background-image: url(../images/addTool-T.png);
+    }
+    .desktop.headerIcon.doneIcon {
+        background-image: url(../images/done-T.png);
+    }
+    .desktop.headerIcon.filterIcon {
+        background-image: url(../images/search-T.png);
+    }
+    .desktop.headerIcon.profileIcon {
+        background-image: url(../images/profile-T.png);
+    }
+    .desktop.headerIcon.toolboxIcon {
+        background-image: url(../images/toolbox-T.png);
+    }
+    .desktop.headerIcon.backgroundTaskIcon {
+        background-image: url(../images/backgroundTask-T.png);
+    }
+    .oneui .dijitDialogCloseIcon {
+        background-image: url(../imagesShared/close-T.png);
+        background-color: black;
+        display: block;
+        position: absolute;
+        right: 5px;
+        top: 5px;
+        height: 35px;
+        width: 35px;
+    }
+}

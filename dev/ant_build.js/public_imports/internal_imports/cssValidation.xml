@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2020 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<project name="cssValidation" basedir=".">
+
+	<!-- This target may be overridden if the set of css files to validate needs to
+       be customized by the project -->
+	<target name="css-validation-files">
+		<!-- By default, include all CSS files -->
+		<fileset id="css.sources" dir="${basedir}/resources/WEB-CONTENT">
+			<include name="**/*.css" />
+		</fileset>
+	</target>
+
+	<target name="css-validation" depends="css-validation-files" description="Validate all of the CSS files in the project">
+		<!-- Default to running cssValidation unless the build definition overrides this property with false. -->
+		<property name="run.cssValidation" value="true" />
+		<if iff="run.cssValidation">
+			<property name="cssResultsDir" value="build/reports/css" />
+
+			<!-- This guard is added to be informative if someone overrides the css-validation-files target -->
+			<fail message="Fileset refid &quot;css.sources&quot; needs to be set to a value">
+				<condition>
+					<not>
+						<isreference refid="css.sources" />
+					</not>
+				</condition>
+			</fail>
+
+			<delete dir="${cssResultsDir}" />
+			<mkdir dir="${cssResultsDir}" />
+			<foreach in="css.sources" param="cssFile">
+				<local name="cssFile.basename" />
+				<local name="cssFile.report" />
+				<local name="cssFile.report.failure" />
+				<local name="cssFile.report.output" />
+				<local name="cssFile.url" />
+
+				<basename property="cssFile.basename" file="${cssFile}" />
+				<property name="cssFile.report" value="build/reports/css/${cssFile.basename}_report.html" />
+				<makeurl property="cssFile.url" file="${cssFile}" />
+
+				<echo>Validating CSS file ${cssFile}</echo>
+				<java jar="${basedir}/../ant_build.js/lib/cssValidator/css-validator.jar" fork="true" timeout="60000" failonerror="true" inputstring="" output="${cssFile.report}">
+					<arg line="--vextwarning=true" />
+					<arg line="--output=html" />
+					<arg line="--warning=2" />
+					<arg line="--profile=css3svg" />
+					<arg line="--medium=all" />
+					<arg line="${cssFile.url}" />
+				</java>
+
+				<!-- Check for errors in the report -->
+				<loadfile property="cssFile.report.output" srcFile="${cssFile.report}" />
+				<condition property="cssFile.report.failure">
+					<or>
+						<matches pattern="Sorry!" string="${cssFile.report.output}" />
+						<matches pattern="Exception" string="${cssFile.report.output}" />
+						<matches pattern="CSS Validator : Error" string="${cssFile.report.output}" />
+					</or>
+				</condition>
+				<fail if="cssFile.report.failure" message="Errors found by CSS Validator! See ${cssFile.report}" />
+			</foreach>
+			<else>
+				<echo>Skipping cssValidation because run.cssValidation was set to false</echo>
+			</else>
+		</if>
+	</target>
+
+</project>

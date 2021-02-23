@@ -1,0 +1,590 @@
+/*******************************************************************************
+ * Copyright (c) 2014 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+/* These media query rules affect mobile smartphones only, not desktop or tablet */
+@media screen and (max-device-width : 480px) {
+    .mblIconAreaTitle {
+        color: #000000;
+    }
+
+    /* Size header container properly for smartphone */
+    .oneui .idxHeaderContainer {
+        width: 100%;
+        min-width: inherit;
+    }
+
+    /* Size the tool icons appropriately for smartphone */
+    .mblImageIcon {
+        vertical-align: top;
+        max-height: 78px;
+        max-width: 78px;
+        /*margin: 10px;*/
+        border-style: solid;
+        border-width: 3px;
+        border-color: #d4d3cd;
+        padding: 0px;
+    }
+    .mblImageIconDisable .mblImageIcon,
+    .mblImageIconDisable .mblIconAreaTitle{
+        opacity: 0.4 !important;
+    }
+    .mblImageIconDisable .mblImageIcon.mblIconItemDeleteIcon {
+        opacity: 1.0 !important;
+    }
+    .mblIconArea {
+        height: 125px;
+        width: 103px;
+        margin: 0px 0px;
+        border: none;
+    }
+    .mblIconAreaInner {
+        height: 89px;
+        margin-bottom: 5px;
+        margin-top: 5px;
+    }
+    .mblIconAreaTitle {
+        width: 78px;
+        height: 33px;
+        font-size: 12px;
+        color: #000000;
+        display: block;
+        line-height: 12px;
+        margin-left: 13px;
+        margin-right: 13px;
+    }
+
+    /* Hide the black, primary banner that says "Liberty Admin Center" */
+    .idxHeaderPrimary, .idxHeaderPrimaryTitle, .idxHeaderPrimaryInner {
+        display: none;
+    }
+
+    /* Trim down header container to fit width of device */
+    .oneui .idxHeaderContainer {
+        max-width: 100%;
+        top: 0px;
+        z-index: 1; /* layer header in front always */
+        height: 45px;
+        top: 0px;
+    }
+
+    /* Adjust secondary header container so that text is centered */
+    .oneui .idxHeaderContainer .idxHeaderSecondaryLeading {
+        left: 20%;
+    }
+
+    /* Center "My Toolbox" text and font size */
+    /*.idxHeaderSecondaryTitle {*/
+    .oneui .idxHeaderContainer .idxHeaderSecondary .idxHeaderSecondaryTitleContainer .idxHeaderSecondaryTitle {
+        text-align: center;
+        font-size: 1.5em;
+        font-weight: normal;
+    }
+    .oneui .idxHeaderContainer .idxHeaderSecondarySingleRow .idxHeaderSecondary {
+        height: 45px;
+    }
+
+    /* To hide Search box */
+    .oneui .idxHeaderContainer .idxHeaderSecondarySingleRow .idxHeaderSecondary .idxHeaderSearchContainer {
+        display: none;
+    }
+
+    /* Override oneui's idx/app/Header.css to make icons align properly */
+    .oneui .idxHeaderContainer .idxHeaderSecondaryTrailing {
+        position: absolute;
+        padding: 0px;
+        margin: 0px;
+        left: 0px;
+        top: 0px;
+        height: 45px;
+    }
+
+    /* css for each icon node */
+    .idxHeaderSecondary .dijitButtonNode {
+        padding: 0px !important;
+        margin: 0px;
+        height: 45px;
+        width: 45px;
+        background-image: none !important;
+        border: none !important;
+    }
+
+    /* Adjust header buttons so they blend in with the rest of background */
+    /* Replaces rules in idx/forms/buttons.css */
+    .oneui .idxButtonDerived.idxButtonSpecial .dijitButtonNode {
+        background-image: none;
+        background-color: rgba(0, 0, 0, 0);
+        border: none;
+    }
+
+    /* Don't display the down arrow in a dijit.form.DropDownButton */
+    .dijitArrowButtonInner {
+        display: none;
+    }
+
+    /* To reduce "Add URL" dialog to fit to smartphone */
+    #addToolDialogId {
+        margin: 0px;
+        top: 134px;
+        left: 26px;
+        padding: 15px 0px;
+        opacity: 1;
+        position: absolute;
+        height: 183px;
+        width: 269px;
+        background-color: rgb(64, 179, 223);
+    }
+
+    /* Tool icons container rule, so that tools are properly spaced out */
+    /* and should scroll "underneath" the "My Toolbox" header. */
+    /* Overrides .mblIconContainer rule in IconContainer.css */
+    #toolIconContainer {
+        overflow: auto;
+        padding-top: 18px;
+        padding-left: 7px;
+        margin: 0 auto;
+    }
+
+    /* Catalog icons container rule, so that catalog tools are properly displayed */
+    #catalogContainer {
+        overflow: auto;
+        margin: 0 auto;
+        padding: 60px 0;
+    }
+
+    /***** Styles for "Remove Tool", "Add Tool", and "Add Bookmark" dialogs *****/
+
+    /* .oneui .dijitDialog */
+    #toolboxRemoveToolId, #catalogAddToolId, #addBookmarkDialogId, .messageDialog {
+        min-width: 270px !important;
+        width: 270px;
+        max-width: 270px;
+        min-height: 185px;
+        background-color: #f4f4f1 !important;
+        position: absolute !important;
+        top: 108px !important;
+        border: none !important;
+        overflow: visible !important;
+        border-radius: 0 !important;
+    }
+    #toolboxRemoveToolId .dijitDialogTitleBar, #catalogAddToolId .dijitDialogTitleBar, #addBookmarkDialogId .dijitDialogTitleBar {
+        padding: 15px 0;
+        text-align: center;
+        border-bottom: none;
+        font-weight: 300;
+        color: #2f3030;
+    }
+    #addBookmarkDialogId .dijitDialogCloseIcon, #toolboxRemoveToolId .dijitDialogCloseIcon, #catalogAddToolId .dijitDialogCloseIcon,
+        .messageDialog .dijitDialogCloseIcon {
+        background-image: url(../images/close-S.png);
+        background-repeat: no-repeat;
+        background-color: transparent;
+        display: block;
+        position: absolute;
+        height: 32px;
+        width: 32px;
+        top: -10px;
+        right: -10px;
+        overflow: visible;
+    }
+
+    /* Title text in dialog smaller for mobile device */
+    .oneui .dijitDialogTitle {
+        font-size: 15px;
+    }
+
+    /* Text in dialog content area must be smaller. This overrides 
+       idx/themes/oneui/dijit/Dialog.css line 68 */
+    .oneui .dijitDialogPaneContentArea {
+        font-size: 15px;
+    }
+
+    /* Center align the button in dialog. 
+       Add to rule in idx/themes/oneui/dijit/Dialog.css */
+    .oneui .dijitDialogPaneActionBar {
+        text-align: center;
+        border-top: none;
+        min-width: 270px !important;
+        /* Don't know why, but the below is needed to center 
+        this dang thing within the dialogue. Otherwise, goes 
+        off of the dialogue to the right! */
+        margin-left: -20px;
+        padding-top: 13px;
+    }
+    #toolboxRemoveToolId .dijitDialogPaneContent, #catalogAddToolId .dijitDialogPaneContent, #addBookmarkDialogId .dijitDialogPaneContent {
+        padding-top: 0px;
+        padding-bottom: 0px;
+    }
+
+    /* Remove/Add confirmation button */
+    .confirmOkButton {
+        width: 100%;
+        height: 40px;
+        background-color: #4178BE;
+        color: #ffffff;
+        font-weight: 300;
+        font-size: 17px;
+        border: none;
+        margin-left: 0px !important;
+        margin-right: 0px !important;
+    }
+
+    /* Following four selector/rules are just for "Add Bookmark" dialog */
+    #bookmarkName {
+        width: 224px;
+        height: 28px;
+        margin-top: 0px;
+        margin-bottom: 0px;
+        font-size: 15px;
+        border: 1px solid #c1c1c1;
+        background-color: #ffffff;
+        color: #545454;
+    }
+    #bookmarkURL {
+        width: 224px;
+        height: 28px;
+        margin-top: 8px;
+        margin-bottom: 0px;
+        font-size: 15px;
+        border: 1px solid #c1c1c1;
+        background-color: #ffffff;
+        color: #000000;
+    }
+    #addBookmarkDialogId .dijitDialogPaneContent .dijitButton .dijitButtonNode {
+        padding: 0px;
+        margin-bottom: 19px;
+        /* Again, I don't know why, but have to 
+        do this in order to center the dang button! */
+        margin-right: -26px;
+    }
+    #addBookmarkButtonId {
+        width: 270px;
+        height: 40px;
+        background-color: #4178BE;
+        color: #ffffff;
+    }
+    #addBookmarkButtonId:hover {
+        box-shadow: #7CC7FF 0 0 2px 2px;
+        cursor: pointer;
+    }
+    #addBookmarkButtonId:focus {
+        box-shadow: 0px 0px 0px 1px #ffffff inset;
+        border: 3px solid #5AAAFA !important;
+    }
+    #addBookmarkButtonId_label {
+        font: 17px;
+        font-weight: normal;
+        padding: 0.5em 0.3em;
+    }
+    .messageDialog {
+        min-height: 0px;
+    }
+    .messageDialog .dijitDialogTitleBar {
+        padding: 15px 0 0 0 !important;
+        text-align: center;
+        border-bottom: none !important;
+    }
+    .messageDialog .dijitDialogTitle {
+        color: #2f3030;
+        font-size: 17px;
+    }
+    .messageDialog .dijitDialogPaneContent {
+        padding: 0;
+    }
+    .messageDialog .dijitDialogPaneContentArea {
+        padding: 15px 12px;
+    }
+    .messageDialog .dijitDialogPaneActionBar {
+        padding: 0;
+        margin: 0 0 15px 0;
+        border-top: none;
+    }
+    .messageOKButton {
+        width: 100%;
+        background-color: #4178BE;
+        color: #ffffff;
+        font-size: 17px;
+        text-align: center;
+        border: none;
+        padding: 0px;
+        height: 40px;
+    }
+    .messageDialogIcon {
+        float: left;
+        padding-right: 8px;
+    }
+    .messageDialogText {
+        padding-left: 34px;
+        font-size: 14px;
+        color: #000000;
+        text-align: left;
+    }
+
+    /***** End rules for dialogs *****/
+
+    /***** Following are for "Add Tool/Add Bookmark" DropDownMenu *****/
+    #toolboxAddToolMenu {
+        border-collapse: collapse;
+        border-top: 12px solid #404e56;
+        border-bottom: 12px solid #404e56;
+        height: 112px;
+        width: 220px;
+        background-color: #4178BE !important;
+    }
+
+    /*.addDropDownMenu .dijitReset .dijitMenuItem */
+    #toolboxAddCatalogToolMenu, .addDropDownMenu .dijitReset .dijitMenuItem {
+        border: none;
+        border-collapse: collapse; /* Also applies to .oneui .dijitMenuTable */
+        background: none repeat scroll 0 0 #4178BE;
+    }
+    .addDropDownMenu .dijitReset .dijitMenuItem .dijitMenuItemIconCell {
+        border: none;
+        border-bottom: none;
+        height: 40px;
+    }
+    .addDropDownMenu .dijitReset .dijitMenuItem .dijitMenuItemLabel {
+        color: #FFFFFF;
+        text-align: center;
+        border-bottom: none;
+    }
+    .addDropDownMenu .dijitReset .dijitMenuItem .dijitMenuItemAccelKey {
+        border-right: none;
+    }
+    .addDropDownMenu .dijitReset .dijitMenuItem .dijitMenuArrowCell {
+        border-right: none;
+        border-bottom: none;
+    }
+    .addDropDownMenu .dijitReset .dijitMenuSeparator {
+        background-color: #404e56;
+        height: 7px;
+    }
+    .addDropDownMenu .dijitMenuSeparatorTop {
+        border-bottom: none;
+    }
+    /***** End rules for "Add Tool/Add Bookmark" menu *****/
+
+    /***** Following are for profile dropdown menu and its children items *****/
+
+    /* Profile DropDownMenu should fill 100% of screen width */
+    /* .dijitPopup that has dijit parent #profileButtonWidgettoolboxContainer */
+    /* Hope this does not affect any other Menus! */
+    .oneui .dijitPopup {
+        width: 100%;
+    }
+    #profileMenutoolboxContainer {
+        width: 100%;
+    }
+
+    /* Style the menu items from the #profileMenu* dijit.DropDownMenu */
+    #userNameLogoutMenuItemtoolboxContainer, #preferencesMenuItemtoolboxContainer, #helpMenuItemtoolboxContainer,
+        #logoutMenuItemtoolboxContainer, #searchMenuItemtoolboxContainer, #userNameLogoutMenuItemprefsContainer,
+        #preferencesMenuItemprefsContainer, #helpMenuItemprefsContainer, #logoutMenuItemprefsContainer,
+        #userNameLogoutMenuItemcatalogContainer, #preferencesMenuItemcatalogContainer, #helpMenuItemcatalogContainer,
+        #logoutMenuItemcatalogContainer, #userNameLogoutMenuItemtoolContainer, #preferencesMenuItemtoolContainer, #helpMenuItemtoolContainer,
+        #logoutMenuItemtoolContainer, #backgroundTaskstoolboxContainer, #backgroundTasksprefsContainer, #backgroundTaskscatalogContainer,
+        #backgroundTaskstoolContainer, #userNameLogoutMenuItembgTasksContainer, #preferencesMenuItembgTasksContainer,
+        #helpMenuItembgTasksContainer, #logoutMenuItembgTasksContainer {
+        background-color: #404e56;
+        color: #fff;
+    }
+
+    /* Font size for profile menu items text */
+    #userNameLogoutMenuItemtoolboxContainer_text, #preferencesMenuItemtoolboxContainer_text, #helpMenuItemtoolboxContainer_text,
+        #logoutMenuItemtoolboxContainer_text, #searchMenuItemtoolboxContainer_text, #userNameLogoutMenuItemprefsContainer_text,
+        #preferencesMenuItemprefsContainer_text, #helpMenuItemprefsContainer_text, #logoutMenuItemprefsContainer_text,
+        #userNameLogoutMenuItemcatalogContainer_text, #preferencesMenuItemcatalogContainer_text, #helpMenuItemcatalogContainer_text,
+        #logoutMenuItemcatalogContainer_text, #userNameLogoutMenuItemtoolContainer_text, #preferencesMenuItemtoolContainer_text,
+        #helpMenuItemtoolContainer_text, #logoutMenuItemtoolContainer_text, #backgroundTaskstoolboxContainer_text,
+        #backgroundTasksprefsContainer_text, #backgroundTaskscatalogContainer_text, #backgroundTaskstoolContainer_text,
+        #userNameLogoutMenuItembgTasksContainer_text, #preferencesMenuItembgTasksContainer_text, #helpMenuItembgTasksContainer_text,
+        #logoutMenuItembgTasksContainer_text {
+        font-size: 1.25em;
+        text-align: left; /* TODO: Need to get text to justify left! */
+        height: 38px;
+    }
+
+    /***** end profile menu rules *****/
+
+    /***** Rules for Preferences page and its miscellaneous elements *****/
+
+    /* Don't show the left panel of the "Preferences" page */
+    /* Overrides lmn_theme.css rule */
+    /* Also, hide the "Preferences h2 that has class "title" */
+    .profile-container .profile-left-panel, .profile-right-panel .title {
+        visibility: hidden;
+    }
+
+    /* Pad menu item cells */
+    .oneui td.dijitMenuItemIconCell {
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+
+    /* disabled and not selected */
+    .dijitRadio.dijitRadioDisabled.bidiRadioButton {
+        width: 26px;
+        height: 26px;
+        background-image: url('../images/bidiPrefRadioButton-S.png') !important;
+        background-position: 0px;
+    }
+
+    /* disabled but selected */
+    .dijitRadio.dijitRadioDisabled.dijitRadioCheckedDisabled.bidiRadioButton {
+        width: 26px;
+        height: 26px;
+        background-image: url('../images/bidiPrefRadioButton-S.png') !important;
+        background-position: -26px;
+    }
+
+    /* enabled and not selected */
+    .dijitRadio.bidiRadioButton {
+        width: 26px;
+        height: 26px;
+        background-image: url('../images/bidiPrefRadioButton-S.png') !important;
+        background-position: -52px;
+    }
+
+    /* enabled and selected */
+    .dijitRadio.dijitRadioChecked.bidiRadioButton {
+        width: 26px;
+        height: 26px;
+        background-image: url('../images/bidiPrefRadioButton-S.png') !important;
+        background-position: -78px;
+    }
+    .profile-container .profile-right-panel {
+        padding-top: 13px; /* for now additional padding on the top as there is no profile */
+        width: 100% !important;
+        left: 0px !important;
+        background-color: #404e56;
+    }
+    .profile-container .profile-right-panel .title {
+        font-size: 24px;
+        font-weight: 300;
+        height: 45px;
+        padding-top: 0px;
+        margin: 0;
+        color: #ffffff;
+        background-color: #111010;
+    }
+    .profile-container .profile-right-panel .section {
+        padding-left: 21px;
+        padding-right: 11px;
+    }
+    .profile-container .profile-right-panel .section h3 {
+        padding-left: 0px;
+        margin: 0 0 15px 0;
+        font-size: 17px;
+        color: #ffffff; /* #413d3d; */
+        font-weight: 300;
+    }
+    .profile-container .profile-right-panel .section legend {
+        margin: 0 0 15px 0;
+        font-size: 17px;
+        color: #ffffff; /* #787878; */
+        font-weight: 300;
+    }
+    .profile-container .profile-right-panel .section .group-radius {
+        height: 25px;
+        margin: 0px 0px 10px 31px;
+    }
+    .profile-container .profile-right-panel label {
+        padding-left: 15px;
+        color: #ffffff; /* #787878; */
+        font-size: 17px;
+        font-weight: 300;
+        padding-bottom: 15px;
+    }
+
+    /* "Task Details and History" button in menu item */
+    /*.button-bar .mblButton are classes */
+    #bgTasksDetailsViewButton {
+        display: block;
+        width: 100%;
+        font-size: 18px;
+        padding: 0;
+        margin-left: 0;
+        margin-bottom: 10px;
+        font-weight: normal;
+        background-image: none;
+    }
+
+    /***** End Preferences rules *****/
+
+    /***** Following rules are for filter area box *****/
+    .header-blank {
+        height: 45px !important;
+    }
+    .dijitDialogUnderlay {
+        background: #000000;
+        opacity: 0.5
+    }
+    .searchBoxHeading {
+        height: 45px;
+        background-color: #325C80;
+        position: relative;
+        margin: 0 auto;
+        width: 100%;
+        -moz-transition: all, .3s;
+        -webkit-transition: all, .3s;
+        transition: all, .3s;
+        overflow: hidden;
+    }
+    .searchBoxPane {
+        position: relative;
+        margin: 0 auto;
+        width: 100%;
+        height: 45px;
+    }
+    .searchBoxInput {
+        position: relative;
+        height: 26px;
+        width: 64%;
+        margin-top: 8px;
+        background-color: #ffffff;
+        font-size: 1em;
+        padding-left: 15px;
+        padding-right: 35px;
+        left: 9px;
+    }
+    .deleteSearchInputImg {
+        z-index: 300;
+        position: relative;
+        top: 3px;
+    }
+    .cancelFilterImg {
+        position: absolute;
+        right: 0px;
+        top: 0px;
+    }
+    .errorMessageBookmarkName {
+        color: #A91024;
+        padding: 4px 10px 0px 10px;
+        font-size: 15px;
+    }
+    .warningMessageBookmarkName {
+        color: #D74108;
+        padding: 4px 10px 0px 10px;
+        font-size: 15px;
+    }
+    .bookmarkBorderIncomplete:focus {
+        border-color: #a91024 !important;
+        outline: none; /* for chrome to remove their extra border in focus */
+    }
+    .bookmarkBorderError:focus {
+        border-color: #D74108 !important;
+        outline: none; /* for chrome to remove their extra border in focus */
+    }
+    .toolContentContainerDiv {
+        width: 100%;
+        position: absolute;
+        top: 45px;
+        bottom: 0px;
+    }
+}

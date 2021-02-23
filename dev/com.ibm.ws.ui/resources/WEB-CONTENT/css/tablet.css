@@ -1,0 +1,832 @@
+/*******************************************************************************
+ * Copyright (c) 2014 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+/* These apply to tablet */
+noscript {
+    text-align: center;
+}
+
+/* Hide the black header */
+.idxHeaderPrimary, .idxHeaderPrimaryTitle, .idxHeaderPrimaryInner {
+    display: none;
+}
+
+/* Disable text-shadow which is present in OneUI CSS */
+* {
+    text-shadow: none;
+}
+/* Disable text-transform which is present in DOJO CSS */
+.mblButton {
+    text-transform: none;
+}
+
+/* To hide Search box */
+.oneui .idxHeaderContainer .idxHeaderSecondarySingleRow .idxHeaderSecondary .idxHeaderSearchContainer {
+    display: none;
+}
+
+/* to get the correct color for button */
+.oneui .idxButtonDerived.idxButtonSpecial .dijitButtonNode, .oneui .dijitButton.idxButtonSpecial .dijitButtonNode, .oneui .dijitToggleButton.idxButtonSpecial .dijitButtonNode,
+    .oneui .dijitDropDownButton.idxButtonSpecial .dijitButtonNode, .oneui .dijitComboButton.idxButtonSpecial .dijitButtonNode {
+    background-color: #4178BE;
+}
+
+/* to get the correct color for button when hover */
+.oneui .idxButtonDerived.dijitHover.idxButtonSpecial .dijitButtonNode, .oneui .idxButtonDerived.idxButtonSpecial.dijitHover .dijitButtonNode,
+    .oneui .dijitButton.dijitHover.idxButtonSpecial .dijitButtonNode, .oneui .dijitButton.idxButtonSpecial.dijitHover .dijitButtonNode,
+    .oneui .dijitToggleButton.dijitHover.idxButtonSpecial .dijitButtonNode, .oneui .dijitToggleButton.idxButtonSpecial.dijitHover .dijitButtonNode,
+    .oneui .dijitDropDownButton.dijitHover.idxButtonSpecial .dijitButtonNode, .oneui .dijitDropDownButton.idxButtonSpecial.dijitHover .dijitButtonNode,
+    .oneui .dijitComboButton.dijitHover.idxButtonSpecial .dijitButtonNode, .oneui .dijitComboButton.idxButtonSpecial.dijitHover .dijitButtonNode
+    {
+    background-color: #325C80;
+}
+
+@media screen and (min-width: 599px) {
+    ::-ms-clear {
+        display: none;
+    }
+
+    /* to get focus on the tool icon area when tab */
+    .mblImageIcon:focus {
+        box-shadow: #7CC7FF 0px 0px 2px 1px
+    }
+
+    .mblImageIcon {
+        vertical-align: top;
+        max-height: 142px !important;
+        max-width: 142px !important;
+        border-style: solid;
+        border-width: 4px;
+        border-color: #d4d3cd;
+        padding: 0px;
+        cursor: pointer;
+    }
+
+    .mblImageIconDisable .mblImageIcon,
+    .mblImageIconDisable .mblIconAreaTitle{
+        opacity: 0.4 !important;
+    }
+    .mblImageIconDisable .mblImageIcon.mblIconItemDeleteIcon {
+        opacity: 1.0 !important;
+    }
+
+    .mblImageIconCursor {
+       cursor: not-allowed;
+    }
+
+    .mblImageIcon:hover {
+        box-shadow: #7CC7FF 0 0 2px 2px;
+    }
+    .mblView {
+        height: 100%;
+        padding-left: 0px;
+        padding-right: 0px;
+        background-color: #f8f8f7;
+    }
+    .oneui .idxHeaderContainer {
+        min-width: 600px;
+    }
+
+    /* Increase the height of the header bar */
+    .oneui .idxHeaderContainer .idxHeaderSecondarySingleRow .idxHeaderSecondary {
+        height: 70px;
+        background-color: #4178BE;
+        background-image: none !important;
+    }
+
+    /* Format the Title header */
+    .oneui .idxHeaderContainer .idxHeaderSecondary .idxHeaderSecondaryTitleContainer .idxHeaderSecondaryTitle {
+        text-align: center;
+        color: #ffffff;
+        font-size: 38px;
+        font-weight: normal;
+    }
+
+    /* Format the Title header - this lives inside 'idxHeaderSecondaryLeading' so width is 100% of that div's size */
+    .oneui .idxHeaderContainer .idxHeaderSecondary .idxHeaderSecondaryTitleContainer {
+        text-align: center;
+        width: 100%;
+        margin-left: 0;
+        height: calc(100% - 13px);   /* subtract margin-top set by oneui.css */
+    }
+
+    /* To center the Title header */
+    .oneui .idxHeaderContainer .idxHeaderSecondaryLeading {
+        text-align: center;
+        height: 70px;
+        margin-left: 210px;
+        margin-right: 210px;
+        position: absolute;
+        left: 0px;
+        right: 0%;
+    }
+
+    /* Space between header and icons container */
+    #toolIconContainer, #catalogIconContainer {
+        padding: 0px;
+        overflow: auto;
+        margin: 43px 31px;
+    }
+
+    /* move the deleteIcon to the right of the tool icon */
+    .mblIconItemDeleteIcon {
+        position: absolute !important;
+        right: 15px;
+        top: -8px !important;
+        left: auto !important;
+        border: none !important;
+    }
+    .mblIconItemDeleteIcon:hover {
+        box-shadow: #5AAAFA 0 0 2px 1px;
+        border-radius: 40px;
+    }
+
+    /* gap between the buttons */
+    .idxHeaderSecondaryTrailing .oneui .dijitDropDownButton, .idxHeaderSecondaryTrailing .dijitDropDownButton, .idxHeaderSecondaryTrailing .oneui .dijitButton,
+        .idxHeaderSecondaryTrailing .dijitButton {
+        margin: 0;
+    }
+
+    /* css for each icon node */
+    .idxHeaderSecondary .dijitButtonNode {
+        padding: 0px !important;
+        margin: 0px;
+        height: 70px;
+        width: 70px;
+        background-image: none !important;
+        border: none !important;
+    }
+
+    /* left header icon has to adjust the position */
+    .leftSecondaryHeader .dijitButtonNode {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+    }
+
+    /* to enable the header buttons with contrast color when focus for assessiblity */
+    #editButtonWidgetDiv .dijitButtonFocused .dijitButtonContents, #filterButtonWidgetDiv .dijitButtonFocused .dijitButtonContents,
+        #modifyButtonWidgetDiv .dijitDropDownButtonFocused .dijitButtonContents, #doneButtonWidgetDiv .dijitButtonFocused .dijitButtonContents,
+        #homeButtonDivcatalogContainer .dijitButtonFocused .dijitButtonContents, #homeButtonDivtoolContainer .dijitButtonFocused .dijitButtonContents,
+        #homeButtonDivprefsContainer .dijitButtonFocused .dijitButtonContents, #homeButtonDivbgTasksContainer .dijitButtonFocused .dijitButtonContents,
+        #profileButtonWidgetDiv_toolboxContainer .dijitDropDownButtonFocused .dijitButtonContents, #profileButtonWidgetDiv_catalogContainer .dijitDropDownButtonFocused .dijitButtonContents,
+        #profileButtonWidgetDiv_toolContainer .dijitDropDownButtonFocused .dijitButtonContents, #profileButtonWidgetDiv_bgTasksContainer .dijitDropDownButtonFocused .dijitButtonContents,
+        #bgTaskButtonDiv .dijitDropDownButtonFocused .dijitButtonContents, #catalogBgTaskButtonDiv .dijitDropDownButtonFocused .dijitButtonContents,
+        #toolBgTaskButtonDiv .dijitDropDownButtonFocused .dijitButtonContents, #prefsBgTaskButtonDiv .dijitDropDownButtonFocused .dijitButtonContents,
+        #bgTasksDetailsbgTaskButtonDiv .dijitDropDownButtonFocused .dijitButtonContents {
+        box-shadow: inset 0px 0px 2px 1px rgba(255, 255, 255, 0.3);
+        border: none !important;
+        outline: none !important;
+    }
+    .oneui .dijitButtonFocused .dijitButtonNode, .oneui .dijitDropDownButtonFocused .dijitButtonNode, .oneui .dijitToggleButtonFocused .dijitButtonNode
+        {
+        border: none !important;
+        outline: none !important;
+    }
+
+    /* drop down menu size and color */
+    .addDropDownMenu {
+        width: 273px;
+        background-color: #4178BE !important;
+    }
+    .addDropDownPopup {
+        position: absolute;
+        left: 0px !important;
+        top: 70px !important;
+        padding: 20px 0;
+        background: #404e56;
+    }
+    .addDropDownPopup:after, .addDropDownPopup:before {
+        bottom: 100%;
+        border: solid transparent;
+        border-color: transparent;
+        border-bottom-color: #404e56;
+        content: " ";
+        height: 0;
+        width: 0;
+        position: absolute;
+    }
+    .addDropDownPopup:after {
+        border-width: 10px;
+        margin-left: -10px;
+        left: 35px;
+    }
+    .addDropDownPopup:before {
+        border-width: 11px;
+        margin-left: -11px;
+        left: 34px;
+    }
+
+    /* to remove the arrow in the drop down button */
+    .dijitArrowButtonInner {
+        display: none;
+    }
+    .addDropDownMenu .dijitReset .dijitMenuItem, .profileMenu .dijitReset .dijitMenuItem {
+        border-color: transparent;
+        border-collapse: collapse;
+        background: none repeat scroll 0 0 #4178BE;
+        height: 40px;
+    }
+
+    /* to set the white text in the drop down menu */
+    .addDropDownMenu .dijitReset .dijitMenuItem .dijitMenuItemLabel {
+        color: #FFFFFF;
+        border-bottom: none;
+    }
+    .addDropDownMenu .dijitReset .dijitMenuItem .dijitMenuItemIconCell, .profileMenu .dijitReset .dijitMenuItem .dijitMenuItemIconCell {
+        border: none;
+        border-bottom: none;
+    }
+    #toolboxAddToolMenu .dijitMenuItemIconCell, #toolboxAddToolMenu .dijitMenuItemLabel, #toolboxAddToolMenu .dijitMenuArrowCell {
+        border-top: none;
+    }
+    #toolboxAddToolMenu .dijitMenuItemLabel {
+        font-size: 18px;
+        text-align: center;
+    }
+
+    /* assessibility focus when tab into drop down menu for addToolMenu and profilMenu */
+    #toolboxAddToolMenu .dijitMenuItemSelected, #toolboxProfileMenu .dijitMenuItemSelected {
+        box-shadow: inset 0px 0px 2px 1px rgba(255, 255, 255, 0.5);
+    }
+    #toolboxAddToolMenu tr, #toolboxProfileMenu tr {
+        display: block;
+    }
+    #toolboxAddToolMenu td.dijitMenuItemLabel {
+        padding-top: 10px;
+    }
+    #toolboxProfileMenu td.dijitMenuItemLabel, #toolboxAddToolMenu td.dijitMenuItemLabel {
+        width: 100%;
+    }
+
+    /* The next five css is to take out the border from the menu table */
+    /* has to use a global one */
+    .oneui .dijitMenuTable {
+        border-collapse: collapse;
+        border-color: #404e56 !important;
+    }
+    .addDropDownMenu .dijitReset .dijitMenuItem .dijitMenuItemAccelKey, .profileMenu .dijitReset .dijitMenuItem .dijitMenuItemAccelKey {
+        border-right: none;
+    }
+    .addDropDownMenu .dijitReset .dijitMenuItem .dijitMenuArrowCell, .profileMenu .dijitReset .dijitMenuItem .dijitMenuArrowCell {
+        border-right: none;
+        border-bottom: none;
+    }
+
+    /*   .oneui .dijitMenuSeparatorTop */
+    .addDropDownMenu .dijitMenuSeparatorTop, .profileMenu .dijitMenuSeparatorTop {
+        border-bottom: none;
+        border-top: none;
+    }
+
+    /* using overflow visible so as to position the close button past the edge */
+    #addBookmarkDialogId, #catalogAddToolId, #toolboxRemoveToolId, .messageDialog {
+        min-width: 370px !important;
+        width: 370px;
+        max-width: 370px;
+        min-height: 180px;
+        background-color: #f4f4f1 !important;
+        position: absolute !important;
+        top: 108px !important;
+        border: none !important;
+        overflow: visible !important;
+        -webkit-box-shadow: none !important;
+        border-radius: 0 !important;
+    }
+    #addBookmarkDialogId {
+        height: 275px;
+    }
+    #addBookmarkButtonId:hover {
+        box-shadow: #7CC7FF 0 0 2px 2px;
+        cursor: pointer;
+    }
+    #addBookmarkButtonId:focus {
+        box-shadow: 0px 0px 0px 1px #ffffff inset;
+        border: 3px solid #5AAAFA !important;
+    }
+    .dijitDialogUnderlay {
+        background: #000000;
+        opacity: 0.5
+    }
+    #addBookmarkDialogId .dijitDialogTitleBar, #toolboxRemoveToolId .dijitDialogTitleBar, #catalogAddToolId .dijitDialogTitleBar {
+        text-align: center;
+        border-bottom: none !important;
+        font-weight: 300;
+        color: #2f3030 !important;
+    }
+    #addBookmarkDialogId .dijitDialogPaneContent, #toolboxRemoveToolId .dijitDialogPaneContent, #catalogAddToolId .dijitDialogPaneContent {
+        padding: 0px;
+    }
+
+    /* additional css for the add button node */
+    #addBookmarkDialogId .dijitDialogPaneContent .dijitButton .dijitButtonNode, #toolboxRemoveToolId .dijitDialogPaneContent .dijitButton .dijitButtonNode,
+        #catalogAddToolId .dijitDialogPaneContent .dijitButton .dijitButtonNode, .messageDialog .messageOKButton {
+        padding: 0px;
+        height: 40px;
+    }
+    .messageDialog .dijitDialogTitleBar {
+        padding: 25px 0 0 0 !important;
+        text-align: center;
+        border-bottom: none !important;
+    }
+    .messageDialog .dijitDialogTitle {
+        color: #2f3030;
+        font-size: 30px;
+    }
+    .messageDialog .dijitDialogPaneContent {
+        padding: 0;
+    }
+    .messageDialog {
+        padding: 20px 30px;
+    }
+    .messageDialog .dijitDialogPaneActionBar {
+        padding-top: 0;
+        border-top: none;
+    }
+    .messageOKButton {
+        width: 100%;
+        background-color: #4178BE;
+        color: #ffffff;
+        font-size: 18px;
+        text-align: center;
+        border: none;
+    }
+    .messageDialogIcon {
+        float: left;
+        padding-right: 20px;
+    }
+    .messageDialogText {
+        padding-left: 47px;
+        font-size: 15px;
+        color: #000000;
+        text-align: left;
+    }
+    .messageOKButton:focus {
+        box-shadow: inset #7CC7FF 0px 0px 2px 1px
+    }
+
+    /* additional css to center the button text vertically */
+    #addBookmarkDialogId .dijitButtonText, #toolboxRemoveToolId .dijitButtonText, #catalogAddToolId .dijitButtonText {
+        padding-top: 7px;
+    }
+    #bookmarkName {
+        width: 310px;
+        height: 40px;
+        margin-top: 0px;
+        margin-bottom: 0px;
+        font-weight: 300;
+        font-size: 15px;
+        border: 1px solid #c1c1c1;
+        background-color: #ffffff;
+        color: #545454;
+        padding-left: 10px;
+        padding-right: 10px;
+        margin-left: 18px;
+    }
+    #bookmarkURL {
+        width: 310px;
+        height: 40px;
+        margin-top: 14px;
+        margin-bottom: 28px;
+        font-weight: 300;
+        font-size: 15px;
+        border: 1px solid #c1c1c1;
+        background-color: #ffffff;
+        color: #000000;
+        padding-left: 10px;
+        padding-right: 10px;
+        margin-left: 18px;
+    }
+    #addBookmarkButtonId {
+        width: 370px;
+        height: 40px;
+        background-color: #4178BE;
+        color: #ffffff;
+        font-weight: 300;
+        font-size: 18px;
+    }
+
+    /* make the add button across the entire width */
+    #addBookmarkDialogId .dijitButton {
+        margin: 0px;
+    }
+    #addBookmarkButtonId:hover {
+        box-shadow: #7CC7FF 0 0 2px 2px;
+        cursor: pointer;
+    }
+    #addBookmarkButtonId:focus {
+        box-shadow: 0px 0px 0px 1px #ffffff inset;
+        border: 3px solid #5AAAFA !important;
+    }
+    #addBookmarkDialogId .dijitDialogCloseIcon, #toolboxRemoveToolId .dijitDialogCloseIcon, #catalogAddToolId .dijitDialogCloseIcon,
+        .messageDialog .dijitDialogCloseIcon {
+        background-image: url(../imagesShared/close-T.png);
+        background-repeat: no-repeat;
+        background-color: transparent;
+        display: block;
+        position: absolute;
+        margin-top: -14px;
+        margin-right: -14px;
+        height: 40px;
+        width: 40px;
+        padding: 0;
+        overflow: visible;
+    }
+
+    /* .dijitTooltipRight .dijitTooltipContainer { */
+    .bookmarkTooltipIncomplete {
+        background-color: #a91024 !important;
+        font-size: 15px !important;
+        color: #ffffff !important;
+        min-height: 20px;
+        font-weight: 300;
+        border: 1px solid #a91024 !important;
+    }
+    .bookmarkTooltipError {
+        background-color: #D74108 !important;
+        font-size: 15px !important;
+        color: #ffffff !important;
+        min-height: 20px;
+        min-width: 200px;
+        font-weight: 300;
+        border: 1px solid #D74108 !important;
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+    .bookmarkTooltipConnectorRightIncomplete {
+        background-position: 0 !important;
+        background-image: url("../images/triangle-connector--rightward--error-message--T.png") !important;
+        height: 20px !important;
+        width: 20px !important;
+    }
+    .bookmarkTooltipConnectorRightError {
+        background-position: 0 !important;
+        background-image: url("../images/triangle-connector--rightward--warning-message--T.png") !important;
+        height: 20px !important;
+        width: 20px !important;
+    }
+    .bookmarkTooltipConnectorLeftIncomplete {
+        background-position: 0 !important;
+        background-image: url("../images/triangle-connector--leftward--error-message--T.png") !important;
+        height: 20px !important;
+        width: 20px !important;
+    }
+    .bookmarkTooltipConnectorLeftError {
+        background-position: 0 !important;
+        background-image: url("../images/triangle-connector--leftward--warning-message--T.png") !important;
+        height: 20px !important;
+        width: 20px !important;
+    }
+    .bookmarkBorderIncomplete:focus {
+        border-color: #a91024 !important;
+        outline: none; /* for chrome to remove their extra border in focus */
+    }
+    .bookmarkBorderError:focus {
+        border-color: #D74108 !important;
+        outline: none; /* for chrome to remove their extra border in focus */
+    }
+    .profile-container .profile-right-panel .title {
+        font-size: 24px;
+        font-weight: 300;
+        height: 50px;
+        padding-top: 35px;
+        margin: 0;
+    }
+    .profile-container .profile-right-panel .section {
+        padding-left: 35px;
+        padding-right: 35px;
+    }
+    .profile-container .profile-right-panel .section h3 {
+        padding-left: 0px;
+        margin: 0 0 15px 0;
+        font-size: 18px;
+        color: #413d3d;
+        font-weight: 300;
+    }
+    .profile-container .profile-right-panel .section legend {
+        margin: 0 0 15px 0;
+        font-size: 17px;
+        color: #787878;
+        font-weight: 300;
+    }
+    .profile-container .profile-right-panel .section .group-radius {
+        height: 32px;
+        margin: 0px 0 7px 25px;
+    }
+    .profile-container .profile-right-panel label {
+        padding-left: 10px;
+        color: #787878;
+        font-size: 17px;
+        font-weight: 300;
+    }
+    .profile-container .profile-right-panel .section h3 .right-button {
+        height: 30px;
+        width: 53px;
+        border-radius: 30px;
+        padding: 0px; /* for IE */
+    }
+    .profile-container .profile-right-panel .section h3 .right-button:after {
+        height: 24px;
+        background-color: #f8f8f7;
+    }
+    .profileMenu {
+        width: 320px;
+        background-color: #404e56 !important;
+        border: none;
+    }
+
+    /* to set the white text in the drop down menu */
+    .profileMenu .dijitReset .dijitMenuItem .dijitMenuItemLabel {
+        color: #FFFFFF;
+        font-size: 18px;
+        border-bottom: none;
+        text-align: center;
+        height: 35px;
+    }
+    #userNameLogoutMenuItem, #preferencesMenuItem, #helpMenuItem {
+        background-color: #4178BE;
+        height: 40px;
+    }
+    .profileMenu .dijitReset .dijitMenuSeparator, .addDropDownMenu .dijitReset .dijitMenuSeparator {
+        background-color: #404e56;
+        height: 10px;
+    }
+    .profileMenuPopup {
+        left: auto !important;
+        right: 0 !important;
+        padding: 20px 0;
+        background: #404e56;
+    }
+
+    /* the little triangle pointing upwards */
+    .profileMenuPopup:after, .profileMenuPopup:before {
+        bottom: 100%;
+        border: solid transparent;
+        border-color: transparent;
+        border-bottom-color: #404e56;
+        content: " ";
+        height: 0;
+        width: 0;
+        position: absolute;
+    }
+    .profileMenuPopup:after {
+        border-width: 10px;
+        margin-left: -10px;
+        right: 95px;
+    }
+    .profileMenuPopup:before {
+        border-width: 11px;
+        margin-left: -11px;
+        right: 94px;
+    }
+    #toolboxProfileMenu .dijitMenuItemIconCell, #toolboxProfileMenu .dijitMenuItemLabel, #toolboxProfileMenu .dijitMenuArrowCell {
+        border-top: none;
+    }
+    .mblIconArea {
+        height: 235px !important;
+        width: 192px !important;
+        margin: 0px 0px !important;
+        border: none !important;
+    }
+    .mblIconAreaTitle {
+        width: 142px !important;
+        height: 60px !important;
+        font-size: 15px;
+        color: #000000;
+        display: block;
+        line-height: 15px;
+        margin-left: 25px;
+        margin-right: 25px;   
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .mblIconAreaInner {
+        height: 150px !important;
+        margin-bottom: 9px;
+        margin-top: 9px;
+    }
+    #cancelFiltering:hover {
+        cursor: pointer;
+        background-color: #4178BE;
+    }
+    #searchBoxInputClear:hover {
+        box-shadow: #7CC7FF 0 0 2px 1px;
+        cursor: pointer;
+        border-radius: 40px;
+    }
+    a.deleteSearchInputHref:focus img.deleteSearchInputImg, a.cancelFilterHref:focus img.cancelFilterImg {
+        border: 1px solid #4178BE;
+        outline: none;
+    }
+    #toolboxRemoveToolId .dijitDialogPaneContentArea, #catalogAddToolId .dijitDialogPaneContentArea {
+        text-align: left;
+        color: #000000; /* Force black text for IE */
+        font-size: 15px;
+        padding: 20px 30px;
+    }
+    #toolboxRemoveToolId   .dijitDialogPaneContentArea {
+        background: url('../images/dialog-alert-T.png') no-repeat 30px 20px;
+        background-size: 32px 32px;
+        min-width: 263px !important; /**370 - 77(left padding) - 30(right padding) */
+        padding-left: 77px !important; /* left padding=30(from left edge)+32(icon width)+15(between icon and text)=77px */
+    }
+    #toolboxRemoveToolId .confirmDescriptionIcon {
+        padding-top: 2px;
+        padding-bottom: 17px;
+        margin-bottom: 0px;
+    }
+    #toolboxRemoveToolId .confirmDescription {
+        font-size: 15px;
+        margin-bottom: 0px;
+    }
+    #catalogAddToolId .dijitDialogPaneContentArea {
+        min-width: 310px !important;
+    }
+    #toolboxRemoveToolId .dijitDialogPaneActionBar, #catalogAddToolId .dijitDialogPaneActionBar {
+        min-width: 370px !important;
+        border-top: none;
+        padding: 0px !important;
+    }
+    .confirmOkButton {
+        min-width: 370px;
+        height: 40px;
+        background-color: #4178BE;
+        color: #ffffff;
+        font-weight: 300;
+        font-size: 18px;
+        border: none;
+        margin-left: 0px !important;
+        margin-right: 0px !important;
+    }
+    .confirmOkButton:focus {
+        outline: #2C363B solid 1px;
+    }
+    .backgroundTaskPopupDialog {
+        left: auto !important;
+        right: -75px !important;
+        width: 400px !important;
+        background-color: #404e56;
+        background-image: none;
+    }
+
+    /* the little triangle pointing upwards */
+    .backgroundTaskPopupDialog:after, .backgroundTaskPopupDialog:before {
+        bottom: 100%;
+        border: solid transparent;
+        border-color: transparent;
+        border-bottom-color: #404e56;
+        content: " ";
+        height: 0;
+        width: 0;
+        position: absolute;
+    }
+    .backgroundTaskPopupDialog:after {
+        border-width: 10px;
+        margin-left: -10px;
+        right: 25px;
+    }
+    .backgroundTaskPopupDialog:before {
+        border-width: 11px;
+        margin-left: -11px;
+        right: 24px;
+    }
+    .backgroundTaskPopupDialog .dijitTooltipContainer {
+        border: none;
+        background-color: #404e56;
+        background-image: none;
+        box-shadow: 0 0px;
+    }
+    .backgroundTaskPopupDialog .dijitTooltipConnector {
+        display: none;
+    }
+    .backgroundTaskPopupDialog .buttonBackground {
+        background-color: #4178BE !important;
+        background-image: none !important;
+        color: #FFFFFF;
+        font-size: 18px;
+        border-bottom: none;
+        text-align: center;
+        height: 35px;
+        padding-top: 4px;
+        padding-bottom: 6px;
+        margin: 0 -14px;
+        width: 410px;
+    }
+    .backgroundTaskPopupDialog .buttonBackground .focused {
+        border: solid 1px #ffffff !important;
+    }
+    .nobackgroundTaskPopupText {
+        color: #FFFFFF;
+        font-size: 18px;
+        border-bottom: none;
+        text-align: center;
+        height: 35px;
+    }
+    .backgroundTaskPopupText {
+        color: #FFFFFF;
+        font-size: 18px;
+        border-bottom: none;
+        text-align: center;
+        height: 35px;
+    }
+    #bgTaskInfoDialog .dijitDialogCloseIcon {
+        background-color: transparent;
+        height: 40px;
+        width: 40px;
+        outline: none;
+    }
+    #bgTasksDetailsViewButton:focus {
+        box-shadow: inset 0px 0px 2px 1px rgba(255, 255, 255, 0.3);
+        border: none !important;
+        outline: none !important;
+    }
+
+    /* disabled and not selected */
+    .dijitRadio.dijitRadioDisabled.bidiRadioButton {
+        width: 32px;
+        height: 32px;
+        background-image: url('../images/bidiPrefRadioButton-T.png') !important;
+        background-position: 0px;
+    }
+
+    /* disabled but selected */
+    .dijitRadio.dijitRadioDisabled.dijitRadioCheckedDisabled.bidiRadioButton {
+        width: 32px;
+        height: 32px;
+        background-image: url('../images/bidiPrefRadioButton-T.png') !important;
+        background-position: -32px;
+    }
+
+    /* enabled and not selected */
+    .dijitRadio.bidiRadioButton {
+        width: 32px;
+        height: 32px;
+        background-image: url('../images/bidiPrefRadioButton-T.png') !important;
+        background-position: -64px;
+    }
+
+    /* enabled and selected + enabled not selected hover */
+    .dijitRadio.dijitRadioHover.bidiRadioButton, .dijitRadio.dijitRadioChecked.bidiRadioButton {
+        width: 32px;
+        height: 32px;
+        background-image: url('../images/bidiPrefRadioButton-T.png') !important;
+        background-position: -96px;
+    }
+
+    /* add focus to the radio button in addition to the label */
+    .dijitRadio.dijitRadioFocused.bidiRadioButton {
+        outline: 1px dotted #4a4a4a;
+    }
+    .searchBoxHeading {
+        height: 66px;
+        padding: 2px 0px;
+        background-color: #325C80;
+        position: relative;
+        margin: 0 auto;
+    }
+    .searchBoxPane {
+        position: relative;
+        margin: 0 auto;
+        width: 300px;
+        height: 66px;
+    }
+    .searchBoxInput {
+        position: relative;
+        height: 40px !important;
+        width: 225px;
+        margin-top: 12px;
+        border: none !important; /* border: 2px solid #00b0da; */
+        background-color: #ffffff;
+        font-size: 1em !important;
+        padding-left: 15px;
+        padding-right: 40px;
+        border-radius: 0px;
+    }
+    .deleteSearchInputImg {
+        z-index: 300;
+        position: absolute;
+        top: calc(50% - 16px);
+    }
+    .cancelFilterImg {
+        position: absolute;
+        right: 0px;
+        top: 0px;
+    }
+    .dijitReset .dijitCheckBoxInput {
+        width: 32px;
+        height: 32px;
+    }
+    .toolContentContainerDiv {
+        width: 100%;
+        position: absolute;
+        top: 70px;
+        bottom: 0px;
+    }
+}

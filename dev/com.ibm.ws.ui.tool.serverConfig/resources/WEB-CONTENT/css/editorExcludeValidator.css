@@ -1,0 +1,94 @@
+/*******************************************************************************
+ * Copyright (c) 2016 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+/* This css file is exempted from css validation and contains valid css that won't pass the css validation */
+
+@media screen and (-webkit-min-device-pixel-ratio:0) { 
+
+    #editorTree .editorTreeNode.active:focus {
+        outline-color: #5AAAFA;
+        outline-style: solid;
+        outline-width: 2px;
+    }
+
+}
+
+.textviewContent ::selection {
+    color: black;
+}
+
+@media screen and (-webkit-min-device-pixel-ratio:0) { 
+
+    .dialog-btn:focus {
+        outline-offset: -2px !important;
+        outline-color: #5AAAFA;
+        outline-style: solid;
+        outline-width: 2px;
+    }
+
+}
+
+@media screen and (-webkit-min-device-pixel-ratio:0) { 
+
+    #dialogAddChildElementListContainer .dialogAddChildElementListItem.active:focus {
+        outline-color: #5AAAFA;
+        outline-style: solid;
+        outline-width: 2px;
+    }
+
+}
+
+@media screen and (-webkit-min-device-pixel-ratio:0) { 
+
+    #dialogEnumerationSelectListContainer .enumerationOption.active:focus {
+        outline-color: #5AAAFA;
+        outline-style: solid;
+        outline-width: 2px;
+    }
+
+}
+
+@media screen and (-webkit-min-device-pixel-ratio:0) { 
+
+    #dialogSelectFeatureContainer .dialogSelectFeatureListItem.active:focus {
+        outline-color: #5AAAFA;
+        outline-style: solid;
+        outline-width: 2px;
+    }
+
+}
+
+@-moz-document url-prefix() {
+#addChildButton, #removeButton, #testButton {
+        outline-color: inherit;
+    }
+}
+
+.textviewTooltip {
+    moz-box-sizing: initial !important;
+    webkit-box-sizing: initial !important;
+}
+
+#serverExplorerClearButton {
+  pointer-events: auto;
+}
+
+#editorForm .clearInputFeedbackAction {
+    pointer-events: auto;
+}
+
+@-moz-document url-prefix() {
+    #loginSubmit {
+        outline-color: inherit;
+    }
+}
+
+

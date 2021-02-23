@@ -1,0 +1,364 @@
+/*******************************************************************************
+ * Copyright (c) 2014 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+/* These apply to desktop or tablet. For now, just for desktop */
+
+/* Disable text-shadow which is present in OneUI CSS */
+* {
+    text-shadow: none;
+}
+
+noscript {
+    text-align: center;
+}
+
+.uppercase-spacing, .dashboard-row-header, .button-total {
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+
+/* Overall container of the dashboard 'tab' */
+#mainDashboard {
+    font-size: 14px; /*??*/
+    font-weight: lighter; /*??*/
+}
+
+.container {
+    background-color: white;
+    box-shadow: 0px 2px 0px #D7D7D7;
+    max-width: 800px;
+    position: relative;
+    margin-left: 10%;
+    width: 80%;
+}
+
+.baseAlertPane {
+    text-align: left;
+    overflow: hidden;
+}
+
+.hiddenAlertPane {
+    display: none;
+}
+
+.dashboardAlertPane {
+    background-color: #F3F3F3;
+    box-shadow: none;
+    font-size: 14px;
+    font-weight: 100;
+    line-height: 22px;
+    margin-bottom: 7px;
+    max-width: 776px;
+    padding: 10px 0px 0px 24px;
+    width: calc(80% - 24px);
+}
+
+.overviewAlertPane {
+    font-size: 12px;
+    line-height: 22px;
+    margin-bottom: 45px;
+    margin-top: 45px;
+    width: 100%;
+    display: inline-block;
+    position: relative;
+}
+
+.baseAlertListPane {
+    clear: both;
+    white-space: normal;
+}
+
+.dashboardAlertIcon {
+    padding: 5px 0px;
+    float: left;
+}
+
+.dashboardAlertIcon svg {
+    height: 25px;
+    width: 25px;
+    vertical-align: bottom;
+}
+
+.dashboardAlertHeading {
+    color: #D74108;
+    margin-left: 10px;
+}
+
+.overviewAlertIcon {
+    padding: 0px;
+    float: left;
+    position: absolute;
+}
+
+.overviewAlertIcon svg {
+    height: 20px;
+    width: 20px;
+    vertical-align: bottom;
+}
+
+.alertLink {
+    color: #4178BE !important;
+    font-family: HelvNeueMedium, Helvetica, Arial, sans-serif;
+}
+
+.resource-icon {
+    background-repeat: no-repeat;
+    background-size: cover;
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+}
+
+.status-icon {
+    background-repeat: no-repeat;
+    background-position: center;
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    margin-top: 2px;
+}
+
+.dashboard-table {
+    display: inline-block;
+    margin-top: 10px;
+    border-collapse: collapse;
+}
+
+.dashboard-table td {
+    border-left: 1px solid #DCDCDC;
+}
+
+.dashboard-table td:first-child {
+    border-left: none;
+}
+
+.dashboard-table:last-child {
+    margin-bottom: 24px;
+}
+
+.dashboard-row-header {
+    background-color: white;
+    border-bottom: 1px solid #CBCBCB;
+    height: 20px;
+    left: 0px;
+    padding: 10px 0px 10px 20px;
+    position: absolute;
+    width: calc(100% - 20px);
+}
+
+.dashboard-row-header p {
+    display: inline-block;
+    margin: 0px 0px 0px 6px;
+    vertical-align: top;
+    color: #7D7373;
+    font-family: "HelvNeueBold", helvetica, sans-serif;
+}
+
+.dashboard-row-detail {
+    padding-top: 41px;
+}
+
+.detail-total {
+    min-width: 300px;
+}
+
+.button-total {
+    background-color: white;
+    border: 0px;
+    color: #325C80;
+    font-size: 14px;
+    height: 116px;
+    line-height: 16px;
+    padding: 0px;
+    text-align: left;
+    width: 100%;
+    -webkit-transition: all ease-in-out 0.12s;
+    -moz-transition: all ease-in-out 0.12s;
+    -o-transition: all ease-in-out 0.12s;
+    transition: all ease-in-out 0.12s;
+}
+
+.button-total .total-detail {
+    display: inline-block;
+    padding: 16px 0px 0px 16px;
+    margin: 0px;
+}
+
+.button-total:hover {
+    background-color: #f3f3f3;
+    cursor: pointer;
+    padding-left: 20px;
+}
+
+.detail-graph {
+    width: 75px;
+    height: 75px;
+    margin: 12px 15px 15px 28px;
+    display: inline-block;
+    float: left;
+    position: relative;
+}
+
+.total-label {
+    line-height: 16px;
+    font-size: 14px;
+}
+
+.total-number {
+    line-height: 35px;
+    padding-top: 16px;
+}
+
+.total-number span {
+    color: #4178BE;
+    font-family: "HelvNeueBold", helvetica, sans-serif;
+    font-size: 54px;
+}
+
+.detail-list {
+    width: 100%;
+}
+
+.detail-list ul {
+    margin: 0px;
+    padding: 0px;
+}
+
+.list-count {
+    display: block;
+    padding: 8px 0px 5px 30px;
+}
+
+.list-count p {
+    font-family: "HelvNeueBold", helvetica, sans-serif;
+    font-size: 14px;
+    display: inline-block;
+    margin: 4px 0px 0px 6px;
+    vertical-align: top;
+    line-height: 17px;
+}
+
+.list-count .list-number {
+    position: absolute;
+    right: 30px;
+    text-align: right;
+}
+
+.list-count:nth-child(3) {
+    border-bottom: none;
+}
+
+.list-count:hover {
+    background-color: #f3f3f3;
+    cursor: pointer;
+}
+
+.status-info {
+    font-family: "HelvNeueBold", helvetica, sans-serif;
+    font-size: 14px;
+    display: inline-block;
+    margin: 4px 0px 0px 6px;
+    vertical-align: top;
+    line-height: 17px;
+    overflow: hidden;
+    padding-right: 10px;
+    max-width: calc(100% - 100px);
+}
+
+.list-number {
+    font-family: "HelvNeueBold", helvetica, sans-serif;
+    font-size: 14px;
+    display: inline-block;
+    margin: 4px 0px 0px 6px;
+    vertical-align: top;
+    line-height: 17px;
+    position: absolute;
+    right: 30px;
+    text-align: right;
+}
+
+.running {
+    color: #4B8400;
+}
+
+.stopped {
+    color: #9F1F25;
+}
+
+.unknown {
+    background-color: #D74108;
+    color: white;
+}
+
+.unknown:hover {
+    background-color: #872A0F;
+}
+
+.detailPercentageLabel g text {
+    font-size: 14px;
+    font-family: HelvNeueBold, Helvetica, Arial, sans-serif;
+    color: #4b8400;
+}
+
+@media ( min-width : 1800px) {
+    .dashboardAlertPane {
+        max-width: 1575px;
+        margin-left: 24px;
+        width: calc(100% - 24px);
+    }
+    .dashboard-table {
+        margin: 16px 15px 0px 15px;
+    }
+    .dashboardPaneContent {
+        margin-left: calc(50% - 830px);
+    }
+}
+
+@media ( min-width : 1001px) and (max-width: 1799px) {
+    .container {
+        margin-left: calc(50% - 400px);
+    }
+}
+
+@media ( max-width : 800px) {
+    .container {
+        margin-left: 0px;
+        width: 100%;
+    }
+    .dashboard-table {
+        display: inline-table;
+    }
+    .dashboardAlertPane {
+        width: calc(100% - 48px);
+    }
+}
+
+@media ( max-width : 600px) {
+    .dashboard-table {
+        margin-top: 24px;
+    }
+    .dashboard-row-detail {
+        display: inline-block;
+    }
+    .dashboardAlertPane {
+        padding-top: 0px;
+        width: calc(100% - 50px);
+    }
+    .detail-total {
+        display: inline-block;
+        width: 100%;
+    }
+    .detail-list {
+        padding-top: 0px;
+    }
+    .list-count:first-child {
+        border-top: 1px solid #CBCBCB;
+    }
+}
