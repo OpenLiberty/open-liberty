@@ -18,8 +18,6 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({
                 Config20Tests.class, //LITE
                 Config20ExceptionTests.class, //LITE
-                Config20PropertyExpressionExceptionTests1.class, //LITE
-                Config20PropertyExpressionExceptionTests2.class, //LITE
                 Config20NoCDITests.class //LITE
 })
 public class FATSuite {

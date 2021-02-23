@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.microprofile.config.internal_fat.apps.brokenPropertyExpression;
+package io.openliberty.microprofile.config.internal_fat.apps.brokenInjection;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -16,10 +16,11 @@ import javax.inject.Inject;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 @RequestScoped
-public class MissingPropertyExpressionBean1 {
+public class BadConfigPropertyInConstructorBean {
 
     @Inject
-    @ConfigProperty(name = "keyFromVariableInServerXML")
-    String nonExistantPropertyExpressionVariable;
+    public BadConfigPropertyInConstructorBean(@ConfigProperty String aConstructorParameter) {
+        //this will fail
+    }
 
 }

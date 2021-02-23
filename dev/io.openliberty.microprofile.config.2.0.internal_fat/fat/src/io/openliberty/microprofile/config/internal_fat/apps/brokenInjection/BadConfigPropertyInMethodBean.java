@@ -16,7 +16,7 @@ import javax.inject.Inject;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 @RequestScoped
-public class ConfigUnnamedMethodInjectionBean {
+public class BadConfigPropertyInMethodBean {
 
     @Inject
     public void aMethod(@ConfigProperty String aMethodParameter) {

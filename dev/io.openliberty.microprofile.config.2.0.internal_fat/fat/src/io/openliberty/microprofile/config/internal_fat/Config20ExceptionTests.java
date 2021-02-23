@@ -34,8 +34,8 @@ import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
-import io.openliberty.microprofile.config.internal_fat.apps.brokenInjection.ConfigUnnamedConstructorInjectionBean;
-import io.openliberty.microprofile.config.internal_fat.apps.brokenInjection.ConfigUnnamedMethodInjectionBean;
+import io.openliberty.microprofile.config.internal_fat.apps.brokenInjection.BadConfigPropertyInConstructorBean;
+import io.openliberty.microprofile.config.internal_fat.apps.brokenInjection.BadConfigPropertyInMethodBean;
 import io.openliberty.microprofile.config.internal_fat.apps.brokenInjection.converters.BadConverter;
 import io.openliberty.microprofile.config.internal_fat.apps.brokenInjection.converters.TypeWithBadConverter;
 import io.openliberty.microprofile.config.internal_fat.apps.brokenInjection.converters.TypeWithNoConverter;
@@ -68,7 +68,7 @@ public class Config20ExceptionTests extends FATServletClient {
                         .addAsResource(brokenInjectionConfigSource, "META-INF/microprofile-config.properties");
 
         // The war should throw a deployment exception, hence don't validate.
-        ShrinkHelper.exportDropinAppToServer(server, brokenInjectionWar, DeployOptions.SERVER_ONLY, DeployOptions.DISABLE_VALIDATION);
+        ShrinkHelper.exportAppToServer(server, brokenInjectionWar, DeployOptions.SERVER_ONLY, DeployOptions.DISABLE_VALIDATION);
 
         server.startServer();
 
@@ -90,7 +90,7 @@ public class Config20ExceptionTests extends FATServletClient {
      */
     @Test
     public void testMethodUnnamed() throws Exception {
-        String beanDir = ConfigUnnamedMethodInjectionBean.class.getName();
+        String beanDir = BadConfigPropertyInMethodBean.class.getName();
         List<String> errors = server.findStringsInLogs("SRCFG02002: .*" + beanDir + ".aMethod\\(@ConfigProperty String\\)");
         assertNotNull(errors);
         assertTrue(errors.size() > 0);
@@ -105,7 +105,7 @@ public class Config20ExceptionTests extends FATServletClient {
      */
     @Test
     public void testConstructorUnnamed() throws Exception {
-        String beanDir = ConfigUnnamedConstructorInjectionBean.class.getName();
+        String beanDir = BadConfigPropertyInConstructorBean.class.getName();
         List<String> errors = server.findStringsInLogs("SRCFG02002: .*" + beanDir + "\\(@ConfigProperty String\\)");
         assertNotNull(errors);
         assertTrue(errors.size() > 0);
@@ -146,6 +146,22 @@ public class Config20ExceptionTests extends FATServletClient {
     @Test
     public void testBadConfigPropertiesInjection() throws Exception {
         List<String> errors = server.findStringsInLogs("SRCFG00029: Expected an integer value, got \"aString\"");
+        assertNotNull(errors);
+        assertTrue(errors.size() > 0);
+    }
+
+    @Test
+    public void testNonExistingPropertyExpressionForServerXMLVariable() throws Exception {
+        List<String> errors = server
+                        .findStringsInLogs("SRCFG00011: Could not expand value nonExistingPropertyForServerXMLVariable in property keyFromVariableInServerXML");
+        assertNotNull(errors);
+        assertTrue(errors.size() > 0);
+    }
+
+    @Test
+    public void testNonExistingPropertyExpressionForServerXMLAppProperty() throws Exception {
+        List<String> errors = server
+                        .findStringsInLogs("SRCFG00011: Could not expand value nonExistingPropertyForServerXMLAppProperty in property keyFromAppPropertyInServerXML");
         assertNotNull(errors);
         assertTrue(errors.size() > 0);
     }
