@@ -14,10 +14,7 @@ package com.ibm.ws.wssecurity.fat.cxf.wsstemplates;
 import java.io.File;
 import java.util.Set;
 
-//import java.io.File;
-
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 //Added 10/2020
 import org.junit.runner.RunWith;
 
@@ -34,8 +31,6 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.FeatureReplacementAction;
-import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
@@ -53,10 +48,6 @@ public class CxfWssTemplatesTestsWithExternalPolicy extends CxfWssTemplatesTests
     //Added 10/2020
     @Server(serverName)
     public static LibertyServer server;
-
-    //2/2021
-    @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification().andWith(FeatureReplacementAction.EE8_FEATURES().forServers(serverName).removeFeature("jsp-2.2").removeFeature("jaxws-2.2").removeFeature("servlet-3.1").removeFeature("usr:wsseccbh-1.0").addFeature("jsp-2.3").addFeature("jaxws-2.3").addFeature("servlet-4.0").addFeature("usr:wsseccbh-2.0"));
 
     @BeforeClass
     public static void setUp() throws Exception {

@@ -19,7 +19,6 @@ import java.util.Set;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Test;
 //Added 10/2020
 import org.junit.runner.RunWith;
@@ -39,8 +38,6 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.FeatureReplacementAction;
-import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
@@ -61,9 +58,6 @@ public class CxfCallerX509SymTests {
 
     static private final Class<?> thisClass = CxfCallerX509SymTests.class;
 
-    //2/2021 to use EE7 or EE8 error messages in CxfCallerSvcClient
-    private static String errMsgVersionInX509 = "";
-
     static boolean debugOnHttp = true;
 
     private static String portNumber = "";
@@ -78,10 +72,6 @@ public class CxfCallerX509SymTests {
     final static String msgExpires = "The message has expired";
     final static String badHttpsToken = "HttpsToken could not be asserted";
     final static String badHttpsClientCert = "Could not send Message.";
-
-    //2/2021
-    @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification().andWith(FeatureReplacementAction.EE8_FEATURES().forServers(serverName).removeFeature("jsp-2.2").removeFeature("jaxws-2.2").removeFeature("servlet-3.1").removeFeature("usr:wsseccbh-1.0").addFeature("jsp-2.3").addFeature("jaxws-2.3").addFeature("servlet-4.0").addFeature("usr:wsseccbh-2.0"));
 
     /**
      * Sets up any configuration required for running the OAuth tests.
@@ -102,13 +92,11 @@ public class CxfCallerX509SymTests {
         if (features.contains("usr:wsseccbh-1.0")) {
             server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbh.jar");
             server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-1.0.mf");
-            errMsgVersionInX509 = "EE7";
         }
         if (features.contains("usr:wsseccbh-2.0")) {
             server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
             server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-2.0.mf");
             copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
-            errMsgVersionInX509 = "EE8";
         }
 
         //Added 11/2020
@@ -159,6 +147,8 @@ public class CxfCallerX509SymTests {
     @Test
     public void testCxfCallerSymmetricEndorsingPolicy() throws Exception {
         //UpdateServerXml.reconfigServer(server, System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_x509_sym.xml");
+        //2/2021 server_x509_sym.xml doesn't exist in publish/servers/com.ibm.ws.wssecurity_fat.x509symcaller
+
         String thisMethod = "testCxfCallerSymmetricEndorsingPolicy";
         methodFull = "testCxfCallerSymmetricEndorsingPolicy";
 
@@ -204,8 +194,7 @@ public class CxfCallerX509SymTests {
                         "FatBAC07Service", //String strServiceName,
                         "UrnCallerToken07", //String strServicePort
                         "test3", // Expecting User ID
-                        "test3", // Password
-                        errMsgVersionInX509 //2/2021
+                        "test3" // Password
             );
         } catch (Exception e) {
             throw e;
@@ -256,34 +245,6 @@ public class CxfCallerX509SymTests {
      *
      */
 
-    //2/2021 Orig:
-    //protected void testRoutine(
-    //                           String thisMethod,
-    //                           String callerPolicy,
-    //                           String testMode, // Positive, positive-1, negative or negative-1... etc
-    //                           String portNumber,
-    //                           String portNumberSecure,
-    //                           String strServiceName,
-    //                           String strServicePort,
-    //                           String untID,
-    //                           String untPassword) throws Exception {
-    //    testSubRoutine(
-    //                   thisMethod,
-    //                   callerPolicy,
-    //                   testMode, // Positive, positive-1, negative or negative-1... etc
-    //                   portNumber,
-    //                   portNumberSecure,
-    //                   strServiceName,
-    //                   strServicePort,
-    //                   callerUNTClientUrl,
-    //                   "",
-    //                   untID,
-    //                   untPassword);
-
-    //    return;
-    //}
-
-    //2/2021
     protected void testRoutine(
                                String thisMethod,
                                String callerPolicy,
@@ -305,38 +266,7 @@ public class CxfCallerX509SymTests {
                        callerUNTClientUrl,
                        "",
                        untID,
-                       untPassword,
-                       null); //2/2021
-
-        return;
-    }
-
-    //2/2021
-    protected void testRoutine(
-                               String thisMethod,
-                               String callerPolicy,
-                               String testMode, // Positive, positive-1, negative or negative-1... etc
-                               String portNumber,
-                               String portNumberSecure,
-                               String strServiceName,
-                               String strServicePort,
-                               String untID,
-                               String untPassword,
-                               String errMsgVersionInX509) throws Exception {
-
-        testSubRoutine(
-                       thisMethod,
-                       callerPolicy,
-                       testMode, // Positive, positive-1, negative or negative-1... etc
-                       portNumber,
-                       portNumberSecure,
-                       strServiceName,
-                       strServicePort,
-                       callerUNTClientUrl,
-                       "",
-                       untID,
-                       untPassword,
-                       null); //2/2021
+                       untPassword);
 
         return;
     }
@@ -350,34 +280,7 @@ public class CxfCallerX509SymTests {
      * Though this test is not enforced it yet.
      *
      */
-    //2/2021 Orig:
-    //protected void testBadRoutine(
-    //                              String thisMethod,
-    //                              String callerPolicy,
-    //                              String testMode, // Positive, positive-1, negative or negative-1... etc
-    //                              String portNumber,
-    //                              String portNumberSecure,
-    //                              String strServiceName,
-    //                              String strServicePort,
-    //                              String untID,
-    //                              String untPassword) throws Exception {
-    //    testSubRoutine(
-    //                   thisMethod,
-    //                   callerPolicy,
-    //                   testMode, // Positive, positive-1, negative or negative-1... etc
-    //                   portNumber,
-    //                   portNumberSecure,
-    //                   strServiceName,
-    //                   strServicePort,
-    //                   callerBadUNTClientUrl,
-    //                   "Bad",
-    //                   untID,
-    //                   untPassword);
 
-    //    return;
-    //}
-
-    //2/2021
     protected void testBadRoutine(
                                   String thisMethod,
                                   String callerPolicy,
@@ -399,37 +302,7 @@ public class CxfCallerX509SymTests {
                        callerBadUNTClientUrl,
                        "Bad",
                        untID,
-                       untPassword,
-                       null);
-
-        return;
-    }
-
-    //2/2021
-    protected void testBadRoutine(
-                                  String thisMethod,
-                                  String callerPolicy,
-                                  String testMode, // Positive, positive-1, negative or negative-1... etc
-                                  String portNumber,
-                                  String portNumberSecure,
-                                  String strServiceName,
-                                  String strServicePort,
-                                  String untID,
-                                  String untPassword,
-                                  String errMsgVersionInX509) throws Exception {
-        testSubRoutine(
-                       thisMethod,
-                       callerPolicy,
-                       testMode, // Positive, positive-1, negative or negative-1... etc
-                       portNumber,
-                       portNumberSecure,
-                       strServiceName,
-                       strServicePort,
-                       callerBadUNTClientUrl,
-                       "Bad",
-                       untID,
-                       untPassword,
-                       errMsgVersionInX509); //2/2021
+                       untPassword);
 
         return;
     }
@@ -454,8 +327,7 @@ public class CxfCallerX509SymTests {
                                   String strClientUrl,
                                   String strBadOrGood,
                                   String untID,
-                                  String untPassword,
-                                  String errMsgVersionInX509) throws Exception {
+                                  String untPassword) throws Exception {
         try {
 
             WebRequest request = null;
@@ -479,8 +351,6 @@ public class CxfCallerX509SymTests {
             request.setParameter("methodFull", methodFull);
             request.setParameter("untID", untID);
             request.setParameter("untPassword", untPassword);
-            //2/2021
-            request.setParameter("errorMsgVersionInX509", errMsgVersionInX509);
 
             // Invoke the client
             response = wc.getResponse(request);
@@ -520,6 +390,12 @@ public class CxfCallerX509SymTests {
         }
         //orig from CL
         //SharedTools.unInstallCallbackHandler(server);
+
+        //2/2021
+        server.deleteFileFromLibertyInstallRoot("usr/extension/lib/bundles/com.ibm.ws.wssecurity.example.cbh.jar");
+        server.deleteFileFromLibertyInstallRoot("usr/extension/lib/features/wsseccbh-1.0.mf");
+        server.deleteFileFromLibertyInstallRoot("usr/extension/lib/bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
+        server.deleteFileFromLibertyInstallRoot("usr/extension/lib/features/wsseccbh-2.0.mf");
     }
 
     private static void printMethodName(String strMethod) {

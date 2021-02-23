@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2020, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -71,6 +71,10 @@ tested.features: jaxws-2.3, \
   cdi-2.0, \
   axb-2.3, \
   el-3.0
+
+#can't compile locally	
+#com.ibm.ws.org.apache.cxf.rt.security.3.3.6;version=latest,\
+#com.ibm.ws.org.apache.cxf.rt.ws.security.3.3.6;version=latest,\	
 	
 	
 -buildpath: \
@@ -94,10 +98,10 @@ tested.features: jaxws-2.3, \
 	com.ibm.websphere.org.osgi.core;version=latest,\
 	com.ibm.websphere.org.osgi.service.component;version=latest,\
 	org.apache.wss4j.wss4j-ws-security-common;version=2.3.0,\
+	com.ibm.ws.org.apache.cxf.rt.security.3.4.1;version=latest,\
+    com.ibm.ws.org.apache.cxf.rt.ws.security.3.4.1;version=latest,\
 	com.ibm.ws.org.apache.cxf.cxf.rt.ws.policy.3.2;version=latest,\
 	com.ibm.ws.org.apache.cxf.cxf.rt.bindings.soap.3.2;version=latest,\
-	com.ibm.ws.org.apache.cxf.rt.security.3.3.6;version=latest,\
-	com.ibm.ws.org.apache.cxf.rt.ws.security.3.3.6;version=latest,\
 	com.ibm.ws.org.apache.wss4j.bindings.2.3.0;version=latest,\
 	com.ibm.ws.org.apache.wss4j.policy.2.3.0;version=latest,\
 	com.ibm.ws.org.apache.wss4j.ws.security.common.2.3.0;version=latest,\

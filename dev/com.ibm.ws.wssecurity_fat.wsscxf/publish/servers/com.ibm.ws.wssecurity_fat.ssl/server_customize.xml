@@ -94,7 +94,10 @@
         <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.util"/>
         <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.soap.name"/>
         <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.xml.internal.messaging.saaj.soap.impl"/>
-        <!-- 2/03/2021 this is detected when running with jaxws-2.3 -->
+        <!-- 2/2021 EE8 -->
         <javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
-       
+        <javaPermission className="org.osgi.framework.AdminPermission" name="*" actions="*"/>
+        <javaPermission className="java.security.SecurityPermission" name="org.apache.xml.security.register"/>
+        <javaPermission className="java.net.URLPermission" name="https://localhost:8020/untoken/FVTVersionBAService" actions="POST:AcceptSOAPActionUser-Agent"/>   
+        
 </server>

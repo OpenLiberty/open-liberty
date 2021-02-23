@@ -21,7 +21,6 @@ import javax.crypto.Cipher;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Test;
 //Added 11/2020
 import org.junit.runner.RunWith;
@@ -42,8 +41,6 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.FeatureReplacementAction;
-import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
@@ -64,6 +61,9 @@ public class CxfX509MigSymTests {
 
     static private final Class<?> thisClass = CxfX509MigSymTests.class;
 
+    //2/2021 to use EE7 or EE8 error messages in CxfX509MigSvcClient or CxfX509MigBadSvcClient
+    private static String errMsgVersion = "";
+
     static boolean debugOnHttp = true;
 
     private static String portNumber = "";
@@ -78,10 +78,6 @@ public class CxfX509MigSymTests {
     final static String msgExpires = "The message has expired";
     final static String badHttpsToken = "HttpsToken could not be asserted";
     final static String badHttpsClientCert = "Could not send Message.";
-
-    //2/2021
-    @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification().andWith(FeatureReplacementAction.EE8_FEATURES().forServers(serverName).removeFeature("jsp-2.2").removeFeature("jaxws-2.2").removeFeature("servlet-3.1").removeFeature("usr:wsseccbh-1.0").addFeature("jsp-2.3").addFeature("jaxws-2.3").addFeature("servlet-4.0").addFeature("usr:wsseccbh-2.0"));
 
     /**
      * Sets up any configuration required for running the OAuth tests.
@@ -106,11 +102,13 @@ public class CxfX509MigSymTests {
             server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbh.jar");
             server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-1.0.mf");
             copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sha512.xml");
+            errMsgVersion = "EE7";
         }
         if (features.contains("usr:wsseccbh-2.0")) {
             server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
             server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-2.0.mf");
             copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_sha512_wss4j.xml");
+            errMsgVersion = "EE8";
         }
 
         //Added 11/2020
@@ -315,7 +313,8 @@ public class CxfX509MigSymTests {
                         portNumber, //String portNumber,
                         "", //String portNumberSecure
                         "FatBAX01Service", //String strServiceName,
-                        "UrnX509Token01" //String strServicePort
+                        "UrnX509Token01", //String strServicePort
+                        errMsgVersion //2/2021 CxfX509MigSvcClient
             );
         } catch (Exception e) {
             throw e;
@@ -334,9 +333,8 @@ public class CxfX509MigSymTests {
     @Test
     @AllowedFFDC(value = { "java.lang.Exception" })
     public void testCxfX509KeyIdMigSymServiceHttps() throws Exception {
-        //2/2021 Orig:
-        //String thisMethod = "testCxfX509KeyIdMigSymService";
-        String thisMethod = "testCxfX509KeyIdMigSymServiceHttps";
+
+        String thisMethod = "testCxfX509KeyIdMigSymService";
         methodFull = "testCxfX509KeyIdMigSymServiceHttps";
 
         try {
@@ -347,7 +345,8 @@ public class CxfX509MigSymTests {
                         portNumber, //String portNumber,
                         portNumberSecure, //String portNumberSecure
                         "FatBAX01Service", //String strServiceName,
-                        "UrnX509Token01" //String strServicePort
+                        "UrnX509Token01", //String strServicePort
+                        errMsgVersion //2/2021 CxfX509MigSvcClient
             );
         } catch (Exception e) {
             throw e;
@@ -526,7 +525,8 @@ public class CxfX509MigSymTests {
                         portNumber, //String portNumber,
                         "", //String portNumberSecure
                         "FatBAX03Service", //String strServiceName,
-                        "UrnX509Token03" //String strServicePort
+                        "UrnX509Token03", //String strServicePort
+                        errMsgVersion //2/2021 CxfX509MigSvcClient
             );
         } catch (Exception e) {
             throw e;
@@ -1478,9 +1478,9 @@ public class CxfX509MigSymTests {
         String thisMethod = "testBasic192Service";
         methodFull = "testBasic192Service";
 
-        // According the KC: IBM® SDK, on all platforms, provides unlimited jurisdiction policy files.
-        // However this wasn't always the case, earlier SDKs the default is limited which means that
-        // this test will fail on the SDKs that don't have unlimited set by default.
+        //According the KC: IBM® SDK, on all platforms, provides unlimited jurisdiction policy files.
+        //However this wasn't always the case, earlier SDKs the default is limited which means that
+        //this test will fail on the SDKs that don't have unlimited set by default.
         if ((Cipher.getMaxAllowedKeyLength("AES") >= 192) == true) {
             try {
                 testRoutine(
@@ -1490,7 +1490,8 @@ public class CxfX509MigSymTests {
                             portNumber, //String portNumber,
                             "", //String portNumberSecure
                             "FatBAX31Service", //String strServiceName,
-                            "UrnX509Token31" //String strServicePort
+                            "UrnX509Token31", //String strServicePort
+                            errMsgVersion //2/2021 CxfX509MigSvcClient
                 );
             } catch (Exception e) {
                 throw e;
@@ -1779,7 +1780,8 @@ public class CxfX509MigSymTests {
                            portNumber, //String portNumber,
                            "", //String portNumberSecure
                            "FatBAX09Service", //String strServiceName,
-                           "UrnX509Token09" //String strServicePort
+                           "UrnX509Token09", //String strServicePort
+                           errMsgVersion //2/2021 CxfX509MigBadSvcClient
             );
         } catch (Exception e) {
             throw e;
@@ -2068,7 +2070,8 @@ public class CxfX509MigSymTests {
                            portNumber, //String portNumber,
                            "", //String portNumberSecure
                            "FatBAX31Service", //String strServiceName,
-                           "UrnX509Token31" //String strServicePort
+                           "UrnX509Token31", //String strServicePort
+                           errMsgVersion //2/2021 CxfX509MigBadSvcClient
             );
         } catch (Exception e) {
             throw e;
@@ -2113,7 +2116,8 @@ public class CxfX509MigSymTests {
                            portNumber, //String portNumber,
                            "", //String portNumberSecure
                            "FatBAX33Service", //String strServiceName,
-                           "UrnX509Token33" //String strServicePort
+                           "UrnX509Token33", //String strServicePort
+                           errMsgVersion //2/2021 CxfX509MigBadSvcClient
             );
         } catch (Exception e) {
             throw e;
@@ -2179,6 +2183,30 @@ public class CxfX509MigSymTests {
      * Though this test is not enforced it yet.
      *
      */
+    //2/2021 Orig:
+    //protected void testRoutine(
+    //                           String thisMethod,
+    //                           String x509Policy,
+    //                           String testMode, // Positive, positive-1, negative or negative-1... etc
+    //                           String portNumber,
+    //                           String portNumberSecure,
+    //                           String strServiceName,
+    //                           String strServicePort) throws Exception {
+    //    testSubRoutine(
+    //                   thisMethod,
+    //                   x509Policy,
+    //                   testMode, // Positive, positive-1, negative or negative-1... etc
+    //                   portNumber,
+    //                   portNumberSecure,
+    //                   strServiceName,
+    //                   strServicePort,
+    //                   x509MigSymClientUrl,
+    //                   "");
+    //
+    //    return;
+    //}
+
+    //2/2021
     protected void testRoutine(
                                String thisMethod,
                                String x509Policy,
@@ -2196,7 +2224,33 @@ public class CxfX509MigSymTests {
                        strServiceName,
                        strServicePort,
                        x509MigSymClientUrl,
-                       "");
+                       "",
+                       null); //2/2201
+
+        return;
+    }
+
+    //2/2021
+    protected void testRoutine(
+                               String thisMethod,
+                               String x509Policy,
+                               String testMode, // Positive, positive-1, negative or negative-1... etc
+                               String portNumber,
+                               String portNumberSecure,
+                               String strServiceName,
+                               String strServicePort,
+                               String errMsgVersion) throws Exception {
+        testSubRoutine(
+                       thisMethod,
+                       x509Policy,
+                       testMode, // Positive, positive-1, negative or negative-1... etc
+                       portNumber,
+                       portNumberSecure,
+                       strServiceName,
+                       strServicePort,
+                       x509MigSymClientUrl,
+                       "",
+                       errMsgVersion); //2/2201
 
         return;
     }
@@ -2210,6 +2264,31 @@ public class CxfX509MigSymTests {
      * Though this test is not enforced it yet.
      *
      */
+
+    //2/2021 Orig:
+    //protected void testBadRoutine(
+    //                              String thisMethod,
+    //                              String x509Policy,
+    //                              String testMode, // Positive, positive-1, negative or negative-1... etc
+    //                              String portNumber,
+    //                              String portNumberSecure,
+    //                              String strServiceName,
+    //                              String strServicePort) throws Exception {
+    //    testSubRoutine(
+    //                   thisMethod,
+    //                   x509Policy,
+    //                   testMode, // Positive, positive-1, negative or negative-1... etc
+    //                   portNumber,
+    //                   portNumberSecure,
+    //                   strServiceName,
+    //                   strServicePort,
+    //                   x509MigBadSymClientUrl,
+    //                   "Bad"
+
+    //    return;
+    //}
+
+    //2/2021
     protected void testBadRoutine(
                                   String thisMethod,
                                   String x509Policy,
@@ -2227,7 +2306,33 @@ public class CxfX509MigSymTests {
                        strServiceName,
                        strServicePort,
                        x509MigBadSymClientUrl,
-                       "Bad");
+                       "Bad",
+                       null); //2/2021
+
+        return;
+    }
+
+    //2/2021
+    protected void testBadRoutine(
+                                  String thisMethod,
+                                  String x509Policy,
+                                  String testMode, // Positive, positive-1, negative or negative-1... etc
+                                  String portNumber,
+                                  String portNumberSecure,
+                                  String strServiceName,
+                                  String strServicePort,
+                                  String errMsgVersion) throws Exception {
+        testSubRoutine(
+                       thisMethod,
+                       x509Policy,
+                       testMode, // Positive, positive-1, negative or negative-1... etc
+                       portNumber,
+                       portNumberSecure,
+                       strServiceName,
+                       strServicePort,
+                       x509MigBadSymClientUrl,
+                       "Bad",
+                       errMsgVersion); //2/2021
 
         return;
     }
@@ -2250,7 +2355,8 @@ public class CxfX509MigSymTests {
                                   String strServiceName,
                                   String strServicePort,
                                   String strClientUrl,
-                                  String strBadOrGood) throws Exception {
+                                  String strBadOrGood,
+                                  String errMsgVersion) throws Exception { //2/2021
         try {
 
             WebRequest request = null;
@@ -2272,6 +2378,9 @@ public class CxfX509MigSymTests {
             request.setParameter("serviceName", strServiceName);
             request.setParameter("servicePort", strServicePort);
             request.setParameter("methodFull", methodFull);
+            //2/2021
+            request.setParameter("errorMsgVersion", errMsgVersion);
+
             Log.info(thisClass, methodFull, "The request is: '" + request);
 
             // Invoke the client

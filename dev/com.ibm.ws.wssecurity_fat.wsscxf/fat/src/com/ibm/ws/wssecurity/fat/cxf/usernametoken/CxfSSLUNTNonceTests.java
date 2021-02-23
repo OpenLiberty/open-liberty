@@ -26,6 +26,10 @@ public class CxfSSLUNTNonceTests extends SSLTestCommon {
 
     static private final Class<?> thisClass = CxfSSLUNTNonceTests.class;
 
+    //2/2021
+    //@ClassRule
+    //public static RepeatTests r = RepeatTests.withoutModification().andWith(FeatureReplacementAction.EE8_FEATURES().forServers(serverName).removeFeature("jsp-2.2").removeFeature("jaxws-2.2").removeFeature("servlet-3.1").removeFeature("usr:wsseccbh-1.0").addFeature("jsp-2.3").addFeature("jaxws-2.3").addFeature("servlet-4.0").addFeature("usr:wsseccbh-2.0"));
+
     /**
      * TestDescription:
      *
@@ -175,10 +179,7 @@ public class CxfSSLUNTNonceTests extends SSLTestCommon {
                     "UrnBasicPlcyBA7",
                     "",
                     "futureTime",
-                    //Mei: this works for jaxws-2.2 only
-                    //"The message has expired (WSSecurityEngine: Invalid timestamp The security semantics of the message have expired)",
                     "Invalid timestamp: The message timestamp is out of range", //@AV999 new message
-                    //End
                     "A future time stamp in WS request did not fail");
 
     }
@@ -234,7 +235,6 @@ public class CxfSSLUNTNonceTests extends SSLTestCommon {
                     "UrnBasicPlcyBA5",
                     "",
                     "missingTimestamp",
-                    //orig:
                     timestampReqButMissing,
                     "The test expected an exception from the server because the timestamp was missing.");
 
@@ -256,9 +256,7 @@ public class CxfSSLUNTNonceTests extends SSLTestCommon {
                     "UrnBasicPlcyBA5",
                     "",
                     "missingTimestamp",
-                    //Mei:
                     morethanOneTimestamp,
-                    //End
                     "The test expected an exception from the server because the timestamp was missing.");
 
     }
@@ -328,7 +326,6 @@ public class CxfSSLUNTNonceTests extends SSLTestCommon {
 
         genericTest("testCxfUntReplaySSLEE7Only", untSSLClientUrl, portNumberSecure,
                     "user1", "security", "FVTVersionBA7Service", "UrnBasicPlcyBA7",
-                    //Orig: only works for jaxws-2.2
                     "true", "", replayAttack,
                     "Second call to FVTVersionBA7Service should have failed");
     }
@@ -366,7 +363,6 @@ public class CxfSSLUNTNonceTests extends SSLTestCommon {
 
         genericTest("testCxfUntHardcodedReplaySSLEE7Only", untSSLClientUrl, portNumberSecure,
                     "user1", "security", "FVTVersionBA7Service", "UrnBasicPlcyBA7",
-                    //orig:
                     "true", "strReplayNonce", replayAttack,
                     "Second call to FVTVersionBA7Service should have failed");
     }
@@ -380,11 +376,7 @@ public class CxfSSLUNTNonceTests extends SSLTestCommon {
 
         genericTest("testCxfUntHardcodedReplaySSLEE8Only", untSSLClientUrl, portNumberSecure,
                     "user1", "security", "FVTVersionBA7Service", "UrnBasicPlcyBA7",
-                    //orig:
-                    //"true", "strReplayNonce", replayAttack,
-                    //Mei:
                     "true", "strReplayNonce", replayAttackNew, //@AV999
-                    //End
                     "Second call to FVTVersionBA7Service should have failed");
     }
 

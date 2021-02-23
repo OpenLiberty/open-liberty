@@ -19,7 +19,6 @@ import java.util.Set;
 //Added 11/2020
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Test;
 //Added 10/2020
 import org.junit.runner.RunWith;
@@ -43,8 +42,6 @@ import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.FeatureReplacementAction;
-import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
@@ -87,10 +84,6 @@ public class CxfPasswordDigestTests extends CommonTests {
     //Added 10/2020
     @Server(serverName)
     public static LibertyServer server;
-
-    //2/2021
-    @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification().andWith(FeatureReplacementAction.EE8_FEATURES().forServers(serverName).removeFeature("jsp-2.2").removeFeature("jaxws-2.2").removeFeature("servlet-3.1").removeFeature("usr:wsseccbh-1.0").addFeature("jsp-2.3").addFeature("jaxws-2.3").addFeature("servlet-4.0").addFeature("usr:wsseccbh-2.0"));
 
     /**
      * Sets up any configuration required for running the OAuth tests.
@@ -225,6 +218,18 @@ public class CxfPasswordDigestTests extends CommonTests {
 
     }
 
+    //2/2021
+    //The following 4 test methods:
+    //testPWDigestCXFSvcClientBadPWOnClientSSL
+    //testPWDigestCXFSvcClientBadPWOnBothSidesSSL
+    //testPWDigestCXFSvcMissingIdInCallbackSSL
+    //testPWDigestCXFSvcClientBadIdSSL
+    //can't work with the combined exceptions:
+    //@ExpectedFFDC(value = { "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException" })
+    //EE7 test will fail with [An FFDC reporting org.apache.wss4j.common.ext.WSSecurityException was expected but none was found.]
+    //EE8 test will fail with [An FFDC reporting org.apache.ws.security.WSSecurityException was expected but none was found.]
+    //So split them for EE7only an EE8only respectively
+
     //2/2021 run with EE7
     @Test
     @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
@@ -349,9 +354,8 @@ public class CxfPasswordDigestTests extends CommonTests {
     }
 
     @Test
-    //Mei:
+    //2/2021
     @AllowedFFDC("org.apache.wss4j.common.ext.WSSecurityException") //@AV999
-    //End
     public void testPWDigestCXFSvcClientBadId() throws Exception {
 
         genericTest(testName.getMethodName(), clientHttpUrl, "", "user77", "UsrTokenPWDigestWebSvc",

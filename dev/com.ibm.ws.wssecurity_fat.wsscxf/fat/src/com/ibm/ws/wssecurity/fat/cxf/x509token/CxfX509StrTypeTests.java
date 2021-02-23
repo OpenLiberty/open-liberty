@@ -15,7 +15,6 @@ import java.io.File;
 import java.util.Set;
 
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Test;
 //Added 11/2020
 import org.junit.runner.RunWith;
@@ -38,8 +37,6 @@ import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.FeatureReplacementAction;
-import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
@@ -56,10 +53,6 @@ public class CxfX509StrTypeTests extends CommonTests {
     //Added 11/2020
     @Server(serverName)
     public static LibertyServer server;
-
-    //2/2021
-    @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification().andWith(FeatureReplacementAction.EE8_FEATURES().forServers(serverName).removeFeature("jsp-2.2").removeFeature("jaxws-2.2").removeFeature("servlet-3.1").removeFeature("usr:wsseccbh-1.0").addFeature("jsp-2.3").addFeature("jaxws-2.3").addFeature("servlet-4.0").addFeature("usr:wsseccbh-2.0"));
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -134,7 +127,6 @@ public class CxfX509StrTypeTests extends CommonTests {
      * This is a positive scenario.
      */
 
-    //2/2021 run with EE7
     @Test
     public void testCxfClientSignIssuerSerial() throws Exception {
 
@@ -187,7 +179,7 @@ public class CxfX509StrTypeTests extends CommonTests {
 
         genericTest(
                     // test name for logging
-                    "testCxfClientKeysMismatchEE7Only",
+                    "testCxfClientKeysMismatch",
                     // Svc Client Url that generic test code should use
                     clientHttpUrl,
                     // Port that svc client code should use
@@ -210,7 +202,7 @@ public class CxfX509StrTypeTests extends CommonTests {
                     "The test did not receive the expected exception from the server.");
 
         // restore original server config
-//        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
+        // reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
 
     }
 
@@ -225,7 +217,7 @@ public class CxfX509StrTypeTests extends CommonTests {
 
         genericTest(
                     // test name for logging
-                    "testCxfClientKeysMismatchEE8Only",
+                    "testCxfClientKeysMismatch",
                     // Svc Client Url that generic test code should use
                     clientHttpUrl,
                     // Port that svc client code should use
@@ -248,7 +240,7 @@ public class CxfX509StrTypeTests extends CommonTests {
                     "The test did not receive the expected exception from the server.");
 
         // restore original server config
-//        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
+        // reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
 
     }
 
