@@ -120,6 +120,7 @@ org.bitbucket.b_c:jose4j:0.5.1
 org.bitbucket.b_c:jose4j:0.6.4
 org.bitbucket.b_c:jose4j:0.6.5
 org.bouncycastle:bcpkix-jdk15on:1.61
+org.eclipse.platform:org.eclipse.osgi:3.15.200
 org.eclipse:yasson:1.0.8
 org.jboss.classfilewriter:jboss-classfilewriter:1.1.2.Final
 org.jboss.classfilewriter:jboss-classfilewriter:1.2.4.Final
