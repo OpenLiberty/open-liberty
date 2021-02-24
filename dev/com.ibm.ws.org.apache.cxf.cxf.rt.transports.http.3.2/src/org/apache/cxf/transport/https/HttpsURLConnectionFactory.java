@@ -65,7 +65,6 @@ public class HttpsURLConnectionFactory {
      * Cache the last SSLContext to avoid recreation
      */
     SSLSocketFactory socketFactory;
-    // int lastTlsHash;  Liberty change: variable/line removed
 
     /**
      * This constructor initialized the factory with the configured TLS
@@ -115,12 +114,7 @@ public class HttpsURLConnectionFactory {
     protected synchronized void decorateWithTLS(TLSClientParameters tlsClientParameters,
             HttpURLConnection connection) throws GeneralSecurityException {
 
-        /* Liberty change: 5 lines below are removed with if clause
         int hash = tlsClientParameters.hashCode();
-        if (hash != lastTlsHash) {
-            lastTlsHash = hash;
-            socketFactory = null;
-        } Liberty change: end */
 
         // always reload socketFactory from HttpsURLConnection.defaultSSLSocketFactory and
         // tlsClientParameters.sslSocketFactory to allow runtime configuration change
@@ -156,8 +150,7 @@ public class HttpsURLConnectionFactory {
                 .getSecureSocketProtocol() : ctx.getProtocol();
             socketFactory = new SSLSocketFactoryWrapper(ctx.getSocketFactory(), cipherSuites,
                                                         protocol);
-            //recalc the hashcode since some of the above MAY have changed the tlsClientParameters
-            // lastTlsHash = tlsClientParameters.hashCode(); Liberty change: line removed
+
         } else {
            // ssl socket factory already initialized, reuse it to benefit of keep alive
         }

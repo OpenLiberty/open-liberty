@@ -19,7 +19,6 @@
 package org.apache.cxf.staxutils;
 
 import java.util.ArrayList;
-import java.util.logging.Logger;
 
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
@@ -39,12 +38,9 @@ import org.w3c.dom.TypeInfo;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 
-import org.apache.cxf.common.logging.LogUtils;
 import org.apache.cxf.helpers.DOMUtils;
 
 public class W3CDOMStreamReader extends AbstractDOMStreamReader<Node, Node> {
-
-    private static final Logger LOG = LogUtils.getL7dLogger(W3CDOMStreamReader.class); // Liberty change: line is added
 
     private Node content;
 
@@ -59,18 +55,14 @@ public class W3CDOMStreamReader extends AbstractDOMStreamReader<Node, Node> {
      */
     public W3CDOMStreamReader(Element element) {
         super(new ElementFrame<Node, Node>(element, null));
-        LOG.entering("W3CDOMStreamReader", "W3CDOMStreamReader");  // Liberty change: line is added
         content = element;
         newFrame(getCurrentFrame());
 
         this.document = element.getOwnerDocument();
-        LOG.exiting("W3CDOMStreamReader", "W3CDOMStreamReader");  // Liberty change: line is added
     }
     public W3CDOMStreamReader(Element element, String systemId) {
         this(element);
-        LOG.entering("W3CDOMStreamReader", "W3CDOMStreamReader");  // Liberty change: line is added
         sysId = systemId;
-        LOG.exiting("W3CDOMStreamReader", "W3CDOMStreamReader");  // Liberty change: line is added
     }
     public W3CDOMStreamReader(Document doc) {
         super(new ElementFrame<Node, Node>(doc, false) {
@@ -78,9 +70,7 @@ public class W3CDOMStreamReader extends AbstractDOMStreamReader<Node, Node> {
                 return true;
             }
         });
-        LOG.entering("W3CDOMStreamReader", "W3CDOMStreamReader");  // Liberty change: line is added
         this.document = doc;
-        LOG.exiting("W3CDOMStreamReader", "W3CDOMStreamReader");  // Liberty change: line is added
     }
     public W3CDOMStreamReader(DocumentFragment docfrag) {
         super(new ElementFrame<Node, Node>(docfrag, true) {
@@ -88,9 +78,7 @@ public class W3CDOMStreamReader extends AbstractDOMStreamReader<Node, Node> {
                 return true;
             }
         });
-        LOG.entering("W3CDOMStreamReader", "W3CDOMStreamReader");  // Liberty change: line is added
         this.document = docfrag.getOwnerDocument();
-        LOG.exiting("W3CDOMStreamReader", "W3CDOMStreamReader");  // Liberty change: line is added
     }
 
     /**
@@ -100,12 +88,7 @@ public class W3CDOMStreamReader extends AbstractDOMStreamReader<Node, Node> {
         return document;
     }
     public String getSystemId() {
-        // try {  Liberty change: line is removed
-            return sysId == null ? document.getDocumentURI() : sysId;
-        // } catch (Throwable ex) { Liberty change: 4 lines  are removed
-            //ignore, probably not DOM level 3
-        // }
-        // return sysId;  Liberty change: end
+        return sysId == null ? document.getDocumentURI() : sysId;
     }
     /**
      * Find name spaces declaration in atrributes and move them to separate
@@ -427,7 +410,6 @@ public class W3CDOMStreamReader extends AbstractDOMStreamReader<Node, Node> {
     }
 
     public String toString() {
-        LOG.entering("W3CDOMStreamReader", "toString"); // Liberty change: line is added
         if (document == null) {
             return "<null>";
         }
@@ -435,11 +417,9 @@ public class W3CDOMStreamReader extends AbstractDOMStreamReader<Node, Node> {
             return "<null document element>";
         }
         try {
-            LOG.exiting("W3CDOMStreamReader", "toString"); // Liberty change: line is added
             return StaxUtils.toString(document);
         } catch (Throwable t) {
             t.printStackTrace();
-            LOG.exiting("W3CDOMStreamReader", "toString"); // Liberty change: line is added
             return super.toString();
         }
     }

@@ -29,16 +29,14 @@ import java.lang.reflect.Modifier;
 import java.net.Authenticator;
 import java.net.InetAddress;
 import java.net.PasswordAuthentication;
-<<<<<<< HEAD
 import java.net.URL;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-=======
-import org.apache.cxf.common.util.ReflectionUtil;
+
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
->>>>>>> a9a715c7f8... All Liberty changes ported to CXF bundles, all tests are passed
 
 public class ReferencingAuthenticator extends Authenticator {
+    private static final boolean SKIPCHECK = System.getSecurityManager() == null;
     final Reference<Authenticator> auth;
     final Authenticator wrapped;
 
@@ -74,7 +72,7 @@ public class ReferencingAuthenticator extends Authenticator {
         }
         return pauth;
     }
-
+    
     @FFDCIgnore({Throwable.class})
     public final void check() {
         Authenticator cxfauth = auth.get();
@@ -91,7 +89,7 @@ public class ReferencingAuthenticator extends Authenticator {
             }
         }
     }
-    @FFDCIgnore({Exception.class, Throwable.class})
+    
     private void remove() {
         try { 
             // Try Authenticator.getDefault() first, JDK9+
@@ -141,6 +139,7 @@ public class ReferencingAuthenticator extends Authenticator {
             //ignore
         }
     }
+    
     @FFDCIgnore({Throwable.class})
     private void removeFromChain(Authenticator a) {
         try {
@@ -164,7 +163,6 @@ public class ReferencingAuthenticator extends Authenticator {
         if (a == null) {
             return null;
         }
-<<<<<<< HEAD
         
         try {
             // Try Authenticator.requestPasswordAuthentication() first, JDK9+
@@ -211,18 +209,31 @@ public class ReferencingAuthenticator extends Authenticator {
         }
 
         for (final Field f : fields) {
-=======
-        for (final Field f : ReflectionUtil.getDeclaredFields(Authenticator.class)) { // Liberty change
->>>>>>> a9a715c7f8... All Liberty changes ported to CXF bundles, all tests are passed
             if (!Modifier.isStatic(f.getModifiers())) {
                 f.setAccessible(true);
                 Object o = f.get(this);
                 f.set(a, o);
             }
         }
-        final Method m = Authenticator.class.getDeclaredMethod("getPasswordAuthentication");
-        m.setAccessible(true);
+        Method method;
+        if (SKIPCHECK) {
+            method = Authenticator.class.getDeclaredMethod("getPasswordAuthentication");
+            method.setAccessible(true);
+        } else {
+            method = AccessController.doPrivileged(
+                    (PrivilegedAction<Method>) () -> {
+                try {
+                    return Authenticator.class.getDeclaredMethod("getPasswordAuthentication");
+                } catch (NoSuchMethodException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+            AccessController.doPrivileged((PrivilegedAction<Object>) () -> {
+                method.setAccessible(true);
+                return null;
+            });
+        }
 
-        return (PasswordAuthentication)m.invoke(a);
+        return (PasswordAuthentication) method.invoke(a);
     }
 }

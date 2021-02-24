@@ -10,10 +10,8 @@
 #*******************************************************************************
 -include= jar:${fileuri;${repo;org.apache.cxf:cxf-core;3.4.3}}!/META-INF/MANIFEST.MF,bnd.overrides
 
-cxfVersion=3.4.1.20201002
-
-instrument.disabled: true
-instrument.ffdc: false
+#instrument.disabled: true
+#instrument.ffdc: false
 
 -includeresource: \
    @${repo;org.apache.cxf:cxf-core;3.4.3;EXACT}!/!*-INF/*,\

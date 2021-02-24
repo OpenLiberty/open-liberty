@@ -86,7 +86,6 @@ public class EndpointReferenceBuilder {
         }
 
         W3CEndpointReferenceBuilder builder = new W3CEndpointReferenceBuilder();
-        //builder.address(this.endpoint.getEndpointInfo().getAddress()); Liberty change: line removed
         // Liberty change: 2 lines below are added
         String eiAddress = this.endpoint.getEndpointInfo().getAddress();
         builder.address(eiAddress);
@@ -97,7 +96,6 @@ public class EndpointReferenceBuilder {
         builder.endpointName(this.endpoint.getEndpointInfo().getName());
 
         if (this.endpoint.getEndpointInfo().getService().getDescription() != null) {
-            // builder.wsdlDocumentLocation(this.endpoint.getEndpointInfo().getService().getDescription().getBaseURI()); Liberty change: line removed
             // Liberty change: 2 lines below are added
             String wsdlBaseUri = this.endpoint.getEndpointInfo().getService().getDescription().getBaseURI();
             builder.wsdlDocumentLocation((wsdlBaseUri != null && wsdlBaseUri.startsWith("http://")) ? wsdlBaseUri : eiAddress + "?wsdl");

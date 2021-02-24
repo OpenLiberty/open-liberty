@@ -85,12 +85,9 @@ public class Fault extends UncheckedException {
     public Fault(Throwable t) {
         super(t);
         // Liberty change:
-        // if (message != null) {  Liberty change: line removed
-        //   message = message.toString(); Liberty change: line removed
         if (super.getMessage() != null) {// Liberty change: line added
             message = super.getMessage();// Liberty change: line added
         } else {
-            // message = t == null ? null : t.getMessage(); // Liberty change: line removed
             message = getMessage(t); // Liberty change: line added
         }
         code = FAULT_CODE_SERVER;
@@ -110,11 +107,7 @@ public class Fault extends UncheckedException {
 
     public Fault(Throwable t, QName fc) {
         super(t);
-        /* if (message != null) {  Liberty change: if block removed and replaced
-             message = message.toString();
-         } else {
-             message = t == null ? null : t.getMessage(); Liberty change: end */
-        if (super.getMessage() != null) { // Liberty change: if block replaced with the code below
+        if (super.getMessage() != null) { // Liberty change: start
             message = super.getMessage();
         } else {
             message = getMessage(t);  // Liberty change: end

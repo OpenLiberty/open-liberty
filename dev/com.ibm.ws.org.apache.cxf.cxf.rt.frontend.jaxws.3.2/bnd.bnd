@@ -11,6 +11,7 @@
 -include= jar:${fileuri;${repo;org.apache.cxf:cxf-rt-frontend-jaxws;3.4.3;EXACT}}!/META-INF/MANIFEST.MF,bnd.overrides
 
 instrument.ffdc: false
+cxfVersion=3.4.1
 
 cxfVersion=3.4.3
 
@@ -20,7 +21,7 @@ cxfVersion=3.4.3
   META-INF=resources/META-INF
    
 -buildpath: \
-  org.apache.cxf:cxf-rt-frontend-jaxws;strategy=exact;version=3.4.1,\
+  org.apache.cxf:cxf-rt-frontend-jaxws;strategy=exact;version=${cxfVersion},\
   com.ibm.websphere.javaee.wsdl4j.1.2;version=latest,\
   com.ibm.ws.org.apache.cxf.cxf.rt.wsdl.3.2;version=latest,\
   com.ibm.ws.org.apache.cxf.cxf.rt.bindings.soap.3.2;version=latest,\

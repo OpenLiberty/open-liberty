@@ -14,13 +14,12 @@ cxfVersion=3.4.3
 
 -includeresource: \
    @${repo;org.apache.cxf:cxf-rt-databinding-jaxb;${cxfVersion};EXACT}!/*-INF/*, \
-   META-INF=resources/META-INF, \
-   org/apache/cxf=${bin}/org/apache/cxf
+   META-INF=resources/META-INF
    
-#instrument.disabled: true
-#instrument.ffdc: false
+instrument.disabled: true
+instrument.ffdc: false
 
--buildpath: org.apache.cxf:cxf-rt-databinding-jaxb;strategy=exact;version=3.4.1,\
+-buildpath: org.apache.cxf:cxf-rt-databinding-jaxb;strategy=exact;version=${cxfVersion},\
   com.ibm.websphere.org.osgi.core,\
   com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
   com.ibm.ws.logging.core,\

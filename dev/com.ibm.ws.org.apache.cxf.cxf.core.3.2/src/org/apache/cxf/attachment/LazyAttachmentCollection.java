@@ -37,15 +37,14 @@ import com.ibm.websphere.ras.annotation.Trivial;
 @Trivial  // Liberty change: line added
 public class LazyAttachmentCollection
     implements Collection<Attachment> {
-
     private AttachmentDeserializer deserializer;
     private final List<Attachment> attachments = new ArrayList<>();
-    private final int maxAttachmentCount; // Liberty Change CVE-2019-12406
+    private final int maxAttachmentCount;
 
-    public LazyAttachmentCollection(AttachmentDeserializer deserializer, int maxAttachmentCount) { // Liberty Change CVE-2019-12406
+    public LazyAttachmentCollection(AttachmentDeserializer deserializer, int maxAttachmentCount) {
         super();
         this.deserializer = deserializer;
-        this.maxAttachmentCount = maxAttachmentCount; // Liberty Change CVE-2019-12406
+        this.maxAttachmentCount = maxAttachmentCount;
     }
 
     public List<Attachment> getLoadedAttachments() {
@@ -55,16 +54,14 @@ public class LazyAttachmentCollection
     private void loadAll() {
         try {
             Attachment a = deserializer.readNext();
-            int count = 0; // Liberty Change CVE-2019-12406
+            int count = 0; 
             while (a != null) {
                 attachments.add(a);
-                // Liberty Change Start
-                // CVE-2019-12406: Apache CXF does not restrict the number of message attachments
+                // Apache CXF does not restrict the number of message attachments
                 count++;
                 if (count > maxAttachmentCount) {
                     throw new IOException("The message contains more attachments than are permitted");
                 }
-                // Liberty Change End
                 a = deserializer.readNext();
             }
         } catch (IOException e) {
@@ -127,7 +124,7 @@ public class LazyAttachmentCollection
                 // if (removed) { Liberty change: if block is removed
                 //     throw new IllegalStateException();
                 // }
-                attachments.remove(current);  //Liberty change: --current replaced by current
+                attachments.remove(--current);  //Liberty change: --current replaced by current
                 // removed = true;  Liberty change: line removed
             }
 

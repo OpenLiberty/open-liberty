@@ -161,7 +161,8 @@ public class ServiceImpl extends ServiceDelegate {
         if (url != null) {
             try {
                 // Liberty change: log line below is added
-                LOG.log(Level.FINE, "Calling initializePorts for service: " + serviceName + " and WSDL: " + wsdlURL);
+                //LOG.log(Level.FINE, "Calling initializePorts for service: " + serviceName + " and WSDL: " + wsdlURL);
+                LOG.log(Level.INFO, "Calling initializePorts for service: " + serviceName + " and WSDL: " + wsdlURL);
                 initializePorts();
             } catch (ServiceConstructionException e) {
                 throw new WebServiceException(e);
@@ -170,6 +171,7 @@ public class ServiceImpl extends ServiceDelegate {
     }
 
     private void initializePorts() {
+        LOG.log(Level.INFO, "IN initializePorts");
         try {
             Definition def = bus.getExtension(WSDLManager.class).getDefinition(wsdlURL);
             javax.wsdl.Service serv = def.getService(serviceName);
@@ -284,7 +286,7 @@ public class ServiceImpl extends ServiceDelegate {
         //When the dispatch is created from EPR, the EPR's address will be set in portInfo
         PortInfoImpl portInfo = getPortInfo(portName);
         if (portInfo != null
-            // && portInfo.getAddress() != null   Liberty change: line is removed
+            && portInfo.getAddress() != null 
             && !portInfo.getAddress().equals(ei.getAddress())) {
             ei.setAddress(portInfo.getAddress());
         }
@@ -498,17 +500,17 @@ public class ServiceImpl extends ServiceDelegate {
             clientFac.setBindingId(portInfo.getBindingID());
             clientFac.setAddress(portInfo.getAddress());
         }
-        //configureObject(portName.toString() + ".jaxws-client.proxyFactory", proxyFac);
+
         if (clazz != ServiceImpl.class) {
             // handlerchain should be on the generated Service object
             proxyFac.setLoadHandlers(false);
         }
-              
-        Object obj =  AccessController.doPrivileged(new PrivilegedAction<Object>() { 
+
+        Object obj =  AccessController.doPrivileged(new PrivilegedAction<Object>() {
             @Override
             public Object run() {
                         return proxyFac.create();
-  
+
             }
         });
      // Liberty Change End
@@ -778,5 +780,3 @@ public class ServiceImpl extends ServiceDelegate {
         }
     }
 }
-
-

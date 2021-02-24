@@ -29,6 +29,8 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.nio.charset.Charset;
 import java.util.AbstractMap;
 import java.util.AbstractSet;
@@ -79,9 +81,17 @@ public final class AttachmentUtil {
     private static final String ATT_UUID = UUID.randomUUID().toString();
 
     private static final Random BOUND_RANDOM = new Random();
-    private static final CommandMap DEFAULT_COMMAND_MAP = CommandMap.getDefaultCommandMap();
+//  Liberty changes: begin
+    private static final CommandMap DEFAULT_COMMAND_MAP = AccessController.doPrivileged(new PrivilegedAction<CommandMap>() {
+        @Override
+        public CommandMap run() {
+            return CommandMap.getDefaultCommandMap();
+        }
+    }); //  Liberty changes: end
+    
     private static final MailcapCommandMap COMMAND_MAP = new EnhancedMailcapCommandMap();
 
+    
     static final class EnhancedMailcapCommandMap extends MailcapCommandMap {
         @Override
         public synchronized DataContentHandler createDataContentHandler(

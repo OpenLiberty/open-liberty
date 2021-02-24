@@ -190,7 +190,7 @@ public final class EndpointReferenceUtils {
                 // searching for a namespace match
                 if (namespaceURI != null) {
                     for (Map.Entry<String, byte[]> ent : schemas.entrySet()) {
-                        if (ent.getKey().endsWith(":" + namespaceURI)) {  // Liberty change: ":"  is deleted from (":" + namespaceURI)
+                        if (ent.getKey().endsWith(namespaceURI)) {  // Liberty change: ":"  is deleted from (":" + namespaceURI)
                             schemas.remove(ent.getKey());
                             impl = createInput(newId, ent.getValue());
                             done.add(newId + ":" + namespaceURI);
