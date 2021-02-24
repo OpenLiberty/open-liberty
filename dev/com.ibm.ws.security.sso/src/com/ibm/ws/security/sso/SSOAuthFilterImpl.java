@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,13 +28,12 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.security.authentication.filter.AuthenticationFilter;
 import com.ibm.ws.security.token.ltpa.LTPAConfiguration;
 import com.ibm.ws.webcontainer.security.util.SSOAuthFilter;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
-
 
 @Component(service = { SSOAuthFilter.class },
            name = "com.ibm.ws.webcontainer.security.util.SSOAuthFilter",
@@ -111,9 +110,10 @@ public class SSOAuthFilterImpl implements com.ibm.ws.webcontainer.security.util.
         return authFilterServiceRef.getService(pid);
     }
 
-/*
- * If there no authentication filter defined, we will process all requests
- */
+    /*
+     * If there no authentication filter defined, we will process all requests
+     */
+    @Override
     public boolean processRequest(HttpServletRequest req) {
         AuthenticationFilter authFilter = getAuthFilter();
         if (authFilter != null) {
@@ -124,6 +124,23 @@ public class SSOAuthFilterImpl implements com.ibm.ws.webcontainer.security.util.
         return true;
     }
 
+    /*
+     * If there no authentication filter defined, we will process all requests
+     */
+    @Override
+    public boolean processRequest(HttpServletRequest req, String pid) {
+        AuthenticationFilter authFilter = getAuthFilterService(pid);
+        if (authFilter != null) {
+            betaFenceCheck();
+            if (!authFilter.isAccepted(req))
+                return false;
+        }
+        return true;
+    }
+
+    /*
+     * Get authFilterRef from the LTPA configuration
+     */
     private AuthenticationFilter getAuthFilter() {
         AuthenticationFilter authFilter = null;
         if (ltpaConfigurationRef != null) {
