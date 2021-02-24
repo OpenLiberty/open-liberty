@@ -21,6 +21,7 @@ import javax.servlet.annotation.WebServlet;
 
 import org.junit.Test;
 
+import com.ibm.ws.cdi.api.fat.apps.alterablecontext.extension.AlterableContextBean;
 import com.ibm.ws.cdi.api.fat.apps.alterablecontext.extension.DirtySingleton;
 
 import componenttest.app.FATServlet;
@@ -31,7 +32,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 public class AlterableContextTestServlet extends FATServlet {
 
     private static final long serialVersionUID = 8549700799591343964L;
-    private static String FIRST = "I got this from my alterablecontext: com.ibm.ws.cdi12.alterablecontext.test.extension.AlterableContextBean";
+    private static String FIRST = "I got this from my alterablecontext: " + AlterableContextBean.class.getName();
     private static String SECOND = "Now the command returns: null";
 
     @Test

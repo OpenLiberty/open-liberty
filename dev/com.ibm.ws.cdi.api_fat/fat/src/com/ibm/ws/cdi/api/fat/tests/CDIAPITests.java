@@ -19,8 +19,6 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
-import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -30,14 +28,18 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.BeansAsset;
+import com.ibm.websphere.simplicity.CDIArchiveHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.ws.cdi.api.fat.apps.alterablecontext.AlterableContextTestServlet;
+import com.ibm.ws.cdi.api.fat.apps.alterablecontext.extension.AlterableContextExtension;
 import com.ibm.ws.cdi.api.fat.apps.alterablecontext.extension.DirtySingleton;
 import com.ibm.ws.cdi.api.fat.apps.conversationfilter.ConversationFilterServlet;
 import com.ibm.ws.cdi.api.fat.apps.current.CDICurrentTestServlet;
 import com.ibm.ws.cdi.api.fat.apps.current.SimpleBean;
 import com.ibm.ws.cdi.api.fat.apps.current.extension.CDICurrentTestBean;
+import com.ibm.ws.cdi.api.fat.apps.current.extension.MyDeploymentVerifier;
 import com.ibm.ws.cdi.api.fat.apps.injectInjectionPoint.InjectInjectionPointServlet;
 import com.ibm.ws.cdi.api.fat.apps.injectInjectionPointBeansXML.InjectInjectionPointBeansXMLServlet;
 import com.ibm.ws.cdi.api.fat.apps.injectInjectionPointParam.InjectInjectionPointAsParamServlet;
@@ -67,12 +69,19 @@ public class CDIAPITests extends FATServletClient {
     public static final String SERVER_NAME = "cdi12APIServer";
 
     public static final String CDI_CURRENT_APP_NAME = "cdiCurrentTest";
-    public static final String ALTERABLE_CONTEXT_APP_NAME = "alterableContextApp";
+    public static final String ALTERABLE_CONTEXT_APP_NAME = "alterableContextsApp";
     public static final String CONVERSATION_FILTER_APP_NAME = "appConversationFilter";
     public static final String INJECT_IP_AS_PARAM_APP_NAME = "injectInjectionPointAsParam";
     public static final String INJECT_IP_BEANS_XML_APP_NAME = "injectInjectionPointBeansXML";
     public static final String INJECT_IP_APP_NAME = "injectInjectionPoint";
     public static final String INJECT_IP_XML_APP_NAME = "injectInjectionPointXML";
+
+    private static final String DEFINITION_EXCEPTION = "org.jboss.weld.exceptions.DefinitionException";
+    private static final String STATE_CHANGE_EXCEPTION = "com.ibm.ws.container.service.state.StateChangeException";
+
+    private static final String DEFINITION_EXCEPTION_PATTERN_PREFIX = "CWWKZ0002E(?=.*injectInjectionPoint)(?=.*" + STATE_CHANGE_EXCEPTION + ")(?=.*" + DEFINITION_EXCEPTION
+                                                                      + ")(?=.*WELD-001405)(?=.*BackedAnnotatedField)(?=.*";
+    private static final String THIS_SHOULD_FAIL_SUFFIX = ".thisShouldFail)";
 
     @ClassRule
     public static RepeatTests r = EERepeatTests.with(SERVER_NAME, EE9, EE7); //not bothering to repeat with EE8 ... the EE9 version is mostly a transformed version of the EE8 code
@@ -87,9 +96,8 @@ public class CDIAPITests extends FATServletClient {
     public static void setUp() throws Exception {
 
         JavaArchive cdiCurrentTest = ShrinkWrap.create(JavaArchive.class, CDI_CURRENT_APP_NAME + ".jar")
-                                               .addPackage(CDICurrentTestBean.class.getPackage())
-                                               .add(new FileAsset(new File("test-applications/cdiCurrentTest.jar/resources/META-INF/services/javax.enterprise.inject.spi.Extension")),
-                                                    "/META-INF/services/javax.enterprise.inject.spi.Extension");
+                                               .addPackage(CDICurrentTestBean.class.getPackage());
+        cdiCurrentTest = CDIArchiveHelper.addCDIExtensionService(cdiCurrentTest, MyDeploymentVerifier.class);
 
         WebArchive cdiCurrentWar = ShrinkWrap.create(WebArchive.class, CDI_CURRENT_APP_NAME + ".war")
                                              .addClass(CDICurrentTestServlet.class.getName())
@@ -101,28 +109,25 @@ public class CDIAPITests extends FATServletClient {
         if (TestModeFilter.shouldRun(TestMode.FULL)) {
             JavaArchive alterableContextExtension = ShrinkWrap.create(JavaArchive.class, "alterableContextExtension.jar");
             alterableContextExtension.addPackage(DirtySingleton.class.getPackage());
-            alterableContextExtension.add(new FileAsset(new File("test-applications/alterableContextExtension.jar/resources/META-INF/services/javax.enterprise.inject.spi.Extension")),
-                                          "/META-INF/services/javax.enterprise.inject.spi.Extension");
-            alterableContextExtension.add(new FileAsset(new File("test-applications/alterableContextExtension.jar/resources/META-INF/beans.xml")), "/META-INF/beans.xml");
+            alterableContextExtension = CDIArchiveHelper.addCDIExtensionService(alterableContextExtension, AlterableContextExtension.class);
+            alterableContextExtension = CDIArchiveHelper.addBeansXML(alterableContextExtension, BeansAsset.Mode.ALL);
 
             WebArchive alterableContextApp = ShrinkWrap.create(WebArchive.class, ALTERABLE_CONTEXT_APP_NAME + ".war");
             alterableContextApp.addClass(AlterableContextTestServlet.class);
-            alterableContextApp.add(new FileAsset(new File("test-applications/alterableContextApp.war/resources/WEB-INF/beans.xml")), "/WEB-INF/beans.xml");
+            alterableContextApp = CDIArchiveHelper.addBeansXML(alterableContextApp, BeansAsset.Mode.ALL);
             alterableContextApp.addAsLibrary(alterableContextExtension);
 
             EnterpriseArchive alterableContextsEar = ShrinkWrap.create(EnterpriseArchive.class, "alterableContextsApp.ear");
-            alterableContextsEar.add(new FileAsset(new File("test-applications/alterableContextsApp.ear/resources/META-INF/permissions.xml")), "/META-INF/permissions.xml");
-            alterableContextsEar.add(new FileAsset(new File("test-applications/alterableContextsApp.ear/resources/META-INF/application.xml")), "/META-INF/application.xml");
+            alterableContextsEar.addAsManifestResource(AlterableContextTestServlet.class.getPackage(), "permissions.xml", "permissions.xml");
             alterableContextsEar.addAsModule(alterableContextApp);
 
             WebArchive appConversationFilter = ShrinkWrap.create(WebArchive.class, CONVERSATION_FILTER_APP_NAME + ".war")
                                                          .addPackage(ConversationFilterServlet.class.getPackage())
-                                                         .add(new FileAsset(new File("test-applications/appConversationFilter.war/resources/WEB-INF/web.xml")), "/WEB-INF/web.xml");
+                                                         .addAsWebInfResource(ConversationFilterServlet.class.getPackage(), "web.xml", "web.xml");
 
             WebArchive injectInjectionPointAsParamWar = ShrinkWrap.create(WebArchive.class, INJECT_IP_AS_PARAM_APP_NAME + ".war")
-                                                                  .addPackage(InjectInjectionPointAsParamServlet.class.getPackage())
-                                                                  .add(new FileAsset(new File("test-applications/injectInjectionPointAsParam.war/resources/WEB-INF/beans.xml")),
-                                                                       "/WEB-INF/beans.xml");
+                                                                  .addPackage(InjectInjectionPointAsParamServlet.class.getPackage());
+            injectInjectionPointAsParamWar = CDIArchiveHelper.addEmptyBeansXML(injectInjectionPointAsParamWar);
 
             ShrinkHelper.exportDropinAppToServer(server, injectInjectionPointAsParamWar, DeployOptions.SERVER_ONLY);
             ShrinkHelper.exportDropinAppToServer(server, appConversationFilter, DeployOptions.SERVER_ONLY);
@@ -169,25 +174,26 @@ public class CDIAPITests extends FATServletClient {
 
     @Test
     @Mode(TestMode.FULL)
-    @ExpectedFFDC("org.jboss.weld.exceptions.DefinitionException")
-    @AllowedFFDC("com.ibm.ws.container.service.state.StateChangeException")
+    @ExpectedFFDC(DEFINITION_EXCEPTION)
+    @AllowedFFDC(STATE_CHANGE_EXCEPTION)
     public void testInjectInjectionPointBeansXML() throws Exception {
         server.setMarkToEndOfLog();
 
         WebArchive injectInjectionPointBeansXMLWar = ShrinkWrap.create(WebArchive.class, INJECT_IP_BEANS_XML_APP_NAME + ".war")
-                                                               .addClass(InjectInjectionPointBeansXMLServlet.class)
-                                                               .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
+                                                               .addClass(InjectInjectionPointBeansXMLServlet.class);
+        injectInjectionPointBeansXMLWar = CDIArchiveHelper.addEmptyBeansXML(injectInjectionPointBeansXMLWar);
 
         ShrinkHelper.exportToServer(server, "dropins", injectInjectionPointBeansXMLWar, DeployOptions.SERVER_ONLY);
 
-        String log = server.waitForStringInLog("CWWKZ0002E(?=.*injectInjectionPoint)(?=.*com.ibm.ws.container.service.state.StateChangeException)(?=.*org.jboss.weld.exceptions.DefinitionException)(?=.*WELD-001405)(?=.*BackedAnnotatedField)(?=.*com.ibm.ws.fat.cdi.injectInjectionPointBeansXML.InjectInjectionPointBeansXMLServlet.thisShouldFail)");
+        String log = server.waitForStringInLog(DEFINITION_EXCEPTION_PATTERN_PREFIX
+                                               + InjectInjectionPointBeansXMLServlet.class.getName() + THIS_SHOULD_FAIL_SUFFIX);
         assertNotNull("DefinitionException not found", log);
     }
 
     @Test
     @Mode(TestMode.FULL)
-    @ExpectedFFDC("org.jboss.weld.exceptions.DefinitionException")
-    @AllowedFFDC("com.ibm.ws.container.service.state.StateChangeException")
+    @ExpectedFFDC(DEFINITION_EXCEPTION)
+    @AllowedFFDC(STATE_CHANGE_EXCEPTION)
     public void testInjectInjectionPoint() throws Exception {
         server.setMarkToEndOfLog();
 
@@ -196,26 +202,27 @@ public class CDIAPITests extends FATServletClient {
 
         ShrinkHelper.exportToServer(server, "dropins", injectInjectionPointWar, DeployOptions.SERVER_ONLY);
 
-        String log = server.waitForStringInLog("CWWKZ0002E(?=.*injectInjectionPoint)(?=.*com.ibm.ws.container.service.state.StateChangeException)(?=.*org.jboss.weld.exceptions.DefinitionException)(?=.*WELD-001405)(?=.*BackedAnnotatedField)(?=.*com.ibm.ws.fat.cdi.injectInjectionPoint.InjectInjectionPointServlet.thisShouldFail)");
+        String log = server.waitForStringInLog(DEFINITION_EXCEPTION_PATTERN_PREFIX
+                                               + InjectInjectionPointServlet.class.getName() + THIS_SHOULD_FAIL_SUFFIX);
         assertNotNull("DefinitionException not found", log);
     }
 
     @Test
     @Mode(TestMode.FULL)
-    @ExpectedFFDC("org.jboss.weld.exceptions.DefinitionException")
-    @AllowedFFDC("com.ibm.ws.container.service.state.StateChangeException")
+    @ExpectedFFDC(DEFINITION_EXCEPTION)
+    @AllowedFFDC(STATE_CHANGE_EXCEPTION)
     public void testInjectInjectionPointXML() throws Exception {
         server.setMarkToEndOfLog();
 
         WebArchive injectInjectionPointXMLWar = ShrinkWrap.create(WebArchive.class, INJECT_IP_XML_APP_NAME + ".war")
                                                           .addClass(InjectInjectionPointXMLServlet.class)
-                                                          .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
-                                                          .add(new FileAsset(new File("test-applications/injectInjectionPointXML.war/resources/WEB-INF/web.xml")),
-                                                               "/WEB-INF/web.xml");
+                                                          .addAsWebInfResource(InjectInjectionPointXMLServlet.class.getPackage(), "web.xml", "web.xml");
+        injectInjectionPointXMLWar = CDIArchiveHelper.addEmptyBeansXML(injectInjectionPointXMLWar);
 
         ShrinkHelper.exportToServer(server, "dropins", injectInjectionPointXMLWar, DeployOptions.SERVER_ONLY);
 
-        String log = server.waitForStringInLog("CWWKZ0002E(?=.*injectInjectionPoint)(?=.*com.ibm.ws.container.service.state.StateChangeException)(?=.*org.jboss.weld.exceptions.DefinitionException)(?=.*WELD-001405)(?=.*BackedAnnotatedField)(?=.*com.ibm.ws.fat.cdi.injectInjectionPointXML.InjectInjectionPointXMLServlet.thisShouldFail)");
+        String log = server.waitForStringInLog(DEFINITION_EXCEPTION_PATTERN_PREFIX
+                                               + InjectInjectionPointXMLServlet.class.getName() + THIS_SHOULD_FAIL_SUFFIX);
         assertNotNull("DefinitionException not found", log);
     }
 
