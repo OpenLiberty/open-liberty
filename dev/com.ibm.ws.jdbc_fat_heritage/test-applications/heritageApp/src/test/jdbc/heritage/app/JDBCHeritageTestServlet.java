@@ -10,9 +10,17 @@
  *******************************************************************************/
 package test.jdbc.heritage.app;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertSame;
 
+import java.lang.reflect.Field;
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 
 import javax.annotation.Resource;
 import javax.servlet.ServletConfig;
@@ -41,13 +49,66 @@ public class JDBCHeritageTestServlet extends FATServlet {
     }
 
     /**
-     * Confirm that a dataSource that is configured with heritageSettings can be injected.
+     * Utility method that accesses the internal field WSJdbcPreparedStatement.pstmtImpl.
+     * This is useful for determining if we got the same statement from the statement cache.
+     *
+     * @param pstmt prepared statement wrapper (WSJdbcPreparedStatement).
+     * @return prepared statement implementation.
+     */
+    private static PreparedStatement pstmtImpl(PreparedStatement pstmt) throws PrivilegedActionException {
+        return AccessController.doPrivileged((PrivilegedExceptionAction<PreparedStatement>) () -> {
+            for (Class<?> c = pstmt.getClass(); c != null; c = c.getSuperclass())
+                try {
+                    Field pstmtImpl = c.getDeclaredField("pstmtImpl");
+                    pstmtImpl.setAccessible(true);
+                    return (PreparedStatement) pstmtImpl.get(pstmt);
+                } catch (NoSuchFieldException x) {
+                    // ignore, try the super class
+                }
+            throw new NoSuchFieldException("Unable to find pstmtImpl on prepared statement wrapper. If the field has been renamed, you will need to update this test.");
+        });
+    }
+
+    /**
+     * Confirm that a dataSource that is configured with heritageSettings can be injected
+     * and has the transaction isolation level that is assigned as default by the DataStoreHelper.
      */
     @Test
-    public void testInjection() throws Exception {
+    public void testDefaultIsolationLevel() throws Exception {
         assertNotNull(defaultDataSource);
         try (Connection con = defaultDataSource.getConnection()) {
-            con.createStatement().close();
+            assertEquals(Connection.TRANSACTION_SERIALIZABLE, con.getTransactionIsolation());
+        }
+    }
+
+    /**
+     * Confirm that doesStatementCacheIsoLevel causes prepared statements to be cached based on
+     * the isolation level that was present on the connection at the time the statement was
+     * created.
+     */
+    @Test
+    public void testStatementCachingBasedOnIsolationLevel() throws Exception {
+        try (Connection con = defaultDataSource.getConnection()) {
+            String sql = "VALUES('testStatementCachingBasedOnIsolationLevel')";
+            PreparedStatement pstmt;
+
+            con.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+            pstmt = con.prepareStatement(sql);
+            PreparedStatement pstmtRC = pstmtImpl(pstmt);
+            pstmt.close();
+
+            con.setTransactionIsolation(Connection.TRANSACTION_REPEATABLE_READ);
+            pstmt = con.prepareStatement(sql);
+            PreparedStatement pstmtRR = pstmtImpl(pstmt);
+            pstmt.close();
+
+            con.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+            pstmt = con.prepareStatement(sql);
+            PreparedStatement pstmtRC2 = pstmtImpl(pstmt);
+            pstmt.close();
+
+            assertNotSame(pstmtRC, pstmtRR);
+            assertSame(pstmtRC, pstmtRC2);
         }
     }
 }

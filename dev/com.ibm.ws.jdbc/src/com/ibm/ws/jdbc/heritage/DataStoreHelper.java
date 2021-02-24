@@ -10,14 +10,25 @@
  *******************************************************************************/
 package com.ibm.ws.jdbc.heritage;
 
+import javax.resource.ResourceException;
+
 /**
  * Extension point for compatibility with data store helpers.
  */
 public interface DataStoreHelper {
     /**
+     * Returns the default to use for transaction isolation level when not specified another way.
+     *
+     * @param unused always null. This is only here for compatibility.
+     * @return transaction isolation level constant from java.sql.Connection
+     * @throws ResourceException never. This is only here for compatibility.
+     */
+    int getIsolationLevel(AccessIntent unused) throws ResourceException;
+
+    /**
      * Returns metadata for the data store helper.
      *
      * @return metadata.
      */
-    public DataStoreHelperMetaData getMetaData();
+    DataStoreHelperMetaData getMetaData();
 }

@@ -38,4 +38,7 @@
 
   <javaPermission codeBase="${shared.resource.dir}derby/derby.jar" className="java.security.AllPermission"/>
 
+  <javaPermission codeBase="${server.config.dir}/dropins/heritageApp.war" className="java.lang.reflect.ReflectPermission" name="suppressAccessChecks"/>
+  <javaPermission codeBase="${server.config.dir}/dropins/heritageApp.war" className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
+
 </server>

@@ -18,6 +18,11 @@ import com.ibm.ws.jdbc.heritage.DataStoreHelperMetaData;
 public class HDDataStoreHelperMetaData implements DataStoreHelperMetaData {
 
     @Override
+    public boolean doesStatementCacheIsoLevel() {
+        return true;
+    }
+
+    @Override
     public boolean supportsGetCatalog() {
         return false;
     }
@@ -39,6 +44,11 @@ public class HDDataStoreHelperMetaData implements DataStoreHelperMetaData {
 
     @Override
     public boolean supportsIsReadOnly() {
+        return false;
+    }
+
+    @Override
+    public boolean supportsUOWDetection() {
         return false;
     }
 }

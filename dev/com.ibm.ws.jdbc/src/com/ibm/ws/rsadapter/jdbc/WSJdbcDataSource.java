@@ -210,13 +210,18 @@ public class WSJdbcDataSource extends WSJdbcWrapper implements DataSource, FFDCS
      * Determine the default isolation level for this data source.
      * 
      * @return the default isolation level for this data source.
+     * @throws SQLException if unable to obtain the default isolation level from the legacy DataStoreHelper.
      */
-    private final int getDefaultIsolationLevel() {
+    private final int getDefaultIsolationLevel() throws SQLException {
         int defaultIsolationLevel = resRefInfo == null ? Connection.TRANSACTION_NONE : resRefInfo.getIsolationLevel();
         if (defaultIsolationLevel == Connection.TRANSACTION_NONE)
             defaultIsolationLevel = dsConfig.get().isolationLevel;
         if (defaultIsolationLevel == -1)
-            defaultIsolationLevel = mcf.getHelper().getDefaultIsolationLevel();
+            try {
+                defaultIsolationLevel = mcf.getDataStoreHelper().getIsolationLevel(null);
+            } catch (ResourceException x) {
+                throw new SQLException(x);
+            }
         return defaultIsolationLevel;
     }
 

@@ -15,6 +15,18 @@ package com.ibm.ws.jdbc.heritage;
  */
 public interface DataStoreHelperMetaData {
     /**
+     * Indicates if statements retain the transaction isolation level that was present on
+     * the connection at the time the statement was created. This means that if the transaction
+     * isolation level of the connection is changed at a later point, it does not impact the
+     * statement. This impacts how matching is performed when caching and reusing statements.
+     *
+     * @return true if statements retain their isolation level once created, otherwise
+     *         false, which means that statements use whatever isolation level is currently
+     *         present on the connection when they run.
+     */
+    boolean doesStatementCacheIsoLevel();
+
+    /**
      * Indicates whether the JDBC driver supports <code>java.sql.Connection.getCatalog</code>.
      *
      * @return true if the operation is supported, otherwise false.
@@ -49,4 +61,13 @@ public interface DataStoreHelperMetaData {
      */
     boolean supportsIsReadOnly();
 
+    /**
+     * Indicates whether the JDBC driver supports the vendor-specific unit-of-work detection API,
+     * <code>com.ibm.db2.jcc.DB2Connection.isInDB2UnitOfWork</code>.
+     * Because support can only be determined from a valid connection, do not invoke this method until
+     * <code>gatherAndDisplayMetaDataInfo</code> has processed the first connection established.
+     *
+     * @return if supported, otherwise false.
+     */
+    boolean supportsUOWDetection();
 }

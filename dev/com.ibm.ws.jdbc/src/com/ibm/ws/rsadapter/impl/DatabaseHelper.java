@@ -48,6 +48,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.jca.adapter.WSConnectionManager;
 import com.ibm.ws.jca.cm.AbstractConnectionFactoryService;
+import com.ibm.ws.jdbc.heritage.AccessIntent;
 import com.ibm.ws.jdbc.heritage.DataStoreHelper;
 import com.ibm.ws.jdbc.heritage.DataStoreHelperMetaData;
 import com.ibm.ws.resource.ResourceRefInfo;
@@ -63,7 +64,7 @@ import com.ibm.ws.rsadapter.jdbc.WSJdbcStatement;
  * Helper for generic relational databases, coded to the most common cases.
  * This class may be subclassed as needed for databases requiring different behavior.
  */
-public class DatabaseHelper implements DataStoreHelper, DataStoreHelperMetaData {
+public class DatabaseHelper implements DataStoreHelper {
     // register the generic database trace needed for enabling database jdbc logging/tracing
     @SuppressWarnings("deprecation")
     private static final com.ibm.ejs.ras.TraceComponent databaseTc = com.ibm.ejs.ras.Tr.register("com.ibm.ws.database.logwriter", "WAS.database", null); 
@@ -238,15 +239,6 @@ public class DatabaseHelper implements DataStoreHelper, DataStoreHelperMetaData 
     }
 
     /**
-     * Indicates whether or not the JDBC vendor statement implementation caches a copy of the transaction isolation level.
-     * 
-     * @return true if statements cache the isolation level, otherwise false.
-     */
-    public boolean doesStatementCacheIsoLevel() {
-        return false;
-    }
-
-    /**
      * <p>This method cleans up a statement before the statement is placed in the statement
      * cache. This method is called only
      * for statements being cached. It is called when at least one of the
@@ -313,16 +305,17 @@ public class DatabaseHelper implements DataStoreHelper, DataStoreHelperMetaData 
 
     /**
      * This method returns a default isolation level based on the database backend.
-     * 
+     *
+     * @param unused
      * @return default isolation level
      */
-    public int getDefaultIsolationLevel() {
+    public int getIsolationLevel(AccessIntent unused) {
         return Connection.TRANSACTION_READ_COMMITTED;
     }
 
     @Override
     public final DataStoreHelperMetaData getMetaData() {
-        return this;
+        throw new UnsupportedOperationException();
     }
 
     /**
@@ -1208,31 +1201,6 @@ public class DatabaseHelper implements DataStoreHelper, DataStoreHelperMetaData 
      */
     public boolean doConnectionVendorPropertyReset(Connection sqlConn, Map<String, Object> props) throws SQLException {
         return false;
-    }
-
-    @Override
-    public boolean supportsGetCatalog() {
-        return mcf.supportsGetCatalog;
-    }
-
-    @Override
-    public boolean supportsGetNetworkTimeout() {
-        return mcf.supportsGetNetworkTimeout;
-    }
-
-    @Override
-    public boolean supportsGetSchema() {
-        return mcf.supportsGetSchema;
-    }
-
-    @Override
-    public boolean supportsGetTypeMap() {
-        return mcf.supportsGetTypeMap;
-    }
-
-    @Override
-    public boolean supportsIsReadOnly() {
-        return mcf.supportsIsReadOnly;
     }
 
     /**
