@@ -25,9 +25,10 @@ public interface WSManagedExecutorService {
     WSContextService getContextService();
 
     /**
-     * Returns the policy executor for running tasks against the long running concurrency policy.
+     * When the longRunningPolicy is configured, returns the policy executor for running tasks against the long running concurrency policy.
+     * Otherwise, returns null when the longRunningPolicy is not configured.
      *
-     * @return the policy executor for running tasks against the long running concurrency policy.
+     * @return the policy executor for running tasks if the long running concurrency policy is configured. Otherwise, returns null.
      */
     PolicyExecutor getLongRunningPolicyExecutor();
 
