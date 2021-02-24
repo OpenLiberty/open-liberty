@@ -27,6 +27,7 @@ import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Rule;
@@ -65,7 +66,9 @@ public class OauthClientStoreCommon extends AbstractOidcRegistrationBaseTest {
 
     private final Mockery mockery = new JUnit4Mockery();
 
-    private static SharedOutputManager outputMgr = SharedOutputManager.getInstance().trace("com.ibm.ws.security.oauth20.plugins.custom.*=all");
+    private static String traceString = "com.ibm.ws.security.oauth20.plugins.custom.*";
+
+    private static SharedOutputManager outputMgr = SharedOutputManager.getInstance().trace(traceString + "=all");
 
     @Rule
     public TestRule managerRule = outputMgr;
@@ -87,6 +90,11 @@ public class OauthClientStoreCommon extends AbstractOidcRegistrationBaseTest {
     @After
     public void tearDown() throws Exception {
         mockery.assertIsSatisfied();
+    }
+
+    @AfterClass
+    public static void tearDownAfterClass() {
+        outputMgr.trace(traceString + "=all=disabled");
     }
 
     /**
