@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,8 @@
 package com.ibm.ws.jsf.container.fat.tests;
 
 import static org.junit.Assert.assertTrue;
+
+import java.io.File;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -49,6 +51,9 @@ public class JSF22StatelessViewTests extends FATServletClient {
         mojarraApp = FATSuite.addMojarra(mojarraApp);
         mojarraApp = (WebArchive) ShrinkHelper.addDirectory(mojarraApp, "publish/files/permissions");
         mojarraApp = (WebArchive) ShrinkHelper.addDirectory(mojarraApp, "test-applications/" + MOJARRA_APP + "/resources");
+        //Mojarra 3.0.0-RC3 (and possibily later versions) need a beans.xml for the
+        // JSF22StatelessView_TestViewScopeCDIBeanNotTransient_Mojarra test to pass 
+        mojarraApp.addAsWebInfResource(new File("lib/LibertyFATTestFiles/beans.xml"));
         ShrinkHelper.exportToServer(server, "dropins", mojarraApp);
         server.addInstalledAppForValidation(MOJARRA_APP);
 
