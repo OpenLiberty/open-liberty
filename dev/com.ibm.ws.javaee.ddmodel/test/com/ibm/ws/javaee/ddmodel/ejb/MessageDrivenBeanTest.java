@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,11 +18,13 @@ import org.junit.Test;
 import com.ibm.ws.javaee.dd.common.InterceptorCallback;
 import com.ibm.ws.javaee.dd.ejb.ActivationConfig;
 import com.ibm.ws.javaee.dd.ejb.ActivationConfigProperty;
+import com.ibm.ws.javaee.dd.ejb.EJBJar;
 import com.ibm.ws.javaee.dd.ejb.EnterpriseBean;
 import com.ibm.ws.javaee.dd.ejb.MessageDriven;
 import com.ibm.ws.javaee.dd.ejb.NamedMethod;
 import com.ibm.ws.javaee.dd.ejb.Timer;
 import com.ibm.ws.javaee.dd.ejb.TransactionalBean;
+import com.ibm.ws.javaee.ddmodel.DDParser;
 
 public class MessageDrivenBeanTest extends EJBJarTestBase {
 
@@ -123,7 +125,7 @@ public class MessageDrivenBeanTest extends EJBJarTestBase {
                                                "</message-driven-destination>" +
                                                "</message-driven>" +
                                                "</enterprise-beans>" +
-                                               "</ejb-jar>").getEnterpriseBeans();
+                                               "</ejb-jar>", EJBJar.VERSION_3_2).getEnterpriseBeans();
         MessageDriven bean0 = (MessageDriven) beans.get(0);
         ActivationConfig actCon0 = bean0.getActivationConfigValue();
         List<ActivationConfigProperty> actConProps = actCon0.getConfigProperties();
@@ -136,6 +138,65 @@ public class MessageDrivenBeanTest extends EJBJarTestBase {
         Assert.assertEquals("javax.jms.Queue", actConProps.get(2).getValue());
         Assert.assertEquals(MessageDriven.ACTIVATION_CONFIG_PROPERTY_SUBSCRIPTION_DURABILITY, actConProps.get(3).getName());
         Assert.assertEquals("Durable", actConProps.get(3).getValue());
+    }
+
+    @Test
+    public void testMessageDrivenActivationConfigEJB20v40() throws Exception {
+        List<EnterpriseBean> beans = getEJBJar(EJBJarTest.ejbJar20() +
+                                               "<enterprise-beans>" +
+                                               "<message-driven>" +
+                                               "<ejb-name>ejbName0</ejb-name>" +
+                                               "<message-selector>messageSelector0</message-selector>" +
+                                               "<acknowledge-mode>Auto-acknowledge</acknowledge-mode>" +
+                                               "<message-driven-destination id=\"tid\">" +
+                                               "<destination-type>jakarta.jms.Queue</destination-type>" +
+                                               "<subscription-durability>Durable</subscription-durability>" +
+                                               "</message-driven-destination>" +
+                                               "</message-driven>" +
+                                               "</enterprise-beans>" +
+                                               "</ejb-jar>", EJBJar.VERSION_4_0).getEnterpriseBeans();
+        MessageDriven bean0 = (MessageDriven) beans.get(0);
+        ActivationConfig actCon0 = bean0.getActivationConfigValue();
+        List<ActivationConfigProperty> actConProps = actCon0.getConfigProperties();
+        Assert.assertEquals(actConProps.toString(), 4, actConProps.size());
+        Assert.assertEquals(MessageDriven.ACTIVATION_CONFIG_PROPERTY_MESSAGE_SELECTOR, actConProps.get(0).getName());
+        Assert.assertEquals("messageSelector0", actConProps.get(0).getValue());
+        Assert.assertEquals(MessageDriven.ACTIVATION_CONFIG_PROPERTY_ACKNOWLEDGE_MODE, actConProps.get(1).getName());
+        Assert.assertEquals("Auto-acknowledge", actConProps.get(1).getValue());
+        Assert.assertEquals(MessageDriven.ACTIVATION_CONFIG_PROPERTY_DESTINATION_TYPE, actConProps.get(2).getName());
+        Assert.assertEquals("jakarta.jms.Queue", actConProps.get(2).getValue());
+        Assert.assertEquals(MessageDriven.ACTIVATION_CONFIG_PROPERTY_SUBSCRIPTION_DURABILITY, actConProps.get(3).getName());
+        Assert.assertEquals("Durable", actConProps.get(3).getValue());
+    }
+
+    @Test(expected = DDParser.ParseException.class)
+    public void testMessageDrivenActivationConfigEJB20Exception() throws Exception {
+        List<EnterpriseBean> beans = getEJBJar(EJBJarTest.ejbJar20() +
+                                               "<enterprise-beans>" +
+                                               "<message-driven>" +
+                                               "<ejb-name>ejbName0</ejb-name>" +
+                                               "<message-selector>messageSelector0</message-selector>" +
+                                               "<acknowledge-mode>Auto-acknowledge</acknowledge-mode>" +
+                                               "<message-driven-destination id=\"tid\">" +
+                                               "<destination-type>javax.jms.Queue</destination-type>" +
+                                               "<subscription-durability>Durable</subscription-durability>" +
+                                               "</message-driven-destination>" +
+                                               "</message-driven>" +
+                                               "</enterprise-beans>" +
+                                               "</ejb-jar>", EJBJar.VERSION_4_0).getEnterpriseBeans();
+        MessageDriven bean0 = (MessageDriven) beans.get(0);
+        ActivationConfig actCon0 = bean0.getActivationConfigValue();
+        List<ActivationConfigProperty> actConProps = actCon0.getConfigProperties();
+        Assert.assertEquals(actConProps.toString(), 4, actConProps.size());
+        Assert.assertEquals(MessageDriven.ACTIVATION_CONFIG_PROPERTY_MESSAGE_SELECTOR, actConProps.get(0).getName());
+        Assert.assertEquals("messageSelector0", actConProps.get(0).getValue());
+        Assert.assertEquals(MessageDriven.ACTIVATION_CONFIG_PROPERTY_ACKNOWLEDGE_MODE, actConProps.get(1).getName());
+        Assert.assertEquals("Auto-acknowledge", actConProps.get(1).getValue());
+        Assert.assertEquals(MessageDriven.ACTIVATION_CONFIG_PROPERTY_DESTINATION_TYPE, actConProps.get(2).getName());
+        Assert.assertEquals("javax.jms.Queue", actConProps.get(2).getValue());
+        Assert.assertEquals(MessageDriven.ACTIVATION_CONFIG_PROPERTY_SUBSCRIPTION_DURABILITY, actConProps.get(3).getName());
+        Assert.assertEquals("Durable", actConProps.get(3).getValue());
+        Assert.fail("ParseException did not occur as expected");
     }
 
     @Test

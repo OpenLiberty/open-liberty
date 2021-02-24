@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -49,6 +49,7 @@ public interface MessageDriven
      * @see org.eclipse.jst.j2ee.ejb.internal.util.MDBActivationConfigModelUtil#destinationTypeValues
      */
     String ACTIVATION_CONFIG_PROPERTY_DESTINATION_TYPE_QUEUE = "javax.jms.Queue";
+    String ACTIVATION_CONFIG_PROPERTY_DESTINATION_TYPE_JAKARTA_QUEUE = "jakarta.jms.Queue";
 
     /**
      * The {@link ActivationConfigProperty#getValue} to represent "Topic" for
@@ -57,6 +58,7 @@ public interface MessageDriven
      * @see org.eclipse.jst.j2ee.ejb.internal.util.MDBActivationConfigModelUtil#destinationTypeValues
      */
     String ACTIVATION_CONFIG_PROPERTY_DESTINATION_TYPE_TOPIC = "javax.jms.Topic";
+    String ACTIVATION_CONFIG_PROPERTY_DESTINATION_TYPE_JAKARTA_TOPIC = "jakarta.jms.Topic";
 
     /**
      * The {@link ActivationConfigProperty#getName} to represent

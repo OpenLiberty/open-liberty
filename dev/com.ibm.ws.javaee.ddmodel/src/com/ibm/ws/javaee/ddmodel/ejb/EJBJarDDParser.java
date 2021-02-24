@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2020 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,14 @@ public class EJBJarDDParser extends DDParser {
     public EJBJarDDParser(Container ddRootContainer, Entry ddEntry, int maxVersion) throws ParseException {
         super(ddRootContainer, ddEntry);
         this.maxVersion = maxVersion;
+
+        // Consistent with WebAppDDParser, set EE runtimeVersion based on when EJB version was introduced
+        if (maxVersion >= EJBJar.VERSION_4_0)
+            runtimeVersion = 90;
+        else if (maxVersion == EJBJar.VERSION_3_2)
+            runtimeVersion = 70;
+        else
+            runtimeVersion = 60; // EJB-3.1 is the earliest Liberty runtime spec.
     }
 
     EJBJar parse() throws ParseException {
