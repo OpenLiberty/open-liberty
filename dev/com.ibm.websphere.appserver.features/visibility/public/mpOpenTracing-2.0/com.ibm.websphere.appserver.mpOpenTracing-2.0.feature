@@ -15,6 +15,6 @@ IBM-API-Package: \
     io.openliberty.mpCompatible-4.0
 -bundles=\
     io.openliberty.microprofile.opentracing.2.0.internal
-kind=beta
+kind=ga
 edition=core
 WLP-Activation-Type: parallel
