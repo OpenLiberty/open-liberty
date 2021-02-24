@@ -219,6 +219,11 @@ public class DatabaseHelper implements DataStoreHelper {
         return false;
     }
 
+    @Override
+    public boolean doConnectionCleanupPerCloseConnection(Connection conn, boolean isCMP, Object unused) throws SQLException {
+        throw new UnsupportedOperationException(); // for legacy impl only
+    }
+
     /**
      * <p>This method configures a connection before first use. This method is invoked only
      * when a new connection to the database is created. It is not invoked when connections
@@ -236,6 +241,11 @@ public class DatabaseHelper implements DataStoreHelper {
      * @exception SQLException if connection setup cannot be completed successfully.
      */
     public void doConnectionSetup(Connection conn) throws SQLException {
+    }
+
+    @Override
+    public boolean doConnectionSetupPerGetConnection(Connection conn, boolean isCMP, Object props) throws SQLException {
+        throw new UnsupportedOperationException(); // for legacy impl only
     }
 
     /**
@@ -315,7 +325,7 @@ public class DatabaseHelper implements DataStoreHelper {
 
     @Override
     public final DataStoreHelperMetaData getMetaData() {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException(); // for legacy impl only
     }
 
     /**

@@ -21,6 +21,7 @@ import java.sql.Driver;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
 import java.sql.Statement;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -61,7 +62,6 @@ import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.FFDCSelfIntrospectable;
 import com.ibm.ws.jca.adapter.WSConnectionManager;
 import com.ibm.ws.jca.adapter.WSManagedConnection;
-import com.ibm.ws.jdbc.heritage.DataStoreHelperMetaData;
 import com.ibm.ws.jdbc.internal.DataSourceDef;
 import com.ibm.ws.jdbc.osgi.JDBCRuntimeVersion;
 import com.ibm.ws.rsadapter.AdapterUtil;
@@ -70,6 +70,7 @@ import com.ibm.ws.rsadapter.ConnectionSharing;
 import com.ibm.ws.rsadapter.DSConfig; 
 import com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException;
 import com.ibm.ws.rsadapter.jdbc.WSJdbcConnection;
+import com.ibm.ws.rsadapter.jdbc.WSJdbcTracer;
 import com.ibm.ws.tx.embeddable.EmbeddableWebSphereTransactionManager;
 
 /**
@@ -184,6 +185,11 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
      * 
      */
     private Boolean transactional;
+
+    /**
+     * Indicates if doConnectionCleanupPerCloseConnection is needed due to doConnectionSetupPerGetConnection.
+     */
+    public boolean perCloseCleanupNeeded;
 
     boolean _claimedVictim;
 
@@ -381,8 +387,6 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
      * 
      */
     private long fatalErrorCount;
-
-    private boolean inCleanup = false;
 
     /**
      * Constructs an instance of WSRdbManagedConnectionImpl.
@@ -1660,12 +1664,6 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
 
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
 
-        if (inCleanup) {
-            if (isTraceOn && tc.isDebugEnabled())
-                Tr.debug(this, tc, "An error occured during connection cleanup. Since the container drives " +
-                                   "the cleanup op, it will directly receive the exception.");
-            return;
-        }
         if (connectionErrorDetected) {
             if (isTraceOn && tc.isEventEnabled())
                 Tr.event(this, tc, "CONNECTION_ERROR_OCCURRED event already fired");
@@ -2408,6 +2406,33 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
         if (isTraceOn && tc.isDebugEnabled())
             Tr.debug(this, tc, "numHandlesInUse", numHandlesInUse);
 
+        if (mcf.isCustomHelper && numHandlesInUse == 1)
+            try
+            {
+                Map<String, Object> props = new HashMap<String, Object>();
+                props.put("SUBJECT", subject);
+
+                // Remove the wrapper for supplemental trace before invoking a custom helper
+                // because the java.sql.Connection wrapper prevents access to vendor APIs
+                // that might be used by the custom helper.
+                Connection conn = mcf.isCustomHelper ?
+                    (Connection) WSJdbcTracer.getImpl(sqlConn) : sqlConn;
+
+                boolean conSetupPerformed = mcf.dataStoreHelper.doConnectionSetupPerGetConnection(conn, false, props);
+                if (isTraceOn && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "doConnectionSetupPerGetConnection", mcf.dataStoreHelper, this, sqlConn, conSetupPerformed);
+
+                // indicate that we need to undo in case cleanup is called before close
+                perCloseCleanupNeeded = true;
+            }
+            catch (Throwable t)
+            {
+                FFDCFilter.processException(t, getClass().getName(), "2849", this);
+                if (t instanceof SQLException)
+                    t = AdapterUtil.mapSQLException((SQLException) t, this);
+                throw new DataStoreAdapterException("DSA_ERROR", t, getClass());
+            }
+
         // Record the number of fatal connection errors found on connections created by the
         // parent ManagedConnectionFactory at the time the last handle was created for this
         // ManagedConnection.  This allows us to determine whether it's safe to return this
@@ -2749,7 +2774,25 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
             throw x;
         }
 
-        inCleanup = false;
+        if (perCloseCleanupNeeded)
+            try {
+                perCloseCleanupNeeded = false;
+
+                Connection conn = mcf.isCustomHelper ?
+                    (Connection) WSJdbcTracer.getImpl(sqlConn) : sqlConn;
+
+                boolean conCleanupPerformed = mcf.getDataStoreHelper().doConnectionCleanupPerCloseConnection(conn, false, null);
+
+                if (isTraceOn && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "doConnectionCleanupPerCloseConnection", mcf.getDataStoreHelper(), sqlConn, conCleanupPerformed);
+            }
+            catch (Throwable x) {
+                if (isTraceOn && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "doConnectionCleanupPerCloseConnection", x);
+                SQLException sqlx = x instanceof SQLException ? (SQLException) x
+                                : new SQLException(x.getMessage(), null, 999999); // 999999 matches legacy behavior
+                throw AdapterUtil.translateSQLException(sqlx, this, false, getClass());
+            }
 
         // Reset to null so that it gets refreshed on next use.
         transactional = null; 

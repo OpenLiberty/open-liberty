@@ -18,6 +18,8 @@ import com.ibm.ws.jdbc.heritage.AccessIntent;
 import com.ibm.ws.jdbc.heritage.DataStoreHelper;
 import com.ibm.ws.jdbc.heritage.DataStoreHelperMetaData;
 
+import test.jdbc.heritage.driver.HDConnection;
+
 /**
  * Data store helper for the test JDBC driver.
  */
@@ -25,11 +27,29 @@ public class HDDataStoreHelper implements DataStoreHelper {
     private final HDDataStoreHelperMetaData metadata = new HDDataStoreHelperMetaData();
 
     @Override
+    public boolean doConnectionCleanupPerCloseConnection(Connection con, boolean isCMP, Object unused) throws SQLException {
+        ((HDConnection) con).cleanupCount.incrementAndGet();
+        try (CallableStatement stmt = con.prepareCall("CALL SYSCS_UTIL.SYSCS_SET_STATISTICS_TIMING(0)")) {
+            stmt.execute();
+        }
+        return true;
+    }
+
+    @Override
     public void doConnectionSetup(Connection con) throws SQLException {
         try (CallableStatement stmt = con.prepareCall("CALL SYSCS_UTIL.SYSCS_SET_RUNTIMESTATISTICS(1)")) {
             stmt.setPoolable(false);
             stmt.execute();
         }
+    }
+
+    @Override
+    public boolean doConnectionSetupPerGetConnection(Connection con, boolean isCMP, Object props) throws SQLException {
+        ((HDConnection) con).setupCount.incrementAndGet();
+        try (CallableStatement stmt = con.prepareCall("CALL SYSCS_UTIL.SYSCS_SET_STATISTICS_TIMING(1)")) {
+            stmt.execute();
+        }
+        return true;
     }
 
     @Override

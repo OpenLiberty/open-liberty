@@ -30,6 +30,7 @@ import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.sql.DataSource;
+import javax.transaction.UserTransaction;
 
 import org.junit.Test;
 
@@ -40,6 +41,9 @@ import componenttest.app.FATServlet;
 public class JDBCHeritageTestServlet extends FATServlet {
     @Resource
     private DataSource defaultDataSource;
+
+    @Resource
+    private UserTransaction tx;
 
     @Override
     public void destroy() {
@@ -74,15 +78,94 @@ public class JDBCHeritageTestServlet extends FATServlet {
 
     /**
      * Verifies that doConnectionSetup was performed on a new connection.
+     * Verifies that doConnectionSetupPerGetConnection is invoked for each first connection handle.
+     * Verifies that doConnectionCleanupPerCloseConnection is invoked upon closing or dissociating the last connection handle.
      */
+    @Test
     public void testConnectionSetup() throws Exception {
         try (Connection con = defaultDataSource.getConnection("testConnectionSetupUser", "PASSWORD")) {
+
+            // Read the value that was set by doConnectionSetup
             Statement stmt = con.createStatement();
             ResultSet result = stmt.executeQuery("VALUES SYSCS_UTIL.SYSCS_GET_RUNTIMESTATISTICS()");
             assertTrue(result.next());
-            assertEquals(1, result.getInt(1));
+            assertNotNull(result.getString(1));
             stmt.close();
+
+            // Query the doConnectionSetupPerGetConnection count, expecting 1
+            result = con.prepareCall("CALL TEST.GET_SETUP_COUNT()").executeQuery();
+            assertTrue(result.next());
+            assertEquals(1, result.getInt(1));
+            result.getStatement().setPoolable(false); // statement caching interferes with test replacing sql
+            result.getStatement().close();
+
+            // Query the doConnectionCleanupPerCloseConnection count, expecting 0
+            result = con.prepareCall("CALL TEST.GET_CLEANUP_COUNT()").executeQuery();
+            assertTrue(result.next());
+            assertEquals(0, result.getInt(1));
+            result.getStatement().setPoolable(false); // statement caching interferes with test replacing sql
+            result.getStatement().close();
         }
+
+        Connection con;
+        ResultSet result;
+
+        tx.begin();
+        try {
+            con = defaultDataSource.getConnection("testConnectionSetupUser", "PASSWORD");
+
+            result = con.prepareCall("VALUES(2)").executeQuery();
+            assertTrue(result.next());
+            result.getStatement().close();
+
+            // Query the doConnectionSetupPerGetConnection count, expecting 2
+            result = con.prepareCall("CALL TEST.GET_SETUP_COUNT()").executeQuery();
+            assertTrue(result.next());
+            assertEquals(2, result.getInt(1));
+            result.getStatement().setPoolable(false); // statement caching interferes with test replacing sql
+            result.getStatement().close();
+
+            // Query the doConnectionCleanupPerCloseConnection count, expecting 1
+            result = con.prepareCall("CALL TEST.GET_CLEANUP_COUNT()").executeQuery();
+            assertTrue(result.next());
+            assertEquals(1, result.getInt(1));
+            result.getStatement().setPoolable(false); // statement caching interferes with test replacing sql
+            result.getStatement().close();
+
+            Connection con2 = defaultDataSource.getConnection("testConnectionSetupUser", "PASSWORD");
+
+            // Query the doConnectionSetupPerGetConnection count, still expecting 2
+            result = con.prepareCall("CALL TEST.GET_SETUP_COUNT()").executeQuery();
+            assertTrue(result.next());
+            assertEquals(2, result.getInt(1));
+            result.getStatement().setPoolable(false); // statement caching interferes with test replacing sql
+            result.getStatement().close();
+
+            // Query the doConnectionCleanupPerCloseConnection count, still expecting 1
+            result = con.prepareCall("CALL TEST.GET_CLEANUP_COUNT()").executeQuery();
+            assertTrue(result.next());
+            assertEquals(1, result.getInt(1));
+            result.getStatement().setPoolable(false); // statement caching interferes with test replacing sql
+            result.getStatement().close();
+        } finally {
+            tx.commit();
+        }
+
+        // Query the doConnectionSetupPerGetConnection count
+        result = con.prepareCall("CALL TEST.GET_SETUP_COUNT()").executeQuery();
+        assertTrue(result.next());
+        // assertEquals(3, result.getInt(1)); // legacy behavior does not invoke doConnectionSetupPerGetConnection on reassociate
+        result.getStatement().setPoolable(false); // statement caching interferes with test replacing sql
+        result.getStatement().close();
+
+        // Query the doConnectionCleanupPerCloseConnection count, expecting 2
+        result = con.prepareCall("CALL TEST.GET_CLEANUP_COUNT()").executeQuery();
+        assertTrue(result.next());
+        assertEquals(2, result.getInt(1));
+        result.getStatement().setPoolable(false); // statement caching interferes with test replacing sql
+        result.getStatement().close();
+
+        con.close();
     }
 
     /**
