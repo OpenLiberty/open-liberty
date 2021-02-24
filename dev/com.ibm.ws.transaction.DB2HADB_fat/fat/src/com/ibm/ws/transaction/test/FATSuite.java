@@ -21,6 +21,7 @@ import org.testcontainers.containers.output.OutputFrame;
 
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.transaction.test.tests.FailoverTest;
+
 import componenttest.containers.ExternalTestServiceDockerClientStrategy;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.JakartaEE9Action;
@@ -44,7 +45,7 @@ public class FATSuite {
                     .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly())
                     .andWith(new JakartaEE9Action().fullFATOnly());
 
-    public static DatabaseContainerType type = DatabaseContainerType.SQLServer;
+    public static DatabaseContainerType type = DatabaseContainerType.DB2;
     public static JdbcDatabaseContainer<?> testContainer;
 
     @BeforeClass

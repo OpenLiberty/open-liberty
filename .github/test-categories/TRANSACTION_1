@@ -1,5 +1,9 @@
 com.ibm.ws.jta_fat
-com.ibm.ws.transaction.HADB_fat
+com.ibm.ws.transaction.DB2HADB_fat
+com.ibm.ws.transaction.DerbyHADB_fat
+com.ibm.ws.transaction.OracleHADB_fat
+com.ibm.ws.transaction.PostgresqlHADB_fat
+com.ibm.ws.transaction.SQLServerHADB_fat
 com.ibm.ws.transaction.cloud_fat.base
 com.ibm.ws.transaction.cloud_fat.db2
 com.ibm.ws.transaction.cloud_fat.derby
