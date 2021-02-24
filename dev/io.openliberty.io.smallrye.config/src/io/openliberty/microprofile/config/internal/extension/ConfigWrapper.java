@@ -10,6 +10,7 @@
  *******************************************************************************/
 package io.openliberty.microprofile.config.internal.extension;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -40,6 +41,10 @@ class ConfigWrapper {
             close = true;
         }
         return close;
+    }
+
+    Set<String> listApplications() {
+        return Collections.unmodifiableSet(applications);
     }
 
     /**
