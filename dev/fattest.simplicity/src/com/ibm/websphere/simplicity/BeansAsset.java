@@ -20,7 +20,18 @@ import org.jboss.shrinkwrap.api.asset.Asset;
 /**
  * Shrinkwrap asset for a beans.xml file
  * <p>
- * Example usage:
+ * Example usage, either using CDIArchiveHelper...
+ *
+ * <pre>
+ * <code>
+ * WebArchive war = ShrinkWrap.create(WebArchive.class)
+ *              .addPackage(MyClass.class.getPackage());
+ *
+ * war = CDIArchiveHelper.addBeansXML(war, Mode.ALL);
+ * </code>
+ * </pre>
+ *
+ * ...or directly...
  *
  * <pre>
  * <code>
@@ -28,7 +39,7 @@ import org.jboss.shrinkwrap.api.asset.Asset;
  *
  * WebArchive war = ShrinkWrap.create(WebArchive.class)
  *              .addPackage(MyClass.class.getPackage())
- *              .addAsResource(beans, "META-INF/beans.xml");
+ *              .addAsWebInfResource(beans, "beans.xml");
  * </code>
  * </pre>
  */
