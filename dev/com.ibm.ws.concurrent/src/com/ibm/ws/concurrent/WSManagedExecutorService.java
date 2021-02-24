@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,7 +24,12 @@ public interface WSManagedExecutorService {
      */
     WSContextService getContextService();
 
-    // TODO getLongRunningPolicyExecutor
+    /**
+     * Returns the policy executor for running tasks against the long running concurrency policy.
+     *
+     * @return the policy executor for running tasks against the long running concurrency policy.
+     */
+    PolicyExecutor getLongRunningPolicyExecutor();
 
     /**
      * Returns the policy executor for running tasks against the normal concurrency policy.
