@@ -114,4 +114,20 @@ public class NettyBufTest extends FATServletClient {
         assertTrue("No EE7 features should be enabled when this test runs: " + features,
                    !features.contains("servlet-3.1"));
     }
+
+    @Test
+    public void testNettyFeatureThere() throws Exception {
+        // This test will only run for the EE9 iteration
+
+        // Verify only EE8 features are enabled
+        Set<String> features = server.getServerConfiguration().getFeatureManager().getFeatures();
+        assertTrue("Expected Netty feature to be there but it was not " + features,
+                   features.contains("io.openliberty.netty-1.0"));
+    }
+
+    @Test
+    public void testNettyFactoryOnClasspath() throws Exception {
+        io.openliberty.netty.NettyFactory.class.getName();
+    }
+
 }
