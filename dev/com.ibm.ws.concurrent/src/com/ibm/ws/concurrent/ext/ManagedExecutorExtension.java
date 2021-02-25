@@ -25,6 +25,7 @@ import java.util.function.Supplier;
 import javax.enterprise.concurrent.ManagedExecutorService;
 
 import org.eclipse.microprofile.context.ManagedExecutor;
+import org.eclipse.microprofile.context.ThreadContext;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.concurrent.WSManagedExecutorService;
