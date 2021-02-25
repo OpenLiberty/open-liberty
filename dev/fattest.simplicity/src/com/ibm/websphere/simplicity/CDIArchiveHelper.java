@@ -18,6 +18,7 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 
 import com.ibm.websphere.simplicity.BeansAsset.Mode;
+import com.ibm.websphere.simplicity.BeansAsset.Version;
 
 /**
  * TODO make use of the ShrinkWrap Descriptors lib
@@ -36,13 +37,24 @@ public class CDIArchiveHelper {
     }
 
     /**
-     * Create a WEB-INF/beans.xml file in a war
+     * Create a CDI 1.1 WEB-INF/beans.xml file in a war
      *
      * @param webArchive The WAR to create the beans.xml in
      * @param mode       The bean-discovery-mode to use; NONE, ALL or ANNOTATED
      */
     public static WebArchive addBeansXML(WebArchive webArchive, Mode mode) {
-        BeansAsset beans = new BeansAsset(mode);
+        return addBeansXML(webArchive, mode, Version.CDI11);
+    }
+
+    /**
+     * Create a WEB-INF/beans.xml file in a war
+     *
+     * @param webArchive The WAR to create the beans.xml in
+     * @param mode       The bean-discovery-mode to use; NONE, ALL or ANNOTATED
+     * @param version    The beans.xml version to use; CDI11 (Java EE) or CDI30 (Jakarta EE)
+     */
+    public static WebArchive addBeansXML(WebArchive webArchive, Mode mode, Version version) {
+        BeansAsset beans = new BeansAsset(mode, version);
         return addBeansXML(webArchive, beans);
     }
 
@@ -66,12 +78,23 @@ public class CDIArchiveHelper {
     }
 
     /**
-     * Create a META-INF/beans.xml file in a jar
+     * Create a CDI 1.1 META-INF/beans.xml file in a jar
      *
      * @param archive The archive to create the beans.xml in
      * @param mode    The bean-discovery-mode to use; NONE, ALL or ANNOTATED
      */
     public static JavaArchive addBeansXML(JavaArchive archive, Mode mode) {
+        return addBeansXML(archive, mode, Version.CDI11);
+    }
+
+    /**
+     * Create a META-INF/beans.xml file in a jar
+     *
+     * @param archive The archive to create the beans.xml in
+     * @param mode    The bean-discovery-mode to use; NONE, ALL or ANNOTATED
+     * @param version The beans.xml version to use; JAVAEE (CDI 1.1) or JAKARTA (CDI 3.0)
+     */
+    public static JavaArchive addBeansXML(JavaArchive archive, Mode mode, Version version) {
         BeansAsset beans = new BeansAsset(mode);
         return addBeansXML(archive, beans);
     }
@@ -93,5 +116,14 @@ public class CDIArchiveHelper {
      */
     public static <T extends Archive<T>> T addCDIExtensionService(ManifestContainer<T> archive, Class<? extends javax.enterprise.inject.spi.Extension> extensionClass) {
         return archive.addAsServiceProvider(javax.enterprise.inject.spi.Extension.class, extensionClass);
+    }
+
+    /**
+     * Create a META-INF/services/jakarta.enterprise.inject.spi.Extension file containing the name of the extension class
+     *
+     * @param archive The archive to create the CDI Extension Service file in
+     */
+    public static <T extends Archive<T>> T addJakartaCDIExtensionService(ManifestContainer<T> archive, Class<? extends jakarta.enterprise.inject.spi.Extension> extensionClass) {
+        return archive.addAsServiceProvider(jakarta.enterprise.inject.spi.Extension.class, extensionClass);
     }
 }
