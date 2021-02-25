@@ -262,6 +262,11 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
     public final AtomicReference<DSConfig> dsConfig;
 
     /**
+     * Indicates if the user provides their own custom legacy data store helper.
+     */
+    public boolean isCustomHelper;
+
+    /**
      * Indicates whether or not the JDBC driver supports <code>java.sql.Connection.getCatalog()</code>.
      */
     public boolean supportsGetCatalog = true;
@@ -355,6 +360,7 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
                 (DataStoreHelper) jdbcDriverLoader.loadClass(config.heritageHelperClass).getConstructor().newInstance());
             DataStoreHelperMetaData metadata = dataStoreHelper.getMetaData();
             doesStatementCacheIsoLevel = metadata.doesStatementCacheIsoLevel();
+            isCustomHelper = !config.heritageHelperClass.startsWith("com.ibm.websphere.rsadapter");
             supportsGetCatalog = metadata.supportsGetCatalog();
             supportsGetNetworkTimeout = metadata.supportsGetNetworkTimeout();
             supportsGetSchema = metadata.supportsGetSchema();
@@ -1328,7 +1334,7 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
      * utility used to gather metadata info and issue doConnectionSetup.
      */
     private void postGetConnectionHandling(Connection conn) throws SQLException {
-        helper.doConnectionSetup(conn);
+        dataStoreHelper.doConnectionSetup(isCustomHelper ? (Connection) WSJdbcTracer.getImpl(conn) : conn);
 
         String[] sqlCommands = dsConfig.get().onConnect;
         if (sqlCommands != null && sqlCommands.length > 0)
