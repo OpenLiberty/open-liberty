@@ -48,13 +48,14 @@ public class ArtifactDownloader {
 
     private final List<File> downloadedFiles = new ArrayList<File>();
 
-    private final Logger logger = InstallLogUtils.getInstallLogger();
+    private final static Logger logger = InstallLogUtils.getInstallLogger();
 
     private final ProgressBar progressBar = ProgressBar.getInstance();
     private static Map<String, Object> envMap = null;
 
     public void synthesizeAndDownloadFeatures(List<String> mavenCoords, String dLocation, MavenRepository repository) throws InstallException {
         info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_CONTACTING_MAVEN_REPO"));
+//        fine("entering synthesizeAndDownloadFeatures");
         checkValidProxy();
         configureProxyAuthentication();
         configureAuthentication(repository);
@@ -131,6 +132,7 @@ public class ArtifactDownloader {
     }
 
     public void synthesizeAndDownload(String mavenCoords, String filetype, String dLocation, MavenRepository repository, boolean individualDownload) throws InstallException {
+//        fine("entering synthesizeAndDownload");
         configureProxyAuthentication();
         configureAuthentication(repository);
         String repo = FormatUrlSuffix(repository.getRepositoryUrl());
@@ -248,12 +250,21 @@ public class ArtifactDownloader {
     }
 
     private void configureProxyAuthentication() {
+//      fine("entering configureProxyAuthentication");
+//      fine("http proxy user = " + envMap.get("http.proxyUser"));
+
+        //set up basic auth HTTP proxy tunnel
+        System.setProperty("jdk.http.auth.tunneling.disabledSchemes", "");
+
         if (envMap.get("https.proxyUser") != null) {
             Authenticator.setDefault(new SystemPropertiesProxyAuthenticator());
+        } else if (envMap.get("http.proxyUser") != null) {
+            Authenticator.setDefault(new SystemPropertiesProxyHttpAuthenticator());
         }
     }
 
     private void configureAuthentication(final MavenRepository repository) {
+        fine("repository userId= " + repository.getUserId() + " " + repository.getPassword());
         if (repository.getUserId() != null && repository.getPassword() != null &&
             envMap.get("https.proxyUser") == null) {
             Authenticator.setDefault(new Authenticator() {
@@ -271,6 +282,7 @@ public class ArtifactDownloader {
      * @return
      */
     protected boolean testConnection(MavenRepository repository, List<String> mavenCoords) {
+        fine("entering testConnection wirh mavenCoords");
         configureProxyAuthentication();
         configureAuthentication(repository);
         List<String> featureURLs = ArtifactDownloaderUtils.acquireFeatureURLs(mavenCoords, repository.getRepositoryUrl());
@@ -293,6 +305,7 @@ public class ArtifactDownloader {
      * @return
      */
     protected boolean testConnection(MavenRepository repository) {
+        fine("entering testConnection with repo");
         configureProxyAuthentication();
         configureAuthentication(repository);
         try {
@@ -314,13 +327,15 @@ public class ArtifactDownloader {
         InputStream in = null;
         try {
             URL url = address.toURL();
+            logger.fine("url is: " + url.toString());
             try {
                 out = new BufferedOutputStream(new FileOutputStream(destination));
             } catch (FileNotFoundException e) {
                 throw ExceptionUtils.createByKey("ERROR_FAILED_TO_DOWNLOAD_FEATURE", ArtifactDownloaderUtils.getFileNameFromURL(address.toString()),
                                                  destination.toString());
             }
-            if (envMap.get("https.proxyUser") != null) {
+            logger.fine("env proxy host " + envMap.get("http.proxyHost"));
+            if (envMap.get("https.proxyHost") != null) {
                 Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress((String) envMap.get("https.proxyHost"), Integer.parseInt((String) envMap.get("https.proxyPort"))));
                 conn = url.openConnection(proxy);
             } else if (envMap.get("http.proxyUser") != null) {
@@ -395,6 +410,13 @@ public class ArtifactDownloader {
         @Override
         protected PasswordAuthentication getPasswordAuthentication() {
             return new PasswordAuthentication((String) envMap.get("https.proxyUser"), ((String) envMap.get("https.proxyPassword")).toCharArray());
+        }
+    }
+
+    private static class SystemPropertiesProxyHttpAuthenticator extends Authenticator {
+        @Override
+        protected PasswordAuthentication getPasswordAuthentication() {
+            return new PasswordAuthentication((String) envMap.get("http.proxyUser"), ((String) envMap.get("http.proxyPassword")).toCharArray());
         }
     }
 
