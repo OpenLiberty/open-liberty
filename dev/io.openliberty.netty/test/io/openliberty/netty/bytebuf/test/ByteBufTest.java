@@ -1,3 +1,4 @@
+package io.openliberty.netty.bytebuf.test;
 
 /*******************************************************************************
  * Copyright (c) 2021 IBM Corporation and others.
@@ -29,8 +30,10 @@ import test.common.SharedOutputManager;
  */
 public class ByteBufTest {
     /**  */
-    private static final ByteBuf HEAP = Unpooled.buffer(256);
-    private static final ByteBuf DIRECT = UnpooledByteBufAllocator.DEFAULT.directBuffer(256);
+    private static final int DATA_SIZE = 256;
+    /**  */
+    private static final ByteBuf HEAP = Unpooled.buffer(DATA_SIZE);
+    private static final ByteBuf DIRECT = UnpooledByteBufAllocator.DEFAULT.directBuffer(DATA_SIZE);
     private static final CompositeByteBuf COMP = Unpooled.compositeBuffer();
 
     private final SharedOutputManager outputMgr = SharedOutputManager.getInstance();
@@ -52,7 +55,7 @@ public class ByteBufTest {
         ByteBuf b = HEAP;
         if (b.hasArray()) {
             byte[] array = b.array();
-            assertEquals(array.length, 256);
+            assertEquals(array.length, DATA_SIZE);
         } else {
             fail("should have heap array");
         }
@@ -62,7 +65,7 @@ public class ByteBufTest {
     public void directBuffer() {
         ByteBuf b = DIRECT;
         if (!b.hasArray()) {
-            assertEquals(b.capacity(), 256);
+            assertEquals(b.capacity(), DATA_SIZE);
         } else {
             fail("should not have heap array");
         }
@@ -73,8 +76,8 @@ public class ByteBufTest {
         ByteBuf b1 = HEAP;
         ByteBuf b2 = DIRECT;
         COMP.addComponents(b1, b2);
-        COMP.writeZero(256);
-        assertEquals(COMP.capacity(), b1.capacity() + b2.capacity() - 256);
+        COMP.writeZero(DATA_SIZE);
+        assertEquals(COMP.capacity(), b1.capacity() + b2.capacity() - DATA_SIZE);
     }
 
 }
