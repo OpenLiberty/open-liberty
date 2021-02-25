@@ -138,7 +138,7 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
     /**
      * Same as the DatabaseHelper unless overridden via the heritage helperClass.
      */
-    transient DataStoreHelper dataStoreHelper;
+    public final DataStoreHelper dataStoreHelper;
 
     /**
      * Helps cope with differences between databases/JDBC drivers.
@@ -220,6 +220,13 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
 
     protected boolean loggedDbUowMessage = false; 
     protected boolean loggedImmplicitTransactionFound = false; 
+
+    /**
+     * Default to be used for transaction isolation level on new connections if neither the
+     * resource reference nor the server (or app-defined resource) configuration specifies one.
+     * Some of the database helpers and legacy data store helpers override this.
+     */
+    public int defaultIsolationLevel = Connection.TRANSACTION_READ_COMMITTED;
 
     /**
      * Indicates if the application server should free java.sql.Array instances
@@ -353,12 +360,13 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
         createDatabaseHelper(config.vendorProps instanceof PropertyService ? ((PropertyService) config.vendorProps).getFactoryPID() : PropertyService.FACTORY_PID);
 
         if (config.heritageHelperClass == null) {
-            dataStoreHelper = helper;
+            dataStoreHelper = null;
             supportsGetNetworkTimeout = supportsGetSchema = atLeastJDBCVersion(JDBCRuntimeVersion.VERSION_4_1);
         } else {
             dataStoreHelper = AccessController.doPrivileged((PrivilegedExceptionAction<DataStoreHelper>) () ->
                 (DataStoreHelper) jdbcDriverLoader.loadClass(config.heritageHelperClass).getConstructor().newInstance());
             DataStoreHelperMetaData metadata = dataStoreHelper.getMetaData();
+            defaultIsolationLevel = dataStoreHelper.getIsolationLevel(null);
             doesStatementCacheIsoLevel = metadata.doesStatementCacheIsoLevel();
             isCustomHelper = !config.heritageHelperClass.startsWith("com.ibm.websphere.rsadapter");
             supportsGetCatalog = metadata.supportsGetCatalog();
@@ -1334,7 +1342,10 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
      * utility used to gather metadata info and issue doConnectionSetup.
      */
     private void postGetConnectionHandling(Connection conn) throws SQLException {
-        dataStoreHelper.doConnectionSetup(isCustomHelper ? (Connection) WSJdbcTracer.getImpl(conn) : conn);
+        if (dataStoreHelper == null)
+            helper.doConnectionSetup(conn);
+        else
+            dataStoreHelper.doConnectionSetup(isCustomHelper ? (Connection) WSJdbcTracer.getImpl(conn) : conn);
 
         String[] sqlCommands = dsConfig.get().onConnect;
         if (sqlCommands != null && sqlCommands.length > 0)
@@ -1348,7 +1359,7 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
             helper.gatherAndDisplayMetaDataInfo(conn, this);
 
             // If a legacy data store helper is used, allow it to determine the unit-of-work detection support:
-            if (dataStoreHelper != helper)
+            if (dataStoreHelper != null)
                 supportsUOWDetection = dataStoreHelper.getMetaData().supportsUOWDetection();
 
             wasUsedToGetAConnection = true;
@@ -1488,13 +1499,6 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
             FFDCFilter.processException(sqlX, getClass().getName(), "1670", this);
             throw AdapterUtil.mapSQLException(sqlX, this);
         }
-    }
-
-    /**
-     * This method returns the legacy DataStoreHelper for the database/JDBC driver.
-     */
-    public final DataStoreHelper getDataStoreHelper() {
-        return dataStoreHelper;
     }
 
     /**

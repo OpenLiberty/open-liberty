@@ -25,7 +25,6 @@ import javax.resource.ResourceException;
 import com.ibm.ejs.cm.logger.TraceWriter;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.jdbc.heritage.AccessIntent;
 
 /**
  * Helper class for Derby.
@@ -45,6 +44,7 @@ public class DerbyHelper extends DatabaseHelper {
     DerbyHelper(WSManagedConnectionFactoryImpl mcf) {
         super(mcf);
 
+        mcf.defaultIsolationLevel = Connection.TRANSACTION_REPEATABLE_READ;
         mcf.supportsGetTypeMap = false;
     }
     
@@ -69,11 +69,6 @@ public class DerbyHelper extends DatabaseHelper {
         if (queryTimeout == null)
             queryTimeout = defaultQueryTimeout;
         stmt.setQueryTimeout(queryTimeout);
-    }
-
-    @Override
-    public int getIsolationLevel(AccessIntent unused) {
-        return Connection.TRANSACTION_REPEATABLE_READ;
     }
 
     /**

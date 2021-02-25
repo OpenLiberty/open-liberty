@@ -26,7 +26,6 @@ import com.ibm.ejs.cm.logger.TraceWriter;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
-import com.ibm.ws.jdbc.heritage.AccessIntent;
 import com.ibm.ws.rsadapter.AdapterUtil;
 
 /**
@@ -100,11 +99,6 @@ public class InformixJCCHelper extends InformixHelper {
         if (queryTimeout == null)
             queryTimeout = defaultQueryTimeout;
         stmt.setQueryTimeout(queryTimeout);
-    }
-
-    @Override
-    public int getIsolationLevel(AccessIntent unused) {
-        return Connection.TRANSACTION_REPEATABLE_READ;
     }
 
     /**

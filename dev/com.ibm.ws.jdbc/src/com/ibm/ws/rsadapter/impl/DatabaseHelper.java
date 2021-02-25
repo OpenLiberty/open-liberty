@@ -48,9 +48,6 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.jca.adapter.WSConnectionManager;
 import com.ibm.ws.jca.cm.AbstractConnectionFactoryService;
-import com.ibm.ws.jdbc.heritage.AccessIntent;
-import com.ibm.ws.jdbc.heritage.DataStoreHelper;
-import com.ibm.ws.jdbc.heritage.DataStoreHelperMetaData;
 import com.ibm.ws.resource.ResourceRefInfo;
 import com.ibm.ws.rsadapter.AdapterUtil;
 import com.ibm.ws.rsadapter.DSConfig;
@@ -64,7 +61,7 @@ import com.ibm.ws.rsadapter.jdbc.WSJdbcStatement;
  * Helper for generic relational databases, coded to the most common cases.
  * This class may be subclassed as needed for databases requiring different behavior.
  */
-public class DatabaseHelper implements DataStoreHelper {
+public class DatabaseHelper {
     // register the generic database trace needed for enabling database jdbc logging/tracing
     @SuppressWarnings("deprecation")
     private static final com.ibm.ejs.ras.TraceComponent databaseTc = com.ibm.ejs.ras.Tr.register("com.ibm.ws.database.logwriter", "WAS.database", null); 
@@ -219,11 +216,6 @@ public class DatabaseHelper implements DataStoreHelper {
         return false;
     }
 
-    @Override
-    public boolean doConnectionCleanupPerCloseConnection(Connection conn, boolean isCMP, Object unused) throws SQLException {
-        throw new UnsupportedOperationException(); // for legacy impl only
-    }
-
     /**
      * <p>This method configures a connection before first use. This method is invoked only
      * when a new connection to the database is created. It is not invoked when connections
@@ -241,11 +233,6 @@ public class DatabaseHelper implements DataStoreHelper {
      * @exception SQLException if connection setup cannot be completed successfully.
      */
     public void doConnectionSetup(Connection conn) throws SQLException {
-    }
-
-    @Override
-    public boolean doConnectionSetupPerGetConnection(Connection conn, boolean isCMP, Object props) throws SQLException {
-        throw new UnsupportedOperationException(); // for legacy impl only
     }
 
     /**
@@ -311,21 +298,6 @@ public class DatabaseHelper implements DataStoreHelper {
      */
     public boolean failoverOccurred(SQLException sqlX) {
         return false;
-    }
-
-    /**
-     * This method returns a default isolation level based on the database backend.
-     *
-     * @param unused
-     * @return default isolation level
-     */
-    public int getIsolationLevel(AccessIntent unused) {
-        return Connection.TRANSACTION_READ_COMMITTED;
-    }
-
-    @Override
-    public final DataStoreHelperMetaData getMetaData() {
-        throw new UnsupportedOperationException(); // for legacy impl only
     }
 
     /**

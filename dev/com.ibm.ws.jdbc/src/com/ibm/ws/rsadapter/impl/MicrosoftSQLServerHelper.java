@@ -26,7 +26,6 @@ import javax.resource.ResourceException;
 import com.ibm.ejs.cm.logger.TraceWriter;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.jdbc.heritage.AccessIntent;
 import com.ibm.ws.rsadapter.AdapterUtil;
 import com.ibm.ws.rsadapter.jdbc.WSJdbcTracer;
 
@@ -61,6 +60,7 @@ public class MicrosoftSQLServerHelper extends DatabaseHelper {
     MicrosoftSQLServerHelper(WSManagedConnectionFactoryImpl mcf) {
         super(mcf);
 
+        mcf.defaultIsolationLevel = Connection.TRANSACTION_REPEATABLE_READ;
         mcf.supportsGetTypeMap = false;
         mcf.supportsIsReadOnly = false;
 
@@ -139,11 +139,6 @@ public class MicrosoftSQLServerHelper extends DatabaseHelper {
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.exit(this, tc, "doStatementCleanup"); 
-    }
-
-    @Override
-    public int getIsolationLevel(AccessIntent unused) {
-        return Connection.TRANSACTION_REPEATABLE_READ;
     }
 
     /**

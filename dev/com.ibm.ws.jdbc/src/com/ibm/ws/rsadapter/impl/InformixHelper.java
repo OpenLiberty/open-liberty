@@ -25,7 +25,6 @@ import javax.resource.ResourceException;
 import com.ibm.ejs.cm.logger.TraceWriter;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.jdbc.heritage.AccessIntent;
 import com.ibm.ws.rsadapter.AdapterUtil;
 import com.ibm.ws.rsadapter.jdbc.WSJdbcStatement; 
 
@@ -45,6 +44,8 @@ public class InformixHelper extends DatabaseHelper {
      */
     InformixHelper(WSManagedConnectionFactoryImpl mcf) {
         super(mcf);
+
+        mcf.defaultIsolationLevel = Connection.TRANSACTION_REPEATABLE_READ;
     }
     
     @Override
@@ -72,11 +73,6 @@ public class InformixHelper extends DatabaseHelper {
         if (queryTimeout == null)
             queryTimeout = defaultQueryTimeout;
         stmt.setQueryTimeout(queryTimeout);
-    }
-
-    @Override
-    public int getIsolationLevel(AccessIntent unused) {
-        return Connection.TRANSACTION_REPEATABLE_READ;
     }
 
     @Override

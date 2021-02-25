@@ -44,6 +44,11 @@ public class HDConnection implements Connection {
      */
     public final AtomicInteger setupCount = new AtomicInteger();
 
+    /**
+     * Counts the number of times that doConnectionSetupPerTransaction is invoked for this connection.
+     */
+    public final AtomicInteger transactionCount = new AtomicInteger(-1);
+
     HDConnection(HDDataSource ds, Connection con) {
         this.ds = ds;
         this.derbycon = con;
@@ -270,6 +275,9 @@ public class HDConnection implements Connection {
 
         else if ("CALL TEST.GET_SETUP_COUNT()".equalsIgnoreCase(sql))
             return "VALUES (" + setupCount.get() + ")";
+
+        else if ("CALL TEST.GET_TRANSACTION_COUNT()".equalsIgnoreCase(sql))
+            return "VALUES (" + transactionCount.get() + ")";
 
         return sql;
     }

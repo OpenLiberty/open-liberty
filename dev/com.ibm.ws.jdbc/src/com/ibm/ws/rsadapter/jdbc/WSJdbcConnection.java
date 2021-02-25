@@ -506,10 +506,10 @@ public class WSJdbcConnection extends WSJdbcObject implements Connection {
                 Connection conn =
                     mcf.isCustomHelper ? (Connection) WSJdbcTracer.getImpl(connImpl) : connImpl;
 
-                boolean conCleanupPerformed = mcf.getDataStoreHelper().doConnectionCleanupPerCloseConnection(conn, false, null);
+                boolean conCleanupPerformed = mcf.dataStoreHelper.doConnectionCleanupPerCloseConnection(conn, false, null);
 
                 if (isTraceOn && tc.isDebugEnabled())
-                    Tr.debug(tc, "doConnectionCleanupPerCloseConnection", mcf.getDataStoreHelper(), managedConn, connImpl, conCleanupPerformed);
+                    Tr.debug(tc, "doConnectionCleanupPerCloseConnection", mcf.dataStoreHelper, managedConn, connImpl, conCleanupPerformed);
 
                 managedConn.perCloseCleanupNeeded = false;
             }

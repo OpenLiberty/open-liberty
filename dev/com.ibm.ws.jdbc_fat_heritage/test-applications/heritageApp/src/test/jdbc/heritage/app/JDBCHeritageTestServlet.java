@@ -114,10 +114,6 @@ public class JDBCHeritageTestServlet extends FATServlet {
         try {
             con = defaultDataSource.getConnection("testConnectionSetupUser", "PASSWORD");
 
-            result = con.prepareCall("VALUES(2)").executeQuery();
-            assertTrue(result.next());
-            result.getStatement().close();
-
             // Query the doConnectionSetupPerGetConnection count, expecting 2
             result = con.prepareCall("CALL TEST.GET_SETUP_COUNT()").executeQuery();
             assertTrue(result.next());
@@ -166,6 +162,80 @@ public class JDBCHeritageTestServlet extends FATServlet {
         result.getStatement().close();
 
         con.close();
+    }
+
+    /**
+     * Verifies that doConnectionCleanupPerTransaction is invoked exactly once for each global transaction
+     * or Local Transaction Containment (which is not actually a transaction).
+     */
+    @Test
+    public void testConnectionSetupPerTransaction() throws Exception {
+        // Use in Local Transaction Containment:
+        try (Connection con = defaultDataSource.getConnection("testConnectionSetupPerTxUser", "PASSWORD")) {
+
+            // Query the doConnectionSetupPerTransaction count, expecting 1
+            ResultSet result = con.prepareCall("CALL TEST.GET_TRANSACTION_COUNT()").executeQuery();
+            assertTrue(result.next());
+            assertEquals(1, result.getInt(1));
+            result.getStatement().setPoolable(false); // statement caching interferes with test replacing sql
+            result.getStatement().close();
+        }
+
+        Connection con;
+        ResultSet result;
+
+        // Use in global transaction:
+        tx.begin();
+        try {
+            con = defaultDataSource.getConnection("testConnectionSetupPerTxUser", "PASSWORD");
+
+            // Query the doConnectionSetupPerTransaction count, expecting 2
+            result = con.prepareCall("CALL TEST.GET_TRANSACTION_COUNT()").executeQuery();
+            assertTrue(result.next());
+            assertEquals(2, result.getInt(1));
+            result.getStatement().setPoolable(false); // statement caching interferes with test replacing sql
+            result.getStatement().close();
+
+            Connection con2 = defaultDataSource.getConnection("testConnectionSetupPerTxUser", "PASSWORD");
+
+            // Query the doConnectionSetupPerTransaction count, still expecting 2
+            result = con.prepareCall("CALL TEST.GET_TRANSACTION_COUNT()").executeQuery();
+            assertTrue(result.next());
+            assertEquals(2, result.getInt(1));
+            result.getStatement().setPoolable(false); // statement caching interferes with test replacing sql
+            result.getStatement().close();
+
+            con.close();
+            con2.close();
+
+            con = defaultDataSource.getConnection("testConnectionSetupPerTxUser", "PASSWORD");
+
+            // Query the doConnectionSetupPerTransaction count, still expecting 2 because it's the same transaction
+            result = con.prepareCall("CALL TEST.GET_TRANSACTION_COUNT()").executeQuery();
+            assertTrue(result.next());
+            assertEquals(2, result.getInt(1));
+            result.getStatement().setPoolable(false); // statement caching interferes with test replacing sql
+            result.getStatement().close();
+        } finally {
+            tx.commit();
+        }
+
+        // Use again in global transaction:
+        tx.begin();
+        try {
+            con = defaultDataSource.getConnection("testConnectionSetupPerTxUser", "PASSWORD");
+
+            // Query the doConnectionSetupPerTransaction count, expecting 3
+            result = con.prepareCall("CALL TEST.GET_TRANSACTION_COUNT()").executeQuery();
+            assertTrue(result.next());
+            assertEquals(3, result.getInt(1));
+            result.getStatement().setPoolable(false); // statement caching interferes with test replacing sql
+            result.getStatement().close();
+
+            con.close();
+        } finally {
+            tx.commit();
+        }
     }
 
     /**
