@@ -8,11 +8,20 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-apply from: '../wlp-gradle/subprojects/fat.gradle'
+package com.ibm.ws.cdi.api.fat.apps.alterablecontext.extension;
 
-addRequiredLibraries.dependsOn addJakartaTransformer
+import java.util.LinkedList;
+import java.util.List;
 
-dependencies {
-  requiredLibs 'commons-logging:commons-logging:1.1.3', 'commons-codec:commons-codec:1.6'
+public class DirtySingleton {
+    private static List<String> strings = new LinkedList<String>();
+
+    public static List<String> getStrings() {
+        return strings;
+
+    }
+
+    public static void addString(String s) {
+        strings.add(s);
+    }
 }
-

@@ -8,11 +8,11 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-apply from: '../wlp-gradle/subprojects/fat.gradle'
+package com.ibm.ws.cdi.api.fat.apps.current.extension;
 
-addRequiredLibraries.dependsOn addJakartaTransformer
+/**
+ *
+ */
+public class CDICurrent {
 
-dependencies {
-  requiredLibs 'commons-logging:commons-logging:1.1.3', 'commons-codec:commons-codec:1.6'
 }
-
