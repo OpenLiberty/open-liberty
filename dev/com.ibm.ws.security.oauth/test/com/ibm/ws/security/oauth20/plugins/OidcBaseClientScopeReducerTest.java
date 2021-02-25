@@ -46,7 +46,7 @@ public class OidcBaseClientScopeReducerTest extends AbstractOidcRegistrationBase
 
     @Test
     public void testNullScope() {
-        OidcBaseClient sampleClient = getSampleOidcBaseClient();
+        OidcBaseClient sampleClient = clientRegistrationHelper.getSampleOidcBaseClient();
         sampleClient.setScope(null);
 
         OidcBaseClientScopeReducer reducer = new OidcBaseClientScopeReducer(sampleClient);
@@ -56,7 +56,7 @@ public class OidcBaseClientScopeReducerTest extends AbstractOidcRegistrationBase
 
     @Test
     public void testBlankScope() {
-        OidcBaseClient sampleClient = getSampleOidcBaseClient();
+        OidcBaseClient sampleClient = clientRegistrationHelper.getSampleOidcBaseClient();
         sampleClient.setScope("");
 
         OidcBaseClientScopeReducer reducer = new OidcBaseClientScopeReducer(sampleClient);
@@ -66,7 +66,7 @@ public class OidcBaseClientScopeReducerTest extends AbstractOidcRegistrationBase
 
     @Test
     public void testNullPreAuthorizedScope() {
-        OidcBaseClient sampleClient = getSampleOidcBaseClient();
+        OidcBaseClient sampleClient = clientRegistrationHelper.getSampleOidcBaseClient();
         sampleClient.setPreAuthorizedScope(null);
 
         OidcBaseClientScopeReducer reducer = new OidcBaseClientScopeReducer(sampleClient);
@@ -77,7 +77,7 @@ public class OidcBaseClientScopeReducerTest extends AbstractOidcRegistrationBase
 
     @Test
     public void testBlankPreAuthorizedScope() {
-        OidcBaseClient sampleClient = getSampleOidcBaseClient();
+        OidcBaseClient sampleClient = clientRegistrationHelper.getSampleOidcBaseClient();
         sampleClient.setPreAuthorizedScope("");
 
         OidcBaseClientScopeReducer reducer = new OidcBaseClientScopeReducer(sampleClient);
@@ -88,7 +88,7 @@ public class OidcBaseClientScopeReducerTest extends AbstractOidcRegistrationBase
 
     @Test
     public void testClientScopeWithLeadingTrailingSpaces() {
-        OidcBaseClient sampleClient = getSampleOidcBaseClient();
+        OidcBaseClient sampleClient = clientRegistrationHelper.getSampleOidcBaseClient();
         sampleClient.setScope(" " + CLIENT_SCOPES + " ");
 
         OidcBaseClientScopeReducer reducer = new OidcBaseClientScopeReducer(sampleClient);
@@ -102,7 +102,7 @@ public class OidcBaseClientScopeReducerTest extends AbstractOidcRegistrationBase
 
     @Test
     public void testValidRequestedScope() {
-        OidcBaseClient sampleClient = getSampleOidcBaseClient();
+        OidcBaseClient sampleClient = clientRegistrationHelper.getSampleOidcBaseClient();
         sampleClient.setScope(CLIENT_SCOPES);
 
         OidcBaseClientScopeReducer reducer = new OidcBaseClientScopeReducer(sampleClient);
@@ -116,7 +116,7 @@ public class OidcBaseClientScopeReducerTest extends AbstractOidcRegistrationBase
 
     @Test
     public void testClientPreAuthorizedScopeWithLeadingTrailingSpaces() {
-        OidcBaseClient sampleClient = getSampleOidcBaseClient();
+        OidcBaseClient sampleClient = clientRegistrationHelper.getSampleOidcBaseClient();
         sampleClient.setPreAuthorizedScope(" " + CLIENT_PREAUTHORIZED_SCOPE + " ");
 
         OidcBaseClientScopeReducer reducer = new OidcBaseClientScopeReducer(sampleClient);
@@ -127,7 +127,7 @@ public class OidcBaseClientScopeReducerTest extends AbstractOidcRegistrationBase
 
     @Test
     public void testValidRequestedPreAuthorizedScope() {
-        OidcBaseClient sampleClient = getSampleOidcBaseClient();
+        OidcBaseClient sampleClient = clientRegistrationHelper.getSampleOidcBaseClient();
         sampleClient.setPreAuthorizedScope(CLIENT_PREAUTHORIZED_SCOPE);
 
         OidcBaseClientScopeReducer reducer = new OidcBaseClientScopeReducer(sampleClient);
@@ -138,7 +138,7 @@ public class OidcBaseClientScopeReducerTest extends AbstractOidcRegistrationBase
 
     @Test
     public void testInvalidScope() {
-        OidcBaseClient sampleClient = getSampleOidcBaseClient();
+        OidcBaseClient sampleClient = clientRegistrationHelper.getSampleOidcBaseClient();
         sampleClient.setScope(CLIENT_SCOPES);
 
         OidcBaseClientScopeReducer reducer = new OidcBaseClientScopeReducer(sampleClient);
@@ -149,7 +149,7 @@ public class OidcBaseClientScopeReducerTest extends AbstractOidcRegistrationBase
 
     @Test
     public void testInvalidPreAuthorizedScope() {
-        OidcBaseClient sampleClient = getSampleOidcBaseClient();
+        OidcBaseClient sampleClient = clientRegistrationHelper.getSampleOidcBaseClient();
         sampleClient.setPreAuthorizedScope(CLIENT_PREAUTHORIZED_SCOPE);
 
         OidcBaseClientScopeReducer reducer = new OidcBaseClientScopeReducer(sampleClient);
@@ -160,7 +160,7 @@ public class OidcBaseClientScopeReducerTest extends AbstractOidcRegistrationBase
 
     @Test
     public void testCaseSensitiveScope() {
-        OidcBaseClient sampleClient = getSampleOidcBaseClient();
+        OidcBaseClient sampleClient = clientRegistrationHelper.getSampleOidcBaseClient();
         sampleClient.setScope(CLIENT_SCOPES);
 
         OidcBaseClientScopeReducer reducer = new OidcBaseClientScopeReducer(sampleClient);
@@ -171,7 +171,7 @@ public class OidcBaseClientScopeReducerTest extends AbstractOidcRegistrationBase
 
     @Test
     public void testCaseSensitivePreAuthorizedScope() {
-        OidcBaseClient sampleClient = getSampleOidcBaseClient();
+        OidcBaseClient sampleClient = clientRegistrationHelper.getSampleOidcBaseClient();
         sampleClient.setPreAuthorizedScope(CLIENT_SCOPES);
 
         OidcBaseClientScopeReducer reducer = new OidcBaseClientScopeReducer(sampleClient);

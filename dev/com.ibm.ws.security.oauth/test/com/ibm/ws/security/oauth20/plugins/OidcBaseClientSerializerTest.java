@@ -47,14 +47,14 @@ public class OidcBaseClientSerializerTest extends AbstractOidcRegistrationBaseTe
 
         try {
             OidcBaseClientSerializer oidcSerializer = new OidcBaseClientSerializer();
-            OidcBaseClient testOidcBaseClient = getSampleOidcBaseClient();
+            OidcBaseClient testOidcBaseClient = clientRegistrationHelper.getSampleOidcBaseClient();
 
             //Ensure clientSecret property has some value that is not '*'
             assertTrue(testOidcBaseClient.getClientSecret() != null
                        && !testOidcBaseClient.getClientSecret().isEmpty()
                        && !testOidcBaseClient.getClientSecret().equals(maskedValue));
 
-            JsonElement jsonElement = oidcSerializer.serialize(getSampleOidcBaseClient(), null, null);
+            JsonElement jsonElement = oidcSerializer.serialize(clientRegistrationHelper.getSampleOidcBaseClient(), null, null);
 
             String serializedClientSecret = jsonElement.getAsJsonObject().get(FIELD_CLIENT_SECRET).getAsString();
 

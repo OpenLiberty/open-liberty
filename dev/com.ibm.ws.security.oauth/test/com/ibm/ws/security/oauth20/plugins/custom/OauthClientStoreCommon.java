@@ -29,6 +29,7 @@ import org.jmock.integration.junit4.JUnit4Mockery;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
@@ -68,16 +69,21 @@ public class OauthClientStoreCommon extends AbstractOidcRegistrationBaseTest {
 
     private static String traceString = "com.ibm.ws.security.oauth20.plugins.custom.*";
 
-    private static SharedOutputManager outputMgr = SharedOutputManager.getInstance().trace(traceString + "=all");
+    private static SharedOutputManager outputMgr = SharedOutputManager.getInstance();
 
     @Rule
     public TestRule managerRule = outputMgr;
 
+    @BeforeClass
+    public static void setUpBeforeClass() {
+        outputMgr.trace(traceString + "=all");
+    }
+
     @Before
     public void setUp() throws Exception {
 
-        op1Clients = AbstractOidcRegistrationBaseTest.getsampleOidcBaseClients(2, componentId);
-        op2Client = AbstractOidcRegistrationBaseTest.getSampleOidcBaseClient(PROVIDER2);
+        op1Clients = clientRegistrationHelper.getsampleOidcBaseClients(2, componentId);
+        op2Client = clientRegistrationHelper.getSampleOidcBaseClient(PROVIDER2);
         op1Client0 = op1Clients.get(0);
         op1Client1 = op1Clients.get(1);
         op1Client0AsJson = getJsonWithExtraProperties(op1Client0);
@@ -150,7 +156,7 @@ public class OauthClientStoreCommon extends AbstractOidcRegistrationBaseTest {
         String clientSecret = client.getClientSecret();
 
         if (clientSecret != null && !clientSecret.isEmpty()) {
-            if (isHash) {
+            if (clientRegistrationHelper.isHash()) {
                 clientSecret = HashSecretUtils.hashSecret(client.getClientSecret(), client.getClientId(), true, clientMetadataAsJson);
             } else {
                 clientSecret = PasswordUtil.passwordEncode(clientSecret);
@@ -160,7 +166,7 @@ public class OauthClientStoreCommon extends AbstractOidcRegistrationBaseTest {
         if (clientMetadataAsJson != null && clientMetadataAsJson.has(OAuth20Constants.CLIENT_SECRET)) {
             String metaClientSecret = clientMetadataAsJson.get(OAuth20Constants.CLIENT_SECRET).getAsString();
             if (metaClientSecret != null && !metaClientSecret.isEmpty()) {
-                if (isHash) {
+                if (clientRegistrationHelper.isHash()) {
                     HashSecretUtils.hashClientMetaTypeSecret(clientMetadataAsJson, client.getClientId(), true);
                 } else {
                     clientMetadataAsJson.addProperty(OAuth20Constants.CLIENT_SECRET, PasswordUtil.passwordEncode(metaClientSecret));
@@ -192,7 +198,7 @@ public class OauthClientStoreCommon extends AbstractOidcRegistrationBaseTest {
         OidcBaseClient retrievedClient = oauthClientStore.get(clientId);
 
         assertNotNull("The client must be found in the store.", retrievedClient);
-        AbstractOidcRegistrationBaseTest.assertEqualsOidcBaseClients(op1Client0, retrievedClient);
+        clientRegistrationHelper.assertEqualsOidcBaseClients(op1Client0, retrievedClient);
     }
 
     @Test
@@ -212,7 +218,7 @@ public class OauthClientStoreCommon extends AbstractOidcRegistrationBaseTest {
     private JsonObject getJsonWithExtraProperties(OidcBaseClient client) {
         JsonObject clientAsJson = getJsonWithComponetIdAndEnabledProperties(client);
         String secret = null;
-        if (isHash) {
+        if (clientRegistrationHelper.isHash()) {
             secret = HashSecretUtils.hashSecret(client.getClientSecret(), client.getClientId(), true, clientAsJson);
         } else {
             secret = PasswordUtil.passwordEncode(client.getClientSecret());
@@ -447,7 +453,7 @@ public class OauthClientStoreCommon extends AbstractOidcRegistrationBaseTest {
             }
         });
 
-        AbstractOidcRegistrationBaseTest.assertEqualsOidcBaseClients(op2Client, oauthClientStore.put(op2Client));
+        clientRegistrationHelper.assertEqualsOidcBaseClients(op2Client, oauthClientStore.put(op2Client));
     }
 
     @Test
@@ -483,7 +489,7 @@ public class OauthClientStoreCommon extends AbstractOidcRegistrationBaseTest {
 
         OidcBaseClient newOp2Client = oauthClientStore.update(op2Client);
 
-        AbstractOidcRegistrationBaseTest.assertEqualsOidcBaseClients(op2Client, newOp2Client);
+        clientRegistrationHelper.assertEqualsOidcBaseClients(op2Client, newOp2Client);
     }
 
     @Test
