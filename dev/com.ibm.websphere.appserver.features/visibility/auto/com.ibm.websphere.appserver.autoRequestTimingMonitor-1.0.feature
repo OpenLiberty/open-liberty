@@ -1,5 +1,5 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
-symbolicName=com.ibm.websphere.appserver.autoTimingMonitor-1.0
+symbolicName=com.ibm.websphere.appserver.autoRequestTimingMonitor-1.0
 IBM-App-ForceRestart: uninstall
 Manifest-Version: 1.0
 IBM-Provision-Capability: osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=com.ibm.websphere.appserver.monitor-1.0))", \
