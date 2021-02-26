@@ -23,6 +23,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.osgi.framework.BundleContext;
@@ -41,6 +42,7 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.LibertyProcess;
 import com.ibm.ws.kernel.launch.service.ForcedServerStop;
 import com.ibm.ws.runtime.update.RuntimeUpdateListener;
@@ -463,12 +465,22 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
             quiesceListenerFutures.add(f);
         }
 
+        @FFDCIgnore(TimeoutException.class)
         boolean isComplete(long startTime) {
             // We will wait 30 seconds past the start time for tasks to complete
             long endTime = startTime + 30000;
+
             for (Future<?> f : quiesceListenerFutures) {
-                if (!f.isDone() && (System.currentTimeMillis() > endTime))
+                long waitTime = endTime - System.currentTimeMillis();
+                if (waitTime < 0)
                     return false;
+                try {
+                    f.get(waitTime, TimeUnit.MILLISECONDS);
+                } catch (TimeoutException e) {
+                    return false;
+                } catch (Exception e) {
+                    return false;
+                }
             }
             return true;
         }
