@@ -56,6 +56,7 @@ Import-Package: \
             jakarta.json.stream;resolution:=optional, \
             javax.management;resolution:=optional, \
             javax.management.openmbean;resolution:=optional, \
+            jakarta.mail.internet;resolution:=optional, \
             javax.naming;resolution:=optional, \
             jakarta.persistence;jpa="3.0";consumer="persistenceService";resolution:=optional, \
             jakarta.persistence.criteria;jpa="3.0";consumer="persistenceService", \
