@@ -36,9 +36,8 @@ public class FATSuite {
         ExternalTestServiceDockerClientStrategy.setupTestcontainers();
     }
 
-    // TODO replace this container with the official oracle-xe container if/when it is available without a license
     @ClassRule
-    public static OracleContainer oracle = new OracleContainer("kyleaure/oracle-18.4.0-xe-prebuilt:1.0")
+    public static OracleContainer oracle = new OracleContainer("kyleaure/oracle-18.4.0-xe-prebuilt:2.0")
                     .withExposedPorts(1521, 5500, 8080) // need to manually expose ports due to regression in 1.14.0
                     .withLogConsumer(new SimpleLogConsumer(FATSuite.class, "Oracle"));
 
