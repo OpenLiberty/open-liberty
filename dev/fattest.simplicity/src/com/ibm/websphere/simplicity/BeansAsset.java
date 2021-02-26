@@ -43,7 +43,8 @@ import org.jboss.shrinkwrap.api.asset.Asset;
  * </code>
  * </pre>
  *
- * TODO make use of the ShrinkWrap Descriptors lib instead
+ * In future it would be better to make use of the ShrinkWrap Descriptors lib instead
+ * https://github.com/OpenLiberty/open-liberty/issues/16057
  */
 public class BeansAsset implements Asset {
 

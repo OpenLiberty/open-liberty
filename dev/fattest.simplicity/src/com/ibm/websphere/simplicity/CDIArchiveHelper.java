@@ -21,7 +21,8 @@ import com.ibm.websphere.simplicity.BeansAsset.Mode;
 import com.ibm.websphere.simplicity.BeansAsset.Version;
 
 /**
- * TODO make use of the ShrinkWrap Descriptors lib
+ * In future it would be better to make use of the ShrinkWrap Descriptors lib instead of the custom BeansAsset
+ * https://github.com/OpenLiberty/open-liberty/issues/16057
  */
 public class CDIArchiveHelper {
 
