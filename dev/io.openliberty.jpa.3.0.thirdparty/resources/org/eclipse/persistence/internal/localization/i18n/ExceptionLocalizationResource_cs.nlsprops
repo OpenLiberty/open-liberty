@@ -1,0 +1,439 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/internal/localization/i18n/ExceptionLocalizationResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+CRITERIA_NON_LITERAL_PASSED_TO_IN=Funkce "in(expression<?>... values)" byla vyvol\u00e1na s typem v\u00fdrazu: {0}, kter\u00fd nen\u00ed ani liter\u00e1l, ani parametr. Tato akce nen\u00ed podporov\u00e1na.
+
+CRITERIA_NO_ROOT_FOR_COMPOUND_QUERY=Pokus vytvo\u0159it dotaz na krit\u00e9ria bez ko\u0159ene.
+
+INCORRECT_PARAMETER_TYPE=Parametr s indexem : {0} nebyl typu: {1}.
+
+MULTIPLE_SELECTIONS_PASSED_TO_QUERY_WITH_PRIMITIVE_RESULT=Funkce "multiSelect" byla vyvol\u00e1na v dotazu CriteriaQuery s primitivn\u00edm typem v\u00fdsledku. Bu\u010f je n\u00e1vratov\u00fd typ nespr\u00e1vn\u00fd, nebo byste m\u011bli pou\u017e\u00edt "select".
+
+NO_PARAMETER_WITH_INDEX=S indexem: {0} nebyl v dotazu: {1} nalezen \u017e\u00e1dn\u00fd parametr.
+
+NO_PARAMETER_WITH_NAME=S n\u00e1zvem: {0} nebyl v dotazu: {1} nalezen \u017e\u00e1dn\u00fd parametr.
+
+NO_VALUE_BOUND=K parametru s n\u00e1zvem: {0} nen\u00ed sv\u00e1z\u00e1na \u017e\u00e1dn\u00e1 hodnota.
+
+NULL_PARAMETER_PASSED_TO_SET_PARAMETER=Do funkce "setParameter" byl p\u0159ed\u00e1n parametr s hodnotou null. Parametry nelze indexovat pomoc\u00ed hodnoty "null".
+
+PARAMETER_NILL_NOT_FOUND=Do funkce getParameterValue() byl p\u0159ed\u00e1n parametr null.
+
+add_attribute_key_was_null=P\u0159i zad\u00e1v\u00e1n\u00ed t\u0159\u00eddy AttributeGroup pro podt\u0159\u00eddu typu atributu nesm\u00ed m\u00edt parametr typu hodnotu null.
+
+argument_collection_was_null=Kolekce argument\u016f m\u011bla hodnotu null.
+
+argument_keyed_named_query_with_JPA=Existuje v\u00edce dotaz\u016f s n\u00e1zvem: {0}, ale pou\u017e\u00edv\u00e1te-li EntityManagerFactory.addNamedQuery(), mus\u00ed b\u00fdt n\u00e1zvy jedine\u010dn\u00e9.
+
+attribute_is_not_map_with_managed_key=Do t\u0159\u00eddy EntityGroup nelze p\u0159idat d\u00edl\u010d\u00ed graf kl\u00ed\u010de, proto\u017ee atribut: {0} ve t\u0159\u00edd\u011b: {1} nen\u00ed mapou se spravovan\u00fdm typem kl\u00ed\u010de.
+
+bean_definition_vector_arguments_are_of_different_sizes=Argumenty vektoru definice objektu typu bean maj\u00ed r\u016fzn\u00e9 velikosti.
+
+bean_not_found_on_database=Objekt typu bean {0} nebyl v datab\u00e1zi nalezen.
+
+bean_validation_constraint_violated=P\u0159i automatick\u00e9m ov\u011b\u0159ov\u00e1n\u00ed Bean Validation bylo poru\u0161eno minim\u00e1ln\u011b jedno omezen\u00ed ov\u011b\u0159en\u00ed Bean Validation u ud\u00e1losti zp\u011btn\u00e9ho vol\u00e1n\u00ed: {0} pro t\u0159\u00eddu: {1}. Podrobnosti viz vestav\u011bn\u00e9 p\u0159ekro\u010den\u00ed omezen\u00ed.
+
+cache_descriptor_has_no_cmppolicy_set_cannot_create_primary_key=T\u0159\u00edda [{0}] s deskriptorem [{1}] nem\u00e1 nastavenou z\u00e1sadu CMPPolicy. Nelze tedy vytvo\u0159it instanci prim\u00e1rn\u00edho kl\u00ed\u010de pro ID typu [{2}].
+
+cache_impl_class_has_no_descriptor_is_not_a_persistent_type=T\u0159\u00edda [{0}] nen\u00ed trval\u00e9ho typu - nem\u00e1 \u017e\u00e1dn\u00fd p\u0159idru\u017een\u00fd deskriptor.
+
+cache_impl_object_descriptor_has_no_cmppolicy_set=Objekt [{0}] s deskriptorem [{1}] nem\u00e1 nastavenou \u017e\u00e1dnou z\u00e1sadu CMPPolicy, tak\u017ee nelze vr\u00e1tit ID.
+
+cache_impl_object_has_no_descriptor_is_not_a_persistent_type=Objekt [{0}] nen\u00ed trval\u00e9ho typu - nem\u00e1 p\u0159idru\u017een\u00fd \u017e\u00e1dn\u00fd deskriptor.
+
+called_get_entity_manager_from_non_jta=Funkce getEntityManager() se vol\u00e1 z tov\u00e1rny EntityManagerFactory bez povolen\u00e9ho JTA. Ujist\u011bte se, \u017ee je u va\u0161\u00ed tov\u00e1rny EntityManagerFactory \u0159\u00e1dn\u011b nastaveno JTA.
+
+can_not_create_directory=Nelze vytvo\u0159it adres\u00e1\u0159 {0}.
+
+can_not_create_file=Nelze vytvo\u0159it soubor {0}.
+
+can_not_move_directory=Adres\u00e1\u0159e nelze p\u0159esunout.
+
+cannot_get_from_non_correlated_query=Funkce getCorrelationParent() byla vol\u00e1na z klauzule from, kter\u00e1 nebyla obdr\u017eena prost\u0159ednictv\u00edm korelace.
+
+cannot_get_unfetched_attribute=Nelze z\u00edskat nena\u010dten\u00fd atribut [{1}] z odpojen\u00e9ho objektu {0}.
+
+cannot_merge_removed_entity=Nelze slou\u010dit entitu, kter\u00e1 byla odebr\u00e1na: {0}
+
+cannot_read_through_txn_for_unsynced_pc=Vlastnost byla nastavena tak, aby spojila tento kontext perzistence s aktu\u00e1ln\u011b aktivn\u00ed transakc\u00ed, ale toto nen\u00ed SYNCHRONIZOVAN\u00dd kontext perzistence.
+
+cannot_remove_detatched_entity=Entita mus\u00ed b\u00fdt spravov\u00e1na tak, aby volala odebr\u00e1n\u00ed: {0}, zkuste slou\u010dit samostatn\u00e9 objekty a znovu zopakujte odebr\u00e1n\u00ed.
+
+cannot_remove_removed_entity=Entita je ji\u017e odebr\u00e1na: {0}
+
+cannot_update_entity_fetch-group=Pokus p\u0159idat nebo odebrat atribut [{1}] z {0} - objekt EntityFetchGroup je nem\u011bnn\u00fd.
+
+cannot_use_transaction_on_unsynced_pc=Nelze volat metody vy\u017eaduj\u00edc\u00ed transakci, pokud se spr\u00e1vce EntityManager nespojil s aktu\u00e1ln\u00ed transakc\u00ed.
+
+cant_lock_not_managed_object=Entita mus\u00ed b\u00fdt spravovan\u00e1 tak, aby volala z\u00e1mek: {0}, zkuste slou\u010dit samostatn\u00e9 objekty a zopakujte zam\u010den\u00ed znovu.
+
+cant_persist_detatched_object=Samostatn\u00fd objekt nelze nastavit jako TRVAL\u00dd. Pravd\u011bpodobn\u011b je duplicitn\u00ed prim\u00e1rn\u00ed kl\u00ed\u010d: {0}.
+
+cant_refresh_not_managed_object=Nelze aktualizovat nespravovan\u00fd objekt: {0}.
+
+create_insertion_failed=Vytvo\u0159en\u00ed vlo\u017een\u00ed se nezda\u0159ilo.
+
+criteria_no_constructor_found=P\u0159i kontrole konstruktoru ve t\u0159\u00edd\u011b: {0} pomoc\u00ed argument\u016f ve tvaru typ\u016f krit\u00e9ri\u00ed v\u00fdb\u011bru do\u0161lo k v\u00fdjimce. Pokud tento dotaz CriteriaQuery nem\u00e1 b\u00fdt dotazem konstruktoru, ov\u011b\u0159te, \u017ee v\u00fdb\u011br souhlas\u00ed s n\u00e1vratov\u00fdm typem.
+
+directory_not_exist=Adres\u00e1\u0159 {0} neexistuje.
+
+ejb30-default-for-unknown-property=Nelze vr\u00e1tit v\u00fdchoz\u00ed hodnotu nezn\u00e1m\u00e9 vlastnosti {0}.
+
+ejb30-illegal-property-value=Vlastnost {0} m\u00e1 nepovolenou hodnotu {1}.
+
+ejb30-incorrect-parameter-type=V \u0159et\u011bzci dotazu {3} jste se pokusili nastavit hodnotu typu {1} do parametru {0}, jeho\u017e o\u010dek\u00e1van\u00fdm typem je {2}.
+
+ejb30-wrong-argument-index=Pokusili jste se nastavit parametr na pozici {0}, kter\u00e1 v tomto \u0159et\u011bzci dotazu {1} neexistuje.
+
+ejb30-wrong-argument-name=Pokusili jste se nastavit hodnotu parametru pomoc\u00ed n\u00e1zvu {0}, kter\u00fd v \u0159et\u011bzci dotazu {1} neexistuje.
+
+ejb30-wrong-lock_called_without_version_locking-index=Neplatn\u00fd typ re\u017eimu uzamyk\u00e1n\u00ed je zapnut\u00fd pro entitu, kter\u00e1 nem\u00e1 index zamyk\u00e1n\u00ed verz\u00ed. Pokud neexistuje \u017e\u00e1dn\u00fd index zamyk\u00e1n\u00ed verz\u00ed, lze pou\u017e\u00edvat pouze re\u017eim z\u00e1mku typu PESIMISTICK\u00dd.
+
+ejb30-wrong-query-hint-value=Dotaz {0}, pokyn k dotazu {1} m\u00e1 neplatnou hodnotu {2}.
+
+ejb30-wrong-type-for-query-hint=Dotaz {0}, pokyn k dotazu {1} je pro tento typ dotazu neplatn\u00fd.
+
+entity_manager_properties_conflict_default_connector_vs_external_transaction_controller=Konflikt vlastnost\u00ed spr\u00e1vce EntityManager: javax.persistence.driver anebo javax.persistence.url vy\u017eaduj\u00ed konektor DefaultConnector, ale jednotka perzistence pou\u017e\u00edv\u00e1 extern\u00ed transak\u010dn\u00ed \u0159adi\u010d, a proto vy\u017eaduje konektor JNDIConnector.
+
+entity_manager_properties_conflict_default_connector_vs_jndi_connector=Konflikt vlastnost\u00ed spr\u00e1vce EntityManager: javax.persistence.driver anebo javax.persistence.url vy\u017eaduje konektor DefaultConnector, ale javax.persistence.jtaDataSource anebo javax.persistence.nonjtaDataSource vy\u017eaduje konektor JNDIConnector.
+
+entity_no_longer_exists_in_db=Entita ji\u017e v datab\u00e1zi neexistuje: {0}.
+
+error_executing_jar_process=Chyba p\u0159i prov\u00e1d\u011bn\u00ed zpracov\u00e1n\u00ed souboru JAR
+
+error_invoking_deploy=Chyba p\u0159i vyvol\u00e1n\u00ed implementace
+
+error_loading_resources=Chyba p\u0159i na\u010d\u00edt\u00e1n\u00ed prost\u0159edk\u016f {0} z cesty ke t\u0159\u00edd\u011b
+
+error_marshalling_arguments=Chyba p\u0159i za\u0159azov\u00e1n\u00ed argument\u016f
+
+error_marshalling_return=Chyba p\u0159i za\u0159azov\u00e1n\u00ed n\u00e1vrat\u016f
+
+error_parsing_resources=Chyba p\u0159i anal\u00fdze prost\u0159edk\u016f {0}
+
+error_reading_jar_file=Chyba p\u0159i \u010dten\u00ed souboru JAR: {0} polo\u017eka: {1}
+
+error_unmarshalling_arguments=Chyba p\u0159i vy\u0159azov\u00e1n\u00ed argument\u016f
+
+error_unmarshalling_return=Chyba p\u0159i vy\u0159azov\u00e1n\u00ed n\u00e1vrat\u016f
+
+file_exists=Soubor {0} ji\u017e existuje.
+
+file_not_exist=Soubor {0} neexistuje.
+
+finder_query_failed=Dotaz vyhled\u00e1va\u010de se nezda\u0159il:
+
+getpersistenceunitutil_called_on_closed_emf=Funkce getPersistenceUnitUtil() byla vol\u00e1na pro zav\u0159enou tov\u00e1rnu EntityManagerFactory.
+
+illegal_state_while_closing=Pokus zav\u0159\u00edt spr\u00e1vce EntityManager se stavem transakce jin\u00fdm ne\u017e NO_TRANSACTION, COMMITTED nebo ROLLEDBACK.
+
+incorrect_hint=Nespr\u00e1vn\u00fd typ objektu pro pokyn: {0}.
+
+incorrect_query_for_get_result_collection=V tomto dotazu nem\u016f\u017eete volat getResultCollection(). Jde o nespr\u00e1vn\u00fd typ dotazu.
+
+incorrect_query_for_get_result_list=V tomto dotazu nem\u016f\u017eete volat getResultList(). Jde o nespr\u00e1vn\u00fd typ dotazu.
+
+incorrect_query_for_get_single_result=V tomto dotazu nem\u016f\u017eete volat getSingleResult(). Jde o nespr\u00e1vn\u00fd typ dotazu.
+
+incorrect_spq_query_for_execute=V tomto dotazu ulo\u017een\u00e9 procedury nem\u016f\u017eete volat execute(). Jde o nespr\u00e1vn\u00fd typ dotazu.
+
+incorrect_spq_query_for_execute_update=V tomto dotazu ulo\u017een\u00e9 procedury nem\u016f\u017eete volat executeUpdate(), proto\u017ee vr\u00e1t\u00ed v\u00fdslednou sadu, a ne pouze po\u010det aktualizac\u00ed.
+
+incorrect_spq_query_for_get_result_list=V tomto dotazu ulo\u017een\u00e9 procedury nem\u016f\u017eete volat getResultList(), proto\u017ee nevr\u00e1t\u00ed v\u00fdslednou sadu.
+
+incorrect_spq_query_for_get_single_result=V tomto dotazu ulo\u017een\u00e9 procedury nem\u016f\u017eete volat getSingleResult(), proto\u017ee nevr\u00e1t\u00ed v\u00fdslednou sadu.
+
+input_source_not_found=Vstupn\u00ed zdroj nenalezen, nebo m\u00e1 hodnotu null
+
+interface_hash_mismatch=Neshoda ha\u0161ov\u00e1n\u00ed rozhran\u00ed
+
+invalid_lock_query=Typ z\u00e1mku lze pou\u017e\u00edvat pouze s dotazem na v\u00fdb\u011br (kter\u00fd umo\u017e\u0148uje zamknout datab\u00e1zi tam, kde je t\u0159eba).
+
+invalid_method_hash=Neplatn\u00e9 ha\u0161ov\u00e1n\u00ed metody
+
+invalid_method_number=Neplatn\u00e9 \u010d\u00edslo metody
+
+invalid_pk_class=Pro tuto operaci vyhled\u00e1v\u00e1n\u00ed jste poskytli instanci nespr\u00e1vn\u00e9 t\u0159\u00eddy PK. O\u010dek\u00e1van\u00e1 t\u0159\u00edda : {0}, P\u0159ijat\u00e1 t\u0159\u00edda : {1}.
+
+jar_not_exist=Soubor JAR {0} neexistuje.
+
+jaxb_helper_invalid_binder=Poskytnut\u00fd v\u00e1zac\u00ed program [{0}] nen\u00ed programem EclipseLink JAXBBinder, a proto ho nelze p\u0159ev\u00e9st.
+
+jaxb_helper_invalid_jaxbcontext=Poskytnut\u00fd kontext JAXBContext [{0}] nen\u00ed kontextem EclipseLink JAXBContext, a proto ho nelze p\u0159ev\u00e9st.
+
+jaxb_helper_invalid_marshaller=Poskytnut\u00fd objekt Marshaller [{0}] nen\u00ed objektem EclipseLink JAXBMarshaller, a proto ho nelze p\u0159ev\u00e9st.
+
+jaxb_helper_invalid_target_for_binder=Poskytnut\u00e1 c\u00edlov\u00e1 t\u0159\u00edda [{0}] mus\u00ed b\u00fdt bu\u010f EclipseLink JAXBBinder, nebo EclipseLink XMLBinder.
+
+jaxb_helper_invalid_target_for_jaxbcontext=Poskytnut\u00e1 c\u00edlov\u00e1 t\u0159\u00edda [{0}] mus\u00ed b\u00fdt bu\u010f EclipseLink JAXBContext, nebo EclipseLink XMLContext.
+
+jaxb_helper_invalid_target_for_marshaller=Poskytnut\u00e1 c\u00edlov\u00e1 t\u0159\u00edda [{0}] mus\u00ed b\u00fdt bu\u010f EclipseLink JAXBMarshaller, nebo EclipseLink XMLMarshaller.
+
+jaxb_helper_invalid_target_for_unmarshaller=Poskytnut\u00e1 c\u00edlov\u00e1 t\u0159\u00edda [{0}] mus\u00ed b\u00fdt bu\u010f EclipseLink JAXBUnmarshaller, nebo EclipseLink XMLUnmarshaller.
+
+jaxb_helper_invalid_unmarshaller=Poskytnut\u00fd objekt Unmarshaller [{0}] nen\u00ed objektem EclipseLink JAXBUnmarshaller, a proto ho nelze p\u0159ev\u00e9st.
+
+jmx_enabled_platform_mbean_runtime_exception=V\u00fdjimka p\u0159i vol\u00e1n\u00ed funkce b\u011bhov\u00e9 slu\u017eby JMX MBean u {0}, kter\u00e1 vystavuje informace o relaci EclipseLink. V\u00fdjimka je: {1}
+
+join_trans_called_on_entity_trans=Byla vol\u00e1na funkce joinTransaction u spr\u00e1vce entit s lok\u00e1ln\u00edmi prost\u0159edky, kter\u00e9ho nebylo mo\u017en\u00e9 zaregistrovat pro transakci JTA.
+
+jpa21-ddl-create-script-target-not-specified=P\u0159i generov\u00e1n\u00ed DDL do skript\u016f mus\u00edte zadat c\u00edl vytv\u00e1\u0159en\u00ed skriptu pomoc\u00ed vlastnosti [javax.persistence.schema-generation.scripts.create-target].
+
+jpa21-ddl-drop-script-target-not-specified=P\u0159i generov\u00e1n\u00ed DDL do skript\u016f mus\u00edte zadat c\u00edl ru\u0161en\u00ed skriptu pomoc\u00ed vlastnosti [javax.persistence.schema-generation.scripts.drop-target].
+
+jpa21-ddl-invalid-source-script-type=Poskytnut\u00fd zdrojov\u00fd skript {0} m\u00e1 neplatn\u00fd typ {0}. Platn\u00e9 typy zdrojov\u00fdch skript\u016f jsou: java.io.Reader nebo \u0159et\u011bzec ozna\u010duj\u00edc\u00ed adresu URL souboru.
+
+jpa21-ddl-invalid-target-script-type=Poskytnut\u00fd c\u00edlov\u00fd skript {0} m\u00e1 neplatn\u00fd typ {0}. Platn\u00e9 typy c\u00edlov\u00fdch skript\u016f jsou: java.io.Writer nebo \u0159et\u011bzec ozna\u010duj\u00edc\u00ed adresu URL souboru.
+
+jpa21-ddl-source-script-io-exception=Do\u0161lo k chyb\u011b vstupu/v\u00fdstupu p\u0159i pou\u017e\u00edv\u00e1n\u00ed zdrojov\u00e9ho skriptu pro generov\u00e1n\u00ed DDL: {0}.
+
+jpa21-ddl-source-script-not-found=Zdrojov\u00fd skript: {0} pro vol\u00e1n\u00ed funkce generateSchema nebyl nalezen. Ujist\u011bte se, \u017ee jste zadali platn\u00fd \u0159et\u011bzec adresy URL, kter\u00fd pou\u017e\u00edv\u00e1 protokol "file:", nebo \u017ee \u0159et\u011bzec n\u00e1zvu souboru p\u0159edstavuje platn\u00fd prost\u0159edek dostupn\u00fd prost\u0159ednictv\u00edm cesty ke t\u0159\u00edd\u011b.
+
+jpa21-ddl-source-script-sql-exception=Do\u0161lo k chyb\u011b p\u0159i prov\u00e1d\u011bn\u00ed {0} ze zdrojov\u00e9ho skriptu pro generov\u00e1n\u00ed DDL: {1}.
+
+jpa21_invalid_call_on_un_executed_query=Dotaz se mus\u00ed prov\u00e9st p\u0159ed vol\u00e1n\u00edm t\u00e9to metody.
+
+jpa21_invalid_call_with_no_output_parameters=Neplatn\u00e9 vol\u00e1n\u00ed dotazu, kter\u00e9 nevr\u00e1tilo parametry v\u00fdstupu OUT.
+
+jpa21_invalid_call_with_no_result_sets_returned=Neplatn\u00e9 vol\u00e1n\u00ed v dotazu, kter\u00e9 nevr\u00e1tilo v\u00fdslednou sadu.
+
+jpa21_invalid_parameter_name=Neplatn\u00fd n\u00e1zev v\u00fdstupn\u00edho parametru : {0}. {1}
+
+jpa21_invalid_parameter_position=Neplatn\u00e1 pozice v\u00fdstupn\u00edho parametru : {0}. {1}.
+
+jpa_criteriaapi_alias_reused=Jeden n\u00e1zev aliasu pou\u017e\u00edv\u00e1 v\u00edce ne\u017e jedna polo\u017eka v\u00fdb\u011bru. Duplicitn\u00ed n\u00e1zvy jsou: {0}
+
+jpa_criteriaapi_illegal_tuple_or_array_value=Nalezen nepovolen\u00e1 polo\u017eka v\u00edcen\u00e1sobn\u00e9ho v\u00fdb\u011bru nebo v\u00fdb\u011bru s polem hodnot. Nalezen argument: {0}
+
+jpa_criteriaapi_invalid_result_index=Index {0} je neplatn\u00fd pro v\u00fdsledn\u00fd seznam velikosti {1}.
+
+jpa_criteriaapi_invalid_result_type=Prvek {0} typu {1} je pro v\u00fdsledek {2} neplatn\u00fd.
+
+jpa_criteriaapi_no_corresponding_element_in_result=Prvek {0} neodpov\u00edd\u00e1 prvku ve v\u00fdsledku dotazu.
+
+jpa_criteriaapi_null_literal_value=Do funkce CriteriaBuilder.literal() byla p\u0159ed\u00e1na hodnota null. Pou\u017eijte m\u00edsto n\u00ed metodu nullLiteral(Class<T> resultClass).
+
+jpa_helper_invalid_entity_manager_factory=Tov\u00e1rna JPA EntityManagerFactory {0} nen\u00ed tov\u00e1rnou EclipseLink EntityManagerFactory, a proto ji nelze p\u0159ev\u00e9st.
+
+jpa_helper_invalid_entity_manager_factory_for_refresh=Tov\u00e1rna JPA EntityManagerFactory {0} nen\u00ed tov\u00e1rnou EclipseLink EntityManagerFactory, a proto nelze aktualizovat jej\u00ed metadata.
+
+jpa_helper_invalid_query=Dotaz typu {0} nen\u00ed dotazem EclipseLink, a proto ho nelze p\u0159ev\u00e9st.
+
+jpa_helper_invalid_read_all_query=Dotaz typu {0} nen\u00ed dotazem typu \u010d\u00edst v\u0161e EclipseLink, a proto ho nelze p\u0159ev\u00e9st.
+
+jpa_helper_invalid_report_query=Dotaz typu {0} nen\u00ed dotazem typu sestava EclipseLink, a proto ho nelze p\u0159ev\u00e9st.
+
+jpa_persistence_util_non_persistent_class=Funkce PersistenceUtil.getIdentifier(entity) byla vol\u00e1na s objektem [{0}], kter\u00fd ale nen\u00ed trval\u00fdm objektem.
+
+lock_called_without_version_locking=Vol\u00e1n\u00ed funkce entityManager.lock(Object entity, LockModeType lockMode) vy\u017eaduje, aby bylo povoleno zamyk\u00e1n\u00ed verz\u00ed.
+
+managed_component_not_found=Atribut: {1} uveden\u00fd v grafu EntityGraph: {0} odkazuje na d\u00edl\u010d\u00ed graf s n\u00e1zvem: {2}, kter\u00fd nelze naj\u00edt.
+
+may_not_contain_xml_entry={0} nem\u016f\u017ee obsahovat {1}.
+
+metamodel_class_incorrect_type_instance=Typ [{2}] nen\u00ed o\u010dek\u00e1van\u00fdm [{1}] pro t\u0159\u00eddu kl\u00ed\u010d\u016f [{0}]. Ov\u011b\u0159te, \u017ee t\u0159\u00edda [{2}] je uvedena v souboru persistence.xml prost\u0159ednictv\u00edm vlastnosti <class/> nebo glob\u00e1ln\u00edho prvku <exclude-unlisted-classes>false</exclude-unlisted-classes>.
+
+metamodel_class_null_type_instance=V metamodelu nebyl nalezen \u017e\u00e1dn\u00fd [{1}] pro t\u0159\u00eddu kl\u00ed\u010de [{0}] - ov\u011b\u0159te, \u017ee je t\u0159\u00edda [{2}] uvedena v souboru persistence.xml prost\u0159ednictv\u00edm specifick\u00e9 vlastnosti <class>{0}</class> nebo glob\u00e1ln\u00edho prvku <exclude-unlisted-classes>false</exclude-unlisted-classes>.
+
+metamodel_class_null_type_instance_for_null_key=V metamodelu nebyl nalezen \u017e\u00e1dn\u00fd [{0}] pro parametr t\u0159\u00eddy kl\u00ed\u010de null - ov\u011b\u0159te, \u017ee je pro metamodel [{1}] uvedena spr\u00e1vn\u00e1 t\u0159\u00edda kl\u00ed\u010de a t\u0159\u00edda kl\u00ed\u010de je uvedena v souboru persistence.xml prost\u0159ednictv\u00edm specifick\u00e9 vlastnosti <class/> nebo glob\u00e1ln\u00edho prvku <exclude-unlisted-classes>false</exclude-unlisted-classes>.
+
+metamodel_identifiable_id_attribute_is_incorrect_idclass=O\u010dek\u00e1van\u00fd jednotliv\u00fd atribut @Id identifikovateln\u00e9ho typu [{0}] je sou\u010d\u00e1st\u00ed neo\u010dek\u00e1van\u00e9 t\u0159\u00eddy @IdClass.
+
+metamodel_identifiable_id_attribute_type_incorrect=O\u010dek\u00e1v\u00e1n atribut ID typu [{2}] u existuj\u00edc\u00edho atributu ID [{0}] identifikovateln\u00e9ho typu [{1}], ale nalezen atribut typu [{3}].
+
+metamodel_identifiable_no_id_attribute_present=U identifikovateln\u00e9ho typu [{0}] neexistuje \u017e\u00e1dn\u00fd atribut @Id.
+
+metamodel_identifiable_no_version_attribute_present=U identifikovateln\u00e9ho typu [{0}] neexistuje \u017e\u00e1dn\u00fd atribut @Version.
+
+metamodel_identifiable_type_has_no_idclass_attribute=U identifikovateln\u00e9ho typu [{0}] neexistuje \u017e\u00e1dn\u00fd atribut @IdClass. U typu by m\u011bl b\u00fdt minim\u00e1ln\u011b jeden atribut @Id nebo @EmbeddedId.
+
+metamodel_identifiable_version_attribute_type_incorrect=O\u010dek\u00e1v\u00e1n atribut verze typu [{2}] u existuj\u00edc\u00edho atributu verze [{0}] identifikovateln\u00e9ho typu [{1}], ale nalezen atribut typu [{3}].
+
+metamodel_incompatible_persistence_config_for_getIdType=Nekompatibiln\u00ed typ ID metamodelu z\u00edsk\u00e1n\u00ed konfigurace perzistence pro typ ManagedType [{0}].
+
+metamodel_interface_inheritance_not_supported=D\u011bdi\u010dnost ({1}) pou\u017e\u00edvaj\u00edc\u00ed deskriptor [{0}] se aktu\u00e1ln\u011b p\u0159i generov\u00e1n\u00ed metamodelu nepodporuje. Zkuste pou\u017e\u00edt d\u011bdi\u010dnost entity nebo supert\u0159\u00eddy MappedSuperclass (abstraktn\u00ed t\u0159\u00eddy).
+
+metamodel_managed_type_attribute_not_present=Atribut [{0}] nen\u00ed ve spravovan\u00e9m typu [{1}] p\u0159\u00edtomen.
+
+metamodel_managed_type_attribute_return_type_incorrect=O\u010dek\u00e1v\u00e1n n\u00e1vratov\u00fd typ atributu [{2}] u existuj\u00edc\u00edho atributu [{0}] spravovan\u00e9ho typu [{1}], ale nalezen n\u00e1vratov\u00fd typ atributu [{3}].
+
+metamodel_managed_type_attribute_type_incorrect=O\u010dek\u00e1v\u00e1n typ atributu [{2}] u existuj\u00edc\u00edho atributu [{0}] spravovan\u00e9ho typu [{1}], ale nalezen typ atributu [{3}].
+
+metamodel_managed_type_declared_attribute_not_present_but_is_on_superclass=Deklarovan\u00fd atribut [{0}] ze spravovan\u00e9ho typu [{1}] nen\u00ed p\u0159\u00edtomen -  je v\u0161ak deklarovan\u00fd v supert\u0159\u00edd\u011b.
+
+missing_parameter_value=Argument dotazu {0} nebyl v seznamu parametr\u016f poskytnut\u00fdch b\u011bhem prov\u00e1d\u011bn\u00ed dotazu nalezen.
+
+missing_toplink_bean_definition_for=Chyb\u00ed definice objektu typu bean TopLink pro {0}
+
+named_entity_graph_exists=NamedEntityGraph s n\u00e1zvem {0}, nalezen\u00fd v {1}, ji\u017e v t\u00e9to jednotce perzistence existuje.
+
+negative_max_result=Z\u00e1porn\u00e1 hodnota maxim\u00e1ln\u00edho po\u010dtu v\u00fdsledk\u016f MaxResult nen\u00ed povolena.
+
+negative_start_position=Z\u00e1porn\u00e1 po\u010d\u00e1te\u010dn\u00ed pozice nen\u00ed povolena.
+
+new_object_found_during_commit=P\u0159i synchronizaci byl nalezen nov\u00fd objekt prost\u0159ednictv\u00edm vztahu, kter\u00fd nebyl ozna\u010den jako kask\u00e1dn\u011b TRVAL\u00dd: {0}.
+
+no_entities_retrieved_for_get_reference=Nelze naj\u00edt entitu pro ID: {0}
+
+no_entities_retrieved_for_get_single_result=Funkce getSingleResult() nena\u010detla \u017e\u00e1dn\u00e9 entity.
+
+no_entity_graph_of_name=Pod n\u00e1zvem {0} neexistuje \u017e\u00e1dn\u00fd graf entit EntityGraph.
+
+not_an_entity=Objekt: {0} nen\u00ed zn\u00e1m\u00fdm typem entity.
+
+not_jar_file={0} nen\u00ed souborem JAR.
+
+not_usable_passed_to_entitygraph_hint=Hodnota {1} p\u0159edan\u00e1 do pokynu k dotazu {0} nen\u00ed pro tento pokyn k dotazu vhodn\u00e1.
+
+null_argument_get_attributegroup=N\u00e1zev hled\u00e1n\u00ed pro skupinu atribut\u016f nesm\u00ed m\u00edt hodnotu null.
+
+null_jar_file_names=N\u00e1zvy soubor\u016f JAR s hodnotou null.
+
+null_not_supported_identityweakhashmap=Mapa IdentityWeakHashMap nepodporuje hodnotu "null" jako kl\u00ed\u010d nebo hodnotu.
+
+null_pk=Pro tuto operaci hled\u00e1n\u00ed byla nespr\u00e1vn\u011b poskytnuta instance PK s hodnotou null.
+
+null_sqlresultsetmapping_in_query=Dotaz ResultSetMappingQuery mus\u00ed m\u00edt nastaven\u00e9 mapov\u00e1n\u00ed SQLResultSetMapping, aby byl platn\u00fd.
+
+null_value_for_column_result=Pro v\u00fdsledek ColumnResult mus\u00edte zadat n\u00e1zev sloupce.
+
+null_value_for_constructor_result=Pro v\u00fdsledek konstruktoru mus\u00edte zadat n\u00e1zev c\u00edlov\u00e9 t\u0159\u00eddy.
+
+null_value_for_entity_result=Pro v\u00fdsledek entity mus\u00edte zadat n\u00e1zev t\u0159\u00eddy entit.
+
+null_value_in_sqlresultsetmapping=Pro mapov\u00e1n\u00ed SQLResultSetMapping mus\u00edte zadat n\u00e1zev. Tento n\u00e1zev se pou\u017eije jako odkaz na mapov\u00e1n\u00ed SQLResultSetMapping z dotazu.
+
+null_values_for_field_result=Pro v\u00fdsledek FieldResult mus\u00edte zadat jak n\u00e1zev atributu, tak i n\u00e1zev sloupce.
+
+only_one_root_subgraph=Bez typu lze vypsat pouze ko\u0159enov\u00e9 d\u00edl\u010d\u00ed grafy. V\u0161echny d\u00edl\u010d\u00ed grafy, kter\u00e9 p\u0159edstavuj\u00ed podt\u0159\u00eddy, mus\u00ed m\u00edt nastaven typ.
+
+operation_not_supported=Vol\u00e1n\u00ed {0} u {1} specifikace nepodporuje.
+
+operation_on_closed_entity_manager=Prob\u00edh\u00e1 pokus prov\u00e9st operaci u zav\u0159en\u00e9ho spr\u00e1vce EntityManager.
+
+operation_on_closed_entity_manager_factory=Prob\u00edh\u00e1 pokus prov\u00e9st operaci u zav\u0159en\u00e9 tov\u00e1rny EntityManagerFactory.
+
+ora_pessimistic_locking_with_rownum=Pesimistick\u00e9 zamyk\u00e1n\u00ed s limity \u0159\u00e1dk\u016f dotazu nen\u00ed podporov\u00e1no.
+
+parsing_error=chyba p\u0159i anal\u00fdze
+
+parsing_fatal_error=anal\u00fdza z\u00e1va\u017en\u00e9 chyby
+
+parsing_warning=anal\u00fdza varov\u00e1n\u00ed
+
+pathnode_is_primitive_node=V\u00fdraz krit\u00e9ri\u00ed je primitivn\u00edho typu a nelze j\u00edm d\u00e1le proch\u00e1zet.
+
+pathnode_type_does_not_apply_to_primitive_node=V\u00fdraz krit\u00e9ri\u00ed je primitivn\u00edho typu a nelze j\u00edm d\u00e1le proch\u00e1zet. Primitivn\u00ed v\u00fdrazy nepovoluj\u00ed "type".
+
+pk_class_not_found=Nelze na\u010d\u00edst t\u0159\u00eddu prim\u00e1rn\u00edho kl\u00ed\u010de {0}
+
+position_bound_param_not_found=\u017d\u00e1dn\u00fd parametr vazby na pozici: {0}.
+
+position_param_not_found=\u017d\u00e1dn\u00fd parametr na pozici: {0}.
+
+pu_configured_for_resource_local=Nelze vytvo\u0159it spr\u00e1vce EntityManager s typem synchronizace SynchronizationType, proto\u017ee jednotka perzistence PersistenceUnit je nakonfigurov\u00e1na s transakcemi pro lok\u00e1ln\u00ed prost\u0159edky.
+
+remove_deletion_failed=Nezda\u0159ilo se odstran\u011bn\u00ed odebr\u00e1n\u00ed:
+
+rollback_because_of_rollback_only=Transakce byla "odvol\u00e1na", proto\u017ee byla nastavena na hodnotu RollbackOnly.
+
+sdo_helper_invalid_changesummary=Poskytnut\u00fd souhrn zm\u011bn ChangeSummary [{0}] nen\u00ed souhrnem EclipseLink SDOChangeSummary, a proto ho nelze p\u0159ev\u00e9st.
+
+sdo_helper_invalid_copyhelper=Poskytnut\u00fd pomocn\u00fd modul pro kop\u00edrov\u00e1n\u00ed CopyHelper [{0}] nen\u00ed modulem EclipseLink SDOCopyHelper, a proto ho nelze p\u0159ev\u00e9st.
+
+sdo_helper_invalid_datafactory=Poskytnut\u00e1 tov\u00e1rna DataFactory [{0}] nen\u00ed tov\u00e1rnou EclipseLink SDODataFactory, a proto ji nelze p\u0159ev\u00e9st.
+
+sdo_helper_invalid_datahelper=Poskytnut\u00fd pomocn\u00fd modul DataHelper [{0}] nen\u00ed modulem EclipseLink SDODataHelper, a proto ho nelze p\u0159ev\u00e9st.
+
+sdo_helper_invalid_dataobject=Poskytnut\u00fd objekt DataObject [{0}] nen\u00ed objektem EclipseLink SDODataObject, a proto ho nelze p\u0159ev\u00e9st.
+
+sdo_helper_invalid_equalityhelper=Poskytnut\u00fd pomocn\u00fd modul EqualityHelper [{0}] nen\u00ed modulem EclipseLink SDOEqualityHelper, a proto ho nelze p\u0159ev\u00e9st.
+
+sdo_helper_invalid_helpercontext=Poskytnut\u00fd kontext HelperContext [{0}] nen\u00ed kontextem EclipseLink SDOHelperContext, a proto ho nelze p\u0159ev\u00e9st.
+
+sdo_helper_invalid_property=Poskytnut\u00e1 vlastnost [{0}] nen\u00ed vlastnost\u00ed EclipseLink SDOProperty, a proto ji nelze p\u0159ev\u00e9st.
+
+sdo_helper_invalid_sequence=Poskytnut\u00e1 posloupnost [{0}] nen\u00ed posloupnost\u00ed EclipseLink SDOSequence, a proto ji nelze p\u0159ev\u00e9st.
+
+sdo_helper_invalid_target_for_changesummary=Poskytnut\u00e1 c\u00edlov\u00e1 t\u0159\u00edda [{0}] mus\u00ed b\u00fdt t\u0159\u00eddou EclipseLink SDOChangeSummary.
+
+sdo_helper_invalid_target_for_copyhelper=Poskytnut\u00e1 c\u00edlov\u00e1 t\u0159\u00edda [{0}] mus\u00ed b\u00fdt t\u0159\u00eddou EclipseLink SDOCopyHelper.
+
+sdo_helper_invalid_target_for_datafactory=Poskytnut\u00e1 c\u00edlov\u00e1 t\u0159\u00edda [{0}] mus\u00ed b\u00fdt t\u0159\u00eddou EclipseLink SDODataFactory.
+
+sdo_helper_invalid_target_for_datahelper=Poskytnut\u00e1 c\u00edlov\u00e1 t\u0159\u00edda [{0}] mus\u00ed b\u00fdt t\u0159\u00eddou EclipseLink SDODataHelper.
+
+sdo_helper_invalid_target_for_dataobject=Poskytnut\u00e1 c\u00edlov\u00e1 t\u0159\u00edda [{0}] mus\u00ed b\u00fdt t\u0159\u00eddou EclipseLink SDODataObject.
+
+sdo_helper_invalid_target_for_equalityhelper=Poskytnut\u00e1 c\u00edlov\u00e1 t\u0159\u00edda [{0}] mus\u00ed b\u00fdt t\u0159\u00eddou EclipseLink SDOEqualityHelper.
+
+sdo_helper_invalid_target_for_helpercontext=Poskytnut\u00e1 c\u00edlov\u00e1 t\u0159\u00edda [{0}] mus\u00ed b\u00fdt t\u0159\u00eddou EclipseLink SDOHelperContext.
+
+sdo_helper_invalid_target_for_property=Poskytnut\u00e1 c\u00edlov\u00e1 t\u0159\u00edda [{0}] mus\u00ed b\u00fdt t\u0159\u00eddou EclipseLink SDOProperty.
+
+sdo_helper_invalid_target_for_sequence=Poskytnut\u00e1 c\u00edlov\u00e1 t\u0159\u00edda [{0}] mus\u00ed b\u00fdt t\u0159\u00eddou EclipseLink SDOSequence.
+
+sdo_helper_invalid_target_for_type=Poskytnut\u00e1 c\u00edlov\u00e1 t\u0159\u00edda [{0}] mus\u00ed b\u00fdt jednou ze t\u0159\u00edd  EclipseLink SDOType, SDOTypeType, SDOPropertyType, SDOChangeSummaryType, SDODataObjectType, SDODataType, SDOOpenSequencedType, SDOObjectType, SDOWrapperType nebo SDOXMLHelperLoadOptionsType.
+
+sdo_helper_invalid_target_for_typehelper=Poskytnut\u00e1 c\u00edlov\u00e1 t\u0159\u00edda [{0}] mus\u00ed b\u00fdt t\u0159\u00eddou EclipseLink SDOTypeHelper.
+
+sdo_helper_invalid_target_for_xmlhelper=Poskytnut\u00e1 c\u00edlov\u00e1 t\u0159\u00edda [{0}] mus\u00ed b\u00fdt jednou ze t\u0159\u00edd EclipseLink SDOXMLHelper, EclipseLink XMLMarshaller nebo EclipseLink XMLUnmarshaller.
+
+sdo_helper_invalid_target_for_xsdhelper=Poskytnut\u00e1 c\u00edlov\u00e1 t\u0159\u00edda [{0}] mus\u00ed b\u00fdt t\u0159\u00eddou EclipseLink SDOXSDHelper.
+
+sdo_helper_invalid_type=Poskytnut\u00fd typ [{0}] nen\u00ed typem EclipseLink SDOType, a proto nebude p\u0159eveden.
+
+sdo_helper_invalid_typehelper=Poskytnut\u00fd pomocn\u00fd modul TypeHelper [{0}] nen\u00ed modulem EclipseLink SDOTypeHelper, a proto ho nelze p\u0159ev\u00e9st.
+
+sdo_helper_invalid_xmlhelper=Poskytnut\u00fd pomocn\u00fd modul XMLHelper [{0}] nen\u00ed modulem EclipseLink SDOXMLHelper, a proto ho nelze p\u0159ev\u00e9st.
+
+sdo_helper_invalid_xsdhelper=Poskytnut\u00fd pomocn\u00fd modul XSDHelper [{0}] nen\u00ed modulem EclipseLink SDOXSDHelper, a proto ho nelze p\u0159ev\u00e9st.
+
+subclass_sought_not_a_managed_type=Hledan\u00fd typ d\u00edl\u010d\u00edho grafu: {0} nen\u00ed spravovan\u00fdm typem tohoto atributu: {1}.
+
+too_many_results_for_get_single_result=Funkce Query.getSingleResult() vr\u00e1tila v\u00edce ne\u017e jeden v\u00fdsledek.
+
+unable_to_find_named_query=Pojmenovan\u00fd dotaz s n\u00e1zvem: {0} nebyl nalezen.
+
+unable_to_unwrap_jpa=Poskytovatel nepodporuje rozbalen\u00ed {0} na {1}
+
+undeclared_checked_exception=Nedeklarovan\u00e1 kontrolovan\u00e1 v\u00fdjimka.
+
+unexpect_argument=Neo\u010dek\u00e1van\u00fd vstupn\u00ed argument {0}
+
+unknown_bean_class=Nezn\u00e1m\u00e1 t\u0159\u00edda objektu entity bean: {0}. Ov\u011b\u0159te, \u017ee je tato t\u0159\u00edda ozna\u010dena pomoc\u00ed anotace @Entity.
+
+unknown_entitybean_name=Nezn\u00e1m\u00fd n\u00e1zev objektu entity bean: {0}
+
+unsupported_classfile_version=T\u0159\u00edda {0} byla kompilov\u00e1na s nepodporovanou sadou JDK. Oznamte tuto chybu projektu typu open source EclipseLink.
+
+wrap_convert_exception=V\u00fdjimka p\u0159i vol\u00e1n\u00ed {0} u t\u0159\u00eddy p\u0159evodn\u00edku {1} s hodnotou {2}
+
+wrap_ejbql_exception=P\u0159i vytv\u00e1\u0159en\u00ed dotazu ve spr\u00e1vci entit do\u0161lo k v\u00fdjimce.
+

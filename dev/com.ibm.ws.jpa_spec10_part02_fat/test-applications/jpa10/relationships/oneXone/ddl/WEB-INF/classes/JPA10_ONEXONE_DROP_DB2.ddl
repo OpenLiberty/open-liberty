@@ -21,7 +21,6 @@ DROP TABLE ${schemaname}.OONoOptEntityA;
 DROP TABLE ${schemaname}.OONoOptEntityB;
 DROP TABLE ${schemaname}.OOUniEntA;
 DROP TABLE ${schemaname}.OOUniEntB;
-DROP TABLE ${schemaname}.OPENJPA_SEQUENCE_TABLE;
 DROP TABLE ${schemaname}.PKJoinOOEntityA;
 DROP TABLE ${schemaname}.PKJoinOOEntityB;
 DROP TABLE ${schemaname}.XMLEmbedIDOOEntA;

@@ -175,8 +175,6 @@ public class HpelPurgeMaxSizeIgnoreTest_1 {
         assertTrue("BinaryTrace Repository size should be less than 50 MB ",
                    binaryTraceSize < (MAX_DEFAULT_PURGE_SIZE * 1024 * 1024));
 
-        ;
-
     }
 
     /**
@@ -217,9 +215,6 @@ public class HpelPurgeMaxSizeIgnoreTest_1 {
         logger.info("The current size of BinaryTrace files in " + binaryTraceDir.getAbsolutePath() + " is " + nf.format(binaryTraceSize));
         assertTrue("Binarytrace Repository size should be less than 200 MB ",
                    binaryTraceSize < (200 * 1024 * 1024));
-
-        ;
-
     }
 
     /**
@@ -309,8 +304,6 @@ public class HpelPurgeMaxSizeIgnoreTest_1 {
         logger.info("The current size of BinaryTrace files in " + binaryTraceDir.getAbsolutePath() + " is " + nf.format(binaryTraceSize));
         assertTrue("Binarytrace Repository size should be less than 50 MB ",
                    binaryTraceSize < (MAX_DEFAULT_PURGE_SIZE * 1024 * 1024));
-
-        ;
     }
 
     /**
@@ -408,8 +401,6 @@ public class HpelPurgeMaxSizeIgnoreTest_1 {
         assertTrue("Binarytrace Repository size should be less than 50 MB ",
                    binaryTraceSize < (MAX_DEFAULT_PURGE_SIZE * 1024 * 1024));
 
-        ;
-        server.stopServer();
     }
 
     /**

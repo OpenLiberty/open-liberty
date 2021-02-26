@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2019 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -51,7 +51,7 @@ import test.common.SharedOutputManager;
  */
 public class OAuth20EndpointServicesTest {
 
-    private static SharedOutputManager outputMgr;
+    private static SharedOutputManager outputMgr = SharedOutputManager.getInstance();
 
     private final Mockery mock = new JUnit4Mockery() {
         {
@@ -89,7 +89,6 @@ public class OAuth20EndpointServicesTest {
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-        outputMgr = SharedOutputManager.getInstance();
         outputMgr.captureStreams();
     }
 
@@ -108,13 +107,12 @@ public class OAuth20EndpointServicesTest {
 
     @After
     public void tearDown() {
-        outputMgr = SharedOutputManager.getInstance();
         outputMgr.resetStreams();
     }
 
     @AfterClass
     public static void setUpAfterClass() throws Exception {
-        outputMgr = SharedOutputManager.getInstance();
+        outputMgr.dumpStreams();
         outputMgr.restoreStreams();
     }
 
@@ -723,7 +721,7 @@ public class OAuth20EndpointServicesTest {
         final OAuth20Request oauth20Request = new OAuth20Request("providerThatDoesNotExist", EndpointType.authorize, req);
         mock.checking(new Expectations() {
             {
-                one(req).getAttribute("OAuth20Request");
+                one(req).getAttribute(OAuth20Constants.OAUTH_REQUEST_OBJECT_ATTR_NAME);
                 will(returnValue(oauth20Request));
             }
         });

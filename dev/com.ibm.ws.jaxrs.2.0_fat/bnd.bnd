@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2019 IBM Corporation and others.
+# Copyright (c) 2019,2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -23,6 +23,7 @@ src: \
   test-applications/client/src,\
   test-applications/context/src,\
   test-applications/contextresolver/src,\
+  test-applications/customsecuritycontext/src,\
   test-applications/exceptionMappingWithOT/src,\
   test-applications/extraproviders/src,\
   test-applications/getCgetS/src,\
@@ -34,11 +35,13 @@ src: \
   test-applications/linkheader/src,\
   test-applications/testManagedBeans/src,\
   test-applications/paramconverter/src,\
+  test-applications/options/src,\
   test-applications/params/src,\
   test-applications/providerAndResource/src,\
   test-applications/providerCache/src,\
   test-applications/providers/src,\
   test-applications/resourcealgorithm/src,\
+  test-applications/resourceinfo/src,\
   test-applications/resourcepkg/src,\
   test-applications/responseAPI/src,\
   test-applications/restmetrics/src,\
@@ -61,6 +64,7 @@ fat.project: true
 tested.features: \
   jaxrs-2.1,\
   cdi-2.0,\
+  restfulWS-3.0,\
   appsecurity-3.0
 
 -buildpath: \
@@ -80,14 +84,10 @@ tested.features: \
   com.ibm.ws.monitor;version=latest,\
   com.ibm.json4j;version=latest,\
   commons-httpclient:commons-httpclient;version=3.1,\
-  org.apache.httpcomponents:httpclient;version=4.3.1,\
-  org.apache.httpcomponents:httpcore;version=4.3.1,\
+  com.ibm.ws.org.apache.httpcomponents;version=latest, \
   org.apache.wink:wink-client;version=1.4,\
   org.apache.wink:wink-common;version=1.4,\
   org.json:json;version=20080701,\
-  com.fasterxml.jackson.core:jackson-annotations;version=2.4.1,\
-  com.fasterxml.jackson.core:jackson-core;version=2.4.1,\
-  com.fasterxml.jackson.core:jackson-databind;version=2.4.1,\
-  com.fasterxml.jackson.jaxrs:jackson-jaxrs-base;version=2.4.1,\
-  com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider;version=2.4.1
+  io.openliberty.com.fasterxml.jackson,\
+  io.openliberty.com.fasterxml.jackson.jaxrs
 	

@@ -57,7 +57,7 @@ public class ServletRegistrationContextListenerConflict implements ServletContex
         //Test with servlet name and URL conflict that's already defined in web.xml
         //Catch expected exceptions, web.xml takes precedent
         try {
-            dynamicReg = sc.addServlet("DynamicAnnotationConflict1", "web.DynamicAnnotationConflict1");
+            dynamicReg = sc.addServlet("DynamicAnnotationConflict1", "web.dynamicannotationconflict.DynamicAnnotationConflict1");
             if (dynamicReg != null) {
                 throw new RuntimeException("Servlet name already exists, but non-null value was returned: " + dynamicReg);
             } else {
@@ -71,7 +71,7 @@ public class ServletRegistrationContextListenerConflict implements ServletContex
         //Test with servlet name and URL conflict that's already defined in static annotation
         //Catch expected exceptions, static annotation takes precedent
         try {
-            dynamicReg = sc.addServlet("DynamicAnnotationConflict2", "web.DynamicAnnotationConflict2");
+            dynamicReg = sc.addServlet("DynamicAnnotationConflict2", "web.dynamicannotationconflict.DynamicAnnotationConflict2");
             if (dynamicReg != null) {
                 throw new RuntimeException("Servlet name already exists, but non-null value was returned: " + dynamicReg);
             } else {
@@ -118,7 +118,7 @@ public class ServletRegistrationContextListenerConflict implements ServletContex
         //RunAs in dynamic injection should take precedent
         //  Dynamic: All methods require Employee (user1) role, RunAs Manager (user99)
         try {
-            dynamicReg = sc.addServlet("DynamicAnnotationConflict4b", "web.DynamicAnnotationConflict4");
+            dynamicReg = sc.addServlet("DynamicAnnotationConflict4b", "web.dynamicannotationconflict.DynamicAnnotationConflict4");
             //New URL would follow RunAs and security constraints from dynamic
             dynamicReg.addMapping("/DynamicAnnotationConflict4b");
             dynamicReg.setRunAsRole("Manager");
@@ -150,7 +150,7 @@ public class ServletRegistrationContextListenerConflict implements ServletContex
         //Dynamic annotation constraint is followed for /DynamicAnnotationConflict6/c
         //  All methods (POST, CUSTOM) requires Manager (user2) role, GET requires SSL and Employee (user1) role for Servlet30DynConflict6/c
         try {
-            dynamicReg = sc.addServlet("DynamicAnnotationConflict6", "web.DynamicAnnotationConflict6");
+            dynamicReg = sc.addServlet("DynamicAnnotationConflict6", "web.dynamicannotationconflict.DynamicAnnotationConflict6");
             dynamicReg.addMapping("/DynamicAnnotationConflict6/*");
             HttpConstraintElement constraint6 = new HttpConstraintElement(TransportGuarantee.NONE, new String[] { "Manager" });
             List<HttpMethodConstraintElement> methodConstraints6 = new ArrayList<HttpMethodConstraintElement>();

@@ -11,6 +11,10 @@
 package com.ibm.ws.fat.grpc;
 
 import java.net.URL;
+import java.util.Set;
+import java.util.logging.Logger;
+
+import com.ibm.websphere.simplicity.RemoteFile;
 
 import componenttest.topology.impl.LibertyServer;
 
@@ -56,5 +60,65 @@ public class GrpcTestUtils {
                         .append(path);
 
         return sb.toString();
+    }
+
+    /**
+     * This method is used to set the server.xml; validation is enabled
+     */
+    public static String setServerConfiguration(LibertyServer server,
+                                                String originalServerXML,
+                                                String serverXML,
+                                                Set<String> appName,
+                                                Logger logger) throws Exception {
+        return setServerConfiguration(server, originalServerXML, serverXML, appName, logger, false);
+    }
+
+    /**
+     * This method is used to set the server.xml
+     */
+    public static String setServerConfiguration(LibertyServer server,
+                                                String originalServerXML,
+                                                String serverXML,
+                                                Set<String> appName,
+                                                Logger logger,
+                                                boolean skipValidation) throws Exception {
+        logger.info("Entered set server config with xml " + serverXML);
+        if (originalServerXML == null || !originalServerXML.equals(serverXML)) {
+            server.setMarkToEndOfLog();
+            // Update server.xml
+            logger.info("setServerConfiguration setServerConfigurationFile to : " + serverXML);
+            server.setMarkToEndOfLog();
+            server.setServerConfigurationFile(serverXML);
+            if (!skipValidation) {
+                if (appName != null) {
+                    server.waitForConfigUpdateInLogUsingMark(appName);
+                } else {
+                    server.waitForStringInLog("CWWKG001[7-8]I");
+                }
+            }
+        }
+        return serverXML;
+    }
+
+    /**
+     * This method is used to set the server.xml
+     */
+    public static void setServerConfiguration(LibertyServer server,
+                                              RemoteFile serverXML,
+                                              Set<String> appName,
+                                              Logger logger) throws Exception {
+        logger.info("Entered set server config with xml " + serverXML);
+        if (serverXML != null && serverXML.exists()) {
+            server.setMarkToEndOfLog();
+            // Update server.xml
+            logger.info("setServerConfiguration setServerConfigurationFile to : " + serverXML);
+            server.setMarkToEndOfLog();
+            server.getServerConfigurationFile().copyFromSource(serverXML);
+            if (appName != null) {
+                server.waitForConfigUpdateInLogUsingMark(appName);
+            } else {
+                server.waitForStringInLog("CWWKG001[7-8]I");
+            }
+        }
     }
 }

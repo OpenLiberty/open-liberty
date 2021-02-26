@@ -25,6 +25,7 @@ import com.ibm.ws.config.admin.ConfigID;
 import com.ibm.ws.config.xml.internal.MetaTypeRegistry.RegistryEntry;
 import com.ibm.ws.config.xml.internal.metatype.ExtendedAttributeDefinition;
 import com.ibm.ws.config.xml.internal.metatype.ExtendedObjectClassDefinition;
+import com.ibm.ws.config.xml.internal.variables.ConfigVariableRegistry;
 
 class ConfigValidator {
 
@@ -41,8 +42,11 @@ class ConfigValidator {
 
     private ServerXMLConfiguration configuration;
 
-    ConfigValidator(MetaTypeRegistry metatypeRegistry) {
+    private final ConfigVariableRegistry variableRegistry;
+
+    ConfigValidator(MetaTypeRegistry metatypeRegistry, ConfigVariableRegistry variableRegistry) {
         this.metatypeRegistry = metatypeRegistry;
+        this.variableRegistry = variableRegistry;
     }
 
     public void setConfiguration(ServerXMLConfiguration configuration) {
@@ -347,7 +351,7 @@ class ConfigValidator {
         return builder.toString();
     }
 
-    protected static class ConfigElementList extends ArrayList<ConfigElement> {
+    protected class ConfigElementList extends ArrayList<ConfigElement> {
 
         private static final long serialVersionUID = -8472291303190806069L;
 
@@ -363,7 +367,7 @@ class ConfigValidator {
         public boolean add(ConfigElement element) {
             if (!hasConflict && !isEmpty()) {
                 Object lastValue = getLastValue();
-                Object currentValue = element.getAttribute(attribute);
+                Object currentValue = variableRegistry.resolveRawString((String) element.getAttribute(attribute));
 
                 if (lastValue == null) {
                     hasConflict = (currentValue != null);

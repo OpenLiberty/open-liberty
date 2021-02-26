@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -58,9 +58,12 @@ public class HandlerChainInfoBuilder {
 
     private static JAXBContext context;
 
+    private static JAXBContext xmlWSContext;
+
     static {
         try {
             context = JAXBUtils.newInstance(PortComponentHandlerType.class);
+            xmlWSContext = JAXBUtils.newInstance(org.apache.cxf.jaxws30.handler.types.PortComponentHandlerType.class);
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
@@ -184,7 +187,8 @@ public class HandlerChainInfoBuilder {
             Document doc = StaxUtils.read(handlerFileURL.openStream());
 
             Element el = doc.getDocumentElement();
-            if (!"http://java.sun.com/xml/ns/javaee".equals(el.getNamespaceURI())
+            if ((!"http://java.sun.com/xml/ns/javaee".equals(el.getNamespaceURI()) &&
+                 !"https://jakarta.ee/xml/ns/jakartaee".equals(el.getNamespaceURI()))
                 || !"handler-chains".equals(el.getLocalName())) {
 
                 // Deprecated XMLUtils.toString(el) is replaced with StaxUtils.toString
@@ -196,7 +200,8 @@ public class HandlerChainInfoBuilder {
             while (node != null) {
                 if (node instanceof Element) {
                     el = (Element) node;
-                    if (!el.getNamespaceURI().equals("http://java.sun.com/xml/ns/javaee")
+                    if ((!el.getNamespaceURI().equals("http://java.sun.com/xml/ns/javaee") &&
+                         !el.getNamespaceURI().equals("https://jakarta.ee/xml/ns/jakartaee"))
                         || !el.getLocalName().equals("handler-chain")) {
 
                         // Deprecated XMLUtils.toString(el) is replaced with StaxUtils.toString
@@ -224,7 +229,8 @@ public class HandlerChainInfoBuilder {
             QName elQName = null;
             if (cur instanceof Element) {
                 el = (Element) cur;
-                if (!el.getNamespaceURI().equals("http://java.sun.com/xml/ns/javaee")) {
+                if (!el.getNamespaceURI().equals("http://java.sun.com/xml/ns/javaee") &&
+                    !el.getNamespaceURI().equals("https://jakarta.ee/xml/ns/jakartaee")) {
                     // Deprecated XMLUtils.toString(el) is replaced with StaxUtils.toString
                     String xml = StaxUtils.toString(el);
                     throw new WebServiceException(Tr.formatMessage(tc, "error.invalid.handlerChainFile.content", xml));
@@ -270,12 +276,37 @@ public class HandlerChainInfoBuilder {
 
     protected HandlerInfo processHandlerElement(Element el) {
         try {
-            PortComponentHandlerType pt = context.createUnmarshaller().unmarshal(el, PortComponentHandlerType.class).getValue();
-            return adaptToHandlerInfo(pt);
+            if (el.getNamespaceURI().equals("http://java.sun.com/xml/ns/javaee")) {
+                PortComponentHandlerType pt = context.createUnmarshaller().unmarshal(el, PortComponentHandlerType.class).getValue();
+                return adaptToHandlerInfo(pt);
+            } else {
+                org.apache.cxf.jaxws30.handler.types.PortComponentHandlerType pt = xmlWSContext.createUnmarshaller().unmarshal(el,
+                                                                                                                               org.apache.cxf.jaxws30.handler.types.PortComponentHandlerType.class).getValue();
+                return adaptToHandlerInfo(pt);
+            }
         } catch (JAXBException e) {
             // log the error info
         }
         return null;
+    }
+
+    private HandlerInfo adaptToHandlerInfo(org.apache.cxf.jaxws30.handler.types.PortComponentHandlerType pt) {
+        HandlerInfo handler = new HandlerInfo();
+
+        handler.setId(pt.getId());
+        handler.setHandlerClass(pt.getHandlerClass().getValue());
+        handler.setHandlerName(pt.getHandlerName().getValue());
+
+        for (org.apache.cxf.jaxws30.handler.types.CString sRole : pt.getSoapRole()) {
+            handler.addSoapRole(sRole.getValue());
+        }
+        for (org.apache.cxf.jaxws30.handler.types.XsdQNameType sHead : pt.getSoapHeader()) {
+            handler.addSoapHeader(new XsdQNameInfo(sHead.getValue(), sHead.getId()));
+        }
+        for (org.apache.cxf.jaxws30.handler.types.ParamValueType param : pt.getInitParam()) {
+            handler.addInitParam(new ParamValueInfo(param.getParamName().getValue(), param.getParamValue().getValue()));
+        }
+        return handler;
     }
 
     private HandlerInfo adaptToHandlerInfo(PortComponentHandlerType pt) {

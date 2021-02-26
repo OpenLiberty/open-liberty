@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
 package com.ibm.ws.jaxws.bus;
 
 import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -31,6 +32,8 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.container.service.app.deploy.ModuleInfo;
 import com.ibm.ws.jaxws.metadata.JaxWsModuleMetaData;
+import com.ibm.ws.jaxws.support.LibertyLoggingInInterceptor;
+import com.ibm.ws.jaxws.support.LibertyLoggingOutInterceptor;
 import com.ibm.ws.util.ThreadContextAccessor;
 
 /**
@@ -99,13 +102,17 @@ public class LibertyApplicationBusFactory extends CXFBusFactory {
         return createBus(e, properties, THREAD_CONTEXT_ACCESSOR.getContextClassLoader(Thread.currentThread()));
     }
 
-    public LibertyApplicationBus createBus(Map<Class<?>, Object> e, Map<String, Object> properties, ClassLoader classLoader) {
+    public LibertyApplicationBus createBus(final Map<Class<?>, Object> e,final Map<String, Object> properties,final ClassLoader classLoader) {
 
         Bus originalBus = getThreadDefaultBus(false);
 
         try {
-            LibertyApplicationBus bus = new LibertyApplicationBus(e, properties, classLoader);
-
+            LibertyApplicationBus bus = AccessController.doPrivileged(new PrivilegedAction<LibertyApplicationBus>() {
+                @Override
+                public LibertyApplicationBus run() {
+                    return new LibertyApplicationBus(e, properties, classLoader);
+                }
+            });
             //Considering that we have set the default bus in JaxWsService, no need to set default bus
             //Also, it avoids polluting the thread bus.
             //possiblySetDefaultBus(bus);
@@ -123,6 +130,16 @@ public class LibertyApplicationBusFactory extends CXFBusFactory {
             }
 
             bus.initialize();
+
+            // Always register LibertyLoggingIn(Out)Interceptor Pretty print the SOAP Messages
+            final LibertyLoggingInInterceptor in = new LibertyLoggingInInterceptor();
+            in.setPrettyLogging(true);
+            bus.getInInterceptors().add(in);
+
+            final LibertyLoggingOutInterceptor out = new LibertyLoggingOutInterceptor();
+            out.setPrettyLogging(true);
+            bus.getOutInterceptors().add(out);
+
             return bus;
 
         } finally {

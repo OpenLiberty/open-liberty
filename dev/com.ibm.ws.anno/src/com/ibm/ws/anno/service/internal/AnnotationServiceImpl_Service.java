@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 IBM Corporation and others.
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,21 +11,24 @@
 
 package com.ibm.ws.anno.service.internal;
 
-import java.text.MessageFormat;
-import java.util.Map;
-
 import org.osgi.framework.BundleContext;
-import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.anno.classsource.internal.ClassSourceImpl_Factory;
 import com.ibm.ws.anno.info.internal.InfoStoreFactoryImpl;
 import com.ibm.ws.anno.targets.internal.AnnotationTargetsImpl_Factory;
-import com.ibm.ws.anno.util.internal.UtilImpl_Factory;
+import com.ibm.wsspi.anno.classsource.ClassSource_Factory;
+import com.ibm.wsspi.anno.info.InfoStoreFactory;
 import com.ibm.wsspi.anno.service.AnnotationService_Service;
+import com.ibm.wsspi.anno.targets.AnnotationTargets_Factory;
+import com.ibm.wsspi.anno.util.Util_Factory;
 
+@Component(configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM"})
 public class AnnotationServiceImpl_Service implements AnnotationService_Service {
     public static final TraceComponent tc = Tr.register(AnnotationServiceImpl_Service.class);
     public static final String CLASS_NAME = AnnotationServiceImpl_Service.class.getName();
@@ -42,26 +45,17 @@ public class AnnotationServiceImpl_Service implements AnnotationService_Service 
 
     //
 
-    protected BundleContext bundleContext;
+    final protected BundleContext bundleContext;
 
-    protected void activate(ComponentContext componentContext, Map<String, Object> properties) {
-        String methodName = "activate";
-
-        if (tc.isEntryEnabled()) {
-            Tr.entry(tc, methodName, getHashText());
-        }
-        bundleContext = componentContext.getBundleContext();
-
-        if (tc.isEntryEnabled()) {
-            Tr.exit(tc, methodName, getHashText());
-        }
-    }
-
-    //
-
-    public AnnotationServiceImpl_Service() {
+    @Activate
+    public AnnotationServiceImpl_Service(BundleContext bundleContext,
+                                         @Reference Util_Factory utilFactory,
+                                         @Reference ClassSource_Factory classSourceFactory,
+                                         @Reference AnnotationTargets_Factory annotationTargetsFactory,
+                                         @Reference InfoStoreFactory infoStoreFactory) {
         super();
 
+        this.bundleContext = bundleContext;
         String methodName = "<init>";
 
         this.hashText = AnnotationServiceImpl_Logging.getBaseHash(this);
@@ -70,18 +64,13 @@ public class AnnotationServiceImpl_Service implements AnnotationService_Service 
             Tr.entry(tc, methodName, this.hashText);
         }
 
-        UtilImpl_Factory useUtilFactory = new UtilImpl_Factory();
-        setUtilFactory(useUtilFactory);
+        this.utilFactory = utilFactory;
 
-        ClassSourceImpl_Factory useClassSourceFactory = new ClassSourceImpl_Factory(useUtilFactory);
-        setClassSourceFactory(useClassSourceFactory);
+        this.classSourceFactory = classSourceFactory;
 
-        AnnotationTargetsImpl_Factory useAnnotationTargetsFactory =
-                        new AnnotationTargetsImpl_Factory(useUtilFactory, useClassSourceFactory);
-        setAnnotationTargetsFactory(useAnnotationTargetsFactory);
+        this.annotationTargetsFactory = annotationTargetsFactory;
 
-        InfoStoreFactoryImpl useInfoStoreFactory = new InfoStoreFactoryImpl(useUtilFactory);
-        setInfoStoreFactory(useInfoStoreFactory);
+        this.infoStoreFactory = infoStoreFactory;
 
         if (tc.isEntryEnabled()) {
             Tr.exit(tc, methodName, this.hashText);
@@ -101,78 +90,37 @@ public class AnnotationServiceImpl_Service implements AnnotationService_Service 
 
     //
 
-    protected UtilImpl_Factory utilFactory;
+    final protected Util_Factory utilFactory;
 
     @Override
     @Trivial
-    public UtilImpl_Factory getUtilFactory() {
+    public Util_Factory getUtilFactory() {
         return utilFactory;
     }
 
-    protected void setUtilFactory(UtilImpl_Factory utilFactory) {
-
-        this.utilFactory = utilFactory;
-
-        if (tc.isDebugEnabled()) {
-            Tr.debug(tc, MessageFormat.format(" [ {0} ] Set utility factory [ {1} ]",
-                                              this.hashText, this.utilFactory.getHashText()));
-        }
-    }
-
-    //
-
-    protected ClassSourceImpl_Factory classSourceFactory;
+    final protected ClassSource_Factory classSourceFactory;
 
     @Override
     @Trivial
-    public ClassSourceImpl_Factory getClassSourceFactory() {
+    public ClassSource_Factory getClassSourceFactory() {
         return classSourceFactory;
     }
 
-    protected void setClassSourceFactory(ClassSourceImpl_Factory classSourceFactory) {
-        this.classSourceFactory = classSourceFactory;
 
-        if (tc.isDebugEnabled()) {
-            Tr.debug(tc, MessageFormat.format(" [ {0} ] Set class source factory [ {1} ]",
-                                              this.hashText, this.classSourceFactory.getHashText()));
-        }
-    }
-
-    //
-
-    protected AnnotationTargetsImpl_Factory annotationTargetsFactory;
+    final protected AnnotationTargets_Factory annotationTargetsFactory;
 
     @Override
     @Trivial
-    public AnnotationTargetsImpl_Factory getAnnotationTargetsFactory() {
+    public AnnotationTargets_Factory getAnnotationTargetsFactory() {
         return annotationTargetsFactory;
     }
 
-    protected void setAnnotationTargetsFactory(AnnotationTargetsImpl_Factory annotationTargetsFactory) {
-        this.annotationTargetsFactory = annotationTargetsFactory;
-
-        if (tc.isDebugEnabled()) {
-            Tr.debug(tc, MessageFormat.format(" [ {0} ] Set annotation targets factory [ {1} ]",
-                                              this.hashText, this.annotationTargetsFactory.getHashText()));
-        }
-    }
-
-    //
-
-    protected InfoStoreFactoryImpl infoStoreFactory;
+    final protected InfoStoreFactory infoStoreFactory;
 
     @Override
     @Trivial
-    public InfoStoreFactoryImpl getInfoStoreFactory() {
+    public InfoStoreFactory getInfoStoreFactory() {
         return infoStoreFactory;
     }
 
-    protected void setInfoStoreFactory(InfoStoreFactoryImpl infoStoreFactory) {
-        this.infoStoreFactory = infoStoreFactory;
-
-        if (tc.isDebugEnabled()) {
-            Tr.debug(tc, MessageFormat.format(" {0} ] Set info store factory [ {1} ]",
-                                              this.hashText, this.infoStoreFactory.getHashText()));
-        }
-    }
 }

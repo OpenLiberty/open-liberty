@@ -35,7 +35,9 @@ import componenttest.topology.utils.HttpUtils;
  * This test is to verify the custom binding file could override Endpoint address and EJB based Web Services context root.
  */
 @RunWith(FATRunner.class)
+
 public class WsBndEndpointOverrideTest_Lite {
+
     private static final int CONN_TIMEOUT = 5;
 
     @Server("EJBinWarEndpointAddressOverrideServer")

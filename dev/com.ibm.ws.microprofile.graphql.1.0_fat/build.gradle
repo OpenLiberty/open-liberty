@@ -8,19 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-repositories {
-  if (isUsingArtifactory) {
-    maven {
-      credentials {
-        username userProps.getProperty("artifactory.download.user")
-        password userProps.getProperty("artifactory.download.token")
-      }
-      url ("https://na.artifactory.swg-devops.com/artifactory/wasliberty-maven-remote")
-    }
-  } else {
-    mavenCentral()
-  }
-}
+apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
 
 configurations {
   smallryeGraphQLClient
@@ -31,8 +19,8 @@ configurations.smallryeGraphQLClient {
 }
 
 dependencies {
-  smallryeGraphQLClient 'io.smallrye:smallrye-graphql-client:1.0.2',
-    'io.smallrye:smallrye-graphql-client-api:1.0.2',
+  smallryeGraphQLClient 'io.smallrye:smallrye-graphql-client:1.0.5',
+    'io.smallrye:smallrye-graphql-client-api:1.0.5',
     'org.slf4j:slf4j-api:1.7.7',
 	'org.slf4j:slf4j-jdk14:1.7.7'
 }

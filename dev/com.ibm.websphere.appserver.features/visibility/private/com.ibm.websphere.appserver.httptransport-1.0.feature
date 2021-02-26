@@ -1,5 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.httptransport-1.0
+WLP-DisableAllFeatures-OnConflict: false
 IBM-SPI-Package: com.ibm.wsspi.http, \
 com.ibm.wsspi.http.ee8
 Subsystem-Version: 1.0

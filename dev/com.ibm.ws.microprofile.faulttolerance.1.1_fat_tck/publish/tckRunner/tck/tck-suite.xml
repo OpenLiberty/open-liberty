@@ -71,9 +71,7 @@
                      !method.getName().startsWith("testFallbacktNoTimeout") &&
                      
                      // BulkheadMetricTest
-                     !method.getName().startsWith("bulkheadMetricAsyncTest") &&
-                     !method.getName().startsWith("bulkheadMetricHistogramTest") &&
-                     !method.getName().startsWith("bulkheadMetricRejectionTest") &&
+                     !method.getDeclaringClass().getSimpleName().equals("BulkheadMetricTest") &&
                      
                      // TimeoutMetricTest
                      !method.getDeclaringClass().getSimpleName().equals("TimeoutMetricTest") &&
@@ -84,8 +82,13 @@
                      // Note: TimeoutTest is inherently timing sensitive, but we haven't seen it fail
                      
                      // AsyncTimeoutTest
-                     // This specific test is broken in the FT 1.1 TCK and was fixed for FT 2.0
-                     !method.getName().startsWith("testAsyncClassLevelTimeout")
+                     // Some tests in this class were broken in the FT 1.1 TCK and were fixed for FT 2.0
+                     !method.getDeclaringClass().getSimpleName().equals("AsyncTimeoutTest")
+                     
+                     // AsynchronousTest
+                     // This test is unreliable in FT 1.1 TCK but was improved in FT 2.0 TCK
+                     // Functionality covered by FATs in AsyncServlet
+                     !method.getDeclaringClass().getSimpleName().equals("AsynchronousTest")
                 ]]>
                 </script>
             </method-selector>

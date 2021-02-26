@@ -1,0 +1,63 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# DO NOT TRANSLATE "\n" and "\t" characters.  these are for textual formatting.
+# REMINDER: if message has substitution parameters, then any apostrophe in the
+#           message text must be followed by a 2nd apostrophe to work correctly.
+#-------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+#
+# Briefly:
+#     MESSAGE_ID=<ComponentPrefix><MessageNumber><TypeCode>: <MessageText>
+#
+# The prefix for this component is:
+#     CWWKW
+#
+# Message numbers are four digit numbers, from '0000' to '9999', inclusive.
+# Message numbers start with '0' and are filled to a width of 4 digits.
+#
+# Valid message type codes are:
+#     I (Informational)
+#     W (Warning)
+#     E (Error)
+#
+# Note the ": " that appears between the type code and the message text.
+#
+# cmvc_en_version_level=
+#
+#CMVCPATHNAME io.openliberty.org.jboss.resteasy.common/resources/io/openliberty/org/jboss/resteasy/common/nls/RESTfulWS.nlsprops
+#COMPONENTPREFIX CWWKW
+#COMPONENTNAMEFOR CWWKW io.openliberty.restfulWS-3.0
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class
+#   (single quote must be coded as one single quote ').
+#
+#-------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWMGQ1xxxI=CWMGQ1xxxI: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWMGQ1xxxI.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWMGQ1xxxI.useraction=User action text for the message
+#
+#-------------------------------------------------------------------------------
+
+MULTIPLE_REST_SERVLETS_CWWKW1300W=CWWKW1300W: \u041d\u0435\u0441\u043a\u043e\u043b\u044c\u043a\u043e \u0441\u0435\u0440\u0432\u043b\u0435\u0442\u043e\u0432 REST \u0437\u0430\u0434\u0430\u043d\u043e \u0434\u043b\u044f \u0432\u0435\u0431-\u043c\u043e\u0434\u0443\u043b\u044f, {0}. \u0414\u043b\u044f \u0432\u0435\u0431-\u043c\u043e\u0434\u0443\u043b\u044f \u043c\u043e\u0436\u043d\u043e \u0443\u043a\u0430\u0437\u0430\u0442\u044c \u043d\u0435 \u0431\u043e\u043b\u0435\u0435 \u043e\u0434\u043d\u043e\u0433\u043e \u0441\u0435\u0440\u0432\u043b\u0435\u0442\u0430 REST.
+MULTIPLE_REST_SERVLETS_CWWKW1300W.explanation=\u0414\u043b\u044f \u0432\u0435\u0431-\u043c\u043e\u0434\u0443\u043b\u044f \u043c\u043e\u0436\u043d\u043e \u0443\u043a\u0430\u0437\u0430\u0442\u044c \u0442\u043e\u043b\u044c\u043a\u043e \u043e\u0434\u0438\u043d \u0441\u0435\u0440\u0432\u043b\u0435\u0442 REST. \u0421\u0435\u0440\u0432\u043b\u0435\u0442\u044b REST \u0438\u0441\u043f\u043e\u043b\u044c\u0437\u0443\u044e\u0442 \u043e\u0434\u043d\u043e \u0438\u0437 \u0441\u043b\u0435\u0434\u0443\u044e\u0449\u0438\u0445 \u0438\u043c\u0435\u043d \u043a\u043b\u0430\u0441\u0441\u043e\u0432: com.ibm.websphere.jaxrs.server.IBMRestServlet, org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher \u0438 org.jboss.resteasy.plugins.server.servlet.HttpServlet30Dispatcher. \u042d\u0442\u043e \u0441\u043e\u043e\u0431\u0449\u0435\u043d\u0438\u0435 \u0443\u043a\u0430\u0437\u044b\u0432\u0430\u0435\u0442, \u0447\u0442\u043e \u043d\u0435\u0441\u043a\u043e\u043b\u044c\u043a\u043e \u0441\u0435\u0440\u0432\u043b\u0435\u0442\u043e\u0432 \u0443\u043a\u0430\u0437\u0430\u043d\u043e \u0432 \u0444\u0430\u0439\u043b\u0435 web.xml \u0438\u043b\u0438 \u043d\u0430\u0441\u0442\u0440\u043e\u0435\u043d\u043e \u0432 \u0434\u0438\u043d\u0430\u043c\u0438\u0447\u0435\u0441\u043a\u043e\u043c \u0440\u0435\u0436\u0438\u043c\u0435. 
+MULTIPLE_REST_SERVLETS_CWWKW1300W.useraction=\u0423\u0431\u0435\u0434\u0438\u0442\u0435\u0441\u044c, \u0447\u0442\u043e \u0432 \u0444\u0430\u0439\u043b\u0435 web.xml \u0443\u043a\u0430\u0437\u0430\u043d\u043e \u043d\u0435 \u0431\u043e\u043b\u0435\u0435 \u043e\u0434\u043d\u043e\u0433\u043e \u0441\u0435\u0440\u0432\u043b\u0435\u0442\u0430.
+
+MULTIPLE_REST_SERVLET_MAPPINGS_CWWKW1301W=CWWKW1301W: \u041d\u0435\u0441\u043a\u043e\u043b\u044c\u043a\u043e \u0441\u0432\u044f\u0437\u0435\u0439 \u0441\u0435\u0440\u0432\u043b\u0435\u0442\u043e\u0432 REST \u0437\u0430\u0434\u0430\u043d\u043e \u0434\u043b\u044f \u0432\u0435\u0431-\u043c\u043e\u0434\u0443\u043b\u044f, {0}. \u0421\u0435\u0440\u0432\u043b\u0435\u0442 REST \u043c\u043e\u0436\u0435\u0442 \u0431\u044b\u0442\u044c \u0441\u0432\u044f\u0437\u0430\u043d \u0442\u043e\u043b\u044c\u043a\u043e \u0441 \u043e\u0434\u043d\u0438\u043c \u043f\u0440\u0435\u043e\u0431\u0440\u0430\u0437\u043e\u0432\u0430\u043d\u0438\u0435\u043c \u043f\u0443\u0442\u0438.
+MULTIPLE_REST_SERVLET_MAPPINGS_CWWKW1301W.explanation=\u0414\u043b\u044f \u0441\u0435\u0440\u0432\u043b\u0435\u0442\u0430 REST \u043c\u043e\u0436\u043d\u043e \u0443\u043a\u0430\u0437\u0430\u0442\u044c \u043d\u0435 \u0431\u043e\u043b\u0435\u0435 \u043e\u0434\u043d\u043e\u0433\u043e \u043f\u0440\u0435\u043e\u0431\u0440\u0430\u0437\u043e\u0432\u0430\u043d\u0438\u044f \u043f\u0443\u0442\u0438. \u0421\u0435\u0440\u0432\u043b\u0435\u0442\u044b REST \u0438\u0441\u043f\u043e\u043b\u044c\u0437\u0443\u044e\u0442 \u043e\u0434\u043d\u043e \u0438\u0437 \u0441\u043b\u0435\u0434\u0443\u044e\u0449\u0438\u0445 \u0438\u043c\u0435\u043d \u043a\u043b\u0430\u0441\u0441\u043e\u0432: com.ibm.websphere.jaxrs.server.IBMRestServlet, org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher \u0438 org.jboss.resteasy.plugins.server.servlet.HttpServlet30Dispatcher. \u042d\u0442\u043e \u0441\u043e\u043e\u0431\u0449\u0435\u043d\u0438\u0435 \u0443\u043a\u0430\u0437\u044b\u0432\u0430\u0435\u0442, \u0447\u0442\u043e \u0441 \u0441\u0435\u0440\u0432\u043b\u0435\u0442\u043e\u043c REST \u0441\u0432\u044f\u0437\u0430\u043d\u043e \u043d\u0435\u0441\u043a\u043e\u043b\u044c\u043a\u043e \u043f\u0440\u0435\u043e\u0431\u0440\u0430\u0437\u043e\u0432\u0430\u043d\u0438\u0439 \u043f\u0443\u0442\u0438 \u0432 \u0444\u0430\u0439\u043b\u0435 web.xml. 
+MULTIPLE_REST_SERVLET_MAPPINGS_CWWKW1301W.useraction=\u0423\u0431\u0435\u0434\u0438\u0442\u0435\u0441\u044c, \u0447\u0442\u043e \u0432 \u0444\u0430\u0439\u043b\u0435 web.xml \u0441\u0435\u0440\u0432\u043b\u0435\u0442 REST \u0441\u0432\u044f\u0437\u0430\u043d \u043d\u0435 \u0431\u043e\u043b\u0435\u0435 \u0447\u0435\u043c \u0441 \u043e\u0434\u043d\u0438\u043c \u043f\u0440\u0435\u043e\u0431\u0440\u0430\u0437\u043e\u0432\u0430\u043d\u0438\u0435\u043c \u043f\u0443\u0442\u0438.
+
+

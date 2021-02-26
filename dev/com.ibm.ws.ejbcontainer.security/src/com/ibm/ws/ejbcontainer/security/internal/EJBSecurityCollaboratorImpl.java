@@ -50,7 +50,6 @@ import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.runtime.metadata.MetaData;
 import com.ibm.ws.security.SecurityService;
 import com.ibm.ws.security.audit.Audit;
-import com.ibm.ws.security.audit.utils.ParameterUtils;
 import com.ibm.ws.security.authentication.AuthenticationService;
 import com.ibm.ws.security.authentication.UnauthenticatedSubjectService;
 import com.ibm.ws.security.authentication.principals.WSIdentity;
@@ -81,10 +80,7 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
     protected SubjectManager subjectManager;
     protected CollaboratorUtils collabUtils;
 
-    public HashMap<String, Object> ejbAuditHashMap = new HashMap<String, Object>();
-
     protected AuditManager auditManager;
-    public HashMap<String, Object> extraAuditData = new HashMap<String, Object>();
 
     protected volatile EJBSecurityConfig ejbSecConfig = null;
     private EJBAuthorizationHelper eah = this;
@@ -166,7 +162,7 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
      * delegate to the run-as user, if specified. {@inheritDoc}
      *
      * @throws EJBAccessDeniedException when the caller is not authorized to invoke
-     *                                      the given request
+     *             the given request
      */
     /** {@inheritDoc} */
     @Override
@@ -390,7 +386,7 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
         return false;
     }
 
-    public void populateAuditEJBHashMap(EJBRequestData request) {
+    public void populateAuditEJBHashMap(EJBRequestData request, Map<String, Object> ejbAuditHashMap) {
         EJBMethodMetaData methodMetaData = request.getEJBMethodMetaData();
         Object[] methodArguments = request.getMethodArguments();
         String applicationName = methodMetaData.getEJBComponentMetaData().getJ2EEName().getApplication();
@@ -406,7 +402,7 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
         ejbAuditHashMap.put("methodInterface", methodInterface);
         ejbAuditHashMap.put("methodSignature", methodSignature);
         ejbAuditHashMap.put("beanName", beanName);
-        ejbAuditHashMap.put("methodParameters", ParameterUtils.format(methodArguments).toString());
+        ejbAuditHashMap.put("methodParameters", methodArguments);
     }
 
     /**
@@ -418,7 +414,7 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
      * <li>is the subject authorized to any of the required roles</li>
      *
      * @param EJBRequestData the info on the EJB method to call
-     * @param subject        the subject authorize
+     * @param subject the subject authorize
      * @throws EJBAccessDeniedException when the subject is not authorized to the EJB
      */
     @Override
@@ -432,7 +428,9 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
         Object webRequest = (auditManager != null) ? auditManager.getWebRequest() : null;
         String realm = (auditManager != null) ? auditManager.getRealm() : null;
 
-        populateAuditEJBHashMap(request);
+        HashMap<String, Object> ejbAuditHashMap = new HashMap<String, Object>();
+
+        populateAuditEJBHashMap(request, ejbAuditHashMap);
 
         Collection<String> roles = getRequiredRoles(methodMetaData);
 
@@ -548,7 +546,7 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
      * If the run-as subject is null or the deployment descriptor specifies to run as the caller,
      * then the passed-in subject is set as the invocation subject instead.
      *
-     * @param methodMetaData    the EJB method info
+     * @param methodMetaData the EJB method info
      * @param delegationSubject subject to set as the invocation when running as caller
      */
     private void performDelegation(EJBMethodMetaData methodMetaData, Subject delegationSubject) {
@@ -556,6 +554,7 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
         String invalidUser = "";
         Set<WSCredential> publicCredentials = (delegationSubject == null ? null : delegationSubject.getPublicCredentials(WSCredential.class));
         Iterator<WSCredential> it = null;
+        HashMap<String, Object> extraAuditData = new HashMap<String, Object>();
         if (publicCredentials != null && (it = publicCredentials.iterator()) != null && it.hasNext()) {
             WSCredential credential = it.next();
             try {

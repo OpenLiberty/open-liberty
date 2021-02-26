@@ -17,6 +17,9 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
+import org.junit.Rule;
+import org.junit.rules.TestWatcher;
+import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 
 import com.ibm.ejb3x.ComponentIDBnd.web.ComponentIDBndTestServlet;
@@ -36,6 +39,21 @@ import componenttest.topology.utils.FATServletClient;
 @RunWith(FATRunner.class)
 public class ComponentIDTest extends FATServletClient {
 
+    @Rule
+    public TestWatcher watchman = new TestWatcher() {
+        @Override
+        protected void failed(Throwable e, Description description) {
+            try {
+                System.runFinalization();
+                System.gc();
+                server.serverDump("heap");
+            } catch (Exception e1) {
+                System.out.println("Failed to dump server");
+                e1.printStackTrace();
+            }
+        }
+    };
+
     @Server("com.ibm.ws.ejbcontainer.bindings.fat.server")
     @TestServlet(servlet = ComponentIDBndTestServlet.class, contextRoot = "ComponentIDBndWeb")
     public static LibertyServer server;
@@ -45,6 +63,9 @@ public class ComponentIDTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
+        server.deleteAllDropinApplications();
+        server.removeAllInstalledAppsForValidation();
+
         // Use ShrinkHelper to build the ears
         JavaArchive ComponentIDBndEJB = ShrinkHelper.buildJavaArchive("ComponentIDBndEJB.jar", "com.ibm.ejb3x.ComponentIDBnd.ejb.");
         ShrinkHelper.addDirectory(ComponentIDBndEJB, "test-applications/ComponentIDBndEJB.jar/resources");
@@ -63,7 +84,7 @@ public class ComponentIDTest extends FATServletClient {
     @AfterClass
     public static void cleanUp() throws Exception {
         if (server != null && server.isStarted()) {
-            server.stopServer();
+            server.stopServer("CNTR0338W");
         }
     }
 

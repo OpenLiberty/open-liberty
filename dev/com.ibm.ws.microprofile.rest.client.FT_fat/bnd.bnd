@@ -33,4 +33,4 @@ fat.project: true
   com.ibm.websphere.javaee.jsonb.1.0;version=latest
 
 tested.features: \
-  servlet-4.0, jsonp-1.1, jaxrsclient-2.1, mpRestClient-1.3, mpRestClient-1.4
+  servlet-4.0, jsonp-1.1, jaxrsclient-2.1, mpRestClient-1.3, mpRestClient-1.4, mpConfig-2.0, mpRestClient-2.0, mpFaultTolerance-3.0

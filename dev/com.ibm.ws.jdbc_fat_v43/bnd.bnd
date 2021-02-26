@@ -15,7 +15,7 @@ bVersion=1.0
 
 javac.args.release: current
 
-fat.minimum.java.level: 9
+fat.minimum.java.level: 11
 
 src: \
 	fat/src,\

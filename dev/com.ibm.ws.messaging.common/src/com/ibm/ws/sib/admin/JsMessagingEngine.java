@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@ package com.ibm.ws.sib.admin;
 
 import java.util.Set;
 
+import com.ibm.ws.messaging.security.RuntimeSecurityService;
 import com.ibm.ws.sib.utils.SIBUuid8;
 /**
  * Interface to support the concept of a SIB Messaging Engine.
@@ -290,5 +291,8 @@ public interface JsMessagingEngine {
     
     public long getMEThreshold();
 
-
+    /**
+     * @return the single, invariant RuntimeSecurityService.
+     */
+    public RuntimeSecurityService getRuntimeSecurityservice();
 }

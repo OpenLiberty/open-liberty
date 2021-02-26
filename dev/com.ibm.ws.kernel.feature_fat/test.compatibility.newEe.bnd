@@ -1,0 +1,9 @@
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0.0
+
+Bundle-SymbolicName: test.compatibility.newEe
+Bundle-Description: test feature bundle for jakarta ee version compatibility
+
+Private-Package: test.compatibility
+
+Bundle-Activator: test.compatibility.Activator

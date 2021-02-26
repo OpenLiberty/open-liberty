@@ -1,0 +1,14 @@
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0.0
+allow.bundle-version.override=true
+Bundle-Name: Simple test WAB
+Bundle-SymbolicName: test.wab1
+Bundle-Version: ${bVersion}
+Bundle-Description: Simple test WAB; version=${bVersion}
+Private-Package: test.wab1
+Web-ContextPath: @WAB1
+
+Include-Resource:\
+    WEB-INF/web.xml=test-bundles/test.wab1/resources/WEB-INF/web.xml, \
+    hello.html=test-bundles/test.wab1/resources/hello.html, \
+    OSGI-INF/internal.txt=test-bundles/test.wab1/resources/OSGI-INF/internal.txt

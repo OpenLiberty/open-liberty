@@ -11,8 +11,6 @@
 package com.ibm.ws.microprofile.graphql.authorization.component;
 
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.annotation.Priority;
 import javax.enterprise.context.Dependent;

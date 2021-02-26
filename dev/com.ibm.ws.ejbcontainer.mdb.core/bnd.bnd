@@ -17,6 +17,7 @@ publish.wlp.jar.disabled: true
 
 -buildpath: \
 	com.ibm.ws.ejbcontainer.core;version=latest,\
+	com.ibm.ws.ejbcontainer.remote.portable.core;version=latest,\
 	com.ibm.ws.logging;version=latest,\
 	com.ibm.websphere.javaee.ejb.3.1;version=latest,\
 	com.ibm.ws.container.service;version=latest,\

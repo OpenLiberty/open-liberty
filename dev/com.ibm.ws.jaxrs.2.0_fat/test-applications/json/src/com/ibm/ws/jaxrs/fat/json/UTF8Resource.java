@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
@@ -39,5 +40,13 @@ public class UTF8Resource {
         countries.add(new Country("DK", "danmark"));
         countries.add(new Country("EG", "ægypten"));
         return countries.toArray(new Country[countries.size()]);
+    }
+
+    @POST
+    @Path("/returnCapital")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String returnCapital(CountryInfo countryInfo) {
+        // should blow up trying to read invalid json from client
+        return countryInfo.capital;
     }
 }

@@ -16,7 +16,6 @@
     <httpSessionCache libraryRef="InfinispanLib" writeContents="GET_AND_SET_ATTRIBUTES" uri="file:///${shared.resource.dir}/infinispan/infinispan-com-ibm-configuration.xml">
         <properties/>
     </httpSessionCache>
-    <httpSessionCache enableBetaSupportForInfinispan="true"/> <!-- TODO remove once no longer gated -->
 
     <library id="InfinispanLib">
         <fileset dir="${shared.resource.dir}/infinispan" includes="*.jar"/>

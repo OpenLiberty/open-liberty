@@ -58,7 +58,7 @@ public class TranTest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().forServers("com.ibm.ws.injection.fat.TranServer")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.injection.fat.TranServer")).andWith(new JakartaEE9Action().forServers("com.ibm.ws.injection.fat.TranServer"));
+    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().fullFATOnly().forServers("com.ibm.ws.injection.fat.TranServer")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.injection.fat.TranServer")).andWith(new JakartaEE9Action().forServers("com.ibm.ws.injection.fat.TranServer"));
 
     @BeforeClass
     public static void setUp() throws Exception {

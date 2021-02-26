@@ -11,15 +11,11 @@
 // NOTE: This is a generated file. Do not edit it directly.
 package com.ibm.ws.javaee.ddmodel.webext;
 
+import java.util.Map;
+
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
-import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferenceCardinality;
-import org.osgi.service.component.annotations.ReferencePolicy;
-import java.util.Map;
-import java.util.ArrayList;
-import java.util.List;
 
 @Component(configurationPid = "com.ibm.ws.javaee.dd.webext.MimeFilter",
      configurationPolicy = ConfigurationPolicy.REQUIRE,

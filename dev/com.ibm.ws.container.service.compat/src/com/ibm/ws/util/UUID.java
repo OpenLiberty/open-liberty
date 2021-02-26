@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1999, 2016 IBM Corporation and others.
+ * Copyright (c) 1999, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,23 +22,20 @@ import com.ibm.ejs.ras.TraceComponent;
 /* ************************************************************************** */
 /**
  * A Universally unique identifier for use at runtime.
- * 
+ *
  * The UUID is an immutable object, it is NOT serializable (but can be converted
  * to and constructed from a byte array), but is clonable (but the clone method
  * just returns "this")
- * 
+ *
  * The UUIDs are comparable, but this just establishes an ordering amongst them,
  * the ordering has no semantic meaning (e.g. they are NOT time ordered).
- * 
+ *
  * @author David Vines
- * 
+ *
  */
 /* ************************************************************************** */
-public class UUID implements Cloneable, Comparable
-{
+public class UUID implements Cloneable, Comparable {
     private static final TraceComponent tc = Tr.register(UUID.class, null, null);
-
-    private static final String SCCSID = "@(#) 1.9 ws/code/utils/src/com/ibm/ws/util/UUID.java, WAS.utils, ASV 3/5/04 11:40:54 [9/7/12 10:20:04]";
 
     private static final Object _LOCK = new Object(); // For synchronization
 
@@ -73,19 +70,18 @@ public class UUID implements Cloneable, Comparable
     /* ------------------------------------------------------------------------ */
     /**
      * Generate a new uuid
-     * 
+     *
      * @author David Vines
-     * 
+     *
      */
     /* ------------------------------------------------------------------------ */
-    public UUID()
-    {
+    public UUID() {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "UUID");
 
         /**************************************************************************
          * UUID Format: LLLLLLLL-MMMM-HHHH-SSSS-PPPPIIIIIIII
-         * 
+         *
          * LLLLLLLL Low 32 bits of timestamp, represented in big-endian order
          * MMMM mid 16 bits of timestamp, represented in big-endian order
          * HHHH high 16 bits of timestamp, divided into
@@ -104,8 +100,7 @@ public class UUID implements Cloneable, Comparable
 
         // set last timestamp and current clock sequence
         // Need mutex semaphor to protect last timestamp and clockSeq
-        synchronized (_LOCK)
-        {
+        synchronized (_LOCK) {
             /* Get time since 00:00:00 GMT, 01/01/70 (64-bit timestamp). */
             time = getTime();
 
@@ -114,8 +109,7 @@ public class UUID implements Cloneable, Comparable
 
             // Check to see if this UUID is being generated in the same time
             // slice as the last one.
-            if (_lastTime == time)
-            {
+            if (_lastTime == time) {
                 // The generation is being doing in the same time slice so
                 // use clockSeq to distinguish between the two UUIDs.
 
@@ -127,20 +121,17 @@ public class UUID implements Cloneable, Comparable
                 // The ourSeq portion of the UUID is only 13 bits in length
                 // 2^13 = 8192 so we must wrap clockSeq to zero once it reaches
                 // 8192 and ensure that we (and all other threads waiting for
-                // the _LOCK) wait for long enough to make the time change. 
-                if (_clockSeq == 8192)
-                {
+                // the _LOCK) wait for long enough to make the time change.
+                if (_clockSeq == 8192) {
                     _clockSeq = 0;
 
                     time = getTime();
 
                     while (_lastTime == time) // If you're lucky the time's already moved on!
                     {
-                        try
-                        {
+                        try {
                             Thread.sleep(1);
-                        } catch (InterruptedException e)
-                        {
+                        } catch (InterruptedException e) {
                             com.ibm.ws.ffdc.FFDCFilter.processException(e, "com.ibm.ws.util.UUID.<init>", "166");
 
                             // We just want the time to change, so no action is required.
@@ -152,14 +143,12 @@ public class UUID implements Cloneable, Comparable
                     // We've moved into a new time slice so update _lastTime
                     _lastTime = time;
                 }
-            }
-            else
-            {
+            } else {
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "Times do no match");
 
                 // We reset clockSeq to zero as we are in a new time slice. By doing
-                // this we minimize the chance of it reaching 8192 during the slice.                
+                // this we minimize the chance of it reaching 8192 during the slice.
                 _clockSeq = 0;
 
                 // Record the new time slice that we're now working in
@@ -201,26 +190,23 @@ public class UUID implements Cloneable, Comparable
      * (Re)construct the uuid from an array of bytes. In this case it is
      * up to the user of the constructor to ensure that the UUID is still used
      * correctly if used to identify unique object etc.
-     * 
+     *
      * @author David Vines
-     * 
+     *
      * @param bytes The 16 byte array from which to reconstruct the uuid
      */
     /* ------------------------------------------------------------------------ */
-    public UUID(byte[] bytes)
-    {
+    public UUID(byte[] bytes) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "UUID", com.ibm.ejs.util.Util.toHexString(bytes));
 
-        if (bytes == null)
-        {
+        if (bytes == null) {
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "UUID", "NullPointerException");
             throw new NullPointerException();
         }
 
-        if (bytes.length != 16)
-        {
+        if (bytes.length != 16) {
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "Unexpected format byte[] length != 16");
 
@@ -235,9 +221,7 @@ public class UUID implements Cloneable, Comparable
             _cachedString = com.ibm.ejs.util.Util.toHexString(bytes);
 
             _unexpectedFormat = true;
-        }
-        else
-        {
+        } else {
             // clone the array for safety & immutability
             byte[] cloned = new byte[16];
             System.arraycopy(bytes, 0, cloned, 0, 16);
@@ -255,14 +239,13 @@ public class UUID implements Cloneable, Comparable
     /**
      * (Re)construct from the string representation. Again it is up to the
      * user of the constructor to ensure that the UUID is used corrected
-     * 
+     *
      * @author David Vines
-     * 
+     *
      * @param string The string form of the uuid
      */
     /* ------------------------------------------------------------------------ */
-    public UUID(String string)
-    {
+    public UUID(String string) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "UUID", string);
 
@@ -296,14 +279,13 @@ public class UUID implements Cloneable, Comparable
     /**
      * Complete construction of the uuid from the byte array form of the
      * uuid
-     * 
+     *
      * @author David Vines
-     * 
+     *
      * @param bytes The byte array version of the uuid
      */
     /* ------------------------------------------------------------------------ */
-    protected void fillFromBytes(byte[] bytes)
-    {
+    protected void fillFromBytes(byte[] bytes) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "fillFromBytes", com.ibm.ejs.util.Util.toHexString(bytes));
 
@@ -335,15 +317,14 @@ public class UUID implements Cloneable, Comparable
     /* ------------------------------------------------------------------------ */
     /**
      * Convert the uuid into a string
-     * 
+     *
      * @author David Vines
-     * 
+     *
      * @return String Description of returned value
      */
     /* ------------------------------------------------------------------------ */
     @Override
-    public String toString()
-    {
+    public String toString() {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "toString");
 
@@ -351,8 +332,7 @@ public class UUID implements Cloneable, Comparable
         // cached strings, we may end up with two identical strings, one of which
         // is cached, while the other thread uses the second. Since the strings are
         // identical, this does not cause a problem!
-        if (_cachedString == null)
-        {
+        if (_cachedString == null) {
             /* Format the string. */
             char[] string = new char[36];
 
@@ -407,16 +387,15 @@ public class UUID implements Cloneable, Comparable
     /* ------------------------------------------------------------------------ */
     /**
      * Test if some other object is equal to this uuid
-     * 
+     *
      * @author David Vines
-     * 
+     *
      * @param other The other object to be tested
      * @return boolean Return true if the other object is equal to this one
      */
     /* ------------------------------------------------------------------------ */
     @Override
-    public boolean equals(Object object)
-    {
+    public boolean equals(Object object) {
         if (this == object)
             return true;
         if (object == null)
@@ -426,8 +405,7 @@ public class UUID implements Cloneable, Comparable
 
         final UUID other = (UUID) object;
 
-        if (_unexpectedFormat)
-        {
+        if (_unexpectedFormat) {
             // This UUID was constructed from a byte[] of
             // an unexpected format. _uuidHigh and _uuidLow
             // have not been initialized so instead we perform
@@ -450,21 +428,17 @@ public class UUID implements Cloneable, Comparable
     /**
      * Return the hashcode of this object. Note that if two objects are equals()
      * each other, their hashCodes must be the same
-     * 
+     *
      * @author David Vines
-     * 
+     *
      * @return int Description of returned value
      */
     /* ------------------------------------------------------------------------ */
     @Override
-    public int hashCode()
-    {
-        if (_unexpectedFormat)
-        {
-            if (!_hashed)
-            {
-                for (int i = 0; i < _cachedBytes.length; i++)
-                {
+    public int hashCode() {
+        if (_unexpectedFormat) {
+            if (!_hashed) {
+                for (int i = 0; i < _cachedBytes.length; i++) {
                     _hashCode += _cachedBytes[i];
                 }
 
@@ -472,9 +446,7 @@ public class UUID implements Cloneable, Comparable
             }
 
             return _hashCode;
-        }
-        else
-        {
+        } else {
             return (int) _uuidHigh;
         }
     }
@@ -484,14 +456,13 @@ public class UUID implements Cloneable, Comparable
     /* ------------------------------------------------------------------------ */
     /**
      * Convert the UUID into a byte array
-     * 
+     *
      * @author David Vines
-     * 
+     *
      * @return byte[] A byte array version of the uuid
      */
     /* ------------------------------------------------------------------------ */
-    public byte[] toByteArray()
-    {
+    public byte[] toByteArray() {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "toByteArray");
 
@@ -499,8 +470,7 @@ public class UUID implements Cloneable, Comparable
         // cached arrays, we may end up with two identical arrays, one of which
         // is cached, while the other thread uses the second. Since the contents of
         // the arrays are identical, this does not cause a problem!
-        if (_cachedBytes == null)
-        {
+        if (_cachedBytes == null) {
             _cachedBytes = new byte[16];
 
             _cachedBytes[0] = (byte) ((_uuidHigh & 0xFF00000000000000L) >>> 56);
@@ -535,9 +505,9 @@ public class UUID implements Cloneable, Comparable
      * the other object return a negative number, if this object is equal
      * to the other object object and if this object comes after the other
      * object return a positive number
-     * 
+     *
      * @author David Vines
-     * 
+     *
      * @param obj The other object with which to compare this object
      * @return int A negative integer if this object is less than obj, 0 if this
      *         object is equals to obj and a positive integer if this object is
@@ -545,8 +515,7 @@ public class UUID implements Cloneable, Comparable
      */
     /* ------------------------------------------------------------------------ */
     @Override
-    public int compareTo(Object obj)
-    {
+    public int compareTo(Object obj) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "compareTo", obj);
 
@@ -554,24 +523,18 @@ public class UUID implements Cloneable, Comparable
 
         int result = 0;
 
-        if (equals(other))
-        {
+        if (equals(other)) {
             result = 0;
-        }
-        else if (_unexpectedFormat)
-        {
+        } else if (_unexpectedFormat) {
             // This UUID is in an unexpected format so we do not have
             // uuidHigh and uuidLow to compare. Instead we compare the
             // two UUID's hash codes (the sum of each byte of their
             // byte array form).
             result = Integer.valueOf(hashCode()).compareTo(Integer.valueOf(other.hashCode()));
-        }
-        else
-        {
+        } else {
             result = Long.valueOf(_uuidHigh).compareTo(Long.valueOf(other._uuidHigh));
 
-            if (result == 0)
-            {
+            if (result == 0) {
                 result = Long.valueOf(_uuidLow).compareTo(Long.valueOf(other._uuidLow));
             }
         }
@@ -586,13 +549,12 @@ public class UUID implements Cloneable, Comparable
     /* ---------------------------------------------------------------------- */
     /**
      * Creates a copy of this object.
-     * 
+     *
      * @return Object new utility object
      */
     /* ---------------------------------------------------------------------- */
     @Override
-    public Object clone()
-    {
+    public Object clone() {
         // Since this UUID is immutable, we can return ourselves as the clone
         return this;
     }
@@ -602,20 +564,16 @@ public class UUID implements Cloneable, Comparable
     /* ------------------------------------------------------------------------ */
     /**
      * Determine if this UUID was created with the current version
-     * 
+     *
      * @author David Vines
-     * 
+     *
      * @return boolean true if this UUID was created with the current version
      */
     /* ------------------------------------------------------------------------ */
-    public boolean isCurrentVersion()
-    {
-        if (_unexpectedFormat)
-        {
+    public boolean isCurrentVersion() {
+        if (_unexpectedFormat) {
             return false;
-        }
-        else
-        {
+        } else {
             return ((_uuidHigh & _VERSION_MASK) == _CURRENT_VERSION_ID);
         }
     }
@@ -625,21 +583,17 @@ public class UUID implements Cloneable, Comparable
     /* ------------------------------------------------------------------------ */
     /**
      * Determine if this UUID was created with an old (but recognised) version
-     * 
+     *
      * @author David Vines
-     * 
+     *
      * @return boolean true if this UUID was created with an old (but recognised) version
-     * 
+     *
      */
     /* ------------------------------------------------------------------------ */
-    public boolean isOldVersion()
-    {
-        if (_unexpectedFormat)
-        {
+    public boolean isOldVersion() {
+        if (_unexpectedFormat) {
             return false;
-        }
-        else
-        {
+        } else {
             final long version = _uuidHigh & _VERSION_MASK;
 
             return (version >= _OLD_VERSION_ID && version < _CURRENT_VERSION_ID);
@@ -653,36 +607,33 @@ public class UUID implements Cloneable, Comparable
      * Return a 16-bit unique identifier for this classloader. The identifier
      * needs to be unique being all class loaders on this IP address (i.e. the
      * uniqueness needs to extend between two JVMs on the same IP address).
-     * 
+     *
      * <p><b>Note:</b>In an environment where RAS is available - server, J2EE
      * client environment we can correctly ascertain the PID. However in any other
      * environment, e.g. thin client we have no good way to do this so we get
      * a random number and hope....)
-     * 
+     *
      * @author David Vines
-     * 
+     *
      * @return short The process's PID or a random value if the PID could not
      *         be determined
      */
     /* ------------------------------------------------------------------------ */
-    private static int getPID()
-    {
+    private static int getPID() {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "getPID");
 
         short spid = 0;
         int ipid = 0;
 
-        try
-        {
+        try {
             spid = Short.parseShort(com.ibm.ejs.ras.RasHelper.getProcessId());
-        } catch (Throwable t)
-        {
+        } catch (Throwable t) {
             // No FFDC code needed.
 
             if (tc.isEventEnabled())
                 Tr.event(tc, "Caught throwable parsing PID", t);
-            spid = (short) (new java.util.Random().nextInt() & 0x0000FFFF); // (i.e. keep 16 bits)
+            spid = (short) (new java.security.SecureRandom().nextInt() & 0x0000FFFF); // (i.e. keep 16 bits)
         }
 
         // Convert the spid value (a 16 bit short that could be posivive or negative)
@@ -726,16 +677,14 @@ public class UUID implements Cloneable, Comparable
     // 00001001 00010100 11011001 00001100
     //
     // Which as a base 10 int is 152361228  - the method's
-    // return value when the IP address is 9.20.217.12 
-    private static long getIPAddress()
-    {
+    // return value when the IP address is 9.20.217.12
+    private static long getIPAddress() {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "getIPAddress");
 
         int lower32Bits = 0;
 
-        try
-        {
+        try {
             final byte[] address = AccessController.doPrivileged(new PrivilegedExceptionAction<byte[]>() {
                 @Override
                 public byte[] run() throws UnknownHostException {
@@ -755,7 +704,7 @@ public class UUID implements Cloneable, Comparable
                 Tr.event(tc, "Exception caught getting host address.", paex.getCause());
 
             // Try random number instead!
-            lower32Bits = new java.util.Random().nextInt();
+            lower32Bits = new java.security.SecureRandom().nextInt();
         } catch (Exception e) // Host address unavailable
         {
             com.ibm.ws.ffdc.FFDCFilter.processException(e, "com.ibm.ws.util.UUID.getIPAddress", "661");
@@ -763,7 +712,7 @@ public class UUID implements Cloneable, Comparable
                 Tr.event(tc, "Exception caught getting host address.", e);
 
             // Try random number instead!
-            lower32Bits = new java.util.Random().nextInt();
+            lower32Bits = new java.security.SecureRandom().nextInt();
         }
 
         final long ipAddress = lower32Bits & 0x00000000FFFFFFFFL;
@@ -781,8 +730,7 @@ public class UUID implements Cloneable, Comparable
     // Of course, between different class loaders (and JVMs) the time
     // could go backwards, but this approach stops NTP from causing
     // duplicate UUID during a run
-    private static long getTime()
-    {
+    private static long getTime() {
         return _CLASS_LOAD_SYSTEM_TIME + (System.nanoTime() - _CLASS_LOAD_NANO_TIME) / NANOS_IN_A_MILLISECOND;
     }
 }

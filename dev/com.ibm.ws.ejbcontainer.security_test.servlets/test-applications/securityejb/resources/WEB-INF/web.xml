@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*******************************************************************************
+ * Copyright (c) 2020 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+-->
+<web-app id="SecurityEJBServlet" version="3.0" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+
+  <display-name>SecurityEJBServlet</display-name>
+  <description>This is a servlet to test EJBs</description>
+
+  <!-- SERVLET DEFINITIONS -->
+  <servlet id="Default_Servlet_1">
+    <description>SecurityEJBServlet to be used in the PureAnnA0x tests</description>
+    <display-name>SecurityEJBServlet</display-name>
+    <servlet-name>SecurityEJBServlet</servlet-name>
+    <servlet-class>web.SecurityEJBServlet</servlet-class>
+    <load-on-startup></load-on-startup>
+  </servlet>
+  <servlet id="RunAs_Servlet_2">
+    <description>SecurityEJBRunAsServlet</description>
+    <display-name>SecurityEJBRunAsServlet</display-name>
+    <servlet-name>SecurityEJBRunAsServlet</servlet-name>
+    <servlet-class>web.SecurityEJBRunAsServlet</servlet-class>
+    <load-on-startup></load-on-startup>
+  </servlet>
+  <servlet id="ejbjarXML_Servlet_3">
+    <description>SecurityEJBXMLServlet</description>
+    <display-name>SecurityEJBXMLServlet</display-name>
+    <servlet-name>SecurityEJBXMLServlet</servlet-name>
+    <servlet-class>web.SecurityEJBXMLServlet</servlet-class>
+    <load-on-startup></load-on-startup>
+  </servlet>
+  <servlet id="ejbjarMC_Servlet_4">
+    <description>SecurityEJBMCServlet</description>
+    <display-name>SecurityEJBMCServlet</display-name>
+    <servlet-name>SecurityEJBMCServlet</servlet-name>
+    <servlet-class>web.SecurityEJBMCServlet</servlet-class>
+    <load-on-startup></load-on-startup>
+  </servlet>
+  <servlet id="ejbjarMC_Servlet_5">
+    <description>SecurityEJBStandaloneServlet</description>
+    <display-name>SecurityEJBStandaloneServlet</display-name>
+    <servlet-name>SecurityEJBStandaloneServlet</servlet-name>
+    <servlet-class>web.SecurityEJBStandaloneServlet</servlet-class>
+    <load-on-startup></load-on-startup>
+  </servlet>
+  <servlet id="ejbjar_NoAuth_Servlet_5">
+    <servlet-name>SecurityEJBNoAuthServlet</servlet-name>
+    <display-name>SecurityEJBNoAuthServlet</display-name>
+    <description>SecurityEJBNoAuthServlet</description>
+    <servlet-class>web.SecurityEJBNoAuthServlet</servlet-class>
+    <load-on-startup></load-on-startup>
+  </servlet>
+  <servlet id="ejbjarXML_NoAuth_Servlet_6">
+    <servlet-name>SecurityEJBXMLNoAuthServlet</servlet-name>
+    <display-name>SecurityEJBXMLNoAuthServlet</display-name>
+    <description>SecurityEJBXMLNoAuthServlet</description>
+    <servlet-class>web.SecurityEJBXMLNoAuthServlet</servlet-class>
+    <load-on-startup></load-on-startup>
+  </servlet>
+  <!-- SERVLET MAPPINGS -->        
+  <servlet-mapping id="Default_Servlet_Mapping_1">
+    <servlet-name>SecurityEJBServlet</servlet-name>
+    <url-pattern>/SimpleServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping id="RunAs_Servlet_Mapping_1">
+    <servlet-name>SecurityEJBRunAsServlet</servlet-name>
+    <url-pattern>/SimpleRunAsServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping id="ejbjarXML_Servlet_Mapping_1">
+    <servlet-name>SecurityEJBXMLServlet</servlet-name>
+    <url-pattern>/SimpleXMLServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping id="ejbjarMC_Servlet_Mapping_1">
+    <servlet-name>SecurityEJBMCServlet</servlet-name>
+    <url-pattern>/SimpleMCServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping id="ejbjarSA_Servlet_Mapping_1">
+    <servlet-name>SecurityEJBStandaloneServlet</servlet-name>
+    <url-pattern>/SimpleStandaloneServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping id="Default_Servlet_NoAuth_Mapping_1">
+    <servlet-name>SecurityEJBNoAuthServlet</servlet-name>
+    <url-pattern>/SimpleNoAuthServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping id="ejbjarXML_Servlet_NoAuth_Mapping_1">
+    <servlet-name>SecurityEJBXMLNoAuthServlet</servlet-name>
+    <url-pattern>/SimpleXMLNoAuthServlet</url-pattern>
+  </servlet-mapping>
+  
+  <!-- SECURITY CONSTRAINTS -->  
+  <security-constraint id="SecurityConstraint_Ann_Default">
+     <web-resource-collection id="WebResourceCollection_Default">
+        <web-resource-name>Protected with all authenticated</web-resource-name>
+        <url-pattern>/SimpleServlet</url-pattern>
+        <http-method>GET</http-method>
+        <http-method>POST</http-method>
+     </web-resource-collection>
+     <auth-constraint id="AuthConstraint_Default">
+        <role-name>AllAuthenticated</role-name>
+     </auth-constraint>
+  </security-constraint>
+    <security-constraint id="SecurityConstraint_RunAs">
+     <web-resource-collection id="WebResourceCollection_RunAS">
+        <web-resource-name>Protected with all authenticated</web-resource-name>
+        <url-pattern>/SimpleRunAsServlet</url-pattern>
+        <http-method>GET</http-method>
+        <http-method>POST</http-method>
+     </web-resource-collection>
+     <auth-constraint id="AuthConstraint_RunAs">
+        <role-name>AllAuthenticated</role-name>
+     </auth-constraint>
+  </security-constraint>
+  <security-constraint id="SecurityConstraint_XML">
+     <web-resource-collection id="WebResourceCollection_XML">
+        <web-resource-name>Protected with all authenticated</web-resource-name>
+        <url-pattern>/SimpleXMLServlet</url-pattern>
+        <http-method>GET</http-method>
+        <http-method>POST</http-method>
+     </web-resource-collection>
+     <auth-constraint id="AuthConstraint_XML">
+        <role-name>AllAuthenticated</role-name>
+     </auth-constraint>
+  </security-constraint>
+  <security-constraint id="SecurityConstraint_MC">
+     <web-resource-collection id="WebResourceCollection_MC">
+        <web-resource-name>Protected with all authenticated</web-resource-name>
+        <url-pattern>/SimpleMCServlet</url-pattern>
+        <http-method>GET</http-method>
+        <http-method>POST</http-method>
+     </web-resource-collection>
+     <auth-constraint id="AuthConstraint_MC">
+        <role-name>AllAuthenticated</role-name>
+     </auth-constraint>
+  </security-constraint>
+  <security-constraint id="SecurityConstraint_SA">
+     <web-resource-collection id="WebResourceCollection_SA">
+        <web-resource-name>Protected with all authenticated</web-resource-name>
+        <url-pattern>/SimpleStandaloneServlet</url-pattern>
+        <http-method>GET</http-method>
+        <http-method>POST</http-method>
+     </web-resource-collection>
+     <auth-constraint id="AuthConstraint_SA">
+        <role-name>AllAuthenticated</role-name>
+     </auth-constraint>
+  </security-constraint>
+     <security-constraint id="SecurityConstraint_NoAuth">
+     <web-resource-collection id="WebResourceCollection_NoAuth">
+        <web-resource-name>Not protected, no authentication</web-resource-name>
+        <url-pattern>/SimpleNoAuthServlet</url-pattern>
+        <http-method>GET</http-method>
+        <http-method>POST</http-method>
+     </web-resource-collection>
+  </security-constraint>
+  <security-constraint id="SecurityConstraint_XML_NoAuth">
+     <web-resource-collection id="WebResourceCollection_XML_NoAuth">
+        <web-resource-name>Not protected, no authentication</web-resource-name>
+        <url-pattern>/SimpleXMLNoAuthServlet</url-pattern>
+        <http-method>GET</http-method>
+        <http-method>POST</http-method>
+     </web-resource-collection>
+  </security-constraint>
+   <login-config id="LoginConfig_1">
+  	<auth-method>BASIC</auth-method>
+    <realm-name>Basic Authentication</realm-name>
+  </login-config>
+  
+  <security-role id="SecurityRole_1">
+     <description>AllAuthenticated role</description>
+     <role-name>AllAuthenticated</role-name>
+  </security-role>
+  <security-role id="SecurityRole_2">
+     <description>Manager role</description>
+     <role-name>Manager</role-name>
+  </security-role>
+  
+</web-app>

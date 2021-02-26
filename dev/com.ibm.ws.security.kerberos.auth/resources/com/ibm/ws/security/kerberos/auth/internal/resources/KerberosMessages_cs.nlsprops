@@ -1,0 +1,27 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.kerberos.auth/resources/com/ibm/ws/security/kerberos/auth/internal/resources/KerberosMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Kerberos Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# For any new messages reserve a code from the nlsprops file in the com.ibm.ws.security.kerberos.java8 bundle
+
+KRB5_FILE_NOT_FOUND_CWWKS4345E=CWWKS4345E: Atribut [{0}] z prvku {1} je nakonfigurov\u00e1n k souboru, kter\u00fd neexistuje v: {2}
+KRB5_FILE_NOT_FOUND_CWWKS4345E.explanation=Konfigurace odkazuje na soubor, kter\u00fd neexistuje, nebo jej nelze p\u0159e\u010d\u00edst.
+KRB5_FILE_NOT_FOUND_CWWKS4345E.useraction=Ujist\u011bte se, \u017ee konfigurace ukazuje na soubor, kter\u00fd existuje a kter\u00fd je \u010diteln\u00fd pro proces aplikace.
+
+KRB5_FILE_FOUND_CWWKS4346I=CWWKS4346I: Komponenta Kerberos je nakonfigurov\u00e1na pro pou\u017eit\u00ed souboru {0} um\u00edst\u011bn\u00e9ho v {1}
+KRB5_FILE_FOUND_CWWKS4346I.explanation=Nakonfigurovan\u00fd soubor byl \u00fasp\u011b\u0161n\u011b um\u00edst\u011bn.
+KRB5_FILE_FOUND_CWWKS4346I.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.

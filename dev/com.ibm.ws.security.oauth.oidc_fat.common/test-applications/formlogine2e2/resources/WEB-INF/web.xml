@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2020 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<web-app id="FormLoginE2E" version="3.0" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+  <display-name>Form Login servlets and JSPs</display-name>
+  <description>This is for servlets and JSPs to test form login.</description>
+
+  <!-- SERVLET DEFINITIONS -->
+  <servlet id="Servlet_1">
+    <servlet-name>FormLoginServletE2E1</servlet-name>
+    <display-name>FormLoginServletE2E1</display-name>
+    <description>FormLoginServletE2E1</description>
+    <servlet-class>web.FormLoginServletE2E1</servlet-class>    
+    <load-on-startup></load-on-startup>
+    <security-role-ref>
+      <role-name>MappedToEmployee</role-name>
+      <role-link>Employee</role-link>
+    </security-role-ref>
+    <security-role-ref>
+      <role-name>MappedToManager</role-name>
+      <role-link>Manager</role-link>
+    </security-role-ref>
+  </servlet>
+
+  <servlet id="Servlet_2">
+    <servlet-name>FormLoginServletE2E2</servlet-name>
+    <display-name>FormLoginServletE2E2</display-name>
+    <description>FormLoginServletE2E2</description>
+    <servlet-class>web.FormLoginServletE2E2</servlet-class>    
+    <load-on-startup></load-on-startup>
+    <security-role-ref>
+      <role-name>MappedToEmployee</role-name>
+      <role-link>Employee</role-link>
+    </security-role-ref>
+    <security-role-ref>
+      <role-name>MappedToManager</role-name>
+      <role-link>Manager</role-link>
+    </security-role-ref>
+  </servlet>
+
+  <!-- SERVLET MAPPINGS -->        
+  <servlet-mapping id="ServletMapping_1">
+    <servlet-name>FormLoginServletE2E1</servlet-name>
+    <url-pattern>/SimpleServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping id="ServletMapping_2">
+    <servlet-name>FormLoginServletE2E2</servlet-name>
+    <url-pattern>/SimpleServlet2</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping id="ServletMapping_3">
+    <servlet-name>FormLoginServletE2E1</servlet-name>
+    <url-pattern>/EmployeeRoleServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping id="ServletMapping_4">
+    <servlet-name>FormLoginServletE2E1</servlet-name>
+    <url-pattern>/NoOneRoleServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping id="ServletMapping_5">
+    <servlet-name>FormLoginServletE2E1</servlet-name>
+    <url-pattern>/ManagerRoleServlet</url-pattern>
+  </servlet-mapping>
+
+  <!-- SECURITY CONSTRAINTS -->  
+  <security-constraint id="SecurityConstraint_1">
+     <web-resource-collection id="WebResourceCollection_1">
+        <web-resource-name>Protected with Employee or Manager roles</web-resource-name>
+        <url-pattern>/SimpleServlet</url-pattern>
+        <http-method>GET</http-method>
+        <http-method>POST</http-method>
+     </web-resource-collection>
+  </security-constraint>
+  <security-constraint id="SecurityConstraint_2">
+     <web-resource-collection id="WebResourceCollection_2">
+        <web-resource-name>Protected with Employee or Manager roles</web-resource-name>
+        <url-pattern>/SimpleServlet2</url-pattern>
+        <http-method>GET</http-method>
+        <http-method>POST</http-method>
+     </web-resource-collection>
+  </security-constraint>
+  <security-constraint id="SecurityConstraint_3">
+     <web-resource-collection id="WebResourceCollection_3">
+        <web-resource-name>Proteced with Employee role</web-resource-name>
+        <url-pattern>/EmployeeRoleServlet</url-pattern>
+        <http-method>GET</http-method>
+        <http-method>POST</http-method>
+     </web-resource-collection>
+  </security-constraint>
+  <security-constraint id="SecurityConstraint_4">
+     <web-resource-collection id="WebResourceCollection_4">
+        <web-resource-name>Protected with no roles.  An empty auth constraint implies NO-ONE has access</web-resource-name>
+        <url-pattern>/NoOneRoleServlet</url-pattern>
+        <http-method>GET</http-method>
+        <http-method>POST</http-method>
+     </web-resource-collection>
+  </security-constraint>
+  <security-constraint id="SecurityConstraint_5">
+     <web-resource-collection id="WebResourceCollection_5">
+        <web-resource-name>Proteced with Manager role</web-resource-name>
+        <url-pattern>/ManagerRoleServlet</url-pattern>
+        <http-method>GET</http-method>
+        <http-method>POST</http-method>
+     </web-resource-collection>
+  </security-constraint>
+
+
+  <!-- ROLES DEFINITION -->
+  <security-role id="SecurityRole_1">
+     <description>Employee role</description>
+     <role-name>Employee</role-name>
+  </security-role>       
+  <security-role id="SecurityRole_2">
+     <description>Manager role</description>
+     <role-name>Manager</role-name>
+  </security-role>
+  <security-role id="SecurityRole_3">
+     <description>AllAuthenticated role</description>
+     <role-name>AllAuthenticated</role-name>
+  </security-role>
+
+</web-app>

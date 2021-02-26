@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.ws.jsf.container.fat.FATSuite;
 
@@ -33,6 +34,7 @@ import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
+import componenttest.rules.repeater.JakartaEE9Action;
 
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
@@ -52,16 +54,26 @@ public class ErrorPathsTest extends FATServletClient {
     @ExpectedFFDC("java.lang.IllegalArgumentException")
     public void testFeatureConflict() throws Exception {
         ServerConfiguration originalConfig = server.getServerConfiguration().clone();
-        server.setServerConfigurationFile("server_" + testName.getMethodName() + ".xml");
+        server.setServerConfigurationFile("server_" + testName.getMethodName().replace("_EE9_FEATURES","") + ".xml");
         try {
-            server.startServer(testName.getMethodName() + ".log");
-            assertNotNull(server.waitForStringInLog(".* CWWKF0033E: " +
-                                                    ".* com.ibm.websphere.appserver.jsfProvider-2.3.0.[MyFaces|Container]" +
-                                                    ".* com.ibm.websphere.appserver.jsfProvider-2.3.0.[MyFaces|Container].*"));
-        } finally {
-            server.stopServer("CWWKF0033E");
-            server.updateServerConfiguration(originalConfig);
-        }
+
+            String message = ".* CWWKF0033E: " +
+                             ".* com.ibm.websphere.appserver.jsfProvider-2.3.0.[MyFaces|Container]" +
+                             ".* com.ibm.websphere.appserver.jsfProvider-2.3.0.[MyFaces|Container].*";
+            if(JakartaEE9Action.isActive()){
+
+               message = ".* CWWKF0033E: " +
+                               ".* io.openliberty.facesProvider-3.0.0.[MyFaces|Container]" +
+                               ".* io.openliberty.facesProvider-3.0.0.[MyFaces|Container].*";
+            }
+
+            server.startServer(testName.getMethodName() + ".log", true, true, false);
+            assertNotNull(server.waitForStringInLog(message));
+
+      } finally {
+              server.stopServer("CWWKF0033E|CWWKF0046W");
+              server.updateServerConfiguration(originalConfig);
+          }
     }
 
     /**
@@ -82,7 +94,7 @@ public class ErrorPathsTest extends FATServletClient {
         jsfApp = (WebArchive) ShrinkHelper.addDirectory(jsfApp, "publish/files/permissions");
         jsfApp = (WebArchive) ShrinkHelper.addDirectory(jsfApp, "test-applications/jsfApp/resources/");
         jsfApp = jsfApp.addAsLibraries(badApiJar);
-        ShrinkHelper.exportAppToServer(server, jsfApp);
+        ShrinkHelper.exportAppToServer(server, jsfApp, DeployOptions.DISABLE_VALIDATION);
         setAppInConfig(JSF_APP_BAD_API);
 
         server.startServer(testName.getMethodName() + ".log");
@@ -115,7 +127,7 @@ public class ErrorPathsTest extends FATServletClient {
                         .addAsLibraries(new File("publish/files/myfaces-libs/").listFiles());
         jsfApp = (WebArchive) ShrinkHelper.addDirectory(jsfApp, "publish/files/permissions");
 
-        ShrinkHelper.exportAppToServer(server, jsfApp);
+        ShrinkHelper.exportAppToServer(server, jsfApp, DeployOptions.DISABLE_VALIDATION);
         setAppInConfig(JSF_APP_BAD_API);
 
         server.startServer(testName.getMethodName() + ".log");
@@ -145,15 +157,22 @@ public class ErrorPathsTest extends FATServletClient {
         jsfApp = (WebArchive) ShrinkHelper.addDirectory(jsfApp, "test-applications/jsfApp/resources/");
         jsfApp = (WebArchive) ShrinkHelper.addDirectory(jsfApp, "test-applications/jsfApp/resources-myfaces/");
         jsfApp = jsfApp.addAsLibraries(badImplJar)
-                        .addAsLibraries(new File(FATSuite.MYFACES_API))
                         .addAsLibraries(new File("publish/files/myfaces-libs/").listFiles());
 
-        ShrinkHelper.exportAppToServer(server, jsfApp);
+        if(JakartaEE9Action.isActive()){
+          jsfApp.addAsLibraries(new File(FATSuite.MYFACES_API_30));
+        } else {
+          jsfApp.addAsLibraries(new File(FATSuite.MYFACES_API));
+        }
+
+        ShrinkHelper.exportAppToServer(server, jsfApp, DeployOptions.DISABLE_VALIDATION);
         setAppInConfig(JSF_APP_BAD_IMPL);
 
         server.startServer(testName.getMethodName() + ".log");
+
         try {
             assertNotNull(server.waitForStringInLog(".*JSFG0104E:.*"));
+
         } finally {
             server.stopServer(".*"); // lots of stuff will go wrong in this error path test
         }

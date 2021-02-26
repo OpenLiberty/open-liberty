@@ -1,0 +1,633 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/ValidationExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+7001=\u00dcgyf\u00e9l munkamenetek (ClientSession) beszerz\u00e9se el\u0151tt be kell jelentkeznie a kiszolg\u00e1l\u00f3 munkamenetbe (ServerSession).
+
+7002=[{0}] nev\u0171 k\u00e9szlet nem l\u00e9tezik.
+
+7003=A maxim\u00e1lis m\u00e9retnek nagyobbnak kell lennie a minim\u00e1lis m\u00e9retn\u00e9l.
+
+7004=A k\u00e9szleteket a bejelentkez\u00e9s el\u0151tt konfigur\u00e1lni kell.
+
+7008=A(z) [{0}] Java t\u00edpus nem egy \u00e9rv\u00e9nyes adatb\u00e1zist\u00edpus.
+
+7009=A(z) [{0}] le\u00edr\u00f3ja hi\u00e1nyzik.  Ellen\u0151rizze, hogy a le\u00edr\u00f3 megfelel\u0151en regisztr\u00e1lva lett-e a munkamenethez.
+
+7010=A kezd\u00e9si index k\u00edv\u00fcl van a tartom\u00e1nyon.
+
+7011=A le\u00e1ll\u00edt\u00e1si index k\u00edv\u00fcl van a tartom\u00e1nyon.
+
+7012=S\u00falyos hiba t\u00f6rt\u00e9nt.
+
+7013=Az elavult SessionManager API-t haszn\u00e1lja, \u00e9s nem tal\u00e1lhat\u00f3 EclipseLink.properties f\u00e1jl az oszt\u00e1ly\u00fatvonalon.  Nem olvashat\u00f3k be munkamenetek f\u00e1jlb\u00f3l.
+
+7017=A lesz\u00e1rmazott le\u00edr\u00f3k nem rendelkeznek azonoss\u00e1gt\u00e9rk\u00e9ppel, a sz\u00fcl\u0151ikkel k\u00f6z\u00f6set haszn\u00e1lnak
+
+7018=F\u00e1jlhiba.
+
+7023=Helytelen bejelentkez\u00e9si p\u00e9ld\u00e1ny biztos\u00edt\u00e1sa.  Egy DatabaseLogin p\u00e9ld\u00e1nyt kell megadni.
+
+7024=\u00c9rv\u00e9nytelen egyes\u00edt\u00e9si ir\u00e1nyelv.
+
+7025=A DatabaseRows eset\u00e9n az \u00e9rv\u00e9nyes kulcsok csak String \u00e9s DatabaseField t\u00edpus\u00faak lehetnek.
+
+7027=A(z) [{0}] nev\u0171 szekvencia helytelen\u00fcl van be\u00e1ll\u00edtva.  A n\u00f6vekm\u00e9nye nem felel meg az el\u0151re lefoglalt m\u00e9ret\u00e9nek.
+
+7028=A writeObject() nem enged\u00e9lyezett egy UnitOfWork elemen bel\u00fcl.
+
+7030=Az olvas\u00e1si k\u00e9szletm\u00e9ret nem \u00e1ll\u00edthat\u00f3 be bejelentkez\u00e9s ut\u00e1n.
+
+7031=Nem adhat hozz\u00e1 le\u00edr\u00f3kat egy SessionBroker elemhez.
+
+7032=Nincs regisztr\u00e1lva munkamenet a(z) [{0}] oszt\u00e1lyhoz.
+
+7033=Nincs regisztr\u00e1lva munkamenet a(z) [{0}] n\u00e9vvel.
+
+7038=Hiba t\u00f6rt\u00e9nt az \u00fczenet napl\u00f3z\u00e1sakor a munkamenetnapl\u00f3ba.
+
+7039=Nem lehet elt\u00e1vol\u00edtani \u00edr\u00e1sv\u00e9dett oszt\u00e1lyok halmaz\u00e1b\u00f3l egy be\u00e1gyazott UnitOfWork elemen bel\u00fcl. {0}Egy be\u00e1gyazott UnitOfWork \u00edr\u00e1sv\u00e9dett oszt\u00e1lyainak halmaza csak a sz\u00fcl\u0151 \u00edr\u00e1sv\u00e9dett oszt\u00e1lyainak halmaz\u00e1val egyenl\u0151 halmaz vagy annak belefoglal\u00f3 halmaza lehet.
+
+7040=Nem m\u00f3dos\u00edthat\u00f3 az \u00edr\u00e1sv\u00e9dett oszt\u00e1lyok halmaza egy UnitOfWork elemen bel\u00fcl az adott UnitOfWork haszn\u00e1lata ut\u00e1n. {0}Az \u00edr\u00e1sv\u00e9dett halmaz m\u00f3dos\u00edt\u00e1sait csak a UnitOfWork beszerz\u00e9sekor vagy k\u00f6zvetlen\u00fcl azut\u00e1n kell elv\u00e9gezni.
+
+7042=A(z) [{0}] adatb\u00e1zis platform oszt\u00e1ly nem tal\u00e1lhat\u00f3.
+
+7043=A(z) [{0}] nem tartalmaz az adatb\u00e1zishoz l\u00e9trehozand\u00f3 t\u00e1bl\u00e1kat.
+
+7044=A t\u00e1rol\u00f3oszt\u00e1ly \u00e1ltal megadott [{0}] nem haszn\u00e1lhat\u00f3 t\u00e1rol\u00f3k\u00e9nt, mivel nem val\u00f3s\u00edtja meg a Collection vagy Map oszt\u00e1lyt.
+
+7047=A t\u00e1rol\u00f3 \u00e1ltal megadott [{0}] nem ig\u00e9nyel kulcsokat.  A(z) [{1}] met\u00f3dust pr\u00f3b\u00e1lta haszn\u00e1lni.
+
+7048=Sem a p\u00e9ld\u00e1nymet\u00f3dus, sem a(z) [{0}] nev\u0171 mez\u0151 nem l\u00e9tezik a(z) [{1}] elemoszt\u00e1lyhoz, \u00e9s ez\u00e9rt nem haszn\u00e1lhat\u00f3 egy kulcs l\u00e9trehoz\u00e1s\u00e1hoz a Map sz\u00e1m\u00e1ra.
+
+7051=Hi\u00e1nyz\u00f3 [{1}] attrib\u00fatum a(z) [{0}] le\u00edr\u00f3 eset\u00e9n, amely innen ker\u00fclt megh\u00edv\u00e1sra: [{2}]
+
+7052=K\u00eds\u00e9rlet t\u00f6rt\u00e9nt a(z) [{0}] haszn\u00e1lat\u00e1ra ( a(z) [{1}]) kulcs met\u00f3dussal egy DirectCollectionMapping t\u00e1rol\u00f3jak\u00e9nt).  A useMapClass() met\u00f3dus nem haszn\u00e1lhat\u00f3, csak a useCollectionClass() API t\u00e1mogatott DirectCollectionMapping eset\u00e9n.
+
+7053=A release() met\u00f3dus megk\u00eds\u00e9rl\u00e9se egy munkamenethez, amely nem egy ClientSession.  Csak ClientSession objektumok szabad\u00edthat\u00f3k fel.
+
+7054=Az acquire() met\u00f3dus megk\u00eds\u00e9rl\u00e9se egy munkamenethez, amely nem egy ServerSession.  A ClientSession objektumok csak ServerSession objektumokb\u00f3l szerezhet\u0151k be.
+
+7055=Az optimista z\u00e1rol\u00e1s nem t\u00e1mogatott t\u00e1rolt elj\u00e1r\u00e1s el\u0151\u00e1ll\u00edt\u00e1ssal.
+
+7056=Helytelen objektum lett regisztr\u00e1lva a UnitOfWork elembe.  A(z) [{0}] objektumnak a(z) [{1}] sz\u00fcl\u0151 gyors\u00edt\u00f3t\u00e1rb\u00f3l sz\u00e1rmaz\u00f3 objektumnak kell lennie.
+
+7058=\u00c9rv\u00e9nytelen [{0}] csatol\u00f3 (DefaultConnector t\u00edpus\u00fanak kell lennie).
+
+7059=\u00c9rv\u00e9nytelen adatforr\u00e1sn\u00e9v: [{0}].
+
+7060=A(z) [{0}] adatforr\u00e1s nem szerezhet\u0151 be.
+
+7061=Kiv\u00e9tel t\u00f6rt\u00e9nt a JTS kiszolg\u00e1l\u00f3n bel\u00fcl.
+
+7062=A mez\u0151 szint\u0171 z\u00e1rol\u00e1s nem t\u00e1mogatott egy UnitOfWork hat\u00f3k\u00f6r\u00e9n k\u00edv\u00fcl.  Mez\u0151 szint\u0171 z\u00e1rol\u00e1s haszn\u00e1lat\u00e1hoz MINDEN \u00edr\u00e1shoz egy UnitOfWork haszn\u00e1lata sz\u00fcks\u00e9ges.
+
+7063=Kiv\u00e9tel t\u00f6rt\u00e9nt az EJB t\u00e1rol\u00f3n bel\u00fcl.
+
+7064=Kiv\u00e9tel t\u00f6rt\u00e9nt a reflekt\u00edv EJB els\u0151dleges kulcs kinyer\u00e9sekor.  Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az els\u0151dleges kulcs objektum helyesen van meghat\u00e1rozva. {2}Kulcs: [{0}] {2}Bean: [{1}]
+
+7065=A bean t\u00e1voli oszt\u00e1lya nem t\u00f6lthet\u0151 be, vagy nem tal\u00e1lhat\u00f3.  Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a helyes oszt\u00e1lybet\u00f6lt\u0151 van be\u00e1ll\u00edtva. {2}Bean: [{0}] {2}T\u00e1voli oszt\u00e1ly: [{1}]
+
+7066=Beanek csak egy JTS tranzakci\u00f3 jelenl\u00e9te eset\u00e9n hozhat\u00f3k l\u00e9tre vagy t\u00e1vol\u00edthat\u00f3k el. {1}Bean: [{0}]
+
+7068=A(z) [{0}] projektoszt\u00e1ly nem tal\u00e1lhat\u00f3 a(z) [{1}] projekthez az alap\u00e9rtelmezett oszt\u00e1lybet\u00f6lt\u0151 haszn\u00e1lat\u00e1val.
+
+7071=K\u00f6t\u00e9s haszn\u00e1lata n\u00e9lk\u00fcl nem haszn\u00e1lhat bemeneti/kimeneti param\u00e9tereket.
+
+7072=A(z) [{0}] adatb\u00e1zis platform oszt\u00e1ly nem tal\u00e1lhat\u00f3 a(z) [{1}] projekthez az alap\u00e9rtelmezett oszt\u00e1lybet\u00f6lt\u0151 haszn\u00e1lat\u00e1val.
+
+7073=A(z) [{0}] nev\u0171 Oracle objektumt\u00edpus nincs meghat\u00e1rozva.
+
+7074=A(z) [{0}] Oracle objektumt\u00edpusn\u00e9v nincs meghat\u00e1rozva.
+
+7075=Nincs meghat\u00e1rozva maxim\u00e1lis m\u00e9ret az Oracle [{0}] VARRAY t\u00edpushoz.  Meg kell hat\u00e1rozni egy maxim\u00e1lis m\u00e9retet.
+
+7076=A projektoszt\u00e1ly el\u0151\u00e1ll\u00edt\u00e1sakor a projekt le\u00edr\u00f3it nem szabad inicializ\u00e1lni. {1}Le\u00edr\u00f3: [{0}]
+
+7077=A BMPWrapperPolicy l\u00e9trehoz\u00e1sa sor\u00e1n megadott [{0}] home fel\u00fclet nem tartalmaz egy megfelel\u0151 findByPrimaryKey() met\u00f3dust.  L\u00e9teznie kell egy findByPrimaryKey() met\u00f3dusnak, amely felveszi a beanhez a PrimaryKey oszt\u00e1lyt.
+
+7079=A(z) [{0}] le\u00edr\u00f3ja nem tal\u00e1lhat\u00f3 a(z) [{1}] munkamenetben.  Ellen\u0151rizze a munkamenethez haszn\u00e1lt projektet.
+
+7080=FinderException t\u00f6rt\u00e9nt a(z) [{0}] bet\u00f6lt\u00e9s\u00e9re tett k\u00eds\u00e9rlet sor\u00e1n, oszt\u00e1ly: [{1}], els\u0151dleges kulcs: [{2}].
+
+7081=A(z) [{0}] \u00f6sszes\u00edt\u00e9si objektum nem regisztr\u00e1lhat\u00f3 k\u00f6zvetlen\u00fcl egy munkaegys\u00e9gben.  T\u00e1rs\u00edtani kell a forr\u00e1s (tulajdonos) objektummal.
+
+7084=A(z) [{0}] f\u00e1jl nem egy \u00e9rv\u00e9nyes t\u00edpus olvas\u00e1shoz.  A ProjectReader param\u00e9terben a telep\u00edtett XML projekt f\u00e1jlt kell megadni.
+
+7086=A(z) [{1}] munkamenetn\u00e9v [{0}] munkamenett\u00edpusa nincs megfelel\u0151en meghat\u00e1rozva.
+
+7087=A(z) [{0}] munkamenett\u00edpus nem tal\u00e1lhat\u00f3 a k\u00f6vetkez\u0151h\u00f6z: [{1}] az alap\u00e9rtelmezett oszt\u00e1lybet\u00f6lt\u0151 haszn\u00e1lat\u00e1val.
+
+7088=Nem hozhat\u00f3 l\u00e9tre a tulajdons\u00e1gf\u00e1jlban megadott [{0}] k\u00fcls\u0151 tranzakci\u00f3vez\u00e9rl\u0151 egy p\u00e9ld\u00e1nya.
+
+7089=Kiv\u00e9tel t\u00f6rt\u00e9nt a(z) [{0}] munkamenet kieg\u00e9sz\u00edt\u00e9si met\u00f3dus kikeres\u00e9sekor vagy megh\u00edv\u00e1sakor a(z) [{1}] oszt\u00e1lyhoz a(z) [{2}] param\u00e9terekkel.
+
+7091=Nem \u00e1ll\u00edthat\u00f3k be figyel\u0151oszt\u00e1lyok.
+
+7092=Nem adhat\u00f3 hozz\u00e1 egy lek\u00e9rdez\u00e9s, amelynek t\u00edpusa \u00fctk\u00f6z\u00f6k egy megl\u00e9v\u0151 lek\u00e9rdez\u00e9ssel. A hozz\u00e1adand\u00f3 lek\u00e9rdez\u00e9s: [{0}], neve: [{1}], argumentumok: [{2}]. A megl\u00e9v\u0151 lek\u00e9rdez\u00e9s: [{3}], neve: [{4}], argumentumok: [{5}].
+
+7093=A(z) [{0}] nev\u0171 lek\u00e9rdez\u00e9sben a(z) [{1}] nev\u0171 lek\u00e9rdez\u00e9si argumentum [{2}] oszt\u00e1lya nem tal\u00e1lhat\u00f3. Foglalja bele a hi\u00e1nyz\u00f3 oszt\u00e1lyt az oszt\u00e1ly\u00fatvonalba.
+
+7095=A(z) [{0}] sessions.xml er\u0151forr\u00e1s nem tal\u00e1lhat\u00f3 az er\u0151forr\u00e1s-\u00fatvonalon.  Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a SessionManager.getSession met\u00f3dusnak \u00e1tadott er\u0151forr\u00e1sn\u00e9v/\u00fatvonal \u00e9s oszt\u00e1ly\u00fatvonal helyes.  A sessions.xml f\u00e1jlt az alkalmaz\u00e1s telep\u00edtett jar arch\u00edvum\u00e1nak gy\u00f6ker\u00e9be kell belefoglalni. Ha a sessions.xml az alkalmaz\u00e1s jar arch\u00edvumban egy alk\u00f6nyvt\u00e1rban van telep\u00edtve, akkor gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az er\u0151forr\u00e1s-\u00fatvonal helyes, \u00e9s "/" elv\u00e1laszt\u00f3t haszn\u00e1l, nem pedig "\" elv\u00e1laszt\u00f3t.
+
+7096=Nem haszn\u00e1lhat\u00f3 commit() met\u00f3dus a UnitOfWork ism\u00e9telt v\u00e9gleges\u00edt\u00e9s\u00e9re.
+
+7097=A m\u0171velet nem t\u00e1mogatott: [{0}].
+
+7099=A(z) [{0}] telep\u00edt\u00e9si projekt XML er\u0151forr\u00e1s nem tal\u00e1lhat\u00f3 az er\u0151forr\u00e1s-\u00fatvonalon.  Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a XMLProjectReader elemnek \u00e1tadott er\u0151forr\u00e1sn\u00e9v/\u00fatvonal \u00e9s oszt\u00e1ly\u00fatvonal helyes.  A projekt XML f\u00e1jlt az alkalmaz\u00e1s telep\u00edtett jar arch\u00edvum\u00e1nak gy\u00f6ker\u00e9be kell belefoglalni. Ha a projekt XML az alkalmaz\u00e1s jar arch\u00edvumban egy alk\u00f6nyvt\u00e1rban van telep\u00edtve, akkor gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az er\u0151forr\u00e1s-\u00fatvonal helyes, \u00e9s "/" elv\u00e1laszt\u00f3t haszn\u00e1l, nem pedig "\" elv\u00e1laszt\u00f3t.
+
+7100=A(z) [{0}] nev\u0171 munkamenet nem tal\u00e1lhat\u00f3 a session.xml f\u00e1jlban [{1}]
+
+7101=Nem tal\u00e1lhat\u00f3 "meta-inf/eclipselink-ejb-jar.xml" az oszt\u00e1ly\u00fatvonalon.  A CMP munkamenet nem olvashat\u00f3 be f\u00e1jlb\u00f3l.
+
+7102=A program null\u00e9rt\u00e9kbe \u00fctk\u00f6z\u00f6tt egy gyors\u00edt\u00f3t\u00e1rkulcs eset\u00e9n, mik\u00f6zben megk\u00eds\u00e9relt elt\u00e1vol\u00edtani {2}egy objektumot a(z) [{0}] azonoss\u00e1gt\u00e9rk\u00e9pb\u0151l, {2}amely a(z) [{1}] oszt\u00e1ly egy objektum\u00e1t (vagy az azonos hierarchi\u00e1ban l\u00e9v\u0151 egyik oszt\u00e1lyt) tartalmazza{2}A helyzet legval\u00f3sz\u00edn\u0171bb oka, hogy az objektumon m\u00e1r futott a szem\u00e9tgy\u0171jt\u00e9s,{2}\u00e9s ez\u00e9rt nem l\u00e9tezik az azonoss\u00e1gt\u00e9rk\u00e9pen bel\u00fcl.{2}Fontolja meg egy alternat\u00edv azonoss\u00e1gt\u00e9rk\u00e9p haszn\u00e1lat\u00e1t az ilyen helyzetek elker\u00fcl\u00e9se \u00e9rdek\u00e9ben. {2}Az azonoss\u00e1gt\u00e9rk\u00e9pekkel kapcsolatos tov\u00e1bbi r\u00e9szletek\u00e9rt tekintse meg az EclipseLink dokument\u00e1ci\u00f3t.
+
+7103=A program null hivatkoz\u00e1sba \u00fctk\u00f6z\u00f6tt a(z) [{0}] met\u00f3dus megh\u00edv\u00e1s\u00e1ra tett {1}k\u00eds\u00e9rlet sor\u00e1n egy k\u00f6zvetett proxyt haszn\u00e1l\u00f3 objektumhoz. {1}Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy ez az objektum nem null, miel\u0151tt megh\u00edvn\u00e1 a met\u00f3dusait.
+
+7104=A sorrendi bejelentkez\u00e9s nem haszn\u00e1lhat k\u00fcls\u0151 tranzakci\u00f3vez\u00e9rl\u0151t.
+
+7105=Hiba t\u00f6rt\u00e9nt a titkos\u00edt\u00f3 oszt\u00e1ly \u00e1talak\u00edt\u00e1sakor: [{0}]
+
+7106=Hiba t\u00f6rt\u00e9nt a karaktersorozat titkos\u00edt\u00e1sa sor\u00e1n.
+
+7107=Hiba t\u00f6rt\u00e9nt a karaktersorozat visszafejt\u00e9se sor\u00e1n.
+
+7108=Ez a m\u0171velet nem-rel\u00e1ci\u00f3s platformok eset\u00e9n nem t\u00e1mogatott.
+
+7109=A munkamenet l\u00e9trehoz\u00e1s\u00e1hoz haszn\u00e1lt projektben a bejelentkez\u00e9s null, \u00e9rv\u00e9nyes bejelentkez\u00e9snek kell lennie.
+
+7110=Jelenleg a HistoricalSession csak Oracle 9R2 vagy \u00fajabb adatb\u00e1zisokkal m\u0171k\u00f6dik, mivel az Oracle Flashback szolg\u00e1ltat\u00e1s\u00e1t haszn\u00e1lja.
+
+7111=Nem szerezhet be egy HistoricalSession objektumot egy UnitOfWork, egy m\u00e1sik HistoricalSession, egy ServerSession, vagy egy ServerSessionBroker objektumb\u00f3l.  Egy norm\u00e1l munkamenetb\u0151l, egy ClientSession, vagy egy ClientSessionBroker objektumb\u00f3l szerezheti be azt.
+
+7112=Azt adta meg, hogy az EclipseLink haszn\u00e1lja a(z) {0} szolg\u00e1ltat\u00e1st, azonban ez a szolg\u00e1ltat\u00e1s nem \u00e9rhet\u0151 el a jelenleg fut\u00f3 JDK v\u00e1ltozatban: {1}.
+
+7113={0} nem t\u00e1mogatja a h\u00edv\u00e1st visszaad\u00e1ssal.
+
+7114=Az elk\u00fcl\u00f6n\u00edtett adatok jelenleg nem t\u00e1mogatottak egy Client Session Brokeren bel\u00fcl. A(z) {0} nev\u0171 munkamenet elk\u00fcl\u00f6n\u00edtett adatokat \u00e1br\u00e1zol\u00f3 le\u00edr\u00f3kat tartalmaz.
+
+7115=A ClientSession beolvas\u00e1sokhoz nem haszn\u00e1lhat\u00f3 ExclusiveConnection elk\u00fcl\u00f6n\u00edtett adatok n\u00e9lk\u00fcl.  Friss\u00edtse az ExclusiveConnection konfigur\u00e1ci\u00f3 elt\u00e1vol\u00edt\u00e1s\u00e1hoz haszn\u00e1lt ConnectionPolicy objektumot, vagy a projektben \u00e1ll\u00edtson be bizonyos adatokat, hogy azok kiz\u00e1r\u00f3lagosak legyenek.
+
+7116=\u00c9rv\u00e9nytelen argumentumok haszn\u00e1lata.  Tekintse meg a h\u00edv\u00f3 met\u00f3dus nyilv\u00e1nos API-j\u00e1t, \u00e9s haszn\u00e1ljon \u00e9rv\u00e9nyes \u00e9rt\u00e9keket az argumentumokhoz.
+
+7117=K\u00eds\u00e9rlet t\u00f6rt\u00e9nt t\u00f6bb kurzor haszn\u00e1lat\u00e1ra a(z) {0} SQLCall objektumban
+
+7118=setCustomSQLArgumentType met\u00f3dus lett megh\u00edvva a(z) {0} SQLCall objektumhoz, azonban ez a h\u00edv\u00e1s nem haszn\u00e1l egy\u00e9ni SQL-t
+
+7119=A nem el\u0151k\u00e9sz\u00edtett {0} SQLCall ford\u00edt\u00e1st k\u00eds\u00e9relt meg
+
+7120=A(z) {1} SQLCall {0} param\u00e9tere nem haszn\u00e1lhat\u00f3 kurzork\u00e9nt, mivel nem OUT t\u00edpus\u00fa a param\u00e9terrel rendelkezik
+
+7121=A(z) {0} nem t\u00e1mogatja a t\u00e1rolt f\u00fcggv\u00e9nyeket
+
+7122=A munkamenettel t\u00e1rs\u00edtott kiz\u00e1r\u00f3lagos kapcsolat nem \u00e9rhet\u0151 el lek\u00e9rdez\u00e9shez a k\u00f6vetkez\u0151 eset\u00e9n: {0}
+
+7123=Sikeres writeChanges() megh\u00edv\u00e1s ehhez a UnitOfWork objektumhoz.  Mivel a v\u00e9gleges\u00edt\u00e9si folyamat elkezd\u0151d\u00f6tt, de m\u00e9g nem fejez\u0151d\u00f6tt be, most csak a k\u00f6vetkez\u0151 m\u0171veletek t\u00e1mogatottak: v\u00e9gleges\u00edt\u00e9s, v\u00e9gleges\u00edt\u00e9s \u00e9s folytat\u00e1s (commitAndResume), felszabad\u00edt\u00e1s, b\u00e1rmilyen objektum szint\u0171 lek\u00e9rdez\u00e9s vagy SQLCall v\u00e9grehajt\u00e1s.  A(z) {0} m\u0171velet jelenleg nem enged\u00e9lyezett.
+
+7124=Sikertelen writeChanges() megh\u00edv\u00e1s ehhez a UnitOfWork objektumhoz.  Mivel fenn\u00e1ll a vesz\u00e9lye annak, hogy r\u00e9szleges m\u00f3dos\u00edt\u00e1sok lettek be\u00edrva az adatb\u00e1zisba, \u00e9s nem lettek visszag\u00f6rgetve (k\u00fcls\u0151 tranzakci\u00f3n bel\u00fcl), csak a k\u00f6vetkez\u0151 m\u0171veletek t\u00e1mogatottak: felszabad\u00edt\u00e1s, glob\u00e1lis tranzakci\u00f3 visszag\u00f6rget\u00e9s, b\u00e1rmilyen nem objektum szint\u0171 lek\u00e9rdez\u00e9s vagy SQLCall v\u00e9grehajt\u00e1s.  A megk\u00eds\u00e9relt m\u0171velet: {0}.
+
+7125=A UnitOfWork v\u00e9gleges\u00edt\u00e9se \u00e9s/vagy felszabad\u00edt\u00e1sa ut\u00e1n azon nem szabad t\u00f6bb m\u0171veletet v\u00e9grehajtani.  A megk\u00eds\u00e9relt m\u0171velet: {0}.
+
+7126=Egy be\u00e1gyazott UnitOfWork objektumhoz nem h\u00edvhat\u00f3 meg writeChanges m\u0171velet.  Egy be\u00e1gyazott UnitOfWork soha nem \u00edrja a m\u00f3dos\u00edt\u00e1sokat k\u00f6zvetlen\u00fcl az adatt\u00e1rol\u00f3ban, ezt csak a sz\u00fcl\u0151 UnitOfWork teszi.
+
+7127=A m\u00f3dos\u00edt\u00e1sokat csak egyszer \u00edrhatja az adatt\u00e1rol\u00f3ba, ugyan\u00fagy, ahogy a v\u00e9gleges\u00edt\u00e9st csak egyszer h\u00edvhatja meg.
+
+7128=A(z) [{0}] munkamenet m\u00e1r be van jelentkezve.
+
+7129=A met\u00f3dus argumentumai nem tartalmaznak null\u00e9rt\u00e9ket.
+
+7130=A be\u00e1gyazott UnitOfWork nem t\u00e1mogatott az attrib\u00fatumm\u00f3dos\u00edt\u00e1sok nyomk\u00f6vet\u00e9s\u00e9hez.
+
+7131=A(z) {0} t\u00edpusa helytelen.  Hozz\u00e1 kell adni vagy el kell t\u00e1vol\u00edtani a gy\u0171jtem\u00e9nym\u00f3dos\u00edt\u00e1si esem\u00e9nyt\u00edpust.
+
+7132=A(z) {0} esem\u00e9nyoszt\u00e1lya helytelen.  Csak a PropertyChangeEvent \u00e9s a CollectionChangeEvent t\u00e1mogatott.
+
+7133=A r\u00e9gi v\u00e9gleges\u00edt\u00e9s nem t\u00e1mogatott az attrib\u00fatumm\u00f3dos\u00edt\u00e1sok nyomk\u00f6vet\u00e9s\u00e9hez.
+
+7134=A(z) {0} kiszolg\u00e1l\u00f3 platform \u00edr\u00e1sv\u00e9dett a bejelentkez\u00e9s ut\u00e1n.
+
+7135=Nem v\u00e9gleges\u00edthet \u00e9s folytathat egy \u00f6sszes lek\u00e9rdez\u00e9s m\u00f3dos\u00edt\u00e1s\u00e1t tartalmaz\u00f3 UnitOfWork objektumot.
+
+7136=A be\u00e1gyazott UnitOfWork objektumok nem t\u00e1mogatottak egy \u00f6sszes lek\u00e9rdez\u00e9s m\u00f3dos\u00edt\u00e1sa m\u0171velethez.
+
+7137=Az objektum r\u00e9szlegesen van leh\u00edvva (a csoportleh\u00edv\u00e1s haszn\u00e1lat\u00e1val), a le nem h\u00edvott attrib\u00fatum ({0}) nem szerkeszthet\u0151.
+
+7139=Az \u00d6sszes lek\u00e9rdez\u00e9s m\u00f3dos\u00edt\u00e1sa m\u0171velet nem adhat\u00f3 ki egy m\u00e1s \u00edr\u00e1si m\u0171veleteket is tartalmaz\u00f3 UnitOfWork objektumon bel\u00fcl.
+
+7140=A(z) {0} sorozatt\u00edpus nem tartalmazza a(z) {1} met\u00f3dust.
+
+7141=A(z) {0} sorozat DefaultSequence t\u00edpus\u00fa, ami nem haszn\u00e1lhat\u00f3 a setDefaultSequence met\u00f3dusban.
+
+7142=A(z) {0} sorozat nem \u00e1ll\u00edthat\u00f3 be alap\u00e9rtelmezettk\u00e9nt, mivel ezzel a n\u00e9vvel m\u00e1r hozz\u00e1 lett adva egy sorozat.
+
+7143=A(z) {0} sorozat nem adhat\u00f3 hozz\u00e1, mivel ezzel a n\u00e9vvel m\u00e1r be van \u00e1ll\u00edtva alap\u00e9rtelmezettk\u00e9nt egy sorozat.
+
+7144={0}: A(z) {1} platform nem t\u00e1mogatja a k\u00f6vetkez\u0151t: {2}.
+
+7145=A(z) {2} megk\u00eds\u00e9rel csatlakozni a(z) {0} sorozathoz, de az m\u00e1r csatlakozik a k\u00f6vetkez\u0151h\u00f6z: {1}. Val\u00f3sz\u00edn\u0171leg k\u00e9t munkamenetnek k\u00f6z\u00f6s a DatasourcePlatform objektuma
+
+7146=A(z) {1} QuerySequence nem tartalmaz SELECT lek\u00e9rdez\u00e9st.
+
+7147=A(z) {0} platform nem tudja l\u00e9trehozni a platform alap\u00e9rtelmezett sorozat\u00e1t - nem b\u00edr\u00e1lja fel\u00fcl a createPlatformDefaultSequence met\u00f3dust
+
+7148=A commitAndResume() met\u00f3dus nem haszn\u00e1lhat\u00f3 egy JTA/szinkroniz\u00e1lt UnitOfWork objektummal.
+
+7149=A(z) [{0}] entit\u00e1soszt\u00e1lyhoz megadott [{4}] t\u00edpus\u00fa [{2}] \u00f6sszetett els\u0151dleges kulcs attrib\u00fatumnak a hozz\u00e1 tartoz\u00f3 [{1}] els\u0151dleges kulcs oszt\u00e1lyhoz meghat\u00e1rozottal megegyez\u0151 t\u00edpus\u00fanak kell lennie. Vagyis [{3}] t\u00edpus\u00fanak kellene lennie.
+
+7150=\u00c9rv\u00e9nytelen \u00f6sszetett els\u0151dleges kulcs meghat\u00e1roz\u00e1s. A(z) [{1}] els\u0151dleges kulcs oszt\u00e1lyban l\u00e9v\u0151 \u00e9s a(z) [{0}] entit\u00e1s bean oszt\u00e1lyban l\u00e9v\u0151 els\u0151dleges kulcs mez\u0151k vagy tulajdons\u00e1gok neveinek egyezni\u00fck kell, \u00e9s a t\u00edpusuknak is azonosnak kell lennie. Tov\u00e1bb\u00e1 gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy megadta a megfelel\u0151 attrib\u00fatumok ID elemeit az XML f\u00e1jlban \u00e9s/vagy egy @Id annot\u00e1ci\u00f3t az entit\u00e1soszt\u00e1ly megfelel\u0151 mez\u0151ihez vagy tulajdons\u00e1gaihoz.
+
+7151=A(z) [{2}] entit\u00e1soszt\u00e1lyhoz megadott [{0}] attrib\u00fatum [{1}] t\u00edpusa nem \u00e9rv\u00e9nyes felsorol\u00e1st haszn\u00e1l\u00f3 lek\u00e9pez\u00e9shez. Az attrib\u00fatumokat Java felsorol\u00e1sk\u00e9nt kell meghat\u00e1rozni.
+
+7153=Az olyan mez\u0151k vagy tulajdons\u00e1gok eset\u00e9n, amelyekhez @Transient annot\u00e1ci\u00f3 van megadva, nem alkalmazhat\u00f3k lek\u00e9pez\u00e9si annot\u00e1ci\u00f3k. A(z) [{0}] megs\u00e9rti ezt a korl\u00e1toz\u00e1st.
+
+7154=A(z) [{2}] entit\u00e1soszt\u00e1lyban l\u00e9v\u0151 [{3}] attrib\u00fatum egy [{1}] mappedBy \u00e9rt\u00e9ket tartalmaz, ami nem l\u00e9tezik a tulajdonos [{0}] entit\u00e1soszt\u00e1ly\u00e1ban. Ha a tulajdonos entit\u00e1soszt\u00e1ly egy @MappedSuperclass, ez \u00e9rv\u00e9nytelen, \u00e9s az attrib\u00fatumnak a helyes sz\u00e1rmaztatott oszt\u00e1lyra kell hivatkoznia.
+
+7155=A(z) [{2}] entit\u00e1soszt\u00e1lyhoz megadott [{0}] attrib\u00fatum [{1}] t\u00edpusa nem \u00e9rv\u00e9nyes soros\u00edtott lek\u00e9pez\u00e9shez. Az attrib\u00fatumt\u00edpusnak meg kell val\u00f3s\u00edtania a Serializable fel\u00fcletet.
+
+7156=Nem tal\u00e1lhat\u00f3 a(z) [{0}] oszt\u00e1ly. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az oszt\u00e1ly neve/\u00fatvonala helyes, \u00e9s el\u00e9rhet\u0151 az oszt\u00e1lybet\u00f6lt\u0151 sz\u00e1m\u00e1ra.
+
+7157=A(z) [{0}] entit\u00e1soszt\u00e1lynak egy @JoinColumn annot\u00e1ci\u00f3t kell haszn\u00e1lnia a @Column annot\u00e1ci\u00f3 helyett, hogy lek\u00e9pezze a(z) [{1}] viszonyattrib\u00fatum\u00e1t.
+
+7158=Hiba t\u00f6rt\u00e9nt a(z) @NamedQuery [{1}] \u00f6ssze\u00e9p\u00edt\u00e9sekor a(z) [{0}] entit\u00e1soszt\u00e1lyb\u00f3l.
+
+7159=A(z) [{1}] entit\u00e1soszt\u00e1lyhoz megadott [{0}] t\u00e9rk\u00e9pkulcs nem tal\u00e1lhat\u00f3 a(z) [{2}] lek\u00e9pez\u00e9shez.
+
+7160=A(z) [{0}] entit\u00e1soszt\u00e1lyban l\u00e9v\u0151 [{1}] attrib\u00fatumn\u00e9v @OneToMany annot\u00e1ci\u00f3j\u00e1hoz nem hat\u00e1rozhat\u00f3 meg JoinColumn. Ahol egy @OneToMany viszonyt nem k\u00e9pez le m\u00e1s entit\u00e1s (vagyis ez a tulajdonos oldal \u00e9s egyir\u00e1ny\u00fa), akkor egy @JoinTable annot\u00e1ci\u00f3t kell megadni, nem egy @JoinColumn annot\u00e1ci\u00f3t. Ha nincs megadva @JoinTable, akkor helyette egy alap\u00e9rtelmezett \u00f6sszef\u00e9s\u00fcl\u00e9si t\u00e1bla ker\u00fcl felhaszn\u00e1l\u00e1sra; a @JoinTable annot\u00e1ci\u00f3t csak akkor adja meg, ha az alap\u00e9rtelmezett konfigur\u00e1ci\u00f3t fel\u00fcl kell b\u00edr\u00e1lni.
+
+7161=A(z) [{0}] entit\u00e1soszt\u00e1lyhoz nincs megadva els\u0151dleges kulcs. Meg kell adnia egy @Id, @EmbeddedId vagy egy @IdClass annot\u00e1ci\u00f3t. Ha az els\u0151dleges kulcsot ezen annot\u00e1ci\u00f3k egyik\u00e9vel hat\u00e1rozta meg, akkor gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az entit\u00e1soszt\u00e1ly hierarchi\u00e1ban nincs vegyes hozz\u00e1f\u00e9r\u00e9st\u00edpus (annot\u00e1ci\u00f3val ell\u00e1tott mez\u0151k \u00e9s tulajdons\u00e1gok).
+
+7162=A(z) [{0}] entit\u00e1soszt\u00e1lyhoz t\u00f6bb @EmbeddedId annot\u00e1ci\u00f3 van megadva (a k\u00f6vetkez\u0151 attrib\u00fatumokhoz: [{1}] \u00e9s [{2}]). Entit\u00e1sonk\u00e9nt csak egy @EmbeddedId adhat\u00f3 meg.
+
+7163=A(z) [{0}] entit\u00e1soszt\u00e1ly egyar\u00e1nt tartalmaz egy @EmbdeddedId ([{1}] attrib\u00fatum) \u00e9s egy @Id ([{2}] attrib\u00fatum) annot\u00e1ci\u00f3t. Mindk\u00e9t azonos\u00edt\u00f3t\u00edpus nem adhat\u00f3 meg egyazon entit\u00e1shoz.
+
+7164=A(z) [{2}] entit\u00e1soszt\u00e1lyhoz megadott [{0}] attrib\u00fatum [{1}] t\u00edpusa nem \u00e9rv\u00e9nyes lob lek\u00e9pez\u00e9shez. Egy BLOB t\u00edpus\u00fa lob eset\u00e9n az attrib\u00fatumot java.sql.Blob, byte[], Byte[] vagy Serializable t\u00edpusk\u00e9nt kell meghat\u00e1rozni. Egy CLOB t\u00edpus\u00fa lob eset\u00e9n az attrib\u00fatumot java.sql.Clob, char[], Character[] vagy String t\u00edpusk\u00e9nt kell meghat\u00e1rozni.
+
+7165=A(z) [{2}] entit\u00e1soszt\u00e1lyhoz megadott [{0}] attrib\u00fatum [{1}] t\u00edpusa nem \u00e9rv\u00e9nyes id\u0151 lek\u00e9pez\u00e9shez. Az attrib\u00fatumot java.util.Date vagy java.util.Calendar t\u00edpusk\u00e9nt kell meghat\u00e1rozni.
+
+7166=A "name" attrib\u00fatumk\u00e9nt a(z) [{0}] fenntartott nevet haszn\u00e1l\u00f3 t\u00e1blael\u0151\u00e1ll\u00edt\u00f3 tal\u00e1lhat\u00f3 a k\u00f6vetkez\u0151ben: [{1}]. Nem haszn\u00e1lhatja ezt a nevet, mert az foglalt egy sorozatel\u0151\u00e1ll\u00edt\u00f3 alap\u00e9rtelmezett "sequence name" be\u00e1ll\u00edt\u00e1s\u00e1hoz.
+
+7167=A "sequence name" attrib\u00fatumk\u00e9nt a(z) [{0}] fenntartott nevet haszn\u00e1l\u00f3 sorozatel\u0151\u00e1ll\u00edt\u00f3 tal\u00e1lhat\u00f3 a k\u00f6vetkez\u0151ben: [{1}]. Nem haszn\u00e1lhatja ezt a nevet, mert az foglalt egy t\u00e1blael\u0151\u00e1ll\u00edt\u00f3 alap\u00e9rtelmezett "name" be\u00e1ll\u00edt\u00e1s\u00e1hoz.
+
+7168=A(z) [{2}] entit\u00e1soszt\u00e1lyhoz megadott [{1}] t\u00edpus\u00fa [{0}] attrib\u00fatum \u00e9rv\u00e9nytelen egy verzi\u00f3tulajdons\u00e1ghoz. A k\u00f6vetkez\u0151 t\u00edpusok t\u00e1mogatottak: int, Integer, short, Short, long, Long, Timestamp.
+
+7169=A(z) [{0}] oszt\u00e1ly k\u00e9t @GeneratedValues annot\u00e1ci\u00f3t tartalmaz: a(z) [{1}] \u00e9s a(z) [{2}] mez\u0151h\u00f6z. Csak egy enged\u00e9lyezett.
+
+7172=Hiba t\u00f6rt\u00e9nt a(z) [{0}] oszt\u00e1ly p\u00e9ld\u00e1nyos\u00edt\u00e1sakor.
+
+7173=Egy tulajdons\u00e1gm\u00f3dos\u00edt\u00e1si esem\u00e9ny lett aktiv\u00e1lva egy [{1}] nev\u0171 tulajdons\u00e1ghoz a k\u00f6vetkez\u0151ben: [{0}].  Azonban ez a tulajdons\u00e1g nem l\u00e9tezik.
+
+7174=A(z) [{0}] entit\u00e1soszt\u00e1ly [{1}] lek\u00e9rdez\u0151 met\u00f3dus\u00e1hoz nincs meghat\u00e1rozva egy megfelel\u0151 be\u00e1ll\u00edt\u00f3 met\u00f3dus.
+
+7175=A(z) [{0}] lek\u00e9pez\u00e9s nem t\u00e1mogatja az optimista z\u00e1rol\u00e1s l\u00e9pcs\u0151zetes v\u00e1ltozat\u00e1t.
+
+7176=A(z) [{0}] lek\u00e9pez\u00e9s nem t\u00e1mogatja az optimista z\u00e1rol\u00e1s l\u00e9pcs\u0151zetes v\u00e1ltozat\u00e1t, mivel egy egy\u00e9ni lek\u00e9rdez\u00e9st tartalmaz.
+
+7177=A(z) [{0}] \u00f6sszes\u00edt\u00e9si le\u00edr\u00f3 priv\u00e1t tulajdon\u00fa lek\u00e9pez\u00e9seket tartalmaz. Az \u00f6sszes\u00edtett le\u00edr\u00f3k nem t\u00e1mogatj\u00e1k az optimista z\u00e1rol\u00e1s l\u00e9pcs\u0151zetes v\u00e1ltozat\u00e1t.
+
+7178=Az OracleOCIProxyConnector OracleOCIConnectionPool adatforr\u00e1st ig\u00e9nyel.
+
+7179=Az OracleJDBC_10_1_0_2ProxyConnectionCustomizer OracleConnections kimenetet el\u0151\u00e1ll\u00edt\u00f3 adatforr\u00e1st ig\u00e9nyel.
+
+7180=Az OracleJDBC_10_1_0_2ProxyConnectionCustomizer Oracle JDBC 10.1.0.2 vagy \u00fajabb v\u00e1ltozatot ig\u00e9nyel, hogy az OracleConnection deklar\u00e1lja az openProxySession met\u00f3dust.
+
+7181=Az OracleJDBC_10_1_0_2ProxyConnectionCustomizer megk\u00f6veteli, hogy a PersistenceUnitProperties.ORACLE_PROXY_TYPE tulajdons\u00e1g \u00e9rt\u00e9ke Integer t\u00edpus\u00fa legyen, vagy \u00e1talak\u00edthat\u00f3 legyen Integer t\u00edpusra: p\u00e9ld\u00e1ul OracleConnection.PROXYTYPE_USER_NAME vagy Integer.toString(OracleConnection.PROXYTYPE_USER_NAME)
+
+7182=EC - Nem tal\u00e1lhat\u00f3 [{0}] illeszt\u0151program-oszt\u00e1ly
+
+7183=Hiba a persistence.xml f\u00e1jl bez\u00e1r\u00e1sakor.
+
+7184=A(z) [{0}] rendszertulajdons\u00e1g nincs meghat\u00e1rozva. Egy olyan oszt\u00e1lyra kell be\u00e1ll\u00edtani, amely meghat\u00e1roz egy "getContainerConfig()" met\u00f3dust.
+
+7185=Nem tal\u00e1lhat\u00f3 a(z) [{0}] oszt\u00e1ly, amely a k\u00f6vetkez\u0151ben van megadva: [{1}]
+
+7186=Nem h\u00edvhat\u00f3 meg a(z) [{1}] oszt\u00e1lyhoz megadott [{0}] met\u00f3dus, amely a k\u00f6vetkez\u0151ben van megadva: [{2}]
+
+7187=A(z) [{0}] oszt\u00e1lynak meg kell hat\u00e1roznia egy [{1}] nyilv\u00e1nos oszt\u00e1lymet\u00f3dust, amelynek nincsenek param\u00e9terei \u00e9s Collection t\u00edpust ad vissza
+
+7188=Nem null oszt\u00e1lylista sz\u00fcks\u00e9ges.
+
+7189=Nem hozhat\u00f3 l\u00e9tre ideiglenes oszt\u00e1lybet\u00f6lt\u0151 az aktu\u00e1lis bet\u00f6lt\u0151b\u0151l: [{0}]
+
+7190=A(z) [{0}] meghi\u00fasult
+
+7191=A(z) [{0}] entit\u00e1soszt\u00e1ly nem tal\u00e1lhat\u00f3 a(z) [{1}] oszt\u00e1lybet\u00f6lt\u0151 haszn\u00e1lat\u00e1val.
+
+7192=A(z) [{0}] ClassFileTransformer kiv\u00e9telt dobott a transform() met\u00f3dus v\u00e9grehajt\u00e1sakor a(z) [{1}] oszt\u00e1lyon.
+
+7193=A perzisztencia XML f\u00e1jlban nem t\u00e1mogatottak a jar f\u00e1jlok az EclipseLink jelen v\u00e1ltozat\u00e1ban.
+
+7194=Nem hozhat\u00f3 l\u00e9tre k\u00f6t\u00e9s a k\u00f6vetkez\u0151k k\u00f6z\u00f6tt: [{0}] \u00e9s [{1}].
+
+7195=Kiv\u00e9tel az EntityManagerFactory konfigur\u00e1l\u00e1sakor.
+
+7196=A(z) [{1}] t\u00edpus\u00fa [{0}] nem alak\u00edthat\u00f3 \u00e1t [{2}] t\u00edpus\u00fara.
+
+7197=Null vagy nulla els\u0151dleges kulcs a(z)  [{1}] els\u0151dleges kulcs\u00fa [{0}] UnitOfWork kl\u00f3n eset\u00e9n. \u00c1ll\u00edtsa be a le\u00edr\u00f3 IdValidation vagy "eclipselink.id-validation" tulajdons\u00e1g\u00e1t.
+
+7198=A(z) [{0}] oszt\u00e1ly nem tal\u00e1lhat\u00f3 az oszt\u00e1lynevek oszt\u00e1lly\u00e1 alak\u00edt\u00e1sakor.
+
+7199=A(z) {0} entit\u00e1shoz nem lett meghat\u00e1rozva els\u0151dleges t\u00e1bla az entity-mappings f\u00e1jlban: {1}.  Az entit\u00e1sviszonyok feldolgoz\u00e1s\u00e1hoz meg kell adni egy els\u0151dleges t\u00e1bl\u00e1t.
+
+7200=A(z) [{1}] attrib\u00fatum nem tal\u00e1lhat\u00f3 a(z) [{0}] be\u00e1gyazott oszt\u00e1lyhoz. Ez a(z) [{3}] be\u00e1gyazott attrib\u00fatum egy attrib\u00fatum-fel\u00fclb\u00edr\u00e1l\u00e1s\u00e1ra hivatkozik a(z) [{2}] oszt\u00e1lyhoz.
+
+7201=Kiv\u00e9tel t\u00f6rt\u00e9nt az entity-mappings f\u00e1jl \u00e9rtelmez\u00e9se sor\u00e1n: {0}.
+
+7202=A(z) {0} attrib\u00fatumfel\u00fclb\u00edr\u00e1l\u00e1s-n\u00e9v \u00e9rv\u00e9nytelen - gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy l\u00e9tezik egy azonos nev\u0171 attrib\u00fatum a be\u00e1gyazhat\u00f3 {1} oszt\u00e1lyban.
+
+7203=A(z) [{2}] oszt\u00e1lyhoz tartoz\u00f3 [{1}] lek\u00e9pez\u00e9si elem [{0}] gy\u0171jtem\u00e9nyt\u00edpusa nem t\u00e1mogatott. Csak a Set, List, Map \u00e9s Collection t\u00edpus t\u00e1mogatott.
+
+7207=A(z) [{0}] entit\u00e1soszt\u00e1lyban l\u00e9v\u0151 [{1}] attrib\u00fatum t\u00edpusa \u00e9rv\u00e9nytelen BLOB t\u00edpus\u00fa lob eset\u00e9n. Az attrib\u00fatumot java.sql.Blob, byte[], Byte[] vagy Serializable t\u00edpusk\u00e9nt kell meghat\u00e1rozni.
+
+7208=A(z) [{0}] entit\u00e1soszt\u00e1lyban l\u00e9v\u0151 [{1}] attrib\u00fatum t\u00edpusa \u00e9rv\u00e9nytelen CLOB t\u00edpus\u00fa lob eset\u00e9n. Az attrib\u00fatumot java.sql.Clob, char[], Character[] vagy String t\u00edpusk\u00e9nt kell meghat\u00e1rozni.
+
+7212=A(z) [{1}] entit\u00e1soszt\u00e1lyb\u00f3l sz\u00e1rmaz\u00f3 [{0}] attrib\u00fatum nem id\u0151 t\u00edpust ad meg. A java.util.Date \u00e9s java.util.Calendar t\u00edpus\u00fa perzisztens mez\u0151kh\u00f6z vagy tulajdons\u00e1gokhoz egy id\u0151 t\u00edpust kell megadni.
+
+7213=K\u00f6rk\u00f6r\u00f6s mappedBy hivatkoz\u00e1sok lettek megadva (Oszt\u00e1ly: [{0}], attrib\u00fatum: [{1}] \u00e9s oszt\u00e1ly: [{2}], attrib\u00fatum: [{3}]. Ez nem \u00e9rv\u00e9nyes, csak az egyik oldal lehet a viszony tulajdonosa. Ez\u00e9rt csak a viszony nem-tulajdonos oldal\u00e1hoz adjon meg egy mappedBy \u00e9rt\u00e9ket.
+
+7214=A(z) [{1}] oszt\u00e1lyhoz megadott [{0}] viszony attrib\u00fatum c\u00e9lentit\u00e1sa nem \u00e1llap\u00edthat\u00f3 meg.  Ha nem haszn\u00e1l generikus t\u00edpusokat, akkor gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a viszonylek\u00e9pez\u00e9shez meg van hat\u00e1rozva a c\u00e9lentit\u00e1s.
+
+7215=Nem t\u00f6lthet\u0151 be a(z) [{1}] oszt\u00e1lyhoz megadott [{0}] nev\u0171 mez\u0151. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az oszt\u00e1lyhoz meg van hat\u00e1rozva az adott nev\u0171 megfelel\u0151 mez\u0151.
+
+7216=Nem t\u00f6lthet\u0151 be a(z) [{1}] oszt\u00e1lyhoz megadott [{0}] tulajdons\u00e1gn\u00e9v met\u00f3dusa. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy meg van hat\u00e1rozva egy megfelel\u0151 get met\u00f3dus az oszt\u00e1lyhoz meghat\u00e1rozott tulajdons\u00e1gn\u00e9vhez.
+
+7217=A(z) [{3}] entit\u00e1sb\u00f3l sz\u00e1rmaz\u00f3 [{2}] elemhez megadott [{0}] order by \u00e9rt\u00e9k \u00e9rv\u00e9nytelen. A(z) [{1}] c\u00e9lentit\u00e1sban nem l\u00e9tezik ilyen nev\u0171 tulajdons\u00e1g vagy mez\u0151.
+
+7218=A(z) [{0}] nem b\u00edr\u00e1lja fel\u00fcl a getCreateTempTableSqlPrefix met\u00f3dust. Az ideiglenes t\u00e1bl\u00e1kat t\u00e1mogat\u00f3 adatb\u00e1zis platformoknak (DatabasePlatform) fel\u00fcl kell b\u00edr\u00e1lniuk ezt a met\u00f3dust.
+
+7219=A(z) [{0}] nem b\u00edr\u00e1lja fel\u00fcl a valueFromRowInternalWithJoin met\u00f3dust, azonban az isJoiningSupported met\u00f3dusa true \u00e9rt\u00e9ket ad vissza. Az \u00f6sszef\u00e9s\u00fcl\u00e9st t\u00e1mogat\u00f3 idegen hivatkoz\u00e1slek\u00e9pez\u00e9seknek fel\u00fcl kell b\u00edr\u00e1lniuk ezt a met\u00f3dust.
+
+7220=A(z) [{1}] entit\u00e1soszt\u00e1lyb\u00f3l sz\u00e1rmaz\u00f3 [{0}] annot\u00e1ci\u00f3val ell\u00e1tott elemhez megadott @JoinColumns annot\u00e1ci\u00f3 hi\u00e1nyos. Amikor a forr\u00e1s entit\u00e1soszt\u00e1ly \u00f6sszetett els\u0151dleges kulcsot haszn\u00e1l, minden egyes \u00f6sszef\u00e9s\u00fcl\u00e9si oszlophoz meg kell adni egy @JoinColumn annot\u00e1ci\u00f3t a @JoinColumns annot\u00e1ci\u00f3val. Az egyes @JoinColumn annot\u00e1ci\u00f3kban a name \u00e9s a referencedColumnName elemeket egyar\u00e1nt meg kell adni.
+
+7222=Hi\u00e1nyos @PrimaryKeyJoinColumns annot\u00e1ci\u00f3 lett megadva az annot\u00e1ci\u00f3val ell\u00e1tott [{0}] elemhez. A @PrimaryKeyJoinColumns megad\u00e1sakor egy olyan entit\u00e1shoz, amelynek \u00f6sszetett els\u0151dleges kulcsa van, meg kell adni egy @PrimaryKeyJoinColumn annot\u00e1ci\u00f3t minden egyes els\u0151dleges kulcs \u00f6sszef\u00e9s\u00fcl\u00e9si oszlophoz a @PrimaryKeyJoinColumns annot\u00e1ci\u00f3 haszn\u00e1lat\u00e1val. Az egyes @PrimaryKeyJoinColumn annot\u00e1ci\u00f3kban a name \u00e9s a referencedColumnName elemeket egyar\u00e1nt meg kell adni.
+
+7223=@PrimaryKeyJoinColumns annot\u00e1ci\u00f3 tal\u00e1lhat\u00f3 az annot\u00e1ci\u00f3val ell\u00e1tott [{0}] elemhez. Amikor az entit\u00e1s egyetlen els\u0151dleges kulcsot haszn\u00e1l, csak egyetlen (vagy nulla) @PrimaryKeyJoinColumn annot\u00e1ci\u00f3t kell megadni.
+
+7224=A(z) [{0}] figyel\u0151oszt\u00e1lyhoz megh\u00edvott [{1}] met\u00f3dus egy \u00e9rv\u00e9nytelen visszah\u00edv\u00e1si met\u00f3dus.
+
+7225=A(z) [{1}] met\u00f3dus nem tal\u00e1lhat\u00f3 a(z) [{0}] figyel\u0151oszt\u00e1lyhoz.
+
+7226=A(z) [{0}] figyel\u0151oszt\u00e1lyhoz megh\u00edvott [{1}] met\u00f3dus egy \u00e9rv\u00e9nytelen m\u00f3dos\u00edt\u00f3t tartalmaz. A visszah\u00edv\u00e1si met\u00f3dusok nem tartalmazhatnak static vagy final m\u00f3dos\u00edt\u00f3t.
+
+7227=A(z) [{0}] figyel\u0151oszt\u00e1ly t\u00f6bb \u00e9letciklus visszah\u00edv\u00e1si met\u00f3dust tartalmaz egyazon \u00e9letciklus esem\u00e9nyhez ([{1}] \u00e9s [{2}]).
+
+7228=A(z) [{0}] figyel\u0151oszt\u00e1lyhoz megh\u00edvott [{1}] visszah\u00edv\u00e1si met\u00f3dus szignat\u00far\u00e1ja helytelen. Nem kellene param\u00e9tereket tartalmaznia.
+
+7229=A(z) [{2}] entit\u00e1sfigyel\u0151-oszt\u00e1lyhoz megh\u00edvott [{3}] visszah\u00edv\u00e1si met\u00f3dus szignat\u00far\u00e1ja helytelen. A met\u00f3dusnak 1 param\u00e9tert kell fogadnia, amely az entit\u00e1soszt\u00e1lyb\u00f3l rendelhet\u0151 hozz\u00e1. Itt a(z) [{1}] param\u00e9teroszt\u00e1ly nem rendelhet\u0151 hozz\u00e1 a(z) [{0}] entit\u00e1soszt\u00e1lyb\u00f3l.
+
+7231=A lev\u00e1lasztott [{0}] objektum nem t\u00e1rolhat\u00f3. {3}Oszt\u00e1ly> {1} Els\u0151dleges kulcs> {2}
+
+7232=A(z) [{0}] entit\u00e1soszt\u00e1ly t\u00f6bb @Id deklar\u00e1ci\u00f3t tartalmaz, azonban nem hat\u00e1roz meg <id> elemeket az entit\u00e1slek\u00e9pez\u00e9si p\u00e9ld\u00e1nydokument\u00e1ci\u00f3ban.  Biztos\u00edtsa, hogy ha egy adott entit\u00e1soszt\u00e1lyhoz t\u00f6bb @Id deklar\u00e1ci\u00f3 tartozik, akkor a megfelel\u0151 <entity> meghat\u00e1roz\u00e1s mindegyikhez tartalmazzon egy <id> elemet.
+
+7233=A lek\u00e9pez\u00e9si adatok nem alkalmazhat\u00f3k a tulajdons\u00e1gokra/met\u00f3dusokra, amelyek argumentumokat vesznek fel. A(z) [{1}] oszt\u00e1lyb\u00f3l sz\u00e1rmaz\u00f3 [{0}] attrib\u00fatum megs\u00e9rti ezt a korl\u00e1toz\u00e1st. Biztos\u00edtsa, hogy a met\u00f3dusnak ne legyenek argumentumai, ha az annot\u00e1ci\u00f3kkal vagy egy XML lek\u00e9pez\u00e9si f\u00e1jlban van lek\u00e9pezve.
+
+7234=A DDL el\u0151\u00e1ll\u00edt\u00e1s megk\u00f6veteli, hogy a(z) [{0}] le\u00edr\u00f3b\u00f3l sz\u00e1rmaz\u00f3 [{1}] attrib\u00fatum \u00e1talak\u00edt\u00e1si lek\u00e9pez\u00e9s\u00e9vel haszn\u00e1lt oszt\u00e1ly\u00e1talak\u00edt\u00f3 egy specifikus visszat\u00e9r\u00e9si t\u00edpust adjon meg a(z) [{2}] met\u00f3dus\u00e1nak (\u00e9s ne Object t\u00edpust). A DDL el\u0151\u00e1ll\u00edt\u00e1shoz ez a specifikus visszat\u00e9r\u00e9si t\u00edpus sz\u00fcks\u00e9ges, hogy el\u0151\u00e1ll\u00edthassa a megfelel\u0151 mez\u0151t\u00edpust.
+
+7235=A(z) [{0}] le\u00edr\u00f3b\u00f3l sz\u00e1rmaz\u00f3 [{1}] attrib\u00fatum \u00e1talak\u00edt\u00e1si lek\u00e9pez\u00e9s\u00e9vel haszn\u00e1lt oszt\u00e1ly\u00e1talak\u00edt\u00f3 nem val\u00f3s\u00edtja meg a(z) [{2}] met\u00f3dust. A met\u00f3dus a FieldTransformer fel\u00fclet r\u00e9sze, \u00e9s meg kell val\u00f3s\u00edtani. Vegye figyelembe azt is, hogy a megval\u00f3s\u00edt\u00e1skor a visszat\u00e9r\u00e9si t\u00edpus\u00e1nak explicit t\u00edpusnak kell lenni (\u00e9s nem lehet Object), ha DDL el\u0151\u00e1ll\u00edt\u00e1st haszn\u00e1l.
+
+7237=Az entit\u00e1sn\u00e9vnek egyedinek kell lennie a perzisztenciaegys\u00e9geken bel\u00fcl. A(z) [{0}] entit\u00e1sn\u00e9v szerepel a(z) [{1}] \u00e9s [{2}] oszt\u00e1lyhoz.
+
+7238=A(z) [{2}] helyen name == [{0}] form\u00e1ban megadott  t\u00e1blael\u0151\u00e1ll\u00edt\u00f3 \u00fctk\u00f6zik a(z) [{1}] helyen megadott azonos nev\u0171 sorozatel\u0151\u00e1ll\u00edt\u00f3val.
+
+7240=A(z) [{2}] helyen pk column value == [{0}] form\u00e1ban megadott  t\u00e1blael\u0151\u00e1ll\u00edt\u00f3 \u00fctk\u00f6zik a(z) [{1}] helyen pk sequence name == [{0}] form\u00e1ban megadott sorozatel\u0151\u00e1ll\u00edt\u00f3val. Ezek nem haszn\u00e1lhatj\u00e1k ugyanazt az \u00e9rt\u00e9ket.
+
+7242=K\u00eds\u00e9rlet t\u00f6rt\u00e9nt egy viszony bej\u00e1r\u00e1s\u00e1ra null munkamenetet tartalmaz\u00f3 k\u00f6zvetetts\u00e9g haszn\u00e1lat\u00e1val.  Ez gyakran megt\u00f6rt\u00e9nik, amikor egy entit\u00e1s nem p\u00e9ld\u00e1nyos\u00edtott LAZY viszonnyal van soros\u00edtva, \u00e9s az adott viszony bej\u00e1r\u00e1sra ker\u00fcl a soros\u00edt\u00e1s ut\u00e1n.  Az ilyen probl\u00e9m\u00e1k elker\u00fcl\u00e9se \u00e9rdek\u00e9ben p\u00e9ld\u00e1nyos\u00edtsa a LAZY viszonyt a soros\u00edt\u00e1s el\u0151tt.
+
+7243=Hi\u00e1nyz\u00f3 metaadatok a(z) [{0}] oszt\u00e1ly eset\u00e9n. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az oszt\u00e1ly nincs kiz\u00e1rva a perzisztencia egys\u00e9gb\u0151l egy <exclude-unlisted-classes>true</exclude-unlisted-classes> be\u00e1ll\u00edt\u00e1ssal. Ha igen, akkor k\u00f6zvetlen\u00fcl bele kell foglalnia az oszt\u00e1lyt egy <class>[{0}]</class> bejegyz\u00e9s hozz\u00e1ad\u00e1s\u00e1val a perzisztencia egys\u00e9ghez.
+
+7244=A program inkompatibilis lek\u00e9pez\u00e9st tal\u00e1lt a(z) [{0}] \u00e9s [{1}] k\u00f6z\u00f6tt. Ez \u00e1ltal\u00e1ban akkor t\u00f6rt\u00e9nik, amikor egy lek\u00e9pez\u00e9s kardinalit\u00e1sa nem felel meg a visszamutat\u00f3ja kardinalit\u00e1s\u00e1val.
+
+7245=A(z) [{0}] be\u00e1gyazhat\u00f3 oszt\u00e1ly az oszt\u00e1lyokban \u00fctk\u00f6z\u0151 hozz\u00e1f\u00e9r\u00e9si t\u00edpusokkal van haszn\u00e1latban. A(z) [{1}] oszt\u00e1ly [{2}] hozz\u00e1f\u00e9r\u00e9st haszn\u00e1l, a(z) [{3}] oszt\u00e1ly pedig [{4}] hozz\u00e1f\u00e9r\u00e9st. Egy be\u00e1gyazhat\u00f3 objektum megoszt\u00e1sakor oszt\u00e1lyok k\u00f6z\u00f6tt, a be\u00e1gyaz\u00f3 oszt\u00e1lyok hozz\u00e1f\u00e9r\u00e9si t\u00edpusainak azonosnak kell lenni\u00fck.
+
+7246=A(z) [{0}] entit\u00e1soszt\u00e1ly tartalmaz egy [{2}] t\u00edpus\u00fa [{1}] be\u00e1gyazott attrib\u00fatumot, ami NEM egy be\u00e1gyazhat\u00f3 oszt\u00e1ly. A probl\u00e9ma oka: hi\u00e1nyz\u00f3 @Embeddable annot\u00e1ci\u00f3, vagy hi\u00e1nyz\u00f3 <embeddable> elem az orm.xml f\u00e1jlban, ha a metadata-complete = true
+
+7247=K\u00f6rk\u00f6r\u00f6s hivatkoz\u00e1s \u00e9szlel\u00e9se a sz\u00e1rmaztatott azonos\u00edt\u00f3k feldolgoz\u00e1skor a k\u00f6vetkez\u0151 entit\u00e1soszt\u00e1lyokhoz: [{0}] 
+
+7249=A(z) [{0}] entit\u00e1s a(z) [{1}] oszt\u00e1lyt haszn\u00e1lja be\u00e1gyazott azonos\u00edt\u00f3 oszt\u00e1lyk\u00e9nt, amelynek hozz\u00e1f\u00e9r\u00e9st\u00edpusa [{2}]. Azonban a(z) [{1}] nem hat\u00e1roz meg [{2}] hozz\u00e1f\u00e9r\u00e9st\u00edpust. Val\u00f3sz\u00edn\u0171leg nem biztos\u00edtott elegend\u0151 metaadatot a(z) [{1}] azonos\u00edt\u00f3 oszt\u00e1lyban.
+
+7250=A(z [{0}] egy nem entit\u00e1s [{1}] oszt\u00e1lyt haszn\u00e1l c\u00e9lentit\u00e1sk\u00e9nt a(z) [{2}] viszony attrib\u00fatumban.
+
+7251=A(z) [{0}] oszt\u00e1ly [{1}] attrib\u00fatuma egy els\u0151dleges kulcs oszlopra van lek\u00e9pezve az adatb\u00e1zisban. A friss\u00edt\u00e9sek nem enged\u00e9lyezettek.
+
+7252=T\u00f6bb [{1}] nev\u0171 lek\u00e9pez\u00e9si f\u00e1jl szerepel az oszt\u00e1ly\u00fatvonalon a(z) [ {0} ] perzisztencia egys\u00e9ghez.
+
+7253=Nincs [{1}] nev\u0171 lek\u00e9pez\u00e9si f\u00e1jl az oszt\u00e1ly\u00fatvonalon a(z) [{0}] perzisztencia egys\u00e9ghez.
+
+7254=A(z) [{1}] nev\u0171 \u00e1talak\u00edt\u00f3 a(z) [{0}] oszt\u00e1lyban a(z) [{2}] adat\u00e9rt\u00e9ket t\u00f6bb objektum\u00e9rt\u00e9kre k\u00e9pezte le. Az \u00e1talak\u00edt\u00e1si \u00e9rt\u00e9kek az egyes adat\u00e9rt\u00e9keket csak egyszer k\u00e9pezhetik le.
+
+7255=A(z) [{0}] oszt\u00e1ly megad egy @Convert annot\u00e1ci\u00f3t a k\u00f6vetkez\u0151h\u00f6z: [{1}]. Ez \u00e9rv\u00e9nytelen. A @Convert annot\u00e1ci\u00f3 csak @Basic, @BasicCollection, @BasicMap \u00e9s @ElementCollection annot\u00e1ci\u00f3kkal t\u00e1mogatott. A t\u00e9rk\u00e9pet haszn\u00e1l\u00f3 to-many lek\u00e9pez\u00e9sek eset\u00e9n csak @MapKeyConvert annot\u00e1ci\u00f3t haszn\u00e1lhat.
+
+7256=A(z) [{0}] oszt\u00e1lyban l\u00e9v\u0151 [{2}] elemmel haszn\u00e1lt [{1}] nev\u0171 \u00e1talak\u00edt\u00f3 nem tal\u00e1lhat\u00f3 a perzisztencia egys\u00e9gen bel\u00fcl. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a helyes \u00e1talak\u00edt\u00f3nevet adta meg.
+
+7257=A(z) [{2}] t\u00edpus\u00fa \u00e9s [{1}] \u00e9rt\u00e9k\u0171 adat\u00e9rt\u00e9k nem p\u00e9ld\u00e1nyos\u00edthat\u00f3 a(z) [{0}] nev\u0171 objektumt\u00edpus \u00e1talak\u00edt\u00f3b\u00f3l
+
+7258=A(z) [{2}] t\u00edpus\u00fa \u00e9s [{1}] \u00e9rt\u00e9k\u0171 objektum\u00e9rt\u00e9k nem p\u00e9ld\u00e1nyos\u00edthat\u00f3 a(z) [{0}] nev\u0171 objektumt\u00edpus \u00e1talak\u00edt\u00f3b\u00f3l
+
+7259=A(z) [{2}] nev\u0171 \u00e1talak\u00edt\u00f3t haszn\u00e1l\u00f3, a(z) [{0}] entit\u00e1soszt\u00e1lyb\u00f3l sz\u00e1rmaz\u00f3 [{1}] attrib\u00fatum adatt\u00edpusa nem \u00e1llap\u00edthat\u00f3 meg. Meg kell adni egy t\u00edpust az \u00e1talak\u00edt\u00f3hoz haszn\u00e1lt adatt\u00edpussal, vagy az attrib\u00fatumnak egy generikus specifik\u00e1ci\u00f3t kell haszn\u00e1lnia.
+
+7260=A(z) [{2}] nev\u0171 \u00e1talak\u00edt\u00f3t haszn\u00e1l\u00f3, a(z) [{0}] entit\u00e1soszt\u00e1lyb\u00f3l sz\u00e1rmaz\u00f3 [{1}] attrib\u00fatum objektumt\u00edpusa nem \u00e1llap\u00edthat\u00f3 meg. Meg kell adni egy t\u00edpust az \u00e1talak\u00edt\u00f3hoz haszn\u00e1lt objektumt\u00edpussal, vagy az attrib\u00fatumnak egy generikus specifik\u00e1ci\u00f3t kell haszn\u00e1lnia.
+
+7261=A(z) [{2}] entit\u00e1soszt\u00e1ly [{0}] attrib\u00fatum\u00e1nak [{1}] t\u00edpusa nem egy \u00e9rv\u00e9nyes t\u00edpus egy alap gy\u0171jtem\u00e9nylek\u00e9pez\u00e9shez. Az attrib\u00fatumnak Collection.class, List.class vagy Set.class t\u00edpus\u00fanak kell lennie.
+
+7262=A(z) [{2}] entit\u00e1soszt\u00e1ly [{0}] attrib\u00fatum\u00e1nak [{1}] t\u00edpusa nem egy \u00e9rv\u00e9nyes t\u00edpus egy alap t\u00e9rk\u00e9plek\u00e9pez\u00e9shez. Az attrib\u00fatumnak Map.class t\u00edpus\u00fanak kell lennie.
+
+7263=A(z) [{0}] oszt\u00e1ly hi\u00e1nyos optimista z\u00e1rol\u00e1si specifik\u00e1ci\u00f3t tartalmaz. Egy SELECTED_COLUMNS t\u00edpus\u00fa optimista z\u00e1rol\u00e1si ir\u00e1nyelv eset\u00e9n meg kell adni a kiv\u00e1lasztott oszlopokat, \u00e9s ezeknek az oszlopoknak a neve nem hagyhat\u00f3 ki.
+
+7264=A(z) [{0}] oszt\u00e1ly hi\u00e1nyos optimista z\u00e1rol\u00e1si specifik\u00e1ci\u00f3t tartalmaz. Egy VERSION_COLUMN t\u00edpus\u00fa optimista z\u00e1rol\u00e1si ir\u00e1nyelv eset\u00e9n meg kell adni egy @Version annot\u00e1ci\u00f3t a v\u00e1ltozat mez\u0151h\u00f6z vagy tulajdons\u00e1ghoz.
+
+7265=Egy be\u00e1gyazhat\u00f3 oszt\u00e1lyhoz nem enged\u00e9lyezett a @Cache annot\u00e1ci\u00f3 haszn\u00e1lata.
+
+7266=A(z) [{0}] oszt\u00e1lyhoz megadott @Cache annot\u00e1ci\u00f3n\u00e1l egyar\u00e1nt meg van adva az expiry() \u00e9s az expiryTimeOfDay() met\u00f3dus. Egy @Cache annot\u00e1ci\u00f3 be\u00e1ll\u00edt\u00e1sban a kett\u0151 k\u00f6z\u00fcl csak az egyik adhat\u00f3 meg.
+
+7267=A megadott [{0}] kiv\u00e9telkezel\u0151 oszt\u00e1ly \u00e9rv\u00e9nytelen, az oszt\u00e1lynak l\u00e9teznie kell az oszt\u00e1ly\u00fatvonalon, \u00e9s meg kell val\u00f3s\u00edtania az ExceptionHandler fel\u00fcletet.
+
+7268=A megadott [{0}] esem\u00e9nyfigyel\u0151 oszt\u00e1ly \u00e9rv\u00e9nytelen, az oszt\u00e1lynak l\u00e9teznie kell az oszt\u00e1ly\u00fatvonalon, \u00e9s meg kell val\u00f3s\u00edtania a SessionEventListener fel\u00fcletet.
+
+7270=A megadott gyors\u00edt\u00f3t\u00e1r utas\u00edt\u00e1sok [{0}] m\u00e9ret \u00e9rt\u00e9ke \u00e9rv\u00e9nytelen: [{1}].
+
+7271=A nat\u00edv sql be\u00e1ll\u00edt\u00e1s\u00e1hoz megadott [{0}] logikai \u00e9rt\u00e9k \u00e9rv\u00e9nytelen, az \u00e9rt\u00e9k csak "true" vagy "false" lehet.
+
+7272=Az SQL utas\u00edt\u00e1s gyors\u00edt\u00f3t\u00e1r enged\u00e9lyez\u00e9s\u00e9hez megadott [{0}] logikai \u00e9rt\u00e9k \u00e9rv\u00e9nytelen, az \u00e9rt\u00e9k csak "true" vagy "false" lehet.
+
+7273=A le\u00edr\u00f3 neves\u00edtett lek\u00e9rdez\u00e9sek m\u00e1sol\u00e1s\u00e1hoz megadott [{0}] logikai \u00e9rt\u00e9k \u00e9rv\u00e9nytelen, az \u00e9rt\u00e9k csak "true" vagy "false" lehet.
+
+7274=Kiv\u00e9tel t\u00f6rt\u00e9nt a napl\u00f3z\u00e1si f\u00e1jl l\u00e9trehoz\u00e1s\u00e1ra tett k\u00eds\u00e9rlet sor\u00e1n: [{0}]:[{1}].
+
+7275=Nem lehet p\u00e9ld\u00e1nyos\u00edtani a(z) [{1}] eclipselink.exception-handler tulajdons\u00e1gban megadott [{0}] kiv\u00e9telkezel\u0151 oszt\u00e1lyt.
+
+7276=Nem lehet p\u00e9ld\u00e1nyos\u00edtani a(z) [{1}] eclipselink.session-event-listener tulajdons\u00e1gban megadott [{0}] munkamenet esem\u00e9nyfigyel\u0151 oszt\u00e1lyt.
+
+7277=A napl\u00f3z\u00e1si f\u00e1jl neve nem lett megadva.
+
+7278=A(z) [{1}] perzisztencia tulajdons\u00e1ghoz megadott [{0}] logikai \u00e9rt\u00e9k \u00e9rv\u00e9nytelen, az \u00e9rt\u00e9k csak "true" vagy "false" lehet.
+
+7282=A(z) {0} StructConverter nem hat\u00e1rozhat\u00f3 meg a(z) {1} lek\u00e9pez\u00e9shez.  A StructConverters csak k\u00f6zvetlen lek\u00e9pez\u00e9sekhez haszn\u00e1lhat\u00f3.
+
+7283=K\u00e9t StructConverters lett hozz\u00e1adva a(z) {0} oszt\u00e1lyhoz.  Oszt\u00e1lyonk\u00e9nt csak egy StructConverter adhat\u00f3 hozz\u00e1.
+
+7284=A(z) [{0}] oszt\u00e1ly nem egy \u00e9rv\u00e9nyes \u00f6sszehasonl\u00edt\u00f3. Az oszt\u00e1lynak meg kell val\u00f3s\u00edtania a Comparator fel\u00fcletet.
+
+7285=A megadott [{0}] profiloz\u00f3 oszt\u00e1ly \u00e9rv\u00e9nytelen, az oszt\u00e1lynak l\u00e9teznie kell az oszt\u00e1ly\u00fatvonalon, \u00e9s meg kell val\u00f3s\u00edtania a SessionProfiler fel\u00fcletet.
+
+7286=Nem lehet p\u00e9ld\u00e1nyos\u00edtani a(z) [{1}] eclipselink.profiler tulajdons\u00e1gban megadott [{0}] profiloz\u00f3 oszt\u00e1lyt.
+
+7287=A(z) [{0}] elemhez megadott olvas\u00e1si \u00e1talak\u00edt\u00f3 nem val\u00f3s\u00edtja meg a sz\u00fcks\u00e9ges AttributeTransformer fel\u00fcletet.
+
+7288=A(z) [{0}] elemhez megadott olvas\u00e1si \u00e1talak\u00edt\u00f3 egyar\u00e1nt tartalmaz oszt\u00e1lyt \u00e9s met\u00f3dust. Vagy az oszt\u00e1ly, vagy a met\u00f3dus k\u00f6telez\u0151, de nem mindkett\u0151.
+
+7289=A(z) [{0}] elemhez megadott olvas\u00e1si \u00e1talak\u00edt\u00f3 nem tartalmaz sem oszt\u00e1lyt, sem met\u00f3dust. Vagy az oszt\u00e1ly, vagy a met\u00f3dus k\u00f6telez\u0151, de nem mindkett\u0151.
+
+7290=A(z) [{0}] elem [{1}] oszlop\u00e1hoz megadott \u00edr\u00e1si \u00e1talak\u00edt\u00f3 nem val\u00f3s\u00edtja meg a sz\u00fcks\u00e9ges FieldTransformer fel\u00fcletet.
+
+7291=A(z) [{0}] elem [{1}] oszlop\u00e1hoz megadott \u00edr\u00e1si \u00e1talak\u00edt\u00f3 egyar\u00e1nt tartalmaz oszt\u00e1lyt \u00e9s met\u00f3dust. Vagy az oszt\u00e1ly, vagy a met\u00f3dus k\u00f6telez\u0151, de nem mindkett\u0151.
+
+7292=A(z) [{0}] elem [{1}] oszlop\u00e1hoz megadott \u00edr\u00e1si \u00e1talak\u00edt\u00f3 nem tartalmaz sem oszt\u00e1lyt, sem met\u00f3dust. Vagy az oszt\u00e1ly, vagy a met\u00f3dus k\u00f6telez\u0151, de nem mindkett\u0151.
+
+7293=A(z) [{0}] elemhez megadott \u00edr\u00e1si \u00e1talak\u00edt\u00f3 nem tartalmaz oszlopot, vagy az oszlopnak nincs neve.
+
+7294=A(z) [{1}] v\u00e1ltoz\u00f3 egy-az-egyhez elem eset\u00e9n t\u00f6bb entit\u00e1s van lek\u00e9pezve egyazon [{0}] megk\u00fcl\u00f6nb\u00f6ztet\u0151h\u00f6z. A v\u00e1ltoz\u00f3 egy-az-egyhez fel\u00fcletet megval\u00f3s\u00edt\u00f3 minden egyes entit\u00e1snak egy saj\u00e1t egyedi megk\u00fcl\u00f6nb\u00f6ztet\u0151vel kell rendelkeznie.
+
+7295=A(z) [{0}] oszt\u00e1lyhoz megadott CloneCopyPolicy nem hat\u00e1roz meg egy met\u00f3dust vagy egy workingCopyMethod met\u00f3dust.  A kett\u0151 k\u00f6z\u00fcl az egyiket meg kell adni.
+
+7296=A(z) [{0}] oszt\u00e1ly t\u00f6bb CopyPolicy annot\u00e1ci\u00f3t tartalmaz.  Oszt\u00e1lyonk\u00e9nt csak egyetlen CopyPolicyAnnotation enged\u00e9lyezett.
+
+7297=Kiv\u00e9tel t\u00f6rt\u00e9nt a(z) [{0}] oszt\u00e1ly reflekt\u00edv p\u00e9ld\u00e1nyos\u00edt\u00e1sakor.  Ez \u00e1ltal\u00e1ban azt jelenti, hogy ez az oszt\u00e1ly meg van adva a metaadatokban, \u00e9s valamilyen okn\u00e1l fogva a Java nem tudja reflekt\u00edven p\u00e9ld\u00e1nyos\u00edtani argumentumok n\u00e9lk\u00fcli konstruktorral.  Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt ellen\u0151rizze a kiv\u00e9tell\u00e1ncot.  Megjegyz\u00e9s: a kiv\u00e9tell\u00e1nc megtekint\u00e9s\u00e9hez lehets\u00e9ges, hogy n\u00f6velnie kell a napl\u00f3z\u00e1si szintet.
+
+7298=A(z) [{3}] be\u00e1gyazott azonos\u00edt\u00f3 oszt\u00e1lyb\u00f3l sz\u00e1rmaz\u00f3 [{2}] lek\u00e9pez\u00e9s \u00e9rv\u00e9nytelen ehhez az oszt\u00e1lyhoz. Egy be\u00e1gyazott azonos\u00edt\u00f3 specifik\u00e1ci\u00f3val ([{1}] forr\u00e1sb\u00f3l sz\u00e1rmaz\u00f3 [{0}] haszn\u00e1lt be\u00e1gyazhat\u00f3 oszt\u00e1ly csak alap lek\u00e9pez\u00e9seket tartalmazhat. T\u00e1vol\u00edtsa el a nem alap lek\u00e9pez\u00e9st, vagy m\u00f3dos\u00edtsa a be\u00e1gyazand\u00f3 forr\u00e1s be\u00e1gyazott azonos\u00edt\u00f3 specifik\u00e1ci\u00f3j\u00e1t.
+
+7299=Azonos [{0}] nev\u0171 \u00fctk\u00f6z\u0151 annot\u00e1ci\u00f3k tal\u00e1lhat\u00f3k. Az els\u0151 [{1}] a(z) [{2}] helyen tal\u00e1lhat\u00f3, a m\u00e1sodik [{3}] a(z) [{4}] helyen. A neves\u00edtett annot\u00e1ci\u00f3knak egyedieknek kell lenni\u00fck a perzisztenciaegys\u00e9gen bel\u00fcl.
+
+7300=Azonos [{0}] nev\u0171 \u00fctk\u00f6z\u0151 [{1}] XML elemek tal\u00e1lhat\u00f3k. Az els\u0151 a(z) [{2}] lek\u00e9pez\u00e9si f\u00e1jlban, a m\u00e1sodik a(z) [{3}] lek\u00e9pez\u00e9si f\u00e1jlban tal\u00e1lhat\u00f3. A neves\u00edtett XML elemeknek egyedieknek kell lenni\u00fck a perzisztenciaegys\u00e9gen bel\u00fcl.
+
+7301=\u00dctk\u00f6z\u0151 annot\u00e1ci\u00f3k tal\u00e1lhat\u00f3k. Az els\u0151 [{0}] a(z) [{1}] helyen tal\u00e1lhat\u00f3, a m\u00e1sodik [{2}] a(z) [{3}] helyen. Jav\u00edtsa ezt a nem \u00e9rv\u00e9nyes annot\u00e1ci\u00f3 elt\u00e1vol\u00edt\u00e1s\u00e1val.
+
+7302=\u00dctk\u00f6z\u0151 [{0}] XML elemek tal\u00e1lhat\u00f3k a(z) [{1}] elemhez. Az els\u0151 a(z) [{2}] lek\u00e9pez\u00e9si f\u00e1jlban, a m\u00e1sodik a(z) [{3}] lek\u00e9pez\u00e9si f\u00e1jlban tal\u00e1lhat\u00f3. Jav\u00edtsa ezt a nem \u00e9rv\u00e9nyes XML elem elt\u00e1vol\u00edt\u00e1s\u00e1val.
+
+7303=A(z) [{0}] \u00e9rt\u00e9kre be\u00e1ll\u00edtott PersistenceUnitProperties.ORACLE_PROXY_TYPE tulajdons\u00e1g, amelynek megad\u00e1sa k\u00f6telez\u0151 ehhez a(z) [{1}] proxyt\u00edpus tulajdons\u00e1ghoz, nem tal\u00e1lhat\u00f3.
+
+7304=A PersistenceUnitProperties.ORACLE_PROXY_TYPE tulajdons\u00e1g ismeretlen [{0}] t\u00edpusra van be\u00e1ll\u00edtva, az ismert t\u00edpusok [{1}], [{2}], [{3}].
+
+7305=Kiv\u00e9tel t\u00f6rt\u00e9nt a lek\u00e9pez\u00e9si f\u00e1jl feldolgoz\u00e1sakor a k\u00f6vetkez\u0151 URL c\u00edmr\u0151l: [{0}].
+
+7306=A(z) [{1}] oszt\u00e1lyb\u00f3l sz\u00e1rmaz\u00f3 [{0}] annot\u00e1ci\u00f3val ell\u00e1tott elem egy helytelen explicit hozz\u00e1f\u00e9r\u00e9si t\u00edpust ad meg. [{2}] hozz\u00e1f\u00e9r\u00e9si t\u00edpust kellene megadnia.
+
+7307=Hi\u00e1nyzik egy napl\u00f3z\u00e1si kontextus karaktersorozat a(z) [{0}] kontextus eset\u00e9n. Ez egy bels\u0151 kiv\u00e9tel, amely egy JPA metaadat feldolgoz\u00e1ssal kapcsolatos napl\u00f3\u00fczenet lek\u00e9r\u00e9sekor t\u00f6rt\u00e9nt, k\u00fcldj\u00f6n egy hibajelent\u00e9st.
+
+7308=A(z) [{1}] perzisztencia tulajdons\u00e1ghoz megadott [{0}] \u00e9rt\u00e9k \u00e9rv\u00e9nytelen - [{2}].
+
+7309=A(z) [{0}] be\u00e1gyazhat\u00f3 oszt\u00e1lyb\u00f3l sz\u00e1rmaz\u00f3 [{1}] nev\u0171 attrib\u00fatum nem egy \u00e9rv\u00e9nyes lek\u00e9pez\u00e9s, amely a(z) [{2}] oszt\u00e1lyhoz megadott [{3}] attrib\u00fatum attrib\u00fatum-fel\u00fclb\u00edr\u00e1l\u00e1s\u00e1val haszn\u00e1lhat\u00f3 lenne.
+
+7310=A(z) [{1}] oszt\u00e1lyhoz megadott [{0}] elemgy\u0171jtem\u00e9ny attrib\u00fatum c\u00e9loszt\u00e1lya nem \u00e1llap\u00edthat\u00f3 meg.  Ha nem haszn\u00e1l generikus t\u00edpusokat, akkor gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a c\u00e9loszt\u00e1ly meg van hat\u00e1rozva az elemgy\u0171jtem\u00e9ny lek\u00e9pez\u00e9shez.
+
+7311=\u00c9rv\u00e9nytelen c\u00e9loszt\u00e1ly haszn\u00e1lata a(z) [{1}] oszt\u00e1ly [{0}] elemgy\u0171jtem\u00e9ny attrib\u00fatum\u00e1val.  Csak alapt\u00edpusok \u00e9s be\u00e1gyazhat\u00f3 oszt\u00e1lyok enged\u00e9lyezettek.
+
+7312=\u00c9rv\u00e9nytelen [{0}] be\u00e1gyazhat\u00f3 oszt\u00e1ly haszn\u00e1lata a(z) [{2}] oszt\u00e1ly [{1}] elemgy\u0171jtem\u00e9ny attrib\u00fatum\u00e1val. Tekintse meg a specifik\u00e1ci\u00f3 2.6. szakasz\u00e1t: "Egy elemgy\u0171jtem\u00e9nyen bel\u00fcl tartalmazott be\u00e1gyazhat\u00f3 oszt\u00e1ly (bele\u00e9rtve a m\u00e1sik be\u00e1gyazhat\u00f3 oszt\u00e1lyon bel\u00fcli be\u00e1gyazott oszt\u00e1lyokat) nem tartalmazhat egy elemgy\u0171jtem\u00e9nyt, sem egy olyan viszonyt egy entit\u00e1shoz, amely nem t\u00f6bb-az-egyhez vagy egy-az-egyhez viszony. A be\u00e1gyazhat\u00f3 oszt\u00e1lynak egy ilyen viszony tulajdonosi oldal\u00e1n kell lennie, \u00e9s a viszonyt egy idegen kulcs megfeleltet\u00e9ssel kell lek\u00e9pezni. " A(z) [{3}] attrib\u00fatum megfeleltet\u00e9se a be\u00e1gyazhat\u00f3 oszt\u00e1lyon \u00fctk\u00f6zik ezzel.
+
+7313=A(z) [{1}] attrib\u00fatum nem tal\u00e1lhat\u00f3 a(z) [{0}] be\u00e1gyazott oszt\u00e1lyhoz. Ez a(z) [{3}] be\u00e1gyazott attrib\u00fatum egy t\u00e1rs\u00edt\u00e1s-fel\u00fclb\u00edr\u00e1l\u00e1s\u00e1ra hivatkozik a(z) [{2}] oszt\u00e1lyhoz.
+
+7314=A(z) [{0}] lek\u00e9pez\u00e9s van haszn\u00e1latban a kulcs lek\u00e9pez\u00e9s\u00e9hez egy MappedKeyMapContainerPolicy elemben, \u00e9s k\u00f6zvetetts\u00e9get haszn\u00e1l.  A t\u00e9rk\u00e9pkulcsokhoz haszn\u00e1lt lek\u00e9pez\u00e9sek nem haszn\u00e1lhatnak k\u00f6zvetetts\u00e9get.
+
+7315=A(z) [{1}] oszt\u00e1lyhoz megadott [{0}] elemgy\u0171jtem\u00e9ny attrib\u00fatum t\u00e9rk\u00e9pkulcs oszt\u00e1lya nem \u00e1llap\u00edthat\u00f3 meg.  Amikor egy elemgy\u0171jtem\u00e9nnyel ad meg egy \u00e1talak\u00edt\u00e1si kulcsot, gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy generikus meghat\u00e1roz\u00e1st haszn\u00e1l, hogy az \u00e1talak\u00edt\u00f3hoz meghat\u00e1rozhat\u00f3 lehessen egy oszt\u00e1lyt\u00edpus.
+
+7316=A(z) [{1}] lek\u00e9pez\u00e9si attrib\u00fatumb\u00f3l sz\u00e1rmaz\u00f3 [{0}] MapsId \u00e9rt\u00e9k \u00e9rv\u00e9nytelen. Az ilyen nev\u0171 egyen\u00e9rt\u00e9k\u0171 attrib\u00fatumot meg kell hat\u00e1rozni a(z) [{2}] IdClass azonos\u00edt\u00f3oszt\u00e1lyhoz.
+
+7317=A listasorrend mez\u0151 nem t\u00e1mogatott a k\u00f6vetkez\u0151h\u00f6z: [{0}].
+
+7318=A(z) [{0}] eset\u00e9n be van \u00e1ll\u00edtva a listasorrend, azonban a CollectionChangeEvent.REMOVE utas\u00edt\u00e1s index n\u00e9lk\u00fcl lett elk\u00fcldve.
+
+7319=A(z) [{0}] be\u00e1gyazhat\u00f3 oszt\u00e1lyb\u00f3l sz\u00e1rmaz\u00f3 [{1}] nev\u0171 attrib\u00fatum nem egy \u00e9rv\u00e9nyes viszony, amely a(z) [{3}] [{2}] t\u00e1rs\u00edt\u00e1s-fel\u00fclb\u00edr\u00e1l\u00e1s\u00e1val haszn\u00e1lhat\u00f3 lenne. Egy t\u00e1rs\u00edt\u00e1s-fel\u00fclb\u00edr\u00e1l\u00e1st csak akkor lehet megadni, amikor a be\u00e1gyazhat\u00f3 oszt\u00e1ly a viszony tulajdonosi oldal\u00e1n tal\u00e1lhat\u00f3.
+
+7320=A(z) [{1}] oszt\u00e1lyb\u00f3l sz\u00e1rmaz\u00f3 (vagy egy lek\u00e9pezett \u0151soszt\u00e1lyb\u00f3l \u00f6r\u00f6k\u00f6lt) [{0}] attrib\u00fatum nem egy \u00e9rv\u00e9nyes t\u00edpus, amely egy rendez\u00e9si oszlop specifik\u00e1ci\u00f3val haszn\u00e1lhat\u00f3 lenne. Egy rendez\u00e9si oszlop megad\u00e1sakor az attrib\u00fatumnak List t\u00edpus\u00fanak kell lennie.
+
+7321=A(z) [{3}] oszt\u00e1ly [{2}] sz\u00e1rmaztatott azonos\u00edt\u00f3lek\u00e9pez\u00e9s\u00e9b\u0151l sz\u00e1rmaz\u00f3 [{1}] mez\u0151 egy \u00e9rv\u00e9nytelen azonos\u00edt\u00f3 mez\u0151 a(z) [{0}] hivatkoz\u00e1si oszt\u00e1lyb\u00f3l. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy ehhez a mez\u0151h\u00f6z l\u00e9tezik egy megfelel\u0151 azonos\u00edt\u00f3lek\u00e9pez\u00e9s. 
+
+7322=A(z) [{3}] oszt\u00e1ly [{2}] attrib\u00fatum\u00e1hoz megadott [{1}] nev\u0171 t\u00e1rs\u00edt\u00e1s-fel\u00fclb\u00edr\u00e1l\u00e1s [{0}] referencia oszlopneve nem egy \u00e9rv\u00e9nyes lek\u00e9pzett els\u0151dleges kulcs mez\u0151. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy ehhez a mez\u0151h\u00f6z l\u00e9tezik egy megfelel\u0151 azonos\u00edt\u00f3lek\u00e9pez\u00e9s.
+
+7323=A(z) [{2}] eredet\u0171 [{1}] nev\u0171 t\u00e1bla t\u00f6bb [{0}] nev\u0171 egyedi megszor\u00edt\u00e1st tartalmaz. Ez nem enged\u00e9lyezett, az egyedi megszor\u00edt\u00e1sneveknek egyedinek kell lenni\u00fck az \u00f6sszes t\u00e1bla tekintet\u00e9ben.
+
+7324=A(z) [{1}] entit\u00e1soszt\u00e1ly egyar\u00e1nt megad egy @ClassExtractor annot\u00e1ci\u00f3t \u00e9s megk\u00fcl\u00f6nb\u00f6ztet\u0151 metaadatokat. Egy @ClassExtractor haszn\u00e1latakor nem adhat\u00f3 meg @DiscriminatorColumn \u00e9s/vagy @DiscriminatorValue ehhez az oszt\u00e1lyhoz, \u00e9s nem hat\u00e1rozhat\u00f3k meg megk\u00fcl\u00f6nb\u00f6ztet\u0151 \u00e9rt\u00e9k metaadatok a sz\u00e1rmaztatott oszt\u00e1lyaihoz sem.
+
+7325=A(z) [{2}] forr\u00e1sb\u00f3l sz\u00e1rmaz\u00f3 [{1}] neves\u00edtett lek\u00e9pez\u00e9ssel haszn\u00e1lt [{0}] sql eredm\u00e9nyhalmaz lek\u00e9pez\u00e9s nem ismerhet\u0151 fel sql eredm\u00e9nyhalmaz lek\u00e9pez\u00e9sk\u00e9nt. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a n\u00e9v helyes, \u00e9s hogy l\u00e9tezik egy ilyen nev\u0171 sql eredm\u00e9nyhalmaz lek\u00e9pez\u00e9s.
+
+7326=A(z) [{1}] oszt\u00e1lyb\u00f3l sz\u00e1rmaz\u00f3 [{0}] attrib\u00fatum, amely a VIRTUAL hozz\u00e1f\u00e9r\u00e9st haszn\u00e1l\u00f3 [{2}] helyen van lek\u00e9pezve, nem ad meg attrib\u00fatumt\u00edpust. A VIRTUAL hozz\u00e1f\u00e9r\u00e9s haszn\u00e1latakor meg kell adni egy attrib\u00fatumt\u00edpust. Megjegyz\u00e9s: Egy-az-egyhez vagy t\u00f6bb-az-egyhez viszonyok eset\u00e9n az attrib\u00fatumt\u00edpus a c\u00e9lentit\u00e1s haszn\u00e1lat\u00e1val van megadva. V\u00e1ltoz\u00f3-egy-az-egyhez viszony eset\u00e9n a c\u00e9loszt\u00e1ly haszn\u00e1lat\u00e1val van megadva.
+
+7327=A(z) [{0}] be\u00e1gyazhat\u00f3 oszt\u00e1ly az oszt\u00e1lyokban \u00fctk\u00f6z\u0151 hozz\u00e1f\u00e9r\u00e9si met\u00f3dusokkal van haszn\u00e1latban. A(z) [{1}] oszt\u00e1ly [{2}] hozz\u00e1f\u00e9r\u00e9si met\u00f3dusokat haszn\u00e1lja, a(z) [{3}] oszt\u00e1ly pedig a(z) [{4}] hozz\u00e1f\u00e9r\u00e9si met\u00f3dusokat. Egy be\u00e1gyazhat\u00f3 objektum megoszt\u00e1sakor oszt\u00e1lyok k\u00f6z\u00f6tt, a be\u00e1gyaz\u00f3 oszt\u00e1lyok hozz\u00e1f\u00e9r\u00e9si met\u00f3dusainak azonosnak kell lenni\u00fck.
+
+7328=VIRTUAL hozz\u00e1f\u00e9r\u00e9s haszn\u00e1lata eset\u00e9n meg kell adni egy DynamicClassLoader met\u00f3dust az EntityManagerFactory l\u00e9trehoz\u00e1sakor az [eclipselink.classloader] eclipselink tulajdons\u00e1gban. Vagyis, createEntityManagerFactory(String persistenceUnitName, Map properties), majd adjon hozz\u00e1 egy \u00faj DynamicClassLoader() met\u00f3dust a Map tulajdons\u00e1gokhoz.
+
+7329=A(z) {0} {1} attrib\u00fatuma nincs lek\u00e9pezve.
+
+7330=A(z) {0} {1} attrib\u00fatuma egy be\u00e1gyazott leh\u00edv\u00e1si csoportra hivatkozik, azonban vagy nincs lek\u00e9pezve ForeignReferenceMapping annot\u00e1ci\u00f3val, vagy a lek\u00e9pez\u00e9snek nincs hivatkoz\u00e1s le\u00edr\u00f3ja.
+
+7331=A(z) {0} {1} attrib\u00fatuma egy be\u00e1gyazott leh\u00edv\u00e1si csoportra hivatkozik, azonban a c\u00e9loszt\u00e1ly nem t\u00e1mogatja a leh\u00edv\u00e1si csoportokat.
+
+7332=A(z) [{1}] helyr\u0151l sz\u00e1rmaz\u00f3 [{4}] t\u00edpus\u00fa [{2}] sz\u00e1rmaztatott \u00f6sszetett els\u0151dleges kulcs attrib\u00fatumnak a(z) [{0}] helyr\u0151l sz\u00e1rmaz\u00f3 sz\u00fcl\u0151 azonos\u00edt\u00f3 attrib\u00fatum mez\u0151j\u00e9vel azonos t\u00edpus\u00fanak kell lennie. Vagyis [{3}] t\u00edpus\u00fanak kellene lennie.
+
+7334=A(z) [{0}] oszt\u00e1ly hi\u00e1nyos els\u0151dleges kulcs specifik\u00e1ci\u00f3t tartalmaz. Els\u0151dleges kulcs oszlopok meghat\u00e1roz\u00e1sakor az oszlopok neveit meg kell adni.
+
+7335=T\u00f6bbsz\u00f6r szerepl\u0151 [{1}] part\u00edci\u00f3\u00e9rt\u00e9k lett megadva egy [{0}] nev\u0171 @ValuePartitioning annot\u00e1ci\u00f3hoz
+
+7336=T\u00f6bb [{2}] \u00e9s [{3}] kontextus tulajdons\u00e1g van megadva egyazon [{1}] b\u00e9rl\u0151 megk\u00fcl\u00f6nb\u00f6ztet\u0151 mez\u0151h\u00f6z a(z) [{0}] oszt\u00e1ly eset\u00e9n
+
+7337=A(z) [{1}] lek\u00e9pezett b\u00e9rl\u0151 megk\u00fcl\u00f6nb\u00f6ztet\u0151 oszlopot a(z) [{0}] oszt\u00e1lyhoz \u00edr\u00e1sv\u00e9dettk\u00e9nt kell megjel\u00f6lni. A JPA-ban ez az oszlopokhoz az insertable=false \u00e9s updatable=false tulajdons\u00e1gok be\u00e1ll\u00edt\u00e1s\u00e1val v\u00e9gezhet\u0151 el, p\u00e9ld\u00e1ul @Column(name="TENANT_ID", insertable=false, updatable=false).
+
+7338=Nem adhat hozz\u00e1 sorozatokat egy SessionBroker eset\u00e9n.
+
+7339=A(z) [{0}] \u00e1lnevet egyar\u00e1nt haszn\u00e1lja a(z) [{1}] \u00e9s a(z) [{2}] oszt\u00e1ly. A le\u00edr\u00f3 \u00e1ln\u00e9vnek egyedinek kell lennie.
+
+7340=T\u00f6bb [{0}] nev\u0171 lek\u00e9pez\u00e9si f\u00e1jl tal\u00e1lhat\u00f3 az oszt\u00e1ly\u00fatvonalon.
+
+7341=Nem lett megadva eclipselink-orm.xml az XMLMetadataSource elemhez.  Adjon meg egyet az eclipselink.metadata-source.xml.file perzisztencia egys\u00e9g tulajdons\u00e1g vagy az eclipselink.metadata-source.xml.url haszn\u00e1lat\u00e1val.
+
+7342=A nat\u00edv sql lek\u00e9rdez\u00e9sek enged\u00e9lyez\u00e9se be\u00e1ll\u00edt\u00e1s\u00e1hoz megadott [{0}] logikai \u00e9rt\u00e9k \u00e9rv\u00e9nytelen, az \u00e9rt\u00e9k csak "true" vagy "false" lehet.
+
+7343=T\u00f6bb VPD azonos\u00edt\u00f3 (b\u00e9rl\u0151 megk\u00fcl\u00f6nb\u00f6ztet\u0151 kontextus tulajdons\u00e1g) lett megadva. A(z) [{1}] entit\u00e1s [{0}] azonos\u00edt\u00f3t haszn\u00e1l, a(z) [{3]} entit\u00e1s pedig [{2}] azonos\u00edt\u00f3t. T\u00f6bb b\u00e9rl\u0151s VPD strat\u00e9gia haszn\u00e1latakor entit\u00e1sonk\u00e9nt csak egyetlen b\u00e9rl\u0151 megk\u00fcl\u00f6nb\u00f6ztet\u0151 oszlop lehet, \u00e9s a kontextus tulajdons\u00e1g\u00e1nak konzisztensnek kell lennie az \u00f6sszes t\u00f6bb b\u00e9rl\u0151s VPD entit\u00e1sra vonatkoz\u00f3an.
+
+7344=A VPD (kapcsolatok \u00e9s DDL el\u0151\u00e1ll\u00edt\u00e1s) nem t\u00e1mogatott a platformhoz: [{0}].
+
+7345=A(z) XMLMetadataSource tulajdons\u00e1ghoz megadott {0} f\u00e1jl nem tal\u00e1lhat\u00f3
+
+7346=Nem lett megadva a(z) [{0}] t\u00f6bb b\u00e9rl\u0151s kontextus tulajdons\u00e1g. Amikor a perzisztencia egys\u00e9g tulajdons\u00e1g (eclipselink.multitenant.tenants-share-emf) false \u00e9rt\u00e9kre van be\u00e1ll\u00edtva, az \u00f6sszes t\u00f6bb b\u00e9rl\u0151s kontextus tulajdons\u00e1got egy\u00e9rtelm\u0171en meg kell adni. Ez megtehet\u0151 k\u00f6zvetlen\u00fcl a perzisztencia egys\u00e9g meghat\u00e1roz\u00e1s\u00e1n kereszt\u00fcl, vagy az \u00f6sszes t\u00f6bb b\u00e9rl\u0151s kontextus tulajdons\u00e1got tartalmaz\u00f3 tulajdons\u00e1gt\u00e9rk\u00e9p \u00e1tad\u00e1s\u00e1val a create EntityManagerFactory h\u00edv\u00e1snak.
+
+7347=A(z) [{0}] oszt\u00e1ly a metaadatok t\u00edpus szint\u0171 \u00e1talak\u00edt\u00e1s\u00e1t adja meg an\u00e9lk\u00fcl, hogy mindegyikhez megadna egy attrib\u00fatumnevet. a metadatok minden t\u00edpus szint\u0171 \u00e1talak\u00edt\u00e1s\u00e1hoz meg kell adni egy attrib\u00fatumnevet, hogy a helyes alkalmaz\u00e1st biztos\u00edtsa egy \u0151soszt\u00e1ly attrib\u00fatumnak.
+
+7348=A(z) [{0}] helyr\u0151l sz\u00e1rmaz\u00f3 [{1}] be\u00e1gyazott lek\u00e9pez\u00e9s nem ad meg attrib\u00fatumnevet, amelyre az \u00e1talak\u00edt\u00e1st alkalmazni kell. Az Embeddable elemhez meg kell adni egy attrib\u00fatumnevet.
+
+7350=A(z) [{0}] oszt\u00e1ly [{1}] lek\u00e9pez\u00e9s\u00e9b\u0151l sz\u00e1rmaz\u00f3 [{3}] \u00e1talak\u00edt\u00e1si attrib\u00fatumn\u00e9v nem tal\u00e1lhat\u00f3 a(z) [{2}] be\u00e1gyazhat\u00f3 oszt\u00e1lyban. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az attrib\u00fatum l\u00e9tezik, \u00e9s helyesen van elnevezve.
+
+7351=A(z) [{0}] oszt\u00e1lyb\u00f3l sz\u00e1rmaz\u00f3 [{1}] lek\u00e9pez\u00e9si attrib\u00fatumhoz megadott [{2}] \u00e1talak\u00edt\u00f3 oszt\u00e1ly nem tal\u00e1lhat\u00f3. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az \u00e1talak\u00edt\u00f3 oszt\u00e1ly neve helyes, \u00e9s az oszt\u00e1ly l\u00e9tezik a perzisztencia egys\u00e9g meghat\u00e1roz\u00e1sban.
+
+7352=A(z) [{0}] \u00e1talak\u00edt\u00f3 oszt\u00e1lynak meg kell val\u00f3s\u00edtania a JPA javax.persistence.AttributeConverter<X, Y> fel\u00fcletet, hogy \u00e9rv\u00e9nyes \u00e1talak\u00edt\u00f3 oszt\u00e1ly legyen.
+
+7353=A(z) [{0}] oszt\u00e1lyb\u00f3l sz\u00e1rmaz\u00f3 [{1}] lek\u00e9pez\u00e9si attrib\u00fatum nem egy \u00e9rv\u00e9nyes lek\u00e9pez\u00e9st\u00edpus egy \u00e1talak\u00edt\u00e1si specifik\u00e1ci\u00f3hoz.
+
+7354=A(z) [{0}] oszt\u00e1lyb\u00f3l sz\u00e1rmaz\u00f3 [{1}] lek\u00e9pez\u00e9si attrib\u00fatum nem egy \u00e9rv\u00e9nyes lek\u00e9pez\u00e9st\u00edpus egy t\u00e9rk\u00e9pkulcs \u00e1talak\u00edt\u00e1si specifik\u00e1ci\u00f3hoz.
+
+7355=A(z) [{0}] oszt\u00e1lyb\u00f3l sz\u00e1rmaz\u00f3 [{1}] lek\u00e9pez\u00e9si attrib\u00fatum nem egy \u00e9rv\u00e9nyes lek\u00e9pez\u00e9st\u00edpus egy attrib\u00fatumnevet haszn\u00e1l\u00f3 \u00e1talak\u00edt\u00e1si specifik\u00e1ci\u00f3hoz. Attrib\u00fatumnevet csak egy be\u00e1gyazott (Embedded) lek\u00e9pez\u00e9st\u00edpus bej\u00e1r\u00e1s\u00e1hoz kell megadni.
+
+7356=A(z) [{1}] elj\u00e1r\u00e1s nem hajthat\u00f3 v\u00e9gre, mert a(z) {0} jelenleg nem t\u00e1mogat t\u00f6bb kimeneti param\u00e9tert
+

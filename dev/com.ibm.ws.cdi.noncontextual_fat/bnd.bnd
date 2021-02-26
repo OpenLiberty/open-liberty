@@ -26,8 +26,12 @@ tested.features:\
         jpa-2.2,\
         beanValidation-2.0,\
         jaxrs-2.1,\
-        jsf-2.3
-	
+        jsf-2.3,\
+	enterprisebeans-4.0,\
+        enterprisebeansremote-4.0,\
+        enterprisebeanshome-4.0,\
+        enterprisebeanslite-4.0,\
+        enterprisebeanspersistenttimer-4.0
 	
 test.project: true
 

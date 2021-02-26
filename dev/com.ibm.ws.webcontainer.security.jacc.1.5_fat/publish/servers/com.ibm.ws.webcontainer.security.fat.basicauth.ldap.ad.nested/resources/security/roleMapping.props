@@ -1,0 +1,22 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+# <application name>::<role name>::<type : USER, GROUP or SPECIAL>::<accessid of user, group, or special subject name (either EVERYONE or ALLAUTHENTICATEDUSERS)):
+
+basicauth::Employee::GROUP::group:SampleLdapADRealm/CN=nested_g1,cn=users,dc=secfvt2,dc=austin,dc=ibm,dc=com
+basicauth::Employee::USER::group:SampleLdapADRealm/CN=topng_user1,cn=users,dc=secfvt2,dc=austin,dc=ibm,dc=com
+basicauth::Manager::USER::group:SampleLdapADRealm/CN=ng_user1,cn=users,dc=secfvt2,dc=austin,dc=ibm,dc=com
+basicauth::Manager::USER::group:SampleLdapADRealm/CN=ng_user3,cn=users,dc=secfvt2,dc=austin,dc=ibm,dc=com
+basicauth::Manager::GROUP::group:SampleLdapADRealm/CN=embedded_group1,cn=users,dc=secfvt2,dc=austin,dc=ibm,dc=com
+#
+
+
+

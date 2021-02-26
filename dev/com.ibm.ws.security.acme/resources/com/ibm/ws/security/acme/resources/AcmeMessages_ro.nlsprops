@@ -20,7 +20,7 @@
 #-----  ACME messages
 
 # The ACME referred to in these messages stands for Automatic Certificate Management Environment.
-# The term "certificate authority" is in reference to SSL/TLS certificate providers.
+# The term "certificate authority" is in reference to SSL and TLS requests certificate providers.
 # The URI parameter in these messages is for the ACME certificate authority, such as https://sampleCAProvider.org/directory
 
 ###############################################################################
@@ -32,6 +32,7 @@ REST_FORBIDDEN=Interzis
 REST_INVALID_CONTENT_TYPE=Antetul content-type al cererii nu a fost 'application/json'.
 REST_MISSING_OPERATION=Opera\u0163ia nu a fost specificat\u0103 pentru cerere.
 REST_NO_ACME_SERVICE=Nu a fost \u00eenregistrat un serviciu AcmeProvider.
+REST_TOO_MANY_REQUESTS=Utilizatorul a trimis prea multe cereri \u00eentr-o perioad\u0103 de timp dat\u0103. Perioada de timp r\u0103mas\u0103 p\u00e2n\u0103 la urm\u0103toarea cerere este {0}.
 ###############################################################################
 
 FILE_NOT_READABLE=fi\u015fierul nu poate fi citit
@@ -130,7 +131,7 @@ CWPKI2023E=CWPKI2023E: Serviciul ACME nu a putut scrie \u00een fi\u015fierul de 
 CWPKI2023E.explanation=Cheile de cont nu au putut fi stocate \u00een fi\u015fierul de chei de cont. Aceasta se poate \u00eent\u00e2mpla dac\u0103 permisiunile la fi\u015fier sunt incorecte sau dac\u0103 fi\u015fierul nu exist\u0103.
 CWPKI2023E.useraction=Examina\u0163i mesajul de eroare pentru detalii despre e\u015fec. Verifica\u0163i c\u0103 loca\u0163ia fi\u015fierului este corect\u0103 \u015fi c\u0103 serverul are permisiuni de scriere la fi\u015fier.
 
-CWPKI2024E=CWPKI2024E: Serviciul ACME nu a putut revoca certificatul cerut pentru autoritatea de certificare ACME la URI-ul {0}. Certificatul este num\u0103rul de serie {1}. Eroarea este ''{2}''.
+CWPKI2024E=CWPKI2024E: Serviciul ACME nu a putut revoca certificatul cerut pentru autoritatea de certificare ACME la URI-ul {0}. Certificatul este num\u0103rul de serie {1}. Eroarea este ''{2}''. Acest lucru se poate \u00eent\u00e2mpla dac\u0103 URI-ul directorului a fost modificat, \u015fi prin urmare, nu poate fi ignorat\u0103.
 CWPKI2024E.explanation=O cerere de revocare a certificatului a e\u015fuat. Certificatul s-ar putea s\u0103 nu fie revocat \u015fi ar putea fi \u00een continuare \u00een uz.
 CWPKI2024E.useraction=Examina\u0163i mesajul de eroare pentru detalii despre e\u015fec.
 
@@ -178,9 +179,9 @@ CWPKI2035E=CWPKI2035E: Serviciul ACME nu a putut stoca certificatul semnat \u00e
 CWPKI2035E.explanation=Certificatul a fost extras cu succes de la autoritatea de certificare, dar nu poate fi stocat local.
 CWPKI2035E.useraction=Examina\u0163i mesajul de eroare pentru detalii despre e\u015fec. Verifica\u0163i dac\u0103 loca\u0163ia fi\u015fierului depozit de chei este corect\u0103 \u015fi dac\u0103 serverul are permisiuni de scriere.
 
-CWPKI2036E=CWPKI2036E: Serviciul ACME a dep\u0103\u015fit pragul de timeout a\u015ftept\u00e2nd ca aplica\u0163ia de autorizare web s\u0103 porneasc\u0103. Aplica\u0163ia este necesar\u0103 pentru a finaliza o cerere de certificat cu o autoritate de certificare ACME. Serviciul a a\u015fteptat {0} minute.
-CWPKI2036E.explanation=Aplica\u0163ia utilizat\u0103 pentru a finaliza o cerere de certificat nu a pornit \u00een cadrul de timp a\u015fteptat. Nu poate fi cerut un certificat semnat.
-CWPKI2036E.useraction=Examina\u0163i istoricul pentru mesaje sau erori anterioare.
+CWPKI2036W=CWPKI2036W: Serviciul ACME a dep\u0103\u015fit pragul de timeout a\u015ftept\u00e2nd ca aplica\u0163ia de autorizare web s\u0103 porneasc\u0103. Aplica\u0163ia este necesar\u0103 pentru a finaliza o cerere de certificat cu o autoritate de certificare ACME. Cererea de certificat este \u00eencercat\u0103. Serviciul a a\u015fteptat {0}.
+CWPKI2036W.explanation=Aplica\u0163ia utilizat\u0103 pentru a finaliza o cerere de certificat nu a pornit \u00een cadrul de timp a\u015fteptat. Dac\u0103 aplica\u0163ia porne\u015fte, cererea continu\u0103. Dac\u0103 aplica\u0163ia nu porne\u015fte, cererea de certificat e\u015fueaz\u0103.
+CWPKI2036W.useraction=Examina\u0163i istoricul pentru mesaje sau erori anterioare. Examina\u0163i istoricul pentru un mesaj CWWKT0016I care include o aplica\u0163ie web cu URL-ul 'acme-challenge' pentru a indica faptul c\u0103 aplica\u0163ia intern\u0103 a pornit.
 
 CWPKI2037E=CWPKI2037E: Domeniile pentru serviciul ACME sunt fie nule, fie goale.
 CWPKI2037E.explanation=Domeniile sunt nule sau goale \u015fi nu pot fi utilizate.
@@ -215,7 +216,7 @@ CWPKI2044E.explanation=Serviciul ACME se a\u015fteapt\u0103 ca toate certificate
 CWPKI2044E.useraction=Asigura\u0163i-v\u0103 c\u0103 toate certificatele din lan\u0163ul de certificate sunt certificate X.509 \u015fi \u00eencerca\u0163i din nou.
 
 CWPKI2045W=CWPKI2045W: Certificatul cu num\u0103rul de serie {0} care este semnat de c\u0103tre autoritatea de certificare ACME la URI-ul {1} nu este valid p\u00e2n\u0103 la {2}.
-CWPKI2045W.explanation=Perioada valid\u0103 pe certificat este \u00een viitor. Cererile SSL/TLS e\u015fueaz\u0103 p\u00e2n\u0103 c\u00e2nd data \u015fi ora curente sunt \u00een intervalul care este specificat de c\u0103tre perioada valid\u0103 de pe certificat.
+CWPKI2045W.explanation=Perioada valid\u0103 pe certificat este \u00een viitor. Cererile SSL \u015fi TLS e\u015fueaz\u0103 p\u00e2n\u0103 c\u00e2nd data \u015fi ora curente sunt \u00een intervalul care este specificat de c\u0103tre perioada valid\u0103 de pe certificat.
 CWPKI2045W.useraction=Actualiza\u0163i data \u015fi ora local\u0103 de pe server dac\u0103 ele sunt incorecte.
 
 CWPKI2046E=CWPKI2046E: Motivul revoc\u0103rii certificatului {0} este invalid. Motivele de revocare suportate sunt: unspecified, key_compromise, ca_compromise, affiliation_changed, superseded, cessation_of_operations, certificate_hold, remove_from_crl, privilege_withdrawn and aa_compromise.
@@ -247,7 +248,7 @@ CWPKI2052I.explanation=Serviciul ACME cere un nou certificat bazat pe proprietat
 CWPKI2052I.useraction=Nicio ac\u0163iune nu este necesar\u0103.
 
 CWPKI2053W=CWPKI2053W: Certificatul cu num\u0103rul de serie {0} a expirat pe {1}. Serviciul ACME nu este configurat s\u0103 cear\u0103 automat un certificat nou.
-CWPKI2053W.explanation=Cererile TLS/SSL nu se pot finaliza deoarece certificatul a expirat.
+CWPKI2053W.explanation=Cererile SSL \u015fi TLS nu se pot finaliza deoarece certificatul a expirat.
 CWPKI2053W.useraction=Actualiza\u0163i proprietatea renewBeforeExpiration din configura\u0163ia serverului la o valoare mai mare dec\u00e2t 0 pentru a cere automat un nou certificat sau folosi\u0163i interfa\u0163a ACME REST pentru a cere un certificat nou.
 
 CWPKI2054W=CWPKI2054W: Proprietatea renewBeforeExpiration a fost setat\u0103 la {0}, care este egal\u0103 sau mai mare dec\u00e2t perioada de validitate a certificatului cu num\u0103rul de serie {1}. Perioada de validitate a certificatului este {2}. Proprietatea renewBeforeExpiration este resetat\u0103 la {3}.
@@ -262,13 +263,13 @@ CWPKI2056W=CWPKI2056W: Perioada de validitate a certificatului cu num\u0103rul d
 CWPKI2056W.explanation=Perioada de validitate este mai scurt\u0103 dec\u00e2t timpul minim de re\u00eennoire. Certificatul expir\u0103 \u00eenainte ca un certificat nou s\u0103 fie cerut.
 CWPKI2056W.useraction=Pentru a evita expirarea certificatului, cere\u0163i un certificat cu o perioad\u0103 de validitate mai lung\u0103. Dac\u0103 autoritatea de certificare suport\u0103 o perioad\u0103 de validitate personalizat\u0103, seta\u0163i proprietatea validFor \u00een configura\u0163ia serverului.
 
-CWPKI2057E=CWPKI2057E: Verificarea st\u0103rii de revocare certificate nu a creat un CertPathValidator pentru a valida certificatul. Eroarea este ''{0}''.
-CWPKI2057E.explanation=Verificatorul de revocare certificate trebuie s\u0103 construiasc\u0103 un CertPathValidator pentru a verifica starea de revocare OCSP \u015fi CRL-uri.
+CWPKI2057E=CWPKI2057E: Verificarea st\u0103rii de revocare certificat nu a creat o unealt\u0103 de validare cale de certificat Java pentru validarea certificatului. Eroarea este ''{0}''.
+CWPKI2057E.explanation=Verificatorul de revocare certificate trebuie s\u0103 construiasc\u0103 o unealt\u0103 de validare cale de certificat Java pentru a verifica starea de revocare OCSP \u015fi CRL-uri.
 CWPKI2057E.useraction=Examina\u0163i mesajul de stare \u015fi eroarea pentru detalii.
 
 CWPKI2058W=CWPKI2058W: Verificarea st\u0103rii de revocare certificate a ignorat erorile soft. Verificarea de revocare ar putea fi incomplet\u0103. Erorile sunt: ''{0}''.
 CWPKI2058W.explanation=E\u015fu\u0103rile soft includ erori de re\u0163ea. Serviciul ACME ignor\u0103 erorile soft deoarece ar putea fi probleme temporare. 
-CWPKI2058W.useraction=Dac\u0103 acest mesaj este \u00eent\u00e2lnit \u00een mod consecvent problema trebuie rezolvat\u0103 pentru ar putea \u00eempiedica verificarea corect\u0103 a s\u0103rii de revocare. Altfel, acest mesaj poate fi ignorat \u00een deplin\u0103 siguran\u0163\u0103. 
+CWPKI2058W.useraction=Dac\u0103 acest mesaj este \u00eent\u00e2lnit \u00een mod consecvent problema trebuie rezolvat\u0103 pentru ar putea \u00eempiedica verificarea corect\u0103 a s\u0103rii de revocare. Altfel, acest mesaj poate fi ignorat \u00een deplin\u0103 siguran\u0163\u0103.  
 
 CWPKI2059I=CWPKI2059I: Verificarea st\u0103rii de revocare certificate a constatat c\u0103 certificatul cu num\u0103rul de serie {0} este revocat.
 CWPKI2059I.explanation=Serviciul ACME a g\u0103sit c\u0103 certificatul a fost marcat ca revocat fie de un CRL, fie de un responder OSCP. 
@@ -285,3 +286,51 @@ CWPKI2061E.useraction=Asigura\u0163i-v\u0103 c\u0103 certificatul este un certif
 CWPKI2062E=CWPKI2062E: URL-ul de responder OCSP {0} definit \u00een configura\u0163ia serverului nu este un URI valid. Dac\u0103 este definit, acesta trebuie s\u0103 fie un URI valid pentru a \u00eenlocui URL-ul de responder OSCP con\u0163inut \u00een certificat.
 CWPKI2062E.explanation=Verificarea revoc\u0103rii certificatelor necesit\u0103 un URL de responder OCSP valid.
 CWPKI2062E.useraction=Furniza\u0163i un URL de responder OCSP valid \u00een configura\u0163ia serverului.
+
+CWPKI2063E=CWPKI2063E: Autoritatea de certificare ACME de la URI {0} a actualizat termenii serviciului s\u0103u \u015fi cere utilizatorului, \u00eenainte de a procesa mai departe cererile, s\u0103 fie de acord cu noii termeni ai serviciului de la URI-ul urm\u0103tor: {1}
+CWPKI2063E.explanation=Autoritatea de certificare \u015fi-a actualizat termenii serviciului \u015fi cere interac\u0163iune din partea utilizatorului.
+CWPKI2063E.useraction=Examina\u0163i termenii de serviciu furniza\u0163i.
+
+CWPKI2064I=CWPKI2064I: Serviciul ACME a extras certificatul cu num\u0103rul de serie {0} de la URI-ul {1} \u00een {2} secunde.
+CWPKI2064I.explanation=Serviciul ACME a cerut cu succes un certificat.
+CWPKI2064I.useraction=Nicio ac\u0163iune nu este necesar\u0103.
+
+CWPKI2065W=CWPKI2065W: Serviciul ACME a e\u015fuat s\u0103 re\u00eennoiasc\u0103 certificatul cu num\u0103rul de serie {0}. Cererea este planificat\u0103 s\u0103 \u00eencerce din nou \u00een {1}. Certificatul expir\u0103 pe {2}. Eroarea cererii de re\u00eennoire este ''{3}''.
+CWPKI2065W.explanation=Serviciul ACME a \u00eencercat s\u0103 re\u00eennoiasc\u0103 un certificat, dar a \u00eent\u00e2lnit o eroare. Serviciul ACME continu\u0103 s\u0103 cear\u0103 un certificat nou p\u00e2n\u0103 c\u00e2nd este emis un nou certificat.
+CWPKI2065W.useraction=Examina\u0163i mesajul de eroare pentru detalii despre e\u015fec.
+
+CWPKI2066E=CWPKI2066E: Serviciul ACME a e\u015fuat s\u0103 re\u00eennoiasc\u0103 certificatul cu num\u0103rul de serie {0}. Certificatul este revocat. Cererea este planificat\u0103 s\u0103 \u00eencerce din nou \u00een {1}. Eroarea cererii de re\u00eennoire este ''{2}''.
+CWPKI2066E.explanation=Serviciul ACME a \u00eencercat s\u0103 re\u00eennoiasc\u0103 un certificat, dar a \u00eent\u00e2lnit o eroare. Serviciul ACME continu\u0103 s\u0103 cear\u0103 un certificat nou p\u00e2n\u0103 c\u00e2nd este emis un nou certificat. Cererile SSL \u015fi TLS e\u015fueaz\u0103 p\u00e2n\u0103 c\u00e2nd cererea de certificat nou are succes.
+CWPKI2066E.useraction=Examina\u0163i mesajul de eroare pentru detalii despre e\u015fec. 
+
+CWPKI2067I=CWPKI2067I: Certificatul cu num\u0103rul de serie {0} este revocat. Serviciul ACME cere un certificat nou de la autoritatea de certificare ACME la URI-ul {1}.
+CWPKI2067I.explanation=C\u00e2nd serviciul ACME detecteaz\u0103 c\u0103 certificatul este revocat, automat cere un nou certificat.
+CWPKI2067I.useraction=Nicio ac\u0163iune nu este necesar\u0103.
+
+CWPKI2068W=CWPKI2068W: Verificarea de certificate automat\u0103 a serviciului ACME a e\u015fuat c\u00e2nd a verificat dac\u0103 certificatul cu num\u0103rul de serie {0} expir\u0103 sau a fost revocat. Verificarea este planificat\u0103 s\u0103 \u00eencerce din nou \u00een {1}. Eroarea este ''{2}''.
+CWPKI2068W.explanation=Serviciul ACME a \u00eenceput s\u0103 verifice dac\u0103 certificatul expir\u0103 sau a fost revocat, dar verificarea a e\u015fuat.
+CWPKI2068W.useraction=Examina\u0163i mesajul de eroare pentru detalii despre e\u015fec. Examina\u0163i starea certificatului utiliz\u00e2nd interfa\u0163a ACME REST. Dac\u0103 certificatul trebuie re\u00eennoit, utiliza\u0163i interfa\u0163a ACME REST pentru a cere un nou certificat.
+
+CWPKI2069I=CWPKI2069I: Verificarea automat\u0103 a certificatelor a serviciului ACME este dezactivat\u0103. Certificatele care expir\u0103 sau au fost revocate nu sunt re\u00eennoite automat.
+CWPKI2069I.explanation=Serviciul ACME nu verific\u0103 cu o planificare certificatele care expir\u0103 sau sunt revocate. Dac\u0103 certificatul expir\u0103 sau este revocat, cererile SSL \u015fi TLS nu se pot finaliza dec\u00e2t dac\u0103 serverul este repornit sau interfa\u0163a REST este utilizat\u0103 pentru a re\u00eennoi certificatul.
+CWPKI2069I.useraction=Nicio ac\u0163iune necesar\u0103. Pentru a activa verificarea automat\u0103 a certificatelor, actualiza\u0163i proprietatea certCheckerSchedule din configura\u0163ia serverului la o valoare mai mare dec\u00e2t 0.
+
+CWPKI2070W=CWPKI2070W: Proprietatea certCheckerSchedule a fost setat\u0103 la {0}, care este mai mic\u0103 dec\u00e2t timpul de planificare minim. Proprietatea certCheckerSchedule este resetat\u0103 la {1}.
+CWPKI2070W.explanation=Valoarea pentru proprietatea certCheckerSchedule for fost sub durata minim\u0103 pentru verifica certificatele care expis\u0103 sau sunt revocate \u015fi este resetat\u0103 la timpul minim de planificare.
+CWPKI2070W.useraction=Pentru a evita acest mesaj de eroare, seta\u0163i proprietatea certCheckerSchedule din configura\u0163ia serverului la o durat\u0103 care este mai mare dec\u00e2t timpul de planificare minim. Pentru a utiliza setarea implicit\u0103, \u00eenl\u0103tura\u0163i proprietatea certCheckerSchedule din configura\u0163ia serverului.
+
+CWPKI2071W=CWPKI2071W: Proprietatea certCheckerErrorSchedule a fost setat\u0103 la {0}, care este mai mic\u0103 dec\u00e2t timpul de planificare minim. Proprietatea certCheckerErrorSchedule este resetat\u0103 la {1}.
+CWPKI2071W.explanation=Valoarea pentru proprietatea certCheckerErrorSchedule for fost sub durata minim\u0103 pentru verifica certificatele care expis\u0103 sau sunt revocate \u015fi este resetat\u0103 la timpul minim de planificare.
+CWPKI2071W.useraction=Pentru a evita acest mesaj de eroare, seta\u0163i proprietatea certCheckerErrorSchedule din configura\u0163ia serverului la o durat\u0103 care este mai mare dec\u00e2t timpul de planificare minim. Pentru a utiliza setarea implicit\u0103, \u00eenl\u0103tura\u0163i proprietatea certCheckerErrorSchedule din configura\u0163ia serverului.
+
+CWPKI2072W=CWPKI2072W: Serviciul ACME nu a putut citi sau scrie la fi\u015fierul cu istoria ACME de la {0}. Eroarea este ''{1}''.
+CWPKI2072W.explanation=Serviciul ACME nu a putut accesa fi\u015fierul cu istoria ACME.
+CWPKI2072W.useraction=Asigura\u0163i-v\u0103 c\u0103 directorul ACME historical are permisiuni de citire \u015fi scriere.
+
+CWPKI2073W=CWPKI2073W: Niciun contact de cont nu a fost specificat. Este recomandat s\u0103 seta\u0163i aceast\u0103 proprietate \u00een configura\u0163ia serverului. Dac\u0103 se pierde o chei sau contul este compromis, accesul la cont se pierde.
+CWPKI2073W.explanation=Valoarea propriet\u0103\u0163ii accountContactnu a fost specificat\u0103 \u00een configura\u0163ia serverului.
+CWPKI2073W.useraction=Seta\u0163i proprietatea accountContact \u00een configura\u0163ia serverului.
+
+CWPKI2074W=CWPKI2074W: Serviciul ACME a expirat a\u015ftept\u00e2nd s\u0103 fie semnalat faptul c\u0103 portul HTTP este deschis. Este necesar un port HTTP disponibil pentru a finaliza o cerere de certificat cu o autoritate de certificare ACME. Cererea de certificat este \u00eencercat\u0103. Serviciul a a\u015fteptat {0}.
+CWPKI2074W.explanation=Serviciul \u00eencearc\u0103 o cerere de certificat. Dac\u0103 un port HTTP este deschis, cererea continu\u0103. Dac\u0103 un port HTTP nu este deschis, cererea e\u015fueaz\u0103.
+CWPKI2074W.useraction=Examina\u0163i istoricul pentru mesaje sau erori anterioare. Examina\u0163i istoricul pentru mesajele CWWKO0219I, care listeaz\u0103 punctele finale \u015fi porturile disponibile.

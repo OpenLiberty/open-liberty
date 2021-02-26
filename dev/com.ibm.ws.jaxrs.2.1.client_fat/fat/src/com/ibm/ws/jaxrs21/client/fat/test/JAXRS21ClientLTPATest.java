@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.jaxrs21.client.fat.test;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,10 +26,12 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
+@SkipForRepeat("EE9_FEATURES") // Continue to skip this test for EE9 as com.ibm.ws.jaxrs.client.ltpa.handler is not supported
 public class JAXRS21ClientLTPATest extends JAXRS21AbstractTest {
     @Server("jaxrs21.client.JAXRS21ClientLTPATest")
     public static LibertyServer server;
@@ -51,6 +55,9 @@ public class JAXRS21ClientLTPATest extends JAXRS21AbstractTest {
             System.out.println(e.toString());
         }
 
+        // Pause for the smarter planet message
+        assertNotNull("The smarter planet message did not get printed on server",
+                      server.waitForStringInLog("CWWKF0011I"));
     }
 
     @AfterClass

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2008 IBM Corporation and others.
+ * Copyright (c) 2004, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -68,6 +68,23 @@ public class AccessLogRequestCookie extends AccessLogData {
         }
 
         return true;
+    }
+
+    public static HttpCookie getCookie(HttpResponseMessage response, HttpRequestMessage request, Object data) {
+        String cookieName = (String) data;
+        HttpCookie headerCookie = null;
+
+        if (cookieName != null) {
+            headerCookie = request.getCookie(cookieName);
+        }
+
+        return headerCookie;
+    }
+
+    public static List<HttpCookie> getAllCookies(HttpResponseMessage response, HttpRequestMessage request, Object data) {
+        List<HttpCookie> cookieValues = null;
+        cookieValues = request.getAllCookies();
+        return cookieValues;
     }
 
 }

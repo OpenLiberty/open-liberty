@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2018 IBM Corporation and others.
+ * Copyright (c) 2010, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -65,6 +65,8 @@ public class IRequestImpl implements IRequestExtended
   private String normalizedURI= null; // PI05525
 
   private String contentType;
+  private String scheme;
+  private Boolean isSSL;
   private static boolean normalizeRequestURI = WCCustomProperties.NORMALIZE_REQUEST_URI; //PI05525
 
   /**
@@ -562,85 +564,93 @@ public class IRequestImpl implements IRequestExtended
 
   public String getScheme()
   {
+      if (this.scheme == null) {
+          boolean useForwarded =false;
 
-      boolean useForwarded =false;
+          if(conn instanceof HttpInboundConnectionExtended) {
 
-      if(conn instanceof HttpInboundConnectionExtended){
+              HttpInboundConnectionExtended ice = (HttpInboundConnectionExtended) conn;
 
-          HttpInboundConnectionExtended ice = (HttpInboundConnectionExtended) conn;
+              if(ice.useForwardedHeaders()) {
 
-          if(ice.useForwardedHeaders()){
+                  useForwarded = true;
+                  String forwardedProto = ice.getRemoteProto();
 
-              useForwarded = true;
-              String forwardedProto = ice.getRemoteProto();
+                  if (forwardedProto!=null) {
 
-              if (forwardedProto!=null) {
-
-                  if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
-                      Tr.debug(tc, " isTrusted --> true --> containsHeader --> X-Forwarded-Proto or Forwarded proto parameter --> scheme --> "+forwardedProto);
+                      if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                          Tr.debug(tc, " isTrusted --> true --> containsHeader --> X-Forwarded-Proto or Forwarded proto parameter --> scheme --> "+forwardedProto);
+                      }
+                      this.scheme = forwardedProto;
+                      return this.scheme;
                   }
-                  return forwardedProto;
               }
           }
+
+
+          // PM70260 - Duplicate code from tWAS WCCRequestImpl.java
+          //321485(tWAS)
+          // First determine whether to trust headers from this connection
+          // By default headers are trusted from all connections but this can be limited to a specific host/set of hosts
+          // with the HTTP Dispatcher config property trustedHeaderOrigin (or set to "none" to disallow from any host).
+          if (this.conn.useTrustedHeaders()) {
+              if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                  Tr.debug(tc, "getScheme: useTrustedHeaders is true");
+              // WC config property httpsIndicatorHeader can be set to the name of a header that states whether SSL termination
+              // has been performed upstream
+              if (isHttpsIndicatorSecure()) {
+                  //321485(tWAS)
+                  if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                      Tr.debug(tc, " isTrusted --> true, isHttpsIndicatorSecure --> true, scheme --> https");
+                  this.scheme = "https";
+                  return this.scheme;
+              }
+
+              // Private WAS header set by WAS Plugin (and other proxies if configured) to contain original scheme
+              String WSSC_header =  this.conn.getTrustedHeader(HttpHeaderKeys.HDR_$WSSC.getName());
+              if (WSSC_header != null) {
+                  //321485(tWAS)
+                  if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                      Tr.debug(tc, " isTrusted --> true, containsHeader --> $WSSC, scheme --> " + WSSC_header);
+                  this.scheme = WSSC_header;
+                  return this.scheme;
+              }
+
+              // Private WAS header set by WAS Plugin (and other proxies if configured) to state that secure protocal was used
+              String WSIS_header =  this.conn.getTrustedHeader(HttpHeaderKeys.HDR_$WSIS.getName());
+              if (WSIS_header != null ){
+                  if (WSIS_header.equalsIgnoreCase("true")) {
+                      //321485(tWAS)
+                      if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                          Tr.debug(tc, " isTrusted --> true --> containsHeader --> $WSIS  --> scheme --> https");
+                      this.scheme = "https";
+                      return this.scheme;
+                  }
+                  else {
+                      //321485(tWAS)
+                      if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                          Tr.debug(tc, " isTrusted --> true --> containsHeader --> $WSIS  --> scheme --> http");
+                      this.scheme = "http";
+                      return this.scheme;
+                  }
+              }
+
+              // De-facto standard header used to indicate original scheme
+              String FORWARDED_PROTO_header =  this.conn.getTrustedHeader(HttpHeaderKeys.HDR_X_FORWARDED_PROTO.getName());
+              if (FORWARDED_PROTO_header != null && !useForwarded){
+                  if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                      Tr.debug(tc, " isTrusted --> true --> containsHeader --> X-Forwarded-Proto  --> scheme --> "+FORWARDED_PROTO_header);
+                  this.scheme = FORWARDED_PROTO_header;
+                  return this.scheme;
+              }
+          }
+          //321485(tWAS)
+          this.scheme = request.getScheme();
       }
-
-
-        // PM70260 - Duplicate code from tWAS WCCRequestImpl.java
-        //321485(tWAS)
-        // First determine whether to trust headers from this connection
-        // By default headers are trusted from all connections but this can be limited to a specific host/set of hosts
-        // with the HTTP Dispatcher config property trustedHeaderOrigin (or set to "none" to disallow from any host).
-        if (this.conn.useTrustedHeaders()) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(tc, "getScheme: useTrustedHeaders is true");
-            // WC config property httpsIndicatorHeader can be set to the name of a header that states whether SSL termination
-            // has been performed upstream
-            if (isHttpsIndicatorSecure()) {
-                //321485(tWAS)
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                    Tr.debug(tc, " isTrusted --> true, isHttpsIndicatorSecure --> true, scheme --> https");
-                return "https";
-            }
-
-            // Private WAS header set by WAS Plugin (and other proxies if configured) to contain original scheme
-            String WSSC_header =  this.conn.getTrustedHeader(HttpHeaderKeys.HDR_$WSSC.getName());
-            if (WSSC_header != null) {
-                //321485(tWAS)
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                    Tr.debug(tc, " isTrusted --> true, containsHeader --> $WSSC, scheme --> " + WSSC_header);
-                return WSSC_header;
-            }
-
-            // Private WAS header set by WAS Plugin (and other proxies if configured) to state that secure protocal was used
-            String WSIS_header =  this.conn.getTrustedHeader(HttpHeaderKeys.HDR_$WSIS.getName());
-            if (WSIS_header != null ){
-                if (WSIS_header.equalsIgnoreCase("true")) {
-                    //321485(tWAS)
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                        Tr.debug(tc, " isTrusted --> true --> containsHeader --> $WSIS  --> scheme --> https");
-                    return "https";
-                }
-                else {
-                    //321485(tWAS)
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                        Tr.debug(tc, " isTrusted --> true --> containsHeader --> $WSIS  --> scheme --> http");
-                    return "http";
-                }
-            }
-
-            // De-facto standard header used to indicate original scheme
-            String FORWARDED_PROTO_header =  this.conn.getTrustedHeader(HttpHeaderKeys.HDR_X_FORWARDED_PROTO.getName());
-            if (FORWARDED_PROTO_header != null && !useForwarded){
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                        Tr.debug(tc, " isTrusted --> true --> containsHeader --> X-Forwarded-Proto  --> scheme --> "+FORWARDED_PROTO_header);
-                return FORWARDED_PROTO_header;
-            }
-        }
-        //321485(tWAS)
-        String scheme = request.getScheme();
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            Tr.debug(tc, "scheme --> " + scheme);
-        return scheme;
+      
+      if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+          Tr.debug(tc, "scheme --> " + this.scheme);
+      return this.scheme;
   }
 
   public String getServerName()
@@ -729,60 +739,62 @@ public class IRequestImpl implements IRequestExtended
 
   public boolean isSSL()
   {
+      if (this.isSSL == null) {
+          boolean useForwarded =false;
 
-      boolean ssl = false;
-      boolean useForwarded =false;
+          if (conn instanceof HttpInboundConnectionExtended){
 
-      if (conn instanceof HttpInboundConnectionExtended){
+              HttpInboundConnectionExtended ice = (HttpInboundConnectionExtended) conn;
 
-          HttpInboundConnectionExtended ice = (HttpInboundConnectionExtended) conn;
+              if (ice.useForwardedHeaders()) {
+                  useForwarded = true;
+                  String forwardedProto = ice.getRemoteProto();
 
-          if(ice.useForwardedHeaders()){
-              useForwarded = true;
-              String forwardedProto = ice.getRemoteProto();
-
-              // router may set this header for all protocols so check specifically for regular ssl (https) and websocket ssl (wss)
-              if (("https").equalsIgnoreCase(forwardedProto)||("wss").equalsIgnoreCase(forwardedProto)) {
-                  ssl = true;
-                  if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
-                      Tr.debug(tc, " isTrusted --> true --> containsHeader --> X-Forwarded-Proto or Forwarded proto parameter --> "+ forwardedProto+" ssl --> " + ssl);
+                  // router may set this header for all protocols so check specifically for regular ssl (https) and websocket ssl (wss)
+                  if (("https").equalsIgnoreCase(forwardedProto)||("wss").equalsIgnoreCase(forwardedProto)) {
+                      isSSL = true;
+                      if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
+                          Tr.debug(tc, " isTrusted --> true --> containsHeader --> X-Forwarded-Proto or Forwarded proto parameter --> "+ forwardedProto+" ssl --> " + isSSL);
+                      }
+                      return isSSL;
                   }
-                  return ssl;
               }
           }
-      }
 
-      //321485(tWAS)
-      if (this.conn.useTrustedHeaders()) {
-          //begin PK12164
-          if (isHttpsIndicatorSecure()) {
-              if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) //306998.4(tWAS)
-                  Tr.debug(tc, " isTrusted --> true, isHttpsIndicatorSecure --> true ssl --> true");
-              return true;
-          }
-          //end  PK12164
-          String WSIS_header =  this.conn.getTrustedHeader(HttpHeaderKeys.HDR_$WSIS.getName());
-          if (WSIS_header != null ){
-              ssl = WSIS_header.equalsIgnoreCase("true");
-              if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) //306998.4(tWAS)
-                  Tr.debug(tc, " isTrusted --> true ssl --> " + ssl);
-              return ssl;
-          }
-          String FORWARDED_PROTO_header =  this.conn.getTrustedHeader(HttpHeaderKeys.HDR_X_FORWARDED_PROTO.getName());
-          if (FORWARDED_PROTO_header != null && !useForwarded){
-              // router may set this header for all protocols so check specifically for regular ssl (https) and websocket ssl (wss)
-              if ((FORWARDED_PROTO_header.equalsIgnoreCase("https"))||(FORWARDED_PROTO_header.equalsIgnoreCase("wss"))) {
-                  ssl = true;
-                  if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                      Tr.debug(tc, " isTrusted --> true --> containsHeader --> X-Forwarded-Proto  --> "+FORWARDED_PROTO_header+" ssl --> " + ssl);
-                  return ssl;
+          //321485(tWAS)
+          if (this.conn.useTrustedHeaders()) {
+              //begin PK12164
+              if (isHttpsIndicatorSecure()) {
+                  if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) //306998.4(tWAS)
+                      Tr.debug(tc, " isTrusted --> true, isHttpsIndicatorSecure --> true ssl --> true");
+                  isSSL = true;
+                  return isSSL;
+              }
+              //end  PK12164
+              String WSIS_header =  this.conn.getTrustedHeader(HttpHeaderKeys.HDR_$WSIS.getName());
+              if (WSIS_header != null) {
+                  isSSL = WSIS_header.equalsIgnoreCase("true");
+                  if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) //306998.4(tWAS)
+                      Tr.debug(tc, " isTrusted --> true ssl --> " + isSSL);
+                  return isSSL;
+              }
+              String FORWARDED_PROTO_header =  this.conn.getTrustedHeader(HttpHeaderKeys.HDR_X_FORWARDED_PROTO.getName());
+              if (FORWARDED_PROTO_header != null && !useForwarded) {
+                  // router may set this header for all protocols so check specifically for regular ssl (https) and websocket ssl (wss)
+                  if ((FORWARDED_PROTO_header.equalsIgnoreCase("https"))||(FORWARDED_PROTO_header.equalsIgnoreCase("wss"))) {
+                      isSSL = true;
+                      if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                          Tr.debug(tc, " isTrusted --> true --> containsHeader --> X-Forwarded-Proto  --> "+FORWARDED_PROTO_header+" ssl --> " + isSSL);
+                      return isSSL;
+                  }
               }
           }
+          isSSL = (null != this.conn.getSSLContext());
       }
-      ssl = (null != this.conn.getSSLContext());
+      
       if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) //306998.4(tWAS)
-          Tr.debug(tc, " ssl --> " + ssl);
-      return ssl;
+          Tr.debug(tc, " ssl --> " + isSSL);
+      return isSSL;
   }
 
   public boolean isStartAsync()

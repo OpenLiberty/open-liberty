@@ -16,14 +16,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
-import org.junit.Assume;
 import org.junit.Test;
 
 import junit.framework.Assert;
 
 public class TrFormatMessageTest {
     private static final String TEST_NLS = "test.resources.Messages";
-    private static final String javaVersion = System.getProperty("java.version");
 
     /**
      * Creates an Enumeration which wraps the List's iterator.
@@ -80,16 +78,6 @@ public class TrFormatMessageTest {
      */
     @Test
     public void testFormatMessage_resolvesToBestMatch_java17() {
-        // I really don't like to conditional on JVM version, but the 1.6 JVM
-        // caches the resolved bundle by the targetLocale, which is the first
-        // Locale in the list. The 1.7 JVM does not do this, and therefore does
-        // look through the list to find a bundle which matches. If we tried to
-        // guess the right Locale, we would be implementing the resource bundle
-        // look-up logic ourselves, which is counter to the whole point of
-        // deferring to ResourceBundle. For now, we'll guard against running
-        // this test on Java 1.6.
-        Assume.assumeTrue(javaVersion.startsWith("1.7"));
-
         Locale aa = new Locale("aa");
         Locale xx = new Locale("xx");
         Locale zz = new Locale("zz");

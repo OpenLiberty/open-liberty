@@ -1,0 +1,47 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/OptimisticLockExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+5001=Si \u00e8 tentato di eliminare l''oggetto [{0}], ma non ha un numero di versione nell''associazione di identit\u00e0. {3}Potrebbe non essere stato letto prima del tentativo di eliminazione. {3}Classe> {1} Chiave primaria> {2}
+
+5003=L''oggetto [{0}] non pu\u00f2 essere eliminato poich\u00e9 \u00e8 stato modificato o eliminato dall''ultima volta che \u00e8 stato letto. {3}Classe> {1} Chiave primaria> {2}
+
+5004=Si \u00e8 tentato di aggiornare l''oggetto [{0}], ma non ha un numero di versione nell''associazione di identit\u00e0. {3}Potrebbe non essere stato letto prima del tentativo di aggiornamento. {3}Classe> {1} Chiave primaria> {2}
+
+5006=L''oggetto [{0}] non pu\u00f2 essere aggiornato poich\u00e9 \u00e8 stato modificato o eliminato dall''ultima volta che \u00e8 stato letto. {3}Classe> {1} Chiave primaria> {2}
+
+5007=L''oggetto [{0}] deve avere un''associazione non di sola lettura con il campo di blocco versione.
+
+5008=\u00c8 necessario associare il campo di blocco versione con java.sql.Timestamp quando si utilizza il blocco della registrazione data/ora
+
+5009=Non \u00e8 possibile eseguire l''unwrap dell''oggetto di classe [{1}] con chiave primaria [{0}] poich\u00e9 \u00e8 stato eliminato dall''ultima volta che \u00e8 stato letto.
+
+5010=L''oggetto [{0}] non pu\u00f2 essere unito poich\u00e9 \u00e8 stato modificato o eliminato dall''ultima volta che \u00e8 stato letto. {2}Classe> {1}
+
+5011=Uno o pi\u00f9 oggetti non possono essere aggiornati poich\u00e9 sono stati modificati o eliminati dall''ultima volta che sono stati letti
+

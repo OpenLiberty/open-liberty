@@ -14,69 +14,85 @@ import static org.junit.Assert.*;
 import static org.junit.Assume.*;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.nio.channels.FileChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.log.Log;
+
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
+@RunWith(FATRunner.class)
 public class PackageRunnableTest {
-    private static String serverName = "runnableTestServer";
-    private static LibertyServer server = LibertyServerFactory.getLibertyServer(serverName);
+    protected static final Class<?> c = PackageRunnableTest.class;
+    protected static final String CLASS_NAME = c.getName();
+
+    private static final String serverName = "runnableTestServer";
+    private static final LibertyServer server = LibertyServerFactory.getLibertyServer(serverName);
     private static final File runnableJar = new File("publish/" + serverName + ".jar");
     private static final File extractDirectory1 = new File("publish" + File.separator + "wlpExtract1");
     private static final File extractDirectory2 = new File("publish" + File.separator + "wlpExtract2");
     private static final File extractAndRunDir = new File("publish" + File.separator + "wlpExtractAndRun");
     private static final File extractDirectory3 = new File("publish" + File.separator + "wlpExtract3");
     private static File extractLocation = null;
+    private static File outputAutoFVTDirectory = null;
 
     /*
      * return env as array and add WLP_JAR_EXTRACT_DIR=extractDirectory
      */
-    private static String[] runEnv(String extractDirectory, boolean useDummyUserDir) {
+    private static void runEnv(Map<String, String> envmap, String extractDirectory, boolean useDummyUserDir) {
 
-        Map<String, String> envmap = System.getenv();
-        Iterator<String> iKeys = envmap.keySet().iterator();
-        List<String> envArrayList = new ArrayList<String>();
-
-        while (iKeys.hasNext()) {
-            String key = iKeys.next();
-            String val = envmap.get(key);
-            // Pass along except for this one special case
-            if (key != "WLP_USER_DIR" || !useDummyUserDir) {
-                envArrayList.add(key + "=" + val);
-            }
-        }
-        if (extractDirectory != null) {
-            String extDirVar = "WLP_JAR_EXTRACT_DIR=" + extractDirectory;
-            envArrayList.add(extDirVar);
-        }
         if (useDummyUserDir) {
             String dummyUserDir = extractDirectory + File.separator + "a1a" + File.separator + "b2b" + File.separator + "c3c";
-            envArrayList.add("WLP_USER_DIR" + "=" + dummyUserDir);
+            envmap.put("WLP_USER_DIR", dummyUserDir);
         }
-        return envArrayList.toArray(new String[0]);
+        if (extractDirectory != null) {
+            envmap.put("WLP_JAR_EXTRACT_DIR", extractDirectory);
+        }
+    }
 
+    @Before
+    public void setup() throws Exception {
+        String method = "setup";
+        int timeout = 0;
+
+        // Sanity check to make sure the manifest.mf that is used by package exists before starting the
+        // test case(s).
+        while (timeout <= 10) {
+            File manifest = new File(server.getInstallRoot(), "lib/extract/META-INF/MANIFEST.MF");
+            if (!manifest.exists()) {
+                Log.info(c, method, "Manifest did not exist. Sleeping - " + timeout + " seconds elapsed.");
+                Thread.sleep(1000);
+            } else {
+                Log.info(c, method, "Manifest was found in " + server.getInstallRoot() + "/lib/extract/META-INF/MANIFEST.MF with size = " + manifest.length());
+                break;
+            }
+            timeout++;
+        }
+
+        outputAutoFVTDirectory = new File("output/servers/", serverName);
+        Log.info(c, method, "outputAutoFVTDirectory: " + outputAutoFVTDirectory.getAbsolutePath());
     }
 
     @BeforeClass
@@ -105,6 +121,8 @@ public class PackageRunnableTest {
     @Test
     public void testRunnableJar() throws Exception {
 
+        String method = "testRunnableJar()";
+
         // Doesn't work on z/OS (because you can't package into a jar on z/OS)
         assumeTrue(!System.getProperty("os.name").equals("z/OS"));
 
@@ -114,8 +132,24 @@ public class PackageRunnableTest {
 
         String searchString = "Server " + serverName + " package complete";
         if (!stdout.contains(searchString)) {
-            System.out.println("Warning: test case " + PackageRunnableTest.class.getName() + " could not package server " + serverName);
+            Log.warning(c, "Warning: test case " + PackageRunnableTest.class.getName() + " could not package server " + serverName);
             return; // get out
+        }
+
+        Log.info(c, method, "stdout for package cmd is: \n" + stdout);
+
+        // Validate the package was successful.  If not, log off the manifest.mf contents.
+        boolean rc = validatePackageManifestExists();
+
+        // If we have an invalid package, save off the jar for troubleshooting.
+        if (rc == false) {
+            outputAutoFVTDirectory.mkdirs();
+            Log.info(c, method, "Copying directory from " +
+                                runnableJar.getAbsolutePath() + " to " +
+                                outputAutoFVTDirectory.getAbsolutePath() + "/" + serverName + ".jar");
+
+            File srcDir = new File(runnableJar.getAbsolutePath());
+            copyFile(srcDir, new File(outputAutoFVTDirectory.getAbsolutePath() + "/" + serverName + ".jar"));
         }
 
         executeTheJar(extractDirectory1, false, true, false);
@@ -135,18 +169,22 @@ public class PackageRunnableTest {
     @Test
     public void testRunnableJarLaunchOnlyWithUserDirSet() throws Exception {
 
+        String method = "testRunnableJarLaunchOnlyWithUserDirSet";
+
         // Doesn't work on z/OS (because you can't package into a jar on z/OS)
         assumeTrue(!System.getProperty("os.name").equals("z/OS"));
 
         String stdout = server.executeServerScript("package",
                                                    new String[] { "--archive=" + runnableJar.getAbsolutePath(),
-                                                                  "--include=minify,runnable" }).getStdout();
+                                                                  "--include=runnable" }).getStdout();
 
         String searchString = "Server " + serverName + " package complete";
         if (!stdout.contains(searchString)) {
-            System.out.println("Warning: test case " + PackageRunnableTest.class.getName() + " could not package server " + serverName);
+            Log.warning(c, "Warning: test case " + PackageRunnableTest.class.getName() + " could not package server " + serverName);
             return; // get out
         }
+
+        Log.info(c, method, "stdout for package cmd is: \n" + stdout);
 
         executeTheJar(extractDirectory2, true, true, false);
         checkDirStructure(extractDirectory2, true);
@@ -160,6 +198,8 @@ public class PackageRunnableTest {
     @Test
     public void testRunnableDeleteServerMinusLogsFolder() throws Exception {
 
+        String method = "testRunnableDeleteServerMinusLogsFolder";
+
         // Doesn't work on z/OS (because you can't package into a jar on z/OS)
         assumeTrue(!System.getProperty("os.name").equals("z/OS"));
 
@@ -169,9 +209,11 @@ public class PackageRunnableTest {
 
         String searchString = "Server " + serverName + " package complete";
         if (!stdout.contains(searchString)) {
-            System.out.println("Warning: test case " + PackageRunnableTest.class.getName() + " could not package server " + serverName);
+            Log.warning(c, "Warning: test case " + PackageRunnableTest.class.getName() + " could not package server " + serverName);
             return; // get out
         }
+
+        Log.info(c, method, "stdout for package cmd is: \n" + stdout);
 
         extractLocation = new File(executeTheJar(extractDirectory3, true, false, true));
 
@@ -189,6 +231,8 @@ public class PackageRunnableTest {
     @Test
     public void testRunnableDoNotDeleteServerFolder() throws Exception {
 
+        String method = "testRunnableDoNotDeleteServerFolder";
+
         // Doesn't work on z/OS (because you can't package into a jar on z/OS)
         assumeTrue(!System.getProperty("os.name").equals("z/OS"));
 
@@ -198,9 +242,11 @@ public class PackageRunnableTest {
 
         String searchString = "Server " + serverName + " package complete";
         if (!stdout.contains(searchString)) {
-            System.out.println("Warning: test case " + PackageRunnableTest.class.getName() + " could not package server " + serverName);
+            Log.warning(c, "Warning: test case " + PackageRunnableTest.class.getName() + " could not package server " + serverName);
             return; // get out
         }
+
+        Log.info(c, method, "stdout for package cmd is: \n" + stdout);
 
         String extLoc = executeTheJar(extractDirectory3, false, true, true);
 
@@ -263,13 +309,14 @@ public class PackageRunnableTest {
 
         assertTrue("Extract directory " + extractDirectory.getAbsolutePath() + " does not exist.", extractDirectory.exists());
 
-        String cmd = "java -jar " + runnableJar.getAbsolutePath();
-        Process proc = null;
+        String[] cmd = { "java", "-jar", runnableJar.getAbsolutePath() };
+        Log.info(c, "executeTheJar", "Running command: " + Arrays.toString(cmd));
+        ProcessBuilder processBuilder = new ProcessBuilder(cmd);
+        processBuilder.redirectErrorStream(true);
         if (useRunEnv == true) {
-            proc = Runtime.getRuntime().exec(cmd, runEnv(extractDirectory.getAbsolutePath(), useDummyUserDir), null); // run server
-        } else {
-            proc = Runtime.getRuntime().exec(cmd);
+            runEnv(processBuilder.environment(), extractDirectory.getAbsolutePath(), useDummyUserDir);
         }
+        Process proc = processBuilder.start();
 
         // setup and start reader threads for error and output streams
 //        StreamReader errorReader = new StreamReader(proc.getErrorStream(), "ERROR", null);
@@ -283,15 +330,51 @@ public class PackageRunnableTest {
 
         String extractLoc = null;
         boolean found = outputReader.foundWatchFor();
+        extractLoc = outputReader.extractLoc();
         while (!found && count <= 90) {
 
             synchronized (proc) {
                 proc.wait(1000); // wait 1 second
-                System.out.println("Waiting for server to complete initialization - " + count + " seconds elapsed.");
+                Log.info(c, "executeTheJar", "Waiting for server to complete initialization - " + count + " seconds elapsed.");
             }
             found = outputReader.foundWatchFor();
             extractLoc = outputReader.extractLoc();
             count++;
+        }
+
+        if (!found) {
+            Log.info(c, "executeTheJar", "Process is alive: " + proc.isAlive());
+            // capture the messages.log for debugging test
+            File messagesLog = new File(server.getInstallRoot(), "/usr/servers/" + serverName + "/logs/messages.log").getAbsoluteFile();
+            if (messagesLog.exists()) {
+                Files.lines(messagesLog.toPath()).forEach((l) -> {
+                    Log.info(c, "executeTheJar", "MESSAGES LINE: " + l);
+                });
+            } else {
+                Log.info(c, "executeTheJar", "No messages.log - " + messagesLog.getAbsolutePath());
+            }
+
+            // log the contents of the runnable jar's manifest.mf
+            JarFile jarFile = new JarFile(runnableJar.getAbsolutePath());
+            boolean manifestFound = false;
+
+            for (Enumeration<JarEntry> e = jarFile.entries(); e.hasMoreElements();) {
+                JarEntry je = e.nextElement();
+                Log.info(c, "executeTheJar", "entry name = " + je.getName() + " entry size = " + je.getSize());
+                if (je.getName().equals("META-INF/MANIFEST.MF")) {
+
+                    Log.info(c, "executeTheJar", "=== Start dumping contents of manifest file ===");
+                    readJarEntryContent(jarFile, je);
+                    manifestFound = true;
+                    Log.info(c, "executeTheJar", "=== End dumping contents of manifest file ===");
+                }
+            }
+
+            if (jarFile != null) {
+                jarFile.close();
+            }
+
+            assertTrue("Runnable jar did not contain a META-INF/MANIFEST.MF file", manifestFound);
         }
 
         assertTrue("Server did not start successfully in time.", found);
@@ -309,7 +392,7 @@ public class PackageRunnableTest {
             os.close();
         }
 
-        System.out.println("Waiting 30 seconds...to make sure all Liberty thread exiting.");
+        Log.info(c, "executeTheJar", "Waiting 30 seconds...to make sure all Liberty thread exiting.");
         Thread.sleep(30000); // wait 30 second
 
         return extractLoc;
@@ -342,8 +425,12 @@ public class PackageRunnableTest {
             }
         }
 
-        String cmd = "java -cp " + extractAndRunDir.getAbsolutePath() + " wlp.lib.extract.SelfExtractRun";
-        Process proc = Runtime.getRuntime().exec(cmd, runEnv(null, false), null); // run server
+        String[] cmd = { "java", "-cp", extractAndRunDir.getAbsolutePath(), "wlp.lib.extract.SelfExtractRun" };
+        Log.info(c, "executeAndExecuteMain", "Running command: " + Arrays.toString(cmd));
+        ProcessBuilder processBuilder = new ProcessBuilder(cmd);
+        processBuilder.redirectErrorStream(true);
+        runEnv(processBuilder.environment(), null, false);
+        Process proc = processBuilder.start();
 
         // setup and start reader threads for error and output streams
 //        StreamReader errorReader = new StreamReader(proc.getErrorStream(), "ERROR", null);
@@ -360,7 +447,7 @@ public class PackageRunnableTest {
 
             synchronized (proc) {
                 proc.wait(1000); // wait 1 second
-                System.out.println("Waiting for server to complete initialization - " + count + " seconds elapsed.");
+                Log.info(c, "extractAndExecuteMain", "Waiting for server to complete initialization - " + count + " seconds elapsed.");
             }
             found = outputReader.foundWatchFor();
             count++;
@@ -370,42 +457,29 @@ public class PackageRunnableTest {
 
         outputReader.setIs(null);
         proc.destroy(); // ensure no process left behind
-        System.out.println("Removing WLP installation directory: " + extractAndRunDir.getAbsolutePath());
+        Log.info(c, "extractAndExecuteMain", "Removing WLP installation directory: " + extractAndRunDir.getAbsolutePath());
         if (extractAndRunDir.exists()) {
             deleteDir(extractAndRunDir);
-            System.out.println("WLP installation directory was removed.");
+            Log.info(c, "extractAndExecuteMain", "WLP installation directory was removed.");
         }
 
         if (os != null) {
             os.close();
         }
 
-        System.out.println("Waiting 30 seconds...to make sure all Liberty thread exiting.");
+        Log.info(c, "extractAndExecuteMain", "Waiting 30 seconds...to make sure all Liberty thread exiting.");
         Thread.sleep(30000); // wait 30 second
     }
 
     class StreamReader extends Thread {
         InputStream is;
-        String type;
         OutputStream os;
         String watchFor;
         boolean foundWatchFor = false;
         String extractLoc = null;
 
-        StreamReader(InputStream is, String type, String watchFor) {
-            this(is, type, watchFor, null);
-        }
-
-        StreamReader(OutputStream os, String type, String watchFor) {
-            this.os = os;
-            this.type = type;
-            this.watchFor = watchFor;
-
-        }
-
         StreamReader(InputStream is, String type, String watchFor, OutputStream redirect) {
             this.is = is;
-            this.type = type;
             this.os = redirect;
             this.watchFor = watchFor;
         }
@@ -425,14 +499,7 @@ public class PackageRunnableTest {
         @Override
         public void run() {
             try {
-                // stdin, process stream is output
-                if (type.equals("INPUT")) {
-                    runOutputStream();
-                }
-                // else stdout, stderr, process stream is input
-                else {
-                    runInputStream();
-                }
+                runInputStream();
             } catch (IOException e) {
                 throw new RuntimeException(e.getMessage());
             }
@@ -440,23 +507,20 @@ public class PackageRunnableTest {
 
         public void runInputStream() throws IOException {
 
-            System.out.println("runInputStream() - in.");
+            Log.info(c, "runInputStream", "runInputStream() - in.");
             if (is == null) {
-                System.out.println("runInputStream() - inputStream is null: skip.");
+                Log.info(c, "runInputStream", "runInputStream() - inputStream is null: skip.");
                 return;
             }
-            PrintWriter pw = null;
-            if (os != null)
-                pw = new PrintWriter(os);
+            PrintWriter pw = new PrintWriter(os);
 
             InputStreamReader isr = new InputStreamReader(is, "UTF-8");
             BufferedReader br = new BufferedReader(isr);
             String line = null;
             String extract = "Extracting files to ";
             while (!foundWatchFor && is != null && (line = br.readLine()) != null) {
-                if (pw != null)
-                    pw.println("runInputStream() - readLine(): " + line);
-                System.out.println(line);
+                Log.info(c, "runInputStream", "line=" + line);
+                pw.println("runInputStream() - readLine(): " + line);
 
                 // Save off the extract location
                 if (line.contains(extract)) {
@@ -475,15 +539,9 @@ public class PackageRunnableTest {
             br.close();
             isr.close();
 
-            System.out.println("runInputStream() - exit.");
+            Log.info(c, "runInputStream", "runInputStream() - exit.");
             if (pw != null)
                 pw.flush();
-        }
-
-        public void runOutputStream() throws IOException {
-            OutputStreamWriter osr = new OutputStreamWriter(os, "UTF-8");
-            BufferedWriter br = new BufferedWriter(osr);
-            br.write("Y");
         }
     }
 
@@ -507,5 +565,83 @@ public class PackageRunnableTest {
         }
 
         Runtime.getRuntime().exec(cmd); // stop server
+    }
+
+    /**
+     * Reads the contents line by line of the JarEntry from the JarFile
+     *
+     * @param jf
+     * @param je
+     */
+    private void readJarEntryContent(JarFile jf, JarEntry je) throws IOException {
+        InputStream is = jf.getInputStream(je);
+        InputStreamReader isr = new InputStreamReader(is);
+        BufferedReader r = new BufferedReader(isr);
+        String line;
+        while ((line = r.readLine()) != null) {
+            Log.info(c, "readJarEntryContent", line);
+        }
+        r.close();
+    }
+
+    /**
+     * Copies a file from one location to another
+     *
+     * @param fromFile
+     * @param toFile
+     * @throws IOException
+     */
+    private static void copyFile(File fromFile, File toFile) throws IOException {
+        String method = "copyFile";
+        // Open the source file
+        FileInputStream fis = new FileInputStream(fromFile);
+        try {
+            // Open the destination file
+            File destDir = toFile.getParentFile();
+            if (!destDir.exists() && !destDir.mkdirs()) {
+                throw new IOException("Failed to create path: " + destDir.getAbsolutePath());
+            }
+
+            Log.info(c, method, "Copying file from: " + fromFile.getAbsolutePath() + " to: " + toFile.getAbsolutePath());
+
+            FileOutputStream fos = new FileOutputStream(toFile);
+
+            // Perform the transfer using nio channels; this is simpler, and usually
+            // faster, than copying the file a chunk at a time
+            try {
+                FileChannel inChan = fis.getChannel();
+                FileChannel outChan = fos.getChannel();
+                inChan.transferTo(0, inChan.size(), outChan);
+            } finally {
+                fos.close();
+            }
+        } finally {
+            fis.close();
+        }
+    }
+
+    /**
+     * Verifies that the package manifest exists, and logs the manifest.mf contents if found.
+     *
+     * @return
+     * @throws IOException
+     */
+    private boolean validatePackageManifestExists() throws IOException {
+
+        // log the contents of the runnable jar's manifest.mf
+        JarFile jarFile = new JarFile(runnableJar.getAbsolutePath());
+        boolean manifestFound = false;
+
+        for (Enumeration<JarEntry> e = jarFile.entries(); e.hasMoreElements();) {
+            JarEntry je = e.nextElement();
+            if (je.getName().equals("META-INF/MANIFEST.MF")) {
+                Log.info(c, "validatePackage", "=== Start dumping contents of manifest.mf file ===");
+                readJarEntryContent(jarFile, je);
+                manifestFound = true;
+                Log.info(c, "validatePackage", "=== End dumping contents of manifest.mf file ===");
+            }
+        }
+
+        return manifestFound;
     }
 }

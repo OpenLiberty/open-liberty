@@ -17,7 +17,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.lang.reflect.Method;
+import java.io.UnsupportedEncodingException;
 import java.net.Authenticator;
 import java.net.InetSocketAddress;
 import java.net.PasswordAuthentication;
@@ -28,6 +28,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -373,19 +374,10 @@ public class ArtifactDownloader {
     }
 
     private String base64Encode(String userInfo) {
-        ClassLoader loader = getClass().getClassLoader();
         try {
-            Method getEncoder = loader.loadClass("java.util.Base64").getMethod("getEncoder");
-            Method encode = loader.loadClass("java.util.Base64$Encoder").getMethod("encodeToString", byte[].class);
-            Object encoder = getEncoder.invoke(null);
-            return (String) encode.invoke(encoder, new Object[] { userInfo.getBytes("UTF-8") });
-        } catch (Exception earlierThanJava7) {
-            try {
-                Method enocode = loader.loadClass("javax.xml.bind.DatatypeConverter").getMethod("printBase64Binary", byte[].class);
-                return (String) enocode.invoke(null, new Object[] { userInfo.getBytes("UTF-8") });
-            } catch (Exception earlierThanJava5) {
-                throw new RuntimeException("Downloading with HTTP Basic Authentication is not supported with your JVM.", earlierThanJava5);
-            }
+            return Base64.getEncoder().encodeToString(userInfo.getBytes("UTF-8"));
+        } catch (UnsupportedEncodingException encodingException) {
+            throw new RuntimeException("Failed to get bytes for user info using UTF-8.", encodingException);
         }
     }
 

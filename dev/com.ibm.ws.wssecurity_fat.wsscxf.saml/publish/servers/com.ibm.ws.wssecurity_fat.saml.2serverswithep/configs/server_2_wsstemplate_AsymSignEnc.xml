@@ -1,0 +1,13 @@
+<server>
+	<include location="imports/cxf_features.xml" />
+	<include location="imports/BasicRegistry_withoutIDPUsers.xml" />
+	<include location="imports/misc2.xml" />
+	<include location="imports/samlProvider1.xml" />
+	<include location="imports/goodSSLSettings.xml" />
+	<include location="imports/securityProvider_1_AsymSignEnc.xml" />
+	<!-- 2/01/2021 update test app xml  -->
+	<!-- old <include location="imports/samlwsstemplates_testApp.xml" />-->
+    <include location="imports/samlwsstemplateswithep_testApp.xml" />
+    
+</server>
+

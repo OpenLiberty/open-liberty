@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,6 +29,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpUtils;
+import componenttest.rules.repeater.JakartaEE9Action;
 
 @RunWith(FATRunner.class)
 public class ClassloadingTest extends FATServletClient {
@@ -52,11 +53,18 @@ public class ClassloadingTest extends FATServletClient {
         // Build test app with just a test servlet (i.e. no JSF usage)
         ShrinkHelper.defaultApp(server, NO_JSF_APP, "jsf.container.nojsf.web");
 
+        // Location of Mojarra jars
+        String mojarraLibraryLocation  = "publish/files/mojarra/";
+
+        if(JakartaEE9Action.isActive()){
+          mojarraLibraryLocation  = "publish/files/mojarra30/";
+        }
         // Build test WAR in EAR application with JSF API+impl in WAR
         EnterpriseArchive jsfEarApp = ShrinkWrap.create(EnterpriseArchive.class, JSF_EAR_APP + ".ear")
                         .addAsModule(ShrinkHelper.buildDefaultApp(JSF_EAR_APP, "jsf.container.bean", "jsf.container.nojsf.web")
                                         .addAsWebResource(new File("test-applications/jsfApp/resources/TestBean.xhtml"))
-                                        .addAsLibraries(new File("publish/files/mojarra/").listFiles()));
+                                        .addAsLibraries(new File(mojarraLibraryLocation).listFiles()));
+
         jsfEarApp = (EnterpriseArchive) ShrinkHelper.addDirectory(jsfEarApp, "publish/files/permissions");
         ShrinkHelper.exportAppToServer(server, jsfEarApp);
 
@@ -68,7 +76,10 @@ public class ClassloadingTest extends FATServletClient {
 
     @After
     public void afterEach() throws Exception {
+      // Stop the server
+      if (server != null && server.isStarted()) {
         server.stopServer();
+      }
     }
 
     @Test
@@ -87,7 +98,12 @@ public class ClassloadingTest extends FATServletClient {
     }
 
     private void runTest() throws Exception {
-        server.setServerConfigurationFile("server_" + testName.getMethodName() + ".xml");
+        if(JakartaEE9Action.isActive()){
+          server.setServerConfigurationFile("server_" + testName.getMethodName().replace("_EE9_FEATURES","") + ".xml");
+        } else {
+            server.setServerConfigurationFile("server_" + testName.getMethodName() + ".xml");
+        }
+
         server.startServer(testName.getMethodName() + ".log");
 
         // Verify that basic JSF works in a WAR

@@ -10,27 +10,18 @@
  *******************************************************************************/
 package com.ibm.ws.cdi12.fat.tests;
 
+import java.io.File;
 import java.net.MalformedURLException;
 
-import java.io.File;
-
+import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.FileAsset;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Test;
-
-import org.junit.ClassRule;
-import org.junit.Test;
-
-import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.ArchivePaths;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.FileAsset;
-import org.jboss.shrinkwrap.api.importer.ZipImporter;
-import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jboss.shrinkwrap.api.spec.ResourceAdapterArchive;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.runner.RunWith;
 
 import com.ibm.ws.fat.util.BuildShrinkWrap;
 import com.ibm.ws.fat.util.LoggingTest;
@@ -38,11 +29,15 @@ import com.ibm.ws.fat.util.ShrinkWrapSharedServer;
 import com.ibm.ws.fat.util.browser.WebBrowser;
 import com.ibm.ws.fat.util.browser.WebResponse;
 
+import componenttest.annotation.SkipForRepeat;
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 
 @Mode(TestMode.FULL)
+@RunWith(FATRunner.class)
+@SkipForRepeat({ SkipForRepeat.EE9_FEATURES }) // Skipped temporarily to test PassivationBeanTests for sessionDatabase-1.0 feature
 public class SessionDestroyTests extends LoggingTest {
 
     @ClassRule
@@ -67,10 +62,10 @@ public class SessionDestroyTests extends LoggingTest {
 
     @BuildShrinkWrap
     public static Archive buildShrinkWrap() {
-         return ShrinkWrap.create(WebArchive.class, "WebListener.war")
-                        .addPackage("com.ibm.ws.cdi.test.session.destroy")
-                        .add(new FileAsset(new File("test-applications/WebListener.war/resources/META-INF/permissions.xml")), "/META-INF/permissions.xml")
-                        .add(new FileAsset(new File("test-applications/WebListener.war/resources/WEB-INF/beans.xml")), "/WEB-INF/beans.xml");
+        return ShrinkWrap.create(WebArchive.class,
+                                 "WebListener.war").addPackage("com.ibm.ws.cdi.test.session.destroy").add(new FileAsset(new File("test-applications/WebListener.war/resources/META-INF/permissions.xml")),
+                                                                                                          "/META-INF/permissions.xml").add(new FileAsset(new File("test-applications/WebListener.war/resources/WEB-INF/beans.xml")),
+                                                                                                                                           "/WEB-INF/beans.xml");
     }
 
     @Test

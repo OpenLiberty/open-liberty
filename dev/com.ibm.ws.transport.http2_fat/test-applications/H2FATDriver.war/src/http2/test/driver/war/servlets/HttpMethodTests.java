@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.ibm.ws.http.channel.h2internal.frames.FrameData;
+import com.ibm.ws.http.channel.h2internal.frames.FramePing;
 import com.ibm.ws.http.channel.h2internal.frames.FrameRstStream;
 import com.ibm.ws.http.channel.h2internal.hpack.H2HeaderField;
 import com.ibm.ws.http.channel.h2internal.hpack.HpackConstants;
@@ -48,7 +49,13 @@ public class HttpMethodTests extends H2FATDriverServlet {
         secondFrameHeaders.setHeaderFields(secondHeadersReceived);
         h2Client.addExpectedFrame(secondFrameHeaders);
 
-        setupDefaultPreface(h2Client);
+        // add an expected PING frame
+        byte[] pingData = "aaaaaaaa".getBytes();
+        FramePing pingFrame = new FramePing(0, pingData, false);
+        pingFrame.setAckFlag();
+        h2Client.addExpectedFrame(pingFrame);
+
+        setupDefaultUpgradedConnection(h2Client);
 
         List<HeaderEntry> firstHeadersToSend = new ArrayList<HeaderEntry>();
         firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":method", "CONNECT"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
@@ -70,6 +77,12 @@ public class HttpMethodTests extends H2FATDriverServlet {
         h2Client.sendFrame(dataFrame3);
         h2Client.sendFrame(dataFrame4);
 
+        // So that the test doesn't end prematurely when the headers are received, send a ping and
+        // expect a response.
+        // send over a PING frame and expect a response
+        pingFrame = new FramePing(0, pingData, false);
+        h2Client.sendFrame(pingFrame);
+
         blockUntilConnectionIsDone.await();
         this.handleErrors(h2Client, testName);
     }
@@ -87,7 +100,13 @@ public class HttpMethodTests extends H2FATDriverServlet {
         FrameRstStream errorFrame = new FrameRstStream(3, PROTOCOL_ERROR, false);
         h2Client.addExpectedFrame(errorFrame);
 
-        setupDefaultPreface(h2Client);
+        // add an expected PING frame
+        byte[] pingData = "aaaaaaaa".getBytes();
+        FramePing pingFrame = new FramePing(0, pingData, false);
+        pingFrame.setAckFlag();
+        h2Client.addExpectedFrame(pingFrame);
+
+        setupDefaultUpgradedConnection(h2Client);
 
         List<HeaderEntry> firstHeadersToSend = new ArrayList<HeaderEntry>();
         firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":method", "CONNECT"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
@@ -108,6 +127,12 @@ public class HttpMethodTests extends H2FATDriverServlet {
         h2Client.sendFrame(dataFrame2);
         h2Client.sendFrame(dataFrame3);
         h2Client.sendFrame(dataFrame4);
+
+        // So that the test doesn't end prematurely when the reset is received, send a ping and
+        // expect a response.
+        // send over a PING frame and expect a response
+        pingFrame = new FramePing(0, pingData, false);
+        h2Client.sendFrame(pingFrame);
 
         blockUntilConnectionIsDone.await();
         this.handleErrors(h2Client, testName);
@@ -130,7 +155,7 @@ public class HttpMethodTests extends H2FATDriverServlet {
         secondFrameHeaders.setHeaderFields(secondHeadersReceived);
         h2Client.addExpectedFrame(secondFrameHeaders);
 
-        setupDefaultPreface(h2Client);
+        setupDefaultUpgradedConnection(h2Client);
 
         List<HeaderEntry> firstHeadersToSend = new ArrayList<HeaderEntry>();
         firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":method", "HEAD"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
@@ -162,7 +187,7 @@ public class HttpMethodTests extends H2FATDriverServlet {
         secondFrameHeaders.setHeaderFields(secondHeadersReceived);
         h2Client.addExpectedFrame(secondFrameHeaders);
 
-        setupDefaultPreface(h2Client);
+        setupDefaultUpgradedConnection(h2Client);
 
         List<HeaderEntry> firstHeadersToSend = new ArrayList<HeaderEntry>();
         firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":method", "OPTIONS"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
@@ -193,7 +218,7 @@ public class HttpMethodTests extends H2FATDriverServlet {
         secondFrameHeaders.setHeaderFields(secondHeadersReceived);
         h2Client.addExpectedFrame(secondFrameHeaders);
 
-        setupDefaultPreface(h2Client);
+        setupDefaultUpgradedConnection(h2Client);
 
         // set up the first headers to send out
         List<HeaderEntry> firstHeadersToSend = new ArrayList<HeaderEntry>();
@@ -225,7 +250,7 @@ public class HttpMethodTests extends H2FATDriverServlet {
         secondFrameHeaders.setHeaderFields(secondHeadersReceived);
         h2Client.addExpectedFrame(secondFrameHeaders);
 
-        setupDefaultPreface(h2Client);
+        setupDefaultUpgradedConnection(h2Client);
 
         // set up the first headers to send out
         List<HeaderEntry> firstHeadersToSend = new ArrayList<HeaderEntry>();

@@ -17,7 +17,7 @@
     version="1.0">
 
     <persistence-unit name="Callback_JTA">
-        <jta-data-source>java:comp/env/jdbc/JPA_DS</jta-data-source>
+        <jta-data-source>java:comp/env/jdbc/JPA_JTA_DS</jta-data-source>
         <mapping-file>META-INF/callback-orm.xml</mapping-file>
         <class>com.ibm.ws.jpa.fvt.callback.entities.AbstractCallbackEntity</class>
 
@@ -63,6 +63,7 @@
         <properties>
             <!-- Eclipselink Support Properties -->
             <property name="eclipselink.cache.shared.default" value="false"/>
+            <property name="eclipselink.logging.parameters" value="true"/>
 
             <!-- Hibernate Support Properties -->
             <property name="hibernate.temp.use_jdbc_metadata_defaults" value="false"/>
@@ -74,7 +75,7 @@
     </persistence-unit>
 
     <persistence-unit name="Callback_RL" transaction-type="RESOURCE_LOCAL">
-        <non-jta-data-source>java:comp/env/jdbc/JPA_NJTADS</non-jta-data-source>
+        <non-jta-data-source>java:comp/env/jdbc/JPA_NJTA_DS</non-jta-data-source>
         <mapping-file>META-INF/callback-orm.xml</mapping-file>
         <class>com.ibm.ws.jpa.fvt.callback.entities.AbstractCallbackEntity</class>
 
@@ -120,6 +121,7 @@
         <properties>
             <!-- Eclipselink Support Properties -->
             <property name="eclipselink.cache.shared.default" value="false"/>
+            <property name="eclipselink.logging.parameters" value="true"/>
 
             <!-- Hibernate Support Properties -->
             <property name="hibernate.temp.use_jdbc_metadata_defaults" value="false"/>
@@ -129,7 +131,7 @@
     </persistence-unit>
 
     <persistence-unit name="Callback-DefaultListener_JTA">
-        <jta-data-source>java:comp/env/jdbc/JPA_DS</jta-data-source>
+        <jta-data-source>java:comp/env/jdbc/JPA_JTA_DS</jta-data-source>
         <mapping-file>META-INF/callback-defaultlistener-orm.xml</mapping-file>
 
         <class>com.ibm.ws.jpa.fvt.callback.entities.defaultlistener.EntityNotSupportingDefaultCallbacks</class>
@@ -152,7 +154,7 @@
     </persistence-unit>
 
     <persistence-unit name="Callback-DefaultListener_RL" transaction-type="RESOURCE_LOCAL">
-        <non-jta-data-source>java:comp/env/jdbc/JPA_NJTADS</non-jta-data-source>
+        <non-jta-data-source>java:comp/env/jdbc/JPA_NJTA_DS</non-jta-data-source>
         <mapping-file>META-INF/callback-defaultlistener-orm.xml</mapping-file>
 
         <class>com.ibm.ws.jpa.fvt.callback.entities.defaultlistener.EntityNotSupportingDefaultCallbacks</class>
@@ -164,6 +166,7 @@
         <properties>
             <!-- Eclipselink Support Properties -->
             <property name="eclipselink.cache.shared.default" value="false"/>
+            <property name="eclipselink.logging.parameters" value="true"/>
 
             <!-- Hibernate Support Properties -->
             <property name="hibernate.temp.use_jdbc_metadata_defaults" value="false"/>
@@ -173,7 +176,7 @@
     </persistence-unit>
 
     <persistence-unit name="Callback-OrderOfInvocation_JTA">
-        <jta-data-source>java:comp/env/jdbc/JPA_DS</jta-data-source>
+        <jta-data-source>java:comp/env/jdbc/JPA_JTA_DS</jta-data-source>
         <mapping-file>META-INF/callback-orderofinvocation-orm.xml</mapping-file>
 
         <class>com.ibm.ws.jpa.fvt.callback.entities.orderofinvocation.OrderOfInvocationRootEntity</class>
@@ -214,6 +217,7 @@
         <properties>
             <!-- Eclipselink Support Properties -->
             <property name="eclipselink.cache.shared.default" value="false"/>
+            <property name="eclipselink.logging.parameters" value="true"/>
 
             <!-- Hibernate Support Properties -->
             <property name="hibernate.temp.use_jdbc_metadata_defaults" value="false"/>
@@ -225,7 +229,7 @@
     </persistence-unit>
 
     <persistence-unit name="Callback-OrderOfInvocation_RL" transaction-type="RESOURCE_LOCAL">
-        <non-jta-data-source>java:comp/env/jdbc/JPA_NJTADS</non-jta-data-source>
+        <non-jta-data-source>java:comp/env/jdbc/JPA_NJTA_DS</non-jta-data-source>
         <mapping-file>META-INF/callback-orderofinvocation-orm.xml</mapping-file>
 
         <class>com.ibm.ws.jpa.fvt.callback.entities.orderofinvocation.OrderOfInvocationRootEntity</class>
@@ -266,6 +270,7 @@
         <properties>
             <!-- Eclipselink Support Properties -->
             <property name="eclipselink.cache.shared.default" value="false"/>
+            <property name="eclipselink.logging.parameters" value="true"/>
 
             <!-- Hibernate Support Properties -->
             <property name="hibernate.temp.use_jdbc_metadata_defaults" value="false"/>

@@ -46,10 +46,10 @@ public class DatabaseManagementServlet extends HttpServlet {
     @Resource
     private UserTransaction tx;
 
-    @Resource(lookup = "jdbc/JPA_DS")
+    @Resource(lookup = "jdbc/JPA_JTA_DS")
     private DataSource dsJta;
 
-    @Resource(lookup = "jdbc/JPA_NJTADS")
+    @Resource(lookup = "jdbc/JPA_NJTA_DS")
     private DataSource dsRl;
 
     /*
@@ -91,6 +91,8 @@ public class DatabaseManagementServlet extends HttpServlet {
             conn = dsRl.getConnection();
             final DatabaseMetaData dbMeta = conn.getMetaData();
             Properties properties = new Properties();
+            properties.put("dbmajor_version", Integer.toString(dbMeta.getDatabaseMajorVersion()));
+            properties.put("dbminor_version", Integer.toString(dbMeta.getDatabaseMinorVersion()));
             properties.put("dbproduct_name", dbMeta.getDatabaseProductName());
             properties.put("dbproduct_version", dbMeta.getDatabaseProductVersion());
             properties.put("jdbcdriver_version", dbMeta.getDatabaseProductVersion());

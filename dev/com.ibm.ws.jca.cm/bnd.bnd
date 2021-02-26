@@ -75,6 +75,7 @@ instrument.disabled: true
 	com.ibm.ws.logging.core,\
 	com.ibm.tx.jta;version=latest,\
 	com.ibm.websphere.javaee.connector.1.6;version=latest,\
+	com.ibm.websphere.security;version=latest,\
 	com.ibm.ws.javaee.dd.common;version=latest,\
 	com.ibm.ws.kernel.service,\
 	com.ibm.ws.classloading;version=latest,\

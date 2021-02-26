@@ -1,0 +1,50 @@
+/*******************************************************************************
+ * Copyright (c) 2020 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+configurations {
+  config11 {
+    canBeConsumed = true
+    canBeResolved = false
+  }
+  config121 {
+    canBeConsumed = true
+    canBeResolved = false
+  }
+  config13 {
+    canBeConsumed = true
+    canBeResolved = false
+  }
+  config14 {
+    canBeConsumed = true
+    canBeResolved = false
+  }
+  ft10 {
+    canBeConsumed = true
+    canBeResolved = false
+  }
+  ft11 {
+    canBeConsumed = true
+    canBeResolved = false
+  }
+  openapi10 {
+    canBeConsumed = true
+    canBeResolved = false
+  }
+}
+
+artifacts {
+  config11(file('build/libs/com.ibm.websphere.org.eclipse.microprofile.config.1.1.jar'))
+  config121(file('build/libs/com.ibm.websphere.org.eclipse.microprofile.config.1.2.1.jar'))
+  config13(file('build/libs/com.ibm.websphere.org.eclipse.microprofile.config.1.3.jar'))
+  config14(file('build/libs/com.ibm.websphere.org.eclipse.microprofile.config.1.4.jar'))
+  ft10(file('build/libs/com.ibm.websphere.org.eclipse.microprofile.faulttolerance.1.0.jar'))
+  ft11(file('build/libs/com.ibm.websphere.org.eclipse.microprofile.faulttolerance.1.1.jar'))
+  openapi10(file('build/libs/com.ibm.websphere.org.eclipse.microprofile.openapi.1.0.jar'))
+}

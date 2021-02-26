@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -44,12 +44,12 @@ public class WebserviceSecurityType extends DDParser.ElementContentParsable impl
 
     @Override
     public List<SecurityConstraint> getSecurityConstraints() {
-        return securityConstraints.isEmpty() ? Collections.EMPTY_LIST : new ArrayList<SecurityConstraint>(securityConstraints);
+        return securityConstraints.isEmpty() ? Collections.emptyList(): new ArrayList<SecurityConstraint>(securityConstraints);
     }
 
     @Override
     public List<SecurityRole> getSecurityRoles() {
-        return securityRoles.isEmpty() ? Collections.EMPTY_LIST : new ArrayList<SecurityRole>(securityRoles);
+        return securityRoles.isEmpty() ? Collections.emptyList() : new ArrayList<SecurityRole>(securityRoles);
     }
 
     @Override

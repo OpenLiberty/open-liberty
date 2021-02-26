@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2016, 2017 IBM Corporation and others.
+# Copyright (c) 2016, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -313,3 +313,65 @@ JWT_TRUSTED_ISSUERS_NULL.useraction=W konfiguracji znacznika JWT podanej w komun
 SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME=CWWKS6053E: U\u017cyto schematu HTTP w okre\u015blonym punkcie ko\u0144cowym: {0}. Wymagany jest protok\u00f3\u0142 HTTPS.
 SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME.explanation=Podany punkt ko\u0144cowy wymaga protoko\u0142u HTTPS, ale w adresie URL \u017c\u0105dania u\u017cyto protoko\u0142u HTTP.
 SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME.useraction=Sprawd\u017a adres URL \u017c\u0105dania i upewnij si\u0119, \u017ce u\u017cywany jest w nim protok\u00f3\u0142 HTTPS, lub zmie\u0144 konfiguracj\u0119, tak aby protok\u00f3\u0142 HTTPS nie by\u0142 wymagany. 
+
+# 0=Signature algorithm from MP Config properties, 1=Default algorithm that will be used
+MP_CONFIG_PUBLIC_KEY_ALG_NOT_SUPPORTED=CWWKS6053W: Algorytm podpisu [{0}] okre\u015blony we w\u0142a\u015bciwo\u015bciach konfiguracji MicroProfile nie jest obs\u0142ugiwany. U\u017cywany b\u0119dzie algorytm podpisu [{1}].
+MP_CONFIG_PUBLIC_KEY_ALG_NOT_SUPPORTED.explanation=Obs\u0142ugiwany jest tylko okre\u015blony zestaw algorytm\u00f3w podpisu RSA, Elliptical Curve i HMAC. Algorytm podpisu okre\u015blony we w\u0142a\u015bciwo\u015bciach konfiguracji MicroProfile nie jest \u017cadnym z obs\u0142ugiwanych algorytm\u00f3w podpisu.
+MP_CONFIG_PUBLIC_KEY_ALG_NOT_SUPPORTED.useraction=Okre\u015bl obs\u0142ugiwany algorytm podpisu we w\u0142a\u015bciwo\u015bciach konfiguracji MicroProfile. Obs\u0142ugiwane algorytmy podpisu to ES256, ES384, ES512, RS256, RS384, RS512, HS256, HS384 i HS512.
+
+# Do not translate "JSON Web Token", "AMR", "JWT"
+# 0=AMR claim of the token, 1=JWT configuration ID, 2=AMR specified in server configuration
+JWT_AMR_CLAIM_NOT_VALID=CWWKS6054E: Warto\u015b\u0107 AMR [{0}] podanego znacznika JSON web token (JWT) nie znajduje si\u0119 na li\u015bcie zaufanych warto\u015bci AMR w konfiguracji znacznika JWT [{1}]. Zaufane warto\u015bci AMR to [{2}].
+JWT_AMR_CLAIM_NOT_VALID.explanation=Konfiguracja serwera okre\u015bla, kt\u00f3re warto\u015bci AMR maj\u0105 by\u0107 traktowane jako zaufane podczas sprawdzania poprawno\u015bci znacznik\u00f3w JWT. Podany znacznik nie jest przeznaczony dla zaufanej warto\u015bci AMR, zatem nie mo\u017cna sprawdzi\u0107 jego poprawno\u015bci.
+JWT_AMR_CLAIM_NOT_VALID.useraction=Pobierz nowy znacznik dla jednej z zaufanych warto\u015bci AMR okre\u015blonych w konfiguracji znacznika JWT lub dodaj warto\u015b\u0107 AMR okre\u015blon\u0105 w komunikacie jako zaufan\u0105 w konfiguracji znacznika JWT.
+
+# 0=JWT configuration ID, 1=Signature algorithm configured in server.xml, 2=Signature algorithm that will be used by default
+BETA_SIGNATURE_ALGORITHM_USED=CWWKS6055W: Konfiguracja [{0}] okre\u015bla algorytm podpisu {1}, ale ten algorytm jest dost\u0119pny tylko w edycji beta. Zamiast tego u\u017cywany jest algorytm podpisu{2}.
+BETA_SIGNATURE_ALGORITHM_USED.explanation=Obs\u0142uga algorytmu podpisu wskazanego w komunikacie jest potencjalnie niepe\u0142na, dlatego tego algorytmu mo\u017cna u\u017cywa\u0107 wy\u0142\u0105cznie w edycji beta.
+BETA_SIGNATURE_ALGORITHM_USED.useraction=Skonfiguruj obs\u0142ugiwany algorytm podpisu lub u\u017cyj edycji beta tego produktu, je\u015bli chcesz korzysta\u0107 z algorytmu podpisu wskazanego w komunikacie.
+
+# 0=JWT configuration ID, 1=Exception message
+ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE=CWWKS6056E: Konsument JWT [{0}] napotka\u0142 b\u0142\u0105d podczas wyodr\u0119bniania \u0142adunku JSON Web Signature (JWS) ze znacznika JSON Web Encryption (JWE). {1}
+ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE.explanation=By\u0107 mo\u017ce znacznik JWE jest zniekszta\u0142cony lub nie zawiera wymaganych informacji. Mo\u017cliwe, \u017ce klucz zarz\u0105dzania kluczami, kt\u00f3ry jest u\u017cywany do deszyfrowania znacznika JWE, jest nieobecny lub nie pozwala na zdeszyfrowanie znacznika.
+ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE.useraction=Wi\u0119cej informacji na ten temat zawiera b\u0142\u0105d w komunikacie. Sprawd\u017a, czy znacznik JWE jest poprawnie sformatowany. Sprawd\u017a, czy konfiguracja konsumenta JWT odwo\u0142uje si\u0119 do klucza zarz\u0105dzania kluczami, kt\u00f3ry odpowiada kluczowi u\u017cywanemu do szyfrowania znacznika JWE.
+# 0="cty", 1=Value of the "cty" header in the token, 2="JWT"
+CTY_NOT_JWT_FOR_NESTED_JWS=CWWKS6057E: Znacznik JSON Web Encryption (JWE) zawiera zagnie\u017cd\u017cony znacznik podpisu JSON Web Signature (JWS), ale nag\u0142\u00f3wek {0} w interfejsie JWE jest ustawiony na [{1}]. Nag\u0142\u00f3wek JWE {0} musi by\u0107 ustawiony na {2}, je\u015bli \u0142adunek JWE jest znacznikiem JWS.
+CTY_NOT_JWT_FOR_NESTED_JWS.explanation=Specyfikacja MicroProfile JSON Web Token 1.2 wymaga, aby znaczniki JWE mia\u0142y nag\u0142\u00f3wek typu tre\u015bci ustawiony na warto\u015b\u0107 okre\u015blon\u0105 w komunikacie, je\u015bli tre\u015b\u0107 znacznika jest znacznikiem JWS.
+CTY_NOT_JWT_FOR_NESTED_JWS.useraction=Upewnij si\u0119, \u017ce nag\u0142\u00f3wek typu tre\u015bci znacznika JWE jest ustawiony na wymagan\u0105 warto\u015b\u0107.
+# Do not translate "JSON Web Encryption", "JWE", "Content Encryption Key"
+# 0=Builder config ID
+KEY_MANAGEMENT_KEY_MISSING=CWWKS6058W: Program buduj\u0105cy JWT [{0}] nie mo\u017ce utworzy\u0107 znacznik\u00f3w JSON Web Encryption (JWE), poniewa\u017c nie podano klucza zarz\u0105dzania kluczami.
+KEY_MANAGEMENT_KEY_MISSING.explanation=Klucz zarz\u0105dzania kluczami jest kluczem u\u017cywanym do szyfrowania klucza szyfrowania tre\u015bci znacznika JWE. Nale\u017cy okre\u015bli\u0107 klucz, aby program buduj\u0105cy JWT m\u00f3g\u0142 utworzy\u0107 znaczniki JWE.
+KEY_MANAGEMENT_KEY_MISSING.useraction=Sprawd\u017a, czy interfejsowi API programu buduj\u0105cego udost\u0119pniono klucz, je\u015bli program buduj\u0105cy powinien utworzy\u0107 znaczniki JWE.
+# 0=Builder config ID, 1=keyManagementKeyAlias, 2=keyManagementKeyAlgorithm, 3=contentEncryptionAlgorithm
+KEY_MANAGEMENT_KEY_ALIAS_MISSING=CWWKS6059W: W konfiguracji programu buduj\u0105cego JWT [{0}] brakuje atrybutu {1}, wi\u0119c nie mo\u017cna utworzy\u0107 znacznik\u00f3w JSON Web Encryption (JWE). Skonfiguruj okre\u015blony atrybut lub usu\u0144 atrybuty {2} i {3}.
+KEY_MANAGEMENT_KEY_ALIAS_MISSING.explanation=Alias zarz\u0105dzania kluczami odwo\u0142uje si\u0119 do klucza, kt\u00f3ry jest u\u017cywany do szyfrowania klucza szyfrowania tre\u015bci znacznika JWE. Konieczne jest okre\u015blenie aliasu klucza, aby program buduj\u0105cy JWT m\u00f3g\u0142 utworzy\u0107 znaczniki JWE.
+KEY_MANAGEMENT_KEY_ALIAS_MISSING.useraction=Je\u015bli program buduj\u0105cy JWT powinien utworzy\u0107 znaczniki JWE, nale\u017cy skonfigurowa\u0107 atrybut aliasu zarz\u0105dzania kluczami. Je\u015bli program buduj\u0105cy JWT nie musi tworzy\u0107 znacznik\u00f3w JWE, usu\u0144 pozosta\u0142e atrybuty wymienione w komunikacie.
+# 0=Builder config ID, 1=Exception message
+ERROR_BUILDING_SIGNED_JWE=CWWKS6060E: Program buduj\u0105cy JWT [{0}] nie mo\u017ce utworzy\u0107 znacznika JSON Web Encryption (JWE). {1}
+ERROR_BUILDING_SIGNED_JWE.explanation=Program buduj\u0105cy JWT napotka\u0142 b\u0142\u0105d podczas tworzenia znacznika JWE. Zapoznaj si\u0119 z informacj\u0105 o b\u0142\u0119dzie podan\u0105 w komunikacie, aby uzyska\u0107 wi\u0119cej informacji.
+ERROR_BUILDING_SIGNED_JWE.useraction=Zapoznaj si\u0119 z informacj\u0105 o b\u0142\u0119dzie podan\u0105 w komunikacie, aby uzyska\u0107 wi\u0119cej informacji.
+
+# Do not translate "JwtBuilder"
+# 0=Builder config ID, 1=keyManagementKeyAlias value, 2=Trust store config ID
+KEY_MANAGEMENT_KEY_NOT_FOUND=CWWKS6061E: Program buduj\u0105cy JWT [{0}] nie mo\u017ce utworzy\u0107 znacznika JSON Web Encryption (JWE), poniewa\u017c nie mo\u017cna znale\u017a\u0107 klucza zarz\u0105dzania kluczami. Ich alias klucza zarz\u0105dzania to [{1}], a skonfigurowany magazyn zaufanych certyfikat\u00f3w to [{2}].
+KEY_MANAGEMENT_KEY_NOT_FOUND.explanation=Klucz zarz\u0105dzania kluczami jest kluczem u\u017cywanym do szyfrowania klucza szyfrowania tre\u015bci znacznika JWE. Nale\u017cy okre\u015bli\u0107 klucz zarz\u0105dzania kluczami, aby program buduj\u0105cy JWT m\u00f3g\u0142 utworzy\u0107 znaczniki JWE. Klucz zarz\u0105dzania kluczami mo\u017cna okre\u015bli\u0107 przy u\u017cyciu aliasu klucza i skonfigurowanych zaufanych certyfikat\u00f3w, kt\u00f3re zosta\u0142y okre\u015blone w komunikacie, lub przy u\u017cyciu interfejsu API JwtBuilder.
+KEY_MANAGEMENT_KEY_NOT_FOUND.useraction=Sprawd\u017a, czy klucz z aliasem, kt\u00f3ry zosta\u0142 okre\u015blony w komunikacie, istnieje w magazynie zaufanych certyfikat\u00f3w wskazanym w komunikacie. Je\u015bli u\u017cywany jest interfejs API JwtBuilder, upewnij si\u0119, \u017ce zosta\u0142 udost\u0119pniony klucz zarz\u0105dzania kluczami.
+
+# Do not translate "MicroProfile Config", "mp.jwt.verify.publickey.location"
+# 0=mp.jwt.decrypt.key.location
+DECRYPT_KEY_LOCATION_INLINE_KEY=CWWKS6062E: Warto\u015b\u0107 w\u0142a\u015bciwo\u015bci konfiguracji MicroProfile [{0}] prawdopodobnie zawiera \u0142a\u0144cuch klucza prywatnego, co nie jest obs\u0142ugiwan\u0105 konfiguracj\u0105.
+DECRYPT_KEY_LOCATION_INLINE_KEY.explanation=Sk\u0142adnik MicroProfile JWT nie zezwala na okre\u015blanie \u0142a\u0144cuch\u00f3w klucza prywatnego we w\u0142a\u015bciwo\u015bci konfiguracji MicroProfile, kt\u00f3ra jest okre\u015blona w komunikacie. Warto\u015b\u0107 tej w\u0142a\u015bciwo\u015bci musi by\u0107 \u015bcie\u017ck\u0105 wzgl\u0119dn\u0105 lub adresem URL.
+DECRYPT_KEY_LOCATION_INLINE_KEY.useraction=U\u017cyj \u015bcie\u017cki wzgl\u0119dnej lub adresu URL jako warto\u015bci w\u0142a\u015bciwo\u015bci konfiguracji MicroProfile, kt\u00f3ra jest okre\u015blona w komunikacie. Obs\u0142ugiwane warto\u015bci po\u0142o\u017cenia s\u0105 takie same jak w przypadku w\u0142a\u015bciwo\u015bci mp.jwt.verify.publickey.location.
+# Do not translate "mp.jwt.decrypt.key.location", "keyManagementKeyAlias", "Content Encryption Key"
+# 0=JWT consumer config ID
+JWS_REQUIRED_BUT_TOKEN_NOT_JWS=CWWKS6063E: Znacznik w \u017c\u0105daniu nie jest zapisany w formacie JWS (JSON Web Signature), ale konsument JWT [{0}] akceptuje tylko znaczniki w formacie JWS.
+JWS_REQUIRED_BUT_TOKEN_NOT_JWS.explanation=By\u0107 mo\u017ce znacznik w \u017c\u0105daniu jest zniekszta\u0142cony lub zapisany w formacie JWE (JSON Web Encryption). Znaczniki musz\u0105 by\u0107 w formacie JWS, je\u015bli po\u0142o\u017cenie klucza deszyfrowania JWE nie jest skonfigurowane. Je\u015bli u\u017cywany jest sk\u0142adnik MicroProfile JWT, wersja 1.2 lub wy\u017csza musi by\u0107 skonfigurowana tak, aby akceptowane by\u0142y znaczniki w formacie JWE.
+JWS_REQUIRED_BUT_TOKEN_NOT_JWS.useraction=Aby akceptowane by\u0142y znaczniki JWE, nale\u017cy skonfigurowa\u0107 w\u0142a\u015bciwo\u015b\u0107 MicroProfile mp.jwt.decrypt.key.location lub atrybut keyManagementKeyAlias w konfiguracji konsumenta JWT. Je\u015bli u\u017cywany jest sk\u0142adnik MicroProfile JWT, nale\u017cy upewni\u0107 si\u0119, \u017ce wersja 1.2 lub nowsza jest odpowiednio skonfigurowana. W przeciwnym razie nale\u017cy upewni\u0107 si\u0119, \u017ce do tego zasobu s\u0105 wysy\u0142ane tylko znaczniki JWS.
+# 0=JWT consumer config ID
+JWE_REQUIRED_BUT_TOKEN_NOT_JWE=CWWKS6064E: Znacznik w \u017c\u0105daniu nie jest zapisany w formacie JWE (JSON Web Encryption), ale konsument JWT [{0}] akceptuje tylko znaczniki w formacie JWE.
+JWE_REQUIRED_BUT_TOKEN_NOT_JWE.explanation=By\u0107 mo\u017ce znacznik w \u017c\u0105daniu jest zniekszta\u0142cony lub zapisany w formacie JWS (JSON Web Signature). Znaczniki musz\u0105 by\u0107 w formacie JWE, je\u015bli po\u0142o\u017cenie klucza deszyfrowania JWE jest skonfigurowane.
+JWE_REQUIRED_BUT_TOKEN_NOT_JWE.useraction=Aby akceptowane by\u0142y znaczniki JWS, a nie JWE, nale\u017cy usun\u0105\u0107 w\u0142a\u015bciwo\u015b\u0107 MicroProfile mp.jwt.decrypt.key.location i atrybut keyManagementKeyAlias w konfiguracji konsumenta JWT. W przeciwnym razie nale\u017cy dopilnowa\u0107, aby do tego zasobu by\u0142y wysy\u0142ane tylko znaczniki JWE.
+NESTED_JWS_REQUIRED_BUT_NOT_FOUND=CWWKS6065E: \u0141adunek znacznika JSON Web Encryption (JWE) zawarty w \u017c\u0105daniu nie jest znacznikiem JSON Web Signature (JWS).
+NESTED_JWS_REQUIRED_BUT_NOT_FOUND.explanation=\u0141adunek znacznika JWE musi by\u0107 poprawnym znacznikiem JSON Web Token (JWT) w formacie JWS.
+NESTED_JWS_REQUIRED_BUT_NOT_FOUND.useraction=Upewnij si\u0119, \u017ce \u0142adunek znacznika JWE jest poprawnym znacznikiem JWT w formacie JWS.

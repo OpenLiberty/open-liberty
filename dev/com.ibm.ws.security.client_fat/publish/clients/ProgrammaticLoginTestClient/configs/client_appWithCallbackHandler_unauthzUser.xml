@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2020 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<client>
+	<featureManager>
+		<feature>javaeeClient-7.0</feature>
+        <feature>appSecurityClient-1.0</feature>
+	</featureManager>
+
+	<application id="myApp" name="ProgrammaticLoginWithCallbackHandlerUnauthzUser" type="ear"
+		location="ProgrammaticLoginWithCallbackHandlerUnauthzUser.ear" />
+
+	<keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" />
+
+	<!-- This is a client configuration file selected to use a non-default SSL config for the sake of variety
+	and decent test coverage to make sure a non-default SSL config works in positive and negative test cases -->
+	<sslDefault sslRef="supportedClientAuthenticationSSLConfig" />
+
+	<ssl id="supportedClientAuthenticationSSLConfig"
+		clientAuthenticationSupported="true" keyStoreRef="defaultKeyStore" />
+
+</client>

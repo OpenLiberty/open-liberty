@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 IBM Corporation and others.
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -107,7 +107,8 @@ public class ConnectionManagerServiceImpl extends ConnectionManagerService {
     /**
      * Default constructor for declarative services to use before activating the service.
      */
-    public ConnectionManagerServiceImpl() {}
+    public ConnectionManagerServiceImpl() {
+    }
 
     /**
      * Constructor for a default connectionManager service.
@@ -126,9 +127,9 @@ public class ConnectionManagerServiceImpl extends ConnectionManagerService {
      * Declarative Services method to activate this component.
      * Best practice: this should be a protected method, not public or private
      *
-     * @param context for this component instance
+     * @param context    for this component instance
      * @param properties : Map containing service & config properties
-     *            populated/provided by config admin
+     *                       populated/provided by config admin
      */
     protected void activate(ComponentContext context, Map<String, Object> properties) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
@@ -282,7 +283,7 @@ public class ConnectionManagerServiceImpl extends ConnectionManagerService {
      * Construct the CMConfigData, including properties from the resource reference, if applicable.
      *
      * @param cfSvc connection factory service
-     * @param ref resource reference.
+     * @param ref   resource reference.
      * @return com.ibm.ejs.j2c.CMConfigData
      */
     private final CMConfigData getCMConfigData(AbstractConnectionFactoryService cfSvc, ResourceInfo refInfo) {
@@ -447,7 +448,7 @@ public class ConnectionManagerServiceImpl extends ConnectionManagerService {
      *
      * Precondition: invoker must have the write lock for this connection manager service.
      *
-     * @param svc connection factory service - this not needed if the pool manager already exists.
+     * @param svc        connection factory service - this not needed if the pool manager already exists.
      * @param properties properties for this connectionManager service.
      * @return gConfigProps J2CGlobalConfigProperties is returned if we created a new one. Null if we modified an existing pool manager.
      * @throws ResourceException
@@ -464,6 +465,9 @@ public class ConnectionManagerServiceImpl extends ConnectionManagerService {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(this, tc, "Setting disableLibertyConnectionManager to " + disableLibertyConnectionPool);
         }
+
+        Object value = map.remove(AUTO_CLOSE_CONNECTIONS);
+        boolean autoCloseConnections = value instanceof Boolean ? (Boolean) value : Boolean.parseBoolean((String) value);
 
         if (disableLibertyConnectionPool) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
@@ -521,6 +525,9 @@ public class ConnectionManagerServiceImpl extends ConnectionManagerService {
             if (pm.gConfigProps.getAgedTimeout() != agedTimeout)
                 pm.gConfigProps.setAgedTimeout(agedTimeout);
 
+            if (pm.gConfigProps.getAutoCloseConnections() != autoCloseConnections)
+                pm.gConfigProps.setAutoCloseConnections(autoCloseConnections);
+
             if (pm.gConfigProps.getConnctionWaitTime() != connectionTimeout)
                 pm.gConfigProps.setConnectionTimeout(connectionTimeout);
 
@@ -553,7 +560,7 @@ public class ConnectionManagerServiceImpl extends ConnectionManagerService {
                             100, // maxFreePoolHashSize,
                             false, // diagnoseConnectionUsage,
                             connectionTimeout, maxPoolSize, minPoolSize, purgePolicy, reapTime, maxIdleTime, agedTimeout, ConnectionPoolProperties.DEFAULT_HOLD_TIME_LIMIT, 0, // commit priority not supported
-                            numConnectionsPerThreadLocal, maxNumberOfMCsAllowableInThread, throwExceptionOnMCThreadCheck);
+                            autoCloseConnections, numConnectionsPerThreadLocal, maxNumberOfMCsAllowableInThread, throwExceptionOnMCThreadCheck);
 
         }
     }
@@ -580,14 +587,14 @@ public class ConnectionManagerServiceImpl extends ConnectionManagerService {
      * This method will also handle raising an exception or Tr message if the
      * property is invalid.
      *
-     * @param map map of configured properties
-     * @param propName the name of the property being tested
-     * @param defaultVal the default value
-     * @param units units for duration type. Null if not a duration type.
-     * @param minVal the minimum value
-     * @param maxVal the maximum value
+     * @param map                map of configured properties
+     * @param propName           the name of the property being tested
+     * @param defaultVal         the default value
+     * @param units              units for duration type. Null if not a duration type.
+     * @param minVal             the minimum value
+     * @param maxVal             the maximum value
      * @param immediateSupported weather or not property supports immediate action
-     * @param connectorSvc connector service
+     * @param connectorSvc       connector service
      * @return the configured value if the value is valid, else the default value
      * @throws ResourceException
      */
@@ -637,10 +644,10 @@ public class ConnectionManagerServiceImpl extends ConnectionManagerService {
      * This method will also handle raising an exception or Tr message if the
      * property is invalid.
      *
-     * @param map map of configured properties
-     * @param propName the name of the property being tested
-     * @param defaultVal the default value
-     * @param type enumeration consisting of the valid values
+     * @param map          map of configured properties
+     * @param propName     the name of the property being tested
+     * @param defaultVal   the default value
+     * @param type         enumeration consisting of the valid values
      * @param connectorSvc connector service
      * @return the configured value if the value is valid, else the default value
      */

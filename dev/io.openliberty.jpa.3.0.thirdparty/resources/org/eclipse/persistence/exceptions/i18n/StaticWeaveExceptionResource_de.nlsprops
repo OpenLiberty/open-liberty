@@ -1,0 +1,43 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/StaticWeaveExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+40001=Es wurde eine Ausnahme ausgel\u00f6st bei dem Versuch, ein Archiv \u00fcber die folgende URL zu \u00f6ffnen: {0}
+
+40002=Es wurde keine Quelle f\u00fcr Weaving angegeben.
+
+40003=Es wurde kein Ziel f\u00fcr Weaving angegeben.
+
+40004=Bei ''Weaving in place'' ist die Angabe einer JAR-Datei nicht zul\u00e4ssig.
+
+40005=Es wurde eine Ausnahme ausgel\u00f6st bei dem Versuch, eine Protokolldatei zu \u00f6ffnen: {0}
+
+40006=Die Protokollierungstufe wurde mit einem falschen Wert angegeben. G\u00fcltige Werte sind: OFF,SEVERE,WARNING,INFO,CONFIG,FINE,FINER,FINEST
+
+40007=Es wurde eine Ausnahme beim Weaving ausgel\u00f6st: {0}
+

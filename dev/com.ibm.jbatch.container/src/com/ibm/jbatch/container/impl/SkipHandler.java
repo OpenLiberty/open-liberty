@@ -127,7 +127,7 @@ public class SkipHandler {
 
         if (chunk.getSkippableExceptionClasses() != null) {
             if (chunk.getSkippableExceptionClasses().getIncludeList() != null) {
-                List<ExceptionClassFilter.Include> includes = chunk.getSkippableExceptionClasses().getIncludeList();
+                List<ExceptionClassFilter.Include> includes = (List<ExceptionClassFilter.Include>) chunk.getSkippableExceptionClasses().getIncludeList();
 
                 for (ExceptionClassFilter.Include include : includes) {
                     _skipIncludeExceptions.add(include.getClazz().trim());
@@ -143,7 +143,7 @@ public class SkipHandler {
 
         if (chunk.getSkippableExceptionClasses() != null) {
             if (chunk.getSkippableExceptionClasses().getExcludeList() != null) {
-                List<ExceptionClassFilter.Exclude> excludes = chunk.getSkippableExceptionClasses().getExcludeList();
+                List<ExceptionClassFilter.Exclude> excludes = (List<ExceptionClassFilter.Exclude>) chunk.getSkippableExceptionClasses().getExcludeList();
 
                 for (ExceptionClassFilter.Exclude exclude : excludes) {
                     _skipExcludeExceptions.add(exclude.getClazz().trim());

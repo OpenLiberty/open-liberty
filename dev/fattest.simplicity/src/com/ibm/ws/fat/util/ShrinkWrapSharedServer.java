@@ -31,6 +31,7 @@ import org.junit.Test;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
+@Deprecated
 public class ShrinkWrapSharedServer extends SharedServer {
 
     private static Class<?> c = ShrinkWrapSharedServer.class;
@@ -46,7 +47,7 @@ public class ShrinkWrapSharedServer extends SharedServer {
      * Methods must be static, have no parameters, return: {@code Archive}, {@codeArchive[]}, {@code List<Archive>}, {@code Map<Archive,String>}.
      * or {@code Map<Archive,List<String>>}.
      * If {@code Archive}, {@code}List<Archive> or Archive[] is returned the returned values will be placed to the server's
-     * dropins folders. If a map is returned each archive will be placed wherever the string points too. If the map contains a list of strings 
+     * dropins folders. If a map is returned each archive will be placed wherever the string points too. If the map contains a list of strings
      * a copy will be placed in each listed path.
      * <p>
      * If the method returns the wrong type an exception will be logged and the test will proceed
@@ -162,7 +163,7 @@ public class ShrinkWrapSharedServer extends SharedServer {
      * This constructor will validate every application.
      *
      * @param shirnkWrapArchives ShrinkWrap archives with will be installed to the server's
-     *            dropins folder.
+     *                               dropins folder.
      */
     public ShrinkWrapSharedServer(String serverName, Archive... shirnkWrapArchives) {
         super(serverName);
@@ -232,10 +233,10 @@ public class ShrinkWrapSharedServer extends SharedServer {
     private void registerArchive(Archive archive, List<String> path, boolean validateApp) {
         archivesAndPaths.put(archive, path);
         if (validateApp) {
-            Log.info(c,"registerArchive",  "Application {0} will be installed at {1}. The application will be validated", new Object[] {archive.getName(), path});
+            Log.info(c, "registerArchive", "Application {0} will be installed at {1}. The application will be validated", new Object[] { archive.getName(), path });
             getLibertyServer().addInstalledAppForValidation(getAppName(archive));
         } else {
-            Log.info(c,"registerArchive",  "Application {0} will be installed at {1}. The application will not be validated", new Object[] {archive.getName(), path});
+            Log.info(c, "registerArchive", "Application {0} will be installed at {1}. The application will not be validated", new Object[] { archive.getName(), path });
         }
     }
 

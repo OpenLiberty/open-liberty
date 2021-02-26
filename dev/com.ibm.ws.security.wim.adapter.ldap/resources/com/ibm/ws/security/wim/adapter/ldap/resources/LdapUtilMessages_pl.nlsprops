@@ -221,3 +221,10 @@ LDAP_REGISTRY_CUSTOM_MAPPER_FAILED.useraction=Je\u015bli wyj\u0105tek by\u0142 n
 LDAP_REGISTRY_INVALID_MAPPING=CWIML4504W: Niestandardowy program odwzorowuj\u0105cy certyfikat X.509 zwr\u00f3ci\u0142 pust\u0105 warto\u015b\u0107 lub warto\u015b\u0107 NULL. 
 LDAP_REGISTRY_INVALID_MAPPING.explanation=Niestandardowy program odwzorowuj\u0105cy certyfikat X.509 musi zwr\u00f3ci\u0107 warto\u015b\u0107 inn\u0105 ni\u017c pust\u0105 i inn\u0105 ni\u017c warto\u015b\u0107 NULL lub zg\u0142osi\u0107 jeden z nazwanych wyj\u0105tk\u00f3w.
 LDAP_REGISTRY_INVALID_MAPPING.useraction=Zmodyfikuj implementacj\u0119 niestandardowego programu odwzorowuj\u0105cego certyfikat X.509 w taki spos\u00f3b, aby nie zwraca\u0142a pustej warto\u015bci ani warto\u015bci NULL. Je\u015bli nie mo\u017cna zwr\u00f3ci\u0107 poprawnej warto\u015bci, implementacja musi zg\u0142osi\u0107 sprawdzony wyj\u0105tek. 
+
+LOGINPROPERTY_OVERRIDE_USERFILTER=CWIML4505W: Zdefiniowany atrybut userFilter jest ignorowany, poniewa\u017c s\u0105 zdefiniowane atrybuty loginProperty. Filtr u\u017cytkownik\u00f3w jest generowany dynamicznie.
+LOGINPROPERTY_OVERRIDE_USERFILTER.explanation=Zdefiniowana jest co najmniej jedna instancja atrybutu loginProperty. Te atrybuty s\u0105 u\u017cywane do budowania filtru u\u017cytkownik\u00f3w.
+LOGINPROPERTY_OVERRIDE_USERFILTER.useraction=Je\u015bli preferowany jest atrybut userFilter, usu\u0144 wszystkie atrybuty loginProperty.
+INVALID_LOGIN_PROPERTIES=CWIML4506E: Nast\u0119puj\u0105ce w\u0142a\u015bciwo\u015bci logowania s\u0105 niepoprawne: {0}.
+INVALID_LOGIN_PROPERTIES.explanation=Co najmniej jedna w\u0142a\u015bciwo\u015b\u0107 logowania nie ma poprawnych w\u0142a\u015bciwo\u015bci WIM PersonAccount.
+INVALID_LOGIN_PROPERTIES.useraction=Wybierz poprawne w\u0142a\u015bciwo\u015bci PersonAccount lub dodaj w\u0142a\u015bciwo\u015bci do obiektu PersonAccount jako w\u0142a\u015bciwo\u015bci rozszerzone. Upewnij si\u0119, \u017ce wielko\u015b\u0107 liter ka\u017cdej w\u0142a\u015bciwo\u015bci logowania jest zgodna z wielko\u015bci\u0105 liter odpowiedniej w\u0142a\u015bciwo\u015bci PersonAccount.

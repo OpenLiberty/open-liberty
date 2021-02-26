@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2020 IBM Corporation and others.
+ * Copyright (c) 2015, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 
 import com.ibm.tx.config.ConfigurationProviderManager;
+import com.ibm.tx.util.Utils;
 import com.ibm.tx.util.logging.Tr;
 import com.ibm.tx.util.logging.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
@@ -85,8 +86,8 @@ public class FileSharedServerLeaseLog implements SharedServerLeaseLog {
     // 2. We'll maintain a single lock for working against possibly more than one peer. But we'll only work against one peer at a time.
     //
 
-    LeaseLock _peerLeaseLock = null;
-    LeaseLock _localLeaseLock = null;
+    LeaseLock _peerLeaseLock;
+    LeaseLock _localLeaseLock;
 
     // Singleton instance of the FileSystem Lease Log class
     private static final FileSharedServerLeaseLog _fileLeaseLog = new FileSharedServerLeaseLog();
@@ -241,7 +242,6 @@ public class FileSharedServerLeaseLog implements SharedServerLeaseLog {
                             }
                         });
                         if (!success) {
-                            // TODO Auto-generated catch block
                             if (tc.isDebugEnabled())
                                 Tr.debug(tc, "Unable to set the last modification time for " + leaseFile);
                         }
@@ -313,7 +313,7 @@ public class FileSharedServerLeaseLog implements SharedServerLeaseLog {
                                 final long leaseTime = leaseFile.lastModified();
 
                                 if (tc.isDebugEnabled()) {
-                                    Tr.debug(tc, "recoveryId: " + recoveryIdentity + ", leaseTime: " + leaseTime);
+                                    Tr.debug(tc, "recoveryId: " + recoveryIdentity + ", leaseTime: " + Utils.traceTime(leaseTime));
                                 }
 
                                 PeerLeaseData pld = new PeerLeaseData(recoveryIdentity, leaseTime, _leaseTimeout);
@@ -397,7 +397,7 @@ public class FileSharedServerLeaseLog implements SharedServerLeaseLog {
             });
 
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "recoveryId: " + recoveryIdentityToRecover + ", new leaseTime: " + newleaseTime);
+                Tr.debug(tc, "recoveryId: " + recoveryIdentityToRecover + ", new leaseTime: " + Utils.traceTime(newleaseTime));
             }
 
             PeerLeaseData pld = new PeerLeaseData(recoveryIdentityToRecover, newleaseTime, _leaseTimeout);
@@ -501,7 +501,7 @@ public class FileSharedServerLeaseLog implements SharedServerLeaseLog {
 
                                         if (tc.isEventEnabled()) {
                                             Tr.event(tc, "Lease Table: read recoveryId: " + recoveryId);
-                                            Tr.event(tc, "Lease Table: read leaseTime: " + leaseTime);
+                                            Tr.event(tc, "Lease Table: read leaseTime: " + Utils.traceTime(leaseTime));
                                         }
 
                                         PeerLeaseData pld = new PeerLeaseData(recoveryId, leaseTime, _leaseTimeout);

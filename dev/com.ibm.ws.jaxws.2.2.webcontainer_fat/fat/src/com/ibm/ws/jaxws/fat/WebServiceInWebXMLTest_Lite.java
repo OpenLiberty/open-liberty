@@ -29,7 +29,9 @@ import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 
@@ -158,6 +160,10 @@ public class WebServiceInWebXMLTest_Lite {
                    line.contains("xml version="));
     }
 
+    /*
+     * TODO: Fix jaxws-2.3 no longer printing message CWWKW0037E when WSDL is not generated (correct behavior no longer prints error).
+     */
+    @SkipForRepeat({ "jaxws-2.3", JakartaEE9Action.ID })
     @Test
     public void testSameWebServiceDiffBindingType_WSDL() throws Exception {
         String method = "testSameWebServiceDiffBindingType_WSDL";

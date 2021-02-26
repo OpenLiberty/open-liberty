@@ -271,7 +271,14 @@ public final class MessageProcessor implements JsEngineComponent,
     HashSet _localistySet = new HashSet();
 
     // Security code changes for Liberty: Sharath Start
-    private final RuntimeSecurityService runtimeSecurityService = RuntimeSecurityService.SINGLETON_INSTANCE;
+    private RuntimeSecurityService runtimeSecurityService;
+    /**
+     * @return the runtimeSecurityService
+     */
+    public final RuntimeSecurityService getRuntimeSecurityService() {
+        return runtimeSecurityService;
+    }
+
     private Authentication _authentication;
     private Authorization _authorization;
 
@@ -371,10 +378,8 @@ public final class MessageProcessor implements JsEngineComponent,
     protected SICoreConnection createConnection(Subject subject,
                                                 boolean system, Map connectionProperties)
                     throws SIResourceException {
-        if (TraceComponent.isAnyTracingEnabled()
-            && tc.isEntryEnabled())
-            SibTr.entry(tc, "createConnection", new Object[] {
-                                                              Boolean.valueOf(system), connectionProperties });
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            SibTr.entry(tc, "createConnection", new Object[] {Boolean.valueOf(system), connectionProperties });
 
         try {
             if (runtimeSecurityService.isUnauthenticated(subject)) {
@@ -1342,6 +1347,7 @@ public final class MessageProcessor implements JsEngineComponent,
         _accessChecker = new AccessChecker(this);
 
         // Security Code changes for Liberty: Sharath Start
+        runtimeSecurityService = _engine.getRuntimeSecurityservice();
         _authentication = runtimeSecurityService.getAuthenticationInstance();
         _authorization = runtimeSecurityService.getAuthorizationInstance();
         // Security Code changes for Liberty: Sharath End

@@ -45,8 +45,8 @@ public class RolesAuthTestServlet extends FATServlet {
 
     static final String ACCESSED = "Accessed";
     
-    ClientInterface role1Client;
-    ClientInterface role2Client;
+    ClientInterface1 role1Client;
+    ClientInterface2 role2Client;
 
     private static String getSysProp(String key, String defaultValue) {
         return AccessController.doPrivileged((PrivilegedAction<String>) () -> System.getProperty(key, defaultValue));
@@ -83,12 +83,10 @@ public class RolesAuthTestServlet extends FATServlet {
         LOG.info("baseUrl = " + baseUriStr);
         role1Client = GraphQlClientBuilder.newBuilder()
                                           .endpoint(baseUriStr)
-                                          .header("Authorization", "Basic " + Base64.getEncoder().encodeToString(("user1:user1pwd").getBytes()))
-                                          .build(ClientInterface.class);
+                                          .build(ClientInterface1.class);
         role2Client = GraphQlClientBuilder.newBuilder()
                         .endpoint(baseUriStr)
-                        .header("Authorization", "Basic " + Base64.getEncoder().encodeToString(("user2:user2pwd").getBytes()))
-                        .build(ClientInterface.class);
+                        .build(ClientInterface2.class);
     }
 
     @Test

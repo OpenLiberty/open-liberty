@@ -12,38 +12,42 @@ package com.ibm.jbatch.container.ws;
 
 import javax.batch.runtime.JobExecution;
 
-
-
 /**
  * Resolves the batch REST url based on endpoint, server, and/or system config.
  */
 public interface BatchLocationService {
-   
+
     /**
      * @return the batch REST url for this server: https://{host}:{port}/ibm/api/batch
      */
-    public String getBatchRestUrl() ;
-      
+    public String getBatchRestUrl();
+
     /**
      * @return unique identity for this server: ${defaultHostName}/${wlp.user.dir}/serverName
      */
-    public String getServerId() ;
+    public String getServerId();
 
     /**
      * @return true if the given jobexecution ran (or is running) on this server.
      */
-    public boolean isLocalJobExecution(WSJobExecution jobExecution) ;
-    
+    public boolean isLocalJobExecution(WSJobExecution jobExecution);
+
     /**
      * @return true if the given jobexecution ran (or is running) on this server.
      */
-    public boolean isLocalJobExecution(long executionId) ;
-    
+    public boolean isLocalJobExecution(long executionId);
+
     /**
      * @return the JobExecution instance.
-     * 
+     *
      * @throws BatchJobNotLocalException if the given execution did not execute here in this server.
      */
-    public JobExecution assertIsLocalJobExecution(long executionId) throws BatchJobNotLocalException ;
- 
+    public JobExecution assertIsLocalJobExecution(long executionId) throws BatchJobNotLocalException;
+
+    /**
+     * @param partition
+     * @return true if the given remotable partition ran (or is running) on this server
+     */
+    boolean isLocalRemotablePartition(WSRemotablePartitionExecution partition);
+
 }

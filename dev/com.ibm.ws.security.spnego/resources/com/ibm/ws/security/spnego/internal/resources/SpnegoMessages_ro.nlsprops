@@ -51,7 +51,7 @@ SPNEGO_NOT_SUPPORTED_ERROR_PAGE.useraction=Configura\u0163i browser-ul clientulu
 SPNEGO_NTLM_TOKEN_RECEIVED_ERROR_PAGE=CWWKS4307E: <html><head><title>A fost primit un jeton NTLM.\
 </title></head> <body>Configura\u0163ia browser-ului dumneavoastr\u0103 de client este corect\u0103, dar nu v-a\u0163i logat \u00eentr-un Domeniu Windows suportat.\
 <p> V\u0103 rug\u0103m s\u0103 v\u0103 loga\u0163i \u00een Domeniul Windows suportat.\
-</html>.
+</body></html>.
 SPNEGO_NTLM_TOKEN_RECEIVED_ERROR_PAGE.explanation=Configura\u0163ia browser-ului clientului este corect\u0103, dar nu v-a\u0163i logat \u00eentr-un domeniu Windows suportat. \
 Sau configura\u0163ia SPNEGO nu este corect\u0103, prin urmare browser-ului clientului nu trimite SPNEGO fie jetonul Kerberos nu este corect.
 SPNEGO_NTLM_TOKEN_RECEIVED_ERROR_PAGE.useraction=Verifica\u0163i c\u0103 v\u0103 loga\u0163i \u00een domeniul Windows suportat \u015fi configura\u0163ia SPNEGO pentru server \u015fi domeniul Windows.
@@ -115,3 +115,17 @@ SPNEGO_CAN_NOT_GET_DELEGATE_SERVICE_SPN.useraction=Verifica\u0163i formatul nume
 SPNEGO_DELEGATE_SPN_LOGIN_TO_KDC_FAILURE=CWWKS4322E: Delegarea SPN {0} nu se poate autentifica la Key Distribution Center (KDC) utiliz\u00e2nd fi\u015fierul de configura\u0163ie Kerberos {1} \u015fi fi\u015fierul tabel\u0103 de chei {2}. S-a primit o excep\u0163\u00ede de logare: {3}
 SPNEGO_DELEGATE_SPN_LOGIN_TO_KDC_FAILURE.explanation=Nu se poate face autentificarea la Key Distribution Center (KDC).
 SPNEGO_DELEGATE_SPN_LOGIN_TO_KDC_FAILURE.useraction=Verifica\u0163i formatul numelui principal de serviciu \u015fi asigura\u0163i-v\u0103 c\u0103 exist\u0103 \u00een domeniul Windows \u015fi c\u0103 fi\u015fierul tabel\u0103 de chei Kerberos con\u0163ine numele principal de serviciu.
+
+SPNEGO_CONFLICTING_SETTINGS_CWWKS4323E=CWWKS4323E: Atributul [{0}] de la elementul {1} intr\u0103 \u00een conflict cu atributul [{2}] de la elementul {3}. Specifica\u0163i o valoare doar fie pe elementul {1}, fie pe elementul {3}, nu pe ambele elemente. Este sugerat s\u0103 specifica\u0163i valoarea doar pe elementul {1}.
+SPNEGO_CONFLICTING_SETTINGS_CWWKS4323E.explanation=Pentru a recunoa\u015fte fiecare atribut, trebuie setat\u0103 o proprietate de sistem, care este o setare la nivel de sistem. Valori diferite pentru o setare la nivel de sistem nu pot fi recunoscute.
+SPNEGO_CONFLICTING_SETTINGS_CWWKS4323E.useraction=Specifica\u0163i atributul \u00een doar unul din elementele de configura\u0163ie.
+
+SPNEGO_AUTHENTICATION_ERROR_PAGE=CWWKS4324E: <html><head><title>Autentificare SPNEGO a e\u015fuat. \
+Contacta\u0163i-v\u0103 administratorul de sistem pentru a rezolva problema.\
+</title></head> <body>Clientul a trimis jetonul SPNEGO. \
+Serverul nu poate valida jetonul SPNEGO al clientului. \
+Contacta\u0163i-v\u0103 administratorul de sistem pentru a rezolva problema.\
+</body></html>.
+SPNEGO_AUTHENTICATION_ERROR_PAGE.explanation=Autentificarea SPNEGO a e\u015fuat. Pentru mai multe informa\u0163ii, verifica\u0163i mesajele de istoric ale serverului.
+SPNEGO_AUTHENTICATION_ERROR_PAGE.useraction=Verifica\u0163i configura\u0163ia serverului \u015fi configura\u0163ia Kerberos \u015fi asigura\u0163i-v\u0103 c\u0103 ceasul serverului este sincronizat cu KDC (Key Distribution Center).
+

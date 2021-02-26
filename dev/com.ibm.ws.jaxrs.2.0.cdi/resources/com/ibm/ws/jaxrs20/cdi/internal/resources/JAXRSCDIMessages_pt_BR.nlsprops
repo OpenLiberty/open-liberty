@@ -19,15 +19,15 @@
 #
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
-# JAXRS 2.0 CDI Message ------------------------
-warning.jaxrs.cdi.resource=CWWKW1000W: O escopo do Recurso JAXRS-2.0 {0} \u00e9 {1}. O Liberty obt\u00e9m a inst\u00e2ncia de recurso de {2}.
+# JAXRS CDI Message ------------------------
+warning.jaxrs.cdi.resource=CWWKW1000W: O escopo do recurso JAXRS {0} \u00e9 {1}. O Liberty obt\u00e9m a inst\u00e2ncia de recurso de {2}.
 warning.jaxrs.cdi.resource.explanation=O Liberty obt\u00e9m a inst\u00e2ncia de recurso de JAXRS se n\u00e3o puder a obter a inst\u00e2ncia de CDI.
 warning.jaxrs.cdi.resource.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria. 
 
-warning.jaxrs.cdi.resource.mismatch=CWWKW1001W: O escopo {1} do Recurso JAXRS-2.0 {0} n\u00e3o corresponde ao escopo CDI {2}. O Liberty obt\u00e9m a inst\u00e2ncia de recurso de {3}.
-warning.jaxrs.cdi.resource.mismatch.explanation=Se o escopo do Recurso JAXRS-2.0 n\u00e3o corresponder ao escopo CDI e a inst\u00e2ncia de recurso existir no CDI, o Liberty obter\u00e1 a inst\u00e2ncia de recurso do CDI. A inst\u00e2ncia n\u00e3o inclui a inje\u00e7\u00e3o de CDI se ela for do JAXRS.
+warning.jaxrs.cdi.resource.mismatch=CWWKW1001W: O escopo {1} do recurso JAXRS {0} n\u00e3o corresponde ao escopo do CDI {2}. O Liberty obt\u00e9m a inst\u00e2ncia de recurso de {3}.
+warning.jaxrs.cdi.resource.mismatch.explanation=Se o escopo do recurso JAXRS n\u00e3o corresponder ao escopo do CDI e a inst\u00e2ncia do recurso existir no CDI, o Liberty obter\u00e1 a inst\u00e2ncia de recurso do CDI. A inst\u00e2ncia n\u00e3o inclui a inje\u00e7\u00e3o de CDI se ela for do JAXRS.
 warning.jaxrs.cdi.resource.mismatch.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria. 
 
-warning.jaxrs.cdi.provider.mismatch=CWWKW1002W: O escopo CDI do Provedor JAXRS-2.0 {0} \u00e9 {1}. O Liberty obt\u00e9m a inst\u00e2ncia do provedor de {2}.
+warning.jaxrs.cdi.provider.mismatch=CWWKW1002W: O escopo do CDI do provedor JAXRS {0} \u00e9 {1}. O Liberty obt\u00e9m a inst\u00e2ncia do provedor de {2}.
 warning.jaxrs.cdi.provider.mismatch.explanation=A inst\u00e2ncia do provedor \u00e9 somente Singleton. O Liberty obt\u00e9m a inst\u00e2ncia do provedor de CDI se o escopo CDI do provedor for Dependent ou ApplicationScoped. A inst\u00e2ncia n\u00e3o inclui a inje\u00e7\u00e3o de CDI se ela for do JAXRS.
 warning.jaxrs.cdi.provider.mismatch.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.

@@ -13,10 +13,11 @@ dependencies {
   requiredLibs project(':fattest.simplicity'),
     project(':com.ibm.ws.security.registry'),
     project(':com.ibm.ws.security.registry_test.servlet'),
-    'com.unboundid:unboundid-ldapsdk:4.0.14',
+    'com.unboundid:unboundid-ldapsdk:5.1.0',
     project(':com.ibm.ws.com.unboundid')
 }
-autoFVT.dependsOn ':com.ibm.ws.security.registry_test.servlet:war'
+autoFVT.dependsOn ':com.ibm.ws.security.registry_test.servlet:assemble'
+autoFVT.dependsOn ':com.ibm.ws.security.wim.repository_test.custom:assemble'
 autoFVT.doLast {
   /*
    * Copy the local ApacheDS LDAP instances. 
@@ -25,6 +26,19 @@ autoFVT.doLast {
     from project(':com.ibm.ws.org.apache.directory.server').projectDir
     into autoFvtDir
     include 'apacheds-2.0.0-M15/**'
+  }
+  
+    /*
+   * Copy sample CustomRepository user feature to this test bucket.
+   */
+  copy { 
+    from project(':com.ibm.ws.security.wim.repository_test.custom').file('publish/usr/extension/lib/features/customRepositorySample-1.0.mf')
+    into new File(autoFvtDir, 'publish/features')
+  }
+  copy {
+    from new File(project(':com.ibm.ws.security.wim.repository_test.custom').buildDir, 'com.ibm.ws.security.wim.repository_test.custom.jar')
+    into new File(autoFvtDir, 'publish/bundles')
+    rename 'com.ibm.ws.security.wim.repository_test.custom.jar', 'com.ibm.ws.security.wim.repository_test.custom_1.0.jar'
   }
 
   /*

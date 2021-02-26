@@ -15,14 +15,21 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.Closeable;
 import java.security.AccessController;
 import java.security.PrivilegedExceptionAction;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.annotation.Resource;
 import javax.naming.InitialContext;
@@ -30,6 +37,8 @@ import javax.resource.spi.security.PasswordCredential;
 import javax.security.auth.Subject;
 import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.sql.DataSource;
 
@@ -42,7 +51,12 @@ import componenttest.app.FATDatabaseServlet;
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/DerbyLoadFromAppServlet")
 public class DerbyLoadFromAppServlet extends FATDatabaseServlet {
-    @Resource
+    /**
+     * Maximum number of nanoseconds to wait for a task to finish.
+     */
+    private static final long TIMEOUT_NS = TimeUnit.MINUTES.toNanos(2);
+
+    @Resource(shareable = false)
     private DataSource defaultDataSource;
 
     @Resource(name = "java:module/env/jdbc/sldsLoginModuleFromOtherApp", lookup = "jdbc/sharedLibDataSource")
@@ -51,8 +65,17 @@ public class DerbyLoadFromAppServlet extends FATDatabaseServlet {
     @Resource(name = "java:module/env/jdbc/sldsLoginModuleFromEnterpriseAppNotFoundInWebApp", lookup = "jdbc/sharedLibDataSource")
     private DataSource sldsLoginModuleFromOtherAppNotFound;
 
-    @Resource(name = "java:module/env/jdbc/sldsLoginModuleFromWebApp", lookup = "jdbc/sharedLibDataSource")
+    @Resource(name = "java:module/env/jdbc/sldsLoginModuleFromWebApp", lookup = "jdbc/sharedLibDataSource", shareable = false)
     private DataSource sldsLoginModuleFromWebApp;
+
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+        try (Connection con = defaultDataSource.getConnection()) {
+            con.createStatement().execute("CREATE TABLE TESTTBL(NAME VARCHAR(20) NOT NULL PRIMARY KEY, VAL INT NOT NULL)");
+        } catch (SQLException x) {
+            throw new ServletException(x);
+        }
+    }
 
     // Use a data source with generic properties element where the dataSource's jdbcDriver
     // specifies a data source class name, but is configured without any library,
@@ -82,6 +105,141 @@ public class DerbyLoadFromAppServlet extends FATDatabaseServlet {
         }
     }
 
+    /**
+     * testHandleListClosesLeakedConnectionWhenEJBRemoveIsInvoked - verifies that when the HandleList is enabled,
+     * it permits EJBs to cache connections across method invocations, but closes the connection if it is leaked
+     * across EJB remove.
+     */
+    @Test
+    public void testHandleListClosesLeakedConnectionWhenEJBRemoveIsInvoked() throws Exception {
+        AtomicReference<Connection> conRef = new AtomicReference<Connection>();
+        AtomicReference<Statement> stmtRef = new AtomicReference<Statement>();
+
+        Executor bean = InitialContext.doLookup("java:global/derbyApp/StatefulBeanInWebApp!web.derby.CloseableExecutorBean");
+        bean.execute(() -> {
+            try {
+                Connection con = defaultDataSource.getConnection();
+                conRef.set(con);
+            } catch (SQLException x) {
+                throw new CompletionException(x);
+            }
+        });
+
+        bean.execute(() -> {
+            try {
+                Statement stmt = conRef.get().createStatement();
+                stmtRef.set(stmt);
+                stmt.executeUpdate("INSERT INTO TESTTBL VALUES('NW Rochester', 55901)");
+            } catch (SQLException x) {
+                throw new CompletionException(x);
+            }
+        });
+
+        bean.execute(() -> {
+            try {
+                stmtRef.get().executeUpdate("INSERT INTO TESTTBL VALUES('SW Rochester', 55902)");
+            } catch (SQLException x) {
+                throw new CompletionException(x);
+            }
+        });
+
+        // Cached handle remains open across EJB method invocations
+        assertFalse(conRef.get().isClosed());
+        assertFalse(stmtRef.get().isClosed());
+
+        // EJB remove
+        ((Closeable) bean).close();
+
+        // Handle is closed by HandleList upon EJB remove
+        assertTrue(conRef.get().isClosed());
+        assertTrue(stmtRef.get().isClosed());
+
+        // Verify the data that was written by the EJB methods
+        try (Connection con = defaultDataSource.getConnection()) {
+            assertEquals(2, con.createStatement().executeUpdate("DELETE FROM TESTTBL WHERE NAME LIKE '%W Rochester'"));
+        }
+    }
+
+    /**
+     * testHandleListDoesNotCloseLeakedConnectionOnEJBRemoveWhenHandleListDisabled - verifies that when the
+     * HandleList is disabled, it does not close a connection that is leaked across EJB remove.
+     */
+    @Test
+    public void testHandleListDoesNotCloseLeakedConnectionOnEJBRemoveWhenHandleListDisabled() throws Exception {
+        AtomicReference<Connection> conRef = new AtomicReference<Connection>();
+
+        Executor bean = InitialContext.doLookup("java:global/derbyApp/StatefulBeanInWebApp!web.derby.CloseableExecutorBean");
+        bean.execute(() -> {
+            try {
+                Connection con = sldsLoginModuleFromWebApp.getConnection();
+                con.createStatement();
+                conRef.set(con);
+            } catch (SQLException x) {
+                throw new CompletionException(x);
+            }
+        });
+
+        // Cached handle remains open across EJB method invocations
+        assertFalse(conRef.get().isClosed());
+
+        // EJB remove should not impact the connection handle when HandleList is disabled
+        ((Closeable) bean).close();
+
+        // Cached handle remains open
+        assertFalse(conRef.get().isClosed());
+
+        conRef.get().close();
+    }
+
+    /**
+     * testHandleListPerSingletonEJBMethod - obtain connection handles within a singleton EJB method
+     * and neglect to close them. Verify that Liberty automatically closes the respective connection
+     * handle when the method ends. Invoke the singleton EJB method from multiple threads at once,
+     * verifying that a separate handle list is used for each, such that only connection handles
+     * which were created within the respective singleton EJB method get closed, while other
+     * connection handles remain open.
+     */
+    @Test
+    public void testHandleListPerSingletonEJBMethod() throws Exception {
+        SingletonBeanInWebApp bean = InitialContext.doLookup("java:global/derbyApp/SingletonBeanInWebApp!web.derby.SingletonBeanInWebApp");
+
+        CountDownLatch blocker = new CountDownLatch(1);
+        CompletableFuture<Connection> con1created = new CompletableFuture<Connection>();
+
+        CompletableFuture<Connection> beanMethod2Completed = con1created.thenApplyAsync(con1 -> bean.invoke(() -> {
+            Connection con2 = defaultDataSource.getConnection();
+            con2.createStatement();
+            // intentionally leak connection (return without closing it)
+            return con2;
+        }));
+
+        CompletableFuture<Connection> beanMethod1Completed = CompletableFuture.supplyAsync(() -> bean.invoke(() -> {
+            Connection con1 = defaultDataSource.getConnection();
+            con1.createStatement();
+            con1created.complete(con1);
+            assertTrue(blocker.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            // intentionally leak connection (return without closing it)
+            return con1;
+        }));
+
+        // Bean method invocation 2 completes first, after which only is own connection should be closed:
+        Connection con2 = beanMethod2Completed.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        assertTrue(con2.isClosed());
+
+        // Bean method invocation 1 should still be running:
+        assertFalse(beanMethod1Completed.isDone());
+
+        // Bean method invocation 1's connection should still be open:
+        Connection con1 = con1created.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        assertFalse(con1.isClosed());
+
+        // Allow the first bean method to complete
+        blocker.countDown();
+
+        con1 = beanMethod1Completed.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        assertTrue(con1.isClosed());
+    }
+
     // This basic test verifies that the application can at least load classes from the Derby library that it includes
     @Test
     public void testLoadDerbyClass() throws Exception {
@@ -94,7 +252,7 @@ public class DerbyLoadFromAppServlet extends FATDatabaseServlet {
      */
     @Test
     public void testLoginModuleFromEJBInWebApp() throws Exception {
-        Executor bean = InitialContext.doLookup("java:global/derbyApp/BeanInWebApp!java.util.concurrent.Executor");
+        Executor bean = InitialContext.doLookup("java:global/derbyApp/StatefulBeanInWebApp!java.util.concurrent.Executor");
         bean.execute(() -> {
             try {
                 DataSource ds = (DataSource) InitialContext.doLookup("java:comp/env/jdbc/dsref");

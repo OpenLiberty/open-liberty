@@ -406,6 +406,7 @@ public class ClientImpl implements Client {
             if (targetClient == null) {
                 JAXRSClientFactoryBean bean = new JAXRSClientFactoryBean();
                 bean.setAddress(uri.toString());
+                bean.setProperties(configProps);
                 Boolean threadSafe = getBooleanValue(configProps.get(THREAD_SAFE_CLIENT_PROP));
                 if (threadSafe == null) {
                     threadSafe = DEFAULT_THREAD_SAFETY_CLIENT_STATUS;

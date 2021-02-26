@@ -870,6 +870,10 @@ ERROR_INVALID_PRODUCT_EDITION_FEATURE_UTILITY=CWWKF1410E: La fonction {0} ne peu
 ERROR_INVALID_PRODUCT_EDITION_FEATURE_UTILITY.explanation=La fonction ne s'applique pas \u00e0 l'\u00e9dition du produit install\u00e9.
 ERROR_INVALID_PRODUCT_EDITION_FEATURE_UTILITY.useraction=Installez des fonctions prises en charge par votre \u00e9dition du produit.
 
+ERROR_BETA_EDITION_NOT_SUPPORTED=CWWKF1411E: L'installation et la mise \u00e0 jour de fonctions ne sont pas prises en charge dans les \u00e9ditions b\u00eata.
+ERROR_BETA_EDITION_NOT_SUPPORTED.explanation=L'installation et la mise \u00e0 jour de fonctions ne sont pas prises en charge pour le produit install\u00e9.
+ERROR_BETA_EDITION_NOT_SUPPORTED.useraction=Aucune action n'est requise.
+
 TOOL_DOWNLOAD_FEATURE_OK=CWWKF1500I: Le t\u00e9l\u00e9chargement de la fonction a abouti.
 TOOL_DOWNLOAD_FEATURE_OK.explanation=La fonction a \u00e9t\u00e9 t\u00e9l\u00e9charg\u00e9e.
 TOOL_DOWNLOAD_FEATURE_OK.useraction=Aucune action n'est requise.

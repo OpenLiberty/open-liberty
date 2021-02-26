@@ -46,6 +46,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.SortedSet;
@@ -490,9 +491,12 @@ public final class InjectionUtils {
 
         value = decodeValue(value, decoded, pType);
 
+        final Optional<ParamConverter<T>> converter = getParamConverter(pClass, genericType, paramAnns, message);
         Object result = null;
         try {
-            result = createFromParameterHandler(value, pClass, genericType, paramAnns, message);
+            if (converter.isPresent()) {
+                result = converter.get().fromString(value);
+            }
         } catch (IllegalArgumentException nfe) {
             throw createParamConversionException(pType, nfe);
         }
@@ -504,7 +508,12 @@ public final class InjectionUtils {
                 theResult = pClass.cast(result);
             }
             return theResult;
+        } else if (converter.isPresent() && !pClass.isPrimitive()) {
+            // The converter was applied and returned null value, acceptable
+            // outcome for non-primitive type.
+            return pClass.cast(result);
         }
+
         if (Number.class.isAssignableFrom(pClass) && "".equals(value)) {
             //pass empty string to boxed number type will result in 404
             return null;
@@ -592,6 +601,18 @@ public final class InjectionUtils {
             return ExceptionUtils.toNotFoundException(ex, null);
         }
         return ExceptionUtils.toBadRequestException(ex, null);
+    }
+
+    public static <T> Optional<ParamConverter<T>> getParamConverter(Class<T> pClass,
+            Type genericType, Annotation[] anns, Message message) {
+                                                                
+        if (message != null) {
+            ServerProviderFactory pf = ServerProviderFactory.getInstance(message);
+            ParamConverter<T> pm = pf.createParameterHandler(pClass, genericType, anns, message);
+            return Optional.ofNullable(pm);
+        }
+
+        return Optional.empty();
     }
 
     public static <T> T createFromParameterHandler(String value,
@@ -760,8 +781,8 @@ public final class InjectionUtils {
                 }
 
                 if (setter != null && getter != null) {
-                    Class<?> type = null;
-                    Type genericType = null;
+                    final Class<?> type;
+                    final Type genericType;
                     Object paramValue = null;
                     if (setter instanceof Method) {
                         type = Method.class.cast(setter).getParameterTypes()[0];
@@ -824,13 +845,11 @@ public final class InjectionUtils {
         return null;
     }
 
-    // CHECKSTYLE:OFF
     private static Object injectIntoMap(Class<?> rawType, Type genericType,
                                         Annotation[] paramAnns,
                                         MultivaluedMap<String, String> processedValues,
                                         boolean decoded,
                                         ParameterType pathParam, Message message) {
-        // CHECKSTYLE:ON
         ParameterizedType paramType = (ParameterizedType) genericType;
         Class<?> keyType = (Class<?>) paramType.getActualTypeArguments()[0];
         Type secondType = InjectionUtils.getType(paramType.getActualTypeArguments(), 1);
@@ -897,10 +916,10 @@ public final class InjectionUtils {
     private static List<MultivaluedMap<String, String>> processValues(Class<?> type, Type genericType,
                                                                       MultivaluedMap<String, String> values,
                                                                       boolean isbean) {
-        List<MultivaluedMap<String, String>> valuesList =
-                        new ArrayList<>();
+        final List<MultivaluedMap<String, String>> valuesList;
 
         if (isbean && InjectionUtils.isSupportedCollectionOrArray(type)) {
+            valuesList = new ArrayList<>();
             Class<?> realType = InjectionUtils.getActualType(genericType);
             for (Map.Entry<String, List<String>> entry : values.entrySet()) {
                 String memberKey = entry.getKey();
@@ -951,7 +970,7 @@ public final class InjectionUtils {
                 }
             }
         } else {
-            valuesList.add(values);
+            valuesList = Collections.singletonList(values);
         }
 
         return valuesList;
@@ -1024,8 +1043,8 @@ public final class InjectionUtils {
         // Liberty change end
         Class<?> type = getCollectionType(rawType);
 
-        Class<?> realType = null;
-        Type realGenericType = null;
+        final Class<?> realType;
+        final Type realGenericType;
         if (rawType.isArray()) {
             realType = rawType.getComponentType();
             realGenericType = realType;
@@ -1088,7 +1107,7 @@ public final class InjectionUtils {
         for (String v : values) {
             String[] segments = v.split("/");
             for (String s : segments) {
-                if (s.length() != 0) {
+                if (!s.isEmpty()) {
                     newValues.add(s);
                 }
             }
@@ -1576,20 +1595,14 @@ public final class InjectionUtils {
                     continue;
                 }
 
-                String propertyName = methodName.substring(minLen);
-                if (propertyName.length() == 1) {
-                    propertyName = propertyName.toLowerCase();
-                } else {
-                    propertyName = propertyName.substring(0, 1).toLowerCase()
-                                   + propertyName.substring(1);
-                }
+                String propertyName = StringUtils.uncapitalize(methodName.substring(minLen));
                 if (baseName.contains(propertyName)
                     || "class".equals(propertyName)
                     || "declaringClass".equals(propertyName)) {
                     continue;
                 }
                 if (!"".equals(baseName)) {
-                    propertyName = baseName + "." + propertyName;
+                    propertyName = baseName + '.' + propertyName;
                 }
 
                 Object value = extractFromMethod(bean, m);
@@ -1601,7 +1614,7 @@ public final class InjectionUtils {
                 } else if (value.getClass().isEnum()) {
                     values.putSingle(propertyName, value.toString());
                 } else if (isSupportedCollectionOrArray(value.getClass())) {
-                    List<Object> theValues = null;
+                    final List<Object> theValues;
                     if (value.getClass().isArray()) {
                         theValues = Arrays.asList((Object[]) value);
                     } else if (value instanceof Set) {
@@ -1614,7 +1627,7 @@ public final class InjectionUtils {
                     if (isSupportedMap(m.getGenericReturnType())) {
                         Map<Object, Object> map = CastUtils.cast((Map<?, ?>) value);
                         for (Map.Entry<Object, Object> entry : map.entrySet()) {
-                            values.add(propertyName + "." + entry.getKey().toString(),
+                            values.add(propertyName + '.' + entry.getKey().toString(),
                                        entry.getValue().toString());
                         }
                     }

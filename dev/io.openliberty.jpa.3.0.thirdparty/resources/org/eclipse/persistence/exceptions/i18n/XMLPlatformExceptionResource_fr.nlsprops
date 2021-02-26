@@ -1,0 +1,51 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/XMLPlatformExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+27001=La classe de plateforme XML n''a pas \u00e9t\u00e9 trouv\u00e9e : {0}
+
+27002=La plateforme XML n''a pas pu \u00eatre instanci\u00e9e : {0}
+
+27003=Un nouveau document XML n''a pas pu \u00eatre cr\u00e9\u00e9.
+
+27004=L''\u00e9l\u00e9ment XPath n''\u00e9tait pas valide.
+
+27005=Une erreur s''est produite lors de la validation du document.
+
+27006=Impossible de r\u00e9soudre le sch\u00e9ma XML : {0}
+
+27101=Une erreur s''est produite lors de l''analyse syntaxique du document.
+
+27102=Fichier non trouv\u00e9 : [{0}]
+
+27103=** Erreur d''analyse syntaxique, ligne [{0}], URI [{1}] [{2}]
+
+27201=Une erreur s''est produite lors de la transformation\u00a0du document.
+
+27202=Type inconnu d\u00e9tect\u00e9 : {0}
+

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2001, 2018 IBM Corporation and others.
+ * Copyright (c) 2001, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -381,30 +381,38 @@ public class WSJdbcStatement extends WSJdbcObject implements Statement {
                 // Find out how much time remains in the JTA transaction timeout
                 UOWManager uowmgr = UOWManagerFactory.getUOWManager();
                 long expireTime = uowmgr.getUOWExpiration();
-                long remainingTime = expireTime - System.currentTimeMillis();
-                if (trace && tc.isDebugEnabled())
-                    Tr.debug(this, tc,
-                             "Milliseconds remaining in transaction timeout: " + remainingTime);
+                
+                // 0 means tran is not set to timeout
+                if (expireTime != 0l) {
+                    long remainingTime = expireTime - System.currentTimeMillis();
+                    if (trace && tc.isDebugEnabled())
+                        Tr.debug(this, tc,
+                                 "Milliseconds remaining in transaction timeout: " + remainingTime);
 
-                // Raise an error if the transaction should have already timed out.
-                if (remainingTime <= 0l)
-                    throw new SQLTimeoutException(
-                                    "Transaction timeout " + (-remainingTime) + " ms ago.",
-                                    "25000"); // Invalid transaction state
+                    // Raise an error if the transaction should have already timed out.
+                    if (remainingTime <= 0l)
+                        throw new SQLTimeoutException(
+                                                      "Transaction timeout " + (-remainingTime) + " ms ago.",
+                                        "25000"); // Invalid transaction state
 
-                // Convert to seconds, rounding up
-                remainingTime = (remainingTime + 999l) / 1000l;
+                    // Convert to seconds, rounding up
+                    remainingTime = (remainingTime + 999l) / 1000l;
 
-                // Track the previous value, in order to restore after transaction ends
-                if (queryTimeoutBeforeSync == null)
-                    queryTimeoutBeforeSync = stmtImpl.getQueryTimeout();
+                    // Track the previous value, in order to restore after transaction ends
+                    if (queryTimeoutBeforeSync == null)
+                        queryTimeoutBeforeSync = stmtImpl.getQueryTimeout();
 
-                if (trace && tc.isDebugEnabled())
-                    Tr.debug(this, tc,
-                             "Setting query timeout to " + remainingTime);
+                    if (trace && tc.isDebugEnabled())
+                        Tr.debug(this, tc,
+                                 "Setting query timeout to " + remainingTime);
 
-                stmtImpl.setQueryTimeout((int) remainingTime);
-                haveStatementPropertiesChanged = true;
+                    stmtImpl.setQueryTimeout((int) remainingTime);
+                    haveStatementPropertiesChanged = true;
+                } else {
+                    if (trace && tc.isDebugEnabled())
+                        Tr.debug(this, tc, "Transaction has no timeout set");
+                }
+
             }
             // If not in JTA transaction, then might need to restore to previous value
             else if (queryTimeoutBeforeSync != null) {

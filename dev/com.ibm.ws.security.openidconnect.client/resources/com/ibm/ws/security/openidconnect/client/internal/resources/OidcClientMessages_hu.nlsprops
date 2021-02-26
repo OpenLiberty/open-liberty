@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2019 IBM Corporation and others.
+# Copyright (c) 2019, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -34,10 +34,11 @@ OIDC_CLIENT_CONFIG_MODIFIED.useraction=Nincs.
 #1702 is used by clients.common bundle, do not use.
 
 # used_by_client_project and clients project IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN THE OTHER BUNDLE!
+# social also uses this and it does not have the enforceHTTPS attribute.
 #do not translate enforceHTTPS
-OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS=CWWKS1703E: Az OpenID Connect \u00fcgyf\u00e9l SSL (HTTPS) haszn\u00e1lat\u00e1t k\u00f6veteli meg, de az OpenID Connect szolg\u00e1ltat\u00f3 URL c\u00edme HTTP: [{0}].  Friss\u00edtse a konfigur\u00e1ci\u00f3t \u00fagy, hogy az [enforceHTTPS] attrib\u00fatum megfeleljen a c\u00e9l URL s\u00e9m\u00e1nak. 
+OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS=CWWKS1703E: Az OpenID Connect \u00fcgyf\u00e9l SSL (HTTPS) haszn\u00e1lat\u00e1t k\u00f6veteli meg, de az OpenID Connect szolg\u00e1ltat\u00f3 URL c\u00edme HTTP: [{0}]. Friss\u00edtse a konfigur\u00e1ci\u00f3t HTTPS URL haszn\u00e1lat\u00e1ra, vagy haszn\u00e1lja az OpenID Connect \u00fcgyf\u00e9l szolg\u00e1ltat\u00e1s\u00e1t, \u00e9s \u00e1ll\u00edtsa az enforceHTTPS tulajdons\u00e1got false \u00e9rt\u00e9kre. 
 OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS.explanation=Az OpenID Connect \u00fcgyf\u00e9l (megb\u00edzhat\u00f3 partner vagy er\u0151forr\u00e1s-kiszolg\u00e1l\u00f3) SSL (HTTPS) haszn\u00e1lat\u00e1t ig\u00e9nyli, de az OpenID Connect szolg\u00e1ltat\u00f3 (OP) RP konfigur\u00e1ci\u00f3ban megadott URL protokollja nem HTTPS.
-OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS.useraction=Tegye a k\u00f6vetkez\u0151k egyik\u00e9t: 1) Gondoskodj\u00e9k r\u00f3la, hogy az OpenID Connect szolg\u00e1ltat\u00f3 t\u00e1mogassa az SSL haszn\u00e1lat\u00e1t. 2) Ha az OpenID Connector szolg\u00e1ltat\u00f3 nem t\u00e1mogatja az SSL haszn\u00e1lat\u00e1t, akkor \u00e1ll\u00edtsa be az enforceHTTPS attrib\u00fatumot az OpenID Connect \u00fcgyf\u00e9l-konfigur\u00e1ci\u00f3ban false \u00e9rt\u00e9kre.
+OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS.useraction=Tegye a k\u00f6vetkez\u0151k egyik\u00e9t: El\u0151sz\u00f6r gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az OpenID Connect szolg\u00e1ltat\u00f3 t\u00e1mogatja-e az SSL kommunik\u00e1ci\u00f3t. Ha az OpenID Connector szolg\u00e1ltat\u00f3 nem t\u00e1mogatja az SSL kommunik\u00e1ci\u00f3t, akkor az OpenID Connect \u00fcgyf\u00e9l szolg\u00e1ltat\u00e1s seg\u00edts\u00e9g\u00e9vel \u00e1ll\u00edtsa be az enforceHTTPS tulajdons\u00e1got false \u00e9rt\u00e9kre az OpenID Connect \u00fcgyf\u00e9l szolg\u00e1ltat\u00e1s konfigur\u00e1ci\u00f3j\u00e1ban.
 
 # unused, but present in both bundles.  IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES
 OIDC_CLIENT_RESPONSE_STATE_VERIFY_ERR=CWWKS1704E: A(z) [{2}] OpenID Connect \u00fcgyf\u00e9l aktu\u00e1lis [{0}] \u00e1llapota \u00e9s az OpenID Connect szolg\u00e1ltat\u00f3 v\u00e1lasz\u00e1ban l\u00e9v\u0151 [{1}] \u00e1llapot param\u00e9ter nem egyezik meg.  Ez a felt\u00e9tel nem megengedett.
@@ -279,7 +280,12 @@ CONFIG_AUTHFILTER_NOTUNIQUE.explanation=T\u00f6bb OpenID Connect \u00fcgyf\u00e9
 CONFIG_AUTHFILTER_NOTUNIQUE.useraction=Tekintse \u00e1t a server.xml f\u00e1jlt, \u00e9s jav\u00edtsa ki a konfigur\u00e1ci\u00f3t.
 
 AUTHFILTER_MULTIPLE_MATCHED=CWWKS1531W: T\u00f6bb OpenID Connect \u00fcgyf\u00e9l hiteles\u00edt\u00e9si sz\u0171r\u0151je felel meg a(z) [{0}] URL c\u00edmnek sz\u00f3l\u00f3 k\u00e9r\u00e9snek. Az egyez\u0151 sz\u0171r\u0151k a k\u00f6vetkez\u0151k voltak:  [{1}]. Ez megj\u00f3solhatatlan viselked\u00e9st okozhat.
-AUTHFILTER_MULTIPLE_MATCHED.explanation=T\u00f6bb hiteles\u00edt\u00e9si sz\u0171r\u0151 felel meg egy bej\u00f6v\u0151 k\u00e9r\u00e9snek. A sz\u0171r\u0151k egyik\u00e9t haszn\u00e1l\u00f3 b\u00e1rmelyik \u00fcgyf\u00e9l feldolgozhatja a k\u00e9r\u00e9st, ami nem kisz\u00e1m\u00edthat\u00f3 viselked\u00e9shez vezet. 
+AUTHFILTER_MULTIPLE_MATCHED.explanation=T\u00f6bb hiteles\u00edt\u00e9si sz\u0171r\u0151 felel meg egy bej\u00f6v\u0151 k\u00e9r\u00e9snek. A sz\u0171r\u0151k egyik\u00e9t haszn\u00e1l\u00f3 b\u00e1rmelyik \u00fcgyf\u00e9l feldolgozhatja a k\u00e9r\u00e9st, ami nem kisz\u00e1m\u00edthat\u00f3 viselked\u00e9shez vezet.  
 AUTHFILTER_MULTIPLE_MATCHED.useraction=Tekintse \u00e1t a server.xml f\u00e1jlt, \u00e9s jav\u00edtsa ki a konfigur\u00e1ci\u00f3t.
+
+# do not translate hostname, wasReqURLRedirectDomainNames, and webAppSecurity
+OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE=CWWKS1532E: \u00c9rv\u00e9nytelen k\u00e9r\u00e9s a k\u00f6vetkez\u0151h\u00f6z: [{0}]. Egy WASReqURLOidc kezdet\u0171 nev\u0171 k\u00f6telez\u0151 cookie \u00e9rt\u00e9ke helytelen. A cookie-ban haszn\u00e1lt [{1}] hosztn\u00e9v nem egyezik a szolg\u00e1ltat\u00f3n\u00e1l regisztr\u00e1lt n\u00e9vvel. Egy 500-as v\u00e1laszk\u00f3d \u00e9rkezett vissza.
+OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE.explanation=Rossz form\u00e1tum\u00fa cookie-t tartalmaz\u00f3 k\u00e9r\u00e9s \u00e9rkezett.
+OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE.useraction=Ellen\u0151rizze az OpenID Connect szolg\u00e1ltat\u00f3 \u00e9s \u00fcgyf\u00e9l konfigur\u00e1ci\u00f3j\u00e1t. A rossz form\u00e1tum\u00fa cookie-t okozhatja a cookie m\u00f3dos\u00edt\u00e1sa a felhaszn\u00e1l\u00f3 \u00fcgyn\u00f6k\u00f6n olyan hosztn\u00e9vvel, ami elt\u00e9r a szolg\u00e1ltat\u00f3n regisztr\u00e1lt \u00e1tir\u00e1ny\u00edt\u00e1s hosztnev\u00e9t\u0151l. Ha a hosztn\u00e9v elv\u00e1rt, akkor adja azt hozz\u00e1 a webAppSecurity elem wasReqURLRedirectDomainNames attrib\u00fatum\u00e1hoz a server.xml f\u00e1jlban.
 
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

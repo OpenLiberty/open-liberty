@@ -20,15 +20,6 @@ configurations {
 
 // Define G:A:V coordinates of each dependency
 dependencies {
-    requiredLibs 'org.testcontainers:testcontainers:1.14.0',
-                 'org.apache.commons:commons-compress:1.19',
-                 'org.rnorth.duct-tape:duct-tape:1.0.7',
-                 'org.rnorth.visible-assertions:visible-assertions:2.1.2',
-                 'org.rnorth:tcp-unix-socket-proxy:1.0.2',
-                 'net.java.dev.jna:jna:5.2.0',
-                 'org.slf4j:slf4j-api:1.7.7',
-                 'org.slf4j:slf4j-jdk14:1.7.7'
-             
 infinispanClient 'com.github.ben-manes.caffeine:caffeine:2.8.0',
                  'org.infinispan:infinispan-client-hotrod:10.0.0.Final',
                  'org.infinispan:infinispan-commons:10.0.0.Final',
@@ -55,4 +46,6 @@ task addInfinispanClientLibs(type: Copy) {
 addRequiredLibraries {
   dependsOn addDerby
   dependsOn addInfinispanClientLibs
+  dependsOn addJakartaTransformer
+  dependsOn addTestcontainers
 }

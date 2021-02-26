@@ -1,0 +1,27 @@
+#*******************************************************************************
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion: 1.0
+
+Bundle-Name: WebSphere OpenTracing 2.0 SPI
+Bundle-Description: WebSphere OpenTracing SPI, version 2.0
+Bundle-SymbolicName: io.openliberty.opentracing.2.0.spi
+
+Import-Package: io.openliberty.opentracing.spi.tracer;version=2.0
+
+Export-Package: io.openliberty.opentracing.spi.tracer;version=2.0
+
+-includeresource: {META-INF/maven/com.ibm.websphere.appserver.spi/io.openliberty.opentracing.2.0.spi/pom.xml=io.openliberty.opentracing.2.0.spi.pom}
+
+publish.wlp.jar.suffix: dev/spi/ibm
+
+-buildpath: \
+	io.openliberty.opentracing.2.0.internal;version=latest

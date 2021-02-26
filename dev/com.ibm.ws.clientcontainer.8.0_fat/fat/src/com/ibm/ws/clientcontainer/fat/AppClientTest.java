@@ -25,6 +25,7 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyClient;
 import componenttest.topology.impl.LibertyClientFactory;
@@ -49,7 +50,7 @@ public class AppClientTest extends FATServletClient {
 
     @Before
     public void getClient() throws Exception {
-        client = LibertyClientFactory.getLibertyClient(testName.getMethodName());
+        client = LibertyClientFactory.getLibertyClient(getTestMethodSimpleName());
     }
 
     /*

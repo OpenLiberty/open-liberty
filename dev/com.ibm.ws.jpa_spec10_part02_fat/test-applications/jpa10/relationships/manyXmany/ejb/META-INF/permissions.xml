@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- 
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -40,6 +40,14 @@
       <class-name>java.net.URLPermission</class-name>
       <name>http://localhost:*/DatabaseManagement/DMS</name>
       <actions>GET</actions>
+   </permission>
+   <permission>
+      <class-name>javax.management.MBeanServerPermission</class-name>
+      <name>newMBeanServer</name>
+   </permission>
+   <permission>
+      <class-name>javax.management.MBeanServerPermission</class-name>
+      <name>createMBeanServer</name>
    </permission>
 
 </permissions>

@@ -70,6 +70,8 @@ import com.ibm.ws.jca.adapter.WSConnectionManager;
 import com.ibm.ws.jca.adapter.WSManagedConnectionFactory;
 import com.ibm.ws.jca.cm.AbstractConnectionFactoryService;
 import com.ibm.ws.jca.cm.ConnectorService;
+import com.ibm.ws.jdbc.heritage.DataStoreHelper;
+import com.ibm.ws.jdbc.heritage.DataStoreHelperMetaData;
 import com.ibm.ws.jdbc.internal.PropertyService;
 import com.ibm.ws.jdbc.osgi.JDBCRuntimeVersion;
 import com.ibm.ws.kernel.service.util.SecureAction;
@@ -133,6 +135,14 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
      */
     final Class<?> type;
 
+    /**
+     * Same as the DatabaseHelper unless overridden via the heritage helperClass.
+     */
+    transient DataStoreHelper dataStoreHelper;
+
+    /**
+     * Helps cope with differences between databases/JDBC drivers.
+     */
     transient DatabaseHelper helper;
 
     /**
@@ -240,10 +250,26 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
     public boolean doXMLCleanup = true;
 
     /**
+     * Indicates if statements retain their isolation level once created,
+     * versus using whatever is currently on the connection when they run.
+     */
+    public boolean doesStatementCacheIsoLevel;
+
+    /**
      * This reference should always be used when accessing configuration data,
      * in order to allow for our future implementation of dynamic updates.
      */
     public final AtomicReference<DSConfig> dsConfig;
+
+    /**
+     * Indicates if the user provides their own custom legacy data store helper.
+     */
+    public boolean isCustomHelper;
+
+    /**
+     * Indicates whether or not the JDBC driver supports <code>java.sql.Connection.getCatalog()</code>.
+     */
+    public boolean supportsGetCatalog = true;
 
     /**
      * Indicates whether or not the JDBC driver supports <code>java.sql.Connection.getNetworkTimeout()</code>.
@@ -289,6 +315,12 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
 
     // Indicates whether the DataSource was used to get a connection.
     private boolean wasUsedToGetAConnection;
+    
+    static enum KerbUsage {
+        NONE,
+        USE_CREDENTIAL,
+        SUBJECT_DOAS
+    }
 
     /**
      * Constructs a managed connection factory based on configuration.
@@ -314,12 +346,27 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
         vendorImplClass = vendorImpl.getClass();
         type = ifc;
         jdbcDriverLoader = priv.getClassLoader(vendorImplClass);
-        supportsGetNetworkTimeout = supportsGetSchema = atLeastJDBCVersion(JDBCRuntimeVersion.VERSION_4_1);
 
         String implClassName = vendorImplClass.getName();
         isUCP = implClassName.charAt(2) == 'a' && implClassName.startsWith("oracle.ucp.jdbc."); // 3rd char distinguishes from common names like: com, org, java
 
         createDatabaseHelper(config.vendorProps instanceof PropertyService ? ((PropertyService) config.vendorProps).getFactoryPID() : PropertyService.FACTORY_PID);
+
+        if (config.heritageHelperClass == null) {
+            dataStoreHelper = helper;
+            supportsGetNetworkTimeout = supportsGetSchema = atLeastJDBCVersion(JDBCRuntimeVersion.VERSION_4_1);
+        } else {
+            dataStoreHelper = AccessController.doPrivileged((PrivilegedExceptionAction<DataStoreHelper>) () ->
+                (DataStoreHelper) jdbcDriverLoader.loadClass(config.heritageHelperClass).getConstructor().newInstance());
+            DataStoreHelperMetaData metadata = dataStoreHelper.getMetaData();
+            doesStatementCacheIsoLevel = metadata.doesStatementCacheIsoLevel();
+            isCustomHelper = !config.heritageHelperClass.startsWith("com.ibm.websphere.rsadapter");
+            supportsGetCatalog = metadata.supportsGetCatalog();
+            supportsGetNetworkTimeout = metadata.supportsGetNetworkTimeout();
+            supportsGetSchema = metadata.supportsGetSchema();
+            supportsGetTypeMap = metadata.supportsGetTypeMap();
+            supportsIsReadOnly = metadata.supportsIsReadOnly();
+        }
 
         if (config.supplementalJDBCTrace == null || config.supplementalJDBCTrace) {
             TraceComponent tracer = helper.getTracer();
@@ -605,8 +652,9 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
                 // This list of credentials may have
                 // [A] PasswordCredentials for this ManagedConnection instance, or
                 // [B] GenericCredentials for use with Kerberos support, or
+                // [C] KerberosTicket for use with Kerberos
                 // no credentials at all.
-
+                
                 final Iterator<Object> iter = subject.getPrivateCredentials().iterator();
 
                 PrivilegedAction<Object> iterationAction = new PrivilegedAction<Object>() {
@@ -628,7 +676,7 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
                     {
                         credential = iter.next(); 
                     } 
-
+                    
                     if (credential instanceof PasswordCredential) {
                         //This is possibly Option A - only possibly because the PasswordCredential
                         // may not match the MC.  Then we have to keep looping.
@@ -648,9 +696,8 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
                         useKerb = true;
                         //This is option B
                         if (isAnyTraceOn && tc.isEventEnabled()) 
-                            Tr.event(this, tc, "Using GenericCredentials for authentication");
+                            Tr.event(this, tc, "Using GSSCredential for authentication");
                         break;
-
                     }
                 }
             } //end else Check for PasswordCredential or Kerbros GenericCredential
@@ -659,7 +706,8 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
         WSRdbManagedConnectionImpl mc = null;
         ConnectionResults results = null; 
         try {
-            results = getConnection(userName, password, subject, cri, useKerb, credential);
+            KerbUsage kerbUsage = useKerb ? KerbUsage.USE_CREDENTIAL : KerbUsage.NONE;
+            results = getConnection(userName, password, subject, cri, kerbUsage, credential);
 
             mc = new WSRdbManagedConnectionImpl(this, results.pooledConnection, results.connection, subject, cri);
 
@@ -746,7 +794,7 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
      * @return the pooled connection, cookie, and connection
      */
     private ConnectionResults getConnection(final String userName, final String password,
-                                            final Subject subject, final WSConnectionRequestInfoImpl cri, boolean useKerb,
+                                            final Subject subject, final WSConnectionRequestInfoImpl cri, KerbUsage useKerb,
                                             final Object credential)
                     throws ResourceException {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
@@ -759,7 +807,7 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
         Connection conn;
 
         // Some JDBC drivers support propagation of GSS credential for kerberos via Subject.doAs
-        if (useKerb && helper.supportsSubjectDoAsForKerberos())
+        if (useKerb == KerbUsage.USE_CREDENTIAL && helper.supportsSubjectDoAsForKerberos()) {
             try {
                 // Run this method as the subject.
 
@@ -768,7 +816,7 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
                                 {
                                     public ConnectionResults run() throws ResourceException
                                     {
-                                        return getConnection(userName, password, subject, cri, false, credential);
+                                        return getConnection(userName, password, subject, cri, KerbUsage.SUBJECT_DOAS, credential);
                                     }
                                 };
 
@@ -805,11 +853,11 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
                     // shouldn't ever happen
                     throw new DataStoreAdapterException("GENERAL_EXCEPTION", null, getClass(), x.getMessage());
             }
-        else if (DataSource.class.equals(type))
+        } else if (DataSource.class.equals(type))
         {
             if (trace && tc.isDebugEnabled())
                 Tr.debug(this, tc, "Getting a connection using Datasource. Is UCP? " + isUCP);
-            conn = getConnectionUsingDS(userName, password, cri);
+            conn = getConnectionUsingDS(userName, password, cri, useKerb, credential);
             results = new ConnectionResults(null, conn);
         } else if (Driver.class.equals(type)) {
             if (trace && tc.isDebugEnabled())
@@ -818,7 +866,8 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
             results = new ConnectionResults(null, conn);
         } else {
             try {
-                results = helper.getPooledConnection((CommonDataSource) dataSourceOrDriver, userName, password, XADataSource.class.equals(type), cri, useKerb, credential);
+                results = helper.getPooledConnection((CommonDataSource) dataSourceOrDriver, userName, password, 
+                                                     XADataSource.class.equals(type), cri, useKerb, credential);
             } catch (DataStoreAdapterException dae) {
                 throw (ResourceException) AdapterUtil.mapException(dae, null, this, false); // error can't be fired as we don't have an mc
             }
@@ -966,7 +1015,8 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
      * @return a Connection.
      * @throws ResourceException
      */
-    private final Connection getConnectionUsingDS(String userN, String password, final WSConnectionRequestInfoImpl cri) throws ResourceException 
+    private final Connection getConnectionUsingDS(String userN, String password, final WSConnectionRequestInfoImpl cri,
+                                                  KerbUsage useKerb, Object gssCredential) throws ResourceException 
     {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
@@ -978,7 +1028,7 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
         Connection conn = null;
         boolean isConnectionSetupComplete = false;
         try {
-            conn = AccessController.doPrivileged(new PrivilegedExceptionAction<Connection>() {
+            conn = AccessController.doPrivilegedWithCombiner(new PrivilegedExceptionAction<Connection>() {
                 public Connection run() throws Exception {
                     boolean buildConnection = cri.ivShardingKey != null || cri.ivSuperShardingKey != null;
                     if (!buildConnection && dataSourceOrDriver instanceof XADataSource) {
@@ -988,9 +1038,13 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
                         return user == null ? ((XADataSource) dataSourceOrDriver).getXAConnection().getConnection()
                                             : ((XADataSource) dataSourceOrDriver).getXAConnection(user, pwd).getConnection();
                     } else {
-                        return buildConnection ? jdbcRuntime.buildConnection((DataSource) dataSourceOrDriver, user, pwd, cri)
-                                        : user == null ? ((DataSource) dataSourceOrDriver).getConnection()
-                                                        : ((DataSource) dataSourceOrDriver).getConnection(user, pwd);
+                        if (buildConnection) {
+                            return jdbcRuntime.buildConnection((DataSource) dataSourceOrDriver, user, pwd, cri);
+                        } else if (user == null) {
+                            return helper.getConnectionFromDatasource((DataSource) dataSourceOrDriver, useKerb, gssCredential);
+                        } else {
+                            return ((DataSource) dataSourceOrDriver).getConnection(user, pwd);
+                        }
                     }
                 }
             });
@@ -1280,7 +1334,7 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
      * utility used to gather metadata info and issue doConnectionSetup.
      */
     private void postGetConnectionHandling(Connection conn) throws SQLException {
-        helper.doConnectionSetup(conn);
+        dataStoreHelper.doConnectionSetup(isCustomHelper ? (Connection) WSJdbcTracer.getImpl(conn) : conn);
 
         String[] sqlCommands = dsConfig.get().onConnect;
         if (sqlCommands != null && sqlCommands.length > 0)
@@ -1292,6 +1346,11 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
             // This accounts for the scenario where the first connection attempt is bad.
             // The information needs to be read again on the second attempt.
             helper.gatherAndDisplayMetaDataInfo(conn, this);
+
+            // If a legacy data store helper is used, allow it to determine the unit-of-work detection support:
+            if (dataStoreHelper != helper)
+                supportsUOWDetection = dataStoreHelper.getMetaData().supportsUOWDetection();
+
             wasUsedToGetAConnection = true;
         }
     }
@@ -1432,11 +1491,18 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
     }
 
     /**
+     * This method returns the legacy DataStoreHelper for the database/JDBC driver.
+     */
+    public final DataStoreHelper getDataStoreHelper() {
+        return dataStoreHelper;
+    }
+
+    /**
      * This method returns the helper for the database/JDBC driver.
      * 
      * @return the instance of the helper class.
      */
-    public DatabaseHelper getHelper() {
+    public final DatabaseHelper getHelper() {
         return helper;
     }
 

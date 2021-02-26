@@ -1,3 +1,4 @@
+###############################################################################
 # Copyright (c) 2014 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
@@ -6,7 +7,7 @@
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
-# -------------------------------------------------------------------------------------------------
+###############################################################################
 # # {0} description of each insert field
 # MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
 # MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
@@ -44,17 +45,17 @@
 
 50008=Nem t\u00e1mogatott {0} Node oszt\u00e1ly.  A createBinder(Class) met\u00f3dus csak az org.w3c.dom.Node oszt\u00e1lyt t\u00e1mogatja.
 
-50009=A(z) {0} tulajdons\u00e1g vagy mez\u0151 transient annot\u00e1ci\u00f3val van megjel\u00f6lve, \u00edgy nem foglalhat\u00f3 bele a propOrder annot\u00e1ci\u00f3ba.
+50009=A(z) {1} oszt\u00e1lyhoz megadott {0} tulajdons\u00e1g vagy mez\u0151 \u00e1tmeneti annot\u00e1ci\u00f3val van megjel\u00f6lve, \u00edgy nem foglalhat\u00f3 bele a propOrder annot\u00e1ci\u00f3ba.
 
-50010=A(z) {0} tulajdons\u00e1gnak vagy mez\u0151nek egy attrib\u00fatumnak kell lennie, mivel egy m\u00e1sik tulajdons\u00e1g vagy mez\u0151 meg van jel\u00f6lve az XmlValue annot\u00e1ci\u00f3val.
+50010=A(z) {1} oszt\u00e1lyhoz megadott {0} tulajdons\u00e1gnak vagy mez\u0151nek egy attrib\u00fatumnak kell lennie, mivel egy m\u00e1sik tulajdons\u00e1g vagy mez\u0151 meg van jel\u00f6lve az XmlValue annot\u00e1ci\u00f3val.
 
-50011=A(z) {0} tulajdons\u00e1g van mez\u0151 nem jel\u00f6lhet\u0151 meg az XmlValue annot\u00e1ci\u00f3val, mivel az egy m\u00e1sik XML k\u00f6t\u00e9s\u0171 oszt\u00e1ly sz\u00e1rmaztatott oszt\u00e1lya.
+50011=A(z) {1} oszt\u00e1lyhoz megadott {0} tulajdons\u00e1g vagy mez\u0151 nem jel\u00f6lhet\u0151 meg az XmlValue annot\u00e1ci\u00f3val, mivel az egy m\u00e1sik XML k\u00f6t\u00e9s\u0171 oszt\u00e1ly sz\u00e1rmaztatott oszt\u00e1lya.
 
-50012=A(z) {0} tulajdons\u00e1g mez\u0151 meg lett adva a propOrder elemben, azonban ez nem egy \u00e9rv\u00e9nyes tulajdons\u00e1g.
+50012=A(z) {1} oszt\u00e1lyhoz megadott {0} tulajdons\u00e1g vagy mez\u0151 meg lett adva a propOrder elemben, azonban ez nem \u00e9rv\u00e9nyes tulajdons\u00e1g.
 
 50013=A(z) {1} oszt\u00e1lyhoz megadott {0} tulajdons\u00e1got vagy mez\u0151t bele kell foglalni az XmlType annot\u00e1ci\u00f3 propOrder elem\u00e9be.
 
-50014=Az XmlValue annot\u00e1ci\u00f3val ell\u00e1tott {0} tulajdons\u00e1gnak vagy mez\u0151nek olyan t\u00edpus\u00fanak kell lennie, amely egy egyszer\u0171 s\u00e9mat\u00edpusra van lek\u00e9pezve.
+50014=Az {1} oszt\u00e1lyhoz megadott XmlValue annot\u00e1ci\u00f3val ell\u00e1tott {0} tulajdons\u00e1gnak vagy mez\u0151nek olyan t\u00edpus\u00fanak kell lennie, amely egyszer\u0171 s\u00e9mat\u00edpusra van lek\u00e9pezve.
 
 50015=Az XmlElementWrapper csak egy collection vagy array tulajdons\u00e1ghoz enged\u00e9lyezett, azonban a(z) [{0}] nem egy collection vagy array tulajdons\u00e1g.
 

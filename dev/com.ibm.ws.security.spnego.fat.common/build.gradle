@@ -1,0 +1,71 @@
+/*******************************************************************************
+ * Copyright (c) 2020 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+apply plugin: 'war'
+
+war { enabled false } // We aren't making a war for the entire project
+
+/* 
+ * This is where all application EARs and WARs will be built.
+ */
+def appBuildDir = "${buildDir}/test-application"
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** SPNEGOTokenHelperFVTWeb.war
+ **
+ ******************************************************************
+ ******************************************************************/
+task SPNEGOTokenHelperFVTWeb_WAR(type: War, dependsOn: classes) { 
+  destinationDir file("${appBuildDir}")
+  archiveName 'SPNEGOTokenHelperFVTWeb.war'
+  classpath = classpath.filter{ false }
+
+  from ('test-applications/SPNEGOTokenHelperFVTWeb.war/resources') { 
+    include 'WEB-INF/**'
+  }
+  from ('build/classes/java/main') { 
+    include 'com/ibm/ws/security/spnego/fat/SPNEGOTokenHelperServlet*.class'
+    into 'WEB-INF/classes'
+  }
+}
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** SPNEGOTokenHelperFVT.ear
+ **
+ ******************************************************************
+ ******************************************************************/
+task SPNEGOTokenHelperFVT_EAR(type: Zip, dependsOn: SPNEGOTokenHelperFVTWeb_WAR) { 
+  destinationDir file("${appBuildDir}")
+  archiveName 'SPNEGOTokenHelperFVT.ear'
+
+  from ('test-applications/SPNEGOTokenHelperFVT.ear/resources') { 
+    include 'META-INF/**'
+  }
+  from ("${appBuildDir}") {
+    include 'SPNEGOTokenHelperFVTWeb.war'
+  }
+}
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** Assemble all of the custom build artifacts.
+ **
+ ******************************************************************
+ ******************************************************************/
+assemble.dependsOn SPNEGOTokenHelperFVT_EAR

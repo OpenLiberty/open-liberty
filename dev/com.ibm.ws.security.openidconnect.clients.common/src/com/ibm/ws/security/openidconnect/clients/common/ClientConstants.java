@@ -10,8 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.clients.common;
 
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.Arrays;
 import java.util.List;
 
@@ -96,14 +94,6 @@ public class ClientConstants {
 
     //"com.ibm.wssi.security.oidc.client.credential.storing.gmt.time";
     public static final String CREDENTIAL_STORING_TIME_MILLISECONDS = Constants.CREDENTIAL_STORING_TIME_MILLISECONDS;
-    public static final String JAVA_VERSION = AccessController.doPrivileged(new PrivilegedAction<String>() {
-        @Override
-        public String run() {
-            return System.getProperty("java.version");
-        }
-    });
-    //public static final boolean JAVA_VERSION_6 = JavaInfo.majorVersion() == 6;
-    public static final String JWT_LIB_MINIMUM_JAVA_VERSION = "1.7";
     public static final String RSA = "RSA";
     public static final String EC = "EC";
 

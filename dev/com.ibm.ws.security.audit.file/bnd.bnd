@@ -17,6 +17,8 @@ Bundle-SymbolicName: com.ibm.ws.security.audit.file
 Bundle-Description: Security Audit: Security Audit File Handler; version=${bVersion}
 WS-TraceGroup: audit
 
+jakartaeeMe: true
+
 Export-Package:
 
 Private-Package: \

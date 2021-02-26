@@ -45,19 +45,21 @@ import org.apache.cxf.service.model.BindingOperationInfo;
 import org.apache.cxf.service.model.MessageInfo;
 import org.apache.cxf.transport.Conduit;
 
+import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.ras.annotation.Trivial;
+
 
 public class OutgoingChainInterceptor extends AbstractPhaseInterceptor<Message> {
     private static final Logger LOG = LogUtils.getL7dLogger(OutgoingChainInterceptor.class);
     
     private PhaseChainCache chainCache = new PhaseChainCache();
     
+    @Trivial
     public OutgoingChainInterceptor() {
         super(Phase.POST_INVOKE);
     }
 
-    @Trivial
-    public void handleMessage(Message message) {
+    public void handleMessage(@Sensitive Message message) {
         LOG.entering("OutgoingChainInterceptor", "handleMessage");
         Exchange ex = message.getExchange();
         BindingOperationInfo binding = ex.get(BindingOperationInfo.class);
@@ -88,6 +90,7 @@ public class OutgoingChainInterceptor extends AbstractPhaseInterceptor<Message> 
         LOG.exiting("OutgoingChainInterceptor", "handleMessage");
     }
     
+    @Trivial
     private void closeInput(Message message) {
         InputStream is = message.getContent(InputStream.class);
         if (is != null) {
@@ -120,6 +123,7 @@ public class OutgoingChainInterceptor extends AbstractPhaseInterceptor<Message> 
         return conduit;
     }
     
+    @Trivial
     public static InterceptorChain getOutInterceptorChain(Exchange ex) {
         Bus bus = ex.get(Bus.class);
         Binding binding = ex.get(Binding.class);
@@ -187,6 +191,7 @@ public class OutgoingChainInterceptor extends AbstractPhaseInterceptor<Message> 
         LOG.exiting("OutgoingChainInterceptor", "modifyChain");
     }
     
+    @Trivial
     private static PhaseInterceptorChain getChain(Exchange ex, PhaseChainCache chainCache) {
         Bus bus = ex.get(Bus.class);
         Binding binding = ex.get(Binding.class);

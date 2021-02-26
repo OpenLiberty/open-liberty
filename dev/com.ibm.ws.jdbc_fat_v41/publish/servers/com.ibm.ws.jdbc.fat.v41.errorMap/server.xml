@@ -1,0 +1,85 @@
+<server>
+    <featureManager>
+        <feature>componenttest-1.0</feature>
+        <feature>servlet-3.1</feature>
+        <feature>jdbc-4.1</feature>
+        <feature>jndi-1.0</feature>
+    </featureManager>
+    
+    <include location="../fatTestPorts.xml"/>
+
+    <application location="errorMappingApp.war" >
+        <classloader commonLibraryRef="CustomDriverLib"/>
+    </application>
+    
+    <library id="CustomDriverLib">
+        <fileset dir="${server.config.dir}/derby" includes="derby.jar,errorMappingDriver.jar"/>
+    </library>
+    
+    <jdbcDriver id="CustomDriver" libraryRef="CustomDriverLib" javax.sql.DataSource="jdbc.fat.v41.errormap.driver.ErrorMapDataSourceImpl"/>
+    
+    <dataSource jndiName="jdbc/errorMap" type="javax.sql.DataSource" jdbcDriverRef="CustomDriver">
+        <properties.derby.embedded databaseName="memory:ds1" createDatabase="create"/>
+        <identifyException errorCode="1234" as="StaleConnection"/>
+    </dataSource>
+    
+    <dataSource jndiName="jdbc/noMappings" type="javax.sql.DataSource" jdbcDriverRef="CustomDriver">
+        <properties.derby.embedded databaseName="memory:ds1" createDatabase="create"/>
+    </dataSource>
+    
+    <dataSource jndiName="jdbc/removeMapping" type="javax.sql.DataSource" jdbcDriverRef="CustomDriver">
+        <properties.derby.embedded databaseName="memory:ds1" createDatabase="create"/>
+        <identifyException sqlState="08001" as="None"/>
+        <identifyException sqlState="08003" sqlCode="1234" as="None"/>
+    </dataSource>
+    
+    <dataSource jndiName="jdbc/manyMappings" type="javax.sql.DataSource" jdbcDriverRef="CustomDriver">
+        <properties.derby.embedded databaseName="memory:ds1" createDatabase="create"/>
+        <identifyException errorCode="0001" as="StaleConnection"/>
+        <identifyException errorCode="2" as="StaleConnection"/>
+        <identifyException errorCode="1003" as="StaleConnection"/>
+        <identifyException sqlState="E1004" as="StaleConnection"/>
+        <identifyException sqlState="5" as="StaleConnection"/>
+        <identifyException errorCode="6" as="StaleConnection"/>
+        <identifyException errorCode="7" as="StaleConnection"/>
+        <identifyException errorCode="-008" as="StaleConnection"/>
+        <identifyException errorCode="-10009" as="StaleConnection"/>
+        <identifyException errorCode="1010" as="None"/>
+        <identifyException sqlState="E1111" as="StaleConnection"/>
+    </dataSource>
+    
+    <dataSource jndiName="jdbc/invalid/noTarget" type="javax.sql.DataSource" jdbcDriverRef="CustomDriver">
+        <properties.derby.embedded databaseName="memory:ds1" createDatabase="create"/>
+        <!-- invalid configuration: the 'as' attribute is not defined-->
+        <identifyException errorCode="1234"/>
+    </dataSource>
+    
+    <dataSource jndiName="jdbc/invalid/bogusTarget" type="javax.sql.DataSource" jdbcDriverRef="CustomDriver">
+        <properties.derby.embedded databaseName="memory:ds1" createDatabase="create"/>
+        <!-- invalid configuration: the value "BOGUS" is not an allowed value for the 'as' attribute -->
+        <identifyException errorCode="1234" as="BOGUS"/>
+    </dataSource>
+    
+    <dataSource jndiName="jdbc/invalid/noStateOrCode" type="javax.sql.DataSource" jdbcDriverRef="CustomDriver">
+        <properties.derby.embedded databaseName="memory:ds1" createDatabase="create"/>
+        <!-- invalid configuration: either errorCode or sqlState must be defined -->
+        <identifyException as="StaleConnection"/>
+    </dataSource>
+    
+    <dataSource jndiName="jdbc/stateAndCode" type="javax.sql.DataSource" jdbcDriverRef="CustomDriver">
+        <properties.derby.embedded databaseName="memory:ds1" createDatabase="create"/>
+        <identifyException errorCode="5001" sqlState="E5001" as="StaleConnection"/>
+    </dataSource>
+    
+    <javaPermission codebase="${server.config.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+    <javaPermission codebase="${server.config.dir}/apps/errorMappingApp.war" className="java.sql.SQLPermission" name="callAbort"/>
+    <javaPermission codebase="${server.config.dir}/apps/errorMappingApp.war" className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
+    <javaPermission codebase="${server.config.dir}/apps/errorMappingApp.war" className="java.lang.RuntimePermission" name="getClassLoader"/>
+    <javaPermission codebase="${server.config.dir}/apps/errorMappingApp.war" className="java.lang.reflect.ReflectPermission" name="suppressAccessChecks"/>
+
+    <!--  Permissions for application to access mbeans -->
+    <javaPermission codebase="${server.config.dir}/apps/errorMappingApp.war" className="javax.management.MBeanPermission" actions="queryNames"/>
+    <javaPermission codebase="${server.config.dir}/apps/errorMappingApp.war" className="javax.management.MBeanServerPermission" name="createMBeanServer"/>
+    
+    <variable name="onError" value="FAIL"/>
+</server>

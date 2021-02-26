@@ -1,0 +1,67 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/EISExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+17007=A(z) {0} tulajdons\u00e1got be kell \u00e1ll\u00edtani.
+
+17008=\u00c9rv\u00e9nytelen {0} tulajdons\u00e1g.
+
+17009=A(z) {0} vagy a(z) {1} tulajdons\u00e1got be kell \u00e1ll\u00edtani.
+
+17010=A kimeneti rekord egy nem t\u00e1mogatott \u00fczenett\u00edpust tartalmaz
+
+17011=Nincs megadva kapcsolatgy\u00e1rt\u00f3.
+
+17012=Az InteractionSspec csak egy CciJMSInteractionSpec lehet.
+
+17013=A rekord csak egy CciJMSRecord lehet.
+
+17014=Ismeretlen interakci\u00f3 specifik\u00e1ci\u00f3 t\u00edpus
+
+17015=A bemenetnek egyetlen sz\u00f6veg elemet kell tartalmaznia.
+
+17016=Id\u0151t\u00fall\u00e9p\u00e9s t\u00f6rt\u00e9nt - nem ker\u00fcltek fogad\u00e1sra \u00fczenetek.
+
+17017=A bemeneti rekord egy nem t\u00e1mogatott \u00fczenett\u00edpust tartalmaz.
+
+17018=Nem h\u00edvhat\u00f3 meg a "begin()" met\u00f3dus egy nem-tranzakci\u00f3s munkamenethez.
+
+17019=Probl\u00e9ma a tranzakci\u00f3s munkamenet tesztel\u00e9se sor\u00e1n: 
+
+17020=Az InteractionSspec csak egy AQInteractionSpec lehet.
+
+17021=A rekord csak egy AQRecord lehet.
+
+17022=A bemenetnek egyetlen nyers elemet kell tartalmaznia.
+
+17023=Kiv\u00e9tel t\u00f6rt\u00e9nt az MQQueueConnectionFactory attrib\u00fatumok be\u00e1ll\u00edt\u00e1sakor.
+
+17024=A f\u00e1jl nem t\u00f6r\u00f6lhet\u0151: {0}
+
+17025=Ez a lek\u00e9pez\u00e9s egy idegen kulcs csoportos\u00edt\u00e1si elemet ig\u00e9nyel, mivel t\u00f6bb idegen kulcs l\u00e9tezik.
+

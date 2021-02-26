@@ -17,6 +17,9 @@ import java.util.Set;
 import javax.el.ELProcessor;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.inject.spi.CDI;
+
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
@@ -61,6 +64,19 @@ public class CDIHelper {
         }
 
         return beanInstances;
+    }
+
+    @SuppressWarnings("rawtypes")
+    @FFDCIgnore(IllegalStateException.class)
+    public static CDI getCDI() {
+        if (! cdiService.isCurrentModuleCDIEnabled()) {
+            return null;
+        }
+        try {
+            return CDI.current();
+        } catch (IllegalStateException e) {
+            return null;
+        }
     }
 
     public static BeanManager getBeanManager() {

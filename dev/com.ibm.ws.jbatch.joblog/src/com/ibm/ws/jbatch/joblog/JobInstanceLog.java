@@ -14,9 +14,12 @@ import java.io.File;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.batch.runtime.JobInstance;
+
+import com.ibm.ws.jbatch.joblog.JobExecutionLog.LogLocalState;
 
 public class JobInstanceLog {
 
@@ -84,7 +87,7 @@ public class JobInstanceLog {
 
     /**
      * Delete this instance log, including the top-level directory and all execution logs.
-     * 
+     *
      * @return true if all files were successfully deleted or the files do not exist.
      */
     public boolean purge() {
@@ -125,5 +128,40 @@ public class JobInstanceLog {
         }
 
         return success;
+    }
+
+    /**
+     * @return true if all executions of this job instance ran on this endpoint
+     */
+    public boolean areExecutionsLocal() {
+        for (JobExecutionLog execLog : jobExecutionLogs) {
+            if (execLog.getLocalState() != LogLocalState.EXECUTION_LOCAL) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * @return true if any executions of this job instance had remote partitions
+     */
+    public boolean hasRemotePartitionLogs() {
+        for (JobExecutionLog execLog : jobExecutionLogs) {
+            if (execLog.getRemotePartitionLogs() != null) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * @return a set of unique URLs, one for each endpoint that ran a remote partition
+     */
+    public HashSet<String> getRemotePartitionLogURLs() {
+        HashSet<String> retMe = new HashSet<String>();
+        for (JobExecutionLog execLog : jobExecutionLogs) {
+            retMe.addAll(execLog.getRemotePartitionEndpointURLs());
+        }
+        return retMe;
     }
 }

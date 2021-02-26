@@ -1,5 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.wsAtomicTransaction-1.2
+WLP-DisableAllFeatures-OnConflict: false
 visibility=public
 IBM-ShortName: wsAtomicTransaction-1.2
 IBM-SPI-Package: com.ibm.wsspi.webservices.wsat

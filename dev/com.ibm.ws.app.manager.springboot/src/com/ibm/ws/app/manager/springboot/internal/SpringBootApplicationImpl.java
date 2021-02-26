@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -125,7 +125,7 @@ import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 
 public class SpringBootApplicationImpl extends DeployedAppInfoBase implements SpringBootConfigFactory, SpringBootApplication {
     private static final TraceComponent tc = Tr.register(SpringBootApplicationImpl.class);
-    final CountDownLatch applicationReadyLatch = new CountDownLatch(1);
+    final CountDownLatch applicationReadyLatch = new CountDownLatch(2);
 
     final class SpringModuleContainerInfo extends ModuleContainerInfoBase {
         public SpringModuleContainerInfo(List<Container> springBootSupport, ModuleHandler moduleHandler, List<ModuleMetaDataExtender> moduleMetaDataExtenders,
@@ -635,11 +635,18 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
         return rawContainer;
     }
 
+    private static final Object thinUtilLock = new Object() {
+    };
+
     private static void thinSpringApp(LibIndexCache libIndexCache, File springAppFile, File thinSpringAppFile, long lastModified) throws IOException, NoSuchAlgorithmException {
         File parent = libIndexCache.getLibIndexParent();
         File workarea = libIndexCache.getLibIndexWorkarea();
         try (SpringBootThinUtil springBootThinUtil = new SpringBootThinUtil(springAppFile, thinSpringAppFile, workarea, parent)) {
-            springBootThinUtil.execute();
+            // to avoid any collisions while thinning we only allow a single thread to
+            // execute the thin utility
+            synchronized (thinUtilLock) {
+                springBootThinUtil.execute();
+            }
         }
         thinSpringAppFile.setLastModified(lastModified);
     }

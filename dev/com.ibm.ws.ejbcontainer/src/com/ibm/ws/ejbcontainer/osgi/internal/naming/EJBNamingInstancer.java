@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ import com.ibm.ejs.container.ContainerEJBException;
 import com.ibm.ejs.container.EJSHome;
 import com.ibm.ejs.container.EJSWrapperCommon;
 import com.ibm.websphere.csi.J2EEName;
+import com.ibm.websphere.ejbcontainer.AmbiguousEJBReferenceException;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
@@ -107,9 +108,9 @@ abstract class EJBNamingInstancer {
      * The returned exception will provide similar information as the
      * CannotInstantiateObjectException from traditional WAS.
      */
-    private NamingException throwCannotInstantiateObjectException(EJBBinding binding,
-                                                                  String jndiName,
-                                                                  Throwable cause) throws NamingException {
+    private void throwCannotInstantiateObjectException(EJBBinding binding,
+                                                       String jndiName,
+                                                       Throwable cause) throws NamingException {
         J2EEName j2eeName = getJ2EEName(binding);
         Object causeMsg = cause.getLocalizedMessage();
         if (causeMsg == null) {
@@ -125,6 +126,25 @@ abstract class EJBNamingInstancer {
         NamingException nex = new NamingException(msgTxt);
         nex.initCause(cause);
         throw nex;
+    }
+
+    protected void throwAmbiguousEJBReferenceException(EJBBinding binding, String jndiName) throws NamingException {
+        String message;
+
+        if (binding.j2eeNames.size() > 1) {
+            message = "The short-form default binding '" + jndiName +
+                      "' is ambiguous because multiple beans implement this interface : " +
+                      binding.j2eeNames + ". Provide an interface specific binding or use " +
+                      "the long-form default binding on lookup.";
+        } else {
+            message = "The simple-binding-name '" + jndiName +
+                      "' for bean " + binding.homeRecord.getJ2EEName() + " is ambiguous because the bean " +
+                      "implements multiple interfaces.  Provide an interface specific " +
+                      "binding or add #<interface> to the simple-binding-name on lookup.";
+        }
+
+        AmbiguousEJBReferenceException amEx = new AmbiguousEJBReferenceException(message);
+        throwCannotInstantiateObjectException(binding, jndiName, amEx);
     }
 
     protected J2EEName getJ2EEName(EJBBinding binding) {

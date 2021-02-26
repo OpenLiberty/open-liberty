@@ -123,7 +123,8 @@ public class ConnectorModuleRuntimeContainer implements ModuleRuntimeContainer {
         this.metaDataService = metaDataService;
     }
 
-    protected void unsetMetaDataService(MetaDataService metaDataService) {}
+    protected void unsetMetaDataService(MetaDataService metaDataService) {
+    }
 
     /*
      * (non-Javadoc)
@@ -229,7 +230,7 @@ public class ConnectorModuleRuntimeContainer implements ModuleRuntimeContainer {
                 if (bundleContext != null) {
                     // properties for resourceAdapter
                     bundleContext.addServiceListener(listeners[0] = this,
-                                                     "(&(objectClass=javax.resource.spi.BootstrapContext)(id=" + id + "))");
+                                                     "(&(objectClass=ja*.resource.spi.BootstrapContext)(id=" + id + "))");
 
                     // properties for adminObject, jmsDestination, jmsQueue, jmsTopic
                     bundleContext.addServiceListener(listeners[1] = new ResourceListener(),

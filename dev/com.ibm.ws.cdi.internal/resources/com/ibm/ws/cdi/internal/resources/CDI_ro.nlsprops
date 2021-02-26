@@ -69,6 +69,10 @@ implicit.bean.scanning.disabled.CWOWB1009W=CWOWB1009W: Sunt dezactivate arhivele
 implicit.bean.scanning.disabled.CWOWB1009W.explanation=Arhivele nu sunt scanate pentru bean-uri CDI \u00een afar\u0103 de cazul au un fi\u015fier beans.xml.
 implicit.bean.scanning.disabled.CWOWB1009W.useraction=Asigura\u0163i-v\u0103 c\u0103 fiecare arhiv\u0103 care utilizeaz\u0103 CDI are fi\u015fierul beans.xml sau c\u0103 re-activa\u0163i bean-urile implicite scan\u00e2nd \u00een fi\u015fierul dumneavoastr\u0103 server.xml.
 
-spi.extension.failed.to.construct.CWOWB10010E=CWOWB10010E: A e\u015fuat crearea Extensiei CDI via SPI.
-spi.extension.failed.to.construct.CWOWB10010E.explanation=CDI a e\u015fuat s\u0103 invoce constructorul clasei de extensie {0} \u00eenregistrat\u0103 prin metoda getExtensions() a unei implement\u0103ri WebSphereCDIExtensionMetaData din cauza excep\u0163iei {1}.
-spi.extension.failed.to.construct.CWOWB10010E.useraction=Rezolva\u0163i eroarea care \u00eempiedic\u0103 extensia de la instan\u0163iere.
+spi.extension.failed.to.construct.CWOWB1010E=CWOWB1010E: A e\u015fuat crearea extensiei CDI {0} cu SPI din cauza excep\u0163iei {1}.
+spi.extension.failed.to.construct.CWOWB1010E.explanation=CDI a e\u015fuat s\u0103 invoce constructorul unei clase de extensie care este \u00eenregistrat\u0103 prin metoda getExtensions() a unei implement\u0103ri CDIExtensionMetadata.
+spi.extension.failed.to.construct.CWOWB1010E.useraction=Rezolva\u0163i eroarea care \u00eempiedic\u0103 extensia de la instan\u0163iere.
+
+spi.extension.class.in.different.bundle.CWOWB1011E=CWOWB1011E: O clas\u0103 {0} \u00eenregistrat\u0103 prin SPI de extensie CDI Extension este \u00eentr-un bundle diferit de implementarea CDIExtensionMetadata.
+spi.extension.class.in.different.bundle.CWOWB1011E.explanation=Clasa este ignorat\u0103 deoarece este \u00eenregistrat\u0103 cu metoda getExtensions() sau getBeanClasses() a unei implement\u0103ri CDIExtensionMetadata \u015fi este \u00eentr-un bundle diferit fa\u0163\u0103 de implementarea CDIExtensionMetadata.
+spi.extension.class.in.different.bundle.CWOWB1011E.useraction=Muta\u0163i clasa afectat\u0103 sau crea\u0163i o nou\u0103 implementare CDIExtensionMetadata \u00een bundle-ul corect.

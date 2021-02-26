@@ -19,8 +19,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
 import javax.persistence.PersistenceUtil;
 
-import org.eclipse.persistence.config.PersistenceUnitProperties;
-
 import com.ibm.wsspi.persistence.PersistenceServiceUnit;
 import com.ibm.wsspi.persistence.PersistenceServiceUnitConfig;
 
@@ -191,9 +189,12 @@ public class ConsumerImpl implements Consumer {
         if (db == null) {
             _activePu.generateDDL(out);
         } else {
+            boolean isJakarta = EntityManager.class.getName().startsWith("jakarta");
+            String propertyName = (isJakarta ? "jakarta" : "javax") + ".persistence.database-product-name";
+
             PersistenceServiceUnitConfig conf = _service.getPersistenceServiceUnitConfig(true);
             Map<String, Object> properties = conf.getProperties();
-            properties.put(PersistenceUnitProperties.SCHEMA_DATABASE_PRODUCT_NAME, db.toString());
+            properties.put(propertyName, db.toString());
             _tempPu = _service.createPersistenceServiceUnit(conf);
             _tempPu.generateDDL(out);
             _tempPu.close();

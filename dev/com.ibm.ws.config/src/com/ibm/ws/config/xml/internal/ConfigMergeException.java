@@ -12,6 +12,7 @@ package com.ibm.ws.config.xml.internal;
 
 import com.ibm.websphere.config.ConfigUpdateException;
 import com.ibm.ws.config.admin.ConfigID;
+import com.ibm.ws.config.xml.internal.variables.ConfigVariable;
 
 public class ConfigMergeException extends ConfigUpdateException {
 

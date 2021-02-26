@@ -265,7 +265,7 @@ public class PartitionedStepControllerImpl extends BaseStepControllerImpl {
 
         PartitionMapperProxy partitionMapperProxy;
 
-        final List<Property> propertyList = partitionMapper.getProperties() == null ? null : partitionMapper.getProperties().getPropertyList();
+        final List<Property> propertyList = partitionMapper.getProperties() == null ? null : (List<Property>) partitionMapper.getProperties().getPropertyList();
 
         // Set all the contexts associated with this controller.
         // Some of them may be null
@@ -361,7 +361,7 @@ public class PartitionedStepControllerImpl extends BaseStepControllerImpl {
 
         if (partitionPlan.getProperties() != null) {
 
-            List<JSLProperties> jslProperties = partitionPlan.getProperties();
+            List<JSLProperties> jslProperties = (List<JSLProperties>) partitionPlan.getProperties();
             for (JSLProperties props : jslProperties) {
                 Integer targetPartition = null;
                 try {
@@ -1068,7 +1068,7 @@ public class PartitionedStepControllerImpl extends BaseStepControllerImpl {
         Analyzer analyzer = getStep().getPartition().getAnalyzer();
 
         if (analyzer != null) {
-            final List<Property> propList = analyzer.getProperties() == null ? null : analyzer.getProperties().getPropertyList();
+            final List<Property> propList = analyzer.getProperties() == null ? null : (List<Property>) analyzer.getProperties().getPropertyList();
 
             injectionRef = new InjectionReferences(runtimeWorkUnitExecution.getWorkUnitJobContext(), runtimeStepExecution, propList);
 
@@ -1084,7 +1084,7 @@ public class PartitionedStepControllerImpl extends BaseStepControllerImpl {
 
         if (partitionReducer != null) {
 
-            final List<Property> propList = partitionReducer.getProperties() == null ? null : partitionReducer.getProperties().getPropertyList();
+            final List<Property> propList = partitionReducer.getProperties() == null ? null : (List<Property>) partitionReducer.getProperties().getPropertyList();
 
             injectionRef = new InjectionReferences(runtimeWorkUnitExecution.getWorkUnitJobContext(), runtimeStepExecution, propList);
 

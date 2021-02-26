@@ -10,6 +10,8 @@
  */
 package com.ibm.ws.jsf22.fat.tests;
 
+import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
+import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -47,6 +49,7 @@ import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import junit.framework.Assert;
 
@@ -333,8 +336,8 @@ public class JSF22AparTests {
         URL url = JSFUtils.createHttpUrl(jsfAparServer, "PI57255Default", "");
 
         // Need to restart the applications to make sure the non-CDI application is loaded first
-        jsfAparServer.restartDropinsApplication("PI57255Default.war");
-        jsfAparServer.restartDropinsApplication("PI57255CDI.war");
+        Assert.assertTrue("The PI57255Default.war application was not restarted.", jsfAparServer.restartDropinsApplication("PI57255Default.war"));
+        Assert.assertTrue("The PI57255CDI.war application was not restarted.", jsfAparServer.restartDropinsApplication("PI57255CDI.war"));
 
         try (WebClient webClient = new WebClient()) {
             HtmlPage page;
@@ -869,7 +872,7 @@ public class JSF22AparTests {
             HtmlForm statefulForm = page.getFormByName("statefulForm");
 
             // Change the value of ViewState to stateless
-            HtmlHiddenInput viewStateInput = (HtmlHiddenInput) statefulForm.getInputByName("javax.faces.ViewState");
+            HtmlHiddenInput viewStateInput = (HtmlHiddenInput) statefulForm.getInputByName((JakartaEE9Action.isActive() ? "jakarta." : "javax.") + "faces.ViewState");
             viewStateInput.setValueAttribute("stateless");
 
             // Get the button and then click it
@@ -881,7 +884,7 @@ public class JSF22AparTests {
 
             // Check that a FacesException is thrown
             assertTrue("PI89168: FacesException was not thrown!\n" + page.asText(),
-                       page.asText().contains("javax.faces.FacesException: unable to create view \"/statefulView.xhtml\""));
+                       page.asText().contains((JakartaEE9Action.isActive() ? "jakarta." : "javax.") + "faces.FacesException: unable to create view \"/statefulView.xhtml\""));
         }
     }
 
@@ -1011,13 +1014,13 @@ public class JSF22AparTests {
      *
      * @throws Exception
      */
-    @SkipForRepeat("JSF-2.3")
+    @SkipForRepeat({ EE8_FEATURES, EE9_FEATURES })
     @Test
     public void testPI90507NonBindingCase() throws Exception {
         try (WebClient webClient = new WebClient()) {
             // Set up search mark and restart the app so that we can check to see if preDestroy is called
             jsfAparServer.setMarkToEndOfLog();
-            jsfAparServer.restartDropinsApplication("PI90507.war");
+            Assert.assertTrue("The PI90507.war application was not restarted.", jsfAparServer.restartDropinsApplication("PI90507.war"));
 
             URL url = JSFUtils.createHttpUrl(jsfAparServer, "PI90507", "actionListenerNonBinding.xhtml");
 
@@ -1055,13 +1058,13 @@ public class JSF22AparTests {
      *
      * @throws Exception
      */
-    @SkipForRepeat("JSF-2.3")
+    @SkipForRepeat({ EE8_FEATURES, EE9_FEATURES })
     @Test
     public void testPI90507BindingCase() throws Exception {
         try (WebClient webClient = new WebClient()) {
             // Set up search mark and restart the app so that we can check to see if preDestroy is called
             jsfAparServer.setMarkToEndOfLog();
-            jsfAparServer.restartDropinsApplication("PI90507.war");
+            Assert.assertTrue("The PI90507.war application was not restarted.", jsfAparServer.restartDropinsApplication("PI90507.war"));
 
             URL url = JSFUtils.createHttpUrl(jsfAparServer, "PI90507", "actionListenerBinding.xhtml");
 

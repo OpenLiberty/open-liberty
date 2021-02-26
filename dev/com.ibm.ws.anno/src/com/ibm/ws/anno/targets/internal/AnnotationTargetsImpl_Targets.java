@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2019 IBM Corporation and others.
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,8 +33,11 @@ import com.ibm.wsspi.anno.classsource.ClassSource;
 import com.ibm.wsspi.anno.classsource.ClassSource_Aggregate;
 import com.ibm.wsspi.anno.classsource.ClassSource_Aggregate.ScanPolicy;
 import com.ibm.wsspi.anno.targets.AnnotationTargets_Exception;
+import com.ibm.wsspi.anno.targets.AnnotationTargets_Factory;
+import com.ibm.wsspi.anno.targets.AnnotationTargets_Fault;
 import com.ibm.wsspi.anno.targets.AnnotationTargets_Targets;
 import com.ibm.wsspi.anno.util.Util_BidirectionalMap;
+import com.ibm.wsspi.anno.util.Util_Factory;
 import com.ibm.wsspi.anno.util.Util_InternMap;
 
 public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets {
@@ -49,8 +52,8 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
 
     //
 
-    protected AnnotationTargetsImpl_Targets(AnnotationTargetsImpl_Factory factory,
-                                            UtilImpl_InternMap classInternMap,
+    protected AnnotationTargetsImpl_Targets(AnnotationTargets_Factory factory,
+                                            Util_InternMap classInternMap,
                                             boolean isDetailEnabled) {
         this.hashText = AnnotationServiceImpl_Logging.getBaseHash(this);
 
@@ -116,14 +119,14 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
 
     //
 
-    protected final AnnotationTargetsImpl_Factory factory;
+    protected final AnnotationTargets_Factory factory;
 
     @Override
-    public AnnotationTargetsImpl_Factory getFactory() {
+    public AnnotationTargets_Factory getFactory() {
         return factory;
     }
 
-    protected AnnotationTargetsImpl_Fault createFault(String unresolvedText, String[] parameters) {
+    protected AnnotationTargets_Fault createFault(String unresolvedText, String[] parameters) {
         return getFactory().createFault(unresolvedText, parameters);
     }
 
@@ -131,24 +134,24 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
         return new AnnotationTargetsImpl_Scanner(getFactory(), classSource, this);
     }
 
-    protected UtilImpl_BidirectionalMap createBidiMap(String holderTag, UtilImpl_InternMap holderInternMap,
-                                                      String heldTag, UtilImpl_InternMap heldInternMap,
+    protected UtilImpl_BidirectionalMap createBidiMap(String holderTag, Util_InternMap holderInternMap,
+                                                      String heldTag, Util_InternMap heldInternMap,
                                                       boolean isEnabled) {
 
-        return getFactory().getUtilFactory().createBidirectionalMap(holderTag, holderInternMap,
+        return ((UtilImpl_Factory) getFactory().getUtilFactory()).createBidirectionalMap(holderTag, holderInternMap,
                                                                     heldTag, heldInternMap,
                                                                     isEnabled);
     }
 
-    protected UtilImpl_InternMap createInternMap(Util_InternMap.ValueType valueType, String mapName) {
+    protected Util_InternMap createInternMap(Util_InternMap.ValueType valueType, String mapName) {
         return getFactory().getUtilFactory().createInternMap(valueType, mapName);
     }
 
     //
 
-    protected final UtilImpl_InternMap classSourceInternMap;
+    protected final Util_InternMap classSourceInternMap;
 
-    protected UtilImpl_InternMap getClassSourceInternMap() {
+    protected Util_InternMap getClassSourceInternMap() {
         return classSourceInternMap;
     }
 
@@ -428,9 +431,9 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
 
     //
 
-    protected final UtilImpl_InternMap classInternMap;
+    protected final Util_InternMap classInternMap;
 
-    public UtilImpl_InternMap getClassInternMap() {
+    public Util_InternMap getClassInternMap() {
         return classInternMap;
     }
 
@@ -752,7 +755,7 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
         return classSourceClassData.i_record(i_classSourceName, i_className);
     }
 
-    protected UtilImpl_BidirectionalMap getClassSourceClassData() {
+    protected Util_BidirectionalMap getClassSourceClassData() {
         return classSourceClassData;
     }
 
@@ -1143,8 +1146,8 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
     }
 
     protected void createAllImplementersMap() {
-        UtilImpl_InternMap useClassNameMap = getClassInternMap();
-        UtilImpl_Factory useUtilFactory = useClassNameMap.getFactory();
+        Util_InternMap useClassNameMap = getClassInternMap();
+        Util_Factory useUtilFactory = useClassNameMap.getFactory();
 
         // Map direction is: implementer to implemented
         this.i_allImplementersMap = new IdentityHashMap<String, Set<String>>();
@@ -1212,8 +1215,8 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
     }
 
     protected void createDescendantsMap() {
-        UtilImpl_InternMap useClassNameMap = getClassInternMap();
-        UtilImpl_Factory useUtilFactory = useClassNameMap.getFactory();
+        Util_InternMap useClassNameMap = getClassInternMap();
+        Util_Factory useUtilFactory = useClassNameMap.getFactory();
 
         // Map direction is: superclass to subclass
         this.i_descendantsMap = new IdentityHashMap<String, Set<String>>();

@@ -37,7 +37,7 @@ import componenttest.vulnerability.LeakedPasswordChecker;
  * configured in the server.xml without specifying an id.
  */
 @RunWith(FATRunner.class)
-@Mode(TestMode.LITE)
+@Mode(TestMode.FULL)
 public class FATTestADNoId {
     private static LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.security.registry.ldap.fat.ad.noId");
     private static final Class<?> c = FATTestADNoId.class;

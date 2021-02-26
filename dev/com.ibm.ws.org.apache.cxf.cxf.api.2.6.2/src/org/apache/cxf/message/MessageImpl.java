@@ -37,6 +37,7 @@ import org.apache.cxf.transport.Destination;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 
+@Trivial
 public class MessageImpl extends StringMapImpl implements Message {
 
     private static final Logger LOG = LogUtils.getL7dLogger(MessageImpl.class);
@@ -102,7 +103,6 @@ public class MessageImpl extends StringMapImpl implements Message {
         return this.interceptorChain;
     }
 
-    @Trivial
     @SuppressWarnings("unchecked")
     public <T> T getContent(Class<T> format) {
         LOG.entering("MessageImpl", "getContent");
@@ -116,7 +116,6 @@ public class MessageImpl extends StringMapImpl implements Message {
         return null;
     }
 
-    @Trivial
     public <T> void setContent(Class<T> format, Object content) {
         LOG.entering("MessageImpl", "setContent");
         for (int x = 0; x < index; x += 2) {

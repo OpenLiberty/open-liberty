@@ -31,19 +31,21 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
+@SkipForRepeat("EE9_FEATURES") // currently broken due to multiple issues
 public class JAXRS21ReactiveSampleTest extends JAXRS21AbstractTest {
     @Server("jaxrs21.client.JAXRS21ReactiveSampleTest")
     public static LibertyServer server;
 
     private static final String reactivesamplewar = "jaxrs21reactivesample";
 
-    private static final String reactivex = "publish/shared/resources/reactivex/";
+    private static final String reactivex = "lib/";
 
-    private static final String cxf = "publish/shared/resources/cxf/";
+    private static final String cxf = "lib/";
 
     @BeforeClass
     public static void setup() throws Exception {
@@ -71,7 +73,7 @@ public class JAXRS21ReactiveSampleTest extends JAXRS21AbstractTest {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer();
+        server.stopServer("SRVE9967W");
     }
 
     @Before

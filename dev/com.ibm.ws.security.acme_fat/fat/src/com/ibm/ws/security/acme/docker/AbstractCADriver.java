@@ -29,7 +29,7 @@ public abstract class AbstractCADriver {
 	/**
 	 * Print a banner with connection related information.
 	 */
-	protected void printBanner() {
+	protected void printBanner(boolean showResponderUrl) {
 
 		Set<String> uris = new HashSet<String>();
 		uris.add(caContainer.getAcmeDirectoryURI(false));
@@ -43,6 +43,11 @@ public abstract class AbstractCADriver {
 		banner.append("* ACME CA Server Directory URI(s):\n");
 		for (String uri : uris) {
 			banner.append("*      " + uri + "\n");
+		}
+
+		if (showResponderUrl) {
+			banner.append("* ACME CA Server Ocsp Responder URI (for revocation checking): "
+					+ caContainer.getOcspResponderUrl() + "\n");
 		}
 		banner.append("* HTTP port: " + caContainer.getHttpPort() + "\n");
 		banner.append("*\n");
@@ -69,4 +74,5 @@ public abstract class AbstractCADriver {
 			caContainer.stop();
 		}
 	}
+
 }

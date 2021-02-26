@@ -12,7 +12,7 @@ package ra;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.jms.Destination;
+import jakarta.jms.Destination;
 
 public class DummyME {
 

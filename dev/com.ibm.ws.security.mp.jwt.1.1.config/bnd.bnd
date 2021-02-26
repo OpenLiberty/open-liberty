@@ -34,7 +34,7 @@ Export-Package: \
 Import-Package: \
    !com.ibm.ws.security.mp.jwt.v11.config.impl, \
    com.ibm.ws.security.mp.jwt, \
-   org.eclipse.microprofile.config;version="[1.0,2)", \
+   org.eclipse.microprofile.config;version="[1.0,3)", \
    org.jose4j.*;version="[0.5,1)", \
    *
 

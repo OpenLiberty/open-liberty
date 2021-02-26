@@ -1,0 +1,65 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/RemoteCommandManagerExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+22101=Nu s-a putut ob\u0163ine contextul JNDI, verifica\u0163i dac\u0103 propriet\u0103\u0163ile v\u0103 sunt setate corect.
+
+22102=Nu s-a putut posta conexiunea \u00een serviciul de numire local sub numele {0}
+
+22103=Nu s-a putut c\u0103uta conexiunea la distan\u0163\u0103 sub numele {0} cu URL {1}
+
+22104=Nu s-a putut c\u0103uta nume gazd\u0103
+
+22105=Nu s-a putut propaga comanda la {0}
+
+22106=Nu s-a putut crea conexiunea extern\u0103 JMS cu Subiect {0} \u015fi Fabrica de subiecte {1}. Verifica\u0163i de asemenea dac\u0103 propriet\u0103\u0163ile dumneavoastr\u0103 contextuale sunt setate corect.
+
+22107=Nu s-a putut \u00eenl\u0103tura conexiunea local\u0103 din serviciul de numire local cu numele {0}
+
+22108=Nu s-a putut serializa sau deserializa comanda
+
+22109=E\u015fuare la recep\u0163ionarea mesajului JMS de la furnizorul JMS
+
+22110=E\u015fuare la descoperirea adresei IP a gazdei locale.
+
+22111=E\u015fuare la ob\u0163inerea ServerPlatform. ServerPlatform trebuie setat \u00een Sesiune sau \u00een RemoteCommandManager.
+
+22112=Nu s-a putut crea conexiunea JMS local\u0103 cu Subiect {0} \u015fi Fabrica de subiecte {1}. De asemenea, verifica\u0163i dac\u0103 propriet\u0103\u0163ile dumneavoastr\u0103 contextuale sunt setate corect.
+
+22113=Nu s-a putut crea ID-ul serviciului Oc4jJGroupsRemoteConnection {0}, subiectul {1}, utiliz\u00e2nd fabrica {2}. Verifica\u0163i de asemenea dac\u0103 propriet\u0103\u0163ile dumneavoastr\u0103 contextuale sunt setate corect.
+
+22114={0}: e\u015fuare la deserializarea mesajului extras {1}.
+
+22115={0}: e\u015fuare la procesarea comenzii la distan\u0163\u0103 extrase din mesajul {1}, din {2}, tip comand\u0103 {3}
+
+22116=Mesajul JMS primit este null. Este tratat ca \u015fi o JMSException
+
+22117=RemoteCommandManager al sesiunii este \u00eenchis sau nu a fost ini\u0163ializat \u00een timpul proces\u0103rii mesajelor de intrare
+
+22118=A e\u015fuat crearea conexiunii JGroups folosind fi\u015fierul config: {0}
+

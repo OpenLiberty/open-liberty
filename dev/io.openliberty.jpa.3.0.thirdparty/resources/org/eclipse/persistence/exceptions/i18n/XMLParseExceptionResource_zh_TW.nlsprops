@@ -1,0 +1,39 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/XMLParseExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+34000=\u5617\u8a66\u5256\u6790 entity-mappings \u6a94\u6848 {0} \u6642\uff0c\u767c\u751f\u7570\u5e38\u72c0\u6cc1\u3002\u7121\u6cd5\u5efa\u7acb DocumentBuilder \u5be6\u4f8b\u3002
+
+34001=\u5617\u8a66\u8b80\u53d6 entity-mappings \u6a94\u6848 {0} \u6642\uff0c\u767c\u751f\u7570\u5e38\u72c0\u6cc1\u3002
+
+34002=\u5f9e URL {0} \u8655\u7406 persistence.xml \u6642\uff0c\u767c\u751f\u7570\u5e38\u72c0\u6cc1\u3002\u7121\u6cd5\u5efa\u7acb SAXParser \u5be6\u4f8b\u3002
+
+34003=\u5f9e URL {0} \u8655\u7406 persistence.xml \u6642\uff0c\u767c\u751f\u7570\u5e38\u72c0\u6cc1\u3002\u7121\u6cd5\u5efa\u7acb XMLReader \u5be6\u4f8b\u3002
+
+34004=\u5f9e URL {0} \u8655\u7406 persistence.xml \u6642\uff0c\u767c\u751f\u7570\u5e38\u72c0\u6cc1\u3002\u7121\u6cd5\u8a2d\u5b9a\u4f4d\u5728 URL {1} \u7684\u7db1\u76ee\u4f86\u6e90\u3002
+

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,8 +20,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnitUtil;
 import javax.persistence.TypedQuery;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.transaction.UserTransaction;
 
 import cdi.hibernate.test.model.EntityA;
@@ -30,9 +28,8 @@ import cdi.hibernate.test.model.EntityB;
 public class CommonTestCode {
     private final static SecureRandom sr = new SecureRandom();
     
-    public static void populate(HttpServletRequest request, HttpServletResponse response, EntityManager em, UserTransaction tx) throws Exception {
-        final PrintWriter pw = response.getWriter();        
-        
+    public static void populate(PrintWriter pw, EntityManager em, UserTransaction tx) throws Exception {
+
         tx.begin();
         em.joinTransaction();
         em.clear();

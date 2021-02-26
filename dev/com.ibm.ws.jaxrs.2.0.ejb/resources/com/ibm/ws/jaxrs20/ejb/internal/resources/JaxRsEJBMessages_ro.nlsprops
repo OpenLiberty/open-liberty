@@ -23,11 +23,11 @@
 
 
 
-warning.jaxrs.ejb.resource.mismatch=CWWKW1100W: Domeniul resursei JAXRS-2.0 {0} {1} nu se potrive\u015fte cu domeniul EJB {2}. Liberty ob\u0163ine instan\u0163a resursei de la {3}.
-warning.jaxrs.ejb.resource.mismatch.explanation=Dac\u0103 domeniul resursei JAXRS-2.0 nu se potrive\u015fte cu domeniul EJB \u015fi instan\u0163a resursei exist\u0103 \u00een EJB, Liberty ob\u0163ine instan\u0163a resursei de la EJB.
+warning.jaxrs.ejb.resource.mismatch=CWWKW1100W: Domeniul {1} al resursei JAXRS {0} nu se potrive\u015fte cu domeniul EJB {2}. Liberty ob\u0163ine instan\u0163a resursei de la {3}.
+warning.jaxrs.ejb.resource.mismatch.explanation=Dac\u0103 domeniul resursei JAXRS nu se potrive\u015fte cu domeniul EJB \u015fi instan\u0163a resursei exist\u0103 \u00een EJB, Liberty ob\u0163ine instan\u0163a resursei de la EJB.
 warning.jaxrs.ejb.resource.mismatch.useraction=Nicio ac\u0163iune necesar\u0103. 
 
-warning.jaxrs.ejb.provider.mismatch=CWWKW1102W: Domeniul EJB al Furnizorului JAXRS-2.0 {0} este {1}. Liberty ob\u0163ine instan\u0163a furnizorului de la {2}.
+warning.jaxrs.ejb.provider.mismatch=CWWKW1102W: Domeniul EJB al furnizorului JAXRS {0} este {1}. Liberty ob\u0163ine instan\u0163a furnizorului de la {2}.
 warning.jaxrs.ejb.provider.mismatch.explanation=Instan\u0163a furnizorului este numai Singleton. Liberty ob\u0163ine instan\u0163e de furnizor de la EJB dac\u0103 domeniul EJB al furnizorului este Dependent sau ApplicationScoped.
 warning.jaxrs.ejb.provider.mismatch.useraction=Nicio ac\u0163iune necesar\u0103.
 

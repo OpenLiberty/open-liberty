@@ -603,6 +603,7 @@ MSG_VALIDATION_INVALID_HOST=Nast\u0119puj\u0105cy host serwera proxy jest niepop
 
 # Message for find action
 MSG_NO_FEATURES_FOUND=Nie znaleziono sk\u0142adnik\u00f3w.
+
 VALIDATION_INVALID_VALUE=Nieobs\u0142ugiwana warto\u015b\u0107
 VALIDATION_INVALID_KEY=Nieobs\u0142ugiwana nazwa w\u0142a\u015bciwo\u015bci
 VALIDATION_EMPTY_KEY=Pusta nazwa w\u0142a\u015bciwo\u015bci
@@ -852,18 +853,26 @@ ERROR_INCOMPATIBLE_FEATURES_SINGLETON.useraction=Usu\u0144 jeden ze sk\u0142adni
 ERROR_FAILED_TO_UNPACK_LICENSE=CWWKF1406E: Nie mo\u017cna rozpakowa\u0107 pakietu licencji na podstawie wsp\u00f3\u0142rz\u0119dnej Maven {0} z repozytorium w \u015bcie\u017cce {1}.
 ERROR_FAILED_TO_UNPACK_LICENSE.explanation=Nie mo\u017cna rozpakowa\u0107 pakietu licencji do instalacji wlp.
 ERROR_FAILED_TO_UNPACK_LICENSE.useraction=Upewnij si\u0119, \u017ce masz poprawne uprawnienia do odczytu z repozytorium.
+
 ERROR_FAILED_TO_READ_LICENSE=CWWKF1407E: Nie mo\u017cna przetworzy\u0107 pliku licencji w po\u0142o\u017ceniu pliku {0}.
 ERROR_FAILED_TO_READ_LICENSE.explanation=Nie mo\u017cna przetworzy\u0107 pliku licencji pod k\u0105tem informacji o akceptacji licencji.
 ERROR_FAILED_TO_READ_LICENSE.useraction=Upewnij si\u0119, \u017ce masz poprawne uprawnienia do odczytu z pliku licencji.
+
 ERROR_FAILED_TO_FIND_WEBSPHERE_JSON=CWWKF1408E: Nie mo\u017cna znale\u017a\u0107 pliku JSON produktu Websphere w po\u0142o\u017ceniu {0}.
 ERROR_FAILED_TO_FIND_WEBSPHERE_JSON.explanation=Nie mo\u017cna znale\u017a\u0107 pliku JSON produktu Websphere.
 ERROR_FAILED_TO_FIND_WEBSPHERE_JSON.useraction=Upewnij si\u0119, \u017ce masz po\u0142\u0105czenie sieciowe i uprawnienia do zapisu w skonfigurowanym lokalnym katalogu Maven.
+
 ERROR_FAILED_TO_LOCATE_AND_DOWNLOAD_JSONS=CWWKF1409E: Nie mo\u017cna znale\u017a\u0107 nast\u0119puj\u0105cych plik\u00f3w JSON sk\u0142adnika w systemie lokalnym ani na skonfigurowanym repozytorium Maven: {0}.
 ERROR_FAILED_TO_LOCATE_AND_DOWNLOAD_JSONS.explanation=Pliki JSON nie zosta\u0142y znalezione lokalnie ani w skonfigurowanym repozytorium Maven.
 ERROR_FAILED_TO_LOCATE_AND_DOWNLOAD_JSONS.useraction=Upewnij si\u0119, \u017ce masz po\u0142\u0105czenie sieciowe, a pliki JSON istniej\u0105 w skonfigurowanym repozytorium Maven.
+
 ERROR_INVALID_PRODUCT_EDITION_FEATURE_UTILITY=CWWKF1410E: Sk\u0142adnik {0} nie mo\u017ce zosta\u0107 zainstalowany w edycji {1} {2}, poniewa\u017c ma zastosowanie tylko do edycji {3}.
 ERROR_INVALID_PRODUCT_EDITION_FEATURE_UTILITY.explanation=Sk\u0142adnik nie ma zastosowania do edycji zainstalowanego produktu.
 ERROR_INVALID_PRODUCT_EDITION_FEATURE_UTILITY.useraction=Zainstaluj sk\u0142adniki, kt\u00f3re s\u0105 obs\u0142ugiwane przez edycj\u0119 produktu.
+
+ERROR_BETA_EDITION_NOT_SUPPORTED=CWWKF1411E: Instalacja i aktualizacja sk\u0142adnik\u00f3w nie jest mo\u017cliwa w wersjach beta.
+ERROR_BETA_EDITION_NOT_SUPPORTED.explanation=Instalacja i aktualizacja sk\u0142adnik\u00f3w nie jest mo\u017cliwa w przypadku zainstalowanego produktu.
+ERROR_BETA_EDITION_NOT_SUPPORTED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
 
 TOOL_DOWNLOAD_FEATURE_OK=CWWKF1500I: Sk\u0142adnik zosta\u0142 pomy\u015blnie pobrany.
 TOOL_DOWNLOAD_FEATURE_OK.explanation=Sk\u0142adnik zosta\u0142 pobrany.

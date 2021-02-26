@@ -1,5 +1,5 @@
 /* ============================================================================
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,14 +32,16 @@ import componenttest.custom.junit.runner.FATRunner;
             })
 public class JMS2AsyncSendTest extends FATBase {
   static {
-    client_ = LibertyClientFactory.getLibertyClient("com.ibm.ws.open_clientcontainer.fat.JMS2Container");
-    server_ = LibertyServerFactory.getLibertyServer("com.ibm.ws.open_clientcontainer.fat.Server");
+    client_ = null;
+    server_ = null;
   }
 
   @BeforeClass
   public static void beforeClass() throws Exception {
     try {
       Util.TRACE_ENTRY();
+      client_ = LibertyClientFactory.getLibertyClient("com.ibm.ws.open_clientcontainer.fat.JMS2Container");
+      server_ = LibertyServerFactory.getLibertyServer("com.ibm.ws.open_clientcontainer.fat.Server");
       deployApplication("JMS2AsyncSend");
       // CWSIC2008E -  FFDC for commit/rollback error in testJMS2ContextInListener
       client_.addIgnoreErrors("CWSIC2008E");
@@ -59,7 +61,8 @@ public class JMS2AsyncSendTest extends FATBase {
       // CWSIK0025E - Queue full; expected.
       server_.stopServer("CWSIJ0051E","CWSIK0015E","CWSIC2009E","CWSIK0025E");
     } finally {
-      Util.TRACE_EXIT();
+        undeployApplication("JMS2AsyncSend");
+        Util.TRACE_EXIT();
     }
   }
 

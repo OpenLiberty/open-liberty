@@ -4,9 +4,9 @@
        bean-discovery-mode="annotated"
        version="1.1">
    <decorators>
-      <class>com.ibm.ws.cdi12.test.priority.LocalJarDecorator</class>
+      <class>com.ibm.ws.cdi12.test.priority.lib.LocalJarDecorator</class>
    </decorators>
    <interceptors>
-      <class>com.ibm.ws.cdi12.test.priority.LocalJarInterceptor</class>
+      <class>com.ibm.ws.cdi12.test.priority.lib.LocalJarInterceptor</class>
    </interceptors>
 </beans>

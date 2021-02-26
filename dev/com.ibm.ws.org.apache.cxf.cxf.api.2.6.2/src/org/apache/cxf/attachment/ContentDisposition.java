@@ -26,6 +26,9 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
+@Trivial
 public class ContentDisposition {
     private static final String CD_HEADER_PARAMS_EXPRESSION =
         "[\\w-]++( )?\\*?=( )?((\"[^\"]++\")|([^;]+))";

@@ -1,0 +1,43 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/StaticWeaveExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+40001=\u5617\u8a66\u5f9e URL {0} \u958b\u555f\u4fdd\u5b58\u6a94\u6642\uff0c\u64f2\u51fa\u7570\u5e38\u72c0\u6cc1
+
+40002=\u672a\u6307\u5b9a\u7de8\u6392\u7684\u4f86\u6e90
+
+40003=\u672a\u6307\u5b9a\u7de8\u6392\u7684\u76ee\u6a19
+
+40004=\u4e0d\u5141\u8a31\u70ba JAR \u6a94\u57f7\u884c\u5c31\u5730\u7de8\u6392
+
+40005=\u5617\u8a66\u958b\u555f\u8a18\u8f09\u6a94\u6848\u6642\uff0c\u64f2\u51fa\u7570\u5e38\u72c0\u6cc1\uff1a{0}
+
+40006=\u6240\u6307\u5b9a\u7684\u8a18\u8f09\u5c64\u6b21\u503c\u932f\u8aa4\uff0c\u5fc5\u9808\u70ba\u4e0b\u5217\u5176\u4e2d\u4e00\u500b\u503c (OFF,SEVERE,WARNING,INFO,CONFIG,FINE,FINER,FINEST)
+
+40007=\u7de8\u6392\u6642\u64f2\u51fa\u7570\u5e38\u72c0\u6cc1\uff1a{0}
+

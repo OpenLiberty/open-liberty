@@ -38,7 +38,7 @@ import com.ibm.ws.jpa.management.JPAExEntityManager;
 import com.ibm.ws.jpa.management.JPAPUnitInfo;
 import com.ibm.ws.jpa.management.JPARuntime;
 import com.ibm.ws.jpa.management.JPATxEntityManager;
-import com.ibm.ws.jpa.management.JPAVersion;
+import com.ibm.ws.jpa.JPAVersion;
 
 @Component(service = JPARuntime.class,
            property = Constants.SERVICE_RANKING + ":Integer=21")
@@ -52,7 +52,7 @@ public class JPA22Runtime extends JPA20Runtime implements JPARuntime {
 
     @Override
     public JPAVersion getJPARuntimeVersion() {
-        return JPAVersion.JPA21;
+        return JPAVersion.JPA22;
     }
 
     @Override

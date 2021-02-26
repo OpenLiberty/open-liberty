@@ -12,7 +12,6 @@ package com.ibm.ws.jaxrs20.security;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
-
 import javax.annotation.Priority;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -21,22 +20,29 @@ import javax.ws.rs.Priorities;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
 
 import org.apache.cxf.interceptor.security.AccessDeniedException;
-import org.apache.cxf.interceptor.security.AuthenticationException;
 import org.apache.cxf.jaxrs.utils.JAXRSUtils;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.message.MessageUtils;
-import org.apache.cxf.security.SecurityContext;
+import org.apache.cxf.service.invoker.MethodDispatcher;
+import org.apache.cxf.service.model.BindingOperationInfo;
 import org.apache.cxf.transport.http.AbstractHTTPDestination;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.authorization.util.RoleMethodAuthUtil;
 import com.ibm.ws.security.authorization.util.UnauthenticatedException;
 
-@Priority(Priorities.AUTHORIZATION)
+// Set the Priority to Priorities.AUTHORIZATION + 1 so that user filters take precedence.
+@Priority(Priorities.AUTHORIZATION + 1)
 public class LibertyAuthFilter implements ContainerRequestFilter {
 
+    private static final TraceComponent tc = Tr
+                    .register(LibertyAuthFilter.class);
+    
     @Override
     @FFDCIgnore({ UnauthenticatedException.class, UnauthenticatedException.class, AccessDeniedException.class })
     public void filter(ContainerRequestContext context) {
@@ -75,13 +81,39 @@ public class LibertyAuthFilter implements ContainerRequestFilter {
     }
 
     private void handleMessage(Message message) throws UnauthenticatedException{
-        HttpServletRequest req = (HttpServletRequest) message.get(AbstractHTTPDestination.HTTP_REQUEST);
-        Method method = MessageUtils.getTargetMethod(message, () -> 
-            new AccessDeniedException("Method is not available : Unauthorized"));
-        if (RoleMethodAuthUtil.parseMethodSecurity(method, req.getUserPrincipal(), s -> req.isUserInRole(s))) {
-            return;
+        SecurityContext jaxrsSecurityContext = message.get(SecurityContext.class);
+        if (jaxrsSecurityContext != null && jaxrsSecurityContext instanceof SecurityContext) {
+            Method method = getTargetMethod(message);
+            if (RoleMethodAuthUtil.parseMethodSecurity(method,
+                                                       jaxrsSecurityContext.getUserPrincipal(),
+                                                       s -> jaxrsSecurityContext.isUserInRole(s))) {
+                return;
+            }
+        } else {
+            HttpServletRequest req = (HttpServletRequest) message.get(AbstractHTTPDestination.HTTP_REQUEST);
+            Method method = MessageUtils.getTargetMethod(message).orElseThrow(() -> 
+                new AccessDeniedException("Method is not available : Unauthorized"));
+            if (RoleMethodAuthUtil.parseMethodSecurity(method,
+                                                       req.getUserPrincipal(),
+                                                       s -> req.isUserInRole(s))) {
+                return;
+            }
         }
 
         throw new AccessDeniedException("Unauthorized");
+    }
+    
+    protected Method getTargetMethod(Message m) {
+        BindingOperationInfo bop = m.getExchange().getBindingOperationInfo();
+        if (bop != null) {
+            MethodDispatcher md = (MethodDispatcher) 
+                m.getExchange().getService().get(MethodDispatcher.class.getName());
+            return md.getMethod(bop);
+        } 
+        Method method = (Method)m.get("org.apache.cxf.resource.method");
+        if (method != null) {
+            return method;
+        }
+        throw new AccessDeniedException("Method is not available : Unauthorized");
     }
 }

@@ -22,7 +22,6 @@ import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
 
 import com.ibm.tx.jta.ut.util.XAResourceImpl;
-
 import jakarta.annotation.Resource;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -395,9 +394,17 @@ public class XAServlet extends HttpServlet {
             throw new Exception();
         } catch (HeuristicMixedException e) {
             // As expected
+            System.out.println("testXA015: caught HeuristicMixedException as expected");
             Thread.sleep(1000 * ((1 + commitRepeatCount) * HEURISTIC_RETRY_INTERVAL + SUITABLE_DELAY));
+            System.out.println("testXA015: check state of XAResources");
             if (!XAResourceImpl.allInState(XAResourceImpl.COMMITTED)) {
-                throw new Exception("Committed count: " + XAResourceImpl.committedCount());
+                // If the test is running on slow infrastructure then we may simply need to wait longer than expected
+                // So if the test appears to have failed wait another while before testing again and failing if necessary
+                System.out.println("testXA015: not all resources are in committed state, sleep for a further period");
+                Thread.sleep(1000 * ((1 + commitRepeatCount) * HEURISTIC_RETRY_INTERVAL + SUITABLE_DELAY));
+                System.out.println("testXA015: recheck state of XAResources");
+                if (!XAResourceImpl.allInState(XAResourceImpl.COMMITTED))
+                    throw new Exception("Committed count: " + XAResourceImpl.committedCount());
             }
         }
     }

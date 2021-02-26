@@ -37,9 +37,9 @@ KRB_S4U2PROXY_IS_NOT_SUPPORT=CWWKS4344E: Funkce omezen\u00e9ho delegov\u00e1n\u0
 KRB_S4U2PROXY_IS_NOT_SUPPORT.explanation=Funkci omezen\u00e9ho delegov\u00e1n\u00ed Kerberos nelze povolit kv\u016fli dodavateli a verzi prost\u0159ed\u00ed Java Runtime.
 KRB_S4U2PROXY_IS_NOT_SUPPORT.useraction=Pou\u017eijte dodavatele a verzi Java podporovan\u00e9 funkc\u00ed omezen\u00e9 delegov\u00e1n\u00ed Kerberos.
 
+# CWWKS4345E is used by the com.ibm.ws.security.kerberos.auth bundle
 
-
-
+# CWWKS4346I is used by the com.ibm.ws.security.kerberos.auth bundle
 
 
 

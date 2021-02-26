@@ -16,9 +16,11 @@
 */
 package com.ibm.jbatch.container.modelresolver.impl;
 
+import java.util.List;
 import java.util.Properties;
 
 import com.ibm.jbatch.jsl.model.Listener;
+import com.ibm.jbatch.jsl.model.Property;
 
 
 public class ListenerPropertyResolverImpl extends AbstractPropertyResolver<Listener> {
@@ -35,7 +37,7 @@ public class ListenerPropertyResolverImpl extends AbstractPropertyResolver<Liste
 
         // Resolve all the properties defined for this listener
         if (listener.getProperties() != null) {
-            this.resolveElementProperties(listener.getProperties().getPropertyList(), submittedProps, parentProps);
+            this.resolveElementProperties((List<Property>) listener.getProperties().getPropertyList(), submittedProps, parentProps);
         }
 
         return listener;

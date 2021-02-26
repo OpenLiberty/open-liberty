@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -57,7 +57,6 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.fat.util.Props;
 
 import componenttest.custom.junit.runner.RepeatTestFilter;
-import componenttest.rules.repeater.EmptyAction;
 import componenttest.topology.impl.LibertyServer;
 import junit.framework.AssertionFailedError;
 
@@ -322,6 +321,9 @@ public class MvnUtils {
         // be different.
         stringArrayList.add("-DsuiteXmlFile=" + getSuiteFileName());
 
+        // Batch mode, gives better output when logged to a file and allows timestamps to be enabled
+        stringArrayList.add("-B");
+
         // add any additional properties passed
         for (Entry<String, String> prop : getAdditionalMvnProps().entrySet()) {
             stringArrayList.add("-D" + prop.getKey() + "=" + prop.getValue());
@@ -391,7 +393,7 @@ public class MvnUtils {
      * @return the name of the suite
      */
     private String getSuiteName() {
-        return getSuiteFileName().replace(".xml", "") + getRepeatID();
+        return getSuiteFileName().replace(".xml", "") + RepeatTestFilter.getRepeatActionsAsString();
     }
 
     /**
@@ -648,7 +650,7 @@ public class MvnUtils {
      * @return a File which represents the mvn output when "install" is run
      */
     private static File getMvnInstallOutputFile() {
-        return new File(getResultsDir(), MVN_INSTALL_OUTPUT_FILENAME_PREFIX + getRepeatID());
+        return new File(getResultsDir(), MVN_INSTALL_OUTPUT_FILENAME_PREFIX + RepeatTestFilter.getRepeatActionsAsString());
     }
 
     /**
@@ -666,7 +668,7 @@ public class MvnUtils {
 
         Transformer transformer = TransformerFactory.newInstance().newTransformer();
 
-        String id = getRepeatID();
+        String id = RepeatTestFilter.getRepeatActionsAsString();
 
         for (File file : resultFiles) {
             Document doc = builder.parse(file);
@@ -830,21 +832,6 @@ public class MvnUtils {
     }
 
     /**
-     * Get the current Repeat Action ID. If there is no current Repeat Action ID then return an empty string.
-     *
-     * @return the current Repeat Action ID or empty string
-     */
-    private static String getRepeatID() {
-        String id;
-        if (RepeatTestFilter.CURRENT_REPEAT_ACTION == null || RepeatTestFilter.CURRENT_REPEAT_ACTION.equals(EmptyAction.ID)) {
-            id = "";
-        } else {
-            id = "_" + RepeatTestFilter.CURRENT_REPEAT_ACTION;
-        }
-        return id;
-    }
-
-    /**
      * Get a File which represents the results directory, typically ${component_Root_Directory}/results
      *
      * @return the results directory
@@ -976,13 +963,19 @@ public class MvnUtils {
      */
     public static int runCmd(String[] cmd, File workingDirectory, File outputFile) throws IOException, InterruptedException {
         ProcessBuilder pb = new ProcessBuilder(cmd);
+
+        // Enables timestamps in the mvnOutput logs
+        pb.environment()
+                        .put("MAVEN_OPTS", "-Dorg.slf4j.simpleLogger.showDateTime=true" +
+                                           " -Dorg.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss,SSS");
+
         pb.directory(workingDirectory);
         pb.redirectOutput(outputFile);
         pb.redirectErrorStream(true);
 
         Log.info(c, "runCmd", "Running command " + Arrays.asList(cmd));
-        
-        int  hardTimeout = Integer.parseInt(System.getProperty("fat.timeout", "10800000"));
+
+        int hardTimeout = Integer.parseInt(System.getProperty("fat.timeout", "10800000"));
         long softTimeout = -1;
 
         // We need to ensure that the hard timeout is large enough to avoid future issues
@@ -994,14 +987,14 @@ public class MvnUtils {
         int returnCode = 1;
         boolean returnStatus;
         if (softTimeout > -1) {
-            returnStatus = p.waitFor(softTimeout, TimeUnit.MILLISECONDS);  // Requires Java 8+
+            returnStatus = p.waitFor(softTimeout, TimeUnit.MILLISECONDS); // Requires Java 8+
             if (returnStatus == false) {
                 // Parse through the mvn logs
                 if (outputFile.exists() && outputFile.canRead()) {
                     try (Scanner s = new Scanner(outputFile)) {
                         // Get the last few lines from the MVN log
                         ArrayList<String> lastLines = new ArrayList<String>();
-                        int numOfLinesToInclude = 7;  // We will include the last 7 lines of the output file in the timeout message
+                        int numOfLinesToInclude = 7; // We will include the last 7 lines of the output file in the timeout message
                         while (s.hasNextLine()) {
                             if (lastLines.size() < numOfLinesToInclude) {
                                 lastLines.add(s.nextLine());
@@ -1010,37 +1003,37 @@ public class MvnUtils {
                                 lastLines.add(s.nextLine());
                             }
                         }
-                        
+
                         // Prepare the timeout message
                         String timeoutMsg = "Timeout occurred. FAT timeout set to: " + hardTimeout + "ms (soft timeout set to " + softTimeout + "ms). The last " +
                                             numOfLinesToInclude + " lines from the mvn logs are as follows:\n";
                         for (String line : lastLines) {
                             timeoutMsg += line + "\n";
                         }
-                        
+
                         // Special Case: Check if the last or second line has the text "downloading" or "downloaded"
-                        if ((lastLines.get(lastLines.size() - 1).toLowerCase().matches(".* downloading .*|.* downloaded .*")) 
-                                        || (lastLines.get(lastLines.size() - 2).toLowerCase().matches(".* downloading .*|.* downloaded .*"))) {       
+                        if ((lastLines.get(lastLines.size() - 1).toLowerCase().matches(".* downloading .*|.* downloaded .*"))
+                            || (lastLines.get(lastLines.size() - 2).toLowerCase().matches(".* downloading .*|.* downloaded .*"))) {
                             timeoutMsg += "It appears there were some issues gathering dependencies. This may be due to network issues such as slow download speeds.";
                         }
-                        
+
                         // Throw custom timeout error message rather then the one provided by the JUnitTask
-                        Log.info(c, "runCmd", timeoutMsg);  // Log the timeout message into messages.log or the default log 
+                        Log.info(c, "runCmd", timeoutMsg); // Log the timeout message into messages.log or the default log
                         throw new AssertionFailedError(timeoutMsg);
                     } catch (FileNotFoundException FileError) {
-                        // Do nothing as we can't look at the mvn log. This leads to hard timeout handled by the JUnit Task in p.waitFor()                     
+                        // Do nothing as we can't look at the mvn log. This leads to hard timeout handled by the JUnit Task in p.waitFor()
                     }
                 }
-                // Return to normal behavior and let it timeout through the Junit Task using the hard timeout 
+                // Return to normal behavior and let it timeout through the Junit Task using the hard timeout
                 returnCode = p.waitFor();
             } else {
                 returnCode = 0;
-            }      
+            }
         } else {
             // The soft timeout could not be used so return to normal behavior and let the Junit Task take care of the timeout
             returnCode = p.waitFor();
         }
-        
+
         return returnCode;
     }
 

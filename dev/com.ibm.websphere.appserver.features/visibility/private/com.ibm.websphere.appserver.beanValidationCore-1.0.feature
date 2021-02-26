@@ -1,5 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.beanValidationCore-1.0
+WLP-DisableAllFeatures-OnConflict: false
 IBM-App-ForceRestart: install, \
  uninstall
 -features=com.ibm.websphere.appserver.injection-1.0, \

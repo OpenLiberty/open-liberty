@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2020 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<applicationbnd:ApplicationBinding xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:applicationbnd="applicationbnd.xmi" xmlns:common="common.xmi" xmlns:application="application.xmi" xmi:id="ApplicationBinding_1050364211188">
+  <authorizationTable xmi:id="AuthorizationTable_1">
+    <authorizations xmi:id="RoleAssignment_1">
+      <users xmi:id="User_1" name="user1"/>
+      <role href="META-INF/application.xml#SecurityRole_1"/>
+      <groups xmi:id="Group_1" name="group1"/>
+    </authorizations>
+    <authorizations xmi:id="RoleAssignment_2">
+      <users xmi:id="User_3" name="user2"/>
+      <role href="META-INF/application.xml#SecurityRole_2"/>
+      <groups xmi:id="Group_2" name="group2"/>
+    </authorizations>
+    <authorizations xmi:id="RoleAssignment_3">
+      <specialSubjects xmi:type="applicationbnd:AllAuthenticatedUsers" xmi:id="AllAuthenticatedUsers_1" name="AllAuthenticatedUsers"/>
+      <role href="META-INF/application.xml#SecurityRole_3"/>
+    </authorizations>
+  </authorizationTable>
+  <application href="META-INF/application.xml#Application_ID"/>
+</applicationbnd:ApplicationBinding>

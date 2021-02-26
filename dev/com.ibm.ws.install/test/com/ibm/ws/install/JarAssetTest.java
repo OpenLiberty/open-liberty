@@ -17,6 +17,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -29,7 +31,17 @@ import test.common.SharedOutputManager;
 
 public class JarAssetTest {
     @Rule
-    public SharedOutputManager outputMgr = SharedOutputManager.getInstance();
+    public static SharedOutputManager outputMgr = SharedOutputManager.getInstance().trace("*=all");
+
+    @BeforeClass
+    public static void setUpBeforeClass() throws Exception {
+        outputMgr.captureStreams();
+    }
+
+    @AfterClass
+    public static void tearDownAfterClass() throws Exception {
+        outputMgr.restoreStreams();
+    }
 
     @Test
     public void testSampleAsset() throws MalformedURLException, IOException {

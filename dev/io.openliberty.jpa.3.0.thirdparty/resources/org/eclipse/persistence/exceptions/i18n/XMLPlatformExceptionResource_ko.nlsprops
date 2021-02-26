@@ -1,0 +1,51 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/XMLPlatformExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+27001=XML Platform \ud074\ub798\uc2a4\ub97c \ucc3e\uc744 \uc218 \uc5c6\uc74c: {0}
+
+27002=XML Platform\uc744 \uc778\uc2a4\ud134\uc2a4\ud654\ud560 \uc218 \uc5c6\uc74c: {0}
+
+27003=\uc0c8 XML \ubb38\uc11c\ub97c \uc791\uc131\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+
+27004=XPath\uac00 \uc62c\ubc14\ub974\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+
+27005=\ubb38\uc11c\ub97c \uc720\ud6a8\uc131 \uac80\uc99d\ud558\ub294 \uc911\uc5d0 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+
+27006=XML \uc2a4\ud0a4\ub9c8\ub97c \ubd84\uc11d\ud560 \uc218 \uc5c6\uc74c:  {0}
+
+27101=\ubb38\uc11c\ub97c \uad6c\ubb38 \ubd84\uc11d\ud558\ub294 \ub3d9\uc548 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+
+27102=\ud30c\uc77c\uc744 \ucc3e\uc744 \uc218 \uc5c6\uc74c: [{0}]
+
+27103=** \uad6c\ubb38 \ubd84\uc11d \uc624\ub958, \ud589 [{0}], uri [{1}] [{2}]
+
+27201=\ubb38\uc11c\ub97c \ubcc0\ud658\ud558\ub294 \ub3d9\uc548 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+
+27202=\uc54c \uc218 \uc5c6\ub294 \uc720\ud615\uc774 \ubc1c\uc0dd\ud568: {0}
+

@@ -15,7 +15,7 @@ Bundle-Name: com.ibm.ws.cdi.2.0.web
 Bundle-SymbolicName: com.ibm.ws.cdi.2.0.web
 Bundle-Description: CDI 2.0 Web, version ${bVersion}
 
-
+jakartaeeMe: true
 
 Export-Package: com.ibm.ws.cdi.web.factories
 

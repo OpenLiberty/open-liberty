@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2001, 2017 IBM Corporation and others.
+ * Copyright (c) 2001, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,6 +30,7 @@ import com.ibm.ejs.cm.logger.TraceWriter;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
+import com.ibm.ws.jdbc.heritage.AccessIntent;
 import com.ibm.ws.rsadapter.AdapterUtil;
 import com.ibm.ws.rsadapter.jdbc.WSJdbcTracer;
 
@@ -101,6 +102,28 @@ public class DataDirectConnectSQLServerHelper extends DatabaseHelper {
     DataDirectConnectSQLServerHelper(WSManagedConnectionFactoryImpl mcf) {
         super(mcf);
 
+        // Default values for the statement properties LongDataCacheSize and QueryTimeout are
+        // configurable as data source properties. These data source properties are supplied to
+        // the data store helper so that we can reset the statement properties to these default
+        // values when caching statements.
+        Properties props = mcf.dsConfig.get().vendorProps;
+        Object value = props.get(LONG_DATA_CACHE_SIZE);
+        try {
+            longDataCacheSize = value instanceof Number ? ((Number) value).intValue()
+                              : value instanceof String ? Integer.parseInt((String) value)
+                              : longDataCacheSize;
+        } catch (NumberFormatException x) {
+            // error paths already covered by data source properties processing code 
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() &&  tc.isDebugEnabled()) 
+            Tr.debug(this, tc, "Default longDataCacheSize = " + longDataCacheSize);
+    }
+    
+    @Override
+    void customizeStaleStates() {
+        super.customizeStaleStates();
+        
         Collections.addAll(staleDDErrorCodes,
                            2217,
                            2251,
@@ -128,23 +151,6 @@ public class DataDirectConnectSQLServerHelper extends DatabaseHelper {
                            6002,
                            6005,
                            6006);
-
-        // Default values for the statement properties LongDataCacheSize and QueryTimeout are
-        // configurable as data source properties. These data source properties are supplied to
-        // the data store helper so that we can reset the statement properties to these default
-        // values when caching statements.
-        Properties props = mcf.dsConfig.get().vendorProps;
-        Object value = props.get(LONG_DATA_CACHE_SIZE);
-        try {
-            longDataCacheSize = value instanceof Number ? ((Number) value).intValue()
-                              : value instanceof String ? Integer.parseInt((String) value)
-                              : longDataCacheSize;
-        } catch (NumberFormatException x) {
-            // error paths already covered by data source properties processing code 
-        }
-
-        if (TraceComponent.isAnyTracingEnabled() &&  tc.isDebugEnabled()) 
-            Tr.debug(this, tc, "Default longDataCacheSize = " + longDataCacheSize);
     }
 
     @Override
@@ -276,7 +282,7 @@ public class DataDirectConnectSQLServerHelper extends DatabaseHelper {
     }
 
     @Override
-    public int getDefaultIsolationLevel() {
+    public int getIsolationLevel(AccessIntent unused) {
         return Connection.TRANSACTION_REPEATABLE_READ;
     }
 

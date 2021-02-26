@@ -11,8 +11,8 @@
 -include= jar:${fileuri;${repo;org.apache.commons:commons-compress;1.19}}!/META-INF/MANIFEST.MF,bnd.overrides
 
 -includeresource: \
-    @${repo;org.apache.commons:commons-compress;1.19}!/!META-INF/maven/*
+    @${repo;org.apache.commons:commons-compress;1.20}!/!META-INF/maven/*
 
 publish.wlp.jar.disabled: true
 
--buildpath: org.apache.commons:commons-compress;version=1.19
+-buildpath: org.apache.commons:commons-compress;version=1.20

@@ -26,6 +26,7 @@ import com.ibm.ws.fat.util.browser.WebResponse;
  *
  * @author Tim Burns
  */
+@Deprecated
 public abstract class LoggingTest {
 
     /** Prints extra messages to the log to distinguish test A from test B. JUnit requires this variable to be public. */

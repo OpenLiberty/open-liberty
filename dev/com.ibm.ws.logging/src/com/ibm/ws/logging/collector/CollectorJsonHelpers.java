@@ -30,27 +30,22 @@ import com.ibm.ws.logging.data.Pair;
  */
 public class CollectorJsonHelpers {
 
-    private static String startMessageJson = null;
     private static String startMessageJsonFields = null;
-    private static String startTraceJson = null;
-    private static String startTraceJsonFields = null;
-    private static String startFFDCJson = null;
-    private static String startFFDCJsonFields = null;
-    private static String startAccessLogJson = null;
     private static String startAccessLogJsonFields = null;
-    private static String startGCJson = null;
-    private static String startAuditJson = null;
+    private static String startTraceJsonFields = null;
+    private static String startFFDCJsonFields = null;
     private static String startAuditJsonFields = null;
-    private static final String TYPE_FIELD_KEY = "\"type";
-    private static final String TYPE_FIELD_PREPPEND = "\":\"";
-    private static final String TYPE_FIELD_APPEND = "\"";
-    private static final String MESSAGE_JSON_TYPE_FIELD = TYPE_FIELD_PREPPEND + CollectorConstants.MESSAGES_LOG_EVENT_TYPE + TYPE_FIELD_APPEND;
-    private static final String TRACE_JSON_TYPE_FIELD = TYPE_FIELD_PREPPEND + CollectorConstants.TRACE_LOG_EVENT_TYPE + TYPE_FIELD_APPEND;
-    private static final String ACCESS_JSON_TYPE_FIELD = TYPE_FIELD_PREPPEND + CollectorConstants.ACCESS_LOG_EVENT_TYPE + TYPE_FIELD_APPEND;
-    private static final String FFDC_JSON_TYPE_FIELD = TYPE_FIELD_PREPPEND + CollectorConstants.FFDC_EVENT_TYPE + TYPE_FIELD_APPEND;
-    private static final String GC_JSON_TYPE_FIELD = TYPE_FIELD_PREPPEND + CollectorConstants.GC_EVENT_TYPE + TYPE_FIELD_APPEND;
-    private static final String AUDIT_JSON_TYPE_FIELD = TYPE_FIELD_PREPPEND + CollectorConstants.AUDIT_LOG_EVENT_TYPE + TYPE_FIELD_APPEND;
-    private static String unchangingFieldsJson = null;
+
+    private static String startMessageLogstashCollector = null;
+    private static String startAccessLogLogstashCollector = null;
+    private static String startTraceLogstashCollector = null;
+    private static String startFFDCLogstashCollector = null;
+    private static String startAuditLogstashCollector = null;
+    private static String startGCLogstashCollector = null;
+
+    public static String hostName = null;
+    public static String wlpUserDir = null;
+    public static String serverName = null;
     public final static String TRUE_BOOL = "true";
     public final static String FALSE_BOOL = "false";
     public final static String INT_SUFFIX = "_int";
@@ -59,6 +54,8 @@ public class CollectorJsonHelpers {
     public final static String LONG_SUFFIX = "_long";
     public static final String LINE_SEPARATOR;
     public static final String OMIT_FIELDS_STRING = "@@@OMIT@@@";
+    private static final int JSON_KEY = CollectorConstants.KEYS_JSON;
+    private static final int LOGSTASH_KEY = CollectorConstants.KEYS_LOGSTASH;
 
     static {
         LINE_SEPARATOR = AccessController.doPrivileged(new PrivilegedAction<String>() {
@@ -67,6 +64,18 @@ public class CollectorJsonHelpers {
                 return System.getProperty("line.separator");
             }
         });
+    }
+
+    public static void setHostName(String host) {
+        hostName = host;
+    }
+
+    public static void setWlpUserDir(String userDir) {
+        wlpUserDir = userDir;
+    }
+
+    public static void setServerName(String server) {
+        serverName = server;
     }
 
     protected static String getEventType(String source, String location) {
@@ -86,7 +95,7 @@ public class CollectorJsonHelpers {
             return "";
     }
 
-    protected static ThreadLocal<BurstDateFormat> dateFormatTL = new ThreadLocal<BurstDateFormat>() {
+    public static ThreadLocal<BurstDateFormat> dateFormatTL = new ThreadLocal<BurstDateFormat>() {
         @Override
         protected BurstDateFormat initialValue() {
             return new BurstDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ"));
@@ -158,7 +167,7 @@ public class CollectorJsonHelpers {
      * Escape \b, \f, \n, \r, \t, ", \, / characters and appends to a string builder
      *
      * @param sb String builder to append to
-     * @param s String to escape
+     * @param s  String to escape
      */
     protected static void jsonEscape3(StringBuilder sb, String s) {
         for (int i = 0; i < s.length(); i++) {
@@ -194,212 +203,130 @@ public class CollectorJsonHelpers {
     }
 
     public static void updateFieldMappings() {
-        startMessageJsonFields = null;
-        startTraceJsonFields = null;
-        startAccessLogJsonFields = null;
-        startAuditJsonFields = null;
-        startFFDCJsonFields = null;
-    }
+        //@formatter:off
+        JSONObjectBuilder jsonBuilder = new JSONObjectBuilder();
 
-    private static void addUnchangingFields(StringBuilder sb, String hostName, String wlpUserDir, String serverName) {
-        if (unchangingFieldsJson == null) {
-            StringBuilder temp = new StringBuilder(512);
-            addToJSON(temp, "hostName", hostName, false, false, false, false);
-            addToJSON(temp, "wlpUserDir", wlpUserDir, false, true, false, false);
-            addToJSON(temp, "serverName", serverName, false, false, false, false);
-            unchangingFieldsJson = temp.toString();
-        }
-        sb.append(unchangingFieldsJson);
-    }
+        // We should initialize both the regular JSON logging and LogstashCollector variants
+        for (int i = 0; i < 2; i++) {
+            // Audit events
+            jsonBuilder = new JSONObjectBuilder();
+            jsonBuilder.addField(AuditData.getTypeKey(i), CollectorConstants.AUDIT_LOG_EVENT_TYPE, false, false)
+                       .addField(AuditData.getHostKey(i), hostName, false, false)
+                       .addField(AuditData.getUserDirKey(i), wlpUserDir, false, true)
+                       .addField(AuditData.getServerNameKey(i), serverName, false, false);
+            if (i == JSON_KEY)
+                startAuditJsonFields = jsonBuilder.toString();
+            else if (i == LOGSTASH_KEY)
+                startAuditLogstashCollector = jsonBuilder.toString();
 
-    protected static StringBuilder startMessageJson(String hostName, String wlpUserDir, String serverName) {
-        StringBuilder sb = new StringBuilder(512);
+            // LogTraceData for message events
+            jsonBuilder = new JSONObjectBuilder();
+            jsonBuilder.addField(LogTraceData.getTypeKey(i, true), CollectorConstants.MESSAGES_LOG_EVENT_TYPE, false, false)
+                       .addField(LogTraceData.getHostKey(i, true), hostName, false, false)
+                       .addField(LogTraceData.getUserDirKey(i, true), wlpUserDir, false, true)
+                       .addField(LogTraceData.getServerNameKey(i, true), serverName, false, false);
+            if (i == JSON_KEY)
+                startMessageJsonFields = jsonBuilder.toString();
+            else if (i == LOGSTASH_KEY)
+                startMessageLogstashCollector = jsonBuilder.toString();
 
-        if (startMessageJson != null) {
-            sb.append(startMessageJson);
-        } else {
-            sb.append("{");
-            sb.append(TYPE_FIELD_KEY);
-            sb.append(MESSAGE_JSON_TYPE_FIELD);
-            addUnchangingFields(sb, hostName, wlpUserDir, serverName);
+            // LogTraceData for trace events
+            jsonBuilder = new JSONObjectBuilder();
+            jsonBuilder.addField(LogTraceData.getTypeKey(i, false), CollectorConstants.TRACE_LOG_EVENT_TYPE, false, false)
+                       .addField(LogTraceData.getHostKey(i, false), hostName, false, false)
+                       .addField(LogTraceData.getUserDirKey(i, false), wlpUserDir, false, true)
+                       .addField(LogTraceData.getServerNameKey(i, false), serverName, false, false);
+            if (i == JSON_KEY)
+                startTraceJsonFields = jsonBuilder.toString();
+            else if (i == LOGSTASH_KEY)
+                startTraceLogstashCollector = jsonBuilder.toString();
 
-            startMessageJson = sb.toString();
-        }
+            // Access Log events
+            jsonBuilder = new JSONObjectBuilder();
+            jsonBuilder.addField(AccessLogData.getTypeKey(i), CollectorConstants.ACCESS_LOG_EVENT_TYPE, false, false)
+                       .addField(AccessLogData.getHostKey(i), hostName, false, false)
+                       .addField(AccessLogData.getUserDirKey(i), wlpUserDir, false, true)
+                       .addField(AccessLogData.getServerNameKey(i), serverName, false, false);
+            if (i == JSON_KEY)
+                startAccessLogJsonFields = jsonBuilder.toString();
+            else if (i == LOGSTASH_KEY)
+                startAccessLogLogstashCollector = jsonBuilder.toString();
 
-        return sb;
-    }
-
-    protected static StringBuilder startTraceJson(String hostName, String wlpUserDir, String serverName) {
-        StringBuilder sb = new StringBuilder(512);
-
-        if (startTraceJson != null) {
-            sb.append(startTraceJson);
-        } else {
-            sb.append("{");
-            sb.append(TYPE_FIELD_KEY);
-            sb.append(TRACE_JSON_TYPE_FIELD);
-            addUnchangingFields(sb, hostName, wlpUserDir, serverName);
-
-            startTraceJson = sb.toString();
-        }
-
-        return sb;
-    }
-
-    protected static StringBuilder startFFDCJson(String hostName, String wlpUserDir, String serverName) {
-        StringBuilder sb = new StringBuilder(512);
-
-        if (startFFDCJson != null) {
-            sb.append(startFFDCJson);
-        } else {
-            sb.append("{");
-            sb.append(TYPE_FIELD_KEY);
-            sb.append(FFDC_JSON_TYPE_FIELD);
-            addUnchangingFields(sb, hostName, wlpUserDir, serverName);
-
-            startFFDCJson = sb.toString();
+            // FFDC events
+            jsonBuilder = new JSONObjectBuilder();
+            jsonBuilder.addField(FFDCData.getTypeKey(i), CollectorConstants.FFDC_EVENT_TYPE, false, false)
+                       .addField(FFDCData.getHostKey(i), hostName, false, false)
+                       .addField(FFDCData.getUserDirKey(i), wlpUserDir, false, true)
+                       .addField(FFDCData.getServerNameKey(i), serverName, false, false);
+            if (i == JSON_KEY)
+                startFFDCJsonFields = jsonBuilder.toString();
+            else if (i == LOGSTASH_KEY)
+                startFFDCLogstashCollector = jsonBuilder.toString();
         }
 
-        return sb;
+        // GC events are only in Logstash Collector, so we only need to initialize one variant of it
+        jsonBuilder = new JSONObjectBuilder();
+        jsonBuilder.addField("type", CollectorConstants.GC_EVENT_TYPE, false, false)
+                   .addField("hostName", hostName, false, false)
+                   .addField("wlpUserDir", wlpUserDir, false, true)
+                   .addField("serverName", serverName, false, false);
+        startGCLogstashCollector = jsonBuilder.toString();
+        //formatter:on
     }
 
-    protected static StringBuilder startAccessLogJson(String hostName, String wlpUserDir, String serverName) {
-        StringBuilder sb = new StringBuilder(512);
-
-        if (startAccessLogJson != null) {
-            sb.append(startAccessLogJson);
-        } else {
-            sb.append("{");
-            sb.append(TYPE_FIELD_KEY);
-            sb.append(ACCESS_JSON_TYPE_FIELD);
-            addUnchangingFields(sb, hostName, wlpUserDir, serverName);
-
-            startAccessLogJson = sb.toString();
-        }
-
-        return sb;
-    }
-
-    protected static StringBuilder startGCJson(String hostName, String wlpUserDir, String serverName) {
-        StringBuilder sb = new StringBuilder(512);
-
-        if (startGCJson != null) {
-            sb.append(startGCJson);
-        } else {
-            sb.append("{");
-            sb.append(TYPE_FIELD_KEY);
-            sb.append(GC_JSON_TYPE_FIELD);
-            addUnchangingFields(sb, hostName, wlpUserDir, serverName);
-
-            startGCJson = sb.toString();
-        }
-
-        return sb;
-    }
-
-    protected static StringBuilder startAuditJson(String hostName, String wlpUserDir, String serverName) {
-        StringBuilder sb = new StringBuilder(2048);
-
-        if (startAuditJson != null) {
-            sb.append(startAuditJson);
-        } else {
-            sb.append("{");
-            sb.append(TYPE_FIELD_KEY);
-            sb.append(AUDIT_JSON_TYPE_FIELD);
-            addUnchangingFields(sb, hostName, wlpUserDir, serverName);
-            startAuditJson = sb.toString();
-        }
-
-        return sb;
-    }
-
-    protected static JSONObjectBuilder startAuditJsonFields(String hostName, String wlpUserDir, String serverName) {
+    protected static JSONObjectBuilder startGC() {
         JSONObjectBuilder jsonBuilder = new JSONObject.JSONObjectBuilder();
-        String tempStartFields = startAuditJsonFields;
-
-        if (tempStartFields != null) {
-            jsonBuilder.addPreformatted(tempStartFields);
-        } else {
-            //@formatter:off
-            jsonBuilder.addField(AuditData.getTypeKeyJSON(), CollectorConstants.AUDIT_LOG_EVENT_TYPE, false, false)
-            .addField(AuditData.getHostKeyJSON(), hostName, false, false)
-            .addField(AuditData.getUserDirKeyJSON(), wlpUserDir, false, true)
-            .addField(AuditData.getServerNameKeyJSON(), serverName, false, false);
-            //@formatter:on
-            startAuditJsonFields = jsonBuilder.toString();
-        }
+        jsonBuilder.addPreformatted(startGCLogstashCollector);
         return jsonBuilder;
     }
 
-    protected static JSONObjectBuilder startMessageJsonFields(String hostName, String wlpUserDir, String serverName) {
+    protected static JSONObjectBuilder startAudit(int format) {
         JSONObjectBuilder jsonBuilder = new JSONObject.JSONObjectBuilder();
-        String tempStartFields = startMessageJsonFields;
-
-        if (tempStartFields != null)
-            jsonBuilder.addPreformatted(tempStartFields);
-        else {
-            //@formatter:off
-            jsonBuilder.addField(LogTraceData.getTypeKeyJSON(true), CollectorConstants.MESSAGES_LOG_EVENT_TYPE, false, false)
-            .addField(LogTraceData.getHostKeyJSON(true), hostName, false, false)
-            .addField(LogTraceData.getUserDirKeyJSON(true), wlpUserDir, false, true)
-            .addField(LogTraceData.getServerNameKeyJSON(true), serverName, false, false);
-            //@formatter:on
-            startMessageJsonFields = jsonBuilder.toString();
-        }
+        // We're assuming startAuditJsonFields will never be null - i.e. updateFieldMappings is always called before this method is called
+        if (format == JSON_KEY)
+            jsonBuilder.addPreformatted(startAuditJsonFields);
+        else if (format == LOGSTASH_KEY)
+            jsonBuilder.addPreformatted(startAuditLogstashCollector);
         return jsonBuilder;
     }
 
-    protected static JSONObjectBuilder startTraceJsonFields(String hostName, String wlpUserDir, String serverName) {
+    protected static JSONObjectBuilder startMessage(int format) {
         JSONObjectBuilder jsonBuilder = new JSONObject.JSONObjectBuilder();
-        String tempStartFields = startTraceJsonFields;
-
-        if (tempStartFields != null)
-            jsonBuilder.addPreformatted(tempStartFields);
-        else {
-            //@formatter:off
-            jsonBuilder.addField(LogTraceData.getTypeKeyJSON(false), CollectorConstants.TRACE_LOG_EVENT_TYPE, false, false)
-            .addField(LogTraceData.getHostKeyJSON(false), hostName, false, false)
-            .addField(LogTraceData.getUserDirKeyJSON(false), wlpUserDir, false, true)
-            .addField(LogTraceData.getServerNameKeyJSON(false), serverName, false, false);
-            //@formatter:on
-            startTraceJsonFields = jsonBuilder.toString();
-        }
+        // We're assuming startMessageJsonFields will never be null - i.e. updateFieldMappings is always called before this method is called
+        if (format == JSON_KEY)
+            jsonBuilder.addPreformatted(startMessageJsonFields);
+        else if (format == LOGSTASH_KEY)
+            jsonBuilder.addPreformatted(startMessageLogstashCollector);
         return jsonBuilder;
     }
 
-    protected static JSONObjectBuilder startFFDCJsonFields(String hostName, String wlpUserDir, String serverName) {
+    protected static JSONObjectBuilder startTrace(int format) {
         JSONObjectBuilder jsonBuilder = new JSONObject.JSONObjectBuilder();
-        String tempStartFields = startFFDCJsonFields;
-
-        if (tempStartFields != null)
-            jsonBuilder.addPreformatted(tempStartFields);
-        else {
-            //@formatter:off
-            jsonBuilder.addField(FFDCData.getTypeKeyJSON(), CollectorConstants.FFDC_EVENT_TYPE, false, false)
-            .addField(FFDCData.getHostKeyJSON(), hostName, false, false)
-            .addField(FFDCData.getUserDirKeyJSON(), wlpUserDir, false, true)
-            .addField(FFDCData.getServerNameKeyJSON(), serverName, false, false);
-            //@formatter:on
-            startFFDCJsonFields = jsonBuilder.toString();
-        }
+        // We're assuming startTraceJsonFields will never be null - i.e. updateFieldMappings is always called before this method is called
+        if (format == JSON_KEY)
+            jsonBuilder.addPreformatted(startTraceJsonFields);
+        else if (format == LOGSTASH_KEY)
+            jsonBuilder.addPreformatted(startTraceLogstashCollector);
         return jsonBuilder;
     }
 
-    protected static JSONObjectBuilder startAccessLogJsonFields(String hostName, String wlpUserDir, String serverName) {
+    protected static JSONObjectBuilder startFFDC(int format) {
         JSONObjectBuilder jsonBuilder = new JSONObject.JSONObjectBuilder();
-        String tempStartFields = startAccessLogJsonFields;
+        // We're assuming startFFDCJsonFields will never be null - i.e. updateFieldMappings is always called before this method is called
+        if (format == JSON_KEY)
+            jsonBuilder.addPreformatted(startFFDCJsonFields);
+        else if (format == LOGSTASH_KEY)
+            jsonBuilder.addPreformatted(startFFDCLogstashCollector);
+        return jsonBuilder;
+    }
 
-        if (tempStartFields != null)
-            jsonBuilder.addPreformatted(tempStartFields);
-        else {
-            //@formatter:off
-            jsonBuilder.addField(AccessLogData.getTypeKeyJSON(), CollectorConstants.ACCESS_LOG_EVENT_TYPE, false, false)
-            .addField(AccessLogData.getHostKeyJSON(), hostName, false, false)
-            .addField(AccessLogData.getUserDirKeyJSON(), wlpUserDir, false, true)
-            .addField(AccessLogData.getServerNameKeyJSON(), serverName, false, false);
-            //@formatter:on
-            startAccessLogJsonFields = jsonBuilder.toString();
-        }
+    protected static JSONObjectBuilder startAccessLog(int format) {
+        JSONObjectBuilder jsonBuilder = new JSONObject.JSONObjectBuilder();
+        // We're assuming startAccessLogJsonFields and startAccessLogLogstashCollector will never be null - i.e. updateFieldMappings is always called before this method is called
+        if (format == JSON_KEY)
+            jsonBuilder.addPreformatted(startAccessLogJsonFields);
+        else if (format == LOGSTASH_KEY)
+            jsonBuilder.addPreformatted(startAccessLogLogstashCollector);
         return jsonBuilder;
     }
 

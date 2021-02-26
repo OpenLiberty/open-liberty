@@ -92,7 +92,7 @@ final class JmsJcaConnectionFactoryImpl implements JmsJcaConnectionFactory {
      * Constructs a connection factory handle associated with the given managed
      * connection factory and connection manager. The <code>isManaged</code>
      * method will then return <code>true</code>.
-     * 
+     *
      * @param managedConnectionFactory
      *            the managed connection
      * @param connectionManager
@@ -127,7 +127,7 @@ final class JmsJcaConnectionFactoryImpl implements JmsJcaConnectionFactory {
      * Constructs a connection factory handle associated with the given managed
      * connection factory andno connection manager. The <code>isManaged</code>
      * method will then return <code>false</code>.
-     * 
+     *
      * @param managedConnectionFactory
      *            the managed connection factory
      */
@@ -157,7 +157,7 @@ final class JmsJcaConnectionFactoryImpl implements JmsJcaConnectionFactory {
      * container or, if none are passed, those from the managed connection
      * factory. The session is held by the connection and returned on the first
      * call to <code>createSession</code>.
-     * 
+     *
      * @return the connection
      * @throws javax.resource.ResourceException
      *             if the JCA runtime fails to allocate a connection
@@ -278,7 +278,7 @@ final class JmsJcaConnectionFactoryImpl implements JmsJcaConnectionFactory {
                             SibTr.info(TRACE, NLS.getFormattedMessage(("CONNECTION_ERROR_RETRY_CWSJR1067"),
                                                                       new Object[] { clonedException }, null));
 
-                            // We need to try again so we clone and change the cri (incremenet counter) which 
+                            // We need to try again so we clone and change the cri (incremenet counter) which
                             // forces j2c to create a new managed connection.  Cloning is needed to prevent
                             // a broken connection in the shared pool being returned because it has a
                             // cri == this cri (PM31826)
@@ -402,7 +402,7 @@ final class JmsJcaConnectionFactoryImpl implements JmsJcaConnectionFactory {
      * if none are passed, those from the application. The session is held by
      * the connection and returned on the first call to
      * <code>createSession</code>.
-     * 
+     *
      * @param userName
      *            the application provided user name
      * @param password
@@ -504,7 +504,7 @@ final class JmsJcaConnectionFactoryImpl implements JmsJcaConnectionFactory {
                             SibTr.info(TRACE, NLS.getFormattedMessage(("CONNECTION_ERROR_RETRY_CWSJR1067"),
                                                                       new Object[] { clonedException }, null));
 
-                            // We need to try again so we clone and change the cri (incremenet counter) which 
+                            // We need to try again so we clone and change the cri (incremenet counter) which
                             // forces j2c to create a new managed connection.  Cloning is needed to prevent
                             // a broken connection in the shared pool being returned because it has a
                             // cri == this cri (PM31826)
@@ -552,8 +552,8 @@ final class JmsJcaConnectionFactoryImpl implements JmsJcaConnectionFactory {
 
             if (cause instanceof SIAuthenticationException)
             {
-                throw new SIAuthenticationException(NLS.getFormattedMessage("APPLICATION_AUTHENTICATION_EXCEPTION_1072",
-                                                                            new Object[] { userName }, null));
+                String m = NLS.getFormattedMessage("APPLICATION_AUTHENTICATION_EXCEPTION_1072", new Object[] { userName }, null);
+                throw (SIAuthenticationException) new SIAuthenticationException(m).initCause(exception);
             }
             else if (cause instanceof SIException)
             {
@@ -576,7 +576,7 @@ final class JmsJcaConnectionFactoryImpl implements JmsJcaConnectionFactory {
 
     /**
      * Create a core connection
-     * 
+     *
      * @return the core connection
      * @throws ResourceException
      *             if the creation fails Feature 169626.14
@@ -590,7 +590,7 @@ final class JmsJcaConnectionFactoryImpl implements JmsJcaConnectionFactory {
 
     /**
      * Creates a core connection
-     * 
+     *
      * @param userName
      *            the username
      * @param password
@@ -694,9 +694,9 @@ final class JmsJcaConnectionFactoryImpl implements JmsJcaConnectionFactory {
     /**
      * Returns the JMS client ID set on the associated managed connection
      * factory or null if none was set.
-     * 
+     *
      * Used in Outbound Diagram 9
-     * 
+     *
      * @return the client ID
      */
     @Override
@@ -707,9 +707,9 @@ final class JmsJcaConnectionFactoryImpl implements JmsJcaConnectionFactory {
     /**
      * Returns the JMS NonPersistentMapping set on the associated managed
      * connection factory or null if none was set.
-     * 
+     *
      * Used in Outbound Diagram 9
-     * 
+     *
      * @return the NonPersistentMapping
      */
     @Override
@@ -720,9 +720,9 @@ final class JmsJcaConnectionFactoryImpl implements JmsJcaConnectionFactory {
     /**
      * Returns the JMS PersistentMapping set on the associated managed
      * connection factory or null if none was set.
-     * 
+     *
      * Used in Outbound Diagram 9
-     * 
+     *
      * @return the PersistentMapping
      */
     @Override
@@ -732,9 +732,9 @@ final class JmsJcaConnectionFactoryImpl implements JmsJcaConnectionFactory {
 
     /**
      * Returns the DurableSubscriptionHome property
-     * 
+     *
      * Used in Outbound Diagram 9
-     * 
+     *
      * @return the DurableSubscriptionHome
      */
     @Override
@@ -744,9 +744,9 @@ final class JmsJcaConnectionFactoryImpl implements JmsJcaConnectionFactory {
 
     /**
      * Returns ReadAhead property
-     * 
+     *
      * Used in Outbound Diagram 9
-     * 
+     *
      * @return ReadAhead
      */
     @Override
@@ -756,7 +756,7 @@ final class JmsJcaConnectionFactoryImpl implements JmsJcaConnectionFactory {
 
     /**
      * Gets the prefix for temporary queue names.
-     * 
+     *
      * @return the prefix
      */
     @Override
@@ -766,7 +766,7 @@ final class JmsJcaConnectionFactoryImpl implements JmsJcaConnectionFactory {
 
     /**
      * Gets the prefix for temporary topic names.
-     * 
+     *
      * @return the prefix
      */
     @Override
@@ -776,7 +776,7 @@ final class JmsJcaConnectionFactoryImpl implements JmsJcaConnectionFactory {
 
     /**
      * Gets the busName
-     * 
+     *
      * @return the busName
      */
     @Override
@@ -786,7 +786,7 @@ final class JmsJcaConnectionFactoryImpl implements JmsJcaConnectionFactory {
 
     /**
      * Gets the userName
-     * 
+     *
      * @return the userName
      */
     @Override
@@ -796,7 +796,7 @@ final class JmsJcaConnectionFactoryImpl implements JmsJcaConnectionFactory {
 
     /**
      * Gets the password
-     * 
+     *
      * @return the password
      */
     @Override
@@ -806,7 +806,7 @@ final class JmsJcaConnectionFactoryImpl implements JmsJcaConnectionFactory {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.sib.api.jmsra.JmsJcaConnectionFactory#getTarget()
      */
     @Override
@@ -816,7 +816,7 @@ final class JmsJcaConnectionFactoryImpl implements JmsJcaConnectionFactory {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.sib.api.jmsra.JmsJcaConnectionFactory#getTargetSignificance()
      */
     @Override
@@ -826,7 +826,7 @@ final class JmsJcaConnectionFactoryImpl implements JmsJcaConnectionFactory {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.sib.api.jmsra.JmsJcaConnectionFactory#getTargetType()
      */
 
@@ -837,7 +837,7 @@ final class JmsJcaConnectionFactoryImpl implements JmsJcaConnectionFactory {
 
     /**
      * Gets the target inbound transport chain.
-     * 
+     *
      * @return the target transport chain
      */
     @Override
@@ -847,7 +847,7 @@ final class JmsJcaConnectionFactoryImpl implements JmsJcaConnectionFactory {
 
     /**
      * Gets the providerEndpoints
-     * 
+     *
      * @return the providerEndpoints
      */
     @Override
@@ -857,7 +857,7 @@ final class JmsJcaConnectionFactoryImpl implements JmsJcaConnectionFactory {
 
     /**
      * Gets the connectionProximity
-     * 
+     *
      * @return the connectionProximity
      */
     @Override
@@ -867,7 +867,7 @@ final class JmsJcaConnectionFactoryImpl implements JmsJcaConnectionFactory {
 
     /**
      * Returns the shareDurableSubscription details
-     * 
+     *
      * @return the shareDurableSubscription property
      */
     @Override
@@ -877,7 +877,7 @@ final class JmsJcaConnectionFactoryImpl implements JmsJcaConnectionFactory {
 
     /**
      * Returns the subscription protocol
-     * 
+     *
      * @return the subscription protocol property
      */
     @Override
@@ -887,7 +887,7 @@ final class JmsJcaConnectionFactoryImpl implements JmsJcaConnectionFactory {
 
     /**
      * Returns the multicast interface
-     * 
+     *
      * @return the multicast interface property
      */
     @Override
@@ -897,7 +897,7 @@ final class JmsJcaConnectionFactoryImpl implements JmsJcaConnectionFactory {
 
     /**
      * Returns the property indicating if the producer will modify the payload after setting it.
-     * 
+     *
      * @return String containing the property value.
      */
     @Override
@@ -907,7 +907,7 @@ final class JmsJcaConnectionFactoryImpl implements JmsJcaConnectionFactory {
 
     /**
      * Returns the property indicating if the consumer will modify the payload after getting it.
-     * 
+     *
      * @return String containing the property value.
      */
     @Override
@@ -921,7 +921,7 @@ final class JmsJcaConnectionFactoryImpl implements JmsJcaConnectionFactory {
      * was passed on its creation. This can be used by the JMS API to determine
      * whether or not to throw exceptions on methods that are not permitted in a
      * managed environment i.e. within the EJB or web container.
-     * 
+     *
      * @return true iff this connection factory is managed
      */
     @Override
@@ -931,7 +931,7 @@ final class JmsJcaConnectionFactoryImpl implements JmsJcaConnectionFactory {
 
     /**
      * Returns the connectionManager.
-     * 
+     *
      * @return ConnectionManager
      */
     ConnectionManager getConnectionManager() {
@@ -940,7 +940,7 @@ final class JmsJcaConnectionFactoryImpl implements JmsJcaConnectionFactory {
 
     /**
      * Returns the managedConnectionFactory.
-     * 
+     *
      * @return JmsJcaManagedConnectionFactoryImpl
      */
     JmsJcaManagedConnectionFactoryImpl getManagedConnectionFactory() {
@@ -949,7 +949,7 @@ final class JmsJcaConnectionFactoryImpl implements JmsJcaConnectionFactory {
 
     /**
      * Compares this object with the supplied object
-     * 
+     *
      * @param other -
      *            The object to compare
      * @return True if the objects match and false otherwise
@@ -1038,7 +1038,7 @@ final class JmsJcaConnectionFactoryImpl implements JmsJcaConnectionFactory {
 
     /**
      * Returns a string representation of this object
-     * 
+     *
      * @return String The string describing this object
      */
     @Override

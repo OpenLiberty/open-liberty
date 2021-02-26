@@ -73,6 +73,10 @@ public class WSContextFactory implements InitialContextFactory, ObjectFactory, A
         }
     }
 
+    protected void deactivate(ComponentContext cc) {
+        userContext.getBundle(Constants.SYSTEM_BUNDLE_LOCATION).getBundleContext().removeServiceListener(this);
+    }
+
     Object getService(final ServiceReference<?> ref) {
         return cache.computeIfAbsent(ref, (r) -> AccessController.doPrivileged((PrivilegedAction<Object>) () -> userContext.getService(r)));
     }

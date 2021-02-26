@@ -365,6 +365,20 @@ PROP_SET_ERROR.useraction=V\u00e9rifiez que la valeur indiqu\u00e9e pour la prop
 # 8050-8055 deleted
 # 8060 deleted
 # 8065 deleted
+     
+# 8066E
+# {0}         The invalid attribute value
+# {1}         The allowed attribute values
+# Do not translate: identifyException, as
+8066E_IDENTIFY_EXCEPTION_INVALID_TARGET=DSRA8066E: La valeur non valide ''{0}'' a \u00e9t\u00e9 sp\u00e9cifi\u00e9e pour l''attribut ''as'' de l''\u00e9l\u00e9ment identifyException. Les valeurs admises sont les suivantes : {1}
+8066E_IDENTIFY_EXCEPTION_INVALID_TARGET.explanation=Une valeur non valide a \u00e9t\u00e9 sp\u00e9cifi\u00e9e pour l'\u00e9l\u00e9ment de configuration identifyException.
+8066E_IDENTIFY_EXCEPTION_INVALID_TARGET.useraction=Mettez \u00e0 jour la configuration pour sp\u00e9cifier l'une des valeurs admises.
+
+# 8067E
+# Do not translate: errorCode, sqlState, identifyException
+8067E_IDENTIFY_EXCEPTION_ERRCODE_SQLSTATE=DSRA8067E: Au moins l'un des attributs 'errorCode' ou 'sqlState' doit \u00eatre sp\u00e9cifi\u00e9 dans l'\u00e9l\u00e9ment identifyException.
+8067E_IDENTIFY_EXCEPTION_ERRCODE_SQLSTATE.explanation=L'un des attributs errorCode ou sqlState doit \u00eatre sp\u00e9cifi\u00e9.
+8067E_IDENTIFY_EXCEPTION_ERRCODE_SQLSTATE.useraction=Mettez \u00e0 jour la configuration pour sp\u00e9cifier au moins l'un des attributs errorCode ou sqlState dans l'\u00e9l\u00e9ment identifyException.
 
 # 8100E      JAVAX_CONN_ERR
 # 
@@ -647,6 +661,10 @@ KERBEROS_NOT_SUPPORTED_WARNING.explanation= Le serveur d'applications ne prend p
 KERBEROS_NOT_SUPPORTED_WARNING.useraction= D\u00e9sactivez Kerberos ou utilisez un programme d'arri\u00e8re plan DB2 avec le pilote JDBC DB2 Universal.
 
 # 9544-9548 deleted
+
+KERBEROS_ORACLE_IBMJDK_NOT_SUPPORTED=DSRA9549E: L'utilisation d'IBM Java 8 SDK avec une base de donn\u00e9es Oracle n'est pas prise en charge. Le pilote JDBC d'Oracle prend uniquement en charge l'authentification Kerberos avec les API de s\u00e9curit\u00e9 par d\u00e9faut disponibles dans OpenJDK, OpenJ9 ou d'autres kits de d\u00e9veloppement Java similaires.
+KERBEROS_ORACLE_IBMJDK_NOT_SUPPORTED.explanation=L'utilisation d'IBM Java 8 SDK avec une base de donn\u00e9es Oracle n'est pas prise en charge. Le pilote JDBC d'Oracle prend uniquement en charge l'authentification Kerberos avec les API de s\u00e9curit\u00e9 par d\u00e9faut disponibles dans OpenJDK, OpenJ9 ou d'autres kits de d\u00e9veloppement Java similaires.
+KERBEROS_ORACLE_IBMJDK_NOT_SUPPORTED.useraction=D\u00e9sactivez l'authentification Kerberos pour la source de donn\u00e9es Oracle ou utilisez un kit de d\u00e9veloppement Java autre qu'IBM Java 8 SDK.
 
 # 9600-9603 deleted 
 # 9900 deleted

@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.batch.runtime.BatchRuntime;
 import javax.batch.runtime.JobExecution;
 import javax.batch.runtime.JobInstance;
 
@@ -42,10 +43,12 @@ import com.ibm.jbatch.container.ws.BatchLocationService;
 import com.ibm.jbatch.container.ws.JoblogUtil;
 import com.ibm.jbatch.container.ws.WSJobExecution;
 import com.ibm.jbatch.container.ws.WSJobRepository;
+import com.ibm.jbatch.container.ws.WSRemotablePartitionExecution;
 import com.ibm.jbatch.container.ws.events.BatchEventsPublisher;
 import com.ibm.jbatch.spi.services.IBatchConfig;
 import com.ibm.websphere.ras.TrConfigurator;
 import com.ibm.ws.jbatch.joblog.JobExecutionLog;
+import com.ibm.ws.jbatch.joblog.JobExecutionLog.LogLocalState;
 import com.ibm.ws.jbatch.joblog.JobInstanceLog;
 import com.ibm.ws.jbatch.joblog.JobLogConstants;
 import com.ibm.ws.jbatch.joblog.services.IJobLogManagerService;
@@ -86,7 +89,7 @@ public class JobLogManagerImpl implements IJobLogManagerService {
      * Our special java.util.logging.Handler. This guy writes to the job logs.
      * All Loggers that this guy is added to, will log to the job log (in addition
      * to wherever else they're configured to log to, e.g. the server log).
-     * 
+     *
      * This guy is registered with all loggers named in the "jobLoggers" config attribute.
      * It's registered with the root logger if includeServerLogging=true, so that
      * all server logging is routed to the job log as well, in addition to the server log.
@@ -126,11 +129,13 @@ public class JobLogManagerImpl implements IJobLogManagerService {
 
     /** {@inheritDoc} */
     @Override
-    public void init(IBatchConfig batchConfig) {}
+    public void init(IBatchConfig batchConfig) {
+    }
 
     /** {@inheritDoc} */
     @Override
-    public void shutdown() {}
+    public void shutdown() {
+    }
 
     /**
      * Called by DS to inject location service ref
@@ -184,37 +189,33 @@ public class JobLogManagerImpl implements IJobLogManagerService {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * Only set the execution context if job logging is enabled, because
      * setting the execution context will cause the first joblog file to be created.
-     * 
+     *
      */
     @Override
     public void workUnitStarted(WorkUnitDescriptor ctx) {
-        //The outer if statement prevents remote job logs from being created.
-        if (isJobLoggingEnabled() && !ctx.isRemotePartitionDispatch()) {
-            if (isJobLoggingEnabled()) {
-
-                try {
-                    String logDirPath = joblogHandler.setExecutionContext(ctx);
-                    ctx.updateExecutionJobLogDir(logDirPath);
-                } catch (BatchLogPartNotCreatedException e) {
-                    //No initial log handler added to this job.
-                    logger.log(Level.SEVERE, "job.logging.create.new",
-                               new Object[] { ctx.getTopLevelJobName(),
-                                             ctx.getTopLevelInstanceId(),
-                                             ctx.getTopLevelExecutionId(),
-                                             e.toString() });
-
-                }
+        if (isJobLoggingEnabled()) {
+            try {
+                String logDirPath = joblogHandler.setExecutionContext(ctx);
+                ctx.updateExecutionJobLogDir(logDirPath);
+            } catch (BatchLogPartNotCreatedException e) {
+                //No initial log handler added to this job.
+                logger.log(Level.SEVERE, "job.logging.create.new",
+                           new Object[] { ctx.getTopLevelJobName(),
+                                          ctx.getTopLevelInstanceId(),
+                                          ctx.getTopLevelExecutionId(),
+                                          e.toString() });
 
             }
+
         }
     }
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * Clear the execution context regardless of whether job logging is enabled.
      * This ensures that the context is cleared in the event that job logging was
      * initially enabled when the job started but was subsequently disabled.
@@ -226,9 +227,9 @@ public class JobLogManagerImpl implements IJobLogManagerService {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * Retrieve the JobExecutionLogs for all executions associated with the given instance.
-     * 
+     *
      * @throws BatchJobNotLocalException
      */
     @Override
@@ -240,9 +241,14 @@ public class JobLogManagerImpl implements IJobLogManagerService {
         JobInstance jobInstance = jobRepository.getJobInstance(jobInstanceId);
 
         for (JobExecution jobExecution : jobRepository.getJobExecutionsFromInstance(jobInstanceId)) {
-            JobExecutionLog execLog = getJobExecutionLog(jobInstance, jobExecution.getExecutionId());
+            // Find any remote partitions, they'll be part of the exec log
+            List<WSRemotablePartitionExecution> remotePartitions = jobRepository.getRemotablePartitionsForJobExecution(jobExecution.getExecutionId());
+            JobExecutionLog execLog = getJobExecutionLog(jobInstance, jobExecution.getExecutionId(), remotePartitions);
             execLogs.add(execLog);
-            instanceDirs.add(execLog.getExecLogRootDir().getParentFile());
+            File execLogRoot = execLog.getExecLogRootDir();
+            if (execLogRoot != null) {
+                instanceDirs.add(execLogRoot.getParentFile());
+            }
         }
 
         JobInstanceLog retMe = new JobInstanceLog(jobInstance, new ArrayList<File>(instanceDirs));
@@ -256,7 +262,7 @@ public class JobLogManagerImpl implements IJobLogManagerService {
 
     /**
      * Gets the local Job Instance Log file list.
-     * 
+     *
      * @param jobInstanceId
      */
     @Override
@@ -269,10 +275,45 @@ public class JobLogManagerImpl implements IJobLogManagerService {
 
         for (JobExecution jobExecution : jobRepository.getJobExecutionsFromInstance(jobInstanceId)) {
 
-            // Only add to list if job log is local to the server
-            if (batchLocationService.isLocalJobExecution(jobExecution.getExecutionId())) {
-                JobExecutionLog execLog = getJobExecutionLog(jobInstance, jobExecution);
+            JobExecutionLog execLog = getJobExecutionLog(jobExecution.getExecutionId());
+
+            // If the execution OR a remote partition ran locally, include it
+            if (execLog.getLocalState() != LogLocalState.NOT_LOCAL) {
                 execLogs.add(execLog);
+                if (execLog.getExecLogRootDir() != null) {
+                    instanceDirs.add(execLog.getExecLogRootDir().getParentFile());
+                }
+            }
+
+        }
+
+        JobInstanceLog retMe = new JobInstanceLog(jobInstance, new ArrayList<File>(instanceDirs));
+
+        for (JobExecutionLog log : execLogs) {
+            retMe.addJobExecutionLog(log);
+        }
+
+        return retMe;
+
+    }
+
+    /**
+     * Gets Job Instance Log file list, including non-local executions.
+     *
+     * @param jobInstanceId
+     */
+    @Override
+    public JobInstanceLog getJobInstanceLogAllExecutions(long jobInstanceId) {
+
+        ArrayList<JobExecutionLog> execLogs = new ArrayList<JobExecutionLog>();
+        HashSet<File> instanceDirs = new HashSet<File>();
+
+        JobInstance jobInstance = jobRepository.getJobInstance(jobInstanceId);
+
+        for (JobExecution jobExecution : jobRepository.getJobExecutionsFromInstance(jobInstanceId)) {
+            JobExecutionLog execLog = getJobExecutionLog(jobExecution.getExecutionId());
+            execLogs.add(execLog);
+            if (execLog.getLocalState() == LogLocalState.EXECUTION_LOCAL) {
                 instanceDirs.add(execLog.getExecLogRootDir().getParentFile());
             }
         }
@@ -286,84 +327,59 @@ public class JobLogManagerImpl implements IJobLogManagerService {
         return retMe;
 
     }
-    
-    /**
-     * Gets Job Instance Log file list, including non-local executions.
-     * 
-     * @param jobInstanceId
-     */
-    @Override
-    public JobInstanceLog getJobInstanceLogAllExecutions(long jobInstanceId) {
-
-        ArrayList<JobExecutionLog> execLogs = new ArrayList<JobExecutionLog>();
-        HashSet<File> instanceDirs = new HashSet<File>();
-
-        JobInstance jobInstance = jobRepository.getJobInstance(jobInstanceId);
-
-        for (JobExecution jobExecution : jobRepository.getJobExecutionsFromInstance(jobInstanceId)) {
-            JobExecutionLog execLog = getJobExecutionLog(jobInstance, jobExecution);
-            execLogs.add(execLog);
-            instanceDirs.add(execLog.getExecLogRootDir().getParentFile());
-        }
-
-        JobInstanceLog retMe = new JobInstanceLog(jobInstance, new ArrayList<File>(instanceDirs));
-
-        for (JobExecutionLog log : execLogs) {
-            retMe.addJobExecutionLog(log);
-        }
-
-        return retMe;
-
-    }
-
-    /**
-     * Gets the Job Execution Log without doing the local job check/assert.
-     * 
-     * @param jobInstance
-     * @param jobExecution
-     * @return
-     */
-    private JobExecutionLog getJobExecutionLog(JobInstance jobInstance, JobExecution jobExecution) {
-
-        String jobLogDirName = ((WSJobExecution) jobExecution).getLogpath();
-
-        File jobLogDir = StringUtils.isEmpty(jobLogDirName) ? getServerOutputDir(getJobExecutionLogDirName(jobInstance, jobExecution.getExecutionId())) : new File(jobLogDirName);
-
-        List<File> jobLogFiles = StringUtils.isEmpty(jobLogDirName) ? Collections.EMPTY_LIST : FileUtils.findFiles(new File(jobLogDirName), JobLogFileFilter);
-
-        return new JobExecutionLog(jobExecution, jobLogFiles, jobLogDir);
-    }
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * Scan the filesystem for all job log parts associated with the given jobExecutionId.
-     * 
+     *
      * @throws BatchJobNotLocalException
      */
     @Override
-    public JobExecutionLog getJobExecutionLog(long jobExecutionId) throws BatchJobNotLocalException {
+    public JobExecutionLog getJobExecutionLog(long jobExecutionId) {
 
         JobInstance jobInstance = jobRepository.getJobInstanceFromExecution(jobExecutionId);
 
-        return getJobExecutionLog(jobInstance, jobExecutionId);
+        List<WSRemotablePartitionExecution> remotePartitions = jobRepository.getRemotablePartitionsForJobExecution(jobExecutionId);
+
+        return getJobExecutionLog(jobInstance, jobExecutionId, remotePartitions);
     }
 
     /**
      * @return JobExecutionLog for the given JobInstance and execution ID.
      * @throws BatchJobNotLocalException
      */
-    private JobExecutionLog getJobExecutionLog(JobInstance jobInstance, long jobExecutionId) throws BatchJobNotLocalException {
+    private JobExecutionLog getJobExecutionLog(JobInstance jobInstance, long jobExecutionId,
+                                               List<WSRemotablePartitionExecution> remotePartitions) {
 
-        JobExecution jobExecution = batchLocationService.assertIsLocalJobExecution(jobExecutionId);
+        WSJobExecution jobExecution = (WSJobExecution) BatchRuntime.getJobOperator().getJobExecution(jobExecutionId);
+        LogLocalState localState = LogLocalState.NOT_LOCAL;
+        String jobLogDirName = null;
+        File jobLogDir = null;
+        List<File> jobLogFiles = new ArrayList<File>();
 
-        String jobLogDirName = ((WSJobExecution) jobExecution).getLogpath();
+        // First, check if the execution itself ran locally
+        if (batchLocationService.isLocalJobExecution(jobExecution)) {
+            localState = LogLocalState.EXECUTION_LOCAL;
+            jobLogDirName = jobExecution.getLogpath();
+            jobLogDir = StringUtils.isEmpty(jobLogDirName) ? getServerOutputDir(getJobExecutionLogDirName(jobInstance, jobExecutionId)) : new File(jobLogDirName);
+            jobLogFiles = StringUtils.isEmpty(jobLogDirName) ? Collections.EMPTY_LIST : FileUtils.findFiles(new File(jobLogDirName), JobLogFileFilter);
 
-        File jobLogDir = StringUtils.isEmpty(jobLogDirName) ? getServerOutputDir(getJobExecutionLogDirName(jobInstance, jobExecutionId)) : new File(jobLogDirName);
+            // If not, check if the execution has any remote partitions that ran locally instead
+        } else if (remotePartitions != null) {
+            for (WSRemotablePartitionExecution partition : remotePartitions) {
+                if (batchLocationService.isLocalRemotablePartition(partition)) {
+                    jobLogDirName = partition.getLogpath();
+                    jobLogDir = StringUtils.isEmpty(jobLogDirName) ? getServerOutputDir(getJobExecutionLogDirName(jobInstance,
+                                                                                                                  jobExecutionId)) : new File(jobLogDirName).getParentFile().getParentFile(); // Go two steps back to exclude the step name/partition num directories
+                    jobLogFiles.addAll(FileUtils.findFiles(new File(jobLogDirName), JobLogFileFilter));
+                    localState = LogLocalState.PARTITION_LOCAL;
+                }
+            }
+        }
 
-        List<File> jobLogFiles = StringUtils.isEmpty(jobLogDirName) ? Collections.EMPTY_LIST : FileUtils.findFiles(new File(jobLogDirName), JobLogFileFilter);
+        return new JobExecutionLog(jobExecution, jobLogFiles, jobLogDir, localState, remotePartitions);
 
-        return new JobExecutionLog(jobExecution, jobLogFiles, jobLogDir);
     }
 
     /**
@@ -410,12 +426,12 @@ public class JobLogManagerImpl implements IJobLogManagerService {
      */
     protected String getJobInstanceLogDirName(String jobName, long instanceId) {
         Object token = null;
-	File dateDir = null;
+        File dateDir = null;
 
-	try {
-	    token = ThreadIdentityManager.runAsServer();
+        try {
+            token = ThreadIdentityManager.runAsServer();
 
-	    String dateDirBase = String.format(getAbsoluteJobLogsRootDirName() + File.separator
+            String dateDirBase = String.format(getAbsoluteJobLogsRootDirName() + File.separator
                                                + "%s" + File.separator
                                                + new SimpleDateFormat("yyyy-MM-dd").format(new Date()),
                                                jobName);
@@ -427,10 +443,10 @@ public class JobLogManagerImpl implements IJobLogManagerService {
                 dateDir = new File(dateDirBase + "_" + extraDir);
                 extraDir++;
             }
-	} finally {
-	    if (token != null)
-		ThreadIdentityManager.reset(token);
-	}
+        } finally {
+            if (token != null)
+                ThreadIdentityManager.reset(token);
+        }
 
         return String.format(dateDir.getPath() + File.separator
                              + "instance.%d",
@@ -454,7 +470,7 @@ public class JobLogManagerImpl implements IJobLogManagerService {
     }
 
     /**
-     * 
+     *
      * A FileFilter for job log files: must be a file (not dir) and must end with ".log".
      */
     protected static final FileFilter JobLogFileFilter = new FileFilter() {
@@ -500,14 +516,14 @@ public class JobLogManagerImpl implements IJobLogManagerService {
 
     /**
      * Set the Level, Filter, and maxRecords props for the JobLogHandler.
-     * 
+     *
      * The Filter is parsed from the configured traceSpecification.
      */
     protected JobLogHandler configureJobLogHandler(Map<String, Object> config) {
 
         if (isJobLoggingEnabled() && (!(Boolean) config.get("enabled"))) {
-            // Job logging was enabled and now is not.  Need to let the 
-            // job log handler know so that, if needed, it can send the final 
+            // Job logging was enabled and now is not.  Need to let the
+            // job log handler know so that, if needed, it can send the final
             // log notification at the end of the job.
             joblogHandler.setFinalNotification(true);
         }

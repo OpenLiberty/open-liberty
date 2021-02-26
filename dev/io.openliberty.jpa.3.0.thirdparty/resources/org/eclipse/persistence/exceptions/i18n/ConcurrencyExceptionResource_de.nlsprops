@@ -1,0 +1,49 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/ConcurrencyExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+2001=Der Wartezyklus wurde unterbrochen. {0} Nachricht: [{1}]
+
+2002=Wartezyklusfehler bei ServerSession.
+
+2003=Wartezyklusfehler bei ClientSession.
+
+2004=Es wurde versucht, ein Signal zu senden, bevor die Methode wait() f\u00fcr ConcurrencyManager ausgef\u00fchrt wurde. Dies bedeutet in der Regel, dass versucht wurde, eine Transaktion {0}festzuschreiben oder ein Rollback f\u00fcr eine Transaktion durchzuf\u00fchren, bevor sie gestartet wurde, oder zweimal ein Rollback f\u00fcr eine Transaktion durchzuf\u00fchren.
+
+2005=Wartezyklusfehler bei Sequencing Connection Handler f\u00fcr DatabaseSession.
+
+2006=Es wurde versucht, sequenziell erzeugte Werte \u00fcber eine einzelne Connection({0}) gleichzeitig in mehreren Threads anzufordern.
+
+2007=Die maximal zul\u00e4ssige Anzahl von Versuchen, das Objekt {0} zu sperren, wurde \u00fcberschritten. Das Objekt konnte nicht geklont werden.
+
+2008=Die maximal zul\u00e4ssige Anzahl von Versuchen, das Objekt {0} zu sperren, wurde \u00fcberschritten. Die Transaktion konnte nicht zusammgef\u00fchrt werden.
+
+2009=Die maximal zul\u00e4ssige Anzahl von Versuchen, das Objekt zu sperren, wurde \u00fcberschritten. Das Objekt konnte nicht erstellt werden. Thread: {0} hat eine Sperre auf dem Objekt, aber der Thread {1} erstellt das Objekt.
+
+2010=Die Sperre wurde bereits in eine aufgeschobene Sperre (Deferred Lock) umgewandelt. Ein zweiter Versuch, die Sperre umzuwandeln, wurde vom Thread {0} w\u00e4hrend der Zusammenf\u00fchrung angefordert.
+

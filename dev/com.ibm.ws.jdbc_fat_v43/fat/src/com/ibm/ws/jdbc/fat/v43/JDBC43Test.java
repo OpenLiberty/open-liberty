@@ -10,7 +10,10 @@
  *******************************************************************************/
 package com.ibm.ws.jdbc.fat.v43;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.File;
+import java.util.List;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.importer.ZipImporter;
@@ -75,15 +78,21 @@ public class JDBC43Test extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer("DSRA0302E.*XA_RBOTHER", // raised by mock JDBC driver for XA operations after abort
-                          "DSRA0302E.*XA_RBROLLBACK", // expected when invoking end on JDBC driver during an abort
-                          "DSRA0304E", // expected when invoking end on JDBC driver during an abort
-                          "DSRA8790W", // expected for begin/endRequest invoked by application being ignored
-                          "J2CA0045E.*poolOf1", // expected when testing that no more connections are available
-                          "J2CA0081E", // TODO why does Derby think a transaction is still active?
-                          "WLTC0018E", // TODO remove once transactions bug is fixed
-                          "WLTC0032W", // local tran rolled back, expected when trying to keep unshared connection open across servlet boundary
-                          "WLTC0033W.*poolOf1"); // same reason as above
+        try {
+            // Must find exactly 1 warning for connection leaks after running tests:
+            List<String> connectionLeakWarnings = server.findStringsInLogs("J2CA8070I");
+            assertEquals(connectionLeakWarnings.toString(), 1, connectionLeakWarnings.size());
+        } finally {
+            server.stopServer("DSRA0302E.*XA_RBOTHER", // raised by mock JDBC driver for XA operations after abort
+                              "DSRA0302E.*XA_RBROLLBACK", // expected when invoking end on JDBC driver during an abort
+                              "DSRA0304E", // expected when invoking end on JDBC driver during an abort
+                              "DSRA8790W", // expected for begin/endRequest invoked by application being ignored
+                              "J2CA0045E.*poolOf1", // expected when testing that no more connections are available
+                              "J2CA0081E", // TODO why does Derby think a transaction is still active?
+                              "WLTC0018E", // TODO remove once transactions bug is fixed
+                              "WLTC0032W", // local tran rolled back, expected when trying to keep unshared connection open across servlet boundary
+                              "WLTC0033W.*poolOf2"); // same reason as above
+        }
     }
 
     /**
@@ -126,7 +135,7 @@ public class JDBC43Test extends FATServletClient {
      * using up all of the connections in the pool. Make a third servlet request that requires a connection and expect it to work because the
      * HandleList enabled the two leaked connections to be closed out and returned to the connection pool.
      */
-    //@Test TODO enable once HandleList is added
+    @Test
     public void testHandleListClosesLeakedConnectionsFromSeparateRequests() throws Exception {
         runTest(server, "app43/JDBC43TestServlet", "testLeakConnection");
         runTest(server, "app43/JDBC43TestServlet", "testLeakConnection");
@@ -138,7 +147,7 @@ public class JDBC43Test extends FATServletClient {
      * connections from the pool. Make second servlet request that requires a connection and expect it to work because the
      * HandleList enabled the two leaked connections to be closed out and returned to the connection pool.
      */
-    //@Test TODO enable once HandleList is added
+    @Test
     public void testHandleListClosesLeakedConnectionsFromSingleRequest() throws Exception {
         runTest(server, "app43/JDBC43TestServlet", "testLeakConnections");
         runTest(server, "app43/JDBC43TestServlet", "testLeakedConnectionsWereReturned&invokedBy=testHandleListClosesLeakedConnectionsFromSingleRequest");

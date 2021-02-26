@@ -20,6 +20,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.CodingErrorAction;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -34,7 +35,6 @@ import javax.json.JsonString;
 import javax.json.JsonValue;
 import javax.json.JsonValue.ValueType;
 import javax.net.ssl.HttpsURLConnection;
-import javax.xml.bind.DatatypeConverter;
 
 import com.ibm.websphere.simplicity.log.Log;
 
@@ -42,6 +42,8 @@ import com.ibm.websphere.simplicity.log.Log;
  * This class represents an external service that has been defined in a central registry with additional properties about it.
  */
 public class ExternalTestService {
+
+    private static final Class<?> c = ExternalTestService.class;
 
     private final String address;
     private final String serviceName;
@@ -76,6 +78,44 @@ public class ExternalTestService {
     }
 
     /**
+     * Retrieves a Consul value from a key/value pair that may or may not be associated with a Consul service.
+     *
+     * @param propertyName The property name or path. It should be available in a web browser at:
+     *                         ${consulServer}/v1/kv/service/${propertyName}
+     */
+    public static String getProperty(String propertyName) throws Exception {
+        Exception firstEx = null;
+        for (String consulServer : getConsulServers()) {
+            try {
+                JsonArray propertiesJson = new HttpsRequest(consulServer + "/v1/kv/service/" + propertyName + "?recurse=true")
+                                .allowInsecure()
+                                .timeout(10_000)
+                                .expectCode(HttpsURLConnection.HTTP_OK)
+                                .expectCode(HttpsURLConnection.HTTP_NOT_FOUND)
+                                .run(JsonArray.class);
+
+                if (propertiesJson.size() != 1) {
+                    throw new Exception("Expected to find exactly 1 property but found " + propertiesJson.size() +
+                                        ". Full JSON is: " + propertiesJson);
+
+                }
+                JsonObject propertyObject = propertiesJson.getJsonObject(0);
+                if (!propertyObject.containsKey("Value")) {
+                    throw new Exception("Property " + propertyName + " was found but contained no value. Full JSON is: " + propertyObject);
+                }
+                String base64Value = propertyObject.getString("Value");
+                return new String(Base64.getDecoder().decode(base64Value));
+            } catch (Exception e) {
+                if (firstEx == null)
+                    firstEx = e;
+                continue;
+            }
+        }
+
+        throw firstEx;
+    }
+
+    /**
      * Returns an ExternalTestService that matches the given service name.
      * The service returned is randomized so that load is distributed across all healthy instances.
      * This method consider the health of the service both in the central registry and locally.
@@ -84,9 +124,9 @@ public class ExternalTestService {
      *
      * It is desirable for release() to be called when the service is finished with to ensure any locking on the service is efficiently cleaned up
      *
-     * @param serviceName the name of the service type in the central registry e.g. selenium
-     * @return the ExternalTestService selected at random
-     * @throws Exception If either no healthy services could be found or no consul server could be contacted.
+     * @param  serviceName the name of the service type in the central registry e.g. selenium
+     * @return             the ExternalTestService selected at random
+     * @throws Exception   If either no healthy services could be found or no consul server could be contacted.
      */
     public static ExternalTestService getService(String serviceName) throws Exception {
         return getService(serviceName, null);
@@ -104,10 +144,10 @@ public class ExternalTestService {
      *
      * It is desirable for release() to be called when the service is finished with to ensure any locking on the service is efficiently cleaned up
      *
-     * @param serviceName the name of the service type in the central registry e.g. selenium
-     * @param filter a filter that will allow only matched Services to be returned or null for no filter
-     * @return the ExternalTestService selected at random
-     * @throws Exception If either no healthy services could be found or no consul server could be contacted.
+     * @param  serviceName the name of the service type in the central registry e.g. selenium
+     * @param  filter      a filter that will allow only matched Services to be returned or null for no filter
+     * @return             the ExternalTestService selected at random
+     * @throws Exception   If either no healthy services could be found or no consul server could be contacted.
      */
     public static ExternalTestService getService(String serviceName, ExternalTestServiceFilter filter) throws Exception {
         return getServices(1, serviceName, filter).iterator().next();
@@ -122,13 +162,32 @@ public class ExternalTestService {
      *
      * It is desirable for release() to be called when the service is finished with to ensure any locking on the service is efficiently cleaned up
      *
-     * @param count the number of given service that should be returned
-     * @param serviceName the name of the service type in the central registry e.g. selenium
-     * @return Collection of ExternalTestService selected at random, where the collection size matches the supplied count
-     * @throws Exception If either not enough healthy services could be found or no consul server could be contacted.
+     * @param  count       the number of given service that should be returned
+     * @param  serviceName the name of the service type in the central registry e.g. selenium
+     * @return             Collection of ExternalTestService selected at random, where the collection size matches the supplied count
+     * @throws Exception   If either not enough healthy services could be found or no consul server could be contacted.
      */
     public static Collection<ExternalTestService> getServices(int count, String serviceName) throws Exception {
         return getServices(count, serviceName, null);
+    }
+
+    private static List<String> consulServers = null;
+
+    private static List<String> getConsulServers() throws Exception {
+        if (consulServers != null)
+            return consulServers;
+
+        String consulServerList = System.getProperty(PROP_CONSUL_SERVERLIST);
+        if (consulServerList == null) {
+            throw new Exception("There are no Consul hosts defined. Please ensure that the '" + PROP_CONSUL_SERVERLIST
+                                + "' property contains a comma separated list of Consul hosts and is included in the "
+                                + "user.build.properties file in your home directory. If not running on the IBM nework, "
+                                + "this message can be ignored.");
+        }
+
+        List<String> servers = Arrays.asList(consulServerList.split(","));
+        Collections.shuffle(servers);
+        return consulServers = servers;
     }
 
     /**
@@ -143,11 +202,11 @@ public class ExternalTestService {
      *
      * It is desirable for release() to be called when the service is finished with to ensure any locking on the service is efficiently cleaned up
      *
-     * @param count the number of given service that should be returned
-     * @param serviceName the name of the service type in the central registry e.g. selenium
-     * @param filter a filter that will allow only matched Services to be returned or null for no filter
-     * @return Collection of ExternalTestService selected at random, where the collection size matches the supplied count
-     * @throws Exception If either not enough healthy services could be found or no consul server could be contacted.
+     * @param  count       the number of given service that should be returned
+     * @param  serviceName the name of the service type in the central registry e.g. selenium
+     * @param  filter      a filter that will allow only matched Services to be returned or null for no filter
+     * @return             Collection of ExternalTestService selected at random, where the collection size matches the supplied count
+     * @throws Exception   If either not enough healthy services could be found or no consul server could be contacted.
      */
     public static Collection<ExternalTestService> getServices(int count, String serviceName, ExternalTestServiceFilter filter) throws Exception {
         if (filter == null) {
@@ -165,20 +224,8 @@ public class ExternalTestService {
             unhealthyReadOnly = new HashSet<String>(unhealthyList);
         }
 
-        //get list of consul servers
-        String consulServerList = System.getProperty(PROP_CONSUL_SERVERLIST);
-        if (consulServerList == null) {
-            throw new Exception("There are no Consul hosts defined. Please ensure that the '" + PROP_CONSUL_SERVERLIST
-                                + "' property contains a comma separated list of Consul hosts and is included in the "
-                                + "user.build.properties file in your home directory. If not running on the IBM nework, "
-                                + "this message can be ignored.");
-        }
-
-        List<String> consulServers = Arrays.asList(consulServerList.split(","));
-        Collections.shuffle(consulServers);
-
         Exception finalError = null;
-        for (String consulServer : consulServers) {
+        for (String consulServer : getConsulServers()) {
             JsonArray instances;
             try {
                 HttpsRequest instancesRequest = new HttpsRequest(consulServer + "/v1/health/service/" + serviceName + "?passing=true");
@@ -303,47 +350,32 @@ public class ExternalTestService {
         private byte[] value = null;
         private String stringValue = null;
 
-        /**
-         * @param instance
-         * @param key
-         * @param value
-         */
         private ServiceProperty(String instance, String key, String base64EncodedValue) {
-            super();
             this.instance = instance;
             this.key = key;
             this.base64EncodedValue = base64EncodedValue;
         }
 
-        /**
-         * @return the instance
-         */
         private String getNodeName() {
             return instance;
         }
 
-        /**
-         * @return the key
-         */
         private String getKey() {
             return key;
         }
 
-        /**
-         * @return the value
-         */
         private synchronized byte[] getValue() {
             if (value == null) {
-                value = DatatypeConverter.parseBase64Binary(base64EncodedValue);
+                value = Base64.getDecoder().decode(base64EncodedValue);
                 base64EncodedValue = null;
             }
             return value;
         }
 
         /**
-         * @return the value as a string
+         * @return                          the value as a string
          * @throws CharacterCodingException if the value is not a UTF-8 encoded string
-         * @throws Exception if the value is encrypted and cannot be decrypted
+         * @throws Exception                if the value is encrypted and cannot be decrypted
          */
         private String getStringValue() throws CharacterCodingException, Exception {
             if (stringValue == null) {
@@ -410,9 +442,9 @@ public class ExternalTestService {
     }
 
     /**
-     * @param encryptedValue
-     * @return decryptedValue
-     * @throws Exception If either no healthy liberty-properties-decrypter services could be found or no consul server could be contacted.
+     * @param  encryptedValue
+     * @return                decryptedValue
+     * @throws Exception      If either no healthy liberty-properties-decrypter services could be found or no consul server could be contacted.
      */
     private static synchronized String decrypt(String encryptedValue) throws Exception {
         if (!encryptedValue.startsWith(ENCRYPTED_PREFIX)) {
@@ -423,7 +455,7 @@ public class ExternalTestService {
         String accessToken = System.getProperty(PROP_ACCESS_TOKEN);
         if (accessToken == null) {
             throw new Exception("Missing Property called: '" + PROP_ACCESS_TOKEN
-                                + "', this property is needed to decrypt secure properties, see https://github.ibm.com/was-liberty/WS-CD-Open/wiki/Automated-Tests#running-fats-that-use-secure-properties-locally for more info");
+                                + "', this property is needed to decrypt secure properties, see https://github.ibm.com/websphere/WS-CD-Open/wiki/Automated-Tests#running-fats-that-use-secure-properties-locally for more info");
         }
 
         // Locate Properties Decrypter Instance
@@ -449,10 +481,10 @@ public class ExternalTestService {
             switch (propsRequest.getResponseCode()) {
                 case HttpsURLConnection.HTTP_UNAUTHORIZED:
                     throw new Exception(PROP_ACCESS_TOKEN
-                                        + " is not recognized by github.ibm.com, see https://github.ibm.com/was-liberty/WS-CD-Open/wiki/Automated-Tests#running-fats-that-use-secure-properties-locally for more info");
+                                        + " is not recognized by github.ibm.com, see https://github.ibm.com/websphere/WS-CD-Open/wiki/Automated-Tests#running-fats-that-use-secure-properties-locally for more info");
                 case HttpsURLConnection.HTTP_FORBIDDEN:
                     throw new Exception(PROP_ACCESS_TOKEN
-                                        + " is not able to be access organisation data, Access Token requires read:org permission, see https://github.ibm.com/was-liberty/WS-CD-Open/wiki/Automated-Tests#running-fats-that-use-secure-properties-locally for more info");
+                                        + " is not able to be access organisation data, Access Token requires read:org permission, see https://github.ibm.com/websphere/WS-CD-Open/wiki/Automated-Tests#running-fats-that-use-secure-properties-locally for more info");
                 case HttpsURLConnection.HTTP_OK:
                     //Do nothing
             }
@@ -546,9 +578,9 @@ public class ExternalTestService {
      * <p>
      * Useful if you have a truststore or keyfile stored in your service properties
      *
-     * @param keyName the name of the service property to write to the file
-     * @param file the file to write to
-     * @throws IOException if there is an error writing the file
+     * @param  keyName               the name of the service property to write to the file
+     * @param  file                  the file to write to
+     * @throws IOException           if there is an error writing the file
      * @throws IllegalStateException if there is no service property with the given key name
      */
     public void writePropertyAsFile(String keyName, File file) throws IOException {
@@ -596,7 +628,7 @@ public class ExternalTestService {
     /**
      * Testing method to ensure the ExternalTestService Works
      *
-     * @param args
+     * @param  args
      * @throws Exception
      */
     public static void main(String[] args) throws Exception {

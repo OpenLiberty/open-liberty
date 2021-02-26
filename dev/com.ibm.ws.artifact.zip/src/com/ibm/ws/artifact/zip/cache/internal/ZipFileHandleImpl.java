@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012,2019 IBM Corporation and others.
+ * Copyright (c) 2012,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -289,9 +289,9 @@ public class ZipFileHandleImpl implements ZipFileHandle {
 
         if ( zipEntry.isDirectory() ) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
-                debug(methodName, "Entry [ " + entryName + " ] [ null ] (Not using cache: Directory entry)");
+                debug(methodName, "Entry [ " + entryName + " ] [ empty stream ] (Not using cache: Directory entry)");
             }
-            return null;
+            return EMPTY_STREAM;
         }
 
         long entrySize = zipEntry.getSize();

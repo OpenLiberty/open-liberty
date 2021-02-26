@@ -14,16 +14,16 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import javax.jms.Destination;
-import javax.resource.ResourceException;
-import javax.resource.spi.ActivationSpec;
-import javax.resource.spi.BootstrapContext;
-import javax.resource.spi.ResourceAdapter;
-import javax.resource.spi.ResourceAdapterInternalException;
-import javax.resource.spi.UnavailableException;
-import javax.resource.spi.endpoint.MessageEndpoint;
-import javax.resource.spi.endpoint.MessageEndpointFactory;
-import javax.resource.spi.work.WorkManager;
+import jakarta.jms.Destination;
+import jakarta.resource.ResourceException;
+import jakarta.resource.spi.ActivationSpec;
+import jakarta.resource.spi.BootstrapContext;
+import jakarta.resource.spi.ResourceAdapter;
+import jakarta.resource.spi.ResourceAdapterInternalException;
+import jakarta.resource.spi.UnavailableException;
+import jakarta.resource.spi.endpoint.MessageEndpoint;
+import jakarta.resource.spi.endpoint.MessageEndpointFactory;
+import jakarta.resource.spi.work.WorkManager;
 import javax.transaction.xa.XAResource;
 
 public class DummyResourceAdapter implements ResourceAdapter {
@@ -57,13 +57,13 @@ public class DummyResourceAdapter implements ResourceAdapter {
             @Override
             public void run() {
                 Destination destination = DummyME.destinations.get(destinationName);
-                if (destination instanceof javax.jms.Queue) {
+                if (destination instanceof jakarta.jms.Queue) {
                     DummyQueue dQ = (DummyQueue) destination;
                     DummyMessage message = dQ.internalQueue.peek();
                     if (message != null) {
                         try {
                             MessageEndpoint me = mef1.createEndpoint(null);
-                            javax.jms.MessageListener endpoint = (javax.jms.MessageListener) me;
+                            jakarta.jms.MessageListener endpoint = (jakarta.jms.MessageListener) me;
                             endpoint.onMessage(message);
                             dQ.internalQueue.remove(message);
                         } catch (Exception e) {

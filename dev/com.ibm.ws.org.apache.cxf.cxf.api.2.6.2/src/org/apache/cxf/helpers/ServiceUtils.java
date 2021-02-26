@@ -33,6 +33,7 @@ import org.apache.cxf.message.Message;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 
+@Trivial
 public final class ServiceUtils {
     
     private static final Logger LOG = LogUtils.getL7dLogger(ServiceUtils.class);
@@ -47,7 +48,6 @@ public final class ServiceUtils {
      * @param message
      * @param type
      */
-    @Trivial
     public static boolean isSchemaValidationEnabled(SchemaValidationType type, Message message) {
         LOG.entering("ServiceUtils", "isSchemaValidationEnabled");
         SchemaValidationType messageType = getSchemaValidationType(message);
@@ -67,7 +67,6 @@ public final class ServiceUtils {
      * 
      * @param message
      */
-    @Trivial
     static SchemaValidationType getSchemaValidationType(Message message) {
         LOG.entering("ServiceUtils", "getSchemaValidationType");
         Object obj = message.getContextualProperty(Message.SCHEMA_VALIDATION_ENABLED);

@@ -1,0 +1,39 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/CommunicationExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+12000=\u50b3\u9001\u9023\u7dda\u670d\u52d9\u81f3 {0} \u6642\u767c\u751f\u932f\u8aa4\u3002
+
+12001=\u7121\u6cd5\u9023\u63a5\u81f3 {0}\u3002
+
+12002=\u7121\u6cd5\u5c07\u8b8a\u66f4\u5ef6\u4f38\u5230 {0}\u3002
+
+12003=\u547c\u53eb\u6642\u767c\u751f\u932f\u8aa4\uff1a{0}\u3002
+
+12004=\u5f9e\u670d\u52d9 {0} \u50b3\u9001\u8a0a\u606f\u6642\u767c\u751f\u932f\u8aa4\u3002
+

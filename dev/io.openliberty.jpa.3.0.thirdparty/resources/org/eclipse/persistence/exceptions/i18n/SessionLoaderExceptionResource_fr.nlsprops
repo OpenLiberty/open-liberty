@@ -1,0 +1,55 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/SessionLoaderExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+9000=Plusieurs exceptions [{0}] SessionLoaderExceptions ont \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9es :
+
+9001=Nom de balise inconnu : [{0}] dans le noeud XML : [{1}].
+
+9002=Impossible de charger la classe de projets [{0}].
+
+9003=Impossible de traiter la balise XML [{0}] avec la valeur [{1}].
+
+9004=Le fichier project-xml [{0}] est introuvable dans le chemin d''acc\u00e8s aux classes et dans le syst\u00e8me de fichiers.
+
+9005=Une exception a \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9e lors du chargement du fichier project-xml [{0}].
+
+9006=Une exception {0} a \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9e lors de l''analyse syntaxique du fichier XML.  Cela s''est produit \u00e0 la ligne {1} colonne {2} dans le document XML.
+
+9007=Une exception a \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9e lors de l''analyse syntaxique du fichier XML.
+
+9008=Valeur inattendue [{0}] de la balise [{1}].
+
+9009=La balise [{0}] comporte un attribut inconnu.
+
+9010=Une exception {0} a \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9e lors de l''analyse syntaxique du fichier XML par rapport au sch\u00e9ma XML.
+
+9011=La classe de plateforme de serveur {0} a \u00e9t\u00e9 retir\u00e9e et la version de serveur d''application correspondante n''est plus prise en charge
+
+9012=Impossible de charger le fichier session-xml car il contient un format non valide ou car le format XML n''est pas pris en charge.
+

@@ -665,6 +665,8 @@ retreived_unknown_message_type=S-a extras tipul de mesaj necunoscut: {0} de la s
 
 sdo_classgenerator_exception={2} A ap\u0103rut o excep\u0163ie [{0}] - mesajul este [{1}]
 
+sdo_error_deserialization=\u00cencercare neautorizat\u0103 de deserializare cu clasa {0}.
+
 sdo_error_processing_referenced_schema=A ap\u0103rut o {0} la procesarea schemei referite cu uri {1} cu schemaLocation {2}.
 
 sdo_invalid_schemaLocation=Nu s-a putut crea schemaLocation [{0}] pentru importul cu uri [{1}].

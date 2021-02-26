@@ -62,7 +62,7 @@ public class CorsHelper {
     private static final String RESPONSE_HEADER_ACCESS_CONTROL_ALLOW_CREDENTIALS = "Access-Control-Allow-Credentials";
 
     /**
-     * Optional. Response to preFlight(OPTIONS) or cross-origin. Whitelist of custom headers that browsers are allowed to access.
+     * Optional. Response to preFlight(OPTIONS) or cross-origin. Allowlist of custom headers that browsers are allowed to access.
      */
     private static final String RESPONSE_HEADER_ACCESS_CONTROL_EXPOSE_HEADERS = "Access-Control-Expose-Headers";
 
@@ -94,10 +94,12 @@ public class CorsHelper {
     List<CorsConfig> configurations = new CopyOnWriteArrayList<CorsConfig>();
 
     @Activate
-    protected void activate(ComponentContext context, Map<String, Object> properties) {}
+    protected void activate(ComponentContext context, Map<String, Object> properties) {
+    }
 
     @Deactivate
-    protected void deactivate(ComponentContext context, int reason) {}
+    protected void deactivate(ComponentContext context, int reason) {
+    }
 
     @Reference(service = CorsConfig.class, name = "corsConfig", policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.MULTIPLE, policyOption = ReferencePolicyOption.GREEDY)
     protected void setCorsConfig(CorsConfig corsConfig) {
@@ -251,7 +253,7 @@ public class CorsHelper {
             accessControlRequestHeaderSet.addAll(accessControlRequestHeaders);
             if (!allowedHeadersSet.containsAll(accessControlRequestHeaderSet)) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(this, tc, "Access-Control-Request-Method '" + Arrays.toString(accessControlRequestHeaders.toArray())
+                    Tr.debug(this, tc, "Access-Control-Request-Header '" + Arrays.toString(accessControlRequestHeaders.toArray())
                                        + "' is not included in the list of allowed headers: " + Arrays.toString(allowedHeaders.toArray()));
                 }
                 return false;

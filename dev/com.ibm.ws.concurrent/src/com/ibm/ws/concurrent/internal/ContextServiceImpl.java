@@ -41,6 +41,9 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import javax.enterprise.concurrent.ContextService;
+import javax.enterprise.concurrent.ManagedTask;
+
 import org.eclipse.microprofile.context.ThreadContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
@@ -79,16 +82,10 @@ import com.ibm.wsspi.threadcontext.WSContextService;
  */
 @Component(name = "com.ibm.ws.context.service",
            configurationPolicy = ConfigurationPolicy.REQUIRE,
-           service = { ResourceFactory.class, //
-                       jakarta.enterprise.concurrent.ContextService.class, //
-                       javax.enterprise.concurrent.ContextService.class, //
-                       ThreadContext.class, WSContextService.class, ApplicationRecycleComponent.class },
-           property = { "creates.objectClass=jakarta.enterprise.concurrent.ContextService",
-                        "creates.objectClass=javax.enterprise.concurrent.ContextService",
+           service = { ResourceFactory.class, ContextService.class, ThreadContext.class, WSContextService.class, ApplicationRecycleComponent.class },
+           property = { "creates.objectClass=javax.enterprise.concurrent.ContextService",
                         "creates.objectClass=org.eclipse.microprofile.context.ThreadContext" })
-public class ContextServiceImpl implements //
-                jakarta.enterprise.concurrent.ContextService, //
-                javax.enterprise.concurrent.ContextService, //
+public class ContextServiceImpl implements ContextService, //
                 ResourceFactory, ThreadContext, WSContextService, ApplicationRecycleComponent {
     private static final TraceComponent tc = Tr.register(ContextServiceImpl.class);
 
@@ -834,7 +831,10 @@ public class ContextServiceImpl implements //
     public <T> CompletableFuture<T> withContextCapture(CompletableFuture<T> stage) {
         CompletableFuture<T> newCompletableFuture;
 
-        UnusableExecutor executor = new UnusableExecutor(this);
+        Executor executor = MPContextPropagationVersion.atLeast(MPContextPropagationVersion.V1_1) //
+                        ? new ContextualDefaultExecutor(this) //
+                        : new UnusableExecutor(this);
+
         if (ManagedCompletableFuture.JAVA8)
             newCompletableFuture = new ManagedCompletableFuture<T>(new CompletableFuture<T>(), executor, null);
         else
@@ -856,7 +856,10 @@ public class ContextServiceImpl implements //
     public <T> CompletionStage<T> withContextCapture(CompletionStage<T> stage) {
         ManagedCompletionStage<T> newStage;
 
-        UnusableExecutor executor = new UnusableExecutor(this);
+        Executor executor = MPContextPropagationVersion.atLeast(MPContextPropagationVersion.V1_1) //
+                        ? new ContextualDefaultExecutor(this) //
+                        : new UnusableExecutor(this);
+
         if (ManagedCompletableFuture.JAVA8)
             newStage = new ManagedCompletionStage<T>(new CompletableFuture<T>(), executor, null);
         else

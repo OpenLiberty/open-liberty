@@ -152,4 +152,9 @@ public interface ConvergedClientConfig {
 
     public List<String> getForwardLoginParameter();
 
+    /**
+     * @return
+     */
+    String getIntrospectionTokenTypeHint();
+
 }

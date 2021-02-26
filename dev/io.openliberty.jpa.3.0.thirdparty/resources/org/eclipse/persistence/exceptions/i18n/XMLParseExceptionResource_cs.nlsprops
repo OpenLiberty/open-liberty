@@ -1,0 +1,39 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/XMLParseExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+34000=P\u0159i pokusu o anal\u00fdzu souboru entity-mappings: {0} do\u0161lo k v\u00fdjimce Instanci DocumentBuilder nelze vytvo\u0159it.
+
+34001=P\u0159i pokusu o \u010dten\u00ed souboru entity-mappings: {0} do\u0161lo k v\u00fdjimce
+
+34002=P\u0159i zpracov\u00e1n\u00ed souboru persistence.xml z adresy URL: {0} do\u0161lo k v\u00fdjimce. Instanci SAXParser nelze vytvo\u0159it.
+
+34003=P\u0159i zpracov\u00e1n\u00ed souboru persistence.xml z adresy URL: {0} do\u0161lo k v\u00fdjimce. Instanci XMLReader nelze vytvo\u0159it.
+
+34004=P\u0159i zpracov\u00e1n\u00ed souboru persistence.xml z adresy URL: {0} do\u0161lo k v\u00fdjimce. Zdroj sch\u00e9matu v adrese URL: {1} nelze nastavit.
+

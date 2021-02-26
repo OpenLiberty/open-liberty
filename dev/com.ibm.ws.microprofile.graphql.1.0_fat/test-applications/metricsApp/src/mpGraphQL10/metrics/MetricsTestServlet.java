@@ -41,6 +41,7 @@ import org.eclipse.microprofile.rest.client.RestClientBuilder;
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
+import mpGraphQL10.metrics.Stats.SimpleTimerStat;
 
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/MetricsTestServlet")
@@ -112,7 +113,10 @@ public class MetricsTestServlet extends FATServlet {
         
         Stats stats = statsBuilder.register(LoggingFilter.class).build(StatsClient.class).getVendorStats();
         assertNotNull(stats);
-        assertEquals(3, stats.getCount().getCount());
+        SimpleTimerStat stat = stats.getCount();
+        if (stat != null) {
+            assertEquals(3, stat.getCount());
+        } //stat will be null when using MP 4.0, so only check it in MP 3.3
     }
 
     @Test
@@ -161,11 +165,13 @@ public class MetricsTestServlet extends FATServlet {
         //TODO: check mpMetrics shows that (1.5s + someBuffer) >= time_from_mpMetrics >= time_from_widget 
         Stats stats = statsBuilder.build(StatsClient.class).getVendorStats();
         assertNotNull(stats);
-        assertNotNull(stats.getTime());
-        assertEquals(3, stats.getTime().getCount());
-        Duration metricsDuration = Duration.ofNanos((long)stats.getTime().getElapsedTime());
-        Duration maxTimeDuration = Duration.ofMillis(1500 + PADDING_TIME);
-        assertTrue( maxTimeDuration.compareTo(metricsDuration) >= 0 );
-        assertTrue( Math.abs(metricsDuration.minus(runningDuration).toMillis()) <= PADDING_TIME);
+        SimpleTimerStat stat = stats.getTime();
+        if (stat != null) {
+            assertEquals(3, stat.getCount());
+            Duration metricsDuration = Duration.ofNanos((long)stat.getElapsedTime());
+            Duration maxTimeDuration = Duration.ofMillis(1500 + PADDING_TIME);
+            assertTrue( maxTimeDuration.compareTo(metricsDuration) >= 0 );
+            assertTrue( Math.abs(metricsDuration.minus(runningDuration).toMillis()) <= PADDING_TIME);
+        } //stat will be null when using MP 4.0, so only check it in MP 3.3
     }
 }

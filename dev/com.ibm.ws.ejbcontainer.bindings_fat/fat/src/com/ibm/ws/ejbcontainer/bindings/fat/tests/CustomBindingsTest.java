@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2019 IBM Corporation and others.
+ * Copyright (c) 2007, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,9 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
+import org.junit.Rule;
+import org.junit.rules.TestWatcher;
+import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
@@ -34,6 +37,21 @@ import componenttest.topology.utils.FATServletClient;
 @RunWith(FATRunner.class)
 public class CustomBindingsTest extends FATServletClient {
 
+    @Rule
+    public TestWatcher watchman = new TestWatcher() {
+        @Override
+        protected void failed(Throwable e, Description description) {
+            try {
+                System.runFinalization();
+                System.gc();
+                server.serverDump("heap");
+            } catch (Exception e1) {
+                System.out.println("Failed to dump server");
+                e1.printStackTrace();
+            }
+        }
+    };
+
     @Server("com.ibm.ws.ejbcontainer.bindings.fat.server")
     @TestServlets({ @TestServlet(servlet = BindingsServlet.class, contextRoot = "EJB3BndWeb") })
     public static LibertyServer server;
@@ -43,6 +61,9 @@ public class CustomBindingsTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
+        server.deleteAllDropinApplications();
+        server.removeAllInstalledAppsForValidation();
+
         // Use ShrinkHelper to build the ears
         JavaArchive EJB3BndBean = ShrinkHelper.buildJavaArchive("EJB3BndBean.jar", "com.ibm.ws.ejbcontainer.bindings.bnd.ejb.");
         ShrinkHelper.addDirectory(EJB3BndBean, "test-applications/EJB3BndBean.jar/resources");

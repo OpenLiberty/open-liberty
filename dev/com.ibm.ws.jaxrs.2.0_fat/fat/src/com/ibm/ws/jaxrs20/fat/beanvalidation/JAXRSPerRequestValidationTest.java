@@ -25,6 +25,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
+
 public class JAXRSPerRequestValidationTest extends AbstractTest {
 
     private static final String bvwar = "beanvalidation";

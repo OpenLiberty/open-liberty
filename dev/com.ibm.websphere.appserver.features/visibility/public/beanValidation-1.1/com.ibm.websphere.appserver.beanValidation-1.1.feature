@@ -1,5 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.beanValidation-1.1
+WLP-DisableAllFeatures-OnConflict: false
 visibility=public
 singleton=true
 IBM-ShortName: beanValidation-1.1
@@ -28,6 +29,7 @@ IBM-API-Package: \
 -bundles=\
   com.ibm.ws.org.apache.commons.weaver.1.1, \
   com.ibm.ws.beanvalidation.v11, \
-  com.ibm.ws.org.apache.bval.1.1.0
+  com.ibm.ws.org.apache.bval.1.1.0, \
+  com.ibm.ws.com.fasterxml.classmate
 kind=ga
 edition=core

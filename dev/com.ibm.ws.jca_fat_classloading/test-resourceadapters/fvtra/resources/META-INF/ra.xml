@@ -9,7 +9,11 @@
     Contributors:
         IBM Corporation - initial API and implementation
  -->
-<connector xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/connector_1_6.xsd" version="1.6">
+<connector xmlns="https://jakarta.ee/xml/ns/jakartaee"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee
+           https://jakarta.ee/xml/ns/jakartaee/connector_2_0.xsd"
+           version="2.0">
   <description>This is the ra.xml for the test rar</description> 
   <display-name>Dummy Resource Adapter</display-name> 
   <vendor-name>IBM</vendor-name> 
@@ -43,7 +47,7 @@
     <inbound-resourceadapter>
       <messageadapter>
         <messagelistener>
-          <messagelistener-type>javax.jms.MessageListener</messagelistener-type>
+          <messagelistener-type>jakarta.jms.MessageListener</messagelistener-type>
           <activationspec>
             <activationspec-class>ra.DummyActivationSpec</activationspec-class>
             <config-property>
@@ -55,7 +59,7 @@
               <description>Destination Type</description>
               <config-property-name>destinationType</config-property-name>
               <config-property-type>java.lang.String</config-property-type>
-              <config-property-value>javax.jms.Queue</config-property-value>
+              <config-property-value>jakarta.jms.Queue</config-property-value>
             </config-property>
             <config-property>
               <description>User name</description>
@@ -73,7 +77,7 @@
       </messageadapter>
     </inbound-resourceadapter>
     <adminobject>
-      <adminobject-interface>javax.jms.Queue</adminobject-interface>
+      <adminobject-interface>jakarta.jms.Queue</adminobject-interface>
       <adminobject-class>ra.DummyQueue</adminobject-class>
       <config-property>
         <description>Queue Name</description>
@@ -82,7 +86,7 @@
       </config-property>
     </adminobject>
     <adminobject>
-      <adminobject-interface>javax.jms.Topic</adminobject-interface>
+      <adminobject-interface>jakarta.jms.Topic</adminobject-interface>
       <adminobject-class>ra.DummyTopic</adminobject-class>
       <config-property>
         <description>Topic Name</description>

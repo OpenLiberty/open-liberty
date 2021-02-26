@@ -49,7 +49,7 @@
     <javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
     <javaPermission codebase="${server.config.dir}/loginModule.jar" className="javax.security.auth.AuthPermission" name="modifyPrivateCredentials"/>
     <javaPermission className="javax.security.auth.AuthPermission" name="createLoginContext.myJAASLoginEntryName"/>
-    <javaPermission className="javax.security.auth.PrivateCredentialPermission" signedBy="javax.resource.spi.security.PasswordCredential" principalType="*" principalName="*" actions="read"/>
+    <javaPermission className="javax.security.auth.PrivateCredentialPermission" signedBy="${env.PERMISSION}" principalType="*" principalName="*" actions="read"/>
     <javaPermission className="javax.security.auth.PrivateCredentialPermission" signedBy="java.util.HashMap" principalType="*" principalName="*" actions="read"/>
     <javaPermission className="java.lang.RuntimePermission" name="modifyThread"/>
     <javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>

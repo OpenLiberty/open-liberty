@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2018 IBM Corporation and others.
+ * Copyright (c) 2006, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -84,7 +84,7 @@ public class SuperEnvInjectionServlet extends FATServlet {
      *
      */
     @Test
-    public void testSLSuperClassInjection() throws Exception {
+    public void testSLSuperClassInjection_SuperEnvInjection() throws Exception {
         // --------------------------------------------------------------------
         // Locate SL Local Home/Factory and execute the test
         // --------------------------------------------------------------------
@@ -110,7 +110,7 @@ public class SuperEnvInjectionServlet extends FATServlet {
      *
      */
     @Test
-    public void testSFSuperClassInjection() throws Exception {
+    public void testSFSuperClassInjection_SuperEnvInjection() throws Exception {
         // --------------------------------------------------------------------
         // Locate SF Local Home/Factory and execute the test
         // --------------------------------------------------------------------
@@ -136,7 +136,7 @@ public class SuperEnvInjectionServlet extends FATServlet {
      *
      */
     @Test
-    public void testSLCompSuperClassInjection() throws Exception {
+    public void testSLCompSuperClassInjection_SuperEnvInjection() throws Exception {
         // --------------------------------------------------------------------
         // Locate SL Local Home/Factory and execute the test
         // --------------------------------------------------------------------
@@ -162,7 +162,7 @@ public class SuperEnvInjectionServlet extends FATServlet {
      *
      */
     @Test
-    public void testSFCompSuperClassInjection() throws Exception {
+    public void testSFCompSuperClassInjection_SuperEnvInjection() throws Exception {
         // --------------------------------------------------------------------
         // Locate SF Local Home/Factory and execute the test
         // --------------------------------------------------------------------

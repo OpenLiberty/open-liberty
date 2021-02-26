@@ -169,9 +169,9 @@ public class AcmeClientTest {
 		 */
 		AcmeConfig acmeConfig = getAcmeConfig(VALID_URI, VALID_USER_KEY_PATH, VALID_DOMAIN_KEY_PATH);
 
-		long duration = AcmeConstants.RENEW_CERT_MIN - 10;
+		long duration = acmeConfig.getRenewCertMin() - 10;
 
-		acmeConfig.setRenewBeforeExpirationMs(AcmeConstants.RENEW_CERT_MIN + 10, true);
+		acmeConfig.setRenewBeforeExpirationMs(acmeConfig.getRenewCertMin() + 10, true);
 
 		/*
 		 * If the duration is under the default and the renewBeforeExpiration is longer, reset
@@ -186,7 +186,7 @@ public class AcmeClientTest {
 		
 		acmeClient.checkRenewTimeAgainstCertValidityPeriod(notBefore, notAfter, "123456");
 		
-		assertEquals(AcmeConstants.RENEW_CERT_MIN, acmeConfig.getRenewBeforeExpirationMs().longValue());
+		assertEquals(acmeConfig.getRenewCertMin(), acmeConfig.getRenewBeforeExpirationMs().longValue());
 	}
 	
 
@@ -199,7 +199,7 @@ public class AcmeClientTest {
 		 */
 		AcmeConfig acmeConfig = getAcmeConfig(VALID_URI, VALID_USER_KEY_PATH, VALID_DOMAIN_KEY_PATH);
 
-		acmeConfig.setRenewBeforeExpirationMs(AcmeConstants.RENEW_CERT_MIN, true);
+		acmeConfig.setRenewBeforeExpirationMs(acmeConfig.getRenewCertMin(), true);
 
 		/*
 		 * If the duration is less than the min_renew and the renewBeforeExpiration is at the min, we don't modify it.
@@ -214,7 +214,7 @@ public class AcmeClientTest {
 
 		acmeClient.checkRenewTimeAgainstCertValidityPeriod(notBefore, notAfter, "123456");
 
-		assertEquals(AcmeConstants.RENEW_CERT_MIN, acmeConfig.getRenewBeforeExpirationMs().longValue());
+		assertEquals(acmeConfig.getRenewCertMin(), acmeConfig.getRenewBeforeExpirationMs().longValue());
 
 	}
 }

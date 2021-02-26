@@ -23,6 +23,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import javax.enterprise.concurrent.ManagedThreadFactory;
+
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 
@@ -293,7 +295,7 @@ public class ManagedThreadFactoryService implements ResourceFactory, Application
     /**
      * Injected or looked up managed thread factory instance.
      */
-    class ManagedThreadFactoryImpl implements jakarta.enterprise.concurrent.ManagedThreadFactory, javax.enterprise.concurrent.ManagedThreadFactory {
+    class ManagedThreadFactoryImpl implements ManagedThreadFactory {
         /**
          * Identifier of the component metadata (if any) that looked up or injected this managed thread factory.
          */

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,19 +11,25 @@
 
 package com.ibm.ws.microprofile.config12.impl;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.microprofile.config.converters.BuiltInConverter;
 import com.ibm.ws.microprofile.config.converters.PriorityConverterMap;
 import com.ibm.ws.microprofile.config.impl.ConversionManager;
 import com.ibm.ws.microprofile.config.impl.ConversionStatus;
-import com.ibm.ws.microprofile.config.interfaces.ConfigException;
 import com.ibm.ws.microprofile.config12.converters.ImplicitConverter;
+
+import io.openliberty.microprofile.config.internal.common.ConfigException;
 
 public class Config12ConversionManager extends ConversionManager {
 
     private static final TraceComponent tc = Tr.register(Config12ConversionManager.class);
+
+    private final Map<Class<?>, ImplicitConverter> implicitConverterCache = Collections.synchronizedMap(new HashMap<>());
 
     /**
      * @param converters all the converters to use
@@ -42,12 +48,12 @@ public class Config12ConversionManager extends ConversionManager {
     @Override
     protected <T> ConversionStatus implicitConverters(String rawString, Class<T> type) {
         ConversionStatus status = new ConversionStatus();
-        BuiltInConverter automaticConverter = getConverter(type);
+        ImplicitConverter implicitConverter = getImplicitConverter(type);
 
         //will be null if a suitable string constructor method could not be found
-        if (automaticConverter != null) {
+        if (implicitConverter != null) {
             try {
-                Object converted = automaticConverter.convert(rawString);
+                Object converted = implicitConverter.convert(rawString);
                 status.setConverted(converted);
             } catch (IllegalArgumentException e) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -65,12 +71,21 @@ public class Config12ConversionManager extends ConversionManager {
         return status;
     }
 
-    @FFDCIgnore(IllegalArgumentException.class)
-    protected <T> BuiltInConverter getConverter(Class<T> type) {
-        ImplicitConverter automaticConverter = null;
+    protected <T> ImplicitConverter getImplicitConverter(Class<T> type) {
+        ImplicitConverter implicitConverter = implicitConverterCache.get(type);
 
+        if (implicitConverter == null) {
+            implicitConverter = newImplicitConverter(type);
+            implicitConverterCache.put(type, implicitConverter);
+        }
+        return implicitConverter;
+    }
+
+    @FFDCIgnore(IllegalArgumentException.class)
+    protected <T> ImplicitConverter newImplicitConverter(Class<T> type) {
+        ImplicitConverter implicitConverter = null;
         try {
-            automaticConverter = new ImplicitConverter(type);
+            implicitConverter = new ImplicitConverter(type);
         } catch (IllegalArgumentException e) {
             //no FFDC
             //this means that a suitable string constuctor method could not be found for the given class
@@ -84,8 +99,7 @@ public class Config12ConversionManager extends ConversionManager {
             }
             throw new ConfigException(t);
         }
-
-        return automaticConverter;
+        return implicitConverter;
     }
 
 }

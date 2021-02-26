@@ -37,7 +37,6 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 
@@ -80,12 +79,6 @@ public class EJBJndiTest {
         ear.add(new FileAsset(new File("lib/LibertyFATTestFiles/EJBJndi/application.xml")), "/META-INF/application.xml");
 
         ShrinkHelper.exportDropinAppToServer(server, ear);
-
-        // Java 7 throws "java.lang.ClassNotFoundException[java.net.URLPermission]" due to java.net.URLPermission defined in server.xml
-        // Using java7_server.xml in which java.net.URLPermission settings are removed solve this test run problem
-        if (7 == JavaInfo.forServer(server).majorVersion()) {
-            server.setServerConfigurationFile("EJBJndi/java7_server.xml");
-        }
 
         try {
             server.startServer();
@@ -258,7 +251,9 @@ public class EJBJndiTest {
 
     protected void runTest(String responseString) throws Exception {
 
-        String testMethod = testName.getMethodName();
+        String testMethod = (((testName.getMethodName()).replace("_jaxws-2.3",
+                                                                 "")).replace("_EE9_FEATURES",
+                                                                              ""));;
 
         String target = null;
         String remoteTestMethod = null;
@@ -273,7 +268,7 @@ public class EJBJndiTest {
         StringBuilder requestURLBuilder = new StringBuilder("http://").append(server.getHostname()).append(":").append(server.getHttpDefaultPort()).append(SERVLET_PATH).append("?type=").append(remoteTestMethod).append("&hostname=").append(server.getHostname()).append("&port=").append(server.getHttpDefaultPort()).append("&target=").append(target);
 
         String requestURL = requestURLBuilder.toString();
-        Log.info(this.getClass(), testName.getMethodName(), "Calling Application with URL=" + requestURL);
+        Log.info(this.getClass(), testMethod, "Calling Application with URL=" + requestURL);
 
         HttpURLConnection con = null;
         try {

@@ -20,24 +20,30 @@ import java.nio.channels.FileChannel;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 
 import com.ibm.ws.install.internal.asset.ServerAsset;
+
+import test.common.SharedOutputManager;
 
 /**
  *
  */
 public class ServerAssetTest {
+    @Rule
+    public static SharedOutputManager outputMgr = SharedOutputManager.getInstance().trace("*=all");
 
     private static File testDir;
 
     /**
      * Set up directories
-     * 
+     *
      * @throws Exception
      */
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
+        outputMgr.captureStreams();
         testDir = new File("build/unittest/serverAssetTest").getAbsoluteFile();
         testDir.mkdirs();
 
@@ -47,12 +53,13 @@ public class ServerAssetTest {
 
     /**
      * Final teardown work when class is exiting.
-     * 
+     *
      * @throws Exception
      */
     @AfterClass
     public static void tearDownAfterClass() throws Exception {
         deleteDirectory(testDir);
+        outputMgr.restoreStreams();
     }
 
     private void initializeTestCase(String testName) {
@@ -123,8 +130,7 @@ public class ServerAssetTest {
                 for (File file : files) {
                     if (file.isDirectory()) {
                         deleteDirectory(file);
-                    }
-                    else {
+                    } else {
                         file.delete();
                     }
                 }

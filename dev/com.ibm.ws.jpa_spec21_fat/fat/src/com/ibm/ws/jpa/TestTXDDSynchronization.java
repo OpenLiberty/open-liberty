@@ -235,7 +235,8 @@ public class TestTXDDSynchronization extends JPAFATServletClient {
                               "CNTR0020E",
                               "CWWJP0045E",
                               "WLTC0017E",
-                              "CNTR0019E");
+                              "CNTR0019E",
+                              "CWWKG0032W");
         } finally {
             try {
                 ServerConfiguration sc = server.getServerConfiguration();

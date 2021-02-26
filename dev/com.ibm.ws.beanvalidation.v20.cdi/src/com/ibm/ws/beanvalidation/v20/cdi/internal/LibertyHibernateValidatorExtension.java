@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -40,6 +40,7 @@ import org.osgi.service.component.annotations.Reference;
 import com.ibm.ejs.util.dopriv.SetContextClassLoaderPrivileged;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.beanvalidation.AbstractBeanValidation.ClassLoaderTuple;
 import com.ibm.ws.beanvalidation.service.Validation20ClassLoader;
 import com.ibm.ws.cdi.CDIService;
 import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
@@ -49,6 +50,8 @@ import com.ibm.wsspi.classloading.ClassLoadingService;
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE,
            immediate = true,
            property = { "api.classes=" +
+                        "jakarta.validation.Validator;" +
+                        "jakarta.validation.ValidatorFactory;" +
                         "javax.validation.Validator;" +
                         "javax.validation.ValidatorFactory;" +
                         "org.hibernate.validator.HibernateValidatorFactory;" +
@@ -79,11 +82,12 @@ public class LibertyHibernateValidatorExtension implements Extension, WebSphereC
     private ValidationExtension delegate(String newClassloaderHint) {
         if (extDelegate == null || newClassloaderHint != null && !newClassloaderHint.equals(currentClassloaderHint)) {
 
-            ClassLoader tcclClassLoader = null;
             SetContextClassLoaderPrivileged setClassLoader = null;
             ClassLoader oldClassLoader = null;
+            ClassLoaderTuple tuple = null;
             try {
-                final ClassLoader tcclClassLoaderTmp = tcclClassLoader = configureBvalClassloader(null);
+                tuple = configureBvalClassloader(null);
+                final ClassLoader tcclClassLoaderTmp = tuple.classLoader;
 
                 ClassLoader bvalClassLoader;
                 if (newClassloaderHint != null) {
@@ -109,8 +113,8 @@ public class LibertyHibernateValidatorExtension implements Extension, WebSphereC
                         Tr.debug(tc, "Set Class loader back to " + oldClassLoader);
                     }
                 }
-                if (setClassLoader != null && setClassLoader.wasChanged) {
-                    releaseLoader(tcclClassLoader);
+                if (tuple != null && tuple.wasCreatedViaClassLoadingService) {
+                    releaseLoader(tuple.classLoader);
                 }
             }
         }
@@ -215,18 +219,18 @@ public class LibertyHibernateValidatorExtension implements Extension, WebSphereC
         });
     }
 
-    private ClassLoader configureBvalClassloader(ClassLoader cl) {
+    private ClassLoaderTuple configureBvalClassloader(ClassLoader cl) {
         if (cl == null) {
             cl = AccessController.doPrivileged((PrivilegedAction<ClassLoader>) () -> Thread.currentThread().getContextClassLoader());
         }
         if (cl != null) {
             if (getClassLoadingService().isThreadContextClassLoader(cl)) {
-                return cl;
+                return ClassLoaderTuple.of(cl, false);
             } else if (getClassLoadingService().isAppClassLoader(cl)) {
-                return createTCCL(cl);
+                return ClassLoaderTuple.of(createTCCL(cl), true);
             }
         }
-        return createTCCL(LibertyHibernateValidatorExtension.class.getClassLoader());
+        return ClassLoaderTuple.of(createTCCL(LibertyHibernateValidatorExtension.class.getClassLoader()), true);
     }
 
     private ClassLoader createTCCL(ClassLoader parentCL) {

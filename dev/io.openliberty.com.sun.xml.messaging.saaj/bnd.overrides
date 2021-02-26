@@ -1,0 +1,44 @@
+-include= ~../cnf/resources/bnd/rejar.props
+bVersion=1.0
+
+Bundle-SymbolicName: io.openliberty.com.sun.xml.messaging.saaj
+
+Include-Resource: \
+  @${repo;com.sun.xml.messaging.saaj:saaj-impl;2.0.0;EXACT}!/META-INF/services/jakarta.xml.soap.SOAPFactory, \
+  @${repo;com.sun.xml.messaging.saaj:saaj-impl;2.0.0;EXACT}!/META-INF/services/jakarta.xml.soap.SOAPConnectionFactory, \
+  @${repo;com.sun.xml.messaging.saaj:saaj-impl;2.0.0;EXACT}!/META-INF/services/jakarta.xml.soap.SAAJMetaFactory, \
+  @${repo;com.sun.xml.messaging.saaj:saaj-impl;2.0.0;EXACT}!/META-INF/services/jakarta.xml.soap.MessageFactory
+ 
+ 
+Export-Package: com.sun.xml.messaging.saaj;version="2.0.0";thread-context=true,\
+  com.sun.xml.messaging.saaj.client.p2p;version="2.0.0";thread-context=true,\
+  com.sun.xml.messaging.saaj.packaging.mime;version="2.0.0";thread-context=true,\
+  com.sun.xml.messaging.saaj.packaging.mime.internet;version="2.0.0";thread-context=true,\
+  com.sun.xml.messaging.saaj.packaging.mime.util;version="2.0.0";thread-context=true,\
+  com.sun.xml.messaging.saaj.soap;version="2.0.0";thread-context=true,\
+  com.sun.xml.messaging.saaj.soap.dynamic;version="2.0.0";thread-context=true,\
+  com.sun.xml.messaging.saaj.soap.impl;version="2.0.0";thread-context=true,\
+  com.sun.xml.messaging.saaj.soap.name;version="2.0.0";thread-context=true,\
+  com.sun.xml.messaging.saaj.soap.ver1_2;version="2.0.0";thread-context=true,\
+  com.sun.xml.messaging.saaj.soap.ver1_1;version="2.0.0";thread-context=true,\
+  com.sun.xml.messaging.saaj.util;version="2.0.0";thread-context=true,\
+  com.sun.xml.messaging.saaj.util.stax;version="2.0.0";thread-context=true,\
+  com.sun.xml.messaging.saaj.util.transform;version="2.0.0";thread-context=true
+  
+app-resources= \
+  META-INF/services/jakarta.xml.soap.SOAPFactory | \
+  META-INF/services/jakarta.xml.soap.SOAPConnectionFactory | \
+  META-INF/services/jakarta.xml.soap.SAAJMetaFactory | \
+  META-INF/services/jakarta.xml.soap.MessageFactory
+
+Import-Package: \
+  !com.sun.xml.fastinfoset.dom, \
+  !org.jvnet.fastinfoset, \
+  *
+
+Service-Component: \
+  io.openliberty.com.sun.xml.messaging.saaj.ResourceProvider; \
+    implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
+    provide:=com.ibm.wsspi.classloading.ResourceProvider; \
+    configuration-policy:=ignore; \
+    properties:="resources=${app-resources}"

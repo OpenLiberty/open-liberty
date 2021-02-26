@@ -19,9 +19,9 @@ import com.ibm.ws.jaxws.tools.internal.JaxWsToolsConstants;
 /**
  * Collected methods used by WsGen and WsImport in a utility class*
  */
-class WsToolsUtils {
+public class WsToolsUtils {
 
-    static String getJarFileOfClass(final Class<?> javaClass) {
+    public static String getJarFileOfClass(final Class<?> javaClass) {
         ProtectionDomain protectionDomain = AccessController.doPrivileged(
                                                                           new PrivilegedAction<ProtectionDomain>() {
                                                                               @Override
@@ -43,14 +43,14 @@ class WsToolsUtils {
         return (OS.contains("win"));
     }
 
-    static int getMajorJavaVersion() {
+    public static int getMajorJavaVersion() {
         String version = System.getProperty("java.version");
         String[] versionElements = version.split("\\D");
         int i = Integer.valueOf(versionElements[0]) == 1 ? 1 : 0;
         return Integer.valueOf(versionElements[i]);
     }
 
-    static boolean isTargetRequired(String[] args) {
+    public static boolean isTargetRequired(String[] args) {
         boolean helpExisted = false;
         boolean versionExisted = false;
         boolean targetExisted = false;

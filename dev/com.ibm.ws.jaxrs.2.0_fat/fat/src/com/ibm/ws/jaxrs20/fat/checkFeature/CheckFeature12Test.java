@@ -21,6 +21,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -31,6 +32,7 @@ import componenttest.topology.impl.LibertyServer;
  * the server had to be restarted if the cdi-1.0 feature was added after the server had started.
  */
 @RunWith(FATRunner.class)
+@SkipForRepeat("EE9_FEATURES") // currently broken due to multiple issues
 public class CheckFeature12Test {
 
     @Server("com.ibm.ws.jaxrs.fat.checkFeature")

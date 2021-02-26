@@ -199,14 +199,24 @@ public class PoolManagerMBeanImpl extends StandardMBean implements ConnectionMan
     }
 
     @Override
-    public Object getAttribute(String attribute) throws AttributeNotFoundException, MBeanException, ReflectionException {
-        String returnValue = null;
+    public Object getAttribute(String attribute) throws AttributeNotFoundException {
         if (attribute.equals("size")) {
-            returnValue = _pm.getTotalConnectionCount().toString();
+            // We need to keep the case for 'size' (lowercase s) because it was originally written this way
+            // and changing it to the proper return type of long would be a breaking change.
+            // Instead, we take advantage of the fact that when the MBean is used through JMX proxy the 'attribute'
+            // param comes in as 'Size' (uppercase S) so we can give the proper return type of long
+            return Long.valueOf(getSize()).toString();
+        } else if (attribute.equals("Size")) {
+            return getSize();
+        } else if (attribute.equalsIgnoreCase("maxSize")) {
+            return getMaxSize();
+        } else if (attribute.equalsIgnoreCase("available")) {
+            return getAvailable();
+        } else if (attribute.equalsIgnoreCase("jndiName")) {
+            return getJndiName();
         } else {
             throw new AttributeNotFoundException(attribute);
         }
-        return returnValue;
     }
 
     /** {@inheritDoc} */

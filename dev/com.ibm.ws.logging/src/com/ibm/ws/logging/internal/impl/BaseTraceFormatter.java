@@ -683,6 +683,7 @@ public class BaseTraceFormatter extends Formatter {
         String txt = null;
         Integer id = null;
         String objId;
+        @SuppressWarnings("unused")
         Integer levelVal = null;
         String name;
 
@@ -697,6 +698,7 @@ public class BaseTraceFormatter extends Formatter {
         String component = null;
 
         String sym = null;
+        @SuppressWarnings("unused")
         String logLevel = null;
 
         String threadName = null;
@@ -1020,7 +1022,7 @@ public class BaseTraceFormatter extends Formatter {
                     if (retryableExceptionCount >= 100) {
                         return "[Caught too many exceptions while logging collection type " + objs.getClass().getName() + "]";
                     }
-                    objArray = ((Collection) objs).toArray();
+                    objArray = ((Collection<?>) objs).toArray();
                 } catch (ConcurrentModificationException cme) {
                     // this exception is possible.  Need to retry until it doesn't happen any longer.
                     retryableExceptionCount++;

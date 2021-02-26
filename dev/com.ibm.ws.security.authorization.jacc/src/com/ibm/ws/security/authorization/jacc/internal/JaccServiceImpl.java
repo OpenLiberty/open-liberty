@@ -62,7 +62,9 @@ public class JaccServiceImpl implements JaccService {
     private static final TraceComponent tc = Tr.register(JaccServiceImpl.class);
 
     private static final String JACC_FACTORY = "javax.security.jacc.PolicyConfigurationFactory.provider";
+    private static final String JACC_FACTORY_EE9 = "jakarta.security.jacc.PolicyConfigurationFactory.provider";
     private static final String JACC_POLICY_PROVIDER = "javax.security.jacc.policy.provider";
+    private static final String JACC_POLICY_PROVIDER_EE9 = "jakarta.security.jacc.policy.provider";
     private static final String JACC_EJB_METHOD_ARGUMENT = "RequestMethodArgumentsRequired";
     static final String KEY_JACC_PROVIDER_SERVICE = "jaccProviderService";
     private final String KEY_LOCATION_ADMIN = "locationAdmin";
@@ -150,9 +152,22 @@ public class JaccServiceImpl implements JaccService {
         if (obj != null && obj instanceof String) {
             policyName = (String) obj;
         }
+        if (policyName == null) {
+            obj = reference.getProperty(JACC_POLICY_PROVIDER_EE9);
+            if (obj != null && obj instanceof String) {
+                policyName = (String) obj;
+            }
+        }
+
         obj = reference.getProperty(JACC_FACTORY);
         if (obj != null && obj instanceof String) {
             factoryName = (String) obj;
+        }
+        if (factoryName == null) {
+            obj = reference.getProperty(JACC_FACTORY_EE9);
+            if (obj != null && obj instanceof String) {
+                factoryName = (String) obj;
+            }
         }
         if (tc.isDebugEnabled())
             Tr.debug(tc, "Meta data : policyName : " + policyName + " factoryName : " + factoryName);
@@ -164,13 +179,22 @@ public class JaccServiceImpl implements JaccService {
             @Override
             public Object run() {
                 String systemPolicyName = System.getProperty(JACC_POLICY_PROVIDER);
+                if (systemPolicyName == null) {
+                    systemPolicyName = System.getProperty(JACC_POLICY_PROVIDER_EE9);
+                }
+
                 String systemFactoryName = System.getProperty(JACC_FACTORY);
+                if (systemFactoryName == null) {
+                    systemFactoryName = System.getProperty(JACC_FACTORY_EE9);
+                }
+
                 if (tc.isDebugEnabled()) {
                     Tr.debug(tc, "System properties : policyName : " + systemPolicyName + " factoryName : " + systemFactoryName);
                 }
                 if (systemPolicyName == null) {
                     if (policyName != null) {
                         System.setProperty(JACC_POLICY_PROVIDER, policyName);
+                        System.setProperty(JACC_POLICY_PROVIDER_EE9, policyName);
                     } else if (policyName == null) {
                         Tr.error(tc, "JACC_POLICY_IS_NOT_SET");
                         return null;
@@ -181,12 +205,14 @@ public class JaccServiceImpl implements JaccService {
                     } else if (!systemPolicyName.equals(policyName)) {
                         Tr.warning(tc, "JACC_INCONSISTENT_POLICY_CLASS", new Object[] { systemPolicyName, policyName });
                         System.setProperty(JACC_POLICY_PROVIDER, policyName);
+                        System.setProperty(JACC_POLICY_PROVIDER_EE9, policyName);
                         originalSystemPolicyName = systemPolicyName;
                     }
                 }
                 if (systemFactoryName == null) {
                     if (factoryName != null) {
                         System.setProperty(JACC_FACTORY, factoryName);
+                        System.setProperty(JACC_FACTORY_EE9, factoryName);
                     } else if (factoryName == null) {
                         Tr.error(tc, "JACC_FACTORY_IS_NOT_SET");
                         return null;
@@ -197,6 +223,7 @@ public class JaccServiceImpl implements JaccService {
                     } else if (!systemFactoryName.equals(factoryName)) {
                         Tr.warning(tc, "JACC_INCONSISTENT_FACTORY_CLASS", new Object[] { systemFactoryName, factoryName });
                         System.setProperty(JACC_FACTORY, factoryName);
+                        System.setProperty(JACC_FACTORY_EE9, factoryName);
                         originalSystemFactoryName = systemFactoryName;
                     }
                 }
@@ -211,12 +238,14 @@ public class JaccServiceImpl implements JaccService {
             public Object run() {
                 if (originalSystemPolicyName != null) {
                     System.setProperty(JACC_POLICY_PROVIDER, originalSystemPolicyName);
+                    System.setProperty(JACC_POLICY_PROVIDER_EE9, originalSystemPolicyName);
                     if (tc.isDebugEnabled()) {
                         Tr.debug(tc, "PolicyName system property is restored by : " + originalSystemPolicyName);
                     }
                 }
                 if (originalSystemFactoryName != null) {
                     System.setProperty(JACC_FACTORY, originalSystemFactoryName);
+                    System.setProperty(JACC_FACTORY_EE9, originalSystemFactoryName);
                     if (tc.isDebugEnabled()) {
                         Tr.debug(tc, "PolicyName system property is restored by : " + originalSystemFactoryName);
                     }

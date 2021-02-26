@@ -517,7 +517,12 @@ public class H2InboundLink extends HttpInboundLink {
                 buf.release();
                 setReadLinkStatusToNotReadingAndNotify();
 
-                throw up;
+                // don't rethrow if we're handling a throwable during a close
+                if ((linkStatus == LINK_STATUS.CLOSING) || (linkStatus == LINK_STATUS.GOAWAY_SENDING)) {
+                    return;
+                } else {
+                    throw up;
+                }
             }
 
         } else {
@@ -1245,18 +1250,22 @@ public class H2InboundLink extends HttpInboundLink {
             }
 
             try {
-
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "H2ConnectionTimeout-run: sending GOAWAY Frame" + " :close: H2InboundLink hc: " + hcDebug);
-                }
-                if (e == null) {
-                    streamTable.get(0).sendGOAWAYFrame(new Http2Exception("the http2 connection has timed out"));
-                } else if (e instanceof Http2Exception) {
-                    streamTable.get(0).sendGOAWAYFrame((Http2Exception) e);
+                if (e instanceof IOException) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "H2ConnectionTimeout-run: IOException encountered, close immediately" + " :close: H2InboundLink hc: " + hcDebug);
+                    }
                 } else {
-                    streamTable.get(0).sendGOAWAYFrame(new Http2Exception(e.getMessage()));
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "H2ConnectionTimeout-run: sending GOAWAY Frame" + " :close: H2InboundLink hc: " + hcDebug);
+                    }
+                    if (e == null) {
+                        streamTable.get(0).sendGOAWAYFrame(new Http2Exception("the http2 connection has timed out"));
+                    } else if (e instanceof Http2Exception) {
+                        streamTable.get(0).sendGOAWAYFrame((Http2Exception) e);
+                    } else {
+                        streamTable.get(0).sendGOAWAYFrame(new Http2Exception(e.getMessage()));
+                    }
                 }
-
             } catch (Exception x) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "H2ConnectionTimeout-run: exeception received while sending GOAWAY: " + " :close: H2InboundLink hc: " + hcDebug + " " + x);

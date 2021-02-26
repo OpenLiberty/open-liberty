@@ -40,4 +40,8 @@ public class CollectorConstants {
     public static final String TRACE_LOG_EVENT_TYPE = "liberty_trace";
     public static final String ACCESS_LOG_EVENT_TYPE = "liberty_accesslog";
     public static final String AUDIT_LOG_EVENT_TYPE = "liberty_audit";
+
+    /* Used to determine if it's a JSON logging or Logstash Collector field */
+    public static final short KEYS_JSON = 0;
+    public static final short KEYS_LOGSTASH = 1;
 }

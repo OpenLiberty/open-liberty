@@ -55,19 +55,25 @@ public class HttpConnector {
 
 	private static final TraceComponent tc = Tr.register(HttpConnector.class);
 
-	private static final int TIMEOUT = 10000;
 	private static final String USER_AGENT;
 
 	static {
 		StringBuilder agent = new StringBuilder("acme4j");
 
 		try (InputStream in = HttpConnector.class.getResourceAsStream("/org/shredzone/acme4j/version.properties")) {
-			Properties prop = new Properties();
-			prop.load(in);
-			agent.append('/').append(prop.getProperty("version"));
+			if (in == null) {
+				if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+					Tr.debug(tc,
+							"Could not read /org/shredzone/acme4j/version.properties, ignore and skip library version.");
+				}
+			} else {
+				Properties prop = new Properties();
+				prop.load(in);
+				agent.append('/').append(prop.getProperty("version"));
+			}
 		} catch (Exception ex) {
 			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-				Tr.debug(tc, "Could not read library version", ex);
+				Tr.debug(tc, "Could not read library version, ignore and skip adding it.", ex);
 			}
 		}
 
@@ -111,8 +117,21 @@ public class HttpConnector {
 	 *            {@link URL} to connect to
 	 */
 	protected void configure(HttpURLConnection conn, URL url) throws IOException {
-		conn.setConnectTimeout(TIMEOUT);
-		conn.setReadTimeout(TIMEOUT);
+		int connectTimeout;
+		int readTimeout;
+		if (AcmeConfigService.getThreadLocalAcmeConfig() != null) {
+			connectTimeout = AcmeConfigService.getThreadLocalAcmeConfig().getHTTPConnectTimeout().intValue();
+			readTimeout = AcmeConfigService.getThreadLocalAcmeConfig().getHTTPReadTimeout().intValue();
+		} else {
+			connectTimeout = AcmeProviderImpl.getAcmeConfig().getHTTPConnectTimeout();
+			readTimeout = AcmeProviderImpl.getAcmeConfig().getHTTPReadTimeout();
+		}
+		if (tc.isDebugEnabled()) {
+			Tr.debug(tc, "Setting http timeouts for ACME calls, connectTimeout: " + connectTimeout
+					+ " and readTimeout: " + readTimeout);
+		}
+		conn.setConnectTimeout(connectTimeout);
+		conn.setReadTimeout(readTimeout);
 		conn.setUseCaches(false);
 		conn.setRequestProperty("User-Agent", USER_AGENT);
 

@@ -365,6 +365,20 @@ PROP_SET_ERROR.useraction=Verify that the value that is specified is valid for t
 # 8050-8055 deleted
 # 8060 deleted
 # 8065 deleted
+     
+# 8066E
+# {0}         The invalid attribute value
+# {1}         The allowed attribute values
+# Do not translate: identifyException, as
+8066E_IDENTIFY_EXCEPTION_INVALID_TARGET=DSRA8066E: The ''{0}'' invalid value was specified for the ''as'' attribute on the identifyException element. Allowed values are: {1}
+8066E_IDENTIFY_EXCEPTION_INVALID_TARGET.explanation=An invalid value was specified for the identifyException configuration element.
+8066E_IDENTIFY_EXCEPTION_INVALID_TARGET.useraction=Update the configuration to specify one of the allowed values.
+
+# 8067E
+# Do not translate: errorCode, sqlState, identifyException
+8067E_IDENTIFY_EXCEPTION_ERRCODE_SQLSTATE=DSRA8067E: At least one of the 'errorCode' or 'sqlState' attributes must be specified on the identifyException element.
+8067E_IDENTIFY_EXCEPTION_ERRCODE_SQLSTATE.explanation=One of the errorCode or sqlState attributes must be specified.
+8067E_IDENTIFY_EXCEPTION_ERRCODE_SQLSTATE.useraction=Update the configuration to specify at least one of the errorCode or sqlState attributes on the identifyException element.
 
 # 8100E      JAVAX_CONN_ERR
 # 
@@ -647,6 +661,10 @@ KERBEROS_NOT_SUPPORTED_WARNING.explanation= The Application Server does not supp
 KERBEROS_NOT_SUPPORTED_WARNING.useraction= Disable Kerberos, or use a DB2 backend with the DB2 universal JDBC driver.
 
 # 9544-9548 deleted
+
+KERBEROS_ORACLE_IBMJDK_NOT_SUPPORTED=DSRA9549E: Using the IBM Java 8 SDK with an Oracle database is not supported. The Oracle JDBC driver only supports Kerberos authentication using the default security APIs available in OpenJDK, OpenJ9, or other similar SDKs.
+KERBEROS_ORACLE_IBMJDK_NOT_SUPPORTED.explanation=Using the IBM Java 8 SDK with an Oracle database is not supported. The Oracle JDBC driver only supports Kerberos authentication using the default security APIs available in OpenJDK, OpenJ9, or other similar SDKs.
+KERBEROS_ORACLE_IBMJDK_NOT_SUPPORTED.useraction=Disable Kerberos authentication for the Oracle data source, or switch to a different Java SDK besides the IBM Java 8 SDK.
 
 # 9600-9603 deleted 
 # 9900 deleted

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2019 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,11 +12,15 @@
 package com.ibm.ws.annocache.util.internal;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Collection;
 
+import org.eclipse.osgi.service.urlconversion.URLConverter;
+
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.kernel.service.utils.FileUtils;
 
@@ -61,6 +65,7 @@ public class UtilImpl_FileStamp {
      *
      * See {@link URL#getProtocol()} and {@link URL#getPath()}.
      *
+     * @param urlConverter A converter to convert bundleentry URLs to file URLs
      * @param container The container for which to answer the
      * physical path.
      *
@@ -68,7 +73,7 @@ public class UtilImpl_FileStamp {
      *     container has multiple URLs, or if the container does
      *     not use a file URL.
      */
-    public static String getPhysicalPath(Container container) {
+    public static String getPhysicalPath(URLConverter urlConverter, Container container) {
         Collection<URL> urls = container.getURLs();
         URL url = null;
         for ( URL nextURL : urls ) {
@@ -79,10 +84,43 @@ public class UtilImpl_FileStamp {
             return null;
         }
         String protocol = url.getProtocol();
-        if ( (protocol == null) || !protocol.equals("file") ) {
-            return null;
+        if (protocol.equals("file")) {
+            return url.getPath();
         }
-        return url.getPath();
+        return convertBundleEntryURLToPhysicalPath(url, urlConverter);
+    }
+
+    @FFDCIgnore(UnsupportedOperationException.class)
+    private static String convertBundleEntryURLToPhysicalPath(URL url, URLConverter urlConverter) {
+        if (urlConverter == null) {
+            // should never happen in OSGi, allow null for testing
+            throw new IllegalStateException();
+        }
+        try {
+            try {
+                url = urlConverter.resolve(url);
+            } catch (UnsupportedOperationException e) {
+                // preparing for OSGi connect where this is not supported
+            }
+            // according to the javadoc resolve should never return null ...
+            // but when using a loose archive for a WAB our loose bundle entries
+            // may return null from BundleEntry.getLocalURL
+            if (url != null) {
+                if ("file".equals(url.getProtocol())) {
+                    return url.getPath();
+                }
+                if ("jar".equals(url.getProtocol())) {
+                    String path = url.getPath();
+                    if (path.startsWith("file:")) {
+                        // strip off the file: and the !/
+                        return path.substring(5, path.length() - 2);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            // Auto-FFDC here
+        }
+        return null;
     }
 
     /**
@@ -101,13 +139,14 @@ public class UtilImpl_FileStamp {
      * have different contents, the stamp of the containers is unchanged
      * across a transposition of the two containers. 
      * 
+     * @param urlConverter A converter to convert bundleentry URLs to file URLs
      * @param container The container for which to compute a stamp.
      *
      * @return The stamp of the container.  Null if no stamp is available for
      *     the container.
      */
-    public static String computeStamp(Container container) {
-        String physicalPath = getPhysicalPath(container);
+    public static String computeStamp(URLConverter urlConverter, Container container) {
+        String physicalPath = getPhysicalPath(urlConverter, container);
         return ( (physicalPath == null) ? null : computeStamp( new File(physicalPath) ) );
     }
 }

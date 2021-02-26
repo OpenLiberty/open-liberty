@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,6 +32,16 @@ import java.util.regex.Pattern;
  * 
  * Both methods nest the top level of the supplied map. If you have multiple levels of flattened configuration
  * you will need to call the appropriate methods at each level on the results from the previous level.
+ */
+
+/*
+ * See also:
+ *     open-liberty\dev\com.ibm.ws.javaee.ddmodel.wsbnd\src\
+ *         com\ibm\ws\javaee\ddmodel\wsbnd\internal\
+ *             NestingUtils.java
+ *
+ * Which implements the same operations.  If any updates are made
+ * here, parallel updates should be made to NestingUtils.
  */
 public class Nester {
 

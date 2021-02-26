@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -57,15 +57,20 @@ public class ClientCertAuthClient extends ServletClientImpl {
 
     public ClientCertAuthClient(String host, int port, boolean isSSL,
                                 LibertyServer server, String servletName, String contextRoot, String ksPath, String ksPassword) {
+        this(host, port, isSSL, null, servletName, contextRoot, ksPath, ksPassword, null);
+    }
+
+    public ClientCertAuthClient(String host, int port, boolean isSSL,
+                                LibertyServer server, String servletName, String contextRoot, String ksPath, String ksPassword, String sslProtocol) {
         super(host, port, isSSL, contextRoot);
         logger = Logger.getLogger(c.getCanonicalName());
         logger.info("ClientCertAuthClient: host=" + host +
                     " port=" + port + " isSSL=" + isSSL +
-                    " servletName=" + servletName + " contextRoot=" + contextRoot);
+                    " servletName=" + servletName + " contextRoot=" + contextRoot + "sslProtocol=" + sslProtocol);
         this.servletName = servletName;
         authType = "CLIENT-CERT";
         if (isSSL) {
-            SSLHelper.establishSSLContext(client, port, server, ksPath, ksPassword, null, null);
+            SSLHelper.establishSSLContext(client, port, server, ksPath, ksPassword, null, null, sslProtocol);
         }
     }
 
@@ -73,7 +78,8 @@ public class ClientCertAuthClient extends ServletClientImpl {
      * {@inheritDoc}
      */
     @Override
-    protected void hookResetClientState() {}
+    protected void hookResetClientState() {
+    }
 
     /**
      * {@inheritDoc}
@@ -91,6 +97,19 @@ public class ClientCertAuthClient extends ServletClientImpl {
         } catch (Exception e) {
             failWithMessage("Caught unexpected exception: " + e);
             return null;
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String access(String urlPattern, int expectedStatusCode, String... dumpSSOCookieName) {
+        if (dumpSSOCookieName != null) {
+            logger.info("access:(urlPattern, expectedStatusCode, dumpSSOCookieName) This version of the method is currently only implemented for BasicAuthClient");
+            return null;
+        } else {
+            return access(urlPattern, expectedStatusCode);
         }
     }
 
@@ -262,6 +281,17 @@ public class ClientCertAuthClient extends ServletClientImpl {
     }
 
     @Override
+    protected String accessWithHeaders(String url, int expectedStatusCode, Map<String, String> headers, Boolean ignoreErrorContent, Boolean handleSSOCookie,
+                                       String... dumpSSOCookieNames) {
+        if (dumpSSOCookieNames != null) {
+            logger.info("accessWithHeaders: This version of the method is currently only implemented for BasicAuthClient");
+            return null;
+        } else {
+            return accessWithHeaders(url, expectedStatusCode, headers, ignoreErrorContent, handleSSOCookie);
+        }
+    }
+
+    @Override
     protected String accessWithHeaders(String url, int expectedStatusCode, Map<String, String> headers, Boolean ignoreErrorContent, Boolean handleSSOCookie) {
         logger.info("accessWithHeaders: url=" + url + " expectedStatusCode=" + expectedStatusCode);
 
@@ -344,5 +374,16 @@ public class ClientCertAuthClient extends ServletClientImpl {
         logger.info("Servlet response: " + content);
         EntityUtils.consume(entity);
         return content;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.ws.webcontainer.security.test.servlets.ServletClientImpl#accessWithException(java.lang.String, java.lang.Class[])
+     */
+    @Override
+    protected String accessWithException(String url, Class<?>[] expectedExceptions) {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

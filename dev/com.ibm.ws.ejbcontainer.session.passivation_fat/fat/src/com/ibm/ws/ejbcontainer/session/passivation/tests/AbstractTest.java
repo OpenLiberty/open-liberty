@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,10 +28,10 @@ public abstract class AbstractTest {
     public TestName testName = new TestName();
 
     protected void runTest(String servlet) throws Exception {
-        String test = testName.getMethodName().endsWith(RepeatTestFilter.CURRENT_REPEAT_ACTION) ? testName.getMethodName().substring(0,
-                                                                                                                                     testName.getMethodName().length()
-                                                                                                                                        - (RepeatTestFilter.CURRENT_REPEAT_ACTION.length()
-                                                                                                                                           + 1)) : testName.getMethodName();
+        String test = testName.getMethodName();
+        if (test.endsWith(RepeatTestFilter.getRepeatActionsAsString())) {
+            test = test.replace(RepeatTestFilter.getRepeatActionsAsString(), "");
+        }
         FATServletClient.runTest(getServer(), servlet, test);
     }
 

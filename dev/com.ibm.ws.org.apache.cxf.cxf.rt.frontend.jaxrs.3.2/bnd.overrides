@@ -30,9 +30,10 @@ Import-Package: \
   javax.xml.bind.annotation;version=!,\
   javax.xml.bind.annotation.adapters;version=!,\
   javax.xml.bind.attachment;version=!,\
+  javax.ws.rs.sse,\
   *
 
-exportVer=3.3.0
+exportVer=3.4.1
 
 Export-Package: com.ibm.ws.jaxrs20.cache,\
   org.apache.cxf.jaxrs;version=${exportVer},\

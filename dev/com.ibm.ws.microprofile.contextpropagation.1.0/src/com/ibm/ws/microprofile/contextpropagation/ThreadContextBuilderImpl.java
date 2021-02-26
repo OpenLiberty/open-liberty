@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018,2019 IBM Corporation and others.
+ * Copyright (c) 2018,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,6 +24,7 @@ import org.eclipse.microprofile.context.spi.ThreadContextProvider;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.concurrent.mp.spi.ThreadContextFactory;
+import com.ibm.ws.microprofile.context.EmptyHandleListContextProvider;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 
@@ -81,10 +82,11 @@ public class ThreadContextBuilderImpl implements ThreadContext.Builder {
             String contextType = provider.getThreadContextType();
             unknown.remove(contextType);
 
-            ContextOp op = propagated.contains(contextType) ? ContextOp.PROPAGATED //
-                            : cleared.contains(contextType) ? ContextOp.CLEARED //
-                                            : unchanged.contains(contextType) ? ContextOp.UNCHANGED //
-                                                            : remaining;
+            ContextOp op = EmptyHandleListContextProvider.EMPTY_HANDLE_LIST.contentEquals(contextType) ? ContextOp.CLEARED //
+                            : propagated.contains(contextType) ? ContextOp.PROPAGATED //
+                                            : cleared.contains(contextType) ? ContextOp.CLEARED //
+                                                            : unchanged.contains(contextType) ? ContextOp.UNCHANGED //
+                                                                            : remaining;
             if (op != ContextOp.UNCHANGED)
                 configPerProvider.put(provider, op);
         }
@@ -150,7 +152,7 @@ public class ThreadContextBuilderImpl implements ThreadContext.Builder {
     /**
      * Fail with error identifying unknown context type(s) that were specified.
      *
-     * @param unknown set of unknown context types(s) that were specified.
+     * @param unknown          set of unknown context types(s) that were specified.
      * @param contextProviders
      */
     static void failOnUnknownContextTypes(HashSet<String> unknown, ArrayList<ThreadContextProvider> contextProviders) {

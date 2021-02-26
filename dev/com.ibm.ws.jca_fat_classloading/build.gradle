@@ -8,12 +8,9 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-
 dependencies {
   //Will be put in the lib directory, testing to make sure the resource adapter's classloader cannot load a thrid party class.
   //Not actually using this library at runtime. 
   requiredLibs 'org.apache.commons:commons-math:2.2'
 }
  
-
-

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*******************************************************************************
+ * Copyright (c) 2020 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+-->
+<server>
+    <featureManager>   
+        <feature>ldapRegistry-3.0</feature>
+        <feature>appSecurity-2.0</feature>
+        <feature>jsp-2.3</feature>
+        <feature>servlet-3.1</feature>
+        <feature>jdbc-4.1</feature>
+        <feature>ssl-1.0</feature>
+        <feature>timedexit-1.0</feature>
+    </featureManager>     
+
+    <webAppSecurity  logoutOnHttpSessionExpire="false"  ssoCookieName="SHIBBOLETH_IDP" sameSiteCookie="${mySameSiteCookie}" />   
+
+	<ldapRegistry
+		id="LDAP"
+		realm="SampleLdapIDSRealm"
+		host="${ldap.server.8.name}"
+		port="${ldap.server.8.port}"
+		ignoreCase="true"
+		baseDN="o=ibm,c=us"
+		userFilter="(&amp;(uid=%v)(objectclass=ePerson))"
+		groupFilter="(&amp;(cn=%v)(|(objectclass=groupOfNames)(objectclass=groupOfUniqueNames)(objectclass=groupOfURLs)))"
+		userIdMap="*:uid"
+		groupIdMap="*:cn"
+		groupMemberIdMap="ibm-allGroups:member"
+		ldapType="IBM Tivoli Directory Server"
+		searchTimeout="8m"
+	>
+		<failoverServers name="failoverLdapServers">
+			<server
+				host="${ldap.server.4.name}"
+				port="${ldap.server.4.port}" />
+		</failoverServers>
+	</ldapRegistry>
+
+
+    <keyStore id="defaultKeyStore" password="keyspass" /> 
+
+    <httpEndpoint host="localhost" httpPort="${bvt.prop.security_3_HTTP_default}" httpsPort="${bvt.prop.security_3_HTTP_default.secure}" id="defaultHttpEndpoint"/>   
+
+<!--
+    <application type="war" id="idp" name="idp" location="${server.config.dir}/test-apps/idp.war">
+    </application>
+-->
+
+    <javaPermission className="java.security.AllPermission"></javaPermission>
+
+</server>
+

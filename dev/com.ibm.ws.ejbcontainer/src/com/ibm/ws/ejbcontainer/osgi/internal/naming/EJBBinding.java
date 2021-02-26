@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,11 @@
  *******************************************************************************/
 package com.ibm.ws.ejbcontainer.osgi.internal.naming;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.ibm.ejs.container.HomeRecord;
+import com.ibm.websphere.csi.J2EEName;
 
 /**
  * Represents EJB object data held for lookup
@@ -26,6 +30,10 @@ public class EJBBinding {
 
     public final boolean isLocal;
 
+    public boolean isAmbiguousReference = false;
+
+    public List<J2EEName> j2eeNames = new ArrayList<J2EEName>();
+
     /**
      * Create EJB binding data
      *
@@ -36,10 +44,26 @@ public class EJBBinding {
         this.interfaceName = interfaceName;
         this.interfaceIndex = interfaceIndex;
         this.isLocal = local;
+
+        if (homeRecord != null) {
+            this.j2eeNames.add(homeRecord.getJ2EEName());
+        }
     }
 
     public boolean isHome() {
         return interfaceIndex == -1;
+    }
+
+    public void setAmbiguousReference() {
+        this.isAmbiguousReference = true;
+    }
+
+    public List<J2EEName> getJ2EENames() {
+        return this.j2eeNames;
+    }
+
+    public void addJ2EENames(List<J2EEName> nameList) {
+        this.j2eeNames.addAll(nameList);
     }
 
     @Override
@@ -48,6 +72,9 @@ public class EJBBinding {
                '[' + homeRecord.getJ2EEName() +
                ", " + interfaceName +
                ", " + interfaceIndex +
+               ", " + isLocal +
+               ", " + isAmbiguousReference +
+               ", " + j2eeNames.toString() +
                ']';
     }
 }

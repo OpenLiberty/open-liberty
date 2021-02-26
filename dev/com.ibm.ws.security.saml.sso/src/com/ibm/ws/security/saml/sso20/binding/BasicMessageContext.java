@@ -95,11 +95,11 @@ public class BasicMessageContext<InboundMessageType extends SAMLObject, Outbound
 
     Status logoutResponseStatus;
     String inResponseTo;
-    
+
     HttpServletRequest request;
     HttpServletResponse response;
-    
-    InitialRequestUtil irUtil= new InitialRequestUtil();
+
+    InitialRequestUtil irUtil = new InitialRequestUtil();
 
     static ChainingEncryptedKeyResolver encryptedKeyResolver = new ChainingEncryptedKeyResolver();
     static {
@@ -115,7 +115,7 @@ public class BasicMessageContext<InboundMessageType extends SAMLObject, Outbound
         this.ssoService = ssoService;
         this.ssoConfig = ssoService.getConfig();
     }
-    
+
     public BasicMessageContext(SsoSamlService ssoService, HttpServletRequest request, HttpServletResponse response) {
         this.ssoService = ssoService;
         this.ssoConfig = ssoService.getConfig();
@@ -322,15 +322,15 @@ public class BasicMessageContext<InboundMessageType extends SAMLObject, Outbound
                 //Tr.error(tc, "SAML20_POTENTIAL_REPLAY_ATTACK", new Object[] { externalRelayState });
                 try {
                     cachedRequestInfo = irUtil.recreateHttpRequestInfo(externalRelayState, this.request, this.response, this.ssoService);
-                } catch(SamlException e) {
-                    Tr.debug(tc,  "cannot recreate HttpRequestInfo using InitialRequest cookie", e.getMessage());
+                } catch (SamlException e) {
+                    Tr.debug(tc, "cannot recreate HttpRequestInfo using InitialRequest cookie", e);
                     throw e;
-                } 
+                }
                 if (cachedRequestInfo == null) {
-                  throw new SamlException("SAML20_POTENTIAL_REPLAY_ATTACK",
-                  //"CWWKS5030E: Cannot handle the SAML request. Make sure the communication is working properly and try the requesting procedure again.",
-                  null, // cause
-                  new Object[] { externalRelayState });
+                    throw new SamlException("SAML20_POTENTIAL_REPLAY_ATTACK",
+                                    //"CWWKS5030E: Cannot handle the SAML request. Make sure the communication is working properly and try the requesting procedure again.",
+                                    null, // cause
+                                    new Object[] { externalRelayState });
                 }
 
             } else {

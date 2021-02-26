@@ -1,7 +1,7 @@
 var messages = {
     WELCOME_SECTION: "환영 섹션",
     WELCOME_SECTION_CONTENT: "환영 섹션 컨텐츠",
-    WELCOME_MESSAGE: "다음의 사용을 환영합니다: ",
+    WELCOME_MESSAGE: "사용을 환영합니다: ",
     WELCOME_IBM_OPEN_SOURCE: "IBM Open Source Project",
     WELCOME_LIGHTWEIGHT: "클라우드 특성을 가진 Java 마이크로서비스를 빠르고 효율적으로 빌드 및 실행하기 위한 경량의 오픈 프레임워크입니다. ",
     UFO: "UFO 및 빔",

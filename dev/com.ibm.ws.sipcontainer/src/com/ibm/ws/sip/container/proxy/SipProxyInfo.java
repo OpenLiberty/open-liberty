@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003 IBM Corporation and others.
+ * Copyright (c) 2003, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,33 +10,27 @@
  *******************************************************************************/
 package com.ibm.ws.sip.container.proxy;
 
-import jain.protocol.ip.sip.ListeningPoint;
-import jain.protocol.ip.sip.SipProvider;
-import jain.protocol.ip.sip.address.SipURL;
+import java.net.*;
+import java.util.*;
 
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.LinkedList;
-
-import javax.servlet.sip.SipServlet;
-import javax.servlet.sip.SipServletRequest;
-import javax.servlet.sip.SipURI;
-import com.ibm.ws.sip.container.parser.SipAppDesc;
+import javax.servlet.sip.*;
 
 import com.ibm.sip.util.log.Log;
 import com.ibm.sip.util.log.LogMgr;
 import com.ibm.ws.sip.container.SipContainer;
+import com.ibm.ws.sip.container.parser.SipAppDesc;
+import com.ibm.ws.sip.container.properties.PropertiesStore;
 import com.ibm.ws.sip.container.servlets.SipServletMessageImpl;
 import com.ibm.ws.sip.parser.util.InetAddressCache;
+import com.ibm.ws.sip.properties.CoreProperties;
 import com.ibm.ws.sip.stack.transaction.util.SIPStackUtil;
-//TODO Liberty replace the fuctionality of this methos, as it's in  our HA component which is not supported in Liberty
+//TODO Liberty replace the functionality of this method, as it's in  our HA component which is not supported in Liberty
 //import com.ibm.ws.sip.hamanagment.util.SipClusterUtil;
 import com.ibm.ws.sip.stack.transport.virtualhost.SipVirtualHostAdapter;
+
+import jain.protocol.ip.sip.ListeningPoint;
+import jain.protocol.ip.sip.SipProvider;
+import jain.protocol.ip.sip.address.SipURL;
 
 /**
  * This class is needed in order to implement MultiHome host support (part of JSR 289):
@@ -303,7 +297,7 @@ public class SipProxyInfo {
 		    	if(c_logger.isTraceDebugEnabled()){
 					c_logger.traceDebug("getIndexOfIface: comparing: " + host + " to host:" + ifaceHost + " and to host addr:" + ifaceHostAddress);
 				}	    		
-	    		if (ifaceHost.equalsIgnoreCase(host) || ifaceHostAddress.equalsIgnoreCase(host)) {
+	    		if (SIPStackUtil.isSameHost(ifaceHost, host) || SIPStackUtil.isSameHost(ifaceHostAddress, host)) {
 	    			if(c_logger.isTraceDebugEnabled()){
 	    	    		c_logger.traceExit(this, "getIndexOfIface", i);
 	    	    	}
@@ -346,20 +340,41 @@ public class SipProxyInfo {
     	
     	if (outboundIfList != null)
     	{
+    		// if both URI and an outbound interface were created using an IP address,
+    		// then compare only IP addresses to prevent DNS lookup
+    		boolean compareByIPOnly;
 	    	final int size = outboundIfList.size();
 	    	for (int i = 0; i < size ; i++) {
-	    		SipURI current = (SipURI)outboundIfList.get(i);
+	    		SipURI outboundIf = (SipURI)outboundIfList.get(i);
+	    		String outboundIfHost = outboundIf.getHost();
+	    		
+	    		String hostAddress = InetAddressCache.getHostAddress(socketAddress.getAddress());
 	    		
 		    	if(c_logger.isTraceDebugEnabled()){
-					c_logger.traceDebug("getIndexOfIface: comparing: " + current.getHost() + " to host:" + socketAddress.getHostName() + " and to host addr:" + InetAddressCache.getHostAddress(socketAddress.getAddress()));
+					c_logger.traceDebug("getIndexOfIface: comparing: " + outboundIfHost + " to: " + hostAddress);
 				}
+	    		// compare IP addresses
+		    	if (SIPStackUtil.isSameHost(outboundIfHost, hostAddress)
+		    			&& outboundIf.getPort() == socketAddress.getPort()) {
 
-		    	if (((current.getHost().equalsIgnoreCase(socketAddress.getHostName()) == true) || 
-	    			(current.getHost().equals(InetAddressCache.getHostAddress(socketAddress.getAddress())) == true)) &&
-	    			current.getPort() == socketAddress.getPort())
-	    		{
-			    	result = i;
+		    		result = i;
 					break; 
+	    		}
+	    		// InetAddress.toString()
+	    		// hostname / literal IP address. If the host name is unresolved, 
+	    		// no reverse name service lookup is performed. The hostname part will be represented by an empty string
+	    		compareByIPOnly = SIPStackUtil.isIpAddress(outboundIfHost) && socketAddress.getAddress().toString().trim().startsWith("/");
+	    		
+	    		if (!compareByIPOnly) {
+			    	if(c_logger.isTraceDebugEnabled()){
+						c_logger.traceDebug("getIndexOfIface: comparing: " + outboundIfHost + " to: " + socketAddress.getHostName());
+					}
+		    		// compare hostnames 
+			    	if (SIPStackUtil.isSameHost(outboundIfHost, socketAddress.getHostName()) &&
+		    			outboundIf.getPort() == socketAddress.getPort()) {
+				    	result = i;
+						break; 
+		    		}
 	    		}
 	    	}
     	}
@@ -403,18 +418,37 @@ public class SipProxyInfo {
 				c_logger.traceDebug("getIndexOfIface: searching for address:"+ address + " list size:" + size);
 			}
 	    	
+    		// if both URI and an outbound interface were created using an IP address,
+    		// then compare only IP addresses to prevent DNS lookup
+    		boolean compareByIPOnly;
 	    	for (int i = 0; i < size ; i++) {
-	    		SipURI current = (SipURI)outboundIfList.get(i);
+	    		SipURI outboundIf = (SipURI)outboundIfList.get(i);
+	    		String outboundIfHost = outboundIf.getHost();
+	    		
+	    		String hostAddress = InetAddressCache.getHostAddress(address);
 	    		
 		    	if(c_logger.isTraceDebugEnabled()){
-					c_logger.traceDebug("getIndexOfIface: comparing: " + current.getHost() + " to host:" + address.getHostName() + " and to host addr:" + InetAddressCache.getHostAddress(address));
+					c_logger.traceDebug("getIndexOfIface: comparing: " + outboundIfHost + " to: " + hostAddress);
 				}
-
-		    	if ((current.getHost().equals(InetAddressCache.getHostAddress(address)) == true) ||
-		    		(current.getHost().equals(address.getHostName()) == true))
-	    		{
-			    	result = i;
+	    		// compare IP addresses
+		    	if (SIPStackUtil.isSameHost(outboundIfHost, hostAddress)) {
+		    		result = i;
 					break; 
+	    		}
+	    		// InetAddress.toString()
+	    		// hostname / literal IP address. If the host name is unresolved, 
+	    		// no reverse name service lookup is performed. The hostname part will be represented by an empty string
+	    		compareByIPOnly = SIPStackUtil.isIpAddress(outboundIfHost) && address.toString().trim().startsWith("/");
+	    		
+	    		if (!compareByIPOnly) {
+			    	if(c_logger.isTraceDebugEnabled()){
+						c_logger.traceDebug("getIndexOfIface: comparing: " + outboundIfHost + " to: " + address.getHostName());
+					}
+		    		// compare hostnames 
+			    	if (SIPStackUtil.isSameHost(outboundIfHost, address.getHostName())) {
+				    	result = i;
+						break; 
+		    		}
 	    		}
 	    	}
     	}
@@ -511,7 +545,7 @@ public class SipProxyInfo {
 	    	
 	    	for (int i = 0; i < size ; i++) {
 	    		SipURI current = (SipURI)outboundIfList.get(i);
-	    		if (current.getHost().equals(host) &&
+	    		if (SIPStackUtil.isSameHost(current.getHost(), host) &&
 		    		(current.getPort() == port)){
 	    			    	result = i;
 	    					break; 
@@ -669,23 +703,26 @@ public class SipProxyInfo {
     		return null;
     	}
 
+    	boolean skipSentByHostCheck = PropertiesStore.getInstance().getProperties().getBoolean(
+				CoreProperties.SKIP_SENT_BY_HOST_CHECK);
     	SipURI defaultInterface = null;
 		String transport = req.getTransport();
 		String host = req.getLocalAddr();
+		if(c_logger.isTraceDebugEnabled()){
+			c_logger.traceDebug("extractReceivedOnInterface: local address: " + host + ", transport: " + transport);
+		}
 		
-		boolean standalone = true;/*TODO Liberty SipContainer.isRunningInWAS()
-			? !SipClusterUtil.isServerInCluster()
-			: true;*/
-		if (standalone) {
-			// a standalone deployment might have set the custom property
-			// com.ibm.ws.sip.sent.by.host, in which case the outbound interface
-			// is set to a custom host name rather than the physical IP address.
-			// in such case, need to compare against the custom host name.
+		if (!skipSentByHostCheck) {
+			// the outbound interface is set to a custom host name
+			// compare against the custom host name.
 			SipServletMessageImpl msgImpl = (SipServletMessageImpl)req;
 			SipProvider provider = msgImpl.getSipProvider();
 			if (provider != null) {
 				ListeningPoint listeningPoint = provider.getListeningPoint();
 				host = listeningPoint.getSentBy();
+				if(c_logger.isTraceDebugEnabled()){
+					c_logger.traceDebug("extractReceivedOnInterface: sent by host: " + host);
+				}
 			}
 		}
 		
@@ -705,6 +742,9 @@ public class SipProxyInfo {
 			if (outboundIfList != null) {
 				Iterator iterator = outboundIfList.iterator();
 	    		String hostAddress = SIPStackUtil.getHostAddress(host);
+				if(c_logger.isTraceDebugEnabled()){
+					c_logger.traceDebug("extractReceivedOnInterface: getHostAddress(host): " + hostAddress);
+				}
 				
 				while (iterator.hasNext()) {
 					SipURI interfaceURI = (SipURI)iterator.next();
@@ -713,7 +753,7 @@ public class SipProxyInfo {
 		    		if(c_logger.isTraceDebugEnabled()){
 						c_logger.traceDebug("extractReceivedOnInterface: comparing <" + ifaceHostAddress + "> to <" + hostAddress + ">, host = " + host);
 					}	
-					if (ifaceHostAddress.equalsIgnoreCase(hostAddress) && 
+					if (SIPStackUtil.isSameHost(ifaceHostAddress, hostAddress) && 
 							interfaceURI.getPort() == req.getLocalPort()) {
 						returnValue = interfaceURI;
 						break;

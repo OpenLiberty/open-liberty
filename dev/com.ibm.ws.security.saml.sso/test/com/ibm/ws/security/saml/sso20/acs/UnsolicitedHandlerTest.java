@@ -188,7 +188,7 @@ public class UnsolicitedHandlerTest {
             unsolicitedHandler.handleRequest(SP_INITAL);
         } catch (SamlException ex) {
             ex.printStackTrace();
-            fail("Unexpected exception was thrown: " + ex.getMessage());
+            fail("Unexpected exception was thrown: " + ex);
         }
     }
 
@@ -275,7 +275,7 @@ public class UnsolicitedHandlerTest {
 
         } catch (SamlException ex) {
             ex.printStackTrace();
-            fail("Unexpected exception was thrown: " + ex.getMessage());
+            fail("Unexpected exception was thrown: " + ex);
         }
     }
 }

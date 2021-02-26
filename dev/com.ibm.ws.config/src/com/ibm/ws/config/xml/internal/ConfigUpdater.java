@@ -37,6 +37,7 @@ import com.ibm.ws.config.xml.internal.ConfigEvaluator.EvaluationResult;
 import com.ibm.ws.config.xml.internal.ConfigEvaluator.UnresolvedPidType;
 import com.ibm.ws.config.xml.internal.MetaTypeRegistry.RegistryEntry;
 import com.ibm.ws.config.xml.internal.metatype.ExtendedAttributeDefinition;
+import com.ibm.ws.config.xml.internal.variables.ConfigVariableRegistry;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.wsspi.kernel.service.utils.OnErrorUtil.OnError;
 
@@ -117,7 +118,7 @@ class ConfigUpdater {
                 if (failOnError) {
                     throw e;
                 } else {
-                    Tr.error(tc, "error.config.update.exception", new Object[] { nodeName, e.getMessage(), info.configElement.getId() });
+                    configEvaluator.issueError("error.config.update.exception", new Object[] { nodeName, e.getMessage(), info.configElement.getId() });
                     warnIfOldConfigExists(info, nodeName);
                 }
             } catch (AttributeValidationException e) {
@@ -125,8 +126,8 @@ class ConfigUpdater {
                 if (failOnError) {
                     throw new ConfigUpdateException(e);
                 } else {
-                    Tr.error(tc, "error.attribute.validation.exception",
-                             new Object[] { nodeName, e.getAttributeDefintion().getID(), e.getValue(), e.getMessage() });
+                    configEvaluator.issueError("error.attribute.validation.exception",
+                                               new Object[] { nodeName, e.getAttributeDefintion().getID(), e.getValue(), e.getMessage() });
                     warnIfOldConfigExists(info, nodeName);
                 }
             } catch (ConfigEvaluatorException e) {
@@ -134,7 +135,7 @@ class ConfigUpdater {
                 if (failOnError) {
                     throw new ConfigUpdateException(e);
                 } else {
-                    Tr.error(tc, "error.config.update.exception", new Object[] { nodeName, e.getMessage(), info.configElement.getId() });
+                    configEvaluator.issueError("error.config.update.exception", new Object[] { nodeName, e.getMessage(), info.configElement.getId() });
                     warnIfOldConfigExists(info, nodeName);
                 }
             }
@@ -424,9 +425,9 @@ class ConfigUpdater {
      * For Map of String value comparison, all keys and values must be equal.
      *
      * @param c1
-     *            config value
+     *               config value
      * @param c2
-     *            config value
+     *               config value
      * @return boolean
      */
     private static boolean equalConfigValues(Object c1, Object c2) {
@@ -595,7 +596,7 @@ class ConfigUpdater {
                 // throw an error
                 if (info != null) {
                     String id = failedUpdateAttrDef.get(value).getID();
-                    Tr.error(tc, "error.unique.value.conflict", id, value);
+                    configEvaluator.issueError("error.unique.value.conflict", id, value);
                     String nodeName = getNodeNameForExceptions(info.configElement);
                     String exceptionMessage = "The value " + value + " for attribute " + id + " is not unique";
 
@@ -605,7 +606,7 @@ class ConfigUpdater {
                     if (failOnError) {
                         throw new ConfigUpdateException(exceptionMessage);
                     } else {
-                        Tr.error(tc, "error.config.update.exception", new Object[] { nodeName, exceptionMessage, info.configElement.getId() });
+                        configEvaluator.issueError("error.config.update.exception", new Object[] { nodeName, exceptionMessage, info.configElement.getId() });
                         warnIfOldConfigExists(info, nodeName);
                     }
                 }

@@ -1,0 +1,62 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/ExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+CallHeader=\u8c03\u7528\uff1a
+
+DescriptionHeader=\u5f02\u5e38\u63cf\u8ff0\uff1a
+
+DescriptorExceptionsHeader=\u63cf\u8ff0\u7b26\u5f02\u5e38\uff1a
+
+DescriptorHeader=\u63cf\u8ff0\u7b26\uff1a
+
+ErrorCodeHeader=\u9519\u8bef\u4ee3\u7801\uff1a
+
+ErrorFormattingMessage=\u5c1d\u8bd5\u5bf9\u5f02\u5e38\u6d88\u606f\u8bbe\u7f6e\u683c\u5f0f\u65f6\u53d1\u751f\u9519\u8bef\uff1a{0} \u53c2\u6570\u5982\u4e0b\uff1a{1}
+
+ExceptionHeader=\u5f02\u5e38 [EclipseLink-
+
+InternalExceptionHeader=\u5185\u90e8\u5f02\u5e38\uff1a
+
+InternalExceptionStackHeader=\u5185\u90e8\u5f02\u5e38\u5806\u6808\uff1a
+
+LocalExceptionStackHeader=\u672c\u5730\u5f02\u5e38\u5806\u6808\uff1a
+
+MappingHeader=\u6620\u5c04\uff1a
+
+NoExceptionTranslationForThisLocale=\uff08\u6b64\u5f02\u5e38\u6ca1\u6709\u7ffb\u8bd1\u3002\uff09{0}
+
+QueryHeader=\u67e5\u8be2\uff1a
+
+
+RuntimeExceptionsHeader=\u8fd0\u884c\u65f6\u5f02\u5e38\uff1a
+
+TargetInvocationExceptionHeader=\u76ee\u6807\u8c03\u7528\u5f02\u5e38\uff1a
+
+TargetInvocationExceptionStackHeader=\u76ee\u6807\u8c03\u7528\u5f02\u5e38\u5806\u6808\uff1a
+

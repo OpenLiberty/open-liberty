@@ -276,6 +276,8 @@ public interface WSJobRepository {
      */
     public abstract WSRemotablePartitionState getRemotablePartitionInternalState(RemotablePartitionKey remotablePartitionKey);
 
+    public abstract List<WSRemotablePartitionExecution> getRemotablePartitionsForJobExecution(long jobExecutionId);
+
     /**
      * Check the version of the job execution table in the job repository.
      */

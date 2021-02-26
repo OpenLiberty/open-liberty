@@ -1,19 +1,6 @@
 package com.ibm.ws.grpc.fat.beer.service;
 
 import static io.grpc.MethodDescriptor.generateFullMethodName;
-import static io.grpc.stub.ClientCalls.asyncBidiStreamingCall;
-import static io.grpc.stub.ClientCalls.asyncClientStreamingCall;
-import static io.grpc.stub.ClientCalls.asyncServerStreamingCall;
-import static io.grpc.stub.ClientCalls.asyncUnaryCall;
-import static io.grpc.stub.ClientCalls.blockingServerStreamingCall;
-import static io.grpc.stub.ClientCalls.blockingUnaryCall;
-import static io.grpc.stub.ClientCalls.futureUnaryCall;
-import static io.grpc.stub.ServerCalls.asyncBidiStreamingCall;
-import static io.grpc.stub.ServerCalls.asyncClientStreamingCall;
-import static io.grpc.stub.ServerCalls.asyncServerStreamingCall;
-import static io.grpc.stub.ServerCalls.asyncUnaryCall;
-import static io.grpc.stub.ServerCalls.asyncUnimplementedStreamingCall;
-import static io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall;
 
 /**
  * <pre>
@@ -21,7 +8,7 @@ import static io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall;
  * </pre>
  */
 @javax.annotation.Generated(
-    value = "by gRPC proto compiler (version 1.28.1)",
+    value = "by gRPC proto compiler (version 1.35.0)",
     comments = "Source: Beer.proto")
 public final class BeerServiceGrpc {
 
@@ -212,7 +199,7 @@ public final class BeerServiceGrpc {
      */
     public void addBeer(com.ibm.ws.grpc.fat.beer.service.Beer request,
         io.grpc.stub.StreamObserver<com.ibm.ws.grpc.fat.beer.service.BeerResponse> responseObserver) {
-      asyncUnimplementedUnaryCall(getAddBeerMethod(), responseObserver);
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getAddBeerMethod(), responseObserver);
     }
 
     /**
@@ -222,7 +209,7 @@ public final class BeerServiceGrpc {
      */
     public void deleteBeer(com.ibm.ws.grpc.fat.beer.service.Beer request,
         io.grpc.stub.StreamObserver<com.ibm.ws.grpc.fat.beer.service.BeerResponse> responseObserver) {
-      asyncUnimplementedUnaryCall(getDeleteBeerMethod(), responseObserver);
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getDeleteBeerMethod(), responseObserver);
     }
 
     /**
@@ -232,7 +219,7 @@ public final class BeerServiceGrpc {
      */
     public void getBestBeer(com.ibm.ws.grpc.fat.beer.service.RequestedBeerType request,
         io.grpc.stub.StreamObserver<com.ibm.ws.grpc.fat.beer.service.Beer> responseObserver) {
-      asyncUnimplementedUnaryCall(getGetBestBeerMethod(), responseObserver);
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getGetBestBeerMethod(), responseObserver);
     }
 
     /**
@@ -242,35 +229,35 @@ public final class BeerServiceGrpc {
      */
     public void getBeers(com.google.protobuf.Empty request,
         io.grpc.stub.StreamObserver<com.ibm.ws.grpc.fat.beer.service.Beer> responseObserver) {
-      asyncUnimplementedUnaryCall(getGetBeersMethod(), responseObserver);
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getGetBeersMethod(), responseObserver);
     }
 
     @java.lang.Override public final io.grpc.ServerServiceDefinition bindService() {
       return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
           .addMethod(
             getAddBeerMethod(),
-            asyncUnaryCall(
+            io.grpc.stub.ServerCalls.asyncUnaryCall(
               new MethodHandlers<
                 com.ibm.ws.grpc.fat.beer.service.Beer,
                 com.ibm.ws.grpc.fat.beer.service.BeerResponse>(
                   this, METHODID_ADD_BEER)))
           .addMethod(
             getDeleteBeerMethod(),
-            asyncUnaryCall(
+            io.grpc.stub.ServerCalls.asyncUnaryCall(
               new MethodHandlers<
                 com.ibm.ws.grpc.fat.beer.service.Beer,
                 com.ibm.ws.grpc.fat.beer.service.BeerResponse>(
                   this, METHODID_DELETE_BEER)))
           .addMethod(
             getGetBestBeerMethod(),
-            asyncUnaryCall(
+            io.grpc.stub.ServerCalls.asyncUnaryCall(
               new MethodHandlers<
                 com.ibm.ws.grpc.fat.beer.service.RequestedBeerType,
                 com.ibm.ws.grpc.fat.beer.service.Beer>(
                   this, METHODID_GET_BEST_BEER)))
           .addMethod(
             getGetBeersMethod(),
-            asyncServerStreamingCall(
+            io.grpc.stub.ServerCalls.asyncServerStreamingCall(
               new MethodHandlers<
                 com.google.protobuf.Empty,
                 com.ibm.ws.grpc.fat.beer.service.Beer>(
@@ -303,7 +290,7 @@ public final class BeerServiceGrpc {
      */
     public void addBeer(com.ibm.ws.grpc.fat.beer.service.Beer request,
         io.grpc.stub.StreamObserver<com.ibm.ws.grpc.fat.beer.service.BeerResponse> responseObserver) {
-      asyncUnaryCall(
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getAddBeerMethod(), getCallOptions()), request, responseObserver);
     }
 
@@ -314,7 +301,7 @@ public final class BeerServiceGrpc {
      */
     public void deleteBeer(com.ibm.ws.grpc.fat.beer.service.Beer request,
         io.grpc.stub.StreamObserver<com.ibm.ws.grpc.fat.beer.service.BeerResponse> responseObserver) {
-      asyncUnaryCall(
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getDeleteBeerMethod(), getCallOptions()), request, responseObserver);
     }
 
@@ -325,7 +312,7 @@ public final class BeerServiceGrpc {
      */
     public void getBestBeer(com.ibm.ws.grpc.fat.beer.service.RequestedBeerType request,
         io.grpc.stub.StreamObserver<com.ibm.ws.grpc.fat.beer.service.Beer> responseObserver) {
-      asyncUnaryCall(
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getGetBestBeerMethod(), getCallOptions()), request, responseObserver);
     }
 
@@ -336,7 +323,7 @@ public final class BeerServiceGrpc {
      */
     public void getBeers(com.google.protobuf.Empty request,
         io.grpc.stub.StreamObserver<com.ibm.ws.grpc.fat.beer.service.Beer> responseObserver) {
-      asyncServerStreamingCall(
+      io.grpc.stub.ClientCalls.asyncServerStreamingCall(
           getChannel().newCall(getGetBeersMethod(), getCallOptions()), request, responseObserver);
     }
   }
@@ -364,7 +351,7 @@ public final class BeerServiceGrpc {
      * </pre>
      */
     public com.ibm.ws.grpc.fat.beer.service.BeerResponse addBeer(com.ibm.ws.grpc.fat.beer.service.Beer request) {
-      return blockingUnaryCall(
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getAddBeerMethod(), getCallOptions(), request);
     }
 
@@ -374,7 +361,7 @@ public final class BeerServiceGrpc {
      * </pre>
      */
     public com.ibm.ws.grpc.fat.beer.service.BeerResponse deleteBeer(com.ibm.ws.grpc.fat.beer.service.Beer request) {
-      return blockingUnaryCall(
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getDeleteBeerMethod(), getCallOptions(), request);
     }
 
@@ -384,7 +371,7 @@ public final class BeerServiceGrpc {
      * </pre>
      */
     public com.ibm.ws.grpc.fat.beer.service.Beer getBestBeer(com.ibm.ws.grpc.fat.beer.service.RequestedBeerType request) {
-      return blockingUnaryCall(
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getGetBestBeerMethod(), getCallOptions(), request);
     }
 
@@ -395,7 +382,7 @@ public final class BeerServiceGrpc {
      */
     public java.util.Iterator<com.ibm.ws.grpc.fat.beer.service.Beer> getBeers(
         com.google.protobuf.Empty request) {
-      return blockingServerStreamingCall(
+      return io.grpc.stub.ClientCalls.blockingServerStreamingCall(
           getChannel(), getGetBeersMethod(), getCallOptions(), request);
     }
   }
@@ -424,7 +411,7 @@ public final class BeerServiceGrpc {
      */
     public com.google.common.util.concurrent.ListenableFuture<com.ibm.ws.grpc.fat.beer.service.BeerResponse> addBeer(
         com.ibm.ws.grpc.fat.beer.service.Beer request) {
-      return futureUnaryCall(
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getAddBeerMethod(), getCallOptions()), request);
     }
 
@@ -435,7 +422,7 @@ public final class BeerServiceGrpc {
      */
     public com.google.common.util.concurrent.ListenableFuture<com.ibm.ws.grpc.fat.beer.service.BeerResponse> deleteBeer(
         com.ibm.ws.grpc.fat.beer.service.Beer request) {
-      return futureUnaryCall(
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getDeleteBeerMethod(), getCallOptions()), request);
     }
 
@@ -446,7 +433,7 @@ public final class BeerServiceGrpc {
      */
     public com.google.common.util.concurrent.ListenableFuture<com.ibm.ws.grpc.fat.beer.service.Beer> getBestBeer(
         com.ibm.ws.grpc.fat.beer.service.RequestedBeerType request) {
-      return futureUnaryCall(
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getGetBestBeerMethod(), getCallOptions()), request);
     }
   }

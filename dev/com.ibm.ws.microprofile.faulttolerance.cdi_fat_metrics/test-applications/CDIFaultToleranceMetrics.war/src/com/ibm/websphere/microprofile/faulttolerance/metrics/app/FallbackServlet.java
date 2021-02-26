@@ -14,13 +14,10 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
-import java.io.IOException;
-
 import javax.inject.Inject;
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+
+import org.junit.Test;
 
 import com.ibm.websphere.microprofile.faulttolerance.metrics.app.beans.FallbackBean;
 import com.ibm.websphere.microprofile.faulttolerance.metrics.utils.ConnectException;
@@ -38,8 +35,8 @@ public class FallbackServlet extends FATServlet {
     @Inject
     FallbackBean bean;
 
-    public void testFallback(HttpServletRequest request,
-                             HttpServletResponse response) throws ServletException, IOException, ConnectException, NoSuchMethodException, SecurityException {
+    @Test
+    public void testFallback() throws ConnectException {
         //should be retried twice and then fallback and we get a result
         Connection connection = bean.connectA();
         String data = connection.getData();

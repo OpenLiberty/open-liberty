@@ -1,3 +1,4 @@
+###############################################################################
 # Copyright (c) 2014 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
@@ -6,7 +7,7 @@
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
-# -------------------------------------------------------------------------------------------------
+###############################################################################
 # # {0} description of each insert field
 # MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
 # MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
@@ -30,7 +31,7 @@ add_namespace_resolvers=\u6b63\u5728\u6dfb\u52a0\u540d\u79f0\u7a7a\u95f4\u89e3\u
 
 create_descriptors=\u6b63\u5728\u521b\u5efa\u63cf\u8ff0\u7b26
 
-create_mappings=\u6b63\u5c06\u6620\u5c04\u6dfb\u52a0\u81f3\u63cf\u8ff0\u7b26
+create_mappings=\u6b63\u5c06\u6620\u5c04\u6dfb\u52a0\u81f3\u63cf\u8ff0\u7b26 {0}
 
 error=\u9519\u8bef\uff1a
 

@@ -13,6 +13,8 @@ import javax.xml.bind.annotation.XmlElementDecl;
 import javax.xml.bind.annotation.XmlRegistry;
 import javax.xml.namespace.QName;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 
 /**
  * This object contains factory methods for each 
@@ -29,6 +31,7 @@ import javax.xml.namespace.QName;
  * 
  */
 @XmlRegistry
+@Trivial
 public class ObjectFactory {
 
     private final static QName _Authorization_QNAME = new QName("http://cxf.apache.org/configuration/security", "authorization");

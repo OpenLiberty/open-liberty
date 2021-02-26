@@ -32,6 +32,8 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.container.service.app.deploy.ModuleInfo;
 import com.ibm.ws.jaxws.metadata.JaxWsModuleMetaData;
+import com.ibm.ws.jaxws.support.LibertyLoggingInInterceptor;
+import com.ibm.ws.jaxws.support.LibertyLoggingOutInterceptor;
 import com.ibm.ws.util.ThreadContextAccessor;
 
 /**
@@ -93,6 +95,7 @@ public class LibertyApplicationBusFactory extends CXFBusFactory {
         } finally {
             THREAD_CONTEXT_ACCESSOR.popContextClassLoaderForUnprivileged(origTccl);
         }
+
     }
 
     @Override
@@ -131,6 +134,16 @@ public class LibertyApplicationBusFactory extends CXFBusFactory {
             }
 
             bus.initialize();
+
+            // Always register LibertyLoggingIn(Out)Interceptor Pretty print the SOAP Messages
+            final LibertyLoggingInInterceptor in = new LibertyLoggingInInterceptor();
+            in.setPrettyLogging(true);
+            bus.getInInterceptors().add(in);
+
+            final LibertyLoggingOutInterceptor out = new LibertyLoggingOutInterceptor();
+            out.setPrettyLogging(true);
+            bus.getOutInterceptors().add(out);
+
             return bus;
 
         } finally {

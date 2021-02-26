@@ -177,13 +177,16 @@ public class ExtractedAppTests20 extends CommonWebServerTests {
 
     @AfterClass
     public static void deleteThinAndExtractedAppsAndStopServer() throws Exception {
-        new RemoteFile(appsDir, SPRING_BOOT_20_APP_BASE_THIN).delete();
-        server.deleteDirectoryFromLibertyServerRoot("apps/" + SPRING_BOOT_20_APP_BASE_EXTRACTED);
-        server.deleteDirectoryFromLibertyServerRoot("apps/" + SPRING_BOOT_20_APP_BASE_THIN_EXTRACTED);
-        server.deleteDirectoryFromLibertyServerRoot("apps/" + SPRING_LIB_INDEX_CACHE);
-        server.deleteFileFromLibertyServerRoot("apps/" + SPRING_BOOT_20_APP_BASE_LOOSE);
-        // note that stop server also deletes the shared and workarea library caches
-        stopServer();
+        try {
+            // note that stop server also deletes the shared and workarea library caches
+            stopServer();
+        } finally {
+            new RemoteFile(appsDir, SPRING_BOOT_20_APP_BASE_THIN).delete();
+            server.deleteDirectoryFromLibertyServerRoot("apps/" + SPRING_BOOT_20_APP_BASE_EXTRACTED);
+            server.deleteDirectoryFromLibertyServerRoot("apps/" + SPRING_BOOT_20_APP_BASE_THIN_EXTRACTED);
+            server.deleteDirectoryFromLibertyServerRoot("apps/" + SPRING_LIB_INDEX_CACHE);
+            server.deleteFileFromLibertyServerRoot("apps/" + SPRING_BOOT_20_APP_BASE_LOOSE);
+        }
     }
 
     @Override

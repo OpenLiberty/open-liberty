@@ -19,15 +19,15 @@
 #
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
-# JAXRS 2.0 CDI Message ------------------------
-warning.jaxrs.cdi.resource=CWWKW1000W: Rozsah prost\u0159edku JAXRS-2.0 {0} je {1}. Liberty z\u00edsk\u00e1 instanci prost\u0159edku od {2}.
+# JAXRS CDI Message ------------------------
+warning.jaxrs.cdi.resource=CWWKW1000W: Rozsah prost\u0159edku JAXRS {0} je {1}. Liberty z\u00edsk\u00e1 instanci prost\u0159edku od {2}.
 warning.jaxrs.cdi.resource.explanation=Liberty z\u00edsk\u00e1 instanci prost\u0159edku od JAXRS v p\u0159\u00edpad\u011b, \u017ee ji nebude moci z\u00edskat od CDI.
 warning.jaxrs.cdi.resource.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce. 
 
-warning.jaxrs.cdi.resource.mismatch=CWWKW1001W: Rozsah {1} prost\u0159edku JAXRS-2.0 {0} neodpov\u00edd\u00e1 rozsahu CDI {2}. Liberty z\u00edsk\u00e1 instanci prost\u0159edku od {3}.
-warning.jaxrs.cdi.resource.mismatch.explanation=Pokud se rozsah prost\u0159edku JAXRS-2.0 neshoduje s rozsahem CDI a tato instance prost\u0159edku existuje v CDI, z\u00edsk\u00e1 Liberty tuto instanci prost\u0159edku od CDI. Instance neobsahuje vlo\u017een\u00ed CDI, pokud je z JAXRS.
+warning.jaxrs.cdi.resource.mismatch=CWWKW1001W: Rozsah {1} prost\u0159edku JAXRS {0} neodpov\u00edd\u00e1 rozsahu CDI {2}. Liberty z\u00edsk\u00e1 instanci prost\u0159edku od {3}.
+warning.jaxrs.cdi.resource.mismatch.explanation=Pokud se rozsah prost\u0159edku JAXRS neshoduje s rozsahem CDI a tato instance prost\u0159edku existuje v CDI, z\u00edsk\u00e1 Liberty tuto instanci prost\u0159edku od CDI. Instance neobsahuje vlo\u017een\u00ed CDI, pokud je z JAXRS.
 warning.jaxrs.cdi.resource.mismatch.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce. 
 
-warning.jaxrs.cdi.provider.mismatch=CWWKW1002W: Rozsah CDI poskytovatele JAXRS-2.0 {0} je {1}. Liberty z\u00edsk\u00e1 instanci poskytovatele od {2}.
+warning.jaxrs.cdi.provider.mismatch=CWWKW1002W: Rozsah CDI poskytovatele JAXRS {0} je {1}. Liberty z\u00edsk\u00e1 instanci poskytovatele od {2}.
 warning.jaxrs.cdi.provider.mismatch.explanation=Instance poskytovatele je pouze typu singleton. Liberty z\u00edsk\u00e1 instanci poskytovatele od CDI v p\u0159\u00edpad\u011b, \u017ee rozsah CDI poskytovatele je typu Z\u00e1visl\u00fd nebo Vymezen aplikac\u00ed. Instance neobsahuje vlo\u017een\u00ed CDI, pokud je z JAXRS.
 warning.jaxrs.cdi.provider.mismatch.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.

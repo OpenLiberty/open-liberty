@@ -35,4 +35,7 @@
 		type="jks"
 		location="${server.config.dir}/rsa_trust.jks" />
 
+
+<include location="${shared.config.dir}/allAlgSSLSettings.xml" />
+
 </server>        

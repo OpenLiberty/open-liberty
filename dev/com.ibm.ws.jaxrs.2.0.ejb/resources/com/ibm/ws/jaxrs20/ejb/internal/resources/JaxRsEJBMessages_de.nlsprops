@@ -23,12 +23,12 @@
 
 
 
-warning.jaxrs.ejb.resource.mismatch=CWWKW1100W: Der Geltungsbereich {1} der JAXRS-2.0-Ressource {0} stimmt nicht mit dem EJB-Geltungsbereich {2} \u00fcberein. Liberty ruft die Ressourceninstanz aus {3} ab.
-warning.jaxrs.ejb.resource.mismatch.explanation=Wenn der Geltungsbereich der JAXRS-2.0-Ressource nicht mit dem EJB-Geltungsbereich \u00fcbereinstimmt und die Ressourceninstanz in EJB vorhanden ist, ruft Liberty die Ressourceninstanz aus EJB ab.
+warning.jaxrs.ejb.resource.mismatch=CWWKW1100W: Der Geltungsbereich {1} der JAXRS-Ressource {0} stimmt nicht mit dem EJB-Geltungsbereich {2} \u00fcberein. Liberty ruft die Ressourceninstanz aus {3} ab.
+warning.jaxrs.ejb.resource.mismatch.explanation=Wenn der Geltungsbereich der JAXRS-Ressource nicht mit dem EJB-Geltungsbereich \u00fcbereinstimmt und die Ressourceninstanz in EJB vorhanden ist, ruft Liberty die Ressourceninstanz aus EJB ab.
 warning.jaxrs.ejb.resource.mismatch.useraction=Es ist keine Aktion erforderlich.
 
 
-warning.jaxrs.ejb.provider.mismatch=CWWKW1102W: Der EJB-Geltungsbereich des JAXRS-2.0-Providers {0} ist {1}. Liberty ruft die Providerinstanz aus {2} ab.
+warning.jaxrs.ejb.provider.mismatch=CWWKW1102W: Der EJB-Geltungsbereich des JAXRS-Providers {0} ist {1}. Liberty ruft die Providerinstanz aus {2} ab.
 warning.jaxrs.ejb.provider.mismatch.explanation=Die Providerinstanz ist nur ein Singleton. Liberty ruft Providerinstanzen aus EJB ab, wenn der EJB-Geltungsbereich des Providers vom Typ Dependent oder ApplicationScoped ist.
 warning.jaxrs.ejb.provider.mismatch.useraction=Es ist keine Aktion erforderlich.
 

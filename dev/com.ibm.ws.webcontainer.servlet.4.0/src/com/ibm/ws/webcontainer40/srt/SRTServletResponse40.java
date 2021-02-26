@@ -24,6 +24,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.servlet.request.IRequest;
 import com.ibm.websphere.servlet.response.IResponse;
 import com.ibm.websphere.servlet40.IResponse40;
+import com.ibm.ws.webcontainer.osgi.WebContainer;
 import com.ibm.ws.webcontainer.webapp.WebApp;
 import com.ibm.ws.webcontainer.webapp.WebAppDispatcherContext;
 import com.ibm.ws.webcontainer31.srt.SRTServletResponse31;
@@ -72,7 +73,15 @@ public class SRTServletResponse40 extends SRTServletResponse31 implements HttpSe
      */
     @Override
     protected String getXPoweredbyHeader() {
-        return WebContainerConstants.X_POWERED_BY_DEFAULT_VALUE40;
+        String xPoweredBy = WebContainerConstants.X_POWERED_BY_DEFAULT_VALUE40;
+
+        // The Servlet 4.0 feature is transformed from javax->jakarta and therefore we need
+        // to add a check here to determine the proper X-Powered-By header value.
+        if (WebContainer.getServletContainerSpecLevel() == WebContainer.SPEC_LEVEL_50) {
+            xPoweredBy = WebContainerConstants.X_POWERED_BY_DEFAULT_VALUE50;
+        }
+
+        return xPoweredBy;
     }
 
     @Override

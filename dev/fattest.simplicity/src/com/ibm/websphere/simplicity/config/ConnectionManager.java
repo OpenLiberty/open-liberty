@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,7 +18,9 @@ import javax.xml.bind.annotation.XmlAttribute;
  */
 public class ConnectionManager extends ConfigElement {
     private String agedTimeout;
+    private String autoCloseConnections;
     private String connectionTimeout;
+    private String enableSharingForDirectLookups;
     private String maxIdleTime;
     private String maxPoolSize;
     private String minPoolSize;
@@ -121,12 +123,30 @@ public class ConnectionManager extends ConfigElement {
     }
 
     @XmlAttribute
+    public void setAutoCloseConnections(String value) {
+        autoCloseConnections = value;
+    }
+
+    public String getAutoCloseConnections() {
+        return autoCloseConnections;
+    }
+
+    @XmlAttribute
     public void setConnectionTimeout(String connectionTimeout) {
         this.connectionTimeout = connectionTimeout;
     }
 
     public String getConnectionTimeout() {
         return connectionTimeout;
+    }
+
+    @XmlAttribute
+    public void setEnableSharingForDirectLookups(String value) {
+        enableSharingForDirectLookups = value;
+    }
+
+    public String getEnableSharingForDirectLookups() {
+        return enableSharingForDirectLookups;
     }
 
     @XmlAttribute
@@ -198,8 +218,12 @@ public class ConnectionManager extends ConfigElement {
         buf.append("id=\"" + (getId() == null ? "" : getId()) + "\" ");
         if (agedTimeout != null)
             buf.append("agedTimeout=\"" + agedTimeout + "\" ");
+        if (autoCloseConnections != null)
+            buf.append("autoCloseConnections=\"" + autoCloseConnections + "\" ");
         if (connectionTimeout != null)
             buf.append("connectionTimeout=\"" + connectionTimeout + "\" ");
+        if (enableSharingForDirectLookups != null)
+            buf.append("enableSharingForDirectLookups=\"" + enableSharingForDirectLookups + "\" ");
         if (maxIdleTime != null)
             buf.append("maxIdleTime=\"" + maxIdleTime + "\" ");
         if (maxPoolSize != null)

@@ -696,6 +696,10 @@ error.missing.version.files.explanation=Das Verzeichnis, das die Dateien mit den
 error.missing.version.files.useraction=Stellen Sie sicher, dass das Verzeichnis vorhanden ist und vom aktuellen Benutzer gelesen werden kann.
 
 
+warning.earlyRelease=CWWKE0953W: Diese Version von {0} ist eine nicht unterst\u00fctzte Vorabversion.
+warning.earlyRelease.explanation=Neue Features, die nicht vollst\u00e4ndig getestet wurden, werden in Vorabversionen verf\u00fcgbar gemacht, um R\u00fcckmeldungen zu sondieren, bevor sie in eine unterst\u00fctzte Version aufgenommen werden.
+warning.earlyRelease.useraction=Verwenden Sie Vorabversionen nicht in Produktionssystemen, da versionierenen nicht unterst\u00fctzt werden.
+
 info.serverStarting=Server {0} wird gestartet.
 info.serverStarted=Der Server {0} wurde gestartet.
 info.serverStartedWithPID=Der Server {0} wurde mit der Prozess-ID {1} gestartet.

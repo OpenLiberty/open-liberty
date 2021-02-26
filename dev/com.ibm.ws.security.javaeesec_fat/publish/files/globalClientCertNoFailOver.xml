@@ -13,7 +13,6 @@
     <ssl id="defaultSSLConfig" keyStoreRef="defaultKeyStore" trustStoreRef="defaultTrustStore" clientAuthentication="true" />
 
     <ldapRegistry id="LDAP" realm="MyLdapRealm" host="localhost" port="${ldap.1.port}" ignoreCase="true"
-        loginProperty="uid"
         bindDN="uid=admin,ou=users,o=ibm,c=us"
         bindPassword="s3cur1ty"
         baseDN="o=ibm,c=us"

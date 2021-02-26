@@ -1,5 +1,5 @@
 /**
- * Copyright 2015 Netflix, Inc.
+ * Copyright 2015, 2021 Netflix, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +36,8 @@ import org.eclipse.microprofile.config.spi.Converter;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.microprofile.config.interfaces.ConfigException;
+
+import io.openliberty.microprofile.config.internal.common.ConfigException;
 
 /**
  * The helper class returns all the built-in converters.
@@ -50,8 +51,6 @@ public class DefaultConverters {
 
     static {
         defaultConverters.addConverter(new IdentityConverter()); // v -> v
-
-        defaultConverters.addConverter(new OptionalConverter());
 
         defaultConverters.addConverter(new BooleanConverter());
         defaultConverters.addConverter(new AutomaticConverter(Integer.class));

@@ -1,0 +1,55 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/SessionLoaderExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+9000=Do\u0161lo k n\u011bkolika v\u00fdjimk\u00e1m [{0}] SessionLoaderExceptions:
+
+9001=Nezn\u00e1m\u00fd n\u00e1zev zna\u010dky: [{0}] v uzlu XML: [{1}].
+
+9002=Nelze na\u010d\u00edst t\u0159\u00eddu projektu [{0}].
+
+9003=Nelze zpracovat zna\u010dku XML [{0}] s hodnotou [{1}].
+
+9004=Soubor XML projektu [{0}] nebyl nalezen na cest\u011b ke t\u0159\u00edd\u011b ani v syst\u00e9mu soubor\u016f.
+
+9005=Do\u0161lo k v\u00fdjimce p\u0159i na\u010d\u00edt\u00e1n\u00ed souboru XML projektu [{0}].
+
+9006=P\u0159i syntaktick\u00e9 anal\u00fdze souboru XML do\u0161lo k {0}. Vyskytuje se na \u0159\u00e1dku {1} a sloupci {2} v dokumentu XML.
+
+9007=Do\u0161lo k v\u00fdjimce p\u0159i syntaktick\u00e9 anal\u00fdze souboru XML.
+
+9008=Neo\u010dek\u00e1van\u00e1 hodnota [{0}] zna\u010dky [{1}].
+
+9009=Zna\u010dka [{0}] m\u00e1 nezn\u00e1m\u00fd atribut.
+
+9010=P\u0159i syntaktick\u00e9 anal\u00fdze souboru XML s pou\u017eit\u00edm sch\u00e9matu XML do\u0161lo k {0}.
+
+9011=Byla odebr\u00e1na t\u0159\u00edda platformy serveru {0} a p\u0159\u00edslu\u0161n\u00e1 verze aplika\u010dn\u00edho serveru ji\u017e nen\u00ed podporov\u00e1na.
+
+9012=Nelze na\u010d\u00edst soubor XML relace, a to bu\u010f proto, \u017ee obsahuje neplatn\u00fd form\u00e1t, nebo proto, \u017ee nen\u00ed podporovan\u00fd form\u00e1t XML.
+

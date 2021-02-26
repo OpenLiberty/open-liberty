@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,6 +9,12 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.wsat.service;
+
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.util.Map;
+
+import javax.xml.ws.BindingProvider;
 
 import org.apache.cxf.ws.addressing.EndpointReferenceType;
 
@@ -23,6 +29,16 @@ public abstract class WebClient {
 
     private static WebClient testClient = null;
 
+    public static final String ASYNC_TIMEOUT = "com.ibm.ws.wsat.asyncResponseTimeout";
+    public static final String DEFAULT_ASYNC_TIMEOUT = "30000";
+
+    public static final String ASYNC_RESPONSE_TIMEOUT = AccessController.doPrivileged(new PrivilegedAction<String>() {
+        @Override
+        public String run() {
+            return System.getProperty(ASYNC_TIMEOUT, DEFAULT_ASYNC_TIMEOUT);
+        }
+    });
+
     /*
      * Factory to return WebClient instances. This allows us to consider caching the clients
      * (if that makes sense) and allows for overriding for unit tests.
@@ -32,6 +48,12 @@ public abstract class WebClient {
             return testClient;
         }
         return new WebClientImpl(toEpr, fromEpr);
+    }
+
+    protected void setTimeouts(Object bp) {
+        Map<String, Object> requestContext = ((BindingProvider) bp).getRequestContext();
+        requestContext.put("javax.xml.ws.client.connectionTimeout", ASYNC_RESPONSE_TIMEOUT);
+        requestContext.put("javax.xml.ws.client.receiveTimeout", ASYNC_RESPONSE_TIMEOUT);
     }
 
     /*

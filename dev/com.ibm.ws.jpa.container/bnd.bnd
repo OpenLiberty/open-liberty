@@ -76,7 +76,8 @@ DynamicImport-Package: \
  javax.xml.bind.annotation.adapters, \
  javax.xml.bind.attachment, \
  javax.xml.bind.helpers, \
- javax.xml.bind.util
+ javax.xml.bind.util, \
+ org.glassfish.jaxb.*
 
 instrument.classesIncludes: com/ibm/ws/jpa/container/osgi/**/*.class
 instrument.classesExcludes: com/ibm/ws/jpa/container/osgi/internal/url/FilterZipFileInputStream*.class

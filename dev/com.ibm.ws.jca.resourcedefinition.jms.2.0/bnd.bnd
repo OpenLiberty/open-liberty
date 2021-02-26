@@ -17,6 +17,8 @@ Bundle-Description: Enables JMSConnectionFactory and JMSDestination Resource Def
 
 WS-TraceGroup: JMSRD
 
+jakartaeeMe: true
+
 Private-Package: \
     com.ibm.ws.jca.processor.jms.service, \
     com.ibm.ws.jca.processor.jms.destination, \

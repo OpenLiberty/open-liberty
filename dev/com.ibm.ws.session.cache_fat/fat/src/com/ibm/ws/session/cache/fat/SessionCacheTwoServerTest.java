@@ -53,8 +53,9 @@ public class SessionCacheTwoServerTest extends FATServletClient {
         serverB.useSecondaryHTTPPort();
 
         String hazelcastConfigFile = "hazelcast-localhost-only.xml";
+        String osName = System.getProperty("os.name").toLowerCase();
 
-        if (FATSuite.isMulticastDisabled()) {
+        if (FATSuite.isMulticastDisabled() || osName.contains("mac os") || osName.contains("macos")) {
             Log.info(SessionCacheTwoServerTest.class, "setUp", "Disabling multicast in Hazelcast config.");
             hazelcastConfigFile = "hazelcast-localhost-only-multicastDisabled.xml";
         }

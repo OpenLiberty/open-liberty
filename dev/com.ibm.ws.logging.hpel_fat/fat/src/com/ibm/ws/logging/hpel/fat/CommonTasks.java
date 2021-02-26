@@ -481,7 +481,9 @@ public class CommonTasks {
         }
         Properties bootstrapProps = new Properties();
         bootstrapProps.setProperty("websphere.log.provider", "binaryLogging-1.0");
-        bootstrapProps.store(bootstrapFile.openForWriting(true), null);
+        OutputStream os = bootstrapFile.openForWriting(true);
+        bootstrapProps.store(os, null);
+        os.close();
         return true;
 //        Workspace tempWorkSpace = HpelSetup.getCellUnderTest().getWorkspace();
 //        getUnifiedLoggingService(aServer).getAttributeByName("enable").setValue(enable);
@@ -925,9 +927,13 @@ public class CommonTasks {
         LibertyServer server = appServer;
         RemoteFile bootstrapFile = server.getServerBootstrapPropertiesFile();
         Properties bootstrapProps = new Properties();
-        bootstrapProps.load(bootstrapFile.openForReading());
+        InputStream is = bootstrapFile.openForReading();
+        bootstrapProps.load(is);
         bootstrapProps.remove(propertyName);
-        bootstrapProps.store(bootstrapFile.openForWriting(false), null);
+        is.close();
+        OutputStream os = bootstrapFile.openForWriting(false);
+        bootstrapProps.store(os, null);
+        os.close();
 
     }
 

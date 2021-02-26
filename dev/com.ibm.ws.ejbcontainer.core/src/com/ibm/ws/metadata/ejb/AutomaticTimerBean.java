@@ -10,7 +10,10 @@
  *******************************************************************************/
 package com.ibm.ws.metadata.ejb;
 
-import java.util.Calendar;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAccessor;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -175,7 +178,7 @@ public class AutomaticTimerBean {
     // F743-506, F743-14447 RTC109678
     private Date parseXSDDateTime(String fieldName, String dateTime) {
         try {
-            return new Date(DateHelper.parse(dateTime));
+            return new Date(parse(dateTime));
         } catch (IllegalArgumentException ex) {
             FFDCFilter.processException(ex, CLASS_NAME + ".parseXSDDateTime", "566", this);
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
@@ -184,119 +187,78 @@ public class AutomaticTimerBean {
         }
     }
 
-    /**
-     * The DatatypeConverter is only guaranteed to work once the JAX-B provider has
-     * set it up. The JVM supports this always by using a default DatatypeConverter,
-     * but the jaxb-2.2 feature does not. So this causes us to initialize the JAX-B
-     * runtime before calling the parse method.
-     */
-    private static final class DateHelper {
-        private static boolean initialized = false;
+    static long parse(String dateTime) {
+        try {
+            return parseJavaTime(dateTime);
+        } catch (Exception e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
 
-        public static long parse(String dateTime) {
-            try {
-                // Reflection is needed here so that ejbcontainer can avoid a dependency on JAX-B, which
-                // is being removed from the JDK in Java 9.  If we are JDK <9 we will continue to use JAX-B,
-                // and if we are JDK >=9 we will use the java.time APIs that were introduced in JDK 8.
-                // NOTE: We still need JAXB for JDK < 8 as java.time does not exist.
-                boolean isJAXBAvailable = System.getProperty("java.version").startsWith("1.");
-                if (isJAXBAvailable) {
-                    if (!initialized) {
-                        // JAXBContext.newInstance(DateHelper.class);
-                        Class.forName("javax.xml.bind.JAXBContext").getMethod("newInstance", Class[].class)//
-                                        .invoke(null, new Object[] { new Class[] { DateHelper.class } });
-                        initialized = true;
-                    }
-                    // return DatatypeConverter.parseDateTime(dateTime).getTimeInMillis();
-                    Calendar calendar = (Calendar) Class.forName("javax.xml.bind.DatatypeConverter").getMethod("parseDateTime", String.class).invoke(null, dateTime);
-                    return calendar.getTimeInMillis();
-                } else {
-                    return parseJavaTime(dateTime);
-                }
-            } catch (Exception e) {
-                throw new IllegalArgumentException(e);
-            }
+    private static long parseJavaTime(String dateTime) {
+        // intentionally fail some input to be consistent with JAXB behavior
+        // ccyy-MM-ddThh:mm
+        // ccyy-MM-ddThh:mm:ss+hh:mm:ss
+        if (Pattern.matches("\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}", dateTime) ||
+            Pattern.matches("\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\+|\\-)\\d{2}:\\d{2}:\\d{2}", dateTime)) {
+            throw new IllegalArgumentException(dateTime + " is not a valid xsd:dateTime format");
         }
 
-        public static long parseJavaTime(String dateTime) throws Exception {
-            // intentionally fail some input to be consistent with JAXB behavior
-            // ccyy-MM-ddThh:mm
-            // ccyy-MM-ddThh:mm:ss+hh:mm:ss
-            if (Pattern.matches("\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}", dateTime) ||
-                Pattern.matches("\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\+|\\-)\\d{2}:\\d{2}:\\d{2}", dateTime)) {
-                throw new IllegalArgumentException(dateTime + " is not a valid xsd:dateTime format");
-            }
-
-            // validate input for creating java.time.Instant, minimum pattern to work is ccyy-MM-ddThh:mm:ss
-            // so try to pad dateTime with 0s to get to it
-            // (c)entury (y)ear (M)onth (d)ay (h)our (m)inute (s)econd .(m)illeseconds Z(UTC) +- Timezone Offset (hh:mm)
-            // ccyy
-            if (Pattern.matches("\\d{4}", dateTime))
-                dateTime += "-01-01T00:00:00";
-            // ccyy-MM
-            else if (Pattern.matches("\\d{4}-\\d{2}", dateTime))
-                dateTime += "-01T00:00:00";
-            // can input only 1 digit for seconds but its a ones not a tens, so we insert a 0 in front of it
-            // hh:mm:s
-            // hh:mm:sZ
-            // hh:mm:s(+|-)hh:mm
-            // hh:mm:s.(m+)(+|-)hh:mm
-            else if (Pattern.matches("\\d{2}:\\d{2}:\\d(\\.\\d+)*(((\\+|\\-)\\d{2}:\\d{2})|Z)?", dateTime)) {
-                dateTime = dateTime.substring(0, 6) + "0" + dateTime.substring(6, dateTime.length());
-                dateTime = "1970-01-01T" + dateTime;
-            }
-            // hh:mm:ss
-            // hh:mm:ssZ
-            // hh:mm:ss(+|-)hh:mm
-            // hh:mm:ss.(m+)(+|-)hh:mm
-            else if (Pattern.matches("\\d{2}:\\d{2}:\\d{2}(\\.\\d+)*(((\\+|\\-)\\d{2}:\\d{2})|Z)?", dateTime))
-                dateTime = "1970-01-01T" + dateTime;
-            // ccyy-MM-dd
-            else if (Pattern.matches("\\d{4}-\\d{2}-\\d{2}", dateTime))
-                dateTime += "T00:00:00";
-            // ccyy-MM-ddZ
-            else if (Pattern.matches("\\d{4}-\\d{2}-\\d{2}Z", dateTime)) {
-                dateTime = dateTime.substring(0, dateTime.length() - 1);
-                dateTime += "T00:00:00Z";
-            }
-            // ccyy-MM-dd(+|-)hh:mm
-            else if (Pattern.matches("\\d{4}-\\d{2}-\\d{2}(\\+|\\-)\\d{2}:\\d{2}", dateTime))
-                dateTime = dateTime.substring(0, 10) + "T00:00:00" + dateTime.substring(10, dateTime.length());
-            // can input only 1 digit for seconds but its a ones not a tens, so we insert a 0 in front of it
-            // ccyy-MM-ddThh:mm:s
-            // ccyy-MM-ddThh:mm:sZ
-            // ccyy-MM-ddThh:mm:s(+-)hh:mm
-            // ccyy-MM-ddThh:mm:s.(m+)(+|-)hh:mm
-            else if (Pattern.matches("\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{1}(\\.\\d+)*(((\\+|\\-)\\d{2}:\\d{2})|Z)?", dateTime)) {
-                dateTime = dateTime.substring(0, 17) + "0" + dateTime.substring(17, dateTime.length());
-            }
-
-            // if dateTime has >4 .millisecond digits, strip them out
-            if (Pattern.matches(".*\\.\\d{4}\\d+.*", dateTime)) {
-                String[] split = dateTime.split("\\.", 2);
-                String[] split2 = split[1].split("(?<=\\d{4})", 2);
-                String[] split3 = split2[1].split("(?!\\d)", 2);
-                dateTime = split[0] + "." + split2[0];
-                dateTime = split3.length > 1 ? dateTime + split3[1] : dateTime;
-            }
-
-            // Finally, take dateTime and parse it using java.time APIs, called using reflections
-
-            // TemporalAccessor accessor = DateTimeFormatter
-            // .ofPattern("yyyy[-MM-dd]['T'HH:mm][:ss][.SSSSSSSSS][.SSSSSS][.SSSSS][.SSSS][.SSS][.SS][.S][z]")
-            // .withZone(ZoneId.systemDefault()).parse(date);
-            // long millis = Instant.from(accessor).toEpochMilli();
-            Class<?> DateTimeFormatter = Class.forName("java.time.format.DateTimeFormatter");
-            Class<?> ZoneId = Class.forName("java.time.ZoneId");
-            Class<?> TemporalAccessor = Class.forName("java.time.temporal.TemporalAccessor");
-            Class<?> Instant = Class.forName("java.time.Instant");
-            Object formatter = DateTimeFormatter.getMethod("ofPattern", String.class)//
-                            .invoke(null, "yyyy[-MM-dd]['T'HH:mm][:ss][.SSSSSSSSS][.SSSSSS][.SSSSS][.SSSS][.SSS][.SS][.S][z]");
-            Object defaultZone = ZoneId.getMethod("systemDefault").invoke(null);
-            formatter = DateTimeFormatter.getMethod("withZone", ZoneId).invoke(formatter, defaultZone);
-            Object accessor = DateTimeFormatter.getMethod("parse", CharSequence.class).invoke(formatter, dateTime);
-            Object instant = Instant.getMethod("from", TemporalAccessor).invoke(null, accessor);
-            return (long) Instant.getMethod("toEpochMilli").invoke(instant);
+        // validate input for creating java.time.Instant, minimum pattern to work is ccyy-MM-ddThh:mm:ss
+        // so try to pad dateTime with 0s to get to it
+        // (c)entury (y)ear (M)onth (d)ay (h)our (m)inute (s)econd .(m)illeseconds Z(UTC) +- Timezone Offset (hh:mm)
+        // ccyy
+        if (Pattern.matches("\\d{4}", dateTime))
+            dateTime += "-01-01T00:00:00";
+        // ccyy-MM
+        else if (Pattern.matches("\\d{4}-\\d{2}", dateTime))
+            dateTime += "-01T00:00:00";
+        // can input only 1 digit for seconds but its a ones not a tens, so we insert a 0 in front of it
+        // hh:mm:s
+        // hh:mm:sZ
+        // hh:mm:s(+|-)hh:mm
+        // hh:mm:s.(m+)(+|-)hh:mm
+        else if (Pattern.matches("\\d{2}:\\d{2}:\\d(\\.\\d+)*(((\\+|\\-)\\d{2}:\\d{2})|Z)?", dateTime)) {
+            dateTime = dateTime.substring(0, 6) + "0" + dateTime.substring(6, dateTime.length());
+            dateTime = "1970-01-01T" + dateTime;
         }
+        // hh:mm:ss
+        // hh:mm:ssZ
+        // hh:mm:ss(+|-)hh:mm
+        // hh:mm:ss.(m+)(+|-)hh:mm
+        else if (Pattern.matches("\\d{2}:\\d{2}:\\d{2}(\\.\\d+)*(((\\+|\\-)\\d{2}:\\d{2})|Z)?", dateTime))
+            dateTime = "1970-01-01T" + dateTime;
+        // ccyy-MM-dd
+        else if (Pattern.matches("\\d{4}-\\d{2}-\\d{2}", dateTime))
+            dateTime += "T00:00:00";
+        // ccyy-MM-ddZ
+        else if (Pattern.matches("\\d{4}-\\d{2}-\\d{2}Z", dateTime)) {
+            dateTime = dateTime.substring(0, dateTime.length() - 1);
+            dateTime += "T00:00:00Z";
+        }
+        // ccyy-MM-dd(+|-)hh:mm
+        else if (Pattern.matches("\\d{4}-\\d{2}-\\d{2}(\\+|\\-)\\d{2}:\\d{2}", dateTime))
+            dateTime = dateTime.substring(0, 10) + "T00:00:00" + dateTime.substring(10, dateTime.length());
+        // can input only 1 digit for seconds but its a ones not a tens, so we insert a 0 in front of it
+        // ccyy-MM-ddThh:mm:s
+        // ccyy-MM-ddThh:mm:sZ
+        // ccyy-MM-ddThh:mm:s(+-)hh:mm
+        // ccyy-MM-ddThh:mm:s.(m+)(+|-)hh:mm
+        else if (Pattern.matches("\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{1}(\\.\\d+)*(((\\+|\\-)\\d{2}:\\d{2})|Z)?", dateTime)) {
+            dateTime = dateTime.substring(0, 17) + "0" + dateTime.substring(17, dateTime.length());
+        }
+
+        // if dateTime has >4 .millisecond digits, strip them out
+        if (Pattern.matches(".*\\.\\d{4}\\d+.*", dateTime)) {
+            String[] split = dateTime.split("\\.", 2);
+            String[] split2 = split[1].split("(?<=\\d{4})", 2);
+            String[] split3 = split2[1].split("(?!\\d)", 2);
+            dateTime = split[0] + "." + split2[0];
+            dateTime = split3.length > 1 ? dateTime + split3[1] : dateTime;
+        }
+
+        // Finally, take dateTime and parse it using java.time APIs.
+        TemporalAccessor accessor = DateTimeFormatter.ofPattern("yyyy[-MM-dd]['T'HH:mm][:ss][.SSSSSSSSS][.SSSSSS][.SSSSS][.SSSS][.SSS][.SS][.S][z]").withZone(ZoneId.systemDefault()).parse(dateTime);
+        return Instant.from(accessor).toEpochMilli();
     }
 }

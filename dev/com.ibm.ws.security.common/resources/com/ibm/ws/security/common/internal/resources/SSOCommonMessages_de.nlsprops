@@ -24,7 +24,7 @@ SUBJECT_MAPPING_MISSING_ATTR=CWWKS6102E: Die Authentifizierungsanforderung ist f
 SUBJECT_MAPPING_MISSING_ATTR.explanation=Die authentifizierten Benutzerinformationen enthalten den angegebenen Anspruch f\u00fcr die Identifizierung des Realms nicht und die Laufzeitumgebung kann den Authentifizierungsprozess nicht fortsetzen.
 SUBJECT_MAPPING_MISSING_ATTR.useraction=F\u00fchren Sie eine der folgenden Aktionen aus: 1) Pr\u00fcfen Sie, ob in der Social Login-Clientkonfiguration ein anderer Anspruch als Attribut angegeben werden kann. 2) Vergewissern Sie sich, dass der Provider die authentifizierten Benutzerinformationen mit dem angegebenen Anspruch ausgibt.
 
-ERROR_AUTHENTICATE=CWWKS6103E: Es kann kein Sicherheitssubjekt f\u00fcr den Benutzer {0} erstellt werden.
+ERROR_AUTHENTICATE=CWWKS6103E: Es kann kein Sicherheitssubjekt f\u00fcr den Benutzer {0} erstellt werden. {1}
 ERROR_AUTHENTICATE.explanation=Der Benutzer konnte nicht authentifiziert werden. 
 ERROR_AUTHENTICATE.useraction=Vergewissern Sie sich, dass der Benutzer in der Registry vorhanden ist und dass das Kennwort oder anderen Berechtigungsnachweise korrekt sind.
 

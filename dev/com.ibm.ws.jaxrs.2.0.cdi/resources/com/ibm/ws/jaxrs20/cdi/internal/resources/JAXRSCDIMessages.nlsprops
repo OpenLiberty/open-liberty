@@ -19,15 +19,15 @@
 #
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
-# JAXRS 2.0 CDI Message ------------------------
-warning.jaxrs.cdi.resource=CWWKW1000W: The scope of JAXRS-2.0 Resource {0} is {1}. Liberty gets resource instance from {2}.
+# JAXRS CDI Message ------------------------
+warning.jaxrs.cdi.resource=CWWKW1000W: The scope of JAXRS Resource {0} is {1}. Liberty gets resource instance from {2}.
 warning.jaxrs.cdi.resource.explanation=Liberty gets resource instance from JAXRS if it cannot get instance from CDI.
 warning.jaxrs.cdi.resource.useraction=No action is required. 
 
-warning.jaxrs.cdi.resource.mismatch=CWWKW1001W: The scope {1} of JAXRS-2.0 Resource {0} does not match the CDI scope {2}. Liberty gets resource instance from {3}.
-warning.jaxrs.cdi.resource.mismatch.explanation=If the JAXRS-2.0 Resource scope does not match the CDI scope and the resource instance exists in CDI, Liberty gets the resource instance from CDI. Instance does not include CDI injection if it is from JAXRS.
+warning.jaxrs.cdi.resource.mismatch=CWWKW1001W: The scope {1} of JAXRS Resource {0} does not match the CDI scope {2}. Liberty gets resource instance from {3}.
+warning.jaxrs.cdi.resource.mismatch.explanation=If the JAXRS Resource scope does not match the CDI scope and the resource instance exists in CDI, Liberty gets the resource instance from CDI. Instance does not include CDI injection if it is from JAXRS.
 warning.jaxrs.cdi.resource.mismatch.useraction=No action is required. 
 
-warning.jaxrs.cdi.provider.mismatch=CWWKW1002W: The CDI scope of JAXRS-2.0 Provider {0} is {1}. Liberty gets the provider instance from {2}.
+warning.jaxrs.cdi.provider.mismatch=CWWKW1002W: The CDI scope of JAXRS Provider {0} is {1}. Liberty gets the provider instance from {2}.
 warning.jaxrs.cdi.provider.mismatch.explanation=Provider instance is Singleton only. Liberty gets provider instance from CDI if the CDI scope of provider is Dependent or ApplicationScoped. Instance does not include CDI injection if it is from JAXRS.
 warning.jaxrs.cdi.provider.mismatch.useraction=No action is required.

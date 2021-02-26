@@ -16,6 +16,7 @@ bSymbolicName=com.ibm.ws.cdi.mp.context
 Bundle-Name: CDI Context for MicroProfile Context Propagation 1.0
 Bundle-Description: CDI Context for MicroProfile Context Propagation 1.0; version=${bVersion}
 
+jakartaeeMe: true
 
 WS-TraceGroup: JCDI
 

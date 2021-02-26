@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*******************************************************************************
+ * Copyright (c) 2020 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+-->
+<com.ibm.ejs.models.base.bindings.applicationbnd:ApplicationBinding xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:com.ibm.ejs.models.base.bindings.applicationbnd="applicationbnd.xmi" xmi:id="ApplicationBinding_1">
+  <authorizationTable xmi:id="AuthorizationTable_1">
+    <authorizations xmi:id="RoleAssignment_1">
+      <users xmi:id="User_1" name="user1"/>
+      <role href="META-INF/application.xml#SecurityRole_1"/>
+      <!-- Comment out group1 so that user0 does NOT have access -->
+      <!--groups xmi:id="Group_1" name="group1"/-->
+    </authorizations>
+    <authorizations xmi:id="RoleAssignment_2">
+      <users xmi:id="User_2" name="user2"/>
+      <role href="META-INF/application.xml#SecurityRole_2"/>
+      <groups xmi:id="Group_2" name="group2"/>
+    </authorizations>
+    <authorizations xmi:id="RoleAssignment_3">
+      <!-- Note: This should be
+           xmi:type="com.ibm.ejs.models.base.bindings.applicationbnd:AllAuthenticatedUsers"
+           because there is no xmlns:applicationbnd="applicationbnd.xmi", but
+           the Liberty parser allows the user of the "applicationbnd" prefix if
+           it is undeclared for backwards compatibility.  tWAS will fail. -->
+      <specialSubjects xmi:type="applicationbnd:AllAuthenticatedUsers" xmi:id="AllAuthenticatedUsers_1" name="AllAuthenticatedUsers"/>
+      <role href="META-INF/application.xml#SecurityRole_3"/>
+    </authorizations>
+  </authorizationTable>
+  <application href="META-INF/application.xml#Application_ID"/>
+</com.ibm.ejs.models.base.bindings.applicationbnd:ApplicationBinding>

@@ -18,6 +18,8 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 
 /**
  * <p>Java class for ProblemActionType complex type.
@@ -45,6 +47,7 @@ import javax.xml.namespace.QName;
     "action",
     "soapAction"
 })
+@Trivial
 public class ProblemActionType {
 
     @XmlElement(name = "Action")

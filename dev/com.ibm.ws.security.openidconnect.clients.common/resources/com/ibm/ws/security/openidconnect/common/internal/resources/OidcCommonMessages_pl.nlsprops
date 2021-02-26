@@ -184,6 +184,6 @@ PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR.explanation=Znacznik nie mo\u017ce 
 PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR.useraction=Uzyskaj nowy znacznik, kt\u00f3ry nie zawiera podanego roszczenia, lub zmie\u0144 warto\u015b\u0107 podanego atrybutu konfiguracji, aby umo\u017cliwi\u0107 umieszczenie roszczenia w znaczniku.
 
 # 0=Client ID, 1=List of invalid parameter names, 2=forwardLoginParameter
-BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED=CWWKS1783W: Klient OpenID Connect [{0}] zawiera element {1} w warto\u015bciach, kt\u00f3re zosta\u0142y okre\u015blone przez atrybut konfiguracji [{2}]. Okre\u015blone warto\u015bci zostan\u0105 zignorowane.
-BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED.explanation=Specyfikacja OAuth 2.0 definiuje zestaw zarezerwowanych parametr\u00f3w \u017c\u0105da\u0144, kt\u00f3re musz\u0105 zosta\u0107 podane przez klienta w przypadku \u017c\u0105da\u0144 autoryzacji. Warto\u015bci tych zarezerwowanych parametr\u00f3w nie mog\u0105 by\u0107 podawane przez u\u017cytkownika.
-BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED.useraction=Usu\u0144 okre\u015blone warto\u015bci z listy warto\u015bci zdefiniowanej w konfiguracji klienta OpenID Connect.
+DISALLOWED_FORWARD_AUTHZ_PARAMS_CONFIGURED=CWWKS1783W: Klient OpenID Connect [{0}] zawiera element {1} w warto\u015bciach, kt\u00f3re zosta\u0142y okre\u015blone przez atrybut konfiguracji [{2}]. Okre\u015blone warto\u015bci zostan\u0105 zignorowane.
+DISALLOWED_FORWARD_AUTHZ_PARAMS_CONFIGURED.explanation=Specyfikacja OAuth 2.0 definiuje zestaw zarezerwowanych parametr\u00f3w \u017c\u0105da\u0144, kt\u00f3re musz\u0105 zosta\u0107 podane przez klienta w przypadku \u017c\u0105da\u0144 autoryzacji. Warto\u015bci tych zarezerwowanych parametr\u00f3w nie mog\u0105 by\u0107 podawane przez u\u017cytkownika.
+DISALLOWED_FORWARD_AUTHZ_PARAMS_CONFIGURED.useraction=Usu\u0144 okre\u015blone warto\u015bci z listy warto\u015bci zdefiniowanej w konfiguracji klienta OpenID Connect.

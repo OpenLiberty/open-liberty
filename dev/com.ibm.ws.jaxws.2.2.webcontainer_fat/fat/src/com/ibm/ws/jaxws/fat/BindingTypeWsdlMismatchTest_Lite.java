@@ -25,6 +25,7 @@ import componenttest.topology.impl.LibertyServer;
 /**
  * Test the binding type is align with the wsdl file if specified.
  */
+
 public class BindingTypeWsdlMismatchTest_Lite {
 
     @Server("BindingTypeWsdlMismatchTestServer")

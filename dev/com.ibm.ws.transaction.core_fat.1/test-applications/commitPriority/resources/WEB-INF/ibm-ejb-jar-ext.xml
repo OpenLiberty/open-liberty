@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ejb-jar-ext
+	xmlns="http://websphere.ibm.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-ejb-jar-ext_1_1.xsd"
+	version="1.1">
+
+	<session name="CommitPriorityEJB">
+		<resource-ref name="jdbc/derby1" commit-priority="1"/>
+		<resource-ref name="jdbc/derby2" commit-priority="2"/>
+		<resource-ref name="jdbc/derby3" commit-priority="3"/>
+		<resource-ref name="jdbc/derby10" commit-priority="10"/>
+		<resource-ref name="jdbc/derby11" commit-priority="11"/>
+		<resource-ref name="jdbc/derby12" commit-priority="12"/>
+	</session>
+</ejb-jar-ext>

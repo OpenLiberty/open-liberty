@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2019 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -415,6 +415,12 @@ public class LdapConfigManager {
     private boolean iDefaultMembershipAttr = true;
 
     /**
+     * Flag to determine if the loginProperty was explicitly defined. We need to know the difference
+     * between getting the default value and defining it.
+     */
+    private boolean isLoginPropertyDefined = false;
+
+    /**
      * Refreshes the caches using the given configuration data object.
      * This method should be called when there are changes in configuration and schema.
      *
@@ -499,7 +505,7 @@ public class LdapConfigManager {
 //        setRDNProperties(configProps);
         setConfidentialAttributes();
         //setGroupMemberFilter();
-        setLoginProperties((String) configProps.get(ConfigConstants.CONFIG_PROP_LOGIN_PROPERTIES));
+        setLoginProperties(configProps);
         setFilters(configProps);
         setGroupMemberFilter();
 
@@ -613,7 +619,9 @@ public class LdapConfigManager {
             int length = objectClassStr.length();
 
             // Parse the User filter and extract the applicable objectclass names
-            if (iUserFilter != null) {
+            // We only use the userFilter if loginProperty is not defined.
+            // Additionally, a warning is issued if this is the case.
+            if (iUserFilter != null && !isLoginPropertyDefined) {
                 LdapEntity ldapEntity = getLdapEntity(SchemaConstants.DO_PERSON_ACCOUNT);
                 if (ldapEntity != null) {
                     Set<String> objClsSet = new HashSet<String>();
@@ -632,12 +640,13 @@ public class LdapConfigManager {
                     }
                 }
 
-                // Set the login property.
-                // Remove the default uid login Property if userFilter is configured.
-                if (iLoginAttrs != null)
-                    iLoginAttrs.remove(0);
-                if (iLoginProps != null)
-                    iLoginProps.remove(0);
+                // If loginProperties are not defined and we are using the userFilter,
+                // remove the default uid login property. In this case, the first attribute
+                // in the userFilter should be the principal.
+                    if (iLoginAttrs != null)
+                        iLoginAttrs.remove(0);
+                    if (iLoginProps != null)
+                        iLoginProps.remove(0);
 
                 String pattern = "=%v";
                 int startIndex = 0;
@@ -674,6 +683,11 @@ public class LdapConfigManager {
                                                                                                                  WIMMessageHelper.generateMsgParms(e.toString())));
                     }
                 }
+            } else if (iUserFilter != null && isLoginPropertyDefined) {
+                //Issue a warning that the filter built using loginProperty is taking precedence over the defined userFilter.
+                if (tc.isWarningEnabled()) {
+                    Tr.warning(tc, WIMMessageKey.LOGINPROPERTY_OVERRIDE_USERFILTER);
+                }
             }
 
             // Parse the Group filter and extract the applicable objectclass names
@@ -706,7 +720,17 @@ public class LdapConfigManager {
                     List<String> objClsList = new ArrayList<String>();
                     while (strtok.hasMoreTokens()) {
                         String objectClass = strtok.nextToken();
+
+                        /*
+						 *  Ensure that the attribute is included. If not, issue warning and skip.
+						 */
+                        if (!strtok.hasMoreTokens()) {
+                            Tr.warning(tc, WIMMessageKey.IDMAP_INVALID_FORMAT, iUserIdMap, "userIdMap");
+                            break;
+                        }
+
                         String attribute = strtok.nextToken();
+
                         // Handle samAccountName.
                         Set<String> propNames = null;
 
@@ -716,10 +740,13 @@ public class LdapConfigManager {
                         } else
                             propNames = getPropertyName(ldapEntity, attribute);
 
-                        rdnPropList.add(propNames.iterator().next());
+                        rdnPropList.addAll(propNames);
 
-                        if (!SchemaConstants.VALUE_ALL_PROPERTIES.equalsIgnoreCase(objectClass))
-                            objClsList.add(objectClass);
+                        if (!SchemaConstants.VALUE_ALL_PROPERTIES.equalsIgnoreCase(objectClass)) {
+                            for (int idx = 0; idx < propNames.size(); idx++) {
+                                objClsList.add(objectClass);
+                            }
+                        }
                     }
                     if (rdnPropList.size() > 0) {
                         String[][] rdnProps = new String[rdnPropList.size()][];
@@ -740,12 +767,16 @@ public class LdapConfigManager {
                                 rdnObjCls[j][0] = objCls[j];
                             }
                         }
-                        ldapEntity.setRDNProperties(rdnProps, rdnAttrs);
+
                         if (isVMMRdnPropertiesDefined) {
                             String updatedRdnAttrs[][] = null;
                             String updatedRdnObjCls[][] = null;
-                            if (ldapEntity.getRDNAttributes().length > 0) {
-                                String orgRdnAttr[][] = ldapEntity.getRDNAttributes();
+
+                            /*
+                             * Merge RDN attributes.
+                             */
+                            String orgRdnAttr[][] = ldapEntity.getRDNAttributes();
+                            if (orgRdnAttr != null && orgRdnAttr.length > 0) {
                                 updatedRdnAttrs = new String[orgRdnAttr.length + rdnAttrs.length][];
                                 for (int i = 0; i < orgRdnAttr.length; i++) {
                                     updatedRdnAttrs[i] = new String[orgRdnAttr[i].length];
@@ -760,8 +791,12 @@ public class LdapConfigManager {
                                     len++;
                                 }
                             }
-                            if (ldapEntity.getRDNObjectclasses().length > 0) {
-                                String orgRdnObjCls[][] = ldapEntity.getRDNObjectclasses();
+
+                            /*
+                             * Merge the RDN objectclasses.
+                             */
+                            String[][] orgRdnObjCls = ldapEntity.getRDNObjectclasses();
+                            if (orgRdnObjCls != null && orgRdnObjCls.length > 0) {
                                 updatedRdnObjCls = new String[orgRdnObjCls.length + rdnObjCls.length][];
                                 for (int i = 0; i < orgRdnObjCls.length; i++) {
                                     updatedRdnObjCls[i] = new String[orgRdnObjCls[i].length];
@@ -775,9 +810,13 @@ public class LdapConfigManager {
                                         updatedRdnObjCls[len][j] = rdnObjCls[i][j];
                                     len++;
                                 }
-
                             }
                             ldapEntity.setRDNAttributes(updatedRdnAttrs, updatedRdnObjCls);
+
+                            /*
+                             * Call this last as it sets the translate RDN flag based on the RDN attributes.
+                             */
+                            ldapEntity.setRDNProperties(rdnProps, updatedRdnAttrs);
                         } else {
                             ldapEntity.setRDNAttributes(rdnAttrs, rdnObjCls);
                         }
@@ -787,7 +826,7 @@ public class LdapConfigManager {
                     }
                 } else {
                     if (tc.isDebugEnabled())
-                        Tr.debug(tc, "Could not find entity for person account!!");
+                        Tr.debug(tc, "Could not find entity for PersonAccount!!");
                 }
             }
 
@@ -800,6 +839,15 @@ public class LdapConfigManager {
                     Set<String> objClsSet = new HashSet<String>();
                     while (strtok.hasMoreTokens()) {
                         String objectClass = strtok.nextToken();
+
+                        /*
+						 *  Ensure that the attribute is included. If not, issue warning and skip.
+						 */
+                        if (!strtok.hasMoreTokens()) {
+                            Tr.warning(tc, WIMMessageKey.IDMAP_INVALID_FORMAT, iGroupIdMap, "groupIdMap");
+                            break;
+                        }
+
                         String attribute = strtok.nextToken();
 
                         Set<String> propNames = getPropertyName(ldapEntity, attribute);
@@ -1031,20 +1079,46 @@ public class LdapConfigManager {
 
     }
 
-    private void setLoginProperties(String loginProps) {
+    private void setLoginProperties(Map<String, Object> configProps) throws WIMSystemException {
         if (iPersonAccountTypes.size() > 0) {
             LdapEntity acct = getLdapEntity(iPersonAccountTypes.get(iPersonAccountTypes.size() - 1));
             iLoginAttrs = new ArrayList<String>();
             iLoginProps = new ArrayList<String>();
-            if (loginProps != null) {
-                String[] loginProperties = loginProps.split(";");
-                for (int i = 0; i < loginProperties.length; i++) {
-                    String propName = loginProperties[i];
+            List<Map<String, Object>> loginProps = Nester.nest(ConfigConstants.CONFIG_PROP_LOGIN_PROPERTIES, configProps);
+
+            if (loginProps != null && !loginProps.isEmpty()) {
+                isLoginPropertyDefined = true;
+            } else {
+                loginProps = new ArrayList<Map<String, Object>>();
+                Map<String, Object> map = new HashMap<String, Object>();
+                map.put(ConfigConstants.CONFIG_PROP_NAME, "uid");
+                loginProps.add(map);
+            }
+            List<String> unsupportedProps = new ArrayList<String>();
+            for (Map<String, Object> propDO : loginProps) {
+                String propName = (String) propDO.get(ConfigConstants.CONFIG_PROP_NAME);
+                // Check if the property is supported or not
+                List<String> props = new ArrayList<String>(1);
+                props.add(propName);
+                List<String> supportedProp = getSupportedProperties(acct, props);
+                if (supportedProp == null || supportedProp.size() == 0) {
+                    unsupportedProps.add(propName);
+                } else {
                     iLoginAttrs.add(getAttributeName(acct, propName));
                     iLoginProps.add(propName);
                 }
-                // iLoginAttrs.add(getAttributeName(acct, loginProps));
             }
+            if (!unsupportedProps.isEmpty()) {
+                String props = "";
+                for (String prop : unsupportedProps) {
+                    props += prop + ", ";
+                }
+                props = props.substring(0, props.lastIndexOf(","));
+                String msg = Tr.formatMessage(tc, WIMMessageKey.INVALID_LOGIN_PROPERTIES, props);
+                throw new WIMSystemException(WIMMessageKey.NAMING_EXCEPTION, msg);
+            }
+
+
             // If no login properties specified, the default RDN property will be used
             if (iLoginAttrs.size() == 0) {
                 String[][] rdns = acct.getRDNAttributes();
@@ -3186,5 +3260,16 @@ public class LdapConfigManager {
 
     public Map<String, LdapAttribute> getAttributes() {
         return iAttrNameToAttrMap;
+    }
+
+    /**
+     * Return True if loginProperties are defined in configuration.
+     * This is used to distinguish between the default uid property
+     * and explicitly defining uid as a login property.
+     *
+     * @return True if loginProperties are defined in configuration
+     */
+    public boolean loginPropertyDefined() {
+        return isLoginPropertyDefined;
     }
 }

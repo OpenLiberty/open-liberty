@@ -19,15 +19,15 @@
 #
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
-# JAXRS 2.0 CDI Message ------------------------
-warning.jaxrs.cdi.resource=CWWKW1000W: L''ambito della risorsa JAXRS-2.0 {0} \u00e8 {1}. Liberty ottiene l''istanza risorsa da {2}.
+# JAXRS CDI Message ------------------------
+warning.jaxrs.cdi.resource=CWWKW1000W: L''ambito della risorsa JAXRS {0} \u00e8 {1}. Liberty ottiene l''istanza risorsa da {2}.
 warning.jaxrs.cdi.resource.explanation=Liberty ottiene l'istanza risorsa da JAXRS se non pu\u00f2 ottenere l'istanza da CDI.
 warning.jaxrs.cdi.resource.useraction=Non \u00e8 richiesta alcuna azione. 
 
-warning.jaxrs.cdi.resource.mismatch=CWWKW1001W: L''ambito {1} della risorsa JAXRS-2.0 {0} non corrisponde all''ambito CDI {2}. Liberty ottiene l''istanza risorsa da {3}.
-warning.jaxrs.cdi.resource.mismatch.explanation=Se l'ambito della risorsa JAXRS-2.0 non corrisponde all'ambito CDI, e l'istanza risorsa esiste in CDI, Liberty ottiene l'istanza risorsa da CDI. L'istanza non include l'injection CDI se proviene da JAXRS.
+warning.jaxrs.cdi.resource.mismatch=CWWKW1001W: L''ambito {1} della risorsa JAXRS {0} non corrisponde all''ambito CDI {2}. Liberty ottiene l''istanza risorsa da {3}.
+warning.jaxrs.cdi.resource.mismatch.explanation=Se l'ambito della risorsa JAXRS non corrisponde all'ambito CDI e l'istanza risorsa esiste in CDI, Liberty richiama l'istanza risorsa da CDI. L'istanza non include l'injection CDI se proviene da JAXRS.
 warning.jaxrs.cdi.resource.mismatch.useraction=Non \u00e8 richiesta alcuna azione. 
 
-warning.jaxrs.cdi.provider.mismatch=CWWKW1002W: L''ambito CDI del provider JAXRS-2.0 {0} \u00e8 {1}. Liberty ottiene l''istanza provider da {2}.
+warning.jaxrs.cdi.provider.mismatch=CWWKW1002W: L''ambito CDI del provider JAXRS {0} \u00e8 {1}. Liberty ottiene l''istanza provider da {2}.
 warning.jaxrs.cdi.provider.mismatch.explanation=L'istanza provider \u00e8 solo Singleton. Liberty ottiene l'istanza provider da CDI se l'ambito CDI del provider \u00e8 Dependent o ApplicationScoped. L'istanza non include l'injection CDI se proviene da JAXRS.
 warning.jaxrs.cdi.provider.mismatch.useraction=Non \u00e8 richiesta alcuna azione.

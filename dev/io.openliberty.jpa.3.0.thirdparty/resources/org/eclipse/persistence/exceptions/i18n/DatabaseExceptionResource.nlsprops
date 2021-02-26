@@ -1,0 +1,61 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/DatabaseExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+4003=Configuration error.  Class [{0}] not found.
+
+4005=DatabaseAccessor not connected.
+
+4006=Error reading BLOB data from stream in getObject().
+
+4007=Could not convert object type due to an internal error. {0}java.sql.TYPES: [{1}]
+
+4008=You cannot log out while a transaction is in progress.
+
+4009=The sequence table information is not complete.
+
+4011=Error preallocating sequence numbers.  The sequence table information is not complete.
+
+4014=Cannot register SynchronizationListener.
+
+4015=Synchronized UnitOfWork does not support the commitAndResume() operation.
+
+4016=Configuration error.  Could not instantiate driver [{0}].
+
+4017=Configuration error.  Could not access driver [{0}].
+
+4018=The TransactionManager has not been set for the JTS driver.
+
+4019=Error while obtaining information about the database. Refer to the nested exception for more details.
+
+4020=Could not find the matched database field for the specified optimistic locking field[{0}]. Note, the matching is case sensitive,therefore,if you allowed the column name to default on the getter method,the name will be uppercased.
+
+4021=Unable to acquire a connection from driver [{0}], user [{1}] and URL [{2}].  Verify that you have set the expected driver class and URL.  Check your login, persistence.xml or sessions.xml resource.  The jdbc.driver property should be set to a class that is compatible with your database platform
+
+4022=Accessor or its connection has been set to null.  This can occur if the ClientSession or UnitOfWork was released in a seperate thread, for instance if a Timeout occurred.
+

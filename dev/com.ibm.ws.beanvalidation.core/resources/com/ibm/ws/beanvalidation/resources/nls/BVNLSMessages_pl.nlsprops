@@ -87,3 +87,14 @@ JNDI_NON_JEE_THREAD_CWNBV0006E.explanation=Operacje JNDI na nazwie java:comp/env
 JNDI_NON_JEE_THREAD_CWNBV0006E.useraction=Zmodyfikuj aplikacj\u0119 tak, aby operacja JNDI wyst\u0119powa\u0142a w w\u0105tku powi\u0105zanym z komponentem aplikacji Java EE.
 
 # -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the method with the invalid ValidateOnExecution annotation
+# -----------------------------------------------------------------------
+BVKEY_VALIDATE_ON_EXECUTION_NOT_ALLOWED_CWNBV0007E=CWNBV0007E: Adnotacja @ValidateOnExecution nie jest dozwolona w metodach przes\u0142aniaj\u0105cych metod\u0119 z klasy nadrz\u0119dnej lub implementuj\u0105cych interfejs. Sprawd\u017a konfiguracj\u0119 dla {0}
+BVKEY_VALIDATE_ON_EXECUTION_NOT_ALLOWED_CWNBV0007E.explanation= Adnotacja @ValidateOnExecution nie jest dozwolona w metodach przes\u0142aniaj\u0105cych metod\u0119 z klasy nadrz\u0119dnej lub implementuj\u0105cych interfejs. Metoda przes\u0142aniaj\u0105ca metod\u0119 z klasy nadrz\u0119dnej lub implementuj\u0105ca interfejs dziedziczy zachowanie metody przes\u0142anianej lub implementowanej.
+BVKEY_VALIDATE_ON_EXECUTION_NOT_ALLOWED_CWNBV0007E.useraction= Usu\u0144 adnotacj\u0119 @ValidateOnExecution ze wskazanej metody.
+# -----------------------------------------------------------------------
+BVKEY_MIXING_IMPLICIT_TYPE_NOT_ALLOWED_CWNBV0008E=CWNBV0008E: Stosowanie typu kodu wykonywalnego IMPLICIT w kombinacji z innymi typami kodu wykonywalnego jest niedozwolone. Sprawd\u017a typy kodu wykonywalnego ustawione dla: \n {0}
+BVKEY_MIXING_IMPLICIT_TYPE_NOT_ALLOWED_CWNBV0008E.explanation=Zgodnie ze specyfikacj\u0105 sprawdzania poprawno\u015bci komponentu bean w przypadku adnotacji @ValidateOnExecution nie jest dozwolone stosowanie typu kodu wykonywalnego IMPLICIT w kombinacji z innymi typami kodu wykonywalnego.
+BVKEY_MIXING_IMPLICIT_TYPE_NOT_ALLOWED_CWNBV0008E.useraction=Zmodyfikuj metod\u0119, klas\u0119 lub globalne ustawienia XML tak, aby nie dochodzi\u0142o do stosowania typu kodu wykonywalnego IMPLICIT w kombinacji z innymi typami kodu wykonywalnego.
+# -----------------------------------------------------------------------

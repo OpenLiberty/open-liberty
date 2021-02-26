@@ -1,0 +1,55 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/DBWSExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+47000=Impossibile individuare il file "[{0}]".
+
+47001=Impossibile localizzare il descrittore [{0}] per l''operazione [{1}] nel progetto O-R
+
+47002=Impossibile localizzare la query [{0}] per il descrittore [{1}]
+
+47003=Impossibile localizzare la query [{0}] per la sessione [{1}]
+
+47004=Il tipo di parametro [{0}] per l''operazione [{1}] non esiste nello schema
+
+47005=Il tipo di parametro [{0}] per l''operazione [{1}] non ha associazioni O-X
+
+47006=Il tipo di risultato [{0}] per l''operazione [{1}] non esiste nello schema
+
+47007=Il tipo di risultato [{0}] per l''operazione [{1}] non ha associazioni O-X
+
+47008=Solo le query in formato XML semplice supportano pi\u00f9 argomenti di output
+
+47009=I parametri cursore INOUT non sono supportati
+
+47010=Impossibile localizzare la sessione O-R per il servizio [{0}]
+
+47011=Impossibile localizzare la sessione O-X per il servizio [{0}]
+
+47012=Impossibile analizzare il file DBWS
+

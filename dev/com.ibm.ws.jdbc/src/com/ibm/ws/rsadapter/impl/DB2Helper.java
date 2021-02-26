@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2018 IBM Corporation and others.
+ * Copyright (c) 2003, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,6 +31,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.Transaction.UOWCoordinator;
 import com.ibm.ws.Transaction.UOWCurrent;
 import com.ibm.ws.jca.cm.AbstractConnectionFactoryService;
+import com.ibm.ws.jdbc.heritage.AccessIntent;
 import com.ibm.ws.resource.ResourceRefInfo;
 import com.ibm.ws.rsadapter.AdapterUtil;
 import com.ibm.ws.rsadapter.DSConfig;
@@ -71,6 +72,7 @@ public class DB2Helper extends DatabaseHelper {
     DB2Helper(WSManagedConnectionFactoryImpl mcf) throws Exception {
         super(mcf);
 
+        mcf.doesStatementCacheIsoLevel = true;
         mcf.supportsGetTypeMap = false;
 
         Properties props = mcf.dsConfig.get().vendorProps;
@@ -86,7 +88,12 @@ public class DB2Helper extends DatabaseHelper {
             threadIdentitySupport = AbstractConnectionFactoryService.THREAD_IDENTITY_ALLOWED;
             threadSecurity = true;
         }
-
+    }
+    
+    @Override
+    void customizeStaleStates() {
+        super.customizeStaleStates();
+        
         Collections.addAll(staleErrorCodes,
                            -30108,
                            -30081
@@ -184,12 +191,7 @@ public class DB2Helper extends DatabaseHelper {
     }
 
     @Override
-    public final boolean doesStatementCacheIsoLevel() {
-        return true;
-    }
-
-    @Override
-    public int getDefaultIsolationLevel() {
+    public int getIsolationLevel(AccessIntent unused) {
         return Connection.TRANSACTION_REPEATABLE_READ;
     }
 

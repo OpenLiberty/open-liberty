@@ -19,6 +19,8 @@ Import-Package: io.openliberty.cdi.spi,*
 
 Export-Package: io.openliberty.cdi.spi
 
+jakartaeeMe: true
+
 publish.wlp.jar.suffix: dev/spi/ibm
 
 -buildpath: \

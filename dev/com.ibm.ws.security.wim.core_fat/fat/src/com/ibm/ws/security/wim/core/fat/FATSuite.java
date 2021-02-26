@@ -20,7 +20,9 @@ import org.junit.runners.Suite.SuiteClasses;
                 MaxSearchResultTest.class,
                 DynamicUpdateTest.class,
                 NoRegistryConfiguredTest.class,
-                WimCoreRegressionTest.class
+                WimCoreRegressionTest.class,
+                ConfigManagerInitModifyTest.class,
+                ConfigManagerFeatureTest.class
 })
 /**
  * Purpose: This suite collects and runs all known good test suites.

@@ -92,7 +92,7 @@
         <AD id="decodeUrlPlusSign"
             name="%decodeUrlPlusSign.name" 
             description="%decodeUrlPlusSign.desc" 
-            required="false" type="Boolean" default="false" />
+            required="false" type="Boolean" />
 
         <!--com.ibm.ws.webcontainer.-->
         <AD id="suppressHtmlRecursiveErrorOutput"
@@ -224,7 +224,7 @@
         <AD id="disableXPoweredBy"
             name="%disableXPoweredBy.name" 
             description="%disableXPoweredBy.desc" 
-            required="false" type="Boolean" default="false" />
+            required="false" type="Boolean" />
             
         <AD id="deferServletLoad"
             name="%deferServletLoad.name" 
@@ -307,19 +307,37 @@
             name="%throwExceptionWhenUnableToCompleteOrDispatch.name" 
             description="%throwExceptionWhenUnableToCompleteOrDispatch.desc" 
             required="false" type="Boolean" default="true" /> 
-            
+
         <!--com.ibm.ws.webcontainer.-->
         <AD id="getRealPathReturnsQualifiedPath"
             name="%getRealPathReturnsQualifiedPath.name"
             description="%getRealPathReturnsQualifiedPath.desc"
             required="false" type="Boolean" default="true" />
-            
+
         <!--com.ibm.ws.webcontainer.-->
         <AD id="stopAppStartUponListenerException"
             name="%stopAppStartUponListenerException.name"
             description="%stopAppStartUponListenerException.desc"
+            required="false" type="Boolean" />
+
+        <!--com.ibm.ws.webcontainer.-->
+        <AD id="redirectToRelativeUrl"
+            name="%redirectToRelativeUrl.name"
+            description="%redirectToRelativeUrl.desc"
             required="false" type="Boolean" default="false" />
-            
+
+        <!--com.ibm.ws.webcontainer.-->
+        <AD id="addStrictTransportSecurityHeader"
+            name="%addStrictTransportSecurityHeader.name"
+            description="%addStrictTransportSecurityHeader.desc"
+            required="false" type="String" default="" />
+
+        <!--com.ibm.ws.webcontainer.-->
+        <AD id="allowQueryParamWithNoEqual"
+            name="%allowQueryParamWithNoEqual.name"
+            description="%allowQueryParamWithNoEqual.desc"
+            required="false" type="Boolean" default="false" />
+
         <AD name="internal" description="internal use only"
             id="extensionFactory" required="true" type="String" cardinality="100"
             ibm:type="pid" ibm:reference="com.ibm.wsspi.webcontainer.extension.ExtensionFactory" default="*" ibm:final="true"/> 

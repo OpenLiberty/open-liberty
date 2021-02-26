@@ -90,7 +90,6 @@ import com.ibm.ws.concurrent.persistent.ejb.TimerStatus;
 import com.ibm.ws.concurrent.persistent.ejb.TimerTrigger;
 import com.ibm.ws.concurrent.persistent.ejb.TimersPersistentExecutor;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.javaee.version.JavaEEVersion;
 import com.ibm.ws.kernel.feature.ServerStarted;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.runtime.update.RuntimeUpdateListener;
@@ -162,6 +161,40 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
     };
 
     /**
+     * Constant for ManagedTask.IDENTITY_NAME in whichever of Jakarta vs Java EE is NOT enabled
+     */
+    private static final String OTHER_SPEC_IDENTITY_NAME;
+
+    /**
+     * Constant for ManagedTask.LONGRUNNING_HINT in whichever of Jakarta vs Java EE is NOT enabled
+     */
+    private static final String OTHER_SPEC_LONGRUNNING_HINT;
+
+    /**
+     * Constant for ManagedTask.TRANSACTION in whichever of Jakarta vs Java EE is NOT enabled
+     */
+    private static final String OTHER_SPEC_TRANSACTION_CONSTANT;
+
+    static {
+        boolean jakarta = ManagedTask.IDENTITY_NAME.charAt(7) == '.';
+
+        OTHER_SPEC_IDENTITY_NAME = new StringBuilder(jakarta ? 41 : 43) //
+                        .append(jakarta ? "javax" : "jakarta") //
+                        .append(".enterprise.concurrent.IDENTITY_NAME") //
+                        .toString();
+
+        OTHER_SPEC_LONGRUNNING_HINT = new StringBuilder(jakarta ? 44 : 46) //
+                        .append(jakarta ? "javax" : "jakarta") //
+                        .append(".enterprise.concurrent.LONGRUNNING_HINT") //
+                        .toString();
+
+        OTHER_SPEC_TRANSACTION_CONSTANT = new StringBuilder(jakarta ? 39 : 41) //
+                        .append(jakarta ? "javax" : "jakarta") //
+                        .append(".enterprise.concurrent.TRANSACTION") //
+                        .toString();
+    }
+
+    /**
      * Names of applications using this ResourceFactory
      */
     private final Set<String> applications = Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>());
@@ -195,16 +228,6 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
      * Default execution properties to use when none are present for the task.
      */
     private final Map<String, String> defaultExecProps = new TreeMap<String, String>();
-
-    /**
-     * Jakarta EE version if Jakarta EE 9 or higher. If 0, assume a lesser EE spec version.
-     */
-    private volatile int eeVersion;
-
-    /**
-     * Tracks the most recently bound EE version service reference. Only use this within the set/unsetEEVersion methods.
-     */
-    private ServiceReference<JavaEEVersion> eeVersionRef;
 
     /**
      * Common Liberty thread pool.
@@ -340,8 +363,7 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
                 throw new IllegalArgumentException("id: null, jndiName: null");
         }
 
-        String TRANSACTION_PROP_KEY = eeVersion < 9 ? "javax.enterprise.concurrent.TRANSACTION" : "jakarta.enterprise.concurrent.TRANSACTION"; // ManagedTask.TRANSACTION
-        defaultExecProps.put(TRANSACTION_PROP_KEY, "USE_TRANSACTION_OF_EXECUTION_THREAD"); // ManagedTask.USE_TRANSACTION_OF_EXECUTION_THREAD
+        defaultExecProps.put(ManagedTask.TRANSACTION, ManagedTask.USE_TRANSACTION_OF_EXECUTION_THREAD);
         defaultExecProps.put(WSContextService.DEFAULT_CONTEXT, WSContextService.UNCONFIGURED_CONTEXT_TYPES);
         defaultExecProps.put(WSContextService.TASK_OWNER, name);
 
@@ -730,8 +752,7 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
             execProps = defaultExecProps;
         else {
             Map<String, String> mergedProps;
-            if (execProps.containsKey("jakarta.enterprise.concurrent.TRANSACTION")
-                || execProps.containsKey("javax.enterprise.concurrent.TRANSACTION")) { // ManagedTask.TRANSACTION is specified by the task
+            if (execProps.containsKey(ManagedTask.TRANSACTION) || execProps.containsKey(OTHER_SPEC_TRANSACTION_CONSTANT)) {
                 mergedProps = new TreeMap<String, String>();
                 mergedProps.put(WSContextService.DEFAULT_CONTEXT, WSContextService.UNCONFIGURED_CONTEXT_TYPES);
                 mergedProps.put(WSContextService.TASK_OWNER, name);
@@ -1227,29 +1248,16 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
         Map<String, String> execProps = getExecutionProperties(task);
 
         // ManagedTask.IDENTITY_NAME
-        String name;
-        if (eeVersion < 9) {
-            name = execProps.get("javax.enterprise.concurrent.IDENTITY_NAME");
-            if (name == null)
-                name = execProps.get("jakarta.enterprise.concurrent.IDENTITY_NAME");
-        } else {
-            name = execProps.get("jakarta.enterprise.concurrent.IDENTITY_NAME");
-            if (name == null)
-                name = execProps.get("javax.enterprise.concurrent.IDENTITY_NAME");
-        }
+        String name = execProps.get(ManagedTask.IDENTITY_NAME);
+        if (name == null)
+            name = execProps.get(OTHER_SPEC_IDENTITY_NAME);
         record.setName(Utils.normalizeString(name));
 
         // ManagedTask.LONGRUNNING_HINT
-        String longRunningHint, key;
-        if (eeVersion < 9) {
-            longRunningHint = execProps.get(key = "javax.enterprise.concurrent.LONGRUNNING_HINT");
-            if (longRunningHint == null)
-                longRunningHint = execProps.get(key = "jakarta.enterprise.concurrent.LONGRUNNING_HINT");
-        } else {
-            longRunningHint = execProps.get(key = "jakarta.enterprise.concurrent.LONGRUNNING_HINT");
-            if (longRunningHint == null)
-                longRunningHint = execProps.get(key = "javax.enterprise.concurrent.LONGRUNNING_HINT");
-        }
+        String key;
+        String longRunningHint = execProps.get(key = ManagedTask.LONGRUNNING_HINT);
+        if (longRunningHint == null)
+            longRunningHint = execProps.get(key = OTHER_SPEC_LONGRUNNING_HINT);
         if (Boolean.parseBoolean(longRunningHint))
             throw new RejectedExecutionException(key + ": " + longRunningHint);
 
@@ -1268,16 +1276,9 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
         record.setTransactionTimeout(txTimeout);
 
         // ManagedTask.TRANSACTION
-        String transaction;
-        if (eeVersion < 9) {
-            transaction = execProps.get("javax.enterprise.concurrent.TRANSACTION");
-            if (transaction == null)
-                transaction = execProps.get("jakarta.enterprise.concurrent.TRANSACTION");
-        } else {
-            transaction = execProps.get("jakarta.enterprise.concurrent.TRANSACTION");
-            if (transaction == null)
-                transaction = execProps.get("javax.enterprise.concurrent.TRANSACTION");
-        }
+        String transaction = execProps.get(ManagedTask.TRANSACTION);
+        if (transaction == null)
+            transaction = execProps.get(OTHER_SPEC_TRANSACTION_CONSTANT);
 
         short flags = 0;
         String autoPurge = execProps.get(AutoPurge.PROPERTY_NAME);
@@ -1774,27 +1775,6 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
     }
 
     /**
-     * Declarative Services method for setting the Jakarta/Java EE version
-     *
-     * @param ref reference to the service
-     */
-    @Reference(service = JavaEEVersion.class,
-               cardinality = ReferenceCardinality.OPTIONAL,
-               policy = ReferencePolicy.DYNAMIC,
-               policyOption = ReferencePolicyOption.GREEDY)
-    protected void setEEVersion(ServiceReference<JavaEEVersion> ref) {
-        String version = (String) ref.getProperty("version");
-        if (version == null) {
-            eeVersion = 0;
-        } else {
-            int dot = version.indexOf('.');
-            String major = dot > 0 ? version.substring(0, dot) : version;
-            eeVersion = Integer.parseInt(major);
-        }
-        eeVersionRef = ref;
-    }
-
-    /**
      * Declarative Services method for setting the Liberty executor.
      *
      * @param svc the service
@@ -2037,18 +2017,6 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
      */
     protected void unsetContextService(ServiceReference<WSContextService> ref) {
         contextSvcRef.unsetReference(ref);
-    }
-
-    /**
-     * Declarative Services method for unsetting the Jakarta/Java EE version
-     *
-     * @param ref reference to the service
-     */
-    protected void unsetEEVersion(ServiceReference<JavaEEVersion> ref) {
-        if (eeVersionRef == ref) {
-            eeVersionRef = null;
-            eeVersion = 0;
-        }
     }
 
     /**

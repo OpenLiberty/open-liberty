@@ -12,8 +12,9 @@
   <featureManager>
     <feature>cdi-2.0</feature>
     <feature>componenttest-1.0</feature>
-    <feature>jaxrs-2.1</feature>
-    <feature>jsonp-1.1</feature>
+    <feature>concurrent-1.0</feature>
+    <feature>jndi-1.0</feature>
+    <feature>servlet-4.0</feature>
   </featureManager>
 
   <cdi12 enableImplicitBeanArchives='false'/>

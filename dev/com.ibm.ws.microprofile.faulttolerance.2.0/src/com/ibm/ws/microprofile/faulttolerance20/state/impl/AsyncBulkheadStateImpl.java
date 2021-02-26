@@ -247,9 +247,4 @@ public class AsyncBulkheadStateImpl implements AsyncBulkheadState {
         CANCELLED
     }
 
-    @Override
-    public void shutdown() {
-        // Do nothing
-    }
-
 }

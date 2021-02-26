@@ -62,7 +62,6 @@ import org.apache.cxf.io.CacheAndWriteOutputStream;
 import org.apache.cxf.io.CachedOutputStream;
 import org.apache.cxf.io.CopyingOutputStream;
 import org.apache.cxf.message.Message;
-import org.apache.cxf.message.MessageImpl;
 import org.apache.cxf.message.MessageUtils;
 import org.apache.cxf.service.model.EndpointInfo;
 import org.apache.cxf.transport.http.Address;
@@ -143,6 +142,7 @@ public class AsyncHTTPConduit extends URLConnectionHTTPConduit {
             super.setupConnection(message, address, csPolicy);
             return;
         }
+        propagateJaxwsSpecTimeoutSettings(message, csPolicy);
         boolean addressChanged = false;
         // need to do some clean up work on the URI address
         URI uri = address.getURI();
@@ -207,11 +207,11 @@ public class AsyncHTTPConduit extends URLConnectionHTTPConduit {
             LOG.fine("Asynchronous connection to " + uri.toString() + " has been set up");
         }
         message.put("http.scheme", uri.getScheme());
-        //Liberty code change start
-        String httpRequestMethod = (String) ((MessageImpl) message).getHttpRequestMethod();
+        String httpRequestMethod =
+            (String)message.get(Message.HTTP_REQUEST_METHOD);
         if (httpRequestMethod == null) {
             httpRequestMethod = "POST";
-            ((MessageImpl) message).setHttpRequestMethod(httpRequestMethod);
+            message.put(Message.HTTP_REQUEST_METHOD, httpRequestMethod);
         }
         final CXFHttpRequest e = new CXFHttpRequest(httpRequestMethod);
         BasicHttpEntity entity = new BasicHttpEntity() {
@@ -220,8 +220,7 @@ public class AsyncHTTPConduit extends URLConnectionHTTPConduit {
             }
         };
         entity.setChunked(true);
-        entity.setContentType((String) ((MessageImpl) message).getContentType());
-        //Liberty code change end
+        entity.setContentType((String)message.get(Message.CONTENT_TYPE));
         e.setURI(uri);
 
         e.setEntity(entity);
@@ -239,6 +238,19 @@ public class AsyncHTTPConduit extends URLConnectionHTTPConduit {
         e.setConfig(b.build());
 
         message.put(CXFHttpRequest.class, e);
+    }
+
+
+
+    private void propagateJaxwsSpecTimeoutSettings(Message message, HTTPClientPolicy csPolicy) {
+        int receiveTimeout = determineReceiveTimeout(message, csPolicy);
+        if (csPolicy.getReceiveTimeout() == 60000) {
+            csPolicy.setReceiveTimeout(receiveTimeout);
+        }
+        int connectionTimeout = determineConnectionTimeout(message, csPolicy);
+        if (csPolicy.getConnectionTimeout() == 30000) {
+            csPolicy.setConnectionTimeout(connectionTimeout);
+        }
     }
 
 
@@ -567,7 +579,7 @@ public class AsyncHTTPConduit extends URLConnectionHTTPConduit {
             }
 
 
-            if (sslURL != null && !sslURL.equals(url)) {
+            if (sslURL != null && isSslTargetDifferent(sslURL, url)) {
                 sslURL = null;
                 sslState = null;
                 session = null;
@@ -602,11 +614,21 @@ public class AsyncHTTPConduit extends URLConnectionHTTPConduit {
             });
         }
 
-        protected void retrySetHttpResponse(HttpResponse r) {
-            if (httpResponse == null && isAsync) {
+        private boolean isSslTargetDifferent(URI lastURL, URI url) {
+            return !lastURL.getScheme().equals(url.getScheme())
+                    || !lastURL.getHost().equals(url.getHost())
+                    || lastURL.getPort() != url.getPort();
+        }
+        
+
+        protected boolean retrySetHttpResponse(HttpResponse r) {
+            if (isAsync) {
                 setHttpResponse(r);
             }
+
+            return !isAsync;
         }
+        
         @FFDCIgnore(Exception.class)
         protected synchronized void setHttpResponse(HttpResponse r) {
             httpResponse = r;
@@ -621,6 +643,8 @@ public class AsyncHTTPConduit extends URLConnectionHTTPConduit {
             }
             notifyAll();
         }
+        
+        
         @FFDCIgnore(Exception.class)
         protected synchronized void setException(Exception ex) {
             exception = ex;
@@ -733,9 +757,7 @@ public class AsyncHTTPConduit extends URLConnectionHTTPConduit {
                 throw new IOException("Could not verify host " + url.getHost());
             }
 
-            //Liberty code change start
-            String method = (String)((MessageImpl) outMessage).getHttpRequestMethod();
-            //Liberty code change end
+            String method = (String)outMessage.get(Message.HTTP_REQUEST_METHOD);
             String cipherSuite = null;
             Certificate[] localCerts = null;
             Principal principal = null;
@@ -919,6 +941,9 @@ public class AsyncHTTPConduit extends URLConnectionHTTPConduit {
             ctx.getClientSessionContext().setSessionTimeout(tlsClientParameters.getSslCacheTimeout());
 
             KeyManager[] keyManagers = tlsClientParameters.getKeyManagers();
+            if (keyManagers == null) {
+                keyManagers = org.apache.cxf.configuration.jsse.SSLUtils.getDefaultKeyStoreManagers(LOG);
+            }
             KeyManager[] configuredKeyManagers =
                 org.apache.cxf.transport.https.SSLUtils.configureKeyManagersWithCertAlias(
                     tlsClientParameters, keyManagers);
@@ -929,6 +954,10 @@ public class AsyncHTTPConduit extends URLConnectionHTTPConduit {
             }
 
             ctx.init(configuredKeyManagers, trustManagers, tlsClientParameters.getSecureRandom());
+            
+            if (ctx.getClientSessionContext() != null) {
+                ctx.getClientSessionContext().setSessionTimeout(tlsClientParameters.getSslCacheTimeout());
+            }
         }
 
         sslContext = ctx;

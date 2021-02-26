@@ -21,6 +21,8 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 import org.w3c.dom.Element;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 
 /**
  * <p>Java class for EndpointReferenceType complex type.
@@ -52,6 +54,7 @@ import org.w3c.dom.Element;
     "metadata",
     "any"
 })
+@Trivial
 public class EndpointReferenceType {
 
     @XmlElement(name = "Address", required = true)

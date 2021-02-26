@@ -1,0 +1,96 @@
+<!--
+    Copyright (c) 2020 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+	<featureManager>
+		<feature>oauth-2.0</feature>
+		<feature>servlet-3.1</feature>
+		<feature>ssl-1.0</feature>
+		<feature>jndi-1.0</feature>
+		<feature>securitylibertyinternals-1.0</feature>
+		<feature>mongodb-2.0</feature>
+		<feature>usr:customStoreSample-1.0</feature>
+	</featureManager>
+
+	<basicRegistry
+		id="basic"
+		realm="BasicRealm"
+	>
+		<user
+			name="testuser"
+			password="testuserpwd" />
+		<user
+			name="user1"
+			password="user1pwd" />
+		<user
+			name="user2"
+			password="user2pwd" />
+	</basicRegistry>
+
+	<include location="../fatTestPorts.xml" />
+
+	<keyStore
+		id="defaultKeyStore"
+		password="keyspass" />
+
+	<oauth-roles>
+		<authenticated>
+			<user name="testuser" />
+			<group name="group1" />
+		</authenticated>
+		<clientManager>
+			<user name="testuser" />
+			<group name="group1" />
+		</clientManager>
+	</oauth-roles>
+
+
+	<!-- **************************************************************************** -->
+	<!-- Database definitions. -->
+	<!-- **************************************************************************** -->
+    <library id="mongo-lib">
+        <fileset dir="${server.config.dir}/mongoDB" includes="*.jar"/>
+    </library>
+    
+    <mongoDB jndiName="mongo/testdb" databaseName="default" >
+        <mongo libraryRef="mongo-lib" hostNames="mongo-auth" ports="0" user="user" password="password" />
+    </mongoDB>
+
+    <application type="war" id="oAuth20MongoSetup" name="oAuth20MongoSetup"
+	location="${server.config.dir}/apps/oAuth20MongoSetup.war">
+      <classloader commonLibraryRef="mongo-lib"/>
+    </application>
+    
+	<oauthProvider
+		id="OAuthConfigDerby"
+		filter="request-url%=ssodemo"
+		oauthOnly="false" clientSecretEncoding="xor"
+	>
+		<customStore storeId="mongoDbStore"/>
+		<autoAuthorizeClient>dclient01</autoAuthorizeClient>
+		<autoAuthorizeClient>dclient02</autoAuthorizeClient>
+	</oauthProvider>
+
+	<webAppSecurity
+		httpOnlyCookies="false"
+		allowFailOverToBasicAuth="true" />
+
+	<httpSession cookieHttpOnly="false" />
+
+	<javaPermission
+		className="java.net.SocketPermission"
+		name="*"
+		actions="connect,resolve" />
+
+	<javaPermission
+		codebase="${server.config.dir}/mongoDB/mongo-java-driver.jar"
+		className="java.security.AllPermission" />
+
+</server>

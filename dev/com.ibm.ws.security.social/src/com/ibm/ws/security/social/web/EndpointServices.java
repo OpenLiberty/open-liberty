@@ -106,7 +106,7 @@ public class EndpointServices {
                     doRedirect(request, response, config);
                 }
             } catch (Exception e) {
-                throw new SocialLoginException("ERROR_PROCESSING_REDIRECT", null, new Object[] { e.getMessage() });
+                throw new SocialLoginException("ERROR_PROCESSING_REDIRECT", null, new Object[] { e });
             }
 
         } else if (socialLoginRequest.isLogout()) {

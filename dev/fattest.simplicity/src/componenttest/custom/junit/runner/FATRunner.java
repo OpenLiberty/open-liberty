@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2020 IBM Corporation and others.
+ * Copyright (c) 2011, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -67,7 +67,7 @@ public class FATRunner extends BlockJUnit4ClassRunner {
     private static final Class<?> c = FATRunner.class;
 
     // Used to reduce timeouts to a sensible level when FATs are running locally
-    public static final boolean FAT_TEST_LOCALRUN = Boolean.getBoolean("fat.test.localrun");
+    public static final boolean FAT_TEST_LOCALRUN = Boolean.getBoolean("fat.test.localrun") && !Boolean.parseBoolean(System.getenv("CI"));
 
     private static final int MAX_FFDC_LINES = 1000;
     private static final boolean DISABLE_FFDC_CHECKING = Boolean.getBoolean("disable.ffdc.checking");
@@ -103,8 +103,8 @@ public class FATRunner extends BlockJUnit4ClassRunner {
     @Override
     protected String testName(FrameworkMethod method) {
         String testName = super.testName(method);
-        if (RepeatTestFilter.CURRENT_REPEAT_ACTION != null && !RepeatTestFilter.CURRENT_REPEAT_ACTION.equals("NO_MODIFICATION_ACTION")) {
-            testName = testName + "_" + RepeatTestFilter.CURRENT_REPEAT_ACTION;
+        if (RepeatTestFilter.isAnyRepeatActionActive()) {
+            testName = testName + RepeatTestFilter.getRepeatActionsAsString();
         }
         return testName;
     }
@@ -186,7 +186,7 @@ public class FATRunner extends BlockJUnit4ClassRunner {
             @Override
             public void evaluate() throws Throwable {
                 if (!RepeatTestFilter.shouldRun(method)) {
-                    return;
+                    throw new AssumptionViolatedException("Test skipped for current RepeatAction");
                 }
                 Map<String, Long> tmpDirFilesBeforeTest = createDirectorySnapshot("/tmp");
                 try {
@@ -632,15 +632,15 @@ public class FATRunner extends BlockJUnit4ClassRunner {
             if (JakartaEE9Action.isActive()) {
                 String[] exceptionClasses = ffdc.value();
                 for (String exceptionClass : exceptionClasses) {
-                    if(ee9Helper == null){
+                    if (ee9Helper == null) {
                         ee9Helper = new EE9PackageReplacementHelper();
                     }
                     exceptionClass = ee9Helper.replacePackages(exceptionClass);
                     annotationListPerClass.add(exceptionClass);
                 }
-            } else if (RepeatTestFilter.CURRENT_REPEAT_ACTION != null) {
+            } else if (RepeatTestFilter.isAnyRepeatActionActive()) {
                 for (String repeatAction : ffdc.repeatAction()) {
-                    if (repeatAction.equals(ExpectedFFDC.ALL_REPEAT_ACTIONS) || repeatAction.equals(RepeatTestFilter.CURRENT_REPEAT_ACTION)) {
+                    if (repeatAction.equals(ExpectedFFDC.ALL_REPEAT_ACTIONS) || RepeatTestFilter.isRepeatActionActive(repeatAction)) {
                         String[] exceptionClasses = ffdc.value();
                         for (String exceptionClass : exceptionClasses) {
                             annotationListPerClass.add(exceptionClass);
@@ -682,15 +682,15 @@ public class FATRunner extends BlockJUnit4ClassRunner {
                 if (JakartaEE9Action.isActive()) {
                     String[] exceptionClasses = ffdc.value();
                     for (String exceptionClass : exceptionClasses) {
-                        if(ee9Helper == null){
+                        if (ee9Helper == null) {
                             ee9Helper = new EE9PackageReplacementHelper();
                         }
                         exceptionClass = ee9Helper.replacePackages(exceptionClass);
                         annotationListPerClass.add(exceptionClass);
                     }
-                } else if (RepeatTestFilter.CURRENT_REPEAT_ACTION != null) {
+                } else if (RepeatTestFilter.isAnyRepeatActionActive()) {
                     for (String repeatAction : ffdc.repeatAction()) {
-                        if (repeatAction.equals(AllowedFFDC.ALL_REPEAT_ACTIONS) || repeatAction.equals(RepeatTestFilter.CURRENT_REPEAT_ACTION)) {
+                        if (repeatAction.equals(AllowedFFDC.ALL_REPEAT_ACTIONS) || RepeatTestFilter.isRepeatActionActive(repeatAction)) {
                             String[] exceptionClasses = ffdc.value();
                             for (String exceptionClass : exceptionClasses) {
                                 annotationListPerClass.add(exceptionClass);
@@ -762,7 +762,7 @@ public class FATRunner extends BlockJUnit4ClassRunner {
                 serverField.set(testClass, serv);
                 Log.info(c, method, "Injected LibertyServer " + serv.getServerName() + " to class " + testClass.getCanonicalName());
             } catch (Exception e) {
-                
+
                 throw new RuntimeException(e);
             }
         }

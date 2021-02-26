@@ -59,6 +59,15 @@ if exist "%JAVA_HOME%\lib\modules" set JVM_ARGS=--add-opens java.base/java.lang=
 set JVM_ARGS=-Djava.awt.headless=true !JVM_ARGS!
 set TOOL_JAVA_CMD_QUOTED=!JAVA_CMD_QUOTED! !JVM_ARGS! -jar "!WLP_INSTALL_DIR!\bin\@TOOL_JAR@"
 
+@REM Do not create a SCC
+if defined IBM_JAVA_OPTIONS (
+  set IBM_JAVA_OPTIONS=!IBM_JAVA_OPTIONS! -Xshareclasses:none
+)
+
+if defined OPENJ9_JAVA_OPTIONS (
+  set OPENJ9_JAVA_OPTIONS=!OPENJ9_JAVA_OPTIONS! -Xshareclasses:none
+)
+
 @REM Execute the tool script or JAR.
 if exist "!WLP_INSTALL_DIR!\lib\tools-internal/@TOOL_SCRIPT@.bat" goto:script
 !TOOL_JAVA_CMD_QUOTED! %*

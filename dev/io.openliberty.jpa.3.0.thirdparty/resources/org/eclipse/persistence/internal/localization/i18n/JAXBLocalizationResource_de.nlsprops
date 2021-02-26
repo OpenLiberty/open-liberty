@@ -1,0 +1,71 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/internal/localization/i18n/JAXBLocalizationResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+add_namespace_resolvers=Namespace-Resolver werden hinzugef\u00fcgt
+
+create_descriptors=Deskriptoren werden erstellt
+
+create_mappings=Zuordnungen zum Deskriptor {0} hinzuf\u00fcgen
+
+error=Fehler: 
+
+generate_files=XML-Implementierungs- und Sitzungskonfiguration wird geschrieben
+
+generate_source=Implementierungsklassen werden generiert
+
+impl_package_missing=Der Name des Implementierungsklassenpakets fehlt.
+
+io_exception_error=Fehler: Nicht erwartete E/A-Ausnahme
+
+malformed_url_error=Fehler: Nicht erwartete Ausnahme vom Typ MalformedURLException
+
+missing_customization=Die Eingabeanpassungsdatei fehlt.
+
+missing_output_dir=Der Name des TopLink-Ausgabeverzeichnisses fehlt.
+
+missing_project_dir=Der Verzeichnisname des TopLink-Workbenchprojekts fehlt.
+
+missing_schema_file=Die Eingabeschemadatei fehlt.
+
+missing_src_dir=Der Name des Quellenausgabeverzeichnisses fehlt.
+
+missing_target_package=Der Zielpaketname fehlt.
+
+read_customization=Anpassungsdatei wird gelesen
+
+setup_inheritance=\u00dcbernahme wird konfiguriert
+
+start_mw_project=Mapping Workbench-Projekt wird erstellt
+
+start_orajaxb=orajaxb wird aufgerufen
+
+start_toplink=TopLink-Generierung wird aufgerufen
+
+version=Version: 
+

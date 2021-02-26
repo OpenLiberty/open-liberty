@@ -50,7 +50,6 @@ import com.ibm.ws.security.javaeesec.fat_helper.WCApplicationHelper;
 import com.ibm.ws.security.javaeesec.identitystore.LdapIdentityStore;
 
 import componenttest.annotation.ExpectedFFDC;
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -62,7 +61,6 @@ import web.war.database.deferred.DatabaseSettingsBean;
 /**
  * Test for {@link LdapIdentityStore} configured with deferred EL expressions.
  */
-@MinimumJavaLevel(javaLevel = 7)
 @RunWith(FATRunner.class)
 @Mode(TestMode.LITE)
 public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {

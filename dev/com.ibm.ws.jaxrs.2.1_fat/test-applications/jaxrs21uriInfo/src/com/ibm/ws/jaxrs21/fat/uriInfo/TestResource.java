@@ -36,7 +36,16 @@ public class TestResource {
     public String get() {
         String content = "uriInfo.baseUri: " + uriInfo.getBaseUriBuilder().build() + ", ";
 
-        content += testClient.invokeRequest();
+        if (testClient == null) {
+            // workaround for missing CDI integration
+            testClient = new TestClient();
+            testClient.initClient();
+            content += testClient.invokeRequest();
+            testClient.closeClient();
+        } else {
+            // normal path
+            content += testClient.invokeRequest();
+        }
 
         return content + ", uriInfo.baseUri 2nd time: " + uriInfo.getBaseUriBuilder().build();
     }

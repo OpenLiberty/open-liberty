@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,50 +17,53 @@ import com.ibm.ws.javaee.dd.common.ModuleDeploymentDescriptor;
 /**
  * Represents &lt;ejb-jar>.
  */
-public interface EJBJar
-                extends ModuleDeploymentDescriptor
-{
+public interface EJBJar extends ModuleDeploymentDescriptor {
     /**
      * Represents "1.1" for {@link #getVersionID}.
-     * 
+     *
      * @see org.eclipse.jst.j2ee.internal.J2EEVersionConstants#EJB_1_1_ID
      */
     int VERSION_1_1 = 11;
 
     /**
      * Represents "2.0" for {@link #getVersionID}.
-     * 
+     *
      * @see org.eclipse.jst.j2ee.internal.J2EEVersionConstants#EJB_2_0_ID
      */
     int VERSION_2_0 = 20;
 
     /**
      * Represents "2.1" for {@link #getVersionID}.
-     * 
+     *
      * @see org.eclipse.jst.j2ee.internal.J2EEVersionConstants#EJB_2_1_ID
      */
     int VERSION_2_1 = 21;
 
     /**
      * Represents "3.0" for {@link #getVersionID}.
-     * 
+     *
      * @see org.eclipse.jst.j2ee.internal.J2EEVersionConstants#EJB_3_0_ID
      */
     int VERSION_3_0 = 30;
 
     /**
      * Represents "3.1" for {@link #getVersionID}.
-     * 
+     *
      * @see org.eclipse.jst.j2ee.internal.J2EEVersionConstants#EJB_3_1_ID
      */
     int VERSION_3_1 = 31;
 
     /**
      * Represents "3.2" for {@link #getVersionID}.
-     * 
+     *
      * @see org.eclipse.jst.j2ee.internal.J2EEVersionConstants#EJB_3_2_ID
      */
     int VERSION_3_2 = 32;
+
+    /**
+     * Represents "4.0" for {@link #getVersionID}.
+     */
+    int VERSION_4_0 = 40;
 
     /**
      * @return the version
@@ -71,6 +74,7 @@ public interface EJBJar
      *         <li>{@link #VERSION_3_0} - 3.0
      *         <li>{@link #VERSION_3_1} - 3.1
      *         <li>{@link #VERSION_3_2} - 3.2
+     *         <li>{@link #VERSION_4_0} - 4.0
      *         </ul>
      */
     int getVersionID();

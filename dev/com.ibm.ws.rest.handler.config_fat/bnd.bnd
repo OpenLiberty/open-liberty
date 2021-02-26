@@ -36,4 +36,16 @@ fat.project: true
     com.ibm.ws.security.jaas.common;version=latest,\
     com.ibm.ws.microprofile.openapi;version=latest,\
     com.ibm.websphere.org.eclipse.microprofile.openapi.1.0;version=latest
-    
+
+tested.features: componenttest-2.0,\
+                 messagingserver-3.0,\
+                 messaging-3.0,\
+                 enterprisebeanslite-4.0,\
+                 messagingclient-3.0,\
+                 mpOpenApi-2.0,\
+                 mpOpenApi-1.1,\
+                 servlet-4.0,\
+                 mpConfig-2.0,\
+                 jsonp-1.1,\
+                 jaxrsclient-2.1,\
+                 jaxrs-2.1

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018,2019 IBM Corporation and others.
+ * Copyright (c) 2018,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import org.eclipse.microprofile.context.ManagedExecutor;
 import org.eclipse.microprofile.context.ThreadContext;
 
 import com.ibm.websphere.ras.Tr;
@@ -53,6 +54,11 @@ public class ThreadContextImpl implements ThreadContext, WSContextService {
     private final int hash;
 
     /**
+     * MicroProfile ManagedExecutor that uses this ThreadContext. Otherwise null.
+     */
+    ManagedExecutor managedExecutor;
+
+    /**
      * Unique name for this instance.
      */
     private final String name;
@@ -60,8 +66,8 @@ public class ThreadContextImpl implements ThreadContext, WSContextService {
     /**
      * Construct a new instance to be used directly as a MicroProfile ThreadContext service or by a ManagedExecutor.
      *
-     * @param name unique name for this instance.
-     * @param int hash hash code for this instance.
+     * @param name   unique name for this instance.
+     * @param int    hash hash code for this instance.
      * @param config represents thread context propagation configuration.
      */
     public ThreadContextImpl(String name, int hash, ThreadContextConfig config) {
@@ -166,7 +172,10 @@ public class ThreadContextImpl implements ThreadContext, WSContextService {
     public final <T> CompletableFuture<T> withContextCapture(CompletableFuture<T> stage) {
         CompletableFuture<T> newCompletableFuture;
 
-        UnusableExecutor executor = new UnusableExecutor(this);
+        Executor executor = MPContextPropagationVersion.atLeast(MPContextPropagationVersion.V1_1) //
+                        ? (managedExecutor == null ? new ContextualDefaultExecutor(this) : managedExecutor) //
+                        : new UnusableExecutor(this);
+
         if (ManagedCompletableFuture.JAVA8)
             newCompletableFuture = new ManagedCompletableFuture<T>(new CompletableFuture<T>(), executor, null);
         else
@@ -188,7 +197,10 @@ public class ThreadContextImpl implements ThreadContext, WSContextService {
     public final <T> CompletionStage<T> withContextCapture(CompletionStage<T> stage) {
         ManagedCompletionStage<T> newStage;
 
-        UnusableExecutor executor = new UnusableExecutor(this);
+        Executor executor = MPContextPropagationVersion.atLeast(MPContextPropagationVersion.V1_1) //
+                        ? (managedExecutor == null ? new ContextualDefaultExecutor(this) : managedExecutor) //
+                        : new UnusableExecutor(this);
+
         if (ManagedCompletableFuture.JAVA8)
             newStage = new ManagedCompletionStage<T>(new CompletableFuture<T>(), executor, null);
         else

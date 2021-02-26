@@ -51,7 +51,7 @@ SPNEGO_NOT_SUPPORTED_ERROR_PAGE.useraction=Configurare il browser client per ese
 SPNEGO_NTLM_TOKEN_RECEIVED_ERROR_PAGE=CWWKS4307E: <html><head><title>\u00c8 stato ricevuto un Token NTLM.\
 </title></head> <body>La configurazione del browser client \u00e8 corretta, ma non si \u00e8 collegati a un dominio Windows supportato.\
 <p> Eseguire il login al dominio Windows supportato.\
-</html>.
+</body></html>.
 SPNEGO_NTLM_TOKEN_RECEIVED_ERROR_PAGE.explanation=La configurazione del browser client \u00e8 corretta, ma non si \u00e8 collegati a un dominio Windows supportato. \
 \u00c8 anche possibile che la configurazione SPNEGO non sia corretta, quindi il browser client non invia il token SPNEGO o Kerberos.
 SPNEGO_NTLM_TOKEN_RECEIVED_ERROR_PAGE.useraction=Verificare di aver effettuato il login al dominio Windows supportato e verificare anche la configurazione SPNEGO sul server e sul dominio Windows.
@@ -115,3 +115,17 @@ SPNEGO_CAN_NOT_GET_DELEGATE_SERVICE_SPN.useraction=Verificare il formato del nom
 SPNEGO_DELEGATE_SPN_LOGIN_TO_KDC_FAILURE=CWWKS4322E: L''SPN di delega {0} non pu\u00f2 autenticarsi con il KDC (Key Distribution Center) utilizzando il file di configurazione Kerberos {1} e il file keytab {2}. Ricevuta eccezione di login: {3}
 SPNEGO_DELEGATE_SPN_LOGIN_TO_KDC_FAILURE.explanation=Impossibile autenticarsi con il KDC (Key Distribution Center).
 SPNEGO_DELEGATE_SPN_LOGIN_TO_KDC_FAILURE.useraction=Verificare il formato del nome del principal del servizio e assicurarsi che esista sul dominio Windows e che il file keytab Kerberos contenga il nome del principal del servizio.
+
+SPNEGO_CONFLICTING_SETTINGS_CWWKS4323E=CWWKS4323E: L''attributo [{0}] dall''elemento {1} \u00e8 in conflitto con l''attributo [{2}] dall''elemento {3}. Specificare un valore solo sull''elemento {1} o {3}, non su entrambi. Si suggerisce di specificare il valore solo sull''elemento {1}.
+SPNEGO_CONFLICTING_SETTINGS_CWWKS4323E.explanation=Per riconoscere ogni attributo, \u00e8 necessario impostare una propriet\u00e0 di sistema, che \u00e8 un'impostazione dell'intero sistema. I valori diversi per un'impostazione dell'intero sistema non possono essere riconosciuti.
+SPNEGO_CONFLICTING_SETTINGS_CWWKS4323E.useraction=Specificare l'attributo in uno solo degli elementi di configurazione.
+
+SPNEGO_AUTHENTICATION_ERROR_PAGE=CWWKS4324E: <html><head><title>L'autenticazione SPNEGO non \u00e8 riuscita. \
+Contattare l'amministratore di sistema per risolvere il problema.\
+</title></head> <body>Il client ha inviato il token SPNEGO. \
+Il server non pu\u00f2 convalidare il token SPNEGO del client. \
+Contattare l'amministratore di sistema per risolvere il problema.\
+</body></html>.
+SPNEGO_AUTHENTICATION_ERROR_PAGE.explanation=Autenticazione SPNEGO non riuscita. Per ulteriori informazioni, controllare i messaggi di log del server.
+SPNEGO_AUTHENTICATION_ERROR_PAGE.useraction=Verificare la configurazione del server e la configurazione Kerberos e assicurarsi che l'orologio del server sia sincronizzato con il KDC (Key Distribution Center).
+

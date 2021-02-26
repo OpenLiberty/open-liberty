@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018,2019 IBM Corporation and others.
+ * Copyright (c) 2018,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,6 +23,7 @@ import org.eclipse.microprofile.context.spi.ThreadContextProvider;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.microprofile.context.EmptyHandleListContextProvider;
 import com.ibm.ws.microprofile.context.ThreadIdentityContextProvider;
 import com.ibm.ws.microprofile.context.WLMContextProvider;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
@@ -63,7 +64,7 @@ public class ContextManagerImpl implements ContextManager {
      * Merge built-in thread context providers from the container with those found
      * on the class loader, detecting any duplicate provider types.
      *
-     * @param cmProvider the registered context manager provider
+     * @param cmProvider  the registered context manager provider
      * @param classloader the class loader from which to discover thread context providers
      */
     ContextManagerImpl(ContextManagerProviderImpl cmProvider, ClassLoader classloader) {
@@ -91,6 +92,8 @@ public class ContextManagerImpl implements ContextManager {
         available.add(ThreadContext.TRANSACTION);
         contextProviders.add(cmProvider.wlmContextProvider);
         available.add(WLMContextProvider.CLASSIFICATION);
+        contextProviders.add(cmProvider.emptyHandleListContextProvider);
+        available.add(EmptyHandleListContextProvider.EMPTY_HANDLE_LIST);
 
         // Thread context providers for the supplied class loader
         for (ThreadContextProvider provider : ServiceLoader.load(ThreadContextProvider.class, classloader)) {
@@ -111,7 +114,7 @@ public class ContextManagerImpl implements ContextManager {
      * Finds and returns the first thread context provider that provides the same
      * thread context type as the specified provider.
      *
-     * @param provider provider that is found to provide a conflicting thread context type with another provider.
+     * @param provider    provider that is found to provide a conflicting thread context type with another provider.
      * @param classloader class loader from which to load thread context providers.
      * @return thread context provider with which the specified provider conflicts.
      */
@@ -146,7 +149,7 @@ public class ContextManagerImpl implements ContextManager {
      * Obtain a default value from MicroProfile Config if available.
      *
      * @param mpConfigPropName name of the MicroProfile Config property.
-     * @param defaultValue value to use if not found in MicroProfile Config.
+     * @param defaultValue     value to use if not found in MicroProfile Config.
      * @return default value.
      */
     <T> T getDefault(String mpConfigPropName, T defaultValue) {

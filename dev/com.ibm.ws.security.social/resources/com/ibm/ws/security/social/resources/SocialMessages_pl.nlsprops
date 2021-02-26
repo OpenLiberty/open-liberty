@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2016, 2018 IBM Corporation and others.
+# Copyright (c) 2016, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -128,6 +128,11 @@ INTROSPECT_ERROR_GETTING_USER_INFO.useraction=Je\u015bli komunikat zawiera inny 
 INTROSPECT_USER_API_INACTIVE=CWWKS5388E: \u017b\u0105danie introspekcji znacznika nie powiod\u0142o si\u0119, poniewa\u017c znacznik, kt\u00f3ry jest zawarty w \u017c\u0105daniu, jest niepoprawny. Pe\u0142na odpowied\u017a to {0}.
 INTROSPECT_USER_API_INACTIVE.explanation=Serwer autoryzacji nie wystawi\u0142 znacznika, w\u0142a\u015bciciel zasobu uniewa\u017cni\u0142 znacznik, znacznik utraci\u0142 wa\u017cno\u015b\u0107 lub wyst\u0105pi\u0142 inny b\u0142\u0105d.
 INTROSPECT_USER_API_INACTIVE.useraction=Sprawd\u017a odpowied\u017a zawart\u0105 w komunikacie. Sprawd\u017a, czy u\u017cywany jest poprawny punkt ko\u0144cowy introspekcji znacznika. Sprawd\u017a, czy znacznik jest poprawny oraz czy mo\u017ce zosta\u0107 poddany introspekcji.
+
+USER_API_RESPONSE_NOT_AUTHENTICATED=CWWKS5389E: Odpowied\u017a interfejsu API u\u017cytkownika wskazuje na to, \u017ce \u017c\u0105danie skierowane do tego interfejsu nie zosta\u0142o uwierzytelnione. Sprawd\u017a, czy znacznik dost\u0119pu zawarty w \u017c\u0105daniu do interfejsu API u\u017cytkownika jest poprawny i jest powi\u0105zany ze znanym u\u017cytkownikiem.
+USER_API_RESPONSE_NOT_AUTHENTICATED.explanation=Mo\u017cliwe, \u017ce znacznik dost\u0119pu w \u017c\u0105daniu kierowanym do interfejsu API u\u017cytkownika zosta\u0142 pomini\u0119ty, utraci\u0142 wa\u017cno\u015b\u0107, ma nieprawid\u0142ow\u0105 posta\u0107 lub jest pod innym wzgl\u0119dem nieprawid\u0142owy. Mo\u017cliwe, \u017ce znacznik nie jest powi\u0105zany z u\u017cytkownikiem znanym w interfejsie API u\u017cytkownika.
+USER_API_RESPONSE_NOT_AUTHENTICATED.useraction=Sprawd\u017a, czy znacznik dost\u0119pu jest uwzgl\u0119dniony w \u017c\u0105daniu do interfejsu API u\u017cytkownika. Upewnij si\u0119, \u017ce znacznik nie utraci\u0142 wa\u017cno\u015bci i \u017ce ma prawid\u0142ow\u0105 posta\u0107. Sprawd\u017a, czy u\u017cytkownik powi\u0105zany ze znacznikiem dost\u0119pu jest znany w interfejsie API u\u017cytkownika.
+
 SOCIAL_LOGIN_CONFIG_PROCESSED=CWWKS5400I: Konfiguracja logowania w serwisach spo\u0142eczno\u015bciowych [{0}] zosta\u0142a pomy\u015blnie przetworzona.
 SOCIAL_LOGIN_CONFIG_PROCESSED.explanation=Wskazana konfiguracja logowania w serwisach spo\u0142eczno\u015bciowych zosta\u0142a pomy\u015blnie przetworzona.
 SOCIAL_LOGIN_CONFIG_PROCESSED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.

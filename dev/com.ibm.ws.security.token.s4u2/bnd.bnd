@@ -23,7 +23,7 @@ Import-Package: \
     com.sun.security.auth.module;resolution:=optional, \
     com.sun.security.auth.callback;resolution:=optional, \
     com.sun.security.jgss;resolution:=optional, \
-    com.ibm.ws.security,  *
+    com.ibm.ws.security, *
   
 Export-Package: \
  com.ibm.ws.security.s4u2proxy, \
@@ -44,6 +44,7 @@ Private-Package: \
 	com.ibm.ws.security;version=latest,\
 	com.ibm.ws.security.authentication;version=latest,\
 	com.ibm.ws.security.authorization;version=latest,\
+	com.ibm.ws.security.kerberos.auth;version=latest,\
 	com.ibm.ws.security.registry;version=latest,\
 	com.ibm.ws.security.token;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\

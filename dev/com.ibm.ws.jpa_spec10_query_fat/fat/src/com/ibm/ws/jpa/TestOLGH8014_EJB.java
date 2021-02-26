@@ -47,6 +47,7 @@ import componenttest.topology.utils.PrivHelper;
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class TestOLGH8014_EJB extends JPAFATServletClient {
+    private final static String CONTEXT_ROOT = "olgh8014Ejb";
     private final static String RESOURCE_ROOT = "test-applications/olgh8014/";
     private final static String appFolder = "ejb";
     private final static String appName = "olgh8014Ejb";
@@ -66,9 +67,9 @@ public class TestOLGH8014_EJB extends JPAFATServletClient {
 
     @Server("JPA10QueryServer")
     @TestServlets({
-                    @TestServlet(servlet = TestOLGH8014_EJB_SL_Servlet.class, path = "olgh8014ejb" + "/" + "TestOLGH8014_EJB_SL_Servlet"),
-                    @TestServlet(servlet = TestOLGH8014_EJB_SF_Servlet.class, path = "olgh8014ejb" + "/" + "TestOLGH8014_EJB_SF_Servlet"),
-                    @TestServlet(servlet = TestOLGH8014_EJB_SFEx_Servlet.class, path = "olgh8014ejb" + "/" + "TestOLGH8014_EJB_SFEx_Servlet")
+                    @TestServlet(servlet = TestOLGH8014_EJB_SL_Servlet.class, path = CONTEXT_ROOT + "/" + "TestOLGH8014_EJB_SL_Servlet"),
+                    @TestServlet(servlet = TestOLGH8014_EJB_SF_Servlet.class, path = CONTEXT_ROOT + "/" + "TestOLGH8014_EJB_SF_Servlet"),
+                    @TestServlet(servlet = TestOLGH8014_EJB_SFEx_Servlet.class, path = CONTEXT_ROOT + "/" + "TestOLGH8014_EJB_SFEx_Servlet")
     })
     public static LibertyServer server;
 

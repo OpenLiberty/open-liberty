@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2015 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -258,6 +258,32 @@ public class SerializationServiceImpl implements SerializationService {
             provider = packageProviders.getReference(pkg);
             if (provider != null) {
                 return loadClass(provider, name);
+            }
+        }
+
+        // Check for classes to convert between Java EE and Jakarta EE.
+        String retryName;
+        if (name.startsWith("javax."))
+            retryName = "jakarta." + name.substring(6);
+        else if (name.startsWith("jakarta."))
+            retryName = "javax." + name.substring(8);
+        else
+            retryName = null;
+        if (retryName != null) {
+            // First, try to find the class by name.
+            provider = classProviders.getReference(retryName);
+            if (provider != null) {
+                return loadClass(provider, retryName);
+            }
+
+            // Next, try to find the class by package.
+            index = retryName.lastIndexOf('.');
+            if (index != -1) {
+                String pkg = retryName.substring(0, index);
+                provider = packageProviders.getReference(pkg);
+                if (provider != null) {
+                    return loadClass(provider, retryName);
+                }
             }
         }
 

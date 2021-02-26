@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2015 IBM Corporation and others.
+ * Copyright (c) 2013, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,7 +13,7 @@
  */
 @org.osgi.annotation.versioning.Version("1.0.0")
 @TraceOptions(traceGroup = "rarInstall", messageBundle = "com.ibm.ws.jca.utils.internal.resources.JcaUtilsMessages")
-@XmlSchema(namespace = "http://xmlns.jcp.org/xml/ns/javaee", elementFormDefault = XmlNsForm.QUALIFIED)
+@XmlSchema(namespace = "https://jakarta.ee/xml/ns/jakartaee", elementFormDefault = XmlNsForm.QUALIFIED)
 @XmlJavaTypeAdapter(value = MetagenXmlAdapter.class, type = String.class)
 package com.ibm.ws.jca.utils.xml.ra;
 
@@ -23,4 +23,3 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import com.ibm.websphere.ras.annotation.TraceOptions;
 import com.ibm.ws.jca.utils.metagen.internal.MetagenXmlAdapter;
-

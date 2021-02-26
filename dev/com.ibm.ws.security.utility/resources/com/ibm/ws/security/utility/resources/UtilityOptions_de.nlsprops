@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2019 IBM Corporation and others.
+# Copyright (c) 2010, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -164,9 +164,10 @@ sslCert.option-desc.ext=\tDie Zertifikatserweiterungsinformationen, die dem Zert
 \tDie Standarderweiterung ist ein alternativer Namenseintrag f\u00fcr das Subject, bei dem \n\
 \tder Hostname verwendet wird. \
 Dieses Flag verwendet dieselbe Syntax wie das Flag -ext im \n\
+\t \
 Java-Befehl ''keytool''. Dieses Flag kann im Befehl mehrfach verwendet werden.\n\
 \ 
-line.
+
 
 # -------- CREATE LTPA KEYS OPTIONS --------------------------------------#
 # List of descriptive text for options. Use "\n\" for line continuations.
@@ -212,3 +213,22 @@ createLTPAKeys.option-desc.password.key=\tGibt den bei der Codierung des Kennwor
 \twlp.password.encryption.key, deren Wert der Schl\u00fcssel ist,\n\
 \tan den Server \u00fcbergeben werden. Wenn Sie diese Option nicht angeben,\n\
 \twird ein Standardschl\u00fcssel verwendet.
+
+# -------- tlsProfiler OPTIONS ------------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+tlsProfiler.desc=\tTestet die Kompatibilit\u00e4t des Zielhosts und des Ports mit verf\u00fcgbaren TLS-Protokollen und Cipher-Suites.
+tlsProfiler.usage.options=\t{0} tlsProfiler [Optionen]
+tlsProfiler.required-key.port=\ \ \ \ --port
+tlsProfiler.required-desc.port=\tGibt den Port an.
+tlsProfiler.required-key.host=\ \ \ \ --host
+tlsProfiler.required-desc.host=\tGibt den Host an.
+tlsProfiler.option-key.file=\ \ \ \ --file
+tlsProfiler.option-desc.file=\tOptional. Das Ergebnis wird in die angegebene Datei und\n\
+\tnicht in die Konsolenanzeige geschrieben.
+tlsProfiler.option-key.verbose=\ \ \ \ --verbose
+tlsProfiler.option-desc.verbose=\tEnth\u00e4lt weitere Informationen zu nicht sicheren Protokollen.

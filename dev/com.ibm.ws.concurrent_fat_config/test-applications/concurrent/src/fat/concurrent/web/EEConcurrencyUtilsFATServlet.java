@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2020 IBM Corporation and others.
+ * Copyright (c) 2017,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,18 +33,20 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
-import javax.annotation.Resource;
-import javax.enterprise.concurrent.ManagedTask;
+import jakarta.annotation.Resource;
+import jakarta.enterprise.concurrent.ManagedTask;
+import jakarta.enterprise.concurrent.ManagedThreadFactory;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.transaction.SystemException;
+import jakarta.transaction.Transaction;
+import jakarta.transaction.TransactionManager;
+import jakarta.transaction.UserTransaction;
+
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.transaction.SystemException;
-import javax.transaction.Transaction;
-import javax.transaction.TransactionManager;
-import javax.transaction.UserTransaction;
 
 import componenttest.app.FATServlet;
 import fat.concurrent.ejb.EEConcurrencyUtilsStatelessBean;
@@ -201,6 +203,16 @@ public class EEConcurrencyUtilsFATServlet extends FATServlet {
         task.getExecutionProperties().put(ManagedTask.LONGRUNNING_HINT, Boolean.TRUE.toString());
         Future<Integer> future = executor.submit(task);
         assertEquals(Integer.valueOf(1), future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+    }
+
+    /**
+     * Verify that a ManagedThreadFactory can create and run a new thread.
+     */
+    public void testManagedThreadFactory() throws Exception {
+        ManagedThreadFactory tf = InitialContext.doLookup("concurrent/threadFactory1");
+        CountDownLatch isRunning = new CountDownLatch(1);
+        tf.newThread(() -> isRunning.countDown()).start();
+        assertTrue(isRunning.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
     }
 
     /**

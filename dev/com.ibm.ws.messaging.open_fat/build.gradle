@@ -10,3 +10,6 @@
  *******************************************************************************/
 apply from: '../wlp-gradle/subprojects/fat.gradle'
 
+addRequiredLibraries {
+  dependsOn addJakartaTransformer
+}

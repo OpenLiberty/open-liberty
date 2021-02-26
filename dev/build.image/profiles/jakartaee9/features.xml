@@ -1,3 +1,6 @@
-<feature>el-4.0</feature>
-<feature>jsp-3.0</feature>
-<feature>servlet-5.0</feature>
+<feature>jakartaee-9.0</feature>
+<feature>jakartaeeClient-9.0</feature>
+<feature>appSecurityClient-1.0</feature>
+<feature>jdbc-4.3</feature>
+<feature>localConnector-1.0</feature>
+<feature>transportSecurity-1.0</feature>

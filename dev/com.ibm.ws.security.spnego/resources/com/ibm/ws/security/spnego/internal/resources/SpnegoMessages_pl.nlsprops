@@ -77,9 +77,9 @@ SPNEGO_NOT_SUPPORTED_ERROR_PAGE.useraction=Skonfiguruj w przegl\u0105darce klien
 
 SPNEGO_NTLM_TOKEN_RECEIVED_ERROR_PAGE=CWWKS4307E: <html><head><title>Odebrano znacznik NTLM.\
 </title></head> <body>Konfiguracja przegl\u0105darki klienta jest poprawna, lecz \
-u\u017cytkownik nie zalogowa\u0142 si\u0119 do obs\u0142ugiwanej domeny Windows. \
-<p>Zaloguj si\u0119 do obs\u0142ugiwanej domeny Windows. \
-</html>.
+u\u017cytkownik nie zalogowa\u0142 si\u0119 do obs\u0142ugiwanej domeny Windows.\
+<p>Zaloguj si\u0119 do obs\u0142ugiwanej domeny Windows.\
+</body></html>.
 SPNEGO_NTLM_TOKEN_RECEIVED_ERROR_PAGE.explanation=Konfiguracja \
 przegl\u0105darki klienta jest poprawna, lecz u\u017cytkownik nie zalogowa\u0142 si\u0119 do \
 obs\u0142ugiwanej domeny Windows. \
@@ -198,3 +198,18 @@ SPNEGO_CAN_NOT_GET_DELEGATE_SERVICE_SPN.useraction=Zweryfikuj format nazwy u\u01
 SPNEGO_DELEGATE_SPN_LOGIN_TO_KDC_FAILURE=CWWKS4322E: Nazwa u\u017cytkownika us\u0142ugi {0} na potrzeby delegowania nie mo\u017ce zosta\u0107 uwierzytelniona przez centrum dystrybucji kluczy (Key Distribution Center \u2013 KDC) przy u\u017cyciu pliku konfiguracyjnego {1} i pliku tabeli kluczy {2} protoko\u0142u Kerberos. Odebrano nast\u0119puj\u0105cy wyj\u0105tek logowania: {3}
 SPNEGO_DELEGATE_SPN_LOGIN_TO_KDC_FAILURE.explanation=Nie mo\u017cna wykona\u0107 uwierzytelniania w centrum dystrybucji kluczy (Key Distribution Center \u2013 KDC).
 SPNEGO_DELEGATE_SPN_LOGIN_TO_KDC_FAILURE.useraction=Zweryfikuj format nazwy u\u017cytkownika us\u0142ugi i upewnij si\u0119, \u017ce ta nazwa istnieje w domenie Windows oraz \u017ce plik tabeli kluczy protoko\u0142u Kerberos zawiera nazw\u0119 u\u017cytkownika us\u0142ugi.
+
+SPNEGO_CONFLICTING_SETTINGS_CWWKS4323E=CWWKS4323E: Atrybut [{0}] z elementu {1} koliduje z atrybutem [{2}] z elementu {3}. Okre\u015bl warto\u015b\u0107 albo w elemencie {1}, albo w elemencie {3}, ale nie w obu elementach. Sugeruje si\u0119 okre\u015blenie warto\u015bci tylko w elemencie {1}.
+SPNEGO_CONFLICTING_SETTINGS_CWWKS4323E.explanation=Aby ka\u017cdy z atrybut\u00f3w zosta\u0142 rozpoznany, nale\u017cy ustawi\u0107 w\u0142a\u015bciwo\u015b\u0107 systemow\u0105, kt\u00f3ra jest ustawieniem og\u00f3lnosystemowym. Ustawienie og\u00f3lnosystemowe mo\u017ce mie\u0107 tylko jedn\u0105 warto\u015b\u0107.
+SPNEGO_CONFLICTING_SETTINGS_CWWKS4323E.useraction=Okre\u015bl atrybut tylko w jednym elemencie konfiguracji.
+SPNEGO_AUTHENTICATION_ERROR_PAGE=CWWKS4324E: <html><head><title>Uwierzytelnianie SPNEGO nie powiod\u0142o si\u0119. \
+Skontaktuj si\u0119 z administratorem systemu, aby \
+rozwi\u0105za\u0107 ten problem.\
+</title></head> <body>Klient wys\u0142a\u0142 znacznik SPNEGO. \
+Serwer nie mo\u017ce sprawdzi\u0107 wa\u017cno\u015bci znacznika SPNEGO klienta. \
+Skontaktuj si\u0119 z administratorem systemu, aby \
+rozwi\u0105za\u0107 ten problem.\
+</body></html>.
+SPNEGO_AUTHENTICATION_ERROR_PAGE.explanation=Uwierzytelnianie SPNEGO nie powiod\u0142o si\u0119. Wi\u0119cej informacji mo\u017cna znale\u017a\u0107 w komunikatach w dzienniku serwera.
+SPNEGO_AUTHENTICATION_ERROR_PAGE.useraction=Zweryfikuj konfiguracj\u0119 serwera oraz konfiguracj\u0119 protoko\u0142u Kerberos i upewnij si\u0119, \u017ce zegar serwera jest zsynchronizowany z centrum dystrybucji kluczy (Key Distribution Center \u2014 KDC).
+

@@ -1,0 +1,49 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/ConcurrencyExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+2001=\ub300\uae30\uac00 \uc778\ud130\ub7fd\ud2b8\ub418\uc5c8\uc2b5\ub2c8\ub2e4. {0}\uba54\uc2dc\uc9c0: [{1}]
+
+2002=ServerSession\uc5d0 \ub300\uae30 \uc2e4\ud328\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+
+2003=ClientSession\uc5d0 \ub300\uae30 \uc2e4\ud328\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+
+2004=ConcurrencyManager\uc5d0\uc11c wait() \uc774\uc804\uc5d0 \uc2e0\ud638 \ubc1c\uc0dd\uc744 \uc2dc\ub3c4\ud588\uc2b5\ub2c8\ub2e4. \uc774\uac83\uc740 \uc77c\ubc18\uc801\uc73c\ub85c \uc2dc\uc791 \uc804\uc5d0 \ud2b8\ub79c\uc7ad\uc158\uc744 {0}\ucee4\ubbf8\ud2b8 \ub610\ub294 \ub864\ubc31\ud558\ub294 \uc2dc\ub3c4\uac00 \uc218\ud589\ub418\uc5c8\uac70\ub098, \ud2b8\ub79c\uc7ad\uc158\uc744 \ub450 \ubc88 \ub864\ubc31\ud558\ub294 \uc2dc\ub3c4\uac00 \uc218\ud589\ub418\uc5c8\ub2e4\ub294 \uac83\uc744 \uc758\ubbf8\ud569\ub2c8\ub2e4.
+
+2005=DatabaseSession\uc5d0 \ub300\ud55c \uc5f0\uacb0 \ud578\ub4e4\ub7ec\ub97c \ucc28\ub840\ub85c \ubc30\uc5f4\ud558\ub294 \uc911\uc5d0 \ub300\uae30 \uc2e4\ud328\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+
+2006=\ub2e4\uc911 \uc2a4\ub808\ub4dc\uc5d0\uc11c \ub3d9\uc2dc\uc801\uc73c\ub85c \ub2e8\uc77c \uc5f0\uacb0({0})\uc744 \ud1b5\ud574 \uac12\uc744 \ucc28\ub840\ub85c \ubc30\uc5f4\ud558\ub3c4\ub85d \uc2dc\ub3c4\ud568
+
+2007=\uc624\ube0c\uc81d\ud2b8: {0}\uc744(\ub97c) \uc7a0\uadf8\uae30 \uc704\ud55c \ucd5c\ub300 \uc2dc\ub3c4 \ud69f\uc218\ub97c \ucd08\uacfc\ud588\uc2b5\ub2c8\ub2e4. \uc624\ube0c\uc81d\ud2b8\ub97c \ubcf5\uc81c\ud558\ub294 \ub370 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4.
+
+2008=\uc624\ube0c\uc81d\ud2b8: {0}\uc744(\ub97c) \uc7a0\uadf8\uae30 \uc704\ud55c \ucd5c\ub300 \uc2dc\ub3c4 \ud69f\uc218\ub97c \ucd08\uacfc\ud588\uc2b5\ub2c8\ub2e4. \ud2b8\ub79c\uc7ad\uc158\uc744 \ubcd1\ud569\ud558\ub294 \ub370 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4.
+
+2009=\uc624\ube0c\uc81d\ud2b8\ub97c \uc7a0\uadf8\uae30 \uc704\ud55c \ucd5c\ub300 \uc2dc\ub3c4 \ud69f\uc218\ub97c \ucd08\uacfc\ud588\uc2b5\ub2c8\ub2e4. \uc624\ube0c\uc81d\ud2b8\ub97c \ube4c\ub4dc\ud558\ub294 \ub370 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4. \uc2a4\ub808\ub4dc: {0}\uc740(\ub294) \uc624\ube0c\uc81d\ud2b8\uc5d0 \ub300\ud55c \uc7a0\uae08\uc744 \ud3ec\ud568\ud558\uc9c0\ub9cc \uc2a4\ub808\ub4dc: {1}\uc740(\ub294) \uc624\ube0c\uc81d\ud2b8\ub97c \ube4c\ub4dc\ud569\ub2c8\ub2e4.
+
+2010=\uc7a0\uae08\uc774 \uc774\ubbf8 \uc7a0\uae08 \uc5f0\uae30\ub85c \uc0c1\ud0dc \uc804\uc774\ub418\uc5c8\uc2b5\ub2c8\ub2e4. \ubcd1\ud569\ud558\ub294 \uc911\uc5d0 \uc7a0\uae08\uc744 \uc0c1\ud0dc \uc804\uc774\ud558\ub294 \ub450 \ubc88\uc9f8 \uc2dc\ub3c4\ub97c \uc2a4\ub808\ub4dc: {0}\uc774(\uac00) \uc694\uccad\ud588\uc2b5\ub2c8\ub2e4.
+

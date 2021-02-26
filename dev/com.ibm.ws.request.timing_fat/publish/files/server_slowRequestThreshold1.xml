@@ -8,7 +8,7 @@
     </featureManager>
 
   
-	 <httpEndpoint id="defaultHttpEndpoint" host="*" />
+	<httpEndpoint id="defaultHttpEndpoint" host="*" />
                    
     <jdbcDriver id="DerbyEmbedded" libraryRef="DerbyLib"/>
     <library filesetRef="DerbyFileset" id="DerbyLib"/>
@@ -26,6 +26,6 @@
 
  	<include location="../fatTestPorts.xml"/>
   
-	  <requestTiming slowRequestThreshold="1s" />
+	<requestTiming slowRequestThreshold="1s" />
   
 </server>

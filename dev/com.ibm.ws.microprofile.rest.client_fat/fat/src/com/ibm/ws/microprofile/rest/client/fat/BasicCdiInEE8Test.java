@@ -35,7 +35,8 @@ public class BasicCdiInEE8Test extends FATServletClient {
         .andWith(FATSuite.MP_REST_CLIENT_WITH_CONFIG("1.1", SERVER_NAME))
         .andWith(FATSuite.MP_REST_CLIENT_WITH_CONFIG("1.2", SERVER_NAME))
         .andWith(FATSuite.MP_REST_CLIENT_WITH_CONFIG("1.3", SERVER_NAME))
-        .andWith(FATSuite.MP_REST_CLIENT_WITH_CONFIG("1.4", SERVER_NAME));
+        .andWith(FATSuite.MP_REST_CLIENT_WITH_CONFIG("1.4", SERVER_NAME))
+        .andWith(FATSuite.MP_REST_CLIENT_WITH_CONFIG("2.0", SERVER_NAME));
 
 
     private static final String appName = "basicCdiClientApp";
@@ -67,6 +68,6 @@ public class BasicCdiInEE8Test extends FATServletClient {
     @AfterClass
     public static void afterClass() throws Exception {
         server.stopServer();
-        remoteAppServer.stopServer();
+        remoteAppServer.stopServer("CWWKE1102W");  //ignore server quiesce timeouts due to slow test machines);
     }
 }

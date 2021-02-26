@@ -322,6 +322,11 @@ POOL_MANAGER_NOT_FOUND_J2CA0695.explanation=An internal error occurred during fa
 POOL_MANAGER_NOT_FOUND_J2CA0695.useraction=CMSG0002
 
 # ---------------------------------
+SPNEGO_XA_RECOVERY_NOT_SUPPORTED_J2CA0695W=J2CA0695W: A connection request for XA resource {0} was made using SPNEGO authentication, but no recovery auth data alias was configured. The XA resource is not able to participate in automated XA recovery unless a recovery auth data alias is configured.
+SPNEGO_XA_RECOVERY_NOT_SUPPORTED_J2CA0695W.explanation=XA recovery is an automated background process, but SPNEGO authentication requires manual user input. As a result, SPNEGO authentication can't be used for automatic XA recovery.
+SPNEGO_XA_RECOVERY_NOT_SUPPORTED_J2CA0695W.useraction=Configure a recovery auth data alias on the XA resource.
+
+# ---------------------------------
 FREEPOOL_GETFREECONNECTION_ERROR_J2CA1002=J2CA1002E: Invalid MCWrapper {0} from the free pool for resource {1}.
 FREEPOOL_GETFREECONNECTION_ERROR_J2CA1002.explanation=The attempt to reserve an MCWrapper failed.
 FREEPOOL_GETFREECONNECTION_ERROR_J2CA1002.useraction=CMSG0002

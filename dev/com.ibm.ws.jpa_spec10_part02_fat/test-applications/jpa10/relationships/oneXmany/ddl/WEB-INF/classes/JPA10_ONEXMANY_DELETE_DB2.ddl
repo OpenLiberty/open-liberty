@@ -32,7 +32,6 @@ DELETE FROM ${schemaname}.OMEntB_CRF;
 DELETE FROM ${schemaname}.OMEntB_CRM;
 DELETE FROM ${schemaname}.OMEntB_DR;
 DELETE FROM ${schemaname}.OneXManyDRUniJoinTABLE;
-DELETE FROM ${schemaname}.OPENJPA_SEQUENCE_TABLE;
 DELETE FROM ${schemaname}.XMLEmbedIDOMEntityA;
 DELETE FROM ${schemaname}.XMLRELOM_EIDOMENTA;
 DELETE FROM ${schemaname}.XMLEmbedIDOMEntityA_XMLEmbedIDOMEntityB;

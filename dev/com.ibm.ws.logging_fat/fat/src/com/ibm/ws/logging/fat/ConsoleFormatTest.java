@@ -241,10 +241,6 @@ public class ConsoleFormatTest {
             String line = server.waitForStringInLogUsingMark("CWWKG0032W", consoleLogFile);
             assertNotNull("Warning CWWKG0032W did not appear in console.log", line);
 
-            // Verify if the WARNING message appeared in the logs.
-            line = server.waitForStringInLogUsingMark("CWWKG0075E", consoleLogFile);
-            assertNotNull("Error CWWKG0075E did not appear in console.log", line);
-
             // Check in console.log file to see if the message is formatted in the default dev console format
             List<String> lines = server.findStringsInLogs(DEV_FORMAT_REGEX_PATTERN, consoleLogFile);
             Log.info(c, "testSimpleFormatSetInBootstrapProperties", "The default console formatted lines : " + lines);

@@ -1,0 +1,55 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/DBWSExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+47000=\u300c[{0}]\u300d\u30d5\u30a1\u30a4\u30eb\u304c\u898b\u3064\u304b\u308a\u307e\u305b\u3093\u3002
+
+47001=O-R \u30d7\u30ed\u30b8\u30a7\u30af\u30c8\u306e\u64cd\u4f5c [{1}]  \u306e\u8a18\u8ff0\u5b50 [{0}] \u304c\u898b\u3064\u304b\u308a\u307e\u305b\u3093\u3067\u3057\u305f
+
+47002=\u8a18\u8ff0\u5b50 [{1}] \u306e\u7167\u4f1a [{0}] \u304c\u898b\u3064\u304b\u308a\u307e\u305b\u3093\u3067\u3057\u305f
+
+47003=\u30bb\u30c3\u30b7\u30e7\u30f3 [{1}] \u306e\u7167\u4f1a [{0}] \u304c\u898b\u3064\u304b\u308a\u307e\u305b\u3093\u3067\u3057\u305f
+
+47004=\u64cd\u4f5c [{1}] \u306e\u30d1\u30e9\u30e1\u30fc\u30bf\u30fc\u30fb\u30bf\u30a4\u30d7 [{0}] \u304c\u30b9\u30ad\u30fc\u30de\u306b\u5b58\u5728\u3057\u307e\u305b\u3093
+
+47005=\u64cd\u4f5c [{1}] \u306e\u30d1\u30e9\u30e1\u30fc\u30bf\u30fc\u30fb\u30bf\u30a4\u30d7 [{0}] \u306b O-X \u30de\u30c3\u30d4\u30f3\u30b0\u304c\u3042\u308a\u307e\u305b\u3093
+
+47006=\u64cd\u4f5c [{1}] \u306e\u7d50\u679c\u30bf\u30a4\u30d7 [{0}] \u304c\u30b9\u30ad\u30fc\u30de\u306b\u5b58\u5728\u3057\u307e\u305b\u3093
+
+47007=\u64cd\u4f5c [{1}] \u306e\u7d50\u679c\u30bf\u30a4\u30d7 [{0}] \u306b O-X \u30de\u30c3\u30d4\u30f3\u30b0\u304c\u3042\u308a\u307e\u305b\u3093
+
+47008=\u8907\u6570\u306e\u51fa\u529b\u5f15\u6570\u304c\u30b5\u30dd\u30fc\u30c8\u3055\u308c\u308b\u306e\u306f\u3001\u5358\u7d14 XML \u5f62\u5f0f\u7167\u4f1a\u306e\u307f\u3067\u3059
+
+47009=INOUT \u30ab\u30fc\u30bd\u30eb\u30fb\u30d1\u30e9\u30e1\u30fc\u30bf\u30fc\u306f\u30b5\u30dd\u30fc\u30c8\u3055\u308c\u307e\u305b\u3093
+
+47010=\u30b5\u30fc\u30d3\u30b9 [{0}] \u306e O-R \u30bb\u30c3\u30b7\u30e7\u30f3\u304c\u898b\u3064\u304b\u308a\u307e\u305b\u3093\u3067\u3057\u305f
+
+47011=\u30b5\u30fc\u30d3\u30b9 [{0}] \u306e O-X \u30bb\u30c3\u30b7\u30e7\u30f3\u304c\u898b\u3064\u304b\u308a\u307e\u305b\u3093\u3067\u3057\u305f
+
+47012=DBWS \u30d5\u30a1\u30a4\u30eb\u3092\u69cb\u6587\u89e3\u6790\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f
+

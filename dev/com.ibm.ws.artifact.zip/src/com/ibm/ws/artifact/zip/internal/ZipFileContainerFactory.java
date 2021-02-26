@@ -15,7 +15,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import org.osgi.framework.BundleContext;
@@ -350,9 +349,10 @@ public class ZipFileContainerFactory implements ArtifactContainerFactoryHelper, 
 
             ZipInputStream zipInputStream = new ZipInputStream(entryInputStream);
             try {
-                ZipEntry entry = zipInputStream.getNextEntry();
-                if ( entry == null ) {
-                    Tr.error(tc, "bad.zip.data", getPhysicalPath(artifactEntry));
+                if ( zipInputStream.getNextEntry() == null ) {
+                    // Possibly a script is prepended to the archive.  So there is an additional test
+                    ZipValidator zipValidator = new ZipValidator(getPhysicalPath(artifactEntry));
+                    validZip = zipValidator.isValid();
                 } else {
                     validZip = true;
                 }
@@ -446,10 +446,10 @@ public class ZipFileContainerFactory implements ArtifactContainerFactoryHelper, 
             ZipInputStream zipInputStream = new ZipInputStream(inputStream);
 
             try {
-                ZipEntry entry = zipInputStream.getNextEntry(); // throws IOException
-                if ( entry == null ) {
-                    Tr.error(tc, "bad.zip.data", file.getAbsolutePath());
-                    return false;
+                if ( zipInputStream.getNextEntry() == null ) { // throws IOException
+                    // Possibly a script is prepended to the archive.  So there is an additional test
+                    ZipValidator zipValidator = new ZipValidator(file.getAbsolutePath());
+                    return zipValidator.isValid();
                 }
                 return true;
             } catch ( IOException e ) {

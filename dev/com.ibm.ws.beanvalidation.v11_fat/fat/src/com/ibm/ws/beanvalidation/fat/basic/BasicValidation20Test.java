@@ -14,7 +14,6 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
@@ -24,7 +23,6 @@ import componenttest.topology.utils.PrivHelper;
  * All Bean Validation tests for the 2.0 feature level.
  */
 @RunWith(FATRunner.class)
-@MinimumJavaLevel(javaLevel = 8)
 public class BasicValidation20Test extends BasicValidation_Common {
 
     @Server("com.ibm.ws.beanvalidation_2.0.fat")

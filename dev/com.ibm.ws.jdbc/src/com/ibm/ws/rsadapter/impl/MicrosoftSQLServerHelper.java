@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2001, 2017 IBM Corporation and others.
+ * Copyright (c) 2001, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,6 +26,7 @@ import javax.resource.ResourceException;
 import com.ibm.ejs.cm.logger.TraceWriter;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.jdbc.heritage.AccessIntent;
 import com.ibm.ws.rsadapter.AdapterUtil;
 import com.ibm.ws.rsadapter.jdbc.WSJdbcTracer;
 
@@ -63,13 +64,6 @@ public class MicrosoftSQLServerHelper extends DatabaseHelper {
         mcf.supportsGetTypeMap = false;
         mcf.supportsIsReadOnly = false;
 
-        Collections.addAll(staleErrorCodes,
-                           230,
-                           6001,
-                           6002,
-                           6005,
-                           6006);
-
         // Default value for the statement property ResponseBuffering is
         // configurable as a data source property. This data source property is supplied to
         // the data store helper so that we can reset the statement properties to the default
@@ -81,6 +75,18 @@ public class MicrosoftSQLServerHelper extends DatabaseHelper {
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(this, tc, "Default responseBuffering = " + responseBuffering);
+    }
+    
+    @Override
+    void customizeStaleStates() {
+        super.customizeStaleStates();
+        
+        Collections.addAll(staleErrorCodes,
+                           230,
+                           6001,
+                           6002,
+                           6005,
+                           6006);
     }
 
     @Override
@@ -136,7 +142,7 @@ public class MicrosoftSQLServerHelper extends DatabaseHelper {
     }
 
     @Override
-    public int getDefaultIsolationLevel() {
+    public int getIsolationLevel(AccessIntent unused) {
         return Connection.TRANSACTION_REPEATABLE_READ;
     }
 

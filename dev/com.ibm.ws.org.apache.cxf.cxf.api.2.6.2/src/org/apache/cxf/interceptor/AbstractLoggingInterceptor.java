@@ -44,10 +44,13 @@ import org.apache.cxf.phase.AbstractPhaseInterceptor;
 import org.apache.cxf.service.model.EndpointInfo;
 import org.apache.cxf.service.model.InterfaceInfo;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 /**
  * A simple logging handler which outputs the bytes of the message to the
  * Logger.
  */
+@Trivial
 public abstract class AbstractLoggingInterceptor extends AbstractPhaseInterceptor<Message> {
     
     protected static final String BINARY_CONTENT_MESSAGE = "--- Binary Content ---";
@@ -75,7 +78,7 @@ public abstract class AbstractLoggingInterceptor extends AbstractPhaseIntercepto
     
     protected abstract Logger getLogger();
     
-    Logger getMessageLogger(Message message) {
+    protected Logger getMessageLogger(Message message) {
         EndpointInfo endpoint = message.getExchange().getEndpoint().getEndpointInfo();
         if (endpoint.getService() == null) {
             return getLogger();

@@ -16,6 +16,7 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 
 import javax.xml.stream.Location;
@@ -30,10 +31,14 @@ import com.ibm.websphere.config.ConfigParserException;
 import com.ibm.websphere.config.ConfigValidationException;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.config.xml.LibertyVariable;
 import com.ibm.ws.config.xml.internal.DefaultConfiguration.DefaultConfigFile;
 import com.ibm.ws.config.xml.internal.validator.XMLConfigValidator;
 import com.ibm.ws.config.xml.internal.validator.XMLConfigValidatorFactory;
+import com.ibm.ws.config.xml.internal.variables.ConfigVariable;
+import com.ibm.ws.config.xml.internal.variables.ConfigVariableRegistry;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.service.util.DesignatedXMLInputFactory;
 import com.ibm.wsspi.kernel.service.location.MalformedLocationException;
@@ -350,7 +355,7 @@ public class XMLConfigParser {
         }
     }
 
-    enum MergeBehavior {
+    public enum MergeBehavior {
         MERGE,
         REPLACE,
         IGNORE,
@@ -437,6 +442,7 @@ public class XMLConfigParser {
         return MergeBehavior.MERGE;
     }
 
+    @Sensitive
     private ConfigVariable parseVariable(DepthAwareXMLStreamReader parser, String docLocation) throws ConfigParserTolerableException {
         String variableName = null;
         String variableValue = null;
@@ -467,7 +473,7 @@ public class XMLConfigParser {
             throw new ConfigParserTolerableException();
         }
 
-        return new ConfigVariable(variableName, variableValue, variableDefault, behaviorStack.getLast(), docLocation);
+        return new ConfigVariable(variableName, variableValue, variableDefault, behaviorStack.getLast(), docLocation, false);
     }
 
     @FFDCIgnore(XMLStreamException.class)
@@ -641,29 +647,35 @@ public class XMLConfigParser {
     private String resolvePath(String path) {
 
         if (PathUtils.isSymbol(path)) {
-            variableRegistry.updateSystemVariables(tempVariables.getVariables());
 
-            // Look for normal variables of the form $(variableName)
-            Matcher matcher = XMLConfigConstants.VAR_PATTERN.matcher(path);
+            Map<String, LibertyVariable> currentVariables = variableRegistry.getConfigVariables();
+            try {
+                variableRegistry.updateSystemVariables(tempVariables.getVariables());
 
-            while (matcher.find()) {
-                String var = matcher.group(1);
+                // Look for normal variables of the form $(variableName)
+                Matcher matcher = XMLConfigConstants.VAR_PATTERN.matcher(path);
 
-                // Try to resolve the variable normally ( for ${var-Name} resolve var-Name }
-                String rep = variableRegistry.lookupVariable(var);
+                while (matcher.find()) {
+                    String var = matcher.group(1);
 
-                if (rep == null) {
-                    rep = variableRegistry.lookupVariableFromAdditionalSources(var);
+                    // Try to resolve the variable normally ( for ${var-Name} resolve var-Name }
+                    String rep = variableRegistry.lookupVariable(var);
+
+                    if (rep == null) {
+                        rep = variableRegistry.lookupVariableFromAdditionalSources(var);
+                    }
+
+                    if (rep == null) {
+                        rep = variableRegistry.lookupVariableDefaultValue(var);
+                    }
+
+                    if (rep != null) {
+                        path = path.replace(matcher.group(0), rep);
+                        matcher.reset(path);
+                    }
                 }
-
-                if (rep == null) {
-                    rep = variableRegistry.lookupVariableDefaultValue(var);
-                }
-
-                if (rep != null) {
-                    path = path.replace(matcher.group(0), rep);
-                    matcher.reset(path);
-                }
+            } finally {
+                variableRegistry.updateSystemVariables(currentVariables);
             }
         } else {
             return locationService.resolveString(path);

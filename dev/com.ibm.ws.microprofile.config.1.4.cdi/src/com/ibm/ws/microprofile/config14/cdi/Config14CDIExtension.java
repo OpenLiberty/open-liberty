@@ -12,6 +12,8 @@ package com.ibm.ws.microprofile.config14.cdi;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -65,7 +67,12 @@ public class Config14CDIExtension extends Config12CDIExtension implements Extens
                         String propertyName = configProperty.name();
                         String defaultValue = configProperty.defaultValue();
 
-                        ClassLoader classLoader = annotatedMethod.getDeclaringType().getJavaClass().getClassLoader();
+                        ClassLoader classLoader = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+                            @Override
+                            public ClassLoader run() {
+                                return annotatedMethod.getDeclaringType().getJavaClass().getClassLoader();
+                            }
+                        });
 
                         Throwable configException = validateConfigProperty(type, propertyName, defaultValue, classLoader);
                         if (configException != null) {

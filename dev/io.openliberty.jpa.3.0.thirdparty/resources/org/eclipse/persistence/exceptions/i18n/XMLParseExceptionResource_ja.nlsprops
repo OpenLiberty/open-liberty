@@ -1,0 +1,39 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/XMLParseExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+34000=\u30a8\u30f3\u30c6\u30a3\u30c6\u30a3\u30fc\u30fb\u30de\u30c3\u30d4\u30f3\u30b0\u30fb\u30d5\u30a1\u30a4\u30eb: {0} \u306e\u69cb\u6587\u89e3\u6790\u3092\u8a66\u884c\u4e2d\u306b\u4f8b\u5916\u304c\u767a\u751f\u3057\u307e\u3057\u305f\u3002 DocumentBuilder \u30a4\u30f3\u30b9\u30bf\u30f3\u30b9\u3092\u4f5c\u6210\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f\u3002
+
+34001=\u30a8\u30f3\u30c6\u30a3\u30c6\u30a3\u30fc\u30fb\u30de\u30c3\u30d4\u30f3\u30b0\u30fb\u30d5\u30a1\u30a4\u30eb: {0} \u306e\u8aad\u307f\u53d6\u308a\u3092\u8a66\u884c\u4e2d\u306b\u4f8b\u5916\u304c\u767a\u751f\u3057\u307e\u3057\u305f\u3002
+
+34002=URL: {0} \u304b\u3089 persistence.xml \u3092\u51e6\u7406\u4e2d\u306b\u4f8b\u5916\u304c\u767a\u751f\u3057\u307e\u3057\u305f\u3002 SAXParser \u30a4\u30f3\u30b9\u30bf\u30f3\u30b9\u3092\u4f5c\u6210\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f\u3002
+
+34003=URL: {0} \u304b\u3089 persistence.xml \u3092\u51e6\u7406\u4e2d\u306b\u4f8b\u5916\u304c\u767a\u751f\u3057\u307e\u3057\u305f\u3002 XMLReader \u30a4\u30f3\u30b9\u30bf\u30f3\u30b9\u3092\u4f5c\u6210\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f\u3002
+
+34004=URL: {0} \u304b\u3089 persistence.xml \u3092\u51e6\u7406\u4e2d\u306b\u4f8b\u5916\u304c\u767a\u751f\u3057\u307e\u3057\u305f\u3002 URL: {1} \u3067\u30b9\u30ad\u30fc\u30de\u30fb\u30bd\u30fc\u30b9\u3092\u8a2d\u5b9a\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f\u3002
+

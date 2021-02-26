@@ -112,16 +112,17 @@ public class ContextServiceSerializationTestServlet extends FATServlet {
     }
 
     /**
-     * Deserialize default classloader context that was serialized on v8.5.5.4.
+     * Deserialize a classloader context that was serialized previously.
      *
-     * @param request  HTTP request
-     * @param response HTTP response
+     * @param request               HTTP request
+     * @param serializedContextName The name of the file containing the serialized context.
+     * @param classToLoad           The name of the class which should be loaded from the serialized context.
      * @throws Exception if an error occurs.
      */
-    public void testDeserializeDefaultClassloaderContextV8_5_5_4(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    private void testDeserializeDefaultClassloaderContext(HttpServletRequest request, String serializedContextName) throws Exception {
         ClassLoader original = Thread.currentThread().getContextClassLoader();
 
-        InputStream input = request.getServletContext().getResourceAsStream("/WEB-INF/serialized/defaultContext_ALL_CONTEXT_TYPES-v8.5.5.4.ser");
+        InputStream input = request.getServletContext().getResourceAsStream(serializedContextName);
         ObjectInputStream objectInput = new ObjectInputStream(input);
         final Executor contextualExecutor;
         try {
@@ -198,6 +199,58 @@ public class ContextServiceSerializationTestServlet extends FATServlet {
     }
 
     /**
+     * Deserialize default classloader context that was serialized on v20.0.0.8 with Jakarta features enabled.
+     *
+     * @param request  HTTP request
+     * @param response HTTP response
+     * @throws Exception if an error occurs.
+     */
+    public void testDeserializeDefaultClassloaderContextV20_0_0_8_Jakarta(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        testDeserializeDefaultClassloaderContext(request, "/WEB-INF/serialized/defaultContext_ALL_CONTEXT_TYPES-v20.0.0.8-jakarta.ser");
+    }
+
+    /**
+     * Deserialize default classloader context that was serialized on v8.5.5.4.
+     *
+     * @param request  HTTP request
+     * @param response HTTP response
+     * @throws Exception if an error occurs.
+     */
+    public void testDeserializeDefaultClassloaderContextV8_5_5_4(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        testDeserializeDefaultClassloaderContext(request, "/WEB-INF/serialized/defaultContext_ALL_CONTEXT_TYPES-v8.5.5.4.ser");
+    }
+
+    /**
+     * Deserialize default Jakarta EE metadata context that was serialized on v20.0.0.8.
+     *
+     * @param request  HTTP request
+     * @param response HTTP response
+     * @throws Exception if an error occurs.
+     */
+    public void testDeserializeDefaultJEEMetadataContextV20_0_0_8_Jakarta(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        InputStream input = request.getServletContext().getResourceAsStream("/WEB-INF/serialized/defaultContext_ALL_CONTEXT_TYPES-v20.0.0.8-jakarta.ser");
+        ObjectInputStream objectInput = new ObjectInputStream(input);
+        final Executor contextualExecutor;
+        try {
+            contextualExecutor = (Executor) objectInput.readObject();
+        } finally {
+            objectInput.close();
+        }
+
+        contextualExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Integer result = (Integer) new InitialContext().lookup("java:comp/env/entry1");
+                    throw new RuntimeException("Should not be able to access java:comp/env/entry1 from default (empty) jeeMetadataContext: " + result);
+                } catch (NamingException x) {
+                    // expected
+                }
+            }
+        });
+    }
+
+    /**
      * Deserialize default Java EE metadata context that was serialized on v8.5.5.4.
      *
      * @param request  HTTP request
@@ -228,13 +281,9 @@ public class ContextServiceSerializationTestServlet extends FATServlet {
     }
 
     /**
-     * Deserialize default security context that was serialized on v8.5.5.4.
-     *
-     * @param request  HTTP request
-     * @param response HTTP response
-     * @throws Exception if an error occurs.
+     * Deserialize default security context.
      */
-    public void testDeserializeDefaultSecurityContextV8_5_5_4(final HttpServletRequest request, HttpServletResponse response) throws Exception {
+    private void testDeserializeDefaultSecurityContext(final HttpServletRequest request, String serFileName) throws Exception {
         // Verify that we are deserializing with user2 already on the thread
         Principal principal = request.getUserPrincipal();
         String principalName = principal.getName();
@@ -261,7 +310,7 @@ public class ContextServiceSerializationTestServlet extends FATServlet {
         if (!"TestRealm/user2".equals(realmSecurityName))
             throw new Exception("Unexpected realm security name " + realmSecurityName + " in runAs subject credential " + credential);
 
-        InputStream input = request.getServletContext().getResourceAsStream("/WEB-INF/serialized/defaultContext_ALL_CONTEXT_TYPES-v8.5.5.4.ser");
+        InputStream input = request.getServletContext().getResourceAsStream(serFileName);
         ObjectInputStream objectInput = new ObjectInputStream(input);
         final Executor contextualExecutor;
         try {
@@ -332,14 +381,32 @@ public class ContextServiceSerializationTestServlet extends FATServlet {
     }
 
     /**
-     * Deserialize default transaction context that was serialized on v8.5.5.4.
+     * Deserialize default security context that was serialized on v20.0.0.8 with Jakarta features enabled.
      *
      * @param request  HTTP request
      * @param response HTTP response
      * @throws Exception if an error occurs.
      */
-    public void testDeserializeDefaultTransactionContextV8_5_5_4(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        InputStream input = request.getServletContext().getResourceAsStream("/WEB-INF/serialized/defaultContext_ALL_CONTEXT_TYPES-v8.5.5.4.ser");
+    public void testDeserializeDefaultSecurityContextV20_0_0_8_Jakarta(final HttpServletRequest request, HttpServletResponse response) throws Exception {
+        testDeserializeDefaultSecurityContext(request, "/WEB-INF/serialized/defaultContext_ALL_CONTEXT_TYPES-v20.0.0.8-jakarta.ser");
+    }
+
+    /**
+     * Deserialize default security context that was serialized on v8.5.5.4.
+     *
+     * @param request  HTTP request
+     * @param response HTTP response
+     * @throws Exception if an error occurs.
+     */
+    public void testDeserializeDefaultSecurityContextV8_5_5_4(final HttpServletRequest request, HttpServletResponse response) throws Exception {
+        testDeserializeDefaultSecurityContext(request, "/WEB-INF/serialized/defaultContext_ALL_CONTEXT_TYPES-v8.5.5.4.ser");
+    }
+
+    /**
+     * Deserialize default transaction context.
+     */
+    private void testDeserializeDefaultTransactionContext(HttpServletRequest request, String serFileName) throws Exception {
+        InputStream input = request.getServletContext().getResourceAsStream(serFileName);
         ObjectInputStream objectInput = new ObjectInputStream(input);
         Executor contextualExecutor;
         try {
@@ -367,6 +434,28 @@ public class ContextServiceSerializationTestServlet extends FATServlet {
         } finally {
             tran.commit();
         }
+    }
+
+    /**
+     * Deserialize default transaction context that was serialized on v20.0.0.8 with Jakarta features enabled.
+     *
+     * @param request  HTTP request
+     * @param response HTTP response
+     * @throws Exception if an error occurs.
+     */
+    public void testDeserializeDefaultTransactionContextV20_0_0_8_Jakarta(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        testDeserializeDefaultTransactionContext(request, "/WEB-INF/serialized/defaultContext_ALL_CONTEXT_TYPES-v20.0.0.8-jakarta.ser");
+    }
+
+    /**
+     * Deserialize default transaction context that was serialized on v8.5.5.4.
+     *
+     * @param request  HTTP request
+     * @param response HTTP response
+     * @throws Exception if an error occurs.
+     */
+    public void testDeserializeDefaultTransactionContextV8_5_5_4(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        testDeserializeDefaultTransactionContext(request, "/WEB-INF/serialized/defaultContext_ALL_CONTEXT_TYPES-v8.5.5.4.ser");
     }
 
     /**
@@ -424,6 +513,28 @@ public class ContextServiceSerializationTestServlet extends FATServlet {
     }
 
     /**
+     * Deserialize classloader context that was serialized on v20.0.0.8 with Jakarta features enabled.
+     *
+     * @param request  HTTP request
+     * @param response HTTP response
+     * @throws Exception if an error occurs.
+     */
+    public void testDeserializeClassloaderContextV20_0_0_8_Jakarta(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        testDeserializeClassloaderContext(request, "/WEB-INF/serialized/classloaderContext-v20.0.0.8-jakarta.ser", ContextServiceSerializationTestServlet.class);
+    }
+
+    /**
+     * Deserialize classloader context that was serialized on v20.0.0.8 from a Jakarta Enterprise Bean.
+     *
+     * @param request  HTTP request
+     * @param response HTTP response
+     * @throws Exception if an error occurs.
+     */
+    public void testDeserializeClassloaderContextV20_0_0_8_Jakarta_EJB(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        testDeserializeClassloaderContext(request, "/WEB-INF/serialized/classloaderContext-EJB-v20.0.0.8-jakarta.ser", ContextServiceSerializationTestBean.class);
+    }
+
+    /**
      * Deserialize classloader context that was serialized on v8.5.5.4.
      *
      * @param request  HTTP request
@@ -446,14 +557,10 @@ public class ContextServiceSerializationTestServlet extends FATServlet {
     }
 
     /**
-     * Deserialize a contextual proxy that was serialized on v8.5.5.4 and verify the execution properties.
-     *
-     * @param request  HTTP request
-     * @param response HTTP response
-     * @throws Exception if an error occurs.
+     * Deserialize a contextual proxy and verify the execution properties.
      */
-    public void testDeserializeExecutionPropertiesV8_5_5_4(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        InputStream input = request.getServletContext().getResourceAsStream("/WEB-INF/serialized/defaultContext_ALL_CONTEXT_TYPES-v8.5.5.4.ser");
+    private void testDeserializeExecutionProperties(HttpServletRequest request, String fileName) throws Exception {
+        InputStream input = request.getServletContext().getResourceAsStream(fileName);
         ObjectInputStream objectInput = new ObjectInputStream(input);
         Executor contextualExecutor;
         try {
@@ -494,14 +601,32 @@ public class ContextServiceSerializationTestServlet extends FATServlet {
     }
 
     /**
-     * Deserialize Java EE metadata context that was serialized on v8.5.5.4.
+     * Deserialize a contextual proxy that was serialized on v20.0.0.8 with Jakarta features enabled and verify the execution properties.
      *
      * @param request  HTTP request
      * @param response HTTP response
      * @throws Exception if an error occurs.
      */
-    public void testDeserializeJEEMetadataContextV8_5_5_4(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        InputStream input = request.getServletContext().getResourceAsStream("/WEB-INF/serialized/jeeMetadataContext-v8.5.5.4.ser");
+    public void testDeserializeExecutionPropertiesV20_0_0_8_Jakarta(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        testDeserializeExecutionProperties(request, "/WEB-INF/serialized/defaultContext_ALL_CONTEXT_TYPES-v20.0.0.8-jakarta.ser");
+    }
+
+    /**
+     * Deserialize a contextual proxy that was serialized on v8.5.5.4 and verify the execution properties.
+     *
+     * @param request  HTTP request
+     * @param response HTTP response
+     * @throws Exception if an error occurs.
+     */
+    public void testDeserializeExecutionPropertiesV8_5_5_4(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        testDeserializeExecutionProperties(request, "/WEB-INF/serialized/defaultContext_ALL_CONTEXT_TYPES-v8.5.5.4.ser");
+    }
+
+    /**
+     * Deserialize Java/Jakarta EE metadata context.
+     */
+    private void testDeserializeJEEMetadataContext(HttpServletRequest request, String fileName) throws Exception {
+        InputStream input = request.getServletContext().getResourceAsStream(fileName);
         ObjectInputStream objectInput = new ObjectInputStream(input);
         final Executor contextualExecutor;
         try {
@@ -541,61 +666,10 @@ public class ContextServiceSerializationTestServlet extends FATServlet {
     }
 
     /**
-     * Deserialize Java EE metadata context that was serialized on v8.5.5.4 from a JSP.
-     *
-     * @param request  HTTP request
-     * @param response HTTP response
-     * @throws Exception if an error occurs.
+     * Deserialize Java EE metadata context that was serialized from an EJB.
      */
-    public void testDeserializeJEEMetadataContextV8_5_5_4_JSP(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        InputStream input = request.getServletContext().getResourceAsStream("/WEB-INF/serialized/jeeMetadataContext-JSP-v8.5.5.4.ser");
-        ObjectInputStream objectInput = new ObjectInputStream(input);
-        final Executor contextualExecutor;
-        try {
-            contextualExecutor = (Executor) objectInput.readObject();
-        } finally {
-            objectInput.close();
-        }
-
-        // Start from an unmanaged thread to prove that the deserialized thread context is properly applied
-        Object result = unmanagedExecutor.submit(new Callable<Object>() {
-            @Override
-            public Object call() throws Exception {
-                final List<Object> results = new LinkedList<Object>();
-                // Apply the deserialized thread context
-                contextualExecutor.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            results.add(new InitialContext().lookup("java:comp/env/entry1"));
-                        } catch (Throwable x) {
-                            results.add(x);
-                        }
-                    }
-                });
-                Object result = results.get(0);
-                if (result instanceof Exception)
-                    throw (Exception) result;
-                else if (result instanceof Error)
-                    throw (Error) result;
-                else
-                    return result;
-            }
-        }).get();
-
-        if (!Integer.valueOf(1).equals(result))
-            throw new Exception("Unexpected value: " + result);
-    }
-
-    /**
-     * Deserialize Java EE metadata context that was serialized on v8.5.5.4 from an EJB.
-     *
-     * @param request  HTTP request
-     * @param response HTTP response
-     * @throws Exception if an error occurs.
-     */
-    public void testDeserializeJEEMetadataContextV8_5_5_4_EJB(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        InputStream input = request.getServletContext().getResourceAsStream("/WEB-INF/serialized/jeeMetadataContext-EJB-v8.5.5.4.ser");
+    private void testDeserializeJEEMetadataContextEJB(HttpServletRequest request, String serFileName) throws Exception {
+        InputStream input = request.getServletContext().getResourceAsStream(serFileName);
         ObjectInputStream objectInput = new ObjectInputStream(input);
         final Executor contextualExecutor;
         try {
@@ -635,13 +709,118 @@ public class ContextServiceSerializationTestServlet extends FATServlet {
     }
 
     /**
-     * Deserialize security context that was serialized on v8.5.5.4.
+     * Deserialize Java EE metadata context that came from a JSP.
+     */
+    private void testDeserializeJEEMetadataContextJSP(HttpServletRequest request, String fileName) throws Exception {
+        InputStream input = request.getServletContext().getResourceAsStream(fileName);
+        ObjectInputStream objectInput = new ObjectInputStream(input);
+        final Executor contextualExecutor;
+        try {
+            contextualExecutor = (Executor) objectInput.readObject();
+        } finally {
+            objectInput.close();
+        }
+
+        // Start from an unmanaged thread to prove that the deserialized thread context is properly applied
+        Object result = unmanagedExecutor.submit(new Callable<Object>() {
+            @Override
+            public Object call() throws Exception {
+                final List<Object> results = new LinkedList<Object>();
+                // Apply the deserialized thread context
+                contextualExecutor.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            results.add(new InitialContext().lookup("java:comp/env/entry1"));
+                        } catch (Throwable x) {
+                            results.add(x);
+                        }
+                    }
+                });
+                Object result = results.get(0);
+                if (result instanceof Exception)
+                    throw (Exception) result;
+                else if (result instanceof Error)
+                    throw (Error) result;
+                else
+                    return result;
+            }
+        }).get();
+
+        if (!Integer.valueOf(1).equals(result))
+            throw new Exception("Unexpected value: " + result);
+    }
+
+    /**
+     * Deserialize Java EE metadata context that was serialized on v20.0.0.8.
      *
      * @param request  HTTP request
      * @param response HTTP response
      * @throws Exception if an error occurs.
      */
-    public void testDeserializeSecurityContextV8_5_5_4(final HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public void testDeserializeJEEMetadataContextV20_0_0_8_Jakarta(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        testDeserializeJEEMetadataContext(request, "/WEB-INF/serialized/jeeMetadataContext-v20.0.0.8-jakarta.ser");
+    }
+
+    /**
+     * Deserialize Java EE metadata context that was serialized on v8.5.5.4 from an EJB.
+     *
+     * @param request  HTTP request
+     * @param response HTTP response
+     * @throws Exception if an error occurs.
+     */
+    public void testDeserializeJEEMetadataContextV20_0_0_8_Jakarta_EJB(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        testDeserializeJEEMetadataContextEJB(request, "/WEB-INF/serialized/jeeMetadataContext-EJB-v20.0.0.8-jakarta.ser");
+    }
+
+    /**
+     * Deserialize Java EE metadata context that was serialized on v20.0.0.8 from a Jakarta JSP.
+     *
+     * @param request  HTTP request
+     * @param response HTTP response
+     * @throws Exception if an error occurs.
+     */
+    public void testDeserializeJEEMetadataContextV20_0_0_8_Jakarta_JSP(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        testDeserializeJEEMetadataContextJSP(request, "WEB-INF/serialized/jeeMetadataContext-JSP-v20.0.0.8-jakarta.ser");
+    }
+
+    /**
+     * Deserialize Java EE metadata context that was serialized on v8.5.5.4.
+     *
+     * @param request  HTTP request
+     * @param response HTTP response
+     * @throws Exception if an error occurs.
+     */
+    public void testDeserializeJEEMetadataContextV8_5_5_4(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        testDeserializeJEEMetadataContext(request, "/WEB-INF/serialized/jeeMetadataContext-v8.5.5.4.ser");
+    }
+
+    /**
+     * Deserialize Java EE metadata context that was serialized on v8.5.5.4 from an EJB.
+     *
+     * @param request  HTTP request
+     * @param response HTTP response
+     * @throws Exception if an error occurs.
+     */
+    public void testDeserializeJEEMetadataContextV8_5_5_4_EJB(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        testDeserializeJEEMetadataContextEJB(request, "/WEB-INF/serialized/jeeMetadataContext-EJB-v8.5.5.4.ser");
+    }
+
+    /**
+     * Deserialize Java EE metadata context that was serialized on v8.5.5.4 from a JSP.
+     *
+     * @param request  HTTP request
+     * @param response HTTP response
+     * @throws Exception if an error occurs.
+     */
+    public void testDeserializeJEEMetadataContextV8_5_5_4_JSP(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        testDeserializeJEEMetadataContextJSP(request, "WEB-INF/serialized/jeeMetadataContext-JSP-v8.5.5.4.ser");
+    }
+
+    /**
+     * Deserialize security context.
+     */
+    private void testDeserializeSecurityContext(final HttpServletRequest request, String serFileName) throws Exception {
         // Verify that we are deserializing from a different context (user2) than we serialized from
         Principal principal = request.getUserPrincipal();
         String principalName = principal.getName();
@@ -669,7 +848,7 @@ public class ContextServiceSerializationTestServlet extends FATServlet {
             throw new Exception("Unexpected realm security name " + realmSecurityName + " in runAs subject credential " + credential);
 
         // Deserialize
-        InputStream input = request.getServletContext().getResourceAsStream("/WEB-INF/serialized/securityContext-user3-user3-v8.5.5.4.ser");
+        InputStream input = request.getServletContext().getResourceAsStream(serFileName);
         ObjectInputStream objectInput = new ObjectInputStream(input);
         final Executor contextualExecutor;
         try {
@@ -860,14 +1039,32 @@ public class ContextServiceSerializationTestServlet extends FATServlet {
     }
 
     /**
-     * Deserialize transaction context that was serialized on v8.5.5.4.
+     * Deserialize security context that was serialized on v20.0.0.8 with Jakarta features enabled.
      *
      * @param request  HTTP request
      * @param response HTTP response
      * @throws Exception if an error occurs.
      */
-    public void testDeserializeTransactionContextV8_5_5_4(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        InputStream input = request.getServletContext().getResourceAsStream("/WEB-INF/serialized/transactionContext-v8.5.5.4.ser");
+    public void testDeserializeSecurityContextV20_0_0_8_Jakarta(final HttpServletRequest request, HttpServletResponse response) throws Exception {
+        testDeserializeSecurityContext(request, "/WEB-INF/serialized/securityContext-user3-user3-v20.0.0.8-jakarta.ser");
+    }
+
+    /**
+     * Deserialize security context that was serialized on v8.5.5.4.
+     *
+     * @param request  HTTP request
+     * @param response HTTP response
+     * @throws Exception if an error occurs.
+     */
+    public void testDeserializeSecurityContextV8_5_5_4(final HttpServletRequest request, HttpServletResponse response) throws Exception {
+        testDeserializeSecurityContext(request, "/WEB-INF/serialized/securityContext-user3-user3-v8.5.5.4.ser");
+    }
+
+    /**
+     * Deserialize transaction context
+     */
+    private void testDeserializeTransactionContext(HttpServletRequest request, String serFileName) throws Exception {
+        InputStream input = request.getServletContext().getResourceAsStream(serFileName);
         ObjectInputStream objectInput = new ObjectInputStream(input);
         Executor contextualExecutor;
         try {
@@ -899,6 +1096,28 @@ public class ContextServiceSerializationTestServlet extends FATServlet {
         Map<String, String> execProps = transactionContextSvc.getExecutionProperties(contextualExecutor);
         if (execProps != null)
             throw new Exception("Execution properties should be null, not " + execProps);
+    }
+
+    /**
+     * Deserialize transaction context that was serialized on v20.0.0.8 with Jakarta features enabled.
+     *
+     * @param request  HTTP request
+     * @param response HTTP response
+     * @throws Exception if an error occurs.
+     */
+    public void testDeserializeTransactionContextV20_0_0_8_Jakarta(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        testDeserializeTransactionContext(request, "/WEB-INF/serialized/transactionContext-v20.0.0.8-jakarta.ser");
+    }
+
+    /**
+     * Deserialize transaction context that was serialized on v8.5.5.4.
+     *
+     * @param request  HTTP request
+     * @param response HTTP response
+     * @throws Exception if an error occurs.
+     */
+    public void testDeserializeTransactionContextV8_5_5_4(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        testDeserializeTransactionContext(request, "/WEB-INF/serialized/transactionContext-v8.5.5.4.ser");
     }
 
     /**
@@ -960,14 +1179,10 @@ public class ContextServiceSerializationTestServlet extends FATServlet {
 
     /**
      * Deserialize and reserialize Java EE metadata context.
-     *
-     * @param request  HTTP request
-     * @param response HTTP response
-     * @throws Exception if an error occurs.
      */
-    public void testReserializeJEEMetadataContext(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    private void testReserializeJEEMetadataContext(HttpServletRequest request, String serFileName) throws Exception {
         // deserialize
-        InputStream input = request.getServletContext().getResourceAsStream("/WEB-INF/serialized/jeeMetadataContext-v8.5.5.4.ser");
+        InputStream input = request.getServletContext().getResourceAsStream(serFileName);
         ObjectInputStream objectInput = new ObjectInputStream(input);
         Object object;
         try {
@@ -1017,6 +1232,28 @@ public class ContextServiceSerializationTestServlet extends FATServlet {
 
         if (!Integer.valueOf(1).equals(result))
             throw new Exception("Unexpected value: " + result);
+    }
+
+    /**
+     * Deserialize and reserialize Java EE metadata context that was captured with Jakarta features enabled.
+     *
+     * @param request  HTTP request
+     * @param response HTTP response
+     * @throws Exception if an error occurs.
+     */
+    public void testReserializeJEEMetadataContextV20_0_0_8_Jakarta(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        testReserializeJEEMetadataContext(request, "/WEB-INF/serialized/jeeMetadataContext-v20.0.0.8-jakarta.ser");
+    }
+
+    /**
+     * Deserialize and reserialize Java EE metadata context.
+     *
+     * @param request  HTTP request
+     * @param response HTTP response
+     * @throws Exception if an error occurs.
+     */
+    public void testReserializeJEEMetadataContextV8_5_5_4(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        testReserializeJEEMetadataContext(request, "/WEB-INF/serialized/jeeMetadataContext-v8.5.5.4.ser");
     }
 
     /**

@@ -13,6 +13,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 
 /**
  * 
@@ -44,6 +46,7 @@ import javax.xml.bind.annotation.XmlType;
     "subjectDNConstraints",
     "issuerDNConstraints"
 })
+@Trivial
 public class CertificateConstraintsType {
 
     @XmlElement(name = "SubjectDNConstraints")

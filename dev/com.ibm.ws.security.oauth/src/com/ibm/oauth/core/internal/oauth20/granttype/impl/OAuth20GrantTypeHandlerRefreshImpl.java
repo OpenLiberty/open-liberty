@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,30 +11,49 @@
 package com.ibm.oauth.core.internal.oauth20.granttype.impl;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.ibm.oauth.core.api.attributes.AttributeList;
 import com.ibm.oauth.core.api.error.OAuthException;
+import com.ibm.oauth.core.api.error.oauth20.InvalidGrantException;
+import com.ibm.oauth.core.api.error.oauth20.OAuth20Exception;
 import com.ibm.oauth.core.api.error.oauth20.OAuth20InvalidScopeException;
 import com.ibm.oauth.core.api.error.oauth20.OAuth20MissingParameterException;
 import com.ibm.oauth.core.api.error.oauth20.OAuth20RefreshTokenInvalidClientException;
 import com.ibm.oauth.core.api.oauth20.token.OAuth20Token;
+import com.ibm.oauth.core.api.oauth20.token.OAuth20TokenCache;
 import com.ibm.oauth.core.internal.oauth20.OAuth20Constants;
 import com.ibm.oauth.core.internal.oauth20.OAuth20Util;
+import com.ibm.oauth.core.internal.oauth20.TraceConstants;
+import com.ibm.oauth.core.internal.oauth20.config.OAuth20ConfigProvider;
 import com.ibm.oauth.core.internal.oauth20.granttype.OAuth20GrantTypeHandler;
 import com.ibm.oauth.core.internal.oauth20.token.OAuth20TokenFactory;
 import com.ibm.oauth.core.internal.oauth20.token.OAuth20TokenHelper;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.security.oauth20.api.OAuth20EnhancedTokenCache;
 
 public class OAuth20GrantTypeHandlerRefreshImpl implements
         OAuth20GrantTypeHandler {
+
+    private static final TraceComponent tc = Tr.register(OAuth20GrantTypeHandlerRefreshImpl.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
 
     final static String CLASS = OAuth20GrantTypeHandlerRefreshImpl.class
             .getName();
 
     private static Logger _log = Logger.getLogger(CLASS);
 
+    protected OAuth20ConfigProvider config = null;
+
+    public OAuth20GrantTypeHandlerRefreshImpl(OAuth20ConfigProvider config) {
+        this.config = config;
+    }
+
+    @Override
     public List<String> getKeysGrantType(AttributeList attributeList)
             throws OAuthException {
         String methodName = "getKeysGrantType";
@@ -60,6 +79,7 @@ public class OAuth20GrantTypeHandlerRefreshImpl implements
         return tokenKeys;
     }
 
+    @Override
     public void validateRequestGrantType(AttributeList attributeList,
             List<OAuth20Token> tokens) throws OAuthException {
         String methodName = "validateRequestGrantType";
@@ -95,6 +115,8 @@ public class OAuth20GrantTypeHandlerRefreshImpl implements
                                 approvedScope);
                     }
                     // ...validated
+
+                    validateRefreshedAccessTokenLimit(clientId, refresh.getUsername());
                 }
             }
         } finally {
@@ -102,6 +124,86 @@ public class OAuth20GrantTypeHandlerRefreshImpl implements
         }
     }
 
+    void validateRefreshedAccessTokenLimit(String clientId, String username) throws OAuth20Exception {
+        String methodName = "validateRefreshedAccessTokenLimit";
+        _log.entering(CLASS, methodName, new Object[] { clientId, username });
+        try {
+            if (config == null) {
+                _log.logp(Level.FINEST, CLASS, "validateRefreshedAccessTokenLimit", "No OAuth config object found");
+                return;
+            }
+            if (isRefreshTokenLimitReached(clientId, username)) {
+                String errorMsg = Tr.formatMessage(tc, "security.oauth20.refreshed.access.token.limit.reached", new Object[] { username, clientId, config.getRefreshedAccessTokenLimit() });
+                throw new InvalidGrantException(errorMsg, null);
+            }
+        } finally {
+            _log.exiting(CLASS, methodName);
+        }
+    }
+
+    boolean isRefreshTokenLimitReached(String clientId, String username) {
+        String methodName = "isRefreshTokenLimitReached";
+        _log.entering(CLASS, methodName, new Object[] { clientId, username });
+        try {
+            Collection<OAuth20Token> userAndClientTokens = getUserAndClientTokens(clientId, username);
+            if (userAndClientTokens == null || userAndClientTokens.isEmpty()) {
+                return false;
+            }
+            long tokenLimit = config.getRefreshedAccessTokenLimit();
+            if (userAndClientTokens.size() < tokenLimit) {
+                // Regardless of what kind of tokens are in the cache, if there are fewer than the configured limit
+                // then we should, by definition, still be allowed to create another refreshed access token
+                return false;
+            }
+            long numberOfRefreshedAccessTokens = getNumberOfRefreshedAccessTokens(userAndClientTokens);
+            if (numberOfRefreshedAccessTokens >= tokenLimit) {
+                _log.logp(Level.FINEST, CLASS, "isRefreshTokenLimitReached", "The refresh token limit has been reached.");
+                return true;
+            }
+            return false;
+        } finally {
+            _log.exiting(CLASS, methodName);
+        }
+    }
+
+    Collection<OAuth20Token> getUserAndClientTokens(String clientId, String username) {
+        String methodName = "getUserAndClientTokens";
+        _log.entering(CLASS, methodName, new Object[] { clientId, username });
+        try {
+            if (username == null || clientId == null) {
+                _log.logp(Level.FINEST, CLASS, "getUserAndClientTokens", "Failed to find username and/or client ID.");
+                return null;
+            }
+            OAuth20TokenCache cache = config.getTokenCache();
+            if (cache != null && cache instanceof OAuth20EnhancedTokenCache) {
+                OAuth20EnhancedTokenCache tokenCache = (OAuth20EnhancedTokenCache) cache;
+                return tokenCache.getUserAndClientTokens(username, clientId);
+            }
+            return null;
+        } finally {
+            _log.exiting(CLASS, methodName);
+        }
+    }
+
+    long getNumberOfRefreshedAccessTokens(Collection<OAuth20Token> userAndClientTokens) {
+        String methodName = "getNumberOfRefreshedAccessTokens";
+        _log.entering(CLASS, methodName, new Object[] { userAndClientTokens });
+        try {
+            long numberOfRefreshedAccessTokens = 0;
+            for (OAuth20Token cachedToken : userAndClientTokens) {
+                String type = cachedToken.getType();
+                String grantType = cachedToken.getGrantType();
+                if (OAuth20Constants.ACCESS_TOKEN.equals(type) && OAuth20Constants.GRANT_TYPE_REFRESH_TOKEN.equals(grantType)) {
+                    numberOfRefreshedAccessTokens++;
+                }
+            }
+            return numberOfRefreshedAccessTokens;
+        } finally {
+            _log.exiting(CLASS, methodName);
+        }
+    }
+
+    @Override
     public List<OAuth20Token> buildTokensGrantType(AttributeList attributeList,
             OAuth20TokenFactory tokenFactory, List<OAuth20Token> tokens) {
         String methodName = "buildTokensGrantType";
@@ -111,7 +213,7 @@ public class OAuth20GrantTypeHandlerRefreshImpl implements
         try {
             // index 0 in the token list should be the refresh token
             if (tokens.size() >= 1) {
-                OAuth20Token refresh = (OAuth20Token) tokens.get(0);
+                OAuth20Token refresh = tokens.get(0);
 
                 if (refresh != null) {
                     String clientId = attributeList
@@ -144,11 +246,11 @@ public class OAuth20GrantTypeHandlerRefreshImpl implements
                     // we are loosing the original grant type of this refresh token when creating the new one, so save it in the ext properties for now. This way, we don't break existing behavior
                     String key = OAuth20Constants.EXTERNAL_CLAIMS_PREFIX + OAuth20Constants.REFRESH_TOKEN_ORIGINAL_GT;
                     String[] originalGrantType = refresh.getExtensionProperty(key);
-                    
+
                     if (originalGrantType != null && originalGrantType.length > 0) {
                         refreshTokenMap.put(key, originalGrantType);
                     }
-                    
+
                     OAuth20Token newRefresh = tokenFactory
                             .createRefreshToken(refreshTokenMap);
 
@@ -191,6 +293,7 @@ public class OAuth20GrantTypeHandlerRefreshImpl implements
         return tokenList;
     }
 
+    @Override
     public void buildResponseGrantType(AttributeList attributeList,
             List<OAuth20Token> tokens) {
         String methodName = "buildResponseGrantType";

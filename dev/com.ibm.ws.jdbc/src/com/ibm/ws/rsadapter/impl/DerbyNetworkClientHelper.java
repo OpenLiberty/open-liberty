@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2001, 2017 IBM Corporation and others.
+ * Copyright (c) 2001, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -55,8 +55,7 @@ public class DerbyNetworkClientHelper extends DerbyHelper {
     DerbyNetworkClientHelper(WSManagedConnectionFactoryImpl mcf) {
         super(mcf);
 
-        Collections.addAll(staleErrorCodes,
-                           -4499);
+        mcf.doesStatementCacheIsoLevel = true;
 
         Properties props = mcf.dsConfig.get().vendorProps;
         // we are not reading the tracelevel since we don't set the trace on the connection as we do with dB2, 
@@ -112,9 +111,13 @@ public class DerbyNetworkClientHelper extends DerbyHelper {
             derbyNSPw = new PrintWriter(new TraceWriter(derbyTc), true);
         }
     }
-
-    public boolean doesStatementCacheIsoLevel() {
-        return true;
+    
+    @Override
+    void customizeStaleStates() {
+        super.customizeStaleStates();
+        
+        Collections.addAll(staleErrorCodes,
+                           -4499);
     }
 
     @Override

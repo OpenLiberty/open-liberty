@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2018 IBM Corporation and others.
+# Copyright (c) 2017, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -8,6 +8,18 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= jar:${fileuri;${repo;org.jboss.logging:jboss-logging;3.3.2.Final}}!/META-INF/MANIFEST.MF,bnd.overrides
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
 
--buildpath: org.jboss.logging:jboss-logging;version=3.3.2.Final
+-include= jar:${fileuri;${repo;org.jboss.logging:jboss-logging;3.4.1.Final}}!/META-INF/MANIFEST.MF,bnd.overrides
+
+Bundle-SymbolicName: com.ibm.ws.org.jboss.logging; singleton:=true
+
+-includeresource: \
+  @${repo;org.jboss.logging:jboss-logging;3.4.1.Final;EXACT}
+
+instrument.disabled: true
+
+-buildpath: \
+        org.jboss.logging:jboss-logging;version=3.4.1.Final, \
+        com.ibm.ws.org.osgi.annotation.versioning;version=latest

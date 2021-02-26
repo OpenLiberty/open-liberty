@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2018 IBM Corporation and others.
+ * Copyright (c) 2006, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -125,7 +125,7 @@ public class BasicSLEnvInjectionServlet extends FATServlet {
      * does NOT occur from the pooled state. <p>
      */
     @Test
-    public void testSLLEnvObjFldInjection() throws Exception {
+    public void testSLLEnvObjFldInjection_XMLBasicSLEnvInjection() throws Exception {
         // --------------------------------------------------------------------
         // Locate SL Local Home/Factory and execute the test
         // --------------------------------------------------------------------
@@ -184,7 +184,7 @@ public class BasicSLEnvInjectionServlet extends FATServlet {
      * does NOT occur from the pooled state. <p>
      */
     @Test
-    public void testSLLEnvPrimFldInjection() throws Exception {
+    public void testSLLEnvPrimFldInjection_XMLBasicSLEnvInjection() throws Exception {
         // --------------------------------------------------------------------
         // Locate SL Local Home/Factory and execute the test
         // --------------------------------------------------------------------
@@ -247,7 +247,7 @@ public class BasicSLEnvInjectionServlet extends FATServlet {
      * does NOT occur from the pooled state. <p>
      */
     @Test
-    public void testSLLEnvObjMthdInjection() throws Exception {
+    public void testSLLEnvObjMthdInjection_XMLBasicSLEnvInjection() throws Exception {
         // --------------------------------------------------------------------
         // Locate SL Local Home/Factory and execute the test
         // --------------------------------------------------------------------
@@ -307,7 +307,7 @@ public class BasicSLEnvInjectionServlet extends FATServlet {
      * does NOT occur from the pooled state. <p>
      */
     @Test
-    public void testSLLEnvPrimMthdInjection() throws Exception {
+    public void testSLLEnvPrimMthdInjection_XMLBasicSLEnvInjection() throws Exception {
         // --------------------------------------------------------------------
         // Locate SL Local Home/Factory and execute the test
         // --------------------------------------------------------------------
@@ -369,7 +369,7 @@ public class BasicSLEnvInjectionServlet extends FATServlet {
      * does NOT occur from the pooled state. <p>
      */
     @Test
-    public void testSLLCompEnvObjFldInjection_BasicSLEnvInjection() throws Exception {
+    public void testSLLCompEnvObjFldInjection_XMLBasicSLEnvInjection() throws Exception {
         // --------------------------------------------------------------------
         // Locate SL Local Home/Factory and execute the test
         // --------------------------------------------------------------------
@@ -429,7 +429,7 @@ public class BasicSLEnvInjectionServlet extends FATServlet {
      * does NOT occur from the pooled state. <p>
      */
     @Test
-    public void testSLLCompEnvPrimFldInjection_BasicSLEnvInjection() throws Exception {
+    public void testSLLCompEnvPrimFldInjection_XMLBasicSLEnvInjection() throws Exception {
         // --------------------------------------------------------------------
         // Locate SL Local Home/Factory and execute the test
         // --------------------------------------------------------------------
@@ -493,7 +493,7 @@ public class BasicSLEnvInjectionServlet extends FATServlet {
      * does NOT occur from the pooled state. <p>
      */
     @Test
-    public void testSLLCompEnvObjMthdInjection_BasicSLEnvInjection() throws Exception {
+    public void testSLLCompEnvObjMthdInjection_XMLBasicSLEnvInjection() throws Exception {
         // --------------------------------------------------------------------
         // Locate SL Local Home/Factory and execute the test
         // --------------------------------------------------------------------
@@ -554,7 +554,7 @@ public class BasicSLEnvInjectionServlet extends FATServlet {
      * does NOT occur from the pooled state. <p>
      */
     @Test
-    public void testSLLCompEnvPrimMthdInjection_BasicSLEnvInjection() throws Exception {
+    public void testSLLCompEnvPrimMthdInjection_XMLBasicSLEnvInjection() throws Exception {
         // --------------------------------------------------------------------
         // Locate SL Local Home/Factory and execute the test
         // --------------------------------------------------------------------

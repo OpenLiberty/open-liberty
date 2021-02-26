@@ -51,7 +51,7 @@ SPNEGO_NOT_SUPPORTED_ERROR_PAGE.useraction=Konfigur\u00e1lja az \u00fcgyf\u00e9l
 SPNEGO_NTLM_TOKEN_RECEIVED_ERROR_PAGE=CWWKS4307E: <html><head><title>NTLM token \u00e9rkezett.\
 </title></head> <body>Az \u00fcgyf\u00e9lb\u00f6ng\u00e9sz\u0151 konfigur\u00e1ci\u00f3ja helyes, de nem jelentkezett be t\u00e1mogatott Windows tartom\u00e1nyba.\
 <p> Jelentkezzen be a t\u00e1mogatott Windows tartom\u00e1nyba.\
-</html>.
+</body></html>.
 SPNEGO_NTLM_TOKEN_RECEIVED_ERROR_PAGE.explanation=Az \u00fcgyf\u00e9lb\u00f6ng\u00e9sz\u0151 konfigur\u00e1ci\u00f3ja helyes, de nem jelentkezett be t\u00e1mogatott Windows tartom\u00e1nyba. \
 Vagy az SPNEGO konfigur\u00e1ci\u00f3 helytelen, ez\u00e9rt az \u00fcgyf\u00e9lb\u00f6ng\u00e9sz\u0151 nem k\u00fcldi el az SPNEGO vagy Kerberos tokent.
 SPNEGO_NTLM_TOKEN_RECEIVED_ERROR_PAGE.useraction=Ellen\u0151rizze, hogy bejelentkezett a t\u00e1mogatott Windows tartom\u00e1nyba, \u00e9s ellen\u0151rizze az SPNEGO konfigur\u00e1ci\u00f3t is a kiszolg\u00e1l\u00f3n \u00e9s a Windows tartom\u00e1nyban.
@@ -115,3 +115,17 @@ SPNEGO_CAN_NOT_GET_DELEGATE_SERVICE_SPN.useraction=Ellen\u0151rizze a szolg\u00e
 SPNEGO_DELEGATE_SPN_LOGIN_TO_KDC_FAILURE=CWWKS4322E: A(z) {0} meghatalmazott SPN nem tud hiteles\u00edt\u00e9st v\u00e9gezni a kulcseloszt\u00f3 k\u00f6zponttal (KDC) a(z) {1} Kerberos konfigur\u00e1ci\u00f3s f\u00e1jllal \u00e9s {2} kulcsc\u00edmke f\u00e1jllal. Bejelentkez\u00e9si kiv\u00e9tel t\u00f6rt\u00e9nt: {3}
 SPNEGO_DELEGATE_SPN_LOGIN_TO_KDC_FAILURE.explanation=Nem lehet hiteles\u00edt\u00e9st v\u00e9gezni a kulcseloszt\u00f3 k\u00f6zponttal (KDC).
 SPNEGO_DELEGATE_SPN_LOGIN_TO_KDC_FAILURE.useraction=Ellen\u0151rizze a szolg\u00e1ltat\u00e1s azonos\u00edt\u00f3nev\u00e9nek form\u00e1tum\u00e1t, \u00e9s gondoskodjon arr\u00f3l, hogy az l\u00e9tezzen a Windows tartom\u00e1nyban \u00e9s a Kerberos kulcsc\u00edmke f\u00e1jl tartalmazza a szolg\u00e1ltat\u00f3 azonos\u00edt\u00f3nev\u00e9t.
+
+SPNEGO_CONFLICTING_SETTINGS_CWWKS4323E=CWWKS4323E: A(z) {1} elem  [{0}] attrib\u00fatuma \u00fctk\u00f6zik a(z) {3} elem [{2}] attrib\u00fatum\u00e1val.  Csak vagy a(z) {1}, vagy {3} elemre vonatkoz\u00f3an adjon meg \u00e9rt\u00e9ket, mindkett\u0151re ne. Az javasoljuk, hogy az \u00e9rt\u00e9ket csak a(z) {1} elemre vonatkoz\u00f3an adja meg.
+SPNEGO_CONFLICTING_SETTINGS_CWWKS4323E.explanation=Az egyes attrib\u00fatumok felismer\u00e9se \u00e9rdek\u00e9ben \u00e1ll\u00edtson be egy rendszertulajdons\u00e1got, amely rendszerszinten \u00e9rv\u00e9nyes. A rendszerszint\u0171 be\u00e1ll\u00edt\u00e1sok eset\u00e9ben nem ismerhet\u0151k el k\u00fcl\u00f6nb\u00f6z\u0151 \u00e9rt\u00e9kek.
+SPNEGO_CONFLICTING_SETTINGS_CWWKS4323E.useraction=Csak az egyik konfigur\u00e1ci\u00f3s elemben adja meg az attrib\u00fatumot.
+
+SPNEGO_AUTHENTICATION_ERROR_PAGE=CWWKS4324E: <html><head><title>A SPNEGO hiteles\u00edt\u00e9s meghi\u00fasult. \
+A probl\u00e9ma megold\u00e1sa \u00e9rdek\u00e9ben l\u00e9pjen kapcsolatba a rendszeradminisztr\u00e1torral.\
+</title></head> <body>Az \u00fcgyf\u00e9l elk\u00fcldte az SPNEGO tokent. \
+A kiszolg\u00e1l\u00f3 nem tudja \u00e9rv\u00e9nyes\u00edteni az \u00fcgyf\u00e9l SPNEGO tokenj\u00e9t. \
+A probl\u00e9ma megold\u00e1sa \u00e9rdek\u00e9ben l\u00e9pjen kapcsolatba a rendszeradminisztr\u00e1torral.\
+</body></html>.
+SPNEGO_AUTHENTICATION_ERROR_PAGE.explanation=A SPNEGO hiteles\u00edt\u00e9s meghi\u00fasult. Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiszolg\u00e1l\u00f3napl\u00f3 \u00fczeneteit.
+SPNEGO_AUTHENTICATION_ERROR_PAGE.useraction=Ellen\u0151rizze a kiszolg\u00e1l\u00f3 \u00e9s a Kerberos konfigur\u00e1ci\u00f3j\u00e1t, \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a kiszolg\u00e1l\u00f3 \u00f3r\u00e1ja szinkronban van a kulcseloszt\u00f3 k\u00f6zpont\u00e9val (KDC).
+

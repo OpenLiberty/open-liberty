@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>     
+<!-- 
+/*******************************************************************************
+ * Copyright (c) 2020 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+-->
+<ejb-jar id="ejb-jar_ID" 
+	xmlns="http://java.sun.com/xml/ns/javaee" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_0.xsd" 
+	metadata-complete="false" version="3.1">
+
+  <display-name>SecurityEJBM09</display-name>
+  
+  <enterprise-beans>
+     <session id="SecurityEJBM09">
+        <ejb-name>SecurityEJBM09Bean</ejb-name>
+        <ejb-class>com.ibm.ws.ejbcontainer.security.test.SecurityEJBM09Bean</ejb-class>
+        <security-identity>
+		   <run-as>
+			 <role-name>Employee</role-name>
+		   </run-as>
+		</security-identity>
+     </session>
+  </enterprise-beans>
+  
+  <assembly-descriptor id="AssemblyDescriptor_1">
+    <security-role id="SecurityRole_1">
+      <description>Manager in an enterprise</description>
+      <role-name>Manager</role-name>
+    </security-role>
+    <security-role id="SecurityRole_2">
+      <description>Employee in an enterprise</description>
+      <role-name>Employee</role-name>
+    </security-role>
+ 
+   
+     <method-permission id="MethodPermission_1">
+     <description>These methods are protected by Employee role. </description>
+     <role-name>Employee</role-name>
+       <method id="MethodElement_1">
+       <ejb-name>SecurityEJBM09Bean</ejb-name>
+         <method-name>employee</method-name>
+       </method>
+     </method-permission>
+     
+     <method-permission id="MethodPermission_2">
+     <description>These methods are protected by Employee role. </description>
+     <role-name>Manager</role-name>
+       <method id="MethodElement_2">
+       <ejb-name>SecurityEJBM09Bean</ejb-name>
+         <method-name>manager</method-name>
+       </method>
+     </method-permission>
+
+     <exclude-list>
+       <description>These methods are uncallable</description>
+       <method id="MethodElement_3">
+          <ejb-name>SecurityEJBM09Bean</ejb-name>
+          <method-name>denyAll</method-name>
+       </method>
+     </exclude-list>
+     
+  </assembly-descriptor>
+  
+</ejb-jar>

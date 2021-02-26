@@ -1,5 +1,5 @@
 /* ============================================================================
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -74,7 +74,9 @@ public class ClientMain {
           m.invoke(this,null);
         } catch (Throwable t) {
           if (t instanceof java.lang.reflect.InvocationTargetException) t = t.getCause();
-          Util.LOG("Test '"+methodName+"' failed with an exception: ",t);
+          StackTraceElement[] elem = t.getStackTrace();
+          String where = (null==elem||0==elem.length?"":" at "+elem[0].getFileName()+":"+elem[0].getLineNumber());
+          Util.LOG("Test '"+methodName+"' failed"+where+" with an exception: "+t.toString());
         }
         finally {
           // trace entry on behalf of the called method

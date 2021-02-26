@@ -15,6 +15,7 @@ Bundle-Name: JPA Container Bean Validation 2.0 Integration
 Bundle-SymbolicName: com.ibm.ws.jpa.container.beanvalidation.2.0
 Bundle-Description: Container-managed JPA/Bean validation 2.0 support, version ${bVersion}
 
+jakartaeeMe: true
 
 WS-TraceGroup: JPA
 

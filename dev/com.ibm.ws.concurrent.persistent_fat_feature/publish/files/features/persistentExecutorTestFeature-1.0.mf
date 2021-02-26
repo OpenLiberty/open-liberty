@@ -2,8 +2,9 @@ Subsystem-ManifestVersion: 1
 IBM-ShortName: persistentExecutorTestFeature-1.0
 Subsystem-SymbolicName: test.concurrent.persistent.persistentExecutorTestFeature-1.0; visibility:=public
 Subsystem-Version: 1.0
-Subsystem-Content: com.ibm.websphere.appserver.persistentExecutorSubset-1.0; type="osgi.subsystem.feature",
- com.ibm.websphere.appserver.transaction-1.2; type="osgi.subsystem.feature"
+Subsystem-Content: io.openliberty.persistentExecutorSubset-2.0; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.jdbc-4.3; ibm.tolerates:="4.2, 4.1"; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.transaction-2.0; type="osgi.subsystem.feature"
 Subsystem-Type: osgi.subsystem.feature
 IBM-Feature-Version: 2
 IBM-SPI-Package: com.ibm.wsspi.concurrent.persistent, com.ibm.wsspi.threadcontext

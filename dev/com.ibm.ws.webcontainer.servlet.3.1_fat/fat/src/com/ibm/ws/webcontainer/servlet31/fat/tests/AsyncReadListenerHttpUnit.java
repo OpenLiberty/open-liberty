@@ -21,8 +21,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.logging.Logger;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
@@ -39,9 +39,12 @@ import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.SharedServer;
 
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import junit.framework.Assert;
 
 @RunWith(FATRunner.class)
+@Mode(TestMode.FULL)
 public class AsyncReadListenerHttpUnit extends LoggingTest {
     private static final Logger LOG = Logger.getLogger(AsyncReadListenerHttpUnit.class.getName());
 
@@ -59,7 +62,7 @@ public class AsyncReadListenerHttpUnit extends LoggingTest {
     @BeforeClass
     public static void setupClass() throws Exception {
         // Build the war apps and add the dependencies
-        WebArchive LibertyWriteListenerFilterApp = ShrinkHelper.buildDefaultApp(LIBERTY_WRITE_LISTENER_FILTER_APP_NAME+ ".war",
+        WebArchive LibertyWriteListenerFilterApp = ShrinkHelper.buildDefaultApp(LIBERTY_WRITE_LISTENER_FILTER_APP_NAME + ".war",
                                                                                 "com.ibm.ws.webcontainer.servlet_31_fat.libertywritelistenerfiltertest.war.writeListener");
         LibertyWriteListenerFilterApp = (WebArchive) ShrinkHelper.addDirectory(LibertyWriteListenerFilterApp, "test-applications/LibertyWriteListenerFilterTest.war/resources");
         WebArchive LibertyReadListenerFilterApp = ShrinkHelper.buildDefaultApp(LIBERTY_READ_LISTENER_FILTER_APP_NAME + ".war",
@@ -76,22 +79,22 @@ public class AsyncReadListenerHttpUnit extends LoggingTest {
             LOG.info("addAppToServer : " + LIBERTY_WRITE_LISTENER_FILTER_APP_NAME + " already installed : " + !appInstalled.isEmpty());
 
             if (appInstalled.isEmpty())
-            ShrinkHelper.exportDropinAppToServer(SHARED_SERVER.getLibertyServer(), LibertyWriteListenerFilterApp);
+                ShrinkHelper.exportDropinAppToServer(SHARED_SERVER.getLibertyServer(), LibertyWriteListenerFilterApp);
 
             appInstalled = SHARED_SERVER.getLibertyServer().getInstalledAppNames(LIBERTY_READ_LISTENER_FILTER_APP_NAME);
             LOG.info("addAppToServer : " + LIBERTY_READ_LISTENER_FILTER_APP_NAME + " already installed : " + !appInstalled.isEmpty());
 
             if (appInstalled.isEmpty())
-            ShrinkHelper.exportDropinAppToServer(SHARED_SERVER.getLibertyServer(), LibertyReadListenerFilterApp);
+                ShrinkHelper.exportDropinAppToServer(SHARED_SERVER.getLibertyServer(), LibertyReadListenerFilterApp);
 
             appInstalled = SHARED_SERVER.getLibertyServer().getInstalledAppNames(LIBERTY_READ_WRITE_LISTENER_APP_NAME);
             LOG.info("addAppToServer : " + LIBERTY_READ_WRITE_LISTENER_APP_NAME + " already installed : " + !appInstalled.isEmpty());
 
             if (appInstalled.isEmpty())
-            ShrinkHelper.exportDropinAppToServer(SHARED_SERVER.getLibertyServer(), LibertyReadWriteListenerApp);
+                ShrinkHelper.exportDropinAppToServer(SHARED_SERVER.getLibertyServer(), LibertyReadWriteListenerApp);
         }
         SHARED_SERVER.startIfNotStarted();
-        
+
         SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* " + LIBERTY_READ_WRITE_LISTENER_APP_NAME);
         SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* " + LIBERTY_READ_LISTENER_FILTER_APP_NAME);
         SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* " + LIBERTY_WRITE_LISTENER_FILTER_APP_NAME);
@@ -137,7 +140,8 @@ public class AsyncReadListenerHttpUnit extends LoggingTest {
                 con.setRequestProperty("TestInputData", String.valueOf(inputData)); //Use these request headers to correlate the requests in server log
                 con.setDoOutput(true);
                 con.setDoInput(true);
-                con.setChunkedStreamingMode(32768);
+                //con.setChunkedStreamingMode(32768);           //see RTC 273647
+                con.setFixedLengthStreamingMode(inputData);
                 con.connect();
                 LOG.info("\n Writing the request to the server");
                 os = con.getOutputStream();
@@ -226,7 +230,7 @@ public class AsyncReadListenerHttpUnit extends LoggingTest {
     public void test_Exception_onSecondReadListener() throws Exception {
 
         // Make sure the test framework knows that SRVE9008E is expected
-        
+
         LOG.info("\n /************************************************************************************/");
         LOG.info("\n [WebContainer | AsyncReadListenerHttpUnit]: test_Exception_onSecondReadListener Start");
         LOG.info("\n /************************************************************************************/");
@@ -274,7 +278,7 @@ public class AsyncReadListenerHttpUnit extends LoggingTest {
     public void test_Exception_onNullReadListener() throws Exception {
 
         // Make sure the test framework knows that SRVE9004E is expected
-        
+
         LOG.info("\n /************************************************************************************/");
         LOG.info("\n [WebContainer | AsyncReadListenerHttpUnit]: test_Exception_onNullReadListener Start");
         LOG.info("\n /************************************************************************************/");
@@ -321,7 +325,7 @@ public class AsyncReadListenerHttpUnit extends LoggingTest {
     public void test_Exception_onReadingData_isReadyFalse() throws Exception {
 
         // Make sure the test framework knows that SRVE9010E is expected
-        
+
         LOG.info("\n /************************************************************************************/");
         LOG.info("\n [WebContainer | AsyncReadListenerHttpUnit]: test_Exception_onReadingData_isReadyFalse Start");
         LOG.info("\n /************************************************************************************/");
@@ -408,7 +412,7 @@ public class AsyncReadListenerHttpUnit extends LoggingTest {
     public void test_IsReadyAfterIsReadyFalse() throws Exception {
 
         // Make sure the test framework knows that SRVE9010E is expected
-        
+
         LOG.info("\n /************************************************************************************/");
         LOG.info("\n [WebContainer | AsyncReadListenerHttpUnit]: test_IsReadyAfterIsReadyFalse Start");
         LOG.info("\n /************************************************************************************/");
@@ -687,7 +691,7 @@ public class AsyncReadListenerHttpUnit extends LoggingTest {
     public void test_Exception_setRL_onNonAsyncServlet() throws HttpException, IOException {
 
         // Make sure the test framework knows that SRVE9006E is expected
-        
+
         LOG.info("\n /************************************************************************************/");
         LOG.info("\n [WebContainer | AsyncReadListenerHttpUnit]: test_Exception_setRL_onNonAsyncServlet Start");
         LOG.info("\n /************************************************************************************/");

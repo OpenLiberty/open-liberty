@@ -1,0 +1,61 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/TransactionExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+23001=Erreur lors de la recherche d''une ressource de transaction externe sous le nom JNDI [{0}]
+
+23002=Erreur lors de l''obtention de l''\u00e9tat des transactions g\u00e9r\u00e9es en externe
+
+23003=Erreur lors de l''obtention des transactions g\u00e9r\u00e9es en externe
+
+23004=Erreur lors de l''obtention du gestionnaire de transactions
+
+23005=Erreur lors de la liaison \u00e0 une transaction g\u00e9r\u00e9e en externe
+
+23006=Erreur lors du d\u00e9marrage d''une transaction g\u00e9r\u00e9e en externe
+
+23007=Erreur lors de la validation d''une transaction g\u00e9r\u00e9e en externe
+
+23008=Erreur lors de l''annulation d''une transaction g\u00e9r\u00e9e en externe
+
+23009=Erreur lors du marquage d''une transaction g\u00e9r\u00e9e en externe pour annulation
+
+23010=Aucune transaction g\u00e9r\u00e9e n''est actuellement active pour cette unit\u00e9 d''ex\u00e9cution
+
+23011=L''\u00e9l\u00e9ment UnitOfWork [{0}] a \u00e9t\u00e9 rendu inactif avant que la transaction g\u00e9r\u00e9e en externe associ\u00e9e ne soit termin\u00e9e.
+
+23012=Aucune transaction n''est actuellement active
+
+23013=La transaction est actuellement active
+
+23014=Impossible d''utiliser un \u00e9l\u00e9ment EntityTransaction lors de l''utilisation de JTA.
+
+23015=Impossible d''inscrire plusieurs sources de donn\u00e9es dans la transaction.
+
+23016=Exception dans l''ex\u00e9cution de proxy.
+

@@ -13,34 +13,12 @@
 -->
 
 <!-- persistence.xml schema -->
-<xsd:schema targetNamespace="https://xmlns.jakarta.ee/xml/ns/persistence" 
+<xsd:schema targetNamespace="https://jakarta.ee/xml/ns/persistence" 
   xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-  xmlns:persistence="https://xmlns.jakarta.ee/xml/ns/persistence"
+  xmlns:persistence="https://jakarta.ee/xml/ns/persistence"
   elementFormDefault="qualified" 
   attributeFormDefault="unqualified" 
   version="3.0">
-
-  <xsd:annotation>
-    <xsd:documentation>
-      @(#)persistence_3_0.xsd 3.0  February 10, 2020
-    </xsd:documentation>
-  </xsd:annotation>
-
-  <xsd:annotation>
-    <xsd:documentation>
-
-  Copyright (c) 2008, 2020 Oracle and/or its affiliates. All rights reserved.
-
-  This program and the accompanying materials are made available under the
-  terms of the Eclipse Public License v. 2.0 which is available at
-  http://www.eclipse.org/legal/epl-2.0,
-  or the Eclipse Distribution License v. 1.0 which is available at
-  http://www.eclipse.org/org/documents/edl-v10.php.
-
-  SPDX-License-Identifier: EPL-2.0 OR BSD-3-Clause
-
-    </xsd:documentation>
-  </xsd:annotation>
 
    <xsd:annotation>
      <xsd:documentation><![CDATA[
@@ -52,15 +30,15 @@
      Persistence configuration files must indicate
      the persistence schema by using the persistence namespace:
 
-     https://xmlns.jakarta.ee/xml/ns/persistence
+     https://jakarta.ee/xml/ns/persistence
 
      and indicate the version of the schema by
      using the version element as shown below:
 
-      <persistence xmlns="https://xmlns.jakarta.ee/xml/ns/persistence"
+      <persistence xmlns="https://jakarta.ee/xml/ns/persistence"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="https://xmlns.jakarta.ee/xml/ns/persistence
-          https://xmlns.jakarta.ee/xml/ns/persistence/persistence_3_0.xsd"
+        xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence
+          https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd"
         version="3.0">
           ...
       </persistence>

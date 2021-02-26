@@ -25,13 +25,14 @@ import com.ibm.ws.testtooling.vehicle.resources.JPAResource;
 import com.ibm.ws.testtooling.vehicle.resources.TestExecutionResources;
 
 public class InheritanceTestLogic extends AbstractTestLogic {
+
     /**
      * Test basic CRUD operations with the targeted entity type to verify basic inheritance.
-     *
+     * <p>
      * Points: 13
      */
     public void testInheritance001(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                   Object managedComponentObject) {
+                                   Object managedComponentObject) throws Throwable {
         // Verify parameters
         if (testExecCtx == null || testExecResources == null) {
             Assert.fail("InheritanceTestLogic.testInheritance001: Missing context and/or resources.  Cannot execute the test.");
@@ -54,11 +55,13 @@ public class InheritanceTestLogic extends AbstractTestLogic {
             return;
         }
 
+        int id = 1;
+
         // Execute Test Case
         try {
             System.out.println("InheritanceTestLogic.testInheritance001(): Begin");
 
-            System.out.println("1) Create and persist " + targetEntityType.getEntityName() + " (id=1).");
+            System.out.println("1) Create and persist " + targetEntityType.getEntityName() + " (id=" + id + ").");
 
             System.out.println("Beginning new transaction...");
             jpaResource.getTj().beginTransaction();
@@ -74,8 +77,8 @@ public class InheritanceTestLogic extends AbstractTestLogic {
             // Construct a new entity instance
             System.out.println("Creating new object instance of " + targetEntityType.getEntityName() + "...");
             ITreeRoot new_entity = (ITreeRoot) constructNewEntityObject(targetEntityType);
-            new_entity.setId(1);
-            new_entity.setName(targetEntityType.getEntityName() + "-1");
+            new_entity.setId(id);
+            new_entity.setName(targetEntityType.getEntityName() + "-" + id);
 
             if (new_entity instanceof ITreeLeaf1 || new_entity instanceof IMSCEntity) {
                 ((ITreeLeaf1) new_entity).setIntVal(42);
@@ -110,27 +113,18 @@ public class InheritanceTestLogic extends AbstractTestLogic {
 
             // Verify that em.find() returned an object.
             Assert.assertNotNull("Assert that the find operation did not return null", find_entity);
-            if (find_entity == null) {
-                // If the find returned null, then terminate the remainder of the test.
-                Assert.fail("Find returned null, cancelling the remainder of the test.");
-                return;
-            }
 
             // Perform basic verifications (4 points)
-            Assert.assertTrue(
-                              "Assert find did not return the original object",
+            Assert.assertTrue("Assert find did not return the original object",
                               new_entity != find_entity);
-            Assert.assertTrue(
-                              "Assert entity returned by find is managed by the persistence context.",
+            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.",
                               jpaResource.getEm().contains(find_entity));
-            Assert.assertEquals(
-                                "Assert that the entity's id is 1",
+            Assert.assertEquals("Assert that the entity's id is " + id,
                                 find_entity.getId(),
-                                1);
-            Assert.assertEquals(
-                                "Assert that the entity's name field is \"" + targetEntityType.getEntityName() + "-1" + "\"",
+                                id);
+            Assert.assertEquals("Assert that the entity's name field is \"" + targetEntityType.getEntityName() + "-" + id + "\"",
                                 find_entity.getName(),
-                                targetEntityType.getEntityName() + "-1");
+                                targetEntityType.getEntityName() + "-" + id);
 
             // Perform Entity-type specific verifications (1 point)
             if (find_entity instanceof ITreeLeaf1 || new_entity instanceof IMSCEntity) {
@@ -178,30 +172,21 @@ public class InheritanceTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().joinTransaction();
             }
 
-            ITreeRoot find2_entity = (ITreeRoot) jpaResource.getEm().find(resolveEntityClass(targetEntityType), 1);
+            ITreeRoot find2_entity = (ITreeRoot) jpaResource.getEm().find(resolveEntityClass(targetEntityType), id);
             System.out.println("Object returned by find: " + find2_entity);
 
             // Verify that em.find() returned an object.
             Assert.assertNotNull("Assert that the find operation did not return null", find2_entity);
-            if (find2_entity == null) {
-                // If the find returned null, then terminate the remainder of the test.
-                Assert.fail("Find returned null, cancelling the remainder of the test.");
-                return;
-            }
 
             // Perform basic verifications (4 points)
-            Assert.assertTrue(
-                              "Assert find did not return the original object",
+            Assert.assertTrue("Assert find did not return the original object",
                               new_entity != find2_entity);
-            Assert.assertTrue(
-                              "Assert entity returned by find is managed by the persistence context.",
+            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.",
                               jpaResource.getEm().contains(find2_entity));
-            Assert.assertEquals(
-                                "Assert that the entity's id is 1",
+            Assert.assertEquals("Assert that the entity's id is " + id,
                                 find2_entity.getId(),
-                                1);
-            Assert.assertEquals(
-                                "Assert that the entity's name field is \"" + find_entity.getName() + "\"",
+                                id);
+            Assert.assertEquals("Assert that the entity's name field is \"" + find_entity.getName() + "\"",
                                 find_entity.getName(),
                                 find2_entity.getName());
 
@@ -229,7 +214,7 @@ public class InheritanceTestLogic extends AbstractTestLogic {
             // 6) Delete the entity from the database
             System.out.println("5) Delete the entity from the database");
 
-            System.out.println("Removing " + targetEntityType.getEntityName() + "(id=1)...");
+            System.out.println("Removing " + targetEntityType.getEntityName() + "(id=" + id + ")...");
             jpaResource.getEm().remove(find2_entity);
 
             System.out.println("Committing transaction...");
@@ -242,19 +227,14 @@ public class InheritanceTestLogic extends AbstractTestLogic {
             jpaResource.getEm().clear();
 
             // Perform the find operation
-            System.out.println("Finding " + targetEntityType.getEntityName() + "(id=1)...");
-            ITreeRoot removed_entity = (ITreeRoot) jpaResource.getEm().find(resolveEntityClass(targetEntityType), 1);
+            System.out.println("Finding " + targetEntityType.getEntityName() + "(id=" + id + ")...");
+            ITreeRoot removed_entity = (ITreeRoot) jpaResource.getEm().find(resolveEntityClass(targetEntityType), id);
             System.out.println("Object returned by find: " + removed_entity);
 
             // Verify that the entity could not be found.
             Assert.assertNull("Assert that the find operation did return null", removed_entity);
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("InheritanceTestLogic.testInheritance001(): End");
         }
@@ -262,11 +242,11 @@ public class InheritanceTestLogic extends AbstractTestLogic {
 
     /**
      * Test basic CRUD operations with the targeted entity type to verify mapped superclass inheritance.
-     *
+     * <p>
      * Points: 13
      */
     public void testMSCInheritance001(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                      Object managedComponentObject) {
+                                      Object managedComponentObject) throws Throwable {
         // Verify parameters
         if (testExecCtx == null || testExecResources == null) {
             Assert.fail("InheritanceTestLogic.testMSCInheritance001: Missing context and/or resources.  Cannot execute the test.");
@@ -289,11 +269,13 @@ public class InheritanceTestLogic extends AbstractTestLogic {
             return;
         }
 
+        int id = 1;
+
         // Execute Test Case
         try {
             System.out.println("InheritanceTestLogic.testMSCInheritance001(): Begin");
 
-            System.out.println("1) Create and persist " + targetEntityType.getEntityName() + " (id=1).");
+            System.out.println("1) Create and persist " + targetEntityType.getEntityName() + " (id=" + id + ").");
 
             System.out.println("Beginning new transaction...");
             jpaResource.getTj().beginTransaction();
@@ -309,7 +291,7 @@ public class InheritanceTestLogic extends AbstractTestLogic {
             // Construct a new entity instance
             System.out.println("Creating new object instance of " + targetEntityType.getEntityName() + "...");
             IMSCEntity new_entity = (IMSCEntity) constructNewEntityObject(targetEntityType);
-            new_entity.setId(1);
+            new_entity.setId(id);
             new_entity.setName("Dr. Doom");
             new_entity.setDescription("Latveria");
 
@@ -332,35 +314,24 @@ public class InheritanceTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().joinTransaction();
             }
 
-            IMSCEntity find_entity = (IMSCEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), 1);
+            IMSCEntity find_entity = (IMSCEntity) jpaResource.getEm().find(resolveEntityClass(targetEntityType), id);
             System.out.println("Object returned by find: " + find_entity);
 
             // Verify that em.find() returned an object.
             Assert.assertNotNull("Assert that the find operation did not return null", find_entity);
-            if (find_entity == null) {
-                // If the find returned null, then terminate the remainder of the test.
-                Assert.fail("Find returned null, cancelling the remainder of the test.");
-                return;
-            }
 
             // Perform basic verifications (4 points)
-            Assert.assertTrue(
-                              "Assert find did not return the original object",
+            Assert.assertTrue("Assert find did not return the original object",
                               new_entity != find_entity);
-            Assert.assertTrue(
-                              "Assert entity returned by find is managed by the persistence context.",
+            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.",
                               jpaResource.getEm().contains(find_entity));
-            Assert.assertEquals(
-                                "Assert that the entity's id is 1",
+            Assert.assertEquals("Assert that the entity's id is " + id,
                                 find_entity.getId(),
-                                1);
-            Assert.assertEquals(
-                                "Assert that the entity's name field is \"Dr. Doom\"",
+                                id);
+            Assert.assertEquals("Assert that the entity's name field is \"Dr. Doom\"",
                                 find_entity.getName(),
                                 "Dr. Doom");
-
-            Assert.assertEquals(
-                                "Assert that the entity's description field is \"Latveria\"",
+            Assert.assertEquals("Assert that the entity's description field is \"Latveria\"",
                                 find_entity.getDescription(),
                                 "Latveria");
 
@@ -385,42 +356,31 @@ public class InheritanceTestLogic extends AbstractTestLogic {
                 jpaResource.getEm().joinTransaction();
             }
 
-            IMSC find2_entity = (IMSC) jpaResource.getEm().find(resolveEntityClass(targetEntityType), 1);
+            IMSC find2_entity = (IMSC) jpaResource.getEm().find(resolveEntityClass(targetEntityType), id);
             System.out.println("Object returned by find: " + find2_entity);
 
             // Verify that em.find() returned an object.
             Assert.assertNotNull("Assert that the find operation did not return null", find2_entity);
-            if (find2_entity == null) {
-                // If the find returned null, then terminate the remainder of the test.
-                Assert.fail("Find returned null, cancelling the remainder of the test.");
-                return;
-            }
 
             // Perform basic verifications (4 points)
-            Assert.assertTrue(
-                              "Assert find did not return the original object",
+            Assert.assertTrue("Assert find did not return the original object",
                               new_entity != find2_entity);
-            Assert.assertTrue(
-                              "Assert entity returned by find is managed by the persistence context.",
+            Assert.assertTrue("Assert entity returned by find is managed by the persistence context.",
                               jpaResource.getEm().contains(find2_entity));
-            Assert.assertEquals(
-                                "Assert that the entity's id is 1",
+            Assert.assertEquals("Assert that the entity's id is " + id,
                                 find2_entity.getId(),
-                                1);
-            Assert.assertEquals(
-                                "Assert that the entity's name field is \"Reed Richards\"",
+                                id);
+            Assert.assertEquals("Assert that the entity's name field is \"Reed Richards\"",
                                 "Reed Richards",
                                 find2_entity.getName());
-
-            Assert.assertEquals(
-                                "Assert that the entity's description field is \"Latveria\"",
+            Assert.assertEquals("Assert that the entity's description field is \"Latveria\"",
                                 find_entity.getDescription(),
                                 "Baxtrr Building");
 
             // 6) Delete the entity from the database
             System.out.println("5) Delete the entity from the database");
 
-            System.out.println("Removing " + targetEntityType.getEntityName() + "(id=1)...");
+            System.out.println("Removing " + targetEntityType.getEntityName() + "(id=" + id + ")...");
             jpaResource.getEm().remove(find2_entity);
 
             System.out.println("Committing transaction...");
@@ -433,19 +393,14 @@ public class InheritanceTestLogic extends AbstractTestLogic {
             jpaResource.getEm().clear();
 
             // Perform the find operation
-            System.out.println("Finding " + targetEntityType.getEntityName() + "(id=1)...");
-            ITreeRoot removed_entity = (ITreeRoot) jpaResource.getEm().find(resolveEntityClass(targetEntityType), 1);
+            System.out.println("Finding " + targetEntityType.getEntityName() + "(id=" + id + ")...");
+            ITreeRoot removed_entity = (ITreeRoot) jpaResource.getEm().find(resolveEntityClass(targetEntityType), id);
             System.out.println("Object returned by find: " + removed_entity);
 
             // Verify that the entity could not be found.
             Assert.assertNull("Assert that the find operation did return null", removed_entity);
 
             System.out.println("Ending test.");
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println("InheritanceTestLogic.testMSCInheritance001(): End");
         }

@@ -1243,12 +1243,19 @@ case "$ACTION" in
 
   # Package up the runtime and target server configuration
   package)
-    serverEnv
+    if serverEnvAndJVMOptions
+    then
+      :
+    else
+     exit $?
+    fi
+    
     # Check to see if the server exists
     if checkServer true
     then
       serverPIDStatus
-      javaCmd '' "${SERVER_NAME}" --pid="${PID}" --package "$@" 
+      JVM_OPTIONS_QUOTED=${SERVER_JVM_OPTIONS_QUOTED}
+      javaCmd '' "${JVM_OPTIONS_QUOTED}" "${SERVER_NAME}" --pid="${PID}" --package "$@" 
       exit $?
     else
       exit 2

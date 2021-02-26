@@ -1,0 +1,26 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+# NLS_MESSAGEFORMAT_ALL
+#
+#CMVCPATHNAME com.ibm.ws.jaxrs20.client/resources/com/ibm/ws/jaxrs20/client/internal/resources/JAXRSClientMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#COMPONENTPREFIX CWWKW
+#COMPONENTNAMEFOR CWWKW WebSphere JAXRS20 Client Code
+#RANGE 0750 - 0799
+#
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# {0} is a space separated list of interface class names
+rest.client.interface.using.request.scope=CWWKW0750I: The following interfaces are configured as RequestScoped which will result in slower performance: {0} Consider using ApplicationScoped for better performance.
+rest.client.interface.using.request.scope.explanation=MicroProfile Rest Client interfaces that are request scoped are initialized on each request which often involves redundant computations. Application scoped interfaces will only perform the initialization process once per application instance. An interface may be considered request scoped if it is annotated with @RequestScoped or if it is injected into a request scoped CDI bean with either the @Dependent annotation or no scope annotation.  
+rest.client.interface.using.request.scope.useraction=Unless there is a valid reason not to, consider using the @ApplicationScoped annotation on the interface to avoid redundant initialization.

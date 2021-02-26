@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2020 IBM Corporation and others.
+ * Copyright (c) 2013, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,8 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.webcontainer.servlet31.fat.tests;
 
-import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -20,8 +20,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
@@ -29,7 +29,6 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -43,16 +42,13 @@ import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.SharedServer;
 import com.ibm.ws.webcontainer.security.test.servlets.PostParamsClient;
 
-import componenttest.annotation.SkipForRepeat;
-import componenttest.topology.impl.LibertyServer;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.topology.impl.LibertyServer;
 
-//Temporarily skipped for EE9 jakarta until jakarta repeat bug is fixed and jakartaee 9 feature is developed
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
-@SkipForRepeat(EE9_FEATURES)
 public class FormLoginReadListenerTest extends LoggingTest {
     private static final Logger LOG = Logger.getLogger(FormLoginReadListenerTest.class.getName());
 
@@ -79,21 +75,29 @@ public class FormLoginReadListenerTest extends LoggingTest {
             Set<String> appInstalled = SHARED_SERVER.getLibertyServer().getInstalledAppNames(FORM_LOGIN_READ_LISTENER_APP_NAME);
             LOG.info("addAppToServer : " + FORM_LOGIN_READ_LISTENER_APP_NAME + " already installed : " + !appInstalled.isEmpty());
             if (appInstalled.isEmpty())
-              ShrinkHelper.exportAppToServer(SHARED_SERVER.getLibertyServer(), FormLoginReadListenerApp);
-          }
+                ShrinkHelper.exportAppToServer(SHARED_SERVER.getLibertyServer(), FormLoginReadListenerApp);
+        }
         //Replace config for the other server
         LibertyServer wlp = SHARED_SERVER.getLibertyServer();
         wlp.saveServerConfiguration();
+        wlp.setMarkToEndOfLog();
         wlp.setServerConfigurationFile("FormLogin_ReadListener/server.xml");
-        
+
         SHARED_SERVER.startIfNotStarted();
-        SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* " + FORM_LOGIN_READ_LISTENER_APP_NAME);
+        wlp.waitForStringInLogUsingMark("CWWKZ0001I.* " + FORM_LOGIN_READ_LISTENER_APP_NAME);
+
+        // Wait for LTPA key to be available to avoid CWWKS4000E
+        // CWWKS4105I: LTPA configuration is ready after x seconds
+        assertNotNull("CWWKS4105I LTPA configuration message not found.",
+                      wlp.waitForStringInLogUsingMark("CWWKS4105I.*"));
     }
-    
+
     @AfterClass
     public static void testCleanup() throws Exception {
         // test cleanup
+        SHARED_SERVER.getLibertyServer().setMarkToEndOfLog();
         SHARED_SERVER.getLibertyServer().restoreServerConfiguration();
+        SHARED_SERVER.getLibertyServer().waitForConfigUpdateInLogUsingMark(null);
         if (SHARED_SERVER.getLibertyServer() != null && SHARED_SERVER.getLibertyServer().isStarted()) {
             SHARED_SERVER.getLibertyServer().stopServer("SRVE8015E:.*");
         }
@@ -177,7 +181,7 @@ public class FormLoginReadListenerTest extends LoggingTest {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.fat.util.LoggingTest#getSharedServer()
      */
     @Override

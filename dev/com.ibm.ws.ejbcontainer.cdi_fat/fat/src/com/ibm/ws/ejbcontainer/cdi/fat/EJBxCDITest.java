@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2018 IBM Corporation and others.
+ * Copyright (c) 2010, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,12 +23,14 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.ejbcontainer.cdi.jcdi.web.BeanManagerInjectionServlet;
 import com.ibm.ws.ejbcontainer.cdi.jcdi.web.InjectMultiLocalEJBServlet;
 import com.ibm.ws.ejbcontainer.cdi.jcdi.web.InterceptorIntegrationServlet;
+import com.ibm.ws.ejbcontainer.cdi.jcdi.web.ResourceServlet;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -39,11 +41,12 @@ public class EJBxCDITest extends FATServletClient {
     @Server("com.ibm.ws.ejbcontainer.cdi.fat.EJB-CDI-Server")
     @TestServlets({ @TestServlet(servlet = BeanManagerInjectionServlet.class, contextRoot = "EJB31JCDIWeb"),
                     @TestServlet(servlet = InjectMultiLocalEJBServlet.class, contextRoot = "EJB31JCDIWeb"),
-                    @TestServlet(servlet = InterceptorIntegrationServlet.class, contextRoot = "EJB31JCDIWeb") })
+                    @TestServlet(servlet = InterceptorIntegrationServlet.class, contextRoot = "EJB31JCDIWeb"),
+                    @TestServlet(servlet = ResourceServlet.class, contextRoot = "EJB31JCDIWeb") })
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification().andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.cdi.fat.EJB-CDI-Server"));
+    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().forServers("com.ibm.ws.ejbcontainer.cdi.fat.EJB-CDI-Server")).andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.cdi.fat.EJB-CDI-Server")).andWith(new JakartaEE9Action().forServers("com.ibm.ws.ejbcontainer.cdi.fat.EJB-CDI-Server"));
 
     @BeforeClass
     public static void setUp() throws Exception {

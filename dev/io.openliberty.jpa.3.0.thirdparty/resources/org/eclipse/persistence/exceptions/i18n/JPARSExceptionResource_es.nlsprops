@@ -1,0 +1,69 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/JPARSExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+61000=No se ha podido encontrar un tipo de entidad {0} con el ID {1} en la unidad de persistencia {2}.
+
+61001=La entidad a la que hace referencia el enlace no existe, tipo de entidad {0}, ID {1}.
+
+61002=Configuraci\u00f3n no v\u00e1lida.
+
+61003=Se est\u00e1 creando un tipo de entidad {0} en la unidad de persistencia {1} con PUT, pero la entidad no es idempotente debido a una generaci\u00f3n de secuencia o una disposici\u00f3n en cascada.
+
+61004=El contexto de persistencia {0} no se ha podido arrancar.
+
+61005=No se ha encontrado la clase o el descriptor de clase para el tipo de entidad {0} en la unidad de persistencia {1}.
+
+61006=No se ha encontrado la correlaci\u00f3n de bases de datos adecuada para el atributo {0}, para el tipo de entidad {1} y el ID {2}, en la unidad de persistencia {3}.
+
+61007=No se ha encontrado el atributo {0} para el tipo de entidad {1} y el ID {2} en la unidad de persistencia {3}.
+
+61008=No se ha encontrado la consulta de selecci\u00f3n para el atributo {0}, para el tipo de entidad {1} y el ID {2}, en la unidad de persistencia {3}.
+
+61009=Par\u00e1metros no v\u00e1lidos en el URL de solicitud de paginaci\u00f3n.
+
+61010=No se ha podido actualizar el atributo {0} para el tipo de entidad {1} y el ID {2} en la unidad de persistencia {3}.
+
+61011=Par\u00e1metros no v\u00e1lidos en el URL de solicitud de eliminaci\u00f3n de atributo para el atributo {0}, para el tipo de entidad {1} y el ID {2}, en la unidad de persistencia {3}.
+
+61012=No se ha podido crear correctamente una respuesta para la solicitud de b\u00fasqueda del atributo {0} para el tipo de entidad {1} y el ID {2} en la unidad de persistencia {3}.
+
+61013=La b\u00fasqueda del bean de sesi\u00f3n con el nombre JNDI {0} ha fallado.
+
+61014=No se ha podido crear correctamente una respuesta para la solicitud de consulta con nombre para la consulta {0} en la unidad de persistencia {1}.
+
+61015=Versi\u00f3n de servicio no v\u00e1lida {0} en la solicitud.
+
+61016=Par\u00e1metro de consulta de paginaci\u00f3n (l\u00edmite o desplazamiento) utilizado para el recurso no paginable.
+
+61017=No pueden utilizarse "fields" y "excludeFields" en la misma solicitud.
+
+61018=El valor del par\u00e1metro no es v\u00e1lido ("{0}" = "{1}").
+
+61999=Se ha producido un {0}.
+

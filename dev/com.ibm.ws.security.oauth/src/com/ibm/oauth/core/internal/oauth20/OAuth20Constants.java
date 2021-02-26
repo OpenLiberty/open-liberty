@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,14 +10,11 @@
  *******************************************************************************/
 package com.ibm.oauth.core.internal.oauth20;
 
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
 import com.ibm.oauth.core.internal.OAuthConstants;
-import com.ibm.ws.kernel.service.util.JavaInfo;
 
 public interface OAuth20Constants extends OAuthConstants {
 
@@ -87,6 +84,10 @@ public interface OAuth20Constants extends OAuthConstants {
     public static final String ISSUER_IDENTIFIER = "issuerIdentifier";
     public static final String REFRESH_TOKEN_KEY = "refresh_key";
     public static final String OLD_REFRESH_TOKEN_KEY = "old_refresh_key";
+
+    public static final String OAUTH_REQUEST_OBJECT_ATTR_NAME = "OAuth20Request";
+    public static final String OIDC_REQUEST_OBJECT_ATTR_NAME = "OidcRequest";
+
     /*
      * Token types, subtypes, and token map data
      */
@@ -162,14 +163,6 @@ public interface OAuth20Constants extends OAuthConstants {
 
     public static final String DEFAULT_AUTHZ_LOGIN_URL = "login.jsp";
 
-    public static final String JAVA_VERSION = AccessController.doPrivileged(new PrivilegedAction<String>() {
-        @Override
-        public String run() {
-            return System.getProperty("java.version");
-        }
-    });
-    public static final boolean JAVA_VERSION_6 = JavaInfo.majorVersion() == 6;
-    public static final boolean JAVA_VERSION_7 = JavaInfo.majorVersion() == 7;
     public static final String PROXY_HOST = "X-Forwarded-Host";
     public final static String ATTRTYPE_PARAM_HEADER = "urn:ibm:names:header:param";
 

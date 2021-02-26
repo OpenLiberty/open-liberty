@@ -474,5 +474,10 @@ error.root.must.be.server=CWWKG0105E: Il documento di configurazione {0} deve in
 error.root.must.be.server.explanation=La configurazione deve essere contenuta in un elemento server o in un elemento client. 
 error.root.must.be.server.useraction=Aggiungere un elemento server o client come root del file di configurazione. 
 
+error.bad.variable.file=CWWKG0106E: Impossibile leggere il file {0}. 
+error.bad.variable.file.explanation=Il file non pu\u00f2 essere caricato come una variabile perch\u00e9 non pu\u00f2 essere letto. 
+error.bad.variable.file.useraction=Verificare che il file contenga del testo e controllare le autorizzazioni del sistema operativo per il file.
+
+
 # Non-TR message
 error.invalidOCDRef=ERRORE: il PID metatipo [{0}] specifica un ID di definizione della classe oggetto inesistente [{1}]

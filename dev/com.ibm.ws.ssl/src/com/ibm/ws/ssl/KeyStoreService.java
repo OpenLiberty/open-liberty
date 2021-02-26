@@ -11,6 +11,7 @@
 package com.ibm.ws.ssl;
 
 import java.security.Key;
+import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.PrivateKey;
 import java.security.cert.Certificate;
@@ -199,4 +200,13 @@ public interface KeyStoreService {
      * @throws CertificateException
      */
     public void setKeyEntryToKeyStore(String keyStoreName, String alias, Key key, Certificate[] chain) throws KeyStoreException, CertificateException;
+
+    /**
+     * Returns the KeyStore instance for the specified keystore name.
+     *
+     * @param keyStoreName The keystore's configuration ID
+     * @return KeyStore
+     * @throws KeyStoreException
+     */
+    public KeyStore getKeyStore(String keyStoreName) throws KeyStoreException;
 }

@@ -16,6 +16,8 @@ import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlType;
 import org.w3c.dom.Element;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 
 /**
  * <p>Java class for ReferencePropertiesType complex type.
@@ -40,6 +42,7 @@ import org.w3c.dom.Element;
 @XmlType(name = "ReferencePropertiesType", propOrder = {
     "any"
 })
+@Trivial
 public class ReferencePropertiesType {
 
     @XmlAnyElement(lax = true)

@@ -24,9 +24,10 @@ import com.ibm.websphere.ras.TraceComponent;
 
 
 public class AuthorizationFilter extends HttpFilter {
+    private static final long serialVersionUID = 82334983658392003L;
 
     private final static TraceComponent tc = Tr.register(AuthorizationFilter.class);
-    
+
     private final static AuthorizationFilter INSTANCE = new AuthorizationFilter();
 
     private final static ThreadLocal<HttpServletRequest> tlRequest = new ThreadLocal<>();

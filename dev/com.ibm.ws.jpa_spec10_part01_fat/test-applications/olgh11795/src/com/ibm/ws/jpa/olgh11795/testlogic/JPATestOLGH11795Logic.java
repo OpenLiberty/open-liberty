@@ -30,7 +30,7 @@ import com.ibm.ws.testtooling.vehicle.resources.TestExecutionResources;
 public class JPATestOLGH11795Logic extends AbstractTestLogic {
 
     public void testJoinColumnWithSameDuplicateName(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                                    Object managedComponentObject) {
+                                                    Object managedComponentObject) throws Throwable {
         final String testName = getTestName();
 
         // Verify parameters
@@ -70,11 +70,6 @@ public class JPATestOLGH11795Logic extends AbstractTestLogic {
             Assert.assertNotNull(e);
             SimpleParentEntityOLGH11795 p = e.getParent();
             Assert.assertEquals(pid, p.getId());
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testName + ": End");
         }

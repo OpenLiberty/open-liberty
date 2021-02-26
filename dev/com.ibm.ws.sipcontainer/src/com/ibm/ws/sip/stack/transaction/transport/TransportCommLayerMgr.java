@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003,2009 IBM Corporation and others.
+ * Copyright (c) 2003, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,41 +10,14 @@
  *******************************************************************************/
 package com.ibm.ws.sip.stack.transaction.transport;
 
-import jain.protocol.ip.sip.ListeningPoint;
-import jain.protocol.ip.sip.SipEvent;
-import jain.protocol.ip.sip.SipException;
-import jain.protocol.ip.sip.SipParseException;
-import jain.protocol.ip.sip.SipProvider;
-import jain.protocol.ip.sip.address.SipURL;
-import jain.protocol.ip.sip.address.URI;
-import jain.protocol.ip.sip.header.CallIdHeader;
-import jain.protocol.ip.sip.header.Header;
-import jain.protocol.ip.sip.header.HeaderIterator;
-import jain.protocol.ip.sip.header.HeaderParseException;
-import jain.protocol.ip.sip.header.MaxForwardsHeader;
-import jain.protocol.ip.sip.header.NameAddressHeader;
-import jain.protocol.ip.sip.header.RetryAfterHeader;
-import jain.protocol.ip.sip.header.ViaHeader;
-import jain.protocol.ip.sip.message.Message;
-import jain.protocol.ip.sip.message.MessageFactory;
-import jain.protocol.ip.sip.message.Request;
-import jain.protocol.ip.sip.message.Response;
-
 import java.io.IOException;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
-import com.ibm.sip.util.log.Log;
-import com.ibm.sip.util.log.LogMgr;
-import com.ibm.sip.util.log.Situation;
+import com.ibm.sip.util.log.*;
 import com.ibm.ws.jain.protocol.ip.sip.ListeningPointImpl;
 import com.ibm.ws.jain.protocol.ip.sip.SipJainFactories;
 import com.ibm.ws.jain.protocol.ip.sip.header.ViaHeaderImpl;
-import com.ibm.ws.jain.protocol.ip.sip.message.MessageImpl;
-import com.ibm.ws.jain.protocol.ip.sip.message.RequestImpl;
-import com.ibm.ws.jain.protocol.ip.sip.message.ResponseImpl;
-import com.ibm.ws.jain.protocol.ip.sip.message.SipResponseCodes;
+import com.ibm.ws.jain.protocol.ip.sip.message.*;
 import com.ibm.ws.sip.container.pmi.PerformanceMgr;
 import com.ibm.ws.sip.parser.MessageParser;
 import com.ibm.ws.sip.properties.StackProperties;
@@ -57,16 +30,18 @@ import com.ibm.ws.sip.stack.transaction.common.BadRequestException;
 import com.ibm.ws.sip.stack.transaction.transactions.SIPTransaction;
 import com.ibm.ws.sip.stack.transaction.transactions.ct.SIPClientTranaction;
 import com.ibm.ws.sip.stack.transaction.transactions.st.SIPServerTransaction;
-import com.ibm.ws.sip.stack.transaction.transport.connections.SIPConnection;
-import com.ibm.ws.sip.stack.transaction.transport.connections.SIPListenningConnection;
-import com.ibm.ws.sip.stack.transaction.transport.connections.SipMessageByteBuffer;
+import com.ibm.ws.sip.stack.transaction.transport.connections.*;
 import com.ibm.ws.sip.stack.transaction.transport.connections.udp.SIPListenningConnectionImpl;
 import com.ibm.ws.sip.stack.transaction.transport.routers.SLSPRouter;
 import com.ibm.ws.sip.stack.transaction.util.ApplicationProperties;
 import com.ibm.ws.sip.stack.transaction.util.SIPStackUtil;
-import com.ibm.ws.sip.stack.util.SipStackUtil;
-import com.ibm.ws.sip.stack.util.StackExternalizedPerformanceMgr;
-import com.ibm.ws.sip.stack.util.ThreadLocalStorage;
+import com.ibm.ws.sip.stack.util.*;
+
+import jain.protocol.ip.sip.*;
+import jain.protocol.ip.sip.address.SipURL;
+import jain.protocol.ip.sip.address.URI;
+import jain.protocol.ip.sip.header.*;
+import jain.protocol.ip.sip.message.*;
 
 /**
  * @author Amirk
@@ -714,29 +689,29 @@ public class TransportCommLayerMgr
 							"getHopConnection",
 							"creating connection to [" + hop + ']');
 					}
-					if(ApplicationProperties.getProperties().getBoolean(StackProperties.CREATE_CONNECTION_USE_LP_FROM_OUTBOUND)){
-						
-						if(listeningPoint == null){
-							listeningPoint = provider.getListeningPoint();
+					ListeningPoint lp = null;
+					if(ApplicationProperties.getProperties().getBoolean(StackProperties.CREATE_CONNECTION_USE_LP_FROM_OUTBOUND)) {
+						lp = listeningPoint;
+						if(lp == null) {
+							lp = provider.getListeningPoint();
 							if (c_logger.isTraceDebugEnabled()) {
 								c_logger.traceDebug(
 									this,
 									"getHopConnection",
-									"replace NULL LP with LP from Provider  " + provider);
+									"replace NULL LP with LP from Provider " + provider);
 							}	
 						}
-						if (c_logger.isTraceDebugEnabled()) {
-							c_logger.traceDebug(
-								this,
-								"getHopConnection",
-								"creating connection from  [" + listeningPoint + ']' + " to [" + hop + ']');
-						}
-						connection = createConnection(hop, listeningPoint );
 					}
-					else{
-						ListeningPoint lp = provider.getListeningPoint();
-						connection = createConnection(hop, lp );
+					else {
+						lp = provider.getListeningPoint();
 					}
+					if (c_logger.isTraceDebugEnabled()) {
+						c_logger.traceDebug(
+							this,
+							"getHopConnection",
+							"creating connection from [" + lp + ']' + " to [" + hop + ']');
+					}
+					connection = createConnection(hop, lp );
 					//if there is no exception here, the connection was created
 				}
 			}
@@ -811,7 +786,7 @@ public class TransportCommLayerMgr
 			throw e;
 		}
 		
-		//start listenning
+		//start listening
 		connection.start();
 		
 		//Amirp for performance reasons use debug instead of info message
@@ -1046,7 +1021,15 @@ public class TransportCommLayerMgr
 		{
 			ViaHeader topVia = ( ViaHeader )msg.getHeader( ViaHeader.name , true );
 			String transport = topVia.getTransport();			 
-			ListeningPointImpl retVal = m_connectionsModel.getDefaultListenningPoint(transport);						
+			boolean useDefaultLPByaddrType = ApplicationProperties.getProperties().getBoolean(
+					StackProperties.DEFAULT_LP_BY_ADDR_TYPE);
+			ListeningPointImpl retVal = null;
+			if (useDefaultLPByaddrType) {
+				retVal = m_connectionsModel.getDefaultListenningPoint(transport, topVia.getHost());	
+			}
+			else {
+				retVal = m_connectionsModel.getDefaultListenningPoint(transport);	
+			}
 			return retVal;
 		}
 		catch( SipException exp )

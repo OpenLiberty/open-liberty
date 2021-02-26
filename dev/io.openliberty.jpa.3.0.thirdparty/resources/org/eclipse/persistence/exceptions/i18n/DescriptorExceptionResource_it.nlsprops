@@ -1,0 +1,441 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/DescriptorExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+1=L''attributo [{0}] non \u00e8 stato dichiarato come tipo ValueHolderInterface, ma la sua associazione utilizza la via indiretta.
+
+10=Questa associazione non ha un nome campo impostato.
+
+100=Un metodo ha attivato un''eccezione.
+
+101=Il metodo sottostante ha attivato un''eccezione.
+
+102=Il metodo [{0}] ha attivato un''eccezione.
+
+103=Problema nell''estrazione della classe dalla riga [{0}], utilizzando il metodo statico [{1}], con il parametro (DatabaseRow).  \u00c8 stata attivata un''eccezione.
+
+104=Problema nella creazione della nuova istanza utilizzando il metodo di creazione [{0}].  Il metodo di creazione ha attivato un''eccezione.
+
+105=Il metodo di callback del descrittore sottostante [{0}], con parametro (Session), ha attivato un''eccezione.
+
+106=Il metodo [{0}] sull''oggetto sta generando un''eccezione. {2}Argomento: [{1}]
+
+108=Impossibile trovare il valore nell''associazione indicatore classe nel descrittore parent [{0}].
+
+109=Questo descrittore non deve avere un campo con blocco di scrittura definito poich\u00e9 \u00e8 un descrittore child. Eredita il campo con blocco di scrittura del descrittore parent.
+
+11=Le informazioni della chiave esterna per questa associazione sono definite in modo non corretto.
+
+110=Manca il descrittore per la classe [{0}].
+
+111=\u00c8 necessario che i nomi campo della chiave primaria della tabella multipla siano completi.
+
+112=\u00c8 possibile aggiungere una sola tabella tramite l''utilizzo di setTableName(String). Utilizzare addTableName(String) per aggiungere pi\u00f9 tabelle a un descrittore.
+
+113=Il costruttore \u00e8 inaccessibile.
+
+114=Problema nella creazione della nuova istanza utilizzando il metodo di creazione [{0}].  Il metodo di creazione \u00e8 inaccessibile.
+
+115=Nessun valore di conversione fornito per l''attributo [{0}].
+
+116=Nessun valore di conversione fornito per il valore [{0}] nel campo [{1}].
+
+118=L''oggetto [{0}] non deve avere associazioni di sola lettura ai suoi campi con blocco di scrittura.
+
+119=Le associazioni [{0}] dell''oggetto ai campi con blocco di scrittura devono essere di sola lettura.
+
+12=I descrittori devono utilizzare un''associazione di identit\u00e0 per utilizzare l''opzione di verifica di esistenza "Check Cache".
+
+120=La chiave della query [{0}] \u00e8 definita nel descrittore parent [{1}], ma non nel descrittore child [{2}].
+
+122=setExistenceCheck() con argomento [{0}] non \u00e8 riconosciuto.
+
+125=L''associazione per l''attributo [{0}] utilizza la via indiretta quindi deve essere inizializzato su un nuovo ValueHolder.  Attualmente il valore \u00e8: [{1}].
+
+126=Nessuna sottoclasse corrisponde a questa classe [{0}] per questa associazione aggregato con eredit\u00e0.
+
+127=Il metodo get per l''attributo [{0}] non restituisce una ValueHolderInterface, ma l''associazione utilizza la via indiretta.
+
+128=Il metodo get per l''attributo [{0}] restituisce una ValueHolderInterface, ma l''associazione non utilizza la via indiretta.
+
+129=Il metodo set per l''attributo [{0}] non prende una ValueHolderInterface come parametro, ma l''associazione utilizza la via indiretta.
+
+13=La variabile di istanza [{0}] nell''oggetto [{1}] \u00e8 inaccessibile.
+
+130=Il metodo set per l''attributo [{0}] prende una ValueHolderInterface come parametro, ma l''associazione non utilizza la via indiretta.
+
+131=Il metodo get per l''attributo [{0}] deve restituire un vettore (o un tipo che implementi l''associazione o la raccolta, se si utilizza Java 2).
+
+133=Il metodo set per l''attributo [{0}] deve prendere un vettore come parametro (o un tipo che implementi l''associazione o la raccolta, se si utilizza Java 2).
+
+135=La relazione chiave esterna della tabella multipla fa riferimento a una tabella sconosciuta [{0}].
+
+138=L''attributo [{0}] \u00e8 di tipo [{1}] ma l''associazione utilizza la via indiretta trasparente (il caricamento lento), che richiede che esso sia una superclasse di [{2}].
+
+139=Il metodo get per l''attributo [{0}] restituisce [{1}] ma l''associazione utilizza la via indiretta trasparente (il caricamento lento), che richiede che esso sia una superclasse di [{2}].
+
+14=Problema nella clonazione dell''oggetto [{0}].  Il metodo di clonazione [{1}] \u00e8 inaccessibile.
+
+140=Il metodo set per l''attributo [{0}] prende [{1}] ma l''associazione utilizza la via indiretta trasparente (il caricamento lento), che richiede che esso sia una superclasse di [{2}].
+
+141=Il campo [{0}] non \u00e8 presente nella tabella [{1}] nel database.
+
+142=La tabella [{0}] non \u00e8 presente nel database.
+
+143=Il vettore dell''ordine di inserimento della tabella multipla specificato, [{0}], ha un numero di tabelle superiore o inferiore a quelle specificate nel descrittore. {2}Tutte le tabelle [{1}] devono essere incluse nel vettore dell''ordine di inserimento.
+
+144=La via indiretta trasparente pu\u00f2 essere utilizzata solo con CollectionMappings.
+
+145=La classe contenitore indiretto [{0}] deve implementare il costruttore [{1}] con il parametro (ValueHolderInterface).
+
+146=La classe contenitore indiretto [{0}] non pu\u00f2 essere istanziata utilizzando il costruttore {1}(ValueHolderInterface).
+
+147=La politica del contenitore [{0}] deve essere utilizzata solo in JDK 1.1.x.  Ne \u00e8 stata creata un''istanza per [{1}].
+
+148=La politica del contenitore [{0}] non \u00e8 compatibile con la via indiretta trasparente.
+
+149=Gli oggetti NoIndirectionPolicy non dovrebbero ricevere questo messaggio.
+
+15=Questa classe non definisce un costruttore predefinito, richiesto da EclipseLink.
+
+150=L''associazione per l''attributo [{0}] utilizza la via indiretta trasparente, quindi l''attributo [{0}] deve essere inizializzato su un contenitore appropriato.  Attualmente il valore \u00e8 [{1}]. {2} \u2013 Deve essere l''istanza di un implementatore di raccolta o associazione.
+
+151=L''operazione [{0}] non \u00e8 valida per questa associazione.
+
+152=L''operazione [{1}] non \u00e8 valida per questa politica di via indiretta [{0}].
+
+153=Il descrittore di riferimento per [{0}] deve essere impostato per essere un descrittore di raccolta di aggregati.
+
+154=La classe contenitore via indiretta [{0}] non implementa IndirectContainer.
+
+155=Questa associazione non include un campo chiave esterna collegato al campo chiave primaria [{0}].
+
+156=Il nome della struttura non \u00e8 impostato per questa associazione.
+
+157=I descrittori regolari non supportano le estensioni non relazionali.
+
+158=La classe parent di questo descrittore \u00e8 stata impostata su s\u00e9 stessa.
+
+159=La via indiretta proxy \u00e8 disponibile solo in macchine virtuali compatibili con JDK 1.3 o versioni successive.
+
+16=Il metodo di callback del descrittore [{0}], con parametro (DescriptorEvent), \u00e8 inaccessibile.
+
+160=L''attributo [{0}] della classe [{1}] \u00e8 immesso come [{2}], ci\u00f2 non \u00e8 specificato nell''elenco di interfacce fornito al metodo useProxyIndirection(). {4}Le interfacce valide sono: [{3}].
+
+161=Il metodo [{0}] nella classe [{1}] restituisce un valore di tipo [{2}], ci\u00f2 non \u00e8 specificato nell''elenco di interfacce fornito al metodo useProxyIndirection(). {4}Le interfacce valide sono: [{3}].
+
+162=Il metodo [{0}] nella classe [{1}] prende un parametro di tipo [{2}], ci\u00f2 non \u00e8 specificato nell''elenco di interfacce fornito al metodo useProxyIndirection().{4}Le interfacce valide sono: [{3}].
+
+163=La classe attributo di questa associazione non corrisponde alla classe di raccolta.  [{1}] non pu\u00f2 essere assegnato a [{0}].
+
+164=Il metodo di rettifica [{1}], nella classe di rettifica [{0}], non \u00e8 valido, non \u00e8 pubblico o non pu\u00f2 essere trovato. {2}I metodi di rettifica del descrittore devono essere dichiarati "public static void" con (ClassDescriptor) come parametro singolo.
+
+165=Il metodo di rettifica di questo descrittore [{1}] nella classe di rettifica [{0}] ha attivato un''eccezione.
+
+166=Non sono presenti associazioni per l''attributo [{0}].
+
+167=Non \u00e8 stato trovato un costruttore valido per la classe contenitore via indiretta [{0}].
+
+168=Problema nella creazione di una nuova istanza utilizzando il costruttore predefinito.  Il costruttore predefinito ha attivato un''eccezione.
+
+169=Problema nella creazione di una nuova istanza di factory utilizzando il costruttore predefinito.  Il costruttore predefinito ha attivato un''eccezione.
+
+17=Tentativo di accedere al metodo [{0}] sull''oggetto [{1}].  Il metodo sottostante \u00e8 inaccessibile.
+
+170=Problema (accesso non consentito) nella creazione di una nuova istanza di factory utilizzando il costruttore predefinito.
+
+171=La classe factory non definisce un costruttore pubblico predefinito o il costruttore ha generato un''eccezione.
+
+172=Costruttore factory non trovato.
+
+173=Il costruttore factory \u00e8 inaccessibile.
+
+174=Problema nella creazione del factory.  Il metodo di creazione [{0}] \u00e8 inaccessibile.
+
+175=Problema durante la creazione del factory utilizzando il metodo di creazione [{0}].  Il metodo di creazione ha attivato un''eccezione.
+
+176=Problema durante la creazione del factory utilizzando il metodo di creazione [{0}].  Il metodo di creazione \u00e8 inaccessibile.
+
+177=Manca l''associazione per l''attributo: [{0}].
+
+178=Impossibile trovare l''associazione per l''attributo [{0}] nel bean di entit\u00e0 [{1}]. L''attributo deve essere associato.
+
+179=L''attributo [{0}] utilizza la conservazione della relazione bidirezionale, ma ha ContainerPolicy [{1}] che non la supporta.  L''attributo deve essere associato ad un altro tipo di raccolta.
+
+18=Accesso al metodo non consentito in un''associazione di trasformazione che utilizza un ValueHolder.
+
+181=Impossibile trovare la classe AttributeTransformer [{0}].
+
+182=Impossibile trovare la classe FieldTransformer [{0}].
+
+183=Impossibile utilizzare la classe [{0}] come un AttributeTransformer.
+
+184=Impossibile utilizzare la classe [{0}] come un FieldTransformer.
+
+185=ReturningPolicy contiene il campo [{0}] con due tipi differenti: [{1}] e [{2}].
+
+186=ReturningPolicy contiene il campo [{0}] aggiunto due volte: utilizzando addInsertField e addInsertFieldReturnOnly.
+
+187=ReturningPolicy contiene il campo [{0}] con tipo [{1}], ma lo stesso campo nel descrittore ha il tipo [{2}].
+
+188=ReturningPolicy contiene il campo non associato [{0}] che richiede il tipo.
+
+189=ReturningPolicy contiene il campo associato [{0}] che richiede il tipo.
+
+19=Accesso non consentito durante il richiamo del metodo dell''attributo su una associazione di trasformazione.  Il metodo sottostante \u00e8 inaccessibile.
+
+190=ReturningPolicy contiene il campo [{0}] associato con l''associazione [{1}], ci\u00f2 non \u00e8 supportato.
+
+191=ReturningPolicy contiene il campo [{0}] che non \u00e8 supportato: \u00e8 un campo di sequenza o indicatore del tipo di classe o utilizzato per il blocco.
+
+192=ReturningPolicy contiene il campo [{0}] ma [{1}] personalizzato non ne crea l''output.
+
+193=Non \u00e8 impostato alcun [{0}] personalizzato, ma ReturningPolicy contiene campi da restituire e [{1}] non supporta la generazione di chiamata con restituzione.
+
+194=Il metodo di estrazione classe [{0}], deve essere un metodo statico sulla classe del descrittore.
+
+195=La classe condivisa {1} non deve fare riferimento alla classe isolata {0}.
+
+196=UpdateAllFields non \u00e8 stato impostato o \u00e8 stato impostato su false.  Quando si utilizza CMPPolicy.setForceUpdate(true) \u00e8 necessario chiamare anche CMPPolicy.setUpdateAllFields(true)
+
+197=L''associazione [{0}] non \u00e8 del tipo appropriato per questo descrittore
+
+198=Per utilizzare ObjectChangeTrackingPolicy o AttributeChangeTrackingPolicy, {0} deve implementare l''interfaccia ChangeTracker.
+
+199=Per utilizzare il gruppo di fetch, la classe dominio ({0}) deve implementare l''interfaccia FetchGroupTracker.
+
+2=L''attributo [{0}] \u00e8 stato dichiarato come tipo ValueHolderInterface, ma la sua associazione non utilizza la via indiretta.
+
+20=Il metodo [{0}] \u00e8 inaccessibile.
+
+200=Tentativo di registrare un oggetto con via indiretta inattiva come nuovo oggetto.  \u00c8 possibile che l''oggetto sia stato eliminato o rimosso dalla cache durante un''unione di un clone serializzato.  Si tratta di una violazione di simultaneit\u00e0, considerare una strategia di blocco.
+
+201=\u00c8 stato effettuato un tentativo di creare un oggetto nella cache di sessione, ma il descrittore \u00e8 contrassegnato come isolato nell''unit\u00e0 di lavoro, quindi non sar\u00e0 mai possibile accedervi al di fuori di una unit\u00e0 di lavoro.
+
+202=Si \u00e8 verificato un errore interno durante l''accesso all''oggetto chiave primaria [{0}].
+
+203=Si \u00e8 verificato un errore interno durante l''accesso al metodo [{1}] sulla classe [{0}].
+
+204=L''ordine della tabella di inserimento \u00e8 in contrasto con le chiavi esterne delle tabelle multiple - in base all''ultima tabella [{0}] deve essere inserita prima della tabella [{1}].
+
+205=L''ordine della tabella di inserimento ha una dipendenza ciclica tra le tabelle [{0}] e [{1}].
+
+206=L''ordine della tabella di inserimento ha una dipendenza ciclica tra tre o pi\u00f9 tabelle.
+
+207=L''ordine della tabella di inserimento \u00e8 errato: \u00e8 specificato di inserire la tabella [{0}] associata al parent dopo la tabella [{1}] associata al child.
+
+208=Si sta tentando di impostare un converter con il nome classe [{1}] su una associazione non diretta [{0}].  Solo alle associazioni dirette \u00e8 consentito avere converter.  Ci\u00f2 generalmente si verifica quando si tenta di impostare un converter di chiavi su una DirectMapMapping con una chiave non diretta.
+
+209=Questo descrittore contiene un''associazione con una DirectMapMapping e nessun campo chiave impostato.
+
+21=Problema nell''estrazione della classe dalla riga [{0}].  Il metodo statico [{1}], con il parametro (DatabaseRow), \u00e8 inaccessibile.
+
+210=[{0}] ha impostato il campo di ordine dell''elenco, ma l''attributo non implementa l''elenco.
+
+211=[{0}] ha impostato il campo di ordine dell''elenco e la modalit\u00e0 di convalida del campo di ordine dell''elenco \u00e8 CORRECTION, che richiede IndirectList per essere assegnabile all''attributo.
+
+212=Il campo di ordine dell''elenco specificato per [{0}] ha una tabella non corretta [{1}]. \u00c8 necessario invece utilizzare {2}.
+
+213={0} richiede che tutti i campi chiave esterna di destinazione appartengano alla stessa tabella, ma ne sono state trovate molte: {1}.
+
+214={0} specifica la tabella di relazione, che non \u00e8 compatibile con il metodo addForeignKey(Nome), utilizzare invece i metodi addSourceRelationKeyField(Nome) e addTargetRelationKeyFieldName.
+
+215={0} deve avere RelationTableMechanism non null.
+
+216=CacheKeyType non pu\u00f2 essere ID_VALUE per una chiave primaria composita.
+
+217=XPath non valido per XMLDirectMapping/XMLCompositeDirectCollectionMapping. L''XPath deve contenere un simbolo @ per gli attributi o terminare con /text() per i nodi di testo. Ad esempio: "@nome" o "nome/text()"
+
+218=\u00c8 possibile che si sia verificata una NullPointerException durante l''accesso a un metodo _vh_ con weaving non esistente [{0}].  La classe non \u00e8 stata sottoposta a weaving in modo appropriato \u2013 per le distribuzioni EE, controllare l''ordine dei moduli nel descrittore di distribuzione application.xml e verificare che il modulo contenente l''unit\u00e0 permanente venga prima di qualsiasi altro modulo che lo utilizza.
+
+219=I criteri supplementari da [{1}] non sono consentiti all''interno di una gerarchia di eredit\u00e0 che utilizza le viste.
+
+22=Problema nella creazione della nuova istanza.  Il metodo di creazione [{0}] \u00e8 inaccessibile.
+
+220=Manca la politica di partizionamento per il nome [{0}].
+
+221=Il campo SerializedObjectPolicy non \u00e8 impostato.
+
+222=\u00c8 stata generata un''eccezione durante il tentativo di ottenere una istanza della classe di chiave primaria.
+
+23=Il metodo di callback del descrittore [{0}], con parametro (Session), \u00e8 inaccessibile.
+
+24=La variabile di istanza [{0}] nell''oggetto [{1}] \u00e8 inaccessibile. {3}Argomento: [{2}]
+
+25=Il metodo [{0}] con argomento [{1}] \u00e8 inaccessibile.
+
+26=Tentativo di ottenere il valore per la variabile di istanza [{0}] di tipo [{1}] dall''oggetto [{2}].  L''oggetto specificato non \u00e8 un''istanza della classe o dell''interfaccia che dichiara il campo sottostante.
+
+27=Tentativo di richiamare il metodo [{0}] sull''oggetto [{1}].  Il numero di parametri effettivi e formali differisce o una conversione di unwrapping ha avuto esito negativo.
+
+28=Argomento non valido durante la creazione di un''istanza di un proxy basato sul metodo in un''associazione di trasformazione.
+
+29=Il numero di parametri effettivi e formali differisce o una conversione di unwrapping ha avuto esito negativo.
+
+30=Il numero di parametri effettivi e formali differisce per il metodo [{0}] o una conversione di unwrapping ha avuto esito negativo.
+
+31=Il numero di parametri effettivi e formali per il metodo di callback del descrittore [{0}] differisce o una conversione di unwrapping ha avuto esito negativo.
+
+32=Tentativo di impostare il valore [{0}] per la variabile dell''istanza [{1}] di tipo [{2}] nell''oggetto.  L''oggetto specificato non \u00e8 un''istanza della classe o dell''interfaccia che dichiara il campo sottostante o una conversione di unwrapping ha avuto esito negativo.
+
+33=Tentativo di richiamare [{0}] sull''oggetto con il valore [{1}].  Il numero di parametri effettivi e formali differisce o una conversione di unwrapping ha avuto esito negativo.
+
+34=Questa classe non definisce un costruttore pubblico predefinito o il costruttore ha generato un''eccezione.
+
+35=Evento non valido.
+
+36=Codice evento non valido [{0}].
+
+37=Codice evento descrittore non valido [{0}].
+
+38=Il costruttore di associazione identit\u00e0 ha avuto esito negativo perch\u00e9 \u00e8 stata specificata un''associazione di identit\u00e0 non valida.
+
+39=Questo descrittore non specifica una classe Java.
+
+40=Manca il descrittore per [{0}].  \u00c8 probabilmente che non sia stato aggiunto alla sessione.
+
+41=\u00c8 necessario definire un''associazione non di sola lettura per il campo numero di sequenza.
+
+43=Classe mancante per un valore campo indicatore [{0}] di tipo [{1}].
+
+44=Campo indicatore di classe mancante dalla riga database [{0}].
+
+45=Associazione mancante per il campo [{0}].
+
+46=Dovrebbe essere presente una sola associazione non di sola lettura definita per il campo chiave primaria [{0}].
+
+47=Quando si utilizza un''unione tabella multipla personalizzata \u00e8 necessario specificare l''associazione chiave primaria tabella multipla.
+
+48=Esistono pi\u00f9 associazioni scrivibili per il campo [{0}].  Solo una pu\u00f2 essere definita come scrivibile, tutte le altre devono essere specificate come di sola lettura.
+
+49=Per questa associazione non \u00e8 specificato un nome di metodo di trasformazione dell''attributo.
+
+50=Un nome campo non \u00e8 impostato per questa associazione.
+
+51=Non sono state specificate chiavi esterne per questa associazione.
+
+52=Non sono state specificate chiavi di riferimento per questa associazione.
+
+53=Il nome della tabella di relazione non \u00e8 impostato per questa associazione.
+
+54=Non sono state specificate chiavi di relazione di origine per questa associazione.
+
+55=Impossibile trovare il metodo di callback del descrittore [{0}].  Deve prendere Session o DescriptorEvent come argomenti.
+
+56=Il metodo [{0}] con parametri (Record) o (Record, Session) non \u00e8 stato trovato.
+
+57=Costruttore inaccessibile.
+
+58=Il metodo [{0}] con parametri () o (Session) non \u00e8 stato trovato.
+
+59=La variabile di istanza [{0}] non \u00e8 definita nella classe dominio [{1}] oppure non \u00e8 accessibile.
+
+6=Manca il nome attributo.
+
+60=Il metodo [{0}] o [{1}] non \u00e8 definito nell''oggetto [{2}].
+
+61=Il metodo di estrazione della classe statica [{0}], con parametro (Record), non esiste oppure non \u00e8 accessibile.
+
+62=Il metodo di clonazione [{0}], senza parametri non esiste oppure non \u00e8 accessibile.
+
+63=Il metodo di creazione [{0}], senza parametri non esiste oppure non \u00e8 accessibile.
+
+64=Non sono state specificate chiavi esterne di destinazione per questa associazione.
+
+65=Non sono state specificate chiavi di relazione di destinazione per questa associazione.
+
+66=Impossibile deserializzare l''oggetto dall''array di byte.
+
+67=Impossibile serializzare l''oggetto nell''array di byte.
+
+68=Il valore di un aggregato nell''oggetto [{0}] \u00e8 null.  I valori null non sono consentiti per le associazioni di aggregati a meno che viene specificato "Allow Null".
+
+69=\u00c8 stata generata una NullPointerException durante l''estrazione di un valore dalla variabile dell''istanza [{0}] nell''oggetto [{1}].
+
+7=L''attributo [{0}] deve essere un tipo che implementa {1}.
+
+70=\u00c8 stata generata una NullPointerException durante l''estrazione di un valore tramite il metodo [{0}] nell''oggetto [{1}].
+
+71=\u00c8 stata generata una NullPointerException durante l''impostazione del valore della variabile dell''istanza [{0}] sul valore [{1}].
+
+72=\u00c8 stata generata una NullPointerException durante l''impostazione di un valore tramite il metodo [{0}] con argomento [{1}].
+
+73=Impossibile trovare il descrittore per la classe parent [{0}].
+
+74=I campi chiave primaria non sono impostati per questo descrittore.
+
+75=La classe di riferimento non \u00e8 specificata per questo descrittore.
+
+77=Il descrittore di riferimento per [{0}] deve essere impostato per essere un descrittore di aggregati.
+
+78=Il campo di riferimento [{0}] per questa associazione deve esistere nella tabella di riferimento.
+
+79=La tabella di riferimento non \u00e8 specificata per questa associazione.
+
+8=Il descrittore [{0}] \u00e8 stato impostato per utilizzare l''eredit\u00e0, ma non \u00e8 stato definito un campo indicatore di classe. {2}Quando si utilizza l''eredit\u00e0, \u00e8 necessario impostare un campo indicatore di classe o metodo di estrazione classe. {2}Descrittore parent: [{1}]
+
+80=Il campo chiave di relazione [{0}] per questa associazione deve esistere nella tabella di relazione.
+
+81=Il metodo [{0}] deve restituire il tipo dell''attributo associato, non void.
+
+82=Il metodo di callback del descrittore [{0}], con parametro (DescriptorEvent), \u00e8 inaccessibile.
+
+83=Il metodo di callback del descrittore [{0}], con parametro (Session), \u00e8 inaccessibile.
+
+84=Il metodo [{0}] con parametri (Record) o (Record, Session) non \u00e8 accessibile.
+
+85=Il metodo [{0}] con parametri () o (Session) non \u00e8 accessibile.
+
+86=La variabile di istanza [{0}] nella classe [{1}] \u00e8 inaccessibile.
+
+87=Il metodi [{0}], [{1}] nell''oggetto [{2}] non sono accessibili
+
+88=Il metodo di estrazione della classe statica [{0}], con parametro (Record), non \u00e8 accessibile.
+
+89=Il metodo di clonazione [{0}], senza parametri non \u00e8 accessibile.
+
+9=Questa associazione non ha un nome campo diretto impostato.
+
+90=Il metodo di creazione dell''istanza [{0}], senza parametri non \u00e8 accessibile.
+
+91=Per utilizzare gli ID generati dalla sequenza, \u00e8 necessario impostare sia la propriet\u00e0\u00a0"Sequence Number Name" che "Sequence Number Field Name" per questo descrittore.
+
+92=La dimensione della chiave primaria della destinazione non corrisponde alla dimensione della chiave esterna.
+
+93=La tabella [{0}] non \u00e8 presente in questo descrittore.
+
+94=I descrittori devono avere un nome tabella definito.
+
+96=Il numero di chiavi di destinazione non corrisponde al numero di chiavi di origine.
+
+97=Problema nella clonazione dell''oggetto [{0}].  Il metodo di clonazione [{1}] ha attivato un''eccezione.
+
+98=Il metodo di callback del descrittore sottostante [{0}], con parametro (DescriptorEvent), ha attivato un''eccezione.
+
+99=Il metodo [{0}] sull''oggetto [{1}] ha attivato un''eccezione.
+

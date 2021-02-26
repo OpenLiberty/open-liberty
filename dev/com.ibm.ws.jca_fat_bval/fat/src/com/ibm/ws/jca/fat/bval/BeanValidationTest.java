@@ -169,8 +169,8 @@ public class BeanValidationTest extends FATServletClient {
         }
 
         server.stopServer("(?s)J2CA0238E.*com.ibm.bval.jca.adapter.InteractionSpecImpl", // multiline match because some translations split this message into multiple lines
-                          "SRVE0319E(?=.*eis/iSpec_ADD)(?=.*javax.resource.cci.InteractionSpec)",
-                          "CWNEN1006E(?=.*eis/iSpec_ADD)(?=.*javax.resource.cci.InteractionSpec)");
+                          "SRVE0319E(?=.*eis/iSpec_ADD)(?=.*ja.*.resource.cci.InteractionSpec)",
+                          "CWNEN1006E(?=.*eis/iSpec_ADD)(?=.*ja.*.resource.cci.InteractionSpec)");
     }
 
     @Test
@@ -192,7 +192,7 @@ public class BeanValidationTest extends FATServletClient {
         }
 
         server.stopServer("(?s)J2CA0238E.*com.ibm.bval.jca.adapter.ManagedConnectionFactoryImpl", // multiline match because some translations split this message into multiple lines
-                          "CWNEN1006E(?=.*eis/conFactory)(?=.*javax.resource.cci.ConnectionFactory)");
+                          "CWNEN1006E(?=.*eis/conFactory)(?=.*ja.*.resource.cci.ConnectionFactory)");
     }
 
     @Test
@@ -216,6 +216,6 @@ public class BeanValidationTest extends FATServletClient {
         server.stopServer("(?s)J2CA0238E.*com.ibm.bval.jca.adapter.ResourceAdapterImpl", // multiline match because some translations split this message into multiple lines
                           "CWWKE0701E",
                           "CWWKE0700W",
-                          "CWNEN1006E(?=.*eis/conFactory)(?=.*javax.resource.cci.ConnectionFactory)");
+                          "CWNEN1006E(?=.*eis/conFactory)(?=.*ja.*.resource.cci.ConnectionFactory)");
     }
 }

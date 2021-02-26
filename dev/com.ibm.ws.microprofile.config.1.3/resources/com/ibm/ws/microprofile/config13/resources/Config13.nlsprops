@@ -47,15 +47,6 @@ service.not.found.CWMCG0204E=CWMCG0204E: An instance of the {0} service could no
 service.not.found.CWMCG0204E.explanation=An internal error occurred and a service could not be found by MicroProfile Config.
 service.not.found.CWMCG0204E.useraction=Review the server message.log file and FFDC logs to identify the problem.
 
-# Server XML Application Properties Config Source
-server.xml.appproperties.config.source=Server XML Application Properties Config Source
-
-# Server XML Variables Config Source
-server.xml.variables.config.source=Server XML Variables Config Source
-
-# Server XML Default Variables Config Source
-server.xml.default.variables.config.source=Server XML Default Variables Config Source
-
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Config 1.3 error message
 #-----------------------------------------------------------------------------------------------------------------------------

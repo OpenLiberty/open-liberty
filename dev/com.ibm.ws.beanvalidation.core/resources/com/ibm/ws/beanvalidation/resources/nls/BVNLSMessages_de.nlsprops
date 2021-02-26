@@ -87,3 +87,16 @@ JNDI_NON_JEE_THREAD_CWNBV0006E.explanation=JNDI-Operationen f\u00fcr einen java:
 JNDI_NON_JEE_THREAD_CWNBV0006E.useraction=\u00c4ndern Sie die Anwendung so, dass die JNDI-Operation in einem Thread vorkommt, der einer Java-EE-Anwendungskomponente zugeordnet ist.
 
 # -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the method with the invalid ValidateOnExecution annotation
+# -----------------------------------------------------------------------
+BVKEY_VALIDATE_ON_EXECUTION_NOT_ALLOWED_CWNBV0007E=CWNBV0007E: @ValidateOnExecution ist f\u00fcr Methoden, die eine Superklassenmethode \u00fcberschreiben oder eine Schnittstelle implementieren, nicht zul\u00e4ssig. \u00dcberpr\u00fcfen Sie die Konfiguration f\u00fcr {0}
+BVKEY_VALIDATE_ON_EXECUTION_NOT_ALLOWED_CWNBV0007E.explanation= @ValidateOnExecution ist f\u00fcr Methoden, die eine Superklassenmethode \u00fcberschreiben oder eine Schnittstelle implementieren, nicht zul\u00e4ssig. Eine Methode, die eine Superklassenmethode \u00fcberschreibt oder eine Schnittstellenmethode implementiert, \u00fcbernimmt das Verhalten der Methode, die sie \u00fcberschreibt bzw. implementiert.
+BVKEY_VALIDATE_ON_EXECUTION_NOT_ALLOWED_CWNBV0007E.useraction= Entfernen Sie @ValidateOnExecution aus der angegebenen Methode.
+
+# -----------------------------------------------------------------------
+BVKEY_MIXING_IMPLICIT_TYPE_NOT_ALLOWED_CWNBV0008E=CWNBV0008E: Das Mischen des Typs IMPLICIT mit anderen ausf\u00fchrbaren Typen ist nicht zul\u00e4ssig. Pr\u00fcfen Sie die ausf\u00fchrbaren Typen, die f\u00fcr \n {0} definiert wurden.
+BVKEY_MIXING_IMPLICIT_TYPE_NOT_ALLOWED_CWNBV0008E.explanation=Gem\u00e4\u00df der Beanvalidierungsspezifikation ist das Mischen des Typs IMPLICIT mit anderen ausf\u00fchrbaren Typen f\u00fcr die Annotation @ValidateOnExecution nicht zul\u00e4ssig.
+BVKEY_MIXING_IMPLICIT_TYPE_NOT_ALLOWED_CWNBV0008E.useraction=Aktualisieren Sie die Methode, die Klasse oder die globalen XML-Einstellungen f\u00fcr ausf\u00fchrbare Typen, um das Mischen des Typs IMPLICIT mit anderen ausf\u00fchrbaren Typen zu verhindern.
+
+# -----------------------------------------------------------------------

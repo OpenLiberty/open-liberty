@@ -25,8 +25,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
 
-import test.common.SharedOutputManager;
-
 import com.ibm.websphere.security.WSSecurityException;
 import com.ibm.websphere.security.auth.WSSubject;
 import com.ibm.ws.security.token.internal.SingleSignonTokenImpl;
@@ -34,9 +32,11 @@ import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
 import com.ibm.ws.webcontainer.security.internal.WebSecurityHelperImpl;
 import com.ibm.wsspi.security.token.SingleSignonToken;
 
+import test.common.SharedOutputManager;
+
 /**
- * 
- * 
+ *
+ *
  */
 public class OIDCBrowserStateUtilTest {
     private static String EXPECTED_OUTPUT = "MSk6/ePHZUtvvpdE3DgngS1neAkIctAwuVU5HYf97Vw=";

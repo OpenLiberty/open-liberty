@@ -10,10 +10,18 @@
  *******************************************************************************/
 package com.ibm.ws.jaxws.fat;
 
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import componenttest.rules.repeater.EmptyAction;
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.RepeatTests;
+
+/*
+ * TODO: Lite Mode
+ */
 @RunWith(Suite.class)
 @SuiteClasses({
                 WebServiceInWebXMLTest.class,
@@ -37,4 +45,14 @@ import org.junit.runners.Suite.SuiteClasses;
                 HandlerChainWithWebServiceClientTest.class,
                 VirtualHostTest.class
 })
-public class FATSuite {}
+public class FATSuite {
+
+    @ClassRule
+    public static RepeatTests r = RepeatTests.with(new EmptyAction().fullFATOnly()).
+        andWith(FeatureReplacementAction.EE8_FEATURES().removeFeature("jsp-2.2").
+                removeFeature("jaxws-2.2").addFeature("jaxws-2.3").
+                removeFeature("jaxwstest-2.2").addFeature("jaxwstest-2.3").withID("jaxws-2.3")).
+        andWith(FeatureReplacementAction.EE9_FEATURES().removeFeature("jaxws-2.3").
+        removeFeature("jaxwstest-2.2").removeFeature("jaxwstest-2.3").addFeature("xmlwstest-3.0"));
+
+}

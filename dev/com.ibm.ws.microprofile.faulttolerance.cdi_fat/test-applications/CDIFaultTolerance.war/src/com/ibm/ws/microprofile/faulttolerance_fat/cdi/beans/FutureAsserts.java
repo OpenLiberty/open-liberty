@@ -13,11 +13,17 @@ package com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans;
 import static com.ibm.ws.microprofile.faulttolerance_fat.cdi.TestConstants.NEGATIVE_TIMEOUT;
 import static com.ibm.ws.microprofile.faulttolerance_fat.cdi.TestConstants.TEST_TIMEOUT;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.fail;
 
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.function.Supplier;
+
+import org.hamcrest.Matcher;
 
 /**
  * Assertion methods for checking Futures
@@ -80,6 +86,40 @@ public class FutureAsserts {
      */
     public static <T> void assertFutureGetsCancelled(Future<T> future) {
         matchFuture(future, ExpectedResult.CANCELLED, TEST_TIMEOUT, null, null);
+    }
+
+    /**
+     * Assert that a future becomes done within TEST_TIMEOUT
+     * <p>
+     * {@code future.isDone()} must return {@code true}
+     *
+     * @param future the future to check
+     */
+    public static void assertFutureBecomesDone(Future<?> future) {
+        if (!matchesWithinTime(future::isDone, is(true), TEST_TIMEOUT)) {
+            fail("Future did not become done");
+        }
+    }
+
+    private static <T> boolean matchesWithinTime(Supplier<T> supplier, Matcher<T> matcher, long timeout) {
+        long timeoutNanos = TimeUnit.NANOSECONDS.convert(timeout, MILLISECONDS);
+        long startTime = System.nanoTime();
+        while (true) {
+            T item = supplier.get();
+            if (matcher.matches(item)) {
+                return true;
+            }
+
+            if (System.nanoTime() - startTime > timeoutNanos) {
+                return false;
+            }
+
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                throw new AssertionError("Interrupted", e);
+            }
+        }
     }
 
     private static <T> void matchFuture(Future<T> future, ExpectedResult expected, long timeout, T expectedResult, Class<? extends Throwable> exception) {

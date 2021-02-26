@@ -81,6 +81,7 @@ class ResolveFileAction implements Action, FileMonitor {
         if (trigger != UpdateTrigger.DISABLED) {
             _mon.setProperty(FileMonitor.MONITOR_TYPE, trigger == UpdateTrigger.MBEAN ? FileMonitor.MONITOR_TYPE_EXTERNAL : FileMonitor.MONITOR_TYPE_TIMED);
         }
+        _mon.setProperty(com.ibm.ws.kernel.filemonitor.FileMonitor.MONITOR_IDENTIFICATION_NAME, "com.ibm.ws.kernel.monitor.artifact");
         lock = new ReentrantLock();
     }
 
@@ -166,6 +167,7 @@ class ResolveFileAction implements Action, FileMonitor {
         }
         _mon.setProperty(FileMonitor.MONITOR_DIRECTORIES, _filesToMonitor);
         _mon.setProperty(FileMonitor.MONITOR_FILES, _filesToMonitor);
+        _mon.setProperty(com.ibm.ws.kernel.filemonitor.FileMonitor.MONITOR_IDENTIFICATION_NAME, "com.ibm.ws.kernel.monitor.artifact");
 
         if (_trigger == UpdateTrigger.DISABLED) {
             findFile(true);

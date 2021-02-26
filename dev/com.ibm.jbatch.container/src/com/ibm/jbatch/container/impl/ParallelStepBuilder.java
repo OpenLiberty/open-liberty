@@ -16,6 +16,9 @@
 */
 package com.ibm.jbatch.container.impl;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.batch.runtime.context.JobContext;
@@ -30,6 +33,15 @@ import com.ibm.jbatch.jsl.model.Step;
 
 public class ParallelStepBuilder {
 
+    private static final Map<String, ObjectFactory> objectFactoryMap;
+
+    static {
+        HashMap<String, ObjectFactory> map = new HashMap<>();
+        map.put("com.ibm.jbatch.jsl.model.v1", new com.ibm.jbatch.jsl.model.v1.ObjectFactory());
+        map.put("com.ibm.jbatch.jsl.model.v2", new com.ibm.jbatch.jsl.model.v2.ObjectFactory());
+        objectFactoryMap = Collections.unmodifiableMap(map);
+    }
+
     public static final String JOB_ID_SEPARATOR = ":"; // Use something permissible in NCName to allow us to key off of.
     /*
      * Build a generated job with only one flow in it to submit to the
@@ -39,7 +51,7 @@ public class ParallelStepBuilder {
 
     public static JSLJob buildFlowInSplitSubJob(long topLevelJobInstanceId, JobContext jobContext, Split split, Flow flow) {
 
-        ObjectFactory jslFactory = new ObjectFactory();
+        ObjectFactory jslFactory = objectFactoryMap.get(split.getClass().getPackage().getName());
         JSLJob subJob = jslFactory.createJSLJob();
 
         // Uses the true top-level job instance id, not an internal "subjob" id.
@@ -47,7 +59,7 @@ public class ParallelStepBuilder {
         subJob.setId(subJobId);
 
         //Copy all properties from parent JobContext to flow threads
-        subJob.setProperties(CloneUtility.javaPropsTojslProperties(jobContext.getProperties()));
+        subJob.setProperties(CloneUtility.javaPropsTojslProperties(jslFactory, jobContext.getProperties()));
 
         //We don't need to do a deep copy here since each flow is already independent of all others, unlike in a partition
         //where one step instance can be executed with different properties on multiple threads.
@@ -63,7 +75,7 @@ public class ParallelStepBuilder {
      */
     public static JSLJob buildPartitionLevelJSLJob(long topLevelJobExecutionId, Properties jobProperties, Step step, int partitionInstance) {
 
-        ObjectFactory jslFactory = new ObjectFactory();
+        ObjectFactory jslFactory = objectFactoryMap.get(step.getClass().getPackage().getName());
         JSLJob subJob = jslFactory.createJSLJob();
 
         // Uses the top-level job execution id.   Note the RI used to use the INSTANCE id, so this is
@@ -72,7 +84,7 @@ public class ParallelStepBuilder {
         subJob.setId(subJobId);
 
         //Copy all job properties (from parent JobContext) to partitioned step threads
-        subJob.setProperties(CloneUtility.javaPropsTojslProperties(jobProperties));
+        subJob.setProperties(CloneUtility.javaPropsTojslProperties(jslFactory, jobProperties));
 
         // Add one step to job
         Step newStep = jslFactory.createStep();
@@ -123,13 +135,13 @@ public class ParallelStepBuilder {
 
     /**
      * @param parentJobInstanceId
-     *                                the execution id of the parent job
-     * @param splitId             this is the split id where the flows are nested
+     *            the execution id of the parent job
+     * @param splitId this is the split id where the flows are nested
      * @param flowId
-     *                                this is the id of the partitioned control element, it can be a
-     *                                step id or flow id
+     *            this is the id of the partitioned control element, it can be a
+     *            step id or flow id
      * @param partitionInstance
-     *                                the instance number of the partitioned element
+     *            the instance number of the partitioned element
      * @return a String of the form
      *         <parentJobExecutionId>:<parentId>:<splitId>:<flowId>
      */
@@ -147,12 +159,12 @@ public class ParallelStepBuilder {
 
     /**
      * @param parentJobInstanceId
-     *                                the execution id of the parent job
+     *            the execution id of the parent job
      * @param stepId
-     *                                this is the id of the partitioned control element, it can be a
-     *                                step id or flow id
+     *            this is the id of the partitioned control element, it can be a
+     *            step id or flow id
      * @param partitionInstance
-     *                                the instance number of the partitioned element
+     *            the instance number of the partitioned element
      * @return a String of the form
      *         <parentJobExecutionId>:<parentId>:<partitionInstance>
      */

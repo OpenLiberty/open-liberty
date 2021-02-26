@@ -1,0 +1,15 @@
+<server description="Server for testing file monitoring in a server">
+
+    <include location="../fatTestPorts.xml"/>
+
+    <!-- Enable features -->
+    <featureManager>
+        <feature>usr:monitoringPrintingFeature-1.0</feature>
+        <feature>restConnector-2.0</feature>
+    </featureManager>
+
+    <quickStartSecurity userName="theUser" userPassword="thePassword"/>
+    
+    <keyStore id="defaultKeyStore" password="Liberty"/>
+
+</server>

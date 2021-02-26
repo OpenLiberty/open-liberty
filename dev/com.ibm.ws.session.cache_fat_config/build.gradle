@@ -26,4 +26,5 @@ task addHazelcastJCacheProviderToSharedDir(type: Copy) {
 
 addRequiredLibraries {
   dependsOn addHazelcastJCacheProviderToSharedDir
+  dependsOn addJakartaTransformer
 }

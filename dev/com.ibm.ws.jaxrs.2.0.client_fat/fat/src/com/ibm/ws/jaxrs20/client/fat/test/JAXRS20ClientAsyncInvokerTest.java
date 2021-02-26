@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,6 +25,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
@@ -116,12 +117,14 @@ public class JAXRS20ClientAsyncInvokerTest extends AbstractTest {
     }
 
     @Test
+    @SkipForRepeat("EE9_FEATURES") // Continue to skip this test for EE9 as com.ibm.ws.jaxrs.client.*.timeout is not supported 
     public void testAsyncInvoker_getReceiveTimeout() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
         this.runTestOnServer(asyncInvokerTarget, "testAsyncInvoker_getReceiveTimeout", p, "Timeout as expected");
     }
 
     @Test
+    @SkipForRepeat("EE9_FEATURES") // Continue to skip this test for EE9 as com.ibm.ws.jaxrs.client.*.timeout is not supported 
     @AllowedFFDC("javax.ws.rs.ProcessingException")
     public void testAsyncInvoker_getConnectionTimeout() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
@@ -129,12 +132,14 @@ public class JAXRS20ClientAsyncInvokerTest extends AbstractTest {
     }
 
     @Test
+    @SkipForRepeat("EE9_FEATURES") // Continue to skip this test for EE9 as com.ibm.ws.jaxrs.client.*.timeout is not supported 
     public void testAsyncInvoker_postReceiveTimeout() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
         this.runTestOnServer(asyncInvokerTarget, "testAsyncInvoker_postReceiveTimeout", p, "Timeout as expected");
     }
 
     @Test
+    @SkipForRepeat("EE9_FEATURES") // Continue to skip this test for EE9 as com.ibm.ws.jaxrs.client.*.timeout is not supported 
     @AllowedFFDC("javax.ws.rs.ProcessingException")
     public void testAsyncInvoker_postConnectionTimeout() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
@@ -142,12 +147,14 @@ public class JAXRS20ClientAsyncInvokerTest extends AbstractTest {
     }
 
     @Test
+    @SkipForRepeat("EE9_FEATURES") // Continue to skip this test for EE9 as com.ibm.ws.jaxrs.client.*.timeout is not supported 
     public void testAsyncInvoker_getReceiveTimeoutwithInvocationCallback() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
         this.runTestOnServer(asyncInvokerTarget, "testAsyncInvoker_getReceiveTimeoutwithInvocationCallback", p, "Timeout as expected");
     }
 
     @Test
+    @SkipForRepeat("EE9_FEATURES") // Continue to skip this test for EE9 as com.ibm.ws.jaxrs.client.*.timeout is not supported 
     @AllowedFFDC("javax.ws.rs.ProcessingException")
     public void testAsyncInvoker_getConnectionTimeoutwithInvocationCallback() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
@@ -155,12 +162,14 @@ public class JAXRS20ClientAsyncInvokerTest extends AbstractTest {
     }
 
     @Test
+    @SkipForRepeat("EE9_FEATURES") // Continue to skip this test for EE9 as com.ibm.ws.jaxrs.client.*.timeout is not supported 
     public void testAsyncInvoker_postReceiveTimeoutwithInvocationCallback() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
         this.runTestOnServer(asyncInvokerTarget, "testAsyncInvoker_postReceiveTimeoutwithInvocationCallback", p, "Timeout as expected");
     }
 
     @Test
+    @SkipForRepeat("EE9_FEATURES") // Continue to skip this test for EE9 as com.ibm.ws.jaxrs.client.*.timeout is not supported 
     @AllowedFFDC("javax.ws.rs.ProcessingException")
     public void testAsyncInvoker_postConnectionTimeoutwithInvocationCallback() throws Exception {
         Map<String, String> p = new HashMap<String, String>();

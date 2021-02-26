@@ -10,7 +10,7 @@
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/rejar.props
 bVersion=1.0
-cxfVersion=3.3.3
+cxfVersion=3.4.1
 
 Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxws.3.2
 
@@ -38,8 +38,9 @@ Import-Package: \
 DynamicImport-Package: com.ibm.ws.jaxws.client
 
 Export-Package: \
-  org.apache.cxf.jaxws.*;version=${cxfVersion},\
-  org.apache.cxf.jaxws22.*;version=${cxfVersion}
+  org.apache.cxf.jaxws.*;version=${cxfVersion};-split-package:=merge-last,\
+  org.apache.cxf.jaxws22.*;version=${cxfVersion};-split-package:=merge-last,\
+  org.apache.cxf.jaxws30.*;version=${cxfVersion}
 
 app-resources= \
   META-INF/services/javax.xml.ws.spi.Provider

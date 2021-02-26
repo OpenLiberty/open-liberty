@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 1997, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -173,6 +173,16 @@ public final class J2CGlobalConfigProperties implements PropertyChangeListener, 
      *
      */
     private int connectionTimeout = 0;
+
+    /**
+     * Enables usage of the handle list, which tracks:
+     * <ul>
+     * <li>unsharable connection handles
+     * <li>sharable connection handles that do not support DissociatableManagedConnection
+     * </ul>
+     */
+    private boolean autoCloseConnections;
+
     /**
      * The maximum number of ManagedConnections that can be created in this
      * pool. ManagedConnections represent the physical connection to the backend
@@ -368,6 +378,7 @@ public final class J2CGlobalConfigProperties implements PropertyChangeListener, 
                                      int agedTimeout,
                                      int holdTimeLimit,
                                      int commitPriority,
+                                     boolean autoCloseConnections,
                                      int numConnectionsPerThreadLocal,
                                      Integer maxNumberOfMCsAllowableInThread,
                                      Boolean throwExceptionOnMCThreadCheck) {
@@ -408,6 +419,7 @@ public final class J2CGlobalConfigProperties implements PropertyChangeListener, 
         this.agedTimeoutMillis = (long) agedTimeout * 1000;
         this.holdTimeLimit = holdTimeLimit;
         this.commitPriority = commitPriority;
+        this.autoCloseConnections = autoCloseConnections;
         this.numConnectionsPerThreadLocal = numConnectionsPerThreadLocal;
         this.maxNumberOfMCsAllowableInThread = maxNumberOfMCsAllowableInThread;
         this.throwExceptionOnMCThreadCheck = throwExceptionOnMCThreadCheck;
@@ -441,6 +453,14 @@ public final class J2CGlobalConfigProperties implements PropertyChangeListener, 
      */
     public String getXpathId() {
         return XpathId;
+    }
+
+    public boolean getAutoCloseConnections() {
+        return autoCloseConnections;
+    }
+
+    public void setAutoCloseConnections(boolean autoCloseConnections) {
+        this.autoCloseConnections = autoCloseConnections;
     }
 
     public int getnumConnectionsPerThreadLocal() {
@@ -489,7 +509,7 @@ public final class J2CGlobalConfigProperties implements PropertyChangeListener, 
 
     /**
      * @param orphanConnHoldTimeLimitSeconds
-     *            The orphanConnHoldTimeLimitSeconds to set.
+     *                                           The orphanConnHoldTimeLimitSeconds to set.
      */
     public synchronized final void setOrphanConnHoldTimeLimitSeconds(int _holdTimeLimit) {
         changeSupport.firePropertyChange("orphanConnHoldTimeLimitSeconds", this.orphanConnHoldTimeLimitSeconds, _holdTimeLimit);
@@ -505,7 +525,7 @@ public final class J2CGlobalConfigProperties implements PropertyChangeListener, 
 
     /**
      * @param timeout
-     *            The unusedTimeout to set.
+     *                    The unusedTimeout to set.
      */
     public synchronized final void setUnusedTimeout(int _unusedTimeout) {
         changeSupport.firePropertyChange("unusedTimeout", this.unusedTimeout, _unusedTimeout);
@@ -521,7 +541,7 @@ public final class J2CGlobalConfigProperties implements PropertyChangeListener, 
 
     /**
      * @param agedTimeout
-     *            The agedTimeout to set.
+     *                        The agedTimeout to set.
      */
     public synchronized final void setAgedTimeout(int _agedTimeout) {
         changeSupport.firePropertyChange("agedTimeout", this.agedTimeout, _agedTimeout);
@@ -537,7 +557,7 @@ public final class J2CGlobalConfigProperties implements PropertyChangeListener, 
 
     /**
      * @param connectionTimeout
-     *            The connectionTimeout to set.
+     *                              The connectionTimeout to set.
      */
     public synchronized final void setConnectionTimeout(int _connectionTimeout) {
         changeSupport.firePropertyChange("connectionTimeout", this.connectionTimeout, _connectionTimeout);
@@ -553,7 +573,7 @@ public final class J2CGlobalConfigProperties implements PropertyChangeListener, 
 
     /**
      * @param minConnections
-     *            The minConnections to set.
+     *                           The minConnections to set.
      */
     public synchronized final void setMinConnections(int _minConnections) {
         changeSupport.firePropertyChange("minConnections", this.minConnections, _minConnections);
@@ -569,7 +589,7 @@ public final class J2CGlobalConfigProperties implements PropertyChangeListener, 
 
     /**
      * @param purgePolicy
-     *            The purgePolicy to set.
+     *                        The purgePolicy to set.
      */
     public synchronized final void setPurgePolicy(PurgePolicy _purgePolicy) {
         changeSupport.firePropertyChange("purgePolicy", this.purgePolicy, _purgePolicy);
@@ -585,7 +605,7 @@ public final class J2CGlobalConfigProperties implements PropertyChangeListener, 
 
     /**
      * @param reapTime
-     *            The reapTime to set.
+     *                     The reapTime to set.
      */
     public synchronized final void setReapTime(int _reapTime) {
         changeSupport.firePropertyChange("reapTime", this.reapTime, _reapTime);
@@ -601,8 +621,8 @@ public final class J2CGlobalConfigProperties implements PropertyChangeListener, 
 
     /**
      * @param cciLocalTransactionSupported
-     *            The cciLocalTransactionSupported to set
-     *            Intended to be called by ConnectionManager.initializeUOW()
+     *                                         The cciLocalTransactionSupported to set
+     *                                         Intended to be called by ConnectionManager.initializeUOW()
      */
     protected void setLocalTranSupport(boolean _cciLocalTranSupported) {
         if (cciLocalTranSupported == _cciLocalTranSupported)
@@ -629,7 +649,7 @@ public final class J2CGlobalConfigProperties implements PropertyChangeListener, 
 
     /**
      * @param maxConnections
-     *            The maxConnections to set.
+     *                           The maxConnections to set.
      */
     public synchronized final void setMaxConnections(int _maxConnections) {
         try {
@@ -652,7 +672,7 @@ public final class J2CGlobalConfigProperties implements PropertyChangeListener, 
 
     /**
      * @param maxFreePoolHashSize
-     *            The maxFreePoolHashSize to set.
+     *                                The maxFreePoolHashSize to set.
      */
     public synchronized final void setMaxFreePoolHashSize(int _maxFreePoolHashSize) {
         try {
@@ -675,7 +695,7 @@ public final class J2CGlobalConfigProperties implements PropertyChangeListener, 
 
     /**
      * @param maxSharedBuckets
-     *            The maxSharedBuckets to set.
+     *                             The maxSharedBuckets to set.
      */
     public synchronized final void setMaxSharedBuckets(int _maxSharedBuckets) {
         try {
@@ -827,7 +847,7 @@ public final class J2CGlobalConfigProperties implements PropertyChangeListener, 
 
     /**
      * @param embeddedRa
-     *            The embeddedRa to set.
+     *                       The embeddedRa to set.
      */
     protected void setEmbeddedRa(boolean embeddedRa) {
         embeddedRaInitialized = true;
@@ -916,7 +936,8 @@ public final class J2CGlobalConfigProperties implements PropertyChangeListener, 
      * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
      */
     @Override
-    public void propertyChange(PropertyChangeEvent event) {}
+    public void propertyChange(PropertyChangeEvent event) {
+    }
 
     public int getConnctionWaitTime() {
         return connectionTimeout;

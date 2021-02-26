@@ -30,39 +30,24 @@ public class ShutdownHook implements Runnable {
 
     private static final ResourceBundle resourceBundle = ResourceBundle.getBundle(SelfExtract.class.getName() + "Messages");
 
-    int platformType;
-    String dir;
-    String serverName;
-    Thread out;
-    Thread err;
-    boolean extractDirPredefined = false;
-
-    // no parm ctor not public
-    private ShutdownHook() {
-
-    }
+    final int platformType;
+    final String dir;
+    final String serverName;
+    final boolean extractDirPredefined;
 
     /**
      * The only constructor.
      *
-     * @param platformType - platform type: unix(1), windows(2), cygwin(3)
-     * @param dir - extraction directory
-     * @param serverName - name of server from jar (in extraction directory)
-     * @param out - output stream reader thread of parent process.
-     * @param err - error stream reader thread of parent process.
+     * @param platformType         - platform type: unix(1), windows(2), cygwin(3)
+     * @param dir                  - extraction directory
+     * @param serverName           - name of server from jar (in extraction directory)
      * @param extractDirPredefined - flag which indicates if WLP_JAR_EXTRACT_DIR was predefined by user
      */
     public ShutdownHook(int platformType,
                         String dir,
                         String serverName,
-                        StreamReader out,
-                        StreamReader err,
                         boolean extractDirPredefined) {
-
-        this();
         this.serverName = serverName;
-        this.out = out;
-        this.err = err;
         this.dir = dir;
         this.platformType = platformType;
         this.extractDirPredefined = extractDirPredefined;
@@ -117,8 +102,12 @@ public class ShutdownHook implements Runnable {
             cmd = "bash -c  " + '"' + cmd.replace('\\', '/') + '"';
         }
 
-        Runtime.getRuntime().exec(cmd, SelfExtractUtils.runEnv(dir), null); // stop server
-
+        Process stopProcess = Runtime.getRuntime().exec(cmd, SelfExtractUtils.runEnv(dir), null); // stop server
+        try {
+            stopProcess.waitFor();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
     }
 
     /**
@@ -151,7 +140,7 @@ public class ShutdownHook implements Runnable {
      * Write logic for windows cleanup script
      *
      * @param file - script File object
-     * @param bw - bufferedWriter to write into script file
+     * @param bw   - bufferedWriter to write into script file
      * @throws IOException
      */
     private void writeWindowsCleanup(File file, BufferedWriter bw) throws IOException {
@@ -187,7 +176,7 @@ public class ShutdownHook implements Runnable {
      * Write logic for Unix cleanup script
      *
      * @param file - script File object
-     * @param bw - bufferedWriter to write into script file
+     * @param bw   - bufferedWriter to write into script file
      * @throws IOException
      */
     private void writeUnixCleanup(File file, BufferedWriter bw) throws IOException {
@@ -220,7 +209,7 @@ public class ShutdownHook implements Runnable {
      * Write logic for Cygwin cleanup script
      *
      * @param file - script File object
-     * @param bw - bufferedWriter to write into script file
+     * @param bw   - bufferedWriter to write into script file
      * @throws IOException
      */
     private void writeCygwinCleanup(File file, BufferedWriter bw) throws IOException {
@@ -294,18 +283,6 @@ public class ShutdownHook implements Runnable {
         try {
 
             stopServer(); // first, stop server
-
-            // wait on error/output stream threads to complete
-            // note on Windows the streams never close, so wait with brief timeout
-            if (out != null && err != null) {
-                if (!System.getProperty("os.name").startsWith("Win")) {
-                    out.join();
-                    err.join();
-                } else { // windows, so use timeout
-                    out.join(500);
-                    err.join(500);
-                }
-            }
 
             // When the server is launched with java -jar, delete the server on exit minus
             // the /logs folder, unless WLP_JAR_EXTRACT_DIR is set at which point don't delete

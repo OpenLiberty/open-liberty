@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2016, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,9 @@ import javax.inject.Inject;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
+import com.ibm.ws.microprofile.appConfig.cdi.broken.test.TypeWithNoConverter;
+import com.ibm.ws.microprofile.appConfig.cdi.broken.test.TypeWithValidConverter;
+
 @RequestScoped
 public class MissingConfigPropertyBean {
 
@@ -23,26 +26,11 @@ public class MissingConfigPropertyBean {
     String nonExistantKey;
 
     @Inject
-    @ConfigProperty()
-    String nullKey;
+    @ConfigProperty
+    TypeWithValidConverter undefinedKeyWithConverter; // undefinedKey == nonExistantKey, just didn't want to mess with the Regex in the tests.
 
     @Inject
-    @ConfigProperty(name = "")
-    String emptyKey;
-
-    /**
-     * @return the nullKey
-     */
-    public String getnullKey() {
-        return nullKey;
-    }
-
-    public String getemptyKey() {
-        return emptyKey;
-    }
-
-    public String getnonExistantKey() {
-        return nonExistantKey;
-    }
+    @ConfigProperty(name = "noConverterKey")
+    TypeWithNoConverter noConverterProp;
 
 }

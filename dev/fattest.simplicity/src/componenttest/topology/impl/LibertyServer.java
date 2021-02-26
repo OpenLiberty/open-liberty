@@ -89,6 +89,9 @@ import com.ibm.websphere.simplicity.config.ServerConfigurationFactory;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.websphere.soe_reporting.SOEHttpPostUtil;
 import com.ibm.ws.fat.util.ACEScanner;
+import com.ibm.ws.fat.util.jmx.JmxException;
+import com.ibm.ws.fat.util.jmx.JmxServiceUrlFactory;
+import com.ibm.ws.fat.util.jmx.mbeans.ApplicationMBean;
 import com.ibm.ws.logging.utils.FileLogHolder;
 
 import componenttest.common.apiservices.Bootstrap;
@@ -1062,6 +1065,7 @@ public class LibertyServer implements LogMonitorClient {
 
     public enum IncludeArg {
         MINIFY, ALL, USR, RUNNABLE, MINIFYRUNNABLE;
+
         public String getIncludeString() {
             if (this.equals(MINIFYRUNNABLE)) {
                 return "--include=" + "minify,runnable";
@@ -2734,7 +2738,9 @@ public class LibertyServer implements LogMonitorClient {
                                     || toCopy.getName().contains("Snap")
                                     || toCopy.getName().contains(serverToUse + ".dump");
 
-                    if (moveFile && isLog) {
+                    boolean isConfigBackup = absPath.contains("serverConfigBackups");
+
+                    if (moveFile && (isLog || isConfigBackup)) {
                         boolean copied = false;
 
                         // If we're local, try to rename the file instead..
@@ -2860,6 +2866,10 @@ public class LibertyServer implements LogMonitorClient {
         LibertyFileManager.copyFileIntoLiberty(machine, installRoot + "/" + extendedPath, (pathToAutoFVTTestFiles + "/" + fileName));
     }
 
+    // Note: This method does not use a tmp file if the destination file already exists!  See comments
+    // and logic of copyFileIntoLiberty().  Use setServerConfigurationFile() for updating server.xml
+    // if the file pre-exists so that a tmp file / move is performed vs a copy.  This helps
+    // avoid the scenario of parsing a partial config file which results in a XML Parsing error.
     public void copyFileToLibertyServerRootUsingTmp(String path, String relPathTolocalFile) throws Exception {
         LocalFile localFileToCopy = new LocalFile(LibertyServerUtils.makeJavaCompatible(relPathTolocalFile, machine));
         LibertyFileManager.copyFileIntoLiberty(machine, path, localFileToCopy.getName(), relPathTolocalFile, false, serverRoot);
@@ -3915,7 +3925,7 @@ public class LibertyServer implements LogMonitorClient {
         }
     }
 
-    protected Properties getBootstrapProperties() {
+    public Properties getBootstrapProperties() {
         Properties props = new Properties();
 
         try {
@@ -4047,6 +4057,21 @@ public class LibertyServer implements LogMonitorClient {
     }
 
     /**
+     * Replaces the server configuration which is using a non default server.xml file name (ex, myServer.xml).
+     * This encapsulates the necessary logic to deal with system / JDK idiosyncrasies.
+     *
+     * @param  srcFile   the source configuration file name
+     * @param  destFile  the destination configuration file name
+     * @throws Exception
+     */
+    protected void replaceServerConfiguration(String srcFile, String destFile) throws Exception {
+        waitIfNeeded();
+
+        LibertyFileManager.moveFileIntoLiberty(machine, getServerRoot(), destFile, srcFile);
+        lastConfigUpdate = System.currentTimeMillis();
+    }
+
+    /**
      * Replaces the server admin-metadata configuration. This encapsulates the necessary logic
      * to deal with system / JDK idiosyncrasies.
      *
@@ -4090,6 +4115,22 @@ public class LibertyServer implements LogMonitorClient {
     }
 
     /**
+     * This will put the named file into the root directory of the server and name it the value of destFile
+     * (ie not server.xml as the single parameter version of this method above).
+     * <br/>
+     * Note: The provided srcFile name is relative to the autoFVT test files directory.
+     *
+     * @param  srcFile
+     * @param  destFile
+     * @throws Exception
+     */
+    public void setServerConfigurationFile(String srcFile, String destFile) throws Exception {
+        replaceServerConfiguration(pathToAutoFVTTestFiles + "/" + srcFile, destFile);
+        Thread.sleep(200); // Sleep for 200ms to ensure we do not process the file "too quickly" by a subsequent call
+
+    }
+
+    /**
      * Puts the named file into the root directory of the server and names it server.xml. If the file path is not absolute, it is
      * assumed to exist under the server root directory.
      */
@@ -4128,7 +4169,18 @@ public class LibertyServer implements LogMonitorClient {
         if (savedServerXml == null) {
             throw new RuntimeException("The server configuration cannot be restored because it was never saved via the saveServerConfiguration method.");
         }
+        Log.info(c, "restoreServerConfiguration", savedServerXml.getName());
         getServerConfigurationFile().copyFromSource(savedServerXml);
+    }
+
+    /**
+     * This will restore the server configuration and wait for all apps to be ready
+     *
+     * @throws Exception
+     */
+    public void restoreServerConfigurationAndWaitForApps(String... extraMsgs) throws Exception {
+        restoreServerConfiguration();
+        waitForConfigUpdateInLogUsingMark(listAllInstalledAppsForValidation(), extraMsgs);
     }
 
     public String getServerConfigurationPath() {
@@ -5406,7 +5458,7 @@ public class LibertyServer implements LogMonitorClient {
 
     public void addInstalledAppForValidation(String app) {
         final String method = "addInstalledAppForValidation";
-        final String START_APP_MESSAGE_CODE = "CWWKZ0001I";
+        final String START_APP_MESSAGE_CODE = "CWWKZ0001I:.*" + app;
         Log.info(c, method, "Adding installed app: " + app + " for validation");
         installedApplications.add(app);
 
@@ -5417,7 +5469,7 @@ public class LibertyServer implements LogMonitorClient {
 
     public void removeInstalledAppForValidation(String app) {
         final String method = "removeInstalledAppForValidation";
-        final String REMOVE_APP_MESSAGE_CODE = "CWWKZ0009I";
+        final String REMOVE_APP_MESSAGE_CODE = "CWWKZ0009I:.*" + app;
         Log.info(c, method, "Removing installed app: " + app + " for validation");
         installedApplications.remove(app);
 
@@ -5516,7 +5568,7 @@ public class LibertyServer implements LogMonitorClient {
     public void startServer(boolean cleanStart, boolean validateApps) throws Exception {
         startServerAndValidate(true, cleanStart, validateApps);
     }
-    
+
     public void deleteAllDropinApplications() throws Exception {
         LibertyFileManager.deleteLibertyDirectoryAndContents(machine, getServerRoot() + "/dropins");
         LibertyFileManager.createRemoteFile(machine, getServerRoot() + "/dropins");
@@ -5566,6 +5618,11 @@ public class LibertyServer implements LogMonitorClient {
         } else {
             Log.info(c, method, appFileName + " successfully moved out of dropins, waiting for message...");
         }
+
+        // The following app stop message does not necessarily indicate that the app has been completely removed.
+        // We'll wait for 1s to ensure that the "restarted" app is recognized as a new rather than updated app.
+        // If we don't wait here, in rare cases a CWWKZ0003I will be printed instead of CWWKZ0001I for the app.
+        Thread.sleep(1000);
 
         String stopMsg = waitForStringInLogUsingMark("CWWKZ0009I:.*" + appName); // throws Exception
         if (stopMsg == null) {
@@ -5947,6 +6004,40 @@ public class LibertyServer implements LogMonitorClient {
     }
 
     /**
+     * Retrieves an {@link ApplicationMBean} for a particular application on this server
+     *
+     * @param  applicationName the name of the application to operate on
+     * @return                 an {@link ApplicationMBean}
+     * @throws JmxException    if the object name for the input application cannot be constructed
+     */
+    public ApplicationMBean getApplicationMBean(String applicationName) throws JmxException {
+        return new ApplicationMBean(getJmxServiceUrl(), applicationName);
+    }
+
+    /**
+     * Get the JMX connection URL of this server
+     *
+     * @return              a {@link JMXServiceURL} that allows you to invoke MBeans on the server
+     * @throws JmxException
+     *                          if the server can't be found,
+     *                          the localConnector-1.0 feature is not enabled,
+     *                          or the address file is not valid
+     */
+    public JMXServiceURL getJmxServiceUrl() throws JmxException {
+        return JmxServiceUrlFactory.getInstance().getUrl(this);
+    }
+
+    /**
+     * Restarts an application via its MBean
+     *
+     * @param  applicationName the application to be restarted
+     * @throws JmxException
+     */
+    public void restartApplication(String applicationName) throws JmxException {
+        getApplicationMBean(applicationName).restart();
+    }
+
+    /**
      * Wait for the specified regex in the default logs from the last offset.
      * The offset is incremented every time this method is called.
      * <p>
@@ -6080,9 +6171,6 @@ public class LibertyServer implements LogMonitorClient {
         fixedIgnoreErrorsList.add("CWWKF0017E.*cik.ext.product1.properties");
         // Added due to build break defect 221453.
         fixedIgnoreErrorsList.add("CWWKG0011W");
-        if (isJavaVersion6()) {
-            fixedIgnoreErrorsList.add("CWWKE0109W");
-        }
     }
 
     public boolean isJava2SecurityEnabled() {
@@ -6105,14 +6193,6 @@ public class LibertyServer implements LogMonitorClient {
         ServerConfiguration config = this.getServerConfiguration();
         config.updateDatabaseArtifacts();
         this.updateServerConfiguration(config);
-    }
-
-    public boolean isJavaVersion6() {
-        return javaInfo.majorVersion() == 6;
-    }
-
-    public boolean isJavaVersion8() {
-        return javaInfo.majorVersion() == 8;
     }
 
     public boolean isIBMJVM() {

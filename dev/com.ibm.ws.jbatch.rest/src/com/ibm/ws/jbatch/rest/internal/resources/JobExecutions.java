@@ -17,9 +17,15 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
+
+import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLHandshakeException;
 
 import javax.batch.operations.JobExecutionAlreadyCompleteException;
@@ -44,8 +50,12 @@ import com.ibm.jbatch.container.ws.WSJobExecution;
 import com.ibm.jbatch.container.ws.WSJobInstance;
 import com.ibm.jbatch.container.ws.WSJobRepository;
 import com.ibm.jbatch.container.ws.WSStepThreadExecutionAggregate;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.jbatch.joblog.JobExecutionLog;
+import com.ibm.ws.jbatch.joblog.JobExecutionLog.LogLocalState;
+import com.ibm.ws.jbatch.joblog.RemotePartitionLog;
 import com.ibm.ws.jbatch.joblog.services.IJobLogManagerService;
 import com.ibm.ws.jbatch.rest.BatchManager;
 import com.ibm.ws.jbatch.rest.internal.BatchNoSuchJobExecutionException;
@@ -106,6 +116,8 @@ import com.ibm.wsspi.rest.handler.RESTResponse;
                             RESTHandler.PROPERTY_REST_HANDLER_CUSTOM_SECURITY + "=true"
                 })
 public class JobExecutions implements RESTHandler {
+	
+	private static final TraceComponent tc = Tr.register(JobExecutions.class, "wsbatch", "com.ibm.ws.jbatch.rest.resources.RESTMessages");
 
     private WSJobRepository jobRepository;
 
@@ -329,31 +341,35 @@ public class JobExecutions implements RESTHandler {
      * 
      */
     private class JobLogsHandler extends RequestHandler {
-        public void get(RESTRequest request, RESTResponse response) throws Exception {
-            getJobLog(request, response, getJobExecutionId(request));
-        }
+    	public void get(RESTRequest request, RESTResponse response) throws Exception {
+    		getJobLog(request, response, getJobExecutionId(request));
+    	}
 
         /**
          * Get the joblog for the given jobExecutionId.
          */
-        @FFDCIgnore(BatchJobNotLocalException.class)
         protected void getJobLog(RESTRequest request, RESTResponse response, long jobExecutionId) throws Exception {
             try {
                 JobExecutionLog jobExecutionLog = jobLogManagerService.getJobExecutionLog(jobExecutionId);
 
-                if (!StringUtils.isEmpty(request.getParameter("part"))) {
-                    sendJobExecutionLogPart(jobExecutionLog, request, response);
+                // Check the localOnly param here. If it's set, we just want the logs from this server, no cascading requests
+                boolean localOnly = "true".equals(request.getParameter("localOnly"));
+                
+                if (localOnly || jobExecutionLog.getLocalState() == LogLocalState.EXECUTION_LOCAL) {
+                	if (!StringUtils.isEmpty(request.getParameter("part"))) {
+                        sendJobExecutionLogPart(jobExecutionLog, request, response);
+                    } else {
+                        sendJobExecutionLog(jobExecutionLog, request, response);
+                    }
                 } else {
-                    sendJobExecutionLog(jobExecutionLog, request, response);
-                }
+                		BatchRequestUtil.handleNonLocalRequest(BatchRequestUtil.buildJoblogsUrl(jobExecutionLog.getJobExecution(), null, request.getQueryString()), 
+                				"GET",
+                				request,
+                				response);
+                } 
 
             } catch (NoSuchJobExecutionException e) {
                 throw new RequestException(HttpURLConnection.HTTP_BAD_REQUEST, "A job with job execution id " + jobExecutionId + " does not exist.");
-            } catch (BatchJobNotLocalException e) {
-        		BatchRequestUtil.handleNonLocalRequest(BatchRequestUtil.buildJoblogsUrl(e.getJobExecution(), null, request.getQueryString()), 
-        				"GET",
-        				request,
-        				response);
             }
         }
 
@@ -362,35 +378,95 @@ public class JobExecutions implements RESTHandler {
          */
         protected void sendJobExecutionLog(JobExecutionLog jobExecutionLog, RESTRequest request, RESTResponse response) throws IOException {
 
-            if ("zip".equals(request.getParameter("type"))) {
+        	if ("zip".equals(request.getParameter("type"))) {
 
-                // Note: headers must be set *before* writing to the output stream
-                response.setContentType("application/zip");
-                response.setResponseHeader("Content-Disposition", "attachment; filename=" + StringUtils.enquote(getZipFileName(jobExecutionLog)));
+        		ZipOutputStream zipOutput = new ZipOutputStream(response.getOutputStream());
 
-                ZipHelper.zipFilesToStream(jobExecutionLog.getJobLogFiles(),
-                                           jobExecutionLog.getExecLogRootDir(),
-                                           response.getOutputStream());
+        		// Note: headers must be set *before* writing to the output stream
+        		response.setContentType("application/zip");
+        		response.setResponseHeader("Content-Disposition", "attachment; filename=" + StringUtils.enquote(getZipFileName(jobExecutionLog)));
 
-            } else if ("text".equals(request.getParameter("type"))) {
+        		// If there are remote partition logs, fetch them now.
+        		// The localOnly flag is used to prevent cascading requests
+        		if (jobExecutionLog.getRemotePartitionLogs() != null &&
+        				!("true".equals(request.getParameter("localOnly")))) {
 
-                // Note: headers must be set *before* writing to the output stream
-                response.setContentType("text/plain; charset=UTF-8");
+        			HashSet<String> partitionEndpointURLs = jobExecutionLog.getRemotePartitionEndpointURLs();
 
-                ZipHelper.aggregateFilesToStream(jobExecutionLog.getJobLogFiles(),
-                                                 jobExecutionLog.getExecLogRootDir(),
-                                                 response.getOutputStream());
-            } else {
+        			// Ignore local URL because the logs would have already been collected with the top-level execution logs
+        			partitionEndpointURLs.remove(BatchRequestUtil.getUrlRoot(request));
 
-                // Send back a json array with REST links to each part.
+        			for (String url : partitionEndpointURLs) {
+        				// Fetch the contents from the remote partition executor
+        				String joblogUrl = BatchRequestUtil.buildJoblogsUrl(url, jobExecutionLog.getExecutionId()) + "?type=zip&localOnly=true";
+        				try {
+        					HttpsURLConnection conn = BatchRequestUtil.sendRESTRequest(joblogUrl, "GET", request, null);
 
-                // Note: headers must be set *before* writing to the output stream
-                response.setContentType(BatchJSONHelper.MEDIA_TYPE_APPLICATION_JSON);
+        					if (conn != null) {
+        						// Copy zip entries from the remote request
+        						ZipInputStream zipStream = new ZipInputStream(conn.getInputStream());
+        						ZipHelper.copyZipEntries(zipStream, zipOutput);
+        					} 
+        				} catch (Exception ex) {
+        					Tr.debug(tc, "Exception occurred fetching remote partition logs from " + joblogUrl +
+        							", exception details: " + ex.getClass().getName() + ": " + ex.getLocalizedMessage());
+        				}
+        			}
 
-                BatchJSONHelper.writeJobExecutionLogLinks(jobExecutionLog,
-                                                          BatchRequestUtil.getUrlRoot(request),
-                                                          response.getOutputStream());
-            }
+        		}
+
+        		ZipHelper.zipFilesToStream(jobExecutionLog.getJobLogFiles(),
+        								   jobExecutionLog.getExecLogRootDir(),
+        								   zipOutput);
+
+        	} else if ("text".equals(request.getParameter("type"))) {
+
+        		// Note: headers must be set *before* writing to the output stream
+        		response.setContentType("text/plain; charset=UTF-8");
+
+        		ZipHelper.aggregateFilesToStream(jobExecutionLog.getJobLogFiles(),
+        				jobExecutionLog.getExecLogRootDir(),
+        				response.getOutputStream());
+
+        		// If there are remote partition logs, fetch them now.
+        		// The localOnly flag is used to prevent cascading requests
+        		if (jobExecutionLog.getRemotePartitionLogs() != null &&
+        				!("true".equals(request.getParameter("localOnly")))) {
+
+        			HashSet<String> partitionEndpointURLs = jobExecutionLog.getRemotePartitionEndpointURLs();
+
+        			// Ignore local URL because the logs would have already been collected with the top-level execution logs
+        			partitionEndpointURLs.remove(BatchRequestUtil.getUrlRoot(request));
+
+        			// Fetch the contents from the remote partition executors
+        			for (String url : partitionEndpointURLs) {
+        				HttpsURLConnection conn = BatchRequestUtil.sendRESTRequest(
+        						BatchRequestUtil.buildJoblogsUrl(url, jobExecutionLog.getExecutionId()) + "?type=text&localOnly=true", 
+        						"GET",
+        						request,
+        						null);
+
+        				// TODO what if the request fails? CGCG
+
+        				// Copy job log text from the remote request
+        				byte[] buf = new byte[1024];
+        				int len;
+        				while ((len = conn.getInputStream().read(buf)) != -1) {
+        					response.getOutputStream().write(buf, 0, len);
+        				}
+        			}
+        		}
+        	} else {
+
+        		// Send back a json array with REST links to each part.
+
+        		// Note: headers must be set *before* writing to the output stream
+        		response.setContentType(BatchJSONHelper.MEDIA_TYPE_APPLICATION_JSON);
+
+        		BatchJSONHelper.writeJobExecutionLogLinks(jobExecutionLog,
+        				BatchRequestUtil.getUrlRoot(request),
+        				response.getOutputStream());
+        	}
         }
 
         /**

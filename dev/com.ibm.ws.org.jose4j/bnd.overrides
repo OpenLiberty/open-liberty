@@ -2,7 +2,7 @@
 bVersion=1.0
 
 Bundle-Name: org.jose4j
-Bundle-Description: org.jose4j; version=0.6.4
+Bundle-Description: org.jose4j; version=0.6.5
 Bundle-SymbolicName: com.ibm.ws.org.jose4j
 
 WS-TraceGroup: \
@@ -12,7 +12,7 @@ Export-Package: \
     org.jose4j.base64url.internal.apache.commons.codec.binary;version="1.0.16", \
     org.jose4j.json.internal.json_simple;version="1.0.16", \
     org.jose4j.json.internal.json_simple.parser;version="1.0.16", \
-    org.jose4j.*;version="0.6.4"
+    org.jose4j.*;version="0.6.5"
 
 Import-Package: \
     !org.jose4j.*.internal.*,\

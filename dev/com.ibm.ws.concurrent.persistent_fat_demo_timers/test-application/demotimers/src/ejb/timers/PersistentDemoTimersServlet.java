@@ -12,8 +12,8 @@ package ejb.timers;
 
 import java.util.concurrent.TimeUnit;
 
-import javax.ejb.EJB;
-import javax.servlet.annotation.WebServlet;
+import jakarta.ejb.EJB;
+import jakarta.servlet.annotation.WebServlet;
 
 import org.junit.Test;
 

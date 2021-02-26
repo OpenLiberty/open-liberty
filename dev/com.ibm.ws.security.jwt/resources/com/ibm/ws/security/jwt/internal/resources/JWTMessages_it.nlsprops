@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2016, 2017 IBM Corporation and others.
+# Copyright (c) 2016, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -313,3 +313,72 @@ JWT_TRUSTED_ISSUERS_NULL.useraction=Verificare che la configurazione JWT specifi
 SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME=CWWKS6053E: \u00c8 utilizzato lo schema HTTP nell''endpoint specificato: {0}, \u00e8 richiesto HTTPS.
 SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME.explanation=L'endpoint specificato richiede HTTPS, ma nell'URL di richiesta \u00e8 stato utilizzato HTTP.
 SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME.useraction=Controllare l'URL di richiesta e assicurarsi che utilizzi HTTPS o modificare la configurazione in modo che HTTPS non sia richiesto.
+
+# 0=Signature algorithm from MP Config properties, 1=Default algorithm that will be used
+MP_CONFIG_PUBLIC_KEY_ALG_NOT_SUPPORTED=CWWKS6053W: L''algoritmo di firma [{0}] specificato dalle propriet\u00e0 di configurazione MicroProfile non \u00e8 supportato. Verr\u00e0 utilizzato l''algoritmo di firma [{1}].
+MP_CONFIG_PUBLIC_KEY_ALG_NOT_SUPPORTED.explanation=Sono supportati solo alcuni algoritmi di firma RSA, Curva ellittica e HMAC. L'algoritmo di firma specificato dalle propriet\u00e0 di configurazione MicroProfile non \u00e8 uno degli algoritmi di firma supportati.
+MP_CONFIG_PUBLIC_KEY_ALG_NOT_SUPPORTED.useraction=Specificare un algoritmo di firma supportato nelle propriet\u00e0 di configurazione MicroProfile. Gli algoritmi di firma supportati includono ES256, ES384, ES512, RS256, RS384, RS512, HS256, HS384 e HS512.
+
+# Do not translate "JSON Web Token", "AMR", "JWT"
+# 0=AMR claim of the token, 1=JWT configuration ID, 2=AMR specified in server configuration
+JWT_AMR_CLAIM_NOT_VALID=CWWKS6054E: L''AMR [{0}] del JWT (JSON web token) fornito non \u00e8 elencato come un AMR affidabile nella configurazione JWT [{1}]. Gli AMR affidabili sono [{2}].
+JWT_AMR_CLAIM_NOT_VALID.explanation=La configurazione del server specifica quali AMR sono affidabili quando si convalidano i JWT. Il token fornito non \u00e8 previsto per un AMR affidabile e, pertanto, non \u00e8 possibile convalidarlo.
+JWT_AMR_CLAIM_NOT_VALID.useraction=Ottenere un nuovo token per uno degli AMR affidabili specificati nella configurazione JWT oppure aggiungere l'AMR specificato nel messaggio come AMR affidabile nella configurazione JWT.
+
+# 0=JWT configuration ID, 1=Signature algorithm configured in server.xml, 2=Signature algorithm that will be used by default
+BETA_SIGNATURE_ALGORITHM_USED=CWWKS6055W: La configurazione [{0}] specifica l''algoritmo di firma {1}, ma tale algoritmo \u00e8 disponibile solo nell''edizione beta. Viene utilizzato l''algoritmo di firma {2}.
+BETA_SIGNATURE_ALGORITHM_USED.explanation=Il supporto per l'algoritmo di firma specificato nel messaggio potrebbe essere incompleto, pertanto l'algoritmo di firma pu\u00f2 essere utilizzato solo nell'edizione beta.
+BETA_SIGNATURE_ALGORITHM_USED.useraction=Configurare un algoritmo di firma supportato oppure utilizzare l'edizione beta di questo prodotto per utilizzare l'algoritmo di firma specificato nel messaggio.
+
+# 0=JWT configuration ID, 1=Exception message
+ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE=CWWKS6056E: Il consumer JWT [{0}] ha riscontrato un errore durante l''estrazione del payload JWS (JSON Web Signature) dal token JWE (JSON Web Encryption). {1}
+ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE.explanation=Il token JWE potrebbe avere un formato errato o potrebbe avere delle informazioni mancanti. La chiave di gestione chiavi utilizzata per decodificare il token JWE potrebbe mancare o non essere in grado di decodificare il token.
+ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE.useraction=Per ulteriori informazioni, consultare l'errore nel messaggio. Verificare che il JWE abbia un formato corretto. Verificare che la configurazione del consumer JWT faccia riferimento alla chiave di gestione chiavi che corrisponde alla chiave utilizzata per codificare il token JWE.
+
+# 0="cty", 1=Value of the "cty" header in the token, 2="JWT"
+CTY_NOT_JWT_FOR_NESTED_JWS=CWWKS6057E: Il token JWE (JSON Web Encryption) contiene un token JWS (JSON Web Signature) nidificato, ma l''intestazione {0} nel JWE \u00e8 impostata su [{1}]. L''intestazione JWE {0} deve essere impostata su {2} se il payload JWE \u00e8 un JWS.
+CTY_NOT_JWT_FOR_NESTED_JWS.explanation=La specifica JSON Web Token 1.2 del microprofilo richiede che i token JWE abbiano la relativa intestazione del tipo di contenuto impostata sul valore specificato nel messaggio, se il contenuto del token \u00e8 un JWS.
+CTY_NOT_JWT_FOR_NESTED_JWS.useraction=Assicurarsi che l'intestazione del tipo di contenuto del token JWE sia impostata sul valore richiesto.
+
+# Do not translate "JSON Web Encryption", "JWE", "Content Encryption Key"
+# 0=Builder config ID
+KEY_MANAGEMENT_KEY_MISSING=CWWKS6058W: Il builder JWT [{0}] non pu\u00f2 creare i token JWE (JSON Web Encryption) perch\u00e9 non \u00e8 stata fornita una chiave di gestione chiavi.
+KEY_MANAGEMENT_KEY_MISSING.explanation=Una chiave di gestione chiavi \u00e8 una chiave utilizzata per codificare la Content Encryption Key di un token JWE. Deve essere specificata una chiave in modo che il builder JWT possa creare dei token JWE.
+KEY_MANAGEMENT_KEY_MISSING.useraction=Verificare all'API builder venga fornita una chiave se il builder deve creare dei token JWE.
+
+# 0=Builder config ID, 1=keyManagementKeyAlias, 2=keyManagementKeyAlgorithm, 3=contentEncryptionAlgorithm
+KEY_MANAGEMENT_KEY_ALIAS_MISSING=CWWKS6059W: Alla configurazione del builder JWT [{0}] manca l''attributo {1} e, pertanto, non pu\u00f2 creare dei token JWE (JSON Web Encryption). Configurare l''attributo specificato oppure rimuovere gli attributi {2} e {3}.
+KEY_MANAGEMENT_KEY_ALIAS_MISSING.explanation=L'alias di gestione chiavi fa riferimento a una chiave utilizzata per codificare la Content Encryption Key di un token JWE. Deve essere specificato un alias chiave in modo che il builder JWT possa creare dei token JWE.
+KEY_MANAGEMENT_KEY_ALIAS_MISSING.useraction=Se il builder JWT deve creare dei token JWE, configurare l'attributo di alias di gestione chiavi. Se il builder JWT non ha bisogno di creare dei token JWE, rimuovere gli altri attributi menzionati nel messaggio.
+
+# 0=Builder config ID, 1=Exception message
+ERROR_BUILDING_SIGNED_JWE=CWWKS6060E: Il builder JWT [{0}] non pu\u00f2 creare un token JWE (JSON Web Encryption). {1}
+ERROR_BUILDING_SIGNED_JWE.explanation=Il builder JWT ha riscontrato un errore durante la creazione del token JWE. Controllare l'errore incluso nel messaggio per ulteriori informazioni.
+ERROR_BUILDING_SIGNED_JWE.useraction=Controllare l'errore incluso nel messaggio per ulteriori informazioni.
+
+# Do not translate "JwtBuilder"
+# 0=Builder config ID, 1=keyManagementKeyAlias value, 2=Trust store config ID
+KEY_MANAGEMENT_KEY_NOT_FOUND=CWWKS6061E: Il builder JWT [{0}] non pu\u00f2 creare un token JWE (JSON Web Encryption) perch\u00e9 non \u00e8 stata trovata una chiave di gestione chiavi. L''alias di chiave di gestione chiavi \u00e8 [{1}] e il truststore configurato \u00e8 [{2}].
+KEY_MANAGEMENT_KEY_NOT_FOUND.explanation=Una chiave di gestione chiavi \u00e8 una chiave utilizzata per codificare la Content Encryption Key di un token JWE. Deve essere specificata una chiave di gestione chiavi in modo che il builder JWT possa creare dei token JWE. Una chiave di gestione chiavi pu\u00f2 essere specificata utilizzando i valori di alias chiave e truststore configurato che sono specificati nel messaggio oppure utilizzando l'API JwtBuilder.
+KEY_MANAGEMENT_KEY_NOT_FOUND.useraction=Verificare che una chiave con l'alias specificato nel messaggio esista nel truststore specificato nel messaggio. Se viene utilizzata l'API JwtBuilder, assicurarsi che venga fornita una chiave di gestione chiavi.
+
+# Do not translate "MicroProfile Config", "mp.jwt.verify.publickey.location"
+# 0=mp.jwt.decrypt.key.location
+DECRYPT_KEY_LOCATION_INLINE_KEY=CWWKS6062E: Il valore per la propriet\u00e0 [{0}] di configurazione del microprofilo sembra includere una stringa di chiave privata, che non \u00e8 una configurazione supportata.
+DECRYPT_KEY_LOCATION_INLINE_KEY.explanation=La funzione JWT del microprofilo non supporta la specifica di stringhe di chiavi private nella propriet\u00e0 di configurazione del microprofilo specificata nel messaggio. Il valore di questa propriet\u00e0 deve essere un percorso relativo o un URL.
+DECRYPT_KEY_LOCATION_INLINE_KEY.useraction=Utilizzare un percorso relativo o un URL come valore della propriet\u00e0 di configurazione del microprofilo specificata nel messaggio. I valori dell'ubicazione supportati sono identici alla propriet\u00e0 mp.jwt.verify.publickey.location.
+
+# Do not translate "mp.jwt.decrypt.key.location", "keyManagementKeyAlias", "Content Encryption Key"
+# 0=JWT consumer config ID
+JWS_REQUIRED_BUT_TOKEN_NOT_JWS=CWWKS6063E: Il token nella richiesta non \u00e8 nel formato JWS (JSON Web Signature), ma il consumer JWT [{0}] accetta solo token nel formato JWS.
+JWS_REQUIRED_BUT_TOKEN_NOT_JWS.explanation=Il token nella richiesta potrebbe essere formattato in modo non corretto o potrebbe essere nel formato JWE (JSON Web Encryption). I token devono essere nel formato JWS se l'ubicazione della chiave di decrittografia JWE non \u00e8 configurata. Se si utilizza la funzione JWT del microprofilo, \u00e8 necessario configurare la versione 1.2 o successiva della funzione per accettare i token nel formato JWE.
+JWS_REQUIRED_BUT_TOKEN_NOT_JWS.useraction=Per accettare i token JWE, configurare la propriet\u00e0 di configurazione del microprofilo mp.jwt.decrypt.key.location o l'attributo keyManagementKeyAlias nella configurazione del consumer JWT. Se si utilizza la funzione JWT del microprofilo, assicurarsi che sia configurata la versione 1.2 o successiva. Altrimenti, assicurarsi che a questa risorsa vengano inviati solo token JWS.
+
+# 0=JWT consumer config ID
+JWE_REQUIRED_BUT_TOKEN_NOT_JWE=CWWKS6064E: Il token nella richiesta non \u00e8 nel formato JWE (JSON Web Encryption), ma il consumer JWT [{0}] accetta solo token nel formato JWE.
+JWE_REQUIRED_BUT_TOKEN_NOT_JWE.explanation=Il token nella richiesta potrebbe essere formattato in modo non corretto o potrebbe essere nel formato JWS (JSON Web Signature). I token devono essere nel formato JWE se l'ubicazione della chiave di decrittografia JWE \u00e8 configurata.
+JWE_REQUIRED_BUT_TOKEN_NOT_JWE.useraction=Per accettare i token JWS invece dei token JWE, rimuovere la propriet\u00e0 di configurazione del microprofilo mp.jwt.decrypt.key.location e l'attributo keyManagementKeyAlias nella configurazione del consumer JWT. Altrimenti, assicurarsi che a questa risorsa vengano inviati solo token JWE.
+
+NESTED_JWS_REQUIRED_BUT_NOT_FOUND=CWWKS6065E: Il payload del token JWE (JSON Web Encryption) incluso nella richiesta non \u00e8 un token JWS (JSON Web Signature).
+NESTED_JWS_REQUIRED_BUT_NOT_FOUND.explanation=Il payload di un token JWE deve essere un JWT (JSON Web Token) valido nel formato JWS.
+NESTED_JWS_REQUIRED_BUT_NOT_FOUND.useraction=Assicurarsi che il payload del token JWE sia un JWT valido nel formato JWS.

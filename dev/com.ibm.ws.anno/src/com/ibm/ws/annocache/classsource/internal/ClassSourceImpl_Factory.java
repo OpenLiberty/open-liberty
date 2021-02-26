@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2019 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,12 @@ package com.ibm.ws.annocache.classsource.internal;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.eclipse.osgi.service.urlconversion.URLConverter;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Reference;
+
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.anno.classsource.specification.ClassSource_Specification_Container_EJB;
 import com.ibm.ws.anno.classsource.specification.ClassSource_Specification_Container_WAR;
@@ -26,23 +32,24 @@ import com.ibm.ws.annocache.classsource.specification.internal.ClassSourceImpl_S
 import com.ibm.ws.annocache.classsource.specification.internal.ClassSourceImpl_Specification_Element;
 import com.ibm.ws.annocache.classsource.specification.internal.ClassSourceImpl_Specification_Elements;
 import com.ibm.ws.annocache.service.internal.AnnotationCacheServiceImpl_Logging;
-import com.ibm.ws.annocache.service.internal.AnnotationCacheServiceImpl_Service;
-import com.ibm.ws.annocache.util.internal.UtilImpl_Factory;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.anno.classsource.ClassSource_MappedContainer;
 import com.ibm.wsspi.anno.classsource.ClassSource_MappedDirectory;
 import com.ibm.wsspi.anno.classsource.ClassSource_MappedJar;
 import com.ibm.wsspi.anno.classsource.ClassSource_MappedSimple.SimpleClassProvider;
 import com.ibm.wsspi.annocache.classsource.ClassSource_Aggregate;
+import com.ibm.wsspi.annocache.classsource.ClassSource_Aggregate.ScanPolicy;
 import com.ibm.wsspi.annocache.classsource.ClassSource_ClassLoader;
 import com.ibm.wsspi.annocache.classsource.ClassSource_Exception;
 import com.ibm.wsspi.annocache.classsource.ClassSource_Factory;
 import com.ibm.wsspi.annocache.classsource.ClassSource_MappedSimple;
 import com.ibm.wsspi.annocache.classsource.ClassSource_Options;
-import com.ibm.wsspi.annocache.classsource.ClassSource_Aggregate.ScanPolicy;
+import com.ibm.wsspi.annocache.service.AnnotationCacheService_Service;
+import com.ibm.wsspi.annocache.util.Util_Factory;
 import com.ibm.wsspi.annocache.util.Util_InternMap;
 import com.ibm.wsspi.annocache.util.Util_RelativePath;
 
+@Component(configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM"})
 public class ClassSourceImpl_Factory implements ClassSource_Factory {
     private static final Logger logger = AnnotationCacheServiceImpl_Logging.ANNO_LOGGER;
 
@@ -51,6 +58,7 @@ public class ClassSourceImpl_Factory implements ClassSource_Factory {
     //
 
     protected final String hashText;
+    private final URLConverter bundleEntryUrlConverter;
 
     @Override
     @Trivial
@@ -58,11 +66,15 @@ public class ClassSourceImpl_Factory implements ClassSource_Factory {
         return hashText;
     }
 
-    //
+    // only for unit testing with no URLConverter required
+    public ClassSourceImpl_Factory(Util_Factory utilFactory) {
+        this(utilFactory, null);
+    }
 
+    @Activate
     public ClassSourceImpl_Factory(
-        AnnotationCacheServiceImpl_Service annoService,
-        UtilImpl_Factory utilFactory) {
+        @Reference Util_Factory utilFactory,
+        @Reference(target = "(protocol=bundleentry)") URLConverter bundleEntryUrlConverter) {
         
         super();
 
@@ -70,8 +82,8 @@ public class ClassSourceImpl_Factory implements ClassSource_Factory {
 
         this.hashText = getClass().getSimpleName() + "@" + Integer.toHexString(hashCode());
 
-        this.annoService = annoService;
         this.utilFactory = utilFactory;
+        this.bundleEntryUrlConverter = bundleEntryUrlConverter;
 
         if ( logger.isLoggable(Level.FINER) ) {
             logger.logp(Level.FINER, CLASS_NAME, methodName,
@@ -84,19 +96,11 @@ public class ClassSourceImpl_Factory implements ClassSource_Factory {
 
     //
 
-    protected final AnnotationCacheServiceImpl_Service annoService;
-
-    public AnnotationCacheServiceImpl_Service getAnnotationService() {
-        return annoService;
-    }
-
-    //
-
-    protected final UtilImpl_Factory utilFactory;
+    protected final Util_Factory utilFactory;
 
     @Override
     @Trivial
-    public UtilImpl_Factory getUtilFactory() {
+    public Util_Factory getUtilFactory() {
         return utilFactory;
     }
 
@@ -300,7 +304,7 @@ public class ClassSourceImpl_Factory implements ClassSource_Factory {
         Container container)
         throws ClassSource_Exception {
 
-        return new ClassSourceImpl_MappedContainer(this, internMap, name, container);
+        return new ClassSourceImpl_MappedContainer(this, internMap, name, container, bundleEntryUrlConverter);
         // throws ClassSource_Exception
     }
 
@@ -310,7 +314,7 @@ public class ClassSourceImpl_Factory implements ClassSource_Factory {
         String name,
         Container container, String entryPrefix) throws ClassSource_Exception {
 
-        return new ClassSourceImpl_MappedContainer(this, internMap, name, container, entryPrefix);
+        return new ClassSourceImpl_MappedContainer(this, internMap, name, container, entryPrefix, bundleEntryUrlConverter);
         // throws ClassSource_Exception
     }
 

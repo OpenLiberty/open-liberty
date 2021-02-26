@@ -11,13 +11,11 @@
 package com.ibm.ws.security.javaeesec.fat;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.client.params.ClientPNames;
-import org.apache.http.params.HttpParams;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpParams;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -25,13 +23,14 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
-import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.apacheds.EmbeddedApacheDS;
+import com.ibm.ws.security.javaeesec.fat_helper.Constants;
+import com.ibm.ws.security.javaeesec.fat_helper.JavaEESecTestBase;
+import com.ibm.ws.security.javaeesec.fat_helper.LocalLdapServer;
+import com.ibm.ws.security.javaeesec.fat_helper.WCApplicationHelper;
 
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.AllowedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -39,12 +38,6 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
-import com.ibm.ws.security.javaeesec.fat_helper.Constants;
-import com.ibm.ws.security.javaeesec.fat_helper.JavaEESecTestBase;
-import com.ibm.ws.security.javaeesec.fat_helper.LocalLdapServer;
-import com.ibm.ws.security.javaeesec.fat_helper.WCApplicationHelper;
-
-@MinimumJavaLevel(javaLevel = 8, runSyntheticTest = false)
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class NoJavaEESecFormTest extends JavaEESecTestBase {
@@ -67,9 +60,8 @@ public class NoJavaEESecFormTest extends JavaEESecTestBase {
     private static String USER2 = "user2";
     private static String INVALIDUSER1 = "invaliduser1";
     private static String PASSWORD = "s3cur1ty";
-    
-    
-    protected DefaultHttpClient httpclient;   
+
+    protected DefaultHttpClient httpclient;
 
     protected static LocalLdapServer ldapServer;
 
@@ -194,7 +186,7 @@ public class NoJavaEESecFormTest extends JavaEESecTestBase {
      * </OL>
      */
     @Mode(TestMode.FULL)
-    @AllowedFFDC({"javax.naming.AuthenticationException" })
+    @AllowedFFDC({ "javax.naming.AuthenticationException" })
     @Test
     public void testNoJavaEESecAuthenticationFailure_DeniedAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());

@@ -21,6 +21,8 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 import org.w3c.dom.Element;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 
 /**
  * <p>Java class for tExtensibleDocumented complex type.
@@ -58,6 +60,7 @@ import org.w3c.dom.Element;
     TPort.class,
     TBindingOperationFault.class
 })
+@Trivial
 public abstract class TExtensibleDocumented
     extends TDocumented
 {

@@ -141,7 +141,7 @@ public class MsgCtxUtilTest {
             assertTrue("A null value was received.", result != null);
         } catch (SamlException ex) {
             ex.printStackTrace();
-            fail("Unexpected exception was thrown: " + ex.getMessage());
+            fail("Unexpected exception was thrown: " + ex);
         }
     }
 
@@ -159,7 +159,7 @@ public class MsgCtxUtilTest {
             assertTrue("Expected to receive a null value.", metadataProvider == null);
         } catch (SamlException e) {
             e.printStackTrace();
-            fail("Unexpected exception was thrown: " + e.getMessage());
+            fail("Unexpected exception was thrown: " + e);
         }
     }
 
@@ -262,7 +262,7 @@ public class MsgCtxUtilTest {
             assertTrue("Expected to receive a null value.", result == null);
         } catch (SamlException ex) {
             ex.printStackTrace();
-            fail("Unexpected exception was thrown: " + ex.getMessage());
+            fail("Unexpected exception was thrown: " + ex);
         }
     }
 

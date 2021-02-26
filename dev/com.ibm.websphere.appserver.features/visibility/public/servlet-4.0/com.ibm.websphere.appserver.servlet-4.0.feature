@@ -1,5 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.servlet-4.0
+WLP-DisableAllFeatures-OnConflict: false
 visibility=public
 singleton=true
 IBM-App-ForceRestart: install, uninstall
@@ -43,7 +44,7 @@ Subsystem-Category: JavaEE8Application
  com.ibm.websphere.appserver.anno-1.0, \
  com.ibm.websphere.appserver.javax.annotation-1.3, \
  com.ibm.websphere.appserver.httptransport-1.0, \
- com.ibm.websphere.appserver.javax.servlet-4.0, \
+ io.openliberty.servlet.api-4.0, \
  com.ibm.websphere.appserver.requestProbes-1.0, \
  com.ibm.websphere.appserver.eeCompatible-8.0, \
  com.ibm.websphere.appserver.servlet-servletSpi1.0, \

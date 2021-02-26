@@ -19,6 +19,7 @@ import org.junit.Test;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -35,6 +36,11 @@ public abstract class EJBModule_Common extends FATServletClient {
     public static void createAndExportEJBWARs(LibertyServer server) throws Exception {
         JavaArchive jar = ShrinkHelper.buildJavaArchive("EJBModule1EJB.jar", "beanvalidation.ejbmodule.*");
         JavaArchive jar2 = ShrinkHelper.buildJavaArchive("EJBModule2EJB.jar", "beanvalidation.ejbmodule2.ejb");
+
+        if (JakartaEE9Action.isActive()) {
+            jar.move("/META-INF/constraints-house_EE9.xml", "/META-INF/constraints-house.xml");
+            jar2.move("/META-INF/constraints-house_EE9.xml", "/META-INF/constraints-house.xml");
+        }
 
         WebArchive war = ShrinkHelper.buildDefaultApp("EJBModuleWeb.war", "beanvalidation.web");
 
@@ -56,6 +62,7 @@ public abstract class EJBModule_Common extends FATServletClient {
 
     protected void run(String war, String servlet) throws Exception {
         String originalTestName = testName.getMethodName();
+        originalTestName = originalTestName.replace("_EE9_FEATURES", "");
         String servletTest = originalTestName.substring(0, originalTestName.length() - 2);
         run(war, servlet, servletTest);
     }
@@ -65,6 +72,7 @@ public abstract class EJBModule_Common extends FATServletClient {
      * being the war, the servlet and test method in the web application.
      */
     protected void run(String war, String servlet, String testMethod) throws Exception {
+        testMethod = testMethod.replace("_EE9_FEATURES", "");
         FATServletClient.runTest(getServer(), war + "/" + servlet, testMethod);
     }
 

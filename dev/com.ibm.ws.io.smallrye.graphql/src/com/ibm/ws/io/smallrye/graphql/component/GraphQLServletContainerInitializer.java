@@ -12,14 +12,11 @@ package com.ibm.ws.io.smallrye.graphql.component;
 
 import java.io.PrintWriter;
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +26,6 @@ import java.util.WeakHashMap;
 
 import javax.servlet.ServletContainerInitializer;
 import javax.servlet.ServletContext;
-import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRegistration;
 
@@ -37,20 +33,20 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.container.service.app.deploy.ModuleInfo;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.io.smallrye.graphql.ui.GraphiQLUIServlet;
 import com.ibm.ws.webcontainer.webapp.WebApp;
 import com.ibm.wsspi.adaptable.module.NonPersistentCache;
-import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 import com.ibm.wsspi.logging.Introspector;
 
 import graphql.schema.GraphQLSchema;
 
 import io.smallrye.graphql.bootstrap.Bootstrap;
+import io.smallrye.graphql.cdi.config.GraphQLConfig;
 import io.smallrye.graphql.execution.ExecutionService;
 import io.smallrye.graphql.execution.SchemaPrinter;
 import io.smallrye.graphql.schema.SchemaBuilder;
 import io.smallrye.graphql.schema.model.Schema;
 import io.smallrye.graphql.servlet.ExecutionServlet;
-import io.smallrye.graphql.servlet.GraphQLConfig;
 import io.smallrye.graphql.servlet.IndexInitializer;
 import io.smallrye.graphql.servlet.SchemaServlet;
 
@@ -65,6 +61,7 @@ public class GraphQLServletContainerInitializer implements ServletContainerIniti
     private static Map<ClassLoader, DiagnosticsBag> diagnostics = new WeakHashMap<ClassLoader, DiagnosticsBag>();
     public static final String EXECUTION_SERVLET_NAME = "ExecutionServlet";
     public static final String SCHEMA_SERVLET_NAME = "SchemaServlet";
+    public static final String UI_SERVLET_NAME = "UIServlet";
 
     @FFDCIgnore({Throwable.class})
     public void onStartup(Set<Class<?>> classes, ServletContext ctx) throws ServletException {
@@ -120,31 +117,39 @@ public class GraphQLServletContainerInitializer implements ServletContainerIniti
         diagBag.webinfClassesUrl = webinfClassesUrl;
 
         GraphQLConfig config = new GraphQLConfig() {
+        	@Override
             public String getDefaultErrorMessage() {
                 return ConfigFacade.getOptionalValue(ConfigKey.DEFAULT_ERROR_MESSAGE, String.class)
                                    .orElse("Server Error");
             }
 
+        	@Override
             public boolean isPrintDataFetcherException() {
                 return ConfigFacade.getOptionalValue("mp.graphql.printDataFetcherException", boolean.class)
                                    .orElse(false);
             }
 
-            public Optional<List<String>> getBlackList() {
-                return Optional.ofNullable(ConfigFacade.getOptionalValue(ConfigKey.EXCEPTION_BLACK_LIST, List.class)
+        	@Override
+            public Optional<List<String>> getHideErrorMessageList() {
+                return Optional.ofNullable(ConfigFacade.getOptionalValue(ConfigKey.EXCEPTION_BLACK_LIST, String.class)
+                		                               .map(s -> Arrays.asList(s.split(",")))
                                                        .orElse(null));
             }
 
-            public Optional<List<String>> getWhiteList() {
-                return Optional.ofNullable(ConfigFacade.getOptionalValue(ConfigKey.EXCEPTION_WHITE_LIST, List.class)
+        	@Override
+            public Optional<List<String>> getShowErrorMessageList() {
+                return Optional.ofNullable(ConfigFacade.getOptionalValue(ConfigKey.EXCEPTION_WHITE_LIST, String.class)
+                		                               .map(s -> Arrays.asList(s.split(",")))
                                                        .orElse(null));
             }
 
+        	@Override
             public boolean isAllowGet() {
                 return ConfigFacade.getOptionalValue("mp.graphql.allowGet", boolean.class)
                                    .orElse(false);
             }
 
+        	@Override
             @FFDCIgnore({Throwable.class})
             public boolean isMetricsEnabled() {
                 try {
@@ -153,6 +158,15 @@ public class GraphQLServletContainerInitializer implements ServletContainerIniti
                     return false;
                 }
             }
+
+        	@SuppressWarnings("unchecked")
+			@Override
+        	public <T> T getConfigValue(String key, Class<T> type, T defaultValue) {
+        		if ("smallrye.graphql.metrics.enabled".equals(key)) {
+        			return (T) Boolean.TRUE;
+        		}
+        		return super.getConfigValue(key, type, defaultValue);
+        	}
         };
         diagBag.config = config;
         
@@ -170,7 +184,7 @@ public class GraphQLServletContainerInitializer implements ServletContainerIniti
                 return;
             }
             diagBag.modelSchema = schema;
-            graphQLSchema = Bootstrap.bootstrap(schema, config);
+            graphQLSchema = Bootstrap.bootstrap(schema, config).getGraphQLSchema();
         } catch (Throwable t) {
             Tr.error(tc, "ERROR_GENERATING_SCHEMA_CWMGQ0001E", ctx.getServletContextName());
             throw new ServletException(t);
@@ -195,6 +209,14 @@ public class GraphQLServletContainerInitializer implements ServletContainerIniti
         diagBag.schemaPrinter = printer;
         ServletRegistration.Dynamic schemaServletReg = ctx.addServlet(SCHEMA_SERVLET_NAME, new SchemaServlet(printer));
         schemaServletReg.addMapping(path + "/schema.graphql");
+
+        boolean enableGraphQLUIServlet = ConfigFacade.getOptionalValue("io.openliberty.enableGraphQLUI", boolean.class)
+        		                                     .orElse(false);
+        if (enableGraphQLUIServlet) {
+        	GraphiQLUIServlet uiServlet = new GraphiQLUIServlet();
+        	ServletRegistration.Dynamic uiServletReg = ctx.addServlet(UI_SERVLET_NAME, uiServlet);
+            uiServletReg.addMapping("/graphql-ui");
+        }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.exit(tc, "onStartup");
@@ -245,8 +267,8 @@ public class GraphQLServletContainerInitializer implements ServletContainerIniti
             } else {
                 sb.append("  ").append("defaultErrorMessage: ").append(config.getDefaultErrorMessage()).append(LS);
                 sb.append("  ").append("printDataFetcherException: ").append(config.isPrintDataFetcherException()).append(LS);
-                sb.append("  ").append("blackList: ").append(config.getBlackList()).append(LS);
-                sb.append("  ").append("whiteList: ").append(config.getWhiteList()).append(LS);
+                sb.append("  ").append("hideErrorMessageList: ").append(config.getHideErrorMessageList()).append(LS);
+                sb.append("  ").append("showErrorMessageList: ").append(config.getShowErrorMessageList()).append(LS);
                 sb.append("  ").append("allowGet: ").append(config.isAllowGet()).append(LS);
                 sb.append("  ").append("metricsEnabled: ").append(config.isMetricsEnabled()).append(LS);
             }

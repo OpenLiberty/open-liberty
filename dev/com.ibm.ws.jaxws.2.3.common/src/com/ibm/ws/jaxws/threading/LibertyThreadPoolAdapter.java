@@ -18,36 +18,55 @@ import org.apache.cxf.workqueue.AutomaticWorkQueue;
 import org.apache.cxf.workqueue.WorkQueueManager;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Component;
+
+import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.jaxws.bus.LibertyApplicationBusFactory;
 import com.ibm.ws.jaxws.bus.LibertyApplicationBusListener;
+import com.ibm.wsspi.classloading.ClassLoadingService;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.threading.WSExecutorService;
 
 /**
  * LibertyThreadPool Adapter will register an initializer for set the AutomaticWorkQueue for each created bus instance.
  */
+@Component(immediate = true, property = { "service.vendor=IBM" }, configurationPolicy = ConfigurationPolicy.IGNORE)
 public class LibertyThreadPoolAdapter {
 
     private static final TraceComponent tc = Tr.register(LibertyThreadPoolAdapter.class);
 
+
+    
     private static final AtomicServiceReference<WSExecutorService> executorServiceRef = new AtomicServiceReference<WSExecutorService>("executorService");
 
     private static final AtomicServiceReference<ScheduledExecutorService> scheduledExecutorServiceRef = new AtomicServiceReference<ScheduledExecutorService>("scheduledExecutorService");
 
+    private static final AtomicServiceReference<ClassLoadingService> classLoadingServiceSR = new AtomicServiceReference<ClassLoadingService>("classLoadingService");
+
+    public static AtomicServiceReference<ClassLoadingService> getClassLoadingServiceref() {
+        return classLoadingServiceSR;
+    }
+
+    public static AtomicServiceReference<ScheduledExecutorService> getScheduledexecutorserviceref() {
+        return scheduledExecutorServiceRef;
+    }
+
+
     private AutomaticWorkQueue automaticeWorkQueue;
 
     private LibertyAutomaticWorkQueueBusListener workQueueBusListener;
-
     /*
      * Called by Declarative Services to activate service
      */
     protected void activate(ComponentContext cc) {
         executorServiceRef.activate(cc);
         scheduledExecutorServiceRef.activate(cc);
-
+        classLoadingServiceSR.activate(cc);
         WSExecutorService executorService = executorServiceRef.getService();
         ScheduledExecutorService scheduledExecutorService = scheduledExecutorServiceRef.getService();
         if (executorService != null && scheduledExecutorService != null) {
@@ -77,26 +96,38 @@ public class LibertyThreadPoolAdapter {
     protected void deactivate(ComponentContext cc) {
         executorServiceRef.deactivate(cc);
         scheduledExecutorServiceRef.deactivate(cc);
-
+        classLoadingServiceSR.deactivate(cc);
         if (workQueueBusListener != null) {
             LibertyApplicationBusFactory.getInstance().unregisterApplicationBusListener(workQueueBusListener);
         }
     }
 
-    public void setExecutorService(ServiceReference<WSExecutorService> reference) {
+
+    @Reference(name = "executorService", service = WSExecutorService.class, cardinality = ReferenceCardinality.MANDATORY)
+    protected void setExecutorService(ServiceReference<WSExecutorService> reference) {
         executorServiceRef.setReference(reference);
     }
 
-    public void unsetExecutorService(ServiceReference<WSExecutorService> reference) {
+    protected void unsetExecutorService(ServiceReference<WSExecutorService> reference) {
         executorServiceRef.unsetReference(reference);
     }
 
-    public void setScheduledExecutorService(ServiceReference<ScheduledExecutorService> reference) {
+    @Reference(name = "scheduledExecutorService", service = ScheduledExecutorService.class, cardinality = ReferenceCardinality.MANDATORY)
+    protected void setScheduledExecutorService(ServiceReference<ScheduledExecutorService> reference) {
         scheduledExecutorServiceRef.setReference(reference);
     }
 
-    public void unsetScheduledExecutorService(ServiceReference<ScheduledExecutorService> reference) {
+    protected void unsetScheduledExecutorService(ServiceReference<ScheduledExecutorService> reference) {
         scheduledExecutorServiceRef.unsetReference(reference);
+    }
+
+    @Reference(name = "classLoadingService", service = ClassLoadingService.class, cardinality = ReferenceCardinality.MANDATORY)
+    protected void setClassLoadingService(ServiceReference<ClassLoadingService> reference) {
+        classLoadingServiceSR.setReference(reference);
+    }
+
+    protected void unsetClassLoadingService(ServiceReference<ClassLoadingService> reference) {
+        classLoadingServiceSR.unsetReference(reference);
     }
 
     class LibertyAutomaticWorkQueueBusListener implements LibertyApplicationBusListener {

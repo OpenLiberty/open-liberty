@@ -1,0 +1,4 @@
+com.ibm.ws.security.saml.sso_fat.logout
+com.ibm.ws.security.saml.sso_fat.logout.httpServletRequest
+com.ibm.ws.security.saml.sso_fat.logout.IDP_initiated 
+com.ibm.ws.security.saml.sso_fat.logout.ibm_security_logout 

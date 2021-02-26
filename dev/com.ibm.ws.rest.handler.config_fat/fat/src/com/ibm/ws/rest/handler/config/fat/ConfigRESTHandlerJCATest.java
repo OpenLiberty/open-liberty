@@ -54,6 +54,8 @@ public class ConfigRESTHandlerJCATest extends FATServletClient {
                                         .addPackage("org.test.config.adapter"));
         ShrinkHelper.exportToServer(server, "connectors", ata_rar);
 
+        FATSuite.setupServerSideAnnotations(server);
+
         server.startServer();
 
         // Wait for the API to become available

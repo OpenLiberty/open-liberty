@@ -69,6 +69,10 @@ implicit.bean.scanning.disabled.CWOWB1009W=CWOWB1009W: Archives bean impl\u00edc
 implicit.bean.scanning.disabled.CWOWB1009W.explanation=Os archives n\u00e3o s\u00e3o varridos para beans CDI, a menos que tenham um arquivo beans.xml.
 implicit.bean.scanning.disabled.CWOWB1009W.useraction=Assegure-se de que cada archive que usa CDI tenha um arquivo beans.xml ou reative a varredura de beans impl\u00edcitos em seu arquivo server.xml.
 
-spi.extension.failed.to.construct.CWOWB10010E=CWOWB10010E: Falha ao criar a extens\u00e3o CDI via SPI.
-spi.extension.failed.to.construct.CWOWB10010E.explanation=O CDI falhou ao chamar o construtor da classe de extens\u00e3o {0} registrada pelo m\u00e9todo getExtensions getExtensions() de uma implementa\u00e7\u00e3o do WebSphereCDIExtensionMetaData devido \u00e0 exce\u00e7\u00e3o {1}.
-spi.extension.failed.to.construct.CWOWB10010E.useraction=Corrija o erro que impede sua extens\u00e3o de instanciar.
+spi.extension.failed.to.construct.CWOWB1010E=CWOWB1010E: Falha ao criar extens\u00e3o de CDI {0} com SPI devido \u00e0 exce\u00e7\u00e3o {1}.
+spi.extension.failed.to.construct.CWOWB1010E.explanation=CDI falhou ao invocar o construtor de uma classe de extens\u00e3o registrada com o m\u00e9todo getExtensions() de uma implementa\u00e7\u00e3o CDIExtensionMetadata.
+spi.extension.failed.to.construct.CWOWB1010E.useraction=Corrija o erro que est\u00e1 impedindo que sua extens\u00e3o seja instanciada.
+
+spi.extension.class.in.different.bundle.CWOWB1011E=CWOWB1011E: Uma classe {0} Uma classe {0} registrada por meio do CDI Extension SPI est\u00e1 em um pacote configur\u00e1vel diferente da implementa\u00e7\u00e3o CDIExtensionMetadata.
+spi.extension.class.in.different.bundle.CWOWB1011E.explanation=A classe \u00e9 ignorada porque foi registrada com o m\u00e9todo getExtensions() ou getBeanClasses() de uma implementa\u00e7\u00e3o CDIExtensionMetadata e est\u00e1 em um pacote configur\u00e1vel diferente da implementa\u00e7\u00e3o CDIExtensionMetadata.
+spi.extension.class.in.different.bundle.CWOWB1011E.useraction=Mova a classe afetada ou crie uma nova implementa\u00e7\u00e3o CDIExtensionMetadata no pacote configur\u00e1vel correto.

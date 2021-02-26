@@ -184,6 +184,6 @@ PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR.explanation=Token nem\u016f\u017ee 
 PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR.useraction=Bu\u010f z\u00edskejte nov\u00fd token, kter\u00fd neobsahuje uveden\u00fd n\u00e1rok, nebo zm\u011b\u0148te uvedenou hodnotu atributu konfigurace, abyste povolili n\u00e1rok, kter\u00fd m\u00e1 b\u00fdt zahrnut do tokenu.
 
 # 0=Client ID, 1=List of invalid parameter names, 2=forwardLoginParameter
-BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED=CWWKS1783W: Klient OpenID Connect [{0}] zahrnuje {1} v hodnot\u00e1ch ur\u010den\u00fdch atributem konfigurace [{2}]. Ur\u010den\u00e9ho hodnoty budou ignorov\u00e1ny.
-BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED.explanation=Specifikace OAuth 2.0 definuje sadu vyhrazen\u00fdch parametr\u016f po\u017eadavku, kter\u00e9 mus\u00ed b\u00fdt dod\u00e1ny klientem pro autoriza\u010dn\u00ed po\u017eadavky. Hodnoty pro tyto vyhrazen\u00e9 parametry nelze dodat u\u017eivatelem.
-BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED.useraction=Odeberte ur\u010den\u00e9 hodnoty ze seznamu hodnot definovan\u00fdch v konfiguraci klienta OpenID Connect.
+DISALLOWED_FORWARD_AUTHZ_PARAMS_CONFIGURED=CWWKS1783W: Klient OpenID Connect [{0}] zahrnuje {1} v hodnot\u00e1ch ur\u010den\u00fdch atributem konfigurace [{2}]. Ur\u010den\u00e9ho hodnoty budou ignorov\u00e1ny.
+DISALLOWED_FORWARD_AUTHZ_PARAMS_CONFIGURED.explanation=Specifikace OAuth 2.0 definuje sadu vyhrazen\u00fdch parametr\u016f po\u017eadavku, kter\u00e9 mus\u00ed b\u00fdt dod\u00e1ny klientem pro autoriza\u010dn\u00ed po\u017eadavky. Hodnoty pro tyto vyhrazen\u00e9 parametry nelze dodat u\u017eivatelem.
+DISALLOWED_FORWARD_AUTHZ_PARAMS_CONFIGURED.useraction=Odeberte ur\u010den\u00e9 hodnoty ze seznamu hodnot definovan\u00fdch v konfiguraci klienta OpenID Connect.

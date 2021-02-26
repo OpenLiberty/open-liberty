@@ -62,12 +62,29 @@ src: \
     test-applications/FunctionMapper.war/src
 
 fat.project: true
-tested.features: servlet-4.0, jsf-2.3, cdi-2.0, beanValidation-2.0
+
+tested.features: \
+    servlet-4.0,\
+    jsf-2.3,\
+    cdi-2.0,\
+    beanValidation-2.0,\
+    expressionLanguage-4.0,\
+    servlet-5.0,\
+    faces-3.0,\
+    pages-3.0,\
+    cdi-3.0,\
+    beanvalidation-3.0
 
 
 -buildpath: \
 	com.ibm.websphere.javaee.annotation.1.2;version=latest,\
-    net.sourceforge.htmlunit:htmlunit;version=2.20,\
+    com.ibm.ws.org.apache.httpcomponents;version=latest, \
+    net.sourceforge.htmlunit:htmlunit;version=2.44.0,\
+    net.sourceforge.htmlunit:webdriver;version=2.6,\
+    net.sourceforge.htmlunit:neko-htmlunit;strategy=exact;version=2.44.0,\
+    org.seleniumhq.webdriver:webdriver-common;version=0.9.7376,\
+    org.brotli:dec;version=0.1.2,\
+    net.sourceforge.htmlunit:htmlunit-cssparser;version=1.6.0,\
     xml-apis:xml-apis;version=1.4.01,\
     com.ibm.websphere.appserver.thirdparty.jsf-2.2;version=latest,\
     com.ibm.websphere.javaee.cdi.1.2;version=latest,\

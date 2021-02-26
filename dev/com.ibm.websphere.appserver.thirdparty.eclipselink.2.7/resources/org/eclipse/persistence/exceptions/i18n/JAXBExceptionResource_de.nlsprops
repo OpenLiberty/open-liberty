@@ -1,3 +1,4 @@
+###############################################################################
 # Copyright (c) 2014 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
@@ -6,7 +7,7 @@
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
-# -------------------------------------------------------------------------------------------------
+###############################################################################
 # # {0} description of each insert field
 # MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
 # MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
@@ -44,17 +45,17 @@
 
 50008=Nicht unterst\u00fctzte Knotenklasse {0}. Die Methode createBinder(Class) unterst\u00fctzt nur die Klasse org.w3c.dom.Node.
 
-50009=Die Eigenschaft bzw. das Feld {0} ist als transient annotiert und kann deshalb nicht in die propOrder-Annotation eingeschlossen werden.
+50009=The property or field {0} on the class {1} is annotated to be transient so it cannot be included in the propOrder annotation.
 
-50010=Die Eigenschaft bzw. das Feld {0} muss ein Attribut sein, weil ein anderes Feld bzw. eine andere Eigenschaft mit XmlValue annotiert ist.
+50010=The property or field {0} on the class {1} must be an attribute because another field or property is annotated with XmlValue.
 
-50011=Die Eigenschaft bzw. das Feld {0} darf nicht mit XmlValue annotiert werden, da es sich dabei um eine Unterklasse einer anderen XML-gebundenen Klasse handelt.
+50011=The property or field {0} on the class {1} cannot be annotated with XmlValue since it is a subclass of another XML-bound class.
 
-50012=Die Eigenschaft bzw. das Feld {0} wurde in propOrder angegeben, ist aber keine g\u00fcltige Eigenschaft.
+50012=The property or field {0} on the class {1} was specified in propOrder but is not a valid property.
 
 50013=Die Eigenschaft bzw. das Feld {0} f\u00fcr die Klasse {1} muss im propOrder-Element der XmlType-Annotation eingeschlossen sein.
 
-50014=Die Eigenschaft bzw. das Feld {0} mit der XmlValue-Annotation muss einen Typ haben, der einem einfachen Schematyp zugeordnet ist.
+50014=The property or field {0} on the class {1} with the XmlValue annotation must be of a type that maps to a simple schema type.
 
 50015=XmlElementWrapper ist nur f\u00fcr eine Sammlungs- oder Array-Eigenschaft zul\u00e4ssig, aber [{0}] ist keine Sammlungs- oder Array-Eigenschaft.
 

@@ -32,7 +32,7 @@ public class BoulderDriver extends AbstractCADriver {
 		/*
 		 * Wait until the process has been cancelled via ctrl-c.
 		 */
-		driver.printBanner();
+		driver.printBanner(true);
 		while (true) {
 			try {
 				Thread.sleep(10000);

@@ -1,0 +1,54 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/SessionLoaderExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+9000=\u5df2\u64f2\u51fa\u6578\u500b [{0}] SessionLoaderExceptions\uff1a
+
+9001=XML \u7bc0\u9ede [{1}] \u4e2d\u6709\u4e0d\u660e\u6a19\u7c64\u540d\u7a31 [{0}]\u3002
+
+9002=\u7121\u6cd5\u8f09\u5165\u5c08\u6848\u985e\u5225 [{0}]\u3002
+
+9003=\u7121\u6cd5\u8655\u7406\u503c\u70ba [{1}] \u7684 XML \u6a19\u7c64 [{0}]\u3002
+
+9004=\u5728\u985e\u5225\u8def\u5f91\u548c\u6a94\u6848\u7cfb\u7d71\u4e2d\u90fd\u627e\u4e0d\u5230 project-xml \u6a94\u6848 [{0}]\u3002
+
+9005=\u8f09\u5165 project-xml \u6a94\u6848 [{0}] \u6642\u64f2\u51fa\u7570\u5e38\u72c0\u6cc1\u3002
+
+9006=\u5256\u6790 XML \u6a94\u6848\u6642\uff0c\u64f2\u51fa {0}\u3002\u767c\u751f\u5728 XML \u6587\u4ef6\u4e2d\u7684\u7b2c {1} \u884c\u7b2c {2} \u6b04\u3002
+
+9007=\u5256\u6790 XML \u6a94\u6848\u6642\uff0c\u64f2\u51fa\u7570\u5e38\u72c0\u6cc1\u3002
+9008=\u6a19\u7c64 [{1}] \u7684\u503c [{0}] \u70ba\u975e\u9810\u671f\u3002
+
+9009=\u6a19\u7c64 [{0}] \u6709\u4e0d\u660e\u5c6c\u6027\u3002
+
+9010=\u5c0d\u7167 XML \u7db1\u76ee\u4f86\u5256\u6790 XML \u6a94\u6848\u6642\uff0c\u64f2\u51fa {0}\u3002
+
+9011=\u5df2\u79fb\u9664\u4f3a\u670d\u5668\u5e73\u53f0\u985e\u5225 {0}\uff0c\u800c\u4e14\u4e0d\u518d\u652f\u63f4\u76f8\u5c0d\u61c9\u7684\u61c9\u7528\u7a0b\u5f0f\u4f3a\u670d\u5668\u7248\u672c
+
+9012=\u7121\u6cd5\u8f09\u5165 session-xml \u6a94\u6848\uff0c\u9019\u53ef\u80fd\u662f\u56e0\u70ba\u5176\u5305\u542b\u7121\u6548\u7684\u683c\u5f0f\uff0c\u6216\u662f XML \u7684\u683c\u5f0f\u4e0d\u53d7\u652f\u63f4\u3002
+

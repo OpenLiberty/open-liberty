@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2018 IBM Corporation and others.
+ * Copyright (c) 2010, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,8 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.security.PrivilegedExceptionAction;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.transaction.HeuristicMixedException;
 import javax.transaction.HeuristicRollbackException;
@@ -31,6 +33,7 @@ import javax.transaction.xa.XAResource;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleException;
 import org.osgi.framework.Constants;
 import org.osgi.service.component.ComponentContext;
 
@@ -44,13 +47,12 @@ import com.ibm.tx.util.TMHelper;
 import com.ibm.tx.util.TMService;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.Transaction.JTA.Util;
 import com.ibm.ws.Transaction.UOWCallback;
 import com.ibm.ws.Transaction.UOWCoordinator;
 import com.ibm.ws.Transaction.UOWCurrent;
+import com.ibm.ws.Transaction.JTA.Util;
 import com.ibm.ws.Transaction.test.XAFlowCallbackControl;
 import com.ibm.ws.ffdc.FFDCFilter;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.tx.embeddable.EmbeddableWebSphereTransactionManager;
 import com.ibm.ws.uow.UOWScopeCallback;
 import com.ibm.wsspi.kernel.service.location.WsLocationConstants;
@@ -62,6 +64,8 @@ public class TransactionManagerService implements ExtendedTransactionManager, Tr
 
     private boolean isClient;
 
+    // Use the isStarted variable to track whether recovery has been started
+    private final AtomicBoolean isStarted = new AtomicBoolean();
     boolean xaFlowCallbacksInitialised;
     private BundleContext _bundleContext = null;
 
@@ -107,60 +111,64 @@ public class TransactionManagerService implements ExtendedTransactionManager, Tr
      * @param cp
      */
     public void doStartup(ConfigurationProvider cp, boolean isSQLRecoveryLog) {
-        if (tc.isDebugEnabled())
-            Tr.debug(tc, "doStartup with cp: " + cp + " and flag: " + isSQLRecoveryLog);
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "doStartup with cp: " + cp + " and flag: " + isSQLRecoveryLog);
 
-        // Create an AppId that will be unique for this server to be used in the generation of Xids.
+        if (isStarted.compareAndSet(false, true)) {
+            // Create an AppId that will be unique for this server to be used in the generation of Xids.
 
-        // Locate the user directory in the Liberty install
-        String userDirEnv = System.getenv("WLP_USER_DIR");
+            // Locate the user directory in the Liberty install
+            String userDirEnv = System.getenv("WLP_USER_DIR");
 
-        if (tc.isDebugEnabled())
-            Tr.debug(tc, "TMS, WLP_USER_DIR env variable is - " + userDirEnv);
-        // Retrieve the server name.
-        String serverName = cp.getServerName();
-
-        if (tc.isDebugEnabled())
-            Tr.debug(tc, "TMS, serverName is - " + serverName);
-        // Retrieve the host name
-        String hostName = "";
-        hostName = AccessController.doPrivileged(new PrivilegedAction<String>() {
-            @Override
-            public String run() {
-
-                String theHost = "";
-                try {
-                    InetAddress addr = InetAddress.getLocalHost();
-                    theHost = addr.getCanonicalHostName().toLowerCase();
-                } catch (UnknownHostException e) {
-                    theHost = "localhost";
-                }
-
-                return theHost;
-            }
-        });
-
-        byte[] theApplId = createApplicationId(userDirEnv, serverName, hostName);
-        cp.setApplId(theApplId);
-        if (tc.isDebugEnabled())
-            Tr.debug(tc, "TMS, cp - " + cp + " set applid - " + Util.toHexString(theApplId));
-        if (!xaFlowCallbacksInitialised) {
-            // -------------------------------------------------------
-            // Initialize the XA Flow callbacks by
-            // attempting to load the test class.
-            // -------------------------------------------------------
             if (tc.isDebugEnabled())
-                Tr.debug(tc, "initialise the XA Flow callbacks");
-            XAFlowCallbackControl.initialize();
-            xaFlowCallbacksInitialised = true;
-        }
-        if (cp.isRecoverOnStartup()) {
-            try {
-                TMHelper.start(cp.isWaitForRecovery());
-            } catch (Exception e) {
-                FFDCFilter.processException(e, "com.ibm.ws.transaction.services.TransactionManagerService.doStartup", "60", this);
+                Tr.debug(tc, "TMS, WLP_USER_DIR env variable is - " + userDirEnv);
+            // Retrieve the server name.
+            String serverName = cp.getServerName();
+
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "TMS, serverName is - " + serverName);
+            // Retrieve the host name
+            String hostName = "";
+            hostName = AccessController.doPrivileged(new PrivilegedAction<String>() {
+                @Override
+                public String run() {
+
+                    String theHost = "";
+                    try {
+                        InetAddress addr = InetAddress.getLocalHost();
+                        theHost = addr.getCanonicalHostName().toLowerCase();
+                    } catch (UnknownHostException e) {
+                        theHost = "localhost";
+                    }
+
+                    return theHost;
+                }
+            });
+
+            byte[] theApplId = createApplicationId(userDirEnv, serverName, hostName);
+            cp.setApplId(theApplId);
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "TMS, cp - " + cp + " set applid - " + Util.toHexString(theApplId));
+            if (!xaFlowCallbacksInitialised) {
+                // -------------------------------------------------------
+                // Initialize the XA Flow callbacks by
+                // attempting to load the test class.
+                // -------------------------------------------------------
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "initialise the XA Flow callbacks");
+                XAFlowCallbackControl.initialize();
+                xaFlowCallbacksInitialised = true;
+            }
+            if (cp.isRecoverOnStartup()) {
+                try {
+                    TMHelper.start(cp.isWaitForRecovery());
+                } catch (Exception e) {
+                    FFDCFilter.processException(e, "com.ibm.ws.transaction.services.TransactionManagerService.doStartup", "60", this);
+                }
             }
         }
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "doStartup");
     }
 
     /**
@@ -184,13 +192,15 @@ public class TransactionManagerService implements ExtendedTransactionManager, Tr
             Tr.exit(tc, "doShutdown");
     }
 
-    protected void deactivate(ComponentContext ctxt) {}
+    protected void deactivate(ComponentContext ctxt) {
+    }
 
     protected void setTmService(TMService tm) {
         // dependency injection ... forces tran service to initialize
     }
 
-    protected void unsetTmService(TMService tm) {}
+    protected void unsetTmService(TMService tm) {
+    }
 
     @Override
     public void setUOWEventListener(UOWEventListener el) {
@@ -452,24 +462,29 @@ public class TransactionManagerService implements ExtendedTransactionManager, Tr
         ((EmbeddableTranManagerSet) etm()).registerLTCCallback(arg0);
     }
 
-    @FFDCIgnore({ org.osgi.framework.BundleException.class })
     public void shutDownFramework() {
-//        Tr.audit(tc, "TransactionManagerService.shutDownFramework");
         try {
             if (_bundleContext != null) {
-                Bundle bundle = _bundleContext.getBundle(Constants.SYSTEM_BUNDLE_LOCATION);
+                final Bundle bundle = _bundleContext.getBundle(Constants.SYSTEM_BUNDLE_LOCATION);
 
                 if (bundle != null)
-                    bundle.stop();
+                    AccessController.doPrivileged(new PrivilegedExceptionAction<Void>() {
+                        @Override
+                        public Void run() throws BundleException {
+                            bundle.stop();
+                            return null;
+                        }
+                    });
             }
-        } catch (org.osgi.framework.BundleException e) {
-            // do not FFDC this.
-            // exceptions during bundle stop occur if framework is already stopping or stopped
         } catch (Exception e) {
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "shutDownFramework", e);
+
             // do not FFDC this.
             // exceptions during bundle stop occur if framework is already stopping or stopped
         }
-        throw new IllegalStateException("Shutting down framework due to startup problems");
+
+        throw new IllegalStateException("Shutting down framework");
     }
 
     /**

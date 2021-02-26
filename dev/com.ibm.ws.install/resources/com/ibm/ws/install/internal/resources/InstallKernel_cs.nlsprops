@@ -870,6 +870,10 @@ ERROR_INVALID_PRODUCT_EDITION_FEATURE_UTILITY=CWWKF1410E: Funkci {0} nelze nains
 ERROR_INVALID_PRODUCT_EDITION_FEATURE_UTILITY.explanation=Funkce nen\u00ed pro aktu\u00e1ln\u00ed vyd\u00e1n\u00ed instalovan\u00e9ho produktu pou\u017eiteln\u00e1.
 ERROR_INVALID_PRODUCT_EDITION_FEATURE_UTILITY.useraction=Nainstalujte funkce, kter\u00e9 dan\u00e9 vyd\u00e1n\u00ed produktu podporuje.
 
+ERROR_BETA_EDITION_NOT_SUPPORTED=CWWKF1411E: Instalace nebo aktualizace funkc\u00ed nen\u00ed pro vyd\u00e1n\u00ed beta podporov\u00e1na.
+ERROR_BETA_EDITION_NOT_SUPPORTED.explanation=Instalace nebo aktualizace funkc\u00ed nen\u00ed u instalovan\u00e9ho produktu podporov\u00e1na.
+ERROR_BETA_EDITION_NOT_SUPPORTED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
 TOOL_DOWNLOAD_FEATURE_OK=CWWKF1500I: Funkce byla \u00fasp\u011b\u0161n\u011b sta\u017eena.
 TOOL_DOWNLOAD_FEATURE_OK.explanation=Funkce byla sta\u017eena.
 TOOL_DOWNLOAD_FEATURE_OK.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.

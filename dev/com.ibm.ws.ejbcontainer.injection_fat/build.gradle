@@ -40,7 +40,45 @@ task addEJBTools {
       into "${buildDir}/autoFVT/publish/servers/com.ibm.ws.ejbcontainer.injection.fat.server/lib/global"
       rename 'com.ibm.ws.ejbcontainer.fat_tools-(.*).jar', 'com.ibm.ws.ejbcontainer.fat_tools.jar'
     }
+    
+    copy {
+      from configurations.ejbTools
+      into "${buildDir}/autoFVT/publish/servers/com.ibm.ws.ejbcontainer.injection.fat.mdbserver/lib/global"
+      rename 'com.ibm.ws.ejbcontainer.fat_tools-(.*).jar', 'com.ibm.ws.ejbcontainer.fat_tools.jar'
+    }
+    
+    copy {
+      from configurations.ejbTools
+      into "${buildDir}/autoFVT/publish/servers/ejbcontainer.injection.ra.fat.MsgEndpointServer/lib/global"
+      rename 'com.ibm.ws.ejbcontainer.fat_tools-(.*).jar', 'com.ibm.ws.ejbcontainer.fat_tools.jar'
+    }
   }
+}
+
+task addTestResourceAdapter {
+  outputs.upToDateWhen { false }
+  enabled = true;
+  dependsOn ':com.ibm.ws.ejbcontainer.fat_tools_rar:build' 
+  doLast{
+      copy {
+          from project(':com.ibm.ws.ejbcontainer.fat_tools_rar').projectDir
+          include 'test-resourceadapters/**'
+      	  into "."
+      }
+      copy {
+          from project(':com.ibm.ws.ejbcontainer.fat_tools_rar').projectDir
+          include 'src/**'
+      	  into "test-resourceadapters/AdapterForEJB.rar/"
+      }
+
+  }       
+}
+
+
+assemble {
+    outputs.upToDateWhen { false }
+    enabled = true;
+    dependsOn addTestResourceAdapter
 }
 
 addRequiredLibraries {

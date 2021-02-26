@@ -1,5 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.json-1.0
+WLP-DisableAllFeatures-OnConflict: false
 visibility=public
 IBM-API-Package: com.ibm.json.java; type="ibm-api", \
  com.ibm.json.xml; type="ibm-api"

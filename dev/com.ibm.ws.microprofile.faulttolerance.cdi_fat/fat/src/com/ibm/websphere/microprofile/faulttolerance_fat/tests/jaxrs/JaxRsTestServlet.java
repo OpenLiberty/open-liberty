@@ -26,6 +26,8 @@ import javax.servlet.annotation.WebServlet;
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 
 @WebServlet("/JaxRsTest")
 public class JaxRsTestServlet extends FATServlet {
@@ -48,6 +50,7 @@ public class JaxRsTestServlet extends FATServlet {
     }
 
     @Test
+    @Mode(TestMode.FULL)
     public void testJaxRsSlow() {
         CompletionStage<String> result = bean.callSlowEndpoint();
         assertThrows(org.eclipse.microprofile.faulttolerance.exceptions.TimeoutException.class, result);

@@ -1,0 +1,47 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/OptimisticLockExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+5001=A fost f\u0103cut\u0103 o \u00eencercare de \u015ftergere a obiectului [{0}], dar nu are num\u0103r de versiune \u00een harta identitate. {3}Este posibil s\u0103 nu fi fost citit\u0103 \u00eenainte de \u00eencercarea de \u015ftergere. {3}Clasa> {1} Cheie primar\u0103> {2}
+
+5003=Obiectul [{0}] nu poate fi \u015fters deoarece s-a modificat sau a fost \u015fters de c\u00e2nd a fost citit ultima dat\u0103. {3}Clasa> {1} Cheie primar\u0103> {2}
+
+5004=A fost f\u0103cut\u0103 o \u00eencercare de actualizare a obiectului [{0}], dar nu are un num\u0103r de versiune \u00een harta de identitate. {3}Este posibil s\u0103 nu fi fost citit\u0103 \u00eenainte d\u0103 fi fost \u00eencercat\u0103 actualizarea. {3}Clasa> {1} Cheie primar\u0103> {2}
+
+5006=Obiectul [{0}] nu poate fi actualizat deoarece s-a modificat sau a fost \u015fters de c\u00e2nd a fost citit ultima dat\u0103. {3}Clasa> {1} Cheie primar\u0103> {2}
+
+5007=Obiectul [{0}] trebuie s\u0103 aib\u0103 o mapare care s\u0103 nu fie numai citire la c\u00e2mpul de blocare versiune.
+
+5008=Trebuie s\u0103 mapa\u0163i c\u00e2mpul de blocare versiune la java.sql.Timestamp atunci c\u00e2nd utiliza\u0163i Blocarea amprent\u0103 de timp
+
+5009=Obiectul din clasa [{1}] cu cheia primar\u0103 [{0}] nu poate fi dezvelit deoarece a fost \u015fters de c\u00e2nd a fost citit ultima dat\u0103.
+
+5010=Obiectul [{0}] nu poate fi combinat deoarece a fost modificat sau \u015fters de c\u00e2nd a fost citit ultima dat\u0103. {2}Clasa> {1}
+
+5011=Unul sau mai multe obiecte nu pot fi actualizate deoarece s-a modificat sau a fost \u015fters de c\u00e2nd a fost citit ultima dat\u0103
+

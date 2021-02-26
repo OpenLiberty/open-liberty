@@ -62,13 +62,24 @@ kafka.library.not.present.CWMRX1006E.useraction=Package the kafka-clients JAR fi
 
 # A Kafka incoming connector for the {0} channel cannot be created. The error is {1}
 kafka.create.incoming.error.CWMRX1007E=CWMRX1007E: A Kafka incoming connector for the {0} channel cannot be created. The error is {1}
-kafka.create.incoming.error.CWMRX1007E.explanation=An error that occurred when the Kafka connector was set up for an incoming reactive messaging channel prevents normal operation of MicroProfile Reactive Messaging.
-kafka.create.incoming.error.CWMRX1007E.useraction=Review the error message, server message.log, and FFDC logs to identify the problem.
+kafka.create.incoming.error.CWMRX1007E.explanation=An error that occurred when the Kafka connector was set up for an incoming reactive messaging channel prevents normal operation of MicroProfile Reactive Messaging. This might be caused by a problem with the connector configuration, or by a problem resolving the Kafka broker hostname.
+kafka.create.incoming.error.CWMRX1007E.useraction=Review the error message, the messages.log file on the server, and FFDC logs to identify the problem.
 
 # A Kafka outgoing connector for the {0} channel cannot be created. The error is {1}
 kafka.create.outgoing.error.CWMRX1008E=CWMRX1008E: A Kafka outgoing connector for the {0} channel cannot be created. The error is {1}
-kafka.create.outgoing.error.CWMRX1008E.explanation=An error that occurred when the Kafka connector was set up for an outgoing reactive messaging channel prevents normal operation of MicroProfile Reactive Messaging.
-kafka.create.outgoing.error.CWMRX1008E.useraction=Review the error message, server message.log, and FFDC logs to identify the problem.
+kafka.create.outgoing.error.CWMRX1008E.explanation=An error that occurred when the Kafka connector was set up for an outgoing reactive messaging channel prevents normal operation of MicroProfile Reactive Messaging. This might be caused by a problem with the connector configuration, or by a problem resolving the Kafka broker hostname.
+kafka.create.outgoing.error.CWMRX1008E.useraction=Review the error message, the messages.log file on the server, and FFDC logs to identify the problem.
+
+# {0} = channel name, {1} = error message
+kafka.create.incoming.retry.CWMRX1009W=CWMRX1009W: A Kafka incoming connector for the {0} channel cannot be created but this operation is being retried. The error is {1}
+kafka.create.incoming.retry.CWMRX1009W.explanation=An error occurred when the Kafka connector was set up for an incoming reactive messaging channel. This might be caused by a problem with the connector configuration, or by a problem resolving the Kafka broker hostname.
+kafka.create.incoming.retry.CWMRX1009W.useraction=Review the error message, the messages.log file on the server, and FFDC logs to identify whether the problem was transient and was resolved by retrying the connector setup.
+
+# {0} = channel name, {1} = error message
+kafka.create.outgoing.retry.CWMRX1010W=CWMRX1010W: A Kafka outgoing connector for the {0} channel cannot be created but this operation is being retried. The error is {1}
+kafka.create.outgoing.retry.CWMRX1010W.explanation=An error occurred when the Kafka connector was set up for an outgoing reactive messaging channel. This might be caused by a problem with the connector configuration, or by a problem resolving the Kafka broker hostname.
+kafka.create.outgoing.retry.CWMRX1010W.useraction=Review the error message, the messages.log file on the server, and FFDC logs to identify whether the problem was transient and was resolved by retrying the connector setup.
+
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Reactive Messaging error message

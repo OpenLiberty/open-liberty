@@ -1,0 +1,50 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMMH
+#COMPONENTNAMEFOR CWMMH MicroProfile Health API 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by Health Impl -  range is 0000-0999
+# The range 0000-0049 has been reserved for messages issued above the HealthCheckExecutor within the call stack
+# The range 0050-0099 has been reserved for messages issued at or below the HealthCheckExecutor within the call stack
+#-----------------------------------------------------------------------------------------------------------------------------
+
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Emergency Health error message
+#-----------------------------------------------------------------------------------------------------------------------------
+OSGI_SERVICE_ERROR=CWMMH0000E: El servicio OSGi {0} no est\u00e1 disponible.
+OSGI_SERVICE_ERROR.explanation=Este error interno del servidor se genera porque el servicio especificado no est\u00e1 disponible.
+OSGI_SERVICE_ERROR.useraction=Reinicie el servidor con la opci\u00f3n clean.
+
+# The HealthCheck bean call method had an exception
+healthcheck.bean.call.exception.CWMMH0050E=CWMMH0050E: El m\u00e9todo HealthCheck {0} en la aplicaci\u00f3n {1} del m\u00f3dulo {2} ha lanzado la excepci\u00f3n {3} con el mensaje siguiente: {4}
+healthcheck.bean.call.exception.CWMMH0050E.explanation=El m\u00e9todo de llamada especificado ha generado una excepci\u00f3n.
+healthcheck.bean.call.exception.CWMMH0050E.useraction=Revise el m\u00e9todo de llamada en el bean HealthCheck para identificar la excepci\u00f3n que se ha producido.
+
+# The HealthCheck bean call method had a DOWN outcome
+healthcheck.application.down.CWMMH0052W=CWMMH0052W: El {0} que implementa HealthCheckResponse en la aplicaci\u00f3n {1} en el m\u00f3dulo {2} ha informado de un estado {3} con datos {4}.
+healthcheck.application.down.CWMMH0052W.explanation=Es posible que el estado DOWN haga que el servicio de supervisi\u00f3n realice una acci\u00f3n en este servidor.
+healthcheck.application.down.CWMMH0052W.useraction=No se requiere ninguna acci\u00f3n del usuario.  Este aviso es un registro del estado DOWN.
+
+# The Readiness HealthCheck had a DOWN outcome, when applications are not started yet
+readiness.healthcheck.applications.not.started.down.CWMMH0053W=CWMMH0053W: La comprobaci\u00f3n de estado de preparaci\u00f3n ha informado de un estado general DOWN porque las aplicaciones siguiente a\u00fan no se han iniciado: {0}
+readiness.healthcheck.applications.not.started.down.CWMMH0053W.explanation=Las aplicaciones especificadas a\u00fan no se han iniciado por completo y no est\u00e1n preparadas para procesar solicitudes, por lo tanto la comprobaci\u00f3n de estado de preparaci\u00f3n ha informado de un estado DOWN.
+readiness.healthcheck.applications.not.started.down.CWMMH0053W.useraction=No se necesita ninguna acci\u00f3n de usuario, espere a que se inicien las aplicaciones. Este aviso es un registro del estado DOWN.

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.reactive.messaging.fat.suite;
 
-import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -24,7 +23,7 @@ import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.liberty_login.specia
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.liberty_login.xor.LibertyLoginModuleXorTest;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.sasl_plain.KafkaSaslPlainTest;
 
-import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
+import componenttest.containers.ExternalTestServiceDockerClientStrategy;
 
 /**
  * Suite for tests which run against a TLS enabled kafka broker
@@ -40,12 +39,13 @@ import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
 })
 public class SaslPlainTests {
 
+    //Required to ensure we calculate the correct strategy each run even when
+    //switching between local and remote docker hosts.
+    static {
+        ExternalTestServiceDockerClientStrategy.setupTestcontainers();
+    }
+
     @ClassRule
     public static KafkaSaslPlainContainer kafkaContainer = new KafkaSaslPlainContainer();
-
-    @BeforeClass
-    public static void beforeSuite() throws Exception {
-        ExternalTestServiceDockerClientStrategy.clearTestcontainersConfig();
-    }
 
 }

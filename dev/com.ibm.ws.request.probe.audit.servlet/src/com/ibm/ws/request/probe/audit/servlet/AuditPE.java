@@ -65,7 +65,6 @@ import com.ibm.ws.security.audit.event.MemberManagementEvent;
 import com.ibm.ws.security.audit.event.RESTAuthorizationEvent;
 import com.ibm.ws.security.audit.event.SAFAuthorizationDetailsEvent;
 import com.ibm.ws.security.audit.event.SAFAuthorizationEvent;
-//import com.ibm.ws.security.audit.utils.AuditConstants;
 import com.ibm.ws.webcontainer.security.AuthenticationResult;
 import com.ibm.ws.webcontainer.security.WebRequest;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;

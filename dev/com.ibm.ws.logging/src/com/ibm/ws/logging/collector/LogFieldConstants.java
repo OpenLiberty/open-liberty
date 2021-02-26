@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -76,33 +76,50 @@ public class LogFieldConstants {
     public static final String RESPONSECODE = "responseCode";
     public static final String IBM_ELAPSEDTIME = "ibm_elapsedTime";
     public static final String ELAPSEDTIME = "elapsedTime";
+    // Non-default access log fields
+    public static final String IBM_REMOTEIP = "ibm_remoteIP";
+    public static final String REMOTEIP = "remoteIP";
+    public static final String IBM_BYTESSENT = "ibm_bytesSent";
+    public static final String BYTESSENT = "bytesSent";
+    public static final String IBM_COOKIE = "ibm_cookie";
+    public static final String COOKIE = "cookie";
+    public static final String IBM_REQUESTELAPSEDTIME = "ibm_requestElapsedTime";
+    public static final String REQUESTELAPSEDTIME = "requestElapsedTime";
+    public static final String IBM_REQUESTHEADER = "ibm_requestHeader";
+    public static final String REQUESTHEADER = "requestHeader";
+    public static final String IBM_RESPONSEHEADER = "ibm_responseHeader";
+    public static final String RESPONSEHEADER = "responseHeader";
+    public static final String IBM_REQUESTFIRSTLINE = "ibm_requestFirstLine";
+    public static final String REQUESTFIRSTLINE = "requestFirstLine";
+    public static final String IBM_ACCESSLOGDATETIME = "ibm_accessLogDatetime";
+    public static final String ACCESSLOGDATETIME = "accessLogDatetime";
+    public static final String IBM_REMOTEUSERID = "ibm_remoteUserID";
+    public static final String REMOTEUSERID = "remoteUserID";
 
     //liberty_ffdc
-    public static final String DATEOFFIRSTOCCURENCE = "dateOfFirstOccurence";
-    public static final String COUNT = "count";
-    public static final String LABEL = "label";
+    //fields that contain 'XXXXXXX' are not expected to be used
     public static final String IBM_EXCEPTIONNAME = "ibm_exceptionName";
     public static final String EXCEPTIONNAME = "exceptionName";
     public static final String IBM_PROBEID = "ibm_probeID";
     public static final String PROBEID = "probeID";
-    public static final String SOURCEID = "sourceID";
     public static final String IBM_STACKTRACE = "ibm_stackTrace";
     public static final String STACKTRACE = "stackTrace";
     public static final String IBM_OBJECTDETAILS = "ibm_objectDetails";
     public static final String OBJECTDETAILS = "objectDetails";
 
     //liberty_gc
-    public static final String IBM_HEAP = "ibm_heap";
+    //fields that contain 'XXXXXXX' are not expected to be used
+    public static final String IBM_HEAP = "XXXXXXX_ibm_heap";
     public static final String HEAP = "heap";
-    public static final String IBM_USED_HEAP = "ibm_usedHeap";
+    public static final String IBM_USED_HEAP = "XXXXXXX_ibm_usedHeap";
     public static final String USED_HEAP = "usedHeap";
-    public static final String IBM_MAX_HEAP = "ibm_maxHeap";
+    public static final String IBM_MAX_HEAP = "XXXXXXX_ibm_maxHeap";
     public static final String MAX_HEAP = "maxHeap";
-    public static final String IBM_DURATION = "ibm_duration";
+    public static final String IBM_DURATION = "XXXXXXX_ibm_duration";
     public static final String DURATION = "duration";
-    public static final String IBM_GC_TYPE = "ibm_gcType";
+    public static final String IBM_GC_TYPE = "XXXXXXX_ibm_gcType";
     public static final String GC_TYPE = "gcType";
-    public static final String IBM_REASON = "ibm_reason";
+    public static final String IBM_REASON = "XXXXXXX_ibm_reason";
     public static final String REASON = "reason";
 
     //other

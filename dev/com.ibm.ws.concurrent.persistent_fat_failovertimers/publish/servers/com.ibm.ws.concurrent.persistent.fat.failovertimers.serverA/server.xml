@@ -28,7 +28,7 @@
   <dataSource id="DefaultDataSource" fat.modify="true">
     <jdbcDriver libraryRef="jdbcLib"/>
     <!-- properties modified by fat-suite during database rotation -->
-    <properties.derby.client createDatabase="create" databaseName="${shared.resource.dir}/data/failovertimersdb" user="dbuser1" password="dbwpd1"/>
+    <properties.derby.client createDatabase="create" databaseName="memory:failovertimersdb" user="dbuser1" password="dbwpd1"/>
   </dataSource>
 
   <library id="jdbcLib">

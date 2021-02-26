@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -45,7 +45,10 @@ public class PortComponentImpl implements Port {
 
     private Properties properties;
 
-    @Reference(cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC, name = WebserviceEndpoint.PROPERTIES_ELEMENT_NAME, target = WsBndConstants.ID_UNBOUND)
+    @Reference(cardinality = ReferenceCardinality.OPTIONAL,
+               policy = ReferencePolicy.DYNAMIC,
+               name = WebserviceEndpoint.PROPERTIES_ELEMENT_NAME,
+               target = WsBndConstants.ID_UNBOUND)
     protected void setProperties(Properties value) {
         this.properties = value;
     }
@@ -67,94 +70,48 @@ public class PortComponentImpl implements Port {
         keyAlias = (String) config.get(Port.ALIAS_ATTRIBUTE_NAME);
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.javaee.ddmodel.wsbnd.Port#getPortQName()
-     */
     @Override
     public QName getPortQName() {
         return StringUtils.buildQName(getNamespace(), getName());
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.javaee.ddmodel.wsbnd.Port#getNamespace()
-     */
     @Override
     public String getNamespace() {
         return namespace;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.javaee.ddmodel.wsbnd.Port#getName()
-     */
     @Override
     public String getName() {
         return name;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.javaee.ddmodel.wsbnd.Port#getAddress()
-     */
     @Override
     public String getAddress() {
         return address;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.javaee.ddmodel.wsbnd.Port#getUserName()
-     */
     @Override
     public String getUserName() {
         return userName;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.javaee.ddmodel.wsbnd.Port#getPassword()
-     */
     @Override
     public ProtectedString getPassword() {
         return password == null ? null : new ProtectedString(password.getChars());
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.javaee.ddmodel.wsbnd.Port#getSSLRef()
-     */
     @Override
     public String getSSLRef() {
         return sslRef;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.javaee.ddmodel.wsbnd.Port#getKeyAlias()
-     */
     @Override
     public String getKeyAlias() {
         return keyAlias;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.javaee.ddmodel.wsbnd.Port#getProperties()
-     */
     @Override
     public Map<String, String> getProperties() {
         return properties == null ? null : properties.getAttributes();
     }
-
 }

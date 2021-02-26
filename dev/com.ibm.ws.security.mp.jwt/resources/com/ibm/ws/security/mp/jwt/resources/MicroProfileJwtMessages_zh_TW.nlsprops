@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -23,10 +23,10 @@ MPJWT_CONFIG_PROCESSED.useraction=\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f
 
 MPJWT_CONFIG_MODIFIED=CWWKS5501I: \u5df2\u9806\u5229\u8655\u7406 MicroProfile JWT \u914d\u7f6e [{0}]\u3002
 MPJWT_CONFIG_MODIFIED.explanation=\u5df2\u9806\u5229\u8655\u7406\u6307\u51fa\u7684\u914d\u7f6e\u3002
-MPJWT_CONFIG_MODIFIED.useraction=\u4e0d\u9700\u4efb\u4f55\u52d5\u4f5c\u3002
+MPJWT_CONFIG_MODIFIED.useraction=\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
 MPJWT_CONFIG_DEACTIVATED=CWWKS5502I: \u5df2\u9806\u5229\u95dc\u9589 MicroProfile JWT \u914d\u7f6e [{0}]\u3002
 MPJWT_CONFIG_DEACTIVATED.explanation=\u5df2\u9806\u5229\u95dc\u9589\u6307\u51fa\u7684\u914d\u7f6e\u3002
-MPJWT_CONFIG_DEACTIVATED.useraction=\u4e0d\u9700\u4efb\u4f55\u52d5\u4f5c\u3002
+MPJWT_CONFIG_DEACTIVATED.useraction=\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
 # 0=Exception message
 ERROR_GETTING_CLAIMS_FROM_JWT_STRING=CWWKS5503E: \u5728\u53d6\u5f97\u4f86\u81ea\u6240\u63d0\u4f9b\u4e4b JWT \u5b57\u4e32\u7684\u8072\u660e\u6642\uff0cMicroProfile JWT \u7279\u6027\u9047\u5230\u554f\u984c\u3002{0}
 ERROR_GETTING_CLAIMS_FROM_JWT_STRING.explanation=JWT \u5b57\u4e32\u53ef\u80fd\u5f62\u614b\u7570\u5e38\u4e14\u7121\u6cd5\u5256\u6790\u3002
@@ -153,3 +153,8 @@ MPJWT_NOT_FOUND_IN_APPLICATION.useraction=\u8acb\u78ba\u5b9a\u4f3a\u670d\u5668\u
 JWT_PREVIOUSLY_LOGGED_OUT=CWWKS5527E: MicroProfile JWT \u7279\u6027\u7121\u6cd5\u57f7\u884c\u9451\u5225\uff0c\u56e0\u70ba\u8981\u6c42\u4e2d\u7684 JWT \u65e9\u5df2\u767b\u51fa\u3002
 JWT_PREVIOUSLY_LOGGED_OUT.explanation=\u5148\u524d\u5df2\u5c0d\u4f7f\u7528\u6b64 JWT \u7684\u4e3b\u9ad4\u767c\u51fa HttpServletRequest.logout() \u547c\u53eb\u3002
 JWT_PREVIOUSLY_LOGGED_OUT.useraction=\u8acb\u4f7f\u7528\u4e0d\u540c\u7684 JWT \u4f86\u91cd\u65b0\u63d0\u4ea4\u8981\u6c42\u3002
+
+# 0=MP Config property value, 1=MP Config property name (e.g. "mp.jwt.token.header"), 2=List of supported values for the property, 3=Default value that will be used
+MP_CONFIG_VALUE_NOT_SUPPORTED=CWWKS5528W: [{0}] {1} MicroProfile Config \u503c\u4e0d\u53d7\u652f\u63f4\u3002\u552f\u4e00\u53d7\u652f\u63f4\u7684\u503c\u70ba {2}\u3002\u4f9d\u9810\u8a2d\uff0c\u5c07\u4f7f\u7528 {3} \u503c\u3002
+MP_CONFIG_VALUE_NOT_SUPPORTED.explanation=\u8a0a\u606f\u4e2d\u6307\u5b9a\u7684 MicroProfile Config \u5167\u5bb9\u5177\u6709\u53d7\u652f\u63f4\u7684\u9810\u5148\u5b9a\u7fa9\u503c\u96c6\u3002\u5176\u4ed6\u503c\u5c07\u88ab\u5ffd\u7565\uff0c\u4e26\u6539\u7528\u9810\u8a2d\u503c\u3002
+MP_CONFIG_VALUE_NOT_SUPPORTED.useraction=\u91dd\u5c0d\u8a0a\u606f\u4e2d\u6307\u793a\u7684\u5167\u5bb9\uff0c\u8acb\u6307\u5b9a\u5176\u4e2d\u4e00\u500b\u53d7\u652f\u63f4\u7684\u503c\u3002

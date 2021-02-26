@@ -20,6 +20,7 @@ import javax.persistence.StoredProcedureQuery;
 
 import org.junit.Assert;
 
+import com.ibm.ws.testtooling.database.DatabaseVendor;
 import com.ibm.ws.testtooling.testinfo.TestExecutionContext;
 import com.ibm.ws.testtooling.testlogic.AbstractTestLogic;
 import com.ibm.ws.testtooling.vehicle.resources.JPAResource;
@@ -28,7 +29,7 @@ import com.ibm.ws.testtooling.vehicle.resources.TestExecutionResources;
 public class JPATestOLGH8820Logic extends AbstractTestLogic {
 
     public void testStoredProcedureOrderWithIndexParameter(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                                           Object managedComponentObject) {
+                                                           Object managedComponentObject) throws Throwable {
         final String testName = getTestName();
 
         // Verify parameters
@@ -52,8 +53,12 @@ public class JPATestOLGH8820Logic extends AbstractTestLogic {
         }
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
 
+        final boolean isOracle = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.ORACLE);
+        final boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
+        final boolean isMySQL = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.MYSQL);
+
         // TODO: Add support for more database platforms
-        if (!isOracle(dbProductName) || !isDB2(dbProductName) || !isMySQL(dbProductName)) {
+        if (!isOracle || !isDB2 || !isMySQL) {
             System.out.println("This test does not support database platform " + dbProductName);
             return;
         }
@@ -102,7 +107,7 @@ public class JPATestOLGH8820Logic extends AbstractTestLogic {
     }
 
     public void testStoredProcedureOrderWithNamedParameter(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                                           Object managedComponentObject) {
+                                                           Object managedComponentObject) throws Throwable {
         final String testName = getTestName();
 
         // Verify parameters
@@ -126,8 +131,12 @@ public class JPATestOLGH8820Logic extends AbstractTestLogic {
         }
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
 
+        final boolean isOracle = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.ORACLE);
+        final boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
+        final boolean isMySQL = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.MYSQL);
+
         // TODO: Add support for more database platforms
-        if (!isOracle(dbProductName) || !isDB2(dbProductName) || !isMySQL(dbProductName)) {
+        if (!isOracle || !isDB2 || !isMySQL) {
             System.out.println("This test does not support database platform " + dbProductName);
             return;
         }

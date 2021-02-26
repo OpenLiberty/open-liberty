@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,29 +10,36 @@
  *******************************************************************************/
 package com.ibm.ws.security.acme.fat;
 
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
+import componenttest.containers.ExternalTestServiceDockerClientStrategy;
 
 @RunWith(Suite.class)
 @SuiteClasses({ AcmeClientTest.class, 
 	AcmeSimpleTest.class,
 	AcmeURISimpleTest.class,
-	AcmeCaRestHandlerTest.class, 
+	AcmeCaRestHandlerTest.class,
+	AcmeSwapDirectoriesTest.class,
 	AcmeValidityAndRenewTest.class,
+	AcmeDisableTriggerSimpleTest.class,
+	AcmeConfigVariationsTest.class,
+	AcmeURIConfigVariationsTest.class,
 	AcmeRevocationTest.class
+
 	 })
 public class FATSuite {
-
-	/*
-	 * This static block should be the first static initialization in this class
-	 * so that the testcontainers config is cleared before we start our new
-	 * testcontainers.
-	 */
-	static {
-		ExternalTestServiceDockerClientStrategy.clearTestcontainersConfig();
-	}
-
+    
+    //Required to ensure we calculate the correct strategy each run even when
+    //switching between local and remote docker hosts.
+    static {
+        ExternalTestServiceDockerClientStrategy.setupTestcontainers();
+        
+        // Filter out any external docker servers in the 'libhpike' cluster
+        ExternalTestServiceDockerClientStrategy.serviceFilter = (svc) -> {
+                return !svc.getAddress().contains("libhpike-dockerengine");
+        };
+    }
 }

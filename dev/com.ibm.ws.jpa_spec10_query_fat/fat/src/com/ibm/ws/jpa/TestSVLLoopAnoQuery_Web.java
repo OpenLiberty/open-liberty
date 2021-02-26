@@ -29,7 +29,27 @@ import com.ibm.websphere.simplicity.config.Application;
 import com.ibm.websphere.simplicity.config.ClassloaderElement;
 import com.ibm.websphere.simplicity.config.ConfigElementList;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
-import com.ibm.ws.query.web.JULoopQueryAnoTestServlet;
+import com.ibm.ws.query.web.loopqueryano.JULoopQueryAnoTest_001_Servlet;
+import com.ibm.ws.query.web.loopqueryano.JULoopQueryAnoTest_002_Servlet;
+import com.ibm.ws.query.web.loopqueryano.JULoopQueryAnoTest_003_Servlet;
+import com.ibm.ws.query.web.loopqueryano.JULoopQueryAnoTest_004_Servlet;
+import com.ibm.ws.query.web.loopqueryano.JULoopQueryAnoTest_005_Servlet;
+import com.ibm.ws.query.web.loopqueryano.JULoopQueryAnoTest_006_Servlet;
+import com.ibm.ws.query.web.loopqueryano.JULoopQueryAnoTest_007_Servlet;
+import com.ibm.ws.query.web.loopqueryano.JULoopQueryAnoTest_008_Servlet;
+import com.ibm.ws.query.web.loopqueryano.JULoopQueryAnoTest_009_Servlet;
+import com.ibm.ws.query.web.loopqueryano.JULoopQueryAnoTest_010_Servlet;
+import com.ibm.ws.query.web.loopqueryano.JULoopQueryAnoTest_011_Servlet;
+import com.ibm.ws.query.web.loopqueryano.JULoopQueryAnoTest_012_Servlet;
+import com.ibm.ws.query.web.loopqueryano.JULoopQueryAnoTest_013_Servlet;
+import com.ibm.ws.query.web.loopqueryano.JULoopQueryAnoTest_014_Servlet;
+import com.ibm.ws.query.web.loopqueryano.JULoopQueryAnoTest_015_Servlet;
+import com.ibm.ws.query.web.loopqueryano.JULoopQueryAnoTest_016_Servlet;
+import com.ibm.ws.query.web.loopqueryano.JULoopQueryAnoTest_017_Servlet;
+import com.ibm.ws.query.web.loopqueryano.JULoopQueryAnoTest_018_Servlet;
+import com.ibm.ws.query.web.loopqueryano.JULoopQueryAnoTest_019_Servlet;
+import com.ibm.ws.query.web.loopqueryano.JULoopQueryAnoTest_020_Servlet;
+import com.ibm.ws.query.web.loopqueryano.JULoopQueryAnoTest_021_Servlet;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
@@ -64,7 +84,28 @@ public class TestSVLLoopAnoQuery_Web extends JPAFATServletClient {
 
     @Server("JPA10SVLQueryLoopServer")
     @TestServlets({
-                    @TestServlet(servlet = JULoopQueryAnoTestServlet.class, path = "svlquery" + "/" + "JULoopQueryAnoTestServlet"),
+                    // Annotated
+                    @TestServlet(servlet = JULoopQueryAnoTest_001_Servlet.class, path = "svlquery" + "/" + "JULoopQueryAnoTest_001_Servlet"),
+                    @TestServlet(servlet = JULoopQueryAnoTest_002_Servlet.class, path = "svlquery" + "/" + "JULoopQueryAnoTest_002_Servlet"),
+                    @TestServlet(servlet = JULoopQueryAnoTest_003_Servlet.class, path = "svlquery" + "/" + "JULoopQueryAnoTest_003_Servlet"),
+                    @TestServlet(servlet = JULoopQueryAnoTest_004_Servlet.class, path = "svlquery" + "/" + "JULoopQueryAnoTest_004_Servlet"),
+                    @TestServlet(servlet = JULoopQueryAnoTest_005_Servlet.class, path = "svlquery" + "/" + "JULoopQueryAnoTest_005_Servlet"),
+                    @TestServlet(servlet = JULoopQueryAnoTest_006_Servlet.class, path = "svlquery" + "/" + "JULoopQueryAnoTest_006_Servlet"),
+                    @TestServlet(servlet = JULoopQueryAnoTest_007_Servlet.class, path = "svlquery" + "/" + "JULoopQueryAnoTest_007_Servlet"),
+                    @TestServlet(servlet = JULoopQueryAnoTest_008_Servlet.class, path = "svlquery" + "/" + "JULoopQueryAnoTest_008_Servlet"),
+                    @TestServlet(servlet = JULoopQueryAnoTest_009_Servlet.class, path = "svlquery" + "/" + "JULoopQueryAnoTest_009_Servlet"),
+                    @TestServlet(servlet = JULoopQueryAnoTest_010_Servlet.class, path = "svlquery" + "/" + "JULoopQueryAnoTest_010_Servlet"),
+                    @TestServlet(servlet = JULoopQueryAnoTest_011_Servlet.class, path = "svlquery" + "/" + "JULoopQueryAnoTest_011_Servlet"),
+                    @TestServlet(servlet = JULoopQueryAnoTest_012_Servlet.class, path = "svlquery" + "/" + "JULoopQueryAnoTest_012_Servlet"),
+                    @TestServlet(servlet = JULoopQueryAnoTest_013_Servlet.class, path = "svlquery" + "/" + "JULoopQueryAnoTest_013_Servlet"),
+                    @TestServlet(servlet = JULoopQueryAnoTest_014_Servlet.class, path = "svlquery" + "/" + "JULoopQueryAnoTest_014_Servlet"),
+                    @TestServlet(servlet = JULoopQueryAnoTest_015_Servlet.class, path = "svlquery" + "/" + "JULoopQueryAnoTest_015_Servlet"),
+                    @TestServlet(servlet = JULoopQueryAnoTest_016_Servlet.class, path = "svlquery" + "/" + "JULoopQueryAnoTest_016_Servlet"),
+                    @TestServlet(servlet = JULoopQueryAnoTest_017_Servlet.class, path = "svlquery" + "/" + "JULoopQueryAnoTest_017_Servlet"),
+                    @TestServlet(servlet = JULoopQueryAnoTest_018_Servlet.class, path = "svlquery" + "/" + "JULoopQueryAnoTest_018_Servlet"),
+                    @TestServlet(servlet = JULoopQueryAnoTest_019_Servlet.class, path = "svlquery" + "/" + "JULoopQueryAnoTest_019_Servlet"),
+                    @TestServlet(servlet = JULoopQueryAnoTest_020_Servlet.class, path = "svlquery" + "/" + "JULoopQueryAnoTest_020_Servlet"),
+                    @TestServlet(servlet = JULoopQueryAnoTest_021_Servlet.class, path = "svlquery" + "/" + "JULoopQueryAnoTest_021_Servlet"),
     })
     public static LibertyServer server;
 
@@ -133,6 +174,8 @@ public class TestSVLLoopAnoQuery_Web extends JPAFATServletClient {
         webApp.addPackages(true, "com.ibm.ws.query.testlogic");
         webApp.addPackages(true, "com.ibm.ws.query.utils");
         webApp.addPackages(true, "com.ibm.ws.query.web");
+        webApp.addPackages(true, "com.ibm.ws.query.web.loopqueryano");
+        webApp.addPackages(true, "com.ibm.ws.query.web.loopqueryxml");
 
         ShrinkHelper.addDirectory(webApp, RESOURCE_ROOT + appFolder + "/" + appName + ".war");
 

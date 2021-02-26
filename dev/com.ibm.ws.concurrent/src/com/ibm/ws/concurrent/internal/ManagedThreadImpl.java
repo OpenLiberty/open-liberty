@@ -14,6 +14,8 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
 
+import javax.enterprise.concurrent.ManageableThread;
+
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
@@ -23,7 +25,7 @@ import com.ibm.wsspi.threadcontext.ThreadContext;
 /**
  * Thread created by a managed thread factory.
  */
-class ManagedThreadImpl extends Thread implements jakarta.enterprise.concurrent.ManageableThread, javax.enterprise.concurrent.ManageableThread {
+class ManagedThreadImpl extends Thread implements ManageableThread {
     private static final TraceComponent tc = Tr.register(ManagedThreadImpl.class);
 
     /**

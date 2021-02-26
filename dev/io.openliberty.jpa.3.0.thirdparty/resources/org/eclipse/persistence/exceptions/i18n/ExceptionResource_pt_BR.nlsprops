@@ -1,0 +1,61 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/ExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+CallHeader=Chamada: 
+
+DescriptionHeader=Descri\u00e7\u00e3o da exce\u00e7\u00e3o: 
+
+DescriptorExceptionsHeader=Exce\u00e7\u00f5es do descritor: 
+
+DescriptorHeader=Descritor: 
+
+ErrorCodeHeader=C\u00f3digo de erro: 
+
+ErrorFormattingMessage=Erro ao tentar formatar a mensagem de exce\u00e7\u00e3o: {0}. Os argumentos s\u00e3o: {1}
+
+ExceptionHeader=Exce\u00e7\u00e3o [EclipseLink-
+
+InternalExceptionHeader=Exce\u00e7\u00e3o interna: 
+
+InternalExceptionStackHeader=Pilha de exce\u00e7\u00f5es internas: 
+
+LocalExceptionStackHeader=Pilha de exce\u00e7\u00f5es locais: 
+
+MappingHeader=Mapeamento: 
+
+NoExceptionTranslationForThisLocale=(N\u00e3o h\u00e1 tradu\u00e7\u00e3o para esta exce\u00e7\u00e3o.) {0}
+
+QueryHeader=Consulta: 
+
+RuntimeExceptionsHeader=Exce\u00e7\u00f5es de tempo de execu\u00e7\u00e3o: 
+
+TargetInvocationExceptionHeader=Exce\u00e7\u00e3o de chamada de destino: 
+
+TargetInvocationExceptionStackHeader=Pilha de exce\u00e7\u00f5es de chamada de destino: 
+

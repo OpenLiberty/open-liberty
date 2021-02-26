@@ -15,6 +15,8 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import org.apache.cxf.wsdl.TExtensibilityElementImpl;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 
 /**
  * <p>Java class for operationType complex type.
@@ -37,6 +39,7 @@ import org.apache.cxf.wsdl.TExtensibilityElementImpl;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "operationType")
+@Trivial
 public class OperationType
     extends TExtensibilityElementImpl
 {

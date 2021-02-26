@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2020 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+ 
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0"  
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
+                   localization="OSGI-INF/l10n/metatype">
+
+    <!-- id gets mapped to configuration class impl in Designate element below --> 
+    <OCD id="io.openliberty.grpc.clientConfig.metatype" name="%clientConfig" description="%clientConfig.desc"
+         ibm:alias="grpcClient" >
+         
+         <!-- the following lines will define defaults and variable types for these parameters.
+              Also drives the documentation for them based on metatype.properties 
+              and makes pretty panels in wdt. 
+         -->
+        <AD id="host" name="%host" description="%host.desc" required="true" type="String" />
+        <AD id="path" name="%path" description="%path.desc" required="false" type="String" default="*" />
+        <AD id="headersToPropagate" name="%headersToPropagate" description="%headersToPropagate.desc" required="false" type="String" />
+        <AD id="keepAliveTime" name="%keepAliveTime" description="%keepAliveTime.desc" required="false" type="String" ibm:type="duration(s)" min="1" />
+        <AD id="keepAliveTimeout" name="%keepAliveTimeout" description="%keepAliveTimeout.desc" required="false" type="String" ibm:type="duration(s)" default="20s" min="1" />
+        <AD id="keepAliveWithoutCalls" name="%keepAliveWithoutCalls" description="%keepAliveWithoutCalls.desc" required="false" type="Boolean" default="false"/>
+        <AD id="maxInboundMessageSize" name="%maxInboundMessageSize" description="%maxInboundMessageSize.desc" required="false" type="Integer" default="4194304" min="1"/>
+        <AD id="maxInboundMetadataSize" name="%maxInboundMetadataSize" description="%maxInboundMetadataSize.desc" required="false" type="Integer" default="8192" min="1" />
+        <AD id="clientInterceptors" name="%clientInterceptors" description="%clientInterceptors.desc" required="false" type="String" />
+        <AD id="sslRef" name="%sslRef" description="%sslRef.desc" ibm:type="pid"  ibm:reference="com.ibm.ws.ssl.repertoire"
+            required="false" type="String"/>
+        <AD id="overrideAuthority" name="%overrideAuthority" description="%overrideAuthority.desc" required="false" type="String" />
+        <AD id="userAgent" name="%userAgent" description="%userAgent.desc" required="false" type="String" />
+        <AD id="usePlaintext" name="%usePlaintext" description="%usePlaintext.desc" required="false" type="Boolean" default="false" />
+    </OCD>
+
+    <!-- factoryPid allows multiple instances in server.xml, activate will be called multiple times --> 
+    <Designate factoryPid="io.openliberty.grpc.clientConfig">       <!-- matches pid in java file -->                        
+        <Object ocdref="io.openliberty.grpc.clientConfig.metatype" /> <!-- matches id of ocd above --> 
+    </Designate>
+
+
+</metatype:MetaData>

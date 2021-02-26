@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.webcontainer.servlet31.fat.tests;
 
-import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -24,8 +23,8 @@ import java.net.Socket;
 import java.net.URL;
 import java.util.List;
 import java.util.Properties;
-import java.util.logging.Logger;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -41,7 +40,6 @@ import com.ibm.ws.fat.util.SharedServer;
 import com.ibm.ws.fat.util.browser.WebBrowser;
 import com.ibm.ws.fat.util.browser.WebResponse;
 
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -68,12 +66,10 @@ import componenttest.custom.junit.runner.Mode.TestMode;
  * <ul>
  * <li>Decorator (not implemented)
  * </ul>
- * Temporarily skipped for EE9 jakarta until cdi-3.0 feature is developed
  */
 @RunWith(FATRunner.class)
-@SkipForRepeat(EE9_FEATURES)
 public class CDIUpgradeHandlerTest extends LoggingTest {
-    
+
     // Server instance ...
 
     /** A single shared server used by all of the tests. */
@@ -100,12 +96,12 @@ public class CDIUpgradeHandlerTest extends LoggingTest {
             Set<String> appInstalled = SHARED_SERVER.getLibertyServer().getInstalledAppNames(CDI12_TEST_V2_UPGRADE_APP_NAME);
             LOG.info("addAppToServer : " + CDI12_TEST_V2_UPGRADE_APP_NAME + " already installed : " + !appInstalled.isEmpty());
             if (appInstalled.isEmpty())
-              ShrinkHelper.exportDropinAppToServer(SHARED_SERVER.getLibertyServer(), CDI12TestV2UpgradeApp);
-          }
+                ShrinkHelper.exportDropinAppToServer(SHARED_SERVER.getLibertyServer(), CDI12TestV2UpgradeApp);
+        }
         SHARED_SERVER.startIfNotStarted();
         SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* " + CDI12_TEST_V2_UPGRADE_APP_NAME);
     }
-    
+
     @AfterClass
     public static void testCleanup() throws Exception {
         // test cleanup
@@ -167,7 +163,6 @@ public class CDIUpgradeHandlerTest extends LoggingTest {
      * @throws Exception Thrown if the expected response text is not present or if the
      *                       unexpected response text is present.
      */
-    
 
     /** Standard failure text. Usually unexpected. */
     public static final String[] FAILED_RESPONSE = new String[] { "FAILED" };

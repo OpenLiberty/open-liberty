@@ -399,6 +399,7 @@ public class KernelResolver {
         /**
          * Try to pre-load from the cache file, if we can.
          */
+        @SuppressWarnings("resource")
         public void load() {
             if (cacheFile != null && cacheFile.exists()) {
                 String line;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -39,7 +39,9 @@ public class ServiceRefComponentImpl implements ServiceRef {
     private Properties properties;
     private final List<Port> ports = new ArrayList<Port>();
 
-    @Reference(cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC, name = ServiceRef.PROPERTIES_ELEMENT_NAME,
+    @Reference(cardinality = ReferenceCardinality.OPTIONAL,
+               policy = ReferencePolicy.DYNAMIC,
+               name = ServiceRef.PROPERTIES_ELEMENT_NAME,
                target = WsBndConstants.ID_UNBOUND)
     protected void setProperties(Properties value) {
         this.properties = value;
@@ -49,7 +51,9 @@ public class ServiceRefComponentImpl implements ServiceRef {
         this.properties = null;
     }
 
-    @Reference(cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC, name = ServiceRef.PORT_ELEMENT_NAME,
+    @Reference(cardinality = ReferenceCardinality.MULTIPLE,
+               policy = ReferencePolicy.DYNAMIC,
+               name = ServiceRef.PORT_ELEMENT_NAME,
                target = WsBndConstants.ID_UNBOUND)
     protected void setPort(Port port) {
         this.ports.add(port);
@@ -67,64 +71,33 @@ public class ServiceRefComponentImpl implements ServiceRef {
         portAddress = (String) config.get(ServiceRef.PORT_ADDRESS_ATTRIBUTE_NAME);
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.javaee.ddmodel.wsbnd.ServiceRef#getName()
-     */
     @Override
     public String getName() {
         return name;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.javaee.ddmodel.wsbnd.ServiceRef#getComponentName()
-     */
     @Override
     public String getComponentName() {
         return componentName;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.javaee.ddmodel.wsbnd.ServiceRef#getPortAddress()
-     */
     @Override
     public String getPortAddress() {
         return portAddress;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.javaee.ddmodel.wsbnd.ServiceRef#getWsdlLocation()
-     */
     @Override
     public String getWsdlLocation() {
         return wsdlLocation;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.javaee.ddmodel.wsbnd.ServiceRef#getPorts()
-     */
     @Override
     public List<Port> getPorts() {
         return ports;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.javaee.ddmodel.wsbnd.ServiceRef#getProperties()
-     */
     @Override
     public Map<String, String> getProperties() {
         return properties == null ? null : properties.getAttributes();
     }
-
 }

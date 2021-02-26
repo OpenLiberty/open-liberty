@@ -36,7 +36,6 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 
@@ -65,12 +64,6 @@ public class EJBInWarServiceTest {
         WebArchive warclient = ShrinkWrap.create(WebArchive.class, ejbinwarservicewarclient + ".war").addPackages(true, "com.ibm.ws.jaxws.ejbinwar");
         ShrinkHelper.addDirectory(warclient, "test-applications/EJBInWarServiceClient/resources/");
         ShrinkHelper.exportDropinAppToServer(server, warclient);
-
-        // Java 7 throws "java.lang.ClassNotFoundException[java.net.URLPermission]" due to java.net.URLPermission defined in server.xml
-        // Using java7_server.xml in which java.net.URLPermission settings are removed solve this test run problem
-        if (7 == JavaInfo.forServer(server).majorVersion()) {
-            server.setServerConfigurationFile("EJBInWarService/java7_server.xml");
-        }
 
         try {
             server.startServer();
@@ -125,9 +118,14 @@ public class EJBInWarServiceTest {
     }
 
     protected void runTest(String responseString) throws ProtocolException, MalformedURLException, IOException {
-        StringBuilder sBuilder = new StringBuilder("http://").append(server.getHostname()).append(":").append(server.getHttpDefaultPort()).append(SERVLET_PATH).append("?testMethod=").append(testName.getMethodName()).append("&hostName=").append(server.getHostname());
+        // Strip the Test Rerun id's out of the method name
+        String testMethod = ((testName.getMethodName()).replace("_jaxws-2.3",
+                                                                "")).replace("_EE9_FEATURES",
+                                                                             "");
+
+        StringBuilder sBuilder = new StringBuilder("http://").append(server.getHostname()).append(":").append(server.getHttpDefaultPort()).append(SERVLET_PATH).append("?testMethod=").append(testMethod).append("&hostName=").append(server.getHostname());
         String urlStr = sBuilder.toString();
-        Log.info(this.getClass(), testName.getMethodName(), "Calling Application with URL=" + urlStr);
+        Log.info(this.getClass(), testMethod, "Calling Application with URL=" + urlStr);
 
         HttpURLConnection con = HttpUtils.getHttpConnection(new URL(urlStr), HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT);
         BufferedReader br = HttpUtils.getConnectionStream(con);

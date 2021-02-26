@@ -63,7 +63,7 @@ problema de configura\u00e7\u00e3o.  \
 A ativa\u00e7\u00e3o do rastreio de depura\u00e7\u00e3o SSL=all=enabled pode produzir informa\u00e7\u00f5es adicionais.
 # -------------------------------------------------------------------------------------------------
 ssl.init.nullsecobject.CWPKI0009E=CWPKI0009E: O sistema n\u00e3o pode criar o objeto de seguran\u00e7a durante a inicializa\u00e7\u00e3o.
-ssl.init.nullsecobject.CWPKI0009E.explanation=O objeto de seguran\u00e7a n\u00e3o pode ser criado a partir do reposit\u00f3rio. Esse \u00e9 um erro interno. O arquivo security.xml pode estar corrompido ou ausente. 
+ssl.init.nullsecobject.CWPKI0009E.explanation=O objeto de seguran\u00e7a n\u00e3o pode ser criado a partir do reposit\u00f3rio. Este \u00e9 um erro interno. O arquivo security.xml pode estar corrompido ou ausente. 
 ssl.init.nullsecobject.CWPKI0009E.useraction=Entre em contato com o representante de servi\u00e7o.
 # -------------------------------------------------------------------------------------------------
 ssl.init.nullprocesstype.CWPKI0010E=CWPKI0010E: O sistema n\u00e3o pode obter o tipo de processo do WebSphere Application Server durante a \
@@ -658,7 +658,7 @@ ssl.create.certificate.end.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1
 #--------------------------------------------------------------------------------------------------
 ssl.create.certificate.error=CWPKI0804E: Erro de cria\u00e7\u00e3o do certificado SSL. {0}
 ssl.create.certificate.error.explanation=O certificado SSL n\u00e3o p\u00f4de ser criado no local especificado.
-ssl.create.certificate.error.useraction=Assegure que o local esteja acess\u00edvel pelo processo do servidor. Quaisquer FFDCs podem indicar um erro fatal na gera\u00e7\u00e3o ou no carregamento das chaves.
+ssl.create.certificate.error.useraction=Assegure que o local esteja acess\u00edvel pelo processo do servidor. Revise os logs FFDC para erros adicionais que est\u00e3o associados \u00e0 gera\u00e7\u00e3o ou ao carregamento das chaves.
 
 # Messages for the CWPKI0804E message descriptor {0}.
 ssl.create.certificate.error.reason1=Imposs\u00edvel criar arquivo-chave SSL: {0}
@@ -709,8 +709,8 @@ de chave privada n\u00e3o est\u00e1 correta ou quando um keystore tem diversas c
 ssl.unrecoverablekey.error.CWPKI0813E.useraction=Certifique-se de que a senha da chave privada esteja correta e de que o keystore n\u00e3o tenha diversas chaves com \
 senhas diferentes ante de usar o keystore para conex\u00f5es SSL.
 #--------------------------------------------------------------------------------------------------
-ssl.hwkeystore.load.error.CWPKI0814E=CWPKI0814E: Erro ao inicializar o keystore de hardware [{0}]. Verifique o arquivo de configura\u00e7\u00e3o de hardware {1} para certificar-se de que os atributos estejam configurados corretamente. A exce\u00e7\u00e3o retornada do provedor \u00e9 {2}.
-ssl.hwkeystore.load.error.CWPKI0814E.explanation=H\u00e1 algo errado com a configura\u00e7\u00e3o de hardware e isso est\u00e1 impedindo a utiliza\u00e7\u00e3o do keystore. Se houver uma configura\u00e7\u00e3o SSL que faz refer\u00eancia a este keystore, ela n\u00e3o poder\u00e1 ser utilizada.
+ssl.hwkeystore.load.error.CWPKI0814E=CWPKI0814E: Erro ao inicializar o keystore de hardware [{0}].  Verifique o arquivo de configura\u00e7\u00e3o de hardware {1} para certificar-se de que os atributos estejam configurados corretamente.  A exce\u00e7\u00e3o retornada do provedor \u00e9 {2}.
+ssl.hwkeystore.load.error.CWPKI0814E.explanation=H\u00e1 algo errado com a configura\u00e7\u00e3o de hardware e isso est\u00e1 impedindo a utiliza\u00e7\u00e3o do keystore.  Se houver uma configura\u00e7\u00e3o SSL que faz refer\u00eancia a este keystore, ela n\u00e3o poder\u00e1 ser utilizada.
 ssl.hwkeystore.load.error.CWPKI0814E.useraction=Certifique-se de que o arquivo de configura\u00e7\u00e3o de hardware contenha os atributos necess\u00e1rios, nome e biblioteca. Certifique-se de que outros atributos no arquivo de configura\u00e7\u00e3o sigam a especifica\u00e7\u00e3o do dispositivo de hardware.
 #--------------------------------------------------------------------------------------------------
 ssl.dynamicSelection.conflict.CWPKI0815W=CWPKI0815W: Mais de um elemento OutboundConnection especifica o host [{0}] e a porta [{1}] como um filtro. O elemento OutboundConnection configurado no elemento SSL [{2}] ser\u00e1 usado.
@@ -743,7 +743,7 @@ ssl.defaultKeyStore.env.password.CWPKI0820A.useraction=Nenhuma a\u00e7\u00e3o \u
 #--------------------------------------------------------------------------------------------------
 ssl.defaultKeyStore.loaded.CWPKI0821I=CWPKI0821I: O keystore {1} padr\u00e3o com o tipo de keystore {2} foi carregado.
 ssl.defaultKeyStore.loaded.CWPKI0821I.explanation=O keystore padr\u00e3o no local especificado e o tipo de keystore foram carregados.
-ssl.defaultKeyStore.loaded.CWPKI0821I.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+ssl.defaultKeyStore.loaded.CWPKI0821I.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
 #--------------------------------------------------------------------------------------------------
 ssl.defaultKeyStore.loaded.jksAndPKCS12Exist.CWPKI0822W=CWPKI0822W: Uma configura\u00e7\u00e3o m\u00ednima de keystore padr\u00e3o foi especificada e os keystores key.jks e key.p12 existem no local do keystore padr\u00e3o. O keystore key.jks ser\u00e1 usado como o keystore padr\u00e3o.
 ssl.defaultKeyStore.loaded.jksAndPKCS12Exist.CWPKI0822W.explanation=Com uma configura\u00e7\u00e3o m\u00ednima de keystore padr\u00e3o e com um arquivo key.jks e um arquivo key.p12 definidos no local de keystore padr\u00e3o, o arquivo key.jks ser\u00e1 usado como keystore padr\u00e3o.
@@ -777,9 +777,17 @@ ssl.environment.cert.error.CWPKI0826W.useraction=Esse problema pode resultar de 
 # -------------------------------------------------------------------------------------------------
 ssl.using.cacerts.CWPKI0827I=CWPKI0827I: A configura\u00e7\u00e3o de SSL {0} usa o armazenamento confi\u00e1vel padr\u00e3o, al\u00e9m do armazenamento confi\u00e1vel configurado.
 ssl.using.cacerts.CWPKI0827I.explanation=O armazenamento confi\u00e1vel padr\u00e3o e o armazenamento confi\u00e1vel que est\u00e1 configurado para a configura\u00e7\u00e3o SSL s\u00e3o ambos usados para confian\u00e7a.
-ssl.using.cacerts.CWPKI0827I.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+ssl.using.cacerts.CWPKI0827I.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
 # -------------------------------------------------------------------------------------------------
 ssl.client.handshake.cacerts.error.CWPKI0828E=CWPKI0828E: O atributo trustDefaultCerts est\u00e1 ativado, mas a confian\u00e7a n\u00e3o foi estabelecida usando o armazenamento confi\u00e1vel padr\u00e3o. A mensagem de erro estendida da exce\u00e7\u00e3o de handshake SSL \u00e9: {0}.
 ssl.client.handshake.cacerts.error.CWPKI0828E.explanation=O armazenamento confi\u00e1vel padr\u00e3o n\u00e3o est\u00e1 configurado corretamente para estabelecer confian\u00e7a.  
 ssl.client.handshake.cacerts.error.CWPKI0828E.useraction=Revise a mensagem de erro estendida para determinar o que mudar na configura\u00e7\u00e3o.
+# -------------------------------------------------------------------------------------------------
+ssl.update.certificate.error=CWPKI0829E: Erro de atualiza\u00e7\u00e3o de certificado SSL. {0}
+ssl.update.certificate.error.explanation=O certificado SSL n\u00e3o p\u00f4de ser atualizado no local especificado.
+ssl.update.certificate.error.useraction=Assegure que o local esteja acess\u00edvel pelo processo do servidor.  Revise os logs FFDC para erros adicionais que est\u00e3o associados \u00e0 gera\u00e7\u00e3o ou ao carregamento das chaves.
+# -------------------------------------------------------------------------------------------------
+ssl.certificate.add.CWPKI0830I=CWPKI0830I: O certificado com o {0} SubjectDN da vari\u00e1vel de ambiente {1} est\u00e1 sendo inclu\u00eddo no keystore {2}.
+ssl.certificate.add.CWPKI0830I.explanation=Um certificado foi recuperado de uma vari\u00e1vel de ambiente na configura\u00e7\u00e3o e est\u00e1 sendo inclu\u00eddo no arquivo keystore.
+ssl.certificate.add.CWPKI0830I.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
 # -------------------------------------------------------------------------------------------------

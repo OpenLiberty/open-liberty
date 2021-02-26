@@ -10,18 +10,13 @@
  *******************************************************************************/
 package com.ibm.ws.cloudant.fat;
 
-import java.io.File;
-
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
-import org.testcontainers.containers.output.OutputFrame;
-import org.testcontainers.images.builder.ImageFromDockerfile;
 
-import com.ibm.websphere.simplicity.log.Log;
-
-import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
+import componenttest.containers.ExternalTestServiceDockerClientStrategy;
+import componenttest.containers.SimpleLogConsumer;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -32,27 +27,14 @@ import componenttest.topology.utils.ExternalTestServiceDockerClientStrategy;
 })
 public class FATSuite {
 
+    //Required to ensure we calculate the correct strategy each run even when
+    //switching between local and remote docker hosts.
     static {
-        ExternalTestServiceDockerClientStrategy.clearTestcontainersConfig();
+        ExternalTestServiceDockerClientStrategy.setupTestcontainers();
     }
 
     @ClassRule
-    public static CouchDBContainer cloudant = new CouchDBContainer(new ImageFromDockerfile()
-                    .withDockerfileFromBuilder(builder -> builder.from("couchdb:2.3")
-                                    .copy("/opt/couchdb/etc/local.d/testcontainers_config.ini", "/opt/couchdb/etc/local.d/testcontainers_config.ini")
-                                    .copy("/etc/couchdb/cert/couchdb.pem", "/etc/couchdb/cert/couchdb.pem")
-                                    .copy("/etc/couchdb/cert/privkey.pem", "/etc/couchdb/cert/privkey.pem")
-                                    .build())
-                    .withFileFromFile("/opt/couchdb/etc/local.d/testcontainers_config.ini", new File("lib/LibertyFATTestFiles/couchdb-config/testcontainers_config.ini"), 644)
-                    .withFileFromFile("/etc/couchdb/cert/couchdb.pem", new File("lib/LibertyFATTestFiles/ssl-certs/couchdb.pem"), 644)
-                    .withFileFromFile("/etc/couchdb/cert/privkey.pem", new File("lib/LibertyFATTestFiles/ssl-certs/privkey.pem"), 644))
-                                    .withLogConsumer(FATSuite::log);
-
-    private static void log(OutputFrame frame) {
-        String msg = frame.getUtf8String();
-        if (msg.endsWith("\n"))
-            msg = msg.substring(0, msg.length() - 1);
-        Log.info(FATSuite.class, "cloudant", msg);
-    }
+    public static CouchDBContainer cloudant = new CouchDBContainer("aguibert/couchdb-ssl:1.0")
+                    .withLogConsumer(new SimpleLogConsumer(FATSuite.class, "cloudant"));
 
 }

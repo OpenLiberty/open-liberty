@@ -32,7 +32,7 @@ public class PebbleDriver extends AbstractCADriver {
 		/*
 		 * Wait until the process has been cancelled via ctrl-c.
 		 */
-		driver.printBanner();
+		driver.printBanner(false);
 		while (true) {
 			try {
 				Thread.sleep(10000);

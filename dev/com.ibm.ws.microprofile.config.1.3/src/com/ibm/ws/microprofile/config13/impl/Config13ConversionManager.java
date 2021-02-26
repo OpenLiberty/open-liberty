@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,11 +14,12 @@ package com.ibm.ws.microprofile.config13.impl;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.microprofile.config.converters.BuiltInConverter;
 import com.ibm.ws.microprofile.config.converters.PriorityConverterMap;
-import com.ibm.ws.microprofile.config.interfaces.ConfigException;
+import com.ibm.ws.microprofile.config12.converters.ImplicitConverter;
 import com.ibm.ws.microprofile.config12.impl.Config12ConversionManager;
 import com.ibm.ws.microprofile.config13.converters.Config13ImplicitConverter;
+
+import io.openliberty.microprofile.config.internal.common.ConfigException;
 
 public class Config13ConversionManager extends Config12ConversionManager {
 
@@ -33,11 +34,10 @@ public class Config13ConversionManager extends Config12ConversionManager {
 
     @Override
     @FFDCIgnore(IllegalArgumentException.class)
-    protected <T> BuiltInConverter getConverter(Class<T> type) {
-        BuiltInConverter automaticConverter = null;
-
+    protected <T> ImplicitConverter newImplicitConverter(Class<T> type) {
+        ImplicitConverter implicitConverter = null;
         try {
-            automaticConverter = new Config13ImplicitConverter(type);
+            implicitConverter = new Config13ImplicitConverter(type);
         } catch (IllegalArgumentException e) {
             //no FFDC
             //this means that a suitable string constuctor method could not be found for the given class
@@ -51,8 +51,7 @@ public class Config13ConversionManager extends Config12ConversionManager {
             }
             throw new ConfigException(t);
         }
-
-        return automaticConverter;
+        return implicitConverter;
     }
 
 }

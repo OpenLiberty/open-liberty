@@ -14,12 +14,12 @@ dependencies {
     project(':com.ibm.ws.security.registry'),
     project(':com.ibm.ws.security.registry_test.custom'),
     project(':com.ibm.ws.security.registry_test.servlet'),
-    'com.unboundid:unboundid-ldapsdk:4.0.14',
+    'com.unboundid:unboundid-ldapsdk:5.1.0',
     project(':com.ibm.ws.com.unboundid')
 }
 
-autoFVT.dependsOn ':com.ibm.ws.security.registry_test.custom:jar'
-autoFVT.dependsOn ':com.ibm.ws.security.registry_test.servlet:war'
+autoFVT.dependsOn ':com.ibm.ws.security.registry_test.custom:assemble'
+autoFVT.dependsOn ':com.ibm.ws.security.registry_test.servlet:assemble'
 autoFVT.doLast {
   /*
    * Copy the local ApacheDS LDAP instances. 

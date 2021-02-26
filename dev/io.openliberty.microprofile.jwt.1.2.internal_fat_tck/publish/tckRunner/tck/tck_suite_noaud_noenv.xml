@@ -1,0 +1,46 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="microprofile-jwt-auth-BaseTCK" verbose="1" preserve-order="true" configfailurepolicy="continue" >
+
+    <!-- The required base JAX-RS and CDI based tests that all MP-JWT implementations
+    must pass.
+    -->
+    <test name="base-tests" verbose="10">
+        <groups>
+            <define name="base-groups">
+                <include name="arquillian" description="Arquillian internal"/>
+                <include name="utils" description="Utility tests"/>
+                <include name="jwt" description="Base JsonWebToken tests"/>
+                <include name="jaxrs" description="JAX-RS invocation tests"/>
+                <include name="cdi" description="Base CDI injection of ClaimValues"/>
+                <include name="cdi-json" description="CDI injection of JSON-P values"/>
+                <include name="cdi-provider" description="CDI injection of javax.inject.Provider values"/>
+                <include name="config" description="Validate configuration using MP-config"/>
+            </define>
+            <define name="excludes">
+                <include name="debug" description="Internal debugging tests" />
+            </define>
+            <run>
+                <include name="base-groups" />
+                <exclude name="excludes" />
+            </run>
+        </groups>
+        <classes>
+
+              <!-- MP JWT 1.1 - These tests do not require an audience defined in the server.xml -->
+              <class name="org.eclipse.microprofile.jwt.tck.config.IssValidationFailTest" />  
+              
+              <!--  MP JWT 1.2 jaxrs tests  -->
+              <class name="org.eclipse.microprofile.jwt.tck.container.jaxrs.AudArrayValidationTest" />
+              <class name="org.eclipse.microprofile.jwt.tck.container.jaxrs.AudValidationBadAudTest" />
+              <class name="org.eclipse.microprofile.jwt.tck.container.jaxrs.AudValidationMissingAudTest" />
+              <class name="org.eclipse.microprofile.jwt.tck.container.jaxrs.AudValidationTest" />
+
+             <!--  MP JWT 1.2 utils tests -->
+             <class name="org.eclipse.microprofile.jwt.tck.util.TokenUtilsEncryptTest" />
+             <class name="org.eclipse.microprofile.jwt.tck.util.TokenUtilsExtraTest" />
+             <class name="org.eclipse.microprofile.jwt.tck.util.TokenUtilsSignEncryptTest" />
+             
+        </classes>
+    </test>
+
+</suite>

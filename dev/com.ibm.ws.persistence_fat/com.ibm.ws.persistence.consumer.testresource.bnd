@@ -15,6 +15,8 @@ Bundle-Name: Test Persistence Service consumer
 Bundle-SymbolicName: com.ibm.ws.persistence.consumer
 Bundle-Description: Test Persistence Service consumer
 
+jakartaeeMe: true
+
 Export-Package: \
   persistence_fat.consumer.*;version=1.0,\
   persistence_fat.persistence.test;version=1.0

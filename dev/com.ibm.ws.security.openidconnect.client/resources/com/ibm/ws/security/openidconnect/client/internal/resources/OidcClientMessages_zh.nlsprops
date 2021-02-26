@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2019 IBM Corporation and others.
+# Copyright (c) 2019, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -33,10 +33,11 @@ OIDC_CLIENT_CONFIG_MODIFIED.useraction=\u65e0\u3002
 #1702 is used by clients.common bundle, do not use.
 
 # used_by_client_project and clients project IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN THE OTHER BUNDLE!
+# social also uses this and it does not have the enforceHTTPS attribute.
 #do not translate enforceHTTPS
-OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS=CWWKS1703E: OpenID Connect \u5ba2\u6237\u673a\u9700\u8981 SSL (HTTPS)\uff0c\u4f46 OpenID Connect \u63d0\u4f9b\u7a0b\u5e8f URL \u4e3a HTTP\uff1a[{0}]\u3002\u8bf7\u66f4\u65b0\u8be5\u914d\u7f6e\uff0c\u4ee5\u4fbf [enforceHTTPS] \u5c5e\u6027\u4e0e\u76ee\u6807 URL \u65b9\u6848\u5339\u914d\u3002
+OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS=CWWKS1703E: OpenID Connect \u5ba2\u6237\u673a\u9700\u8981 SSL (HTTPS)\uff0c\u4f46 OpenID Connect \u63d0\u4f9b\u7a0b\u5e8f URL \u4e3a HTTP\uff1a[{0}]\u3002\u66f4\u65b0\u914d\u7f6e\u4ee5\u4f7f\u7528 HTTPS URL\uff0c\u6216\u4f7f\u7528 OpenID Connect \u5ba2\u6237\u673a\u529f\u80fd\u90e8\u4ef6\u5e76\u5c06 enforceHTTPS \u8bbe\u7f6e\u4e3a false\u3002
 OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS.explanation=OpenID Connect \u5ba2\u6237\u673a\uff08\u5373\u4f9d\u8d56\u65b9\u6216\u8d44\u6e90\u670d\u52a1\u5668\uff09\u9700\u8981 SSL (HTTPS)\uff0c\u4f46 OpenID Connect \u5ba2\u6237\u673a\u914d\u7f6e\u4e2d\u6307\u5b9a\u7684 OpenID Connect \u63d0\u4f9b\u7a0b\u5e8f (OP) URL \u534f\u8bae\u4e0d\u662f HTTPS\u3002
-OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS.useraction=\u8bf7\u6267\u884c\u4e0b\u5217\u5176\u4e2d\u4e00\u4e2a\u64cd\u4f5c\uff1a1) \u786e\u4fdd OpenID Connect \u63d0\u4f9b\u7a0b\u5e8f\u652f\u6301 SSL\u30022) \u5982\u679c OpenID Connect \u63d0\u4f9b\u7a0b\u5e8f\u4e0d\u652f\u6301 SSL\uff0c\u8bf7\u5c06 OpenID Connect \u5ba2\u6237\u673a\u914d\u7f6e\u4e2d\u7684 enforceHTTPS \u8bbe\u7f6e\u4e3a false\u3002
+OIDC_CLIENT_URL_PROTOCOL_NOT_HTTPS.useraction=\u8bf7\u6267\u884c\u4e0b\u5217\u5176\u4e2d\u4e00\u9879\u64cd\u4f5c\uff1a\u9996\u5148\uff0c\u786e\u4fdd OpenID Connect \u63d0\u4f9b\u7a0b\u5e8f\u652f\u6301 SSL\u3002\u5982\u679c OpenID Connect \u63d0\u4f9b\u7a0b\u5e8f\u4e0d\u652f\u6301 SSL\uff0c\u8bf7\u4f7f\u7528 OpenID Connect \u5ba2\u6237\u673a\u529f\u80fd\u90e8\u4ef6\uff0c\u5e76\u5c06 OpenID Connect \u5ba2\u6237\u673a\u529f\u80fd\u90e8\u4ef6\u914d\u7f6e\u4e2d\u7684 enforceHTTPS \u8bbe\u7f6e\u4e3a false\u3002
 
 # unused, but present in both bundles.  IF YOU CHANGE THIS YOU MUST DUPLICATE THE CHANGE IN BOTH BUNDLES
 OIDC_CLIENT_RESPONSE_STATE_VERIFY_ERR=CWWKS1704E: OpenID Connect \u5ba2\u6237\u673a [{2}] \u7684\u5f53\u524d\u72b6\u6001 [{0}] \u4e0e\u6765\u81ea OpenID Connect \u63d0\u4f9b\u7a0b\u5e8f\u7684\u54cd\u5e94\u4e2d\u7684\u72b6\u6001\u53c2\u6570 [{1}] \u4e0d\u5339\u914d\u3002\u8fd9\u79cd\u60c5\u51b5\u662f\u4e0d\u5141\u8bb8\u7684\u3002
@@ -280,5 +281,10 @@ CONFIG_AUTHFILTER_NOTUNIQUE.useraction=\u8bf7\u67e5\u770b server.xml \u6587\u4ef
 AUTHFILTER_MULTIPLE_MATCHED=CWWKS1531W: \u591a\u4e2a OpenID Connect \u5ba2\u6237\u673a\u8ba4\u8bc1\u8fc7\u6ee4\u5668\u4e0e\u9488\u5bf9 [{0}] URL \u7684\u8bf7\u6c42\u5339\u914d\u3002\u5339\u914d\u8fc7\u6ee4\u5668\u4e3a [{1}]\u3002\u8fd9\u53ef\u80fd\u5bfc\u81f4\u4e0d\u786e\u5b9a\u884c\u4e3a\u3002
 AUTHFILTER_MULTIPLE_MATCHED.explanation=\u591a\u4e2a\u8ba4\u8bc1\u8fc7\u6ee4\u5668\u4e0e\u4e00\u4e2a\u5165\u7ad9\u8bf7\u6c42\u5339\u914d\u3002\u4f7f\u7528\u5176\u4e2d\u4e00\u4e2a\u8fc7\u6ee4\u5668\u7684\u4efb\u4f55\u5ba2\u6237\u673a\u53ef\u80fd\u5904\u7406\u8be5\u8bf7\u6c42\uff0c\u4ece\u800c\u5bfc\u81f4\u4e0d\u786e\u5b9a\u884c\u4e3a\u3002
 AUTHFILTER_MULTIPLE_MATCHED.useraction=\u8bf7\u67e5\u770b server.xml \u6587\u4ef6\u5e76\u66f4\u6b63\u914d\u7f6e\u3002
+
+# do not translate hostname, wasReqURLRedirectDomainNames, and webAppSecurity
+OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE=CWWKS1532E: \u5bf9 [{0}] \u7684\u8bf7\u6c42\u65e0\u6548\u3002\u5176\u540d\u79f0\u4ee5 WASReqURLOidc \u5f00\u5934\u7684\u5fc5\u9700 Cookie \u5177\u6709\u4e0d\u6b63\u786e\u7684\u503c\u3002\u8be5 Cookie \u4e2d\u6240\u4f7f\u7528\u7684\u4e3b\u673a\u540d [{1}] \u4e0e\u63d0\u4f9b\u7a0b\u5e8f\u4e2d\u6240\u6ce8\u518c\u7684\u540d\u79f0\u4e0d\u5339\u914d\u3002\u8fd4\u56de\u4e86\u54cd\u5e94\u4ee3\u7801 500\u3002
+OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE.explanation=\u63a5\u6536\u5230\u7684\u8bf7\u6c42\u5305\u542b\u683c\u5f0f\u4e0d\u6b63\u786e\u7684 Cookie\u3002
+OIDC_CLIENT_BAD_REQUEST_MALFORMED_URL_IN_COOKIE.useraction=\u8bf7\u9a8c\u8bc1 OpenID Connect \u63d0\u4f9b\u7a0b\u5e8f\u914d\u7f6e\u548c\u5ba2\u6237\u673a\u914d\u7f6e\u3002\u5982\u679c\u4fee\u6539 Cookie \u7684\u7528\u6237\u4ee3\u7406\u5177\u6709\u7684\u4e3b\u673a\u540d\u4e0e\u5411\u63d0\u4f9b\u7a0b\u5e8f\u6ce8\u518c\u7684\u91cd\u5b9a\u5411\u7684\u4e3b\u673a\u540d\u4e0d\u540c\uff0c\u90a3\u4e48\u53ef\u80fd\u4f1a\u5bfc\u81f4\u683c\u5f0f\u4e0d\u6b63\u786e\u7684 Cookie\u3002\u5982\u679c\u4e3b\u673a\u540d\u7b26\u5408\u9884\u671f\uff0c\u90a3\u4e48\u5c06\u8be5\u4e3b\u673a\u540d\u6dfb\u52a0\u5230 server.xml \u4e2d\u7684 webAppSecurity \u5143\u7d20\u7684 wasReqURLRedirectDomainNames \u5c5e\u6027\u3002
 
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

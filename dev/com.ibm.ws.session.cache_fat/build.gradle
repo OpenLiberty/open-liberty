@@ -36,4 +36,5 @@ addRequiredLibraries {
   dependsOn addDerby
   dependsOn addHazelcastJCacheProviderToSharedDir
   dependsOn addHazelcastClientToSharedDir
+  dependsOn addJakartaTransformer
 }

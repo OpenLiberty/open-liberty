@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 IBM Corporation and others.
+ * Copyright (c) 2011, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,7 +23,9 @@ import com.ibm.ws.webcontainer.webapp.WebApp;
 import com.ibm.ws.webcontainer40.osgi.webapp.WebAppDispatcherContext40;
 import com.ibm.ws.webcontainer40.srt.SRTServletRequest40;
 import com.ibm.wsspi.webcontainer.logging.LoggerFactory;
+import com.ibm.wsspi.webcontainer.servlet.IExtendedRequest;
 import com.ibm.wsspi.webcontainer.servlet.IServletWrapper;
+import com.ibm.wsspi.webcontainer.util.ServletUtil;
 
 /**
  * A Servlet 4.0 specific CacheServletWrapper implementation that supports the Servle 4.0
@@ -54,7 +56,8 @@ public class CacheServletWrapper40 extends CacheServletWrapper {
             logger.entering(CLASS_NAME, methodName);
         }
 
-        WebAppDispatcherContext40 dispatchContext = (WebAppDispatcherContext40) ((SRTServletRequest40) req).getWebAppDispatcherContext();
+        IExtendedRequest wasreq = (IExtendedRequest) ServletUtil.unwrapRequest(req);
+        WebAppDispatcherContext40 dispatchContext = (WebAppDispatcherContext40) ((SRTServletRequest40) wasreq).getWebAppDispatcherContext();
         mapping = dispatchContext.getServletMapping();
 
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {

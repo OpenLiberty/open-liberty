@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -92,6 +92,11 @@ public class RequestTimingConfig {
 	public boolean getInterruptRequest(String type, String[] contextInfo) {
 		return false;
 	}
+	
+	public boolean getEnableThreadDumps(String type, String[] contextInfo) {
+		// Thread dumps are enabled by default for hung requests.
+		return true; 
+	}
 
 	protected Timing getTiming(String type, String contextInfo[]) {
 		//Returns the threshold value for the type if present
@@ -160,4 +165,5 @@ public class RequestTimingConfig {
 		}
 		return requestThreasholdMax;
 	}
+
 }

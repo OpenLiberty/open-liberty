@@ -68,7 +68,7 @@ public class JAXRS21SecurityAnnotationsTest {
     @AfterClass
     public static void tearDown() throws Exception {
         if (server != null) {
-            server.stopServer();
+            server.stopServer("CWWKO0221E");
         }
         if (clientServer != null) {
             clientServer.stopServer();

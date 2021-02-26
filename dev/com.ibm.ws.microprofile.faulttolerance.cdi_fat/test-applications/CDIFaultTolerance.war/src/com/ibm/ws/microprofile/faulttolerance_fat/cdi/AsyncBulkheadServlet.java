@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2019 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,6 +29,7 @@ import javax.servlet.annotation.WebServlet;
 import org.eclipse.microprofile.faulttolerance.exceptions.BulkheadException;
 import org.junit.Test;
 
+import com.ibm.websphere.microprofile.faulttolerance_fat.suite.BasicTest;
 import com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans.AsyncBulkheadBean;
 import com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans.AsyncBulkheadBean2;
 import com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans.SyntheticTask;
@@ -50,6 +51,8 @@ public class AsyncBulkheadServlet extends FATServlet {
 
     public SyntheticTaskManager syntheticTaskManager = new SyntheticTaskManager();
 
+    @BasicTest
+    @Test
     public void testAsyncBulkheadSmall() throws Exception {
 
         syntheticTaskManager.runTest(() -> {

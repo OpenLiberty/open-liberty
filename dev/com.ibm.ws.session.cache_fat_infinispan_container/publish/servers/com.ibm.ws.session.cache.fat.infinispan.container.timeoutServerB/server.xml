@@ -7,7 +7,7 @@
         <feature>sessionCache-1.0</feature>
     </featureManager>
     
-    <include location="../fatTestPorts.xml"/>
+    <include location="../fatTestCommon.xml"/>
     
     <!-- This server runs at the same time as com.ibm.ws.session.cache.fat.infinispan.container.timeoutServerA, so use a different set of ports -->    
     <httpEndpoint id="defaultHttpEndpoint"

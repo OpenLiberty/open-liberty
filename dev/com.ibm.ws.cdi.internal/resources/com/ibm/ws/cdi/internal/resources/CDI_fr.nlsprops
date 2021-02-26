@@ -69,6 +69,10 @@ implicit.bean.scanning.disabled.CWOWB1009W=CWOWB1009W: Les archives de bean impl
 implicit.bean.scanning.disabled.CWOWB1009W.explanation=Les archives ne sont pas analys\u00e9es pour d\u00e9tecter des beans CDI \u00e0 moins qu'elles ne comportent un fichier beans.xml.
 implicit.bean.scanning.disabled.CWOWB1009W.useraction=Veillez \u00e0 ce que chaque archive utilisant CDI dispose d'un fichier beans.xml ou r\u00e9activez l'analyse de beans implicites dans votre fichier server.xml.
 
-spi.extension.failed.to.construct.CWOWB10010E=CWOWB10010E: Echec de la cr\u00e9ation de l'extension CDI via l'interface SPI.
-spi.extension.failed.to.construct.CWOWB10010E.explanation=CDI n'est pas parvenu \u00e0 appeler le constructeur de la classe d'extension {0} enregistr\u00e9e via la m\u00e9thode getExtensions() d'une impl\u00e9mentation WebSphereCDIExtensionMetaData en raison de l'exception {1}.
-spi.extension.failed.to.construct.CWOWB10010E.useraction=Corrigez l'erreur qui emp\u00eache l'instanciation de votre extension.
+spi.extension.failed.to.construct.CWOWB1010E=CWOWB1010E: Echec de la cr\u00e9ation de l'extension CDI {0} avec l'interface SPI en raison de l'exception {1}.
+spi.extension.failed.to.construct.CWOWB1010E.explanation=CDI n'est pas parvenu \u00e0 appeler le constructeur d'une classe d'extension qui est enregistr\u00e9e avec la m\u00e9thode getExtensions() d'une impl\u00e9mentation CDIExtensionMetadata.
+spi.extension.failed.to.construct.CWOWB1010E.useraction=Corrigez l'erreur qui emp\u00eache l'instanciation de votre extension.
+
+spi.extension.class.in.different.bundle.CWOWB1011E=CWOWB1011E: Une classe {0} enregistr\u00e9e via l'interface SPI d'extensions CDI se trouve dans un bundle diff\u00e9rent de l'impl\u00e9mentation CDIExtensionMetadata.
+spi.extension.class.in.different.bundle.CWOWB1011E.explanation=La classe est ignor\u00e9e car elle a \u00e9t\u00e9 enregistr\u00e9e avec la m\u00e9thode getExtensions() ou getBeanClasses() d'une impl\u00e9mentation CDIExtensionMetadata et se trouve dans un bundle diff\u00e9rent de l'impl\u00e9mentation CDIExtensionMetadata.
+spi.extension.class.in.different.bundle.CWOWB1011E.useraction=D\u00e9placez la classe affect\u00e9e ou cr\u00e9ez une impl\u00e9mentation CDIExtensionMetadata dans le bundle appropri\u00e9.

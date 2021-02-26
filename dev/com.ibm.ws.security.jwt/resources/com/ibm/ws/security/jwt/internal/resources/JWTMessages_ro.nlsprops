@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2016, 2017 IBM Corporation and others.
+# Copyright (c) 2016, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -313,3 +313,72 @@ JWT_TRUSTED_ISSUERS_NULL.useraction=Asigura\u0163i-v\u0103 c\u0103 \u00een confi
 SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME=CWWKS6053E: Este utilizat\u0103 schema HTTP \u00een punctul final specificat: {0}, este necesar HTTPS.
 SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME.explanation=Punctul final specificat necesit\u0103 HTTPS, dar a fost utilizat HTTP \u00een URL-ul de cerere.
 SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME.useraction=Verifica\u0163i URL-ul de cerere \u015fi asigura\u0163i-v\u0103 c\u0103 utilizeaz\u0103 HTTPS sau modifica\u0163i configura\u0163ia astfel \u00eenc\u00e2t HTTPS s\u0103 nu fie necesar.
+
+# 0=Signature algorithm from MP Config properties, 1=Default algorithm that will be used
+MP_CONFIG_PUBLIC_KEY_ALG_NOT_SUPPORTED=CWWKS6053W: Algoritmul de semn\u0103tur\u0103 [{0}] care este specificat de propriet\u0103\u0163ile MicroProfile Config nu este suportat. Va fi folosit algoritmul de semn\u0103tur\u0103 [{1}].
+MP_CONFIG_PUBLIC_KEY_ALG_NOT_SUPPORTED.explanation=Doar un anumit set de algoritmi RSA, Elliptical Curve \u015fi HMAC sunt suporta\u0163i. Algoritmul de semn\u0103tur\u0103 care este specificat de propriet\u0103\u0163ile MicroProfile Config nu este unul dintre algoritmii de semn\u0103tur\u0103 suporta\u0163i.
+MP_CONFIG_PUBLIC_KEY_ALG_NOT_SUPPORTED.useraction=Specifica\u0163i un algoritm de semn\u0103tur\u0103 suportat \u00een propriet\u0103\u0163ile MicroProfile Config. Algoritmii de semn\u0103tur\u0103 suporta\u0163i includ ES256, ES384, ES512, RS256, RS384, RS512, HS256, HS384 \u015fi HS512.
+
+# Do not translate "JSON Web Token", "AMR", "JWT"
+# 0=AMR claim of the token, 1=JWT configuration ID, 2=AMR specified in server configuration
+JWT_AMR_CLAIM_NOT_VALID=CWWKS6054E: AMR-ul [{0}] al jetonului web JSON (JWT) furnizat nu este listat ca un AMR de \u00eencredere \u00een configura\u0163ia JWT [{1}]. AMR-urile de \u00eencredere sunt [{2}].
+JWT_AMR_CLAIM_NOT_VALID.explanation=Configura\u0163ia serverului specific\u0103 ce AMR este de \u00eencredere c\u00e2nd se valideaz\u0103 JWT-uri. Jetonul furnizat nu este destinat pentru un AMR de \u00eencredere, a\u015fa c\u0103 jetonul nu poate fi validat.
+JWT_AMR_CLAIM_NOT_VALID.useraction=Ob\u0163ine\u0163i un jeton nou pentru unul din AMR-urile de \u00eencredere specificate \u00een configura\u0163ia dumneavoastr\u0103 JWT sau ad\u0103uga\u0163i AMR-ul specificat \u00een mesaj ca un AMR de \u00eencredere \u00een configura\u0163ia JWT.
+
+# 0=JWT configuration ID, 1=Signature algorithm configured in server.xml, 2=Signature algorithm that will be used by default
+BETA_SIGNATURE_ALGORITHM_USED=CWWKS6055W: Configura\u0163ia [{0}] specific\u0103 algoritmul de semn\u0103tur\u0103 {1}, dar acest algoritm este disponibil doar \u00een edi\u0163ia beta. \u00cen locul lui, se utilizeaz\u0103 algoritmul de semn\u0103tur\u0103 {2}.
+BETA_SIGNATURE_ALGORITHM_USED.explanation=Suportul pentru algoritmul de semn\u0103tur\u0103 care este specificat \u00een mesaj ar putea fi incomplet, a\u015fa c\u0103 algoritmul de semn\u0103tur\u0103 poate fi utilizat doar \u00een edi\u0163ia beta.
+BETA_SIGNATURE_ALGORITHM_USED.useraction=Configura\u0163i un algoritm de semn\u0103tur\u0103 suportat sau folosi\u0163i edi\u0163ia beta a acestui produs pentru a utiliza algoritmul de semn\u0103tur\u0103 specificat \u00een mesaj.
+
+# 0=JWT configuration ID, 1=Exception message
+ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE=CWWKS6056E: Consumatorul JWT [{0}] a \u00eent\u00e2lnit o eroare \u00een timpul extragerii datelor utile JWS (JSON Web Signature) din jetonul JWE (JSON Web Encryption). {1}
+ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE.explanation=Jetonul JWE s-ar putea s\u0103 fie format gre\u015fit sau ar putea s\u0103 \u00eei lipseasc\u0103 informa\u0163ii. Cheia de gestionare chei care este folosit\u0103 pentru a decripta jetonul JWE ar putea s\u0103 lipseasc\u0103 sau ar putea s\u0103 nu fie capabil\u0103 s\u0103 decripteze jetonul.
+ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE.useraction=Vede\u0163i eroarea din mesaj pentru informa\u0163ii suplimentare. Verifica\u0163i c\u0103 JWE are un format corect. Verifica\u0163i dac\u0103 \u00een configura\u0163ia de consumator JWT se face referire la cheia de gestionare chei care corespunde cheii care este folosit\u0103 pentru a cripta jetonul JWE.
+
+# 0="cty", 1=Value of the "cty" header in the token, 2="JWT"
+CTY_NOT_JWT_FOR_NESTED_JWS=CWWKS6057E: jetonul JWE (JSON Web Encryption) con\u0163ine un jeton imbricat JWS (JSON Web Signature), dar antetul {0} din JWE este setat la [{1}]. Antetul JWE {0} trebuie setat la {2} dac\u0103 datele utile (payload) JWE reprezint\u0103 un JWS.
+CTY_NOT_JWT_FOR_NESTED_JWS.explanation=Specifica\u0163ia MicroProfile JSON Web Token 1.2 cere ca jetoanele JWE s\u0103 aib\u0103 antetul tipului de con\u0163inut setat la valoarea care este specificat\u0103 \u00een mesaj dac\u0103 con\u0163inutul jetonului este un JWS.
+CTY_NOT_JWT_FOR_NESTED_JWS.useraction=Asigura\u0163i-v\u0103 c\u0103 antetul tipului de con\u0163inut al jetonului JWE este setat la valoarea cerut\u0103.
+
+# Do not translate "JSON Web Encryption", "JWE", "Content Encryption Key"
+# 0=Builder config ID
+KEY_MANAGEMENT_KEY_MISSING=CWWKS6058W: Builder-ul JWT [{0}] nu poate crea jetoane JWE (JSON Web Encryption) deoarece nu este furnizat\u0103 o cheie de gestionare chei.
+KEY_MANAGEMENT_KEY_MISSING.explanation=O cheie de gestionare chei este o cheie care este utilizat\u0103 pentru a cripta cheia de criptare con\u0163inut a unui jeton JWE. Trebuie specificat\u0103 o cheie astfel \u00eenc\u00e2t builder-ul JWT s\u0103 poat\u0103 crea jetoane JWE.
+KEY_MANAGEMENT_KEY_MISSING.useraction=Verifica\u0163i c\u0103 este furnizat\u0103 o cheie API-ului builder dac\u0103 builder-ul ar trebui s\u0103 creeze jetoane JWE.
+
+# 0=Builder config ID, 1=keyManagementKeyAlias, 2=keyManagementKeyAlgorithm, 3=contentEncryptionAlgorithm
+KEY_MANAGEMENT_KEY_ALIAS_MISSING=CWWKS6059W: Configura\u0163iei builder-ului JWT [{0}] \u00eei lipse\u015fte atributul {1}, a\u015fa c\u0103 nu poate crea jetoane JWE (JSON Web Encryption). Fie configura\u0163i atributul specificat, fie \u00eenl\u0103tura\u0163i atributele {2} \u015fi {3}.
+KEY_MANAGEMENT_KEY_ALIAS_MISSING.explanation=Aliasul de gestionare chei se refer\u0103 la o cheie care este utilizat\u0103 pentru a cripta cheia de criptare con\u0163inut a unui jeton JWE. Un alias de cheie trebuie specificat astfel \u00eenc\u00e2t builder-ul JWT s\u0103 poat\u0103 crea jetoane JWE.
+KEY_MANAGEMENT_KEY_ALIAS_MISSING.useraction=Dac\u0103 builder-ul JWT trebuie s\u0103 creeze jetoane JWE, configura\u0163i atributul alias de gestionare chei. Dac\u0103 builder-ul JWT nu are nevoie s\u0103 creeze jetoane JWE, \u00eenl\u0103tura\u0163i celelalte atribute care sunt men\u0163ionate \u00een mesaj.
+
+# 0=Builder config ID, 1=Exception message
+ERROR_BUILDING_SIGNED_JWE=CWWKS6060E: Builder-ul JWT [{0}] nu poate crea un jeton JWE (JSON Web Encryption). {1}
+ERROR_BUILDING_SIGNED_JWE.explanation=Builder-ul JWT a \u00eent\u00e2lnit o eroare \u00een timpul cre\u0103rii jetonului JWE. Verifica\u0163i eroarea care este inclus\u0103 \u00een mesaj pentru mai multe informa\u0163ii.
+ERROR_BUILDING_SIGNED_JWE.useraction=Verifica\u0163i eroarea care este inclus\u0103 \u00een mesaj pentru mai multe informa\u0163ii.
+
+# Do not translate "JwtBuilder"
+# 0=Builder config ID, 1=keyManagementKeyAlias value, 2=Trust store config ID
+KEY_MANAGEMENT_KEY_NOT_FOUND=CWWKS6061E: Builder-ul JWT [{0}] nu poate crea un jeton JWE (JSON Web Encryption) deoarece nu poate fi g\u0103sit\u0103 o cheie de gestionare chei. Aliasul cheii de gestionare chei este [{1}], iar depozitul de \u00eencrederi configurat este [{2}].
+KEY_MANAGEMENT_KEY_NOT_FOUND.explanation=O cheie de gestionare chei este o cheie care este utilizat\u0103 pentru a cripta cheia de criptare con\u0163inut a unui jeton JWE. O cheie de gestionare chei trebuie specificat\u0103 astfel \u00eenc\u00e2t builder-ul JWT s\u0103 poat\u0103 crea jetoane JWE. O cheie de gestionare chei poate fi specificat\u0103 utiliz\u00e2nd valorile de alias de cheie \u015fi de depozit de \u00eencrederi configurate care sunt specificate \u00een mesaj sau prin utilizarea API-ului JwtBuilder.
+KEY_MANAGEMENT_KEY_NOT_FOUND.useraction=Verifica\u0163i c\u0103 o cheie cu aliasul care este specificat \u00een mesaj exist\u0103 \u00een depozitul de \u00eencrederi care este specificat \u00een mesaj. Dac\u0103 este utilizat API-ul JwtBuilder, asigura\u0163i-v\u0103 c\u0103 este furnizat\u0103 o cheie de gestionare chei.
+
+# Do not translate "MicroProfile Config", "mp.jwt.verify.publickey.location"
+# 0=mp.jwt.decrypt.key.location
+DECRYPT_KEY_LOCATION_INLINE_KEY=CWWKS6062E: Valoarea propriet\u0103\u0163ii MicroProfile Config [{0}] pare s\u0103  includ\u0103 un \u015fir de cheie privat\u0103, ceea ce nu reprezint\u0103 o configura\u0163ie suportat\u0103.
+DECRYPT_KEY_LOCATION_INLINE_KEY.explanation=Caracteristica MicroProfile JWT nu suport\u0103 specificarea de \u015firuri de cheie privat\u0103 \u00een proprietatea MicroProfile Config care este specificat\u0103 \u00een mesaj. Valoarea acestei propriet\u0103\u0163i trebuie s\u0103 fie o cale relativ\u0103 sau un URL.
+DECRYPT_KEY_LOCATION_INLINE_KEY.useraction=Utiliza\u0163i o cale relativ\u0103 sau un URL ca valoare pentru proprietatea MicroProfile Config specificat\u0103 \u00een mesaj. Valorile de loca\u0163ie care sunt suportate sunt acelea\u015fi ca pentru proprietatea mp.jwt.verify.publickey.location.
+
+# Do not translate "mp.jwt.decrypt.key.location", "keyManagementKeyAlias", "Content Encryption Key"
+# 0=JWT consumer config ID
+JWS_REQUIRED_BUT_TOKEN_NOT_JWS=CWWKS6063E: Jetonul din cerere nu este \u00een formatul JWS (JSON Web Signature), iar consumatorul JWT [{0}] accept\u0103 doar jetoane care sunt \u00een formatul JWS.
+JWS_REQUIRED_BUT_TOKEN_NOT_JWS.explanation=Jetonul din cerere poate fi \u00eentr-un format gre\u015fit sau poate fi \u00een formatul JWE (JSON Web Encryption). Jetoanele trebuie s\u0103 fie \u00een formatul JWS dac\u0103 nu este configurat\u0103 loca\u0163ia cheii de decriptare JWE. Dac\u0103 utiliza\u0163i caracteristica MicroProfile JWT, versiunea 1.2 sau ulterioar\u0103 a caracteristicii trebuie configurat\u0103 s\u0103 accepte jetoane \u00een formatul JWE.
+JWS_REQUIRED_BUT_TOKEN_NOT_JWS.useraction=Pentru a accepta jetoane JWE, configura\u0163i proprietatea MicroProfile Config mp.jwt.decrypt.key.location sau atributul keyManagementKeyAlias \u00een configura\u0163ia consumatorului de JWT. Dac\u0103 utiliza\u0163i caracteristica MicroProfile JWT, asigura\u0163i-v\u0103 c\u0103 este configurat\u0103 versiunea 1.2 sau ulterioar\u0103. Altfel. asigura\u0163i-v\u0103 c\u0103 sunt trimise c\u0103tre resurs\u0103 numai jetoane JWS.
+
+# 0=JWT consumer config ID
+JWE_REQUIRED_BUT_TOKEN_NOT_JWE=CWWKS6064E: Jetonul din cerere nu este \u00een formatul JWE (JSON Web Encryption), iar consumatorul JWT [{0}] accept\u0103 doar jetoane care sunt \u00een formatul JWE.
+JWE_REQUIRED_BUT_TOKEN_NOT_JWE.explanation=Jetonul din cerere poate fi \u00eentr-un format gre\u015fit sau poate fi \u00een formatul JWS (JSON Web Signature). Jetoanele trebuie s\u0103 fie \u00een formatul JWE dac\u0103 este configurat\u0103 loca\u0163ia cheii de decriptare JWE.
+JWE_REQUIRED_BUT_TOKEN_NOT_JWE.useraction=Pentru a accepta JWS \u00een locu de jetoane JWE, \u00eenl\u0103tura\u0163i proprietatea MicroProfile Config mp.jwt.decrypt.key.location \u015fi atributul keyManagementKeyAlias din configura\u0163ia consumatorului de JWT. Altfel. asigura\u0163i-v\u0103 c\u0103 sunt trimise c\u0103tre resurs\u0103 numai jetoane JWE.
+
+NESTED_JWS_REQUIRED_BUT_NOT_FOUND=CWWKS6065E: Datele utile (payload) ale jetonului JWE (JSON Web Encryption) care este inclus \u00een cerere nu este un jeton JWS (JSON Web Signature).
+NESTED_JWS_REQUIRED_BUT_NOT_FOUND.explanation=Datele utile ale unui jeton JWE trebuie s\u0103 fie un JWT (JSON Web Token) \u00een formatul JWS.
+NESTED_JWS_REQUIRED_BUT_NOT_FOUND.useraction=Asigura\u0163i-v\u0103 c\u0103 datele utile ale jetonului JWE reprezint\u0103 un JWT valid \u00een formatul JWS.

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011 IBM Corporation and others.
+# Copyright (c) 2011,2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -73,3 +73,7 @@ INVALID_MBEAN_INVOKE_ACTION_J2CA8061.useraction=Zm\u011b\u0148te vyvol\u00e1vano
 MBEAN_ATTRIBUTE_NOT_FOUND_J2CA8062=J2CA8062E: Atribut {0} je pro objekt {1} typu MBean neplatn\u00fd.
 MBEAN_ATTRIBUTE_NOT_FOUND_J2CA8062.explanation=Do\u0161lo k pokusu o z\u00edsk\u00e1n\u00ed nebo nastaven\u00ed atributu, kter\u00fd pro uveden\u00fd objekt typu MBean nen\u00ed k dispozici.
 MBEAN_ATTRIBUTE_NOT_FOUND_J2CA8062.useraction=Zm\u011b\u0148te uveden\u00fd atribut na jeden z atribut\u016f dostupn\u00fdch pro tento objekt typu MBean.
+
+CONNECTION_LEAK_DETECTED_J2CA8070=J2CA8070I: P\u0159ipojen\u00ed, kter\u00e9 bylo z\u00edsk\u00e1no z {0}, nebylo uzav\u0159eno. N\u00e1sleduj\u00edc\u00ed z\u00e1sobn\u00edk identifikuje k\u00f3d, kter\u00fd z\u00edskal p\u0159ipojen\u00ed: {1}
+CONNECTION_LEAK_DETECTED_J2CA8070.explanation=P\u0159ipojen\u00ed nebylo uzav\u0159eno k\u00f3dem, kter\u00fd jej z\u00edskal. Z\u00e1sobn\u00edk identifikuje jednu oblast k\u00f3du, ve kter\u00e9 se vyskytuje neuzav\u0159en\u00e9 p\u0159ipojen\u00ed, ale jin\u00e9 instance mohou existovat jinde. Aby se p\u0159ede\u0161lo p\u0159epln\u011bn\u00ed protokol\u016f a minimalizoval se dopad shroma\u017e\u010fov\u00e1n\u00ed z\u00e1sobn\u00edk\u016f, je na ka\u017ed\u00e9 spu\u0161t\u011bn\u00ed serveru hl\u00e1\u0161en pouze jeden v\u00fdskyt.
+CONNECTION_LEAK_DETECTED_J2CA8070.useraction=Pomoc\u00ed z\u00e1sobn\u00edku jako pr\u016fvodce vyhledejte k\u00f3d, kter\u00fd po\u017eaduje p\u0159ipojen\u00ed, a aktualizujte jej tak, aby zav\u0159el p\u0159ipojen\u00ed.

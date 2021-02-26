@@ -1,0 +1,18 @@
+<server>
+    <featureManager>
+        <feature>componenttest-2.0</feature>\
+        <feature>restfulWS-3.0</feature>
+        <feature>ssl-1.0</feature> 
+    </featureManager>
+   
+     <!-- Server SSL configuration -->
+     <ssl id="defaultSSLConfig" keyStoreRef="clientKeyStore" trustStoreRef="clientTrustStore" /> 
+       
+     <!-- customize SSL configuration -->
+     <ssl id="mySSLConfig" keyStoreRef="clientKeyStore" trustStoreRef="clientTrustStore" /> 
+     <keyStore id="clientKeyStore" location="key.jks" type="JKS" password="passw0rd" /> 
+     <keyStore id="clientTrustStore" location="trust.jks" type="JKS" password="passw0rd" /> 
+     
+  	<include location="../fatTestPorts.xml"/>
+  	<javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
+</server>

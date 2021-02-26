@@ -1,0 +1,19 @@
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+src: \
+  fat/src,\
+  test-applications/testCoordinator/src,\
+  test-applications/testParticipant/src
+
+fat.project: true
+
+# Define additional tested features that are NOT present in any XML files in this bucket.
+# In this case, Java EE 8 features are added programmatically at runtime by the RepeatTests rule.
+tested.features: \
+	servlet-4.0
+
+-buildpath: \
+  com.ibm.websphere.javaee.jaxws.2.2;version=latest,\
+  com.ibm.websphere.javaee.servlet.3.0;version=latest,\
+  com.ibm.websphere.javaee.transaction.1.1;version=latest

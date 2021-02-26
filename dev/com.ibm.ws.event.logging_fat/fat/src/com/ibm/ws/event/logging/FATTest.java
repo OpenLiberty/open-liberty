@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2019 IBM Corporation and others.
+ * Copyright (c) 2014, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@
 package com.ibm.ws.event.logging;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -680,6 +681,7 @@ public class FATTest {
     @Test
     public void testEventLoggingLogModeUpdate2() throws Exception {
         server.setServerConfigurationFile("server_logModeExit.xml");
+        assertNotNull(server.waitForStringInLog("CWWKG0017I|CWWKG0018I", 90000));
         Log.info(c, "testEventLoggingLogModeUpdate2", "--------> Started server with logMode = Exit");
 
         Log.info(c, "testEventLoggingLogModeUpdate2", "Calling jdbcTestPrj_1 Application with URL=" + url.toString());
@@ -1310,7 +1312,6 @@ public class FATTest {
             count++;
         }
         List<String> lines = server.findStringsInFileInLibertyServerRoot("END", TRACE_LOG);
-
         int previous = 0;
         for (String line : lines) {
             Log.info(c, "testEventLoggingSampleRateUpdate", "*****  line : " + line);
@@ -1318,12 +1319,12 @@ public class FATTest {
                 previous++;
             }
         }
+        Log.info(c, "testEventLoggingMinDurationRemove", "Before Event Logging feature removal -------> size : " + lines.size() + " ---> previous : " + previous);
+
         assertTrue("The expected number of enteries are 2 for the sampling rate 2, Actual are : " + previous, (previous == 2));
-        for (String line : lines) {
-            Log.info(c, "testEventLoggingSampleRateRemove", "*****  line : " + line);
-        }
 
         server.setServerConfigurationFile("server_eventLogging_original.xml");
+        server.waitForStringInLog("CWWKG0017I", 90000);
         Log.info(c, "testEventLoggingMinDurationRemove", " $$$$$$ ---->  Removed eventLogging element... <---- $$$$$$ ");
 
         count = 0;
@@ -1341,7 +1342,8 @@ public class FATTest {
                 current++;
             }
         }
-        Log.info(c, "testEventLoggingMinDurationRemove", "-------> size : " + lines.size() + " ---> previous : " + previous);
+        Log.info(c, "testEventLoggingMinDurationRemove",
+                 "After Event Logging feature removal -------> size : " + lines.size() + " ---> current : " + current + " ---> previous : " + previous);
         assertTrue("The expected number of entries are 3 for the default sampling rate..", ((current - previous) == 3));
 
         Log.info(c, "testEventLoggingSampleRateUpdate", "********** Dynamically Removing eventLogging element works for SampleRate! ********");

@@ -325,9 +325,19 @@ public class Launcher {
         if (consoleLogFileStr == null)
             consoleLogFileStr = getEnv(BootstrapConstants.ENV_LOG_FILE);
 
+        String serviceBindingRoot = getEnv(BootstrapConstants.ENV_SERVICE_BINDING_ROOT);
+
+        BootstrapLocations locations = new BootstrapLocations();
+        locations.setProcessName(processName);
+        locations.setUserDir(userDirStr);
+        locations.setServerDir(serversDirStr);
+        locations.setLogDir(logDirStr);
+        locations.setConsoleLogFile(consoleLogFileStr);
+        locations.setServiceBindingRoot(serviceBindingRoot);
+
         // Do enough processing to know where the directories should be.
         // this should not cause any directories to be created
-        bootProps.findLocations(processName, userDirStr, serversDirStr, logDirStr, consoleLogFileStr, null);
+        bootProps.findLocations(locations);
     }
 
     protected ReturnCode showHelp(LaunchArguments launchArgs) {

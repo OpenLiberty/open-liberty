@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2019 IBM Corporation and others.
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,7 @@ import com.ibm.ws.anno.service.internal.AnnotationServiceImpl_Logging;
 import com.ibm.wsspi.anno.classsource.ClassSource_Aggregate;
 import com.ibm.wsspi.anno.classsource.ClassSource_Exception;
 import com.ibm.wsspi.anno.targets.AnnotationTargets_Exception;
+import com.ibm.wsspi.anno.targets.AnnotationTargets_Factory;
 
 public class AnnotationTargetsImpl_Scanner {
     private static final TraceComponent tc = Tr.register(AnnotationTargetsImpl_Scanner.class);
@@ -35,7 +36,7 @@ public class AnnotationTargetsImpl_Scanner {
     //
 
     @SuppressWarnings("unused")
-    protected AnnotationTargetsImpl_Scanner(AnnotationTargetsImpl_Factory factory,
+    protected AnnotationTargetsImpl_Scanner(AnnotationTargets_Factory factory,
                                             ClassSource_Aggregate classSource,
                                             AnnotationTargetsImpl_Targets annotationTargets) throws AnnotationTargets_Exception {
         super();
@@ -60,10 +61,10 @@ public class AnnotationTargetsImpl_Scanner {
 
     //
 
-    protected final AnnotationTargetsImpl_Factory factory;
+    protected final AnnotationTargets_Factory factory;
 
     @Trivial
-    public AnnotationTargetsImpl_Factory getFactory() {
+    public AnnotationTargets_Factory getFactory() {
         return factory;
     }
 

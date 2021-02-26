@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -58,7 +58,9 @@ public class WebAppDDParser extends DDParser {
             throw new ParseException(unknownDeploymentDescriptorVersion());
         }
 
-        if (maxVersion == 40)
+        if (maxVersion == 50)
+            runtimeVersion = 90;
+        else if (maxVersion == 40)
             runtimeVersion = 80;
         else if (maxVersion == 31)
             runtimeVersion = 70;
@@ -93,6 +95,12 @@ public class WebAppDDParser extends DDParser {
             if ("http://xmlns.jcp.org/xml/ns/javaee".equals(namespace)) {
                 version = WebApp.VERSION_4_0;
                 eePlatformVersion = 80;
+                return new WebAppType(getDeploymentDescriptorPath());
+            }
+        } else if ((maxVersion >= 50) && "5.0".equals(vers)) {
+            if ("https://jakarta.ee/xml/ns/jakartaee".equals(namespace)) {
+                version = WebApp.VERSION_5_0;
+                eePlatformVersion = 90;
                 return new WebAppType(getDeploymentDescriptorPath());
             }
         }

@@ -18,9 +18,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.ws.security.fat.common.CommonSecurityFat;
-import com.ibm.ws.security.fat.common.jwt.JwtMessageConstants;
 import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 import com.ibm.ws.security.fat.common.validation.TestValidationUtils;
+import com.ibm.ws.security.jwt.fat.builder.utils.JwtBuilderMessageConstants;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
@@ -52,20 +52,18 @@ public class JwtBuilderAPIMinimumConfigTests extends CommonSecurityFat {
     @Server("com.ibm.ws.security.jwt_fat.builder")
     public static LibertyServer builderServer;
 
-    @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification();
-
     public static final TestValidationUtils validationUtils = new TestValidationUtils();
 
     @BeforeClass
     public static void setUp() throws Exception {
+    	FATSuite.transformApps(builderServer, "test-apps/jwtbuilder.war", "test-apps/jwtbuilderclient.war", "dropins/testmarker.war");
 
         serverTracker.addServer(builderServer);
         builderServer.startServerUsingExpandedConfiguration("server_minimumConfig.xml");
         SecurityFatHttpUtils.saveServerPorts(builderServer, JWTBuilderConstants.BVT_SERVER_1_PORT_NAME_ROOT);
 
         // the server's default config contains an invalid value (on purpose), tell the fat framework to ignore it!
-        builderServer.addIgnoredErrors(Arrays.asList(JwtMessageConstants.CWWKG0032W_CONFIG_INVALID_VALUE));
+        builderServer.addIgnoredErrors(Arrays.asList(JwtBuilderMessageConstants.CWWKG0032W_CONFIG_INVALID_VALUE));
 
     }
 

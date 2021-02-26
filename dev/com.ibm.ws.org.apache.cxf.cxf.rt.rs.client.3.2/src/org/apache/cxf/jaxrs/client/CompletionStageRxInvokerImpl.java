@@ -34,7 +34,7 @@ import javax.ws.rs.core.Response;
 import org.apache.cxf.common.logging.LogUtils;
 
 import com.ibm.ws.jaxrs21.clientconfig.JAXRSClientCompletionStageFactoryConfig;
-import com.ibm.ws.concurrent.mp.spi.CompletionStageFactory;
+import com.ibm.ws.threading.CompletionStageFactory;
 //Liberty code change end
 
 public class CompletionStageRxInvokerImpl implements CompletionStageRxInvoker {
@@ -194,6 +194,10 @@ public class CompletionStageRxInvokerImpl implements CompletionStageRxInvoker {
                 return CompletableFuture.supplyAsync(supplier);
             }
             return CompletableFuture.supplyAsync(supplier, ex);
+        }
+
+        if (ex == null) {
+            return completionStageFactory.supplyAsync(supplier);
         }
 
         return completionStageFactory.supplyAsync(supplier, ex); 

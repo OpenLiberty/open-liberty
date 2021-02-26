@@ -104,19 +104,18 @@ public class SecureHttp2Client {
                                                                                                                             latch)).setH2Config(h2Config).setTlsStrategy(createTlsStrategy(sslContext))
                         //.setStreamListener(createStreamListener()) // uncomment for detailed logging on each stream
                         .create();
-
         requester.start();
         AsyncClientEndpoint endpoint = h2Connect(target, requester);
         for (final String requestUri : requestUris) {
             LOGGER.logp(Level.INFO, CLASS_NAME, "drivePushRequests", "requesting " + requestUri);
-            executeRequest(endpoint, target, requestUri, responseMessages, latch);
+            executeRequest(endpoint, requester, target, requestUri, responseMessages, latch);
         }
 
-        latch.await(5, TimeUnit.SECONDS);
+        latch.await(29, TimeUnit.SECONDS);
 
         LOGGER.logp(Level.INFO, CLASS_NAME, "drivePushRequests", "requests complete, shutting down client");
         requester.initiateShutdown();
-        requester.awaitShutdown(TimeValue.ofSeconds(5));
+        requester.awaitShutdown(TimeValue.ofSeconds(10));
         logResponseMessages(responseMessages);
         LOGGER.logp(Level.INFO, CLASS_NAME, "drivePushRequests", "client shutdown complete, returning");
         return responseMessages;
@@ -264,34 +263,41 @@ public class SecureHttp2Client {
         });
     }
 
-    private void executeRequest(final AsyncClientEndpoint endpoint, HttpHost target, String requestUri,
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    private void executeRequest(final AsyncClientEndpoint endpoint, final HttpAsyncRequester requester, HttpHost target, String requestUri,
                                 List<String> responseMessages, CountDownLatch latch) {
-        endpoint.execute(
-                         new BasicRequestProducer("GET", target, requestUri),
-                         new BasicResponseConsumer<>(new StringAsyncEntityConsumer()),
-                         new FutureCallback<Message<HttpResponse, String>>() {
+        requester.execute(
+                          new BasicRequestProducer("GET", target, requestUri),
+                          new BasicResponseConsumer(new StringAsyncEntityConsumer()),
+                          // the first request to a server can take more than the default timeout;
+                          // we'll allow 28 seconds for the request to complete
+                          Timeout.ofSeconds(28),
+                          new FutureCallback<Message<HttpResponse, String>>() {
 
-                             @Override
-                             public void completed(final Message<HttpResponse, String> message) {
-                                 endpoint.releaseAndReuse();
-                                 HttpResponse response = message.getHead();
-                                 String body = message.getBody();
-                                 responseMessages.add(body);
-                                 latch.countDown();
-                             }
+                              @Override
+                              public void completed(final Message<HttpResponse, String> message) {
+                                  endpoint.releaseAndReuse();
+                                  String body = message.getBody();
+                                  responseMessages.add(body);
+                                  LOGGER.logp(Level.INFO, CLASS_NAME, "executeRequest", "completed with body: " + body);
+                                  latch.countDown();
+                              }
 
-                             @Override
-                             public void failed(final Exception ex) {
-                                 endpoint.releaseAndDiscard();
-                                 latch.countDown();
-                             }
+                              @Override
+                              public void failed(final Exception ex) {
+                                  endpoint.releaseAndDiscard();
+                                  LOGGER.logp(Level.INFO, CLASS_NAME, "executeRequest", "failed: " + ex);
+                                  latch.countDown();
+                              }
 
-                             @Override
-                             public void cancelled() {
-                                 endpoint.releaseAndDiscard();
-                                 latch.countDown();
-                             }
-                         });
+                              @Override
+                              public void cancelled() {
+                                  endpoint.releaseAndDiscard();
+                                  LOGGER.logp(Level.INFO, CLASS_NAME, "executeRequest", "cancelled");
+
+                                  latch.countDown();
+                              }
+                          });
     }
 
     private AsyncClientEndpoint h2Connect(HttpHost target, HttpAsyncRequester requester) throws Exception {
@@ -304,11 +310,12 @@ public class SecureHttp2Client {
         while (retry && retryCount++ < 5) {
             try {
                 LOGGER.logp(Level.INFO, CLASS_NAME, "h2Connect", "connection attempt " + retryCount);
-                future = requester.connect(target, Timeout.ofSeconds(5));
+                future = requester.connect(target, Timeout.ofSeconds(10));
                 endpoint = future.get();
                 retry = false;
             } catch (Exception e) {
                 // if connect() fails, try again in one second
+                LOGGER.logp(Level.INFO, CLASS_NAME, "h2Connect", "exception caught: " + e);
                 retry = true;
                 Thread.sleep(1000);
             }

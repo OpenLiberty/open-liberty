@@ -108,6 +108,16 @@ public class SSLConfig {
         return protocol;
     }
 
+    public boolean getEnforceCipherOrder(String sslAliasName) throws SSLException {
+        Properties props = jsseHelper.getProperties(sslAliasName);
+        String enforceCipherOrder = props.getProperty(Constants.SSLPROP_ENFORCE_CIPHER_ORDER);
+
+        if (enforceCipherOrder != null)
+            return Boolean.valueOf(enforceCipherOrder);
+
+        return false;
+    }
+
     /**
      * This method will warn if any requested cipher suites appear to not match the options
      *

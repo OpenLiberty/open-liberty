@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2019 IBM Corporation and others.
+# Copyright (c) 2019, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -14,6 +14,17 @@ bVersion=1.1
 Bundle-Name: WAS Security OAuth 2.0
 Bundle-SymbolicName: com.ibm.ws.security.oauth.2.0
 Bundle-Description: WAS Security OAuth 2.0, version=${bVersion}
+
+#
+# Generate an Jakarta EE compliant JAR for the bundle.
+#
+jakartaeeMe: true
+#jakartaee.transform.jar.name=io.openliberty.security.oauth.internal.2.0.jar
+#JakartaEE-Bundle-Name: Liberty Security OAuth 2.0
+#JakartaEE-Bundle-Symbolic-Name: io.openliberty.security.oauth.internal.2.0
+#JakartaEE-Bundle-Description: Liberty Security OAuth 2.0, version=${bVersion}
+#JakartaEE-Bundle-Version: 
+
 
 Web-ContextPath: /oauth2
 WS-TraceGroup: \
@@ -44,7 +55,8 @@ Export-Package: \
  com.ibm.oauth.core.*, \
  com.ibm.wsspi.security.oauth20.token, \
  com.ibm.ws.security.oauth20.*, \
- com.ibm.ws.security.common.claims
+ com.ibm.ws.security.common.claims, \
+ io.openliberty.security.oauth20.*
  
 # com.ibm.ws.security.common.* #238871
 
@@ -155,7 +167,7 @@ Include-Resource.zh: ${if;${include.zh};com/ibm/ws/security/oauth20/resources/Pr
 	com.ibm.ws.logging.core,\
 	com.ibm.ws.logging;version=latest,\
 	com.ibm.ws.org.jose4j;version=latest,\
-	com.ibm.ws.org.apache.commons.codec.1.4;version=latest,\
+	com.ibm.ws.org.apache.commons.codec;version=latest,\
 	com.ibm.ws.org.json.simple.1.1.1;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.ws.resource;version=latest,\

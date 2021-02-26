@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,16 +22,12 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.rules.TestRule;
 
-import test.common.SharedOutputManager;
-
 import com.ibm.ws.annocache.classsource.internal.ClassSourceImpl_Aggregate;
 import com.ibm.ws.annocache.classsource.internal.ClassSourceImpl_Factory;
 import com.ibm.ws.annocache.info.internal.InfoStoreFactoryImpl;
 import com.ibm.ws.annocache.info.internal.InfoStoreImpl;
-import com.ibm.ws.annocache.service.internal.AnnotationCacheServiceImpl_Service;
-import com.ibm.ws.annocache.targets.cache.internal.TargetCacheImpl_Factory;
-import com.ibm.ws.annocache.targets.cache.internal.TargetCacheImpl_Options;
 import com.ibm.ws.annocache.test.utils.TestLocalization;
+import com.ibm.ws.annocache.util.internal.UtilImpl_Factory;
 import com.ibm.wsspi.annocache.classsource.ClassSource_Aggregate;
 import com.ibm.wsspi.annocache.classsource.ClassSource_ClassLoader;
 import com.ibm.wsspi.annocache.classsource.ClassSource_Factory;
@@ -40,6 +36,8 @@ import com.ibm.wsspi.annocache.info.ClassInfo;
 import com.ibm.wsspi.annocache.info.FieldInfo;
 import com.ibm.wsspi.annocache.info.Info;
 import com.ibm.wsspi.annocache.info.MethodInfo;
+
+import test.common.SharedOutputManager;
 
 // Abstract: Runs tests using the test environment class loader.
 // The subclass API is to implement test methods.
@@ -59,7 +57,9 @@ public abstract class InfoStore_TestBase {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        setUpAnnotationService(); // throws Exception
+        UtilImpl_Factory utilFactory = new UtilImpl_Factory();
+        classSourceFactory = new ClassSourceImpl_Factory(utilFactory);
+        infoStoreFactory = new InfoStoreFactoryImpl(utilFactory);
         setUpClassSource(); // throws Exception
         setUpInfoStore(); // throws Exception
     }
@@ -68,34 +68,22 @@ public abstract class InfoStore_TestBase {
     public static void tearDown() throws Exception {
         tearDownInfoStore(); // throws Exception
         tearDownClassSource(); // throws Exception
-        tearDownAnnotationService(); // throws Exception
+        classSourceFactory = null;
+        infoStoreFactory = null;
     }
 
     //
 
-    private static AnnotationCacheServiceImpl_Service annotationService;
+    private static ClassSourceImpl_Factory classSourceFactory;
+    private static InfoStoreFactoryImpl infoStoreFactory;
 
-    public static AnnotationCacheServiceImpl_Service getAnnotationService() {
-        return annotationService;
-    }
-
-    private static void setUpAnnotationService() throws Exception {
-        annotationService = new AnnotationCacheServiceImpl_Service();
-
-        TargetCacheImpl_Options cacheOptions = TargetCacheImpl_Factory.createOptionsFromDefaults();
-        annotationService.activate(cacheOptions);
-    }
-
-    private static void tearDownAnnotationService() throws Exception {
-        annotationService = null;
-    }
 
     public static ClassSourceImpl_Factory getClassSourceFactory() {
-        return getAnnotationService().getClassSourceFactory();
+        return classSourceFactory;
     }
 
     public static InfoStoreFactoryImpl getInfoStoreFactory() {
-        return getAnnotationService().getInfoStoreFactory();
+        return infoStoreFactory;
     }
 
     //

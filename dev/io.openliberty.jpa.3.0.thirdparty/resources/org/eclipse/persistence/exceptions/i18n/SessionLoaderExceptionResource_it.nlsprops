@@ -1,0 +1,55 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/SessionLoaderExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+9000=Sono state generate diverse [{0}] SessionLoaderException:
+
+9001=Nome tag sconosciuto: [{0}] nel nodo XML: [{1}].
+
+9002=Impossibile caricare la classe progetto [{0}].
+
+9003=Impossibile elaborare la tag XML [{0}] con valore [{1}].
+
+9004=Il file project-xml [{0}] non \u00e8 stato trovato nel percorso di classe n\u00e9 nel filesystem.
+
+9005=\u00c8 stata generata un''eccezione durante il caricamento del file project-xml [{0}].
+
+9006=Generazione di {0} durante l''analisi del file XML.  Si verifica alla riga {1} e colonna {2} nel documento XML.
+
+9007=\u00c8 stata generata un''eccezione durante l''analisi del file XML.
+
+9008=Valore imprevisto [{0}] della tag [{1}].
+
+9009=La tag [{0}] ha un attributo sconosciuto.
+
+9010=Generazione di {0} durante l''analisi del file XML rispetto allo schema XML.
+
+9011=La classe piattaforma server {0} \u00e8 stata rimossa e la versione server delle applicazioni corrispondente non \u00e8 pi\u00f9 supportata
+
+9012=Impossibile caricare il file session-xml perch\u00e9 contiene un formato non valido o il formato XML non \u00e8 supportato.
+

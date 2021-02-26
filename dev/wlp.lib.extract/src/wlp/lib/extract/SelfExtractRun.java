@@ -120,7 +120,7 @@ public class SelfExtractRun extends SelfExtract {
      * @return unique dir name
      */
     private static String createTempDirectory(String baseDir, String fileStem) {
-        Long nano = new Long(System.nanoTime());
+        Long nano = Long.valueOf(System.nanoTime());
         return baseDir + File.separator + fileStem + nano;
     }
 
@@ -271,7 +271,7 @@ public class SelfExtractRun extends SelfExtract {
         outputReader.start();
 
         // now setup the shutdown hook
-        Runtime.getRuntime().addShutdownHook(new Thread(new ShutdownHook(platformType, extractDirectory, serverName, outputReader, errorReader, extractDirPredefined)));
+        Runtime.getRuntime().addShutdownHook(new Thread(new ShutdownHook(platformType, extractDirectory, serverName, extractDirPredefined)));
         // wait on server start process to complete, capture and pass on return code
         rc = proc.waitFor();
 
@@ -349,7 +349,7 @@ public class SelfExtractRun extends SelfExtract {
         props.setProperty("LOG_DIR",
                           extractDirectory + File.separator + "wlp" + File.separator + "usr" + File.separator + "servers" + File.separator + serverName + File.separator + "logs");
 
-        Class clazz = cl.loadClass(className);
+        Class<?> clazz = cl.loadClass(className);
         List<String> argList = new ArrayList<String>(args.length + 2);
         argList.add(serverName);
         if (args.length > 0) {
@@ -359,7 +359,7 @@ public class SelfExtractRun extends SelfExtract {
         Method m = clazz.getDeclaredMethod("main", new Class[] { String[].class });
 
         // Add the shutdown hook to clean up
-        Runtime.getRuntime().addShutdownHook(new Thread(new ShutdownHook(platformType, extractDirectory, serverName, null, null, extractDirPredefined)));
+        Runtime.getRuntime().addShutdownHook(new Thread(new ShutdownHook(platformType, extractDirectory, serverName, extractDirPredefined)));
 
         attachJavaAgent(extractDirectory);
 
@@ -388,10 +388,11 @@ public class SelfExtractRun extends SelfExtract {
                 URL thisJar = SelfExtractRun.class.getProtectionDomain().getCodeSource().getLocation();
                 try {
                     URL toolsJar = new URL("file:" + f.getCanonicalPath());
+                    @SuppressWarnings("resource")
                     URLClassLoader cl = new URLClassLoader(new URL[] { thisJar, toolsJar }, null);
                     Class<?> clazz = cl.loadClass("wlp.lib.extract.AgentAttach");
                     Method m = clazz.getDeclaredMethod("attach", new Class[] { String.class });
-                    Object result = m.invoke(null, new String[] { javaAgent.getAbsolutePath() });
+                    Object result = m.invoke(null, javaAgent.getAbsolutePath());
                     if (result != null) {
                         err("UNABLE_TO_ATTACH_AGENT", result);
                     }

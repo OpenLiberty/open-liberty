@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2018 IBM Corporation and others.
+ * Copyright (c) 2016, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -318,7 +318,7 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtCon
             this.discoveryjson = JSONObject.parse(jsonString);
         } catch (Exception e) {
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Caught exception parsing JSON string [" + jsonString + "]: " + e.getMessage());
+                Tr.debug(tc, "Caught exception parsing JSON string [" + jsonString + "]: " + e);
             }
         }
     }
@@ -466,6 +466,11 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtCon
         return audiences;
     }
 
+    @Override
+    public boolean ignoreAudClaimIfNotConfigured() {
+        return false;
+    }
+
     /** {@inheritDoc} */
     @Override
     public boolean isValidationRequired() { // TODO may need to be set from configuration
@@ -484,14 +489,10 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtCon
     @FFDCIgnore(SocialLoginException.class)
     public String getTrustStoreRef() {
         if (this.sslRefInfo == null) {
-            SocialLoginService service = socialLoginServiceRef.getService();
-            if (service == null) {
-                if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Social login service is not available");
-                }
+            sslRefInfo = initializeSslRefInfo();
+            if (sslRefInfo == null) {
                 return null;
             }
-            sslRefInfo = createSslRefInfoImpl(service);
         }
         try {
             return sslRefInfo.getTrustStoreName();
@@ -500,6 +501,35 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtCon
             e.logErrorMessage();
         }
         return null;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    @FFDCIgnore(SocialLoginException.class)
+    public String getKeyStoreRef() {
+        if (this.sslRefInfo == null) {
+            sslRefInfo = initializeSslRefInfo();
+            if (sslRefInfo == null) {
+                return null;
+            }
+        }
+        try {
+            return sslRefInfo.getKeyStoreName();
+        } catch (SocialLoginException e) {
+            // TODO - NLS message?
+        }
+        return null;
+    }
+
+    SslRefInfoImpl initializeSslRefInfo() {
+        SocialLoginService service = socialLoginServiceRef.getService();
+        if (service == null) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Social login service is not available");
+            }
+            return null;
+        }
+        return createSslRefInfoImpl(service);
     }
 
     /** {@inheritDoc} */
@@ -830,6 +860,17 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtCon
             return;
         }
         oidcConfigUtils.populateCustomRequestParameterMap(socialLoginService.getConfigAdmin(), paramMapToPopulate, configuredCustomRequestParams, KEY_PARAM_NAME, KEY_PARAM_VALUE);
+    }
+
+    @Override
+    public List<String> getAMRClaim() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public String getKeyManagementKeyAlias() {
+        return null;
     }
 
 }

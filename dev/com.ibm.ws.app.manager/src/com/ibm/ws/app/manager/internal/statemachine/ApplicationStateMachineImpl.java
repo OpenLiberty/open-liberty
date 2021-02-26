@@ -148,7 +148,7 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
         } else {
             completeAppHandlerFuture();
             if (oldHandler != null) {
-                queueStateChange(StateChangeAction.RESTART);
+                queueRestartChange(StateChangeAction.RESTART);
             }
         }
     }
@@ -222,7 +222,7 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
         if (notifyAppStarted != null) {
             _notifyAppStarted.add(notifyAppStarted);
         }
-        queueStateChange(StateChangeAction.RESTART);
+        queueRestartChange(StateChangeAction.RESTART);
     }
 
     @Override
@@ -920,6 +920,41 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
         }
     }
 
+    /**
+     * queueRestartChange is intended to be used only for RESTART actions. It will wait for 30 seconds for the
+     * action queue to be empty before it adds the restart action. This means that we may end up doing extra work
+     * (eg, finishing a start action before doing a restart), but in practice it has been nearly impossible to
+     * handle all of the timing issues resulting from canceling operations in flight.
+     */
+    void queueRestartChange(StateChangeAction action) {
+        if (_tc.isEventEnabled()) {
+            Tr.event(_tc, asmLabel() + "queueRestartChange: interruptible=" + isInterruptible());
+        }
+        for (int i = 0; i < 30; i++) {
+            synchronized (_interruptibleLock) {
+                if (_queuedActions.isEmpty()) {
+                    QueuedStateChangeAction qa = new QueuedStateChangeAction(action, _qscaCounter.getAndIncrement());
+                    _queuedActions.add(qa);
+                    if (_tc.isDebugEnabled()) {
+                        Tr.debug(_tc, asmLabel() + "queueRestartChange: added action " + qa);
+                    }
+                    _executorService.execute(this);
+                    return;
+                }
+            }
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                //Auto FFDC only
+            }
+        }
+
+        if (_tc.isEventEnabled()) {
+            Tr.event(_tc, asmLabel() + "queueRestartChange: Restart action could not be added within 30 seconds.");
+        }
+
+    }
+
     void queueStateChange(StateChangeAction action) {
         if (_tc.isEventEnabled()) {
             Tr.event(_tc, asmLabel() + "queueStateChange: interruptible=" + isInterruptible());
@@ -1261,16 +1296,18 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
                             break;
                         }
                         if (_handler.get() == null) {
-                            if (!_asmHelper.appTypeSupported()) {
-                                Tr.error(_tc, "NO_APPLICATION_HANDLER", _appConfig.get().getLocation());
-                            }
                             CancelableCompletionListenerWrapper<Boolean> cl = completionListener.getAndSet(null);
                             if (cl != null) {
                                 cl.cancel();
                             }
+                            // wait for the app handler to arrive, note this is done even if we know the type is not supported.
                             addAppHandlerFuture();
-                            for (ApplicationDependency startingFuture; (startingFuture = _notifyAppStarting.poll()) != null;) {
-                                failedDependency(startingFuture, null);
+                            if (!_asmHelper.appTypeSupported()) {
+                                Tr.error(_tc, "NO_APPLICATION_HANDLER", _appConfig.get().getLocation());
+                                // we only fail here if the app type is not supported; otherwise we assume the handler is coming
+                                for (ApplicationDependency startingFuture; (startingFuture = _notifyAppStarting.poll()) != null;) {
+                                    failedDependency(startingFuture, null);
+                                }
                             }
                             break;
                         }

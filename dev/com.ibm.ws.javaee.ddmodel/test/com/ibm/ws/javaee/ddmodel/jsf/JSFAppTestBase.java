@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2014 IBM Corporation and others.
+ * Copyright (c) 2013, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,13 +28,16 @@ import com.ibm.wsspi.artifact.overlay.OverlayContainer;
 public class JSFAppTestBase extends DDTestBase {
     protected boolean isWarModule = false;
 
-    private static final String JSF22FacesConfigVersion = "2.2";
+    private static final String JSF22_FacesConfig_Version = "2.2";
+    private static final String JSF23_FacesConfig_Version = "2.3";
 
     protected FacesConfig parse(final String xml) throws Exception {
-        if (xml.contains(JSF22FacesConfigVersion)) {
+        if (xml.contains(JSF22_FacesConfig_Version)) {
             return parseJSFApp(xml, FacesConfig.VERSION_2_2);
-        } else {
+        } else if(xml.contains(JSF23_FacesConfig_Version)){
             return parseJSFApp(xml, FacesConfig.VERSION_2_3);
+        } else { // Faces 3.0
+            return parseJSFApp(xml, FacesConfig.VERSION_3_0);
         }
     }
 
@@ -45,6 +48,7 @@ public class JSFAppTestBase extends DDTestBase {
         final OverlayContainer rootOverlay = mockery.mock(OverlayContainer.class, "rootOverlay" + mockId++);
         final ArtifactContainer artifactContainer = mockery.mock(ArtifactContainer.class, "artifactContainer" + mockId++);
         final Container container = mockery.mock(Container.class, "container" + mockId++);
+        @SuppressWarnings("unchecked")
         final ServiceReference<FacesVersion> versionRef = mockery.mock(ServiceReference.class, "sr" + mockId++);
 
         mockery.checking(new Expectations() {
@@ -96,6 +100,15 @@ public class JSFAppTestBase extends DDTestBase {
                " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
                " xsi:schemaLocation=\"http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_3.xsd\"" +
                " version=\"2.3\"" +
+               ">";
+    }
+
+    protected static final String faces30() {
+        return "<faces-config" +
+               " xmlns=\"https://jakarta.ee/xml/ns/jakartaee\"" +
+               " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
+               " xsi:schemaLocation=\"https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-facesconfig_3_0.xsd\"" +
+               " version=\"3.0\"" +
                ">";
     }
 

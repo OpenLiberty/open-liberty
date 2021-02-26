@@ -1,0 +1,55 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/SessionLoaderExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+9000=Several [{0}] SessionLoaderExceptions were thrown:
+
+9001=Unknown tag name: [{0}] in XML node: [{1}].
+
+9002=Unable to load Project class [{0}].
+
+9003=Unable to process XML tag [{0}] with value [{1}].
+
+9004=The project-xml file [{0}] was not found on the classpath, nor on the filesystem.
+
+9005=An exception was thrown while loading the project-xml file [{0}].
+
+9006=A {0} was thrown while parsing the XML file.  It occurs at line {1} and column {2} in the XML document.
+
+9007=An exception was thrown while parsing the XML file.
+
+9008=Unexpected value [{0}] of tag [{1}].
+
+9009=Tag [{0}] has unknown attribute.
+
+9010=A {0} was thrown while parsing the XML file against the XML schema.
+
+9011=Server platform class {0} has been removed and the corresponding application server version is no longer supported
+
+9012=Unable to load session-xml file either because it contains invalid format or the format of XML is not supported.
+

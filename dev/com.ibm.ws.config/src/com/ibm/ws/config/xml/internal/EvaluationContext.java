@@ -23,6 +23,8 @@ import java.util.Set;
 import org.osgi.service.metatype.AttributeDefinition;
 
 import com.ibm.websphere.config.ConfigEvaluatorException;
+import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.config.xml.internal.ConfigEvaluator.AttributeValueCopy;
 import com.ibm.ws.config.xml.internal.ConfigEvaluator.EvaluationResult;
 import com.ibm.ws.config.xml.internal.ConfigEvaluator.UnresolvedPidType;
@@ -157,7 +159,7 @@ class EvaluationContext {
         return (attributeMap == null) ? null : attributeMap.get(name);
     }
 
-    public void push(String variableName) throws ConfigEvaluatorException {
+    public void push(@Sensitive String variableName) throws ConfigEvaluatorException {
         if (lookupStack.contains(variableName)) {
             throw new ConfigEvaluatorException("Variable evaluation loop detected: " + lookupStack.subList(lookupStack.indexOf(variableName), lookupStack.size()));
         }
@@ -168,10 +170,12 @@ class EvaluationContext {
         lookupStack.removeLast();
     }
 
-    public void putValue(String variableName, Object value) {
+    @Trivial
+    public void putValue(String variableName, @Sensitive Object value) {
         cache.put(variableName, value);
     }
 
+    @Sensitive
     public Object getValue(String variableName) {
         return cache.get(variableName);
     }
@@ -180,7 +184,7 @@ class EvaluationContext {
         return cache.containsKey(variableName);
     }
 
-    protected void addDefinedVariable(String variableName, Object variableValue) {
+    protected void addDefinedVariable(String variableName, @Sensitive Object variableValue) {
         if (variables == null) {
             variables = new HashMap<String, Object>();
             result.setVariables(variables);
@@ -225,9 +229,10 @@ class EvaluationContext {
 
     /**
      * Tries to resolve variables.
-     * 
+     *
      * @throws ConfigEvaluatorException
      */
+    @Trivial
     public String resolveString(String value, boolean ignoreWarnings) throws ConfigEvaluatorException {
         value = variableEvaluator.resolveVariables(value, this, ignoreWarnings);
         return value;

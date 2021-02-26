@@ -33,6 +33,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
@@ -45,6 +46,7 @@ import componenttest.topology.impl.LibertyServer;
  * password specified in the actual Client APIs are not logged, even when
  * tracing is enabled.
  */
+@SkipForRepeat("EE9_FEATURES") // Continue to skip this test for EE9 as proxy authority (properties com.ibm.ws.jaxrs.client.proxy.*) is not supported yet
 @RunWith(FATRunner.class)
 public class JAXRSClientSSLProxyAuthTest extends AbstractTest {
 

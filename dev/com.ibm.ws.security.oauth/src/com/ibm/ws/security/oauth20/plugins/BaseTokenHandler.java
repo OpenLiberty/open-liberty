@@ -87,7 +87,7 @@ public class BaseTokenHandler implements OAuth20TokenTypeHandler {
                 stateId = OAuth20Util.generateUUID();
             }
             String grantType = OAuth20Util.getValueFromMap(OAuth20Constants.GRANT_TYPE, tokenMap);
-            boolean isAppPasswordOrTokenGT = OAuth20Constants.APP_PASSWORD.equals(grantType) ||  OAuth20Constants.APP_TOKEN.equals(grantType);
+            boolean isAppPasswordOrTokenGT = OAuth20Constants.APP_PASSWORD.equals(grantType) || OAuth20Constants.APP_TOKEN.equals(grantType);
             Map<String, String[]> externalClaims = OAuth20TokenHelper.getExternalClaims(tokenMap);
             if (isAppPasswordOrTokenGT) {
                 length = length + 2;
@@ -165,10 +165,6 @@ public class BaseTokenHandler implements OAuth20TokenTypeHandler {
 
     boolean isJwtMediatorSpi() {
         if (ConfigUtils.getJwtAccessTokenMediatorService().size() > 0) {
-            if (OAuth20Constants.JAVA_VERSION_6) {
-                Tr.warning(tc, "JWT_MEDIATOR_SPI_REQUIRES_JDK", OAuth20Constants.JAVA_VERSION);
-                return false;
-            }
             return true;
         }
         return false;

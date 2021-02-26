@@ -49,6 +49,7 @@ public class MemoryStore implements IStore {
     protected ITimer _invalidator;
     protected SessionManagerConfig _smc;
     private MemorySession overflowSession;
+    private String overflowSessionError;
     private static final String overflowId = "overflowed-session";
     protected ServletContext _servletContext = null;
     private boolean httpSessListener = false;
@@ -93,6 +94,7 @@ public class MemoryStore implements IStore {
                 overflowSession = new MemorySession(this, overflowId, _storeCallback);
                 overflowSession.setOverflow(); // sets to true
                 overflowSession.setIsValid(false);
+                overflowSessionError = "Maximum session limit is reached, attempt to use the session will results in a java.lang.IllegalStateException.";
             }
             _sessions = new SessionSimpleHashMap(this, _initialTableSize, _allowOverflow);
         }
@@ -127,6 +129,7 @@ public class MemoryStore implements IStore {
                 
                 overflowSession.setOverflow(); // sets to true
                 overflowSession.setIsValid(false);
+                overflowSessionError = "Maximum session limit is reached, attempt to use the session will results in a java.lang.IllegalStateException.";
             }
             _sessions = new SessionSimpleHashMap(this, _initialTableSize, _allowOverflow);
         }
@@ -171,6 +174,7 @@ public class MemoryStore implements IStore {
                 _sessionStatistics.incNoRoomForNewSession();
             }
             sess = overflowSession;
+            LoggingUtil.SESSION_LOGGER_CORE.logp(Level.SEVERE, methodClassName, methodNames[CREATE_SESSION], overflowSessionError);
         }
         // We expect the second part of check below - _sessions.get(id) == null --
         // to pass unless
@@ -200,6 +204,7 @@ public class MemoryStore implements IStore {
                 // could catch this exception if multiple threads get past the
                 // first overflow check and then attempt to do the sessions.put
                 sess = overflowSession;
+                LoggingUtil.SESSION_LOGGER_CORE.logp(Level.SEVERE, methodClassName, methodNames[CREATE_SESSION], overflowSessionError);
             }
         }
 

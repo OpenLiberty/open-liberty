@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,6 +27,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -38,6 +39,7 @@ public class DerbyResourceAdapterTest extends FATServletClient {
 
     private static final String derbyRAAppName = "derbyRAAppName";
     private static final String DerbyRAAnnoServlet = "fvtweb/DerbyRAAnnoServlet";
+    private static final String DerbyRACFDServlet = "fvtweb/DerbyRACFDServlet";
     private static final String DerbyRAServlet = "fvtweb/DerbyRAServlet";
 
     @Server("com.ibm.ws.jca.fat.derbyra")
@@ -48,6 +50,7 @@ public class DerbyResourceAdapterTest extends FATServletClient {
 
         WebArchive war = ShrinkWrap.create(WebArchive.class, WAR_NAME + ".war");
         war.addPackage("web");
+        war.addPackage("web.cfd");
         war.addPackage("web.mdb");
         war.addAsWebInfResource(new File("test-applications/fvtweb/resources/WEB-INF/ibm-web-bnd.xml"));
         war.addAsWebInfResource(new File("test-applications/fvtweb/resources/WEB-INF/web.xml"));
@@ -66,8 +69,11 @@ public class DerbyResourceAdapterTest extends FATServletClient {
 
         ShrinkHelper.exportToServer(server, "connectors", rar);
 
+        server.addEnvVar("PERMISSION", JakartaEE9Action.isActive() ? "jakarta.resource.spi.security.PasswordCredential" : "javax.resource.spi.security.PasswordCredential");
         server.addInstalledAppForValidation(derbyRAAppName);
         server.startServer();
+
+        FATServletClient.runTest(server, DerbyRAServlet, "initDatabaseTables");
     }
 
     @AfterClass
@@ -80,14 +86,7 @@ public class DerbyResourceAdapterTest extends FATServletClient {
     }
 
     private void runTest(String servlet) throws Exception {
-        String test = testName.getMethodName();
-        // RepeatTests causes the test name to be appended with _EE8_FEATURES.  Strip it off so that the right
-        // test name is sent to the servlet
-        int index = test == null ? -1 : test.indexOf("_EE8_FEATURES");
-        if (index != -1) {
-            test = test.substring(0, index);
-        }
-        FATServletClient.runTest(server, servlet, test);
+        FATServletClient.runTest(server, servlet, getTestMethodSimpleName());
     }
 
     @Test
@@ -128,8 +127,25 @@ public class DerbyResourceAdapterTest extends FATServletClient {
     }
 
     @Test
+    public void testConnectionFactoryDefinitionLeakedConnectionWithAutoCloseEnabled() throws Exception {
+        runTest(server, DerbyRACFDServlet, "testConnectionFactoryDefinitionLeakConnectionWithAutoCloseEnabled");
+        runTest(server, DerbyRACFDServlet, "testConnectionFactoryDefinitionLeakedConnectionWithAutoCloseEnabledClosed");
+    }
+
+    @Test
+    public void testConnectionFactoryDefinitionLeakedConnectionWithAutoCloseDisabled() throws Exception {
+        runTest(server, DerbyRACFDServlet, "testConnectionFactoryDefinitionLeakConnectionWithAutoCloseDisabled");
+        runTest(server, DerbyRACFDServlet, "testConnectionFactoryDefinitionLeakedConnectionWithAutoCloseDisabledNotClosed");
+    }
+
+    @Test
     public void testExecutionContext() throws Exception {
         runTest(DerbyRAServlet);
+    }
+
+    @Test
+    public void testHandleListClosesParkedHandleWhenMDBTransactionEnds() throws Exception {
+        runTest(DerbyRAAnnoServlet);
     }
 
     @Test
@@ -155,6 +171,22 @@ public class DerbyResourceAdapterTest extends FATServletClient {
     @Test
     public void testJCADataSourceResourceRef() throws Exception {
         runTest(DerbyRAServlet);
+    }
+
+    @Test
+    public void testNonDissociatableHandlesCannotBeParkedAcrossTransactionScopes() throws Exception {
+        runTest(DerbyRAServlet);
+    }
+
+    @Test
+    public void testNonDissociatableHandlesParkedAcrossEJBMethods() throws Exception {
+        runTest(DerbyRAServlet);
+    }
+
+    @Test
+    public void testNonDissociatableSharableHandleIsClosedAcrossServletMethods() throws Exception {
+        runTest(server, DerbyRAServlet, "testNonDissociatableSharableHandleLeftOpenAfterServletMethod");
+        runTest(server, DerbyRAServlet, "testNonDissociatableSharableHandleIsClosed");
     }
 
     @Test

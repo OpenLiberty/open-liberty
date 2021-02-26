@@ -59,13 +59,16 @@ public class FeatureUtility {
     private Boolean isBasicInit;
     private final Boolean licenseAccepted;
     private final List<String> featuresToInstall;
+    private final List<String> additionalJsons;
     private final List<String> jsons;
     private static String openLibertyVersion;
+    private static String openLibertyEdition;
     private final Logger logger;
     private ProgressBar progressBar;
 
     private final static String OPEN_LIBERTY_PRODUCT_ID = "io.openliberty";
     private final static String WEBSPHERE_LIBERTY_GROUP_ID = "com.ibm.websphere.appserver.features";
+    private final static String BETA_EDITION = "EARLY_ACCESS";
 
 
     private FeatureUtility(FeatureUtilityBuilder builder) throws IOException, InstallException {
@@ -73,6 +76,12 @@ public class FeatureUtility {
         this.progressBar = ProgressBar.getInstance();
 
         this.openLibertyVersion = getLibertyVersion();
+        
+        if (this.openLibertyEdition.equals(BETA_EDITION)) {
+            throw new InstallException(
+                            Messages.INSTALL_KERNEL_MESSAGES.getMessage("ERROR_BETA_EDITION_NOT_SUPPORTED"));
+        }
+        this.additionalJsons = new ArrayList<String>();
 
         this.fromDir = builder.fromDir; //this can be overwritten by the env prop
         // this.featuresToInstall = new ArrayList<>(builder.featuresToInstall);
@@ -81,7 +90,7 @@ public class FeatureUtility {
 
         this.featuresToInstall = new ArrayList<>(jsonsAndFeatures.get("features"));
         Set<String> jsonsRequired = jsonsAndFeatures.get("jsons");
-        jsonsRequired.addAll(Arrays.asList("io.openliberty.features", "com.ibm.websphere.appserver.features"));
+        jsonsRequired.addAll(Arrays.asList("io.openliberty.features"));
         
 
         this.esaFiles = builder.esaFiles;
@@ -111,7 +120,18 @@ public class FeatureUtility {
         		fine(key +": " + (envMap.get(key)));
         	}
         }
+        map.put("json.provided", false);
         overrideEnvMapWithProperties();
+        
+        fine("additional jsons: " + additionalJsons);
+        if (!additionalJsons.isEmpty() && additionalJsons != null) {
+        	jsonsRequired.addAll(additionalJsons);
+        }
+
+        boolean isOpenLiberty = (Boolean) map.get("is.open.liberty");
+        if (!isOpenLiberty) {
+        	jsonsRequired.add("com.ibm.websphere.appserver.features");
+        }
 
         if (noCache != null && noCache) {
             fine("Features installed from the remote repository will not be cached locally");
@@ -206,6 +226,12 @@ public class FeatureUtility {
         if(!FeatureUtilityProperties.isUsingDefaultRepo()){
             overrideMap.put("FEATURE_UTILITY_MAVEN_REPOSITORIES", FeatureUtilityProperties.getMirrorRepositories());
         }
+        
+        //get any additional required jsons
+        if(FeatureUtilityProperties.additionalJsonsRequired()) {
+        	this.additionalJsons.addAll(FeatureUtilityProperties.getAdditionalJsons());
+        	map.put("json.provided", true);
+        }
 
         map.put("override.environment.variables", overrideMap);
     }
@@ -262,7 +288,6 @@ public class FeatureUtility {
             jsonsRequired.add(groupId);
             featuresRequired.add(artifactId);
         }
-        jsonsRequired.add(WEBSPHERE_LIBERTY_GROUP_ID);
         jsonsAndFeatures.put("jsons", jsonsRequired);
         jsonsAndFeatures.put("features", featuresRequired);
 
@@ -302,26 +327,32 @@ public class FeatureUtility {
         if (this.openLibertyVersion != null) {
             return this.openLibertyVersion;
         }
+        if (this.openLibertyEdition != null) {
+            return this.openLibertyEdition;
+        }
         File propertiesFile = new File(Utils.getInstallDir(), "lib/versions/openliberty.properties");
         String openLibertyVersion = null;
+        String openLibertyEdition = null;
         Properties properties = new Properties();
         try (InputStream input = new FileInputStream(propertiesFile)) {
             properties.load(input);
             String productId = properties.getProperty("com.ibm.websphere.productId");
             String productVersion = properties.getProperty("com.ibm.websphere.productVersion");
-
+            String productEdition = properties.getProperty("com.ibm.websphere.productEdition");
             if (productId.equals(OPEN_LIBERTY_PRODUCT_ID)) {
                 openLibertyVersion = productVersion;
+                openLibertyEdition = productEdition;
             }
 
         }
 
-        if (openLibertyVersion == null) {
+        if (openLibertyVersion == null || openLibertyEdition == null) {
             // openliberty.properties file is missing or invalidly formatted
             throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getMessage("ERROR_COULD_NOT_DETERMINE_RUNTIME_PROPERTIES_FILE", propertiesFile.getAbsolutePath()));
 
         }
         this.openLibertyVersion = openLibertyVersion;
+        this.openLibertyEdition = openLibertyEdition;
         return openLibertyVersion;
     }
 

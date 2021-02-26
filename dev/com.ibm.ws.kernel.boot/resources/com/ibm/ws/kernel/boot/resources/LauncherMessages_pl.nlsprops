@@ -474,7 +474,7 @@ specyfikacji dla pliku BLST nie jest zgodny z wymagan\u0105 sk\u0142adni\u0105. 
 error.blst.spec.invalid.useraction=Okre\u015bl nazw\u0119 symboliczn\u0105 i \
 zakres wersji pliku BLST w postaci \
 <nazwa_symboliczna>;version="<zakres_wersji>". Nazwa symboliczna musi by\u0107 \
-poprawnym znacznikiem OSGi. Zakres wersji musi by\u0107 poprawnym zakresem wersji OSGi. Dodatkowo zakres wersji musi zawiera\u0107 ograniczenie dolne i g\u00f3rne (w\u0142\u0105czne lub wy\u0142\u0105czne) i nie mo\u017ce okre\u015bla\u0107 kwalifikatora.
+poprawnym znacznikiem OSGi. Zakres wersji musi by\u0107 poprawnym zakresem wersji OSGi. Dodatkowo zakres wersji musi zawiera\u0107 ograniczenie dolne i g\u00f3rne (w\u0142\u0105czone lub wy\u0142\u0105czne) i nie mo\u017ce okre\u015bla\u0107 kwalifikatora.
 
 # {0} The BLST filename
 error.blst.failed.to.resolve=CWWKE0073E: Rozstrzygni\u0119cie \
@@ -949,6 +949,9 @@ error.missing.version.files=CWWKE0952E: Nie mo\u017cna odczyta\u0107 informacji 
 error.missing.version.files.explanation=Katalog zawieraj\u0105cy pliki z informacjami o wersji nie istnieje lub bie\u017c\u0105cy u\u017cytkownik nie mo\u017ce go odczyta\u0107.
 error.missing.version.files.useraction=Upewnij si\u0119, \u017ce katalog istnieje i bie\u017c\u0105cy u\u017cytkownik mo\u017ce go odczyta\u0107. 
 
+warning.earlyRelease=CWWKE0953W: Ta wersja produktu {0} jest wersj\u0105 wst\u0119pn\u0105 nieobj\u0119t\u0105 wsparciem.
+warning.earlyRelease.explanation=W wersjach wst\u0119pnych udost\u0119pniane s\u0105 nowe, nie do ko\u0144ca przetestowane funkcje, co s\u0142u\u017cy zbieraniu informacji zwrotnych od u\u017cytkownik\u00f3w przed wydaniem tych funkcji w obs\u0142ugiwanej wersji.
+warning.earlyRelease.useraction=Nie nale\u017cy u\u017cywa\u0107 wersji wst\u0119pnych w systemach produkcyjnych, poniewa\u017c takie wersje nie s\u0105 obj\u0119te wsparciem.
 info.serverStarting=Uruchamianie serwera {0}.
 info.serverStarted=Serwer {0} zosta\u0142 uruchomiony.
 info.serverStartedWithPID=Serwer {0} zosta\u0142 \

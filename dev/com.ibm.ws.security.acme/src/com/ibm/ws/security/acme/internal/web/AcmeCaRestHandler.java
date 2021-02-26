@@ -371,7 +371,7 @@ public class AcmeCaRestHandler implements RESTHandler {
 				return;
 			}
 		} else {
-			commitJsonResponse(response, 405, Tr.formatMessage(tc, "REST_METHOD_NOT_SUPPORTED"));
+			commitJsonResponse(response, 405, Tr.formatMessage(tc, "REST_METHOD_NOT_SUPPORTED", method));
 			return;
 		}
 	}
@@ -397,7 +397,6 @@ public class AcmeCaRestHandler implements RESTHandler {
 			sb.append("<pre>");
 			sb.append("Location:                  ").append(account.getLocation()).append("\n");
 			sb.append("Status:                    ").append(account.getStatus()).append("\n");
-			sb.append("Terms of Service Agreed:   ").append(account.getTermsOfServiceAgreed()).append("\n");
 			sb.append("Contacts:                  ").append("\n");
 			if (account.getContacts() != null && !account.getContacts().isEmpty()) {
 				for (URI contact : account.getContacts()) {

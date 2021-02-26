@@ -139,6 +139,7 @@ interface Member {
 
 @Component(configurationPid = "com.ibm.ws.security.registry.basic.config",
            configurationPolicy = ConfigurationPolicy.REQUIRE,
+           immediate = true,
            property = { "service.vendor=IBM", "com.ibm.ws.security.registry.type=Basic" })
 @DSExt.ConfigureWithInterfaces
 public class BasicRegistry implements UserRegistry {

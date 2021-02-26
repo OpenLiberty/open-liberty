@@ -1,0 +1,47 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/OptimisticLockExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+5001=Une tentative a \u00e9t\u00e9 effectu\u00e9e de supprimer l''objet [{0}], mais celui-ci n''a pas de num\u00e9ro de version dans la mappe d''identit\u00e9. {3}Il n''a peut-\u00eatre pas \u00e9t\u00e9 lu avant la tentative de suppression. {3}Classe> {1} Cl\u00e9 primaire > {2}
+
+5003=L''objet [{0}] ne peut pas \u00eatre supprim\u00e9 car il a \u00e9t\u00e9 modifi\u00e9 ou il a \u00e9t\u00e9 supprim\u00e9 depuis la derni\u00e8re lecture. {3}Classe> {1} Cl\u00e9 primaire > {2}
+
+5004=Une tentative a \u00e9t\u00e9 effectu\u00e9e de mettre \u00e0 jour l''objet [{0}], mais celui-ci n''a pas de num\u00e9ro de version dans la mappe d''identit\u00e9. {3}Il n''a peut-\u00eatre pas \u00e9t\u00e9 lu avant la tentative de mise \u00e0 jour. {3}Classe> {1} Cl\u00e9 primaire > {2}
+
+5006=L''objet [{0}] ne peut pas \u00eatre mis \u00e0 jour car il a \u00e9t\u00e9 modifi\u00e9 ou il a \u00e9t\u00e9 supprim\u00e9 depuis la derni\u00e8re lecture. {3}Classe> {1} Cl\u00e9 primaire > {2}
+
+5007=L''objet [{0}] doit avoir un mappage non en lecture seule \u00e0 la zone de verrouillage de version.
+
+5008=La zone de verrouillage de version doit \u00eatre mapp\u00e9e \u00e0 java.sql.Timestamp lors de l''utilisation du verrouillage d''horodatage
+
+5009=L''objet de classe [{1}] avec la cl\u00e9 primaire [{0}] ne peut pas \u00eatre d\u00e9sencapsul\u00e9 car il a \u00e9t\u00e9 supprim\u00e9 depuis sa derni\u00e8re lecture.
+
+5010=L''objet [{0}] ne peut pas \u00eatre fusionn\u00e9 car il a \u00e9t\u00e9 modifi\u00e9 ou il a \u00e9t\u00e9 supprim\u00e9 depuis la derni\u00e8re lecture. {2}Classe> {1}
+
+5011=Un ou plusieurs objets ne peuvent pas \u00eatre mis \u00e0 jour car ils ont \u00e9t\u00e9 modifi\u00e9s ou ils ont \u00e9t\u00e9 supprim\u00e9s depuis leur derni\u00e8re lecture.
+

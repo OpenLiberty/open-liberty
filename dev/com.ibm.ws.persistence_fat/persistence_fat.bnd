@@ -13,3 +13,5 @@ bVersion=1.0
 
 # Define the bundle for this FAT
 Bundle-SymbolicName: ${basename;${basedir}}
+
+jakartaeeMe: true

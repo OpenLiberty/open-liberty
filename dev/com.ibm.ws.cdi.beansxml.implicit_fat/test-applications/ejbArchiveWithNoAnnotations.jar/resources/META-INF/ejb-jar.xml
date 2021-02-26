@@ -10,14 +10,14 @@
 		<session>
 			<ejb-name>EjbBean</ejb-name>
 			<ejb-class>
-				com.ibm.ws.cdi12.test.SimpleEjbBean
+				com.ibm.ws.cdi.beansxml.implicit.apps.ejb.ApplicationScopedEjbBean
 			</ejb-class>
 			<session-type>Stateful</session-type>
 		</session>
 		<session>
             <ejb-name>EjbBean2</ejb-name>
             <ejb-class>
-                    com.ibm.ws.cdi12.test.SimpleEjbBean2
+                    com.ibm.ws.cdi.beansxml.implicit.apps.ejb.DependentEjbBean
             </ejb-class>
             <session-type>Stateless</session-type>
         </session>

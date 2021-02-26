@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2015 IBM Corporation and others.
+ * Copyright (c) 2014, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -80,6 +80,13 @@ public interface ApplicationClient extends ModuleDeploymentDescriptor, Deploymen
     int VERSION_8 = 80;
 
     /**
+     * Represents "9" for {@link #getVersionID}.
+     *
+     * @see org.eclipse.jst.j2ee.internal.J2EEVersionConstants#JEE_9_0_ID
+     */
+    int VERSION_9 = 90;
+
+    /**
      * @return the version
      *         <ul>
      *         <li>{@link #VERSION_1_2} - 1.2
@@ -89,6 +96,7 @@ public interface ApplicationClient extends ModuleDeploymentDescriptor, Deploymen
      *         <li>{@link #VERSION_6} - 6
      *         <li>{@link #VERSION_7} - 7
      *         <li>{@link #VERSION_8} - 8
+     *         <li>{@link #VERSION_9} - 9
      *         </ul>
      */
     int getVersionID();

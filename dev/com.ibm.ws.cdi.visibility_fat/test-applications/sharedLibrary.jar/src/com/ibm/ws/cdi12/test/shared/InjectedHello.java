@@ -20,7 +20,10 @@ import javax.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class InjectedHello {
+
+    public static final String PREFIX = "Hello from an InjectedHello, I am here: ";
+
     public String areYouThere(String name) {
-        return "Hello from an InjectedHello, I am here: " + name;
+        return PREFIX + name;
     }
 }

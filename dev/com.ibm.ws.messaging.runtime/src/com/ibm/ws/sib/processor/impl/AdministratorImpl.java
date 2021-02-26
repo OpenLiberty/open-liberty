@@ -255,7 +255,7 @@ public final class AdministratorImpl implements Administrator
   /**
    * <p>Query a subscription.</p>
    *
-   * @param  id   The subscription id
+   * @param  subId The subscription id
    * @return def  The subscription definition
    * @throws SIDestinationNotFoundException
    * @throws SIResourceException

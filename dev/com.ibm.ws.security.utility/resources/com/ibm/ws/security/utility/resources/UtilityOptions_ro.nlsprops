@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2019 IBM Corporation and others.
+# Copyright (c) 2010, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -151,7 +151,9 @@ sslCert.option-key.ext=\ \ \ \ --extInfo=informa\u0163ii extensii certificat
 sslCert.option-desc.ext=\tInforma\u0163iile de extensii certificat de ad\u0103ugat la certificat.\n\
 \tExtensia implicit\u0103 este o intrare Subject Alternative Name care utilizeaz\u0103 \n\
 \tnumele de gazd\u0103. Acest stegule\u0163 urmeaz\u0103 aceea\u015fi sintax\u0103 ca \u015fi stegule\u0163ul -ext\n\
-al comenzii Java Keytool. Acest stegule\u0163 poate fi folosit de mai multe ori pe comanda\n\
+\t \
+al comenzii Java Keytool. Acest stegule\u0163 poate fi folosit de mai multe ori pe comand\u0103\n\
+\ 
 line.
 
 # -------- CREATE LTPA KEYS OPTIONS --------------------------------------#
@@ -188,3 +190,22 @@ createLTPAKeys.option-desc.password.key=\tSpecifica\u0163i o cheie de utilizat c
 \tpoate fi furnizat\u0103 serverului definind variabila\n\
 \twlp.password.encryption.key a c\u0103rei valoare este cheia. Dac\u0103 aceast\u0103 \n\
 \top\u0163iune nu este furnizat\u0103, se va folosi o cheie implicit\u0103.
+
+# -------- tlsProfiler OPTIONS ------------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+tlsProfiler.desc=\tTesta\u0163i compatibilitatea gazdei \u015fi portului \u0163int\u0103 cu protocoalele TLS disponibile \u015fi suitele de cifrare.
+tlsProfiler.usage.options=\t{0} tlsProfiler [op\u0163iuni]
+tlsProfiler.required-key.port=\ \ \ \ --port
+tlsProfiler.required-desc.port=\tSpecifica\u0163i portul.
+tlsProfiler.required-key.host=\ \ \ \ --host
+tlsProfiler.required-desc.host=\tSpecifica\u0163i gazda.
+tlsProfiler.option-key.file=\ \ \ \ --file
+tlsProfiler.option-desc.file=\tOp\u0163ional. rezultatul va fi scris \u00een fi\u015fierul specificat \n\
+\t\u00een loc s\u0103 fie scris pe ecranul consolei.
+tlsProfiler.option-key.verbose=\ \ \ \ --verbose
+tlsProfiler.option-desc.verbose=\tInclude\u0163i informa\u0163ii suplimentare despre protocoalele nesigure.

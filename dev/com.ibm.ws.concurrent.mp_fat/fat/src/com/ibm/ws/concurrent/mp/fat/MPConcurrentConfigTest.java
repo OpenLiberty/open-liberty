@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,17 +25,20 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.test.context.location.CityContextProvider;
 import org.test.context.location.StateContextProvider;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import concurrent.mp.fat.config.web.MPConcurrentConfigTestServlet;
@@ -44,6 +47,9 @@ import concurrent.mp.fat.config.web.MPConcurrentConfigTestServlet;
 public class MPConcurrentConfigTest extends FATServletClient {
 
     private static final String APP_NAME = "MPConcurrentConfigApp";
+
+    @ClassRule
+    public static RepeatTests r = MPContextPropActions.repeat("MPConcurrentConfigTestServer", MPContextPropActions.CTX10, MPContextPropActions.CTX12);
 
     @Server("MPConcurrentConfigTestServer")
     @TestServlet(servlet = MPConcurrentConfigTestServlet.class, contextRoot = APP_NAME)
@@ -94,7 +100,7 @@ public class MPConcurrentConfigTest extends FATServletClient {
         JavaArchive customContextProviders = ShrinkWrap.create(JavaArchive.class, "customContextProviders.jar")
                         .addPackage("org.test.context.location")
                         .addAsServiceProvider(ThreadContextProvider.class, CityContextProvider.class, StateContextProvider.class);
-        ShrinkHelper.exportToServer(server, "lib", customContextProviders);
+        ShrinkHelper.exportToServer(server, "lib", customContextProviders, DeployOptions.SERVER_ONLY);
 
         server.startServer();
 

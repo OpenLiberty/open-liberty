@@ -679,29 +679,50 @@ public class InstallUtils {
             conn = (HttpURLConnection) url.openConnection();
             isUrl = true;
 
-        } catch(MalformedURLException malf){
+        } catch (MalformedURLException malf) {
             realServerXml = Paths.get(serverXml).normalize();
-            if(visitedServerXmls.contains(realServerXml.toString())) {
+            if (visitedServerXmls.contains(realServerXml.toString())) {
                 return features;
             }
         }
 
-        try (InputStream is =  isUrl ? conn.getInputStream() : Files.newInputStream(realServerXml)){
+        try (InputStream is = isUrl ? conn.getInputStream() : Files.newInputStream(realServerXml)) {
             Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(is);
             Element element = doc.getDocumentElement();
             NodeList childs = doc.getChildNodes();
-            for(int i =0; i < childs.getLength(); i++){
-                if (childs.item(i).getNodeType() == Node.ELEMENT_NODE) {
-                    Element el = (Element) childs.item(i);
-                    if(el.getNodeName().equals("include")){
-                        String location = el.getAttribute("location");
-                        if(!newLocations.contains(location) && !visitedServerXmls.contains(location)){
-                            newLocations.add(location);
-                        }
+            Map<String, String> varMap = new HashMap<String, String>();
+
+            NodeList varList = element.getElementsByTagName("variable");
+            for (int j = 0; j < varList.getLength(); j++) {
+                Node vl = varList.item(j);
+                Element vlElement = (Element) vl;
+                String varName = vlElement.getAttribute("name");
+                String varVal = vlElement.getAttribute("value");
+                varMap.put(varName, varVal);
+            }
+            ConfigParser cp = new ConfigParser(realServerXml, varMap);
+
+            // parse include tag
+            NodeList includeList = element.getElementsByTagName("include");
+            for (int i = 0; i < includeList.getLength(); i++) {
+                Node il = includeList.item(i);
+                Element ilElement = (Element) il;
+                String location = ilElement.getAttribute("location");
+
+                File f = new File(location);
+                if (!f.isAbsolute()) { // include location is relative
+                    if (!isUrl && location.contains("${")) {
+                        location = cp.resolvePath(location);
+                    } else {
+                        location = isUrl ? location : new File(realServerXml.getParent().toFile(), location).getCanonicalPath();
                     }
                 }
-
+                if (!newLocations.contains(location) && !visitedServerXmls.contains(location)) {
+                    newLocations.add(location);
+                }
             }
+
+            // parse featureManager tag
             NodeList fmList = element.getElementsByTagName("featureManager");
             for (int i = 0; i < fmList.getLength(); i++) {
                 Node fm = fmList.item(i);
@@ -716,7 +737,7 @@ public class InstallUtils {
             logger.log(Level.FINE, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_INVALID_SERVER_XML", xml, e.getMessage()));
         }
         visitedServerXmls.add(isUrl ? serverXml : realServerXml.toString());
-        for(String filepath : newLocations){
+        for (String filepath : newLocations) {
             Path path = Paths.get(filepath);
             features.addAll(getFeatures(path.toString(), path.getFileName().toString(), visitedServerXmls));
         }
@@ -1257,7 +1278,5 @@ public class InstallUtils {
     public static boolean isServerXmlInstall() {
         return isServerXmlInstallation;
     }
-
-
 
 }

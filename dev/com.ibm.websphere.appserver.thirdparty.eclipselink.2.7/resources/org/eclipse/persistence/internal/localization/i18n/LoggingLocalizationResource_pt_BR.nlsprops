@@ -665,6 +665,8 @@ retreived_unknown_message_type=Tipo de mensagem desconhecida recuperado: {0} do 
 
 sdo_classgenerator_exception={2} Um [{0}] Exce\u00e7\u00e3o ocorreu \u2013 a mensagem \u00e9 [{1}]
 
+sdo_error_deserialization=Tentativa de desserializa\u00e7\u00e3o desautorizada com a classe {0}.
+
 sdo_error_processing_referenced_schema=Um {0} ocorreu ao processar o esquema referenciado com uri {1} com schemaLocation {2}.
 
 sdo_invalid_schemaLocation=N\u00e3o foi poss\u00edvel criar o schemaLocation [{0}] para importar com o uri [{1}].

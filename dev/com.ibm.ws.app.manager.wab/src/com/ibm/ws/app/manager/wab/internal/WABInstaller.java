@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 IBM Corporation and others.
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,9 +19,13 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.ReentrantLock;
@@ -44,6 +48,8 @@ import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicyOption;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventAdmin;
 import org.osgi.service.event.EventHandler;
@@ -57,6 +63,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.websphere.servlet.context.ExtendedServletContext;
 import com.ibm.websphere.servlet.filter.IFilterConfig;
+import com.ibm.ws.app.manager.ApplicationStateCoordinator;
 import com.ibm.ws.app.manager.module.DeployedAppServices;
 import com.ibm.ws.app.manager.module.DeployedModuleInfo;
 import com.ibm.ws.app.manager.module.internal.ModuleClassLoaderFactory;
@@ -75,6 +82,8 @@ import com.ibm.ws.container.service.app.deploy.extended.ModuleContainerInfo;
 import com.ibm.ws.container.service.metadata.MetaDataException;
 import com.ibm.ws.eba.wab.integrator.EbaProvider;
 import com.ibm.ws.javaee.dd.web.WebApp;
+import com.ibm.ws.kernel.feature.ServerReadyStatus;
+import com.ibm.ws.kernel.feature.ServerStarted;
 import com.ibm.ws.runtime.update.RuntimeUpdateListener;
 import com.ibm.ws.runtime.update.RuntimeUpdateManager;
 import com.ibm.ws.runtime.update.RuntimeUpdateNotification;
@@ -92,6 +101,7 @@ import com.ibm.wsspi.kernel.service.location.VariableRegistry;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.FileUtils;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
+import com.ibm.wsspi.kernel.service.utils.ServerQuiesceListener;
 import com.ibm.wsspi.wab.configure.WABConfiguration;
 import com.ibm.wsspi.webcontainer.extension.ExtensionFactory;
 import com.ibm.wsspi.webcontainer.extension.ExtensionProcessor;
@@ -172,9 +182,9 @@ import com.ibm.wsspi.webcontainer.servlet.IServletContext;
  */
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE,
            immediate = true,
-           service = {EventHandler.class, RuntimeUpdateListener.class},
+           service = { EventHandler.class, RuntimeUpdateListener.class, ServerQuiesceListener.class, ServerReadyStatus.class },
            property = { "service.vendor=IBM", "event.topics=org/osgi/service/web/UNDEPLOYED" })
-public class WABInstaller implements EventHandler, ExtensionFactory, RuntimeUpdateListener {
+public class WABInstaller implements EventHandler, ExtensionFactory, RuntimeUpdateListener, ServerQuiesceListener, ServerReadyStatus {
 
     private static final TraceComponent tc = Tr.register(WABInstaller.class);
     private static final String CONFIGURABLE_FILTER = "(&"
@@ -182,7 +192,8 @@ public class WABInstaller implements EventHandler, ExtensionFactory, RuntimeUpda
                                                       + "(" + WABConfiguration.CONTEXT_NAME + "=*)"
                                                       + "(" + WABConfiguration.CONTEXT_PATH + "=*))";
 
-    private interface WABLifeCycle {};
+    private interface WABLifeCycle {
+    };
 
     private static final TraceComponent tcWabLifeCycleDebug = Tr.register(WABLifeCycle.class);
 
@@ -210,6 +221,7 @@ public class WABInstaller implements EventHandler, ExtensionFactory, RuntimeUpda
 
     private final AtomicBoolean deactivated = new AtomicBoolean(false);
     private final ReentrantReadWriteLock deactivationLock = new ReentrantReadWriteLock();
+    private final AtomicBoolean quiesceStarted = new AtomicBoolean(false);
 
     /**
      * A map of WABs grouped under an EBA, keyed by the EBA ID
@@ -226,6 +238,11 @@ public class WABInstaller implements EventHandler, ExtensionFactory, RuntimeUpda
 
     @Reference
     private volatile List<WABClassInfoHelper> classInfoHelpers;
+
+    private final Map<WAB, Future<?>> systemWABsDeploying = new ConcurrentHashMap<>();
+
+    @Reference(policyOption = ReferencePolicyOption.GREEDY, cardinality = ReferenceCardinality.OPTIONAL)
+    private volatile ServerStarted serverStarted;
 
     /* Package protected method to allow WAB's to obtain bundle trackers too */
     <T> WABTracker<T> getTracker(BundleTrackerCustomizer<T> wabTrackerCustomizer) {
@@ -347,9 +364,11 @@ public class WABInstaller implements EventHandler, ExtensionFactory, RuntimeUpda
         ctx = null;
     }
 
+    @Override
     public void notificationCreated(RuntimeUpdateManager updateManager, RuntimeUpdateNotification notification) {
         if (RuntimeUpdateNotification.CONFIG_UPDATES_DELIVERED.equals(notification.getName())) {
             notification.onCompletion(new CompletionListener<Boolean>() {
+                @Override
                 public void successfulCompletion(Future<Boolean> future, Boolean result) {
                     if (result) {
                         List<Bundle> bundles = new ArrayList<>();
@@ -365,14 +384,16 @@ public class WABInstaller implements EventHandler, ExtensionFactory, RuntimeUpda
                         } finally {
                             wabGroupsLock.unlock();
                         }
-                
+
                         for (Bundle b : bundles) {
                             restart(b);
                         }
                     }
                 }
 
-                public void failedCompletion(Future<Boolean> future, Throwable t) {}
+                @Override
+                public void failedCompletion(Future<Boolean> future, Throwable t) {
+                }
             });
         }
     }
@@ -387,7 +408,7 @@ public class WABInstaller implements EventHandler, ExtensionFactory, RuntimeUpda
      * This method is called asynchronously from queued work resulting from
      * WAB bundles entering the STARTING|ACTIVE states as tracked by the {@link WABTracker} and {@link WABTrackerCustomizer}.
      *
-     * @param wab - the tracked {@link WAB} object
+     * @param wab    - the tracked {@link WAB} object
      * @param bundle - the {@link Bundle} to install
      */
     protected boolean installIntoWebContainer(WAB wab) {
@@ -568,9 +589,34 @@ public class WABInstaller implements EventHandler, ExtensionFactory, RuntimeUpda
                             wabGroupsLock.unlock();
                         }
                         if (wab.getCreatedApplicationInfo()) {
+                            // system WABs get uninstalled here
                             deployedApp.uninstallApp(wab);
                         } else {
-                            deployedApp.uninstallModule(wab);
+                            if (ctx.getBundle(org.osgi.framework.Constants.SYSTEM_BUNDLE_LOCATION).getState() == Bundle.STOPPING) {
+                                // if shutting down then launch uninstallModule asynchronously and wait up
+                                // to 30 secs. This avoids blocking server shutdown unduly.
+                                final CountDownLatch latch = new CountDownLatch(1);
+                                executorService.getService().submit(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        deployedApp.uninstallModule(wab);
+                                        latch.countDown();
+                                    }
+                                }, Boolean.TRUE);
+                                try {
+                                    // If a quiesce has not been initiated then a force stop was called so
+                                    // continue without waiting. Otherwise give the uninstallModule thread
+                                    // time to unwind before proceeding with WAB removal.
+                                    if (quiesceStarted.get()) {
+                                        latch.await(30, TimeUnit.SECONDS);
+                                    }
+                                } catch (InterruptedException e) {
+                                    // continue with wab uninstall.
+                                    Thread.currentThread().interrupt();
+                                }
+                            } else {
+                                deployedApp.uninstallModule(wab);
+                            }
                         }
                     }
                 }
@@ -1498,11 +1544,12 @@ public class WABInstaller implements EventHandler, ExtensionFactory, RuntimeUpda
             return mci;
         }
 
+        @Override
         public DeployedModuleInfo getDeployedModule(ExtendedModuleInfo moduleInfo) {
             DeployedModuleInfo deployedMod = super.getDeployedModule(moduleInfo);
             currentWAB.setDeployedModuleInfo(deployedMod);
 
-            WebAppConfiguration appConfig = (WebAppConfiguration)((WebModuleMetaData)moduleInfo.getMetaData()).getConfiguration();
+            WebAppConfiguration appConfig = (WebAppConfiguration) ((WebModuleMetaData) moduleInfo.getMetaData()).getConfiguration();
             if (appConfig != null) {
                 String virtualHost = currentWAB.getVirtualHost();
                 if (virtualHost != null) {
@@ -1541,6 +1588,54 @@ public class WABInstaller implements EventHandler, ExtensionFactory, RuntimeUpda
 
         public String getModuleName(ModuleContainerInfo mci) {
             return ((WebModuleContainerInfo) mci).moduleInfo.getName();
+        }
+    }
+
+    @Override
+    public void serverStopping() {
+        quiesceStarted.set(true);
+    }
+
+    void addSystemWABDeployFuture(WAB wab, Future<?> future) {
+        if (serverStarted != null) {
+            return;
+        }
+        EbaProvider ebaProvider = ebaProviderTracker.getService();
+        if (ebaProvider != null && ebaProvider.getApplicationInfo(wab.getBundle()) != null) {
+            return;
+        }
+        // This is a system wab, not from an OSGi application EBA.
+        systemWABsDeploying.put(wab, future);
+    }
+
+    @Override
+    public void check() {
+        AtomicBoolean timeoutOccurred = new AtomicBoolean();
+        systemWABsDeploying.forEach((w, f) -> {
+            try {
+                if (timeoutOccurred.get()) {
+                    if (!f.isDone()) {
+                        logSlowWab(w);
+                    }
+                } else {
+                    f.get(ApplicationStateCoordinator.getApplicationStartTimeout(), TimeUnit.SECONDS);
+                }
+            } catch (InterruptedException e) {
+                // FFDC here and keep interruption
+                Thread.currentThread().interrupt();
+            } catch (ExecutionException e) {
+                // FFDC here and continue
+            } catch (TimeoutException e) {
+                timeoutOccurred.set(true);
+                logSlowWab(w);
+            }
+        });
+        systemWABsDeploying.clear();
+    }
+
+    private void logSlowWab(WAB w) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+            Tr.event(tc, "Stopped waiting for the system WAB to start: ", w.getBundle().getSymbolicName());
         }
     }
 }

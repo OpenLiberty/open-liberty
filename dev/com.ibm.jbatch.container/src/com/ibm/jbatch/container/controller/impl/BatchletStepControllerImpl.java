@@ -47,7 +47,7 @@ public class BatchletStepControllerImpl extends SingleThreadedStepControllerImpl
 	private void invokeBatchlet(Batchlet batchlet) throws BatchContainerServiceException {
 
 		String batchletId = batchlet.getRef();
-		List<Property> propList = (batchlet.getProperties() == null) ? null : batchlet.getProperties().getPropertyList();
+		List<Property> propList = (batchlet.getProperties() == null) ? null : (List<Property>) batchlet.getProperties().getPropertyList();
 
 		String sourceMethod = "invokeBatchlet";
 		if (logger.isLoggable(Level.FINER)) {

@@ -1,5 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.connectionManagement-1.0
+WLP-DisableAllFeatures-OnConflict: false
 IBM-API-Package: com.ibm.ws.jca.cm.mbean; type="ibm-api"
 visibility=private
 -features=com.ibm.websphere.appserver.transaction-1.1; ibm.tolerates:="1.2, 2.0", \

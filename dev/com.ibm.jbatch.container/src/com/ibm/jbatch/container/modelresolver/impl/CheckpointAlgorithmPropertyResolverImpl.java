@@ -16,9 +16,11 @@
 */
 package com.ibm.jbatch.container.modelresolver.impl;
 
+import java.util.List;
 import java.util.Properties;
 
 import com.ibm.jbatch.jsl.model.CheckpointAlgorithm;
+import com.ibm.jbatch.jsl.model.Property;
 
 
 public class CheckpointAlgorithmPropertyResolverImpl extends AbstractPropertyResolver<CheckpointAlgorithm> {
@@ -37,7 +39,7 @@ public class CheckpointAlgorithmPropertyResolverImpl extends AbstractPropertyRes
     	
     	// Resolve all the properties defined for this checkpoint algorithm
         if (checkpointalgorithm.getProperties() != null) {
-            this.resolveElementProperties(checkpointalgorithm.getProperties().getPropertyList(), submittedProps, parentProps);
+            this.resolveElementProperties((List<Property>) checkpointalgorithm.getProperties().getPropertyList(), submittedProps, parentProps);
         }
         
         return checkpointalgorithm;

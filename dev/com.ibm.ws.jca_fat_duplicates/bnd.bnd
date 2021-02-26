@@ -16,5 +16,7 @@ src: \
 
 fat.project: true
 
+tested.features: connectors-2.0
+
 -buildpath: \
 	com.ibm.websphere.javaee.annotation.1.1;version=latest

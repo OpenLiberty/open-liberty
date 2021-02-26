@@ -1,0 +1,67 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/EISExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+17007=W\u0142a\u015bciwo\u015b\u0107 {0} musi by\u0107 ustawiona.
+
+17008=Napotkano niepoprawn\u0105 w\u0142a\u015bciwo\u015b\u0107 {0}.
+
+17009=W\u0142a\u015bciwo\u015b\u0107 {0} lub {1} musi by\u0107 ustawiona.
+
+17010=Rekord wyj\u015bciowy zawiera nieobs\u0142ugiwany typ komunikatu
+
+17011=Nie okre\u015blono fabryki po\u0142\u0105cze\u0144.
+
+17012=Interfejsem InteractionSspec musi by\u0107 klasa CciJMSInteractionSpec.
+
+17013=Rekord musi by\u0107 klas\u0105 CciJMSRecord.
+
+17014=Nieznany typ specyfikacji interakcji
+
+17015=Dane wej\u015bciowe musz\u0105 zawiera\u0107 pojedynczy element tekstowy.
+
+17016=Nast\u0105pi\u0142o przekroczenie limitu czasu - nie otrzymano \u017cadnego komunikatu.
+
+17017=Rekord wej\u015bciowy zawiera nieobs\u0142ugiwany typ komunikatu.
+
+17018=Nie mo\u017cna wywo\u0142a\u0107 metody "begin()" na sekcji bez transakcji.
+
+17019=Wyst\u0105pi\u0142 problem podczas testowania dla sesji z transakcjami: 
+
+17020=Interfejsem InteractionSspec musi by\u0107 klasa AQInteractionSpec.
+
+17021=Rekord musi by\u0107 klas\u0105 AQRecord.
+
+17022=Dane wej\u015bciowe musz\u0105 zawiera\u0107 pojedynczy element surowy.
+
+17023=Wyst\u0105pi\u0142 wyj\u0105tek podczas ustawiania atrybut\u00f3w MQQueueConnectionFactory.
+
+17024=Nie mo\u017cna usun\u0105\u0107 pliku: {0}
+
+17025=To odwzorowanie wymaga elementu grupowania klucza obcego, poniewa\u017c istnieje wiele kluczy obcych.
+

@@ -32,6 +32,9 @@ import javax.activation.DataHandler;
 
 import org.apache.cxf.message.Attachment;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
+@Trivial
 public class LazyAttachmentCollection 
     implements Collection<Attachment> {
     

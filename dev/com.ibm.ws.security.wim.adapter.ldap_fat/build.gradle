@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,10 +33,12 @@ dependencies {
     project(':com.ibm.ws.webcontainer.security_test.servlets')
 }
 
-autoFVT.dependsOn ':com.ibm.ws.security.registry_test.custom:jar'
-autoFVT.dependsOn ':com.ibm.ws.security.registry_test.servlet:war'
-autoFVT.dependsOn ':com.ibm.ws.security.wim_test.servlet:war'
-autoFVT.dependsOn ':com.ibm.ws.webcontainer.security_test.servlets:war'
+autoFVT.dependsOn ':com.ibm.ws.security.registry_test.custom:assemble'
+autoFVT.dependsOn ':com.ibm.ws.security.registry_test.servlet:assemble'
+autoFVT.dependsOn ':com.ibm.ws.security.wim_test.servlet:assemble'
+autoFVT.dependsOn ':com.ibm.ws.security.wim.repository_test.custom:assemble'
+autoFVT.dependsOn ':com.ibm.ws.webcontainer.security_test.servlets:assemble'
+
 autoFVT.doLast {
   /*
    * Copy the local ApacheDS LDAP instances. 
@@ -104,7 +106,9 @@ autoFVT.doLast {
     'com.ibm.ws.security.wim.adapter.ldap.fat.ETSFforGroupM',
     'com.ibm.ws.security.wim.adapter.ldap.fat.federation',
     'com.ibm.ws.security.wim.adapter.ldap.fat.input.output.mapping',
+    'com.ibm.ws.security.wim.adapter.ldap.fat.loginproperty',
     'com.ibm.ws.security.wim.adapter.ldap.fat.multipleldaps',
+    'com.ibm.ws.security.wim.adapter.ldap.fat.operationalattribute',
     'com.ibm.ws.security.wim.adapter.ldap.fat.realm.mapping',
     'com.ibm.ws.security.wim.adapter.ldap.fat.referral',
     'com.ibm.ws.security.wim.adapter.ldap.fat.search.paging',
@@ -127,11 +131,13 @@ autoFVT.doLast {
     'com.ibm.ws.security.wim.adapter.ldap.fat.tworealms',
     'com.ibm.ws.security.wim.adapter.ldap.fat.ids.allIbmGroups',
     'com.ibm.ws.security.registry.ldap.fat.regression',
+    'com.ibm.ws.security.registry.ldap.fat.scope',
     'com.ibm.ws.security.wim.adapter.ldap.fat.readtimeout',
     'com.ibm.ws.security.wim.adapter.ldap.fat.racf.sdbm',
     'com.ibm.ws.security.wim.adapter.ldap.fat.return.to.primary',
     'com.ibm.ws.security.wim.adapter.ldap.fat.racf.sdbm.basic',
-    'com.ibm.ws.security.wim.adapter.ldap.fat.jndi.output'
+    'com.ibm.ws.security.wim.adapter.ldap.fat.jndi.output',
+    'com.ibm.ws.security.wim.adapter.ldap.fat.rdn'
   ]
   servers.each { server ->
     copy { 
@@ -146,6 +152,7 @@ autoFVT.doLast {
   servers = [
     'com.ibm.ws.security.wim.adapter.ldap.fat.tds.ssl',
     'com.ibm.ws.security.wim.adapter.ldap.fat.ad.ssl',
+    'com.ibm.ws.security.wim.adapter.ldap.fat.sun.ssl',
     'com.ibm.ws.security.registry.ldap.fat.ids.ssl.trustonly',
     'com.ibm.ws.security.registry.ldap.fat.ids.ssl'
   ]

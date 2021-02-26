@@ -1,0 +1,10 @@
+<server>
+	<include location="imports/cxf_features.xml" />
+	<include location="imports/BasicRegistry_withoutIDPUsers.xml" />
+	<include location="imports/misc2.xml" />
+	<include location="imports/goodSSLSettings.xml" />
+	<include location="imports/securityProvider_1_symSignEnc.xml" />
+	<include location="imports/samltoken_testApp.xml" />
+
+</server>
+

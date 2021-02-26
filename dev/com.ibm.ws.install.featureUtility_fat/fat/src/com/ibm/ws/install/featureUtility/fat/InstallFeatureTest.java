@@ -16,6 +16,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -75,7 +77,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         final String METHOD_NAME = "testInstallFeature";
         Log.entering(c, METHOD_NAME);
 
-        String[] param1s = { "installFeature", "jsp-2.3"};
+        String[] param1s = { "installFeature", "jsp-2.3", "--verbose"};
         String [] fileLists = {"lib/features/com.ibm.websphere.appserver.jsp-2.3.mf"};
 //        deleteFiles(METHOD_NAME, "com.ibm.websphere.appserver.jsp-2.3", fileLists);
 
@@ -97,7 +99,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         final String METHOD_NAME = "testInstallAutoFeature";
         Log.entering(c, METHOD_NAME);
 
-        String[] param1s = { "installFeature", "jsf-2.2", "cdi-1.2"};
+        String[] param1s = { "installFeature", "jsf-2.2", "cdi-1.2", "--verbose"};
         String [] fileListA = {"lib/features/com.ibm.websphere.appserver.jsf-2.2.mf", "lib/features/com.ibm.websphere.appserver.cdi1.2-jsf2.2.mf"};
         String [] fileListB = {"lib/features/com.ibm.websphere.appserver.cdi-1.2.mf"};
 //        deleteFiles(METHOD_NAME, "com.ibm.websphere.appserver.jsf-2.2", fileListA);
@@ -149,8 +151,11 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         copyFileToMinifiedRoot("repo/com/ibm/websphere/appserver/features/wlp-nd-license/20.0.0.4",
                 "../../publish/repo/com/ibm/websphere/appserver/features/wlp-nd-license/20.0.0.4/wlp-nd-license-20.0.0.4.zip");
 
-        writeToProps(minifiedRoot+ "/etc/featureUtility.properties", "featureLocalRepo", minifiedRoot + "/repo/");
-        String[] param1s = { "installFeature", "adminCenter-1.0", "--acceptLicense" };
+        Map<String, String> propsMap = new HashMap<String, String>();
+        propsMap.put("featureLocalRepo", minifiedRoot + "/repo/");
+        propsMap.put("wlptestjson.JSON.coordinate", "com.ibm.websphere.appserver.features");
+        writeToProps(minifiedRoot+ "/etc/featureUtility.properties", propsMap);
+        String[] param1s = { "installFeature", "adminCenter-1.0", "--acceptLicense", "--verbose" };
 
         ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
         String edition = getClosedLibertyWlpEdition();
@@ -195,8 +200,11 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         copyFileToMinifiedRoot("repo/com/ibm/websphere/appserver/features/wlp-nd-license/20.0.0.4",
                 "../../publish/repo/com/ibm/websphere/appserver/features/wlp-nd-license/20.0.0.4/wlp-nd-license-20.0.0.4.zip");
 
-        writeToProps(minifiedRoot+ "/etc/featureUtility.properties", "featureLocalRepo", minifiedRoot + "/repo/");
-        String[] param1s = { "installFeature", "adminCenter-1.0", "deploy-1.0", "--acceptLicense" };
+        Map<String, String> propsMap = new HashMap<String, String>();
+        propsMap.put("featureLocalRepo", minifiedRoot + "/repo/");
+        propsMap.put("wlptestjson.JSON.coordinate", "com.ibm.websphere.appserver.features");
+        writeToProps(minifiedRoot+ "/etc/featureUtility.properties", propsMap);
+        String[] param1s = { "installFeature", "adminCenter-1.0", "deploy-1.0", "--acceptLicense", "--verbose" };
 
         ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
         String edition = getClosedLibertyWlpEdition();
@@ -236,7 +244,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 
 
         writeToProps(minifiedRoot+ "/etc/featureUtility.properties", "featureLocalRepo", minifiedRoot + "/repo/");
-        String[] param1s = { "installFeature", "el-3.0"};
+        String[] param1s = { "installFeature", "el-3.0", "--verbose"};
 
         ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
         assertEquals("Exit code should be 0",0, po.getReturnCode());
@@ -261,7 +269,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         final String METHOD_NAME = "testInvalidFeature";
         Log.entering(c, METHOD_NAME);
 
-        String[] param1s = { "installFeature", "veryClearlyMadeUpFeatureThatNoOneWillEverThinkToCreateThemselvesAbCxYz-1.0"};
+        String[] param1s = { "installFeature", "veryClearlyMadeUpFeatureThatNoOneWillEverThinkToCreateThemselvesAbCxYz-1.0", "--verbose"};
         ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
         assertEquals("Exit code should be 21",21,  po.getReturnCode());
         String output = po.getStdout();
@@ -278,7 +286,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         final String METHOD_NAME = "testAlreadyInstalledFeature";
         Log.entering(c, METHOD_NAME);
 
-        String[] param1s = { "installFeature", "mpHealth-2.0"};
+        String[] param1s = { "installFeature", "mpHealth-2.0", "--verbose"};
         String [] fileLists = {"lib/features/com.ibm.websphere.appserver.mpHealth-2.0.mf"};
 //        deleteFiles(METHOD_NAME, "com.ibm.websphere.appserver.mpHealth-2.0", fileLists);
 
@@ -319,7 +327,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
     public void testInvalidMavenCoordinateArtifactId() throws Exception {
         String methodName = "testInvalidMavenCoordinateArtifactId";
 
-        String [] param1s = {"if", "io.openliberty.features:mpHealth"};
+        String [] param1s = {"if", "io.openliberty.features:mpHealth", "--verbose"};
         ProgramOutput po = runFeatureUtility(methodName, param1s);
         assertEquals("Invalid feature shortname", 21, po.getReturnCode());
         String output = po.getStdout();
@@ -339,7 +347,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         // version mismatch. get an old Liberty version.
 
         String oldVersion = "19.0.0.1";
-        String [] param1s = {"if", "io.openliberty.features:mpHealth-2.0:"+oldVersion};
+        String [] param1s = {"if", "io.openliberty.features:mpHealth-2.0:"+oldVersion, "--verbose"};
         ProgramOutput po = runFeatureUtility(methodName, param1s);
         assertEquals("Incompatible feature version" , 21, po.getReturnCode());
         String output = po.getStdout();
@@ -362,7 +370,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 
 
         // test with invalid packaging
-        String [] param1s = {"if", "io.openliberty.features:jsp-2.3:"+currentVersion+":jar"};
+        String [] param1s = {"if", "io.openliberty.features:jsp-2.3:"+currentVersion+":jar", "--verbose"};
         ProgramOutput po = runFeatureUtility(methodName, param1s);
         assertEquals(21, po.getReturnCode());
         //"CWWKF1395E"
@@ -370,7 +378,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         assertTrue("expected CWWKF1396E", output.indexOf("CWWKF1396E")>=0);
 
         // now try with valid packaging
-        String [] param2s = {"if", "io.openliberty.features:jsp-2.3:"+currentVersion+":esa"};
+        String [] param2s = {"if", "io.openliberty.features:jsp-2.3:"+currentVersion+":esa", "--verbose"};
         po = runFeatureUtility(methodName, param2s);
         assertEquals("Should install successfully.", 0, po.getReturnCode());
         Log.exiting(c, methodName);
@@ -385,27 +393,27 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 
 
 
-        String [] param1s = {"if", "groupId:artifactId:"+version+":esa:unsupportedOption"};
+        String [] param1s = {"if", "groupId:artifactId:"+version+":esa:unsupportedOption", "--verbose"};
         po = runFeatureUtility(methodName, param1s);
         assertEquals(21, po.getReturnCode());
         output = po.getStdout();
         assertTrue("should output CWWKF1397E ", output.indexOf("CWWKF1397E")>=0);
 
-        String [] param2s = {"if", ":::"};
+        String [] param2s = {"if", ":::", "--verbose"};
         po = runFeatureUtility(methodName, param2s);
         assertEquals(21, po.getReturnCode());
         output = po.getStdout();
         assertTrue("should output CWWKF1397E ", output.indexOf("CWWKF1397E")>=0);
 
 
-        String [] param3s = {"if", "groupId::" + version};
+        String [] param3s = {"if", "groupId::" + version, "--verbose"};
         po = runFeatureUtility(methodName, param3s);
         assertEquals(21, po.getReturnCode());
         output = po.getStdout();
         assertTrue("should output CWWKF1397E ", output.indexOf("CWWKF1397E")>=0);
 
 
-        String [] param4s = {"if", "groupId:::esa"};
+        String [] param4s = {"if", "groupId:::esa", "--verbose"};
         po = runFeatureUtility(methodName, param4s);
         assertEquals(21, po.getReturnCode());
         output = po.getStdout();
@@ -418,7 +426,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
     public void testBlankFeature() throws Exception {
         String methodName = "testBlankFeature";
 
-        String [] param1s = {"if" , " "};
+        String [] param1s = {"if" , " ", "--verbose"};
         ProgramOutput po = runFeatureUtility(methodName, param1s);
         assertEquals(20, po.getReturnCode()); // 20 refers to ReturnCode.BAD_ARGUMENT
         String output = po.getStdout();

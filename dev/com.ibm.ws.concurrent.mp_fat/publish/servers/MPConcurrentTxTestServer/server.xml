@@ -12,11 +12,11 @@
 
     <featureManager>
         <feature>componenttest-1.0</feature>
-        <feature>concurrent-2.0</feature>
+        <feature>concurrent-1.0</feature>
         <feature>jdbc-4.2</feature>
         <feature>jndi-1.0</feature>
-        <feature>mpContextPropagation-1.1</feature>
-        <feature>servlet-5.0</feature>
+        <feature>mpContextPropagation-1.0</feature>
+        <feature>servlet-4.0</feature>
     </featureManager>
     
     <include location="../fatTestPorts.xml"/>
@@ -24,11 +24,13 @@
     <application location="MPConcurrentTxApp.war"/>
 
     <dataSource id="DefaultDataSource">
+        <connectionManager autoCloseConnections="true"/>
         <jdbcDriver libraryRef="DerbyLib"/>
         <properties.derby.embedded createDatabase="create" databaseName="memory:txdb"/>
     </dataSource>
 
     <dataSource id="OnePhaseDataSource" jndiName="jdbc/ds1phase" type="javax.sql.ConnectionPoolDataSource">
+        <connectionManager autoCloseConnections="false"/>
         <jdbcDriver libraryRef="DerbyLib"/>
         <properties.derby.embedded createDatabase="create" databaseName="memory:txdb"/>
     </dataSource>

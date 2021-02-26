@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ import org.apache.http.client.params.ClientPNames;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpParams;
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -33,7 +34,6 @@ import com.ibm.ws.security.javaeesec.fat_helper.JavaEESecTestBase;
 import com.ibm.ws.security.javaeesec.fat_helper.LocalLdapServer;
 import com.ibm.ws.security.javaeesec.fat_helper.WCApplicationHelper;
 
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -43,7 +43,6 @@ import componenttest.topology.impl.LibertyServerFactory;
 /**
  *
  */
-@MinimumJavaLevel(javaLevel = 8)
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class EJBModuleRealmTest extends JavaEESecTestBase {
@@ -57,9 +56,9 @@ public class EJBModuleRealmTest extends JavaEESecTestBase {
     protected static String EJB_REALM2_WAR_NAME = "AnnotatedEjbinWarServletLdapRealm2.war";
     protected static String EJB_REALM2_WAR_PATH = "/AnnotatedEjbinWarServletLdapRealm2/";
     protected static String EJB_EAR_REALM_NAME = "securityejbinwarrealm.ear";
-    protected static String EJB_REALM_APP_NAME = EJB_EAR_REALM_NAME;
+    protected static String EJB_REALM_APP_NAME = "securityejbinwarrealm";
     protected static String EJB_EAR_REALM2_NAME = "securityejbinwarrealm2.ear";
-    protected static String EJB_REALM2_APP_NAME = EJB_EAR_REALM2_NAME;
+    protected static String EJB_REALM2_APP_NAME = "securityejbinwarrealm2";
     protected static String XML_REALM_NAME = "ejbprotectedrealmserver.xml";
     protected static String XML_INCORRECT_REALM = "ejbprotectedrealmserverincorrectrealm.xml";
     protected static String JAR_NAME = "JavaEESecBase.jar";
@@ -81,17 +80,12 @@ public class EJBModuleRealmTest extends JavaEESecTestBase {
         Log.info(logClass, "setUp()", "-----setting up test");
         ldapServer = new LocalLdapServer();
         ldapServer.start();
-
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
-        try {
-            myServer.stopServer();
-        } finally {
-            if (ldapServer != null) {
-                ldapServer.stop();
-            }
+        if (ldapServer != null) {
+            ldapServer.stop();
         }
     }
 
@@ -104,6 +98,11 @@ public class EJBModuleRealmTest extends JavaEESecTestBase {
         httpclient = new DefaultHttpClient(httpParams);
     }
 
+    @After
+    public void shutDown() throws Exception {
+        myServer.stopServer();
+    }
+
     @Override
     protected String getCurrentTestName() {
         return name.getMethodName();
@@ -111,9 +110,9 @@ public class EJBModuleRealmTest extends JavaEESecTestBase {
 
     protected static void startServer(String config, String appName, String appName2) throws Exception {
         myServer.setServerConfigurationFile(config);
-        myServer.startServer(true);
         myServer.addInstalledAppForValidation(appName);
         myServer.addInstalledAppForValidation(appName2);
+        myServer.startServer(true);
         urlBase = "http://" + myServer.getHostname() + ":" + myServer.getHttpDefaultPort();
     }
 
@@ -197,7 +196,6 @@ public class EJBModuleRealmTest extends JavaEESecTestBase {
 
         myServer.removeInstalledAppForValidation(EJB_REALM_APP_NAME);
         myServer.removeInstalledAppForValidation(EJB_REALM2_APP_NAME);
-        myServer.stopServer();
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
 
@@ -279,7 +277,6 @@ public class EJBModuleRealmTest extends JavaEESecTestBase {
 
         myServer.removeInstalledAppForValidation(EJB_REALM_APP_NAME);
         myServer.removeInstalledAppForValidation(EJB_REALM2_APP_NAME);
-        myServer.stopServer();
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
 

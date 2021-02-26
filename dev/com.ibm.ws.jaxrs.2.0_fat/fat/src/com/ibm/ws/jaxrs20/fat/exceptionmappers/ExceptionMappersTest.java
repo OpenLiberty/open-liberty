@@ -38,10 +38,12 @@ import com.ibm.ws.jaxrs.fat.exceptionmappers.mapped.CommentError;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
+@SkipForRepeat("EE9_FEATURES") // currently broken due to multiple issues
 public class ExceptionMappersTest {
 
     @Server("com.ibm.ws.jaxrs.fat.providers")

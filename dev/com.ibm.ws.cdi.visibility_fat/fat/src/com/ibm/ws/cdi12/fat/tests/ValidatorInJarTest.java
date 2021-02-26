@@ -10,63 +10,79 @@
  *******************************************************************************/
 package com.ibm.ws.cdi12.fat.tests;
 
+import static componenttest.rules.repeater.EERepeatTests.EEVersion.EE7;
+
 import java.io.File;
 
-import org.junit.ClassRule;
-import org.junit.Test;
-
-import com.ibm.ws.fat.util.BuildShrinkWrap;
-import com.ibm.ws.fat.util.LoggingTest;
-import com.ibm.ws.fat.util.ShrinkWrapSharedServer;
-
-import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
-import org.jboss.shrinkwrap.api.importer.ZipImporter;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jboss.shrinkwrap.api.spec.ResourceAdapterArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.ClassRule;
+import org.junit.runner.RunWith;
 
+import com.ibm.cdi.test.basic.injection.WebServ;
+import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
+
+import componenttest.annotation.Server;
+import componenttest.annotation.TestServlet;
+import componenttest.annotation.TestServlets;
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.custom.junit.runner.TestModeFilter;
+import componenttest.rules.repeater.EERepeatTests;
+import componenttest.rules.repeater.RepeatTests;
+import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.FATServletClient;
 
-public class ValidatorInJarTest extends LoggingTest {
+@Mode(TestMode.FULL)
+@RunWith(FATRunner.class)
+public class ValidatorInJarTest extends FATServletClient {
+
+    public static final String SERVER_NAME = "cdi12ValidatorInJarServer";
 
     @ClassRule
-    public static ShrinkWrapSharedServer SHARED_SERVER = new ShrinkWrapSharedServer("cdi12ValidatorInJarServer");
+    public static RepeatTests r = EERepeatTests.with(SERVER_NAME, EE7);
 
-    @BuildShrinkWrap
-    public static Archive buildShrinkWrap() {
+    public static final String TEST_VALIDATOR_APP_NAME = "TestValidatorInJar";
 
-        JavaArchive TestValidatorInJar = ShrinkWrap.create(JavaArchive.class,"TestValidatorInJar.jar")
-                        .addClass("com.ibm.cdi.test.basic.injection.jar.AppScopedBean");
+    @Server(SERVER_NAME)
+    @TestServlets({
+                    @TestServlet(servlet = WebServ.class, contextRoot = TEST_VALIDATOR_APP_NAME) }) //FULL
+    public static LibertyServer server;
 
-        WebArchive TestValidatorInJarWar = ShrinkWrap.create(WebArchive.class, "TestValidatorInJar.war")
-                        .addClass("com.ibm.cdi.test.basic.injection.WebServ")
-                        .addAsManifestResource(new File("test-applications/TestValidatorInJar.war/resources/META-INF/MANIFEST.MF"))
-                        .add(new FileAsset(new File("test-applications/TestValidatorInJar.war/resources/WEB-INF/web.xml")), "/WEB-INF/web.xml")
-                        .add(new FileAsset(new File("test-applications/TestValidatorInJar.war/resources/WEB-INF/lib/jaxrs-analyzer-0.9.jar")), "/WEB-INF/lib/jaxrs-analyzer-0.9.jar");
+    @BeforeClass
+    public static void setup() throws Exception {
+        if (TestModeFilter.shouldRun(TestMode.FULL)) {
+            JavaArchive TestValidatorInJar = ShrinkWrap.create(JavaArchive.class, "TestValidatorInJar.jar")
+                                                       .addClass(com.ibm.cdi.test.basic.injection.jar.AppScopedBean.class);
 
-        return ShrinkWrap.create(EnterpriseArchive.class,"TestValidatorInJar.ear")
-                        .add(new FileAsset(new File("test-applications/TestValidatorInJar.ear/resources/META-INF/application.xml")), "/META-INF/application.xml")
-                        .addAsModule(TestValidatorInJarWar)
-                        .addAsModule(TestValidatorInJar);
+            WebArchive TestValidatorInJarWar = ShrinkWrap.create(WebArchive.class, "TestValidatorInJar.war")
+                                                         .addClass(com.ibm.cdi.test.basic.injection.WebServ.class)
+                                                         .addAsManifestResource(new File("test-applications/TestValidatorInJar.war/resources/META-INF/MANIFEST.MF"))
+                                                         .add(new FileAsset(new File("test-applications/TestValidatorInJar.war/resources/WEB-INF/web.xml")), "/WEB-INF/web.xml")
+                                                         .add(new FileAsset(new File("test-applications/TestValidatorInJar.war/resources/WEB-INF/lib/jaxrs-analyzer-0.9.jar")),
+                                                              "/WEB-INF/lib/jaxrs-analyzer-0.9.jar");
+
+            EnterpriseArchive testValidatorInJarEAR = ShrinkWrap.create(EnterpriseArchive.class, "TestValidatorInJar.ear")
+                                                                .add(new FileAsset(new File("test-applications/TestValidatorInJar.ear/resources/META-INF/application.xml")),
+                                                                     "/META-INF/application.xml")
+                                                                .addAsModule(TestValidatorInJarWar)
+                                                                .addAsModule(TestValidatorInJar);
+
+            ShrinkHelper.exportDropinAppToServer(server, testValidatorInJarEAR, DeployOptions.SERVER_ONLY);
+        }
+        server.startServer();
     }
 
-    /** {@inheritDoc} */
-    @Override
-    protected ShrinkWrapSharedServer getSharedServer() {
-        // TODO Auto-generated method stub
-        return SHARED_SERVER;
-    }
-
-    @Test
-    @Mode(TestMode.FULL)
-    public void testValidatorInJar() throws Exception {
-        //If the application has started correctly the test passes.
-        verifyResponse("/TestValidatorInJar/testservlet", "App Scoped Hello World");
+    @AfterClass
+    public static void tearDown() throws Exception {
+        server.stopServer();
     }
 
 }

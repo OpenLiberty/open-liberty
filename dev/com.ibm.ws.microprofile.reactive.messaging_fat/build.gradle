@@ -1,16 +1,4 @@
-repositories {
-  if (isUsingArtifactory) {
-    maven {
-      credentials {
-        username userProps.getProperty("artifactory.download.user")
-        password userProps.getProperty("artifactory.download.token")
-      }
-      url ("https://na.artifactory.swg-devops.com/artifactory/wasliberty-maven-remote")
-    }
-  } else {
-    mavenCentral()
-  }
-}
+apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
 
 configurations {
     kafkaClient
@@ -24,13 +12,7 @@ dependencies {
     kafkaClient 'org.xerial.snappy:snappy-java:1.1.7.2'
     kafkaClient 'org.slf4j:slf4j-api:1.7.7'
     kafkaClient 'org.slf4j:slf4j-jdk14:1.7.7'
-    requiredLibs 'org.rnorth.duct-tape:duct-tape:1.0.7'
-    requiredLibs 'org.testcontainers:testcontainers:1.14.0'
-    requiredLibs 'org.testcontainers:kafka:1.14.0'
-    requiredLibs 'org.rnorth.visible-assertions:visible-assertions:2.1.2'
-    requiredLibs 'org.rnorth:tcp-unix-socket-proxy:1.0.2'
-    requiredLibs 'net.java.dev.jna:jna:5.2.0'
-    requiredLibs 'org.apache.commons:commons-compress:1.19'
+    requiredLibs "org.testcontainers:kafka:${testcontainersVersion}"
     requiredLibs 'org.testng:testng:6.14.3'
     requiredLibs 'org.reactivestreams:reactive-streams-tck:1.0.2'
     requiredLibs project(':com.ibm.websphere.org.reactivestreams.reactive-streams.1.0')
@@ -48,3 +30,4 @@ task addKafkaClientLibs (type: Copy) {
 }
 
 zipAutoFVT.dependsOn addKafkaClientLibs
+addRequiredLibraries.dependsOn addTestcontainers

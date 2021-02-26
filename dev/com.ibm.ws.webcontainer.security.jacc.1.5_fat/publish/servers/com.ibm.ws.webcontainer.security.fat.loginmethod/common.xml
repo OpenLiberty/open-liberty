@@ -1,0 +1,100 @@
+<!--
+    Copyright (c) 2020 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server description="com.ibm.ws.webcontainer.security.fat.loginmethod">
+
+<!-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 
+     NOTE: this file is essentially duplicated in publish/files/proxyredirect.
+     If you make changes here, please make the same change there.
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
+
+	<featureManager>
+		<feature>appSecurity-2.0</feature>
+		<feature>jsp-2.2</feature>
+		<feature>servlet-3.1</feature>
+		<feature>usr:jaccTestProvider-1.0</feature>
+	</featureManager>
+
+	<jaccTestProvider roleMappingFile="${server.config.dir}/resources/security/roleMapping.props" />
+	 <webContainer deferServletLoad="false"/>
+
+	<keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty, expires 1/4/2099 -->
+ 
+	<webAppSecurity allowFailOverToBasicAuth="true" />
+ 
+	<basicRegistry id="basic" realm="BasicRealm">
+		<user name="user0" password="user0pwd" />
+		<user name="user1" password="user1pwd" />
+		<group name="group1">
+			<member name="user0" />
+			<member name="user1" />
+		</group>
+		<user name="user2" password="user2pwd" />
+		<group name="group2">
+			<member name="user2" />
+			<member name="user6" />
+		</group>
+		<user name="user3" password="user3pwd" />
+		<group name="group3">
+			<member name="user3" />
+		</group>
+		<user name="user4" password="user4 pwd" />
+		<group name="group4">
+			<member name="user4" />
+		</group>
+		<user name="user5" password="user5pwd " />
+		<group name="group5">
+			<member name="user5" />
+		</group>
+		<user name="user6" password="user6pwd" />
+		<user name="user7" password="user7pwd " />
+		<group name="group7">
+			<member name="user7" />
+		</group>
+		<user name="user8" password="user8pwd " />
+		<group name="group8">
+			<member name="user8" />
+		</group>
+		<user name="user98" password="user98pwd " />
+		<user name="user99" password="user99pwd " />
+	</basicRegistry>
+
+    <!-- If changes are made to the application-bnd here, please make equivalent updates
+     in the additionalVHosts.xml file, which redeploys this application across virtual hosts -->
+	<application type="ear" id="loginmethod" name="loginmethod" location="loginmethod.ear">
+		<application-bnd>
+			<security-role name="Employee">
+				<!--user name="user1" /-->
+				<!--group name="group1" /-->
+				<run-as userid="user98" password="user98pwd" />
+			</security-role>
+			<security-role name="Manager">
+				<!--user name="user2" /-->
+				<!--group name="group2" /-->
+				<run-as userid="user99" password="user99pwd" />
+			</security-role>
+			<security-role name="DeclaredManager">
+				<!--user name="user7" /-->
+				<!--group name="group7" /-->
+			</security-role>
+			<security-role name="DeclaredManagerDyn">
+				<!--user name="user8" /-->
+				<!--group name="group8" /-->
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+ 
+	<include location="../fatTestPorts.xml"/>
+	<include location="additionalVHosts.xml" optional="true"/>
+
+</server>

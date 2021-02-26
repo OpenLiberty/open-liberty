@@ -46,6 +46,22 @@ public class BasicClientTestServlet extends FATServlet {
         return AccessController.doPrivileged((PrivilegedAction<String>) () -> System.getProperty(key));
     }
 
+    static {
+        //for localhost testing only
+        javax.net.ssl.HttpsURLConnection.setDefaultHostnameVerifier(
+                new javax.net.ssl.HostnameVerifier() {
+
+            @Override
+            public boolean verify(String hostname,
+                    javax.net.ssl.SSLSession sslSession) {
+                if (hostname.contains("localhost")) {
+                    return true;
+                }
+                return false;
+            }
+        });
+    }
+
     @Override
     public void init() throws ServletException {
         String baseUrlStr = "https://localhost:" + getSysProp("bvt.prop.HTTP_secondary.secure") + "/basicRemoteApp";

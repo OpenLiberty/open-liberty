@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -45,23 +45,24 @@ public class SMTPInlineServlet extends HttpServlet {
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // TODO Auto-generated method stub
-
         response.setContentType("text/html");
         PrintWriter out = response.getWriter();
 
         String testSubjectString = "Sent from Liberty JavaMail";
         String testBodyString = "Test mail sent by GreenMail";
+        Object jndiConstant;
 
         try {
-            jndiConstant = new InitialContext().lookup("TestingApp/SMTPInlineServlet/smtp_port");
-
+            jndiConstant = new InitialContext().lookup("TestingApp/smtp_port");
         } catch (NamingException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            System.out.println("Failed to look-up 'TestingApp/smtp_port': "+e.getMessage());
+            e.printStackTrace(System.out);
+            throw new RuntimeException(e);
         }
 
+        System.out.println("jndiConstant="+jndiConstant);
         String smtpPort = Integer.toString((Integer) jndiConstant);
+        System.out.println("TestingApp/smtp_port="+smtpPort);
 
         Properties props = new Properties();
         props.setProperty("mail.smtp.host", "localhost");
@@ -73,7 +74,9 @@ public class SMTPInlineServlet extends HttpServlet {
         session = Session.getInstance(props, new Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
-                PasswordAuthentication passwordAuthentication = new PasswordAuthentication("smtp@testserver.com", "smtpPa$$word4U2C");
+                PasswordAuthentication passwordAuthentication = new PasswordAuthentication("smtp@testserver.com"
+                                                                                          ,"smtpPa$$word4U2C"
+                                                                                          );
                 return passwordAuthentication;
             }
         });
@@ -94,6 +97,8 @@ public class SMTPInlineServlet extends HttpServlet {
             Transport.send(message);
 
         } catch (MessagingException e) {
+            System.out.println("Mail session properties: "+session.getProperties());
+            e.printStackTrace(System.out);
             throw new RuntimeException(e);
         }
     }
@@ -103,8 +108,6 @@ public class SMTPInlineServlet extends HttpServlet {
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // TODO Auto-generated method stub
-
     }
 
 }

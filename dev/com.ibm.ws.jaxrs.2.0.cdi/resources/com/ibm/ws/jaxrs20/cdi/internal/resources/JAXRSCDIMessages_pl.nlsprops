@@ -19,15 +19,15 @@
 #
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
-# JAXRS 2.0 CDI Message ------------------------
-warning.jaxrs.cdi.resource=CWWKW1000W: Zasi\u0119g zasobu JAXRS-2.0 {0} to {1}. Profil Liberty pobiera instancji zasob\u00f3w z {2}.
+# JAXRS CDI Message ------------------------
+warning.jaxrs.cdi.resource=CWWKW1000W: Zasi\u0119g zasobu JAXRS {0} to {1}. Profil Liberty pobiera instancji zasob\u00f3w z {2}.
 warning.jaxrs.cdi.resource.explanation=Profil Liberty pobiera instancje zasob\u00f3w z JAXRS, je\u015bli nie mo\u017ce pobra\u0107 instancji z CDI.
 warning.jaxrs.cdi.resource.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107. 
 
-warning.jaxrs.cdi.resource.mismatch=CWWKW1001W: Zasi\u0119g {1} zasobu JAXRS-2.0 {0} nie jest zgodny z zasi\u0119giem CDI {2}. Profil Liberty pobiera instancje zasob\u00f3w z {3}.
-warning.jaxrs.cdi.resource.mismatch.explanation=Je\u015bli zasi\u0119g zasobu JAXRS-2.0 nie jest zgodny z zasi\u0119giem CDI i instancja zasobu istnieje w CDI, profil Liberty pobiera instancj\u0119 zasobu z CDI. Instancja nie zawiera wstrzykiwania CDI, je\u015bli pochodzi z interfejsu JAXRS.
+warning.jaxrs.cdi.resource.mismatch=CWWKW1001W: Zasi\u0119g {1} zasobu JAXRS {0} nie jest zgodny z zasi\u0119giem CDI {2}. Profil Liberty pobiera instancje zasob\u00f3w z {3}.
+warning.jaxrs.cdi.resource.mismatch.explanation=Je\u015bli zasi\u0119g zasobu JAXRS nie jest zgodny z zasi\u0119giem CDI i instancja zasobu istnieje w CDI, profil Liberty pobiera instancj\u0119 zasobu z CDI. Instancja nie zawiera wstrzykiwania CDI, je\u015bli pochodzi z interfejsu JAXRS.
 warning.jaxrs.cdi.resource.mismatch.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107. 
 
-warning.jaxrs.cdi.provider.mismatch=CWWKW1002W: Zasi\u0119giem CDI dostawcy JAXRS-2.0 {0} jest {1}. Profil Liberty pobiera instancj\u0119 dostawcy z {2}.
+warning.jaxrs.cdi.provider.mismatch=CWWKW1002W: Zasi\u0119g CDI dostawcy JAXRS {0} to {1}. Profil Liberty pobiera instancj\u0119 dostawcy z {2}.
 warning.jaxrs.cdi.provider.mismatch.explanation=Instancja dostawcy jest tylko typu Singleton. Profil Liberty pobiera instancj\u0119 dostawcy z CDI, je\u015bli zasi\u0119g CDI dostawcy ma warto\u015b\u0107 Dependent lub ApplicationScoped. Instancja nie zawiera wstrzykiwania CDI, je\u015bli pochodzi z interfejsu JAXRS.
 warning.jaxrs.cdi.provider.mismatch.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.

@@ -68,6 +68,7 @@ class SchemaWriter {
     private static final String INTERNAL_PROPERTIES_TYPE = "internalPropertiesType";
     private static final String VARIABLE_DEFINITION_TYPE = "variableDefinitionType";
     private static final String GENERATE_SCHEMA_ACTION = "generateSchema";
+    private static final String EARLY_ACCESS = "EARLY_ACCESS";
 
     private static final ResourceBundle _msgs = ResourceBundle.getBundle(SchemaGenConstants.NLS_PROPS);
 
@@ -88,7 +89,7 @@ class SchemaWriter {
     private boolean isRuntime;
     private SchemaVersion schemaVersion;
     private OutputVersion outputVersion;
-    private boolean gaBuild = true;
+    private boolean beta = false;
     private static File installDir;
 
     public SchemaWriter(XMLStreamWriter writer) {
@@ -106,16 +107,16 @@ class SchemaWriter {
         this.hasType.add(Type.LOCATION);
         this.restrictedTypes = new LinkedHashSet<String>();
         this.isRuntime = false;
-        gaBuild = isGABuild();
+        beta = isEarlyAccess();
     }
 
     /**
-     * Work out whether we should generate the schema for a GA build or not.
+     * Work out whether we should generate the schema for a Beta build or not.
      *
-     * @return true if ga schema, false otherwise.
+     * @return true if beta schema, false otherwise.
      */
-    private static boolean isGABuild() {
-        boolean result = true;
+    private static boolean isEarlyAccess() {
+        boolean result = false;
 
         final Properties props = new Properties();
         AccessController.doPrivileged(new PrivilegedAction<Object>() {
@@ -123,8 +124,13 @@ class SchemaWriter {
             @Override
             public Object run() {
                 try {
-                    final File version = new File(getInstallDir(), "lib/versions/WebSphereApplicationServer.properties");
-                    Reader r = new InputStreamReader(new FileInputStream(version), "UTF-8");
+                    Reader r;
+                    final File wasFile = new File(getInstallDir(), "lib/versions/WebSphereApplicationServer.properties");
+                    final File olFile = new File(getInstallDir(), "lib/versions/openliberty.properties");
+                    if (olFile.exists())
+                        r = new InputStreamReader(new FileInputStream(olFile), "UTF-8");
+                    else
+                        r = new InputStreamReader(new FileInputStream(wasFile), "UTF-8");
                     props.load(r);
                     r.close();
                 } catch (IOException e) {
@@ -133,22 +139,13 @@ class SchemaWriter {
                 return null;
             }
         });
-        String v = props.getProperty("com.ibm.websphere.productVersion");
+        String edition = props.getProperty("com.ibm.websphere.productEdition");
 
-        if (v != null) {
-            int index = v.indexOf('.');
-            if (index != -1) {
-                try {
-                    int major = Integer.parseInt(v.substring(0, index));
-                    if (major > 2012) {
-                        result = false;
-                    }
-                } catch (NumberFormatException nfe) {
-                    // ignore because we fail safe. True for this hides stuff
-                }
-            }
+        if (edition == null) {
+            result = false;
+        } else {
+            result = edition.equals(EARLY_ACCESS);
         }
-
         return result;
     }
 
@@ -409,7 +406,7 @@ class SchemaWriter {
      */
     private boolean shouldAddOCD(OCDType ocdType) {
         return !!!ocdType.isInternal() &&
-               !!!(gaBuild &&
+               !!!(!beta &&
                    ocdType.isBeta());
     }
 
@@ -516,13 +513,13 @@ class SchemaWriter {
     /**
      * This method takes a set of Attribute Definitions and processes them against an existing Map of attributes.
      *
-     * @param currDefId - A String containing the id of the ObjectClassDefinition that we're processing.
-     * @param attrDefs - The Attribute Definitions of the ObjectClassDefinition that we're processing
-     * @param currentAttributes - The existing map of properties from previous ObjectClassDefinition's in the heirarchy.
+     * @param currDefId          - A String containing the id of the ObjectClassDefinition that we're processing.
+     * @param attrDefs           - The Attribute Definitions of the ObjectClassDefinition that we're processing
+     * @param currentAttributes  - The existing map of properties from previous ObjectClassDefinition's in the heirarchy.
      * @param requiredAttributes - The current list of required Attributes from the processed definitions.
      * @param optionalAttributes - The current list of optional Attributes from the processed definitions.
-     * @param attributeMap - The list of ExtendedDefinitionAttributes for all of the OCD's in the heirarchy.
-     * @param required - A boolean indicating whether the list of currentAttributes are required or optional.
+     * @param attributeMap       - The list of ExtendedDefinitionAttributes for all of the OCD's in the heirarchy.
+     * @param required           - A boolean indicating whether the list of currentAttributes are required or optional.
      */
     private void processOCDAttributes(String currDefId, AttributeDefinition[] attrDefs, Map<String, AttributeDefinition> requiredAttributes,
                                       Map<String, AttributeDefinition> optionalAttributes, Map<String, ExtendedAttributeDefinition> attributeMap,
@@ -596,10 +593,10 @@ class SchemaWriter {
      * This method processes the rename attribute. It builds up a new attribute based on the original attribute, but override any values
      * that have been defined in the new attribute.
      *
-     * @param currDefId - A String containing the id of the ObjectClassDefinition that we're processing.
+     * @param currDefId    - A String containing the id of the ObjectClassDefinition that we're processing.
      * @param oldAttribute - The Attribute that is being renamed.
      * @param newAttribute - The new attribute that has the rename extension.
-     * @param required - A boolean indicating whether this attribute is required or optional.
+     * @param required     - A boolean indicating whether this attribute is required or optional.
      * @return - An AttributeDefinition object that contains the "merged" values.
      */
     private AttributeDefinition renameAttribute(String currDefId, ExtendedAttributeDefinition oldAttribute, ExtendedAttributeDefinition newAttribute, boolean required) {
@@ -798,7 +795,7 @@ class SchemaWriter {
      */
     private boolean shouldAddAttribute(ExtendedAttributeDefinition attributeDef) {
         return !"internal".equals(attributeDef.getName()) &&
-               !!!(gaBuild &&
+               !!!(!beta &&
                    attributeDef.isBeta());
     }
 
@@ -1461,7 +1458,7 @@ class SchemaWriter {
      * This method adds additional annotations to required schema elements so that WDT is aware
      * that it needs to invoke server specific schema generation and use the generated schema.
      *
-     * @param action The action that should be invoked by WDT on encountering this element
+     * @param action      The action that should be invoked by WDT on encountering this element
      * @param currentType The current OCD type
      * @throws XMLStreamException
      */

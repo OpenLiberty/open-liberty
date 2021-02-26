@@ -1,0 +1,266 @@
+/*******************************************************************************
+ * Copyright (c) 2020 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+dependencies {
+  requiredLibs 'org.apache.httpcomponents:httpclient:4.1.2',
+               'org.apache.httpcomponents:httpcore:4.1.2',
+               'commons-codec:commons-codec:1.4',
+               'commons-logging:commons-logging:1.1.1',
+               project(':com.ibm.ws.security.spnego.fat.common')
+}
+
+addRequiredLibraries.dependsOn addJakartaTransformer
+
+/* 
+ * This is where all application ZIP and WARs will be built.
+ */
+def appBuildDir = "${buildDir}/test-application"
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** Copy feature bundles and applications to specific servers.
+ **
+ ******************************************************************
+ ******************************************************************/
+autoFVT.dependsOn ':com.ibm.ws.security.spnego.fat.common:SPNEGOTokenHelperFVT_EAR'
+autoFVT.dependsOn ':com.ibm.ws.webcontainer.security_test.servlets:war'
+autoFVT.doLast {
+  
+  /******************************************************************
+   * Setup server: BasicAuthTest
+   ******************************************************************/
+  def server = 'BasicAuthTest'
+  copy { 
+    from new File(project(':com.ibm.ws.webcontainer.security_test.servlets').buildDir, 'test-application/basicauth.zip')
+    into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
+    rename 'basicauth.zip', 'basicauth.war'
+  }
+  copy { 
+    from new File(buildDir, 'com.ibm.ws.security.spnego_fat.jar')
+    into new File(autoFvtDir, 'publish/servers/' + server)
+    rename 'com.ibm.ws.security.spnego_fat.jar', 'CustomLoginModule.jar'
+  }
+  copy { 
+    from 'publish/files/server_modules/'
+    into new File(autoFvtDir, 'publish/servers/' + server + '/imports')
+    include 'application_definition/**.xml'
+    include 'configs/**.xml'
+    include 'features/**.xml'
+    include 'spnego/configs/**.xml'
+    include 'spnego/authfilters/**.xml'
+    include 'spnego/serversettings/**.xml'
+    include 'jwt/serversettings/**.xml'
+  }
+  copy { 
+    from 'publish/files/resources/security'
+    into new File(autoFvtDir, 'publish/servers/' + server + '/resources/security')
+    include '**'
+  }
+  copy { 
+    from 'publish/files/errorPages/'
+    into new File(autoFvtDir, 'publish/servers/' + server + '/errorPages')
+    include '**.jsp'
+  }
+    
+  /******************************************************************
+   * Setup server: CanonicalHostNameTest
+   ******************************************************************/
+  server = 'CanonicalHostNameTest'
+  copy { 
+    from new File(project(':com.ibm.ws.webcontainer.security_test.servlets').buildDir, 'test-application/basicauth.zip')
+    into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
+    rename 'basicauth.zip', 'basicauth.war'
+  }
+  copy { 
+    from 'publish/files/resources/security'
+    into new File(autoFvtDir, 'publish/servers/' + server + '/resources/security')
+    include '**'
+  }
+
+
+  /******************************************************************
+   * Setup server: com.ibm.ws.security.spnego.fat.setup
+   ******************************************************************/
+  server = 'com.ibm.ws.security.spnego.fat.setup'
+  copy { 
+    from 'publish/files/resources/security'
+    into new File(autoFvtDir, 'publish/servers/' + server + '/resources/security')
+    include '**'
+  }
+  
+  
+  /******************************************************************
+   * Setup server: IncludeClientGSSCredentialInSubjectTest
+   ******************************************************************/
+  server = 'IncludeClientGSSCredentialInSubjectTest'
+  copy { 
+    from new File(project(':com.ibm.ws.webcontainer.security_test.servlets').buildDir, 'test-application/basicauth.zip')
+    into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
+    rename 'basicauth.zip', 'basicauth.war'
+  }
+  copy { 
+    from 'publish/files/server_modules/'
+    into new File(autoFvtDir, 'publish/servers/' + server + '/imports')
+    include 'application_definition/**.xml'
+    include 'configs/**.xml'
+    include 'features/**.xml'
+    include 'spnego/configs/**.xml'
+    include 'spnego/authfilters/**.xml'
+    include 'spnego/serversettings/**.xml'
+  }
+  copy { 
+    from 'publish/files/resources/security'
+    into new File(autoFvtDir, 'publish/servers/' + server + '/resources/security')
+    include '**'
+  }
+    
+    
+  /******************************************************************
+   * Setup server: IncludeCustomCacheKeyTest
+   ******************************************************************/
+  server = 'IncludeCustomCacheKeyTest'
+  copy { 
+    from new File(project(':com.ibm.ws.webcontainer.security_test.servlets').buildDir, 'test-application/basicauth.zip')
+    into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
+    rename 'basicauth.zip', 'basicauth.war'
+  }
+  copy { 
+    from 'publish/files/server_modules/'
+    into new File(autoFvtDir, 'publish/servers/' + server + '/imports')
+    include 'application_definition/**.xml'
+    include 'configs/**.xml'
+    include 'features/**.xml'
+    include 'spnego/configs/**.xml'
+    include 'spnego/authfilters/**.xml'
+    include 'spnego/serversettings/**.xml'
+  }
+  copy { 
+    from 'publish/files/resources/security'
+    into new File(autoFvtDir, 'publish/servers/' + server + '/resources/security')
+    include '**'
+  }
+  copy { 
+    from 'publish/files/resources/security'
+    into new File(autoFvtDir, 'publish/servers/' + server + '/resources/security')
+    include '**'
+  }
+    
+    
+  /******************************************************************
+   * Setup server: Krb5ConfigTest
+   ******************************************************************/
+  server = 'Krb5ConfigTest'
+  copy { 
+    from new File(project(':com.ibm.ws.webcontainer.security_test.servlets').buildDir, 'test-application/basicauth.zip')
+    into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
+    rename 'basicauth.zip', 'basicauth.war'
+  }
+  copy { 
+    from 'publish/files/server_modules/'
+    into new File(autoFvtDir, 'publish/servers/' + server + '/imports')
+    include 'application_definition/**.xml'
+    include 'configs/**.xml'
+    include 'features/**.xml'
+    include 'spnego/configs/**.xml'
+    include 'spnego/authfilters/**.xml'
+    include 'spnego/serversettings/**.xml'
+  }
+  copy { 
+    from 'publish/files/resources/security'
+    into new File(autoFvtDir, 'publish/servers/' + server + '/resources/security')
+    include '**'
+  }
+    
+    
+  /******************************************************************
+   * Setup server: ServicePrincipalNamesTest
+   ******************************************************************/
+  server = 'ServicePrincipalNamesTest'
+  copy { 
+    from new File(project(':com.ibm.ws.webcontainer.security_test.servlets').buildDir, 'test-application/basicauth.zip')
+    into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
+    rename 'basicauth.zip', 'basicauth.war'
+  }
+  copy { 
+    from 'publish/files/server_modules/'
+    into new File(autoFvtDir, 'publish/servers/' + server + '/imports')
+    include 'application_definition/basicauth_war.xml'
+    include 'configs/**.xml'
+    include 'features/**.xml'
+    include 'spnego/configs/**.xml'
+    include 'spnego/authfilters/simpleservlet_contains.xml'
+    include 'spnego/serversettings/standard_config.xml'
+  }
+  copy { 
+    from 'publish/files/resources/security'
+    into new File(autoFvtDir, 'publish/servers/' + server + '/resources/security')
+    include '**'
+  }
+    
+    
+  /******************************************************************
+   * Setup server: SpnegoTokenHelperTest
+   ******************************************************************/
+  server = 'SpnegoTokenHelperTest'
+  copy { 
+    from new File(project(':com.ibm.ws.security.spnego.fat.common').buildDir, 'test-application/SPNEGOTokenHelperFVT.ear')
+    into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
+  }
+  copy { 
+    from new File(project(':com.ibm.ws.webcontainer.security_test.servlets').buildDir, 'test-application/basicauth.zip')
+    into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
+    rename 'basicauth.zip', 'basicauth.war'
+  }
+  copy { 
+    from 'publish/files/server_modules/'
+    into new File(autoFvtDir, 'publish/servers/' + server + '/imports')
+    include 'application_definition/spnegoTokenHelperFvt_location.xml'
+    include 'configs/**.xml'
+    include 'features/**.xml'
+    include 'spnego/configs/**.xml'
+    include 'spnego/authfilters/spnegoTokenHelper_simpleServlet_contains.xml'
+    include 'jaas_loginmodule_serversettings/**.xml'
+  }
+  copy { 
+    from 'publish/files/resources/security'
+    into new File(autoFvtDir, 'publish/servers/' + server + '/resources/security')
+    include '**'
+  }
+    
+    
+  /******************************************************************
+   * Setup server: TrustedActiveDirectoryDomainsTest
+   ******************************************************************/
+  server = 'TrustedActiveDirectoryDomainsTest'
+  copy { 
+    from new File(project(':com.ibm.ws.webcontainer.security_test.servlets').buildDir, 'test-application/basicauth.zip')
+    into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
+    rename 'basicauth.zip', 'basicauth.war'
+  }
+  copy { 
+    from 'publish/files/server_modules/'
+    into new File(autoFvtDir, 'publish/servers/' + server + '/imports')
+      include 'application_definition/basicauth_war.xml'
+      include 'configs/**.xml'
+      include 'constrained_delegation/jaas_config/**.xml'
+      include 'features/**.xml'
+      include 'spnego/configs/**.xml'
+      include 'spnego/authfilters/simpleservlet_contains.xml'
+      include 'spnego/serversettings/standard_config.xml'
+  }
+  copy { 
+    from 'publish/files/resources/security'
+    into new File(autoFvtDir, 'publish/servers/' + server + '/resources/security')
+    include '**'
+  }
+}

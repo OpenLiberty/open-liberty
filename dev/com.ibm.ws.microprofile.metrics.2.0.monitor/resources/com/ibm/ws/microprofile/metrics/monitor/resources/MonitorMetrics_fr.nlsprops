@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2019 IBM Corporation and others.
+# Copyright (c) 2019, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -19,9 +19,9 @@
 # Messages used by MonitorMetrics Impl -  range is 2000-2199
 #-----------------------------------------------------------------------------------------------------------------------------
 FEATURE_REGISTERED=CWPMI2003I: Les m\u00e9triques de surveillance peuvent \u00eatre extraites via mpMetrics.
-FEATURE_REGISTERED.explanation=Les fonctions monitor-1.0 et mpMetrics-2.0 sont activ\u00e9es et les m\u00e9triques de surveillance peuvent \u00eatre extraites via mpMetrics.
+FEATURE_REGISTERED.explanation=Les fonctions Surveillance des performances et MicroProfile Metrics sont activ\u00e9es. Les m\u00e9triques de surveillance peuvent \u00eatre extraites via MicroProfile Metrics.
 FEATURE_REGISTERED.useraction=Aucune action utilisateur n'est requise.
 
 FEATURE_UNREGISTERED=CWPMI2004I: L'enregistrement de toutes les m\u00e9triques de surveillance a \u00e9t\u00e9 annul\u00e9 depuis mpMetrics.
-FEATURE_UNREGISTERED.explanation=La fonction monitor-1.0, la fonction mpMetrics-2.0 ou les deux fonctions ont \u00e9t\u00e9 retir\u00e9es du serveur et l'enregistrement de toutes les m\u00e9triques de surveillance a \u00e9t\u00e9 annul\u00e9 depuis mpMetrics.
+FEATURE_UNREGISTERED.explanation=La fonction Surveillance des performances, la fonction MicroProfile Metrics, ou les deux fonctions ont \u00e9t\u00e9 retir\u00e9es du serveur. L'enregistrement de toutes les m\u00e9triques de surveillance dans MicroProfile Metrics a \u00e9t\u00e9 annul\u00e9.
 FEATURE_UNREGISTERED.useraction=Aucune action utilisateur n'est requise.

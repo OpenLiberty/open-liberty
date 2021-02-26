@@ -264,7 +264,7 @@ public class ClientAuthorization {
      * @throws OAuth20Exception
      */
     private void validateScopes(HttpServletRequest request, AttributeList attrList, OidcBaseClient client, String clientId) throws OAuth20Exception {
-        if (request.getAttribute("OidcRequest") != null) {
+        if (request.getAttribute(OAuth20Constants.OIDC_REQUEST_OBJECT_ATTR_NAME) != null) {
             checkForMissingScopeInTheRequest(request);
             checkForEmptyRegisteredScopeSet(client, clientId);
         }
@@ -372,7 +372,7 @@ public class ClientAuthorization {
                 return retVal;
             }
 
-            if (request.getAttribute("OidcRequest") == null) {
+            if (request.getAttribute(OAuth20Constants.OIDC_REQUEST_OBJECT_ATTR_NAME) == null) {
                 if (tc.isDebugEnabled()) {
                     Tr.debug(tc, "This is an OAuth20 request");
                 }
@@ -735,7 +735,7 @@ public class ClientAuthorization {
          * Check:
          * - autoauthorization is enabled
          * - autoauthorization param is set to true
-         * - client is whitelisted
+         * - client is automatically authorized
          */
         String autoAuthzName = provider.getAutoAuthorizeParam();
         if (autoAuthzName == null || autoAuthzName.isEmpty()) {
@@ -751,25 +751,25 @@ public class ClientAuthorization {
             return false;
         }
         if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "Auto authorize param is true, loading whitelisted clients");
+            Tr.debug(tc, "Auto authorize param is true, loading automatically authorized clients");
         }
 
         String[] allowedClients = provider.getAutoAuthorizeClients();
 
         if (allowedClients == null || allowedClients.length < 1) {
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Authauthz param enabled but no whitelisted clients, strange to see an autoauthz request.");
+                Tr.debug(tc, "Authauthz param enabled but no allowed clients, strange to see an autoauthz request.");
             }
             return false;
         }
 
         if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "Checking if client [" + clientId + "] is whitelisted");
+            Tr.debug(tc, "Checking if client [" + clientId + "] is automatically authorized");
         }
-        // Check if the client is whitelisted
+        // Check if the client is allowed
         for (String client : allowedClients) {
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Checking against whitelisted client: " + client);
+                Tr.debug(tc, "Checking against allowed client: " + client);
             }
             if (clientId != null && clientId.equals(client)) {
                 return true;

@@ -15,6 +15,7 @@ bVersion=1.0
 
 src: \
 	fat/src,\
+	test-applications/injectIntoPath.war/src,\
 	test-applications/jaxrsResourceInjection.war/src,\
 	test-applications/jeeInjectionTargetTest.war/src,\
 	test-applications/jeeInjectionTargetTestEJB.jar/src,\
@@ -33,7 +34,11 @@ tested.features:\
         jpa-2.2,\
         beanValidation-2.0,\
         jaxrs-2.1,\
-        jsf-2.3
+        jsf-2.3,\
+        restfulwsclient-3.0,\
+        restfulws-3.0,\
+        jsonp-2.0,\
+        faces-3.0
 	
 	
 test.project: true

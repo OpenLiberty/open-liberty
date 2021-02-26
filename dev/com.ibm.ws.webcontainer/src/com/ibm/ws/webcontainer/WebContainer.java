@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2008 IBM Corporation and others.
+ * Copyright (c) 1997, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.text.MessageFormat;
@@ -190,8 +191,6 @@ public abstract class WebContainer extends BaseContainer {
                                                                  + WebContainer.class.getClassLoader());
 
     }
-
-    protected static boolean decodePlusSign = true; //default to not decoding the plus sign per URL Spec
 
     protected final static ConcurrentMap _cacheMap = new ConcurrentHashMap(invocationCacheSize);
     final private static AtomicInteger _cacheSize = new AtomicInteger();
@@ -806,7 +805,7 @@ public abstract class WebContainer extends BaseContainer {
             // Begin 293696 ServletRequest.getPathInfo() fails WASCC.web.webcontainer
             String reqURI = req.getRequestURI();
             String decodedReqURI = null;
-            if (decodePlusSign) {
+            if (WCCustomProperties.DECODE_URL_PLUS_SIGN) {
                 decodedReqURI = URLDecoder.decode(reqURI, encoding);
             } else {
                 decodedReqURI = WSURLDecoder.decode(reqURI, encoding);
@@ -823,7 +822,7 @@ public abstract class WebContainer extends BaseContainer {
             if (decode) {
                 // URLs have been decoded with UTF-8 but not yet URLDecoded
                 //reqURI = URLDecoder.decode(reqURI, encoding); // encoding should be UTF-8
-                String isoURI = new String(reqURI.getBytes(encoding), ISO);
+                String isoURI = new String(reqURI.getBytes(encoding), StandardCharsets.ISO_8859_1);
                 hreq.setAttribute("com.ibm.websphere.servlet.uri_non_decoded", isoURI);
                 if (isTraceOn && logger.isLoggable(Level.FINE)) //306998.15 
                 {
@@ -1180,10 +1179,6 @@ public abstract class WebContainer extends BaseContainer {
         }
     }
 
-    public boolean getDecodePlusSign() {
-        return WebContainer.decodePlusSign;
-    }
-
     /**
      * Method getWebContainerProperties.
      * 
@@ -1235,7 +1230,7 @@ public abstract class WebContainer extends BaseContainer {
         String cacheKeyStr = cacheKey.toString();
         // Servlet 4.0 : Use CacheServletWrapperFactory
         CacheServletWrapper wrapper =  cacheServletWrapperFactory.createCacheServletWrapper((IServletWrapper) s, req, cacheKeyStr, app);
-        if (_cacheMap.putIfAbsent(cacheKeyStr, wrapper) != null) {
+        if (_cacheMap.containsKey(cacheKeyStr) || _cacheMap.putIfAbsent(cacheKeyStr, wrapper) != null) {
             if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) //306998.15
             {
                 logger.logp(Level.FINE, CLASS_NAME, "addToCache", "Already cached cacheKey --> " + cacheKey);

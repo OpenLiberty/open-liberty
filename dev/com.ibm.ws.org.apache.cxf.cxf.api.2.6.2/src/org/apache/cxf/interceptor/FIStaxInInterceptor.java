@@ -24,6 +24,7 @@ import java.io.InputStream;
 
 import javax.xml.stream.XMLStreamReader;
 
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.sun.xml.fastinfoset.stax.StAXDocumentParser;
 
 import org.apache.cxf.endpoint.Endpoint;
@@ -35,6 +36,7 @@ import org.apache.cxf.phase.Phase;
 /**
  * Creates an XMLStreamReader from the InputStream on the Message.
  */
+@Trivial
 public class FIStaxInInterceptor extends AbstractPhaseInterceptor<Message> {
     public static final String FI_GET_SUPPORTED = "org.apache.cxf.fastinfoset.get.supported";
     

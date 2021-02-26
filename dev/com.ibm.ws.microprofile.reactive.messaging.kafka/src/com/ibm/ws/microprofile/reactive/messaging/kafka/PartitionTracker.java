@@ -43,6 +43,10 @@ public class PartitionTracker {
         this.isClosed = new AtomicBoolean(false);
     }
 
+    public TopicPartition getTopicPartition() {
+        return topicPartition;
+    }
+
     /**
      * Records that the assigned partition has been revoked
      */

@@ -1,0 +1,3 @@
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: test
+Import-Packages: java.io, javax.servlet, javax.servlet.http, org.osgi.framework,  org.osgi.service.cm, com.ibm.wsspi.kernel.service.location

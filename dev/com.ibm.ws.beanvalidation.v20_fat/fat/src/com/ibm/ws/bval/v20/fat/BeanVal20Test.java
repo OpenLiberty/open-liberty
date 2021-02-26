@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,6 +18,7 @@ import static com.ibm.websphere.simplicity.ShrinkHelper.exportToServer;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -36,6 +37,7 @@ import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -58,17 +60,26 @@ public class BeanVal20Test extends FATServletClient {
                     @TestServlet(servlet = BeanValidationTestServlet.class, contextRoot = MULTI_VAL_APP),
                     @TestServlet(servlet = ValueExtractorServlet.class, contextRoot = VAL_EXT_APP),
                     @TestServlet(servlet = BeanValidationServlet.class, contextRoot = HIBERNATE_DEFAULT_APP),
-                    @TestServlet(servlet = CustomProviderTestServlet.class, contextRoot = CUSTOM_PROVIDER_APP),
+                    @TestServlet(servlet = CustomProviderTestServlet.class, contextRoot = CUSTOM_PROVIDER_APP)
     })
     public static LibertyServer server;
 
     @BeforeClass
     public static void setUp() throws Exception {
 
+        JavaArchive multipleValidationXmlEjb1_jar = buildJavaArchive("MultipleValidationXmlEjb1.jar", "bval.v20.ejb1.*");
+        JavaArchive multipleValidationXmlEjb2_jar = buildJavaArchive("MultipleValidationXmlEjb2.jar", "bval.v20.ejb2.*");
+        WebArchive multipleValidationXmlWeb_war = buildDefaultApp("MultipleValidationXmlWeb.war", "bval.v20.multixml.*");
+
+        if (JakartaEE9Action.isActive()) {
+            multipleValidationXmlEjb1_jar.move("/META-INF/constraints/constraints-house_EE9.xml", "/META-INF/constraints/constraints-house.xml");
+            multipleValidationXmlEjb2_jar.move("/META-INF/constraints/constraints-house_EE9.xml", "/META-INF/constraints/constraints-house.xml");
+            multipleValidationXmlWeb_war.move("/WEB-INF/constraints3/constraints-house_EE9.xml", "/WEB-INF/constraints3/constraints-house.xml");
+        }
         EnterpriseArchive multiValXmlEar = ShrinkWrap.create(EnterpriseArchive.class, "MultipleValidationXmlEjb.ear")
-                        .addAsModule(buildJavaArchive("MultipleValidationXmlEjb1.jar", "bval.v20.ejb1.*"))
-                        .addAsModule(buildJavaArchive("MultipleValidationXmlEjb2.jar", "bval.v20.ejb2.*"))
-                        .addAsModule(buildDefaultApp("MultipleValidationXmlWeb.war", "bval.v20.multixml.*"));
+                        .addAsModule(multipleValidationXmlEjb1_jar)
+                        .addAsModule(multipleValidationXmlEjb2_jar)
+                        .addAsModule(multipleValidationXmlWeb_war);
         addDirectory(multiValXmlEar, "test-applications/MultipleValidationXmlEjb.ear/resources");
         exportToServer(server, "dropins", multiValXmlEar);
 

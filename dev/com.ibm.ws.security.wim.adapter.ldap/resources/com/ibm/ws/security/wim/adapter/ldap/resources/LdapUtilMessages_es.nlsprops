@@ -46,7 +46,6 @@ INVALID_PROPERTY_VALUE.useraction=Aseg\u00farese de que el valor de la propiedad
 GENERIC=CWIML1999E: La operaci\u00f3n del registro de usuarios no ha podido completarse. Se ha producido un error de tiempo de ejecuci\u00f3n durante el proceso: {0}
 GENERIC.explanation=El programa ha encontrado el error especificado durante la operaci\u00f3n.
 GENERIC.useraction= Revise los registros para averiguar la causa de este error y realice las acciones correctivas adecuadas.
-
 MISSING_MANDATORY_PROPERTY=CWIML1028E: La operaci\u00f3n del registro de usuarios no ha podido completarse. Falta el valor de la propiedad obligatoria {0}. Especifique un valor para la propiedad obligatoria.
 MISSING_MANDATORY_PROPERTY.explanation=La operaci\u00f3n no puede realizarse porque falta el valor de la propiedad obligatoria. Por ejemplo, no se ha especificado la propiedad RDN (nombre distinguido relativo) durante la creaci\u00f3n de la entidad; o faltan propertyName o entityTypeName en PropertyDefinitionControl o en ExtensionPropertyDefinitionControl; o falta entityName en entitySchema.
 MISSING_MANDATORY_PROPERTY.useraction=Especifique un valor para la propiedad obligatoria.
@@ -221,3 +220,11 @@ LDAP_REGISTRY_CUSTOM_MAPPER_FAILED.useraction=Si la excepci\u00f3n no se esperab
 LDAP_REGISTRY_INVALID_MAPPING=CWIML4504W: El correlacionador de certificado X.509 personalizado ha devuelto un valor vac\u00edo o nulo. 
 LDAP_REGISTRY_INVALID_MAPPING.explanation=El correlacionador de certificado X.509 personalizado debe devolver un valor no vac\u00edo ni nulo o emitir una de las excepciones nombradas.
 LDAP_REGISTRY_INVALID_MAPPING.useraction=Modifique la implementaci\u00f3n del correlacionador de certificado X.509 personalizado para que no devuelva un valor vac\u00edo o nulo. Si no se puede devolver un valor v\u00e1lido, la implementaci\u00f3n debe emitir una excepci\u00f3n comprobada. 
+
+LOGINPROPERTY_OVERRIDE_USERFILTER=CWIML4505W: El atributo userFilter definido se pasa por alto porque los atributos loginProperty est\u00e1n definidos. El filtro de usuario se genera din\u00e1micamente.
+LOGINPROPERTY_OVERRIDE_USERFILTER.explanation=Se han definido una o varias instancias del atributo loginProperty. Estos atributos se utilizan para crear el filtro de usuario.
+LOGINPROPERTY_OVERRIDE_USERFILTER.useraction=Si se prefiere el atributo userFilter, elimine los atributos loginProperty.
+
+INVALID_LOGIN_PROPERTIES=CWIML4506E: Las siguientes propiedades de inicio de sesi\u00f3n no son v\u00e1lidas: {0}.
+INVALID_LOGIN_PROPERTIES.explanation=Una o varias propiedades de inicio de sesi\u00f3n no son propiedades de WIM PersonAccount v\u00e1lidas.
+INVALID_LOGIN_PROPERTIES.useraction=Elija propiedades PersonAccount v\u00e1lidas o a\u00f1ada las propiedades a PersonAccount como propiedades ampliadas. Aseg\u00farese de que las may\u00fasculas y min\u00fasculas de cada propiedad de inicio de sesi\u00f3n coincida con las de la propiedad PersonAccount correspondiente.

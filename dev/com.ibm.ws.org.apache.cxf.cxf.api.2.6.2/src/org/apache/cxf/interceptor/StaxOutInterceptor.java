@@ -43,6 +43,9 @@ import org.apache.cxf.phase.AbstractPhaseInterceptor;
 import org.apache.cxf.phase.Phase;
 import org.apache.cxf.staxutils.StaxUtils;
 
+import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.websphere.ras.annotation.Trivial;
+
 /**
  * Creates an XMLStreamReader from the InputStream on the Message.
  */
@@ -58,13 +61,13 @@ public class StaxOutInterceptor extends AbstractPhaseInterceptor<Message> {
     private static final ResourceBundle BUNDLE = BundleUtils.getBundle(StaxOutInterceptor.class);
     private static Map<Object, XMLOutputFactory> factories = new HashMap<Object, XMLOutputFactory>();
 
-    
+    @Trivial
     public StaxOutInterceptor() {
         super(Phase.PRE_STREAM);
         addAfter(AttachmentOutInterceptor.class.getName());
     }
 
-    public void handleMessage(Message message) {
+    public void handleMessage(@Sensitive Message message) {
         OutputStream os = message.getContent(OutputStream.class);
         XMLStreamWriter xwriter = message.getContent(XMLStreamWriter.class);
         Exchange ex = message.getExchange();
@@ -123,6 +126,8 @@ public class StaxOutInterceptor extends AbstractPhaseInterceptor<Message> {
         // Add a final interceptor to write end elements
         message.getInterceptorChain().add(ENDING);
     }
+    
+    @Trivial
     private OutputStream setupOutputStream(Message message, OutputStream os) {
         if (!(os instanceof AbstractWrappedOutputStream)) {
             os = new AbstractWrappedOutputStream(os) { };
@@ -144,6 +149,7 @@ public class StaxOutInterceptor extends AbstractPhaseInterceptor<Message> {
         }
     }
 
+    @Trivial
     private String getEncoding(Message message) {
         Exchange ex = message.getExchange();
         String encoding = (String)message.get(Message.ENCODING);
@@ -159,6 +165,7 @@ public class StaxOutInterceptor extends AbstractPhaseInterceptor<Message> {
         return encoding;
     }
 
+    @Trivial
     public static XMLOutputFactory getXMLOutputFactory(Message m) throws Fault {
         Object o = m.getContextualProperty(XMLOutputFactory.class.getName());
         if (o instanceof XMLOutputFactory) {

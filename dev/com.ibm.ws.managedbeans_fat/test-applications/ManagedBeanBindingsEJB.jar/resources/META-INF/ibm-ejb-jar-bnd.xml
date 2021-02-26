@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ejb-jar-bnd
+  xmlns="http://websphere.ibm.com/xml/ns/javaee"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-ejb-jar-bnd_1_0.xsd"
+  version="1.0">
+
+  <session name="StatelessEJBforNamedManaged">
+    <resource-ref name="ManagedBean"
+                  binding-name="java:module/NamedManagedBean"/>
+  </session>
+  <session name="StatelessEJBforInjectionManaged">
+    <resource-ref name="ManagedBean"
+                  binding-name="java:module/InjectionManagedBean"/>
+  </session>
+  <session name="StatelessEJBforInterceptorManaged">
+    <resource-ref name="ManagedBean"
+                  binding-name="java:module/InterceptorManagedBean"/>
+  </session>
+</ejb-jar-bnd>

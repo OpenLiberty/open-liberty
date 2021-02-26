@@ -374,7 +374,10 @@ class BundleProcessor implements SynchronousBundleListener, EventHandler, Runtim
                         }
                     }
 
-                    processed.setResult(true);
+                    if (processed != null) {
+                        // This can only be null if the server started shutting down after our shutdown check.
+                        processed.setResult(true);
+                    }
 
                 }
 

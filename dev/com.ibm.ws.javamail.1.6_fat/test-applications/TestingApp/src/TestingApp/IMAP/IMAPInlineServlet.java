@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -44,17 +44,15 @@ public class IMAPInlineServlet extends HttpServlet {
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // TODO Auto-generated method stub
-
         response.setContentType("text/html");
         PrintWriter out = response.getWriter();
 
         try {
-            jndiConstant = new InitialContext().lookup("TestingApp/IMAPInlineServlet/imap_port");
-
+            jndiConstant = new InitialContext().lookup("TestingApp/imap_port");
         } catch (NamingException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            System.out.println("Failed to lookup 'TestingApp/imap_port': "+e.getMessage());
+            e.printStackTrace(System.out);
+            throw new RuntimeException(e);
         }
 
         String imapPort = Integer.toString((Integer) jndiConstant);
@@ -71,7 +69,9 @@ public class IMAPInlineServlet extends HttpServlet {
             session = Session.getInstance(props, new Authenticator() {
                 @Override
                 protected PasswordAuthentication getPasswordAuthentication() {
-                    PasswordAuthentication passwordAuthentication = new PasswordAuthentication("imap@testserver.com", "imapPa$$word4U2C");
+                    PasswordAuthentication passwordAuthentication = new PasswordAuthentication("imap@testserver.com"
+                                                                                              ,"imapPa$$word4U2C"
+                                                                                              );
                     return passwordAuthentication;
                 }
             });
@@ -108,7 +108,7 @@ public class IMAPInlineServlet extends HttpServlet {
             store.close();
 
         } catch (Exception mex) {
-            mex.printStackTrace();
+            mex.printStackTrace(System.out);
         }
     }
 
@@ -117,8 +117,6 @@ public class IMAPInlineServlet extends HttpServlet {
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // TODO Auto-generated method stub
-
     }
 
 }

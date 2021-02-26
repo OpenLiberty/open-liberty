@@ -13,9 +13,7 @@ package com.ibm.ws.app.manager.ear.internal;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.Version;
@@ -28,7 +26,6 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.app.manager.ApplicationManager;
-import com.ibm.ws.app.manager.internal.AppManagerConstants;
 import com.ibm.ws.app.manager.module.AbstractDeployedAppInfoFactory;
 import com.ibm.ws.app.manager.module.DeployedAppInfo;
 import com.ibm.ws.app.manager.module.DeployedAppInfoFactory;
@@ -65,6 +62,8 @@ public class EARDeployedAppInfoFactoryImpl extends AbstractDeployedAppInfoFactor
     protected volatile Version platformVersion = JavaEEVersion.DEFAULT_VERSION;
 
     private ApplicationManager applicationManager;
+
+    private final String DEFAULT_APP_LOCATION = "${server.config.dir}/apps/expanded/";
 
     @Reference(service = JavaEEVersion.class,
                cardinality = ReferenceCardinality.OPTIONAL,
@@ -145,19 +144,35 @@ public class EARDeployedAppInfoFactoryImpl extends AbstractDeployedAppInfoFactor
     }
 
     // Application expansion ...
+    protected void prepareExpansion(String earName) throws IOException {
+        WsResource expansionResource;
+        try {
+            expansionResource = deployedAppServices.getLocationAdmin().resolveResource(applicationManager.getExpandLocation());
+            if (expansionResource != null) {
+                expansionResource.create();
+            } else {
+                // if we cant resolve the expandLocation value default it and warn the user
+                Tr.warning(_tc, "warning.could.not.expand.app.loc", earName, applicationManager.getExpandLocation());
+                expansionResource = null;
+                expansionResource = deployedAppServices.getLocationAdmin().resolveResource(DEFAULT_APP_LOCATION);
+                expansionResource.create();
 
-    protected void prepareExpansion() throws IOException {
-        WsResource expansionResource = deployedAppServices.getLocationAdmin().resolveResource(AppManagerConstants.EXPANDED_APPS_DIR);
-        expansionResource.create();
+            }
+        } catch (Exception e) {
+            Tr.warning(_tc, "warning.could.not.expand.app.loc", earName, applicationManager.getExpandLocation());
+            expansionResource = null;
+            expansionResource = deployedAppServices.getLocationAdmin().resolveResource(DEFAULT_APP_LOCATION);
+            expansionResource.create();
+        }
     }
 
     protected WsResource resolveExpansion(String appName) {
-        return deployedAppServices.getLocationAdmin().resolveResource(AppManagerConstants.EXPANDED_APPS_DIR + appName + ".ear/");
+        return deployedAppServices.getLocationAdmin().resolveResource(applicationManager.getExpandLocation() + appName + ".ear/");
     }
 
     protected void expand(
-        String name, File collapsedFile,
-        WsResource expandedResource, File expandedFile) throws IOException {
+                          String name, File collapsedFile,
+                          WsResource expandedResource, File expandedFile) throws IOException {
 
         String collapsedPath = collapsedFile.getAbsolutePath();
 
@@ -190,15 +205,14 @@ public class EARDeployedAppInfoFactoryImpl extends AbstractDeployedAppInfoFactor
      * expand the application to the expanded applications location.
      *
      * @param appInfo Information for the application for which to create
-     *     deployment information.
+     *            deployment information.
      * @return Deployment information for the application.
      *
      * @throws UnableToAdaptException Thrown if the deployment information
-     *     count not be created.
+     *             count not be created.
      */
     @Override
-    public DeployedAppInfo createDeployedAppInfo(ApplicationInformation<DeployedAppInfo> appInfo)
-        throws UnableToAdaptException {
+    public DeployedAppInfo createDeployedAppInfo(ApplicationInformation<DeployedAppInfo> appInfo) throws UnableToAdaptException {
 
         String appPid = appInfo.getPid();
         String appName = appInfo.getName();
@@ -223,7 +237,7 @@ public class EARDeployedAppInfoFactoryImpl extends AbstractDeployedAppInfoFactor
         } else if (applicationManager.getExpandApps()) {
 
             try {
-                prepareExpansion();
+                prepareExpansion(appName);
 
                 WsResource expandedResource = resolveExpansion(appName);
                 File expandedFile = expandedResource.asFile();
@@ -275,8 +289,7 @@ public class EARDeployedAppInfoFactoryImpl extends AbstractDeployedAppInfoFactor
         }
         appInfo.setContainer(jeeContainer);
 
-        EARDeployedAppInfo deployedApp =
-            new EARDeployedAppInfo(appInfo, applicationDD, this, deployedAppServices, originalAppContainer);
+        EARDeployedAppInfo deployedApp = new EARDeployedAppInfo(appInfo, applicationDD, this, deployedAppServices, originalAppContainer);
         appInfo.setHandlerInfo(deployedApp);
 
         return deployedApp;

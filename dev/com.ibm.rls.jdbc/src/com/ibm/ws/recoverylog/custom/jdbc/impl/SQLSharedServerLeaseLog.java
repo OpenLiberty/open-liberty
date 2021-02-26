@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014,2020 IBM Corporation and others.
+ * Copyright (c) 2014,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@ import java.util.StringTokenizer;
 
 import javax.sql.DataSource;
 
+import com.ibm.tx.util.Utils;
 import com.ibm.tx.util.logging.Tr;
 import com.ibm.tx.util.logging.TraceComponent;
 import com.ibm.ws.recoverylog.spi.CustomLogProperties;
@@ -45,7 +46,7 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog {
                                                          TraceConstants.TRACE_GROUP, TraceConstants.NLS_FILE);
 
     // Reference to the dedicated non-transactional datasource
-    private DataSource _theDS = null;
+    private DataSource _theDS;
 
     /**
      * A reference to the LogProperties object that defines the identity and physical
@@ -54,24 +55,30 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog {
     private final CustomLogProperties _customLogProperties;
 
     /**
-     * Are we working against an Oracle Database or DB2
+     * Are we working against Oracle, PostgreSQL or Generic (DB2 or SQL Server at least)
      */
-    private boolean _isOracle = false;
+    private boolean _isOracle;
+    private boolean _isPostgreSQL;
 
     private int _leaseTimeout;
     private final String _leaseTableName = "WAS_LEASES_LOG";
 
     /**
      * These strings are used for Database table creation. DDL is
-     * different for DB2 and Oracle.
+     * different for DB2, MS SQL Server, PostgreSQL and Oracle.
      */
-    private final String db2TablePreString = "CREATE TABLE ";
-    private final String db2TablePostString = "( SERVER_IDENTITY VARCHAR(128), RECOVERY_GROUP VARCHAR(128), LEASE_OWNER VARCHAR(128), " +
-                                              "LEASE_TIME BIGINT) ";
+    private final String genericTablePreString = "CREATE TABLE ";
+    private final String genericTablePostString = "( SERVER_IDENTITY VARCHAR(128), RECOVERY_GROUP VARCHAR(128), LEASE_OWNER VARCHAR(128), " +
+                                                  "LEASE_TIME BIGINT) ";
 
     private final String oracleTablePreString = "CREATE TABLE ";
     private final String oracleTablePostString = "( SERVER_IDENTITY VARCHAR(128), RECOVERY_GROUP VARCHAR(128), LEASE_OWNER VARCHAR(128), " +
                                                  "LEASE_TIME NUMBER(19)) ";
+
+    private final String postgreSQLTablePreString = "CREATE TABLE ";
+    private final String postgreSQLTablePostString = "( SERVER_IDENTITY VARCHAR (128) UNIQUE NOT NULL, RECOVERY_GROUP VARCHAR (128) NOT NULL, LEASE_OWNER VARCHAR (128) NOT NULL, "
+                                                     +
+                                                     "LEASE_TIME BIGINT);";
 
     /**
      * We only want one client at a time to attempt to create a new
@@ -189,7 +196,7 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog {
 
                     if (tc.isEventEnabled()) {
                         Tr.event(tc, "Lease Table: read recoveryId: " + recoveryId);
-                        Tr.event(tc, "Lease Table: read leaseTime: " + leaseTime);
+                        Tr.event(tc, "Lease Table: read leaseTime: " + Utils.traceTime(leaseTime));
                     }
 
                     PeerLeaseData pld = new PeerLeaseData(recoveryId, leaseTime, _leaseTimeout);
@@ -270,7 +277,8 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog {
             try {
                 String queryString = "SELECT LEASE_TIME, LEASE_OWNER" +
                                      " FROM " + _leaseTableName +
-                                     " WHERE SERVER_IDENTITY='" + recoveryIdentity + "' FOR UPDATE OF LEASE_TIME";
+                                     " WHERE SERVER_IDENTITY='" + recoveryIdentity + "'" +
+                                     (_isPostgreSQL ? "" : " FOR UPDATE OF LEASE_TIME");
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "Attempt to select the row for UPDATE using - " + queryString);
                 lockingRS = lockingStmt.executeQuery(queryString);
@@ -318,7 +326,7 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog {
                     long storedLease = lockingRS.getLong(1);
                     String storedLeaseOwner = lockingRS.getString(2);
                     if (tc.isDebugEnabled())
-                        Tr.debug(tc, "Acquired lock row, stored lease value is: " + storedLease + ", stored owner is: " + storedLeaseOwner);
+                        Tr.debug(tc, "Acquired lock row, stored lease value is: " + Utils.traceTime(storedLease) + ", stored owner is: " + storedLeaseOwner);
 
                     // If this is startup, check whether lease has expired
                     if (isServerStartup) {
@@ -334,8 +342,7 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog {
                             if (!storedLeaseOwner.equals(recoveryIdentity)) {
                                 if (tc.isDebugEnabled())
                                     Tr.debug(tc, "A peer is recovering, we will fail our recovery and exit");
-                                Object[] errorObject = new Object[] { recoveryIdentity };
-                                RecoveryFailedException rex = new RecoveryFailedException();
+                                RecoveryFailedException rex = new RecoveryFailedException(recoveryIdentity);
                                 throw rex;
                             }
                         }
@@ -356,8 +363,7 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog {
                     updateStmt.setString(2, recoveryGroup);
                     updateStmt.setString(3, recoveryIdentity);
                     if (tc.isDebugEnabled())
-                        Tr.debug(tc, "Ready to UPDATE using string - " + updateString + " and time: " + fir1);
-                    Tr.audit(tc, "WTRN0108I: Update Lease for server with recovery identity " + recoveryIdentity);
+                        Tr.debug(tc, "Ready to UPDATE using string - " + updateString + " and time: " + Utils.traceTime(fir1));
 
                     int ret = updateStmt.executeUpdate();
 
@@ -425,7 +431,7 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog {
         Tr.audit(tc, "WTRN0108I: Insert New Lease for server with recovery identity " + recoveryIdentity);
         try {
             if (tc.isDebugEnabled())
-                Tr.debug(tc, "Need to setup new row using - " + insertString + ", and time: " + fir1);
+                Tr.debug(tc, "Need to setup new row using - " + insertString + ", and time: " + Utils.traceTime(fir1));
             specStatement = conn.prepareStatement(insertString);
             specStatement.setString(1, recoveryIdentity);
             specStatement.setString(2, recoveryGroup);
@@ -513,6 +519,15 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog {
                     Tr.debug(tc, "This is an Oracle Database");
                 // Flag the we can tolerate transient SQL error codes
                 //sqlTransientErrorHandlingEnabled = true;
+            } else if (dbName.toLowerCase().contains("postgresql")) {
+                // we are PostgreSQL
+                _isPostgreSQL = true;
+                //TODO: WORRY about failover later
+                //_sqlTransientErrorCodes = _db2TransientErrorCodes;
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "This is a PostgreSQL Database");
+                // Flag the we can tolerate transient SQL error codes
+                //sqlTransientErrorHandlingEnabled = true;
             } else if (dbName.toLowerCase().contains("db2")) {
                 // we are DB2
                 //TODO: WORRY about failover later
@@ -521,10 +536,18 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog {
                     Tr.debug(tc, "This is a DB2 Database");
                 // Flag the we can tolerate transient SQL error codes
                 //sqlTransientErrorHandlingEnabled = true;
-            } else {
-                // Not DB2 or Oracle, cannot handle transient SQL errors
+            } else if (dbName.toLowerCase().contains("microsoft sql")) {
+                // we are MS SQL Server
+                //TODO: WORRY about failover later
+                //_sqlTransientErrorCodes = _db2TransientErrorCodes;
                 if (tc.isDebugEnabled())
-                    Tr.debug(tc, "This is neither Oracle nor DB2, it is " + dbName);
+                    Tr.debug(tc, "This is a Microsoft SQL Server Database");
+                // Flag the we can tolerate transient SQL error codes
+                //sqlTransientErrorHandlingEnabled = true;
+            } else {
+                // Not DB2, PostgreSQL or Oracle, cannot handle transient SQL errors
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "This is neither Oracle, PostgreSQL, MS SQL Server nor DB2, it is " + dbName);
             }
 
             String dbVersion = mdata.getDatabaseProductVersion();
@@ -545,15 +568,14 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog {
      * log.
      *
      * @exception SQLException thrown if a SQLException is
-     *                             encountered when accessing the
-     *                             Database.
+     *                encountered when accessing the
+     *                Database.
      */
     private void createLeaseTable(Connection conn) throws SQLException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "createLeaseTable", new java.lang.Object[] { conn, this });
 
         Statement createTableStmt = null;
-        PreparedStatement specStatement = null;
 
         try {
             createTableStmt = conn.createStatement();
@@ -563,19 +585,22 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog {
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "Create Oracle Table using: " + oracleTableString);
                 createTableStmt.executeUpdate(oracleTableString);
-            } else {
-                String db2TableString = db2TablePreString + _leaseTableName + db2TablePostString;
+            } else if (_isPostgreSQL) {
+                String postgreSQLTableString = postgreSQLTablePreString + _leaseTableName + postgreSQLTablePostString;
                 if (tc.isDebugEnabled())
-                    Tr.debug(tc, "Create DB2 Table using: " + db2TableString);
-                createTableStmt.executeUpdate(db2TableString);
+                    Tr.debug(tc, "Create PostgreSQL Table using: " + postgreSQLTableString);
+                conn.rollback();
+                createTableStmt.execute(postgreSQLTableString);
+            } else {
+                String genericTableString = genericTablePreString + _leaseTableName + genericTablePostString;
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "Create Generic Table using: " + genericTableString);
+                createTableStmt.executeUpdate(genericTableString);
             }
 
         } finally {
             if (createTableStmt != null && !createTableStmt.isClosed()) {
                 createTableStmt.close();
-            }
-            if (specStatement != null && !specStatement.isClosed()) {
-                specStatement.close();
             }
         }
 
@@ -601,9 +626,6 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog {
             Tr.entry(tc, "deleteServerLease", new java.lang.Object[] { recoveryIdentity, this });
 
         Connection conn = null;
-        boolean sqlSuccess = false;
-        SQLException currentSqlEx = null;
-
         Statement deleteStmt = null;
 
         try {
@@ -715,7 +737,8 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog {
             try {
                 String queryString = "SELECT LEASE_TIME" +
                                      " FROM " + _leaseTableName +
-                                     " WHERE SERVER_IDENTITY='" + recoveryIdentityToRecover + "' FOR UPDATE OF LEASE_TIME";
+                                     " WHERE SERVER_IDENTITY='" + recoveryIdentityToRecover + "'" +
+                                     (_isPostgreSQL ? "" : " FOR UPDATE OF LEASE_TIME");
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "Attempt to select the row for UPDATE using - " + queryString);
                 lockingRS = lockingStmt.executeQuery(queryString);
@@ -730,7 +753,7 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog {
                 // We found the server row
                 long storedLease = lockingRS.getLong(1);
                 if (tc.isDebugEnabled())
-                    Tr.debug(tc, "Acquired server row, stored lease value is: " + storedLease);
+                    Tr.debug(tc, "Acquired server row, stored lease value is: " + Utils.traceTime(storedLease));
 
                 // Has the lease expired?
                 PeerLeaseData pld = new PeerLeaseData(recoveryIdentityToRecover, storedLease, _leaseTimeout);
@@ -754,7 +777,7 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog {
                     updateStmt.setLong(1, fir1);
                     updateStmt.setString(2, myRecoveryIdentity);
                     if (tc.isDebugEnabled())
-                        Tr.debug(tc, "Ready to UPDATE using string - " + updateString + " and time: " + fir1);
+                        Tr.debug(tc, "Ready to UPDATE using string - " + updateString + " and time: " + Utils.traceTime(fir1));
 
                     int ret = updateStmt.executeUpdate();
 
@@ -844,15 +867,11 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog {
      */
     @Override
     public void setPeerRecoveryLeaseTimeout(int leaseTimeout) {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "setPeerRecoveryLeaseTimeout", leaseTimeout);
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "setPeerRecoveryLeaseTimeout", leaseTimeout);
 
         // Store the Lease Timeout
         _leaseTimeout = leaseTimeout;
-
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "setPeerRecoveryLeaseTimeout", this);
-
     }
 
 }

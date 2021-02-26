@@ -1,0 +1,69 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/JPARSExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+61000=Un tip de entitate {0} cu ID-ul {1} nu a putut fi g\u0103sit \u00een unitatea de persisten\u0163\u0103 {2}.
+
+61001=Entitatea referit\u0103 de leg\u0103tur\u0103 nu exist\u0103, tipul de entitate {0}, id {1}.
+
+61002=Configura\u0163ie invalid\u0103.
+
+61003=Un tip de entitate {0} din unitatea de persisten\u0163\u0103 {1} este creat cu PUT, dar entitatea nu este idempotent\u0103 din cauza gener\u0103rii secven\u0163ei sau a cascad\u0103rii.
+
+61004=Contextul de presisten\u0163\u0103 {0} nu a putut fi f\u0103cut bootstrap.
+
+61005=Nu s-a putut g\u0103si clasa sau descriptorul de clas\u0103 pentru tipul de entitate {0} \u00een unitatea de persisten\u0163\u0103 {1}.
+
+61006=Nu s-a putut g\u0103si o mapare de baz\u0103 de date corespunz\u0103toare pentru atributul {0} pentru tipul de entitate {1} \u015fi ID-ul {2} \u00een unitatea de persisten\u0163\u0103 {3}.
+
+61007=Atributul {0} pentru tipul de entitate {1} \u015fi ID-ul {2} nu a putut fi g\u0103sit \u00een unitatea de persisten\u0163\u0103 {3}.
+
+61008=Interogarea de selec\u0163ie pentru atributul {0}, pentru tipul de entitate {1} \u015fi ID-ul {2} nu a putut fi g\u0103sit\u0103 \u00een unitatea de persisten\u0163\u0103 {3}.
+
+61009=Parametri invalizi \u00een URL-ul cererii de paginare.
+
+61010=Atributul {0} pentru tipul de entitate {1} \u015fi ID-ul {2} din unitatea de persisten\u0163\u0103 {3} nu a putut fi actualizat.
+
+61011=Parametri invalizi \u00een URL-ul cererii de \u00eenl\u0103turare pentru atributul {0} pentru tipul de entitate {1} \u015fi ID-ul {2} \u00een unitatea de persisten\u0163\u0103 {3}.
+
+61012=R\u0103spunsul pentru cererea de c\u0103utare pentru atributul {0} pentru tipul de entitate {1} \u015fi ID-ul {2} din unitatea de persisten\u0163\u0103 {3} nu a putut fi construit cu succes.
+
+61013=A e\u015fuat c\u0103utarea bean-ului de sesiune cu numele JNDI {0}.
+
+61014=R\u0103spunsul pentru cererea de interogare {0} din unitatea de persisten\u0163\u0103 {1} nu a putut fi construi cu succes.
+
+61015=Versiune de serviciu invalid\u0103 {0} \u00een cerere.
+
+61016=Parametrul interog\u0103rii de paginare (limit\u0103 sau offset) este folosit pentru o resurs\u0103 nepaginabil\u0103.
+
+61017=Nu se pot folosi \u015fi "fields", \u015fi "excludeFields" \u00een aceea\u015fi cerere.
+
+61018=Valoare de parametru invalid\u0103 ("{0}" = "{1}").
+
+61999=A ap\u0103rut {0}.
+

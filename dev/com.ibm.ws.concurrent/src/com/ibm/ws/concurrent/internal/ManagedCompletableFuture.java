@@ -34,6 +34,8 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import javax.enterprise.concurrent.ManagedTask;
+
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
@@ -221,8 +223,8 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      * Use this constructor only for Java SE 8.
      *
      * @param completableFuture underlying completable future upon which this instance is backed.
-     * @param managedExecutor   managed executor service
-     * @param futureRef         reference to a policy executor Future that will be submitted if requested to run async. Otherwise null.
+     * @param managedExecutor managed executor service
+     * @param futureRef reference to a policy executor Future that will be submitted if requested to run async. Otherwise null.
      */
     ManagedCompletableFuture(CompletableFuture<T> completableFuture, Executor managedExecutor, FutureRefExecutor futureRef) {
         super();
@@ -249,7 +251,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      * Construct a completable future with a managed executor as its default asynchronous execution facility.
      *
      * @param managedExecutor managed executor service
-     * @param futureRef       reference to a policy executor Future that will be submitted if requested to run async. Otherwise null.
+     * @param futureRef reference to a policy executor Future that will be submitted if requested to run async. Otherwise null.
      */
     ManagedCompletableFuture(Executor managedExecutor, FutureRefExecutor futureRef) {
         super();
@@ -280,7 +282,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      * Provides the implementation of managedExecutor.completedFuture(value) where the target
      * executor is the default asynchronous execution facility.
      *
-     * @param value    result of the completed future
+     * @param value result of the completed future
      * @param executor executor to become the default asynchronous execution facility for the completed future
      * @return completed completable future
      */
@@ -362,7 +364,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      * Provides the implementation of managedExecutor.failedFuture(value) where the target
      * executor is the default asynchronous execution facility.
      *
-     * @param x        the exception.
+     * @param x the exception.
      * @param executor executor to become the default asynchronous execution facility for the completed future
      * @return completed completable future
      */
@@ -395,7 +397,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      * Provides the implementation of managedExecutor.failedStage(value) where the target
      * executor is the default asynchronous execution facility.
      *
-     * @param x        the exception.
+     * @param x the exception.
      * @param executor executor to become the default asynchronous execution facility for the completion stage
      * @return completed completion stage
      */
@@ -446,7 +448,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      * Alternative to CompletableFuture.runAsync(action, executor) with an implementation that switches the
      * default asynchronous execution facility to be the specified managed executor.
      *
-     * @param action   the action to run asynchronously.
+     * @param action the action to run asynchronously.
      * @param executor the executor, typically a managed executor, that becomes the default asynchronous execution facility for the completable future.
      * @return completable future where the specified managed executor is the default asynchronous execution facility.
      */
@@ -496,7 +498,7 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      * Alternative to CompletableFuture.supplyAsync(supplier, executor) with an implementation that switches the
      * default asynchronous execution facility to be the specified managed executor.
      *
-     * @param action   the supplier to invoke asynchronously.
+     * @param action the supplier to invoke asynchronously.
      * @param executor the executor, typically a managed executor, that becomes the default asynchronous execution facility for the completable future.
      * @return completable future where the specified managed executor is the default asynchronous execution facility.
      */
@@ -1091,8 +1093,8 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      * ManagedCompletionStage overrides to ensure that an instance of that class is created instead.
      *
      * @param completableFuture underlying completable future upon which this instance is backed.
-     * @param managedExecutor   managed executor service
-     * @param futureRef         reference to a policy executor Future that will be submitted if requested to run async. Otherwise null.
+     * @param managedExecutor managed executor service
+     * @param futureRef reference to a policy executor Future that will be submitted if requested to run async. Otherwise null.
      * @return a new instance of this class.
      */
     @Trivial
@@ -1162,10 +1164,8 @@ public class ManagedCompletableFuture<T> extends CompletableFuture<T> {
      * Reject ManagedTask so that we have the flexibility to decide later how to handle ManagedTaskListener and execution properties
      */
     private static final void rejectManagedTask(Object action) {
-        if (action instanceof jakarta.enterprise.concurrent.ManagedTask)
-            throw new IllegalArgumentException(jakarta.enterprise.concurrent.ManagedTask.class.getName());
-        if (action instanceof javax.enterprise.concurrent.ManagedTask)
-            throw new IllegalArgumentException(javax.enterprise.concurrent.ManagedTask.class.getName());
+        if (action instanceof ManagedTask)
+            throw new IllegalArgumentException(ManagedTask.class.getName());
     }
 
     /**

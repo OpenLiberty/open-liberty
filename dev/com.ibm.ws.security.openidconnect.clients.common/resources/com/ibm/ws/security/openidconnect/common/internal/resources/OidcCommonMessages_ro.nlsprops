@@ -184,6 +184,6 @@ PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR.explanation=Jetonul nu poate con\u0
 PROPAGATION_TOKEN_ISS_CLAIM_NOT_REQUIRED_ERR.useraction=Fie ob\u0163ine\u0163i un jeton nou care nu con\u0163ine revendicarea specificat\u0103, fie modifica\u0163i valoarea atributului de configura\u0163ie specificat pentru a permite s\u0103 fie inclus\u0103 revendicarea \u00een jeton.
 
 # 0=Client ID, 1=List of invalid parameter names, 2=forwardLoginParameter
-BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED=CWWKS1783W: Clientul OpenID Connect [{0}] include {1} \u00een valorile specificate de atributul de configura\u0163ie  [{2}]. Valorile specificate vor fi ignorate.
-BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED.explanation=Specifica\u0163ia OAuth 2.0 define\u015fte un set de parametri de cerere rezerva\u0163i care trebuie furnizat de client pentru cererile de autorizare. Valorile pentru ace\u015fti parametri rezerva\u0163i nu pot fi furnizate de utilizator.
-BLACKLISTED_FORWARD_AUTHZ_PARAMS_CONFIGURED.useraction=\u00cenl\u0103tura\u0163i valorile specificate din lista de valori definite \u00een configura\u0163ia clientului OpenID Connect.
+DISALLOWED_FORWARD_AUTHZ_PARAMS_CONFIGURED=CWWKS1783W: Clientul OpenID Connect [{0}] include {1} \u00een valorile specificate de atributul de configura\u0163ie  [{2}]. Valorile specificate vor fi ignorate.
+DISALLOWED_FORWARD_AUTHZ_PARAMS_CONFIGURED.explanation=Specifica\u0163ia OAuth 2.0 define\u015fte un set de parametri de cerere rezerva\u0163i care trebuie furnizat de client pentru cererile de autorizare. Valorile pentru ace\u015fti parametri rezerva\u0163i nu pot fi furnizate de utilizator.
+DISALLOWED_FORWARD_AUTHZ_PARAMS_CONFIGURED.useraction=\u00cenl\u0103tura\u0163i valorile specificate din lista de valori definite \u00een configura\u0163ia clientului OpenID Connect.

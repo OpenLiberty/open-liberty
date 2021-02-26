@@ -870,6 +870,10 @@ ERROR_INVALID_PRODUCT_EDITION_FEATURE_UTILITY=CWWKF1410E: The {0} feature cannot
 ERROR_INVALID_PRODUCT_EDITION_FEATURE_UTILITY.explanation=The feature is not applicable to the edition of the installed product.
 ERROR_INVALID_PRODUCT_EDITION_FEATURE_UTILITY.useraction=Install features that are supported by the product edition.
 
+ERROR_BETA_EDITION_NOT_SUPPORTED=CWWKF1411E: Installing or updating features is not supported for beta releases.
+ERROR_BETA_EDITION_NOT_SUPPORTED.explanation=Installing or updating features is not supported for the installed product.
+ERROR_BETA_EDITION_NOT_SUPPORTED.useraction=No action is required.
+
 TOOL_DOWNLOAD_FEATURE_OK=CWWKF1500I: The feature has been successfully downloaded.
 TOOL_DOWNLOAD_FEATURE_OK.explanation=The feature was downloaded.
 TOOL_DOWNLOAD_FEATURE_OK.useraction=No action is required.

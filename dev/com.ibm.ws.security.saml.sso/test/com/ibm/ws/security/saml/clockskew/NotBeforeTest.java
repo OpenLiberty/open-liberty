@@ -152,7 +152,7 @@ public class NotBeforeTest extends AssertionValidator {
             validator.verifyConditions();
         } catch (SamlException ex) {
             ex.printStackTrace();
-            fail("Unexpected exception was thrown: " + ex.getMessage());
+            fail("Unexpected exception was thrown: " + ex);
         }
     }
 
@@ -189,7 +189,7 @@ public class NotBeforeTest extends AssertionValidator {
             validator.verifyConditions();
         } catch (SamlException ex) {
             ex.printStackTrace();
-            fail("Unexpected exception was thrown: " + ex.getMessage());
+            fail("Unexpected exception was thrown: " + ex);
         }
     }
 
@@ -264,7 +264,7 @@ public class NotBeforeTest extends AssertionValidator {
             validator.verifyConditions();
         } catch (SamlException ex) {
             ex.printStackTrace();
-            fail("Unexpected exception was thrown: " + ex.getMessage());
+            fail("Unexpected exception was thrown: " + ex);
         }
     }
 
@@ -301,7 +301,7 @@ public class NotBeforeTest extends AssertionValidator {
             validator.verifyConditions();
         } catch (SamlException ex) {
             ex.printStackTrace();
-            fail("Unexpected exception was thrown: " + ex.getMessage());
+            fail("Unexpected exception was thrown: " + ex);
         }
     }
 
@@ -338,7 +338,7 @@ public class NotBeforeTest extends AssertionValidator {
             validator.verifyConditions();
         } catch (SamlException ex) {
             ex.printStackTrace();
-            fail("Unexpected exception was thrown: " + ex.getMessage());
+            fail("Unexpected exception was thrown: " + ex);
         }
     }
 
@@ -375,7 +375,7 @@ public class NotBeforeTest extends AssertionValidator {
             validator.verifyConditions();
         } catch (SamlException ex) {
             ex.printStackTrace();
-            fail("Unexpected exception was thrown: " + ex.getMessage());
+            fail("Unexpected exception was thrown: " + ex);
         }
     }
 
@@ -412,7 +412,7 @@ public class NotBeforeTest extends AssertionValidator {
             validator.verifyConditions();
         } catch (SamlException ex) {
             ex.printStackTrace();
-            fail("Unexpected exception was thrown: " + ex.getMessage());
+            fail("Unexpected exception was thrown: " + ex);
         }
     }
 
@@ -525,7 +525,7 @@ public class NotBeforeTest extends AssertionValidator {
             validator.verifyConditions();
         } catch (SamlException ex) {
             ex.printStackTrace();
-            fail("Unexpected exception was thrown: " + ex.getMessage());
+            fail("Unexpected exception was thrown: " + ex);
         }
     }
 }

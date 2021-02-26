@@ -10,10 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.webcontainer.servlet31.fat.tests;
 
-import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
-
-import java.util.logging.Logger;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -28,7 +26,6 @@ import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.SharedServer;
 import com.ibm.ws.fat.util.browser.WebBrowser;
 
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -37,10 +34,8 @@ import componenttest.custom.junit.runner.Mode.TestMode;
  * CDI Test
  *
  * Tests Servlet Filter/Listener Injection
- * Temporarily skipped for EE9 jakarta until cdi-3.0 feature is developed
  */
 @RunWith(FATRunner.class)
-@SkipForRepeat(EE9_FEATURES)
 public class CDIServletFilterListenerTest extends LoggingTest {
 
     private static final Logger LOG = Logger.getLogger(CDIServletFilterListenerTest.class.getName());
@@ -48,7 +43,7 @@ public class CDIServletFilterListenerTest extends LoggingTest {
     // Server instance ...
     @ClassRule
     public static SharedServer SHARED_SERVER = new SharedServer("servlet31_cdiServletFilterListenerServer");
-    
+
     private static final String CDI12_TEST_V2_JAR_NAME = "CDI12TestV2";
     private static final String CDI12_TEST_V2_INJECTION_APP_NAME = "CDI12TestV2Injection";
 
@@ -84,15 +79,15 @@ public class CDIServletFilterListenerTest extends LoggingTest {
         CDI12TestV2InjectionApp = CDI12TestV2InjectionApp.addAsLibrary(CDI12TestV2Jar);
         // Verify if the apps are in the server before trying to deploy them
         if (SHARED_SERVER.getLibertyServer().isStarted()) {
-          Set<String> appInstalled = SHARED_SERVER.getLibertyServer().getInstalledAppNames(CDI12_TEST_V2_INJECTION_APP_NAME);
-          LOG.info("addAppToServer : " + CDI12_TEST_V2_INJECTION_APP_NAME + " already installed : " + !appInstalled.isEmpty());
-          if (appInstalled.isEmpty())
-            ShrinkHelper.exportDropinAppToServer(SHARED_SERVER.getLibertyServer(), CDI12TestV2InjectionApp);
+            Set<String> appInstalled = SHARED_SERVER.getLibertyServer().getInstalledAppNames(CDI12_TEST_V2_INJECTION_APP_NAME);
+            LOG.info("addAppToServer : " + CDI12_TEST_V2_INJECTION_APP_NAME + " already installed : " + !appInstalled.isEmpty());
+            if (appInstalled.isEmpty())
+                ShrinkHelper.exportDropinAppToServer(SHARED_SERVER.getLibertyServer(), CDI12TestV2InjectionApp);
         }
         SHARED_SERVER.startIfNotStarted();
         SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* " + CDI12_TEST_V2_INJECTION_APP_NAME);
     }
-    
+
     @AfterClass
     public static void testCleanup() throws Exception {
         // test cleanup

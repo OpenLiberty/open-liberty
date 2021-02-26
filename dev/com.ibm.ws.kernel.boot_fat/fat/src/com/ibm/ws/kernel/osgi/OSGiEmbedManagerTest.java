@@ -17,11 +17,9 @@ import org.junit.Test;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
-@MinimumJavaLevel(javaLevel = 7)
 public class OSGiEmbedManagerTest {
 
     private static final String SERVER_NAME = "com.ibm.ws.kernel.osgi.fat";

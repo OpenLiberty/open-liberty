@@ -39,7 +39,7 @@ public class EntityManagerLogic extends AbstractTestLogic {
      * from the persistence context. (3.2.6)
      */
     public void testDetach001(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                              Object managedComponentObject) {
+                              Object managedComponentObject) throws Throwable {
         final String testName = getTestName();
 
         // Verify parameters
@@ -89,11 +89,6 @@ public class EntityManagerLogic extends AbstractTestLogic {
             if (tj.isTransactionActive()) {
                 tj.commitTransaction();
             }
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testName + ": End");
         }
@@ -104,7 +99,7 @@ public class EntityManagerLogic extends AbstractTestLogic {
      * cascade all and detach to become detached from the persistence context. (3.2.6)
      */
     public void testDetach002(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                              Object managedComponentObject) {
+                              Object managedComponentObject) throws Throwable {
         final String testName = getTestName();
 
         // Verify parameters
@@ -335,11 +330,6 @@ public class EntityManagerLogic extends AbstractTestLogic {
             if (tj.isTransactionActive()) {
                 tj.commitTransaction();
             }
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testName + ": End");
         }
@@ -350,7 +340,7 @@ public class EntityManagerLogic extends AbstractTestLogic {
      * the entity being persisted to the database, unless it was flushed before being detached. (3.2.6)
      */
     public void testDetach003(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                              Object managedComponentObject) {
+                              Object managedComponentObject) throws Throwable {
         final String testName = getTestName();
 
         // Verify parameters
@@ -468,11 +458,6 @@ public class EntityManagerLogic extends AbstractTestLogic {
             System.out.println("Performing find(" + JPA20EntityManagerEntityA.class.getSimpleName() + ", " + id2 + ") operation");
             entityRemove2 = em.find(JPA20EntityManagerEntityA.class, id2);
             Assert.assertNull("find(" + JPA20EntityManagerEntityA.class.getSimpleName() + ", " + id2 + ") returned an entity.", entityRemove2);
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testName + ": End");
         }
@@ -483,7 +468,7 @@ public class EntityManagerLogic extends AbstractTestLogic {
      * persisted to the database. (3.2.6)
      */
     public void testDetach004(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                              Object managedComponentObject) {
+                              Object managedComponentObject) throws Throwable {
         final String testName = getTestName();
 
         // Verify parameters
@@ -551,11 +536,6 @@ public class EntityManagerLogic extends AbstractTestLogic {
             Assert.assertTrue(entityFind1B + " should have strVal \"A String\"" +
                               " (is " + entityFind1B.getStrData() + ")",
                               "A String".equals(entityFind1B.getStrData()));
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testName + ": End");
         }
@@ -566,7 +546,7 @@ public class EntityManagerLogic extends AbstractTestLogic {
      * being persisted to the database. (3.2.6)
      */
     public void testDetach005(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                              Object managedComponentObject) {
+                              Object managedComponentObject) throws Throwable {
         final String testName = getTestName();
 
         // Verify parameters
@@ -671,11 +651,6 @@ public class EntityManagerLogic extends AbstractTestLogic {
             Assert.assertTrue(entityFind1C + " should have strVal \"A String\"" +
                               " (is " + entityFind1C.getStrData() + ")",
                               "A String".equals(entityFind1C.getStrData()));
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testName + ": End");
         }
@@ -686,7 +661,7 @@ public class EntityManagerLogic extends AbstractTestLogic {
      * persisted to the database. (3.2.6)
      */
     public void testDetach006(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                              Object managedComponentObject) {
+                              Object managedComponentObject) throws Throwable {
         final String testName = getTestName();
 
         // Verify parameters
@@ -749,11 +724,6 @@ public class EntityManagerLogic extends AbstractTestLogic {
             System.out.println("Performing find(" + JPA20EntityManagerEntityA.class.getSimpleName() + ", " + id + ") operation");
             entityFind1A = em.find(JPA20EntityManagerEntityA.class, id);
             Assert.assertNotNull("find(" + JPA20EntityManagerEntityA.class.getSimpleName() + ", " + id + ") did not return an entity.", entityFind1A);
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testName + ": End");
         }
@@ -764,7 +734,7 @@ public class EntityManagerLogic extends AbstractTestLogic {
      * being persisted to the database. (3.2.6)
      */
     public void testDetach007(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                              Object managedComponentObject) {
+                              Object managedComponentObject) throws Throwable {
         final String testName = getTestName();
 
         // Verify parameters
@@ -857,11 +827,6 @@ public class EntityManagerLogic extends AbstractTestLogic {
             System.out.println("Performing find(" + JPA20EntityManagerEntityA.class.getSimpleName() + ", " + id + ") operation");
             JPA20EntityManagerEntityA entityFind1C = em.find(JPA20EntityManagerEntityA.class, id);
             Assert.assertNotNull("find(" + JPA20EntityManagerEntityA.class.getSimpleName() + ", " + id + ") did not return an entity.", entityFind1C);
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testName + ": End");
         }
@@ -872,7 +837,7 @@ public class EntityManagerLogic extends AbstractTestLogic {
      * across relationships marked with DETACH or ALL CascadeType (3.2.6)
      */
     public void testDetach008(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                              Object managedComponentObject) {
+                              Object managedComponentObject) throws Throwable {
         final String testName = getTestName();
 
         // Verify parameters
@@ -1122,11 +1087,6 @@ public class EntityManagerLogic extends AbstractTestLogic {
                 }
                 throw (e);
             }
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testName + ": End");
         }
@@ -1136,7 +1096,7 @@ public class EntityManagerLogic extends AbstractTestLogic {
      * Verify that passing null to EntityManager.detach() throws an IllegalArgumentException
      */
     public void testDetach009(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                              Object managedComponentObject) {
+                              Object managedComponentObject) throws Throwable {
         final String testName = getTestName();
 
         // Verify parameters
@@ -1172,11 +1132,6 @@ public class EntityManagerLogic extends AbstractTestLogic {
             } catch (Exception e) {
                 Assert.fail("detach(null) should have thrown an IllegalArgumentException");
             }
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testName + ": End");
         }
@@ -1187,7 +1142,7 @@ public class EntityManagerLogic extends AbstractTestLogic {
      * reference the detached entity.
      */
     public void testDetach010(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                              Object managedComponentObject) {
+                              Object managedComponentObject) throws Throwable {
         final String testName = getTestName();
 
         // Verify parameters
@@ -1253,11 +1208,6 @@ public class EntityManagerLogic extends AbstractTestLogic {
             // Verify JPA20EntityManagerEntityC refers to the detached JPA20EntityManagerEntityA instance
             Assert.assertTrue("JPA20EntityManagerEntityC(id=" + id + ") should refer to the detached JPA20EntityManagerEntityA(id=" + id + ")",
                               entityC.getEntityA() == entityA);
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testName + ": End");
         }
@@ -1269,7 +1219,7 @@ public class EntityManagerLogic extends AbstractTestLogic {
      * find(Class, Object, Map, LockModeType).
      */
     public void testFind001(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                            Object managedComponentObject) {
+                            Object managedComponentObject) throws Throwable {
         final String testName = getTestName();
 
         // Verify parameters
@@ -1332,11 +1282,6 @@ public class EntityManagerLogic extends AbstractTestLogic {
                 }
                 throw (e);
             }
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testName + ": End");
         }
@@ -1348,7 +1293,7 @@ public class EntityManagerLogic extends AbstractTestLogic {
      * find(Class, Object, Map, LockModeType).
      */
     public void testFind002(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                            Object managedComponentObject) {
+                            Object managedComponentObject) throws Throwable {
         final String testName = getTestName();
 
         // Verify parameters
@@ -1412,11 +1357,6 @@ public class EntityManagerLogic extends AbstractTestLogic {
                 }
                 throw (e);
             }
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testName + ": End");
         }
@@ -1428,7 +1368,7 @@ public class EntityManagerLogic extends AbstractTestLogic {
      * find(Class, Object, Map, LockModeType).
      */
     public void testFind003(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                            Object managedComponentObject) {
+                            Object managedComponentObject) throws Throwable {
         final String testName = getTestName();
 
         // Verify parameters
@@ -1491,11 +1431,6 @@ public class EntityManagerLogic extends AbstractTestLogic {
                 }
                 throw (e);
             }
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testName + ": End");
         }

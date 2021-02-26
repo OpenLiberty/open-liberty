@@ -665,6 +665,8 @@ retreived_unknown_message_type=Otrzymano nieznany typ komunikatu: {0} z tematu: 
 
 sdo_classgenerator_exception={2} Wyst\u0105pi\u0142 wyj\u0105tek [{0}] \u2013 komunikat: [{1}]
 
+sdo_error_deserialization=Nieautoryzowana pr\u00f3ba deserializacji z klas\u0105 {0}.
+
 sdo_error_processing_referenced_schema=Wyst\u0105pi\u0142 wyj\u0105tek {0} podczas przetwarzania przywo\u0142ywanego schematu z identyfikatorem URI {1} i po\u0142o\u017ceniem schematu {2}.
 
 sdo_invalid_schemaLocation=Nie mo\u017cna utworzy\u0107 po\u0142o\u017cenia schematu [{0}] na potrzeby importowania z identyfikatorem URI [{1}].

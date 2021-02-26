@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,7 +34,10 @@ public class WebserviceEndpointComponentImpl implements WebserviceEndpoint {
     private String address;
     private Properties properties;
 
-    @Reference(cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC, name = WebserviceEndpoint.PROPERTIES_ELEMENT_NAME, target = WsBndConstants.ID_UNBOUND)
+    @Reference(cardinality = ReferenceCardinality.OPTIONAL,
+               policy = ReferencePolicy.DYNAMIC,
+               name = WebserviceEndpoint.PROPERTIES_ELEMENT_NAME,
+               target = WsBndConstants.ID_UNBOUND)
     protected void setProperties(Properties value) {
         this.properties = value;
     }
@@ -55,34 +58,18 @@ public class WebserviceEndpointComponentImpl implements WebserviceEndpoint {
         address = null;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.javaee.ddmodel.wsbnd.WebserviceEndpoint#getPortComponentName()
-     */
     @Override
     public String getPortComponentName() {
         return portComponentName;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.javaee.ddmodel.wsbnd.WebserviceEndpoint#getAddress()
-     */
     @Override
     public String getAddress() {
         return address;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.javaee.ddmodel.wsbnd.WebserviceEndpoint#getProperties()
-     */
     @Override
     public Map<String, String> getProperties() {
         return properties == null ? null : properties.getAttributes();
     }
-
 }

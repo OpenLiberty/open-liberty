@@ -23,11 +23,11 @@
 
 
 
-warning.jaxrs.ejb.resource.mismatch=CWWKW1100W: The JAXRS-2.0 Resource {0} scope {1} does not match the EJB scope {2}. Liberty gets resource instance from {3}.
-warning.jaxrs.ejb.resource.mismatch.explanation=If the JAXRS-2.0 Resource scope does not match the EJB scope, and the resource instance exists in EJB, Liberty gets the resource instance from EJB.
+warning.jaxrs.ejb.resource.mismatch=CWWKW1100W: The JAXRS Resource {0} scope {1} does not match the EJB scope {2}. Liberty gets resource instance from {3}.
+warning.jaxrs.ejb.resource.mismatch.explanation=If the JAXRS Resource scope does not match the EJB scope, and the resource instance exists in EJB, Liberty gets the resource instance from EJB.
 warning.jaxrs.ejb.resource.mismatch.useraction=No action is required. 
 
-warning.jaxrs.ejb.provider.mismatch=CWWKW1102W: The EJB scope of the JAXRS-2.0 Provider {0} is {1}. Liberty gets the provider instance from {2}.
+warning.jaxrs.ejb.provider.mismatch=CWWKW1102W: The EJB scope of the JAXRS Provider {0} is {1}. Liberty gets the provider instance from {2}.
 warning.jaxrs.ejb.provider.mismatch.explanation=Provider instance is Singleton only. Liberty gets provider instances from EJB if the EJB scope of provider is Dependent or ApplicationScoped.
 warning.jaxrs.ejb.provider.mismatch.useraction=No action is required.
 

@@ -53,14 +53,11 @@ Private-Package: com.ibm.ws.sib.admin.internal,\
  com.ibm.ws.sib.matchspace.selector.impl,\
  com.ibm.ws.sib.matchspace.tools
 
--dsannotations: com.ibm.ws.sib.admin.internal.JsMainAdminComponentImpl
+-dsannotations: com.ibm.ws.sib.admin.internal.JsMainAdminComponentImpl, \
+                com.ibm.ws.messaging.service.JsAdminServiceImpl, \
+                com.ibm.ws.messaging.service.JsMainAdminServiceImpl
  
 Service-Component: \
-  com.ibm.ws.sib.admin.JsAdminService;\
-    implementation:=com.ibm.ws.messaging.service.JsAdminServiceImpl; \
-    provide:=com.ibm.ws.sib.admin.JsAdminService; \
-    configuration-policy:=ignore; \
-    properties:="service.vendor=IBM",\
   Item.Interface;\
     implementation:=com.ibm.ws.sib.processor.impl.store.ItemInterfaceFactory; \
     provide:=com.ibm.ws.sib.processor.ItemInterface; \
@@ -81,6 +78,7 @@ instrument.disabled: true
 	com.ibm.websphere.org.osgi.service.cm;version=latest,\
 	com.ibm.websphere.org.osgi.service.component;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	com.ibm.ws.app.manager.lifecycle;version=latest,\
 	com.ibm.ws.messaging.utils;version=latest,\
 	com.ibm.ws.messaging.common;version=latest,\
 	com.ibm.ws.logging.core;version=latest,\

@@ -3,7 +3,7 @@ var messages = {
     WELCOME_SECTION_CONTENT: "Üdvözlő szakasz tartalma",
     WELCOME_MESSAGE: "Üdvözli a(z) ",
     WELCOME_IBM_OPEN_SOURCE: "IBM nyílt forrású projekt",
-    WELCOME_LIGHTWEIGHT: "Egy egyszerűsített nyílt keretrendszer gyors, hatékony felhő-natív Java mikroszolgáltatások készítéséhez és futtatásához. ",
+    WELCOME_LIGHTWEIGHT: "Egy egyszerűsített nyílt keretrendszer gyors, hatékony, felhő-natív Java mikroszolgáltatások készítéséhez és futtatásához. ",
     UFO: "UFO és sugárnyaláb",
     CLOUDS: "Felhők",
     LOGOS_SECTION: "Logók szakasz",

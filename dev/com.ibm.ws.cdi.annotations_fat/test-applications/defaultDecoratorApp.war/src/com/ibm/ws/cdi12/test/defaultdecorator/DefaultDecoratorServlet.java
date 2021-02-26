@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,43 +10,38 @@
  *******************************************************************************/
 package com.ibm.ws.cdi12.test.defaultdecorator;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.LinkedList;
-import java.util.List;
 
 import javax.enterprise.context.Conversation;
 import javax.inject.Inject;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+
+import org.junit.Test;
+
+import componenttest.app.FATServlet;
 
 @WebServlet("/")
-public class DefaultDecoratorServlet extends HttpServlet {
+public class DefaultDecoratorServlet extends FATServlet {
 
     private static final long serialVersionUID = 1L;
 
     @Inject
     Conversation c;
 
-    private static List<String> output = new LinkedList<String>();
+    private static String output = "FAIL";
 
-    public static void addOutput(String s) {
-        output.add(s);
+    public static void setOutput(String s) {
+        output = s;
     }
 
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    @Test
+    public void testDecorator() throws IOException {
 
         c.isTransient();
 
-        PrintWriter pw = response.getWriter();
-        for (String s : output) {
-            pw.write(s);
-        }
-        pw.flush();
-        pw.close();
+        assertEquals("decorating", output);
 
     }
 

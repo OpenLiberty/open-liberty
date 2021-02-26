@@ -1,0 +1,183 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/internal/localization/i18n/ToStringLocalizationResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+begin_profile_of=Za\u010d\u00e1tek profilu
+
+class=t\u0159\u00edda
+
+commit_depth=(potvrdit hloubku = {0})
+
+connected=p\u0159ipojeno
+
+connector=konektor
+
+context=Kontext:    
+
+database_name=n\u00e1zev datab\u00e1ze
+
+datasource=zdroj dat
+
+datasource_URL=adresa URL zdroje dat
+
+datasource_name=n\u00e1zev zdroje dat
+
+depth_reset_key=(hloubka = {0}, resetovat kl\u00ed\u010d = {1}, resetovat verzi = {2})
+
+disconnected=odpojeno
+
+empty_commit_order_dependency_node=Pr\u00e1zdn\u00fd uzel CommitOrderDependencyNode
+
+end_profile=Ukon\u010dit profil
+
+error_printing_expression=Chyba p\u0159i tisku v\u00fdrazu
+
+lazy=pomal\u00fd
+
+local_time=m\u00edstn\u00ed \u010das
+
+login=p\u0159ihl\u00e1\u0161en\u00ed
+
+longestTime=nejdel\u0161\u00ed doba
+
+min_max=(minimum p\u0159ipojen\u00ed = {0}, maximum p\u0159ipojen\u00ed = {1})
+
+mulitple_files=v\u00edce soubor\u016f
+
+multiple_readers=v\u00edce \u010dtec\u00edch za\u0159\u00edzen\u00ed
+
+name=N\u00e1zev: 
+
+nest_level=(vno\u0159en\u00e1 \u00farove\u0148 = {0})
+
+no_files=\u017e\u00e1dn\u00e9 soubory
+
+no_streams=\u017e\u00e1dn\u00e9 proudy
+
+node=Uzel ({0})
+
+non_lazy=nepomal\u00fd
+
+not_instantiated=nep\u0159evedeno na instance
+
+number_of_objects=po\u010det objekt\u016f
+
+objects_second=objekt\u016f/sekundu
+
+platform=platforma
+
+pooled=z fondu
+
+profile=Profil
+
+profiling_time=doba profilace
+
+reader=\u010dtec\u00ed za\u0159\u00edzen\u00ed
+
+schema=Sch\u00e9ma: 
+
+sdo_classgenerator_usage_help_1of8={0} Pou\u017eit\u00ed: org.eclipse.persistence.sdo.helper.{0} [-volby]
+
+sdo_classgenerator_usage_help_2of8=Volby:
+
+sdo_classgenerator_usage_help_3of8=    -help                        Vytiskne text zpr\u00e1vy n\u00e1pov\u011bdy
+
+sdo_classgenerator_usage_help_4of8=    -sourceFile <n\u00e1zev_souboru>  Vstupn\u00ed soubor sch\u00e9matu (povinn\u00e9)
+
+sdo_classgenerator_usage_help_5of8=    -targetDirectory <DirName>   Adres\u00e1\u0159 pro vygenerov\u00e1n\u00ed zdroje Java (nepovinn\u00e9)
+
+sdo_classgenerator_usage_help_6of8=    -logLevel <\u010d.\u00farovn\u011b>         Zadejte celo\u010d\u00edselnou hodnotu \u00farovn\u011b protokolov\u00e1n\u00ed (8=VYPNUTO, 7=Z\u00c1VA\u017dN\u00c9, 6=VAROV\u00c1N\u00cd, 5=INFO, 4=KONFIGURACE, 3=DOBR\u00dd, 2=LEP\u0160\u00cd(p\u0159edvolba), 1=NEJLEP\u0160\u00cd, 0=V\u0160E).
+
+sdo_classgenerator_usage_help_7of8=    -noInterfaces                Negenerovat t\u0159\u00eddy rozhran\u00ed
+
+sdo_classgenerator_usage_help_8of8=    -noImpls                     Negenerovat t\u0159\u00eddy implementace
+
+sdo_classgenerator_usage_missing_sourcefile={0} Parametr -sourceFile nebyl uveden, ale je povinn\u00fd.
+
+sdo_classgenerator_usage_missing_sourcefile_value={0} Nebyla uvedena hodnota -sourceFile.
+
+sdo_classgenerator_usage_missing_targetdir={0} Nebyla uvedena hodnota -targetDirectory.
+
+server_name=n\u00e1zev serveru
+
+shortestTime=nejkrat\u0161\u00ed doba
+
+staticweave_commandline_help_message_10of19=    -log
+
+staticweave_commandline_help_message_11of19=           Zadejte soubor protokolov\u00e1n\u00ed.
+
+staticweave_commandline_help_message_12of19=    -loglevel
+
+staticweave_commandline_help_message_13of19=           Zadejte celo\u010d\u00edselnou hodnotu \u00farovn\u011b protokolov\u00e1n\u00ed (8=VYPNUTO, 7=Z\u00c1VA\u017dN\u00c9, 6=VAROV\u00c1N\u00cd, 5=INFO, 4=KONFIGURACE, 3=DOBR\u00dd, 2=LEP\u0160\u00cd(p\u0159edvolba), 1=NEJLEP\u0160\u00cd, 0=V\u0160E).
+
+staticweave_commandline_help_message_14of19=    Cesta ke t\u0159\u00edd\u011b mus\u00ed obsahovat v\u0161echny t\u0159\u00eddy nezbytn\u00e9 pro na\u010dten\u00ed t\u0159\u00edd ze zdroje.
+
+staticweave_commandline_help_message_15of19=    Zakomponov\u00e1n\u00ed se provede, pokud zdroj a c\u00edl ukazuj\u00ed na stejn\u00e9 um\u00edst\u011bn\u00ed. Zakomponov\u00e1n\u00ed je mo\u017en\u00e9 POUZE v p\u0159\u00edpad\u011b zdroj\u016f s adres\u00e1\u0159ovou strukturou.
+
+staticweave_commandline_help_message_16of19=  P\u0159\u00edklad:
+
+staticweave_commandline_help_message_17of19=    Chcete-li zakomponovat v\u0161echny entity z C:\\foo-source.jar a persistence.xml, kter\u00fd je sou\u010d\u00e1st\u00ed C:\\foo-containing-persistence-xml.jar,
+
+staticweave_commandline_help_message_18of19=    a zapsat v\u00fdstup do C:\\foo-target.jar, zadejte:
+
+staticweave_commandline_help_message_19of19=    StaticWeave -persistenceinfo C:\\foo-containing-persistence-xml.jar -classpath C:\\classpath1;C:\\classpath2 C:\\foo-source.jar C:\\foo-target.jar
+
+staticweave_commandline_help_message_1of19=  Pou\u017eit\u00ed: StaticWeave [volby] zdroj c\u00edl
+
+staticweave_commandline_help_message_2of19=  Volby:
+
+staticweave_commandline_help_message_3of19=    -classpath cesta_ke_t\u0159\u00edd\u011b
+
+staticweave_commandline_help_message_4of19=           Nastav\u00ed cestu ke t\u0159\u00edd\u011b u\u017eivatele. Jako odd\u011blova\u010d pou\u017eijte v syst\u00e9mu Windows znak ";" a v syst\u00e9mu Unix znak ":".
+
+staticweave_commandline_help_message_5of19=    -persistenceinfo
+
+staticweave_commandline_help_message_6of19=           Explicitn\u011b identifikujte, kde je ulo\u017een soubor META-INF/persistence.xml. Mus\u00ed j\u00edt o ko\u0159enovou specifikaci META-INF/persistence.xml.
+
+staticweave_commandline_help_message_7of19=           Tato volba se obvykle pou\u017e\u00edv\u00e1 ke specifikaci hlavn\u00edho souboru JAR p\u0159i zakomponov\u00e1n\u00ed soubor\u016f uveden\u00fdch parametrem <jar-file> ve specifikaci persistence.xml.
+
+staticweave_commandline_help_message_8of19=    -persistencexml
+
+staticweave_commandline_help_message_9of19=           Identifikujte um\u00edst\u011bn\u00ed specifikace persistence.xml relativn\u011b ke ko\u0159eni jednotky perzistence, pokud se li\u0161\u00ed od META-INF/persistence.xml.
+
+staticweave_processor_dir_not_created=Adres\u00e1\u0159 {0} nelze vytvo\u0159it.
+
+staticweave_processor_file_not_created=Soubor {0} nelze vytvo\u0159it.
+
+staticweave_processor_unknown_outcome=Zakomponov\u00e1n\u00ed t\u0159\u00edd ulo\u017een\u00fdch v adres\u00e1\u0159i a vystupuj\u00edc\u00edch do souboru JAR \u010dasto vede k neo\u010dek\u00e1van\u00fdm v\u00fdsledk\u016fm.
+
+time_object=\u010das/objekt
+
+total_time=celkov\u00fd \u010das
+
+unknown=nezn\u00e1m\u00e9
+
+user_name=jm\u00e9no u\u017eivatele
+
+writer=autor
+

@@ -14,7 +14,7 @@ bVersion=1.0
 Bundle-SymbolicName: com.ibm.ws.org.eclipse.yasson.1.0
 
 Export-Package: \
-  org.eclipse.yasson;version=1.0.7;thread-context=true
+  org.eclipse.yasson;version=1.0.8;thread-context=true
 
 Import-Package: \
   !javax.naming, \

@@ -16,14 +16,31 @@ import static org.junit.Assert.assertNull;
 
 import java.io.File;
 
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 
 import com.ibm.ws.install.internal.Product;
+
+import test.common.SharedOutputManager;
 
 /**
  *
  */
 public class InvalidProductTest {
+    @Rule
+    public static SharedOutputManager outputMgr = SharedOutputManager.getInstance().trace("*=all");
+
+    @BeforeClass
+    public static void setUpBeforeClass() throws Exception {
+        outputMgr.captureStreams();
+    }
+
+    @AfterClass
+    public static void tearDownAfterClass() throws Exception {
+        outputMgr.restoreStreams();
+    }
 
     @Test
     public void testProductNullInstallPath() {

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2016, 2018 IBM Corporation and others.
+# Copyright (c) 2016, 2020 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -129,6 +129,9 @@ INTROSPECT_USER_API_INACTIVE=CWWKS5388E: A solicita\u00e7\u00e3o de introspec\u0
 INTROSPECT_USER_API_INACTIVE.explanation=O servidor de autoriza\u00e7\u00e3o n\u00e3o emitiu o token, o propriet\u00e1rio do recurso revogou o token, o token expirou ou ocorreu outro erro.
 INTROSPECT_USER_API_INACTIVE.useraction=Verifique a resposta inclu\u00edda na mensagem. Verifique se o terminal de introspec\u00e7\u00e3o de token correto foi utilizado. Verifique se o token \u00e9 v\u00e1lido e se pode passar por introspec\u00e7\u00e3o.
 
+USER_API_RESPONSE_NOT_AUTHENTICATED=CWWKS5389E: A resposta da API do usu\u00e1rio indica que a solicita\u00e7\u00e3o da API do usu\u00e1rio n\u00e3o est\u00e1 autenticada. Verifique se o token de acesso que est\u00e1 inclu\u00eddo na solicita\u00e7\u00e3o da API do usu\u00e1rio \u00e9 v\u00e1lido e est\u00e1 associado a um usu\u00e1rio conhecido.
+USER_API_RESPONSE_NOT_AUTHENTICATED.explanation=O token de acesso que est\u00e1 na solicita\u00e7\u00e3o da API do usu\u00e1rio pode estar ausente, expirado, malformado ou pode n\u00e3o ser v\u00e1lido por outros motivos. O token pode n\u00e3o estar associado a um usu\u00e1rio conhecido para a API do usu\u00e1rio.
+USER_API_RESPONSE_NOT_AUTHENTICATED.useraction=Verifique se um token de acesso est\u00e1 inclu\u00eddo na solicita\u00e7\u00e3o da API do usu\u00e1rio. Certifique-se de que o token n\u00e3o esteja vencido ou malformado. Verifique se o usu\u00e1rio associado ao token de acesso \u00e9 conhecido para a API do usu\u00e1rio. 
 SOCIAL_LOGIN_CONFIG_PROCESSED=CWWKS5400I: A configura\u00e7\u00e3o de login social [{0}] foi processada com \u00eaxito.
 SOCIAL_LOGIN_CONFIG_PROCESSED.explanation=A configura\u00e7\u00e3o de login social indicada foi processada com \u00eaxito.
 SOCIAL_LOGIN_CONFIG_PROCESSED.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.

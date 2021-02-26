@@ -175,7 +175,13 @@ public class NBAccept {
                     // only wait if this is not during startup - to prevent deadlocks
                     if (CHFWBundle.isServerCompletelyStarted() == true) {
                         try {
-                            workSync.wait();
+                            // if this is during shutdown, only wait briefly, since the selector that needs
+                            // to de-queue the work may have been nuked asynchronously also during shutdown
+                            if (com.ibm.wsspi.kernel.service.utils.FrameworkState.isStopping()) {
+                                workSync.wait(2000);
+                            } else {
+                                workSync.wait();
+                            }
                         } catch (InterruptedException x) {
                             // nothing to do
                         }

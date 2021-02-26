@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 IBM Corporation and others.
+ * Copyright (c) 2009, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -97,10 +97,19 @@ public class CHFWBundle implements ServerQuiesceListener {
 
     private static AtomicBoolean serverCompletelyStarted = new AtomicBoolean(false);
     private static Queue<Callable<?>> serverStartedTasks = new LinkedBlockingQueue<>();
-    private static Object syncStarted = new Object() {}; // use brackets/inner class to make lock appear in dumps using class name
+    private static Object syncStarted = new Object() {
+    }; // use brackets/inner class to make lock appear in dumps using class name
 
     private volatile ServiceReference<HttpProtocolBehavior> protocolBehaviorRef;
     private static volatile String httpVersionSetting = null;
+    private static volatile boolean versionSet = false;
+    private static volatile boolean default20Off = false;
+    private static volatile boolean default20On = false;
+
+    /** The channel will disable HTTP/2.0 by default. */
+    private static final String OPTIONAL_DEFAULT_OFF_20 = "2.0_Optional_Off";
+    /** The channel will be enabled for HTTP/2.0 by default". */
+    private static final String OPTIONAL_DEFAULT_ON_20 = "2.0_Optional_On";
 
     /**
      * Constructor.
@@ -166,7 +175,7 @@ public class CHFWBundle implements ServerQuiesceListener {
      * configuration change.
      *
      * @param cfwConfiguration
-     *            the configuration data
+     *                             the configuration data
      */
     @Modified
     protected synchronized void modified(Map<String, Object> cfwConfiguration) {
@@ -325,7 +334,8 @@ public class CHFWBundle implements ServerQuiesceListener {
      *
      * @param service
      */
-    protected void unsetByteBufferConfig(ByteBufferConfiguration bbConfig) {}
+    protected void unsetByteBufferConfig(ByteBufferConfiguration bbConfig) {
+    }
 
     /**
      * Access the event service.
@@ -357,7 +367,8 @@ public class CHFWBundle implements ServerQuiesceListener {
      *
      * @param service
      */
-    protected void unsetEventService(EventEngine service) {}
+    protected void unsetEventService(EventEngine service) {
+    }
 
     /**
      * Access the channel framework's {@link java.util.concurrent.ExecutorService} to
@@ -377,7 +388,7 @@ public class CHFWBundle implements ServerQuiesceListener {
      * DS method for setting the executor service reference.
      *
      * @param executorService the {@link java.util.concurrent.ExecutorService} to
-     *            queue work to.
+     *                            queue work to.
      */
     @Reference(service = ExecutorService.class,
                cardinality = ReferenceCardinality.MANDATORY)
@@ -391,7 +402,8 @@ public class CHFWBundle implements ServerQuiesceListener {
      *
      * @param executorService the service instance to clear
      */
-    protected void unsetExecutorService(ExecutorService executorService) {}
+    protected void unsetExecutorService(ExecutorService executorService) {
+    }
 
     /**
      * Access the scheduled event service.
@@ -423,7 +435,8 @@ public class CHFWBundle implements ServerQuiesceListener {
      *
      * @param ref
      */
-    protected void unsetScheduledExecutorService(ScheduledExecutorService ref) {}
+    protected void unsetScheduledExecutorService(ScheduledExecutorService ref) {
+    }
 
     /**
      * Access the scheduled executor service.
@@ -455,7 +468,8 @@ public class CHFWBundle implements ServerQuiesceListener {
      *
      * @param ref
      */
-    protected void unsetScheduledEventService(ScheduledEventService ref) {}
+    protected void unsetScheduledEventService(ScheduledEventService ref) {
+    }
 
     /**
      * DS method to set a factory provider.
@@ -514,17 +528,35 @@ public class CHFWBundle implements ServerQuiesceListener {
 
         protocolBehaviorRef = reference;
         httpVersionSetting = (String) reference.getProperty(HttpProtocolBehavior.HTTP_VERSION_SETTING);
+        if (OPTIONAL_DEFAULT_OFF_20.equalsIgnoreCase(httpVersionSetting)) {
+            default20Off = true;
+            versionSet = true;
+        } else if (OPTIONAL_DEFAULT_ON_20.equalsIgnoreCase(httpVersionSetting)) {
+            default20On = true;
+            versionSet = true;
+        }
     }
 
     protected synchronized void unsetBehavior(ServiceReference<HttpProtocolBehavior> reference) {
         if (reference == this.protocolBehaviorRef) {
             protocolBehaviorRef = null;
             httpVersionSetting = null;
+            versionSet = false;
+            default20Off = false;
+            default20On = false;
         }
     }
 
     public static String getServletConfiguredHttpVersionSetting() {
         return httpVersionSetting;
+    }
+
+    public static boolean isHttp2DisabledByDefault() {
+        return versionSet && default20Off;
+    }
+
+    public static boolean isHttp2EnabledByDefault() {
+        return versionSet && default20On;
     }
 
     /**

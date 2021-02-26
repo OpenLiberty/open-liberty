@@ -27,8 +27,8 @@ import com.ibm.ws.el.fat.tests.EL30ReservedWordsTest;
 import com.ibm.ws.el.fat.tests.EL30StaticFieldsAndMethodsTest;
 import com.ibm.ws.fat.util.FatLogHandler;
 
+import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
-import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 /**
  * EL 3.0 Tests
@@ -69,7 +69,7 @@ public class FATSuite {
 
     @ClassRule
     public static RepeatTests r = RepeatTests
-                    .withoutModification()
-                    .andWith(new JakartaEE9Action());
+                    .with(new EmptyAction().fullFATOnly())
+                    .andWith(FeatureReplacementAction.EE9_FEATURES());
 
 }

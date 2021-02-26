@@ -1,0 +1,67 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/PersistenceUnitLoadingExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+30001=Kiv\u00e9tel t\u00f6rt\u00e9nt egy perzisztencia egys\u00e9g bet\u00f6lt\u00e9s\u00e9re tett k\u00eds\u00e9rlet sor\u00e1n a k\u00f6vetkez\u0151 k\u00f6nyvt\u00e1rhoz: {0}
+
+30002=Kiv\u00e9tel t\u00f6rt\u00e9nt egy perzisztencia egys\u00e9g bet\u00f6lt\u00e9s\u00e9re tett k\u00eds\u00e9rlet sor\u00e1n a k\u00f6vetkez\u0151 jar f\u00e1jlhoz: {0}
+
+30003=Kiv\u00e9tel t\u00f6rt\u00e9nt a k\u00f6vetkez\u0151 URL c\u00edmen tal\u00e1lhat\u00f3 perzisztencia egys\u00e9g feldolgoz\u00e1sakor: {0}
+
+30004=Kiv\u00e9tel t\u00f6rt\u00e9nt a persistence.xml feldolgoz\u00e1sakor a k\u00f6vetkez\u0151 URL c\u00edmr\u0151l: {0}
+
+30005=Kiv\u00e9tel t\u00f6rt\u00e9nt a perzisztencia arch\u00edvumok keres\u00e9sekor a k\u00f6vetkez\u0151 ClassLoader haszn\u00e1lat\u00e1val: {0}
+
+30006=Kiv\u00e9tel t\u00f6rt\u00e9nt az entit\u00e1sok keres\u00e9sekor a k\u00f6vetkez\u0151 URL c\u00edmen: {0}
+
+30007=Kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {0} oszt\u00e1ly bet\u00f6lt\u00e9se sor\u00e1n annak ellen\u0151rz\u00e9sekor, hogy megval\u00f3s\u00edtja-e az @Entity, @Embeddable vagy @MappedSuperclass fel\u00fcleteket.
+
+30008=A visszaadott f\u00e1jl\u00fatvonal \u00fcres vagy null volt
+
+30009=Kiv\u00e9tel t\u00f6rt\u00e9nt a k\u00f6vetkez\u0151 URL c\u00edmen tal\u00e1lhat\u00f3 perzisztencia egys\u00e9g bet\u00f6lt\u00e9s\u00e9re tett k\u00eds\u00e9rlet sor\u00e1n: {0}
+
+30010=Kiv\u00e9tel t\u00f6rt\u00e9nt az ORM XML f\u00e1jl bet\u00f6lt\u00e9se sor\u00e1n: {0}
+
+30011=Az EclipseLink nem tudta lek\u00e9rdezni az oszt\u00e1lyokat a k\u00f6vetkez\u0151 URL c\u00edmr\u0151l: {0}.  Az EclipseLink megk\u00eds\u00e9relte beolvasni ezt az URL c\u00edmet jar f\u00e1jlk\u00e9nt \u00e9s k\u00f6nyvt\u00e1rk\u00e9nt, azonban nem tudta feldolgozni.
+
+30012=Az EclipseLink nem tudta lek\u00e9rdezni a perzisztencia egys\u00e9get a k\u00f6vetkez\u0151 URL c\u00edmr\u0151l: {0}
+
+30013=Kiv\u00e9tel t\u00f6rt\u00e9nt egy perzisztencia egys\u00e9g n\u00e9v \u00f6ssze\u00e9p\u00edt\u00e9s\u00e9re tett k\u00eds\u00e9rlet sor\u00e1n a(z) [{1}] perzisztencia egys\u00e9ghez a k\u00f6vetkez\u0151 URL c\u00edmr\u0151l: {0}.
+
+30014=A perzisztencia egys\u00e9g a validation-mode param\u00e9tert "CALLBACK" \u00e9rt\u00e9kkel adja meg, azonban nem inicializ\u00e1lhat\u00f3 egy Bean Validation ValidatorFactory. R\u00e9szletek\u00e9rt tekintse meg a be\u00e1gyazott kiv\u00e9telt. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a Bean Validation API \u00e9s a Bean Validation Provider el\u00e9rhet\u0151 az oszt\u00e1ly\u00fatvonalon.
+
+30015=Kiv\u00e9tel t\u00f6rt\u00e9nt az \u00e9rv\u00e9nyes\u00edt\u00e9si csoport oszt\u00e1ly bet\u00f6lt\u00e9se sor\u00e1n: {0}.
+
+30016=A(z) {1} perzisztencia egys\u00e9g nem haszn\u00e1lhatja a(z) {0} munkamenetnevet, azt m\u00e1r a(z) {2} perzisztencia egys\u00e9g haszn\u00e1lja
+
+30017=A(z) {0} perzisztencia egys\u00e9g a(z) {1} \u00e9s a(z) {2} URL c\u00edmben egyar\u00e1nt meg van adva. Nem lehet t\u00f6bb azonos nev\u0171 perzisztencia egys\u00e9g, amelyeket egyazon oszt\u00e1lybet\u00f6lt\u0151 t\u00f6lt be.
+
+30018={1} kiv\u00e9tel t\u00f6rt\u00e9nt a felhaszn\u00e1l\u00f3 \u00e1ltal megadott ArchiveFactory p\u00e9ld\u00e1nyos\u00edt\u00e1s\u00e1ra tett k\u00eds\u00e9rlet sor\u00e1n: {0}.
+
+30019=A refreshMetadata m\u0171veletet egy {0} perzisztencia egys\u00e9ghez tartoz\u00f3 EntityManagerFactory eset\u00e9n h\u00edvja meg.  A metaadatok nem friss\u00edthet\u0151k, mivel ez az EntityManagerFactory egy munkamenet objektumb\u00f3l lett l\u00e9trehozva, \u00e9s nem egy perzisztencia egys\u00e9gb\u0151l lett sz\u00e1rmaztatva.
+

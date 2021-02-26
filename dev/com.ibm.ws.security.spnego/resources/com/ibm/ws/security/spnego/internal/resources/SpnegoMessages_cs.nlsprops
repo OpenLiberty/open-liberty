@@ -49,9 +49,9 @@ SPNEGO_NOT_SUPPORTED_ERROR_PAGE.explanation=Ov\u011b\u0159ov\u00e1n\u00ed SPNEGO
 SPNEGO_NOT_SUPPORTED_ERROR_PAGE.useraction=Nakonfigurujte prohl\u00ed\u017ee\u010d klienta, aby provedl ov\u011b\u0159en\u00ed SPNEGO.
 
 SPNEGO_NTLM_TOKEN_RECEIVED_ERROR_PAGE=CWWKS4307E: <html><head><title>Byl p\u0159ijat token NTLM.\
-</title></head> <body>Konfigurace va\u0161eho prohl\u00ed\u017ee\u010de klienta je spr\u00e1vn\u00e1, ale vy nejste p\u0159ihl\u00e1\u0161eni do podporovan\u00e9 dom\u00e9ny Windows. \
-<p>P\u0159ihlaste se do podporovan\u00e9 dom\u00e9ny Windows. \
-</html>.
+</title></head> <body>Konfigurace va\u0161eho prohl\u00ed\u017ee\u010de klienta je spr\u00e1vn\u00e1, ale vy nejste p\u0159ihl\u00e1\u0161eni do podporovan\u00e9 dom\u00e9ny Windows.\
+<p>P\u0159ihlaste se do podporovan\u00e9 dom\u00e9ny Windows.\
+</body></html>.
 SPNEGO_NTLM_TOKEN_RECEIVED_ERROR_PAGE.explanation=Konfigurace prohl\u00ed\u017ee\u010de klienta je spr\u00e1vn\u00e1, ale nep\u0159ihl\u00e1sili jste se do podporovan\u00e9 dom\u00e9ny Windows. \
 Nebo nen\u00ed konfigurace SPNEGO spr\u00e1vn\u00e1, tak\u017ee prohl\u00ed\u017ee\u010d klienta neodeslal token SPNEGO nebo Kerberos.
 SPNEGO_NTLM_TOKEN_RECEIVED_ERROR_PAGE.useraction=Ov\u011b\u0159te, zda jste p\u0159ihl\u00e1\u0161eni do podporovan\u00e9 dom\u00e9ny Windows a tak\u00e9 konfiguraci SPNEGO na serveru v dom\u00e9n\u011b Windows.
@@ -115,3 +115,17 @@ SPNEGO_CAN_NOT_GET_DELEGATE_SERVICE_SPN.useraction=Ov\u011b\u0159te tvar hlavn\u
 SPNEGO_DELEGATE_SPN_LOGIN_TO_KDC_FAILURE=CWWKS4322E: N\u00e1zev SPN delegov\u00e1n\u00ed {0} nelze ov\u011b\u0159it u centra Key Distribution Center (KDC) pomoc\u00ed konfigura\u010dn\u00edho souboru Kerberos {1} a souboru keytab {2}. Byla p\u0159ijata v\u00fdjimka p\u0159ihl\u00e1\u0161en\u00ed: {3}
 SPNEGO_DELEGATE_SPN_LOGIN_TO_KDC_FAILURE.explanation=Nelze ov\u011b\u0159it u centra Key Distribution Center (KDC).
 SPNEGO_DELEGATE_SPN_LOGIN_TO_KDC_FAILURE.useraction=Ov\u011b\u0159te tvar hlavn\u00edho n\u00e1zvu slu\u017eby a ujist\u011bte se, \u017ee existuje v dom\u00e9n\u011b Windows. D\u00e1le ov\u011b\u0159te, zda je v souboru keytab Kerberos tento hlavn\u00ed n\u00e1zev slu\u017eby uveden.
+
+SPNEGO_CONFLICTING_SETTINGS_CWWKS4323E=CWWKS4323E: Atribut [{0}] z prvku {1} je v konfliktu s atributem [{2}] z prvku {3}. Zadejte hodnotu pouze pro prvek {1} nebo prvek {3}, nikoli pro oba prvky. Doporu\u010duje se zadat hodnotu pouze pro prvek {1}.
+SPNEGO_CONFLICTING_SETTINGS_CWWKS4323E.explanation=Chcete-li rozpoznat ka\u017ed\u00fd atribut, mus\u00ed b\u00fdt nastavena syst\u00e9mov\u00e1 vlastnost, co\u017e je nastaven\u00ed v r\u00e1mci cel\u00e9ho syst\u00e9mu. R\u016fzn\u00e9 hodnoty pro nastaven\u00ed v r\u00e1mci cel\u00e9ho syst\u00e9mu nelze rozpoznat.
+SPNEGO_CONFLICTING_SETTINGS_CWWKS4323E.useraction=Zadejte atribut pouze v jednom z prvk\u016f konfigurace.
+
+SPNEGO_AUTHENTICATION_ERROR_PAGE=CWWKS4324E: <html><head><title>Ov\u011b\u0159en\u00ed SPNEGO se nezda\u0159ilo. \
+Kontaktujte administr\u00e1tora syst\u00e9mu, abyste probl\u00e9m vy\u0159e\u0161ili.\
+</title></head> <body>Klient odeslat token SPNEGO. \
+Server nem\u016f\u017ee ov\u011b\u0159it token SPNEGO klienta. \
+Kontaktujte administr\u00e1tora syst\u00e9mu, abyste probl\u00e9m vy\u0159e\u0161ili.\
+</body></html>.
+SPNEGO_AUTHENTICATION_ERROR_PAGE.explanation=Ov\u011b\u0159en\u00ed SPNEGO se nezda\u0159ilo. Dal\u0161\u00ed informace z\u00edsk\u00e1te kontrolou zpr\u00e1v protokolu serveru.
+SPNEGO_AUTHENTICATION_ERROR_PAGE.useraction=Ov\u011b\u0159te konfiguraci serveru a konfiguraci Kerberos a ujist\u011bte se, \u017ee jsou hodiny serveru synchronizovan\u00e9 s centrem Key Distribution Center (KDC).
+

@@ -192,7 +192,7 @@ public class IDTokenHandlerTest {
             List<OAuth20Token> tokens = Collections.emptyList();
             idTokenHandler.validateRequestTokenType(attributeList, tokens);
         } catch (OAuthException e) {
-            fail("There must not be a request token validation exception, but received " + e.getMessage());
+            fail("There must not be a request token validation exception, but received " + e);
         }
     }
 

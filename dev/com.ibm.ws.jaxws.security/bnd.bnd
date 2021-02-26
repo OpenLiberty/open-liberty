@@ -15,10 +15,12 @@ Bundle-SymbolicName: com.ibm.ws.jaxws.security
 Bundle-Name: JAX-WS Security
 Bundle-Description: JAX-WS Transport Level and Endpoints Security 
 
+exportVer=2.2
+
 Import-Package: \
-   com.ibm.ws.jaxws.webcontainer, \
-   com.ibm.ws.jaxws.metadata.builder, \
-   org.apache.cxf.*;version="[2.6.2,2.6.3)", \
+   com.ibm.ws.jaxws;version="[2.0,2.4)", \
+   com.ibm.ws.jaxws.*;version="[2.0,2.4)", \
+   org.apache.cxf.*;version="[2.6.2,3)", \
    com.ibm.ws.webcontainer.security.metadata, \
    com.ibm.wsspi.webcontainer.metadata, \
    com.ibm.wsspi.webcontainer.webapp, \

@@ -35,7 +35,7 @@ import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.LDAPUtils;
 
 @RunWith(FATRunner.class)
-@Mode(TestMode.LITE)
+@Mode(TestMode.FULL)
 public class URAPIs_SUNLDAPTest_URAttrMappingVar4 {
     private static LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.security.wim.adapter.ldap.fat.sun.attrMappingVar4");
     private static final Class<?> c = URAPIs_SUNLDAPTest_URAttrMappingVar4.class;

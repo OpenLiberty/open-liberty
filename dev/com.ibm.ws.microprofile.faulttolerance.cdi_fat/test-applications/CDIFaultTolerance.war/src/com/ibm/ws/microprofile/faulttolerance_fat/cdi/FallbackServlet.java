@@ -13,7 +13,9 @@ package com.ibm.ws.microprofile.faulttolerance_fat.cdi;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.util.concurrent.Future;
@@ -26,6 +28,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.junit.Test;
 
+import com.ibm.websphere.microprofile.faulttolerance_fat.suite.BasicTest;
 import com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans.FallbackBean;
 import com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans.FallbackBeanWithoutRetry;
 import com.ibm.ws.microprofile.faulttolerance_fat.util.ConnectException;
@@ -56,6 +59,7 @@ public class FallbackServlet extends FATServlet {
         assertThat("Call count", bean.getConnectCountA(), is(3));
     }
 
+    @BasicTest
     @Test
     public void testFallbackWithoutRetry(HttpServletRequest request,
                                          HttpServletResponse response) throws ServletException, IOException, ConnectException, NoSuchMethodException, SecurityException {
@@ -94,6 +98,26 @@ public class FallbackServlet extends FATServlet {
         Connection connection = future.get();
         assertThat("Result data", connection.getData(), equalTo("fallbackAsync"));
         assertThat("Call count", bean.getConnectCountD(), equalTo(3));
+    }
+
+    @Test
+    public void testFallbackMethodThrowingException() {
+        try {
+            bean.fallbackMethodThrowsException();
+            fail("No Exception thrown");
+        } catch (RuntimeException e) {
+            assertEquals("FallbackBean.exceptionalFallbackMethod", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testFallbackHandlerThrowingException() {
+        try {
+            bean.fallbackHandlerThrowsException();
+            fail("No exception thrown");
+        } catch (RuntimeException e) {
+            assertEquals("ExceptionalHandler.handle", e.getMessage());
+        }
     }
 
 }

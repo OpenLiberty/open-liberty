@@ -125,9 +125,6 @@ public class HttpInputStreamEE7 extends HttpInputStreamImpl {
                         }
                         return false;
                     } else if (eos == 2) {
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "isFinished(): GRPC detected, stream ended, return true");
-                        }
                         // check that all the buffers have been drained
                         if (isc != null && isc.isIncomingMessageFullyRead()) {
                             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {

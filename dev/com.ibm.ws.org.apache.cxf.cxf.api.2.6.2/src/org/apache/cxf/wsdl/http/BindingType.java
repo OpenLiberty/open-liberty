@@ -17,6 +17,8 @@ import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.apache.cxf.wsdl.TExtensibilityElementImpl;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 
 /**
  * <p>Java class for bindingType complex type.
@@ -39,6 +41,7 @@ import org.apache.cxf.wsdl.TExtensibilityElementImpl;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "bindingType")
+@Trivial
 public class BindingType
     extends TExtensibilityElementImpl
 {

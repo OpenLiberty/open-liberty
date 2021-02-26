@@ -27,6 +27,7 @@ Private-Package: com.google.common.*
 
 # Mimic the Import-Package header from the original JAR.  However, the code
 # paths we use do require javax.inject, so make that non-optional.
+# making javax.inject optional since opensaml utilities need guava classes and do not have dependency on javax.inject
 Import-Package: javax.annotation; resolution:=optional, \
-  javax.inject, \
+  javax.inject; resolution:=optional, \
   sun.misc; resolution:=optional

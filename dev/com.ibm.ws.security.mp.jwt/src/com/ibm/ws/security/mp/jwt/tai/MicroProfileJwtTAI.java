@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2016, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -41,6 +41,7 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.SecurityService;
 import com.ibm.ws.security.authentication.filter.AuthenticationFilter;
 import com.ibm.ws.security.common.jwk.utils.JsonUtils;
+import com.ibm.ws.security.jwt.config.MpConfigProperties;
 import com.ibm.ws.security.jwt.utils.JwtUtils;
 import com.ibm.ws.security.mp.jwt.MicroProfileJwtConfig;
 import com.ibm.ws.security.mp.jwt.MpConfigProxyService;
@@ -50,6 +51,8 @@ import com.ibm.ws.security.mp.jwt.error.ErrorHandlerImpl;
 import com.ibm.ws.security.mp.jwt.error.MpJwtProcessingException;
 import com.ibm.ws.security.mp.jwt.impl.utils.MicroProfileJwtTaiRequest;
 import com.ibm.ws.webcontainer.security.ReferrerURLCookieHandler;
+import com.ibm.ws.webcontainer.security.WebRequest;
+import com.ibm.ws.webcontainer.security.internal.TAIAuthenticator;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
 import com.ibm.wsspi.security.tai.TAIResult;
@@ -232,28 +235,23 @@ public class MicroProfileJwtTAI implements TrustAssociationInterceptor {
             Tr.entry(tc, methodName, request);
         }
         MicroProfileJwtTaiRequest mpJwtTaiRequest = taiRequestHelper.createMicroProfileJwtTaiRequestAndSetRequestAttribute(request);
-        boolean defaultMpJwtConfigExists = false;
-        defaultMpJwtConfigExists = isNewMpJwtAndMpConfig(request);
-        boolean result = taiRequestHelper.requestShouldBeHandledByTAI(request, mpJwtTaiRequest, defaultMpJwtConfigExists);
+        updateTaiRequestWithMpConfigProps(request, mpJwtTaiRequest);
+        boolean result = taiRequestHelper.requestShouldBeHandledByTAI(request, mpJwtTaiRequest);
         if (tc.isDebugEnabled()) {
             Tr.exit(tc, methodName, result);
         }
         return result;
     }
 
+    void updateTaiRequestWithMpConfigProps(HttpServletRequest request, MicroProfileJwtTaiRequest mpJwtTaiRequest) {
+        mpJwtTaiRequest.setMpConfigProps(mpConfigUtil.getMpConfig(request));
+        request.setAttribute(ATTRIBUTE_TAI_REQUEST, mpJwtTaiRequest);
+    }
+
     /**
      * @param request
      * @return
      */
-    private boolean isNewMpJwtAndMpConfig(HttpServletRequest request) {
-        boolean newMpjwtAndMpConfig = false;
-        Map mpCfg = mpConfigUtil.getMpConfig(request);
-        if (!mpCfg.isEmpty()) {
-            newMpjwtAndMpConfig = true;
-        }
-        return newMpjwtAndMpConfig;
-    }
-
     @Override
     public TAIResult negotiateValidateandEstablishTrust(HttpServletRequest request, HttpServletResponse response) throws WebTrustAssociationFailedException {
         String methodName = "negotiateValidateandEstablishTrust";
@@ -282,7 +280,7 @@ public class MicroProfileJwtTAI implements TrustAssociationInterceptor {
         } catch (MpJwtProcessingException e) {
             // did not find unique mpJwt config to serve this request
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "A unique mpJwt config wasn't found for this request. Exception was " + e.getMessage());
+                Tr.debug(tc, "A unique mpJwt config wasn't found for this request. Exception was " + e);
             }
             TAIResult result = sendToErrorPage(response, defaultTaiResult);
             if (tc.isDebugEnabled()) {
@@ -355,12 +353,7 @@ public class MicroProfileJwtTAI implements TrustAssociationInterceptor {
 
         String token = taiRequestHelper.getBearerToken(request, mpJwtConfig);
         if (token == null) {
-            Tr.error(tc, "JWT_NOT_FOUND_IN_REQUEST");
-            TAIResult result = sendToErrorPage(response, TAIResult.create(HttpServletResponse.SC_UNAUTHORIZED));
-            if (tc.isDebugEnabled()) {
-                Tr.exit(tc, methodName, result);
-            }
-            return result;
+            return getResultForMissingToken(request, response, methodName);
         }
         if (TAIJwtUtils.isJwtPreviouslyLoggedOut(token)) {
             Tr.error(tc, "JWT_PREVIOUSLY_LOGGED_OUT");
@@ -377,6 +370,25 @@ public class MicroProfileJwtTAI implements TrustAssociationInterceptor {
         return result;
     }
 
+    TAIResult getResultForMissingToken(HttpServletRequest request, HttpServletResponse response, String methodName) throws WebTrustAssociationFailedException {
+        TAIResult result = null;
+        if (isUnprotectedRequest(request)) {
+            result = TAIResult.create(HttpServletResponse.SC_CONTINUE);
+        } else {
+            Tr.error(tc, "JWT_NOT_FOUND_IN_REQUEST");
+            result = sendToErrorPage(response, TAIResult.create(HttpServletResponse.SC_UNAUTHORIZED));
+        }
+        return result;
+    }
+
+    boolean isUnprotectedRequest(HttpServletRequest request) {
+        WebRequest webRequest = (WebRequest) request.getAttribute(TAIAuthenticator.WEB_REQUEST_ATTRIBUTE_NAME);
+        if (webRequest != null) {
+            return webRequest.isUnprotectedURI();
+        }
+        return false;
+    }
+
     @FFDCIgnore({ Exception.class })
     public TAIResult handleMicroProfileJwtValidation(HttpServletRequest req, HttpServletResponse res, MicroProfileJwtConfig clientConfig, String token, boolean addJwtPrincipal) throws WebTrustAssociationFailedException {
         String methodName = "handleMicroProfileJwtValidation";
@@ -390,7 +402,7 @@ public class MicroProfileJwtTAI implements TrustAssociationInterceptor {
         if (token != null) {
             // Create JWT from access token / id token
             try {
-                Map mpCfg = mpConfigUtil.getMpConfig(req);
+                MpConfigProperties mpCfg = taiRequestHelper.getMpConfigPropsFromRequestObject(req);
                 if (!mpCfg.isEmpty()) {
                     jwtToken = clientConfig.getConsumerUtils().parseJwt(token, clientConfig, mpCfg);
                 } else {
@@ -404,7 +416,7 @@ public class MicroProfileJwtTAI implements TrustAssociationInterceptor {
                 }
                 return sendToErrorPage(res, TAIResult.create(HttpServletResponse.SC_UNAUTHORIZED));
             }
-            String payload = JsonUtils.getPayload(token);
+            String payload = JsonUtils.getPayload(jwtToken.compact());
             decodedPayload = JsonUtils.decodeFromBase64String(payload);
         }
 

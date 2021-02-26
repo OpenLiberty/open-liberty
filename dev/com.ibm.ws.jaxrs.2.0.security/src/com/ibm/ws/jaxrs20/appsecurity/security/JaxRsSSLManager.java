@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,57 +13,64 @@ package com.ibm.ws.jaxrs20.appsecurity.security;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
-import javax.net.ssl.SSLException;
+import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ssl.Constants;
 import com.ibm.websphere.ssl.JSSEHelper;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.jaxrs20.appsecurity.component.SSLSupportService;
-import com.ibm.wsspi.ssl.SSLSupport;
+import com.ibm.websphere.ssl.SSLException;
 
 public class JaxRsSSLManager {
     private static final TraceComponent tc = Tr.register(JaxRsSSLManager.class);
 
-    public static SSLSocketFactory getProxySSLSocketFactoryBySSLRef(String sslRef, Map<String, Object> props) {
-        return SSLSupportService.isSSLSupportServiceReady() ? new JaxRsProxySSLSocketFactory(sslRef, props) : null;
-    }
+    private static final Map<String, SSLSocketFactory> socketFactories = new HashMap<>();
+    private static final Map<String, SSLContext> sslContexts = new HashMap<>();
 
     /**
      * Get the SSLSocketFactory by sslRef, if could not get the configuration, try use the server's default
      * ssl configuration when fallbackOnDefault = true
      *
      * @param sslRef
-     * @param props             the additional props to override the properties in SSLConfig
-     * @param fallbackOnDefault if true, will fall back on server default ssl configuration
+     * @param host   - used to get the SSLSocketFactory from JSSEHelper
+     * @param port   - used to get the SSLSocketFactory from JSSEHelper
      * @return
      */
-    @FFDCIgnore(PrivilegedActionException.class)
-    public static SSLSocketFactory getSSLSocketFactoryBySSLRef(String sslRef, Map<String, Object> props, boolean fallbackOnDefault) {
+    public static SSLSocketFactory getSSLSocketFactoryBySSLRef(String sslRef, String host, String port) {
+        SSLSocketFactory sslSocketFactory = null;
+        JSSEHelper jsseHelper = JSSEHelper.getInstance();
 
-        if (!SSLSupportService.isSSLSupportServiceReady()) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "The SSL support service is not ready and can't create SSLSocketFactory");
-            }
-            return null;
-        }
-
-        SSLSupport sslSupportService = SSLSupportService.getSSLSupport();
-
-        JSSEHelper jsseHelper = sslSupportService.getJSSEHelper();
-        Boolean sslCfgExists = null;
         try {
-            final JSSEHelper f_jsseHelper = jsseHelper;
+            Map<String, Object> connectionInfo = new HashMap<String, Object>();
+            connectionInfo.put(Constants.CONNECTION_INFO_DIRECTION, Constants.DIRECTION_OUTBOUND);
+            connectionInfo.put(Constants.CONNECTION_INFO_REMOTE_HOST, host);
+            connectionInfo.put(Constants.CONNECTION_INFO_REMOTE_PORT, port); // String expected by OutboundSSLSelections
+            Properties sslProps;
+            try {
+                sslProps = AccessController.doPrivileged(new PrivilegedExceptionAction<Properties>() {
+                    @Override
+                    public Properties run() throws SSLException {
+                        return jsseHelper.getProperties(sslRef, connectionInfo, null);
+                    }
+                });
+
+            } catch (PrivilegedActionException pae) {
+                Throwable cause = pae.getCause();
+                throw (SSLException) cause;
+            }
+
+            Boolean sslCfgExists = null;
             if (sslRef != null) {
-                final String f_sslRef = sslRef;
                 try {
                     sslCfgExists = AccessController.doPrivileged(new PrivilegedExceptionAction<Boolean>() {
                         @Override
                         public Boolean run() throws SSLException {
-                            return Boolean.valueOf(f_jsseHelper.doesSSLConfigExist(f_sslRef));
+                            return Boolean.valueOf(jsseHelper.doesSSLConfigExist(sslRef));
                         }
                     });
 
@@ -76,18 +83,31 @@ public class JaxRsSSLManager {
                     return null;
             }
 
-            return SSLSupportService.getSSLSocketFactory(sslRef);
-        } catch (SSLException e) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "SSL Exception with ssl ref id " + sslRef + ": " + e.toString());
-            }
-            throw new IllegalArgumentException(e);
-        } catch (Exception e) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Exception with ssl ref id " + sslRef + ": " + e.toString());
-            }
-            throw new IllegalStateException(e);
-        }
-    }
+            SSLContext sslContext = jsseHelper.getSSLContext(connectionInfo, sslProps);
 
+            boolean recache = false;
+            synchronized (sslContexts) {
+                SSLContext cachedSslContext = sslContexts.get(sslRef);
+                if (sslContext == null || !sslContext.equals(cachedSslContext)) {
+                    // first request or SSL config has changed, re-cache the SSLContext and SSLSocketFactory
+                    sslContexts.put(sslRef, sslContext);
+                    recache = true;
+                }
+            }
+
+            synchronized (socketFactories) {
+                sslSocketFactory = socketFactories.get(sslRef);
+                if (sslSocketFactory == null || recache) {
+                    sslSocketFactory = sslContext.getSocketFactory();
+                    socketFactories.put(sslRef, sslSocketFactory);
+                }
+            }
+        } catch (com.ibm.websphere.ssl.SSLException e) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "configClientSSL failed to get the SSLSocketFactory with exception: " + e.toString());
+            }
+            return null;
+        }
+        return sslSocketFactory;
+    }
 }

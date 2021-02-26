@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014,2018 IBM Corporation and others.
+ * Copyright (c) 2014, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@
 package componenttest.topology.utils;
 
 import java.io.File;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -61,20 +62,22 @@ public class CommonMergeTools {
      * same directory that the parameter 'serverXmlpath' is. If this method fails
      * for what ever reason it will return false.
      *
-     * @param serverXmlPath
-     *            The Location of the server.xml file to copy.
-     * @param autoFVTPath
-     *            The path to the "import" directory inside of the build.image
-     *            folder... i.e. the server file Location
-     * @return True if the merge was successful or false if the merge wasn't
-     *         successful.
+     * @param  serverXmlPath
+     *                           The Location of the server.xml file to copy.
+     * @param  autoFVTPath
+     *                           The path to the "import" directory inside of the build.image
+     *                           folder... i.e. the server file Location
+     * @param  serverRootLoc
+     *                           The path to the server root location.
+     * @return               True if the merge was successful or false if the merge wasn't
+     *                       successful.
      *
      */
     public boolean mergeFile(String serverXmlPath, String autoFVTPath, String serverRootLoc) {
 
         String methodName = "mergeFile";
-        autoFVTDir = autoFVTPath;
-        autoFVTServerRoot = serverRootLoc;
+        autoFVTDir = autoFVTPath.replace("\\", "/");
+        autoFVTServerRoot = serverRootLoc.replace("\\", "/");
 
         /*
          * Get XML document.
@@ -169,9 +172,9 @@ public class CommonMergeTools {
      * Remove unnecessary text nodes / whitespace.
      *
      * @param targetDoc
-     *            The target document.
+     *                       The target document.
      * @param targetRoot
-     *            The parent node to remove all white space under.
+     *                       The parent node to remove all white space under.
      */
     private static void trimWhitespace(Document targetDoc) {
         try {
@@ -195,7 +198,7 @@ public class CommonMergeTools {
      * that replaced the include elements.
      *
      * @param targetDoc
-     *            The target document to add the whitespace to.
+     *                      The target document to add the whitespace to.
      */
     private static void addWhitespace(Document targetDoc) {
         try {
@@ -239,11 +242,11 @@ public class CommonMergeTools {
      * content of the file specified.
      *
      * @param includeElements
-     *            List of Include elements
+     *                            List of Include elements
      * @param targetDoc
-     *            The target document to add the included parts to.
+     *                            The target document to add the included parts to.
      * @param newRoot
-     *            The root to add the included parts to.
+     *                            The root to add the included parts to.
      */
     private void replaceIncludeElements(NodeList includeElements, Document targetDoc, Element newRoot) {
         String methodName = "replaceIncludeElements";
@@ -271,10 +274,13 @@ public class CommonMergeTools {
                  * code if we start including files from other locations
                  */
                 if (Pattern.matches("^\\.\\..*", path)) {
-                    path = autoFVTServerRoot + path;
+                    path = autoFVTServerRoot + File.separatorChar + path;
                 } else {
-                    Pattern p = Pattern.compile("\\$\\{shared\\.config\\.dir\\}");
-                    path = p.matcher(path).replaceAll(autoFVTDir);
+                    Matcher m1 = Pattern.compile("\\$\\{shared\\.config\\.dir\\}").matcher(path);
+                    path = m1.replaceAll(autoFVTDir);
+
+                    Matcher m2 = Pattern.compile("\\$\\{server\\.config\\.dir\\}").matcher(path);
+                    path = m2.replaceAll(autoFVTServerRoot);
                 }
                 Log.info(thisClass, methodName, "The Path to the updated include " + path);
 
@@ -313,9 +319,9 @@ public class CommonMergeTools {
     /**
      * Creates a Document Object from the specified directory
      *
-     * @param pathToDocument
-     *            Is the Path to the file to convert
-     * @return A Document file if it was successful or returns null
+     * @param  pathToDocument
+     *                            Is the Path to the file to convert
+     * @return                A Document file if it was successful or returns null
      */
     private Document retrieveDocument(String pathToDocument) {
 
@@ -336,11 +342,11 @@ public class CommonMergeTools {
      * Will merge all the specified elements in the root under one element
      *
      * @param targetRoot
-     *            The root element to search under.
+     *                        The root element to search under.
      * @param targetDoc
-     *            The target document to merge into.
+     *                        The target document to merge into.
      * @param elementName
-     *            Name of element to merge.
+     *                        Name of element to merge.
      */
     private static void mergeElement(Element targetRoot, Document targetDoc, String elementName) {
         String methodName = "mergeElement";
@@ -368,13 +374,13 @@ public class CommonMergeTools {
      * Clone the child nodes from the original node to the target node.
      *
      * @param originalNode
-     *            The node to clone content from.
+     *                         The node to clone content from.
      * @param targetDoc
-     *            The target document to copy to.
+     *                         The target document to copy to.
      * @param targetNode
-     *            The node to copy the clones to.
+     *                         The node to copy the clones to.
      * @param insertBefore
-     *            The node to insert the children before. If null, appends to the end of the list of children of 'targetNode'.
+     *                         The node to insert the children before. If null, appends to the end of the list of children of 'targetNode'.
      */
     private static void cloneChildContent(Node originalNode, Document targetDoc, Node targetNode, Node insertBefore) {
 

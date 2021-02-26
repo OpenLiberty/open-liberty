@@ -49,8 +49,7 @@ import com.ibm.websphere.ras.TraceComponent;
  * 
  */
 @NoJSR250Annotations
-public class DynamicAttachmentProvider extends AbstractPolicyProvider
-                implements PolicyProvider {
+public class DynamicAttachmentProvider extends AbstractPolicyProvider implements PolicyProvider {
     private static final TraceComponent tc = Tr.register(DynamicAttachmentProvider.class);
 
     private String location = null;
@@ -170,8 +169,11 @@ public class DynamicAttachmentProvider extends AbstractPolicyProvider
         return p;
     }
 
-    void readDocument() {
+    synchronized void readDocument() {
         if (null != attachments) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Policy already loaded, return");
+            }
             return;
         }
 
@@ -195,9 +197,8 @@ public class DynamicAttachmentProvider extends AbstractPolicyProvider
             throw new PolicyException(ex);
         }
 
-        for (Element ae : PolicyConstants
-                        .findAllPolicyElementsOfLocalName(doc,
-                                                          Constants.ELEM_POLICY_ATTACHMENT)) {
+        for (Element ae : PolicyConstants.findAllPolicyElementsOfLocalName(doc,
+                                                                           Constants.ELEM_POLICY_ATTACHMENT)) {
             PolicyAttachment attachment = new PolicyAttachment();
 
             for (Node nd = ae.getFirstChild(); nd != null; nd = nd.getNextSibling()) {

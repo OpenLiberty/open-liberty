@@ -1,0 +1,147 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/SDOExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+45000=No se ha podido encontrar el elemento de ID del ID de tipo en el tipo con el uri [{0}] y el nombre [{1}].
+
+45001=Se ha producido un error al procesar le importaci\u00f3n con la schemaLocation [{0}] y el espacio de nombres [{1}] .
+
+45002=Se ha producido un error al procesar la inclusi\u00f3n con la schemaLocation [{0}].
+
+45003=No se ha encontrado una propiedad referenciada con el uri [{0}] y el nombre [{1}].
+
+45004=No se ha encontrado la secuencia anterior en el changesummary.
+
+45005=El valor de la propiedad denominada [{0}] debe ser un DataObject
+
+45006=La secuencia no puede ser nula cuando type.isSequenced() es true.
+
+45007=No se ha establecido un tipo en la propiedad con el nombre [{0}]
+
+45008=Se ha producido una excepci\u00f3n de E/S.
+
+45009=No se ha encontrado el tipo con el uri [{0}] y el nombre [{1}]
+
+45010=No se ha podido encontrar un tipo la clase de interfaz [{0}]. Aseg\u00farese de que el tipo se haya definido.  Asimismo, el cargador de clases de la interfaz debe ser miembro de la jerarqu\u00eda del cargador de clases de contexto de ayuda: parece que es [{1}].
+
+45011=No se ha podido crear un DataObject para el tipo con el uri [{0}] y el nombre [{1}] porque type.isAbstract() devuelve true.
+
+45012=No se ha podido crear un DataObject para la interfaz [{0}]; se intenta crear un DataObject para el tipo con el uri [{1}] y el nombre [{2}] 
+
+45013=No se puede buscar un argumento nulo en la informaci\u00f3n de la aplicaci\u00f3n.
+
+45014=No se ha podido definir un tipo.  Los tipos s\u00f3lo pueden definirse para los DataObjects con el tipo establecido en commonj.sdo.Type
+
+45015=No se ha podido definir un tipo con un nombre nulo.
+
+45016=En un objeto modificado en el XML de changesummary falta un atributo ref o no se ha especificado el valor.
+
+45017=Se ha producido un error al procesar la xpath [{0}].
+
+45018=La adici\u00f3n de una entrada duplicada para el valor \u00fanico complejo [{1}] en una secuencia en la posici\u00f3n [{0}] no est\u00e1 soportada.
+
+45019=La adici\u00f3n de una propiedad de atributo [{0}] a una secuencia no est\u00e1 soportada.
+
+45020=No se ha encontrado ninguna secuencia para la v\u00eda de acceso [{0}].
+
+45021=Se ha producido un error al intentar crear una instancia de un objeto de secuencia con un campo de instancia de dataObject nulo.
+
+45022=No hay ninguna secuencia soportada para la propiedad [{0}].
+
+45023=No se ha podido establecer la propiedad del tipo con el uri [{0}] y el nombre [{1}] para el valor de la clase [{2}]
+
+45024=Se ha producido un error de conversi\u00f3n.
+
+45025=No se ha podido encontrar la propiedad en el \u00edndice [{0}]
+
+45026=No se puede realizar la operaci\u00f3n [{0}] en el par\u00e1metro nulo.
+
+45027=No se puede encontrar la clase para el tipo con el uri [{0}] y el nombre [{1}].
+
+45028=No se puede establecer un tipo en open y datatype.  Error en el tipo con el uri [{0}] y el nombre [{1}].
+
+45029=Se ha pasado un \u00edndice no v\u00e1lido [{0}] al m\u00e9todo [{1}].
+
+45030=Se ha producido un error al invocar el constructor con un argumento de serie en la clase [{0}].
+
+45031=No se puede establecer el tipo de destino no v\u00e1lido [{0}] en la propiedad [{1}] porque el type.dataType de destino es true.
+
+45032=Se ha producido una XMLMarshalException para el uri [{1}] y el nombre local [{2}].  Excepci\u00f3n: [{0}]
+
+45033=Se ha producido un error al generar los tipos. Se hace referencia al componente de esquema XML con el nombre [{1}] y el URI de espacio de nombre [{0}], pero no se ha definido nunca.  Puede que falte una importaci\u00f3n o una inclusi\u00f3n para el URI de espacio de nombres [{0}] en el esquema XML.
+
+45034=El valor del par\u00e1metro de opciones debe ser un DataObject del tipo con el uri [{0}] y el nombre [{1}].
+
+45035=El valor que corresponde a la propiedad "type" debe ser un objeto de tipo.
+
+45036=No se ha encontrado una propiedad global correspondiente al nodo XML que se est\u00e1 cargando.
+
+45037=Se utiliza el prefijo [{0}], pero no se ha declarado en el esquema XML.
+
+45038=No se puede ejecutar la operaci\u00f3n en la propiedad [{0}] porque no es accesible desde la v\u00eda de acceso [{1}]. La v\u00eda de acceso no es v\u00e1lida, o uno o m\u00e1s objetos de datos en la v\u00eda de acceso son nulos.
+
+45039=Se ha producido un error al acceder al campo externalizableDelegator [{0}] en el DataObject.
+
+45040=No se puede ejecutar la operaci\u00f3n [{0}] con el par\u00e1metro nulo [{1}].
+
+45041=El valor [{0}] de la clase [{1}] no es v\u00e1lido para la propiedad [{2}] del tipo [{3}].
+
+45100=Se ha producido un error al intentar devolver el SDOHelperContext solicitado.  En una instancia de WebLogic activa, se necesita el nombre de la aplicaci\u00f3n para las b\u00fasquedas de cach\u00e9 de contexto de ayuda.  No se ha podido determinar el nombre de aplicaci\u00f3n porque la b\u00fasqueda {0} ha fallado.
+
+45101=Se ha producido un error al intentar devolver el SDOHelperContext solicitado.  En una instancia de WebLogic activa, se necesita el nombre de la aplicaci\u00f3n para las b\u00fasquedas de cach\u00e9 de contexto de ayuda.  No se ha podido determinar el nombre de aplicaci\u00f3n porque {0} no se ha podido invocar de forma reflexiva en {1}.
+
+45102=Se ha producido un error al intentar devolver el SDOHelperContext solicitado.  En una instancia de WebLogic activa, se necesita el nombre de la aplicaci\u00f3n para las b\u00fasquedas de cach\u00e9 de contexto de ayuda.  No se ha podido determinar el nombre de aplicaci\u00f3n porque no se ha podido crear/devolver un ObjectName para {0}.
+
+45103=Se ha producido un error al intentar devolver el SDOHelperContext solicitado.  En una instancia de WebLogic activa, se necesita el nombre de la aplicaci\u00f3n para las b\u00fasquedas de cach\u00e9 de contexto de ayuda.  No se ha podido determinar el nombre de aplicaci\u00f3n porque no se ha podido crear una instancia de un InitialContext.
+
+45200=SDO/JAXB - No se ha encontrado un descriptor OXM correspondiente al tipo SDO [{0}]; aseg\u00farese de que haya una clase Java correlacionada con el tipo XML [{1}].
+
+45201=SDO/JAXB - No se ha encontrado una correlaci\u00f3n OXM correspondiente a la propiedad SDO [{0}]; aseg\u00farese de que haya una propiedad Java correlacionada con el nodo XML [{1}].
+
+45202=SDO/JAXB - No se ha encontrado un tipo SDO correspondiente a la clase Java [{0}].
+
+45203=SDO/JAXB - Debe establecerse una referencia de esquema en el descriptor para la clase Java [{0}].
+
+45204=SDO/JAXB - Debe establecerse un contexto de esquema en la referencia de esquema del descriptor para la clase Java [{0}].
+
+45205=SDO/JAXB - No se ha encontrado un tipo SDO correspondiente a la clase Java [{0}]; aseg\u00farese de que haya un tipo SDO correspondiente al tipo XML [{1}].
+
+45206=SDO/JAXB - Se ha producido un error al crear un desordenador JAXB.
+
+45207=Se ha producido un error al intentar resolver un esquema utilizando el SchemaResolver proporcionado.
+
+45208=No se puede correlacionar la propiedad {0} del tipo {1}. Se necesitan los paquetes de javax.activation y javax.mail para correlacionar las propiedades de tipo DataHandler. Aseg\u00farese de que ambos est\u00e9n disponibles en la classpath.
+
+45209=Se ha intentado restablecer la instancia ApplicationResolver en SDOHelperContext.  S\u00f3lo se permite un establecimiento.
+
+45210=El DataObject que se est\u00e1 ordenando no pertenece al mismo HelperContext que XMLHelper.
+
+45211=El tipo no se ha podido definir con el nombre [{0}]. El nombre no es un nombre XML v\u00e1lido.
+
+45212=La propiedad no se ha podido definir con el nombre [{0}]. El nombre no es un nombre XML v\u00e1lido.
+

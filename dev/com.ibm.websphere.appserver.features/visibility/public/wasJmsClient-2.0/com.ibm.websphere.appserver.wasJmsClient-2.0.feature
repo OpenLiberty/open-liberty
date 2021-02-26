@@ -1,5 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.wasJmsClient-2.0
+WLP-DisableAllFeatures-OnConflict: false
 visibility=public
 singleton=true
 IBM-API-Package: javax.jms; version="2.0"; type="spec", \
@@ -12,6 +13,7 @@ Subsystem-Name: JMS 2.0 Client for Message Server
 -bundles=com.ibm.ws.messaging.common, \
  com.ibm.ws.resource, \
  com.ibm.ws.messaging.utils, \
+ com.ibm.ws.messaging.security.common, \
  com.ibm.ws.messaging.jms.common, \
  com.ibm.ws.messaging.jms.2.0, \
  com.ibm.ws.messaging.comms.client

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2019 IBM Corporation and others.
+ * Copyright (c) 2011, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,6 +27,13 @@ import com.ibm.wsspi.resource.ResourceInfo;
  * Connection manager service.
  */
 public abstract class ConnectionManagerService extends Observable {
+
+    /**
+     * Name of property that determines whether or not to automatically close unshared connections
+     * that remain open when a HandleList goes out of scope. Also applies to non-dissociatable
+     * shared connections.
+     */
+    protected static final String AUTO_CLOSE_CONNECTIONS = "autoCloseConnections";
 
     /**
      * Name of element used for data source configuration.
@@ -74,6 +81,7 @@ public abstract class ConnectionManagerService extends Observable {
      */
     public static final List<String> CONNECTION_MANAGER_PROPS = Collections.unmodifiableList(Arrays.asList(
                                                                                                            J2CConstants.POOL_AgedTimeout,
+                                                                                                           AUTO_CLOSE_CONNECTIONS,
                                                                                                            J2CConstants.POOL_ConnectionTimeout,
                                                                                                            "enableSharingForDirectLookups",
                                                                                                            MAX_IDLE_TIME,

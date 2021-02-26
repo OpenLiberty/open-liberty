@@ -24,6 +24,7 @@ Private-Package: \
 
 Import-Package: \
  javax.xml.ws.*;version="[2.2,3)", \
+ com.ibm.ws.jaxws.* ;version="[2.0,3)", \
  *
 
 instrument.classesExcludes: com/ibm/ws/webservices/javaee/common/internal/resources/*.class
@@ -39,3 +40,5 @@ instrument.classesExcludes: com/ibm/ws/webservices/javaee/common/internal/resour
 	com.ibm.ws.javaee.ddmodel.ws;version=latest,\
 	com.ibm.ws.jaxws.common;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+
+jakartaeeMe: true

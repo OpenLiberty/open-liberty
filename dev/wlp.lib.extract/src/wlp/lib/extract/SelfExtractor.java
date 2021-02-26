@@ -97,22 +97,28 @@ public class SelfExtractor implements LicenseProvider {
 
     public static class NullExtractProgress implements ExtractProgress {
         @Override
-        public void extractedFile(String f) {}
+        public void extractedFile(String f) {
+        }
 
         @Override
-        public void downloadingFile(URL sourceUrl, File targetFile) {}
+        public void downloadingFile(URL sourceUrl, File targetFile) {
+        }
 
         @Override
-        public void dataDownloaded(int numBytes) {}
+        public void dataDownloaded(int numBytes) {
+        }
 
         @Override
-        public void setFilesToExtract(int count) {}
+        public void setFilesToExtract(int count) {
+        }
 
         @Override
-        public void commandRun(List args) {}
+        public void commandRun(List args) {
+        }
 
         @Override
-        public void commandsToRun(int count) {}
+        public void commandsToRun(int count) {
+        }
 
         @Override
         public boolean isCanceled() {
@@ -120,7 +126,8 @@ public class SelfExtractor implements LicenseProvider {
         }
 
         @Override
-        public void skippedFile() {}
+        public void skippedFile() {
+        }
     }
 
     public static class ExternalDependencies {
@@ -229,11 +236,11 @@ public class SelfExtractor implements LicenseProvider {
      * be returned.</p>
      *
      * @param appliesTo The string to construct the {@link ProductMatch} objects from. It is a comma separated list of items in the form:</p>
-     *                      <code>{product_id}; productVersion={product_version}; productInstallType={product_install_type}; productEdition={product_edition(s)}</code></p>
-     *                      Note that the {product_edition(s)} can be either a single edition or a comma separated list of editions enclosed in quotes. For example the following is
-     *                      a valid
-     *                      applies to string:</p>
-     *                      <code>com.ibm.websphere.appserver; productVersion=8.5.next.beta; productInstallType=Archive; productEdition="BASE,DEVELOPERS,EXPRESS,ND"</code>
+     *            <code>{product_id}; productVersion={product_version}; productInstallType={product_install_type}; productEdition={product_edition(s)}</code></p>
+     *            Note that the {product_edition(s)} can be either a single edition or a comma separated list of editions enclosed in quotes. For example the following is
+     *            a valid
+     *            applies to string:</p>
+     *            <code>com.ibm.websphere.appserver; productVersion=8.5.next.beta; productInstallType=Archive; productEdition="BASE,DEVELOPERS,EXPRESS,ND"</code>
      * @return A list of {@link ProductMatch} objects or an empty list if none are found
      */
     public static List parseAppliesTo(String appliesTo) {
@@ -478,7 +485,7 @@ public class SelfExtractor implements LicenseProvider {
         String version = System.getProperty("java.version");
         int pos = version.indexOf('.');
         pos = version.indexOf('.', pos + 1);
-        if (Double.parseDouble(version.substring(0, pos)) < 1.6)
+        if (Double.parseDouble(version.substring(0, pos)) < 1.8)
             return rc;
         String skipInstallRequiredAssets = System.getProperty("was.liberty.self.extractor.skip.install.required.assets");
         if (skipInstallRequiredAssets != null && skipInstallRequiredAssets.equalsIgnoreCase("true")) {
@@ -509,7 +516,7 @@ public class SelfExtractor implements LicenseProvider {
      * matches method must return either {@link ProductMatch#NOT_APPLICABLE} or {@link ProductMatch#MATCHED} for every properties file for this method to return
      * {@link ReturnCode#OK}.
      *
-     * @param outputDir      Where the product is being installed to
+     * @param outputDir Where the product is being installed to
      * @param productMatches The list of {@link ProductMatch} objects that need to be satisfied to the current install
      * @return A {@link ReturnCode} indicating if this was successful or not
      */
@@ -975,7 +982,7 @@ public class SelfExtractor implements LicenseProvider {
      * Retrieves the directory in common between the specified path and the archive root directory.
      * If the file path cannot be found among the valid paths then null is returned.
      *
-     * @param filePath       Path to the file to check
+     * @param filePath Path to the file to check
      * @param validFilePaths A list of valid file paths and their common directories with the root
      * @return The directory in common between the specified path and the root directory
      */
@@ -1016,7 +1023,7 @@ public class SelfExtractor implements LicenseProvider {
     }
 
     /**
-     * @param ep        - The object that will invoke the chmod commands.
+     * @param ep - The object that will invoke the chmod commands.
      * @param outputDir - The Liberty runtime install root.
      */
     public ReturnCode fixScriptPermissions(ExtractProgress ep, File outputDir) {
@@ -1024,9 +1031,9 @@ public class SelfExtractor implements LicenseProvider {
     }
 
     /**
-     * @param ep        - The object that will invoke the chmod commands.
+     * @param ep - The object that will invoke the chmod commands.
      * @param outputDir - The Liberty runtime install root.
-     * @param filter    - A zip file containing files that we want to do the chmod against.
+     * @param filter - A zip file containing files that we want to do the chmod against.
      */
     public ReturnCode fixScriptPermissions(ExtractProgress ep, File outputDir, ZipFile filter) {
         return SelfExtractUtils.fixScriptPermissions(ep, outputDir, filter);
@@ -1137,7 +1144,7 @@ public class SelfExtractor implements LicenseProvider {
     /**
      * If necessary this will print a message saying that the installed files mean that an iFix needs to be re-installed.
      *
-     * @param outputDir      The directory where the files were extracted to (typically the "wlp" directory)
+     * @param outputDir The directory where the files were extracted to (typically the "wlp" directory)
      * @param extractedFiles A list of Strings which are file paths within the directory
      */
     public static void printNeededIFixes(File outputDir, List extractedFiles) {
@@ -1326,9 +1333,9 @@ public class SelfExtractor implements LicenseProvider {
      * case insensitive.
      *
      * @param arg
-     *                   User specified argument
+     *            User specified argument
      * @param option
-     *                   Option for test/comparison
+     *            Option for test/comparison
      * @return true if the argument matches the option
      */
     protected static boolean argIsOption(String arg, String option) {
@@ -1368,7 +1375,7 @@ public class SelfExtractor implements LicenseProvider {
      * license file, exit with a message
      *
      * @param licenseFile
-     *                        The license file to display
+     *            The license file to display
      */
     public void showLicenseFile(InputStream licenseFile) {
         Object e = SelfExtract.class;
@@ -1385,7 +1392,7 @@ public class SelfExtractor implements LicenseProvider {
      * This method will print out information about the license and if necessary prompt the user to accept it.
      *
      * @param licenseProvider The license provider to use to get information about the license from the archive
-     * @param acceptLicense   <code>true</code> if the license should be automatically accepted
+     * @param acceptLicense <code>true</code> if the license should be automatically accepted
      */
     public void handleLicenseAcceptance(LicenseProvider licenseProvider, boolean acceptLicense) {
         //

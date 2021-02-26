@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2018 IBM Corporation and others.
+ * Copyright (c) 2014, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -44,6 +44,7 @@ import org.apache.http.util.EntityUtils;
 
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 
 public class JavaEESecTestBase {
@@ -526,7 +527,11 @@ public class JavaEESecTestBase {
         nvps.add(new BasicNameValuePair("form:j_id_e", "Login"));
         nvps.add(new BasicNameValuePair("form_SUBMIT", "1"));
         if (viewState != null) {
-            nvps.add(new BasicNameValuePair("javax.faces.ViewState", viewState));
+            if (JakartaEE9Action.isActive()) {
+                nvps.add(new BasicNameValuePair("jakarta.faces.ViewState", viewState));
+            } else {
+                nvps.add(new BasicNameValuePair("javax.faces.ViewState", viewState));
+            }
         }
         postMethod.setEntity(new UrlEncodedFormEntity(nvps, HTTP.UTF_8));
 

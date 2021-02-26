@@ -37,17 +37,18 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.microprofile.config.interfaces.ConfigException;
 import com.ibm.ws.microprofile.config.interfaces.ConfigStartException;
+
+import io.openliberty.microprofile.config.internal.common.ConfigException;
 
 public class PollingDynamicConfig implements Closeable {
 
     /**  */
     private static final TraceComponent tc = Tr.register(PollingDynamicConfig.class);
 
-    private final CopyOnWriteArrayList<ConfigListener> listeners = new CopyOnWriteArrayList<ConfigListener>();
+    private final CopyOnWriteArrayList<ConfigListener> listeners = new CopyOnWriteArrayList<>();
 
-    private volatile Map<String, String> current = new HashMap<String, String>();
+    private volatile Map<String, String> current = new HashMap<>();
     private final AtomicBoolean busy = new AtomicBoolean();
     private Future<?> future;
 
@@ -83,7 +84,7 @@ public class PollingDynamicConfig implements Closeable {
         }
 
         this.future = start();
-        if (this.future != null && this.future.isDone()) {
+        if ((this.future != null) && this.future.isDone()) {
             try {
                 this.future.get(0, TimeUnit.MILLISECONDS);
             } catch (InterruptedException | ExecutionException | TimeoutException e) {
@@ -101,11 +102,11 @@ public class PollingDynamicConfig implements Closeable {
      * @param listener
      */
     public void addListener(ConfigListener listener) {
-        listeners.add(listener);
+        this.listeners.add(listener);
     }
 
     protected void notifyConfigUpdated() {
-        for (ConfigListener listener : listeners) {
+        for (ConfigListener listener : this.listeners) {
             listener.onConfigUpdated();
         }
     }
@@ -134,9 +135,9 @@ public class PollingDynamicConfig implements Closeable {
         }
 
         //if there was an initial startup failure, don't start the polling thread
-        if (!startUpFailure && future == null && interval > 0) {
+        if (!startUpFailure && (future == null) && (this.interval > 0)) {
             Refresher refresher = new Refresher(this);
-            future = executor.scheduleWithFixedDelay(refresher, interval, interval, units);
+            future = this.executor.scheduleWithFixedDelay(refresher, this.interval, this.interval, this.units);
             refresher.future = future;
         }
         return future;
@@ -150,17 +151,17 @@ public class PollingDynamicConfig implements Closeable {
     @FFDCIgnore({ ConfigStartException.class })
     private void update() throws Exception {
         // OK to ignore calls to update() if already busy updating
-        if (busy.compareAndSet(false, true)) {
+        if (this.busy.compareAndSet(false, true)) {
             try {
                 Map<String, String> updated = new HashMap<>();
                 //a last minute check to see if the system is shutting down
                 if (!com.ibm.wsspi.kernel.service.utils.FrameworkState.isStopping()) {
-                    Map<String, String> props = source.getProperties();
+                    Map<String, String> props = this.source.getProperties();
                     if (props != null) {
                         updated.putAll(props);
                     }
-                    if (!updated.equals(current)) {
-                        current = updated;
+                    if (!updated.equals(this.current)) {
+                        this.current = updated;
 
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                             Tr.debug(tc, "update: Contents of ConfigSource {0} has changed.", this);
@@ -189,7 +190,7 @@ public class PollingDynamicConfig implements Closeable {
 
                 throw e;
             } finally {
-                busy.set(false);
+                this.busy.set(false);
             }
         }
 
@@ -199,12 +200,12 @@ public class PollingDynamicConfig implements Closeable {
     @Override
     public void close() {
         try {
-            if (future != null) {
-                if (!(future.isDone() || future.isCancelled())) {
-                    boolean cancelled = future.cancel(true);
+            if (this.future != null) {
+                if (!(this.future.isDone() || this.future.isCancelled())) {
+                    boolean cancelled = this.future.cancel(true);
                     if (!cancelled) {
                         // On shutdown these threads are getting closed down from elsewhere
-                        if (future.isDone() || future.isCancelled()) {
+                        if (this.future.isDone() || this.future.isCancelled()) {
                             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                                 Tr.debug(tc, "PollingDynamicConfig lost race in future cancel: {0}", this);
                             }
@@ -216,7 +217,7 @@ public class PollingDynamicConfig implements Closeable {
                         }
                     }
                 }
-                future = null;
+                this.future = null;
             }
         } finally {
             if (this.localExecutor) {
@@ -231,7 +232,7 @@ public class PollingDynamicConfig implements Closeable {
      */
     @Trivial
     protected boolean containsKey(String key) {
-        return current.containsKey(key);
+        return this.current.containsKey(key);
     }
 
     /**
@@ -241,9 +242,9 @@ public class PollingDynamicConfig implements Closeable {
      */
     @Trivial
     protected String getRawProperty(String key) {
-        String rawValue = source.getValue(key);
+        String rawValue = this.source.getValue(key);
         if (rawValue != null) {
-            current.put(key, rawValue);
+            this.current.put(key, rawValue);
         }
         return rawValue;
     }
@@ -253,7 +254,7 @@ public class PollingDynamicConfig implements Closeable {
      */
     @Trivial
     protected Iterator<String> getKeys() {
-        return current.keySet().iterator();
+        return this.current.keySet().iterator();
     }
 
     /** {@inheritDoc} */
@@ -281,18 +282,18 @@ public class PollingDynamicConfig implements Closeable {
         private volatile Future<?> future;
 
         private Refresher(PollingDynamicConfig config) {
-            configRef = new WeakReference<>(config);
+            this.configRef = new WeakReference<>(config);
         }
 
         @Override
         public void run() {
 
-            PollingDynamicConfig config1 = configRef.get();
-            if (config1 == null || com.ibm.wsspi.kernel.service.utils.FrameworkState.isStopping()) {
+            PollingDynamicConfig config1 = this.configRef.get();
+            if ((config1 == null) || com.ibm.wsspi.kernel.service.utils.FrameworkState.isStopping()) {
                 // Our pollingDynamicConfig has been GC'd, we can't update it any more, cancel ourselves
                 // OR the OSGi Framework is being shutdown (i.e. the server is being shutdown)
-                if (future != null) {
-                    future.cancel(false);
+                if (this.future != null) {
+                    this.future.cancel(false);
                 }
                 return;
             }
@@ -315,8 +316,8 @@ public class PollingDynamicConfig implements Closeable {
             } finally {
                 if (com.ibm.wsspi.kernel.service.utils.FrameworkState.isStopping()) {
                     // the OSGi Framework is being shutdown (i.e. the server is being shutdown)
-                    if (future != null) {
-                        future.cancel(false);
+                    if (this.future != null) {
+                        this.future.cancel(false);
                     }
                     return;
                 }

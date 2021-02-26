@@ -365,4 +365,9 @@ public class OkdServiceLoginImpl implements SocialLoginConfig {
         return null;
     }
 
+    @Override
+    public String getIntrospectionTokenTypeHint() {
+        return null;
+    }
+
 }

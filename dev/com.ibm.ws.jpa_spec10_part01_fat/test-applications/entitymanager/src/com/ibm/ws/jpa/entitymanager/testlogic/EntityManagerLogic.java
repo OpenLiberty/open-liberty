@@ -31,7 +31,7 @@ public class EntityManagerLogic extends AbstractTestLogic {
      * Verify that calling EntityManager.remove() will result in the removal of the entity from the database. (3.2.3)
      */
     public void testRemove001(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                              Object managedComponentObject) {
+                              Object managedComponentObject) throws Throwable {
         final String testName = getTestName();
 
         // Verify parameters
@@ -124,11 +124,6 @@ public class EntityManagerLogic extends AbstractTestLogic {
             System.out.println("Performing find(" + JPA10EntityManagerEntityA.class.getSimpleName() + ", " + id + ") operation");
             JPA10EntityManagerEntityA entityFind1C = em.find(JPA10EntityManagerEntityA.class, id);
             Assert.assertNotNull("find(" + JPA10EntityManagerEntityA.class.getSimpleName() + ", " + id + ") did not return an entity.", entityFind1C);
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testName + ": End");
         }
@@ -139,7 +134,7 @@ public class EntityManagerLogic extends AbstractTestLogic {
      * (or the transaction commit will fail). (3.2.3)
      */
     public void testRemove002(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                              Object managedComponentObject) {
+                              Object managedComponentObject) throws Throwable {
         final String testName = getTestName();
 
         // Verify parameters
@@ -229,11 +224,6 @@ public class EntityManagerLogic extends AbstractTestLogic {
             // JPA spec; 3.2.3:
             // If X is a detached entity, an IllegalArgumentException will be thrown by the remove operation (or the transaction commit will fail).
             Assert.assertTrue("Neither remove() nor transaction commit failed", removeFailed || commitFailed);
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testName + ": End");
         }

@@ -71,6 +71,7 @@ public abstract class AbstractSpringTests {
     public static final String SPRING_BOOT_20_APP_WEBFLUX_WRONG_VERSION = "com.ibm.ws.springboot.support.version20.test.webflux.wrong.version.app-0.0.1-SNAPSHOT.jar";
     public static final String SPRING_BOOT_21_APP_BASE = "com.ibm.ws.springboot.support.version21.test.app-0.0.1-SNAPSHOT.jar";
     public static final String SPRING_BOOT_22_APP_BASE = "com.ibm.ws.springboot.support.version22.test.app-0.0.1-SNAPSHOT.jar";
+    public static final String SPRING_BOOT_23_APP_BASE = "com.ibm.ws.springboot.support.version23.test.app-0.0.1-SNAPSHOT.jar";
     public static final String LIBERTY_USE_DEFAULT_HOST = "server.liberty.use-default-host";
     public static final String SPRING_LIB_INDEX_CACHE = "lib.index.cache";
     public static final String SPRING_WORKAREA_DIR = "workarea/spring/";

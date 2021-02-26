@@ -21,6 +21,7 @@ import javax.persistence.Query;
 import org.junit.Assert;
 
 import com.ibm.ws.jpa.query.sqlcapture.SQLListener;
+import com.ibm.ws.testtooling.database.DatabaseVendor;
 import com.ibm.ws.testtooling.testinfo.TestExecutionContext;
 import com.ibm.ws.testtooling.testlogic.AbstractTestLogic;
 import com.ibm.ws.testtooling.vehicle.resources.JPAResource;
@@ -53,9 +54,9 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
         }
 
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
-        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        final String lDbProductName = dbProductName.toLowerCase();
+        final boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DERBY);
+        final boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
 
         // Execute Test Case
         try {
@@ -79,8 +80,8 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
 
                 List<String> sql = SQLListener.getAndClear();
                 Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
-                if (isDerby(lDbProductName) || isDB2(dbProductVersion)) {
-                    String expected = "SELECT 1 FROM SIMPLEENTITYOLGH8294 WHERE (ABS(COALESCE(ITEM_INTEGER1,? )) >= ?)";
+                if (isDerby || isDB2) {
+                    String expected = "SELECT 1 FROM SIMPLEENTITYOLGH8294 WHERE (ABS(COALESCE(ITEM_INTEGER1, ?)) >= ?)";
                     Assert.assertEquals(expected, sql.get(0));
                 } // TODO: other databases
 
@@ -102,8 +103,8 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
 
                 List<String> sql = SQLListener.getAndClear();
                 Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
-                if (isDerby(lDbProductName) || isDB2(dbProductVersion)) {
-                    String expected = "SELECT 1 FROM SIMPLEENTITYOLGH8294 WHERE (ABS(COALESCE(ITEM_INTEGER1,0 )) >= 99)";
+                if (isDerby || isDB2) {
+                    String expected = "SELECT 1 FROM SIMPLEENTITYOLGH8294 WHERE (ABS(COALESCE(ITEM_INTEGER1, 0)) >= 99)";
                     Assert.assertEquals(expected, sql.get(0));
                 } // TODO: other databases
 
@@ -127,7 +128,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
                     Assert.assertNotNull(resultList);
                     Assert.assertEquals("Expecting 0 entries in the result list", 0, resultList.size());
 
-                    if (isDerby(lDbProductName) || isDB2(dbProductVersion)) {
+                    if (isDerby || isDB2) {
                         // Expected a failure
                         Assert.fail("Query did not throw expected Exception on derby and db2 platforms.");
                     }
@@ -138,7 +139,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
                     // If all Arguments of COALESCE are untyped parameters, this is expected to fail for DB2/z and DB2 LUW
                     // Derby: All the arguments to the COALESCE/VALUE function cannot be parameters.
                     //  The function needs at least one argument that is not a parameter. Error 42610.
-                    if (isDerby(lDbProductName) || isDB2(dbProductVersion)) {
+                    if (isDerby || isDB2) {
                         // Expected
                     } else {
                         throw t;
@@ -183,9 +184,10 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
         }
 
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
-        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        final String lDbProductName = dbProductName.toLowerCase();
+        final boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DERBY);
+        final boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
+        final boolean isDB2ZOS = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2ZOS);
 
         // Execute Test Case
         try {
@@ -208,20 +210,20 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
                     Assert.assertNotNull(resultList);
                     Assert.assertEquals("Expecting 1 entries in the result list", 1, resultList.size());
 
-                    if (isDB2ForZOS(dbProductVersion)) {
+                    if (isDB2ZOS) {
                         // Expected this to fail.
                         Assert.fail("Query did not throw expected Exception on DB2 on Z platform.");
                     }
 
                     List<String> sql = SQLListener.getAndClear();
                     Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
-                    if (isDerby(lDbProductName) || isDB2(dbProductVersion)) {
+                    if (isDerby || isDB2) {
                         String expected = "SELECT 2, COUNT(ABS(?)) FROM SIMPLEENTITYOLGH8294 WHERE (ITEM_INTEGER1 = ABS(?))";
                         Assert.assertEquals(expected, sql.get(0));
                     } // TODO: other databases
                 } catch (Throwable t) {
                     // Expecting exception on db2/z
-                    if (isDB2ForZOS(dbProductVersion)) {
+                    if (isDB2ZOS) {
                         // Expected
                     } else {
                         throw t;
@@ -245,7 +247,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
 
                 List<String> sql = SQLListener.getAndClear();
                 Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
-                if (isDerby(lDbProductName) || isDB2(dbProductVersion)) {
+                if (isDerby || isDB2) {
                     String expected = "SELECT 2, COUNT(ABS(-3)) FROM SIMPLEENTITYOLGH8294 WHERE (ITEM_INTEGER1 = ABS(-3))";
                     Assert.assertEquals(expected, sql.get(0));
                 } // TODO: other databases
@@ -287,9 +289,10 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
         }
 
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
-        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        final String lDbProductName = dbProductName.toLowerCase();
+        final boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DERBY);
+        final boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
+        final boolean isDB2ZOS = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2ZOS);
 
         // Execute Test Case
         try {
@@ -315,7 +318,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
 
                 List<String> sql = SQLListener.getAndClear();
                 Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
-                if (isDerby(lDbProductName) || isDB2(dbProductVersion)) {
+                if (isDerby || isDB2) {
                     String expected = "SELECT 2 FROM SIMPLEENTITYOLGH8294 WHERE ((ITEM_STRING1 = TRIM(VARCHAR(? || '-'))) AND (ITEM_STRING1 = TRIM(VARCHAR(? || '-'))))";
                     Assert.assertEquals(expected, sql.get(0));
                 } // TODO: other databases
@@ -338,7 +341,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
 
                 try {
                     final List<?> resultList = query.getResultList();
-                    if (isDerby(lDbProductName) || isDB2ForZOS(dbProductVersion)) {
+                    if (isDerby || isDB2ZOS) {
                         // This is expected to fail on Derby and DB2 for z/OS
                     }
 
@@ -347,12 +350,12 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
                     List<String> sql = SQLListener.getAndClear();
                     Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
 
-                    if (isDB2(dbProductVersion)) {
+                    if (isDB2) {
                         String expected = "SELECT 2 FROM SIMPLEENTITYOLGH8294 WHERE ((ITEM_STRING1 = TRIM(VARCHAR(? || ?))) AND (ITEM_STRING1 = TRIM(VARCHAR(? || ?))))";
                         Assert.assertEquals(expected, sql.get(0));
                     } // TODO: other databases
                 } catch (Throwable t) {
-                    if (isDerby(lDbProductName) || isDB2ForZOS(dbProductVersion)) {
+                    if (isDerby || isDB2ZOS) {
                         // This is expected to fail
                         // When all the operands of an IN predicate are untyped parameters, error on DB2/z
                         // Use as the left operand of an IN list is not allowed when all operands are untyped parameters, error 42X35 on Derby
@@ -398,9 +401,9 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
         }
 
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
-        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        final String lDbProductName = dbProductName.toLowerCase();
+        final boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DERBY);
+        final boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
 
         // Execute Test Case
         try {
@@ -426,7 +429,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
 
                 List<String> sql = SQLListener.getAndClear();
                 Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
-                if (isDerby(lDbProductName) || isDB2(dbProductVersion)) {
+                if (isDerby || isDB2) {
                     String expected = "SELECT t0.KEY_CHAR, t0.ITEM_BOOLEAN1, t0.ITEM_DATE1, t0.ITEM_INTEGER1, t0.ITEM_STRING1 FROM SIMPLEENTITYOLGH8294 t0 WHERE ((t0.ITEM_STRING1 = ?) AND EXISTS (SELECT 1 FROM SIMPLEENTITYOLGH8294 t1 WHERE (t0.ITEM_INTEGER1 = ?)) )";
                     Assert.assertEquals(expected, sql.get(0));
                 } // TODO: other databases
@@ -449,7 +452,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
 
                 List<String> sql = SQLListener.getAndClear();
                 Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
-                if (isDerby(lDbProductName) || isDB2(dbProductVersion)) {
+                if (isDerby || isDB2) {
                     String expected = "SELECT t0.KEY_CHAR, t0.ITEM_BOOLEAN1, t0.ITEM_DATE1, t0.ITEM_INTEGER1, t0.ITEM_STRING1 FROM SIMPLEENTITYOLGH8294 t0 WHERE ((t0.ITEM_STRING1 = 'Test') AND EXISTS (SELECT 1 FROM SIMPLEENTITYOLGH8294 t1 WHERE (t0.ITEM_INTEGER1 = 33)) )";
                     Assert.assertEquals(expected, sql.get(0));
                 } // TODO: other databases
@@ -491,9 +494,9 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
         }
 
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
-        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        final String lDbProductName = dbProductName.toLowerCase();
+        final boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DERBY);
+        final boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
 
         // Execute Test Case
         try {
@@ -517,7 +520,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
 
                 List<String> sql = SQLListener.getAndClear();
                 Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
-                if (isDerby(lDbProductName) || isDB2(dbProductVersion)) {
+                if (isDerby || isDB2) {
                     String expected = "SELECT (ITEM_INTEGER1 + ?) FROM SIMPLEENTITYOLGH8294 WHERE ((ITEM_INTEGER1 + ?) > 1)";
                     Assert.assertEquals(expected, sql.get(0));
                 } // TODO: other databases
@@ -544,11 +547,11 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
 
                     System.out.println("resultList size = " + resultList.size());
 
-                    if (isDerby(lDbProductName)) {
-                        Assert.fail("Expected failure  with database product " + lDbProductName);
+                    if (isDerby) {
+                        Assert.fail("Expected failure  with database product " + dbProductName);
                     }
                 } catch (Throwable t) {
-                    if (isDerby(lDbProductName)) {
+                    if (isDerby) {
                         // This is expected to fail
                         // When all the operands of a numeric expression are untyped parameters, error 42X35 on Derby
                     } else {
@@ -575,7 +578,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
 
                 List<String> sql = SQLListener.getAndClear();
                 Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
-                if (isDerby(lDbProductName) || isDB2(dbProductVersion)) {
+                if (isDerby || isDB2) {
                     String expected = "SELECT (ITEM_INTEGER1 + 4) FROM SIMPLEENTITYOLGH8294 WHERE (ABS((ITEM_INTEGER1 + 4)) > 1)";
                     Assert.assertEquals(expected, sql.get(0));
                 } // TODO: other databases
@@ -617,9 +620,10 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
         }
 
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
-        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        final String lDbProductName = dbProductName.toLowerCase();
+        final boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DERBY);
+        final boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
+        final boolean isDB2ZOS = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2ZOS);
 
         // Execute Test Case
         try {
@@ -643,8 +647,8 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
                     final List<?> resultList = query.getResultList();
 
                     // Expect failure with derby and DB2/z
-                    if (isDerby(lDbProductName) || isDB2ForZOS(dbProductVersion)) {
-                        Assert.fail("Expected failure  with database product " + lDbProductName);
+                    if (isDerby || isDB2ZOS) {
+                        Assert.fail("Expected failure with database product " + dbProductName);
                     }
 
                     Assert.assertNotNull(resultList);
@@ -654,12 +658,12 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
                     List<String> sql = SQLListener.getAndClear();
                     Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
 
-                    if (isDB2(dbProductVersion)) {
+                    if (isDB2) {
                         String expected = "SELECT 2 FROM SIMPLEENTITYOLGH8294 WHERE (? IN (?, ?, ?))";
                         Assert.assertEquals(expected, sql.get(0));
                     } // TODO: other databases
                 } catch (Throwable t) {
-                    if (isDerby(lDbProductName) || isDB2ForZOS(dbProductVersion)) {
+                    if (isDerby || isDB2ZOS) {
                         // This is expected to fail
                         // Use as the left operand of an IN list is not allowed when all operands are untyped parameters, error 42X35 on Derby                    } else {
                         // When all the operands of an IN predicate are untyped parameters, error on DB2/z
@@ -688,7 +692,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
 
                 List<String> sql = SQLListener.getAndClear();
                 Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
-                if (isDerby(lDbProductName) || isDB2(dbProductVersion)) {
+                if (isDerby || isDB2) {
                     String expected = "SELECT 2 FROM SIMPLEENTITYOLGH8294 WHERE (? IN (?, 'b', 'c'))";
                     Assert.assertEquals(expected, sql.get(0));
                 } // TODO: other databases
@@ -714,7 +718,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
 
                 List<String> sql = SQLListener.getAndClear();
                 Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
-                if (isDerby(lDbProductName) || isDB2(dbProductVersion)) {
+                if (isDerby || isDB2) {
                     String expected = "SELECT 2 FROM SIMPLEENTITYOLGH8294 WHERE (? IN (5, ?, 6))";
                     Assert.assertEquals(expected, sql.get(0));
                 } // TODO: other databases
@@ -740,7 +744,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
 
                 List<String> sql = SQLListener.getAndClear();
                 Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
-                if (isDerby(lDbProductName) || isDB2(dbProductVersion)) {
+                if (isDerby || isDB2) {
                     String expected = "SELECT 2 FROM SIMPLEENTITYOLGH8294 WHERE (ITEM_STRING1 IN (?, 'b', ?))";
                     Assert.assertEquals(expected, sql.get(0));
                 } // TODO: other databases
@@ -783,9 +787,9 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
         }
 
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
-        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        final String lDbProductName = dbProductName.toLowerCase();
+        final boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DERBY);
+        final boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
 
         // Execute Test Case
         try {
@@ -812,7 +816,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
 
                 List<String> sql = SQLListener.getAndClear();
                 Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
-                if (isDerby(lDbProductName) || isDB2(dbProductVersion)) {
+                if (isDerby || isDB2) {
                     String expected = "SELECT 1 FROM SIMPLEENTITYOLGH8294 WHERE ? LIKE ? ESCAPE '_'";
                     Assert.assertEquals(expected, sql.get(0));
                 } // TODO: other databases
@@ -839,7 +843,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
 
                 List<String> sql = SQLListener.getAndClear();
                 Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
-                if (isDerby(lDbProductName) || isDB2(dbProductVersion)) {
+                if (isDerby || isDB2) {
                     String expected = "SELECT 1 FROM SIMPLEENTITYOLGH8294 WHERE ITEM_STRING1 LIKE ?";
                     Assert.assertEquals(expected, sql.get(0));
                 } // TODO: other databases
@@ -881,9 +885,9 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
         }
 
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
-        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        final String lDbProductName = dbProductName.toLowerCase();
+        final boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DERBY);
+        final boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
 
         // Execute Test Case
         try {
@@ -907,7 +911,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
 
                 List<String> sql = SQLListener.getAndClear();
                 Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
-                if (isDerby(lDbProductName) || isDB2(dbProductVersion)) {
+                if (isDerby || isDB2) {
                     String expected = "SELECT 1 FROM SIMPLEENTITYOLGH8294 WHERE (TRIM(ITEM_STRING1) = TRIM(SUBSTR(?, 1, 5)))";
                     Assert.assertEquals(expected, sql.get(0));
                 } // TODO: other databases
@@ -933,7 +937,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
 
                 List<String> sql = SQLListener.getAndClear();
                 Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
-                if (isDerby(lDbProductName) || isDB2(dbProductVersion)) {
+                if (isDerby || isDB2) {
                     String expected = "SELECT 1 FROM SIMPLEENTITYOLGH8294 WHERE (TRIM(ITEM_STRING1) = TRIM(SUBSTR(?, ?, 5)))";
                     Assert.assertEquals(expected, sql.get(0));
                 } // TODO: other databases
@@ -960,7 +964,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
 
                 List<String> sql = SQLListener.getAndClear();
                 Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
-                if (isDerby(lDbProductName) || isDB2(dbProductVersion)) {
+                if (isDerby || isDB2) {
                     String expected = "SELECT 1 FROM SIMPLEENTITYOLGH8294 WHERE (ITEM_STRING1 = SUBSTR(?, ?, ?))";
                     Assert.assertEquals(expected, sql.get(0));
                 } // TODO: other databases
@@ -989,7 +993,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
 
                 List<String> sql = SQLListener.getAndClear();
                 Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
-                if (isDerby(lDbProductName) || isDB2(dbProductVersion)) {
+                if (isDerby || isDB2) {
                     String expected = "SELECT 1 FROM SIMPLEENTITYOLGH8294 WHERE (SUBSTR(ITEM_STRING1, 1, ?) NOT IN (?, ?, ?, ?))";
                     Assert.assertEquals(expected, sql.get(0));
                 } // TODO: other databases

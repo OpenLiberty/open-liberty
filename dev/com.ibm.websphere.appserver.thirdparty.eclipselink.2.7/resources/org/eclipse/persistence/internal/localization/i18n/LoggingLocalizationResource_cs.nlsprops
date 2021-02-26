@@ -665,6 +665,8 @@ retreived_unknown_message_type=Na\u010dten nezn\u00e1m\u00fd typ zpr\u00e1vy: {0
 
 sdo_classgenerator_exception={2} Do\u0161lo k v\u00fdjimce [{0}] - zpr\u00e1va je [{1}]
 
+sdo_error_deserialization=Neopr\u00e1vn\u011bn\u00fd pokus o deserializaci se t\u0159\u00eddou {0}.
+
 sdo_error_processing_referenced_schema={0} p\u0159i zpracov\u00e1n\u00ed odkazovan\u00e9ho sch\u00e9matu s identifik\u00e1torem URI {1} a um\u00edst\u011bn\u00edm sch\u00e9matu {2}.
 
 sdo_invalid_schemaLocation=Nelze vytvo\u0159it um\u00edst\u011bn\u00ed sch\u00e9matu [{0}] s identifik\u00e1torem URI [{1}] pro import.

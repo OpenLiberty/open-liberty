@@ -37,7 +37,7 @@ import com.ibm.ws.testtooling.vehicle.resources.TestExecutionResources;
 public class JPATestOLGH9018Logic extends AbstractTestLogic {
 
     public void testUnwrapConnectionNoTrans(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                            Object managedComponentObject) {
+                                            Object managedComponentObject) throws Throwable {
         final String testName = getTestName();
 
         // Verify parameters
@@ -65,25 +65,20 @@ public class JPATestOLGH9018Logic extends AbstractTestLogic {
             EntityManager em = jpaResource.getEm();
 
             Connection c = em.unwrap(Connection.class);
-            if (getJPAProviderImpl(jpaResource).equals(JPAProviderImpl.OPENJPA)) {
+            if (JPAProviderImpl.OPENJPA.equals(getJPAProviderImpl(jpaResource))) {
                 //OpenJPA will return a Connection even when outside of a transaction boundary
                 Assert.assertNotNull(c);
             } else {
                 //EclipseLink will return null when outside of a transaction boundary
                 Assert.assertNull(c);
             }
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testName + ": End");
         }
     }
 
     public void testUnwrapConnectionInTrans(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                            Object managedComponentObject) {
+                                            Object managedComponentObject) throws Throwable {
         final String testName = getTestName();
 
         // Verify parameters
@@ -124,25 +119,20 @@ public class JPATestOLGH9018Logic extends AbstractTestLogic {
 
             // Assert that it is no longer available when tx is done.
             c = em.unwrap(Connection.class);
-            if (getJPAProviderImpl(jpaResource).equals(JPAProviderImpl.OPENJPA)) {
+            if (JPAProviderImpl.OPENJPA.equals(getJPAProviderImpl(jpaResource))) {
                 //OpenJPA will return a Connection even when outside of a transaction boundary
                 Assert.assertNotNull(c);
             } else {
                 //EclipseLink will return null when outside of a transaction boundary
                 Assert.assertNull(c);
             }
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testName + ": End");
         }
     }
 
     public void testUnwrapConnectionInTransWithOp(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
-                                                  Object managedComponentObject) {
+                                                  Object managedComponentObject) throws Throwable {
         final String testName = getTestName();
 
         // Verify parameters
@@ -185,18 +175,13 @@ public class JPATestOLGH9018Logic extends AbstractTestLogic {
 
             // Assert that it is no longer available when tx is done.
             c = em.unwrap(Connection.class);
-            if (getJPAProviderImpl(jpaResource).equals(JPAProviderImpl.OPENJPA)) {
+            if (JPAProviderImpl.OPENJPA.equals(getJPAProviderImpl(jpaResource))) {
                 //OpenJPA will return a Connection even when outside of a transaction boundary
                 Assert.assertNotNull(c);
             } else {
                 //EclipseLink will return null when outside of a transaction boundary
                 Assert.assertNull(c);
             }
-        } catch (java.lang.AssertionError ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testName + ": End");
         }

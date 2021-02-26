@@ -11,7 +11,7 @@
 
 package com.ibm.ws.security.acme.utils;
 
-import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
 import static junit.framework.Assert.fail;
@@ -37,16 +37,20 @@ import java.util.List;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSession;
+import javax.xml.bind.DatatypeConverter;
 
+import org.apache.http.Header;
 import org.apache.http.HttpResponseInterceptor;
 import org.apache.http.StatusLine;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.conn.ManagedHttpClientConnection;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.TrustAllStrategy;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.ConnectionShutdownException;
@@ -54,6 +58,7 @@ import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.protocol.HttpCoreContext;
 import org.apache.http.ssl.SSLContextBuilder;
+import org.apache.http.util.EntityUtils;
 
 import com.ibm.websphere.simplicity.config.AcmeCA;
 import com.ibm.websphere.simplicity.config.AcmeCA.AcmeTransportConfig;
@@ -63,7 +68,9 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.crypto.certificateutil.DefaultSSLCertificateCreator;
 import com.ibm.ws.crypto.certificateutil.keytool.KeytoolSSLCertificateCreator;
 import com.ibm.ws.security.acme.docker.CAContainer;
-import com.ibm.ws.security.acme.docker.pebble.PebbleContainer;
+import com.ibm.ws.security.acme.fat.AcmeRevocationTest;
+import com.ibm.ws.security.acme.fat.AcmeValidityAndRenewTest;
+import com.ibm.ws.security.acme.internal.web.AcmeCaRestHandler;
 
 import componenttest.topology.impl.LibertyServer;
 
@@ -78,6 +85,9 @@ public class AcmeFatUtils {
 	public static final String DEFAULT_KEYSTORE_PASSWORD = "acmepassword";
 	private static final long SCHEDULE_TIME = 30000;
 	public static final String ACME_CHECKER_TRACE = "ACME automatic certificate checker verified";
+
+	public static final String ADMIN_USER = "administrator";
+	public static final String ADMIN_PASS = "adminpass";
 
 	/**
 	 * Get an X.509 certificate from a PEM certificate.
@@ -277,6 +287,30 @@ public class AcmeFatUtils {
 	 */
 	public static void configureAcmeCA(LibertyServer server, CAContainer caContainer,
 			ServerConfiguration originalConfig, boolean useAcmeURIs, boolean disableRenewWindow, String... domains) throws Exception {
+		configureAcmeCA(server, caContainer, originalConfig, useAcmeURIs, disableRenewWindow, true, domains);
+	}
+	
+	/**
+	 * Convenience method for dynamically configuring the acmeCA-2.0
+	 * configuration.
+	 * 
+	 * @param server
+	 *            Liberty server to update.
+	 * @param originalConfig
+	 *            The original configuration to update from.
+	 * @param useAcmeURIs
+	 *            Use "acme://" style URIs for ACME providers.
+	 * @param disableRenewWindow
+	 *            Set the disableMinRenewWindow in the server config.
+	 * @param disableRenewOnNewHistory
+	 *            Set the disableRenewOnNewHistory in the server config.
+	 * @param domains
+	 *            Domains to request the certificate for.
+	 * @throws Exception
+	 *             IF there was an error updating the configuration.
+	 */
+	public static void configureAcmeCA(LibertyServer server, CAContainer caContainer,
+			ServerConfiguration originalConfig, boolean useAcmeURIs, boolean disableRenewWindow, boolean disableRenewOnNewHistory, String... domains) throws Exception {
 		/*
 		 * Choose which configuration to update.
 		 */
@@ -288,12 +322,22 @@ public class AcmeFatUtils {
 		 */
 		AcmeCA acmeCA = clone.getAcmeCA();
 		acmeCA.setDomain(Arrays.asList(domains));
+		ArrayList<String> accounts = new ArrayList<String>();
+		accounts.add("mailto:pacman@mail.com");
+		acmeCA.setAccountContact(accounts);
 		configureAcmeCaConnection(caContainer.getAcmeDirectoryURI(useAcmeURIs), acmeCA);
 		if (disableRenewWindow) {
 			/*
 			 * Allow back to back renew requests for test efficiency
 			 */
 			acmeCA.setDisableMinRenewWindow(true);
+		}
+		
+		if (disableRenewOnNewHistory) {
+			/*
+			 * Allow back to back renew requests for test efficiency
+			 */
+			acmeCA.setDisableRenewOnNewHistory(true);
 		}
 
 		/*
@@ -423,8 +467,24 @@ public class AcmeFatUtils {
 	 *            The server to check.
 	 */
 	public static final void waitForSslToCreateKeystore(LibertyServer server) {
-		assertNotNull("ACME did not create a new certificate.",
-				server.waitForStringInLog("CWPKI0803A: SSL certificate created"));
+		/*
+		 * Temporary extra debug for RTC bug 277292
+		 */
+		if (server.waitForStringInLog("CWPKI0803A: SSL certificate created") == null) {
+			Log.info(AcmeFatUtils.class, "waitForSslToCreateKeystore",
+					"SSL Cert not created -- requesting javacore to see if RTC bug 277292 was recreated.");
+			try {
+				server.javadumpThreads();
+			} catch (Exception e) {
+				Log.error(AcmeFatUtils.class, "waitForSslToCreateKeystore", e,
+						"Tried to request a java thread dump, but it failed.");
+			}
+			junit.framework.Assert.fail(
+					"ACME did not create a new certificate. Issued javacore. Check if RTC bug 277292 was recreated.");
+		}
+
+		// assertNotNull("ACME did not create a new certificate.",
+		// server.waitForStringInLog("CWPKI0803A: SSL certificate created"));
 	}
 
 	/**
@@ -440,6 +500,16 @@ public class AcmeFatUtils {
 		 * Longer timeout for local runs, similar to timeout for builds
 		 */
 		assertNotNull("ACME did not create the certificate.", server.waitForStringInLogUsingMark("CWPKI2007I", 120000));
+	}
+	
+	/**
+	 * Wait for the ACME service to report that a certificate has been revoked
+	 * 
+	 * @param server
+	 *            The server to check.
+	 */
+	public static final void waitForAcmeToRevokeCertificate(LibertyServer server) {
+		assertNotNull("ACME did not revoke the certificate.", server.waitForStringInLog("CWPKI2038I", 120000));
 	}
 
 	/**
@@ -576,11 +646,14 @@ public class AcmeFatUtils {
 			 * Send the GET request and process the response.
 			 */
 			try (final CloseableHttpResponse response = httpclient.execute(httpGet, context)) {
-				AcmeFatUtils.logHttpResponse(PebbleContainer.class, methodName, httpGet, response);
+				AcmeFatUtils.logHttpResponse(AcmeFatUtils.class, methodName, httpGet, response);
 
 				StatusLine statusLine = response.getStatusLine();
 				if (statusLine.getStatusCode() != 200) {
-					fail(methodName + ": Expected response 200, but received response: " + statusLine);
+					/*
+					 * We can still get the certificate even if we get a non-200 response.
+					 */
+					Log.info(AcmeFatUtils.class, "assertAndGetServerCertificate", "Expected response 200, but received response: " + statusLine +". " + response);
 				}
 
 				/*
@@ -596,6 +669,30 @@ public class AcmeFatUtils {
 				return certificates;
 			}
 		}
+	}
+
+	/**
+	 * Wait for assertAndGetServerCertificate to complete without errors. If it
+	 * fails until the timeout, run again to throw the exception back to the caller.
+	 * 
+	 * @param server
+	 * @param container
+	 * @param timeout
+	 * @return
+	 * @throws Exception
+	 */
+	public static final <assertAndGetServerCertificate> Certificate[] waitForAcmeCert(LibertyServer server,
+			CAContainer container, long timeout) throws Exception {
+		long startTime = System.currentTimeMillis();
+		while (System.currentTimeMillis() < startTime + timeout) {
+			Log.info(AcmeFatUtils.class, "waitForAcmeCert", "Cert checking to swap from self signed to acme ");
+			try {
+				return assertAndGetServerCertificate(server, container);
+			} catch (Exception e) {
+				Thread.sleep(1000);
+			}
+		}
+		return assertAndGetServerCertificate(server, container);
 	}
 
 	/**
@@ -616,7 +713,7 @@ public class AcmeFatUtils {
 		File domainKey = new File(server.getServerRoot() + "/resources/security/acmeDomainKey.pem");
 		List<Object[]> failedFiles = new ArrayList<Object[]>();
 		int attempt = 0;
-		int retries = 3;
+		int retries = 12;
 		/*
 		 * Keep attempting to delete until we have either deleted all the files, or
 		 * exhausted all attempts.
@@ -656,7 +753,7 @@ public class AcmeFatUtils {
 		}
 		if (!failedFiles.isEmpty()) {
 			StringBuffer sb = new StringBuffer();
-			sb.append("Failed to delete ACME files. Future tests may fail. The following files failed: ");
+			sb.append("Failed to delete ACME files after " + retries + ". Future tests may fail. The following files failed: ");
 			for (Object[] failure : failedFiles) {
 				File f = (File) failure[0];
 				IOException ioe = (IOException) failure[1];
@@ -719,8 +816,8 @@ public class AcmeFatUtils {
 	 * @param startingCertificateChain
 	 * @throws Exception
 	 */
-	public static final void waitForNewCert(LibertyServer server, CAContainer acmeContainer, Certificate[] startingCertificateChain) throws Exception {
-		waitForNewCert(server, acmeContainer, startingCertificateChain, SCHEDULE_TIME);
+	public static final Certificate[]  waitForNewCert(LibertyServer server, CAContainer acmeContainer, Certificate[] startingCertificateChain) throws Exception {
+		return waitForNewCert(server, acmeContainer, startingCertificateChain, SCHEDULE_TIME);
 	}
 
 	/**
@@ -731,7 +828,7 @@ public class AcmeFatUtils {
 	 * @param timeout
 	 * @throws Exception
 	 */
-	public static final void waitForNewCert(LibertyServer server, CAContainer acmeContainer, Certificate[] startingCertificateChain, long timeout) throws Exception {
+	public static final Certificate[]  waitForNewCert(LibertyServer server, CAContainer acmeContainer, Certificate[] startingCertificateChain, long timeout) throws Exception {
 		Certificate[] endingCertificateChain;
 		long startTime = System.currentTimeMillis();
 		while (System.currentTimeMillis() < startTime + timeout) {
@@ -752,5 +849,122 @@ public class AcmeFatUtils {
 		String serial2 = ((X509Certificate) endingCertificateChain[0]).getSerialNumber().toString(16);
 
 		assertThat("Expected a new certificate.", serial1, not(equalTo(serial2)));	
+		
+		return endingCertificateChain;
+	}
+	
+	/**
+ 	 * Check if the test is running on Windows OS.
+ 	 * @param methodName the name of the method being run.
+ 	 * @return True if the test is running on Windows.
+ 	 */
+ 	public static boolean isWindows(String methodName) {
+ 		if (System.getProperty("os.name").toLowerCase().startsWith("win")) {
+ 			// windows not enforcing the setReadable/setWriteable
+ 			Log.info(AcmeFatUtils.class, methodName,
+ 					"Skipping unreadable/unwriteable file tests on Windows: "
+ 							+ System.getProperty("os.name", "unknown"));
+ 			return true;
+ 		}
+ 		return false;
+ 	}
+
+	/**
+	 * Check if the test is running on Windows OS and a specific java
+	 * 
+	 * @param methodName
+	 * @return True if the test is running on the specific OS/JDK combo
+	 */
+	public static boolean isWindowsWithOpenJDK(String methodName) {
+		String os = System.getProperty("os.name").toLowerCase();
+		String javaVendor = System.getProperty("java.vendor").toLowerCase();
+		String javaVersion = System.getProperty("java.version");
+		Log.info(AcmeFatUtils.class, methodName,
+				"Checking os.name: " + os + " java.vendor: " + javaVendor + " java.version: " + javaVersion);
+		if (os.startsWith("win") && (javaVendor.contains("openjdk") || javaVendor.contains(("oracle")))
+				&& (javaVersion.equals("11.0.5") || javaVersion.equals("14.0.1") || javaVersion.equals("11")
+						|| javaVersion.equals("1.8.0_181") || javaVersion.equals("15"))) {
+			/*
+			 * On Windows with OpenJDK 11.0.5 (and others), we sometimes get an exception
+			 * deleting the Acme related files.
+			 * 
+			 * "The process cannot access the file because it is being used by another
+			 * process"
+			 * 
+			 * The exception is not seen on later OpenJDK versions.
+			 */
+			Log.info(AcmeFatUtils.class, methodName,
+					"Skipping this test due to a bug with the specific OS/JDK combo: " + System.getProperty("os.name")
+							+ " " + System.getProperty("java.vendor") + " " + System.getProperty("java.version"));
+			return true;
+		}
+		return false;
+	}
+
+ 	/**
+ 	 * Handle adding CWPKI2045W as an allowed warning message to all stopServer requests.
+ 	 * 
+ 	 * @param server
+ 	 * @param msgs
+ 	 * @throws Exception
+ 	 */
+ 	public static void stopServer(LibertyServer server, String...msgs) throws Exception{
+ 		/*
+ 		 * If the test Pebble or Boulder container is slightly ahead of our test machine, we can
+ 		 * get a certificate that is in "the future" and that will produce a warning message.
+ 		 */
+ 		String alwaysAdd = "CWPKI2045W";
+ 		
+ 		List<String> tempList = new ArrayList<String>(Arrays.asList(msgs));
+		tempList.add(alwaysAdd);
+		server.stopServer(tempList.toArray(new String[tempList.size()]));
+ 	}
+
+	/**
+	 * Issue a POST request to the ACME REST API to renew the certificate
+	 * 
+	 * @return The JSON response.
+	 * @throws Exception
+	 *                       if the request failed.
+	 */
+	public static String renewCertificate(LibertyServer server) throws Exception {
+		final String methodName = "renewCertificate()";
+		Log.info(AcmeFatUtils.class, methodName, "RenewCertificate request");
+
+		try (CloseableHttpClient httpclient = AcmeFatUtils.getInsecureHttpsClient()) {
+
+			/*
+			 * Create a POST request to the Liberty server.
+			 */
+			HttpPost httpPost = new HttpPost("https://localhost:" + server.getHttpDefaultSecurePort() + "/ibm/api"
+					+ AcmeCaRestHandler.PATH_CERTIFICATE);
+			httpPost.setHeader("Authorization", "Basic " + DatatypeConverter
+					.printBase64Binary((AcmeFatUtils.ADMIN_USER + ":" + AcmeFatUtils.ADMIN_PASS).getBytes()));
+			httpPost.setHeader("Content-Type", "application/json");
+			httpPost.setEntity(new StringEntity("{\"operation\":\"renewCertificate\"}"));
+
+			/*
+			 * Send the POST request and process the response.
+			 */
+			try (final CloseableHttpResponse response = httpclient.execute(httpPost)) {
+				AcmeFatUtils.logHttpResponse(AcmeRevocationTest.class, methodName, httpPost, response);
+
+				StatusLine statusLine = response.getStatusLine();
+				assertEquals("Unexpected status code response.", 200, statusLine.getStatusCode());
+
+				/*
+				 * Check content type header.
+				 */
+				Header[] headers = response.getHeaders("content-type");
+				assertNotNull("Expected content type header.", headers);
+				assertEquals("Expected 1 content type header.", 1, headers.length);
+				assertEquals("Unexpected content type.", "application/json", headers[0].getValue());
+
+				String contentString = EntityUtils.toString(response.getEntity());
+				Log.info(AcmeValidityAndRenewTest.class, methodName, "HTTP post contents: \n" + contentString);
+
+				return contentString;
+			}
+		}
 	}
 }

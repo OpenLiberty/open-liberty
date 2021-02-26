@@ -28,5 +28,5 @@ public interface HttpConstants {
     /** Key used on z/OS for an unlimited HTTP body size */
     String HTTPUnlimitedMessageMark = "UNLIMITED_HTTP_MESSAGE_SIZE";
     /** HTTP/2 MAGIC string */
-    String HTTP2PrefaceString = "PRI * HTTP/2.0\r\n\r\nSM\r\n\r\n";
+    byte[] HTTP2PrefaceBytes = "PRI * HTTP/2.0\r\n\r\nSM\r\n\r\n".getBytes();
 }

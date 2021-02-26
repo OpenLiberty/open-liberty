@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,21 +19,20 @@ import java.util.logging.Logger;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.ibm.ws.fat.util.LoggingTest;
-import com.ibm.ws.fat.util.SharedServer;
 import com.ibm.ws.fat.wc.WCApplicationHelper;
 import com.meterware.httpunit.GetMethodWebRequest;
 import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 
+import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.topology.impl.LibertyServer;
 
 /**
  * The web.xml has default encoding setting:
@@ -41,49 +40,44 @@ import componenttest.custom.junit.runner.Mode.TestMode;
  * <response-encoding>Shift-JIS</response-encoding>
  */
 @RunWith(FATRunner.class)
-public class WCEncodingTest extends LoggingTest {
+public class WCEncodingTest {
 
     private static final Logger LOG = Logger.getLogger(WCEncodingTest.class.getName());
     private static final String APP_NAME_ENCODING = "TestEncoding";
 
-    @ClassRule
-    public static SharedServer SHARED_SERVER = new SharedServer("servlet40_wcServer");
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.fat.util.LoggingTest#getSharedServer()
-     */
-    @Override
-    protected SharedServer getSharedServer() {
-        return SHARED_SERVER;
-    }
+    @Server("servlet40_wcServer")
+    public static LibertyServer server;
 
     @BeforeClass
     public static void before() throws Exception {
         LOG.info("Setup : add TestEncoding to the server if not already present.");
 
-        WCApplicationHelper.addWarToServerDropins(SHARED_SERVER.getLibertyServer(), APP_NAME_ENCODING + ".war", true,
+        WCApplicationHelper.addWarToServerDropins(server, APP_NAME_ENCODING + ".war", true,
                                                   "testencoding.war.servlets");
 
         LOG.info("Setup : add TestServlet40 to the server if not already present.");
 
-        WCApplicationHelper.addEarToServerDropins(SHARED_SERVER.getLibertyServer(), "TestServlet40.ear", true,
+        WCApplicationHelper.addEarToServerDropins(server, "TestServlet40.ear", true,
                                                   "TestServlet40.war", true, "TestServlet40.jar", true, "testservlet40.war.servlets",
                                                   "testservlet40.war.listeners", "testservlet40.jar.servlets");
 
         ArrayList<String> expectedErrors = new ArrayList<String>();
         expectedErrors.add("CWWWC0401E:.*");
-        SHARED_SERVER.getLibertyServer().addIgnoredErrors(expectedErrors);
-        SHARED_SERVER.startIfNotStarted();
-        WCApplicationHelper.waitForAppStart("TestEncoding", WCEncodingTest.class.getName(), SHARED_SERVER.getLibertyServer());
-        WCApplicationHelper.waitForAppStart("TestServlet40", WCEncodingTest.class.getName(), SHARED_SERVER.getLibertyServer());
+        server.addIgnoredErrors(expectedErrors);
+
+        // Start the server and use the class name so we can find logs easily.
+        server.startServer(WCEncodingTest.class.getSimpleName() + ".log");
+        WCApplicationHelper.waitForAppStart("TestEncoding", WCEncodingTest.class.getName(), server);
+        WCApplicationHelper.waitForAppStart("TestServlet40", WCEncodingTest.class.getName(), server);
         LOG.info("Setup : complete, ready for Tests");
     }
 
     @AfterClass
     public static void testCleanup() throws Exception {
-        SHARED_SERVER.getLibertyServer().stopServer();
+        // Stop the server
+        if (server != null && server.isStarted()) {
+            server.stopServer();
+        }
     }
 
     /*
@@ -222,7 +216,8 @@ public class WCEncodingTest extends LoggingTest {
             }
         }
 
-        WebRequest request = new GetMethodWebRequest(SHARED_SERVER.getServerUrl(true, uri));
+        String url = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + uri;
+        WebRequest request = new GetMethodWebRequest(url);
         WebResponse response = wc.getResponse(request);
 
         return response;

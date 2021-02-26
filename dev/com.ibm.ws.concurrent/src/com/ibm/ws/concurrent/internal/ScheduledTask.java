@@ -26,6 +26,13 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicReference;
 
+import javax.enterprise.concurrent.AbortedException;
+import javax.enterprise.concurrent.LastExecution;
+import javax.enterprise.concurrent.ManagedTask;
+import javax.enterprise.concurrent.ManagedTaskListener;
+import javax.enterprise.concurrent.SkippedException;
+import javax.enterprise.concurrent.Trigger;
+
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
@@ -140,12 +147,12 @@ public class ScheduledTask<T> implements Callable<T> {
     /**
      * Information about the most recent execution of the task. Only available if using a trigger.
      */
-    private volatile LastExecutionImpl lastExecution;
+    private volatile LastExecution lastExecution;
 
     /**
      * Managed task listener. Null if there isn't one.
      */
-    private final Object listener;
+    private final ManagedTaskListener listener;
 
     /**
      * Managed Scheduled executor service to which the task was submitted.
@@ -187,7 +194,7 @@ public class ScheduledTask<T> implements Callable<T> {
     /**
      * Trigger that controls when and how often to execute the task. Null if not using a trigger.
      */
-    private final Object trigger;
+    private final Trigger trigger;
 
     /**
      * Unit of time for fixed delay, fixed rate, or one-shot tasks.
@@ -214,9 +221,7 @@ public class ScheduledTask<T> implements Callable<T> {
         this.fixedRate = fixedRate;
         this.initialDelay = initialDelay;
         this.isCallable = isCallable;
-        this.listener = task instanceof jakarta.enterprise.concurrent.ManagedTask ? ((jakarta.enterprise.concurrent.ManagedTask) task).getManagedTaskListener() : //
-                        task instanceof javax.enterprise.concurrent.ManagedTask ? ((javax.enterprise.concurrent.ManagedTask) task).getManagedTaskListener() : //
-                                        null;
+        this.listener = task instanceof ManagedTask ? ((ManagedTask) task).getManagedTaskListener() : null;
         this.managedExecSvc = managedExecSvc;
         this.trigger = null;
         this.unit = unit;
@@ -249,7 +254,7 @@ public class ScheduledTask<T> implements Callable<T> {
                 result.executionThread = Thread.currentThread();
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
                     Tr.event(this, tc, "taskSubmitted", managedExecSvc, this.task);
-                taskSubmitted(this.task);
+                listener.taskSubmitted(future, managedExecSvc, this.task);
             } finally {
                 result.executionThread = null;
                 if (tranContextRestorer != null)
@@ -276,16 +281,14 @@ public class ScheduledTask<T> implements Callable<T> {
      * @param isCallable indicates whether task is submitted as a Callable or Runnable.
      * @param trigger indicates when the task should run
      */
-    ScheduledTask(ManagedScheduledExecutorServiceImpl managedExecSvc, Object task, boolean isCallable, Object trigger) {
+    ScheduledTask(ManagedScheduledExecutorServiceImpl managedExecSvc, Object task, boolean isCallable, Trigger trigger) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
 
         this.fixedDelay = null;
         this.fixedRate = null;
         this.initialDelay = null;
         this.isCallable = isCallable;
-        this.listener = task instanceof jakarta.enterprise.concurrent.ManagedTask ? ((jakarta.enterprise.concurrent.ManagedTask) task).getManagedTaskListener() : //
-                        task instanceof javax.enterprise.concurrent.ManagedTask ? ((javax.enterprise.concurrent.ManagedTask) task).getManagedTaskListener() : //
-                            null;
+        this.listener = task instanceof ManagedTask ? ((ManagedTask) task).getManagedTaskListener() : null;
         this.managedExecSvc = managedExecSvc;
         this.trigger = trigger;
         this.unit = TimeUnit.MILLISECONDS;
@@ -307,9 +310,7 @@ public class ScheduledTask<T> implements Callable<T> {
 
         Date nextExecutionDate;
         try {
-            nextExecutionDate = trigger instanceof jakarta.enterprise.concurrent.Trigger //
-                            ? ((jakarta.enterprise.concurrent.Trigger) trigger).getNextRunTime(lastExecution = null, taskScheduledTime) //
-                            : ((javax.enterprise.concurrent.Trigger) trigger).getNextRunTime(lastExecution = null, taskScheduledTime);
+            nextExecutionDate = trigger.getNextRunTime(lastExecution = null, taskScheduledTime);
         } catch (Throwable x) {
             throw new RejectedExecutionException(x);
         }
@@ -328,7 +329,7 @@ public class ScheduledTask<T> implements Callable<T> {
                 result.executionThread = Thread.currentThread();
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
                     Tr.event(this, tc, "taskSubmitted", managedExecSvc, this.task);
-                taskSubmitted(this.task);
+                listener.taskSubmitted(future, managedExecSvc, this.task);
             } finally {
                 result.executionThread = null;
                 if (tranContextRestorer != null)
@@ -382,10 +383,7 @@ public class ScheduledTask<T> implements Callable<T> {
             // Determine if task should be skipped
             if (trigger != null)
                 try {
-                    boolean skip = trigger instanceof jakarta.enterprise.concurrent.Trigger //
-                                    ? ((jakarta.enterprise.concurrent.Trigger) trigger).skipRun(lastExecution, new Date(nextExecutionTime)) //
-                                    : ((javax.enterprise.concurrent.Trigger) trigger).skipRun(lastExecution, new Date(nextExecutionTime));
-                    if (skip)
+                    if (trigger.skipRun(lastExecution, new Date(nextExecutionTime)))
                         skipped = new Status<T>(Status.Type.SKIPPED, null, null, false);
                 } catch (Throwable x) {
                     // spec requires skip when skipRun fails
@@ -402,7 +400,7 @@ public class ScheduledTask<T> implements Callable<T> {
                     try {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
                             Tr.event(this, tc, "taskStarting", managedExecSvc, task);
-                        taskStarting(task);
+                        listener.taskStarting(future, managedExecSvc, task);
                     } finally {
                         done = result.getStatus().type == Status.Type.CANCELED;
                     }
@@ -455,9 +453,7 @@ public class ScheduledTask<T> implements Callable<T> {
                         if (trigger == null)
                             result.compareAndSet(status, new Status<T>(Status.Type.DONE, taskResult, null, fixedDelay == null && fixedRate == null));
                         else {
-                            nextExecutionDate = trigger instanceof jakarta.enterprise.concurrent.Trigger //
-                                            ? ((jakarta.enterprise.concurrent.Trigger) trigger).getNextRunTime(lastExecution, taskScheduledTime) //
-                                            : ((javax.enterprise.concurrent.Trigger) trigger).getNextRunTime(lastExecution, taskScheduledTime);
+                            nextExecutionDate = trigger.getNextRunTime(lastExecution, taskScheduledTime);
                             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                                 Tr.debug(this, tc, "getNextRunTime", trigger, lastExecution,
                                          "taskScheduled " + Utils.toString(taskScheduledTime),
@@ -478,7 +474,7 @@ public class ScheduledTask<T> implements Callable<T> {
                                     CancellationException cancelX = new CancellationException(Tr.formatMessage(tc, "CWWKC1110.task.canceled", getName(), managedExecSvc.name));
                                     if (trace && tc.isEventEnabled())
                                         Tr.event(this, tc, "taskCanceled", managedExecSvc, task, cancelX);
-                                    taskAborted(task, cancelX);
+                                    listener.taskAborted(future, managedExecSvc, task, cancelX);
                                 } catch (Throwable x) {
                                     Tr.error(tc, "CWWKC1102.listener.failed", getName(), managedExecSvc.name, x);
                                 }
@@ -486,7 +482,7 @@ public class ScheduledTask<T> implements Callable<T> {
                             Throwable failure = result.getStatus().failure;
                             if (trace && tc.isEventEnabled())
                                 Tr.event(this, tc, "taskDone", managedExecSvc, task, failure);
-                            taskDone(task, failure);
+                            listener.taskDone(future, managedExecSvc, task, failure);
                         } catch (Throwable x) {
                             Tr.error(tc, "CWWKC1102.listener.failed", getName(), managedExecSvc.name, x);
                         }
@@ -499,9 +495,7 @@ public class ScheduledTask<T> implements Callable<T> {
                         result.compareAndSet(status, skipped);
 
                     // calculate next execution
-                    nextExecutionDate = trigger instanceof jakarta.enterprise.concurrent.Trigger //
-                                    ? ((jakarta.enterprise.concurrent.Trigger) trigger).getNextRunTime(lastExecution, taskScheduledTime) //
-                                    : ((javax.enterprise.concurrent.Trigger) trigger).getNextRunTime(lastExecution, taskScheduledTime);
+                    nextExecutionDate = trigger.getNextRunTime(lastExecution, taskScheduledTime);
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                         Tr.debug(this, tc, "getNextRunTime", trigger, lastExecution,
                                  "taskScheduled " + Utils.toString(taskScheduledTime),
@@ -517,9 +511,7 @@ public class ScheduledTask<T> implements Callable<T> {
                     if (listener != null) {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
                             Tr.event(this, tc, "taskAborted(skipped)", managedExecSvc, task);
-                        taskAborted(task, managedExecSvc.eeVersion < 9 //
-                                        ? new javax.enterprise.concurrent.SkippedException(skipped.failure) //
-                                        : new jakarta.enterprise.concurrent.SkippedException(skipped.failure));
+                        listener.taskAborted(future, managedExecSvc, task, new SkippedException(skipped.failure));
                     }
                 }
 
@@ -527,7 +519,7 @@ public class ScheduledTask<T> implements Callable<T> {
                 if (listener != null) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
                         Tr.event(this, tc, "taskDone(skipped)", managedExecSvc, task);
-                    taskDone(task, null);
+                    listener.taskDone(future, managedExecSvc, task, null);
                 }
             }
 
@@ -564,7 +556,7 @@ public class ScheduledTask<T> implements Callable<T> {
                         result.executionThread = Thread.currentThread();
                         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
                             Tr.event(this, tc, "taskSubmitted", managedExecSvc, task);
-                        taskSubmitted(task);
+                        listener.taskSubmitted(future, managedExecSvc, task);
                     } finally {
                         result.executionThread = null;
                     }
@@ -607,14 +599,12 @@ public class ScheduledTask<T> implements Callable<T> {
                         if (skipped == null && status.type != Status.Type.STARTED) {
                             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
                                 Tr.event(this, tc, "taskAborted", managedExecSvc);
-                            taskAborted(task, managedExecSvc.eeVersion < 9 //
-                                            ? new javax.enterprise.concurrent.AbortedException(x) //
-                                            : new jakarta.enterprise.concurrent.AbortedException(x));
+                            listener.taskAborted(future, managedExecSvc, task, new AbortedException(x));
                         }
                     } finally {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
                             Tr.event(this, tc, "taskDone", managedExecSvc, task, x);
-                        taskDone(task, x);
+                        listener.taskDone(future, managedExecSvc, task, x);
                     }
                 } catch (Throwable t) {
                     // Log message, but otherwise ignore because we want to the original failure to be raised
@@ -654,38 +644,6 @@ public class ScheduledTask<T> implements Callable<T> {
                     taskName = execProps.get("javax.enterprise.concurrent.IDENTITY_NAME");
             }
         return taskName == null ? task.toString() : taskName;
-    }
-
-    @Trivial
-    private void taskAborted(Object task, Throwable exception) {
-        if (listener instanceof jakarta.enterprise.concurrent.ManagedTaskListener)
-            ((jakarta.enterprise.concurrent.ManagedTaskListener) listener).taskAborted(future, managedExecSvc, task, exception);
-        else
-            ((javax.enterprise.concurrent.ManagedTaskListener) listener).taskAborted(future, managedExecSvc, task, exception);
-    }
-
-    @Trivial
-    private void taskDone(Object task, Throwable exception) {
-        if (listener instanceof jakarta.enterprise.concurrent.ManagedTaskListener)
-            ((jakarta.enterprise.concurrent.ManagedTaskListener) listener).taskDone(future, managedExecSvc, task, exception);
-        else
-            ((javax.enterprise.concurrent.ManagedTaskListener) listener).taskDone(future, managedExecSvc, task, exception);
-    }
-
-    @Trivial
-    private void taskStarting(Object task) {
-        if (listener instanceof jakarta.enterprise.concurrent.ManagedTaskListener)
-            ((jakarta.enterprise.concurrent.ManagedTaskListener) listener).taskStarting(future, managedExecSvc, task);
-        else
-            ((javax.enterprise.concurrent.ManagedTaskListener) listener).taskStarting(future, managedExecSvc, task);
-    }
-
-    @Trivial
-    private void taskSubmitted(Object task) {
-        if (listener instanceof jakarta.enterprise.concurrent.ManagedTaskListener)
-            ((jakarta.enterprise.concurrent.ManagedTaskListener) listener).taskSubmitted(future, managedExecSvc, task);
-        else
-            ((javax.enterprise.concurrent.ManagedTaskListener) listener).taskSubmitted(future, managedExecSvc, task);
     }
 
     /**
@@ -741,7 +699,7 @@ public class ScheduledTask<T> implements Callable<T> {
                                 Throwable cancelX = new CancellationException(Tr.formatMessage(tc, "CWWKC1110.task.canceled", getName(), managedExecSvc.name));
                                 if (trace && tc.isEventEnabled())
                                     Tr.event(this, tc, "taskAborted", managedExecSvc, task.task, cancelX);
-                                taskAborted(task.task, cancelX);
+                                listener.taskAborted(this, managedExecSvc, task.task, cancelX);
                             } catch (Error x) {
                                 failure = x;
                                 throw x;
@@ -751,7 +709,7 @@ public class ScheduledTask<T> implements Callable<T> {
                             } finally {
                                 if (trace && tc.isEventEnabled())
                                     Tr.event(this, tc, "taskDone", managedExecSvc, task.task, failure);
-                                taskDone(task.task, failure);
+                                listener.taskDone(this, managedExecSvc, task.task, failure);
                             }
                         } finally {
                             if (tranContextRestorer != null)
@@ -833,17 +791,13 @@ public class ScheduledTask<T> implements Callable<T> {
                             x = new ExecutionException(status.failure);
                         break;
                     case ABORTED:
-                        x = managedExecSvc.eeVersion < 9 //
-                                        ? new javax.enterprise.concurrent.AbortedException(status.failure) //
-                                        : new jakarta.enterprise.concurrent.AbortedException(status.failure);
+                        x = new AbortedException(status.failure);
                         break;
                     case CANCELED:
                         x = new CancellationException(Tr.formatMessage(tc, "CWWKC1110.task.canceled", getName(), managedExecSvc.name));
                         break;
                     case SKIPPED:
-                        x = managedExecSvc.eeVersion < 9 //
-                                        ? new javax.enterprise.concurrent.SkippedException(status.failure) //
-                                        : new jakarta.enterprise.concurrent.SkippedException(status.failure);
+                        x = new SkippedException(status.failure);
                         break;
                     default:
                         x = new IllegalStateException(status.type.name());
@@ -895,17 +849,13 @@ public class ScheduledTask<T> implements Callable<T> {
                             x = new ExecutionException(status.failure);
                         break;
                     case ABORTED:
-                        x = managedExecSvc.eeVersion < 9 //
-                                        ? new javax.enterprise.concurrent.AbortedException(status.failure) //
-                                        : new jakarta.enterprise.concurrent.AbortedException(status.failure);
+                        x = new AbortedException(status.failure);
                         break;
                     case CANCELED:
                         x = new CancellationException(Tr.formatMessage(tc, "CWWKC1110.task.canceled", getName(), managedExecSvc.name));
                         break;
                     case SKIPPED:
-                        x = managedExecSvc.eeVersion < 9 //
-                                        ? new javax.enterprise.concurrent.SkippedException(status.failure) //
-                                        : new jakarta.enterprise.concurrent.SkippedException(status.failure);
+                        x = new SkippedException(status.failure);
                         break;
                     default:
                         x = new IllegalStateException(status.type.name());

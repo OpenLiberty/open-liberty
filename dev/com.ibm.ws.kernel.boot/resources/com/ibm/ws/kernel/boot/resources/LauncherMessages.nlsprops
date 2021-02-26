@@ -704,6 +704,10 @@ error.missing.version.files=CWWKE0952E: Version information cannot be read from 
 error.missing.version.files.explanation=The directory that contains version information files either does not exist or cannot be read by the current user.
 error.missing.version.files.useraction=Ensure that the directory exists and can be read by the current user. 
 
+warning.earlyRelease=CWWKE0953W: This version of {0} is an unsupported early release version.
+warning.earlyRelease.explanation=New features that are not fully tested are made available in early releases to elicit feedback before they are included in a supported release.
+warning.earlyRelease.useraction=Do not use an early release version on production systems, since early release versions are not supported.
+
 info.serverStarting=Starting server {0}.
 info.serverStarted=Server {0} started.
 info.serverStartedWithPID=Server {0} started with process ID {1}.

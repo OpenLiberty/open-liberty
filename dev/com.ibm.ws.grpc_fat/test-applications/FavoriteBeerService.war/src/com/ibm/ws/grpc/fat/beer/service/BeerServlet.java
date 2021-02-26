@@ -11,6 +11,7 @@
 package com.ibm.ws.grpc.fat.beer.service;
 
 import java.io.IOException;
+import java.util.logging.Logger;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -27,16 +28,19 @@ import io.grpc.stub.StreamObserver;
  */
 @WebServlet(urlPatterns = { "/beer" }, asyncSupported = true)
 public class BeerServlet extends HttpServlet {
+
+    protected static final Class<?> c = BeerServlet.class;
     private static final long serialVersionUID = 1L;
+    private static final Logger LOG = Logger.getLogger(c.getName());
 
     private static Beer beerList[];
     private static int numBeers;
 
     // implementation of the BeerService service
-    private static final class BeerServiceImpl extends BeerServiceGrpc.BeerServiceImplBase {
+    public static final class BeerServiceImpl extends BeerServiceGrpc.BeerServiceImplBase {
 
-        // a no-arg constructor is required for Liberty to start this service automatically
-        BeerServiceImpl() {
+        // a public no-arg constructor is required for Liberty to start this service automatically
+        public BeerServiceImpl() {
             beerList = new Beer[20];
             numBeers = 0;
         }
@@ -44,16 +48,18 @@ public class BeerServlet extends HttpServlet {
         @Override
         public void addBeer(Beer newBeer, StreamObserver<BeerResponse> responseObserver) {
             boolean notFound = true;
+            LOG.info("Entered addBeer, current number of beers is " + numBeers);
             // Lame test, only 20 beers allowed
             if (numBeers < 20) {
                 int i = 0;
-                while (i < numBeers) {
+                while (i < numBeers && notFound) {
+                    LOG.info("In while, beer is " + beerList[i].getBeerName());
                     if (beerList[i].getBeerName().equals(newBeer.getBeerName())) {
                         notFound = false;
-                        break;
                     }
                     i++;
                 }
+                LOG.info("Out of while, beer not found is " + notFound);
                 if (notFound) {
                     beerList[i] = newBeer;
                     numBeers++;

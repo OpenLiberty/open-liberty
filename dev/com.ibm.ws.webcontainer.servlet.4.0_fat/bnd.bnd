@@ -12,25 +12,29 @@
 bVersion=1.0
 
 src: \
-	fat/src,\
-	test-applications/TestServlet40.war/src,\
-	test-applications/TestServlet40.jar/src,\
-	test-applications/TestGetMapping.war/src,\
-	test-applications/TestAddJspFile.war/src, \
-	test-applications/TestEncoding.war/src, \
-	test-applications/TestPushBuilderSecurity.war/src, \
-	test-applications/ServletPathDefaultMapping.war/src, \
-	test-applications/TestBadServletContextListener.war/src, \
-	test-applications/TestGetMappingSlashStar.war/src, \
-	test-applications/SCIExceptionTest.jar/src, \
-	test-applications/SCIFilterServletNameMapping.jar/src, \
-	test-applications/SameSiteTest.war/src, \
-	test-applications/SameSiteSecurityTest.war/src
-	
+    fat/src,\
+    test-applications/TestServlet40.war/src,\
+    test-applications/TestServlet40.jar/src,\
+    test-applications/TestGetMapping.war/src,\
+    test-applications/TestAddJspFile.war/src,\
+    test-applications/TestEncoding.war/src,\
+    test-applications/TestPushBuilderSecurity.war/src,\
+    test-applications/ServletPathDefaultMapping.war/src,\
+    test-applications/TestBadServletContextListener.war/src,\
+    test-applications/TestGetMappingSlashStar.war/src,\
+    test-applications/SCIExceptionTest.jar/src,\
+    test-applications/SCIFilterServletNameMapping.jar/src,\
+    test-applications/SameSiteTest.war/src,\
+    test-applications/SameSiteSecurityTest.war/src,\
+    test-applications/Servlet5TestApp.war/src
+
 fat.project: true
 
-tested.features: servlet-5.0,\
-	jsp-3.0
+tested.features:\
+    servlet-5.0,\
+    pages-3.0,\
+    appsecurity-4.0,\
+    cdi-3.0
 
 -buildpath:\
     com.ibm.ws.org.apache.commons.logging.1.0.3;version=latest,\
@@ -38,11 +42,9 @@ tested.features: servlet-5.0,\
     com.ibm.websphere.javaee.servlet.4.0;version=latest,\
     com.ibm.websphere.javaee.jsp.2.3;version=latest,\
     io.openliberty.jakarta.servlet.5.0;version=latest,\
-    io.openliberty.jakarta.jsp.3.0;version=latest,\
+    io.openliberty.jakarta.pages.3.0;version=latest,\
     commons-httpclient:commons-httpclient;version=3.1,\
-    org.apache.httpcomponents:httpclient;version=4.1.2, \
-    org.apache.httpcomponents:httpcore;version=4.1.2, \
     httpunit:httpunit;version=1.5.4,\
     net.sf.jtidy:jtidy;version=9.3.8,\
-    org.apache.httpcomponents.client5:httpclient5;version=5.0,\
-    org.apache.httpcomponents.core5:httpcore5;version=5.0
+    org.apache.httpcomponents.client5:httpclient5;version=5.0.2,\
+    org.apache.httpcomponents.core5:httpcore5;version=5.0.2

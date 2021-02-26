@@ -16,9 +16,11 @@
  */
 package com.ibm.jbatch.container.modelresolver.impl;
 
+import java.util.List;
 import java.util.Properties;
 
 import com.ibm.jbatch.jsl.model.PartitionReducer;
+import com.ibm.jbatch.jsl.model.Property;
 
 
 public class PartitionReducerPropertyResolverImpl extends
@@ -46,7 +48,7 @@ public class PartitionReducerPropertyResolverImpl extends
 
         // Resolve all the properties defined for this artifact
         if (reducer.getProperties() != null) {
-            this.resolveElementProperties(reducer.getProperties().getPropertyList(), submittedProps, parentProps);
+            this.resolveElementProperties((List<Property>) reducer.getProperties().getPropertyList(), submittedProps, parentProps);
         }
 
         return reducer;

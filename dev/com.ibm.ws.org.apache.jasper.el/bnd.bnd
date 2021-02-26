@@ -11,8 +11,6 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=3.0
 
-jakartaeeMe: true
-
 Bundle-Name: WAS EL 3.0
 Bundle-SymbolicName: com.ibm.ws.org.apache.jasper.el.3.0
 Bundle-Description: WAS EL 3.0, Version=${bVersion}

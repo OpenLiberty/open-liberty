@@ -1,0 +1,633 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/ValidationExceptionResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+7001=P\u0159ed z\u00edsk\u00e1n\u00edm t\u0159\u00eddy ClientSession se mus\u00edte p\u0159ihl\u00e1sit ke t\u0159\u00edd\u011b ServerSession.
+
+7002=Fond s n\u00e1zvem [{0}] neexistuje.
+
+7003=Maxim\u00e1ln\u00ed velikost mus\u00ed b\u00fdt v\u011bt\u0161\u00ed ne\u017e minim\u00e1ln\u00ed velikost.
+
+7004=Fondy mus\u00ed b\u00fdt p\u0159ed p\u0159ihl\u00e1\u0161en\u00edm nakonfigurov\u00e1ny.
+
+7008=Typ Java [{0}] nen\u00ed platn\u00fd typ datab\u00e1ze.
+
+7009=Chyb\u00ed deskriptor pro [{0}]. Ov\u011b\u0159te, \u017ee je deskriptor v relaci \u0159\u00e1dn\u011b registrovan\u00fd.
+
+7010=Po\u010d\u00e1te\u010dn\u00ed index je mimo rozsah.
+
+7011=Koncov\u00fd index je mimo rozsah.
+
+7012=Do\u0161lo k z\u00e1va\u017en\u00e9 chyb\u011b.
+
+7013=Pou\u017e\u00edv\u00e1te zam\u00edtnut\u00e9 rozhran\u00ed API SessionManager a ve va\u0161\u00ed cest\u011b ke t\u0159\u00edd\u011b nebyl nalezen \u017e\u00e1dn\u00fd soubor EclipseLink.properties. Ze souboru nemohly b\u00fdt na\u010dteny \u017e\u00e1dn\u00e9 relace.
+
+7017=Pod\u0159\u00edzen\u00e9 deskriptory nemaj\u00ed mapu identity, sd\u00edlej\u00ed sv\u00e9 nad\u0159\u00edzen\u00e9 prvky.
+
+7018=Chyba souboru.
+
+7023=Byla poskytnuta chybn\u00e1 instance p\u0159ihl\u00e1\u0161en\u00ed. Mus\u00ed b\u00fdt poskytnuto p\u0159ihl\u00e1\u0161en\u00ed DatabaseLogin.
+
+7024=Neplatn\u00e1 z\u00e1sada slou\u010den\u00ed.
+
+7025=Jedin\u00e9 platn\u00e9 kl\u00ed\u010de pro objekty DatabaseRow jsou objekty String a DatabaseField.
+
+7027=Posloupnost s n\u00e1zvem [{0}] je chybn\u011b nastavena. Jej\u00ed p\u0159\u00edr\u016fstek neodpov\u00edd\u00e1 velikosti p\u0159ed alokac\u00ed.
+
+7028=Metoda writeObject() nen\u00ed v r\u00e1mci rozhran\u00ed UnitOfWork povolena.
+
+7030=Po p\u0159ihl\u00e1\u0161en\u00ed nelze nastavit velikost fondu na\u010dten\u00ed.
+
+7031=Do t\u0159\u00eddy SessionBroker nelze p\u0159idat deskriptory.
+
+7032=Pro t\u0159\u00eddu [{0}] nen\u00ed registrov\u00e1na \u017e\u00e1dn\u00e1 relace.
+
+7033=Nen\u00ed registrov\u00e1na \u017e\u00e1dn\u00e1 relace s n\u00e1zvem [{0}].
+
+7038=Chyba p\u0159i protokolov\u00e1n\u00ed zpr\u00e1vy do protokolu relace.
+
+7039=Nelze odebrat ze sady t\u0159\u00edd jen pro \u010dten\u00ed ve vno\u0159en\u00e9m rozhran\u00ed UnitOfWork. {0}Sada t\u0159\u00edd jen pro \u010dten\u00ed vno\u0159en\u00e9ho rozhran\u00ed UnitOfWork mus\u00ed b\u00fdt rovna sad\u011b t\u0159\u00edd jen pro \u010dten\u00ed nad\u0159\u00edzen\u00e9ho prvku, nebo mus\u00ed b\u00fdt jej\u00ed nad\u0159\u00edzenou sadou.
+
+7040=Sadu t\u0159\u00edd jen pro \u010dten\u00ed v rozhran\u00ed UnitOfWork nelze zm\u011bnit pot\u00e9, co bylo rozhran\u00ed UnitOfWork pou\u017eito. {0}Zm\u011bny sady jen pro \u010dten\u00ed je t\u0159eba prov\u00e9st p\u0159i z\u00edsk\u00e1n\u00ed rozhran\u00ed UnitOfWork nebo okam\u017eit\u011b po n\u011bm.
+
+7042=Nebyla nalezena t\u0159\u00edda datab\u00e1zov\u00e9 platformy [{0}].
+
+7043=[{0}] neobsahuje \u017e\u00e1dn\u00e9 tabulky, kter\u00e9 by se m\u011bly vytvo\u0159it v datab\u00e1zi.
+
+7044=Uvedenou t\u0159\u00eddu kontejneru [{0}] nelze pou\u017e\u00edt jako kontejner, proto\u017ee neimplementuje kolekci ani mapu.
+
+7047=Uveden\u00fd kontejner [{0}] nevy\u017eaduje kl\u00ed\u010de. Pokusili jste se pou\u017e\u00edt metodu [{1}].
+
+7048=Pro t\u0159\u00eddu polo\u017eky [{1}] neexistuje instan\u010dn\u00ed metoda ani pole s n\u00e1zvem [{0}], a proto ji nelze pou\u017e\u00edt k vytvo\u0159en\u00ed kl\u00ed\u010de pro mapu.
+
+7051=Chyb\u00ed atribut [{1}] pro deskriptor [{0}] volan\u00fd z [{2}]
+
+7052=Do\u0161lo k pokusu o pou\u017eit\u00ed [{0}] (s metodou kl\u00ed\u010de [{1}]) jako kontejneru pro t\u0159\u00eddu DirectCollectionMapping. Metodu useMapClass() nelze pou\u017e\u00edt, pro t\u0159\u00eddu DirectCollectionMappings je podporov\u00e1no pouze rozhran\u00ed API useCollectionClass().
+
+7053=Do\u0161lo k pokusu o metodu release() v jin\u00e9 relaci ne\u017e ClientSession. Uvolnit lze pouze relace ClientSession.
+
+7054=Do\u0161lo k pokusu o metodu acquire() v jin\u00e9 relaci ne\u017e ServerSession. Relace ClientSession lze z\u00edskat pouze z relac\u00ed ServerSession.
+
+7055=Zamyk\u00e1n\u00ed p\u0159ed aktualizac\u00ed nen\u00ed podporov\u00e1no u generov\u00e1n\u00ed ulo\u017een\u00fdch procedur.
+
+7056=Do rozhran\u00ed UnitOfWork byl registrov\u00e1n chybn\u00fd objekt. Objekt [{0}] by m\u011bl b\u00fdt objekt z nad\u0159\u00edzen\u00e9 mezipam\u011bti [{1}].
+
+7058=Neplatn\u00fd konektor [{0}] (mus\u00ed b\u00fdt typu DefaultConnector).
+
+7059=Neplatn\u00fd n\u00e1zev zdroje dat [{0}].
+
+7060=Nelze z\u00edskat zdroj dat [{0}].
+
+7061=Do\u0161lo k v\u00fdjimce v r\u00e1mci JTS.
+
+7062=Zamyk\u00e1n\u00ed na \u00farovni pole nen\u00ed podporov\u00e1no mimo rozhran\u00ed UnitOfWork. Chcete-li pou\u017e\u00edt zamyk\u00e1n\u00ed na \u00farovni pole, je t\u0159eba pro V\u0160ECHNY z\u00e1pisy pou\u017e\u00edvat rozhran\u00ed UnitOfWork.
+
+7063=Do\u0161lo k v\u00fdjimce v r\u00e1mci kontejneru EJB.
+
+7064=Do\u0161lo k v\u00fdjimce v reflexivn\u00ed extrakci prim\u00e1rn\u00edho kl\u00ed\u010de EJB. Ov\u011b\u0159te, \u017ee je spr\u00e1vn\u011b definov\u00e1n objekt prim\u00e1rn\u00edho kl\u00ed\u010de. {2}Kl\u00ed\u010d: [{0}] {2}Objekt typu bean: [{1}]
+
+7065=Nelze na\u010d\u00edst ani naj\u00edt vzd\u00e1lenou t\u0159\u00eddu pro objekt typu bean. Zkontrolujte, zda je nastaven spr\u00e1vn\u00fd zavad\u011b\u010d t\u0159\u00edd. {2}Objekt typu bean: [{0}] {2}Vzd\u00e1len\u00e1 t\u0159\u00edda: [{1}]
+
+7066=Objekty typu bean nelze vytvo\u0159it ani odebrat, pokud nen\u00ed p\u0159\u00edtomna transakce JTS. {1}Objekt typu bean: [{0}]
+
+7068=Pomoc\u00ed v\u00fdchoz\u00edho zavad\u011b\u010de t\u0159\u00edd nebyla nalezena t\u0159\u00edda projektu [{0}] pro projekt [{1}].
+
+7071=Vstupn\u00ed/v\u00fdstupn\u00ed parametry nelze pou\u017e\u00edt bez pou\u017eit\u00ed vazby.
+
+7072=Pomoc\u00ed v\u00fdchoz\u00edho zavad\u011b\u010de t\u0159\u00edd nebyla nalezena t\u0159\u00edda datab\u00e1zov\u00e9 platformy [{0}] pro projekt [{1}].
+
+7073=Nen\u00ed definov\u00e1n typ objektu Oracle s n\u00e1zvem typu [{0}].
+
+7074=Nen\u00ed definov\u00e1n n\u00e1zev typu objektu Oracle [{0}].
+
+7075=Nen\u00ed definov\u00e1na maxim\u00e1ln\u00ed velikost pro typ VARRAY Oracle [{0}]. Maxim\u00e1ln\u00ed velikost mus\u00ed b\u00fdt definov\u00e1na.
+
+7076=P\u0159i generov\u00e1n\u00ed t\u0159\u00eddy projektu nesm\u00ed b\u00fdt inicializov\u00e1ny deskriptory projektu. {1} Deskriptor: [{0}]
+
+7077=Domovsk\u00e9 rozhran\u00ed [{0}] ur\u010den\u00e9 b\u011bhem vytvo\u0159en\u00ed z\u00e1sady BMPWrapperPolicy neobsahuje spr\u00e1vnou metodu findByPrimaryKey(). Mus\u00ed existovat metoda findByPrimaryKey(), kter\u00e1 p\u0159ij\u00edm\u00e1 t\u0159\u00eddu PrimaryKey pro tento objekt typu bean.
+
+7079=V relaci [{1}] nebyl nalezen deskriptor pro [{0}]. Zkontrolujte projekt pou\u017e\u00edvan\u00fd pro tuto relaci.
+
+7080=P\u0159i pokusu o na\u010dten\u00ed [{0}] t\u0159\u00eddy [{1}] s prim\u00e1rn\u00edm kl\u00ed\u010dem [{2}] do\u0161lo k v\u00fdjimce FinderException.
+
+7081=Agregovan\u00fd objekt [{0}] nelze p\u0159\u00edmo registrovat v rozhran\u00ed UnitOfWork. Mus\u00ed b\u00fdt p\u0159idru\u017een ke zdrojov\u00e9mu objektu (vlastn\u00edk).
+
+7084=Soubor [{0}] nen\u00ed platn\u00fdm typem pro \u010dten\u00ed. T\u0159\u00edd\u011b ProjectReader mus\u00ed b\u00fdt p\u0159ed\u00e1n implementovan\u00fd soubor projektu XML.
+
+7086=Typ relace [{0}] n\u00e1zvu relace [{1}] nebyl \u0159\u00e1dn\u011b definov\u00e1n.
+
+7087=Pomoc\u00ed v\u00fdchoz\u00edho zavad\u011b\u010de t\u0159\u00edd nebyl nalezen typ relace [{0}] pro [{1}].
+
+7088=Nelze vytvo\u0159it instanci extern\u00edho \u0159adi\u010de transakc\u00ed [{0}] uveden\u00e9ho v souboru vlastnost\u00ed.
+
+7089=Do\u0161lo k v\u00fdjimce p\u0159i vyhled\u00e1v\u00e1n\u00ed nebo vyvol\u00e1v\u00e1n\u00ed metody dopln\u011bn\u00ed relace [{0}] na t\u0159\u00edd\u011b [{1}] s parametry [{2}].
+
+7091=Nelze nastavit t\u0159\u00eddy modulu listener.
+
+7092=Nelze p\u0159idat dotaz, jeho\u017e typy jsou v konfliktu s existuj\u00edc\u00edm dotazem. P\u0159id\u00e1van\u00fd dotaz: [{0}] m\u00e1 n\u00e1zev: [{1}] s argumenty [{2}]. Existuj\u00edc\u00ed koliduj\u00edc\u00ed dotaz: [{3}] m\u00e1 n\u00e1zev: [{4}] s parametry: [{5}].
+
+7093=V dotazu s n\u00e1zvem [{0}] nelze naj\u00edt t\u0159\u00eddu [{2}] pro argument dotazu s n\u00e1zvem [{1}]. Zahr\u0148te chyb\u011bj\u00edc\u00ed t\u0159\u00eddu do cesty ke t\u0159\u00edd\u011b.
+
+7095=Na cest\u011b k prost\u0159edku nebyl nalezen prost\u0159edek sessions.xml [{0}]. Zkontrolujte spr\u00e1vnost n\u00e1zvu/cesty k prost\u0159edku a zavad\u011b\u010de t\u0159\u00edd p\u0159edan\u00fdch metod\u011b SessionManager.getSession. Soubor sessions.xml by m\u011bl b\u00fdt zahrnut\u00fd do ko\u0159enov\u00e9ho adres\u00e1\u0159e implementovan\u00e9ho souboru JAR aplikace. Pokud je soubor sessions.xml v souboru JAR aplikace implementovan\u00fd v podadres\u00e1\u0159i, zkontrolujte, zda se pou\u017e\u00edv\u00e1 spr\u00e1vn\u00e1 cesta k prost\u0159edku s pou\u017eit\u00edm dop\u0159edn\u00fdch lom\u00edtek "/", nikoli zp\u011btn\u00fdch lom\u00edtek "\".
+
+7096=K op\u011btovn\u00e9mu potvrzen\u00ed rozhran\u00ed UnitOfWork nelze pou\u017e\u00edt metodu commit().
+
+7097=Operace nen\u00ed podporov\u00e1na: [{0}].
+
+7099=Na cest\u011b k prost\u0159edku nebyl nalezen prost\u0159edek XML projektu implementace [{0}]. Zkontrolujte spr\u00e1vnost n\u00e1zvu/cesty k prost\u0159edku a zavad\u011b\u010de t\u0159\u00edd p\u0159edan\u00fdch t\u0159\u00edd\u011b XMLProjectReader. Soubor XML projektu by m\u011bl b\u00fdt zahrnut\u00fd do ko\u0159enov\u00e9ho adres\u00e1\u0159e implementovan\u00e9ho souboru JAR aplikace. Pokud je soubor XML projektu v souboru JAR aplikace implementovan\u00fd v podadres\u00e1\u0159i, zkontrolujte, zda se pou\u017e\u00edv\u00e1 spr\u00e1vn\u00e1 cesta k prost\u0159edku s pou\u017eit\u00edm dop\u0159edn\u00fdch lom\u00edtek "/", nikoli zp\u011btn\u00fdch lom\u00edtek "\".
+
+7100=Nelze naj\u00edt relaci s n\u00e1zvem [{0}] v souboru session.xml [{1}]
+
+7101=Ve va\u0161\u00ed cest\u011b ke t\u0159\u00edd\u011b nebyl nalezen \u017e\u00e1dn\u00fd soubor "meta-inf/eclipselink-ejb-jar.xml". Relaci CMP nelze na\u010d\u00edst ze souboru.
+
+7102=Byla rozpozn\u00e1na hodnota null kl\u00ed\u010de mezipam\u011bti p\u0159i pokusu o odebr\u00e1n\u00ed{2}objektu z mapy identit: [{0}]{2}obsahuj\u00edc\u00ed objekt t\u0159\u00eddy: [{1}] (nebo t\u0159\u00eddu v t\u00e9to hierarchii){2}Nejpravd\u011bpodobn\u011bj\u0161\u00ed p\u0159\u00ed\u010dinou t\u00e9to situace je to, \u017ee objekt ji\u017e byl uvoln\u011bn{2}z pam\u011bti, a proto v map\u011b identit neexistuje.{2}Chcete-li t\u00e9to situaci zabr\u00e1nit, zva\u017ete pou\u017eit\u00ed alternativn\u00ed mapy identit.{2}Dal\u0161\u00ed podrobnosti o map\u00e1ch identit viz dokumentace EclipseLink.
+
+7103=Byl rozpozn\u00e1n odkaz na hodnotu null p\u0159i pokusu o vyvol\u00e1n\u00ed{1}metody: [{0}] na objektu, kter\u00fd pou\u017e\u00edv\u00e1 nep\u0159\u00edm\u00fd odkaz serveru proxy.{1}P\u0159ed vyvol\u00e1n\u00edm metod tohoto objektu zkontrolujte, zda tento objekt nem\u00e1 hodnotu null.
+
+7104=P\u0159ihl\u00e1\u0161en\u00ed k sekven\u010dn\u00edmu zpracov\u00e1n\u00ed by nem\u011blo pou\u017e\u00edvat extern\u00ed \u0159adi\u010d transakc\u00ed.
+
+7105=Do\u0161lo k chyb\u011b p\u0159i p\u0159evodu t\u0159\u00eddy \u0161ifrov\u00e1n\u00ed: [{0}]
+
+7106=Do\u0161lo k chyb\u011b b\u011bhem \u0161ifrov\u00e1n\u00ed \u0159et\u011bzce.
+
+7107=Do\u0161lo k chyb\u011b b\u011bhem de\u0161ifrov\u00e1n\u00ed \u0159et\u011bzce.
+
+7108=Tato operace nen\u00ed podporov\u00e1na pro nerela\u010dn\u00ed platformy.
+
+7109=P\u0159ihl\u00e1\u0161en\u00ed v projektu, kter\u00e9 se pou\u017e\u00edv\u00e1 k vytvo\u0159en\u00ed relace, m\u00e1 hodnotu null, mus\u00ed se jednat o platn\u00e9 p\u0159ihl\u00e1\u0161en\u00ed.
+
+7110=V sou\u010dasn\u00e9 dob\u011b funguje relace HistoricalSession pouze s datab\u00e1zemi Oracle 9R2 nebo nov\u011bj\u0161\u00edmi, proto\u017ee pou\u017e\u00edv\u00e1 funkci Flashback spole\u010dnosti Oracle.
+
+7111=Relaci HistoricalSession nelze z\u00edskat z rozhran\u00ed UnitOfWork, jin\u00e9 relace HistoricalSession, relace ServerSession nebo relace ServerSessionBroker. M\u016f\u017eete ji z\u00edskat z b\u011b\u017en\u00e9 relace, relace ClientSession nebo relace ClientSessionBroker.
+
+7112=Uvedli jste, \u017ee produkt EclipseLink pou\u017e\u00edv\u00e1 funkci: {0}, tato funkce v\u0161ak nen\u00ed dostupn\u00e1 v aktu\u00e1ln\u011b spu\u0161t\u011bn\u00e9 verzi JDK:{1}.
+
+7113={0} nepodporuje vol\u00e1n\u00ed s n\u00e1vratem.
+
+7114=Izolovan\u00e1 data nejsou aktu\u00e1ln\u011b podporov\u00e1na v r\u00e1mci zprost\u0159edkovatele relac\u00ed klienta. Relace s n\u00e1zvem {0} obsahuje deskriptory p\u0159edstavuj\u00edc\u00ed izolovan\u00e1 data.
+
+7115=V\u00fdhradn\u00ed p\u0159ipojen\u00ed nelze pou\u017e\u00edt pro \u010dten\u00ed relace typu ClientSession bez izolovan\u00fdch dat. Aktualizujte z\u00e1sadu ConnectionPolicy pou\u017e\u00edvanou k odebr\u00e1n\u00ed konfigurace ExclusiveConnection nebo projektu tak, aby byla ur\u010dit\u00e1 data nastavena jako exkluzivn\u00ed.
+
+7116=Jsou pou\u017eity neplatn\u00e9 argumenty. Prostudujte si informace k ve\u0159ejn\u00e9mu rozhran\u00ed API volaj\u00edc\u00ed metody a pou\u017eijte platn\u00e9 hodnoty argument\u016f.
+
+7117=Do\u0161lo k pokusu o pou\u017eit\u00ed v\u00edce ne\u017e jednoho kurzoru ve vol\u00e1n\u00ed SQLCall {0}
+
+7118=Ve vol\u00e1n\u00ed SQLCall {0} byla vol\u00e1na metoda setCustomSQLArgumentType, toto vol\u00e1n\u00ed v\u0161ak nepou\u017e\u00edv\u00e1 vlastn\u00ed k\u00f3d SQL.
+
+7119=Nep\u0159ipraven\u00e9 vol\u00e1n\u00ed SQLCall {0} se pokusilo o p\u0159eklad.
+
+7120=Parametr {0} ve vol\u00e1n\u00ed SQLCall {1} nelze pou\u017e\u00edt jako kurzor, proto\u017ee m\u00e1 jin\u00fd typ parametru ne\u017e OUT.
+
+7121={0} nepodporuje ulo\u017een\u00e9 funkce
+
+7122=V\u00fdhradn\u00ed p\u0159ipojen\u00ed p\u0159idru\u017een\u00e9 k dan\u00e9 relaci je nedostupn\u00e9 pro dotaz na {0}.
+
+7123=Na tomto rozhran\u00ed UnitOfWork byla vol\u00e1na \u00fasp\u011b\u0161n\u00e1 metoda writeChanges(). Jeliko\u017e byl zah\u00e1jen proces potvrzen\u00ed, kter\u00fd v\u0161ak je\u0161t\u011b nebyl dokon\u010den, jsou nyn\u00ed podporov\u00e1ny pouze operace commit, commitAndResume, release, libovoln\u00e9 dotazy na jin\u00e9 \u00farovni ne\u017e na \u00farovni objektu a proveden\u00ed SQLCall. Operace {0} v t\u00e9to chv\u00edli nen\u00ed povolena.
+
+7124=Na tomto rozhran\u00ed UnitOfWork byla vol\u00e1na ne\u00fasp\u011b\u0161n\u00e1 metoda writeChanges(). S ohledem na riziko, \u017ee do datov\u00e9ho \u00falo\u017ei\u0161t\u011b mohly b\u00fdt zaps\u00e1ny d\u00edl\u010d\u00ed zm\u011bny, kter\u00e9 v\u0161ak nebyly odvol\u00e1ny (pokud jsou uvnit\u0159 extern\u00ed transakce), jsou nyn\u00ed podporov\u00e1ny pouze operace release, glob\u00e1ln\u00ed vr\u00e1cen\u00ed transakce, libovoln\u00e9 dotazy na jin\u00e9 \u00farovni ne\u017e na \u00farovni objektu a proveden\u00ed SQLCall. Do\u0161lo k pokusu o operaci {0}.
+
+7125=Pot\u00e9, co je rozhran\u00ed UnitOfWork potvrzeno anebo vyd\u00e1no, nem\u011bla by se na n\u011bm prov\u00e1d\u011bt \u017e\u00e1dn\u00e1 jin\u00e1 operace. Do\u0161lo na n\u011bm k pokusu o operaci {0}.
+
+7126=Metodu writeChanges nelze volat na vno\u0159en\u00e9 rozhran\u00ed UnitOfWork. Vno\u0159en\u00e9 rozhran\u00ed UnitOfWork nikdy nezapisuje zm\u011bny p\u0159\u00edmo do datov\u00e9ho \u00falo\u017ei\u0161t\u011b, to prov\u00e1d\u00ed pouze nad\u0159\u00edzen\u00e9 rozhran\u00ed UnitOfWork.
+
+7127=Zm\u011bny do datov\u00e9ho \u00falo\u017ei\u0161t\u011b m\u016f\u017eete zapsat pouze jednou, stejn\u011b jako m\u016f\u017eete pouze jednou volat potvrzen\u00ed.
+
+7128=Relace [{0}] je ji\u017e p\u0159ihl\u00e1\u0161ena.
+
+7129=Argumenty metody nemohou m\u00edt hodnotu null.
+
+7130=Vno\u0159en\u00e9 rozhran\u00ed UnitOfWork nen\u00ed p\u0159i sledov\u00e1n\u00ed zm\u011bn atributu podporov\u00e1no.
+
+7131={0} je chybn\u00fd typ. Typem ud\u00e1losti zm\u011bny kolekce mus\u00ed b\u00fdt p\u0159id\u00e1n\u00ed nebo odebr\u00e1n\u00ed.
+
+7132={0} je chybn\u00e1 t\u0159\u00edda ud\u00e1losti. Jsou podporov\u00e1ny pouze t\u0159\u00eddy PropertyChangeEvent a CollectionChangeEvent.
+
+7133=P\u0159i sledov\u00e1n\u00ed zm\u011bn atribut\u016f nen\u00ed podporov\u00e1no star\u00e9 potvrzen\u00ed.
+
+7134=Platforma serveru {0} je po p\u0159ihl\u00e1\u0161en\u00ed jen pro \u010dten\u00ed.
+
+7135=Nem\u016f\u017eete potvrdit a obnovit rozhran\u00ed UnitOfWork obsahuj\u00edc\u00ed jak\u00e9koli dotazy typu Upravit v\u0161e.
+
+7136=Vno\u0159en\u00e9 rozhran\u00ed UnitOfWork nen\u00ed pro dotaz typu Upravit v\u0161e podporov\u00e1no.
+
+7137=Objekt je \u010d\u00e1ste\u010dn\u011b na\u010dten\u00fd (pomoc\u00ed skupiny na\u010dten\u00ed), nena\u010dten\u00fd atribut ({0}) nen\u00ed upraviteln\u00fd.
+
+7139=Dotazy typu Upravit v\u0161e nelze vydat v r\u00e1mci rozhran\u00ed UnitOfWork obsahuj\u00edc\u00edho jin\u00e9 operace z\u00e1pisu.
+
+7140=Typ posloupnosti {0} nem\u00e1 metodu {1}.
+
+7141=Posloupnost {0} je typu DefaultSequence, kter\u00fd nelze pou\u017e\u00edt v metod\u011b setDefaultSequence.
+
+7142=Posloupnost {0} nelze nastavit jako v\u00fdchoz\u00ed, proto\u017ee posloupnost s t\u00edmto n\u00e1zvem ji\u017e byla p\u0159id\u00e1na.
+
+7143=Posloupnost {0} nelze p\u0159idat, proto\u017ee posloupnost s t\u00edmto n\u00e1zvem ji\u017e byla nastavena jako v\u00fdchoz\u00ed.
+
+7144={0}: platforma {1} nepodporuje {2}.
+
+7145={2} se pokou\u0161\u00ed o p\u0159ipojen\u00ed k posloupnosti {0}, ale ji\u017e je p\u0159ipojena k {1}. Tyto dv\u011b relace pravd\u011bpodobn\u011b sd\u00edlej\u00ed objekt DatasourcePlatform.
+
+7146=QuerySequence {1} nem\u00e1 dotaz v\u00fdb\u011bru.
+
+7147=Platforma {0} nem\u016f\u017ee vytvo\u0159it v\u00fdchoz\u00ed posloupnost platformy - nep\u0159episuje metodu createPlatformDefaultSequence.
+
+7148=Metodu commitAndResume() nelze pou\u017e\u00edt s jednotkou pr\u00e1ce JTA nebo synchronizovan\u00fdm rozhran\u00edm UnitOfWork.
+
+7149=Atribut slo\u017een\u00e9ho prim\u00e1rn\u00edho kl\u00ed\u010de [{2}] typu [{4}] na t\u0159\u00edd\u011b entity [{0}] by m\u011bl b\u00fdt stejn\u00e9ho typu, jak\u00fd je definov\u00e1n v jeho t\u0159\u00edd\u011b prim\u00e1rn\u00edho kl\u00ed\u010de [{1}]. To znamen\u00e1, \u017ee by m\u011bl b\u00fdt typu [{3}].
+
+7150=Neplatn\u00e1 specifikace slo\u017een\u00e9ho prim\u00e1rn\u00edho kl\u00ed\u010de. N\u00e1zvy pol\u00ed prim\u00e1rn\u00edho kl\u00ed\u010de nebo vlastnost\u00ed ve t\u0159\u00edd\u011b prim\u00e1rn\u00edho kl\u00ed\u010de [{1}] mus\u00ed odpov\u00eddat n\u00e1zv\u016fm t\u0159\u00eddy objektu entity bean [{0}] a jejich typy se mus\u00ed shodovat. Rovn\u011b\u017e zkontrolujte, zda jste ur\u010dili prvky ID pro odpov\u00eddaj\u00edc\u00ed atributy v k\u00f3du XML anebo atributy @Id na odpov\u00eddaj\u00edc\u00edch pol\u00edch nebo vlastnostech t\u0159\u00eddy entity.
+
+7151=Typ [{1}] pro atribut [{0}] na t\u0159\u00edd\u011b entity [{2}] nen\u00ed platn\u00fdm typem pro v\u00fd\u010dtov\u00e9 mapov\u00e1n\u00ed. Atribut mus\u00ed b\u00fdt definov\u00e1n jako v\u00fd\u010det jazyka Java.
+
+7153=Anotace mapov\u00e1n\u00ed nelze pou\u017e\u00edt na pole a vlastnosti, kter\u00e9 maj\u00ed zadan\u00fd atribut @Transient. [{0}] poru\u0161uje toto omezen\u00ed.
+
+7154=Atribut [{3}] ve t\u0159\u00edd\u011b entity [{2}] m\u00e1 hodnotu mappedBy [{1}], kter\u00e1 ve vlastnick\u00e9 t\u0159\u00edd\u011b entity [{0}] neexistuje. Pokud je vlastnick\u00e1 t\u0159\u00edda entity @MappedSuperclass, je tato hodnota neplatn\u00e1 a atribut by m\u011bl odkazovat na spr\u00e1vnou podt\u0159\u00eddu.
+
+7155=Typ [{1}] pro atribut [{0}] na t\u0159\u00edd\u011b entity [{2}] nen\u00ed platn\u00fdm typem pro serializovan\u00e9 mapov\u00e1n\u00ed. Typ atributu mus\u00ed implementovat serializovateln\u00e9 rozhran\u00ed.
+
+7156=Nelze naj\u00edt t\u0159\u00eddu s n\u00e1zvem [{0}]. Zkontrolujte spr\u00e1vnost n\u00e1zvu/cesty ke t\u0159\u00edd\u011b a jejich dostupnost zavad\u011b\u010di t\u0159\u00edd.
+
+7157=T\u0159\u00edda entity [{0}] mus\u00ed k mapov\u00e1n\u00ed sv\u00e9ho atributu vztahu [{1}] pou\u017e\u00edvat nam\u00edsto sloupce @Column sloupec @JoinColumn.
+
+7158=Do\u0161lo k chyb\u011b p\u0159i sestavov\u00e1n\u00ed dotazu @NamedQuery [{1}] z t\u0159\u00eddy entity [{0}].
+
+7159=Nelze naj\u00edt kl\u00ed\u010d mapy [{0}] na t\u0159\u00edd\u011b entity [{1}] pro mapov\u00e1n\u00ed [{2}].
+
+7160=U vztahu @OneToMany pro n\u00e1zev atributu [{1}] ve t\u0159\u00edd\u011b entity [{0}] by nem\u011bly b\u00fdt u\u010deny sloupce JoinColumn. Pokud nen\u00ed vztah @OneToMany mapov\u00e1n jinou entitou (tj. je na stran\u011b vlastn\u00edka a je jednosm\u011brn\u00fd), mus\u00ed b\u00fdt zad\u00e1na tabulka @JoinTable, nikoli sloupec \u010di sloupce @JoinColumn. Pokud nen\u00ed zad\u00e1na tabulka @JoinTable, pou\u017eije se nam\u00edsto n\u00ed v\u00fdchoz\u00ed tabulka spojen\u00ed. Tabulku @JoinTable zadejte pouze, pokud je t\u0159eba p\u0159epsat v\u00fdchoz\u00ed konfiguraci.
+
+7161=T\u0159\u00edda entity [{0}] nem\u00e1 ur\u010den\u00fd \u017e\u00e1dn\u00fd prim\u00e1rn\u00ed kl\u00ed\u010d. M\u011bla by definovat bu\u010f @Id, @EmbeddedId, nebo @IdClass. Pokud jste definovali PK pomoc\u00ed n\u011bkter\u00e9 z t\u011bchto anotac\u00ed, zkontrolujte, zda jste v hierarchii t\u0159\u00edd nezkombinovali typ p\u0159\u00edstupu (anotovan\u00e1 pole i vlastnosti).
+
+7162=T\u0159\u00edda entity [{0}] m\u00e1 ur\u010deno v\u00edce anotac\u00ed @EmbeddedId (na atributech [{1}] a [{2}]). Pro jednu entitu lze ur\u010dit pouze jednu anotaci @EmbeddedId.
+
+7163=T\u0159\u00edda entity [{0}] m\u00e1 @EmbdeddedId (na atributu [{1}]) a @Id (na atributu [{2}]). Na stejn\u00e9 entit\u011b nelze ur\u010dit oba typy ID.
+
+7164=Typ [{1}] pro atribut [{0}] na t\u0159\u00edd\u011b entity [{2}] nen\u00ed platn\u00fdm typem pro mapov\u00e1n\u00ed objekt\u016f LOB. Pro objekt LOB typu BLOB mus\u00ed b\u00fdt atribut definovan\u00fd jako typ java.sql.Blob, byte[], Byte[] nebo serializovateln\u00fd typ. Pro objekt LOB typu CLOB, mus\u00ed b\u00fdt atribut definovan\u00fd jako typ java.sql.Clob, char[], Character[] nebo \u0159et\u011bzcov\u00fd typ.
+
+7165=Typ [{1}] pro atribut [{0}] na t\u0159\u00edd\u011b entity [{2}] nen\u00ed platn\u00fdm typem pro do\u010dasn\u00e9 mapov\u00e1n\u00ed. Atribut mus\u00ed b\u00fdt definovan\u00fd jako java.util.Date nebo java.util.Calendar.
+
+7166=V [{1}] byl nalezen gener\u00e1tor tabulek, kter\u00fd pou\u017e\u00edv\u00e1 jako sv\u016fj "n\u00e1zev" vyhrazen\u00fd n\u00e1zev [{0}]. Tento n\u00e1zev nem\u016f\u017ee pou\u017e\u00edvat, proto\u017ee je vyhrazen\u00fd pro v\u00fdchoz\u00ed nastaven\u00ed "n\u00e1zvu posloupnosti" gener\u00e1toru posloupnosti.
+
+7167=V [{1}] byl nalezen gener\u00e1tor posloupnosti, kter\u00fd pou\u017e\u00edv\u00e1 jako "n\u00e1zev posloupnosti" vyhrazen\u00fd n\u00e1zev [{0}]. Tento n\u00e1zev nem\u016f\u017ee pou\u017e\u00edvat, proto\u017ee je vyhrazen\u00fd pro v\u00fdchoz\u00ed nastaven\u00ed "n\u00e1zvu" gener\u00e1toru tabulky.
+
+7168=Atribut [{0}] typu [{1}] na t\u0159\u00edd\u011b entity [{2}] nen\u00ed platn\u00fd pro vlastnost verze. Jsou podporov\u00e1ny n\u00e1sleduj\u00edc\u00ed typy: int, Integer, short, Short, long, Long, Timestamp.
+
+7169=T\u0159\u00edda [{0}] m\u00e1 dv\u011b hodnoty @GeneratedValues: pro pole [{1}] a [{2}]. Povolena je pouze jedna hodnota.
+
+7172=Do\u0161lo k chyb\u011b p\u0159i vytv\u00e1\u0159en\u00ed instance t\u0159\u00eddy [{0}].
+
+7173=Na vlastnosti s n\u00e1zvem [{1}] v [{0}] byla spu\u0161t\u011bna ud\u00e1lost zm\u011bny vlastnosti. Tato vlastnost v\u0161ak neexistuje.
+
+7174=Metoda getter [{1}] na t\u0159\u00edd\u011b entity [{0}] nem\u00e1 definovan\u00fd odpov\u00eddaj\u00edc\u00ed modul nastaven\u00ed.
+
+7175=Mapov\u00e1n\u00ed [{0}] nepodporuje zamyk\u00e1n\u00ed p\u0159ed aktualizac\u00ed verze kask\u00e1dov\u00e1n\u00ed.
+
+7176=Mapov\u00e1n\u00ed [{0}] nepodporuje zamyk\u00e1n\u00ed p\u0159ed aktualizac\u00ed verze kask\u00e1dov\u00e1n\u00ed, proto\u017ee m\u00e1 vlastn\u00ed dotaz.
+
+7177=Agrega\u010dn\u00ed deskriptor [{0}] m\u00e1 soukrom\u011b vlastn\u011bn\u00e1 mapov\u00e1n\u00ed. Agrega\u010dn\u00ed deskriptory nepodporuj\u00ed zamyk\u00e1n\u00ed p\u0159ed aktualizac\u00ed verze kask\u00e1dov\u00e1n\u00ed.
+
+7178=OracleOCIProxyConnector vy\u017eaduje zdroj dat OracleOCIConnectionPool.
+
+7179=OracleJDBC_10_1_0_2ProxyConnectionCustomizer vy\u017eaduje zdroj dat, kter\u00fd vytv\u00e1\u0159\u00ed p\u0159ipojen\u00ed OracleConnection.
+
+7180=OracleJDBC_10_1_0_2ProxyConnectionCustomizer vy\u017eaduje Oracle JDBC verze 10.1.0.2 nebo vy\u0161\u0161\u00ed, aby p\u0159ipojen\u00ed OracleConnection deklarovalo metodu openProxySession.
+
+7181=OracleJDBC_10_1_0_2ProxyConnectionCustomizer vy\u017eaduje, aby byla hodnota vlastnosti PersistenceUnitProperties.ORACLE_PROXY_TYPE bu\u010f cel\u00e9 \u010d\u00edslo, nebo hodnota p\u0159evoditeln\u00e1 na cel\u00e9 \u010d\u00edslo: nap\u0159\u00edklad OracleConnection.PROXYTYPE_USER_NAME nebo Integer.toString(OracleConnection.PROXYTYPE_USER_NAME)
+
+7182=EC - Nebyla nalezena t\u0159\u00edda ovlada\u010de [{0}]
+
+7183=Chyba p\u0159i zav\u00edr\u00e1n\u00ed souboru persistence.xml.
+
+7184=Nen\u00ed ur\u010dena syst\u00e9mov\u00e1 vlastnost [{0}]. Mus\u00ed b\u00fdt nastavena na t\u0159\u00eddu, kter\u00e1 definuje metodu "getContainerConfig()".
+
+7185=Nelze naj\u00edt t\u0159\u00eddu [{0}] ur\u010denou v [{1}].
+
+7186=Nelze vyvolat metodu [{0}] na t\u0159\u00edd\u011b [{1}] ur\u010den\u00e9 v [{2}].
+
+7187=[{0}] by m\u011bl definovat ve\u0159ejnou statickou metodu [{1}], kter\u00e1 nem\u00e1 \u017e\u00e1dn\u00e9 parametry a vrac\u00ed kolekci.
+
+7188=Je vy\u017eadov\u00e1n nenulov\u00fd seznam t\u0159\u00edd.
+
+7189=Nelze vytvo\u0159it do\u010dasn\u00fd zavad\u011b\u010d t\u0159\u00edd z aktu\u00e1ln\u00edho zavad\u011b\u010de: [{0}]
+
+7190=[{0}] se nezda\u0159ilo
+
+7191=T\u0159\u00edda entity [{0}] nebyla nalezena pomoc\u00ed zavad\u011b\u010de t\u0159\u00edd [{1}].
+
+7192=ClassFileTransformer [{0}] generuje v\u00fdjimku p\u0159i prov\u00e1d\u011bn\u00ed metody transform() na t\u0159\u00edd\u011b [{1}].
+
+7193=Soubory JAR v k\u00f3du XML persistence nejsou v t\u00e9to verzi EclipseLink podporov\u00e1ny.
+
+7194=Nelze v\u00e1zat: [{0}] na: [{1}].
+
+7195=V\u00fdjimka p\u0159i konfiguraci EntityManagerFactory.
+
+7196=[{0}] typu [{1}] nelze p\u0159etypovat na [{2}].
+
+7197=Byl rozpozn\u00e1n prim\u00e1rn\u00ed kl\u00ed\u010d s hodnotou null nebo nulovou hodnotou v klonu rozhran\u00ed UnitOfWork [{0}], prim\u00e1rn\u00ed kl\u00ed\u010d [{1}]. Nastavte vlastnost "eclipselink.id-validation" nebo IdValidation deskriptoru.
+
+7198=P\u0159i p\u0159evodu z n\u00e1zv\u016f t\u0159\u00edd na t\u0159\u00eddy nebyla nalezena t\u0159\u00edda: [{0}].
+
+7199=Pro entitu {0} nebyla definov\u00e1na prim\u00e1rn\u00ed tabulka v souboru mapov\u00e1n\u00ed entit: {1}. Prim\u00e1rn\u00ed tabulka je nezbytn\u00e1 ke zpracov\u00e1n\u00ed vztahu entity.
+
+7200=Na vlo\u017eiteln\u00e9 t\u0159\u00edd\u011b [{0}] nebyl nalezen atribut [{1}]. Odkazuje se na n\u011bj v potla\u010den\u00ed atributu pro vlo\u017een\u00fd atribut [{3}] na t\u0159\u00edd\u011b [{2}].
+
+7201=Do\u0161lo k v\u00fdjimce p\u0159i syntaktick\u00e9 anal\u00fdze souboru mapov\u00e1n\u00ed entit: {0}.
+
+7202=N\u00e1zev potla\u010den\u00ed atributu {0} je neplatn\u00fd - zkontrolujte, zda ve vlo\u017eiteln\u00e9m {1} existuje atribut se stejn\u00fdm n\u00e1zvem.
+
+7203=Prvek mapov\u00e1n\u00ed [{1}] pro t\u0159\u00eddu [{2}] m\u00e1 nepodporovan\u00fd typ kolekce [{0}]. Jsou podporov\u00e1ny pouze typy sada, seznam, mapa a kolekce.
+
+7207=Atribut [{1}] ve t\u0159\u00edd\u011b entity [{0}] m\u00e1 neplatn\u00fd typ pro objekt LOB typu BLOB. Atribut mus\u00ed b\u00fdt definovan\u00fd jako typ java.sql.Blob, byte[], Byte[] nebo serializovateln\u00fd typ.
+
+7208=Atribut [{1}] ve t\u0159\u00edd\u011b entity [{0}] m\u00e1 neplatn\u00fd typ pro objekt LOB typu CLOB. Atribut mus\u00ed b\u00fdt definovan\u00fd jako typ java.sql.Clob, char[], Character[] nebo \u0159et\u011bzcov\u00fd typ.
+
+7212=Atribut [{0}] z t\u0159\u00eddy entity [{1}] neur\u010duje do\u010dasn\u00fd typ. Do\u010dasn\u00fd typ mus\u00ed b\u00fdt ur\u010den\u00fd pro trval\u00e1 pole nebo vlastnosti typu java.util.Date a java.util.Calendar.
+
+7213=Byly ur\u010deny cyklick\u00e9 odkazy mappedBy (t\u0159\u00edda: [{0}], atribut: [{1}] a t\u0159\u00edda: [{2}], atribut: [{3}]. Toto nen\u00ed platn\u00e9; vlastn\u00edkem vztahu m\u016f\u017ee b\u00fdt pouze jedna strana. Hodnotu mappedBy proto ur\u010dete pouze na nevlastnick\u00e9 stran\u011b vztahu.
+
+7214=Nelze ur\u010dit c\u00edlovou entitu atributu vztahu [{0}] na t\u0159\u00edd\u011b [{1}]. Pokud nepou\u017e\u00edv\u00e1te generick\u00e9 hodnoty, zajist\u011bte, aby byla c\u00edlov\u00e1 entita definov\u00e1na v mapov\u00e1n\u00ed vztahu.
+
+7215=Nelze na\u010d\u00edst pole s n\u00e1zvem [{0}] ve t\u0159\u00edd\u011b [{1}]. Zajist\u011bte, aby bylo v dan\u00e9 t\u0159\u00edd\u011b definov\u00e1no odpov\u00eddaj\u00edc\u00ed pole s t\u00edmto n\u00e1zvem.
+
+7216=Ve t\u0159\u00edd\u011b [{1}] nelze na\u010d\u00edst metodu pro n\u00e1zev vlastnosti [{0}]. Zajist\u011bte, aby byla v dan\u00e9 t\u0159\u00edd\u011b definov\u00e1na odpov\u00eddaj\u00edc\u00ed metoda get pro tento n\u00e1zev vlastnosti.
+
+7217=Hodnota [{0}], podle kter\u00e9 se m\u00e1 prov\u00e9st \u0159azen\u00ed, ur\u010den\u00e1 na prvku [{2}] z entity [{3}], je neplatn\u00e1. V c\u00edlov\u00e9 entit\u011b [{1}] neexistuje \u017e\u00e1dn\u00e1 vlastnost ani \u017e\u00e1dn\u00e9 pole s t\u00edmto n\u00e1zvem.
+
+7218=[{0}] nep\u0159episuje metodu getCreateTempTableSqlPrefix. Platformy DatabasePlatform, kter\u00e9 podporuj\u00ed do\u010dasn\u00e9 tabulky, mus\u00ed tuto metodu p\u0159episovat.
+
+7219=[{0}] nep\u0159episuje metodu valueFromRowInternalWithJoin, ale jeho metoda isJoiningSupported vrac\u00ed hodnotu true. Mapov\u00e1n\u00ed ciz\u00edch odkaz\u016f, kter\u00e9 podporuje spojov\u00e1n\u00ed, mus\u00ed tuto metodu p\u0159episovat.
+
+7220=Atribut @JoinColumns na anotovan\u00e9m prvku [{0}] ze t\u0159\u00eddy entity [{1}] je ne\u00fapln\u00fd. Kdy\u017e t\u0159\u00edda zdrojov\u00e9 entity pou\u017e\u00edv\u00e1 slo\u017een\u00fd prim\u00e1rn\u00ed kl\u00ed\u010d, mus\u00ed b\u00fdt pro ka\u017ed\u00fd sloupec spojen\u00ed ur\u010den atribut @JoinColumn pomoc\u00ed atributu @JoinColumns. V ka\u017ed\u00e9m takov\u00e9m atributu @JoinColumn mus\u00ed b\u00fdt ur\u010den prvek name i prvek referencedColumnName.
+
+7222=Na anotovan\u00e9m prvku [{0}] byl ur\u010den ne\u00fapln\u00fd atribut @PrimaryKeyJoinColumns. P\u0159i ur\u010den\u00ed atributu @PrimaryKeyJoinColumns pro entitu, kter\u00e1 m\u00e1 slo\u017een\u00fd prim\u00e1rn\u00ed kl\u00ed\u010d, mus\u00ed b\u00fdt pomoc\u00ed atributu @PrimaryKeyJoinColumns ur\u010den atribut @PrimaryKeyJoinColumn pro ka\u017ed\u00fd sloupec spojen\u00ed prim\u00e1rn\u00edho kl\u00ed\u010de. V ka\u017ed\u00e9m takov\u00e9m atributu @PrimaryKeyJoinColumn mus\u00ed b\u00fdt ur\u010den prvek name i prvek referencedColumnName.
+
+7223=Na anotovan\u00e9m prvku [{0}] byl nalezen atribut @PrimaryKeyJoinColumns. Kdy\u017e entita pou\u017e\u00edv\u00e1 jednotliv\u00fd prim\u00e1rn\u00ed kl\u00ed\u010d, m\u011bl by b\u00fdt ur\u010den pouze jeden (nebo \u017e\u00e1dn\u00fd) atribut @PrimaryKeyJoinColumn.
+
+7224=Metoda [{1}] ve t\u0159\u00edd\u011b modulu listener [{0}] je neplatn\u00e1 metoda zp\u011btn\u00e9ho vol\u00e1n\u00ed.
+
+7225=Ve t\u0159\u00edd\u011b modulu listener [{0}] nelze naj\u00edt metodu [{1}].
+
+7226=Metoda [{1}] ve t\u0159\u00edd\u011b modulu listener [{0}] m\u00e1 neplatn\u00fd modifik\u00e1tor. Metody zp\u011btn\u00e9ho vol\u00e1n\u00ed nemohou b\u00fdt statick\u00e9 ani kone\u010dn\u00e9.
+
+7227=T\u0159\u00edda modulu listener [{0}] m\u00e1 v\u00edce metod zp\u011btn\u00e9ho vol\u00e1n\u00ed \u017eivotn\u00edho cyklu pro stejnou ud\u00e1lost \u017eivotn\u00edho cyklu ([{1}] a [{2}]).
+
+7228=Metoda zp\u011btn\u00e9ho vol\u00e1n\u00ed [{1}] ve t\u0159\u00edd\u011b modulu listener [{0}] m\u00e1 chybn\u00fd podpis. Nem\u011bla by m\u00edt \u017e\u00e1dn\u00e9 parametry.
+
+7229=Metoda zp\u011btn\u00e9ho vol\u00e1n\u00ed [{3}] ve t\u0159\u00edd\u011b modulu listener entity [{2}] m\u00e1 chybn\u00fd podpis. Metoda mus\u00ed p\u0159ij\u00edmat jeden parametr, kter\u00fd mus\u00ed b\u00fdt mo\u017en\u00e9 p\u0159i\u0159adit ze t\u0159\u00eddy entity. V tomto p\u0159\u00edpad\u011b nelze t\u0159\u00eddu parametru [{1}] p\u0159i\u0159adit ze t\u0159\u00eddy entity [{0}].
+
+7231=Nelze trvale uchovat odpojen\u00fd objekt [{0}]. {3}T\u0159\u00edda> {1} Prim\u00e1rn\u00ed kl\u00ed\u010d> {2}
+
+7232=T\u0159\u00edda entity [{0}] obsahuje v\u00edce deklarac\u00ed @Id, ale nedefinuje \u017e\u00e1dn\u00e9 prvky <id> v dokumentu instance mapov\u00e1n\u00ed entit. Zajist\u011bte, aby v p\u0159\u00edpad\u011b, \u017ee pro danou t\u0159\u00eddu entity existuje v\u00edce deklarac\u00ed @Id, obsahovala p\u0159\u00edslu\u0161n\u00e1 definice <entity> pro ka\u017edou z nich prvek <id>.
+
+7233=Metadata mapov\u00e1n\u00ed nelze pou\u017e\u00edt na vlastnosti/metody, kter\u00e9 p\u0159ij\u00edmaj\u00ed argumenty. Atribut [{0}] ze t\u0159\u00eddy [{1}] poru\u0161uje toto omezen\u00ed. Pokud je metoda mapov\u00e1na s anotacemi nebo v souboru mapov\u00e1n\u00ed XML, zajist\u011bte, aby nem\u011bla \u017e\u00e1dn\u00e9 argumenty.
+
+7234=Generov\u00e1n\u00ed DDL vy\u017eaduje, aby transform\u00e1tor t\u0159\u00edd pou\u017e\u00edvan\u00fd s mapov\u00e1n\u00edm transformace atributu [{1}] z deskriptoru [{0}] ur\u010doval pro svoji metodu [{2}] specifick\u00fd n\u00e1vratov\u00fd typ (a nikoli objekt). Generov\u00e1n\u00ed DDL vy\u017eaduje tento specifick\u00fd typ vr\u00e1cen\u00ed, aby mohl generovat spr\u00e1vn\u00fd typ pole.
+
+7235=Transform\u00e1tor t\u0159\u00edd pou\u017e\u00edvan\u00fd s mapov\u00e1n\u00edm transformace atributu [{1}] z deskriptoru [{0}] neimplementuje metodu [{2}]. Tato metoda je sou\u010d\u00e1st\u00ed rozhran\u00ed FieldTransformer a mus\u00ed b\u00fdt implementov\u00e1na. Tak\u00e9 nezapome\u0148te, \u017ee v p\u0159\u00edpad\u011b pou\u017eit\u00ed generov\u00e1n\u00ed DDL by m\u011bl b\u00fdt p\u0159i implementaci jej\u00ed n\u00e1vratov\u00fd typ explicitn\u00edm typem (a nikoli objektem).
+
+7237=N\u00e1zev entity mus\u00ed b\u00fdt jedine\u010dn\u00fd v jednotce perzistence. N\u00e1zev entity [{0}] se pou\u017e\u00edv\u00e1 pro t\u0159\u00eddy entity [{1}] a [{2}].
+
+7238=Gener\u00e1tor tabulek ur\u010den\u00fd v [{2}] s n\u00e1zvem == [{0}] je v konfliktu s gener\u00e1torem posloupnosti se stejn\u00fdm n\u00e1zvem, kter\u00fd je ur\u010den\u00fd v [{1}].
+
+7240=Gener\u00e1tor tabulek ur\u010den\u00fd v [{2}] s hodnotou sloupce pk == [{0}] je v konfliktu s gener\u00e1torem posloupnosti, kter\u00fd je ur\u010den\u00fd v [{1}] s n\u00e1zvem posloupnosti == [{0}]. Nemohou pou\u017e\u00edvat stejnou hodnotu.
+
+7242=Do\u0161lo k pokusu o proch\u00e1zen\u00ed vztahu pomoc\u00ed nep\u0159\u00edm\u00e9ho odkazu, kter\u00fd m\u011bl relaci s hodnotou null. K tomu \u010dasto doch\u00e1z\u00ed, kdy\u017e je serializov\u00e1na entita se vztahem nep\u0159eveden\u00fdm na instanci a t\u00edmto pomal\u00fdm vztahem se po serializaci proch\u00e1z\u00ed. Chcete-li se tomuto probl\u00e9mu vyhnout, vytvo\u0159te p\u0159ed serializac\u00ed instanci pomal\u00e9ho vztahu.
+
+7243=Chyb\u00ed metadata pro t\u0159\u00eddu [{0}]. Ov\u011b\u0159te, \u017ee t\u0159\u00edda nen\u00ed vylou\u010dena z va\u0161\u00ed jednotky perzistence pomoc\u00ed nastaven\u00ed <exclude-unlisted-classes>true</exclude-unlisted-classes>. Pokud tomu tak je, budete muset zahrnout t\u0159\u00eddu p\u0159\u00edmo p\u0159id\u00e1n\u00edm polo\u017eky <class>[{0}]</class> pro va\u0161i jednotku perzistence.
+
+7244=Bylo rozpozn\u00e1no nekompatibiln\u00ed mapov\u00e1n\u00ed mezi [{0}] a [{1}]. K tomu obvykle doch\u00e1z\u00ed, kdy\u017e kardinalita mapov\u00e1n\u00ed neodpov\u00edd\u00e1 kardinalit\u011b jeho zp\u011btn\u00e9ho ukazatele.
+
+7245=Vlo\u017eiteln\u00e1 t\u0159\u00edda [{0}] se pou\u017e\u00edv\u00e1 v t\u0159\u00edd\u00e1ch s konfliktn\u00edmi typy p\u0159\u00edstupu. T\u0159\u00edda [{1}] pou\u017e\u00edv\u00e1 p\u0159\u00edstup [{2}] a t\u0159\u00edda [{3}] pou\u017e\u00edv\u00e1 p\u0159\u00edstup [{4}]. P\u0159i sd\u00edlen\u00ed vlo\u017eiteln\u00e9ho objektu mezi t\u0159\u00eddami mus\u00ed b\u00fdt typy p\u0159\u00edstupu t\u011bchto vkl\u00e1daj\u00edc\u00edch t\u0159\u00edd stejn\u00e9.
+
+7246=T\u0159\u00edda entity [{0}] m\u00e1 vlo\u017een\u00fd atribut [{1}] typu [{2}], kter\u00fd NEN\u00cd vlo\u017eitelnou t\u0159\u00eddou. Pravd\u011bpodobn\u00e1 p\u0159\u00ed\u010dina: Chyb\u00ed atribut @Embeddable nebo chyb\u00ed zna\u010dka <embeddable> v souboru orm.xml, pokud metadata-complete = true
+
+7247=Byl zji\u0161t\u011bn cyklick\u00fd odkaz p\u0159i zpracov\u00e1n\u00ed odvozen\u00fdch ID v n\u00e1sleduj\u00edc\u00edch t\u0159\u00edd\u00e1ch entity: [{0}] 
+
+7249=Entita [{0}] pou\u017e\u00edv\u00e1 [{1}] jako vlo\u017eenou t\u0159\u00eddu ID, jej\u00ed\u017e typ p\u0159\u00edstupu byl ur\u010den jako [{2}]. [{1}] v\u0161ak nedefinuje \u017e\u00e1dn\u00e9 [{2}]. Je pravd\u011bpodobn\u00e9, \u017ee jste ve t\u0159\u00edd\u011b ID [{1}] neposkytli dostate\u010dn\u00e1 metadata.
+
+7250=[{0}] pou\u017e\u00edv\u00e1 jako c\u00edlovou entitu v atributu vztahu [{2}] neentitu [{1}].
+
+7251=Atribut [{1}] t\u0159\u00eddy [{0}] je mapovan\u00fd na sloupec prim\u00e1rn\u00edho kl\u00ed\u010de v datab\u00e1zi. Aktualizace nejsou povoleny.
+
+7252=Na cest\u011b ke t\u0159\u00edd\u011b pro jednotku perzistence s n\u00e1zvem [ {0} ] existuje v\u00edce soubor\u016f mapov\u00e1n\u00ed s n\u00e1zvem [{1}].
+
+7253=Na cest\u011b ke t\u0159\u00edd\u011b pro jednotku perzistence s n\u00e1zvem [{0}] neexistuje \u017e\u00e1dn\u00fd soubor mapov\u00e1n\u00ed s n\u00e1zvem [{1}].
+
+7254=P\u0159evodn\u00edk s n\u00e1zvem [{1}] ve t\u0159\u00edd\u011b [{0}] namapoval datovou hodnotu [{2}] na v\u00edce hodnot objektu. Hodnota p\u0159evodu mus\u00ed mapovat ka\u017edou datovou hodnotu pouze jednou.
+
+7255=T\u0159\u00edda [{0}] ur\u010duje atribut @Convert na [{1}]. Tato akce je neplatn\u00e1. Atribut @Convert je podporov\u00e1n pouze s atributy @Basic, @BasicCollection, @BasicMap a @ElementCollection. Pro mapov\u00e1n\u00ed typu to-many, kter\u00e1 pou\u017e\u00edvaj\u00ed mapu, m\u016f\u017eete pou\u017e\u00edvat pouze atribut @MapKeyConvert.
+
+7256=P\u0159evodn\u00edk s n\u00e1zvem [{1}] pou\u017eit\u00fd s prvkem [{2}] ve t\u0159\u00edd\u011b [{0}] nebyl nalezen v r\u00e1mci jednotky perzistence. Zkontrolujte, zda jste zadali spr\u00e1vn\u00fd n\u00e1zev p\u0159evodn\u00edku.
+
+7257=Nelze vytvo\u0159it instanci datov\u00e9 hodnoty s typem [{2}] a hodnotou [{1}] z p\u0159evodn\u00edku typu objektu s n\u00e1zvem [{0}].
+
+7258=Nelze vytvo\u0159it instanci hodnoty objektu s typem [{2}] a hodnotou [{1}] z p\u0159evodn\u00edku typu objektu s n\u00e1zvem [{0}].
+
+7259=Nelze ur\u010dit datov\u00fd typ pro atribut [{1}] z t\u0159\u00eddy entity [{0}], kter\u00fd pou\u017e\u00edv\u00e1 p\u0159evodn\u00edk s n\u00e1zvem [{2}]. Typ mus\u00ed b\u00fdt ur\u010den\u00fd pomoc\u00ed datov\u00e9ho typu v p\u0159evodn\u00edku nebo by m\u011bl atribut pou\u017e\u00edvat generickou specifikaci.
+
+7260=Nelze ur\u010dit typ objektu pro atribut [{1}] z t\u0159\u00eddy entity [{0}], kter\u00fd pou\u017e\u00edv\u00e1 p\u0159evodn\u00edk s n\u00e1zvem [{2}]. Typ mus\u00ed b\u00fdt ur\u010den\u00fd pomoc\u00ed typu objektu v p\u0159evodn\u00edku nebo by m\u011bl atribut pou\u017e\u00edvat generickou specifikaci.
+
+7261=Typ [{1}] pro atribut [{0}] ve t\u0159\u00edd\u011b entity [{2}] nen\u00ed platn\u00fdm typem pro z\u00e1kladn\u00ed mapov\u00e1n\u00ed kolekc\u00ed. Atribut mus\u00ed b\u00fdt typu Collection.class, List.class nebo Set.class.
+
+7262=Typ [{1}] pro atribut [{0}] na t\u0159\u00edd\u011b entity [{2}] nen\u00ed platn\u00fdm typem pro z\u00e1kladn\u00ed mapov\u00e1n\u00ed kolekc\u00ed. Atribut mus\u00ed b\u00fdt typu Map.class.
+
+7263=T\u0159\u00edda [{0}] m\u00e1 ne\u00faplnou specifikaci zamyk\u00e1n\u00ed p\u0159ed aktualizac\u00ed. Pro z\u00e1sadu zamyk\u00e1n\u00ed p\u0159ed aktualizac\u00ed typu SELECTED_COLUMNS mus\u00ed b\u00fdt ur\u010deny vybran\u00e9 sloupce a n\u00e1zvy t\u011bchto sloupc\u016f nelze vynechat.
+
+7264=T\u0159\u00edda [{0}] m\u00e1 ne\u00faplnou specifikaci zamyk\u00e1n\u00ed p\u0159ed aktualizac\u00ed. Pro z\u00e1sadu zamyk\u00e1n\u00ed p\u0159ed aktualizac\u00ed typu VERSION_COLUMN mus\u00ed b\u00fdt ur\u010den\u00fd atribut @Version v poli nebo vlastnosti verze.
+
+7265=Anotace @Cache nen\u00ed u vlo\u017eiteln\u00e9 t\u0159\u00eddy povolena.
+
+7266=Anotace @Cache na t\u0159\u00edd\u011b [{0}] m\u00e1 ur\u010denou metodu expiry() i metodu expiryTimeOfDay(). V nastaven\u00ed anotace @Cache m\u016f\u017ee b\u00fdt ur\u010dena jen jedna z nich.
+
+7267=Ur\u010den\u00e1 t\u0159\u00edda obslu\u017en\u00e9 rutiny v\u00fdjimek [{0}] je neplatn\u00e1, t\u0159\u00edda mus\u00ed existovat na cest\u011b ke t\u0159\u00edd\u011b a implementovat rozhran\u00ed ExceptionHandler.
+
+7268=Ur\u010den\u00e1 t\u0159\u00edda modulu listener pro ud\u00e1losti relace [{0}] je neplatn\u00e1, t\u0159\u00edda mus\u00ed existovat na cest\u011b ke t\u0159\u00edd\u011b a implementovat rozhran\u00ed SessionEventListener.
+
+7270=Ur\u010den\u00e1 hodnota velikosti v\u00fdrok\u016f mezipam\u011bti [{0}] je neplatn\u00e1 [{1}].
+
+7271=Ur\u010den\u00e1 logick\u00e1 hodnota [{0}] pro nastaven\u00ed nativn\u00edho k\u00f3du SQL je neplatn\u00e1, hodnota mus\u00ed b\u00fdt bu\u010f "true". nebo "false".
+
+7272=Ur\u010den\u00e1 logick\u00e1 hodnota [{0}] pro povolen\u00ed mezipam\u011bti p\u0159\u00edkaz\u016f SQL je neplatn\u00e1, hodnota mus\u00ed b\u00fdt bu\u010f "true", nebo "false".
+
+7273=Ur\u010den\u00e1 logick\u00e1 hodnota [{0}] pro kop\u00edrov\u00e1n\u00ed pojmenovan\u00fdch dotaz\u016f deskriptoru do relace je neplatn\u00e1, hodnota mus\u00ed b\u00fdt bu\u010f "true", nebo "false".
+
+7274=Do\u0161lo k v\u00fdjimce p\u0159i pokusu o vytvo\u0159en\u00ed souboru protokolov\u00e1n\u00ed [{0}]:[{1}].
+
+7275=Nelze vytvo\u0159it instanci t\u0159\u00eddy obslu\u017en\u00e9 rutiny v\u00fdjimek [{0}] ur\u010den\u00e9 ve vlastnosti eclipselink.exception-handler [{1}].
+
+7276=Nelze vytvo\u0159it instanci t\u0159\u00eddy modulu listener pro ud\u00e1losti relace [{0}] ur\u010den\u00e9 ve vlastnosti eclipselink.session-event-listener [{1}].
+
+7277=Nebyl zad\u00e1n n\u00e1zev souboru protokolov\u00e1n\u00ed.
+
+7278=Ur\u010den\u00e1 logick\u00e1 hodnota [{0}] pro vlastnost perzistence [{1}] je neplatn\u00e1, hodnota mus\u00ed b\u00fdt bu\u010f "true", nebo "false".
+
+7282=Je mo\u017en\u00e9, \u017ee v mapov\u00e1n\u00ed {1} nen\u00ed definov\u00e1n typ StructConverter: {0}. Typy StructConverter lze pou\u017e\u00edvat pouze v p\u0159\u00edm\u00fdch mapov\u00e1n\u00edch.
+
+7283=Pro t\u0159\u00eddu {0} byly p\u0159id\u00e1ny dva typy StructConverter. Pro jednu t\u0159\u00eddu lze p\u0159idat jen jeden typ StructConverter.
+
+7284=T\u0159\u00edda [{0}] nen\u00ed platn\u00fdm porovn\u00e1n\u00edm. T\u0159\u00edda mus\u00ed implementovat rozhran\u00ed Comparator.
+
+7285=Ur\u010den\u00e1 t\u0159\u00edda profileru [{0}] je neplatn\u00e1, t\u0159\u00edda mus\u00ed existovat na cest\u011b ke t\u0159\u00edd\u011b a implementovat rozhran\u00ed SessionProfiler.
+
+7286=Nelze vytvo\u0159it instanci t\u0159\u00eddy profileru [{0}] ur\u010den\u00e9 ve vlastnosti eclipselink.profiler [{1}].
+
+7287=Transform\u00e1tor \u010dten\u00ed ur\u010den\u00fd pro prvek [{0}] neimplementuje povinn\u00e9 rozhran\u00ed AttributeTransformer.
+
+7288=Transform\u00e1tor \u010dten\u00ed ur\u010den\u00fd pro prvek [{0}] m\u00e1 t\u0159\u00eddu i metodu. Je povinn\u00e1 bu\u010f t\u0159\u00edda, nebo metoda, nikoli v\u0161ak ob\u011b z nich.
+
+7289=Transform\u00e1tor \u010dten\u00ed ur\u010den\u00fd pro prvek [{0}] nem\u00e1 t\u0159\u00eddu ani metodu. Je povinn\u00e1 bu\u010f t\u0159\u00edda, nebo metoda, nikoli v\u0161ak ob\u011b z nich.
+
+7290=Transform\u00e1tor z\u00e1pisu ur\u010den\u00fd pro sloupec [{1}] prvku [{0}] neimplementuje povinn\u00e9 rozhran\u00ed FieldTransformer.
+
+7291=Transform\u00e1tor z\u00e1pisu ur\u010den\u00fd pro sloupec [{1}] prvku [{0}] m\u00e1 t\u0159\u00eddu i metodu. Je povinn\u00e1 bu\u010f t\u0159\u00edda, nebo metoda, nikoli v\u0161ak ob\u011b z nich.
+
+7292=Transform\u00e1tor z\u00e1pisu ur\u010den\u00fd pro sloupec [{1}] prvku [{0}] nem\u00e1 t\u0159\u00eddu ani metodu. Je povinn\u00e1 bu\u010f t\u0159\u00edda, nebo metoda, nikoli v\u0161ak ob\u011b z nich.
+
+7293=Transform\u00e1tor z\u00e1pisu ur\u010den\u00fd pro sloupec [{0}] bu\u010f nem\u00e1 sloupec, nebo sloupec nem\u00e1 n\u00e1zev.
+
+7294=Prvek prom\u011bnn\u00fdch typu jeden na jednoho [{1}] mapuje v\u00edce entit na stejn\u00fd diskrimin\u00e1tor [{0}]. Ka\u017ed\u00e1 entita, kter\u00e1 implementuje rozhran\u00ed prom\u011bnn\u00fdch typu jeden na jednoho, mus\u00ed m\u00edt sv\u016fj vlastn\u00ed jedine\u010dn\u00fd diskrimin\u00e1tor.
+
+7295=T\u0159\u00edda CloneCopyPolicy ur\u010den\u00e1 na t\u0159\u00edd\u011b [{0}] neur\u010duje metodu nebo prom\u011bnnou workingCopyMethod. Je nezbytn\u00e9, aby jedna z nich byla ur\u010dena.
+
+7296=T\u0159\u00edda [{0}] m\u00e1 v\u00edce anotac\u00ed CopyPolicy. Na jednu t\u0159\u00eddu je povolena pouze jedna anotace CopyPolicyAnnotation.
+
+7297=Do\u0161lo k v\u00fdjimce p\u0159i reflexivn\u00edm vytv\u00e1\u0159en\u00ed instance t\u0159\u00eddy [{0}]. To obvykle znamen\u00e1, \u017ee tato t\u0159\u00edda je ur\u010dena ve va\u0161ich metadatech a jazyk Java z n\u011bjak\u00e9ho d\u016fvodu nem\u016f\u017ee reflexivn\u011b vytvo\u0159it jej\u00ed instanci s konstruktorem bez argument\u016f. Dal\u0161\u00ed informace naleznete ve z\u0159et\u011bzen\u00e9 v\u00fdjimce. Pozn\u00e1mka: K zobrazen\u00ed z\u0159et\u011bzen\u00e9 v\u00fdjimky mo\u017en\u00e1 budete muset zv\u00fd\u0161it \u00farove\u0148 protokolov\u00e1n\u00ed.
+
+7298=Mapov\u00e1n\u00ed [{2}] z vlo\u017een\u00e9 t\u0159\u00eddy ID [{3}] je neplatn\u00e9 mapov\u00e1n\u00ed pro tuto t\u0159\u00eddu. Vlo\u017eiteln\u00e1 t\u0159\u00edda, kter\u00e1 se pou\u017e\u00edv\u00e1 se specifikac\u00ed vlo\u017een\u00e9ho ID (atribut [{0}] ze zdroje [{1}]), m\u016f\u017ee obsahovat pouze z\u00e1kladn\u00ed mapov\u00e1n\u00ed. Bu\u010f odeberte jin\u00e9 ne\u017e z\u00e1kladn\u00ed mapov\u00e1n\u00ed, nebo zm\u011b\u0148te specifikaci vlo\u017een\u00e9ho ID na vkl\u00e1dan\u00e9m zdroji.
+
+7299=Byly nalezeny konfliktn\u00ed anotace se stejn\u00fdm n\u00e1zvem [{0}]. Prvn\u00ed [{1}] byla nalezena v r\u00e1mci [{2}] a druh\u00e1 [{3}] byla nalezena v r\u00e1mci [{4}]. Pojmenovan\u00e9 anotace mus\u00ed b\u00fdt jedine\u010dn\u00e9 v cel\u00e9 jednotce perzistence.
+
+7300=Byly nalezeny konfliktn\u00ed prvky XML [{1}] se stejn\u00fdm n\u00e1zvem [{0}]. Prvn\u00ed byl nalezen v souboru mapov\u00e1n\u00ed [{2}] a druh\u00fd v souboru mapov\u00e1n\u00ed [{3}]. Pojmenovan\u00e9 prvky XML mus\u00ed b\u00fdt jedine\u010dn\u00e9 v cel\u00e9 jednotce perzistence.
+
+7301=Byly nalezeny konfliktn\u00ed anotace. Prvn\u00ed [{0}] byla nalezena v r\u00e1mci [{1}] a druh\u00e1 [{2}] byla nalezena v r\u00e1mci [{3}]. Opravu prove\u010fte odebr\u00e1n\u00edm anotace, kter\u00e1 neplat\u00ed.
+
+7302=Byly nalezeny konfliktn\u00ed prvky XML [{0}] pro prvek [{1}]. Prvn\u00ed byl nalezen v souboru mapov\u00e1n\u00ed [{2}] a druh\u00fd v souboru mapov\u00e1n\u00ed [{3}]. Opravu prove\u010fte odebr\u00e1n\u00edm prvku XML, kter\u00fd neplat\u00ed.
+
+7303=Vlastnost PersistenceUnitProperties.ORACLE_PROXY_TYPE je nastavena na [{0}], vlastnost [{1}] nezbytn\u00e1 pro tento typ serveru proxy nebyla nalezena.
+
+7304=Vlastnost PersistenceUnitProperties.ORACLE_PROXY_TYPE je nastavena na nezn\u00e1m\u00fd typ [{0}], zn\u00e1m\u00e9 typy jsou [{1}], [{2}], [{3}].
+
+7305=Do\u0161lo k v\u00fdjimce p\u0159i zpracov\u00e1n\u00ed souboru mapov\u00e1n\u00ed z adresy URL: [{0}].
+
+7306=Anotovan\u00fd prvek [{0}] z t\u0159\u00eddy [{1}] m\u00e1 ur\u010den\u00fd chybn\u00fd explicitn\u00ed typ p\u0159\u00edstupu. M\u011bl by ur\u010dovat typ p\u0159\u00edstupu [{2}].
+
+7307=Chyb\u00ed \u0159et\u011bzec kontextu protokolov\u00e1n\u00ed pro kontext [{0}]. Jedn\u00e1 se o intern\u00ed v\u00fdjimku, ke kter\u00e9 do\u0161lo p\u0159i na\u010d\u00edt\u00e1n\u00ed zpr\u00e1vy protokolu pro zpracov\u00e1n\u00ed metadat JPA, ohlaste chybu.
+
+7308=Ur\u010den\u00e1 hodnota [{0}] pro vlastnost perzistence [{1}] je neplatn\u00e1 - [{2}].
+
+7309=Atribut s n\u00e1zvem [{1}] z vlo\u017eiteln\u00e9 t\u0159\u00eddy [{0}] nep\u0159edstavuje platn\u00e9 mapov\u00e1n\u00ed pro pou\u017eit\u00ed s potla\u010den\u00edm atributu pro atribut [{3}] na t\u0159\u00edd\u011b [{2}].
+
+7310=Nelze ur\u010dit c\u00edlovou t\u0159\u00eddu atributu kolekce prvku [{0}] na t\u0159\u00edd\u011b [{1}]. Pokud nepou\u017e\u00edv\u00e1te generick\u00e9 hodnoty, zajist\u011bte, aby byla c\u00edlov\u00e1 t\u0159\u00edda definov\u00e1na v mapov\u00e1n\u00ed kolekce prvku.
+
+7311=S atributem kolekce prvku [{0}] na t\u0159\u00edd\u011b [{1}] se pou\u017e\u00edv\u00e1 neplatn\u00e1 c\u00edlov\u00e1 t\u0159\u00edda. Jsou povoleny pouze z\u00e1kladn\u00ed typy a vlo\u017eiteln\u00e9 t\u0159\u00eddy.
+
+7312=S atributem kolekce prvku [{1}] na t\u0159\u00edd\u011b [{2}] se pou\u017e\u00edv\u00e1 neplatn\u00e1 vlo\u017eiteln\u00e1 t\u0159\u00edda [{0}]. Viz sekce 2.6 specifikace: "Vlo\u017eiteln\u00e1 t\u0159\u00edda (v\u010detn\u011b vlo\u017eiteln\u00e9 t\u0159\u00eddy v r\u00e1mci jin\u00e9 vlo\u017eiteln\u00e9 t\u0159\u00eddy) obsa\u017een\u00e1 v kolekci prvku nesm\u00ed obsahovat kolekci prvku ani jin\u00fd vztah s entitou ne\u017e vztah typu  many-to-one nebo one-to-one. Vlo\u017eiteln\u00e1 t\u0159\u00edda mus\u00ed b\u00fdt na vlastnick\u00e9 stran\u011b tohoto vztahu a vztah mus\u00ed b\u00fdt mapov\u00e1n pomoc\u00ed mapov\u00e1n\u00ed ciz\u00edho kl\u00ed\u010de." Mapov\u00e1n\u00ed pro atribut [{3}] na vlo\u017eiteln\u00e9 t\u0159\u00edd\u011b to poru\u0161uje.
+
+7313=Na vlo\u017eiteln\u00e9 t\u0159\u00edd\u011b [{0}] nebyl nalezen atribut [{1}]. Odkazuje se na n\u011bj v potla\u010den\u00ed p\u0159idru\u017een\u00ed pro vlo\u017een\u00fd atribut [{3}] na t\u0159\u00edd\u011b [{2}].
+
+7314=Mapov\u00e1n\u00ed [{0}] se pou\u017e\u00edv\u00e1 k mapov\u00e1n\u00ed kl\u00ed\u010de v z\u00e1sad\u011b MappedKeyMapContainerPolicy a pou\u017e\u00edv\u00e1 nep\u0159\u00edm\u00fd odkaz. Mapov\u00e1n\u00ed pou\u017e\u00edvan\u00e1 pro kl\u00ed\u010de map nemohou pou\u017e\u00edvat nep\u0159\u00edm\u00fd odkaz.
+
+7315=Nelze ur\u010dit t\u0159\u00eddu kl\u00ed\u010de mapy atributu kolekce prvku [{0}] na t\u0159\u00edd\u011b [{1}]. P\u0159i ur\u010den\u00ed kl\u00ed\u010de p\u0159evodu s kolekc\u00ed prvku ov\u011b\u0159te, \u017ee pou\u017e\u00edv\u00e1te generickou definici, aby bylo mo\u017en\u00e9 ur\u010dit typ t\u0159\u00eddy pro p\u0159evodn\u00edk.
+
+7316=Hodnota MapsId [{0}] z atributu mapov\u00e1n\u00ed [{1}] je neplatn\u00e1. Ve t\u0159\u00edd\u011b IdClass [{2}] mus\u00ed b\u00fdt definov\u00e1n ekvivalentn\u00ed atribut s t\u00edmto n\u00e1zvem.
+
+7317=Pole po\u0159ad\u00ed seznamu nen\u00ed pro [{0}] podporov\u00e1no.
+
+7318=[{0}] m\u00e1 nastaven\u00e9 po\u0159ad\u00ed seznamu, ale prom\u011bnn\u00e1 CollectionChangeEvent.REMOVE byla odesl\u00e1na bez indexu.
+
+7319=Atribut s n\u00e1zvem [{1}] z vlo\u017eiteln\u00e9 t\u0159\u00eddy [{0}] nep\u0159edstavuje platn\u00fd vztah pro pou\u017eit\u00ed s potla\u010den\u00edm p\u0159idru\u017een\u00ed s n\u00e1zvem [{2}] z [{3}]. Potla\u010den\u00ed p\u0159idru\u017een\u00ed m\u016f\u017ee b\u00fdt ur\u010deno pouze, kdy\u017e je vlo\u017eiteln\u00e1 t\u0159\u00edda na vlastnick\u00e9 stran\u011b vztahu.
+
+7320=Atribut [{0}] ze t\u0159\u00eddy [{1}] (nebo zd\u011bd\u011bn\u00fd z mapovan\u00e9 supert\u0159\u00eddy) nen\u00ed platn\u00fdm typem pro pou\u017eit\u00ed se specifikac\u00ed sloupce po\u0159ad\u00ed. P\u0159i ur\u010den\u00ed sloupce po\u0159ad\u00ed mus\u00ed b\u00fdt atribut typu seznam.
+
+7321=Pole [{1}] z odvozen\u00e9ho mapov\u00e1n\u00ed ID [{2}] ze t\u0159\u00eddy [{3}] je neplatn\u00e9 pole ID z t\u0159\u00eddy odkazu [{0}]. Ov\u011b\u0159te, \u017ee existuje odpov\u00eddaj\u00edc\u00ed mapov\u00e1n\u00ed ID na toto pole. 
+
+7322=N\u00e1zev sloupce odkaz\u016f [{0}] z potla\u010den\u00ed p\u0159idru\u017een\u00ed s n\u00e1zvem [{1}] na atributu [{2}] ze t\u0159\u00eddy [{3}] nen\u00ed platn\u00fdm mapovan\u00fdm polem prim\u00e1rn\u00edho kl\u00ed\u010de. Ov\u011b\u0159te, \u017ee existuje odpov\u00eddaj\u00edc\u00ed mapov\u00e1n\u00ed ID na toto pole.
+
+7323=Tabulka s n\u00e1zvem [{1}] z [{2}] m\u00e1 v\u00edce jedine\u010dn\u00fdch omezen\u00ed s n\u00e1zvem [{0}]. To nen\u00ed povoleno, n\u00e1zvy jedine\u010dn\u00fdch omezen\u00ed mus\u00ed b\u00fdt jedine\u010dn\u00e9 v r\u00e1mci v\u0161ech tabulek.
+
+7324=T\u0159\u00edda entity [{1}] ur\u010duje atribut @ClassExtractor a metadata diskrimin\u00e1toru. P\u0159i pou\u017eit\u00ed atributu @ClassExtractor by nem\u011bl b\u00fdt na t\u00e9to t\u0159\u00edd\u011b ur\u010den atribut @DiscriminatorColumn anebo @DiscriminatorValue a na jej\u00edch podt\u0159\u00edd\u00e1ch by nem\u011bla b\u00fdt definov\u00e1na \u017e\u00e1dn\u00e1 metadata hodnot diskrimin\u00e1toru.
+
+7325=Mapov\u00e1n\u00ed sady v\u00fdsledk\u016f SQL [{0}] pou\u017e\u00edvan\u00e9 s pojmenovan\u00fdm dotazem [{1}] z [{2}] nen\u00ed rozpoznan\u00e9 mapov\u00e1n\u00ed sady v\u00fdsledk\u016f SQL. Ov\u011b\u0159te, \u017ee je n\u00e1zev spr\u00e1vn\u00fd a existuje mapov\u00e1n\u00ed sady v\u00fdsledk\u016f SQL s t\u00edmto n\u00e1zvem.
+
+7326=Atribut [{0}] z t\u0159\u00eddy [{1}] mapovan\u00fd v [{2}], kter\u00fd pou\u017e\u00edv\u00e1 VIRTU\u00c1LN\u00cd p\u0159\u00edstup, neur\u010duje typ atributu. P\u0159i pou\u017eit\u00ed VIRTU\u00c1LN\u00cdHO p\u0159\u00edstupu mus\u00ed b\u00fdt ur\u010den typ atributu. Pozn\u00e1mka: V p\u0159\u00edpad\u011b typu one-to-one nebo many-to-one je typ atributu ur\u010den pomoc\u00ed c\u00edlov\u00e9 entity. V p\u0159\u00edpad\u011b typu variable-one-to-one je ur\u010den pomoc\u00ed c\u00edlov\u00e9 t\u0159\u00eddy.
+
+7327=Vlo\u017eiteln\u00e1 t\u0159\u00edda [{0}] se pou\u017e\u00edv\u00e1 v t\u0159\u00edd\u00e1ch s konfliktn\u00edmi p\u0159\u00edstupov\u00fdmi metodami. T\u0159\u00edda [{1}] pou\u017e\u00edv\u00e1 p\u0159\u00edstupov\u00e9 metody [{2}] a t\u0159\u00edda [{3}] pou\u017e\u00edv\u00e1 p\u0159\u00edstupov\u00e9 metody [{4}]. P\u0159i sd\u00edlen\u00ed vlo\u017eiteln\u00fdch objekt\u016f mezi t\u0159\u00eddami mus\u00ed b\u00fdt p\u0159\u00edstupov\u00e9 metody t\u011bchto vkl\u00e1daj\u00edc\u00edch t\u0159\u00edd stejn\u00e9.
+
+7328=P\u0159i pou\u017eit\u00ed VIRTU\u00c1LN\u00cdHO p\u0159\u00edstupu je t\u0159eba p\u0159i vytv\u00e1\u0159en\u00ed rozhran\u00ed EntityManagerFactory pomoc\u00ed vlastnosti EclipseLink [eclipselink.classloader] poskytnout DynamicClassLoader. To znamen\u00e1 pou\u017e\u00edt metodu createEntityManagerFactory(String persistenceUnitName, Map properties) a p\u0159idat novou metodu DynamicClassLoader() do vlastnost\u00ed mapy.
+
+7329=Atribut {1} pro {0} nen\u00ed mapovan\u00fd.
+
+7330=Atribut {1} pro {0} odkazuje na vno\u0159enou skupinu na\u010dten\u00ed, ale bu\u010f nepou\u017e\u00edv\u00e1 mapov\u00e1n\u00ed pomoc\u00ed ForeignReferenceMapping, nebo mapov\u00e1n\u00ed nem\u00e1 deskriptor odkazu.
+
+7331=Atribut {1} pro {0} odkazuje na vno\u0159enou skupinu na\u010dten\u00ed, ale c\u00edlov\u00e1 t\u0159\u00edda nepodporuje skupiny na\u010dten\u00ed.
+
+7332=Odvozen\u00fd atribut slo\u017een\u00e9ho prim\u00e1rn\u00edho kl\u00ed\u010de [{2}] typu [{4}] z {1}] by m\u011bl b\u00fdt stejn\u00e9ho typu jako pole ID nad\u0159\u00edzen\u00e9ho prvku z [{0}]. To znamen\u00e1, \u017ee by m\u011bl b\u00fdt typu [{3}].
+
+7334=T\u0159\u00edda [{0}] m\u00e1 ne\u00faplnou specifikaci prim\u00e1rn\u00edho kl\u00ed\u010de. P\u0159i ur\u010den\u00ed sloupc\u016f prim\u00e1rn\u00edho kl\u00ed\u010de mus\u00ed b\u00fdt ur\u010deny n\u00e1zvy t\u011bchto sloupc\u016f.
+
+7335=Pro atribut @ValuePartitioning s n\u00e1zvem [{0}] je uvedena duplicitn\u00ed hodnota logick\u00e9 oblasti [{1}].
+
+7336=Pro stejn\u00e9 pole diskrimin\u00e1toru n\u00e1jemce [{1}] pro t\u0159\u00eddu [{0}] je ur\u010deno v\u00edce vlastnost\u00ed kontextu [{2}] a [{3}].
+
+7337=Mapovan\u00fd sloupec diskrimin\u00e1toru n\u00e1jemce [{1}] na t\u0159\u00edd\u011b [{0}] mus\u00ed b\u00fdt ozna\u010den\u00fd jako ur\u010den\u00fd jen pro \u010dten\u00ed. V JPA se to provede nastaven\u00edm hodnoty insertable=false a updatable=false na sloupci, nap\u0159. @Column(name="TENANT_ID", insertable=false, updatable=false).
+
+7338=Do t\u0159\u00eddy SessionBroker nelze p\u0159idat posloupnosti.
+
+7339=Alias [{0}] je pou\u017e\u00edv\u00e1n t\u0159\u00eddami [{1}] a [{2}]. Alias deskriptoru mus\u00ed b\u00fdt jedine\u010dn\u00fd.
+
+7340=Na cest\u011b ke t\u0159\u00edd\u011b existuje v\u00edce soubor\u016f mapov\u00e1n\u00ed s n\u00e1zvem [{0}].
+
+7341=Pro XMLMetadataSource nebyl ur\u010den \u017e\u00e1dn\u00fd soubor eclipselink-orm.xml. Ur\u010dete ho pomoc\u00ed vlastnosti jednotky perzistence eclipselink.metadata-source.xml.file nebo eclipselink.metadata-source.xml.url
+
+7342=Ur\u010den\u00e1 logick\u00e1 hodnota [{0}] pro nastaven\u00ed povolen\u00ed nativn\u00edch dotaz\u016f SQL je neplatn\u00e1, hodnota mus\u00ed b\u00fdt bu\u010f "true", nebo "false".
+
+7343=Bylo ur\u010deno v\u00edce identifik\u00e1tor\u016f VPD (vlastnost kontextu diskrimin\u00e1toru n\u00e1jemce). Entita [{1}] pou\u017e\u00edv\u00e1 [{0}] a entita [{3]} pou\u017e\u00edv\u00e1 [{2}]. P\u0159i pou\u017eit\u00ed strategie VPD s v\u00edce n\u00e1jemci m\u016f\u017ee pro ka\u017edou entitu existovat pouze jeden sloupec diskrimin\u00e1toru n\u00e1jemce a jeho vlastnost kontextu mus\u00ed b\u00fdt konzistentn\u00ed v r\u00e1mci v\u0161ech entit VPD s v\u00edce n\u00e1jemci.
+
+7344=VPD (p\u0159ipojen\u00ed a generov\u00e1n\u00ed DDL) nen\u00ed podporov\u00e1no pro platformu: [{0}].
+
+7345=Soubor {0} ur\u010den\u00fd pro XMLMetadataSource nebyl nalezen.
+
+7346=Nebyla poskytnuta vlastnost kontextu v\u00edce n\u00e1jemc\u016f [{0}]. Kdy\u017e je vlastnost jednotky perzistence (eclipselink.multitenant.tenants-share-emf) nastavena na hodnotu false, mus\u00ed b\u00fdt v\u0161echny vlastnosti kontextu v\u00edce n\u00e1jemc\u016f poskytnuty p\u0159edem. To lze prov\u00e9st p\u0159\u00edmo prost\u0159ednictv\u00edm definice jednotky perzistence nebo p\u0159ed\u00e1n\u00edm mapy vlastnost\u00ed obsahuj\u00edc\u00ed v\u0161echny vlastnosti kontextu v\u00edce n\u00e1jemc\u016f p\u0159i vol\u00e1n\u00ed vytvo\u0159en\u00ed rozhran\u00ed EntityManagerFactory.
+
+7347=T\u0159\u00edda [{0}] ur\u010duje metadata p\u0159eveden\u00ed \u00farovn\u011b typu bez ur\u010den\u00ed n\u00e1zvu atributu pro v\u0161echna z nich. N\u00e1zev atributu mus\u00ed b\u00fdt poskytnut\u00fd pro v\u0161echna metadata p\u0159eveden\u00ed \u00farovn\u011b typu, aby bylo zaru\u010deno jejich spr\u00e1vn\u00e9 pou\u017eit\u00ed na atribut supert\u0159\u00eddy.
+
+7348=Vlo\u017een\u00e9 mapov\u00e1n\u00ed [{1}] z [{0}] neur\u010duje n\u00e1zev atributu, na kter\u00fd se m\u00e1 p\u0159eveden\u00ed pou\u017e\u00edt. N\u00e1zev atributu mus\u00edte ur\u010dit na anotaci Embeddable.
+
+7350=Na vlo\u017eiteln\u00e9 t\u0159\u00edd\u011b [{2}] nebyl nalezen n\u00e1zev atributu p\u0159eveden\u00ed [{3}] z mapov\u00e1n\u00ed [{1}] z t\u0159\u00eddy [{0}]. Zkontrolujte, zda tento atribut existuje a zda je spr\u00e1vn\u011b pojmenov\u00e1n.
+
+7351=Nebyla nalezena t\u0159\u00edda p\u0159evodn\u00edku [{2}] ur\u010den\u00e1 na atributu mapov\u00e1n\u00ed [{1}] z t\u0159\u00eddy [{0}]. Ov\u011b\u0159te, zda je n\u00e1zev t\u0159\u00eddy p\u0159evodn\u00edku spr\u00e1vn\u00fd a zda existuje v definici jednotky perzistence.
+
+7352=T\u0159\u00edda p\u0159evodn\u00edku [{0}] mus\u00ed implementovat rozhran\u00ed JPA javax.persistence.AttributeConverter<X, Y>, aby byla platnou t\u0159\u00eddou p\u0159evodn\u00edku.
+
+7353=Atribut mapov\u00e1n\u00ed [{1}] ze t\u0159\u00eddy [{0}] nen\u00ed platn\u00fdm typem mapov\u00e1n\u00ed pro specifikaci p\u0159evodu.
+
+7354=Atribut mapov\u00e1n\u00ed [{1}] z t\u0159\u00eddy [{0}] nen\u00ed platn\u00fdm typem mapov\u00e1n\u00ed pro specifikaci p\u0159evodu kl\u00ed\u010de mapy.
+
+7355=Atribut mapov\u00e1n\u00ed [{1}] z t\u0159\u00eddy [{0}] nen\u00ed platn\u00fdm typem mapov\u00e1n\u00ed pro specifikaci p\u0159evodu pomoc\u00ed n\u00e1zvu atributu. N\u00e1zev atributu by m\u011bl b\u00fdt ur\u010den\u00fd k proch\u00e1zen\u00ed typu vestav\u011bn\u00e9ho mapov\u00e1n\u00ed.
+
+7356=Proceduru [{1}] nelze prov\u00e9st, proto\u017ee {0} aktu\u00e1ln\u011b nepodporuje v\u00edce v\u00fdstupn\u00edch parametr\u016f.
+

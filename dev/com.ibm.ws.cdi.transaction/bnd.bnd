@@ -28,6 +28,8 @@ Import-Package: \
 
 WS-TraceGroup: JCDI
 
+jakartaeeMe: true
+
 -buildpath: \
 	com.ibm.websphere.javaee.transaction.1.1;version=latest,\
 	com.ibm.tx.jta;version=latest,\

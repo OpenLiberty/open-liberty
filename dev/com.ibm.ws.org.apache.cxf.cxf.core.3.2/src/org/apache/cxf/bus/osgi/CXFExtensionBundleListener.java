@@ -64,7 +64,7 @@ public class CXFExtensionBundleListener implements SynchronousBundleListener {
                 && bundle.getBundleId() != context.getBundle().getBundleId()) {
             	// Start Liberty Change
                 String bundleName = bundle.toString();
-                if(!bundleName.startsWith("com.ibm.ws.org.apache.cxf")) {
+                if(!bundleName.startsWith("com.ibm.ws.org.apache.cxf") && !bundleName.startsWith("com.ibm.ws.wssecurity")) {
                     // don't register non-cxf bundles
                 }       
                 else

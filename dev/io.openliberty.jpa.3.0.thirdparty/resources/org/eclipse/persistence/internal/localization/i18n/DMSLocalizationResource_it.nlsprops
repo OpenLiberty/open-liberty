@@ -1,0 +1,111 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/internal/localization/i18n/DMSLocalizationResource.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+assigning_sequence_numbers=Include il tempo impiegato per la manutenzione del meccanismo numero di sequenza e realmente nell''impostazione del numero di sequenza sugli oggetti
+
+cache_hits=Il numero di volte in cui l''oggetto \u00e8 stato trovato nella cache
+
+cache_misses=Il numero di volte in cui l''oggetto non \u00e8 stato trovato nella cache
+
+caching=Include il tempo impiegato per l''aggiunta, la ricerca e la rimozione degli oggetti nella cache
+
+change_set_not_processed=Il numero di ObjectChangeSets eliminati perch\u00e9 l''oggetto NON \u00e8 stato trovato nella cache
+
+change_set_processed=Il numero di ObjectChangeSets non trovati nella cache
+
+client_session_count=Il numero di ClientSession accedute
+
+connect_call=Il numero totale di chiamate di connessione effettuate
+
+connection=Il tempo impiegato per gestire le connessioni incluso la connessione, la riconnessione e la disconnessione da un''origine dati
+
+connection_in_used=Il numero di connessioni in uso per pool per ogni ConnectionPool(Write, ExclusiveRead) esclusivo
+
+connection_ping=Il tempo impiegato per la verifica della connessione al database per determinare se pu\u00f2 essere utilizzata.
+
+database_execute=Il tempo impiegato in chiamate all''istruzione JDBC, include il tempo impiegato nelle chiamate a: close, executeUpdate e executeQuery
+
+deleted_object=L''oggetto deve essere rimosso da identityMap da ObjectChangeSet
+
+descriptor_event=Il tempo impiegato nell''esecuzione di DescriptorEvent
+
+disconnect_call=Il numero totale di chiamate di disconnessione effettuate
+
+distributed_merge=Il tempo impiegato per l''unione delle modifiche di transazioni remote nella cache condivisa locale. Viene visualizzato quando viene utilizzata la sincronia cache
+
+jts_aftercompletion=Il tempo impiegato sul metodo JTS afterCompletion(Object status)
+
+jts_beforecompletion=Il tempo impiegato sul metodo JTS beforeCompletion()
+
+logging=Il tempo impiegato nella registrazione delle attivit\u00e0 TopLink
+
+merge_time=Il tempo impiegato per l''unione delle modifiche nella cache condivisa.
+
+object_building=Il tempo impiegato per costruire gli oggetti persistenti dalle righe di database
+
+optimistic_lock=Il numero di eccezioni per blocco ottimistico emesse
+
+query=Il tempo totale impiegato sull''operazione: {0}
+
+query_misc=Il tempo totale impiegato sull''operazione: {0}.  Per operazioni speciali non incluse in alcun nome query, ad esempio la scrittura batch.
+
+query_prepareation=Il tempo di preparazione della query
+
+rcm_message_received=Il numero di messaggi ricevuti tramite RCM
+
+rcm_message_sent=Il numero di messaggi inviati tramite RCM
+
+rcm_status=Uno di [non configurato, avviato, arrestato]
+
+remote_change_set=Il numero di insiemi di modifiche ricevuti da macchine remote ed elaborati
+
+row_fetch=Il tempo impiegato per costruire oggetti Record dal ResultSet JDBC. Include chiamate regolari SQL e chiamate a procedure memorizzate
+
+session_event=Il tempo impiegato nell''esecuzione di SessionEvent
+
+session_login_time=Tempo di login nella sessione
+
+session_name=Il nome della sessione
+
+sql_generation=Il tempo impiegato nella generazione dell''SQL. Nel caso di espressioni TopLink, il tempo impiegato nella conversione dell''espressione in SQL
+
+sql_prepare=Il tempo impiegato in JDBC per la preparazione dell''istruzione. Include anche il tempo impiegato in EIS per la creazione di un''interazione associata ad una connessione e per la creazione di oggetti Record di input e di output
+
+unitofwork_commit=Misura il processo di commit della UnitOfWork
+
+unitofwork_commits=Numero di commit della UnitOfWork
+
+unitofwork_count=Conteggio del numero totale di oggetti UnitOfWork creati
+
+unitofwork_register=Include il tempo impiegato per registerExistingObject, registerNewContainerBean, registerNewContainerBeanForCMP, registerNewObject, registerObject, readIntoWorkingCopy
+
+unitofwork_rollback=Numero di commit di UnitOfWork sottoposti a rollback
+
+wrapping=Il tempo impiegato per eseguire il wrap dei bean CMP e BMP
+

@@ -1,0 +1,28 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+
+#ISMESSAGEFILE true
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#COMPONENTPREFIX CWMRX
+
+# LRA is currently using the message prefix CWMRX in the range 5000-5999
+# This is temporary and should be fixed with a proper prefix before GA.
+
+LRA_INVALID_COORDINATOR_URI.CWMRX5000E=CWMRX5000E: Identifik\u00e1tor URI koordin\u00e1tora LRA je neplatn\u00fd.
+LRA_INVALID_COORDINATOR_URI.CWMRX5000E.explanation=\u00da\u010dastn\u00edci LRA mus\u00ed b\u00fdt schopni kontaktovat koordin\u00e1tora.
+LRA_INVALID_COORDINATOR_URI.CWMRX5000E.useraction=Opravte konfiguraci koordin\u00e1tora LRA v souboru server.xml.
+
+
+LRA_CANT_REGISTER_FILTERS.CWMRX5001E=CWMRX5001E: P\u0159i inicializaci funkce mpLRA-1.0 do\u0161lo k chyb\u011b. Chyba: {0}
+LRA_CANT_REGISTER_FILTERS.CWMRX5001E.explanation=Do\u0161lo k chyb\u011b LRA, co\u017e zabra\u0148uje norm\u00e1ln\u00ed operaci.
+LRA_CANT_REGISTER_FILTERS.CWMRX5001E.useraction=Prozkoumejte chybovou zpr\u00e1vu, soubor messages.log na serveru a protokoly FFDC a identifikujte probl\u00e9m.

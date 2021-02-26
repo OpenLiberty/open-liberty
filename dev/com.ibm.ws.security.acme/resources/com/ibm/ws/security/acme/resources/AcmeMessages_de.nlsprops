@@ -20,7 +20,7 @@
 #-----  ACME messages
 
 # The ACME referred to in these messages stands for Automatic Certificate Management Environment.
-# The term "certificate authority" is in reference to SSL/TLS certificate providers.
+# The term "certificate authority" is in reference to SSL and TLS requests certificate providers.
 # The URI parameter in these messages is for the ACME certificate authority, such as https://sampleCAProvider.org/directory
 
 ###############################################################################
@@ -32,6 +32,7 @@ REST_FORBIDDEN=Unzul\u00e4ssig
 REST_INVALID_CONTENT_TYPE=Der content-type-Header der Anforderung war nicht 'application/json'.
 REST_MISSING_OPERATION=Die Operation wurde nicht f\u00fcr die Anforderung angegeben.
 REST_NO_ACME_SERVICE=Ein AcmeProvider-Service wurde nicht registriert.
+REST_TOO_MANY_REQUESTS=Der Benutzer hat zu viele Anforderungen in der angegebenen Zeit gesendet. Die verbleibende Zeit, bis die n\u00e4chste Anforderung gesendet werden kann, ist {0}.
 ###############################################################################
 
 FILE_NOT_READABLE=Die Datei kann nicht gelesen werden.
@@ -127,7 +128,7 @@ CWPKI2023E=CWPKI2023E: Der ACME-Service konnte in die Kontoschl\u00fcsseldatei f
 CWPKI2023E.explanation=Die Kontoschl\u00fcssel konnten nicht in der Kontoschl\u00fcsseldatei gespeichert werden. Dies kann auftreten, wenn die Dateiberechtigungen falsch sind oder die Datei nicht vorhanden ist.
 CWPKI2023E.useraction=Suchen Sie in der Fehlernachricht nach Details zum Fehler. Vergewissern Sie sich, dass die Dateiposition richtig ist und der Server Schreibberechtigung hat.
 
-CWPKI2024E=CWPKI2024E: Der ACME-Service konnte das angeforderte Zertifikat f\u00fcr die ACME-Zertifizierungsstelle unter dem URI {0} nicht widerrufen. Das Zertifikat hat die Seriennummer {1}. Der Fehler ist ''{2}''.
+CWPKI2024E=CWPKI2024E: Der ACME-Service konnte das angeforderte Zertifikat f\u00fcr die ACME-Zertifizierungsstelle unter dem URI {0} nicht widerrufen. Das Zertifikat hat die Seriennummer {1}. Der Fehler ist ''{2}''. Dieser Fehler kann auftreten, wenn sich das Verzeichnis URI ge\u00e4ndert hat, und kann in dem Fall ignoriert werden.
 CWPKI2024E.explanation=Die Anforderung zum Widerrufen eines Zertifikat ist fehlgeschlagen. Das Zertifikat wird m\u00f6glicherweise nicht widerrufen und wird m\u00f6glicherweise noch verwendet.
 CWPKI2024E.useraction=Suchen Sie in der Fehlernachricht nach Details zum Fehler.
 
@@ -172,9 +173,9 @@ CWPKI2035E=CWPKI2035E: Der ACME-Service konnte das signierte Zertifikat nicht im
 CWPKI2035E.explanation=Das Zertifikat wurde erfolgreich von der Zertifizierungsstelle abgerufen, aber es kann nicht lokal gespeichert werden.
 CWPKI2035E.useraction=Suchen Sie in der Fehlernachricht nach Details zum Fehler. Vergewissern Sie sich, dass die Position der Keystore-Datei richtig ist und der Server Schreibberechtigung hat.
 
-CWPKI2036E=CWPKI2036E: Der ACME-Dienst hat beim Warten auf den Start der Webautorisierungsanwendung das Zeitlimit \u00fcberschritten. Die Anwendung muss eine Zertifikatsanforderung bei einer ACME-Zertifizierungsstelle ausf\u00fchren. Der Service hat {0} Minuten gewartet.
-CWPKI2036E.explanation=Die Anwendung, die f\u00fcr die Ausf\u00fchrung der Zertifikatsanforderung verwendet wurde, ist nicht im erwarteten Zeitrahmen gestartet. Ein signiertes Zertifikat kann nicht angefordert werden.
-CWPKI2036E.useraction=Suchen Sie in der Protokolldatei nach fr\u00fcheren Nachrichten oder Fehlern.
+CWPKI2036W=CWPKI2036W: Der ACME-Dienst hat beim Warten auf den Start der Webautorisierungsanwendung das Zeitlimit \u00fcberschritten. Die Anwendung muss eine Zertifikatsanforderung bei einer ACME-Zertifizierungsstelle ausf\u00fchren. Es wurde versucht, eine Zertifikatsanforderung abzusetzen. Der Service hat auf {0} gewartet.
+CWPKI2036W.explanation=Die Anwendung, die f\u00fcr die Ausf\u00fchrung der Zertifikatsanforderung verwendet wurde, ist nicht im erwarteten Zeitrahmen gestartet. Wenn die Anwendung startet, wird die Anforderung fortgesetzt. Wenn die Anwendung nicht startet, schl\u00e4ft die Zertifikatsanforderung fehl.
+CWPKI2036W.useraction=Suchen Sie in der Protokolldatei nach fr\u00fcheren Nachrichten oder Fehlern. Suchen Sie im Protokoll nach einer CWWKT0016I-Nachricht, in der eine Webanwendung mit der 'acme-challenge'-URL enthalten ist, die angibt, dass die interne Anwendung gestartet wurde.
 
 CWPKI2037E=CWPKI2037E: Die Dom\u00e4nen f\u00fcr den ACME-Service waren null oder leer.
 CWPKI2037E.explanation=Die Dom\u00e4nen waren entweder null oder leer und k\u00f6nnen nicht verwendet werden.
@@ -208,7 +209,7 @@ CWPKI2044E.explanation=Der ACME-Service setzt voraus, dass alle Zertifikate in d
 CWPKI2044E.useraction=Stellen Sie sicher, dass alle Zertifikate in der Zertifikatskette X.509-Zertifikate sind.
 
 CWPKI2045W=CWPKI2045W: Das Zertifikat mit der Seriennummer {0}, das von der ACME-Zertifizierungsstelle unter dem URI {1} signiert wurde, ist erst ab {2} g\u00fcltig.
-CWPKI2045W.explanation=Der G\u00fcltigkeitszeitraum im Zertifikat liegt in der Zukunft. SSL/TLS-Anforderungen schlagen solange fehl, bis das aktuelle Datum und die aktuelle Zeit in dem Bereich liegen, der als G\u00fcltigkeitszeitraum im Zertifikat angegeben ist.
+CWPKI2045W.explanation=Der G\u00fcltigkeitszeitraum im Zertifikat liegt in der Zukunft. SSL- und TLS-Anforderungen schlagen solange fehl, bis das aktuelle Datum und die aktuelle Zeit in dem Bereich liegen, der als G\u00fcltigkeitszeitraum im Zertifikat angegeben ist.
 CWPKI2045W.useraction=Aktualisieren Sie die Ortszeit im Server, wenn die Zeit falsch ist.
 
 CWPKI2046E=CWPKI2046E: Der Grund f\u00fcr den Widerruf des Zertifikats {0} ist ung\u00fcltig. Zu den unterst\u00fctzten Widerrufsgr\u00fcnden geh\u00f6ren: unspecified, key_compromise, ca_compromise, affiliation_changed, superseded, cessation_of_operations, certificate_hold, remove_from_crl, privilege_withdrawn und aa_compromise.
@@ -231,14 +232,14 @@ CWPKI2050E.explanation=Die vorhandene Kontoschl\u00fcsselpaardatei konnte nicht 
 CWPKI2050E.useraction=Stellen Sie sicher, dass das Verzeichnis, das die vorhandene Kontoschl\u00fcsselpaardatei enth\u00e4lt, beschreibbar ist. Suchen Sie in der Fehlernachricht nach Details zum Fehler.
 
 CWPKI2051W=CWPKI2051W: Die Eigenschaft renewBeforeExpiration wurde auf {0} gesetzt. Dieser Wert ist k\u00fcrzer als die Mindestzeit f\u00fcr die Verl\u00e4ngerung. Der Wert der Eigenschaft renewBeforeExpiration wird auf {1} zur\u00fcckgesetzt.
-CWPKI2051W.explanation=Der Wert f\u00fcr die Eigenschaft renewBeforeExpiration lag unter der Mindestdauer f\u00fcr die Anforderung eines neuen Zertifikats und wurde daher auf die Mindestzeit f\u00fcr die Verl\u00e4ngerung gesetzt. Dies k\u00f6nnte die Serverleistung beeintr\u00e4chtigen.
+CWPKI2051W.explanation=Der Wert f\u00fcr die Eigenschaft renewBeforeExpiration lag unter der Mindestzeit f\u00fcr die Anforderung eines neuen Zertifikats und wurde daher auf die Mindestzeit f\u00fcr die Verl\u00e4ngerung gesetzt. Dies k\u00f6nnte die Serverleistung beeintr\u00e4chtigen.
 CWPKI2051W.useraction=Wenn Sie diese Warnnachricht vermeiden m\u00f6chten, setzen Sie den Wert der Eigenschaft renewBeforeExpiration in der Serverkonfiguration auf einen Wert, der l\u00e4nger ist als der Mindestzeitraum f\u00fcr die Verl\u00e4ngerung. Wenn Sie die Standardeinstellung verwenden m\u00f6chten, entfernen Sie die Eigenschaft renewBeforeExpiration property aus der Serverkonfiguration.
 
 CWPKI2052I=CWPKI2052I: Das Zertifikat mit der Seriennummer {0} l\u00e4uft am {1} ab. Der ACME-Service fordert ein neues Zertifikat von der ACME-Zertifizierungsstelle unter dem URI {2} an.
 CWPKI2052I.explanation=Der ACME-Service fordert ein neues Zertifikat basierend auf der Eigenschaft renewBeforeExpiration in der Serverkonfiguration und dem Ablaufdatum des Zertifikats an. Wenn die Eigenschaft renewBeforeExpiration nicht konfiguriert ist, wird der Standardwert verwendet.
 CWPKI2052I.useraction=Es ist keine Aktion erforderlich. 
 CWPKI2053W=CWPKI2053W: Das Zertifikat mit der Seriennummer {0} ist am {1} abgelaufen. Der ACME-Service wurde nicht f\u00fcr die automatische Anforderung eines neuen Zertifikats konfiguriert.
-CWPKI2053W.explanation=Die TLS/SSL-Anforderungen k\u00f6nnen nicht ausgef\u00fchrt werden, weil das Zertifikat abgelaufen ist.
+CWPKI2053W.explanation=Die SSL- und TLS-Anforderungen k\u00f6nnen nicht ausgef\u00fchrt werden, weil das Zertifikat abgelaufen ist.
 CWPKI2053W.useraction=Aktualisieren Sie die Eigenschaft renewBeforeExpiration in der Serverkonfiguration in einen Wert gr\u00f6\u00dfer null, damit automatisch ein neues Zertifikat angefordert wird, oder verwenden Sie die ACME-REST-Schnittstelle, um ein neues Zertifikat anzufordern.
 
 CWPKI2054W=CWPKI2054W: Die Eigenschaft renewBeforeExpiration wurde auf den Wert {0} gesetzt, der G\u00fcltigkeitszeitraum des Zertifikats mit der Seriennummer {1} entspricht oder l\u00e4nger ist als dieser G\u00fcltigkeitszeitraum. Der G\u00fcltigkeitszeitraum des Zertifikats ist {2}. Der Wert der Eigenschaft renewBeforeExpiration wird auf {3} zur\u00fcckgesetzt.
@@ -253,8 +254,8 @@ CWPKI2056W=CWPKI2056W: Der G\u00fcltigkeitszeitraum des Zertifikats mit der Seri
 CWPKI2056W.explanation=Der G\u00fcltigkeitszeitraum ist k\u00fcrzer als die Mindestzeit f\u00fcr die Verl\u00e4ngerung. Das Zertifikat l\u00e4uft bereits ab, bevor ein neues Zertifikat angefordert wird.
 CWPKI2056W.useraction=Wenn Sie den Ablauf des Zertifikats vermeiden m\u00f6chten, fordern Sie ein Zertifikat mit einem l\u00e4ngeren G\u00fcltigkeitszeitraum an. Wenn die Zertifizierungsstelle einen angepassten G\u00fcltigkeitszeitraum unterst\u00fctzt, legen Sie einen Wert f\u00fcr die Eigenschaft validFor in der Serverkonfiguration fest.
 
-CWPKI2057E=CWPKI2057E: Die Pr\u00fcfung des Zertifikatswiderrufsstatus hat keinen CertPathValidator f\u00fcr die Validierung des Zertifikats erstellt. Der Fehler ist ''{0}''.
-CWPKI2057E.explanation=Das Zertifikatswiderrufspr\u00fcfprogramm muss einen CertPathValidator erstellen, um den Widerrufsstatus von OCSP und CRLs zu \u00fcberpr\u00fcfen.
+CWPKI2057E=CWPKI2057E: Bei der Pr\u00fcfung des Zertifikatswiderrufsstatus wurde kein Validierungstool f\u00fcr einen Java-Zertifikatspfad zum Validieren des Zertifikats erstellt. Der Fehler ist ''{0}''.
+CWPKI2057E.explanation=Das Zertifikatswiderrufspr\u00fcfprogramm muss einen Java-Zertifikatspfad erstellen, um den Widerrufsstatus von OCSP und CRLs zu pr\u00fcfen.
 CWPKI2057E.useraction=Suchen Sie in der Statusnachricht und im Fehler nach Details.
 
 CWPKI2058W=CWPKI2058W: Bei der Pr\u00fcfung des Zertifikatswiderrufsstatus wurden sporadisch auftretende Fehler ignoriert. Die Widerrufspr\u00fcfung ist m\u00f6glicherweise unvollst\u00e4ndig. Die Fehler sind: ''{0}''.
@@ -275,3 +276,49 @@ CWPKI2061E.useraction=Stellen Sie sicher, dass das Zertifikat ein g\u00fcltiges 
 CWPKI2062E=CWPKI2062E: Die in der Serverkonfiguration definierte OCSP-Responder-URL {0} ist kein g\u00fcltiger URI. Wenn ein URI definiert ist, muss es sich um einen g\u00fcltigen URI handeln, um die im Zertifikat enthaltene OSCP-Responder-URL zu \u00fcberschreiben.
 CWPKI2062E.explanation=F\u00fcr die Zertifikatswiderrufspr\u00fcfung ist eine g\u00fcltige OCSP-Responder-URL erforderlich.
 CWPKI2062E.useraction=Geben Sie eine g\u00fcltige OCSP-Responder-URL in der Serverkonfiguration an.
+
+CWPKI2063E=CWPKI2063E: Die ACME-Zertifizierungsstelle am URI {0} hat die Nutzungsbedinungen aktualisiert. Daher ist es jetzt erforderlich, dass der Benutzer den neuen Nutzungsbedingungen am folgenden URI zustimmt, bevor weitere Anforderungen verarbeitet werden: {1}
+CWPKI2063E.explanation=Die Zertifizierungsstelle hat die zugeh\u00f6rigen Nutzungsbedingungen aktualisiert und es ist eine Benutzerinteraktion erforderlich.
+CWPKI2063E.useraction=Pr\u00fcfen Sie die bereitgestellten Nutzungsbedingungen.
+
+CWPKI2064I=CWPKI2064I: Der ACME-Service hat das Zertifikat mit der Seriennummer {0} vom URI {1} in {2} Sekunden abgerufen.
+CWPKI2064I.explanation=Der ACME-Service hat ein Zertifikat erfolgreich angefordert.
+CWPKI2064I.useraction=Es ist keine Aktion erforderlich. 
+CWPKI2065W=CWPKI2065W: Der ACME-Service konnte das Zertifikat mit der Seriennummer {0} nicht automatisch verl\u00e4ngern. Die Anforderung wird die Operation in {1} wiederholen. Das Zertifikat l\u00e4uft am {2} ab. Der Verl\u00e4ngerungsanforderungsfehler ist ''{3}''.
+CWPKI2065W.explanation=Der ACME-Service hat versucht, ein Zertifikat zu verl\u00e4ngern. Es ist jedoch ein Fehler aufgetreten. Der ACME-Service fordert weiter ein neues Zertifikat an, bis ein neues Zertifikat ausgegeben wurde.
+CWPKI2065W.useraction=Suchen Sie in der Fehlernachricht nach Details zum Fehler.
+
+CWPKI2066E=CWPKI2066E: Der ACME-Service konnte das Zertifikat mit der Seriennummer {0} nicht automatisch verl\u00e4ngern. Das Zertifikat wird widerrufen. Die Anforderung wird die Operation in {1} wiederholen. Der Verl\u00e4ngerungsanforderungsfehler ist ''{2}''.
+CWPKI2066E.explanation=Der ACME-Service hat versucht, ein Zertifikat zu verl\u00e4ngern. Es ist jedoch ein Fehler aufgetreten. Der ACME-Service fordert weiter ein neues Zertifikat an, bis ein neues Zertifikat ausgegeben wurde. SSL- und TLS-Anforderungen schlagen solange fehl, bis eine neue Zertifikatsanforderung erfolgreich war.
+CWPKI2066E.useraction=Suchen Sie in der Fehlernachricht nach Details zum Fehler. 
+
+CWPKI2067I=CWPKI2067I: Das Zertifikat mit der Seriennummer {0} wird widerrufen. Der ACME-Service fordert ein neues Zertifikat von der ACME-Zertifizierungsstelle unter dem URI {1} an.
+CWPKI2067I.explanation=Wenn der ACME-Service erkennt, dass das Zertifikat widerrufen wurde, wird automatisch ein neues Zertifikat angefordert.
+CWPKI2067I.useraction=Es ist keine Aktion erforderlich. 
+CWPKI2068W=CWPKI2068W: Die automatische Zertifikatspr\u00fcfung des ACME-Service hat nicht gepr\u00fcft, ob das Zertifikat mit der Seriennummer {0} abl\u00e4uft oder widerrufen wurde. Es ist geplant, Pr\u00fcfung in {1} zu wiederholen. Der Fehler ist ''{2}''.
+CWPKI2068W.explanation=Der ACME-Service hat damit begonnen, zu pr\u00fcfen, ob das Zertifikat abl\u00e4uft oder widerrufen wurde.
+CWPKI2068W.useraction=Suchen Sie in der Fehlernachricht nach Details zum Fehler. Pr\u00fcfen Sie den Zertifikatsstatus mit der ACME-REST-Schnittstelle. Wenn das Zertifikat erneuert werden muss, verwenden Sie die ACME-REST-Schnittstelle, um ein neues Zertifikat anzufordern.
+
+CWPKI2069I=CWPKI2069I: Der automatische Zertifikatspr\u00fcfung des ACME-Service ist inaktiviert. Ablaufende oder widerrufene Zertifikate werden nicht automtisch verl\u00e4ngert.
+CWPKI2069I.explanation=Der ACME-Service pr\u00fcft nicht anhand eines automatisierten Zeitplans, ob ablaufende oder widerrufene Zertifikate vorhanden sind. Wenn das Zertifikat abl\u00e4uft oder widerrufen wird, k\u00f6nnen SSL- und TLS-Anforderungen erst ausgef\u00fchrt werden, wenn der Server neu gestartet wurde oder die REST-Schnittstelle f\u00fcr die Verl\u00e4nderung des Zertifikats verwendet wurde.
+CWPKI2069I.useraction=Es ist keine Aktion erforderlich. Wenn Sie die automatische Zertifikatspr\u00fcfung aktivieren m\u00f6chten, \u00e4ndern Sie den Wert f\u00fcr die Eigenschaft certCheckerSchedule in der Serverkonfiguration in einen Wert gr\u00f6\u00dfer als 0.
+
+CWPKI2070W=CWPKI2070W: Die Eigenschaft certCheckerSchedule wurde auf den Wert {0} gesetzt, der k\u00fcrzer ist als die Mindestplanzeit. Der Wert der Eigenschaft certCheckerSchedule wird auf {1} zur\u00fcckgesetzt.
+CWPKI2070W.explanation=Der Wert f\u00fcr die Eigenschaft certCheckerSchedule lag unter der Mindestzeit, die f\u00fcr die Suche nach ablaufenden bzw. widerrufenen Zertifikaten liegt. Er wird daher auf die Mindestplanzeit zur\u00fcckgesetzt.
+CWPKI2070W.useraction=Wenn Sie diese Warnnachricht vermeiden m\u00f6chten, setzen Sie den Wert der Eigenschaft certCheckerSchedule in der Serverkonfiguration auf einen Wert, der gr\u00f6\u00dfer ist als die Mindestplanzeit. Wenn Sie die Standardeinstellung verwenden m\u00f6chten, entfernen Sie die Eigenschaft certCheckerSchedule property aus der Serverkonfiguration.
+
+CWPKI2071W=CWPKI2071W: Die Eigenschaft certCheckerErrorSchedule wurde auf den Wert {0} gesetzt, der k\u00fcrzer ist als die Mindestplanzeit. Der Wert der Eigenschaft certCheckerErrorSchedule wird auf {1} zur\u00fcckgesetzt.
+CWPKI2071W.explanation=Der Wert f\u00fcr die Eigenschaft certCheckerErrorSchedule lag unter der Mindestzeit, die f\u00fcr die Suche nach ablaufenden bzw. widerrufenen Zertifikaten liegt. Er wird daher auf die Mindestplanzeit zur\u00fcckgesetzt.
+CWPKI2071W.useraction=Wenn Sie diese Warnnachricht vermeiden m\u00f6chten, setzen Sie den Wert der Eigenschaft certCheckerErrorSchedule in der Serverkonfiguration auf einen Wert, der gr\u00f6\u00dfer ist als die Mindestplanzeit. Wenn Sie die Standardeinstellung verwenden m\u00f6chten, entfernen Sie die Eigenschaft certCheckerErrorSchedule property aus der Serverkonfiguration.
+
+CWPKI2072W=CWPKI2072W: Der ACME-Service konnte die archivierte ACME-Datei in {0} nicht lesen oder schreiben. Der Fehler ist ''{1}''.
+CWPKI2072W.explanation=Der ACME-Service konnte nicht auf die archivierte ACME-Datei zugreifen.
+CWPKI2072W.useraction=Stellen Sie sicher, dass das Verzeichnis mit der archivierten ACME-Datei Lese- und Schreibberechtigung hat.
+
+CWPKI2073W=CWPKI2073W: Es wurde keine Kontaktperson f\u00fcr das Konto angegeben. Es wird empfohlen, diese Eigenschaft in der Serverkonfiguration zu definieren. Wenn ein Schl\u00fcssel verloren geht oder das Konto beeintr\u00e4chtigt wird, ist der Zugriff auf das Konto nicht mehr m\u00f6glich.
+CWPKI2073W.explanation=Der Wert f\u00fcr die Eigenschaft accountContact wurde in der Serverkonfiguration nicht angegeben.
+CWPKI2073W.useraction=Legen Sie die Eigenschaft accountContact in der Serverkonfiguration fest.
+
+CWPKI2074W=CWPKI2074W: Der ACME-Service hat das Zeitlimit \u00fcberschritten, w\u00e4hrend er auf das Signal gewartet hat, dass der HTTP-Port offen ist. Zum Ausf\u00fchren einer Zertifikatsanforderung mit einer ACME-Zertifizierungsstelle muss ein HTTP-Port verf\u00fcgbar sein. Es wurde versucht, eine Zertifikatsanforderung abzusetzen. Der Service hat auf {0} gewartet.
+CWPKI2074W.explanation=Der Service versucht, eine Zertifikatsanforderung abzusetzen. Wenn ein HTTP-Port offen ist, wird die Anforderung fortgesetzt. Wenn kein HTTP-Port offen ist, schl\u00e4gt die Zertifikatsanforderung fehl.
+CWPKI2074W.useraction=Suchen Sie in der Protokolldatei nach fr\u00fcheren Nachrichten oder Fehlern. Suchen Sie im Protokoll nach CWWKO0219I-Nachrichten, in denen die verf\u00fcgbaren Endpunkte und Ports aufgelistet sind. 

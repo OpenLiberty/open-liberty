@@ -23,4 +23,6 @@
 		type="jks"
 		location="${server.config.dir}/commonConfigServerDefault.jks" />
 
+<include location="${shared.config.dir}/allAlgSSLSettings.xml" />
+
 </server>        
