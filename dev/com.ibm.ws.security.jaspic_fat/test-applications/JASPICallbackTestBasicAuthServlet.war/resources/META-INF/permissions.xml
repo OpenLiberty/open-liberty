@@ -4,6 +4,12 @@
     xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
         http://xmlns.jcp.org/xml/ns/javaee/permissions_7.xsd"
     version="7">
+
+   <permission>
+   		<class-name>javax.security.auth.PrivateCredentialPermission</class-name>
+        <name>* * "*"</name>
+   		<actions>read</actions>
+   </permission>
     
    <permission>
       <class-name>javax.security.auth.AuthPermission</class-name>
