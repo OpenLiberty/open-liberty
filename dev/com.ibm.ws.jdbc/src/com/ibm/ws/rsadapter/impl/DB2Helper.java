@@ -31,7 +31,6 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.Transaction.UOWCoordinator;
 import com.ibm.ws.Transaction.UOWCurrent;
 import com.ibm.ws.jca.cm.AbstractConnectionFactoryService;
-import com.ibm.ws.jdbc.heritage.AccessIntent;
 import com.ibm.ws.resource.ResourceRefInfo;
 import com.ibm.ws.rsadapter.AdapterUtil;
 import com.ibm.ws.rsadapter.DSConfig;
@@ -72,6 +71,7 @@ public class DB2Helper extends DatabaseHelper {
     DB2Helper(WSManagedConnectionFactoryImpl mcf) throws Exception {
         super(mcf);
 
+        mcf.defaultIsolationLevel = Connection.TRANSACTION_REPEATABLE_READ;
         mcf.doesStatementCacheIsoLevel = true;
         mcf.supportsGetTypeMap = false;
 
@@ -188,11 +188,6 @@ public class DB2Helper extends DatabaseHelper {
 
         if (isTraceOn && tc.isEntryEnabled())
             Tr.exit(this, tc, "doConnectionSetup");
-    }
-
-    @Override
-    public int getIsolationLevel(AccessIntent unused) {
-        return Connection.TRANSACTION_REPEATABLE_READ;
     }
 
     /**

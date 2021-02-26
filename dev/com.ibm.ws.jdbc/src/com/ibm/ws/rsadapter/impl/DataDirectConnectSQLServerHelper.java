@@ -30,7 +30,6 @@ import com.ibm.ejs.cm.logger.TraceWriter;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
-import com.ibm.ws.jdbc.heritage.AccessIntent;
 import com.ibm.ws.rsadapter.AdapterUtil;
 import com.ibm.ws.rsadapter.jdbc.WSJdbcTracer;
 
@@ -101,6 +100,8 @@ public class DataDirectConnectSQLServerHelper extends DatabaseHelper {
      */
     DataDirectConnectSQLServerHelper(WSManagedConnectionFactoryImpl mcf) {
         super(mcf);
+
+        mcf.defaultIsolationLevel = Connection.TRANSACTION_REPEATABLE_READ;
 
         // Default values for the statement properties LongDataCacheSize and QueryTimeout are
         // configurable as data source properties. These data source properties are supplied to
@@ -279,11 +280,6 @@ public class DataDirectConnectSQLServerHelper extends DatabaseHelper {
 
        if (TraceComponent.isAnyTracingEnabled() &&  tc.isEntryEnabled())  
            Tr.exit(this, tc, "doStatementCleanup");  
-    }
-
-    @Override
-    public int getIsolationLevel(AccessIntent unused) {
-        return Connection.TRANSACTION_REPEATABLE_READ;
     }
 
     /**

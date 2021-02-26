@@ -271,11 +271,7 @@ public class WSConnectionRequestInfoImpl implements ConnectionRequestInfo, FFDCS
         if (ivIsoLevel == Connection.TRANSACTION_NONE)
             ivIsoLevel = mcf.dsConfig.get().isolationLevel;
         if (ivIsoLevel == -1)
-            try {
-                ivIsoLevel = mcf.getDataStoreHelper().getIsolationLevel(null);
-            } catch (ResourceException x) {
-                throw new SQLException(x);
-            }
+            ivIsoLevel = mcf.defaultIsolationLevel;
 
         hashcode = ivConfigID +
                    (ivUserName == null ? 0 : ivUserName.hashCode()) +

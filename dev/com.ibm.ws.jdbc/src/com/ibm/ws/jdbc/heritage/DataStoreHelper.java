@@ -14,6 +14,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 import javax.resource.ResourceException;
+import javax.security.auth.Subject;
 
 /**
  * Extension point for compatibility with data store helpers.
@@ -54,6 +55,19 @@ public interface DataStoreHelper {
      * @throws SQLException if it fails.
      */
     boolean doConnectionSetupPerGetConnection(Connection conn, boolean isCMP, Object props) throws SQLException;
+
+    /**
+     * Invoked prior to a connection being used in a transaction.
+     *
+     * @param subject subject for the newly requested connection if container authentication is used, otherwise null.
+     * @param user user name for the newly requested connection. Null if container authentication is used and a subject is provided.
+     * @param conm the connection.
+     * @param reauthRequired indicates whether reauthentication is required to get the connection in sync with the subject or user name.
+     * @param props <code>java.util.Properties</code> containing a property with key, "FIRST_TIME_CALLED", and value of "true" or "false"
+     *        depending on whether or not this is the first time invoking this method for the specified connection.
+     * @throws SQLException to indicate failure of this method.
+     */
+    void doConnectionSetupPerTransaction(Subject subject, String user, Connection conn, boolean reauthRequired, Object props) throws SQLException;
 
     /**
      * Returns the default to use for transaction isolation level when not specified another way.

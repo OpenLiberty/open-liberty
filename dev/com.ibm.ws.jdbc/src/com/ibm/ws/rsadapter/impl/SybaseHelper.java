@@ -25,7 +25,6 @@ import javax.sql.XADataSource;
 import com.ibm.ejs.cm.logger.TraceWriter;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.jdbc.heritage.AccessIntent;
 import com.ibm.ws.rsadapter.AdapterUtil;
 import com.ibm.ws.rsadapter.jdbc.WSJdbcStatement; 
 
@@ -47,6 +46,7 @@ public class SybaseHelper extends DatabaseHelper
     SybaseHelper(WSManagedConnectionFactoryImpl mcf) {
         super(mcf);
 
+        mcf.defaultIsolationLevel = Connection.TRANSACTION_REPEATABLE_READ;
         mcf.supportsGetTypeMap = false;
     }
     
@@ -123,11 +123,6 @@ public class SybaseHelper extends DatabaseHelper
                 throw sqlex;
             }
         }
-    }
-
-    @Override
-    public int getIsolationLevel(AccessIntent unused) {
-        return Connection.TRANSACTION_REPEATABLE_READ;
     }
 
     @Override

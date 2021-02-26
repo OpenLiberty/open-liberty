@@ -24,6 +24,7 @@ import java.sql.Statement;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
@@ -356,6 +357,8 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
     // boolean to indicate if the client information has been set on this connection explictly
     public boolean clientInfoExplicitlySet;
     public boolean clientInfoImplicitlySet;
+
+    private Properties doConnectionSetupPerTranProps;
 
     // Indicates if the Connection supports two phase commit.
     private boolean is2Phase;
@@ -2353,6 +2356,33 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
                 (stateMgr.getState() == WSStateManager.RRS_GLOBAL_TRANSACTION_ACTIVE 
                 && !rrsGlobalTransactionReallyActive)) 
             {
+                if (mcf.dataStoreHelper != null)
+                    try
+                    {
+                        if (doConnectionSetupPerTranProps == null) {
+                            doConnectionSetupPerTranProps = new Properties();
+                            doConnectionSetupPerTranProps.setProperty("FIRST_TIME_CALLED", "true");
+                        } else {
+                            doConnectionSetupPerTranProps.setProperty("FIRST_TIME_CALLED", "false");
+                        }
+
+                        // Remove the wrapper for supplemental trace before invoking a custom helper
+                        // because the java.sql.Connection wrapper prevents access to vendor APIs
+                        // that might be used by the custom helper.
+                        Connection conn = mcf.isCustomHelper ?
+                            (Connection) WSJdbcTracer.getImpl(sqlConn) : sqlConn;
+
+                        // if we have a subject, it will take precedence
+                        mcf.dataStoreHelper.doConnectionSetupPerTransaction(subject,
+                           (subject == null ? newCRI.ivUserName : null),
+                            conn, _claimedVictim, doConnectionSetupPerTranProps);
+                    }
+                    catch (SQLException sqe)
+                    {
+                        FFDCFilter.processException(sqe, getClass().getName(), "2294", this);
+                        throw new DataStoreAdapterException("DSA_ERROR", sqe, getClass());
+                    }
+
                 // setting the new subject in the managed connection, this may be the same
                 // as the existing one, however, in the claimedVictim path it won't. Setting it all the time.
                 this.subject = subject;
@@ -2781,10 +2811,10 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
                 Connection conn = mcf.isCustomHelper ?
                     (Connection) WSJdbcTracer.getImpl(sqlConn) : sqlConn;
 
-                boolean conCleanupPerformed = mcf.getDataStoreHelper().doConnectionCleanupPerCloseConnection(conn, false, null);
+                boolean conCleanupPerformed = mcf.dataStoreHelper.doConnectionCleanupPerCloseConnection(conn, false, null);
 
                 if (isTraceOn && tc.isDebugEnabled())
-                    Tr.debug(this, tc, "doConnectionCleanupPerCloseConnection", mcf.getDataStoreHelper(), sqlConn, conCleanupPerformed);
+                    Tr.debug(this, tc, "doConnectionCleanupPerCloseConnection", mcf.dataStoreHelper, sqlConn, conCleanupPerformed);
             }
             catch (Throwable x) {
                 if (isTraceOn && tc.isDebugEnabled())

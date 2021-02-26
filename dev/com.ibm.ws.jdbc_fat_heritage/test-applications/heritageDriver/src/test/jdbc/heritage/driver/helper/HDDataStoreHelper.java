@@ -13,6 +13,10 @@ package test.jdbc.heritage.driver.helper;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Properties;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import javax.security.auth.Subject;
 
 import com.ibm.ws.jdbc.heritage.AccessIntent;
 import com.ibm.ws.jdbc.heritage.DataStoreHelper;
@@ -50,6 +54,16 @@ public class HDDataStoreHelper implements DataStoreHelper {
             stmt.execute();
         }
         return true;
+    }
+
+    @Override
+    public void doConnectionSetupPerTransaction(Subject subject, String user, Connection con, boolean reauthRequired, Object props) throws SQLException {
+        AtomicInteger count = ((HDConnection) con).transactionCount;
+        boolean first = Boolean.parseBoolean(((Properties) props).getProperty("FIRST_TIME_CALLED"));
+        if (first)
+            count.set(1);
+        else
+            count.incrementAndGet();
     }
 
     @Override
