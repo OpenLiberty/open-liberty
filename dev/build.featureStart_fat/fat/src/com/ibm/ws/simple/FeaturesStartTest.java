@@ -166,7 +166,8 @@ public class FeaturesStartTest {
                 String line = scanner.nextLine();
                 if (line.startsWith("IBM-ShortName:")) {
                     shortName = line.substring("IBM-ShortName:".length()).trim();
-                    if (shortName.toUpperCase().contains("CLIENT")) {
+                    String upperShortName = shortName.toUpperCase();
+                    if (upperShortName.contains("EECLIENT") || upperShortName.contains("SECURITYCLIENT")) {
                         Log.info(c, "parseShortName", "Skipping client-only feature: " + feature.getName());
                         return;
                     }
