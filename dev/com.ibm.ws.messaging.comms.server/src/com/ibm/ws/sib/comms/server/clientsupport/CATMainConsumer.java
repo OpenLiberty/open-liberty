@@ -1193,11 +1193,11 @@ public class CATMainConsumer extends CATConsumer
            writer.newLine();
            writer.startTag(this.getClass().getSimpleName());
            writer.indent();
-       
+
            super.dump(writer);          
            if (subConsumer!= null)
                subConsumer.dump(writer);
-      
+
            writer.outdent();
            writer.newLine();
            writer.endTag(this.getClass().getSimpleName());

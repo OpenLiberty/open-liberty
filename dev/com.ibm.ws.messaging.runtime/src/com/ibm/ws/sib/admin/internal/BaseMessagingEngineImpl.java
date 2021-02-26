@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2020 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1913,11 +1913,11 @@ public class BaseMessagingEngineImpl implements JsEngineComponent, LWMConfig, Co
                 fw.startTag("sib");
                 fw.indent();
                 fw.newLine();
-                fw.nameSpace("MessageProcessor");
+                fw.nameSpace("processor");
                 if(_messageProcessor != null) {
                     dump(dumpSpec, "com.ibm.ws.sib.processor.impl.MessageProcessor", _messageProcessor, fw);
                 }
-                fw.nameSpace("Communications");
+                fw.nameSpace("comms");
                 ServerCommsDiagnosticDump.dump(fw, dumpSpec);
                 fw.nameSpace("msgstore");
                 if(_messageStore != null)

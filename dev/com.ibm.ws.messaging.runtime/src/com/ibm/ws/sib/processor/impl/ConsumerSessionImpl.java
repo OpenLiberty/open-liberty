@@ -1214,48 +1214,75 @@ public final class ConsumerSessionImpl implements MPConsumerSession, MPDestinati
 
     }
     
-    public void dump(FormattedWriter writer) {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.entry(this, tc, "dump", new Object[] { writer });
+  public void dump(FormattedWriter writer) {
+      if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+          SibTr.entry(this, tc, "dump", new Object[] { writer });
 
-        try {
-            writer.newLine();
-            writer.startTag(this.getClass().getSimpleName());
-            writer.indent();
-        
-            writer.newLine();
-            writer.taggedValue("toString", toString());
-            writer.newLine();
-            writer.taggedValue("DestinationAddress", getDestinationAddress());
-            writer.newLine();
-            writer.taggedValue("LocalConsumerPoint", getLocalConsumerPoint());
-           
-            ConsumerDispatcher cd = (ConsumerDispatcher) getLocalConsumerPoint().getConsumerManager();
-            MPSubscription mpSubscription = cd.getMPSubscription();
-            if (mpSubscription != null ) {
-                writer.newLine();
-                writer.taggedValue("SubscriperId", mpSubscription.getSubscriberId());
-                writer.newLine();
-                writer.taggedValue("WPMTopicSpaceName", mpSubscription.getWPMTopicSpaceName());
-                for (SelectionCriteria selectionCriteria : mpSubscription.getSelectionCriteria()) {
-                  writer.newLine();
-                  writer.taggedValue("SelectionCriteria", selectionCriteria);
-                }
-            }
-            writer.outdent();
-            writer.newLine();
-            writer.endTag(this.getClass().getSimpleName());
+      try {
+          writer.newLine();
+          writer.startTag(this.getClass().getSimpleName());
+          writer.indent();
 
-         } catch (Throwable t) {
-             // No FFDC Code Needed            
-             try {
-                 writer.write("\nUnable to dump " + this + " " + t);
-             } catch (IOException e) {
-                 e.printStackTrace();
-             }
-        }
-      
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.exit(this, tc, "dump");
-    }
+          writer.newLine();
+          writer.taggedValue("toString", toString());
+          writer.newLine();
+          writer.taggedValue("DestinationAddress", getDestinationAddress());
+          writer.newLine();
+          writer.taggedValue("LocalConsumerPoint", getLocalConsumerPoint());
+
+          LocalConsumerPoint lcp = null;
+          ConsumerManager cm = null;
+          ConsumerDispatcher cd = null;
+          lcp = getLocalConsumerPoint();
+          if (lcp != null) {
+        	  cm = lcp.getConsumerManager();
+        	  if (cm != null) {
+        		  if (cm instanceof ConsumerDispatcher) {
+        			  cd = (ConsumerDispatcher)cm;
+        			  
+        			  MPSubscription mpSubscription = cd.getMPSubscription();
+        			  
+        			  if (mpSubscription != null) {
+        	              writer.newLine();
+        	              writer.taggedValue("SubscriperId", mpSubscription.getSubscriberId());
+        	              writer.newLine();
+        	              writer.taggedValue("WPMTopicSpaceName", mpSubscription.getWPMTopicSpaceName());
+        	              for (SelectionCriteria selectionCriteria : mpSubscription.getSelectionCriteria()) {
+        	                writer.newLine();
+        	                writer.taggedValue("SelectionCriteria", selectionCriteria);
+        	              }
+        			  }
+        			  else {
+        				  writer.comment("MPSubscription is null");
+        			  }
+        		  }
+        		  else {
+        			  writer.comment("ConsumerManager is not instanceof ConsumerDispatcher");
+        		  }
+        	  }
+        	  else {
+        		  writer.comment("ConsumerManager is null");
+        	  }
+          }
+          else {
+        	  writer.comment("LocalSubscriptionPoint is null");
+          }
+ 
+          writer.outdent();
+          writer.newLine();
+          writer.endTag(this.getClass().getSimpleName());
+
+       } catch (Throwable t) {
+           // No FFDC Code Needed            
+           try {
+               if (writer != null) writer.write("\nUnable to dump " + this + " " + t);
+           } catch (IOException e) {
+               e.printStackTrace();
+           }
+      }
+
+      if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+          SibTr.exit(this, tc, "dump");
+  }
+  
 }

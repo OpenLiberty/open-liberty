@@ -22,6 +22,5 @@
     <queue id="QUEUE_TWO"></queue>
     <queue id="DEPTH_LIMITED_QUEUE" maxMessageDepth="5"></queue>
     <topicSpace id="TOPIC_ONE"/>
-    <topicSpace id="NOKIA"/>
   </messagingEngine>
 </server>
