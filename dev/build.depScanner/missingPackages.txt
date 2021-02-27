@@ -1,0 +1,1069 @@
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/dev/api/spec/com.ibm.websphere.javaee.activity.1.0_1.0.50.jar
+	javax.activity
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/dev/api/spec/com.ibm.websphere.javaee.ejb.3.2_1.0.50.jar
+	javax.ejb
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/dev/api/spec/com.ibm.websphere.javaee.el.2.2_1.0.50.jar
+	javax.el
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/dev/api/spec/com.ibm.websphere.javaee.el.3.0_1.0.50.jar
+	javax.el
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/dev/api/spec/com.ibm.websphere.javaee.jaxb.2.2_1.0.50.jar
+	javax.xml.bind
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/dev/api/spec/com.ibm.websphere.javaee.jaxb.2.3_1.0.50.jar
+	javax.xml.bind
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/dev/api/spec/com.ibm.websphere.javaee.jsf.2.2_1.0.50.jar
+	javax.faces
+	javax.faces.application
+	javax.faces.bean
+	javax.faces.component
+	javax.faces.component.behavior
+	javax.faces.component.html
+	javax.faces.component.visit
+	javax.faces.context
+	javax.faces.convert
+	javax.faces.event
+	javax.faces.flow
+	javax.faces.lifecycle
+	javax.faces.model
+	javax.faces.render
+	javax.faces.validator
+	javax.faces.view
+	javax.faces.view.facelets
+	javax.faces.webapp
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/dev/api/spec/com.ibm.websphere.javaee.jsp.tld.2.2.jakarta_1.2.50.jar
+	org.apache.taglibs.standard.extra.spath
+	org.apache.taglibs.standard.functions
+	org.apache.taglibs.standard.lang.jstl
+	org.apache.taglibs.standard.lang.jstl.parser
+	org.apache.taglibs.standard.lang.jstl.test
+	org.apache.taglibs.standard.lang.support
+	org.apache.taglibs.standard.tag.common.core
+	org.apache.taglibs.standard.tag.common.fmt
+	org.apache.taglibs.standard.tag.common.sql
+	org.apache.taglibs.standard.tag.common.xml
+	org.apache.taglibs.standard.tag.el.core
+	org.apache.taglibs.standard.tag.el.fmt
+	org.apache.taglibs.standard.tag.el.sql
+	org.apache.taglibs.standard.tag.el.xml
+	org.apache.taglibs.standard.tag.rt.core
+	org.apache.taglibs.standard.tag.rt.fmt
+	org.apache.taglibs.standard.tag.rt.sql
+	org.apache.taglibs.standard.tag.rt.xml
+	org.apache.taglibs.standard.tei
+	org.apache.taglibs.standard.tlv
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/dev/api/spec/com.ibm.websphere.javaee.management.j2ee.1.1_1.0.50.jar
+	javax.management.j2ee
+	javax.management.j2ee.statistics
+	org.omg.stub.javax.management.j2ee
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/dev/api/spec/com.ibm.websphere.org.osgi.service.http.jakarta_1.0.50.jar
+	org.osgi.service.http
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/dev/api/spec/io.openliberty.jakarta.batch.2.0_1.0.50.jar
+	jakarta.batch.runtime
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/dev/api/spec/io.openliberty.jakarta.enterpriseBeans.4.0_1.0.50.jar
+	jakarta.ejb
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/dev/api/spec/io.openliberty.jakarta.transaction.2.0_1.0.50.jar
+	javax.transaction.xa
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/dev/api/spec/io.openliberty.jakarta.xmlBinding.3.0_1.0.50.jar
+	jakarta.xml.bind
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/dev/api/third-party/com.ibm.websphere.appserver.thirdparty.eclipselink.2.7_1.0.50.jar
+	org.eclipse.persistence.config
+	org.eclipse.persistence.exceptions.i18n
+	org.eclipse.persistence.internal.databaseaccess
+	org.eclipse.persistence.internal.helper
+	org.eclipse.persistence.internal.jpa
+	org.eclipse.persistence.internal.localization.i18n
+	org.eclipse.persistence.sessions
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/dev/api/third-party/com.ibm.websphere.appserver.thirdparty.eclipselink_1.0.50.jar
+	org.eclipse.persistence.exceptions.i18n
+	org.eclipse.persistence.internal.helper
+	org.eclipse.persistence.internal.localization.i18n
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/dev/api/third-party/com.ibm.websphere.appserver.thirdparty.jsf-2.2_1.0.50.jar
+	org.apache.myfaces.renderkit.html
+	org.apache.myfaces.shared.config
+	org.apache.myfaces.shared.renderkit
+	org.apache.myfaces.shared.renderkit.html
+	org.apache.myfaces.shared.renderkit.html.util
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/dev/api/third-party/io.openliberty.jpa.3.0.thirdparty_1.0.50.jar
+	org.eclipse.persistence.exceptions.i18n
+	org.eclipse.persistence.internal.localization.i18n
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/com.ibm.websphere.javaee.jcache.1.1.jakarta_1.0.50.jar
+	javax.cache.annotation
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/com.ibm.ws.componenttest.2.0_1.0.50.jar
+	componenttest.app
+	componenttest.matchers
+	componenttest.serverinfo
+	componenttest.serverinfo.impl
+	junit.extensions
+	junit.framework
+	junit.runner
+	junit.textui
+	org.junit
+	org.junit.experimental
+	org.junit.experimental.categories
+	org.junit.experimental.max
+	org.junit.experimental.results
+	org.junit.experimental.runners
+	org.junit.experimental.theories
+	org.junit.experimental.theories.internal
+	org.junit.experimental.theories.suppliers
+	org.junit.internal
+	org.junit.internal.builders
+	org.junit.internal.matchers
+	org.junit.internal.requests
+	org.junit.internal.runners
+	org.junit.internal.runners.model
+	org.junit.internal.runners.rules
+	org.junit.internal.runners.statements
+	org.junit.matchers
+	org.junit.rules
+	org.junit.runner
+	org.junit.runner.manipulation
+	org.junit.runner.notification
+	org.junit.runners
+	org.junit.runners.model
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/com.ibm.ws.componenttest_1.0.50.jar
+	componenttest.app
+	componenttest.matchers
+	componenttest.serverinfo
+	componenttest.serverinfo.impl
+	junit.extensions
+	junit.framework
+	junit.runner
+	junit.textui
+	org.junit
+	org.junit.experimental
+	org.junit.experimental.categories
+	org.junit.experimental.max
+	org.junit.experimental.results
+	org.junit.experimental.runners
+	org.junit.experimental.theories
+	org.junit.experimental.theories.internal
+	org.junit.experimental.theories.suppliers
+	org.junit.internal
+	org.junit.internal.builders
+	org.junit.internal.matchers
+	org.junit.internal.requests
+	org.junit.internal.runners
+	org.junit.internal.runners.model
+	org.junit.internal.runners.rules
+	org.junit.internal.runners.statements
+	org.junit.matchers
+	org.junit.rules
+	org.junit.runner
+	org.junit.runner.manipulation
+	org.junit.runner.notification
+	org.junit.runners
+	org.junit.runners.model
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/com.ibm.ws.config_1.0.50.jar
+	org.eclipse.equinox.metatype.impl
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/com.ibm.ws.filetransfer.routing.archiveExpander_1.0.50.jar
+	org.apache.commons.compress.archivers
+	org.apache.commons.compress.compressors
+	org.apache.commons.compress.compressors.bzip2
+	org.apache.commons.compress.compressors.deflate64
+	org.apache.commons.compress.utils
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/com.ibm.ws.io.smallrye.graphql_1.0.50.jar
+	io.smallrye.graphql.execution.context
+	io.smallrye.graphql.servlet
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/com.ibm.ws.jaxb.tools.2.2.10_1.0.50.jar
+	com.sun.xml.bind
+	com.sun.xml.bind.api
+	com.sun.xml.bind.marshaller
+	com.sun.xml.bind.unmarshaller
+	com.sun.xml.bind.util
+	com.sun.xml.bind.v2
+	com.sun.xml.bind.v2.model.annotation
+	com.sun.xml.bind.v2.model.impl
+	com.sun.xml.bind.v2.runtime
+	com.sun.xml.bind.v2.runtime.unmarshaller
+	com.sun.xml.bind.v2.util
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/com.ibm.ws.jaxb.tools.2.3_1.0.50.jar
+	com.sun.xml.bind
+	com.sun.xml.bind.api
+	com.sun.xml.bind.marshaller
+	com.sun.xml.bind.unmarshaller
+	com.sun.xml.bind.util
+	com.sun.xml.bind.v2
+	com.sun.xml.bind.v2.model.annotation
+	com.sun.xml.bind.v2.model.impl
+	com.sun.xml.bind.v2.runtime
+	com.sun.xml.bind.v2.runtime.unmarshaller
+	com.sun.xml.bind.v2.util
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/com.ibm.ws.jaxrs.2.0.beanvalidation_1.0.50.jar
+	org.apache.cxf.validation
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/com.ibm.ws.jaxrs.2.0.common_1.0.50.jar
+	org.apache.cxf.attachment
+	org.apache.cxf.common.logging
+	org.apache.cxf.common.util
+	org.apache.cxf.helpers
+	org.apache.cxf.interceptor
+	org.apache.cxf.jaxrs
+	org.apache.cxf.jaxrs.blueprint
+	org.apache.cxf.jaxrs.client
+	org.apache.cxf.jaxrs.client.spec
+	org.apache.cxf.jaxrs.impl
+	org.apache.cxf.jaxrs.interceptor
+	org.apache.cxf.jaxrs.lifecycle
+	org.apache.cxf.jaxrs.model
+	org.apache.cxf.jaxrs.provider
+	org.apache.cxf.jaxrs.utils
+	org.apache.cxf.message
+	org.apache.cxf.service.factory
+	org.apache.cxf.service.model
+	org.apache.cxf.staxutils
+	org.apache.cxf.transport
+	org.apache.cxf.transport.http
+	org.apache.cxf.transport.http.osgi
+	org.apache.cxf.transport.https
+	org.apache.cxf.transports.http.configuration
+	org.codehaus.jackson.jaxrs
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/com.ibm.ws.jaxws.tools.2.2.10_1.0.50.jar
+	com.sun.tools.ws.wscompile
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/com.ibm.ws.jsf.2.2_1.0.50.jar
+	org.apache.myfaces.application
+	org.apache.myfaces.application.cdi
+	org.apache.myfaces.application.jsp
+	org.apache.myfaces.application.viewstate
+	org.apache.myfaces.cdi.dependent
+	org.apache.myfaces.cdi.impl
+	org.apache.myfaces.cdi.util
+	org.apache.myfaces.cdi.view
+	org.apache.myfaces.component
+	org.apache.myfaces.component.visit
+	org.apache.myfaces.config
+	org.apache.myfaces.config.annotation
+	org.apache.myfaces.config.element
+	org.apache.myfaces.config.element.facelets
+	org.apache.myfaces.config.impl
+	org.apache.myfaces.config.impl.digester
+	org.apache.myfaces.config.impl.digester.elements
+	org.apache.myfaces.config.impl.digester.elements.facelets
+	org.apache.myfaces.config.util
+	org.apache.myfaces.context
+	org.apache.myfaces.context.servlet
+	org.apache.myfaces.convert
+	org.apache.myfaces.debug
+	org.apache.myfaces.ee6
+	org.apache.myfaces.el
+	org.apache.myfaces.el.convert
+	org.apache.myfaces.el.unified
+	org.apache.myfaces.el.unified.resolver
+	org.apache.myfaces.el.unified.resolver.implicitobject
+	org.apache.myfaces.event
+	org.apache.myfaces.flow
+	org.apache.myfaces.flow.builder
+	org.apache.myfaces.flow.cdi
+	org.apache.myfaces.flow.impl
+	org.apache.myfaces.flow.util
+	org.apache.myfaces.lifecycle
+	org.apache.myfaces.logging
+	org.apache.myfaces.renderkit
+	org.apache.myfaces.resource
+	org.apache.myfaces.shared
+	org.apache.myfaces.shared.application
+	org.apache.myfaces.shared.component
+	org.apache.myfaces.shared.context
+	org.apache.myfaces.shared.context.flash
+	org.apache.myfaces.shared.el
+	org.apache.myfaces.shared.resource
+	org.apache.myfaces.shared.taglib
+	org.apache.myfaces.shared.taglib.core
+	org.apache.myfaces.shared.test
+	org.apache.myfaces.shared.trace
+	org.apache.myfaces.shared.util
+	org.apache.myfaces.shared.util.el
+	org.apache.myfaces.shared.util.io
+	org.apache.myfaces.shared.util.renderkit
+	org.apache.myfaces.shared.util.serial
+	org.apache.myfaces.shared.util.servlet
+	org.apache.myfaces.shared.util.xml
+	org.apache.myfaces.shared.view
+	org.apache.myfaces.shared.webapp.webxml
+	org.apache.myfaces.shared_impl.util.serial
+	org.apache.myfaces.shared_impl.webapp.webxml
+	org.apache.myfaces.spi
+	org.apache.myfaces.spi.impl
+	org.apache.myfaces.taglib.core
+	org.apache.myfaces.taglib.html
+	org.apache.myfaces.util
+	org.apache.myfaces.view
+	org.apache.myfaces.view.facelets
+	org.apache.myfaces.view.facelets.compiler
+	org.apache.myfaces.view.facelets.component
+	org.apache.myfaces.view.facelets.el
+	org.apache.myfaces.view.facelets.impl
+	org.apache.myfaces.view.facelets.pool
+	org.apache.myfaces.view.facelets.pool.impl
+	org.apache.myfaces.view.facelets.tag
+	org.apache.myfaces.view.facelets.tag.composite
+	org.apache.myfaces.view.facelets.tag.jsf
+	org.apache.myfaces.view.facelets.tag.jsf.core
+	org.apache.myfaces.view.facelets.tag.jsf.html
+	org.apache.myfaces.view.facelets.tag.jstl.core
+	org.apache.myfaces.view.facelets.tag.jstl.fn
+	org.apache.myfaces.view.facelets.tag.ui
+	org.apache.myfaces.view.facelets.util
+	org.apache.myfaces.view.impl
+	org.apache.myfaces.view.jsp
+	org.apache.myfaces.webapp
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/com.ibm.ws.jsp.2.3.jakarta_1.0.50.jar
+	org.apache.jasper
+	org.apache.jasper.el
+	org.apache.jasper.runtime
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/com.ibm.ws.jsp.2.3_1.0.50.jar
+	org.apache.jasper
+	org.apache.jasper.el
+	org.apache.jasper.runtime
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/com.ibm.ws.jsp.jakarta_1.0.50.jar
+	org.apache.jasper.compiler
+	org.apache.jasper.runtime
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/com.ibm.ws.jsp.jasper_1.0.50.jar
+	org.apache.jasper
+	org.apache.jasper.el
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/com.ibm.ws.jsp_1.0.50.jar
+	org.apache.jasper.compiler
+	org.apache.jasper.runtime
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/com.ibm.ws.kernel.boot_1.0.50.jar
+	org.osgi.framework
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/com.ibm.ws.kernel.cmdline_1.0.50.jar
+	org.osgi.framework
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/com.ibm.ws.kernel.feature_1.0.50.jar
+	wlp.lib.extract
+	wlp.lib.extract.platform
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/com.ibm.ws.microprofile.metrics.1.1.cdi_1.0.50.jar
+	io.astefanutti.metrics.cdi
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/com.ibm.ws.microprofile.metrics.cdi.2.0_1.0.50.jar
+	io.astefanutti.metrics.cdi20
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/com.ibm.ws.microprofile.metrics.cdi.2.3_1.0.50.jar
+	io.astefanutti.metrics.cdi23
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/com.ibm.ws.microprofile.metrics.cdi_1.0.50.jar
+	io.astefanutti.metrics.cdi
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/com.ibm.ws.org.apache.aries.util_1.0.50.jar
+	org.apache.aries.util.tracker
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/com.ibm.ws.org.apache.bval.1.1.0_1.0.50.jar
+	org.apache.bval.constraints
+	org.apache.bval.jsr303
+	org.apache.bval.jsr303.resolver
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/com.ibm.ws.org.apache.commons.fileupload.jakarta_1.0.50.jar
+	org.apache.commons.fileupload
+	org.apache.commons.fileupload.servlet
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/com.ibm.ws.org.apache.commons.logging.1.0.3_1.0.50.jar
+	org.apache.commons.logging
+	org.apache.commons.logging.impl
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/com.ibm.ws.org.apache.cxf.cxf.api.2.6.2_1.0.50.jar
+	org.apache.cxf.annotations
+	org.apache.cxf.attachment
+	org.apache.cxf.common.jaxb
+	org.apache.cxf.common.util
+	org.apache.cxf.configuration.jsse
+	org.apache.cxf.configuration.security
+	org.apache.cxf.configuration.spring
+	org.apache.cxf.helpers
+	org.apache.cxf.interceptor
+	org.apache.cxf.message
+	org.apache.cxf.phase
+	org.apache.cxf.resource
+	org.apache.cxf.staxutils
+	org.apache.cxf.transport
+	org.apache.cxf.ws.addressing
+	org.apache.cxf.ws.addressing.v200403
+	org.apache.cxf.ws.addressing.v200408
+	org.apache.cxf.ws.addressing.wsdl
+	org.apache.cxf.wsdl
+	org.apache.cxf.wsdl.http
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/com.ibm.ws.org.apache.cxf.cxf.core.3.2.jakarta_1.0.50.jar
+	org.apache.cxf.attachment
+	org.apache.cxf.binding
+	org.apache.cxf.bus.managers
+	org.apache.cxf.bus.osgi
+	org.apache.cxf.bus.resource
+	org.apache.cxf.catalog
+	org.apache.cxf.common.injection
+	org.apache.cxf.common.jaxb
+	org.apache.cxf.common.logging
+	org.apache.cxf.common.util
+	org.apache.cxf.configuration.blueprint
+	org.apache.cxf.configuration.jsse
+	org.apache.cxf.configuration.security
+	org.apache.cxf.configuration.spring
+	org.apache.cxf.databinding
+	org.apache.cxf.databinding.source
+	org.apache.cxf.endpoint
+	org.apache.cxf.feature
+	org.apache.cxf.helpers
+	org.apache.cxf.interceptor
+	org.apache.cxf.interceptor.security
+	org.apache.cxf.message
+	org.apache.cxf.service.factory
+	org.apache.cxf.service.invoker
+	org.apache.cxf.service.model
+	org.apache.cxf.staxutils
+	org.apache.cxf.transport
+	org.apache.cxf.validation
+	org.apache.cxf.ws.addressing
+	org.apache.cxf.ws.addressing.v200403
+	org.apache.cxf.ws.addressing.v200408
+	org.apache.cxf.ws.addressing.wsdl
+	org.apache.cxf.wsdl.http
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/com.ibm.ws.org.apache.cxf.cxf.core.3.2_1.0.50.jar
+	org.apache.cxf.bus.osgi
+	org.apache.cxf.common.jaxb
+	org.apache.cxf.common.logging
+	org.apache.cxf.common.util
+	org.apache.cxf.message
+	org.apache.cxf.service.invoker
+	org.apache.cxf.service.model
+	org.apache.cxf.staxutils
+	org.apache.cxf.transport
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/com.ibm.ws.org.apache.cxf.cxf.rt.bindings.soap.2.6.2_1.0.50.jar
+	org.apache.cxf.binding.soap.interceptor
+	org.apache.cxf.binding.soap.saaj
+	org.apache.cxf.binding.soap.tcp
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/com.ibm.ws.org.apache.cxf.cxf.rt.bindings.soap.3.2.jakarta_1.0.50.jar
+	org.apache.cxf.binding.soap
+	org.apache.cxf.binding.soap.interceptor
+	org.apache.cxf.binding.soap.jms.interceptor
+	org.apache.cxf.binding.soap.saaj
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/com.ibm.ws.org.apache.cxf.cxf.rt.bindings.soap.3.2_1.0.50.jar
+	org.apache.cxf.binding.soap
+	org.apache.cxf.binding.soap.interceptor
+	org.apache.cxf.binding.soap.saaj
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/com.ibm.ws.org.apache.cxf.cxf.rt.bindings.xml.3.2.jakarta_1.0.50.jar
+	org.apache.cxf.binding.xml.wsdl11
+	org.apache.cxf.bindings.xformat
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/com.ibm.ws.org.apache.cxf.cxf.rt.core.2.6.2_1.0.50.jar
+	org.apache.cxf.bus.osgi
+	org.apache.cxf.databinding.source
+	org.apache.cxf.service.factory
+	org.apache.cxf.wsdl11
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/com.ibm.ws.org.apache.cxf.cxf.rt.databinding.jaxb.2.6.2_1.0.50.jar
+	org.apache.cxf.jaxb
+	org.apache.cxf.jaxb.io
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/com.ibm.ws.org.apache.cxf.cxf.rt.databinding.jaxb.3.2.jakarta_1.0.50.jar
+	org.apache.cxf.jaxb
+	org.apache.cxf.jaxb.attachment
+	org.apache.cxf.jaxb.io
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxrs.3.2_1.0.50.jar
+	org.apache.cxf.jaxrs
+	org.apache.cxf.jaxrs.blueprint
+	org.apache.cxf.jaxrs.impl
+	org.apache.cxf.jaxrs.interceptor
+	org.apache.cxf.jaxrs.lifecycle
+	org.apache.cxf.jaxrs.model
+	org.apache.cxf.jaxrs.provider
+	org.apache.cxf.jaxrs.utils
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxws.2.6.2_1.0.50.jar
+	org.apache.cxf.jaxws
+	org.apache.cxf.jaxws.context
+	org.apache.cxf.jaxws.handler
+	org.apache.cxf.jaxws.handler.logical
+	org.apache.cxf.jaxws.handler.soap
+	org.apache.cxf.jaxws.interceptors
+	org.apache.cxf.jaxws.spi
+	org.apache.cxf.jaxws.support
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxws.3.2.jakarta_1.0.50.jar
+	org.apache.cxf.jaxws
+	org.apache.cxf.jaxws.binding
+	org.apache.cxf.jaxws.binding.http
+	org.apache.cxf.jaxws.binding.soap
+	org.apache.cxf.jaxws.context
+	org.apache.cxf.jaxws.handler
+	org.apache.cxf.jaxws.handler.logical
+	org.apache.cxf.jaxws.handler.soap
+	org.apache.cxf.jaxws.handler.types
+	org.apache.cxf.jaxws.interceptors
+	org.apache.cxf.jaxws.spi
+	org.apache.cxf.jaxws.spring
+	org.apache.cxf.jaxws.support
+	org.apache.cxf.jaxws22
+	org.apache.cxf.jaxws30.handler.types
+	org.apache.cxf.transport.http_jaxws_spi
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxws.3.2_1.0.50.jar
+	org.apache.cxf.jaxws
+	org.apache.cxf.jaxws.handler.soap
+	org.apache.cxf.jaxws.interceptors
+	org.apache.cxf.jaxws30.handler.types
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/com.ibm.ws.org.apache.cxf.cxf.rt.frontend.simple.2.6.2_1.0.50.jar
+	org.apache.cxf.frontend
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/com.ibm.ws.org.apache.cxf.cxf.rt.frontend.simple.3.2.jakarta_1.0.50.jar
+	org.apache.cxf.endpoint.dynamic
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/com.ibm.ws.org.apache.cxf.cxf.rt.management.3.2.jakarta_1.0.50.jar
+	org.apache.cxf.management.jmx
+	org.apache.cxf.management.jmx.type
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/com.ibm.ws.org.apache.cxf.cxf.rt.rs.client.3.2_1.0.50.jar
+	org.apache.cxf.jaxrs.client
+	org.apache.cxf.jaxrs.client.spec
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/com.ibm.ws.org.apache.cxf.cxf.rt.rs.mp.client.3.2_1.0.50.jar
+	org.apache.cxf.microprofile.client
+	org.apache.cxf.microprofile.client.cdi
+	org.apache.cxf.microprofile.client.proxy
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/com.ibm.ws.org.apache.cxf.cxf.rt.rs.mp.client.3.3_1.0.50.jar
+	org.apache.cxf.microprofile.client
+	org.apache.cxf.microprofile.client.cdi
+	org.apache.cxf.microprofile.client.sse
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/com.ibm.ws.org.apache.cxf.cxf.rt.rs.sse.3.2_1.0.50.jar
+	org.apache.cxf.jaxrs.sse
+	org.apache.cxf.jaxrs.sse.client
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.2.6.2_1.0.50.jar
+	org.apache.cxf.transport.commons_text
+	org.apache.cxf.transport.http
+	org.apache.cxf.transport.http.osgi
+	org.apache.cxf.transport.http.policy.impl
+	org.apache.cxf.transport.https
+	org.apache.cxf.transport.servlet
+	org.apache.cxf.transport.servlet.servicelist
+	org.apache.cxf.transports.http.configuration
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.3.2.jakarta_1.0.50.jar
+	org.apache.cxf.transport.http
+	org.apache.cxf.transport.http.auth
+	org.apache.cxf.transport.http.osgi
+	org.apache.cxf.transport.http.policy
+	org.apache.cxf.transport.http.policy.impl
+	org.apache.cxf.transport.servlet
+	org.apache.cxf.transport.servlet.blueprint
+	org.apache.cxf.transport.servlet.servicelist
+	org.apache.cxf.transports.http.configuration
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.3.2_1.0.50.jar
+	org.apache.cxf.transport.http
+	org.apache.cxf.transports.http.configuration
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.hc.3.2.jakarta_1.0.50.jar
+	org.apache.cxf.transport.http.asyncclient
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.hc.3.2_1.0.50.jar
+	org.apache.cxf.transport.http.asyncclient
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/com.ibm.ws.org.apache.cxf.cxf.rt.ws.addr.3.2.jakarta_1.0.50.jar
+	org.apache.cxf.ws.addressing.impl
+	org.apache.cxf.ws.addressing.soap
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/com.ibm.ws.org.apache.cxf.cxf.rt.ws.policy.2.6.2_1.0.50.jar
+	org.apache.cxf.ws.policy
+	org.apache.cxf.ws.policy.attachment.external
+	org.apache.cxf.ws.policy.attachment.wsdl11
+	org.apache.cxf.ws.policy.blueprint
+	org.apache.cxf.ws.policy.builder.primitive
+	org.apache.cxf.ws.policy.v200409
+	org.apache.cxf.ws.policy.v200607
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/com.ibm.ws.org.apache.cxf.cxf.rt.ws.policy.3.2.jakarta_1.0.50.jar
+	org.apache.cxf.ws.policy
+	org.apache.cxf.ws.policy.attachment.external
+	org.apache.cxf.ws.policy.builder.jaxb
+	org.apache.cxf.ws.policy.v200409
+	org.apache.cxf.ws.policy.v200607
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/com.ibm.ws.org.apache.cxf.cxf.rt.wsdl.3.2.jakarta_1.0.50.jar
+	org.apache.cxf.wsdl
+	org.apache.cxf.wsdl.service.factory
+	org.apache.cxf.wsdl11
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/com.ibm.ws.org.apache.cxf.cxf.tools.common.3.2.jakarta_1.0.50.jar
+	org.apache.cxf.tools.common
+	org.apache.cxf.tools.common.model
+	org.apache.cxf.tools.util
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/com.ibm.ws.org.apache.cxf.cxf.tools.validator.3.2.jakarta_1.0.50.jar
+	org.apache.cxf.tools.validator.internal
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/com.ibm.ws.org.apache.cxf.rt.ws.security.3.4.1_1.0.50.jar
+	org.apache.cxf.ws.security.cache
+	org.apache.cxf.ws.security.wss4j
+	org.apache.cxf.ws.security.wss4j.policyhandlers
+	org.apache.cxf.ws.security.wss4j.policyvalidators
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/com.ibm.ws.org.apache.cxf.ws.security.2.6.2_1.0.50.jar
+	org.apache.cxf.ws.security.cache
+	org.apache.cxf.ws.security.policy
+	org.apache.cxf.ws.security.policy.interceptors
+	org.apache.cxf.ws.security.policy.model
+	org.apache.cxf.ws.security.wss4j
+	org.apache.cxf.ws.security.wss4j.policyhandlers
+	org.apache.cxf.ws.security.wss4j.policyvalidators
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/com.ibm.ws.org.apache.jasper.el.2.2_1.0.50.jar
+	org.apache.el.lang
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/com.ibm.ws.org.apache.jasper.el.3.0_3.0.50.jar
+	org.apache.el
+	org.apache.el.lang
+	org.apache.el.parser
+	org.apache.el.stream
+	org.apache.el.util
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/com.ibm.ws.org.apache.wss4j.ws.security.common.2.3.0_1.0.50.jar
+	org.apache.wss4j.common.crypto
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/com.ibm.ws.org.apache.yoko.corba.spec.1.5_1.0.50.jar
+	org.omg.CORBA
+	org.omg.CORBA_2_3.portable
+	org.omg.CosNaming
+	org.omg.DynamicAny
+	org.omg.PortableServer
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/com.ibm.ws.org.apache.yoko.rmi.spec.1.5_1.0.50.jar
+	javax.rmi
+	javax.rmi.CORBA
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/com.ibm.ws.org.eclipse.equinox.console_1.0.50.jar
+	org.eclipse.equinox.console.command.adapter
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/com.ibm.ws.org.glassfish.json.1.1.jakarta_1.0.50.jar
+	org.glassfish.json
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/com.ibm.ws.org.jboss.weld.2.4.8_1.0.50.jar
+	org.jboss.weldx.transaction
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/com.ibm.ws.org.jboss.weld3_1.0.50.jar
+	org.jboss.weldx.transaction
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/com.ibm.ws.org.openid4java.0.9.7_1.0.50.jar
+	org.openid4java.consumer
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/com.ibm.ws.org.opensaml.opensaml.2.6.1.jakarta_1.0.50.jar
+	org.opensaml.common.binding.decoding
+	org.opensaml.common.binding.security
+	org.opensaml.saml2.binding.decoding
+	org.opensaml.saml2.binding.security
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/com.ibm.ws.org.opensaml.opensaml.2.6.1_1.0.50.jar
+	org.opensaml.saml2.binding.decoding
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/com.ibm.ws.org.opensaml.openws.1.5.6.jakarta_1.0.50.jar
+	org.opensaml.ws.security
+	org.opensaml.ws.transport.http
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/com.ibm.ws.org.opensaml.xmltooling.1.4.4_1.0.50.jar
+	org.opensaml.xml.security.x509
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/com.ibm.ws.security.acme_1.0.50.jar
+	org.shredzone.acme4j.connector
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/com.ibm.ws.security.registry_test.servlet_1.0.50.jar
+	web
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/com.ibm.ws.security.wim.repository_test.custom_1.0.50.jar
+	com.myorg
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/io.openliberty.grpc.1.0.internal.common_1.0.50.jar
+	io.grpc
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/io.openliberty.grpc.1.0.internal_1.0.50.jar
+	io.grpc.servlet
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/io.openliberty.microprofile.metrics.internal.cdi.3.0_1.0.50.jar
+	io.astefanutti.metrics.cdi30
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/io.openliberty.org.apache.jasper.expressionLanguage.4.0_1.0.50.jar
+	org.apache.el.lang
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/io.openliberty.org.jboss.narayana.rts.lra-coordinator_5.10.6.jar
+	WEB-INF.classes.com.arjuna.ats.arjuna
+	WEB-INF.classes.com.arjuna.ats.arjuna.common
+	WEB-INF.classes.com.arjuna.ats.arjuna.coordinator
+	WEB-INF.classes.com.arjuna.ats.arjuna.coordinator.abstractrecord
+	WEB-INF.classes.com.arjuna.ats.arjuna.coordinator.internal
+	WEB-INF.classes.com.arjuna.ats.arjuna.coordinator.listener
+	WEB-INF.classes.com.arjuna.ats.arjuna.exceptions
+	WEB-INF.classes.com.arjuna.ats.arjuna.logging
+	WEB-INF.classes.com.arjuna.ats.arjuna.objectstore
+	WEB-INF.classes.com.arjuna.ats.arjuna.objectstore.jdbc
+	WEB-INF.classes.com.arjuna.ats.arjuna.recovery
+	WEB-INF.classes.com.arjuna.ats.arjuna.state
+	WEB-INF.classes.com.arjuna.ats.arjuna.tools
+	WEB-INF.classes.com.arjuna.ats.arjuna.tools.log
+	WEB-INF.classes.com.arjuna.ats.arjuna.tools.osb.annotation
+	WEB-INF.classes.com.arjuna.ats.arjuna.tools.osb.api.mbeans
+	WEB-INF.classes.com.arjuna.ats.arjuna.tools.osb.api.proxy
+	WEB-INF.classes.com.arjuna.ats.arjuna.tools.osb.mbean
+	WEB-INF.classes.com.arjuna.ats.arjuna.tools.osb.util
+	WEB-INF.classes.com.arjuna.ats.arjuna.tools.stats
+	WEB-INF.classes.com.arjuna.ats.arjuna.utils
+	WEB-INF.classes.com.arjuna.ats.internal.arjuna
+	WEB-INF.classes.com.arjuna.ats.internal.arjuna.abstractrecords
+	WEB-INF.classes.com.arjuna.ats.internal.arjuna.common
+	WEB-INF.classes.com.arjuna.ats.internal.arjuna.coordinator
+	WEB-INF.classes.com.arjuna.ats.internal.arjuna.objectstore
+	WEB-INF.classes.com.arjuna.ats.internal.arjuna.objectstore.hornetq
+	WEB-INF.classes.com.arjuna.ats.internal.arjuna.objectstore.jdbc
+	WEB-INF.classes.com.arjuna.ats.internal.arjuna.objectstore.jdbc.accessors
+	WEB-INF.classes.com.arjuna.ats.internal.arjuna.objectstore.jdbc.drivers
+	WEB-INF.classes.com.arjuna.ats.internal.arjuna.objectstore.slot
+	WEB-INF.classes.com.arjuna.ats.internal.arjuna.recovery
+	WEB-INF.classes.com.arjuna.ats.internal.arjuna.thread
+	WEB-INF.classes.com.arjuna.ats.internal.arjuna.tools.log
+	WEB-INF.classes.com.arjuna.ats.internal.arjuna.utils
+	WEB-INF.classes.com.arjuna.common.internal.util
+	WEB-INF.classes.com.arjuna.common.internal.util.propertyservice
+	WEB-INF.classes.com.arjuna.common.logging
+	WEB-INF.classes.com.arjuna.common.util
+	WEB-INF.classes.com.arjuna.common.util.propertyservice
+	WEB-INF.classes.io.narayana.lra
+	WEB-INF.classes.io.narayana.lra.coordinator.api
+	WEB-INF.classes.io.narayana.lra.coordinator.domain.model
+	WEB-INF.classes.io.narayana.lra.coordinator.domain.service
+	WEB-INF.classes.io.narayana.lra.coordinator.internal
+	WEB-INF.classes.io.narayana.lra.logging
+	WEB-INF.classes.org.apache.commons.logging
+	WEB-INF.classes.org.apache.commons.logging.impl
+	WEB-INF.classes.org.apache.harmony.math.internal.nls
+	WEB-INF.classes.org.apache.html.dom
+	WEB-INF.classes.org.apache.http
+	WEB-INF.classes.org.apache.http.annotation
+	WEB-INF.classes.org.apache.http.auth
+	WEB-INF.classes.org.apache.http.auth.params
+	WEB-INF.classes.org.apache.http.client
+	WEB-INF.classes.org.apache.http.client.config
+	WEB-INF.classes.org.apache.http.client.entity
+	WEB-INF.classes.org.apache.http.client.methods
+	WEB-INF.classes.org.apache.http.client.params
+	WEB-INF.classes.org.apache.http.client.protocol
+	WEB-INF.classes.org.apache.http.client.utils
+	WEB-INF.classes.org.apache.http.concurrent
+	WEB-INF.classes.org.apache.http.config
+	WEB-INF.classes.org.apache.http.conn
+	WEB-INF.classes.org.apache.http.conn.params
+	WEB-INF.classes.org.apache.http.conn.routing
+	WEB-INF.classes.org.apache.http.conn.scheme
+	WEB-INF.classes.org.apache.http.conn.socket
+	WEB-INF.classes.org.apache.http.conn.ssl
+	WEB-INF.classes.org.apache.http.conn.util
+	WEB-INF.classes.org.apache.http.cookie
+	WEB-INF.classes.org.apache.http.cookie.params
+	WEB-INF.classes.org.apache.http.entity
+	WEB-INF.classes.org.apache.http.impl
+	WEB-INF.classes.org.apache.http.impl.auth
+	WEB-INF.classes.org.apache.http.impl.bootstrap
+	WEB-INF.classes.org.apache.http.impl.client
+	WEB-INF.classes.org.apache.http.impl.conn
+	WEB-INF.classes.org.apache.http.impl.conn.tsccm
+	WEB-INF.classes.org.apache.http.impl.cookie
+	WEB-INF.classes.org.apache.http.impl.entity
+	WEB-INF.classes.org.apache.http.impl.execchain
+	WEB-INF.classes.org.apache.http.impl.io
+	WEB-INF.classes.org.apache.http.impl.nio
+	WEB-INF.classes.org.apache.http.impl.nio.bootstrap
+	WEB-INF.classes.org.apache.http.impl.nio.client
+	WEB-INF.classes.org.apache.http.impl.nio.codecs
+	WEB-INF.classes.org.apache.http.impl.nio.conn
+	WEB-INF.classes.org.apache.http.impl.nio.pool
+	WEB-INF.classes.org.apache.http.impl.nio.reactor
+	WEB-INF.classes.org.apache.http.impl.nio.ssl
+	WEB-INF.classes.org.apache.http.impl.pool
+	WEB-INF.classes.org.apache.http.io
+	WEB-INF.classes.org.apache.http.message
+	WEB-INF.classes.org.apache.http.nio
+	WEB-INF.classes.org.apache.http.nio.client
+	WEB-INF.classes.org.apache.http.nio.client.methods
+	WEB-INF.classes.org.apache.http.nio.client.util
+	WEB-INF.classes.org.apache.http.nio.conn
+	WEB-INF.classes.org.apache.http.nio.conn.scheme
+	WEB-INF.classes.org.apache.http.nio.conn.ssl
+	WEB-INF.classes.org.apache.http.nio.entity
+	WEB-INF.classes.org.apache.http.nio.params
+	WEB-INF.classes.org.apache.http.nio.pool
+	WEB-INF.classes.org.apache.http.nio.protocol
+	WEB-INF.classes.org.apache.http.nio.reactor
+	WEB-INF.classes.org.apache.http.nio.reactor.ssl
+	WEB-INF.classes.org.apache.http.nio.util
+	WEB-INF.classes.org.apache.http.params
+	WEB-INF.classes.org.apache.http.pool
+	WEB-INF.classes.org.apache.http.protocol
+	WEB-INF.classes.org.apache.http.ssl
+	WEB-INF.classes.org.apache.http.util
+	WEB-INF.classes.org.apache.wml
+	WEB-INF.classes.org.apache.wml.dom
+	WEB-INF.classes.org.apache.xalan
+	WEB-INF.classes.org.apache.xalan.client
+	WEB-INF.classes.org.apache.xalan.extensions
+	WEB-INF.classes.org.apache.xalan.lib
+	WEB-INF.classes.org.apache.xalan.lib.sql
+	WEB-INF.classes.org.apache.xalan.processor
+	WEB-INF.classes.org.apache.xalan.res
+	WEB-INF.classes.org.apache.xalan.serialize
+	WEB-INF.classes.org.apache.xalan.templates
+	WEB-INF.classes.org.apache.xalan.trace
+	WEB-INF.classes.org.apache.xalan.transformer
+	WEB-INF.classes.org.apache.xalan.xslt
+	WEB-INF.classes.org.apache.xalan.xsltc.cmdline
+	WEB-INF.classes.org.apache.xalan.xsltc.cmdline.getopt
+	WEB-INF.classes.org.apache.xalan.xsltc.cmdline.res
+	WEB-INF.classes.org.apache.xerces.dom
+	WEB-INF.classes.org.apache.xerces.dom.events
+	WEB-INF.classes.org.apache.xerces.dom3.as
+	WEB-INF.classes.org.apache.xerces.impl
+	WEB-INF.classes.org.apache.xerces.impl.dtd
+	WEB-INF.classes.org.apache.xerces.impl.dtd.models
+	WEB-INF.classes.org.apache.xerces.impl.dv
+	WEB-INF.classes.org.apache.xerces.impl.dv.dtd
+	WEB-INF.classes.org.apache.xerces.impl.dv.util
+	WEB-INF.classes.org.apache.xerces.impl.dv.xs
+	WEB-INF.classes.org.apache.xerces.impl.io
+	WEB-INF.classes.org.apache.xerces.impl.msg
+	WEB-INF.classes.org.apache.xerces.impl.validation
+	WEB-INF.classes.org.apache.xerces.impl.xpath
+	WEB-INF.classes.org.apache.xerces.impl.xpath.regex
+	WEB-INF.classes.org.apache.xerces.impl.xs
+	WEB-INF.classes.org.apache.xerces.impl.xs.identity
+	WEB-INF.classes.org.apache.xerces.impl.xs.models
+	WEB-INF.classes.org.apache.xerces.impl.xs.opti
+	WEB-INF.classes.org.apache.xerces.impl.xs.traversers
+	WEB-INF.classes.org.apache.xerces.impl.xs.util
+	WEB-INF.classes.org.apache.xerces.jaxp
+	WEB-INF.classes.org.apache.xerces.jaxp.datatype
+	WEB-INF.classes.org.apache.xerces.jaxp.validation
+	WEB-INF.classes.org.apache.xerces.parsers
+	WEB-INF.classes.org.apache.xerces.util
+	WEB-INF.classes.org.apache.xerces.xinclude
+	WEB-INF.classes.org.apache.xerces.xni
+	WEB-INF.classes.org.apache.xerces.xni.grammars
+	WEB-INF.classes.org.apache.xerces.xni.parser
+	WEB-INF.classes.org.apache.xerces.xpointer
+	WEB-INF.classes.org.apache.xerces.xs
+	WEB-INF.classes.org.apache.xerces.xs.datatypes
+	WEB-INF.classes.org.apache.xml.dtm
+	WEB-INF.classes.org.apache.xml.dtm.ref
+	WEB-INF.classes.org.apache.xml.dtm.ref.dom2dtm
+	WEB-INF.classes.org.apache.xml.dtm.ref.sax2dtm
+	WEB-INF.classes.org.apache.xml.res
+	WEB-INF.classes.org.apache.xml.serialize
+	WEB-INF.classes.org.apache.xml.serializer
+	WEB-INF.classes.org.apache.xml.serializer.charmap
+	WEB-INF.classes.org.apache.xml.serializer.dom3
+	WEB-INF.classes.org.apache.xml.serializer.unicode
+	WEB-INF.classes.org.apache.xml.serializer.utils
+	WEB-INF.classes.org.apache.xml.utils
+	WEB-INF.classes.org.apache.xml.utils.res
+	WEB-INF.classes.org.apache.xmlcommons
+	WEB-INF.classes.org.apache.xpath
+	WEB-INF.classes.org.apache.xpath.axes
+	WEB-INF.classes.org.apache.xpath.compiler
+	WEB-INF.classes.org.apache.xpath.domapi
+	WEB-INF.classes.org.apache.xpath.functions
+	WEB-INF.classes.org.apache.xpath.jaxp
+	WEB-INF.classes.org.apache.xpath.objects
+	WEB-INF.classes.org.apache.xpath.operations
+	WEB-INF.classes.org.apache.xpath.patterns
+	WEB-INF.classes.org.apache.xpath.res
+	WEB-INF.classes.org.jboss.logging
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/io.openliberty.org.jboss.resteasy.common.jakarta_1.0.50.jar
+	org.jboss.resteasy.api.validation
+	org.jboss.resteasy.client.jaxrs
+	org.jboss.resteasy.client.jaxrs.cache
+	org.jboss.resteasy.client.jaxrs.engines
+	org.jboss.resteasy.client.jaxrs.i18n
+	org.jboss.resteasy.client.jaxrs.internal
+	org.jboss.resteasy.client.jaxrs.internal.proxy
+	org.jboss.resteasy.client.jaxrs.internal.proxy.extractors
+	org.jboss.resteasy.client.jaxrs.internal.proxy.processors
+	org.jboss.resteasy.client.jaxrs.internal.proxy.processors.invocation
+	org.jboss.resteasy.client.jaxrs.internal.proxy.processors.webtarget
+	org.jboss.resteasy.core
+	org.jboss.resteasy.core.interception.jaxrs
+	org.jboss.resteasy.core.messagebody
+	org.jboss.resteasy.core.providerfactory
+	org.jboss.resteasy.core.registry
+	org.jboss.resteasy.core.request
+	org.jboss.resteasy.microprofile.config
+	org.jboss.resteasy.mock
+	org.jboss.resteasy.plugins.delegates
+	org.jboss.resteasy.plugins.interceptors
+	org.jboss.resteasy.plugins.providers
+	org.jboss.resteasy.plugins.providers.multipart
+	org.jboss.resteasy.plugins.providers.multipart.i18n
+	org.jboss.resteasy.plugins.providers.sse
+	org.jboss.resteasy.plugins.providers.sse.client
+	org.jboss.resteasy.plugins.server
+	org.jboss.resteasy.plugins.server.servlet
+	org.jboss.resteasy.plugins.touri
+	org.jboss.resteasy.resteasy_jaxrs.i18n
+	org.jboss.resteasy.specimpl
+	org.jboss.resteasy.spi
+	org.jboss.resteasy.spi.metadata
+	org.jboss.resteasy.spi.util
+	org.jboss.resteasy.test
+	org.jboss.resteasy.tracing
+	org.jboss.resteasy.util
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/io.openliberty.org.jboss.resteasy.common_1.0.50.jar
+	org.jboss.resteasy.client.jaxrs.engines
+	org.jboss.resteasy.core
+	org.jboss.resteasy.microprofile.config
+	org.jboss.resteasy.plugins.providers.multipart
+	org.jboss.resteasy.plugins.server.servlet
+	org.jboss.resteasy.util
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/io.openliberty.org.jboss.resteasy.jaxb.provider.jakarta_1.0.50.jar
+	org.jboss.resteasy.annotations.providers.jaxb
+	org.jboss.resteasy.plugins.providers.jaxb
+	org.jboss.resteasy.plugins.providers.jaxb.i18n
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/io.openliberty.org.jboss.resteasy.server.jakarta_1.0.50.jar
+	org.jboss.resteasy.cdi
+	org.jboss.resteasy.cdi.i18n
+	org.jboss.resteasy.plugins.servlet
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/io.openliberty.org.jboss.resteasy.validator.provider.jakarta_1.0.50.jar
+	org.jboss.resteasy.plugins.validation
+	org.jboss.resteasy.plugins.validation.i18n
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/io.openliberty.org.jboss.resteasy.validator.provider_1.0.50.jar
+	org.jboss.resteasy.plugins.validation
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/io.openliberty.xmlBinding.3.0.internal.tools_1.0.50.jar
+	com.sun.istack.internal
+	com.sun.istack.internal.localization
+	com.sun.istack.internal.logging
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/io.openliberty.xmlWS.3.0.internal.tools_1.0.50.jar
+	com.sun.tools.ws.ant
+	com.sun.tools.ws.wscompile
+/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp/lib/mpLRACoordinator_5.10.6.jar
+	WEB-INF.classes.com.arjuna.ats.arjuna
+	WEB-INF.classes.com.arjuna.ats.arjuna.common
+	WEB-INF.classes.com.arjuna.ats.arjuna.coordinator
+	WEB-INF.classes.com.arjuna.ats.arjuna.coordinator.abstractrecord
+	WEB-INF.classes.com.arjuna.ats.arjuna.coordinator.internal
+	WEB-INF.classes.com.arjuna.ats.arjuna.coordinator.listener
+	WEB-INF.classes.com.arjuna.ats.arjuna.exceptions
+	WEB-INF.classes.com.arjuna.ats.arjuna.logging
+	WEB-INF.classes.com.arjuna.ats.arjuna.objectstore
+	WEB-INF.classes.com.arjuna.ats.arjuna.objectstore.jdbc
+	WEB-INF.classes.com.arjuna.ats.arjuna.recovery
+	WEB-INF.classes.com.arjuna.ats.arjuna.state
+	WEB-INF.classes.com.arjuna.ats.arjuna.tools
+	WEB-INF.classes.com.arjuna.ats.arjuna.tools.log
+	WEB-INF.classes.com.arjuna.ats.arjuna.tools.osb.annotation
+	WEB-INF.classes.com.arjuna.ats.arjuna.tools.osb.api.mbeans
+	WEB-INF.classes.com.arjuna.ats.arjuna.tools.osb.api.proxy
+	WEB-INF.classes.com.arjuna.ats.arjuna.tools.osb.mbean
+	WEB-INF.classes.com.arjuna.ats.arjuna.tools.osb.util
+	WEB-INF.classes.com.arjuna.ats.arjuna.tools.stats
+	WEB-INF.classes.com.arjuna.ats.arjuna.utils
+	WEB-INF.classes.com.arjuna.ats.internal.arjuna
+	WEB-INF.classes.com.arjuna.ats.internal.arjuna.abstractrecords
+	WEB-INF.classes.com.arjuna.ats.internal.arjuna.common
+	WEB-INF.classes.com.arjuna.ats.internal.arjuna.coordinator
+	WEB-INF.classes.com.arjuna.ats.internal.arjuna.objectstore
+	WEB-INF.classes.com.arjuna.ats.internal.arjuna.objectstore.hornetq
+	WEB-INF.classes.com.arjuna.ats.internal.arjuna.objectstore.jdbc
+	WEB-INF.classes.com.arjuna.ats.internal.arjuna.objectstore.jdbc.accessors
+	WEB-INF.classes.com.arjuna.ats.internal.arjuna.objectstore.jdbc.drivers
+	WEB-INF.classes.com.arjuna.ats.internal.arjuna.objectstore.slot
+	WEB-INF.classes.com.arjuna.ats.internal.arjuna.recovery
+	WEB-INF.classes.com.arjuna.ats.internal.arjuna.thread
+	WEB-INF.classes.com.arjuna.ats.internal.arjuna.tools.log
+	WEB-INF.classes.com.arjuna.ats.internal.arjuna.utils
+	WEB-INF.classes.com.arjuna.common.internal.util
+	WEB-INF.classes.com.arjuna.common.internal.util.propertyservice
+	WEB-INF.classes.com.arjuna.common.logging
+	WEB-INF.classes.com.arjuna.common.util
+	WEB-INF.classes.com.arjuna.common.util.propertyservice
+	WEB-INF.classes.io.narayana.lra
+	WEB-INF.classes.io.narayana.lra.coordinator.api
+	WEB-INF.classes.io.narayana.lra.coordinator.domain.model
+	WEB-INF.classes.io.narayana.lra.coordinator.domain.service
+	WEB-INF.classes.io.narayana.lra.coordinator.internal
+	WEB-INF.classes.io.narayana.lra.logging
+	WEB-INF.classes.org.apache.commons.logging
+	WEB-INF.classes.org.apache.commons.logging.impl
+	WEB-INF.classes.org.apache.harmony.math.internal.nls
+	WEB-INF.classes.org.apache.html.dom
+	WEB-INF.classes.org.apache.http
+	WEB-INF.classes.org.apache.http.annotation
+	WEB-INF.classes.org.apache.http.auth
+	WEB-INF.classes.org.apache.http.auth.params
+	WEB-INF.classes.org.apache.http.client
+	WEB-INF.classes.org.apache.http.client.config
+	WEB-INF.classes.org.apache.http.client.entity
+	WEB-INF.classes.org.apache.http.client.methods
+	WEB-INF.classes.org.apache.http.client.params
+	WEB-INF.classes.org.apache.http.client.protocol
+	WEB-INF.classes.org.apache.http.client.utils
+	WEB-INF.classes.org.apache.http.concurrent
+	WEB-INF.classes.org.apache.http.config
+	WEB-INF.classes.org.apache.http.conn
+	WEB-INF.classes.org.apache.http.conn.params
+	WEB-INF.classes.org.apache.http.conn.routing
+	WEB-INF.classes.org.apache.http.conn.scheme
+	WEB-INF.classes.org.apache.http.conn.socket
+	WEB-INF.classes.org.apache.http.conn.ssl
+	WEB-INF.classes.org.apache.http.conn.util
+	WEB-INF.classes.org.apache.http.cookie
+	WEB-INF.classes.org.apache.http.cookie.params
+	WEB-INF.classes.org.apache.http.entity
+	WEB-INF.classes.org.apache.http.impl
+	WEB-INF.classes.org.apache.http.impl.auth
+	WEB-INF.classes.org.apache.http.impl.bootstrap
+	WEB-INF.classes.org.apache.http.impl.client
+	WEB-INF.classes.org.apache.http.impl.conn
+	WEB-INF.classes.org.apache.http.impl.conn.tsccm
+	WEB-INF.classes.org.apache.http.impl.cookie
+	WEB-INF.classes.org.apache.http.impl.entity
+	WEB-INF.classes.org.apache.http.impl.execchain
+	WEB-INF.classes.org.apache.http.impl.io
+	WEB-INF.classes.org.apache.http.impl.nio
+	WEB-INF.classes.org.apache.http.impl.nio.bootstrap
+	WEB-INF.classes.org.apache.http.impl.nio.client
+	WEB-INF.classes.org.apache.http.impl.nio.codecs
+	WEB-INF.classes.org.apache.http.impl.nio.conn
+	WEB-INF.classes.org.apache.http.impl.nio.pool
+	WEB-INF.classes.org.apache.http.impl.nio.reactor
+	WEB-INF.classes.org.apache.http.impl.nio.ssl
+	WEB-INF.classes.org.apache.http.impl.pool
+	WEB-INF.classes.org.apache.http.io
+	WEB-INF.classes.org.apache.http.message
+	WEB-INF.classes.org.apache.http.nio
+	WEB-INF.classes.org.apache.http.nio.client
+	WEB-INF.classes.org.apache.http.nio.client.methods
+	WEB-INF.classes.org.apache.http.nio.client.util
+	WEB-INF.classes.org.apache.http.nio.conn
+	WEB-INF.classes.org.apache.http.nio.conn.scheme
+	WEB-INF.classes.org.apache.http.nio.conn.ssl
+	WEB-INF.classes.org.apache.http.nio.entity
+	WEB-INF.classes.org.apache.http.nio.params
+	WEB-INF.classes.org.apache.http.nio.pool
+	WEB-INF.classes.org.apache.http.nio.protocol
+	WEB-INF.classes.org.apache.http.nio.reactor
+	WEB-INF.classes.org.apache.http.nio.reactor.ssl
+	WEB-INF.classes.org.apache.http.nio.util
+	WEB-INF.classes.org.apache.http.params
+	WEB-INF.classes.org.apache.http.pool
+	WEB-INF.classes.org.apache.http.protocol
+	WEB-INF.classes.org.apache.http.ssl
+	WEB-INF.classes.org.apache.http.util
+	WEB-INF.classes.org.apache.wml
+	WEB-INF.classes.org.apache.wml.dom
+	WEB-INF.classes.org.apache.xalan
+	WEB-INF.classes.org.apache.xalan.client
+	WEB-INF.classes.org.apache.xalan.extensions
+	WEB-INF.classes.org.apache.xalan.lib
+	WEB-INF.classes.org.apache.xalan.lib.sql
+	WEB-INF.classes.org.apache.xalan.processor
+	WEB-INF.classes.org.apache.xalan.res
+	WEB-INF.classes.org.apache.xalan.serialize
+	WEB-INF.classes.org.apache.xalan.templates
+	WEB-INF.classes.org.apache.xalan.trace
+	WEB-INF.classes.org.apache.xalan.transformer
+	WEB-INF.classes.org.apache.xalan.xslt
+	WEB-INF.classes.org.apache.xalan.xsltc.cmdline
+	WEB-INF.classes.org.apache.xalan.xsltc.cmdline.getopt
+	WEB-INF.classes.org.apache.xalan.xsltc.cmdline.res
+	WEB-INF.classes.org.apache.xerces.dom
+	WEB-INF.classes.org.apache.xerces.dom.events
+	WEB-INF.classes.org.apache.xerces.dom3.as
+	WEB-INF.classes.org.apache.xerces.impl
+	WEB-INF.classes.org.apache.xerces.impl.dtd
+	WEB-INF.classes.org.apache.xerces.impl.dtd.models
+	WEB-INF.classes.org.apache.xerces.impl.dv
+	WEB-INF.classes.org.apache.xerces.impl.dv.dtd
+	WEB-INF.classes.org.apache.xerces.impl.dv.util
+	WEB-INF.classes.org.apache.xerces.impl.dv.xs
+	WEB-INF.classes.org.apache.xerces.impl.io
+	WEB-INF.classes.org.apache.xerces.impl.msg
+	WEB-INF.classes.org.apache.xerces.impl.validation
+	WEB-INF.classes.org.apache.xerces.impl.xpath
+	WEB-INF.classes.org.apache.xerces.impl.xpath.regex
+	WEB-INF.classes.org.apache.xerces.impl.xs
+	WEB-INF.classes.org.apache.xerces.impl.xs.identity
+	WEB-INF.classes.org.apache.xerces.impl.xs.models
+	WEB-INF.classes.org.apache.xerces.impl.xs.opti
+	WEB-INF.classes.org.apache.xerces.impl.xs.traversers
+	WEB-INF.classes.org.apache.xerces.impl.xs.util
+	WEB-INF.classes.org.apache.xerces.jaxp
+	WEB-INF.classes.org.apache.xerces.jaxp.datatype
+	WEB-INF.classes.org.apache.xerces.jaxp.validation
+	WEB-INF.classes.org.apache.xerces.parsers
+	WEB-INF.classes.org.apache.xerces.util
+	WEB-INF.classes.org.apache.xerces.xinclude
+	WEB-INF.classes.org.apache.xerces.xni
+	WEB-INF.classes.org.apache.xerces.xni.grammars
+	WEB-INF.classes.org.apache.xerces.xni.parser
+	WEB-INF.classes.org.apache.xerces.xpointer
+	WEB-INF.classes.org.apache.xerces.xs
+	WEB-INF.classes.org.apache.xerces.xs.datatypes
+	WEB-INF.classes.org.apache.xml.dtm
+	WEB-INF.classes.org.apache.xml.dtm.ref
+	WEB-INF.classes.org.apache.xml.dtm.ref.dom2dtm
+	WEB-INF.classes.org.apache.xml.dtm.ref.sax2dtm
+	WEB-INF.classes.org.apache.xml.res
+	WEB-INF.classes.org.apache.xml.serialize
+	WEB-INF.classes.org.apache.xml.serializer
+	WEB-INF.classes.org.apache.xml.serializer.charmap
+	WEB-INF.classes.org.apache.xml.serializer.dom3
+	WEB-INF.classes.org.apache.xml.serializer.unicode
+	WEB-INF.classes.org.apache.xml.serializer.utils
+	WEB-INF.classes.org.apache.xml.utils
+	WEB-INF.classes.org.apache.xml.utils.res
+	WEB-INF.classes.org.apache.xmlcommons
+	WEB-INF.classes.org.apache.xpath
+	WEB-INF.classes.org.apache.xpath.axes
+	WEB-INF.classes.org.apache.xpath.compiler
+	WEB-INF.classes.org.apache.xpath.domapi
+	WEB-INF.classes.org.apache.xpath.functions
+	WEB-INF.classes.org.apache.xpath.jaxp
+	WEB-INF.classes.org.apache.xpath.objects
+	WEB-INF.classes.org.apache.xpath.operations
+	WEB-INF.classes.org.apache.xpath.patterns
+	WEB-INF.classes.org.apache.xpath.res
+	WEB-INF.classes.org.jboss.logging

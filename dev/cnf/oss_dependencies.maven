@@ -291,7 +291,9 @@ org.apache.johnzon:johnzon-jsonb:1.1.5
 org.apache.johnzon:johnzon-jsonb:1.1.8
 org.apache.johnzon:johnzon-mapper:1.1.5
 org.apache.johnzon:johnzon-mapper:1.1.8
+org.apache.maven:maven-artifact:3.6.3
 org.apache.maven:maven-model:3.5.0
+org.apache.maven:maven-model:3.6.3
 org.apache.myfaces.core:myfaces-api:2.2.12
 org.apache.myfaces.core:myfaces-api:2.3.8
 org.apache.myfaces.core:myfaces-api:3.0.0
