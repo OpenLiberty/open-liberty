@@ -997,7 +997,7 @@ public class WABInstaller implements EventHandler, ExtensionFactory, RuntimeUpda
                 //was already in use. It does not hold bundles that fail for other reasons.
                 synchronized (wabsEligibleForCollisionResolution) {
                     knownCollisionsHolder = wabsEligibleForCollisionResolution.put(webContextPath, collisionsHolder);
-                    if (knownCollisionsHolder != null) {
+                    if (knownCollisionsHolder != null && !knownCollisionsHolder.getWABs().isEmpty()) {
                         //there was already a holder for this path, we are not in it yet.
                         wabsEligibleForCollisionResolution.put(webContextPath, knownCollisionsHolder);
                         synchronized (knownCollisionsHolder) {
@@ -1018,7 +1018,7 @@ public class WABInstaller implements EventHandler, ExtensionFactory, RuntimeUpda
                     }
                 }
 
-                if (knownCollisionsHolder != null) {
+                if (knownCollisionsHolder != null && !knownCollisionsHolder.getWABs().isEmpty()) {
                     //there was a Web-ContextPath collision
                     //add previous bundles to the collisions list
                     long[] collisionIds;
