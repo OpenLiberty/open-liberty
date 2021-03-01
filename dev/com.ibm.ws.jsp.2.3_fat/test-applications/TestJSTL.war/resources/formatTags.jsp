@@ -16,17 +16,20 @@
     <title>Format Tags</title>
 </head>
 <body>
-
-    <p> Testing fmt:parseDate, fmt:formatDate </p>
-
     <fmt:setLocale value = "en_US"/>
-    <c:set var="timeZone" value="GMT-5"/>
-
-    <c:set var="date" value="02-17-2021" />  
-    <fmt:parseDate value="${date}" var="parsedDate"  pattern="MM-dd-yyyy"/>  
-    <fmt:timeZone value="${timeZone}">
-        <fmt:formatDate dateStyle="medium" value="${parsedDate}" />
-    </fmt:timeZone>
+    <p> Testing fmt:parseDate, fmt:formatDate </p>
+    <!-- Using Current Date of System!-->
     
+    <c:set var="date" value="<%=new java.util.Date()%>" />
+
+    Formatted Date: <fmt:formatDate dateStyle="MEDIUM" value="${date}" />
+
+    <!-- Using Jan 1 2000 for Parsing !--> 
+    <c:set var="dateToParse" value="01-01-2000" />
+
+    <fmt:parseDate var="parsedDate" value="${dateToParse}" pattern="MM-dd-yyyy" />
+
+    Parsed date: <c:out value="${parsedDate}" />
+  
 </body>
 </html>

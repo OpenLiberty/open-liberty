@@ -32,6 +32,11 @@ import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
+// For testFormatTags
+import java.util.Date;
+import java.text.DateFormat;
+import java.util.Locale;
+
 /**
  *  Smoke Tests for JSTL
  */
@@ -166,7 +171,15 @@ public class JSTLTests {
         WebResponse response = wc.getResponse(request);
         LOG.info("Servlet response : " + response.getText());
 
-        assertTrue("Something went wrong with format tags", response.getText().contains("Feb 17, 2021"));
+        Date today = new Date();
+        DateFormat dateFormatter = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.US);
+        String dateOut = dateFormatter.format(today);
+
+        assertTrue("Something went wrong with format tags. Did not find expected string: " + dateOut,
+            response.getText().contains(dateOut));
+
+        assertTrue("Something went wrong with the parse tags!",
+            response.getText().contains("Sat Jan 01 00:00:00")); 
 
 
     }
