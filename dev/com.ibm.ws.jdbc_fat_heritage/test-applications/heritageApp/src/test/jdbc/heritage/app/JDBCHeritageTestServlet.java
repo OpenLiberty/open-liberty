@@ -24,6 +24,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.Set;
 
 import javax.annotation.Resource;
 import javax.servlet.ServletConfig;
@@ -35,6 +36,7 @@ import javax.transaction.UserTransaction;
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
+import test.jdbc.heritage.driver.HeritageDBConnection;
 
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/JDBCHeritageTestServlet")
@@ -74,6 +76,53 @@ public class JDBCHeritageTestServlet extends FATServlet {
                 }
             throw new NoSuchFieldException("Unable to find pstmtImpl on prepared statement wrapper. If the field has been renamed, you will need to update this test.");
         });
+    }
+
+    /**
+     * Verifies that doConnectionCleanup is invoked on a data store helper that uses this notification to
+     * restore the default list of client info properties.
+     */
+    @Test
+    public void testConnectionCleanup() throws Exception {
+        try (Connection con = defaultDataSource.getConnection()) {
+            HeritageDBConnection hcon = con.unwrap(HeritageDBConnection.class);
+            Set<String> defaultClientInfoKeys = hcon.getClientInfoKeys();
+
+            // Set non-default keys
+            hcon.setClientInfoKeys("testConCleanupKey1", "testConCleanupKey2");
+
+            // Prove the fake JDBC driver API returns what we set because the test will rely on this later
+            Set<String> validKeys = hcon.getClientInfoKeys();
+            assertTrue(validKeys.toString(), validKeys.contains("testConCleanupKey1")
+                                             && validKeys.contains("testConCleanupKey2")
+                                             && validKeys.size() == 2);
+
+            tx.begin();
+            try {
+                con.createStatement()
+                                .executeQuery("VALUES ('testConnectionCleanup is an excellent test')")
+                                .getStatement()
+                                .close();
+
+                // doConnectionCleanup resets the default client info keys value when the connection handle is
+                // reassociated across the transaction boundary
+
+                validKeys = hcon.getClientInfoKeys();
+                assertEquals(defaultClientInfoKeys, validKeys);
+
+                // Set more non-default keys
+                hcon.setClientInfoKeys("testConCleanupKey3", "testConCleanupKey4", "testConCleanupKey5");
+
+            } finally {
+                tx.commit();
+            }
+
+            // doConnectionCleanup again resets the default client info keys value when the connection handle is
+            // reassociated across the transaction boundary
+
+            validKeys = hcon.getClientInfoKeys();
+            assertEquals(defaultClientInfoKeys, validKeys);
+        }
     }
 
     /**

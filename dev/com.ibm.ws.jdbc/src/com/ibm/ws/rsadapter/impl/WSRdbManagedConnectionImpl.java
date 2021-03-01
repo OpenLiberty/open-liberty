@@ -2870,9 +2870,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
         // connection pool, we should reset the autocommit of this connection to false.
         //  - SybaseHelper will also return true.
 
-        //  - change wasAutoCommitResetByCleanup to wasCleanupReturnTrue
-
-        boolean wasCleanupReturnTrue;
+        boolean modifiedByCleanup;
 
         try {
 
@@ -2882,7 +2880,9 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
                 helper.resetClientInformation(this);
             }
 
-            wasCleanupReturnTrue = mcf.helper.doConnectionCleanup(sqlConn);
+            modifiedByCleanup = mcf.dataStoreHelper == null
+                              ? helper.doConnectionCleanup(sqlConn)
+                              : mcf.dataStoreHelper.doConnectionCleanup(sqlConn);
 
             if (!connectionErrorDetected) 
             {
@@ -2915,7 +2915,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
         // modifications are accounted for. 
 
         if (!connectionErrorDetected && 
-            (connectionPropertyChanged || wasCleanupReturnTrue)) 
+            (connectionPropertyChanged || modifiedByCleanup)) 
         {
             if (mcf.supportsIsReadOnly) {
                 try {
@@ -3076,7 +3076,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
             connectionPropertyChanged = false;
 
             //  - get the autocommit value, isolation level value and holdability value from the native connection
-            if (wasCleanupReturnTrue) {
+            if (modifiedByCleanup) {
                 try {
                     currentAutoCommit = sqlConn.getAutoCommit();
                     if (cachedConnection != null) 
@@ -4313,7 +4313,10 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
             }
 
             // Clean up the connection.
-            mcf.helper.doConnectionCleanup(sqlConn);
+            if (mcf.dataStoreHelper == null)
+                mcf.helper.doConnectionCleanup(sqlConn);
+            else
+                mcf.dataStoreHelper.doConnectionCleanup(sqlConn);
 
             // Clear the warning.
             sqlConn.clearWarnings();
@@ -4358,7 +4361,10 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
                 }
 
                 try {
-                    mcf.helper.doConnectionCleanup(sqlConn);
+                    if (mcf.dataStoreHelper == null)
+                        mcf.helper.doConnectionCleanup(sqlConn);
+                    else
+                        mcf.dataStoreHelper.doConnectionCleanup(sqlConn);
                 } catch (SQLException cleanEx) {
                     // No FFDC coded needed
 

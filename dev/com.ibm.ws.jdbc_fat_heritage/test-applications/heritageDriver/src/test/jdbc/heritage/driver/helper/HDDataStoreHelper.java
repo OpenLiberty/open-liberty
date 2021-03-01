@@ -31,6 +31,12 @@ public class HDDataStoreHelper implements DataStoreHelper {
     private final HDDataStoreHelperMetaData metadata = new HDDataStoreHelperMetaData();
 
     @Override
+    public boolean doConnectionCleanup(Connection con) throws SQLException {
+        ((HDConnection) con).setClientInfoKeys(); // defaults
+        return false;
+    }
+
+    @Override
     public boolean doConnectionCleanupPerCloseConnection(Connection con, boolean isCMP, Object unused) throws SQLException {
         ((HDConnection) con).cleanupCount.incrementAndGet();
         try (CallableStatement stmt = con.prepareCall("CALL SYSCS_UTIL.SYSCS_SET_STATISTICS_TIMING(0)")) {

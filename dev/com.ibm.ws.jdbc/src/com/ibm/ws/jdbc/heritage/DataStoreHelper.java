@@ -21,6 +21,16 @@ import javax.security.auth.Subject;
  */
 public interface DataStoreHelper {
     /**
+     * Cleans up a connection before it is returned to the connection
+     * pool for later reuse. This method is also used when checking for invalid connections.
+     *
+     * @param conn the connection to clean up.
+     * @return true if any standard connection property was modified, otherwise false.
+     * @exception SQLException if an error occurs while cleaning up the connection.
+     */
+    boolean doConnectionCleanup(Connection conn) throws SQLException;
+
+    /**
      * Invoked after the last active connection handle is closed.
      * This provides an opportunity to undo connection setup that was previously performed by
      * <code>doConnectionSetupPerGetConnection</code>.
