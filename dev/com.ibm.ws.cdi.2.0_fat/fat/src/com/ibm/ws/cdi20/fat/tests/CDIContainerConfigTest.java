@@ -13,8 +13,6 @@ package com.ibm.ws.cdi20.fat.tests;
 import static componenttest.rules.repeater.EERepeatTests.EEVersion.EE8_FULL;
 import static componenttest.rules.repeater.EERepeatTests.EEVersion.EE9_FULL;
 
-import java.io.File;
-
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -23,6 +21,7 @@ import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.CDIArchiveHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.ws.cdi20.fat.apps.cdiContainerConfig.explicit.MyExplicitBean;
@@ -65,7 +64,7 @@ public class CDIContainerConfigTest extends FATServletClient {
         WebArchive app = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war");
         app.addClass(CDIContainerConfigServlet.class);
         app.addClass(MyBeanCDI20.class);
-        app.addAsWebInfResource(new File("test-applications/" + APP_NAME + "/resources/beans.xml"));
+        app = CDIArchiveHelper.addEmptyBeansXML(app);
 
         JavaArchive implicitJar = ShrinkWrap.create(JavaArchive.class, "implicit.jar");
         implicitJar.addClass(MyImplicitBean.class);
@@ -73,7 +72,7 @@ public class CDIContainerConfigTest extends FATServletClient {
 
         JavaArchive explicitJar = ShrinkWrap.create(JavaArchive.class, "explicit.jar");
         explicitJar.addClass(MyExplicitBean.class);
-        explicitJar.addAsManifestResource(new File("test-applications/" + APP_NAME + "/resources/beans.xml"));
+        explicitJar = CDIArchiveHelper.addEmptyBeansXML(explicitJar);
         app.addAsLibrary(explicitJar);
 
         ShrinkHelper.exportAppToServer(server, app, DeployOptions.SERVER_ONLY);
