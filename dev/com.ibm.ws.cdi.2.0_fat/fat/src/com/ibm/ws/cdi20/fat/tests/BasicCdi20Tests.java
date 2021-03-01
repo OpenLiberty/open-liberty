@@ -13,8 +13,6 @@ package com.ibm.ws.cdi20.fat.tests;
 import static componenttest.rules.repeater.EERepeatTests.EEVersion.EE8;
 import static componenttest.rules.repeater.EERepeatTests.EEVersion.EE9;
 
-import java.io.File;
-
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
@@ -22,6 +20,10 @@ import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.BeansAsset;
+import com.ibm.websphere.simplicity.BeansAsset.CDIVersion;
+import com.ibm.websphere.simplicity.BeansAsset.DiscoveryMode;
+import com.ibm.websphere.simplicity.CDIArchiveHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.ws.cdi20.fat.apps.beanManagerLookup.BeanManagerLookupServlet;
@@ -99,21 +101,28 @@ public class BasicCdi20Tests extends FATServletClient {
         if (TestModeFilter.shouldRun(TestMode.FULL)) {
 
             WebArchive app2 = ShrinkWrap.create(WebArchive.class, CONFIGURATION_APP_NAME + ".war")
-                                        .addPackages(true, ConfiguratorTestBase.class.getPackage())
-                                        .addAsManifestResource(new File("test-applications/" + CONFIGURATION_APP_NAME
-                                                                        + "/resources/META-INF/services/javax.enterprise.inject.spi.Extension"),
-                                                               "services/javax.enterprise.inject.spi.Extension")
-                                        .addAsWebInfResource(new File("test-applications/" + CONFIGURATION_APP_NAME + "/resources/META-INF/beans.xml"), "beans.xml"); // NEEDS TO GO IN WEB-INF in a war
+                                        .addPackages(true, ConfiguratorTestBase.class.getPackage());
+
+            app2 = CDIArchiveHelper.addCDIExtensionService(app2,
+                                                           com.ibm.ws.cdi20.fat.apps.configurator.bean.AfterBeanDiscoveryObserver.class,
+                                                           com.ibm.ws.cdi20.fat.apps.configurator.beanAttributes.ProcessBeanAttributesObserver.class,
+                                                           com.ibm.ws.cdi20.fat.apps.configurator.injectionPoint.ProcessInjectionPointObserver.class,
+                                                           com.ibm.ws.cdi20.fat.apps.configurator.observerMethod.ProcessObserverMethodObserver.class,
+                                                           com.ibm.ws.cdi20.fat.apps.configurator.producer.ProcessProducerObserver.class,
+                                                           com.ibm.ws.cdi20.fat.apps.configurator.annotatedTypeConfigurator.ProcessAnnotatedTypeObserver.class);
+
+            app2 = CDIArchiveHelper.addBeansXML(app2, DiscoveryMode.ALL);
 
             WebArchive app3 = ShrinkWrap.create(WebArchive.class, INTERCEPTION_FACTORY_APP_NAME + ".war")
                                         .addPackages(true, InterceptionFactoryServlet.class.getPackage());
 
             WebArchive app4 = ShrinkWrap.create(WebArchive.class, TRIM_TEST_APP_NAME + ".war")
-                                        .addPackages(true, TrimTestServlet.class.getPackage())
-                                        .addAsManifestResource(new File("test-applications/" + TRIM_TEST_APP_NAME
-                                                                        + "/resources/META-INF/services/javax.enterprise.inject.spi.Extension"),
-                                                               "services/javax.enterprise.inject.spi.Extension")
-                                        .addAsWebInfResource(new File("test-applications/" + TRIM_TEST_APP_NAME + "/resources/META-INF/beans.xml"), "beans.xml"); // NEEDS TO GO IN WEB-INF in a war
+                                        .addPackages(true, TrimTestServlet.class.getPackage());
+
+            app4 = CDIArchiveHelper.addCDIExtensionService(app4, com.ibm.ws.cdi20.fat.apps.trimTest.PATObserver.class);
+            BeansAsset beans = new BeansAsset(DiscoveryMode.ALL, CDIVersion.CDI20);
+            beans.setTrim(true);
+            app4 = CDIArchiveHelper.addBeansXML(app4, beans);
 
             ShrinkHelper.exportDropinAppToServer(server, app2, DeployOptions.SERVER_ONLY);
             ShrinkHelper.exportDropinAppToServer(server, app3, DeployOptions.SERVER_ONLY);

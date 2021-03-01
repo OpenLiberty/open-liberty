@@ -13,16 +13,15 @@ package com.ibm.ws.cdi20.fat.tests;
 import static componenttest.rules.repeater.EERepeatTests.EEVersion.EE8;
 import static componenttest.rules.repeater.EERepeatTests.EEVersion.EE9;
 
-import java.io.File;
-
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.BeansAsset.DiscoveryMode;
+import com.ibm.websphere.simplicity.CDIArchiveHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.ws.cdi20.fat.apps.builtinAnno.BuiltinAnnoServlet;
@@ -61,11 +60,11 @@ public class BuiltinAnnoLiteralsTest extends FATServletClient {
     public static void setUp() throws Exception {
 
         WebArchive app = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
-                                   .addPackages(true, BuiltinAnnoServlet.class.getPackage())
-                                   .add(new FileAsset(new File("test-applications/" + APP_NAME + "/resources/META-INF/permissions.xml")), "/META-INF/permissions.xml")
-                                   .addAsManifestResource(new File("test-applications/" + APP_NAME + "/resources/META-INF/services/javax.enterprise.inject.spi.Extension"),
-                                                          "services/javax.enterprise.inject.spi.Extension")
-                                   .addAsWebInfResource(new File("test-applications/" + APP_NAME + "/resources/META-INF/beans.xml"), "beans.xml"); // NEEDS TO GO IN WEB-INF in a war
+                                   .addPackages(true, BuiltinAnnoServlet.class.getPackage());
+
+        app.addAsManifestResource(BuiltinAnnoServlet.class.getPackage(), "permissions.xml", "permissions.xml");
+        app = CDIArchiveHelper.addCDIExtensionService(app, com.ibm.ws.cdi20.fat.apps.builtinAnno.CakeExtension.class);
+        app = CDIArchiveHelper.addBeansXML(app, DiscoveryMode.ALL);
 
         ShrinkHelper.exportAppToServer(server, app, DeployOptions.SERVER_ONLY);
 
