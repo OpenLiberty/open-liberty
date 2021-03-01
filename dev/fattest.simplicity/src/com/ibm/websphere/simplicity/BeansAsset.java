@@ -42,6 +42,9 @@ import org.jboss.shrinkwrap.api.asset.Asset;
  *              .addAsWebInfResource(beans, "beans.xml");
  * </code>
  * </pre>
+ *
+ * In future it would be better to make use of the ShrinkWrap Descriptors lib instead
+ * https://github.com/OpenLiberty/open-liberty/issues/16057
  */
 public class BeansAsset implements Asset {
 
@@ -49,25 +52,63 @@ public class BeansAsset implements Asset {
         NONE, ALL, ANNOTATED
     };
 
-    private static final String PRE = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-                                      "\n" +
-                                      "<beans xmlns=\"http://xmlns.jcp.org/xml/ns/javaee\"\n" +
-                                      "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
-                                      "xsi:schemaLocation=\"http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/beans_1_1.xsd\" \n" +
-                                      "bean-discovery-mode=\"";
+    public static enum Version {
+        CDI11, CDI30
+    };
 
-    private static final String POST = "\"\n" +
-                                       "       version=\"1.1\"> \n" +
-                                       "</beans>";
+    private static final String NEW_LINE = "\n";
+
+    private static final String BEANS_START = "<beans ";
+    private static final String BEANS_END = ">\n</beans>";
+
+    private static final String XML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
+    private static final String XML_SCHEMA = "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"";
+
+    //Java EE (CDI 1.1) namespaces and versions
+    private static final String JAVAEE_NS = "xmlns=\"http://xmlns.jcp.org/xml/ns/javaee\"";
+    private static final String JAVAEE_SCHEMA = "xsi:schemaLocation=\"http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/beans_1_1.xsd\"";
+    private static final String JAVAEE_VERSION = "version=\"1.1\"";
+
+    //Jakarta EE (CDI 3.0) namespaces and versions
+    private static final String JAKARTA_NS = "xmlns=\"https://jakarta.ee/xml/ns/jakartaee\"";
+    private static final String JAKARTA_SCHEMA = "xsi:schemaLocation=\"https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/beans_3_0.xsd\"";
+    private static final String JAKARTA_VERSION = "version=\"3.0\"";
+
+    private static final String MODE = "[[MODE]]";
+    private static final String BEAN_DISCOVERY_MODE = "bean-discovery-mode=\"" + MODE + "\"";
+
+    private static final String PRE = XML + NEW_LINE +
+                                      BEANS_START + XML_SCHEMA + NEW_LINE;
+
+    private static final String BEANS11 = PRE + JAVAEE_NS + NEW_LINE +
+                                          JAVAEE_SCHEMA + NEW_LINE +
+                                          JAVAEE_VERSION + NEW_LINE +
+                                          BEAN_DISCOVERY_MODE + BEANS_END;
+
+    private static final String BEANS30 = PRE + JAKARTA_NS + NEW_LINE +
+                                          JAKARTA_SCHEMA + NEW_LINE +
+                                          JAKARTA_VERSION + NEW_LINE +
+                                          BEAN_DISCOVERY_MODE + BEANS_END;
 
     private Mode mode = Mode.ALL;
+    private Version version = Version.CDI11;
 
     public BeansAsset() {
 
     }
 
     public BeansAsset(Mode mode) {
-        setMode(mode);
+        this(mode, Version.CDI11);
+    }
+
+    public BeansAsset(Mode mode, Version version) {
+        this.mode = mode;
+        this.version = version;
+    }
+
+    public BeansAsset setVersion(Version version) {
+        this.version = version;
+        return this;
     }
 
     public BeansAsset setMode(Mode mode) {
@@ -79,9 +120,11 @@ public class BeansAsset implements Asset {
     public InputStream openStream() {
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            baos.write(PRE.getBytes("UTF-8"));
-            baos.write(mode.toString().toLowerCase().getBytes("UTF-8"));
-            baos.write(POST.getBytes("UTF-8"));
+            if (this.version == Version.CDI11) {
+                baos.write(BEANS11.replace(MODE, this.mode.toString().toLowerCase()).getBytes("UTF-8"));
+            } else {
+                baos.write(BEANS30.replace(MODE, this.mode.toString().toLowerCase()).getBytes("UTF-8"));
+            }
 
             return new ByteArrayInputStream(baos.toByteArray());
         } catch (IOException e) {
