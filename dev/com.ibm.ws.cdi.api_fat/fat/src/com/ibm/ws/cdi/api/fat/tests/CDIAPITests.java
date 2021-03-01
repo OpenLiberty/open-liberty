@@ -110,11 +110,11 @@ public class CDIAPITests extends FATServletClient {
             JavaArchive alterableContextExtension = ShrinkWrap.create(JavaArchive.class, "alterableContextExtension.jar");
             alterableContextExtension.addPackage(DirtySingleton.class.getPackage());
             alterableContextExtension = CDIArchiveHelper.addCDIExtensionService(alterableContextExtension, AlterableContextExtension.class);
-            alterableContextExtension = CDIArchiveHelper.addBeansXML(alterableContextExtension, BeansAsset.Mode.ALL);
+            alterableContextExtension = CDIArchiveHelper.addBeansXML(alterableContextExtension, BeansAsset.DiscoveryMode.ALL);
 
             WebArchive alterableContextApp = ShrinkWrap.create(WebArchive.class, ALTERABLE_CONTEXT_APP_NAME + ".war");
             alterableContextApp.addClass(AlterableContextTestServlet.class);
-            alterableContextApp = CDIArchiveHelper.addBeansXML(alterableContextApp, BeansAsset.Mode.ALL);
+            alterableContextApp = CDIArchiveHelper.addBeansXML(alterableContextApp, BeansAsset.DiscoveryMode.ALL);
             alterableContextApp.addAsLibrary(alterableContextExtension);
 
             EnterpriseArchive alterableContextsEar = ShrinkWrap.create(EnterpriseArchive.class, "alterableContextsApp.ear");
