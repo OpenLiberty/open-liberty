@@ -570,6 +570,10 @@ goto:eof
   @REM the script will try to read etc
 
   set RC=0
+  call:mergeJVMOptions "%WLP_USER_DIR%\shared\jvm.options"
+  if not %RC% == 0 goto:eof
+  
+  @REM This location is intentionally not documented but removing might break existing installations
   call:mergeJVMOptions "%WLP_INSTALL_DIR%\usr\shared\jvm.options"
   if not %RC% == 0 goto:eof
   
