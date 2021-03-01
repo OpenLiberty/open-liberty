@@ -42,8 +42,7 @@ import com.ibm.wsspi.security.wim.model.Root;
 @ObjectClassDefinition(factoryPid = "com.ibm.wsspi.security.wim.CustomRepository", name = Ext.INTERNAL, description = Ext.INTERNAL_DESC, localization = Ext.LOCALIZATION)
 @Ext.Alias("customRepository")
 @Ext.ObjectClassClass(CustomRepository.class)
-@interface CustomRepositoryMarker {
-}
+@interface CustomRepositoryMarker {}
 
 @ObjectClassDefinition(pid = "com.ibm.ws.security.wim.VMMService", name = Ext.INTERNAL, description = Ext.INTERNAL_DESC, localization = Ext.LOCALIZATION)
 @interface VMMServiceConfig {
@@ -101,8 +100,10 @@ public class VMMService implements Service, RealmConfigChangeListener {
     @Reference(cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC)
     protected void setConfiguredRepository(ConfiguredRepository configuredRepository, Map<String, Object> props) {
         String repositoryId = (String) props.get(KEY_ID);
-        repositoryManager.addConfiguredRepository(repositoryId, configuredRepository);
-        notifyListeners();
+        if (!"NullUserRegistry".equals(repositoryId)) { // Do not Add NullUserRegistry to Repository
+            repositoryManager.addConfiguredRepository(repositoryId, configuredRepository);
+            notifyListeners();
+        }
     }
 
     protected void updatedConfiguredRepository(ConfiguredRepository configuredRepository) {
@@ -357,8 +358,10 @@ public class VMMService implements Service, RealmConfigChangeListener {
             registryRealmNames = new HashSet<String>();
 
         for (UserRegistry ur : registries) {
-            registryRealmNames.add(ur.getRealm());
-            repositoryManager.addUserRegistry(ur);
+            if (!"NullUserRegistry".equals(ur.getType())) { // Do not Add NullUserRegistry to Repository Manager
+                registryRealmNames.add(ur.getRealm());
+                repositoryManager.addUserRegistry(ur);
+            }
         }
         configMgr.processConfig();
     }
