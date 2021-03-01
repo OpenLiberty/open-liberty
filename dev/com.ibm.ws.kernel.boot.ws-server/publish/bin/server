@@ -654,6 +654,11 @@ serverEnvAndJVMOptions()
   # the script will try to read the jvm.options in etc
 
   TEMP_SAVED_OPTIONS=$SERVER_JVM_OPTIONS_QUOTED
+  mergeJVMOptions "${WLP_USER_DIR}/shared/jvm.options"
+  if [ $rc -ne 0 ]; then
+    return $rc
+  fi  
+  # This location is intentionally not documented  but removing might break existing installations
   mergeJVMOptions "${WLP_INSTALL_DIR}/usr/shared/jvm.options"
   if [ $rc -ne 0 ]; then
     return $rc
