@@ -71,6 +71,7 @@ Include-Resource: \
     com.ibm.ws.logging;version=latest,\
     com.ibm.ws.security;version=latest,\
     com.ibm.ws.security.authentication;version=latest,\
+    com.ibm.ws.security.credentials;version=latest,\
     com.ibm.ws.security.jaspic.1.1;version=latest,\
     com.ibm.ws.security.token;version=latest,\
     com.ibm.ws.webcontainer;version=latest,\
