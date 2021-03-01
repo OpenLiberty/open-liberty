@@ -50,8 +50,8 @@ dependencies {
       'commons-codec:commons-codec:1.11',
       'javax.xml.bind:jaxb-api:2.3.0'
     mojarra30 'org.glassfish:jakarta.faces:3.0.0-RC3'
-    myfaces30 'org.apache.myfaces.core:myfaces-api:3.0.0-RC1',
-      'org.apache.myfaces.core:myfaces-impl:3.0.0-RC1'
+    myfaces30 'org.apache.myfaces.core:myfaces-api:3.0.0',
+      'org.apache.myfaces.core:myfaces-impl:3.0.0'
     }
 
 task addMojarra(type: Copy) {
@@ -83,7 +83,6 @@ task copyPermissionFile(type: Copy) {
     from "publish/files/permissions"
     into "${buildDir}/autoFVT/publish/files/permissions"
 }
-
 
 addRequiredLibraries {
     dependsOn addMojarra
