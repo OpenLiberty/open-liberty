@@ -2,12 +2,10 @@ Begin NOTICES AND INFORMATION FOR Open Liberty @LIBERTY_VERSION@
 Copyright 1999-2021 IBM Corporation and others
 This product includes software developed at
 The Open Liberty @LIBERTY_VERSION@ Project (https://openliberty.io/).
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 TABLE OF CONTENTS
 
-THE REMAINDER OF THIS IBM NOTICES FILE CONSISTS OF THE FOLLOWING 
-SECTIONS:
 
 APACHE V1.1
 APACHE V2
@@ -22,8 +20,8 @@ EPL
 EPL V2  
 ISC  
 JDOM
-LGPL V2   
-LGPL V2.1  
+LGPL V2    
+LGPL V2.1   
 MIT  
 MPL V1.1  
 MPL V2.0  
@@ -292,6 +290,10 @@ GUAVA,
 PLEXUS-CLASSWORLDS, 
 SNAKEYAML,
 SWAGGER-UI
+APACHE MAVEN WAGON 
+MAVEN-RESOLVER 
+MAVEN-SHARED-UTILS
+JANSI
 
 
 Apache License
@@ -1747,12 +1749,11 @@ XMLHTTPREQUEST [Esprima (node)]
 librhsm 
 libdnf
 RESTEASYPROVIDERFACTORYDELEGATE [JBoss RESTEasy]
-
 INFINISPAN [Hibernate]
 CHECKSTYLE-EVENTUAL.XML [Hibernate]
 RESOURCES [Hibernate]
- HIBERNATE
- HIBERNATE-OSGI [Hibernate]
+HIBERNATE
+HIBERNATE-OSGI [Hibernate]
 HIBERNATE-COMMONS-ANNOTATIONS
 
                   GNU LESSER GENERAL PUBLIC LICENSE
@@ -2807,7 +2808,8 @@ IS-PROMISE (Copyright (c) 2014 Forbes Lindesay), JSON-PATCH [swagger-ui]
 (Copyright (c) 2017 Joachim Wester.), YECHT (Copyright (c) 2009-2010 Ola
 Bini), SAFE-BUFFER (Copyright (c) Feross Aboukhadijeh), bcpkix-jdk15on
 (Copyright Bouncy Castle), bcprov-jdk15on (No copyright)
-
+SLF4J-API (Copyright (c) 2004-2011 QOS.ch), JCL-OVER-SLF4J (Copyright
+2001-2004 The Apache Software Foundation.)
 
 Permission is hereby granted, free of charge, to any person obtaining a 
 copy of this software and associated documentation files (the 
@@ -2985,7 +2987,7 @@ DOM [XercesImpl]
 SOAP-ENVELOPE [OpenSAML]
 DOM/* [XML-APIs],
 XMLDSIG-CORE-SCHEMA.DTD [xmlsec]
- XPATHSTYLESHEETDOM3EXCEPTION. [serializer]
+XPATHSTYLESHEETDOM3EXCEPTION. [serializer]
 XPATHSTYLESHEETDOM3EXCEPTION.JAVA [serializer]
 XPATH [serializer]
 SAC [XML-APIs]
@@ -3049,11 +3051,14 @@ holders.
 END OF W3C SOFTWARE LICENSE NOTICES AND INFORMATION
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+END OF OPEN LIBERTY NOTICES AND INFORMATION 
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 END OF OPEN LIBERTY @LIBERTY_VERSION@ NOTICES AND INFORMATION 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 OPEN LIBERTY DOCKER @LIBERTY_VERSION@ NOTICES AND INFORMATION FOR EXCLUDED COMPONENTS
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 TABLE OF CONTENTS
 
@@ -3187,10 +3192,10 @@ IN THE FONT SOFTWARE.
 
 
 END OF SIL OPEN FONT LICENSE 1.1 LICENSE NOTICES AND INFORMATION
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 END OF OPEN LIBERTY DOCKER @LIBERTY_VERSION@ NOTICES AND INFORMATION FOR EXCLUDED COMPONENTS
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 END OF NOTICE FILE
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
