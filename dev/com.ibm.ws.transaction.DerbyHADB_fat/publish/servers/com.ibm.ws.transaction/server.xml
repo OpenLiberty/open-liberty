@@ -41,6 +41,8 @@
     
     <!-- JDBC driver -->
     <javaPermission codebase="${shared.resource.dir}/jdbc/${env.DB_DRIVER}" className="java.security.AllPermission"/>
+    <javaPermission codebase="${shared.resource.dir}/ifx/ifxjdbc.jar" className="java.security.AllPermission"/>
+    <javaPermission codebase="${shared.resource.dir}/ifx/anomyous.jar" className="java.security.AllPermission"/>
   
     <!-- Permission needed for SQLServer driver -->
     <javaPermission className="java.net.SocketPermission" name="*" actions="connect,resolve"/>
