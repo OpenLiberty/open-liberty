@@ -53,8 +53,8 @@ public abstract class ChannelSelector implements Runnable, FFDCSelfIntrospectabl
 
     // Set to true when the thread is waiting to quit (has decided that
     // there is insufficent work to do, has waited for the prescribed
-    // time for more work, but yet cannot quit as it currently has a
-    // slave).
+    // time for more work, but yet cannot quit as it is currently
+    // waiting on a child).
     boolean waitingToQuit = false;
 
     // An approximation to the value of System.currentTimeMillis() in
