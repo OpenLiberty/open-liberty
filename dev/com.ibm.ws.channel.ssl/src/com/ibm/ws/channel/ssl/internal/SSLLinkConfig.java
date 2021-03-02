@@ -104,7 +104,7 @@ public class SSLLinkConfig {
                     Tr.debug(tc, "enabledCipherSuites is a String: " + ciphersObject);
                 }
                 // Quickly break the string up into an array based on space delimiters.
-                ciphers = ((String) ciphersObject).split("\\s");
+                ciphers = ((String) ciphersObject).split("\\s+");
             } else if (ciphersObject instanceof String[]) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "enabledCipherSuites is a String array");
@@ -123,9 +123,11 @@ public class SSLLinkConfig {
                 Tr.event(tc, "Unable to find any enabled ciphers");
             }
         }
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.exit(tc, "getEnabledCipherSuites");
         }
+
         return ciphers;
     }
 
