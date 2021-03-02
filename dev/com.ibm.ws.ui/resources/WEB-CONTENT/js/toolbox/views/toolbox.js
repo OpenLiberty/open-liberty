@@ -13,7 +13,7 @@ define(["dojo/parser",
         "dojo/query",
         "dojo/i18n!js/toolbox/nls/toolboxMessages",
         "dojo/i18n!js/widgets/nls/widgetsMessages", 
-        "dojox/mobile/compat",
+        // "dojox/mobile/compat", // remove compact as the compatibility css file, ios7-compat.css, is not available on dojo 1.12.9
         "dojo/_base/kernel",
         "dojox/mobile/deviceTheme",
         "dojox/mobile/ScrollableView",
@@ -31,7 +31,7 @@ define(["dojo/parser",
             query,
             i18n,
             i18nL,
-            mCompat, // not used in code, but tools show up horizontal when this and the following two strings are deleted
+            //mCompat, // not used in code, but tools show up horizontal when this and the following two strings are deleted
             kernel,
             mDeviceTheme,
             mScrollableView,
