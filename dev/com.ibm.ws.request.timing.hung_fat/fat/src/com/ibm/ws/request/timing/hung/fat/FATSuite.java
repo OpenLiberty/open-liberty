@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.request.timing.fat;
+package com.ibm.ws.request.timing.hung.fat;
 
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
@@ -20,8 +20,8 @@ import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                SlowRequestTiming.class,
-                TimingRequestTiming.class
+                HungRequestTiming.class,
+                HungRequestEnableThreadDumps.class
 })
 
 public class FATSuite {

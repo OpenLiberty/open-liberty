@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.request.timing.fat;
+package com.ibm.ws.request.timing.hung.fat;
 
 import static org.junit.Assert.assertTrue;
 
