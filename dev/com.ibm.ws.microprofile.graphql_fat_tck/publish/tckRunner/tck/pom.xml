@@ -52,6 +52,11 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <dependency>
+                <groupId>org.jboss.spec.javax.servlet</groupId>
+                <artifactId>jboss-servlet-api_3.0_spec</artifactId>
+                <version>1.0.2.Final</version> <!-- Needed for ZOS. Defines the version of this artifact that arquillian-liberty-managed should use -->
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
