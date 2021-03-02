@@ -31,13 +31,14 @@ then
     testsRemoved=$(cat $TEMP_COMPAR_DIR/diff | grep "<" )
     if [ ! -z "$testsAdded" ]; then
         echo "::error::The following fat(s) need to be added to a category under .github/test-categories: $testsAdded"
+        echo "::warning::Not all fats were run, this build should not be considered complete."
+        exit 0; # Post error to annotation, but do not fail build outright
     fi
 
     if [ ! -z "$testsRemoved" ]; then
         echo "::error::The following fat(s) need to be removed from a category under .github/test-categories: $testsRemoved"
+        exit 1; # Post error to annotation and fail build, otherwise, we will try to run a fat that does not exist.
     fi
-    
-    exit 1;
 else 
     echo "List of tests in .github/test-categories matches the list of projects with '_fat' in the name"
 fi
