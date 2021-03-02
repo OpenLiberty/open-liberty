@@ -1674,7 +1674,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
             return;
         }
 
-        if (ex instanceof SQLException && mcf.helper.isAnAuthorizationException((SQLException) ex)) {
+        if (ex instanceof SQLException && helper.isAnAuthorizationException((SQLException) ex)) {
             if (isTraceOn && tc.isDebugEnabled())
                 Tr.debug(this, tc, "CONNECTION_ERROR_OCCURRED will fire an event to only purge and destroy this connection");
 
@@ -2044,7 +2044,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
                     // the reuse call won't go down to the DB til the next execution of the.  DB optimizaiton.
                     // if we were in a tran, a connection will have to match as we do compare subject and CRI
                     // the fact that the gssNames don't match, means we are not in a tra.
-                    mcf.helper.reuseKerbrosConnection(sqlConn, cri.gssCredential, null);
+                    helper.reuseKerbrosConnection(sqlConn, cri.gssCredential, null);
 
                     //now save the cri props in the mc
                     mc_gssCredential = cri.gssCredential;
@@ -3302,7 +3302,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
                 if (mcf.supportsUOWDetection) {
                     String operation = "none";
                     try {
-                        if (mcf.helper.isInDatabaseUnitOfWork(sqlConn)) {
+                        if (helper.isInDatabaseUnitOfWork(sqlConn)) {
                             /*
                              * If the DB supports UOW Detection and we are in a DB UOW we will commit or rollback per
                              * setting on the DataSource.
@@ -3426,7 +3426,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
                  */
                 if (mcf.supportsUOWDetection) {
                     try {
-                        if (mcf.helper.isInDatabaseUnitOfWork(sqlConn)) {
+                        if (helper.isInDatabaseUnitOfWork(sqlConn)) {
 
                             if (!mcf.loggedImmplicitTransactionFound) {
                                 Tr.info(tc, "IMPLICIT_TRANSACTION_FOUND");
@@ -4314,7 +4314,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
 
             // Clean up the connection.
             if (mcf.dataStoreHelper == null)
-                mcf.helper.doConnectionCleanup(sqlConn);
+                helper.doConnectionCleanup(sqlConn);
             else
                 mcf.dataStoreHelper.doConnectionCleanup(sqlConn);
 
@@ -4362,7 +4362,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
 
                 try {
                     if (mcf.dataStoreHelper == null)
-                        mcf.helper.doConnectionCleanup(sqlConn);
+                        helper.doConnectionCleanup(sqlConn);
                     else
                         mcf.dataStoreHelper.doConnectionCleanup(sqlConn);
                 } catch (SQLException cleanEx) {
