@@ -10,25 +10,40 @@
  *******************************************************************************/
 package test.jdbc.heritage.driver.helper;
 
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.sql.CallableStatement;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.security.auth.Subject;
 
 import com.ibm.ws.jdbc.heritage.AccessIntent;
-import com.ibm.ws.jdbc.heritage.DataStoreHelper;
 import com.ibm.ws.jdbc.heritage.DataStoreHelperMetaData;
+import com.ibm.ws.jdbc.heritage.GenericDataStoreHelper;
 
 import test.jdbc.heritage.driver.HDConnection;
 
 /**
  * Data store helper for the test JDBC driver.
  */
-public class HDDataStoreHelper implements DataStoreHelper {
+public class HDDataStoreHelper extends GenericDataStoreHelper {
     private final HDDataStoreHelperMetaData metadata = new HDDataStoreHelperMetaData();
+
+    private final int defaultQueryTimeout;
+
+    private AtomicReference<?> dsConfigRef;
+
+    public HDDataStoreHelper(Properties props) {
+        String value = props == null ? null : props.getProperty("queryTimeout");
+        defaultQueryTimeout = value == null || value.length() <= 0 ? 0 : Integer.parseInt(value);
+    }
 
     @Override
     public boolean doConnectionCleanup(Connection con) throws SQLException {
@@ -73,6 +88,19 @@ public class HDDataStoreHelper implements DataStoreHelper {
     }
 
     @Override
+    public void doStatementCleanup(PreparedStatement stmt) throws SQLException {
+        stmt.setCursorName(null);
+        stmt.setFetchDirection(ResultSet.FETCH_FORWARD);
+        stmt.setMaxFieldSize(HDConnection.DEFAULT_MAX_FIELD_SIZE);
+        stmt.setMaxRows(0);
+
+        Integer queryTimeout = dsConfigRef == null ? null : (Integer) readConfig("queryTimeout");
+        if (queryTimeout == null)
+            queryTimeout = defaultQueryTimeout;
+        stmt.setQueryTimeout(queryTimeout);
+    }
+
+    @Override
     public int getIsolationLevel(AccessIntent unused) {
         return Connection.TRANSACTION_SERIALIZABLE;
     }
@@ -80,5 +108,20 @@ public class HDDataStoreHelper implements DataStoreHelper {
     @Override
     public DataStoreHelperMetaData getMetaData() {
         return metadata;
+    }
+
+    private Object readConfig(String fieldName) {
+        Object dsConfig = dsConfigRef.get();
+        try {
+            return AccessController.doPrivileged((PrivilegedExceptionAction<?>) () -> //
+            dsConfig.getClass().getField(fieldName).get(dsConfig));
+        } catch (PrivilegedActionException x) {
+            throw new RuntimeException(x);
+        }
+    }
+
+    @Override
+    public void setConfig(Object configRef) {
+        dsConfigRef = (AtomicReference<?>) configRef;
     }
 }

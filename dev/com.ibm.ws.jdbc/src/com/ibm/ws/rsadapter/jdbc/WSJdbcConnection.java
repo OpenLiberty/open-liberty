@@ -2566,7 +2566,12 @@ public class WSJdbcConnection extends WSJdbcObject implements Connection {
         // - in order to free up memory, parameters are cleared before caching instead of after
         if (managedConn.resetStmtsInCacheOnRemove)
         {
-            mcf.getHelper().doStatementCleanup(cstmt);
+            if (mcf.dataStoreHelper == null)
+                mcf.getHelper().doStatementCleanup(cstmt);
+            else
+                mcf.dataStoreHelper.doStatementCleanup(mcf.isCustomHelper ?
+                                (CallableStatement) WSJdbcTracer.getImpl(cstmt) :
+                                cstmt);
         }
         return cstmt;
     }
@@ -2587,7 +2592,12 @@ public class WSJdbcConnection extends WSJdbcObject implements Connection {
         // - in order to free up memory, parameters are cleared before caching instead of after
         if (managedConn.resetStmtsInCacheOnRemove)
         {
-            mcf.getHelper().doStatementCleanup(pstmt);
+            if (mcf.dataStoreHelper == null)
+                mcf.getHelper().doStatementCleanup(pstmt);
+            else
+                mcf.dataStoreHelper.doStatementCleanup(mcf.isCustomHelper ?
+                                (PreparedStatement) WSJdbcTracer.getImpl(pstmt) :
+                                pstmt);
         }
 
         return pstmt;
