@@ -22,7 +22,6 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.ValidationData.validationData;
 import com.ibm.ws.security.fat.common.utils.ConditionalIgnoreRule;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLCommonTest;
-import com.ibm.ws.security.saml20.fat.commonTest.SAMLCommonTestHelpers;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLConstants;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLMessageConstants;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLTestSettings;
@@ -84,7 +83,7 @@ public class GeneralSAMLMapToUserRegistryConfigTests extends SAMLCommonTest {
             List<validationData> expectations) throws Exception {
         if (runSolicitedSPInitiatedTests) {
             printTestTrace("solicited_SP_initiated_SAML", "Running Solicited SP Initiated SAML Flow");
-            WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+            WebClient webClient = getAndSaveWebClient();
             return genericSAML(testName, webClient, updatedTestSettings, actions, expectations);
         } else {
             return null;
@@ -96,7 +95,7 @@ public class GeneralSAMLMapToUserRegistryConfigTests extends SAMLCommonTest {
             List<validationData> expectations) throws Exception {
         if (runIDPInitiatedTests) {
             printTestTrace("IDP_initiated_SAML", "Running IDP Initiated SAML Flow");
-            WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+            WebClient webClient = getAndSaveWebClient();
             return genericSAML(testName, webClient, updatedTestSettings, actions, expectations);
         } else {
             return null;
@@ -108,7 +107,7 @@ public class GeneralSAMLMapToUserRegistryConfigTests extends SAMLCommonTest {
             List<validationData> expectations) throws Exception {
         if (runUnsolicitedSPInitiatedTests) {
             printTestTrace("unsolicited_SP_initiated_SAML", "Running Unsolicited SP Initiated SAML Flow");
-            WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+            WebClient webClient = getAndSaveWebClient();
             return genericSAML(testName, webClient, updatedTestSettings, actions, expectations);
         } else {
             return null;

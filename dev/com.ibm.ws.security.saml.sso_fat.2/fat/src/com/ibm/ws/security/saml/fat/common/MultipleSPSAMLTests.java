@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.saml.fat.common;
 
@@ -19,7 +19,6 @@ import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.util.Cookie;
 import com.ibm.ws.security.fat.common.ValidationData.validationData;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLCommonTest;
-import com.ibm.ws.security.saml20.fat.commonTest.SAMLCommonTestHelpers;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLConstants;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLTestSettings;
 
@@ -68,7 +67,7 @@ public class MultipleSPSAMLTests extends SAMLCommonTest {
 
         //	testSAMLServer.reconfigServer(buildSPServerName("server_2Providers.xml"), _testName, Constants.NO_EXTRA_MSGS, Constants.JUNIT_REPORTING);
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings1 = testSettings.copyTestSettings();
         updatedTestSettings1.updatePartnerInSettings("sp1", true);
@@ -92,7 +91,7 @@ public class MultipleSPSAMLTests extends SAMLCommonTest {
     @Test
     public void multipleSPSAMLTests_accessMultipleAppsInSameConversation() throws Exception {
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings1 = testSettings.copyTestSettings();
         updatedTestSettings1.updatePartnerInSettings("sp1", true);
@@ -107,7 +106,7 @@ public class MultipleSPSAMLTests extends SAMLCommonTest {
         // now, remove the ltpaToken2 cookie from the conversation (if we leave it in the conversation, the IDP will just return our original SAML Token -
         //   which if used should result in a replay attack
 
-        WebClient webClient2 = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient2 = getAndSaveWebClient();
         CookieManager cm1 = webClient.getCookieManager();
         Cookie cookie = cm1.getCookie("WASSamlSP_myTestName1");
         CookieManager cm2 = webClient2.getCookieManager();
@@ -144,7 +143,7 @@ public class MultipleSPSAMLTests extends SAMLCommonTest {
         //	testSAMLServer.reconfigServer(buildSPServerName("server_2Providers.xml"), _testName, Constants.NO_EXTRA_MSGS, Constants.JUNIT_REPORTING);
 
         // Create the conversation object which will maintain state for us
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings1 = testSettings.copyTestSettings();
         updatedTestSettings1.updatePartnerInSettings("sp1", true);
@@ -157,7 +156,7 @@ public class MultipleSPSAMLTests extends SAMLCommonTest {
 
         // now, remove the ltpaToken2 cookie from the conversation (if we leave it in the conversation, the IDP will just return our original SAML Token -
         //   which if used should result in a replay attack
-        WebClient webClient2 = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient2 = getAndSaveWebClient();
         CookieManager cm1 = webClient.getCookieManager();
         Cookie cookie = cm1.getCookie("WASSamlSP_myTestName1");
         Cookie cookie2 = cm1.getCookie("saml20_SP_sso");

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2020 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -825,7 +825,7 @@ public class SAMLCommonTestHelpers extends TestHelpers {
         String thisMethod = "invokeApp";
         msgUtils.printMethodName(thisMethod);
         Object thePage;
-
+        WebClient webClient2 = null;
         try {
 
             if (app == null) {
@@ -836,7 +836,7 @@ public class SAMLCommonTestHelpers extends TestHelpers {
 
             setMarkEndOfLogs();
 
-            WebClient webClient2 = getWebClient();
+            webClient2 = getWebClient();
 
             URL url = AutomationTools.getNewUrl(app);
             WebRequest request = new WebRequest(url, HttpMethod.POST);
@@ -929,6 +929,8 @@ public class SAMLCommonTestHelpers extends TestHelpers {
             Log.error(thisClass, testcase, e, "Exception occurred in " + thisMethod);
             System.err.println("Exception: " + e);
             validationTools.validateException(expectations, step, e);
+        } finally {
+            destroyWebClient(webClient2);
         }
 
     }
@@ -1061,6 +1063,10 @@ public class SAMLCommonTestHelpers extends TestHelpers {
 
         setMarkEndOfLogs();
 
+        boolean cleanupWebClient = false;
+        if (inWebClient == null) {
+            cleanupWebClient = true;
+        }
         WebClient webClient = getWebClient(inWebClient);
 
         URL url = AutomationTools.getNewUrl(settings.getSpMetaDataEdpt());
@@ -1076,6 +1082,9 @@ public class SAMLCommonTestHelpers extends TestHelpers {
         validationTools.setServers(testSAMLServer, testSAMLOIDCServer, testOIDCServer, testAppServer, testIDPServer);
         validationTools.validateResult(webClient, thePage, SAMLConstants.SAML_META_DATA_ENDPOINT, expectations, settings);
 
+        if (cleanupWebClient) {
+            destroyWebClient(webClient);
+        }
         return thePage;
     }
 

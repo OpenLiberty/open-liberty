@@ -17,7 +17,6 @@ import java.util.List;
 
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.ibm.ws.security.fat.common.ValidationData.validationData;
-import com.ibm.ws.security.saml20.fat.commonTest.SAMLCommonTestHelpers;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLConstants;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLMessageConstants;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLTestSettings;
@@ -99,7 +98,7 @@ public class TimeoutTests extends SAMLLogoutCommonTest {
      */
     public void test_logoutAfterIDPSessionExpires(String loginType, String logoutType, boolean localOnly, String[] flowOverride) throws Exception {
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
         boolean spCookieStillGood;
 
         SAMLTestSettings settings = testSettings.copyTestSettings();
@@ -152,7 +151,7 @@ public class TimeoutTests extends SAMLLogoutCommonTest {
 
     public void test_logoutAfterSAMLTokenExpires(String loginType, String logoutType, boolean localOnly, String[] flowOverride) throws Exception {
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings settings = testSettings.copyTestSettings();
         // Set test settings for requested flow type

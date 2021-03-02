@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.saml.fat.common;
 
@@ -18,7 +18,6 @@ import com.gargoylesoftware.htmlunit.WebClient;
 import com.ibm.ws.security.fat.common.ValidationData.validationData;
 import com.ibm.ws.security.fat.common.utils.ConditionalIgnoreRule;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLCommonTest;
-import com.ibm.ws.security.saml20.fat.commonTest.SAMLCommonTestHelpers;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLConstants;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLTestSettings;
 
@@ -42,7 +41,7 @@ public class DefaultConfigTests extends SAMLCommonTest {
     public void testSaml_defaultConfig() throws Exception {
 
         //        WebClient webClient = getWebClient(true);
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         //		updatedTestSettings.updatePartnerInSettings("sp1", true) ;
@@ -57,7 +56,7 @@ public class DefaultConfigTests extends SAMLCommonTest {
     @Test
     public void testSaml_defaultConfig_noDefaultSSLConfig() throws Exception {
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         testSAMLServer.reconfigServer("server_defaultConfig_noDefaultSSLConfig.xml", _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
