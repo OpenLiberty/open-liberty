@@ -147,7 +147,7 @@
 
 7089=Une exception s''est produite lors de la recherche ou de l''appel de la m\u00e9thode d''amendement de session [{0}] sur la classe [{1}] avec les param\u00e8tres [{2}].
 
-7091=Impossible de d\u00e9finir les classes de l''\u00e9couteur.
+7091=Impossible de d\u00e9finir les classes de programme d''\u00e9coute.
 
 7092=Impossible d''ajouter une requ\u00eate dont les types sont en conflit avec une requ\u00eate existante. Requ\u00eate \u00e0 ajouter : [{0}] est nomm\u00e9e : [{1}] avec les arguments [{2}]. La requ\u00eate en conflit existante : [{3}] est nomm\u00e9e : [{4}] avec les arguments : [{5}].
 
@@ -387,17 +387,17 @@
 
 7223=Un \u00e9l\u00e9ment @PrimaryKeyJoinColumns a \u00e9t\u00e9 d\u00e9tect\u00e9 sur l''\u00e9l\u00e9ment annot\u00e9 [{0}]. Lorsque l''entit\u00e9 utilise une seule cl\u00e9 primaire, seulement un seul (ou z\u00e9ro) \u00e9l\u00e9ment @PrimaryKeyJoinColumn doit \u00eatre sp\u00e9cifi\u00e9.
 
-7224=La m\u00e9thode [{1}] sur la classe d''\u00e9couteur [{0}] est une m\u00e9thode de rappel non valide.
+7224=La m\u00e9thode [{1}] sur la classe de programme d''\u00e9coute [{0}] est une m\u00e9thode de rappel non valide.
 
-7225=La m\u00e9thode [{1}] est introuvable sur la classe d''\u00e9couteur [{0}].
+7225=La m\u00e9thode [{1}] est introuvable sur la classe de programme d''\u00e9coute [{0}].
 
-7226=La m\u00e9thode [{1}] sur la classe d''\u00e9couteur [{0}] comporte un modificateur non valide. Les m\u00e9thodes de rappel ne peuvent pas \u00eatre statiques ou finales.
+7226=La m\u00e9thode [{1}] sur la classe de programme d''\u00e9coute [{0}] comporte un modificateur non valide. Les m\u00e9thodes de rappel ne peuvent pas \u00eatre statiques ou finales.
 
-7227=La classe d''\u00e9couteur [{0}] comporte plusieurs m\u00e9thodes de rappel de cycle de vie pour le m\u00eame \u00e9v\u00e9nement de cycle de vie ([{1}] et [{2}]).
+7227=La classe de programme d''\u00e9coute [{0}] comporte plusieurs m\u00e9thodes de rappel de cycle de vie pour le m\u00eame \u00e9v\u00e9nement de cycle de vie ([{1}] et [{2}]).
 
-7228=la m\u00e9thode de rappel [{1}] sur la classe d''\u00e9couteur [{0}] comporte une signature incorrecte. Elle ne doit avoir aucun param\u00e8tre.
+7228=la m\u00e9thode de rappel [{1}] sur la classe de programme d''\u00e9coute [{0}] comporte une signature incorrecte. Elle ne doit avoir aucun param\u00e8tre.
 
-7229=la m\u00e9thode de rappel [{3}] sur la classe d''\u00e9couteur d''entit\u00e9 [{2}] comporte une signature incorrecte. La m\u00e9thode doit prendre 1 param\u00e8tre qui doit pouvoir \u00eatre affect\u00e9 depuis la classe entit\u00e9. Ici, la classe de param\u00e8tre [{1}] ne peut pas \u00eatre affect\u00e9e depuis la classe entit\u00e9 [{0}].
+7229=la m\u00e9thode de rappel [{3}] sur la classe de programme d''\u00e9coute d''entit\u00e9 [{2}] comporte une signature incorrecte. La m\u00e9thode doit prendre 1 param\u00e8tre qui doit pouvoir \u00eatre affect\u00e9 depuis la classe entit\u00e9. Ici, la classe de param\u00e8tre [{1}] ne peut pas \u00eatre affect\u00e9e depuis la classe entit\u00e9 [{0}].
 
 7231=Impossible de conserver l''objet d\u00e9tach\u00e9 [{0}]. {3}Classe> {1} Cl\u00e9 primaire > {2}
 
@@ -465,7 +465,7 @@
 
 7267=La classe de gestionnaire d''exceptions sp\u00e9cifi\u00e9e [{0}] n''est pas valide, elle doit exister dans le chemin d''acc\u00e8s aux classes et impl\u00e9menter l''interface ExceptionHandler.
 
-7268=La classe d''\u00e9couteur d''\u00e9v\u00e9nement de session sp\u00e9cifi\u00e9e [{0}] n''est pas valide, elle doit exister dans le chemin d''acc\u00e8s aux classes et impl\u00e9menter l''interface SessionEventListener.
+7268=La classe de programme d''\u00e9coute d''\u00e9v\u00e9nement de session sp\u00e9cifi\u00e9e [{0}] n''est pas valide, elle doit exister dans le chemin d''acc\u00e8s aux classes et impl\u00e9menter l''interface SessionEventListener.
 
 7270=La valeur de taille des instructions sp\u00e9cifi\u00e9e [{0}] n''est pas valide [{1}].
 
@@ -479,7 +479,7 @@
 
 7275=Impossible d''instancier La classe de gestionnaire d''exceptions [{0}] sp\u00e9cifi\u00e9e dans la propri\u00e9t\u00e9 eclipselink.exception-handler [{1}].
 
-7276=Impossible d''instancier la classe d''\u00e9couteur d''\u00e9v\u00e9nement de session [{0}] sp\u00e9cifi\u00e9e dans la propri\u00e9t\u00e9 eclipselink.session-event-listener [{1}].
+7276=Impossible d''instancier la classe de programme d''\u00e9coute d''\u00e9v\u00e9nement de session [{0}] sp\u00e9cifi\u00e9e dans la propri\u00e9t\u00e9 eclipselink.session-event-listener [{1}].
 
 7277=Le nom du fichier de journalisation n''a pas \u00e9t\u00e9 sp\u00e9cifi\u00e9.
 

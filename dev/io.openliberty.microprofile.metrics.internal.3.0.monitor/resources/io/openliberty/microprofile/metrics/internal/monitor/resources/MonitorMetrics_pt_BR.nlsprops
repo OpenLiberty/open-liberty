@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2020, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -25,3 +25,7 @@ FEATURE_REGISTERED.useraction=Nenhuma a\u00e7\u00e3o do usu\u00e1rio \u00e9 nece
 FEATURE_UNREGISTERED=CWPMI2004I: Todas as m\u00e9tricas de monitoramento tiveram seu registro cancelado do mpMetrics.
 FEATURE_UNREGISTERED.explanation=O recurso de Monitoramento de Desempenho, o recurso de MicroProfile Metrics ou ambos os recursos foram removidos do servidor. Todas as m\u00e9tricas de monitoramento tiveram seu registro cancelado do MicroProfile Metrics.
 FEATURE_UNREGISTERED.useraction=Nenhuma a\u00e7\u00e3o do usu\u00e1rio \u00e9 necess\u00e1ria.
+
+METRICS_UNHANDLED_JAXRS_EXCEPTION=CWPMI2005W: O mapeador de exce\u00e7\u00e3o do MicroProfile Metrics detectou e est\u00e1 lidando com uma exce\u00e7\u00e3o n\u00e3o manipulada do aplicativo JAX-RS.
+METRICS_UNHANDLED_JAXRS_EXCEPTION.explanation=No aplicativo baseado em JAX-RS ocorreu uma exce\u00e7\u00e3o que n\u00e3o \u00e9 manipulada no aplicativo. O c\u00f3digo MicroProfile manipula essa exce\u00e7\u00e3o criando um log do rastreio de pilha de exce\u00e7\u00e3o e retornando uma resposta 500 Erro interno do servidor.
+METRICS_UNHANDLED_JAXRS_EXCEPTION.useraction=Esse comportamento pode ser aceit\u00e1vel. Para lidar com a exce\u00e7\u00e3o de modo diferente, inclua uma interface ExceptionMapper que a manipule e mapeie para uma resposta diferente.

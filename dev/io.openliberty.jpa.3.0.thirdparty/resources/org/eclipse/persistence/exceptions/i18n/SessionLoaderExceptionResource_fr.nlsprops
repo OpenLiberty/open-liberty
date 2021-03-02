@@ -49,7 +49,7 @@
 
 9010=Une exception {0} a \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9e lors de l''analyse syntaxique du fichier XML par rapport au sch\u00e9ma XML.
 
-9011=La classe de plateforme de serveur {0} a \u00e9t\u00e9 retir\u00e9e et la version de serveur d''application correspondante n''est plus prise en charge
+9011=La classe de plateforme de serveur {0} a \u00e9t\u00e9 retir\u00e9e et la version de serveur d''applications correspondante n''est plus prise en charge
 
 9012=Impossible de charger le fichier session-xml car il contient un format non valide ou car le format XML n''est pas pris en charge.
 

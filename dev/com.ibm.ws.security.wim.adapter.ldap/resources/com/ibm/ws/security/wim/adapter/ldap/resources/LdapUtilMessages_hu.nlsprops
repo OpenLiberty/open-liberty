@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2013 IBM Corporation and others.
+# Copyright (c) 2012, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -229,3 +229,51 @@ LOGINPROPERTY_OVERRIDE_USERFILTER.useraction=Ha a userFilter attrib\u00fatum a p
 INVALID_LOGIN_PROPERTIES=CWIML4506E: A k\u00f6vetkez\u0151 bejelentkez\u00e9si tulajdons\u00e1gok \u00e9rv\u00e9nytelenek: {0}.
 INVALID_LOGIN_PROPERTIES.explanation=Legal\u00e1bb egy bejelentkez\u00e9si tulajdons\u00e1g nem \u00e9rv\u00e9nyes WIM PersonAccount tulajdons\u00e1g.
 INVALID_LOGIN_PROPERTIES.useraction=V\u00e1lasszon \u00e9rv\u00e9nyes PersonAccount tulajdons\u00e1gokat vagy adja hozz\u00e1 a tulajdons\u00e1gokat a PersonAccount elemhez kiterjesztett tulajdons\u00e1gk\u00e9nt. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a kis- \u00e9s nagybet\u0171k mindegyik bejelentkez\u00e9si tulajdons\u00e1gban megegyeznek a megfelel\u0151 PersonAccount tulajdons\u00e1g kis- \u00e9s nagybet\u0171ivel.
+
+KRB5_LOGIN_FAILED_CACHE=CWIML4507E: Nem siker\u00fclt a Kerberos bejelentkez\u00e9s a(z) {0} Kerberos azonos\u00edt\u00f3val \u00e9s a(z) {1} Kerberos hiteles\u00edt\u00e9si adat gyors\u00edt\u00f3t\u00e1rral (ccache).
+KRB5_LOGIN_FAILED_CACHE.explanation=Vagy a megadott Kerberos azonos\u00edt\u00f3 \u00e9rv\u00e9nytelen, vagy a Kerberos hiteles\u00edt\u0151 adat gyors\u00edt\u00f3t\u00e1r (ccache) \u00e9rv\u00e9nytelen, illetve lej\u00e1rt.
+KRB5_LOGIN_FAILED_CACHE.useraction=Gondoskodj\u00e9k \u00e9rv\u00e9nyes Kerberos azonos\u00edt\u00f3 megad\u00e1s\u00e1r\u00f3l, illetve arr\u00f3l, hogy a Kerberos hiteles\u00edt\u0151 adat gyors\u00edt\u00f3t\u00e1r (ccache) ne legyen lej\u00e1rt.
+
+KRB5_LOGIN_FAILED_KEYTAB=CWIML4508E: Nem siker\u00fclt a Kerberos bejelentkez\u00e9s a(z) {0} Kerberos azonos\u00edt\u00f3val \u00e9s a(z) {1} Kerberos kulcsc\u00edmk\u00e9vel.
+KRB5_LOGIN_FAILED_KEYTAB.explanation=Vagy a megadott Kerberos azonos\u00edt\u00f3, vagy a Kerberos kulcsc\u00edmke \u00e9rv\u00e9nytelen.
+KRB5_LOGIN_FAILED_KEYTAB.useraction=Gondoskodj\u00e9k \u00e9rv\u00e9nyes Kerberos azonos\u00edt\u00f3 megad\u00e1s\u00e1r\u00f3l, illetve egy Kerberos azonos\u00edt\u00f3t tartalmaz\u00f3 \u00e9rv\u00e9nyes Kerberos kulcsc\u00edmke megad\u00e1s\u00e1r\u00f3l.
+		
+KRB5_LOGIN_FAILED_DEFAULT_CACHE=CWIML4509E: Nem siker\u00fclt a Kerberos bejelentkez\u00e9s a(z) {0} Kerberos azonos\u00edt\u00f3val \u00e9s az alap\u00e9rtelmezett Kerberos hiteles\u00edt\u00e9si adat gyors\u00edt\u00f3t\u00e1rral (ccache).
+KRB5_LOGIN_FAILED_DEFAULT_CACHE.explanation=Vagy a megadott Kerberos azonos\u00edt\u00f3 \u00e9rv\u00e9nytelen, vagy az alap\u00e9rtelmezett Kerberos hiteles\u00edt\u0151 adat gyors\u00edt\u00f3t\u00e1r (ccache) \u00e9rv\u00e9nytelen, illetve lej\u00e1rt.
+KRB5_LOGIN_FAILED_DEFAULT_CACHE.useraction=Gondoskodj\u00e9k \u00e9rv\u00e9nyes Kerberos azonos\u00edt\u00f3 megad\u00e1s\u00e1r\u00f3l, illetve arr\u00f3l, hogy a Kerberos hiteles\u00edt\u0151 adat gyors\u00edt\u00f3t\u00e1r (ccache) ne legyen lej\u00e1rt.
+
+KRB5_LOGIN_FAILED_DEFAULT_KEYTAB=CWIML4510E: Nem siker\u00fclt a Kerberos bejelentkez\u00e9s a(z) {0} Kerberos azonos\u00edt\u00f3val \u00e9s az alap\u00e9rtelmezett Kerberos kulcsc\u00edmk\u00e9vel.
+KRB5_LOGIN_FAILED_DEFAULT_KEYTAB.explanation=Vagy a megadott Kerberos azonos\u00edt\u00f3, vagy az alap\u00e9rtelmezett Kerberos kulcsc\u00edmke \u00e9rv\u00e9nytelen.
+KRB5_LOGIN_FAILED_DEFAULT_KEYTAB.useraction=Gondoskodj\u00e9k \u00e9rv\u00e9nyes Kerberos azonos\u00edt\u00f3 megad\u00e1s\u00e1r\u00f3l, illetve arr\u00f3l, hogy az alap\u00e9rtelmezett Kerberos kulcsc\u00edmke \u00e9rv\u00e9nyes legyen.
+
+KRB5_TICKETCACHE_USED=CWIML4511E: A(z) {0} LDAP nyilv\u00e1ntart\u00e1s a(z) {1} Kerberos jegy gyors\u00edt\u00f3t\u00e1r (ccache) f\u00e1jln\u00e9vvel \u00e9s a(z) {2} kulcsc\u00edmke f\u00e1jln\u00e9vvel van konfigur\u00e1lva. A Kerberos k\u00f6t\u00e9shiteles\u00edt\u00e9shez az LDAP kiszolg\u00e1l\u00f3hoz a Kerberos hiteles\u00edt\u0151 adat gyors\u00edt\u00f3t\u00e1r (ccache) ker\u00fcl alkalmaz\u00e1sra.
+KRB5_TICKETCACHE_USED.explanation=A kulcsc\u00edmkef\u00e1jl haszn\u00e1lat\u00e1hoz a kulcsc\u00edmkef\u00e1jl nev\u00e9t kell megadni, \u00e9s a Kerberos hiteles\u00edt\u0151 adat gyors\u00edt\u00f3t\u00e1r (ccache) f\u00e1jlnev\u00e9t nem szabad megadni.
+KRB5_TICKETCACHE_USED.useraction=Nincs teend\u0151. Az \u00fczenet elker\u00fcl\u00e9se \u00e9rdek\u00e9ben t\u00e1vol\u00edtsa el az LDAP nyilv\u00e1ntart\u00e1s ticketCache attrib\u00fatumot vagy a Kerberos kulcsc\u00edmke attrib\u00fatumot.
+
+INVALID_KRB5_PRINCIPAL=CWIML4512E: A(z) {0} Kerberos azonos\u00edt\u00f3n\u00e9v nem megfelel\u0151en form\u00e1zott, vagy hi\u00e1nyzik a tartom\u00e1ny, illetve nem tal\u00e1lhat\u00f3 alap\u00e9rtelmezett tartom\u00e1ny.
+INVALID_KRB5_PRINCIPAL.explanation=Az Kerberos azonos\u00edt\u00f3n\u00e9v nem lehet \u00fcres. Az azonos\u00edt\u00f3n\u00e9vnek tartalmaznia kell a tartom\u00e1nynevet, vagy a Kerberos konfigur\u00e1ci\u00f3s f\u00e1jlban meg kell adni egy alap\u00e9rtelmezett tartom\u00e1nynevet.
+INVALID_KRB5_PRINCIPAL.useraction=Jav\u00edtsa ki az azonos\u00edt\u00f3nevet, vagy vegyen fel egy alap\u00e9rtelmezett tartom\u00e1nynevet.
+
+CANNOT_READ_KRB5_FILE=CWIML4513E: A(z) {0} LDAP nyilv\u00e1ntart\u00e1s nem tudja olvasni a(z) {1} Kerberos f\u00e1jlt.
+CANNOT_READ_KRB5_FILE.explanation=A Kerberos f\u00e1jlt nem lehet megnyitni. Vagy a f\u00e1jlenged\u00e9lyek nem megfelel\u0151ek, vagy a f\u00e1jl nem l\u00e9tezik.
+CANNOT_READ_KRB5_FILE.useraction=Ellen\u0151rizze, hogy a f\u00e1jl helye megfelel\u0151-e, \u00e9s a kiszolg\u00e1l\u00f3 rendelkezik-e f\u00e1jlolvas\u00e1si enged\u00e9llyel.
+# CWIML4514 already used
+
+KRB5_FILE_NOT_FOUND=CWIML4515E: A(z) {1} elem {0} attrib\u00fatuma a(z) {2} helyen nem l\u00e9tez\u0151 f\u00e1jlra van konfigur\u00e1lva.
+KRB5_FILE_NOT_FOUND.explanation=A konfigur\u00e1ci\u00f3 olyan f\u00e1jlra hivatkozik, amely nem olvashat\u00f3 vagy nem l\u00e9tezik.
+KRB5_FILE_NOT_FOUND.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a konfigur\u00e1ci\u00f3 l\u00e9tez\u0151 \u00e9s az alkalmaz\u00e1sfeldolgoz\u00e1s \u00e1ltal olvashat\u00f3 f\u00e1jlra mutasson.
+
+KRB5_FILE_FOUND=CWIML4516E: A LDAP nyilv\u00e1ntart\u00e1s \u00f6sszetev\u0151 a(z) {1} helyen tal\u00e1lhat\u00f3 {0} f\u00e1jl haszn\u00e1lat\u00e1ra van be\u00e1ll\u00edtva.
+KRB5_FILE_FOUND.explanation=A rendszer sikeresen megtal\u00e1lta a be\u00e1ll\u00edtott f\u00e1jlt.
+KRB5_FILE_FOUND.useraction=Nincs teend\u0151.
+
+# CWIML4517 already used
+
+IDMAP_INVALID_FORMAT=CWIML4518W: A(z) {0} {1} \u00e9rt\u00e9k nem megfelel\u0151 form\u00e1tum\u00fa. Az \u00e9rt\u00e9k az ''objektumoszt\u00e1ly:attrib\u00fatum'' vagy ''*:attrib\u00fatum'' p\u00e1rok pontosvessz\u0151vel elv\u00e1lasztott list\u00e1ja lehet.
+IDMAP_INVALID_FORMAT.explanation=A userIdMap \u00e9rt\u00e9k\u00e9nek \u00e9rv\u00e9nyes form\u00e1tumban kell lennie, hogy az objektumoszt\u00e1ly \u00e9s az attrib\u00fatum \u00e9rtelmezhet\u0151 legyen.
+IDMAP_INVALID_FORMAT.useraction=Friss\u00edtse a userIdMap \u00e9rt\u00e9k\u00e9t \u00fagy, hogy az megfeleljen a megadott form\u00e1tumnak.
+# CWIML4519 and CWIML4520 already used
+
+KRB5_SERVICE_NOT_AVAILABLE=CWIML4521E: A(z) {0} LDAP nyilv\u00e1ntart\u00e1s megk\u00eds\u00e9relte a k\u00f6t\u00e9st az LDAP kiszolg\u00e1l\u00f3hoz a(z) {1} azonos\u00edt\u00f3n\u00e9v Kerberos hiteles\u00edt\u0151 adataival, de a hiteles\u00edt\u0151 adatokat biztos\u00edt\u00f3 Kerberos szolg\u00e1ltat\u00e1s nem \u00e9rhet\u0151 el. A k\u00f6t\u00e9shiteles\u00edt\u00e9si mechanizmus: {2}.
+KRB5_SERVICE_NOT_AVAILABLE.explanation=A Kerberos szolg\u00e1ltat\u00e1s nem volt el\u00e9rhet\u0151, amikor az LDAP nyilv\u00e1ntart\u00e1s megk\u00eds\u00e9relte a k\u00f6t\u00e9st az LDAP kiszolg\u00e1l\u00f3hoz. Ha a Kerberos szolg\u00e1ltat\u00e1s nem \u00e9rhet\u0151 el, akkor a felhaszn\u00e1l\u00f3k hiteles\u00edt\u00e9se nem v\u00e9gezhet\u0151 el.
+KRB5_SERVICE_NOT_AVAILABLE.useraction=Tekintse \u00e1t a bindAuthMechanism, krb5Principal \u00e9s krb5TicketCache attrib\u00fatumokra vonatkoz\u00f3 LDAP nyilv\u00e1ntart\u00e1s konfigur\u00e1ci\u00f3s be\u00e1ll\u00edt\u00e1sokat, valamint a Kerberos konfigur\u00e1ci\u00f3t. Ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t.

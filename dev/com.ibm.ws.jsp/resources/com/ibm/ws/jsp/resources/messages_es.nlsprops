@@ -1258,3 +1258,7 @@ jsp.parse.tld.exception.useraction=Compruebe si el archivo del Descriptor de bib
 system.java.compiler.not.found=JSPG0304W: El atributo JSP, useJDKCompiler, se ha establecido en true, pero no se ha encontrado el compilador de SDK de Java. El contenedor JSP utiliza el compilador que se ha incluido en el producto para compilar los archivos JSP en el m\u00f3dulo web: {0}.
 system.java.compiler.not.found.explanation=El contenedor JSP no ha podido encontrar el compilador del sistema, que habitualmente indica que el archivo jar de SDK de Java, tools.jar, no se ha encontrado en la v\u00eda de acceso de clases.
 system.java.compiler.not.found.useraction=Aseg\u00farese de que el archivo jar de SDK de Java, tools.jar, est\u00e1 en la v\u00eda de acceso de clases y verifique que el SDK de Java da soporte a la API del compilador Java. Para m\u00e1s informaci\u00f3n, consulte Specification Request 199.
+
+jsp.feature.not.loaded.correctly=CWWJS0001: La caracter\u00edstica JSP [Pages] no se ha cargado con una versi\u00f3n aceptable.
+jsp.feature.not.loaded.correctly.explanation=La caracter\u00edstica JSP [Pages] se ha cargado con una versi\u00f3n que corresponde a la especificaci\u00f3n Java [Jakarta] EE de dicha caracter\u00edstica JSP [Pages]. La caracter\u00edstica se ha cargado sin ninguna versi\u00f3n definida.
+jsp.feature.not.loaded.correctly.useraction=Compruebe el archivo server.xml para ver si existe una caracter\u00edstica JSP [Pages]. Solo se debe especificar una.

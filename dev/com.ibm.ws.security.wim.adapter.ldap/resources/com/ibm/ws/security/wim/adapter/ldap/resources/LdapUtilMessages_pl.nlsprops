@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2013 IBM Corporation and others.
+# Copyright (c) 2012, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -225,6 +225,57 @@ LDAP_REGISTRY_INVALID_MAPPING.useraction=Zmodyfikuj implementacj\u0119 niestanda
 LOGINPROPERTY_OVERRIDE_USERFILTER=CWIML4505W: Zdefiniowany atrybut userFilter jest ignorowany, poniewa\u017c s\u0105 zdefiniowane atrybuty loginProperty. Filtr u\u017cytkownik\u00f3w jest generowany dynamicznie.
 LOGINPROPERTY_OVERRIDE_USERFILTER.explanation=Zdefiniowana jest co najmniej jedna instancja atrybutu loginProperty. Te atrybuty s\u0105 u\u017cywane do budowania filtru u\u017cytkownik\u00f3w.
 LOGINPROPERTY_OVERRIDE_USERFILTER.useraction=Je\u015bli preferowany jest atrybut userFilter, usu\u0144 wszystkie atrybuty loginProperty.
+
 INVALID_LOGIN_PROPERTIES=CWIML4506E: Nast\u0119puj\u0105ce w\u0142a\u015bciwo\u015bci logowania s\u0105 niepoprawne: {0}.
 INVALID_LOGIN_PROPERTIES.explanation=Co najmniej jedna w\u0142a\u015bciwo\u015b\u0107 logowania nie ma poprawnych w\u0142a\u015bciwo\u015bci WIM PersonAccount.
 INVALID_LOGIN_PROPERTIES.useraction=Wybierz poprawne w\u0142a\u015bciwo\u015bci PersonAccount lub dodaj w\u0142a\u015bciwo\u015bci do obiektu PersonAccount jako w\u0142a\u015bciwo\u015bci rozszerzone. Upewnij si\u0119, \u017ce wielko\u015b\u0107 liter ka\u017cdej w\u0142a\u015bciwo\u015bci logowania jest zgodna z wielko\u015bci\u0105 liter odpowiedniej w\u0142a\u015bciwo\u015bci PersonAccount.
+
+KRB5_LOGIN_FAILED_CACHE=CWIML4507E: Nie powiod\u0142o si\u0119 logowanie Kerberos z u\u017cyciem nazwy u\u017cytkownika protoko\u0142u Kerberos {0} i pami\u0119ci podr\u0119cznej referencji Kerberos (ccache) {1}.
+KRB5_LOGIN_FAILED_CACHE.explanation=Podana nazwa u\u017cytkownika protoko\u0142u Kerberos jest niepoprawna albo pami\u0119\u0107 podr\u0119czna referencji Kerberos (ccache) jest niepoprawna b\u0105d\u017a utraci\u0142a wa\u017cno\u015b\u0107.
+KRB5_LOGIN_FAILED_CACHE.useraction=Podaj poprawn\u0105 nazw\u0119 u\u017cytkownika protoko\u0142u Kerberos i upewnij si\u0119, \u017ce pami\u0119\u0107 podr\u0119czna referencji Kerberos (ccache) nie utraci\u0142a wa\u017cno\u015bci.
+
+KRB5_LOGIN_FAILED_KEYTAB=CWIML4508E: Nie powiod\u0142o si\u0119 logowanie Kerberos z u\u017cyciem nazwy u\u017cytkownika protoko\u0142u Kerberos {0} i pliku keytab Kerberos {1}.
+KRB5_LOGIN_FAILED_KEYTAB.explanation=Podana nazwa u\u017cytkownika protoko\u0142u Kerberos jest niepoprawna albo plik keytab Kerberos jest niepoprawny.
+KRB5_LOGIN_FAILED_KEYTAB.useraction=Podaj poprawn\u0105 nazw\u0119 u\u017cytkownika protoko\u0142u Kerberos i upewnij si\u0119, \u017ce podany jest poprawny plik keytab Kerberos zawieraj\u0105cy t\u0119 nazw\u0119.
+		
+KRB5_LOGIN_FAILED_DEFAULT_CACHE=CWIML4509E: Nie powiod\u0142o si\u0119 logowanie Kerberos z u\u017cyciem nazwy u\u017cytkownika protoko\u0142u Kerberos {0} i domy\u015blnej pami\u0119ci podr\u0119cznej referencji Kerberos (ccache).
+KRB5_LOGIN_FAILED_DEFAULT_CACHE.explanation=Podana nazwa u\u017cytkownika protoko\u0142u Kerberos jest niepoprawna albo domy\u015blna pami\u0119\u0107 podr\u0119czna referencji Kerberos (ccache) jest niepoprawna b\u0105d\u017a utraci\u0142a wa\u017cno\u015b\u0107.
+KRB5_LOGIN_FAILED_DEFAULT_CACHE.useraction=Podaj poprawn\u0105 nazw\u0119 u\u017cytkownika protoko\u0142u Kerberos i upewnij si\u0119, \u017ce domy\u015blna pami\u0119\u0107 podr\u0119czna referencji Kerberos (ccache) nie utraci\u0142a wa\u017cno\u015bci.
+
+KRB5_LOGIN_FAILED_DEFAULT_KEYTAB=CWIML4510E: Nie powiod\u0142o si\u0119 logowanie Kerberos z u\u017cyciem nazwy u\u017cytkownika protoko\u0142u Kerberos {0} i domy\u015blnego pliku keytab Kerberos.
+KRB5_LOGIN_FAILED_DEFAULT_KEYTAB.explanation=Podana nazwa u\u017cytkownika protoko\u0142u Kerberos jest niepoprawna albo domy\u015blny plik keytab Kerberos jest niepoprawny.
+KRB5_LOGIN_FAILED_DEFAULT_KEYTAB.useraction=Podaj poprawn\u0105 nazw\u0119 u\u017cytkownika protoko\u0142u Kerberos i upewnij si\u0119, \u017ce domy\u015blny plik keytab Kerberos jest poprawny.
+
+KRB5_TICKETCACHE_USED=CWIML4511E: Rejestr LDAP {0} jest skonfigurowany z nazw\u0105 pliku pami\u0119ci podr\u0119cznej bilet\u00f3w Kerberos {1} (ccache) i nazw\u0105 pliku keytab {2} Pami\u0119\u0107 podr\u0119czna referencji Kerberos (ccache) jest u\u017cywana do uwierzytelniania wi\u0105zania z serwerem LDAP.
+KRB5_TICKETCACHE_USED.explanation=Aby u\u017cywany by\u0142 plik keytab, nazwa pliku keytab musi by\u0107 podana, a nazwa pami\u0119ci podr\u0119cznej referencji Kerberos (ccache) nie mo\u017ce by\u0107 podana.
+KRB5_TICKETCACHE_USED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107. Aby unikn\u0105\u0107 tego komunikatu, usu\u0144 atrybut rejestru LDAP ticketCache lub atrybut keytab Kerberos.
+
+INVALID_KRB5_PRINCIPAL=CWIML4512E: Nazwa u\u017cytkownika protoko\u0142u Kerberos {0} ma nieprawid\u0142owy format, brakuje nazwy dziedziny albo nie znaleziono domy\u015blnej nazwy dziedziny.
+INVALID_KRB5_PRINCIPAL.explanation=Nazwa u\u017cytkownika protoko\u0142u Kerberos nie mo\u017ce by\u0107 pusta. Nazwa u\u017cytkownika musi zawiera\u0107 nazw\u0119 dziedziny albo w pliku konfiguracyjnym protoko\u0142u Kerberos musi by\u0107 zdefiniowana domy\u015blna nazwa dziedziny.
+INVALID_KRB5_PRINCIPAL.useraction=Popraw nazw\u0119 u\u017cytkownika lub dodaj domy\u015bln\u0105 nazw\u0119 dziedziny.
+
+CANNOT_READ_KRB5_FILE=CWIML4513E: Rejestr LDAP {0} nie mo\u017ce odczyta\u0107 pliku Kerberos {1}.
+CANNOT_READ_KRB5_FILE.explanation=Nie mo\u017cna otworzy\u0107 pliku Kerberos. Uprawnienia do pliku s\u0105 nieprawid\u0142owe albo plik nie istnieje.
+CANNOT_READ_KRB5_FILE.useraction=Upewnij si\u0119, \u017ce po\u0142o\u017cenie pliku jest prawid\u0142owe, a serwer ma uprawnienia do odczytu pliku.
+
+# CWIML4514 already used
+
+KRB5_FILE_NOT_FOUND=CWIML4515E: Atrybut [{0}] z elementu {1} odwo\u0142uje si\u0119 do pliku, kt\u00f3ry nie istnieje w po\u0142o\u017ceniu: {2}
+KRB5_FILE_NOT_FOUND.explanation=Konfiguracja odwo\u0142uje si\u0119 do pliku, kt\u00f3ry nie istnieje lub kt\u00f3rego nie mo\u017cna odczyta\u0107.
+KRB5_FILE_NOT_FOUND.useraction=Upewnij si\u0119, \u017ce konfiguracja wskazuje na istniej\u0105cy plik, kt\u00f3ry mo\u017ce by\u0107 odczytywany przez proces aplikacji.
+
+KRB5_FILE_FOUND=CWIML4516E: Komponent rejestru LDAP jest skonfigurowany tak, by korzysta\u0142 z pliku {0} w po\u0142o\u017ceniu {1}.
+KRB5_FILE_FOUND.explanation=Plik okre\u015blony w konfiguracji zosta\u0142 pomy\u015blnie znaleziony.
+KRB5_FILE_FOUND.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+# CWIML4517 already used
+
+IDMAP_INVALID_FORMAT=CWIML4518W: Warto\u015b\u0107 {0} {1} jest nieprawid\u0142owo sformatowana. Warto\u015b\u0107 musi by\u0107 list\u0105 rozdzielonych \u015brednikami par ''klasa_obiekt\u00f3w:atrybut'' albo ''*:atrybut''.
+IDMAP_INVALID_FORMAT.explanation=Warto\u015b\u0107 userIdMap musi mie\u0107 poprawny format, aby mo\u017cliwa by\u0142a analiza klas obiekt\u00f3w i atrybut\u00f3w.
+IDMAP_INVALID_FORMAT.useraction=Zmodyfikuj warto\u015b\u0107 userIdMap, aby by\u0142a zgodna z wymaganym formatem.
+
+# CWIML4519 and CWIML4520 already used
+
+KRB5_SERVICE_NOT_AVAILABLE=CWIML4521E: Rejestr LDAP {0} pr\u00f3bowa\u0142 utworzy\u0107 powi\u0105zanie z serwerem LDAP przy u\u017cyciu referencji Kerberos dla nazwy u\u017cytkownika {1}, ale us\u0142uga Kerberos udost\u0119pniaj\u0105ca te referencje jest niedost\u0119pna. Mechanizm uwierzytelniania wi\u0105zania to {2}.
+KRB5_SERVICE_NOT_AVAILABLE.explanation=Us\u0142uga Kerberos by\u0142\u0105 niedost\u0119pna, gdy rejestr LDAP pr\u00f3bowa\u0142 utworzy\u0107 powi\u0105zanie z serwerem LDAP. Gdy us\u0142uga Kerberos jest niedost\u0119pna, uwierzytelnianie u\u017cytkownik\u00f3w nie jest mo\u017cliwe.
+KRB5_SERVICE_NOT_AVAILABLE.useraction=Sprawd\u017a, czy ustawienia konfiguracji rejestru LDAP zawieraj\u0105 atrybuty bindAuthMechanism, krb5Principal i krb5TicketCache, a tak\u017ce sprawd\u017a konfiguracj\u0119 protoko\u0142u Kerberos. Zrestartuj serwer.  

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2019 IBM Corporation and others.
+# Copyright (c) 2012, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -270,4 +270,4 @@ CANNOT_WRITE_TO_READ_ONLY_REPOSITORY.useraction=Gondoskodj\u00e9k r\u00f3la, hog
 
 REQUIRED_IDENTIFIERS_MISSING=CWIML3001W: Az entit\u00e1s k\u00f6telez\u0151 azonos\u00edt\u00f3i hi\u00e1nyoznak.
 REQUIRED_IDENTIFIERS_MISSING.explanation=A uniqueName \u00e9s uniqueId azonos\u00edt\u00f3k nem lettek megadva. Legal\u00e1bb egy azonos\u00edt\u00f3t meg kell adni.
-REQUIRED_IDENTIFIERS_MISSING.useraction=Gondoskodj\u00e9k r\u00f3la, hogy az azonos\u00edt\u00f3 tulajdons\u00e1g minden \u00e1tvett entit\u00e1sra vonatkoz\u00f3an meg legyen adva. Ha nincs megadva azonos\u00edt\u00f3, akkor vegye fel a tulajdons\u00e1got, \u00e9s adja meg vagy a uniqueName, vagy a uniqueId azonos\u00edt\u00f3t.
+REQUIRED_IDENTIFIERS_MISSING.useraction=Gondoskodj\u00e9k r\u00f3la, hogy az azonos\u00edt\u00f3 tulajdons\u00e1g mindegyik \u00e1tadott entit\u00e1shoz meg legyen adva. Ha nincs megadva azonos\u00edt\u00f3, akkor vegye fel a tulajdons\u00e1got, \u00e9s adja meg vagy a uniqueName, vagy a uniqueId azonos\u00edt\u00f3t.

@@ -1,4 +1,4 @@
-# Copyright (c) 2018, 2020 IBM Corporation and others.
+# Copyright (c) 2018, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -61,6 +61,6 @@ OPENAPI_APPLICATION_PROCESSED=CWWKO1660I: Aplikace {0} byla zpracov\u00e1na a by
 OPENAPI_APPLICATION_PROCESSED.explanation=Vygenerovan\u00fd dokument OpenAPI pro uvedenou aplikaci. Lze jej zobrazit v koncov\u00e9m bodu /openapi.
 OPENAPI_APPLICATION_PROCESSED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
 
-OPENAPI_APPLICATION_PROCESSING_ERROR=CWWKO1661E: Do\u0161lo k chyb\u011b p\u0159i zpracov\u00e1n\u00ed aplikace {0} a nebyl vytvo\u0159en dokument OpenAPI.
+OPENAPI_APPLICATION_PROCESSING_ERROR=CWWKO1661E: Do\u0161lo k chyb\u011b p\u0159i zpracov\u00e1n\u00ed aplikace {0} a nebyl vytvo\u0159en dokument OpenAPI. Chyba: {1}.
 OPENAPI_APPLICATION_PROCESSING_ERROR.explanation=P\u0159i zpracov\u00e1n\u00ed aplikace do\u0161lo k b\u011bhov\u00e9 chyb\u011b.
-OPENAPI_APPLICATION_PROCESSING_ERROR.useraction=Shrom\u00e1\u017ed\u011bte protokoly a obra\u0165te se na servis spole\u010dnosti IBM.
+OPENAPI_APPLICATION_PROCESSING_ERROR.useraction=Prozkoumejte protokoly FFDC a text v\u00fdjimky a identifikujte p\u0159\u00ed\u010dinu probl\u00e9mu.

@@ -39,7 +39,7 @@
 
 3006=[{0}] deve ser do mesmo comprimento para ser convertido em uma matriz de bytes.
 
-3007=O objeto [{0}] da classe [{1}] n\u00e3o pode ser convertido em [{2}]. Certifique-se de que a classe [{2}] esteja no CLASSPATH. Pode ser necess\u00e1rio usar a API alternativa transmitindo o carregador de classes apropriado conforme necess\u00e1rio, ou configurando-o no ConversionManager padr\u00e3o.
+3007=O objeto [{0}] da classe [{1}] n\u00e3o pode ser convertido em [{2}].  Certifique-se de que a classe [{2}] esteja no CLASSPATH.  Pode ser necess\u00e1rio usar a API alternativa transmitindo o carregador de classes apropriado conforme necess\u00e1rio, ou configurando-o no ConversionManager padr\u00e3o.
 
 3008=Formato de data/hora incorreto: [{0}] (esperado [AAAA-MM-DD''T''HH:MM:SS])
 
