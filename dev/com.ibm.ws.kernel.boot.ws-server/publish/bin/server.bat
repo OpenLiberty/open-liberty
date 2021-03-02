@@ -1,7 +1,7 @@
 @echo off
 @REM WebSphere Application Server liberty launch script
 @REM
-@REM Copyright IBM Corp. 2011, 2020
+@REM Copyright IBM Corp. 2011, 2021
 @REM The source code for this program is not published or other-
 @REM wise divested of its trade secrets, irrespective of what has
 @REM been deposited with the U.S. Copyright Office.
@@ -511,7 +511,7 @@ goto:eof
     set JAVA_CMD_QUOTED="!JAVA_HOME!\bin\java"
   )
 
-@REM Use OPENJ9_JAVA_OPTIONS if defined, otherwise use IBM_JAVA_OPTIONS
+  @REM Use OPENJ9_JAVA_OPTIONS if defined, otherwise use IBM_JAVA_OPTIONS
   if NOT defined OPENJ9_JAVA_OPTIONS (
     set SPECIFIED_JAVA_OPTIONS=!IBM_JAVA_OPTIONS!
   ) else (
@@ -520,9 +520,24 @@ goto:eof
 
   @REM Command-line parsing of -Xshareclasses does not allow "," in cacheDir.
   if "!WLP_OUTPUT_DIR:,=!" == "!WLP_OUTPUT_DIR!" (
+
     @REM Skip if Xshareclasses is defined in IBM_JAVA_OPTIONS/OPENJ9_JAVA_OPTIONS
+    @REM First check if SPECIFIED_JAVA_OPTIONS is undefined as the second test does not seem to work with undefined variables
+    if NOT defined SPECIFIED_JAVA_OPTIONS (
+      set SHARE_CLASSES=true
+    )
     if "!SPECIFIED_JAVA_OPTIONS:Xshareclasses=!" == "!SPECIFIED_JAVA_OPTIONS!" (
-      set SERVER_IBM_JAVA_OPTIONS=-Xshareclasses:name=liberty-%%u,nonfatal,cacheDir="%WLP_OUTPUT_DIR%\.classCache" -XX:ShareClassesEnableBCI -Xscmx80m !SPECIFIED_JAVA_OPTIONS!
+      set SHARE_CLASSES=true
+    )
+ 
+    if "!SHARE_CLASSES!" == "true" (
+      @REM Set -Xscmx
+      if "debug" == "%ACTION%" (
+        set XSCMX_VAL="130m"
+      ) else (
+        set XSCMX_VAL="80m"
+      )
+      set SERVER_IBM_JAVA_OPTIONS=-Xshareclasses:name=liberty-%%u,nonfatal,cacheDir="%WLP_OUTPUT_DIR%\.classCache" -XX:ShareClassesEnableBCI -Xscmx!XSCMX_VAL! !SPECIFIED_JAVA_OPTIONS!
     ) else (
       set SERVER_IBM_JAVA_OPTIONS=!SPECIFIED_JAVA_OPTIONS!
     )
