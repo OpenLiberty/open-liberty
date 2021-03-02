@@ -71,7 +71,8 @@ public class JULoopQueryAnoTest_021_Servlet extends JPATestServlet {
         executeTest(testName, testMethod, testResource);
     }
 
-    @Test
+    // Disabled for RTC282016 until a better timezone adjustment can be finished.
+    //@Test
     public void jpa_spec10_query_svlquery_juloopquery_ano_test479_AMJTA_Web() throws Exception {
         final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test479_AMJTA_Web";
         final String testMethod = "testLoop479";
@@ -87,7 +88,8 @@ public class JULoopQueryAnoTest_021_Servlet extends JPATestServlet {
         executeTest(testName, testMethod, testResource);
     }
 
-    @Test
+    // Disabled for RTC282016 until a better timezone adjustment can be finished.
+    //@Test
     public void jpa_spec10_query_svlquery_juloopquery_ano_test481_AMJTA_Web() throws Exception {
         final String testName = "jpa_spec10_query_svlquery_juloopquery_ano_test481_AMJTA_Web";
         final String testMethod = "testLoop481";
