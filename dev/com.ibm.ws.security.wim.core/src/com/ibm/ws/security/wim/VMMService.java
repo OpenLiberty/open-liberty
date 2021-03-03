@@ -100,10 +100,10 @@ public class VMMService implements Service, RealmConfigChangeListener {
     @Reference(cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC)
     protected void setConfiguredRepository(ConfiguredRepository configuredRepository, Map<String, Object> props) {
         String repositoryId = (String) props.get(KEY_ID);
-        if (!"NullUserRegistry".equals(repositoryId)) { // Do not Add NullUserRegistry to Repository
-            repositoryManager.addConfiguredRepository(repositoryId, configuredRepository);
-            notifyListeners();
-        }
+//        if (!"NullUserRegistry".equals(repositoryId)) { // Do not Add NullUserRegistry to Repository
+        repositoryManager.addConfiguredRepository(repositoryId, configuredRepository);
+        notifyListeners();
+//        }
     }
 
     protected void updatedConfiguredRepository(ConfiguredRepository configuredRepository) {
@@ -358,10 +358,10 @@ public class VMMService implements Service, RealmConfigChangeListener {
             registryRealmNames = new HashSet<String>();
 
         for (UserRegistry ur : registries) {
-            if (!"NullUserRegistry".equals(ur.getType())) { // Do not Add NullUserRegistry to Repository Manager
-                registryRealmNames.add(ur.getRealm());
-                repositoryManager.addUserRegistry(ur);
-            }
+//            if (!"NullUserRegistry".equals(ur.getType())) { // Do not Add NullUserRegistry to Repository Manager
+            registryRealmNames.add(ur.getRealm());
+            repositoryManager.addUserRegistry(ur);
+//            }
         }
         configMgr.processConfig();
     }

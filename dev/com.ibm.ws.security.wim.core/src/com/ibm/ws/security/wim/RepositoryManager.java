@@ -94,8 +94,17 @@ public class RepositoryManager {
      * @param repositoryHolder
      */
     private void addRepository(String repositoryId, RepositoryWrapper repositoryHolder) {
+
+//        if ("NullUserRegistry".equals(repositoryId) && getNumberOfRepositories() > 0)
+//            return;
+
         repositories.put(repositoryId, repositoryHolder);
+
+        if (getNumberOfRepositories() > 1)
+            repositories.remove("NullUserRegistry");
+
         numRepos = getNumberOfRepositories();
+
     }
 
     void addUserRegistry(UserRegistry userRegistry) {

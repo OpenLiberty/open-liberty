@@ -104,8 +104,7 @@ public class UserRegistryServiceImpl implements UserRegistryService, ServiceProp
 
     // Keep track of the actual user registry to use
     private final AtomicReference<UserRegistry> userRegistry = new AtomicReference<UserRegistry>();
-    private final Object userRegistrySync = new Object() {
-    };
+    private final Object userRegistrySync = new Object() {};
     private final List<String> registryTypes = new ArrayList<String>();
 
     static final String KEY_FEDERATION_REGISTRY = "FederationRegistry";
@@ -572,7 +571,10 @@ public class UserRegistryServiceImpl implements UserRegistryService, ServiceProp
 
         try {
             List<UserRegistry> urs = new ArrayList<UserRegistry>();
+            int numUrs = userRegistries.size();
             for (String id : userRegistries.keySet()) {
+                if (numUrs > 1 && id.equals("NullUserRegistry"))
+                    continue;
                 urs.add(userRegistries.getServiceWithException(id));
             }
             federationRegistry.addFederationRegistries(urs);
