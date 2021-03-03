@@ -36,7 +36,9 @@ import test.common.SharedOutputManager;
 
 public class OAuthEndpointSettingsTest extends CommonTestClass {
 
-    private static SharedOutputManager outputMgr = SharedOutputManager.getInstance().trace("io.openliberty.security.oauth.*=all:com.ibm.ws.security.oauth.*=all");
+    private static String traceString = "io.openliberty.security.oauth.*=all:com.ibm.ws.security.oauth.*";
+
+    private static SharedOutputManager outputMgr = SharedOutputManager.getInstance().trace(traceString + "=all");
 
     private final Configuration config = mockery.mock(Configuration.class);
 
@@ -63,6 +65,7 @@ public class OAuthEndpointSettingsTest extends CommonTestClass {
     public static void tearDownAfterClass() throws Exception {
         outputMgr.dumpStreams();
         outputMgr.restoreStreams();
+        outputMgr.trace(traceString + "=all=disabled");
     }
 
     @Test

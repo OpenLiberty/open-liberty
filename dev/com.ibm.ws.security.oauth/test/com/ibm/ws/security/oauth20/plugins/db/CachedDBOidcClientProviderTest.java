@@ -58,7 +58,8 @@ public abstract class CachedDBOidcClientProviderTest extends AbstractOidcRegistr
     protected static final String SCHEMA_TABLE_NAME = SCHEMA + "." + TABLE_NAME;
     private static final String REQUEST_URL_STRING = "https://localhost:8020/oidc/endpoint/" + PROVIDER_NAME + "/registration";
     protected static final String[] EMPTY_STRING_ARR = new String[0];
-    protected static List<OidcBaseClient> SAMPLE_CLIENTS = null;
+
+    protected List<OidcBaseClient> SAMPLE_CLIENTS = null;
 
     public interface MockInterface {
         void addClientToDB() throws SQLException, OidcServerException;
@@ -93,13 +94,10 @@ public abstract class CachedDBOidcClientProviderTest extends AbstractOidcRegistr
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-        setHash(false);
         outputMgr = SharedOutputManager.getInstance();
         outputMgr.captureStreams();
 
         System.setProperty(Context.INITIAL_CONTEXT_FACTORY, InitialContextFactoryMock.class.getName());
-
-        SAMPLE_CLIENTS = getsampleOidcBaseClients(5, PROVIDER_NAME);
     }
 
     @AfterClass
@@ -184,11 +182,11 @@ public abstract class CachedDBOidcClientProviderTest extends AbstractOidcRegistr
         assertEquals("Task to clean db of all clients failed.", 0, oidcBaseClientProvider.getAll().size());
     }
 
-    protected void insertSampleClientsToDb(CachedDBOidcClientProvider oidcBaseClientProvider) throws OidcServerException {
+    protected void insertSampleClientsToDb(CachedDBOidcClientProvider oidcBaseClientProvider, boolean hashClientSecret) throws OidcServerException {
         for (int i = 0; i < SAMPLE_CLIENTS.size(); i++) {
             if (i == 0) {
-                InitialContextFactoryMock.addEntryToOldOAuth20ClientConfigTable();
-                OidcBaseClientDBModel initialClient = InitialContextFactoryMock.getInitializedOidcBaseClientModel();
+                InitialContextFactoryMock.addEntryToOldOAuth20ClientConfigTable(hashClientSecret);
+                OidcBaseClientDBModel initialClient = InitialContextFactoryMock.getInitializedOidcBaseClientModel(hashClientSecret);
                 OidcBaseClient retrievedOidcBaseClient = oidcBaseClientProvider.get(initialClient.getClientId());
                 assertClientEquals(initialClient, retrievedOidcBaseClient);
                 continue;
@@ -197,11 +195,11 @@ public abstract class CachedDBOidcClientProviderTest extends AbstractOidcRegistr
             OidcBaseClient storedOidcBaseClient = oidcBaseClientProvider.put(SAMPLE_CLIENTS.get(i));
 
             assertNotNull(storedOidcBaseClient);
-            assertEqualsOidcBaseClients(SAMPLE_CLIENTS.get(i), storedOidcBaseClient);
+            clientRegistrationHelper.assertEqualsOidcBaseClients(SAMPLE_CLIENTS.get(i), storedOidcBaseClient);
 
             OidcBaseClient retrievedOidcBaseClient = oidcBaseClientProvider.get(SAMPLE_CLIENTS.get(i).getClientId());
             assertNotNull(retrievedOidcBaseClient);
-            assertEqualsOidcBaseClients(SAMPLE_CLIENTS.get(i), retrievedOidcBaseClient);
+            clientRegistrationHelper.assertEqualsOidcBaseClients(SAMPLE_CLIENTS.get(i), retrievedOidcBaseClient);
         }
         assertEquals(SAMPLE_CLIENTS.size(), oidcBaseClientProvider.getAll().size());
 
@@ -210,16 +208,16 @@ public abstract class CachedDBOidcClientProviderTest extends AbstractOidcRegistr
     private void assertEqualsSampleClients(Collection<OidcBaseClient> clients) {
         assertEquals(SAMPLE_CLIENTS.size(), clients.size());
 
-        Map<String, OidcBaseClient> clientsMap = getOidcBaseClientMap(clients);
+        Map<String, OidcBaseClient> clientsMap = clientRegistrationHelper.getOidcBaseClientMap(clients);
 
         int i = 0;
         for (OidcBaseClient client : clients) {
             if (i == 0) {
-                assertClientEquals(InitialContextFactoryMock.getInitializedOidcBaseClientModel(), clientsMap.get(String.valueOf(i)));
+                assertClientEquals(InitialContextFactoryMock.getInitializedOidcBaseClientModel(clientRegistrationHelper.isHash()), clientsMap.get(String.valueOf(i)));
                 continue;
             }
 
-            assertEqualsOidcBaseClients(SAMPLE_CLIENTS.get(i), client);
+            clientRegistrationHelper.assertEqualsOidcBaseClients(SAMPLE_CLIENTS.get(i), client);
             i++;
         }
     }
@@ -286,11 +284,11 @@ public abstract class CachedDBOidcClientProviderTest extends AbstractOidcRegistr
             OidcBaseClient storedOidcBaseClient = oidcBaseClientProvider.put(newClient);
 
             assertNotNull(storedOidcBaseClient);
-            assertEqualsOidcBaseClients(newClient, storedOidcBaseClient);
+            clientRegistrationHelper.assertEqualsOidcBaseClients(newClient, storedOidcBaseClient);
 
             OidcBaseClient retrievedOidcBaseClient = oidcBaseClientProvider.get(newClient.getClientId());
             assertNotNull(retrievedOidcBaseClient);
-            assertEqualsOidcBaseClients(newClient, retrievedOidcBaseClient);
+            clientRegistrationHelper.assertEqualsOidcBaseClients(newClient, retrievedOidcBaseClient);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(_testName, t);
         }
@@ -436,7 +434,7 @@ public abstract class CachedDBOidcClientProviderTest extends AbstractOidcRegistr
 
             assertEquals(SAMPLE_CLIENTS.size(), clients.size());
 
-            Map<String, OidcBaseClient> clientsMap = getOidcBaseClientMap(clients);
+            Map<String, OidcBaseClient> clientsMap = clientRegistrationHelper.getOidcBaseClientMap(clients);
 
             // Ensure the clients from the client provider match what was expected (the sample clients)
             // while adding the modification to check for expected registration uri based on mocked request
@@ -444,9 +442,9 @@ public abstract class CachedDBOidcClientProviderTest extends AbstractOidcRegistr
                 OidcBaseClient clientProviderClient = clientsMap.remove(String.valueOf(i));
 
                 if (i > 0) {
-                    assertEqualsOidcBaseClients(SAMPLE_CLIENTS.get(i), clientProviderClient);
+                    clientRegistrationHelper.assertEqualsOidcBaseClients(SAMPLE_CLIENTS.get(i), clientProviderClient);
                 } else {
-                    assertClientEquals(InitialContextFactoryMock.getInitializedOidcBaseClientModel(), clientProviderClient);
+                    assertClientEquals(InitialContextFactoryMock.getInitializedOidcBaseClientModel(clientRegistrationHelper.isHash()), clientProviderClient);
                 }
 
                 // Add check for checking registration URI which isn't in assertEqualsOidcBaseClients
@@ -587,8 +585,8 @@ public abstract class CachedDBOidcClientProviderTest extends AbstractOidcRegistr
             }
 
             Collection<OidcBaseClient> updatedClients = oidcBaseClientProvider.getAll();
-            Map<String, OidcBaseClient> updatedClientsMap = getOidcBaseClientMap(updatedClients);
-            Map<String, OidcBaseClient> sampleClientMap = getOidcBaseClientMap(SAMPLE_CLIENTS);
+            Map<String, OidcBaseClient> updatedClientsMap = clientRegistrationHelper.getOidcBaseClientMap(updatedClients);
+            Map<String, OidcBaseClient> sampleClientMap = clientRegistrationHelper.getOidcBaseClientMap(SAMPLE_CLIENTS);
 
             for (int i = 0; i < SAMPLE_CLIENTS.size(); i++) {
                 OidcBaseClient updatedClientProviderClient = updatedClientsMap.remove(String.valueOf(i));
@@ -598,10 +596,10 @@ public abstract class CachedDBOidcClientProviderTest extends AbstractOidcRegistr
                 sampleClient.setScope(newScopes);
 
                 if (i > 0) {
-                    assertEqualsOidcBaseClients(sampleClient, updatedClientProviderClient);
+                    clientRegistrationHelper.assertEqualsOidcBaseClients(sampleClient, updatedClientProviderClient);
                 } else {
                     assertEquals(sampleClient.getScope(), updatedClientProviderClient.getScope());
-                    assertClientEquals(InitialContextFactoryMock.getInitializedOidcBaseClientModel(), updatedClientProviderClient);
+                    assertClientEquals(InitialContextFactoryMock.getInitializedOidcBaseClientModel(clientRegistrationHelper.isHash()), updatedClientProviderClient);
                 }
             }
 
