@@ -26,13 +26,13 @@ import io.openliberty.cdi.spi.CDIExtensionMetadata;
     configurationPolicy = ConfigurationPolicy.IGNORE,
     immediate = true,
     property = { "api.classes=" +
-                    "javax.ws.rs.Path;" +
-                    "javax.ws.rs.core.Application;" +
-                    "javax.ws.rs.ext.Provider",
+                    "jakarta.ws.rs.Path;" +
+                    "jakarta.ws.rs.core.Application;" +
+                    "jakarta.ws.rs.ext.Provider",
                  "bean.defining.annotations=" +
-                    "javax.ws.rs.Path;" +
-                    "javax.ws.rs.core.Application;" +
-                    "javax.ws.rs.ext.Provider",
+                    "jakarta.ws.rs.Path;" +
+                    "jakarta.ws.rs.core.Application;" +
+                    "jakarta.ws.rs.ext.Provider",
                  "service.vendor=IBM" })
 public class ResteasyCDIExtensionMetadata implements CDIExtensionMetadata {
     
