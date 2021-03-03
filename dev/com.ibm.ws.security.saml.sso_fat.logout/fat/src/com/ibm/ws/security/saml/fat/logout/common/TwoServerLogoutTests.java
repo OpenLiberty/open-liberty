@@ -19,7 +19,6 @@ import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.util.Cookie;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.ValidationData.validationData;
-import com.ibm.ws.security.saml20.fat.commonTest.SAMLCommonTestHelpers;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLConstants;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLTestSettings;
 
@@ -131,7 +130,7 @@ public class TwoServerLogoutTests extends SAMLLogoutCommonTest {
         String[] server1Cookies = { cookieInfo.getSp1CookieName(), cookieInfo.getSp2CookieName() };
         String[] server2Cookies = { cookieInfo.getServer2Sp1CookieName(), cookieInfo.getServer2Sp2CookieName() };
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         // call helper method to log in to 4 different SPs (2 sp's on SP server1, and 2 on SP server2)
         loginTo4SPs(webClient, settings);
@@ -175,7 +174,7 @@ public class TwoServerLogoutTests extends SAMLLogoutCommonTest {
         String cookiePrintName = "server2_sp2";
         String spName = "server2_sp2";
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         // call helper method to log in to 4 different SPs (2 sp's on SP server1, and 2 on SP server2)
         loginTo4SPs(webClient, settings);
@@ -197,7 +196,7 @@ public class TwoServerLogoutTests extends SAMLLogoutCommonTest {
         //        expectations = vData.addExpectation(expectations, SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE_KEEPING_COOKIES, SAMLConstants.COOKIES, SAMLConstants.STRING_CONTAINS, "Conversation did NOT have an SP Cookie.", cookieName, null);
 
         // create a new client and use the saved cookie to access the app (just to show that with just the cookie, we can access the app)
-        WebClient webClient2 = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient2 = getAndSaveWebClient();
         webClient2.getCookieManager().addCookie(cookie);
         Log.info(thisClass, _testName, "Trying to access app with new client with " + cookiePrintName + " cookie added");
         helpers.invokeAppSameConversation(_testName, webClient2, null, updatedTestSettingsServer2sp2, updatedTestSettingsServer2sp2.getSpDefaultApp(), expectations, SAMLConstants.INVOKE_DEFAULT_APP);

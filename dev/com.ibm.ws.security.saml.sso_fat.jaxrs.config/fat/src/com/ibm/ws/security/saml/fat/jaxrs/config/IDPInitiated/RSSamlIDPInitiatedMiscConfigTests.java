@@ -20,7 +20,6 @@ import com.ibm.ws.security.fat.common.Utils;
 import com.ibm.ws.security.fat.common.ValidationData.validationData;
 import com.ibm.ws.security.saml.fat.jaxrs.config.utils.RSSamlConfigSettings;
 import com.ibm.ws.security.saml.fat.jaxrs.config.utils.RSSamlProviderSettings;
-import com.ibm.ws.security.saml20.fat.commonTest.SAMLCommonTestHelpers;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLConstants;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLMessageConstants;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLTestSettings;
@@ -60,7 +59,7 @@ public class RSSamlIDPInitiatedMiscConfigTests extends RSSamlIDPInitiatedConfigC
 
         testAppServer.reconfigServer(buildSPServerName("server_1.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         List<validationData> expectations = vData.addSuccessStatusCodes();
 

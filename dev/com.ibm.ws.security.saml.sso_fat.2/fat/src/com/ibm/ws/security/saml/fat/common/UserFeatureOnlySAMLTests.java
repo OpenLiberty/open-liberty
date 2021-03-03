@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.saml.fat.common;
 
@@ -17,7 +17,6 @@ import org.junit.Test;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.ibm.ws.security.fat.common.ValidationData.validationData;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLCommonTest;
-import com.ibm.ws.security.saml20.fat.commonTest.SAMLCommonTestHelpers;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLConstants;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLTestSettings;
 import com.ibm.ws.security.saml20.fat.commonTest.SampleUserFeatureInstaller;
@@ -48,7 +47,7 @@ public class UserFeatureOnlySAMLTests extends SAMLCommonTest {
     @Test
     public void userFeatureOnlySAMLTests_mainFlowTest() throws Exception {
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp1", true);

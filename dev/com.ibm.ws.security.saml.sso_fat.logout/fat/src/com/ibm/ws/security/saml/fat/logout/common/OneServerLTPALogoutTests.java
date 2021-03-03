@@ -22,7 +22,6 @@ import com.gargoylesoftware.htmlunit.util.Cookie;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.ValidationData.validationData;
 import com.ibm.ws.security.fat.common.utils.ConditionalIgnoreRule;
-import com.ibm.ws.security.saml20.fat.commonTest.SAMLCommonTestHelpers;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLConstants;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLTestSettings;
 
@@ -102,7 +101,7 @@ public class OneServerLTPALogoutTests extends SAMLLogoutCommonTest {
     @Test
     public void OneServerLTPALogoutTests_mainPath() throws Exception {
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp13", true);
@@ -130,7 +129,7 @@ public class OneServerLTPALogoutTests extends SAMLLogoutCommonTest {
     public void OneServerLTPALogoutTests_useCookie_afterLogout() throws Exception {
 
         //        useCookieAfterLogout(cookieInfo.getSp13CookieName(), "LTPA", "sp13");
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp13", true);
@@ -146,7 +145,7 @@ public class OneServerLTPALogoutTests extends SAMLLogoutCommonTest {
         Log.info(thisClass, _testName, "Extracted Cookie: " + cookie.getName() + " Value: " + cookie.getValue());
 
         // create a new client and use the sp1 cookie to access the app (just to show that with just the cookie, we can access the app)
-        WebClient webClient2 = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient2 = getAndSaveWebClient();
         webClient2.getCookieManager().addCookie(cookie);
         Log.info(thisClass, _testName, "Trying to access app with new client with " + "SP13" + " cookie added");
         helpers.invokeAppSameConversation(_testName, webClient2, null, updatedTestSettings, updatedTestSettings.getSpDefaultApp(), expectations, SAMLConstants.INVOKE_DEFAULT_APP);

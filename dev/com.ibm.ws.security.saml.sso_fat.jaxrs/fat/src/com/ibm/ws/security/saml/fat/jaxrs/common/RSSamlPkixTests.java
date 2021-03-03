@@ -19,7 +19,6 @@ import com.gargoylesoftware.htmlunit.WebClient;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.ValidationData.validationData;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLCommonTest;
-import com.ibm.ws.security.saml20.fat.commonTest.SAMLCommonTestHelpers;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLConstants;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLMessageConstants;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLTestSettings;
@@ -109,7 +108,7 @@ public class RSSamlPkixTests extends SAMLCommonTest {
      */
     private void commonRunTest_GoodServerHasCert_GoodServerDoesNotHaveCert(String appName) throws Exception {
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = updateTestSettings(appName);
 
@@ -152,7 +151,7 @@ public class RSSamlPkixTests extends SAMLCommonTest {
      */
     private void commonRunTest_GoodServerHasCert_5049EServerDoesNotHaveCert(Boolean shouldSucceed, String appName) throws Exception {
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = updateTestSettings(appName);
 
@@ -252,7 +251,7 @@ public class RSSamlPkixTests extends SAMLCommonTest {
     @Test
     public void RSSamlPkixTests_badTrustAnchorReference() throws Exception {
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = commonUtils.changeTestApps(testAppServer, testSettings, "missingJKSFile");
 

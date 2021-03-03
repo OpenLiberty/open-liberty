@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.saml.fat.common;
 
@@ -20,7 +20,6 @@ import com.gargoylesoftware.htmlunit.WebClient;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.ValidationData.validationData;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLCommonTest;
-import com.ibm.ws.security.saml20.fat.commonTest.SAMLCommonTestHelpers;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLConstants;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLMessageConstants;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLTestSettings;
@@ -65,7 +64,7 @@ public class DefaultConfigMissingMetaDataTests extends SAMLCommonTest {
     @Test
     public void testSaml_defaultConfig_IDPInitiated_missingIDPMetaDataFile() throws Exception {
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
 
@@ -81,7 +80,7 @@ public class DefaultConfigMissingMetaDataTests extends SAMLCommonTest {
     @Test
     public void testSaml_defaultConfig_SolicitedSPInitiated_missingIDPMetaDataFile() throws Exception {
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
 

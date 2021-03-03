@@ -19,7 +19,6 @@ import org.junit.runner.RunWith;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.ibm.ws.security.fat.common.ValidationData.validationData;
 import com.ibm.ws.security.fat.common.utils.ConditionalIgnoreRule;
-import com.ibm.ws.security.saml20.fat.commonTest.SAMLCommonTestHelpers;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLConstants;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLMessageConstants;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLTestSettings;
@@ -181,7 +180,7 @@ public class SAMLMisc1ConfigTests extends SAMLConfigCommonTests {
 
         testSAMLServer.reconfigServer("server_forceAuthn_true.xml", _testName, commonAddtlMsgs, SAMLConstants.JUNIT_REPORTING);
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         // make a request using IDP flow and the force flag will be set to the
         // default value which is false (We're making the call directly, we're
@@ -196,7 +195,7 @@ public class SAMLMisc1ConfigTests extends SAMLConfigCommonTests {
         // to the configured value which is true
         // create a new client, so, there is no question about cookie
         // contamination
-        webClient = SAMLCommonTestHelpers.getWebClient();
+        webClient = getAndSaveWebClient();
         expectations = helpers.setDefaultGoodSAMLSolicitedSPInitiatedExpectations(updatedTestSettings);
         expectations = vData.addExpectation(expectations, SAMLConstants.BUILD_POST_SP_INITIATED_REQUEST, SAMLConstants.IDP_PROCESS_LOG, SAMLConstants.STRING_CONTAINS, "The forceAuthn flag is NOT set to true in the request received by the IDP", null, "forceAuthn=true");
         printTestTrace("_testName", "Invoking Solicited SP Initiated request");
@@ -231,7 +230,7 @@ public class SAMLMisc1ConfigTests extends SAMLConfigCommonTests {
 
         testSAMLServer.reconfigServer("server_isPassive_true.xml", _testName, commonAddtlMsgs, SAMLConstants.JUNIT_REPORTING);
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         // make a request using IDP flow and the isPassive flag will be set to
         // the default value which is false (We're making the call directly,
@@ -246,7 +245,7 @@ public class SAMLMisc1ConfigTests extends SAMLConfigCommonTests {
         // set to the configured value which is true
         // create a new client, so, there is no question about cookie
         // contamination
-        webClient = SAMLCommonTestHelpers.getWebClient();
+        webClient = getAndSaveWebClient();
         expectations = vData.addSuccessStatusCodes();
         expectations = vData.addExpectation(expectations, SAMLConstants.BUILD_POST_SP_INITIATED_REQUEST, SAMLConstants.RESPONSE_TITLE, SAMLConstants.STRING_CONTAINS, "The Response from the IDP did NOT indicate a problem handling the request", null, SAMLConstants.SP_DEFAULT_ERROR_PAGE_TITLE);
         expectations = vData.addExpectation(expectations, SAMLConstants.BUILD_POST_SP_INITIATED_REQUEST, SAMLConstants.IDP_PROCESS_LOG, SAMLConstants.STRING_CONTAINS, "The isPassive flag is NOT set to true in the request received by the IDP", null, "isPassive=true");

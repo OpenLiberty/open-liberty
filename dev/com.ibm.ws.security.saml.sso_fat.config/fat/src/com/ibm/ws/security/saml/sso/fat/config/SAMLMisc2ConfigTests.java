@@ -590,7 +590,7 @@ public class SAMLMisc2ConfigTests extends SAMLConfigCommonTests {
         testSAMLServer.reconfigServer(testServerConfigFile, _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
 
         // Create the conversation object which will maintain state for us
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp1", true);
@@ -929,7 +929,7 @@ public class SAMLMisc2ConfigTests extends SAMLConfigCommonTests {
     public void test_createSession_true() throws Exception {
         testSAMLServer.reconfigServer("server_createSession_true.xml", _testName, commonAddtlMsgs, SAMLConstants.JUNIT_REPORTING);
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp1", true);
@@ -945,7 +945,7 @@ public class SAMLMisc2ConfigTests extends SAMLConfigCommonTests {
     public void test_createSession_false() throws Exception {
         testSAMLServer.reconfigServer("server_createSession_false.xml", _testName, commonAddtlMsgs, SAMLConstants.JUNIT_REPORTING);
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp1", true);
