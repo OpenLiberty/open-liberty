@@ -32,6 +32,19 @@ public class ContainersTestServlet extends FATServlet {
     @Resource(lookup = "jdbc/postgres")
     private DataSource ds_postgres;
 
+    public void setupDatabase() throws Exception {
+        try (Connection con = ds_postgres.getConnection(); Statement stmt = con.createStatement()) {
+            stmt.execute("DROP TABLE IF EXISTS testtable;");
+            stmt.execute("CREATE TABLE testtable (" +
+                         "PersonID int," +
+                         "LastName varchar(255)," +
+                         "FirstName varchar(255)," +
+                         "City varchar(255)" +
+                         ");");
+            stmt.execute("INSERT INTO testtable (PersonID, LastName, FirstName, City) VALUES (1, 'Doe', 'John', 'Rochester');");
+        }
+    }
+
     @Test
     public void testGenericContainer() throws Exception {
         try (Connection con = ds_postgres.getConnection(); Statement stmt = con.createStatement()) {

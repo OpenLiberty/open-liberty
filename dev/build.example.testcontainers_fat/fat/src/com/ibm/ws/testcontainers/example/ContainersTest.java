@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.testcontainers.example;
 
+import static componenttest.custom.junit.runner.Mode.TestMode.FULL;
+
 import java.time.Duration;
 
 import org.junit.AfterClass;
@@ -18,7 +20,6 @@ import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy;
-import org.testcontainers.utility.MountableFile;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
@@ -26,6 +27,7 @@ import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import web.generic.ContainersTestServlet;
@@ -35,6 +37,7 @@ import web.generic.ContainersTestServlet;
  * TestContainer for use to test against.
  */
 @RunWith(FATRunner.class)
+@Mode(FULL)
 public class ContainersTest extends FATServletClient {
 
     public static final String APP_NAME = "containerApp";
@@ -72,7 +75,6 @@ public class ContainersTest extends FATServletClient {
                     .withEnv("POSTGRES_DB", POSTGRES_DB)
                     .withEnv("POSTGRES_USER", POSTGRES_USER)
                     .withEnv("POSTGRES_PASSWORD", POSTGRES_PASSWORD)
-                    .withCopyFileToContainer(MountableFile.forHostPath("lib/LibertyFATTestFiles/postgres/scripts/initDB.sql"), "/docker-entrypoint-initdb.d/initDB.sql")
                     .withLogConsumer(new SimpleLogConsumer(ContainersTest.class, "postgres"))
                     .waitingFor(new LogMessageWaitStrategy()
                                     .withRegEx(".*database system is ready to accept connections.*\\s")
@@ -82,9 +84,6 @@ public class ContainersTest extends FATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
         ShrinkHelper.defaultApp(server, APP_NAME, "web.generic");
-
-        //Execute a command within container after it has started
-        container.execInContainer("echo \"This is executed after container has started\"");
 
         /*
          * Use server.addEnvVar() to pass any variables from the container that is needed
@@ -100,6 +99,8 @@ public class ContainersTest extends FATServletClient {
         server.addEnvVar("PS_PASSWORD", POSTGRES_PASSWORD);
 
         server.startServer();
+
+        runTest(server, APP_NAME, "setupDatabase");
     }
 
     @AfterClass
