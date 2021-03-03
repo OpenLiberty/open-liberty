@@ -19,6 +19,7 @@ src: \
 	test-applications/broken-servlet/src, \
 	test-applications/ffdc-servlet/src, \
 	test-applications/logger-servlet/src, \
+	test-applications/tbasic-servlet/src, \
 	test-applications/missing-feature-servlet/src, \
 	test-applications/RealFlushTestApp/src, \
 	test-applications/add-extension-fields/src, \
