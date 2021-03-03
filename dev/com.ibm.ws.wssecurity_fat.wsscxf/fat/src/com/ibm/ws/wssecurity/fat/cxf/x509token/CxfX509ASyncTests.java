@@ -31,6 +31,7 @@ import com.ibm.ws.wssecurity.fat.utils.common.UpdateWSDLPortNum;
 
 //Added 11/2020
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -51,6 +52,9 @@ public class CxfX509ASyncTests extends CommonTests {
     @Server(serverName)
     public static LibertyServer server;
 
+    //2/26/2021 to use EE7 or EE8 CallBackHandler
+    private static String CBHVersion = "";
+
     @BeforeClass
     public static void setUp() throws Exception {
 
@@ -64,11 +68,13 @@ public class CxfX509ASyncTests extends CommonTests {
         if (features.contains("usr:wsseccbh-1.0")) {
             server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbh.jar");
             server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-1.0.mf");
+            CBHVersion = "EE7";
         }
         if (features.contains("usr:wsseccbh-2.0")) {
             server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
             server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-2.0.mf");
             copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
+            CBHVersion = "EE8";
         }
 
         //Added 11/2020
@@ -97,6 +103,7 @@ public class CxfX509ASyncTests extends CommonTests {
      */
 
     @Test
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
     public void testCxfAsyncInvokeNonBlocking() throws Exception {
 
         genericTest(
@@ -122,7 +129,8 @@ public class CxfX509ASyncTests extends CommonTests {
                     "Response: null",
                     //"This is WSSECFVT CXF X509AsyncService",
                     // msg to issue if do NOT get the expected result
-                    "The test expected a succesful message from the server.");
+                    "The test expected a succesful message from the server.",
+                    CBHVersion); //2/26/2021
 
     }
 

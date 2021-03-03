@@ -98,6 +98,7 @@
 		id="default"
 		ws-security.callback-handler="com.ibm.ws.wssecurity.example.cbh.CommonPasswordCallback"
 	>
+	
 		<!-- **Do not need Signature properties in Symmetric. But put back for 
 			EndorsingSupportingToken BAX35 -->
 		<signatureProperties

@@ -90,14 +90,14 @@
                   <sp:IncludeTimestamp/>
                </wsp:Policy>
             </sp:AsymmetricBinding>
-            <ns1:Wss10 xmlns:ns1="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702">
+            <ns1:Wss11 xmlns:ns1="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702">
                <wsp:Policy>
                   <ns1:MustSupportRefKeyIdentifier/>
                   <ns1:MustSupportRefIssuerSerial />
                   <ns1:MustSupportRefThumbprint />
                   <ns1:MustSupportRefEncryptedKey />
                </wsp:Policy>
-            </ns1:Wss10>
+            </ns1:Wss11>
             <sp:SignedParts>
                <sp:Body/>
                <sp:Header Namespace="http://schemas.xmlsoap.org/ws/2004/08/addressing"/>
@@ -159,14 +159,14 @@
                   <sp:IncludeTimestamp/>
                </wsp:Policy>
             </sp:AsymmetricBinding>
-            <ns1:Wss10 xmlns:ns1="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702">
+            <ns1:Wss11 xmlns:ns1="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702">
                <wsp:Policy>
                   <ns1:MustSupportRefKeyIdentifier/>
                   <ns1:MustSupportRefIssuerSerial />
                   <ns1:MustSupportRefThumbprint />
                   <ns1:MustSupportRefEncryptedKey />
                </wsp:Policy>
-            </ns1:Wss10>
+            </ns1:Wss11>
             <sp:SignedParts>
                <sp:Body/>
                <sp:Header Namespace="http://schemas.xmlsoap.org/ws/2004/08/addressing"/>
