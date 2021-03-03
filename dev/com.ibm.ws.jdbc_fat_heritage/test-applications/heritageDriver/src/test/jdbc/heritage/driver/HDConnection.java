@@ -13,6 +13,7 @@ package test.jdbc.heritage.driver;
 import java.sql.Array;
 import java.sql.Blob;
 import java.sql.CallableStatement;
+import java.sql.ClientInfoStatus;
 import java.sql.Clob;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -25,12 +26,17 @@ import java.sql.SQLXML;
 import java.sql.Savepoint;
 import java.sql.Statement;
 import java.sql.Struct;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-public class HDConnection implements Connection {
+public class HDConnection implements Connection, HeritageDBConnection {
+    private static final Set<String> DEFAULT_CLIENT_INFO_KEYS = Stream.of("ApplicationName", "ClientHostname", "ClientUser").collect(Collectors.toSet());
     /**
      * Counts the number of times that doConnectionCleanupPerCloseConnection is invoked for this connection.
      */
@@ -38,6 +44,7 @@ public class HDConnection implements Connection {
 
     final HDDataSource ds;
     final Connection derbycon;
+    Set<String> clientInfoKeys = DEFAULT_CLIENT_INFO_KEYS;
 
     /**
      * Counts the number of times that doConnectionSetupPerGetConnection is invoked for this connection.
@@ -140,6 +147,11 @@ public class HDConnection implements Connection {
     @Override
     public String getClientInfo(String name) throws SQLException {
         return derbycon.getClientInfo(name);
+    }
+
+    @Override
+    public Set<String> getClientInfoKeys() {
+        return clientInfoKeys;
     }
 
     @Override
@@ -307,12 +319,28 @@ public class HDConnection implements Connection {
 
     @Override
     public void setClientInfo(Properties properties) throws SQLClientInfoException {
+        Map<String, ClientInfoStatus> invalidEntries = clientInfoKeys.stream() //
+                        .filter(key -> !properties.containsKey(key)) //
+                        .collect(Collectors.toMap(key -> key, value -> ClientInfoStatus.REASON_UNKNOWN_PROPERTY));
+        if (invalidEntries.size() > 0)
+            throw new SQLClientInfoException("not supported", invalidEntries);
+
         derbycon.setClientInfo(properties);
     }
 
     @Override
     public void setClientInfo(String name, String value) throws SQLClientInfoException {
+        if (!clientInfoKeys.contains(name))
+            throw new SQLClientInfoException("not supported", Collections.singletonMap(name, ClientInfoStatus.REASON_UNKNOWN_PROPERTY));
         derbycon.setClientInfo(name, value);
+    }
+
+    @Override
+    public void setClientInfoKeys(String... keys) {
+        if (keys.length == 0)
+            clientInfoKeys = DEFAULT_CLIENT_INFO_KEYS;
+        else
+            clientInfoKeys = Stream.of(keys).collect(Collectors.toSet());
     }
 
     @Override

@@ -1674,7 +1674,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
             return;
         }
 
-        if (ex instanceof SQLException && mcf.helper.isAnAuthorizationException((SQLException) ex)) {
+        if (ex instanceof SQLException && helper.isAnAuthorizationException((SQLException) ex)) {
             if (isTraceOn && tc.isDebugEnabled())
                 Tr.debug(this, tc, "CONNECTION_ERROR_OCCURRED will fire an event to only purge and destroy this connection");
 
@@ -2044,7 +2044,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
                     // the reuse call won't go down to the DB til the next execution of the.  DB optimizaiton.
                     // if we were in a tran, a connection will have to match as we do compare subject and CRI
                     // the fact that the gssNames don't match, means we are not in a tra.
-                    mcf.helper.reuseKerbrosConnection(sqlConn, cri.gssCredential, null);
+                    helper.reuseKerbrosConnection(sqlConn, cri.gssCredential, null);
 
                     //now save the cri props in the mc
                     mc_gssCredential = cri.gssCredential;
@@ -2870,9 +2870,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
         // connection pool, we should reset the autocommit of this connection to false.
         //  - SybaseHelper will also return true.
 
-        //  - change wasAutoCommitResetByCleanup to wasCleanupReturnTrue
-
-        boolean wasCleanupReturnTrue;
+        boolean modifiedByCleanup;
 
         try {
 
@@ -2882,7 +2880,9 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
                 helper.resetClientInformation(this);
             }
 
-            wasCleanupReturnTrue = mcf.helper.doConnectionCleanup(sqlConn);
+            modifiedByCleanup = mcf.dataStoreHelper == null
+                              ? helper.doConnectionCleanup(sqlConn)
+                              : mcf.dataStoreHelper.doConnectionCleanup(sqlConn);
 
             if (!connectionErrorDetected) 
             {
@@ -2915,7 +2915,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
         // modifications are accounted for. 
 
         if (!connectionErrorDetected && 
-            (connectionPropertyChanged || wasCleanupReturnTrue)) 
+            (connectionPropertyChanged || modifiedByCleanup)) 
         {
             if (mcf.supportsIsReadOnly) {
                 try {
@@ -3076,7 +3076,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
             connectionPropertyChanged = false;
 
             //  - get the autocommit value, isolation level value and holdability value from the native connection
-            if (wasCleanupReturnTrue) {
+            if (modifiedByCleanup) {
                 try {
                     currentAutoCommit = sqlConn.getAutoCommit();
                     if (cachedConnection != null) 
@@ -3302,7 +3302,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
                 if (mcf.supportsUOWDetection) {
                     String operation = "none";
                     try {
-                        if (mcf.helper.isInDatabaseUnitOfWork(sqlConn)) {
+                        if (helper.isInDatabaseUnitOfWork(sqlConn)) {
                             /*
                              * If the DB supports UOW Detection and we are in a DB UOW we will commit or rollback per
                              * setting on the DataSource.
@@ -3426,7 +3426,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
                  */
                 if (mcf.supportsUOWDetection) {
                     try {
-                        if (mcf.helper.isInDatabaseUnitOfWork(sqlConn)) {
+                        if (helper.isInDatabaseUnitOfWork(sqlConn)) {
 
                             if (!mcf.loggedImmplicitTransactionFound) {
                                 Tr.info(tc, "IMPLICIT_TRANSACTION_FOUND");
@@ -4313,7 +4313,10 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
             }
 
             // Clean up the connection.
-            mcf.helper.doConnectionCleanup(sqlConn);
+            if (mcf.dataStoreHelper == null)
+                helper.doConnectionCleanup(sqlConn);
+            else
+                mcf.dataStoreHelper.doConnectionCleanup(sqlConn);
 
             // Clear the warning.
             sqlConn.clearWarnings();
@@ -4358,7 +4361,10 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
                 }
 
                 try {
-                    mcf.helper.doConnectionCleanup(sqlConn);
+                    if (mcf.dataStoreHelper == null)
+                        helper.doConnectionCleanup(sqlConn);
+                    else
+                        mcf.dataStoreHelper.doConnectionCleanup(sqlConn);
                 } catch (SQLException cleanEx) {
                     // No FFDC coded needed
 

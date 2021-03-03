@@ -27,6 +27,10 @@
     <fileset dir="${shared.resource.dir}/derby"/>
   </library>
 
+  <application location="heritageApp.war">
+    <classloader commonLibraryRef="JDBCLib"/>
+  </application>
+
   <authData id="dbAuth" user="dbuser" password="{xor}Oz0vKDs=" />
 
   <dataSource id="DefaultDataSource" containerAuthDataRef="dbAuth" type="javax.sql.DataSource">
@@ -38,7 +42,7 @@
 
   <javaPermission codeBase="${shared.resource.dir}derby/derby.jar" className="java.security.AllPermission"/>
 
-  <javaPermission codeBase="${server.config.dir}/dropins/heritageApp.war" className="java.lang.reflect.ReflectPermission" name="suppressAccessChecks"/>
-  <javaPermission codeBase="${server.config.dir}/dropins/heritageApp.war" className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
+  <javaPermission codeBase="${server.config.dir}/apps/heritageApp.war" className="java.lang.reflect.ReflectPermission" name="suppressAccessChecks"/>
+  <javaPermission codeBase="${server.config.dir}/apps/heritageApp.war" className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
 
 </server>

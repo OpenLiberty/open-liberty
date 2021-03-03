@@ -45,7 +45,7 @@ public class HeritageJDBCTest extends FATServletClient {
         // Test application
         WebArchive heritageApp = ShrinkWrap.create(WebArchive.class, "heritageApp.war")
                         .addPackage("test.jdbc.heritage.app");
-        ShrinkHelper.exportDropinAppToServer(server, heritageApp);
+        ShrinkHelper.exportAppToServer(server, heritageApp);
 
         server.addInstalledAppForValidation("heritageApp");
 
