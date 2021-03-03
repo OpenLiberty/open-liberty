@@ -356,7 +356,7 @@ public class VMMService implements Service, RealmConfigChangeListener {
     public void addFederationRegistries(List<UserRegistry> registries) {
         if (registryRealmNames == null)
             registryRealmNames = new HashSet<String>();
-
+//        int regNum = registries.size();
         for (UserRegistry ur : registries) {
 //            if (!"NullUserRegistry".equals(ur.getType())) { // Do not Add NullUserRegistry to Repository Manager
             registryRealmNames.add(ur.getRealm());

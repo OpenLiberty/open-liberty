@@ -99,10 +99,11 @@ public class RepositoryManager {
 //            return;
 
         repositories.put(repositoryId, repositoryHolder);
-
-        if (getNumberOfRepositories() > 1)
-            repositories.remove("NullUserRegistry");
-
+        // TODO: we need to get the respository type or ID
+        if (getNumberOfRepositories() > 1) {
+//            repositories.remove("NullUserRegistry");
+            repositories.remove("defaultRealm");
+        }
         numRepos = getNumberOfRepositories();
 
     }
