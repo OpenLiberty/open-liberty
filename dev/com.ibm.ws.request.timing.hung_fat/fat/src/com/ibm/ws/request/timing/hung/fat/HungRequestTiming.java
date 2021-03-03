@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2020 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.request.timing.fat;
+package com.ibm.ws.request.timing.hung.fat;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -74,7 +74,7 @@ public class HungRequestTiming {
         if (server != null && !server.isStarted()) {
             server.startServer();
         }
-        
+
         // Allow the configuration to change back to the original and ensure the update is finished before starting a test
         server.setServerConfigurationFile("server_original.xml");
         server.waitForStringInLog("CWWKG0017I", 90000);
