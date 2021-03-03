@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.sib.comms.server.clientsupport;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 import com.ibm.websphere.ras.TraceComponent;
@@ -31,6 +32,7 @@ import com.ibm.ws.sib.mfp.JsMessage;
 import com.ibm.ws.sib.mfp.MessageCopyFailedException;
 import com.ibm.ws.sib.mfp.MessageEncodeFailedException;
 import com.ibm.ws.sib.utils.DataSlice;
+import com.ibm.ws.sib.utils.ras.FormattedWriter;
 import com.ibm.ws.sib.utils.ras.SibTr;
 import com.ibm.wsspi.sib.core.ConsumerSession;
 import com.ibm.wsspi.sib.core.OrderingContext;
@@ -1106,5 +1108,57 @@ public class CATProxyConsumer extends CATConsumer
 
       if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "unlockAll");
    }
+   /**
+    * Create a formatted dump of the current state.
+    * Overriding the method in CATConsumer so that we can add some further data about the readahead counters.
+    *
+    * @param writer
+    */
+   public void dump(FormattedWriter writer) {
+       if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+           SibTr.entry(this, tc, "dump", new Object[] { writer });
+
+       try {
+           writer.newLine();
+           writer.startTag(this.getClass().getSimpleName());
+           writer.indent();
+
+           writer.newLine();
+           writer.taggedValue("toString", toString());
+
+           writer.newLine();
+           writer.taggedValue("sentBytes", getSentBytes());
+           writer.newLine();
+           writer.taggedValue("requestedBytes", getRequestedBytes());
+
+           ConsumerSession consumerSession = getConsumerSession();
+           if (consumerSession != null)
+               consumerSession.dump(writer);
+           writer.outdent();
+           writer.newLine();
+           writer.endTag(this.getClass().getSimpleName());
+
+        } catch (Throwable t) {
+            // No FFDC Code Needed
+            try {
+                writer.write("\nUnable to dump " + this + " " + t);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+       }
+
+       if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+           SibTr.exit(this, tc, "dump");
+   }
+
+   public String toString()
+   {
+	   StringBuilder builder = new StringBuilder(super.toString());
+	   builder.append(", sentBytes: " + sentBytes +
+			   ", requestedBytes: " + requestedBytes);
+
+	   return builder.toString();
+   }
+
 
 }
