@@ -91,8 +91,10 @@
 	<wsSecurityProvider
 		id="default"
 		ws-security.callback-handler="com.ibm.ws.wssecurity.example.cbhwss4j.CommonPasswordCallbackWss4j"
+		ws-security.return.security.error="true"
 	>
-	<!-- EE8 Callbackhandler -->
+	<!-- 3/2021 added ws-security.return.security.error -->
+	<!-- 2/2021 EE8 Callbackhandler -->
 	
 		<callerToken name="X509Token" />
 		<signatureProperties

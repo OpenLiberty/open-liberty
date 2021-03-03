@@ -49,11 +49,11 @@
 
 	<wsSecurityClient
 		id="default"
-		ws-security.password="security"
 		ws-security.username="user1"
 		ws-security.callback-handler="com.ibm.ws.wssecurity.example.cbhwss4j.CommonPasswordCallbackWss4j"
 		ws-security.signature.username="soaprequester"
 	>
+	<!-- ws-security.password="security"  -->
 	<!-- 2/2021 EE8 Callbackhandler -->
 	
 		<signatureProperties

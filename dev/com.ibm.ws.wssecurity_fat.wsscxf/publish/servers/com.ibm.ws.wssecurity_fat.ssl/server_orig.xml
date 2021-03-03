@@ -72,6 +72,14 @@
 		ws-security.cache.config.file="${server.config.dir}/cxf-ehcache.xml"> </wsSecurityProvider> 
 		<application name="untoken" type="war" location="${server.config.dir}/untoken.war"> 
 		<classloader apiTypeVisibility="spec, ibm-api, third-party" /> </application> -->
+		
+    <wsSecurityProvider
+		id="default"
+		ws-security.return.security.error="true"
+	>
+	<!-- 3/2021 added ws-security.return.security.error -->
+	</wsSecurityProvider>
+	
 	<wsSecurityClient
 		id="default"
 		ws-security.username="user1"

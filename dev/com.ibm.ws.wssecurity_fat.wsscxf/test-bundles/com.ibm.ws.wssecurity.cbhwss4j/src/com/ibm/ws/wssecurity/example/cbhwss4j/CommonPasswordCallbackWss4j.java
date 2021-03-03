@@ -145,19 +145,19 @@ public class CommonPasswordCallbackWss4j implements CallbackHandler {
      */
     @Override
     public void handle(Callback[] callbacks) throws IOException, UnsupportedCallbackException {
-        System.out.println("CommonPasswordCallbackWss4j :" + callbacks);
+        System.out.println("From CommonPasswordCallbackWss4j.java, using the callbacks:" + callbacks);
         for (int i = 0; i < callbacks.length; i++) {
             WSPasswordCallback pwcb = (WSPasswordCallback) callbacks[i];
             String id = pwcb.getIdentifier();
-            System.out.println("CommonPasswordCallbackWss4j: id:" + id);
+            System.out.println("From CommonPasswordCallbackWss4j.java: id:" + id);
             String pass = null;
 
             switch (pwcb.getUsage()) {
-                //case WSPasswordCallback.USERNAME_TOKEN_UNKNOWN:  // depricated
+                //case WSPasswordCallback.USERNAME_TOKEN_UNKNOWN:  // deprecated
                 case WSPasswordCallback.UNKNOWN:
                 case WSPasswordCallback.USERNAME_TOKEN:
 
-                    System.out.println("CommonPasswordCallbackWss4j: Getting userPassword id:" + id);
+                    System.out.println("From CommonPasswordCallbackWss4j.java: Getting userPassword id:" + id);
                     pass = userPasswords.get(id);
                     if (pass != null) {
                         pwcb.setPassword(pass);
@@ -166,10 +166,10 @@ public class CommonPasswordCallbackWss4j implements CallbackHandler {
                     break;
 
                 case WSPasswordCallback.DECRYPT:
-                    System.out.println("CommonPasswordCallbackWss4j: Getting decryptPassword id:" + id);
+                    System.out.println("From CommonPasswordCallbackWss4j.java: Getting decryptPassword id:" + id);
                     pass = encryptPasswords.get(id);
                     if (pass != null) {
-                        System.out.println("CommonPasswordCallbackWss4j: encryptPassword:" + pass);
+                        System.out.println("From CommonPasswordCallbackWss4j.java: encryptPassword:" + pass);
                         pwcb.setPassword(pass);
                         return;
                     }
@@ -178,16 +178,16 @@ public class CommonPasswordCallbackWss4j implements CallbackHandler {
 
                 case WSPasswordCallback.SIGNATURE:
 
-                    System.out.println("CommonPasswordCallbackWss4j: Getting signaturePassword id:" + id);
+                    System.out.println("From CommonPasswordCallbackWss4j.java: Getting signaturePassword id:" + id);
                     pass = signaturePasswords.get(id);
                     if (pass != null) {
                         pwcb.setPassword(pass);
-                        System.out.println("CommonPasswordCallbackWss4j: signaturePassword:" + pass);
+                        System.out.println("From CommonPasswordCallbackWss4j.java: signaturePassword:" + pass);
                         return;
                     }
                     break;
                 default:
-                    System.out.println("CommonPasswordCallbackWss4j: Password not handled id:" + id + "  type:" + pwcb.getUsage());
+                    System.out.println("From CommonPasswordCallbackWss4j.java: Password not handled id:" + id + "  type:" + pwcb.getUsage());
                     break;
             }
         }

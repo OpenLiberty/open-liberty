@@ -90,6 +90,7 @@
 		id="default"
 		ws-security.callback-handler="com.ibm.ws.wssecurity.example.cbh.CommonPasswordCallback"
 	>
+	
 		<callerToken name="UsernameToken" />
 		<signatureProperties
 			org.apache.ws.security.crypto.merlin.keystore.type="jks"
