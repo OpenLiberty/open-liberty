@@ -70,6 +70,16 @@ public class CDIArchiveHelper {
     }
 
     /**
+     * Create a WEB-INF/beans.xml file in a war
+     *
+     * @param webArchive The WAR to create the beans.xml in
+     * @param srcPackage The package where the source beans.xml file can be found
+     */
+    public static WebArchive addBeansXML(WebArchive webArchive, Package srcPackage) {
+        return webArchive.addAsWebInfResource(srcPackage, BEANS_XML, BEANS_XML);
+    }
+
+    /**
      * Create an empty META-INF/beans.xml file in a jar
      *
      * @param archive The archive to create the beans.xml in
@@ -108,6 +118,16 @@ public class CDIArchiveHelper {
      */
     public static JavaArchive addBeansXML(JavaArchive archive, Asset beans) {
         return archive.addAsManifestResource(beans, BEANS_XML);
+    }
+
+    /**
+     * Create a META-INF/beans.xml file in an a jar
+     *
+     * @param archive    The archive to create the beans.xml in
+     * @param srcPackage The package where the source beans.xml file can be found
+     */
+    public static JavaArchive addBeansXML(JavaArchive archive, Package srcPackage) {
+        return archive.addAsManifestResource(srcPackage, BEANS_XML, BEANS_XML);
     }
 
     /**
