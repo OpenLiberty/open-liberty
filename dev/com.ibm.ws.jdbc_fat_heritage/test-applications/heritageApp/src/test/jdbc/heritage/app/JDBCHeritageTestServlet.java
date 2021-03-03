@@ -20,6 +20,7 @@ import java.lang.reflect.Field;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -300,6 +301,29 @@ public class JDBCHeritageTestServlet extends FATServlet {
     }
 
     /**
+     * Confirm that a data store helper's doStatementCleanup is capable of resetting the configured
+     * default queryTimeout from the dataSource configuration.
+     */
+    @Test
+    public void testDefaultQueryTimeout() throws Exception {
+        try (Connection con = defaultDataSource.getConnection()) {
+            PreparedStatement pstmt = con.prepareStatement("VALUES ('testDefaultQueryTimeout', SQRT(196))");
+            assertEquals(81, pstmt.getQueryTimeout()); // configured on dataSource as 1m21s
+            pstmt.setQueryTimeout(289);
+            pstmt.executeQuery().close();
+            // return statement to cache
+            pstmt.close();
+
+            // reuse from cache
+            pstmt = con.prepareStatement("VALUES ('testDefaultQueryTimeout', SQRT(196))");
+            assertEquals(81, pstmt.getQueryTimeout()); // doStatementCleanup resets the configured default
+            pstmt.executeQuery().close();
+            pstmt.close();
+        }
+
+    }
+
+    /**
      * Confirm that doesStatementCacheIsoLevel causes prepared statements to be cached based on
      * the isolation level that was present on the connection at the time the statement was
      * created.
@@ -327,6 +351,41 @@ public class JDBCHeritageTestServlet extends FATServlet {
 
             assertNotSame(pstmtRC, pstmtRR);
             assertSame(pstmtRC, pstmtRC2);
+        }
+    }
+
+    /**
+     * Confirm that doStatementCleanup is invoked when reusing statements from the statement cache.
+     */
+    @Test
+    public void testStatementCleanup() throws Exception {
+        try (Connection con = defaultDataSource.getConnection()) {
+            PreparedStatement pstmt = con.prepareStatement("VALUES ('testPreparedStatementCleanup', CURRENT_TIME)");
+            assertEquals(225, pstmt.getMaxFieldSize()); // default value used by fake JDBC driver
+            pstmt.setMaxFieldSize(441);
+            pstmt.executeQuery().close();
+            // return statement to cache
+            pstmt.close();
+
+            // reuse from cache
+            pstmt = con.prepareStatement("VALUES ('testPreparedStatementCleanup', CURRENT_TIME)");
+            assertEquals(225, pstmt.getMaxFieldSize()); // doStatementCleanup resets the default
+            pstmt.executeQuery().close();
+            pstmt.close();
+
+            // repeat with CallableStatement
+            CallableStatement cstmt = con.prepareCall("VALUES (SUBSTR('testCallableStatementCleanup', 5, 12))");
+            assertEquals(225, cstmt.getMaxFieldSize()); // default value used by fake JDBC driver
+            cstmt.setMaxFieldSize(576);
+            cstmt.executeQuery().close();
+            // return statement to cache
+            cstmt.close();
+
+            // reuse from cache
+            cstmt = con.prepareCall("VALUES (SUBSTR('testCallableStatementCleanup', 5, 12))");
+            assertEquals(225, cstmt.getMaxFieldSize()); // doStatementCleanup resets the default
+            cstmt.executeQuery().close();
+            cstmt.close();
         }
     }
 }

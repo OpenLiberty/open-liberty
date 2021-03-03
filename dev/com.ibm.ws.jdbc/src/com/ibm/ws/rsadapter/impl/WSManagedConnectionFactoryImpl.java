@@ -70,7 +70,7 @@ import com.ibm.ws.jca.adapter.WSConnectionManager;
 import com.ibm.ws.jca.adapter.WSManagedConnectionFactory;
 import com.ibm.ws.jca.cm.AbstractConnectionFactoryService;
 import com.ibm.ws.jca.cm.ConnectorService;
-import com.ibm.ws.jdbc.heritage.DataStoreHelper;
+import com.ibm.ws.jdbc.heritage.GenericDataStoreHelper;
 import com.ibm.ws.jdbc.heritage.DataStoreHelperMetaData;
 import com.ibm.ws.jdbc.internal.PropertyService;
 import com.ibm.ws.jdbc.osgi.JDBCRuntimeVersion;
@@ -138,7 +138,7 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
     /**
      * Same as the DatabaseHelper unless overridden via the heritage helperClass.
      */
-    public final DataStoreHelper dataStoreHelper;
+    public final GenericDataStoreHelper dataStoreHelper;
 
     /**
      * Helps cope with differences between databases/JDBC drivers.
@@ -363,8 +363,10 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
             dataStoreHelper = null;
             supportsGetNetworkTimeout = supportsGetSchema = atLeastJDBCVersion(JDBCRuntimeVersion.VERSION_4_1);
         } else {
-            dataStoreHelper = AccessController.doPrivileged((PrivilegedExceptionAction<DataStoreHelper>) () ->
-                (DataStoreHelper) jdbcDriverLoader.loadClass(config.heritageHelperClass).getConstructor().newInstance());
+            Properties helperProps = new Properties(); // TODO populate with what is needed
+            dataStoreHelper = AccessController.doPrivileged((PrivilegedExceptionAction<GenericDataStoreHelper>) () ->
+                (GenericDataStoreHelper) jdbcDriverLoader.loadClass(config.heritageHelperClass).getConstructor(Properties.class).newInstance(helperProps));
+            dataStoreHelper.setConfig(dsConfigRef);
             DataStoreHelperMetaData metadata = dataStoreHelper.getMetaData();
             defaultIsolationLevel = dataStoreHelper.getIsolationLevel(null);
             doesStatementCacheIsoLevel = metadata.doesStatementCacheIsoLevel();

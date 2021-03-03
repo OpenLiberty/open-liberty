@@ -11,6 +11,7 @@
 package com.ibm.ws.jdbc.heritage;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import javax.resource.ResourceException;
@@ -19,7 +20,7 @@ import javax.security.auth.Subject;
 /**
  * Extension point for compatibility with data store helpers.
  */
-public interface DataStoreHelper {
+public abstract class GenericDataStoreHelper {
     /**
      * Cleans up a connection before it is returned to the connection
      * pool for later reuse. This method is also used when checking for invalid connections.
@@ -28,7 +29,7 @@ public interface DataStoreHelper {
      * @return true if any standard connection property was modified, otherwise false.
      * @exception SQLException if an error occurs while cleaning up the connection.
      */
-    boolean doConnectionCleanup(Connection conn) throws SQLException;
+    public abstract boolean doConnectionCleanup(Connection conn) throws SQLException;
 
     /**
      * Invoked after the last active connection handle is closed.
@@ -41,7 +42,7 @@ public interface DataStoreHelper {
      * @return boolean false indicates no connection cleanup is performed by this method, true otherwise. Default is false as its a no-op.
      * @throws SQLException if it fails.
      */
-    boolean doConnectionCleanupPerCloseConnection(Connection conn, boolean isCMP, Object unused) throws SQLException;
+    public abstract boolean doConnectionCleanupPerCloseConnection(Connection conn, boolean isCMP, Object unused) throws SQLException;
 
     /**
      * Configures a connection before first use. This method is invoked only
@@ -51,7 +52,7 @@ public interface DataStoreHelper {
      * @param conn the connection to set up.
      * @exception SQLException if connection setup cannot be completed successfully.
      */
-    void doConnectionSetup(Connection conn) throws SQLException;
+    public abstract void doConnectionSetup(Connection conn) throws SQLException;
 
     /**
      * Invoked per getConnection request when the connection handle count is 1,
@@ -64,7 +65,7 @@ public interface DataStoreHelper {
      * @return true if any connection setup is performed by this method, otherwise false.
      * @throws SQLException if it fails.
      */
-    boolean doConnectionSetupPerGetConnection(Connection conn, boolean isCMP, Object props) throws SQLException;
+    public abstract boolean doConnectionSetupPerGetConnection(Connection conn, boolean isCMP, Object props) throws SQLException;
 
     /**
      * Invoked prior to a connection being used in a transaction.
@@ -77,7 +78,15 @@ public interface DataStoreHelper {
      *        depending on whether or not this is the first time invoking this method for the specified connection.
      * @throws SQLException to indicate failure of this method.
      */
-    void doConnectionSetupPerTransaction(Subject subject, String user, Connection conn, boolean reauthRequired, Object props) throws SQLException;
+    public abstract void doConnectionSetupPerTransaction(Subject subject, String user, Connection conn, boolean reauthRequired, Object props) throws SQLException;
+
+    /**
+     * Cleans up a statement before the statement is placed in the statement cache.
+     *
+     * @param stmt the PreparedStatement.
+     * @exception SQLException if an error occurs cleaning up the statement.
+     */
+    public abstract void doStatementCleanup(PreparedStatement stmt) throws SQLException;
 
     /**
      * Returns the default to use for transaction isolation level when not specified another way.
@@ -86,12 +95,19 @@ public interface DataStoreHelper {
      * @return transaction isolation level constant from java.sql.Connection
      * @throws ResourceException never. This is only here for compatibility.
      */
-    int getIsolationLevel(AccessIntent unused) throws ResourceException;
+    public abstract int getIsolationLevel(AccessIntent unused) throws ResourceException;
 
     /**
      * Returns metadata for the data store helper.
      *
      * @return metadata.
      */
-    DataStoreHelperMetaData getMetaData();
+    public abstract DataStoreHelperMetaData getMetaData();
+
+    /**
+     * Supplies the dataSource configuration to the data store helper.
+     *
+     * @param config AtomicReference to the dataSource configuration.
+     */
+    public abstract void setConfig(Object config);
 }
