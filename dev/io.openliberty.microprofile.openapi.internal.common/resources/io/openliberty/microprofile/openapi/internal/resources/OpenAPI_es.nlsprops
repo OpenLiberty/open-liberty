@@ -1,4 +1,4 @@
-# Copyright (c) 2018, 2020 IBM Corporation and others.
+# Copyright (c) 2018, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -61,6 +61,6 @@ OPENAPI_APPLICATION_PROCESSED=CWWKO1660I: La aplicaci\u00f3n {0} se ha procesado
 OPENAPI_APPLICATION_PROCESSED.explanation=Se ha generado el documento OpenAPI para la aplicaci\u00f3n especificada. Se puede ver en el punto final /openapi.
 OPENAPI_APPLICATION_PROCESSED.useraction=No se requiere ninguna acci\u00f3n.
 
-OPENAPI_APPLICATION_PROCESSING_ERROR=CWWKO1661E: Se ha producido un error al procesar la aplicaci\u00f3n {0} y no se ha producido un documento OpenAPI.
+OPENAPI_APPLICATION_PROCESSING_ERROR=CWWKO1661E: Se ha producido un error al procesar la aplicaci\u00f3n {0} y no se ha generado un documento OpenAPI. El error es: {1}.
 OPENAPI_APPLICATION_PROCESSING_ERROR.explanation=Se ha producido un error de tiempo de ejecuci\u00f3n al procesar la aplicaci\u00f3n.
-OPENAPI_APPLICATION_PROCESSING_ERROR.useraction=Recopile los registros y p\u00f3ngase en contacto con el servicio de IBM.
+OPENAPI_APPLICATION_PROCESSING_ERROR.useraction=Revise los registros FFDC y el texto de excepci\u00f3n para identificar el problema.

@@ -237,3 +237,7 @@ info.directory.app.useraction=Nincs teend\u0151.
 info.unexpanded.app=CWWKZ0136I: A(z) {0} alkalmaz\u00e1s az arch\u00edv f\u00e1jlt haszn\u00e1lja a(z) {1} helyen.
 info.unexpanded.app.explanation=Az alkalmaz\u00e1s helye bin\u00e1ris arch\u00edv f\u00e1jlra mutat. Az arch\u00edv f\u00e1jl nem lesz kibontva lemezre, mivel az alkalmaz\u00e1sok automatikus kibont\u00e1sa nem lett be\u00e1ll\u00edtva.
 info.unexpanded.app.useraction=Nincs teend\u0151.
+
+warning.could.not.expand.app.loc=CWWKZ0137W: A(z) {0} alkalmaz\u00e1s nem bonthat\u00f3 ki az expandLocation tulajdons\u00e1g \u00e1ltal megadott {1} helyen.
+warning.could.not.expand.app.loc.explanation=Az alkalmaz\u00e1s nem bonthat\u00f3 ki a expandLocation tulajdons\u00e1g \u00e1ltal megadott helyre. A ${server.config.dir}/apps/expanded/ alap\u00e9rtelmezett hely ker\u00fclt felhaszn\u00e1l\u00e1sra az alkalmaz\u00e1shoz.
+warning.could.not.expand.app.loc.useraction=Jav\u00edtsa ki az expandLocation tulajdons\u00e1gban megadott \u00e9rt\u00e9ket, majd ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t vagy friss\u00edtse az alkalmaz\u00e1st.

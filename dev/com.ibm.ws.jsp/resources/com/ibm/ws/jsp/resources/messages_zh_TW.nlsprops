@@ -387,6 +387,7 @@ jsp.error.multiple.line.number.explanation=
 jsp.error.multiple.line.number.useraction=
 
 jsp.error.corresponding.servlet=JSPG0093E: {0} \u6a94\u7522\u751f Servlet \u932f\u8aa4
+
 jsp.error.corresponding.servlet.explanation=
 jsp.error.corresponding.servlet.useraction=
 
@@ -573,6 +574,7 @@ jsp.error.tagfile.invoke.scope_invalid.explanation=
 jsp.error.tagfile.invoke.scope_invalid.useraction=
 
 jsp.error.tagfile.dobody.scope_invalid=JSPG0141E: jsp:doBody scope \u503c\u7121\u6548
+
 jsp.error.tagfile.dobody.scope_invalid.explanation=
 jsp.error.tagfile.dobody.scope_invalid.useraction=
 
@@ -841,6 +843,7 @@ jsp.error.no.doctype-root-element.attr.explanation=
 jsp.error.no.doctype-root-element.attr.useraction=
 
 jsp.error.no.doctype-system.attr=JSPG0214E: \u672a\u63d0\u4f9b doctype-system\u3002
+
 jsp.error.no.doctype-system.attr.explanation=
 jsp.error.no.doctype-system.attr.useraction=
 
@@ -1258,3 +1261,7 @@ jsp.parse.tld.exception.useraction=\u8acb\u6aa2\u67e5\u300cJSP \u6a19\u7c64\u5ea
 system.java.compiler.not.found=JSPG0304W: JSP \u5c6c\u6027 useJDKCompiler \u8a2d\u70ba true\uff0c\u4f46\u537b\u627e\u4e0d\u5230 Java SDK \u7de8\u8b6f\u5668\u3002JSP \u5132\u5b58\u5668\u4f7f\u7528\u7522\u54c1\u4e2d\u7684\u5167\u5d4c\u7de8\u8b6f\u5668\uff0c\u4f86\u7de8\u8b6f Web \u6a21\u7d44\u4e2d\u7684 JSP \u6a94\uff1a{0}\u3002
 system.java.compiler.not.found.explanation=JSP \u5132\u5b58\u5668\u627e\u4e0d\u5230\u7cfb\u7d71\u7de8\u8b6f\u5668\uff0c\u9019\u901a\u5e38\u8868\u793a\u5728\u985e\u5225\u8def\u5f91\u4e2d\u627e\u4e0d\u5230 Java SDK JAR \u6a94 tools.jar\u3002
 system.java.compiler.not.found.useraction=\u8acb\u78ba\u5b9a Java SDK JAR \u6a94 tools.jar \u4f4d\u65bc\u985e\u5225\u8def\u5f91\u4e2d\uff0c\u4e26\u9a57\u8b49 Java SDK \u652f\u63f4\u300cJava \u7de8\u8b6f\u5668 API\u300d\u3002\u5982\u9700\u76f8\u95dc\u8cc7\u8a0a\uff0c\u8acb\u53c3\u95b1\u300cJava \u898f\u683c\u8981\u6c42 199\u300d\u3002
+
+jsp.feature.not.loaded.correctly=CWWJS0001: \u8f09\u5165 JSP [Pages] \u7279\u6027\u6642\uff0c\u672a\u4f7f\u7528\u5408\u9069\u7684\u7248\u672c\u3002
+jsp.feature.not.loaded.correctly.explanation=\u8f09\u5165 JSP [Pages] \u7279\u6027\u6642\uff0c\u6703\u4f7f\u7528\u5c0d\u61c9\u81f3\u8a72 JSP [Pages] \u7279\u6027\u4e4b Java [Jakarta] EE \u898f\u683c\u7684\u7248\u672c\u3002\u8f09\u5165\u7279\u6027\u6642\uff0c\u672a\u5b9a\u7fa9\u4efb\u4f55\u7248\u672c\u3002
+jsp.feature.not.loaded.correctly.useraction=\u8acb\u6aa2\u67e5 server.xml \u6a94\u4e2d\u662f\u5426\u5b58\u5728 JSP [Pages] \u7279\u6027\u3002\u53ea\u61c9\u6307\u5b9a\u4e00\u500b\u3002

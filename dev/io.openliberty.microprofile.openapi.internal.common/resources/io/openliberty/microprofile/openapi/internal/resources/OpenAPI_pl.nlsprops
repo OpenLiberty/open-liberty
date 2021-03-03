@@ -1,4 +1,4 @@
-# Copyright (c) 2018, 2020 IBM Corporation and others.
+# Copyright (c) 2018, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -61,6 +61,6 @@ OPENAPI_APPLICATION_PROCESSED=CWWKO1660I: Aplikacja {0} zosta\u0142a przetworzon
 OPENAPI_APPLICATION_PROCESSED.explanation=Wygenerowano dokument OpenAPI dla okre\u015blonej aplikacji. Mo\u017cna go wy\u015bwietli\u0107 w punkcie ko\u0144cowym /openapi.
 OPENAPI_APPLICATION_PROCESSED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
 
-OPENAPI_APPLICATION_PROCESSING_ERROR=CWWKO1661E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas przetwarzania aplikacji {0} i nie przedstawiono dokumentu OpenAPI.
+OPENAPI_APPLICATION_PROCESSING_ERROR=CWWKO1661E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas przetwarzania aplikacji {0} i nie przedstawiono dokumentu OpenAPI. B\u0142\u0105d: {1}.
 OPENAPI_APPLICATION_PROCESSING_ERROR.explanation=Podczas przetwarzania aplikacji wyst\u0105pi\u0142 b\u0142\u0105d.
-OPENAPI_APPLICATION_PROCESSING_ERROR.useraction=Zbierz dzienniki i skontaktuj si\u0119 z Serwisem IBM.
+OPENAPI_APPLICATION_PROCESSING_ERROR.useraction=Sprawd\u017a dzienniki FFDC i tekst wyj\u0105tku w celu zidentyfikowania problemu.

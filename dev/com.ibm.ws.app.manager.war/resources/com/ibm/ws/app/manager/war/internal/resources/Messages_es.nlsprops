@@ -237,3 +237,7 @@ info.directory.app.useraction=No se requiere ninguna acci\u00f3n.
 info.unexpanded.app=CWWKZ0136I: La aplicaci\u00f3n {0} est\u00e1 utilizando el archivo de archivado en la ubicaci\u00f3n {1}.
 info.unexpanded.app.explanation=La ubicaci\u00f3n de la aplicaci\u00f3n apunta a un archivo de archivado binario. El archivo de archivado no se expandir\u00e1 en el disco porque no se ha configurado la expansi\u00f3n autom\u00e1tica de las aplicaciones.
 info.unexpanded.app.useraction=No se requiere ninguna acci\u00f3n.
+
+warning.could.not.expand.app.loc=CWWKZ0137W: No se ha podido expandir la aplicaci\u00f3n {0} en la ubicaci\u00f3n {1} especificada por la propiedad expandLocation.
+warning.could.not.expand.app.loc.explanation=La aplicaci\u00f3n no se ha podido expandir a la ubicaci\u00f3n especificada por la propiedad expandLocation. Se ha utilizado la ubicaci\u00f3n predeterminada ${server.config.dir}/apps/expanded/ para la aplicaci\u00f3n.
+warning.could.not.expand.app.loc.useraction=Corrija el valor especificado por la propiedad expandLocation y reinicie el servidor o bien actualice la aplicaci\u00f3n.

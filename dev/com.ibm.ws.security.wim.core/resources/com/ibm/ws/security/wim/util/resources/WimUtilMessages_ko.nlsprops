@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2019 IBM Corporation and others.
+# Copyright (c) 2012, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -270,4 +270,4 @@ CANNOT_WRITE_TO_READ_ONLY_REPOSITORY.useraction=\uc4f0\uae30 \uc870\uc791\uc774 
 
 REQUIRED_IDENTIFIERS_MISSING=CWIML3001W: \uc5d4\ud2f0\ud2f0\uc758 \ud544\uc218 ID\uac00 \ub204\ub77d\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
 REQUIRED_IDENTIFIERS_MISSING.explanation=ID uniqueName \ubc0f uniqueId\uac00 \uc9c0\uc815\ub418\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4. \ucd5c\uc18c \ud558\ub098\uc758 ID\ub97c \uc9c0\uc815\ud574\uc57c \ud569\ub2c8\ub2e4.
-REQUIRED_IDENTIFIERS_MISSING.useraction=\uc804\ub2ec\ub418\ub294 \uac01 \uc5d4\ud2f0\ud2f0\uc758 ID \ud2b9\uc131\uc774 \uc9c0\uc815\ub418\uc5b4 \uc788\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624. ID\uac00 \uc9c0\uc815\ub418\uc9c0 \uc54a\uc740 \uacbd\uc6b0 \ud2b9\uc131\uc744 \ucd94\uac00\ud558\uace0 uniqueName \ub610\ub294 uniqueId\ub97c \uc9c0\uc815\ud558\uc2ed\uc2dc\uc624.
+REQUIRED_IDENTIFIERS_MISSING.useraction=\uc804\ub2ec\ub418\ub294 \uac01 \uc5d4\ud2f0\ud2f0\uc5d0 \ub300\ud574 ID \ud2b9\uc131\uc774 \uc9c0\uc815\ub418\uc5c8\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624. ID\uac00 \uc9c0\uc815\ub418\uc9c0 \uc54a\uc740 \uacbd\uc6b0 \ud2b9\uc131\uc744 \ucd94\uac00\ud558\uace0 uniqueName \ub610\ub294 uniqueId\ub97c \uc9c0\uc815\ud558\uc2ed\uc2dc\uc624.

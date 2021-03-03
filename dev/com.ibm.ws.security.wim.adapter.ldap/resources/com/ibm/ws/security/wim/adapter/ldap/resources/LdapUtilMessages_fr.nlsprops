@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2013 IBM Corporation and others.
+# Copyright (c) 2012, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -225,6 +225,57 @@ LDAP_REGISTRY_INVALID_MAPPING.useraction=Modifiez le programme de mappage de cer
 LOGINPROPERTY_OVERRIDE_USERFILTER=CWIML4505W: L'attribut userFilter d\u00e9fini est ignor\u00e9 car des attributs loginProperty sont d\u00e9finis. Le filtre utilisateur est g\u00e9n\u00e9r\u00e9 dynamiquement.
 LOGINPROPERTY_OVERRIDE_USERFILTER.explanation=Une ou plusieurs instances de l'attribut loginProperty sont d\u00e9finies. Ces attributs sont utilis\u00e9s pour g\u00e9n\u00e9rer le filtre utilisateur.
 LOGINPROPERTY_OVERRIDE_USERFILTER.useraction=Si l'attribut userFilter est pr\u00e9f\u00e9r\u00e9, retirez tous les attributs loginProperty.
+
 INVALID_LOGIN_PROPERTIES=CWIML4506E: Les propri\u00e9t\u00e9s de connexion suivantes ne sont pas valides : {0}.
 INVALID_LOGIN_PROPERTIES.explanation=Une ou plusieurs propri\u00e9t\u00e9s de connexion ne sont pas des propri\u00e9t\u00e9s WIM PersonAccount valides.
 INVALID_LOGIN_PROPERTIES.useraction=Choisissez des propri\u00e9t\u00e9s PersonAccount valides ou ajoutez les propri\u00e9t\u00e9s \u00e0 PersonAccount en tant que propri\u00e9t\u00e9s \u00e9tendues. Assurez-vous que la casse de chaque propri\u00e9t\u00e9 de connexion correspond \u00e0 la casse de la propri\u00e9t\u00e9 PersonAccount correspondante.
+
+KRB5_LOGIN_FAILED_CACHE=CWIML4507E: La connexion Kerberos a \u00e9chou\u00e9 avec le principal Kerberos {0} et le cache de donn\u00e9es d''identification Kerberos (ccache) {1}.
+KRB5_LOGIN_FAILED_CACHE.explanation=Le principal Kerberos sp\u00e9cifi\u00e9 n'est pas valide ou le cache de donn\u00e9es d'identification Kerberos (ccache) n'est pas valide ou a expir\u00e9.
+KRB5_LOGIN_FAILED_CACHE.useraction=Assurez-vous qu'un principal Kerberos valide est sp\u00e9cifi\u00e9 et que le cache de donn\u00e9es d'identification Kerberos (ccache) n'est pas arriv\u00e9 \u00e0 expiration.
+
+KRB5_LOGIN_FAILED_KEYTAB=CWIML4508E: La connexion Kerberos a \u00e9chou\u00e9 avec le principal Kerberos {0} et le fichier de cl\u00e9s Kerberos {1}.
+KRB5_LOGIN_FAILED_KEYTAB.explanation=Le principal Kerberos sp\u00e9cifi\u00e9 ou le fichier de cl\u00e9s Kerberos n'est pas valide.
+KRB5_LOGIN_FAILED_KEYTAB.useraction=Assurez-vous qu'un principal Kerberos valide et qu'un fichier de cl\u00e9s Kerberos valide contenant le principal Kerberos sont sp\u00e9cifi\u00e9s.
+		
+KRB5_LOGIN_FAILED_DEFAULT_CACHE=CWIML4509E: La connexion Kerberos a \u00e9chou\u00e9 avec le principal Kerberos {0} et le cache de donn\u00e9es d''identification Kerberos (ccache) par d\u00e9faut.
+KRB5_LOGIN_FAILED_DEFAULT_CACHE.explanation=Le principal Kerberos sp\u00e9cifi\u00e9 n'est pas valide ou le cache de donn\u00e9es d'identification Kerberos (ccache) par d\u00e9faut n'est pas valide ou a expir\u00e9.
+KRB5_LOGIN_FAILED_DEFAULT_CACHE.useraction=Assurez-vous qu'un principal Kerberos valide est sp\u00e9cifi\u00e9 et que le cache de donn\u00e9es d'identification Kerberos (ccache) par d\u00e9faut n'est pas arriv\u00e9 \u00e0 expiration.
+
+KRB5_LOGIN_FAILED_DEFAULT_KEYTAB=CWIML4510E: La connexion Kerberos a \u00e9chou\u00e9 avec le principal Kerberos {0} et le fichier de cl\u00e9s Kerberos par d\u00e9faut.
+KRB5_LOGIN_FAILED_DEFAULT_KEYTAB.explanation=Le principal Kerberos sp\u00e9cifi\u00e9 ou le fichier de cl\u00e9s Kerberos par d\u00e9faut n'est pas valide.
+KRB5_LOGIN_FAILED_DEFAULT_KEYTAB.useraction=Assurez-vous qu'un principal Kerberos valide est sp\u00e9cifi\u00e9 et que le fichier de cl\u00e9s Kerberos par d\u00e9faut est valide.
+
+KRB5_TICKETCACHE_USED=CWIML4511E: Le registre LDAP {0} est configur\u00e9 avec le nom de fichier de cache de tickets Kerberos (ccache) {1} et le nom de fichier de cl\u00e9s {2}. Le cache des donn\u00e9es d''identification Kerberos (ccache) est utilis\u00e9 pour l''authentification de liaison Kerberos aupr\u00e8s du serveur LDAP.
+KRB5_TICKETCACHE_USED.explanation=Pour utiliser le fichier de cl\u00e9s, le nom du fichier de cl\u00e9s doit \u00eatre sp\u00e9cifi\u00e9 et le nom du fichier de cache de donn\u00e9es d'identification Kerberos (ccache) ne doit pas \u00eatre sp\u00e9cifi\u00e9.
+KRB5_TICKETCACHE_USED.useraction=Aucune action n'est requise. Pour \u00e9viter ce message, supprimez l'attribut ticketCache du registre LDAP ou l'attribut keytab de Kerberos.
+
+INVALID_KRB5_PRINCIPAL=CWIML4512E: Le nom du principal Kerberos {0} est incorrectement format\u00e9, le nom de domaine est manquant ou un nom de domaine par d\u00e9faut est introuvable.
+INVALID_KRB5_PRINCIPAL.explanation=Le nom du principal Kerberos ne peut pas \u00eatre null. Le nom du principal doit inclure le nom de domaine ou un nom de domaine par d\u00e9faut doit \u00eatre d\u00e9fini dans le fichier de configuration Kerberos.
+INVALID_KRB5_PRINCIPAL.useraction=Corrigez le nom du principal ou ajoutez un nom de domaine par d\u00e9faut.
+
+CANNOT_READ_KRB5_FILE=CWIML4513E: Le registre LDAP {0} ne peut pas lire le fichier Kerberos {1}.
+CANNOT_READ_KRB5_FILE.explanation=Le fichier Kerberos ne peut pas \u00eatre ouvert. Les droits d'acc\u00e8s au fichier sont incorrects ou le fichier n'existe pas.
+CANNOT_READ_KRB5_FILE.useraction=V\u00e9rifiez que l'emplacement du fichier est correct et que le serveur dispose des droits d'acc\u00e8s en lecture pour le fichier.
+
+# CWIML4514 already used
+
+KRB5_FILE_NOT_FOUND=CWIML4515E: La configuration de l''attribut {0} de l''\u00e9l\u00e9ment {1} fait r\u00e9f\u00e9rence \u00e0 un fichier qui n''existe pas \u00e0 l''emplacement suivant : {2}
+KRB5_FILE_NOT_FOUND.explanation=La configuration fait r\u00e9f\u00e9rence \u00e0 un fichier illisible ou inexistant.
+KRB5_FILE_NOT_FOUND.useraction=Assurez-vous que la configuration d\u00e9signe un fichier qui existe et que le processus applicatif peut lire.
+
+KRB5_FILE_FOUND=CWIML4516E: Le registre LDAP est configur\u00e9 pour utiliser un fichier {0} qui se trouve dans {1}
+KRB5_FILE_FOUND.explanation=Le fichier configur\u00e9 a \u00e9t\u00e9 localis\u00e9.
+KRB5_FILE_FOUND.useraction=Aucune action n'est requise.
+
+# CWIML4517 already used
+
+IDMAP_INVALID_FORMAT=CWIML4518W: La valeur {0} {1} est incorrectement form\u00e9e. La valeur doit \u00eatre une liste de paires ''objectclass:attribute'' ou ''*:attribute'' s\u00e9par\u00e9es par des points-virgules.
+IDMAP_INVALID_FORMAT.explanation=Le format de la valeur userIdMap doit \u00eatre valide pour que la classe d'objets et l'attribut puissent \u00eatre analys\u00e9s.
+IDMAP_INVALID_FORMAT.useraction=Mettez \u00e0 jour la valeur userIdMap de sorte qu'elle respecte le format sp\u00e9cifi\u00e9.
+
+# CWIML4519 and CWIML4520 already used
+
+KRB5_SERVICE_NOT_AVAILABLE=CWIML4521E: Le registre LDAP {0} a tent\u00e9 de se connecter au serveur LDAP \u00e0 l''aide des donn\u00e9es d''identification Kerberos pour le nom principal {1}, mais le service Kerberos qui fournit ces donn\u00e9es d''identification est indisponible. Le m\u00e9canisme d''authentification de liaison est {2}.
+KRB5_SERVICE_NOT_AVAILABLE.explanation=Le service Kerberos \u00e9tait indisponible lorsque le registre LDAP a tent\u00e9 d'\u00e9tablir la liaison avec le serveur LDAP. Si le service Kerberos est indisponible, aucun utilisateur ne peut s'authentifier.
+KRB5_SERVICE_NOT_AVAILABLE.useraction=Examinez les attributs bindAuthMechanism, krb5Principal et krb5TicketCache dans les param\u00e8tres de configuration du registre LDAP ainsi que la configuration Kerberos. Red\u00e9marrez le serveur.
