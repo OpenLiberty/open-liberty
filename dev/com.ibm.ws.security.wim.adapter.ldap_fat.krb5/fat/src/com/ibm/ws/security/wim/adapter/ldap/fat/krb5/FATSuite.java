@@ -18,8 +18,19 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                AlwaysPassesTest.class
+                AlwaysPassesTest.class,
+                //  KeytabBind_UserLoginTest.class, // to-do: kristip, in-progress
+                SimpleBindTest.class,
+                TicketCacheBindTest.class,
+                TicketCacheBindLongRunTest.class,
+                TicketCacheBindMultiRegistryTest.class
 })
-public class FATSuite {
+public class FATSuite extends ApacheDSandKDC {
+    /*
+     * The ApacheDS Directory Service, Ldap and KDC are started globally in ApacheDSandKDC (beforeClass and afterClass).
+     *
+     * ApacheDS trace will appear in output.txt. To enable more ApacheDS trace, set the setup method in ApacheDSandKDC.
+     *
+     */
 
 }

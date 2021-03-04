@@ -70,7 +70,7 @@ public class LdapRegistry extends ConfigElement {
     private String timestampFormat;
     private ConfigElementList<LoginProperty> loginProperties;
     private String bindAuthMechanism;
-    private String krb5PrincipalName;
+    private String krb5Principal;
     private String krb5TicketCache;
 
     /**
@@ -382,10 +382,10 @@ public class LdapRegistry extends ConfigElement {
     }
 
     /**
-     * @return the krb5PrincipalName
+     * @return the krb5Principal
      */
-    public String getKrb5PrincipalName() {
-        return krb5PrincipalName;
+    public String getKrb5Principal() {
+        return krb5Principal;
     }
 
     /**
@@ -780,17 +780,17 @@ public class LdapRegistry extends ConfigElement {
     }
 
     /**
-     * @param krb5PrincipalName the krb5PrincipalName to set
+     * @param krb5PrincipalName the krb5Principal to set
      */
-    @XmlAttribute(name = "krb5PrincipalName")
-    public void setKrb5PrincipalName(String krb5PrincipalName) {
-        this.krb5PrincipalName = krb5PrincipalName;
+    @XmlAttribute(name = "krb5Principal")
+    public void setKrb5Principal(String krb5PrincipalName) {
+        this.krb5Principal = krb5PrincipalName;
     }
 
     /**
      * @param TicketCache the TicketCache to set
      */
-    @XmlAttribute(name = "TicketCache")
+    @XmlAttribute(name = "krb5TicketCache")
     public void setKrb5TicketCache(String krb5TicketCache) {
         this.krb5TicketCache = krb5TicketCache;
     }
@@ -930,8 +930,8 @@ public class LdapRegistry extends ConfigElement {
         if (bindAuthMechanism != null) {
             sb.append("bindAuthMechanism=\"").append(bindAuthMechanism).append("\" ");
         }
-        if (krb5PrincipalName != null) {
-            sb.append("krb5PrincipalName=\"").append(krb5PrincipalName).append("\" ");
+        if (krb5Principal != null) {
+            sb.append("krb5Principal=\"").append(krb5Principal).append("\" ");
         }
         if (krb5TicketCache != null) {
             sb.append("krb5TicketCache=\"").append(krb5TicketCache).append("\" ");
