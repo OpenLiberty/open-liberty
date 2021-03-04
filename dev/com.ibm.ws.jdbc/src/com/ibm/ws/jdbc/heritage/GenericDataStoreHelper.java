@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.jdbc.heritage;
 
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -104,6 +105,13 @@ public abstract class GenericDataStoreHelper {
      * @return metadata.
      */
     public abstract DataStoreHelperMetaData getMetaData();
+
+    /**
+     * Overrides the PrintWriter for JDBC driver trace.
+     *
+     * @return PrintWriter to use for JDBC driver trace.
+     */
+    public abstract PrintWriter getPrintWriter();
 
     /**
      * Provides additional logging information for an <code>XAException</code>.

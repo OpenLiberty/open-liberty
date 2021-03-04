@@ -10,6 +10,8 @@
  *******************************************************************************/
 package test.jdbc.heritage.driver.helper;
 
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
@@ -109,6 +111,12 @@ public class HDDataStoreHelper extends GenericDataStoreHelper {
     @Override
     public DataStoreHelperMetaData getMetaData() {
         return metadata;
+    }
+
+    @Override
+    public PrintWriter getPrintWriter() {
+        // Redirects to System.out instead of OpenLiberty trace, which will cause output to go into message.log where the test can scan for it
+        return new PrintWriter(new OutputStreamWriter(System.out));
     }
 
     @Override
