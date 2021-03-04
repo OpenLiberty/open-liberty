@@ -51,6 +51,7 @@ import com.ibm.ws.security.authentication.utility.SubjectHelper;
 import com.ibm.ws.webcontainer.security.JaspiService;
 import com.ibm.wsspi.security.registry.RegistryHelper;
 import com.ibm.wsspi.security.token.AttributeNameConstants;
+import com.ibm.ws.security.authentication.principals.WSPrincipal;
 
 public class JaspiCallbackHandler implements CallbackHandler {
 
@@ -154,6 +155,13 @@ public class JaspiCallbackHandler implements CallbackHandler {
                 securityName = userPrincipal.getName();
                 addCommonAttributes(realm, securityName, credData);
                 credData.put("com.ibm.wsspi.security.cred.jaspi.principal", userPrincipal);
+
+                // In the case that the end user has created their own custom implementation Principal
+                // make sure to add that custom principal into the Principals list
+                if (!(callback.getPrincipal() instanceof WSPrincipal)) {
+                    clientSubject.getPrincipals().add(callback.getPrincipal());
+                }
+                
             } else {
                 securityName = userName;
                 addCommonAttributes(realm, securityName, credData);
