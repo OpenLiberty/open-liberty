@@ -16,9 +16,11 @@ bVersion=1.0
 Bundle-Name: Dependency scanner
 Bundle-SymbolicName: build.depScanner
 Bundle-Description: Dependency scanner; version=${bVersion}
-Main-Class: io.openliberty.cveanalyze.BestMatch
+Main-Class: io.openliberty.depScanner.BestMatch
 
-Export-Package: io.openliberty.depScanner.*;version="1.0"
+Conditional-Package: \
+			org.apache.maven.*, \
+			org.codehaus.plexus.*
 
 
 instrument.disabled: true
@@ -28,7 +30,8 @@ publish.wlp.jar.disabled: true
 
 -buildpath: \
   org.apache.maven:maven-artifact;version=3.6.3, \
-  org.apache.maven:maven-model;version=3.6.3
+  org.apache.maven:maven-model;version=3.6.3, \
+  org.codehaus.plexus:plexus-utils;version=3.2.1
   
 
 -testpath: \

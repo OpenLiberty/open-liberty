@@ -1,13 +1,3 @@
-/*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- *******************************************************************************/
 package io.openliberty.depScanner;
 
 import java.io.File;
@@ -38,7 +28,7 @@ public final class Module extends Jar implements Comparable<Module> {
                 version = props.getProperty("version");
             } else {
                 File cur = f.getParentFile();
-                version = cur.getName();
+                version = cleanupVersion(cur.getName());
                 artifactId = (cur = cur.getParentFile()).getName();
 
                 cur = cur.getParentFile();
@@ -62,6 +52,35 @@ public final class Module extends Jar implements Comparable<Module> {
         }
 
         // TODO compute the coordinates from the jar
+    }
+
+    private String cleanupVersion(String name) {
+        String v = name;
+        String[] parts = v.split("\\.");
+        String prefix;
+        int i;
+        if (parts.length == 3) {
+            prefix = parts[0] + '.' + parts[1];
+            if ((parts[2].contains("was")) || (parts[2].contains("ibm") || (parts[2].contains("WAS"))))
+                return prefix;
+            else {
+                if ((i = parts[2].indexOf("-20")) != -1)
+                    return (prefix + '.' + (parts[2].substring(0, i)));
+                else
+                    return (prefix + '.' + parts[2]);
+            }
+        } else if (parts.length == 4) {
+            prefix = parts[0] + '.' + parts[1] + '.' + parts[2];
+            if ((parts[3].contains("was")) || (parts[3].contains("ibm") || (parts[3].contains("WAS"))))
+                return prefix;
+            else {
+                if ((i = parts[3].indexOf("-20")) != -1)
+                    return (prefix + '.' + (parts[3].substring(0, i)));
+                else
+                    return (prefix + '.' + parts[3]);
+            }
+        } else
+            return v;
     }
 
     public String getGroupId() {

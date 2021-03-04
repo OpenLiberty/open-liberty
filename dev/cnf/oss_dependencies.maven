@@ -329,6 +329,7 @@ org.codehaus.jackson:jackson-core-asl:1.6.2
 org.codehaus.jackson:jackson-jaxrs:1.6.2
 org.codehaus.jackson:jackson-mapper-asl:1.6.2
 org.codehaus.jackson:jackson-xc:1.6.2
+org.codehaus.plexus:plexus-utils:3.2.1
 org.codehaus.woodstox:stax2-api:4.2
 org.codehaus.woodstox:woodstox-core-asl:4.2.0
 org.cryptacular:cryptacular:1.2.4

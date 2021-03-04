@@ -11,27 +11,41 @@
 package io.openliberty.depScanner;
 
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
+
+import org.apache.maven.model.Dependency;
+import org.apache.maven.model.Model;
+import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
 
 public class BestMatch {
 
-    public static final String LIBERTY_INSTALL_DIR = "/Users/cbridgha@us.ibm.com/git/OL/dev/build.image/wlp";
+    /**
+     * @param args[0] = wlp dir to scan args[1] = dependency pom file location.
+     * @throws Exception
+     */
+    private static int pomFiles = 1;
+    private static final Map<String, List<String>> depVersionMap = new HashMap<>();
 
     public static void main(String[] args) throws Exception {
         Repository repo = new Repository(new File(System.getProperty("user.home"), ".ibmartifactory/repository"));
-        LibertyInstall liberty = new LibertyInstall(new File(LIBERTY_INSTALL_DIR));
-
-        PrintStream modOut = new PrintStream(new File("moduleMatches.txt"));
-        PrintStream mpOut = new PrintStream(new File("missingPackages.txt"));
-        PrintStream foundLibs = new PrintStream(new File("foundDeps.txt"));
-
+        String wlpDir = args[0];
+        String outputDir = args[1];
+        LibertyInstall liberty = new LibertyInstall(new File(wlpDir));
+        PrintStream modOut = new PrintStream(new File(outputDir + "/moduleMatches.txt"));
+        PrintStream mpOut = new PrintStream(new File(outputDir + "/missingPackages.txt"));
         Set<Module> matched = new TreeSet<>();
         Set<String> uniqueMissingPackages = new HashSet<>();
 
@@ -91,20 +105,85 @@ public class BestMatch {
 
                         });
 
-        matched.forEach(foundLibs::println);
+        writePom(matched, outputDir);
 
-        writePom(matched);
-
-        mpOut.println();
-        mpOut.print("Missing Packages: ");
-        mpOut.println(uniqueMissingPackages.size());
     }
 
     /**
      * @param matched
      */
-    private static void writePom(Set<Module> matched) {
-        // TODO Auto-generated method stub
+    private static void writePom(Set<Module> matched, String path) {
+
+        matched.forEach(library -> {
+            if (!library.getGroupId().equals("com.ibm.ws")) {
+                List<String> versions = depVersionMap.computeIfAbsent((library.getGroupId() + library.getArtifactId()), k -> new ArrayList<>());
+                versions.add(library.getVersion());
+                if (versions.size() > pomFiles)
+                    pomFiles = versions.size();
+            }
+        });
+
+        for (AtomicInteger count = new AtomicInteger(0); count.intValue() < pomFiles; count.incrementAndGet()) {
+
+            Model model = new Model();
+            model.setModelVersion("4.0.0");
+            model.setVersion("1.0-SNAPSHOT");
+            model.setGroupId("liberty");
+            model.setArtifactId("dependency-report");
+
+            matched.forEach(library -> {
+                if (!library.getGroupId().equals("com.ibm.ws")) {
+                    List<String> versions = depVersionMap.get((library.getGroupId() + library.getArtifactId()));
+                    if (versions.size() > count.intValue()) {
+
+                        class ComparedDependency extends Dependency {
+
+                            /*
+                             * (non-Javadoc)
+                             *
+                             * @see java.lang.Object#equals(java.lang.Object)
+                             */
+                            @Override
+                            public boolean equals(Object obj) {
+
+                                return this.getGroupId().equals(((Dependency) obj).getGroupId())
+                                       && this.getArtifactId().equals(((Dependency) obj).getArtifactId());
+                            }
+
+                            /*
+                             * (non-Javadoc)
+                             *
+                             * @see java.lang.Object#hashCode()
+                             */
+                            @Override
+                            public int hashCode() {
+
+                                int result = 17;
+                                result = 31 * result + getGroupId().hashCode();
+                                result = 31 * result + getArtifactId().hashCode();
+                                return result;
+                            }
+
+                        }
+                        ComparedDependency dependency = new ComparedDependency();
+                        dependency.setGroupId(library.getGroupId());
+                        dependency.setArtifactId(library.getArtifactId());
+                        dependency.setVersion(versions.get(count.intValue()));
+
+                        if (!model.getDependencies().contains(dependency))
+                            model.addDependency(dependency);
+                    }
+                }
+            });
+
+            MavenXpp3Writer writer = new MavenXpp3Writer();
+            try {
+                writer.write(new FileWriter(path + "/pom_" + count.intValue() + ".xml"), model);
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
 
     }
 
