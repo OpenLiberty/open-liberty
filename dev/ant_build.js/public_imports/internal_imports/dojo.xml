@@ -427,8 +427,6 @@
             	Once we replace dojox/mobile with dojo/dijit equivalent, the mobile/themes can be removed. -->
             	<include name="mobile/themes/ios7/ios7.css" />
                 <include name="mobile/themes/ios7/ios7_rtl.css" />
-                <include name="mobile/themes/ios7/ios7-compat.css" />
-                <include name="mobile/themes/ios7/ios7_rtl-compat.css" />
                 <include name="mobile/themes/ios7/**/*.png" />
                 <include name="mobile/themes/ios7/**/*.gif" />
                 <include name="date/zoneinfo/*" />
