@@ -50,6 +50,9 @@ import javax.json.JsonValue.ValueType;
 
 import org.apache.aries.util.manifest.ManifestProcessor;
 
+import com.ibm.websphere.crypto.InvalidPasswordDecodingException;
+import com.ibm.websphere.crypto.PasswordUtil;
+import com.ibm.websphere.crypto.UnsupportedCryptoAlgorithmException;
 import com.ibm.ws.install.CancelException;
 import com.ibm.ws.install.InstallConstants;
 import com.ibm.ws.install.InstallEventListener;
@@ -1785,12 +1788,21 @@ public class InstallKernelMap implements Map {
      */
     private Map<String, String> getProxyVariables(String proxyEnvVar, String protocol) throws InstallException {
         Map<String, String> result = new HashMap<String, String>();
-        if (protocol.equals("https")) {
-            String[] proxyEnvVarSplit = proxyEnvVar.split("@");
-            if (proxyEnvVarSplit.length != 2) {
-                throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_IMPROPER_HTTPSPROXY_FORMAT", proxyEnvVar));
+
+        String[] proxyEnvVarSplit = proxyEnvVar.split("@");
+        if (proxyEnvVarSplit.length != 1 && proxyEnvVarSplit.length != 2) {
+            throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_IMPROPER_" + protocol + "PROXY_FORMAT", proxyEnvVar));
+        }
+
+        if (proxyEnvVarSplit.length == 1) { //without username and password
+            String[] proxyHttpSplit = proxyEnvVar.split(":");
+            if (proxyHttpSplit.length != 3) {
+                throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_IMPROPER_" + protocol + "PROXY_FORMAT", proxyEnvVar));
             }
-            String[] proxyCredentials = proxyEnvVarSplit[0].split(":"); //[https, //user, password]
+            result.put(protocol + ".proxyHost", proxyHttpSplit[1].replace("/", "")); //prox-server
+            result.put(protocol + ".proxyPort", proxyHttpSplit[2]); ////3128
+        } else {
+            String[] proxyCredentials = proxyEnvVarSplit[0].split(":"); //[http(s), //user, password]
             if (proxyCredentials.length != 3) {
                 throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_IMPROPER_HTTPSPROXY_FORMAT", proxyEnvVar));
             }
@@ -1801,17 +1813,48 @@ public class InstallKernelMap implements Map {
             result.put(protocol + ".proxyHost", proxyHostPort[0]); //prox-server
             result.put(protocol + ".proxyPort", proxyHostPort[1]); //3128
             result.put(protocol + ".proxyUser", proxyCredentials[1].replace("/", "")); //user
-            result.put(protocol + ".proxyPassword", proxyCredentials[2]); //password
-        } else if (protocol.equals("http")) {
-            String[] proxyHttpSplit = proxyEnvVar.split(":");
-            if (proxyHttpSplit.length != 3) {
-                throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_IMPROPER_HTTPPROXY_FORMAT", proxyEnvVar));
+
+            String decodedPwd = proxyCredentials[2];
+            try {
+                //Decode encrypted proxy server password
+                decodedPwd = PasswordUtil.decode(proxyCredentials[2]);
+            } catch (InvalidPasswordDecodingException ipde) {
+                decodedPwd = proxyCredentials[2];
+                logger.log(Level.FINE, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("LOG_PASSWORD_NOT_ENCODED_PROXY", proxyEnvVar) + InstallUtils.NEWLINE);
+            } catch (UnsupportedCryptoAlgorithmException ucae) {
+                throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_TOOL_PROXY_PWD_CRYPTO_UNSUPPORTED"), ucae, InstallException.RUNTIME_EXCEPTION);
             }
-            result.put(protocol + ".proxyHost", proxyHttpSplit[1].replace("/", "")); //prox-server
-            result.put(protocol + ".proxyPort", proxyHttpSplit[2]); ////3128
+            result.put(protocol + ".proxyPassword", decodedPwd); //password
         }
 
         return result;
+
+//        if (protocol.equals("https")) {
+//            String[] proxyEnvVarSplit = proxyEnvVar.split("@");
+//            if (proxyEnvVarSplit.length != 2) {
+//                throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_IMPROPER_HTTPSPROXY_FORMAT", proxyEnvVar));
+//            }
+//            String[] proxyCredentials = proxyEnvVarSplit[0].split(":"); //[https, //user, password]
+//            if (proxyCredentials.length != 3) {
+//                throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_IMPROPER_HTTPSPROXY_FORMAT", proxyEnvVar));
+//            }
+//            String[] proxyHostPort = proxyEnvVarSplit[1].split(":"); //[prox-server, 3128]
+//            if (proxyHostPort.length != 2) {
+//                throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_IMPROPER_HTTPSPROXY_FORMAT", proxyEnvVar));
+//            }
+//            result.put(protocol + ".proxyHost", proxyHostPort[0]); //prox-server
+//            result.put(protocol + ".proxyPort", proxyHostPort[1]); //3128
+//            result.put(protocol + ".proxyUser", proxyCredentials[1].replace("/", "")); //user
+//            result.put(protocol + ".proxyPassword", proxyCredentials[2]); //password
+//        } else if (protocol.equals("http")) {
+//            String[] proxyHttpSplit = proxyEnvVar.split(":");
+//            if (proxyHttpSplit.length != 3) {
+//                throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_IMPROPER_HTTPPROXY_FORMAT", proxyEnvVar));
+//            }
+//            result.put(protocol + ".proxyHost", proxyHttpSplit[1].replace("/", "")); //prox-server
+//            result.put(protocol + ".proxyPort", proxyHttpSplit[2]); ////3128
+//        }
+//
     }
 
     /**
