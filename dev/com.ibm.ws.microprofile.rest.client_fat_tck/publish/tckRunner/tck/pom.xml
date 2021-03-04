@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- 
-    Copyright (c) 2017 IBM Corporation and others. All rights reserved.
+    Copyright (c) 2017, 2021 IBM Corporation and others. All rights reserved.
     This program and the accompanying materials are made available under the 
     terms of the Eclipse Public License v1.0 which accompanies this distribution, 
     and is available at 
@@ -8,8 +8,7 @@
     Contributors: 
         IBM Corporation - initial API and implementation
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.ibm.ws.microprofile.rest.client</groupId>
@@ -42,12 +41,17 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <dependency>
+                <groupId>org.jboss.spec.javax.servlet</groupId>
+                <artifactId>jboss-servlet-api_3.0_spec</artifactId>
+                <version>1.0.2.Final</version> <!-- Needed for ZOS. Defines the version of this artifact that arquillian-liberty-managed should use -->
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
     <dependencies>
 
-       <dependency>
+        <dependency>
             <groupId>com.ibm.ws</groupId>
             <artifactId>fattest.simplicity</artifactId>
             <version>1</version>
@@ -173,12 +177,12 @@
             <type>pom</type>
             <scope>test</scope>
         </dependency>
- --> 
- 
+ -->
+
         <dependency>
             <groupId>com.github.tomakehurst</groupId>
             <artifactId>wiremock-standalone</artifactId>
-            
+
             <version>2.14.0</version>
             <!-- <scope>system</scope>
             <systemPath>${basedir}/../../servers/FATServer/wiremock-standalone-2.14.0.jar</systemPath> -->
@@ -197,9 +201,9 @@
             <version>1.2.0</version>
             <scope>test</scope>
         </dependency>
-        
+
     </dependencies>
- 
+
     <build>
         <directory>${targetDirectory}</directory>
         <defaultGoal>clean test</defaultGoal>
@@ -240,7 +244,8 @@
                     <!-- <argLine>-Dwas.debug.mode=true -Dcom.ibm.websphere.ras.inject.at.transform=true -Dsun.reflect.noInflation=true -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=7777</argLine> -->
                     <systemPropertyVariables>
                         <!-- <wlp>/home/andymc/mpRestClientTCK/open-liberty/dev/build.image/wlp</wlp> -->
-                        <wlp>${wlp}</wlp>>
+                        <wlp>${wlp}</wlp>
+                        >
                         <!-- <tck_server>${tck_server}</tck_server> -->
                         <tck_server>FATServer</tck_server>
                         <!-- <tck_port>${tck_port}</tck_port>  -->
@@ -256,21 +261,21 @@
                 </configuration>
             </plugin>
             <plugin>
-               <groupId>uk.co.automatictester</groupId>
-               <artifactId>wiremock-maven-plugin</artifactId>
-               <version>4.1.0</version>
-               <executions>
-                   <execution>
-                       <phase>generate-test-sources</phase>
-                       <goals>
-                           <goal>run</goal>
-                       </goals>
-                       <configuration>
-                           <dir>target/classes</dir>
-                           <params>--port=8765 --verbose</params>
-                       </configuration>
-                   </execution>
-               </executions>
+                <groupId>uk.co.automatictester</groupId>
+                <artifactId>wiremock-maven-plugin</artifactId>
+                <version>4.1.0</version>
+                <executions>
+                    <execution>
+                        <phase>generate-test-sources</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <dir>target/classes</dir>
+                            <params>--port=8765 --verbose</params>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
