@@ -13,6 +13,7 @@ package com.ibm.ws.security.wim.adapter.ldap.fat.krb5;
 import static componenttest.topology.utils.LDAPFatUtils.updateConfigDynamically;
 import static org.junit.Assert.assertNotNull;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -38,13 +39,21 @@ public class TicketCacheBindLongRunTest extends CommonBindTest {
 
     private static final Class<?> c = TicketCacheBindLongRunTest.class;
 
+    @BeforeClass
+    public static void setStopMessages() {
+        stopStrings = new String[] { "CWIML4520E" };
+    }
+
     /**
      * Stop and restart the ldapServer and verify that we will fail when the ldapServer is down and succeed when it is up again.
+     *
+     * Run with context pool and caches disabled
      *
      * @throws Exception
      */
     @Test
-    public void restartLdapServer() throws Exception {
+    @AllowedFFDC({ "javax.naming.CommunicationException", "javax.security.auth.login.LoginException" })
+    public void restartLdapServerNoContextPool() throws Exception {
         Log.info(c, testName.getMethodName(), "Stop and restart the ApacheDS servers");
         ServerConfiguration newServer = emptyConfiguration.clone();
         LdapRegistry ldap = getLdapRegistryWithTicketCache();
@@ -52,18 +61,27 @@ public class TicketCacheBindLongRunTest extends CommonBindTest {
         newServer.getLdapRegistries().add(ldap);
         updateConfigDynamically(server, newServer);
 
-        loginUser();
+        bodyOfRestartServer();
+    }
 
-        Log.info(c, testName.getMethodName(), "Stop all of the ApacheDS servers");
-        ApacheDSandKDC.stopAllServers();
+    /**
+     * Stop and restart the ldapServer and verify that we will fail when the ldapServer is down and succeed when it is up again.
+     *
+     * Run with context pool and caches enabled
+     *
+     * @throws Exception
+     */
+    @Test
+    @AllowedFFDC({ "javax.naming.CommunicationException", "javax.security.auth.login.LoginException" })
+    public void restartLdapServerWithContextPool() throws Exception {
+        Log.info(c, testName.getMethodName(), "Stop and restart the ApacheDS servers");
+        ServerConfiguration newServer = emptyConfiguration.clone();
+        LdapRegistry ldap = getLdapRegistryWithTicketCacheWithContextPool();
+        addKerberosConfig(newServer);
+        newServer.getLdapRegistries().add(ldap);
+        updateConfigDynamically(server, newServer);
 
-        loginUserShouldFail();
-
-        Log.info(c, testName.getMethodName(), "Start all of the ApacheDS servers");
-        ApacheDSandKDC.startAllServers();
-
-        Log.info(c, testName.getMethodName(), "After apacheDS restart, all logins should succeed.");
-        loginUser();
+        bodyOfRestartServer();
     }
 
     /**
@@ -83,6 +101,7 @@ public class TicketCacheBindLongRunTest extends CommonBindTest {
         LdapRegistry ldap = getLdapRegistryWithTicketCache();
         ldap.setKrb5TicketCache(expiringTicketCache);
         newServer.getLdapRegistries().add(ldap);
+        addKerberosConfig(newServer);
         updateConfigDynamically(server, newServer);
 
         // Mark file so we can check for trace updates
@@ -121,6 +140,7 @@ public class TicketCacheBindLongRunTest extends CommonBindTest {
         LdapRegistry ldap = getLdapRegistryWithTicketCache();
         ldap.setKrb5TicketCache(expiringTicketCache);
         newServer.getLdapRegistries().add(ldap);
+        addKerberosConfig(newServer);
         updateConfigDynamically(server, newServer);
 
         loginUser();

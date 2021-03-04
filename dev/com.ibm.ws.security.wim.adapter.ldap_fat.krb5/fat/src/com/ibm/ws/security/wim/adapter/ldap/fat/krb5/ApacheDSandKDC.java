@@ -192,7 +192,7 @@ public class ApacheDSandKDC {
 
         Log.info(c, "startKDC", "Creating krb.conf file");
 
-        configFile = createConfigFile();
+        configFile = createDefaultConfigFile();
         System.setProperty("java.security.krb5.conf", configFile);
         Log.info(c, "startKDC", "krb.conf file: " + configFile);
 
@@ -247,7 +247,7 @@ public class ApacheDSandKDC {
         }
         if (serverPrincipal == null) {
             serverPrincipal = fixServicePrincipalName(ldapPrincipal,
-                                                      new Dn("uid=ldap,dc=example,dc=com"), ldapServer);
+                                                      new Dn(ldapUserDN), ldapServer);
         }
 
         addBasicUserAndGroup();
@@ -477,9 +477,19 @@ public class ApacheDSandKDC {
      * @return
      * @throws IOException
      */
-    public static String createConfigFile() throws IOException {
-        Log.info(c, "createConfigFile", "Creating config file");
-        File ccFile = File.createTempFile(bindUserName + "krb5-", ".conf");
+    public static String createDefaultConfigFile() throws IOException {
+        return createConfigFile(bindUserName + "krb5-", KDC_PORT);
+    }
+
+    /**
+     * Create the default krb config file with a custom KDC port
+     *
+     * @return
+     * @throws IOException
+     */
+    public static String createConfigFile(String name, int port) throws IOException {
+        Log.info(c, "createConfigFile", "Creating config file: " + name);
+        File ccFile = File.createTempFile(name, ".conf");
         if (!FAT_TEST_LOCALRUN) {
             ccFile.deleteOnExit();
         }
@@ -497,7 +507,7 @@ public class ApacheDSandKDC {
                       "\n" +
                       "[realms]\n" +
                       "        " + DOMAIN.toUpperCase() + " = {\n" +
-                      "                kdc = " + ldapServerHostName + ":" + KDC_PORT + "\n" +
+                      "                kdc = " + ldapServerHostName + ":" + port + "\n" +
                       "        }\n" +
                       "\n" +
                       "[domain_realm]\n" +
@@ -510,37 +520,36 @@ public class ApacheDSandKDC {
         return ccFile.getAbsolutePath();
     }
 
-    public static String createConfigFileWithBadKDCPort() throws IOException {
-        Log.info(c, "createConfigFileWithBadKDCPort", "Creating conf file with bad KDC port.");
-
-        File ccFile = File.createTempFile(bindUserName + "krb5BadConfig-", ".conf");
+    /**
+     * Create the default krb config file with a custom KDC port
+     *
+     * @return
+     * @throws IOException
+     */
+    public static String createInvalidConfigFile(String name, int port) throws IOException {
+        Log.info(c, "createInvalidConfigFile", "Creating invalid config file: " + name);
+        File ccFile = File.createTempFile(name, ".conf");
         if (!FAT_TEST_LOCALRUN) {
             ccFile.deleteOnExit();
         }
 
         Path outputPath = Paths.get(ccFile.getAbsolutePath());
-
         Log.info(c, "generateConf", "creating krb.conf file.");
         String conf = "[libdefaults]\n" +
-                      "        rdns = false\n" +
-                      "        dns_lookup_realm = false\n" +
-                      "        udp_preference_limit = 1\n" +
-                      "        dns_lookup_kdc = false\n" +
-                      "        default_realm = " + DOMAIN.toUpperCase() + "\n" +
+                      "        default_realm = NOT.REALM" + "\n" +
                       "\n" +
                       "[realms]\n" +
-                      "        " + DOMAIN.toUpperCase() + " = {\n" +
-                      "                kdc = " + ldapServerHostName + ":" + -1 + "\n" +
+                      "        NOT.REALM = {\n" +
+                      "                kdc = " + ldapServerHostName + ":" + port + "\n" +
                       "        }\n" +
                       "\n" +
                       "[domain_realm]\n" +
-                      "        ." + DOMAIN.toLowerCase() + " = " + DOMAIN.toUpperCase() + "\n" +
-                      "        " + DOMAIN.toLowerCase() + " = " + DOMAIN.toUpperCase() + "\n";
+                      "        .not.realm = NOT.REALM\n" +
+                      "        not.realm = NOT.REALM\n";
         outputPath.getParent().toFile().mkdirs();
         Files.write(outputPath, conf.getBytes(StandardCharsets.UTF_8));
 
-        Log.info(c, "createConfigFileWithBadKDCPort", "krb.conf file contents: " + conf);
-
+        Log.info(c, "createInvalidConfigFile", "krb.conf file contents: " + conf);
         return ccFile.getAbsolutePath();
     }
 
@@ -643,7 +652,18 @@ public class ApacheDSandKDC {
         keytabFile = keyTabTemp.getAbsolutePath();
 
         Log.info(c, "createKeyTabFile", "Created keytab: " + keytabFile);
-        Log.info(c, "createKeyTabFile", "Keytab contents: " + FileUtils.readFile(keytabFile));
+        Log.info(c, "createKeyTabFile", "Keytab actual contents: " + FileUtils.readFile(keytabFile));
+        // KeytabEntry doesn't have a nice toString
+        for (KeytabEntry key : entries) {
+            StringBuffer strBuf = new StringBuffer();
+            strBuf.append(" PrincipalName: " + key.getPrincipalName());
+            strBuf.append(" PrincipalType: " + key.getPrincipalType());
+            strBuf.append(" Key: " + key.getKey());
+            strBuf.append(" KeyVersion: " + key.getKeyVersion());
+            strBuf.append(" TimeStamp: " + key.getTimeStamp());
+
+            Log.info(c, "createKeyTabFile", "Keytab entry: " + strBuf.toString());
+        }
 
     }
 }

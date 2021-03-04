@@ -21,6 +21,7 @@ fat.project: true
 	org.apache.directory.server:kerberos-client;version=latest, \
 	com.ibm.ws.security.registry;version=latest,\
 	com.ibm.websphere.security.wim.base;verison=latest, \
+	com.ibm.ws.security.wim.adapter.ldap;verison=latest, \
 	com.ibm.ws.security.registry_test.servlet;version=latest, \
 	com.unboundid:unboundid-ldapsdk;version=5.1.0,\
 	com.ibm.ws.com.unboundid;version=latest, \
