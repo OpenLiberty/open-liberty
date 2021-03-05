@@ -66,7 +66,7 @@ public class DatabaseHelper {
     @SuppressWarnings("deprecation")
     private static final com.ibm.ejs.ras.TraceComponent databaseTc = com.ibm.ejs.ras.Tr.register("com.ibm.ws.database.logwriter", "WAS.database", null); 
     private static final TraceComponent tc = Tr.register(DatabaseHelper.class, "RRA", AdapterUtil.NLS_FILE); 
-    private transient PrintWriter genPw = null; 
+    transient PrintWriter genPw;
 
     /**
      * Default query timeout configured on the data source.

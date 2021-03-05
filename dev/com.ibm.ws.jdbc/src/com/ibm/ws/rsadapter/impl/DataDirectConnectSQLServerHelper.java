@@ -64,8 +64,6 @@ public class DataDirectConnectSQLServerHelper extends DatabaseHelper {
     @SuppressWarnings("deprecation")
     private transient com.ibm.ejs.ras.TraceComponent sqlserverTc = com.ibm.ejs.ras.Tr.register("com.ibm.ws.sqlserver.logwriter", "WAS.database", null);
 
-    private transient PrintWriter sqlServerPW;
-
     /**
      * SQLException error codes from the DataDirect Connect JDBC driver that indicate a stale connection.
      */
@@ -337,11 +335,11 @@ public class DataDirectConnectSQLServerHelper extends DatabaseHelper {
         //not synchronizing here since there will be one helper
         // and most likely the setting will be serially, even if its not, 
         // it shouldn't matter here (tracing).
-        if (sqlServerPW == null) {
-            sqlServerPW = new PrintWriter(new TraceWriter(sqlserverTc), true);
+        if (genPw == null) {
+            genPw = new PrintWriter(new TraceWriter(sqlserverTc), true);
         }
-        Tr.debug(sqlserverTc, "returning", sqlServerPW);
-        return sqlServerPW;
+        Tr.debug(sqlserverTc, "returning", genPw);
+        return genPw;
     }
 
     /**

@@ -10,6 +10,8 @@
  *******************************************************************************/
 package test.jdbc.heritage.driver.helper;
 
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
@@ -23,6 +25,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 import javax.security.auth.Subject;
+import javax.transaction.xa.XAException;
 
 import com.ibm.ws.jdbc.heritage.AccessIntent;
 import com.ibm.ws.jdbc.heritage.DataStoreHelperMetaData;
@@ -108,6 +111,18 @@ public class HDDataStoreHelper extends GenericDataStoreHelper {
     @Override
     public DataStoreHelperMetaData getMetaData() {
         return metadata;
+    }
+
+    @Override
+    public PrintWriter getPrintWriter() {
+        // Redirects to System.out instead of OpenLiberty trace, which will cause output to go into message.log where the test can scan for it
+        return new PrintWriter(new OutputStreamWriter(System.out));
+    }
+
+    @Override
+    public String getXAExceptionContents(XAException x) {
+        // This ought to be unreachable for non-xa-capable javax.sql.DataSource.
+        throw new UnsupportedOperationException("This driver does not provide an XADataSource.");
     }
 
     private Object readConfig(String fieldName) {
