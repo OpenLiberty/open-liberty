@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2020 IBM Corporation and others.
+ * Copyright (c) 2016, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -108,6 +108,8 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtCon
 
     public static final String KEY_INCLUDE_CUSTOM_CACHE_KEY_IN_SUBJECT = "includeCustomCacheKeyInSubject";
     private boolean includeCustomCacheKeyInSubject = true;
+    public static final String KEY_CREATE_SESSION = "createSession";
+    private boolean createSession = false;
 
     public static final String KEY_AUTHZ_PARAM = "authzParameter";
     public static final String KEY_TOKEN_PARAM = "tokenParameter";
@@ -187,6 +189,7 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtCon
         this.realmName = configUtils.getConfigAttribute(props, KEY_realmName);
         this.includeCustomCacheKeyInSubject = configUtils.getBooleanConfigAttribute(props, KEY_INCLUDE_CUSTOM_CACHE_KEY_IN_SUBJECT, this.includeCustomCacheKeyInSubject);
         this.resource = configUtils.getConfigAttribute(props, KEY_resource);
+        this.createSession = configUtils.getBooleanConfigAttribute(props, KEY_CREATE_SESSION, this.createSession);
 
         authzRequestParamMap = populateCustomRequestParameterMap(props, KEY_AUTHZ_PARAM);
         tokenRequestParamMap = populateCustomRequestParameterMap(props, KEY_TOKEN_PARAM);
@@ -643,7 +646,7 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtCon
     /** {@inheritDoc} */
     @Override
     public boolean createSession() {
-        return false;
+        return createSession;
     }
 
     /** {@inheritDoc} */
