@@ -1,0 +1,27 @@
+/* ***************************************************************************
+ * Copyright (c) 2021 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ * ***************************************************************************/
+
+// Set up an endorsed standards directory containing the relevant Yoko jars.
+task stageEndorsed(type: Sync) {
+    from configurations.runtimeClasspath {
+        include "**/*yoko*jar"
+    }
+    into temporaryDir
+}
+
+test {
+    if (JavaVersion.current() < JavaVersion.VERSION_1_9) { // Java 8 and below provide an ORB that needs to be overriden
+        dependsOn stageEndorsed // ensure endorsed directory is created and populated
+        jvmArgs "-Djava.endorsed.dirs=$stageEndorsed.destinationDir" // endorse the jars in the endorsed directory
+    }
+}
+
+test { filter { excludeTestsMatching "all.tests.subtests.*" } } //subtests must not be run directly
