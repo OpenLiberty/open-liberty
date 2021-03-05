@@ -319,7 +319,7 @@ public class WCCustomProperties {
     //21.0.0.1
     public static boolean REDIRECT_TO_RELATIVE_URL;
 
-    //21.0.0.3
+    //21.0.0.4
     public static boolean SET_HTML_CONTENT_TYPE_ON_ERROR; 
 
     static {
@@ -802,7 +802,7 @@ public class WCCustomProperties {
         //21.0.0.1
         REDIRECT_TO_RELATIVE_URL = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.redirecttorelativeurl", "false")).booleanValue();
 
-        //21.0.0.3
+        //21.0.0.4
         SET_HTML_CONTENT_TYPE_ON_ERROR = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.sethtmlcontenttypeonerror", "true")).booleanValue();
 
         //Default for Servlet 5.0 +
