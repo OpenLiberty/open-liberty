@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2021 IBM Corporation and others.
+ * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,23 +18,23 @@ import javax.interceptor.AroundConstruct;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
 
-import com.ibm.ws.cdi.ejb.apps.aroundconstruct.AroundConstructLogger;
-import com.ibm.ws.cdi.ejb.utils.Intercepted;
+import com.ibm.ws.cdi.ejb.apps.aroundconstruct.StatelessAroundConstructLogger;
+import com.ibm.ws.cdi.ejb.utils.StatelessIntercepted;
 
 @Interceptor
-@Intercepted
+@StatelessIntercepted
 @Priority(Interceptor.Priority.APPLICATION)
-public class ConstructInterceptor {
+public class StatelessConstructInterceptor {
 
     @Inject
-    AroundConstructLogger logger;
+    StatelessAroundConstructLogger statelessLogger;
 
     @AroundConstruct
     public Object intercept(InvocationContext context) throws Exception {
-        logger.setConstructor(context.getConstructor());
-        logger.addConstructorInterceptor(this.getClass());
+        Class<?> declaringClass = context.getConstructor().getDeclaringClass();
+
+        statelessLogger.setInterceptedBean(declaringClass);
         context.proceed();
-        logger.setTarget(context.getTarget());
         return null;
     }
 }

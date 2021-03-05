@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2021 IBM Corporation and others.
+ * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,16 +8,20 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.cdi.ejb.apps.aroundconstruct;
+package com.ibm.ws.cdi.ejb.utils;
 
-import javax.ejb.Stateless;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-import com.ibm.ws.cdi.ejb.utils.StatelessIntercepted;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
-@Stateless
-@StatelessIntercepted
-public class StatelessEjb {
-    public StatelessEjb() {} // necessary to be proxyable
+import javax.interceptor.InterceptorBinding;
 
-    public void doSomething() {}
+@InterceptorBinding
+@Target({ METHOD, TYPE })
+@Retention(RUNTIME)
+public @interface StatelessIntercepted {
+
 }
