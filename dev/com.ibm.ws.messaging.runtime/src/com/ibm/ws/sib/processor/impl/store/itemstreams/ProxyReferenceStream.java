@@ -76,7 +76,7 @@ public final class ProxyReferenceStream
     this.parentItemStream = parentItemStream;
     // The storage strategy for a reference stream can be no better than the
     // parent stream storage strategy.  The parent message stream storage
-    // strategy would usually be the most persistent, but if is slaved to a 
+    // strategy would usually be the most persistent, but if is co-opted to a
     // temporary destination then it will have a lesser reliability.
     setStorageStrategy(parentItemStream.getStorageStrategy());
 
