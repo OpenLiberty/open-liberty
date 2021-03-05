@@ -322,9 +322,9 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
                         Tr.debug(this, tc, "Connection error occurred for this mcw " + mcWrapper + ", mcw will not be reuse");
                     }
                     mcWrapper.markStale();
-                    ResourceException e = new ResourceException("Resource adatepr called connection error event during getConnection " +
+                    ResourceException e = new ResourceException("Resource adapter called connection error event during getConnection " +
                                                                 "processing and did not throw a resource exception.  The reason for " +
-                                                                "this falue may have been logged during the connection error event " +
+                                                                "this failure may have been logged during the connection error event " +
                                                                 "logging.");
                     throw e;
                 }

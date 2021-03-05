@@ -68,6 +68,7 @@
     </library>
     
     <application type="ear" id="fvtapp" name="fvtapp" location="fvtapp.ear">
+      <classloader classProviderRef="FAT1" />
     </application>
 
     <jaasLoginContextEntry id="jar1LoginContextEntry" name="jar1login">

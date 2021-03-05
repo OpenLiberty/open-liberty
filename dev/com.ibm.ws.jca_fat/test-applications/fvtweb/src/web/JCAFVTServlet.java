@@ -43,6 +43,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.transaction.UserTransaction;
 
 import componenttest.app.FATServlet;
+import fat.jca.resourceadapter.FVTConnection;
+import fat.jca.resourceadapter.FVTConnectionFactory;
 import web.mdb.FVTMessageDrivenBean;
 import web.mdb.bindings.FVTMessageDrivenBeanBinding;
 
@@ -463,6 +465,61 @@ public class JCAFVTServlet extends FATServlet {
         } finally {
             con1.close();
         }
+    }
+
+    /**
+     * Make sure invalid connections are getting cleaned up properly when they go through the non-optimal free pool check
+     */
+    public void testNonOptimalFreePoolInvalidConnectionCleanup(HttpServletRequest request, HttpServletResponse response) throws Throwable {
+        System.out.println("Enter testNonOptimalFreePoolInvalidConnectionCleanup");
+        FVTConnectionFactory cf = (FVTConnectionFactory) new InitialContext().lookup("java:comp/env/jms/cf1");
+        UserTransaction tran = (UserTransaction) new InitialContext().lookup("java:comp/UserTransaction");
+        FVTConnection con1 = null;
+        FVTConnection con2 = null;
+
+        try {
+            tran.begin();
+            con1 = (FVTConnection) cf.createConnection("user1", "pwd1");
+            con2 = (FVTConnection) cf.createConnection("user2", "pwd2");
+        } catch (JMSException x) {
+        } finally {
+            con2.close();
+            con1.close();
+            tran.commit();
+        }
+        System.out.println("GJW20NOV2020 Invalidating con1 & con2 now");
+
+        con1.invalidate();
+        con2.invalidate();
+
+        System.out.println("GJW20NOV2020 Reusing con1 & con2 connections again");
+
+        try {
+            tran.begin();
+            con1 = (FVTConnection) cf.createConnection("user1", "pwd1");
+            con2 = (FVTConnection) cf.createConnection("user2", "pwd2");
+
+        } catch (JMSException x) {
+        } finally {
+            con2.close();
+            con1.close();
+            tran.commit();
+        }
+
+        try {
+            tran.begin();
+            System.out.println("GJW20NOV2020 Should get J2CA0045E here");
+            con1 = (FVTConnection) cf.createConnection("user1", "pwd1");
+            con2 = (FVTConnection) cf.createConnection("user2", "pwd2");
+            System.out.println("GJW20NOV2020 Should not see this");
+        } catch (JMSException x) {
+        } finally {
+            con2.close();
+            con1.close();
+            tran.commit();
+        }
+
+        System.out.println("Exit testNonOptimalFreePoolInvalidConnectionCleanup");
     }
 
     /**

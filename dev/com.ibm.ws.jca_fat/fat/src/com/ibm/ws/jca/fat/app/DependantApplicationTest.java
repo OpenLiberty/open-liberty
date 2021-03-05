@@ -562,4 +562,15 @@ public class DependantApplicationTest extends FATServletClient {
         cleanUpExprs = EMPTY_EXPR_LIST;
         Log.exiting(getClass(), "testUpdateContextService");
     }
+
+    /**
+     * Run the testNonOptimalFreePoolInvalidConnectionCleanup test to make sure invalid connections are getting cleaned up properly
+     * when they go through the non-optimal free pool check
+     *
+     * @throws Exception if the test fails.
+     */
+    @Test
+    public void testNonOptimalFreePoolInvalidConnectionCleanup() throws Exception {
+        runTest("testNonOptimalFreePoolInvalidConnectionCleanup");
+    }
 }

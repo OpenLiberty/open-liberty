@@ -93,4 +93,8 @@ public class FVTConnection implements Connection {
     @Override
     public void stop() throws JMSException {
     }
+
+    public void invalidate() {
+        mc.invalid = true;
+    }
 }

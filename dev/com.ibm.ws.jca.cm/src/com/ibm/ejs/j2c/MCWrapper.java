@@ -407,6 +407,7 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
     private boolean pretestThisConnection = false;
     private boolean aborted = false;
     private boolean qmidenabled = true;
+    protected boolean errorDuringExternalCall = false;
 
     /**
      * Constructor is protected and should only be used by
@@ -2174,6 +2175,7 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
                                    "Attempting to cleanup and destroy this connection cleanly");
             }
             do_not_reuse_mcw = true;
+            errorDuringExternalCall = true;
 
         } else {
             /*
@@ -2531,6 +2533,11 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
          */
         if (isStale()) {
             buf.append("[STALE]  ");
+        }
+
+        // Added errorDuringExternalCall check for tracing purposes
+        if (errorDuringExternalCall) {
+            buf.append("[ExtCallError]  ");
         }
 
         buf.append("MCWrapper id ");

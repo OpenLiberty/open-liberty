@@ -42,6 +42,8 @@ public class FVTManagedConnection implements LazyEnlistableManagedConnection, Lo
     final String user;
     private final XAConnection xacon;
 
+    public boolean invalid = false; // Testing only, remove before pushing to GH
+
     FVTManagedConnection(final FVTManagedConnectionFactory mcf, FVTConnectionRequestInfo cri, Subject subj) throws ResourceException {
         this.mcf = mcf;
         this.cri = cri;
@@ -65,9 +67,7 @@ public class FVTManagedConnection implements LazyEnlistableManagedConnection, Lo
             });
 
         try {
-            this.xacon = userPwd == null
-                            ? mcf.adapter.xaDataSource.getXAConnection()
-                            : mcf.adapter.xaDataSource.getXAConnection(userPwd[0], userPwd[1]);
+            this.xacon = userPwd == null ? mcf.adapter.xaDataSource.getXAConnection() : mcf.adapter.xaDataSource.getXAConnection(userPwd[0], userPwd[1]);
         } catch (SQLException x) {
             throw new ResourceAllocationException(x);
         }
@@ -229,5 +229,15 @@ public class FVTManagedConnection implements LazyEnlistableManagedConnection, Lo
     @Override
     public void setLogWriter(PrintWriter writer) throws ResourceException {
         throw new UnsupportedOperationException();
+    }
+
+    /**
+     * GJW Internal test verification only
+     * Remove before pushing to GH
+     *
+     * @return
+     */
+    public boolean isInvalid() {
+        return invalid;
     }
 }
