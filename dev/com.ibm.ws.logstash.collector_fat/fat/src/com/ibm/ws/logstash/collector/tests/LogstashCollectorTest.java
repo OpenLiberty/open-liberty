@@ -186,7 +186,7 @@ public abstract class LogstashCollectorTest {
                     .withFileFromFile("/usr/share/logstash/config/logstash.key", new File(PATH_TO_AUTOFVT_TESTFILES + "logstash.key"), 644) //
                     .withFileFromFile("/usr/share/logstash/config/logstash.crt", new File(PATH_TO_AUTOFVT_TESTFILES + "logstash.crt"), 644)) //
                                     .withExposedPorts(5043) //
-                                    .withStartupTimeout(Duration.ofSeconds(90)) //
+                                    .withStartupTimeout(Duration.ofSeconds(240)) //
                                     .withLogConsumer(LogstashCollectorTest::log); //
 
     // This helper method is passed into `withLogConsumer()` of the container
