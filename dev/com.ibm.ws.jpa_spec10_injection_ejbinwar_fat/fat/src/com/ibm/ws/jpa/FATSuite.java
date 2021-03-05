@@ -16,7 +16,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import com.ibm.ws.jpa.ejbinwar.EjbInWar_Test;
+import com.ibm.ws.jpa.injection.ejb_in_war.EjbInWar_Test;
 
 import componenttest.rules.repeater.RepeatTests;
 

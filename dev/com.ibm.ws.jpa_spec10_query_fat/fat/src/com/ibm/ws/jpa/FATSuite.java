@@ -17,6 +17,15 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 
+import com.ibm.ws.jpa.spec10.query.TestSVLLoopAnoQuery_Web;
+import com.ibm.ws.jpa.spec10.query.TestSVLLoopXMLQuery_Web;
+import com.ibm.ws.jpa.spec10.query.TestSVLQuery_Bulkupdate_Web;
+import com.ibm.ws.jpa.spec10.query.TestSVLQuery_Web;
+import com.ibm.ws.jpa.spec10.query.olgh.TestOLGH14137_EJB;
+import com.ibm.ws.jpa.spec10.query.olgh.TestOLGH14137_Web;
+import com.ibm.ws.jpa.spec10.query.olgh.TestOLGH8014_EJB;
+import com.ibm.ws.jpa.spec10.query.olgh.TestOLGH8014_Web;
+
 import componenttest.containers.ExternalTestServiceDockerClientStrategy;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;

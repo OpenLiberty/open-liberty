@@ -17,10 +17,10 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 
-import com.ibm.ws.jpa.spec10.TestOLGH10310_EJB;
-import com.ibm.ws.jpa.spec10.TestOLGH10310_Web;
-import com.ibm.ws.jpa.spec10.TestOLGH11795_EJB;
-import com.ibm.ws.jpa.spec10.TestOLGH11795_Web;
+import com.ibm.ws.jpa.spec10.olgh.TestOLGH10310_EJB;
+import com.ibm.ws.jpa.spec10.olgh.TestOLGH10310_Web;
+import com.ibm.ws.jpa.spec10.olgh.TestOLGH11795_EJB;
+import com.ibm.ws.jpa.spec10.olgh.TestOLGH11795_Web;
 
 import componenttest.containers.ExternalTestServiceDockerClientStrategy;
 import componenttest.rules.repeater.FeatureReplacementAction;
