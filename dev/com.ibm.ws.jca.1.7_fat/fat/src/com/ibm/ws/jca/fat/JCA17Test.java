@@ -93,6 +93,8 @@ public class JCA17Test extends FATServletClient {
         ShrinkHelper.exportToServer(server, "connectors", helloworldbeanra);
         ShrinkHelper.exportToServer(server, "apps", fvtapp_ear);
 
+        server.addInstalledAppForValidation("fvtapp");
+
         server.startServer();
 
         assertNotNull(server.waitForStringInLog("J2CA7001I.*ADO"));
