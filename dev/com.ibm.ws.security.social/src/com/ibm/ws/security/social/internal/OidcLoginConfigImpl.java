@@ -873,4 +873,21 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements JwtCon
         return null;
     }
 
+    @Override
+    public String toString() {
+        StringBuffer sb = new StringBuffer();
+        sb.append("{");
+        sb.append("Id: " + uniqueId);
+        sb.append(" clientId: " + clientId);
+        sb.append(" grantType: " + grantType);
+        sb.append(" responseType: " + responseType);
+        sb.append(" scope: " + scope);
+        sb.append(" redirectToRPHostAndPort: " + redirectToRPHostAndPort);
+        sb.append(" issuerIdentifier: " + getIssuerIdentifier());
+        sb.append(" tokenEndpointUrl: " + tokenEndpoint);
+        sb.append(" userInfoEndpointUrl: " + userInfoEndpoint);
+        sb.append("}");
+        return sb.toString();
+    }
+
 }
