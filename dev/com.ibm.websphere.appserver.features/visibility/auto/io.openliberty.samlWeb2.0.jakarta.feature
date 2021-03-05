@@ -14,5 +14,5 @@ IBM-Install-Policy: when-satisfied
   io.openliberty.security.saml.internal.sso.2.0, \
   io.openliberty.security.saml.internal.wab.2.0, \
   io.openliberty.security.common.internal
-kind=noship
-edition=full
+kind=beta
+edition=core
