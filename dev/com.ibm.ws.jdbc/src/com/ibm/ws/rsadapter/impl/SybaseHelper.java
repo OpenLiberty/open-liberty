@@ -36,7 +36,6 @@ public class SybaseHelper extends DatabaseHelper
     private static final TraceComponent tc = Tr.register(SybaseHelper.class, "RRA", AdapterUtil.NLS_FILE); 
     @SuppressWarnings("deprecation")
     private transient com.ibm.ejs.ras.TraceComponent sybaseTc = com.ibm.ejs.ras.Tr.register("com.ibm.ws.sybase.logwriter", "WAS.database", null);
-    private transient PrintWriter sybasePw = null;
 
     /**
      * Construct a helper class for Sybase.
@@ -151,12 +150,12 @@ public class SybaseHelper extends DatabaseHelper
         //not synchronizing here since there will be one helper
         // and most likely the setting will be serially, even if its not, 
         // it shouldn't matter here (tracing).
-        if (sybasePw == null)
-            sybasePw = new PrintWriter(new TraceWriter(sybaseTc), true);
+        if (genPw == null)
+            genPw = new PrintWriter(new TraceWriter(sybaseTc), true);
 
         if (trace && tc.isDebugEnabled())
-            Tr.debug(this, tc, "returning", sybasePw);
-        return sybasePw;
+            Tr.debug(this, tc, "returning", genPw);
+        return genPw;
     }
 
     /**

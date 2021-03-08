@@ -60,7 +60,6 @@ public class DB2Helper extends DatabaseHelper {
     static int JDBC = 1; 
     static int SQLJ = 2; 
     int connType = 0; 
-    private transient PrintWriter db2Pw; 
 
     /**
      * Construct a helper class for common DB2 behavior. Do not instantiate this class directly.
@@ -236,12 +235,12 @@ public class DB2Helper extends DatabaseHelper {
         // and most likely the setting will be serially, even if its not,
         // it shouldn't matter here (tracing).
 
-        if (db2Pw == null) {
-            db2Pw = new PrintWriter(new TraceWriter(db2Tc), true);
+        if (genPw == null) {
+            genPw = new PrintWriter(new TraceWriter(db2Tc), true);
         }
         if (trace && tc.isDebugEnabled())
-            Tr.debug(this, tc, "returning", db2Pw);
-        return db2Pw;
+            Tr.debug(this, tc, "returning", genPw);
+        return genPw;
     }
 
     /**

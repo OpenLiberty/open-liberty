@@ -471,9 +471,9 @@ public class OptimizedSIXAResourceProxy extends BaseSIXAResourceProxy implements
 
       // Below is some logic to unjoin from a resource. The comms implementation of TMJOIN places
       // the first XAResource that starts a transaction as the 'master' XAResource. Therefore if
-      // any XAResources join up with it then they effectively become 'slave' XAResources to the
+      // any XAResources join up with it then they effectively become 'co-opted' XAResources to the
       // first. As the XAResources can be ended in any order, we must ensure that we if the master
-      // is ended first then ending the last slave resource causes the end to actually occur.
+      // is ended first then ending the last co-opted resource causes the end to actually occur.
 
       boolean performEndNow;
       // If we are currently joined to a resource, unjoin it here. We also need to work out wh
@@ -519,7 +519,7 @@ public class OptimizedSIXAResourceProxy extends BaseSIXAResourceProxy implements
 
             // Record whether a transaction was ever created on the server
             // If it was _not_ then this information makes completing the
-            // transaction a no-op. Again, if this is a slave resource,
+            // transaction a no-op. Again, if this is a co-opted resource,
             // defer the real answer to the master XAResource.
             if (joinedResource != null) info.serverTransactionCreated = joinedResource.serverUowCreated;
             else                        info.serverTransactionCreated = serverUowCreated;
@@ -535,7 +535,7 @@ public class OptimizedSIXAResourceProxy extends BaseSIXAResourceProxy implements
                // need invoking on the server before the resource can be
                // used again. Set internal state to remember this. Ensure
                // we update the flags in the correct instance if this is a
-               // slave XAResource.
+               // co-opted XAResource.
                if (joinedResource != null)
                {
                   joinedResource.serverUowRequiresEnding = true;

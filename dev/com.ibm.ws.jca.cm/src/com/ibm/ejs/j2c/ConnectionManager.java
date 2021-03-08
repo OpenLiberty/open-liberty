@@ -1108,9 +1108,11 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
         if (shareable) {
             // CM is configured for sharable connections.
 
-            if (hcmDetails._mcWrapper.pm.gConfigProps.isSmartHandleSupport()) {
+            if (gConfigProps.isSmartHandleSupport() || !gConfigProps.getParkIfDissociateUnavailable()) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-                    Tr.exit(tc, "reAssociate", "RA supports smart handles.  Nothing to do.");
+                    Tr.exit(tc, "reAssociate", "skip: "
+                                               + (gConfigProps.isSmartHandleSupport() ? "dissociatable" : "non-dissociatable")
+                                               + (gConfigProps.getParkIfDissociateUnavailable() ? ",enabled" : ",disabled"));
                 return;
             } else {
                 UOWCurrent uowCurrent = (UOWCurrent) _pm.connectorSvc.transactionManager;
@@ -1221,22 +1223,19 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
      * @param hcmdetails Passed in because it contains the handle which we need to park.
      */
     public void parkHandle(HCMDetails hcmDetails) throws ResourceException {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            Tr.entry(tc, "parkHandle", hcmDetails._handle);
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
 
-        if (!shareable) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-                Tr.exit(tc, "parkHandle: non-sharable connection. Nothing to do.");
+        if (!shareable || gConfigProps.isSmartHandleSupport() || !gConfigProps.getParkIfDissociateUnavailable()) {
+            if (trace && tc.isDebugEnabled())
+                Tr.debug(this, tc, "parkHandle skipped: "
+                                   + (shareable ? "sharable" : "unsharable")
+                                   + (gConfigProps.isSmartHandleSupport() ? ",dissociatable" : ",non-dissociatable")
+                                   + (gConfigProps.getParkIfDissociateUnavailable() ? ",enabled" : ",disabled"));
             return;
         }
-        if (hcmDetails._mcWrapper.gConfigProps.isSmartHandleSupport()) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-                Tr.exit(tc, "parkHandle: RA supports smart handles. Nothing to do.");
-            return;
-        } else {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(tc, "parkHandle: RA doesn't support smart handles. Proceed with parkHandle");
-        }
+
+        if (trace && tc.isEntryEnabled())
+            Tr.entry(tc, "parkHandle", hcmDetails._handle);
 
         MCWrapper parkingMCWrapper = null;
         MCWrapper fromMCWrapper = hcmDetails._mcWrapper;
@@ -1253,13 +1252,13 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
         } catch (ResourceException e) {
             FFDCFilter.processException(e, "com.ibm.ejs.j2c.ConnectionManager.parkHandle", "966", this);
             Tr.error(tc, "FAILED_TO_ASSOCIATE_CONNECTION_J2CA0058", new Object[] { hcmDetails._handle, parkingMCWrapper, e, fromMCWrapper.gConfigProps.cfName });
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            if (trace && tc.isEntryEnabled())
                 Tr.exit(tc, "parkHandle", e);
             throw e;
         } catch (Exception e) {
             FFDCFilter.processException(e, "com.ibm.ejs.j2c.ConnectionManager.parkHandle", "973", this);
             Tr.error(tc, "FAILED_TO_ASSOCIATE_CONNECTION_J2CA0058", new Object[] { hcmDetails._handle, parkingMCWrapper, e, fromMCWrapper.gConfigProps.cfName });
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            if (trace && tc.isEntryEnabled())
                 Tr.exit(tc, "parkHandle", e);
             ResourceException re = new ResourceException("parkHandle: Caught an Exception from mc.associateConnection().");
             re.initCause(e);
@@ -1278,7 +1277,7 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
         // new managed connection.
         hcmDetails._mcWrapper = parkingMCWrapper;
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+        if (trace && tc.isEntryEnabled())
             Tr.exit(tc, "parkHandle");
     }
 

@@ -1392,11 +1392,13 @@
   <AD id="socketTimeout"                 ibmui:group="Advanced" required="false" type="String"  ibm:type="duration(s)" name="%socketTimeout"       description="%socketTimeout.desc"/>
   <AD id="targetServerType"              ibmui:group="Advanced" required="false" type="String"                         name="%targetServerType"    description="%targetServerType.desc">
    <Option value="any"             label="any"/>
+   <Option value="primary"         label="primary"/>
+   <Option value="secondary"       label="secondary"/>
+   <Option value="preferSecondary" label="preferSecondary"/>
+   <!-- Deprecated, but still permitted, by PostgreSQL JDBC Driver: -->
    <Option value="master"          label="master"/>
    <Option value="slave"           label="slave"/>
-   <Option value="secondary"       label="secondary"/>
    <Option value="preferSlave"     label="preferSlave"/>
-   <Option value="preferSecondary" label="preferSecondary"/>
   </AD>
   <AD id="tcpKeepAlive"                  ibmui:group="Advanced" required="false" type="Boolean" name="%tcpKeepAlive" description="%tcpKeepAlive.desc"/>
   <AD id="user"                          ibmui:group="Advanced" required="false" type="String"  name="%user" description="%user.desc"/>

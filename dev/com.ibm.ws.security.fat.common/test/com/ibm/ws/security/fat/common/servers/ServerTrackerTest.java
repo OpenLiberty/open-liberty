@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2019 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -105,6 +105,7 @@ public class ServerTrackerTest extends CommonTestClass {
                 {
                     one(server1).addInstalledAppForValidation(Constants.APP_TESTMARKER);
                     one(server1).addIgnoredErrors(Arrays.asList(MessageConstants.CWWKG0014E_CONFIG_PARSER_XML_SYNTAX_ERROR));
+                    one(server1).addIgnoredErrors(Arrays.asList(MessageConstants.CWWKO0227E_EXECUTOR_SERVICE_MISSING));
                 }
             });
 
@@ -131,6 +132,7 @@ public class ServerTrackerTest extends CommonTestClass {
                 {
                     exactly(2).of(server1).addInstalledAppForValidation(Constants.APP_TESTMARKER);
                     exactly(2).of(server1).addIgnoredErrors(Arrays.asList(MessageConstants.CWWKG0014E_CONFIG_PARSER_XML_SYNTAX_ERROR));
+                    exactly(2).of(server1).addIgnoredErrors(Arrays.asList(MessageConstants.CWWKO0227E_EXECUTOR_SERVICE_MISSING));
                 }
             });
 
@@ -158,10 +160,13 @@ public class ServerTrackerTest extends CommonTestClass {
                 {
                     one(server1).addInstalledAppForValidation(Constants.APP_TESTMARKER);
                     one(server1).addIgnoredErrors(Arrays.asList(MessageConstants.CWWKG0014E_CONFIG_PARSER_XML_SYNTAX_ERROR));
+                    one(server1).addIgnoredErrors(Arrays.asList(MessageConstants.CWWKO0227E_EXECUTOR_SERVICE_MISSING));
                     one(server2).addInstalledAppForValidation(Constants.APP_TESTMARKER);
                     one(server2).addIgnoredErrors(Arrays.asList(MessageConstants.CWWKG0014E_CONFIG_PARSER_XML_SYNTAX_ERROR));
+                    one(server2).addIgnoredErrors(Arrays.asList(MessageConstants.CWWKO0227E_EXECUTOR_SERVICE_MISSING));
                     one(server3).addInstalledAppForValidation(Constants.APP_TESTMARKER);
                     one(server3).addIgnoredErrors(Arrays.asList(MessageConstants.CWWKG0014E_CONFIG_PARSER_XML_SYNTAX_ERROR));
+                    one(server3).addIgnoredErrors(Arrays.asList(MessageConstants.CWWKO0227E_EXECUTOR_SERVICE_MISSING));
                 }
             });
 
@@ -226,6 +231,7 @@ public class ServerTrackerTest extends CommonTestClass {
                 {
                     one(server1).addInstalledAppForValidation(Constants.APP_TESTMARKER);
                     one(server1).addIgnoredErrors(Arrays.asList(MessageConstants.CWWKG0014E_CONFIG_PARSER_XML_SYNTAX_ERROR));
+                    one(server1).addIgnoredErrors(Arrays.asList(MessageConstants.CWWKO0227E_EXECUTOR_SERVICE_MISSING));
                }
             });
 
@@ -257,6 +263,7 @@ public class ServerTrackerTest extends CommonTestClass {
                 {
                     one(server1).addInstalledAppForValidation(Constants.APP_TESTMARKER);
                     one(server1).addIgnoredErrors(Arrays.asList(MessageConstants.CWWKG0014E_CONFIG_PARSER_XML_SYNTAX_ERROR));
+                    one(server1).addIgnoredErrors(Arrays.asList(MessageConstants.CWWKO0227E_EXECUTOR_SERVICE_MISSING));
                }
             });
 
@@ -293,10 +300,13 @@ public class ServerTrackerTest extends CommonTestClass {
                 {
                     one(server1).addInstalledAppForValidation(Constants.APP_TESTMARKER);
                     one(server1).addIgnoredErrors(Arrays.asList(MessageConstants.CWWKG0014E_CONFIG_PARSER_XML_SYNTAX_ERROR));
+                    one(server1).addIgnoredErrors(Arrays.asList(MessageConstants.CWWKO0227E_EXECUTOR_SERVICE_MISSING));
                     one(server2).addInstalledAppForValidation(Constants.APP_TESTMARKER);
                     one(server2).addIgnoredErrors(Arrays.asList(MessageConstants.CWWKG0014E_CONFIG_PARSER_XML_SYNTAX_ERROR));
+                    one(server2).addIgnoredErrors(Arrays.asList(MessageConstants.CWWKO0227E_EXECUTOR_SERVICE_MISSING));
                     one(server3).addInstalledAppForValidation(Constants.APP_TESTMARKER);
                     one(server3).addIgnoredErrors(Arrays.asList(MessageConstants.CWWKG0014E_CONFIG_PARSER_XML_SYNTAX_ERROR));
+                    one(server3).addIgnoredErrors(Arrays.asList(MessageConstants.CWWKO0227E_EXECUTOR_SERVICE_MISSING));
                 }
             });
 
@@ -332,10 +342,13 @@ public class ServerTrackerTest extends CommonTestClass {
                 {
                     one(server1).addInstalledAppForValidation(Constants.APP_TESTMARKER);
                     one(server1).addIgnoredErrors(Arrays.asList(MessageConstants.CWWKG0014E_CONFIG_PARSER_XML_SYNTAX_ERROR));
+                    one(server1).addIgnoredErrors(Arrays.asList(MessageConstants.CWWKO0227E_EXECUTOR_SERVICE_MISSING));
                     one(server2).addInstalledAppForValidation(Constants.APP_TESTMARKER);
                     one(server2).addIgnoredErrors(Arrays.asList(MessageConstants.CWWKG0014E_CONFIG_PARSER_XML_SYNTAX_ERROR));
+                    one(server2).addIgnoredErrors(Arrays.asList(MessageConstants.CWWKO0227E_EXECUTOR_SERVICE_MISSING));
                     one(server3).addInstalledAppForValidation(Constants.APP_TESTMARKER);
                     one(server3).addIgnoredErrors(Arrays.asList(MessageConstants.CWWKG0014E_CONFIG_PARSER_XML_SYNTAX_ERROR));
+                    one(server3).addIgnoredErrors(Arrays.asList(MessageConstants.CWWKO0227E_EXECUTOR_SERVICE_MISSING));
                 }
             });
 

@@ -2882,7 +2882,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
 
             modifiedByCleanup = mcf.dataStoreHelper == null
                               ? helper.doConnectionCleanup(sqlConn)
-                              : mcf.dataStoreHelper.doConnectionCleanup(sqlConn);
+                              : mcf.dataStoreHelper.doConnectionCleanup((Connection) WSJdbcTracer.getImpl(sqlConn));
 
             if (!connectionErrorDetected) 
             {
@@ -4316,7 +4316,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
             if (mcf.dataStoreHelper == null)
                 helper.doConnectionCleanup(sqlConn);
             else
-                mcf.dataStoreHelper.doConnectionCleanup(sqlConn);
+                mcf.dataStoreHelper.doConnectionCleanup((Connection) WSJdbcTracer.getImpl(sqlConn));
 
             // Clear the warning.
             sqlConn.clearWarnings();
@@ -4364,7 +4364,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
                     if (mcf.dataStoreHelper == null)
                         helper.doConnectionCleanup(sqlConn);
                     else
-                        mcf.dataStoreHelper.doConnectionCleanup(sqlConn);
+                        mcf.dataStoreHelper.doConnectionCleanup((Connection) WSJdbcTracer.getImpl(sqlConn));
                 } catch (SQLException cleanEx) {
                     // No FFDC coded needed
 

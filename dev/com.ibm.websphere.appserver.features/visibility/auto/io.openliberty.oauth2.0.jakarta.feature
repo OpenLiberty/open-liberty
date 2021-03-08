@@ -16,5 +16,5 @@ IBM-Install-Policy: when-satisfied
   io.openliberty.oauth; location:=dev/api/ibm/
 -files=\
   dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.oauth_1.2-javadoc.zip
-kind=noship
-edition=full
+kind=beta
+edition=core

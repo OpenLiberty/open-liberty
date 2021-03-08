@@ -307,7 +307,6 @@ public class HDConnection implements Connection, HeritageDBConnection {
      * information back to the application for testing purposes.
      */
     private String replace(String sql) {
-        System.out.println("In replace, the counts are CLEANUP:" + cleanupCount.get() + "; SETUP:" + setupCount.get());
         if ("CALL TEST.GET_CLEANUP_COUNT()".equalsIgnoreCase(sql))
             return "VALUES (" + cleanupCount.get() + ")";
 

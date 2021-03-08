@@ -367,6 +367,8 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
             dataStoreHelper = AccessController.doPrivileged((PrivilegedExceptionAction<GenericDataStoreHelper>) () ->
                 (GenericDataStoreHelper) jdbcDriverLoader.loadClass(config.heritageHelperClass).getConstructor(Properties.class).newInstance(helperProps));
             dataStoreHelper.setConfig(dsConfigRef);
+            if (helper.genPw == null)
+                helper.genPw = dataStoreHelper.getPrintWriter();
             DataStoreHelperMetaData metadata = dataStoreHelper.getMetaData();
             defaultIsolationLevel = dataStoreHelper.getIsolationLevel(null);
             doesStatementCacheIsoLevel = metadata.doesStatementCacheIsoLevel();
@@ -377,6 +379,9 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
             supportsGetTypeMap = metadata.supportsGetTypeMap();
             supportsIsReadOnly = metadata.supportsIsReadOnly();
         }
+
+        if (helper.shouldTraceBeEnabled(this))
+            helper.enableJdbcLogging(this);
 
         if (config.supplementalJDBCTrace == null || config.supplementalJDBCTrace) {
             TraceComponent tracer = helper.getTracer();
@@ -466,9 +471,6 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
         if (helper == null)
             if (dsClassName.startsWith("com.ibm.db2.jcc.")) helper = new DB2JCCHelper(this); // unable to distinguish between DB2/Informix
             else helper = new DatabaseHelper(this);
-
-        if (helper.shouldTraceBeEnabled(this))
-            helper.enableJdbcLogging(this);
     }
 
     /**

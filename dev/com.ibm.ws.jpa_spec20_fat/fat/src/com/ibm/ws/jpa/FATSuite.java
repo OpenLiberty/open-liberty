@@ -16,6 +16,13 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import com.ibm.ws.jpa.spec20.olgh.TestOLGH10515_EJB;
+import com.ibm.ws.jpa.spec20.olgh.TestOLGH10515_WEB;
+import com.ibm.ws.jpa.spec20.olgh.TestOLGH9018_EJB;
+import com.ibm.ws.jpa.spec20.olgh.TestOLGH9018_WEB;
+import com.ibm.ws.jpa.spec20.olgh.TestOLGH9339_EJB;
+import com.ibm.ws.jpa.spec20.olgh.TestOLGH9339_WEB;
+
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 

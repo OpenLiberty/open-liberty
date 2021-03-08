@@ -33,7 +33,6 @@ import com.ibm.websphere.ras.TraceComponent;
 public class DerbyHelper extends DatabaseHelper {
     @SuppressWarnings("deprecation")
     protected static final com.ibm.ejs.ras.TraceComponent derbyTc = com.ibm.ejs.ras.Tr.register("com.ibm.ws.derby.logwriter", "WAS.database", null); // rename 
-    private transient PrintWriter derbyPw = null; 
 
     /**
      * Construct a helper class for Derby.
@@ -86,11 +85,11 @@ public class DerbyHelper extends DatabaseHelper {
         //not synchronizing here since there will be one helper
         // and most likely the setting will be serially, even if its not, 
         // it shouldn't matter here (tracing).
-        if (derbyPw == null) {
-            derbyPw = new java.io.PrintWriter(new TraceWriter(derbyTc), true);
+        if (genPw == null) {
+            genPw = new java.io.PrintWriter(new TraceWriter(derbyTc), true);
         }
-        Tr.debug(derbyTc, "returning", derbyPw);
-        return derbyPw;
+        Tr.debug(derbyTc, "returning", genPw);
+        return genPw;
     }
 
     /**

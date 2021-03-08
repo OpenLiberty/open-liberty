@@ -49,11 +49,6 @@ public abstract class Cmsfv2ParentData implements Serializable {
         if (!(obj instanceof Cmsfv2ParentData))
             return false;
         Cmsfv2ParentData other = (Cmsfv2ParentData) obj;
-        if (data == null) {
-            if (other.data != null)
-                return false;
-        } else if (!data.equals(other.data))
-            return false;
-        return true;
+        return data.equals(other.data);
     }
 }
