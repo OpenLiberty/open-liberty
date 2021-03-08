@@ -868,6 +868,11 @@ public class OneServerSPCookieLogoutTests extends SAMLLogoutCommonTest {
      * @throws Exception
      */
     public void common_postLogoutRedirectUrl_test(String spCookieName, String spName, PostLogoutPage postLogoutUrl) throws Exception {
+
+        if (!helpers.pingExternalServer(_testName, "http://example.com", 30)) {
+            // skip test if we can't get to the example.com site
+            testSkipped();
+        }
         common_postLogoutRedirectUrl_test(spCookieName, spName, postLogoutUrl, null);
     }
 
