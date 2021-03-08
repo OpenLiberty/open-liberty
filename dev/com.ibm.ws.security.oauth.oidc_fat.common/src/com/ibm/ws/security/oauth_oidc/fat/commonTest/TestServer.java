@@ -475,8 +475,8 @@ public class TestServer extends com.ibm.ws.security.fat.common.TestServer {
         bootPropsMap.put(Constants.BOOT_PROP_OIDC_JWK_VALIDATION_URL_2, "");
         if (Constants.JWK_CERT.equals(certType)) {
             bootPropsMap.put(Constants.BOOT_PROP_OIDC_SIG_ALG, Constants.SIGALG_RS256);
-            bootPropsMap.put(Constants.BOOT_PROP_OIDC_JWK_VALIDATION_URL, "\"https://localhost:${bvt.prop.OP_HTTP_default.secure}/${" + Constants.BOOT_PROP_PROVIDER_ROOT + "}/endpoint/${" + Constants.BOOT_PROP_PROVIDER_SAMPLE + "}/jwk\"");
-            bootPropsMap.put(Constants.BOOT_PROP_OIDC_JWK_VALIDATION_URL_2, "\"https://localhost:${bvt.prop.OP_HTTP_default.secure}/${" + Constants.BOOT_PROP_PROVIDER_ROOT + "}/endpoint/${" + Constants.BOOT_PROP_PROVIDER_SAMPLE + "}2/jwk\"");
+            bootPropsMap.put(Constants.BOOT_PROP_OIDC_JWK_VALIDATION_URL, "\"https://localhost:${bvt.prop." + Constants.SYS_PROP_PORT_OP_HTTPS_DEFAULT + "}/${" + Constants.BOOT_PROP_PROVIDER_ROOT + "}/endpoint/${" + Constants.BOOT_PROP_PROVIDER_SAMPLE + "}/jwk\"");
+            bootPropsMap.put(Constants.BOOT_PROP_OIDC_JWK_VALIDATION_URL_2, "\"https://localhost:${bvt.prop." + Constants.SYS_PROP_PORT_OP_HTTPS_DEFAULT + "}/${" + Constants.BOOT_PROP_PROVIDER_ROOT + "}/endpoint/${" + Constants.BOOT_PROP_PROVIDER_SAMPLE + "}2/jwk\"");
         }
         return bootPropsMap;
     }
@@ -488,7 +488,7 @@ public class TestServer extends com.ibm.ws.security.fat.common.TestServer {
         for (Map.Entry<String, String> entry : jwkValidationMap.entrySet()) {
             String propValue = "\"\"";
             if (Constants.JWK_CERT.equals(certType)) {
-                propValue = "\"https://localhost:${bvt.prop.OP_HTTP_default.secure}/${" + Constants.BOOT_PROP_PROVIDER_ROOT + "}/endpoint/" + entry.getValue() + "/jwk\"";
+                propValue = "\"https://localhost:${bvt.prop." + Constants.SYS_PROP_PORT_OP_HTTPS_DEFAULT + "}/${" + Constants.BOOT_PROP_PROVIDER_ROOT + "}/endpoint/" + entry.getValue() + "/jwk\"";
             }
             bootstrapUtils.writeBootstrapProperty(this, entry.getKey(), propValue);
         }

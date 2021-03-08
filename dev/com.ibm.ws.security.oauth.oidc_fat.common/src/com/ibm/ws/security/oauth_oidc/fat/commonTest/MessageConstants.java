@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -82,6 +82,7 @@ public class MessageConstants extends com.ibm.ws.security.fat.common.MessageCons
     public static final String CWWKS1497E_WRONG_TOKEN_TYPE = "CWWKS1497E";
 
     public static final String CWWKS1520E_MISSING_SAMESITE_COOKIE = "CWWKS1520E";
+    public static final String CWWKS1532E_MALFORMED_URL_IN_COOKIE = "CWWKS1532E";
     public static final String CWWKS1524E_DISCOVERY_FAILED_TO_RETURN_ENDPOINT = "CWWKS1524E";
     public static final String CWWKS1525E_SUCCESSFUL_RESPONSE_NOT_RETURNED = "CWWKS1525E";
 
