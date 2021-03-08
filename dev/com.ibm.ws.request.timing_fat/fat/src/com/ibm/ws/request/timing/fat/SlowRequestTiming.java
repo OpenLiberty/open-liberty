@@ -818,7 +818,7 @@ public class SlowRequestTiming {
         //Retry the request again
         if (warnings == 0) {
             CommonTasks.writeLogMsg(Level.INFO, "$$$$ -----> Retry because no slow request warning found!");
-            createRequest("?sleepTime=3000");
+            createRequest("?sleepTime=13000");
             server.waitForStringInLog("TRAS0112W", 20000);
             warnings = fetchNoOfslowRequestWarnings();
         }
