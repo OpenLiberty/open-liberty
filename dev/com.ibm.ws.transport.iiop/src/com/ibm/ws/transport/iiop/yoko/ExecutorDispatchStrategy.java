@@ -17,12 +17,17 @@ import org.apache.yoko.orb.OB.DispatchStrategy;
 import org.omg.CORBA.Any;
 import org.omg.CORBA.LocalObject;
 
+import com.ibm.ws.threading.RunnableWithContext;
+import com.ibm.ws.transport.iiop.internal.IIOPWorkContext;
+import com.ibm.wsspi.threading.WorkContext;
+
 /**
  *
  */
 public class ExecutorDispatchStrategy extends LocalObject implements DispatchStrategy {
 
     private final Executor executor;
+    final IIOPWorkContext wc = new IIOPWorkContext();
 
     /**
      * @param executor
@@ -35,11 +40,16 @@ public class ExecutorDispatchStrategy extends LocalObject implements DispatchStr
     @Override
     public void dispatch(final DispatchRequest req) {
 
-        executor.execute(new Runnable() {
+        executor.execute(new RunnableWithContext() {
 
             @Override
             public void run() {
                 req.invoke();
+            }
+
+            @Override
+            public WorkContext getWorkContext() {
+                return wc;
             }
         });
     }

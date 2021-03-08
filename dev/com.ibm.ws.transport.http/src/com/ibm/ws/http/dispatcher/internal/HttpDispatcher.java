@@ -13,6 +13,8 @@ package com.ibm.ws.http.dispatcher.internal;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -45,6 +47,7 @@ import com.ibm.wsspi.http.WorkClassifier;
 import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 import com.ibm.wsspi.http.ee7.HttpTransportBehavior;
 import com.ibm.wsspi.kernel.service.utils.MetatypeUtils;
+import com.ibm.wsspi.threading.ExecutorServiceTaskInterceptor;
 import com.ibm.wsspi.timer.ApproximateTime;
 import com.ibm.wsspi.timer.QuickApproxTime;
 
@@ -74,6 +77,32 @@ public class HttpDispatcher {
 
     private static volatile boolean useEE7Streams = false;
     private static volatile Boolean useIOExceptionBehavior = null;
+
+    /**
+     * Indicates whether any interceptors are currently being used. This is for performance
+     * reasons, to avoid using the default executor when no interceptors are registered
+     */
+    static boolean interceptorsActive = false;
+
+    /**
+     * A Set of interceptors that are all given a chance to wrap tasks that are submitted
+     * to the executor for execution.
+     */
+    Set<ExecutorServiceTaskInterceptor> interceptors = new CopyOnWriteArraySet<ExecutorServiceTaskInterceptor>();
+
+    @Reference(cardinality = ReferenceCardinality.MULTIPLE,
+               policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
+    protected synchronized void setInterceptor(ExecutorServiceTaskInterceptor interceptor) {
+        interceptors.add(interceptor);
+        interceptorsActive = true;
+    }
+
+    protected synchronized void unsetInterceptor(ExecutorServiceTaskInterceptor interceptor) {
+        interceptors.remove(interceptor);
+        if (interceptors.size() == 0) {
+            interceptorsActive = false;
+        }
+    }
 
     static final String CONFIG_ALIAS = "httpDispatcher";
 
@@ -693,6 +722,15 @@ public class HttpDispatcher {
             return f.workClassifier;
 
         return null;
+    }
+
+    /**
+     * Checks for interceptors
+     *
+     * @return WorkClassifier - null if not found
+     */
+    public static boolean getInterceptorValue() {
+        return interceptorsActive;
     }
 
     /**

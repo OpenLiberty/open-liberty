@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.RejectedExecutionException;
@@ -29,8 +28,8 @@ import javax.resource.spi.work.ExecutionContext;
 import javax.resource.spi.work.HintsContext;
 import javax.resource.spi.work.TransactionContext;
 import javax.resource.spi.work.Work;
-import javax.resource.spi.work.WorkCompletedException;
 import javax.resource.spi.work.WorkContext;
+import javax.resource.spi.work.WorkCompletedException;
 import javax.resource.spi.work.WorkContextErrorCodes;
 import javax.resource.spi.work.WorkContextLifecycleListener;
 import javax.resource.spi.work.WorkContextProvider;
@@ -45,6 +44,8 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.jca.security.JCASecurityContext;
+import com.ibm.ws.threading.CallableWithContext;
+import com.ibm.ws.threading.RunnableWithContext;
 import com.ibm.wsspi.threadcontext.ThreadContext;
 import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
 import com.ibm.wsspi.threadcontext.WSContextService;
@@ -55,22 +56,27 @@ import com.ibm.wsspi.threadcontext.jca.JCAContextProvider;
  * This wrapper takes care of execution context handling, work listener notification
  * and startTimeout.
  */
-public class WorkProxy implements Callable<Void>, Runnable {
+public class WorkProxy implements CallableWithContext<Void>, RunnableWithContext {
+
+    //Creates a workContext item we can put the hintsContext into and return
+    //This is not the same as javax.resource.spi.work.WorkContext, it helps interceptors in Liberty get context
+    private final com.ibm.wsspi.threading.WorkContext wc = new LibertyWorkContext();
+
     /**
      * Constructor for WorkProxy.
      *
      * @pre theWork != null
      *
-     * @param theWork the actual Work object that is passed in by the RA.
-     * @param theStartTimeout abort the request after this amount of time has passed
-     *            and the actual Work has not yet started.
-     *            A start timeout occurs when the thread pool is to busy
-     *            to allocate a thread to start the work on.
-     * @param theContext controls what context information is used by the thread to
-     *            establish its context
-     * @param theListener send state changes to the Work to this object.
-     * @param bootstrapContext the bootstrap context.
-     * @param runningWork list of work that is running.
+     * @param theWork             the actual Work object that is passed in by the RA.
+     * @param theStartTimeout     abort the request after this amount of time has passed
+     *                                and the actual Work has not yet started.
+     *                                A start timeout occurs when the thread pool is to busy
+     *                                to allocate a thread to start the work on.
+     * @param theContext          controls what context information is used by the thread to
+     *                                establish its context
+     * @param theListener         send state changes to the Work to this object.
+     * @param bootstrapContext    the bootstrap context.
+     * @param runningWork         list of work that is running.
      * @param applyDefaultContext determines whether or not to apply default context for thread context types that aren't otherwise specified or configured.
      * @throws ResourceException if unable to associate with the resource adapter.
      */
@@ -119,9 +125,9 @@ public class WorkProxy implements Callable<Void>, Runnable {
                     // JCA 11.6.1.1 Work Name Hint
                     // The value for the hint must be a valid java.lang.String.
                     Serializable value = hints.get(HintsContext.NAME_HINT);
-                    if (value == null || value instanceof String)
+                    if (value == null || value instanceof String) {
                         workName = (String) value;
-                    else
+                    } else
                         hintsContextSetupFailure = new ClassCastException(Tr.formatMessage(TC, "J2CA8687.hint.datatype.invalid", "HintsContext.NAME_HINT", String.class.getName(),
                                                                                            bootstrapContext.resourceAdapterID, value, value.getClass().getName()));
 
@@ -135,6 +141,9 @@ public class WorkProxy implements Callable<Void>, Runnable {
                         hintsContextSetupFailure = new ClassCastException(Tr.formatMessage(TC, "J2CA8687.hint.datatype.invalid", "HintsContext.LONGRUNNING_HINT",
                                                                                            Boolean.class.getName(),
                                                                                            bootstrapContext.resourceAdapterID, value, value.getClass().getName()));
+
+                    //This is not the same as javax.resource.spi.work.WorkContext, it helps interceptors in Liberty get context
+                    wc.putAll(hints);
                 }
         String identityNameKey = bootstrapContext.eeVersion < 9 ? "javax.enterprise.concurrent.IDENTITY_NAME" : "jakarta.enterprise.concurrent.IDENTITY_NAME";
         executionProperties.put(identityNameKey, workName == null ? work == null ? null : work.getClass().getName() : workName);
@@ -320,8 +329,8 @@ public class WorkProxy implements Callable<Void>, Runnable {
      * Handle a work context setup failure.
      *
      * @param workContext the work context.
-     * @param errorCode error code from javax.resource.spi.work.WorkContextErrorCodes
-     * @param cause Throwable to chain as the cause. Can be null.
+     * @param errorCode   error code from javax.resource.spi.work.WorkContextErrorCodes
+     * @param cause       Throwable to chain as the cause. Can be null.
      * @return WorkCompletedException to raise the the invoker.
      */
     private WorkCompletedException contextSetupFailure(Object context, String errorCode, Throwable cause) {
@@ -453,4 +462,12 @@ public class WorkProxy implements Callable<Void>, Runnable {
      * obtain the listener.
      */
     protected WorkListener lsnr;
+
+    //Returns the workContext for this JCA runnable including the hintsContext if it's applicable.
+    //This is not the same as javax.resource.spi.work.WorkContext, it helps interceptors in Liberty get context
+    @Override
+    public com.ibm.wsspi.threading.WorkContext getWorkContext() {
+        return this.wc;
+    }
+
 }
