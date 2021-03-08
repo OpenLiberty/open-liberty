@@ -20,12 +20,10 @@ import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
-import com.ibm.websphere.simplicity.BeansAsset;
-import com.ibm.websphere.simplicity.BeansAsset.CDIVersion;
-import com.ibm.websphere.simplicity.BeansAsset.DiscoveryMode;
 import com.ibm.websphere.simplicity.CDIArchiveHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
+import com.ibm.websphere.simplicity.beansxml.BeansAsset.DiscoveryMode;
 import com.ibm.ws.cdi20.fat.apps.beanManagerLookup.BeanManagerLookupServlet;
 import com.ibm.ws.cdi20.fat.apps.beanManagerLookup.MyBeanCDI20;
 import com.ibm.ws.cdi20.fat.apps.configurator.ConfiguratorTestBase;
@@ -120,9 +118,7 @@ public class BasicCdi20Tests extends FATServletClient {
                                         .addPackages(true, TrimTestServlet.class.getPackage());
 
             app4 = CDIArchiveHelper.addCDIExtensionService(app4, com.ibm.ws.cdi20.fat.apps.trimTest.PATObserver.class);
-            BeansAsset beans = new BeansAsset(DiscoveryMode.ALL, CDIVersion.CDI20);
-            beans.setTrim(true);
-            app4 = CDIArchiveHelper.addBeansXML(app4, beans);
+            app4 = CDIArchiveHelper.addBeansXML(app4, TrimTestServlet.class.getPackage());
 
             ShrinkHelper.exportDropinAppToServer(server, app2, DeployOptions.SERVER_ONLY);
             ShrinkHelper.exportDropinAppToServer(server, app3, DeployOptions.SERVER_ONLY);

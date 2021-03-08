@@ -17,8 +17,9 @@ import org.jboss.shrinkwrap.api.container.ManifestContainer;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 
-import com.ibm.websphere.simplicity.BeansAsset.CDIVersion;
-import com.ibm.websphere.simplicity.BeansAsset.DiscoveryMode;
+import com.ibm.websphere.simplicity.beansxml.BeansAsset;
+import com.ibm.websphere.simplicity.beansxml.BeansAsset.CDIVersion;
+import com.ibm.websphere.simplicity.beansxml.BeansAsset.DiscoveryMode;
 
 /**
  * In future it would be better to make use of the ShrinkWrap Descriptors lib instead of the custom BeansAsset
@@ -103,7 +104,7 @@ public class CDIArchiveHelper {
      *
      * @param archive The archive to create the beans.xml in
      * @param mode    The bean-discovery-mode to use; NONE, ALL or ANNOTATED
-     * @param version The beans.xml version to use; JAVAEE (CDI 1.1) or JAKARTA (CDI 3.0)
+     * @param version The beans.xml version to use
      */
     public static JavaArchive addBeansXML(JavaArchive archive, DiscoveryMode mode, CDIVersion version) {
         BeansAsset beans = new BeansAsset(mode);

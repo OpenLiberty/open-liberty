@@ -16,11 +16,11 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
-import com.ibm.websphere.simplicity.BeansAsset.DiscoveryMode;
-import com.ibm.websphere.simplicity.BeansAsset.CDIVersion;
 import com.ibm.websphere.simplicity.CDIArchiveHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
+import com.ibm.websphere.simplicity.beansxml.BeansAsset.CDIVersion;
+import com.ibm.websphere.simplicity.beansxml.BeansAsset.DiscoveryMode;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;

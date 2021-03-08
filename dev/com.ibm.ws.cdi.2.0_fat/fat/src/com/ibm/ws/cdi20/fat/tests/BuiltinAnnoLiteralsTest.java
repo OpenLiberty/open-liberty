@@ -20,10 +20,10 @@ import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
-import com.ibm.websphere.simplicity.BeansAsset.DiscoveryMode;
 import com.ibm.websphere.simplicity.CDIArchiveHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
+import com.ibm.websphere.simplicity.beansxml.BeansAsset.DiscoveryMode;
 import com.ibm.ws.cdi20.fat.apps.builtinAnno.BuiltinAnnoServlet;
 
 import componenttest.annotation.Server;

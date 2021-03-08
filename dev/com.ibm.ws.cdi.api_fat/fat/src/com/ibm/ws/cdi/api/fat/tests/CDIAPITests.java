@@ -28,10 +28,10 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.ibm.websphere.simplicity.BeansAsset;
 import com.ibm.websphere.simplicity.CDIArchiveHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
+import com.ibm.websphere.simplicity.beansxml.BeansAsset;
 import com.ibm.ws.cdi.api.fat.apps.alterablecontext.AlterableContextTestServlet;
 import com.ibm.ws.cdi.api.fat.apps.alterablecontext.extension.AlterableContextExtension;
 import com.ibm.ws.cdi.api.fat.apps.alterablecontext.extension.DirtySingleton;
