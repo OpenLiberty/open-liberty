@@ -233,8 +233,6 @@ org.apache.derby:derbynet:10.11.1.1
 org.apache.directory.server:apacheds-all:2.0.0-M24
 org.apache.directory.server:apacheds-service:2.0.0-M15
 org.apache.directory.server:kerberos-client:2.0.0-M24
-org.apache.felix:org.apache.felix.gogo.runtime:0.16.2
-org.apache.felix:org.apache.felix.gogo.shell:0.12.0
 org.apache.felix:org.apache.felix.http.api:2.2.0
 org.apache.felix:org.apache.felix.http.base:2.2.0
 org.apache.felix:org.osgi.service.obr:1.0.2
