@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -53,6 +53,7 @@ public class ErrorMappingTest extends FATServletClient {
     public static void tearDown() throws Exception {
         server.stopServer("CWWKG0058E.*identifyException", // expected by 'jdbc/invalid/noTarget'
                           "DSRA8066E.*BOGUS", // expected by testInvalidConfig_bogusTarget
+                          "DSRA8066E.*com.ibm.websphere.ce.cm.StaleConnectionException", // expected by testInvalidConfig_bogusTarget
                           "DSRA8067E", // expected by testInvalidConfig_noStateOrCode / testInvalidConfig_stateAndCode
                           "com\\.ibm\\.ws\\.jdbc.*CWWKE0701E" // expected by invalid datasource configs
         );
