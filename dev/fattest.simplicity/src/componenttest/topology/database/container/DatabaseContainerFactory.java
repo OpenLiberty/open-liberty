@@ -128,7 +128,7 @@ public class DatabaseContainerFactory {
                     cont.withExposedPorts(1521, 5500, 8080); // need to manually expose ports due to regression in 1.14.0
                     break;
                 case Postgres:
-                    cont = (JdbcDatabaseContainer<?>) clazz.getConstructor().newInstance();
+                    cont = (JdbcDatabaseContainer<?>) clazz.getConstructor(String.class).newInstance("postgres");
                     //This allows postgres by default to participate in XA transactions (2PC).
                     //Documentation on the Prepare Transaction action in postgres: https://www.postgresql.org/docs/9.3/sql-prepare-transaction.html
 
