@@ -99,7 +99,6 @@ public class TestFacade {
         final String host;
         final String endpoint;
         final String corbalocUrl;
-//        final String nsInitRef;
         final ORB serverOrb;
         NamingContext cosNamingContext;
         Context jndiContext;
@@ -116,7 +115,6 @@ public class TestFacade {
             this.host = "localhost";
             this.endpoint = "iiop --host " + host + " --port " + port;
             this.corbalocUrl = "corbaloc::" + host + ":" + port + "/NameService";
-//            this.nsInitRef = "NameService=" + corbalocUrl;
             this.jndiProps = new Properties();
             this.jndiProps.put(INITIAL_CONTEXT_FACTORY, InitialContextFactoryImpl.class.getName());
             this.jndiProps.put(PROVIDER_URL, corbalocUrl);

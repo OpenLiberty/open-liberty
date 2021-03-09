@@ -17,6 +17,8 @@ task stageEndorsed(type: Sync) {
 }
 
 test {
+    // subtests must only run as part of containing suites
+    filter { excludeTestsMatching "com.ibm.ws.jndi.iiop.subtests.*" }
     // pre Java 9: use the endorsed standards mechanism to override ORB API
     if (JavaVersion.current() < JavaVersion.VERSION_1_9) {
         dependsOn stageEndorsed                                      // populate endorsed dir
@@ -24,5 +26,3 @@ test {
         doLast { delete stageEndorsed.destinationDir }               // clean up endorsed dir
     }
 }
-
-test { filter { excludeTestsMatching "all.tests.subtests.*" } } //subtests must not be run directly

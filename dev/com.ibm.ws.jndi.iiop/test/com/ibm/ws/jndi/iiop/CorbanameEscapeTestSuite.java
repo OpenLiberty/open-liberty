@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  * ***************************************************************************/
-package all.tests;
+package com.ibm.ws.jndi.iiop;
 
 import java.util.Arrays;
 import java.util.List;
@@ -20,11 +20,10 @@ import org.junit.runners.Parameterized.Parameters;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import com.ibm.ws.jndi.iiop.TestFacade;
+import com.ibm.ws.jndi.iiop.CorbanameEscapeTestSuite.NoEscape;
+import com.ibm.ws.jndi.iiop.CorbanameEscapeTestSuite.SomeEscape;
+import com.ibm.ws.jndi.iiop.CorbanameEscapeTestSuite.SomeEscapeIdempotency;
 
-import all.tests.CorbanameEscapeTest.NoEscape;
-import all.tests.CorbanameEscapeTest.SomeEscape;
-import all.tests.CorbanameEscapeTest.SomeEscapeIdempotency;
 import junit.framework.Assert;
 
 @RunWith(Suite.class)
@@ -33,7 +32,7 @@ import junit.framework.Assert;
                SomeEscape.class,
                SomeEscapeIdempotency.class
 })
-public class CorbanameEscapeTest {
+public class CorbanameEscapeTestSuite {
     private static final String CORBANAME_PREFIX = "corbaname::localhost:2809/NameService#";
 
     @RunWith(Parameterized.class)

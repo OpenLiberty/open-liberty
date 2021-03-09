@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  * ***************************************************************************/
-package all.tests.subtests;
+package com.ibm.ws.jndi.iiop.subtests;
 
 import static com.ibm.ws.jndi.iiop.TestFacade.bindCosNamingContext;
 import static com.ibm.ws.jndi.iiop.TestFacade.bindCosNamingObject;

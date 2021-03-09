@@ -8,29 +8,32 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  * ***************************************************************************/
-package all.tests.subtests;
+package com.ibm.ws.jndi.iiop;
 
-import static com.ibm.ws.jndi.iiop.TestFacade.bindCosNamingObject;
-
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
-import com.ibm.ws.jndi.iiop.TestFacade;
+import com.ibm.ws.jndi.iiop.subtests.TestBindAndRebind;
+import com.ibm.ws.jndi.iiop.subtests.TestCorbaname;
+import com.ibm.ws.jndi.iiop.subtests.TestLookup;
 
-/** Not to be run except as part of a test suite */
-public class TestCorbaname {
-
-    private static final String OBJECT_NAME = TestCorbaname.class.getSimpleName();
-
+@RunWith(Suite.class)
+@SuiteClasses({
+               TestLookup.class,
+               TestBindAndRebind.class,
+               TestCorbaname.class
+})
+public class RootContextTestSuite {
     @BeforeClass
     public static void setup() throws Exception {
-        // will fail if containing suite is not run first
-        bindCosNamingObject(OBJECT_NAME);
-
+        TestFacade.setup();
     }
 
-    @Test
-    public void testLookupObject() throws Exception {
-        TestFacade.stringToObjectUsingCorbaname(OBJECT_NAME);
+    @AfterClass
+    public static void teardown() throws Exception {
+        TestFacade.tearDown();
     }
 }

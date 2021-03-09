@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  * ***************************************************************************/
-package all.tests;
+package com.ibm.ws.jndi.iiop;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -16,11 +16,9 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import all.tests.subtests.TestBindAndRebind;
-import all.tests.subtests.TestCorbaname;
-import all.tests.subtests.TestLookup;
-
-import com.ibm.ws.jndi.iiop.TestFacade;
+import com.ibm.ws.jndi.iiop.subtests.TestBindAndRebind;
+import com.ibm.ws.jndi.iiop.subtests.TestCorbaname;
+import com.ibm.ws.jndi.iiop.subtests.TestLookup;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -28,12 +26,11 @@ import com.ibm.ws.jndi.iiop.TestFacade;
                TestBindAndRebind.class,
                TestCorbaname.class
 })
-public class JndiNestedContextTest {
-
+public class NestedContextTestSuite {
     @BeforeClass
     public static void setup() throws Exception {
         TestFacade.setup();
-        TestFacade.useSubcontext(JndiNestedContextTest.class.getSimpleName());
+        TestFacade.useSubcontext(NestedContextTestSuite.class.getSimpleName());
     }
 
     @AfterClass
