@@ -467,7 +467,8 @@ public class ConnectionManagerServiceImpl extends ConnectionManagerService {
         }
 
         Object value = map.remove(AUTO_CLOSE_CONNECTIONS);
-        boolean autoCloseConnections = value instanceof Boolean ? (Boolean) value : Boolean.parseBoolean((String) value);
+        boolean autoCloseConnections = value == null || // default to true for app-defined resources
+                                       (value instanceof Boolean ? (Boolean) value : Boolean.parseBoolean((String) value));
 
         if (disableLibertyConnectionPool) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
