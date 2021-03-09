@@ -10,17 +10,18 @@
  * ***************************************************************************/
 
 // Set up an endorsed standards directory containing the relevant Yoko jars.
+// We rely on the pattern matching to find all the relevant artifacts from the runtime classpath.
 task stageEndorsed(type: Sync) {
-    from configurations.runtimeClasspath {
-        include "**/*yoko*jar"
-    }
+    from configurations.runtimeClasspath { include "**/*yoko*jar" }
     into temporaryDir
 }
 
 test {
-    if (JavaVersion.current() < JavaVersion.VERSION_1_9) { // Java 8 and below provide an ORB that needs to be overriden
-        dependsOn stageEndorsed // ensure endorsed directory is created and populated
-        jvmArgs "-Djava.endorsed.dirs=$stageEndorsed.destinationDir" // endorse the jars in the endorsed directory
+    // pre Java 9: use the endorsed standards mechanism to override ORB API
+    if (JavaVersion.current() < JavaVersion.VERSION_1_9) {
+        dependsOn stageEndorsed                                      // populate endorsed dir
+        jvmArgs "-Djava.endorsed.dirs=$stageEndorsed.destinationDir" // endorse endorsed dir
+        doLast { delete stageEndorsed.destinationDir }               // clean up endorsed dir
     }
 }
 
