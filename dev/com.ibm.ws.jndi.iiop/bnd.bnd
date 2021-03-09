@@ -36,6 +36,11 @@ Import-Package: \
 
 instrument.classesExcludes: com/ibm/ws/jndi/iiop/*.class
 
+# Technically, only one of these Yoko jars might be needed on the classpath
+# since the others should be pulled in as transitive dependencies.
+# However, Gradle does not provide an easy way to access the transitive
+# dependencies of a classpath declared to and resolved by the bnd tooling. Sigh.
+# Therefore, all three are declared here so that build.gradle can find and endorse them.
 -buildpath: \
 	com.ibm.ws.org.apache.yoko.osgi.1.5;version=latest,\
 	com.ibm.ws.org.apache.yoko.corba.spec.1.5;version=latest,\
