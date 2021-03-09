@@ -1836,4 +1836,58 @@ public class SAMLCommonTestHelpers extends TestHelpers {
 
     }
 
+    public boolean pingExternalServer(String testcase, String serverUrl, int waitTime) throws Exception {
+
+        String thisMethod = "pingExternalServer";
+        msgUtils.printMethodName(thisMethod);
+        WebClient webClient = null;
+        WebRequest request = null;
+        boolean status = false;
+
+        try {
+            webClient = getWebClient();
+
+            // Perform logout request
+            URL url = AutomationTools.getNewUrl(serverUrl);
+            request = new WebRequest(url, HttpMethod.GET);
+        } catch (Exception e) {
+            Log.error(thisClass, thisMethod, e, "Exception occurred in " + thisMethod);
+            System.err.println("Exception: " + e);
+        }
+
+        boolean keepChecking = true;
+        int timeSlept = 0;
+        while (keepChecking) {
+
+            try {
+                msgUtils.printAllCookies(webClient);
+                msgUtils.printRequestParts(webClient, request, testcase, "Outgoing request");
+                Object thePage = webClient.getPage(request);
+                // make sure the page is processed before continuing
+                waitBeforeContinuing(webClient);
+
+                //               msgUtils.printAllCookies(webClient);
+                //               msgUtils.printResponseParts(thePage, testcase, thisMethod + " response");
+                Log.info(thisClass, thisMethod, "**********************************************************");
+                Log.info(thisClass, thisMethod, "Was able to get to the requested url - with title: " + AutomationTools.getResponseTitle(thePage));
+                Log.info(thisClass, thisMethod, "**********************************************************");
+                keepChecking = false;
+                status = true;
+            } catch (Exception e) {
+                 Log.info(thisClass, thisMethod, "Exception occurred in " + thisMethod + System.getProperty("line.separator") + e.getMessage());
+                if (timeSlept >= waitTime) {
+                    keepChecking = false;
+                    Log.info(thisClass, thisMethod, "Tried to ping " + serverUrl + " for more than the requested " + waitTime + " seconds - giving up.");
+                } else {
+                    Log.info(thisClass, thisMethod, "Sleeping 5 seconds");
+                    testSleep(5);
+                    timeSlept = timeSlept + 5;
+                }
+            }
+
+        }
+        destroyWebClient(webClient);
+        return status;
+    }
+
 }
