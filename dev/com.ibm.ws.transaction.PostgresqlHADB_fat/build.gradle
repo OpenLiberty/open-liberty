@@ -59,7 +59,7 @@ task copyTxJdbcDrivers(type: Copy) {
   mustRunAfter jar
   from configurations.jdbcDrivers
   into new File(autoFvtDir, 'publish/shared/resources/ifx')
-  rename 'mssql-jdbc.*.jar', 'anomyous.jar'
+  rename 'postgresql.*.jar', 'anomyous.jar'
 }
 
 jar.dependsOn copyCommonFiles

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2020 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -342,16 +342,15 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
     private boolean _writeToCacheA = true;
 
     /**
-     * Key Database Transient error and Failover codes that alert us
-     * to a transient absence of a database connection. These are
-     * culled from the RDBMS specific Helper classes in
-     * SERV1\ws\code\adapter\src\com\ibm\websphere\rsadapter
+     * In Liberty, we now rely on the RDBMS throwing SQLTransientExceptions, to signify a transient condition. Retain the codes as documentation.
+     * Key Database Transient error and Failover codes that alert us to a transient absence of a database connection. These are
+     * pulled from the RDBMS specific Helper classes in SERV1\ws\code\adapter\src\com\ibm\websphere\rsadapter
+     *
+     * private static final int _db2TransientErrorCodes[] = { -1015, -1034, -1035, -6036, -30081, -30108, -1224, -1229, -518, -514, -30080, -924, -923, -906, -4498, -4499, -1776 };
+     * private static final int _oracleTransientErrorCodes[] = { 20, 28, 1012, 1014, 1033, 1034, 1035, 1089, 1090, 1092, 3113, 3114, 12505, 12514, 12541, 12560,
+     * 12571, 17002, 17008, 17009, 17410, 17401, 17430, 25408, 24794, 17447, 30006 }; // N.B. POSITIVE - is that correct?
+     * private int _sqlTransientErrorCodes[];
      */
-    private static final int _db2TransientErrorCodes[] = { -1015, -1034, -1035, -6036, -30081, -30108, -1224, -1229, -518, -514, -30080, -924, -923, -906, -4498, -4499, -1776 };
-
-    private static final int _oracleTransientErrorCodes[] = { 20, 28, 1012, 1014, 1033, 1034, 1035, 1089, 1090, 1092, 3113, 3114, 12505, 12514, 12541, 12560,
-                                                              12571, 17002, 17008, 17009, 17410, 17401, 17430, 25408, 24794, 17447, 30006 }; // N.B. POSITIVE - is that correct?
-    private int _sqlTransientErrorCodes[];
     private final int DEFAULT_TRANSIENT_RETRY_SLEEP_TIME = 10000; // In milliseconds, ie 10 seconds
     private final int LIGHTWEIGHT_TRANSIENT_RETRY_SLEEP_TIME = 1000; // In milliseconds, ie 1 second
     private int _transientRetrySleepTime;
@@ -793,17 +792,17 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                 Tr.debug(tc, "Got connection: " + conn);
             DatabaseMetaData mdata = conn.getMetaData();
             String dbName = mdata.getDatabaseProductName();
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "Working with database: " + dbName);
             if (dbName.toLowerCase().contains("oracle")) {
                 _isOracle = true;
-                _sqlTransientErrorCodes = _oracleTransientErrorCodes;
             } else if (dbName.toLowerCase().contains("db2")) {
                 _isDB2 = true;
-                _sqlTransientErrorCodes = _db2TransientErrorCodes;
             } else if (dbName.toLowerCase().contains("postgresql")) {
                 _isPostgreSQL = true;
             } else if (dbName.toLowerCase().contains("microsoft sql")) {
                 _isSQLServer = true;
-            } else {
+            } else if (!dbName.toLowerCase().contains("derby")) {
                 sqlTransientErrorHandlingEnabled = false;
             }
 
@@ -2025,24 +2024,8 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
             Tr.event(tc, " Error code: " + sqlErrorCode);
         }
 
-        if (_isDB2 || _isOracle) {
-            for (int transientCode : _sqlTransientErrorCodes) {
-                Tr.event(tc, "Test against stored code: " + transientCode);
-                if (transientCode == sqlErrorCode) {
-                    Tr.event(tc, "TRANSIENT: A connection failed but could be reestablished, retry.");
-                    if (tc.isDebugEnabled()) {
-                        if (!(sqlex instanceof SQLTransientException)) {
-                            Tr.debug(tc, "Exception is considered transient but does not implement SQLTransientException!");
-                        }
-                    }
-                    retryBatch = true;
-                    break;
-                }
-            }
-        } else {
-            if (sqlex instanceof SQLTransientException) {
-                retryBatch = true;
-            }
+        if (sqlex instanceof SQLTransientException) {
+            retryBatch = true;
         }
 
         if (!retryBatch && sqlex instanceof BatchUpdateException) {
@@ -2068,32 +2051,8 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                     Tr.event(tc, " Error code: " + sqlErrorCode);
                 }
 
-                boolean typeIndicatesTransient = (nextex instanceof SQLTransientException);
-
-                if (_isDB2 || _isOracle) {
-                    for (int transientCode : _sqlTransientErrorCodes) {
-                        Tr.event(tc, "Test against stored code: " + transientCode);
-                        if (transientCode == sqlErrorCode) {
-                            Tr.event(tc, "TRANSIENT: A connection failed but could be reestablished, retry.");
-                            if (tc.isDebugEnabled()) {
-                                if (!typeIndicatesTransient) {
-                                    Tr.debug(tc, "Exception is considered transient but does not implement SQLTransientException!");
-                                }
-                            }
-                            retryBatch = true;
-                            break;
-                        } else {
-                            if (tc.isDebugEnabled()) {
-                                if (typeIndicatesTransient) {
-                                    Tr.debug(tc, "Exception is not considered transient but does implement SQLTransientException!");
-                                }
-                            }
-                        }
-                    }
-                } else {
-                    if (typeIndicatesTransient) {
-                        retryBatch = true;
-                    }
+                if (nextex instanceof SQLTransientException) {
+                    retryBatch = true;
                 }
 
                 nextex = nextex.getNextException();
