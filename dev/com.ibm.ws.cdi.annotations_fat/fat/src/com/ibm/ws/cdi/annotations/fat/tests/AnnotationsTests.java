@@ -84,19 +84,19 @@ public class AnnotationsTests extends FATServletClient {
         if (TestModeFilter.shouldRun(TestMode.FULL)) {
             WebArchive defaultDecorator = ShrinkWrap.create(WebArchive.class, DEFAULT_DECORATOR_APP_NAME + ".war")
                                                     .addPackage(DefaultDecoratorServlet.class.getPackage());
-            defaultDecorator = CDIArchiveHelper.addBeansXML(defaultDecorator, DefaultDecoratorServlet.class.getPackage());
+            CDIArchiveHelper.addBeansXML(defaultDecorator, DefaultDecoratorServlet.class);
 
             JavaArchive globalPriorityLib = ShrinkWrap.create(JavaArchive.class, "globalPriorityLib.jar")
                                                       .addPackage(JarBean.class.getPackage());
-            globalPriorityLib = CDIArchiveHelper.addBeansXML(globalPriorityLib, JarBean.class.getPackage());
+            CDIArchiveHelper.addBeansXML(globalPriorityLib, JarBean.class);
 
             JavaArchive utilLib = ShrinkWrap.create(JavaArchive.class, "utilLib.jar")
                                             .addPackage(ChainableListImpl.class.getPackage());
-            utilLib = CDIArchiveHelper.addEmptyBeansXML(utilLib);
+            CDIArchiveHelper.addEmptyBeansXML(utilLib);
 
             WebArchive globalPriorityWebApp = ShrinkWrap.create(WebArchive.class, GLOBAL_PRIORITY_APP_NAME + ".war")
                                                         .addPackage(GlobalPriorityTestServlet.class.getPackage());
-            globalPriorityWebApp = CDIArchiveHelper.addEmptyBeansXML(globalPriorityWebApp);
+            CDIArchiveHelper.addEmptyBeansXML(globalPriorityWebApp);
 
             EnterpriseArchive globalPriorityApp = ShrinkWrap.create(EnterpriseArchive.class, "globalPriorityApp.ear")
                                                             .addAsLibrary(globalPriorityLib)
@@ -106,8 +106,8 @@ public class AnnotationsTests extends FATServletClient {
             WebArchive withAnnotationsApp = ShrinkWrap.create(WebArchive.class, WITH_ANNOTATIONS_APP_NAME + ".war")
                                                       .addPackage(WithAnnotationsServlet.class.getPackage())
                                                       .addAsLibrary(utilLib);
-            withAnnotationsApp = CDIArchiveHelper.addEmptyBeansXML(withAnnotationsApp);
-            withAnnotationsApp = CDIArchiveHelper.addCDIExtensionService(withAnnotationsApp, WithAnnotationsExtension.class);
+            CDIArchiveHelper.addEmptyBeansXML(withAnnotationsApp);
+            CDIArchiveHelper.addCDIExtensionService(withAnnotationsApp, WithAnnotationsExtension.class);
 
             ShrinkHelper.exportDropinAppToServer(server, withAnnotationsApp, DeployOptions.SERVER_ONLY);
             ShrinkHelper.exportDropinAppToServer(server, globalPriorityApp, DeployOptions.SERVER_ONLY);

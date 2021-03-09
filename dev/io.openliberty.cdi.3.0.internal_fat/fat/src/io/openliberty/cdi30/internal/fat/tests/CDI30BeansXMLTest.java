@@ -52,7 +52,7 @@ public class CDI30BeansXMLTest extends FATServletClient {
                                               .addClass(CDI30BeansXMLTestServlet.class.getName())
                                               .addClass(SimpleBean.class.getName())
                                               .addClass(AnnotatedBean.class.getName());
-        cdiBeansXMLWar = CDIArchiveHelper.addBeansXML(cdiBeansXMLWar, DiscoveryMode.ALL, CDIVersion.CDI30);
+        CDIArchiveHelper.addBeansXML(cdiBeansXMLWar, DiscoveryMode.ALL, CDIVersion.CDI30);
 
         ShrinkHelper.exportDropinAppToServer(server, cdiBeansXMLWar, DeployOptions.SERVER_ONLY);
 

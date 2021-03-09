@@ -64,7 +64,7 @@ public class CDIContainerConfigTest extends FATServletClient {
         WebArchive app = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war");
         app.addClass(CDIContainerConfigServlet.class);
         app.addClass(MyBeanCDI20.class);
-        app = CDIArchiveHelper.addEmptyBeansXML(app);
+        CDIArchiveHelper.addEmptyBeansXML(app);
 
         JavaArchive implicitJar = ShrinkWrap.create(JavaArchive.class, "implicit.jar");
         implicitJar.addClass(MyImplicitBean.class);
@@ -72,7 +72,7 @@ public class CDIContainerConfigTest extends FATServletClient {
 
         JavaArchive explicitJar = ShrinkWrap.create(JavaArchive.class, "explicit.jar");
         explicitJar.addClass(MyExplicitBean.class);
-        explicitJar = CDIArchiveHelper.addEmptyBeansXML(explicitJar);
+        CDIArchiveHelper.addEmptyBeansXML(explicitJar);
         app.addAsLibrary(explicitJar);
 
         ShrinkHelper.exportAppToServer(server, app, DeployOptions.SERVER_ONLY);

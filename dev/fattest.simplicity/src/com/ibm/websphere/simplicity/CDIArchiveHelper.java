@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.websphere.simplicity;
 
+import java.net.URL;
+
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.asset.Asset;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
@@ -56,7 +58,7 @@ public class CDIArchiveHelper {
      * @param version    The beans.xml version to use; CDI11 (Java EE) or CDI30 (Jakarta EE)
      */
     public static WebArchive addBeansXML(WebArchive webArchive, DiscoveryMode mode, CDIVersion version) {
-        BeansAsset beans = new BeansAsset(mode, version);
+        BeansAsset beans = BeansAsset.getBeansAsset(mode, version);
         return addBeansXML(webArchive, beans);
     }
 
@@ -68,6 +70,26 @@ public class CDIArchiveHelper {
      */
     public static WebArchive addBeansXML(WebArchive webArchive, Asset beans) {
         return webArchive.addAsWebInfResource(beans, BEANS_XML);
+    }
+
+    /**
+     * Create a WEB-INF/beans.xml file in a war
+     *
+     * @param webArchive       The WAR to create the beans.xml in
+     * @param beansXMLResource The Resource URL of the beans.xml file to add.
+     */
+    public static WebArchive addBeansXML(WebArchive webArchive, URL beansXMLResource) {
+        return webArchive.addAsWebInfResource(beansXMLResource, BEANS_XML);
+    }
+
+    /**
+     * Create a WEB-INF/beans.xml file in a war
+     *
+     * @param webArchive  The WAR to create the beans.xml in
+     * @param owningClass The class to which the source beans.xml belongs. Must be in the same package.
+     */
+    public static WebArchive addBeansXML(WebArchive webArchive, Class<?> owningClass) {
+        return addBeansXML(webArchive, owningClass.getPackage());
     }
 
     /**
@@ -107,7 +129,7 @@ public class CDIArchiveHelper {
      * @param version The beans.xml version to use
      */
     public static JavaArchive addBeansXML(JavaArchive archive, DiscoveryMode mode, CDIVersion version) {
-        BeansAsset beans = new BeansAsset(mode);
+        BeansAsset beans = BeansAsset.getBeansAsset(mode, version);
         return addBeansXML(archive, beans);
     }
 
@@ -119,6 +141,26 @@ public class CDIArchiveHelper {
      */
     public static JavaArchive addBeansXML(JavaArchive archive, Asset beans) {
         return archive.addAsManifestResource(beans, BEANS_XML);
+    }
+
+    /**
+     * Create a WEB-INF/beans.xml file in a war
+     *
+     * @param archive          The JAR to create the beans.xml in
+     * @param beansXMLResource The Resource URL of the beans.xml file to add.
+     */
+    public static JavaArchive addBeansXML(JavaArchive archive, URL beansXMLResource) {
+        return archive.addAsManifestResource(beansXMLResource, BEANS_XML);
+    }
+
+    /**
+     * Create a WEB-INF/beans.xml file in a war
+     *
+     * @param archive     The JAR to create the beans.xml in
+     * @param owningClass The class to which the source beans.xml belongs. Must be in the same package.
+     */
+    public static JavaArchive addBeansXML(JavaArchive archive, Class<?> owningClass) {
+        return addBeansXML(archive, owningClass.getPackage());
     }
 
     /**

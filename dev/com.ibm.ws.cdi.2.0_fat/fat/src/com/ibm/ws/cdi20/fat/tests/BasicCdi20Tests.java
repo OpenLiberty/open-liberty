@@ -101,15 +101,15 @@ public class BasicCdi20Tests extends FATServletClient {
             WebArchive app2 = ShrinkWrap.create(WebArchive.class, CONFIGURATION_APP_NAME + ".war")
                                         .addPackages(true, ConfiguratorTestBase.class.getPackage());
 
-            app2 = CDIArchiveHelper.addCDIExtensionService(app2,
-                                                           com.ibm.ws.cdi20.fat.apps.configurator.bean.AfterBeanDiscoveryObserver.class,
-                                                           com.ibm.ws.cdi20.fat.apps.configurator.beanAttributes.ProcessBeanAttributesObserver.class,
-                                                           com.ibm.ws.cdi20.fat.apps.configurator.injectionPoint.ProcessInjectionPointObserver.class,
-                                                           com.ibm.ws.cdi20.fat.apps.configurator.observerMethod.ProcessObserverMethodObserver.class,
-                                                           com.ibm.ws.cdi20.fat.apps.configurator.producer.ProcessProducerObserver.class,
-                                                           com.ibm.ws.cdi20.fat.apps.configurator.annotatedTypeConfigurator.ProcessAnnotatedTypeObserver.class);
+            CDIArchiveHelper.addCDIExtensionService(app2,
+                                                    com.ibm.ws.cdi20.fat.apps.configurator.bean.AfterBeanDiscoveryObserver.class,
+                                                    com.ibm.ws.cdi20.fat.apps.configurator.beanAttributes.ProcessBeanAttributesObserver.class,
+                                                    com.ibm.ws.cdi20.fat.apps.configurator.injectionPoint.ProcessInjectionPointObserver.class,
+                                                    com.ibm.ws.cdi20.fat.apps.configurator.observerMethod.ProcessObserverMethodObserver.class,
+                                                    com.ibm.ws.cdi20.fat.apps.configurator.producer.ProcessProducerObserver.class,
+                                                    com.ibm.ws.cdi20.fat.apps.configurator.annotatedTypeConfigurator.ProcessAnnotatedTypeObserver.class);
 
-            app2 = CDIArchiveHelper.addBeansXML(app2, DiscoveryMode.ALL);
+            CDIArchiveHelper.addBeansXML(app2, DiscoveryMode.ALL);
 
             WebArchive app3 = ShrinkWrap.create(WebArchive.class, INTERCEPTION_FACTORY_APP_NAME + ".war")
                                         .addPackages(true, InterceptionFactoryServlet.class.getPackage());
@@ -117,8 +117,8 @@ public class BasicCdi20Tests extends FATServletClient {
             WebArchive app4 = ShrinkWrap.create(WebArchive.class, TRIM_TEST_APP_NAME + ".war")
                                         .addPackages(true, TrimTestServlet.class.getPackage());
 
-            app4 = CDIArchiveHelper.addCDIExtensionService(app4, com.ibm.ws.cdi20.fat.apps.trimTest.PATObserver.class);
-            app4 = CDIArchiveHelper.addBeansXML(app4, TrimTestServlet.class.getPackage());
+            CDIArchiveHelper.addCDIExtensionService(app4, com.ibm.ws.cdi20.fat.apps.trimTest.PATObserver.class);
+            CDIArchiveHelper.addBeansXML(app4, TrimTestServlet.class);
 
             ShrinkHelper.exportDropinAppToServer(server, app2, DeployOptions.SERVER_ONLY);
             ShrinkHelper.exportDropinAppToServer(server, app3, DeployOptions.SERVER_ONLY);

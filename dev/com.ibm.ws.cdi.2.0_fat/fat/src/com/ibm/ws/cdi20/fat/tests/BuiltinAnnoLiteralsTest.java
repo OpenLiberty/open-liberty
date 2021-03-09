@@ -63,8 +63,8 @@ public class BuiltinAnnoLiteralsTest extends FATServletClient {
                                    .addPackages(true, BuiltinAnnoServlet.class.getPackage());
 
         app.addAsManifestResource(BuiltinAnnoServlet.class.getPackage(), "permissions.xml", "permissions.xml");
-        app = CDIArchiveHelper.addCDIExtensionService(app, com.ibm.ws.cdi20.fat.apps.builtinAnno.CakeExtension.class);
-        app = CDIArchiveHelper.addBeansXML(app, DiscoveryMode.ALL);
+        CDIArchiveHelper.addCDIExtensionService(app, com.ibm.ws.cdi20.fat.apps.builtinAnno.CakeExtension.class);
+        CDIArchiveHelper.addBeansXML(app, DiscoveryMode.ALL);
 
         ShrinkHelper.exportAppToServer(server, app, DeployOptions.SERVER_ONLY);
 

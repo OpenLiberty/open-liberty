@@ -23,7 +23,7 @@ import org.jboss.shrinkwrap.impl.base.asset.AssetUtil;
  * WebArchive war = ShrinkWrap.create(WebArchive.class)
  *              .addPackage(MyClass.class.getPackage());
  *
- * war = CDIArchiveHelper.addBeansXML(war, Mode.ALL);
+ * CDIArchiveHelper.addBeansXML(war, DiscoveryMode.ALL);
  * </code>
  * </pre>
  *
@@ -31,7 +31,7 @@ import org.jboss.shrinkwrap.impl.base.asset.AssetUtil;
  *
  * <pre>
  * <code>
- * BeansAsset beans = new BeansAsset(Mode.ALL);
+ * BeansAsset beans = BeansAsset.getBeansAsset(DiscoveryMode.ALL);
  *
  * WebArchive war = ShrinkWrap.create(WebArchive.class)
  *              .addPackage(MyClass.class.getPackage())
@@ -44,23 +44,54 @@ import org.jboss.shrinkwrap.impl.base.asset.AssetUtil;
  */
 public class BeansAsset extends ClassLoaderAsset {
 
+    /**
+     * All the possible values of bean-discovery-mode
+     */
     public static enum DiscoveryMode {
         NONE, ALL, ANNOTATED
     };
 
+    /**
+     * All the supported CDI versions
+     */
     public static enum CDIVersion {
         CDI11, CDI20, CDI30
     };
 
-    public BeansAsset(DiscoveryMode mode) {
-        this(mode, CDIVersion.CDI11);
-    }
-
-    public BeansAsset(DiscoveryMode mode, CDIVersion version) {
-        super(AssetUtil.getClassLoaderResourceName(BeansAsset.class.getPackage(), getFileName(mode, version)));
+    //A static array containing cached BeansAsset instances for all combinations of DiscoveryMode and CDIVersion
+    private static final BeansAsset[][] ASSETS = new BeansAsset[DiscoveryMode.values().length][CDIVersion.values().length];
+    static {
+        for (DiscoveryMode mode : DiscoveryMode.values()) {
+            for (CDIVersion version : CDIVersion.values()) {
+                ASSETS[mode.ordinal()][version.ordinal()] = new BeansAsset(mode, version);
+            }
+        }
     }
 
     /**
+     * Get a simple CDI 1.1 beans.xml asset
+     *
+     * @param  mode The bean-discovery-mode to use
+     * @return      A BeansAsset
+     */
+    public static BeansAsset getBeansAsset(DiscoveryMode mode) {
+        return getBeansAsset(mode, CDIVersion.CDI11);
+    }
+
+    /**
+     * Get a simple beans.xml asset
+     *
+     * @param  mode    The bean-discovery-mode to use
+     * @param  version the CDI version to use
+     * @return         A BeansAsset
+     */
+    public static BeansAsset getBeansAsset(DiscoveryMode mode, CDIVersion version) {
+        return ASSETS[mode.ordinal()][version.ordinal()];
+    }
+
+    /**
+     * Get the filename of the beans.xml for the given mode and version
+     *
      * @param  mode
      * @param  version
      * @return         the name of the beans.xml file
@@ -86,6 +117,13 @@ public class BeansAsset extends ClassLoaderAsset {
             throw new RuntimeException("Unknown CDI Discovery Mode: " + mode);
         }
         return beans;
+    }
+
+    /**
+     * Private constructor
+     */
+    private BeansAsset(DiscoveryMode mode, CDIVersion version) {
+        super(AssetUtil.getClassLoaderResourceName(BeansAsset.class.getPackage(), getFileName(mode, version)));
     }
 
 }
