@@ -20,6 +20,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -43,6 +44,8 @@ public class HDDataStoreHelper extends GenericDataStoreHelper {
 
     private AtomicReference<?> dsConfigRef;
 
+    private Map<Object, Class<?>> exceptionIdentificationOverrides;
+
     public HDDataStoreHelper(Properties props) {
         String value = props == null ? null : props.getProperty("queryTimeout");
         defaultQueryTimeout = value == null || value.length() <= 0 ? 0 : Integer.parseInt(value);
@@ -65,6 +68,8 @@ public class HDDataStoreHelper extends GenericDataStoreHelper {
 
     @Override
     public void doConnectionSetup(Connection con) throws SQLException {
+        ((HDConnection) con).setExceptionIdentificationOverrides(exceptionIdentificationOverrides);
+
         try (CallableStatement stmt = con.prepareCall("CALL SYSCS_UTIL.SYSCS_SET_RUNTIMESTATISTICS(1)")) {
             stmt.setPoolable(false);
             stmt.execute();
@@ -138,5 +143,11 @@ public class HDDataStoreHelper extends GenericDataStoreHelper {
     @Override
     public void setConfig(Object configRef) {
         dsConfigRef = (AtomicReference<?>) configRef;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public void setUserDefinedMap(@SuppressWarnings("rawtypes") Map map) {
+        exceptionIdentificationOverrides = map;
     }
 }

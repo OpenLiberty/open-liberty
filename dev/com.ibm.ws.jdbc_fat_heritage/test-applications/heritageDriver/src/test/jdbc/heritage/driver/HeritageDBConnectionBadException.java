@@ -8,21 +8,18 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+package test.jdbc.heritage.driver;
 
-package com.ibm.ws.rsadapter;
+import java.sql.SQLException;
 
 /**
- * Values for <code>identifyException as=...</code>.
+ * A vendor-specific SQLException subclass that really should have been java.sql.SQLRecoverableException.
+ * This allows for testing of exception identification/mapping.
  */
-public enum IdentifyExceptionAs {
-    None("java.lang.Void"),
-    StaleConnection("com.ibm.websphere.ce.cm.StaleConnectionException");
-    // TODO StaleStatement("com.ibm.websphere.ce.cm.StaleStatementException"),
-    // TODO Unsupported(null)
+public class HeritageDBConnectionBadException extends SQLException {
+    private static final long serialVersionUID = 1L;
 
-    public final String legacyClassName;
-
-    private IdentifyExceptionAs(String legacyClassName) {
-        this.legacyClassName = legacyClassName;
+    public HeritageDBConnectionBadException(String message, String sqlState, int errorCode) {
+        super(message, sqlState, errorCode);
     }
 }

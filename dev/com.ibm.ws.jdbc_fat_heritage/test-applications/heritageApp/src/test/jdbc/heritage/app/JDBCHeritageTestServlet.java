@@ -15,6 +15,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.lang.reflect.Field;
 import java.security.AccessController;
@@ -24,6 +25,10 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
+import java.sql.SQLIntegrityConstraintViolationException;
+import java.sql.SQLRecoverableException;
 import java.sql.Statement;
 import java.util.Set;
 
@@ -386,6 +391,35 @@ public class JDBCHeritageTestServlet extends FATServlet {
             assertEquals(225, cstmt.getMaxFieldSize()); // doStatementCleanup resets the default
             cstmt.executeQuery().close();
             cstmt.close();
+        }
+    }
+
+    /**
+     * Confirm that setUserDefinedMap is supplied with the identifyException configuration.
+     */
+    @Test
+    public void testUserDefinedExceptionMap() throws SQLException {
+        try (Connection con = defaultDataSource.getConnection()) {
+            try {
+                con.prepareCall("CALL TEST.FORCE_EXCEPTION(H8006,0,test.jdbc.heritage.driver.HeritageDBConnectionBadException)").executeQuery();
+                fail("Test case did not force an error with SQL state H8006");
+            } catch (SQLRecoverableException x) {
+                // pass
+            }
+
+            try {
+                con.prepareCall("CALL TEST.FORCE_EXCEPTION(23000,143360,java.sql.SQLException)").executeQuery();
+                fail("Test case did not force an error with SQL state 23000 and error code 143360");
+            } catch (SQLIntegrityConstraintViolationException x) {
+                // pass
+            }
+
+            try {
+                con.prepareCall("CALL TEST.FORCE_EXCEPTION(HY000,40960),test.jdbc.heritage.driver.HeritageDBDoesNotImplementItException)").executeQuery();
+                fail("Test case did not force an error with error code 40960");
+            } catch (SQLFeatureNotSupportedException x) {
+                // pass
+            }
         }
     }
 }

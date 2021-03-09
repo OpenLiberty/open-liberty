@@ -14,6 +14,7 @@ import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Map;
 
 import javax.resource.ResourceException;
 import javax.security.auth.Subject;
@@ -127,4 +128,12 @@ public abstract class GenericDataStoreHelper {
      * @param config AtomicReference to the dataSource configuration.
      */
     public abstract void setConfig(Object config);
+
+    /**
+     * Overrides identification of SQLExceptions by supplying a map of
+     * SQL state (a type String key) or error code (a type Integer key) to
+     * <code>com.ibm.websphere.ce.cm.PortableSQLException</code> subclass
+     * or <code>Void.class</code> (which indicates to ignore).
+     */
+    public abstract void setUserDefinedMap(@SuppressWarnings("rawtypes") Map map);
 }

@@ -38,6 +38,9 @@
     <properties databaseName="memory:testdb" createDatabase="create"
                 supportsCatalog="false" supportsNetworkTimeout="false" supportsReadOnly="false" supportsSchema="false" supportsTypeMap="false"/>
     <heritageSettings helperClass="test.jdbc.heritage.driver.helper.HDDataStoreHelper"/>
+    <identifyException as="java.sql.SQLRecoverableException" sqlState="H8006"/>
+    <identifyException as="java.sql.SQLIntegrityConstraintViolationException" sqlState="23000" errorCode="143360"/>
+    <identifyException as="java.sql.SQLFeatureNotSupportedException" errorCode="40960"/>
   </dataSource>
 
   <javaPermission codeBase="${shared.resource.dir}derby/derby.jar" className="java.security.AllPermission"/>
