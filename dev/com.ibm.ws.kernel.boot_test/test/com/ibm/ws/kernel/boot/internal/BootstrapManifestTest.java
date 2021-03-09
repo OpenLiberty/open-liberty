@@ -11,10 +11,10 @@
 package com.ibm.ws.kernel.boot.internal;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -23,6 +23,7 @@ import java.util.Map;
 
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -60,25 +61,46 @@ public class BootstrapManifestTest {
         TestUtils.cleanTempFiles();
     }
 
+    private static final String JAVA_VERSION_PROP = "java.version";
+    String originalJavaVersion = null;
+
+    @Before
+    public void setup() {
+        originalJavaVersion = System.getProperty(JAVA_VERSION_PROP);
+    }
+
     @After
     public void tearDown() throws Exception {
         // reset the bootstrap jar...
         TestUtils.setKernelUtilsBootstrapJar(null); // make sure jar is clear
+        System.setProperty(JAVA_VERSION_PROP, originalJavaVersion);
     }
 
     @Test
     public void testGetDefaults() throws Exception {
-        BootstrapConfig config = new BootstrapConfig();
+        Map<String, String> initProps = new HashMap<String, String>();
+        SharedBootstrapConfig config = SharedBootstrapConfig.createSharedConfig(outputMgr);
+        config.setInitProps(initProps);
 
+        System.setProperty(JAVA_VERSION_PROP, "1.8.0");
         setBootstrapJar(0); // use a real built jar
         BootstrapManifest m = new BootstrapManifest();
+
         assertNotNull("Bundle version should be set for the kernel.boot jar/bundle", m.getBundleVersion());
+        m.prepSystemPackages(config);
+        //the system packages are obtained from a java.version file name
+        String sysPkgs = initProps.get(BootstrapConstants.INITPROP_OSGI_SYSTEM_PACKAGES);
+        assertNotNull(sysPkgs);
+
+        assertTrue("Wrong system packages: " + sysPkgs, sysPkgs.contains("java.util.function"));
+        assertFalse("Unexpected package java.lang.module: " + sysPkgs, sysPkgs.contains("java.lang.module"));
     }
 
     @Test(expected = com.ibm.ws.kernel.boot.LaunchException.class)
     public void testMissingSystemPackagesList() throws Exception {
         BootstrapConfig config = new BootstrapConfig();
 
+        System.setProperty(JAVA_VERSION_PROP, "1.8.0");
         // WebSphere-SystemPackages in MANIFEST.MF, points to file not present in bundle/jar
         setBootstrapJar(3);
         BootstrapManifest m = new BootstrapManifest();
@@ -119,7 +141,7 @@ public class BootstrapManifestTest {
     @Test
     public void testSystemPackagesJavaVersion() throws Exception {
         Map<String, String> initProps = new HashMap<String, String>();
-
+        System.setProperty(JAVA_VERSION_PROP, "1.8.0");
         SharedBootstrapConfig config = SharedBootstrapConfig.createSharedConfig(outputMgr);
         config.setInitProps(initProps);
 
@@ -130,42 +152,16 @@ public class BootstrapManifestTest {
         m.prepSystemPackages(config);
         String sysPkgs = initProps.get(BootstrapConstants.INITPROP_OSGI_SYSTEM_PACKAGES);
 
-        int javaVersion = JavaInfo.JAVA_VERSION;
+        int javaVersion = 8;
 
         //validate the system packages obtained match the running java.version file name
         assertTrue("The system packages being used do not match the running java.version: "
                    + javaVersion
                    + " . This is normal if you are running the test on a version of Java that we support for running the server, but do not fully support. If we are intending to fully support a new Java version then new files are required in /com.ibm.ws.kernel.boot/resources/OSGI-OPT/websphere/system-packages_*.properties for production and /com.ibm.ws.kernel.boot_test/resources/system-packages_*.properties for test."
                    + "  Sys packages are: " + sysPkgs,
-                   sysPkgs.contains(javaVersion < 9 ? "1." + javaVersion + ".0" : "" + javaVersion));
+                   sysPkgs.contains("1." + javaVersion + ".0"));
 
-        String versionsToCheck = null;
-        if (javaVersion == 7) {
-            versionsToCheck = "1.7.0,1.6.0";
-        } else if (javaVersion == 8) {
-            versionsToCheck = "1.8.0,1.7.0,1.6.0";
-        } else if (javaVersion == 9) {
-            // Some packages were removed from the JDK in Java 9, so the JDK 9 packages do not inherit previous java versions
-            versionsToCheck = "9";
-        } else if (javaVersion == 10) {
-            versionsToCheck = "10,9";
-        } else if (javaVersion == 11) {
-            versionsToCheck = "11,10,9";
-        } else if (javaVersion == 12) {
-            versionsToCheck = "12,11,10,9";
-        } else if (javaVersion == 13) {
-            versionsToCheck = "13,12,11,10,9";
-        } else if (javaVersion == 14) {
-            versionsToCheck = "14,13,12,11,10,9";
-        } else if (javaVersion == 15) {
-            versionsToCheck = "15,14,13,12,11,10,9";
-        } else if (javaVersion == 16) {
-            versionsToCheck = "16,15,14,13,12,11,10,9";
-        } else if (javaVersion == 17) {
-            versionsToCheck = "17,16,15,14,13,12,11,10,9";
-        } else {
-            fail("The running java version: " + javaVersion + " is newer than we have properties files for, system-packages udpates are required");
-        }
+        String versionsToCheck = "1.8.0,1.7.0,1.6.0";
 
         //validate that merging works and we have the older versions too
         assertEquals("The system-packages_*.properties files were not merged for multiple java versions.", versionsToCheck,
@@ -174,6 +170,7 @@ public class BootstrapManifestTest {
 
     @Test
     public void testSystemPackagesFileWrongProperty() throws Exception {
+        System.setProperty(JAVA_VERSION_PROP, "1.8.0");
         Map<String, String> initProps = new HashMap<String, String>();
 
         SharedBootstrapConfig config = SharedBootstrapConfig.createSharedConfig(outputMgr);
@@ -184,6 +181,27 @@ public class BootstrapManifestTest {
         m.prepSystemPackages(config);
         assertNull(initProps.get(BootstrapConstants.INITPROP_OSGI_EXTRA_PACKAGE));
         assertNull(initProps.get(BootstrapConstants.INITPROP_OSGI_SYSTEM_PACKAGES));
+    }
+
+    @Test
+    public void testSystemPackagesJavaModules() throws Exception {
+        if (JavaInfo.JAVA_VERSION < 9) {
+            return;
+        }
+        Map<String, String> initProps = new HashMap<String, String>();
+
+        SharedBootstrapConfig config = SharedBootstrapConfig.createSharedConfig(outputMgr);
+        config.setInitProps(initProps);
+
+        setBootstrapJar(1); // use a jar with system packages
+        BootstrapManifest m = new BootstrapManifest();
+        m.prepSystemPackages(config);
+        //the system packages are obtained from a java.version file name
+        assertNull(initProps.get(BootstrapConstants.INITPROP_OSGI_EXTRA_PACKAGE));
+        String sysPkgs = initProps.get(BootstrapConstants.INITPROP_OSGI_SYSTEM_PACKAGES);
+        assertNotNull(sysPkgs);
+
+        assertTrue("Wrong system packages: " + sysPkgs, sysPkgs.contains("java.lang.module"));
     }
 
     protected static void setBootstrapJar(int jarTestCase) throws Exception {

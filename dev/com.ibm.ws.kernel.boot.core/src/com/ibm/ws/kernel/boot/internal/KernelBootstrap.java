@@ -77,7 +77,7 @@ public class KernelBootstrap {
 
     /**
      * @param bootProps BootstrapProperties carry forward all of the parameters and
-     *            options used to launch the kernel.
+     *                      options used to launch the kernel.
      */
     public KernelBootstrap(BootstrapConfig bootProps) {
         this.bootProps = bootProps;
@@ -138,8 +138,7 @@ public class KernelBootstrap {
                 throw new LaunchException("Could not read the defaults file", BootstrapConstants.messages.getString("error.unknown.kernel.version"), e);
             }
 
-            // handle system packages & system.packages.extra -- MAY THROW if
-            // required system.packages list can't be read from the jar
+            // handle system.packages.extra
             bootManifest.prepSystemPackages(bootProps);
 
             // Get product version information & retrieve log provider
