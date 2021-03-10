@@ -521,16 +521,18 @@ goto:eof
   @REM Command-line parsing of -Xshareclasses does not allow "," in cacheDir.
   if "!WLP_OUTPUT_DIR:,=!" == "!WLP_OUTPUT_DIR!" (
 
-    @REM Skip if Xshareclasses is defined in IBM_JAVA_OPTIONS/OPENJ9_JAVA_OPTIONS
-    @REM First check if SPECIFIED_JAVA_OPTIONS is undefined as the second test does not seem to work with undefined variables
+    @REM Check if Xshareclasses is already defined in IBM_JAVA_OPTIONS/OPENJ9_JAVA_OPTIONS
+    @REM First check if SPECIFIED_JAVA_OPTIONS is undefined as the second test does not work with undefined variables
     if NOT defined SPECIFIED_JAVA_OPTIONS (
-      set SHARE_CLASSES=true
-    )
-    if "!SPECIFIED_JAVA_OPTIONS:Xshareclasses=!" == "!SPECIFIED_JAVA_OPTIONS!" (
-      set SHARE_CLASSES=true
+      set ADD_SHARE_CLASSES=true
+    ) else if "!SPECIFIED_JAVA_OPTIONS:Xshareclasses=!" == "!SPECIFIED_JAVA_OPTIONS!" (
+      set ADD_SHARE_CLASSES=true
+    ) else (
+      @REM Xshareclasses IS found in IBM_JAVA_OPTIONS/OPENJ9_JAVA_OPTIONS, skip adding it to SERVER_IBM_JAVA_OPTIONS below
+      set ADD_SHARE_CLASSES=false
     )
  
-    if "!SHARE_CLASSES!" == "true" (
+    if "!ADD_SHARE_CLASSES!" == "true" (
       @REM Set -Xscmx
       if "debug" == "%ACTION%" (
         set XSCMX_VAL="130m"
