@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2017 Contributors to the Eclipse Foundation
+ * Copyright (c) 2016, 2021 Contributors to the Eclipse Foundation
  *
  *  See the NOTICE file(s) distributed with this work for additional
  *  information regarding copyright ownership.
@@ -121,7 +121,7 @@ public class RolesAllowedTest extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server1.stopServer("CWWKS552[2-4]E");
+        server1.stopServer("CWWKS552[2-4]E", "CWWKS5604E");
     }
 
     @BeforeClass
