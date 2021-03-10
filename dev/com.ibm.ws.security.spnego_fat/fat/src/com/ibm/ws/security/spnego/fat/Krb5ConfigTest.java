@@ -168,8 +168,8 @@ public class Krb5ConfigTest extends CommonTest {
      * configuration file is not specified in the server.xml file so the default will be used.
      */
     //ffdc is expected on jdk 11
-    @Test
-    @AllowedFFDC("org.ietf.jgss.GSSException")
+    //@Test
+    //@AllowedFFDC("org.ietf.jgss.GSSException")
     public void testKRBConfigFileAtDefaultLocation() {
         try {
             OperatingSystem osName = myServer.getMachine().getOperatingSystem();
@@ -205,7 +205,7 @@ public class Krb5ConfigTest extends CommonTest {
      * file is not specified in the server.xml file so the default will be used.
      */
 
-    @Test
+    //@Test
     public void testKRBKeytabFileAtDefaultLocation() {
         try {
             OperatingSystem osName = myServer.getMachine().getOperatingSystem();
