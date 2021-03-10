@@ -8,22 +8,29 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package test.jdbc.heritage.driver;
+package com.ibm.websphere.ce.cm;
 
 import java.sql.SQLException;
 
 /**
- * A vendor-specific SQLException subclass that really should have been java.sql.SQLFeatureNotSupportedException.
- * This allows for testing of exception identification/mapping.
+ * Copy of legacy exception class for testing.
  */
-public class HeritageDBDoesNotImplementItException extends SQLException {
+public class DuplicateKeyException extends PortableSQLException {
     private static final long serialVersionUID = 1L;
 
-    public HeritageDBDoesNotImplementItException(SQLException x) {
+    public DuplicateKeyException() {
+        super();
+    }
+
+    public DuplicateKeyException(SQLException x) {
         super(x);
     }
 
-    public HeritageDBDoesNotImplementItException(String message, String sqlState, int errorCode) {
-        super(message, sqlState, errorCode);
+    public DuplicateKeyException(String message) {
+        super(message);
+    }
+
+    public DuplicateKeyException(String message, String sqlState, int errCode) {
+        super(message, sqlState, errCode);
     }
 }

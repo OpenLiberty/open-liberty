@@ -19,6 +19,8 @@ Bundle-Description: Test bundle that simulates providing heritageSettings
 
 WS-TraceGroup: jdbcHeritage
 
+Export-Package: com.ibm.websphere.ce.cm
+
 Private-Package: test.jdbc.heritage.bundle.*
 
 Include-Resource:\

@@ -19,6 +19,10 @@ import java.sql.SQLException;
 public class HeritageDBConnectionBadException extends SQLException {
     private static final long serialVersionUID = 1L;
 
+    public HeritageDBConnectionBadException(SQLException x) {
+        super(x);
+    }
+
     public HeritageDBConnectionBadException(String message, String sqlState, int errorCode) {
         super(message, sqlState, errorCode);
     }

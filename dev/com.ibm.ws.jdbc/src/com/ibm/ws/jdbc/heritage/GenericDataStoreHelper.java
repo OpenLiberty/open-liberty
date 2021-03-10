@@ -123,6 +123,14 @@ public abstract class GenericDataStoreHelper {
     public abstract String getXAExceptionContents(XAException xae);
 
     /**
+     * Used to identify an exception and possibly replace it (if replaceExceptions=true).
+     *
+     * @param x an exception.
+     * @return the exception to identify as or replace with.
+     */
+    public abstract SQLException mapException(SQLException x);
+
+    /**
      * Supplies the dataSource configuration to the data store helper.
      *
      * @param config AtomicReference to the dataSource configuration.

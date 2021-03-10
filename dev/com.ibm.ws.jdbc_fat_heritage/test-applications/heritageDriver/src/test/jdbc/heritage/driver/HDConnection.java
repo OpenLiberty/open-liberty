@@ -314,20 +314,12 @@ public class HDConnection implements Connection, HeritageDBConnection {
      */
     private String replace(String sql) throws SQLException {
         if (sql.toUpperCase().startsWith("CALL TEST.FORCE_EXCEPTION(")) {
-            String[] params = sql.substring("CALL TEST.FORCE_EXCEPTION(".length() + 1, sql.length() - 1).split(",");
+            String[] params = sql.substring("CALL TEST.FORCE_EXCEPTION(".length(), sql.length() - 1).split(",");
             String sqlState = params[0];
             int errorCode = params[1] == null ? 0 : Integer.parseInt(params[1]);
             try {
                 throw AccessController.doPrivileged((PrivilegedExceptionAction<SQLException>) () -> {
                     Class<?> exceptionClass = params[2] == null ? SQLException.class : Class.forName(params[2]);
-
-                    // TODO replace this temporary section once we have exception mapping in the helper
-                    Class<?> replacementClass = exceptionIdentificationOverrides.get(errorCode);
-                    if (replacementClass == null)
-                        replacementClass = exceptionIdentificationOverrides.get(sqlState);
-                    if (replacementClass != null)
-                        exceptionClass = replacementClass;
-
                     @SuppressWarnings("unchecked")
                     Constructor<SQLException> ctor = (Constructor<SQLException>) exceptionClass.getConstructor(String.class, String.class, int.class);
                     return ctor.newInstance("Test JDBC driver fails on purpose.", sqlState, errorCode);

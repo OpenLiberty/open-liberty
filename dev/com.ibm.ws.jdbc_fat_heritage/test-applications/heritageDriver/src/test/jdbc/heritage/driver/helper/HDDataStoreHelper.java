@@ -12,6 +12,7 @@ package test.jdbc.heritage.driver.helper;
 
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.lang.reflect.Constructor;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
@@ -20,6 +21,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -28,6 +30,9 @@ import java.util.concurrent.atomic.AtomicReference;
 import javax.security.auth.Subject;
 import javax.transaction.xa.XAException;
 
+import com.ibm.websphere.ce.cm.DuplicateKeyException;
+import com.ibm.websphere.ce.cm.StaleConnectionException;
+import com.ibm.websphere.ce.cm.StaleStatementException;
 import com.ibm.ws.jdbc.heritage.AccessIntent;
 import com.ibm.ws.jdbc.heritage.DataStoreHelperMetaData;
 import com.ibm.ws.jdbc.heritage.GenericDataStoreHelper;
@@ -45,6 +50,18 @@ public class HDDataStoreHelper extends GenericDataStoreHelper {
     private AtomicReference<?> dsConfigRef;
 
     private Map<Object, Class<?>> exceptionIdentificationOverrides;
+
+    private static final Map<Object, Class<?>> exceptionMap = new HashMap<Object, Class<?>>();
+    {
+        exceptionMap.put("22013", StaleStatementException.class);
+        exceptionMap.put("08000", StaleConnectionException.class);
+        exceptionMap.put("08001", HeritageDBStaleConnectionException.class);
+        exceptionMap.put("08003", StaleConnectionException.class);
+        exceptionMap.put("08004", StaleConnectionException.class); // identifyException removes this mapping
+        exceptionMap.put("08006", StaleConnectionException.class);
+        exceptionMap.put("0A000", HeritageDBFeatureUnavailableException.class);
+        exceptionMap.put("23000", DuplicateKeyException.class);
+    }
 
     public HDDataStoreHelper(Properties props) {
         String value = props == null ? null : props.getProperty("queryTimeout");
@@ -128,6 +145,43 @@ public class HDDataStoreHelper extends GenericDataStoreHelper {
     public String getXAExceptionContents(XAException x) {
         // This ought to be unreachable for non-xa-capable javax.sql.DataSource.
         throw new UnsupportedOperationException("This driver does not provide an XADataSource.");
+    }
+
+    @Override
+    public SQLException mapException(SQLException x) {
+        String sqlState = x.getSQLState();
+        int errorCode = x.getErrorCode();
+        Class<?> exceptionClass = exceptionIdentificationOverrides.get(errorCode);
+        if (exceptionClass == null) {
+            exceptionClass = exceptionIdentificationOverrides.get(sqlState);
+            if (exceptionClass == null) {
+                exceptionClass = exceptionMap.get(errorCode);
+                if (exceptionClass == null) {
+                    exceptionClass = exceptionMap.get(sqlState);
+                    if (exceptionClass == null)
+                        return x;
+                }
+            }
+        }
+
+        System.out.println("datastorehelper.mapException sqlState: " + sqlState + ", errorCode: " + errorCode + " " + x.getClass().getName());
+        System.out.println("  --> " + exceptionClass.getName());
+        System.out.println("  based on map:  " + exceptionMap);
+        System.out.println("  and overrides: " + exceptionIdentificationOverrides);
+
+        if (Void.class.equals(exceptionClass))
+            return x;
+
+        try {
+            @SuppressWarnings("unchecked")
+            final Class<? extends SQLException> sqlXClass = (Class<? extends SQLException>) exceptionClass;
+            return AccessController.doPrivileged((PrivilegedExceptionAction<SQLException>) () -> {
+                Constructor<? extends SQLException> ctor = sqlXClass.getConstructor(SQLException.class);
+                return ctor.newInstance(x);
+            });
+        } catch (PrivilegedActionException privX) {
+            return new SQLException(privX);
+        }
     }
 
     private Object readConfig(String fieldName) {

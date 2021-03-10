@@ -508,11 +508,9 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
                 Object key = entry.getKey();
                 if (key instanceof String || key instanceof Integer)
                     map.put(key, exceptionClass);
-                else {
-                    SQLStateAndCode s = (SQLStateAndCode) key;
-                    map.put(s.sqlState, exceptionClass);
-                    map.put(s.errorCode, exceptionClass);
-                }
+                else
+                    // TODO NLS message
+                    throw new IllegalArgumentException("The sqlState and errorCode attributes cannot both be configured on the same identifyException element when replaceExceptions=true is enabled.");
             } catch (ClassNotFoundException x) {
                 Tr.error(tc, "8066E_IDENTIFY_EXCEPTION_INVALID_TARGET", entry.getValue(), Arrays.toString(IdentifyExceptionAs.values()) + ", com.ibm.websphere.ce.cm.*, ...");
                 throw x;
