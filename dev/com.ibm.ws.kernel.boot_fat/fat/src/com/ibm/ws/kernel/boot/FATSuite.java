@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,9 +21,9 @@ import com.ibm.ws.kernel.boot.commandline.StartCommandTest;
 import com.ibm.ws.kernel.boot.commandport.ServerCommandPortTest;
 import com.ibm.ws.kernel.boot.internal.commands.LogLevelPropertyTest;
 import com.ibm.ws.kernel.boot.internal.commands.PackageCommandTest;
-import com.ibm.ws.kernel.boot.internal.commands.PackageLooseConfigTest;
-import com.ibm.ws.kernel.boot.internal.commands.PackageLooseConfigDropinsTest;
-import com.ibm.ws.kernel.boot.internal.commands.PackageLooseConfigParameterizedTest;
+import com.ibm.ws.kernel.boot.internal.commands.PackageLooseRunnableTest;
+import com.ibm.ws.kernel.boot.internal.commands.PackageLooseContentsTest;
+import com.ibm.ws.kernel.boot.internal.commands.PackageLooseFilterTest;
 import com.ibm.ws.kernel.osgi.OSGiEmbedManagerTest;
 import com.ibm.ws.kernel.provisioning.KernelChangeTest;
 import com.ibm.ws.kernel.provisioning.ProvisioningTest;
@@ -43,30 +43,31 @@ import com.ibm.wsspi.kernel.embeddable.EmbeddedServerTest;
  * in a combined total of 5 minutes or less.
  */
 @SuiteClasses({
-                EmbeddedServerTest.class,
-                EmbeddedServerAddProductExtensionTest.class,
-                EmbeddedServerAddProductExtensionMultipleTest.class,
-                ProvisioningTest.class,
-                KernelChangeTest.class,
-                ServerStartTest.class,
-                ServerStartAsServiceTest.class,
-                ShutdownTest.class,
-                ServerCommandPortTest.class,
-                DumpCommandTest.class,
-                PackageCommandTest.class,
-                PackageLooseConfigTest.class,
-                PackageLooseConfigDropinsTest.class,
-                PackageLooseConfigParameterizedTest.class,
-                LogLevelPropertyTest.class,
-                CreateCommandTest.class,
-                StartCommandTest.class,
-                ServerClasspathTest.class,
-                ServerStartJVMOptionsTest.class,
-                ServerStartJavaEnvironmentVariablesTest.class,
-                PauseResumeCommandTest.class,
-                EmbeddedServerMergeProductExtensionTest.class,
-                ServerEndpointControlMBeanTest.class,
-                OSGiEmbedManagerTest.class
+//                EmbeddedServerTest.class,
+//                EmbeddedServerAddProductExtensionTest.class,
+//                EmbeddedServerAddProductExtensionMultipleTest.class,
+//                ProvisioningTest.class,
+//                KernelChangeTest.class,
+//                ServerStartTest.class,
+//                ServerStartAsServiceTest.class,
+//                ShutdownTest.class,
+//                ServerCommandPortTest.class,
+//                DumpCommandTest.class,
+//                PackageCommandTest.class,
+//                PackageLooseRunnableTest.class,
+//                PackageLooseContentsTest.class,
+                PackageLooseFilterTest.class,
+//                LogLevelPropertyTest.class,
+//                CreateCommandTest.class,
+//                StartCommandTest.class,
+//                ServerClasspathTest.class,
+//                ServerStartJVMOptionsTest.class,
+//                ServerStartJavaEnvironmentVariablesTest.class,
+//                PauseResumeCommandTest.class,
+//                EmbeddedServerMergeProductExtensionTest.class,
+//                ServerEndpointControlMBeanTest.class,
+//                OSGiEmbedManagerTest.class
 })
 public class FATSuite {
+    // Empty
 }
