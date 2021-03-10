@@ -30943,8 +30943,9 @@ public class JULoopQueryXMLTest extends AbstractTestLogic {
                     eStr = e.toString();
                 }
                 if (pvdr == JPAProviderImpl.ECLIPSELINK) {
-                    String lookFor = "An exception occurred while creating a query in EntityManager: \n" +
-                                     "Exception Description: Internal problem encountered while compiling [select new com.dw.test.Detail (e.empid, e.salary) from EmpBean e].";
+//                    String lookFor = "An exception occurred while creating a query in EntityManager: \n" +
+//                                     "Exception Description: Internal problem encountered while compiling [select new com.dw.test.Detail (e.empid, e.salary) from EmpBean e].";
+                    String lookFor = "Exception Description: Internal problem encountered while compiling [select new com.dw.test.Detail (e.empid, e.salary) from EmpBean e].";
                     System.out.println("eStr = " + eStr);
                     System.out.println("lookFor = " + lookFor);
                     boolean result = eStr.contains(lookFor);
@@ -31020,8 +31021,9 @@ public class JULoopQueryXMLTest extends AbstractTestLogic {
                     eStr = e.toString();
                 }
                 if (pvdr == JPAProviderImpl.ECLIPSELINK) {
-                    String lookFor = "An exception occurred while creating a query in EntityManager: \n" +
-                                     "Exception Description: Internal problem encountered while compiling [select new com.dw.test.Detail (max(e.empid), max(e.salary)) from EmpBean e].";
+//                    String lookFor = "An exception occurred while creating a query in EntityManager: \n" +
+//                                     "Exception Description: Internal problem encountered while compiling [select new com.dw.test.Detail (max(e.empid), max(e.salary)) from EmpBean e].";
+                    String lookFor = "Exception Description: Internal problem encountered while compiling [select new com.dw.test.Detail (max(e.empid), max(e.salary)) from EmpBean e].";
                     System.out.println("eStr = " + eStr);
                     System.out.println("lookFor = " + lookFor);
                     boolean result = eStr.contains(lookFor);
@@ -31159,8 +31161,10 @@ public class JULoopQueryXMLTest extends AbstractTestLogic {
                     eStr = e.toString();
                 }
                 if (pvdr == JPAProviderImpl.ECLIPSELINK) {
-                    String lookFor = "An exception occurred while creating a query in EntityManager: \n" +
-                                     "Exception Description: Problem compiling [select new com.ibm.ws.query.utils.SimpleDeptEmpView (d.deptno, d.name) from DeptBean d ].";
+//                    String lookFor = "An exception occurred while creating a query in EntityManager: \n" +
+//                                     "Exception Description: Problem compiling [select new com.ibm.ws.query.utils.SimpleDeptEmpView (d.deptno, d.name) from DeptBean d ].";
+                    String lookFor = "Exception Description: Problem compiling [select new com.ibm.ws.query.utils.SimpleDeptEmpView (d.deptno, d.name) from DeptBean d ].";
+
                     System.out.println("eStr = " + eStr);
                     System.out.println("lookFor = " + lookFor);
                     boolean result = eStr.contains(lookFor);
@@ -31571,8 +31575,10 @@ public class JULoopQueryXMLTest extends AbstractTestLogic {
                     eStr = e.toString();
                 }
                 if (pvdr == JPAProviderImpl.ECLIPSELINK) {
-                    String lookFor = "Problem compiling [select new com.ibm.ws.query.utils.DeptEmpListView (d.no, d.name, d.budget, d.emps ) from DeptBean d ]. \n" +
-                                     "[74, 80] The state field path 'd.emps' cannot be resolved to a collection type.";
+//                    String lookFor = "Problem compiling [select new com.ibm.ws.query.utils.DeptEmpListView (d.no, d.name, d.budget, d.emps ) from DeptBean d ]. \n" +
+//                                     "[74, 80] The state field path 'd.emps' cannot be resolved to a collection type.";
+                    String lookFor = "[74, 80] The state field path 'd.emps' cannot be resolved to a collection type.";
+
                     System.out.println("eStr = " + eStr);
                     System.out.println("lookFor = " + lookFor);
                     boolean result = eStr.contains(lookFor);
