@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2020 IBM Corporation and others.
+ * Copyright (c) 2009, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,6 +33,7 @@ import com.ibm.websphere.event.EventEngine;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.http.channel.internal.HttpConfigConstants;
 import com.ibm.ws.http.internal.EncodingUtilsImpl;
 import com.ibm.ws.http.internal.HttpDateFormatImpl;
 import com.ibm.wsspi.bytebuffer.WsByteBufferPoolManager;
@@ -131,13 +132,15 @@ public class HttpDispatcher {
     /** keep track of the hosts for which private headers are trusted */
     private volatile TrustedHeaderOriginLists trustedLists = null;
 
+    /** Web Container property for HSTS header value **/
+    private volatile static String hstsHeader = "noValue";
+
     private static final AtomicInteger updateCount = new AtomicInteger(0);
 
     /**
      * Constructor.
      */
-    public HttpDispatcher() {
-    }
+    public HttpDispatcher() {}
 
     /**
      * DS method to activate this component.
@@ -271,7 +274,7 @@ public class HttpDispatcher {
      *
      * The helper class TrustedHeaderOriginLists is used to maintain lists of trusted hosts, and to perform lookups.
      *
-     * @param trustedPrivateHeaderHosts   String[] of hosts to trust for non-sensitive private headers
+     * @param trustedPrivateHeaderHosts String[] of hosts to trust for non-sensitive private headers
      * @param trustedSensitiveHeaderHosts String[] of hosts to trust for sensitive private headers
      */
     private synchronized void parseTrustedPrivateHeaderOrigin(String[] trustedPrivateHeaderHosts, String[] trustedSensitiveHeaderHosts) {
@@ -321,7 +324,7 @@ public class HttpDispatcher {
     }
 
     /**
-     * @param addr     the remote address to check
+     * @param addr the remote address to check
      * @param HostName the remote host to check
      * @return true if private headers should be used (the default is true)
      */
@@ -330,7 +333,7 @@ public class HttpDispatcher {
     }
 
     /**
-     * @param hostAddr   the remote address to check
+     * @param hostAddr the remote address to check
      * @param headerName the name of the header to check
      * @return true if private headers should be used (the default is true when headerName is not sensitive)
      */
@@ -340,8 +343,8 @@ public class HttpDispatcher {
     }
 
     /**
-     * @param hostAddr   the remote address to check
-     * @param hostName   the remote host to check
+     * @param hostAddr the remote address to check
+     * @param hostName the remote host to check
      * @param headerName the name of the header to check
      * @return true if private headers should be used (the default is true when headerName is not sensitive)
      */
@@ -390,7 +393,7 @@ public class HttpDispatcher {
      * trustedSensitiveHeaderOrigin takes precedence over trustedHeaderOrigin; so if trustedHeaderOrigin="none"
      * while trustedSensitiveHeaderOrigin="*", non-sensitive headers will still be trusted for all hosts.
      *
-     * @param addr       the remote address to check
+     * @param addr the remote address to check
      * @param headerName the name of the header to check
      * @return true if hostAddr is a trusted source of private headers
      */
@@ -645,6 +648,9 @@ public class HttpDispatcher {
      * @see #parseTrustedPrivateHeaderOrigin(String[])
      */
     protected void updatedWebContainer(ServiceReference<VirtualHostListener> ref) {
+
+        boolean configUpdated = false;
+        boolean currentConfigUpdate = false;
         boolean newTrusted = MetatypeUtils.parseBoolean("webContainer", PROP_WC_TRUSTED,
                                                         ref.getProperty(PROP_WC_TRUSTED), true);
 
@@ -654,12 +660,58 @@ public class HttpDispatcher {
             // Check the value of trusted headers..
             parseTrustedPrivateHeaderOrigin(origHeaderOrigin, origSensitiveHeaderOrigin);
             // increment updateCount so listeners know the config has updated
+            configUpdated = true;
+        }
+
+        String hstsPropertyValue = chooseWebContainerProperty(ref,
+                                                              HttpConfigConstants.PROPNAME_HDR_HSTS_SHORTNAME,
+                                                              HttpConfigConstants.PROPNAME_HDR_HSTS_FULLYQUALIFIED);
+
+        if (hstsPropertyValue.isEmpty()) {
+            if (!"noValue".equalsIgnoreCase(hstsHeader)) {
+                hstsHeader = "noValue";
+                configUpdated = true;
+            }
+        } else {
+            currentConfigUpdate = parseHSTSHeader(hstsPropertyValue);
+            if (!configUpdated) {
+                configUpdated = currentConfigUpdate;
+            }
+
+        }
+
+        if (configUpdated) {
             updateCount.getAndIncrement();
         }
+
     }
 
-    protected void unsetWebContainer(ServiceReference<VirtualHostListener> ref) {
+    /**
+     * Web container properties sometimes accept either a short name or a fully qualified
+     * name. This utility method will evaluate the fully qualified name first, and if the value is
+     * null or empty, try the short name instead.
+     *
+     * The value returned will either be a configured value or an empty string.
+     *
+     * @param ref
+     * @param propShortName
+     * @param propFullyQualifiedName
+     * @return
+     */
+    private String chooseWebContainerProperty(ServiceReference<VirtualHostListener> ref, String propShortName, String propFullyQualifiedName) {
+
+        Object currentProperty = ref.getProperty(propFullyQualifiedName);
+        String result = (currentProperty != null) ? ((String) currentProperty) : "";
+
+        if (result.isEmpty()) {
+            currentProperty = ref.getProperty(propShortName);
+            result = (currentProperty != null) ? ((String) currentProperty) : "";
+
+        }
+        return result;
     }
+
+    protected void unsetWebContainer(ServiceReference<VirtualHostListener> ref) {}
 
     /**
      * DS method for setting the Work Classification service reference.
@@ -723,5 +775,177 @@ public class HttpDispatcher {
 
     public static Boolean useIOEForInboundConnectionsBehavior() {
         return useIOExceptionBehavior;
+    }
+
+    /**
+     * Check the configuration to see if the HSTS header is configured to be added to
+     * HTTPS responses when missing from the response.
+     *
+     * The possible values are:
+     * Strict-Transport-Security:"max-age=31536000";
+     * Strict-Transport-Security:"max-age=31536000; includeSubDomains";
+     * Strict-Transport-Security:"max-age=31536000; includeSubDomains; preload";
+     *
+     * The requirements for the directives are as follows:
+     * 1. The order of appearance of directives is not significant.
+     * 2. All directives MUST appear only once in an STS header field.
+     * 3. Directive names are case-insensitive
+     * 4. UAs MUST ignore any STS header field containing directives, or other
+     * header field value data, that does not conform to the syntax defined in
+     * this specification.
+     * 5. If an STS header field contains directive(s) not recognized by the
+     * UA, the UA MUST ignore the unrecognized directives, and if the STS
+     * header field otherwise satisfied the above requirements, the UA MUST
+     * process the recognized directives.
+     *
+     * The max age directive value can be, optionally, quoted:
+     * Strict-Transport-Security: max-age="31536000"
+     *
+     *
+     * @param props
+     */
+    private boolean parseHSTSHeader(String configuredHSTSHeader) {
+
+        boolean hasConfigError = false;
+        boolean configUpdated = false;
+
+        if (!"noValue".equalsIgnoreCase(configuredHSTSHeader)) {
+
+            String parsedHSTSHeader = null;
+
+            String[] tokens = configuredHSTSHeader.split(";");
+            //Identifies if the three possible tokens have been parsed
+            boolean foundMaxAgeToken = false, foundIncludeSubDomains = false, foundPreload = false;
+
+            int parsedMaxAgeValue = -1;
+            boolean shouldQuoteMaxAgeValue = false;
+
+            for (String token : tokens) {
+
+                if (hasConfigError) {
+                    break;
+                }
+
+                if ((TraceComponent.isAnyTracingEnabled()) && (tc.isDebugEnabled())) {
+                    Tr.debug(tc, "HSTS Header Config:", "parsing token found:  [" + token + "]");
+                }
+
+                if (token.toLowerCase().contains("max-age")) {
+                    try {
+                        if (foundMaxAgeToken) {
+                            //Not first time we find this token. Web Container doesn't
+                            //throw error, just picks first one so do the same here.
+                            break;
+                        }
+                        foundMaxAgeToken = true;
+
+                        String[] tok = token.split("=");
+                        if (tok.length == 2) {
+                            tok[1] = tok[1].trim();
+                            if ((tok[1].startsWith("\"")) && (tok[1].endsWith("\""))) {
+                                shouldQuoteMaxAgeValue = true;
+                                tok[1] = tok[1].replace("\"", "");
+                            }
+                            parsedMaxAgeValue = Integer.parseInt(tok[1].trim());
+                            if (parsedMaxAgeValue < 0) {
+                                Tr.warning(tc, "config.hsts.invalid.max.age.value", token);
+                                hasConfigError = true;
+                            }
+                        } else {
+                            Tr.warning(tc, "config.hsts.invalid.max.age.value", token);
+                            hasConfigError = true;
+                        }
+
+                    } catch (NumberFormatException e) {
+
+                        Tr.warning(tc, "config.hsts.invalid.max.age.value", token);
+
+                        hasConfigError = true;
+                        break;
+
+                    }
+                }
+
+                else if ("preload".equalsIgnoreCase(token.trim())) {
+                    if (!foundPreload) {
+                        //Not first time we find this token. Web Container chooses
+                        //first found token, so skip.
+                        foundPreload = true;
+                    }
+
+                }
+
+                else if ("includeSubDomains".equalsIgnoreCase(token.trim())) {
+                    if (!foundIncludeSubDomains) {
+                        foundIncludeSubDomains = true;
+                    }
+
+                }
+
+                else {
+                    //Not-worthy of warning, but log unrecognized token, log that it will be ignored
+                    if ((TraceComponent.isAnyTracingEnabled()) && (tc.isDebugEnabled())) {
+                        Tr.debug(tc, "HSTS Header Config:", "The token [" + token + "] is not a recognized HSTS token. Value is ignored.");
+                    }
+                }
+
+            }
+
+            //Done parsing, if no errors construct the HSTS header
+            if (!hasConfigError) {
+                if (foundMaxAgeToken) {
+
+                    parsedHSTSHeader = (shouldQuoteMaxAgeValue) ? "max-age=" + "\"" + parsedMaxAgeValue + "\"" : "max-age=" + parsedMaxAgeValue;
+
+                } else {
+                    Tr.warning(tc, "config.hsts.missing.max.age", configuredHSTSHeader);
+                    hasConfigError = true;
+                }
+            }
+
+            //If no errors have be found at this point, add the two optional
+            //attributes if present. Then, update the class level hstsHeader
+            //with the new value.
+            if (!hasConfigError) {
+
+                if (foundIncludeSubDomains) {
+                    parsedHSTSHeader = parsedHSTSHeader + "; includeSubDomains";
+                }
+
+                if (foundPreload) {
+                    parsedHSTSHeader = parsedHSTSHeader + "; preload";
+                }
+
+                if (!hstsHeader.equalsIgnoreCase(parsedHSTSHeader)) {
+                    configUpdated = true;
+                    hstsHeader = parsedHSTSHeader;
+                }
+            }
+
+        }
+
+        if (hasConfigError) {
+            if (!"noValue".equalsIgnoreCase(hstsHeader)) {
+                configUpdated = true;
+                hstsHeader = "noValue";
+            }
+        }
+
+        if ((TraceComponent.isAnyTracingEnabled()) && (tc.isDebugEnabled())) {
+            Tr.debug(tc, "HSTS Header Config",
+                     "Successful Parse [" + (!hasConfigError) + "] Value is set to: [" + hstsHeader + "]");
+        }
+        return configUpdated;
+    }
+
+    /**
+     * Specified the configured HSTS header to add on HTTPS responses when the HSTS header is
+     * missing.
+     *
+     * @return
+     */
+    public static String getHSTS() {
+
+        return (("noValue".equalsIgnoreCase(hstsHeader)) ? null : hstsHeader);
     }
 }
