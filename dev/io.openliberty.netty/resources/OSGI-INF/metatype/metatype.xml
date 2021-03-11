@@ -16,7 +16,7 @@
     <!-- BYTE BUFFER OPTIONS .............................................................. -->
 
     <OCD name="internal" description="%bytebuffer.config.desc" 
-         id="com.ibm.ws.bytebuffer.metatype" ibm:alias="bytebuffer">   
+         id="io.openliberty.netty.com.ibm.ws.bytebuffer.metatype" ibm:alias="nettybytebuffer">   
 
         <AD name="internal" 
             description="internal use only"
@@ -24,8 +24,8 @@
          
     </OCD>
 
-    <Designate pid="com.ibm.ws.bytebuffer">
-        <Object ocdref="com.ibm.ws.bytebuffer.metatype" />
+    <Designate pid="io.openliberty.netty.com.ibm.ws.bytebuffer">
+        <Object ocdref="io.openliberty.netty.com.ibm.ws.bytebuffer.metatype" />
     </Designate>
 
   

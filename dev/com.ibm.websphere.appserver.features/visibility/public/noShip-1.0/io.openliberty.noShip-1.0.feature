@@ -3,7 +3,5 @@ IBM-ShortName: noShip-1.0
 Subsystem-Name: Non-ship feature that can be used to guard noship autofeatures 1.0
 symbolicName=io.openliberty.noShip-1.0
 visibility=public
--features= \
- io.openliberty.netty
 kind=noship
 edition=full

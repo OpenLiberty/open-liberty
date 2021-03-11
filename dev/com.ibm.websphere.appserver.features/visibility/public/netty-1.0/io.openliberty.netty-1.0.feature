@@ -1,7 +1,15 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=io.openliberty.netty-1.0
+visibility=public
 WLP-DisableAllFeatures-OnConflict: false
-IBM-API-Package: com.ibm.websphere.endpoint; type="ibm-api"
+singleton=true
+IBM-App-ForceRestart: install, \
+ uninstall
+IBM-API-Package: \
+ io.openliberty.netty ; type="ibm-api",\
+ com.ibm.wsspi.bytebuffer; type="ibm-api"
+IBM-ShortName: netty-1.0
+Subsystem-Name: Liberty Netty based IO Channels 1.0
 IBM-Process-Types: \
  server, \
  client

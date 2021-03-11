@@ -35,7 +35,7 @@ import com.ibm.websphere.event.EventEngine;
 import com.ibm.websphere.event.ScheduledEventService;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.bytebuffer.internal.ByteBufferConfiguration;
+import com.ibm.ws.bytebuffer.internal.NettyByteBufferConfiguration;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.feature.ServerStarted;
 import com.ibm.wsspi.bytebuffer.WsByteBufferPoolManager;
@@ -72,7 +72,7 @@ public class Bundle implements ServerQuiesceListener {
     /** Reference to the channel framework */
     private NettyImpl netty = null;
     /** Reference to ByteBufferConfiguration */
-    private ByteBufferConfiguration wsbbmgr = null;
+    private NettyByteBufferConfiguration wsbbmgr = null;
     /** Reference to the event service */
     private EventEngine eventService = null;
     /** Reference to the scheduler service -- required */
@@ -265,9 +265,9 @@ public class Bundle implements ServerQuiesceListener {
     /**
      * Make sure we have an active/ready/configured ByteBuffer service
      */
-    @Reference(service = ByteBufferConfiguration.class,
+    @Reference(service = NettyByteBufferConfiguration.class,
                cardinality = ReferenceCardinality.MANDATORY)
-    protected void setByteBufferConfig(ByteBufferConfiguration bbConfig) {
+    protected void setByteBufferConfig(NettyByteBufferConfiguration bbConfig) {
         wsbbmgr = bbConfig;
     }
 
@@ -277,7 +277,7 @@ public class Bundle implements ServerQuiesceListener {
      *
      * @param service
      */
-    protected void unsetByteBufferConfig(ByteBufferConfiguration bbConfig) {
+    protected void unsetByteBufferConfig(NettyByteBufferConfiguration bbConfig) {
     }
 
     /**
@@ -423,7 +423,7 @@ public class Bundle implements ServerQuiesceListener {
      * @return WsByteBufferPoolManager
      */
     public WsByteBufferPoolManager getBufferManager() {
-        ByteBufferConfiguration bbMgr = this.wsbbmgr;
+        NettyByteBufferConfiguration bbMgr = this.wsbbmgr;
 
         // Get the byte buffer manager-- bbMgr could return null
         WsByteBufferPoolManager result = (bbMgr == null) ? null : bbMgr.getBufferManager();

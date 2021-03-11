@@ -26,7 +26,7 @@ IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 # for the exported API.
 Export-Package: \
 	io.openliberty.netty*; version=1.0; provide:=true, \
-	com.ibm.wsspi.bytebuffer; version=1.0; provide:=true; -split-package:=merge-first
+	com.ibm.wsspi.bytebuffer*; version=1.0; provide:=true; -split-package:=merge-first
 	
 Private-Package: \
 	com.ibm.ws.bytebuffer.internal, \

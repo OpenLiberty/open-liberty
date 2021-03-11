@@ -26,8 +26,7 @@ public interface Netty {
      * @return
      */
     static WsByteBufferPoolManager getBufferManager() {
-        // TODO Auto-generated method stub
-        return null;
+        return NettyFactory.getBufferManager();
     }
 
 }

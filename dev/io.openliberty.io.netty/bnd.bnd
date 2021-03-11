@@ -11,13 +11,15 @@
 
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
-nettyVersion=4.1.59.Final
+nettyVersion=4.1.59
 
 Bundle-Name: Netty as an OSGi bundle
 Bundle-SymbolicName: io.openliberty.io.netty
 Bundle-Description: Netty as an OSGi bundle for OpenLiberty, version ${bVersion}
 
 Import-Package: \
+  !org.apache.commons.logging,\
+  !io.netty.handler.ssl,\
   !com.google.protobuf.nano,\
   !com.google.code.gson,\
   !org.checkerframework,\
@@ -35,7 +37,9 @@ Import-Package: \
   !org.jboss.*,\
   !reactor.blockhound.*,\
   !sun.*,\
-  javax.annotation;version=!,\
+  !com.google.protobuf,\
+  !org.slf4j*,\
+  !javax.annotation,\
   *
 
 Export-Package: \
@@ -45,6 +49,11 @@ Export-Package: \
 -fixupmessages.missingexport: "Used bundle version * for exported package";is:=ignore
 
 -buildpath: \
+  com.ibm.ws.org.apache.commons.logging.1.0.3;version=latest,\
+  org.slf4j:slf4j-api;version=latest,\
+  com.ibm.ws.org.slf4j.api.1.7.7;version=latest,\
+  com.ibm.websphere.javaee.annotation.1.1;version=latest,\
+  javax.annotation:javax.annotation-api;version=1.3,\
   io.netty:netty-buffer;version=${nettyVersion},\
   io.netty:netty-codec;version=${nettyVersion},\
   io.netty:netty-codec-http;version=${nettyVersion},\
@@ -54,5 +63,11 @@ Export-Package: \
   io.netty:netty-handler;version=${nettyVersion},\
   io.netty:netty-handler-proxy;version=${nettyVersion},\
   io.netty:netty-resolver;version=${nettyVersion},\
-  io.netty:netty-transport;version=${nettyVersion}
+  io.netty:netty-transport;version=${nettyVersion},\
+  com.google.api.grpc:proto-google-common-protos;version=2.0.1,\
+  com.google.code.findbugs:jsr305;version=3.0.2,\
+  com.google.guava:failureaccess;version=1.0.1,\
+  com.google.guava:guava;version=27.0.1,\
+  com.google.j2objc:j2objc-annotations;version=1.1
+#  com.google.protobuf:protobuf-java;version=3.13.0
   

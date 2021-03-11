@@ -17,7 +17,27 @@ Bundle-Name: Netty SSL classes as an OSGi bundle
 Bundle-SymbolicName: io.openliberty.io.netty.ssl
 Bundle-Description: Netty SSL classes as an OSGi bundle for OpenLiberty, version ${bVersion}
 
-Import-Package: *
+Import-Package: \
+  !com.google.protobuf.nano,\
+  !com.google.code.gson,\
+  !org.checkerframework,\
+  !com.jcraft.jzlib,\
+  !com.ning.*,\
+  !com.oracle.svm.core.annotate,\
+  !io.netty.internal.tcnative,\
+  !lzma.*,\
+  !net.jpountz.*,\
+  !org.apache.log4j.*,\
+  !org.apache.logging.*,\
+  !org.bouncycastle.*,\
+  !org.conscrypt,\
+  !org.eclipse.jetty.*,\
+  !org.jboss.*,\
+  !reactor.blockhound.*,\
+  !sun.*,\
+  !com.google.protobuf,\
+  !javax.annotation.*,\
+  *
 
 Export-Package:\
   io.netty.handler.ssl.*;version=${nettyVersion}; -split-package:=merge-first
@@ -36,5 +56,11 @@ Export-Package:\
   io.netty:netty-handler;version=${nettyVersion},\
   io.netty:netty-handler-proxy;version=${nettyVersion},\
   io.netty:netty-resolver;version=${nettyVersion},\
-  io.netty:netty-transport;version=${nettyVersion}
+  io.netty:netty-transport;version=${nettyVersion},\
+  com.google.api.grpc:proto-google-common-protos;version=2.0.1,\
+  com.google.code.findbugs:jsr305;version=3.0.2,\
+  com.google.guava:failureaccess;version=1.0.1,\
+  com.google.guava:guava;version=27.0.1,\
+  com.google.j2objc:j2objc-annotations;version=1.1
+#  com.google.protobuf:protobuf-java;version=3.13.0
   
