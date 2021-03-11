@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2020 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -57,15 +57,7 @@ import componenttest.topology.utils.FATServletClient;
 public class AroundTimeoutTest extends FATServletClient {
     private static final Logger logger = Logger.getLogger(AroundTimeoutTest.class.getCanonicalName());
     private static final Set<String> skipWhenLeavingDaylightSavings = new HashSet<String>( //
-                    Arrays.asList("testAdvancedAroundTimeoutInterceptorScheduleAnn", //
-                                  "testAdvancedAroundTimeoutInterceptorScheduleMix", //
-                                  "testAdvancedAroundTimeoutInterceptorScheduleXml", //
-                                  "testAroundTimeoutScheduleAppEx", //
-                                  "testAroundTimeoutScheduleNoEx", //
-                                  "testInheritedAroundTimeoutAnn", //
-                                  "testInheritedTimeoutCallbackAnn", //
-                                  "testMDBNonPersistentAutomaticTimerInterceptorsAnn", //
-                                  "testMDBPersistentAutomaticTimerInterceptorsAnn"));
+                    Arrays.asList("No tests currently skipped for DST"));
     private static boolean leavingDaylightSavings = false;
 
     @Server("com.ibm.ws.ejbcontainer.interceptor.fat.AroundTimeoutServer")

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2013 IBM Corporation and others.
+ * Copyright (c) 2009, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ejs.container;
 
+import java.lang.reflect.Method;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
@@ -24,30 +25,25 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ejbcontainer.util.ParsedScheduleExpression;
 import com.ibm.ws.ejbcontainer.util.ScheduleExpressionParser;
 
-public class ScheduleExpressionParserTest
-{
+public class ScheduleExpressionParserTest {
     private static final TraceComponent tc = Tr.register(ScheduleExpressionParserTest.class, "EJBContainerUT", null);
 
     private static final String[] DAYS_OF_WEEK = new String[] { "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" };
     private static final String[] MONTHS = new String[] { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
 
-    private static void parse(ScheduleExpression expr)
-    {
+    private static void parse(ScheduleExpression expr) {
         ScheduleExpressionParser.parse(expr);
     }
 
-    private static void failParse(ScheduleExpression expr)
-    {
-        try
-        {
+    private static void failParse(ScheduleExpression expr) {
+        try {
             parse(expr);
             throw new Error("accepted: " + expr);
         } catch (IllegalArgumentException ex) {
         }
     }
 
-    private static long stringToMillis(String dateTime)
-    {
+    private static long stringToMillis(String dateTime) {
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.MILLISECOND, 0);
 
@@ -55,19 +51,15 @@ public class ScheduleExpressionParserTest
         cal.set(Calendar.YEAR, Integer.parseInt(st.nextToken()));
         cal.set(Calendar.MONTH, Integer.parseInt(st.nextToken()) - 1);
         cal.set(Calendar.DAY_OF_MONTH, Integer.parseInt(st.nextToken()));
-        if (st.hasMoreTokens())
-        {
+        if (st.hasMoreTokens()) {
             cal.set(Calendar.HOUR_OF_DAY, Integer.parseInt(st.nextToken()));
             cal.set(Calendar.MINUTE, Integer.parseInt(st.nextToken()));
             cal.set(Calendar.SECOND, Integer.parseInt(st.nextToken()));
 
-            if (st.hasMoreTokens())
-            {
+            if (st.hasMoreTokens()) {
                 cal.setTimeZone(TimeZone.getTimeZone(st.nextToken()));
             }
-        }
-        else
-        {
+        } else {
             cal.set(Calendar.HOUR_OF_DAY, 0);
             cal.set(Calendar.MINUTE, 0);
             cal.set(Calendar.SECOND, 0);
@@ -76,8 +68,7 @@ public class ScheduleExpressionParserTest
         return cal.getTimeInMillis();
     }
 
-    private static String toString(Calendar cal)
-    {
+    private static String toString(Calendar cal) {
         return String.format("%04d-%02d-%02d %02d:%02d:%02d",
                              cal.get(Calendar.YEAR),
                              cal.get(Calendar.MONTH) + 1,
@@ -87,21 +78,18 @@ public class ScheduleExpressionParserTest
                              cal.get(Calendar.SECOND));
     }
 
-    private static String millisToString(long now, TimeZone timezone)
-    {
+    private static String millisToString(long now, TimeZone timezone) {
         Calendar cal = Calendar.getInstance(timezone);
         cal.setTimeInMillis(now);
 
         return toString(cal);
     }
 
-    private static String millisToString(long now)
-    {
+    private static String millisToString(long now) {
         return millisToString(now, TimeZone.getDefault());
     }
 
-    private static void verifyFirstTimeout(ScheduleExpression expr, String expected)
-    {
+    private static void verifyFirstTimeout(ScheduleExpression expr, String expected) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "verifyFirstTimeout: " + ScheduleExpressionParser.toString(expr) + " ?= \"" + expected + "\"");
 
@@ -109,14 +97,46 @@ public class ScheduleExpressionParserTest
         String first = firstMillis == -1 ? "" : millisToString(firstMillis);
         expected = expected == null ? "" : millisToString(stringToMillis(expected));
 
-        if (!expected.equals(first))
-        {
+        if (!expected.equals(first)) {
             throw new Error(ScheduleExpressionParser.toString(expr) + " = \"" + first + "\" != \"" + expected + "\"");
         }
     }
 
-    private static void verifyNextTimeout(ScheduleExpression expr, String now, String expected)
-    {
+    /**
+     * Verify the first timeout for a ScheduleExpression using a specified current time. <p>
+     *
+     * Note that getFirstTimeout() uses current system time, so instead test the method called
+     * by getFirstTimeout, getTimeout(time, false);
+     *
+     * @param expr           ScheduleExpression to test for first timeout
+     * @param currentTime    override of current system time for testing calculation of first timeout
+     * @param expectedMillis expected first timeout in milliseconds; may differ from value calculated
+     *                           from expected string due to Daylight Savings Time adjustment
+     * @param expected       expected first timeout in string format
+     */
+    private static void verifyFirstTimeout(ScheduleExpression expr, long currentTime, long expectedMillis, String expected) throws Exception {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(tc, "verifyFirstTimeout: " + ScheduleExpressionParser.toString(expr) + "(" + currentTime + ") ?= \"" + expected + "\"" + " (" + expectedMillis + ")");
+
+        final TimeZone timezone = TimeZone.getTimeZone(expr.getTimezone());
+        Method getTimeout = ParsedScheduleExpression.class.getDeclaredMethod("getTimeout", new Class[] { long.class, boolean.class });
+        getTimeout.setAccessible(true);
+
+        long firstMillis = (long) getTimeout.invoke(ScheduleExpressionParser.parse(expr), currentTime, false);
+
+        String first = firstMillis == -1 ? "" : millisToString(firstMillis, timezone);
+
+        if (!expected.equals(first)) {
+            throw new Error(ScheduleExpressionParser.toString(expr) + " = \"" + first + "\" != \"" + expected + "\"");
+        }
+
+        // During fall adjustment, hour 1 is repeated twice; since same string may occur twice, also checking milliseconds
+        if (firstMillis != expectedMillis) {
+            throw new Error(ScheduleExpressionParser.toString(expr) + " = \"" + firstMillis + "\" != \"" + expectedMillis + "\"");
+        }
+    }
+
+    private static void verifyNextTimeout(ScheduleExpression expr, String now, String expected) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "verifyNextTimeout: \"" + now + "\" + " + ScheduleExpressionParser.toString(expr) + " ?= \"" + expected + "\"");
 
@@ -125,15 +145,13 @@ public class ScheduleExpressionParserTest
         String next = nextMillis == -1 ? "" : millisToString(nextMillis);
         expected = expected == null ? "" : millisToString(stringToMillis(expected));
 
-        if (!expected.equals(next))
-        {
+        if (!expected.equals(next)) {
             throw new Error("\"" + millisToString(nowMillis) + "\" + " + ScheduleExpressionParser.toString(expr) + " = \"" + next + "\" != \"" + expected + "\"");
         }
     }
 
     @Test
-    public void testParseDefault()
-    {
+    public void testParseDefault() {
         parse(new ScheduleExpression());
         Assert.assertNull(new ScheduleExpression().getStart());
         Assert.assertNull(new ScheduleExpression().getEnd());
@@ -178,8 +196,7 @@ public class ScheduleExpressionParserTest
     }
 
     @Test
-    public void testParseSecond()
-    {
+    public void testParseSecond() {
         parse(new ScheduleExpression().second("*"));
         parse(new ScheduleExpression().second(0));
         parse(new ScheduleExpression().second("0"));
@@ -195,8 +212,7 @@ public class ScheduleExpressionParserTest
     }
 
     @Test
-    public void testParseMinute()
-    {
+    public void testParseMinute() {
         parse(new ScheduleExpression().minute("*"));
         parse(new ScheduleExpression().minute(0));
         parse(new ScheduleExpression().minute("0"));
@@ -212,8 +228,7 @@ public class ScheduleExpressionParserTest
     }
 
     @Test
-    public void testParseHour()
-    {
+    public void testParseHour() {
         parse(new ScheduleExpression().hour("*"));
         parse(new ScheduleExpression().hour(0));
         parse(new ScheduleExpression().hour("0"));
@@ -229,8 +244,7 @@ public class ScheduleExpressionParserTest
     }
 
     @Test
-    public void testParseDayOfMonth()
-    {
+    public void testParseDayOfMonth() {
         parse(new ScheduleExpression().dayOfMonth("*"));
         parse(new ScheduleExpression().dayOfMonth(1));
         parse(new ScheduleExpression().dayOfMonth("1"));
@@ -246,8 +260,7 @@ public class ScheduleExpressionParserTest
     }
 
     @Test
-    public void testParseLastDayOfMonth()
-    {
+    public void testParseLastDayOfMonth() {
         parse(new ScheduleExpression().dayOfMonth("Last"));
         parse(new ScheduleExpression().dayOfMonth("last"));
         parse(new ScheduleExpression().dayOfMonth("LAST"));
@@ -259,12 +272,9 @@ public class ScheduleExpressionParserTest
     }
 
     @Test
-    public void testParseNthDayOfMonth()
-    {
-        for (String ordinal : new String[] { "1st", "2nd", "3rd", "4th", "5th", "Last" })
-        {
-            for (String dayOfWeek : DAYS_OF_WEEK)
-            {
+    public void testParseNthDayOfMonth() {
+        for (String ordinal : new String[] { "1st", "2nd", "3rd", "4th", "5th", "Last" }) {
+            for (String dayOfWeek : DAYS_OF_WEEK) {
                 parse(new ScheduleExpression().dayOfMonth(ordinal + " " + dayOfWeek));
                 parse(new ScheduleExpression().dayOfMonth(ordinal.toLowerCase() + " " + dayOfWeek.toLowerCase()));
                 parse(new ScheduleExpression().dayOfMonth(ordinal.toUpperCase() + " " + dayOfWeek.toUpperCase()));
@@ -306,8 +316,7 @@ public class ScheduleExpressionParserTest
     }
 
     @Test
-    public void testParseNthLastDayOfMonth()
-    {
+    public void testParseNthLastDayOfMonth() {
         parse(new ScheduleExpression().dayOfMonth(-1));
         parse(new ScheduleExpression().dayOfMonth("-1"));
         parse(new ScheduleExpression().dayOfMonth(-7));
@@ -321,8 +330,7 @@ public class ScheduleExpressionParserTest
     }
 
     @Test
-    public void testParseNumericMonth()
-    {
+    public void testParseNumericMonth() {
         parse(new ScheduleExpression().month("*"));
         parse(new ScheduleExpression().month(1));
         parse(new ScheduleExpression().month("1"));
@@ -338,10 +346,8 @@ public class ScheduleExpressionParserTest
     }
 
     @Test
-    public void testParseNamedMonth()
-    {
-        for (String month : MONTHS)
-        {
+    public void testParseNamedMonth() {
+        for (String month : MONTHS) {
             parse(new ScheduleExpression().month(month));
             parse(new ScheduleExpression().month(month.toLowerCase()));
             parse(new ScheduleExpression().month(month.toUpperCase()));
@@ -351,8 +357,7 @@ public class ScheduleExpressionParserTest
     }
 
     @Test
-    public void testParseNumericDayOfWeek()
-    {
+    public void testParseNumericDayOfWeek() {
         parse(new ScheduleExpression().dayOfWeek("*"));
         parse(new ScheduleExpression().dayOfWeek(0));
         parse(new ScheduleExpression().dayOfWeek("0"));
@@ -368,10 +373,8 @@ public class ScheduleExpressionParserTest
     }
 
     @Test
-    public void testParseNamedDayOfWeek()
-    {
-        for (String dayOfWeek : DAYS_OF_WEEK)
-        {
+    public void testParseNamedDayOfWeek() {
+        for (String dayOfWeek : DAYS_OF_WEEK) {
             parse(new ScheduleExpression().dayOfWeek(dayOfWeek));
             parse(new ScheduleExpression().dayOfWeek(dayOfWeek.toLowerCase()));
             parse(new ScheduleExpression().dayOfWeek(dayOfWeek.toUpperCase()));
@@ -381,12 +384,10 @@ public class ScheduleExpressionParserTest
     }
 
     @Test
-    public void testParseYear()
-    {
+    public void testParseYear() {
         parse(new ScheduleExpression().year("*"));
 
-        for (int i = 1000; i <= 9999; i++)
-        {
+        for (int i = 1000; i <= 9999; i++) {
             parse(new ScheduleExpression().year(i));
             parse(new ScheduleExpression().year(Integer.toString(i)));
             parse(new ScheduleExpression().year(Integer.toString(i) + " "));
@@ -396,8 +397,7 @@ public class ScheduleExpressionParserTest
         failParse(new ScheduleExpression().year(null));
         failParse(new ScheduleExpression().year(""));
 
-        for (int i = 0; i < 1000; i++)
-        {
+        for (int i = 0; i < 1000; i++) {
             failParse(new ScheduleExpression().year(i));
             failParse(new ScheduleExpression().year(Integer.toString(i)));
         }
@@ -407,8 +407,7 @@ public class ScheduleExpressionParserTest
     }
 
     @Test
-    public void testParseListAttributes()
-    {
+    public void testParseListAttributes() {
         parse(new ScheduleExpression().second("1, 1"));
         parse(new ScheduleExpression().minute("1, 1"));
         parse(new ScheduleExpression().hour("1, 1"));
@@ -419,8 +418,7 @@ public class ScheduleExpressionParserTest
     }
 
     @Test
-    public void testParseListValues()
-    {
+    public void testParseListValues() {
         parse(new ScheduleExpression().second("0, 0"));
         failParse(new ScheduleExpression().second("*, 0"));
         failParse(new ScheduleExpression().second("0, *"));
@@ -429,8 +427,7 @@ public class ScheduleExpressionParserTest
     }
 
     @Test
-    public void testParseRangeAttributes()
-    {
+    public void testParseRangeAttributes() {
         parse(new ScheduleExpression().second("1-1"));
         parse(new ScheduleExpression().minute("1-1"));
         parse(new ScheduleExpression().hour("1-1"));
@@ -441,8 +438,7 @@ public class ScheduleExpressionParserTest
     }
 
     @Test
-    public void testParseRangeValues()
-    {
+    public void testParseRangeValues() {
         failParse(new ScheduleExpression().second("*-0"));
         failParse(new ScheduleExpression().second("0-*"));
         failParse(new ScheduleExpression().second("1/2-0"));
@@ -451,8 +447,7 @@ public class ScheduleExpressionParserTest
     }
 
     @Test
-    public void testParseSecondRange()
-    {
+    public void testParseSecondRange() {
         parse(new ScheduleExpression().second("0-59"));
         parse(new ScheduleExpression().second("59-0"));
         failParse(new ScheduleExpression().second("-1-59"));
@@ -462,8 +457,7 @@ public class ScheduleExpressionParserTest
     }
 
     @Test
-    public void testParseMinuteRange()
-    {
+    public void testParseMinuteRange() {
         parse(new ScheduleExpression().minute("0-59"));
         parse(new ScheduleExpression().minute("59-0"));
         failParse(new ScheduleExpression().minute("-1-59"));
@@ -473,8 +467,7 @@ public class ScheduleExpressionParserTest
     }
 
     @Test
-    public void testParseHourRange()
-    {
+    public void testParseHourRange() {
         parse(new ScheduleExpression().hour("0-23"));
         parse(new ScheduleExpression().hour("23-0"));
         failParse(new ScheduleExpression().hour("-1-23"));
@@ -484,8 +477,7 @@ public class ScheduleExpressionParserTest
     }
 
     @Test
-    public void testParseDayOfMonthRange()
-    {
+    public void testParseDayOfMonthRange() {
         parse(new ScheduleExpression().dayOfMonth("1-31"));
         parse(new ScheduleExpression().dayOfMonth("31-1"));
         failParse(new ScheduleExpression().dayOfMonth("0-31"));
@@ -509,8 +501,7 @@ public class ScheduleExpressionParserTest
     }
 
     @Test
-    public void testParseMonthRange()
-    {
+    public void testParseMonthRange() {
         parse(new ScheduleExpression().month("1-12"));
         parse(new ScheduleExpression().month("12-1"));
         failParse(new ScheduleExpression().month("0-12"));
@@ -520,8 +511,7 @@ public class ScheduleExpressionParserTest
     }
 
     @Test
-    public void testParseDayOfWeekRange()
-    {
+    public void testParseDayOfWeekRange() {
         parse(new ScheduleExpression().dayOfWeek("0-7"));
         parse(new ScheduleExpression().dayOfWeek("7-0"));
         failParse(new ScheduleExpression().dayOfWeek("-1-7"));
@@ -531,8 +521,7 @@ public class ScheduleExpressionParserTest
     }
 
     @Test
-    public void testParseYearRange()
-    {
+    public void testParseYearRange() {
         parse(new ScheduleExpression().year("1000-9999"));
         parse(new ScheduleExpression().year("9999-1000"));
         failParse(new ScheduleExpression().year("999-9999"));
@@ -542,8 +531,7 @@ public class ScheduleExpressionParserTest
     }
 
     @Test
-    public void testParseIncrementAttributes()
-    {
+    public void testParseIncrementAttributes() {
         parse(new ScheduleExpression().second("0/1"));
         parse(new ScheduleExpression().minute("0/1"));
         parse(new ScheduleExpression().hour("0/1"));
@@ -554,15 +542,13 @@ public class ScheduleExpressionParserTest
     }
 
     @Test
-    public void testParseIncrementValues()
-    {
+    public void testParseIncrementValues() {
         parse(new ScheduleExpression().second("*/0"));
         failParse(new ScheduleExpression().second("0/*"));
     }
 
     @Test
-    public void testParseSecondIncrement()
-    {
+    public void testParseSecondIncrement() {
         parse(new ScheduleExpression().second("0/59"));
         parse(new ScheduleExpression().second("59/1"));
         failParse(new ScheduleExpression().second("-1/59"));
@@ -572,8 +558,7 @@ public class ScheduleExpressionParserTest
     }
 
     @Test
-    public void testParseMinuteIncrement()
-    {
+    public void testParseMinuteIncrement() {
         parse(new ScheduleExpression().minute("0/59"));
         parse(new ScheduleExpression().minute("59/1"));
         failParse(new ScheduleExpression().minute("-1/59"));
@@ -583,8 +568,7 @@ public class ScheduleExpressionParserTest
     }
 
     @Test
-    public void testParseHourIncrement()
-    {
+    public void testParseHourIncrement() {
         parse(new ScheduleExpression().hour("0/23"));
         parse(new ScheduleExpression().hour("23/1"));
         failParse(new ScheduleExpression().hour("-1/23"));
@@ -594,14 +578,12 @@ public class ScheduleExpressionParserTest
     }
 
     @Test
-    public void testParseRules()
-    {
+    public void testParseRules() {
         failParse(new ScheduleExpression().dayOfMonth("- 1"));
     }
 
     @Test
-    public void testParseExamples()
-    {
+    public void testParseExamples() {
         // 18.2.1.1.1
         parse(new ScheduleExpression().second("10"));
         parse(new ScheduleExpression().month("Sep"));
@@ -665,7 +647,7 @@ public class ScheduleExpressionParserTest
     //  7  8  9 10 11 12 13
     // 14 15 16 17 18 19 20
     // 21 22 23 24 25 26 27
-    // 28 29 30 31      
+    // 28 29 30 31
     //
     // ----- FEB 9996 -----
     // Su Mo Tu We Th Fr Sa
@@ -740,31 +722,25 @@ public class ScheduleExpressionParserTest
     // 30 31
 
     @Test
-    public void testFirstTimeout() throws Exception
-    {
+    public void testFirstTimeout() throws Exception {
         // Advance time so that we land on the 0th millisecond.  This test will
         // probably only be useful on Windows with its low-resolution timers.
         Thread.sleep(1000 - System.currentTimeMillis() % 1000);
 
         Calendar cal = Calendar.getInstance();
-        ParsedScheduleExpression parsedExpr = ScheduleExpressionParser.parse(
-                        new ScheduleExpression().second(cal.get(Calendar.SECOND)).minute("*").hour("*"));
+        ParsedScheduleExpression parsedExpr = ScheduleExpressionParser.parse(new ScheduleExpression().second(cal.get(Calendar.SECOND)).minute("*").hour("*"));
         long firstTimeout = parsedExpr.getFirstTimeout();
 
         long now = cal.getTimeInMillis();
-        if (firstTimeout < now)
-        {
+        if (firstTimeout < now) {
             throw new Error("firstTimeout=" + firstTimeout + " < now=" + now);
-        }
-        else if (now % 1000 != 0)
-        {
+        } else if (now % 1000 != 0) {
             Tr.info(tc, "testFirstTimeout might not have been useful: now=" + now + ", firstTimeout=" + firstTimeout);
         }
     }
 
     @Test
-    public void testSecond()
-    {
+    public void testSecond() {
         verifyNextTimeout(new ScheduleExpression().second(1),
                           "9996-01-01 00:00:00",
                           "9996-01-01 00:00:01");
@@ -780,8 +756,7 @@ public class ScheduleExpressionParserTest
     }
 
     @Test
-    public void testSecondRollover()
-    {
+    public void testSecondRollover() {
         verifyNextTimeout(new ScheduleExpression().second("*"),
                           "9996-01-01 00:00:59",
                           "9996-01-02 00:00:00");
@@ -806,8 +781,7 @@ public class ScheduleExpressionParserTest
     }
 
     @Test
-    public void testSecondRange()
-    {
+    public void testSecondRange() {
         verifyNextTimeout(new ScheduleExpression().second("8-10"),
                           "9996-01-01 00:00:00",
                           "9996-01-01 00:00:08");
@@ -835,10 +809,8 @@ public class ScheduleExpressionParserTest
     }
 
     @Test
-    public void testSecondIncrement()
-    {
-        for (String second : new String[] { "0/15", "*/15" })
-        {
+    public void testSecondIncrement() {
+        for (String second : new String[] { "0/15", "*/15" }) {
             verifyNextTimeout(new ScheduleExpression().second(second),
                               "9996-01-01 00:00:00",
                               "9996-01-01 00:00:15");
@@ -868,8 +840,7 @@ public class ScheduleExpressionParserTest
     }
 
     @Test
-    public void testSecondList()
-    {
+    public void testSecondList() {
         verifyNextTimeout(new ScheduleExpression().second("10, 20, 30"),
                           "9996-01-01 00:00:00",
                           "9996-01-01 00:00:10");
@@ -885,8 +856,7 @@ public class ScheduleExpressionParserTest
     }
 
     @Test
-    public void testMinute()
-    {
+    public void testMinute() {
         verifyNextTimeout(new ScheduleExpression().minute(1),
                           "9996-01-01 00:00:56",
                           "9996-01-01 00:01:00");
@@ -914,8 +884,7 @@ public class ScheduleExpressionParserTest
     }
 
     @Test
-    public void testMinuteRollover()
-    {
+    public void testMinuteRollover() {
         verifyNextTimeout(new ScheduleExpression().minute("*"),
                           "9996-01-01 00:59:00",
                           "9996-01-02 00:00:00");
@@ -946,8 +915,7 @@ public class ScheduleExpressionParserTest
     }
 
     @Test
-    public void testMinuteRange()
-    {
+    public void testMinuteRange() {
         verifyNextTimeout(new ScheduleExpression().minute("8-10"),
                           "9996-01-01 00:00:56",
                           "9996-01-01 00:08:00");
@@ -975,10 +943,8 @@ public class ScheduleExpressionParserTest
     }
 
     @Test
-    public void testMinuteIncrement()
-    {
-        for (String minute : new String[] { "0/15", "*/15" })
-        {
+    public void testMinuteIncrement() {
+        for (String minute : new String[] { "0/15", "*/15" }) {
             verifyNextTimeout(new ScheduleExpression().minute(minute),
                               "9996-01-01 00:00:56",
                               "9996-01-01 00:15:00");
@@ -1002,8 +968,7 @@ public class ScheduleExpressionParserTest
     }
 
     @Test
-    public void testMinuteList()
-    {
+    public void testMinuteList() {
         verifyNextTimeout(new ScheduleExpression().minute("10, 20, 30"),
                           "9996-01-01 00:00:00",
                           "9996-01-01 00:10:00");
@@ -1019,8 +984,7 @@ public class ScheduleExpressionParserTest
     }
 
     @Test
-    public void testHour()
-    {
+    public void testHour() {
         verifyNextTimeout(new ScheduleExpression().hour(1),
                           "9996-01-01 00:34:56",
                           "9996-01-01 01:00:00");
@@ -1048,8 +1012,7 @@ public class ScheduleExpressionParserTest
     }
 
     @Test
-    public void testHourRollover()
-    {
+    public void testHourRollover() {
         verifyNextTimeout(new ScheduleExpression().hour("*"),
                           "9996-01-01 23:00:00",
                           "9996-01-02 00:00:00");
@@ -1080,8 +1043,7 @@ public class ScheduleExpressionParserTest
     }
 
     @Test
-    public void testHourRange()
-    {
+    public void testHourRange() {
         verifyNextTimeout(new ScheduleExpression().hour("8-10"),
                           "9996-01-01 00:34:56",
                           "9996-01-01 08:00:00");
@@ -1109,10 +1071,8 @@ public class ScheduleExpressionParserTest
     }
 
     @Test
-    public void testHourIncrement()
-    {
-        for (String hour : new String[] { "0/6", "*/6" })
-        {
+    public void testHourIncrement() {
+        for (String hour : new String[] { "0/6", "*/6" }) {
             verifyNextTimeout(new ScheduleExpression().hour(hour),
                               "9996-01-01 00:00:00",
                               "9996-01-01 06:00:00");
@@ -1136,8 +1096,7 @@ public class ScheduleExpressionParserTest
     }
 
     @Test
-    public void testHourList()
-    {
+    public void testHourList() {
         verifyNextTimeout(new ScheduleExpression().hour("4, 8, 12"),
                           "9996-01-01 00:00:00",
                           "9996-01-01 04:00:00");
@@ -1153,8 +1112,7 @@ public class ScheduleExpressionParserTest
     }
 
     @Test
-    public void testDayOfMonth()
-    {
+    public void testDayOfMonth() {
         verifyNextTimeout(new ScheduleExpression().dayOfMonth(2),
                           "9996-01-01 12:34:56",
                           "9996-01-02 00:00:00");
@@ -1182,8 +1140,7 @@ public class ScheduleExpressionParserTest
     }
 
     @Test
-    public void testNthLastDayOfMonth()
-    {
+    public void testNthLastDayOfMonth() {
         verifyNextTimeout(new ScheduleExpression().dayOfMonth("-1"),
                           "9996-01-01 12:34:56",
                           "9996-01-30 00:00:00");
@@ -1199,8 +1156,7 @@ public class ScheduleExpressionParserTest
     }
 
     @Test
-    public void testLastDayOfMonth()
-    {
+    public void testLastDayOfMonth() {
         verifyNextTimeout(new ScheduleExpression().dayOfMonth("Last"),
                           "9996-01-01 12:34:56",
                           "9996-01-31 00:00:00");
@@ -1210,8 +1166,7 @@ public class ScheduleExpressionParserTest
     }
 
     @Test
-    public void testNthDayOfMonth()
-    {
+    public void testNthDayOfMonth() {
         verifyNextTimeout(new ScheduleExpression().dayOfMonth("1st Sun"),
                           "9996-01-01 12:34:56",
                           "9996-01-07 00:00:00");
@@ -1233,8 +1188,7 @@ public class ScheduleExpressionParserTest
     }
 
     @Test
-    public void testLastDayOfWeekOfMonth()
-    {
+    public void testLastDayOfWeekOfMonth() {
         verifyNextTimeout(new ScheduleExpression().dayOfMonth("Last Sun"),
                           "9996-01-01 12:34:56",
                           "9996-01-28 00:00:00");
@@ -1280,8 +1234,7 @@ public class ScheduleExpressionParserTest
     }
 
     @Test
-    public void testDayOfMonthRange()
-    {
+    public void testDayOfMonthRange() {
         verifyNextTimeout(new ScheduleExpression().dayOfMonth("8-10"),
                           "9996-01-01 12:34:56",
                           "9996-01-08 00:00:00");
@@ -1321,8 +1274,7 @@ public class ScheduleExpressionParserTest
     }
 
     @Test
-    public void testDayToNthLastDayOfMonthRange()
-    {
+    public void testDayToNthLastDayOfMonthRange() {
         verifyNextTimeout(new ScheduleExpression().dayOfMonth("28--1"),
                           "9996-01-01",
                           "9996-01-28");
@@ -1347,8 +1299,7 @@ public class ScheduleExpressionParserTest
     }
 
     @Test
-    public void testDayToLastDayOfMonthRange()
-    {
+    public void testDayToLastDayOfMonthRange() {
         verifyNextTimeout(new ScheduleExpression().dayOfMonth("30-Last"),
                           "9996-01-01",
                           "9996-01-30");
@@ -1364,10 +1315,8 @@ public class ScheduleExpressionParserTest
     }
 
     @Test
-    public void testDayOfMonthToNthDayOfWeekRange()
-    {
-        for (int i = 1; i < 7; i++)
-        {
+    public void testDayOfMonthToNthDayOfWeekRange() {
+        for (int i = 1; i < 7; i++) {
             verifyNextTimeout(new ScheduleExpression().dayOfMonth("7-1st Sun"),
                               "9996-01-" + i,
                               "9996-01-07");
@@ -1411,24 +1360,20 @@ public class ScheduleExpressionParserTest
     }
 
     @Test
-    public void testDayOfMonthToLastDayOfWeekRange()
-    {
-        for (int i = 1; i <= 27; i++)
-        {
+    public void testDayOfMonthToLastDayOfWeekRange() {
+        for (int i = 1; i <= 27; i++) {
             verifyNextTimeout(new ScheduleExpression().dayOfMonth("28-Last Sun"),
                               "9996-01-" + i,
                               "9996-01-28");
         }
 
-        for (int i = 28; i <= 31; i++)
-        {
+        for (int i = 28; i <= 31; i++) {
             verifyNextTimeout(new ScheduleExpression().dayOfMonth("28-Last Sun"),
                               "9996-01-" + i,
                               "9996-03-28");
         }
 
-        for (int i = 28; i <= 30; i++)
-        {
+        for (int i = 28; i <= 30; i++) {
             verifyNextTimeout(new ScheduleExpression().dayOfMonth("28-Last Sun"),
                               "9996-03-" + i,
                               "9996-03-" + (i + 1));
@@ -1436,8 +1381,7 @@ public class ScheduleExpressionParserTest
     }
 
     @Test
-    public void testNthLastDayToDayOfMonthRange()
-    {
+    public void testNthLastDayToDayOfMonthRange() {
         verifyNextTimeout(new ScheduleExpression().dayOfMonth("-1-31, 5th Sat-5th Sun"),
                           "9996-01-01",
                           "9996-01-30");
@@ -1465,8 +1409,7 @@ public class ScheduleExpressionParserTest
     }
 
     @Test
-    public void testNthLastDayToNthLastDayOfMonth()
-    {
+    public void testNthLastDayToNthLastDayOfMonth() {
         verifyNextTimeout(new ScheduleExpression().dayOfMonth("-1--1"),
                           "9996-01-01",
                           "9996-01-30");
@@ -1497,8 +1440,7 @@ public class ScheduleExpressionParserTest
     }
 
     @Test
-    public void testNthLastDayToLastDayOfMonthRange()
-    {
+    public void testNthLastDayToLastDayOfMonthRange() {
         verifyNextTimeout(new ScheduleExpression().dayOfMonth("-1-Last"),
                           "9996-01-01",
                           "9996-01-30");
@@ -1529,8 +1471,7 @@ public class ScheduleExpressionParserTest
     }
 
     @Test
-    public void testNthLastDayToNthDayOfWeekRange()
-    {
+    public void testNthLastDayToNthDayOfWeekRange() {
         verifyNextTimeout(new ScheduleExpression().dayOfMonth("-7-4th Fri"), // Jan:25-26
                           "9996-01-01",
                           "9996-01-24");
@@ -1543,10 +1484,8 @@ public class ScheduleExpressionParserTest
     }
 
     @Test
-    public void testLastToDayOfMonthRange()
-    {
-        for (int i = 1; i <= 30; i++)
-        {
+    public void testLastToDayOfMonthRange() {
+        for (int i = 1; i <= 30; i++) {
             verifyNextTimeout(new ScheduleExpression().dayOfMonth("Last-30"),
                               "9996-01-" + i,
                               "9996-02-29");
@@ -1563,10 +1502,8 @@ public class ScheduleExpressionParserTest
     }
 
     @Test
-    public void testLastToNthLastDayOfMonthRange()
-    {
-        for (int i = 1; i <= 7; i++)
-        {
+    public void testLastToNthLastDayOfMonthRange() {
+        for (int i = 1; i <= 7; i++) {
             verifyNextTimeout(new ScheduleExpression().dayOfMonth("Last--" + i),
                               "9996-01-01",
                               null);
@@ -1577,8 +1514,7 @@ public class ScheduleExpressionParserTest
     }
 
     @Test
-    public void testLastToLastDayOfMonthRange()
-    {
+    public void testLastToLastDayOfMonthRange() {
         verifyNextTimeout(new ScheduleExpression().dayOfMonth("Last-Last"),
                           "9996-01-01",
                           "9996-01-31");
@@ -1588,8 +1524,7 @@ public class ScheduleExpressionParserTest
     }
 
     @Test
-    public void testLastDayOfMonthToNthDayOfWeekRange()
-    {
+    public void testLastDayOfMonthToNthDayOfWeekRange() {
         verifyNextTimeout(new ScheduleExpression().dayOfMonth("Last-5th Wed"),
                           "9996-01-05",
                           "9996-01-31");
@@ -1599,16 +1534,14 @@ public class ScheduleExpressionParserTest
     }
 
     @Test
-    public void testNthDayOfWeekToDayOfMonthRange()
-    {
+    public void testNthDayOfWeekToDayOfMonthRange() {
         verifyNextTimeout(new ScheduleExpression().dayOfMonth("1st Mon-1"),
                           "9996-01-01",
                           "9996-04-01");
     }
 
     @Test
-    public void testNthDayOfWeekToNthLastDayOfMonthRange()
-    {
+    public void testNthDayOfWeekToNthLastDayOfMonthRange() {
         verifyNextTimeout(new ScheduleExpression().dayOfMonth("5th Mon--1"), // Jan:29-30
                           "9996-01-01",
                           "9996-01-29");
@@ -1618,8 +1551,7 @@ public class ScheduleExpressionParserTest
     }
 
     @Test
-    public void testNthDayOfWeekToLastDayOfMonthRange()
-    {
+    public void testNthDayOfWeekToLastDayOfMonthRange() {
         verifyNextTimeout(new ScheduleExpression().dayOfMonth("5th Tue-Last"), // Jan:30-31
                           "9996-01-01",
                           "9996-01-30");
@@ -1629,8 +1561,7 @@ public class ScheduleExpressionParserTest
     }
 
     @Test
-    public void testNthDayOfWeekToNthDayOfWeekRange()
-    {
+    public void testNthDayOfWeekToNthDayOfWeekRange() {
         verifyNextTimeout(new ScheduleExpression().dayOfMonth("1st Fri-3rd Wed"), // Jan:5-17
                           "9996-01-01",
                           "9996-01-05");
@@ -1646,8 +1577,7 @@ public class ScheduleExpressionParserTest
     }
 
     @Test
-    public void testDayOfMonthList()
-    {
+    public void testDayOfMonthList() {
         verifyNextTimeout(new ScheduleExpression().dayOfMonth("5, 10, 15"),
                           "9996-01-01 00:00:00",
                           "9996-01-05 00:00:00");
@@ -1663,8 +1593,7 @@ public class ScheduleExpressionParserTest
     }
 
     @Test
-    public void testMonth()
-    {
+    public void testMonth() {
         verifyNextTimeout(new ScheduleExpression().month(1).dayOfMonth(1),
                           "9996-01-01 12:34:56",
                           "9997-01-01 00:00:00");
@@ -1672,10 +1601,8 @@ public class ScheduleExpressionParserTest
                           "9996-01-01 12:34:56",
                           "9997-01-01 00:00:00");
 
-        for (int i = 1; i < MONTHS.length - 1; i++)
-        {
-            for (int j = 0; j < 2; j++)
-            {
+        for (int i = 1; i < MONTHS.length - 1; i++) {
+            for (int j = 0; j < 2; j++) {
                 String month = j == 0 ? Integer.toString(i + 1) : MONTHS[i];
                 verifyNextTimeout(new ScheduleExpression().month(month).dayOfMonth(1),
                                   "              9996-  01-01 12:34:56",
@@ -1701,8 +1628,7 @@ public class ScheduleExpressionParserTest
     }
 
     @Test
-    public void testMonthRange()
-    {
+    public void testMonthRange() {
         verifyNextTimeout(new ScheduleExpression().dayOfMonth(1).month("8-10"),
                           "9996-01-01",
                           "9996-08-01");
@@ -1730,8 +1656,7 @@ public class ScheduleExpressionParserTest
     }
 
     @Test
-    public void testMonthList()
-    {
+    public void testMonthList() {
         verifyNextTimeout(new ScheduleExpression().dayOfMonth(1).month("Feb, Apr, Jun"),
                           "9996-01-01 00:00:00",
                           "9996-02-01 00:00:00");
@@ -1747,10 +1672,8 @@ public class ScheduleExpressionParserTest
     }
 
     @Test
-    public void testDayOfWeek()
-    {
-        for (String dayOfWeek : new String[] { "0", "7", "Sun" })
-        {
+    public void testDayOfWeek() {
+        for (String dayOfWeek : new String[] { "0", "7", "Sun" }) {
             verifyNextTimeout(new ScheduleExpression().dayOfWeek(dayOfWeek),
                               "9996-01-01 12:34:56",
                               "9996-01-07 00:00:00");
@@ -1762,8 +1685,7 @@ public class ScheduleExpressionParserTest
                               "9996-02-04 00:00:00");
         }
 
-        for (String dayOfWeek : new String[] { "1", "Mon" })
-        {
+        for (String dayOfWeek : new String[] { "1", "Mon" }) {
             verifyNextTimeout(new ScheduleExpression().dayOfWeek(dayOfWeek),
                               "9996-01-02 12:34:56",
                               "9996-01-08 00:00:00");
@@ -1775,8 +1697,7 @@ public class ScheduleExpressionParserTest
                               "9996-02-05 00:00:00");
         }
 
-        for (String dayOfWeek : new String[] { "2", "Tue" })
-        {
+        for (String dayOfWeek : new String[] { "2", "Tue" }) {
             verifyNextTimeout(new ScheduleExpression().dayOfWeek(dayOfWeek),
                               "9996-01-01 12:34:56",
                               "9996-01-02 00:00:00");
@@ -1788,8 +1709,7 @@ public class ScheduleExpressionParserTest
                               "9996-02-06 00:00:00");
         }
 
-        for (String dayOfWeek : new String[] { "3", "Wed" })
-        {
+        for (String dayOfWeek : new String[] { "3", "Wed" }) {
             verifyNextTimeout(new ScheduleExpression().dayOfWeek(dayOfWeek),
                               "9996-01-01 12:34:56",
                               "9996-01-03 00:00:00");
@@ -1801,8 +1721,7 @@ public class ScheduleExpressionParserTest
                               "9996-02-07 00:00:00");
         }
 
-        for (String dayOfWeek : new String[] { "4", "Thu" })
-        {
+        for (String dayOfWeek : new String[] { "4", "Thu" }) {
             verifyNextTimeout(new ScheduleExpression().dayOfWeek(dayOfWeek),
                               "9996-01-01 12:34:56",
                               "9996-01-04 00:00:00");
@@ -1814,8 +1733,7 @@ public class ScheduleExpressionParserTest
                               "9996-02-01 00:00:00");
         }
 
-        for (String dayOfWeek : new String[] { "5", "Fri" })
-        {
+        for (String dayOfWeek : new String[] { "5", "Fri" }) {
             verifyNextTimeout(new ScheduleExpression().dayOfWeek(dayOfWeek),
                               "9996-01-01 12:34:56",
                               "9996-01-05 00:00:00");
@@ -1827,8 +1745,7 @@ public class ScheduleExpressionParserTest
                               "9996-02-02 00:00:00");
         }
 
-        for (String dayOfWeek : new String[] { "6", "Sat" })
-        {
+        for (String dayOfWeek : new String[] { "6", "Sat" }) {
             verifyNextTimeout(new ScheduleExpression().dayOfWeek(dayOfWeek),
                               "9996-01-01 12:34:56",
                               "9996-01-06 00:00:00");
@@ -1842,8 +1759,7 @@ public class ScheduleExpressionParserTest
     }
 
     @Test
-    public void testDayOfWeekRange()
-    {
+    public void testDayOfWeekRange() {
         verifyNextTimeout(new ScheduleExpression().dayOfWeek("Tue-Thu"),
                           "9996-01-07",
                           "9996-01-09");
@@ -1892,10 +1808,8 @@ public class ScheduleExpressionParserTest
     }
 
     @Test
-    public void test7thDayOfWeekRange()
-    {
-        for (int i = 1; i < 7; i++)
-        {
+    public void test7thDayOfWeekRange() {
+        for (int i = 1; i < 7; i++) {
             verifyNextTimeout(new ScheduleExpression().dayOfWeek("0-7"),
                               "9996-01-" + i,
                               "9996-01-" + (i + 1));
@@ -1940,8 +1854,7 @@ public class ScheduleExpressionParserTest
     }
 
     @Test
-    public void testDayOfWeekList()
-    {
+    public void testDayOfWeekList() {
         verifyNextTimeout(new ScheduleExpression().dayOfWeek("Tue, Thu, Sat"),
                           "9996-01-01 00:00:00",
                           "9996-01-02 00:00:00");
@@ -1957,8 +1870,7 @@ public class ScheduleExpressionParserTest
     }
 
     @Test
-    public void testDayOfMonthAndWeek()
-    {
+    public void testDayOfMonthAndWeek() {
         // 18.2.1.2
         verifyNextTimeout(new ScheduleExpression().dayOfMonth("4, 5").dayOfWeek("Tue, Fri"),
                           "9996-01-01",
@@ -1993,8 +1905,7 @@ public class ScheduleExpressionParserTest
     }
 
     @Test
-    public void testYear()
-    {
+    public void testYear() {
         verifyNextTimeout(new ScheduleExpression().year(9996),
                           "9996-01-01 12:34:56",
                           "9996-01-02 00:00:00");
@@ -2004,8 +1915,7 @@ public class ScheduleExpressionParserTest
     }
 
     @Test
-    public void testYearRange()
-    {
+    public void testYearRange() {
         verifyNextTimeout(new ScheduleExpression().dayOfMonth(1).month(1).year("9990-9999"),
                           "9996-01-01",
                           "9997-01-01");
@@ -2015,8 +1925,7 @@ public class ScheduleExpressionParserTest
     }
 
     @Test
-    public void testYearList()
-    {
+    public void testYearList() {
         verifyNextTimeout(new ScheduleExpression().dayOfMonth(1).month(1).year("9997, 9999"),
                           "9996-01-01",
                           "9997-01-01");
@@ -2029,8 +1938,7 @@ public class ScheduleExpressionParserTest
     }
 
     @Test
-    public void testStart()
-    {
+    public void testStart() {
         verifyFirstTimeout(new ScheduleExpression().start(new Date(0)).year(9996),
                            "9996-01-01");
         verifyFirstTimeout(new ScheduleExpression().start(new Date(Long.MIN_VALUE)).year(9996),
@@ -2048,8 +1956,7 @@ public class ScheduleExpressionParserTest
     }
 
     @Test
-    public void testEnd()
-    {
+    public void testEnd() {
         verifyFirstTimeout(new ScheduleExpression().end(new Date(0)),
                            null);
         verifyFirstTimeout(new ScheduleExpression().end(new Date(Long.MIN_VALUE)),
@@ -2072,8 +1979,7 @@ public class ScheduleExpressionParserTest
     }
 
     @Test
-    public void testStartAndEnd()
-    {
+    public void testStartAndEnd() {
         verifyNextTimeout(new ScheduleExpression().start(new Date(stringToMillis("2000-01-01"))).end(new Date(stringToMillis("9999-12-31"))),
                           "9996-01-01",
                           "9996-01-02");
@@ -2088,53 +1994,459 @@ public class ScheduleExpressionParserTest
     }
 
     @Test
-    public void testDaylightSavingsTime()
-    {
+    public void testDaylightSavingsTime() {
         // This test relies on US-specific DST transitions in 2009.
+
+        // First, cover springing ahead to DST
         verifyNextTimeout(new ScheduleExpression().hour("0-4").timezone("America/Chicago"),
                           "2009-03-08 01:00:00 America/Chicago",
                           "2009-03-08 03:00:00 America/Chicago");
+        verifyNextTimeout(new ScheduleExpression().hour("2").timezone("America/Chicago"),
+                          "2009-03-08 01:00:00 America/Chicago",
+                          "2009-03-09 02:00:00 America/Chicago");
+        verifyNextTimeout(new ScheduleExpression().hour("2-4").timezone("America/Chicago"),
+                          "2009-03-08 01:00:00 America/Chicago",
+                          "2009-03-08 03:00:00 America/Chicago");
+        verifyNextTimeout(new ScheduleExpression().hour("2").minute("*").timezone("America/Chicago"),
+                          "2009-03-08 01:59:00 America/Chicago",
+                          "2009-03-09 02:00:00 America/Chicago");
+        verifyNextTimeout(new ScheduleExpression().hour("2-4").minute("*").second("*").timezone("America/Chicago"),
+                          "2009-03-08 01:59:59 America/Chicago",
+                          "2009-03-08 03:00:00 America/Chicago");
 
+        // Second, cover falling back from DST, where timer runs on the hour, every hour
         final TimeZone timezone = TimeZone.getTimeZone("America/Chicago");
-        final ParsedScheduleExpression parsedAllHours = ScheduleExpressionParser.parse(
-                        new ScheduleExpression().hour("*").timezone("America/Chicago"));
+        final ParsedScheduleExpression parsedAllHours = ScheduleExpressionParser.parse(new ScheduleExpression().hour("*").timezone("America/Chicago"));
 
         final long t2009_11_01__00_00_00 = 1257051600000L;
-        if (!millisToString(t2009_11_01__00_00_00, timezone).equals("2009-11-01 00:00:00"))
-        {
+        if (!millisToString(t2009_11_01__00_00_00, timezone).equals("2009-11-01 00:00:00")) {
             throw new Error(millisToString(t2009_11_01__00_00_00, timezone));
         }
 
-        final long t2009_11_01__01_00_00 = parsedAllHours.getNextTimeout(t2009_11_01__00_00_00);
-        if (t2009_11_01__01_00_00 != t2009_11_01__00_00_00 + (1 * 60 * 60 * 1000))
-        {
-            throw new Error(t2009_11_01__01_00_00 + " " + millisToString(t2009_11_01__01_00_00));
+        final long t2009_11_01__01a_00_00 = parsedAllHours.getNextTimeout(t2009_11_01__00_00_00);
+        if (t2009_11_01__01a_00_00 != t2009_11_01__00_00_00 + (1 * 60 * 60 * 1000)) {
+            throw new Error(t2009_11_01__01a_00_00 + " " + millisToString(t2009_11_01__01a_00_00));
         }
-        if (!millisToString(t2009_11_01__01_00_00, timezone).equals("2009-11-01 01:00:00"))
-        {
-            throw new Error(millisToString(t2009_11_01__01_00_00, timezone));
+        if (!millisToString(t2009_11_01__01a_00_00, timezone).equals("2009-11-01 01:00:00")) {
+            throw new Error(millisToString(t2009_11_01__01a_00_00, timezone));
         }
 
-        final long t2009_11_01__02_00_00 = parsedAllHours.getNextTimeout(t2009_11_01__01_00_00);
-        if (t2009_11_01__02_00_00 != t2009_11_01__00_00_00 + (3 * 60 * 60 * 1000))
-        {
-            throw new Error(t2009_11_01__00_00_00 + " " + millisToString(t2009_11_01__02_00_00));
+        final long t2009_11_01__01b_00_00 = parsedAllHours.getNextTimeout(t2009_11_01__01a_00_00);
+        if (t2009_11_01__01b_00_00 != t2009_11_01__00_00_00 + (2 * 60 * 60 * 1000)) {
+            throw new Error(t2009_11_01__01b_00_00 + " " + millisToString(t2009_11_01__01b_00_00));
         }
-        if (!millisToString(t2009_11_01__02_00_00, timezone).equals("2009-11-01 02:00:00"))
-        {
+        if (!millisToString(t2009_11_01__01b_00_00, timezone).equals("2009-11-01 01:00:00")) {
+            throw new Error(millisToString(t2009_11_01__01b_00_00, timezone));
+        }
+
+        final long t2009_11_01__02_00_00 = parsedAllHours.getNextTimeout(t2009_11_01__01b_00_00);
+        if (t2009_11_01__02_00_00 != t2009_11_01__00_00_00 + (3 * 60 * 60 * 1000)) {
+            throw new Error(t2009_11_01__02_00_00 + " " + millisToString(t2009_11_01__02_00_00));
+        }
+        if (!millisToString(t2009_11_01__02_00_00, timezone).equals("2009-11-01 02:00:00")) {
             throw new Error(millisToString(t2009_11_01__02_00_00, timezone));
+        }
+
+        final long t2009_11_01__03_00_00 = parsedAllHours.getNextTimeout(t2009_11_01__02_00_00);
+        if (t2009_11_01__03_00_00 != t2009_11_01__00_00_00 + (4 * 60 * 60 * 1000)) {
+            throw new Error(t2009_11_01__03_00_00 + " " + millisToString(t2009_11_01__03_00_00));
+        }
+        if (!millisToString(t2009_11_01__03_00_00, timezone).equals("2009-11-01 03:00:00")) {
+            throw new Error(millisToString(t2009_11_01__03_00_00, timezone));
+        }
+
+        // Third, cover falling back from DST, where timer runs on the minute, every minute
+        final ParsedScheduleExpression parsedAllMinutes = ScheduleExpressionParser.parse(new ScheduleExpression().hour("*").minute("*").timezone("America/Chicago"));
+
+        final long t2009_11_01__00_01_00 = parsedAllMinutes.getNextTimeout(t2009_11_01__00_00_00);
+        if (t2009_11_01__00_01_00 != t2009_11_01__00_00_00 + (1 * 60 * 1000)) {
+            throw new Error(t2009_11_01__00_01_00 + " " + millisToString(t2009_11_01__00_01_00));
+        }
+        if (!millisToString(t2009_11_01__00_01_00, timezone).equals("2009-11-01 00:01:00")) {
+            throw new Error(millisToString(t2009_11_01__00_01_00, timezone));
+        }
+
+        long t2009_11_01__01a_00_00m = t2009_11_01__00_01_00;
+        for (int i = 0; i < 59; ++i) {
+            t2009_11_01__01a_00_00m = parsedAllMinutes.getNextTimeout(t2009_11_01__01a_00_00m);
+        }
+        if (t2009_11_01__01a_00_00m != t2009_11_01__00_00_00 + (1 * 60 * 60 * 1000)) {
+            throw new Error(t2009_11_01__01a_00_00m + " " + millisToString(t2009_11_01__01a_00_00m));
+        }
+        if (!millisToString(t2009_11_01__01a_00_00m, timezone).equals("2009-11-01 01:00:00")) {
+            throw new Error(millisToString(t2009_11_01__01a_00_00m, timezone));
+        }
+
+        long t2009_11_01__01b_00_00m = t2009_11_01__01a_00_00m;
+        for (int i = 0; i <= 59; ++i) {
+            t2009_11_01__01b_00_00m = parsedAllMinutes.getNextTimeout(t2009_11_01__01b_00_00m);
+        }
+        if (t2009_11_01__01b_00_00m != t2009_11_01__00_00_00 + (2 * 60 * 60 * 1000)) {
+            throw new Error(t2009_11_01__01b_00_00m + " " + millisToString(t2009_11_01__01b_00_00m));
+        }
+        if (!millisToString(t2009_11_01__01b_00_00m, timezone).equals("2009-11-01 01:00:00")) {
+            throw new Error(millisToString(t2009_11_01__01b_00_00m, timezone));
+        }
+
+        long t2009_11_01__02_00_00m = t2009_11_01__01b_00_00m;
+        for (int i = 0; i <= 59; ++i) {
+            t2009_11_01__02_00_00m = parsedAllMinutes.getNextTimeout(t2009_11_01__02_00_00m);
+        }
+        if (t2009_11_01__02_00_00m != t2009_11_01__00_00_00 + (3 * 60 * 60 * 1000)) {
+            throw new Error(t2009_11_01__02_00_00m + " " + millisToString(t2009_11_01__02_00_00m));
+        }
+        if (!millisToString(t2009_11_01__02_00_00m, timezone).equals("2009-11-01 02:00:00")) {
+            throw new Error(millisToString(t2009_11_01__02_00_00m, timezone));
+        }
+
+        long t2009_11_01__03_00_00m = t2009_11_01__02_00_00m;
+        for (int i = 0; i <= 59; ++i) {
+            t2009_11_01__03_00_00m = parsedAllMinutes.getNextTimeout(t2009_11_01__03_00_00m);
+        }
+        if (t2009_11_01__03_00_00m != t2009_11_01__00_00_00 + (4 * 60 * 60 * 1000)) {
+            throw new Error(t2009_11_01__03_00_00m + " " + millisToString(t2009_11_01__03_00_00m));
+        }
+        if (!millisToString(t2009_11_01__03_00_00m, timezone).equals("2009-11-01 03:00:00")) {
+            throw new Error(millisToString(t2009_11_01__03_00_00m, timezone));
+        }
+
+        // Fourth, cover falling back from DST, where timer runs at 1 AM only
+        final ParsedScheduleExpression parsed1Only = ScheduleExpressionParser.parse(new ScheduleExpression().hour("1").timezone("America/Chicago"));
+        final long t2009_10_31__01_00_00 = stringToMillis("2009-10-31 01:00:00 America/Chicago");
+        final long t2009_11_01__01a_00_00_1 = parsed1Only.getNextTimeout(t2009_10_31__01_00_00);
+        if (t2009_11_01__01a_00_00_1 != t2009_10_31__01_00_00 + (24 * 60 * 60 * 1000)) {
+            throw new Error(t2009_11_01__01a_00_00_1 + " " + millisToString(t2009_11_01__01a_00_00_1));
+        }
+        if (!millisToString(t2009_11_01__01a_00_00_1, timezone).equals("2009-11-01 01:00:00")) {
+            throw new Error(millisToString(t2009_11_01__01a_00_00_1, timezone));
+        }
+
+        final long t2009_11_01__01b_00_00_1 = parsed1Only.getNextTimeout(t2009_11_01__01a_00_00_1);
+        if (t2009_11_01__01b_00_00_1 != t2009_10_31__01_00_00 + (25 * 60 * 60 * 1000)) {
+            throw new Error(t2009_11_01__01b_00_00_1 + " " + millisToString(t2009_11_01__01b_00_00_1));
+        }
+        if (!millisToString(t2009_11_01__01b_00_00_1, timezone).equals("2009-11-01 01:00:00")) {
+            throw new Error(millisToString(t2009_11_01__01b_00_00_1, timezone));
+        }
+
+        final long t2009_11_02__01_00_00_1 = parsed1Only.getNextTimeout(t2009_11_01__01b_00_00_1);
+        if (t2009_11_02__01_00_00_1 != t2009_10_31__01_00_00 + (49 * 60 * 60 * 1000)) {
+            throw new Error(t2009_11_02__01_00_00_1 + " " + millisToString(t2009_11_02__01_00_00_1));
+        }
+        if (!millisToString(t2009_11_02__01_00_00_1, timezone).equals("2009-11-02 01:00:00")) {
+            throw new Error(millisToString(t2009_11_02__01_00_00_1, timezone));
+        }
+
+        final long t2009_11_03__01_00_00_1 = parsed1Only.getNextTimeout(t2009_11_02__01_00_00_1);
+        if (t2009_11_03__01_00_00_1 != t2009_10_31__01_00_00 + (73 * 60 * 60 * 1000)) {
+            throw new Error(t2009_11_03__01_00_00_1 + " " + millisToString(t2009_11_03__01_00_00_1));
+        }
+        if (!millisToString(t2009_11_03__01_00_00_1, timezone).equals("2009-11-03 01:00:00")) {
+            throw new Error(millisToString(t2009_11_03__01_00_00_1, timezone));
+        }
+
+        // Fifth, cover falling back from DST, where timer runs from 0 to 2 only; every minute and every second
+        final ParsedScheduleExpression parsed02Allms = ScheduleExpressionParser.parse(new ScheduleExpression().hour("0-2").minute("*").second("*").timezone("America/Chicago"));
+        final long t2009_11_01__00_59_59 = stringToMillis("2009-11-01 00:59:59 America/Chicago");
+        final long t2009_11_01__01a_00_00_02ms = parsed02Allms.getNextTimeout(t2009_11_01__00_59_59);
+        if (t2009_11_01__01a_00_00_02ms != t2009_11_01__00_59_59 + (1000)) {
+            throw new Error(t2009_11_01__01a_00_00_02ms + " " + millisToString(t2009_11_01__01a_00_00_02ms) + " " + (t2009_11_01__01a_00_00_02ms - t2009_11_01__00_59_59));
+        }
+        if (!millisToString(t2009_11_01__01a_00_00_02ms, timezone).equals("2009-11-01 01:00:00")) {
+            throw new Error(millisToString(t2009_11_01__01a_00_00_02ms, timezone));
+        }
+
+        final long t2009_11_01__01a_00_01_02ms = parsed02Allms.getNextTimeout(t2009_11_01__01a_00_00_02ms);
+        if (t2009_11_01__01a_00_01_02ms != t2009_11_01__00_59_59 + (2 * 1000)) {
+            throw new Error(t2009_11_01__01a_00_01_02ms + " " + millisToString(t2009_11_01__01a_00_01_02ms) + " " + (t2009_11_01__01a_00_01_02ms - t2009_11_01__00_59_59));
+        }
+        if (!millisToString(t2009_11_01__01a_00_01_02ms, timezone).equals("2009-11-01 01:00:01")) {
+            throw new Error(millisToString(t2009_11_01__01a_00_01_02ms, timezone));
+        }
+
+        final long t2009_11_01__01b_00_00_02ms = parsed02Allms.getNextTimeout(t2009_11_01__00_59_59 + (60 * 60 * 1000));
+        if (t2009_11_01__01b_00_00_02ms != t2009_11_01__00_59_59 + (60 * 60 * 1000) + (1000)) {
+            throw new Error(t2009_11_01__01b_00_00_02ms + " " + millisToString(t2009_11_01__01b_00_00_02ms) + " " + (t2009_11_01__01b_00_00_02ms - t2009_11_01__00_59_59));
+        }
+        if (!millisToString(t2009_11_01__01b_00_00_02ms, timezone).equals("2009-11-01 01:00:00")) {
+            throw new Error(millisToString(t2009_11_01__01b_00_00_02ms, timezone));
+        }
+
+        final long t2009_11_01__2_00_00_02ms = parsed02Allms.getNextTimeout(t2009_11_01__00_59_59 + (2 * 60 * 60 * 1000));
+        if (t2009_11_01__2_00_00_02ms != t2009_11_01__00_59_59 + (2 * 60 * 60 * 1000) + (1000)) {
+            throw new Error(t2009_11_01__2_00_00_02ms + " " + millisToString(t2009_11_01__2_00_00_02ms) + " " + (t2009_11_01__2_00_00_02ms - t2009_11_01__00_59_59));
+        }
+        if (!millisToString(t2009_11_01__2_00_00_02ms, timezone).equals("2009-11-01 02:00:00")) {
+            throw new Error(millisToString(t2009_11_01__2_00_00_02ms, timezone));
+        }
+
+        // Fourth, cover falling back from DST, where timer runs at 1 and 3 AM only
+        final ParsedScheduleExpression parsed13Only = ScheduleExpressionParser.parse(new ScheduleExpression().hour("1,3").timezone("America/Chicago"));
+        final long t2009_10_31__03_00_00 = stringToMillis("2009-10-31 03:00:00 America/Chicago");
+        final long t2009_11_01__01a_00_00_13 = parsed13Only.getNextTimeout(t2009_10_31__03_00_00);
+        if (t2009_11_01__01a_00_00_13 != t2009_10_31__03_00_00 + (22 * 60 * 60 * 1000)) {
+            throw new Error(t2009_11_01__01a_00_00_13 + " " + millisToString(t2009_11_01__01a_00_00_13) + " " + (t2009_11_01__01a_00_00_13 - t2009_10_31__03_00_00));
+        }
+        if (!millisToString(t2009_11_01__01a_00_00_13, timezone).equals("2009-11-01 01:00:00")) {
+            throw new Error(millisToString(t2009_11_01__01a_00_00_13, timezone));
+        }
+
+        final long t2009_11_01__01b_00_00_13 = parsed13Only.getNextTimeout(t2009_11_01__01a_00_00_13);
+        if (t2009_11_01__01b_00_00_13 != t2009_10_31__03_00_00 + (23 * 60 * 60 * 1000)) {
+            throw new Error(t2009_11_01__01b_00_00_13 + " " + millisToString(t2009_11_01__01b_00_00_13) + " " + (t2009_11_01__01b_00_00_13 - t2009_11_01__01a_00_00_13));
+        }
+        if (!millisToString(t2009_11_01__01b_00_00_13, timezone).equals("2009-11-01 01:00:00")) {
+            throw new Error(millisToString(t2009_11_01__01b_00_00_13, timezone));
+        }
+
+        final long t2009_11_01__03_00_00_13 = parsed13Only.getNextTimeout(t2009_11_01__01b_00_00_13);
+        if (t2009_11_01__03_00_00_13 != t2009_10_31__03_00_00 + (25 * 60 * 60 * 1000)) {
+            throw new Error(t2009_11_01__03_00_00_13 + " " + millisToString(t2009_11_01__03_00_00_13) + " " + (t2009_11_01__03_00_00_13 - t2009_11_01__01b_00_00_13));
+        }
+        if (!millisToString(t2009_11_01__03_00_00_13, timezone).equals("2009-11-01 03:00:00")) {
+            throw new Error(millisToString(t2009_11_01__03_00_00_13, timezone));
         }
     }
 
     @Test
-    public void testExamples()
-    {
+    public void testDaylightSavingsTimeFirstTimeout() throws Exception {
+        // This test relies on US-specific DST transitions in 2009.
+
+        // Note: getFirstTimeout uses current system time, so instead test the
+        // method called by getFirstTimeout, getTimeout(time, false);
+
+        // First, cover springing ahead to DST; specific hours, every hour, and every minute
+        final long t2009_03_08__00_59_00 = stringToMillis("2009-03-08 00:59:00 America/Chicago");
+        verifyFirstTimeout(new ScheduleExpression().hour("0-4").timezone("America/Chicago"),
+                           t2009_03_08__00_59_00,
+                           t2009_03_08__00_59_00 + (60 * 1000),
+                           "2009-03-08 01:00:00");
+        verifyFirstTimeout(new ScheduleExpression().hour("1").timezone("America/Chicago"),
+                           t2009_03_08__00_59_00,
+                           t2009_03_08__00_59_00 + (60 * 1000),
+                           "2009-03-08 01:00:00");
+        verifyFirstTimeout(new ScheduleExpression().hour("2").timezone("America/Chicago"),
+                           t2009_03_08__00_59_00,
+                           t2009_03_08__00_59_00 + (60 * 1000) + (24 * 60 * 60 * 1000),
+                           "2009-03-09 02:00:00");
+        verifyFirstTimeout(new ScheduleExpression().hour("2").minute("*").second("*").timezone("America/Chicago"),
+                           t2009_03_08__00_59_00,
+                           t2009_03_08__00_59_00 + (60 * 1000) + (24 * 60 * 60 * 1000),
+                           "2009-03-09 02:00:00");
+        verifyFirstTimeout(new ScheduleExpression().hour("2,3").timezone("America/Chicago"),
+                           t2009_03_08__00_59_00,
+                           t2009_03_08__00_59_00 + (60 * 1000) + (1 * 60 * 60 * 1000),
+                           "2009-03-08 03:00:00");
+        verifyFirstTimeout(new ScheduleExpression().hour("2,4").timezone("America/Chicago"),
+                           t2009_03_08__00_59_00,
+                           t2009_03_08__00_59_00 + (60 * 1000) + (2 * 60 * 60 * 1000),
+                           "2009-03-08 04:00:00");
+
+        final long t2009_03_08__01_59_00 = t2009_03_08__00_59_00 + (1 * 60 * 60 * 1000);
+        verifyFirstTimeout(new ScheduleExpression().hour("0-4").timezone("America/Chicago"),
+                           t2009_03_08__01_59_00,
+                           t2009_03_08__01_59_00 + (60 * 1000),
+                           "2009-03-08 03:00:00");
+        verifyFirstTimeout(new ScheduleExpression().hour("1").timezone("America/Chicago"),
+                           t2009_03_08__01_59_00,
+                           t2009_03_08__01_59_00 + (60 * 1000) + (22 * 60 * 60 * 1000),
+                           "2009-03-09 01:00:00");
+        verifyFirstTimeout(new ScheduleExpression().hour("2").timezone("America/Chicago"),
+                           t2009_03_08__01_59_00,
+                           t2009_03_08__01_59_00 + (60 * 1000) + (23 * 60 * 60 * 1000),
+                           "2009-03-09 02:00:00");
+        verifyFirstTimeout(new ScheduleExpression().hour("2").minute("*").second("*").timezone("America/Chicago"),
+                           t2009_03_08__01_59_00,
+                           t2009_03_08__01_59_00 + (60 * 1000) + (23 * 60 * 60 * 1000),
+                           "2009-03-09 02:00:00");
+        verifyFirstTimeout(new ScheduleExpression().hour("2,3").timezone("America/Chicago"),
+                           t2009_03_08__01_59_00,
+                           t2009_03_08__01_59_00 + (60 * 1000),
+                           "2009-03-08 03:00:00");
+        verifyFirstTimeout(new ScheduleExpression().hour("2,4").timezone("America/Chicago"),
+                           t2009_03_08__01_59_00,
+                           t2009_03_08__01_59_00 + (60 * 1000) + (1 * 60 * 60 * 1000),
+                           "2009-03-08 04:00:00");
+        verifyFirstTimeout(new ScheduleExpression().hour("*").timezone("America/Chicago"),
+                           t2009_03_08__01_59_00,
+                           t2009_03_08__01_59_00 + (60 * 1000),
+                           "2009-03-08 03:00:00");
+        verifyFirstTimeout(new ScheduleExpression().hour("*").minute("*").timezone("America/Chicago"),
+                           t2009_03_08__01_59_00,
+                           t2009_03_08__01_59_00,
+                           "2009-03-08 01:59:00");
+
+        final long t2009_03_08__01_59_01 = t2009_03_08__01_59_00 + 1000;
+        verifyFirstTimeout(new ScheduleExpression().hour("2").timezone("America/Chicago"),
+                           t2009_03_08__01_59_01,
+                           t2009_03_08__01_59_01 + (59 * 1000) + (23 * 60 * 60 * 1000),
+                           "2009-03-09 02:00:00");
+        verifyFirstTimeout(new ScheduleExpression().hour("2,4").timezone("America/Chicago"),
+                           t2009_03_08__01_59_01,
+                           t2009_03_08__01_59_01 + (59 * 1000) + (1 * 60 * 60 * 1000),
+                           "2009-03-08 04:00:00");
+        verifyFirstTimeout(new ScheduleExpression().hour("*").timezone("America/Chicago"),
+                           t2009_03_08__01_59_01,
+                           t2009_03_08__01_59_01 + (59 * 1000),
+                           "2009-03-08 03:00:00");
+        verifyFirstTimeout(new ScheduleExpression().hour("*").minute("*").timezone("America/Chicago"),
+                           t2009_03_08__01_59_01,
+                           t2009_03_08__01_59_01 + (59 * 1000),
+                           "2009-03-08 03:00:00");
+
+        // Second, cover falling back from DST; specific hours, every hour, and every minute
+        final long t2009_11_01__00_00_00 = stringToMillis("2009-11-01 00:00:00 America/Chicago");
+        verifyFirstTimeout(new ScheduleExpression().hour("*").timezone("America/Chicago"),
+                           t2009_11_01__00_00_00,
+                           t2009_11_01__00_00_00,
+                           "2009-11-01 00:00:00");
+        verifyFirstTimeout(new ScheduleExpression().hour("0-4").timezone("America/Chicago"),
+                           t2009_11_01__00_00_00,
+                           t2009_11_01__00_00_00,
+                           "2009-11-01 00:00:00");
+        verifyFirstTimeout(new ScheduleExpression().hour("0").timezone("America/Chicago"),
+                           t2009_11_01__00_00_00,
+                           t2009_11_01__00_00_00,
+                           "2009-11-01 00:00:00");
+        verifyFirstTimeout(new ScheduleExpression().hour("1").timezone("America/Chicago"),
+                           t2009_11_01__00_00_00,
+                           t2009_11_01__00_00_00 + (1 * 60 * 60 * 1000),
+                           "2009-11-01 01:00:00");
+        verifyFirstTimeout(new ScheduleExpression().hour("2").timezone("America/Chicago"),
+                           t2009_11_01__00_00_00,
+                           t2009_11_01__00_00_00 + (3 * 60 * 60 * 1000),
+                           "2009-11-01 02:00:00");
+
+        final long t2009_11_01__01_00_00 = t2009_11_01__00_00_00 + (1 * 60 * 60 * 1000);
+        verifyFirstTimeout(new ScheduleExpression().hour("*").timezone("America/Chicago"),
+                           t2009_11_01__01_00_00,
+                           t2009_11_01__01_00_00,
+                           "2009-11-01 01:00:00");
+        verifyFirstTimeout(new ScheduleExpression().hour("0-4").timezone("America/Chicago"),
+                           t2009_11_01__01_00_00,
+                           t2009_11_01__01_00_00,
+                           "2009-11-01 01:00:00");
+        verifyFirstTimeout(new ScheduleExpression().hour("1").timezone("America/Chicago"),
+                           t2009_11_01__01_00_00,
+                           t2009_11_01__01_00_00,
+                           "2009-11-01 01:00:00");
+        verifyFirstTimeout(new ScheduleExpression().hour("1,2").timezone("America/Chicago"),
+                           t2009_11_01__01_00_00,
+                           t2009_11_01__01_00_00,
+                           "2009-11-01 01:00:00");
+        verifyFirstTimeout(new ScheduleExpression().hour("2,3").timezone("America/Chicago"),
+                           t2009_11_01__01_00_00,
+                           t2009_11_01__01_00_00 + (2 * 60 * 60 * 1000),
+                           "2009-11-01 02:00:00");
+
+        final long t2009_11_01__01_59_00 = t2009_11_01__01_00_00 + (59 * 60 * 1000);
+        verifyFirstTimeout(new ScheduleExpression().hour("*").timezone("America/Chicago"),
+                           t2009_11_01__01_59_00,
+                           t2009_11_01__01_59_00 + (60 * 1000),
+                           "2009-11-01 01:00:00");
+        verifyFirstTimeout(new ScheduleExpression().hour("0-4").timezone("America/Chicago"),
+                           t2009_11_01__01_59_00,
+                           t2009_11_01__01_59_00 + (60 * 1000),
+                           "2009-11-01 01:00:00");
+        verifyFirstTimeout(new ScheduleExpression().hour("1").timezone("America/Chicago"),
+                           t2009_11_01__01_59_00,
+                           t2009_11_01__01_59_00 + (60 * 1000),
+                           "2009-11-01 01:00:00");
+        verifyFirstTimeout(new ScheduleExpression().hour("2").minute("*").timezone("America/Chicago"),
+                           t2009_11_01__01_59_00,
+                           t2009_11_01__01_59_00 + (60 * 1000) + (1 * 60 * 60 * 1000),
+                           "2009-11-01 02:00:00");
+        verifyFirstTimeout(new ScheduleExpression().hour("*").minute("*").timezone("America/Chicago"),
+                           t2009_11_01__01_59_00,
+                           t2009_11_01__01_59_00,
+                           "2009-11-01 01:59:00");
+        verifyFirstTimeout(new ScheduleExpression().hour("*").minute("*").timezone("America/Chicago"),
+                           t2009_11_01__01_59_00 + 1000,
+                           t2009_11_01__01_59_00 + (60 * 1000),
+                           "2009-11-01 01:00:00");
+
+        final long t2009_11_01__01_59_00b = t2009_11_01__01_59_00 + (1 * 60 * 60 * 1000);
+        verifyFirstTimeout(new ScheduleExpression().hour("*").timezone("America/Chicago"),
+                           t2009_11_01__01_59_00b,
+                           t2009_11_01__01_59_00b + (60 * 1000),
+                           "2009-11-01 02:00:00");
+        verifyFirstTimeout(new ScheduleExpression().hour("0-4").timezone("America/Chicago"),
+                           t2009_11_01__01_59_00b,
+                           t2009_11_01__01_59_00b + (60 * 1000),
+                           "2009-11-01 02:00:00");
+        verifyFirstTimeout(new ScheduleExpression().hour("2").timezone("America/Chicago"),
+                           t2009_11_01__01_59_00b,
+                           t2009_11_01__01_59_00b + (60 * 1000),
+                           "2009-11-01 02:00:00");
+        verifyFirstTimeout(new ScheduleExpression().hour("2,3").minute("*").timezone("America/Chicago"),
+                           t2009_11_01__01_59_00b,
+                           t2009_11_01__01_59_00b + (60 * 1000),
+                           "2009-11-01 02:00:00");
+        verifyFirstTimeout(new ScheduleExpression().hour("*").minute("*").timezone("America/Chicago"),
+                           t2009_11_01__01_59_00b,
+                           t2009_11_01__01_59_00b,
+                           "2009-11-01 01:59:00");
+        verifyFirstTimeout(new ScheduleExpression().hour("*").minute("*").timezone("America/Chicago"),
+                           t2009_11_01__01_59_00b + 1000,
+                           t2009_11_01__01_59_00b + (60 * 1000),
+                           "2009-11-01 02:00:00");
+
+        // Finally, cover falling back from DST where time is not an even second
+        final long t2009_11_01__01_59_00x = t2009_11_01__01_00_00 + (59 * 60 * 1000) + 5;
+        verifyFirstTimeout(new ScheduleExpression().hour("*").timezone("America/Chicago"),
+                           t2009_11_01__01_59_00x,
+                           t2009_11_01__01_59_00x + (60 * 1000) - 5,
+                           "2009-11-01 01:00:00");
+        verifyFirstTimeout(new ScheduleExpression().hour("0-4").timezone("America/Chicago"),
+                           t2009_11_01__01_59_00x,
+                           t2009_11_01__01_59_00x + (60 * 1000) - 5,
+                           "2009-11-01 01:00:00");
+        verifyFirstTimeout(new ScheduleExpression().hour("1").timezone("America/Chicago"),
+                           t2009_11_01__01_59_00x,
+                           t2009_11_01__01_59_00x + (60 * 1000) - 5,
+                           "2009-11-01 01:00:00");
+        verifyFirstTimeout(new ScheduleExpression().hour("2").timezone("America/Chicago"),
+                           t2009_11_01__01_59_00x,
+                           t2009_11_01__01_59_00x + (60 * 1000) - 5 + (1 * 60 * 60 * 1000),
+                           "2009-11-01 02:00:00");
+        verifyFirstTimeout(new ScheduleExpression().hour("*").minute("*").timezone("America/Chicago"),
+                           t2009_11_01__01_59_00x,
+                           t2009_11_01__01_59_00x + (60 * 1000) - 5,
+                           "2009-11-01 01:00:00");
+        verifyFirstTimeout(new ScheduleExpression().hour("*").minute("*").second("*/10").timezone("America/Chicago"),
+                           t2009_11_01__01_59_00x + (59 * 1000),
+                           t2009_11_01__01_59_00x + (60 * 1000) - 5,
+                           "2009-11-01 01:00:00");
+
+        final long t2009_11_01__01_59_00bx = t2009_11_01__01_59_00 + (1 * 60 * 60 * 1000) + 5;
+        verifyFirstTimeout(new ScheduleExpression().hour("*").timezone("America/Chicago"),
+                           t2009_11_01__01_59_00bx,
+                           t2009_11_01__01_59_00bx + (60 * 1000) - 5,
+                           "2009-11-01 02:00:00");
+        verifyFirstTimeout(new ScheduleExpression().hour("0-4").timezone("America/Chicago"),
+                           t2009_11_01__01_59_00bx,
+                           t2009_11_01__01_59_00bx + (60 * 1000) - 5,
+                           "2009-11-01 02:00:00");
+        verifyFirstTimeout(new ScheduleExpression().hour("2").timezone("America/Chicago"),
+                           t2009_11_01__01_59_00bx,
+                           t2009_11_01__01_59_00bx + (60 * 1000) - 5,
+                           "2009-11-01 02:00:00");
+        verifyFirstTimeout(new ScheduleExpression().hour("*").minute("*").timezone("America/Chicago"),
+                           t2009_11_01__01_59_00bx,
+                           t2009_11_01__01_59_00bx + (60 * 1000) - 5,
+                           "2009-11-01 02:00:00");
+        verifyFirstTimeout(new ScheduleExpression().hour("*").minute("*").second("*/10").timezone("America/Chicago"),
+                           t2009_11_01__01_59_00bx + (59 * 1000),
+                           t2009_11_01__01_59_00bx + (60 * 1000) - 5,
+                           "2009-11-01 02:00:00");
+    }
+
+    @Test
+    public void testExamples() {
         // 18.2.1.3.1
-        for (ScheduleExpression expr : new ScheduleExpression[] {
-                                                                 new ScheduleExpression().dayOfWeek("Mon"),
-                                                                 new ScheduleExpression().second("0").minute("0").hour("0").dayOfMonth("*").month("*").dayOfWeek("*").dayOfWeek("Mon").year("*"),
-        })
-        {
+        for (ScheduleExpression expr : new ScheduleExpression[] { new ScheduleExpression().dayOfWeek("Mon"),
+                                                                  new ScheduleExpression().second("0").minute("0").hour("0").dayOfMonth("*").month("*").dayOfWeek("*").dayOfWeek("Mon").year("*"),
+        }) {
             verifyNextTimeout(expr,
                               "9996-01-01 00:00:00",
                               "9996-01-08 00:00:00");
@@ -2221,11 +2533,9 @@ public class ScheduleExpressionParserTest
                           "9996-02-02 12:00:30");
 
         // 18.2.1.3.6
-        for (ScheduleExpression expr : new ScheduleExpression[] {
-                                                                 new ScheduleExpression().minute("*/5").hour("*"),
-                                                                 new ScheduleExpression().minute("0,5,10,15,20,25,30,35,40,45,50,55").hour("*"),
-        })
-        {
+        for (ScheduleExpression expr : new ScheduleExpression[] { new ScheduleExpression().minute("*/5").hour("*"),
+                                                                  new ScheduleExpression().minute("0,5,10,15,20,25,30,35,40,45,50,55").hour("*"),
+        }) {
             verifyNextTimeout(expr,
                               "9996-01-01 00:00:00",
                               "9996-01-01 00:05:00");
