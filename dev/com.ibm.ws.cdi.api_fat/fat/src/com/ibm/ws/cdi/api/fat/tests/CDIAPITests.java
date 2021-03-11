@@ -28,10 +28,10 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.ibm.websphere.simplicity.BeansAsset;
 import com.ibm.websphere.simplicity.CDIArchiveHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
+import com.ibm.websphere.simplicity.beansxml.BeansAsset;
 import com.ibm.ws.cdi.api.fat.apps.alterablecontext.AlterableContextTestServlet;
 import com.ibm.ws.cdi.api.fat.apps.alterablecontext.extension.AlterableContextExtension;
 import com.ibm.ws.cdi.api.fat.apps.alterablecontext.extension.DirtySingleton;
@@ -97,7 +97,7 @@ public class CDIAPITests extends FATServletClient {
 
         JavaArchive cdiCurrentTest = ShrinkWrap.create(JavaArchive.class, CDI_CURRENT_APP_NAME + ".jar")
                                                .addPackage(CDICurrentTestBean.class.getPackage());
-        cdiCurrentTest = CDIArchiveHelper.addCDIExtensionService(cdiCurrentTest, MyDeploymentVerifier.class);
+        CDIArchiveHelper.addCDIExtensionService(cdiCurrentTest, MyDeploymentVerifier.class);
 
         WebArchive cdiCurrentWar = ShrinkWrap.create(WebArchive.class, CDI_CURRENT_APP_NAME + ".war")
                                              .addClass(CDICurrentTestServlet.class.getName())
@@ -109,12 +109,12 @@ public class CDIAPITests extends FATServletClient {
         if (TestModeFilter.shouldRun(TestMode.FULL)) {
             JavaArchive alterableContextExtension = ShrinkWrap.create(JavaArchive.class, "alterableContextExtension.jar");
             alterableContextExtension.addPackage(DirtySingleton.class.getPackage());
-            alterableContextExtension = CDIArchiveHelper.addCDIExtensionService(alterableContextExtension, AlterableContextExtension.class);
-            alterableContextExtension = CDIArchiveHelper.addBeansXML(alterableContextExtension, BeansAsset.Mode.ALL);
+            CDIArchiveHelper.addCDIExtensionService(alterableContextExtension, AlterableContextExtension.class);
+            CDIArchiveHelper.addBeansXML(alterableContextExtension, BeansAsset.DiscoveryMode.ALL);
 
             WebArchive alterableContextApp = ShrinkWrap.create(WebArchive.class, ALTERABLE_CONTEXT_APP_NAME + ".war");
             alterableContextApp.addClass(AlterableContextTestServlet.class);
-            alterableContextApp = CDIArchiveHelper.addBeansXML(alterableContextApp, BeansAsset.Mode.ALL);
+            CDIArchiveHelper.addBeansXML(alterableContextApp, BeansAsset.DiscoveryMode.ALL);
             alterableContextApp.addAsLibrary(alterableContextExtension);
 
             EnterpriseArchive alterableContextsEar = ShrinkWrap.create(EnterpriseArchive.class, "alterableContextsApp.ear");
@@ -127,7 +127,7 @@ public class CDIAPITests extends FATServletClient {
 
             WebArchive injectInjectionPointAsParamWar = ShrinkWrap.create(WebArchive.class, INJECT_IP_AS_PARAM_APP_NAME + ".war")
                                                                   .addPackage(InjectInjectionPointAsParamServlet.class.getPackage());
-            injectInjectionPointAsParamWar = CDIArchiveHelper.addEmptyBeansXML(injectInjectionPointAsParamWar);
+            CDIArchiveHelper.addEmptyBeansXML(injectInjectionPointAsParamWar);
 
             ShrinkHelper.exportDropinAppToServer(server, injectInjectionPointAsParamWar, DeployOptions.SERVER_ONLY);
             ShrinkHelper.exportDropinAppToServer(server, appConversationFilter, DeployOptions.SERVER_ONLY);
@@ -181,7 +181,7 @@ public class CDIAPITests extends FATServletClient {
 
         WebArchive injectInjectionPointBeansXMLWar = ShrinkWrap.create(WebArchive.class, INJECT_IP_BEANS_XML_APP_NAME + ".war")
                                                                .addClass(InjectInjectionPointBeansXMLServlet.class);
-        injectInjectionPointBeansXMLWar = CDIArchiveHelper.addEmptyBeansXML(injectInjectionPointBeansXMLWar);
+        CDIArchiveHelper.addEmptyBeansXML(injectInjectionPointBeansXMLWar);
 
         ShrinkHelper.exportToServer(server, "dropins", injectInjectionPointBeansXMLWar, DeployOptions.SERVER_ONLY);
 
@@ -217,7 +217,7 @@ public class CDIAPITests extends FATServletClient {
         WebArchive injectInjectionPointXMLWar = ShrinkWrap.create(WebArchive.class, INJECT_IP_XML_APP_NAME + ".war")
                                                           .addClass(InjectInjectionPointXMLServlet.class)
                                                           .addAsWebInfResource(InjectInjectionPointXMLServlet.class.getPackage(), "web.xml", "web.xml");
-        injectInjectionPointXMLWar = CDIArchiveHelper.addEmptyBeansXML(injectInjectionPointXMLWar);
+        CDIArchiveHelper.addEmptyBeansXML(injectInjectionPointXMLWar);
 
         ShrinkHelper.exportToServer(server, "dropins", injectInjectionPointXMLWar, DeployOptions.SERVER_ONLY);
 

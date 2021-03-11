@@ -14,13 +14,7 @@ bVersion=1.0
 # Define the bundle for this FAT
 
 src: \
-	fat/src,\
-	test-applications/defaultDecoratorApp.war/src,\
-	test-applications/DepProducerApp.war/src,\
-	test-applications/globalPriorityLib.jar/src,\
-	test-applications/globalPriorityWebApp.war/src,\
-	test-applications/utilLib.jar/src,\
-	test-applications/withAnnotationsApp.war/src
+	fat/src
 	
 tested.features:\
 	cdi-2.0,\
