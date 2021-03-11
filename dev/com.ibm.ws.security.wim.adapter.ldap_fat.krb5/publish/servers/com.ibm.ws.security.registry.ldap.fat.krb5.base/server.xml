@@ -11,10 +11,15 @@
 <server>
 
     <featureManager>
-        <feature>componenttest-1.0</feature>
+        <feature>appSecurity-2.0</feature>
+		<feature>ldapRegistry-3.0</feature>
+		<feature>servlet-3.1</feature>
+		<feature>securitylibertyinternals-1.0</feature>
     </featureManager>
     
     <include location="../fatTestPorts.xml"/>
-    
 
+    <!--  For FAT testing, make we're always calling back to the LDAP Registry  -->
+    <authentication id="Basic" cacheEnabled="false" />
+    
 </server>

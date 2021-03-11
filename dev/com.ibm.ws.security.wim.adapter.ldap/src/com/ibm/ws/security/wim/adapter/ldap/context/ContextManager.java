@@ -494,6 +494,7 @@ public class ContextManager {
      * @return The {@link TimedDirContext}.
      * @throws NamingException If there was an issue binding to the LDAP server.
      */
+    @FFDCIgnore({ javax.security.auth.login.LoginException.class })
     private TimedDirContext createDirContext(Hashtable<String, Object> env, long createTimestamp) throws NamingException {
         if (isKerberosBindAuth()) {
             try {
@@ -1660,6 +1661,13 @@ public class ContextManager {
                 if (tc.isDebugEnabled()) {
                     Tr.debug(tc, "setKerberosCredentials the ticketCache and keytab were both configured, ticketCache is tried first, then keytab");
                 }
+            }
+
+            /*
+             * Clear the principal from the kerberService cache in case the ticketCache changed.
+             */
+            if (krb5Principal != null && !krb5Principal.trim().isEmpty()) {
+                kerberosService.clearPrincipalFromCache(krb5Principal);
             }
 
             if (tc.isDebugEnabled()) {
