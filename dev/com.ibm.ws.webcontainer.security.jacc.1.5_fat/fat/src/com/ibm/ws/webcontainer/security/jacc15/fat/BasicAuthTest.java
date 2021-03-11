@@ -104,7 +104,7 @@ public class BasicAuthTest extends CommonServletTestScenarios {
     @AfterClass
     public static void tearDown() throws Exception {
         try {
-            myServer.stopServer("CWWKS5524E");
+            myServer.stopServer("CWWKZ0013E");
         } finally {
             JACCFatUtils.uninstallJaccUserFeature(myServer);
         }
