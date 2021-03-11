@@ -55,7 +55,6 @@ public class ArtifactDownloader {
 
     public void synthesizeAndDownloadFeatures(List<String> mavenCoords, String dLocation, MavenRepository repository) throws InstallException {
         info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_CONTACTING_MAVEN_REPO"));
-//        fine("entering synthesizeAndDownloadFeatures");
         checkValidProxy();
         configureProxyAuthentication();
         configureAuthentication(repository);
@@ -132,7 +131,6 @@ public class ArtifactDownloader {
     }
 
     public void synthesizeAndDownload(String mavenCoords, String filetype, String dLocation, MavenRepository repository, boolean individualDownload) throws InstallException {
-//        fine("entering synthesizeAndDownload");
         configureProxyAuthentication();
         configureAuthentication(repository);
         String repo = FormatUrlSuffix(repository.getRepositoryUrl());
@@ -250,9 +248,6 @@ public class ArtifactDownloader {
     }
 
     private void configureProxyAuthentication() {
-//      fine("entering configureProxyAuthentication");
-//      fine("http proxy user = " + envMap.get("http.proxyUser"));
-
         //set up basic auth HTTP proxy tunnel
         System.setProperty("jdk.http.auth.tunneling.disabledSchemes", "");
 
@@ -264,9 +259,9 @@ public class ArtifactDownloader {
     }
 
     private void configureAuthentication(final MavenRepository repository) {
-        fine("repository userId= " + repository.getUserId() + " " + repository.getPassword());
+
         if (repository.getUserId() != null && repository.getPassword() != null &&
-            envMap.get("https.proxyUser") == null) {
+            envMap.get("https.proxyUser") == null && envMap.get("http.proxyUser") == null) {
             Authenticator.setDefault(new Authenticator() {
                 @Override
                 protected PasswordAuthentication getPasswordAuthentication() {
@@ -282,7 +277,6 @@ public class ArtifactDownloader {
      * @return
      */
     protected boolean testConnection(MavenRepository repository, List<String> mavenCoords) {
-        fine("entering testConnection wirh mavenCoords");
         configureProxyAuthentication();
         configureAuthentication(repository);
         List<String> featureURLs = ArtifactDownloaderUtils.acquireFeatureURLs(mavenCoords, repository.getRepositoryUrl());
@@ -305,7 +299,6 @@ public class ArtifactDownloader {
      * @return
      */
     protected boolean testConnection(MavenRepository repository) {
-        fine("entering testConnection with repo");
         configureProxyAuthentication();
         configureAuthentication(repository);
         try {
@@ -327,14 +320,13 @@ public class ArtifactDownloader {
         InputStream in = null;
         try {
             URL url = address.toURL();
-            logger.fine("url is: " + url.toString());
             try {
                 out = new BufferedOutputStream(new FileOutputStream(destination));
             } catch (FileNotFoundException e) {
                 throw ExceptionUtils.createByKey("ERROR_FAILED_TO_DOWNLOAD_FEATURE", ArtifactDownloaderUtils.getFileNameFromURL(address.toString()),
                                                  destination.toString());
             }
-            logger.fine("env proxy host " + envMap.get("http.proxyHost"));
+
             if (envMap.get("https.proxyHost") != null) {
                 Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress((String) envMap.get("https.proxyHost"), Integer.parseInt((String) envMap.get("https.proxyPort"))));
                 conn = url.openConnection(proxy);
@@ -445,16 +437,22 @@ public class ArtifactDownloader {
     }
 
     public void checkValidProxy() throws InstallException {
-
-        String proxyPort = (String) envMap.get("https.proxyPort");
+        String protocol = null;
         if (envMap.get("https.proxyUser") != null) {
+            protocol = "https";
+        } else if (envMap.get("http.proxyUser") != null) {
+            protocol = "http";
+        }
+
+        String proxyPort = (String) envMap.get(protocol + ".proxyPort");
+        if (protocol != null) {
             int proxyPortnum = Integer.parseInt(proxyPort);
-            if (((String) envMap.get("https.proxyHost")).isEmpty()) {
+            if (((String) envMap.get(protocol + ".proxyHost")).isEmpty()) {
                 throw ExceptionUtils.createByKey("ERROR_TOOL_PROXY_HOST_MISSING");
             } else if (proxyPortnum < 0 || proxyPortnum > 65535) {
                 throw ExceptionUtils.createByKey("ERROR_TOOL_INVALID_PROXY_PORT", proxyPort);
-            } else if (((String) envMap.get("https.proxyPassword")).isEmpty() ||
-                       envMap.get("https.proxyPassword") == null) {
+            } else if (((String) envMap.get(protocol + ".proxyPassword")).isEmpty() ||
+                       envMap.get(protocol + ".proxyPassword") == null) {
                 throw ExceptionUtils.createByKey("ERROR_TOOL_PROXY_PWD_MISSING");
             }
         }
