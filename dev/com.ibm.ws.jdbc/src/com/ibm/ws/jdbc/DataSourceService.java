@@ -860,19 +860,17 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
         // (identifyException.#.sqlState, identifyException.#.errorCode, identifyException.#.as)
         // is parsed separately to have a predictable order of precedence when collisions occur
         Map<Object, String> identifications = null;
-        StringBuilder key = new StringBuilder(31).append("identifyException.");
+        String keyFormat = "identifyException.%d.%s";
+        String key;
         for (int i = 0; i < 1000; i++) { // cardinality is capped at 1000 in metatype
-            key.append(i);
-            int dot2 = key.length();
-            key.append(".as");
-            String as = (String) configProps.get(key.toString());
+            key = String.format(keyFormat, i, "as");
+            String as = (String) configProps.get(key);
             if (as == null)
                 break; // no more nested identifyException elements
-            key.replace(dot2 + 1, dot2 + 9, "sqlState");
-            String sqlState = (String) configProps.get(key.toString());
-            key.replace(dot2 + 1, dot2 + 10, "errorCode");
-            Integer errorCode = (Integer) configProps.get(key.toString());
-            key.delete(18, key.length());
+            key = String.format(keyFormat, i, "sqlState");
+            String sqlState = (String) configProps.get(key);
+            key = String.format(keyFormat, i, "errorCode");
+            Integer errorCode = (Integer) configProps.get(key);
             if (i == 0)
                 identifications = new HashMap<Object, String>();
             if (sqlState == null && errorCode == null) {
