@@ -23,8 +23,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.wsspi.bytebuffer.WsByteBuffer;
-import com.ibm.wsspi.bytebuffer.WsByteBufferUtils;
 
 import app1.web.TestServletA;
 import componenttest.annotation.Server;
@@ -33,7 +31,6 @@ import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
-import io.openliberty.netty.NettyFactory;
 
 /**
  * Example Shrinkwrap FAT project:
@@ -49,7 +46,7 @@ import io.openliberty.netty.NettyFactory;
  * servlet referenced by the annotation, and will be run whenever this test class runs.
  */
 @RunWith(FATRunner.class)
-public class NettyBufTest extends FATServletClient {
+public class SimpleTest extends FATServletClient {
 
     public static final String APP_NAME = "app1";
 
@@ -117,29 +114,4 @@ public class NettyBufTest extends FATServletClient {
         assertTrue("No EE7 features should be enabled when this test runs: " + features,
                    !features.contains("servlet-3.1"));
     }
-
-    @Test
-    public void testNoShipFeatureThere() throws Exception {
-        // This test will only run for the EE9 iteration
-
-        // Verify only EE8 features are enabled
-        Set<String> features = server.getServerConfiguration().getFeatureManager().getFeatures();
-        assertTrue("Expected noShip-1.0 feature to be there but it was not " + features,
-                   features.contains("noShip-1.0"));
-    }
-
-    @Test
-    public void testNettyFactoryOnClasspath() throws Exception {
-        WsByteBuffer writeBuffer = NettyFactory.getBufferManager().wrap("SERVER".getBytes());
-        writeBuffer.release();
-    }
-
-    @Test
-    public void testWsByteBufferUtilsOnClassPath() {
-        WsByteBuffer buffer = NettyFactory.getBufferManager().wrap("SERVER".getBytes());
-        String result = WsByteBufferUtils.asString(buffer);
-        assertTrue(result.equals("SERVER"));
-        buffer.release();
-    }
-
 }

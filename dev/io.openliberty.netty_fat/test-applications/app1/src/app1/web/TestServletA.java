@@ -10,6 +10,8 @@
  *******************************************************************************/
 package app1.web;
 
+import static org.junit.Assert.assertTrue;
+
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -17,9 +19,13 @@ import javax.servlet.http.HttpServletResponse;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.ibm.wsspi.bytebuffer.WsByteBuffer;
+import com.ibm.wsspi.bytebuffer.WsByteBufferUtils;
+
 import componenttest.app.FATServlet;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import io.openliberty.netty.NettyFactory;
 
 @SuppressWarnings("serial")
 @WebServlet("/TestServletA")
@@ -59,5 +65,19 @@ public class TestServletA extends FATServlet {
     @Mode(TestMode.QUARANTINE)
     public void testQuarantine() throws Exception {
         System.out.println("This test should only run in Quarantine mode!");
+    }
+
+    @Test
+    public void testNettyFactoryOnClasspath() throws Exception {
+        WsByteBuffer writeBuffer = NettyFactory.getBufferManager().wrap("SERVER".getBytes());
+        writeBuffer.release();
+    }
+
+    @Test
+    public void testWsByteBufferUtilsOnClassPath() {
+        WsByteBuffer buffer = NettyFactory.getBufferManager().wrap("SERVER".getBytes());
+        String result = WsByteBufferUtils.asString(buffer);
+        assertTrue(result.equals("SERVER"));
+        buffer.release();
     }
 }
