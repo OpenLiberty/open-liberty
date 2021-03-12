@@ -109,6 +109,8 @@ public class SecureTest extends LoggingTest {
         bwst.setUp();
         // tests cannot work until ssl is up
         wlp.waitForStringInLog("CWWKO0219I:.*ssl.*");
+        // tests cannot work until ltpa keys are created
+        wlp.waitForStringInLog("CWWKS4104A:.*LTPA keys created.*");
     }
 
     @AfterClass
