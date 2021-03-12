@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2020 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -35,9 +35,14 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import web.SchedulerFATServlet;
 
-@AllowedFFDC({ "javax.resource.ResourceException", // due to transaction timeout from infra slowness
-		"javax.transaction.RollbackException", // due to transaction timeout from infra slowness
-		"javax.transaction.xa.XAException" // due to transaction timeout from infra slowness
+@AllowedFFDC({
+    "jakarta.persistence.PersistenceException", // after transaction times out and rolls back
+    "jakarta.resource.ResourceException", // due to transaction timeout from infra slowness
+    "jakarta.transaction.RollbackException", // due to transaction timeout from infra slowness
+    "javax.persistence.PersistenceException", // after transaction times out and rolls back
+    "javax.resource.ResourceException", // due to transaction timeout from infra slowness
+    "javax.transaction.RollbackException", // due to transaction timeout from infra slowness
+    "javax.transaction.xa.XAException" // due to transaction timeout from infra slowness
 })
 @RunWith(FATRunner.class)
 public class PersistentExecutorWithFailoverEnabledTest extends FATServletClient {
@@ -91,7 +96,8 @@ public class PersistentExecutorWithFailoverEnabledTest extends FATServletClient 
 							"CWWKC1503W", // Task rolled back due to failure ..., retry time unspecified
 							"CWWKC1510W", // Task rolled back and aborted
 							"CWWKC1511W", // Task rolled back and aborted. Failure is ...
-							"DSRA0174W"); // Generic Datasource Helper
+							"DSRA0174W",  // Generic Datasource Helper
+							"DSRA030*E"); // XA errors related to transaction timeout
 			} finally {
 				testContainer.stop();
 			}
