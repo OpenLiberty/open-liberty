@@ -28,4 +28,4 @@ instrument.disabled: true
   com.ibm.websphere.javaee.cdi.2.0;version=latest,\
   com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
   com.ibm.websphere.javaee.jaxrs.2.1;version=latest,\
-  biz.aQute.bnd:biz.aQute.bnd;version=4.3.0
+  biz.aQute.bnd:biz.aQute.bnd;version=5.3.0
