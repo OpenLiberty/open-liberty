@@ -60,9 +60,6 @@
             <groupId>org.eclipse.microprofile.context-propagation</groupId>
             <artifactId>microprofile-context-propagation-tck</artifactId>
             <version>${microprofile.context.propagation.version}</version>
-            <!-- TODO remove next 2 lines once 1.2 final release is on Maven -->
-            <scope>system</scope>
-            <systemPath>${org.eclipse.microprofile.contextpropagationtck.1.2_}</systemPath>
         </dependency>
 
         <dependency>

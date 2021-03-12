@@ -1637,11 +1637,6 @@
       <version>1.2</version>
     </dependency>
     <dependency>
-      <groupId>org.eclipse.microprofile.context-propagation</groupId>
-      <artifactId>microprofile-context-propagation-tck</artifactId>
-      <version>1.2</version>
-    </dependency>
-    <dependency>
       <groupId>org.eclipse.microprofile.fault-tolerance</groupId>
       <artifactId>microprofile-fault-tolerance-api</artifactId>
       <version>1.0</version>
