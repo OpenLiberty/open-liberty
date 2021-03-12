@@ -31,3 +31,4 @@ Subsystem-Name: Java XML Bindings 2.3
   bin/jaxb/schemagen.bat
 kind=noship
 edition=full
+WLP-Activation-Type: parallel

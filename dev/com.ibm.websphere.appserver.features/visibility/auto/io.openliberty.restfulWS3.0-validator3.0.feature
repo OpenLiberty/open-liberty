@@ -8,3 +8,4 @@ visibility=private
 IBM-Install-Policy: when-satisfied
 kind=beta
 edition=core
+WLP-Activation-Type: parallel
