@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2020 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -123,14 +123,17 @@ public class OAuthResourceProtectionFilter extends CommonHTTPHeaderFilter implem
 
     private boolean isOAuthServiceApp(HttpServletRequest req) {
         String appName = getApplication(req);
-        boolean oauthApp = false;
+
+        /* Is this the OAUTH service app? */
         if (UtilConstants.OAUTH_SERVICE_APP_JAVAEE.equalsIgnoreCase(appName) ||
-                UtilConstants.OAUTH_SERVICE_APP_JAKARTA.equalsIgnoreCase(appName) ||
-                (UtilConstants.OIDC_SERVICE_APP.equalsIgnoreCase(appName) && !isProtectedByAccessToken(req))) {
-            oauthApp = true;
+                UtilConstants.OAUTH_SERVICE_APP_JAKARTA.equalsIgnoreCase(appName)) {
+            return true;
         }
 
-        return oauthApp;
+        /* Is this the OIDC service app? */
+        return ((UtilConstants.OIDC_SERVICE_APP_JAVAEE.equalsIgnoreCase(appName) ||
+                     UtilConstants.OIDC_SERVICE_APP_JAKARTA.equalsIgnoreCase(appName))
+                && !isProtectedByAccessToken(req));
     }
 
     /**

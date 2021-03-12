@@ -1,0 +1,77 @@
+<!--
+    Copyright (c) 2021 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+	<ldapRegistry
+		id="ldap"
+		realm="SampleLdapIDSRealm"
+		host="${ldap.server.8.name}"
+		port="${ldap.server.8.ssl.port}"
+		ignoreCase="true"
+		baseDN="o=ibm,c=us"
+		bindDN="${ldap.server.8.bindDN}"
+		bindPassword="${ldap.server.8.bindPassword}"
+		ldapType="IBM Tivoli Directory Server"
+		idsFilters="ibm_dir_server"
+		sslEnabled="true"
+		sslRef="LDAPSSLSettings"
+		searchTimeout="8m"
+	>
+		<failoverServers name="failoverLdapServers">
+			<server
+				host="${ldap.server.4.name}"
+				port="${ldap.server.4.ssl.port}" />
+		</failoverServers>
+	</ldapRegistry>
+
+	<!-- Yes, this is valid XML -->
+	<idsLdapFilterProperties
+		id="ibm_dir_server"
+		userFilter="(&amp;(uid=%v)(objectclass=ePerson))"
+		groupFilter="(&amp;(cn=%v)(|(objectclass=groupOfNames)(objectclass=groupOfUniqueNames)(objectclass=groupOfURLs)))"
+		userIdMap="*:uid"
+		groupIdMap="*:cn"
+		groupMemberIdMap="ibm-allGroups:member;ibm-allGroups:uniqueMember;groupOfNames:member;groupOfUniqueNames:uniqueMember"
+	>
+	</idsLdapFilterProperties>
+
+	<keyStore
+		id="defaultKeyStore"
+		password="keyspass" />
+
+	<ssl
+		id="LDAPSSLSettings"
+		keyStoreRef="LDAPKeyStore"
+		trustStoreRef="LDAPTrustStore"
+		clientAuthenticationSupported="true" />
+	<keyStore
+		id="LDAPKeyStore"
+		location="${server.config.dir}/commonLdapSSLKeyStore.jks"
+		type="JKS"
+		password="{xor}CDo9Hgw=" />
+	<keyStore
+		id="LDAPTrustStore"
+		location="${server.config.dir}/commonLdapSSLTrustStore.jks"
+		type="JKS"
+		password="{xor}CDo9Hgw=" />
+
+	<oauth-roles>
+		<authenticated>
+			<special-subject type="ALL_AUTHENTICATED_USERS" />
+		</authenticated>
+	</oauth-roles>
+
+	<authorization-roles id="com.ibm.ws.security.oidc10">
+		<authenticated>
+			<special-subject type="ALL_AUTHENTICATED_USERS" />
+		</authenticated>
+	</authorization-roles>
+</server>
