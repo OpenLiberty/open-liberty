@@ -302,9 +302,8 @@ public class ServicePrincipalNamesTest extends CommonTest {
      * - Multiple FFDCs for GSSExceptions should be thrown due to multiple invalid SPNs appearing in the list.
      * - Authentication will ultimately be successful for the default SPN.
      */
-
-    @AllowedFFDC({ "org.ietf.jgss.GSSException" })
-    @Test
+//    @AllowedFFDC({ "org.ietf.jgss.GSSException" })
+//    @Test
     public void testInvalidSpnList_BadFormatGoodSpn() {
         try {
             testHelper.reconfigureServer("invalidSpnList_badFormatGoodSpn.xml", name.getMethodName(), SPNEGOConstants.RESTART_SERVER);
