@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2020 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -35,131 +35,137 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import web.SchedulerFATServlet;
 
-@AllowedFFDC({ "javax.resource.ResourceException", // due to transaction timeout from infra slowness
-		"javax.transaction.RollbackException", // due to transaction timeout from infra slowness
-		"javax.transaction.xa.XAException" // due to transaction timeout from infra slowness
+@AllowedFFDC({
+    "jakarta.persistence.PersistenceException", // after transaction times out and rolls back
+    "jakarta.resource.ResourceException", // due to transaction timeout from infra slowness
+    "jakarta.transaction.RollbackException", // due to transaction timeout from infra slowness
+    "javax.persistence.PersistenceException", // after transaction times out and rolls back
+    "javax.resource.ResourceException", // due to transaction timeout from infra slowness
+    "javax.transaction.RollbackException", // due to transaction timeout from infra slowness
+    "javax.transaction.xa.XAException" // due to transaction timeout from infra slowness
 })
 @RunWith(FATRunner.class)
 public class PersistentExecutorWithFailoverEnabledTest extends FATServletClient {
 
-	private static final String APP_NAME = "schedtest";
+    private static final String APP_NAME = "schedtest";
 
-	@ClassRule
-	public static RepeatTests r = RepeatTests.withoutModification()//
-			.andWith(new JakartaEE9Action());
+    @ClassRule
+    public static RepeatTests r = RepeatTests.withoutModification()//
+            .andWith(new JakartaEE9Action());
 
-	@Server("com.ibm.ws.concurrent.persistent.fat.failover")
-	@TestServlet(servlet = SchedulerFATServlet.class, path = APP_NAME)
-	public static LibertyServer server;
-	
-	public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.create();
+    @Server("com.ibm.ws.concurrent.persistent.fat.failover")
+    @TestServlet(servlet = SchedulerFATServlet.class, path = APP_NAME)
+    public static LibertyServer server;
 
-	@BeforeClass
-	public static void setUp() throws Exception {
-		testContainer.start();
-		
-		server.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
+    public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.create();
 
-		DatabaseContainerUtil.setupDataSourceProperties(server, testContainer);
+    @BeforeClass
+    public static void setUp() throws Exception {
+        testContainer.start();
 
-		ShrinkHelper.defaultDropinApp(server, APP_NAME, "web");
+        server.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
 
-		// Use the Jakarta version of test features if Jakarta is being used.
-		if (JakartaEE9Action.isActive()) {
-			ServerConfiguration config = server.getServerConfiguration();
-			Set<String> features = config.getFeatureManager().getFeatures();
-			features.remove("persistentexecutor-1.0");
-			features.remove("timerinterfacestestfeature-1.0");
-			features.add("persistentExecutor-2.0");
-			features.add("timerInterfacesTestFeature-2.0");
-			server.updateServerConfiguration(config);
-		}
+        DatabaseContainerUtil.setupDataSourceProperties(server, testContainer);
 
-		server.startServer();
-	}
+        ShrinkHelper.defaultDropinApp(server, APP_NAME, "web");
 
-	@AfterClass
-	public static void tearDown() throws Exception {
-		try {
-			runTest(server, APP_NAME, "verifyNoTasksRunning");
-		} finally {
-			try {
-				if (server.isStarted())
-					server.stopServer("CWWKC1500W", // Task rolled back
-							"CWWKC1501W", // Task rolled back due to failure ...
-							"CWWKC1502W", // Task rolled back, retry time unspecified
-							"CWWKC1503W", // Task rolled back due to failure ..., retry time unspecified
-							"CWWKC1510W", // Task rolled back and aborted
-							"CWWKC1511W", // Task rolled back and aborted. Failure is ...
-							"DSRA0174W"); // Generic Datasource Helper
-			} finally {
-				testContainer.stop();
-			}
-		}
-	}
+        // Use the Jakarta version of test features if Jakarta is being used.
+        if (JakartaEE9Action.isActive()) {
+            ServerConfiguration config = server.getServerConfiguration();
+            Set<String> features = config.getFeatureManager().getFeatures();
+            features.remove("persistentexecutor-1.0");
+            features.remove("timerinterfacestestfeature-1.0");
+            features.add("persistentExecutor-2.0");
+            features.add("timerInterfacesTestFeature-2.0");
+            server.updateServerConfiguration(config);
+        }
 
-	@Test
-	public void testBlockAfterCancelByIdFE() throws Exception {
-		runTest(server, APP_NAME, "testBlockAfterCancelByIdFE");
-	}
+        server.startServer();
+    }
 
-	@Test
-	public void testBlockAfterCancelByNameFE() throws Exception {
-		runTest(server, APP_NAME, "testBlockAfterCancelByNameFE");
-	}
+    @AfterClass
+    public static void tearDown() throws Exception {
+        try {
+            runTest(server, APP_NAME, "verifyNoTasksRunning");
+        } finally {
+            try {
+                if (server.isStarted())
+                    server.stopServer("CWWKC1500W", // Task rolled back
+                            "CWWKC1501W", // Task rolled back due to failure ...
+                            "CWWKC1502W", // Task rolled back, retry time unspecified
+                            "CWWKC1503W", // Task rolled back due to failure ..., retry time unspecified
+                            "CWWKC1510W", // Task rolled back and aborted
+                            "CWWKC1511W", // Task rolled back and aborted. Failure is ...
+                            "DSRA0174W",  // Generic Datasource Helper
+                            "DSRA030*E"); // XA errors related to transaction timeout
+            } finally {
+                testContainer.stop();
+            }
+        }
+    }
 
-	@Test
-	public void testBlockAfterFindByIdFE() throws Exception {
-		runTest(server, APP_NAME, "testBlockAfterFindByIdFE");
-	}
+    @Test
+    public void testBlockAfterCancelByIdFE() throws Exception {
+        runTest(server, APP_NAME, "testBlockAfterCancelByIdFE");
+    }
 
-	@Test
-	public void testBlockAfterFindByNameFE() throws Exception {
-		runTest(server, APP_NAME, "testBlockAfterFindByNameFE");
-	}
+    @Test
+    public void testBlockAfterCancelByNameFE() throws Exception {
+        runTest(server, APP_NAME, "testBlockAfterCancelByNameFE");
+    }
 
-	@Test
-	public void testBlockAfterRemoveByIdFE() throws Exception {
-		runTest(server, APP_NAME, "testBlockAfterRemoveByIdFE");
-	}
+    @Test
+    public void testBlockAfterFindByIdFE() throws Exception {
+        runTest(server, APP_NAME, "testBlockAfterFindByIdFE");
+    }
 
-	@Test
-	public void testBlockAfterRemoveByNameFE() throws Exception {
-		runTest(server, APP_NAME, "testBlockAfterRemoveByNameFE");
-	}
+    @Test
+    public void testBlockAfterFindByNameFE() throws Exception {
+        runTest(server, APP_NAME, "testBlockAfterFindByNameFE");
+    }
 
-	@Test
-	public void testBlockAfterScheduleFE() throws Exception {
-		runTest(server, APP_NAME, "testBlockAfterScheduleFE");
-	}
+    @Test
+    public void testBlockAfterRemoveByIdFE() throws Exception {
+        runTest(server, APP_NAME, "testBlockAfterRemoveByIdFE");
+    }
 
-	@Test
-	public void testBlockRunningTaskFE() throws Exception {
-		runTest(server, APP_NAME, "testBlockRunningTaskFE");
-	}
+    @Test
+    public void testBlockAfterRemoveByNameFE() throws Exception {
+        runTest(server, APP_NAME, "testBlockAfterRemoveByNameFE");
+    }
 
-	@Test
-	public void testBlockRunningTaskThatCancelsSelfFE() throws Exception {
-		runTest(server, APP_NAME, "testBlockRunningTaskThatCancelsSelfFE");
-	}
+    @Test
+    public void testBlockAfterScheduleFE() throws Exception {
+        runTest(server, APP_NAME, "testBlockAfterScheduleFE");
+    }
 
-	@Test
-	public void testBlockRunningTaskThatRemovesSelfFE() throws Exception {
-		runTest(server, APP_NAME, "testBlockRunningTaskThatRemovesSelfFE");
-	}
+    @Test
+    public void testBlockRunningTaskFE() throws Exception {
+        runTest(server, APP_NAME, "testBlockRunningTaskFE");
+    }
 
-	@Test
-	public void testCancelRunningTaskFE() throws Exception {
-		runTest(server, APP_NAME, "testCancelRunningTaskFE");
-	}
+    @Test
+    public void testBlockRunningTaskThatCancelsSelfFE() throws Exception {
+        runTest(server, APP_NAME, "testBlockRunningTaskThatCancelsSelfFE");
+    }
 
-	@Test
-	public void testRemoveRunningTaskAutoPurgeFE() throws Exception {
-		runTest(server, APP_NAME, "testRemoveRunningTaskAutoPurgeFE");
-	}
+    @Test
+    public void testBlockRunningTaskThatRemovesSelfFE() throws Exception {
+        runTest(server, APP_NAME, "testBlockRunningTaskThatRemovesSelfFE");
+    }
 
-	@Test
-	public void testRemoveRunningTaskFE() throws Exception {
-		runTest(server, APP_NAME, "testRemoveRunningTaskFE");
-	}
+    @Test
+    public void testCancelRunningTaskFE() throws Exception {
+        runTest(server, APP_NAME, "testCancelRunningTaskFE");
+    }
+
+    @Test
+    public void testRemoveRunningTaskAutoPurgeFE() throws Exception {
+        runTest(server, APP_NAME, "testRemoveRunningTaskAutoPurgeFE");
+    }
+
+    @Test
+    public void testRemoveRunningTaskFE() throws Exception {
+        runTest(server, APP_NAME, "testRemoveRunningTaskFE");
+    }
 }
