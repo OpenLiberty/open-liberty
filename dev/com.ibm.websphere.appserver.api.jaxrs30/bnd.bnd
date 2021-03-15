@@ -45,4 +45,15 @@ publish.wlp.jar.suffix: dev/api/ibm
   com.ibm.ws.jaxrs.2.x.config;version=latest, \
   io.openliberty.org.jboss.resteasy.common;version=latest
 
+-testpath: \
+ com.ibm.ws.componenttest;version=latest,\
+ com.ibm.ws.kernel.boot.core;version=latest,\
+ com.ibm.ws.kernel.security.thread;version=latest,\
+ com.ibm.ws.logging.core;version=latest,\
+ com.ibm.websphere.javaee.jaxrs.2.1;version=latest, \
+ io.openliberty.jakarta.restfulWS.3.0;version=latest, \
+ javax.activation:activation;version=1.1
+ 
+ 
+
 jakartaeeMe: true

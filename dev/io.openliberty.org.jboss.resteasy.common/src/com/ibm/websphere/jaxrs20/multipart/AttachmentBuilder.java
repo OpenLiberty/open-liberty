@@ -207,7 +207,7 @@ public class AttachmentBuilder {
         }
         headers.putIfAbsent(CONTENT_ID_HEADER, DEFAULT_CONTENT_ID);
         headers.computeIfAbsent(CONTENT_DISPOSITION_HEADER, this::constructContentDispositionHeaderValue);
-
+        headers.computeIfAbsent(CONTENT_TYPE_HEADER, this::constructContentTypeHeaderValue);
         IAttachmentImpl impl = new IAttachmentImpl(headers, fieldName, Optional.ofNullable(fileName), inputStream);
         return impl;
     }
@@ -223,6 +223,13 @@ public class AttachmentBuilder {
             sb.append("\"");
         }
         return Collections.singletonList(sb.toString());
+    }
+
+    private List<String> constructContentTypeHeaderValue(String headerName) {
+        // Per RFC 7578 ( https://tools.ietf.org/html/rfc7578#section-4.4 ) default to text/plain if not a file
+        // or application/octet-stream if it is.
+        String mediaType = fileName == null ? MediaType.TEXT_PLAIN : MediaType.APPLICATION_OCTET_STREAM;
+        return Collections.singletonList(mediaType);
     }
 
     private static void checkNull(String attr, Object obj) {
