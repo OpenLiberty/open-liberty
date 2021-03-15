@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,8 +10,6 @@
  *******************************************************************************/
 
 package com.ibm.ws.concurrent.persistent.fat.demo.timers;
-
-import static org.junit.Assert.fail;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -67,9 +65,6 @@ public class DemoTimerTest extends FATServletClient {
         //Install App
         ShrinkHelper.defaultDropinApp(server, APP_NAME, "ejb.timers");
 
-        //Start server
-        server.startServer();
-
         //Application uses an XA datasource to perform database access.
         //Oracle restrictions creation/dropping of database tables using transactions with error:
         //  ORA-02089: COMMIT is not allowed in a subordinate session
@@ -83,10 +78,13 @@ public class DemoTimerTest extends FATServletClient {
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
-                fail(c.getName() + " caught exception when initializing table: " + e.getMessage());
+                System.out.println("DemoTimerTest did not create table. Table might have already been created by ejb.timers.AutomaticDatabase.initTable. " + e.getMessage());
             }
 
         }
+
+        //Start server
+        server.startServer();
     }
 
     @AfterClass
