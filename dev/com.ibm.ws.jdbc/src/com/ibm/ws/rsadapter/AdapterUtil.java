@@ -19,6 +19,7 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
+import java.sql.BatchUpdateException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -1190,6 +1191,9 @@ public class AdapterUtil {
                 mapsToStaleConnection = isLegacyException(mappedX, "com.ibm.websphere.ce.cm.StaleConnectionException");
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "mapped to " + mappedX.getClass().getName());
+                // Legacy code does not replace BatchUpdateException
+                if (sqlX instanceof BatchUpdateException)
+                    mappedX = sqlX;
             }
 
             if (tc.isDebugEnabled())

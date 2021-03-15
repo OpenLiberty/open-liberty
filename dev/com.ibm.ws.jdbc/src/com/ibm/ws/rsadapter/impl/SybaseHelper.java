@@ -204,7 +204,7 @@ public class SybaseHelper extends DatabaseHelper
             super.gatherAndDisplayMetaDataInfo(conn, mcf);                 
         } catch (SQLException x)
         {
-            if (isConnectionError(x))
+            if (mcf.dataStoreHelper == null ? isConnectionError(x) : mcf.dataStoreHelper.isConnectionError(x))
                 throw x;
 
             Tr.info(tc, "META_DATA_EXCEPTION", x.getMessage());
