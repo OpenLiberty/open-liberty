@@ -16,131 +16,140 @@
  *
  * Configure 'assemble' to depend on above tasks.
  */
-task publishWLPJars(type: Copy) {
-    dependsOn jar
-    dependsOn jakartaeeTransform
-    def publishWlpJarDefault = parseBoolean(bnd('test.project', 'false')) ? 'true' : 'false'
-    enabled bnd('publish.tool.jar', '').empty && !parseBoolean(bnd('publish.wlp.jar.disabled', publishWlpJarDefault))
-    from project.buildDir
-    into buildImage.file('wlp/' + bnd('publish.wlp.jar.suffix', 'lib'))
-    include bnd('publish.wlp.jar.include', '*.jar')
-    def hasIFIXHeaders = [:]
-    def fullVersions = [:]
-    if (parseBoolean(bnd('publish.wlp.jar.rename', 'true'))) {
-        def outerSymbolicName = bnd('Bundle-SymbolicName', project.name)
-        if (outerSymbolicName != null) {
-            int index = outerSymbolicName.indexOf(";")
-            if (index != -1) {
-                outerSymbolicName = outerSymbolicName.substring(0, index).trim()
+def publishWlpJarDefault = parseBoolean(bnd('test.project', 'false')) ? 'true' : 'false'
+if (bnd('publish.tool.jar', '').empty && !parseBoolean(bnd('publish.wlp.jar.disabled', publishWlpJarDefault))) {
+    task publishWLPJars(type: Copy) {
+        dependsOn jar
+        if ( parseBoolean( bnd('jakartaeeMe', 'true'))) {
+            dependsOn jakartaeeTransform
+        }
+        from project.buildDir
+        into buildImage.file('wlp/' + bnd('publish.wlp.jar.suffix', 'lib'))
+        include bnd('publish.wlp.jar.include', '*.jar')
+        def hasIFIXHeaders = [:]
+        def fullVersions = [:]
+        if (parseBoolean(bnd('publish.wlp.jar.rename', 'true'))) {
+            def outerSymbolicName = bnd('Bundle-SymbolicName', project.name)
+            if (outerSymbolicName != null) {
+                int index = outerSymbolicName.indexOf(";")
+                if (index != -1) {
+                    outerSymbolicName = outerSymbolicName.substring(0, index).trim()
+                }
             }
-        }
 
-        // store the full version information for the outer project from
-        // the projects bnd.bnd file.  
-        def outerVersion = bnd('bVersion')
-        def outerFullVersion = bnd('bFullVersion')
-        fullVersions.put(outerSymbolicName, outerFullVersion)
+            // store the full version information for the outer project from
+            // the projects bnd.bnd file.  
+            def outerVersion = bnd('bVersion')
+            def outerFullVersion = bnd('bFullVersion')
+            fullVersions.put(outerSymbolicName, outerFullVersion)
 
-        // iFixed jars should get renamed with a qualifier so they can exist in the filesystem
-        // next to the base version of the jar, *except* for jars that are directly
-        // referenced in a tool script's classpath...
-        if (((!bnd('IBM-Interim-Fixes', '').empty) || (!bnd('IBM-Test-Fixes', '').empty))
-                && (!project.name.equals("com.ibm.ws.kernel.boot"))
-                && (!project.name.equals("com.ibm.ws.kernel.boot.archive"))
-                && (!project.name.equals("com.ibm.ws.appclient.boot"))
-                && (!project.name.equals("com.ibm.ws.kernel.boot.cmdline"))) {
-            hasIFIXHeaders.put(outerSymbolicName, true)
-        }
+            // iFixed jars should get renamed with a qualifier so they can exist in the filesystem
+            // next to the base version of the jar, *except* for jars that are directly
+            // referenced in a tool script's classpath...
+            if (((!bnd('IBM-Interim-Fixes', '').empty) || (!bnd('IBM-Test-Fixes', '').empty))
+                    && (!project.name.equals("com.ibm.ws.kernel.boot"))
+                    && (!project.name.equals("com.ibm.ws.kernel.boot.archive"))
+                    && (!project.name.equals("com.ibm.ws.appclient.boot"))
+                    && (!project.name.equals("com.ibm.ws.kernel.boot.cmdline"))) {
+                hasIFIXHeaders.put(outerSymbolicName, true)
+            }
 
-        if (!bnd('-sub', '').empty) {
-            fileTree(dir: projectDir, include: bnd('-sub', '')).each { subBndFile ->
-                Properties subBndProperties = new Properties()
-                subBndFile.withInputStream { subBndProperties.load(it) }
-                def symbolicName = subBndProperties.getProperty("Bundle-SymbolicName")
-                if (symbolicName != null) {
-                    int index = symbolicName.indexOf(";")
-                    if (index != -1) {
-                        symbolicName = symbolicName.substring(0, index).trim()
-                    }
+            if (!bnd('-sub', '').empty) {
+                fileTree(dir: projectDir, include: bnd('-sub', '')).each { subBndFile ->
+                    Properties subBndProperties = new Properties()
+                    subBndFile.withInputStream { subBndProperties.load(it) }
+                    def symbolicName = subBndProperties.getProperty("Bundle-SymbolicName")
+                    if (symbolicName != null) {
+                        int index = symbolicName.indexOf(";")
+                        if (index != -1) {
+                            symbolicName = symbolicName.substring(0, index).trim()
+                        }
 
-                    if (subBndProperties.getProperty("IBM-Interim-Fixes") != null
-                        || subBndProperties.getProperty("IBM-Test-Fixes") != null) {
-                        hasIFIXHeaders.put(symbolicName, true)
-                    }
+                        if (subBndProperties.getProperty("IBM-Interim-Fixes") != null
+                            || subBndProperties.getProperty("IBM-Test-Fixes") != null) {
+                            hasIFIXHeaders.put(symbolicName, true)
+                        }
 
-                    // Sub bundles in a project can have a different bundle
-                    // version number than the outer project's bnd.bnd file
-                    // This logic stores the correctly full bundle version
-                    // for sub bundles in a project.
-                    def subBVersion = subBndProperties.getProperty('bVersion')
-                    if (outerVersion.equals(subBVersion)) {
-                        fullVersions.put(symbolicName, outerFullVersion)
-                    } else {
-                        fullVersions.put(symbolicName, subBVersion + outerFullVersion.substring(outerVersion.length()))
+                        // Sub bundles in a project can have a different bundle
+                        // version number than the outer project's bnd.bnd file
+                        // This logic stores the correctly full bundle version
+                        // for sub bundles in a project.
+                        def subBVersion = subBndProperties.getProperty('bVersion')
+                        if (outerVersion.equals(subBVersion)) {
+                            fullVersions.put(symbolicName, outerFullVersion)
+                        } else {
+                            fullVersions.put(symbolicName, subBVersion + outerFullVersion.substring(outerVersion.length()))
+                        }
                     }
                 }
             }
-        }
 
-        // Update each published bundle to have the full version suffix.
-        eachFile {
-            // If the sub.bnd that built this jar contains iFix headers, rename it with a qualifer.
-            def symbolicName = it.getSourceName().substring(0, it.getSourceName().lastIndexOf("."))
-            def fullVersion = fullVersions.get(symbolicName)
-            if (fullVersion == null) {
-                fullVersion = outerFullVersion
-            }
+            // Update each published bundle to have the full version suffix.
+            eachFile {
+                // If the sub.bnd that built this jar contains iFix headers, rename it with a qualifer.
+                def symbolicName = it.getSourceName().substring(0, it.getSourceName().lastIndexOf("."))
+                def fullVersion = fullVersions.get(symbolicName)
+                if (fullVersion == null) {
+                    fullVersion = outerFullVersion
+                }
 
-            def selectedSymbolicName = symbolicName
-            // If the jar is jakartaee transformed, then see if the pre-transformed bundle has iFix headers.
-            if (it.getSourceName().equals(bnd('jakartaee.transform.jar.name', '')) || symbolicName.endsWith(".jakarta")) {
-                selectedSymbolicName = outerSymbolicName
-            }
-                
-            if (!hasIFIXHeaders.get(selectedSymbolicName)) {
-                it.setName(symbolicName + "_" + fullVersion + ".jar")
-            } else {
-                it.setName(symbolicName + "_" + fullVersion + ".${qualifier}.jar")
+                def selectedSymbolicName = symbolicName
+                // If the jar is jakartaee transformed, then see if the pre-transformed bundle has iFix headers.
+                if (it.getSourceName().equals(bnd('jakartaee.transform.jar.name', '')) || symbolicName.endsWith(".jakarta")) {
+                    selectedSymbolicName = outerSymbolicName
+                }
+                    
+                if (!hasIFIXHeaders.get(selectedSymbolicName)) {
+                    it.setName(symbolicName + "_" + fullVersion + ".jar")
+                } else {
+                    it.setName(symbolicName + "_" + fullVersion + ".${qualifier}.jar")
+                }
             }
         }
     }
+    assemble.dependsOn publishWLPJars
 }
 
-task publishJavadoc(type: Copy) {
-    dependsOn zipJavadoc
-    from zipJavadoc
-    into rootProject.file("build.image/wlp/" + bnd('publish.wlp.jar.suffix', 'lib') + "/javadoc")
-    rename '.javadoc.zip', "_${bnd.bVersion}-javadoc.zip"
+if (bnd('publish.wlp.jar.suffix', 'lib').contains('api/ibm') || bnd('publish.wlp.jar.suffix', 'lib').contains('spi/ibm')) {
+    task publishJavadoc(type: Copy) {
+        dependsOn zipJavadoc
+        from zipJavadoc
+        into rootProject.file("build.image/wlp/" + bnd('publish.wlp.jar.suffix', 'lib') + "/javadoc")
+        rename '.javadoc.zip', "_${bnd.bVersion}-javadoc.zip"
+    }
+    assemble.dependsOn publishJavadoc
 }
 
 task publishToolScripts(type: Copy) {
-    dependsOn jar
     enabled !bnd('publish.tool.script', '').empty
+    dependsOn jar
     from cnf.file('resources/bin')
     into buildImage.file('wlp/bin/' + bnd('publish.tool.script.subdir', ''))
     fileMode 0755
     rename 'tool(.*)', bnd('publish.tool.script') + '$1'
     filter(org.apache.tools.ant.filters.ReplaceTokens,
             tokens: [TOOL_JAR: bnd('publish.tool.script.subdir', '') + 'tools/' + bnd('publish.tool.jar', ''),
-                     TOOL_SCRIPT: bnd('publish.tool.script.subdir', '') + bnd('publish.tool.script', ''),
-                     TOOL_SCRIPT_DIR_LENGTH: bnd('publish.tool.script.dir.length', '5'),
-                     TOOL_SCRIPT_RELATIVE: bnd('publish.tool.script.relative', '')])
+                    TOOL_SCRIPT: bnd('publish.tool.script.subdir', '') + bnd('publish.tool.script', ''),
+                    TOOL_SCRIPT_DIR_LENGTH: bnd('publish.tool.script.dir.length', '5'),
+                    TOOL_SCRIPT_RELATIVE: bnd('publish.tool.script.relative', '')])
 }
 
 task publishToolJars(type: Copy) {
+    enabled !bnd('publish.tool.jar', '').empty
     dependsOn jar
     dependsOn publishToolScripts
-    enabled !bnd('publish.tool.jar', '').empty
     from project.buildDir
     into buildImage.file('wlp/bin/' + bnd('publish.tool.script.subdir', '') + 'tools')
     include bnd('publish.tool.jar', '')
 }
+assemble.dependsOn publishToolJars
 
 task publishSchemaResources(type: Copy) {
     dependsOn jar
     from project.file('resources/schemas')
     into buildImage.file('wlp/dev/api/ibm/schema')
 }
+assemble.dependsOn publishSchemaResources
 
 task publishPlatformManifests(type: Copy) {
     dependsOn jar
@@ -150,20 +159,22 @@ task publishPlatformManifests(type: Copy) {
     filter(org.apache.tools.ant.filters.ConcatFilter,
             append: file(cnf.file('resources/IBM-ProductID.txt')))
 }
+assemble.dependsOn publishPlatformManifests
 
 task publishPlatformFiles(type: Copy) {
-    dependsOn jar
     dependsOn publishPlatformManifests
     from project.file('publish/platform')
     into buildImage.file('wlp/lib/platform')
     exclude '*.mf'
 }
+assemble.dependsOn publishPlatformFiles
 
 task publishTemplates(type: Copy) {
     dependsOn jar
     from project.file('publish/templates')
     into buildImage.file('wlp/templates')
 }
+assemble.dependsOn publishTemplates
 
 task publishBinScripts(type: Copy) {
     dependsOn jar
@@ -171,12 +182,15 @@ task publishBinScripts(type: Copy) {
     into buildImage.file('wlp/bin')
     fileMode 0755
 }
+assemble.dependsOn publishBinScripts
 
-task publishClientScripts(type: Copy) {
-    dependsOn jar
-    enabled parseBoolean(bnd('publish.wlp.clients', 'true'))
-    from project.file('publish/clients')
-    into buildImage.file('wlp/clients')
+if (parseBoolean(bnd('publish.wlp.clients', 'true'))) {
+    task publishClientScripts(type: Copy) {
+        dependsOn jar
+        from project.file('publish/clients')
+        into buildImage.file('wlp/clients')
+    }
+    assemble.dependsOn publishClientScripts
 }
 
 task publishLibNative(type: Copy) {
@@ -184,15 +198,4 @@ task publishLibNative(type: Copy) {
     from project.file('lib/native')
     into buildImage.file('wlp/lib/native')
 }
-
-assemble {
-    dependsOn publishWLPJars
-    dependsOn publishJavadoc
-    dependsOn publishToolJars
-    dependsOn publishSchemaResources
-    dependsOn publishPlatformFiles
-    dependsOn publishTemplates
-    dependsOn publishBinScripts
-    dependsOn publishClientScripts
-    dependsOn publishLibNative
-}
+assemble.dependsOn publishLibNative
