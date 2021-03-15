@@ -489,13 +489,13 @@ ext.gitClone = { proj, branch = 'NOT_SET', folder = '', site = 'git@github.com',
     return
   }
 
-  // Default the branch to master but allow -Dbranch= or a parameter coming in
+  // Default the branch to release but allow -Dbranch= or a parameter coming in
   if( "NOT_SET".equals( branch ) ){
     String branchProp = System.getProperty('branch')
     if( branchProp != null && branchProp.length() > 0 ){
        branch = branchProp
     }else{
-       branch = "master"
+       branch = "release"
     }
   }
   
