@@ -22,6 +22,8 @@ import javax.ws.rs.core.MultivaluedMap;
 
 import org.jboss.resteasy.plugins.providers.multipart.IAttachmentImpl;
 
+import com.ibm.ws.kernel.productinfo.ProductInfo;
+
 
 /**
  *
@@ -36,7 +38,11 @@ public class AttachmentBuilder {
     private final MultivaluedMap<String, String> headers = new MultivaluedHashMap<>();
     private final String fieldName;
 
+    @Deprecated //TODO: remove for GA
     public static AttachmentBuilder newBuilder(String fieldName) {
+        if (!ProductInfo.getBetaEdition()) {
+            throw new UnsupportedOperationException("AttachmentBuilder API is currently only available in Beta");
+        }
         if (fieldName == null) {
             throw new IllegalArgumentException("fieldName must be non-null");
         }
