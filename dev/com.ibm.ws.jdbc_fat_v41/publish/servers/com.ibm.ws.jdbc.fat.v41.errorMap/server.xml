@@ -1,3 +1,13 @@
+<!--
+    Copyright (c) 2020, 2021 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
 <server>
     <featureManager>
         <feature>componenttest-1.0</feature>
@@ -58,6 +68,8 @@
         <properties.derby.embedded databaseName="memory:ds1" createDatabase="create"/>
         <!-- invalid configuration: the value "BOGUS" is not an allowed value for the 'as' attribute -->
         <identifyException errorCode="1234" as="BOGUS"/>
+        <!-- legacy exceptions are not enabled -->
+        <identifyException sqlState="SCE99" as="com.ibm.websphere.ce.cm.StaleConnectionException"/>
     </dataSource>
     
     <dataSource jndiName="jdbc/invalid/noStateOrCode" type="javax.sql.DataSource" jdbcDriverRef="CustomDriver">

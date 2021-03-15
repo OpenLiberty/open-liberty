@@ -37,7 +37,12 @@
     <jdbcDriver libraryRef="JDBCLib" javax.sql.DataSource="test.jdbc.heritage.driver.HDDataSource"/>
     <properties databaseName="memory:testdb" createDatabase="create"
                 supportsCatalog="false" supportsNetworkTimeout="false" supportsReadOnly="false" supportsSchema="false" supportsTypeMap="false"/>
-    <heritageSettings helperClass="test.jdbc.heritage.driver.helper.HDDataStoreHelper"/>
+    <heritageSettings helperClass="test.jdbc.heritage.driver.helper.HDDataStoreHelper" replaceExceptions="true"/>
+    <identifyException as="None" sqlState="08004"/>
+    <identifyException as="StaleConnection" sqlState="H8000"/>
+    <identifyException as="com.ibm.websphere.ce.cm.StaleConnectionException" sqlState="H8006"/>
+    <identifyException as="test.jdbc.heritage.driver.helper.HeritageDBDuplicateKeyException" errorCode="143360"/>
+    <identifyException as="test.jdbc.heritage.driver.helper.HeritageDBFeatureUnavailableException" errorCode="40960"/>
   </dataSource>
 
   <javaPermission codeBase="${shared.resource.dir}derby/derby.jar" className="java.security.AllPermission"/>

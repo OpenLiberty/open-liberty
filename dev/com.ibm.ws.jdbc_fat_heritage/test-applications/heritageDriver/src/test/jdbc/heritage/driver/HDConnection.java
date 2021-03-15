@@ -10,6 +10,10 @@
  *******************************************************************************/
 package test.jdbc.heritage.driver;
 
+import java.lang.reflect.Constructor;
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.sql.Array;
 import java.sql.Blob;
 import java.sql.CallableStatement;
@@ -47,6 +51,8 @@ public class HDConnection implements Connection, HeritageDBConnection {
     final HDDataSource ds;
     final Connection derbycon;
     Set<String> clientInfoKeys = DEFAULT_CLIENT_INFO_KEYS;
+
+    private Map<Object, Class<?>> exceptionIdentificationOverrides;
 
     /**
      * Counts the number of times that doConnectionSetupPerGetConnection is invoked for this connection.
@@ -306,7 +312,23 @@ public class HDConnection implements Connection, HeritageDBConnection {
      * Enables the test case to intercept and replace SQL as a way of providing various
      * information back to the application for testing purposes.
      */
-    private String replace(String sql) {
+    private String replace(String sql) throws SQLException {
+        if (sql.toUpperCase().startsWith("CALL TEST.FORCE_EXCEPTION(")) {
+            String[] params = sql.substring("CALL TEST.FORCE_EXCEPTION(".length(), sql.length() - 1).split(",");
+            String sqlState = params[0];
+            int errorCode = params[1] == null ? 0 : Integer.parseInt(params[1]);
+            try {
+                throw AccessController.doPrivileged((PrivilegedExceptionAction<SQLException>) () -> {
+                    Class<?> exceptionClass = params[2] == null ? SQLException.class : Class.forName(params[2]);
+                    @SuppressWarnings("unchecked")
+                    Constructor<SQLException> ctor = (Constructor<SQLException>) exceptionClass.getConstructor(String.class, String.class, int.class);
+                    return ctor.newInstance("Test JDBC driver fails on purpose.", sqlState, errorCode);
+                });
+            } catch (PrivilegedActionException x) {
+                throw new SQLException("Failed to create exception class", sqlState, errorCode, x);
+            }
+        }
+
         if ("CALL TEST.GET_CLEANUP_COUNT()".equalsIgnoreCase(sql))
             return "VALUES (" + cleanupCount.get() + ")";
 
@@ -366,6 +388,10 @@ public class HDConnection implements Connection, HeritageDBConnection {
             clientInfoKeys = DEFAULT_CLIENT_INFO_KEYS;
         else
             clientInfoKeys = Stream.of(keys).collect(Collectors.toSet());
+    }
+
+    public void setExceptionIdentificationOverrides(Map<Object, Class<?>> overrides) {
+        exceptionIdentificationOverrides = overrides;
     }
 
     @Override

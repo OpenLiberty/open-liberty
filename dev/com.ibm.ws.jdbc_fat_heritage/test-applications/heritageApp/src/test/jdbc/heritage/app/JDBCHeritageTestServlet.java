@@ -15,6 +15,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.lang.reflect.Field;
 import java.security.AccessController;
@@ -24,6 +25,7 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Set;
 
@@ -36,8 +38,14 @@ import javax.transaction.UserTransaction;
 
 import org.junit.Test;
 
+import com.ibm.websphere.ce.cm.DuplicateKeyException;
+import com.ibm.websphere.ce.cm.StaleConnectionException;
+
 import componenttest.app.FATServlet;
 import test.jdbc.heritage.driver.HeritageDBConnection;
+import test.jdbc.heritage.driver.helper.HeritageDBDuplicateKeyException;
+import test.jdbc.heritage.driver.helper.HeritageDBFeatureUnavailableException;
+import test.jdbc.heritage.driver.helper.HeritageDBStaleConnectionException;
 
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/JDBCHeritageTestServlet")
@@ -324,6 +332,76 @@ public class JDBCHeritageTestServlet extends FATServlet {
     }
 
     /**
+     * Verify that the data store helper is invoked to map and replace exceptions.
+     */
+    @Test
+    public void testMapExceptionAndReplaceIt() throws Exception {
+        try (Connection con = defaultDataSource.getConnection()) {
+            try {
+                con.prepareCall("CALL TEST.FORCE_EXCEPTION(0A000,0,java.sql.SQLFeatureNotSupportedException)").executeQuery();
+                fail("Test case did not force an error with SQL state 0A000");
+            } catch (HeritageDBFeatureUnavailableException x) {
+                // pass
+            }
+
+            try {
+                con.prepareCall("CALL TEST.FORCE_EXCEPTION(08001,22344,java.sql.SQLException)").executeQuery();
+                fail("Test case did not force an error with SQL state 08001 and error code 22344");
+            } catch (HeritageDBStaleConnectionException x) {
+                // pass
+            }
+
+            // user-defined exception indicates stale:
+            assertTrue(con.isClosed());
+        }
+
+        try (Connection con = defaultDataSource.getConnection()) {
+            try {
+                con.prepareCall("CALL TEST.FORCE_EXCEPTION(08006,4002,java.sql.SQLException)").executeQuery();
+                fail("Test case did not force an error with SQL state 08006 and error code 4002");
+            } catch (StaleConnectionException x) {
+                // pass if not a subclass
+                assertEquals(StaleConnectionException.class.getName(), x.getClass().getName());
+            }
+
+            // user-defined exception indicates stale:
+            assertTrue(con.isClosed());
+        }
+    }
+
+    /**
+     * Cause an error that we have arbitrarily mapped to StaleStatementException in the data store helper.
+     * Verify that the statement is not cached and that the error is surface to the application as a
+     * StaleConnectionException. This matches the legacy behavior.
+     */
+    @Test
+    public void testStaleStatement() throws Exception {
+        PreparedStatement cachedStatement;
+
+        try (Connection con = defaultDataSource.getConnection("testStaleStatement", "StaleStmtPwd")) {
+            // Force an error that raises a SQLState (22013) that we mapped to StaleStatementException,
+            PreparedStatement pstmt = con.prepareStatement("VALUES SQRT (-1)");
+            cachedStatement = pstmtImpl(pstmt);
+            try {
+                ResultSet result = pstmt.executeQuery();
+                result.next();
+                System.out.println("The database says that the square root of -1 is " + result.getObject(1));
+            } catch (StaleConnectionException x) {
+                // The StaleStatementException must be surfaced to the application as StaleConnectionException
+                assertEquals(StaleConnectionException.class.getName(), x.getClass().getName());
+                assertEquals("22013", x.getSQLState());
+            }
+        }
+
+        // The statement must not be cached due to the StaleStatementException
+        try (Connection con = defaultDataSource.getConnection("testStaleStatement", "StaleStmtPwd")) {
+            // Force an error that raises a SQLState (22013) that we mapped to StaleStatementException,
+            PreparedStatement pstmt = con.prepareStatement("VALUES SQRT (-1)");
+            assertNotSame(cachedStatement, pstmtImpl(pstmt));
+        }
+    }
+
+    /**
      * Confirm that doesStatementCacheIsoLevel causes prepared statements to be cached based on
      * the isolation level that was present on the connection at the time the statement was
      * created.
@@ -386,6 +464,82 @@ public class JDBCHeritageTestServlet extends FATServlet {
             assertEquals(225, cstmt.getMaxFieldSize()); // doStatementCleanup resets the default
             cstmt.executeQuery().close();
             cstmt.close();
+        }
+    }
+
+    /**
+     * Confirm that setUserDefinedMap is supplied with the identifyException configuration.
+     */
+    @Test
+    public void testUserDefinedExceptionMap() throws SQLException {
+        try (Connection con = defaultDataSource.getConnection()) {
+            try {
+                con.prepareCall("CALL TEST.FORCE_EXCEPTION(HY000,40960,test.jdbc.heritage.driver.HeritageDBDoesNotImplementItException)").executeQuery();
+                fail("Test case did not force an error with error code 40960");
+            } catch (HeritageDBFeatureUnavailableException x) {
+                // pass
+            }
+
+            try {
+                con.prepareCall("CALL TEST.FORCE_EXCEPTION(08004,0,java.sql.SQLException)").executeQuery();
+                fail("Test case did not force an error with SQL state 08004");
+            } catch (StaleConnectionException x) {
+                // identifyException removes this mapping, so it should not be considered stale
+                throw x;
+            } catch (SQLException x) {
+                // pass
+            }
+
+            try {
+                con.prepareCall("CALL TEST.FORCE_EXCEPTION(H8006,0,test.jdbc.heritage.driver.HeritageDBConnectionBadException)").executeQuery();
+                fail("Test case did not force an error with SQL state H8006");
+            } catch (StaleConnectionException x) {
+                // pass if not a subclass
+                assertEquals(StaleConnectionException.class.getName(), x.getClass().getName());
+            }
+
+            // automatically closed due to stale connection
+            assertTrue(con.isClosed());
+        }
+
+        try (Connection con = defaultDataSource.getConnection()) {
+            try {
+                con.prepareCall("CALL TEST.FORCE_EXCEPTION(H8000,0,java.sql.SQLRecoverableException)").executeQuery();
+                fail("Test case did not force an error with SQL state H8000");
+            } catch (StaleConnectionException x) {
+                // pass if not a subclass
+                assertEquals(StaleConnectionException.class.getName(), x.getClass().getName());
+            }
+
+            // automatically closed due to stale connection
+            assertTrue(con.isClosed());
+        }
+    }
+
+    /**
+     * Verify that the user-defined error map (configured via identifyException) takes precedence when both
+     * the data store helper and the identifyException configuration have a conflicting mapping.
+     */
+    @Test
+    public void testUserDefinedExceptionMapOverridesDefaults() throws SQLException {
+        try (Connection con = defaultDataSource.getConnection()) {
+            // Default mapping for SQL state 23000:
+            try {
+                con.prepareCall("CALL TEST.FORCE_EXCEPTION(23000,0,java.sql.SQLIntegrityConstraintViolationException)").executeQuery();
+                fail("Test case did not force an error with SQL state 23000 and error code 143360");
+            } catch (HeritageDBDuplicateKeyException x) {
+                throw x;
+            } catch (DuplicateKeyException x) {
+                // pass
+            }
+
+            // Override by identifyException when error code is 143360
+            try {
+                con.prepareCall("CALL TEST.FORCE_EXCEPTION(23000,143360,java.sql.SQLIntegrityConstraintViolationException)").executeQuery();
+                fail("Test case did not force an error with SQL state 23000 and error code 143360");
+            } catch (HeritageDBDuplicateKeyException x) {
+                // pass
+            }
         }
     }
 }
