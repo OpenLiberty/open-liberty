@@ -39,4 +39,14 @@
   <AD id="numConnectionsPerThreadLocal"       name="%numConPerThd"  description="%numConPerThd.desc"  ibmui:group="Advanced" required="false" type="Integer" min="0"/>
  </OCD>
 
+ <!-- Connector Service (internal) -->
+
+ <Designate factoryPid="com.ibm.ws.jca.connector">
+  <Object ocdref="com.ibm.ws.jca.connector" />
+ </Designate>
+
+ <OCD id="com.ibm.ws.jca.connector" ibm:alias="connectorService" name="internal" description="internal use only">
+  <AD id="enableHeritageBehavior" type="Boolean" default="false" name="internal" description="internal use only"/>
+ </OCD>
+
 </metatype:MetaData>

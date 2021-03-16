@@ -69,6 +69,11 @@ public class DatabaseHelper {
     transient PrintWriter genPw;
 
     /**
+     * Class name of corresponding legacy data store helper class.
+     */
+    String dataStoreHelper = "com.ibm.websphere.rsadapter.GenericDataStoreHelper";
+
+    /**
      * Default query timeout configured on the data source.
      */
     protected int defaultQueryTimeout;
@@ -87,7 +92,7 @@ public class DatabaseHelper {
      * at the beginning we assume holdability is supported, if we get an exception when calling the getHolidablity
      * then we will mark the flag as false so that getHoldability is not called all the time
      */
-    protected boolean holdabilitySupported = true; 
+    protected boolean holdabilitySupported = true;
 
     private boolean setCursorNameSupported = true;
     

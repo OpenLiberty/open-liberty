@@ -99,6 +99,8 @@ public class DataDirectConnectSQLServerHelper extends DatabaseHelper {
     DataDirectConnectSQLServerHelper(WSManagedConnectionFactoryImpl mcf) {
         super(mcf);
 
+        dataStoreHelper = "com.ibm.websphere.rsadapter.ConnectJDBCDataStoreHelper";
+
         mcf.defaultIsolationLevel = Connection.TRANSACTION_REPEATABLE_READ;
 
         // Default values for the statement properties LongDataCacheSize and QueryTimeout are
@@ -401,12 +403,12 @@ public class DataDirectConnectSQLServerHelper extends DatabaseHelper {
 
         if (ind != -1) { // if none found ===> it is a datadirect one
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) 
-                Tr.debug(this, tc, "The exception is NOT a DataDirect exception ");
+                Tr.debug(this, tc, "The exception is NOT a DataDirect exception");
             return false;
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) 
-            Tr.debug(this, tc, "the exception is a DataDirect exception  ");
+            Tr.debug(this, tc, "the exception is a DataDirect exception");
         return true;
     }
 

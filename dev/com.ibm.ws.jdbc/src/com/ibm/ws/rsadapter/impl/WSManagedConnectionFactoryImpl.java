@@ -362,11 +362,11 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
 
         createDatabaseHelper(config.vendorProps instanceof PropertyService ? ((PropertyService) config.vendorProps).getFactoryPID() : PropertyService.FACTORY_PID);
 
-        if (config.heritageHelperClass == null) {
+        if (connectorSvc.isHeritageEnabled()) {
+            dataStoreHelper = createDataStoreHelper();
+        } else {
             dataStoreHelper = null;
             supportsGetNetworkTimeout = supportsGetSchema = atLeastJDBCVersion(JDBCRuntimeVersion.VERSION_4_1);
-        } else {
-            dataStoreHelper = createDataStoreHelper();
         }
 
         if (helper.shouldTraceBeEnabled(this))
@@ -474,8 +474,10 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
         DSConfig config = dsConfig.get();
         Properties helperProps = new Properties(); // TODO populate with what is needed
 
+        String helperClassName = config.heritageHelperClass == null ? helper.dataStoreHelper : config.heritageHelperClass;
+
         GenericDataStoreHelper dataStoreHelper = AccessController.doPrivileged((PrivilegedExceptionAction<GenericDataStoreHelper>) () ->
-            (GenericDataStoreHelper) jdbcDriverLoader.loadClass(config.heritageHelperClass).getConstructor(Properties.class).newInstance(helperProps));
+            (GenericDataStoreHelper) jdbcDriverLoader.loadClass(helperClassName).getConstructor(Properties.class).newInstance(helperProps));
 
         dataStoreHelper.setConfig(dsConfig);
 
@@ -485,7 +487,7 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
         DataStoreHelperMetaData metadata = dataStoreHelper.getMetaData();
         defaultIsolationLevel = dataStoreHelper.getIsolationLevel(null);
         doesStatementCacheIsoLevel = metadata.doesStatementCacheIsoLevel();
-        isCustomHelper = !config.heritageHelperClass.startsWith("com.ibm.websphere.rsadapter");
+        isCustomHelper = !helperClassName.startsWith("com.ibm.websphere.rsadapter");
         supportsGetCatalog = metadata.supportsGetCatalog();
         supportsGetNetworkTimeout = metadata.supportsGetNetworkTimeout();
         supportsGetSchema = metadata.supportsGetSchema();

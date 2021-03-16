@@ -56,6 +56,9 @@ public class JDBCHeritageTestServlet extends FATServlet {
     @Resource(shareable = false)
     private DataSource defaultDataSource_unsharable;
 
+    @Resource(lookup = "jdbc/helperDefaulted", shareable = false)
+    private DataSource dsWithHelperDefaulted;
+
     @Resource
     private UserTransaction tx;
 
@@ -321,6 +324,78 @@ public class JDBCHeritageTestServlet extends FATServlet {
     }
 
     /**
+     * It should be possible to configure exception replacement without specifying a data store helper,
+     * in which case a default is assigned.
+     */
+    @Test
+    public void testDataStoreHelperUnspecified() throws Exception {
+        assertNotNull(dsWithHelperDefaulted);
+
+        try (Connection con = dsWithHelperDefaulted.getConnection()) {
+            // exception replacement from identifyException
+            try {
+                con.prepareCall("CALL TEST.FORCE_EXCEPTION(2300H,0,java.sql.SQLException)").executeQuery();
+                fail("Test case did not force an error with SQL state 2300H");
+            } catch (HeritageDBDuplicateKeyException x) {
+                // pass
+            }
+
+            // exception replacement from identifyException
+            try {
+                con.prepareCall("CALL TEST.FORCE_EXCEPTION(0A00H,0,java.sql.SQLFeatureNotSupportedException)").executeQuery();
+                fail("Test case did not force an error with SQL state 0A00H");
+            } catch (HeritageDBFeatureUnavailableException x) {
+                // pass
+            }
+
+            // exception ignore from identifyException
+            try {
+                con.prepareCall("CALL TEST.FORCE_EXCEPTION(S1000,8006,java.sql.SQLException)").executeQuery();
+                fail("Test case did not force an error with SQL state S1000 and error code 8006");
+            } catch (SQLException x) {
+                if (x.getClass().getName().equals("java.sql.SQLException"))
+                    ; // pass
+                else
+                    throw x;
+            }
+
+            // exception replacement from identifyException
+            try {
+                con.prepareCall("CALL TEST.FORCE_EXCEPTION(HY000,8008,java.sql.SQLException)").executeQuery();
+                fail("Test case did not force an error with SQL state HY000 and error code 8008");
+            } catch (StaleConnectionException x) {
+                // pass
+            }
+
+            assertTrue(con.isClosed()); // due to stale connection
+        }
+
+        PreparedStatement cachedStatement;
+
+        try (Connection con = dsWithHelperDefaulted.getConnection("testDataStoreHelperUnspecified", "StaleStmtPwd")) {
+            // Force an error that raises error code (22013) that we mapped to StaleStatementException,
+            PreparedStatement pstmt = con.prepareStatement("VALUES SQRT (-9)");
+            cachedStatement = pstmtImpl(pstmt);
+            try {
+                ResultSet result = pstmt.executeQuery();
+                result.next();
+                fail("The database says that the square root of -9 is " + result.getObject(1));
+            } catch (StaleConnectionException x) {
+                // The StaleStatementException must be surfaced to the application as StaleConnectionException
+                assertEquals(StaleConnectionException.class.getName(), x.getClass().getName());
+                assertEquals("22013", x.getSQLState());
+            }
+        }
+
+        // The statement must not be cached due to the StaleStatementException
+        try (Connection con = dsWithHelperDefaulted.getConnection("testDataStoreHelperUnspecified", "StaleStmtPwd")) {
+            // Force an error that raises a SQLState (22013) that we mapped to StaleStatementException,
+            PreparedStatement pstmt = con.prepareStatement("VALUES SQRT (-9)");
+            assertNotSame(cachedStatement, pstmtImpl(pstmt));
+        }
+    }
+
+    /**
      * Confirm that a dataSource that is configured with heritageSettings can be injected
      * and has the transaction isolation level that is assigned as default by the DataStoreHelper.
      */
@@ -427,7 +502,7 @@ public class JDBCHeritageTestServlet extends FATServlet {
             try {
                 ResultSet result = pstmt.executeQuery();
                 result.next();
-                System.out.println("The database says that the square root of -1 is " + result.getObject(1));
+                fail("The database says that the square root of -1 is " + result.getObject(1));
             } catch (StaleConnectionException x) {
                 // The StaleStatementException must be surfaced to the application as StaleConnectionException
                 assertEquals(StaleConnectionException.class.getName(), x.getClass().getName());

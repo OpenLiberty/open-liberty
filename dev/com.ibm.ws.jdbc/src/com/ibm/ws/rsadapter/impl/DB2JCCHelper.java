@@ -121,6 +121,8 @@ public class DB2JCCHelper extends DB2Helper {
 
         boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
 
+        dataStoreHelper = "com.ibm.websphere.rsadapter.DB2UniversalDataStoreHelper";
+
         configuredTraceLevel = 0; // value of DB2BaseDataSource.TRACE_NONE
 
         isRRSTransaction = false;

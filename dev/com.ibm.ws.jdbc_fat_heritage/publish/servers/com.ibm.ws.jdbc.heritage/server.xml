@@ -45,6 +45,17 @@
     <identifyException as="test.jdbc.heritage.driver.helper.HeritageDBFeatureUnavailableException" errorCode="40960"/>
   </dataSource>
 
+  <dataSource jndiName="jdbc/helperDefaulted" containerAuthDataRef="dbAuth" type="javax.sql.DataSource">
+    <jdbcDriver libraryRef="JDBCLib" javax.sql.DataSource="test.jdbc.heritage.driver.HDDataSource"/>
+    <properties databaseName="memory:testdb" createDatabase="create"/>
+    <heritageSettings replaceExceptions="true"/>
+    <IdentifyException as="None" sqlState="S1000"/>
+    <identifyException as="StaleConnection" errorCode="8008"/>
+    <identifyException as="com.ibm.websphere.ce.cm.StaleStatementException" sqlState="22013"/> <!-- TODO switch to "StaleStatement" once added -->
+    <identifyException as="test.jdbc.heritage.driver.helper.HeritageDBDuplicateKeyException" sqlState="2300H"/>
+    <identifyException as="test.jdbc.heritage.driver.helper.HeritageDBFeatureUnavailableException" sqlState="0A00H"/>
+  </dataSource>
+
   <javaPermission codeBase="${shared.resource.dir}derby/derby.jar" className="java.security.AllPermission"/>
 
   <javaPermission codeBase="${server.config.dir}/apps/heritageApp.war" className="java.lang.reflect.ReflectPermission" name="suppressAccessChecks"/>
