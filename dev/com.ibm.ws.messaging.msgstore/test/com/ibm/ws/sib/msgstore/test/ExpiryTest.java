@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -106,8 +106,6 @@ public class ExpiryTest extends MessageStoreTestCase {
         return suite;
     }
 
-    
-
     @Test
     public void testStoreNeverItemExpiry() {
         storageStrategy = AbstractItem.STORE_NEVER;
@@ -119,7 +117,10 @@ public class ExpiryTest extends MessageStoreTestCase {
         //assertTrue("No items dropped", dropped > 0);
         if (dropped == 0) getLog().error("No items dropped!");
         assertTrue("No items expired, itemsExpired="+itemsExpired , itemsExpired.get() > 0);
-        assertTrue("No items expired, itemsRemoved="+itemsRemoved , itemsRemoved.get() > 0);
+        // Some items are usually removed, however, this is not guaranteed because it is possible that 
+        // the items all expire before the ItemReader sees them Don't make it a hard error if no items are removed. 
+        //assertTrue("No items removed, itemsRemoved="+itemsRemoved , itemsRemoved.get() > 0);
+        if (itemsRemoved.get() == 0) getLog().error("No items removed!");    
     }
 
     @Test
