@@ -1226,9 +1226,12 @@ public class DataSourceTestServlet extends FATServlet {
             DatabaseMetaData metadata = con.getMetaData();
             String user = metadata.getUserName();
             if (!"dbuser2".equalsIgnoreCase(user))
-                throw new Exception("Connection is using APPLICATION res-auth - enableContainerAuthForDirectLookups property is not being honored. ");
+                throw new Exception("Expected user 'dbuser2', got '" + user
+                                    + "' Connection is using APPLICATION res-auth - enableContainerAuthForDirectLookups property is not being honored. ");
         } finally {
-            con.close();
+            if (con != null) {
+                con.close();
+            }
         }
     }
 

@@ -95,6 +95,7 @@ public abstract class ConnectionManagerService extends Observable {
                                                                                                            AUTO_CLOSE_CONNECTIONS,
                                                                                                            J2CConstants.POOL_ConnectionTimeout,
                                                                                                            "enableSharingForDirectLookups",
+                                                                                                           ENABLE_CONTAINER_AUTH_FOR_DIRECT_LOOKUPS,
                                                                                                            MAX_IDLE_TIME,
                                                                                                            MAX_CONNECTIONS_PER_THREAD,
                                                                                                            MAX_POOL_SIZE,

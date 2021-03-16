@@ -15,7 +15,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.ObjectStreamField;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -507,7 +506,7 @@ public final class CMConfigDataImpl implements CMConfigData {
     }
 
     /*
-     * This method rereates the CMConfigData Object from a stream - all the members will be
+     * This method recreates the CMConfigData Object from a stream - all the members will be
      * re-initialized.
      */
     @SuppressWarnings("unchecked")
@@ -550,7 +549,7 @@ public final class CMConfigDataImpl implements CMConfigData {
         res_resolution_control = getField.get("res_resolution_control", 999);
         res_sharing_scope = getField.get("res_sharing_scope", false);
         loginConfigurationName = (String) getField.get("loginConfigurationName", null);
-        loginConfigProperties = (HashMap<String, String>) getField.get("loginConfigProperties", Collections.EMPTY_MAP);
+        loginConfigProperties = (Map<String, String>) getField.get("loginConfigProperties", Collections.EMPTY_MAP);
         loginConfigPropsKeyString = (String) getField.get("loginConfigPropsKeyString", null);
         _commitPriority = getField.get("_commitPriority", 0);
         _branchCoupling = getField.get("_branchCoupling", 999);
