@@ -27,13 +27,8 @@ public class WSClassRegistration {
         public Class<?> forName(String name) throws ClassNotFoundException {
             return Class.forName(name);
         }
-        @SuppressWarnings({ "rawtypes", "unchecked" })
         public Object newInstance(Class cls) throws InstantiationException, IllegalAccessException {
-            try {
-                return cls.getDeclaredConstructor().newInstance();
-            } catch (ReflectiveOperationException e) {
-                throw (InstantiationException)(new InstantiationException().initCause(e));
-            }
+            return cls.newInstance();
         }
     }
     private Register providerRegistry;

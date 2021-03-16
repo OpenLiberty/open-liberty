@@ -61,7 +61,7 @@ public class WSPortableRemoteObjectImpl extends PortableRemoteObjectImpl {
 
         Object stubObject;
         try {
-            stubObject = stubClass.getDeclaredConstructor().newInstance();
+            stubObject = stubClass.newInstance();
         } catch (Throwable t) {
             // This will fail if the stub class is "invalid" (missing default
             // constructor, non-public default constructor, logic in the
