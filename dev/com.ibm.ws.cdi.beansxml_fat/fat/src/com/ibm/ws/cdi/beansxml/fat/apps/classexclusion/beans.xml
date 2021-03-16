@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/beans_1_1.xsd" 
+bean-discovery-mode="all"
+       version="1.1"> 
+   <interceptors>
+   </interceptors>
+
+   <decorators>
+   </decorators>
+   
+   <!-- To run these tests com.ibm.ws.cdi12.classExclusion.excludeexcluded must be set to true and 
+   cdi12.classexclusion.test.Supercalifragelisticexpealidocious must not exist -->
+   
+   <scan>
+        <exclude name="com.ibm.ws.cdi.beansxml.fat.apps.classexclusion.ExcludedBean" />
+
+        <exclude name="com.ibm.ws.cdi.beansxml.fat.apps.classexclusion.excludedpackage.*" />
+
+        <exclude name="com.ibm.ws.cdi.beansxml.fat.apps.classexclusion.excludedpackagetree.**" />
+        
+        <exclude name="com.ibm.ws.cdi.beansxml.fat.apps.classexclusion.packageprotectedbyclass.*">
+            <if-class-available name="com.ibm.ws.cdi.beansxml.fat.apps.classexclusion.Supercalifragelisticexpealidocious"/>
+        </exclude>
+
+        <exclude name="com.ibm.ws.cdi.beansxml.fat.apps.classexclusion.packageexcludedbyproperty.*">
+            <if-system-property name="com.ibm.ws.cdi.beansxml.fat.apps.classexclusion.excludeexcluded" value="true"/>
+        </exclude>
+
+        <exclude name="com.ibm.ws.cdi.beansxml.fat.apps.classexclusion.exludedbycombopackagetree.**">
+            <if-class-not-available name="com.ibm.ws.cdi.beansxml.fat.apps.classexclusion.Supercalifragelisticexpealidocious"/>
+            <if-system-property name="com.ibm.ws.cdi.beansxml.fat.apps.classexclusion.excludeexcluded"/>
+        </exclude>
+        
+        <exclude name="com.ibm.ws.cdi.beansxml.fat.apps.classexclusion.ProtectedByHalfComboBean">
+       	    <if-class-not-available name="com.ibm.ws.cdi.beansxml.fat.apps.classexclusion.Supercalifragelisticexpealidocious"/>
+            <if-system-property name="com.ibm.ws.cdi.beansxml.fat.apps.classexclusion.excludeexcluded" value="false"/>
+        </exclude>
+    </scan>
+   
+</beans>
