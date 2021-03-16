@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2019, 2020 IBM Corporation and others.
+    Copyright (c) 2019, 2021 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -170,6 +170,12 @@
     <dataSource id="dsfat11derby" jndiName="jdbc/dsfat11" jdbcDriverRef="Derby" connectionManagerRef="conMgr5" badProperty="badValue1" isolationLevel="TRANSACTION_READ_UNCOMMITTED" queryTimeout="11s" syncQueryTimeoutWithTransactionTimeout="false">
       <properties.derby.embedded databaseName="${shared.resource.dir}/data/derbyfat" createDatabase="create" badVendorProperty="badValue2" user="dbuser1" password="{xor}Oz0vKDtu"/>
     </dataSource>
+ 
+     <dataSource jndiName="jdbc/dsfat12" fat.modify="true" containerAuthDataRef="derbyAuth2" jdbcDriverRef="FATJDBCDriver" >
+      <connectionManager enableContainerAuthForDirectLookups="true"/>
+      <properties.derby.embedded databaseName="${shared.resource.dir}/data/jdbcfat" createDatabase="create"/>
+    </dataSource>
+    
         
     <!-- The following two datasources test that you can define two data sources with nested child
          libraries that do not define an ID -->

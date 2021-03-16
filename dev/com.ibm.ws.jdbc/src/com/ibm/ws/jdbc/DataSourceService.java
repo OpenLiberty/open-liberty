@@ -660,7 +660,7 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
             isUCP = vendorImplClassName.startsWith("oracle.ucp");
             if (isUCP) {
                 if (!createdDefaultConnectionManager && !sentUCPConnMgrPropsIgnoredInfoMessage) {
-                    Set<String> connMgrPropsAllowed = Collections.singleton("enableSharingForDirectLookups");
+                    Set<String> connMgrPropsAllowed = new HashSet<String> (Arrays.asList("enableSharingForDirectLookups", ConnectionManagerService.ENABLE_CONTAINER_AUTH_FOR_DIRECT_LOOKUPS));
                     Tr.info(tc, "DSRA4013.ignored.connection.manager.config.used", connMgrPropsAllowed);
                     sentUCPConnMgrPropsIgnoredInfoMessage = true;
                 }

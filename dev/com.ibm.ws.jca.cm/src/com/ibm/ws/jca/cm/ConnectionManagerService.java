@@ -83,6 +83,11 @@ public abstract class ConnectionManagerService extends Observable {
     public static final String TEMPORARILY_ASSOCIATE_IF_DISSOCIATE_UNAVAILABLE = "temporarilyAssociateIfDissociateUnavailable";
 
     /**
+     * Name of property controlling the authentication mechanism of connections.
+     */
+    public static final String ENABLE_CONTAINER_AUTH_FOR_DIRECT_LOOKUPS = "enableContainerAuthForDirectLookups";
+
+    /**
      * List of connectionManager properties.
      */
     public static final List<String> CONNECTION_MANAGER_PROPS = Collections.unmodifiableList(Arrays.asList(

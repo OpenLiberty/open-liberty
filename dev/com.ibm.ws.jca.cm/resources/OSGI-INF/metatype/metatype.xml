@@ -35,6 +35,7 @@
   <!-- Advanced properties for connectionManager -->
   <AD id="autoCloseConnections"               name="%autoCloseCon"  description="%autoCloseCon.desc"  ibmui:group="Advanced" default="true"   type="Boolean"/>
   <AD id="enableSharingForDirectLookups"      name="%enableSharing" description="%enableSharing.desc" ibmui:group="Advanced" default="true"   type="Boolean"/>
+  <AD id="enableContainerAuthForDirectLookups"      name="%enableContainerAuth" description="%enableContainerAuth.desc" ibmui:group="Advanced" default="false"   type="Boolean"/>
   <AD id="maxConnectionsPerThread"            name="%maxConPerThd"  description="%maxConPerThd.desc"  ibmui:group="Advanced" required="false" type="Integer" min="0"/>
   <AD id="numConnectionsPerThreadLocal"       name="%numConPerThd"  description="%numConPerThd.desc"  ibmui:group="Advanced" required="false" type="Integer" min="0"/>
  </OCD>

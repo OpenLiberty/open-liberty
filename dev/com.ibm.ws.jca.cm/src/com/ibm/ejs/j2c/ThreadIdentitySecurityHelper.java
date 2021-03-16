@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012,2018 IBM Corporation and others.
+ * Copyright (c) 2012,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,8 +13,8 @@ package com.ibm.ejs.j2c;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
 import javax.resource.ResourceException;
@@ -191,9 +191,9 @@ public class ThreadIdentitySecurityHelper implements SecurityHelper {
      * identity. In this case, restore the thread identity to what it
      * was originally.
      *
-     * @param Subject subject
+     * @param Subject               subject
      * @param ConnectionRequestInfo reqInfo
-     * @param Object credentialToken
+     * @param Object                credentialToken
      * @return void
      * @exception ResourceException
      *
@@ -278,7 +278,7 @@ public class ThreadIdentitySecurityHelper implements SecurityHelper {
      * connector by default will get Server identity since no user
      * identity will have been pushed to the current OS thread.
      *
-     * @param Subject subject
+     * @param Subject               subject
      * @param ConnectionRequestInfo reqInfo
      * @return Object if non-null, the user identity defined by the
      *         Subject was pushed to thread. The Object in
@@ -500,9 +500,9 @@ public class ThreadIdentitySecurityHelper implements SecurityHelper {
      * The primary intent of this method is to allow the Subject to be
      * defaulted.
      *
-     * @param Subject subject
+     * @param Subject               subject
      * @param ConnectionRequestInfo reqInfo
-     * @param cmConfigData to determine whether to call getJ2CInvocationSubject
+     * @param cmConfigData          to determine whether to call getJ2CInvocationSubject
      * @return Subject
      * @exception ResourceException
      *
@@ -649,7 +649,7 @@ public class ThreadIdentitySecurityHelper implements SecurityHelper {
         String loginConfigurationName = cmConfigData.getLoginConfigurationName();
         if ((loginConfigurationName != null) && (!loginConfigurationName.equals(""))) {
             if (loginConfigurationName.equals(DEFAULT_PRINCIPAL_MAPPING)) {
-                HashMap loginConfigProps = cmConfigData.getLoginConfigProperties();
+                Map loginConfigProps = cmConfigData.getLoginConfigProperties();
                 if ((loginConfigProps != null) && (!loginConfigProps.isEmpty())) {
                     alias = (String) loginConfigProps.get(MAPPING_ALIAS);
                 }

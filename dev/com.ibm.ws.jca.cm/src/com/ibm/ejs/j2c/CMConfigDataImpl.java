@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2012 IBM Corporation and others.
+ * Copyright (c) 1997, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.ObjectStreamField;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -54,7 +55,7 @@ public final class CMConfigDataImpl implements CMConfigData {
     private String cfDetailsKey = "undefined";
     private String _CfKey;
     private String loginConfigurationName = null;
-    private HashMap<String, String> loginConfigProperties = null;
+    private Map<String, String> loginConfigProperties = null;
     private String loginConfigPropsKeyString = null;
     private int _commitPriority = 0;
     private int _branchCoupling = 999; //  Loose|Tight
@@ -95,7 +96,7 @@ public final class CMConfigDataImpl implements CMConfigData {
                                                                                                 new ObjectStreamField("res_resolution_control", Integer.TYPE),
                                                                                                 new ObjectStreamField("res_sharing_scope", Boolean.TYPE),
                                                                                                 new ObjectStreamField("loginConfigurationName", String.class),
-                                                                                                new ObjectStreamField("loginConfigProperties", HashMap.class),
+                                                                                                new ObjectStreamField("loginConfigProperties", Map.class),
                                                                                                 new ObjectStreamField("loginConfigPropsKeyString", String.class),
                                                                                                 new ObjectStreamField("_commitPriority", Integer.TYPE),
                                                                                                 new ObjectStreamField("_branchCoupling", Integer.TYPE),
@@ -109,7 +110,7 @@ public final class CMConfigDataImpl implements CMConfigData {
                                int auth,
                                String cfKey,
                                String loginConfigurationName,
-                               HashMap<String, String> loginConfigProperties,
+                               Map<String, String> loginConfigProperties,
                                String resRefName,
                                int commitPriority,
                                int branchCoupling,
@@ -266,7 +267,7 @@ public final class CMConfigDataImpl implements CMConfigData {
      * @return HashMap
      */
     @Override
-    public HashMap<String, String> getLoginConfigProperties() {
+    public Map<String, String> getLoginConfigProperties() {
         return loginConfigProperties;
     }
 
@@ -302,7 +303,7 @@ public final class CMConfigDataImpl implements CMConfigData {
      * Sets the sharing scope.
      *
      * @param i Expected to be one of <code>SHAREABLE</code> or <code>UNSHAREABLE</code>
-     *            as defined by the constants in <code>com.ibm.websphere.csi.ResRef</code>
+     *              as defined by the constants in <code>com.ibm.websphere.csi.ResRef</code>
      */
     protected void setSharingScope(int i) {
 
@@ -549,7 +550,7 @@ public final class CMConfigDataImpl implements CMConfigData {
         res_resolution_control = getField.get("res_resolution_control", 999);
         res_sharing_scope = getField.get("res_sharing_scope", false);
         loginConfigurationName = (String) getField.get("loginConfigurationName", null);
-        loginConfigProperties = (HashMap<String, String>) getField.get("loginConfigProperties", null);
+        loginConfigProperties = (HashMap<String, String>) getField.get("loginConfigProperties", Collections.EMPTY_MAP);
         loginConfigPropsKeyString = (String) getField.get("loginConfigPropsKeyString", null);
         _commitPriority = getField.get("_commitPriority", 0);
         _branchCoupling = getField.get("_branchCoupling", 999);
@@ -619,8 +620,8 @@ public final class CMConfigDataImpl implements CMConfigData {
     /**
      * Generate a config dump containing all the attributes which match the regular expression.
      *
-     * @param aLocalId The regular expression which will be used to determine which attributes to display. Ie, .* will enable everything,
-     *            current-resourceAdapterDD-transactionSupport enables just the transactionSupport level.
+     * @param aLocalId        The regular expression which will be used to determine which attributes to display. Ie, .* will enable everything,
+     *                            current-resourceAdapterDD-transactionSupport enables just the transactionSupport level.
      * @param aRegisteredOnly If true only registered attributes will be displayed.
      */
     @Override
@@ -731,6 +732,7 @@ public final class CMConfigDataImpl implements CMConfigData {
     /**
      * @return the qmid
      */
+    @Override
     public String getQmid() {
         return qmid;
     }

@@ -292,18 +292,20 @@ public class ConnectionManagerServiceImpl extends ConnectionManagerService {
             Tr.entry(this, tc, "getCMConfigData");
 
         // Defaults for direct lookup
-        int auth = J2CConstants.AUTHENTICATION_APPLICATION;
+        int auth;
         int branchCoupling = ResourceRefInfo.BRANCH_COUPLING_UNSET;
         int commitPriority = 0;
         int isolation = Connection.TRANSACTION_NONE;
         int sharingScope;
         String loginConfigName = null;
-        HashMap<String, String> loginConfigProps = null;
+        Map<String, String> loginConfigProps = Collections.<String, String> emptyMap();
         String resRefName = null;
 
         if (refInfo != null) {
             if (refInfo.getAuth() == ResourceRef.AUTH_CONTAINER)
                 auth = J2CConstants.AUTHENTICATION_CONTAINER;
+            else
+                auth = J2CConstants.AUTHENTICATION_APPLICATION;
 
             branchCoupling = refInfo.getBranchCoupling();
             commitPriority = refInfo.getCommitPriority();
@@ -320,8 +322,15 @@ public class ConnectionManagerServiceImpl extends ConnectionManagerService {
                                || enableSharingForDirectLookups instanceof String && Boolean.parseBoolean((String) enableSharingForDirectLookups) //
                                                ? ResourceRefInfo.SHARING_SCOPE_SHAREABLE //
                                                : ResourceRefInfo.SHARING_SCOPE_UNSHAREABLE;
+
+                Object enableContainerAuthForDirectLookups = properties.get(ConnectionManagerService.ENABLE_CONTAINER_AUTH_FOR_DIRECT_LOOKUPS);
+                auth = enableContainerAuthForDirectLookups == null
+                       || Boolean.FALSE.equals(enableContainerAuthForDirectLookups)
+                       || enableContainerAuthForDirectLookups instanceof String
+                          && !Boolean.parseBoolean((String) enableContainerAuthForDirectLookups) ? J2CConstants.AUTHENTICATION_APPLICATION : J2CConstants.AUTHENTICATION_CONTAINER;
             } else {
                 sharingScope = ResourceRefInfo.SHARING_SCOPE_SHAREABLE;
+                auth = J2CConstants.AUTHENTICATION_APPLICATION;
             }
         }
 
