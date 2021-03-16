@@ -30,8 +30,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.ibm.websphere.crypto.InvalidPasswordDecodingException;
+import com.ibm.websphere.crypto.PasswordUtil;
+import com.ibm.websphere.crypto.UnsupportedCryptoAlgorithmException;
+import com.ibm.ws.install.internal.InstallUtils;
 import com.ibm.ws.install.InstallException;
 import com.ibm.ws.install.InstallKernel;
 import com.ibm.ws.install.featureUtility.props.FeatureUtilityProperties;
@@ -193,7 +198,7 @@ public class FeatureUtility {
     /**
      * Override the environment variables with any properties we can find
      */
-    private void overrideEnvMapWithProperties(){
+    private void overrideEnvMapWithProperties() throws InstallException {
         if(!FeatureUtilityProperties.didLoadProperties()){
             logger.fine("No featureUtility.properties detected.");
             return;
@@ -207,14 +212,44 @@ public class FeatureUtility {
         String username = FeatureUtilityProperties.getProxyUser();
         String password = FeatureUtilityProperties.getProxyPassword();
 
-        if(FeatureUtilityProperties.canConstructHttpProxy()){
-            String http_proxy = "http://" + host + ":" + "port";
-            overrideMap.put("http_proxy", http_proxy);
-        }
-        if(FeatureUtilityProperties.canConstructHttpsProxy()) {
-            String https_proxy = "https://" + username + ":" + password + "@" + host + ":" + port;
-            overrideMap.put("http_proxy", https_proxy);
-        }
+        String protocol = null;
+		if (host != null && !host.isEmpty()) {
+			if (host.toLowerCase().startsWith("https://")) {
+				protocol = "https";
+			} else {
+				protocol = "http";
+			}
+		}
+
+		if (protocol != null && !protocol.isEmpty()) {
+			if (port != null && !port.isEmpty()) {
+				overrideMap.put(protocol + ".proxyHost", host);
+				overrideMap.put(protocol + ".proxyPort", port);
+			} else {
+				throw new InstallException(
+						Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_TOOL_PROXY_PORT_MISSING"),
+						InstallException.MISSING_CONTENT);
+			}
+
+			String decodedPwd = password;
+			if (decodedPwd != null && !decodedPwd.isEmpty()) {
+				try {
+					// Decode encrypted proxy server password
+					decodedPwd = PasswordUtil.decode(password);
+				} catch (InvalidPasswordDecodingException ipde) {
+					decodedPwd = password;
+					logger.log(Level.FINE, Messages.INSTALL_KERNEL_MESSAGES
+							.getLogMessage("LOG_PASSWORD_NOT_ENCODED_PROXY", host + ":" + port) + InstallUtils.NEWLINE);
+				} catch (UnsupportedCryptoAlgorithmException ucae) {
+					throw new InstallException(
+							Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_TOOL_PROXY_PWD_CRYPTO_UNSUPPORTED"),
+							ucae, InstallException.RUNTIME_EXCEPTION);
+				}
+			}
+			overrideMap.put(protocol + ".proxyUser", username);
+			overrideMap.put(protocol + ".proxyPassword", decodedPwd);
+
+		}
 
         // override the local feature repo
         if(FeatureUtilityProperties.getFeatureLocalRepo() != null){

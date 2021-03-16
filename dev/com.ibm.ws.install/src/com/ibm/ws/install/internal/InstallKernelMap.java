@@ -1785,12 +1785,21 @@ public class InstallKernelMap implements Map {
      */
     private Map<String, String> getProxyVariables(String proxyEnvVar, String protocol) throws InstallException {
         Map<String, String> result = new HashMap<String, String>();
-        if (protocol.equals("https")) {
-            String[] proxyEnvVarSplit = proxyEnvVar.split("@");
-            if (proxyEnvVarSplit.length != 2) {
-                throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_IMPROPER_HTTPSPROXY_FORMAT", proxyEnvVar));
+
+        String[] proxyEnvVarSplit = proxyEnvVar.split("@");
+        if (proxyEnvVarSplit.length != 1 && proxyEnvVarSplit.length != 2) {
+            throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_IMPROPER_" + protocol + "PROXY_FORMAT", proxyEnvVar));
+        }
+
+        if (proxyEnvVarSplit.length == 1) { //without username and password
+            String[] proxyHttpSplit = proxyEnvVar.split(":");
+            if (proxyHttpSplit.length != 3) {
+                throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_IMPROPER_" + protocol + "PROXY_FORMAT", proxyEnvVar));
             }
-            String[] proxyCredentials = proxyEnvVarSplit[0].split(":"); //[https, //user, password]
+            result.put(protocol + ".proxyHost", proxyHttpSplit[1].replace("/", "")); //proxy-server
+            result.put(protocol + ".proxyPort", proxyHttpSplit[2]); ////3128
+        } else {
+            String[] proxyCredentials = proxyEnvVarSplit[0].split(":"); //[http(s), //user, password]
             if (proxyCredentials.length != 3) {
                 throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_IMPROPER_HTTPSPROXY_FORMAT", proxyEnvVar));
             }
@@ -1802,13 +1811,6 @@ public class InstallKernelMap implements Map {
             result.put(protocol + ".proxyPort", proxyHostPort[1]); //3128
             result.put(protocol + ".proxyUser", proxyCredentials[1].replace("/", "")); //user
             result.put(protocol + ".proxyPassword", proxyCredentials[2]); //password
-        } else if (protocol.equals("http")) {
-            String[] proxyHttpSplit = proxyEnvVar.split(":");
-            if (proxyHttpSplit.length != 3) {
-                throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_IMPROPER_HTTPPROXY_FORMAT", proxyEnvVar));
-            }
-            result.put(protocol + ".proxyHost", proxyHttpSplit[1].replace("/", "")); //prox-server
-            result.put(protocol + ".proxyPort", proxyHttpSplit[2]); ////3128
         }
 
         return result;
