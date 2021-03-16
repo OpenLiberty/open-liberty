@@ -33,7 +33,7 @@ src: \
   test-applications/jacksonJsonIgnore/src,\
   test-applications/json/src,\
   test-applications/linkheader/src,\
-  test-applications/testManagedBeans/src,\
+  test-applications/multipart/src,\
   test-applications/paramconverter/src,\
   test-applications/options/src,\
   test-applications/params/src,\
@@ -51,6 +51,7 @@ src: \
   test-applications/servletcoexist2/src,\
   test-applications/servletcoexist3/src,\
   test-applications/simpleJson/src,\
+  test-applications/testManagedBeans/src,\
   test-applications/thirdpartyjersey/src,\
   test-applications/thirdpartyjerseywithinjection/src,\
   test-applications/uriInfo/src,\
