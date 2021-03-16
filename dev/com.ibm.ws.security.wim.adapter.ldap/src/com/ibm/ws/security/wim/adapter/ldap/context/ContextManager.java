@@ -21,6 +21,7 @@ import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
+import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Properties;
@@ -46,6 +47,9 @@ import javax.naming.ldap.LdapName;
 import javax.security.auth.Subject;
 import javax.security.auth.login.LoginException;
 
+import org.osgi.service.cm.Configuration;
+import org.osgi.service.cm.ConfigurationAdmin;
+
 import com.ibm.websphere.crypto.PasswordUtil;
 import com.ibm.websphere.ras.ProtectedString;
 import com.ibm.websphere.ras.Tr;
@@ -57,6 +61,7 @@ import com.ibm.websphere.security.wim.ras.WIMMessageKey;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.authentication.utility.SubjectHelper;
 import com.ibm.ws.security.kerberos.auth.KerberosService;
+import com.ibm.ws.security.kerberos.auth.Krb5Constants;
 import com.ibm.ws.security.wim.adapter.ldap.BEROutputStream;
 import com.ibm.ws.security.wim.adapter.ldap.LdapConnection;
 import com.ibm.ws.security.wim.adapter.ldap.LdapConstants;
@@ -269,6 +274,8 @@ public class ContextManager {
 
     /** Read/Write lock to prevent multiple processes from using and updating the KerberosService and/or context pool at the same time. **/
     private final ReadWriteLock kerberServiceModifyLock = new ReentrantReadWriteLock();
+
+    private ConfigurationAdmin configAdmin = null;
 
     /**
      * Add a fail-over LDAP server hostname and port.
@@ -1196,10 +1203,75 @@ public class ContextManager {
          */
 
         /*
+         * If the contextPool is enabled and Kerberos is enabled, check if the current config and keytab are null from the <kerberos/> config. If they are null,
+         * use the config service to check if there's any config for them that is not processed yet (outstanding modify() that will happen after this initialize completes.
+         * If there's <kerberos/> config, delay creating the context pool and wait until LdapRegistry receives a modify and calls updateKerberosService. This avoids a
+         * temporary failure logged to FFDC connecting to the KDC/LDAP before updating with the complete <kerberos/> config.
+         */
+        boolean delayContextPool = false;
+        if (iContextPoolEnabled && isKerberosBindAuth() && kerberosService != null && kerberosService.getKeytab() == null && kerberosService.getConfigFile() == null
+            && configAdmin != null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, METHODNAME
+                             + " The Kerberos config is currently null for the keytab and config file, double check that there isn't an incoming modify with non-null config");
+            }
+
+            try {
+                if (configAdmin != null) {
+                    Configuration[] kerbConfig = configAdmin.listConfigurations(Krb5Constants.PID_ID);
+
+                    if (kerbConfig != null) {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, METHODNAME + " Kerberos configuration ref found, check the config and keytab properties.");
+                        }
+                        for (int i = 0; i < kerbConfig.length; i++) { // really should be only 1 entry
+                            Dictionary<String, Object> props = kerbConfig[i].getProperties();
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                Tr.debug(tc, METHODNAME + " Checking props: " + props);
+                            }
+                            if (props != null) {
+                                Object keytab = props.get(Krb5Constants.KEYTAB);
+                                if (keytab != null) {
+                                    delayContextPool = true;
+                                    break;
+                                }
+
+                                Object config = props.get(Krb5Constants.CONFIG_FILE);
+                                if (config != null) {
+                                    delayContextPool = true;
+                                    break;
+                                }
+                            }
+                        }
+                    } else {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, METHODNAME + " The Kerberos config object is null, nothing to double check.");
+                        }
+                    }
+                } else {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, METHODNAME + " METHODNAME + \" ConfigAdmin is null, nothing to double check.");
+                    }
+                }
+            } catch (Exception e) {
+                if (tc.isEventEnabled()) {
+                    Tr.event(tc, METHODNAME + " Exception trying to review Kerberos config", e);
+                }
+            }
+
+
+        }
+        /*
          * Create Context Pool
          */
         try {
-            createContextPool(iInitPoolSize, null);
+            if (delayContextPool) {
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, METHODNAME + " Delay creating the context pool until the Kerberos service completes a config update and notifies LdapRegistry.");
+                }
+            } else {
+                createContextPool(iInitPoolSize, null);
+            }
         } catch (NamingException e) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, METHODNAME + " Can not create context pool: " + e.toString(true));
@@ -1625,7 +1697,8 @@ public class ContextManager {
      * @param krb5TicketCache
      */
     @FFDCIgnore({ MalformedURLException.class, URISyntaxException.class, IllegalArgumentException.class })
-    public void setKerberosCredentials(String id, KerberosService kerb, String krb5Principal, String rawKrb5TicketCache) throws PropertyNotDefinedException {
+    public void setKerberosCredentials(String id, KerberosService kerb, String krb5Principal, String rawKrb5TicketCache,
+                                       ConfigurationAdmin configAdmin) throws PropertyNotDefinedException {
         if (!isKerberosBindAuth()) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "setKerberosCredentials was called, but Kerberos is not enabled. BindAuthMechanism is " + bindAuthMechanism);
@@ -1638,6 +1711,7 @@ public class ContextManager {
 
             reposId = id;
             kerberosService = kerb;
+            this.configAdmin = configAdmin;
 
             if (rawKrb5TicketCache != null && !rawKrb5TicketCache.trim().isEmpty()) {
                 krb5TicketCache = Paths.get(rawKrb5TicketCache);
