@@ -24,6 +24,8 @@ src: \
 	test-applications/EJB3INJSMBean.jar/src, \
 	test-applications/EJB3INJINTMBean.jar/src, \
 	test-applications/EJB3INJSMWeb.war/src, \
+	test-applications/LookupOverrideEJB.jar/src, \
+	test-applications/LookupOverrideWeb.war/src, \
 	test-resourceadapters/AdapterForEJB.rar/src
 	
 

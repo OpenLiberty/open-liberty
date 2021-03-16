@@ -49,6 +49,12 @@ task addEJBTools {
     
     copy {
       from configurations.ejbTools
+      into "${buildDir}/autoFVT/publish/servers/com.ibm.ws.ejbcontainer.injection.fat.mdbdatasourceserver/lib/global"
+      rename 'com.ibm.ws.ejbcontainer.fat_tools-(.*).jar', 'com.ibm.ws.ejbcontainer.fat_tools.jar'
+    }
+    
+    copy {
+      from configurations.ejbTools
       into "${buildDir}/autoFVT/publish/servers/ejbcontainer.injection.ra.fat.MsgEndpointServer/lib/global"
       rename 'com.ibm.ws.ejbcontainer.fat_tools-(.*).jar', 'com.ibm.ws.ejbcontainer.fat_tools.jar'
     }
