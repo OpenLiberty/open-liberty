@@ -128,6 +128,8 @@ public class ApacheDSandKDC {
     static int LDAP_PORT = -1;
     static int KDC_PORT = -1;
 
+    static int DEFAULT_KDC_PORT = 88;
+
     private static final String DIRECTORY_NAME = c.toString();
     private static boolean initialised;
 
@@ -148,7 +150,7 @@ public class ApacheDSandKDC {
 
         directoryService.startup();
 
-        LDAP_PORT = getOpenPort();
+        LDAP_PORT = getOpenPort(-1);
 
         ldapServer = new LdapServer();
         ldapServer.setServiceName("DefaultLDAP");
@@ -188,7 +190,7 @@ public class ApacheDSandKDC {
     }
 
     private static void startKDC() throws Exception {
-        KDC_PORT = getOpenPort();
+        KDC_PORT = getOpenPort(DEFAULT_KDC_PORT); // attempt to get the normal default KDC port
 
         Log.info(c, "startKDC", "Creating krb.conf file");
 
@@ -456,9 +458,24 @@ public class ApacheDSandKDC {
      * @return The free port.
      * @throws IOException If a free port could not be found.
      */
-    private static int getOpenPort() throws IOException {
+    private static int getOpenPort(int preferredPort) throws IOException {
         Log.info(c, "getOpenPort", "Entry.");
-        ServerSocket s = new ServerSocket(0);
+        ServerSocket s = null;
+        if (preferredPort > 0) {
+            try {
+                s = new ServerSocket(preferredPort);
+                Log.info(c, "getOpenPort", "Got preferred port " + s);
+                return preferredPort;
+            } catch (Throwable t) {
+                // get a random port instead
+                Log.info(c, "getOpenPort", "Unabled to get preferred port, get a random port.");
+            } finally {
+                if (s != null) {
+                    s.close();
+                }
+            }
+        }
+        s = new ServerSocket(0);
         Log.info(c, "getOpenPort", "Got socket.");
         int port = s.getLocalPort();
         Log.info(c, "getOpenPort", "Got port " + s);
@@ -478,46 +495,55 @@ public class ApacheDSandKDC {
      * @throws IOException
      */
     public static String createDefaultConfigFile() throws IOException {
-        return createConfigFile(bindUserName + "krb5-", KDC_PORT);
+        return createConfigFile(bindUserName + "krb5-", KDC_PORT, true, false);
     }
 
     /**
-     * Create the default krb config file with a custom KDC port
+     * Create the krb config file with a custom KDC port
      *
      * @return
      * @throws IOException
      */
-    public static String createConfigFile(String name, int port) throws IOException {
+    public static String createConfigFile(String name, int port, boolean includeRealm, boolean includeKeytab) throws IOException {
         Log.info(c, "createConfigFile", "Creating config file: " + name);
-        File ccFile = File.createTempFile(name, ".conf");
+        File configFile = File.createTempFile(name, ".conf");
         if (!FAT_TEST_LOCALRUN) {
-            ccFile.deleteOnExit();
+            configFile.deleteOnExit();
         }
 
-        Path outputPath = Paths.get(ccFile.getAbsolutePath());
-        Log.info(c, "generateConf", "creating krb.conf file.");
+        Path outputPath = Paths.get(configFile.getAbsolutePath());
+        Log.info(c, "createConfigFile", "Created krb.conf file: " + configFile.getAbsolutePath());
         String conf = "[libdefaults]\n" +
                       "        rdns = false\n" +
                       "        dns_lookup_realm = false\n" +
                       "        udp_preference_limit = 1\n" +
                       "        dns_lookup_kdc = false\n" +
                       "        renew_lifetime = 7d\n" +
-                      "        forwardable = true\n" +
-                      "        default_realm = " + DOMAIN.toUpperCase() + "\n" +
-                      "\n" +
-                      "[realms]\n" +
-                      "        " + DOMAIN.toUpperCase() + " = {\n" +
-                      "                kdc = " + ldapServerHostName + ":" + port + "\n" +
-                      "        }\n" +
-                      "\n" +
-                      "[domain_realm]\n" +
-                      "        ." + DOMAIN.toLowerCase() + " = " + DOMAIN.toUpperCase() + "\n" +
-                      "        " + DOMAIN.toLowerCase() + " = " + DOMAIN.toUpperCase() + "\n";
+                      "        forwardable = true\n";
+        if (includeRealm) {
+            conf = conf + "        default_realm = " + DOMAIN.toUpperCase() + "\n";
+        }
+        if (includeKeytab) {
+            if (keytabFile == null) {
+                Log.info(c, "createConfigFile", "Default keytab is null, test may fail with default_keytab_name set to null.");
+            }
+            conf = conf + "        default_keytab_name = " + keytabFile + "\n";
+        }
+        conf = conf +
+               "\n" +
+               "[realms]\n" +
+               "        " + DOMAIN.toUpperCase() + " = {\n" +
+               "                kdc = " + ldapServerHostName + ":" + port + "\n" +
+               "        }\n" +
+               "\n" +
+               "[domain_realm]\n" +
+               "        ." + DOMAIN.toLowerCase() + " = " + DOMAIN.toUpperCase() + "\n" +
+               "        " + DOMAIN.toLowerCase() + " = " + DOMAIN.toUpperCase() + "\n";
         outputPath.getParent().toFile().mkdirs();
         Files.write(outputPath, conf.getBytes(StandardCharsets.UTF_8));
 
         Log.info(c, "createConfigFile", "krb.conf file contents: " + conf);
-        return ccFile.getAbsolutePath();
+        return configFile.getAbsolutePath();
     }
 
     /**

@@ -68,7 +68,7 @@ public class LdapKerberosUtils {
      * @return
      */
     public static LdapRegistry getTicketCacheWithoutContextPool(String hostname, int port, String ticketCacheFile) {
-        return getTicketCache(hostname, port, ticketCacheFile, true);
+        return getTicketCache(hostname, port, ticketCacheFile, true, true);
     }
 
     /**
@@ -80,10 +80,10 @@ public class LdapKerberosUtils {
      * @param disableCaches
      * @return
      */
-    public static LdapRegistry getTicketCache(String hostname, int port, String ticketCacheFile, boolean disableCaches) {
+    public static LdapRegistry getTicketCache(String hostname, int port, String ticketCacheFile, boolean disableContextPool, boolean disableCaches) {
         LdapRegistry ldap = new LdapRegistry();
 
-        getBasicsLdapRegistry(ldap, hostname, port, disableCaches);
+        getBasicsLdapRegistry(ldap, hostname, port, disableContextPool, disableCaches);
         ldap.setBindAuthMechanism(ConfigConstants.CONFIG_BIND_AUTH_KRB5);
         ldap.setKrb5Principal(BIND_PRINCIPAL_NAME);
         ldap.setKrb5TicketCache(ticketCacheFile);
@@ -102,7 +102,7 @@ public class LdapKerberosUtils {
      * @return
      */
     public static LdapRegistry getKrb5PrincipalNameWithoutContextPool(String hostname, int port) {
-        return getKrb5PrincipalName(hostname, port, true);
+        return getKrb5PrincipalName(hostname, port, true, true);
     }
 
     /**
@@ -113,9 +113,9 @@ public class LdapKerberosUtils {
      * @param disableCaches
      * @return
      */
-    public static LdapRegistry getKrb5PrincipalName(String hostname, int port, boolean disableCaches) {
+    public static LdapRegistry getKrb5PrincipalName(String hostname, int port, boolean disableContextPool, boolean disableCaches) {
         LdapRegistry ldap = new LdapRegistry();
-        getBasicsLdapRegistry(ldap, hostname, port, disableCaches);
+        getBasicsLdapRegistry(ldap, hostname, port, disableContextPool, disableCaches);
         ldap.setBindAuthMechanism(ConfigConstants.CONFIG_BIND_AUTH_KRB5);
         ldap.setKrb5Principal(BIND_PRINCIPAL_NAME);
 
@@ -132,7 +132,7 @@ public class LdapKerberosUtils {
      * @return
      */
     public static LdapRegistry getSimpleBind(String hostname, int port) {
-        return getSimpleBind(hostname, port, true);
+        return getSimpleBind(hostname, port, true, true);
     }
 
     /**
@@ -144,10 +144,10 @@ public class LdapKerberosUtils {
      * @param disableCaches
      * @return
      */
-    public static LdapRegistry getSimpleBind(String hostname, int port, boolean disableCaches) {
+    public static LdapRegistry getSimpleBind(String hostname, int port, boolean disableContextPool, boolean disableCaches) {
         LdapRegistry ldap = new LdapRegistry();
 
-        getBasicsLdapRegistry(ldap, hostname, port, disableCaches);
+        getBasicsLdapRegistry(ldap, hostname, port, disableContextPool, disableCaches);
         ldap.setBindAuthMechanism(ConfigConstants.CONFIG_AUTHENTICATION_TYPE_SIMPLE);
         ldap.setBindDN(BIND_SIMPLE_DN);
         ldap.setBindPassword(BIND_PASSWORD);
@@ -161,16 +161,20 @@ public class LdapKerberosUtils {
      *
      * @param ldap
      */
-    public static void disableCaches(LdapRegistry ldap) {
-        ContextPool cp = new ContextPool();
-        cp.setEnabled(false);
-        ldap.setContextPool(cp);
-        AttributesCache ac = new AttributesCache();
-        ac.setEnabled(false);
-        SearchResultsCache src = new SearchResultsCache();
-        src.setEnabled(false);
-        ldap.setLdapCache(new LdapCache(ac, src));
+    public static void disableCaches(LdapRegistry ldap, boolean disableContextPool, boolean disableCaches) {
+        if (disableContextPool) {
+            ContextPool cp = new ContextPool();
+            cp.setEnabled(false);
+            ldap.setContextPool(cp);
+        }
 
+        if (disableCaches) {
+            AttributesCache ac = new AttributesCache();
+            ac.setEnabled(false);
+            SearchResultsCache src = new SearchResultsCache();
+            src.setEnabled(false);
+            ldap.setLdapCache(new LdapCache(ac, src));
+        }
     }
 
     /**
@@ -181,7 +185,7 @@ public class LdapKerberosUtils {
      * @param port
      * @param disableCaches
      */
-    public static void getBasicsLdapRegistry(LdapRegistry ldap, String hostname, int port, boolean disableCaches) {
+    public static void getBasicsLdapRegistry(LdapRegistry ldap, String hostname, int port, boolean disableContextPool, boolean disableCaches) {
         ldap.setId("LDAP1");
         ldap.setRealm("LDAPRealm");
         ldap.setHost(hostname);
@@ -190,8 +194,8 @@ public class LdapKerberosUtils {
         ldap.setLdapType(LDAP_TYPE);
 
         // Force new connections for everything
-        if (disableCaches) {
-            disableCaches(ldap);
+        if (disableContextPool || disableCaches) {
+            disableCaches(ldap, disableContextPool, disableCaches);
         }
     }
 
