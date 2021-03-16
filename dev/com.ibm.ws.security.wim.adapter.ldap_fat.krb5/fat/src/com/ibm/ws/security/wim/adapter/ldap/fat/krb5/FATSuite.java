@@ -19,6 +19,9 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
 @RunWith(Suite.class)
 @SuiteClasses({
                 AlwaysPassesTest.class,
+                /*
+                 * Currently all tests are > Java8 as ApacheDS fails to authenticate the Kerberos token on Java8
+                 */
                 Krb5ConfigTest.class,
                 KeytabBindTest.class,
                 KeytabBindLongRunTest.class,
