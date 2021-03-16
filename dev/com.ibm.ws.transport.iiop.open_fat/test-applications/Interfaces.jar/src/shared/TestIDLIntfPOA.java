@@ -36,11 +36,11 @@ public abstract class TestIDLIntfPOA extends org.omg.PortableServer.Servant
   private static String[] __ids = {
     "IDL:shared/TestIDLIntf:1.0"};
 
-  private static java.util.Hashtable<String,Integer> _methods = new java.util.Hashtable<>();
+  private static java.util.Hashtable _methods = new java.util.Hashtable ();
   static
   {
-    _methods.put ("_get_s", Integer.valueOf(0));
-    _methods.put ("_set_s", Integer.valueOf(1));
+    _methods.put ("_get_s", new java.lang.Integer (0));
+    _methods.put ("_set_s", new java.lang.Integer (1));
   }
 
   public org.omg.CORBA.portable.OutputStream _invoke (String $method,

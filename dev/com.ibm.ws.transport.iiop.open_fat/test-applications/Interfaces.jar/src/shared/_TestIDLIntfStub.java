@@ -15,8 +15,6 @@ package shared;
 
 public class _TestIDLIntfStub extends org.omg.CORBA_2_3.portable.ObjectImpl implements shared.TestIDLIntf
 {
-  private static final long serialVersionUID = 1L;
-
   // Constructors
   // NOTE:  If the default constructor is used, the
   //        object is useless until _set_delegate (...)
@@ -121,7 +119,7 @@ public class _TestIDLIntfStub extends org.omg.CORBA_2_3.portable.ObjectImpl impl
     return (String[])__ids.clone ();
   }
 
-  final public static Class<TestIDLIntfOperations> _opsClass =
+  final public static java.lang.Class _opsClass =
     shared.TestIDLIntfOperations.class;
 
   private void readObject (java.io.ObjectInputStream s)
