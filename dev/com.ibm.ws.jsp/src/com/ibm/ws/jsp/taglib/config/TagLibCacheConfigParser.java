@@ -175,13 +175,11 @@ public class TagLibCacheConfigParser extends DefaultHandler {
         String resourcePath = null;            
         if (publicId.equals(DTD_PUBLIC_ID)) {
 
-            switch(com.ibm.ws.jsp.webcontainerext.JSPExtensionFactory.getLoadedPagesSpecLevel()){
-                case "3.0":
-                    resourcePath = DTD_RESOURCE_PATH_EE9;
-                    break;
-                default:
-                    resourcePath = DTD_RESOURCE_PATH;
-            }         
+            if(com.ibm.ws.jsp.webcontainerext.JSPExtensionFactory.isPages30orHigher()){
+                resourcePath = DTD_RESOURCE_PATH_EE9;
+            } else {
+                resourcePath = DTD_RESOURCE_PATH;
+            }        
         }
         if (resourcePath != null) {
             InputStream input = this.getClass().getResourceAsStream(resourcePath);

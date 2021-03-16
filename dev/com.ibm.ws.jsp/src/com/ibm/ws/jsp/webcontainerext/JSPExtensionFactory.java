@@ -118,7 +118,7 @@ public class JSPExtensionFactory extends AbstractJSPExtensionFactory implements 
 
     protected static volatile CountDownLatch selfInit = new CountDownLatch(1);
 
-    // Add OL Issue # Here If This Approach is Accepted
+    // See OL #15317 
     private boolean isPagesVersionLoaded = false;
     ArrayList<GlobalTagLibConfig> storedGlobalTagLibConfigs = new ArrayList<GlobalTagLibConfig>();
     
@@ -203,7 +203,7 @@ public class JSPExtensionFactory extends AbstractJSPExtensionFactory implements 
       JSPExtensionFactory.loadedSpecLevel = (String) reference.getProperty("version");
       isPagesVersionLoaded = true;
       if(!storedGlobalTagLibConfigs.isEmpty()){
-        storedGlobalTagLibConfigs.forEach(tagConfig ->  getGlobalTagLibraryCache().addGlobalTagLibConfig(tagConfig));
+        storedGlobalTagLibConfigs.forEach(tagConfig ->  setGlobalTagLibConfig(tagConfig));
         storedGlobalTagLibConfigs.clear();
       }
     }
@@ -608,7 +608,16 @@ public class JSPExtensionFactory extends AbstractJSPExtensionFactory implements 
      */
     @Reference(cardinality=ReferenceCardinality.MULTIPLE, policy=ReferencePolicy.DYNAMIC)
     protected void setGlobalTagLibConfig(GlobalTagLibConfig globalTagLibConfig) {
-            // Wait for pages version to be loaded first before calling getGlobalTagLibraryCache
+            
+            /*  
+                Cache the globalTagLibConfig argument until setVersion is called. 
+
+                setGlobalTagLibConfig creates the GlobalTagLibraryCache if it doesn't exist yet 
+                isPages30orHigher is called with in the GlobalTagLibraryCache constuctor.  
+                setGlobalTagLibConfig is called before setVersion and it created a problem 
+                since the JSP/Pages version is needed to determine which JSTL/Tags TLDs to load. 
+            */  
+            
             if(!isPagesVersionLoaded){
                 storedGlobalTagLibConfigs.add(globalTagLibConfig);
             } else {
@@ -659,7 +668,7 @@ public class JSPExtensionFactory extends AbstractJSPExtensionFactory implements 
     
     public static boolean isPages30orHigher(){
         String version = getLoadedPagesSpecLevel();
-        if(version == "2.2" || version == "2.3"){
+        if(version.equals("2.2" ) || version.equals("2.3")){
             return false;
         }
         return true;
