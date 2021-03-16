@@ -123,6 +123,15 @@ public abstract class GenericDataStoreHelper {
     public abstract String getXAExceptionContents(XAException xae);
 
     /**
+     * Determines if the exception indicates that the connection ought to be
+     * removed from or kept out of the connection pool.
+     *
+     * @param x the exception to check.
+     * @return true to avoid pooling the connection, otherwise false.
+     */
+    public abstract boolean isConnectionError(SQLException x);
+
+    /**
      * Used to identify an exception and possibly replace it (if replaceExceptions=true).
      *
      * @param x an exception.

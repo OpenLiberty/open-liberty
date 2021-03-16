@@ -4333,7 +4333,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
             if (isTraceOn && tc.isDebugEnabled()) 
                 Tr.debug(this, tc, "validate", AdapterUtil.getStackTraceWithState(sqle));
 
-            if (helper.isConnectionError(sqle)) {
+            if (mcf.dataStoreHelper == null ? helper.isConnectionError(sqle) : mcf.dataStoreHelper.isConnectionError(sqle)) {
                 // Don't do any cleanup
                 if (isTraceOn && tc.isEntryEnabled())
                     Tr.exit(this, tc, "validate", false);
@@ -4350,9 +4350,9 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
                     } catch (SQLException rollbackEx) {
                         // No FFDC coded needed
 
-                        // There is a possiblility that now the connection is stale.
+                        // There is a possibility that now the connection is stale.
 
-                        if (helper.isConnectionError(rollbackEx)) {
+                        if (mcf.dataStoreHelper == null ? helper.isConnectionError(rollbackEx) : mcf.dataStoreHelper.isConnectionError(rollbackEx)) {
                             if (isTraceOn && tc.isEntryEnabled())
                                 Tr.exit(this, tc, "validate", AdapterUtil.getStackTraceWithState(rollbackEx));
                             return false;
@@ -4368,9 +4368,9 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
                 } catch (SQLException cleanEx) {
                     // No FFDC coded needed
 
-                    // There is a possiblility that now the connection is stale.
+                    // There is a possibility that now the connection is stale.
 
-                    if (helper.isConnectionError(cleanEx)) {
+                    if (mcf.dataStoreHelper == null ? helper.isConnectionError(cleanEx) : mcf.dataStoreHelper.isConnectionError(cleanEx)) {
                         if (isTraceOn && tc.isEntryEnabled())
                             Tr.exit(this, tc, "validate", AdapterUtil.getStackTraceWithState(cleanEx));
                         return false;
@@ -4384,7 +4384,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
 
                     // There is a possibility that now the connection is stale.
 
-                    if (helper.isConnectionError(cleanEx)) {
+                    if (mcf.dataStoreHelper == null ? helper.isConnectionError(cleanEx) : mcf.dataStoreHelper.isConnectionError(cleanEx)) {
                         if (isTraceOn && tc.isEntryEnabled())
                             Tr.exit(this, tc, "validate", AdapterUtil.getStackTraceWithState(cleanEx));
                         return false;

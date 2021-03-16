@@ -53,6 +53,9 @@ public class JDBCHeritageTestServlet extends FATServlet {
     @Resource
     private DataSource defaultDataSource;
 
+    @Resource(shareable = false)
+    private DataSource defaultDataSource_unsharable;
+
     @Resource
     private UserTransaction tx;
 
@@ -64,6 +67,27 @@ public class JDBCHeritageTestServlet extends FATServlet {
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
+    }
+
+    /**
+     * Utility method that accesses the internal field WSJdbcConnection.connImpl.
+     * This is useful for determining if we got the same connection from the connection pool.
+     *
+     * @param con connection wrapper (WSJdbcConnection).
+     * @return connection implementation.
+     */
+    private static Connection connImpl(Connection con) throws PrivilegedActionException {
+        return AccessController.doPrivileged((PrivilegedExceptionAction<Connection>) () -> {
+            for (Class<?> c = con.getClass(); c != null; c = c.getSuperclass())
+                try {
+                    Field connImpl = c.getDeclaredField("connImpl");
+                    connImpl.setAccessible(true);
+                    return (Connection) connImpl.get(con);
+                } catch (NoSuchFieldException x) {
+                    // ignore, try the super class
+                }
+            throw new NoSuchFieldException("Unable to find conImpl on the connection wrapper. If the field has been renamed, you will need to update this test.");
+        });
     }
 
     /**
@@ -329,6 +353,24 @@ public class JDBCHeritageTestServlet extends FATServlet {
             pstmt.close();
         }
 
+    }
+
+    /**
+     * Verify that the data store helper is invoked to determine if an exception indicates a connection error,
+     * even when exceptions are not replaced.
+     */
+    @Test
+    public void testIsConnectionError() throws Exception {
+        Connection connImpl;
+        try (Connection con = defaultDataSource_unsharable.getConnection("user-of-testIsConnectionError", "password-of-user-of-testIsConnectionError")) {
+            con.prepareCall("CALL TEST.FORCE_EXCEPTION_ON_IS_VALID()").executeQuery().getStatement().close();
+            connImpl = connImpl(con);
+        }
+
+        // Must not reuse the same connection from the connection pool
+        try (Connection con = defaultDataSource_unsharable.getConnection("user-of-testIsConnectionError", "password-of-user-of-testIsConnectionError")) {
+            assertNotSame(connImpl, connImpl(con));
+        }
     }
 
     /**

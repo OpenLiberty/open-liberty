@@ -21,6 +21,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLNonTransientConnectionException;
+import java.sql.SQLRecoverableException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -53,6 +55,7 @@ public class HDDataStoreHelper extends GenericDataStoreHelper {
 
     private static final Map<Object, Class<?>> exceptionMap = new HashMap<Object, Class<?>>();
     {
+        exceptionMap.put(44098, StaleConnectionException.class); // vendor-specific error code for when isValid fails
         exceptionMap.put("22013", StaleStatementException.class);
         exceptionMap.put("08000", StaleConnectionException.class);
         exceptionMap.put("08001", HeritageDBStaleConnectionException.class);
@@ -145,6 +148,14 @@ public class HDDataStoreHelper extends GenericDataStoreHelper {
     public String getXAExceptionContents(XAException x) {
         // This ought to be unreachable for non-xa-capable javax.sql.DataSource.
         throw new UnsupportedOperationException("This driver does not provide an XADataSource.");
+    }
+
+    @Override
+    public boolean isConnectionError(SQLException x) {
+        return x instanceof SQLRecoverableException
+               || x instanceof SQLNonTransientConnectionException
+               || x instanceof StaleConnectionException
+               || mapException(x) instanceof StaleConnectionException;
     }
 
     @Override

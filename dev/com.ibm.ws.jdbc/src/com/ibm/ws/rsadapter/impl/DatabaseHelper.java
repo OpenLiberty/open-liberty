@@ -630,7 +630,7 @@ public class DatabaseHelper {
             return 0;
         }
         catch (SQLException sqe) {
-            if ((isConnectionError(sqe))) {
+            if (mcf.dataStoreHelper == null ? isConnectionError(sqe) : mcf.dataStoreHelper.isConnectionError(sqe)) {
                 throw sqe; // if this is a stale we need to throw exception here.
             }
 
@@ -841,7 +841,7 @@ public class DatabaseHelper {
         } catch (Throwable x) {
             if (x instanceof SQLException) {
                 SQLException sqe = (SQLException) x;
-                if ((isConnectionError(sqe))) {
+                if (mcf.dataStoreHelper == null ? isConnectionError(sqe) : mcf.dataStoreHelper.isConnectionError(sqe)) {
                     throw sqe; // if this is a stale we need to throw exception here.
                 }
 

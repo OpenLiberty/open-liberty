@@ -53,6 +53,7 @@ public class HDConnection implements Connection, HeritageDBConnection {
     Set<String> clientInfoKeys = DEFAULT_CLIENT_INFO_KEYS;
 
     private Map<Object, Class<?>> exceptionIdentificationOverrides;
+    private boolean failOnIsValid;
 
     /**
      * Counts the number of times that doConnectionSetupPerGetConnection is invoked for this connection.
@@ -232,6 +233,9 @@ public class HDConnection implements Connection, HeritageDBConnection {
 
     @Override
     public boolean isValid(int timeout) throws SQLException {
+        if (failOnIsValid)
+            throw new SQLException("Test case asked for isValid to fail, and so it is.", null, 44098);
+
         return derbycon.isValid(timeout);
     }
 
@@ -329,7 +333,10 @@ public class HDConnection implements Connection, HeritageDBConnection {
             }
         }
 
-        if ("CALL TEST.GET_CLEANUP_COUNT()".equalsIgnoreCase(sql))
+        if ("CALL TEST.FORCE_EXCEPTION_ON_IS_VALID()".equalsIgnoreCase(sql))
+            return "VALUES (" + (failOnIsValid = true) + ")";
+
+        else if ("CALL TEST.GET_CLEANUP_COUNT()".equalsIgnoreCase(sql))
             return "VALUES (" + cleanupCount.get() + ")";
 
         else if ("CALL TEST.GET_SETUP_COUNT()".equalsIgnoreCase(sql))
