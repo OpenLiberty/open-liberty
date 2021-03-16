@@ -9,9 +9,6 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-
-addRequiredLibraries.dependsOn addJakartaTransformer
-
 /* 
  * This is where all application ZIP and WARs will be built.
  */
@@ -27,11 +24,6 @@ dependencies {
 }
 
 autoFVT.dependsOn ':com.ibm.ws.security.registry_test.servlet:assemble'
-
-assemble {  
-  dependsOn ':com.ibm.ws.security.registry_test.servlet:assemble'
-
-}
 
 autoFVT.doLast {
   

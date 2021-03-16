@@ -67,7 +67,7 @@ public class LdapKerberosUtils {
      * @param ticketCacheFile
      * @return
      */
-    public static LdapRegistry getTicketCache(String hostname, int port, String ticketCacheFile) {
+    public static LdapRegistry getTicketCacheWithoutContextPool(String hostname, int port, String ticketCacheFile) {
         return getTicketCache(hostname, port, ticketCacheFile, true);
     }
 
@@ -94,10 +94,25 @@ public class LdapKerberosUtils {
 
     }
 
-    public static LdapRegistry getKrb5PrincipalName(String hostname, int port) {
+    /**
+     * Get a basic LdapRegistry with Kerberos and krb5Principal name, contextpool and caches disables
+     *
+     * @param hostname
+     * @param port
+     * @return
+     */
+    public static LdapRegistry getKrb5PrincipalNameWithoutContextPool(String hostname, int port) {
         return getKrb5PrincipalName(hostname, port, true);
     }
 
+    /**
+     * Get a basic LdapRegistry with Kerberos and krb5Principal name, contextpool and caches can be enabled or disabled
+     *
+     * @param hostname
+     * @param port
+     * @param disableCaches
+     * @return
+     */
     public static LdapRegistry getKrb5PrincipalName(String hostname, int port, boolean disableCaches) {
         LdapRegistry ldap = new LdapRegistry();
         getBasicsLdapRegistry(ldap, hostname, port, disableCaches);
@@ -167,6 +182,7 @@ public class LdapKerberosUtils {
      * @param disableCaches
      */
     public static void getBasicsLdapRegistry(LdapRegistry ldap, String hostname, int port, boolean disableCaches) {
+        ldap.setId("LDAP1");
         ldap.setRealm("LDAPRealm");
         ldap.setHost(hostname);
         ldap.setPort(String.valueOf(port));
@@ -180,7 +196,7 @@ public class LdapKerberosUtils {
     }
 
     /**
-     * Create the LdapRegistry for an UnBoundID server
+     * Create the LdapRegistry for an UnBoundID server. Search and attributes cache are disabled.
      *
      * @param port
      * @param baseDN

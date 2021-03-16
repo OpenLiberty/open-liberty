@@ -19,17 +19,30 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
 @RunWith(Suite.class)
 @SuiteClasses({
                 AlwaysPassesTest.class,
-                //  KeytabBind_UserLoginTest.class, // to-do: kristip, in-progress
+                Krb5ConfigTest.class,
+                KeytabBindTest.class,
+                KeytabBindLongRunTest.class,
+                KeytabBindMultiRegistryTest.class,
                 SimpleBindTest.class,
                 TicketCacheBindTest.class,
                 TicketCacheBindLongRunTest.class,
-                TicketCacheBindMultiRegistryTest.class
+                TicketCacheBindMultiRegistryTest.class,
+                KeytabBadPrincipalNameTest.class,
+                TicketCacheBadPrincipalNameTest.class,
+                /*
+                 * vvv Leave Krb5ConfigJVMProp as the last test, the JVM prop changes the rest of the tests
+                 */
+                Krb5ConfigJVMProp.class
+                /*
+                 * ^^^ Leave Krb5ConfigJVMProp as the last test, the JVM prop changes the rest of the tests
+                 */
+
 })
 public class FATSuite extends ApacheDSandKDC {
     /*
      * The ApacheDS Directory Service, Ldap and KDC are started globally in ApacheDSandKDC (beforeClass and afterClass).
      *
-     * ApacheDS trace will appear in output.txt. To enable more ApacheDS trace, set the setup method in ApacheDSandKDC.
+     * ApacheDS trace will appear in output.txt. To enable more ApacheDS trace, see the setup method in ApacheDSandKDC.
      *
      */
 

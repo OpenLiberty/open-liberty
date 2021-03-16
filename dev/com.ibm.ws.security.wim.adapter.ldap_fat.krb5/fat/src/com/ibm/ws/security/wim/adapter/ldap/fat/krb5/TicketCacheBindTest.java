@@ -16,6 +16,7 @@ import static org.junit.Assert.assertFalse;
 import java.io.File;
 
 import org.junit.Assume;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -26,6 +27,7 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.wim.adapter.ldap.fat.krb5.utils.LdapKerberosUtils;
 
 import componenttest.annotation.AllowedFFDC;
+import componenttest.annotation.CheckForLeakedPasswords;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -40,16 +42,41 @@ public class TicketCacheBindTest extends CommonBindTest {
 
     private static final Class<?> c = TicketCacheBindTest.class;
 
+    @BeforeClass
+    public static void setStopMessages() {
+        stopStrings = new String[] { "CWIML4507E", "CWIML4513E", "CWIML4515E", "CWIML4520E", "CWIML4529E", "CWIML0004E", "CWWKE0701E", "CWWKS3005E" };
+    }
+
     /**
      * Run golden path tests for bindAuthMech=GSSAPI, a valid krbPrincipalName and valid krb5TicketCache
      *
      * @throws Exception
      */
     @Test
+    @CheckForLeakedPasswords(LdapKerberosUtils.BIND_PASSWORD)
     public void basicLoginChecks() throws Exception {
         Log.info(c, testName.getMethodName(), "Run basic login checks with a standard configuration");
         ServerConfiguration newServer = emptyConfiguration.clone();
         LdapRegistry ldap = getLdapRegistryWithTicketCache();
+        addKerberosConfig(newServer);
+        newServer.getLdapRegistries().add(ldap);
+        updateConfigDynamically(server, newServer);
+
+        baselineTests();
+    }
+
+    /**
+     * Run golden path tests for bindAuthMech=GSSAPI, a valid krbPrincipalName and valid krb5TicketCache
+     *
+     * @throws Exception
+     */
+    @Test
+    @CheckForLeakedPasswords(LdapKerberosUtils.BIND_PASSWORD)
+    @AllowedFFDC("javax.naming.NamingException") // temporary, remove when Issue #16231 is fixed
+    public void basicLoginChecksWithContextPool() throws Exception {
+        Log.info(c, testName.getMethodName(), "Run basic login checks with a standard configuration");
+        ServerConfiguration newServer = emptyConfiguration.clone();
+        LdapRegistry ldap = getLdapRegistryWithTicketCacheWithContextPool();
         addKerberosConfig(newServer);
         newServer.getLdapRegistries().add(ldap);
         updateConfigDynamically(server, newServer);
@@ -80,7 +107,7 @@ public class TicketCacheBindTest extends CommonBindTest {
         Log.info(c, testName.getMethodName(), "Login expected to fail, ticketCache exists, but is empty");
         loginUserShouldFail();
 
-        assertFalse("Expected to find Kerberos bind failure: CWIML4507E", server.findStringsInLogs("CWIML4507E").isEmpty());
+        assertFalse("Expected to find Kerberos bind failure: CWIML4507E", server.findStringsInLogsAndTraceUsingMark("CWIML4507E").isEmpty());
     }
 
     /**
@@ -111,7 +138,7 @@ public class TicketCacheBindTest extends CommonBindTest {
 
         Log.info(c, testName.getMethodName(), "Login expected to fail, ticketCache is unreadable");
         loginUserShouldFail();
-        assertFalse("Expected to find Kerberos bind failure: CWIML4513E", server.findStringsInLogs("CWIML4513E").isEmpty());
+        assertFalse("Expected to find Kerberos bind failure: CWIML4513E", server.findStringsInLogsAndTraceUsingMark("CWIML4513E").isEmpty());
     }
 
     /**
@@ -133,7 +160,7 @@ public class TicketCacheBindTest extends CommonBindTest {
 
         Log.info(c, testName.getMethodName(), "Login expected to fail, ticketCache isn't a valid file");
         loginUserShouldFail();
-        assertFalse("Expected to find Kerberos bind failure: " + "CWIML4515E", server.findStringsInLogs("CWIML4515E").isEmpty());
+        assertFalse("Expected to find Kerberos bind failure: " + "CWIML4515E", server.findStringsInLogsAndTraceUsingMark("CWIML4515E").isEmpty());
     }
 
     /**
@@ -156,7 +183,7 @@ public class TicketCacheBindTest extends CommonBindTest {
         Log.info(c, testName.getMethodName(), "Login expected to fail, config has a bad principalName");
         loginUserShouldFail();
 
-        assertFalse("Expected to find Kerberos bind failure: CWIML4507E", server.findStringsInLogs("CWIML4507E").isEmpty());
+        assertFalse("Expected to find Kerberos bind failure: CWIML4507E", server.findStringsInLogsAndTraceUsingMark("CWIML4507E").isEmpty());
     }
 
     /**
@@ -179,7 +206,7 @@ public class TicketCacheBindTest extends CommonBindTest {
         Log.info(c, testName.getMethodName(), "Login expected to fail, config is missing the principalName");
         loginUserShouldFail();
 
-        assertFalse("Expected to find Kerberos bind failure: CWIML0004E", server.findStringsInLogs("CWIML0004E").isEmpty());
+        assertFalse("Expected to find Kerberos bind failure: CWIML0004E", server.findStringsInLogsAndTraceUsingMark("CWIML0004E").isEmpty());
     }
 
     /**
@@ -202,7 +229,7 @@ public class TicketCacheBindTest extends CommonBindTest {
         Log.info(c, testName.getMethodName(), "Login expected to fail, the krb5PrincipalName is empty");
         loginUserShouldFail();
 
-        assertFalse("Expected to find Kerberos bind failure: CWIML4507E", server.findStringsInLogs("CWIML4507E").isEmpty());
+        assertFalse("Expected to find missing principal name: CWWKE0701E", server.findStringsInLogsAndTraceUsingMark("CWWKE0701E").isEmpty());
     }
 
     /**
@@ -262,7 +289,7 @@ public class TicketCacheBindTest extends CommonBindTest {
 
         Log.info(c, testName.getMethodName(), "Login expected to fail, the ticketCache is expired");
         loginUserShouldFail();
-        assertFalse("Expected to find Kerberos bind failure: CWIML4520E", server.findStringsInLogs("CWIML4520E").isEmpty());
+        assertFalse("Expected to find Kerberos bind failure: CWIML4520E", server.findStringsInLogsAndTraceUsingMark("CWIML4520E").isEmpty());
 
         Log.info(c, testName.getMethodName(), "Update with valid ticketCache, next login should succeed");
         resetTicketCache(ldap);
@@ -280,7 +307,7 @@ public class TicketCacheBindTest extends CommonBindTest {
     public void configFileWrongKDCPort() throws Exception {
         Log.info(c, testName.getMethodName(), "Update to a config file with a bad port for the KDC server");
 
-        String badConfigFile = ApacheDSandKDC.createConfigFileWithBadKDCPort();
+        String badConfigFile = ApacheDSandKDC.createConfigFile("badConfig-", -1);
 
         ServerConfiguration newServer = emptyConfiguration.clone();
         LdapRegistry ldap = getLdapRegistryWithTicketCache();
@@ -293,7 +320,7 @@ public class TicketCacheBindTest extends CommonBindTest {
         Log.info(c, testName.getMethodName(), "Login expected to fail, the krb.conf file has a bad port defined for the KDC server.");
         loginUserShouldFail();
 
-        assertFalse("Expected to find Kerberos bind failure: CWIML4520E", server.findStringsInLogs("CWIML4520E").isEmpty());
+        assertFalse("Expected to find Kerberos bind failure: CWIML4520E", server.findStringsInLogsAndTraceUsingMark("CWIML4520E").isEmpty());
     }
 
 }

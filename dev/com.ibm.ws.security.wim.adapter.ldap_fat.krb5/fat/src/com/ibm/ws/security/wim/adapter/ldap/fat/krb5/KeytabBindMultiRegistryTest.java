@@ -16,6 +16,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.config.Kerberos;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.config.wim.LdapRegistry;
 import com.ibm.websphere.simplicity.log.Log;
@@ -26,16 +27,15 @@ import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 
 /**
- * Tests Kerberos bind (GSSAPI) for Ldap, using primarily the krb5TicketCache
+ * Tests Kerberos bind (GSSAPI) for Ldap, using primarily the keytab
  *
  * The tests in this bucket use multiple registries.
- *
  */
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
-public class TicketCacheBindMultiRegistryTest extends CommonBindTest {
+public class KeytabBindMultiRegistryTest extends CommonBindTest {
 
-    private static final Class<?> c = TicketCacheBindMultiRegistryTest.class;
+    private static final Class<?> c = KeytabBindMultiRegistryTest.class;
 
     @BeforeClass
     public static void setStopMessages() {
@@ -55,29 +55,29 @@ public class TicketCacheBindMultiRegistryTest extends CommonBindTest {
         Log.info(c, testName.getMethodName(), "Run failover tests with two registries and allowOpIfRepoDown=false");
         try {
             ServerConfiguration newServer = emptyConfiguration.clone();
-            LdapRegistry ldap = getLdapRegistryWithTicketCache();
-            addKerberosConfig(newServer);
+            LdapRegistry ldap = getLdapRegistryForKeytab();
+            Kerberos kerb = addKerberosConfigAndKeytab(newServer);
             newServer.getLdapRegistries().add(ldap);
 
             Log.info(c, testName.getMethodName(), "Run ApacheDS restart tests");
             bodyOfMultiRegistryTest(newServer);
 
-            Log.info(c, testName.getMethodName(), "Update with an expired ticketCache");
-            String expiredCache = expiredTicketCache;
-            ldap.setKrb5TicketCache(expiredCache);
+            Log.info(c, testName.getMethodName(), "Update with an bad keytab");
+            kerb.keytab = wrongUserKeytab;
             updateConfigDynamically(server, newServer);
 
             Log.info(c, testName.getMethodName(), "Since allowOp=false, expected logins on both Ldap repos to fail");
             loginUserShouldFail();
             loginUserShouldFailUnboundID();
 
-            Log.info(c, testName.getMethodName(), "Update to valid TicketCache");
-            resetTicketCache(ldap);
+            Log.info(c, testName.getMethodName(), "Update to valid keytab");
+            kerb.keytab = keytabFile;
             updateConfigDynamically(server, newServer);
 
             Log.info(c, testName.getMethodName(), "Both registries should login again successfully");
             loginUser();
             loginUserUnboundID();
+
         } finally {
             stopUnboundIDLdapServer();
         }
@@ -96,24 +96,23 @@ public class TicketCacheBindMultiRegistryTest extends CommonBindTest {
         Log.info(c, testName.getMethodName(), "Run failover tests with two registries and allowOpIfRepoDown=true");
         try {
             ServerConfiguration newServer = emptyConfiguration.clone();
-            LdapRegistry ldap = getLdapRegistryWithTicketCache();
-            addKerberosConfig(newServer);
+            LdapRegistry ldap = getLdapRegistryForKeytab();
+            Kerberos kerb = addKerberosConfigAndKeytab(newServer);
             newServer.getLdapRegistries().add(ldap);
 
             Log.info(c, testName.getMethodName(), "Run ApacheDS restart tests");
             bodyOfMultiRegistryTestAllowOp(newServer);
 
-            Log.info(c, testName.getMethodName(), "Update with an expired ticketCache");
-            String expiredCache = expiredTicketCache;
-            ldap.setKrb5TicketCache(expiredCache);
+            Log.info(c, testName.getMethodName(), "Update with an bad keytab");
+            kerb.keytab = wrongUserKeytab;
             updateConfigDynamically(server, newServer);
 
             Log.info(c, testName.getMethodName(), "Since allowOp=false, expected login to fail on the Keberos Ldap and succeed on the simple bind Ldap");
             loginUserShouldFail();
             loginUserUnboundID();
 
-            Log.info(c, testName.getMethodName(), "Update to valid TicketCache");
-            resetTicketCache(ldap);
+            Log.info(c, testName.getMethodName(), "Update to valid keytab");
+            kerb.keytab = keytabFile;
             updateConfigDynamically(server, newServer);
 
             Log.info(c, testName.getMethodName(), "Both registries should login successfully");
@@ -123,4 +122,5 @@ public class TicketCacheBindMultiRegistryTest extends CommonBindTest {
             stopUnboundIDLdapServer();
         }
     }
+
 }
