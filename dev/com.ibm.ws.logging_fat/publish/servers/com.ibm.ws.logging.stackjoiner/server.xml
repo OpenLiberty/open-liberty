@@ -16,7 +16,5 @@
 	   <feature>jsp-2.3</feature>
     </featureManager>
     
-    <javaPermission className="java.util.PropertyPermission"  name="*" actions="read" />
-    
     
 </server>
