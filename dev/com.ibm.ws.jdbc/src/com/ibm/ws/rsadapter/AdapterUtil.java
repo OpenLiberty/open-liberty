@@ -1174,7 +1174,7 @@ public class AdapterUtil {
         SQLException mappedX;
         boolean alreadyMapped = sqlX != null && isLegacyException(sqlX, "com.ibm.websphere.ce.cm.PortableSQLException");
 
-        if (mcf == null                          // no access to helper or error detection model
+        if (mcf == null                          // no access to helper or replaceExceptions config
          || sqlX == null                         // nothing to map
          || alreadyMapped                        // already mapped
          || dsae != null && dsae.beenMapped())   // already mapped

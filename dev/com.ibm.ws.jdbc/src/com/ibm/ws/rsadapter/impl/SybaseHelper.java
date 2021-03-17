@@ -45,6 +45,8 @@ public class SybaseHelper extends DatabaseHelper
     SybaseHelper(WSManagedConnectionFactoryImpl mcf) {
         super(mcf);
 
+        dataStoreHelper = "com.ibm.websphere.rsadapter.Sybase11DataStoreHelper";
+
         mcf.defaultIsolationLevel = Connection.TRANSACTION_REPEATABLE_READ;
         mcf.supportsGetTypeMap = false;
     }

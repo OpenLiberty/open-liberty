@@ -58,6 +58,8 @@ public class MicrosoftSQLServerHelper extends DatabaseHelper {
     MicrosoftSQLServerHelper(WSManagedConnectionFactoryImpl mcf) {
         super(mcf);
 
+        dataStoreHelper = "com.ibm.websphere.rsadapter.MicrosoftSQLServerDataStoreHelper";
+
         mcf.defaultIsolationLevel = Connection.TRANSACTION_REPEATABLE_READ;
         mcf.supportsGetTypeMap = false;
         mcf.supportsIsReadOnly = false;
