@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -118,10 +118,9 @@ public class ServerXMLBindingsTestServlet extends FATServlet {
         assertNotNull("@EJB bean.method() for binding-name for local was null", bindingNameEJB.foo());
 
         // Remote
-        Object RBNlookup = ctx.lookup("ejb/ServerXMLBindingNameIntf5");
-        RemoteBindingNameIntf RBNbeanHome = (RemoteBindingNameIntf) PortableRemoteObject.narrow(RBNlookup, RemoteBindingNameIntf.class);
-        assertNotNull("lookup binding-name for remote was null", RBNbeanHome);
-        assertNotNull("bean.method() for binding-name for remote was null", RBNbeanHome.foo());
+        RemoteBindingNameIntf RBNbean = (RemoteBindingNameIntf) ctx.lookup("ejb/ServerXMLBindingNameIntf5");
+        assertNotNull("lookup binding-name for remote was null", RBNbean);
+        assertNotNull("bean.method() for binding-name for remote was null", RBNbean.foo());
 
         assertNotNull("@EJB binding-name for remote was null", remoteBindingNameEJB);
         assertNotNull("@EJB bean.method() for binding-name for remote was null", remoteBindingNameEJB.foo());
