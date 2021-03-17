@@ -8,12 +8,12 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= jar:${fileuri;${repo;org.eclipse.platform:org.eclipse.osgi;3.15.200}}!/META-INF/MANIFEST.MF,bnd.overrides
+-include= jar:${fileuri;${repo;org.eclipse.platform:org.eclipse.osgi;3.16.200}}!/META-INF/MANIFEST.MF,bnd.overrides
 -nouses: true
 -nodefaultversion: true
 
 -includeresource: \
-   @${repo;org.eclipse.platform:org.eclipse.osgi;3.15.200}
+   @${repo;org.eclipse.platform:org.eclipse.osgi;3.16.200}
 
 -buildpath: \
-	org.eclipse.platform:org.eclipse.osgi;version=3.15.200
+	org.eclipse.platform:org.eclipse.osgi;version=3.16.200
