@@ -34,6 +34,7 @@ import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
+import io.openliberty.microprofile.config.internal_fat.apps.brokenInjection.BadConfigPropertiesBean;
 import io.openliberty.microprofile.config.internal_fat.apps.brokenInjection.BadConfigPropertyInConstructorBean;
 import io.openliberty.microprofile.config.internal_fat.apps.brokenInjection.BadConfigPropertyInMethodBean;
 import io.openliberty.microprofile.config.internal_fat.apps.brokenInjection.converters.BadConverter;
@@ -63,7 +64,7 @@ public class Config20ExceptionTests extends FATServletClient {
                         .addProperty("noConverterKey", "aValue");
 
         WebArchive brokenInjectionWar = ShrinkWrap.create(WebArchive.class, BROKEN_INJECTION_APP_NAME + ".war")
-                        .addPackages(true, "io.openliberty.microprofile.config.internal_fat.apps.brokenInjection")
+                        .addPackages(true, BadConfigPropertiesBean.class.getPackage())
                         .addAsServiceProvider(Converter.class, ValidConverter.class, BadConverter.class)
                         .addAsResource(brokenInjectionConfigSource, "META-INF/microprofile-config.properties");
 
@@ -145,7 +146,8 @@ public class Config20ExceptionTests extends FATServletClient {
 
     @Test
     public void testBadConfigPropertiesInjection() throws Exception {
-        List<String> errors = server.findStringsInLogs("SRCFG00029: Expected an integer value, got \"aString\"");
+        List<String> errors = server
+                        .findStringsInLogs("SRCFG00039: The config property validPrefix.myString with the config value \"aString\" threw an Exception whilst being converted");
         assertNotNull(errors);
         assertTrue(errors.size() > 0);
     }

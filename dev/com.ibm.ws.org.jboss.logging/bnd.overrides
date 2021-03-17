@@ -6,3 +6,6 @@ Bundle-SymbolicName: com.ibm.ws.org.jboss.logging; singleton:=true
 bFullVersion=${version;==;${bVersion}}.${libertyBundleMicroVersion}
 Build-Identifier: SNAPSHOT-${now}
 Bundle-Version: ${bFullVersion}.${if;${driver;gradle};${version.qualifier};eclipse}
+
+Export-Package: org.jboss.logging;version="3.4.1.Final",\
+                org.jboss.logging.annotations;version="2.2.1.Final"
