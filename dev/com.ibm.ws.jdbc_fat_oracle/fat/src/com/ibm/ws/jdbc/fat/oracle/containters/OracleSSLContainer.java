@@ -10,12 +10,15 @@
  *******************************************************************************/
 package com.ibm.ws.jdbc.fat.oracle.containters;
 
+import java.time.Duration;
+
 import org.testcontainers.containers.OracleContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
 
 import com.ibm.ws.jdbc.fat.oracle.FATSuite;
 
 import componenttest.containers.SimpleLogConsumer;
+import componenttest.custom.junit.runner.FATRunner;
 
 /**
  * Custom Oracle SSL Container class
@@ -32,7 +35,8 @@ public class OracleSSLContainer extends OracleContainer {
 
     public OracleSSLContainer() {
         super(IMAGE_NAME);
-        super.waitingFor(Wait.forLogMessage(".*DONE: Executing user defined scripts.*", 1));
+        super.waitingFor(Wait.forLogMessage(".*DONE: Executing user defined scripts.*", 1)
+                        .withStartupTimeout(Duration.ofMinutes(FATRunner.FAT_TEST_LOCALRUN ? 3 : 25)));
         super.withExposedPorts(TCP_PORT, TCPS_PORT, OEM_EXPRESS_PORT, HTTP_PORT);
         super.withLogConsumer(new SimpleLogConsumer(FATSuite.class, "Oracle-SSL"));
     }
