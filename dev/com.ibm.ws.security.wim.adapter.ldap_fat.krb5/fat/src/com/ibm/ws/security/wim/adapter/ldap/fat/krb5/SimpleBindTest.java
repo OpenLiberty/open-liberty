@@ -29,6 +29,7 @@ import com.ibm.ws.security.wim.adapter.ldap.fat.krb5.utils.LdapKerberosUtils;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.CheckForLeakedPasswords;
+import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -38,6 +39,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
  */
 @RunWith(FATRunner.class)
 @Mode(TestMode.LITE)
+@MinimumJavaLevel(javaLevel = 9)
 public class SimpleBindTest extends CommonBindTest {
 
     private static final Class<?> c = SimpleBindTest.class;

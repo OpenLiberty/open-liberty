@@ -22,6 +22,7 @@ import com.ibm.websphere.simplicity.config.wim.LdapRegistry;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.AllowedFFDC;
+import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -33,6 +34,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
  */
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
+@MinimumJavaLevel(javaLevel = 9)
 public class KeytabBindMultiRegistryTest extends CommonBindTest {
 
     private static final Class<?> c = KeytabBindMultiRegistryTest.class;

@@ -26,6 +26,7 @@ import com.ibm.ws.security.wim.adapter.ldap.LdapConstants;
 import com.ibm.ws.security.wim.adapter.ldap.fat.krb5.utils.LdapKerberosUtils;
 
 import componenttest.annotation.CheckForLeakedPasswords;
+import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -36,6 +37,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
  */
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
+@MinimumJavaLevel(javaLevel = 9)
 public class Krb5ConfigJVMProp extends CommonBindTest {
 
     private static final Class<?> c = Krb5ConfigJVMProp.class;
