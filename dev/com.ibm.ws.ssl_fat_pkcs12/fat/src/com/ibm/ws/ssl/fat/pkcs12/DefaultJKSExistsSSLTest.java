@@ -61,7 +61,7 @@ public class DefaultJKSExistsSSLTest extends CommonSSLTest {
     public void testSSLFeatureNoSSLConfigExistingJKSUsesJKSKeyStore() throws Exception {
 
         Log.info(c, name.getMethodName(), "Entering " + name.getMethodName());
-        String protocol = TLSV11_PROTOCOL;
+        String protocol = TLSV12_PROTOCOL;
 
         server.setServerConfigurationFile(NO_SSL_CONFIG_BUT_DOES_INCLUDE_SSL_FEATURE);
         server.startServer(name.getMethodName() + ".log");
@@ -121,7 +121,7 @@ public class DefaultJKSExistsSSLTest extends CommonSSLTest {
     public void testDefaultMinimalSSLCertificateFileKeyJKSFileDoesExist() throws Exception {
 
         Log.info(c, name.getMethodName(), "Entering " + name.getMethodName());
-        String protocol = TLSV11_PROTOCOL;
+        String protocol = TLSV12_PROTOCOL;
 
         server.setServerConfigurationFile(DEFAULT_MINIMAL_SSL_CONFIG);
         server.startServer(name.getMethodName() + ".log");
