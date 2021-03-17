@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -2236,7 +2236,7 @@ public class DataSourceTestServlet extends FATServlet {
                 throw new Exception("Default query timeout not honored for callable statement. Instead: " + cstmtQueryTimeout);
             cstmt.setQueryTimeout(40);
 
-            tran.setTransactionTimeout(25);
+            tran.setTransactionTimeout(28);
             try {
                 tran.begin();
                 try {
@@ -2244,7 +2244,7 @@ public class DataSourceTestServlet extends FATServlet {
                     pstmt.executeQuery();
 
                     timeout = pstmt.getQueryTimeout();
-                    if (timeout > 25 || timeout < 20)
+                    if (timeout > 28 || timeout < 10)
                         throw new Exception("Query timeout not properly synced to tran timeout. Instead: " + timeout);
 
                     cstmt.executeQuery();
@@ -2259,7 +2259,7 @@ public class DataSourceTestServlet extends FATServlet {
 
                     int prevTimeout = timeout;
                     timeout = pstmt.getQueryTimeout();
-                    if (timeout >= prevTimeout || timeout < 15)
+                    if (timeout >= prevTimeout || timeout < 5)
                         throw new Exception("Query timeout not properly synced to tran timeout. Instead: " + timeout + " (previous timeout was: " + prevTimeout + ")");
                 } finally {
                     tran.commit();
