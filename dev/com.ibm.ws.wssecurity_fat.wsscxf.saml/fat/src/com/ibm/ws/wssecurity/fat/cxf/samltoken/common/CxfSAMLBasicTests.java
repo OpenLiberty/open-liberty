@@ -30,6 +30,9 @@ import componenttest.annotation.ExpectedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+//3/2021
+import componenttest.annotation.SkipForRepeat;
+
 import componenttest.topology.impl.LibertyServerWrapper;
 
 /**
@@ -100,6 +103,7 @@ public class CxfSAMLBasicTests extends SAMLCommonTest {
      * Test should succeed in accessing the server side service.
      *
      */
+    
     @Mode(TestMode.LITE)
     @AllowedFFDC(value = { "java.lang.Exception" })
     @Test

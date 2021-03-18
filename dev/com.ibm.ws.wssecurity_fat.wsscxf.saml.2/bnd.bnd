@@ -21,15 +21,13 @@ src: \
 
 fat.project: true
 
-tested.features: jsp-2.3, jdbc-4.1, el-3.0, federatedregistry-1.0, ldapregistry-3.0
+tested.features: jsp-2.3, jdbc-4.1, el-3.0, appsecurity-3.0, servlet-4.0, jaxb-2.3, cdi-2.0, jaxws-2.3
 
 # Dependencies may be local bundles (e.g. com.ibm.websphere.javaee.servlet.3.1)
 #      or binaries from Artifactory (e.g. commons-logging:commons-logging)
 # For all project names that match the pattern "*_fat*", dependencies for junit,
 # fattest.simplicity, and componenttest-1.0 will be automatically added to the buildpath
 
-# net.sourceforge.htmlunit:htmlunit for com.gargoylesoftware.htmlunit
-# not used com.ibm.ws.security_fat.common.tooling;version=latest,\
 	
 -buildpath: \
   com.ibm.ws.wssecurity.fat.utils.common;version=latest,\
