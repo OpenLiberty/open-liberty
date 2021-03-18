@@ -43,6 +43,9 @@ com.icegreen:greenmail:1.5.10
 com.microsoft.sqlserver:mssql-jdbc:8.2.1.jre8
 com.nimbusds:nimbus-jose-jwt:4.23
 com.oracle.ojdbc:ojdbc8_g:19.3.0.0
+com.oracle.ojdbc:oraclepki:19.3.0.0
+com.oracle.ojdbc:osdt_cert:19.3.0.0
+com.oracle.ojdbc:osdt_core:19.3.0.0
 com.oracle.ojdbc:ucp:19.3.0.0
 com.sebastian-daschner:jaxrs-analyzer:0.9
 com.sun.activation:jakarta.activation:2.0.0
