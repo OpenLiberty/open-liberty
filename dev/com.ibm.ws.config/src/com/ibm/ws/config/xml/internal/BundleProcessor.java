@@ -923,8 +923,13 @@ class BundleProcessor implements SynchronousBundleListener, EventHandler, Runtim
             return hasDefaultConfig.get();
         }
 
+        // Remove milliseconds from timestamp values to address inconsistencies in container file systems
+        long reduceTimestampPrecision(long value) {
+            return (value / 1000) * 1000;
+        }
+
         public boolean needsReprocessing() {
-            return lastProcessed.get() != bundle.getLastModified();
+            return reduceTimestampPrecision(lastProcessed.get()) != reduceTimestampPrecision(bundle.getLastModified());
         }
 
         public Bundle getBundle() {
