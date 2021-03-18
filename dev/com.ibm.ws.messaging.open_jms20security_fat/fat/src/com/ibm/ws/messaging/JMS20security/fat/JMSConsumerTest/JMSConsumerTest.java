@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -104,9 +104,18 @@ public class JMSConsumerTest {
                                             "features/testjmsinternals-1.0.mf");
         server.copyFileToLibertyServerRoot("resources/security",
                                            "clientLTPAKeys/mykey.jks");
+        TestUtils.addDropinsWebApp(server, "JMSConsumer", "web");
+        startAppServers();
+    }
+
+    /**
+     * Start both the JMSConsumerClient local and remote messaging engine AppServers.
+     *
+     * @throws Exception
+     */
+    private static void startAppServers() throws Exception {
         server.setServerConfigurationFile("JMSContext_ssl.xml");
         server1.setServerConfigurationFile("TestServer1_ssl.xml");
-        TestUtils.addDropinsWebApp(server, "JMSConsumer", "web");
         server.startServer("JMSConsumerTestClient.log");
         String waitFor = server.waitForStringInLog("CWWKF0011I.*", server.getMatchingLogFile("messages.log"));
         assertNotNull("Server ready message not found", waitFor);
@@ -447,6 +456,7 @@ public class JMSConsumerTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         if (JakartaEE9Action.isActive()) {
             RemoteFile file = server.getFileFromLibertyServerRoot("apps/jmsapp.ear");
             Path appPath = Paths.get(file.getAbsolutePath());
@@ -517,6 +527,10 @@ public class JMSConsumerTest {
         }
         assertTrue("testRDC_TcpIp failed", strings != null && strings.size() == 1);
 
+        // The following console log errors are masked by the following try catch blocks.
+        // [24/03/21 16:57:09:781 GMT] 0000004b com.ibm.ws.config.xml.internal.ConfigEvaluator               W CWWKG0032W: Unexpected value specified for property [destinationType], value = [javax.jms.Topic]. Expected value(s) are: [jakarta.jms.Queue][jakarta.jms.Topic]. Default value in use: [jakarta.jms.Queue].
+        // [24/03/21 16:57:09:781 GMT] 0000004b com.ibm.ws.config.xml.internal.ConfigEvaluator               W CWWKG0032W: Unexpected value specified for property [destinationType], value = [javax.jms.Topic]. Expected value(s) are: [jakarta.jms.Queue][jakarta.jms.Topic]. Default value in use: [jakarta.jms.Queue].
+        // [24/03/21 16:57:16:336 GMT] 0000004b com.ibm.ws.jca.service.EndpointActivationService             E J2CA8802E: The message endpoint activation failed for resource adapter wasJms due to exception: jakarta.resource.spi.InvalidPropertyException: CWSJR1181E: The JMS activation specification has invalid values - the reason(s) for failing to validate the JMS
         try {
             System.out.println("Stopping engine server");
             server1.stopServer();
@@ -530,17 +544,11 @@ public class JMSConsumerTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        server.setServerConfigurationFile("JMSContext_ssl.xml");
-        server1.setServerConfigurationFile("TestServer1_ssl.xml");
-        server1.startServer();
-        messageFromLog = server1.waitForStringInLog("CWWKF0011I.*",
-                                                    server1.getMatchingLogFile("trace.log"));
-        assertNotNull("Could not find the upload message in the new file",
-                      messageFromLog);
-        server.startServer();
-        messageFromLog = server.waitForStringInLog("CWWKF0011I.*", server.getMatchingLogFile("messages.log"));
-        assertNotNull("Server ready message not found", messageFromLog);
 
+        // When fixed use...
+        //server.stopServer();
+        //server1.stopServer();
+        startAppServers();
     }
 
     @Test
@@ -550,14 +558,7 @@ public class JMSConsumerTest {
 
         server.stopServer();
         server1.stopServer();
-        server1.startServer();
-        String messageFromLog = server1.waitForStringInLog("CWWKF0011I.*",
-                                                           server1.getMatchingLogFile("trace.log"));
-        assertNotNull("Could not find the upload message in the new file",
-                      messageFromLog);
-        server.startServer("JMSConsumerTestClient.log");
-        messageFromLog = server.waitForStringInLog("CWWKF0011I.*", server.getMatchingLogFile("messages.log"));
-        assertNotNull("Server ready message not found", messageFromLog);
+        startAppServers();
 
         val = runInServlet("testCreateSharedDurableConsumer_consume");
         assertTrue("testCreateSharedDurable_B_SecOn failed", val);
@@ -572,12 +573,7 @@ public class JMSConsumerTest {
 
         server.stopServer();
         server1.stopServer();
-        server1.startServer("JMSConsumerTestServer.log");
-        String waitFor = server1.waitForStringInLog("CWWKF0011I.*", server1.getMatchingLogFile("messages.log"));
-        assertNotNull("Server ready message not found", waitFor);
-        server.startServer("JMSConsumerTestClient.log");
-        waitFor = server.waitForStringInLog("CWWKF0011I.*", server.getMatchingLogFile("messages.log"));
-        assertNotNull("Server ready message not found", waitFor);
+        startAppServers();
 
         val = runInServlet("testCreateSharedDurableConsumer_consume_TCP");
         assertTrue("testCreateSharedDurable_TCP_SecOn failed", val);
@@ -592,12 +588,7 @@ public class JMSConsumerTest {
 
         server.stopServer();
         server1.stopServer();
-        server1.startServer();
-        String waitFor = server1.waitForStringInLog("CWWKF0011I.*", server1.getMatchingLogFile("messages.log"));
-        assertNotNull("Server ready message not found", waitFor);
-        server.startServer();
-        waitFor = server.waitForStringInLog("CWWKF0011I.*", server.getMatchingLogFile("messages.log"));
-        assertNotNull("Server ready message not found", waitFor);
+        startAppServers();
 
         val = runInServlet("testCreateSharedDurableConsumerWithMsgSel_consume");
         assertTrue("testCreateSharedDurableWithMsgSel_B_SecOn failed", val);
@@ -613,12 +604,7 @@ public class JMSConsumerTest {
 
         server.stopServer();
         server1.stopServer();
-        server1.startServer();
-        String waitFor = server1.waitForStringInLog("CWWKF0011I.*", server1.getMatchingLogFile("messages.log"));
-        assertNotNull("Server ready message not found", waitFor);
-        server.startServer();
-        waitFor = server.waitForStringInLog("CWWKF0011I.*", server.getMatchingLogFile("messages.log"));
-        assertNotNull("Server ready message not found", waitFor);
+        startAppServers();
 
         val = runInServlet("testCreateSharedDurableConsumerWithMsgSel_consume_TCP");
         assertTrue("testCreateSharedDurableWithMsgSel_TCP_SecOn failed", val);
@@ -632,12 +618,7 @@ public class JMSConsumerTest {
 
         server.stopServer();
         server1.stopServer();
-        server1.startServer();
-        String waitFor = server1.waitForStringInLog("CWWKF0011I.*", server1.getMatchingLogFile("messages.log"));
-        assertNotNull("Server ready message not found", waitFor);
-        server.startServer();
-        waitFor = server.waitForStringInLog("CWWKF0011I.*", server.getMatchingLogFile("messages.log"));
-        assertNotNull("Server ready message not found", waitFor);
+        startAppServers();
 
         val = runInServlet("testCreateSharedNonDurableConsumer_consume");
         assertTrue("testCreateSharedNonDurable_B_SecOn failed", val);
@@ -652,15 +633,9 @@ public class JMSConsumerTest {
 
         server.stopServer();
         server1.stopServer();
-        server1.startServer();
-        String waitFor = server1.waitForStringInLog("CWWKF0011I.*", server1.getMatchingLogFile("messages.log"));
-        assertNotNull("Server ready message not found", waitFor);
-        server.startServer();
-        waitFor = server.waitForStringInLog("CWWKF0011I.*", server.getMatchingLogFile("messages.log"));
-        assertNotNull("Server ready message not found", waitFor);
+        startAppServers();
 
         val = runInServlet("testCreateSharedNonDurableConsumer_consume_TCP");
-
         assertTrue("testCreateSharedNonDurable_TCP_SecOn failed", val);
 
     }
@@ -673,12 +648,7 @@ public class JMSConsumerTest {
 
         server.stopServer();
         server1.stopServer();
-        server1.startServer();
-        String waitFor = server1.waitForStringInLog("CWWKF0011I.*", server1.getMatchingLogFile("messages.log"));
-        assertNotNull("Server ready message not found", waitFor);
-        server.startServer();
-        waitFor = server.waitForStringInLog("CWWKF0011I.*", server.getMatchingLogFile("messages.log"));
-        assertNotNull("Server ready message not found", waitFor);
+        startAppServers();
 
         val = runInServlet("testCreateSharedNonDurableConsumerWithMsgSel_consume");
         assertTrue("testCreateSharedNonDurableWithMsgSel_B_SecOn failed", val);
@@ -694,15 +664,9 @@ public class JMSConsumerTest {
 
         server.stopServer();
         server1.stopServer();
-        server1.startServer();
-        String waitFor = server1.waitForStringInLog("CWWKF0011I.*", server1.getMatchingLogFile("messages.log"));
-        assertNotNull("Server ready message not found", waitFor);
-        server.startServer();
-        waitFor = server.waitForStringInLog("CWWKF0011I.*", server.getMatchingLogFile("messages.log"));
-        assertNotNull("Server ready message not found", waitFor);
+        startAppServers();
 
         val = runInServlet("testCreateSharedNonDurableConsumerWithMsgSel_consume_TCP");
-
         assertTrue("testCreateSharedNonDurableWithMsgSel_TCP_SecOn failed", val);
 
     }
@@ -720,10 +684,8 @@ public class JMSConsumerTest {
         waitFor = server.waitForStringInLog("CWWKF0011I.*", server.getMatchingLogFile("messages.log"));
         assertNotNull("Server ready message not found", waitFor);
 
-        String changedMessageFromLog = server.waitForStringInLog(
-                                                                 "CWWKF0011I.*", server.getMatchingLogFile("trace.log"));
-        assertNotNull(
-                      "Could not find the server start info message in the new file",
+        String changedMessageFromLog = server.waitForStringInLog("CWWKF0011I.*", server.getMatchingLogFile("trace.log"));
+        assertNotNull("Could not find the server start info message in the new file",
                       changedMessageFromLog);
 
         val = runInServlet("testBasicMDBTopic");
@@ -770,15 +732,7 @@ public class JMSConsumerTest {
 
         server.stopServer();
         server1.stopServer();
-        server.setServerConfigurationFile("JMSContext_ssl.xml");
-        server1.setServerConfigurationFile("TestServer1_ssl.xml");
-        server1.startServer();
-        waitFor = server1.waitForStringInLog("CWWKF0011I.*", server1.getMatchingLogFile("messages.log"));
-        assertNotNull("Server ready message not found", waitFor);
-        server.startServer();
-        waitFor = server.waitForStringInLog("CWWKF0011I.*", server.getMatchingLogFile("messages.log"));
-        assertNotNull("Server ready message not found", waitFor);
-
+        startAppServers();
     }
 
     // @Test
@@ -834,15 +788,7 @@ public class JMSConsumerTest {
 
         server.stopServer();
         server1.stopServer();
-        server.setServerConfigurationFile("JMSContext_ssl.xml");
-        server1.setServerConfigurationFile("TestServer1_ssl.xml");
-        server1.startServer();
-        waitFor = server1.waitForStringInLog("CWWKF0011I.*", server1.getMatchingLogFile("messages.log"));
-        assertNotNull("Server ready message not found", waitFor);
-        server.startServer();
-        waitFor = server.waitForStringInLog("CWWKF0011I.*", server.getMatchingLogFile("messages.log"));
-        assertNotNull("Server ready message not found", waitFor);
-
+        startAppServers();
     }
 
     @Mode(TestMode.FULL)
@@ -895,7 +841,13 @@ public class JMSConsumerTest {
 
         val = runInServlet("testQueueNameCaseSensitive_Bindings");
         assertTrue("testQueueNameCaseSensitive_Bindings_SecOn failed", val);
+        // Should see CWSIK0015E: The destination queue1 was not found on messaging engine defaultME.
+        String waitFor = server.waitForStringInLog("CWSIK0015E.*queue1.*", server.getMatchingLogFile("messages.log"));
+        assertNotNull("Server CWSIK0015E message not found", waitFor);
 
+        server.stopServer("CWSIK0015E.*");
+        server1.stopServer();
+        startAppServers();
     }
 
     @Mode(TestMode.FULL)
@@ -903,9 +855,13 @@ public class JMSConsumerTest {
     public void testQueueNameCaseSensitive_TCP_SecOn() throws Exception {
 
         val = runInServlet("testQueueNameCaseSensitive_TCP");
-
         assertTrue("testQueueNameCaseSensitive_TCP_SecOn failed", val);
-
+        // Should see CWSIK0015E: The destination queue1 was not found on messaging engine defaultME.
+        String waitFor = server1.waitForStringInLog("CWSIK0015E.*queue1.*", server1.getMatchingLogFile("messages.log"));
+        assertNotNull("Server CWSIK0015E message not found", waitFor);
+        server.stopServer();
+        server1.stopServer("CWSIK0015E.*");
+        startAppServers();
     }
 
     // end 118077
