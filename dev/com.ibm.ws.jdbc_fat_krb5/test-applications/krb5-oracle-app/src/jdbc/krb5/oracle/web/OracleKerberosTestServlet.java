@@ -43,6 +43,9 @@ public class OracleKerberosTestServlet extends FATServlet {
     @Resource(lookup = "jdbc/krb/basic")
     DataSource krb5DataSource;
 
+    @Resource(lookup = "jdbc/krb/userpass")
+    DataSource krb5UPDataSource;
+
     @Resource(lookup = "jdbc/krb/xa")
     DataSource krb5XADataSource;
 
@@ -121,6 +124,17 @@ public class OracleKerberosTestServlet extends FATServlet {
     @Test
     public void testKerberosBasicConnection() throws Exception {
         try (Connection con = getConnectionWithRetry(krb5DataSource)) {
+            con.createStatement().execute("SELECT 1 FROM DUAL");
+        }
+    }
+
+    /**
+     * Get a connection using a password in server.xml
+     * Config updates are done in OracleKerberosTest.java
+     */
+    public void testKerberosUsingPassword() throws Exception {
+
+        try (Connection con = getConnectionWithRetry(krb5UPDataSource)) {
             con.createStatement().execute("SELECT 1 FROM DUAL");
         }
     }
