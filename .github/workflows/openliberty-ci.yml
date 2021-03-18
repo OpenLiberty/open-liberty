@@ -100,7 +100,7 @@ jobs:
         name: openliberty-image
         if-no-files-found: error
         path: openliberty-image.zip
-    - name: Upload Modified Categories
+    - name: Upload modified categories
       uses: actions/upload-artifact@v2
       if: steps.gen-params.outputs.modified-categories == 'true'
       with:
@@ -109,7 +109,7 @@ jobs:
         path: |
           .github/test-categories/MODIFIED_LITE_MODE
           .github/test-categories/MODIFIED_FULL_MODE*
-    - name: Upload failure output
+    - name: Upload gradle failure output
       if: failure()
       uses: actions/upload-artifact@v2
       with:
@@ -157,7 +157,7 @@ jobs:
         key: ${{ runner.os }}-maven-${{ hashFiles('**/*.maven') }}
         restore-keys: |
           ${{ runner.os }}-maven-
-    - name: Run unit tests
+    - name: Run unit tests with gradle
       id: run-unit-tests
       run: .github/workflow-scripts/run-unit-tests.sh
     - name: Upload unit test artifact
@@ -166,6 +166,13 @@ jobs:
       with:
         name: Unit Test Logs
         path: dev/cnf/generated/testReports/allUnitTests
+    - name: Upload gradle failure output
+      if: failure()
+      uses: actions/upload-artifact@v2
+      with:
+        name: unit-test-failure-gradle.log
+        if-no-files-found: error
+        path: dev/tmp/gradle.log
     - name: Analyze junit output
       if: steps.run-unit-tests.outputs.status == 'failure'
       uses: KyleAure/junit-report-annotations-action@1.6

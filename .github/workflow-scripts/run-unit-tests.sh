@@ -1,5 +1,13 @@
 #!/bin/bash
-# This script runs all unit tests and outputs final values [total / successes / failed / skipped]
+
+##############################
+# This script runs all unit tests, and reports failure/success
+# Inputs: none
+# Outputs: 
+#   Files: /dev/unit-results/*    - junit.xml files saved in a common directory used by KyleAure/junit-report-annotations-action
+#   File: /dev/tmp/gradle.log     - Gradle output to be uploaded if there is a failure
+#   Build Output: status          - Reports build status [failure/success]
+############################## 
 
 cd dev
 chmod +x gradlew
@@ -7,8 +15,9 @@ chmod +x gradlew
 echo "Running gradle test and testReport tasks.  This will take approx. 30 minutes."
 
 # Redirect stdout to log file that will get archived if build fails
+mkdir tmp && touch tmp/gradle.log
 echo "::group::Gradle Output"
-./gradlew --continue cnf:initialize testResults -Dgradle.test.ignoreFailures=true
+./gradlew --continue cnf:initialize testResults -Dgradle.test.ignoreFailures=true &> tmp/gradle.log
 echo "::endgroup::"
 
 # Gradle testResults task will save off results in generated.properties ensure that file exists otherwise fail

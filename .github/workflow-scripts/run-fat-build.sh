@@ -1,9 +1,17 @@
 #!/bin/bash
 
-# Params:
-# CATEGORY:    the category name (e.g. CDI_1)
-# GH_EVENT_NAME: the event triggering this workflow. Will be 'pull_request' if a PR triggered it
+##############################
+# This scripts runs each fat in a category
+# Inputs:
+#   Env Var: CATEGORY                         - The category name (e.g. CDI_1)
+#   Env Var: GH_EVENT_NAME                    - The event that triggered the workflow (e.g. pull_request)
+# Outputs:
+#   File: {autoFVT}/output/[passed/fail].log  - Indicator file used by validate-fat-failures.sh
+#   File: {AutoFVT}/output/gradle.log         - Gradle output saved to a file for debugging
+#   File: /dev/fat-results/*                  - junit.xml files saved in a common directory used by KyleAure/junit-report-annotations-action
+##############################
 
+# Prevent script from reporting failures
 set +e
 
 # Override default LITE mode per-bucket timeout to 45m
@@ -62,7 +70,6 @@ echo "org.gradle.daemon=false" >> gradle.properties
 
 #Build test infrastructure
 echo "::group::Build com.ibm.ws.componenttest and fattest.simplicity"
-mkdir -p gradle/fats/ && touch setup.gradle.log
 ./gradlew :cnf:initialize :com.ibm.ws.componenttest:build :fattest.simplicity:build
 echo "::endgroup::"
 
@@ -71,10 +78,13 @@ for FAT_BUCKET in $FAT_BUCKETS
 do
   echo "::group:: Run $FAT_BUCKET with FAT_ARGS=$FAT_ARGS"
   BUCKET_PASSED=true
-  ./gradlew :$FAT_BUCKET:buildandrun $FAT_ARGS || BUCKET_PASSED=false
   OUTPUT_DIR=$FAT_BUCKET/build/libs/autoFVT/output
   RESULTS_DIR=$FAT_BUCKET/build/libs/autoFVT/results
-  mkdir -p $OUTPUT_DIR
+  mkdir -p $OUTPUT_DIR && touch $OUTPUT_DIR/gradle.log
+
+  #Run fat
+  ./gradlew :$FAT_BUCKET:buildandrun $FAT_ARGS &> $OUTPUT_DIR/gradle.log || BUCKET_PASSED=false
+
   # Create a file to mark whether a bucket failed or passed
   if $BUCKET_PASSED; then
     echo "The bucket $FAT_BUCKET passed.";
@@ -83,6 +93,7 @@ do
     echo "$FAT_BUCKET failed."
     touch "$OUTPUT_DIR/fail.log";
   fi
+  
   # Collect all junit files in a central location
   FAT_RESULTS=$PWD/fat-results
   mkdir $FAT_RESULTS
