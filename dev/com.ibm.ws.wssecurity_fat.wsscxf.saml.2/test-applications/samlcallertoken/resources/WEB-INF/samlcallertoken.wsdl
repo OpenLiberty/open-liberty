@@ -62,8 +62,10 @@
                             sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/AlwaysToRecipient">
                             <wsp:Policy>
                                 <sp:WssSamlV20Token11/>
+                                <!-- 3/2021 @AV999 these two are UNT specific
                                 <sp13:Created/>
                                 <sp13:Nonce/>
+                                -->
                             </wsp:Policy>
                         </sp:SamlToken>
                     </wsp:Policy>

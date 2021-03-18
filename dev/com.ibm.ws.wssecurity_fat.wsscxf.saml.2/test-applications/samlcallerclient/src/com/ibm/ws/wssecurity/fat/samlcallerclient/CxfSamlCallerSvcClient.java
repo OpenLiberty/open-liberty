@@ -204,7 +204,7 @@ public class CxfSamlCallerSvcClient extends HttpServlet {
                         }
                        
                        /* PrintWriter rsp = response.getWriter();
-                                rsp.print("<html><head><title>CXF SAML Service Cleint</title></head><body>");
+                                rsp.print("<html><head><title>CXF SAML Service Client</title></head><body>");
                                 rsp.print("<p>Request: SAML CXF Service Client</p>");
                                 rsp.print("<p>Response: "+answer+"</p>");
                             rsp.print("</body></html>"); */

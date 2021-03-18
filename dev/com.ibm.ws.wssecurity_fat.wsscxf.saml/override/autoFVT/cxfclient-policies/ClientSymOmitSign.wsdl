@@ -199,13 +199,14 @@
                          <sp:OnlySignEntireHeadersAndBody/>
                      </wsp:Policy>
                 </sp:SymmetricBinding>
-                <sp:Wss10>
+                <!-- 3/2021 updated to Wss11 from Wss10 -->
+                <sp:Wss11>
                     <wsp:Policy>
                         <sp:MustSupportRefKeyIdentifier/>
                         <sp:MustSupportRefEncryptedKey/>
                         <sp:MustSupportRefThumbprint/>
                     </wsp:Policy>
-                </sp:Wss10>
+                </sp:Wss11>
                 <sp:SignedParts>
                     <sp:Body/>
                 </sp:SignedParts>
