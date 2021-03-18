@@ -31,6 +31,8 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.rsadapter.AdapterUtil;
+import com.ibm.ws.rsadapter.DSConfig;
+import com.ibm.ws.rsadapter.SQLStateAndCode;
 import com.ibm.ws.rsadapter.jdbc.WSJdbcTracer;
 
 /**
@@ -119,12 +121,7 @@ public class DataDirectConnectSQLServerHelper extends DatabaseHelper {
 
         if (TraceComponent.isAnyTracingEnabled() &&  tc.isDebugEnabled()) 
             Tr.debug(this, tc, "Default longDataCacheSize = " + longDataCacheSize);
-    }
-    
-    @Override
-    void customizeStaleStates() {
-        super.customizeStaleStates();
-        
+
         Collections.addAll(staleDDErrorCodes,
                            2217,
                            2251,
@@ -143,8 +140,8 @@ public class DataDirectConnectSQLServerHelper extends DatabaseHelper {
 
         // DataDirect also informs us they do not use 40003 or S1000 to indicate a
         // dead connection. These need to be removed because they are inherited from the super class.
-        staleSQLStates.remove("40003");
-        staleSQLStates.remove("S1000");
+        staleConCodes.remove("40003");
+        staleConCodes.remove("S1000");
 
         Collections.addAll(staleMSErrorCodes,
                            230,
@@ -356,20 +353,30 @@ public class DataDirectConnectSQLServerHelper extends DatabaseHelper {
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(this, tc, "isConnectionError", ex);
 
+        DSConfig config = mcf.dsConfig.get();
+
         // Maintain a set in order to check for cycles
         Set<Throwable> chain = new HashSet<Throwable>();
 
         boolean stale = super.isConnectionError(ex);
         for (Throwable t = ex; t != null && !stale && chain.add(t); t = t.getCause()) {
-            SQLException sqlX = t instanceof SQLException ? (SQLException) t : null;
-            if (isTraceOn && tc.isDebugEnabled())
-                Tr.debug(this, tc, "checking " + t,
-                         sqlX == null ? null : sqlX.getSQLState(),
-                         sqlX == null ? null : sqlX.getErrorCode());
-            if (sqlX != null)
-                stale |= isDataDirectExp(ex)
-                         ? staleDDErrorCodes.contains(sqlX.getErrorCode()) || staleDDSQLStates.contains(sqlX.getSQLState())
-                         : staleMSErrorCodes.contains(sqlX.getErrorCode());
+            if (t instanceof SQLException) {
+                SQLException sqlX = (SQLException) t;
+                String sqlState = sqlX.getSQLState();
+                int errorCode = sqlX.getErrorCode();
+                SQLStateAndCode combo = sqlState == null ? null : new SQLStateAndCode(sqlState, errorCode);
+
+                if (config.identifyExceptions.get(combo) == null &&
+                                config.identifyExceptions.get(errorCode) == null &&
+                                config.identifyExceptions.get(sqlState) == null)
+                    stale = isDataDirectExp(ex)
+                                    ? staleDDErrorCodes.contains(sqlX.getErrorCode()) || staleDDSQLStates.contains(sqlX.getSQLState())
+                                    : staleMSErrorCodes.contains(sqlX.getErrorCode());
+                // else already checked by super.isConnectionError
+
+                if (isTraceOn && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "isConnectionError? " + sqlState + ' ' + errorCode + ' ' + sqlX.getClass().getName(), stale);
+            }
         }
 
         if (isTraceOn && tc.isEntryEnabled())

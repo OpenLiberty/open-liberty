@@ -51,7 +51,7 @@
     <heritageSettings replaceExceptions="true"/>
     <IdentifyException as="None" sqlState="S1000"/>
     <identifyException as="StaleConnection" errorCode="8008"/>
-    <identifyException as="com.ibm.websphere.ce.cm.StaleStatementException" sqlState="22013"/> <!-- TODO switch to "StaleStatement" once added -->
+    <identifyException as="StaleStatement" sqlState="22013"/>
     <identifyException as="test.jdbc.heritage.driver.helper.HeritageDBDuplicateKeyException" sqlState="2300H"/>
     <identifyException as="test.jdbc.heritage.driver.helper.HeritageDBFeatureUnavailableException" sqlState="0A00H"/>
   </dataSource>

@@ -97,15 +97,17 @@ public class DatabaseHelper {
     private boolean setCursorNameSupported = true;
     
     /**
-     * SQLException error codes that indicate a stale connection.
+     * SQLException SQL State and error codes (and combination of both via SQLStateAndCode)
+     * that indicate a stale connection.
      */
-    final Set<Integer> staleErrorCodes = new HashSet<Integer>();
+    final Set<Object> staleConCodes = new HashSet<Object>();
 
     /**
-     * SQLException SQL States that indicate a stale connection.
+     * SQLException SQL State and error codes (and combination of both via SQLStateAndCode)
+     * that indicate a stale statement.
      */
-    final Set<String> staleSQLStates = new HashSet<String>();
-    
+    final Set<Object> staleStmtCodes = new HashSet<Object>();
+
     /**
      * Indicates if the JDBC driver alters the autocommit value upon XAResource.end.
      */
@@ -133,7 +135,7 @@ public class DatabaseHelper {
             Tr.debug(this, tc, "init", "Default query timeout=" + defaultQueryTimeout);
 
         // X/OPEN standard SQLSTATE mappings
-        Collections.addAll(staleSQLStates,
+        Collections.addAll(staleConCodes,
                            "08001",
                            "08003",
                            "08006",
@@ -141,19 +143,6 @@ public class DatabaseHelper {
                            "40003",
                            "55032",
                            "S1000");
-        
-        customizeStaleStates();
-        
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Stale error codes are:  " + staleErrorCodes);
-            Tr.debug(tc, "Stale SQL states are: " + staleSQLStates);
-        }
-    }
-    
-    /**
-     * Override this method to customize vendor-specific SQL States and SQL Codes that should map to stale
-     */
-    void customizeStaleStates() {
     }
     
     /**
@@ -261,7 +250,7 @@ public class DatabaseHelper {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (setCursorNameSupported) {
             try{        
-                stmt.setCursorName(null);            
+                stmt.setCursorName(null);
             } catch (SQLFeatureNotSupportedException supportX) {
                 setCursorNameSupported = false;
                 if (isTraceOn && tc.isDebugEnabled()) Tr.debug(tc, "Statement.setCursorName() is not supported.", supportX);
@@ -392,78 +381,107 @@ public class DatabaseHelper {
 
         DSConfig config = mcf.dsConfig.get();
 
-        if (isTraceOn && tc.isEntryEnabled())
-            Tr.entry(this, tc, "isConnectionError", ex, config.identifyExceptions);
-
         // Maintain a set in order to check for cycles
         Set<Throwable> chain = new HashSet<Throwable>();
-        
-        boolean stale = false;
-        for (Throwable t = ex; t != null && !stale && chain.add(t); t = t.getCause()) {
-            SQLException sqlX = t instanceof SQLException ? (SQLException) t : null;
-            if (isTraceOn && tc.isDebugEnabled())
-                Tr.debug(this, tc, "checking " + t,
-                         sqlX == null ? null : sqlX.getSQLState(),
-                         sqlX == null ? null : sqlX.getErrorCode());
 
-            if (sqlX != null) {
-                // first check user-defined mappings
+        boolean stale = false;
+        for (Throwable t = ex; !stale && t != null && chain.add(t); t = t.getCause())
+            if (t instanceof SQLException) {
+                SQLException sqlX = (SQLException) t;
                 String sqlState = sqlX.getSQLState();
-                String target = sqlState == null ? null : config.identifyExceptions.get(new SQLStateAndCode(sqlState, sqlX.getErrorCode()));
+                int errorCode = sqlX.getErrorCode();
+                SQLStateAndCode combo = sqlState == null ? null : new SQLStateAndCode(sqlState, errorCode);
+
+                // First look for identifyException overrides
+                String target = combo == null ? null : config.identifyExceptions.get(combo);
                 if (target == null) {
-                    target = config.identifyExceptions.get(sqlX.getErrorCode());
+                    target = config.identifyExceptions.get(errorCode);
                     if (target == null)
                         target = config.identifyExceptions.get(sqlState);
                 }
                 if (target == null) {
-                    // No user-defined mappings, use default handling
-                    stale |= sqlX instanceof SQLRecoverableException ||
-                             sqlX instanceof SQLNonTransientConnectionException ||
-                             sqlX instanceof SQLTransientConnectionException && failoverOccurred(sqlX) ||
-                             staleErrorCodes.contains(sqlX.getErrorCode()) ||
-                             staleSQLStates.contains(sqlState);
+                    // No overrides, use built-in handling
+                    stale = sqlX instanceof SQLRecoverableException ||
+                                    sqlX instanceof SQLNonTransientConnectionException ||
+                                    sqlX instanceof SQLTransientConnectionException && failoverOccurred(sqlX) ||
+                                    combo != null && staleConCodes.contains(combo) ||
+                                    staleConCodes.contains(errorCode) ||
+                                    staleConCodes.contains(sqlState);
                 } else {
-                    stale |= isStaleConnection(target);
+                    // Override was found, need to interpret it
+                    stale = IdentifyExceptionAs.StaleConnection.name().equals(target);
+                    if (!stale && target.contains(".")) {
+                        // legacy behavior of identification by class name
+                        try {
+                            Class<?> c = WSManagedConnectionFactoryImpl.priv.loadClass(mcf.jdbcDriverLoader, target);
+                            for (; !stale && c != null; c = c.getSuperclass())
+                                stale = c.getClass().getName().equals(IdentifyExceptionAs.StaleConnection.legacyClassName);
+                        } catch (ClassNotFoundException cnfx) {
+                            Tr.error(tc, "8066E_IDENTIFY_EXCEPTION_INVALID_TARGET", target, Arrays.toString(IdentifyExceptionAs.values()));
+                        }
+                    }
                 }
+                if (isTraceOn && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "isConnectionError? " + sqlState + ' ' + errorCode + ' ' + sqlX.getClass().getName(), stale);
+            } else {
+                if (isTraceOn && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "isConnectionError? " + t.getClass().getName(), stale);
             }
-        }
-        
-        if (isTraceOn && tc.isEntryEnabled())
-            Tr.exit(this, tc, "isConnectionError", stale);
-
         return stale;
-    }
-
-    /**
-     * Determines if the specified <code>identifyException as=...</code> target identifies a stale connection.
-     *
-     * @param target value to check.
-     * @return true if a stale connection, otherwise false.
-     */
-    private boolean isStaleConnection(String target) {
-        if (IdentifyExceptionAs.StaleConnection.name().equals(target)) {
-            return true;
-        } else if (target.contains(".")) {
-            // legacy behavior of identification by class name
-            Class<?> c;
-            try {
-                c = WSManagedConnectionFactoryImpl.priv.loadClass(mcf.jdbcDriverLoader, target);
-            } catch (ClassNotFoundException x) {
-                Tr.error(tc, "8066E_IDENTIFY_EXCEPTION_INVALID_TARGET", target, Arrays.toString(IdentifyExceptionAs.values()));
-                return false;
-            }
-            for (; c != null; c = c.getSuperclass())
-                if (c.getClass().getName().equals("com.ibm.websphere.ce.cm.StaleConnectionException"))
-                    return true;
-        }
-        return false;
     }
 
     /**
      * @return true if the exception or a cause exception in the chain is known to indicate a stale statement. Otherwise false.
      */
-    public boolean isStaleStatement(SQLException x) {
-        return false;
+    public final boolean isStaleStatement(SQLException x) {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+
+        DSConfig config = mcf.dsConfig.get();
+
+        // check for cycles
+        Set<Throwable> chain = new HashSet<Throwable>();
+
+        boolean stale = false;
+        for (Throwable t = x; !stale && t != null && chain.add(t); t = t.getCause())
+            if (t instanceof SQLException) {
+                SQLException sqlX = (SQLException) t;
+                String sqlState = sqlX.getSQLState();
+                int errorCode = sqlX.getErrorCode();
+                SQLStateAndCode combo = sqlState == null ? null : new SQLStateAndCode(sqlState, errorCode);
+
+                // First look for identifyException overrides
+                String target = combo == null ? null : config.identifyExceptions.get(combo);
+                if (target == null) {
+                    target = config.identifyExceptions.get(errorCode);
+                    if (target == null)
+                        target = config.identifyExceptions.get(sqlState);
+                }
+                if (target == null) {
+                    // No overrides, use built-in handling
+                    stale = combo != null && staleStmtCodes.contains(combo) ||
+                                    staleStmtCodes.contains(errorCode) ||
+                                    staleStmtCodes.contains(sqlState);
+                } else {
+                    // Override was found, need to interpret it
+                    stale = IdentifyExceptionAs.StaleStatement.name().equals(target);
+                    if (!stale && target.contains(".")) {
+                        // legacy behavior of identification by class name
+                        try {
+                            Class<?> c = WSManagedConnectionFactoryImpl.priv.loadClass(mcf.jdbcDriverLoader, target);
+                            for (; !stale && c != null; c = c.getSuperclass())
+                                stale = c.getClass().getName().equals(IdentifyExceptionAs.StaleStatement.legacyClassName);
+                        } catch (ClassNotFoundException cnfx) {
+                            Tr.error(tc, "8066E_IDENTIFY_EXCEPTION_INVALID_TARGET", target, Arrays.toString(IdentifyExceptionAs.values()));
+                        }
+                    }
+                }
+                if (trace && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "isStaleStatement? " + sqlState + ' ' + errorCode + ' ' + sqlX.getClass().getName(), stale);
+            } else {
+                if (trace && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "isStaleStatement? " + t.getClass().getName(), stale);
+            }
+        return stale;
     }
 
     /**
@@ -828,6 +846,13 @@ public class DatabaseHelper {
         Tr.info(tc, "DB_PRODUCT_VERSION", databaseProductVersion); 
         Tr.info(tc, "JDBC_DRIVER_NAME", driverName); 
         Tr.info(tc, "JDBC_DRIVER_VERSION", driverVersion); 
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(tc, "exception identification",
+                     "stale connection: " + staleConCodes,
+                     "stale statement:  " + staleStmtCodes,
+                     "overrides: " + mcf.dsConfig.get().identifyExceptions
+                     );
 
         try {
             if (mData.supportsResultSetHoldability(ResultSet.HOLD_CURSORS_OVER_COMMIT) &&

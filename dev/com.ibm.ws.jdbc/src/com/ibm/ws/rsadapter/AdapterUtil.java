@@ -1188,7 +1188,7 @@ public class AdapterUtil {
                 mapsToStaleConnection = iHelper.isConnectionError(sqlX);
             } else {
                 mappedX = mcf.dataStoreHelper.mapException(sqlX);
-                mapsToStaleConnection = isLegacyException(mappedX, "com.ibm.websphere.ce.cm.StaleConnectionException");
+                mapsToStaleConnection = isLegacyException(mappedX, IdentifyExceptionAs.StaleConnection.legacyClassName);
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "mapped to " + mappedX.getClass().getName());
                 // Legacy code does not replace BatchUpdateException
@@ -1201,21 +1201,21 @@ public class AdapterUtil {
 
             // Check for stale statement
 
-            if (isLegacyException(mappedX, "com.ibm.websphere.ce.cm.StaleStatementException"))
+            if (mcf.dataStoreHelper == null)
+                isStaleStatement = iHelper.isStaleStatement(sqlX);
+            else if (isLegacyException(mappedX, IdentifyExceptionAs.StaleStatement.legacyClassName))
                 try {
                     isStaleStatement = true;
                     SQLException m = mappedX;
                     mappedX = AccessController.doPrivileged((PrivilegedExceptionAction<SQLException>) () -> {
                         @SuppressWarnings("unchecked")
                         Class<? extends SQLException> StaleConnectionException = (Class<? extends SQLException>)
-                            m.getClass().getClassLoader().loadClass("com.ibm.websphere.ce.cm.StaleConnectionException");
+                            m.getClass().getClassLoader().loadClass(IdentifyExceptionAs.StaleConnection.legacyClassName);
                         return StaleConnectionException.getConstructor(SQLException.class).newInstance(m.getNextException());
                     });
                 } catch (PrivilegedActionException privX) {
                     FFDCFilter.processException(privX, AdapterUtil.class.getName(), "1210");
                 }
-            else
-                isStaleStatement = iHelper.isStaleStatement(sqlX);
 
             if (isStaleStatement) {
                 if (handle == null) {

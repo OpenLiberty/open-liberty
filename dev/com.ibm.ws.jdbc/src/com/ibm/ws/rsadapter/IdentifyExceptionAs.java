@@ -15,10 +15,11 @@ package com.ibm.ws.rsadapter;
  * Values for <code>identifyException as=...</code>.
  */
 public enum IdentifyExceptionAs {
+    // TODO AuthorizationError(null),
     None("java.lang.Void"),
-    StaleConnection("com.ibm.websphere.ce.cm.StaleConnectionException");
-    // TODO StaleStatement("com.ibm.websphere.ce.cm.StaleStatementException"),
-    // TODO Unsupported(null)
+    StaleConnection("com.ibm.websphere.ce.cm.StaleConnectionException"),
+    StaleStatement("com.ibm.websphere.ce.cm.StaleStatementException");
+    // TODO Unsupported(null);
 
     public final String legacyClassName;
 
