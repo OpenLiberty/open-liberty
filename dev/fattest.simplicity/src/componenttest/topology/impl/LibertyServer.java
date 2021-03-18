@@ -2637,7 +2637,7 @@ public class LibertyServer implements LogMonitorClient {
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy-HH-mm-ss");
         Date d = new Date(System.currentTimeMillis());
 
-        String runLevel = RepeatTestFilter.getMostRecentRepeatAction();
+        String runLevel = RepeatTestFilter.getRepeatActionsAsString();
 
         String logDirectoryName = "";
         if (runLevel == null || runLevel.isEmpty()) {
