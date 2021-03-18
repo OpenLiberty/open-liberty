@@ -7,6 +7,7 @@
 		ws-security.callback-handler="com.ibm.ws.wssecurity.example.cbh.CommonPasswordCallback"
 		ws-security.cache.config.file="${server.config.dir}/cxf-ehcache.xml"
 	>
+	 
 		<signatureProperties
 			org.apache.ws.security.crypto.merlin.keystore.type="jks"
 			org.apache.ws.security.crypto.merlin.keystore.password="LibertyX509Server"

@@ -13,6 +13,8 @@ package com.ibm.ws.wssecurity.fat.cxf.samltoken2.TwoServerTests;
 
 import java.util.ArrayList;
 import java.util.List;
+//3/2021
+import java.util.Set;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -28,6 +30,11 @@ import com.ibm.ws.security.saml20.fat.commonTest.SAMLMessageConstants;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLTestSettings;
 import com.ibm.ws.wssecurity.fat.cxf.samltoken2.common.CxfSAMLCallerTests;
 
+//3/2021
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
+import componenttest.annotation.SkipForRepeat;
+
+import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -138,8 +145,20 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
         testSettings.setSpTargetApp(testSAMLServer.getHttpString() + "/samlcallerclient/CxfSamlCallerSvcClient");
         testSettings.setSamlTokenValidationData(testSettings.getIdpUserName(), testSettings.getSamlTokenValidationData().getIssuer(), testSettings.getSamlTokenValidationData().getInResponseTo(), testSettings.getSamlTokenValidationData().getMessageID(), testSettings.getSamlTokenValidationData().getEncryptionKeyUser(), testSettings.getSamlTokenValidationData().getRecipient(), SAMLConstants.AES256);
 
-        testSAMLServer.addIgnoredServerExceptions(SAMLMessageConstants.CWWKS5207W_SAML_CONFIG_IGNORE_ATTRIBUTES, SAMLMessageConstants.CWWKG0101W_CONFIG_NOT_VISIBLE_TO_OTHER_BUNDLES);
-        testSAMLServer2.addIgnoredServerExceptions(SAMLMessageConstants.CWWKS5207W_SAML_CONFIG_IGNORE_ATTRIBUTES, SAMLMessageConstants.CWWKS5207W_SAML_CONFIG_IGNORE_ATTRIBUTES, SAMLMessageConstants.CWWKS3107W_GROUP_USER_MISMATCH, SAMLMessageConstants.CWWKW0232E_CANNOT_CREATE_SUBJECT_FOR_USER, SAMLMessageConstants.CWWKW0210E_CANNOT_CREATE_SUBJECT, SAMLMessageConstants.CWWKW0228E_SAML_ASSERTION_MISSING, SAMLMessageConstants.CWWKG0101W_CONFIG_NOT_VISIBLE_TO_OTHER_BUNDLES);
+        //Orig: 3/2021 In EE7/EE8 dual test scenario, without adding the ignoring of CWWKF0001E, EE7 test resulted to additional error count
+        //testSAMLServer.addIgnoredServerExceptions(SAMLMessageConstants.CWWKS5207W_SAML_CONFIG_IGNORE_ATTRIBUTES, SAMLMessageConstants.CWWKG0101W_CONFIG_NOT_VISIBLE_TO_OTHER_BUNDLES);
+        //testSAMLServer2.addIgnoredServerExceptions(SAMLMessageConstants.CWWKS5207W_SAML_CONFIG_IGNORE_ATTRIBUTES, SAMLMessageConstants.CWWKS5207W_SAML_CONFIG_IGNORE_ATTRIBUTES, SAMLMessageConstants.CWWKS3107W_GROUP_USER_MISMATCH, SAMLMessageConstants.CWWKW0232E_CANNOT_CREATE_SUBJECT_FOR_USER, SAMLMessageConstants.CWWKW0210E_CANNOT_CREATE_SUBJECT, SAMLMessageConstants.CWWKW0228E_SAML_ASSERTION_MISSING, SAMLMessageConstants.CWWKG0101W_CONFIG_NOT_VISIBLE_TO_OTHER_BUNDLES);
+        testSAMLServer.addIgnoredServerExceptions(SAMLMessageConstants.CWWKS5207W_SAML_CONFIG_IGNORE_ATTRIBUTES, SAMLMessageConstants.CWWKG0101W_CONFIG_NOT_VISIBLE_TO_OTHER_BUNDLES, SAMLMessageConstants.CWWKF0001E_FEATURE_MISSING);
+        testSAMLServer2.addIgnoredServerExceptions(SAMLMessageConstants.CWWKS5207W_SAML_CONFIG_IGNORE_ATTRIBUTES, SAMLMessageConstants.CWWKS5207W_SAML_CONFIG_IGNORE_ATTRIBUTES, SAMLMessageConstants.CWWKS3107W_GROUP_USER_MISMATCH, SAMLMessageConstants.CWWKW0232E_CANNOT_CREATE_SUBJECT_FOR_USER, SAMLMessageConstants.CWWKW0210E_CANNOT_CREATE_SUBJECT, SAMLMessageConstants.CWWKW0228E_SAML_ASSERTION_MISSING, SAMLMessageConstants.CWWKG0101W_CONFIG_NOT_VISIBLE_TO_OTHER_BUNDLES, SAMLMessageConstants.CWWKF0001E_FEATURE_MISSING);
+        
+        //3/2021 update the config for EE8 test
+        ServerConfiguration config = testSAMLServer.getServer().getServerConfiguration();
+        Set<String> features = config.getFeatureManager().getFeatures();
+        if (features.contains("usr:wsseccbh-2.0")) {
+        	testSAMLServer2.getServer().copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
+        	testSAMLServer2.getServer().copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-2.0.mf");
+        } //End 3/2021
+        
     }
 
     /**
@@ -239,7 +258,38 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
         // If set to true, the client will accept connections to any host, regardless of whether they have valid certificates or not.
         webClient.getOptions().setUseInsecureSSL(true); 
 
+        //Orig:
         String partToCheck = ".*pass:false::FatSamlC02aService.*SOAPFaultException.*security token could not be authenticated or authorized.*";
+        //3/2021
+        //String partToCheck = ".*pass:false::FatSamlC02aService.*SOAPFaultException.*An error happened processing a SAML Token: \"invalid user ID\"*";//@AV999 TODO set the message depending on the runtime
+        
+        String testMode = "negative";
+
+        SAMLTestSettings updatedTestSettings = setCallerCXFSettings(partToCheck, testMode);
+
+        List<validationData> expectations = helpers.setErrorSAMLCXFExpectationsMatches(null, flowType, updatedTestSettings, null);
+        expectations = vData.addExpectation(expectations, SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE, SAMLConstants.SAML_MESSAGES_LOG, SAMLConstants.STRING_CONTAINS, "Did not receive the proper failure.", null, "SOAPFaultException");
+
+        genericSAML(_testName, webClient, updatedTestSettings, standardFlow, expectations);
+
+    }
+    
+    public void notfoundExceptionTestEE8(String serverCfgFile) throws Exception {
+
+        testSAMLServer2.reconfigServer(buildSPServerName(serverCfgFile), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
+
+        // Create the conversation object which will maintain state for us
+        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        
+        // Added to fix hostname mismatch to Common Name on the server certificate. This change ignore this check
+        // If set to true, the client will accept connections to any host, regardless of whether they have valid certificates or not.
+        webClient.getOptions().setUseInsecureSSL(true); 
+
+        //Orig:
+        //String partToCheck = ".*pass:false::FatSamlC02aService.*SOAPFaultException.*security token could not be authenticated or authorized.*";
+        //3/2021
+        String partToCheck = ".*pass:false::FatSamlC02aService.*SOAPFaultException.*An error happened processing a SAML Token: \"invalid user ID\"*";//@AV999 TODO set the message depending on the runtime
+        
         String testMode = "negative";
 
         SAMLTestSettings updatedTestSettings = setCallerCXFSettings(partToCheck, testMode);
@@ -308,12 +358,25 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * User: test_userIdentifier
      * Group: An IPD group
      */
-    //1/26/2021 comment out
-    //@Mode(TestMode.LITE)
+    
+    //3/2021 to run with EE7
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @Test
-    public void testCxfCaller_mapToUserRegistry_Group_inRegistry_identifiersGood() throws Exception {
+    //Orig:
+    //public void testCxfCaller_mapToUserRegistry_Group_inRegistry_identifiersGood() throws Exception {
+    public void testCxfCaller_mapToUserRegistry_Group_inRegistry_identifiersGoodEE7Only() throws Exception {
 
         generalPositiveTest("server_2_caller_mapToUserRegistry_Group_inRegistry_identifiersGood.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultIDPGroups);
+
+    }
+    
+    //3/2021 to run with EE8
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @AllowedFFDC(value = { "java.util.MissingResourceException", "java.lang.ClassNotFoundException" }) //@AV999
+    @Test
+    public void testCxfCaller_mapToUserRegistry_Group_inRegistry_identifiersGoodEE8Only() throws Exception {
+
+        generalPositiveTest("server_2_caller_mapToUserRegistry_Group_inRegistry_identifiersGood_ee8.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultIDPGroups);
 
     }
 
@@ -331,10 +394,25 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * User: test_userIdentifier
      * Group: Default IDP Group
      */
+    
+    //3/2021 to run with EE7
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @Test
+    //Orig:
+    //public void testCxfCaller_mapToUserRegistry_Group_notInRegistry_identifiersGood() throws Exception {
     public void testCxfCaller_mapToUserRegistry_Group_notInRegistry_identifiersGood() throws Exception {
+        
+    	generalPositiveTest("server_2_caller_mapToUserRegistry_Group_notInRegistry_identifiersGood.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultIDPIdentifierGroup);
 
-        generalPositiveTest("server_2_caller_mapToUserRegistry_Group_notInRegistry_identifiersGood.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultIDPIdentifierGroup);
+    }
+    
+    //3/2021 to run with EE8
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @AllowedFFDC(value = { "java.util.MissingResourceException", "java.lang.ClassNotFoundException"}) //@AV999
+    @Test
+    public void testCxfCaller_mapToUserRegistry_Group_notInRegistry_identifiersGoodEE8Only() throws Exception {
+
+        generalPositiveTest("server_2_caller_mapToUserRegistry_Group_notInRegistry_identifiersGood_ee8.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultIDPIdentifierGroup);
 
     }
 
@@ -352,10 +430,25 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * User: test_userIdentifier
      * Group: Default IDP Group
      */
+    
+    //3/2021 to run with EE7
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @Test
-    public void testCxfCaller_mapToUserRegistry_Group_groupNotInRegistry_identifiersGood() throws Exception {
+    //Orig:
+    //public void testCxfCaller_mapToUserRegistry_Group_groupNotInRegistry_identifiersGood() throws Exception {
+    public void testCxfCaller_mapToUserRegistry_Group_groupNotInRegistry_identifiersGoodEE7Only() throws Exception {
+        
+    	generalPositiveTest("server_2_caller_mapToUserRegistry_Group_groupNotInRegistry_identifiersGood.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultNullGroup);
 
-        generalPositiveTest("server_2_caller_mapToUserRegistry_Group_groupNotInRegistry_identifiersGood.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultNullGroup);
+    }
+    
+    //3/2021 to run with EE8
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @AllowedFFDC(value = { "java.util.MissingResourceException" }) //@AV999
+    @Test
+    public void testCxfCaller_mapToUserRegistry_Group_groupNotInRegistry_identifiersGoodEE8Only() throws Exception {
+
+        generalPositiveTest("server_2_caller_mapToUserRegistry_Group_groupNotInRegistry_identifiersGood_ee8.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultNullGroup);
 
     }
 
@@ -373,10 +466,25 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * User: test_userIdentifier
      * Group: Default IDP Group
      */
+    
+    //3/2021 to run with EE7
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @Test
-    public void testCxfCaller_mapToUserRegistry_Group_group2InRegistry_identifiersGood() throws Exception {
+    //Orig:
+    //public void testCxfCaller_mapToUserRegistry_Group_group2InRegistry_identifiersGood() throws Exception {
+    public void testCxfCaller_mapToUserRegistry_Group_group2InRegistry_identifiersGoodEE7Only() throws Exception {
+        
+    	generalPositiveTest("server_2_caller_mapToUserRegistry_Group_group2InRegistry_identifiersGood.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultNullGroup);
 
-        generalPositiveTest("server_2_caller_mapToUserRegistry_Group_group2InRegistry_identifiersGood.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultNullGroup);
+    }
+    
+    //3/2021 to run with EE8
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @AllowedFFDC(value = { "java.util.MissingResourceException" }) //@AV999
+    @Test
+    public void testCxfCaller_mapToUserRegistry_Group_group2InRegistry_identifiersGoodEE8Only() throws Exception {
+
+        generalPositiveTest("server_2_caller_mapToUserRegistry_Group_group2InRegistry_identifiersGood_ee8.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultNullGroup);
 
     }
 
@@ -395,10 +503,24 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * User: testuser
      * Group: null
      */
+    
+    //3/2021 to run with EE7
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @Test
-    public void testCxfCaller_mapToUserRegistry_Group_inRegistry_identifiersOmitted() throws Exception {
-
+    //Orig:
+    //public void testCxfCaller_mapToUserRegistry_Group_inRegistry_identifiersOmitted() throws Exception {
+    public void testCxfCaller_mapToUserRegistry_Group_inRegistry_identifiersOmittedEE7Only() throws Exception {
         generalPositiveTest("server_2_caller_mapToUserRegistry_Group_inRegistry_identifiersOmitted.xml", defaultServerCfgRealm, defaultIDPUser, defaultNullGroup);
+
+    }
+    
+    //3/2021 to run with EE8
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @AllowedFFDC(value = { "java.util.MissingResourceException", "java.lang.ClassNotFoundException" }) //@AV999
+    @Test
+    public void testCxfCaller_mapToUserRegistry_Group_inRegistry_identifiersOmittedEE8Only() throws Exception {
+
+        generalPositiveTest("server_2_caller_mapToUserRegistry_Group_inRegistry_identifiersOmitted_ee8.xml", defaultServerCfgRealm, defaultIDPUser, defaultNullGroup);
 
     }
 
@@ -416,10 +538,25 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * User: testuser
      * Group: null
      */
+    
+    //3/2021 to run with EE7
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @Test
-    public void testCxfCaller_mapToUserRegistry_Group_notInRegistry_identifiersOmitted() throws Exception {
+    //Orig:
+    //public void testCxfCaller_mapToUserRegistry_Group_notInRegistry_identifiersOmitted() throws Exception {
+    public void testCxfCaller_mapToUserRegistry_Group_notInRegistry_identifiersOmittedEE7Only() throws Exception {
+        
+    	generalPositiveTest("server_2_caller_mapToUserRegistry_Group_notInRegistry_identifiersOmitted.xml", defaultServerCfgRealm, defaultIDPUser, defaultNullGroup);
 
-        generalPositiveTest("server_2_caller_mapToUserRegistry_Group_notInRegistry_identifiersOmitted.xml", defaultServerCfgRealm, defaultIDPUser, defaultNullGroup);
+    }
+    
+    //3/2021 to run with EE8
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @AllowedFFDC(value = { "java.util.MissingResourceException" }) //@AV999
+    @Test
+    public void testCxfCaller_mapToUserRegistry_Group_notInRegistry_identifiersOmittedEE8Only() throws Exception {
+
+        generalPositiveTest("server_2_caller_mapToUserRegistry_Group_notInRegistry_identifiersOmitted_ee8.xml", defaultServerCfgRealm, defaultIDPUser, defaultNullGroup);
 
     }
 
@@ -437,10 +574,24 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * User: test_userIdentifier
      * Group: null
      */
+    
+    //3/2021 to run with EE7
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
+    @Test 
+    //Orig:
+    //public void testCxfCaller_mapToUserRegistry_Group_inRegistry_groupIdentifierOmitted() throws Exception {
+    public void testCxfCaller_mapToUserRegistry_Group_inRegistry_groupIdentifierOmittedEE7Only() throws Exception {
+    	
+    	generalPositiveTest("server_2_caller_mapToUserRegistry_Group_inRegistry_groupIdentifierOmitted.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultNullGroup);
 
+    }
+    
+    //3/2021 to run with EE8
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @AllowedFFDC(value = { "java.util.MissingResourceException" }) //@AV999
     @Test
-    public void testCxfCaller_mapToUserRegistry_Group_inRegistry_groupIdentifierOmitted() throws Exception {
-        generalPositiveTest("server_2_caller_mapToUserRegistry_Group_inRegistry_groupIdentifierOmitted.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultNullGroup);
+    public void testCxfCaller_mapToUserRegistry_Group_inRegistry_groupIdentifierOmittedEE8Only() throws Exception {
+        generalPositiveTest("server_2_caller_mapToUserRegistry_Group_inRegistry_groupIdentifierOmitted_ee8.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultNullGroup);
 
     }
 
@@ -458,10 +609,25 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * User: test_userIdentifier
      * Group: null
      */
+    
+    //3/2021 to run with EE7
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @Test
-    public void testCxfCaller_mapToUserRegistry_Group_notInRegistry_groupIdentifierOmitted() throws Exception {
+    //Orig:
+    //public void testCxfCaller_mapToUserRegistry_Group_notInRegistry_groupIdentifierOmitted() throws Exception {
+    public void testCxfCaller_mapToUserRegistry_Group_notInRegistry_groupIdentifierOmittedEE7Only() throws Exception {
+        
+    	generalPositiveTest("server_2_caller_mapToUserRegistry_Group_notInRegistry_groupIdentifierOmitted.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultNullGroup);
 
-        generalPositiveTest("server_2_caller_mapToUserRegistry_Group_notInRegistry_groupIdentifierOmitted.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultNullGroup);
+    }
+    
+    //3/2021 to run with EE8
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @AllowedFFDC(value = { "java.util.MissingResourceException" }) //@AV999
+    @Test
+    public void testCxfCaller_mapToUserRegistry_Group_notInRegistry_groupIdentifierOmittedEE8Only() throws Exception {
+
+        generalPositiveTest("server_2_caller_mapToUserRegistry_Group_notInRegistry_groupIdentifierOmitted_ee8.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultNullGroup);
 
     }
 
@@ -479,10 +645,25 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * User: test_userIdentifier
      * Group: Local server's group
      */
+    
+    //3/2021 to run with EE7
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @Test
-    public void testCxfCaller_mapToUserRegistry_Group_inRegistry_realmIdentifierOmitted() throws Exception {
+    //Orig:
+    //public void testCxfCaller_mapToUserRegistry_Group_inRegistry_realmIdentifierOmitted() throws Exception {
+    public void testCxfCaller_mapToUserRegistry_Group_inRegistry_realmIdentifierOmittedEE7Only() throws Exception {
+       
+    	generalPositiveTest("server_2_caller_mapToUserRegistry_Group_inRegistry_realmIdentifierOmitted.xml", defaultLocalRealm, defaultIDPIdentifierUser, defaultLocalGroups);
 
-        generalPositiveTest("server_2_caller_mapToUserRegistry_Group_inRegistry_realmIdentifierOmitted.xml", defaultLocalRealm, defaultIDPIdentifierUser, defaultLocalGroups);
+    }
+    
+    //3/2021 to run with EE8
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @AllowedFFDC(value = { "java.util.MissingResourceException" }) //@AV999
+    @Test
+    public void testCxfCaller_mapToUserRegistry_Group_inRegistry_realmIdentifierOmittedEE8Only() throws Exception {
+
+        generalPositiveTest("server_2_caller_mapToUserRegistry_Group_inRegistry_realmIdentifierOmitted_ee8.xml", defaultLocalRealm, defaultIDPIdentifierUser, defaultLocalGroups);
 
     }
 
@@ -500,10 +681,25 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * User: test_userIdentifier
      * Group: null
      */
+    
+    //3/2021 to run with EE7
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @Test
-    public void testCxfCaller_mapToUserRegistry_Group_notInRegistry_realmIdentifierOmitted() throws Exception {
+    //Orig:
+    //public void testCxfCaller_mapToUserRegistry_Group_notInRegistry_realmIdentifierOmitted() throws Exception {
+    public void testCxfCaller_mapToUserRegistry_Group_notInRegistry_realmIdentifierOmittedEE7Only() throws Exception {
+        
+    	generalPositiveTest("server_2_caller_mapToUserRegistry_Group_notInRegistry_realmIdentifierOmitted.xml", defaultLocalRealm, defaultIDPIdentifierUser, defaultLocalGroups);
 
-        generalPositiveTest("server_2_caller_mapToUserRegistry_Group_notInRegistry_realmIdentifierOmitted.xml", defaultLocalRealm, defaultIDPIdentifierUser, defaultLocalGroups);
+    }
+    
+    //3/2021 to run with EE8
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @AllowedFFDC(value = { "java.util.MissingResourceException" }) //@AV999
+    @Test
+    public void testCxfCaller_mapToUserRegistry_Group_notInRegistry_realmIdentifierOmittedEE8Only() throws Exception {
+
+        generalPositiveTest("server_2_caller_mapToUserRegistry_Group_notInRegistry_realmIdentifierOmitted_ee8.xml", defaultLocalRealm, defaultIDPIdentifierUser, defaultLocalGroups);
 
     }
 
@@ -521,10 +717,25 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * User: testuser
      * Group: An IPD group
      */
+    
+    //3/2021 to run with EE7
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @Test
-    public void testCxfCaller_mapToUserRegistry_Group_inRegistry_userIdentifierOmitted() throws Exception {
+    //Orig:
+    //public void testCxfCaller_mapToUserRegistry_Group_inRegistry_userIdentifierOmitted() throws Exception {
+    public void testCxfCaller_mapToUserRegistry_Group_inRegistry_userIdentifierOmittedEE7Only() throws Exception {
+        
+    	generalPositiveTest("server_2_caller_mapToUserRegistry_Group_inRegistry_userIdentifierOmitted.xml", defaultIDPIdentifierRealm, defaultIDPUser, defaultIDPGroups);
 
-        generalPositiveTest("server_2_caller_mapToUserRegistry_Group_inRegistry_userIdentifierOmitted.xml", defaultIDPIdentifierRealm, defaultIDPUser, defaultIDPGroups);
+    }
+    
+    //3/2021 to run with EE8
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @AllowedFFDC(value = { "java.util.MissingResourceException" }) //@AV999
+    @Test
+    public void testCxfCaller_mapToUserRegistry_Group_inRegistry_userIdentifierOmittedEE8Only() throws Exception {
+
+        generalPositiveTest("server_2_caller_mapToUserRegistry_Group_inRegistry_userIdentifierOmitted_ee8.xml", defaultIDPIdentifierRealm, defaultIDPUser, defaultIDPGroups);
 
     }
 
@@ -542,10 +753,25 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * User: testuser
      * Group: Default IDP Group
      */
+    
+    //3/2021 to run with EE7
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @Test
-    public void testCxfCaller_mapToUserRegistry_Group_notInRegistry_userIdentifierOmitted() throws Exception {
+    //Orig:
+    //public void testCxfCaller_mapToUserRegistry_Group_notInRegistry_userIdentifierOmitted() throws Exception {
+    public void testCxfCaller_mapToUserRegistry_Group_notInRegistry_userIdentifierOmittedEE7Only() throws Exception {
+        
+    	generalPositiveTest("server_2_caller_mapToUserRegistry_Group_notInRegistry_userIdentifierOmitted.xml", defaultIDPIdentifierRealm, defaultIDPUser, defaultIDPGroups);
 
-        generalPositiveTest("server_2_caller_mapToUserRegistry_Group_notInRegistry_userIdentifierOmitted.xml", defaultIDPIdentifierRealm, defaultIDPUser, defaultIDPGroups);
+    }
+    
+    //3/2021 to run with EE8
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @AllowedFFDC(value = { "java.util.MissingResourceException" }) //@AV999
+    @Test
+    public void testCxfCaller_mapToUserRegistry_Group_notInRegistry_userIdentifierOmittedEE8Only() throws Exception {
+
+        generalPositiveTest("server_2_caller_mapToUserRegistry_Group_notInRegistry_userIdentifierOmitted_ee8.xml", defaultIDPIdentifierRealm, defaultIDPUser, defaultIDPGroups);
 
     }
 
@@ -563,10 +789,25 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * User: test_userIdentifier
      * Group: An IPD group
      */
+    
+    //3/2021 to run with EE7
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @Test
-    public void testCxfCaller_mapToUserRegistry_Group_inRegistry_userUniqueIdentifierOmitted() throws Exception {
+    //Orig:
+    //public void testCxfCaller_mapToUserRegistry_Group_inRegistry_userUniqueIdentifierOmitted() throws Exception {
+    public void testCxfCaller_mapToUserRegistry_Group_inRegistry_userUniqueIdentifierOmittedEE7Only() throws Exception {
+        
+    	generalPositiveTest("server_2_caller_mapToUserRegistry_Group_inRegistry_userUniqueIdentifierOmitted.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultIDPGroups);
 
-        generalPositiveTest("server_2_caller_mapToUserRegistry_Group_inRegistry_userUniqueIdentifierOmitted.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultIDPGroups);
+    }
+    
+    //3/2021 to run with EE8
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @AllowedFFDC(value = { "java.util.MissingResourceException" }) //@AV999
+    @Test
+    public void testCxfCaller_mapToUserRegistry_Group_inRegistry_userUniqueIdentifierOmittedEE8Only() throws Exception {
+
+        generalPositiveTest("server_2_caller_mapToUserRegistry_Group_inRegistry_userUniqueIdentifierOmitted_ee8.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultIDPGroups);
 
     }
 
@@ -584,10 +825,25 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * User: test_userIdentifier
      * Group: Default IDP Group
      */
+    
+    //3/2021 to run with EE7
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @Test
-    public void testCxfCaller_mapToUserRegistry_Group_notInRegistry_userUniqueIdentifierOmitted() throws Exception {
+    //Orig:
+    //public void testCxfCaller_mapToUserRegistry_Group_notInRegistry_userUniqueIdentifierOmitted() throws Exception {
+    public void testCxfCaller_mapToUserRegistry_Group_notInRegistry_userUniqueIdentifierOmittedEE7Only() throws Exception {
+        
+    	generalPositiveTest("server_2_caller_mapToUserRegistry_Group_notInRegistry_userUniqueIdentifierOmitted.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultIDPGroups);
 
-        generalPositiveTest("server_2_caller_mapToUserRegistry_Group_notInRegistry_userUniqueIdentifierOmitted.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultIDPGroups);
+    }
+    
+    //3/2021 to run with EE8
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @AllowedFFDC(value = { "java.util.MissingResourceException" }) //@AV999
+    @Test
+    public void testCxfCaller_mapToUserRegistry_Group_notInRegistry_userUniqueIdentifierOmittedEE8Only() throws Exception {
+
+        generalPositiveTest("server_2_caller_mapToUserRegistry_Group_notInRegistry_userUniqueIdentifierOmitted_ee8.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultIDPGroups);
 
     }
 
@@ -606,13 +862,28 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * User: test_userIdentifier
      * Group: Local Server groups
      */
+    
+    //3/2021 to run with EE7
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @Test
-    public void testCxfCaller_mapToUserRegistry_Group_inRegistry_groupIdentifierBad() throws Exception {
-
-        generalPositiveTest("server_2_caller_mapToUserRegistry_Group_inRegistry_groupIdentifierBad.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultNullGroup);
+    //Orig:
+    //public void testCxfCaller_mapToUserRegistry_Group_inRegistry_groupIdentifierBad() throws Exception {
+    public void testCxfCaller_mapToUserRegistry_Group_inRegistry_groupIdentifierBadEE7Only() throws Exception {
+        
+    	generalPositiveTest("server_2_caller_mapToUserRegistry_Group_inRegistry_groupIdentifierBad.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultNullGroup);
 
     }
 
+    //3/2021 to run with EE8
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @AllowedFFDC(value = { "java.util.MissingResourceException" }) //@AV999
+    @Test
+    public void testCxfCaller_mapToUserRegistry_Group_inRegistry_groupIdentifierBadEE8Only() throws Exception {
+
+        generalPositiveTest("server_2_caller_mapToUserRegistry_Group_inRegistry_groupIdentifierBad_ee8.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultNullGroup);
+
+    }
+    
     /*
      * config settings:
      * mapToUserRegistry = Group
@@ -627,12 +898,26 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * User: test_userIdentifier
      * Group: null
      */
+    
+    //3/2021 to run with EE7
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @Test
-    public void testCxfCaller_mapToUserRegistry_Group_notInRegistry_groupIdentifierBad() throws Exception {
-
+    //Orig:
+    //public void testCxfCaller_mapToUserRegistry_Group_notInRegistry_groupIdentifierBad() throws Exception {
+    public void testCxfCaller_mapToUserRegistry_Group_notInRegistry_groupIdentifierBadEE7Only() throws Exception {
         generalPositiveTest("server_2_caller_mapToUserRegistry_Group_notInRegistry_groupIdentifierBad.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultNullGroup);
 
     }
+    
+    //3/2021 to run with EE8
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @AllowedFFDC(value = { "java.util.MissingResourceException" }) //@AV999
+    @Test
+    public void testCxfCaller_mapToUserRegistry_Group_notInRegistry_groupIdentifierBadEE8Only() throws Exception {
+
+        generalPositiveTest("server_2_caller_mapToUserRegistry_Group_notInRegistry_groupIdentifierBad_ee8.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultNullGroup);
+
+    }
 
     /*
      * config settings:
@@ -646,11 +931,27 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * Expected/checked values:
      * Bad Attribute exception - looking for realmIdentifier in the message
      */
+    
+    //3/2021 to run with EE7
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" })
     @Test
-    public void testCxfCaller_mapToUserRegistry_Group_inRegistry_realmIdentifierBad() throws Exception {
+    //Orig:
+    //public void testCxfCaller_mapToUserRegistry_Group_inRegistry_realmIdentifierBad() throws Exception {
+    public void testCxfCaller_mapToUserRegistry_Group_inRegistry_realmIdentifierBadEE7Only() throws Exception {
+        
+    	badAttrValueTest("server_2_caller_mapToUserRegistry_Group_inRegistry_realmIdentifierBad.xml", realmIdentifierString);
 
-        badAttrValueTest("server_2_caller_mapToUserRegistry_Group_inRegistry_realmIdentifierBad.xml", realmIdentifierString);
+    }
+    
+    //3/2021 to run with EE8
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @AllowedFFDC(value = { "java.util.MissingResourceException" }) //@AV999
+    @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" })
+    @Test
+    public void testCxfCaller_mapToUserRegistry_Group_inRegistry_realmIdentifierBadEE8Only() throws Exception {
+
+        badAttrValueTest("server_2_caller_mapToUserRegistry_Group_inRegistry_realmIdentifierBad_ee8.xml", realmIdentifierString);
 
     }
 
@@ -666,13 +967,30 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * Expected/checked values:
      * Bad Attribute exception - looking for realmIdentifier in the message
      */
+    
+    //3/2021 to run with EE7
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" })
     @Test
-    public void testCxfCaller_mapToUserRegistry_Group_notInRegistry_realmIdentifierBad() throws Exception {
-
-        badAttrValueTest("server_2_caller_mapToUserRegistry_Group_notInRegistry_realmIdentifierBad.xml", realmIdentifierString);
+    //Orig:
+    //public void testCxfCaller_mapToUserRegistry_Group_notInRegistry_realmIdentifierBad() throws Exception {
+    public void testCxfCaller_mapToUserRegistry_Group_notInRegistry_realmIdentifierBadEE7Only() throws Exception {
+        
+    	badAttrValueTest("server_2_caller_mapToUserRegistry_Group_notInRegistry_realmIdentifierBad.xml", realmIdentifierString);
 
     }
+    
+    //3/2021 to run with EE8
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @AllowedFFDC(value = { "java.util.MissingResourceException" }) //@AV999
+    @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" })
+    @Test
+    public void testCxfCaller_mapToUserRegistry_Group_notInRegistry_realmIdentifierBadEE8Only() throws Exception {
+
+        badAttrValueTest("server_2_caller_mapToUserRegistry_Group_notInRegistry_realmIdentifierBad_ee8.xml", realmIdentifierString);
+
+    }
+
 
     /*
      * config settings:
@@ -686,11 +1004,26 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * Expected/checked values:
      * Bad Attribute exception - looking for userIdentifier in the message
      */
+    //3/2021 to run with EE7
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" })
     @Test
-    public void testCxfCaller_mapToUserRegistry_Group_inRegistry_userIdentifierBad() throws Exception {
+    //Orig:
+    //public void testCxfCaller_mapToUserRegistry_Group_inRegistry_userIdentifierBad() throws Exception {
+    public void testCxfCaller_mapToUserRegistry_Group_inRegistry_userIdentifierBadEE7Only() throws Exception {
+        
+    	badAttrValueTest("server_2_caller_mapToUserRegistry_Group_inRegistry_userIdentifierBad.xml", userIdentifierString);
 
-        badAttrValueTest("server_2_caller_mapToUserRegistry_Group_inRegistry_userIdentifierBad.xml", userIdentifierString);
+    }
+    
+    //3/2021 to run with EE8
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @AllowedFFDC(value = { "java.util.MissingResourceException" }) //@AV999
+    @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" })
+    @Test
+    public void testCxfCaller_mapToUserRegistry_Group_inRegistry_userIdentifierBadEE8Only() throws Exception {
+
+        badAttrValueTest("server_2_caller_mapToUserRegistry_Group_inRegistry_userIdentifierBad_ee8.xml", userIdentifierString);
 
     }
 
@@ -706,11 +1039,28 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * Expected/checked values:
      * Bad Attribute exception - looking for userIdentifier in the message
      */
+    
+    //3/2021 to run with EE7
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" })
     @Test
-    public void testCxfCaller_mapToUserRegistry_Group_notInRegistry_userIdentifierBad() throws Exception {
+    //Orig:
+    //public void testCxfCaller_mapToUserRegistry_Group_notInRegistry_userIdentifierBad() throws Exception {
+    public void testCxfCaller_mapToUserRegistry_Group_notInRegistry_userIdentifierBadEE7Only() throws Exception {
+       
+    	badAttrValueTest("server_2_caller_mapToUserRegistry_Group_notInRegistry_userIdentifierBad.xml", userIdentifierString);
 
-        badAttrValueTest("server_2_caller_mapToUserRegistry_Group_notInRegistry_userIdentifierBad.xml", userIdentifierString);
+    }
+
+    //3/2021 to run with EE8
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    //@AllowedFFDC(value = { "java.util.MissingResourceException" }) //@AV999
+    @AllowedFFDC(value = { "java.util.MissingResourceException", "java.lang.ClassNotFoundException" })
+    @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" })
+    @Test
+    public void testCxfCaller_mapToUserRegistry_Group_notInRegistry_userIdentifierBadEE8Only() throws Exception {
+
+        badAttrValueTest("server_2_caller_mapToUserRegistry_Group_notInRegistry_userIdentifierBad_ee8.xml", userIdentifierString);
 
     }
 
@@ -726,14 +1076,30 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * Expected/checked values:
      * Bad Attribute exception - looking for userUniqueIdentifier in the message
      */
+    
+    //3/2021 to run with EE7
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" })
     @Test
-    public void testCxfCaller_mapToUserRegistry_Group_inRegistry_userUniqueIdentifierBad() throws Exception {
-
-        badAttrValueTest("server_2_caller_mapToUserRegistry_Group_inRegistry_userUniqueIdentifierBad.xml", userUniqueIdentifierString);
+    //Orig:
+    //public void testCxfCaller_mapToUserRegistry_Group_inRegistry_userUniqueIdentifierBad() throws Exception {
+    public void testCxfCaller_mapToUserRegistry_Group_inRegistry_userUniqueIdentifierBadEE7Only() throws Exception {
+        
+    	badAttrValueTest("server_2_caller_mapToUserRegistry_Group_inRegistry_userUniqueIdentifierBad.xml", userUniqueIdentifierString);
 
     }
 
+    //3/2021 to run with EE8
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @AllowedFFDC(value = { "java.util.MissingResourceException" }) //@AV999
+    @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" })
+    @Test
+    public void testCxfCaller_mapToUserRegistry_Group_inRegistry_userUniqueIdentifierBadEE8Only() throws Exception {
+
+        badAttrValueTest("server_2_caller_mapToUserRegistry_Group_inRegistry_userUniqueIdentifierBad_ee8.xml", userUniqueIdentifierString);
+
+    }
+    
     /*
      * config settings:
      * mapToUserRegistry = Group
@@ -746,11 +1112,27 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * Expected/checked values:
      * Bad Attribute exception - looking for userUniqueIdentifier in the message
      */
+    
+    //3/2021 to run with EE7
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" })
     @Test
-    public void testCxfCaller_mapToUserRegistry_Group_notInRegistry_userUniqueIdentifierBad() throws Exception {
+    //Orig:
+    //public void testCxfCaller_mapToUserRegistry_Group_notInRegistry_userUniqueIdentifierBad() throws Exception {
+    public void testCxfCaller_mapToUserRegistry_Group_notInRegistry_userUniqueIdentifierBadEE7Only() throws Exception {
+        
+    	badAttrValueTest("server_2_caller_mapToUserRegistry_Group_notInRegistry_userUniqueIdentifierBad.xml", userUniqueIdentifierString);
 
-        badAttrValueTest("server_2_caller_mapToUserRegistry_Group_notInRegistry_userUniqueIdentifierBad.xml", userUniqueIdentifierString);
+    }
+    
+    //3/2021 to run with EE8
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @AllowedFFDC(value = { "java.util.MissingResourceException" }) //@AV999
+    @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" })
+    @Test
+    public void testCxfCaller_mapToUserRegistry_Group_notInRegistry_userUniqueIdentifierBadEE8Only() throws Exception {
+
+        badAttrValueTest("server_2_caller_mapToUserRegistry_Group_notInRegistry_userUniqueIdentifierBad_ee8.xml", userUniqueIdentifierString);
 
     }
 
@@ -771,12 +1153,24 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * Group: IPD Server groups
      */
     
-    //1/26/2021 comment out
-    //@Mode(TestMode.LITE)
+    //3/2021 to run with EE7
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @Test
-    public void testCxfCaller_mapToUserRegistry_No_inRegistry_identifiersGood() throws Exception {
+    //Orig:
+    //public void testCxfCaller_mapToUserRegistry_No_inRegistry_identifiersGood() throws Exception {
+    public void testCxfCaller_mapToUserRegistry_No_inRegistry_identifiersGoodEe7Only() throws Exception {
+        
+    	generalPositiveTest("server_2_caller_mapToUserRegistry_No_inRegistry_identifiersGood.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultIDPGroups);
 
-        generalPositiveTest("server_2_caller_mapToUserRegistry_No_inRegistry_identifiersGood.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultIDPGroups);
+    }
+    
+    //3/2021 to run with EE8
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @AllowedFFDC(value = { "java.util.MissingResourceException" }) //@AV999
+    @Test
+    public void testCxfCaller_mapToUserRegistry_No_inRegistry_identifiersGoodEE8Only() throws Exception {
+
+        generalPositiveTest("server_2_caller_mapToUserRegistry_No_inRegistry_identifiersGood_ee8.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultIDPGroups);
 
     }
 
@@ -794,10 +1188,25 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * User: test_userIdentifier
      * Group: Default IDP Groups
      */
+    
+    //3/2021 to run with EE7
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @Test
-    public void testCxfCaller_mapToUserRegistry_No_notInRegistry_identifiersGood() throws Exception {
+    //Orig:
+    //public void testCxfCaller_mapToUserRegistry_No_notInRegistry_identifiersGood() throws Exception {
+    public void testCxfCaller_mapToUserRegistry_No_notInRegistry_identifiersGoodEE7Only() throws Exception {
+        
+    	generalPositiveTest("server_2_caller_mapToUserRegistry_No_notInRegistry_identifiersGood.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultIDPGroups);
 
-        generalPositiveTest("server_2_caller_mapToUserRegistry_No_notInRegistry_identifiersGood.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultIDPGroups);
+    }
+    
+    //3/2021 to run with EE8
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @AllowedFFDC(value = { "java.util.MissingResourceException" }) //@AV999
+    @Test
+    public void testCxfCaller_mapToUserRegistry_No_notInRegistry_identifiersGoodEE8Only() throws Exception {
+
+        generalPositiveTest("server_2_caller_mapToUserRegistry_No_notInRegistry_identifiersGood_ee8.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultIDPGroups);
 
     }
 
@@ -816,13 +1225,26 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * User: testuser
      * Group: null
      */
+    
+    //3/2021 to run with EE7
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @Test
-    public void testCxfCaller_mapToUserRegistry_No_inRegistry_identifiersOmitted() throws Exception {
-
+    //Orig:
+    //public void testCxfCaller_mapToUserRegistry_No_inRegistry_identifiersOmitted() throws Exception {
+    public void testCxfCaller_mapToUserRegistry_No_inRegistry_identifiersOmittedEE7Only() throws Exception {
         generalPositiveTest("server_2_caller_mapToUserRegistry_No_inRegistry_identifiersOmitted.xml", defaultServerCfgRealm, defaultIDPUser, defaultNullGroup);
 
     }
 
+    //3/2021 to run with EE8
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @AllowedFFDC(value = { "java.util.MissingResourceException" }) //@AV999
+    @Test
+    public void testCxfCaller_mapToUserRegistry_No_inRegistry_identifiersOmittedEE8Only() throws Exception {
+
+        generalPositiveTest("server_2_caller_mapToUserRegistry_No_inRegistry_identifiersOmitted_ee8.xml", defaultServerCfgRealm, defaultIDPUser, defaultNullGroup);
+
+    }
     /*
      * config settings:
      * mapToUserRegistry = No
@@ -837,10 +1259,25 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * User: testuser
      * Group: null
      */
+    
+    //3/2021 to run with EE7
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @Test
-    public void testCxfCaller_mapToUserRegistry_No_notInRegistry_identifiersOmitted() throws Exception {
+    //Orig:
+    //public void testCxfCaller_mapToUserRegistry_No_notInRegistry_identifiersOmitted() throws Exception {
+    public void testCxfCaller_mapToUserRegistry_No_notInRegistry_identifiersOmittedEE7Only() throws Exception {
+        
+    	generalPositiveTest("server_2_caller_mapToUserRegistry_No_notInRegistry_identifiersOmitted.xml", defaultServerCfgRealm, defaultIDPUser, defaultNullGroup);
 
-        generalPositiveTest("server_2_caller_mapToUserRegistry_No_notInRegistry_identifiersOmitted.xml", defaultServerCfgRealm, defaultIDPUser, defaultNullGroup);
+    }
+    
+    //3/2021 to run with EE8
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @AllowedFFDC(value = { "java.util.MissingResourceException" }) //@AV999
+    @Test
+    public void testCxfCaller_mapToUserRegistry_No_notInRegistry_identifiersOmittedEE8Only() throws Exception {
+
+        generalPositiveTest("server_2_caller_mapToUserRegistry_No_notInRegistry_identifiersOmitted_ee8.xml", defaultServerCfgRealm, defaultIDPUser, defaultNullGroup);
 
     }
 
@@ -858,10 +1295,25 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * User: test_userIdentifier
      * Group: null
      */
+    
+    //3/2021 to run with EE7
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @Test
-    public void testCxfCaller_mapToUserRegistry_No_inRegistry_groupIdentifierOmitted() throws Exception {
+    //Orig:
+    //public void testCxfCaller_mapToUserRegistry_No_inRegistry_groupIdentifierOmitted() throws Exception {
+    public void testCxfCaller_mapToUserRegistry_No_inRegistry_groupIdentifierOmittedEE7Only() throws Exception {
 
         generalPositiveTest("server_2_caller_mapToUserRegistry_No_inRegistry_groupIdentifierOmitted.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultNullGroup);
+
+    }
+    
+    //3/2021 to run with EE8
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @AllowedFFDC(value = { "java.util.MissingResourceException" }) //@AV999
+    @Test
+    public void testCxfCaller_mapToUserRegistry_No_inRegistry_groupIdentifierOmittedEE8Only() throws Exception {
+
+        generalPositiveTest("server_2_caller_mapToUserRegistry_No_inRegistry_groupIdentifierOmitted_ee8.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultNullGroup);
 
     }
 
@@ -879,10 +1331,24 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * User: test_userIdentifier
      * Group: null
      */
+    
+    //3/2021 to run with EE7
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @Test
-    public void testCxfCaller_mapToUserRegistry_No_notInRegistry_groupIdentifierOmitted() throws Exception {
-
+    //Orig:
+    //public void testCxfCaller_mapToUserRegistry_No_notInRegistry_groupIdentifierOmitted() throws Exception {
+    public void testCxfCaller_mapToUserRegistry_No_notInRegistry_groupIdentifierOmittedEE7Only() throws Exception {
         generalPositiveTest("server_2_caller_mapToUserRegistry_No_notInRegistry_groupIdentifierOmitted.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultNullGroup);
+
+    }
+    
+    //3/2021 to run with EE8
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @AllowedFFDC(value = { "java.util.MissingResourceException" }) //@AV999
+    @Test
+    public void testCxfCaller_mapToUserRegistry_No_notInRegistry_groupIdentifierOmittedEE8Only() throws Exception {
+
+        generalPositiveTest("server_2_caller_mapToUserRegistry_No_notInRegistry_groupIdentifierOmitted_ee8.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultNullGroup);
 
     }
 
@@ -900,10 +1366,24 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * User: test_userIdentifier
      * Group: Local server's groups
      */
+    //3/2021
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @Test
-    public void testCxfCaller_mapToUserRegistry_No_inRegistry_realmIdentifierOmitted() throws Exception {
+    //Orig:
+    //public void testCxfCaller_mapToUserRegistry_No_inRegistry_realmIdentifierOmitted() throws Exception {
+    public void testCxfCaller_mapToUserRegistry_No_inRegistry_realmIdentifierOmittedEE7Only() throws Exception {
+        
+    	generalPositiveTest("server_2_caller_mapToUserRegistry_No_inRegistry_realmIdentifierOmitted.xml", defaultServerCfgRealm, defaultIDPIdentifierUser, defaultServerCfgGroups);
 
-        generalPositiveTest("server_2_caller_mapToUserRegistry_No_inRegistry_realmIdentifierOmitted.xml", defaultServerCfgRealm, defaultIDPIdentifierUser, defaultServerCfgGroups);
+    }
+    
+    //3/2021 to run with EE8
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @AllowedFFDC(value = { "java.util.MissingResourceException" }) //@AV999
+    @Test
+    public void testCxfCaller_mapToUserRegistry_No_inRegistry_realmIdentifierOmittedEE8Only() throws Exception {
+
+        generalPositiveTest("server_2_caller_mapToUserRegistry_No_inRegistry_realmIdentifierOmitted_ee8.xml", defaultServerCfgRealm, defaultIDPIdentifierUser, defaultServerCfgGroups);
 
     }
 
@@ -921,10 +1401,25 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * User: test_userIdentifier
      * Group: Hybrid Group
      */
+    
+    //3/2021 to run with EE7
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @Test
-    public void testCxfCaller_mapToUserRegistry_No_notInRegistry_realmIdentifierOmitted() throws Exception {
+    //Orig:
+    //public void testCxfCaller_mapToUserRegistry_No_notInRegistry_realmIdentifierOmitted() throws Exception {
+    public void testCxfCaller_mapToUserRegistry_No_notInRegistry_realmIdentifierOmittedEE7Only() throws Exception {
+        
+    	generalPositiveTest("server_2_caller_mapToUserRegistry_No_notInRegistry_realmIdentifierOmitted.xml", defaultServerCfgRealm, defaultIDPIdentifierUser, defaultServerCfgGroups);
 
-        generalPositiveTest("server_2_caller_mapToUserRegistry_No_notInRegistry_realmIdentifierOmitted.xml", defaultServerCfgRealm, defaultIDPIdentifierUser, defaultServerCfgGroups);
+    }
+
+    //3/2021 to run with EE8
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @AllowedFFDC(value = { "java.util.MissingResourceException" }) //@AV999
+    @Test
+    public void testCxfCaller_mapToUserRegistry_No_notInRegistry_realmIdentifierOmittedEE8Only() throws Exception {
+
+        generalPositiveTest("server_2_caller_mapToUserRegistry_No_notInRegistry_realmIdentifierOmitted_ee8.xml", defaultServerCfgRealm, defaultIDPIdentifierUser, defaultServerCfgGroups);
 
     }
 
@@ -942,10 +1437,25 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * User: testuser
      * Group: An IPD group
      */
+    
+    //3/2021 to run with EE7
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @Test
-    public void testCxfCaller_mapToUserRegistry_No_inRegistry_userIdentifierOmitted() throws Exception {
+    //Orig:
+    //public void testCxfCaller_mapToUserRegistry_No_inRegistry_userIdentifierOmitted() throws Exception {
+    public void testCxfCaller_mapToUserRegistry_No_inRegistry_userIdentifierOmittedEE7Only() throws Exception {
+        
+    	generalPositiveTest("server_2_caller_mapToUserRegistry_No_inRegistry_userIdentifierOmitted.xml", defaultIDPIdentifierRealm, defaultIDPUser, defaultIDPIdentifierGroup);
 
-        generalPositiveTest("server_2_caller_mapToUserRegistry_No_inRegistry_userIdentifierOmitted.xml", defaultIDPIdentifierRealm, defaultIDPUser, defaultIDPIdentifierGroup);
+    }
+    
+    //3/2021 to run with EE8
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @AllowedFFDC(value = { "java.util.MissingResourceException" }) //@AV999
+    @Test
+    public void testCxfCaller_mapToUserRegistry_No_inRegistry_userIdentifierOmittedEE8Only() throws Exception {
+
+        generalPositiveTest("server_2_caller_mapToUserRegistry_No_inRegistry_userIdentifierOmitted_ee8.xml", defaultIDPIdentifierRealm, defaultIDPUser, defaultIDPIdentifierGroup);
 
     }
 
@@ -963,10 +1473,25 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * User: testuser
      * Group: Default IDP Groups
      */
+    
+    //3/2021 to run with EE7
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @Test
-    public void testCxfCaller_mapToUserRegistry_No_notInRegistry_userIdentifierOmitted() throws Exception {
+    //Orig:
+    //public void testCxfCaller_mapToUserRegistry_No_notInRegistry_userIdentifierOmitted() throws Exception {
+    public void testCxfCaller_mapToUserRegistry_No_notInRegistry_userIdentifierOmittedEE7Only() throws Exception {
+        
+    	generalPositiveTest("server_2_caller_mapToUserRegistry_No_notInRegistry_userIdentifierOmitted.xml", defaultIDPIdentifierRealm, defaultIDPUser, defaultIDPIdentifierGroup);
 
-        generalPositiveTest("server_2_caller_mapToUserRegistry_No_notInRegistry_userIdentifierOmitted.xml", defaultIDPIdentifierRealm, defaultIDPUser, defaultIDPIdentifierGroup);
+    }
+    
+    //3/2021 to run with EE8
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @AllowedFFDC(value = { "java.util.MissingResourceException" }) //@AV999
+    @Test
+    public void testCxfCaller_mapToUserRegistry_No_notInRegistry_userIdentifierOmittedEE8Only() throws Exception {
+
+        generalPositiveTest("server_2_caller_mapToUserRegistry_No_notInRegistry_userIdentifierOmitted_ee8.xml", defaultIDPIdentifierRealm, defaultIDPUser, defaultIDPIdentifierGroup);
 
     }
 
@@ -984,13 +1509,27 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * User: test_userIdentifier
      * Group: An IPD group
      */
+    
+    //3/2021 to run with EE7
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @Test
-    public void testCxfCaller_mapToUserRegistry_No_inRegistry_userUniqueIdentifierOmitted() throws Exception {
-
+    //Orig:
+    //public void testCxfCaller_mapToUserRegistry_No_inRegistry_userUniqueIdentifierOmitted() throws Exception {
+    public void testCxfCaller_mapToUserRegistry_No_inRegistry_userUniqueIdentifierOmittedEE7Only() throws Exception {
         generalPositiveTest("server_2_caller_mapToUserRegistry_No_inRegistry_userUniqueIdentifierOmitted.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultIDPGroups);
 
     }
 
+    //3/2021 to run with EE8
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @AllowedFFDC(value = { "java.util.MissingResourceException" }) //@AV999
+    @Test
+    public void testCxfCaller_mapToUserRegistry_No_inRegistry_userUniqueIdentifierOmittedEE8Only() throws Exception {
+
+        generalPositiveTest("server_2_caller_mapToUserRegistry_No_inRegistry_userUniqueIdentifierOmitted_ee8.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultIDPGroups);
+
+    }
+    
     /*
      * config settings:
      * mapToUserRegistry = No
@@ -1005,13 +1544,28 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * User: test_userIdentifier
      * Group: Default IDP Groups
      */
+    
+    //3/2021 to run with EE7
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @Test
-    public void testCxfCaller_mapToUserRegistry_No_notInRegistry_userUniqueIdentifierOmitted() throws Exception {
-
-        generalPositiveTest("server_2_caller_mapToUserRegistry_No_notInRegistry_userUniqueIdentifierOmitted.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultIDPGroups);
+    //Orig:
+    //public void testCxfCaller_mapToUserRegistry_No_notInRegistry_userUniqueIdentifierOmitted() throws Exception {
+    public void testCxfCaller_mapToUserRegistry_No_notInRegistry_userUniqueIdentifierOmittedEE7Only() throws Exception {
+        
+    	generalPositiveTest("server_2_caller_mapToUserRegistry_No_notInRegistry_userUniqueIdentifierOmitted.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultIDPGroups);
 
     }
 
+    //3/2021 to run with EE8
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @AllowedFFDC(value = { "java.util.MissingResourceException" }) //@AV999
+    @Test
+    public void testCxfCaller_mapToUserRegistry_No_notInRegistry_userUniqueIdentifierOmittedEE8Only() throws Exception {
+
+        generalPositiveTest("server_2_caller_mapToUserRegistry_No_notInRegistry_userUniqueIdentifierOmitted_ee8.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultIDPGroups);
+
+    }
+    
     /********** identifiers are Bad **********/
     /*
      * config settings:
@@ -1027,13 +1581,27 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * User: test_userIdentifier
      * Group: Local user's Groups
      */
+    
+    //3/2021 to run with EE7
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @Test
-    public void testCxfCaller_mapToUserRegistry_No_inRegistry_groupIdentifierBad() throws Exception {
-
-        generalPositiveTest("server_2_caller_mapToUserRegistry_No_inRegistry_groupIdentifierBad.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultNullGroup);
+    //Orig:
+    //public void testCxfCaller_mapToUserRegistry_No_inRegistry_groupIdentifierBad() throws Exception {
+    public void testCxfCaller_mapToUserRegistry_No_inRegistry_groupIdentifierBadEE7Only() throws Exception {
+        
+    	generalPositiveTest("server_2_caller_mapToUserRegistry_No_inRegistry_groupIdentifierBad.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultNullGroup);
 
     }
 
+    //3/2021 to run with EE8
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @AllowedFFDC(value = { "java.util.MissingResourceException", "java.lang.ClassNotFoundException" }) //@AV999
+    @Test
+    public void testCxfCaller_mapToUserRegistry_No_inRegistry_groupIdentifierBadEE8Only() throws Exception {
+
+        generalPositiveTest("server_2_caller_mapToUserRegistry_No_inRegistry_groupIdentifierBad_ee8.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultNullGroup);
+
+    }
     /*
      * config settings:
      * mapToUserRegistry = No
@@ -1048,10 +1616,25 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * User: test_userIdentifier
      * Group: null
      */
+    
+    //3/2021 to run with EE7
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @Test
-    public void testCxfCaller_mapToUserRegistry_No_notInRegistry_groupIdentifierBad() throws Exception {
+    //Orig:
+    //public void testCxfCaller_mapToUserRegistry_No_notInRegistry_groupIdentifierBad() throws Exception {
+    public void testCxfCaller_mapToUserRegistry_No_notInRegistry_groupIdentifierBadEE7Only() throws Exception {
+       
+    	generalPositiveTest("server_2_caller_mapToUserRegistry_No_notInRegistry_groupIdentifierBad.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultNullGroup);
 
-        generalPositiveTest("server_2_caller_mapToUserRegistry_No_notInRegistry_groupIdentifierBad.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultNullGroup);
+    }
+    
+    //3/2021 to run with EE8
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @AllowedFFDC(value = { "java.util.MissingResourceException" }) //@AV999
+    @Test
+    public void testCxfCaller_mapToUserRegistry_No_notInRegistry_groupIdentifierBadEE8Only() throws Exception {
+
+        generalPositiveTest("server_2_caller_mapToUserRegistry_No_notInRegistry_groupIdentifierBad_ee8.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultNullGroup);
 
     }
 
@@ -1067,11 +1650,27 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * Expected/checked values:
      * Bad Attribute exception - looking for realmIdentifier in the message
      */
+    
+    //3/2021 to run with EE7
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" })
     @Test
-    public void testCxfCaller_mapToUserRegistry_No_inRegistry_realmIdentifierBad() throws Exception {
+    //Orig:
+    //public void testCxfCaller_mapToUserRegistry_No_inRegistry_realmIdentifierBad() throws Exception {
+    public void testCxfCaller_mapToUserRegistry_No_inRegistry_realmIdentifierBadEE7Only() throws Exception {
+        
+    	badAttrValueTest("server_2_caller_mapToUserRegistry_No_inRegistry_realmIdentifierBad.xml", realmIdentifierString);
 
-        badAttrValueTest("server_2_caller_mapToUserRegistry_No_inRegistry_realmIdentifierBad.xml", realmIdentifierString);
+    }
+    
+    //3/2021 to run with EE8
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @AllowedFFDC(value = { "java.util.MissingResourceException" }) //@AV999
+    @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" })
+    @Test
+    public void testCxfCaller_mapToUserRegistry_No_inRegistry_realmIdentifierBadEE8Only() throws Exception {
+
+        badAttrValueTest("server_2_caller_mapToUserRegistry_No_inRegistry_realmIdentifierBad_ee8.xml", realmIdentifierString);
 
     }
 
@@ -1087,11 +1686,27 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * Expected/checked values:
      * Bad Attribute exception - looking for realmIdentifier in the message
      */
+    
+    //3/2021 to run with EE7
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" })
     @Test
-    public void testCxfCaller_mapToUserRegistry_No_notInRegistry_realmIdentifierBad() throws Exception {
+    //Orig:
+    //public void testCxfCaller_mapToUserRegistry_No_notInRegistry_realmIdentifierBad() throws Exception {
+    public void testCxfCaller_mapToUserRegistry_No_notInRegistry_realmIdentifierBadEE7Only() throws Exception {
+       
+    	badAttrValueTest("server_2_caller_mapToUserRegistry_No_notInRegistry_realmIdentifierBad.xml", realmIdentifierString);
 
-        badAttrValueTest("server_2_caller_mapToUserRegistry_No_notInRegistry_realmIdentifierBad.xml", realmIdentifierString);
+    }
+    
+    //3/2021 to run with EE8
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @AllowedFFDC(value = { "java.util.MissingResourceException" }) //@AV999
+    @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" })
+    @Test
+    public void testCxfCaller_mapToUserRegistry_No_notInRegistry_realmIdentifierBadEE8Only() throws Exception {
+
+        badAttrValueTest("server_2_caller_mapToUserRegistry_No_notInRegistry_realmIdentifierBad_ee8.xml", realmIdentifierString);
 
     }
 
@@ -1107,11 +1722,27 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * Expected/checked values:
      * Bad Attribute exception - looking for userIdentifier in the message
      */
+    
+    //3/2021 to run with EE7
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" })
     @Test
-    public void testCxfCaller_mapToUserRegistry_No_inRegistry_userIdentifierBad() throws Exception {
+    //Orig:
+    //public void testCxfCaller_mapToUserRegistry_No_inRegistry_userIdentifierBad() throws Exception {
+    public void testCxfCaller_mapToUserRegistry_No_inRegistry_userIdentifierBadEE7Only() throws Exception {
+        
+    	badAttrValueTest("server_2_caller_mapToUserRegistry_No_inRegistry_userIdentifierBad.xml", userIdentifierString);
 
-        badAttrValueTest("server_2_caller_mapToUserRegistry_No_inRegistry_userIdentifierBad.xml", userIdentifierString);
+    }
+    
+    //3/2021 to run with EE8
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @AllowedFFDC(value = { "java.util.MissingResourceException" }) //@AV999
+    @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" })
+    @Test
+    public void testCxfCaller_mapToUserRegistry_No_inRegistry_userIdentifierBadEE8Only() throws Exception {
+
+        badAttrValueTest("server_2_caller_mapToUserRegistry_No_inRegistry_userIdentifierBad_ee8.xml", userIdentifierString);
 
     }
 
@@ -1127,11 +1758,27 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * Expected/checked values:
      * Bad Attribute exception - looking for userIdentifier in the message
      */
+    
+    //3/2021 to run with EE7
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" })
     @Test
-    public void testCxfCaller_mapToUserRegistry_No_notInRegistry_userIdentifierBad() throws Exception {
+    //Orig:
+    //public void testCxfCaller_mapToUserRegistry_No_notInRegistry_userIdentifierBad() throws Exception {	
+    public void testCxfCaller_mapToUserRegistry_No_notInRegistry_userIdentifierBadEE7Only() throws Exception {
+        
+    	badAttrValueTest("server_2_caller_mapToUserRegistry_No_notInRegistry_userIdentifierBad.xml", userIdentifierString);
 
-        badAttrValueTest("server_2_caller_mapToUserRegistry_No_notInRegistry_userIdentifierBad.xml", userIdentifierString);
+    }
+    
+    //3/2021 to run with EE8
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @AllowedFFDC(value = { "java.util.MissingResourceException" }) //@AV999
+    @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" })
+    @Test
+    public void testCxfCaller_mapToUserRegistry_No_notInRegistry_userIdentifierBadEE8Only() throws Exception {
+
+        badAttrValueTest("server_2_caller_mapToUserRegistry_No_notInRegistry_userIdentifierBad_ee8.xml", userIdentifierString);
 
     }
 
@@ -1147,14 +1794,30 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * Expected/checked values:
      * Bad Attribute exception - looking for userUniqueIdentifier in the message
      */
+    
+    //3/2021 to run with EE7
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" })
     @Test
-    public void testCxfCaller_mapToUserRegistry_No_inRegistry_userUniqueIdentifierBad() throws Exception {
-
-        badAttrValueTest("server_2_caller_mapToUserRegistry_No_inRegistry_userUniqueIdentifierBad.xml", userUniqueIdentifierString);
+    //Orig:
+    //public void testCxfCaller_mapToUserRegistry_No_inRegistry_userUniqueIdentifierBad() throws Exception {
+    public void testCxfCaller_mapToUserRegistry_No_inRegistry_userUniqueIdentifierBadEE7Only() throws Exception {
+        
+    	badAttrValueTest("server_2_caller_mapToUserRegistry_No_inRegistry_userUniqueIdentifierBad.xml", userUniqueIdentifierString);
 
     }
 
+    //3/2021 to run with EE8
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @AllowedFFDC(value = { "java.util.MissingResourceException" }) //@AV999
+    @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" })
+    @Test
+    public void testCxfCaller_mapToUserRegistry_No_inRegistry_userUniqueIdentifierBadEE8Only() throws Exception {
+
+        badAttrValueTest("server_2_caller_mapToUserRegistry_No_inRegistry_userUniqueIdentifierBad_ee8.xml", userUniqueIdentifierString);
+
+    }
+    
     /*
      * config settings:
      * mapToUserRegistry = No
@@ -1167,14 +1830,30 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * Expected/checked values:
      * Bad Attribute exception - looking for userUniqueIdentifier in the message
      */
+    
+    //3/2021 to run with EE7
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" })
     @Test
-    public void testCxfCaller_mapToUserRegistry_No_notInRegistry_userUniqueIdentifierBad() throws Exception {
-
-        badAttrValueTest("server_2_caller_mapToUserRegistry_No_notInRegistry_userUniqueIdentifierBad.xml", userUniqueIdentifierString);
+    //Orig:
+    //public void testCxfCaller_mapToUserRegistry_No_notInRegistry_userUniqueIdentifierBad() throws Exception {
+    public void testCxfCaller_mapToUserRegistry_No_notInRegistry_userUniqueIdentifierBadEE7Only() throws Exception {
+        
+    	badAttrValueTest("server_2_caller_mapToUserRegistry_No_notInRegistry_userUniqueIdentifierBad.xml", userUniqueIdentifierString);
 
     }
 
+    //3/2021 to run with EE8
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @AllowedFFDC(value = { "java.util.MissingResourceException" }) //@AV999
+    @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" })
+    @Test
+    public void testCxfCaller_mapToUserRegistry_No_notInRegistry_userUniqueIdentifierBadEE8Only() throws Exception {
+
+        badAttrValueTest("server_2_caller_mapToUserRegistry_No_notInRegistry_userUniqueIdentifierBad_ee8.xml", userUniqueIdentifierString);
+
+    }
+    
     /******* mapToUserRegistry = User *******/
     /********** identifiers are Good **********/
     /*
@@ -1191,15 +1870,28 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * User: test_userIdentifier
      * Group: Local user's group
      */
-    //1/26/2021 comment out
-    //@Mode(TestMode.LITE)
+    
+    //3/2021 to run with EE7
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @Test
-    public void testCxfCaller_mapToUserRegistry_User_inRegistry_identifiersGood() throws Exception {
-
-        generalPositiveTest("server_2_caller_mapToUserRegistry_User_inRegistry_identifiersGood.xml", defaultLocalRealm, defaultIDPIdentifierUser, defaultLocalGroups);
+    //Orig:
+    //public void testCxfCaller_mapToUserRegistry_User_inRegistry_identifiersGood() throws Exception {
+    public void testCxfCaller_mapToUserRegistry_User_inRegistry_identifiersGoodEE7Only() throws Exception {
+        
+    	generalPositiveTest("server_2_caller_mapToUserRegistry_User_inRegistry_identifiersGood.xml", defaultLocalRealm, defaultIDPIdentifierUser, defaultLocalGroups);
 
     }
 
+    //3/2021 to run with EE8
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @AllowedFFDC(value = { "java.util.MissingResourceException" }) //@AV999
+    @Test
+    public void testCxfCaller_mapToUserRegistry_User_inRegistry_identifiersGoodEE8Only() throws Exception {
+
+        generalPositiveTest("server_2_caller_mapToUserRegistry_User_inRegistry_identifiersGood_ee8.xml", defaultLocalRealm, defaultIDPIdentifierUser, defaultLocalGroups);
+
+    }
+    
     /*
      * config settings:
      * mapToUserRegistry = User
@@ -1212,12 +1904,29 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * Expected/checked values:
      * EntryNotFoundException expectd
      */
+    
+    //3/2021 to run with EE7
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @ExpectedFFDC(value = { "com.ibm.ws.security.registry.EntryNotFoundException", "org.apache.ws.security.WSSecurityException" })
     @Test
-    public void testCxfCaller_mapToUserRegistry_User_notInRegistry_identifiersGood() throws Exception {
+    //Orig:
+    //public void testCxfCaller_mapToUserRegistry_User_notInRegistry_identifiersGood() throws Exception {
+    public void testCxfCaller_mapToUserRegistry_User_notInRegistry_identifiersGoodEE7Only() throws Exception {
+        
+    	notfoundExceptionTest("server_2_caller_mapToUserRegistry_User_notInRegistry_identifiersGood.xml");
 
-        notfoundExceptionTest("server_2_caller_mapToUserRegistry_User_notInRegistry_identifiersGood.xml");
+    }
+    
+    //3/2021 to run with EE8
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException", "java.util.MissingResourceException" })//@AV999
+    @ExpectedFFDC(value = { "com.ibm.ws.security.registry.EntryNotFoundException" })//@AV999
+    @Test
+    public void testCxfCaller_mapToUserRegistry_User_notInRegistry_identifiersGoodEE8Only() throws Exception {
 
+        //notfoundExceptionTest("server_2_caller_mapToUserRegistry_User_notInRegistry_identifiersGood_ee8.xml");
+    	notfoundExceptionTestEE8("server_2_caller_mapToUserRegistry_User_notInRegistry_identifiersGood_ee8.xml");
+    	
     }
 
     /********** identifiers are Omitted **********/
@@ -1235,13 +1944,28 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * User: testuser
      * Group: Local user's group
      */
+    
+    //3/2021 to run with EE7
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @Test
-    public void testCxfCaller_mapToUserRegistry_User_inRegistry_identifiersOmitted() throws Exception {
-
-        generalPositiveTest("server_2_caller_mapToUserRegistry_User_inRegistry_identifiersOmitted.xml", defaultLocalRealm, defaultIDPUser, defaultNullGroup);
+    //Orig:
+    //public void testCxfCaller_mapToUserRegistry_User_inRegistry_identifiersOmitted() throws Exception {
+    public void testCxfCaller_mapToUserRegistry_User_inRegistry_identifiersOmittedEE7Only() throws Exception {
+        
+    	generalPositiveTest("server_2_caller_mapToUserRegistry_User_inRegistry_identifiersOmitted.xml", defaultLocalRealm, defaultIDPUser, defaultNullGroup);
 
     }
 
+    //3/2021 to run with EE8
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @AllowedFFDC(value = { "java.util.MissingResourceException" }) //@AV999
+    @Test
+    public void testCxfCaller_mapToUserRegistry_User_inRegistry_identifiersOmittedEE8Only() throws Exception {
+
+        generalPositiveTest("server_2_caller_mapToUserRegistry_User_inRegistry_identifiersOmitted_ee8.xml", defaultLocalRealm, defaultIDPUser, defaultNullGroup);
+
+    }
+    
     /*
      * config settings:
      * mapToUserRegistry = User
@@ -1254,14 +1978,31 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * Expected/checked values:
      * EntryNotFoundException expected
      */
+    
+    //3/2021 to run with EE7
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @ExpectedFFDC(value = { "com.ibm.ws.security.registry.EntryNotFoundException", "org.apache.ws.security.WSSecurityException" })
     @Test
-    public void testCxfCaller_mapToUserRegistry_User_notInRegistry_identifiersOmitted() throws Exception {
-
-        notfoundExceptionTest("server_2_caller_mapToUserRegistry_User_notInRegistry_identifiersOmitted.xml");
+    //Orig:
+    //public void testCxfCaller_mapToUserRegistry_User_notInRegistry_identifiersOmitted() throws Exception {
+    public void testCxfCaller_mapToUserRegistry_User_notInRegistry_identifiersOmittedEE7Only() throws Exception {
+        
+    	notfoundExceptionTest("server_2_caller_mapToUserRegistry_User_notInRegistry_identifiersOmitted.xml");
 
     }
 
+    //3/2021 to run with EE8
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException", "java.util.MissingResourceException" })//@AV999
+    @ExpectedFFDC(value = { "com.ibm.ws.security.registry.EntryNotFoundException" })//@AV999
+    @Test
+    public void testCxfCaller_mapToUserRegistry_User_notInRegistry_identifiersOmittedEE8Only() throws Exception {
+
+       //notfoundExceptionTest("server_2_caller_mapToUserRegistry_User_notInRegistry_identifiersOmitted_ee8.xml");
+    	notfoundExceptionTestEE8("server_2_caller_mapToUserRegistry_User_notInRegistry_identifiersOmitted_ee8.xml");
+    	
+    }
+    
     /*
      * config settings:
      * mapToUserRegistry = User
@@ -1276,10 +2017,25 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * User: test_userIdentifier
      * Group: Local server's group
      */
+    
+    //3/2021 to run with EE7
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @Test
-    public void testCxfCaller_mapToUserRegistry_User_inRegistry_groupIdentifierOmitted() throws Exception {
+    //Orig:
+    //public void testCxfCaller_mapToUserRegistry_User_inRegistry_groupIdentifierOmitted() throws Exception {
+    public void testCxfCaller_mapToUserRegistry_User_inRegistry_groupIdentifierOmittedEE7Only() throws Exception {
+        
+    	generalPositiveTest("server_2_caller_mapToUserRegistry_User_inRegistry_groupIdentifierOmitted.xml", defaultLocalRealm, defaultIDPIdentifierUser, defaultNullGroup);
 
-        generalPositiveTest("server_2_caller_mapToUserRegistry_User_inRegistry_groupIdentifierOmitted.xml", defaultLocalRealm, defaultIDPIdentifierUser, defaultNullGroup);
+    }
+    
+    //3/2021 to run with EE8
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @AllowedFFDC(value = { "java.util.MissingResourceException" }) //@AV999
+    @Test
+    public void testCxfCaller_mapToUserRegistry_User_inRegistry_groupIdentifierOmittedEE8Only() throws Exception {
+
+        generalPositiveTest("server_2_caller_mapToUserRegistry_User_inRegistry_groupIdentifierOmitted_ee8.xml", defaultLocalRealm, defaultIDPIdentifierUser, defaultNullGroup);
 
     }
 
@@ -1295,12 +2051,29 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * Expected/checked values:
      * EntryNotFoundException expected
      */
+    
+    //3/2021 to run with EE7
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @ExpectedFFDC(value = { "com.ibm.ws.security.registry.EntryNotFoundException", "org.apache.ws.security.WSSecurityException" })
     @Test
-    public void testCxfCaller_mapToUserRegistry_User_notInRegistry_groupIdentifierOmitted() throws Exception {
+    //Orig:
+    //public void testCxfCaller_mapToUserRegistry_User_notInRegistry_groupIdentifierOmitted() throws Exception {
+    public void testCxfCaller_mapToUserRegistry_User_notInRegistry_groupIdentifierOmittedEE7Only() throws Exception {
+        
+    	notfoundExceptionTest("server_2_caller_mapToUserRegistry_User_notInRegistry_groupIdentifierOmitted.xml");
 
-        notfoundExceptionTest("server_2_caller_mapToUserRegistry_User_notInRegistry_groupIdentifierOmitted.xml");
+    }
+    
+    //3/2021 to run with EE8
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException", "java.util.MissingResourceException" })//@AV999
+    @ExpectedFFDC(value = { "com.ibm.ws.security.registry.EntryNotFoundException" })//@AV999
+    @Test
+    public void testCxfCaller_mapToUserRegistry_User_notInRegistry_groupIdentifierOmittedEE8Only() throws Exception {
 
+        //notfoundExceptionTest("server_2_caller_mapToUserRegistry_User_notInRegistry_groupIdentifierOmitted_ee8.xml");
+    	notfoundExceptionTestEE8("server_2_caller_mapToUserRegistry_User_notInRegistry_groupIdentifierOmitted_ee8.xml");
+    	
     }
 
     /*
@@ -1317,13 +2090,28 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * User: test_userIdentifier
      * Group: Local server's group
      */
+    
+    //3/2021 to run with EE7
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @Test
-    public void testCxfCaller_mapToUserRegistry_User_inRegistry_realmIdentifierOmitted() throws Exception {
-
-        generalPositiveTest("server_2_caller_mapToUserRegistry_User_inRegistry_realmIdentifierOmitted.xml", defaultLocalRealm, defaultIDPIdentifierUser, defaultNullGroup);
+    //Orig:
+    //public void testCxfCaller_mapToUserRegistry_User_inRegistry_realmIdentifierOmitted() throws Exception {
+    public void testCxfCaller_mapToUserRegistry_User_inRegistry_realmIdentifierOmittedEE7Only() throws Exception {
+        
+    	generalPositiveTest("server_2_caller_mapToUserRegistry_User_inRegistry_realmIdentifierOmitted.xml", defaultLocalRealm, defaultIDPIdentifierUser, defaultNullGroup);
 
     }
 
+    //3/2021 to run with EE8
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @AllowedFFDC(value = { "java.util.MissingResourceException" }) //@AV999
+    @Test
+    public void testCxfCaller_mapToUserRegistry_User_inRegistry_realmIdentifierOmittedEE8Only() throws Exception {
+
+        generalPositiveTest("server_2_caller_mapToUserRegistry_User_inRegistry_realmIdentifierOmitted_ee8.xml", defaultLocalRealm, defaultIDPIdentifierUser, defaultNullGroup);
+
+    }
+    
     /*
      * config settings:
      * mapToUserRegistry = User
@@ -1336,11 +2124,28 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * Expected/checked values:
      * EntryNotFoundException expected
      */
+    
+    //3/2021 to run with EE7
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @ExpectedFFDC(value = { "com.ibm.ws.security.registry.EntryNotFoundException", "org.apache.ws.security.WSSecurityException" })
     @Test
-    public void testCxfCaller_mapToUserRegistry_User_notInRegistry_realmIdentifierOmitted() throws Exception {
+    //Orig:
+    //public void testCxfCaller_mapToUserRegistry_User_notInRegistry_realmIdentifierOmitted() throws Exception {
+    public void testCxfCaller_mapToUserRegistry_User_notInRegistry_realmIdentifierOmittedEE7Only() throws Exception {
+        
+    	notfoundExceptionTest("server_2_caller_mapToUserRegistry_User_notInRegistry_realmIdentifierOmitted.xml");
 
-        notfoundExceptionTest("server_2_caller_mapToUserRegistry_User_notInRegistry_realmIdentifierOmitted.xml");
+    }
+   
+    //3/2021 to run with EE8
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException", "java.util.MissingResourceException" }) //@AV999
+    @ExpectedFFDC(value = { "com.ibm.ws.security.registry.EntryNotFoundException" })//@AV999
+    @Test
+    public void testCxfCaller_mapToUserRegistry_User_notInRegistry_realmIdentifierOmittedEE8Only() throws Exception {
+
+        //notfoundExceptionTest("server_2_caller_mapToUserRegistry_User_notInRegistry_realmIdentifierOmitted_ee8.xml");
+    	notfoundExceptionTestEE8("server_2_caller_mapToUserRegistry_User_notInRegistry_groupIdentifierOmitted_ee8.xml");
 
     }
 
@@ -1358,10 +2163,25 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * User: testuser
      * Group: Local Server's group
      */
+    
+    //3/2021 to run with EE7
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @Test
-    public void testCxfCaller_mapToUserRegistry_User_inRegistry_userIdentifierOmitted() throws Exception {
+    //Orig:
+    //public void testCxfCaller_mapToUserRegistry_User_inRegistry_userIdentifierOmitted() throws Exception {
+    public void testCxfCaller_mapToUserRegistry_User_inRegistry_userIdentifierOmittedEE7Only() throws Exception {
+        
+    	generalPositiveTest("server_2_caller_mapToUserRegistry_User_inRegistry_userIdentifierOmitted.xml", defaultLocalRealm, defaultLocalUser, defaultLocalGroups);
 
-        generalPositiveTest("server_2_caller_mapToUserRegistry_User_inRegistry_userIdentifierOmitted.xml", defaultLocalRealm, defaultLocalUser, defaultLocalGroups);
+    }
+    
+    //3/2021 to run with EE8
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @AllowedFFDC(value = { "java.util.MissingResourceException" }) //@AV999
+    @Test
+    public void testCxfCaller_mapToUserRegistry_User_inRegistry_userIdentifierOmittedEE8Only() throws Exception {
+
+        generalPositiveTest("server_2_caller_mapToUserRegistry_User_inRegistry_userIdentifierOmitted_ee8.xml", defaultLocalRealm, defaultLocalUser, defaultLocalGroups);
 
     }
 
@@ -1377,12 +2197,29 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * Expected/checked values:
      * EntryNotFoundException expected
      */
+    
+    //3/2021 to run with EE7
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @ExpectedFFDC(value = { "com.ibm.ws.security.registry.EntryNotFoundException", "org.apache.ws.security.WSSecurityException" })
     @Test
-    public void testCxfCaller_mapToUserRegistry_User_notInRegistry_userIdentifierOmitted() throws Exception {
+    //Orig:
+    //public void testCxfCaller_mapToUserRegistry_User_notInRegistry_userIdentifierOmitted() throws Exception {
+    public void testCxfCaller_mapToUserRegistry_User_notInRegistry_userIdentifierOmittedEE7Only() throws Exception {
+       
+    	notfoundExceptionTest("server_2_caller_mapToUserRegistry_User_notInRegistry_userIdentifierOmitted.xml");
 
-        notfoundExceptionTest("server_2_caller_mapToUserRegistry_User_notInRegistry_userIdentifierOmitted.xml");
+    }
+    
+    //3/2021 to run with EE8
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException", "java.util.MissingResourceException" })//@AV999
+    @ExpectedFFDC(value = { "com.ibm.ws.security.registry.EntryNotFoundException" })//@AV999
+    @Test
+    public void testCxfCaller_mapToUserRegistry_User_notInRegistry_userIdentifierOmittedEE8Only() throws Exception {
 
+        //notfoundExceptionTest("server_2_caller_mapToUserRegistry_User_notInRegistry_userIdentifierOmitted_ee8.xml");
+    	notfoundExceptionTestEE8("server_2_caller_mapToUserRegistry_User_notInRegistry_userIdentifierOmitted_ee8.xml");
+    	
     }
 
     /*
@@ -1399,10 +2236,25 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * User: test_userIdentifier
      * Group: Local Server's group
      */
+    
+    //3/2021 to run with EE7
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @Test
-    public void testCxfCaller_mapToUserRegistry_User_inRegistry_userUniqueIdentifierOmitted() throws Exception {
+    //Orig:
+    //public void testCxfCaller_mapToUserRegistry_User_inRegistry_userUniqueIdentifierOmitted() throws Exception {
+    public void testCxfCaller_mapToUserRegistry_User_inRegistry_userUniqueIdentifierOmittedEE7Only() throws Exception {
+        
+    	generalPositiveTest("server_2_caller_mapToUserRegistry_User_inRegistry_userUniqueIdentifierOmitted.xml", defaultLocalRealm, defaultIDPIdentifierUser, defaultNullGroup);
 
-        generalPositiveTest("server_2_caller_mapToUserRegistry_User_inRegistry_userUniqueIdentifierOmitted.xml", defaultLocalRealm, defaultIDPIdentifierUser, defaultNullGroup);
+    }
+    
+    //3/2021 to run with EE8
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @AllowedFFDC(value = { "java.util.MissingResourceException" }) //@AV999
+    @Test
+    public void testCxfCaller_mapToUserRegistry_User_inRegistry_userUniqueIdentifierOmittedEE8Only() throws Exception {
+
+        generalPositiveTest("server_2_caller_mapToUserRegistry_User_inRegistry_userUniqueIdentifierOmitted_ee8.xml", defaultLocalRealm, defaultIDPIdentifierUser, defaultNullGroup);
 
     }
 
@@ -1418,11 +2270,28 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * Expected/checked values:
      * EntryNotFoundException expected
      */
+    
+    //3/2021 to run with EE7
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @ExpectedFFDC(value = { "com.ibm.ws.security.registry.EntryNotFoundException", "org.apache.ws.security.WSSecurityException" })
     @Test
-    public void testCxfCaller_mapToUserRegistry_User_notInRegistry_userUniqueIdentifierOmitted() throws Exception {
+    //Orig:
+    //public void testCxfCaller_mapToUserRegistry_User_notInRegistry_userUniqueIdentifierOmitted() throws Exception {
+    public void testCxfCaller_mapToUserRegistry_User_notInRegistry_userUniqueIdentifierOmittedEE7Only() throws Exception {
+       
+    	notfoundExceptionTest("server_2_caller_mapToUserRegistry_User_notInRegistry_userUniqueIdentifierOmitted.xml");
 
-        notfoundExceptionTest("server_2_caller_mapToUserRegistry_User_notInRegistry_userUniqueIdentifierOmitted.xml");
+    }
+    
+    //3/2021 to run with EE8
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException", "java.util.MissingResourceException" })//@AV999
+    @ExpectedFFDC(value = { "com.ibm.ws.security.registry.EntryNotFoundException" })//@AV999
+    @Test
+    public void testCxfCaller_mapToUserRegistry_User_notInRegistry_userUniqueIdentifierOmittedEE8Only() throws Exception {
+
+        //notfoundExceptionTest("server_2_caller_mapToUserRegistry_User_notInRegistry_userUniqueIdentifierOmitted_ee8.xml");
+    	notfoundExceptionTestEE8("server_2_caller_mapToUserRegistry_User_notInRegistry_userUniqueIdentifierOmitted_ee8.xml");
 
     }
 
@@ -1441,13 +2310,28 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * User: test_userIdentifier
      * Group: Local Server groups
      */
+    
+    //3/2021 to run with EE7
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @Test
-    public void testCxfCaller_mapToUserRegistry_User_inRegistry_groupIdentifierBad() throws Exception {
-
-        generalPositiveTest("server_2_caller_mapToUserRegistry_User_inRegistry_groupIdentifierBad.xml", defaultLocalRealm, defaultIDPIdentifierUser, defaultNullGroup);
+    //Orig:
+    //public void testCxfCaller_mapToUserRegistry_User_inRegistry_groupIdentifierBad() throws Exception {
+    public void testCxfCaller_mapToUserRegistry_User_inRegistry_groupIdentifierBadEE7Only() throws Exception {
+       
+    	generalPositiveTest("server_2_caller_mapToUserRegistry_User_inRegistry_groupIdentifierBad.xml", defaultLocalRealm, defaultIDPIdentifierUser, defaultNullGroup);
 
     }
 
+    //3/2021 to run with EE8
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @AllowedFFDC(value = { "java.util.MissingResourceException", "java.lang.ClassNotFoundException" }) //@AV999
+    @Test
+    public void testCxfCaller_mapToUserRegistry_User_inRegistry_groupIdentifierBadEE8Only() throws Exception {
+
+        generalPositiveTest("server_2_caller_mapToUserRegistry_User_inRegistry_groupIdentifierBad_ee8.xml", defaultLocalRealm, defaultIDPIdentifierUser, defaultNullGroup);
+
+    }
+    
     /*
      * config settings:
      * mapToUserRegistry = User
@@ -1460,14 +2344,31 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * Expected/checked values:
      * EntryNotFoundException expected
      */
+    
+    //3/2021 to run with EE7
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @ExpectedFFDC(value = { "com.ibm.ws.security.registry.EntryNotFoundException", "org.apache.ws.security.WSSecurityException" })
     @Test
-    public void testCxfCaller_mapToUserRegistry_User_notInRegistry_groupIdentifierBad() throws Exception {
-
-        notfoundExceptionTest("server_2_caller_mapToUserRegistry_User_notInRegistry_groupIdentifierBad.xml");
+    //Orig:
+    //public void testCxfCaller_mapToUserRegistry_User_notInRegistry_groupIdentifierBad() throws Exception {
+    public void testCxfCaller_mapToUserRegistry_User_notInRegistry_groupIdentifierBadEE7Only() throws Exception {
+        
+    	notfoundExceptionTest("server_2_caller_mapToUserRegistry_User_notInRegistry_groupIdentifierBad.xml");
 
     }
 
+    //3/2021 to run with EE8
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException", "java.util.MissingResourceException" })//@AV999
+    @ExpectedFFDC(value = { "com.ibm.ws.security.registry.EntryNotFoundException" }) //@AV999 START HERE
+    @Test
+    public void testCxfCaller_mapToUserRegistry_User_notInRegistry_groupIdentifierBadEE8Only() throws Exception {
+
+        //notfoundExceptionTest("server_2_caller_mapToUserRegistry_User_notInRegistry_groupIdentifierBad_ee8.xml");
+    	notfoundExceptionTestEE8("server_2_caller_mapToUserRegistry_User_notInRegistry_groupIdentifierBad_ee8.xml");
+    	
+    }
+    
     /*
      * config settings:
      * mapToUserRegistry = User
@@ -1482,10 +2383,25 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * User: test_userIdentifier
      * Group: Local Server groups
      */
+    
+    //3/2021 to run with EE7
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @Test
-    public void testCxfCaller_mapToUserRegistry_User_inRegistry_realmIdentifierBad() throws Exception {
+    //Orig:
+    //public void testCxfCaller_mapToUserRegistry_User_inRegistry_realmIdentifierBad() throws Exception {
+    public void testCxfCaller_mapToUserRegistry_User_inRegistry_realmIdentifierBadEE7Only() throws Exception {
+        
+    	generalPositiveTest("server_2_caller_mapToUserRegistry_User_inRegistry_realmIdentifierBad.xml", defaultLocalRealm, defaultIDPIdentifierUser, defaultLocalGroups);
 
-        generalPositiveTest("server_2_caller_mapToUserRegistry_User_inRegistry_realmIdentifierBad.xml", defaultLocalRealm, defaultIDPIdentifierUser, defaultLocalGroups);
+    }
+    
+    //3/2021 to run with EE8
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @AllowedFFDC(value = { "java.util.MissingResourceException" }) //@AV999
+    @Test
+    public void testCxfCaller_mapToUserRegistry_User_inRegistry_realmIdentifierBadEE8Only() throws Exception {
+
+        generalPositiveTest("server_2_caller_mapToUserRegistry_User_inRegistry_realmIdentifierBad_ee8.xml", defaultLocalRealm, defaultIDPIdentifierUser, defaultLocalGroups);
 
     }
 
@@ -1501,14 +2417,31 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * Expected/checked values:
      * EntryNotFoundException expected
      */
+    
+    //3/2021 to run with EE7
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @ExpectedFFDC(value = { "com.ibm.ws.security.registry.EntryNotFoundException", "org.apache.ws.security.WSSecurityException" })
     @Test
-    public void testCxfCaller_mapToUserRegistry_User_notInRegistry_realmIdentifierBad() throws Exception {
-
-        notfoundExceptionTest("server_2_caller_mapToUserRegistry_User_notInRegistry_realmIdentifierBad.xml");
+    //Orig:
+    //public void testCxfCaller_mapToUserRegistry_User_notInRegistry_realmIdentifierBad() throws Exception {
+    public void testCxfCaller_mapToUserRegistry_User_notInRegistry_realmIdentifierBadEE7Only() throws Exception {
+        
+    	notfoundExceptionTest("server_2_caller_mapToUserRegistry_User_notInRegistry_realmIdentifierBad.xml");
 
     }
 
+    //3/2021 to run with EE8
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException", "java.util.MissingResourceException" })//@AV999
+    @ExpectedFFDC(value = { "com.ibm.ws.security.registry.EntryNotFoundException" }) //@AV999
+    @Test
+    public void testCxfCaller_mapToUserRegistry_User_notInRegistry_realmIdentifierBadEE8Only() throws Exception {
+
+        //notfoundExceptionTest("server_2_caller_mapToUserRegistry_User_notInRegistry_realmIdentifierBad_ee8.xml");
+    	notfoundExceptionTestEE8("server_2_caller_mapToUserRegistry_User_notInRegistry_realmIdentifierBad_ee8.xml");
+
+    }
+    
     /*
      * config settings:
      * mapToUserRegistry = User
@@ -1521,11 +2454,27 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * Expected/checked values:
      * Bad Attribute exception - looking for userIdentifier in the message
      */
+    
+    //3/2021 to run with EE7
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" })
     @Test
-    public void testCxfCaller_mapToUserRegistry_User_inRegistry_userIdentifierBad() throws Exception {
+    //Orig:
+    //public void testCxfCaller_mapToUserRegistry_User_inRegistry_userIdentifierBad() throws Exception {
+    public void testCxfCaller_mapToUserRegistry_User_inRegistry_userIdentifierBadEE7Only() throws Exception {
+        
+    	badAttrValueTest("server_2_caller_mapToUserRegistry_User_inRegistry_userIdentifierBad.xml", userIdentifierString);
 
-        badAttrValueTest("server_2_caller_mapToUserRegistry_User_inRegistry_userIdentifierBad.xml", userIdentifierString);
+    }
+    
+    //3/2021 to run with EE8
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" })
+    @AllowedFFDC(value = { "java.util.MissingResourceException" }) //@AV999
+    @Test
+    public void testCxfCaller_mapToUserRegistry_User_inRegistry_userIdentifierBadEE8Only() throws Exception {
+
+        badAttrValueTest("server_2_caller_mapToUserRegistry_User_inRegistry_userIdentifierBad_ee8.xml", userIdentifierString);
 
     }
 
@@ -1541,14 +2490,29 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * Expected/checked values:
      * Bad Attribute exception - looking for userIdentifier in the message
      */
+    //3/2021 to run with EE7
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" })
     @Test
-    public void testCxfCaller_mapToUserRegistry_User_notInRegistry_userIdentifierBad() throws Exception {
-
-        badAttrValueTest("server_2_caller_mapToUserRegistry_User_notInRegistry_userIdentifierBad.xml", userIdentifierString);
+    //Orig:
+    //public void testCxfCaller_mapToUserRegistry_User_notInRegistry_userIdentifierBad() throws Exception {
+    public void testCxfCaller_mapToUserRegistry_User_notInRegistry_userIdentifierBadEE7Only() throws Exception {
+        
+    	badAttrValueTest("server_2_caller_mapToUserRegistry_User_notInRegistry_userIdentifierBad.xml", userIdentifierString);
 
     }
 
+    //3/2021 to run with EE8
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" })
+    @AllowedFFDC(value = { "java.util.MissingResourceException" }) //@AV999
+    @Test
+    public void testCxfCaller_mapToUserRegistry_User_notInRegistry_userIdentifierBadEE8Only() throws Exception {
+
+        badAttrValueTest("server_2_caller_mapToUserRegistry_User_notInRegistry_userIdentifierBad_ee8.xml", userIdentifierString);
+
+    }
+    
     /*
      * config settings:
      * mapToUserRegistry = User
@@ -1563,13 +2527,28 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * User: test_userIdentifier
      * Group: Local Server groups
      */
+    
+    //3/2021 to run with EE7
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @Test
-    public void testCxfCaller_mapToUserRegistry_User_inRegistry_userUniqueIdentifierBad() throws Exception {
-
-        generalPositiveTest("server_2_caller_mapToUserRegistry_User_inRegistry_userUniqueIdentifierBad.xml", defaultLocalRealm, defaultIDPIdentifierUser, defaultLocalGroups);
+    //Orig:
+    //public void testCxfCaller_mapToUserRegistry_User_inRegistry_userUniqueIdentifierBad() throws Exception {
+    public void testCxfCaller_mapToUserRegistry_User_inRegistry_userUniqueIdentifierBadEE7Only() throws Exception {
+        
+    	generalPositiveTest("server_2_caller_mapToUserRegistry_User_inRegistry_userUniqueIdentifierBad.xml", defaultLocalRealm, defaultIDPIdentifierUser, defaultLocalGroups);
 
     }
 
+    //3/2021 to run with EE8
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @AllowedFFDC(value = { "java.util.MissingResourceException" }) //@AV999
+    @Test
+    public void testCxfCaller_mapToUserRegistry_User_inRegistry_userUniqueIdentifierBadEE8Only() throws Exception {
+
+        generalPositiveTest("server_2_caller_mapToUserRegistry_User_inRegistry_userUniqueIdentifierBad_ee8.xml", defaultLocalRealm, defaultIDPIdentifierUser, defaultLocalGroups);
+
+    }
+    
     /*
      * config settings:
      * mapToUserRegistry = User
@@ -1582,12 +2561,28 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * Expected/checked values:
      * EntryNotFoundException expected
      */
+    
+    //3/2021 to run with EE7
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @ExpectedFFDC(value = { "com.ibm.ws.security.registry.EntryNotFoundException", "org.apache.ws.security.WSSecurityException" })
     @Test
-    public void testCxfCaller_mapToUserRegistry_User_notInRegistry_userUniqueIdentifierBad() throws Exception {
-
+    //Orig:
+    //public void testCxfCaller_mapToUserRegistry_User_notInRegistry_userUniqueIdentifierBad() throws Exception {
+    public void testCxfCaller_mapToUserRegistry_User_notInRegistry_userUniqueIdentifierBadEE7Only() throws Exception {
         notfoundExceptionTest("server_2_caller_mapToUserRegistry_User_notInRegistry_userUniqueIdentifierBad.xml");
 
     }
 
+    //3/2021 to run with EE8
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException", "java.util.MissingResourceException" })//@AV999
+    @ExpectedFFDC(value = { "com.ibm.ws.security.registry.EntryNotFoundException" }) //@AV999
+    @Test
+    public void testCxfCaller_mapToUserRegistry_User_notInRegistry_userUniqueIdentifierBadEE8Only() throws Exception {
+
+        //notfoundExceptionTest("server_2_caller_mapToUserRegistry_User_notInRegistry_userUniqueIdentifierBad_ee8.xml");
+        notfoundExceptionTestEE8("server_2_caller_mapToUserRegistry_User_notInRegistry_userUniqueIdentifierBad_ee8.xml");
+
+    }
+    
 }

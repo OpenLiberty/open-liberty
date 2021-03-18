@@ -14,6 +14,8 @@ package com.ibm.ws.wssecurity.fat.cxf.samltoken.common;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import componenttest.annotation.SkipForRepeat;
+
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLCommonTest;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLCommonTestHelpers;
@@ -64,10 +66,15 @@ public class CxfSSLSAMLBasicTests extends SAMLCommonTest {
      * Test should succeed in accessing the server side service.
      * 
      */
+    
+    //3/2021 to run with EE7
     @Mode(TestMode.LITE)
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @AllowedFFDC(value = { "java.lang.Exception" })
     @Test
-    public void testSAMLCxfSvcClient_TransportEnabled() throws Exception {
+    //Orig:
+    //public void testSAMLCxfSvcClient_TransportEnabled() throws Exception {	
+    public void testSAMLCxfSvcClient_TransportEnabledEE7Only() throws Exception {
 
         WebClient webClient = SAMLCommonTestHelpers.getWebClient();
 
@@ -79,7 +86,35 @@ public class CxfSSLSAMLBasicTests extends SAMLCommonTest {
         genericSAML(_testName, webClient, updatedTestSettings, standardFlow, helpers.setDefaultGoodSAMLCXFExpectations(null, flowType, updatedTestSettings, SAMLConstants.CXF_SSL_SAML_TOKEN_SERVICE));
 
     }
+    
+    //3/2021 to run with EE8
+    @Mode(TestMode.LITE)
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @AllowedFFDC(value = { "java.lang.Exception",  "java.util.MissingResourceException", "java.lang.ClassNotFoundException"}) //@AV999 TODO: look into CNFE
+    @Test
+    public void testSAMLCxfSvcClient_TransportEnabledEE8Only() throws Exception {	
 
+    	//3/2021
+    	if (testSAMLServer2 == null) {
+            //1 server reconfig
+    		testSAMLServer.reconfigServer(buildSPServerName("server_2_in_1_ee8.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
+    	} else {
+    	    //2 servers reconfig
+    		testSAMLServer2.reconfigServer("server_2_ee8.xml", _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
+    		testSAMLServer.reconfigServer("server_1_wss4j.xml", _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
+    	} //End 3/2021
+    	
+        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+
+        SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
+        updatedTestSettings.updatePartnerInSettings("sp1", true);
+        updatedTestSettings.setCXFSettings(_testName, null, servicePort, serviceSecurePort, "user1", "user1pwd", "SamlTokenTransportSecure",
+                "SamlTokenTransportSecurePort", "", "False", null, null);
+
+        genericSAML(_testName, webClient, updatedTestSettings, standardFlow, helpers.setDefaultGoodSAMLCXFExpectations(null, flowType, updatedTestSettings, SAMLConstants.CXF_SSL_SAML_TOKEN_SERVICE));
+
+    }
+    
     /**
      * TestDescription:
      * 
@@ -91,11 +126,19 @@ public class CxfSSLSAMLBasicTests extends SAMLCommonTest {
      * Test should fail as policy can't be enforced.
      * 
      */
+    
+    //3/2021 to run with EE7, then the corresponding error message is expected
     //1/20/2021 added FULL mode
     @Mode(TestMode.FULL)
+    //Ask Aruna if this is temporary?
+    //@Mode(TestMode.LITE)
+    //3/2021
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @AllowedFFDC(value = { "java.lang.Exception" })
     @Test
-    public void testSAMLCxfSvcClient_TransportEnabled_httpFromClient() throws Exception {
+    //3/2021 Orig:
+    //public void testSAMLCxfSvcClient_TransportEnabled_httpFromClient() throws Exception {
+    public void testSAMLCxfSvcClient_TransportEnabled_httpFromClientEE7Only() throws Exception {
 
         WebClient webClient = SAMLCommonTestHelpers.getWebClient();
 
@@ -104,10 +147,45 @@ public class CxfSSLSAMLBasicTests extends SAMLCommonTest {
         updatedTestSettings.setCXFSettings(_testName, null, servicePort, null, "user1", "user1pwd", "SamlTokenTransportSecure",
                 "SamlTokenTransportSecurePort", "", "False", null, null);
 
+        
         genericSAML(_testName, webClient, updatedTestSettings, standardFlow, helpers.setErrorSAMLCXFExpectations(null, flowType, updatedTestSettings, SAMLConstants.CXF_SAML_TOKEN_SERVICE_HTTPS_NOT_USED));
-
+       
     }
 
+    //3/2021 to run with EE8, then the corresponding error message is expected
+    //1/20/2021 added FULL mode
+    @Mode(TestMode.FULL)
+    //Ask Aruna if this is temporary?
+    //@Mode(TestMode.LITE)
+    //3/2021
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @AllowedFFDC(value = { "java.lang.Exception" })
+    @Test
+    public void testSAMLCxfSvcClient_TransportEnabled_httpFromClientEE8Only() throws Exception {
+
+    	//3/2021
+    	if (testSAMLServer2 == null) {
+            //1 server reconfig
+    		testSAMLServer.reconfigServer(buildSPServerName("server_2_in_1_ee8.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
+    	} else {
+    	    //2 servers reconfig
+    		testSAMLServer2.reconfigServer("server_2_ee8.xml", _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
+    		testSAMLServer.reconfigServer("server_1_wss4j.xml", _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
+    	} //End 3/2021
+    	
+        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+
+        SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
+        updatedTestSettings.updatePartnerInSettings("sp1", true);
+        updatedTestSettings.setCXFSettings(_testName, null, servicePort, null, "user1", "user1pwd", "SamlTokenTransportSecure",
+                "SamlTokenTransportSecurePort", "", "False", null, null);
+
+        //3/2021
+        //@AV999
+        String CXF_SAML_TOKEN_SERVICE_HTTPS_NOT_USED = "HttpsToken could not be asserted: Not an HTTPs connection"; // @AV999 slightly different error with new runtime
+        genericSAML(_testName, webClient, updatedTestSettings, standardFlow, helpers.setErrorSAMLCXFExpectations(null, flowType, updatedTestSettings, CXF_SAML_TOKEN_SERVICE_HTTPS_NOT_USED));
+    }
+    
     /**
      * TestDescription:
      * 
@@ -120,10 +198,14 @@ public class CxfSSLSAMLBasicTests extends SAMLCommonTest {
      * "more secure" than the server
      * 
      */
+    //3/2021 to run with EE7
+    @SkipForRepeat(SkipForRepeat.EE8_FEATURES)
     @Mode(TestMode.LITE)
     @AllowedFFDC(value = { "java.lang.Exception" })
     @Test
-    public void testSAMLCxfSvcClient_TransportNotEnabled_httpsFromClient() throws Exception {
+    //Orig:
+    //public void testSAMLCxfSvcClient_TransportNotEnabled_httpsFromClient() throws Exception {
+    public void testSAMLCxfSvcClient_TransportNotEnabled_httpsFromClientEE7Only() throws Exception {
 
         WebClient webClient = SAMLCommonTestHelpers.getWebClient();
 
@@ -136,4 +218,26 @@ public class CxfSSLSAMLBasicTests extends SAMLCommonTest {
 
     }
 
+    //3/2021 to run with EE8
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    @Mode(TestMode.LITE)
+    @AllowedFFDC(value = { "java.lang.Exception", "java.util.MissingResourceException" })
+    @Test
+    public void testSAMLCxfSvcClient_TransportNotEnabled_httpsFromClientEE8Only() throws Exception {
+
+    	//3/2021
+    	testSAMLServer2.reconfigServer("server_2_ee8.xml", _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
+		testSAMLServer.reconfigServer("server_1_wss4j.xml", _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
+		
+        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+
+        SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
+        updatedTestSettings.updatePartnerInSettings("sp1", true);
+        updatedTestSettings.setCXFSettings(_testName, null, servicePort, serviceSecurePort, "user1", "user1pwd", "SAMLSOAPService2",
+                "SAMLSoapPort2", "", "False", null, null);
+
+        genericSAML(_testName, webClient, updatedTestSettings, standardFlow, helpers.setDefaultGoodSAMLCXFExpectations(null, flowType, updatedTestSettings));
+
+    }
+    
 }

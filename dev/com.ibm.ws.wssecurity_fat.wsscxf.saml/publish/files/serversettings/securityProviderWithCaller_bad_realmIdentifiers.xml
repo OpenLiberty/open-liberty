@@ -3,8 +3,11 @@
 		id="default"
 		ws-security.timestamp.timeToLive="60"
 		ws-security.timestamp.futureTimeToLive="60"
+		ws-security.return.security.error="true"
 		ws-security.cache.config.file="${server.config.dir}/cxf-ehcache.xml"
 	>
+	<!-- 3/2021 add ws-security.return.security.error="true" -->
+	
 		<signatureProperties
 			org.apache.ws.security.crypto.merlin.keystore.type="jks"
 			org.apache.ws.security.crypto.merlin.keystore.password="Liberty"
