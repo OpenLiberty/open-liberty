@@ -735,25 +735,7 @@ mergeJVMOptions()
 readEnvFile()
 {
   if [ -f "$1" ]; then
-    saveIFS=$IFS
-    IFS=$newline
-    for line in `readNativeFile "$1" '[#_A-Za-z=]' | tr -d '\r'`; do
-      case $line in
-      \#*);;
-      *=*)
-        # Only accept alphanumeric variable names to avoid eval complexities.
-        if var=`safeEcho "$line" | sed -e 's/^\([a-zA-Z0-9_][a-zA-Z0-9_]*\)=.*/\1/'`; then
-           case $var in
-	   *=*)
-               SERVER_ENV_SETUP_FAILURE="${var} ${SERVER_ENV_SETUP_FAILURE}" ;;
-           *)
-              extractValueAndEscapeForEval "${line}"
-              eval "${var}=${escapeForEvalResult}; export ${var}" ;;
-	   esac
-        fi
-      esac
-    done
-    IFS=$saveIFS
+     eval ". \"$1\""
   fi
 }
 
