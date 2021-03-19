@@ -2002,10 +2002,10 @@ public class ScheduleExpressionParserTest {
                           "2009-03-08 01:00:00 America/Chicago",
                           "2009-03-08 03:00:00 America/Chicago");
         verifyNextTimeout(new ScheduleExpression().hour("2").timezone("America/Chicago"),
-                          "2009-03-08 01:00:00 America/Chicago",
+                          "2009-03-07 02:00:00 America/Chicago",
                           "2009-03-09 02:00:00 America/Chicago");
         verifyNextTimeout(new ScheduleExpression().hour("2-4").timezone("America/Chicago"),
-                          "2009-03-08 01:00:00 America/Chicago",
+                          "2009-03-07 04:00:00 America/Chicago",
                           "2009-03-08 03:00:00 America/Chicago");
         verifyNextTimeout(new ScheduleExpression().hour("2").minute("*").timezone("America/Chicago"),
                           "2009-03-08 01:59:00 America/Chicago",
