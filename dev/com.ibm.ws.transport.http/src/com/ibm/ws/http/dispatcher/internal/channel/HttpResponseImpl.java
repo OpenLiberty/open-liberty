@@ -173,7 +173,7 @@ public class HttpResponseImpl implements HttpResponse {
      */
     @Override
     public HttpOutputStreamImpl getBody() {
-        if (null == this.body) {
+        if (isNewBodyNeeded()) {
             if (HttpDispatcher.useEE7Streams()) {
                 this.body = new HttpOutputStreamEE7(this.isc);
             } else {
@@ -188,6 +188,22 @@ public class HttpResponseImpl implements HttpResponse {
             }
         }
         return this.body;
+    }
+
+    /**
+     * Check to see if the output stream (body) instance is correct for the configured servlet version
+     *
+     * @return true if the output stream needs to be initialized
+     */
+    private boolean isNewBodyNeeded() {
+        if (null != this.body) {
+            boolean useEE7Streams = HttpDispatcher.useEE7Streams();
+            boolean bodyIsEE7Stream = (this.body instanceof HttpOutputStreamEE7);
+            if ((bodyIsEE7Stream && useEE7Streams) || (!bodyIsEE7Stream && !useEE7Streams)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /*
