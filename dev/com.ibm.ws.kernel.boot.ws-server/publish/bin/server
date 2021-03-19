@@ -464,7 +464,7 @@ checkServer()
 ## installEnv: Set variables for a non-server or nonexistent server command.
 installEnv()
 {
-  readServerEnv "${WLP_INSTALL_DIR}/etc/server.env"
+  readEnvFile "${WLP_INSTALL_DIR}/etc/server.env"
   installEnvDefaults
   serverEnvDefaults
 }
@@ -474,8 +474,8 @@ installEnv()
 ##                     server command.
 installEnvDefaults()
 {
-  readServerEnv "${WLP_INSTALL_DIR}/java/java.env"
-  readServerEnv "${WLP_INSTALL_DIR}/etc/default.env"
+  readEnvFile "${WLP_INSTALL_DIR}/java/java.env"
+  readEnvFile "${WLP_INSTALL_DIR}/etc/default.env"
 
   if [ -z "${WLP_USER_DIR}" ]
   then
@@ -632,11 +632,11 @@ serverEnvDefaults()
 ## serverEnv: Set variables for an existing server.
 serverEnv()
 {
-  readServerEnv "${WLP_INSTALL_DIR}/etc/server.env"
+  readEnvFile "${WLP_INSTALL_DIR}/etc/server.env"
   installEnvDefaults
 
-  readServerEnv "${WLP_USER_DIR}/shared/server.env"
-  readServerEnv "${SERVER_CONFIG_DIR}/server.env"
+  readEnvFile "${WLP_USER_DIR}/shared/server.env"
+  readEnvFile "${SERVER_CONFIG_DIR}/server.env"
   serverEnvDefaults
 }
 
@@ -731,8 +731,8 @@ mergeJVMOptions()
 }
 
 ##
-## readServerEnv: Read server.env file and export environment variables.
-readServerEnv()
+## readEnvFile: Read config file (eg. server.env, etc/default.env, etc/java.env) and export environment variables.
+readEnvFile()
 {
   if [ -f "$1" ]; then
     saveIFS=$IFS
