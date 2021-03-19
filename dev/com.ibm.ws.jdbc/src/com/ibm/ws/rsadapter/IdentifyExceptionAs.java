@@ -18,8 +18,8 @@ public enum IdentifyExceptionAs {
     // TODO AuthorizationError(null),
     None("java.lang.Void"),
     StaleConnection("com.ibm.websphere.ce.cm.StaleConnectionException"),
-    StaleStatement("com.ibm.websphere.ce.cm.StaleStatementException");
-    // TODO Unsupported(null);
+    StaleStatement("com.ibm.websphere.ce.cm.StaleStatementException"),
+    Unsupported(null);
 
     public final String legacyClassName;
 

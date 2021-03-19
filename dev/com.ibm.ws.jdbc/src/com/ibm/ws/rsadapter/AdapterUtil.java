@@ -1399,24 +1399,6 @@ public class AdapterUtil {
             return false;
         }
     }
-
-    /**
-     * Identifies if an exception indicates an unsupported operation.
-     * 
-     * @param sqle the exception.
-     * @return true if unsupported, otherwise false.
-     */
-    public static boolean isUnsupportedException(SQLException sqle){
-        if(sqle instanceof SQLFeatureNotSupportedException)
-            return true;
-        
-        String state = sqle.getSQLState() == null ? "" : sqle.getSQLState();
-        int code = sqle.getErrorCode();
-
-        return state.startsWith("0A") || 0x0A000 == code // standard code for unsupported operation
-            || state.startsWith("HYC00") // ODBC error code
-            || code == -79700 && "IX000".equals(state); // Informix specific
-    }
     
     public static ClassLoader getClassLoaderWithPriv(final Library lib) {
         if(System.getSecurityManager() == null)

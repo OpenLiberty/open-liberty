@@ -396,17 +396,17 @@ public class DatabaseHelper {
                 String target = combo == null ? null : config.identifyExceptions.get(combo);
                 if (target == null) {
                     target = config.identifyExceptions.get(errorCode);
-                    if (target == null)
+                    if (target == null && sqlState != null)
                         target = config.identifyExceptions.get(sqlState);
                 }
                 if (target == null) {
                     // No overrides, use built-in handling
-                    stale = sqlX instanceof SQLRecoverableException ||
-                                    sqlX instanceof SQLNonTransientConnectionException ||
-                                    sqlX instanceof SQLTransientConnectionException && failoverOccurred(sqlX) ||
-                                    combo != null && staleConCodes.contains(combo) ||
-                                    staleConCodes.contains(errorCode) ||
-                                    staleConCodes.contains(sqlState);
+                    stale = sqlX instanceof SQLRecoverableException
+                                    || sqlX instanceof SQLNonTransientConnectionException
+                                    || sqlX instanceof SQLTransientConnectionException && failoverOccurred(sqlX)
+                                    || combo != null && staleConCodes.contains(combo)
+                                    || staleConCodes.contains(errorCode)
+                                    || sqlState != null && staleConCodes.contains(sqlState);
                 } else {
                     // Override was found, need to interpret it
                     stale = IdentifyExceptionAs.StaleConnection.name().equals(target);
@@ -453,14 +453,14 @@ public class DatabaseHelper {
                 String target = combo == null ? null : config.identifyExceptions.get(combo);
                 if (target == null) {
                     target = config.identifyExceptions.get(errorCode);
-                    if (target == null)
+                    if (target == null && sqlState != null)
                         target = config.identifyExceptions.get(sqlState);
                 }
                 if (target == null) {
                     // No overrides, use built-in handling
-                    stale = combo != null && staleStmtCodes.contains(combo) ||
-                                    staleStmtCodes.contains(errorCode) ||
-                                    staleStmtCodes.contains(sqlState);
+                    stale = combo != null && staleStmtCodes.contains(combo)
+                                    || staleStmtCodes.contains(errorCode)
+                                    || sqlState != null && staleStmtCodes.contains(sqlState);
                 } else {
                     // Override was found, need to interpret it
                     stale = IdentifyExceptionAs.StaleStatement.name().equals(target);
@@ -482,6 +482,45 @@ public class DatabaseHelper {
                     Tr.debug(this, tc, "isStaleStatement? " + t.getClass().getName(), stale);
             }
         return stale;
+    }
+
+    /**
+     * Identifies if an exception indicates an unsupported operation.
+     *
+     * @param sqle the exception.
+     * @return true if unsupported, otherwise false.
+     */
+    public final boolean isUnsupported(SQLException sqlX) {
+        DSConfig config = mcf.dsConfig.get();
+        boolean unsupported = false;
+
+        String sqlState = sqlX.getSQLState();
+        int errorCode = sqlX.getErrorCode();
+        SQLStateAndCode combo = sqlState == null ? null : new SQLStateAndCode(sqlState, errorCode);
+
+        // First look for identifyException overrides
+        String target = combo == null ? null : config.identifyExceptions.get(combo);
+        if (target == null) {
+            target = config.identifyExceptions.get(errorCode);
+            if (target == null && sqlState != null)
+                target = config.identifyExceptions.get(sqlState);
+        }
+        if (target == null) {
+            // No overrides, use built-in handling
+            // TODO use legacy DataStoreHelper instead if present
+            unsupported = sqlX instanceof SQLFeatureNotSupportedException
+                            || sqlState != null && sqlState.startsWith("0A")
+                            || 0x0A000 == errorCode // standard code for unsupported operation
+                            || sqlState != null && sqlState.startsWith("HYC00") // ODBC error code
+                            || errorCode == -79700 && "IX000".equals(sqlState); // Informix specific
+        } else {
+            // Override was found, need to interpret it
+            unsupported = IdentifyExceptionAs.Unsupported.name().equals(target);
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "isUnsupported? " + sqlState + ' ' + errorCode + ' ' + sqlX.getClass().getName(), unsupported);
+        return unsupported;
     }
 
     /**

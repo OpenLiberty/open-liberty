@@ -501,8 +501,9 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
                 if (!className.contains("."))
                     try {
                         IdentifyExceptionAs identifyAs = IdentifyExceptionAs.valueOf(className);
-                        if (identifyAs.legacyClassName != null)
-                            className = identifyAs.legacyClassName;
+                        if (identifyAs.legacyClassName == null)
+                            continue; // no equivalent legacy exception class, so ignore it
+                        className = identifyAs.legacyClassName;
                     } catch (IllegalArgumentException x) {
                         // probably an error, but maybe the user has a custom exception class without a package, so continue on...
                     }

@@ -366,12 +366,12 @@ public class DataDirectConnectSQLServerHelper extends DatabaseHelper {
                 int errorCode = sqlX.getErrorCode();
                 SQLStateAndCode combo = sqlState == null ? null : new SQLStateAndCode(sqlState, errorCode);
 
-                if (config.identifyExceptions.get(combo) == null &&
-                                config.identifyExceptions.get(errorCode) == null &&
-                                config.identifyExceptions.get(sqlState) == null)
+                if ((combo == null || config.identifyExceptions.get(combo) == null)
+                                && config.identifyExceptions.get(errorCode) == null
+                                && (sqlState == null || config.identifyExceptions.get(sqlState) == null))
                     stale = isDataDirectExp(ex)
-                                    ? staleDDErrorCodes.contains(sqlX.getErrorCode()) || staleDDSQLStates.contains(sqlX.getSQLState())
-                                    : staleMSErrorCodes.contains(sqlX.getErrorCode());
+                                    ? staleDDErrorCodes.contains(errorCode) || staleDDSQLStates.contains(sqlState)
+                                    : staleMSErrorCodes.contains(errorCode);
                 // else already checked by super.isConnectionError
 
                 if (isTraceOn && tc.isDebugEnabled())
