@@ -1190,7 +1190,7 @@ public class AdapterUtil {
                 mappedX = mcf.dataStoreHelper.mapException(sqlX);
                 mapsToStaleConnection = isLegacyException(mappedX, IdentifyExceptionAs.StaleConnection.legacyClassName);
                 if (tc.isDebugEnabled())
-                    Tr.debug(tc, "mapped to " + mappedX.getClass().getName());
+                    Tr.debug(tc, mappedX == sqlX ? "not replaced" : ("mapped to " + mappedX.getClass().getName()));
                 // Legacy code does not replace BatchUpdateException
                 if (sqlX instanceof BatchUpdateException)
                     mappedX = sqlX;

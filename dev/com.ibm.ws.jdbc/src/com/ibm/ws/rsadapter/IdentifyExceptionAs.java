@@ -15,7 +15,7 @@ package com.ibm.ws.rsadapter;
  * Values for <code>identifyException as=...</code>.
  */
 public enum IdentifyExceptionAs {
-    // TODO AuthorizationError(null),
+    AuthorizationError(null),
     None("java.lang.Void"),
     StaleConnection("com.ibm.websphere.ce.cm.StaleConnectionException"),
     StaleStatement("com.ibm.websphere.ce.cm.StaleStatementException"),

@@ -51,13 +51,15 @@
     <properties databaseName="memory:testdb" createDatabase="create"
                 supportsNetworkTimeout="false" supportsSchema="false" supportsTypeMap="false"/> <!-- rely on identifyExceptions to determine lack of support -->
     <heritageSettings replaceExceptions="true"/>
-    <IdentifyException as="None" sqlState="S1000"/>
+    <identifyException as="None" sqlState="S1000"/>
+    <identifyException as="AuthorizationError" errorCode="28"/>
+    <identifyException as="StaleConnection" errorCode="8008"/>
     <identifyException as="StaleConnection" errorCode="8008"/>
     <identifyException as="StaleStatement" sqlState="22013"/>
     <identifyException as="test.jdbc.heritage.driver.helper.HeritageDBDuplicateKeyException" sqlState="2300H"/>
     <identifyException as="test.jdbc.heritage.driver.helper.HeritageDBFeatureUnavailableException" sqlState="0A00H"/>
     <identifyException as="Unsupported" errorCode="-40960"/>
-    <identifyException as="Unsupported" sqlState="HY000" errorCode="10"/>
+    <identifyException as="Unsupported" errorCode="10"/>
     <identifyException as="Unsupported" sqlState="HDISA"/>
   </dataSource>
 

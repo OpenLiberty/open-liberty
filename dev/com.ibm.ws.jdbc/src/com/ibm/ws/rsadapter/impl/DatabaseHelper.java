@@ -422,10 +422,10 @@ public class DatabaseHelper {
                     }
                 }
                 if (isTraceOn && tc.isDebugEnabled())
-                    Tr.debug(this, tc, "isConnectionError? " + sqlState + ' ' + errorCode + ' ' + sqlX.getClass().getName(), stale);
+                    Tr.debug(this, tc, "isConnectionError? " + stale + ": " + sqlState + ' ' + errorCode + ' ' + sqlX.getClass().getName());
             } else {
                 if (isTraceOn && tc.isDebugEnabled())
-                    Tr.debug(this, tc, "isConnectionError? " + t.getClass().getName(), stale);
+                    Tr.debug(this, tc, "isConnectionError? " + stale + ": " + t.getClass().getName());
             }
         return stale;
     }
@@ -476,10 +476,10 @@ public class DatabaseHelper {
                     }
                 }
                 if (trace && tc.isDebugEnabled())
-                    Tr.debug(this, tc, "isStaleStatement? " + sqlState + ' ' + errorCode + ' ' + sqlX.getClass().getName(), stale);
+                    Tr.debug(this, tc, "isStaleStatement? " + stale + ": " + sqlState + ' ' + errorCode + ' ' + sqlX.getClass().getName());
             } else {
                 if (trace && tc.isDebugEnabled())
-                    Tr.debug(this, tc, "isStaleStatement? " + t.getClass().getName(), stale);
+                    Tr.debug(this, tc, "isStaleStatement? " + stale + ": " + t.getClass().getName());
             }
         return stale;
     }
@@ -519,7 +519,7 @@ public class DatabaseHelper {
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            Tr.debug(this, tc, "isUnsupported? " + sqlState + ' ' + errorCode + ' ' + sqlX.getClass().getName(), unsupported);
+            Tr.debug(this, tc, "isUnsupported? " + unsupported + ": " + sqlState + ' ' + errorCode + ' ' + sqlX.getClass().getName());
         return unsupported;
     }
 
@@ -1134,10 +1134,10 @@ public class DatabaseHelper {
      * @param SQLException the exception to check.
      * @return boolean true if determined to be an authorization exception, otherwise false.
      */
-    public boolean isAnAuthorizationException(SQLException x) {
+    public final boolean isAnAuthorizationException(SQLException x) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
-        if (isTraceOn && tc.isEntryEnabled())
-            Tr.entry(this, tc, "isAnAuthorizationException", x);
+
+        DSConfig config = mcf.dsConfig.get();
 
         boolean isAuthError = false;
         LinkedList<SQLException> stack = new LinkedList<SQLException>();
@@ -1148,7 +1148,27 @@ public class DatabaseHelper {
         for (int depth = 0; depth < 20 && !isAuthError && !stack.isEmpty(); depth++) {
             x = stack.pop();
 
-            isAuthError |= isAuthException(x);
+            String sqlState = x.getSQLState();
+            int errorCode = x.getErrorCode();
+            SQLStateAndCode combo = sqlState == null ? null : new SQLStateAndCode(sqlState, errorCode);
+
+            // First look for identifyException overrides
+            String target = combo == null ? null : config.identifyExceptions.get(combo);
+            if (target == null) {
+                target = config.identifyExceptions.get(errorCode);
+                if (target == null && sqlState != null)
+                    target = config.identifyExceptions.get(sqlState);
+            }
+            if (target == null) {
+                // No overrides, use built-in handling
+                isAuthError = isAuthException(x);
+            } else {
+                // Override was found, need to interpret it
+                isAuthError = IdentifyExceptionAs.AuthorizationError.name().equals(target);
+            }
+
+            if (isTraceOn && tc.isDebugEnabled())
+                Tr.debug(this, tc, "isAnAuthorizationException? " + isAuthError + ": " + sqlState + ' ' + errorCode + ' ' + x.getClass().getName());
 
             // Add the chained exceptions to the stack.
 
@@ -1158,8 +1178,6 @@ public class DatabaseHelper {
                 stack.push((SQLException) x.getCause());
         }
 
-        if (isTraceOn && tc.isEntryEnabled())
-            Tr.exit(this, tc, "isAnAuthorizationException", isAuthError);
         return isAuthError;
     }
 
