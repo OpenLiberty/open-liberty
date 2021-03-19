@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -152,9 +152,21 @@ class LdapIdentityStoreDefinitionWrapper {
      */
     @FFDCIgnore(IllegalArgumentException.class)
     private String evaluateBindDn(boolean immediateOnly) {
+        String bindDn = this.idStoreDefinition.bindDn();
         try {
-            return elHelper.processString("bindDn", this.idStoreDefinition.bindDn(), immediateOnly);
+            return elHelper.processString("bindDn", bindDn, immediateOnly);
         } catch (IllegalArgumentException e) {
+            /*
+             * If deferred expression and called during initialization, return null so the expression can be re-evaluated
+             * again later.
+             */
+            if (immediateOnly && elHelper.isDeferredExpression(bindDn)) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "evaluateBindDn", "Returning null since bindDn is a deferred expression and this is called on initialization.");
+                }
+                return null;
+            }
+            
             if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
                 Tr.warning(tc, "JAVAEESEC_WARNING_IDSTORE_CONFIG", new Object[] { "bindDn", "" });
             }
@@ -174,10 +186,22 @@ class LdapIdentityStoreDefinitionWrapper {
     @FFDCIgnore(IllegalArgumentException.class)
     private ProtectedString evaluateBindDnPassword(boolean immediateOnly) {
         String result;
+        String bindDnPassword = this.idStoreDefinition.bindDnPassword();
         try {
-            result = elHelper.processString("bindDnPassword", this.idStoreDefinition.bindDnPassword(), immediateOnly, true);
+            result = elHelper.processString("bindDnPassword", bindDnPassword, immediateOnly, true);
 
         } catch (IllegalArgumentException e) {
+            /*
+             * If deferred expression and called during initialization, return null so the expression can be re-evaluated
+             * again later.
+             */
+            if (immediateOnly && elHelper.isDeferredExpression(bindDnPassword)) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "evaluateBindDnPassword", "Returning null since bindDnPassword is a deferred expression and this is called on initialization.");
+                }
+                return null;
+            }
+            
             if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
                 Tr.warning(tc, "JAVAEESEC_WARNING_IDSTORE_CONFIG", new Object[] { "bindDnPassword", "" });
             }
@@ -197,9 +221,22 @@ class LdapIdentityStoreDefinitionWrapper {
      */
     @FFDCIgnore(IllegalArgumentException.class)
     private String evaluateCallerBaseDn(boolean immediateOnly) {
+        
+        String callerBaseDn = this.idStoreDefinition.callerBaseDn();
         try {
-            return elHelper.processString("callerBaseDn", this.idStoreDefinition.callerBaseDn(), immediateOnly);
+            return elHelper.processString("callerBaseDn", callerBaseDn, immediateOnly);
         } catch (IllegalArgumentException e) {
+            /*
+             * If deferred expression and called during initialization, return null so the expression can be re-evaluated
+             * again later.
+             */
+            if (immediateOnly && elHelper.isDeferredExpression(callerBaseDn)) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "evaluateCallerBaseDn", "Returning null since callerBaseDn is a deferred expression and this is called on initialization.");
+                }
+                return null;
+            }
+            
             if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
                 Tr.warning(tc, "JAVAEESEC_WARNING_IDSTORE_CONFIG", new Object[] { "callerBaseDn", "" });
             }
@@ -218,9 +255,21 @@ class LdapIdentityStoreDefinitionWrapper {
      */
     @FFDCIgnore(IllegalArgumentException.class)
     private String evaluateCallerNameAttribute(boolean immediateOnly) {
+        String callerNameAttribute = this.idStoreDefinition.callerNameAttribute();
         try {
-            return elHelper.processString("callerNameAttribute", this.idStoreDefinition.callerNameAttribute(), immediateOnly);
+            return elHelper.processString("callerNameAttribute", callerNameAttribute, immediateOnly);
         } catch (IllegalArgumentException e) {
+            /*
+             * If deferred expression and called during initialization, return null so the expression can be re-evaluated
+             * again later.
+             */
+            if (immediateOnly && elHelper.isDeferredExpression(callerNameAttribute)) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "evaluateCallerNameAttribute", "Returning null since callerNameAttribute is a deferred expression and this is called on initialization.");
+                }
+                return null;
+            }
+            
             if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
                 Tr.warning(tc, "JAVAEESEC_WARNING_IDSTORE_CONFIG", new Object[] { "callerNameAttribute", "uid" });
             }
@@ -239,9 +288,21 @@ class LdapIdentityStoreDefinitionWrapper {
      */
     @FFDCIgnore(IllegalArgumentException.class)
     private String evaluateCallerSearchBase(boolean immediateOnly) {
+        String callerSearchBase = this.idStoreDefinition.callerSearchBase();
         try {
-            return elHelper.processString("callerSearchBase", this.idStoreDefinition.callerSearchBase(), immediateOnly);
+            return elHelper.processString("callerSearchBase", callerSearchBase, immediateOnly);
         } catch (IllegalArgumentException e) {
+            /*
+             * If deferred expression and called during initialization, return null so the expression can be re-evaluated
+             * again later.
+             */
+            if (immediateOnly && elHelper.isDeferredExpression(callerSearchBase)) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "evaluateCallerSearchBase", "Returning null since callerSearchBase is a deferred expression and this is called on initialization.");
+                }
+                return null;
+            }
+            
             if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
                 Tr.warning(tc, "JAVAEESEC_WARNING_IDSTORE_CONFIG", new Object[] { "callerSearchBase", "" });
             }
@@ -260,9 +321,21 @@ class LdapIdentityStoreDefinitionWrapper {
      */
     @FFDCIgnore(IllegalArgumentException.class)
     private String evaluateCallerSearchFilter(boolean immediateOnly) {
+        String callerSearchFilter = this.idStoreDefinition.callerSearchFilter();
         try {
-            return elHelper.processString("callerSearchFilter", this.idStoreDefinition.callerSearchFilter(), immediateOnly);
+            return elHelper.processString("callerSearchFilter", callerSearchFilter, immediateOnly);
         } catch (IllegalArgumentException e) {
+            /*
+             * If deferred expression and called during initialization, return null so the expression can be re-evaluated
+             * again later.
+             */
+            if (immediateOnly && elHelper.isDeferredExpression(callerSearchFilter)) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "evaluateCallerSearchFilter", "Returning null since callerSearchFilter is a deferred expression and this is called on initialization.");
+                }
+                return null;
+            }
+            
             if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
                 Tr.warning(tc, "JAVAEESEC_WARNING_IDSTORE_CONFIG", new Object[] { "callerSearchFilter", "" });
             }
@@ -281,10 +354,22 @@ class LdapIdentityStoreDefinitionWrapper {
      */
     @FFDCIgnore(IllegalArgumentException.class)
     private LdapSearchScope evaluateCallerSearchScope(boolean immediateOnly) {
+        String callerSearchScopeExpression = this.idStoreDefinition.callerSearchScopeExpression();
         try {
-            return elHelper.processLdapSearchScope("callerSearchScopeExpression", this.idStoreDefinition.callerSearchScopeExpression(), this.idStoreDefinition.callerSearchScope(),
+            return elHelper.processLdapSearchScope("callerSearchScopeExpression", callerSearchScopeExpression, this.idStoreDefinition.callerSearchScope(),
                                                    immediateOnly);
         } catch (IllegalArgumentException e) {
+            /*
+             * If deferred expression and called during initialization, return null so the expression can be re-evaluated
+             * again later.
+             */
+            if (immediateOnly && elHelper.isDeferredExpression(callerSearchScopeExpression)) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "evaluateCallerSearchScope", "Returning null since callerSearchScopeExpression is a deferred expression and this is called on initialization.");
+                }
+                return null;
+            }
+            
             if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
                 Tr.warning(tc, "JAVAEESEC_WARNING_IDSTORE_CONFIG", new Object[] { "callerSearchScope/callerSearchScopeExpression", "LdapSearchScope.SUBTREE" });
             }
@@ -303,9 +388,21 @@ class LdapIdentityStoreDefinitionWrapper {
      */
     @FFDCIgnore(IllegalArgumentException.class)
     private String evaluateGroupMemberAttribute(boolean immediateOnly) {
+        String groupMemberAttribute = this.idStoreDefinition.groupMemberAttribute();
         try {
-            return elHelper.processString("groupMemberAttribute", this.idStoreDefinition.groupMemberAttribute(), immediateOnly);
+            return elHelper.processString("groupMemberAttribute", groupMemberAttribute, immediateOnly);
         } catch (IllegalArgumentException e) {
+            /*
+             * If deferred expression and called during initialization, return null so the expression can be re-evaluated
+             * again later.
+             */
+            if (immediateOnly && elHelper.isDeferredExpression(groupMemberAttribute)) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "evaluateGroupMemberAttribute", "Returning null since groupMemberAttribute is a deferred expression and this is called on initialization.");
+                }
+                return null;
+            }
+            
             if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
                 Tr.warning(tc, "JAVAEESEC_WARNING_IDSTORE_CONFIG", new Object[] { "groupMemberAttribute", "member" });
             }
@@ -324,9 +421,21 @@ class LdapIdentityStoreDefinitionWrapper {
      */
     @FFDCIgnore(IllegalArgumentException.class)
     private String evaluateGroupMemberOfAttribute(boolean immediateOnly) {
+        String groupMemberOfAttribute = this.idStoreDefinition.groupMemberOfAttribute();
         try {
-            return elHelper.processString("groupMemberOfAttribute", this.idStoreDefinition.groupMemberOfAttribute(), immediateOnly);
+            return elHelper.processString("groupMemberOfAttribute", groupMemberOfAttribute, immediateOnly);
         } catch (IllegalArgumentException e) {
+            /*
+             * If deferred expression and called during initialization, return null so the expression can be re-evaluated
+             * again later.
+             */
+            if (immediateOnly && elHelper.isDeferredExpression(groupMemberOfAttribute)) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "evaluateGroupMemberOfAttribute", "Returning null since groupMemberOfAttribute is a deferred expression and this is called on initialization.");
+                }
+                return null;
+            }
+            
             if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
                 Tr.warning(tc, "JAVAEESEC_WARNING_IDSTORE_CONFIG", new Object[] { "groupMemberOfAttribute", "memberOf" });
             }
@@ -345,9 +454,21 @@ class LdapIdentityStoreDefinitionWrapper {
      */
     @FFDCIgnore(IllegalArgumentException.class)
     private String evaluateGroupNameAttribute(boolean immediateOnly) {
+        String groupNameAttribute = this.idStoreDefinition.groupNameAttribute();
         try {
-            return elHelper.processString("groupNameAttribute", this.idStoreDefinition.groupNameAttribute(), immediateOnly);
+            return elHelper.processString("groupNameAttribute", groupNameAttribute, immediateOnly);
         } catch (IllegalArgumentException e) {
+            /*
+             * If deferred expression and called during initialization, return null so the expression can be re-evaluated
+             * again later.
+             */
+            if (immediateOnly && elHelper.isDeferredExpression(groupNameAttribute)) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "evaluateGroupNameAttribute", "Returning null since groupNameAttribute is a deferred expression and this is called on initialization.");
+                }
+                return null;
+            }
+            
             if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
                 Tr.warning(tc, "JAVAEESEC_WARNING_IDSTORE_CONFIG", new Object[] { "groupNameAttribute", "cn" });
             }
@@ -366,9 +487,21 @@ class LdapIdentityStoreDefinitionWrapper {
      */
     @FFDCIgnore(IllegalArgumentException.class)
     private String evaluateGroupSearchBase(boolean immediateOnly) {
+        String groupSearchBase = this.idStoreDefinition.groupSearchBase();
         try {
-            return elHelper.processString("groupSearchBase", this.idStoreDefinition.groupSearchBase(), immediateOnly);
+            return elHelper.processString("groupSearchBase", groupSearchBase, immediateOnly);
         } catch (IllegalArgumentException e) {
+            /*
+             * If deferred expression and called during initialization, return null so the expression can be re-evaluated
+             * again later.
+             */
+            if (immediateOnly && elHelper.isDeferredExpression(groupSearchBase)) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "evaluateGroupSearchBase", "Returning null since groupSearchBase is a deferred expression and this is called on initialization.");
+                }
+                return null;
+            }
+            
             if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
                 Tr.warning(tc, "JAVAEESEC_WARNING_IDSTORE_CONFIG", new Object[] { "groupSearchBase", "" });
             }
@@ -387,12 +520,23 @@ class LdapIdentityStoreDefinitionWrapper {
      */
     @FFDCIgnore(IllegalArgumentException.class)
     private String evaluateGroupSearchFilter(boolean immediateOnly) {
+        String groupSearchFilter = this.idStoreDefinition.groupSearchFilter();
         try {
-            return elHelper.processString("groupSearchFilter", this.idStoreDefinition.groupSearchFilter(), immediateOnly);
+            return elHelper.processString("groupSearchFilter", groupSearchFilter, immediateOnly);
         } catch (IllegalArgumentException e) {
+            /*
+             * If deferred expression and called during initialization, return null so the expression can be re-evaluated
+             * again later.
+             */
+            if (immediateOnly && elHelper.isDeferredExpression(groupSearchFilter)) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "evaluateGroupSearchFilter", "Returning null since groupSearchFilter is a deferred expression and this is called on initialization.");
+                }
+                return null;
+            }
+
             if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
-                Tr.warning(tc, "There was an error resolving the '{1}' configuration object. Ensure any EL expressions are resolveable. The value will be defaulted to '{2}'",
-                           new Object[] { "groupSearchFilter", "" });
+                Tr.warning(tc, "JAVAEESEC_WARNING_IDSTORE_CONFIG", new Object[] { "groupSearchFilter", "" });
             }
             return ""; /* Default value from spec. */
         }
@@ -409,10 +553,22 @@ class LdapIdentityStoreDefinitionWrapper {
      */
     @FFDCIgnore(IllegalArgumentException.class)
     private LdapSearchScope evaluateGroupSearchScope(boolean immediateOnly) {
+        String groupSearchScopeExpression = this.idStoreDefinition.groupSearchScopeExpression();
         try {
-            return elHelper.processLdapSearchScope("groupSearchScopeExpression", this.idStoreDefinition.groupSearchScopeExpression(), this.idStoreDefinition.groupSearchScope(),
+            return elHelper.processLdapSearchScope("groupSearchScopeExpression", groupSearchScopeExpression, this.idStoreDefinition.groupSearchScope(),
                                                    immediateOnly);
         } catch (IllegalArgumentException e) {
+            /*
+             * If deferred expression and called during initialization, return null so the expression can be re-evaluated
+             * again later.
+             */
+            if (immediateOnly && elHelper.isDeferredExpression(groupSearchScopeExpression)) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "evaluateGroupSearchScope", "Returning null since groupSearchScopeExpression is a deferred expression and this is called on initialization.");
+                }
+                return null;
+            }
+
             if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
                 Tr.warning(tc, "JAVAEESEC_WARNING_IDSTORE_CONFIG", new Object[] { "groupSearchScope/groupSearchScopeExpression", "LdapSearchScope.SUBTREE" });
             }
@@ -431,9 +587,21 @@ class LdapIdentityStoreDefinitionWrapper {
      */
     @FFDCIgnore(IllegalArgumentException.class)
     private Integer evaluateMaxResults(boolean immediateOnly) {
+        String maxResultsExpression = this.idStoreDefinition.maxResultsExpression();
         try {
-            return elHelper.processInt("maxResultsExpression", this.idStoreDefinition.maxResultsExpression(), this.idStoreDefinition.maxResults(), immediateOnly);
+            return elHelper.processInt("maxResultsExpression", maxResultsExpression, this.idStoreDefinition.maxResults(), immediateOnly);
         } catch (IllegalArgumentException e) {
+            /*
+             * If deferred expression and called during initialization, return null so the expression can be re-evaluated
+             * again later.
+             */
+            if (immediateOnly && elHelper.isDeferredExpression(maxResultsExpression)) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "evaluateMaxResults", "Returning null since maxResultsExpression is a deferred expression and this is called on initialization.");
+                }
+                return null;
+            }
+
             if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
                 Tr.warning(tc, "JAVAEESEC_WARNING_IDSTORE_CONFIG", new Object[] { "maxResults/maxResultsExpression", "1000" });
             }
@@ -452,9 +620,21 @@ class LdapIdentityStoreDefinitionWrapper {
      */
     @FFDCIgnore(IllegalArgumentException.class)
     private Integer evaluatePriority(boolean immediateOnly) {
+        String priorityExpression = this.idStoreDefinition.priorityExpression();
         try {
-            return elHelper.processInt("priorityExpression", this.idStoreDefinition.priorityExpression(), this.idStoreDefinition.priority(), immediateOnly);
+            return elHelper.processInt("priorityExpression", priorityExpression, this.idStoreDefinition.priority(), immediateOnly);
         } catch (IllegalArgumentException e) {
+            /*
+             * If deferred expression and called during initialization, return null so the expression can be re-evaluated
+             * again later.
+             */
+            if (immediateOnly && elHelper.isDeferredExpression(priorityExpression)) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "evaluatePriority", "Returning null since priorityExpression is a deferred expression and this is called on initialization.");
+                }
+                return null;
+            }
+
             if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
                 Tr.warning(tc, "JAVAEESEC_WARNING_IDSTORE_CONFIG", new Object[] { "priority/priorityExpression", "80" });
             }
@@ -473,9 +653,21 @@ class LdapIdentityStoreDefinitionWrapper {
      */
     @FFDCIgnore(IllegalArgumentException.class)
     private Integer evaluateReadTimeout(boolean immediateOnly) {
+        String readTimeoutExpression = this.idStoreDefinition.readTimeoutExpression();
         try {
-            return elHelper.processInt("readTimeoutExpression", this.idStoreDefinition.readTimeoutExpression(), this.idStoreDefinition.readTimeout(), immediateOnly);
+            return elHelper.processInt("readTimeoutExpression", readTimeoutExpression, this.idStoreDefinition.readTimeout(), immediateOnly);
         } catch (IllegalArgumentException e) {
+            /*
+             * If deferred expression and called during initialization, return null so the expression can be re-evaluated
+             * again later.
+             */
+            if (immediateOnly && elHelper.isDeferredExpression(readTimeoutExpression)) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "evaluateReadTimeout", "Returning null since readTimeoutExpression is a deferred expression and this is called on initialization.");
+                }
+                return null;
+            }
+
             if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
                 Tr.warning(tc, "JAVAEESEC_WARNING_IDSTORE_CONFIG", new Object[] { "readTimeout/readTimeoutExpression", "0" });
             }
@@ -494,9 +686,21 @@ class LdapIdentityStoreDefinitionWrapper {
      */
     @FFDCIgnore(IllegalArgumentException.class)
     private String evaluateUrl(boolean immediateOnly) {
+        String url = this.idStoreDefinition.url();
         try {
-            return elHelper.processString("url", this.idStoreDefinition.url(), immediateOnly);
+            return elHelper.processString("url", url, immediateOnly);
         } catch (IllegalArgumentException e) {
+            /*
+             * If deferred expression and called during initialization, return null so the expression can be re-evaluated
+             * again later.
+             */
+            if (immediateOnly && elHelper.isDeferredExpression(url)) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "evaluateUrl", "Returning null since url is a deferred expression and this is called on initialization.");
+                }
+                return null;
+            }
+
             if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
                 Tr.warning(tc, "JAVAEESEC_WARNING_IDSTORE_CONFIG", new Object[] { "url", "" });
             }
@@ -515,9 +719,21 @@ class LdapIdentityStoreDefinitionWrapper {
      */
     @FFDCIgnore(IllegalArgumentException.class)
     private Set<ValidationType> evaluateUseFor(boolean immediateOnly) {
+        String useForExpression = this.idStoreDefinition.useForExpression();
         try {
-            return elHelper.processUseFor(this.idStoreDefinition.useForExpression(), this.idStoreDefinition.useFor(), immediateOnly);
+            return elHelper.processUseFor(useForExpression, this.idStoreDefinition.useFor(), immediateOnly);
         } catch (IllegalArgumentException e) {
+            /*
+             * If deferred expression and called during initialization, return null so the expression can be re-evaluated
+             * again later.
+             */
+            if (immediateOnly && elHelper.isDeferredExpression(useForExpression)) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "evaluateUseFor", "Returning null since useForExpression is a deferred expression and this is called on initialization.");
+                }
+                return null;
+            }
+            
             Set<ValidationType> values = new HashSet<ValidationType>();
             values.add(ValidationType.PROVIDE_GROUPS); /* Default value from the spec. */
             values.add(ValidationType.VALIDATE); /* Default value from the spec. */

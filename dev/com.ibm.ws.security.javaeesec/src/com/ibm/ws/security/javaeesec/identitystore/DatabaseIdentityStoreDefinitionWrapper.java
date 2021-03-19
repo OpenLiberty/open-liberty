@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -112,8 +112,28 @@ public class DatabaseIdentityStoreDefinitionWrapper {
      * @return The callerQuery or null if immediateOnly==true AND the value is not evaluated
      *         from a deferred EL expression.
      */
+    @FFDCIgnore(IllegalArgumentException.class)
     private String evaluateCallerQuery(boolean immediateOnly) {
-        return elHelper.processString("callerQuery", idStoreDefinition.callerQuery(), immediateOnly);
+        String callerQuery = idStoreDefinition.callerQuery();
+        try {
+           return elHelper.processString("callerQuery", callerQuery, immediateOnly);
+        } catch (IllegalArgumentException e) {
+            /*
+             * If deferred expression and called during initialization, return null so the expression can be re-evaluated
+             * again later.
+             */
+            if (immediateOnly && elHelper.isDeferredExpression(callerQuery)) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "evaluateCallerQuery", "Returning null since callerQuery is a deferred expression and this is called on initialization.");
+                }
+                return null;
+            }
+            
+            /*
+             * Otherwise re-throw the exception.
+             */
+            throw e;
+        }
     }
 
     /**
@@ -127,9 +147,21 @@ public class DatabaseIdentityStoreDefinitionWrapper {
      */
     @FFDCIgnore(IllegalArgumentException.class)
     private String evaluateDataSourceLookup(boolean immediateOnly) {
+        String dataSourceLookup = idStoreDefinition.dataSourceLookup();
         try {
-            return elHelper.processString("dataSourceLookup", idStoreDefinition.dataSourceLookup(), immediateOnly);
+            return elHelper.processString("dataSourceLookup", dataSourceLookup, immediateOnly);
         } catch (IllegalArgumentException e) {
+            /*
+             * If deferred expression and called during initialization, return null so the expression can be re-evaluated
+             * again later.
+             */
+            if (immediateOnly && elHelper.isDeferredExpression(dataSourceLookup)) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "evaluateDataSourceLookup", "Returning null since dataSourceLookup is a deferred expression and this is called on initialization.");
+                }
+                return null;
+            }
+            
             if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
                 Tr.warning(tc, "JAVAEESEC_WARNING_IDSTORE_CONFIG", new Object[] { "dataSourceLookup", "java:comp/DefaultDataSource" });
             }
@@ -146,8 +178,28 @@ public class DatabaseIdentityStoreDefinitionWrapper {
      * @return The groupsQuery or null if immediateOnly==true AND the value is not evaluated
      *         from a deferred EL expression.
      */
+    @FFDCIgnore(IllegalArgumentException.class)
     private String evaluateGroupsQuery(boolean immediateOnly) {
-        return elHelper.processString("groupsQuery", idStoreDefinition.groupsQuery(), immediateOnly);
+        String groupsQuery = idStoreDefinition.groupsQuery();
+        try {
+           return elHelper.processString("groupsQuery", groupsQuery, immediateOnly);
+        } catch (IllegalArgumentException e) {
+            /*
+             * If deferred expression and called during initialization, return null so the expression can be re-evaluated
+             * again later.
+             */
+            if (immediateOnly && elHelper.isDeferredExpression(groupsQuery)) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "evaluateGroupsQuery", "Returning null since groupsQuery is a deferred expression and this is called on initialization.");
+                }
+                return null;
+            }
+            
+            /*
+             * Otherwise re-throw the exception.
+             */
+            throw e;
+        }
     }
 
     /**
@@ -253,9 +305,22 @@ public class DatabaseIdentityStoreDefinitionWrapper {
      */
     @FFDCIgnore(IllegalArgumentException.class)
     private Integer evaluatePriority(boolean immediateOnly) {
+        String priorityExpression = this.idStoreDefinition.priorityExpression();
+        int priority = this.idStoreDefinition.priority();
         try {
-            return elHelper.processInt("priorityExpression", this.idStoreDefinition.priorityExpression(), this.idStoreDefinition.priority(), immediateOnly);
+            return elHelper.processInt("priorityExpression", priorityExpression, priority, immediateOnly);
         } catch (IllegalArgumentException e) {
+            /*
+             * If deferred expression and called during initialization, return null so the expression can be re-evaluated
+             * again later.
+             */
+            if (immediateOnly && elHelper.isDeferredExpression(priorityExpression)) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "evaluatePriority", "Returning null since priorityExpression is a deferred expression and this is called on initialization.");
+                }
+                return null;
+            }
+
             if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
                 Tr.warning(tc, "JAVAEESEC_WARNING_IDSTORE_CONFIG", new Object[] { "priority/priorityExpression", 70 });
             }
@@ -274,9 +339,23 @@ public class DatabaseIdentityStoreDefinitionWrapper {
      */
     @FFDCIgnore(IllegalArgumentException.class)
     private Set<ValidationType> evaluateUseFor(boolean immediateOnly) {
+
+        String useForExpression = this.idStoreDefinition.useForExpression();
+        ValidationType[] useFor = this.idStoreDefinition.useFor();
         try {
-            return elHelper.processUseFor(this.idStoreDefinition.useForExpression(), this.idStoreDefinition.useFor(), immediateOnly);
+            return elHelper.processUseFor(useForExpression, useFor, immediateOnly);
         } catch (IllegalArgumentException e) {
+            /*
+             * If deferred expression and called during initialization, return null so the expression can be re-evaluated
+             * again later.
+             */
+            if (immediateOnly && elHelper.isDeferredExpression(useForExpression)) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "evaluateUseFor", "Returning null since useForExpression is a deferred expression and this is called on initialization.");
+                }
+                return null;
+            }
+
             Set<ValidationType> values = new HashSet<ValidationType>();
             values.add(ValidationType.PROVIDE_GROUPS); /* Default value from the spec. */
             values.add(ValidationType.VALIDATE); /* Default value from the spec. */
