@@ -16,7 +16,6 @@ Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxws.3.2
 
 
 Import-Package: \
-  !java.*, \
   javax.wsdl.*, \
   com.ibm.wsspi.classloading, \
   !com.ctc.wstx.*,\
