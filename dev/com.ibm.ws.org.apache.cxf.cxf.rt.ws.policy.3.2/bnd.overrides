@@ -16,7 +16,6 @@ Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.rt.ws.policy.3.2
 
 
 Import-Package: \
-!java.*,\
 !com.ctc.wstx.*,\
 !org.codehaus.stax2.*,\
 !com.sun.msv.*,\
