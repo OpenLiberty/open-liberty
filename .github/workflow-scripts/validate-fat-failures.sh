@@ -9,6 +9,7 @@
 #   Files: dev/failing_buckets/*  - Collection of failing bucket zips to be archived for debugging
 ##############################
 
+# Prevent script from reporting failures
 set +e
 
 echo "Done running all FAT buckets. Checking for failures now."
