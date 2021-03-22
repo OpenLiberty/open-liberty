@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2020 IBM Corporation and others.
+ * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.security.saml.sso20.metadata;
 
-import static org.opensaml.xml.signature.X509Data.DEFAULT_ELEMENT_NAME;
+import static org.opensaml.xmlsec.signature.X509Data.DEFAULT_ELEMENT_NAME;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -38,17 +38,21 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
-import org.opensaml.saml2.metadata.impl.SPSSODescriptorImpl;
-import org.opensaml.xml.Configuration;
-import org.opensaml.xml.XMLObject;
-import org.opensaml.xml.XMLObjectBuilder;
-import org.opensaml.xml.io.Marshaller;
-import org.opensaml.xml.io.MarshallingException;
-import org.opensaml.xml.parse.ParserPool;
-import org.opensaml.xml.parse.XMLParserException;
-import org.opensaml.xml.signature.X509Data;
-import org.opensaml.xml.signature.impl.KeyInfoImpl;
-import org.opensaml.xml.util.IDIndex;
+import org.opensaml.core.config.Configuration;
+import org.opensaml.core.config.ConfigurationService;
+import org.opensaml.core.config.provider.MapBasedConfiguration;
+import org.opensaml.core.xml.XMLObject;
+import org.opensaml.core.xml.XMLObjectBuilder;
+import org.opensaml.core.xml.XMLObjectBuilderFactory;
+import org.opensaml.core.xml.config.XMLObjectProviderRegistry;
+import org.opensaml.core.xml.io.Marshaller;
+import org.opensaml.core.xml.io.MarshallerFactory;
+import org.opensaml.core.xml.io.MarshallingException;
+import org.opensaml.core.xml.io.UnmarshallerFactory;
+import org.opensaml.core.xml.util.IDIndex;
+import org.opensaml.saml.saml2.metadata.impl.SPSSODescriptorImpl;
+import org.opensaml.xmlsec.signature.X509Data;
+import org.opensaml.xmlsec.signature.impl.KeyInfoImpl;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -62,6 +66,8 @@ import com.ibm.ws.security.saml.SsoRequest;
 import com.ibm.ws.security.saml.SsoSamlService;
 import com.ibm.ws.security.saml.error.SamlException;
 
+import net.shibboleth.utilities.java.support.xml.ParserPool;
+import net.shibboleth.utilities.java.support.xml.XMLParserException;
 import test.common.SharedOutputManager;
 
 public class MetadataHandlerTest {
@@ -92,13 +98,16 @@ public class MetadataHandlerTest {
     private static final Node node = mockery.mock(Node.class, "node");
     private static final ServletOutputStream servletOutputStream = mockery.mock(ServletOutputStream.class, "servletOutputStreamMD");
     private static final ParserPool parserPool = mockery.mock(ParserPool.class, "parserPoolMD");
+    private final static XMLObjectProviderRegistry providerRegistry = mockery.mock(XMLObjectProviderRegistry.class);
+    private final static MarshallerFactory marshallerFactory = mockery.mock(MarshallerFactory.class);
+    private final static XMLObjectBuilderFactory builderFactory = mockery.mock(XMLObjectBuilderFactory.class);
     private static final SecurityService securityService = mockery.mock(SecurityService.class, "securityServiceMD");
     private static final SsoConfig ssoConfig = mockery.mock(SsoConfig.class, "ssoConfigMD");
     private static final SsoRequest ssoRequest = mockery.mock(SsoRequest.class, "ssoRequest");
     private static final SsoSamlService ssoService = mockery.mock(SsoSamlService.class, "ssoServiceMD");
     private static final X509Data X509Data = mockery.mock(X509Data.class, "X509DataMD");
     private static final X509Certificate xCertificate509 = mockery.mock(X509Certificate.class, "X509CertificateMD");
-    private static final org.opensaml.xml.signature.X509Certificate x509CertificateSaml = mockery.mock(org.opensaml.xml.signature.X509Certificate.class, "X509CertificateSamlMD");
+    private static final org.opensaml.xmlsec.signature.X509Certificate x509CertificateSaml = mockery.mock(org.opensaml.xmlsec.signature.X509Certificate.class, "X509CertificateSamlMD");
     @SuppressWarnings("unchecked")
     private static final HashMap<String, Object> HashMap = mockery.mock(HashMap.class, "hashMap<String,Object>MD");
     @SuppressWarnings("unchecked")
@@ -229,6 +238,8 @@ public class MetadataHandlerTest {
     private final String RESPONSE_HEADER_1 = "Content-Disposition";
     private final String RESPONSE_HEADER_2 = "attachment;filename=\"spMetadata.xml\"";
     private final String CHARACTER_ENCODING = "UTF-8";
+    
+    private static Configuration configuration;
 
     public static Document loadXML(String xmlString) throws ParserConfigurationException, SAXException, IOException {
 
@@ -267,6 +278,26 @@ public class MetadataHandlerTest {
                 will(returnValue(SERVER_PROTOCOL));//
 
                 allowing(element).setAttributeNS(with(any(String.class)), with(any(String.class)), with(any(String.class)));
+                
+                allowing(providerRegistry).getParserPool();
+                will(returnValue(parserPool));
+                
+                allowing(providerRegistry).getMarshallerFactory();
+                will(returnValue(marshallerFactory));
+                
+                allowing(marshallerFactory).registerMarshaller(with(any(QName.class)), with(any(Marshaller.class)));
+
+                allowing(marshallerFactory).getMarshaller(with(any(QName.class)));
+                will(returnValue(marshaller));
+                
+                allowing(marshallerFactory).getMarshaller(with(any(XMLObject.class)));
+                will(returnValue(marshaller));
+                
+                allowing(providerRegistry).getBuilderFactory();
+                will(returnValue(builderFactory));
+                
+                allowing(builderFactory).registerBuilder(with(any(QName.class)), with(any(XMLObjectBuilder.class)));
+                
             }
         });
 
@@ -277,18 +308,24 @@ public class MetadataHandlerTest {
         elementFinal = (Element) nodeList.item(0);
 
         QName childQN = new QName("urn:oasis:names:tc:SAML:2.0:metadata", "SPSSODescriptor", "md");
-        Configuration.getMarshallerFactory().registerMarshaller(childQN, marshaller);
+        providerRegistry.getMarshallerFactory().registerMarshaller(childQN, marshaller);
 
-        Configuration.getBuilderFactory().registerBuilder(org.opensaml.xml.signature.X509Data.DEFAULT_ELEMENT_NAME, XMLObjectBuilder);
-        Configuration.getBuilderFactory().registerBuilder(org.opensaml.xml.signature.X509Certificate.DEFAULT_ELEMENT_NAME, XMLObjectBuilder);
+        providerRegistry.getBuilderFactory().registerBuilder(childQN, XMLObjectBuilder);
+        providerRegistry.getBuilderFactory().registerBuilder(org.opensaml.xmlsec.signature.X509Data.DEFAULT_ELEMENT_NAME, XMLObjectBuilder);
+        providerRegistry.getBuilderFactory().registerBuilder(org.opensaml.xmlsec.signature.X509Certificate.DEFAULT_ELEMENT_NAME, XMLObjectBuilder);
         Certificates.add(xCertificate509);
-
-        Configuration.setParserPool(parserPool);
+        
+        configuration = new MapBasedConfiguration();
+        ConfigurationService.setConfiguration(configuration);
+        configuration.register(XMLObjectProviderRegistry.class,providerRegistry,ConfigurationService.DEFAULT_PARTITION_NAME);
+        
     }
 
     @AfterClass
     public static void tearDown() {
         outputMgr.trace("*=all=disabled");
+        configuration = new MapBasedConfiguration();
+        ConfigurationService.setConfiguration(configuration);
     }
 
     @Test
@@ -336,6 +373,11 @@ public class MetadataHandlerTest {
                 will(returnValue(true));
                 one(ssoService).getSignatureCertificate();
                 will(returnValue(xCertificate509));
+                
+                allowing(builderFactory).getBuilder(with(any(Element.class)));
+                will(returnValue(XMLObjectBuilder));
+                allowing(builderFactory).getBuilder(with(any(QName.class)));
+                will(returnValue(XMLObjectBuilder));
 
                 allowing(XMLObjectBuilder).buildObject(DEFAULT_ELEMENT_NAME);
                 will(returnValue(X509Data));
@@ -362,7 +404,7 @@ public class MetadataHandlerTest {
 
                 allowing(XMLObjectBuilder).buildObject(DEFAULT_ELEMENT_NAME);
                 will(returnValue(x509CertificateSaml));
-                allowing(XMLObjectBuilder).buildObject(org.opensaml.xml.signature.X509Certificate.DEFAULT_ELEMENT_NAME);
+                allowing(XMLObjectBuilder).buildObject(org.opensaml.xmlsec.signature.X509Certificate.DEFAULT_ELEMENT_NAME);
                 will(returnValue(x509CertificateSaml));
 
                 allowing(xCertificate509).getEncoded();

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,7 +29,7 @@ import org.opensaml.saml.saml2.core.ProxyRestriction;
 import org.opensaml.saml.saml2.core.Subject;
 import org.opensaml.saml.saml2.core.SubjectConfirmation;
 import org.opensaml.saml.saml2.core.SubjectConfirmationData;
-//import org.opensaml.ws.security.SecurityPolicyException; //@AV999
+
 import org.opensaml.security.trust.TrustEngine;
 import org.opensaml.xmlsec.SignatureValidationParameters;
 import org.opensaml.xmlsec.context.SecurityParametersContext;
@@ -97,16 +97,13 @@ public class AssertionValidator {
     }
 
     protected void validateSignature() throws SamlException {
-        //this.context.setInboundSAMLMessageAuthenticated(false); //@AV999 big change
-        this.context.getMessageContext().getSubcontext(SAMLPeerEntityContext.class, true).setAuthenticated(false); //@AV999
+        this.context.getMessageContext().getSubcontext(SAMLPeerEntityContext.class, true).setAuthenticated(false);
         if (this.assertion.getSignature() != null) {
             verifyAssertionSignature();
         }
         if (this.context.getSsoConfig().isWantAssertionsSigned() &&
-            //!this.context.isInboundSAMLMessageAuthenticated()) { //@AV999
-            !this.context.getMessageContext().getSubcontext(SAMLPeerEntityContext.class, true).isAuthenticated()) { //@AV999
+            !this.context.getMessageContext().getSubcontext(SAMLPeerEntityContext.class, true).isAuthenticated()) {
             throw new SamlException("SAML20_ASSERTION_SIGNATURE_NOT_VERIFIED_ERR",
-                            //"SAML Assertion Signature is not verified",
                             null,
                             new Object[] {});
         }
@@ -116,26 +113,21 @@ public class AssertionValidator {
         try {
             TrustEngine<Signature> trustEngine = MsgCtxUtil.getTrustedEngine(context);
             SignatureValidationParameters sigValParams = new SignatureValidationParameters();
-            sigValParams.setSignatureTrustEngine((SignatureTrustEngine) trustEngine); //@AV999 TODO
-            //SAMLMessageXMLSignatureSecurityPolicyRule signatureRule = new SAMLMessageXMLSignatureSecurityPolicyRule(trustEngine); //@AV999 TODO
-            this.context.getMessageContext().getSubcontext(SecurityParametersContext.class, true).setSignatureValidationParameters(sigValParams); //@AV999
+            sigValParams.setSignatureTrustEngine((SignatureTrustEngine) trustEngine); //TODO
+            this.context.getMessageContext().getSubcontext(SecurityParametersContext.class, true).setSignatureValidationParameters(sigValParams);
             SAMLMessageXMLSignatureSecurityPolicyRule signatureRule = new SAMLMessageXMLSignatureSecurityPolicyRule();
             try {
                 signatureRule.initialize();
             } catch (ComponentInitializationException e) {
-                // TODO Auto-generated catch block
-                // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-                // e.printStackTrace();
                 throw new SamlException("SAML20_ASSERTION_SIGNATURE_FAIL_ERR",
                                         //The SAML Assertion Signature is not trusted or invalid with exception [{0}].
                                         e,
                                         new Object[] { e
                                         });
             }
-            signatureRule.invoke(this.context.getMessageContext()); //@AV999 added this call here..
-            //signatureRule.evaluateAssertion(this.context, this.assertion); //@AV999
+            signatureRule.invoke(this.context.getMessageContext()); //we may not need this?
             signatureRule.evaluateAssertion(this.context, this.assertion);
-        } catch (MessageHandlerException e) { //@AV999
+        } catch (MessageHandlerException e) {
             throw new SamlException("SAML20_ASSERTION_SIGNATURE_FAIL_ERR",
                             //The SAML Assertion Signature is not trusted or invalid with exception [{0}].
                             e,
@@ -219,7 +211,7 @@ public class AssertionValidator {
                                     new Object[] { data.getRecipient(), acsEndpointUrl });
                 }
 
-                this.context.setSubjectNameIdentifier(subject.getNameID()); //@AV999
+                this.context.setSubjectNameIdentifier(subject.getNameID());
                 return;
 
             } else {
@@ -285,7 +277,7 @@ public class AssertionValidator {
     }
 
     protected void verifyAudience(List<AudienceRestriction> audienceRestrictions) throws SamlException {
-        //Need fix it to use metadata's entityId
+        //TODO fix it to use metadata's entityId
         String audienceUrl = RequestUtil.getEntityUrl(this.context.getHttpServletRequest(),
                                                       Constants.SAML20_CONTEXT_PATH, // "/ibm/saml20/"
                                                       this.context.getSsoService().getProviderId(),

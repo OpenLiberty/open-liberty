@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2020 IBM Corporation and others.
+ * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,15 +28,17 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
-import org.opensaml.saml2.core.Issuer;
-import org.opensaml.xml.Configuration;
-import org.opensaml.xml.XMLObject;
-import org.opensaml.xml.io.Unmarshaller;
-import org.opensaml.xml.io.UnmarshallingException;
-import org.opensaml.xml.parse.ParserPool;
-import org.opensaml.xml.parse.StaticBasicParserPool;
-import org.opensaml.xml.parse.XMLParserException;
-import org.opensaml.xml.util.XMLHelper;
+import org.opensaml.core.config.Configuration;
+import org.opensaml.core.config.ConfigurationService;
+import org.opensaml.core.config.provider.MapBasedConfiguration;
+import org.opensaml.core.xml.XMLObject;
+import org.opensaml.core.xml.config.XMLObjectProviderRegistry;
+import org.opensaml.core.xml.config.XMLObjectProviderRegistrySupport;
+import org.opensaml.core.xml.io.Unmarshaller;
+import org.opensaml.core.xml.io.UnmarshallerFactory;
+import org.opensaml.core.xml.io.UnmarshallingException;
+import org.opensaml.saml.saml2.core.Issuer;
+import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -46,6 +48,10 @@ import com.ibm.ws.security.saml.sso20.binding.BasicMessageContext;
 import com.ibm.ws.security.saml.sso20.common.CommonMockObjects;
 import com.ibm.ws.security.saml.sso20.metadata.AcsDOMMetadataProvider;
 
+import net.shibboleth.utilities.java.support.xml.BasicParserPool;
+import net.shibboleth.utilities.java.support.xml.ParserPool;
+import net.shibboleth.utilities.java.support.xml.QNameSupport;
+import net.shibboleth.utilities.java.support.xml.XMLParserException;
 import test.common.SharedOutputManager;
 
 public class MsgCtxUtilTest {
@@ -57,32 +63,40 @@ public class MsgCtxUtilTest {
     private final CommonMockObjects common = new CommonMockObjects();
     private final Mockery mockery = common.getMockery();
 
-    private final BasicMessageContext<?, ?, ?> basicMessageContext = common.getBasicMessageContext();
+    private final BasicMessageContext<?, ?> basicMessageContext = common.getBasicMessageContext();
     private final Issuer issuer = common.getIssuer();
     private final SsoConfig ssoConfig = common.getSsoConfig();
-    private final ParserPool parserPool = mockery.mock(StaticBasicParserPool.class, "parserPool");
+    private final ParserPool parserPool = mockery.mock(BasicParserPool.class, "parserPool");
     private final Document document = mockery.mock(Document.class, "document");
+    private final DOMImplementation domimpl = mockery.mock(DOMImplementation.class, "domimpl");
     private final Element element = mockery.mock(Element.class, "element");
     private final Unmarshaller unmarshaller = mockery.mock(Unmarshaller.class, "unmarshaller");
     private final XMLObject mDataTemp = mockery.mock(XMLObject.class, "mDataTemp");
+    private final XMLObjectProviderRegistry providerRegistry = mockery.mock(XMLObjectProviderRegistry.class);
+    private final UnmarshallerFactory unmarshallerFactory = mockery.mock(UnmarshallerFactory.class);
 
     private static final String PATH_IDP_METADATA = "IdpMetadata.xml";
+    private static Configuration configuration;
 
     @BeforeClass
     public static void setUp() {
-        outputMgr.trace("*=all");
+        //outputMgr.trace("*=all");
     }
 
     @Before
     public void before() {
-        Configuration.setParserPool(parserPool);
-        mockery.checking(new Expectations() {
+        configuration = new MapBasedConfiguration();
+        ConfigurationService.setConfiguration(configuration);
+        configuration.register(XMLObjectProviderRegistry.class,providerRegistry,ConfigurationService.DEFAULT_PARTITION_NAME);
+        
+       mockery.checking(new Expectations() {
             {
+                
                 allowing(basicMessageContext).getSsoConfig();
                 will(returnValue(ssoConfig));
 
                 allowing(ssoConfig).getProviderId();
-                will(returnValue(with(any(String.class))));
+                will(returnValue("providerid"));
 
                 one(mDataTemp).getElementQName();
                 will(returnValue(new QName("test")));
@@ -96,14 +110,18 @@ public class MsgCtxUtilTest {
 
     @AfterClass
     public static void tearDown() {
-        Configuration.setParserPool(null);
+        //providerRegistry.setParserPool(null);
         outputMgr.trace("*=all=disabled");
     }
 
     @Test
     public void testParseIdpMetadataProvider() throws XMLParserException, UnmarshallingException {
         mockery.checking(new Expectations() {
-            {
+            {  
+                allowing(providerRegistry).setParserPool(parserPool);
+                allowing(providerRegistry).getParserPool();
+                will(returnValue(parserPool));
+                
                 one(ssoConfig).getIdpMetadata();
                 will(returnValue("test" + File.separator + "resources" + File.separator + "IdpMetadata" + File.separator + PATH_IDP_METADATA));
 
@@ -112,6 +130,12 @@ public class MsgCtxUtilTest {
 
                 one(document).getDocumentElement();
                 will(returnValue(element));
+                
+                allowing(document).getImplementation();
+                will(returnValue(domimpl));
+                
+                allowing(domimpl).getFeature("LS", "3.0");
+                will(returnValue(""));
 
                 one(element).getAttributeNodeNS(with(any(String.class)), with(any(String.class)));
                 will(returnValue(null));
@@ -130,13 +154,19 @@ public class MsgCtxUtilTest {
 
                 one(mDataTemp).releaseDOM();
                 one(mDataTemp).releaseChildrenDOM(true);
+                allowing(providerRegistry).getUnmarshallerFactory();
+                will(returnValue(unmarshallerFactory));
+                allowing(unmarshallerFactory).registerUnmarshaller(with(any(QName.class)), with(any(Unmarshaller.class)));
+                will(returnValue(null));
+                allowing(unmarshallerFactory).getUnmarshaller(element);
+                will(returnValue(unmarshaller));
             }
+
         });
 
         try {
-            QName name = XMLHelper.getNodeQName(element);
-            Configuration.getUnmarshallerFactory().registerUnmarshaller(name, unmarshaller);
-
+            QName name = QNameSupport.getNodeQName(element);
+            providerRegistry.getUnmarshallerFactory().registerUnmarshaller(name, unmarshaller);
             AcsDOMMetadataProvider result = MsgCtxUtil.parseIdpMetadataProvider(ssoConfig);
             assertTrue("A null value was received.", result != null);
         } catch (SamlException ex) {
@@ -168,6 +198,10 @@ public class MsgCtxUtilTest {
         final XMLParserException pex = new XMLParserException();
         mockery.checking(new Expectations() {
             {
+                allowing(providerRegistry).setParserPool(parserPool);
+                allowing(providerRegistry).getParserPool();
+                will(returnValue(parserPool));
+                
                 one(ssoConfig).getIdpMetadata();
                 will(returnValue("test" + File.separator + "resources" + File.separator + "IdpMetadata" + File.separator + PATH_IDP_METADATA));
 
@@ -187,9 +221,12 @@ public class MsgCtxUtilTest {
 
     @Test
     public void testParseIdpMetadataProvider_NullParserPool() throws XMLParserException {
-        Configuration.setParserPool(null);
+    
         mockery.checking(new Expectations() {
             {
+                allowing(providerRegistry).setParserPool(null);
+                allowing(providerRegistry).getParserPool();
+                will(returnValue(null));
                 one(ssoConfig).getIdpMetadata();
                 will(returnValue("test" + File.separator + "resources" + File.separator + "IdpMetadata" + File.separator + PATH_IDP_METADATA));
             }
@@ -210,6 +247,10 @@ public class MsgCtxUtilTest {
         final UnmarshallingException ue = new UnmarshallingException();
         mockery.checking(new Expectations() {
             {
+                allowing(providerRegistry).setParserPool(parserPool);
+                allowing(providerRegistry).getParserPool();
+                will(returnValue(parserPool));
+                
                 one(ssoConfig).getIdpMetadata();
                 will(returnValue("test" + File.separator + "resources" + File.separator + "IdpMetadata" + File.separator + PATH_IDP_METADATA));
 
@@ -230,15 +271,23 @@ public class MsgCtxUtilTest {
 
                 atMost(2).of(element).getPrefix();
                 will(returnValue("Prefix"));
+                
+                allowing(unmarshallerFactory).getUnmarshaller(element);
+                will(returnValue(unmarshaller));
 
                 one(unmarshaller).unmarshall(element);
                 will(throwException(ue));
+                
+                allowing(providerRegistry).getUnmarshallerFactory();
+                will(returnValue(unmarshallerFactory));
+                allowing(unmarshallerFactory).registerUnmarshaller(with(any(QName.class)), with(any(Unmarshaller.class)));
+                will(returnValue(null));
             }
         });
 
         try {
-            QName name = XMLHelper.getNodeQName(element);
-            Configuration.getUnmarshallerFactory().registerUnmarshaller(name, unmarshaller);
+            QName name = QNameSupport.getNodeQName(element);
+            providerRegistry.getUnmarshallerFactory().registerUnmarshaller(name, unmarshaller);
 
             MsgCtxUtil.parseIdpMetadataProvider(ssoConfig);
             fail("SamlException was not thrown");
@@ -253,7 +302,7 @@ public class MsgCtxUtilTest {
         mockery.checking(new Expectations() {
             {
                 one(ssoConfig).getIdpMetadata();
-                will(returnValue("inexistent_file"));
+                will(returnValue(""));
             }
         });
 

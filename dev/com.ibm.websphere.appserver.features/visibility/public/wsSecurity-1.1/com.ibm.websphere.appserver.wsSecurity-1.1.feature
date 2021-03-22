@@ -22,13 +22,13 @@ IBM-API-Package:\
   org.apache.ws.security.transform;  type="third-party", \
   org.apache.ws.security.util;  type="third-party", \
   org.apache.ws.security.validate;  type="third-party", \
+  org.apache.wss4j.common.ext; type="third-party", \
   com.ibm.ws.wssecurity.callback;  version="1.0"; type="internal"
 IBM-ShortName: wsSecurity-1.1
 Subsystem-Name: Web Service Security 1.1
 -features=\
   com.ibm.websphere.appserver.jta-1.1; ibm.tolerates:=1.2; apiJar=false, \
   com.ibm.websphere.appserver.appSecurity-2.0; ibm.tolerates:=3.0, \
-  com.ibm.websphere.appserver.jaxws-2.2; ibm.tolerates:=2.3, \
   com.ibm.websphere.appserver.ssoCommon-1.0
 kind=ga
 edition=base

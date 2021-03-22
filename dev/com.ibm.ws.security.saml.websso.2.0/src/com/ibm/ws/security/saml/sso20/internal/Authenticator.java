@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -95,13 +95,13 @@ public class Authenticator {
             try {
                 errorHandler.handleException(request, resp, e);
             } catch (Exception e1) {
-                // unexpecting exception which too complicated to handle further
+                // unexpected exception complicated to handle further
                 // especially, we are throwing a WebTrustAssociationFailedException to the caller
                 if (tc.isDebugEnabled()) {
                     Tr.debug(tc, "Unexpceted exception during errorHandling" + e);
                 }
             }
-            // Since we have handle the error. No need to throw the Exception to ask the webcontainer to handle the error.
+            // Since we have handled the error. No need to throw the Exception to ask the web container to handle the error.
             result = TAIResult.create(HttpServletResponse.SC_FORBIDDEN);
         } catch (Exception e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {

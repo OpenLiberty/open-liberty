@@ -1,40 +1,24 @@
-/*
- * Licensed to the University Corporation for Advanced Internet Development,
- * Inc. (UCAID) under one or more contributor license agreements.  See the
- * NOTICE file distributed with this work for additional information regarding
- * copyright ownership. The UCAID licenses this file to You under the Apache
- * License, Version 2.0 (the "License"); you may not use this file except in
- * compliance with the License.  You may obtain a copy of the License at
+/*******************************************************************************
+ * Copyright (c) 2021 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package com.ibm.ws.security.saml.sso20.rs;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
-//import org.opensaml.xml.Configuration;
-import org.opensaml.core.config.Configuration; //@AV999
 import org.opensaml.core.xml.XMLObject;
 import org.opensaml.core.xml.config.XMLObjectProviderRegistrySupport;
 import org.opensaml.core.xml.io.Unmarshaller;
 import org.opensaml.core.xml.io.UnmarshallingException;
-//import org.opensaml.common.binding.SAMLMessageContext;
-//import org.opensaml.ws.message.MessageContext;
-import org.opensaml.messaging.context.MessageContext; //@AV999
-//import org.opensaml.ws.message.decoder.MessageDecodingException;
-import org.opensaml.messaging.decoder.MessageDecodingException; //@AV999
-import org.opensaml.saml.common.SAMLObject; //@AV999
-//import org.opensaml.xml.parse.ParserPool; //@AV999
-//import org.opensaml.xml.parse.XMLParserException;
-//import org.opensaml.xml.util.XMLHelper;
+import org.opensaml.messaging.decoder.MessageDecodingException;
+import org.opensaml.saml.common.SAMLObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -44,8 +28,8 @@ import com.ibm.ws.security.saml.TraceConstants;
 import com.ibm.ws.security.saml.sso20.binding.BasicMessageContext;
 
 import net.shibboleth.utilities.java.support.xml.ParserPool;
-import net.shibboleth.utilities.java.support.xml.SerializeSupport;
 import net.shibboleth.utilities.java.support.xml.QNameSupport;
+import net.shibboleth.utilities.java.support.xml.SerializeSupport;
 import net.shibboleth.utilities.java.support.xml.XMLParserException;
 
 /** Message decoder implementing the SAML 2.0 HTTP POST binding. */
@@ -53,22 +37,20 @@ public class ByteArrayDecoder {
     private static final TraceComponent tc = Tr.register(ByteArrayDecoder.class,
                                                          TraceConstants.TRACE_GROUP,
                                                          TraceConstants.MESSAGE_BUNDLE);
-    // ParserPool parserPool = Configuration.getParserPool(); //@AV999
-    ParserPool parserPool = XMLObjectProviderRegistrySupport.getParserPool(); //@AV999
+    
+    ParserPool parserPool = XMLObjectProviderRegistrySupport.getParserPool(); //v3
 
     /** Constructor. */
-    public ByteArrayDecoder() {}
+    public ByteArrayDecoder() {
+    }
 
     /** {@inheritDoc} */
     @SuppressWarnings("rawtypes")
-    protected void doDecode(/*MessageContext messageContext*/BasicMessageContext<?, ?> messageContext, ByteArrayInputStream byteArrayInputStream) throws MessageDecodingException {
-        //SAMLMessageContext samlMsgCtx = (SAMLMessageContext) messageContext; //@AV999
+    protected void doDecode(/* MessageContext messageContext */BasicMessageContext<?, ?> messageContext,
+                            ByteArrayInputStream byteArrayInputStream) throws MessageDecodingException {
         InputStream base64DecodedMessage = byteArrayInputStream;
         SAMLObject inboundMessage = (SAMLObject) unmarshallMessage(base64DecodedMessage);
-        messageContext.getMessageContext().setMessage(inboundMessage); //@AV999 major change
-        //samlMsgCtx.setInboundMessage(inboundMessage); //@AV999 TODO
-        //samlMsgCtx.setInboundSAMLMessage(inboundMessage);
-        // Should only happen during testing the installation
+        messageContext.getMessageContext().setMessage(inboundMessage); //v3
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "Decoded SAML message");
         }
@@ -89,20 +71,19 @@ public class ByteArrayDecoder {
             Document messageDoc = parserPool.parse(messageStream);
             Element messageElem = messageDoc.getDocumentElement();
             if (tc.isDebugEnabled()) {
-                //Tr.debug(tc, "Resultant DOM message was:\n{}", messageElem == null ? "null" : XMLHelper.nodeToString(messageElem)); //@AV999
-                Tr.debug(tc, "Resultant DOM message was:\n{}", messageElem == null ? "null" : SerializeSupport.nodeToString(messageElem)); //@AV999
-                Tr.debug(tc, "Unmarshalling message DOM");
+                Tr.debug(tc, "Resultant DOM message was:\n{}", messageElem == null ? "null" : SerializeSupport.nodeToString(messageElem));
+                Tr.debug(tc, "Unmarshalling message");
             }
 
-            //Unmarshaller unmarshaller = Configuration.getUnmarshallerFactory().getUnmarshaller(messageElem); //@AV999
-            Unmarshaller unmarshaller = XMLObjectProviderRegistrySupport.getUnmarshallerFactory().getUnmarshaller(messageElem); //@AV999
+            //Unmarshaller unmarshaller = Configuration.getUnmarshallerFactory().getUnmarshaller(messageElem)
+            Unmarshaller unmarshaller = XMLObjectProviderRegistrySupport.getUnmarshallerFactory().getUnmarshaller(messageElem);
             if (unmarshaller == null) {
                 if (tc.isDebugEnabled()) {
                     Tr.debug(tc, "Unable to unmarshall message, no unmarshaller registered for message element "
-                                 + QNameSupport.getNodeQName(messageElem)); //@AV999
+                                 + QNameSupport.getNodeQName(messageElem));
                 }
                 throw new MessageDecodingException("Unable to unmarshall message, no unmarshaller registered for message element "
-                                                   + QNameSupport.getNodeQName(messageElem)); //@AV999
+                                                   + QNameSupport.getNodeQName(messageElem));
             }
 
             XMLObject message = unmarshaller.unmarshall(messageElem);

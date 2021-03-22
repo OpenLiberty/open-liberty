@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -199,13 +199,9 @@ public class SpMetadataBuilder {
         try {
             cert = (X509Certificate) ssoService.getSignatureCertificate();
         } catch (KeyStoreException e) {
-            // TODO Auto-generated catch block
-            // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-            // http://was.pok.ibm.com/xwiki/bin/view/Liberty/LoggingFFDC
+
         } catch (CertificateException e) {
-            // TODO Auto-generated catch block
-            // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-            // http://was.pok.ibm.com/xwiki/bin/view/Liberty/LoggingFFDC
+
         }
 
         if (authReqSignedAttr && cert == null) {
@@ -226,9 +222,7 @@ public class SpMetadataBuilder {
             try {
                 KeyInfoSupport.addCertificate(keyInfo, cert);
             } catch (CertificateEncodingException e) {
-                // TODO Auto-generated catch block
-                // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-                // http://was.pok.ibm.com/xwiki/bin/view/Liberty/LoggingFFDC
+
             }
             keyDescriptor.setKeyInfo(keyInfo);
             keyDescriptor.setParent(spSSODescriptor);
@@ -241,9 +235,7 @@ public class SpMetadataBuilder {
             try {
                 KeyInfoSupport.addCertificate(encKeyInfo, cert);
             } catch (CertificateEncodingException e) {
-                // TODO Auto-generated catch block
-                // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-                // http://was.pok.ibm.com/xwiki/bin/view/Liberty/LoggingFFDC
+
             }
             encKeyDescriptor.setKeyInfo(encKeyInfo);
             encKeyDescriptor.setParent(spSSODescriptor);
@@ -276,8 +268,8 @@ public class SpMetadataBuilder {
             try {
                 EntityDescriptorMarshaller marshaller = new EntityDescriptorMarshaller();
                 Element element = marshaller.marshall(entityDescriptor);
-                //result = XMLHelper.nodeToString(element); //AV999
-                result = SerializeSupport.nodeToString(element); //AV999
+                //result = XMLHelper.nodeToString(element);
+                result = SerializeSupport.nodeToString(element); //v3
             } catch (MarshallingException e) {
                 throw new SamlException(e, true); // Let SamlException handles opensaml Exception
             }

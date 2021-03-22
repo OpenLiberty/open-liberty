@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -247,29 +247,17 @@ public abstract class PkixTrustEngineConfig {
                 }
             }
         } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-            // http://was.pok.ibm.com/xwiki/bin/view/Liberty/LoggingFFDC
-            //e.printStackTrace();
+
         } catch (CRLException e) {
-            // TODO Auto-generated catch block
-            // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-            // http://was.pok.ibm.com/xwiki/bin/view/Liberty/LoggingFFDC
-            //e.printStackTrace();
+
         } catch (CertificateException e) {
-            // TODO Auto-generated catch block
-            // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-            // http://was.pok.ibm.com/xwiki/bin/view/Liberty/LoggingFFDC
-            //e.printStackTrace();
+
         } finally {
             if (inStream != null) {
                 try {
                     inStream.close();
                 } catch (IOException e) {
-                    // TODO Auto-generated catch block
-                    // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-                    // http://was.pok.ibm.com/xwiki/bin/view/Liberty/LoggingFFDC
-                    //e.printStackTrace();
+;
                 }
             }
         }

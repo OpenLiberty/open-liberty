@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,18 +19,14 @@ import java.util.Set;
 
 import javax.xml.namespace.QName;
 
-//import org.opensaml.core.config.Configuration; //@AV999
 import org.opensaml.saml.saml2.core.Attribute;
 import org.opensaml.core.xml.Namespace;
 import org.opensaml.core.xml.XMLObject;
 import org.opensaml.core.xml.config.XMLObjectProviderRegistrySupport;
 import org.opensaml.core.xml.io.UnmarshallingException;
 import org.opensaml.core.xml.util.XMLObjectSupport;
-//import org.opensaml.xml.parse.StaticBasicParserPool; //@AV999
-//import org.opensaml.xml.parse.XMLParserException; //@AV999
+
 import net.shibboleth.utilities.java.support.xml.XMLParserException;
-//import org.opensaml.xml.util.XMLHelper;
-//import org.opensaml.xml.util.XMLObjectHelper;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -64,8 +60,8 @@ public class Saml20AttributeImpl implements Saml20Attribute {
     public Saml20AttributeImpl(Attribute attribute) {
         attribute.detach();
         this.attribute = attribute;
-        //this.seializedAttribute = XMLHelper.nodeToString(attribute.getDOM()); //@AV999
-        this.seializedAttribute = SerializeSupport.nodeToString(attribute.getDOM());
+        //this.seializedAttribute = XMLHelper.nodeToString(attribute.getDOM());
+        this.seializedAttribute = SerializeSupport.nodeToString(attribute.getDOM());//v3
         init();
     }
 
@@ -78,8 +74,8 @@ public class Saml20AttributeImpl implements Saml20Attribute {
 
     protected void deserialize() {
 
-        //StaticBasicParserPool ppMgr = (StaticBasicParserPool) Configuration.getParserPool(); //@AV999
-        ParserPool ppMgr = XMLObjectProviderRegistrySupport.getParserPool();
+        //StaticBasicParserPool ppMgr = (StaticBasicParserPool) Configuration.getParserPool();
+        ParserPool ppMgr = XMLObjectProviderRegistrySupport.getParserPool();//v3
         try {
             StringReader reader = new StringReader(this.seializedAttribute);
             this.attribute = (Attribute) XMLObjectSupport.unmarshallFromReader(ppMgr, reader);
@@ -213,8 +209,8 @@ public class Saml20AttributeImpl implements Saml20Attribute {
         Iterator<XMLObject> it = valueXmls.iterator();
         while (it.hasNext()) {
             XMLObject valueXml = it.next();
-            //String stringValue = XMLHelper.nodeToString(valueXml.getDOM()); @AV999
-            String stringValue = SerializeSupport.nodeToString(valueXml.getDOM());
+            //String stringValue = XMLHelper.nodeToString(valueXml.getDOM());
+            String stringValue = SerializeSupport.nodeToString(valueXml.getDOM());//v3
             this.stringValues.add(stringValue);
             this.simpleStringValues.add(valueXml.getDOM().getTextContent());
         }

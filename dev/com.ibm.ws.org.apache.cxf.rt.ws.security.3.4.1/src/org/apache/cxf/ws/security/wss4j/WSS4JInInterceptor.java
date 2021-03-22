@@ -240,12 +240,17 @@ public class WSS4JInInterceptor extends AbstractWSS4JInterceptor {
         }
         reqData.setWssConfig(config);
 
+        boolean doDebug = LOG.isLoggable(Level.FINE);
         // Add Audience Restrictions for SAML
+        if (doDebug) {
+            LOG.fine("WSS4JInInterceptor: saml audience restriction validation = " + SecurityUtils.getSecurityPropertyBoolean(SecurityConstants.AUDIENCE_RESTRICTION_VALIDATION,                                                                                                                msg, true));
+        }
+        
         reqData.setAudienceRestrictions(SAMLUtils.getAudienceRestrictions(msg, true));
 
         SOAPMessage doc = getSOAPMessage(msg);
 
-        boolean doDebug = LOG.isLoggable(Level.FINE);
+        
 
         SoapVersion version = msg.getVersion();
         try {
@@ -644,7 +649,6 @@ public class WSS4JInInterceptor extends AbstractWSS4JInterceptor {
         } catch (Exception ex) {
             throw new WSSecurityException(WSSecurityException.ErrorCode.FAILURE, ex);
         }
-
         if (cbHandler == null) {
             try {
                 cbHandler = getPasswordCallbackHandler(reqData);

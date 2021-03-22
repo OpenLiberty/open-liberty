@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -73,21 +73,21 @@ public class WebSSOConsumer<InboundMessageType extends SAMLObject, OutboundMessa
             messageContext = ctxBuilder.buildAcs(req, res, ssoService, externalRelayState, samlRequest);
 
             // get the SAML Response
-            //Response samlResponse = (Response) messageContext.getInboundMessage(); //@AV999
-            MessageContext<SAMLObject> mc = messageContext.getMessageContext();
-            Response samlResponse = (Response) mc.getMessage(); //@AV999 major change
-            String inboundMsgIssuer = samlResponse.getIssuer().getValue(); //@AV999
-            messageContext.setInboundSamlMessageIssuer(inboundMsgIssuer); //@AV999
-            // debugging statements
+            //Response samlResponse = (Response) messageContext.getInboundMessage();
+            MessageContext<SAMLObject> mc = messageContext.getMessageContext(); //v3
+            Response samlResponse = (Response) mc.getMessage(); //v3
+            String inboundMsgIssuer = samlResponse.getIssuer().getValue(); //v3
+            messageContext.setInboundSamlMessageIssuer(inboundMsgIssuer);
+            
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "samlResponse:" + samlResponse);
                 Tr.debug(tc, DumpData.dumpXMLObject(null, samlResponse, 0).toString());
             }
             
-            //@AV999 TODO new config attribute to get this value?
+            //TODO: new config attribute to get this value?
             if (messageContext.getPeerEntityMetadata() != null) {
                 String issuer = messageContext.getPeerEntityMetadata().getEntityID();
-                mc.getSubcontext(SAMLPeerEntityContext.class, true).setEntityId(issuer); //@AV999
+                mc.getSubcontext(SAMLPeerEntityContext.class, true).setEntityId(issuer); //v3
             }           
             mc.getSubcontext(SAMLPeerEntityContext.class, true).setRole(IDPSSODescriptor.DEFAULT_ELEMENT_NAME);
             mc.getSubcontext(SAMLProtocolContext.class, true).setProtocol(SAMLConstants.SAML20P_NS);
@@ -166,24 +166,23 @@ public class WebSSOConsumer<InboundMessageType extends SAMLObject, OutboundMessa
             MessageContext<SAMLObject> mc = messageContext.getMessageContext();
             
             // get the SAML Response
-            //LogoutResponse samlLogoutResponse = (LogoutResponse) messageContext.getInboundMessage(); //@AV999
-            LogoutResponse samlLogoutResponse = (LogoutResponse) messageContext.getMessageContext().getMessage(); //@AV999
+            LogoutResponse samlLogoutResponse = (LogoutResponse) messageContext.getMessageContext().getMessage(); //v3
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "saml logoutResponse:" + samlLogoutResponse);
                 Tr.debug(tc, DumpData.dumpXMLObject(null, samlLogoutResponse, 0).toString());
             }
-            messageContext.setInboundSamlMessageIssuer(samlLogoutResponse.getIssuer().getValue()); //@AV999
-            //@AV999 TODO new config attribute to get this value?
+            messageContext.setInboundSamlMessageIssuer(samlLogoutResponse.getIssuer().getValue());
+            // TODO: new config attribute to get this value?
             if (messageContext.getPeerEntityMetadata() != null) {
                 String issuer = messageContext.getPeerEntityMetadata().getEntityID();
-                mc.getSubcontext(SAMLPeerEntityContext.class, true).setEntityId(issuer); //@AV999
+                mc.getSubcontext(SAMLPeerEntityContext.class, true).setEntityId(issuer);
             }           
             mc.getSubcontext(SAMLPeerEntityContext.class, true).setRole(IDPSSODescriptor.DEFAULT_ELEMENT_NAME);
             mc.getSubcontext(SAMLProtocolContext.class, true).setProtocol(SAMLConstants.SAML20P_NS);
             //validate LogoutResponse - first check for status and then look at other data
             ResponseValidator<InboundMessageType, OutboundMessageType, NameIdentifierType> validator = new ResponseValidator<InboundMessageType, OutboundMessageType, NameIdentifierType>(messageContext, samlLogoutResponse);
             messageContext.setSLOResponseStatus(validator.validateLogoutStatus());
-            if (StatusCode.SUCCESS.equals(messageContext.getSLOResponseStatus().getStatusCode().getValue())) { //@AV999
+            if (StatusCode.SUCCESS.equals(messageContext.getSLOResponseStatus().getStatusCode().getValue())) {
                 validator.validateLogoutResponse();
             }
 
@@ -209,18 +208,17 @@ public class WebSSOConsumer<InboundMessageType extends SAMLObject, OutboundMessa
         MessageContext<SAMLObject> mc = messageContext.getMessageContext();
         
         // get the SAML Request
-        //LogoutRequest samlLogoutRequest = (LogoutRequest) messageContext.getInboundMessage(); //@AV999
-        LogoutRequest samlLogoutRequest = (LogoutRequest) messageContext.getMessageContext().getMessage(); //@AV999
-        messageContext.setInboundSamlMessageIssuer(samlLogoutRequest.getIssuer().getValue()); //@AV999
+        LogoutRequest samlLogoutRequest = (LogoutRequest) messageContext.getMessageContext().getMessage();
+        messageContext.setInboundSamlMessageIssuer(samlLogoutRequest.getIssuer().getValue());
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "saml logoutRequest:" + samlLogoutRequest);
             Tr.debug(tc, "saml logoutRequest ID :" + samlLogoutRequest.getID());
             Tr.debug(tc, DumpData.dumpXMLObject(null, samlLogoutRequest, 0).toString());
         }
-        //@AV999 TODO new config attribute to get this value?
+        //TODO: new config attribute to get this value?
         if (messageContext.getPeerEntityMetadata() != null) {
             String issuer = messageContext.getPeerEntityMetadata().getEntityID();
-            mc.getSubcontext(SAMLPeerEntityContext.class, true).setEntityId(issuer); //@AV999
+            mc.getSubcontext(SAMLPeerEntityContext.class, true).setEntityId(issuer);
         }           
         mc.getSubcontext(SAMLPeerEntityContext.class, true).setRole(IDPSSODescriptor.DEFAULT_ELEMENT_NAME);
         mc.getSubcontext(SAMLProtocolContext.class, true).setProtocol(SAMLConstants.SAML20P_NS);
@@ -231,7 +229,7 @@ public class WebSSOConsumer<InboundMessageType extends SAMLObject, OutboundMessa
         //validate LogoutRequest
         ResponseValidator<InboundMessageType, OutboundMessageType, NameIdentifierType> validator = new ResponseValidator<InboundMessageType, OutboundMessageType, NameIdentifierType>(messageContext, samlLogoutRequest);
         if (validator.validateLogoutRequest()) {
-            statusBuilderUtil.setStatus(messageContext.getSLOResponseStatus(), StatusCode.SUCCESS); //@AV999
+            statusBuilderUtil.setStatus(messageContext.getSLOResponseStatus(), StatusCode.SUCCESS);
         }
         messageContext.setInResponseTo(samlLogoutRequest.getID());
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,12 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-/**
- * 04/26/10 F743-25523     leou      Initial version
- * 05/10/10 F743-25523.1   leou      Move Jaspi hooks to WebAuthenticator
- * 05/27/10 654357         leou      CTS6: jaspic failure - testName:  CheckValidateReqAuthException, do not call secureResponse during postInvoke 
- * 08/11/10 665302         leou      Authorization problem with cache key using JASPI authentication
- */
+
 package com.ibm.ws.security.saml.impl;
 
 import java.util.HashMap;

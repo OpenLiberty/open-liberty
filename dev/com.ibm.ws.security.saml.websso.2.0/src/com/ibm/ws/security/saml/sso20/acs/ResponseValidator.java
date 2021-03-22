@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,8 +14,9 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.joda.time.DateTime;
+import org.opensaml.messaging.handler.MessageHandlerException;
 import org.opensaml.saml.common.SAMLObject;
-import org.opensaml.saml.common.SAMLVersion; //TODO: @AV999 check this package
+import org.opensaml.saml.common.SAMLVersion;
 import org.opensaml.saml.saml2.core.Issuer;
 import org.opensaml.saml.saml2.core.LogoutRequest;
 import org.opensaml.saml.saml2.core.LogoutResponse;
@@ -26,13 +27,11 @@ import org.opensaml.saml.saml2.core.Status;
 import org.opensaml.saml.saml2.core.StatusCode;
 import org.opensaml.saml.saml2.core.StatusMessage;
 import org.opensaml.saml.saml2.encryption.Decrypter;
-//import org.opensaml.ws.security.SecurityPolicyException; //@AV999
-import org.opensaml.messaging.handler.MessageHandlerException;
+import org.opensaml.security.trust.TrustEngine;
 import org.opensaml.xmlsec.SignatureValidationParameters;
 import org.opensaml.xmlsec.context.SecurityParametersContext;
-import org.opensaml.xmlsec.encryption.support.DecryptionException; //@AV999
-import org.opensaml.security.trust.TrustEngine; //@AV999
-import org.opensaml.xmlsec.signature.Signature; //@AV999
+import org.opensaml.xmlsec.encryption.support.DecryptionException;
+import org.opensaml.xmlsec.signature.Signature;
 import org.opensaml.xmlsec.signature.support.SignatureTrustEngine;
 
 import com.ibm.websphere.ras.Tr;
@@ -206,7 +205,7 @@ public class ResponseValidator<InboundMessageType extends SAMLObject, OutboundMe
             // opensaml may have done this for us.
             validateResponseSignature();
         } catch (SamlException e) {
-            statusBuilderUtil.setStatus(this.context.getSLOResponseStatus(), StatusCode.REQUESTER); //@AV999 - it was StatusCode.REQUESTER_URI
+            statusBuilderUtil.setStatus(this.context.getSLOResponseStatus(), StatusCode.REQUESTER); //v3 - it was StatusCode.REQUESTER_URI
             return false;
         }
 
@@ -221,7 +220,7 @@ public class ResponseValidator<InboundMessageType extends SAMLObject, OutboundMe
         if (samlLogoutRequest != null) {
             Saml20Token saml20token = PropagationHelper.getSaml20Token();
             if (saml20token == null) {
-                statusBuilderUtil.setStatus(this.context.getSLOResponseStatus(), StatusCode.RESPONDER); //@AV999
+                statusBuilderUtil.setStatus(this.context.getSLOResponseStatus(), StatusCode.RESPONDER); //v3
                 return false;
             }
             String session = (String) saml20token.getProperties().get(SINDEX);
@@ -234,7 +233,7 @@ public class ResponseValidator<InboundMessageType extends SAMLObject, OutboundMe
                 if (list.isEmpty() && session == null) { // no session index
                     return true;
                 }
-                statusBuilderUtil.setStatus(this.context.getSLOResponseStatus(), StatusCode.REQUESTER); //@AV999
+                statusBuilderUtil.setStatus(this.context.getSLOResponseStatus(), StatusCode.REQUESTER); //v3
                 return false;
             }
 
@@ -246,7 +245,7 @@ public class ResponseValidator<InboundMessageType extends SAMLObject, OutboundMe
                 }
             }
             if (!valid) {
-                statusBuilderUtil.setStatus(this.context.getSLOResponseStatus(), StatusCode.REQUESTER); //@AV999
+                statusBuilderUtil.setStatus(this.context.getSLOResponseStatus(), StatusCode.REQUESTER); //v3
             }
         }
         return valid;
@@ -269,10 +268,10 @@ public class ResponseValidator<InboundMessageType extends SAMLObject, OutboundMe
                 try {
                     validateResponseSignature();
                 } catch (SamlException e) {
-                    statusBuilderUtil.setStatus(this.context.getSLOResponseStatus(), StatusCode.REQUESTER); //@AV999
+                    statusBuilderUtil.setStatus(this.context.getSLOResponseStatus(), StatusCode.REQUESTER); //v3
                     return false;
                 }
-                statusBuilderUtil.setStatus(this.context.getSLOResponseStatus(), StatusCode.SUCCESS); //@AV999
+                statusBuilderUtil.setStatus(this.context.getSLOResponseStatus(), StatusCode.SUCCESS); //v3
                 return false;
             }
             if (tc.isDebugEnabled()) {
@@ -281,7 +280,7 @@ public class ResponseValidator<InboundMessageType extends SAMLObject, OutboundMe
             }
             if (principal == null || !principal.equals(saml20token.getSAMLNameID())) {
                 //TODO Tr.error
-                statusBuilderUtil.setStatus(this.context.getSLOResponseStatus(), StatusCode.REQUESTER); //@AV999
+                statusBuilderUtil.setStatus(this.context.getSLOResponseStatus(), StatusCode.REQUESTER); //v3
                 return false;
             }
         }
@@ -347,7 +346,7 @@ public class ResponseValidator<InboundMessageType extends SAMLObject, OutboundMe
         StatusCode requiredStatusCode = samlResponse.getStatus().getStatusCode();
         String statusCode = requiredStatusCode.getValue();
 
-        if (!StatusCode.SUCCESS.equals(statusCode)) { //@AV999
+        if (!StatusCode.SUCCESS.equals(statusCode)) { //v3
             valid = false;
             String message = statusCode;
             StatusMessage statusMessage = samlResponse.getStatus().getStatusMessage();
@@ -425,7 +424,7 @@ public class ResponseValidator<InboundMessageType extends SAMLObject, OutboundMe
         }
         if (majorVersion != 2 || minorVersion != 0) {
             if (isLogoutMessage) {
-                statusBuilderUtil.setStatus(this.context.getSLOResponseStatus(), StatusCode.REQUESTER); //@AV999
+                statusBuilderUtil.setStatus(this.context.getSLOResponseStatus(), StatusCode.REQUESTER); //v3
                 return false;
             } else {
                 throw new SamlException("SAML20_SP_BAD_VERSION_ERROR",
@@ -533,7 +532,7 @@ public class ResponseValidator<InboundMessageType extends SAMLObject, OutboundMe
                         null, // Cause
                         new Object[] { jodaTime,
                                        currentTime,
-                                       clockSkewAllowed / 1000 //milli seconds to seconds
+                                       clockSkewAllowed / 1000 //milliseconds to seconds
                         } // parameters for NLS Message
         );
     }
@@ -550,16 +549,12 @@ public class ResponseValidator<InboundMessageType extends SAMLObject, OutboundMe
         try {
             TrustEngine<Signature> trustEngine = MsgCtxUtil.getTrustedEngine(context);
             SignatureValidationParameters sigValParams = new SignatureValidationParameters();
-            sigValParams.setSignatureTrustEngine((SignatureTrustEngine) trustEngine); //@AV999 TODO
-            //SAMLMessageXMLSignatureSecurityPolicyRule signatureRule = new SAMLMessageXMLSignatureSecurityPolicyRule(trustEngine); //@AV999 TODO
-            this.context.getMessageContext().getSubcontext(SecurityParametersContext.class, true).setSignatureValidationParameters(sigValParams); //@AV999
-            SAMLMessageXMLSignatureSecurityPolicyRule signatureRule = new SAMLMessageXMLSignatureSecurityPolicyRule();/*new SAMLMessageXMLSignatureSecurityPolicyRule(trustEngine);*/ //@AV999 - major change
+            sigValParams.setSignatureTrustEngine((SignatureTrustEngine) trustEngine);
+            this.context.getMessageContext().getSubcontext(SecurityParametersContext.class, true).setSignatureValidationParameters(sigValParams); 
+            SAMLMessageXMLSignatureSecurityPolicyRule signatureRule = new SAMLMessageXMLSignatureSecurityPolicyRule(); //v3
             try {
                 signatureRule.initialize();
             } catch (ComponentInitializationException e) {
-                // TODO Auto-generated catch block
-                // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-                // e.printStackTrace();
                 throw new SamlException("SAML20_SIGNATURE_NOT_VERIFIED_ERR",
                                         //The SAML Assertion Signature is not trusted or invalid with exception [{0}].
                                         e,
@@ -567,15 +562,14 @@ public class ResponseValidator<InboundMessageType extends SAMLObject, OutboundMe
                                         });
             }
             
-            signatureRule.invoke(this.context.getMessageContext()); //@AV999 added this call here..
+            signatureRule.invoke(this.context.getMessageContext()); //TODO v3
             signatureRule.evaluateProtocol(this.context);
-            //if (!this.context.isInboundSAMLMessageAuthenticated()) { //@AV999
-            if (!signatureRule.getPeerContext().isAuthenticated()) {   
+            if (!signatureRule.getPeerContext().isAuthenticated()) {   //v3
                 throw new SamlException("SAML20_SIGNATURE_NOT_VERIFIED_ERR",
                                 //SAML20_SIGNARURE_NO_VERIFIED_ERR=CWWKS5046E: The SAML response message Signature is not verified.
                                 null, new Object[] {});
             }
-        } catch (MessageHandlerException e) { //@AV999
+        } catch (MessageHandlerException e) { 
             throw new SamlException(e); // Let the SamlException handle the opensaml exception
             //"SAML Response Signature is not trusted or invalid. The signature validation fails with exception: " + e.getCause());
         }

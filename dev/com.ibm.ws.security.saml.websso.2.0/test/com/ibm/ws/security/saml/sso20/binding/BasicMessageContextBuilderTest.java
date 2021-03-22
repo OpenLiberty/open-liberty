@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2020 IBM Corporation and others.
+ * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,8 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.security.saml.sso20.binding;
 
-import java.util.ArrayList;
-import java.util.List;
+
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -27,18 +26,18 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
-import org.opensaml.Configuration;
-import org.opensaml.saml2.binding.decoding.HTTPPostDecoder;
-import org.opensaml.saml2.metadata.provider.MetadataProviderException;
-import org.opensaml.ws.message.decoder.MessageDecodingException;
-import org.opensaml.ws.security.SecurityPolicy;
-import org.opensaml.ws.security.SecurityPolicyException;
-import org.opensaml.ws.security.SecurityPolicyResolver;
-import org.opensaml.ws.transport.http.HttpServletRequestAdapter;
-import org.opensaml.xml.io.Unmarshaller;
-import org.opensaml.xml.io.UnmarshallingException;
-import org.opensaml.xml.security.SecurityConfiguration;
-import org.opensaml.xml.security.SecurityException;
+import org.opensaml.core.config.Configuration;
+import org.opensaml.core.config.ConfigurationService;
+import org.opensaml.core.config.provider.MapBasedConfiguration;
+import org.opensaml.saml.saml2.binding.decoding.impl.HTTPPostDecoder;
+
+import org.opensaml.messaging.decoder.MessageDecodingException;
+import org.opensaml.core.xml.config.XMLObjectProviderRegistry;
+
+
+import org.opensaml.core.xml.io.UnmarshallingException;
+
+import org.opensaml.messaging.context.MessageContext;
 
 import com.ibm.ws.security.saml.SsoConfig;
 import com.ibm.ws.security.saml.SsoRequest;
@@ -70,7 +69,7 @@ public class BasicMessageContextBuilderTest {
     private final String RELAY_STATE = "RPID%3Dhttps%253A%252F%252Frelyingpartyapp%26wctx%3Dappid%253D45%2526foo%253Dbar";
 
     public interface MockInterface {
-        BasicMessageContext<?, ?, ?> getBasicMessageContext();
+        BasicMessageContext<?, ?> getBasicMessageContext();
 
         HTTPPostDecoder getSamlHttpPostDecoder();
     }
@@ -78,15 +77,13 @@ public class BasicMessageContextBuilderTest {
     private static final MockInterface mockInterface = mockery.mock(MockInterface.class);
 
     private static final BasicMessageContext basicMessageContext = mockery.mock(BasicMessageContext.class, "basicMessageContextCB");
+    private static final MessageContext messageContext = mockery.mock(MessageContext.class);
     private static final HttpServletRequest httpServletRequest = mockery.mock(HttpServletRequest.class);
-    private static final SecurityPolicyResolver securityPolicyResolver = mockery.mock(SecurityPolicyResolver.class);
-    private static final Unmarshaller unmarshaller = mockery.mock(Unmarshaller.class, "UnmarshallerCB");
     private static final HttpServletResponse httpServletResponse = mockery.mock(HttpServletResponse.class);
     private static final SsoSamlService ssoService = mockery.mock(SsoSamlService.class);
     private static final SsoRequest ssoRequest = mockery.mock(SsoRequest.class);
     private static final SsoConfig ssoConfig = mockery.mock(SsoConfig.class);
     private static final AcsDOMMetadataProvider acsDOM = mockery.mock(AcsDOMMetadataProvider.class);
-    private static final SecurityConfiguration securityConfiguration = mockery.mock(SecurityConfiguration.class);
     private static final HTTPPostDecoder httpPostDecoder = mockery.mock(HTTPPostDecoder.class);
 
     @BeforeClass
@@ -94,14 +91,18 @@ public class BasicMessageContextBuilderTest {
         outputMgr.trace("*=all");
         instance = new BasicMessageContextBuilder();
         qnLogoutRequest = new QName(QN_NS_URI, QN_LOCALNAME, QN_NAME);
-        Configuration.getUnmarshallerFactory().registerUnmarshaller(qnLogoutRequest, unmarshaller);
+        
+        Configuration configuration = new MapBasedConfiguration();
+        ConfigurationService.setConfiguration(configuration);
 
-        Configuration.setGlobalSecurityConfiguration(securityConfiguration);
+        XMLObjectProviderRegistry providerRegistry = new XMLObjectProviderRegistry();
+        configuration.register(XMLObjectProviderRegistry.class, providerRegistry,
+                               ConfigurationService.DEFAULT_PARTITION_NAME);
+
     }
 
     @AfterClass
     public static void tearDown() {
-        Configuration.setGlobalSecurityConfiguration(null);
         outputMgr.trace("*=all=disabled");
     }
 
@@ -111,20 +112,20 @@ public class BasicMessageContextBuilderTest {
     }
 
     @Test
-    public void BuildAcsTest() throws SamlException, UnmarshallingException, MessageDecodingException, SecurityException, MetadataProviderException {
+    public void BuildAcsTest() throws SamlException, UnmarshallingException, MessageDecodingException, SecurityException {
         instance = new BasicMessageContextBuilder() {
             @Override
-            BasicMessageContext<?, ?, ?> getBasicMessageContext(SsoSamlService ssoService) {
+            BasicMessageContext<?, ?> getBasicMessageContext(SsoSamlService ssoService) {
                 return mockInterface.getBasicMessageContext();
             }
             
             @Override
-            BasicMessageContext<?, ?, ?> getBasicMessageContext(SsoSamlService ssoService, HttpServletRequest req, HttpServletResponse res) {
+            BasicMessageContext<?, ?> getBasicMessageContext(SsoSamlService ssoService, HttpServletRequest req, HttpServletResponse res) {
                 return mockInterface.getBasicMessageContext();
             }
 
             @Override
-            HTTPPostDecoder getSamlHttpPostDecoder(String acsUrl) {
+            HTTPPostDecoder getSamlHttpPostDecoder(String acsUrl, HttpServletRequest req) {
                 return mockInterface.getSamlHttpPostDecoder();
             }
         };
@@ -135,7 +136,7 @@ public class BasicMessageContextBuilderTest {
                 will(returnValue(basicMessageContext));
 
                 one(basicMessageContext).setAndRemoveCachedRequestInfo(RELAY_STATE, ssoRequest);
-                one(basicMessageContext).setInboundMessageTransport(with(any(HttpServletRequestAdapter.class)));
+                //one(basicMessageContext).setInboundMessageTransport(with(any(HttpServletRequestAdapter.class)));
 
                 allowing(basicMessageContext).getSsoConfig();
                 will(returnValue(ssoConfig));
@@ -160,7 +161,12 @@ public class BasicMessageContextBuilderTest {
                 one(mockInterface).getSamlHttpPostDecoder();
                 will(returnValue(httpPostDecoder));
 
-                one(httpPostDecoder).decode(basicMessageContext);
+                one(httpPostDecoder).decode();
+                
+                allowing(httpPostDecoder).getMessageContext();
+                will(returnValue(messageContext));
+                
+                allowing(basicMessageContext).setMessageContext(with(any(MessageContext.class)));
 
             }
         });
@@ -168,27 +174,4 @@ public class BasicMessageContextBuilderTest {
         instance.buildAcs(httpServletRequest, httpServletResponse, ssoService, RELAY_STATE, ssoRequest);
     }
 
-    @SuppressWarnings("unchecked")
-    @Test(expected = SamlException.class)
-    public void verifySignatureWithIdpMetadataReturnsSamlExceptionTest() throws SamlException, SecurityException {
-
-        final SecurityPolicy securityPolicy = mockery.mock(SecurityPolicy.class);
-        final List<SecurityPolicy> iterablePolicy = new ArrayList<SecurityPolicy>();
-        iterablePolicy.add(securityPolicy);
-
-        mockery.checking(new Expectations() {
-            {
-                one(basicMessageContext).getIdpSecurityPolicyResolver();
-                will(returnValue(securityPolicyResolver));
-
-                one(securityPolicyResolver).resolve(basicMessageContext);
-                will(returnValue(iterablePolicy));
-
-                one(securityPolicy).evaluate(basicMessageContext);
-                will(throwException(new SecurityPolicyException()));
-            }
-        });
-
-        instance.verifySignatureWithIdpMetadata(basicMessageContext);
-    }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,8 +17,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.joda.time.DateTime;
-import org.opensaml.core.config.Configuration;
 import org.opensaml.core.criterion.EntityIdCriterion;
+import org.opensaml.core.xml.XMLObjectBuilder;
+import org.opensaml.core.xml.XMLObjectBuilderFactory;
+import org.opensaml.core.xml.config.XMLObjectProviderRegistrySupport;
+import org.opensaml.core.xml.io.Marshaller;
+import org.opensaml.core.xml.io.MarshallingException;
+import org.opensaml.messaging.encoder.MessageEncodingException;
 import org.opensaml.saml.common.SAMLObject;
 import org.opensaml.saml.common.SAMLVersion;
 import org.opensaml.saml.common.SignableSAMLObject;
@@ -37,32 +42,11 @@ import org.opensaml.saml.saml2.core.impl.RequestedAuthnContextBuilder;
 import org.opensaml.saml.saml2.metadata.EntityDescriptor;
 import org.opensaml.saml.saml2.metadata.IDPSSODescriptor;
 import org.opensaml.saml.saml2.metadata.SingleSignOnService;
-//import org.opensaml.saml.saml2.metadata.provider.MetadataProvider;
-//import org.opensaml.saml.saml2.metadata.provider.MetadataProviderException;
-import org.opensaml.messaging.encoder.MessageEncodingException;
-import org.opensaml.core.xml.XMLObject;
-import org.opensaml.core.xml.XMLObjectBuilder;
-import org.opensaml.core.xml.XMLObjectBuilderFactory;
-import org.opensaml.core.xml.config.XMLObjectProviderRegistrySupport;
-import org.opensaml.core.xml.io.Marshaller;
-import org.opensaml.core.xml.io.MarshallingException;
-import org.opensaml.security.SecurityException;
-//import org.opensaml.xml.security.SecurityHelper;
 import org.opensaml.security.credential.Credential;
 import org.opensaml.xmlsec.signature.Signature;
 import org.opensaml.xmlsec.signature.support.SignatureConstants;
 import org.opensaml.xmlsec.signature.support.Signer;
 import org.opensaml.xmlsec.signature.support.SignerProvider;
-
-//import org.opensaml.xml.util.Base64; //@AV999
-import net.shibboleth.utilities.java.support.codec.Base64Support;
-import net.shibboleth.utilities.java.support.resolver.CriteriaSet;
-import net.shibboleth.utilities.java.support.resolver.CriterionPredicateRegistry;
-import net.shibboleth.utilities.java.support.resolver.ResolverException;
-import net.shibboleth.utilities.java.support.xml.SerializeSupport;
-
-//import org.opensaml.xml.util.XMLHelper;
-import org.opensaml.xmlsec.signature.support.SignatureSupport;
 import org.w3c.dom.Element;
 
 import com.ibm.websphere.ras.Tr;
@@ -82,6 +66,11 @@ import com.ibm.ws.security.saml.sso20.internal.utils.RequestUtil;
 import com.ibm.ws.security.saml.sso20.internal.utils.SamlUtil;
 import com.ibm.ws.security.saml.sso20.metadata.AcsDOMMetadataProvider;
 import com.ibm.wsspi.security.tai.TAIResult;
+
+import net.shibboleth.utilities.java.support.codec.Base64Support;
+import net.shibboleth.utilities.java.support.resolver.CriteriaSet;
+import net.shibboleth.utilities.java.support.resolver.ResolverException;
+import net.shibboleth.utilities.java.support.xml.SerializeSupport;
 
 /**
  * http://docs.oasis-open.org/security/saml/v2.0/saml-core-2.0-os.pdf
@@ -157,8 +146,8 @@ public class Solicited {
      */
     String handleIdpMetadataAndLoginUrl(BasicMessageContext<?, ?> basicMsgCtx) throws SamlException {
         String idpUrl = null;
-        //MetadataProvider metadataProvider = basicMsgCtx.getMetadataProvider(); //@AV999
-        AcsDOMMetadataProvider metadataProvider = basicMsgCtx.getMetadataProvider();
+        //MetadataProvider metadataProvider = basicMsgCtx.getMetadataProvider(); //
+        AcsDOMMetadataProvider metadataProvider = basicMsgCtx.getMetadataProvider();//v3
         if (metadataProvider == null) {
             // Should only happen during testing the installation
             if (tc.isDebugEnabled()) {
@@ -181,25 +170,24 @@ public class Solicited {
 
         }
 
-        //XMLObject metadata = null; //@AV999
-        EntityDescriptor metadata2 = null; //@AV999
-        String entityID = metadataProvider.getEntityId(); //@AV999 - TODO we need a config attribute
+        //XMLObject metadata = null;
+        EntityDescriptor metadata2 = null; //v3
+        String entityID = metadataProvider.getEntityId(); //TODO: we need a config attribute
         CriteriaSet criteriaSet;
         try {
             criteriaSet = new CriteriaSet(new EntityIdCriterion(entityID));
-            metadata2 = metadataProvider.resolveSingle(criteriaSet); //metadataProvider.getMetadata(); //@AV999
-            // assume the metadataProvider is an entityDescriptor for now
-            if (metadata2 != null /*instanceof EntityDescriptor*/) {
-                //EntityDescriptor entityDescriptor = (EntityDescriptor) metadata; //@AV999
-                EntityDescriptor entityDescriptor = metadata2; //@AV999
+            metadata2 = metadataProvider.resolveSingle(criteriaSet);
+            // make sure that we have EntityDescriptor
+            if (metadata2 != null) {
+                EntityDescriptor entityDescriptor = metadata2; //v3
                 String idpEntityId = entityDescriptor.getEntityID(); // output variable
-                //basicMsgCtx.setPeerEntityId(idpEntityId); //@AV999 major change?
+                //basicMsgCtx.setPeerEntityId(idpEntityId);
                 IDPSSODescriptor ssoDescriptor = entityDescriptor.getIDPSSODescriptor(Constants.SAML20P_NS);
                 if (ssoDescriptor != null) {
                     List<SingleSignOnService> list = ssoDescriptor.getSingleSignOnServices();
                     for (SingleSignOnService ssoService : list) {
                         if (Constants.SAML2_POST_BINDING_URI.equals(ssoService.getBinding())) {
-                            basicMsgCtx.setPeerEntityEndpoint(ssoService); //@AV999 major change?
+                            basicMsgCtx.setPeerEntityEndpoint(ssoService); //v3
                             idpUrl = ssoService.getLocation(); // output
                             break;
                         }
@@ -232,7 +220,7 @@ public class Solicited {
                                 null,
                                 new Object[] { idpMetadaFile, providerId });
             }
-        } catch (/*MetadataProviderException*/ResolverException e) { //@AV999
+        } catch (ResolverException e) {
             throw new SamlException(e); // Let SamlException handles the unexpected Exception
         }
         return idpUrl;
@@ -396,8 +384,8 @@ public class Solicited {
             throw wtfae;
         }
 
-        //String samlRequest = Base64.encodeBytes(authnReqBytes, Base64.DONT_BREAK_LINES); //@AV999
-        String samlRequest = Base64Support.encode(authnReqBytes, Base64Support.UNCHUNKED); //@AV999
+        //String samlRequest = Base64.encodeBytes(authnReqBytes, Base64.DONT_BREAK_LINES);
+        String samlRequest = Base64Support.encode(authnReqBytes, Base64Support.UNCHUNKED); //v3
 
         if (relayState == null || samlRequest == null || idpUrl == null) {
             // This should not happen
@@ -438,44 +426,29 @@ public class Solicited {
     @SuppressWarnings("unchecked")
     void signAuthnRequest(SAMLObject authnRequest, Credential signingCredential) throws SamlException {
         SsoConfig samlConfig = ssoService.getConfig();
-        //QName qName = Signature.DEFAULT_ELEMENT_NAME;
-        
+        //QName qName = Signature.DEFAULT_ELEMENT_NAME;       
         if (authnRequest instanceof SignableSAMLObject && signingCredential != null) {
             SignableSAMLObject signableMessage = (SignableSAMLObject) authnRequest;
-            //@AV999
-            XMLObjectBuilderFactory builderFactory = XMLObjectProviderRegistrySupport.getBuilderFactory();
-//@AV999
-//            XMLObjectBuilder<Signature> signatureBuilder = Configuration.getBuilderFactory().getBuilder(
-//                                                                                                        Signature.DEFAULT_ELEMENT_NAME);
+            XMLObjectBuilderFactory builderFactory = XMLObjectProviderRegistrySupport.getBuilderFactory();//v3
             XMLObjectBuilder<Signature> signatureBuilder = (XMLObjectBuilder<Signature>)builderFactory.getBuilder(Signature.DEFAULT_ELEMENT_NAME);
-            Signature signature = signatureBuilder.buildObject(Signature.DEFAULT_ELEMENT_NAME/*Signature.DEFAULT_ELEMENT_NAME*/);
+            Signature signature = signatureBuilder.buildObject(Signature.DEFAULT_ELEMENT_NAME);
             signature.setSignatureAlgorithm(samlConfig.getSignatureMethodAlgorithm());//SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA256);// SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA1); //               
             signature.setCanonicalizationAlgorithm(SignatureConstants.ALGO_ID_C14N_EXCL_OMIT_COMMENTS);
 
             signature.setSigningCredential(signingCredential);
-//            try {
-//                //SecurityHelper.prepareSignatureParams(signature, signingCredential, null, null); //@AV999
-//                // SignatureSupport.prepareSignatureParams(signature, signingCredential, null, null); //@AV999 maybe we don't need this
-//            } catch (SecurityException e) {
-//                throw new SamlException(e, true); // Let SamlException handles opensaml Exception
-//            }
-
             signableMessage.setSignature(signature);
 
             final ClassLoader originalClassLoader = Thread.currentThread().getContextClassLoader(); 
             try {
-                //Marshaller marshaller = Configuration.getMarshallerFactory().getMarshaller(signableMessage); //@AV999
-                Marshaller marshaller = XMLObjectProviderRegistrySupport.getMarshallerFactory().getMarshaller(signableMessage);
+                //Marshaller marshaller = Configuration.getMarshallerFactory().getMarshaller(signableMessage);
+                Marshaller marshaller = XMLObjectProviderRegistrySupport.getMarshallerFactory().getMarshaller(signableMessage);//v3
                 if (marshaller == null) {
-                    //Tr.error(tc, "SAML20_NO_MARSHALLER_FOUND", signableMessage.getElementQName());
-                    // CWWKS5043E: The Web Service request failed. Cannot find a marshaller registered for [{0}] unable to marshall the Element.
                     throw new SamlException("SAML20_AUTHENTICATION_FAIL",
                                     //"CWWKS5063E: The Web Service Request failed due to the authentication is not successful.",
                                     null,
                                     new Object[] {});
                 }
-                marshaller.marshall(signableMessage);
-                //final ClassLoader originalClassLoader = Thread.currentThread().getContextClassLoader(); 
+                marshaller.marshall(signableMessage); 
                 Thread.currentThread().setContextClassLoader(SignerProvider.class.getClassLoader());
                 Signer.signObject(signature);
             } catch (Exception e) {
@@ -492,8 +465,8 @@ public class Solicited {
             try {
                 AuthnRequestMarshaller marshaller = new AuthnRequestMarshaller();
                 Element element = marshaller.marshall(authnRequest);
-                //result = XMLHelper.nodeToString(element); //@AV999
-                result = SerializeSupport.nodeToString(element); //AV999
+                //result = XMLHelper.nodeToString(element);
+                result = SerializeSupport.nodeToString(element); //v3
             } catch (MarshallingException e) {
                 throw new SamlException(e, true); // Let SamlException handles opensaml Exception
             }

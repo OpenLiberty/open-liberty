@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2020 IBM Corporation and others.
+ * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,26 +18,28 @@ import org.jmock.Mockery;
 import org.jmock.States;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
-import org.opensaml.saml2.core.Assertion;
-import org.opensaml.saml2.core.AudienceRestriction;
-import org.opensaml.saml2.core.AuthnStatement;
-import org.opensaml.saml2.core.Condition;
-import org.opensaml.saml2.core.Conditions;
-import org.opensaml.saml2.core.EncryptedAssertion;
-import org.opensaml.saml2.core.Issuer;
-import org.opensaml.saml2.core.NameID;
-import org.opensaml.saml2.core.Response;
-import org.opensaml.saml2.core.Status;
-import org.opensaml.saml2.core.StatusCode;
-import org.opensaml.saml2.core.Subject;
-import org.opensaml.saml2.core.SubjectConfirmation;
-import org.opensaml.saml2.core.SubjectConfirmationData;
-import org.opensaml.saml2.metadata.EntityDescriptor;
-import org.opensaml.saml2.metadata.provider.MetadataProvider;
-import org.opensaml.ws.message.MessageContext;
-import org.opensaml.xml.security.SecurityConfiguration;
-import org.opensaml.xml.security.keyinfo.KeyInfoCredentialResolver;
-import org.opensaml.xml.signature.Signature;
+//import org.opensaml.message.MessageContext;
+import org.opensaml.messaging.context.MessageContext;
+import org.opensaml.saml.common.messaging.context.SAMLPeerEntityContext;
+//import org.opensaml.saml.saml2.metadata.provider.MetadataProvider;
+import org.opensaml.saml.metadata.resolver.impl.DOMMetadataResolver;
+import org.opensaml.saml.saml2.core.Assertion;
+import org.opensaml.saml.saml2.core.AudienceRestriction;
+import org.opensaml.saml.saml2.core.AuthnStatement;
+import org.opensaml.saml.saml2.core.Condition;
+import org.opensaml.saml.saml2.core.Conditions;
+import org.opensaml.saml.saml2.core.EncryptedAssertion;
+import org.opensaml.saml.saml2.core.Issuer;
+import org.opensaml.saml.saml2.core.NameID;
+import org.opensaml.saml.saml2.core.Response;
+import org.opensaml.saml.saml2.core.Status;
+import org.opensaml.saml.saml2.core.StatusCode;
+import org.opensaml.saml.saml2.core.Subject;
+import org.opensaml.saml.saml2.core.SubjectConfirmation;
+import org.opensaml.saml.saml2.core.SubjectConfirmationData;
+import org.opensaml.saml.saml2.metadata.EntityDescriptor;
+import org.opensaml.xmlsec.keyinfo.KeyInfoCredentialResolver;
+import org.opensaml.xmlsec.signature.Signature;
 
 import com.ibm.websphere.security.saml2.Saml20Token;
 import com.ibm.ws.security.common.structures.Cache;
@@ -84,9 +86,8 @@ public class CommonMockObjects {
     private final Issuer issuer = mockery.mock(Issuer.class);
     private final EntityDescriptor entityDescriptor = mockery.mock(EntityDescriptor.class);
     private final KeyInfoCredentialResolver keyInfoCredResolver = mockery.mock(KeyInfoCredentialResolver.class);
-    private final MetadataProvider metadataProvider = mockery.mock(MetadataProvider.class);
+    private final DOMMetadataResolver metadataProvider = mockery.mock(DOMMetadataResolver.class);
     private final ForwardRequestInfo requestInfo = mockery.mock(ForwardRequestInfo.class);
-    private final SecurityConfiguration securityConfig = mockery.mock(SecurityConfiguration.class);
     private final Signature signature = mockery.mock(Signature.class);
     private final MessageContext messageContext = mockery.mock(MessageContext.class);
     private final Response samlResponse = mockery.mock(Response.class);
@@ -104,13 +105,21 @@ public class CommonMockObjects {
     private final AudienceRestriction audienceRestriction = mockery.mock(AudienceRestriction.class);
     private final EncryptedAssertion encryptedAssertion = mockery.mock(EncryptedAssertion.class);
     private final BasicMessageContextBuilder basicMessageContextBuilder = mockery.mock(BasicMessageContextBuilder.class);
+    private final SAMLPeerEntityContext samlPeerEntityContext = mockery.mock(SAMLPeerEntityContext.class);
 
     private final States stateMachine = mockery.states("states");
 
     /**
+     * @return the samlPeerEntityContext
+     */
+    public SAMLPeerEntityContext getSAMLPeerEntityContext() {
+        return samlPeerEntityContext;
+    }
+
+    /**
      * @return the metadataProvider
      */
-    public MetadataProvider getMetadataProvider() {
+    public DOMMetadataResolver getMetadataProvider() {
         return metadataProvider;
     }
 
@@ -119,13 +128,6 @@ public class CommonMockObjects {
      */
     public ForwardRequestInfo getRequestInfo() {
         return requestInfo;
-    }
-
-    /**
-     * @return the securityConfig
-     */
-    public SecurityConfiguration getSecurityConfig() {
-        return securityConfig;
     }
 
     /**
@@ -271,7 +273,7 @@ public class CommonMockObjects {
     /**
      * @return the basicMessageContext
      */
-    public BasicMessageContext<?, ?, ?> getBasicMessageContext() {
+    public BasicMessageContext<?, ?> getBasicMessageContext() {
         return basicMessageContext;
     }
 

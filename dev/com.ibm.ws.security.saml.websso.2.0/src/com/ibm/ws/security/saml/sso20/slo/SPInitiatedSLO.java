@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,8 +18,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.joda.time.DateTime;
-import org.opensaml.core.config.Configuration;
 import org.opensaml.core.criterion.EntityIdCriterion;
+import org.opensaml.core.xml.XMLObjectBuilder;
+import org.opensaml.core.xml.XMLObjectBuilderFactory;
+import org.opensaml.core.xml.config.XMLObjectProviderRegistrySupport;
+import org.opensaml.core.xml.io.Marshaller;
+import org.opensaml.core.xml.io.MarshallingException;
+import org.opensaml.messaging.encoder.MessageEncodingException;
 import org.opensaml.saml.common.SAMLObject;
 import org.opensaml.saml.common.SAMLVersion;
 import org.opensaml.saml.common.SignableSAMLObject;
@@ -37,24 +42,11 @@ import org.opensaml.saml.saml2.core.impl.SessionIndexBuilder;
 import org.opensaml.saml.saml2.metadata.EntityDescriptor;
 import org.opensaml.saml.saml2.metadata.IDPSSODescriptor;
 import org.opensaml.saml.saml2.metadata.SingleLogoutService;
-//import org.opensaml.saml2.metadata.provider.MetadataProvider; //@AV999
-//import org.opensaml.saml2.metadata.provider.MetadataProviderException;
-import org.opensaml.messaging.encoder.MessageEncodingException;
-import org.opensaml.core.xml.XMLObject;
-import org.opensaml.core.xml.XMLObjectBuilder;
-import org.opensaml.core.xml.XMLObjectBuilderFactory;
-import org.opensaml.core.xml.config.XMLObjectProviderRegistrySupport;
-import org.opensaml.core.xml.io.Marshaller;
-import org.opensaml.core.xml.io.MarshallingException;
-import org.opensaml.security.SecurityException;
-//import org.opensaml.xml.security.SecurityHelper;
 import org.opensaml.security.credential.Credential;
 import org.opensaml.xmlsec.signature.Signature;
 import org.opensaml.xmlsec.signature.support.SignatureConstants;
 import org.opensaml.xmlsec.signature.support.Signer;
 import org.opensaml.xmlsec.signature.support.SignerProvider;
-//import org.opensaml.xml.util.Base64;
-//import org.opensaml.xml.util.XMLHelper;
 import org.w3c.dom.Element;
 
 import com.ibm.websphere.ras.Tr;
@@ -158,7 +150,7 @@ public class SPInitiatedSLO {
      */
     String handleIdpMetadataAndLogoutUrl(BasicMessageContext<?, ?> basicMsgCtx) throws SamlException {
         String idpUrl = null;
-        //MetadataProvider metadataProvider = basicMsgCtx.getMetadataProvider(); //@AV999
+        //MetadataProvider metadataProvider = basicMsgCtx.getMetadataProvider();
         AcsDOMMetadataProvider metadataProvider = basicMsgCtx.getMetadataProvider();
         if (metadataProvider == null) {
             // Should only happen during testing the installation
@@ -180,22 +172,21 @@ public class SPInitiatedSLO {
 
         }
 
-        //XMLObject metadata = null; //@AV999
-        EntityDescriptor metadata2 = null; //@AV999
-        String entityID = metadataProvider.getEntityId(); //@AV999 - TODO we need a config attribute
+        //XMLObject metadata = null;
+        EntityDescriptor metadata2 = null; //v3
+        String entityID = metadataProvider.getEntityId(); //TODO: we need a config attribute
         CriteriaSet criteriaSet;
         try {
             criteriaSet = new CriteriaSet(new EntityIdCriterion(entityID));
-            metadata2 = metadataProvider.resolveSingle(criteriaSet); //metadataProvider.getMetadata(); //@AV999
-            //metadata = metadataProvider.getMetadata(); //@AV999
-            // assume the metadataProvider is an entityDescriptor for now
-            if (metadata2 != null /* instanceof EntityDescriptor*/) { //@AV999
+            metadata2 = metadataProvider.resolveSingle(criteriaSet);
+            
+            // TODO: make sure that we have an EntityDescriptor
+            if (metadata2 != null) {
                 EntityDescriptor entityDescriptor = (EntityDescriptor) metadata2;
                 String idpEntityId = entityDescriptor.getEntityID(); // output variable
-                //basicMsgCtx.setPeerEntityId(idpEntityId); //@AV999 major change?
+                //basicMsgCtx.setPeerEntityId(idpEntityId);
                 IDPSSODescriptor ssoDescriptor = entityDescriptor.getIDPSSODescriptor(Constants.SAML20P_NS);
                 if (ssoDescriptor != null) {
-//                    List<SingleSignOnService> list = ssoDescriptor.getSingleSignOnServices();
                     List<SingleLogoutService> list = ssoDescriptor.getSingleLogoutServices();
                     for (SingleLogoutService sloService : list) {
                         if (Constants.SAML2_POST_BINDING_URI.equals(sloService.getBinding())) {
@@ -230,7 +221,7 @@ public class SPInitiatedSLO {
                                 //SAML20_NO_IDP_URL_ERROR=CWWKS5079E: Cannot find the IdP URL through the identity provider (IdP) metadata file [{0}] in the service provider (SP) [{1}].
                                 null, new Object[] { idpMetadaFile, providerId });
             }
-        } catch (/*MetadataProviderException*/ResolverException e) {
+        } catch (ResolverException e) {
             throw new SamlException(e); // Let SamlException handles the unexpected Exception
         }
         return idpUrl;
@@ -362,8 +353,7 @@ public class SPInitiatedSLO {
             throw samlException;
         }
 
-        //String samlRequest = Base64.encodeBytes(logoutReqBytes, Base64.DONT_BREAK_LINES); //@AV999
-        String samlRequest = Base64Support.encode(logoutReqBytes, Base64Support.UNCHUNKED); //@AV999
+        String samlRequest = Base64Support.encode(logoutReqBytes, Base64Support.UNCHUNKED); //v3
 
         if (relayState == null || samlRequest == null || idpUrl == null) {
             // This should not happen
@@ -407,9 +397,6 @@ public class SPInitiatedSLO {
         SsoConfig samlConfig = ssoService.getConfig();
         if (logoutRequest instanceof SignableSAMLObject && signingCredential != null) {
             SignableSAMLObject signableMessage = (SignableSAMLObject) logoutRequest;
-//@AV999
-//            XMLObjectBuilder<Signature> signatureBuilder = Configuration.getBuilderFactory().getBuilder(
-//                                                                                                        Signature.DEFAULT_ELEMENT_NAME);
             
             XMLObjectBuilderFactory builderFactory = XMLObjectProviderRegistrySupport.getBuilderFactory();
             XMLObjectBuilder<Signature> signatureBuilder = (XMLObjectBuilder<Signature>)builderFactory.getBuilder(Signature.DEFAULT_ELEMENT_NAME);
@@ -418,27 +405,16 @@ public class SPInitiatedSLO {
             signature.setCanonicalizationAlgorithm(SignatureConstants.ALGO_ID_C14N_EXCL_OMIT_COMMENTS);
 
             signature.setSigningCredential(signingCredential);
-            //@AV999
-//            try {
-//                SecurityHelper.prepareSignatureParams(signature, signingCredential, null, null);
-//            } catch (SecurityException e) {
-//                throw new SamlException(e, true); // Let SamlException handles opensaml Exception
-//            }
-
             signableMessage.setSignature(signature);
             final ClassLoader originalClassLoader = Thread.currentThread().getContextClassLoader();
             try {
-                //Marshaller marshaller = Configuration.getMarshallerFactory().getMarshaller(signableMessage); //@AV999
-                Marshaller marshaller = XMLObjectProviderRegistrySupport.getMarshallerFactory().getMarshaller(signableMessage);
+                Marshaller marshaller = XMLObjectProviderRegistrySupport.getMarshallerFactory().getMarshaller(signableMessage);//v3
                 if (marshaller == null) {
-                    //Tr.error(tc, "SAML20_NO_MARSHALLER_FOUND", signableMessage.getElementQName());
-                    // CWWKS5043E: The Web Service request failed. Cannot find a marshaller registered for [{0}] unable to marshall the Element.
                     throw new SamlException("SAML20_AUTHENTICATION_FAIL",
                                     //"CWWKS5063E: The Web Service Request failed due to the authentication is not successful.",
                                     null, new Object[] {});
                 }
                 marshaller.marshall(signableMessage);
-
                 Thread.currentThread().setContextClassLoader(SignerProvider.class.getClassLoader());
                 Signer.signObject(signature);
             } catch (Exception e) {
@@ -455,8 +431,8 @@ public class SPInitiatedSLO {
             try {
                 LogoutRequestMarshaller marshaller = new LogoutRequestMarshaller();
                 Element element = marshaller.marshall(logoutRequest);
-                //result = XMLHelper.nodeToString(element); //@AV999
-                result = SerializeSupport.nodeToString(element);
+                //result = XMLHelper.nodeToString(element);
+                result = SerializeSupport.nodeToString(element);//v3
             } catch (MarshallingException e) {
                 throw new SamlException(e, true); // Let SamlException handles opensaml Exception
             }

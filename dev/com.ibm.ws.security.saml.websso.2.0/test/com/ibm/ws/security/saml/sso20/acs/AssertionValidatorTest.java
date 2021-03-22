@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2020 IBM Corporation and others.
+ * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,24 +32,31 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.rules.TestRule;
-import org.opensaml.saml2.core.Assertion;
-import org.opensaml.saml2.core.Audience;
-import org.opensaml.saml2.core.AudienceRestriction;
-import org.opensaml.saml2.core.AuthnStatement;
-import org.opensaml.saml2.core.Condition;
-import org.opensaml.saml2.core.Conditions;
-import org.opensaml.saml2.core.Issuer;
-import org.opensaml.saml2.core.NameID;
-import org.opensaml.saml2.core.OneTimeUse;
-import org.opensaml.saml2.core.Subject;
-import org.opensaml.saml2.core.SubjectConfirmation;
-import org.opensaml.saml2.core.SubjectConfirmationData;
-import org.opensaml.saml2.metadata.EntityDescriptor;
-import org.opensaml.saml2.metadata.provider.MetadataProvider;
-import org.opensaml.xml.Configuration;
-import org.opensaml.xml.security.SecurityConfiguration;
-import org.opensaml.xml.security.keyinfo.KeyInfoCredentialResolver;
-import org.opensaml.xml.signature.Signature;
+import org.opensaml.messaging.context.MessageContext;
+import org.opensaml.saml.common.messaging.context.SAMLPeerEntityContext;
+import org.opensaml.saml.common.messaging.context.SAMLProtocolContext;
+import org.opensaml.saml.common.xml.SAMLConstants;
+import org.opensaml.saml.metadata.resolver.impl.DOMMetadataResolver;
+import org.opensaml.saml.saml2.core.Assertion;
+import org.opensaml.saml.saml2.core.Audience;
+import org.opensaml.saml.saml2.core.AudienceRestriction;
+import org.opensaml.saml.saml2.core.AuthnStatement;
+import org.opensaml.saml.saml2.core.Condition;
+import org.opensaml.saml.saml2.core.Conditions;
+import org.opensaml.saml.saml2.core.Issuer;
+import org.opensaml.saml.saml2.core.NameID;
+import org.opensaml.saml.saml2.core.OneTimeUse;
+import org.opensaml.saml.saml2.core.Response;
+import org.opensaml.saml.saml2.core.Subject;
+import org.opensaml.saml.saml2.core.SubjectConfirmation;
+import org.opensaml.saml.saml2.core.SubjectConfirmationData;
+import org.opensaml.saml.saml2.metadata.EntityDescriptor;
+import org.opensaml.saml.saml2.metadata.IDPSSODescriptor;
+import org.opensaml.xmlsec.SignatureValidationParameters;
+import org.opensaml.xmlsec.context.SecurityParametersContext;
+import org.opensaml.xmlsec.keyinfo.KeyInfoCredentialResolver;
+import org.opensaml.xmlsec.signature.Signature;
+import org.opensaml.xmlsec.signature.support.SignatureTrustEngine;
 
 import com.ibm.ws.security.saml.SsoConfig;
 import com.ibm.ws.security.saml.SsoSamlService;
@@ -57,6 +64,7 @@ import com.ibm.ws.security.saml.error.SamlException;
 import com.ibm.ws.security.saml.sso20.binding.BasicMessageContext;
 import com.ibm.ws.security.saml.sso20.common.CommonMockObjects;
 import com.ibm.ws.security.saml.sso20.internal.utils.ForwardRequestInfo;
+import com.ibm.ws.security.saml.sso20.metadata.AcsDOMMetadataProvider;
 
 import test.common.SharedOutputManager;
 
@@ -67,6 +75,8 @@ public class AssertionValidatorTest {
     private static final Mockery mockery = common.getMockery();
 
     private static final Assertion assertion = common.getAssertion();
+    private static final MessageContext messageContext = common.getMessageContext();
+    private static final SAMLPeerEntityContext samlPeerEntityContext = common.getSAMLPeerEntityContext();
     private static final AudienceRestriction audienceRestriction = common.getAudienceRestriction();
     private static final AuthnStatement authnStatement = common.getAuthnStatement();
     private static final BasicMessageContext context = common.getBasicMessageContext();
@@ -75,11 +85,11 @@ public class AssertionValidatorTest {
     private static final EntityDescriptor entityDescriptor = common.getEntityDescriptor();
     private static final HttpServletRequest request = common.getServletRequest();
     private static final Issuer issuer = common.getIssuer();
-    private static final KeyInfoCredentialResolver keyInfoCredResolver = common.getKeyInfoCredResolver();
-    private static final MetadataProvider metadataProvider = common.getMetadataProvider();
+
+    private static final AcsDOMMetadataProvider acsmetadataProvider = mockery.mock(AcsDOMMetadataProvider.class);
     private static final NameID nameId = common.getNameId();
     private static final ForwardRequestInfo requestInfo = common.getRequestInfo();
-    private static final SecurityConfiguration securityConfig = common.getSecurityConfig();
+
     private static final Signature signature = common.getSignature();
     private static final SsoConfig ssoConfig = common.getSsoConfig();
     private static final SsoSamlService ssoService = common.getSsoService();
@@ -88,7 +98,13 @@ public class AssertionValidatorTest {
     private static final SubjectConfirmation subjectConfirmation = common.getSubjectConfirmation();
     private static final SubjectConfirmationData subjectConfirmationData = common.getSubjectConfirmationData();
 
+    private static final SAMLProtocolContext samlProtocolContext = mockery.mock(SAMLProtocolContext.class);
+    private static final SecurityParametersContext securityParamContext = mockery.mock(SecurityParametersContext.class);
+    private static final SignatureValidationParameters signatureValidationParams = mockery.mock(SignatureValidationParameters.class);
+    private static final SignatureTrustEngine signatureTrustEngine = mockery.mock(SignatureTrustEngine.class);
     private static final Audience audience = mockery.mock(Audience.class, "audience");
+    
+    private static final Response samlResponse = common.getSamlResponse();
 
     private static final String INVALID_PROVIDERID = "invalid_providerID";
     private static final String METHOD_BEARER = "urn:oasis:names:tc:SAML:2.0:cm:bearer";
@@ -104,11 +120,13 @@ public class AssertionValidatorTest {
     private static final String AUDIENCE_URL = SERVER_PROTOCOL + "://" + SERVER_NAME + ":" + SERVER_PORT + "/ibm/saml20/" + SERVER_PROVIDER_ID;
     private static final String INVALID_METHOD = SubjectConfirmation.METHOD_HOLDER_OF_KEY;
 
+    private static QName role = IDPSSODescriptor.DEFAULT_ELEMENT_NAME;
+    
     private static AssertionValidator validator;
     private static String stateTest;
     private static DateTime date;
     private static QName conditionQName;
-
+    private static String protocol = SAMLConstants.SAML20P_NS;
     private static List<Audience> listAudience = new ArrayList<Audience>();
     private static List<AudienceRestriction> listAudienceRestriction = new ArrayList<AudienceRestriction>();
     private static List<AuthnStatement> listAuthn = new ArrayList<AuthnStatement>();
@@ -130,7 +148,6 @@ public class AssertionValidatorTest {
 
         date = new DateTime().plusYears(YEARS);
         conditionQName = OneTimeUse.DEFAULT_ELEMENT_NAME;
-        Configuration.setGlobalSecurityConfiguration(securityConfig);
 
         mockery.checking(new Expectations() {
             {
@@ -140,7 +157,29 @@ public class AssertionValidatorTest {
                 will(returnValue(ssoConfig));
                 allowing(ssoConfig).isPkixTrustEngineEnabled();
                 will(returnValue(false));
-                allowing(context).setInboundSAMLMessageAuthenticated(with(any(Boolean.class)));
+                allowing(context).getMessageContext();
+                will(returnValue(messageContext));
+                allowing(messageContext).getSubcontext(SAMLPeerEntityContext.class, true);
+                will(returnValue(samlPeerEntityContext));
+                allowing(messageContext).getSubcontext(SAMLPeerEntityContext.class);
+                will(returnValue(samlPeerEntityContext));
+                allowing(samlPeerEntityContext).setAuthenticated(with(any(Boolean.class)));
+                allowing(samlPeerEntityContext).getRole();
+                will(returnValue(role));
+                allowing(messageContext).getSubcontext(SAMLProtocolContext.class);
+                will(returnValue(samlProtocolContext));                
+                allowing(samlProtocolContext).getProtocol();
+                will(returnValue(protocol));
+                allowing(messageContext).getSubcontext(SecurityParametersContext.class, true);
+                will(returnValue(securityParamContext));
+                allowing(messageContext).getSubcontext(SecurityParametersContext.class);
+                will(returnValue(securityParamContext));
+                allowing(securityParamContext).setSignatureValidationParameters(with(any(SignatureValidationParameters.class)));
+                allowing(securityParamContext).getSignatureValidationParameters();
+                will(returnValue(signatureValidationParams));
+                allowing(signatureValidationParams).getSignatureTrustEngine();
+                will(returnValue(signatureTrustEngine));
+
                 allowing(context).getPeerEntityMetadata();
                 will(returnValue(entityDescriptor));
                 allowing(context).getCachedRequestInfo();
@@ -242,8 +281,6 @@ public class AssertionValidatorTest {
                 will(returnValue(conditionQName));
                 when(stateMachine.is(SETUP));
 
-                allowing(securityConfig).getDefaultKeyInfoCredentialResolver();
-                will(returnValue(keyInfoCredResolver));
             }
 
         });
@@ -265,7 +302,6 @@ public class AssertionValidatorTest {
 
     @AfterClass
     public static void tearDown() {
-        Configuration.setGlobalSecurityConfiguration(null);
         outputMgr.trace("*=all=disabled");
     }
 
@@ -339,10 +375,15 @@ public class AssertionValidatorTest {
         mockery.checking(new Expectations() {
             {
                 one(context).getMetadataProvider();
-                will(returnValue(metadataProvider));
+                will(returnValue(acsmetadataProvider));
                 when(stateMachine.is(stateTest));
-                one(context).isInboundSAMLMessageAuthenticated();
+
+                allowing(samlPeerEntityContext).isAuthenticated();
                 will(returnValue(false));
+                when(stateMachine.is(stateTest));
+                allowing(messageContext).getMessage();
+                will(returnValue(samlResponse));
+                when(stateMachine.is(stateTest));
 
                 one(ssoConfig).isWantAssertionsSigned();
                 will(returnValue(true));
@@ -352,6 +393,9 @@ public class AssertionValidatorTest {
                 will(returnValue(signature));
                 when(stateMachine.is(stateTest));
                 one(assertion).isSigned();
+                will(returnValue(false));
+                when(stateMachine.is(stateTest));
+                allowing(samlResponse).isSigned();
                 will(returnValue(false));
                 when(stateMachine.is(stateTest));
             }
@@ -376,12 +420,20 @@ public class AssertionValidatorTest {
         mockery.checking(new Expectations() {
             {
                 one(context).getMetadataProvider();
-                will(returnValue(metadataProvider));
+                will(returnValue(acsmetadataProvider));
                 when(stateMachine.is(stateTest));
 
+                allowing(messageContext).getMessage();
+                will(returnValue(samlResponse));
+                when(stateMachine.is(stateTest));
+                
                 one(assertion).isSigned();
                 will(returnValue(true));
                 when(stateMachine.is(stateTest));
+                allowing(samlResponse).isSigned();
+                will(returnValue(false));
+                when(stateMachine.is(stateTest));
+                
                 one(assertion).getSignature();
                 will(returnValue(signature));
                 when(stateMachine.is(stateTest));

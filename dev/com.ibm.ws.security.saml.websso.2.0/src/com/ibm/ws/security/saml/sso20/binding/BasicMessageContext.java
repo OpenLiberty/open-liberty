@@ -1,23 +1,17 @@
-/*
- * Licensed to the University Corporation for Advanced Internet Development,
- * Inc. (UCAID) under one or more contributor license agreements.  See the
- * NOTICE file distributed with this work for additional information regarding
- * copyright ownership. The UCAID licenses this file to You under the Apache
- * License, Version 2.0 (the "License"); you may not use this file except in
- * compliance with the License.  You may obtain a copy of the License at
+/*******************************************************************************
+ * Copyright (c) 2021 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 
 package com.ibm.ws.security.saml.sso20.binding;
 
-import java.util.ArrayList;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -36,42 +30,18 @@ import org.opensaml.saml.saml2.core.LogoutResponse;
 import org.opensaml.saml.saml2.core.NameID;
 import org.opensaml.saml.saml2.core.Response;
 import org.opensaml.saml.saml2.core.Status;
-import org.opensaml.saml.saml2.metadata.Endpoint;
-import org.opensaml.saml.saml2.metadata.EntityDescriptor;
-//import org.opensaml.saml.common.messaging.context.SAMLPeerEntityContext;
-//import org.opensaml.saml.common.messaging.soap.SAMLSOAPClientContextBuilder;
-////import org.opensaml.common.binding.BasicSAMLMessageContext; //@AV999
-////import org.opensaml.common.binding.SAMLMessageContext; //@AV999
-//import org.opensaml.saml.common.xml.SAMLConstants;
-//import org.opensaml.saml.saml2.core.Assertion;
-//import org.opensaml.saml.saml2.core.LogoutRequest;
-//import org.opensaml.saml.saml2.core.LogoutResponse;
-//import org.opensaml.saml.saml2.core.Response;
-//import org.opensaml.saml.saml2.core.Status;
 import org.opensaml.saml.saml2.encryption.Decrypter;
 import org.opensaml.saml.saml2.encryption.EncryptedElementTypeEncryptedKeyResolver;
-//import org.opensaml.saml.saml2.encryption.EncryptedElementTypeEncryptedKeyResolver;
-//import org.opensaml.saml.saml2.metadata.EntityDescriptor;
-//import org.opensaml.saml.saml2.metadata.IDPSSODescriptor;
-//import org.opensaml.security.credential.Credential;
-////import org.opensaml.ws.transport.http.HttpServletRequestAdapter; //@AV999
+import org.opensaml.saml.saml2.metadata.Endpoint;
+import org.opensaml.saml.saml2.metadata.EntityDescriptor;
+import org.opensaml.saml.saml2.metadata.IDPSSODescriptor;
+import org.opensaml.security.credential.Credential;
 import org.opensaml.xmlsec.encryption.support.ChainingEncryptedKeyResolver;
 import org.opensaml.xmlsec.encryption.support.EncryptedKeyResolver;
 import org.opensaml.xmlsec.encryption.support.InlineEncryptedKeyResolver;
 import org.opensaml.xmlsec.encryption.support.SimpleRetrievalMethodEncryptedKeyResolver;
 import org.opensaml.xmlsec.keyinfo.KeyInfoCredentialResolver;
 import org.opensaml.xmlsec.keyinfo.impl.StaticKeyInfoCredentialResolver;
-//import org.opensaml.xmlsec.encryption.support.InlineEncryptedKeyResolver;
-//import org.opensaml.xmlsec.encryption.support.SimpleRetrievalMethodEncryptedKeyResolver;
-//import org.opensaml.xmlsec.keyinfo.KeyInfoCredentialResolver;
-//import org.opensaml.xmlsec.keyinfo.impl.StaticKeyInfoCredentialResolver;
-import org.opensaml.saml.saml2.metadata.IDPSSODescriptor;
-import org.opensaml.saml.saml2.metadata.SingleSignOnService;
-import org.opensaml.security.credential.Credential;
-import org.opensaml.xmlsec.encryption.support.ChainingEncryptedKeyResolver;
-
-import net.shibboleth.utilities.java.support.resolver.CriteriaSet;
-import net.shibboleth.utilities.java.support.resolver.ResolverException;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -88,24 +58,21 @@ import com.ibm.ws.security.saml.sso20.internal.utils.RequestUtil;
 import com.ibm.ws.security.saml.sso20.internal.utils.UserData;
 import com.ibm.ws.security.saml.sso20.metadata.AcsDOMMetadataProvider;
 
+import net.shibboleth.utilities.java.support.resolver.CriteriaSet;
+import net.shibboleth.utilities.java.support.resolver.ResolverException;
+
 // MessageContext
 
 /**
- * Base implemention of {@link SAMLMessageContext}.
+ * 
  *
  * @param <InboundMessageType> type of inbound SAML message
  * @param <OutboundMessageType> type of outbound SAML message
- * @param <NameIdentifierType> type of name identifier used for subjects
+ * 
  */
-//public class BasicMessageContext<InboundMessageType extends SAMLObject, OutboundMessageType extends SAMLObject, NameIdentifierType extends SAMLObject> extends BasicSAMLMessageContext<InboundMessageType, OutboundMessageType, NameIdentifierType> {
+
 @SuppressWarnings("rawtypes")
 public class BasicMessageContext<InboundMessageType extends SAMLObject, OutboundMessageType extends SAMLObject>/* extends SAMLSOAPClientContextBuilder */{
-
-    // For debugging we may want to put back the DebugMessageContext
-    //  Because the DebugMessageContext print more messages in the product code
-
-    //      We want to keep DebugMessageContext for debugging in future
-    //        In that case, change the opensaml BasicSAMLMessageContext to DebugMessageContext
 
     public static final TraceComponent tc = Tr.register(BasicMessageContext.class,
                                                         TraceConstants.TRACE_GROUP,
@@ -124,8 +91,6 @@ public class BasicMessageContext<InboundMessageType extends SAMLObject, Outbound
     HttpRequestInfo cachedRequestInfo;
     boolean bSetIDPSSODescriptor = false;
 
-    /** Name identifier for the Subject of the message. */
-    private NameID subjectNameIdentifer;
     
     Status logoutResponseStatus;
     String inResponseTo;
@@ -136,14 +101,6 @@ public class BasicMessageContext<InboundMessageType extends SAMLObject, Outbound
     HttpServletResponse response;
 
     InitialRequestUtil irUtil = new InitialRequestUtil();
-    //static List <EncryptedKeyResolver> list = new ArrayList<EncryptedKeyResolver>(); //@AV999
-//    static ChainingEncryptedKeyResolver encryptedKeyResolver2 = new ChainingEncryptedKeyResolver(new ArrayList<EncryptedKeyResolver>());
-//    static {
-//        encryptedKeyResolver2.getResolverChain().add(new InlineEncryptedKeyResolver());
-//        encryptedKeyResolver2.getResolverChain().add(new EncryptedElementTypeEncryptedKeyResolver());
-//        encryptedKeyResolver2.getResolverChain().add(new SimpleRetrievalMethodEncryptedKeyResolver());
-//    };
-//    
     ChainingEncryptedKeyResolver encryptedKeyResolver;
     private List<EncryptedKeyResolver> resolverChain;
     EncryptedKeyResolver inline = new InlineEncryptedKeyResolver();
@@ -153,17 +110,16 @@ public class BasicMessageContext<InboundMessageType extends SAMLObject, Outbound
     SAMLPeerEntityContext samlPeerEntityContext = new SAMLPeerEntityContext();
 
     private MessageContext<SAMLObject> messageContext;
-
-    /** Resolver used to determine active security policy. get the trust store from idp Metadata */
-    // private SecurityPolicyResolver idpSecurityPolicyResolver;
-    //@AV999
     private Endpoint peerEntityEndpoint;
-
     private String inboundMessageIssuer;
+
+    private NameID subjectNameIdentifer;
 
     public BasicMessageContext(SsoSamlService ssoService) {
         this.ssoService = ssoService;
         this.ssoConfig = ssoService.getConfig();
+        resolverChain = Arrays.asList(inline, encryptedelem, simple);
+        encryptedKeyResolver = new ChainingEncryptedKeyResolver(resolverChain);
     }
 
     public BasicMessageContext(SsoSamlService ssoService, HttpServletRequest request, HttpServletResponse response) {
@@ -183,8 +139,6 @@ public class BasicMessageContext<InboundMessageType extends SAMLObject, Outbound
     }
 
     public HttpServletRequest getHttpServletRequest() {
-//        HttpServletRequestAdapter requestAdapter = (HttpServletRequestAdapter) getInboundMessageTransport(); //@AV999
-//        return requestAdapter.getWrappedRequest();
         return this.request;
     }
     
@@ -204,34 +158,6 @@ public class BasicMessageContext<InboundMessageType extends SAMLObject, Outbound
         logoutResponseStatus = status;
     }
 
-//    /** {@inheritDoc} */
-//    @Override
-//    public void setPeerEntityRole(QName role) {
-//        peerEntityRole = role;
-//    }
-//
-//    /** {@inheritDoc} */
-//    @Override
-//    public QName getPeerEntityRole() {
-//        if (peerEntityRole == null) {
-//
-//            if (!bSetIDPSSODescriptor) {
-//                setIDPSSODescriptor();
-//            }
-//            if (idpSsoDescriptor != null) {
-//                peerEntityRole = idpSsoDescriptor.getElementQName();
-//            }
-//        }
-//
-//        if (peerEntityRole == null) {
-//            // default value
-//            peerEntityRole = IDPSSODescriptor.DEFAULT_ELEMENT_NAME;
-//        }
-//        return peerEntityRole;
-//    }
-
-//    /** {@inheritDoc} */
-//    @Override
     public EntityDescriptor getPeerEntityMetadata() {
         if (!bSetIDPSSODescriptor) {
             setIDPSSODescriptor();
@@ -239,13 +165,13 @@ public class BasicMessageContext<InboundMessageType extends SAMLObject, Outbound
         return peerEntityMetadata;
     }
 
-    /**
-     *
-     */
     void setIDPSSODescriptor() {
         bSetIDPSSODescriptor = true;
-        //SAMLObject samlMsg = getInboundSAMLMessage(); //@AV999
-        SAMLObject samlMsg = getMessageContext().getMessage();
+        
+        SAMLObject samlMsg = null;
+        if (getMessageContext() != null) {
+            samlMsg = getMessageContext().getMessage();
+        }
         if (samlMsg != null && (samlMsg instanceof Response || samlMsg instanceof LogoutResponse ||
                                 samlMsg instanceof LogoutRequest)) {
             String issuer = null;
@@ -259,12 +185,9 @@ public class BasicMessageContext<InboundMessageType extends SAMLObject, Outbound
                 LogoutRequest sloRequest = (LogoutRequest) samlMsg;
                 issuer = sloRequest.getIssuer().getValue();
             }
-
-            //MetadataProvider metadataProvider = this.getMetadataProvider(); //@AV999
             if (metadataProvider != null) {
 //                try {
-                    CriteriaSet criteriaSet = new CriteriaSet(new EntityIdCriterion(issuer)); //@AV999
-                    //EntityDescriptor entityDescriptor = metadataProvider.getEntityDescriptor(issuer); //@AV999
+                    CriteriaSet criteriaSet = new CriteriaSet(new EntityIdCriterion(issuer));
                     EntityDescriptor entityDescriptor = null;
                     try {
                         entityDescriptor = metadataProvider.resolveSingle(criteriaSet);
@@ -275,20 +198,20 @@ public class BasicMessageContext<InboundMessageType extends SAMLObject, Outbound
                       }
                     }
                     if (entityDescriptor == null) {
-                        // can not find a valid idpMetadata
+                        // cannot find a valid idpMetadata
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                             Tr.debug(tc, "Can not find a valid IDP Metadata for issuer:"
                                          + issuer);
                         }
                         // This could happen. And if no idpMetadata found, later on,
-                        // the Saml Token signature can not be verified
+                        // the Saml Token signature cannot be verified
                         // since no trusted certificate...
-                        // Unless trustEngine is specified (such as: pkixTrustEngine)
+                        // Unless trustEngine is specified (using pkixTrustEngine)
                     } else {
                         peerEntityMetadata = entityDescriptor;
                         idpSsoDescriptor = entityDescriptor.getIDPSSODescriptor(SAMLConstants.SAML20P_NS);
                     }
-//                } catch (MetadataProviderException e) {
+//                } catch (MetadataProviderException e) { // TODO: handle ResolverException?
 //                    // do nothing and let the IDPSsoDescriptor == null
 //                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
 //                        Tr.debug(tc, "setIDPSSODescriptor hit  MetadataProviderException", e);
@@ -298,43 +221,11 @@ public class BasicMessageContext<InboundMessageType extends SAMLObject, Outbound
                 // no Metadata Provider.
                 // Do nothing and let the IDPSSODescriptor == null
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "No IdP metadata exists. Need to fall down to local trust store.");
+                    Tr.debug(tc, "IdP metadata does not exist, fall back to local trust store.");
                 }
             }
         }
     }
-
-//    /** {@inheritDoc} */
-//    @Override
-//    public void setInboundSAMLProtocol(String protocol) {
-//        inboundSAMLProtocol = DatatypeHelper.safeTrimOrNullString(protocol);
-//    }
-//
-//    /** {@inheritDoc} */
-//    @Override
-//    public String getInboundSAMLProtocol() {
-//        if (inboundSAMLProtocol == null) {
-//            SAMLObject samlMsg = getInboundSAMLMessage();
-//            if (samlMsg != null && samlMsg instanceof Response) {
-//                Response samlResponse = (Response) samlMsg;
-//                inboundSAMLProtocol = samlResponse.getElementQName().getNamespaceURI();
-//            }
-//        }
-//
-//        return inboundSAMLProtocol;
-//    }
-
-//    public SecurityPolicyResolver getIdpSecurityPolicyResolver() {
-//        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-//            Tr.debug(tc, "BasicMessageContext:getSecurityPolicyResolver(mc):"
-//                         + idpSecurityPolicyResolver);
-//        }
-//        return idpSecurityPolicyResolver;
-//    }
-//
-//    public void setIdpSecurityPolicyResolver(SecurityPolicyResolver resolver) {
-//        idpSecurityPolicyResolver = resolver;
-//    }
 
     public Assertion getValidatedAssertion() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -459,7 +350,6 @@ public class BasicMessageContext<InboundMessageType extends SAMLObject, Outbound
         return this.messageContext;        
     }
 
-    //@AV999
     /**
      * @param nameID
      */
@@ -467,7 +357,7 @@ public class BasicMessageContext<InboundMessageType extends SAMLObject, Outbound
         this.subjectNameIdentifer = nameID;
         
     }
-  //@AV999
+
     /**
      * @param entityEndpoint
      */

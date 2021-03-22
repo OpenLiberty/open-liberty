@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,7 +19,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.codec.binary.Base64;
 import org.opensaml.messaging.context.MessageContext;
-import org.opensaml.messaging.decoder.MessageDecodingException;
 import org.opensaml.saml.common.SAMLObject;
 import org.opensaml.saml.common.messaging.context.SAMLPeerEntityContext;
 import org.opensaml.saml.common.messaging.context.SAMLProtocolContext;
@@ -30,13 +29,9 @@ import org.opensaml.saml.saml2.core.Response;
 import org.opensaml.saml.saml2.encryption.Decrypter;
 import org.opensaml.saml.saml2.metadata.IDPSSODescriptor;
 
-//import org.opensaml.xml.util.Base64; //@AV999
-import net.shibboleth.utilities.java.support.codec.Base64Support; //@AV999
-
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
-import com.ibm.ws.common.internal.encoder.Base64Coder;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.saml.Constants;
 import com.ibm.ws.security.saml.SsoRequest;
@@ -91,8 +86,8 @@ public class RsSamlConsumer<InboundMessageType extends SAMLObject, OutboundMessa
                 if (tc.isDebugEnabled()) {
                     Tr.debug(tc, "Encoded SAML assertion in header" );
                 }
-                //bytes = Base64.decode(headerContent); //@AV999
-                bytes = decodeSaml(headerContent);//Base64.decodeBase64(headerContent); //@AV999
+                //bytes = Base64.decode(headerContent);
+                bytes = decodeSaml(headerContent);//Base64.decodeBase64(headerContent); //v3
             }
             if (bytes == null) {
                 // the incoming saml_token is not in good shape
@@ -103,29 +98,15 @@ public class RsSamlConsumer<InboundMessageType extends SAMLObject, OutboundMessa
             }
             ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
             ByteArrayDecoder byteArrayDecoder = new ByteArrayDecoder();
-            //@AV999
-//            try {
-//                byteArrayDecoder.doDecode(messageContext, byteArrayInputStream);
-//            } catch (MessageDecodingException mde) {
-//                bytes = Base64Coder.base64DecodeString(headerContent);
-//                if (bytes == null) {
-//                    // the incoming saml_token is not in good shape
-//                    //SAML_BAD_INBOUND_SAML_TOKEN=CWWKS5208E: The inbound SAML Assertion is not valid [{0}].
-//                    throw new SamlException("SAML_BAD_INBOUND_SAML_TOKEN",
-//                                    null,
-//                                    new Object[] { headerContent });
-//                }
-//                byteArrayInputStream = new ByteArrayInputStream(bytes);
-//                byteArrayDecoder.doDecode(messageContext, byteArrayInputStream);   
-//            }
-            byteArrayDecoder.doDecode(messageContext, byteArrayInputStream); //@AV999
+
+            byteArrayDecoder.doDecode(messageContext, byteArrayInputStream); //v3
 
             //decrypt EncryptedAssertion, and add decrypted assertion to Assertion list
             List<Assertion> assertions = decryptEncryptedAssertion(messageContext);
-            MessageContext<SAMLObject> mc = messageContext.getMessageContext(); //@AV999
+            MessageContext<SAMLObject> mc = messageContext.getMessageContext(); //v3
             
-            mc.getSubcontext(SAMLPeerEntityContext.class, true).setRole(IDPSSODescriptor.DEFAULT_ELEMENT_NAME); //@AV999
-            mc.getSubcontext(SAMLProtocolContext.class, true).setProtocol(SAMLConstants.SAML20P_NS); //@AV999
+            mc.getSubcontext(SAMLPeerEntityContext.class, true).setRole(IDPSSODescriptor.DEFAULT_ELEMENT_NAME); //v3
+            mc.getSubcontext(SAMLProtocolContext.class, true).setProtocol(SAMLConstants.SAML20P_NS); //@v3
             //Search for first valid assertion without exception
             Assertion validatedAssertion = null;
             SamlException lastSamlException = null;
@@ -139,8 +120,8 @@ public class RsSamlConsumer<InboundMessageType extends SAMLObject, OutboundMessa
                         if (tc.isDebugEnabled()) {
                             Tr.debug(tc, "Issuer from ToBeValidate-assertion:" + issuer);
                         }
-                        //messageContext.setInboundMessageIssuer(issuer); //@AV999
-                        messageContext.setInboundSamlMessageIssuer(issuer); //@AV999 major change
+                        //messageContext.setInboundMessageIssuer(issuer);
+                        messageContext.setInboundSamlMessageIssuer(issuer);//v3
                         //
                         RsAssertionValidator rsAssertionValidator = new RsAssertionValidator(messageContext, assertion);
 
@@ -195,8 +176,7 @@ public class RsSamlConsumer<InboundMessageType extends SAMLObject, OutboundMessa
 
     List<Assertion> decryptEncryptedAssertion(BasicMessageContext<?, ?> context) throws SamlException {
         List<Assertion> assertionList = new ArrayList<Assertion>();
-        //Object objectMessage = context.getInboundMessage(); //@AV999
-        Object objectMessage = context.getMessageContext().getMessage(); //@AV999 major change
+        Object objectMessage = context.getMessageContext().getMessage();
         if (objectMessage instanceof Response) {
             // We do not allow samlp:Response in the Authorization header
             // return decryptEncryptedAssertion((Response) objectMessage, context);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,8 +22,7 @@ import javax.xml.namespace.QName;
 import org.opensaml.saml.common.SignableSAMLObject;
 import org.opensaml.saml.saml2.core.Assertion;
 import org.opensaml.saml.metadata.resolver.impl.DOMMetadataResolver;
-//import org.opensaml.saml.saml2.metadata.provider.DOMMetadataProvider;
-//import org.opensaml.saml2.metadata.provider.MetadataProviderException;
+
 import org.opensaml.core.xml.XMLObject;
 import org.w3c.dom.Element;
 
@@ -169,7 +168,7 @@ public class DumpData {
      */
     public static StringBuffer dumpMetadata(DOMMetadataResolver metadataProvider) {
         XMLObject metadata = null;
-        //@AV999 TODO 
+        //TODO:
 //        try {
 //            metadata = metadataProvider.getMetadata();
 //        } catch (MetadataProviderException e) {

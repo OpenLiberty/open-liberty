@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2020 IBM Corporation and others.
+ * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,7 +14,7 @@ import static com.ibm.ws.security.saml.sso20.common.CommonMockObjects.SAML20_AUT
 import static com.ibm.ws.security.saml.sso20.common.CommonMockObjects.SETUP;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
-import static org.opensaml.common.SAMLVersion.VERSION_20;
+import static org.opensaml.saml.common.SAMLVersion.VERSION_20;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,25 +34,28 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.rules.TestRule;
-import org.opensaml.common.SAMLVersion;
-import org.opensaml.saml2.core.Assertion;
-import org.opensaml.saml2.core.AudienceRestriction;
-import org.opensaml.saml2.core.AuthnStatement;
-import org.opensaml.saml2.core.Condition;
-import org.opensaml.saml2.core.Conditions;
-import org.opensaml.saml2.core.EncryptedAssertion;
-import org.opensaml.saml2.core.Issuer;
-import org.opensaml.saml2.core.NameID;
-import org.opensaml.saml2.core.OneTimeUse;
-import org.opensaml.saml2.core.Response;
-import org.opensaml.saml2.core.Status;
-import org.opensaml.saml2.core.StatusCode;
-import org.opensaml.saml2.core.Subject;
-import org.opensaml.saml2.core.SubjectConfirmation;
-import org.opensaml.saml2.core.SubjectConfirmationData;
-import org.opensaml.saml2.encryption.Decrypter;
-import org.opensaml.saml2.metadata.EntityDescriptor;
-import org.opensaml.xml.encryption.DecryptionException;
+import org.opensaml.messaging.context.MessageContext;
+import org.opensaml.saml.common.SAMLVersion;
+import org.opensaml.saml.common.messaging.context.SAMLPeerEntityContext;
+import org.opensaml.saml.common.messaging.context.SAMLProtocolContext;
+import org.opensaml.saml.saml2.core.Assertion;
+import org.opensaml.saml.saml2.core.AudienceRestriction;
+import org.opensaml.saml.saml2.core.AuthnStatement;
+import org.opensaml.saml.saml2.core.Condition;
+import org.opensaml.saml.saml2.core.Conditions;
+import org.opensaml.saml.saml2.core.EncryptedAssertion;
+import org.opensaml.saml.saml2.core.Issuer;
+import org.opensaml.saml.saml2.core.NameID;
+import org.opensaml.saml.saml2.core.OneTimeUse;
+import org.opensaml.saml.saml2.core.Response;
+import org.opensaml.saml.saml2.core.Status;
+import org.opensaml.saml.saml2.core.StatusCode;
+import org.opensaml.saml.saml2.core.Subject;
+import org.opensaml.saml.saml2.core.SubjectConfirmation;
+import org.opensaml.saml.saml2.core.SubjectConfirmationData;
+import org.opensaml.saml.saml2.encryption.Decrypter;
+import org.opensaml.saml.saml2.metadata.EntityDescriptor;
+import org.opensaml.xmlsec.encryption.support.DecryptionException;
 
 import com.ibm.ws.security.saml.SsoConfig;
 import com.ibm.ws.security.saml.SsoRequest;
@@ -77,6 +80,9 @@ public class WebSSOConsumerTest {
     private static final AuthnStatement authnStatement = common.getAuthnStatement();
     private static final BasicMessageContext messageContext = common.getBasicMessageContext();
     private static final BasicMessageContextBuilder<?, ?, ?> basicMessageContextBuilder = common.getBasicMessageContextBuilder();
+    private static final MessageContext mContext = common.getMessageContext();
+    private static final SAMLPeerEntityContext samlPeerEntityContext = common.getSAMLPeerEntityContext();
+    private static final SAMLProtocolContext samlProtocolContext = mockery.mock(SAMLProtocolContext.class);
     private static final Condition condition = common.getCondition();
     private static final Conditions conditions = common.getConditions();
     private static final EncryptedAssertion encryptedAssertion = common.getEncryptedAssertion();
@@ -140,7 +146,10 @@ public class WebSSOConsumerTest {
                 allowing(basicMessageContextBuilder).buildAcs(request, response, ssoService, "externalRelayState", ssoRequest);
                 will(returnValue(messageContext));
 
-                allowing(messageContext).getInboundMessage();
+                //allowing(messageContext).getInboundMessage();
+                allowing(messageContext).getMessageContext();
+                will(returnValue(mContext));
+                allowing(mContext).getMessage();
                 will(returnValue(samlResponse));
                 allowing(messageContext).getCachedRequestInfo();
                 will(returnValue(requestInfo));
@@ -152,7 +161,20 @@ public class WebSSOConsumerTest {
                 will(returnValue(null));
                 allowing(messageContext).getPeerEntityMetadata();
                 will(returnValue(entityDescriptor));
-                one(messageContext).setInboundSAMLMessageAuthenticated(with(any(Boolean.class)));
+                allowing(mContext).getSubcontext(SAMLPeerEntityContext.class, true);
+                will(returnValue(samlPeerEntityContext));
+                allowing(mContext).getSubcontext(SAMLProtocolContext.class, true);
+                will(returnValue(samlProtocolContext));
+                
+                allowing(samlProtocolContext).setProtocol(with(any(String.class)));
+                allowing(samlPeerEntityContext).setEntityId(with(any(String.class)));
+                
+                allowing(samlPeerEntityContext).setAuthenticated(with(any(Boolean.class)));
+                allowing(samlPeerEntityContext).setRole(with(any(QName.class)));
+                
+                allowing(messageContext).setInboundSamlMessageIssuer(with(any(String.class)));
+                
+                //one(messageContext).setInboundSAMLMessageAuthenticated(with(any(Boolean.class)));
                 allowing(messageContext).getHttpServletRequest();
                 will(returnValue(request));
                 one(messageContext).getSsoService();

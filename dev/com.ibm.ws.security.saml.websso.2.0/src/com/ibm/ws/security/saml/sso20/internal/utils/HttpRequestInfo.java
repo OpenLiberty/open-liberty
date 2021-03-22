@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -55,9 +55,7 @@ public class HttpRequestInfo implements Serializable {
     String queryString; // queries
     String reqUrl; // the pure requestURL without queries or fragments. Can be compared when restore
     String method;
-    //boolean bFromRequest = false;
-    //boolean bSolicited = false;
-    //boolean bUnsolicited = false;
+
     HashMap<String, String[]> parameters;
     String strInResponseToId;
     String fragement = null;
@@ -96,7 +94,7 @@ public class HttpRequestInfo implements Serializable {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "An exception getting InputStreamData : ", new Object[] { e });
                 }
-                // this should not happen. Let the SamlException handles it
+                // this should not happen. Let the SamlException handle it
                 throw new SamlException(e);
             }
         }

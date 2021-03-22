@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.security.saml.sso20.acs;
 
-import org.opensaml.saml.saml2.core.Status; //@AV999
+import org.opensaml.saml.saml2.core.Status;
 import org.opensaml.saml.saml2.core.StatusCode;
 import org.opensaml.saml.saml2.core.StatusDetail;
 import org.opensaml.saml.saml2.core.StatusMessage;
@@ -59,7 +59,7 @@ public class StatusBuilderUtil {
      * @param responderUri
      */
     public void setStatus(Status sloStatus, String statusCode) {
-        // TODO Auto-generated method stub
+        
         sloStatus.getStatusCode().setValue(statusCode);
 
     }

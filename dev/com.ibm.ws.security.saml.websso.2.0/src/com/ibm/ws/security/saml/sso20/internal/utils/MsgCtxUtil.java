@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,36 +26,24 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-//import org.opensaml.Configuration;
-import org.opensaml.core.config.Configuration;
-import org.opensaml.core.criterion.EntityIdCriterion;
 import org.opensaml.core.xml.config.XMLObjectProviderRegistrySupport;
-//import org.opensaml.common.SAMLObject;
 import org.opensaml.saml.common.SAMLObject;
 import org.opensaml.saml.metadata.resolver.impl.DOMMetadataResolver;
-import org.opensaml.saml.metadata.resolver.impl.FilesystemMetadataResolver;
 import org.opensaml.saml.metadata.resolver.impl.PredicateRoleDescriptorResolver;
 import org.opensaml.saml.saml2.core.Issuer;
 import org.opensaml.saml.saml2.core.NameIDType;
 import org.opensaml.saml.saml2.metadata.EntityDescriptor;
 import org.opensaml.saml.security.impl.MetadataCredentialResolver;
-
-//import org.opensaml.saml2.metadata.provider.MetadataProvider;
-//import org.opensaml.saml2.metadata.provider.MetadataProviderException;
-//import org.opensaml.security.MetadataCredentialResolverFactory;
-//import org.opensaml.xml.parse.StaticBasicParserPool;
-//import org.opensaml.xml.parse.XMLParserException;
-import net.shibboleth.utilities.java.support.xml.XMLParserException;
-import org.opensaml.xmlsec.keyinfo.impl.BasicProviderKeyInfoCredentialResolver; //@AV999
-import org.opensaml.xmlsec.keyinfo.KeyInfoCredentialResolver;
-import org.opensaml.xmlsec.keyinfo.impl.KeyInfoProvider;
-import org.opensaml.xmlsec.keyinfo.impl.provider.InlineX509DataProvider;
 import org.opensaml.security.trust.TrustEngine;
 import org.opensaml.security.trust.TrustedCredentialTrustEngine;
+import org.opensaml.security.x509.PKIXValidationInformation;
 import org.opensaml.security.x509.impl.BasicPKIXValidationInformation;
 import org.opensaml.security.x509.impl.BasicX509CredentialNameEvaluator;
-import org.opensaml.security.x509.PKIXValidationInformation;
 import org.opensaml.security.x509.impl.StaticPKIXValidationInformationResolver;
+import org.opensaml.xmlsec.keyinfo.KeyInfoCredentialResolver;
+import org.opensaml.xmlsec.keyinfo.impl.BasicProviderKeyInfoCredentialResolver;
+import org.opensaml.xmlsec.keyinfo.impl.KeyInfoProvider;
+import org.opensaml.xmlsec.keyinfo.impl.provider.InlineX509DataProvider;
 import org.opensaml.xmlsec.signature.Signature;
 import org.opensaml.xmlsec.signature.support.impl.ExplicitKeySignatureTrustEngine;
 import org.opensaml.xmlsec.signature.support.impl.PKIXSignatureTrustEngine;
@@ -63,7 +51,6 @@ import org.w3c.dom.Document;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.saml.Constants;
 import com.ibm.ws.security.saml.SsoConfig;
 import com.ibm.ws.security.saml.error.SamlException;
@@ -71,10 +58,9 @@ import com.ibm.ws.security.saml.sso20.binding.BasicMessageContext;
 import com.ibm.ws.security.saml.sso20.metadata.AcsDOMMetadataProvider;
 
 import net.shibboleth.utilities.java.support.component.ComponentInitializationException;
-import net.shibboleth.utilities.java.support.resolver.CriteriaSet;
-import net.shibboleth.utilities.java.support.resolver.ResolverException;
 import net.shibboleth.utilities.java.support.xml.ParserPool;
 import net.shibboleth.utilities.java.support.xml.SerializeSupport;
+import net.shibboleth.utilities.java.support.xml.XMLParserException;
 
 /**
  *
@@ -97,17 +83,12 @@ public class MsgCtxUtil<InboundMessageType extends SAMLObject, OutboundMessageTy
         AcsDOMMetadataProvider acsIdpMetadataProvider = null;
         final String strIdpMetadata = samlConfig.getIdpMetadata();
         if (strIdpMetadata != null && !strIdpMetadata.isEmpty()) {
-            //strIdpMetadata = "/Users/aruna/libertyGit/open-liberty/dev/build.image/wlp/usr/servers/solicited/imports/localhost/entity.xml";
+            
             final File fileIdpMetadata = new File(strIdpMetadata);
             
             InputStream inputStream = null;
             //try {
-                // BasicParserPool ppMgr = new BasicParserPool();
-                // ppMgr.setNamespaceAware(true);  // We may need to use our own XMLParser
-                ParserPool parserPool;
-                //StaticBasicParserPool ppMgr = (StaticBasicParserPool) Configuration.getParserPool(); //@AV999
-                parserPool = XMLObjectProviderRegistrySupport.getParserPool();
-
+                ParserPool parserPool = XMLObjectProviderRegistrySupport.getParserPool();
                 try {
                     inputStream = (InputStream) AccessController.doPrivileged(
                                     new PrivilegedExceptionAction<Object>() {
@@ -152,15 +133,14 @@ public class MsgCtxUtil<InboundMessageType extends SAMLObject, OutboundMessageTy
                       }
                 }
                 Document doc = null;
-                if (inputStream != null) {
-//                    final Document doc = ppMgr.parse(inputStream); //@AV999
-                    
+                if (inputStream != null && parserPool != null) {           
                     try {
                         doc = parserPool.parse(inputStream);
                     } catch (XMLParserException e) {
-                        // TODO Auto-generated catch block
-                        // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-                        e.printStackTrace();
+                     throw new SamlException(
+                                       "SAML20_IDP_METADATA_PARSE_ERROR",
+                                       e, // cause
+                                       new Object[] { strIdpMetadata, samlConfig.getProviderId(), e.getMessage() });
                     }  finally {
                         if (inputStream != null) {
                             try {
@@ -174,140 +154,27 @@ public class MsgCtxUtil<InboundMessageType extends SAMLObject, OutboundMessageTy
                         }
                     }
                     if (doc != null) {
-                        Tr.debug(tc,  "@AV999, Babuji", SerializeSupport.nodeToString(doc));
-//                        Tr.debug(tc,  "@AV999, Babuji, first child", SerializeSupport.nodeToString(doc.getFirstChild()));
-//                        
-//                        Tr.debug(tc,  "@AV999, Babuji root element", SerializeSupport.nodeToString(doc.getDocumentElement()));
+                        if (tc.isDebugEnabled()) {
+                            Tr.debug(tc,  "document = ", SerializeSupport.nodeToString(doc));
+                        }
                         acsIdpMetadataProvider = new AcsDOMMetadataProvider(doc.getDocumentElement(), fileIdpMetadata);
                         try {
                             acsIdpMetadataProvider.setId(samlConfig.getProviderId()); 
                             acsIdpMetadataProvider.initialize();
-                            //acsIdpMetadataProvider.get
-                            
-//                            FilesystemMetadataResolver idpMetaDataProvider = null;
-//                            try {
-//                                idpMetaDataProvider = new FilesystemMetadataResolver( new File( strIdpMetadata ) );
-//                            } catch (ResolverException e) {
-//                                // TODO Auto-generated catch block
-//                                // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-//                                e.printStackTrace();
-//                            }
-//                            idpMetaDataProvider.setRequireValidMetadata( true );
-//                            idpMetaDataProvider.setId( "myId" );
-//                            //BasicParserPool pool = new BasicParserPool();
-//
-//                            //pool.initialize();
-//                            idpMetaDataProvider.setParserPool( parserPool );
-//                            idpMetaDataProvider.initialize();
-//                            String entityID = "urn:mace:incommon:osu.edu";
-//                            CriteriaSet criteriaSet = new CriteriaSet(new EntityIdCriterion(entityID));
-//                            EntityDescriptor metadata2 = null;
-//                            try {
-//                                metadata2 = idpMetaDataProvider.resolveSingle(criteriaSet);
-//                            } catch (ResolverException e) {
-//                                // TODO Auto-generated catch block
-//                                // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-//                                e.printStackTrace();
-//                            } //metadataProvider.getMetadata(); //@AV999
-//                            //EntityDescriptor metadata2 = null; //@AV999
-//                            Tr.debug(tc,  "@AV999, Babuji, from another md provider : ", metadata2);
-//
-                        } catch (ComponentInitializationException e) {
-                            // TODO Auto-generated catch block
-                            // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-                            // e.printStackTrace();
-                        }
-                        // debug
-                        if (tc.isDebugEnabled()) {
-                            //Tr.debug(tc, "dumpData metadataProvider:" + DumpData.dumpMetadata(acsIdpMetadataProvider)); //@AV999
+                        } catch (Exception e) {
+                            throw new SamlException("SAML20_IDP_METADATA_PARSE_ERROR",e, // cause
+                            new Object[] { strIdpMetadata, samlConfig.getProviderId(), e.getMessage() });
                         }
                     }
+                } else {
+                    throw new SamlException("SAML20_IDP_METADATA_PARSE_ERROR", new NullPointerException(), // cause
+                                            new Object[] { strIdpMetadata, samlConfig.getProviderId(), "null" });
                 }
-            //} catch (XMLParserException e) {
-             //   if (tc.isDebugEnabled()) {
-              //      Tr.debug(tc, "Can not parse MetadataFile:" + strIdpMetadata, e);
-              //  }
-               // throw new SamlException(
-                 //               "SAML20_IDP_METADATA_PARSE_ERROR",
-                                //"CWWKS5023E: The IdP Metadata file [" + strIdpMetadata +
-                                //                "] in Service Provider [" + samlConfig.getProviderId() +
-                                //                "] cannot be parsed as an XML file. Exception [" + e.getMessage() +
-                                //                "]",
-                 //               e, // cause
-                 //               new Object[] { strIdpMetadata, samlConfig.getProviderId(), e.getMessage() });
-            //} catch (MetadataProviderException e) {
-                // One of the possible cause is: The metadata file is an XML file but does not have legal SAML20 tags
-            //    if (tc.isDebugEnabled()) {
-            //        Tr.debug(tc, "Provider error MetadataFile:" + strIdpMetadata, e);
-            //    }
-             //   throw new SamlException(
-              //                  "SAML20_IDP_METADATA_PARSE_ERROR",
-                                //"CWWKS5024E: The metadata file [" + strIdpMetadata +
-                                //                "] of the Identity Probvider in Service Provider [" + samlConfig.getProviderId() +
-                                //                " has bad data in it and cannot be handled as a metadata file. Exception message [" + e.getMessage() +
-                                //                "]",
-                //                e, // cause
-                 //               new Object[] { strIdpMetadata, samlConfig.getProviderId(), e.getMessage() });
-            //} catch (PrivilegedActionException e) {
-              //  Exception newe = e.getException(); // the real Exception
-              //  if (newe instanceof FileNotFoundException) {
-              //      if (tc.isDebugEnabled()) {
-               //         Tr.debug(tc, "Provider error MetadataFile:" + strIdpMetadata, newe);
-                 //   }
-                  //  throw new SamlException(
-                                   // "SAML20_NO_IDP_METADATA_ERROR",
-                                    //"CWWKS5025E: The metadata file [" + strIdpMetadata +
-                                    //                "] of the Identity Probvider in Service Provider [" + samlConfig.getProviderId() +
-                                    //                "] does not exist or cannot be accessed. Exception message[" + newe.getMessage() +
-                                    //                "]",
-                               //     newe, // cause
-                               //     new Object[] { strIdpMetadata, samlConfig.getProviderId(), newe.getMessage() });
-                //} else {
-                  //  if (tc.isDebugEnabled()) {
-                  //      Tr.debug(tc, "unexpected Provider error MetadataFile:" + strIdpMetadata, e, newe);
-                   // }
-                    // unexpected exception. The cause may be null
-                    //throw new SamlException(
-                      //              "SAML20_IDP_METADATA_PARSE_ERROR",
-                                    //"CWWKS5026E: When parsing the metadata file [" + strIdpMetadata +
-                                    //                "] of the Identity Provider in Service Provider [" + samlConfig.getProviderId() +
-                                    //                "], it gets an unexpected exception. Exception message [" + e.getMessage() +
-                                    //                "]",
-                     //               newe, // cause
-                      //              new Object[] { strIdpMetadata, samlConfig.getProviderId(), newe.getMessage() });
-                //}
-            //} catch (NullPointerException e) {
-                // One of the possible cause is: The metadata file is an XML file but does not have legal SAML20 tags
-             //   if (tc.isDebugEnabled()) {
-             //       Tr.debug(tc, "Provider error MetadataFile:" + strIdpMetadata, e);
-              //  }
-              //  throw new SamlException(
-               //                 "SAML20_IDP_METADATA_PARSE_ERROR",
-                                //"CWWKS5024E: The metadata file [" + strIdpMetadata +
-                                //                "] of the Identity Probvider in Service Provider [" + samlConfig.getProviderId() +
-                                //                " has bad data in it and cannot be handled as a metadata file. Exception message [" + e.getMessage() +
-                                //                "]",
-                  //              e, // cause
-                     //           new Object[] { strIdpMetadata, samlConfig.getProviderId(), e.getMessage() });
-           // } finally {
-             //   if (inputStream != null) {
-              //      try {
-              //          inputStream.close();
-              //      } catch (IOException e) {
-                        // Error handling?
-                //        if (tc.isDebugEnabled()) {
-                  //          Tr.debug(tc, "Can not close InputStream of MetadataFile:" + strIdpMetadata, e);
-                   //     }
-                  //  }
-               // }
-           // }
-
         } else {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "The idpMetadataFile in " + samlConfig.getProviderId() + " is null. This has to define the trustStore to verify the signature in SAML Response");
             }
-            // This maybe on purpose. Do not throw Exception to increase unnecessary FFDC.
-            // So, we will have to use the trustStore which is defined in the server.xml to verify
+            // no metadata? this maybe a requirement.., we will have to use the trustStore which is defined in the server configuration
         }
 
         return acsIdpMetadataProvider;
@@ -324,16 +191,16 @@ public class MsgCtxUtil<InboundMessageType extends SAMLObject, OutboundMessageTy
     }
 
     public static TrustEngine<Signature> getTrustedEngineFromMetadata(BasicMessageContext<?, ?> context) {
-        //MetadataProvider metadataProvider = context.getMetadataProvider(); //@AV999 TODO: any other way?
+        
         DOMMetadataResolver metadataProvider = context.getMetadataProvider();
         
-        //@AV999 TODO: maybe we can just do roleResolver once
+        // TODO: maybe we can just do roleResolver once
         PredicateRoleDescriptorResolver roleResolver;
         roleResolver = new PredicateRoleDescriptorResolver(metadataProvider);
         try {
             roleResolver.initialize();
         } catch (ComponentInitializationException e) {
-             //@AV999 TODO:
+             //v3 TODO:
         }
         
         MetadataCredentialResolver mdCredResolver = new MetadataCredentialResolver();
@@ -342,16 +209,8 @@ public class MsgCtxUtil<InboundMessageType extends SAMLObject, OutboundMessageTy
         try {
             mdCredResolver.initialize();
         } catch (ComponentInitializationException e) {
-            // TODO Auto-generated catch block
-            // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-            // e.printStackTrace();
-        }
-        // MetadataCredentialResolverFactory factory = MetadataCredentialResolverFactory.getFactory(); //@AV999
 
-//        TrustedCredentialTrustEngine<Signature> engine = new ExplicitKeySignatureTrustEngine( //@AV999
-//                        factory.getInstance(metadataProvider),
-//                        getKeyInfoCredResolver()
-//                        );
+        }
         TrustedCredentialTrustEngine<Signature> engine = new ExplicitKeySignatureTrustEngine(mdCredResolver, getKeyInfoCredResolver());
         return engine;
     }
@@ -359,11 +218,11 @@ public class MsgCtxUtil<InboundMessageType extends SAMLObject, OutboundMessageTy
     public static TrustEngine<Signature> getTrustedEngineFromPkix(BasicMessageContext<?, ?> context) throws SamlException {
         SsoConfig ssoConfig = context.getSsoConfig();
         Collection<X509Certificate> x509Certs = ssoConfig.getPkixTrustAnchors();
-        Collection<X509CRL> x509CRLs = ssoConfig.getX509Crls(); //new ArrayList<X509CRL>();
+        Collection<X509CRL> x509CRLs = ssoConfig.getX509Crls();
         BasicPKIXValidationInformation pkixValidationInformation = new BasicPKIXValidationInformation(x509Certs, x509CRLs, Integer.valueOf(20));
 
         List<PKIXValidationInformation> infos = new ArrayList<PKIXValidationInformation>();
-        Set<String> names = new HashSet<String>(); //@AV999 TODO: can we depend on their trusted names evaluation??
+        Set<String> names = new HashSet<String>(); //TODO: can we depend on their trusted names evaluation??
         //names.add("https://witsend4.austin.ibm.com/idp/shibboleth");
         infos.add(pkixValidationInformation);
         StaticPKIXValidationInformationResolver pkixValidationInfoResolver = new StaticPKIXValidationInformationResolver(infos, names);
@@ -375,7 +234,7 @@ public class MsgCtxUtil<InboundMessageType extends SAMLObject, OutboundMessageTy
         x509CredentialEvaluator.setCheckSubjectAltNames(false);
         x509CredentialEvaluator.setCheckSubjectDN(false);
         x509CredentialEvaluator.setCheckSubjectDNCommonName(false);
-        //context.setPKIXTrustEngine(true);
+        
         return pkixSignatureTrustEngine;
     }
 

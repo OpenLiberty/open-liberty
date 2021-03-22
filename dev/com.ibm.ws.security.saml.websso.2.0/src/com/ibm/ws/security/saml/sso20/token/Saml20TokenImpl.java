@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,7 +27,10 @@ import java.util.Set;
 import javax.xml.namespace.QName;
 
 import org.joda.time.DateTime;
-import org.opensaml.saml.saml2.core.Assertion; //@AV999
+import org.opensaml.core.xml.Namespace;
+import org.opensaml.core.xml.NamespaceManager;
+import org.opensaml.core.xml.XMLObject;
+import org.opensaml.saml.saml2.core.Assertion;
 import org.opensaml.saml.saml2.core.Attribute;
 import org.opensaml.saml.saml2.core.AttributeStatement;
 import org.opensaml.saml.saml2.core.Audience;
@@ -41,18 +44,9 @@ import org.opensaml.saml.saml2.core.ProxyRestriction;
 import org.opensaml.saml.saml2.core.Subject;
 import org.opensaml.saml.saml2.core.SubjectConfirmation;
 import org.opensaml.saml.saml2.core.SubjectLocality;
-import org.opensaml.core.xml.Namespace;
-import org.opensaml.core.xml.NamespaceManager;
-import org.opensaml.core.xml.XMLObject;
 import org.opensaml.xmlsec.signature.KeyInfo;
 import org.opensaml.xmlsec.signature.Signature;
 import org.opensaml.xmlsec.signature.X509Data;
-//import org.opensaml.xml.util.Base64; //@AV999
-import net.shibboleth.utilities.java.support.codec.Base64Support;
-import net.shibboleth.utilities.java.support.xml.NamespaceSupport;
-import net.shibboleth.utilities.java.support.xml.SerializeSupport;
-
-//import org.opensaml.xml.util.XMLHelper; //@AV999
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -64,6 +58,10 @@ import com.ibm.ws.security.saml.Constants;
 import com.ibm.ws.security.saml.error.SamlException;
 import com.ibm.ws.security.saml.sso20.internal.utils.SamlUtil;
 import com.ibm.ws.security.saml.sso20.metadata.TraceConstants;
+
+import net.shibboleth.utilities.java.support.codec.Base64Support;
+import net.shibboleth.utilities.java.support.xml.NamespaceSupport;
+import net.shibboleth.utilities.java.support.xml.SerializeSupport;
 
 public class Saml20TokenImpl implements Saml20Token, Serializable {
     /** */
@@ -118,8 +116,8 @@ public class Saml20TokenImpl implements Saml20Token, Serializable {
     void init(Assertion assertion) throws SamlException {
         this.assertionDOM = getClonedAssertionDom(assertion);
         this.maps.put(samlElement, this.assertionDOM);
-        //this.samlString = XMLHelper.nodeToString(this.assertionDOM); //@AV999
-        this.samlString = SerializeSupport.nodeToString(this.assertionDOM);
+        //this.samlString = XMLHelper.nodeToString(this.assertionDOM);
+        this.samlString = SerializeSupport.nodeToString(this.assertionDOM);//v3
         //  no need to check the validation of assertion (isSigned) at this point.
         // It had been verified already
 
@@ -324,8 +322,8 @@ public class Saml20TokenImpl implements Saml20Token, Serializable {
         Iterator<X509Data> it = x509Datas.iterator();
         while (it.hasNext()) {
             X509Data x509data = it.next();
-            List<org.opensaml.xmlsec.signature.X509Certificate> certs = x509data.getX509Certificates(); //@AV999
-            Iterator<org.opensaml.xmlsec.signature.X509Certificate> itc = certs.iterator(); //@AV999
+            List<org.opensaml.xmlsec.signature.X509Certificate> certs = x509data.getX509Certificates(); //v3
+            Iterator<org.opensaml.xmlsec.signature.X509Certificate> itc = certs.iterator();
             while (itc.hasNext()) {
                 org.opensaml.xmlsec.signature.X509Certificate cert = itc.next();
                 String certString = cert.getValue();
@@ -575,27 +573,6 @@ public class Saml20TokenImpl implements Saml20Token, Serializable {
         return Collections.unmodifiableList(this.signerCertificates);
     };
 
-/*
- * public Element getDOM() { //Throw SamlException
- * if (this.assertionDOM != null)
- * return this.assertionDOM;
- * StaticBasicParserPool ppMgr = (StaticBasicParserPool) Configuration.getParserPool();
- * try {
- * StringReader reader = new StringReader(this.samlString);
- * this.samlXMLObject = XMLObjectHelper.unmarshallFromReader(ppMgr, reader);
- * this.assertionDOM = this.samlXMLObject.getDOM();
- * } catch (XMLParserException xpe) {
- * if (tc.isDebugEnabled()) {
- * Tr.debug(tc, "Fail to deserialize SAML", xpe.toString());
- * }
- * } catch (UnmarshallingException ue) {
- * if (tc.isDebugEnabled()) {
- * Tr.debug(tc, "Fail to deserialize SAML", ue.toString());
- * }
- * }
- * return this.assertionDOM;
- * };
- */
 
     /**
      * Gets the serializable representation of this SAML XML.
@@ -699,8 +676,8 @@ public class Saml20TokenImpl implements Saml20Token, Serializable {
         Set<Namespace> namespaces = nsManager.getAllNamespacesInSubtreeScope();
         for (Namespace namespace : namespaces) {
             if (!dsUri.equals(namespace.getNamespaceURI())) { // do not add the Signature namespace
-//                XMLHelper.appendNamespaceDeclaration(dom, namespace.getNamespaceURI(), namespace.getNamespacePrefix()); //@AV999
-                NamespaceSupport.appendNamespaceDeclaration(dom, namespace.getNamespaceURI(), namespace.getNamespacePrefix());
+//                XMLHelper.appendNamespaceDeclaration(dom, namespace.getNamespaceURI(), namespace.getNamespacePrefix());
+                NamespaceSupport.appendNamespaceDeclaration(dom, namespace.getNamespaceURI(), namespace.getNamespacePrefix());//v3
             }
         }
         return dom;

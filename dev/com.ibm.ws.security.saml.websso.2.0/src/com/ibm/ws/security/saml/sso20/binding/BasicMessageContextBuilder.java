@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,9 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.security.saml.sso20.binding;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -20,25 +18,10 @@ import javax.servlet.http.HttpServletResponse;
 import org.opensaml.core.xml.config.XMLObjectProviderRegistrySupport;
 import org.opensaml.messaging.context.MessageContext;
 import org.opensaml.saml.common.SAMLObject;
-//import org.opensaml.common.binding.SAMLMessageContext;
 import org.opensaml.saml.saml2.binding.decoding.impl.HTTPPostDecoder;
-//import org.opensaml.saml2.metadata.provider.MetadataProvider;
-//import org.opensaml.security.MetadataCredentialResolverFactory;
-//import org.opensaml.ws.security.SecurityPolicy;
-//import org.opensaml.ws.security.SecurityPolicyResolver;
-//import org.opensaml.ws.security.provider.StaticSecurityPolicyResolver;
-//import org.opensaml.ws.transport.http.HttpServletRequestAdapter;
-import org.opensaml.security.SecurityException;
-import org.opensaml.xmlsec.keyinfo.impl.BasicProviderKeyInfoCredentialResolver;
-import org.opensaml.xmlsec.keyinfo.impl.KeyInfoProvider;
-import org.opensaml.xmlsec.keyinfo.impl.provider.InlineX509DataProvider;
-import org.opensaml.security.trust.TrustEngine;
-import org.opensaml.xmlsec.signature.Signature;
-import org.opensaml.xmlsec.signature.support.impl.ExplicitKeySignatureTrustEngine;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.saml.Constants;
 import com.ibm.ws.security.saml.SsoConfig;
 import com.ibm.ws.security.saml.SsoRequest;
@@ -46,8 +29,6 @@ import com.ibm.ws.security.saml.SsoSamlService;
 import com.ibm.ws.security.saml.TraceConstants;
 import com.ibm.ws.security.saml.error.SamlException;
 import com.ibm.ws.security.saml.impl.Saml20HTTPPostDecoder;
-//import com.ibm.ws.security.saml.sso20.acs.AcsSecurityPolicy;
-import com.ibm.ws.security.saml.sso20.acs.SAMLMessageXMLSignatureSecurityPolicyRule;
 import com.ibm.ws.security.saml.sso20.internal.utils.RequestUtil;
 import com.ibm.ws.security.saml.sso20.metadata.AcsDOMMetadataProvider;
 
@@ -88,28 +69,12 @@ public class BasicMessageContextBuilder<InboundMessageType extends SAMLObject, O
         BasicMessageContext<InboundMessageType, OutboundMessageType> basicMessageContext = getBasicMessageContext(ssoService, req, res);
             
         basicMessageContext.setAndRemoveCachedRequestInfo(externalRelayState, samlRequest); 
-        //basicMessageContext.setInboundMessageTransport(new HttpServletRequestAdapter(req)); //@AV999
+        //basicMessageContext.setInboundMessageTransport(new HttpServletRequestAdapter(req)); //v2
         setIdpMetadaProvider(basicMessageContext);
-        //setSecurityPolicyResolver(basicMessageContext);
 
         // 1) Parsing the samlResponse
-        decodeSamlResponse(basicMessageContext, req); //@AV999
+        decodeSamlResponse(basicMessageContext, req);
 
-        //Comment out following codes, they are done later
-        /*
-         * // 2) Decrypt the encryptedAssertion
-         * // TODO add code to decrypt
-         *
-         * // 3) Check signature with IdpSecurityPolicyResolver
-         * if (!verifySignatureWithIdpMetadata(basicMessageContext)) {
-         * // 4) check signature with specified trustStore
-         * // TODO add code to handle local trust store
-         * // a) The specified Trust Store may be able to be merged into the SecurityPolicyResolver
-         * // b) The signature may have be parsed and verified.
-         * // The only thing is not done is: TrustEngine
-         * // We may be able to the TrustEngine in AcsSecurityPolicy
-         * }
-         */
         return basicMessageContext;
     }
 
@@ -120,10 +85,10 @@ public class BasicMessageContextBuilder<InboundMessageType extends SAMLObject, O
                                                                                                      SsoRequest samlRequest) throws SamlException {
         BasicMessageContext<InboundMessageType, OutboundMessageType> basicMessageContext = getBasicMessageContext(ssoService, req, res);
         basicMessageContext.setAndRemoveCachedRequestInfo(externalRelayState, samlRequest);
-        //basicMessageContext.setInboundMessageTransport(new HttpServletRequestAdapter(req)); //@AV999 TODO:
+        //basicMessageContext.setInboundMessageTransport(new HttpServletRequestAdapter(req)); //v2
         setIdpMetadaProvider(basicMessageContext);
 
-        decodeSamlLogoutMessage(basicMessageContext, req); //@AV999
+        decodeSamlLogoutMessage(basicMessageContext, req);
         return basicMessageContext;
     }
 
@@ -132,10 +97,10 @@ public class BasicMessageContextBuilder<InboundMessageType extends SAMLObject, O
                                                                                                         SsoSamlService ssoService,
                                                                                                         String headerCpontent,
                                                                                                         SsoRequest samlRequest) throws SamlException {
-        BasicMessageContext<InboundMessageType, OutboundMessageType> basicMessageContext = getBasicMessageContext(ssoService, req, res); //@AV999
+        BasicMessageContext<InboundMessageType, OutboundMessageType> basicMessageContext = getBasicMessageContext(ssoService, req, res); //v3
         //basicMessageContext.setInboundMessageTransport(new HttpServletRequestAdapter(req));
         //decodeSamlResponse(basicMessageContext, req);
-        basicMessageContext.setMessageContext(new MessageContext<SAMLObject>()); //@AV999 major change
+        basicMessageContext.setMessageContext(new MessageContext<SAMLObject>()); //v3
         return basicMessageContext;
     }
 
@@ -161,17 +126,12 @@ public class BasicMessageContextBuilder<InboundMessageType extends SAMLObject, O
         
         try {
             HTTPPostDecoder samlMessageDecoder = getSamlHttpPostDecoder(acsUrl, req);
-            //samlMessageDecoder.decode(basicMessageContext); //@AV999 important change
+            //samlMessageDecoder.decode(basicMessageContext); //v2
             samlMessageDecoder.decode();
-            basicMessageContext.setMessageContext(samlMessageDecoder.getMessageContext());
+            basicMessageContext.setMessageContext(samlMessageDecoder.getMessageContext());//v3?
         } catch (Exception e) {
-            // includes these 2 declared exception
-            // Exception MessageDecodingException mde
-            // But the  org.opensaml.xml.security.SecurityException se should not happen, since we only decode and parse the samlResponse here
-            //
-            // That pretty much nothing we can do/say in this kind of failure
             // We may want to return false, so it can be handled by the specified TrustStore
-            //throw decodeError(e, basicMessageContext); //@AV999
+            //throw decodeError(e, basicMessageContext); //v2
             throw decodeError(e);
         }
         return true;
@@ -187,18 +147,13 @@ public class BasicMessageContextBuilder<InboundMessageType extends SAMLObject, O
         }
         
         try {
-            HTTPPostDecoder samlMessageDecoder = getSamlHttpPostDecoder(sloUrl, req); //@AV999
-            //samlMessageDecoder.decode(basicMessageContext); //@AV999 important change
+            HTTPPostDecoder samlMessageDecoder = getSamlHttpPostDecoder(sloUrl, req); //v3
+            //samlMessageDecoder.decode(basicMessageContext); //v2
             samlMessageDecoder.decode();
             basicMessageContext.setMessageContext(samlMessageDecoder.getMessageContext());
         } catch (Exception e) {
-            // includes these 2 declared exception
-            // Exception MessageDecodingException mde
-            // But the  org.opensaml.xml.security.SecurityException se should not happen, since we only decode and parse the samlResponse here
-            //
-            // That pretty much nothing we can do/say in this kind of failure
             // We may want to return false, so it can be handled by the specified TrustStore
-            //throw decodeError(e, basicMessageContext); //@AV999
+            //throw decodeError(e, basicMessageContext); //v2
             throw decodeError(e);
         }
         return true;
@@ -209,54 +164,8 @@ public class BasicMessageContextBuilder<InboundMessageType extends SAMLObject, O
         decoder.setHttpServletRequest(req);
         decoder.setParserPool(XMLObjectProviderRegistrySupport.getParserPool());
         decoder.initialize();
-        //TODO @AV999 initialize()?
         return decoder;
     }
-
-//    boolean verifySignatureWithIdpMetadata(BasicMessageContext<InboundMessageType, OutboundMessageType, NameIdentifierType> basicMessageContext) throws SamlException {
-//        try {
-//            SecurityPolicyResolver idpPolicyResolver = basicMessageContext.getIdpSecurityPolicyResolver();
-//            if (idpPolicyResolver != null) {
-//                Iterable<SecurityPolicy> securityPolicies = idpPolicyResolver.resolve(basicMessageContext);
-//                if (securityPolicies != null) {
-//                    for (SecurityPolicy policy : securityPolicies) {
-//                        if (policy != null) {
-//                            if (tc.isDebugEnabled()) {
-//                                Tr.debug(tc, "Evaluating security policy of type '{}' for decoded message", policy.getClass().getName());
-//                            }
-//                            policy.evaluate(basicMessageContext);
-//                        }
-//                    }
-//                } else {
-//                    if (tc.isDebugEnabled()) {
-//                        Tr.debug(tc, "No security policy resolved for this message context, no security policy evaluation attempted");
-//                    }
-//                }
-//            }
-//        } catch (SecurityException e) {
-//            // Let the SamlException handle the opensaml exception
-//            throw new SamlException(e);
-//        }
-//
-//        return true;
-//    }
-
-//    /**
-//     * @param messageContext
-//     */
-//    void setSecurityPolicyResolver(BasicMessageContext<InboundMessageType, OutboundMessageType, NameIdentifierType> messageContext) {
-//        AcsSecurityPolicy acsSecurityPolicy = new AcsSecurityPolicy();
-//        //acsSecurityPolicy.add(new SAML2AuthnRequestsSignedRule()); // AuthRequest
-//        MetadataProvider metadataProvider = messageContext.getMetadataProvider();
-//        MetadataCredentialResolverFactory factory = MetadataCredentialResolverFactory.getFactory();
-//        InlineX509DataProvider x509DataProvider = new InlineX509DataProvider();
-//        List<KeyInfoProvider> providers = new ArrayList<KeyInfoProvider>();
-//        providers.add(x509DataProvider);
-//        BasicProviderKeyInfoCredentialResolver keyInfoCredResolver = new BasicProviderKeyInfoCredentialResolver(providers);
-//        TrustEngine<Signature> engine = new ExplicitKeySignatureTrustEngine(factory.getInstance(metadataProvider), keyInfoCredResolver);
-//        acsSecurityPolicy.add(new SAMLMessageXMLSignatureSecurityPolicyRule(engine));
-//        messageContext.setIdpSecurityPolicyResolver(new StaticSecurityPolicyResolver(acsSecurityPolicy));
-//    }
 
     BasicMessageContext<InboundMessageType, OutboundMessageType> setIdpMetadaProvider(BasicMessageContext<InboundMessageType, OutboundMessageType> messageContext) throws SamlException {
         SsoConfig samlConfig = messageContext.getSsoConfig();
@@ -265,10 +174,7 @@ public class BasicMessageContextBuilder<InboundMessageType extends SAMLObject, O
         return messageContext;
     }
 
-    //SAML20_DECODE_SAML_RESPONSE_FAILURE=CWWKS5017E: The request failed. The SAML Token issued by the SAML Web SSO Version 2.0 provider can not be decoded or parsed. It is very likely a communication glitch happened.
-    //SAML20_DECODE_SAML_RESPONSE_FAILURE_LOG=CWWKS5018E: The SAML Token can not be decoded or parsed. Error message is [{1}]. Exception name is [{2}].
-    public static SamlException decodeError(Exception e/*,
-                                            SAMLMessageContext<?, ?, ?> msgContext @AV999 */) {
+    public static SamlException decodeError(Exception e) {
         String msg = e.getMessage();
         String className = e.getClass().getName();
         SamlException result = new SamlException("SAML20_DECODE_SAML_RESPONSE_FAILURE_LOG",

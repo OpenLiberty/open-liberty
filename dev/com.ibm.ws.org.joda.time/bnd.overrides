@@ -8,11 +8,11 @@ Bundle-SymbolicName: com.ibm.ws.org.joda.time.1.6.2
 WS-TraceGroup: WSS4J
 
 Export-Package: \
- org.joda.time, \
- org.joda.time.chrono, \
- org.joda.time.format
+ org.joda.time;version="1.6.2", \
+ org.joda.time.chrono;version="1.6.2", \
+ org.joda.time.format;version="1.6.2"
 
-Private-Package: org.joda.time.*
+Private-Package: org.joda.time.*;version="1.6.2"
 
 Include-Resource: \
  @${repo;joda-time:joda-time;1.6.2}!/org/joda/time/**/*xml,\

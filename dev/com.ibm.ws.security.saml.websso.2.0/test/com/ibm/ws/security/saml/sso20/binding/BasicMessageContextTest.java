@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2020 IBM Corporation and others.
+ * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,14 +14,14 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.security.KeyStoreException;
 import java.security.PrivateKey;
+import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -37,17 +37,19 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
-import org.opensaml.saml2.core.Assertion;
-import org.opensaml.saml2.core.Issuer;
-import org.opensaml.saml2.core.Response;
-import org.opensaml.saml2.metadata.EntityDescriptor;
-import org.opensaml.saml2.metadata.provider.MetadataProvider;
-import org.opensaml.saml2.metadata.provider.MetadataProviderException;
-import org.opensaml.ws.security.SecurityPolicyResolver;
-import org.opensaml.ws.transport.http.HttpServletRequestAdapter;
-import org.opensaml.xml.Namespace;
-import org.opensaml.xml.NamespaceManager;
-import org.opensaml.xml.XMLObject;
+import org.opensaml.core.config.Configuration;
+import org.opensaml.core.config.ConfigurationService;
+import org.opensaml.core.config.provider.MapBasedConfiguration;
+import org.opensaml.core.xml.Namespace;
+import org.opensaml.core.xml.NamespaceManager;
+import org.opensaml.core.xml.XMLObject;
+import org.opensaml.core.xml.config.XMLObjectProviderRegistry;
+import org.opensaml.core.xml.config.XMLObjectProviderRegistrySupport;
+import org.opensaml.saml.saml2.core.Assertion;
+import org.opensaml.saml.saml2.core.Issuer;
+import org.opensaml.saml.saml2.core.Response;
+import org.opensaml.saml.saml2.metadata.EntityDescriptor;
+import org.opensaml.xmlsec.config.DecryptionParserPool;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
@@ -62,6 +64,10 @@ import com.ibm.ws.security.saml.sso20.internal.utils.ForwardRequestInfo;
 import com.ibm.ws.security.saml.sso20.internal.utils.InitialRequestUtil;
 import com.ibm.ws.security.saml.sso20.metadata.AcsDOMMetadataProvider;
 
+import net.shibboleth.utilities.java.support.component.ComponentInitializationException;
+import net.shibboleth.utilities.java.support.resolver.CriteriaSet;
+import net.shibboleth.utilities.java.support.resolver.ResolverException;
+import net.shibboleth.utilities.java.support.xml.BasicParserPool;
 import test.common.SharedOutputManager;
 
 @SuppressWarnings("rawtypes")
@@ -87,22 +93,23 @@ public class BasicMessageContextTest {
     private static final ForwardRequestInfo requestInfo = mockery.mock(ForwardRequestInfo.class, "RequestInfoCTX");
 
     private static final QName qName = mockery.mock(QName.class, "QNameCTX");
-    private static final SecurityPolicyResolver securityPolicyResolver = mockery.mock(SecurityPolicyResolver.class);
     private static final Assertion assertion = mockery.mock(Assertion.class);
     private static final PrivateKey privateKey = mockery.mock(PrivateKey.class);
+    private static final Certificate certificate = mockery.mock(Certificate.class);
+    private static final X509Certificate x509certificate = mockery.mock(X509Certificate.class);
     private static final XMLObject xmlObject = mockery.mock(XMLObject.class);
-    private static final HttpServletRequestAdapter httpServletRequestAdapter = mockery.mock(HttpServletRequestAdapter.class);
-    private static final HttpServletRequest httpServletRequest = mockery.mock(HttpServletRequest.class);
-    private static final HttpServletResponse httpServletResponse = mockery.mock(HttpServletResponse.class);
     private static final Response response = mockery.mock(Response.class);
     private static final Issuer issuer = mockery.mock(Issuer.class);
     private static final EntityDescriptor entityDescriptor = mockery.mock(EntityDescriptor.class);
-
-    private static final MetadataProvider metadataProvider = mockery.mock(MetadataProvider.class);
-    private static final NamespaceManager nsManager = mockery.mock(NamespaceManager.class, "nsManager"); //assertion.getNamespaceManager();
+    private static final AcsDOMMetadataProvider acsmetadataProvider = mockery.mock(AcsDOMMetadataProvider.class);
+    
+    private static final NamespaceManager nsManager = mockery.mock(NamespaceManager.class, "nsManager");
 
     private static BasicMessageContext instance;
     private static Element finalElement;
+    
+    private static Configuration configuration = null;
+    private static XMLObjectProviderRegistry providerRegistry;
     
     private static final InitialRequestUtil irutil = mockery.mock(InitialRequestUtil.class);
 
@@ -115,8 +122,6 @@ public class BasicMessageContextTest {
     private final String IDP_NAME = "https://idp.example.org/SAML2";
 
     private final String metadataFile = "Metadata.xml";
-
-    private final String HTTP_METHOD = "POST";
 
     final static String elementAsString = "<saml:Assertion\r\n" +
                                           "xmlns:saml=\"urn:oasis:names:tc:SAML:2.0:assertion\"\r\n" +
@@ -202,6 +207,24 @@ public class BasicMessageContextTest {
         listXMLObjects.add(xmlObject);
         instance = new BasicMessageContext(ssoService);
         finalElement = loadXML(elementAsString).getDocumentElement();
+        
+        configuration = new MapBasedConfiguration();
+        ConfigurationService.setConfiguration(configuration);
+
+        providerRegistry = new XMLObjectProviderRegistry();
+        configuration.register(XMLObjectProviderRegistry.class, providerRegistry,
+                               ConfigurationService.DEFAULT_PARTITION_NAME);
+        BasicParserPool pp = new BasicParserPool();
+        pp.setNamespaceAware(true);
+        pp.setMaxPoolSize(50);
+        try {
+            pp.initialize();
+        } catch (ComponentInitializationException e) {
+           
+        }
+        ConfigurationService.register(DecryptionParserPool.class, new DecryptionParserPool(pp));
+        configuration.register(DecryptionParserPool.class, new DecryptionParserPool(pp), ConfigurationService.DEFAULT_PARTITION_NAME);
+        providerRegistry.setParserPool(pp);
     }
 
     @AfterClass
@@ -231,27 +254,7 @@ public class BasicMessageContextTest {
         instance.getSsoConfig();
     }
 
-    @Test
-    public void getHttpServletRequestTest() {
-        mockery.checking(new Expectations() {
-            {
-                one(httpServletRequestAdapter).getWrappedRequest();
-                will(returnValue(httpServletRequest));
-            }
-        });
-        instance.setInboundMessageTransport(httpServletRequestAdapter);
-        instance.getHttpServletRequest();
-    }
 
-    @Test
-    public void setPeerEntityRoleTest() {
-        instance.setPeerEntityRole(qName);
-    }
-
-    @Test
-    public void getPeerEntityRoleTest() {
-        instance.getPeerEntityRole();
-    }
 
     @Test
     public void getPeerEntityMetadataTest() {
@@ -260,8 +263,8 @@ public class BasicMessageContextTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void setIDPSSODescriptorIfEntityIsNullTest() throws SamlException, MetadataProviderException {
-        final AcsDOMMetadataProvider metadataProvider = mockery.mock(AcsDOMMetadataProvider.class);
+    public void setIDPSSODescriptorIfEntityIsNullTest() throws SamlException, ResolverException {
+        
         mockery.checking(new Expectations() {
             {
                 allowing(response).getIssuer();
@@ -270,26 +273,28 @@ public class BasicMessageContextTest {
                 allowing(issuer).getValue();
                 will(returnValue(ENTITY_DES_ID));
 
-                allowing(metadataProvider).getEntityDescriptor(ENTITY_DES_ID);
+                allowing(acsmetadataProvider).resolveSingle(with(any(CriteriaSet.class)));
+                //allowing(metadataProvider).getEntityDescriptor(ENTITY_DES_ID);
                 will(returnValue(null));
 
                 allowing(response).getID();
                 will(returnValue(ENTITY_DES_ID));
 
-                allowing(metadataProvider).getMetadataFilename();
+                allowing(acsmetadataProvider).getMetadataFilename();
                 will(returnValue(metadataFile));
             }
         });
 
-        instance.setInboundSAMLMessage(response);
-        instance.setMetadataProvider(metadataProvider);
+        //instance.setMessage(response);
+        instance.setMetadataProvider(acsmetadataProvider);
         instance.setIDPSSODescriptor();
 
     }
 
     @SuppressWarnings("unchecked")
     @Test
-    public void setIDPSSODescriptorTest() throws SamlException, MetadataProviderException {
+    public void setIDPSSODescriptorTest() throws SamlException, ResolverException {
+        
         mockery.checking(new Expectations() {
             {
                 one(response).getIssuer();
@@ -298,7 +303,7 @@ public class BasicMessageContextTest {
                 one(issuer).getValue();
                 will(returnValue(ENTITY_DES_ID));
 
-                one(metadataProvider).getEntityDescriptor(ENTITY_DES_ID);
+                allowing(acsmetadataProvider).resolveSingle(with(any(CriteriaSet.class)));
                 will(returnValue(entityDescriptor));
 
                 one(entityDescriptor).getIDPSSODescriptor(SUPPORTED_PROTOCOL);
@@ -306,46 +311,10 @@ public class BasicMessageContextTest {
             }
         });
 
-        instance.setInboundSAMLMessage(response);
-        instance.setMetadataProvider(metadataProvider);
+        instance.setMetadataProvider(acsmetadataProvider);
         instance.setIDPSSODescriptor();
     }
 
-    @Test
-    public void getPeerEntityRoleTestQNameIsNull() {
-        instance.setPeerEntityRole(null);
-        instance.getPeerEntityRole();
-    }
-
-    @Test
-    public void setInboundSAMLProtocolTest() {
-        instance.setInboundSAMLProtocol(HTTP_METHOD);
-    }
-
-    @Test
-    public void getInboundSAMLProtocolTest() {
-        mockery.checking(new Expectations() {
-            {
-                one(response).getElementQName();
-                will(returnValue(qName));
-
-                one(qName).getNamespaceURI();
-                will(returnValue(SUPPORTED_PROTOCOL));
-            }
-        });
-        instance.setInboundSAMLProtocol(null);
-        instance.getInboundSAMLProtocol();
-    }
-
-    @Test
-    public void setIdpSecurityPolicyResolver() {
-        instance.setIdpSecurityPolicyResolver(securityPolicyResolver);
-    }
-
-    @Test
-    public void getIdpSecurityPolicyResolverTest() {
-        instance.getIdpSecurityPolicyResolver();
-    }
 
     @Test
     public void setValidateAssertionTest() {
@@ -386,10 +355,13 @@ public class BasicMessageContextTest {
 
     @Test
     public void getDecrypterNullTest() throws SamlException, KeyStoreException, CertificateException {
+        XMLObjectProviderRegistrySupport.getParserPool();
         mockery.checking(new Expectations() {
             {
                 one(ssoService).getPrivateKey();
                 will(returnValue(privateKey));
+                allowing(ssoService).getSignatureCertificate();
+                will(returnValue(x509certificate));
             }
         });
 
@@ -402,6 +374,8 @@ public class BasicMessageContextTest {
             {
                 one(ssoService).getPrivateKey();
                 will(returnValue(privateKey));
+                allowing(ssoService).getSignatureCertificate();
+                will(returnValue(x509certificate));
             }
         });
         instance.setDecrypter();
@@ -416,6 +390,9 @@ public class BasicMessageContextTest {
 
                 one(ssoService).getPrivateKey();
                 will(returnValue(privateKey));
+                
+                allowing(ssoService).getSignatureCertificate();
+                will(returnValue(certificate));
             }
         });
 

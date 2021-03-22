@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,10 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.security.saml.sso20.internal.utils;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectInputStream;
+
 import java.io.UnsupportedEncodingException;
 import java.security.Principal;
 import java.security.PrivateKey;
@@ -32,9 +29,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.opensaml.security.credential.Credential;
 import org.opensaml.security.x509.BasicX509Credential;
-
-//import org.opensaml.xml.security.credential.Credential; //@AV999
-//import org.opensaml.xml.security.x509.BasicX509Credential;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -243,7 +237,7 @@ public class RequestUtil extends KnownSamlUrl {
 
     @FFDCIgnore({ SamlException.class })
     public static Credential getSigningCredential(SsoSamlService ssoService) throws SamlException {
-        BasicX509Credential credential = null;//new BasicX509Credential(); //@AV999
+        BasicX509Credential credential = null;//v3
         try {
 
             PrivateKey privateKey = ssoService.getPrivateKey();
@@ -261,7 +255,6 @@ public class RequestUtil extends KnownSamlUrl {
                                 null, true, new Object[] { ssoService.getProviderId(), ssoService.getConfig().getKeyStoreRef() });
             }
             credential = new BasicX509Credential((X509Certificate) certificate);
-            //credential.setEntityCertificate((X509Certificate) certificate); //@AV999
             
             credential.setPrivateKey(privateKey);
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -133,21 +133,7 @@ public class SLOHandler implements SsoHandler {
 
     void handleLogoutResponseFromIdp(HttpServletRequest request, HttpServletResponse response, SsoRequest ssoRequest,
                                      SsoSamlService ssoService) throws Exception {
-        //                Collection<String> headers = response.getHeaderNames();
-        //                Iterator<String> it = headers.iterator();
-        //                while (it.hasNext()) {
-        //                    String header = it.next();
-        //                    if (tc.isDebugEnabled()) {
-        //                        Tr.debug(tc, "logout response header = ", header);
-        //                        Tr.debug(tc, "logout response header content = ", response.getHeader(header));
-        //                    }
-        //                }
-        //
-        //                String rawLogoutResponse = null;
-        //                MyHttpServletResponseWrapper wrapper = new MyHttpServletResponseWrapper(response);
-        ////                    ServletOutputStream sos = response.getOutputStream();
-        ////                    sos.println("Success");
-        //                rawLogoutResponse = wrapper.toString();
+
         String rawLogoutResponse = request.getParameter(Constants.SAMLResponse);
 
         if (tc.isDebugEnabled()) {
