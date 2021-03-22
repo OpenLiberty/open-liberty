@@ -51,7 +51,7 @@ argument_collection_was_null=Kolekcja argument\u00f3w ma warto\u015b\u0107 NULL
 
 argument_keyed_named_query_with_JPA=Istnieje wiele zapyta\u0144 o nazwie {0}, ale nazwy musz\u0105 by\u0107 unikalne w przypadku u\u017cywania metody EntityManagerFactory.addNamedQuery()
 
-attribute_is_not_map_with_managed_key=Nie mo\u017cna doda\u0107 grafu podrz\u0119dnego klucza do obiektu EntityGroup jako atrybutu: {0} w klasie: {1}, poniewa\u017c element nie jest odwzorowaniem z kluczem typu zarz\u0105dzanego.
+attribute_is_not_map_with_managed_key=Nie mo\u017cna doda\u0107 grafu podrz\u0119dnego klucza do obiektu EntityGroup jako atrybutu {0} w klasie {1}, poniewa\u017c element nie jest odwzorowaniem z kluczem typu zarz\u0105dzanego.
 
 bean_definition_vector_arguments_are_of_different_sizes=Argumenty wektora definicji komponentu bean s\u0105 r\u00f3\u017cnej wielko\u015bci
 

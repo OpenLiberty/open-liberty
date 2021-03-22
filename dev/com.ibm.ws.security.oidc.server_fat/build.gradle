@@ -1,0 +1,199 @@
+/*******************************************************************************
+ * Copyright (c) 2021 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+ext {
+  autoFvtDir = "${buildDir}/autoFVT"
+}
+
+configurations {
+  derbyJar
+  mongoJavaDriver
+}
+
+dependencies {
+  derbyJar        'org.apache.derby:derby:10.11.1.1'
+  mongoJavaDriver 'org.mongodb:mongo-java-driver:2.13.3'
+}
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** Copy feature bundles and applications to specific servers.
+ **
+ ******************************************************************
+ ******************************************************************/
+assemble.dependsOn ':com.ibm.ws.security.fat.common:assemble'
+assemble.dependsOn ':com.ibm.ws.security.oauth.oidc_fat.common:assemble'
+assemble.dependsOn ':com.ibm.ws.security.oauth_test.custom_store:assemble'
+assemble.dependsOn ':com.ibm.ws.security.oauth_test.custom_servlets:assemble'
+assemble.dependsOn ':com.ibm.ws.security.oauth_test.servlets:assemble'
+assemble.doLast {
+
+  /****************************************************************
+   *
+   * Since this project is not a FAT project (fat.project: true), 
+   * copy the servers manually.
+   *
+   ****************************************************************/
+  copy {
+    from new File(projectDir, 'publish/servers')
+    into new File(autoFvtDir, 'publish/servers')
+    include '**'
+  }
+
+
+  /****************************************************************
+   *
+   * Copy common files and applications to all servers.
+   *
+   ****************************************************************/
+  def servers = [
+	"com.ibm.ws.security.openidconnect.server-1.0_fat",
+	"com.ibm.ws.security.openidconnect.server-1.0_fat.cert",
+	"com.ibm.ws.security.openidconnect.server-1.0_fat.cert_required",
+	"com.ibm.ws.security.openidconnect.server-1.0_fat.pwdTest",
+	"com.ibm.ws.security.openidconnect.server-1.0_fat.tai"
+  ]
+  servers.each { server ->
+  
+    copy {
+      from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').buildDir, 'test-application/oauthclient.zip')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/dropins')
+      rename 'oauthclient.zip', 'oauthclient.war'
+    }
+
+    copy {
+      from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').buildDir, 'test-application/oauthtaidemo.ear')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/dropins')
+    }
+
+    copy {
+      from configurations.derbyJar
+      into new File(autoFvtDir, 'publish/servers/' + server + '/derby')
+      rename 'derby-.*.jar', 'derby.jar'
+    }
+
+    copy {
+      from new File(project(':com.ibm.ws.security.oauth_test.servlets').buildDir, 'test-application/oAuth20DerbySetup.war')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/dropins')
+    }
+
+    copy {
+      from configurations.mongoJavaDriver
+      into new File(autoFvtDir, 'publish/servers/' + server + '/mongoDB')
+      rename 'mongo-java-driver-.*.jar', 'mongo-java-driver.jar'
+    }
+
+    copy {
+      from new File(project(':com.ibm.ws.security.oauth_test.custom_servlets').buildDir, 'test-application/oAuth20MongoSetup.war')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/test-apps')
+    }
+
+    copy {
+      from new File(projectDir, 'publish/files/serversettings')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/imports')
+      include '**.xml'
+    }
+
+	copy {
+	  from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').projectDir, '/securitykeys')
+	  into new File(autoFvtDir, 'publish/servers/' + server)
+	  include 'commonKeyStore.jks'
+	  include 'commonSslServerTrust.jks'
+	  include 'commonLdapSSLKeyStore.jks'
+	  include 'commonLdapSSLTrustStore.jks'
+	}
+
+    copy { 
+      from new File(project(':com.ibm.ws.security.fat.common').buildDir, 'test-application/testmarker.war')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/dropins')
+    }
+  }
+
+
+  /****************************************************************
+   *
+   * com.ibm.ws.security.openidconnect.server-1.0_fat
+   *
+   ****************************************************************/
+  servers = [
+	"com.ibm.ws.security.openidconnect.server-1.0_fat"
+  ]
+  servers.each { server ->
+    copy {
+      from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').buildDir, "test-application/testMediator.zip")
+      into new File(autoFvtDir, 'publish/servers/' + server + '/test-apps')
+      rename 'testMediator.zip', 'testMediator.jar'
+    }
+
+	copy {
+	  from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').projectDir, "/securitykeys")
+	  into new File(autoFvtDir, 'publish/servers/' + server)
+	  include 'commonOpKeyStore.jks'
+	}
+  }
+
+
+  /****************************************************************
+   *
+   * com.ibm.ws.security.openidconnect.server-1.0_fat.cert
+   * com.ibm.ws.security.openidconnect.server-1.0_fat.cert_required
+   *
+   ****************************************************************/
+  servers = [
+	"com.ibm.ws.security.openidconnect.server-1.0_fat.cert",
+	"com.ibm.ws.security.openidconnect.server-1.0_fat.cert_required"
+  ]
+  servers.each { server ->
+	copy {
+	  from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').projectDir, "/securitykeys")
+	  into new File(autoFvtDir, 'publish/servers/' + server)
+	  include 'commonBasicKeyStore.jks'
+	  include 'commonTrustStore.jks'
+	  include 'commonDummyServerTrustFile.jks'
+	  include 'commonDummyServerKeyFile.jks'
+	}
+  }
+
+
+  /****************************************************************
+   *
+   * Copy the custom oauth store JAR feature so we can use it both 
+   * as a user feature and as a library in a BELL.
+   *
+   ****************************************************************/
+  copy { 
+    from new File(project(':com.ibm.ws.security.oauth_test.custom_store').buildDir, 'com.ibm.ws.security.oauth_test.custom_store.jar')
+    into new File(autoFvtDir, 'publish/bundles')
+    rename 'com.ibm.ws.security.oauth_test.custom_store.jar', 'security.custom.store_1.0.jar'
+  }
+  copy { 
+    from new File(project(':com.ibm.ws.security.oauth_test.custom_store').buildDir, 'com.ibm.ws.security.oauth_test.custom_store.jar')
+    into new File(autoFvtDir, 'publish/shared')
+    rename 'com.ibm.ws.security.oauth_test.custom_store.jar', 'security.custom.store_1.0.jar'
+  }
+  copy { 
+    from new File(project(':com.ibm.ws.security.oauth_test.custom_store').projectDir, 'publish/features/customStoreSample-1.0.mf')
+    into new File(autoFvtDir, 'publish/features')
+  }
+  
+  /****************************************************************
+   *
+   * Copy the mongo-java-driver to the shared directory.
+   *
+   ****************************************************************/
+  copy {
+    from configurations.mongoJavaDriver
+    into new File(autoFvtDir, 'publish/shared')
+    rename 'mongo-java-driver-.*.jar', 'mongo-java-driver.jar'
+  }
+}

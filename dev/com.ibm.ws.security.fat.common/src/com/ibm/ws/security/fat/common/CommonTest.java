@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.fat.common;
 
@@ -20,6 +20,7 @@ import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
 
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.security.fat.common.utils.WebClientTracker;
 
 public class CommonTest {
 
@@ -28,6 +29,7 @@ public class CommonTest {
     protected static int timeoutCounter = 0;
     protected static int allowableTimeoutCount = 0;
     public static CommonMessageTools msgUtils = new CommonMessageTools();
+    protected WebClientTracker webClientTracker = new WebClientTracker();
 
     @Rule
     public TestWatcher watchman = new TestWatcher() {
@@ -146,8 +148,8 @@ public class CommonTest {
         if (timeoutFound && (timeoutCounter > allowableTimeoutCount)) {
             Log.info(thisClass, method, "Timeout messages found: " + timeoutCounter + ", number of allowed timeout messages: " + allowableTimeoutCount);
             throw new RuntimeException("Unexpected number of timed out messages found in output.txt - most likly a test case issue - search output.txt for 'Timed out'."
-                                       + System.getProperty("line.separator")
-                                       + "This exception is issued from an end of test class check and appears as an extra test case.  Fix the timed out msg issue and the test count will be correct!!!");
+                    + System.getProperty("line.separator")
+                    + "This exception is issued from an end of test class check and appears as an extra test case.  Fix the timed out msg issue and the test count will be correct!!!");
         }
 
     }

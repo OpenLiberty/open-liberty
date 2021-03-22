@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.app.manager.wab.installer.fat;
 
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -40,6 +41,7 @@ public class ConfigurableWABTests extends AbstractWABTests {
 
     private static final String CONFIG_MULTIPLE = CONFIGS + "testMultple.xml";
     private static final String CONFIG_CONFLICT = CONFIGS + "testConflict.xml";
+    private static final String CONFIG_RESET = CONFIGS + "testReset.xml";;
 
     @BeforeClass
     public static void startServer() throws Exception {
@@ -52,6 +54,11 @@ public class ConfigurableWABTests extends AbstractWABTests {
             // we expect a conflict error from the conflict test
             server.stopServer("CWWKZ0208E");
         }
+    }
+
+    @After
+    public void clear() throws Exception {
+        setConfiguration(CONFIG_RESET);
     }
 
     @Test

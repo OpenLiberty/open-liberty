@@ -1,0 +1,25 @@
+<!--
+    Copyright (c) 2021 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+	<oidcTAI id="myOidcTaiID1">
+		<properties
+			result="1"
+			client_id="client01"
+			username="testuser"
+			realm="BasicRealm" />
+	</oidcTAI>
+	<trustAssociation
+		id="NeededTAIConfig"
+		invokeForUnprotectedURI="false"
+		invokeForFormLogin="false"
+		failOverToAppAuthType="false" />
+
+</server>

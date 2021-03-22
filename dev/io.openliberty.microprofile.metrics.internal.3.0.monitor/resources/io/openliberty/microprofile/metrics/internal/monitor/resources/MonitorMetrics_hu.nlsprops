@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2020, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -25,3 +25,7 @@ FEATURE_REGISTERED.useraction=Semmit sem kell tennie.
 FEATURE_UNREGISTERED=CWPMI2004I: Az \u00f6sszes megfigyel\u00e9si m\u00e9r\u0151sz\u00e1m regisztr\u00e1l\u00e1sa meg lett sz\u00fcntetve az mpMetrics szolg\u00e1ltat\u00e1sban.
 FEATURE_UNREGISTERED.explanation=A teljes\u00edtm\u00e9nyfigyel\u0151 szolg\u00e1ltat\u00e1s, a MicroProfile m\u00e9r\u0151sz\u00e1mok szolg\u00e1ltat\u00e1s vagy mindk\u00e9t szolg\u00e1ltat\u00e1s elt\u00e1vol\u00edt\u00e1sra ker\u00fclt a kiszolg\u00e1l\u00f3r\u00f3l. Az \u00f6sszes megfigyel\u00e9si m\u00e9r\u0151sz\u00e1m regisztr\u00e1ci\u00f3ja megsz\u0171nt a MicroProfile m\u00e9r\u0151sz\u00e1mok szolg\u00e1ltat\u00e1sban.
 FEATURE_UNREGISTERED.useraction=Semmit sem kell tennie.
+
+METRICS_UNHANDLED_JAXRS_EXCEPTION=CWPMI2005W: Az MicroProfile Metrics kiv\u00e9tel lek\u00e9pez\u0151 a JAX-RS alkalmaz\u00e1sban egy kezeletlen hib\u00e1t tal\u00e1lt, \u00e9s \u00e9ppen kezeli.
+METRICS_UNHANDLED_JAXRS_EXCEPTION.explanation=A JAX-RS alap\u00fa alkalmaz\u00e1sban az alkalmaz\u00e1son bel\u00fcl nem kezelt kiv\u00e9tel t\u00f6rt\u00e9nt. Az MicroProfile k\u00f3d kezeli a kiv\u00e9telt a veremnyomk\u00f6vet\u00e9s napl\u00f3z\u00e1s\u00e1val, \u00e9s az 500-as Bels\u0151 kiszolg\u00e1l\u00f3hiba v\u00e1laszt adja vissza.
+METRICS_UNHANDLED_JAXRS_EXCEPTION.useraction=Ez a viselked\u00e9s elfogadhat\u00f3 lehet. A kiv\u00e9tel m\u00e1s m\u00f3don val\u00f3 kezel\u00e9s\u00e9hez vegyen fel egy ExceptionMapper csatol\u00f3t, amely kezeli a kiv\u00e9telt, \u00e9s egy m\u00e1sik v\u00e1laszba k\u00e9pezi le.

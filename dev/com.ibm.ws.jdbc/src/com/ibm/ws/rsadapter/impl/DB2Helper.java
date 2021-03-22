@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2018 IBM Corporation and others.
+ * Copyright (c) 2003, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -60,7 +60,6 @@ public class DB2Helper extends DatabaseHelper {
     static int JDBC = 1; 
     static int SQLJ = 2; 
     int connType = 0; 
-    private transient PrintWriter db2Pw; 
 
     /**
      * Construct a helper class for common DB2 behavior. Do not instantiate this class directly.
@@ -71,6 +70,8 @@ public class DB2Helper extends DatabaseHelper {
     DB2Helper(WSManagedConnectionFactoryImpl mcf) throws Exception {
         super(mcf);
 
+        mcf.defaultIsolationLevel = Connection.TRANSACTION_REPEATABLE_READ;
+        mcf.doesStatementCacheIsoLevel = true;
         mcf.supportsGetTypeMap = false;
 
         Properties props = mcf.dsConfig.get().vendorProps;
@@ -188,16 +189,6 @@ public class DB2Helper extends DatabaseHelper {
             Tr.exit(this, tc, "doConnectionSetup");
     }
 
-    @Override
-    public final boolean doesStatementCacheIsoLevel() {
-        return true;
-    }
-
-    @Override
-    public int getDefaultIsolationLevel() {
-        return Connection.TRANSACTION_REPEATABLE_READ;
-    }
-
     /**
      * Feature WS14621 
      * 
@@ -244,12 +235,12 @@ public class DB2Helper extends DatabaseHelper {
         // and most likely the setting will be serially, even if its not,
         // it shouldn't matter here (tracing).
 
-        if (db2Pw == null) {
-            db2Pw = new PrintWriter(new TraceWriter(db2Tc), true);
+        if (genPw == null) {
+            genPw = new PrintWriter(new TraceWriter(db2Tc), true);
         }
         if (trace && tc.isDebugEnabled())
-            Tr.debug(this, tc, "returning", db2Pw);
-        return db2Pw;
+            Tr.debug(this, tc, "returning", genPw);
+        return genPw;
     }
 
     /**

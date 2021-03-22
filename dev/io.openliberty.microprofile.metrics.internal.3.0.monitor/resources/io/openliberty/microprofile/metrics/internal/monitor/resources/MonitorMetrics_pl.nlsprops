@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2020, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -25,3 +25,7 @@ FEATURE_REGISTERED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107 u\
 FEATURE_UNREGISTERED=CWPMI2004I: Wszystkie pomiary monitorowania zosta\u0142y wyrejestrowane ze sk\u0142adnika mpMetrics.
 FEATURE_UNREGISTERED.explanation=Sk\u0142adnik Performance Monitoring i/lub sk\u0142adnik MicroProfile Metrics zosta\u0142 usuni\u0119ty z serwera. Wszystkie pomiary monitorowania zosta\u0142y wyrejestrowane ze sk\u0142adnika MicroProfile Metrics.
 FEATURE_UNREGISTERED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107 u\u017cytkownika.
+
+METRICS_UNHANDLED_JAXRS_EXCEPTION=CWPMI2005W: Wykryto odwzorowuj\u0105cy wyj\u0105tek program MicroProfile Metrics obs\u0142uguj\u0105cy nieobs\u0142ugiwany wyj\u0105tek aplikacji JAX-RS.
+METRICS_UNHANDLED_JAXRS_EXCEPTION.explanation=W aplikacji opartej na specyfikacji JAX-RS wyst\u0105pi\u0142 nieobs\u0142ugiwany przez aplikacj\u0119 wyj\u0105tek. Kod MicroProfile obs\u0142uguje go, rejestruj\u0105c dane \u015bledzenia stosu wyj\u0105tku i zwracaj\u0105c odpowied\u017a Wewn\u0119trzny b\u0142\u0105d serwera 500.
+METRICS_UNHANDLED_JAXRS_EXCEPTION.useraction=To zachowanie mo\u017ce by\u0107 dopuszczalne. Aby zastosowa\u0107 inn\u0105 obs\u0142ug\u0119 wyj\u0105tku, dodaj interfejs ExceptionMapper, kt\u00f3ry obs\u0142uguje wyj\u0105tek i odwzorowuje go na inn\u0105 odpowied\u017a.

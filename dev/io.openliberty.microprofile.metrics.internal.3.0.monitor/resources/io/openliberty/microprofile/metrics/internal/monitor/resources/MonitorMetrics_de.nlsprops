@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2020, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -25,3 +25,7 @@ FEATURE_REGISTERED.useraction=Es ist keine Benutzeraktion erforderlich.
 FEATURE_UNREGISTERED=CWPMI2004I: Die Registrierung aller \u00dcberwachungsmetriken wurde in mpMetrics aufgehoben.
 FEATURE_UNREGISTERED.explanation=Das Performance-Monitoring-Feature, das MicroProfile-Metrics-Feature oder beide Features wurden vom Server entfernt. Die Registrierung aller \u00dcberwachungsmetriken wurde in MicroProfile Metrics aufgehoben.
 FEATURE_UNREGISTERED.useraction=Es ist keine Benutzeraktion erforderlich.
+
+METRICS_UNHANDLED_JAXRS_EXCEPTION=CWPMI2005W: Der MicroProfile Metrics-Ausnahmemapper hat eine nicht behandelte Ausnahme der JAX-RS-Anwendung entdeckt und verarbeitet.
+METRICS_UNHANDLED_JAXRS_EXCEPTION.explanation=In der JAX-RS-basierte Anwendung ist eine Ausnahme eingetreten, die nicht innerhalb der Anwendung verarbeitet wurde. Der MicroProfile Metrics-Code verarbeitet sie, indem der Stack-Trace f\u00fcr Ausnahmebedingung protokolliert und eine Antwort des Typs '500 Internal Server Error' zur\u00fcckgegeben wird.
+METRICS_UNHANDLED_JAXRS_EXCEPTION.useraction=Dieses Verhalten ist m\u00f6glicherweise zul\u00e4ssig. Wenn die Ausnahme anders verarbeitet werden soll, f\u00fcgen Sie eine ExceptionMapper-Schnittstelle zur Verarbeitung der Ausnahme hinzu und ordnen Sie ihr eine andere Antwort zu.

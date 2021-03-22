@@ -27,6 +27,7 @@ import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
@@ -53,7 +54,9 @@ import test.common.SharedOutputManager;
  */
 public class ClientAuthenticationTest {
 
-    static SharedOutputManager outputMgr = SharedOutputManager.getInstance().trace("com.ibm.ws.security.oauth*=all");
+    private static String traceString = "com.ibm.ws.security.oauth*";
+
+    static SharedOutputManager outputMgr = SharedOutputManager.getInstance().trace(traceString + "=all");
 
     @Rule
     public TestRule outputRule = outputMgr;
@@ -103,6 +106,11 @@ public class ClientAuthenticationTest {
     @After
     public void tearDown() throws Exception {
         mock.assertIsSatisfied();
+    }
+
+    @AfterClass
+    public static void tearDownAfterClass() {
+        outputMgr.trace(traceString + "=all=disabled");
     }
 
     @Rule
@@ -1153,7 +1161,7 @@ public class ClientAuthenticationTest {
 
     /**
      * verify that when this method detects mismatch between supplied id and
-     * security id, it sets a request attribute to the security id so the 
+     * security id, it sets a request attribute to the security id so the
      * token(s) will be built with the correct id.
      */
     @Test

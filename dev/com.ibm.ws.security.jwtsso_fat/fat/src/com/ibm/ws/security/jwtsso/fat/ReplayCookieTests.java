@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 20201 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -109,7 +109,7 @@ public class ReplayCookieTests extends CommonSecurityFat {
         server.addInstalledAppForValidation(JwtFatConstants.APP_FORMLOGIN);
         serverTracker.addServer(server);
 
-        server.startServerUsingExpandedConfiguration(DEFAULT_CONFIG, CommonWaitForAppChecks.getSSLChannelReadyMsgs());
+        server.startServerUsingExpandedConfiguration(DEFAULT_CONFIG, CommonWaitForAppChecks.getLTPAReadyMsgs(CommonWaitForAppChecks.getSSLChannelReadyMsgs()));
 
     }
 

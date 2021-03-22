@@ -53,10 +53,10 @@
   <javaPermission className="java.io.FilePermission" name="files/timertestoutput.txt" actions="read,write"/>
   <javaPermission className="java.io.FilePermission" name="files" actions="write"/>
     
-
+<!--
     <logging  traceSpecification="JPA=all=enabled"
               traceFileName="trace.log"
               maxFileSize="2000"
               maxFiles="10"
-              traceFormat="BASIC" />
+              traceFormat="BASIC" /> -->
 </server>

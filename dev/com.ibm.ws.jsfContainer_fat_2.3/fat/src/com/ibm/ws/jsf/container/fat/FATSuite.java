@@ -57,7 +57,7 @@ public class FATSuite {
     public static final String MYFACES_API = "publish/files/myfaces/myfaces-api-2.3.8.jar";
     public static final String MYFACES_IMP = "publish/files/myfaces/myfaces-impl-2.3.8.jar";
     // For ErrorPathsTest#testBadImplVersion_MyFaces Test
-    public static final String MYFACES_API_30 = "publish/files/myfaces30/myfaces-api-3.0.0-RC1.jar";
+    public static final String MYFACES_API_30 = "publish/files/myfaces30/myfaces-api-3.0.0.jar";
 
     public static WebArchive addMojarra(WebArchive app) throws Exception {
         if (JakartaEE9Action.isActive()) {

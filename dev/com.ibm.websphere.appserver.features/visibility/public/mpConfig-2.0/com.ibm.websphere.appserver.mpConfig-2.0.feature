@@ -25,6 +25,6 @@ Subsystem-Name: MicroProfile Config 2.0
  com.ibm.ws.org.apache.commons.lang3, \
  com.ibm.ws.cdi.interfaces, \
  com.ibm.ws.org.jboss.logging
-kind=beta
+kind=ga
 edition=core
 WLP-Activation-Type: parallel

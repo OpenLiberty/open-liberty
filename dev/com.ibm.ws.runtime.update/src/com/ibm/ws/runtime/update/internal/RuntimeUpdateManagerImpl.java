@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -22,6 +23,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.osgi.framework.BundleContext;
@@ -40,6 +42,7 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.LibertyProcess;
 import com.ibm.ws.kernel.launch.service.ForcedServerStop;
 import com.ibm.ws.runtime.update.RuntimeUpdateListener;
@@ -356,13 +359,17 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
             });
         }
 
+        ThreadQuiesce tq = (ThreadQuiesce) executorService;
+
+        FutureCollection quiesceListenerFutures = new FutureCollection();
+
         // Queue the notification of each listener (unbounded queue)
         final ConcurrentLinkedQueue<ServerQuiesceListener> listeners = new ConcurrentLinkedQueue<ServerQuiesceListener>();
         for (ServiceReference<ServerQuiesceListener> ref : listenerRefs) {
             final ServerQuiesceListener listener = bundleCtx.getService(ref);
             if (listener != null) {
 
-                executorService.execute(new Runnable() {
+                quiesceListenerFutures.add(executorService.submit(new Runnable() {
                     @Override
                     public void run() {
                         try {
@@ -381,7 +388,7 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
                             listeners.remove(listener);
                         }
                     }
-                });
+                }));
 
             }
         }
@@ -390,12 +397,15 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
             Tr.debug(tc, "About to begin quiesce of executor service threads.");
 
         // Notify the executor service that we are quiescing
-        ThreadQuiesce tq = (ThreadQuiesce) executorService;
-        if (tq.quiesceThreads()) {
+
+        long startTime = System.currentTimeMillis();
+        if (tq.quiesceThreads() && quiesceListenerFutures.isComplete(startTime)) {
             if (isServer())
                 Tr.info(tc, "quiesce.end");
             else
                 Tr.info(tc, "client.quiesce.end");
+
+            return;
         } else {
 
             if (tc.isDebugEnabled()) {
@@ -442,6 +452,38 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
             }
         }
 
+    }
+
+    private class FutureCollection {
+        List<Future<?>> quiesceListenerFutures = new ArrayList<Future<?>>();
+
+        FutureCollection() {
+
+        }
+
+        void add(Future<?> f) {
+            quiesceListenerFutures.add(f);
+        }
+
+        @FFDCIgnore(TimeoutException.class)
+        boolean isComplete(long startTime) {
+            // We will wait 30 seconds past the start time for tasks to complete
+            long endTime = startTime + 30000;
+
+            for (Future<?> f : quiesceListenerFutures) {
+                long waitTime = endTime - System.currentTimeMillis();
+                if (waitTime < 0)
+                    return false;
+                try {
+                    f.get(waitTime, TimeUnit.MILLISECONDS);
+                } catch (TimeoutException e) {
+                    return false;
+                } catch (Exception e) {
+                    return false;
+                }
+            }
+            return true;
+        }
     }
 
     private boolean isServer() {

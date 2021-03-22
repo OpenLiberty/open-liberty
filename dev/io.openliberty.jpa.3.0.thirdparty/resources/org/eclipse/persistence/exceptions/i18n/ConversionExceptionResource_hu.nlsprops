@@ -39,7 +39,7 @@
 
 3006=Ahhoz, hogy a(z) [{0}] egy byte t\u00f6mbb\u00e9 alak\u00edthat\u00f3 legyen, a hossz\u00fas\u00e1g\u00e1nak p\u00e1rosnak kell lennie.
 
-3007=A [{1}] oszt\u00e1ly [{0}] objektuma nem alak\u00edthat\u00f3 \u00e1t a k\u00f6vetkez\u0151re: [{2}]. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a(z) [{2}] oszt\u00e1ly rajta van-e a CLASSPATH \u00fatvonalon. Lehets\u00e9ges, hogy sz\u00fcks\u00e9g eset\u00e9n egy m\u00e1sik API \u00e1tad\u00e1st kell haszn\u00e1lnia a megfelel\u0151 oszt\u00e1lybet\u00f6lt\u0151ben, vagy be kell \u00e1ll\u00edtania azt az alap\u00e9rtelmezett ConversionManager objektumra.
+3007=A [{1}] oszt\u00e1ly [{0}] objektuma nem alak\u00edthat\u00f3 \u00e1t a k\u00f6vetkez\u0151re: [{2}].  Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a(z) [{2}] oszt\u00e1ly rajta van-e a CLASSPATH \u00fatvonalon.  Lehets\u00e9ges, hogy sz\u00fcks\u00e9g eset\u00e9n egy m\u00e1sik API \u00e1tad\u00e1st kell haszn\u00e1lnia a megfelel\u0151 oszt\u00e1lybet\u00f6lt\u0151ben, vagy be kell \u00e1ll\u00edtania azt az alap\u00e9rtelmezett ConversionManager objektumra.
 
 3008=Helytelen d\u00e1tum/id\u0151 form\u00e1tum: [{0}] (v\u00e1rt: [\u00c9\u00c9\u00c9\u00c9-HH-NN''T''\u00d3\u00d3:PP:MM])
 

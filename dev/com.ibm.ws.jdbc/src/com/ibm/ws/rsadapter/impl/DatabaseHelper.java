@@ -23,8 +23,8 @@ import java.sql.SQLInvalidAuthorizationSpecException;
 import java.sql.SQLNonTransientConnectionException;
 import java.sql.SQLRecoverableException;
 import java.sql.SQLTransientConnectionException;
+import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
@@ -48,13 +48,11 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.jca.adapter.WSConnectionManager;
 import com.ibm.ws.jca.cm.AbstractConnectionFactoryService;
-import com.ibm.ws.jdbc.heritage.DataStoreHelper;
-import com.ibm.ws.jdbc.heritage.DataStoreHelperMetaData;
 import com.ibm.ws.resource.ResourceRefInfo;
 import com.ibm.ws.rsadapter.AdapterUtil;
 import com.ibm.ws.rsadapter.DSConfig;
-import com.ibm.ws.rsadapter.DSConfig.IdentifyException;
-import com.ibm.ws.rsadapter.DSConfig.IdentifyException.Target;
+import com.ibm.ws.rsadapter.IdentifyExceptionAs;
+import com.ibm.ws.rsadapter.SQLStateAndCode;
 import com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException;
 import com.ibm.ws.rsadapter.impl.WSManagedConnectionFactoryImpl.KerbUsage;
 import com.ibm.ws.rsadapter.jdbc.WSJdbcStatement;
@@ -63,12 +61,17 @@ import com.ibm.ws.rsadapter.jdbc.WSJdbcStatement;
  * Helper for generic relational databases, coded to the most common cases.
  * This class may be subclassed as needed for databases requiring different behavior.
  */
-public class DatabaseHelper implements DataStoreHelper, DataStoreHelperMetaData {
+public class DatabaseHelper {
     // register the generic database trace needed for enabling database jdbc logging/tracing
     @SuppressWarnings("deprecation")
     private static final com.ibm.ejs.ras.TraceComponent databaseTc = com.ibm.ejs.ras.Tr.register("com.ibm.ws.database.logwriter", "WAS.database", null); 
     private static final TraceComponent tc = Tr.register(DatabaseHelper.class, "RRA", AdapterUtil.NLS_FILE); 
-    private transient PrintWriter genPw = null; 
+    transient PrintWriter genPw;
+
+    /**
+     * Class name of corresponding legacy data store helper class.
+     */
+    String dataStoreHelper = "com.ibm.websphere.rsadapter.GenericDataStoreHelper";
 
     /**
      * Default query timeout configured on the data source.
@@ -89,7 +92,7 @@ public class DatabaseHelper implements DataStoreHelper, DataStoreHelperMetaData 
      * at the beginning we assume holdability is supported, if we get an exception when calling the getHolidablity
      * then we will mark the flag as false so that getHoldability is not called all the time
      */
-    protected boolean holdabilitySupported = true; 
+    protected boolean holdabilitySupported = true;
 
     private boolean setCursorNameSupported = true;
     
@@ -102,18 +105,6 @@ public class DatabaseHelper implements DataStoreHelper, DataStoreHelperMetaData 
      * SQLException SQL States that indicate a stale connection.
      */
     final Set<String> staleSQLStates = new HashSet<String>();
-    
-    /**
-     * Pairs of SQLException error codes and SQL states that indicate a stale exception.
-     * This differs from staleErrorCodes and staleSQLStates because here both items must
-     * match in order to be considered stale.
-     * The entries are of the format: SQLSTATE/SQLCODE created by {@link #createStaleMapKey(String, Integer)}
-     * If any SQLState or SQLCode matches, then a start (*) is used.
-     * Examples:
-     * - match state=E1234 && code 456 has key E1234/456
-     * - match state=E1234 and any code has key E1234/*
-     */
-    private final Map<String,IdentifyException.Target> userDefinedStales = new HashMap<>();
     
     /**
      * Indicates if the JDBC driver alters the autocommit value upon XAResource.end.
@@ -153,11 +144,6 @@ public class DatabaseHelper implements DataStoreHelper, DataStoreHelperMetaData 
         
         customizeStaleStates();
         
-        // Process user-defined error mappings from the <identifyException> config elements
-        for (IdentifyException mapping : mcf.dsConfig.get().identifyExceptions) {
-            String key = createStaleMapKey(mapping.sqlState, mapping.errorCode);
-            userDefinedStales.put(key, mapping.as);
-        }
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Stale error codes are:  " + staleErrorCodes);
             Tr.debug(tc, "Stale SQL states are: " + staleSQLStates);
@@ -238,15 +224,6 @@ public class DatabaseHelper implements DataStoreHelper, DataStoreHelperMetaData 
     }
 
     /**
-     * Indicates whether or not the JDBC vendor statement implementation caches a copy of the transaction isolation level.
-     * 
-     * @return true if statements cache the isolation level, otherwise false.
-     */
-    public boolean doesStatementCacheIsoLevel() {
-        return false;
-    }
-
-    /**
      * <p>This method cleans up a statement before the statement is placed in the statement
      * cache. This method is called only
      * for statements being cached. It is called when at least one of the
@@ -309,20 +286,6 @@ public class DatabaseHelper implements DataStoreHelper, DataStoreHelperMetaData 
      */
     public boolean failoverOccurred(SQLException sqlX) {
         return false;
-    }
-
-    /**
-     * This method returns a default isolation level based on the database backend.
-     * 
-     * @return default isolation level
-     */
-    public int getDefaultIsolationLevel() {
-        return Connection.TRANSACTION_READ_COMMITTED;
-    }
-
-    @Override
-    public final DataStoreHelperMetaData getMetaData() {
-        return this;
     }
 
     /**
@@ -427,8 +390,10 @@ public class DatabaseHelper implements DataStoreHelper, DataStoreHelperMetaData 
     public boolean isConnectionError(SQLException ex) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
 
+        DSConfig config = mcf.dsConfig.get();
+
         if (isTraceOn && tc.isEntryEnabled())
-            Tr.entry(this, tc, "isConnectionError", ex);
+            Tr.entry(this, tc, "isConnectionError", ex, config.identifyExceptions);
 
         // Maintain a set in order to check for cycles
         Set<Throwable> chain = new HashSet<Throwable>();
@@ -440,26 +405,25 @@ public class DatabaseHelper implements DataStoreHelper, DataStoreHelperMetaData 
                 Tr.debug(this, tc, "checking " + t,
                          sqlX == null ? null : sqlX.getSQLState(),
                          sqlX == null ? null : sqlX.getErrorCode());
-            
+
             if (sqlX != null) {
                 // first check user-defined mappings
-                IdentifyException.Target target = userDefinedStales.get(createStaleMapKey(sqlX.getSQLState(), sqlX.getErrorCode()));
-                if (target == null)
-                    target = userDefinedStales.get(createStaleMapKey(null, sqlX.getErrorCode()));
-                if (target == null)
-                    target = userDefinedStales.get(createStaleMapKey(sqlX.getSQLState(), null));
-                
-                if (target == Target.None) {
-                    stale = false;
-                } else if (target == Target.StaleConnection) {
-                    stale = true;
-                } else {
+                String sqlState = sqlX.getSQLState();
+                String target = sqlState == null ? null : config.identifyExceptions.get(new SQLStateAndCode(sqlState, sqlX.getErrorCode()));
+                if (target == null) {
+                    target = config.identifyExceptions.get(sqlX.getErrorCode());
+                    if (target == null)
+                        target = config.identifyExceptions.get(sqlState);
+                }
+                if (target == null) {
                     // No user-defined mappings, use default handling
                     stale |= sqlX instanceof SQLRecoverableException ||
                              sqlX instanceof SQLNonTransientConnectionException ||
                              sqlX instanceof SQLTransientConnectionException && failoverOccurred(sqlX) ||
                              staleErrorCodes.contains(sqlX.getErrorCode()) ||
-                             staleSQLStates.contains(sqlX.getSQLState());
+                             staleSQLStates.contains(sqlState);
+                } else {
+                    stale |= isStaleConnection(target);
                 }
             }
         }
@@ -468,6 +432,31 @@ public class DatabaseHelper implements DataStoreHelper, DataStoreHelperMetaData 
             Tr.exit(this, tc, "isConnectionError", stale);
 
         return stale;
+    }
+
+    /**
+     * Determines if the specified <code>identifyException as=...</code> target identifies a stale connection.
+     *
+     * @param target value to check.
+     * @return true if a stale connection, otherwise false.
+     */
+    private boolean isStaleConnection(String target) {
+        if (IdentifyExceptionAs.StaleConnection.name().equals(target)) {
+            return true;
+        } else if (target.contains(".")) {
+            // legacy behavior of identification by class name
+            Class<?> c;
+            try {
+                c = WSManagedConnectionFactoryImpl.priv.loadClass(mcf.jdbcDriverLoader, target);
+            } catch (ClassNotFoundException x) {
+                Tr.error(tc, "8066E_IDENTIFY_EXCEPTION_INVALID_TARGET", target, Arrays.toString(IdentifyExceptionAs.values()));
+                return false;
+            }
+            for (; c != null; c = c.getSuperclass())
+                if (c.getClass().getName().equals("com.ibm.websphere.ce.cm.StaleConnectionException"))
+                    return true;
+        }
+        return false;
     }
 
     /**
@@ -646,7 +635,7 @@ public class DatabaseHelper implements DataStoreHelper, DataStoreHelperMetaData 
             return 0;
         }
         catch (SQLException sqe) {
-            if ((isConnectionError(sqe))) {
+            if (mcf.dataStoreHelper == null ? isConnectionError(sqe) : mcf.dataStoreHelper.isConnectionError(sqe)) {
                 throw sqe; // if this is a stale we need to throw exception here.
             }
 
@@ -857,7 +846,7 @@ public class DatabaseHelper implements DataStoreHelper, DataStoreHelperMetaData 
         } catch (Throwable x) {
             if (x instanceof SQLException) {
                 SQLException sqe = (SQLException) x;
-                if ((isConnectionError(sqe))) {
+                if (mcf.dataStoreHelper == null ? isConnectionError(sqe) : mcf.dataStoreHelper.isConnectionError(sqe)) {
                     throw sqe; // if this is a stale we need to throw exception here.
                 }
 
@@ -1208,11 +1197,6 @@ public class DatabaseHelper implements DataStoreHelper, DataStoreHelperMetaData 
      */
     public boolean doConnectionVendorPropertyReset(Connection sqlConn, Map<String, Object> props) throws SQLException {
         return false;
-    }
-
-    @Override
-    public boolean supportsGetCatalog() {
-        return true;
     }
 
     /**

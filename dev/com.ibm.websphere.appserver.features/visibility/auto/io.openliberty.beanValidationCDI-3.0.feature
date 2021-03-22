@@ -11,3 +11,4 @@ IBM-Install-Policy: when-satisfied
   io.openliberty.org.hibernate.validator.cdi.7.0
 kind=beta
 edition=core
+WLP-Activation-Type: parallel

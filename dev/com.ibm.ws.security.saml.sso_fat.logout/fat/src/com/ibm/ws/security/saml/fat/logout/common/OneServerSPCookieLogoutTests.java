@@ -24,7 +24,6 @@ import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.util.Cookie;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.ValidationData.validationData;
-import com.ibm.ws.security.saml20.fat.commonTest.SAMLCommonTestHelpers;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLConstants;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLMessageConstants;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLTestSettings;
@@ -116,7 +115,7 @@ public class OneServerSPCookieLogoutTests extends SAMLLogoutCommonTest {
     @Test
     public void OneServerSPCookieLogoutTests_mainPath() throws Exception {
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp1", true);
@@ -162,7 +161,7 @@ public class OneServerSPCookieLogoutTests extends SAMLLogoutCommonTest {
 
     public void multipleSPs_leaveIDPSessionCookie() throws Exception {
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         // call helper method to log in to 3 different SPs
         loginTo3SPs(webClient);
@@ -232,7 +231,7 @@ public class OneServerSPCookieLogoutTests extends SAMLLogoutCommonTest {
 
     public void multipleSPs_removeIDPSessionCookie() throws Exception {
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         // call helper method to log in to 3 different SPs
         loginTo3SPs(webClient);
@@ -248,7 +247,7 @@ public class OneServerSPCookieLogoutTests extends SAMLLogoutCommonTest {
         // different logout expectations for local/idp logout and different steps will remove the idp session...
         genericSAML(_testName, webClient, updatedTestSettings13, logoutFlow, expectationsLogout);
 
-        WebClient webClient2 = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient2 = getAndSaveWebClient();
         // Remove IDP session cookie (if it exists)
         Log.info(thisClass, null, "Removing IDP Session cookie from conversation before calling logout");
         webClient2 = helpers.addAllCookiesExcept(webClient2, helpers.extractAllCookiesExcept(webClient, SAMLConstants.IDP_SESSION_COOKIE_NAME), SAMLConstants.IDP_SESSION_COOKIE_NAME);
@@ -273,7 +272,7 @@ public class OneServerSPCookieLogoutTests extends SAMLLogoutCommonTest {
     @Test
     public void OneServerSPCookieLogoutTests_useCookie_afterLogout() throws Exception {
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp1", true);
@@ -289,7 +288,7 @@ public class OneServerSPCookieLogoutTests extends SAMLLogoutCommonTest {
         Log.info(thisClass, _testName, "Extracted Cookie: " + cookie.getName() + " Value: " + cookie.getValue());
 
         // create a new client and use the sp1 cookie to access the app (just to show that with just the cookie, we can access the app)
-        WebClient webClient2 = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient2 = getAndSaveWebClient();
         webClient2.getCookieManager().addCookie(cookie);
         Log.info(thisClass, _testName, "Trying to access app with new client with " + "SP1" + " cookie added");
         helpers.invokeAppSameConversation(_testName, webClient2, null, updatedTestSettings, updatedTestSettings.getSpDefaultApp(), expectations, SAMLConstants.INVOKE_DEFAULT_APP);
@@ -341,7 +340,7 @@ public class OneServerSPCookieLogoutTests extends SAMLLogoutCommonTest {
     @Test
     public void OneServerSPCookieLogoutTests_logoutSPNotLoggedInTo_noOtherSPLoggedIn() throws Exception {
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp1", true);
@@ -393,7 +392,7 @@ public class OneServerSPCookieLogoutTests extends SAMLLogoutCommonTest {
 
     public void logoutSPNotLoggedInTo_otherSPLoggedIn() throws Exception {
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         loginTo3SPs(webClient);
 
@@ -507,7 +506,7 @@ public class OneServerSPCookieLogoutTests extends SAMLLogoutCommonTest {
     public void OneServerSPCookieLogoutTests_logoutUrlMissingFromSPMetaData() throws Exception {
 
         String[] spCookie = { cookieInfo.getSpUnderscoreCookieName() };
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp_underscore", true);
@@ -558,7 +557,7 @@ public class OneServerSPCookieLogoutTests extends SAMLLogoutCommonTest {
 
         String[] spCookie = { cookieInfo.getSpDashCookieName() };
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp-dash", true);
@@ -690,7 +689,7 @@ public class OneServerSPCookieLogoutTests extends SAMLLogoutCommonTest {
 
         String[] spCookie = { cookieInfo.getSp5CookieName() };
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp5", true);
@@ -743,8 +742,8 @@ public class OneServerSPCookieLogoutTests extends SAMLLogoutCommonTest {
         String[] client2_threeSPCookies = { cookieInfo.getSp13CookieName(), cookieInfo.getSp2CookieName(), cookieInfo.getSp5CookieName() };
         String[] client2_missingAfterCookies = { cookieInfo.getSp1CookieName(), cookieInfo.getSp5CookieName() };
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
-        WebClient webClient2 = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
+        WebClient webClient2 = getAndSaveWebClient();
 
         // log into 2 sps in 2 different webClients
         loginToSP(webClient, standardFlowKeepingCookies, testUsers.getUser1(), testUsers.getPassword1(), "sp1", client1_oneSPCookie);
@@ -806,7 +805,7 @@ public class OneServerSPCookieLogoutTests extends SAMLLogoutCommonTest {
      * @throws Exception
      */
     public void sp_missing_or_disabled(String sp) throws Exception {
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         // call helper method to log in to 3 different SPs
         loginTo3SPs(webClient);
@@ -869,6 +868,11 @@ public class OneServerSPCookieLogoutTests extends SAMLLogoutCommonTest {
      * @throws Exception
      */
     public void common_postLogoutRedirectUrl_test(String spCookieName, String spName, PostLogoutPage postLogoutUrl) throws Exception {
+
+        if (!helpers.pingExternalServer(_testName, "http://example.com", 30)) {
+            // skip test if we can't get to the example.com site
+            testSkipped();
+        }
         common_postLogoutRedirectUrl_test(spCookieName, spName, postLogoutUrl, null);
     }
 
@@ -876,7 +880,7 @@ public class OneServerSPCookieLogoutTests extends SAMLLogoutCommonTest {
 
         String[] cookieList = new String[] { spCookieName };
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings(spName, true);

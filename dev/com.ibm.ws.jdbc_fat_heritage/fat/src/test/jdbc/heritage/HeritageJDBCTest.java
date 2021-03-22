@@ -10,6 +10,10 @@
  *******************************************************************************/
 package test.jdbc.heritage;
 
+import static org.junit.Assert.assertTrue;
+
+import java.util.List;
+
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -45,7 +49,7 @@ public class HeritageJDBCTest extends FATServletClient {
         // Test application
         WebArchive heritageApp = ShrinkWrap.create(WebArchive.class, "heritageApp.war")
                         .addPackage("test.jdbc.heritage.app");
-        ShrinkHelper.exportDropinAppToServer(server, heritageApp);
+        ShrinkHelper.exportAppToServer(server, heritageApp);
 
         server.addInstalledAppForValidation("heritageApp");
 
@@ -54,6 +58,13 @@ public class HeritageJDBCTest extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer();
+        try {
+            // Verify that DataStoreHelper getPrintWriter successfully overrides the
+            // JDBC trace location to System.out (appears in message.log),
+            List<String> found = server.findStringsInLogs(".*==> Connection.*.prepareStatement\\(\"VALUES \\('testDefaultQueryTimeout', SQRT\\(196\\)\\)\", 1003, 1007\\).*");
+            assertTrue(found.toString(), found.size() == 1);
+        } finally {
+            server.stopServer();
+        }
     }
 }

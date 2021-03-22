@@ -237,3 +237,7 @@ info.directory.app.useraction=Nicio ac\u0163iune nu este necesar\u0103.
 info.unexpanded.app=CWWKZ0136I: Aplica\u0163ia {0} utilizeaz\u0103 fi\u015fierul arhiv\u0103 de la loca\u0163ia {1}.
 info.unexpanded.app.explanation=Loca\u0163ia pentru aplica\u0163ie indic\u0103 la un fi\u015fier arhiv\u0103 binar. Fi\u015fierul arhiv\u0103 mu este expandat pe disc pentru c\u0103 nu a fost configurat\u0103 expandarea automat\u0103 a aplica\u0163iilor.
 info.unexpanded.app.useraction=Nicio ac\u0163iune nu este necesar\u0103.
+
+warning.could.not.expand.app.loc=CWWKZ0137W: Nu s-a putut expanda aplica\u0163ia {0} la loca\u0163ia {1} care este specificat\u0103 de proprietatea expandLocation.
+warning.could.not.expand.app.loc.explanation=Aplica\u0163ia nu a putut fi expandat\u0103 la loca\u0163ia specificat\u0103 de proprietatea expandLocation. A fost folosit\u0103 pentru aplica\u0163ie loca\u0163ia implicit\u0103 ${server.config.dir}/apps/expanded/.
+warning.could.not.expand.app.loc.useraction=Corecta\u0163i valoarea care este specificat\u0103 de proprietatea expandLocation \u015fi fie reporni\u0163i serverul, fie actualiza\u0163i aplica\u0163ia.

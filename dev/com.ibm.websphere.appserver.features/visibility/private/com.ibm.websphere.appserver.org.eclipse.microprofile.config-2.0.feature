@@ -4,6 +4,6 @@ singleton=true
 -features=com.ibm.websphere.appserver.javax.cdi-2.0, \
           io.openliberty.mpCompatible-4.0
 -bundles=io.openliberty.org.eclipse.microprofile.config.2.0; location:="dev/api/stable/,lib/"; mavenCoordinates="org.eclipse.microprofile.config:microprofile-config-api:2.0"
-kind=beta
+kind=ga
 edition=core
 WLP-Activation-Type: parallel

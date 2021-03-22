@@ -42,7 +42,8 @@ public class FATSuite {
         };
     }
 
-    static final DockerImageName db2Image = DockerImageName.parse("aguibert/db2-ssl:1.0")
+    // Updated docker image to use TLS1.2 for secure communication
+    static final DockerImageName db2Image = DockerImageName.parse("gjwatts/db2-tls12:1.0")
                     .asCompatibleSubstituteFor("ibmcom/db2");
 
     @ClassRule

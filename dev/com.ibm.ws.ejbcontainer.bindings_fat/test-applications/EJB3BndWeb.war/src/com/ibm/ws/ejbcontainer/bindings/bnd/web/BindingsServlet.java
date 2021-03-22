@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2019 IBM Corporation and others.
+ * Copyright (c) 2007, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -161,8 +161,7 @@ public class BindingsServlet extends FATServlet {
         RemoteTargetOneBiz rto1 = null;
 
         try {
-            Object lookup = ctx.lookup("ejb/RemoteTargetOneBiz");
-            rto1 = (RemoteTargetOneBiz) PortableRemoteObject.narrow(lookup, RemoteTargetOneBiz.class);
+            rto1 = (RemoteTargetOneBiz) ctx.lookup("ejb/RemoteTargetOneBiz");
         } catch (Exception e) {
             e.printStackTrace(System.out);
             fail("1 ---> Check RemoteTargetOne lookup failed");
@@ -226,8 +225,7 @@ public class BindingsServlet extends FATServlet {
         RemoteTargetTwoBiz1 rt2b1 = null;
 
         try {
-            Object lookup = ctx.lookup("ejb/RemoteTargetTwoBiz1");
-            rt2b1 = (RemoteTargetTwoBiz1) PortableRemoteObject.narrow(lookup, RemoteTargetTwoBiz1.class);
+            rt2b1 = (RemoteTargetTwoBiz1) ctx.lookup("ejb/RemoteTargetTwoBiz1");
         } catch (Exception e) {
             e.printStackTrace(System.out);
             fail("1 ---> Check RemoteTargetTwoBiz1 lookup failed");
@@ -246,8 +244,7 @@ public class BindingsServlet extends FATServlet {
         RemoteTargetTwoBiz2 rt2b2 = null;
 
         try {
-            Object lookup = ctx.lookup("ejb/RemoteTargetTwoBiz2");
-            rt2b2 = (RemoteTargetTwoBiz2) PortableRemoteObject.narrow(lookup, RemoteTargetTwoBiz2.class);
+            rt2b2 = (RemoteTargetTwoBiz2) ctx.lookup("ejb/RemoteTargetTwoBiz2");
         } catch (Exception e) {
             e.printStackTrace(System.out);
             fail("1 ---> Check RemoteTargetTwoBiz2 lookup failed");
@@ -266,8 +263,7 @@ public class BindingsServlet extends FATServlet {
         RemoteTargetTwoBiz3 rt2b3 = null;
 
         try {
-            Object lookup = ctx.lookup("ejb/RemoteTargetTwoBiz3");
-            rt2b3 = (RemoteTargetTwoBiz3) PortableRemoteObject.narrow(lookup, RemoteTargetTwoBiz3.class);
+            rt2b3 = (RemoteTargetTwoBiz3) ctx.lookup("ejb/RemoteTargetTwoBiz3");
         } catch (Exception e) {
             e.printStackTrace(System.out);
             fail("1 ---> Check RemoteTargetTwoBiz3 lookup failed");
@@ -343,8 +339,7 @@ public class BindingsServlet extends FATServlet {
         RemoteTargetFourBiz1 rt4b1 = null;
 
         try {
-            Object lookup = ctx.lookup("ejb/RemoteTargetFourBiz1");
-            rt4b1 = (RemoteTargetFourBiz1) PortableRemoteObject.narrow(lookup, RemoteTargetFourBiz1.class);
+            rt4b1 = (RemoteTargetFourBiz1) ctx.lookup("ejb/RemoteTargetFourBiz1");
         } catch (Exception e) {
             e.printStackTrace(System.out);
             fail("1 ---> Check RemoteTargetFourBiz1 lookup failed");
@@ -363,8 +358,7 @@ public class BindingsServlet extends FATServlet {
         RemoteTargetFourBiz2 rt2b4 = null;
 
         try {
-            Object lookup = ctx.lookup("ejb/RemoteTargetFourBiz2");
-            rt2b4 = (RemoteTargetFourBiz2) PortableRemoteObject.narrow(lookup, RemoteTargetFourBiz2.class);
+            rt2b4 = (RemoteTargetFourBiz2) ctx.lookup("ejb/RemoteTargetFourBiz2");
         } catch (Exception e) {
             e.printStackTrace(System.out);
             fail("1 ---> Check RemoteTargetFourBiz2 lookup failed");

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2001, 2017 IBM Corporation and others.
+ * Copyright (c) 2001, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -64,8 +64,6 @@ public class DataDirectConnectSQLServerHelper extends DatabaseHelper {
     @SuppressWarnings("deprecation")
     private transient com.ibm.ejs.ras.TraceComponent sqlserverTc = com.ibm.ejs.ras.Tr.register("com.ibm.ws.sqlserver.logwriter", "WAS.database", null);
 
-    private transient PrintWriter sqlServerPW;
-
     /**
      * SQLException error codes from the DataDirect Connect JDBC driver that indicate a stale connection.
      */
@@ -100,6 +98,10 @@ public class DataDirectConnectSQLServerHelper extends DatabaseHelper {
      */
     DataDirectConnectSQLServerHelper(WSManagedConnectionFactoryImpl mcf) {
         super(mcf);
+
+        dataStoreHelper = "com.ibm.websphere.rsadapter.ConnectJDBCDataStoreHelper";
+
+        mcf.defaultIsolationLevel = Connection.TRANSACTION_REPEATABLE_READ;
 
         // Default values for the statement properties LongDataCacheSize and QueryTimeout are
         // configurable as data source properties. These data source properties are supplied to
@@ -280,11 +282,6 @@ public class DataDirectConnectSQLServerHelper extends DatabaseHelper {
            Tr.exit(this, tc, "doStatementCleanup");  
     }
 
-    @Override
-    public int getDefaultIsolationLevel() {
-        return Connection.TRANSACTION_REPEATABLE_READ;
-    }
-
     /**
      * @return NULL because the DataDirect Connect JDBC driver provides sufficient trace of its own.
      */
@@ -340,11 +337,11 @@ public class DataDirectConnectSQLServerHelper extends DatabaseHelper {
         //not synchronizing here since there will be one helper
         // and most likely the setting will be serially, even if its not, 
         // it shouldn't matter here (tracing).
-        if (sqlServerPW == null) {
-            sqlServerPW = new PrintWriter(new TraceWriter(sqlserverTc), true);
+        if (genPw == null) {
+            genPw = new PrintWriter(new TraceWriter(sqlserverTc), true);
         }
-        Tr.debug(sqlserverTc, "returning", sqlServerPW);
-        return sqlServerPW;
+        Tr.debug(sqlserverTc, "returning", genPw);
+        return genPw;
     }
 
     /**
@@ -406,12 +403,12 @@ public class DataDirectConnectSQLServerHelper extends DatabaseHelper {
 
         if (ind != -1) { // if none found ===> it is a datadirect one
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) 
-                Tr.debug(this, tc, "The exception is NOT a DataDirect exception ");
+                Tr.debug(this, tc, "The exception is NOT a DataDirect exception");
             return false;
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) 
-            Tr.debug(this, tc, "the exception is a DataDirect exception  ");
+            Tr.debug(this, tc, "the exception is a DataDirect exception");
         return true;
     }
 

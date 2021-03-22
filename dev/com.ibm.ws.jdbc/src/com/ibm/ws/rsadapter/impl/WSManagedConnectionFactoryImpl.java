@@ -31,6 +31,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference; 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -70,13 +71,16 @@ import com.ibm.ws.jca.adapter.WSConnectionManager;
 import com.ibm.ws.jca.adapter.WSManagedConnectionFactory;
 import com.ibm.ws.jca.cm.AbstractConnectionFactoryService;
 import com.ibm.ws.jca.cm.ConnectorService;
-import com.ibm.ws.jdbc.heritage.DataStoreHelper;
+import com.ibm.ws.jdbc.heritage.GenericDataStoreHelper;
+import com.ibm.ws.jdbc.heritage.DataStoreHelperMetaData;
 import com.ibm.ws.jdbc.internal.PropertyService;
 import com.ibm.ws.jdbc.osgi.JDBCRuntimeVersion;
 import com.ibm.ws.kernel.service.util.SecureAction;
 import com.ibm.ws.resource.ResourceRefInfo;
 import com.ibm.ws.rsadapter.AdapterUtil;
-import com.ibm.ws.rsadapter.DSConfig; 
+import com.ibm.ws.rsadapter.DSConfig;
+import com.ibm.ws.rsadapter.IdentifyExceptionAs;
+import com.ibm.ws.rsadapter.SQLStateAndCode;
 import com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException;
 import com.ibm.ws.rsadapter.jdbc.WSJdbcTracer;
 
@@ -137,7 +141,7 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
     /**
      * Same as the DatabaseHelper unless overridden via the heritage helperClass.
      */
-    transient DataStoreHelper dataStoreHelper;
+    public final GenericDataStoreHelper dataStoreHelper;
 
     /**
      * Helps cope with differences between databases/JDBC drivers.
@@ -221,6 +225,13 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
     protected boolean loggedImmplicitTransactionFound = false; 
 
     /**
+     * Default to be used for transaction isolation level on new connections if neither the
+     * resource reference nor the server (or app-defined resource) configuration specifies one.
+     * Some of the database helpers and legacy data store helpers override this.
+     */
+    public int defaultIsolationLevel = Connection.TRANSACTION_READ_COMMITTED;
+
+    /**
      * Indicates if the application server should free java.sql.Array instances
      * on behalf of applications that forgot to clean them up.
      * 
@@ -249,10 +260,26 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
     public boolean doXMLCleanup = true;
 
     /**
+     * Indicates if statements retain their isolation level once created,
+     * versus using whatever is currently on the connection when they run.
+     */
+    public boolean doesStatementCacheIsoLevel;
+
+    /**
      * This reference should always be used when accessing configuration data,
      * in order to allow for our future implementation of dynamic updates.
      */
     public final AtomicReference<DSConfig> dsConfig;
+
+    /**
+     * Indicates if the user provides their own custom legacy data store helper.
+     */
+    public boolean isCustomHelper;
+
+    /**
+     * Indicates whether or not the JDBC driver supports <code>java.sql.Connection.getCatalog()</code>.
+     */
+    public boolean supportsGetCatalog = true;
 
     /**
      * Indicates whether or not the JDBC driver supports <code>java.sql.Connection.getNetworkTimeout()</code>.
@@ -329,15 +356,21 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
         vendorImplClass = vendorImpl.getClass();
         type = ifc;
         jdbcDriverLoader = priv.getClassLoader(vendorImplClass);
-        supportsGetNetworkTimeout = supportsGetSchema = atLeastJDBCVersion(JDBCRuntimeVersion.VERSION_4_1);
 
         String implClassName = vendorImplClass.getName();
         isUCP = implClassName.charAt(2) == 'a' && implClassName.startsWith("oracle.ucp.jdbc."); // 3rd char distinguishes from common names like: com, org, java
 
         createDatabaseHelper(config.vendorProps instanceof PropertyService ? ((PropertyService) config.vendorProps).getFactoryPID() : PropertyService.FACTORY_PID);
 
-        dataStoreHelper = config.heritageHelperClass == null ? helper : AccessController.doPrivileged((PrivilegedExceptionAction<DataStoreHelper>) () ->
-                          (DataStoreHelper) jdbcDriverLoader.loadClass(config.heritageHelperClass).getConstructor().newInstance());
+        if (connectorSvc.isHeritageEnabled()) {
+            dataStoreHelper = createDataStoreHelper();
+        } else {
+            dataStoreHelper = null;
+            supportsGetNetworkTimeout = supportsGetSchema = atLeastJDBCVersion(JDBCRuntimeVersion.VERSION_4_1);
+        }
+
+        if (helper.shouldTraceBeEnabled(this))
+            helper.enableJdbcLogging(this);
 
         if (config.supplementalJDBCTrace == null || config.supplementalJDBCTrace) {
             TraceComponent tracer = helper.getTracer();
@@ -427,9 +460,67 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
         if (helper == null)
             if (dsClassName.startsWith("com.ibm.db2.jcc.")) helper = new DB2JCCHelper(this); // unable to distinguish between DB2/Informix
             else helper = new DatabaseHelper(this);
+    }
 
-        if (helper.shouldTraceBeEnabled(this))
-            helper.enableJdbcLogging(this);
+    /**
+     * Creates a legacy DataStoreHelper and populates or overrides some default values from it.
+     *
+     * @return legacy DataStoreHelper.
+     * @throws PrivilegedActionException if an error occurs.
+     * @throws ResourceException if an error occurs.
+     * @throws ClassNotFoundException if unable to load a data store helper class.
+     */
+    private GenericDataStoreHelper createDataStoreHelper() throws PrivilegedActionException, ResourceException, ClassNotFoundException {
+        DSConfig config = dsConfig.get();
+        Properties helperProps = new Properties(); // TODO populate with what is needed
+
+        String helperClassName = config.heritageHelperClass == null ? helper.dataStoreHelper : config.heritageHelperClass;
+
+        GenericDataStoreHelper dataStoreHelper = AccessController.doPrivileged((PrivilegedExceptionAction<GenericDataStoreHelper>) () ->
+            (GenericDataStoreHelper) jdbcDriverLoader.loadClass(helperClassName).getConstructor(Properties.class).newInstance(helperProps));
+
+        dataStoreHelper.setConfig(dsConfig);
+
+        if (helper.genPw == null)
+            helper.genPw = dataStoreHelper.getPrintWriter();
+
+        DataStoreHelperMetaData metadata = dataStoreHelper.getMetaData();
+        defaultIsolationLevel = dataStoreHelper.getIsolationLevel(null);
+        doesStatementCacheIsoLevel = metadata.doesStatementCacheIsoLevel();
+        isCustomHelper = !helperClassName.startsWith("com.ibm.websphere.rsadapter");
+        supportsGetCatalog = metadata.supportsGetCatalog();
+        supportsGetNetworkTimeout = metadata.supportsGetNetworkTimeout();
+        supportsGetSchema = metadata.supportsGetSchema();
+        supportsGetTypeMap = metadata.supportsGetTypeMap();
+        supportsIsReadOnly = metadata.supportsIsReadOnly();
+
+        Map<Object, Class<?>> map = new HashMap<Object, Class<?>>();
+        for (Map.Entry<Object, String> entry : config.identifyExceptions.entrySet())
+            try {
+                String className = entry.getValue();
+                if (!className.contains("."))
+                    try {
+                        IdentifyExceptionAs identifyAs = IdentifyExceptionAs.valueOf(className);
+                        if (identifyAs.legacyClassName != null)
+                            className = identifyAs.legacyClassName;
+                    } catch (IllegalArgumentException x) {
+                        // probably an error, but maybe the user has a custom exception class without a package, so continue on...
+                    }
+                Class<?> exceptionClass = WSManagedConnectionFactoryImpl.priv.loadClass(jdbcDriverLoader, className);
+                Object key = entry.getKey();
+                if (key instanceof String || key instanceof Integer)
+                    map.put(key, exceptionClass);
+                else
+                    // TODO NLS message
+                    throw new IllegalArgumentException("The sqlState and errorCode attributes cannot both be configured on the same identifyException element when replaceExceptions=true is enabled.");
+            } catch (ClassNotFoundException x) {
+                Tr.error(tc, "8066E_IDENTIFY_EXCEPTION_INVALID_TARGET", entry.getValue(), Arrays.toString(IdentifyExceptionAs.values()) + ", com.ibm.websphere.ce.cm.*, ...");
+                throw x;
+            }
+        if (!map.isEmpty())
+            dataStoreHelper.setUserDefinedMap(map);
+
+        return dataStoreHelper;
     }
 
     /**
@@ -1305,7 +1396,10 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
      * utility used to gather metadata info and issue doConnectionSetup.
      */
     private void postGetConnectionHandling(Connection conn) throws SQLException {
-        helper.doConnectionSetup(conn);
+        if (dataStoreHelper == null)
+            helper.doConnectionSetup(conn);
+        else
+            dataStoreHelper.doConnectionSetup(isCustomHelper ? (Connection) WSJdbcTracer.getImpl(conn) : conn);
 
         String[] sqlCommands = dsConfig.get().onConnect;
         if (sqlCommands != null && sqlCommands.length > 0)
@@ -1317,6 +1411,11 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
             // This accounts for the scenario where the first connection attempt is bad.
             // The information needs to be read again on the second attempt.
             helper.gatherAndDisplayMetaDataInfo(conn, this);
+
+            // If a legacy data store helper is used, allow it to determine the unit-of-work detection support:
+            if (dataStoreHelper != null)
+                supportsUOWDetection = dataStoreHelper.getMetaData().supportsUOWDetection();
+
             wasUsedToGetAConnection = true;
         }
     }
@@ -1461,7 +1560,7 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
      * 
      * @return the instance of the helper class.
      */
-    public DatabaseHelper getHelper() {
+    public final DatabaseHelper getHelper() {
         return helper;
     }
 

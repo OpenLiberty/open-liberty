@@ -237,3 +237,7 @@ info.directory.app.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
 info.unexpanded.app=CWWKZ0136I: Aplikacja {0} u\u017cywa rozszerzonego pliku archiwum w po\u0142o\u017ceniu {1}.
 info.unexpanded.app.explanation=Po\u0142o\u017cenie aplikacji wskazuje binarny plik archiwum. Plik archiwum nie zostanie rozszerzony na dysku, poniewa\u017c nie skonfigurowano automatycznego rozszerzania aplikacji.
 info.unexpanded.app.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+warning.could.not.expand.app.loc=CWWKZ0137W: Nie powiod\u0142o si\u0119 rozpakowanie aplikacji {0} w po\u0142o\u017ceniu {1} okre\u015blonym przez w\u0142a\u015bciwo\u015b\u0107 expandLocation.
+warning.could.not.expand.app.loc.explanation=Nie by\u0142o mo\u017cliwe rozpakowanie aplikacji do po\u0142o\u017cenia okre\u015blonego we w\u0142a\u015bciwo\u015bci expandLocation. Dla aplikacji u\u017cyto po\u0142o\u017cenia domy\u015blnego ${server.config.dir}/apps/expanded/.
+warning.could.not.expand.app.loc.useraction=Popraw warto\u015b\u0107 okre\u015blon\u0105 przez w\u0142a\u015bciwo\u015b\u0107 expandLocation i zrestartuj serwer albo zaktualizuj aplikacj\u0119.

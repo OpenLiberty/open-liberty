@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2020 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,7 +21,6 @@ import com.gargoylesoftware.htmlunit.WebClient;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.ValidationData.validationData;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLCommonTest;
-import com.ibm.ws.security.saml20.fat.commonTest.SAMLCommonTestHelpers;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLConstants;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLMessageConstants;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLTestSettings;
@@ -76,7 +75,7 @@ public class BasicSAMLTests extends SAMLCommonTest {
         extraMsgs.add("CWWKS9122I:.*sp1/snoop");
         testSAMLServer.reconfigServer(buildSPServerName("server_1_withJwtSsoFeature.xml"), _testName, extraMsgs, SAMLConstants.JUNIT_REPORTING);
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp1", true);
@@ -113,7 +112,7 @@ public class BasicSAMLTests extends SAMLCommonTest {
     @Test
     public void basicSAMLTests_idAssertNoUser_noIDPSign_noIDPEncrypt() throws Exception {
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp1", true);
@@ -171,7 +170,7 @@ public class BasicSAMLTests extends SAMLCommonTest {
 
         testSAMLServer.reconfigServer(buildSPServerName("server_4.xml"), _testName, extraMsgs, SAMLConstants.JUNIT_REPORTING);
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp2", true);
@@ -208,7 +207,7 @@ public class BasicSAMLTests extends SAMLCommonTest {
 
         testSAMLServer.reconfigServer(buildSPServerName("server_.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp13", true);
@@ -252,7 +251,7 @@ public class BasicSAMLTests extends SAMLCommonTest {
 
         testSAMLServer.reconfigServer(buildSPServerName("server_8.xml"), _testName, extraMsgs, SAMLConstants.JUNIT_REPORTING);
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp5", true);
@@ -422,7 +421,7 @@ public class BasicSAMLTests extends SAMLCommonTest {
 
         testSAMLServer.reconfigServer(buildSPServerName("server_13.xml"), _testName, extraMsgs, SAMLConstants.JUNIT_REPORTING);
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp13", true);
@@ -447,7 +446,7 @@ public class BasicSAMLTests extends SAMLCommonTest {
 
         testSAMLServer.reconfigServer(buildSPServerName("server_1_badFilter.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp1", true);
@@ -472,7 +471,7 @@ public class BasicSAMLTests extends SAMLCommonTest {
 
         testSAMLServer.reconfigServer(buildSPServerName("server_1_noFilter.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp1", true);
@@ -493,7 +492,7 @@ public class BasicSAMLTests extends SAMLCommonTest {
     @Test
     public void basicSAMLTests_useSAMLTokenAgain_replayAttack() throws Exception {
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp1", true);
@@ -523,7 +522,7 @@ public class BasicSAMLTests extends SAMLCommonTest {
     @Test
     public void basicSAMLTests_badSAMLToken_thenGoodSAMLToken_usuallyNoReplayAttack() throws Exception {
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp1", true);
@@ -558,7 +557,7 @@ public class BasicSAMLTests extends SAMLCommonTest {
     @Test
     public void basicSAMLTests_mangleSAMLToken_userNameInAssertion_notSigned() throws Exception {
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp1NotSigned", true);
@@ -576,7 +575,7 @@ public class BasicSAMLTests extends SAMLCommonTest {
     @Test
     public void basicSAMLTests_mangleSAMLToken_userNameInAssertion_signed() throws Exception {
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp1", true);
@@ -595,7 +594,7 @@ public class BasicSAMLTests extends SAMLCommonTest {
     @Test
     public void basicSAMLTests_mangleSAMLToken_badXMLFormatInResponse() throws Exception {
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp1", true);
@@ -613,7 +612,7 @@ public class BasicSAMLTests extends SAMLCommonTest {
     @Test
     public void basicSAMLTests_mangleSAMLToken_sendGarbage() throws Exception {
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp1", true);
@@ -637,7 +636,7 @@ public class BasicSAMLTests extends SAMLCommonTest {
     @Test
     public void basicSAMLTests_mangleSAMLToken_removeSignature_serverRequiresSign() throws Exception {
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp1", true);
@@ -663,7 +662,7 @@ public class BasicSAMLTests extends SAMLCommonTest {
 
         //        testSAMLServer.reconfigServer(buildSPServerName("server_1_notSigned.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp1NotSigned", true);
@@ -687,7 +686,7 @@ public class BasicSAMLTests extends SAMLCommonTest {
 
         //        testSAMLServer.reconfigServer(buildSPServerName("server_1_notSigned.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp1NotSigned", true);
@@ -710,7 +709,7 @@ public class BasicSAMLTests extends SAMLCommonTest {
     @Test
     public void basicSAMLTests_invoke_ACS_withoutClearingCookies() throws Exception {
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp1", true);
@@ -727,7 +726,7 @@ public class BasicSAMLTests extends SAMLCommonTest {
     @Test
     public void basicSAMLTests_unProtectedApp_then_protectedApp_SPCookie() throws Exception {
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp1", true);
@@ -775,7 +774,7 @@ public class BasicSAMLTests extends SAMLCommonTest {
     @Test
     public void basicSAMLTests_protectedApp_then_unProtectedApp_SPCookie() throws Exception {
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp1", true);
@@ -804,7 +803,7 @@ public class BasicSAMLTests extends SAMLCommonTest {
 
         testSAMLServer.reconfigServer(buildSPServerName("server_1_ltpaToken.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp1", true);
@@ -855,7 +854,7 @@ public class BasicSAMLTests extends SAMLCommonTest {
 
         testSAMLServer.reconfigServer(buildSPServerName("server_1_ltpaToken.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp1", true);
@@ -884,7 +883,7 @@ public class BasicSAMLTests extends SAMLCommonTest {
 
         testSAMLServer.reconfigServer(buildSPServerName("server_1_ltpaToken_missingIDPSSODescriptor.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp1", true);
@@ -920,7 +919,7 @@ public class BasicSAMLTests extends SAMLCommonTest {
 
         testSAMLServer.reconfigServer(buildSPServerName("server_chainedCert.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp50", true);
@@ -942,7 +941,7 @@ public class BasicSAMLTests extends SAMLCommonTest {
 
         testSAMLServer.reconfigServer(buildSPServerName("server_chainedCert_useLeafInKeyStore.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp50", true);
@@ -980,7 +979,7 @@ public class BasicSAMLTests extends SAMLCommonTest {
 
         testSAMLServer.reconfigServer(buildSPServerName("server_chainedCert_useIntermediateInKeyStore.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp50", true);
@@ -1018,7 +1017,7 @@ public class BasicSAMLTests extends SAMLCommonTest {
 
         testSAMLServer.reconfigServer(buildSPServerName("server_chainedCert_useRootInKeyStore.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp50", true);
@@ -1040,7 +1039,7 @@ public class BasicSAMLTests extends SAMLCommonTest {
     @Test
     public void basicSAMLTests_invokeACS_withNoToken_usingGet() throws Exception {
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp1", true);
@@ -1059,7 +1058,7 @@ public class BasicSAMLTests extends SAMLCommonTest {
     @Test
     public void basicSAMLTests_invokeACS_withNoToken_usingPost() throws Exception {
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp1", true);

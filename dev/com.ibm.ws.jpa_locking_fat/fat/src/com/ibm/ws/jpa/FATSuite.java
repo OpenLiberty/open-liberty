@@ -17,6 +17,8 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 
+import com.ibm.ws.jpa.locking.TestEntityLocking_Web;
+
 import componenttest.containers.ExternalTestServiceDockerClientStrategy;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;

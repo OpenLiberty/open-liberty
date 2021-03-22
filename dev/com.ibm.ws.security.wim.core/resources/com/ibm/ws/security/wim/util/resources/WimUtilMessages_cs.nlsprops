@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2019 IBM Corporation and others.
+# Copyright (c) 2012, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -270,4 +270,4 @@ CANNOT_WRITE_TO_READ_ONLY_REPOSITORY.useraction=Ujist\u011bte se, \u017ee nen\u0
 
 REQUIRED_IDENTIFIERS_MISSING=CWIML3001W: Po\u017eadovan\u00e9 identifik\u00e1tory pro entitu chyb\u00ed.
 REQUIRED_IDENTIFIERS_MISSING.explanation=Identifik\u00e1tory uniqueName a uniqueId nejsou zad\u00e1ny. Zad\u00e1n mus\u00ed b\u00fdt alespo\u0148 jeden identifik\u00e1tor.
-REQUIRED_IDENTIFIERS_MISSING.useraction=Ov\u011b\u0159te, \u017ee je pro ka\u017edou p\u0159edanou identitu zad\u00e1na vlastnost identifik\u00e1toru. Pokud n\u011bkter\u00fd identifik\u00e1tor nen\u00ed zad\u00e1n, p\u0159idejte p\u0159\u00edslu\u0161nou vlastnost a zadejte bu\u010f polo\u017eku uniqueName, nebo polo\u017eku uniqueId.
+REQUIRED_IDENTIFIERS_MISSING.useraction=Ujist\u011bte se, \u017ee je pro ka\u017edou vstupuj\u00edc\u00ed entitu uvedena vlastnost identifik\u00e1tor. Pokud n\u011bkter\u00fd identifik\u00e1tor nen\u00ed zad\u00e1n, p\u0159idejte p\u0159\u00edslu\u0161nou vlastnost a zadejte bu\u010f polo\u017eku uniqueName, nebo polo\u017eku uniqueId.

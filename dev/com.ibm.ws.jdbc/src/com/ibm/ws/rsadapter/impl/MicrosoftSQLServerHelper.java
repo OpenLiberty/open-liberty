@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2001, 2017 IBM Corporation and others.
+ * Copyright (c) 2001, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -38,8 +38,6 @@ public class MicrosoftSQLServerHelper extends DatabaseHelper {
     @SuppressWarnings("deprecation")
     private transient com.ibm.ejs.ras.TraceComponent jdbcTC = com.ibm.ejs.ras.Tr.register("com.ibm.ws.sqlserver.logwriter", "WAS.database", null);
 
-    private transient PrintWriter jdbcTraceWriter;
-
     /**
      * Cached copy (per data store helper) of stmt.setResponseBuffering
      */
@@ -60,6 +58,9 @@ public class MicrosoftSQLServerHelper extends DatabaseHelper {
     MicrosoftSQLServerHelper(WSManagedConnectionFactoryImpl mcf) {
         super(mcf);
 
+        dataStoreHelper = "com.ibm.websphere.rsadapter.MicrosoftSQLServerDataStoreHelper";
+
+        mcf.defaultIsolationLevel = Connection.TRANSACTION_REPEATABLE_READ;
         mcf.supportsGetTypeMap = false;
         mcf.supportsIsReadOnly = false;
 
@@ -140,11 +141,6 @@ public class MicrosoftSQLServerHelper extends DatabaseHelper {
             Tr.exit(this, tc, "doStatementCleanup"); 
     }
 
-    @Override
-    public int getDefaultIsolationLevel() {
-        return Connection.TRANSACTION_REPEATABLE_READ;
-    }
-
     /**
      * This returns a <code>PrintWriter</code> for a specific
      * backend. The order of printwriter lookup is as follows:
@@ -164,13 +160,13 @@ public class MicrosoftSQLServerHelper extends DatabaseHelper {
         //not synchronizing here since there will be one helper
         // and most likely the setting will be serially, even if it's not, 
         // it shouldn't matter here (tracing).
-        if (jdbcTraceWriter == null) {
-            jdbcTraceWriter = new PrintWriter(new TraceWriter(jdbcTC), true);
+        if (genPw == null) {
+            genPw = new PrintWriter(new TraceWriter(jdbcTC), true);
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            Tr.exit(this, tc, "getPrintWriter", jdbcTraceWriter); 
-        return jdbcTraceWriter;
+            Tr.exit(this, tc, "getPrintWriter", genPw);
+        return genPw;
     }
 
     /**

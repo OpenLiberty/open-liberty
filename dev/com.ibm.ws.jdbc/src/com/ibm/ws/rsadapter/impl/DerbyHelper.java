@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2001, 2017 IBM Corporation and others.
+ * Copyright (c) 2001, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,7 +33,6 @@ import com.ibm.websphere.ras.TraceComponent;
 public class DerbyHelper extends DatabaseHelper {
     @SuppressWarnings("deprecation")
     protected static final com.ibm.ejs.ras.TraceComponent derbyTc = com.ibm.ejs.ras.Tr.register("com.ibm.ws.derby.logwriter", "WAS.database", null); // rename 
-    private transient PrintWriter derbyPw = null; 
 
     /**
      * Construct a helper class for Derby.
@@ -44,6 +43,9 @@ public class DerbyHelper extends DatabaseHelper {
     DerbyHelper(WSManagedConnectionFactoryImpl mcf) {
         super(mcf);
 
+        dataStoreHelper = "com.ibm.websphere.rsadapter.DerbyDataStoreHelper";
+
+        mcf.defaultIsolationLevel = Connection.TRANSACTION_REPEATABLE_READ;
         mcf.supportsGetTypeMap = false;
     }
     
@@ -70,11 +72,6 @@ public class DerbyHelper extends DatabaseHelper {
         stmt.setQueryTimeout(queryTimeout);
     }
 
-    @Override
-    public int getDefaultIsolationLevel() {
-        return Connection.TRANSACTION_REPEATABLE_READ;
-    }
-
     /**
      * Returns a trace component for supplemental JDBC driver level trace.
      * 
@@ -90,11 +87,11 @@ public class DerbyHelper extends DatabaseHelper {
         //not synchronizing here since there will be one helper
         // and most likely the setting will be serially, even if its not, 
         // it shouldn't matter here (tracing).
-        if (derbyPw == null) {
-            derbyPw = new java.io.PrintWriter(new TraceWriter(derbyTc), true);
+        if (genPw == null) {
+            genPw = new java.io.PrintWriter(new TraceWriter(derbyTc), true);
         }
-        Tr.debug(derbyTc, "returning", derbyPw);
-        return derbyPw;
+        Tr.debug(derbyTc, "returning", genPw);
+        return genPw;
     }
 
     /**

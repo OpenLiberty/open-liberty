@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -36,6 +36,7 @@ import org.osgi.service.component.annotations.Modified;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.service.util.SecureAction;
 import com.ibm.ws.security.authentication.utility.SubjectHelper;
@@ -59,14 +60,38 @@ public class KerberosService {
     private Path keytab;
     private Path configFile;
     private final LRUCache subjectCache = new LRUCache(2500);
+    private final String originalJVMConfigFile;
+
+    public KerberosService() {
+        /*
+         * Save the original JVM config file in case the user adds and removes a <Kerberos/> config file.
+         */
+        originalJVMConfigFile = priv.getProperty(KRB5_CONFIG_PROPERTY);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Saving original " + KRB5_CONFIG_PROPERTY + " value " + originalJVMConfigFile);
+        }
+    }
 
     @Activate
-    @FFDCIgnore({ MalformedURLException.class, URISyntaxException.class, IllegalArgumentException.class })
     protected void activate(ComponentContext ctx) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.entry(tc, "activate", ctx.getProperties());
         }
 
+        initialize(ctx, false);
+    }
+
+    /**
+     * Do all the initialization work for KerberosSerivce, processing the keytab and config. On the activate path, if the
+     * config is null, we will not set the KRB5_CONFIG_PROPERTY. On the modify path, if the config is null, we will set
+     * the KRB5_CONFIG_PROPERTY to the original JVM value.
+     *
+     * @param ctx
+     * @param modifyPath
+     */
+    @Trivial
+    @FFDCIgnore({ MalformedURLException.class, URISyntaxException.class, IllegalArgumentException.class })
+    protected void initialize(ComponentContext ctx, boolean modifyPath) {
         String rawKeytab = (String) ctx.getProperties().get("keytab");
         String rawConfigFile = (String) ctx.getProperties().get("configFile");
 
@@ -128,6 +153,22 @@ public class KerberosService {
             } else {
                 Tr.error(tc, "KRB5_FILE_NOT_FOUND_CWWKS4345E", "configFile", "<kerberos>", configFile.toAbsolutePath());
             }
+        } else if (rawConfigFile == null && modifyPath) {
+            /*
+             * Config is null, but we're on the modify path, so we'll reset the config JVM property to the original value,
+             * which could be null.
+             */
+            Path previousConfig = configFile;
+            configFile = null;
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Modify called, Setting system property back to original: " + KRB5_CONFIG_PROPERTY + "=" + originalJVMConfigFile +
+                             "  Previous value was: " + previousConfig);
+            }
+            if (originalJVMConfigFile == null) {
+                priv.clearProperty(KRB5_CONFIG_PROPERTY);
+            } else {
+                priv.setProperty(KRB5_CONFIG_PROPERTY, originalJVMConfigFile);
+            }
         } else {
             configFile = null;
         }
@@ -139,7 +180,7 @@ public class KerberosService {
             Tr.debug(tc, "Kerberos config modified. Re-running activate");
         }
         subjectCache.clear();
-        activate(ctx);
+        initialize(ctx, true);
     }
 
     public Path getConfigFile() {
@@ -245,6 +286,24 @@ public class KerberosService {
         }
 
         return subject;
+    }
+
+    /**
+     * Removes the provided krb5Principal name from the local LRU subject cache
+     *
+     * @param krb5Principal
+     */
+    public void clearPrincipalFromCache(String krb5Principal) {
+        if (krb5Principal == null || krb5Principal.trim().isEmpty()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Clear skipped because krb5Principal was " + (krb5Principal == null ? krb5Principal : " an empty string"));
+            }
+        }
+        Object s = subjectCache.remove(new KerberosPrincipal(krb5Principal));
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Clear requested for " + krb5Principal + ": " + (s != null ? "removed" : "not found in cache"));
+        }
     }
 
 }

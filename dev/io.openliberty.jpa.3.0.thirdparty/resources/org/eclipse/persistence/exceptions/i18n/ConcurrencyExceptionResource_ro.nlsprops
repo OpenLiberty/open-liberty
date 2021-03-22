@@ -44,5 +44,6 @@
 2008=Num\u0103rul maxim de \u00eencerc\u0103ri de blocare obiect: {0} a fost dep\u0103\u015fit.  E\u015fuare la combinarea tranzac\u0163iei.
 
 2009=Num\u0103rul maxim de \u00eencerc\u0103ri de blocare obiect a fost dep\u0103\u015fit.  E\u015fuare la construirea obiectului. Firul de execu\u0163ie: {0} are o blocare asupra obiectului dar firul de execu\u0163ie: {1} construie\u015fte obiectul.
+
 2010=Blocarea a fost deja tranzi\u0163ionat\u0103 pentru o Blocare am\u00e2nat\u0103.  O a doua \u00eencercare de tranzi\u0163ie a bloc\u0103rii a fost solicitat\u0103 de firul de execu\u0163ie: {0} \u00een timpul combin\u0103rii.
 

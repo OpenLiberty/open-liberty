@@ -1,0 +1,57 @@
+<!-- 
+/*******************************************************************************
+ * Copyright (c) 2021 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+-->
+<server>
+	<openidConnectProvider
+		id="OidcConfigSample"
+		oauthProviderRef="OAuthConfigSample"
+		signatureAlgorithm="RS256"
+		keyStoreRef="rsa_key"
+		keyAliasName="rsacert"
+		requireOpenidScopeForUserInfo="false" />
+
+	<oauthProvider
+		id="OAuthConfigSample"
+		jwtAccessToken="${oidcCreateJWTToken}"
+		autoAuthorize="true"
+		httpsRequired="false"
+	>
+		<autoAuthorizeClient>client01</autoAuthorizeClient>
+		<autoAuthorizeClient>oidcLoginUser</autoAuthorizeClient>
+
+		<localStore>
+			<client
+				name="client01"
+				secret="{xor}LDo8LTor"
+				displayname="client01"
+				redirect="http://${fat.server.canonical.hostname}:${bvt.prop.HTTP_default}/ibm/api/social-login/redirect/oidcLogin1,https://${fat.server.canonical.hostname}:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin1,http://localhost:${bvt.prop.HTTP_default}/ibm/api/social-login/redirect/oidcLogin1,https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin1,http://${fat.server.canonical.hostname}:${bvt.prop.HTTP_default}/ibm/api/social-login/redirect/oauth2Login1,https://${fat.server.canonical.hostname}:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oauth2Login1,http://localhost:${bvt.prop.HTTP_default}/ibm/api/social-login/redirect/oauth2Login1,https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oauth2Login1"
+				scope="ALL_SCOPES"
+				introspectTokens="true"
+				enabled="true" />
+		</localStore>
+	</oauthProvider>
+
+	<oauth-roles>
+		<authenticated>
+			<user name="testuser" />
+			<user name="oidcLoginUser" />
+			<group name="group1" />
+		</authenticated>
+		<clientManager>
+			<user name="testuser" />
+			<user name="oidcLoginUser" />
+			<group name="group1" />
+		</clientManager>
+	</oauth-roles>
+	
+</server>
+

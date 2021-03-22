@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
 package com.ibm.websphere.microprofile.faulttolerance_fat.tests.ejb;
 
 import static componenttest.custom.junit.runner.Mode.TestMode.FULL;
+import static org.junit.Assert.assertNotNull;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -53,6 +54,7 @@ public class AsyncEJBTest extends FATServletClient {
                         .addAsManifestResource(AsyncEJBServlet.class.getPackage(), "permissions.xml", "permissions.xml");
         ShrinkHelper.exportAppToServer(server, app, DeployOptions.SERVER_ONLY);
         server.startServer();
+        assertNotNull("Security service did not start", server.waitForStringInLog("CWWKS0008I")); // CWWKS0008I: The security service is ready.
     }
 
     @AfterClass

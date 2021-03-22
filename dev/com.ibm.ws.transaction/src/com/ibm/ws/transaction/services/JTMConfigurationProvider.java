@@ -11,8 +11,10 @@
 package com.ibm.ws.transaction.services;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Dictionary;
-import java.util.Hashtable;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 
@@ -39,7 +41,7 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
 
     private RuntimeMetaDataProvider _runtimeMetaDataProvider;
 
-    private static Dictionary<String, Object> _props;
+    private volatile Map<String, Object> _props;
     ComponentContext _cc;
     private static String logDir = null;
     private static final String defaultLogDir = "$(server.output.dir)/tranlog";
@@ -75,7 +77,22 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
         _transactionSettingsProviders.activate(cc);
         _cc = cc;
         // Irrespective of the logtype we need to get the properties
-        _props = _cc.getProperties();
+
+        // Make a copy of the properties and store it in a unmodifiable Map.
+        // The properties are queried on each transaction so with using a
+        // Dictionary (Hashtable), it becomes a bottleneck to read a property
+        // with each thread getting a Hashtable lock to do a get operation.
+        Dictionary<String, Object> props = cc.getProperties();
+        Map<String, Object> properties = new HashMap<>();
+        Enumeration<String> keys = props.keys();
+        while (keys.hasMoreElements()) {
+            String key = keys.nextElement();
+            properties.put(key, props.get(key));
+        }
+        properties = Collections.unmodifiableMap(properties);
+        synchronized (this) {
+            _props = properties;
+        }
         if (tc.isDebugEnabled())
             Tr.debug(tc, "activate  properties set to " + _props);
 
@@ -131,12 +148,10 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     /*
      * Called by DS to modify service config properties
      */
-    @SuppressWarnings("unchecked")
-    protected void modified(Map<?, ?> newProperties) {
-        if (newProperties instanceof Dictionary) {
-            _props = (Dictionary<String, Object>) newProperties;
-        } else {
-            _props = new Hashtable(newProperties);
+    protected void modified(Map<String, Object> newProperties) {
+        Map<String, Object> newProps = Collections.unmodifiableMap(new HashMap<>(newProperties));
+        synchronized (this) {
+            _props = newProps;
         }
     }
 
@@ -335,10 +350,6 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     @Override
     public boolean isLoggingForHeuristicReportingEnabled() {
         return (Boolean) _props.get("enableLoggingForHeuristicReporting");
-    }
-
-    public static void setTotalTransactionLifetimeTimeout(int timeout) {
-        _props.put("propogatedOrBMTTranLifetimeTimeout", timeout);
     }
 
     @Override

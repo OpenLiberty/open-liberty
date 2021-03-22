@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2020, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -20,8 +20,12 @@
 #-----------------------------------------------------------------------------------------------------------------------------
 FEATURE_REGISTERED=CWPMI2003I: Les m\u00e9triques de surveillance peuvent \u00eatre extraites via mpMetrics.
 FEATURE_REGISTERED.explanation=Les fonctions Surveillance des performances et MicroProfile Metrics sont activ\u00e9es. Les m\u00e9triques de surveillance peuvent \u00eatre extraites via MicroProfile Metrics.
-FEATURE_REGISTERED.useraction=Aucune action utilisateur n'est requise.
+FEATURE_REGISTERED.useraction=Aucune intervention de l'utilisateur n'est requise.
 
 FEATURE_UNREGISTERED=CWPMI2004I: L'enregistrement de toutes les m\u00e9triques de surveillance a \u00e9t\u00e9 annul\u00e9 depuis mpMetrics.
 FEATURE_UNREGISTERED.explanation=La fonction Surveillance des performances, la fonction MicroProfile Metrics, ou les deux fonctions ont \u00e9t\u00e9 retir\u00e9es du serveur. L'enregistrement de toutes les m\u00e9triques de surveillance dans MicroProfile Metrics a \u00e9t\u00e9 annul\u00e9.
-FEATURE_UNREGISTERED.useraction=Aucune action utilisateur n'est requise.
+FEATURE_UNREGISTERED.useraction=Aucune intervention de l'utilisateur n'est requise.
+
+METRICS_UNHANDLED_JAXRS_EXCEPTION=CWPMI2005W: L'associateur d'exception MicroProfile Metrics a d\u00e9tect\u00e9 et traite une exception non g\u00e9r\u00e9e depuis l'application JAX-RS.
+METRICS_UNHANDLED_JAXRS_EXCEPTION.explanation=L'application reposant sur JAX-RS a rencontr\u00e9 une exception qui n'est pas trait\u00e9e dans l'application. Le code MicroProfile traite cette exception en consignant la trace de pile d'exceptions et en renvoyant la r\u00e9ponse 500 (erreur de serveur interne).
+METRICS_UNHANDLED_JAXRS_EXCEPTION.useraction=Ce comportement peut \u00eatre acceptable. Pour traiter l'exception autrement, ajoutez une interface ExceptionMapper qui g\u00e8re l'exception et la mappe \u00e0 une r\u00e9ponse diff\u00e9rente.

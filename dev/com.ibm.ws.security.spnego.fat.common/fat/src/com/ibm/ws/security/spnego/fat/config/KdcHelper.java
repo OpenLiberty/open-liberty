@@ -909,7 +909,8 @@ public abstract class KdcHelper {
                 /*
                  * Execute the command on the channel and wait for it to complete.
                  */
-                Set<ClientChannelEvent> ccEvents = channel.waitFor(EnumSet.of(ClientChannelEvent.CLOSED), remainingTimeoutMs);
+                Set<ClientChannelEvent> ccEvents = channel.waitFor(EnumSet.of(ClientChannelEvent.EXIT_STATUS), remainingTimeoutMs);
+                Log.info(thisClass, methodName, "Client channel returned the following events: " + ccEvents);
 
                 /*
                  * Did the command timeout? If so throw an exception.

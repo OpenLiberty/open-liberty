@@ -1,0 +1,96 @@
+<!--
+    Copyright (c) 2021 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+	<oauthProvider
+		id="OAuthConfigSampleGrantTypes"
+		filter="request-url%=snoop;request-url!=snooping"
+		oauthOnly="true"
+		autoAuthorize="true"
+		jwtAccessToken="${oidcCreateJWTToken}"
+	>
+		<autoAuthorizeClient>client00</autoAuthorizeClient>
+		<autoAuthorizeClient>client01</autoAuthorizeClient>
+		<autoAuthorizeClient>client02</autoAuthorizeClient>
+		<autoAuthorizeClient>client03</autoAuthorizeClient>
+		<autoAuthorizeClient>client04</autoAuthorizeClient>
+		<autoAuthorizeClient>client05</autoAuthorizeClient>
+		<autoAuthorizeClient>client06</autoAuthorizeClient>
+		<autoAuthorizeClient>client07</autoAuthorizeClient>
+
+		<localStore>
+			<client
+				name="client00"
+				secret="{xor}LDo8LTor"
+				displayname="client00"
+				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/authorize_redirect.jsp"
+				scope="ALL_SCOPES"
+				enabled="true" />
+			<client
+				name="client01"
+				secret="{xor}LDo8LTor"
+				displayname="client01"
+				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/authorize_redirect.jsp"
+				grantTypes="authorization_code"
+				scope="ALL_SCOPES"
+				enabled="true" />
+			<client
+				name="client02"
+				secret="{xor}LDo8LTor"
+				displayname="client02"
+				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/authorize_redirect.jsp"
+				grantTypes="implicit"
+				responseTypes="id_token token"
+				scope="ALL_SCOPES"
+				enabled="true" />
+			<client
+				name="client03"
+				secret="{xor}LDo8LTor"
+				displayname="client03"
+				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/authorize_redirect.jsp"
+				grantTypes="authorization_code, refresh_token"
+				scope="ALL_SCOPES"
+				enabled="true" />
+			<client
+				name="client04"
+				secret="{xor}LDo8LTor"
+				displayname="client04"
+				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/authorize_redirect.jsp"
+				grantTypes="client_credentials"
+				scope="openid scope1 scope2"
+				preAuthorizedScope="openid scope1 scope2"
+				enabled="true" />
+			<client
+				name="client05"
+				secret="{xor}LDo8LTor"
+				displayname="client05"
+				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/authorize_redirect.jsp"
+				grantTypes="password"
+				scope="openid scope1 scope2"
+				preAuthorizedScope="openid scope1 scope2"
+				enabled="true" />
+			<client
+				name="client07"
+				secret="{xor}LDo8LTor"
+				displayname="client07"
+				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/authorize_redirect.jsp"
+				grantTypes="someBadValue"
+				scope="ALL_SCOPES"
+				enabled="true" />
+		</localStore>
+	</oauthProvider>
+
+	<!-- <client name="client06" secret="{xor}LDo8LTor" displayname="client06" 
+		redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/authorize_redirect.jsp" 
+		grantTypes="urn:ietf:params:oauth:grant-type:jwt-bearer" scope="ALL_SCOPES" 
+		enabled="true"/> -->
+
+</server>

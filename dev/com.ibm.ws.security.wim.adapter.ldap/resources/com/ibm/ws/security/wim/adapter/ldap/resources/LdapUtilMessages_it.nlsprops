@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2013 IBM Corporation and others.
+# Copyright (c) 2012, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -229,3 +229,53 @@ LOGINPROPERTY_OVERRIDE_USERFILTER.useraction=Se si preferisce l'attributo userFi
 INVALID_LOGIN_PROPERTIES=CWIML4506E: Le seguenti propriet\u00e0 di login non sono valide: {0}.
 INVALID_LOGIN_PROPERTIES.explanation=Una o pi\u00f9 propriet\u00e0 di login non sono propriet\u00e0 PersonAccount WIM valide.
 INVALID_LOGIN_PROPERTIES.useraction=Selezionare propriet\u00e0 PersonAccount valide o aggiungere le propriet\u00e0 a PersonAccount come propriet\u00e0 estese. Assicurarsi che le lettere maiuscole/minuscole per ciascuna propriet\u00e0 di login corrispondano alle maiuscole/minuscole per la propriet\u00e0 PersonAccount corrispondente.
+
+KRB5_LOGIN_FAILED_CACHE=CWIML4507E: Login Kerberos non riuscito con il principal Kerberos {0} e la cache delle credenziali Kerberos (ccache) {1}.
+KRB5_LOGIN_FAILED_CACHE.explanation=Il principal Kerberos specificato non \u00e8 valido oppure la cache delle credenziali Kerberos (ccache) non \u00e8 valida o \u00e8 scaduta.
+KRB5_LOGIN_FAILED_CACHE.useraction=Assicurarsi che sia specificato un principal Kerberos valido e che la cache delle credenziali Kerberos (ccache) non sia scaduta.
+
+KRB5_LOGIN_FAILED_KEYTAB=CWIML4508E: Login Kerberos non riuscito con il principal Kerberos {0} e il keytab Kerberos {1}.
+KRB5_LOGIN_FAILED_KEYTAB.explanation=Il principal Kerberos specificato non \u00e8 valido oppure il keytab Kerberos non \u00e8 valido.
+KRB5_LOGIN_FAILED_KEYTAB.useraction=Assicurarsi che sia specificato un principal Kerberos valido e che sia specificato un keytab Kerberos valido contenente il principal Kerberos.
+		
+KRB5_LOGIN_FAILED_DEFAULT_CACHE=CWIML4509E: Login Kerberos non riuscito con il principal Kerberos {0} e la cache delle credenziali Kerberos (ccache) predefinita.
+KRB5_LOGIN_FAILED_DEFAULT_CACHE.explanation=Il principal Kerberos specificato non \u00e8 valido oppure la cache delle credenziali Kerberos (ccache) predefinita non \u00e8 valida o \u00e8 scaduta.
+KRB5_LOGIN_FAILED_DEFAULT_CACHE.useraction=Assicurarsi che sia specificato un principal Kerberos valido e che la cache delle credenziali Kerberos (ccache) predefinita non sia scaduta.
+
+KRB5_LOGIN_FAILED_DEFAULT_KEYTAB=CWIML4510E: Login Kerberos non riuscito con il principal Kerberos {0} e il keytab Kerberos predefinito.
+KRB5_LOGIN_FAILED_DEFAULT_KEYTAB.explanation=Il principal Kerberos specificato non \u00e8 valido oppure il keytab Kerberos predefinito non \u00e8 valido.
+KRB5_LOGIN_FAILED_DEFAULT_KEYTAB.useraction=Assicurarsi che sia specificato un principal Kerberos valido e che il keytab Kerberos predefinito sia valido.
+
+KRB5_TICKETCACHE_USED=CWIML4511E: Il registro LDAP {0} \u00e8 configurato con il nome file della cache del ticket Kerberos (ccache) {1} e il nome file keytab {2}. La cache delle credenziali Kerberos (ccache) viene utilizzata per l''autenticazione di bind Kerberos al server LDAP.
+KRB5_TICKETCACHE_USED.explanation=Per utilizzare il file keytab, il nome file keytab deve essere specificato e il nome file della cache delle credenziali Kerberos (ccache) non deve essere specificato.
+KRB5_TICKETCACHE_USED.useraction=Nessuna azione richiesta. Per evitare questo messaggio, rimuovere l'attributo della cache del ticket del registro LDAP o l'attributo del keytab Kerberos.
+
+INVALID_KRB5_PRINCIPAL=CWIML4512E: Il nome del principal Kerberos {0} non \u00e8 formattato in modo corretto, il nome del realm \u00e8 mancante oppure non \u00e8 stato possibile trovare un nome realm predefinito.
+INVALID_KRB5_PRINCIPAL.explanation=Il nome del principal Kerberos non pu\u00f2 essere null. Il nome del principal deve includere il nome realm oppure \u00e8 necessario definire un nome realm predefinito nel file di configurazione Kerberos.
+INVALID_KRB5_PRINCIPAL.useraction=Correggere il nome del principal o aggiungere un nome realm predefinito.
+
+CANNOT_READ_KRB5_FILE=CWIML4513E: Il registro LDAP {0} non pu\u00f2 leggere il file Kerberos {1}.
+CANNOT_READ_KRB5_FILE.explanation=Impossibile aprire il file Kerberos. Le autorizzazioni per il file non sono corrette oppure il file non esiste.
+CANNOT_READ_KRB5_FILE.useraction=Verificare che l'ubicazione file sia corretta e che il server abbia autorizzazioni di lettura per il file.
+
+# CWIML4514 already used
+
+KRB5_FILE_NOT_FOUND=CWIML4515E: L''attributo {0} dall''elemento {1} \u00e8 configurato su un file che non esiste nella seguente ubicazione: {2}
+KRB5_FILE_NOT_FOUND.explanation=La configurazione fa riferimento a un file che non \u00e8 leggibile o non esiste.
+KRB5_FILE_NOT_FOUND.useraction=Assicurarsi che la configurazione punti a un file esistente e leggibile dal processo dell'applicazione.
+
+KRB5_FILE_FOUND=CWIML4516E: Il componente del registro LDAP \u00e8 configurato per utilizzare un file {0} che \u00e8 ubicato in {1}.
+KRB5_FILE_FOUND.explanation=Il file configurato \u00e8 stato individuato correttamente.
+KRB5_FILE_FOUND.useraction=Nessuna azione richiesta.
+
+# CWIML4517 already used
+
+IDMAP_INVALID_FORMAT=CWIML4518W: Il valore {0} {1} ha un formato non corretto. Il valore deve essere un elenco separato da punti e virgole di coppie ''objectclass:attribute'' o ''*:attribute''.
+IDMAP_INVALID_FORMAT.explanation=Il valore userIdMap deve avere un formato valido per consentire l'analisi della classe di oggetti e dell'attributo.
+IDMAP_INVALID_FORMAT.useraction=Aggiornare il valore di userIdMap in modo che sia conforme al formato specificato.
+
+# CWIML4519 and CWIML4520 already used
+
+KRB5_SERVICE_NOT_AVAILABLE=CWIML4521E: Il registro LDAP {0} ha tentato di eseguire il bind al server LDAP utilizzando le credenziali Kerberos per il nome principal {1}, ma il servizio Kerberos che fornisce tali credenziali non \u00e8 disponibile. Il meccanismo di autenticazione di bind \u00e8 {2}.
+KRB5_SERVICE_NOT_AVAILABLE.explanation=Il servizio Kerberos non era disponibile quando il registro LDAP ha tentato di eseguire il bind al server LDAP. Se il servizio Kerberos non \u00e8 disponibile, nessun utente potr\u00e0 autenticarsi
+KRB5_SERVICE_NOT_AVAILABLE.useraction=Esaminare le impostazioni di configurazione del registro LDAP per gli attributi bindAuthMechanism, krb5Principal e krb5TicketCache e la configurazione Kerberos. Riavviare il server.

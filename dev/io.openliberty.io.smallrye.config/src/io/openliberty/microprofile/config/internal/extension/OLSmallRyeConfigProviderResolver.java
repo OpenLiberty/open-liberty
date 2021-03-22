@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,12 +30,13 @@ import com.ibm.ws.container.service.state.StateChangeException;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 
+import io.openliberty.microprofile.config.internal.common.ConfigIntrospectionProvider;
 import io.smallrye.config.SmallRyeConfigBuilder;
 import io.smallrye.config.SmallRyeConfigProviderResolver;
 
-@Component(service = { ConfigProviderResolver.class,
-                       ApplicationStateListener.class }, configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM" }, immediate = true)
-public class OLSmallRyeConfigProviderResolver extends SmallRyeConfigProviderResolver implements ApplicationStateListener {
+@Component(service = { ConfigProviderResolver.class, ApplicationStateListener.class, ConfigIntrospectionProvider.class },
+           configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM" }, immediate = true)
+public class OLSmallRyeConfigProviderResolver extends SmallRyeConfigProviderResolver implements ApplicationStateListener, ConfigIntrospectionProvider {
 
     //We try to keep track of which application is using which Config. There are cases where the Config is used by a global component
     //or we just can't work out which app it is. Then we fall back to this global name.
@@ -159,6 +160,20 @@ public class OLSmallRyeConfigProviderResolver extends SmallRyeConfigProviderReso
             applicationName = GLOBAL_CONFIG_APPLICATION_NAME;
         }
         return applicationName;
+    }
+
+    @Override
+    public Map<String, Set<Config>> getConfigsByApplication() {
+        Map<String, Set<Config>> appInfos = new HashMap<>();
+        synchronized (configCache) {
+            for (ConfigWrapper wrapper : configCache.values()) {
+                for (String appName : wrapper.listApplications()) {
+                    appInfos.computeIfAbsent(appName, x -> new HashSet<>())
+                            .add(wrapper.getConfig());
+                }
+            }
+        }
+        return appInfos;
     }
 
 }

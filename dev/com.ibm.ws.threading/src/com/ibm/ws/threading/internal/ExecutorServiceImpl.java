@@ -224,8 +224,6 @@ public final class ExecutorServiceImpl implements WSExecutorService, ThreadQuies
 
         RunnableWrapper(Runnable r) {
             this.wrappedTask = r;
-
-            phaser.register();
         }
 
         /*
@@ -235,6 +233,7 @@ public final class ExecutorServiceImpl implements WSExecutorService, ThreadQuies
          */
         @Override
         public void run() {
+            phaser.register();
             try {
                 this.wrappedTask.run();
             } finally {
@@ -253,7 +252,6 @@ public final class ExecutorServiceImpl implements WSExecutorService, ThreadQuies
 
         CallableWrapper(Callable<T> c) {
             this.callable = c;
-            phaser.register();
         }
 
         /*
@@ -263,6 +261,7 @@ public final class ExecutorServiceImpl implements WSExecutorService, ThreadQuies
          */
         @Override
         public T call() throws Exception {
+            phaser.register();
             try {
                 return this.callable.call();
             } finally {

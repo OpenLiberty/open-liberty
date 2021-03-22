@@ -1,0 +1,511 @@
+/*******************************************************************************
+ * Copyright (c) 2014 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+ @import url("searchExcludeValidator.css");
+ .searchPane {
+    overflow: hidden;
+    white-space: nowrap;
+    height: 75px; /**searchbox 40px + top margin 20px+ bottom 15px**/
+    background-color: inherit;
+}
+
+.searchBox {
+	display: inline-block;
+	height: 40px;
+	margin-right: 20px;	
+	margin-left: 20px;
+    position: relative;
+	border: 2px solid #CDCED2;
+	box-sizing: border-box;
+	background-color: #FFFFFF;
+	padding-right: 14px;
+	padding-left: 20px;
+	margin-top: 20px;  
+	margin-bottom: 15px
+}
+
+.searchBox:hover {
+	border-color: #C0E6FF;	
+}
+
+.inputFont{
+	font-size: 14px;
+    color: #404041;
+    vertical-align: middle;
+}
+
+/**Some of these values are dynamically changed (and reset) in SearchBox.js __setMainTextAreaPosition()**/
+.searchTextBox { 
+	position: absolute;
+	top: 8px;
+	left: 20px;
+	height: 25px;
+}
+
+#widget_search-text-box:focus,
+.searchTextBoxFocused  .dijitReset .dijitInputInner,
+.searchTextBox .dijitReset:focus,
+.searchTextBox .dijitInputField:focus, 
+.searchTextBox .dijitInputContainer:focus{
+	box-shadow: none;
+	border: none;
+	outline: none;
+}
+.searchTextBox .dijitInputContainer, 
+.searchTextBox .dijitReset .dijitInputInner{
+	height: 22px;
+}
+
+#searchBoxButtonsDiv {
+	position: absolute;
+	top: 0px;
+	right: 0px;
+	min-width: 95px !important; /*this width is needed now while using 3 buttons*/	
+	/*min-width: 90px !important; /*this width is needed now while using 2 buttons*/	
+}
+
+.searchBoxButton {
+	display: inline-block;
+	background-repeat: no-repeat;
+	background-position: center center;
+	border-radius: 25px;
+	background-color: black;
+	background-size: 100%;
+	float: left;
+	margin: 7px 0px 7px 3px; /*visual spec has top and bottom as 11, but that 22 plus icon height of 22 = 44 and box is only 40px*/
+}
+
+.searchBoxClearButtonIcon{
+	background-image: url('../imagesShared/cancel-T.png');
+	width: 22px;
+	height: 22px;
+	background-size: 100%;
+}
+
+.searchBoxSearchButtonIcon{
+	background-image: url('../imagesShared/search-D.png');	
+	width: 22px;
+	height: 22px;
+	background-size: 100%;
+}
+
+.searchBoxAddPillButtonIcon{
+	background-image: url('../imagesShared/add-menu-T.png');
+	width: 22px;
+	height: 22px;
+	background-size: 100%;
+}
+
+.searchPillPane{
+	display: block;
+	overflow-x : hidden !important;
+    float: none; 
+    height: 35px;   
+}
+
+#fadingOverlay {
+	z-index: 999;
+	float: none;
+	position: fixed; /**The top and left values will be set dynamically in SeachBox.js __showPillOverlay*/
+	height: 22px;
+}
+    
+.searchPill {
+	display: inline-block;
+	height: 22px;
+	margin: 6px 5px 0px 0px;
+	border-radius: 5px;
+	float: inherit;	
+}
+
+.searchPillInvalid{
+	border: 1px solid #A91024 !important;
+}
+
+.searchPillInvalidTextValue{
+	color: #A91024;
+	text-decoration: underline;
+	
+	/**The following properties are only supported in Firefox. 
+	*Will need to find workaround since the textbox border overlaps the outer searchpill
+	text-decoration-line: underline;
+    text-decoration-style: dotted;
+    text-decoration-color: #A91024;
+    */	
+}
+
+ .searchPillInvalidMenuItemValue{
+	color: #A91024;
+	border-bottom: 2px dotted #A91024;	
+}
+
+.searchPillNotSelected{
+	border: 1px solid #E3E4E6;
+}
+
+.searchPillSelected,
+.searchPill:focus{
+	border: 1px solid #4178BE;	
+	outline: none;	
+}
+
+.searchPillLeft  {
+	display: inline-block;
+	float: left;
+	padding-left: 10px;
+}
+
+.searchPillRight .dijitButtonContents,
+.searchPillLeft .dijitButtonContents {
+	height: 21px;
+	vertical-align: middle;
+	margin-top: 1px;
+}
+
+.searchPillLeftNotSelected {
+	background-color: #E3E4E6;
+}
+
+.searchPillLeftSelected {
+	background-color: #C0E6FF;	
+}
+
+.searchPillLeftInvalid{
+	border-bottom: 1px dotted #A91024;
+}
+
+.searchByDropDownButtonSelected {
+	background-color: #404E56;
+	background: #404E56;
+	color: #FFFFFF;
+}
+
+.searchByDropDownMenu,
+.searchByDropDownMenu .dijitMenu,
+.searchByDropDownMenu .dijitMenuTable,
+.searchByDropDownMenu table{
+	border: 1px solid #E3E4E6 !important;
+	border-radius: 5px ;
+	box-sizing: border-box;
+	background-color: #404E56;
+	box-shadow: none !important;
+	margin-left: -10px !important;
+}
+
+.searchTextBox .dijitButtonNode{
+	display: none;
+}
+
+.searchPillInputArea .dijitValidationContainer,
+.searchTextBox .dijitValidationContainer{
+	display: none;
+}
+
+.searchInputDropDownMenu .dijitMenuItem,
+.searchInputDropDownMenu .dijitMenuItem:hover,
+.searchByDropDownMenu .dijitMenuItem,
+.searchByDropDownMenu .dijitMenuItem:hover{
+	font-size: 14px;
+	margin: 1px 20px 0px 10px;
+	height: 23px !important;
+}
+
+.searchByDropDownMenu .dijitMenuItem,
+.searchByDropDownMenu .dijitMenuItemSelected,
+.searchByDropDownMenu .dijitMenuItem .dijitReset{ /* Overriding the dijitReset ghost-blue background-color */
+	color: #FFFFFF;
+	background-color: #404C56;
+	background: #404C56;
+}
+
+.searchByDropDownMenu .dijitMenuItem:hover,
+.searchByDropDownMenu .dijitMenuItem:focus,
+.searchByDropDownMenu tbody > .dijitReset:hover *,
+.searchByDropDownMenu tbody > .dijitReset:focus *{
+	color: #FFFFFF;
+	background-color: #2c363b;
+	background: #2c363b;
+ }
+
+.searchByDropDownMenu .dijitMenuItem td,
+.searchInputDropDownMenu .dijitMenuItem td,
+.searchInputDropDownButton,
+.searchByDropDownButton{
+	border: none;
+}
+ 
+.searchInputDropDownButtonFocused,
+.searchByDropDownButtonFocused{
+	box-shadow: inset #7CC7FF 0px 0px 2px 1px;
+}
+
+.searchInputDropDownMenu{
+	border: 1px solid #C3C4C6;
+	border-radius: 5px;
+	box-sizing: border-box;
+	background-color: #FFFFFF;	
+}
+
+.searchInputDropDownMenu .dijitMenuItem,
+.searchInputDropDownMenu .dijitMenuItemSelected{
+	color: #404041;
+	background-color: #FFFFFF;
+	background: #FFFFFF;
+}
+
+.searchInputDropDownMenu .dijitMenuItem:hover,
+.searchInputDropDownMenu .dijitMenuItem:focus{
+	color: #404041;
+	background-color: #C0E6FF;
+	background: #C0E6FF;
+}
+
+.searchByButtonIcon {
+  background-image: url('../imagesShared/triangle-connector-downward-dialog-confirmation-T.png');
+  background-repeat: no-repeat;
+  float: right;
+  width: 8px;
+  height: 6px;
+  margin: 6px 10px 0px 4px;
+  background-size: 100%;
+  vertical-align: middle;
+}
+
+.searchByButtonIconSelected {
+  background-image: url('../imagesShared/search-criteria-dropdown-indicator-selected.png');
+  background-repeat: no-repeat;
+  float: right;
+  width: 8px;
+  height: 6px;
+  margin: 6px 10px 0px 4px;
+  background-size: 100%;
+  vertical-align: middle;
+}
+
+.searchByButtonIconDisabled {
+  background-image: url('../imagesShared/search-criteria-dropdown-indicator-disable.png');
+  background-repeat: no-repeat;
+  float: right;
+  width: 8px;
+  height: 6px;
+  margin: 6px 10px 0px 4px;
+  background-size: 100%;
+  vertical-align: middle;
+}
+
+.searchByMenu {
+	display: none;
+ }
+  
+.searchPillRight  {
+	display: inline-block;
+	float: left;
+	padding-left: 10px;
+	padding-right: 10px;
+	height: 100%;
+}
+
+.searchPillRightNotSelected{
+	background-color: #FFFFFF;	
+}
+
+.searchPillDeleteButton.searchPillDeleteButtonSelected,
+.searchPillRightSelected {
+	background-color: #DDF2F9;	
+}
+
+.searchPillInputArea .dijitReset .dijitInputInner {
+	height: 22px;
+}
+
+.searchPillInputArea {
+	border: none;
+}
+
+.searchPillInputAreaVisible {
+	display: inline-block ;
+}
+
+.searchPillInputAreaHidden {
+	display: none;
+}
+
+.applicationsMenuItemIcon,
+.serversMenuItemIcon,
+.clustersMenuItemIcon,
+.hostsMenuItemIcon,
+.runtimesMenuItemIcon,
+.runningMenuItemIcon,
+.stoppedMenuItemIcon,
+.unknownMenuItemIcon {
+	background-repeat: no-repeat;
+	float: left;
+	width: 16px;
+	height: 16px;
+	background-size: 100%;    
+}
+
+.unsupportedSearchDiv,
+.invalidSearchDiv,
+.loadingOverlayDiv,
+.noResultsDiv {
+	background-repeat: no-repeat;
+	background-position: left center;
+	padding-left: 52px !important;
+	margin-top: 40px !important; /**design shows 60px above, and the search pane already has 20px bottom **/
+	margin-right: auto !important;
+	margin-left: auto !important;
+	font-size: 22px !important;
+    color: #404041;
+	width: 350px;
+	height: 28px;
+}
+
+.noResultsDiv {
+	background-image: url('../imagesShared/search-no-result-D.png');
+}
+
+.unsupportedSearchDiv,
+.invalidSearchDiv {
+	background-image: url('../imagesShared/dialog-alert-T.png');
+}
+
+.invalidSearchErrorMsg {
+	color: #A91024;
+	font-size: 14px;
+	padding-left: 40px !important;
+}
+
+.loadingOverlayDiv {
+	width: 80px;
+	height: 80px;
+	background: transparent url('../imagesShared/search-loading-T.gif') no-repeat 50% 50%;
+	background-color: inherit;
+	border-radius: 10px;
+    font-size: 12px !important;
+}
+
+#widget_search-text-box_dropdown {
+	border: 1px solid #c3c3c3;
+}
+
+#search-text-box_popup .dijitMenuItem{
+	padding-top: 0px;
+	padding-bottom: 0px;
+	margin-top: 0px;
+	margin-bottom: 0px;
+	overflow: hidden; 
+}
+
+.resourceAutocompleteOuter {
+	min-width: 200px;
+	overflow: hidden;
+	width: 100%;
+	height : 25px;
+	float: left;
+	margin: 0px;
+	clear: both;
+	margin-left: -11px; /**or could overwrite padding-left of .oneui .dijitComboBoxMenu (currently 1px) and .oneui .dijitComboBoxMenu .dijitMenuItem (currently 10px) to be 0px and **/
+}
+
+.resourceAutocompleteOuterBorder {
+	border-top: 1px solid #BBBBBB; /**TODO see if Design wants to specify size and color **/
+}
+
+.resourceAutocompleteOuter .resourceAutocompleteLeft {/* ,
+.oneui .dijitMenuItem td{*/
+	/*width: 75px; /**TODO see if Design wants to specify width; using % seems to cause the divs to position under each other**/
+	display: inline-block;
+	height: 100%;
+	float: left;
+	padding: 5px 10px;
+	background-color: #EDEDED; /**TODO see if Design wants to specify color **/
+	color: #999999; /**TODO see if Design wants to specify color **/
+	font-size: 14px;
+}
+
+.resourceAutocompleteOuter .resourceAutocompleteRight {/* .oneui .dijitMenuItem td{*/
+	display: inline-block;
+	float: left;
+	height: 100%;
+	padding: 5px 10px;
+	font-size: 14px;
+}
+
+.dijitTitlePaneTextNode svg {
+    height: 24px;
+    width: 24px;
+}
+
+.searchButtonHolderPane {
+	float: right;
+	display: inline-block;
+	margin-top: 25px;
+	min-width: 100px;
+}
+
+.searchButtonPane {
+	float: right;
+	display: inline-block;
+}
+
+.searchButtonPaneHidden {
+	display: none;
+}
+
+.searchViewSwitchView {
+    background-image: url(../imagesShared/list-view-off-DT.png);
+    height: 24px;
+    width: 42px;
+    border: 0px;
+    border-radius: 18px;
+    cursor: pointer;
+}
+
+.searchViewSwitchView:hover {
+	cursor: pointer;
+	box-shadow: #7CC7FF 0 0 2px 1px;
+	background-color: #C0E6FF;
+}
+
+.searchViewSwitchView:focus {
+	outline: none;
+  	box-shadow: #7CC7FF 0px 0px 2px 1px;
+}
+
+.searchViewSwitchViewChecked {
+    background-image: url(../imagesShared/list-view-on-DT.png);
+}
+
+.searchPillDeleteIcon {
+	background-image: url('../imagesShared/deletePill.png');
+	width: 22px;
+	height: 22px;
+	background-size: 100%;
+}
+
+.searchPillDeleteButton {
+	/*Had to add display and float to fix alignment issues 
+	only for windows 7 firefox 52.0.1 32-bit*/
+	display: inline-block;
+	float: left;
+
+	border: none;
+	background-color: #FFFFFF;
+	cursor: pointer;
+	border-top-right-radius: 3.9px;
+	border-bottom-right-radius: 3.9px;
+}
+
+.searchPillDeleteButton:focus,
+.searchPillDeleteButton:hover {
+	border: none;
+	background-color: #E3E4E6;
+}

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2019 IBM Corporation and others.
+# Copyright (c) 2012, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -270,4 +270,4 @@ CANNOT_WRITE_TO_READ_ONLY_REPOSITORY.useraction=Non richiamare un'operazione di 
 
 REQUIRED_IDENTIFIERS_MISSING=CWIML3001W: Mancano gli identificativi richiesti per l'entit\u00e0.
 REQUIRED_IDENTIFIERS_MISSING.explanation=Gli identificativi uniqueName e uniqueId non sono specificati. Occorre specificare almeno un identificativo.
-REQUIRED_IDENTIFIERS_MISSING.useraction=Assicurarsi che la propriet\u00e0 identificativo sia specificata per ogni entit\u00e0 trasmessa. Se non \u00e8 specificato un identificativo, aggiungere la propriet\u00e0 e specificare uniqueName o uniqueId.
+REQUIRED_IDENTIFIERS_MISSING.useraction=Assicurarsi che la propriet\u00e0 identificativo sia specificata per ogni entit\u00e0 che viene trasmessa. Se non \u00e8 specificato un identificativo, aggiungere la propriet\u00e0 e specificare uniqueName o uniqueId.

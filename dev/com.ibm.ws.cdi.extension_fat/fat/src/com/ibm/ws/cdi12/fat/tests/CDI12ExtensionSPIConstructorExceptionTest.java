@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2020 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,42 +15,45 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.fat.util.LoggingTest;
-import com.ibm.ws.fat.util.SharedServer;
-import com.ibm.ws.fat.util.browser.WebBrowser;
 
+import componenttest.annotation.Server;
+import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.HttpUtils;
 
 /**
  * Test the runtime extension to function correctly
  */
-public class CDI12ExtensionSPIConstructorExceptionTest extends LoggingTest {
+@RunWith(FATRunner.class)
+public class CDI12ExtensionSPIConstructorExceptionTest {
 
-    public static SharedServer EXTENSION_SERVER = new SharedServer("cdi12SPIConstructorExceptionExtensionServer");
-    public static String INSTALL_USERBUNDLE = "cdi.spi.constructor.fail.extension";
-    public static String INSTALL_USERFEATURE_JAVAX = "cdi.spi.constructor.fail.extension-1.0";
-    public static String INSTALL_USERFEATURE_JAKARTA = "cdi.spi.constructor.fail.extension-3.0";
-    private static LibertyServer server;
+    public static final String SERVER_NAME = "cdi12SPIConstructorExceptionExtensionServer";
+    public static final String INSTALL_USERBUNDLE_JAVAX = "cdi.spi.constructor.fail.extension";
+    public static final String INSTALL_USERBUNDLE_JAKARTA = "cdi.spi.constructor.fail.extension-jakarta";
+    public static final String INSTALL_USERFEATURE_JAVAX = "cdi.spi.constructor.fail.extension-1.0";
+    public static final String INSTALL_USERFEATURE_JAKARTA = "cdi.spi.constructor.fail.extension-3.0";
 
-    @Override
-    protected SharedServer getSharedServer() {
-        return EXTENSION_SERVER;
-    }
+    @Server(SERVER_NAME)
+    public static LibertyServer server;
 
     @BeforeClass
     public static void setUp() throws Exception {
 
         WebArchive extensionConstructorExceptionApp = ShrinkWrap.create(WebArchive.class,
                                                                         "ExtensionConstructorExceptionApp.war").addPackage("com.ibm.ws.cdi.extension.spi.test.constructor");
-
-        server = EXTENSION_SERVER.getLibertyServer();
         System.out.println("Intall the user feature bundle... cdi.spi.extension");
-        server.installUserBundle(INSTALL_USERBUNDLE);
-        server.installUserFeature(INSTALL_USERFEATURE_JAVAX);
-        server.installUserFeature(INSTALL_USERFEATURE_JAKARTA);
+        if (RepeatTestFilter.isRepeatActionActive("EE9_FEATURES")) {
+            server.installUserBundle(INSTALL_USERBUNDLE_JAKARTA);
+            server.installUserFeature(INSTALL_USERFEATURE_JAKARTA);
+        } else {
+            server.installUserBundle(INSTALL_USERBUNDLE_JAVAX);
+            server.installUserFeature(INSTALL_USERFEATURE_JAVAX);
+        }
         ShrinkHelper.exportDropinAppToServer(server, extensionConstructorExceptionApp);
         server.startServer(true);
         server.waitForStringInLogUsingMark("CWWKZ0001I.*Application ExtensionConstructorExceptionApp started");
@@ -58,9 +61,8 @@ public class CDI12ExtensionSPIConstructorExceptionTest extends LoggingTest {
 
     @Test
     public void testConstructorExceptionViaExtensionSPI() throws Exception {
-        WebBrowser browser = createWebBrowserForTestCase();
 
-        verifyResponse(browser, "/ExtensionConstructorExceptionApp/",
+        HttpUtils.findStringInUrl(server, "/ExtensionConstructorExceptionApp/",
                        new String[] { "getBeans registered bean was injected", "Could not find unregistered bean" });
     }
 
@@ -72,8 +74,12 @@ public class CDI12ExtensionSPIConstructorExceptionTest extends LoggingTest {
             server.stopServer("CWOWB1010E");//The error thrown when a SPI extension constructor fails. 
         }
         Log.info(CDI12ExtensionTest.class, METHOD_NAME, "Removing cdi extension test user feature files.");
-        server.uninstallUserBundle(INSTALL_USERBUNDLE);
-        server.uninstallUserFeature(INSTALL_USERFEATURE_JAVAX);
-        server.uninstallUserFeature(INSTALL_USERFEATURE_JAKARTA);
+        if (RepeatTestFilter.isRepeatActionActive("EE9_FEATURES")) {
+            server.uninstallUserBundle(INSTALL_USERBUNDLE_JAKARTA);
+            server.uninstallUserFeature(INSTALL_USERFEATURE_JAKARTA);
+        } else {
+            server.uninstallUserBundle(INSTALL_USERBUNDLE_JAVAX);
+            server.uninstallUserFeature(INSTALL_USERFEATURE_JAVAX);
+        }
     }
 }

@@ -16,8 +16,39 @@ import com.ibm.ws.jdbc.heritage.DataStoreHelperMetaData;
  * Data store helper metadata for the test JDBC driver.
  */
 public class HDDataStoreHelperMetaData implements DataStoreHelperMetaData {
+
+    @Override
+    public boolean doesStatementCacheIsoLevel() {
+        return true;
+    }
+
     @Override
     public boolean supportsGetCatalog() {
+        return false;
+    }
+
+    @Override
+    public boolean supportsGetNetworkTimeout() {
+        return false;
+    }
+
+    @Override
+    public boolean supportsGetSchema() {
+        return false;
+    }
+
+    @Override
+    public boolean supportsGetTypeMap() {
+        return false;
+    }
+
+    @Override
+    public boolean supportsIsReadOnly() {
+        return false;
+    }
+
+    @Override
+    public boolean supportsUOWDetection() {
         return false;
     }
 }

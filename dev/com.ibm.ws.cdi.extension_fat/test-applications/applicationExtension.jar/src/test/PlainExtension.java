@@ -18,6 +18,7 @@ import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
+import javax.enterprise.inject.spi.BeanManager;
 
 public class PlainExtension implements Extension {
     void beforeBeanDiscovery(@Observes BeforeBeanDiscovery bbd) {
@@ -28,8 +29,9 @@ public class PlainExtension implements Extension {
         System.out.println("PlainExtension: scanning type->" + pat.getAnnotatedType().getJavaClass().getName());
     }
 
-    void afterBeanDiscovery(@Observes AfterBeanDiscovery abd) {
+    void afterBeanDiscovery(@Observes AfterBeanDiscovery abd, BeanManager bm) {
         System.out.println("PlainExtension: finished the scanning process");
+        System.out.println(bm.toString());
     }
 
 }

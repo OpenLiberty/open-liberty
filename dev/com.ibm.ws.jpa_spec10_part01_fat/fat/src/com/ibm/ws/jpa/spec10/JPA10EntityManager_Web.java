@@ -30,6 +30,7 @@ import com.ibm.websphere.simplicity.config.Application;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.ws.jpa.FATSuite;
 import com.ibm.ws.jpa.JPAFATServletClient;
+import com.ibm.ws.jpa.SkipDatabaseRule;
 import com.ibm.ws.jpa.entitymanager.web.TestEntityManagerServlet;
 
 import componenttest.annotation.Server;

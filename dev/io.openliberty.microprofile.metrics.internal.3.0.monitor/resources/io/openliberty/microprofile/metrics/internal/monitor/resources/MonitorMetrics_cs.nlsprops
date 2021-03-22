@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2020, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -25,3 +25,7 @@ FEATURE_REGISTERED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce u
 FEATURE_UNREGISTERED=CWPMI2004I: V\u0161echny metriky monitorov\u00e1n\u00ed byly z mpmetrics odregistrov\u00e1ny.
 FEATURE_UNREGISTERED.explanation=Funkce monitorov\u00e1n\u00ed v\u00fdkonu, funkce metrik MicroProfile nebo ob\u011b funkce byly odebr\u00e1ny ze serveru. V\u0161echny metriky monitorov\u00e1n\u00ed byly z metrik MicroProfile odregistrov\u00e1ny.
 FEATURE_UNREGISTERED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+METRICS_UNHANDLED_JAXRS_EXCEPTION=CWPMI2005W: Mapova\u010d v\u00fdjimek MicroProfile Metrics zjistil a zpracov\u00e1v\u00e1 neo\u0161et\u0159enou v\u00fdjimku z aplikace JAX-RS.
+METRICS_UNHANDLED_JAXRS_EXCEPTION.explanation=Aplikace zalo\u017een\u00e1 na JAX-RS zaznamenala v\u00fdjimku, kter\u00e1 zpracov\u00e1v\u00e1na v aplikaci. K\u00f3d MicroProfile se zpracov\u00e1v\u00e1 protokolov\u00e1n\u00edm trasov\u00e1n\u00ed z\u00e1sobn\u00edku v\u00fdjimek a vr\u00e1cen\u00edm odezvy 500 Intern\u00ed chyba serveru.
+METRICS_UNHANDLED_JAXRS_EXCEPTION.useraction=Toto chov\u00e1n\u00ed m\u016f\u017ee b\u00fdt p\u0159ijateln\u00e9. Chcete-li v\u00fdjimku zpracovat odli\u0161n\u011b, p\u0159idejte rozhran\u00ed ExceptionMapper, kter\u00e9 v\u00fdjimku zpracov\u00e1v\u00e1 a mapuje ji na jinou odezvu.

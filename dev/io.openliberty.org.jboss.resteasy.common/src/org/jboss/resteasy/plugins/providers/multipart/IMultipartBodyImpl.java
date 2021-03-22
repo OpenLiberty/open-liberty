@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.jboss.resteasy.plugins.providers.multipart;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -28,7 +29,7 @@ public class IMultipartBodyImpl implements IMultipartBody {
     private final MultipartInputImpl multipartInput;
     private final List<IAttachment> attachments;
 
-    public IMultipartBodyImpl(MultipartInputImpl multipartInput) {
+    public IMultipartBodyImpl(MultipartInputImpl multipartInput) throws IOException {
         this.multipartInput = multipartInput;
         attachments = new ArrayList<>();
         for (InputPart inputPart : multipartInput.getParts()) {

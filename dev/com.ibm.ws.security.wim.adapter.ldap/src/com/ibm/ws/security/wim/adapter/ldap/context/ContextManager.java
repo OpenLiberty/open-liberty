@@ -56,6 +56,8 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.authentication.utility.SubjectHelper;
 import com.ibm.ws.security.kerberos.auth.KerberosService;
 import com.ibm.ws.security.wim.adapter.ldap.BEROutputStream;
+import com.ibm.ws.security.wim.adapter.ldap.LdapConnection;
+import com.ibm.ws.security.wim.adapter.ldap.LdapConstants;
 import com.ibm.wsspi.kernel.service.utils.SerializableProtectedString;
 import com.ibm.wsspi.security.wim.exception.EntityAlreadyExistsException;
 import com.ibm.wsspi.security.wim.exception.EntityHasDescendantsException;
@@ -494,6 +496,7 @@ public class ContextManager {
      * @return The {@link TimedDirContext}.
      * @throws NamingException If there was an issue binding to the LDAP server.
      */
+    @FFDCIgnore({ javax.security.auth.login.LoginException.class })
     private TimedDirContext createDirContext(Hashtable<String, Object> env, long createTimestamp) throws NamingException {
         if (isKerberosBindAuth()) {
             try {
@@ -1662,6 +1665,22 @@ public class ContextManager {
                 }
             }
 
+            /*
+             * Clear the principal from the kerberService cache in case the ticketCache changed.
+             */
+            if (krb5Principal != null && !krb5Principal.trim().isEmpty()) {
+                try {
+                    kerberosService.clearPrincipalFromCache(krb5Principal);
+                } catch (java.lang.IllegalArgumentException e) {
+                    /**
+                     * Can fail if the principle name is incorrect and the realm cannot be found. Avoid failing during activate.
+                     */
+                    if (tc.isEventEnabled()) {
+                        Tr.event(tc, "Failed to clear subjectCache", e);
+                    }
+                }
+            }
+
             if (tc.isDebugEnabled()) {
                 StringBuffer strBuf = new StringBuffer();
                 strBuf.append("\tKrb5Principal: ").append(krb5Principal).append("\n");
@@ -1783,6 +1802,7 @@ public class ContextManager {
      *
      * @return
      */
+    @FFDCIgnore({ javax.security.auth.login.LoginException.class, IllegalArgumentException.class })
     private Subject handleKerberos() throws LoginException, MalformedURLException {
         final String METHODNAME = "handleKerberos";
         if (!isKerberosBindAuth()) {
@@ -1823,6 +1843,15 @@ public class ContextManager {
                 LoginException le = new LoginException(msg + " " + e.getClass().getName() + ": " + e.getMessage());
                 le.initCause(e);
                 throw le;
+            } catch (IllegalArgumentException ie) {
+                /*
+                 * Caused by: java.lang.IllegalArgumentException: KrbException: Cannot locate default realm
+                 * at java.security.jgss/javax.security.auth.kerberos.KerberosPrincipal.<init>(KerberosPrincipal.java:174)
+                 */
+                String msg = Tr.formatMessage(tc, WIMMessageKey.INVALID_KRB5_PRINCIPAL, WIMMessageHelper.generateMsgParms(krb5Principal));
+                LoginException le = new LoginException(msg + " " + ie.getClass().getName() + ": " + ie.getMessage());
+                le.initCause(ie);
+                throw le;
             }
         } finally {
             releaseKrb5ReadLock();
@@ -1845,27 +1874,33 @@ public class ContextManager {
     }
 
     /**
-     * When invoked, this will dump the context pool (if enabled) and recreate the pool with the new kerberos configuration.
+     * When invoked, if Kerberos (GSSAPI) is enabled, this will dump the context pool (if enabled)
+     * and recreate the pool with the new kerberos configuration.
+     *
+     * Also clear the caches within the write lock, to make sure we're not allowing stale access after a config update.
      *
      * @param ks
+     * @param ldapConn
      */
-    public void updateKerberosService(KerberosService ks) {
+    public void updateKerberosService(KerberosService ks, LdapConnection ldapConn) {
+        String METHOD_NAME = "updateKerberosService";
         if (isKerberosBindAuth()) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, METHOD_NAME + " Kerberos is enabled and the KerberosService was updated, acquire write lock and process krb5 update tasks");
+            }
             acquireKrb5WriteLock();
             try {
                 kerberosService = ks;
                 if (iContextPoolEnabled) {
                     try {
-                        /*
-                         * Do we want to refresh if ticketCache is enabled and only keytab changes? This could be unnecessary churn if the keytab is
-                         * only used for another config. However, if the customer is banking on the keytab working if the ticketCache fails, then
-                         * we'll be delaying refreshing the context pool.
-                         */
-                        reCreateDirContext(getDirContext(), "The Kerberos configuration was updated, refresh the context pool.");
+                        reCreateDirContext(getDirContext(), LdapConstants.KERBEROS_UDPATE_MSG);
                     } catch (WIMSystemException e) {
-
+                        if (tc.isEventEnabled()) {
+                            Tr.event(tc, METHOD_NAME + " Exception processing reCreateDirContext after a KerberosService update.", e);
+                        }
                     }
                 }
+                ldapConn.clearCaches();
             } finally {
                 releaseKrb5WriteLock();
             }

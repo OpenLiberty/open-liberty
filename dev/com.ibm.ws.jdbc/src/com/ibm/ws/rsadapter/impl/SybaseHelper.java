@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2017 IBM Corporation and others.
+ * Copyright (c) 2003, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -36,7 +36,6 @@ public class SybaseHelper extends DatabaseHelper
     private static final TraceComponent tc = Tr.register(SybaseHelper.class, "RRA", AdapterUtil.NLS_FILE); 
     @SuppressWarnings("deprecation")
     private transient com.ibm.ejs.ras.TraceComponent sybaseTc = com.ibm.ejs.ras.Tr.register("com.ibm.ws.sybase.logwriter", "WAS.database", null);
-    private transient PrintWriter sybasePw = null;
 
     /**
      * Construct a helper class for Sybase.
@@ -46,6 +45,9 @@ public class SybaseHelper extends DatabaseHelper
     SybaseHelper(WSManagedConnectionFactoryImpl mcf) {
         super(mcf);
 
+        dataStoreHelper = "com.ibm.websphere.rsadapter.Sybase11DataStoreHelper";
+
+        mcf.defaultIsolationLevel = Connection.TRANSACTION_REPEATABLE_READ;
         mcf.supportsGetTypeMap = false;
     }
     
@@ -125,11 +127,6 @@ public class SybaseHelper extends DatabaseHelper
     }
 
     @Override
-    public int getDefaultIsolationLevel() {
-        return Connection.TRANSACTION_REPEATABLE_READ;
-    }
-
-    @Override
     public void doStatementCleanup(PreparedStatement stmt) throws SQLException {
         // Sybase doesn't support cursor name. Cursor name will
         // be reset when the result set is closed.
@@ -155,12 +152,12 @@ public class SybaseHelper extends DatabaseHelper
         //not synchronizing here since there will be one helper
         // and most likely the setting will be serially, even if its not, 
         // it shouldn't matter here (tracing).
-        if (sybasePw == null)
-            sybasePw = new PrintWriter(new TraceWriter(sybaseTc), true);
+        if (genPw == null)
+            genPw = new PrintWriter(new TraceWriter(sybaseTc), true);
 
         if (trace && tc.isDebugEnabled())
-            Tr.debug(this, tc, "returning", sybasePw);
-        return sybasePw;
+            Tr.debug(this, tc, "returning", genPw);
+        return genPw;
     }
 
     /**
@@ -209,7 +206,7 @@ public class SybaseHelper extends DatabaseHelper
             super.gatherAndDisplayMetaDataInfo(conn, mcf);                 
         } catch (SQLException x)
         {
-            if (isConnectionError(x))
+            if (mcf.dataStoreHelper == null ? isConnectionError(x) : mcf.dataStoreHelper.isConnectionError(x))
                 throw x;
 
             Tr.info(tc, "META_DATA_EXCEPTION", x.getMessage());

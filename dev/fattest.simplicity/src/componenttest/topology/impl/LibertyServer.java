@@ -97,6 +97,7 @@ import com.ibm.ws.logging.utils.FileLogHolder;
 import componenttest.common.apiservices.Bootstrap;
 import componenttest.common.apiservices.LocalMachine;
 import componenttest.custom.junit.runner.LogPolice;
+import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.depchain.FeatureDependencyProcessor;
 import componenttest.exception.TopologyException;
 import componenttest.topology.impl.JavaInfo.Vendor;
@@ -2636,7 +2637,15 @@ public class LibertyServer implements LogMonitorClient {
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy-HH-mm-ss");
         Date d = new Date(System.currentTimeMillis());
 
-        String logDirectoryName = pathToAutoFVTOutputServersFolder + "/" + serverToUse + "-" + sdf.format(d);
+        String runLevel = RepeatTestFilter.getMostRecentRepeatAction();
+
+        String logDirectoryName = "";
+        if (runLevel == null || runLevel.isEmpty()) {
+            logDirectoryName = pathToAutoFVTOutputServersFolder + "/" + serverToUse + "-" + sdf.format(d);
+        }
+        else {
+            logDirectoryName = pathToAutoFVTOutputServersFolder + "/" + serverToUse + "-" + runLevel + "-" + sdf.format(d);
+        }
         LocalFile logFolder = new LocalFile(logDirectoryName);
         RemoteFile serverFolder = new RemoteFile(machine, serverRoot);
 

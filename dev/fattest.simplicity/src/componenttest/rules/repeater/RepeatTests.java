@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -133,12 +133,18 @@ public class RepeatTests extends ExternalResource {
         }
 
         private static boolean shouldRun(RepeatTestAction action) {
-            String repeatOnly = System.getProperty("fat.test.repeat.only");
-            if (repeatOnly == null) {
+            String repeatOnly = System.getProperty("fat.test.repeat.only"); // If current action matches
+            String repeatAny = System.getProperty("fat.test.repeat.any"); // If any action matches
+            if (repeatOnly == null && repeatAny == null) {
                 return action.isEnabled();
             } else {
-                // Note: If the user has requested this specific action, we ignore the isEnabled() flag
-                return action.getID().equals(repeatOnly);
+                if (repeatOnly != null) {
+                    // Note: If the user has requested this specific action, we ignore the isEnabled() flag
+                    return action.getID().equals(repeatOnly);
+                } else { // repeatAny != null
+                    // Note: If the user has requested any of the active actions, we ignore isEnabled() flag.
+                    return RepeatTestFilter.isRepeatActionActive(repeatAny);
+                }
             }
         }
     }

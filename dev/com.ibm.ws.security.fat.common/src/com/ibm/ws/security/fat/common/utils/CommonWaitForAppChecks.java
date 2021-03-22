@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -42,4 +42,11 @@ public class CommonWaitForAppChecks {
         return getBasicSecurityReadyMsgs(getSSLChannelReadyMsgs(waitForMessages));
     }
 
+    public static List<String> getLTPAReadyMsgs(List<String> waitForMessages) {
+        if (waitForMessages == null) {
+            waitForMessages = new ArrayList<String>();
+        }
+        waitForMessages.add(MessageConstants.CWWKS4105I_LTPA_CONFIG_READY);
+        return waitForMessages;
+    }
 }

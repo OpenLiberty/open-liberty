@@ -1,4 +1,4 @@
-# Copyright (c) 2018, 2020 IBM Corporation and others.
+# Copyright (c) 2018, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -60,6 +60,7 @@ OPENAPI_FILE_PARSE_ERROR.useraction=\u8bf7\u786e\u4fdd\u6587\u4ef6\u91c7\u7528\u
 OPENAPI_APPLICATION_PROCESSED=CWWKO1660I: \u5df2\u5904\u7406 {0} \u5e94\u7528\u7a0b\u5e8f\uff0c\u751f\u6210\u4e86 OpenAPI \u6587\u6863\u3002
 OPENAPI_APPLICATION_PROCESSED.explanation=\u4e3a\u6240\u6307\u5b9a\u7684\u5e94\u7528\u7a0b\u5e8f\u751f\u6210\u4e86 OpenAPI \u6587\u6863\u3002\u53ef\u4ee5\u5728 /openapi \u7aef\u70b9\u67e5\u770b\u8be5\u6587\u6863\u3002
 OPENAPI_APPLICATION_PROCESSED.useraction=\u65e0\u9700\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
-OPENAPI_APPLICATION_PROCESSING_ERROR=CWWKO1661E: \u5904\u7406\u5e94\u7528\u7a0b\u5e8f {0} \u65f6\u53d1\u751f\u9519\u8bef\uff0c\u672a\u751f\u6210 OpenAPI \u6587\u6863\u3002
+
+OPENAPI_APPLICATION_PROCESSING_ERROR=CWWKO1661E: \u5904\u7406\u5e94\u7528\u7a0b\u5e8f {0} \u65f6\u53d1\u751f\u9519\u8bef\uff0c\u672a\u751f\u6210 OpenAPI \u6587\u6863\u3002\u9519\u8bef\u662f\uff1a{1}\u3002
 OPENAPI_APPLICATION_PROCESSING_ERROR.explanation=\u5904\u7406\u5e94\u7528\u7a0b\u5e8f\u65f6\u53d1\u751f\u8fd0\u884c\u65f6\u9519\u8bef\u3002
-OPENAPI_APPLICATION_PROCESSING_ERROR.useraction=\u8bf7\u6536\u96c6\u65e5\u5fd7\u5e76\u4e0e IBM \u670d\u52a1\u4e2d\u5fc3\u8054\u7cfb\u3002
+OPENAPI_APPLICATION_PROCESSING_ERROR.useraction=\u8bf7\u67e5\u770b FFDC \u65e5\u5fd7\u548c\u5f02\u5e38\u6587\u672c\u4ee5\u786e\u5b9a\u95ee\u9898\u3002

@@ -69,14 +69,21 @@ rootProject.ext.betaFeatures = {
 
 task copyFeaturePiiFiles {
   doLast {
-    Map<String,Properties> map = getFeatureMap()
-    map.keySet().each { featureName ->
-      Properties featureProps = map[featureName]
-      if ('public'.equals(featureProps['visibility'])) {
+    def featureFiles = fileTree(dir: project.projectDir, include: 'visibility/**/*.feature')
+    featureFiles.each { featureFile ->
+      File featureFolder = featureFile.getParentFile()
+
+      Properties props = new Properties()
+      props.load(new FileInputStream(featureFile))
+
+      String featureName = props['symbolicName']
+
+      File l10nResources = new File(featureFolder, 'resources/l10n')
+      if (l10nResources.exists()) {
         copy {
-          from project.file('visibility/public/' + featureProps['IBM-ShortName'] + '/resources')
+          from l10nResources
           into rootProject.file('build.pii.package/nlssrc/' + featureName)
-          include 'l10n/*.properties'
+          include '*.properties'
         }
       }
     }
@@ -161,16 +168,17 @@ task createFeatureResources {
       }
       String version = ('beta'.equals(kind) ? bnd.libertyBetaVersion : bnd.libertyServiceVersion)
 
-      String relPath = featureFile.getPath().replace(projectDir.getPath() + '/visibility/', '')
-      def pathParts = relPath.split('/')
-      String visibility = pathParts[0]
-      if (pathParts.length == 3) {
+      File l10nResources = new File(featureFolder, 'resources/l10n')
+      if (l10nResources.exists()) {
         copy {
-          from new File(featureFolder, 'resources/l10n')
+          from l10nResources 
           into buildImage.file('wlp/lib/features/l10n')
         }
+      }
+      File iconsResources = new File(featureFolder, 'resources/icons')
+      if (iconsResources.exists()) {
         copy {
-          from new File(featureFolder, 'resources/icons')
+          from iconsResources
           into buildImage.file('wlp/lib/features/icons')
         }
       }
@@ -238,13 +246,18 @@ task publishFeatureResources {
       }
       String version = ('beta'.equals(kind) ? bnd.libertyBetaVersion : bnd.libertyServiceVersion)
 
-      String relPath = featureFile.getPath().replace(projectDir.getPath() + '/visibility/', '')
-      def pathParts = relPath.split('/')
-      String visibility = pathParts[0]
-      if (pathParts.length == 3) {
+      File l10nResources = new File(featureFolder, 'resources/l10n')
+      if (l10nResources.exists()) {
         copy {
-          from new File(featureFolder, 'resources/l10n')
+          from l10nResources
           into buildImage.file('wlp/lib/features/l10n')
+        }
+      }
+      File iconsResources = new File(featureFolder, 'resources/icons')
+      if (iconsResources.exists()) {
+        copy {
+          from iconsResources
+          into buildImage.file('wlp/lib/features/icons')
         }
       }
 

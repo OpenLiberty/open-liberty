@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2013 IBM Corporation and others.
+# Copyright (c) 2012, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -229,3 +229,53 @@ LOGINPROPERTY_OVERRIDE_USERFILTER.useraction=Pokud je up\u0159ednost\u0148ov\u00
 INVALID_LOGIN_PROPERTIES=CWIML4506E: N\u00e1sleduj\u00edc\u00ed vlastnosti p\u0159ihl\u00e1\u0161en\u00ed jsou neplatn\u00e9: {0}.
 INVALID_LOGIN_PROPERTIES.explanation=Jedna nebo v\u00edce vlastnost\u00ed p\u0159ihl\u00e1\u0161en\u00ed nejsou platn\u00e9 vlastnosti WIM PersonAccount.
 INVALID_LOGIN_PROPERTIES.useraction=Bu\u010f zvolte platn\u00e9 vlastnosti PersonAccount, nebo p\u0159idejte vlastnosti do PersonAccount jako roz\u0161\u00ed\u0159en\u00e9 vlastnosti. Ov\u011b\u0159te, \u017ee se p\u0159\u00edpad pro ka\u017edou vlastnost p\u0159ihl\u00e1\u0161en\u00ed shoduje s p\u0159\u00edpadem pro odpov\u00eddaj\u00edc\u00ed vlastnost PersonAccount.
+
+KRB5_LOGIN_FAILED_CACHE=CWIML4507E: P\u0159ihl\u00e1\u0161en\u00ed Kerberos se nezda\u0159ilo pomoc\u00ed \u010dinitele ov\u011b\u0159ov\u00e1n\u00ed Kerberos {0} a mezipam\u011bti pov\u011b\u0159en\u00ed Kerberos {1} (ccache).
+KRB5_LOGIN_FAILED_CACHE.explanation=Bu\u010f je zadan\u00fd \u010dinitel ov\u011b\u0159ov\u00e1n\u00ed Kerberos neplatn\u00fd, nebo je mezipam\u011b\u0165 pov\u011b\u0159en\u00ed Kerberos (ccache) neplatn\u00e1 nebo vypr\u0161ela jej\u00ed platnost.
+KRB5_LOGIN_FAILED_CACHE.useraction=Ujist\u011bte se, \u017ee je zad\u00e1n platn\u00fd \u010dinitel ov\u011b\u0159ov\u00e1n\u00ed Kerberos a nevypr\u0161ela platnost mezipam\u011bti pov\u011b\u0159en\u00ed Kerberos (ccache).
+
+KRB5_LOGIN_FAILED_KEYTAB=CWIML4508E: P\u0159ihl\u00e1\u0161en\u00ed Kerberos se nezda\u0159ilo pomoc\u00ed \u010dinitele ov\u011b\u0159ov\u00e1n\u00ed Kerberos {0} a souboru keytab Kerberos {1}.
+KRB5_LOGIN_FAILED_KEYTAB.explanation=Zadan\u00fd \u010dinitel ov\u011b\u0159ov\u00e1n\u00ed Kerberos je neplatn\u00fd, nebo je neplatn\u00fd soubor keytab Kerberos.
+KRB5_LOGIN_FAILED_KEYTAB.useraction=Ujist\u011bte se, \u017ee je zad\u00e1n platn\u00fd \u010dinitel ov\u011b\u0159ov\u00e1n\u00ed Kerberos a \u017ee je zad\u00e1n platn\u00fd soubor keytab Kerberos obsahuj\u00edc\u00ed \u010dinitele ov\u011b\u0159ov\u00e1n\u00ed Kerberos.
+		
+KRB5_LOGIN_FAILED_DEFAULT_CACHE=CWIML4509E: P\u0159ihl\u00e1\u0161en\u00ed Kerberos se nezda\u0159ilo pomoc\u00ed \u010dinitele ov\u011b\u0159ov\u00e1n\u00ed Kerberos {0} a v\u00fdchoz\u00ed mezipam\u011bti pov\u011b\u0159en\u00ed Kerberos (ccache).
+KRB5_LOGIN_FAILED_DEFAULT_CACHE.explanation=Bu\u010f je zadan\u00fd \u010dinitel ov\u011b\u0159ov\u00e1n\u00ed Kerberos neplatn\u00fd, nebo je v\u00fdchoz\u00ed mezipam\u011b\u0165 pov\u011b\u0159en\u00ed Kerberos (ccache) neplatn\u00e1 nebo vypr\u0161ela jej\u00ed platnost.
+KRB5_LOGIN_FAILED_DEFAULT_CACHE.useraction=Ujist\u011bte se, \u017ee je zad\u00e1n platn\u00fd \u010dinitel ov\u011b\u0159ov\u00e1n\u00ed Kerberos a nevypr\u0161ela v\u00fdchoz\u00ed platnost mezipam\u011bti pov\u011b\u0159en\u00ed Kerberos (ccache).
+
+KRB5_LOGIN_FAILED_DEFAULT_KEYTAB=CWIML4510E: P\u0159ihl\u00e1\u0161en\u00ed Kerberos se nezda\u0159ilo pomoc\u00ed \u010dinitele ov\u011b\u0159ov\u00e1n\u00ed Kerberos {0} a v\u00fdchoz\u00ed souboru keytab Kerberos.
+KRB5_LOGIN_FAILED_DEFAULT_KEYTAB.explanation=Zadan\u00fd \u010dinitel ov\u011b\u0159ov\u00e1n\u00ed Kerberos je neplatn\u00fd, nebo je neplatn\u00fd v\u00fdchoz\u00ed soubor keytab Kerberos.
+KRB5_LOGIN_FAILED_DEFAULT_KEYTAB.useraction=Ujist\u011bte se, \u017ee je zad\u00e1n platn\u00fd \u010dinitel ov\u011b\u0159ov\u00e1n\u00ed Kerberos a je platn\u00fd v\u00fdchoz\u00ed soubor keytab Kerberos.
+
+KRB5_TICKETCACHE_USED=CWIML4511E: Registr LDAP {0} je nakonfigurov\u00e1n s n\u00e1zvem souboru mezipam\u011bti tiketu Kerberos (ccache) {1} a n\u00e1zvem souboru keytab {2}. Mezipam\u011b\u0165 pov\u011b\u0159en\u00ed Kerberos (ccache) se pou\u017e\u00edv\u00e1 pro ov\u011b\u0159en\u00ed vazeb Kerberos na server LDAP.
+KRB5_TICKETCACHE_USED.explanation=Chcete-li pou\u017e\u00edt keytab, mus\u00ed b\u00fdt zad\u00e1n n\u00e1zev souboru keytab a nesm\u00ed b\u00fdt zad\u00e1n n\u00e1zev souboru (ccache) mezipam\u011bti pov\u011b\u0159en\u00ed Kerberos.
+KRB5_TICKETCACHE_USED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce. Abyste se vyhnuli t\u00e9to zpr\u00e1v\u011b, odeberte bu\u010f atribut ticketCache registru LDAP, nebo atribut keytab Kerberos.
+
+INVALID_KRB5_PRINCIPAL=CWIML4512E: N\u00e1zev \u010dinitele ov\u011b\u0159ov\u00e1n\u00ed Kerberos {0} je nespr\u00e1vn\u011b naform\u00e1tovan\u00fd nebo chyb\u00ed n\u00e1zev sf\u00e9ry nebo nelze naj\u00edt v\u00fdchoz\u00ed n\u00e1zev sf\u00e9ry.
+INVALID_KRB5_PRINCIPAL.explanation=N\u00e1zev \u010dinitele ov\u011b\u0159ov\u00e1n\u00ed Kerberos nem\u016f\u017ee b\u00fdt null. N\u00e1zev \u010dinitele mus\u00ed obsahovat bu\u010f n\u00e1zev sf\u00e9ry, nebo mus\u00ed b\u00fdt v konfigura\u010dn\u00edm souboru Kerberos definov\u00e1n v\u00fdchoz\u00ed n\u00e1zev sf\u00e9ry.
+INVALID_KRB5_PRINCIPAL.useraction=Opravte n\u00e1zev \u010dinitele nebo p\u0159idejte v\u00fdchoz\u00ed n\u00e1zev sf\u00e9ry.
+
+CANNOT_READ_KRB5_FILE=CWIML4513E: Registr LDAP {0} nem\u016f\u017ee p\u0159e\u010d\u00edst soubor Kerberos {1}.
+CANNOT_READ_KRB5_FILE.explanation=Soubor Kerberos nelze otev\u0159\u00edt. Bu\u010f jsou opr\u00e1vn\u011bn\u00ed k souboru nespr\u00e1vn\u00e1, nebo soubor neexistuje.
+CANNOT_READ_KRB5_FILE.useraction=Ov\u011b\u0159te, \u017ee um\u00edst\u011bn\u00ed souboru je spr\u00e1vn\u00e9 a \u017ee server p\u0159e\u010detl opr\u00e1vn\u011bn\u00ed k souboru.
+
+# CWIML4514 already used
+
+KRB5_FILE_NOT_FOUND=CWIML4515E: Atribut {0} z prvku {1} je nakonfigurov\u00e1n k souboru, kter\u00fd neexistuje v n\u00e1sleduj\u00edc\u00edm um\u00edst\u011bn\u00ed: {2}
+KRB5_FILE_NOT_FOUND.explanation=Konfigurace odkazuje na soubor, kter\u00fd je bu\u010f ne\u010diteln\u00fd, nebo neexistuje.
+KRB5_FILE_NOT_FOUND.useraction=Ujist\u011bte se, \u017ee konfigurace ukazuje na soubor, kter\u00fd existuje a kter\u00fd je \u010diteln\u00fd pro proces aplikace.
+
+KRB5_FILE_FOUND=CWIML4516E: Komponenta registru LDAP je nakonfigurov\u00e1na pro pou\u017eit\u00ed souboru {0} um\u00edst\u011bn\u00e9ho v {1}.
+KRB5_FILE_FOUND.explanation=Nakonfigurovan\u00fd soubor byl \u00fasp\u011b\u0161n\u011b um\u00edst\u011bn.
+KRB5_FILE_FOUND.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+# CWIML4517 already used
+
+IDMAP_INVALID_FORMAT=CWIML4518W: Hodnota {0} {1} je chybn\u00e1. Hodnota mus\u00ed b\u00fdt st\u0159edn\u00edky odd\u011blen\u00fd seznam dvojic ''objectclass: attribute'' nebo ''*:attribute''.
+IDMAP_INVALID_FORMAT.explanation=Hodnota userIdMap mus\u00ed b\u00fdt v platn\u00e9m form\u00e1tu tak, aby bylo mo\u017en\u00e9 analyzovat t\u0159\u00eddu objekt\u016f a atribut.
+IDMAP_INVALID_FORMAT.useraction=Aktualizujte hodnotu userIdMap tak, aby odpov\u00eddala zadan\u00e9mu form\u00e1tu.
+
+# CWIML4519 and CWIML4520 already used
+
+KRB5_SERVICE_NOT_AVAILABLE=CWIML4521E: Registr LDAP {0} se pokusil sv\u00e1zat se serverem LDAP s pou\u017eit\u00edm pov\u011b\u0159en\u00ed Kerberos pro n\u00e1zev \u010dinitele {1}, ale slu\u017eba Kerberos, kter\u00e1 poskytuje tato pov\u011b\u0159en\u00ed, nen\u00ed k dispozici. Mechanizmus ov\u011b\u0159ov\u00e1n\u00ed vazby: {2}.
+KRB5_SERVICE_NOT_AVAILABLE.explanation=Slu\u017eba Kerberos nebyla k dispozici, kdy\u017e se registr LDAP pokusil sv\u00e1zat se serverem LDAP. Nen\u00ed-li slu\u017eba ov\u011b\u0159ov\u00e1n\u00ed Kerberos k dispozici, nemohou prov\u00e9st ov\u011b\u0159en\u00ed \u017e\u00e1dn\u00ed u\u017eivatel\u00e9.
+KRB5_SERVICE_NOT_AVAILABLE.useraction=Zkontrolujte nastaven\u00ed konfigurace registru LDAP pro atributy bindAuthMechanizm, krb5Principal a krb5TicketCache stejn\u011b jako konfiguraci Kerberos. Restartujte server.

@@ -11,3 +11,4 @@ IBM-Install-Policy: when-satisfied
   com.ibm.ws.org.hibernate.validator.cdi
 kind=ga
 edition=core
+WLP-Activation-Type: parallel

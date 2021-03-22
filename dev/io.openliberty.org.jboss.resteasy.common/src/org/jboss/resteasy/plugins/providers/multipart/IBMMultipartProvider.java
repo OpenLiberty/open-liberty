@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -36,10 +36,6 @@ import javax.ws.rs.ext.Providers;
 import com.ibm.websphere.jaxrs20.multipart.IAttachment;
 import com.ibm.websphere.jaxrs20.multipart.IMultipartBody;
 
-import org.jboss.resteasy.plugins.providers.multipart.MultipartInput;
-import org.jboss.resteasy.plugins.providers.multipart.MultipartOutput;
-import org.jboss.resteasy.plugins.providers.multipart.MultipartReader;
-import org.jboss.resteasy.plugins.providers.multipart.MultipartWriter;
 import org.jboss.resteasy.spi.InternalServerErrorException;
 
 @Provider
@@ -63,7 +59,7 @@ public class IBMMultipartProvider implements MessageBodyReader<Object>, MessageB
     Providers providers;
     
     private MessageBodyReader<MultipartInput> reader = new MultipartReader();
-    private MessageBodyWriter<MultipartOutput> writer = new MultipartWriter();
+    private LibertyMultipartWriter writer = new LibertyMultipartWriter();
 
     @Override
     public boolean isReadable(Class<?> clazz, Type type, Annotation[] anns, MediaType mt) {
@@ -105,34 +101,57 @@ public class IBMMultipartProvider implements MessageBodyReader<Object>, MessageB
         if (clazz.equals(IMultipartBody.class)) {
             return new IMultipartBodyImpl((MultipartInputImpl)multiInput);
         }
-        if (Collection.class.isAssignableFrom(clazz) && genericType instanceof ParameterizedType &&
-            ((ParameterizedType)genericType).getActualTypeArguments()[0].getTypeName().equals(IAttachment.class.getName())) {
-            List<IAttachment> attachments = new ArrayList<>();
-            for (InputPart inputPart : multiInput.getParts()) {
-                attachments.add(new IAttachmentImpl(inputPart));
+        if (Collection.class.isAssignableFrom(clazz)) {
+            if (genericType instanceof ParameterizedType 
+                            && ((ParameterizedType)genericType).getActualTypeArguments()[0].getTypeName().equals(IAttachment.class.getName())) {
+                List<IAttachment> attachments = new ArrayList<>();
+                for (InputPart inputPart : multiInput.getParts()) {
+                    attachments.add(new IAttachmentImpl(inputPart));
+                }
+                return attachments;
             }
-            return attachments;
+            if (genericType instanceof ParameterizedType
+                            && ((ParameterizedType)genericType).getActualTypeArguments()[0].getTypeName().equals(String.class.getName())) {
+                List<String> parts = new ArrayList<>();
+                for (InputPart inputPart : multiInput.getParts()) {
+                    parts.add(inputPart.getBodyAsString());
+                }
+                return parts;
+            }
         }
         String genericTypeStr = genericType == null ? "null" : genericType.getTypeName();
         throw new InternalServerErrorException("Unexpected multipart type: " + clazz.getName() + " / " + genericTypeStr);
     }
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public void writeTo(Object entity, Class<?> clazz, Type genericType, Annotation[] anns, MediaType mt, MultivaluedMap<String, Object> headers,
                         OutputStream outputStream) throws IOException, WebApplicationException {
 
-        if (!(entity instanceof IMultipartBody)) {
+        List<IAttachment> attachments;
+        if (entity instanceof IMultipartBody) {
+            attachments = ((IMultipartBody)entity).getAllAttachments();
+        } else if (entity instanceof List) {
+            attachments = (List<IAttachment>) entity;
+        } else {
             throw new WebApplicationException("Unexpected output type");
         }
         MultipartOutput outputObj = new MultipartOutput();
-        for (IAttachment attachment : ((IMultipartBody)entity).getAllAttachments()) {
-            outputObj.addPart(attachment.getDataHandler().getContent(), attachment.getContentType());
+        for (IAttachment attachment : attachments) {
+            Object content = attachment.getDataHandler().getContent();
+            OutputPart part = outputObj.addPart(content, content.getClass(), null, attachment.getContentType(), 
+                                                ((IAttachmentImpl)attachment).getFileName());
+            attachment.getHeaders().entrySet().stream().forEach(entry -> {part.getHeaders().put(entry.getKey(), (List)entry.getValue());});
+           // part.getHeaders().putAll((Map<? extends String, ? extends List<Object>>) attachment.getHeaders());
         }
+        writer.init();
         writer.writeTo(outputObj, clazz, genericType, anns, mt, headers, outputStream);
     }
-
     
+    class LibertyMultipartWriter extends MultipartWriter {
 
-    
-
+        void init() {
+            workers = providers;
+        }
+    }
 }

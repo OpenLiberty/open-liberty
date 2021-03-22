@@ -48,7 +48,7 @@ public class ArtifactDownloader {
 
     private final List<File> downloadedFiles = new ArrayList<File>();
 
-    private final Logger logger = InstallLogUtils.getInstallLogger();
+    private final static Logger logger = InstallLogUtils.getInstallLogger();
 
     private final ProgressBar progressBar = ProgressBar.getInstance();
     private static Map<String, Object> envMap = null;
@@ -248,14 +248,20 @@ public class ArtifactDownloader {
     }
 
     private void configureProxyAuthentication() {
+        //set up basic auth HTTP proxy tunnel
+        System.setProperty("jdk.http.auth.tunneling.disabledSchemes", "");
+
         if (envMap.get("https.proxyUser") != null) {
             Authenticator.setDefault(new SystemPropertiesProxyAuthenticator());
+        } else if (envMap.get("http.proxyUser") != null) {
+            Authenticator.setDefault(new SystemPropertiesProxyHttpAuthenticator());
         }
     }
 
     private void configureAuthentication(final MavenRepository repository) {
+
         if (repository.getUserId() != null && repository.getPassword() != null &&
-            envMap.get("https.proxyUser") == null) {
+            envMap.get("https.proxyUser") == null && envMap.get("http.proxyUser") == null) {
             Authenticator.setDefault(new Authenticator() {
                 @Override
                 protected PasswordAuthentication getPasswordAuthentication() {
@@ -320,7 +326,8 @@ public class ArtifactDownloader {
                 throw ExceptionUtils.createByKey("ERROR_FAILED_TO_DOWNLOAD_FEATURE", ArtifactDownloaderUtils.getFileNameFromURL(address.toString()),
                                                  destination.toString());
             }
-            if (envMap.get("https.proxyUser") != null) {
+
+            if (envMap.get("https.proxyHost") != null) {
                 Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress((String) envMap.get("https.proxyHost"), Integer.parseInt((String) envMap.get("https.proxyPort"))));
                 conn = url.openConnection(proxy);
             } else if (envMap.get("http.proxyUser") != null) {
@@ -398,6 +405,13 @@ public class ArtifactDownloader {
         }
     }
 
+    private static class SystemPropertiesProxyHttpAuthenticator extends Authenticator {
+        @Override
+        protected PasswordAuthentication getPasswordAuthentication() {
+            return new PasswordAuthentication((String) envMap.get("http.proxyUser"), ((String) envMap.get("http.proxyPassword")).toCharArray());
+        }
+    }
+
     public List<File> getDownloadedEsas() {
         List<File> esaFiles = new ArrayList<File>();
         for (File f : downloadedFiles) {
@@ -423,16 +437,22 @@ public class ArtifactDownloader {
     }
 
     public void checkValidProxy() throws InstallException {
-
-        String proxyPort = (String) envMap.get("https.proxyPort");
+        String protocol = null;
         if (envMap.get("https.proxyUser") != null) {
+            protocol = "https";
+        } else if (envMap.get("http.proxyUser") != null) {
+            protocol = "http";
+        }
+
+        String proxyPort = (String) envMap.get(protocol + ".proxyPort");
+        if (protocol != null) {
             int proxyPortnum = Integer.parseInt(proxyPort);
-            if (((String) envMap.get("https.proxyHost")).isEmpty()) {
+            if (((String) envMap.get(protocol + ".proxyHost")).isEmpty()) {
                 throw ExceptionUtils.createByKey("ERROR_TOOL_PROXY_HOST_MISSING");
             } else if (proxyPortnum < 0 || proxyPortnum > 65535) {
                 throw ExceptionUtils.createByKey("ERROR_TOOL_INVALID_PROXY_PORT", proxyPort);
-            } else if (((String) envMap.get("https.proxyPassword")).isEmpty() ||
-                       envMap.get("https.proxyPassword") == null) {
+            } else if (((String) envMap.get(protocol + ".proxyPassword")).isEmpty() ||
+                       envMap.get(protocol + ".proxyPassword") == null) {
                 throw ExceptionUtils.createByKey("ERROR_TOOL_PROXY_PWD_MISSING");
             }
         }

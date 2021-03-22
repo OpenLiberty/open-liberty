@@ -36,53 +36,8 @@ import com.ibm.wsspi.resource.ResourceFactory;
  */
 public class DSConfig implements FFDCSelfIntrospectable {
     private static final TraceComponent tc = Tr.register(DSConfig.class, AdapterUtil.TRACE_GROUP, AdapterUtil.NLS_FILE);
-    
-    public static class IdentifyException {
-        
-        public static enum Target {
-            None,
-            StaleConnection
-        }
-        
-        public Integer errorCode;
-        public String sqlState;
-        public Target as;
-        
-        @FFDCIgnore(IllegalArgumentException.class)
-        public void setProperty(String name, Object value) {
-            if ("errorCode".equals(name)) {
-                errorCode = (Integer) value;
-            } else if ("sqlState".equals(name)) {
-                sqlState = (String) value;
-            } else if ("as".equals(name)) {
-                try {
-                    as = Target.valueOf((String) value);
-                } catch (IllegalArgumentException e) {
-                    Tr.error(tc, "8066E_IDENTIFY_EXCEPTION_INVALID_TARGET", value, Arrays.toString(Target.values()));
-                    throw e;
-                }
-            }
-        }
-        
-        public void validate() {
-            if (errorCode == null && sqlState == null) {
-                Tr.error(tc, "8067E_IDENTIFY_EXCEPTION_ERRCODE_SQLSTATE");
-                throw new IllegalArgumentException(AdapterUtil.getNLSMessage("8067E_IDENTIFY_EXCEPTION_ERRCODE_SQLSTATE"));
-            }
-            // do not need to validate the 'as' attribute because it is marked required in metatype so it will be enforced in config layer
-        }
-        
-        @Override
-        public String toString() {
-            return new StringBuilder(super.toString())
-                            .append("{ errorCode=").append(errorCode)
-                            .append(", sqlState=").append(sqlState)
-                            .append(", as=" + as).append(" }")
-                            .toString();
-        }
-    }
 
-    // WebSphere data source property names and values
+    // dataSource property names and values
     public static final String
                     BEGIN_TRAN_FOR_SCROLLING_APIS = "beginTranForResultSetScrollingAPIs",
                     BEGIN_TRAN_FOR_VENDOR_APIS = "beginTranForVendorAPIs",
@@ -247,6 +202,11 @@ public class DSConfig implements FFDCSelfIntrospectable {
     public final String id;
 
     /**
+     * Identifies exceptions by SQL state and error code, or the combination of both.
+     */
+    public final Map<Object, String> identifyExceptions;
+
+    /**
      * Default isolation level for new connections.
      */
     public final int isolationLevel;
@@ -256,11 +216,6 @@ public class DSConfig implements FFDCSelfIntrospectable {
      */
     public final String jndiName;
     
-    /**
-     * List of identified exceptinos to check if certain errorCode or sqlState values that should map to specific actions.
-     */
-    public final List<IdentifyException> identifyExceptions;
-
     /**
      * List of SQL commands to execute once per newly established connection. Can be null if none are configured.
      */
@@ -352,7 +307,7 @@ public class DSConfig implements FFDCSelfIntrospectable {
         enableMultithreadedAccessDetection = false;
         heritageHelperClass = remove(HELPER_CLASS, (String) null);
         heritageReplaceExceptions = remove(REPLACE_EXCEPTIONS, false);
-        identifyExceptions = new ArrayList<>(remove(IDENTIFY_EXCEPTION, Collections.emptyMap()).values());
+        identifyExceptions = remove(IDENTIFY_EXCEPTION, Collections.emptyMap());
         isolationLevel = remove(DataSourceDef.isolationLevel.name(), -1, -1, null, -1, 0, 1, 2, 4, 8, 16, 4096);
         onConnect = remove(ON_CONNECT, (String[]) null);
         queryTimeout = remove(QUERY_TIMEOUT, (Integer) null, 0, TimeUnit.SECONDS);
@@ -366,9 +321,6 @@ public class DSConfig implements FFDCSelfIntrospectable {
                         ? (transactional ? null : CommitOrRollbackOnCleanup.rollback)
                                         : commitOrRollback;
                         
-        for (IdentifyException errorMapping : identifyExceptions)
-            errorMapping.validate();
-
         if (trace && tc.isDebugEnabled() && entry != null)
             Tr.debug(this, tc, "unknown attributes: " + entries);
         // TODO: when we have a stricter variant of onError, apply it to unrecognized attributes

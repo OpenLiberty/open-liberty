@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2013 IBM Corporation and others.
+# Copyright (c) 2012, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -229,3 +229,53 @@ LOGINPROPERTY_OVERRIDE_USERFILTER.useraction=Dac\u0103 este preferat atributul u
 INVALID_LOGIN_PROPERTIES=CWIML4506E: Propriet\u0103\u0163ile de logare nu sunt valide: {0}.
 INVALID_LOGIN_PROPERTIES.explanation=Una sau mai multe propriet\u0103\u0163i nu sunt propriet\u0103\u0163i WIM PersonAccount valide.
 INVALID_LOGIN_PROPERTIES.useraction=Fie alege\u0163i propriet\u0103\u0163i PersonAccount valide, fie ad\u0103uga\u0163i propriet\u0103\u0163ile la PersonAccount ca \u015fi propriet\u0103\u0163i extinse. Asigura\u0163i-v\u0103 c\u0103 tipul de litere (mari, mici) se potrive\u015fte cu cel din proprietatea PersonAccount corespondent\u0103.
+
+KRB5_LOGIN_FAILED_CACHE=CWIML4507E: Logarea Kerberos cu principalul Kerberos {0} \u015fi cu cache-ul de acredit\u0103ri Kerberos {1} (ccache) a e\u015fuat.
+KRB5_LOGIN_FAILED_CACHE.explanation=Fie principalul Kerberos este invalid, fie cache-ul de acredit\u0103ri Kerberos (ccache) este invalid sau expirat.
+KRB5_LOGIN_FAILED_CACHE.useraction=Asigura\u0163i-v\u0103 c\u0103 este specificat un principal Kerberos valid \u015fi cache-ul de acredit\u0103ri Kerberos (ccache) nu este expirat.
+
+KRB5_LOGIN_FAILED_KEYTAB=CWIML4508E: Logarea Kerberos cu principalul Kerberos {0} \u015fi fi\u015fierul keytab Kerberos  {1} a e\u015fuat.
+KRB5_LOGIN_FAILED_KEYTAB.explanation=Fie principalul Kerberos este invalid, fie fi\u015fierul keytab Kerberos este invalid.
+KRB5_LOGIN_FAILED_KEYTAB.useraction=Asigura\u0163i-v\u0103 c\u0103 este specificat un principal Kerberos valid \u015fi c\u0103 este specificat un fi\u015fier keytab Kerberos valid care s\u0103 con\u0163in\u0103 principalul Kerberos.
+		
+KRB5_LOGIN_FAILED_DEFAULT_CACHE=CWIML4509E: Logarea Kerberos cu principalul Kerberos {0} \u015fi cu cache-ul de acredit\u0103ri Kerberos implicit (ccache) a e\u015fuat.
+KRB5_LOGIN_FAILED_DEFAULT_CACHE.explanation=Fie principalul Kerberos este invalid, fie cache-ul de acredit\u0103ri Kerberos (ccache) implicit este invalid sau expirat.
+KRB5_LOGIN_FAILED_DEFAULT_CACHE.useraction=Asigura\u0163i-v\u0103 c\u0103 este specificat un principal Kerberos valid \u015fi cache-ul de acredit\u0103ri Kerberos implicit (ccache) nu este expirat.
+
+KRB5_LOGIN_FAILED_DEFAULT_KEYTAB=CWIML4510E: Logarea Kerberos cu principalul Kerberos {0} \u015fi fi\u015fierul keytab Kerberos implicit a e\u015fuat.
+KRB5_LOGIN_FAILED_DEFAULT_KEYTAB.explanation=Fie principalul Kerberos este invalid, fie fi\u015fierul keytab Kerberos implicit este invalid.
+KRB5_LOGIN_FAILED_DEFAULT_KEYTAB.useraction=Asigura\u0163i-v\u0103 c\u0103 este specificat un principal Kerberos valid \u015fi c\u0103 este valid fi\u015fierul keytab Kerberos implicit.
+
+KRB5_TICKETCACHE_USED=CWIML4511E: Registrul LDAP {0} este configurat cu numele de fi\u015fier cache de tichete Kerberos {1} (ccache) \u015fi numele de fi\u015fier keytab {2}. Cache-ul de acredit\u0103ri Kerberos (ccache) este utilizat pentru autentificarea de legare Kerberos la serverul LDAP.
+KRB5_TICKETCACHE_USED.explanation=Pentru a folosi fi\u015fierul tabel de chei (keytab), trebuie specificat numele de fi\u015fier keytab, iar numele de fi\u015fier cache de acredit\u0103ri Kerberos (ccache) nu trebuie specificat.
+KRB5_TICKETCACHE_USED.useraction=Nicio ac\u0163iune necesar\u0103. Pentru a evita acest mesaj, \u00eenl\u0103tura\u0163i fie atributul de registru LDAP, ticketCache, fie atributul de keytab Kerberos.
+
+INVALID_KRB5_PRINCIPAL=CWIML4512E: Numele de principal Kerberos {0} este formatat gre\u015fit sau lipse\u015fte numele de regiune (realm) sau nu poate fi g\u0103sit un nume de regiune implicit.
+INVALID_KRB5_PRINCIPAL.explanation=Numele de principal Kerberos nu poate fi null. Numele de principal trebuie fie s\u0103 includ\u0103 numele regiunii, fie un nume de regiune implicit s\u0103 fie definit \u00een fi\u015fierul de configura\u0163ie Kerberos.
+INVALID_KRB5_PRINCIPAL.useraction=Corecta\u0163i numele de principal sau ad\u0103uga\u0163i un nume de regiune implicit.
+
+CANNOT_READ_KRB5_FILE=CWIML4513E: Registrul LDAP {0} nu poate citi fi\u015fierul Kerberos {1}.
+CANNOT_READ_KRB5_FILE.explanation=Fi\u015fierul Kerberos nu poate fi deschis. Fie permisiunile fi\u015fierului sunt incorecte, fie fi\u015fierul nu exist\u0103.
+CANNOT_READ_KRB5_FILE.useraction=Verifica\u0163i c\u0103 loca\u0163ia fi\u015fierului este corect\u0103 \u015fi c\u0103 serverul are permisiuni de citire la fi\u015fier.
+
+# CWIML4514 already used
+
+KRB5_FILE_NOT_FOUND=CWIML4515E: Atributul [{0}] de la elementul {1} este configurat la un fi\u015fier care nu exist\u0103 la urm\u0103toarea loca\u0163ie: {2}
+KRB5_FILE_NOT_FOUND.explanation=Configura\u0163ia se refer\u0103 la un fi\u015fier care fie poate fi citit, fie nu exist\u0103.
+KRB5_FILE_NOT_FOUND.useraction=Asigura\u0163i-v\u0103 c\u0103 \u00een configura\u0163ie se indic\u0103 un fi\u015fier care exist\u0103 \u015fi poate fi citit de procesul aplica\u0163iei.
+
+KRB5_FILE_FOUND=CWIML4516E: Componenta de registru LDAP este configurat\u0103 s\u0103 utilizeze un fi\u015fier {0} care este localizat la {1}.
+KRB5_FILE_FOUND.explanation=Fi\u015fierul configurat a fost localizat cu succes.
+KRB5_FILE_FOUND.useraction=Nu este nevoie de realizarea niciunei ac\u0163iuni.
+
+# CWIML4517 already used
+
+IDMAP_INVALID_FORMAT=CWIML4518W: Valoarea {0} {1} este formatat\u0103 gre\u015fit. Valoarea trebuie s\u0103 fie o list\u0103 separat\u0103 prin punct \u015fi virgul\u0103 a perechilor ''objectclass:attribute'' sau ''*:attribute''.
+IDMAP_INVALID_FORMAT.explanation=Valoarea userIdMap trebuie s\u0103 fie \u00eentr-un format valid, astfel \u00eenc\u00e2t clasa de obiect \u015fi atributul s\u0103 poat\u0103 fi parsate.
+IDMAP_INVALID_FORMAT.useraction=Actualiza\u0163i valoarea userIdMap astfel \u00eenc\u00e2t s\u0103 fie conform\u0103 formatului specificat.
+
+# CWIML4519 and CWIML4520 already used
+
+KRB5_SERVICE_NOT_AVAILABLE=CWIML4521E: Registrul LDAP {0} a \u00eencercat s\u0103 se lege la serverul LDAP prin utilizarea acredit\u0103rilor Kerberos pentru numele de principal {1}, dar serviciul Kerberos care furnizeaz\u0103 aceste acredit\u0103ri nu este disponibil. Mecanismul de autentificare pentru legare este {2}.
+KRB5_SERVICE_NOT_AVAILABLE.explanation=Serviciul Kerberos nu a fost disponibil c\u00e2nd registrul LDAP a \u00eencercat s\u0103 se lege la serverul LDAP. Dac\u0103 serviciul Kerberos nu este disponibil, niciun utilizator nu se poate autentifica.
+KRB5_SERVICE_NOT_AVAILABLE.useraction=Examina\u0163i set\u0103rile de configura\u0163ie ale registrului LDAP pentru atributele bindAuthMechanism, krb5Principal \u015fi krb5TicketCache, precum \u015fi configura\u0163ia Kerberos. Reporni\u0163i serverul.

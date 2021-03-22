@@ -10,9 +10,14 @@
  *******************************************************************************/
 package test.jdbc.heritage.driver;
 
+import java.lang.reflect.Constructor;
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.sql.Array;
 import java.sql.Blob;
 import java.sql.CallableStatement;
+import java.sql.ClientInfoStatus;
 import java.sql.Clob;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -25,13 +30,40 @@ import java.sql.SQLXML;
 import java.sql.Savepoint;
 import java.sql.Statement;
 import java.sql.Struct;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.concurrent.Executor;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-public class HDConnection implements Connection {
+public class HDConnection implements Connection, HeritageDBConnection {
+    private static final Set<String> DEFAULT_CLIENT_INFO_KEYS = Stream.of("ApplicationName", "ClientHostname", "ClientUser").collect(Collectors.toSet());
+    public static final int DEFAULT_MAX_FIELD_SIZE = 225;
+
+    /**
+     * Counts the number of times that doConnectionCleanupPerCloseConnection is invoked for this connection.
+     */
+    public final AtomicInteger cleanupCount = new AtomicInteger();
+
     final HDDataSource ds;
     final Connection derbycon;
+    Set<String> clientInfoKeys = DEFAULT_CLIENT_INFO_KEYS;
+
+    private Map<Object, Class<?>> exceptionIdentificationOverrides;
+    private boolean failOnIsValid;
+
+    /**
+     * Counts the number of times that doConnectionSetupPerGetConnection is invoked for this connection.
+     */
+    public final AtomicInteger setupCount = new AtomicInteger();
+
+    /**
+     * Counts the number of times that doConnectionSetupPerTransaction is invoked for this connection.
+     */
+    public final AtomicInteger transactionCount = new AtomicInteger(-1);
 
     HDConnection(HDDataSource ds, Connection con) {
         this.ds = ds;
@@ -85,17 +117,23 @@ public class HDConnection implements Connection {
 
     @Override
     public Statement createStatement() throws SQLException {
-        return derbycon.createStatement();
+        Statement s = derbycon.createStatement();
+        s.setMaxFieldSize(DEFAULT_MAX_FIELD_SIZE);
+        return s;
     }
 
     @Override
     public Statement createStatement(int resultSetType, int resultSetConcurrency) throws SQLException {
-        return derbycon.createStatement(resultSetType, resultSetConcurrency);
+        Statement s = derbycon.createStatement(resultSetType, resultSetConcurrency);
+        s.setMaxFieldSize(DEFAULT_MAX_FIELD_SIZE);
+        return s;
     }
 
     @Override
     public Statement createStatement(int resultSetType, int resultSetConcurrency, int resultSetHoldability) throws SQLException {
-        return derbycon.createStatement(resultSetType, resultSetConcurrency, resultSetHoldability);
+        Statement s = derbycon.createStatement(resultSetType, resultSetConcurrency, resultSetHoldability);
+        s.setMaxFieldSize(DEFAULT_MAX_FIELD_SIZE);
+        return s;
     }
 
     @Override
@@ -127,6 +165,11 @@ public class HDConnection implements Connection {
     }
 
     @Override
+    public Set<String> getClientInfoKeys() {
+        return clientInfoKeys;
+    }
+
+    @Override
     public int getHoldability() throws SQLException {
         return derbycon.getHoldability();
     }
@@ -138,12 +181,18 @@ public class HDConnection implements Connection {
 
     @Override
     public int getNetworkTimeout() throws SQLException {
-        return derbycon.getNetworkTimeout();
+        if (ds.supportsNetworkTimeout)
+            return derbycon.getNetworkTimeout();
+        else
+            throw new SQLException("You disabled the ability to get the network timeout.");
     }
 
     @Override
     public String getSchema() throws SQLException {
-        return derbycon.getSchema();
+        if (ds.supportsSchema)
+            return derbycon.getSchema();
+        else
+            throw new SQLException("You disabled the ability to get the schema.");
     }
 
     @Override
@@ -153,7 +202,10 @@ public class HDConnection implements Connection {
 
     @Override
     public Map<String, Class<?>> getTypeMap() throws SQLException {
-        return derbycon.getTypeMap();
+        if (ds.supportsTypeMap)
+            return derbycon.getTypeMap();
+        else
+            throw new SQLException("You disabled support for type map.");
     }
 
     @Override
@@ -168,7 +220,10 @@ public class HDConnection implements Connection {
 
     @Override
     public boolean isReadOnly() throws SQLException {
-        return derbycon.isReadOnly();
+        if (ds.supportsReadOnly)
+            return derbycon.isReadOnly();
+        else
+            throw new SQLException("You disabled support for read only.");
     }
 
     @Override
@@ -178,6 +233,9 @@ public class HDConnection implements Connection {
 
     @Override
     public boolean isValid(int timeout) throws SQLException {
+        if (failOnIsValid)
+            throw new SQLException("Test case asked for isValid to fail, and so it is.", null, 44098);
+
         return derbycon.isValid(timeout);
     }
 
@@ -188,52 +246,106 @@ public class HDConnection implements Connection {
 
     @Override
     public CallableStatement prepareCall(String sql) throws SQLException {
-        return derbycon.prepareCall(sql);
+        CallableStatement s = derbycon.prepareCall(replace(sql));
+        s.setMaxFieldSize(DEFAULT_MAX_FIELD_SIZE);
+        return s;
     }
 
     @Override
     public CallableStatement prepareCall(String sql, int resultSetType, int resultSetConcurrency) throws SQLException {
-        return derbycon.prepareCall(sql, resultSetType, resultSetConcurrency);
+        CallableStatement s = derbycon.prepareCall(replace(sql), resultSetType, resultSetConcurrency);
+        s.setMaxFieldSize(DEFAULT_MAX_FIELD_SIZE);
+        return s;
     }
 
     @Override
     public CallableStatement prepareCall(String sql, int resultSetType, int resultSetConcurrency, int resultSetHoldability) throws SQLException {
-        return derbycon.prepareCall(sql, resultSetType, resultSetConcurrency, resultSetHoldability);
+        CallableStatement s = derbycon.prepareCall(replace(sql), resultSetType, resultSetConcurrency, resultSetHoldability);
+        s.setMaxFieldSize(DEFAULT_MAX_FIELD_SIZE);
+        return s;
     }
 
     @Override
     public PreparedStatement prepareStatement(String sql) throws SQLException {
-        return derbycon.prepareStatement(sql);
+        PreparedStatement s = derbycon.prepareStatement(replace(sql));
+        s.setMaxFieldSize(DEFAULT_MAX_FIELD_SIZE);
+        return s;
     }
 
     @Override
     public PreparedStatement prepareStatement(String sql, int autoGeneratedKeys) throws SQLException {
-        return derbycon.prepareStatement(sql, autoGeneratedKeys);
+        PreparedStatement s = derbycon.prepareStatement(replace(sql), autoGeneratedKeys);
+        s.setMaxFieldSize(DEFAULT_MAX_FIELD_SIZE);
+        return s;
     }
 
     @Override
     public PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency, int resultSetHoldability) throws SQLException {
-        return derbycon.prepareStatement(sql, resultSetType, resultSetConcurrency, resultSetHoldability);
+        PreparedStatement s = derbycon.prepareStatement(replace(sql), resultSetType, resultSetConcurrency, resultSetHoldability);
+        s.setMaxFieldSize(DEFAULT_MAX_FIELD_SIZE);
+        return s;
     }
 
     @Override
     public PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency) throws SQLException {
-        return derbycon.prepareStatement(sql, resultSetType, resultSetConcurrency);
+        PreparedStatement s = derbycon.prepareStatement(replace(sql), resultSetType, resultSetConcurrency);
+        s.setMaxFieldSize(DEFAULT_MAX_FIELD_SIZE);
+        return s;
     }
 
     @Override
     public PreparedStatement prepareStatement(String sql, int[] columnIndexes) throws SQLException {
-        return derbycon.prepareStatement(sql, columnIndexes);
+        PreparedStatement s = derbycon.prepareStatement(replace(sql), columnIndexes);
+        s.setMaxFieldSize(DEFAULT_MAX_FIELD_SIZE);
+        return s;
     }
 
     @Override
     public PreparedStatement prepareStatement(String sql, String[] columnNames) throws SQLException {
-        return derbycon.prepareStatement(sql, columnNames);
+        PreparedStatement s = derbycon.prepareStatement(replace(sql), columnNames);
+        s.setMaxFieldSize(DEFAULT_MAX_FIELD_SIZE);
+        return s;
     }
 
     @Override
     public void releaseSavepoint(Savepoint savepoint) throws SQLException {
         derbycon.releaseSavepoint(savepoint);
+    }
+
+    /**
+     * Enables the test case to intercept and replace SQL as a way of providing various
+     * information back to the application for testing purposes.
+     */
+    private String replace(String sql) throws SQLException {
+        if (sql.toUpperCase().startsWith("CALL TEST.FORCE_EXCEPTION(")) {
+            String[] params = sql.substring("CALL TEST.FORCE_EXCEPTION(".length(), sql.length() - 1).split(",");
+            String sqlState = params[0];
+            int errorCode = params[1] == null ? 0 : Integer.parseInt(params[1]);
+            try {
+                throw AccessController.doPrivileged((PrivilegedExceptionAction<SQLException>) () -> {
+                    Class<?> exceptionClass = params[2] == null ? SQLException.class : Class.forName(params[2]);
+                    @SuppressWarnings("unchecked")
+                    Constructor<SQLException> ctor = (Constructor<SQLException>) exceptionClass.getConstructor(String.class, String.class, int.class);
+                    return ctor.newInstance("Test JDBC driver fails on purpose.", sqlState, errorCode);
+                });
+            } catch (PrivilegedActionException x) {
+                throw new SQLException("Failed to create exception class", sqlState, errorCode, x);
+            }
+        }
+
+        if ("CALL TEST.FORCE_EXCEPTION_ON_IS_VALID()".equalsIgnoreCase(sql))
+            return "VALUES (" + (failOnIsValid = true) + ")";
+
+        else if ("CALL TEST.GET_CLEANUP_COUNT()".equalsIgnoreCase(sql))
+            return "VALUES (" + cleanupCount.get() + ")";
+
+        else if ("CALL TEST.GET_SETUP_COUNT()".equalsIgnoreCase(sql))
+            return "VALUES (" + setupCount.get() + ")";
+
+        else if ("CALL TEST.GET_TRANSACTION_COUNT()".equalsIgnoreCase(sql))
+            return "VALUES (" + transactionCount.get() + ")";
+
+        return sql;
     }
 
     @Override
@@ -261,12 +373,32 @@ public class HDConnection implements Connection {
 
     @Override
     public void setClientInfo(Properties properties) throws SQLClientInfoException {
+        Map<String, ClientInfoStatus> invalidEntries = clientInfoKeys.stream() //
+                        .filter(key -> !properties.containsKey(key)) //
+                        .collect(Collectors.toMap(key -> key, value -> ClientInfoStatus.REASON_UNKNOWN_PROPERTY));
+        if (invalidEntries.size() > 0)
+            throw new SQLClientInfoException("not supported", invalidEntries);
+
         derbycon.setClientInfo(properties);
     }
 
     @Override
     public void setClientInfo(String name, String value) throws SQLClientInfoException {
+        if (!clientInfoKeys.contains(name))
+            throw new SQLClientInfoException("not supported", Collections.singletonMap(name, ClientInfoStatus.REASON_UNKNOWN_PROPERTY));
         derbycon.setClientInfo(name, value);
+    }
+
+    @Override
+    public void setClientInfoKeys(String... keys) {
+        if (keys.length == 0)
+            clientInfoKeys = DEFAULT_CLIENT_INFO_KEYS;
+        else
+            clientInfoKeys = Stream.of(keys).collect(Collectors.toSet());
+    }
+
+    public void setExceptionIdentificationOverrides(Map<Object, Class<?>> overrides) {
+        exceptionIdentificationOverrides = overrides;
     }
 
     @Override
@@ -276,12 +408,18 @@ public class HDConnection implements Connection {
 
     @Override
     public void setNetworkTimeout(Executor executor, int milliseconds) throws SQLException {
-        derbycon.setNetworkTimeout(executor, milliseconds);
+        if (ds.supportsNetworkTimeout)
+            derbycon.setNetworkTimeout(executor, milliseconds);
+        else
+            throw new SQLException("You disabled the ability to set the network timeout.");
     }
 
     @Override
     public void setReadOnly(boolean readOnly) throws SQLException {
-        derbycon.setReadOnly(readOnly);
+        if (ds.supportsReadOnly)
+            derbycon.setReadOnly(readOnly);
+        else
+            throw new SQLException("You disabled support for read only.");
     }
 
     @Override
@@ -296,7 +434,10 @@ public class HDConnection implements Connection {
 
     @Override
     public void setSchema(String schema) throws SQLException {
-        derbycon.setSchema(schema);
+        if (ds.supportsSchema)
+            derbycon.setSchema(schema);
+        else
+            throw new SQLException("You disabled the ability to set the schema.");
     }
 
     @Override
@@ -306,7 +447,10 @@ public class HDConnection implements Connection {
 
     @Override
     public void setTypeMap(Map<String, Class<?>> map) throws SQLException {
-        derbycon.setTypeMap(map);
+        if (ds.supportsTypeMap)
+            derbycon.setTypeMap(map);
+        else
+            throw new SQLException("You disabled support for type map.");
     }
 
     @Override

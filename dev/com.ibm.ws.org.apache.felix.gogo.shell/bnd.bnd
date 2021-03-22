@@ -8,13 +8,13 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= jar:${fileuri;${repo;org.apache.felix:org.apache.felix.gogo.shell;0.12.0}}!/META-INF/MANIFEST.MF,bnd.overrides
+-include= jar:${fileuri;${repo;org.apache.felix:org.apache.felix.gogo.shell;1.1.4}}!/META-INF/MANIFEST.MF,bnd.overrides
 
 -includeresource: \
-   @${repo;org.apache.felix:org.apache.felix.gogo.shell;0.12.0}!/!META-INF/maven/*, \
+   @${repo;org.apache.felix:org.apache.felix.gogo.shell;1.1.4}!/!META-INF/maven/*, \
    gosh_profile=resources/gosh_profile
 
 instrument.disabled: true
 
 -buildpath: \
-	org.apache.felix:org.apache.felix.gogo.shell;version=0.12.0
+	org.apache.felix:org.apache.felix.gogo.shell;version=1.1.4

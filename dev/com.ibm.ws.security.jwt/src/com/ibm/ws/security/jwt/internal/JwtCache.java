@@ -28,10 +28,12 @@ public class JwtCache extends SingleTableCache {
 
     private static final TraceComponent tc = Tr.register(JwtCache.class);
 
+    static final int DEFAULT_ENTRY_LIMIT = 500;
+
     private final JwtConsumerConfig config;
 
     public JwtCache(long timeoutInMilliSeconds, JwtConsumerConfig config) {
-        super(timeoutInMilliSeconds);
+        super(DEFAULT_ENTRY_LIMIT, timeoutInMilliSeconds);
         this.config = config;
     }
 

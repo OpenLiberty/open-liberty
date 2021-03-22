@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,8 @@
 package com.ibm.ws.jsf.container.fat.tests;
 
 import static org.junit.Assert.assertTrue;
+
+import java.io.File;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -26,7 +28,6 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.jsf.container.fat.FATSuite;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -50,6 +51,9 @@ public class JSF22StatelessViewTests extends FATServletClient {
         mojarraApp = FATSuite.addMojarra(mojarraApp);
         mojarraApp = (WebArchive) ShrinkHelper.addDirectory(mojarraApp, "publish/files/permissions");
         mojarraApp = (WebArchive) ShrinkHelper.addDirectory(mojarraApp, "test-applications/" + MOJARRA_APP + "/resources");
+        //Mojarra 3.0.0-RC3 (and possibily later versions) need a beans.xml for the
+        // JSF22StatelessView_TestViewScopeCDIBeanNotTransient_Mojarra test to pass 
+        mojarraApp.addAsWebInfResource(new File("lib/LibertyFATTestFiles/beans.xml"));
         ShrinkHelper.exportToServer(server, "dropins", mojarraApp);
         server.addInstalledAppForValidation(MOJARRA_APP);
 
@@ -290,7 +294,6 @@ public class JSF22StatelessViewTests extends FATServletClient {
      * Since the view here is stateless, the ViewScoped bean should be re-initialized on every submit.
      */
     @Test
-    @SkipForRepeat(SkipForRepeat.EE9_FEATURES) //  SKIPPING FOR MOJARRA 3.0.0-RC3
     public void JSF22StatelessView_TestViewScopeCDIBeanTransient_Mojarra() throws Exception {
         testViewScopeManagedBeanTransient(MOJARRA_APP, "/JSF22StatelessView_ViewScope_CDI_Transient.xhtml");
     }
@@ -305,7 +308,6 @@ public class JSF22StatelessViewTests extends FATServletClient {
      * Since the view here is NOT stateless, the ViewScoped bean should persist through a submit.
      */
     @Test
-    @SkipForRepeat(SkipForRepeat.EE9_FEATURES) //SKIPPING FOR MOJARRA 3.0.0-RC3
     public void JSF22StatelessView_TestViewScopeCDIBeanNotTransient_Mojarra() throws Exception {
         testViewScopeManagedBeanNotTransient(MOJARRA_APP, "/JSF22StatelessView_ViewScope_CDI_NotTransient.xhtml");
     }

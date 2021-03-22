@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.saml.fat.common;
 
@@ -17,7 +17,6 @@ import org.junit.Test;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.ibm.ws.security.fat.common.ValidationData.validationData;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLCommonTest;
-import com.ibm.ws.security.saml20.fat.commonTest.SAMLCommonTestHelpers;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLConstants;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLMessageConstants;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLTestSettings;
@@ -86,7 +85,7 @@ public class UserFeatureSAMLTests extends SAMLCommonTest {
     @Test
     public void userFeatureSAMLTests_mainFlowTest() throws Exception {
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp1", true);
@@ -113,7 +112,7 @@ public class UserFeatureSAMLTests extends SAMLCommonTest {
     @Test
     public void userFeatureSAMLTests_userNotHandledByUserFeature() throws Exception {
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp1", true);
@@ -134,7 +133,7 @@ public class UserFeatureSAMLTests extends SAMLCommonTest {
     @Test
     public void userFeatureSAMLTests_usrFeatureReturnsEmptyString() throws Exception {
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp1", true);
@@ -160,7 +159,7 @@ public class UserFeatureSAMLTests extends SAMLCommonTest {
     @Test
     public void userFeatureSAMLTests_usrFeatureReturnsNullString() throws Exception {
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp1", true);
@@ -186,7 +185,7 @@ public class UserFeatureSAMLTests extends SAMLCommonTest {
     @Test
     public void userFeatureSAMLTests_usrFeatureReturnsUserNotInLocalRegistry() throws Exception {
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp1", true);
@@ -211,7 +210,7 @@ public class UserFeatureSAMLTests extends SAMLCommonTest {
     @Test
     public void userFeatureSAMLTests_mapToUserRegistry_User_goodIdentifiers() throws Exception {
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp2", true);
@@ -236,7 +235,7 @@ public class UserFeatureSAMLTests extends SAMLCommonTest {
     @Test
     public void userFeatureSAMLTests_mapToUserRegistry_Group_goodIdentifiers() throws Exception {
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.updatePartnerInSettings("sp13", true);

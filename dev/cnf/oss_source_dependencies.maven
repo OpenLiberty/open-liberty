@@ -6,7 +6,6 @@ com.google.code.findbugs:jsr305:3.0.2
 com.google.code.gson:gson:2.2.4
 com.google.code.gson:gson:2.8.2
 com.google.guava:failureaccess:1.0.1
-com.google.guava:guava:27.0.1-android
 com.googlecode.json-simple:json-simple:1.1.1
 com.sun.mail:javax.mail:1.5.6
 com.sun.mail:javax.mail:1.6.2
@@ -101,7 +100,10 @@ org.apache.cxf:cxf-rt-ws-policy:2.6.2
 org.apache.cxf:cxf-tools-common:3.3.0
 org.apache.cxf:cxf-tools-validator:3.3.3
 org.apache.cxf:cxf-tools-wadlto-jaxrs:3.3.0
-org.apache.felix:org.apache.felix.gogo.command:0.16.0
+org.apache.felix:org.apache.felix.gogo.command:1.1.2
+org.apache.felix:org.apache.felix.gogo.runtime:1.1.4
+org.apache.felix:org.apache.felix.gogo.shell:1.1.4
+org.apache.felix:org.apache.felix.scr:2.1.26
 org.apache.geronimo.specs:geronimo-jta_1.1_spec:1.1.1
 org.apache.geronimo.specs:geronimo-osgi-registry:1.1
 org.apache.geronimo.specs:geronimo-validation_1.0_spec:1.1
@@ -119,6 +121,11 @@ org.bitbucket.b_c:jose4j:0.5.1
 org.bitbucket.b_c:jose4j:0.6.4
 org.bitbucket.b_c:jose4j:0.6.5
 org.bouncycastle:bcpkix-jdk15on:1.61
+org.eclipse.platform:org.eclipse.equinox.console:1.4.300
+org.eclipse.platform:org.eclipse.equinox.coordinator:1.4.0
+org.eclipse.platform:org.eclipse.equinox.metatype:1.6.0
+org.eclipse.platform:org.eclipse.equinox.region:1.5.100
+org.eclipse.platform:org.eclipse.osgi:3.16.200
 org.eclipse:yasson:1.0.8
 org.jboss.classfilewriter:jboss-classfilewriter:1.1.2.Final
 org.jboss.classfilewriter:jboss-classfilewriter:1.2.4.Final

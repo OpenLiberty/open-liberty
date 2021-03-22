@@ -759,6 +759,30 @@ public class LdapConnection {
     }
 
     /**
+     * Clear both the searchResults and attributes caches. This can be a big
+     * performance hit to populate so only use when we need to clear to prevent
+     * stale access to users/groups/attributes.
+     *
+     */
+    public void clearCaches() {
+        try {
+            if (iSearchResultsCache != null) {
+                iSearchResultsCache.clear();
+            }
+            if (iAttrsCache != null) {
+                iAttrsCache.clear();
+            }
+        } catch (Exception e) {
+            /*
+             * Unlikely to still hit an NPE here, but shouldn't be a fatal error if we couldn't clear a cache
+             * that doesn't exist
+             */
+            if (tc.isEventEnabled()) {
+                Tr.event(tc, "clearCaches Unexpected exception occurred while clearing the search and attributes cache", e);
+            }
+        }
+    }
+    /**
      * Method to invalidate the specified entry from the attributes cache. One or all
      * parameters can be set in a single call. If all parameters are null, then this
      * operation no-ops.
@@ -2405,6 +2429,6 @@ public class LdapConnection {
      */
     protected void updateKerberosService(KerberosService ks) {
         kerberosService = ks;
-        iContextManager.updateKerberosService(ks);
+        iContextManager.updateKerberosService(ks, this);
     }
 }
