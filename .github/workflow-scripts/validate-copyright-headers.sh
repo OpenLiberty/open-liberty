@@ -7,6 +7,7 @@
 # Outputs: none (just fail and report if we find any)
 ##############################
 
+# Prevent script from reporting failures
 set +e
 
 # Strings indicating IBM-specific copyright notice.
