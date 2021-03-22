@@ -507,12 +507,14 @@ public class DatabaseHelper {
         }
         if (target == null) {
             // No overrides, use built-in handling
-            // TODO use legacy DataStoreHelper instead if present
-            unsupported = sqlX instanceof SQLFeatureNotSupportedException
-                            || sqlState != null && sqlState.startsWith("0A")
-                            || 0x0A000 == errorCode // standard code for unsupported operation
-                            || sqlState != null && sqlState.startsWith("HYC00") // ODBC error code
-                            || errorCode == -79700 && "IX000".equals(sqlState); // Informix specific
+            if (mcf.dataStoreHelper == null)
+                unsupported = sqlX instanceof SQLFeatureNotSupportedException
+                                || sqlState != null && sqlState.startsWith("0A")
+                                || 0x0A000 == errorCode // standard code for unsupported operation
+                                || sqlState != null && sqlState.startsWith("HYC00") // ODBC error code
+                                || errorCode == -79700 && "IX000".equals(sqlState); // Informix specific
+            else
+                unsupported = mcf.dataStoreHelper.isUnsupported(sqlX);
         } else {
             // Override was found, need to interpret it
             unsupported = IdentifyExceptionAs.Unsupported.name().equals(target);

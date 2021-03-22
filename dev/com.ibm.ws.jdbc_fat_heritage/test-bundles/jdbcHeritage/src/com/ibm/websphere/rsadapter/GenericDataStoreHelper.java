@@ -19,6 +19,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 import java.sql.SQLNonTransientConnectionException;
 import java.sql.SQLRecoverableException;
 import java.util.Collections;
@@ -130,6 +131,16 @@ public class GenericDataStoreHelper extends com.ibm.ws.jdbc.heritage.GenericData
                || x instanceof SQLNonTransientConnectionException
                || x instanceof StaleConnectionException
                || mapException(x) instanceof StaleConnectionException;
+    }
+
+    @Override
+    public boolean isUnsupported(SQLException x) {
+        String sqlState = x.getSQLState();
+        int errorCode = x.getErrorCode();
+        return x instanceof SQLFeatureNotSupportedException
+               || 0x0A000 == Math.abs(errorCode)
+               || sqlState != null && sqlState.startsWith("0A")
+               || sqlState != null && sqlState.startsWith("HYC00");
     }
 
     @Override
