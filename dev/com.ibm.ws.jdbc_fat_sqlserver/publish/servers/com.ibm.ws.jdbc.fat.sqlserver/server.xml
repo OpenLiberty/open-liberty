@@ -75,7 +75,7 @@
 
   <javaPermission codebase="${server.config.dir}/apps/sqlserverfat.war" className="java.security.AllPermission"/>
   <javaPermission codebase="${shared.resource.dir}/sqlserver/anomyous.jar" className="java.security.AllPermission"/>
-  
+ 
   <!-- SQLServer JDBC test requirement -->
   <javaPermission className="java.util.PropertyPermission" name="java.specification.version" actions="read"/>
   <javaPermission className="java.net.SocketPermission" name="*" actions="connect,resolve"/>

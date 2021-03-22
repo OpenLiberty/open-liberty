@@ -84,33 +84,6 @@ public class SQLServerTestServlet extends FATServlet {
     // Maximum amount of time the test will wait for an operation to complete
     private static final long TIMEOUT = TimeUnit.MINUTES.toNanos(2);
 
-    // One-time initialization of database before tests run
-    public void initDatabase() throws SQLException {
-        Connection con = ds.getConnection();
-        try {
-            // Enable the use of snapshot isolation level
-            String dbName = con.getCatalog();
-            Statement stmt = con.createStatement();
-            stmt.execute("ALTER DATABASE " + dbName + " SET ALLOW_SNAPSHOT_ISOLATION ON");
-
-            // Create tables
-            int version = con.getMetaData().getDatabaseMajorVersion();
-            if (version >= 13) // SQLServer 2016 or higher
-                stmt.execute("DROP TABLE IF EXISTS MYTABLE");
-            else
-                try {
-                    stmt.execute("DROP TABLE MYTABLE");
-                } catch (SQLException x) {
-                    // probably didn't exist
-                }
-            stmt.execute("CREATE TABLE MYTABLE (ID SMALLINT NOT NULL PRIMARY KEY, STRVAL NVARCHAR(40))");
-
-            stmt.close();
-        } finally {
-            con.close();
-        }
-    }
-
     // Verify that the responseBuffering attribute of cached statements is reset to the default from the data source
     @Test
     public void testResponseBuffering() throws Exception {
