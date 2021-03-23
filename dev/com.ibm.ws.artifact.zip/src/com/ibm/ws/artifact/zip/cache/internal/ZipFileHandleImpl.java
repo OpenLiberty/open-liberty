@@ -88,7 +88,10 @@ public class ZipFileHandleImpl implements ZipFileHandle {
 
     //
 
-    private final Integer zipFileLock = new Integer(0);
+    private static class ZipFileLock {
+        // EMPTY
+    }
+    private final ZipFileLock zipFileLock = new ZipFileLock();
     private ZipFile zipFile;
     private int openCount;
 
@@ -216,9 +219,6 @@ public class ZipFileHandleImpl implements ZipFileHandle {
         }
     }
 
-    //
-
-    private final Integer zipEntriesLock = new Integer(1);
     private final Map<String, byte[]> zipEntries;
 
     {
@@ -352,7 +352,7 @@ public class ZipFileHandleImpl implements ZipFileHandle {
         // reads could create large delays.
 
         byte[] entryBytes;
-        synchronized( zipEntriesLock ) {
+        synchronized( zipEntries ) {
             entryBytes = zipEntries.get(entryCacheKey);
         }
 
@@ -364,7 +364,7 @@ public class ZipFileHandleImpl implements ZipFileHandle {
                 inputStream.close(); // throws IOException
             }
 
-            synchronized( zipEntriesLock ) {
+            synchronized( zipEntries ) {
                 zipEntries.put(entryCacheKey, entryBytes);
             }
         }
