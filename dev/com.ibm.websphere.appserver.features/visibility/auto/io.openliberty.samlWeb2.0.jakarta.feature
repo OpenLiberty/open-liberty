@@ -3,8 +3,7 @@ symbolicName = io.openliberty.samlWeb2.0.jakarta
 visibility = private
 IBM-Provision-Capability:\
   osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=com.ibm.websphere.appserver.samlWeb-2.0))",\
-  osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=com.ibm.websphere.appserver.servlet-5.0))",\
-  osgi.identity; filter:="(&(type=osgi.subsystem.feature)(|(osgi.identity=com.ibm.websphere.appserver.jaxws-2.2)))"
+  osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=com.ibm.websphere.appserver.servlet-5.0))"
 IBM-Install-Policy: when-satisfied
 -features=\
   com.ibm.websphere.appserver.servlet-5.0, \
