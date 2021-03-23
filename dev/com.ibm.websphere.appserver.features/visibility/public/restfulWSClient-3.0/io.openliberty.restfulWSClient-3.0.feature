@@ -33,6 +33,7 @@ Subsystem-Name: Jakarta RESTful Web Services 3.0 Client
 # com.ibm.websphere.appserver.internal.optional.jaxb-2.2; ibm.tolerates:=2.3, \ # not sure about these...
 # com.ibm.websphere.appserver.internal.optional.jaxws-2.2; ibm.tolerates:=2.3, \
 -bundles=\
+  com.ibm.ws.jaxrs.2.x.config, \
   com.ibm.ws.org.apache.commons.codec.1.3, \
   com.ibm.ws.org.apache.commons.logging.1.0.3, \
   com.ibm.ws.org.apache.httpcomponents, \
