@@ -16,8 +16,6 @@ src: \
 	test-bundles/cloudtx/src,\
 	test-applications/transaction/src
 
--sub: *.bnd
-
 fat.project: true
 fat.test.databases: true
 
