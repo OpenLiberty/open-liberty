@@ -75,13 +75,8 @@ public class MicrosoftSQLServerHelper extends DatabaseHelper {
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(this, tc, "Default responseBuffering = " + responseBuffering);
-    }
-    
-    @Override
-    void customizeStaleStates() {
-        super.customizeStaleStates();
         
-        Collections.addAll(staleErrorCodes,
+        Collections.addAll(staleConCodes,
                            230,
                            6001,
                            6002,

@@ -17,8 +17,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException; 
 import java.sql.SQLInvalidAuthorizationSpecException; 
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 
 import javax.resource.ResourceException;
 
@@ -47,16 +45,14 @@ public class DerbyHelper extends DatabaseHelper {
 
         mcf.defaultIsolationLevel = Connection.TRANSACTION_REPEATABLE_READ;
         mcf.supportsGetTypeMap = false;
-    }
-    
-    @Override
-    void customizeStaleStates() {
-        super.customizeStaleStates();
         
-        Collections.addAll(staleErrorCodes,
+        Collections.addAll(staleConCodes,
                            40000,
                            45000,
                            50000);
+
+        Collections.addAll(staleStmtCodes,
+                        "XCL10");
     }
 
     @Override
@@ -110,23 +106,6 @@ public class DerbyHelper extends DatabaseHelper {
         return x instanceof SQLInvalidAuthorizationSpecException
                || "08004".equals(x.getSQLState()) // user authorization error
                || "04501".equals(x.getSQLState()); // user authentication error (no permission to access database)
-    }
-
-    /**
-     * @return true if the exception or a cause exception in the chain is known to indicate a stale statement. Otherwise false.
-     */
-    @Override
-    public boolean isStaleStatement(SQLException x) {
-        // check for cycles
-        Set<Throwable> chain = new HashSet<Throwable>();
-
-        for (Throwable t = x; t != null && chain.add(t); t = t.getCause())
-            if (t instanceof SQLException) {
-                String ss = ((SQLException) t).getSQLState();
-                if ("XCL10".equals(ss))
-                    return true;
-            }
-        return super.isStaleStatement(x);
     }
 
     @Override
