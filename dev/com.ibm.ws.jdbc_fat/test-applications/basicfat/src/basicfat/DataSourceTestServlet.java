@@ -1215,6 +1215,27 @@ public class DataSourceTestServlet extends FATServlet {
     }
 
     /**
+     * Verify that connections are CONTAINER auth when enableContainerAuthForDirectLookups=true
+     */
+    public void testEnableContainerAuthForDirectLookupsTrue() throws Exception {
+        DataSource ds = (DataSource) new InitialContext().lookup("jdbc/dsfat12");
+        Connection con = null;
+        try {
+            con = ds.getConnection();
+            // user should be dbuser2
+            DatabaseMetaData metadata = con.getMetaData();
+            String user = metadata.getUserName();
+            if (!"dbuser2".equalsIgnoreCase(user))
+                throw new Exception("Expected user 'dbuser2', got '" + user
+                                    + "' Connection is using APPLICATION res-auth - enableContainerAuthForDirectLookups property is not being honored. ");
+        } finally {
+            if (con != null) {
+                con.close();
+            }
+        }
+    }
+
+    /**
      * Verify that pooled connections are properly cleaned up.
      */
     public void testConnectionCleanup() throws Exception {
