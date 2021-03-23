@@ -119,12 +119,7 @@ public class CommonBindTest {
 
         server.startServer();
 
-        assertNotNull("Application userRegistry does not appear to have started.",
-                      server.waitForStringInLog("CWWKZ0001I:.*userRegistry"));
-        assertNotNull("Security service did not report it was ready",
-                      server.waitForStringInLog("CWWKS0008I"));
-        assertNotNull("Server did not came up",
-                      server.waitForStringInLog("CWWKF0011I"));
+        startupChecks();
 
         Log.info(c, "setUp", "Creating servlet connection the server");
         servlet = new UserRegistryServletConnection(server.getHostname(), server.getHttpDefaultPort());
@@ -159,7 +154,8 @@ public class CommonBindTest {
     public static void tearDown() throws Exception {
         try {
             if (server != null) {
-                server.stopServer(stopStrings);;
+                Log.info(c, "tearDown", "stop strings provided: " + Arrays.toString(stopStrings));
+                server.stopServer(stopStrings);
             }
         } finally {
             stopUnboundIDLdapServer();
@@ -432,7 +428,16 @@ public class CommonBindTest {
      * @return
      */
     protected LdapRegistry getLdapRegistryWithTicketCacheWithContextPool() {
-        return LdapKerberosUtils.getTicketCache(ldapServerHostName, LDAP_PORT, ticketCacheFile, false);
+        return LdapKerberosUtils.getTicketCache(ldapServerHostName, LDAP_PORT, ticketCacheFile, false, false);
+    }
+
+    /**
+     * Return a basic LdapRegistry with the default ticketCacheFile, context pool enabled and caches disabled
+     *
+     * @return
+     */
+    protected LdapRegistry getLdapRegistryWithTicketCacheWithContextPoolWithoutCaches() {
+        return LdapKerberosUtils.getTicketCache(ldapServerHostName, LDAP_PORT, ticketCacheFile, false, true);
     }
 
     /**
@@ -450,7 +455,7 @@ public class CommonBindTest {
      * @return
      */
     protected LdapRegistry getLdapRegistryForKeytabWithContextPool() {
-        return LdapKerberosUtils.getKrb5PrincipalName(ldapServerHostName, LDAP_PORT, false);
+        return LdapKerberosUtils.getKrb5PrincipalName(ldapServerHostName, LDAP_PORT, false, false);
     }
 
     /**
@@ -505,5 +510,17 @@ public class CommonBindTest {
 
         loginUserShouldFail();
         assertFalse("Expected to find Kerberos principalName failure: " + failMessage, server.findStringsInLogsAndTraceUsingMark(failMessage).isEmpty());
+    }
+
+    /**
+     * Standard server startup message checks.
+     */
+    public static void startupChecks() {
+        assertNotNull("Application userRegistry does not appear to have started.",
+                      server.waitForStringInLog("CWWKZ0001I:.*userRegistry"));
+        assertNotNull("Security service did not report it was ready",
+                      server.waitForStringInLog("CWWKS0008I"));
+        assertNotNull("Server did not came up",
+                      server.waitForStringInLog("CWWKF0011I"));
     }
 }

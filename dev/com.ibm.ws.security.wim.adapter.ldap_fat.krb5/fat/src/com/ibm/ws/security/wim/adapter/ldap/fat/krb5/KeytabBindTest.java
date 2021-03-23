@@ -14,6 +14,7 @@ import static componenttest.topology.utils.LDAPFatUtils.updateConfigDynamically;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeTrue;
 
 import java.io.File;
 
@@ -224,4 +225,27 @@ public class KeytabBindTest extends CommonBindTest {
 
         loginUser();
     }
+
+    /**
+     * Set the keytab in the config file (default_keytab_name = key_tab_file.keytab), ensure we pick up the keytab correctly and can run
+     * the baseline tests.
+     *
+     * @throws Exception
+     */
+    @Test
+    @CheckForLeakedPasswords(LdapKerberosUtils.BIND_PASSWORD)
+    public void keytabDefinedInConfig() throws Exception {
+        assumeTrue(FATRunner.FAT_TEST_LOCALRUN); // Remote build wasn't picking up the keytab set in the config, despite using the same keytab for all the other keytab tests
+        Log.info(c, testName.getMethodName(), "Run basic login checks with the keytab defined in the krb5config file");
+        ServerConfiguration newServer = emptyConfiguration.clone();
+        LdapRegistry ldap = getLdapRegistryForKeytab();
+        String altConfigFile = ApacheDSandKDC.createConfigFile("keyTabInConfig-", KDC_PORT, true, true);
+        Kerberos kerb = newServer.getKerberos();
+        kerb.configFile = altConfigFile;
+        newServer.getLdapRegistries().add(ldap);
+        updateConfigDynamically(server, newServer);
+
+        baselineTests();
+    }
+
 }

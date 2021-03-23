@@ -237,35 +237,68 @@ public class TicketCacheBindTest extends CommonBindTest {
     /**
      * Start with a valid ticketCache, add a valid keytab, change the ticketCache to a bad one, then remove the bad ticketCache.
      *
+     * Run without context pool.
+     *
      * All logins should be successful as we'll try the ticketCache, if configured, and then the keytab, if configured.
      *
      * @throws Exception
      */
     @Test
-    public void swapToKeytab() throws Exception {
+    public void swapToKeytabNoContextPool() throws Exception {
         Log.info(c, testName.getMethodName(), "Start with a ticket cache");
 
         ServerConfiguration newServer = emptyConfiguration.clone();
         LdapRegistry ldap = getLdapRegistryWithTicketCache();
-        addKerberosConfig(newServer);
+        Kerberos kerb = addKerberosConfig(newServer);
         newServer.getLdapRegistries().add(ldap);
         updateConfigDynamically(server, newServer);
 
+        bodySwapToKeytab(ldap, kerb);
+    }
+
+    /**
+     * Start with a valid ticketCache, add a valid keytab, change the ticketCache to a bad one, then remove the bad ticketCache.
+     *
+     * Run with context pool.
+     *
+     * All logins should be successful as we'll try the ticketCache, if configured, and then the keytab, if configured.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void swapToKeytabWithContextPool() throws Exception {
+        Log.info(c, testName.getMethodName(), "Start with a ticket cache");
+
+        ServerConfiguration newServer = emptyConfiguration.clone();
+        LdapRegistry ldap = getLdapRegistryWithTicketCacheWithContextPool();
+        Kerberos kerb = addKerberosConfig(newServer);
+        newServer.getLdapRegistries().add(ldap);
+        updateConfigDynamically(server, newServer);
+
+        bodySwapToKeytab(ldap, kerb);
+    }
+
+    /**
+     * Add a keytab, add a bad ticketCache, remove badTicket cache, all logins should be valid.
+     *
+     * @param ldap
+     * @param kerb
+     * @throws Exception
+     */
+    private void bodySwapToKeytab(LdapRegistry ldap, Kerberos kerb) throws Exception {
         loginUser();
 
         Log.info(c, testName.getMethodName(), "Add valid keytab, should be successful");
-        Kerberos kerb = newServer.getKerberos();
-        kerb.configFile = configFile;
         kerb.keytab = keytabFile;
 
         loginUser();
 
-        Log.info(c, testName.getMethodName(), "Change the ticketCache to a bad config, should be successful because we'll use the keytab");
+        Log.info(c, testName.getMethodName(), "Change the ticketCache to a bad config, login should be successful because we'll use the keytab");
         ldap.setKrb5TicketCache("badCache.cc");
 
         loginUser();
 
-        Log.info(c, testName.getMethodName(), "Remove the bad ticketCache, should be successful because we'll use the keytab");
+        Log.info(c, testName.getMethodName(), "Remove the bad ticketCache, login should be successful because we'll use the keytab");
         ldap.setKrb5TicketCache(null);
 
         loginUser();
@@ -309,7 +342,7 @@ public class TicketCacheBindTest extends CommonBindTest {
     public void configFileWrongKDCPort() throws Exception {
         Log.info(c, testName.getMethodName(), "Update to a config file with a bad port for the KDC server");
 
-        String badConfigFile = ApacheDSandKDC.createConfigFile("badConfig-", -1);
+        String badConfigFile = ApacheDSandKDC.createConfigFile("badConfig-", 17, true, false);
 
         ServerConfiguration newServer = emptyConfiguration.clone();
         LdapRegistry ldap = getLdapRegistryWithTicketCache();
