@@ -10,10 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.jaxrs20.fat.multipart;
 
-import java.io.File;
-
 import org.jboss.shrinkwrap.api.asset.StringAsset;
-import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -40,8 +37,7 @@ public class MultipartTest extends FATServletClient {
     public static void setUp() throws Exception {
         ShrinkHelper.defaultDropinApp(server, war, "com.ibm.ws.jaxrs.fat.multipart")
                     .addAsWebInfResource(new StringAsset("This is a resource file that is part of the app"),
-                                         "resource.txt")//;
-                    .as(ZipExporter.class).exportTo(new File("/tmp/multipart.war"), true);
+                                         "resource.txt");
 
         // Make sure we don't fail because we try to start an
         // already started server
