@@ -47,6 +47,7 @@ import com.ibm.websphere.security.audit.AuditEvent;
 import com.ibm.websphere.security.audit.InvalidConfigurationException;
 import com.ibm.ws.common.internal.encoder.Base64Coder;
 import com.ibm.ws.config.xml.internal.nester.Nester;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.logging.collector.LogFieldConstants;
 import com.ibm.ws.logging.data.GenericData;
 import com.ibm.ws.logging.data.KeyValuePair;
@@ -653,6 +654,7 @@ public class AuditFileHandler implements SynchronousHandler {
         return this.events;
     }
 
+    @FFDCIgnore(KeyStoreException.class)
     public void setSignerKeys() throws KeyStoreException, AuditSigningException {
         KeyStoreService service = null;
         int retries = 0;
@@ -733,6 +735,7 @@ public class AuditFileHandler implements SynchronousHandler {
 
     }
 
+    @FFDCIgnore(KeyStoreException.class)
     public void setEncryptionKeys() throws KeyStoreException, AuditEncryptionException {
 
         final int MAX_RETRIES = 10;
