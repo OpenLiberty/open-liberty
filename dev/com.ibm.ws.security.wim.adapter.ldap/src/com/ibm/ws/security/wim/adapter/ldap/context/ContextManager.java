@@ -18,6 +18,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
@@ -496,13 +498,11 @@ public class ContextManager {
      * @return The {@link TimedDirContext}.
      * @throws NamingException If there was an issue binding to the LDAP server.
      */
-    @FFDCIgnore({ javax.security.auth.login.LoginException.class })
+    @FFDCIgnore({ javax.security.auth.login.LoginException.class, PrivilegedActionException.class })
     private TimedDirContext createDirContext(Hashtable<String, Object> env, long createTimestamp) throws NamingException {
         if (isKerberosBindAuth()) {
             try {
-                Subject subject = handleKerberos();
-                // Using javax.security.sasl.Sasl.CREDENTIALS caused intermittent compile failures on Java 8
-                env.put("javax.security.sasl.credentials", SubjectHelper.getGSSCredentialFromSubject(subject));
+                handleKerberos(env);
             } catch (LoginException e) {
                 NamingException ne = new NamingException(e.getMessage());
                 ne.setRootCause(e);
@@ -546,7 +546,23 @@ public class ContextManager {
             ClassLoader origCL = getContextClassLoader();
             setContextClassLoader(getClass());
             try {
-                TimedDirContext ctx = new TimedDirContext(env, getConnectionRequestControls(), createTimestamp);
+                TimedDirContext ctx = null;
+                if (isKerberosBindAuth()) {
+                    try {
+                        ctx = java.security.AccessController.doPrivileged(new PrivilegedExceptionAction<TimedDirContext>() {
+                            @Override
+                            public TimedDirContext run() throws NamingException {
+                                return new TimedDirContext(env, getConnectionRequestControls(), createTimestamp);
+                            }
+                        });
+                    } catch (PrivilegedActionException pae) {
+                        NamingException e = (NamingException) pae.getException();
+                        throw e;
+                    }
+                }
+                if (ctx == null) {
+                    ctx = new TimedDirContext(env, getConnectionRequestControls(), createTimestamp);
+                }
                 String newURL = getProviderURL(ctx);
                 // Set the active URL if context pool is disabled,
                 // otherwise active URL will be set when pool is refreshed
@@ -1802,8 +1818,8 @@ public class ContextManager {
      *
      * @return
      */
-    @FFDCIgnore({ javax.security.auth.login.LoginException.class, IllegalArgumentException.class })
-    private Subject handleKerberos() throws LoginException, MalformedURLException {
+    @FFDCIgnore({ javax.security.auth.login.LoginException.class, IllegalArgumentException.class, PrivilegedActionException.class })
+    private void handleKerberos(Hashtable<String, Object> env) throws LoginException, MalformedURLException {
         final String METHODNAME = "handleKerberos";
         if (!isKerberosBindAuth()) {
             /*
@@ -1812,9 +1828,9 @@ public class ContextManager {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, METHODNAME + " Kerberos login method was called, but Kerberos is not enabled. BindAuthMechanism is " + bindAuthMechanism);
             }
-            return null;
+            return;
         }
-        Subject subject = null;
+
         acquireKrb5ReadLock();
         try {
             if (kerberosService == null) {
@@ -1827,7 +1843,21 @@ public class ContextManager {
             }
 
             try {
-                subject = kerberosService.getOrCreateSubject(krb5Principal, null, krb5TicketCache);
+                try {
+                    java.security.AccessController.doPrivileged(new PrivilegedExceptionAction<Subject>() {
+                        @Override
+                        public Subject run() throws LoginException {
+                            Subject subject = kerberosService.getOrCreateSubject(krb5Principal, null, krb5TicketCache);
+                            // Using javax.security.sasl.Sasl.CREDENTIALS caused intermittent compile failures on Java 8
+                            env.put("javax.security.sasl.credentials", SubjectHelper.getGSSCredentialFromSubject(subject));
+                            return subject;
+                        }
+                    });
+                } catch (PrivilegedActionException pae) {
+                    LoginException e = (LoginException) pae.getException();
+                    throw e;
+                }
+
             } catch (LoginException e) {
                 /*
                  * Customize the exception, based on the provided krb5 config: ticketCache vs keytab vs default
@@ -1856,8 +1886,6 @@ public class ContextManager {
         } finally {
             releaseKrb5ReadLock();
         }
-
-        return subject;
     }
 
     /**
