@@ -21,7 +21,26 @@ repositories {
         username userProps.getProperty("artifactory.download.user")
         password userProps.getProperty("artifactory.download.token")
       }
+      url ("https://" + userProps.getProperty("artifactory.download.server") + "/artifactory/wasliberty-open-liberty")
+      // for fats - this repository is used *only* contains artifacts with group "biz.aQute.bnd"
+      content {
+        includeGroup "biz.aQute.bnd"
+      }
+      metadataSources {
+        mavenPom()
+        artifact()
+      }
+    }
+    maven {
+      credentials {
+        username userProps.getProperty("artifactory.download.user")
+        password userProps.getProperty("artifactory.download.token")
+      }
       url ("https://" + gradle.userProps.getProperty("artifactory.download.server") + "/artifactory/wasliberty-maven-remote")
+      metadataSources {
+        mavenPom()
+        artifact()
+      }
     }
   } else {
     mavenCentral()
