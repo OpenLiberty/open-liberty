@@ -78,7 +78,6 @@ public class KeytabBindTest extends CommonBindTest {
      */
     @Test
     @CheckForLeakedPasswords(LdapKerberosUtils.BIND_PASSWORD)
-    @AllowedFFDC("javax.naming.NamingException") // temporary, remove when Issue #16231 is fixed
     public void basicLoginChecksWithContextPool() throws Exception {
         Log.info(c, testName.getMethodName(), "Run basic login checks with a standard configuration");
         ServerConfiguration newServer = emptyConfiguration.clone();

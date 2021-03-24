@@ -73,6 +73,8 @@ import javax.naming.ldap.LdapName;
 import javax.naming.ldap.PagedResultsControl;
 import javax.naming.ldap.PagedResultsResponseControl;
 
+import org.osgi.service.cm.ConfigurationAdmin;
+
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
@@ -205,6 +207,8 @@ public class LdapConnection {
     /** The KerberosService for use when bindAuthMechanism is GSSAPI (Kerberos), also loads the keytab/config if configured in the <kerberos> element */
     private KerberosService kerberosService = null;
 
+    private ConfigurationAdmin configAdmin = null;
+
     /**
      * Returns a hash key for the name|filter|cons tuple used in the search
      * query-results cache.
@@ -304,9 +308,10 @@ public class LdapConnection {
      * @param ldapConfigMgr The {@link LdapConfigManager} to get configuration from.
      * @param ks            The {@link KerberosService} to get KRB5 configuration from (can be null).
      */
-    public LdapConnection(LdapConfigManager ldapConfigMgr, KerberosService ks) {
+    public LdapConnection(LdapConfigManager ldapConfigMgr, KerberosService ks, ConfigurationAdmin configAdminRef) {
         iLdapConfigMgr = ldapConfigMgr;
         kerberosService = ks;
+        configAdmin = configAdminRef;
     }
 
     /**
@@ -470,7 +475,7 @@ public class LdapConnection {
             betaFenceCheckKrb5();
 
             iContextManager.setKerberosCredentials(iReposId, kerberosService, (String) configProps.get(ConfigConstants.CONFIG_PROP_KRB5_PRINCIPAL),
-                                                   (String) configProps.get(ConfigConstants.CONFIG_PROP_KRB5_TICKET_CACHE));
+                                                   (String) configProps.get(ConfigConstants.CONFIG_PROP_KRB5_TICKET_CACHE), configAdmin);
         }
 
         /*
