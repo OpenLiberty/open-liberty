@@ -31,18 +31,7 @@
 
     <target name="post-compile">
         <antcall target="get-jquery-lib" />
-        <antcall target="get-bootstrap-lib" />
         <antcall target="get-orion-lib" />
-        <copy-one-font-file font-file="helvetica-neue/helvetica-neue-roman.woff" font-target-dir="lib/fonts" />
-        <antcall target="404_copy_to_tools"></antcall>
-
-        <copy todir="${basedir}/build/jsShared/utils">
-            <fileset dir="${basedir}/../com.ibm.ws.ui.shared/resources/WEB-CONTENT/jsShared/utils">
-            	<include name="apiMsgUtils.js" />
-            </fileset>
-        </copy>
-
-    	<antcall target="minify-js" />
-        <antcall target="closureDevSetup" />
+        <antcall target="404_copy_to_tools" />
     </target>
 </project>

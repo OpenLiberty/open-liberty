@@ -10,6 +10,7 @@
  *******************************************************************************/
 
 ant.importBuild 'import.xml'
+apply from: rootProject.file('wlp-gradle/javascript.gradle')
 
 jar {
     dependsOn 'compile-js'
