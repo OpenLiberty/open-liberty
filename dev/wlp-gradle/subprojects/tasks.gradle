@@ -20,12 +20,13 @@ jar {
   version=null
 }
 
-task globalize {
-  // Exclude messages from quotation validation if explicitly excluded via bnd.bnd
-  def quotationExcludes = bnd('globalize.quotation.excludes')
+if (parseBoolean(bnd('globalize', 'true'))) {
+  task globalize {
+    // Exclude messages from quotation validation if explicitly excluded via bnd.bnd
+    def quotationExcludes = bnd('globalize.quotation.excludes')
 
-  ext.destinationDir = new File(buildDir, "src/${name}/java")
-  if (parseBoolean(bnd('globalize', 'true'))) {
+    ext.destinationDir = new File(buildDir, "src/${name}/java")
+    
     inputs.files(fileTree(dir: project.file('resources'), include: '**/*.nlsprops')).skipWhenEmpty()
     outputs.dir destinationDir
     doFirst {
@@ -123,193 +124,199 @@ task globalize {
       }
     }
   }
-}
 
-task copyPiiFiles(type: Copy) {
-  enabled parseBoolean(bnd('copy.pii', 'true'))
-  ext.destinationDir = rootProject.file("build.pii.package/nlssrc/${project.name}")
-  from project.file('resources')
-  into ext.destinationDir
-  include '**/*.nlsprops'
-  include 'OSGI-INF/l10n/*'
-  include 'l10n/*'
-  include 'publish/features/l10n/*.properties'
-  include 'WEB-CONTENT/**/nls/*.js'
-  include 'OSGI-INF/**/nls/*.js'
-}
-
-sourceSets {
-  main {
-    if (parseBoolean(bnd('globalize', 'true'))) {
+  sourceSets {
+    main {
       java.srcDir globalize.destinationDir
     }
   }
 }
 
-configurations {
-  jakartaeeTransformJars
+if (parseBoolean(bnd('copy.pii', 'true'))) {
+  task copyPiiFiles(type: Copy) {
+    ext.destinationDir = rootProject.file("build.pii.package/nlssrc/${project.name}")
+    from project.file('resources')
+    into ext.destinationDir
+    include '**/*.nlsprops'
+    include 'OSGI-INF/l10n/*'
+    include 'l10n/*'
+    include 'publish/features/l10n/*.properties'
+    include 'WEB-CONTENT/**/nls/*.js'
+    include 'OSGI-INF/**/nls/*.js'
+  }
+} else {
+  task copyPiiFiles { }
 }
 
-dependencies {
-  jakartaeeTransformJars 'biz.aQute.bnd:biz.aQute.bnd.transform:5.1.1',
-                          'commons-cli:commons-cli:1.4',
-                          'org.slf4j:slf4j-simple:1.7.30',
-                          'org.slf4j:slf4j-api:1.7.26',
-                          'org.eclipse.transformer:org.eclipse.transformer:0.2.0',
-                          'org.eclipse.transformer:org.eclipse.transformer.cli:0.2.0'
-}
+if ( parseBoolean( bnd('jakartaeeMe', 'true'))) {
+  configurations {
+    jakartaeeTransformJars
+  }
 
-task jakartaeeTransform {
-  mustRunAfter project.tasks.jar
+  dependencies {
+    jakartaeeTransformJars 'biz.aQute.bnd:biz.aQute.bnd.transform:5.1.1',
+                            'commons-cli:commons-cli:1.4',
+                            'org.slf4j:slf4j-simple:1.7.30',
+                            'org.slf4j:slf4j-api:1.7.26',
+                            'org.eclipse.transformer:org.eclipse.transformer:0.2.0',
+                            'org.eclipse.transformer:org.eclipse.transformer.cli:0.2.0'
+  }
 
-  if ( parseBoolean( bnd('jakartaeeMe', 'true') ) ) {
+  task jakartaeeTransform {
+    mustRunAfter project.tasks.jar
+    dependsOn jar
+    inputs.files(fileTree(project.buildDir).matching {include '*.jar' exclude '*jakarta.jar' }).skipWhenEmpty()
+    outputs.dir project.buildDir
     doLast {
       fileTree(project.buildDir).matching { include '*jakarta.jar' }.each { delete it }
 
       FileTree bundles = fileTree(project.buildDir).matching {include '*.jar' }        
-          bundles.each { bundleJar ->
+      bundles.each { bundleJar ->
 
-      println 'BND [ jakartaeeMe ] detected; performing jakarta transform'
+        println 'BND [ jakartaeeMe ] detected; performing jakarta transform'
 
-      // Jakarta transform options always input the bundle jar and output
-      // a jakarta transformed copy of the bundle jar.
-      //
-      // Jakarta transform always uses a set of global properties files.
- 
-      def initialBundleJarName = project.buildDir.path + '/' + bundleJar.name
-      println 'Initial bundle jar name [ ' + initialBundleJarName + ' ]'
+        // Jakarta transform options always input the bundle jar and output
+        // a jakarta transformed copy of the bundle jar.
+        //
+        // Jakarta transform always uses a set of global properties files.
 
-      def finalBundleJarName = initialBundleJarName.replaceAll( '.jar', '.jakarta.jar' )
-      println 'Default jakarta final bundle jar name [ ' + finalBundleJarName + ' ]'
+        def initialBundleJarName = project.buildDir.path + '/' + bundleJar.name
+        println 'Initial bundle jar name [ ' + initialBundleJarName + ' ]'
 
-      def localBundleJarName = bnd('jakartaFinalJarName')
-      if ( (localBundleJarName != null) && !localBundleJarName.isEmpty() ) {
-        println 'Local jakarta final bundle jar name [ ' + localBundleJarName + ' ]'
-        println 'Ignoring default jakarta final bundle jar name'
-        finalBundleJarName = project.buildDir.path + '/' + localBundleJarName
-        println 'Override jakarta bundle final jar name [ ' + finalBundleJarName + ' ]'
-      } else {
-        println 'Using default jakarta final bundle jar name'
-      }
+        def finalBundleJarName = initialBundleJarName.replaceAll( '.jar', '.jakarta.jar' )
+        println 'Default jakarta final bundle jar name [ ' + finalBundleJarName + ' ]'
 
-      def transformProject = bndWorkspace.getProject('wlp-jakartaee-transform')
-      def globalRules = transformProject.getFile('rules')
-      println 'Using global rules [ ' + globalRules.path + ' ]'
- 
-      def transformerArgs = [
-        initialBundleJarName, finalBundleJarName,
-        '-tr', transformProject.getFile('rules/jakarta-renames.properties').path,
-        '-ts', transformProject.getFile('rules/jakarta-selections.properties').path,
-        '-tv', transformProject.getFile('rules/jakarta-versions.properties').path,
-        '-tb', transformProject.getFile('rules/jakarta-bundles.properties').path,
-        '-td', transformProject.getFile('rules/jakarta-direct.properties').path,
-        '-tf', transformProject.getFile('rules/jakarta-xml-master.properties').path ]
+        def localBundleJarName = bnd('jakartaFinalJarName')
+        if ( (localBundleJarName != null) && !localBundleJarName.isEmpty() ) {
+          println 'Local jakarta final bundle jar name [ ' + localBundleJarName + ' ]'
+          println 'Ignoring default jakarta final bundle jar name'
+          finalBundleJarName = project.buildDir.path + '/' + localBundleJarName
+          println 'Override jakarta bundle final jar name [ ' + finalBundleJarName + ' ]'
+        } else {
+          println 'Using default jakarta final bundle jar name'
+        }
 
-      // Add BND file specified local additions.
+        def transformProject = bndWorkspace.getProject('wlp-jakartaee-transform')
+        def globalRules = transformProject.getFile('rules')
+        println 'Using global rules [ ' + globalRules.path + ' ]'
 
-      project.ext.set( 'jakartaLocalSelections', 'local.selections.properties' )
+        def transformerArgs = [
+          initialBundleJarName, finalBundleJarName,
+          '-q', // quiet output
+          '-tr', transformProject.getFile('rules/jakarta-renames.properties').path,
+          '-ts', transformProject.getFile('rules/jakarta-selections.properties').path,
+          '-tv', transformProject.getFile('rules/jakarta-versions.properties').path,
+          '-tb', transformProject.getFile('rules/jakarta-bundles.properties').path,
+          '-td', transformProject.getFile('rules/jakarta-direct.properties').path,
+          '-tf', transformProject.getFile('rules/jakarta-xml-master.properties').path ]
 
-      def localOptions = [
-          [ 'Selections', '-ts' ],
-          [ 'Renames',    '-tr' ],
-          [ 'Versions',   '-tv' ],
-          [ 'Bundles',    '-tb' ],
-          [ 'Direct',     '-td' ],
-          [ 'TextMaster', '-tf' ]
-      ]
+        // Add BND file specified local additions.
 
-      for ( localEntry in localOptions ) {
-          def localName = localEntry[0]
-          def localOption = localEntry[1]
+        project.ext.set( 'jakartaLocalSelections', 'local.selections.properties' )
 
-          def bndProperty = 'jakartaLocal' + localName
-          def localAddition = bnd(bndProperty)
+        def localOptions = [
+            [ 'Selections', '-ts' ],
+            [ 'Renames',    '-tr' ],
+            [ 'Versions',   '-tv' ],
+            [ 'Bundles',    '-tb' ],
+            [ 'Direct',     '-td' ],
+            [ 'TextMaster', '-tf' ]
+        ]
 
-          if ( (localAddition == null) || localAddition.isEmpty() ) {
-              println 'BND [ ' + bndProperty + ' ] is not set'
+        for ( localEntry in localOptions ) {
+            def localName = localEntry[0]
+            def localOption = localEntry[1]
 
+            def bndProperty = 'jakartaLocal' + localName
+            def localAddition = bnd(bndProperty)
+
+            if ( (localAddition == null) || localAddition.isEmpty() ) {
+                println 'BND [ ' + bndProperty + ' ] is not set'
+
+            } else {
+                def localFile = project.file( 'rules/' + localAddition )
+
+                if ( !localFile.exists() ) {
+                    logger.error( 'ERROR: BND Ignoring [ ' + bndProperty + ' ]; [ ' + localFile.path + ' ] does not exist' )
+
+                } else {
+                    println 'BND adding [ ' + bndProperty + ' ]: [ ' + localFile.path + ' ]'
+                    transformerArgs.add( localOption )
+                    transformerArgs.add( localFile.path )
+                }
+            }
+        }
+
+        def initialBundleId = bnd('jakartaInitialBundleId')
+        if ( (initialBundleId != null) && !initialBundleId.isEmpty() ) {
+          println 'BND jakartaInitialBundleId [ ' + initialBundleId + ' ]'
+
+          def finalBundleId = bnd('jakartaFinalBundleId')
+          if ( (finalBundleId == null) || finalBundleId.isEmpty() ) {
+            logger.error( 'ERROR: BND Final bundle id property [ jakartaFinalBundleId ] is not set' )
           } else {
-              def localFile = project.file( 'rules/' + localAddition )
-
-              if ( !localFile.exists() ) {
-                  logger.error( 'ERROR: BND Ignoring [ ' + bndProperty + ' ]; [ ' + localFile.path + ' ] does not exist' )
-
-              } else {
-                  println 'BND adding [ ' + bndProperty + ' ]: [ ' + localFile.path + ' ]'
-                  transformerArgs.add( localOption )
-                  transformerArgs.add( localFile.path )
-             }
+            println 'BND jakartaFinalBundleId [ ' + finalBundleId + ' ]'
           }
-      }
 
-      def initialBundleId = bnd('jakartaInitialBundleId')
-      if ( (initialBundleId != null) && !initialBundleId.isEmpty() ) {
-        println 'BND jakartaInitialBundleId [ ' + initialBundleId + ' ]'
+          def finalBundleVersion = bnd('jakartaFinalBundleVersion')
+          if ( (finalBundleVersion == null) || finalBundleVersion.isEmpty() ) {
+            logger.error( 'ERROR: BND Final bundle version property [ jakartaFinalBundleVersion ] is not set' )
+          } else {
+            println 'BND jakartaFinalBundleVersion [ ' + finalBundleVersion + ' ]'
+          }
 
-        def finalBundleId = bnd('jakartaFinalBundleId')
-        if ( (finalBundleId == null) || finalBundleId.isEmpty() ) {
-          logger.error( 'ERROR: BND Final bundle id property [ jakartaFinalBundleId ] is not set' )
-        } else {
-          println 'BND jakartaFinalBundleId [ ' + finalBundleId + ' ]'
+          def finalBundleShortName = bnd('jakartaFinalBundleShortName')
+          if ( (finalBundleShortName == null) || finalBundleShortName.isEmpty() ) {
+            logger.error( 'ERROR: BND Final bundle short name property [ jakartaFinalBundleShortName ] is not set' )
+          } else {
+            println 'BND jakartaFinalBundleName [ ' + finalBundleShortName + ' ]'
+          }
+
+          def finalBundleDescription = bnd('jakartaFinalBundleDescription')
+          if ( (finalBundleDescription == null) || finalBundleDescription.isEmpty() ) {
+            logger.error( 'ERROR: BND Final bundle description property [ jakartaFinalBundleDescription ] is not set' )
+          } else {
+            println 'BND jakartaFinalBundleDescription [ ' + finalBundleDescription + ' ]'
+          }
+
+          def directBundleDataKey = initialBundleId
+          def directBundleDataValue =
+            finalBundleId + ',' +
+            finalBundleVersion + ',' + 
+            finalBundleShortName + ',' +
+            finalBundleDescription
+
+          println 'BND jakarta direct key [ ' + directBundleDataKey + ' ]'
+          println 'BND jakarta direct value [ ' + directBundleDataValue + ' ]'
+
+          transformerArgs.add( '-ti' )
+          transformerArgs.add( 'tb' )
+          transformerArgs.add( directBundleDataKey )
+          transformerArgs.add( directBundleDataValue )
         }
 
-        def finalBundleVersion = bnd('jakartaFinalBundleVersion')
-        if ( (finalBundleVersion == null) || finalBundleVersion.isEmpty() ) {
-          logger.error( 'ERROR: BND Final bundle version property [ jakartaFinalBundleVersion ] is not set' )
-        } else {
-          println 'BND jakartaFinalBundleVersion [ ' + finalBundleVersion + ' ]'
+        println 'Transformer options:'
+        transformerArgs.each {
+            println '  [ ' + it + ' ]'
         }
 
-        def finalBundleShortName = bnd('jakartaFinalBundleShortName')
-        if ( (finalBundleShortName == null) || finalBundleShortName.isEmpty() ) {
-          logger.error( 'ERROR: BND Final bundle short name property [ jakartaFinalBundleShortName ] is not set' )
-        } else {
-          println 'BND jakartaFinalBundleName [ ' + finalBundleShortName + ' ]'
+        javaexec {
+            classpath configurations.jakartaeeTransformJars
+            main = 'org.eclipse.transformer.jakarta.JakartaTransformer'
+            args = transformerArgs
         }
-
-        def finalBundleDescription = bnd('jakartaFinalBundleDescription')
-        if ( (finalBundleDescription == null) || finalBundleDescription.isEmpty() ) {
-          logger.error( 'ERROR: BND Final bundle description property [ jakartaFinalBundleDescription ] is not set' )
-        } else {
-          println 'BND jakartaFinalBundleDescription [ ' + finalBundleDescription + ' ]'
-        }
-
-        def directBundleDataKey = initialBundleId
-        def directBundleDataValue =
-          finalBundleId + ',' +
-          finalBundleVersion + ',' + 
-          finalBundleShortName + ',' +
-          finalBundleDescription
-
-        println 'BND jakarta direct key [ ' + directBundleDataKey + ' ]'
-        println 'BND jakarta direct value [ ' + directBundleDataValue + ' ]'
-
-        transformerArgs.add( '-ti' )
-        transformerArgs.add( 'tb' )
-        transformerArgs.add( directBundleDataKey )
-        transformerArgs.add( directBundleDataValue )
-      }
-
-      println 'Transformer options:'
-      transformerArgs.each {
-          println '  [ ' + it + ' ]'
-      }
-
-      javaexec {
-          classpath configurations.jakartaeeTransformJars
-          main = 'org.eclipse.transformer.jakarta.JakartaTransformer'
-          args = transformerArgs
       }
     }
-  } }
-}
+  }
 
-assemble.dependsOn(jakartaeeTransform)
+  assemble.dependsOn(jakartaeeTransform)
+}
 
 compileJava {
   if (!parseBoolean(bnd('instrument.disabled', 'false'))) {
     inputs.files { rasInstrumentationInputFiles() }
-    def instrument = fileTree(dir: compileJava.destinationDir, include: bnd('instrument.classesIncludes'), exclude: bnd('instrument.classesExcludes'))
+    outputs.dir compileJava.destinationDir
+    def instrument = fileTree(dir: compileJava.destinationDir, include: bnd('instrument.classesIncludes').split("\\s*,\\s*"), exclude: bnd('instrument.classesExcludes').split("\\s*,\\s*"))
     doLast {
       if (instrument.isEmpty())
         return
@@ -375,53 +382,53 @@ task buildfat {
   group = "build"
 }
 
-task apiSpiJavadoc(type: Javadoc) {
-  dependsOn jar
-  def publishSuffix = bnd('publish.wlp.jar.suffix', 'lib')
-  enabled publishSuffix.contains('api/ibm') || publishSuffix.contains('spi/ibm')
+if (bnd('publish.wlp.jar.suffix', 'lib').contains('api/ibm') || bnd('publish.wlp.jar.suffix', 'lib').contains('spi/ibm')) {
+  task apiSpiJavadoc(type: Javadoc) {
+    dependsOn jar
 
-  onlyIf {
-    !new File(buildDir, "javadoc").exists()
-  }
-
-  def sp = files()
-  def cp = files()
-  bndWorkspace.getProject(bnd('Bundle-SymbolicName', project.name))?.getBuildpath().each {
-    def proj = it.getProject()
-    sp += files(proj.getSourcePath())
-    cp += files(it.getFile())
-    cp += files(proj.getBuildpath()*.getFile())
-  }
-
-  destinationDir = file("$buildDir/javadoc")
-  classpath += cp
-  source = sp
-
-  include bnd('Export-Package', '').split(',').collect {
-    def pkg = it
-    int index = pkg.indexOf(";")
-    if (index != -1) {
-      pkg = pkg.substring(0, index)
+    onlyIf {
+      !new File(buildDir, "javadoc").exists()
     }
-    // Replace . with / (path separator) and * (package name wildcard) with **
-    pkg = pkg.trim().replaceAll("\\.", "/").replaceAll("\\*", "/**") + "/*.java"
-    return pkg
-  }
-  exclude "**/internal/**"
-  title = bnd('Bundle-Name')
-  options.source bnd('javac.source')
-  options.memberLevel = 'PUBLIC'
-  options.noIndex true
-  options.use true
-  if (JavaVersion.current().isJava8Compatible()) {
-    options.addStringOption('Xdoclint:none', '-quiet')
-  }
-}
 
-task zipJavadoc(type: Zip) {
-  dependsOn apiSpiJavadoc
-  archiveName bnd('Bundle-SymbolicName', project.name) + '.javadoc.zip'
-  from new File(project.buildDir, "javadoc")
+    def sp = files()
+    def cp = files()
+    bndWorkspace.getProject(bnd('Bundle-SymbolicName', project.name))?.getBuildpath().each {
+      def proj = it.getProject()
+      sp += files(proj.getSourcePath())
+      cp += files(it.getFile())
+      cp += files(proj.getBuildpath()*.getFile())
+    }
+
+    destinationDir = file("$buildDir/javadoc")
+    classpath += cp
+    source = sp
+
+    include bnd('Export-Package', '').split(',').collect {
+      def pkg = it
+      int index = pkg.indexOf(";")
+      if (index != -1) {
+        pkg = pkg.substring(0, index)
+      }
+      // Replace . with / (path separator) and * (package name wildcard) with **
+      pkg = pkg.trim().replaceAll("\\.", "/").replaceAll("\\*", "/**") + "/*.java"
+      return pkg
+    }
+    exclude "**/internal/**"
+    title = bnd('Bundle-Name')
+    options.source bnd('javac.source')
+    options.memberLevel = 'PUBLIC'
+    options.noIndex true
+    options.use true
+    if (JavaVersion.current().isJava8Compatible()) {
+      options.addStringOption('Xdoclint:none', '-quiet')
+    }
+  }
+
+  task zipJavadoc(type: Zip) {
+    dependsOn apiSpiJavadoc
+    archiveName bnd('Bundle-SymbolicName', project.name) + '.javadoc.zip'
+    from new File(project.buildDir, "javadoc")
+  }
 }
 
 /**
