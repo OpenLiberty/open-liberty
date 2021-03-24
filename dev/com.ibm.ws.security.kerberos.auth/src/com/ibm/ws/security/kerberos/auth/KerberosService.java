@@ -272,6 +272,21 @@ public class KerberosService {
         Set<GSSCredential> gssCreds = subject.getPrivateCredentials(GSSCredential.class);
         if (gssCreds == null || gssCreds.size() == 0) {
             GSSCredential gssCred = SubjectHelper.createGSSCredential(subject);
+
+            if (gssCred == null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "The createGSSCredential on subject " + subject + " using principal, " + principal + ", returned null. ");
+                }
+                String msg = null;
+                if (ccache != null) {
+                    msg = Tr.formatMessage(tc, "KRB5_LOGIN_FAILED_CACHE_CWWKS4347E", principal, ccache.toAbsolutePath());
+                } else if (keytab != null) {
+                    msg = Tr.formatMessage(tc, "KRB5_LOGIN_FAILED_KEYTAB_CWWKS4348E", principal, keytab.toAbsolutePath());
+                } else {
+                    msg = Tr.formatMessage(tc, "KRB5_LOGIN_FAILED_DEFAULT_KEYTAB_CWWKS4349E", principal);
+                }
+                throw new LoginException(msg);
+            }
             if (System.getSecurityManager() == null) {
                 subject.getPrivateCredentials().add(gssCred);
             } else {
