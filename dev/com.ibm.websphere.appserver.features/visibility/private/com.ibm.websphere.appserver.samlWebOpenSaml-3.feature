@@ -1,5 +1,5 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
-symbolicName = com.ibm.websphere.appserver.opensaml3
+symbolicName = com.ibm.websphere.appserver.samlWebOpenSaml-3
 WLP-DisableAllFeatures-OnConflict: false
 visibility=private
 singleton=true

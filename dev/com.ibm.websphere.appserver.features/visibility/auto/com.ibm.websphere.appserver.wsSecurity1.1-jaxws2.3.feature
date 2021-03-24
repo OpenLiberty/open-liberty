@@ -8,7 +8,6 @@ IBM-Provision-Capability:\
 IBM-Install-Policy: when-satisfied
 -features= \
   com.ibm.websphere.appserver.ssoCommon-1.0, \
-  com.ibm.websphere.appserver.jaxws-2.3, \
   com.ibm.websphere.appserver.wss4j-2.3, \
   com.ibm.websphere.appserver.httpcommons-1.0
 -bundles= \

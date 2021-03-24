@@ -8,7 +8,6 @@ IBM-Provision-Capability:\
 IBM-Install-Policy: when-satisfied
 -features=\
   com.ibm.websphere.appserver.internal.slf4j-1.7.7,\
-  com.ibm.websphere.appserver.jaxws-2.2, \
   com.ibm.websphere.appserver.wss4j-1.0
 -bundles=com.ibm.ws.org.opensaml.xmltooling.1.4.4, \
   com.ibm.ws.org.joda.time.1.6.2, \
