@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2019 IBM Corporation and others.
+    Copyright (c) 2019,2021 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -21,6 +21,10 @@
 
   <application location="sqlserverfat.war" >
     <classloader commonLibraryRef="SQLServerLibAnon"/>
+    <web-ext>
+      <resource-ref name="java:comp/jdbc/env/unsharable-ds-xa-loosely-coupled" branch-coupling="LOOSE"/>
+      <resource-ref name="java:comp/jdbc/env/unsharable-ds-xa-tightly-coupled" branch-coupling="TIGHT"/>
+    </web-ext>
   </application>
   
  <!-- Anonymously named jar used to prevent JDBCDriver auto-detection -->
@@ -28,7 +32,7 @@
     <fileset dir="${shared.resource.dir}/sqlserver" includes="anomyous.jar"/>
   </library>
     
-  <dataSource id="DefaultDataSource">
+  <dataSource id="DefaultDataSource" enableBranchCouplingExtension="true"><!-- TODO remove attribute once GA -->
     <jdbcDriver libraryRef="SQLServerLibAnon"/>
     <properties.microsoft.sqlserver
       databaseName="${env.DBNAME}" serverName="${env.HOST}" portNumber="${env.PORT}"/>
@@ -70,7 +74,7 @@
   </dataSource>
 
   <javaPermission codebase="${server.config.dir}/apps/sqlserverfat.war" className="java.security.AllPermission"/>
-  <javaPermission codebase="${server.config.dir}/sqlserver/anomyous.jar" className="java.security.AllPermission"/>
+  <javaPermission codebase="${shared.resource.dir}/sqlserver/anomyous.jar" className="java.security.AllPermission"/>
   
   <!-- SQLServer JDBC test requirement -->
   <javaPermission className="java.util.PropertyPermission" name="java.specification.version" actions="read"/>

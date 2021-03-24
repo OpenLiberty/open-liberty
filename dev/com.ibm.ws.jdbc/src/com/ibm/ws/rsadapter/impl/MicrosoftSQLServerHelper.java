@@ -22,10 +22,12 @@ import java.util.Collections;
 import java.util.Properties;
 
 import javax.resource.ResourceException;
+import javax.transaction.xa.XAResource;
 
 import com.ibm.ejs.cm.logger.TraceWriter;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.resource.ResourceRefInfo;
 import com.ibm.ws.rsadapter.AdapterUtil;
 import com.ibm.ws.rsadapter.jdbc.WSJdbcTracer;
 
@@ -82,6 +84,25 @@ public class MicrosoftSQLServerHelper extends DatabaseHelper {
                            6002,
                            6005,
                            6006);
+    }
+
+    /**
+     * Returns the XA start flag for loose or tight branch coupling
+     *
+     * @param couplingType branch coupling type
+     * @return XA start flag value for the specified coupling type
+     */
+    @Override
+    public int branchCouplingSupported(int couplingType) {
+        // TODO remove this check at GA
+        if (!mcf.dsConfig.get().enableBranchCouplingExtension)
+            return super.branchCouplingSupported(couplingType);
+
+        if (couplingType == ResourceRefInfo.BRANCH_COUPLING_TIGHT)
+            return 0x8000; // value of SQLServerXAResource.SSTRANSTIGHTLYCPLD (32768)
+
+        // Loose branch coupling is default for Microsoft SQL Server
+        return XAResource.TMNOFLAGS;
     }
 
     @Override

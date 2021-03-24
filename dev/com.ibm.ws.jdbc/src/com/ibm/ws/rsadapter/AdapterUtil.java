@@ -628,7 +628,13 @@ public class AdapterUtil {
                 return "TMNOFLAGS (" + flag + ')'; 
 
             case XAResource.TMRESUME:
-                return "TMRESUME (" + flag + ')'; 
+                return "TMRESUME (" + flag + ')';
+
+            case 0x8000:
+                return "SSTRANSTIGHTLYCPLD (" + flag + ')';
+
+            case 0x10000:
+                return "ORATRANSLOOSE (" + flag + ')';
         }
 
         return "UNKNOWN XA RESOURCE START FLAG (" + flag + ')'; 
