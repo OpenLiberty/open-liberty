@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2020 IBM Corporation and others.
+ * Copyright (c) 1997, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -555,8 +555,7 @@ public class SRTServletResponse implements HttpServletResponse, IResponseOutput,
             WebContainerRequestState reqState = WebContainerRequestState.getInstance(true);
             if (! reqState.isCompleted()) {
                 _response.releaseChannel();
-                if (reqState.getCurrentThreadsIExtendedRequest()==this.getRequest())
-                    WebContainerRequestState.getInstance(true).setCompleted(true);
+                WebContainerRequestState.getInstance(true).setCompleted(true);
             }
         }
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)){
