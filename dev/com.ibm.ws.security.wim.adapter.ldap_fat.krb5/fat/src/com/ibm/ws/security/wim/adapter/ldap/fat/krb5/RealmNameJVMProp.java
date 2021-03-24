@@ -78,7 +78,7 @@ public class RealmNameJVMProp extends CommonBindTest {
         server.stopServer(stopStrings);
 
         Log.info(c, testName.getMethodName(), "Add a realm name as a JVM property, restart server to take effect");
-        server.setJvmOptions(Arrays.asList("-Djava.security.krb5.realm=" + DOMAIN, "-Djava.security.krb5.kdc=localhost", "-Dcom.ibm.ws.beta.edition=true"));
+        server.setJvmOptions(Arrays.asList("-Djava.security.krb5.realm=" + DOMAIN, "-Djava.security.krb5.kdc=localhost"));
 
         server.startServer();
         startupChecks();
