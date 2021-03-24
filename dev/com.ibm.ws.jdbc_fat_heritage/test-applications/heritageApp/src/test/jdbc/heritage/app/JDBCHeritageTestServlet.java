@@ -26,6 +26,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLRecoverableException;
 import java.sql.Statement;
 import java.util.Set;
 
@@ -112,6 +113,40 @@ public class JDBCHeritageTestServlet extends FATServlet {
                 }
             throw new NoSuchFieldException("Unable to find pstmtImpl on prepared statement wrapper. If the field has been renamed, you will need to update this test.");
         });
+    }
+
+    /**
+     * Verifies that when an authorization error occurs, only the connection on which the
+     * error occurred is removed from the pool.
+     */
+    @Test
+    public void testAuthorizationError() throws Exception {
+        Connection connImpl;
+
+        try (Connection con1 = dsWithHelperDefaulted.getConnection("testAuthorizationError", "testAuthorizationError")) {
+            connImpl = connImpl(con1);
+
+            try (Connection con2 = dsWithHelperDefaulted.getConnection("testAuthorizationError", "testAuthorizationError")) {
+                // put the first connection into the pool
+                con1.close();
+
+                // cause an authorization error on the second connection
+                try {
+                    con2.prepareCall("CALL TEST.FORCE_EXCEPTION(08001,28,java.sql.SQLRecoverableException)").executeQuery();
+                    fail("Test case did not force an error with SQL state 08001 and error code 28");
+                } catch (SQLRecoverableException x) {
+                    // Expected. Ensure the SQL state, error code, and exception class match.
+                    assertEquals(SQLRecoverableException.class.getName(), x.getClass().getName());
+                    assertEquals("08001", x.getSQLState());
+                    assertEquals(28, x.getErrorCode());
+                }
+            }
+        }
+
+        // Verify that the first connection is reused form the pool, unimpacted by con2's authorization error
+        try (Connection con3 = dsWithHelperDefaulted.getConnection("testAuthorizationError", "testAuthorizationError")) {
+            assertSame(connImpl, connImpl(con3));
+        }
     }
 
     /**

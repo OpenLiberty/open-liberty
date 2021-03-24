@@ -1,5 +1,19 @@
 #!/bin/bash
 
+##############################
+# This script analyses the pull request and determines what fat
+# suites need to run, and at what level (LITE/FULL).
+# Inputs: 
+#   Env Var: PRBODY                     - text in the PR's description field
+# Outputs: 
+#   Build Output: modified-categories   - reports if modified categories exit
+#   Build Output: test-os               - sets os tests will run on
+#   Build Output: test-java             - sets java level tests will run on
+#   Build Output: test-matrix           - sets the category matrix of fats to run
+# Callouts: 
+#   App: GenerateCategories.java        - calculates category matrix and outputs in json format
+##############################
+
 # Save off PR Summary
 echo $PRBODY >> .github/pull_request_body.txt
 echo "::group::PR Summary"

@@ -184,7 +184,7 @@ public class HDConnection implements Connection, HeritageDBConnection {
         if (ds.supportsNetworkTimeout)
             return derbycon.getNetworkTimeout();
         else
-            throw new SQLException("You disabled the ability to get the network timeout.");
+            throw new SQLException("You disabled the ability to get the network timeout.", "HDISA", 0);
     }
 
     @Override
@@ -192,7 +192,7 @@ public class HDConnection implements Connection, HeritageDBConnection {
         if (ds.supportsSchema)
             return derbycon.getSchema();
         else
-            throw new SQLException("You disabled the ability to get the schema.");
+            throw new SQLException("You disabled the ability to get the schema.", "HY000", 10);
     }
 
     @Override
@@ -205,7 +205,7 @@ public class HDConnection implements Connection, HeritageDBConnection {
         if (ds.supportsTypeMap)
             return derbycon.getTypeMap();
         else
-            throw new SQLException("You disabled support for type map.");
+            throw new SQLException("You disabled support for type map.", null, -40960);
     }
 
     @Override

@@ -24,6 +24,9 @@ app-resources= \
 
 -cdiannotations:
 
+-dsannotations: \
+  io.openliberty.org.jboss.resteasy.common.client.JAXRSClientConfig
+
 Service-Component: \
   io.openliberty.org.jboss.resteasy.client.clientbuilder; \
      implementation:=org.jboss.resteasy.client.jaxrs.internal.ResteasyClientBuilderImpl; \

@@ -21,8 +21,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 import java.sql.SQLNonTransientConnectionException;
 import java.sql.SQLRecoverableException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -40,6 +42,7 @@ import com.ibm.ws.jdbc.heritage.DataStoreHelperMetaData;
 import com.ibm.ws.jdbc.heritage.GenericDataStoreHelper;
 
 import test.jdbc.heritage.driver.HDConnection;
+import test.jdbc.heritage.driver.HeritageDBDoesNotImplementItException;
 
 /**
  * Data store helper for the test JDBC driver.
@@ -51,7 +54,7 @@ public class HDDataStoreHelper extends GenericDataStoreHelper {
 
     private AtomicReference<?> dsConfigRef;
 
-    private Map<Object, Class<?>> exceptionIdentificationOverrides;
+    private Map<Object, Class<?>> exceptionIdentificationOverrides = Collections.emptyMap();
 
     private static final Map<Object, Class<?>> exceptionMap = new HashMap<Object, Class<?>>();
     {
@@ -156,6 +159,13 @@ public class HDDataStoreHelper extends GenericDataStoreHelper {
                || x instanceof SQLNonTransientConnectionException
                || x instanceof StaleConnectionException
                || mapException(x) instanceof StaleConnectionException;
+    }
+
+    @Override
+    public boolean isUnsupported(SQLException x) {
+        return x instanceof SQLFeatureNotSupportedException
+               || x instanceof HeritageDBDoesNotImplementItException
+               || x instanceof HeritageDBFeatureUnavailableException;
     }
 
     @Override

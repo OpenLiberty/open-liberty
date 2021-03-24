@@ -1,4 +1,12 @@
 #!/bin/bash
+
+##############################
+# This script looks through all tests listed under test-categories and 
+# compares that to all fats that exist in open liberty (found through common naming convention of _fat)
+# Inputs: none
+# Outputs: none (just fail and report if we find any difference)
+##############################
+
 # This script performs validation for PRs that will fail if a fat was created/renamed/removed but not updated in test-categories
 TEST_CATEGORY_DIR=$PWD/.github/test-categories/
 DEV_DIR=$PWD/dev

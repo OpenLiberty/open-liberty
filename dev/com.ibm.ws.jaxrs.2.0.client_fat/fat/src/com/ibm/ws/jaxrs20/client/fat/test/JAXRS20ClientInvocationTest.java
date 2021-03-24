@@ -71,7 +71,7 @@ public class JAXRS20ClientInvocationTest extends AbstractTest {
     public void testClientClass() throws Exception {
         Map<String, String> p = new HashMap<String, String>();        
         if (JakartaEE9Action.isActive()) {
-            this.runTestOnServer(invocationTarget, "testClientClass", p, "org.jboss.resteasy.client.jaxrs.internal.ResteasyClientImpl");
+            this.runTestOnServer(invocationTarget, "testClientClass", p, "io.openliberty.org.jboss.resteasy.common.client.LibertyResteasyClientImpl");
         } else {
             this.runTestOnServer(invocationTarget, "testClientClass", p, "com.ibm.ws.jaxrs20.client.JAXRSClientImpl");
         }
