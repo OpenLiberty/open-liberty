@@ -1082,9 +1082,6 @@ public class WSRdbXaResourceImpl implements WSXAResource, FFDCSelfIntrospectable
         this.ivXid = xid;
 
         try {
-            // TODO if we add dsConfig.transactionBranchesLooselyCoupled, then for Oracle, do
-            // flags |= 0x10000; // value of oracle.jdbc.xa.OracleXAResource.ORATRANSLOOSE
-
             ivXaRes.start(xid, flags);
             ivStateManager.setState(WSStateManager.XA_START);
         } catch (TransactionException te) {

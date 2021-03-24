@@ -58,11 +58,10 @@ public class OracleTestServlet extends FATServlet {
     @Resource(lookup = "jdbc/inferred-ds")
     private DataSource inferred_ds;
 
-    // TODO add branch coupling extension
-    // @Resource(name = "java:comp/jdbc/env/unsharable-ds-xa-loosely-coupled", shareable = false)
+    @Resource(name = "java:comp/jdbc/env/unsharable-ds-xa-loosely-coupled", shareable = false)
     private DataSource unsharable_ds_xa_loosely_coupled;
 
-    @Resource(shareable = false)
+    @Resource(name = "java:comp/jdbc/env/unsharable-ds-xa-tightly-coupled", shareable = false)
     private DataSource unsharable_ds_xa_tightly_coupled;
 
     @Resource
@@ -334,7 +333,7 @@ public class OracleTestServlet extends FATServlet {
     /**
      * Confirm that locks are not shared between transaction branches that are loosely coupled.
      */
-    //@Test TODO enable once we add support for loosely coupled transaction branches for Oracle
+    @Test
     public void testTransactionBranchesLooselyCoupled() throws Exception {
         tx.begin();
         try {
