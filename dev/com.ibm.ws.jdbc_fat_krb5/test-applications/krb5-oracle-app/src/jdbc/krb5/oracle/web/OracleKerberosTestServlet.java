@@ -67,15 +67,16 @@ public class OracleKerberosTestServlet extends FATServlet {
         for (int attempt = 0; attempt < 5; attempt++) {
             try {
                 return ds.getConnection();
-            } catch (Exception e) {
-                //Try to find nested SQLExceptions
+            } catch (Throwable e) {
+                //Get the underlying SQLException
                 SQLException found = null;
                 for (Throwable t = e; t.getCause() != null; t = t.getCause()) {
-                    if (t instanceof SQLException) {
+                    if (t instanceof SQLException && t.getClass() == SQLException.class) {
                         found = (SQLException) t;
+                        break;
                     }
                 }
-                //If none was found throw original exception
+                //If nested SQLException was not found throw original
                 if (found == null)
                     throw e;
                 //Keep track of the first SQLException we found
@@ -84,9 +85,8 @@ public class OracleKerberosTestServlet extends FATServlet {
                 //Check to see if we failed with ORA-12631 if so attempt again
                 if (found.getMessage() != null && found.getMessage().contains("ORA-12631")) {
                     System.out.println("getConnection attempt " + attempt + " failed with ORA-12631");
-                    waitFor(3_000);
+                    waitFor(3000);
                     continue;
-                    //Otherwise, throw the original exception
                 } else {
                     throw e;
                 }
@@ -112,6 +112,7 @@ public class OracleKerberosTestServlet extends FATServlet {
     }
 
     @Test
+    @AllowedFFDC
     public void testNonKerberosConnection() throws Exception {
         try (Connection con = getConnectionWithRetry(noKrb5)) {
             con.createStatement().execute("SELECT 1 FROM DUAL");
@@ -122,6 +123,7 @@ public class OracleKerberosTestServlet extends FATServlet {
      * Get a connection from a javax.sql.ConnectionPoolDataSource
      */
     @Test
+    @AllowedFFDC
     public void testKerberosBasicConnection() throws Exception {
         try (Connection con = getConnectionWithRetry(krb5DataSource)) {
             con.createStatement().execute("SELECT 1 FROM DUAL");
@@ -143,6 +145,7 @@ public class OracleKerberosTestServlet extends FATServlet {
      * Get a connection from a javax.sql.XADataSource
      */
     @Test
+    @AllowedFFDC
     public void testKerberosXAConnection() throws Exception {
         try (Connection con = getConnectionWithRetry(krb5XADataSource)) {
             con.createStatement().execute("SELECT 1 FROM DUAL");
@@ -153,6 +156,7 @@ public class OracleKerberosTestServlet extends FATServlet {
      * Get a connection from a javax.sql.DataSource
      */
     @Test
+    @AllowedFFDC
     public void testKerberosRegularConnection() throws Exception {
         try (Connection con = getConnectionWithRetry(krb5RegularDs)) {
             con.createStatement().execute("SELECT 1 FROM DUAL");
@@ -179,10 +183,11 @@ public class OracleKerberosTestServlet extends FATServlet {
 
     /**
      * Get two connection handles from the same datasource.
-     * Ensure that both connection handles share the same managed connection (i.e. phyiscal connection)
+     * Ensure that both connection handles share the same managed connection (i.e. physical connection)
      * to prove that Subject reuse is working
      */
     @Test
+    @AllowedFFDC
     public void testConnectionReuse() throws Exception {
         String managedConn1 = null;
         String managedConn2 = null;
