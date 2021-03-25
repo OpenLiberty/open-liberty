@@ -9,7 +9,8 @@ IBM-API-Package: com.ibm.websphere.jmx.connector.rest; type="ibm-api", \
 IBM-ShortName: restConnector-2.0
 Subsystem-Name: Admin REST Connector 2.0
 -features=com.ibm.websphere.appserver.restHandler-1.0, \
- com.ibm.websphere.appserver.servlet-3.0; ibm.tolerates:="3.1, 4.0, 5.0"
+ com.ibm.websphere.appserver.servlet-3.0; ibm.tolerates:="3.1, 4.0, 5.0", \
+ io.openliberty.restConnector2.0.internal.ee-6.0; ibm.tolerates:="9.0"
 -bundles=com.ibm.ws.filetransfer.routing.archiveExpander, \
  com.ibm.ws.jmx.connector.client.rest, \
  com.ibm.ws.filetransfer, \
