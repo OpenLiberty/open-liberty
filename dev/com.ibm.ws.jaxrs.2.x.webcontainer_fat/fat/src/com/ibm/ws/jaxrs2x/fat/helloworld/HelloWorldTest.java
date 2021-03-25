@@ -32,7 +32,6 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
-//@SkipForRepeat(JakartaEE9Action.ID)
 @RunWith(FATRunner.class)
 public class HelloWorldTest {
     @Server("com.ibm.ws.jaxrs2x.fat")

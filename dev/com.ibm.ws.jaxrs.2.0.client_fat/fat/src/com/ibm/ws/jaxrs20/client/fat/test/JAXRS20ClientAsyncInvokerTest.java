@@ -25,7 +25,6 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
@@ -40,7 +39,7 @@ public class JAXRS20ClientAsyncInvokerTest extends AbstractTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        WebArchive app = ShrinkHelper.defaultDropinApp(server, appname, "com.ibm.ws.jaxrs20.fat.bookstore");
+        ShrinkHelper.defaultDropinApp(server, appname, "com.ibm.ws.jaxrs20.fat.bookstore");
 
         // Make sure we don't fail because we try to start an
         // already started server
@@ -116,15 +115,13 @@ public class JAXRS20ClientAsyncInvokerTest extends AbstractTest {
         this.runTestOnServer(asyncInvokerTarget, "testAsyncInvoker_post4", p, "Test book4");
     }
 
-    @Test
-    @SkipForRepeat("EE9_FEATURES") // Continue to skip this test for EE9 as com.ibm.ws.jaxrs.client.*.timeout is not supported 
+    @Test 
     public void testAsyncInvoker_getReceiveTimeout() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
         this.runTestOnServer(asyncInvokerTarget, "testAsyncInvoker_getReceiveTimeout", p, "Timeout as expected");
     }
 
     @Test
-    @SkipForRepeat("EE9_FEATURES") // Continue to skip this test for EE9 as com.ibm.ws.jaxrs.client.*.timeout is not supported 
     @AllowedFFDC("javax.ws.rs.ProcessingException")
     public void testAsyncInvoker_getConnectionTimeout() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
@@ -132,14 +129,12 @@ public class JAXRS20ClientAsyncInvokerTest extends AbstractTest {
     }
 
     @Test
-    @SkipForRepeat("EE9_FEATURES") // Continue to skip this test for EE9 as com.ibm.ws.jaxrs.client.*.timeout is not supported 
     public void testAsyncInvoker_postReceiveTimeout() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
         this.runTestOnServer(asyncInvokerTarget, "testAsyncInvoker_postReceiveTimeout", p, "Timeout as expected");
     }
 
     @Test
-    @SkipForRepeat("EE9_FEATURES") // Continue to skip this test for EE9 as com.ibm.ws.jaxrs.client.*.timeout is not supported 
     @AllowedFFDC("javax.ws.rs.ProcessingException")
     public void testAsyncInvoker_postConnectionTimeout() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
@@ -147,14 +142,12 @@ public class JAXRS20ClientAsyncInvokerTest extends AbstractTest {
     }
 
     @Test
-    @SkipForRepeat("EE9_FEATURES") // Continue to skip this test for EE9 as com.ibm.ws.jaxrs.client.*.timeout is not supported 
     public void testAsyncInvoker_getReceiveTimeoutwithInvocationCallback() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
         this.runTestOnServer(asyncInvokerTarget, "testAsyncInvoker_getReceiveTimeoutwithInvocationCallback", p, "Timeout as expected");
     }
 
     @Test
-    @SkipForRepeat("EE9_FEATURES") // Continue to skip this test for EE9 as com.ibm.ws.jaxrs.client.*.timeout is not supported 
     @AllowedFFDC("javax.ws.rs.ProcessingException")
     public void testAsyncInvoker_getConnectionTimeoutwithInvocationCallback() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
@@ -162,14 +155,12 @@ public class JAXRS20ClientAsyncInvokerTest extends AbstractTest {
     }
 
     @Test
-    @SkipForRepeat("EE9_FEATURES") // Continue to skip this test for EE9 as com.ibm.ws.jaxrs.client.*.timeout is not supported 
     public void testAsyncInvoker_postReceiveTimeoutwithInvocationCallback() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
         this.runTestOnServer(asyncInvokerTarget, "testAsyncInvoker_postReceiveTimeoutwithInvocationCallback", p, "Timeout as expected");
     }
 
     @Test
-    @SkipForRepeat("EE9_FEATURES") // Continue to skip this test for EE9 as com.ibm.ws.jaxrs.client.*.timeout is not supported 
     @AllowedFFDC("javax.ws.rs.ProcessingException")
     public void testAsyncInvoker_postConnectionTimeoutwithInvocationCallback() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
