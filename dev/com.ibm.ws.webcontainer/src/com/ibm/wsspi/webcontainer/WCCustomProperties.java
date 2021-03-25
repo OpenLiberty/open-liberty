@@ -113,7 +113,6 @@ public class WCCustomProperties {
     //Start 7.0.0.9
     public static boolean IGNORE_INJECTION_FAILURE; // 596191
 
-    public static String HTTPONLY_COOKIES; //F004323
     public static boolean REINIT_SERVLET_ON_INIT_UNAVAILABLE_EXCEPTION; //PM01373
     //End 7.0.0.9
 
@@ -577,7 +576,6 @@ public class WCCustomProperties {
         //Start 7.0.0.9
         IGNORE_INJECTION_FAILURE = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.ignoreinjectionfailure", "false")).booleanValue(); // 596191
 
-        HTTPONLY_COOKIES = customProps.getProperty("com.ibm.ws.webcontainer.httponlycookies"); //F004323
         REINIT_SERVLET_ON_INIT_UNAVAILABLE_EXCEPTION = Boolean.valueOf(WebContainer.getWebContainerProperties().
               getProperty("com.ibm.ws.webcontainer.reinitservletoninitunavailableexception","true")).booleanValue(); //PM01373
         
