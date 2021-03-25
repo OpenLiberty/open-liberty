@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2020 IBM Corporation and others.
+ * Copyright (c) 2013, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -433,22 +433,16 @@ public class OidcClientUtil {
         response.addCookie(c);
     }
 
-    /**
-     * @param encodedReqParams
-     * @param clientSecret
-     * @return
-     */
     public static String calculateOidcCodeCookieValue(String encoded, ConvergedClientConfig clientCfg) {
 
         String retVal = new String(encoded);
-        String clientidsecret = clientCfg.toString();
-        if (clientCfg.getClientSecret() != null) {
-            clientidsecret = clientidsecret.concat(clientCfg.getClientSecret());
+        String uniqueSecretValue = clientCfg.getClientSecret();
+        if (uniqueSecretValue == null) {
+            uniqueSecretValue = clientCfg.toString();
         }
 
-        String tmpStr = new String(encoded);
-        tmpStr = tmpStr.concat("_").concat(clientidsecret);
-        retVal = retVal.concat("_").concat(HashUtils.digest(tmpStr)); // digest encoded request params and clientid+client_secret
+        String signatureValue = (new String(encoded)) + "_" + uniqueSecretValue;
+        retVal = retVal + "_" + HashUtils.digest(signatureValue); // digest encoded request params and client_secret/client-specific value
 
         return retVal;
     }
