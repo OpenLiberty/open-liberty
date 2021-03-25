@@ -10,6 +10,7 @@ IBM-API-Package: com.ibm.wsspi.security.tai; type="ibm-api", \
  com.ibm.websphere.appserver.securityInfrastructure-1.0, \
  com.ibm.websphere.appserver.builtinAuthorization-1.0, \
  com.ibm.websphere.appserver.ltpa-1.0, \
+ io.openliberty.servlet.api-3.0; ibm.tolerates:="3.1,4.0,5.0"; apiJar=false, \
  com.ibm.websphere.appserver.builtinAuthentication-1.0; ibm.tolerates:=2.0, \
  com.ibm.websphere.appserver.basicRegistry-1.0
 -bundles=com.ibm.websphere.security.impl, \

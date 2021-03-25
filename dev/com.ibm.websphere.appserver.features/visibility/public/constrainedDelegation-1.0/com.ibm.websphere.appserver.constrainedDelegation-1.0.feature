@@ -7,7 +7,8 @@ IBM-ShortName: constrainedDelegation-1.0
 IBM-API-Package: com.ibm.websphere.security.s4u2proxy; type="ibm-api"
 Subsystem-Name: Kerberos Constrained Delegation for SPNEGO 1.0
 -features=\
-  com.ibm.websphere.appserver.eeCompatible-6.0; ibm.tolerates:="7.0,8.0,9.0"
+  com.ibm.websphere.appserver.eeCompatible-6.0; ibm.tolerates:="7.0,8.0,9.0", \
+  io.openliberty.constrainedDelegation1.0.internal.ee-6.0; ibm.tolerates:="9.0"
 -bundles=\
   com.ibm.ws.security.kerberos.java8
 -jars=\

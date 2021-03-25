@@ -7,7 +7,6 @@ IBM-ShortName: webProfile-9.0
 Subsystem-Version: 9.0.0
 Subsystem-Name: Jakarta EE Web Profile 9.0
 -features=\
-  com.ibm.websphere.appserver.builtinAuthentication-2.0,\
   com.ibm.websphere.appserver.eeCompatible-9.0, \
   com.ibm.websphere.appserver.jdbc-4.2; ibm.tolerates:="4.3",\
   com.ibm.websphere.appserver.jndi-1.0,\
