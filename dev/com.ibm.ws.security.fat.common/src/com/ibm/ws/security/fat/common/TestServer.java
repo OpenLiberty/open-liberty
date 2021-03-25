@@ -1300,4 +1300,11 @@ public class TestServer extends ExternalResource {
         Properties serverProperties = this.getServer().getBootstrapProperties();
         return serverProperties.getProperty(key, null);
     }
+    
+    public String getJvmOptionsFilePath() throws Exception {
+        String thisMethod = "getJvmOptionsFilePath";
+        String jvmProps = getServerFileLoc() + "/jvm.options";
+        Log.info(thisClass, thisMethod, "jvm.options property file path: " + jvmProps);
+        return jvmProps;
+    }
 }
