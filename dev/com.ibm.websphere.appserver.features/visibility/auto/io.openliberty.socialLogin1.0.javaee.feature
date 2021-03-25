@@ -7,8 +7,5 @@ IBM-Provision-Capability:\
 IBM-Install-Policy: when-satisfied
 -features=\
   com.ibm.websphere.appserver.jsonp-1.0; ibm.tolerates:=1.1
--bundles=\
-  com.ibm.ws.security.social,\
-  com.ibm.ws.security.openidconnect.clients.common
 kind=ga
 edition=core
