@@ -72,6 +72,7 @@ public class LdapRegistry extends ConfigElement {
     private String bindAuthMechanism;
     private String krb5Principal;
     private String krb5TicketCache;
+    private Boolean allowWriteToSecondaryServers;
 
     /**
      * @return the activedFilters
@@ -323,6 +324,13 @@ public class LdapRegistry extends ConfigElement {
      */
     public Boolean getReturnToPrimaryServer() {
         return returnToPrimaryServer;
+    }
+
+    /**
+     * @return the allowWriteToSecondaryServers
+     */
+    public Boolean getAllowWriteToSecondaryServers() {
+        return allowWriteToSecondaryServers;
     }
 
     /**
@@ -716,6 +724,14 @@ public class LdapRegistry extends ConfigElement {
     }
 
     /**
+     * @param allowWriteToSecondaryServers the allowWriteToSecondaryServers to set
+     */
+    @XmlAttribute(name = "allowWriteToSecondaryServers")
+    public void setAllowWriteToSecondaryServers(Boolean allowWriteToSecondaryServers) {
+        this.allowWriteToSecondaryServers = allowWriteToSecondaryServers;
+    }
+
+    /**
      * @param reuseConnection the reuseConnection to set
      */
     @XmlAttribute(name = "reuseConnection")
@@ -904,7 +920,10 @@ public class LdapRegistry extends ConfigElement {
             sb.append("registryBaseEntries=\"").append(registryBaseEntries).append("\" ");
         }
         if (returnToPrimaryServer != null) {
-            sb.append("returnToPrimaryServer").append(returnToPrimaryServer).append("\" ");
+            sb.append("returnToPrimaryServer=\"").append(returnToPrimaryServer).append("\" ");
+        }
+        if (allowWriteToSecondaryServers != null) {
+            sb.append("allowWriteToSecondaryServers=\"").append(allowWriteToSecondaryServers).append("\" ");;
         }
         if (reuseConnection != null) {
             sb.append("reuseConnection=\"").append(reuseConnection).append("\" ");

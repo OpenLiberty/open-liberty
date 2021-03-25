@@ -170,6 +170,9 @@
 		<AD id="timestampFormat" name="%timestampFormat" description="%timestampFormat.desc" required="false" type="String" />
 		<!-- End VMM ported Entries -->	
 
+		<AD id="allowWriteToSecondaryServers" name="%allowWriteToSecondaryServers" description="%allowWriteToSecondaryServers.desc"
+			required="false" type="Boolean" default="false"/>	
+			
 	    <AD id="bindAuthMechanism" name="%bindAuthMechanism" description="%bindAuthMechanism.desc" required="false" type="String" ibm:beta="true">
 		    <Option label="%bindAuthMechanism.none" value="none" />
 		    <Option label="%bindAuthMechanism.simple" value="simple" />
