@@ -1758,7 +1758,7 @@ public class ContextManager {
             /*
              * Clear the principal from the kerberService cache in case the ticketCache changed.
              */
-            if (krb5Principal != null && !krb5Principal.trim().isEmpty()) {
+            if (kerberosService != null && krb5Principal != null && !krb5Principal.trim().isEmpty()) {
                 try {
                     kerberosService.clearPrincipalFromCache(krb5Principal);
                 } catch (java.lang.IllegalArgumentException e) {
@@ -1837,6 +1837,9 @@ public class ContextManager {
         sb.append(", iReturnToPrimary=").append(iReturnToPrimary);
         sb.append(", iReferral=").append(iReferral);
         sb.append(", iBinaryAttributeNames=").append(iBinaryAttributeNames);
+        sb.append(", bindAuthMechanism=").append(bindAuthMechanism);
+        sb.append(", krb5Principal=").append(krb5Principal);
+        sb.append(", krb5TicketCache=").append(krb5TicketCache);
         sb.append("}");
 
         return sb.toString();
