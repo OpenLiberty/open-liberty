@@ -45,12 +45,14 @@ import javax.resource.ResourceException;
 import javax.sql.CommonDataSource;
 import javax.sql.DataSource;
 import javax.transaction.xa.XAException;
+import javax.transaction.xa.XAResource;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.kernel.service.util.JavaInfo;
 import com.ibm.ws.kernel.service.util.JavaInfo.Vendor;
+import com.ibm.ws.resource.ResourceRefInfo;
 import com.ibm.ws.rsadapter.AdapterUtil;
 import com.ibm.ws.rsadapter.impl.WSManagedConnectionFactoryImpl.KerbUsage;
 import com.ibm.ws.rsadapter.jdbc.WSJdbcTracer;
@@ -278,6 +280,24 @@ public class OracleHelper extends DatabaseHelper {
     @Override
     public boolean alwaysSetAutoCommit() {
         return false;
+    }
+
+    /**
+     * Returns the XA start flag for loose or tight branch coupling
+     *
+     * @param couplingType branch coupling type
+     * @return XA start flag value for the specified coupling type
+     */
+    public int branchCouplingSupported(int couplingType) {
+        // TODO remove this check at GA
+        if (!mcf.dsConfig.get().enableBranchCouplingExtension)
+            return super.branchCouplingSupported(couplingType);
+
+        if (couplingType == ResourceRefInfo.BRANCH_COUPLING_LOOSE)
+            return 0x10000; // value of oracle.jdbc.xa.OracleXAResource.ORATRANSLOOSE
+
+        // Tight branch coupling is default for Oracle
+        return XAResource.TMNOFLAGS;
     }
 
     /**
