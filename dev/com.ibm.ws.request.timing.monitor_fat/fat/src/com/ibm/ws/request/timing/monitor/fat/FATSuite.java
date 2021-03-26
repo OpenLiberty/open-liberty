@@ -15,6 +15,6 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({ RequestTimingMbeanTest.class, RequestTimingEventTest.class })
+@SuiteClasses({ RequestTimingMbeanTest.class, RequestTimingEventTest.class, RequestTimingMetricsTest.class })
 public class FATSuite {
 }
