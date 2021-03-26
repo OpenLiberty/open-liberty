@@ -45,7 +45,7 @@ class ClientTransactionInterceptor extends LocalObject implements ClientRequestI
     private static final long serialVersionUID = 1L;
     private static final TraceComponent tc = Tr.register(ClientTransactionInterceptor.class);
     private final Codec codec;
-    private final ThreadLocal<Transaction> _storedTx = new ThreadLocal<Transaction>();
+    private final ThreadLocal<Transaction> _storedTx = new ThreadLocal<>();
     private volatile TransactionManager transactionManager;
 
     public ClientTransactionInterceptor(Codec codec) {

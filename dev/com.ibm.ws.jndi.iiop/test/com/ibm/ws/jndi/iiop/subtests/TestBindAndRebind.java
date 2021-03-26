@@ -39,7 +39,6 @@ import org.junit.runners.Parameterized.Parameters;
 
 import com.ibm.ws.jndi.iiop.JndiBindOperation;
 import com.ibm.ws.jndi.iiop.JndiUtil;
-import com.ibm.ws.jndi.iiop.TestFacade;
 import com.ibm.ws.jndi.iiop.Testable;
 
 /** Not to be run except as part of a test suite */

@@ -103,7 +103,7 @@ public class ORBMBeanRuntime {
      * @return : A service registration that provides access to manage the MBean
      */
     private <T> ServiceRegistration<T> registerMBean(ObjectName on, Class<T> type, T o) {
-        Dictionary<String, Object> props = new Hashtable<String, Object>();
+        Dictionary<String, Object> props = new Hashtable<>();
         props.put("jmx.objectname", on.toString());
         return context.registerService(type, o, props);
     }
