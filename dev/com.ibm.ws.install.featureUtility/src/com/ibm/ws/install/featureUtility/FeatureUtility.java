@@ -135,15 +135,8 @@ public class FeatureUtility {
 
         boolean isOpenLiberty = (Boolean) map.get("is.open.liberty");
         if (!isOpenLiberty) {
-        	jsonsRequired.add(WEBSPHERE_LIBERTY_GROUP_ID);
-        }else { //check if user is trying to install CL feature onto OL runtime without specifying json cord in featureUtility.prop. 
-        	for(String s: jsonsRequired) {
-        		if(s.contains(WEBSPHERE_LIBERTY_GROUP_ID) && additionalJsons == null || additionalJsons.isEmpty()) {
-        			throw new InstallException("Incorrectly tried to install a websphere liberty feature onto open liberty");
-        		}
-        	}
+        	jsonsRequired.add("com.ibm.websphere.appserver.features");
         }
-        
 
         if (noCache != null && noCache) {
             fine("Features installed from the remote repository will not be cached locally");
