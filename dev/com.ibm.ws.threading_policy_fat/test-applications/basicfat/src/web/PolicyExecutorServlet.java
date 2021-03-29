@@ -3512,16 +3512,14 @@ public class PolicyExecutorServlet extends FATServlet {
         PolicyExecutor executor = provider.create("testInvokeAnyNullSuccessfulResult");
 
         CountDownLatch blocker = new CountDownLatch(1);
-        CountDownTask task1 = new CountDownTask(new CountDownLatch(0), blocker, TIMEOUT_NS * 3);
+        CountDownLatch task1started = new CountDownLatch(1);
+        CountDownTask task1 = new CountDownTask(task1started, blocker, TIMEOUT_NS * 3);
 
-        SharedIncrementTask task2 = new SharedIncrementTask();
+        Callable<Boolean> task2 = () -> task1started.await(TIMEOUT_NS * 2, TimeUnit.NANOSECONDS) ? null : false;
 
-        List<Callable<Boolean>> tasks = Arrays.asList(task1, Executors.callable(task2, (Boolean) null));
+        List<Callable<Boolean>> tasks = Arrays.asList(task1, task2);
 
         assertNull(executor.invokeAny(tasks));
-
-        // Another way to verify that task2 completed
-        assertEquals(1, task2.count());
 
         // Verify that task1 ends prior to when it would have otherwise completed. This is due to cancel/interruption upon return from invokeAny.
         for (long start = System.nanoTime(); task1.executionThreads.peek() != null && System.nanoTime() - start < TIMEOUT_NS; Thread.sleep(100));
