@@ -22,7 +22,7 @@ import org.omg.PortableInterceptor.ORBInitializer;
 
 public class OrbMaker {
     private static final String PREFIX = ORBInitializer.class.getName() + "Class.";
-    final List<String> args = new ArrayList<String>();
+    final List<String> args = new ArrayList<>();
     final Properties props = new Properties();
 
     public OrbMaker arg(String arg) {

@@ -123,7 +123,7 @@ public class WSContextFactory implements InitialContextFactory, ObjectFactory, A
         return null;
     }
 
-    static Reference makeReference(WSContext ctx) throws NamingException {
+    static Reference makeReference(WSContext ctx) {
         RefAddr addr = new StringRefAddr("jndi", "" + ctx.myNode.fullName);
         return new Reference(WSContext.class.getName(), addr, WSContextFactory.class.getName(), null);
     }
