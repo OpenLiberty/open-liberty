@@ -169,8 +169,8 @@ public class MultipartResource extends Application {
                                          @FormParam("file2") String part2,
                                          @FormParam("notAFile") String part3,
                                          @FormParam("noSpecifiedContentType") String part4) throws IOException {
-        assertEquals(Util.toString(Util.xmlFile()).trim(), part1.trim());
-        assertEquals(Util.toString(Util.asciidocFile()).trim(), part2.trim());
+        assertEquals(Util.removeLineFeeds(Util.toString(Util.xmlFile()).trim()), Util.removeLineFeeds(part1.trim()));
+        assertEquals(Util.removeLineFeeds(Util.toString(Util.asciidocFile()).trim()), Util.removeLineFeeds(part2.trim()));
         assertEquals("This is not a file...", part3.trim());
         assertEquals("No content type specified", part4.trim());
         return "SUCCESS";

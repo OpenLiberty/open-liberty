@@ -123,18 +123,6 @@ public class Util {
                                            .collect(Collectors.joining("\n"));
         System.out.println("Util.toString " + str);
         return str;
-        /*
-        StringBuilder sb = new StringBuilder();
-        byte[] buf = new byte[1024];
-        int bytesRead = 0;
-        while (bytesRead > -1) {
-            bytesRead = is.read(buf);
-            sb.append(new String(buf, 0, bytesRead));
-        }
-        String str = sb.toString();
-        System.out.println("Util.toString " + str);
-        return str;
-        */
     }
 
     static String getPartName(IAttachment part) {
@@ -184,5 +172,10 @@ public class Util {
         public boolean isClosed() {
             return closed;
         }
+    }
+
+    static String removeLineFeeds(String original) {
+        String updated = original.replaceAll("\n", "");
+        return updated.replaceAll("\r", "");
     }
 }
