@@ -12,6 +12,7 @@ package basicfat;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -124,7 +125,9 @@ import componenttest.app.FATServlet;
                                                        user = "dbuser1",
                                                        password = "{xor}Oz0vKDtu",
                                                        properties = {
+                                                                      "containerAuthDataRef=derbyAuth2",
                                                                       "createDatabase=create",
+                                                                      "enableContainerAuthForDirectLookups=false",
                                                                       "validationTimeout=10s"
                                                        })
 
@@ -1211,6 +1214,22 @@ public class DataSourceTestServlet extends FATServlet {
         } finally {
             con2.close();
             con.close();
+        }
+    }
+
+    /**
+     * Verify that connections do not use container authentication when enableContainerAuthForDirectLookups=false
+     * is configured on an application-defined data source.
+     */
+    public void testEnableContainerAuthForDirectLookupsFalse() throws Exception {
+        DataSource ds = (DataSource) new InitialContext().lookup("java:comp/env/jdbc/dsValTderbyAnn");
+        try (Connection con = ds.getConnection()) {
+            DatabaseMetaData metadata = con.getMetaData();
+            // dbuser2 indicates container auth
+            // dbuser1 indicates application auth
+            String user = metadata.getUserName();
+            assertNotNull(user);
+            assertEquals("dbuser1", user.toLowerCase());
         }
     }
 
