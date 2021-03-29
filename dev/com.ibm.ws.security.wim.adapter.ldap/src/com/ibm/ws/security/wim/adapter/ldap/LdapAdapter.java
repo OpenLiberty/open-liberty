@@ -51,6 +51,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import javax.naming.InvalidNameException;
 import javax.naming.NameAlreadyBoundException;
@@ -222,6 +223,13 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
     private final AtomicServiceReference<ConfigurationAdmin> configAdminRef = new AtomicServiceReference<ConfigurationAdmin>("configAdmin");
 
     /**
+     * Read/write lock to protect against changing the underlying configuration while requests are in flight.
+     *
+     * Configuration changes will be blocked while requests are in flight.
+     */
+    private final ReentrantReadWriteLock configReadWriteLock = new ReentrantReadWriteLock();
+
+    /**
      * Set the KerberosService reference, Load the general Kerberos configuration so we can use the KerberosService and
      * load the keytab/config attributes, if needed.
      *
@@ -258,15 +266,25 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
 
     @Activate
     protected void activated(Map<String, Object> properties, ComponentContext cc) throws WIMException {
-        super.activate(properties, cc);
-        configAdminRef.activate(cc);
-        initialize(properties);
+        getConfigWriteLock();
+        try {
+            super.activate(properties, cc);
+            configAdminRef.activate(cc);
+            initialize(properties);
+        } finally {
+            releaseConfigWriteLock();
+        }
     }
 
     @Modified
     protected void modified(Map<String, Object> properties) throws WIMException {
-        super.modify(properties);
-        initialize(properties);
+        getConfigWriteLock();
+        try {
+            super.modify(properties);
+            initialize(properties);
+        } finally {
+            releaseConfigWriteLock();
+        }
     }
 
     @Override
@@ -310,7 +328,16 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
      */
     @Override
     public Root get(Root root) throws WIMException {
-        final String METHODNAME = "get";
+        getConfigReadLock();
+        try {
+            return getImpl(root);
+        } finally {
+            releaseConfigReadLock();
+        }
+    }
+
+    private Root getImpl(Root root) throws WIMException {
+        final String METHODNAME = "getImpl";
         Root outRoot = new Root();
 
         Map<String, Control> ctrlMap = ControlsHelper.getControlMap(root);
@@ -525,8 +552,17 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
      * @param root The incoming Root object.
      */
     @Override
-    @FFDCIgnore({ EntityNotFoundException.class, InvalidNameException.class, NamingException.class })
     public Root login(Root root) throws WIMException {
+        getConfigReadLock();
+        try {
+            return loginImpl(root);
+        } finally {
+            releaseConfigReadLock();
+        }
+    }
+
+    @FFDCIgnore({ EntityNotFoundException.class, InvalidNameException.class, NamingException.class })
+    private Root loginImpl(Root root) throws WIMException {
         List<Entity> entities = root.getEntities();
         LoginAccount inAccount = (LoginAccount) entities.get(0);
         String qName = inAccount.getTypeName();
@@ -700,8 +736,17 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
      * @param root The incoming Root object.
      */
     @Override
-    @FFDCIgnore(InvalidNameException.class)
     public Root search(Root root) throws WIMException {
+        getConfigReadLock();
+        try {
+            return searchImpl(root);
+        } finally {
+            releaseConfigReadLock();
+        }
+    }
+
+    @FFDCIgnore(InvalidNameException.class)
+    private Root searchImpl(Root root) throws WIMException {
         final String METHODNAME = "search";
         boolean bFirstChangeSearchCall = false;
 
@@ -3140,6 +3185,15 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
      */
     @Override
     public Root delete(Root root) throws WIMException {
+        getConfigReadLock();
+        try {
+            return deleteImpl(root);
+        } finally {
+            releaseConfigReadLock();
+        }
+    }
+
+    private Root deleteImpl(Root root) throws WIMException {
         Map<String, Control> ctrlMap = ControlsHelper.getControlMap(root);
 
         DeleteControl deleteCtrl = (DeleteControl) ctrlMap.get(SchemaConstants.DO_DELETE_CONTROL);
@@ -3334,6 +3388,15 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
 
     @Override
     public Root create(Root root) throws WIMException {
+        getConfigReadLock();
+        try {
+            return createImpl(root);
+        } finally {
+            releaseConfigReadLock();
+        }
+    }
+
+    private Root createImpl(Root root) throws WIMException {
         // Only create first entity
         Entity entity = root.getEntities().get(0);
         String typeName = entity.getTypeName();
@@ -4118,5 +4181,33 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
      */
     protected void unsetConfigurationAdmin(ServiceReference<ConfigurationAdmin> reference) {
         configAdminRef.unsetReference(reference);
+    }
+
+    /**
+     * Get the configuration read lock.
+     */
+    private void getConfigReadLock() {
+        configReadWriteLock.readLock().lock();
+    }
+
+    /**
+     * Release the configuration read lock.
+     */
+    private void releaseConfigReadLock() {
+        configReadWriteLock.readLock().unlock();
+    }
+
+    /**
+     * Get the configuration write lock.
+     */
+    private void getConfigWriteLock() {
+        configReadWriteLock.writeLock().lock();
+    }
+
+    /**
+     * Release the configuration write lock.
+     */
+    private void releaseConfigWriteLock() {
+        configReadWriteLock.writeLock().unlock();
     }
 }
