@@ -171,12 +171,12 @@
       <properties.derby.embedded databaseName="${shared.resource.dir}/data/derbyfat" createDatabase="create" badVendorProperty="badValue2" user="dbuser1" password="{xor}Oz0vKDtu"/>
     </dataSource>
  
-     <dataSource jndiName="jdbc/dsfat12" fat.modify="true" containerAuthDataRef="derbyAuth2" jdbcDriverRef="FATJDBCDriver" >
+    <!-- This is a Derby-only data source -->
+    <dataSource id="dsfat12derby" jndiName="jdbc/dsfat12" containerAuthDataRef="derbyAuth2" jdbcDriverRef="Derby" >
       <connectionManager enableContainerAuthForDirectLookups="true"/>
-      <properties.derby.embedded databaseName="${shared.resource.dir}/data/jdbcfat" createDatabase="create"/>
+      <properties.derby.embedded databaseName="${shared.resource.dir}/data/derbyfat" createDatabase="create"/>
     </dataSource>
-    
-        
+
     <!-- The following two datasources test that you can define two data sources with nested child
          libraries that do not define an ID -->
     <dataSource id="derbyWithNestedList" jndiName="jdbc/derbyWithNestedList">
