@@ -16,14 +16,12 @@ import static com.ibm.ws.security.javaeesec.fat_helper.Constants.getUserPrincipa
 import static javax.servlet.http.HttpServletResponse.SC_FORBIDDEN;
 import static javax.servlet.http.HttpServletResponse.SC_OK;
 import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -333,25 +331,16 @@ public class DatabaseIdentityStoreDeferredSettingsTest extends JavaEESecTestBase
         String msg = "DataSource for "; // will only be in trace.log
         String msg2 = "returns: java:comp/InvalidDataSource"; // will be in trace.log and messages.log
 
-        String msg3 = "Always evaluate Datasource: true"; //trace
-        List<String> foundResults = myServer.findStringsInLogsAndTrace(msg3);
-        assertEquals("Expected datasource to not be evaluated: " + msg3, 1, foundResults.size());
-
+        FATHelper.resetMarksInLogs(server);
         verifyAuthorization(SC_FORBIDDEN, SC_FORBIDDEN, SC_FORBIDDEN);
-
-        foundResults = myServer.findStringsInLogsAndTrace(msg);
-        assertTrue("Should not save the datasource: " + msg, foundResults.isEmpty());
-        foundResults = myServer.findStringsInLogs(msg2);
-        assertFalse("Should have evaluated the datasource: " + msg2, foundResults.isEmpty());
-
-        int priorEval = foundResults.size();
+        assertTrue("Should not save the datasource: " + msg, myServer.findStringsInLogsAndTraceUsingMark(msg).isEmpty());
+        assertFalse("Should have evaluated the datasource: " + msg2, myServer.findStringsInLogsAndTraceUsingMark(msg2).isEmpty());
 
         // login again -- we should evaluate the datasource lookup again.
+        FATHelper.resetMarksInLogs(server);
         verifyAuthorization(SC_FORBIDDEN, SC_FORBIDDEN, SC_FORBIDDEN);
-        foundResults = myServer.findStringsInLogsAndTrace(msg);
-        assertTrue("Should not save the datasource: " + msg, foundResults.isEmpty());
-        foundResults = myServer.findStringsInLogs(msg2);
-        assertTrue("Should have evaluated the datasource again: " + msg2, foundResults.size() > priorEval);
+        assertTrue("Should not save the datasource: " + msg, myServer.findStringsInLogsAndTraceUsingMark(msg).isEmpty());
+        assertFalse("Should have evaluated the datasource again: " + msg2, myServer.findStringsInLogsAndTraceUsingMark(msg2).isEmpty());
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
