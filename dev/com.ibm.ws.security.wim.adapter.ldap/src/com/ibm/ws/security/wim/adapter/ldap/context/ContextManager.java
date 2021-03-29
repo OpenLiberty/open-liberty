@@ -1956,7 +1956,8 @@ public class ContextManager {
                  * at java.security.jgss/javax.security.auth.kerberos.KerberosPrincipal.<init>(KerberosPrincipal.java:174)
                  */
                 String msg = Tr.formatMessage(tc, WIMMessageKey.INVALID_KRB5_PRINCIPAL, WIMMessageHelper.generateMsgParms(krb5Principal));
-                LoginException le = new LoginException(msg + " " + ie.getClass().getName() + ": " + ie.getMessage());
+                String rootMessage = ie.getMessage(); // Only print if there's info, sometimes the java.lang.IllegalArgumentException has no getMessage
+                LoginException le = new LoginException(msg + " " + ie.getClass().getName() + (rootMessage == null ? "" : ": " + ie.getMessage()));
                 le.initCause(ie);
                 throw le;
             }
