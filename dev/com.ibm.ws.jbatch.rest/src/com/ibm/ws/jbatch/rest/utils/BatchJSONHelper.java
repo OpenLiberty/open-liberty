@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,9 +29,11 @@ import javax.batch.runtime.Metric;
 import javax.batch.runtime.StepExecution;
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
+import javax.json.JsonBuilderFactory;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonReader;
+import javax.json.JsonReaderFactory;
 import javax.json.JsonString;
 import javax.json.JsonStructure;
 import javax.json.JsonValue;
@@ -43,7 +45,6 @@ import com.ibm.jbatch.container.ws.WSJobExecution;
 import com.ibm.jbatch.container.ws.WSJobInstance;
 import com.ibm.jbatch.container.ws.WSPartitionStepAggregate;
 import com.ibm.jbatch.container.ws.WSPartitionStepThreadExecution;
-import com.ibm.ws.jbatch.rest.utils.WSPurgeResponse;
 import com.ibm.jbatch.container.ws.WSStepThreadExecutionAggregate;
 import com.ibm.jbatch.container.ws.WSTopLevelStepExecution;
 import com.ibm.websphere.ras.annotation.Trivial;
@@ -60,11 +61,24 @@ public class BatchJSONHelper {
 	public static final String HTTP_HEADER_CONTENT_TYPE = "Content-Type";
 	public static final String MEDIA_TYPE_APPLICATION_JSON = "application/json; charset=UTF-8";
 
-	/**
+    private static final JsonBuilderFactory builderFactory = Json.createBuilderFactory(null);
+
+    private static final JsonReaderFactory readerFactory = Json.createReaderFactory(null);
+
+    private static final JsonWriterFactory prettyWriterFactory;
+
+    static {
+        Map<String, Object> writerConfig = new HashMap<String, Object>(1);
+        writerConfig.put(JsonGenerator.PRETTY_PRINTING, true);
+
+        prettyWriterFactory = Json.createWriterFactory(writerConfig);
+    }
+    
+    /**
 	 * @return the JsonObject read from the given stream.
 	 */
 	public static JsonObject readJsonObject(InputStream inputStream) {
-		JsonReader jsonReader = Json.createReader(inputStream);
+		JsonReader jsonReader = readerFactory.createReader(inputStream);
 		JsonObject jsonObject = jsonReader.readObject();
 		jsonReader.close();
 		return jsonObject;
@@ -92,7 +106,7 @@ public class BatchJSONHelper {
      * Create an empty JSON object
      */
     public static JsonObject createJsonObject() {
-       return Json.createObjectBuilder().build();
+       return builderFactory.createObjectBuilder().build();
     }
 
 	/**
@@ -104,7 +118,7 @@ public class BatchJSONHelper {
 			String urlRoot, 
 			OutputStream outputStream ) throws IOException {
 
-		JsonArrayBuilder jsonArrayBuilder = Json.createArrayBuilder();
+		JsonArrayBuilder jsonArrayBuilder = builderFactory.createArrayBuilder();
 
 		for (WSJobInstance jobInstance : jobInstances ) {
 			
@@ -172,8 +186,8 @@ public class BatchJSONHelper {
 			List<WSStepThreadExecutionAggregate> stepExecAggregateList, String urlRoot,
 			OutputStream outputStream) throws IOException {
 
-		JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
-		JsonArrayBuilder partitionBuilder = Json.createArrayBuilder();
+		JsonArrayBuilder arrayBuilder = builderFactory.createArrayBuilder();
+		JsonArrayBuilder partitionBuilder = builderFactory.createArrayBuilder();
 		JsonObjectBuilder topLevelObject = null;
 		JsonObjectBuilder stepObjectLinks = null;
 
@@ -233,9 +247,9 @@ public class BatchJSONHelper {
 	 */
 	public static void writeJobDefinitions(Set<String> jobNames, OutputStream outputStream) throws IOException {
 
-		JsonObjectBuilder jsonObjBuilder = Json.createObjectBuilder();
+		JsonObjectBuilder jsonObjBuilder = builderFactory.createObjectBuilder();
 
-		JsonArrayBuilder jsonArrayBuilder = Json.createArrayBuilder();
+		JsonArrayBuilder jsonArrayBuilder = builderFactory.createArrayBuilder();
 
 		for (String jobName : jobNames) {
 			jsonArrayBuilder.add(jobName);
@@ -258,10 +272,10 @@ public class BatchJSONHelper {
 		JsonArrayBuilder links = convertJobExecutionLogLinksToJsonArray(jobInstanceLog.getJobExecutionLogs(), urlRoot);
 
 		// Add links for the entire joblog, both as aggregated text and as a zip file.
-		links.add( Json.createObjectBuilder()
+		links.add( builderFactory.createObjectBuilder()
 				.add("rel", "joblog text")
 				.add("href", urlRoot + "jobinstances/" + jobInstanceLog.getJobInstance().getInstanceId() + "/joblogs?type=text"))
-				.add( Json.createObjectBuilder()
+				.add( builderFactory.createObjectBuilder()
 						.add("rel", "joblog zip")
 						.add("href", urlRoot + "jobinstances/" + jobInstanceLog.getJobInstance().getInstanceId() + "/joblogs?type=zip")) ;
 
@@ -273,7 +287,7 @@ public class BatchJSONHelper {
 	 * @return a JsonObjectBuilder for the given PurgeResponse
 	 */
 	public static JsonObjectBuilder toJsonObjectBuilder(WSPurgeResponse purgeResponse) {
-		JsonObjectBuilder jsonObjBuilder = Json.createObjectBuilder();
+		JsonObjectBuilder jsonObjBuilder = builderFactory.createObjectBuilder();
 		
 		jsonObjBuilder.add("instanceId",purgeResponse.getInstanceId())
 			.add("purgeStatus",purgeResponse.getPurgeStatus().toString())
@@ -288,7 +302,7 @@ public class BatchJSONHelper {
 	 */
 	public static JsonObjectBuilder toJsonObjectBuilder(WSJobInstance jobInstance) {
 
-		JsonObjectBuilder jsonObjBuilder = Json.createObjectBuilder();
+		JsonObjectBuilder jsonObjBuilder = builderFactory.createObjectBuilder();
 
 		// Use parens since they can never be part of a legal xs:id value
 		jsonObjBuilder.add("jobName", StringUtils.firstNonNull(jobInstance.getJobName(), ""))
@@ -339,16 +353,16 @@ public class BatchJSONHelper {
 		
 
 		// Add REST-specific links.
-		JsonArrayBuilder jsonArrayBuilder = Json.createArrayBuilder()
-				.add(Json.createObjectBuilder()
+		JsonArrayBuilder jsonArrayBuilder = builderFactory.createArrayBuilder()
+				.add(builderFactory.createObjectBuilder()
 						.add("rel", "self")
 						.add("href",urlRoot + "jobinstances/" + jobInstance.getInstanceId() ))
-						.add(Json.createObjectBuilder()
+						.add(builderFactory.createObjectBuilder()
 								.add("rel", "job logs")
 								.add("href",urlRoot + "jobinstances/" + jobInstance.getInstanceId() + "/joblogs" ));;
 
 								for (WSJobExecution jobExec : ((jobExecList != null) ? jobExecList : new ArrayList<WSJobExecution>())) {
-									jsonArrayBuilder.add(Json.createObjectBuilder()
+									jsonArrayBuilder.add(builderFactory.createObjectBuilder()
 											.add("rel", "job execution")
 											.add("href",urlRoot + "jobinstances/" + jobInstance.getInstanceId()+ "/jobexecutions/" + jobExec.getExecutionNumberForThisInstance()));
 								}
@@ -367,7 +381,7 @@ public class BatchJSONHelper {
 
 		JsonObjectBuilder jsonObjBuilder = toJsonObjectBuilderInBasicFormat(jobExecution);
 
-		JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
+		JsonArrayBuilder arrayBuilder = builderFactory.createArrayBuilder();
 		for(WSStepThreadExecutionAggregate stepExec : stepExecs){
 			arrayBuilder.add(convertStepExecutionSummaryToJsonObject(stepExec.getTopLevelStepExecution(),jobExecution.getExecutionId()));
 		}
@@ -389,7 +403,7 @@ public class BatchJSONHelper {
 	// Utility method to build the job execution json object
 	private static JsonObjectBuilder buildExecutionJson(WSJobExecution jobExecution, String version)
 	{
-		JsonObjectBuilder jsonObjBuilder = Json.createObjectBuilder();
+		JsonObjectBuilder jsonObjBuilder = builderFactory.createObjectBuilder();
 		
 		jsonObjBuilder.add("jobName", jobExecution.getJobName())
 		.add("executionId", jobExecution.getExecutionId())
@@ -422,7 +436,7 @@ public class BatchJSONHelper {
 
 		JsonObjectBuilder jsonObjBuilder = toJsonObjectBuilderInBasicFormat(jobExecution,BatchRequestUtil.getUrlVersion(urlRoot));
 
-		JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
+		JsonArrayBuilder arrayBuilder = builderFactory.createArrayBuilder();
 		for(WSStepThreadExecutionAggregate stepExec : stepExecs){
 			arrayBuilder.add(convertStepExecutionSummaryToJsonObjectWithLink(stepExec.getTopLevelStepExecution(),jobExecution.getExecutionId(),urlRoot));
 		}
@@ -438,20 +452,20 @@ public class BatchJSONHelper {
 	 */
 	protected static JsonArrayBuilder buildJobExecutionLinksArray(WSJobExecution jobExecution,String urlRoot){
 
-		return Json.createArrayBuilder()
-				.add(Json.createObjectBuilder()
+		return builderFactory.createArrayBuilder()
+				.add(builderFactory.createObjectBuilder()
 						.add("rel", "self")
 						.add("href",urlRoot + "jobexecutions/" + jobExecution.getExecutionId()))
-				.add(Json.createObjectBuilder()
+				.add(builderFactory.createObjectBuilder()
 						.add("rel", "job instance")
 						.add("href",urlRoot + "jobinstances/" + jobExecution.getInstanceId()))
-				.add(Json.createObjectBuilder()
+				.add(builderFactory.createObjectBuilder()
 						.add("rel", "step executions")
 						.add("href",urlRoot + "jobexecutions/" + jobExecution.getExecutionId() + "/stepexecutions"))                       
-				.add(Json.createObjectBuilder()
+				.add(builderFactory.createObjectBuilder()
 						.add("rel", "job logs")
 						.add("href", BatchRequestUtil.buildJoblogsUrl(jobExecution, urlRoot)))
-				.add(Json.createObjectBuilder()
+				.add(builderFactory.createObjectBuilder()
 						.add("rel", "stop url")
 						.add("href", BatchRequestUtil.buildStopUrl(jobExecution, urlRoot)));
 	}
@@ -465,13 +479,13 @@ public class BatchJSONHelper {
 	 */
 	protected static JsonObjectBuilder buildStepExecutionLinks(long jobExecutionId, long jobInstanceId, String urlRoot) {
 
-		JsonObjectBuilder jsonObjBuilder = Json.createObjectBuilder();
+		JsonObjectBuilder jsonObjBuilder = builderFactory.createObjectBuilder();
 		jsonObjBuilder
-		.add("_links", Json.createArrayBuilder()
-				.add(Json.createObjectBuilder()
+		.add("_links", builderFactory.createArrayBuilder()
+				.add(builderFactory.createObjectBuilder()
 						.add("rel", "job execution")
 						.add("href", urlRoot + "jobexecutions/" + jobExecutionId))
-						.add(Json.createObjectBuilder()
+						.add(builderFactory.createObjectBuilder()
 								.add("rel", "job instance")
 								.add("href", urlRoot
 										+ "jobinstances/" + jobInstanceId)));
@@ -497,7 +511,7 @@ public class BatchJSONHelper {
 	 */
 	protected static JsonObjectBuilder convertStepExecutionSummaryToJsonObject(StepExecution stepExecution, Long jobExecutionId){
 
-		JsonObjectBuilder jsonObjBuilder = Json.createObjectBuilder();
+		JsonObjectBuilder jsonObjBuilder = builderFactory.createObjectBuilder();
 
 		jsonObjBuilder.add("stepExecutionId", stepExecution.getStepExecutionId())
 		.add("stepName", stepExecution.getStepName())
@@ -513,7 +527,7 @@ public class BatchJSONHelper {
 	 */
 	protected static JsonArrayBuilder toJsonArrayBuilderWithLinks(List<WSJobExecution> jobExecutionList, Map<Long,List<WSStepThreadExecutionAggregate>> jobExecStepExecListMap, 
 			String urlRoot) {
-		JsonArrayBuilder retMe = Json.createArrayBuilder();
+		JsonArrayBuilder retMe = builderFactory.createArrayBuilder();
 
 		for ( WSJobExecution jobExecution : jobExecutionList ) {
 			retMe.add( toJsonObjectBuilderWithLinks( jobExecution,jobExecStepExecListMap.get(jobExecution.getExecutionId()),urlRoot));
@@ -528,7 +542,7 @@ public class BatchJSONHelper {
 	public static JsonObjectBuilder convertStepExecutionToJsonObjectInBasicFormatNoLink(WSTopLevelStepExecution stepExecution,
 			String urlRoot) { 
 
-		JsonObjectBuilder jsonObjBuilder = Json.createObjectBuilder();
+		JsonObjectBuilder jsonObjBuilder = builderFactory.createObjectBuilder();
 
 		jsonObjBuilder.add("stepExecutionId", stepExecution.getStepExecutionId())
 		.add("stepName", stepExecution.getStepName())
@@ -560,7 +574,7 @@ public class BatchJSONHelper {
 			WSPartitionStepAggregate partitionAggregate, String urlRoot, int partNumber) {
 
 		StepExecution stepExecution = partitionAggregate.getPartitionStepThread();
-		JsonObjectBuilder jsonObjBuilder = Json.createObjectBuilder();
+		JsonObjectBuilder jsonObjBuilder = builderFactory.createObjectBuilder();
 		
 		String serverId = partitionAggregate.getRemotablePartition() == null ? "":partitionAggregate.getRemotablePartition().getServerId();
 		String restUrl = partitionAggregate.getRemotablePartition() == null ? "":partitionAggregate.getRemotablePartition().getRestUrl();
@@ -591,7 +605,7 @@ public class BatchJSONHelper {
 	protected static JsonObjectBuilder convertStepExecutionPartitionToJsonObject(
 			StepExecution stepExecution, String urlRoot, int partNumber) {
 
-		JsonObjectBuilder jsonObjBuilder = Json.createObjectBuilder();
+		JsonObjectBuilder jsonObjBuilder = builderFactory.createObjectBuilder();
 
 		jsonObjBuilder
 		.add("partitionNumber", partNumber)
@@ -620,7 +634,7 @@ public class BatchJSONHelper {
 	 */
 	protected static JsonObjectBuilder convertStepMetricsToJsonObject(Metric[] metrics) {
 
-		JsonObjectBuilder jsonObjBuilder = Json.createObjectBuilder();
+		JsonObjectBuilder jsonObjBuilder = builderFactory.createObjectBuilder();
 
 		for (Metric metric : metrics) {
 			String name = metric.getType().toString();
@@ -646,12 +660,7 @@ public class BatchJSONHelper {
 	 * @return a pretty-print configured JsonWriter
 	 */
 	protected static JsonWriter createPrettyJsonWriter(OutputStream outputStream) {
-		Map<String, Object> writerConfig = new HashMap<String, Object>(1);
-		writerConfig.put(JsonGenerator.PRETTY_PRINTING, true);
-
-		JsonWriterFactory writerFactory = Json.createWriterFactory(writerConfig);
-
-		return writerFactory.createWriter(outputStream);
+		return prettyWriterFactory.createWriter(outputStream);
 	}
 
 	/**
@@ -677,7 +686,7 @@ public class BatchJSONHelper {
 	 */
 	protected static JsonObject convertPropertiesToJsonObject( Properties props) {
 
-		JsonObjectBuilder builder = Json.createObjectBuilder();
+		JsonObjectBuilder builder = builderFactory.createObjectBuilder();
 
 		if (props != null) {
 			for (String key : props.stringPropertyNames()) {
@@ -696,18 +705,18 @@ public class BatchJSONHelper {
 	 */
 	protected static JsonArrayBuilder convertJobExecutionLogLinksToJsonArray(List<JobExecutionLog> jobExecutionLogs,
 			String urlRoot) throws IOException {
-		JsonArrayBuilder retMe = Json.createArrayBuilder();
+		JsonArrayBuilder retMe = builderFactory.createArrayBuilder();
 		
 		String urlVersion = BatchRequestUtil.getUrlVersion(urlRoot);
 
 		for (JobExecutionLog jobExecutionLog : jobExecutionLogs) {
 
 			// Add links for the entire joblog, both as aggregated text and as a zip file.
-			retMe.add(Json.createObjectBuilder()
+			retMe.add(builderFactory.createObjectBuilder()
 					.add("rel", "joblog text")
 					.add("href", ((WSJobExecution)jobExecutionLog.getJobExecution()).getRestUrl() + "/" + urlVersion +"jobexecutions/" + 
 							     jobExecutionLog.getExecutionId() + "/joblogs?type=text"));
-			retMe.add(Json.createObjectBuilder()
+			retMe.add(builderFactory.createObjectBuilder()
 					.add("rel", "joblog zip")
 					.add("href", ((WSJobExecution)jobExecutionLog.getJobExecution()).getRestUrl() + "/" + urlVersion + "jobexecutions/" + 
 					             jobExecutionLog.getExecutionId() + "/joblogs?type=zip"));
@@ -717,11 +726,11 @@ public class BatchJSONHelper {
 				relativePath = StringUtils.normalizePath(relativePath);
 
 				// Add links for each individual joblog part, as both plain text and as a zip file.
-				retMe.add(Json.createObjectBuilder()
+				retMe.add(builderFactory.createObjectBuilder()
 						.add("rel", "joblog part text")
 						.add("href", ((WSJobExecution)jobExecutionLog.getJobExecution()).getRestUrl() + "/" + urlVersion + "jobexecutions/" + 
 						             jobExecutionLog.getExecutionId() + "/joblogs?part=" + relativePath + "&type=text"));
-				retMe.add(Json.createObjectBuilder()
+				retMe.add(builderFactory.createObjectBuilder()
 						.add("rel", "joblog part zip")
 						.add("href", ((WSJobExecution)jobExecutionLog.getJobExecution()).getRestUrl() + "/" + urlVersion + "jobexecutions/" + 
 						             jobExecutionLog.getExecutionId() + "/joblogs?part=" + relativePath + "&type=zip"));
@@ -761,7 +770,7 @@ public class BatchJSONHelper {
 			BatchStatus batchStatus, String exitStatus, String stepName,
 			long topLevelInstanceId, long topLevelExecutionId, long topLevelStepExecutionId) {
 		
-		JsonObjectBuilder jsonObjBuilder = Json.createObjectBuilder();
+		JsonObjectBuilder jsonObjBuilder = builderFactory.createObjectBuilder();
 
 		jsonObjBuilder
 		.add("partitionNumber", partitionNumber)
@@ -785,7 +794,7 @@ public class BatchJSONHelper {
 	 */
 	public static JsonObjectBuilder convertCheckpointToJsonObjectBuilderForEvent(
 			String stepName, long jobInstanceId, long jobExecutionId, long stepExecutionId) {
-		JsonObjectBuilder jsonObjBuilder = Json.createObjectBuilder();
+		JsonObjectBuilder jsonObjBuilder = builderFactory.createObjectBuilder();
 
 		jsonObjBuilder
 		.add("stepName", stepName)
@@ -798,7 +807,7 @@ public class BatchJSONHelper {
 
 	public static JsonObjectBuilder convertSplitFlowToJsonObjectBuilderForEvent(
 			String splitName, String flowName, long jobInstanceId, long jobExecutionId) {
-		JsonObjectBuilder jsonObjBuilder = Json.createObjectBuilder();
+		JsonObjectBuilder jsonObjBuilder = builderFactory.createObjectBuilder();
 
 		jsonObjBuilder
 		.add("splitName", splitName)
@@ -828,7 +837,7 @@ public class BatchJSONHelper {
 			int partNumber, Integer partitionNumber, String stepName, String splitName,
 			String flowName, boolean finalLog, String logContent) {
 
-		JsonObjectBuilder jsonObjBuilder = Json.createObjectBuilder();
+		JsonObjectBuilder jsonObjBuilder = builderFactory.createObjectBuilder();
 
 		jsonObjBuilder
 		.add("executionId", jobExecutionId)
@@ -850,7 +859,7 @@ public class BatchJSONHelper {
 		}		
 		
 		//Create a JsonArray where each long of the job log is one object in the array
-        JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
+        JsonArrayBuilder arrayBuilder = builderFactory.createArrayBuilder();
         BufferedReader bufferedReader = new BufferedReader(new StringReader(logContent));
         String line = null;
 		try {
@@ -869,8 +878,8 @@ public class BatchJSONHelper {
     public static void buildAndWritePurgeJsonObject(
             ArrayList<WSPurgeResponse> responseList,
             OutputStream outputStream) {
-        JsonObjectBuilder jsonObjBuilder = Json.createObjectBuilder();
-        JsonArrayBuilder jsonArrayBuilder = Json.createArrayBuilder();
+        JsonObjectBuilder jsonObjBuilder = builderFactory.createObjectBuilder();
+        JsonArrayBuilder jsonArrayBuilder = builderFactory.createArrayBuilder();
 
         WSPurgeResponse purgeResponse;
         
