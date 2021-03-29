@@ -17,6 +17,11 @@ import java.util.Set;
  */
 public interface HeritageDBConnection {
     /**
+     * XA start flag for loosely coupled transaction branches.
+     */
+    public static int LOOSELY_COUPLED_TRANSACTION_BRANCHES = 0x1000;
+
+    /**
      * Obtains the list of valid client info keys.
      *
      * @return the list of valid client info keys.

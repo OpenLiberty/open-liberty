@@ -180,6 +180,11 @@ public class GenericDataStoreHelper extends com.ibm.ws.jdbc.heritage.GenericData
         }
     }
 
+    @Override
+    public int modifyXAFlag(int xaStartFlags) {
+        return xaStartFlags;
+    }
+
     private Object readConfig(String fieldName) {
         Object dsConfig = dsConfigRef.get();
         try {

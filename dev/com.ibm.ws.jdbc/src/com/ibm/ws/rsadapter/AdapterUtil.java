@@ -631,10 +631,13 @@ public class AdapterUtil {
                 return "TMRESUME (" + flag + ')';
 
             case 0x8000:
-                return "SSTRANSTIGHTLYCPLD (" + flag + ')';
+                return "SSTRANSTIGHTLYCPLD (" + flag + ')'; // Microsoft SQL Server JDBC driver
 
             case 0x10000:
-                return "ORATRANSLOOSE (" + flag + ')';
+                return "ORATRANSLOOSE (" + flag + ')'; // Oracle JDBC driver
+
+            case 0x800000:
+                return "TMLCS (" + flag + ')'; // DB2 JCC driver
         }
 
         return "UNKNOWN XA RESOURCE START FLAG (" + flag + ')'; 
