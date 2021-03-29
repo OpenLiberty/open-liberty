@@ -1,5 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.adminCenter.tool.serverConfig-1.0
+WLP-DisableAllFeatures-OnConflict: false
 visibility=private
 IBM-ShortName: serverConfig-1.0
 Subsystem-Name: Server Config

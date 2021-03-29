@@ -1,5 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.adminCenter.tool.explore-1.0
+WLP-DisableAllFeatures-OnConflict: false
 visibility=private
 IBM-ShortName: explore-1.0
 Subsystem-Name: Explore
