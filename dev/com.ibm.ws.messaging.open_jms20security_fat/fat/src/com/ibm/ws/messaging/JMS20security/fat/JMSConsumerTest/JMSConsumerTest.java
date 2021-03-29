@@ -105,6 +105,7 @@ public class JMSConsumerTest {
         server.copyFileToLibertyServerRoot("resources/security",
                                            "clientLTPAKeys/mykey.jks");
         TestUtils.addDropinsWebApp(server, "JMSConsumer", "web");
+
         startAppServers();
     }
 
@@ -117,12 +118,17 @@ public class JMSConsumerTest {
         server.setServerConfigurationFile("JMSContext_ssl.xml");
         server1.setServerConfigurationFile("TestServer1_ssl.xml");
         server.startServer("JMSConsumerTestClient.log");
-        String waitFor = server.waitForStringInLog("CWWKF0011I.*", server.getMatchingLogFile("messages.log"));
-        assertNotNull("Server ready message not found", waitFor);
-
         server1.startServer("JMSConsumerServer.log");
-        waitFor = server1.waitForStringInLog("CWWKF0011I.*", server1.getMatchingLogFile("messages.log"));
-        assertNotNull("Server ready message not found", waitFor);
+
+        // CWWKF0011I: The TestServer1 server is ready to run a smarter planet. The TestServer1 server started in 6.435 seconds.
+        // CWSID0108I: JMS server has started.
+        // CWWKS4105I: LTPA configuration is ready after 4.028 seconds.
+        for (String messageId : new String[] { "CWWKF0011I.*", "CWSID0108I.*", "CWWKS4105I.*" }) {
+            String waitFor = server.waitForStringInLog(messageId, server.getMatchingLogFile("messages.log"));
+            assertNotNull("Server message " + messageId + " not found", waitFor);
+            waitFor = server1.waitForStringInLog(messageId, server1.getMatchingLogFile("messages.log"));
+            assertNotNull("Server1 message " + messageId + " not found", waitFor);
+        }
     }
 
     // start 118076
