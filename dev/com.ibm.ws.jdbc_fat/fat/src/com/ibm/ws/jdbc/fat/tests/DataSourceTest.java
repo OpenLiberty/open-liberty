@@ -171,8 +171,18 @@ public class DataSourceTest extends FATServletClient {
     }
 
     @Test
+    public void testEnableContainerAuthForDirectLookupsFalse() throws Exception {
+        runTest();
+    }
+
+    @Test
     public void testEnableContainerAuthForDirectLookupsTrue() throws Exception {
         runTest();
+    }
+
+    @Test
+    public void testEnableContainerAuthForDirectLookupsTrueOnAppDefinedDataSource() throws Exception {
+        runTest(server, dsdfat, testName);
     }
 
     @Test
