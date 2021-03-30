@@ -1,0 +1,186 @@
+###############################################################################
+# Copyright (c) 2010 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO Websphere kernel channel framework service
+#CMVCPATHNAME com.ibm.ws.channelfw/resources/com/ibm/ws/channelfw/internal/resources/ChannelfwMessages.nlsprops
+#NLS_ENCODING=UNICODE
+#ISMESSAGEFILE TRUE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+
+### CHFW will use message numbers 0000-0199
+
+channel.dir.missing=CWWKO0001W: {0} is missing or is not a directory.
+channel.dir.missing.explanation=CMSG0001
+channel.dir.missing.useraction=CMSG0002
+
+channel.jar.open.failure=CWWKO0002E: Channel implementation {0} could not be opened: {1}
+channel.jar.open.failure.explanation=CMSG0001
+channel.jar.open.failure.useraction=CMSG0002
+
+channel.descriptor.missing=CWWKO0003E: Channel implementation {0} does not have a channel descriptor.
+channel.descriptor.missing.explanation=CMSG0001
+channel.descriptor.missing.useraction=CMSG0002
+
+channel.descriptor.parse.failure=CWWKO0004E: Errors were generated when parsing the channel descriptor from {0}: {1}
+channel.descriptor.parse.failure.explanation=CMSG0001
+channel.descriptor.parse.failure.useraction=CMSG0002
+
+channel.descriptor.factory.missing=CWWKO0005E: Channel implementation {0} does not specify a factory runtime class.
+channel.descriptor.factory.missing.explanation=CMSG0001
+channel.descriptor.factory.missing.useraction=CMSG0002
+
+channel.descriptor.channel.missing=CWWKO0006E: Channel implementation {0} does not specify a channel configuration class.
+channel.descriptor.channel.missing.explanation=CMSG0001
+channel.descriptor.channel.missing.useraction=CMSG0002
+
+channel.descriptor.interfaces.missing=CWWKO0007E: Channel implementation {0} does not specify device-side or application-side interfaces.
+channel.descriptor.interfaces.missing.explanation=CMSG0001
+channel.descriptor.interfaces.missing.useraction=CMSG0002
+
+channel.descriptor.weight.invalid=CWWKO0008E: Channel implementation {0} specifies an default weight of {1}. This is not a valid default weight.
+channel.descriptor.weight.invalid.explanation=CMSG0001
+channel.descriptor.weight.invalid.useraction=CMSG0002
+
+chain.channels.empty=CWWKO0009E: Chain {0} does not contain any transport channels.
+chain.channels.empty.explanation=Chains must contain transport channels to function.
+chain.channels.empty.useraction=Add some transport channels to the specified chain.
+
+chain.flow.mismatch=CWWKO0010E: The transport channels of chain {0} must all flow in the same direction.
+chain.flow.mismatch.explanation=Transport channels can flow into a server (inbound channels) or out of a server (outbound channels). All transport channels in a chain must flow in the same direction.
+chain.flow.mismatch.useraction=Ensure that all of the transport channels in the chain flow in the same direction. Do not mix inbound and outbound channels in the same chain.
+
+chain.inbound.first.mismatch=CWWKO0011E: The first transport channel in chain {0} is not a connector channel.
+chain.inbound.first.mismatch.explanation=The first transport channel in an in inbound chain must be a connector channel.
+chain.inbound.first.mismatch.useraction=Ensure that the first transport channel in the inbound chain is a connector channel.
+
+chain.inbound.last.mismatch=CWWKO0012E: The last transport channel in chain {0} is not an acceptor channel.
+chain.inbound.last.mismatch.explanation=The last transport channel in an inbound chain must be an acceptor channel.
+chain.inbound.last.mismatch.useraction=Ensure that the last transport channel in the inbound chain is an acceptor channel.
+
+chain.acceptor.determination.failure=CWWKO0013E: The system could not determine the acceptor ID for chain {0}.
+chain.acceptor.determination.failure.explanation=CMSG0001
+chain.acceptor.determination.failure.useraction=CMSG0002
+
+channel.descriptor.notfound=CWWKO0014E: The system could not find channel descriptor to match channel configuration type {0}.
+channel.descriptor.notfound.explanation=Channels must provide a descriptor to map configuration types to runtime types; no matching descriptor could be found.
+channel.descriptor.notfound.useraction=CMSG0002
+
+jndi.context.failure=CWWKO0015E: The system could not get the following initial naming context: {0}
+jndi.context.failure.explanation=CMSG0001
+jndi.context.failure.useraction=CMSG0002
+
+factory.load.failure=CWWKO0016E: The system could not load the following transport channel factory: {0}
+factory.load.failure.explanation=CMSG0001
+factory.load.failure.useraction=CMSG0002
+
+channel.load.failure=CWWKO0017E: The system could not load the following transport channel: {0}
+channel.load.failure.explanation=CMSG0001
+channel.load.failure.useraction=CMSG0002
+
+chain.load.failure=CWWKO0018E: The system could not load the following chain: {0}
+chain.load.failure.explanation=CMSG0001
+chain.load.failure.useraction=CMSG0002
+
+chain.started=CWWKO0019I: The Transport Channel Service has started chain {0}.
+chain.started.explanation=The Transport Channel Service has started the specified chain.
+chain.started.useraction=No action needed.
+
+chain.stopped=CWWKO0020I: The Transport Channel Service has stopped the chain labeled {0}.
+chain.stopped.explanation=The Transport Channel Service has stopped the specified chain.
+chain.stopped.useraction=No action needed.
+
+chain.disabled=CWWKO0021I: Inbound chain {0} has been marked disabled.
+chain.disabled.explanation=Inbound chains must be explicitly marked as enabled to be eligible for automatic startup. Disabled chains can still be started, but they must be explictly started by name.
+chain.disabled.useraction=No action needed.
+
+config.load.error=CWWKO0022E: The Transport Channel Service could not locate its configuration due to an exception: {0}
+config.load.error.explanation=The Transport Channel Service generated an exception when attempting to discover and load its configuration. It will be started without configuration.
+config.load.error.useraction=CMSG0002
+
+boot.no.config=CWWKO0023I: The Transport Channel Service could not locate its configuration but will be started without it.
+boot.no.config.explanation=The Transport Channel Service could not locate its configuation. The default configuration details for the Transport Channel Service should be added to the server.xml configuration file.
+boot.no.config.useraction=Use the administrative console or wsadmin to add default configuration for the Transport Channel Service.
+
+framework.disabled=CWWKO0024I: The Transport Channel Service has been explicitly disabled.
+framework.disabled.explanation=The Transport Channel Service has been explicitly configured to be disabled and will not be started.
+framework.disabled.useraction=No action needed.
+
+channel.descriptor.factory.config.missing=CWWKO0025E: Channel implementation {0} does not specify a factory configuration class.
+channel.descriptor.factory.config.missing.explanation=CMSG0001
+channel.descriptor.factory.config.missing.useraction=CMSG0002
+
+factory.descriptor.notfound=CWWKO0026E: The system could not find a channel factory descriptor to match transport channel configuration type {0}.
+factory.descriptor.notfound.explanation=Channels must provide a descriptor to map configuration types to runtime types. No matching descriptor could be found.
+factory.descriptor.notfound.useraction=CMSG0002
+
+channel.load.problems=CWWKO0027I: One or more transport channel implementations did not load.
+channel.load.problems.explanation=CMSG0001
+channel.load.problems.useraction=CMSG0002
+
+chain.outbound.last.mismatch=CWWKO0028E: The last transport channel in chain {0} is not a connector channel.
+chain.outbound.last.mismatch.explanation=The last transport channel in an outbound chain must be a connector channel.
+chain.outbound.last.mismatch.useraction=Ensure that the last transport channel in the outbound chain is a connector channel.
+
+chain.initialization.error=CWWKO0029E: An exception was generated  when initializing chain {0} because of exception {1}
+chain.initialization.error.explanation=An exception was generated in either the chain or the underlying channels.
+chain.initialization.error.useraction=Ensure the right channels are being used in the chain.
+
+chain.start.error=CWWKO0030E: An exception was generated when starting chain {0} because of exception {1}
+chain.start.error.explanation=An exception was generated in either the chain or the underlying channels.
+chain.start.error.useraction=Ensure the right channels are being used in the chain.
+
+chain.stop.error=CWWKO0031E: An exception was generated when stopping chain {0} because of exception {1}
+chain.stop.error.explanation=An exception was generated in either the chain or the underlying channels.
+chain.stop.error.useraction=Ensure the right channels are being used in the chain.
+
+chain.destroy.error=CWWKO0032E: An exception was generated when destroying chain {0} because of exception {1}
+chain.destroy.error.explanation=An exception was generated in either the chain or the underlying channels.
+chain.destroy.error.useraction=Ensure the right channels are being used in the chain.
+
+chain.retrystart.error=CWWKO0033E: The Transport Channel Service did not start transport chain {0} after {1} attempts to start it.
+chain.retrystart.error.explanation=The configured number of retries is not enough to cause the chain to start, or the port used by the chain is already in use.
+chain.retrystart.error.useraction=Ensure the port used by the chain is not already in use.  Correctly set the custom properties for restarting chains.
+
+chain.retrystart.warning=CWWKO0034W: The Transport Channel Service detected that transport chain {0} did not start.  The service will try to start chain {0} every {1} milliseconds for up to {2} attempts.
+chain.retrystart.warning.explanation=The initial attempt to start the chain did not succeed. Further attempts will be made to get it started.
+chain.retrystart.warning.useraction=Watch for an error or audit message indicating the result of the retry attempts.
+
+framework.property.error=CWWKO0035E: The Transport Channel Service found a value of {0} for property {1}. Thsi is not a valid value.
+framework.property.error.explanation=The value of the property is out of the expected bounds.
+framework.property.error.useraction=Adjust the configuration to set the property to a valid value.
+
+missing.factory=CWWKO0036W: The chain configuration contains a missing factory type, {0}, and could not start one or more chains.
+missing.factory.explanation=The runtime environment does not contain a channel factory of the matching type, and so cannot start the chains that use it.
+missing.factory.useraction=Check whether the runtime featureset list is missing one or more required items.
+
+DEFAULT_OPTIONS_ERROR_TCP=CWWKO0037E: Unable to create default TCP channel configuration. Exception is {0}.
+DEFAULT_OPTIONS_ERROR_TCP.explanation=An error was encountered while creating the default configuration for TCP channnels.
+DEFAULT_OPTIONS_ERROR_TCP.useraction=Review the exception for information on how the creation failed.
+
+DEFAULT_OPTIONS_ERROR_UDP=CWWKO0038E: Unable to create default UDP channel configuration. Exception is {0}.
+DEFAULT_OPTIONS_ERROR_UDP.explanation=An error was encountered while creating the default configuration for UDP channnels.
+DEFAULT_OPTIONS_ERROR_UDP.useraction=Review the exception for information on how the creation failed.
+
+channel.shared.warning=CWWKO0039W: Non-shareable channel {0} is being shared between multiple regions.
+channel.shared.warning.explanation=The channel has been configured to be a non-shareable channel. However the channel is being shared between multiple regions.
+channel.shared.warning.useraction=Review the configuration of the channel and its usage.

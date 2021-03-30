@@ -1,0 +1,186 @@
+###############################################################################
+# Copyright (c) 2010 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO Websphere kernel channel framework service
+#CMVCPATHNAME com.ibm.ws.channelfw/resources/com/ibm/ws/channelfw/internal/resources/ChannelfwMessages.nlsprops
+#NLS_ENCODING=UNICODE
+#ISMESSAGEFILE TRUE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+
+### CHFW will use message numbers 0000-0199
+
+channel.dir.missing=CWWKO0001W: {0} n''existe pas ou n''est pas un r\u00e9pertoire.
+channel.dir.missing.explanation=CMSG0001
+channel.dir.missing.useraction=CMSG0002
+
+channel.jar.open.failure=CWWKO0002E: Impossible d''ouvrir l''impl\u00e9mentation de canal {0} : {1}
+channel.jar.open.failure.explanation=CMSG0001
+channel.jar.open.failure.useraction=CMSG0002
+
+channel.descriptor.missing=CWWKO0003E: L''impl\u00e9mentation de canal {0} n''a pas de descripteur de canal.
+channel.descriptor.missing.explanation=CMSG0001
+channel.descriptor.missing.useraction=CMSG0002
+
+channel.descriptor.parse.failure=CWWKO0004E: Des erreurs ont \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9es lors de l''analyse syntaxique du descripteur de canal de {0} : {1}
+channel.descriptor.parse.failure.explanation=CMSG0001
+channel.descriptor.parse.failure.useraction=CMSG0002
+
+channel.descriptor.factory.missing=CWWKO0005E: L''impl\u00e9mentation de canal {0} ne sp\u00e9cifie pas de classe de fabrique (factory) utilisable \u00e0 l''ex\u00e9cution.
+channel.descriptor.factory.missing.explanation=CMSG0001
+channel.descriptor.factory.missing.useraction=CMSG0002
+
+channel.descriptor.channel.missing=CWWKO0006E: L''impl\u00e9mentation de canal {0} ne sp\u00e9cifie pas de classe de configuration de canal.
+channel.descriptor.channel.missing.explanation=CMSG0001
+channel.descriptor.channel.missing.useraction=CMSG0002
+
+channel.descriptor.interfaces.missing=CWWKO0007E: L''impl\u00e9mentation de canal {0} ne sp\u00e9cifie pas d''interfaces cot\u00e9 application ou c\u00f4t\u00e9 p\u00e9riph\u00e9rique.
+channel.descriptor.interfaces.missing.explanation=CMSG0001
+channel.descriptor.interfaces.missing.useraction=CMSG0002
+
+channel.descriptor.weight.invalid=CWWKO0008E: L''impl\u00e9mentation de canal {0} sp\u00e9cifie un poids par d\u00e9faut de {1}. Ce poids par d\u00e9faut n''est pas valide.
+channel.descriptor.weight.invalid.explanation=CMSG0001
+channel.descriptor.weight.invalid.useraction=CMSG0002
+
+chain.channels.empty=CWWKO0009E: La cha\u00eene {0} ne contient pas de canaux de transport.
+chain.channels.empty.explanation=Les cha\u00eenes doivent contenir des canaux de transport pour fonctionner.
+chain.channels.empty.useraction=Ajoutez des canaux de transport \u00e0 la cha\u00eene indiqu\u00e9e.
+
+chain.flow.mismatch=CWWKO0010E: Les canaux de transport de la cha\u00eene {0} doivent tous aller dans le m\u00eame sens.
+chain.flow.mismatch.explanation=Les canaux de transport peuvent avoir une direction entrante (flux \u00e0 destination du serveur) ou sortante (flux en provenance du serveur). Tous les canaux d'une m\u00eame cha\u00eene doivent avoir la m\u00eame direction.
+chain.flow.mismatch.useraction=Assurez-vous que tous les canaux de transport de la cha\u00eene vont dans la m\u00eame direction. Ne m\u00e9langez pas des canaux entrants et sortants dans une m\u00eame cha\u00eene.
+
+chain.inbound.first.mismatch=CWWKO0011E: Le premier canal de transport de la cha\u00eene {0} n''est pas un canal connecteur.
+chain.inbound.first.mismatch.explanation=Le premier canal de transport d'une cha\u00eene entrante doit \u00eatre un canal connecteur.
+chain.inbound.first.mismatch.useraction=V\u00e9rifiez que le premier canal de transport de la cha\u00eene entrante est un canal connecteur.
+
+chain.inbound.last.mismatch=CWWKO0012E: Le dernier canal de transport de la cha\u00eene {0} n''est pas un canal accepteur.
+chain.inbound.last.mismatch.explanation=Le dernier canal de transport d'une cha\u00eene entrante doit \u00eatre un canal accepteur.
+chain.inbound.last.mismatch.useraction=V\u00e9rifiez que le dernier canal de transport de la cha\u00eene entrante est un canal accepteur.
+
+chain.acceptor.determination.failure=CWWKO0013E: Le syst\u00e8me n''a pas pu d\u00e9terminer l''ID d''accepteur de la cha\u00eene {0}.
+chain.acceptor.determination.failure.explanation=CMSG0001
+chain.acceptor.determination.failure.useraction=CMSG0002
+
+channel.descriptor.notfound=CWWKO0014E: Le syst\u00e8me n''a pas trouv\u00e9 de descripteur de canal correspondant au type de configuration de canal {0}.
+channel.descriptor.notfound.explanation=Les canaux doivent fournir un descripteur pour mapper les types de configuration \u00e0 des types d'ex\u00e9cution (runtime). Aucun descripteur correspondant n'a \u00e9t\u00e9 trouv\u00e9.
+channel.descriptor.notfound.useraction=CMSG0002
+
+jndi.context.failure=CWWKO0015E: Le syst\u00e8me n''a pas pu obtenir le contexte de nommage initial suivant : {0}
+jndi.context.failure.explanation=CMSG0001
+jndi.context.failure.useraction=CMSG0002
+
+factory.load.failure=CWWKO0016E: Le syst\u00e8me n''a pas pu charger la fabrique de canal de transport suivante : {0}
+factory.load.failure.explanation=CMSG0001
+factory.load.failure.useraction=CMSG0002
+
+channel.load.failure=CWWKO0017E: Le syst\u00e8me n''a pas pu charger le canal de transport suivant : {0}
+channel.load.failure.explanation=CMSG0001
+channel.load.failure.useraction=CMSG0002
+
+chain.load.failure=CWWKO0018E: Le syst\u00e8me n''a pas pu charger la cha\u00eene suivante : {0}
+chain.load.failure.explanation=CMSG0001
+chain.load.failure.useraction=CMSG0002
+
+chain.started=CWWKO0019I: Le service de canal de transport a d\u00e9marr\u00e9 la cha\u00eene {0}.
+chain.started.explanation=Le service de canal de transport a d\u00e9marr\u00e9 la cha\u00eene indiqu\u00e9e.
+chain.started.useraction=Aucune action n'est n\u00e9cessaire.
+
+chain.stopped=CWWKO0020I: Le service de canal de transport a arr\u00eat\u00e9 la cha\u00eene {0}.
+chain.stopped.explanation=Le service de canal de transport a arr\u00eat\u00e9 la cha\u00eene indiqu\u00e9e.
+chain.stopped.useraction=Aucune action n'est n\u00e9cessaire.
+
+chain.disabled=CWWKO0021I: La cha\u00eene entrante {0} a \u00e9t\u00e9 marqu\u00e9e comme d\u00e9sactiv\u00e9e.
+chain.disabled.explanation=Les cha\u00eenes entrantes doivent \u00eatre explicitement marqu\u00e9es comme activ\u00e9es pour \u00eatre \u00e9ligibles au d\u00e9marrage automatique. Les cha\u00eenes d\u00e9sactiv\u00e9es peuvent quand m\u00eame \u00eatre d\u00e9marr\u00e9es, mais elles doivent l'\u00eatre explicitement par leur nom.
+chain.disabled.useraction=Aucune action n'est n\u00e9cessaire.
+
+config.load.error=CWWKO0022E: Le service de canal de transport n''a pas r\u00e9ussi \u00e0 localiser sa configuration \u00e0 cause d''une exception: {0}
+config.load.error.explanation=Le service de canal de transport a g\u00e9n\u00e9r\u00e9 une exception en tentant de d\u00e9couvrir et de charger sa configuration. Il sera d\u00e9marr\u00e9 sans configuration.
+config.load.error.useraction=CMSG0002
+
+boot.no.config=CWWKO0023I: Le service de canal de transport n'a pas r\u00e9ussi \u00e0 localiser sa configuration et sera d\u00e9marr\u00e9 sans elle.
+boot.no.config.explanation=Le service de canal de transport n'a pas r\u00e9ussi \u00e0 localiser sa configuration.  Les d\u00e9tails de configuration par d\u00e9faut du service de canal de transport doivent \u00eatre ajout\u00e9s au fichier server.xml.
+boot.no.config.useraction=Utilisez la console d'administration ou l'utilitaire wsadmin pour ajouter la configuration par d\u00e9faut du service de canal de transport.
+
+framework.disabled=CWWKO0024I: Le service de canal de transport a \u00e9t\u00e9 d\u00e9sactiv\u00e9 de mani\u00e8re explicite.
+framework.disabled.explanation=Le service de canal de transport a \u00e9t\u00e9 configur\u00e9 explicitement pour \u00eatre d\u00e9sactiv\u00e9 et ne sera pas d\u00e9marr\u00e9.
+framework.disabled.useraction=Aucune action n'est n\u00e9cessaire.
+
+channel.descriptor.factory.config.missing=CWWKO0025E: L''impl\u00e9mentation de canal {0} ne sp\u00e9cifie pas de classe de configuration de fabrique (factory).
+channel.descriptor.factory.config.missing.explanation=CMSG0001
+channel.descriptor.factory.config.missing.useraction=CMSG0002
+
+factory.descriptor.notfound=CWWKO0026E: Le syst\u00e8me n''a pas trouv\u00e9 de descripteur de fabrique de canal correspondant au type de configuration de canal de transport {0}.
+factory.descriptor.notfound.explanation=Les canaux doivent fournir un descripteur pour mapper les types de configuration \u00e0 des types d'ex\u00e9cution (runtime). Aucun descripteur correspondant n'a \u00e9t\u00e9 trouv\u00e9.
+factory.descriptor.notfound.useraction=CMSG0002
+
+channel.load.problems=CWWKO0027I: Une ou plusieurs impl\u00e9mentations de canal de transport n'ont pas \u00e9t\u00e9 charg\u00e9es.
+channel.load.problems.explanation=CMSG0001
+channel.load.problems.useraction=CMSG0002
+
+chain.outbound.last.mismatch=CWWKO0028E: Le dernier canal de transport de la cha\u00eene {0} n''est pas un canal connecteur.
+chain.outbound.last.mismatch.explanation=Le dernier canal de transport d'une cha\u00eene sortante doit \u00eatre un canal connecteur.
+chain.outbound.last.mismatch.useraction=V\u00e9rifiez que le dernier canal de transport de la cha\u00eene sortante est un canal connecteur.
+
+chain.initialization.error=CWWKO0029E: Une exception a \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9e pendant l''initialisation de la cha\u00eene {0}. Exception : {1}.
+chain.initialization.error.explanation=Une exception a \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9e dans la cha\u00eene ou dans les canaux sous-jacents.
+chain.initialization.error.useraction=V\u00e9rifiez que la cha\u00eene utilise les canaux appropri\u00e9s.
+
+chain.start.error=CWWKO0030E: Une exception a \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9e au d\u00e9marrage de la cha\u00eene {0}. Exception : {1}.
+chain.start.error.explanation=Une exception a \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9e dans la cha\u00eene ou dans les canaux sous-jacents.
+chain.start.error.useraction=V\u00e9rifiez que la cha\u00eene utilise les canaux appropri\u00e9s.
+
+chain.stop.error=CWWKO0031E: Une exception a \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9e \u00e0 l''arr\u00eat de la cha\u00eene {0}. Exception : {1}.
+chain.stop.error.explanation=Une exception a \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9e dans la cha\u00eene ou dans les canaux sous-jacents.
+chain.stop.error.useraction=V\u00e9rifiez que la cha\u00eene utilise les canaux appropri\u00e9s.
+
+chain.destroy.error=CWWKO0032E: Une exception a \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9e \u00e0 la destruction de la cha\u00eene {0}. Exception : {1}.
+chain.destroy.error.explanation=Une exception a \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9e dans la cha\u00eene ou dans les canaux sous-jacents.
+chain.destroy.error.useraction=V\u00e9rifiez que la cha\u00eene utilise les canaux appropri\u00e9s.
+
+chain.retrystart.error=CWWKO0033E: Le service de canal de transport n''a pas r\u00e9ussi \u00e0 d\u00e9marrer la cha\u00eene de transport {0} apr\u00e8s {1} tentatives.
+chain.retrystart.error.explanation=Le nombre configur\u00e9 de relances est insuffisant pour d\u00e9marrer la cha\u00eene ou le port pr\u00e9vu pour celle-ci est d\u00e9j\u00e0 utilis\u00e9.
+chain.retrystart.error.useraction=V\u00e9rifiez que le port \u00e0 utiliser par la cha\u00eene n'est pas en cours d'utilisation. D\u00e9finissez les propri\u00e9t\u00e9s personnalis\u00e9es de mani\u00e8re appropri\u00e9e pour red\u00e9marrer les cha\u00eenes.
+
+chain.retrystart.warning=CWWKO0034W: Le service de canal de transport a d\u00e9tect\u00e9 que la cha\u00eene de transport {0} n''a pas d\u00e9marr\u00e9. Le service va tenter de d\u00e9marrer la cha\u00eene {0} toutes les {1} millisecondes dans la limite de {2} tentatives.
+chain.retrystart.warning.explanation=La tentative initiale de d\u00e9marrage de la cha\u00eene n'a pas r\u00e9ussi. D'autres tentatives seront effectu\u00e9es pour la d\u00e9marrer.
+chain.retrystart.warning.useraction=Surveillez tout message d'erreur ou d'audit indiquant le r\u00e9sultat des nouvelles tentatives.
+
+framework.property.error=CWWKO0035E: Le service de canal de transport a d\u00e9tect\u00e9 la valeur {0} pour la propri\u00e9t\u00e9 {1}. Il ne s''agit pas d''une valeur valide.
+framework.property.error.explanation=La valeur de la propri\u00e9t\u00e9 n'est pas comprise dans les limites attendues.
+framework.property.error.useraction=Modifiez la configuration pour affecter une valeur valide \u00e0 la propri\u00e9t\u00e9.
+
+missing.factory=CWWKO0036W: La configuration de cha\u00eene ne contient pas le type de fabrique {0} et n''a pas permis de d\u00e9marrer une ou plusieurs cha\u00eenes.
+missing.factory.explanation=L'environnement d'ex\u00e9cution ne contient pas de fabrique de canal du type correspondant et ne parvient pas \u00e0 d\u00e9marrer les cha\u00eenes qui utilisent ce type de canal.
+missing.factory.useraction=V\u00e9rifiez s'il manque un ou plusieurs \u00e9l\u00e9ments dans la liste des jeux de fonctions de l'environnement d'ex\u00e9cution.
+
+DEFAULT_OPTIONS_ERROR_TCP=CWWKO0037E: Impossible de cr\u00e9er une configuration de canaux TCP par d\u00e9faut. L''exception est {0}.
+DEFAULT_OPTIONS_ERROR_TCP.explanation=Une erreur a \u00e9t\u00e9 rencontr\u00e9e lors de la cr\u00e9ation de la configuration par d\u00e9faut pour les canaux TCP.
+DEFAULT_OPTIONS_ERROR_TCP.useraction=Examinez l'exception pour d\u00e9terminer ce qui a provoqu\u00e9 cet \u00e9chec.
+
+DEFAULT_OPTIONS_ERROR_UDP=CWWKO0038E: Impossible de cr\u00e9er une configuration de canaux UDP par d\u00e9faut. L''exception est {0}.
+DEFAULT_OPTIONS_ERROR_UDP.explanation=Une erreur a \u00e9t\u00e9 rencontr\u00e9e lors de la cr\u00e9ation de la configuration par d\u00e9faut pour les canaux UDP.
+DEFAULT_OPTIONS_ERROR_UDP.useraction=Examinez l'exception pour d\u00e9terminer ce qui a provoqu\u00e9 cet \u00e9chec.
+
+channel.shared.warning=CWWKO0039W: Le canal non partageable {0} est partag\u00e9 entre plusieurs r\u00e9gions.
+channel.shared.warning.explanation=Le canal a \u00e9t\u00e9 configur\u00e9 pour \u00eatre non partageable. Il est cependant partag\u00e9 entre plusieurs r\u00e9gions.
+channel.shared.warning.useraction=Examinez la configuration du canal et son utilisation.

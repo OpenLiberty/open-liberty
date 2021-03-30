@@ -1,0 +1,186 @@
+###############################################################################
+# Copyright (c) 2010 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO Websphere kernel channel framework service
+#CMVCPATHNAME com.ibm.ws.channelfw/resources/com/ibm/ws/channelfw/internal/resources/ChannelfwMessages.nlsprops
+#NLS_ENCODING=UNICODE
+#ISMESSAGEFILE TRUE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+
+### CHFW will use message numbers 0000-0199
+
+channel.dir.missing=CWWKO0001W: {0} fehlt oder ist kein Verzeichnis.
+channel.dir.missing.explanation=CMSG0001
+channel.dir.missing.useraction=CMSG0002
+
+channel.jar.open.failure=CWWKO0002E: Die Kanalimplementierung {0} konnte nicht ge\u00f6ffnet werden: {1}
+channel.jar.open.failure.explanation=CMSG0001
+channel.jar.open.failure.useraction=CMSG0002
+
+channel.descriptor.missing=CWWKO0003E: Die Kanalimplementierung {0} hat keinen Kanaldeskriptor.
+channel.descriptor.missing.explanation=CMSG0001
+channel.descriptor.missing.useraction=CMSG0002
+
+channel.descriptor.parse.failure=CWWKO0004E: Beim Parsen des Kanaldeskriptors aus {0} sind Fehler aufgetreten: {1}
+channel.descriptor.parse.failure.explanation=CMSG0001
+channel.descriptor.parse.failure.useraction=CMSG0002
+
+channel.descriptor.factory.missing=CWWKO0005E: Die Kanalimplementierung {0} gibt keine Factorylaufzeitklasse an.
+channel.descriptor.factory.missing.explanation=CMSG0001
+channel.descriptor.factory.missing.useraction=CMSG0002
+
+channel.descriptor.channel.missing=CWWKO0006E: Die Kanalimplementierung {0} gibt keine Kanalkonfigurationsklasse an.
+channel.descriptor.channel.missing.explanation=CMSG0001
+channel.descriptor.channel.missing.useraction=CMSG0002
+
+channel.descriptor.interfaces.missing=CWWKO0007E: Die Kanalimplementierung {0} gibt keine Einheiten oder anwendungsseitigen Schnittstellen an.
+channel.descriptor.interfaces.missing.explanation=CMSG0001
+channel.descriptor.interfaces.missing.useraction=CMSG0002
+
+channel.descriptor.weight.invalid=CWWKO0008E: Die Kanalimplementierung {0} gibt die Standardwertigkeit {1} an. Diese Wertigkeit ist keine g\u00fcltige Standardwertigkeit.
+channel.descriptor.weight.invalid.explanation=CMSG0001
+channel.descriptor.weight.invalid.useraction=CMSG0002
+
+chain.channels.empty=CWWKO0009E: Die Kette {0} enth\u00e4lt keine Transportkan\u00e4le.
+chain.channels.empty.explanation=Ketten m\u00fcssen Transportkan\u00e4le enthalten, damit sie funktionieren.
+chain.channels.empty.useraction=F\u00fcgen Sie der angegebenen Kette einige Transportkan\u00e4le hinzu.
+
+chain.flow.mismatch=CWWKO0010E: Die Transportkan\u00e4le der Kette {0} m\u00fcssen alle in dieselbe Richtung flie\u00dfen.
+chain.flow.mismatch.explanation=Transportkan\u00e4le k\u00f6nnen in einen Server (eingehende Kan\u00e4le) oder aus einem Container flie\u00dfen (abgehende Kan\u00e4le). Alle Transportkan\u00e4le in einer Kette m\u00fcssen in dieselbe Richtung flie\u00dfen.
+chain.flow.mismatch.useraction=Stellen Sie sicher, dass alle Transportkan\u00e4le in der Kette in dieselbe Richtung flie\u00dfen. Verwenden Sie entweder nur eingehende oder nur abgehende Kan\u00e4le in einer Kette.
+
+chain.inbound.first.mismatch=CWWKO0011E: Der erste Transportkanal in der Kette {0} ist kein Connectorkanal.
+chain.inbound.first.mismatch.explanation=Der erste Transportkanal in einer eingehenden Kette muss ein Connectorkanal sein.
+chain.inbound.first.mismatch.useraction=Stellen Sie sicher, dass der erste Transportkanal in der eingehenden Kette ein Connectorkanal ist.
+
+chain.inbound.last.mismatch=CWWKO0012E: Der letzte Transportkanal in der Kette {0} ist kein Akzeptorkanal.
+chain.inbound.last.mismatch.explanation=Der letzte Transportkanal in einer eingehenden Kette muss ein Akzeptorkanal sein.
+chain.inbound.last.mismatch.useraction=Stellen Sie sicher, dass der letzte Transportkanal in der eingehenden Kette ein Akzeptorkanal ist.
+
+chain.acceptor.determination.failure=CWWKO0013E: Das System konnte die Akzeptor-ID f\u00fcr die Kette {0} nicht bestimmen.
+chain.acceptor.determination.failure.explanation=CMSG0001
+chain.acceptor.determination.failure.useraction=CMSG0002                                                                  
+
+channel.descriptor.notfound=CWWKO0014E: Das System hat festgestellt, dass der Kanaldeskriptor nicht mit dem Kanalkonfigurationstyp {0} \u00fcbereinstimmt.
+channel.descriptor.notfound.explanation=Kan\u00e4le m\u00fcssen einen Deskriptor haben, um Konfigurationstypen Laufzeittypen zuzuordnen. Es wurde jedoch kein \u00fcbereinstimmender Deskriptor gefunden.
+channel.descriptor.notfound.useraction=CMSG0002                                                                  
+
+jndi.context.failure=CWWKO0015E: Das System konnte den folgenden Anfangsnamenskontext nicht abrufen: {0}
+jndi.context.failure.explanation=CMSG0001
+jndi.context.failure.useraction=CMSG0002                                                                  
+
+factory.load.failure=CWWKO0016E: Das System konnte die folgende Transportkanalfactory nicht laden: {0}
+factory.load.failure.explanation=CMSG0001
+factory.load.failure.useraction=CMSG0002                                                                  
+
+channel.load.failure=CWWKO0017E: Das System konnte den folgenden Transportkanal nicht laden: {0}
+channel.load.failure.explanation=CMSG0001
+channel.load.failure.useraction=CMSG0002                                                                  
+
+chain.load.failure=CWWKO0018E: Das System konnte die folgende Kette nicht laden: {0}
+chain.load.failure.explanation=CMSG0001
+chain.load.failure.useraction=CMSG0002                                                                  
+
+chain.started=CWWKO0019I: Der Transportkanalservice hat die Kette {0} gestartet.
+chain.started.explanation=Der Transportkanalservice hat die angegebene Kette gestartet.
+chain.started.useraction=Es ist keine Aktion erforderlich.
+
+chain.stopped=CWWKO0020I: Der Transportkanalservice hat die Kette {0} gestoppt.
+chain.stopped.explanation=Der Transportkanalservice hat die angegebene Kette gestoppt.
+chain.stopped.useraction=Es ist keine Aktion erforderlich.
+
+chain.disabled=CWWKO0021I: Die eingehende Kette {0} wurde als inaktiviert markiert.
+chain.disabled.explanation=Eingehende Ketten m\u00fcssen explizit als aktiviert markiert werden, damit sie f\u00fcr den automatischen Start infrage kommen. Inaktivierte Ketten k\u00f6nnen trotzdem gestartet werden, m\u00fcssen aber in diesem Fall explizit unter Verwendung ihres Namens gestartet werden.
+chain.disabled.useraction=Es ist keine Aktion erforderlich.
+
+config.load.error=CWWKO0022E: Der Transportkanalservice hat seine Konfiguration wegen der folgenden Ausnahme nicht gefunden: {0}
+config.load.error.explanation=Der Transportkanalservice hat beim Versuch, seine Konfiguration zu erkennen und zu laden, eine Ausnahme generiert. Der Service wird ohne Konfiguration gestartet.
+config.load.error.useraction=CMSG0002                                                                  
+
+boot.no.config=CWWKO0023I: Der Transportkanalservice hat seine Konfiguration nicht gefunden, wird aber ohne die Konfiguration gestartet.
+boot.no.config.explanation=Der Transportkanalservice hat seine Konfiguration nicht gefunden. Die Standardkonfigurationsdetails f\u00fcr den Transportkanalservice muss der Konfigurationsdatei server.xml hinzugef\u00fcgt werden.
+boot.no.config.useraction=Verwenden Sie die Administrationskonsole oder wsadmin, um die Standardkonfiguration f\u00fcr den Transportkanalservice hinzuzuf\u00fcgen.
+
+framework.disabled=CWWKO0024I: Der Transportkanalservice wurde explizit inaktiviert.
+framework.disabled.explanation=Der Transportkanalservice wurde explizit als inaktiviert konfiguriert und wird nicht gestartet.
+framework.disabled.useraction=Es ist keine Aktion erforderlich.
+
+channel.descriptor.factory.config.missing=CWWKO0025E: Die Kanalimplementierung {0} gibt keine Factorykonfigurationsklasse an.
+channel.descriptor.factory.config.missing.explanation=CMSG0001
+channel.descriptor.factory.config.missing.useraction=CMSG0002                                                                  
+
+factory.descriptor.notfound=CWWKO0026E: Das System hat keinen Kanalfactorydeskriptor gefunden, der dem Transportkanalkonfigurationstyp {0} entspricht.
+factory.descriptor.notfound.explanation=Kan\u00e4le m\u00fcssen einen Deskriptor haben, um Konfigurationstypen Laufzeittypen zuzuordnen. Es wurde jedoch kein \u00fcbereinstimmender Deskriptor gefunden.
+factory.descriptor.notfound.useraction=CMSG0002                                                                  
+
+channel.load.problems=CWWKO0027I: Mindestens eine Transportkanalimplementierung wurde nicht geladen.
+channel.load.problems.explanation=CMSG0001
+channel.load.problems.useraction=CMSG0002                                                                  
+
+chain.outbound.last.mismatch=CWWKO0028E: Der letzte Transportkanal in der Kette {0} ist kein Connectorkanal.
+chain.outbound.last.mismatch.explanation=Der letzte Transportkanal in einer abgehenden Kette muss ein Connectorkanal sein.
+chain.outbound.last.mismatch.useraction=Stellen Sie sicher, dass der letzte Transportkanal in der abgehenden Kette ein Connectorkanal ist.
+
+chain.initialization.error=CWWKO0029E: Beim Initialisieren der Kette {0} wurde wegen der Ausnahme {1} eine Ausnahme generiert.
+chain.initialization.error.explanation=Es wurde eine Ausnahme in der Kette oder in den zugrunde liegenden Kan\u00e4len generiert.
+chain.initialization.error.useraction=Stellen Sie sicher, dass die richtigen Kan\u00e4le in der Kette verwendet werden.
+
+chain.start.error=CWWKO0030E: Beim Starten der Kette {0} wurde wegen der Ausnahme {1} eine Ausnahme generiert.
+chain.start.error.explanation=Es wurde eine Ausnahme in der Kette oder in den zugrunde liegenden Kan\u00e4len generiert.
+chain.start.error.useraction=Stellen Sie sicher, dass die richtigen Kan\u00e4le in der Kette verwendet werden.
+
+chain.stop.error=CWWKO0031E: Beim Stoppen der Kette {0} wurde wegen der Ausnahme {1} eine Ausnahme generiert.
+chain.stop.error.explanation=Es wurde eine Ausnahme in der Kette oder in den zugrunde liegenden Kan\u00e4len generiert.
+chain.stop.error.useraction=Stellen Sie sicher, dass die richtigen Kan\u00e4le in der Kette verwendet werden.
+
+chain.destroy.error=CWWKO0032E: Beim L\u00f6schen der Kette {0} wurde wegen der Ausnahme {1} eine Ausnahme generiert.
+chain.destroy.error.explanation=Es wurde eine Ausnahme in der Kette oder in den zugrunde liegenden Kan\u00e4len generiert.
+chain.destroy.error.useraction=Stellen Sie sicher, dass die richtigen Kan\u00e4le in der Kette verwendet werden.
+
+chain.retrystart.error=CWWKO0033E: Der Transportkanalservice konnte die Transportkette {0} auch nach {1} Startversuchen nicht starten.
+chain.retrystart.error.explanation=Die konfigurierte Anzahl an Wiederholungen reicht nicht aus, um die Kette zu starten, oder der von der Kette verwendete Port ist bereits im Gebrauch.
+chain.retrystart.error.useraction=Stellen Sie sicher, dass der von der Kette verwendete Port noch nicht im Gebrauch ist. Definieren Sie die angepassten Eigenschaften f\u00fcr das erneute Starten von Ketten ordnungsgem\u00e4\u00df.
+
+chain.retrystart.warning=CWWKO0034W: Der Transportkanalservice hat festgestellt, dass die Transportkette {0} nicht gestartet wurde. Der Service versucht, die Kette {0} alle {1} Millisekunden zu starten, bis die maximale Anzahl von {2} Versuchen erreicht ist.
+chain.retrystart.warning.explanation=Der erste Versuch, die Kette zu starten, war nicht erfolgreich. Es werden weitere Versuche unternommen, die Kette zu starten.
+chain.retrystart.warning.useraction=Achten Sie auf Fehler- oder Pr\u00fcfnachrichten, die das Ergebnis der Wiederholungen anzeigen.
+
+framework.property.error=CWWKO0035E: Der Transportkanalservice hat den Wert {0} f\u00fcr die Eigenschaft {1} gefunden. Dieser Wert ist nicht g\u00fcltig.
+framework.property.error.explanation=Der Wert der Eigenschaft liegt au\u00dferhalb der erwarteten Grenzen.
+framework.property.error.useraction=Passen Sie die Konfiguration an, um die Eigenschaft auf einen g\u00fcltigen Wert zu setzen.
+
+missing.factory=CWWKO0036W: Die Kettenkonfiguration enth\u00e4lt den fehlenden Factorytyp {0} und konnte mindestens eine Kette nicht starten.
+missing.factory.explanation=Die Laufzeitumgebung enth\u00e4lt keine Kanalfactory mit einem \u00fcbereinstimmenden Typ und kann deshalb die Ketten nicht starten, die die Factory verwenden.
+missing.factory.useraction=Pr\u00fcfen Sie, ob in der Feature-Set-Liste der Laufzeitumgebung ein oder mehrere Elemente fehlen.
+
+DEFAULT_OPTIONS_ERROR_TCP=CWWKO0037E: Die TCP-Standardkanalkonfiguration konnte nicht erstellt werden. Die Ausnahme ist {0}.
+DEFAULT_OPTIONS_ERROR_TCP.explanation=Beim Erstellen der Standardkonfiguration f\u00fcr TCP-Kan\u00e4le ist ein Fehler aufgetreten.
+DEFAULT_OPTIONS_ERROR_TCP.useraction=Suchen Sie in der Ausnahme nach Informationen zum Grund der fehlgeschlagenen Erstellung.
+
+DEFAULT_OPTIONS_ERROR_UDP=CWWKO0038E: Die UDP-Standardkanalkonfiguration konnte nicht erstellt werden. Die Ausnahme ist {0}.
+DEFAULT_OPTIONS_ERROR_UDP.explanation=Beim Erstellen der Standardkonfiguration f\u00fcr UDP-Kan\u00e4le ist ein Fehler aufgetreten.
+DEFAULT_OPTIONS_ERROR_UDP.useraction=Suchen Sie in der Ausnahme nach Informationen zum Grund der fehlgeschlagenen Erstellung.
+
+channel.shared.warning=CWWKO0039W: Der nicht gemeinsam nutzbare Kanal {0} wird von mehreren Regionen genutzt.
+channel.shared.warning.explanation=Der Kanal wurde als nicht gemeinsam nutzbarer Kanal konfiguriert. Der Kanal wird jedoch von mehreren Regionen genutzt.
+channel.shared.warning.useraction=\u00dcberpr\u00fcfen Sie die Konfiguration des Kanals und dessen Verwendung.
