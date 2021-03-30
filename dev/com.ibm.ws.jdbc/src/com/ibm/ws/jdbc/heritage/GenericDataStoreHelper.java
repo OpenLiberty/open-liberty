@@ -148,6 +148,15 @@ public abstract class GenericDataStoreHelper {
     public abstract SQLException mapException(SQLException x);
 
     /**
+     * Adds an XA start flag for loosely coupled transaction branches.
+     *
+     * @param xaStartFlags XA start flags to add to.
+     * @return updated XA start flags which are a combination of the flags supplied to this method
+     *         and the flag for loosely coupled transaction branches.
+     */
+    public abstract int modifyXAFlag(int xaStartFlags);
+
+    /**
      * Supplies the dataSource configuration to the data store helper.
      *
      * @param config AtomicReference to the dataSource configuration.

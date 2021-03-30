@@ -11,6 +11,7 @@
 package test.jdbc.heritage.app;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
@@ -27,6 +28,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLRecoverableException;
+import java.sql.SQLTransactionRollbackException;
 import java.sql.Statement;
 import java.util.Set;
 
@@ -35,6 +37,7 @@ import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.sql.DataSource;
+import javax.transaction.Status;
 import javax.transaction.UserTransaction;
 
 import org.junit.Test;
@@ -54,8 +57,11 @@ public class JDBCHeritageTestServlet extends FATServlet {
     @Resource
     private DataSource defaultDataSource;
 
-    @Resource(shareable = false)
-    private DataSource defaultDataSource_unsharable;
+    @Resource(name = "java:comp/jdbc/env/unsharable-ds-xa-loosely-coupled", shareable = false)
+    private DataSource defaultDataSource_unsharable_loosely_coupled;
+
+    @Resource(name = "java:comp/jdbc/env/unsharable-ds-xa-tightly-coupled", shareable = false)
+    private DataSource defaultDataSource_unsharable_tightly_coupled;
 
     @Resource(lookup = "jdbc/helperDefaulted", shareable = false)
     private DataSource dsWithHelperDefaulted;
@@ -71,6 +77,18 @@ public class JDBCHeritageTestServlet extends FATServlet {
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
+
+        try (Connection con = defaultDataSource.getConnection()) {
+            Statement stmt = con.createStatement();
+            try {
+                stmt.execute("DROP TABLE MYTABLE");
+            } catch (SQLException x) {
+                // probably didn't exist
+            }
+            stmt.execute("CREATE TABLE MYTABLE (ID INT NOT NULL PRIMARY KEY, STRVAL VARCHAR(40))");
+        } catch (SQLException x) {
+            throw new ServletException(x);
+        }
     }
 
     /**
@@ -472,13 +490,13 @@ public class JDBCHeritageTestServlet extends FATServlet {
     @Test
     public void testIsConnectionError() throws Exception {
         Connection connImpl;
-        try (Connection con = defaultDataSource_unsharable.getConnection("user-of-testIsConnectionError", "password-of-user-of-testIsConnectionError")) {
+        try (Connection con = defaultDataSource_unsharable_loosely_coupled.getConnection("user-of-testIsConnectionError", "password-of-user-of-testIsConnectionError")) {
             con.prepareCall("CALL TEST.FORCE_EXCEPTION_ON_IS_VALID()").executeQuery().getStatement().close();
             connImpl = connImpl(con);
         }
 
         // Must not reuse the same connection from the connection pool
-        try (Connection con = defaultDataSource_unsharable.getConnection("user-of-testIsConnectionError", "password-of-user-of-testIsConnectionError")) {
+        try (Connection con = defaultDataSource_unsharable_loosely_coupled.getConnection("user-of-testIsConnectionError", "password-of-user-of-testIsConnectionError")) {
             assertNotSame(connImpl, connImpl(con));
         }
     }
@@ -692,6 +710,62 @@ public class JDBCHeritageTestServlet extends FATServlet {
             } catch (HeritageDBDuplicateKeyException x) {
                 // pass
             }
+        }
+    }
+
+    /**
+     * Confirm that locks are not shared between transaction branches that are loosely coupled.
+     */
+    @Test
+    public void testTransactionBranchesLooselyCoupled() throws Exception {
+        tx.begin();
+        try {
+            try (Connection con1 = defaultDataSource_unsharable_loosely_coupled.getConnection()) {
+                con1.createStatement().executeUpdate("INSERT INTO MYTABLE VALUES (31, 'thirty-one')");
+
+                // Obtain a second (unshared) connection so that we have 2 transaction branches
+                try (Connection con2 = defaultDataSource_unsharable_loosely_coupled.getConnection()) {
+                    Statement stmt = con2.createStatement();
+                    // Reduce the lock timeout so that this test runs faster,
+                    stmt.execute("CALL SYSCS_UTIL.SYSCS_SET_DATABASE_PROPERTY('derby.locks.waitTimeout', '2')");
+                    try {
+                        ResultSet result = stmt.executeQuery("SELECT STRVAL FROM MYTABLE WHERE ID=31");
+                        assertFalse(result.next());
+                    } catch (SQLTransactionRollbackException x) {
+                        // expected due to lock timeout
+                        tx.setRollbackOnly();
+                    } finally {
+                        stmt.execute("CALL SYSCS_UTIL.SYSCS_SET_DATABASE_PROPERTY('derby.locks.waitTimeout', '60')");
+                    }
+                }
+            }
+        } finally {
+            if (tx.getStatus() == Status.STATUS_MARKED_ROLLBACK)
+                tx.rollback();
+            else
+                tx.commit();
+        }
+    }
+
+    /**
+     * Confirm that locks are shared between transaction branches that are tightly coupled.
+     */
+    @Test
+    public void testTransactionBranchesTightlyCoupled() throws Exception {
+        tx.begin();
+        try {
+            try (Connection con1 = defaultDataSource_unsharable_tightly_coupled.getConnection()) {
+                con1.createStatement().executeUpdate("INSERT INTO MYTABLE VALUES (32, 'thirty-two')");
+
+                // Obtain a second (unshared) connection so that we have 2 transaction branches
+                try (Connection con2 = defaultDataSource_unsharable_tightly_coupled.getConnection()) {
+                    ResultSet result = con2.createStatement().executeQuery("SELECT STRVAL FROM MYTABLE WHERE ID=32");
+                    assertTrue(result.next());
+                    assertEquals("thirty-two", result.getString(1));
+                }
+            }
+        } finally {
+            tx.commit();
         }
     }
 }

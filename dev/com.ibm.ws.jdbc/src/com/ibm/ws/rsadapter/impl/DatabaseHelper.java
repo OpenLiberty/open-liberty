@@ -39,6 +39,7 @@ import javax.sql.DataSource;
 import javax.sql.PooledConnection;
 import javax.sql.XADataSource;
 import javax.transaction.xa.XAException;
+import javax.transaction.xa.XAResource;
 
 import org.ietf.jgss.GSSCredential;
 
@@ -1222,19 +1223,21 @@ public class DatabaseHelper {
      * @param couplingType
      * @return xa_start flag value
      */
-    public int branchCouplingSupported(int couplingType) 
-    {
-        // Return -1 as we have no support for resref branch coupling
-        if (couplingType == ResourceRefInfo.BRANCH_COUPLING_LOOSE || couplingType == ResourceRefInfo.BRANCH_COUPLING_TIGHT) 
-        {
+    public int branchCouplingSupported(int couplingType) {
+        int result = couplingType == ResourceRefInfo.BRANCH_COUPLING_LOOSE && mcf.dataStoreHelper != null
+                   ? mcf.dataStoreHelper.modifyXAFlag(XAResource.TMNOFLAGS)
+                   : XAResource.TMNOFLAGS;
+
+        if (couplingType == ResourceRefInfo.BRANCH_COUPLING_LOOSE && result == XAResource.TMNOFLAGS
+         || couplingType == ResourceRefInfo.BRANCH_COUPLING_TIGHT) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(this, tc, "Specified branch coupling type not supported");
             }
-            return -1;
+            // -1 indicates the JDBC driver has no support for setting the transaction branch coupling per xa.start
+            result = -1;
         }
 
-        // If resref branch coupling unset then return default xa_start flags
-        return javax.transaction.xa.XAResource.TMNOFLAGS;
+        return result;
     }
 
     /**
@@ -1291,11 +1294,5 @@ public class DatabaseHelper {
      */
     public boolean supportsSubjectDoAsForKerberos() {
         return false;
-    }
-    
-    private static String createStaleMapKey(String sqlState, Integer sqlCode) {
-        return (sqlState == null ? "*" : sqlState) + 
-               "/" + 
-               (sqlCode == null ? "*" : sqlCode);
     }
 }
