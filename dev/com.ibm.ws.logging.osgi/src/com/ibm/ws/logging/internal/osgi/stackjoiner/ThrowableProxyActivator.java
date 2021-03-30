@@ -19,6 +19,7 @@ import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.URL;
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.Enumeration;
@@ -94,10 +95,10 @@ public class ThrowableProxyActivator {
      *
      * @param bundleContext the bundleContext
      */
-    protected void activate() throws Exception {    
+    public void activate() throws Exception {    
         // Store a reference to the printStackTraceOverride method from BaseTraceService
         throwableInfo = new ThrowableInfo(inst);
-        
+		
         if (throwableInfo.isInitialized()) {
         	String runtimeVersion = getRuntimeClassVersion();
             if (runtimeVersion != null && !runtimeVersion.equals(getCurrentVersion())) {
@@ -133,7 +134,7 @@ public class ThrowableProxyActivator {
     	
 	}
 	
-	protected void deactivate() throws Exception {
+	public void deactivate() throws Exception {
         try {
         	if (throwableInfo.isInitialized())
         		deactivateThrowableProxyTarget();
@@ -177,7 +178,7 @@ public class ThrowableProxyActivator {
         if (!dataFile.exists()) {
             dataFile.createNewFile();
         }
-
+        
         // Generate a manifest
         Manifest manifest = createBootJarManifest();
 
@@ -198,10 +199,8 @@ public class ThrowableProxyActivator {
                     writeRemappedClass(sourceClassResource, jarOutputStream, BOOT_DELEGATED_PACKAGE);
             }
         }
-
         jarOutputStream.close();
         fileOutputStream.close();
-
         return new JarFile(dataFile);
     }
     
@@ -328,7 +327,6 @@ public class ThrowableProxyActivator {
         manifestAttributes.putValue("Created-By", "Liberty Logging Osgi Extender");
         manifestAttributes.putValue("Created-Time", DateFormat.getInstance().format(new Date()));
         manifestAttributes.putValue(LOGGING_VERSION_MANIFEST_HEADER, getCurrentVersion());
-
         return manifest;
     }
     
@@ -393,4 +391,5 @@ public class ThrowableProxyActivator {
         }
         return b;
     }
+    
 }

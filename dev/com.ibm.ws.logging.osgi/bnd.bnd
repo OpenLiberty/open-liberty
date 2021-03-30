@@ -55,9 +55,10 @@ instrument.disabled: true
 	com.ibm.wsspi.org.osgi.service.event;version=latest,\
 	com.ibm.wsspi.org.osgi.service.log;version=latest,\
 	com.ibm.ws.logging;version=latest,\
-	com.ibm.ws.ras.instrument;version=latest, \
+	com.ibm.ws.ras.instrument;version=latest,\
 	com.ibm.ws.org.objectweb.asm;version=latest,\
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.ws.kernel.boot.core
 
 -testpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
