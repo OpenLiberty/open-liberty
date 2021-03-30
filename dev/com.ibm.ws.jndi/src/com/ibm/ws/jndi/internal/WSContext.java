@@ -279,7 +279,7 @@ final class WSContext extends WSContextBase implements Context, Referenceable {
 
     @Override
     protected NamingEnumeration<NameClassPair> list(final WSName subname) throws NamingException {
-        return new WSNamingEnumeration<NameClassPair>(myNode.getChildren(subname).entrySet(), new Adapter<Entry<String, Object>, NameClassPair>() {
+        return new WSNamingEnumeration<>(myNode.getChildren(subname).entrySet(), new Adapter<Entry<String, Object>, NameClassPair>() {
             @Override
             public NameClassPair adapt(Entry<String, Object> entry) {
                 String className = resolveObjectClassName(entry.getValue());
@@ -290,7 +290,7 @@ final class WSContext extends WSContextBase implements Context, Referenceable {
 
     @Override
     protected NamingEnumeration<Binding> listBindings(final WSName subname) throws NamingException {
-        return new WSNamingEnumeration<Binding>(myNode.getChildren(subname).entrySet(), new Adapter<Entry<String, Object>, Binding>() {
+        return new WSNamingEnumeration<>(myNode.getChildren(subname).entrySet(), new Adapter<Entry<String, Object>, Binding>() {
             @Override
             public Binding adapt(Entry<String, Object> entry) throws NamingException {
                 return new Binding(entry.getKey(), resolveObject(entry.getValue(), subname.plus(entry.getKey())));

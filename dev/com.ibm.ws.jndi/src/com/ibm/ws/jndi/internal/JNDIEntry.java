@@ -78,7 +78,7 @@ public class JNDIEntry {
         Object parsedValue = LiteralParser.parse(value);
         String valueClassName = parsedValue.getClass().getName();
         final Object serviceObject = decode ? new Decode(originalValue) : parsedValue;
-        Dictionary<String, Object> propertiesForJndiService = new Hashtable<String, Object>();
+        Dictionary<String, Object> propertiesForJndiService = new Hashtable<>();
         propertiesForJndiService.put("osgi.jndi.service.name", jndiName);
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Registering JNDIEntry " + valueClassName + " with value " + parsedValue + " and JNDI name " + jndiName);

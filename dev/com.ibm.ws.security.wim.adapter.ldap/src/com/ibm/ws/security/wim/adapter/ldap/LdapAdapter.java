@@ -72,6 +72,8 @@ import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
 import javax.security.auth.Subject;
 
+import org.osgi.framework.ServiceReference;
+import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -112,6 +114,7 @@ import com.ibm.ws.security.wim.xpath.ldap.util.LdapXPathTranslateHelper;
 import com.ibm.ws.security.wim.xpath.mapping.datatype.PropertyNode;
 import com.ibm.ws.security.wim.xpath.mapping.datatype.XPathNode;
 import com.ibm.ws.ssl.optional.SSLSupportOptional;
+import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.security.wim.SchemaConstants;
 import com.ibm.wsspi.security.wim.exception.AuthenticationNotSupportedException;
 import com.ibm.wsspi.security.wim.exception.CertificateMapFailedException;
@@ -214,6 +217,11 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
     private KerberosService kerberosService = null;
 
     /**
+     * Config updates are not as well ordered as we would like. Peek at the Kerberos config to see if we should create the context pool or not.
+     */
+    private final AtomicServiceReference<ConfigurationAdmin> configAdminRef = new AtomicServiceReference<ConfigurationAdmin>("configAdmin");
+
+    /**
      * Set the KerberosService reference, Load the general Kerberos configuration so we can use the KerberosService and
      * load the keytab/config attributes, if needed.
      *
@@ -251,6 +259,7 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
     @Activate
     protected void activated(Map<String, Object> properties, ComponentContext cc) throws WIMException {
         super.activate(properties, cc);
+        configAdminRef.activate(cc);
         initialize(properties);
     }
 
@@ -264,6 +273,7 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
     @Deactivate
     protected void deactivate(int reason, ComponentContext cc) {
         super.deactivate(reason, cc);
+        configAdminRef.deactivate(cc);
     }
 
     /**
@@ -284,7 +294,7 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
         iLdapConfigMgr = new LdapConfigManager();
         iLdapConfigMgr.initialize(configProps);
 
-        iLdapConn = new LdapConnection(iLdapConfigMgr, kerberosService);
+        iLdapConn = new LdapConnection(iLdapConfigMgr, kerberosService, configAdminRef.getService());
         iLdapConn.initialize(configProps);
 
         isActiveDirectory = iLdapConfigMgr.isActiveDirectory();
@@ -4087,5 +4097,26 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
 
     protected void unsetCertificateMapper(X509CertificateMapper mapper) {
         iCertificateMapperRef.compareAndSet(mapper, null);
+    }
+
+    /**
+     * Set the reference for the ConfigurationAdmin service
+     *
+     * @param reference
+     */
+    @Reference(name = "configAdmin")
+    protected void setConfigurationAdmin(ServiceReference<ConfigurationAdmin> reference) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(tc, "setConfigAdminRef", reference);
+        configAdminRef.setReference(reference);
+    }
+
+    /**
+     * Unset the reference for the ConfigurationAdmin service.
+     *
+     * @param reference
+     */
+    protected void unsetConfigurationAdmin(ServiceReference<ConfigurationAdmin> reference) {
+        configAdminRef.unsetReference(reference);
     }
 }

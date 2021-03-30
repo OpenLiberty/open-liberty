@@ -72,7 +72,7 @@ public class _TestableImpl_Tie extends org.omg.PortableServer.Servant implements
     }
     
     public String[] _all_interfaces(POA poa, byte[] objectId) { 
-        return (String [] )  _type_ids.clone();
+        return _type_ids.clone();
     }
     
     public OutputStream _invoke(String method, InputStream _in, ResponseHandler reply) throws SystemException {

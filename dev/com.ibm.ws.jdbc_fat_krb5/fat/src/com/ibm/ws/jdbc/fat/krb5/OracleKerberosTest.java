@@ -31,6 +31,7 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jdbc.fat.krb5.containers.KerberosPlatformRule;
 import com.ibm.ws.jdbc.fat.krb5.containers.OracleKerberosContainer;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
@@ -115,7 +116,7 @@ public class OracleKerberosTest extends FATServletClient {
      * set the keytab location to an invalid location to confirm that the supplied password actually gets used.
      */
     @Test
-    @Mode(TestMode.FULL)
+    @AllowedFFDC //Servlet attempts getConnection multiple times until the kerberos service is up.  Expect FFDCs
     public void testKerberosUsingPassword() throws Exception {
         ServerConfiguration config = server.getServerConfiguration();
         String originalKeytab = config.getKerberos().keytab;

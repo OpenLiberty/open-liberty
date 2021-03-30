@@ -132,19 +132,6 @@ public class CommonBindTest {
         server.copyFileToLibertyServerRoot(expiredTicketCache);
         server.copyFileToLibertyServerRoot(wrongUserKeytab);
 
-        /*
-         * To-do: Working out the timing for a KerberosService modify and LdapRegistry init --
-         * Since KerberosService has a default instance, if LdapRegistry runs an init before a
-         * modify on dynamic update, we can use the default KerberosService values to initialize the contextPool
-         * and cause an extra FFDC (since the OS krb.config won't have the right info). Once the KerberosSevice
-         * modify runs, we are fine. Leaving this
-         * here temporarily so we don't have random FFDCs pop up until we resolve the modify/init
-         * dynamic update.
-         */
-        ServerConfiguration newServer = server.getServerConfiguration().clone();
-        addKerberosConfig(newServer);
-        updateConfigDynamically(server, newServer);
-
         if (emptyConfiguration == null) {
             emptyConfiguration = server.getServerConfiguration();
         }

@@ -13,8 +13,6 @@ package com.ibm.ws.security.kerberos.auth;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -174,23 +172,9 @@ public class Krb5LoginModuleWrapper implements LoginModule {
         krb5loginModule.initialize(subject, callbackHandler, sharedState, options);
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    @FFDCIgnore(PrivilegedActionException.class)
     @Override
     public boolean login() throws LoginException {
-        try {
-            java.security.AccessController.doPrivileged(new PrivilegedExceptionAction() {
-                @Override
-                public Object run() throws LoginException {
-                    return krb5loginModule.login();
-
-                }
-            });
-        } catch (PrivilegedActionException pae) {
-            LoginException e = (LoginException) pae.getException();
-            throw e;
-        }
-
+        krb5loginModule.login();
         login_called = true;
         return true;
     }

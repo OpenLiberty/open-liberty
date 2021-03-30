@@ -78,12 +78,14 @@ for FAT_BUCKET in $FAT_BUCKETS
 do
   echo "::group:: Run $FAT_BUCKET with FAT_ARGS=$FAT_ARGS"
   BUCKET_PASSED=true
-  OUTPUT_DIR=$FAT_BUCKET/build/libs/autoFVT/output
-  RESULTS_DIR=$FAT_BUCKET/build/libs/autoFVT/results
-  mkdir -p $OUTPUT_DIR && touch $OUTPUT_DIR/gradle.log
+  TEMP_DIR=tmp/$FAT_BUCKET && mkdir -p $TEMP_DIR && touch $TEMP_DIR/gradle.log
 
   #Run fat
-  ./gradlew :$FAT_BUCKET:buildandrun $FAT_ARGS &> $OUTPUT_DIR/gradle.log || BUCKET_PASSED=false
+  ./gradlew :$FAT_BUCKET:buildandrun $FAT_ARGS &> $TEMP_DIR/gradle.log || BUCKET_PASSED=false
+
+  OUTPUT_DIR=$FAT_BUCKET/build/libs/autoFVT/output
+  RESULTS_DIR=$FAT_BUCKET/build/libs/autoFVT/results
+  mkdir -p $OUTPUT_DIR && touch $OUTPUT_DIR/gradle.log && mv $TEMP_DIR/gradle.log $OUTPUT_DIR/gradle.log
 
   # Create a file to mark whether a bucket failed or passed
   if $BUCKET_PASSED; then

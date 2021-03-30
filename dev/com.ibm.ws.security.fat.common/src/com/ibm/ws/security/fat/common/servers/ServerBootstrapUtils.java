@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -36,7 +36,7 @@ public class ServerBootstrapUtils {
     public void writeBootstrapProperty(TestServer server, String propKey, String propValue) throws Exception {
         writeBootstrapProperty(server.getServer(), propKey, propValue);
     }
-    
+
     /**
      * Writes the specified bootstrap property and value to the provided server's bootstrap.properties file.
      */
@@ -60,7 +60,6 @@ public class ServerBootstrapUtils {
             appendBootstrapPropertyToFile(bootPropFilePath, entry.getKey(), entry.getValue(), doNotLog);
         }
     }
-    
 
     /**
      * Writes each of the specified bootstrap properties and values to the provided server's bootstrap.properties file.
@@ -68,7 +67,7 @@ public class ServerBootstrapUtils {
     public void writeBootstrapProperties(TestServer server, Map<String, String> miscParms) throws Exception {
         writeBootstrapProperties(server.getServer(), miscParms);
     }
-    
+
     /**
      * Writes each of the specified bootstrap properties and values to the provided server's bootstrap.properties file.
      * Please use this method when including passwords and or user information.
@@ -107,5 +106,25 @@ public class ServerBootstrapUtils {
         String bootProps = serverFileUtils.getServerFileLoc(server) + "/bootstrap.properties";
         Log.info(thisClass, thisMethod, "Bootstrap property file path: " + bootProps);
         return bootProps;
+    }
+
+    /**
+     * Writes the specified bootstrap property and value to the provided server's bootstrap.properties file.
+     */
+    public void writeJvmOptionProperty(TestServer server, String propKey, String propValue) throws Exception {
+        String jvmProps = server.getJvmOptionsFilePath();
+        appendJvmOptionToFile(jvmProps, propKey, propValue);
+    }
+
+    private void appendJvmOptionToFile(String propertyFilePath, String propKey, String propValue) throws IOException {
+        String thisMethod = "appendJvmOptionToFile";
+        String newPropAndValue = createBootstrapPropertyString(propKey, propValue);
+        Log.info(thisClass, thisMethod, "Adding " + newPropAndValue + " to bootstrap.properties");
+
+        FileWriter writer = new FileWriter(propertyFilePath, true);
+        writer.append(System.getProperty("line.separator"));
+        writer.append(createBootstrapPropertyString(propKey, propValue));
+        writer.append(System.getProperty("line.separator"));
+        writer.close();
     }
 }

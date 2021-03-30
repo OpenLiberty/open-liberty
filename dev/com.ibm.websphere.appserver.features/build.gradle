@@ -81,9 +81,9 @@ task copyFeaturePiiFiles {
       File l10nResources = new File(featureFolder, 'resources/l10n')
       if (l10nResources.exists()) {
         copy {
-          from l10nResources
+          from new File(featureFolder, 'resources')
           into rootProject.file('build.pii.package/nlssrc/' + featureName)
-          include '*.properties'
+          include 'l10n/*.properties'
         }
       }
     }

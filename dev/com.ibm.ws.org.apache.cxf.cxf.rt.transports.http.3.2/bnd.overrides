@@ -19,6 +19,7 @@ Export-Package: \
   com.ibm.ws.cxf.exceptions;version=${exportVer}
   
 Import-Package: \
+  !java.*,\
   !org.apache.aries.*,\
   !org.springframework.*,\
   javax.wsdl.*;resolution:=optional, \

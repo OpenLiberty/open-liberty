@@ -143,7 +143,6 @@ public class FeatureUtility {
         		}
         	}
         }
-        
 
         if (noCache != null && noCache) {
             fine("Features installed from the remote repository will not be cached locally");

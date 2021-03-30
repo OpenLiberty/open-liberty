@@ -16,6 +16,8 @@
     <include location="${shared.config.dir}/formloginApp.xml" />
     <include location="../fatTestPorts.xml"/>
 
+    <authentication cacheEnabled="false"/>
+
     <jwtSso id="myJwtSso" useLtpaIfJwtAbsent="false" includeLtpaCookie="false" setCookieSecureFlag="false" authFilterRef="" />
 
 </server>

@@ -90,9 +90,10 @@ public interface PolicyExecutor extends ExecutorService {
     int getMaxConcurrency();
 
     /**
-     * Returns the number of tasks from this PolicyExecutor currently running on the global executor.
+     * Returns the number of tasks from this PolicyExecutor currently running or about to run on the global executor.
+     * This number might include tasks that do not actually get to start due to cancellation or shutdown within a timing window.
      *
-     * @return the number of running tasks
+     * @return the number of running or about-to-run tasks
      */
     int getRunningTaskCount();
 
