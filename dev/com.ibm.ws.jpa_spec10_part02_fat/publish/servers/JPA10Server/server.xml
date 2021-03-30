@@ -43,6 +43,9 @@
 
     <!-- Permission needed for Oracle driver -->
     <javaPermission className="java.lang.RuntimePermission" name="accessDeclaredMembers" />
+    
+    <!-- Permission needed for Postgres driver -->
+    <javaPermission className="java.util.PropertyPermission" name="org.postgresql.forceBinary" actions="read"/>
 
     <!-- File read write permissions -->
     <javaPermission className="java.util.PropertyPermission" name="user.dir" actions="read"/>
