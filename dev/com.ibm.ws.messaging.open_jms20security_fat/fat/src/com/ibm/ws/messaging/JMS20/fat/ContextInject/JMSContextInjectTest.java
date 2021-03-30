@@ -97,9 +97,20 @@ public class JMSContextInjectTest {
                                             "features/testjmsinternals-1.0.mf");
         server.copyFileToLibertyServerRoot("resources/security",
                                            "clientLTPAKeys/mykey.jks");
+
+        TestUtils.addDropinsWebApp(server, "JMSContextInject", "web");
+
+        startAppservers();
+    }
+
+    /**
+     * Start both the JMSConsumerClient local and remote messaging engine AppServers.
+     *
+     * @throws Exception
+     */
+    private static void startAppservers() throws Exception {
         server.setServerConfigurationFile("JMSContextInject.xml");
         server1.setServerConfigurationFile("TestServer1_ssl.xml");
-        TestUtils.addDropinsWebApp(server, "JMSContextInject", "web");
         server.startServer("JMSConsumerTestClient.log");
         server1.startServer("JMSConsumerServer.log");
 

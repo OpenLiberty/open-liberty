@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -95,16 +95,31 @@ public class DurableUnshared {
         server.copyFileToLibertyServerRoot("resources/security",
                                            "clientLTPAKeys/mykey.jks");
 
+        TestUtils.addDropinsWebApp(server, "DurableUnshared", "web");
+
+        startAppservers();
+    }
+
+    /**
+     * Start both the JMSConsumerClient local and remote messaging engine AppServers.
+     *
+     * @throws Exception
+     */
+    private static void startAppservers() throws Exception {
         server.setServerConfigurationFile("JMSContext_ssl.xml");
         server1.setServerConfigurationFile("TestServer1_ssl.xml");
-        TestUtils.addDropinsWebApp(server, "DurableUnshared", "web");
         server.startServer("DurableUnShared_Client.log");
-        String waitFor = server.waitForStringInLog("CWWKF0011I.*", server.getMatchingLogFile("messages.log"));
-        assertNotNull("Server ready message not found", waitFor);
-
         server1.startServer("DurableUnShared_Server.log");
-        waitFor = server1.waitForStringInLog("CWWKF0011I.*", server1.getMatchingLogFile("messages.log"));
-        assertNotNull("Server ready message not found", waitFor);
+
+        // CWWKF0011I: The TestServer1 server is ready to run a smarter planet. The TestServer1 server started in 6.435 seconds.
+        // CWSID0108I: JMS server has started.
+        // CWWKS4105I: LTPA configuration is ready after 4.028 seconds.
+        for (String messageId : new String[] { "CWWKF0011I.*", "CWSID0108I.*", "CWWKS4105I.*" }) {
+            String waitFor = server.waitForStringInLog(messageId, server.getMatchingLogFile("messages.log"));
+            assertNotNull("Server message " + messageId + " not found", waitFor);
+            waitFor = server1.waitForStringInLog(messageId, server1.getMatchingLogFile("messages.log"));
+            assertNotNull("Server1 message " + messageId + " not found", waitFor);
+        }
     }
 
     // 1st method
@@ -140,12 +155,7 @@ public class DurableUnshared {
 
         server.stopServer();
         server1.stopServer();
-        server1.startServer();
-        String waitFor = server1.waitForStringInLog("CWWKF0011I.*", server1.getMatchingLogFile("messages.log"));
-        assertNotNull("Server ready message not found", waitFor);
-        server.startServer();
-        waitFor = server.waitForStringInLog("CWWKF0011I.*", server.getMatchingLogFile("messages.log"));
-        assertNotNull("Server ready message not found", waitFor);
+        startAppservers();
 
         val2 = runInServlet("testCreateUnSharedDurableConsumer_consume_TCP");
         if (val1 == true && val2 == true)
