@@ -13,18 +13,18 @@ define({
       ACCOUNTING_STRING : "アカウンティング・ストリング",
       SEARCH_RESOURCE_TYPE_ALL : "すべて",
       SEARCH : "検索",
-      JAVA_BATCH_SEARCH_BOX_LABEL : "「Add Search Criteria」ボタンを選択して検索基準を入力してから、値を指定してください",
+      JAVA_BATCH_SEARCH_BOX_LABEL : "「検索基準の追加」ボタンを選択して検索基準を入力してから、値を指定してください",
       SUBMITTED : "サブミット済み",
       JMS_QUEUED : "JMS キュー済み",
       JMS_CONSUMED : "JMS コンシューム済み",
       JOB_PARAMETER : "ジョブ・パラメーター",
       DISPATCHED : "ディスパッチ済み",
       FAILED : "失敗",
-      STOPPED : "停止済み",
+      STOPPED : "停止",
       COMPLETED : "完了",
       ABANDONED : "中止",
-      STARTED : "開始済み",
-      STARTING : "開始中",
+      STARTED : "始動済み",
+      STARTING : "始動中",
       STOPPING : "停止中",
       REFRESH : "最新表示",
       INSTANCE_STATE : "インスタンスの状態",
@@ -71,12 +71,12 @@ define({
       TIMES: "時刻",      // Heading on section referencing create, start, and end timestamps
       STATUS: "状況",
       SEARCH_ON: "{1} {0} でのフィルタリングを選択",                    // {0} Value, {1} Column name
-      SEARCH_PILL_INPUT : "検索基準を入力してください。",
+      SEARCH_PILL_INPUT : "検索基準を入力します。",
       BREADCRUMB_JOB_INSTANCE : "ジョブ・インスタンス {0}",                // Job Instance ID
       BREADCRUMB_JOB_EXECUTION : "ジョブ実行 {0}",              // Job Execution ID
       BREADCRUMB_JOB_LOG : "ジョブ・ログ {0}",
       BATCH_SEARCH_CRITERIA_INVALID : "検索基準が無効です。",
-      ERROR_CANNOT_HAVE_MULTIPLE_SEARCHBY : "検索基準には {0} パラメーターによる複数のフィルターを指定することはできません。", // {0} will be another translated message key like SUBMITTER and BATCH_JOB_NAME
+      ERROR_CANNOT_HAVE_MULTIPLE_SEARCHBY : "検索基準に、{0} パラメーターによる複数のフィルターを指定することはできません。", // {0} will be another translated message key like SUBMITTER and BATCH_JOB_NAME
 
       INSTANCES_TABLE_IDENTIFIER: "ジョブ・インスタンス・テーブル",
       EXECUTIONS_TABLE_IDENTIFIER: "ジョグ実行テーブル",
@@ -86,30 +86,30 @@ define({
       LOADING_GRID : "検索結果がサーバーから返されるのを待機中",
       PAGENUMBER : "ページ番号",
       SELECT_QUERY_SIZE: "照会サイズを選択",
-      LINK_EXPLORE_HOST: "Explore ツールでホスト {0} 上の詳細を表示する場合に選択してください。",      // Host name
-      LINK_EXPLORE_SERVER: "Explore ツールでサーバー {0} 上の詳細を表示する場合に選択してください。",  // Server name
+      LINK_EXPLORE_HOST: "探索ツールでホスト {0} の詳細を表示する場合に選択します。",      // Host name
+      LINK_EXPLORE_SERVER: "探索ツールでサーバー {0} の詳細を表示する場合に選択します。",  // Server name
 
       //ACTIONS
       RESTART: "再始動",
       STOP: "停止",
       PURGE: "パージ",
       OK_BUTTON_LABEL: "OK",
-      INSTANCE_ACTIONS_BUTTON_LABEL: "ジョブ・インスタンス {0} に対するアクション",     // Job Instance ID number
+      INSTANCE_ACTIONS_BUTTON_LABEL: "ジョブ・インスタンス {0} のアクション",     // Job Instance ID number
       INSTANCE_ACTIONS_MENU_LABEL:  "ジョブ・インスタンスのアクション・メニュー",
 
-      RESTART_INSTANCE_MESSAGE: "ジョブ・インスタンス {0} に関連した直近のジョブ実行を再始動しますか?",     // Job Instance ID number
-      STOP_INSTANCE_MESSAGE: "ジョブ・インスタンス {0} に関連した直近のジョブ実行を停止しますか?",           // Job Instance ID number
+      RESTART_INSTANCE_MESSAGE: "ジョブ・インスタンス {0} に関連した最新のジョブ実行を再開しますか?",     // Job Instance ID number
+      STOP_INSTANCE_MESSAGE: "ジョブ・インスタンス {0} に関連した最新のジョブ実行を停止しますか?",           // Job Instance ID number
       PURGE_INSTANCE_MESSAGE: "ジョブ・インスタンス {0} に関連したすべてのデータベース項目およびジョブ・ログをパージしますか?",     // Job Instance ID number
       PURGE_JOBSTORE_ONLY: "ジョブ・ストアのみをパージする",
 
       RESTART_INST_ERROR_MESSAGE: "再始動要求は失敗しました。",
       STOP_INST_ERROR_MESSAGE: "停止要求は失敗しました。",
       PURGE_INST_ERROR_MESSAGE: "パージ要求は失敗しました。",
-      ACTION_REQUEST_ERROR_MESSAGE: "アクション要求が失敗しました。状況コード: {0}。  URL: {1}",  // Status Code number, URL string
+      ACTION_REQUEST_ERROR_MESSAGE: "アクション要求が失敗しました。状況コード: {0}。URL: {1}",  // Status Code number, URL string
 
       // RESTART JOB WITH PARAMETERS DIALOG
       REUSE_PARMS_TOGGLE_LABEL: "直前の実行からのパラメーターを再利用する",
-      JOB_PARAMETERS_EMPTY: "'{0}' が選択されていない場合、このエリアを使用してジョブ・パラメーターを入力してください。",   // 0 - Checkbox label - REUSE_PARMS_TOGGLE_LABEL
+      JOB_PARAMETERS_EMPTY: "'{0}' が選択されていない場合、この領域を使用してジョブ・パラメーターを入力します。",   // 0 - Checkbox label - REUSE_PARMS_TOGGLE_LABEL
       JOB_PARAMETER_NAME: "パラメーター名",
       JOB_PARAMETER_VALUE: "パラメーター値",
       PARM_NAME_COLUMN_HEADER: "パラメーター",
@@ -117,7 +117,7 @@ define({
       PARM_ADD_ICON_TITLE: "パラメーターの追加",
       PARM_REMOVE_ICON_TITLE: "パラメーターの削除",
       PARMS_ENTRY_ERROR: "パラメーター名が必要です。",
-      JOB_PARAMETER_CREATE: "このジョブ・インスタンスの次回の実行にパラメーターを追加するには、{0} を選択してください。",  // 0 - Button label
+      JOB_PARAMETER_CREATE: "このジョブ・インスタンスの次回の実行にパラメーターを追加するには、「{0}」を選択してください。",  // 0 - Button label
       JOB_PARAMETER_CREATE_BUTTON: "テーブル・ヘッダーにパラメーター・ボタンを追加してください。",
 
       //JOB LOGS PAGE MESSAGES
@@ -151,4 +151,3 @@ define({
       GRIDX_SUMMARY_TEXT : "最新の ${0} ジョブ・インスタンスを表示しています"
 
 });
-

@@ -8,8 +8,8 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
- 
- define({
+
+define({
     LIBERTY_HEADER_TITLE: "Liberty Admin Center",
     LIBERTY_HEADER_PROFILE: "Beállítások",
     LIBERTY_HEADER_LOGOUT: "Kijelentkezés",
@@ -105,5 +105,5 @@
 
     TOOL_OIDC_ACCESS_DENIED: "A felhasználó nincs benne abban a szerepben, amelynek van engedélye ennek a kérésnek a végrehajtására.",
     TOOL_OIDC_GENERIC_ERROR: "Hiba történt. További információkért tekintse meg a hibát a naplóban.",
-    TOOL_DISABLE: "A felhasználó nem rendelkezik jogosultsággal az eszköz elérésére. Csak az adminisztrátori szereppel felruházott felhasználók rendelkeznek jogosultsággal az eszköz használatára. " 
+    TOOL_DISABLE: "A felhasználó nem rendelkezik jogosultsággal az eszköz elérésére. Csak az adminisztrátori szereppel felruházott felhasználók rendelkeznek jogosultsággal az eszköz használatára." 
 });

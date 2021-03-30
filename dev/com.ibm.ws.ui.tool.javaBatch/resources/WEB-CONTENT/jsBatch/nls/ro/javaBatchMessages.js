@@ -14,7 +14,7 @@ define({
       SEARCH_RESOURCE_TYPE_ALL : "Toate",
       SEARCH : "Căutare",
       JAVA_BATCH_SEARCH_BOX_LABEL : "Introduceţi criteriile de căutare selectând butonul Adăugare criterii de căutare şi apoi specificaţi o valoare.",
-      SUBMITTED : "Lansat",
+      SUBMITTED : "Trimisă",
       JMS_QUEUED : "Pus în coadă JMS",
       JMS_CONSUMED : "Consumat JMS",
       JOB_PARAMETER : "Parametru job",
@@ -26,7 +26,7 @@ define({
       STARTED : "Pornit",
       STARTING : "În pornire",
       STOPPING : "În oprire",
-      REFRESH : "Reîmprospătare",
+      REFRESH : "Reimprospătaţi",
       INSTANCE_STATE : "Stare instanţă",
       APPLICATION_NAME : "Nume de aplicaţie",
       APPLICATION: "Aplicaţie",
@@ -45,7 +45,7 @@ define({
       GO_TO_DASHBOARD: "Deplasare la Tablou de bord",
       DASHBOARD : "Tablou de bord",
       BATCH_JOB_NAME: "Nume job batch",
-      SUBMITTER: "Trimis de",
+      SUBMITTER: "Expeditor",
       BATCH_STATUS: "Stare batch",
       EXECUTION_ID: "ID execuţie job",
       EXIT_STATUS: "Stare la ieşire",
@@ -54,7 +54,7 @@ define({
       END_TIME: "Oră de sfârşit",
       SERVER: "Server",
       SERVER_NAME: "Nume server",
-      SERVER_USER_DIRECTORY: "Director utilizator",
+      SERVER_USER_DIRECTORY: "Director de utilizator",
       SERVERS_USER_DIRECTORY: "Directorul de utilizator al serverului",
       HOST: "Gazdă",
       NAME: "Nume",
@@ -83,7 +83,7 @@ define({
       STEPS_DETAILS_TABLE_IDENTIFIER: "Tabel de detalii paşi",
       LOADING_VIEW : "Pagina încarcă în prezent informaţii",
       LOADING_VIEW_TITLE : "Încărcare vizualizare",
-      LOADING_GRID : "Se aşteaptă să returnarea rezultatelor căutării de la server ",
+      LOADING_GRID : "Se aşteaptă să returnarea rezultatelor căutării de la server",
       PAGENUMBER : "Număr pagină",
       SELECT_QUERY_SIZE: "Selectare dimensiune interogare",
       LINK_EXPLORE_HOST: "Selectaţi pentru a vizualiza detaliile pe Gazda {0} în unealta Explorare.",      // Host name
@@ -151,4 +151,3 @@ define({
       GRIDX_SUMMARY_TEXT : "Afişare ${0} cele mai recente instanţe de job"
 
 });
-

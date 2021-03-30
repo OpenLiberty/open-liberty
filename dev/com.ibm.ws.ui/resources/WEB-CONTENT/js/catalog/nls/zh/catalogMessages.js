@@ -9,11 +9,10 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 define({
-        ERROR_DELETETOOL_NOID: "已请求删除工具但未提供标识。",
+        ERROR_DELETETOOL_NOID: "请求删除工具但未提供标识。",
         ERROR_ADDBOOKMARK_NOPROPS: "添加书签时未指定任何书签属性。",
         ERROR_GETTOOL_NOTOOL: "没有工具 {0}。",
-        ERROR_GETTOOL_NOID: "已请求工具但未提供标识。",
-        ERROR_URLACCESS_NOURL: "已请求 URL 状态但未提供 URL",
-        ERROR_URLANALYZE_NOURL: "已请求分析 URL 但未提供 URL"
+        ERROR_GETTOOL_NOID: "请求了工具但未提供标识。",
+        ERROR_URLACCESS_NOURL: "请求了 URL 的状态但未提供 URL",
+        ERROR_URLANALYZE_NOURL: "请求了分析 URL 但未提供 URL"
 });
-

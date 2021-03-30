@@ -19,4 +19,3 @@ define({
       BREADCRUMB_SEPARATOR_LABEL : "Разделитель пути навигации",
       SEARCH_PILL_DELETE_BUTTON : "Удалить критерии поиска"
 });
-

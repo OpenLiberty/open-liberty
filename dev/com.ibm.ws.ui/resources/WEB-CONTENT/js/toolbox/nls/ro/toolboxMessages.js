@@ -24,4 +24,3 @@ define({
         TOOL_DUPLICATE: "Semnul de carte există deja. Specificaţi un nume unic.",
         TOOL_BADREQUEST: "A apărut o eroare la adăugarea semnului de carte la trusa de unelte: {0}."
 });
-

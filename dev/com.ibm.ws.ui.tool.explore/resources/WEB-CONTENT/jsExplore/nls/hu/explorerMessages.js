@@ -394,7 +394,7 @@ define({
 
     STATUS : "Állapot",
     STATE : "Állapot:",
-    NAME : "Név: ",
+    NAME : "Név:",
     DIRECTORY : "Könyvtár",
     INFORMATION : "Információk",
     DETAILS : "Részletek",
@@ -540,7 +540,7 @@ define({
     GRAPH_SERVER_HOSTING_APP_NOT_STARTED: "Ehhez az alkalmazáshoz nem érhetők el aktuális statisztikák, mivel a társított kiszolgálója le van állítva. Indítsa el a kiszolgálót, hogy elkezdje az alkalmazás megfigyelését.",
     GRAPH_FEATURES_NOT_CONFIGURED: "Még nincs itt semmi! Kattintson a Szerkesztés ikonra és adjon hozzá méréseket az erőforrás megfigyeléséhez.",
     NO_GRAPHS_AVAILABLE: "Nem érhetők el hozzáadható mérőszámok. Próbáljon meg további megfigyelési szolgáltatásokat telepíteni, hogy több mérés legyen elérhető.",
-    NO_APPS_GRAPHS_AVAILABLE: "Nem érhetők el hozzáadható mérőszámok. Próbáljon meg további megfigyelési szolgáltatásokat telepíteni, hogy több mérés legyen elérhető.Győződjön meg arról is, hogy az alkalmazás használatban van.",
+    NO_APPS_GRAPHS_AVAILABLE: "Nem érhetők el hozzáadható mérőszámok. Próbáljon meg további megfigyelési szolgáltatásokat telepíteni, hogy több mérés legyen elérhető. Győződjön meg arról is, hogy az alkalmazás használatban van.",
     GRAPH_CONFIG_NOT_SAVED_TITLE : "Nem mentett módosítások",
     GRAPH_CONFIG_NOT_SAVED_DESCR : "Nem mentett módosításokkal rendelkezik. Ha átlép egy másik oldalra, akkor elveszíti a módosításokat.",
     GRAPH_CONFIG_NOT_SAVED_MSG : "Kívánja menteni a módosításait?",

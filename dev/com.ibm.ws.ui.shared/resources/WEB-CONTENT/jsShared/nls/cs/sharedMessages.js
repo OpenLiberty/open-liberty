@@ -19,4 +19,3 @@ define({
       BREADCRUMB_SEPARATOR_LABEL : "Oddělovač navigační cesty",
       SEARCH_PILL_DELETE_BUTTON : "Odebrat vyhledávací kritéria"
 });
-

@@ -25,7 +25,7 @@ define({
       ABANDONED : "Opuštěno",
       STARTED : "Spuštěno",
       STARTING : "Spouštění",
-      STOPPING : "Zastavení",
+      STOPPING : "Zastavování",
       REFRESH : "Aktualizovat",
       INSTANCE_STATE : "Stav instance",
       APPLICATION_NAME : "Název aplikace",
@@ -54,7 +54,7 @@ define({
       END_TIME: "Čas ukončení",
       SERVER: "Server",
       SERVER_NAME: "Název serveru",
-      SERVER_USER_DIRECTORY: "Uživatelský adresář",
+      SERVER_USER_DIRECTORY: "Adresář uživatelů",
       SERVERS_USER_DIRECTORY: "Uživatelský adresář serveru",
       HOST: "Hostitel",
       NAME: "Název",
@@ -76,7 +76,7 @@ define({
       BREADCRUMB_JOB_EXECUTION : "Provedení úlohy {0}",              // Job Execution ID
       BREADCRUMB_JOB_LOG : "Protokol úlohy {0}",
       BATCH_SEARCH_CRITERIA_INVALID : "Vyhledávací kritéria nejsou platná.",
-      ERROR_CANNOT_HAVE_MULTIPLE_SEARCHBY : "Vyhledávací kritéria nemohou mít více filtrů podle parametrů {0}. ", // {0} will be another translated message key like SUBMITTER and BATCH_JOB_NAME
+      ERROR_CANNOT_HAVE_MULTIPLE_SEARCHBY : "Vyhledávací kritéria nemají více filtrů podle parametrů {0}.", // {0} will be another translated message key like SUBMITTER and BATCH_JOB_NAME
 
       INSTANCES_TABLE_IDENTIFIER: "Tabulka instancí úlohy",
       EXECUTIONS_TABLE_IDENTIFIER: "Tabulka provedení úlohy",
@@ -86,12 +86,12 @@ define({
       LOADING_GRID : "Čekání na výsledky hledání pro návrat ze serveru",
       PAGENUMBER : "Číslo stránky",
       SELECT_QUERY_SIZE: "Vybrat velikost dotazu",
-      LINK_EXPLORE_HOST: "Tuto položku vyberte, chcete-li zobrazit podrobnosti na hostiteli {0} v nástroji pro prozkoumání. ",      // Host name
-      LINK_EXPLORE_SERVER: "Tuto položku vyberte, chcete-li zobrazit podrobnosti na serveru {0} v nástroji pro prozkoumání. ",  // Server name
+      LINK_EXPLORE_HOST: "Vyberte k zobrazení podrobností na hostiteli {0} v nástroji pro prozkoumání.",      // Host name
+      LINK_EXPLORE_SERVER: "Vyberte k zobrazení podrobností na serveru {0} v nástroji pro prozkoumání.",  // Server name
 
       //ACTIONS
       RESTART: "Restartovat",
-      STOP: "Zastavit",
+      STOP: "Zastavení",
       PURGE: "Vyprázdnit",
       OK_BUTTON_LABEL: "OK",
       INSTANCE_ACTIONS_BUTTON_LABEL: "Akce pro instanci úlohy {0}",     // Job Instance ID number
@@ -151,4 +151,3 @@ define({
       GRIDX_SUMMARY_TEXT : "Zobrazení nejnovějších instancí úlohy: ${0}"
 
 });
-

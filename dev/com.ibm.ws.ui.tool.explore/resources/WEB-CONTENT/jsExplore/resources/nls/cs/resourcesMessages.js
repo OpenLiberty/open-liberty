@@ -37,4 +37,3 @@ define({
     STANDALONE_STOP_FAILED : 'Operace zastavení serveru nebyla úspěšně dokončena. Podrobné informace naleznete v protokolech serveru.',
     STANDALONE_STOP_SUCCESS : 'Server byl úspěšně zastaven.',
 });
-

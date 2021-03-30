@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2020 IBM Corporation and others.
+# Copyright (c) 2002, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -183,3 +183,11 @@ trusted.header.origin.invalid.value.useraction=Aseg\u00farese de que las direcci
 trusted.sensitive.header.origin.invalid.value=CWWKT0039W: El valor trustedSensitiveHeaderOrigin configurado [{0}] no es v\u00e1lido y no se puede utilizar.
 trusted.sensitive.header.origin.invalid.value.explanation=El valor especificado debe ser una direcci\u00f3n IP completa o un nombre de host con el formato correcto.
 trusted.sensitive.header.origin.invalid.value.useraction=Aseg\u00farese de que las direcciones IP configuradas contienen un valor para cada segmento y que los nombres de host no contienen caracteres no v\u00e1lidos.
+
+config.hsts.invalid.max.age.value=CWWKT0040W: El valor configurado [{0}] para la directiva max-age no es v\u00e1lido y no se puede utilizar. El valor de la directiva max-age debe ser un entero no negativo.
+config.hsts.invalid.max.age.value.explanation=El valor de la directiva max-age no puede ser un entero negativo.
+config.hsts.invalid.max.age.value.useraction=Aseg\u00farese de que la directiva max-age configurada contiene un valor entero no negativo.
+
+config.hsts.missing.max.age=CWWKT0041W: Se ha intentado configurar [{0}] como la cabecera Strict-Transport-Security. Esta configuraci\u00f3n no contiene la directiva max-age obligatoria. Una configuraci\u00f3n que no contiene una directiva max-age no es v\u00e1lida y no se puede utilizar.
+config.hsts.missing.max.age.explanation=La configuraci\u00f3n especificada debe contener una directiva max-age con un valor entero no negativo.
+config.hsts.missing.max.age.useraction=Aseg\u00farese de que la configuraci\u00f3n contiene una directiva max-age con un valor entero no negativo.

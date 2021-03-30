@@ -9,8 +9,8 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 define({
-      SEARCH_ENTER_CRITERIA : "Adja meg a keresési feltételeket. A lefelé mutató nyíllal válassza ki a típust, majd a Tab billentyűvel adja meg az értéket. Típus:érték formában is megadhatja, amelyet egy tabulátor követ.  Egy nemrég használt keresési feltétel kiválasztásához kattintson a bal egérgombbal és használja a lefelé mutató nyilat.",
-      SEARCH_BUTTON_ADD : "Keresési feltétel hozzáadása",
+      SEARCH_ENTER_CRITERIA : "Adja meg a keresési feltételeket. A lefelé mutató nyíllal válassza ki a típust, majd a Tab billentyűvel adja meg az értéket. Típus:érték formában is megadhatja, amelyet egy tabulátor követ.  Egy nemrég használt keresési feltétel kiválasztásához kattintson a bal egérgombbal és használja a lefelé mutató nyilat. ",
+      SEARCH_BUTTON_ADD : "Keresési feltételek hozzáadása",
       SEARCH_BUTTON_CLEAR : "Keresési mező kiürítése",
       SEARCH_BUTTON_SEARCH : "Keresés",
       SEARCH_RESOURCE_TYPE_ALL: "Minden", // Search all resource types
@@ -19,4 +19,3 @@ define({
       BREADCRUMB_SEPARATOR_LABEL : "Navigációs útvonal elválasztója",
       SEARCH_PILL_DELETE_BUTTON : "Keresési feltételek eltávolítása"
 });
-

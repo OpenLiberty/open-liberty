@@ -9,11 +9,10 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 define({
-        ERROR_DELETETOOL_NOID: "도구 삭제를 요청했지만 ID를 제공하지 않았습니다. ",
-        ERROR_ADDBOOKMARK_NOPROPS: "책갈피를 추가할 때 책갈피 특성을 지정하지 않았습니다. ",
-        ERROR_GETTOOL_NOTOOL: "해당 {0} 도구가 없습니다. ",
-        ERROR_GETTOOL_NOID: "도구를 요청했지만 ID를 제공하지 않았습니다. ",
-        ERROR_URLACCESS_NOURL: "URL 상태를 요청했지만 URL을 제공하지 않음 ",
-        ERROR_URLANALYZE_NOURL: "URL 분석을 요청했지만 URL을 제공하지 않음 "
+        ERROR_DELETETOOL_NOID: "도구를 삭제하도록 요청했으나 ID를 제공하지 않았습니다.",
+        ERROR_ADDBOOKMARK_NOPROPS: "책갈피를 추가할 때 책갈피 특성을 지정하지 않았습니다.",
+        ERROR_GETTOOL_NOTOOL: "{0} 도구가 없습니다.",
+        ERROR_GETTOOL_NOID: "도구를 요청했으나 ID를 제공하지 않았습니다.",
+        ERROR_URLACCESS_NOURL: "URL의 상태를 요청했으나 URL을 제공하지 않았습니다.",
+        ERROR_URLANALYZE_NOURL: "URL을 분석하도록 요청했으나 URL을 제공하지 않았습니다."
 });
-

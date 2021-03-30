@@ -8,8 +8,8 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
- 
- define({
+
+define({
     LIBERTY_HEADER_TITLE: "Centro de Administração Liberty",
     LIBERTY_HEADER_PROFILE: "Preferências",
     LIBERTY_HEADER_LOGOUT: "Efetuar logout",

@@ -16,4 +16,3 @@ define({
         ERROR_URLACCESS_NOURL: "Se ha solicitado el estado de un URL pero no se ha proporcionado un URL",
         ERROR_URLANALYZE_NOURL: "Se ha solicitado analizar un URL pero no se ha proporcionado un URL"
 });
-

@@ -10,48 +10,48 @@
  *******************************************************************************/
 
 define({
-      ACCOUNTING_STRING : "Sequência de Caracteres para Contabilização",
-      SEARCH_RESOURCE_TYPE_ALL : "Todos",
+      ACCOUNTING_STRING : "Accounting String",
+      SEARCH_RESOURCE_TYPE_ALL : "Tudo",
       SEARCH : "Procurar",
       JAVA_BATCH_SEARCH_BOX_LABEL : "Insira os critérios de procura selecionando o botão Incluir critério de procura e, em seguida, especificando um valor",
       SUBMITTED : "Enviado",
       JMS_QUEUED : "Enfileirado pelo JMS",
       JMS_CONSUMED : "Consumido pelo JMS",
-      JOB_PARAMETER : "Parâmetro da Tarefa",
+      JOB_PARAMETER : "Parâmetro do Job",
       DISPATCHED : "Despachado",
-      FAILED : "Com falha",
+      FAILED : "Erro",
       STOPPED : "Interrompido",
-      COMPLETED : "Concluído",
+      COMPLETED : "Concluída",
       ABANDONED : "Abandonado",
       STARTED : "Iniciado",
       STARTING : "Iniciando",
       STOPPING : "Interrompendo",
       REFRESH : "Atualizar",
       INSTANCE_STATE : "Estado da Instância",
-      APPLICATION_NAME : "Nome do Aplicativo",
+      APPLICATION_NAME : "Nome do aplicativo",
       APPLICATION: "Aplicativo",
-      INSTANCE_ID : "ID da Instância",
+      INSTANCE_ID : "ID da instância",
       LAST_UPDATE : "Última Atualização",
       LAST_UPDATE_RANGE : "Intervalo da última atualização",
       LAST_UPDATED_TIME : "Horário da Última Atualização",
-      DASHBOARD_VIEW : "Visualização de painel",
+      DASHBOARD_VIEW : "Exibição do painel",
       HOMEPAGE : "Página Inicial",
       JOBLOGS : "Logs de Tarefa",
-      QUEUED : "Enfileirado",
-      ENDED : "Terminado",
+      QUEUED : "Em Fila",
+      ENDED : "Encerrado",
       ERROR : "Erro",
       CLOSE : "Fechar",
       WARNING : "Aviso",
       GO_TO_DASHBOARD: "Acessar o Painel",
       DASHBOARD : "Painel",
       BATCH_JOB_NAME: "Nome da Tarefa em Lote",
-      SUBMITTER: "Requisitante",
-      BATCH_STATUS: "Status do Lote",
+      SUBMITTER: "Submitter",
+      BATCH_STATUS: "Status do Batch",
       EXECUTION_ID: "ID de Execução da Tarefa",
-      EXIT_STATUS: "Status de Saída",
-      CREATE_TIME: "Horário de Criação",
+      EXIT_STATUS: "Status de saída",
+      CREATE_TIME: "Tempo da Criação",
       START_TIME: "Horário de Início",
-      END_TIME: "Horário de Encerramento",
+      END_TIME: "Hora de Encerramento",
       SERVER: "Servidor",
       SERVER_NAME: "Nome do Servidor",
       SERVER_USER_DIRECTORY: "Diretório do usuário",
@@ -63,12 +63,12 @@ define({
       JES_JOB_ID: "ID da Tarefa JES",
       ACTIONS: "Ações",
       VIEW_LOG_FILE: "Visualizar arquivo de log",
-      STEP_NAME: "Nome da etapa",
+      STEP_NAME: "Nome da Etapa",
       ID: "ID",
       PARTITION_ID: "Partição {0}",                               // Partition ID number
       VIEW_EXECUTION_DETAILS: "Visualizar detalhes de execução da tarefa {0}",    // Job Execution ID number
       PARENT_DETAILS: "Detalhes das Informações Pai",
-      TIMES: "Horários",      // Heading on section referencing create, start, and end timestamps
+      TIMES: "Tempos",      // Heading on section referencing create, start, and end timestamps
       STATUS: "Status",
       SEARCH_ON: "Selecione para filtrar em {1} {0}",                    // {0} Value, {1} Column name
       SEARCH_PILL_INPUT : "Inserir critérios de procura.",
@@ -84,15 +84,15 @@ define({
       LOADING_VIEW : "A página está atualmente carregando informações",
       LOADING_VIEW_TITLE : "Visualização de Carregamento",
       LOADING_GRID : "Aguardando os resultados da procura retornarem do servidor",
-      PAGENUMBER : "Número de Página",
+      PAGENUMBER : "Número de página",
       SELECT_QUERY_SIZE: "Selecionar tamanho de consulta",
-      LINK_EXPLORE_HOST: "Selecionar para visualizar os detalhes sobre o Host {0} na ferramenta Explore.",      // Host name
-      LINK_EXPLORE_SERVER: "Selecionar para visualizar os detalhes sobre o Servidor {0} na ferramenta Explore.",  // Server name
+      LINK_EXPLORE_HOST: "Selecione para visualizar os detalhes sobre o Host {0} na ferramenta Explorar.",      // Host name
+      LINK_EXPLORE_SERVER: "Selecione para visualizar os detalhes sobre o Servidor {0} na ferramenta Explorar.",  // Server name
 
       //ACTIONS
       RESTART: "Reiniciar",
       STOP: "Parar",
-      PURGE: "Limpar",
+      PURGE: "Limpeza",
       OK_BUTTON_LABEL: "OK",
       INSTANCE_ACTIONS_BUTTON_LABEL: "Ações para instância da tarefa {0}",     // Job Instance ID number
       INSTANCE_ACTIONS_MENU_LABEL:  "Menu de ações de instância da tarefa",
@@ -111,7 +111,7 @@ define({
       REUSE_PARMS_TOGGLE_LABEL: "Reutilizar os parâmetros da execução anterior",
       JOB_PARAMETERS_EMPTY: "Caso '{0}' não esteja selecionado, use essa área para inserir os parâmetros da tarefa.",   // 0 - Checkbox label - REUSE_PARMS_TOGGLE_LABEL
       JOB_PARAMETER_NAME: "Nome do parâmetro",
-      JOB_PARAMETER_VALUE: "Valor do parâmetro",
+      JOB_PARAMETER_VALUE: "Valor de Parâmetro",
       PARM_NAME_COLUMN_HEADER: "Parâmetro",
       PARM_VALUE_COLUMN_HEADER: "Valor",
       PARM_ADD_ICON_TITLE: "Incluir parâmetro",
@@ -122,16 +122,16 @@ define({
 
       //JOB LOGS PAGE MESSAGES
       JOBLOGS_LOG_CONTENT : "Conteúdo do log da tarefa",
-      FILE_DOWNLOAD : "Download de Arquivo",
+      FILE_DOWNLOAD : "Download de arquivo",
       DOWNLOAD_DIALOG_DESCRIPTION : "Deseja fazer download do arquivo de log?",
       INCLUDE_ALL_LOGS : "Incluir todos os arquivos de log para a execução da tarefa",
       LOGS_NAVIGATION_BAR : "Barra de navegação de logs da tarefa",
-      DOWNLOAD : "Fazer download",
+      DOWNLOAD : "Download",
       LOG_TOP : "Parte Superior dos Sogs",
       LOG_END : "Término dos Logs",
       PREVIOUS_PAGE : "Página Anterior",
-      NEXT_PAGE : "Próxima Página",
-      DOWNLOAD_ARIA : "Fazer o download do arquivo",
+      NEXT_PAGE : "Próxima página",
+      DOWNLOAD_ARIA : "Download do arquivo",
 
       //Error messages for popups
       REST_CALL_FAILED : "A chamada para buscar dados falhou.",
@@ -151,4 +151,3 @@ define({
       GRIDX_SUMMARY_TEXT : "Mostrando as ${0} instâncias de tarefa mais recentes"
 
 });
-

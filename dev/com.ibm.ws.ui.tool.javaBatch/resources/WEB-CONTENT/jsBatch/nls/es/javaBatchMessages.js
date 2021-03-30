@@ -11,21 +11,21 @@
 
 define({
       ACCOUNTING_STRING : "Serie de cuentas",
-      SEARCH_RESOURCE_TYPE_ALL : "Todo",
+      SEARCH_RESOURCE_TYPE_ALL : "Todos",
       SEARCH : "Buscar",
       JAVA_BATCH_SEARCH_BOX_LABEL : "Indique los criterios de búsqueda seleccionando el botón Añadir criterios de búsqueda y especificando un valor a continuación",
-      SUBMITTED : "Enviado",
+      SUBMITTED : "Sometido",
       JMS_QUEUED : "JMS en cola",
       JMS_CONSUMED : "JMS consumido",
       JOB_PARAMETER : "Parámetro de trabajo",
       DISPATCHED : "Asignado",
-      FAILED : "Erróneo",
-      STOPPED : "Detenido",
-      COMPLETED : "Completado",
+      FAILED : "Errónea",
+      STOPPED : "Detenidos",
+      COMPLETED : "Completada",
       ABANDONED : "Abandonado",
-      STARTED : "Iniciado",
+      STARTED : "iniciado",
       STARTING : "Iniciando",
-      STOPPING : "Deteniendo",
+      STOPPING : "Deteniéndose",
       REFRESH : "Renovar",
       INSTANCE_STATE : "Estado de instancia",
       APPLICATION_NAME : "Nombre de aplicación",
@@ -36,24 +36,24 @@ define({
       LAST_UPDATED_TIME : "Hora de última actualización",
       DASHBOARD_VIEW : "Vista de panel de instrumentos",
       HOMEPAGE : "Página inicial",
-      JOBLOGS : "Registros de trabajos",
+      JOBLOGS : "Registros de trabajo",
       QUEUED : "En cola",
-      ENDED : "Finalizados",
+      ENDED : "Finalizado",
       ERROR : "Error",
       CLOSE : "Cerrar",
       WARNING : "Aviso",
       GO_TO_DASHBOARD: "Ir al panel de instrumentos",
-      DASHBOARD : "Panel de control",
+      DASHBOARD : "Panel de instrumentos",
       BATCH_JOB_NAME: "Nombre de trabajo por lotes",
-      SUBMITTER: "Originador",
-      BATCH_STATUS: "Estado de lotes",
-      EXECUTION_ID: "ID de ejecución de trabajos",
+      SUBMITTER: "Emisor",
+      BATCH_STATUS: "Estado del lote",
+      EXECUTION_ID: "ID de ejecución del trabajo",
       EXIT_STATUS: "Estado de salida",
       CREATE_TIME: "Hora de creación",
       START_TIME: "Hora de inicio",
       END_TIME: "Hora de finalización",
       SERVER: "Servidor",
-      SERVER_NAME: "Nombre del servidor",
+      SERVER_NAME: "Nombre de servidor",
       SERVER_USER_DIRECTORY: "Directorio de usuario",
       SERVERS_USER_DIRECTORY: "Directorio de usuario del servidor",
       HOST: "Host",
@@ -63,14 +63,14 @@ define({
       JES_JOB_ID: "ID de trabajo de JES",
       ACTIONS: "Acciones",
       VIEW_LOG_FILE: "Ver archivo de registro",
-      STEP_NAME: "Nombre del paso",
+      STEP_NAME: "Nombre de paso",
       ID: "ID",
       PARTITION_ID: "Partición {0}",                               // Partition ID number
-      VIEW_EXECUTION_DETAILS: "Ver detalles de ejecución de trabajos {0}",    // Job Execution ID number
+      VIEW_EXECUTION_DETAILS: "Ver detalles de ejecución del trabajo {0}",    // Job Execution ID number
       PARENT_DETAILS: "Detalles de la información de padre",
-      TIMES: "Horas",      // Heading on section referencing create, start, and end timestamps
+      TIMES: "Veces",      // Heading on section referencing create, start, and end timestamps
       STATUS: "Estado",
-      SEARCH_ON: "Seleccione para filtrar en {1} {0}",                    // {0} Value, {1} Column name
+      SEARCH_ON: "Seleccione para filtrar por {1} {0}",                    // {0} Value, {1} Column name
       SEARCH_PILL_INPUT : "Especifique los criterios de búsqueda.",
       BREADCRUMB_JOB_INSTANCE : "Instancia de trabajo {0}",                // Job Instance ID
       BREADCRUMB_JOB_EXECUTION : "Ejecución de trabajo {0}",              // Job Execution ID
@@ -91,8 +91,8 @@ define({
 
       //ACTIONS
       RESTART: "Reiniciar",
-      STOP: "Detener",
-      PURGE: "Depurar",
+      STOP: "Parar",
+      PURGE: "Purgar",
       OK_BUTTON_LABEL: "Aceptar",
       INSTANCE_ACTIONS_BUTTON_LABEL: "Acciones de la instancia de trabajo {0}",     // Job Instance ID number
       INSTANCE_ACTIONS_MENU_LABEL:  "Menú de acciones de la instancia de trabajo",
@@ -110,7 +110,7 @@ define({
       // RESTART JOB WITH PARAMETERS DIALOG
       REUSE_PARMS_TOGGLE_LABEL: "Reutilizar parámetros de la ejecución previa",
       JOB_PARAMETERS_EMPTY: "Si no se ha seleccionado '{0}', utilice esta área para especificar los parámetros del trabajo.",   // 0 - Checkbox label - REUSE_PARMS_TOGGLE_LABEL
-      JOB_PARAMETER_NAME: "Nombre de parámetro",
+      JOB_PARAMETER_NAME: "Nombre del parámetro",
       JOB_PARAMETER_VALUE: "Valor de parámetro",
       PARM_NAME_COLUMN_HEADER: "Parámetro",
       PARM_VALUE_COLUMN_HEADER: "Valor",
@@ -121,7 +121,7 @@ define({
       JOB_PARAMETER_CREATE_BUTTON: "Añadir botón de parámetro a la cabecera de tabla.",
 
       //JOB LOGS PAGE MESSAGES
-      JOBLOGS_LOG_CONTENT : "Contenido de registro de trabajo",
+      JOBLOGS_LOG_CONTENT : "Contenido del registro de trabajo",
       FILE_DOWNLOAD : "Descarga de archivo",
       DOWNLOAD_DIALOG_DESCRIPTION : "¿Desea descargar el archivo de registro?",
       INCLUDE_ALL_LOGS : "Incluir todos los archivos de registro para ejecución de trabajos",
@@ -135,7 +135,7 @@ define({
 
       //Error messages for popups
       REST_CALL_FAILED : "La llamada para captar datos ha fallado.",
-      NO_JOB_EXECUTION_URL : "No se ha proporcionado número de ejecución de trabajos en el URL o la instancia no tiene registros de ejecución de trabajos para mostrar",
+      NO_JOB_EXECUTION_URL : "No se ha proporcionado número de ejecución de trabajos en el URL o la instancia no tiene registros de ejecución de trabajos para mostrar.",
       NO_VIEW : "Error de URL: No existe esta vista.",
       WRONG_TOOL_ID : "La serie de consulta del URL no se ha iniciado con el ID de herramienta {0}, sino con {1}.",   // {0} and {1} are both Strings
       URL_NO_LOGS : "Error de URL: No existen registros.",
@@ -151,4 +151,3 @@ define({
       GRIDX_SUMMARY_TEXT : "Mostrando las últimas ${0} instancias de trabajo"
 
 });
-

@@ -20,6 +20,7 @@
 LOADED_DEFAULT_CATALOG=CWWKX1000I: Az Admin Center alap\u00e9rtelmezett katal\u00f3gus bet\u00f6ltve.
 LOADED_DEFAULT_CATALOG.explanation=Az alap\u00e9rtelmezett katal\u00f3gus ker\u00fcl bet\u00f6lt\u00e9sre, mivel m\u00e9g nincs l\u00e9trehozott katal\u00f3gus. 
 LOADED_DEFAULT_CATALOG.useraction=Semmit sem kell tennie.
+
 TOOL_NOT_FOUND=CWWKX1001E: A(z) {0} eszk\u00f6z nem tal\u00e1lhat\u00f3 az Admin Center katal\u00f3gusban.
 TOOL_NOT_FOUND.explanation=A katal\u00f3gus a megadott eszk\u00f6zazonos\u00edt\u00f3j\u00fa eszk\u00f6zt nem tartalmazza.
 TOOL_NOT_FOUND.useraction=Semmit sem kell tennie.
@@ -44,6 +45,7 @@ LOADED_CATALOG_NOT_VALID.useraction=A lehets\u00e9ges jav\u00edt\u00f3 m\u0171ve
 LOADED_PERSISTED_CATALOG=CWWKX1006I: Az Admin Center katal\u00f3gus bet\u00f6ltve.
 LOADED_PERSISTED_CATALOG.explanation=Az Admin Center katal\u00f3gus bet\u00f6ltve a meg\u0151rz\u00f6tt t\u00e1rol\u00f3b\u00f3l. 
 LOADED_PERSISTED_CATALOG.useraction=Semmit sem kell tennie.
+
 TOOL_ALREADY_EXIST=CWWKX1007E: A(z) {0} eszk\u00f6z m\u00e1r l\u00e9tezik az Admin Center katal\u00f3gusban.
 TOOL_ALREADY_EXIST.explanation=A katal\u00f3gus a megadott eszk\u00f6zazonos\u00edt\u00f3j\u00fa eszk\u00f6zt m\u00e1r tartalmazza.
 TOOL_ALREADY_EXIST.useraction=Azonos nev\u0171 \u00e9s verzi\u00f3sz\u00e1m\u00fa eszk\u00f6z m\u00e1r l\u00e9tezik a katal\u00f3gusban. Adjon meg m\u00e1sik eszk\u00f6znevet (vagy verzi\u00f3sz\u00e1mot) \u00e9s pr\u00f3b\u00e1lkozzon \u00fajra.
@@ -85,6 +87,7 @@ FILE_PERSISTENCE_STORE_IO_ERROR.useraction=Ellen\u0151rizze a f\u00e1jl enged\u0
 STORAGE_INITIALIZED=CWWKX1015I: {0} Admin Center megmarad\u00e1si r\u00e9teg inicializ\u00e1lva.
 STORAGE_INITIALIZED.explanation=A term\u00e9k inicializ\u00e1lta az Admin Center megmarad\u00e1si r\u00e9teget.
 STORAGE_INITIALIZED.useraction=Semmit sem kell tennie.
+
 UNABLE_TO_LOAD_DISPLAY_NAME_FOR_USER=CWWKX1016E: Az Admin Center nem tudja lek\u00e9rdezni a(z) {0} felhaszn\u00e1l\u00f3 megjelen\u0151 nev\u00e9t.
 UNABLE_TO_LOAD_DISPLAY_NAME_FOR_USER.explanation=A kiszolg\u00e1l\u00f3 megpr\u00f3b\u00e1lta azonos\u00edtani a felhaszn\u00e1l\u00f3 megjelen\u0151 nev\u00e9t, de a k\u00eds\u00e9rlet meghi\u00fasult.
 UNABLE_TO_LOAD_DISPLAY_NAME_FOR_USER.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a megadott felhaszn\u00e1l\u00f3 l\u00e9tezik. Ha igen, akkor n\u00e9zzem ut\u00e1na a lehets\u00e9ges jav\u00edt\u00f3 tev\u00e9kenys\u00e9geknek a nyomk\u00f6vet\u00e9si \u00e9s ffdc \u00fczenetekben.
@@ -118,6 +121,7 @@ TOOL_NOT_FOUND_TOOLBOX.developeraction=A term\u00e9k nem tal\u00e1lja a k\u00e9r
 CATALOG_RESET_SUCCESSFUL=CWWKX1023I: A katal\u00f3gus sikeresen vissza\u00e1ll\u00edt\u00e1sra ker\u00fclt.
 CATALOG_RESET_SUCCESSFUL.explanation=A term\u00e9k vissza\u00e1ll\u00edtotta a mem\u00f3ri\u00e1ban l\u00e9v\u0151 katal\u00f3gust \u00e9s a meg\u0151rz\u00f6tt \u00e1llapotot az alap\u00e9rtelmezett be\u00e1ll\u00edt\u00e1sokra.
 CATALOG_RESET_SUCCESSFUL.useraction=Semmit sem kell tennie.
+
 CATALOG_RESET_MUST_BE_CONFIRMED=CWWKX1024E: A katal\u00f3gus vissza\u00e1ll\u00edt\u00e1s\u00e1hoz adja meg a "resetCatalog=true" HTTP k\u00e9r\u00e9sparam\u00e9tert.
 CATALOG_RESET_MUST_BE_CONFIRMED.explanation=A katal\u00f3gus HTTP DELETE met\u00f3dussal v\u00e9gzett vissza\u00e1ll\u00edt\u00e1si m\u0171veletet t\u00e1mogat. Ha biztos szeretne lenni benne, hogy a katal\u00f3gusok v\u00e9letlen\u00fcl nem ker\u00fclnek t\u00f6rl\u00e9sre, akkor adjon meg egy meger\u0151s\u00edt\u00e9si k\u00e9r\u00e9sparam\u00e9tert is.
 CATALOG_RESET_MUST_BE_CONFIRMED.useraction=Semmit sem kell tennie.
@@ -136,6 +140,7 @@ TOOL_OBJECT_NOT_VALID_TOOLBOX.developeraction=Az eszk\u00f6zk\u00e9szlethez hozz
 TOOLBOX_RESET_SUCCESSFUL=CWWKX1027I: Az eszk\u00f6zk\u00e9szlet sikeresen vissza\u00e1ll\u00edt\u00e1sra ker\u00fclt.
 TOOLBOX_RESET_SUCCESSFUL.explanation=A term\u00e9k vissza\u00e1ll\u00edtotta a mem\u00f3ri\u00e1ban l\u00e9v\u0151 eszk\u00f6zk\u00e9szletet \u00e9s a meg\u0151rz\u00f6tt \u00e1llapotot az alap\u00e9rtelmezett be\u00e1ll\u00edt\u00e1sokra.
 TOOLBOX_RESET_SUCCESSFUL.useraction=Semmit sem kell tennie.
+
 TOOLBOX_RESET_MUST_BE_CONFIRMED=CWWKX1028E: Az eszk\u00f6zk\u00e9szlet vissza\u00e1ll\u00edt\u00e1s\u00e1hoz adja meg a "resetToolbox=true" HTTP k\u00e9r\u00e9sparam\u00e9tert.
 TOOLBOX_RESET_MUST_BE_CONFIRMED.explanation=Az eszk\u00f6zk\u00e9szlet HTTP DELETE met\u00f3dussal v\u00e9gzett vissza\u00e1ll\u00edt\u00e1si m\u0171veletet t\u00e1mogat. Ha biztos szeretne lenni benne, hogy az eszk\u00f6zk\u00e9szletek v\u00e9letlen\u00fcl nem ker\u00fclnek t\u00f6rl\u00e9sre, akkor adjon meg egy meger\u0151s\u00edt\u00e9si k\u00e9r\u00e9sparam\u00e9tert is.
 TOOLBOX_RESET_MUST_BE_CONFIRMED.useraction=Semmit sem kell tennie.
@@ -144,6 +149,7 @@ TOOLBOX_RESET_MUST_BE_CONFIRMED.developeraction=Az eszk\u00f6zk\u00e9szlet alaph
 LOADED_DEFAULT_TOOLBOX=CWWKX1029I: Az Admin Center alap\u00e9rtelmezett eszk\u00f6zk\u00e9szlete ker\u00fcl bet\u00f6lt\u00e9sre {0} felhaszn\u00e1l\u00f3 sz\u00e1m\u00e1ra.
 LOADED_DEFAULT_TOOLBOX.explanation=Az alap\u00e9rtelmezett eszk\u00f6zk\u00e9szlet ker\u00fcl bet\u00f6lt\u00e9sre, mivel a megadott felhaszn\u00e1l\u00f3 m\u00e9g nem rendelkezik eszk\u00f6zk\u00e9szlettel.
 LOADED_DEFAULT_TOOLBOX.useraction=Semmit sem kell tennie.
+
 UNABLE_TO_LOAD_TOOLBOX_SYNTAX=CWWKX1030E: Az Admin Center eszk\u00f6zk\u00e9szlet nem t\u00f6lthet\u0151 be a meg\u0151rz\u00f6tt t\u00e1rol\u00f3b\u00f3l {0} felhaszn\u00e1l\u00f3 sz\u00e1m\u00e1ra. A meg\u0151rz\u00f6tt tartalom szintaxisa s\u00e9r\u00fcltnek t\u0171nik. Az alap\u00e9rtelmezett eszk\u00f6zk\u00e9szlet lesz bet\u00f6ltve helyette.
 UNABLE_TO_LOAD_TOOLBOX_SYNTAX.explanation=A term\u00e9k nem tudja \u00e9rtelmezni az Admin Center eszk\u00f6zk\u00e9szlet alapul szolg\u00e1l\u00f3 megmarad\u00e1si r\u00e9teg\u00e9ben t\u00e1rolt tartalm\u00e1t. Az adatok szintaxisa s\u00e9r\u00fcltnek t\u0171nik. Ez egy helyre\u00e1ll\u00edthatatlan hiba.
 UNABLE_TO_LOAD_TOOLBOX_SYNTAX.useraction=A lehets\u00e9ges jav\u00edt\u00f3 m\u0171veleteknek n\u00e9zzen ut\u00e1na a kor\u00e1bbi napl\u00f3\u00fczenetekben.
@@ -163,6 +169,7 @@ LOADED_TOOLBOX_NOT_VALID.useraction=A lehets\u00e9ges jav\u00edt\u00f3 m\u0171ve
 LOADED_PERSISTED_TOOLBOX=CWWKX1034I: Az Admin Center eszk\u00f6zk\u00e9szlete bet\u00f6lt\u00e9sre ker\u00fclt {0} felhaszn\u00e1l\u00f3 sz\u00e1m\u00e1ra.
 LOADED_PERSISTED_TOOLBOX.explanation=Az Admin Center eszk\u00f6zk\u00e9szlet bet\u00f6lt\u00e9sre ker\u00fcl a meg\u0151rz\u00f6tt t\u00e1rol\u00f3b\u00f3l a megadott felhaszn\u00e1l\u00f3 sz\u00e1m\u00e1ra.
 LOADED_PERSISTED_TOOLBOX.useraction=Semmit sem kell tennie.
+
 INVALID_TOOL_CONTENT_WARNING_TOOLBOX=CWWKX1035W: Az \u00e1lland\u00f3 t\u00e1rol\u00f3b\u00f3l bet\u00f6lt\u00f6tt {0} eszk\u00f6z a k\u00f6vetkez\u0151 hiba miatt el lett t\u00e1vol\u00edtva az Admin Center eszk\u00f6zk\u00e9szletb\u0151l {1} felhaszn\u00e1l\u00f3 eset\u00e9ben: {2} 
 INVALID_TOOL_CONTENT_WARNING_TOOLBOX.explanation=A term\u00e9k az \u00e1lland\u00f3 t\u00e1rol\u00f3ban l\u00e9v\u0151 eszk\u00f6zt elt\u00e1vol\u00edtotta az eszk\u00f6zk\u00e9szletb\u0151l, mivel az eszk\u00f6z adatai \u00e9rv\u00e9nytelenek vagy hi\u00e1nyosak. 
 INVALID_TOOL_CONTENT_WARNING_TOOLBOX.useraction=\u00c1ll\u00edtsa vissza az eszk\u00f6zk\u00e9szletet biztons\u00e1gi ment\u00e9sb\u0151l. Ha a felhaszn\u00e1l\u00f3 m\u00f3dos\u00edtja az eszk\u00f6zk\u00e9szletet, akkor az eszk\u00f6zk\u00e9szletf\u00e1jl \u00e9rv\u00e9nyes m\u00e1solattal ker\u00fcl fel\u00fcl\u00edr\u00e1sra.
@@ -178,9 +185,11 @@ TOOLBOX_TOOL_NO_LONGER_AVAILABLE.useraction=Az eszk\u00f6z elt\u00e1vol\u00edt\u
 CATALOG_FILE_PROMOTED_TO_COLLECTIVE=CWWKX1038I: Az Admin Center katal\u00f3gus bet\u00f6lt\u00e9sre ker\u00fclt a(z) {0} megmarad\u00e1si r\u00e9tegb\u0151l \u00e9s t\u00e1rol\u00e1sra ker\u00fclt a(z) {1} megmarad\u00e1si r\u00e9tegben. 
 CATALOG_FILE_PROMOTED_TO_COLLECTIVE.explanation=A term\u00e9k bet\u00f6lt\u00f6tte az Admin Center katal\u00f3gust a kor\u00e1bbi megmarad\u00e1si r\u00e9tegb\u0151l, \u00e9s t\u00e1rolt egy m\u00e1solatot az \u00faj megmarad\u00e1si r\u00e9tegbe. Az \u00faj megmarad\u00e1si r\u00e9tegben tal\u00e1lhat\u00f3 m\u00e1solatot a rendszer a k\u00f6vetkez\u0151 el\u00e9r\u00e9sn\u00e9l bet\u00f6lti az \u00e1lland\u00f3 t\u00e1rol\u00f3b\u00f3l.
 CATALOG_FILE_PROMOTED_TO_COLLECTIVE.useraction=Semmit sem kell tennie.
+
 TOOLBOX_FILE_PROMOTED_TO_COLLECTIVE=CWWKX1039I: A(z) {0} felhaszn\u00e1l\u00f3 sz\u00e1m\u00e1ra bet\u00f6lt\u00e9sre ker\u00fclt az Admin Center eszk\u00f6zk\u00e9szlete a(z) {1} megmarad\u00e1si r\u00e9tegb\u0151l, \u00e9s t\u00e1rol\u00e1sra ker\u00fclt a(z) {2} megmarad\u00e1si r\u00e9tegben. 
 TOOLBOX_FILE_PROMOTED_TO_COLLECTIVE.explanation=A term\u00e9k bet\u00f6lt\u00f6tte az Admin Center term\u00e9ket a kor\u00e1bbi megmarad\u00e1si r\u00e9tegb\u0151l, \u00e9s t\u00e1rolt egy m\u00e1solatot az \u00faj megmarad\u00e1si r\u00e9tegbe. Az \u00faj megmarad\u00e1si r\u00e9tegben tal\u00e1lhat\u00f3 m\u00e1solatot a rendszer a k\u00f6vetkez\u0151 el\u00e9r\u00e9sn\u00e9l bet\u00f6lti az \u00e1lland\u00f3 t\u00e1rol\u00f3b\u00f3l.
 TOOLBOX_FILE_PROMOTED_TO_COLLECTIVE.useraction=Semmit sem kell tennie.
+
 POST_MAX_JSON_SIZE=CWWKX1040E: A k\u00e9r\u00e9s JSON hasznos tartalma meghaladja a megengedhet\u0151 {0} hosszt.
 POST_MAX_JSON_SIZE.explanation=A term\u00e9k nem tudja \u00e9rtelmezni a JSON hasznos tartalmat, mert az meghaladja a m\u0171velet enged\u00e9lyezett m\u00e9ret\u00e9t.
 POST_MAX_JSON_SIZE.useraction=Cs\u00f6kkentse a JSON hasznos tartalom m\u00e9ret\u00e9t.
@@ -193,6 +202,7 @@ TOOL_AND_TYPE_NOT_FOUND.developeraction=A k\u00e9rt eszk\u00f6z nem tal\u00e1lha
 FEATURE_TOOL_DELETED_FROM_CATALOG=CWWKX1042I: A(z) {0} eszk\u00f6z t\u00f6bb\u00e9 nincs a katal\u00f3gusban, mert a(z) {1} megfelel\u0151 szolg\u00e1ltat\u00e1s telep\u00edt\u00e9sre ker\u00fclt. 
 FEATURE_TOOL_DELETED_FROM_CATALOG.explanation=A term\u00e9k telep\u00edtette az eszk\u00f6z funkci\u00f3t, \u00e9s elt\u00e1vol\u00edtotta az eszk\u00f6z a katal\u00f3gusb\u00f3l. 
 FEATURE_TOOL_DELETED_FROM_CATALOG.useraction=Semmit sem kell tennie.
+
 TOOL_LIST_NOT_MATCH_TOOLBOX=CWWKX1043E: Az eszk\u00f6zk\u00e9szlet eszk\u00f6zeinek list\u00e1ja nem friss\u00fclt. A friss\u00edtend\u0151 {0} eszk\u00f6z\u00f6k sz\u00e1ma nem egyezik meg az aktu\u00e1lis eszk\u00f6zk\u00e9szlet {1} eszk\u00f6zeinek sz\u00e1m\u00e1val.
 TOOL_LIST_NOT_MATCH_TOOLBOX.explanation=A friss\u00edtend\u0151 eszk\u00f6z\u00f6k list\u00e1ja nem egyezik meg az aktu\u00e1lis eszk\u00f6zk\u00e9szlet eszk\u00f6zeinek list\u00e1j\u00e1val.
 TOOL_LIST_NOT_MATCH_TOOLBOX.useraction=Jav\u00edtsa ki az eszk\u00f6zk\u00e9szlet eszk\u00f6zeinek list\u00e1j\u00e1t, \u00e9s k\u00fcldje el \u00fajra a k\u00e9r\u00e9st.
@@ -211,6 +221,7 @@ TOOL_NOT_FOUND_FROM_TOOLBOX.developeraction=A term\u00e9k nem tal\u00e1lja a fri
 TOOLBOX_UPDATE_SUCCESSFUL=CWWKX1046I: Az eszk\u00f6zk\u00e9szlet eszk\u00f6zbejegyz\u00e9seinek friss\u00edt\u00e9se siker\u00fclt.
 TOOLBOX_UPDATE_SUCCESSFUL.explanation=A term\u00e9k elt\u00e1rolta a mem\u00f3ri\u00e1ban tal\u00e1lhat\u00f3 eszk\u00f6zk\u00e9szletet \u00e9s a megmarad\u00f3 \u00e1llapotot az \u00faj be\u00e1ll\u00edt\u00e1sokba.
 TOOLBOX_UPDATE_SUCCESSFUL.useraction=Semmit sem kell tennie.
+
 PASSWORD_VALIDATION_EXCEPTION=CWWKX1047W: Hiba t\u00f6rt\u00e9nt a jelsz\u00f3 \u00e9rv\u00e9nyes\u00edt\u00e9sekor: {0}
 PASSWORD_VALIDATION_EXCEPTION.explanation=A hiba megakad\u00e1lyozta a bejelentkez\u00e9si jelsz\u00f3 \u00e9rv\u00e9nyes\u00edt\u00e9s\u00e9t.
 PASSWORD_VALIDATION_EXCEPTION.useraction=A r\u00e9szletek\u00e9rt ellen\u0151rizze a napl\u00f3t.  Jav\u00edtsa a hib\u00e1ban eml\u00edtett probl\u00e9m\u00e1t, majd pr\u00f3b\u00e1lkozzon \u00fajra.
@@ -218,6 +229,7 @@ PASSWORD_VALIDATION_EXCEPTION.useraction=A r\u00e9szletek\u00e9rt ellen\u0151riz
 LOADED_PERSISTED_TOOL_DATA=CWWKX1048I: A(z) {1} eszk\u00f6z adatai a(z) {0} felhaszn\u00e1l\u00f3 sz\u00e1m\u00e1ra bet\u00f6ltve.
 LOADED_PERSISTED_TOOL_DATA.explanation=A megadott felhaszn\u00e1l\u00f3 \u00e9s eszk\u00f6z eszk\u00f6zadatai az \u00e1lland\u00f3 t\u00e1rol\u00f3b\u00f3l bet\u00f6ltve.
 LOADED_PERSISTED_TOOL_DATA.useraction=Nincs teend\u0151.
+
 UNABLE_TO_LOAD_TOOL_DATA_CONTENT=CWWKX1049E: A(z) {1} eszk\u00f6z adatait a(z) {0} felhaszn\u00e1l\u00f3 sz\u00e1m\u00e1ra nem lehet bet\u00f6lteni az \u00e1lland\u00f3 t\u00e1rol\u00f3b\u00f3l. Lehet, hogy a t\u00e1rolt tartalom s\u00e9r\u00fclt.
 UNABLE_TO_LOAD_TOOL_DATA_CONTENT.explanation=Az eszk\u00f6z alapul szolg\u00e1l\u00f3 megmarad\u00e1si r\u00e9teg\u00e9ben t\u00e1rolt tartalom t\u00edpusa nem felel meg az elv\u00e1r\u00e1snak. Ez egy helyre\u00e1ll\u00edthatatlan hiba.
 UNABLE_TO_LOAD_TOOL_DATA_CONTENT.useraction=A lehets\u00e9ges jav\u00edt\u00f3 m\u0171veleteknek n\u00e9zzen ut\u00e1na a kor\u00e1bbi napl\u00f3\u00fczenetekben.
@@ -261,6 +273,7 @@ TOOLDATA_PARENT_DIR_DELETE_RESULT_FALSE.useraction=Ha a mapp\u00e1t m\u00e1s pro
 DELETED_PERSISTED_TOOL_DATA=CWWKX1059I: A term\u00e9k a(z) {1} eszk\u00f6z adatait a(z) {0} felhaszn\u00e1l\u00f3 sz\u00e1m\u00e1ra t\u00f6r\u00f6lte.
 DELETED_PERSISTED_TOOL_DATA.explanation=A megadott felhaszn\u00e1l\u00f3 \u00e9s eszk\u00f6z eszk\u00f6zadatai az \u00e1lland\u00f3 t\u00e1rol\u00f3b\u00f3l t\u00f6r\u00f6lve lettek.
 DELETED_PERSISTED_TOOL_DATA.useraction=Nincs teend\u0151.
+
 UNABLE_TO_DELETE_PERSISTED_TOOL_DATA=CWWKX1060W: A term\u00e9k a(z) {1} eszk\u00f6z adatait a(z) {0} felhaszn\u00e1l\u00f3 eset\u00e9ben nem tudja t\u00f6r\u00f6lni az \u00e1lland\u00f3 t\u00e1rol\u00f3b\u00f3l. Az alapul szolg\u00e1l\u00f3 megmarad\u00e1si r\u00e9teg I/O hib\u00e1ba \u00fctk\u00f6z\u00f6tt.
 UNABLE_TO_DELETE_PERSISTED_TOOL_DATA.explanation=Probl\u00e9ma mer\u00fclt fel az alapul szolg\u00e1l\u00f3 megmarad\u00e1si r\u00e9teg el\u00e9r\u00e9se k\u00f6zben, az eszk\u00f6zadatok t\u00f6rl\u00e9se sor\u00e1n.
 UNABLE_TO_DELETE_PERSISTED_TOOL_DATA.useraction=A lehets\u00e9ges jav\u00edt\u00f3 m\u0171veleteknek n\u00e9zzen ut\u00e1na a kor\u00e1bbi napl\u00f3\u00fczenetekben.
@@ -280,6 +293,7 @@ TOOLDATA_UPDATE_CHECKSUM_NOT_MATCH.useraction=Adjon ki GET h\u00edv\u00e1si k\u0
 STORAGE_INITIALIZED_PLAINTEXT_LOADER=CWWKX1063I: {0} megmarad\u00e1si r\u00e9teg inicializ\u00e1lva az Admin Center eszk\u00f6z adatbet\u00f6lt\u0151je sz\u00e1m\u00e1ra.
 STORAGE_INITIALIZED_PLAINTEXT_LOADER.explanation=A term\u00e9k inicializ\u00e1lta az Admin Center megmarad\u00e1si r\u00e9teget az eszk\u00f6z adatbet\u00f6lt\u0151je sz\u00e1m\u00e1ra.
 STORAGE_INITIALIZED_PLAINTEXT_LOADER.useraction=Nincs teend\u0151.
+
 UNABLE_TO_PROMOTE_TOOL_DATA_CONTENT=CWWKX1064E: A term\u00e9k a(z) {0} felhaszn\u00e1l\u00f3 {1} eszk\u00f6zadatait nem tudja el\u0151l\u00e9ptetni FILE megmarad\u00e1sr\u00f3l COLLECTIVE megmarad\u00e1sra.  A term\u00e9k I/O hib\u00e1ba \u00fctk\u00f6z\u00f6tt.
 UNABLE_TO_PROMOTE_TOOL_DATA_CONTENT.explanation=Probl\u00e9ma mer\u00fclt fel az alapul szolg\u00e1l\u00f3 megmarad\u00e1si r\u00e9teg el\u00e9r\u00e9se k\u00f6zben, amikor a term\u00e9k az eszk\u00f6zadatokat megpr\u00f3b\u00e1lta FILE megmarad\u00e1sr\u00f3l COLLECTIVE megmarad\u00e1sra el\u0151l\u00e9ptetni.
 UNABLE_TO_PROMOTE_TOOL_DATA_CONTENT.useraction=A lehets\u00e9ges jav\u00edt\u00f3 m\u0171veleteknek n\u00e9zzen ut\u00e1na a kor\u00e1bbi napl\u00f3\u00fczenetekben.

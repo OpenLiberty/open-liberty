@@ -37,4 +37,3 @@ define({
     STANDALONE_STOP_FAILED : 'L\'opération d\'arrêt du serveur ne s\'est pas terminée correctement. Pour plus de détails, consultez les journaux du serveur.',
     STANDALONE_STOP_SUCCESS : 'Le serveur s\'est arrêté correctement.',
 });
-

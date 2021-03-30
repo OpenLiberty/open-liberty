@@ -8,8 +8,8 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
- 
- define({
+
+define({
     LIBERTY_HEADER_TITLE: "Centre d'administration Liberty",
     LIBERTY_HEADER_PROFILE: "Préférences",
     LIBERTY_HEADER_LOGOUT: "Se déconnecter",
@@ -93,7 +93,7 @@
     DETAILS_UPDATED: "Mise à jour : {0}",
     DETAILS_NOTOPTIMIZED: "Non optimisé pour l'unité en cours.",
     DETAILS_ADDBUTTON: "Ajouter à Ma boîte à outils",
-    DETAILS_OPEN: "Ouvrir",
+    DETAILS_OPEN: "Ouvert",
     DETAILS_CATEGORY: "Catégorie {0}",
     DETAILS_ADDCONFIRM: "L'outil {0} a été ajouté à la boîte à outils.",
     CONFIRM_DIALOG_HELP: "Aide",
@@ -105,5 +105,5 @@
 
     TOOL_OIDC_ACCESS_DENIED: "L'utilisateur ne possède pas le rôle permettant de traiter cette demande.",
     TOOL_OIDC_GENERIC_ERROR: "Une erreur est survenue. Examinez-la dans le journal pour plus d'informations.",
-    TOOL_DISABLE: "L'utilisateur n'est pas autorisé à utiliser cet outil. Seuls les utilisateurs disposant du rôle d'administrateur sont autorisés à l'utiliser. " 
+    TOOL_DISABLE: "L'utilisateur n'est pas autorisé à utiliser cet outil. Seuls les utilisateurs disposant du rôle d'administrateur sont autorisés à l'utiliser." 
 });

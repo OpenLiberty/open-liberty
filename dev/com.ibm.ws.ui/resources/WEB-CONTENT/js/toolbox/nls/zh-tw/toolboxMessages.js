@@ -24,4 +24,3 @@ define({
         TOOL_DUPLICATE: "書籤已存在。請指定唯一名稱。",
         TOOL_BADREQUEST: "將書籤新增至工具箱時發生錯誤：{0}。"
 });
-

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2020 IBM Corporation and others.
+# Copyright (c) 2002, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -183,3 +183,11 @@ trusted.header.origin.invalid.value.useraction=Assurez-vous que les adresses IP 
 trusted.sensitive.header.origin.invalid.value=CWWKT0039W: La valeur [{0}] configur\u00e9e trustedSensitiveHeaderOrigin n''est pas valide et ne peut pas \u00eatre utilis\u00e9e.
 trusted.sensitive.header.origin.invalid.value.explanation=La valeur sp\u00e9cifi\u00e9e doit \u00eatre une adresse IP compl\u00e8te ou un nom d'h\u00f4te correctement format\u00e9.
 trusted.sensitive.header.origin.invalid.value.useraction=Assurez-vous que les adresses IP configur\u00e9es contiennent une valeur pour chaque segment et que les noms d'h\u00f4te ne contiennent pas de caract\u00e8res non valides.
+
+config.hsts.invalid.max.age.value=CWWKT0040W: La valeur [{0}] configur\u00e9e pour la directive max-age n''est pas valide et ne peut pas \u00eatre utilis\u00e9e. La valeur de la directive max-age doit \u00eatre un entier non n\u00e9gatif.
+config.hsts.invalid.max.age.value.explanation=La valeur de la directive max-age ne peut pas \u00eatre un entier n\u00e9gatif.
+config.hsts.invalid.max.age.value.useraction=V\u00e9rifiez que la directive max-age configur\u00e9e contient une valeur enti\u00e8re non n\u00e9gative.
+
+config.hsts.missing.max.age=CWWKT0041W: Vous avez tent\u00e9 de configurer [{0}] comme en-t\u00eate Strict-Transport-Security. Cette configuration ne contient pas la directive max-age obligatoire. Une configuration qui ne contient pas de directive max-age n''est pas valide et ne peut pas \u00eatre utilis\u00e9e.
+config.hsts.missing.max.age.explanation=La configuration sp\u00e9cifi\u00e9e doit contenir une directive max-age avec une valeur enti\u00e8re non n\u00e9gative.
+config.hsts.missing.max.age.useraction=V\u00e9rifiez que la configuration contient une directive max-age avec une valeur enti\u00e8re non n\u00e9gative.

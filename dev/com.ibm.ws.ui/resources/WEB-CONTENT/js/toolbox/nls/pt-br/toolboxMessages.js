@@ -24,4 +24,3 @@ define({
         TOOL_DUPLICATE: "O marcador já existe. Especifique um nome exclusivo.",
         TOOL_BADREQUEST: "Ocorreu um erro ao incluir o marcador na caixa de ferramentas: {0}."
 });
-

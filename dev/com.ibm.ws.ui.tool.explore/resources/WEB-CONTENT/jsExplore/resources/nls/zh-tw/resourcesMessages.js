@@ -27,14 +27,13 @@ define({
     ERROR_HOST_OPERATION_SET_MAINTENANCE_MODE : "由於發生錯誤，未設定主機 {0} 的維護模式。", // hostName
     ERROR_HOST_OPERATION_UNSET_MAINTENANCE_MODE : "由於發生錯誤，未完成嘗試取消設定主機 {0} 的維護模式。", // hostName
     // Dialog messages on operation errors
-    SERVER_START_ERROR: "在伺服器啟動期間發生錯誤。",
+    SERVER_START_ERROR: "伺服器啟動期間發生錯誤。",
     SERVER_START_CLEAN_ERROR: "伺服器啟動 --clean 期間發生錯誤。",
-    SERVER_STOP_ERROR: "在伺服器停止期間發生錯誤。",
-    SERVER_RESTART_ERROR: "在伺服器重新啟動期間發生錯誤。",
+    SERVER_STOP_ERROR: "伺服器停止期間發生錯誤。",
+    SERVER_RESTART_ERROR: "伺服器重新啟動期間發生錯誤。",
     // Used by standalone stop operation
-    STANDALONE_STOP_NO_MBEAN : '伺服器未停止。停止伺服器所需的 API 無法使用。',
+    STANDALONE_STOP_NO_MBEAN : '伺服器未停止。無法使用停止伺服器所需的 API。',
     STANDALONE_STOP_CANT_DETERMINE_MBEAN : '伺服器未停止。無法判斷停止伺服器所需的 API。',
     STANDALONE_STOP_FAILED : '伺服器停止作業未順利完成。請檢查伺服器日誌，以取得詳細資料。',
     STANDALONE_STOP_SUCCESS : '伺服器已順利停止。',
 });
-

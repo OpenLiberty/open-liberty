@@ -13,7 +13,6 @@ define({
         ERROR_ADDBOOKMARK_NOPROPS: "Podczas dodawania zakładki nie określono jej właściwości.",
         ERROR_GETTOOL_NOTOOL: "Brak narzędzia {0}.",
         ERROR_GETTOOL_NOID: "Zażądano narzędzia, ale nie podano identyfikatora.",
-        ERROR_URLACCESS_NOURL: "Zażądano statusu adresu URL, ale nie podano adresu URL",
-        ERROR_URLANALYZE_NOURL: "Zażądano analizy adresu URL, ale nie podano go"
+        ERROR_URLACCESS_NOURL: "Zażądano statusu adresu URL, ale go nie podano",
+        ERROR_URLANALYZE_NOURL: "Zażądano analizy adresu URL, ale go nie podano"
 });
-

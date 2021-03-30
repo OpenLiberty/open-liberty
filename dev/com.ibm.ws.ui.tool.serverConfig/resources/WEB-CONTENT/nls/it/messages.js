@@ -46,7 +46,7 @@ var editorMessages = {
 "SOURCE": "Origine",
 "SOURCE_PANE": "riquadro origine",
 "LINE_NUMBERS": "Numeri righe",
-"DOCUMENTATION_DEFAULT": "Impostazione predefinita: {0}",
+"DOCUMENTATION_DEFAULT": "Valore predefinito: {0}",
 "REQUIRED_SUFFIX": "(obbligatorio)",
 "USER_NAME": "Nome utente",
 "USER_NAME_OPTIONAL": "Nome utente (facoltativo)",
@@ -66,7 +66,7 @@ var editorMessages = {
 "SIGN_OUT_PROMPT": "Uscire?",
 "CHANGES_SAVED": "Modifiche salvate",
 "FILE_ACCESS_ERROR_MESSAGE": "Si è verificato un errore durante il tentativo di accedere ai file di configurazione del server",
-"ERROR_SAVING_FILE_MESSAGE": "Le modifiche non sono state salvate.  Il server potrebbe essere inattivo, il file potrebbe essere di sola lettura o il ruolo utente potrebbe non disporre dell'autorizzazione per apportare modifiche alla configurazione.",
+"ERROR_SAVING_FILE_MESSAGE": "Le modifiche non sono state salvate. Il server potrebbe essere inattivo, il file potrebbe essere di sola lettura o il ruolo utente potrebbe non disporre dell'autorizzazione per apportare modifiche alla configurazione.",
 "ERROR": "Errore",
 "UNSAVED_CHANGES_MESSAGE": "Sono presenti modifiche non salvate.",
 "READ_ONLY": "Sola lettura",
@@ -157,7 +157,7 @@ var editorMessages = {
 "FEATURE_DESCRIPTION": "Descrizione funzione",
 "SELECT_FEATURE_TO_VIEW_DESCRIPTION": "Selezionare una funzione per visualizzarne la descrizione.",
 "SUPPORT_MESSAGE" : "Configurazione server non disponibile per server Node.js nè per server in un contenitore Docker cui si accede tramite il Collective Controller.",
-"NO_ROLE_MESSAGE": "L'utente non ha un ruolo che dispone dell'autorizzazione per completare questa richiesta. I file sono disponibili in modalità di sola lettura.",
+"NO_ROLE_MESSAGE": "L'utente non ha un ruolo che dispone dell'autorizzazione per effettuare modifiche di configurazione. I file sono disponibili in modalità di sola lettura.",
 	
 // Messages for Collective Debugging
 "REQUIRED_ACTIONS" : "AZIONI RICHIESTE PER I MEMBRI COLLECTIVE:",

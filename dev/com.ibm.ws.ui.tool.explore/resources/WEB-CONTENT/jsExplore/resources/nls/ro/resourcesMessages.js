@@ -16,8 +16,8 @@ define({
     ERROR_SERVER_UNAVAILABLE : "Serverul nu a răspuns în timpul alocat.",
     ERROR_APP_NOT_AVAILABLE : "Aplicaţia {0} nu mai este disponibilă pentru serverul {1} pe gazda {2} în directorul {3}.", //appName, serverName, hostName, userdirName
     ERROR_APPLICATION_OPERATION : "A apărut o eroare la încercarea la {0} aplicaţia {1} pe serverul {2} pe gazda {3} în directorul {4}.", //operation, appName, serverName, hostName, userdirName
-    CLUSTER_STATUS : "Cluster-ul {0} este {1}.", //clusterName, clusterStatus
-    CLUSTER_UNAVAILABLE : "Cluster-ul {0} nu mai este disponibil.", //clusterName
+    CLUSTER_STATUS : "Clusterul {0} este {1}.", //clusterName, clusterStatus
+    CLUSTER_UNAVAILABLE : "Clusterul {0} nu mai este disponibil.", //clusterName
     STOP_FAILED_DURING_RESTART : "Oprirea nu s-a finalizat cu succes la repornire.  Eroarea a fost: {0}", //errMsg
     ERROR_CLUSTER_OPERATION : "A apărut o eroare la încercarea {0} cluster {1}.", //operation, clusterName
     SERVER_NONEXISTANT : "Serverul {0} nu există.", // serverName
@@ -37,4 +37,3 @@ define({
     STANDALONE_STOP_FAILED : 'Operaţia de oprire a serverului nu s-a finalizat cu succes. Verificaţi istoricele serverului pentru detalii.',
     STANDALONE_STOP_SUCCESS : 'Serverul s-a oprit cu succes.',
 });
-

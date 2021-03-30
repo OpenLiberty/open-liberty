@@ -39,7 +39,7 @@ define({
 
     INSTANCE : "인스턴스",
     INSTANCES : "인스턴스",
-    APPLICATION : "응용프로그램",
+    APPLICATION : "애플리케이션",
     APPLICATIONS : "애플리케이션",
     SERVER : "서버",
     SERVERS : "서버",
@@ -442,7 +442,7 @@ define({
     INSERT_STOPPED_ON_INSERT : "실행 중인 {1}에서 {0}개가 중지됨", // NUMBER_APPS, SERVERS_INSERT
 
     APPSERVER_STOPPED_ON_SERVER : "{0}이(가) 실행 중인 서버 {1}에서 중지됨", //appName, serverName
-    APPCLUSTER_STOPPED_ON_SERVER : "클러스터 {1}의 {0}이(가) 실행 중인 서버 {2}에서 중지됨 ",  //appName, clusterName, serverName(s)
+    APPCLUSTER_STOPPED_ON_SERVER : "클러스터 {1}의 {0}이(가) 실행 중인 서버 {2}에서 중지됨",  //appName, clusterName, serverName(s)
 
     INSTANCES_STOPPED_ON_SERVERS : "실행 중인 서버에서 {0}개 애플리케이션 인스턴스가 중지됨", // quantity
     INSTANCE_STOPPED_ON_SERVERS : "{0}: 애플리케이션 인스턴스가 실행 중이 아님", // serverNames
@@ -539,7 +539,7 @@ define({
     GRAPH_SERVER_NOT_STARTED: "이 서버가 중지되었기 때문에 이 서버에 대한 현재 통계를 사용할 수 없습니다. 해당 서버를 시작하여 모니터링을 시작하십시오.",
     GRAPH_SERVER_HOSTING_APP_NOT_STARTED: "연관된 서버가 중지되었기 때문에 이 애플리케이션에 대한 현재 통계를 사용할 수 없습니다. 해당 서버를 시작하여 이 애플리케이션 모니터링을 시작하십시오.",
     GRAPH_FEATURES_NOT_CONFIGURED: "아직 항목이 없습니다! 편집 아이콘을 선택한 후 메트릭을 추가하여 이 자원을 모니터하십시오.",
-    NO_GRAPHS_AVAILABLE: "추가할 수 있는 메트릭이 없습니다. 추가 모니터링 기능을 설치하여 더 많은 메트릭을 사용할 수 있게 하십시오. ",
+    NO_GRAPHS_AVAILABLE: "추가할 수 있는 메트릭이 없습니다. 추가 모니터링 기능을 설치하여 더 많은 메트릭을 사용할 수 있게 하십시오.",
     NO_APPS_GRAPHS_AVAILABLE: "추가할 수 있는 메트릭이 없습니다. 추가 모니터링 기능을 설치하여 더 많은 메트릭을 사용할 수 있게 하십시오. 애플리케이션이 사용 중인지도 확인하십시오.",
     GRAPH_CONFIG_NOT_SAVED_TITLE : "저장되지 않은 변경사항",
     GRAPH_CONFIG_NOT_SAVED_DESCR : "저장되지 않은 변경사항이 있습니다. 다른 페이지로 이동하면 해당 변경사항이 유실됩니다.",
