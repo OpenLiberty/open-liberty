@@ -52,6 +52,7 @@ import org.xml.sax.SAXException;
  * Instances of the inbound and outbound security streams can be retrieved
  * with this class.
  */
+//No Liberty code change
 public class WSSec {
 
     //todo outgoing client setup per policy

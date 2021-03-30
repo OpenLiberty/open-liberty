@@ -37,7 +37,7 @@ import org.apache.wss4j.policy.model.SymmetricBinding;
  * Validate a SymmetricBinding policy.
  */
 public class SymmetricBindingPolicyValidator extends AbstractBindingPolicyValidator {
-    private static final Logger LOG = LogUtils.getL7dLogger(SymmetricBindingPolicyValidator.class);
+    private static final Logger LOG = LogUtils.getL7dLogger(SymmetricBindingPolicyValidator.class); //Liberty code change, for debug only
     /**
      * Return true if this SecurityPolicyValidator implementation is capable of validating a
      * policy defined by the AssertionInfo parameter

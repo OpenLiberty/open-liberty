@@ -40,6 +40,7 @@ import org.opensaml.saml.common.SAMLVersion;
  * checks that the Subject contains a KeyInfo (and processes it) for the holder-of-key case,
  * and verifies that the Assertion is signed as well for holder-of-key.
  */
+//No Liberty code change
 public class SamlAssertionValidator extends SignatureTrustValidator {
 
     private static final org.slf4j.Logger LOG =

@@ -82,7 +82,9 @@ import org.apache.xml.security.utils.XMLUtils;
  *
  */
 public class UsernameTokenInterceptor extends AbstractTokenInterceptor {
+    //Liberty code change start, for debug only
     private static final Logger LOG = LogUtils.getL7dLogger(UsernameTokenInterceptor.class);
+    //Liberty code change end
     public UsernameTokenInterceptor() {
         super();
     }

@@ -90,6 +90,7 @@ import org.apache.wss4j.policy.model.X509Token;
 /**
  *
  */
+//No Liberty Change, but needed to recompile due to Liberty change in MessageImpl.
 public class TransportBindingHandler extends AbstractBindingBuilder {
     TransportBinding tbinding;
 

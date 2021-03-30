@@ -24,6 +24,3 @@ Export-Package: \
 Import-Package: \
  *
  
-Include-Resource: \
- @${repo;org.apache.wss4j:wss4j-ws-security-stax;2.3.0}!/!META-INF/MANIFEST.MF|META-INF/maven/*
-

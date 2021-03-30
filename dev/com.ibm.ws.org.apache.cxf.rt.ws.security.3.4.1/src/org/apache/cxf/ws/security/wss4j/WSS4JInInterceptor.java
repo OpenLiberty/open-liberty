@@ -239,13 +239,14 @@ public class WSS4JInInterceptor extends AbstractWSS4JInterceptor {
             config = engine.getWssConfig();
         }
         reqData.setWssConfig(config);
-
+        //Liberty code change start, for debug only
         boolean doDebug = LOG.isLoggable(Level.FINE);
-        // Add Audience Restrictions for SAML
+        
         if (doDebug) {
             LOG.fine("WSS4JInInterceptor: saml audience restriction validation = " + SecurityUtils.getSecurityPropertyBoolean(SecurityConstants.AUDIENCE_RESTRICTION_VALIDATION,                                                                                                                msg, true));
         }
-        
+        //Liberty code change end
+        // Add Audience Restrictions for SAML
         reqData.setAudienceRestrictions(SAMLUtils.getAudienceRestrictions(msg, true));
 
         SOAPMessage doc = getSOAPMessage(msg);

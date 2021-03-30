@@ -63,6 +63,7 @@ import org.apache.wss4j.policy.model.X509Token;
 /**
  * Some common functionality to be shared between the two binding handlers (DOM + StAX)
  */
+//No Liberty Change, but needed to recompile due to Liberty change in MessageImpl.
 public abstract class AbstractCommonBindingHandler {
     private static final Logger LOG = LogUtils.getL7dLogger(AbstractCommonBindingHandler.class);
     protected final SoapMessage message;

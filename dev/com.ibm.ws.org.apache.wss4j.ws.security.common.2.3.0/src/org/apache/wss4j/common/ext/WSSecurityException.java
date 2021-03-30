@@ -26,6 +26,7 @@ import javax.xml.namespace.QName;
 /**
  * Exception class for WS-Security.
  */
+//No Liberty code change
 public class WSSecurityException extends XMLSecurityException {
 
     private static final long serialVersionUID = 4703352039717763655L;
