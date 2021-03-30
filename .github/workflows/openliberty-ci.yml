@@ -25,10 +25,13 @@ jobs:
   validate: #Perform validation before any other jobs run.  If we fail validation, don't run anything else.
     name: Validation
     runs-on: ubuntu-18.04
-    # Do not run on draft PRs
     if: |
       github.event_name == 'pull_request' &&
-      (github.event.pull_request.draft == false && github.event.pull_request.state != 'closed')
+      (
+        github.event.pull_request.draft == false && 
+        github.event.pull_request.state != 'closed' && 
+        contains(github.event.pull_request.labels.*.name, 'GitHub Build')
+      )
     steps:
     - uses: actions/checkout@v2
       with:
@@ -48,10 +51,13 @@ jobs:
       test-os: ${{ steps.gen-params.outputs.test-os }}
       test-java: ${{ steps.gen-params.outputs.test-java }}
       modified-categories: ${{ steps.gen-params.outputs.modified-categories }}
-    # Do not run on draft PRs
     if: |
       github.event_name == 'pull_request' &&
-      (github.event.pull_request.draft == false && github.event.pull_request.state != 'closed')
+      (
+        github.event.pull_request.draft == false && 
+        github.event.pull_request.state != 'closed' && 
+        contains(github.event.pull_request.labels.*.name, 'GitHub Build')
+      )
     steps:
     - uses: actions/checkout@v2
       with:
@@ -117,10 +123,13 @@ jobs:
     needs: validate
     runs-on: ubuntu-18.04
     timeout-minutes: 60
-    # Do not run on draft PRs
     if: |
       github.event_name == 'pull_request' &&
-      (github.event.pull_request.draft == false && github.event.pull_request.state != 'closed')
+      (
+        github.event.pull_request.draft == false && 
+        github.event.pull_request.state != 'closed' && 
+        contains(github.event.pull_request.labels.*.name, 'GitHub Build')
+      )
     steps:
     - uses: actions/checkout@v2
       with:
@@ -180,10 +189,13 @@ jobs:
     name: FAT Tests - ${{matrix.category}}
     needs: [validate, build]
     runs-on: ${{ needs.build.outputs.test-os }}
-    # Do not run on draft PRs
     if: |
       github.event_name == 'pull_request' &&
-      (github.event.pull_request.draft == false && github.event.pull_request.state != 'closed')
+      (
+        github.event.pull_request.draft == false && 
+        github.event.pull_request.state != 'closed' && 
+        contains(github.event.pull_request.labels.*.name, 'GitHub Build')
+      )
     strategy:
       fail-fast: false
       max-parallel: 19
