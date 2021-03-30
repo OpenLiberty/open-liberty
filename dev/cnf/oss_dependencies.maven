@@ -84,6 +84,14 @@ httpunit:httpunit:1.5.4
 httpunit:httpunit:1.6.2
 httpunit:httpunit:1.7
 io.dropwizard.metrics:metrics-core:4.1.5
+io.grpc:grpc-api:1.36.1
+io.grpc:grpc-census:1.36.1
+io.grpc:grpc-context:1.36.1
+io.grpc:grpc-core:1.36.1
+io.grpc:grpc-netty:1.36.1
+io.grpc:grpc-protobuf-lite:1.36.1
+io.grpc:grpc-protobuf:1.36.1
+io.grpc:grpc-stub:1.36.1
 io.jaegertracing:jaeger-client:0.34.0
 io.jaegertracing:jaeger-client:1.2.0
 io.jaegertracing:jaeger-core:1.2.0
