@@ -453,7 +453,7 @@ public class LdapConnection {
                 iContextManager.addFailoverServer((String) server.get(CONFIG_PROP_HOST), (Integer) server.get(CONFIG_PROP_PORT));
             }
         }
-        iContextManager.setWriteToSecondary(Boolean.getBoolean((String) configProps.get(CONFIG_PROP_ALLOW_WRITE_TO_SECONDARY_SERVERS)));
+        iContextManager.setWriteToSecondary((Boolean) configProps.get(CONFIG_PROP_ALLOW_WRITE_TO_SECONDARY_SERVERS));
         iContextManager.setReturnToPrimary((Boolean) configProps.get(CONFIG_PROP_RETURN_TO_PRIMARY_SERVER));
         iContextManager.setQueryInterval((Integer) configProps.get(CONFIG_PROP_PRIMARY_SERVER_QUERY_TIME_INTERVAL) * 60);
 
@@ -2276,7 +2276,7 @@ public class LdapConnection {
      */
     public void modifyAttributes(String name, ModificationItem[] mods) throws NamingException, WIMException {
         TimedDirContext ctx = iContextManager.getDirContext();
-        // checkWritePermission(ctx); TODO Why are we not checking for permission here?
+        iContextManager.checkWritePermission(ctx);
         try {
             try {
                 ctx.modifyAttributes(new LdapName(name), mods);

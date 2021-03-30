@@ -729,9 +729,9 @@ public class ContextManager {
      * @throws EntityNotFoundException If part of the name cannot be found to destroy the entity.
      * @throws WIMSystemException If any other {@link NamingException} occurs or the context cannot be released.
      */
-    public void destroySubcontext(String name) throws EntityHasDescendantsException, EntityNotFoundException, WIMSystemException {
+    public void destroySubcontext(String name) throws OperationNotSupportedException, EntityHasDescendantsException, EntityNotFoundException, WIMSystemException {
         TimedDirContext ctx = getDirContext();
-        // checkWritePermission(ctx); // TODO Why are we not checking permissions here?
+        checkWritePermission(ctx);
         try {
             try {
                 ctx.destroySubcontext(new LdapName(name));
