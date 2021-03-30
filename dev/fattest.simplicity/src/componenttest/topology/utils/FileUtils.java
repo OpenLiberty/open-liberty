@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2020 IBM Corporation and others.
+ * Copyright (c) 2011, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,76 +12,96 @@ package componenttest.topology.utils;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.nio.channels.FileChannel;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
+
+import com.ibm.websphere.simplicity.log.Log;
 
 /**
  * Utilities for working with files
  */
 public class FileUtils {
+    private static final Class<?> c = FileUtils.class;
+
+    private static final boolean enableLogging = false; // Enable for debug. This can be verbose.
 
     /**
-     * Recursively deletes files within the supplied directory and then deletes the directory itself.
+     * Recursively deletes the supplied file or the files within the supplied directory and
+     * then deletes the directory itself.
      *
-     * @param dir The directory to delete
+     * @param file The file or directory to delete
      */
-    public static void recursiveDelete(File dir) {
-        if (dir.exists()) {
-            for (File f : dir.listFiles()) {
-                if (f.isDirectory()) {
-                    recursiveDelete(f);
-                } else {
-                    f.delete();
+    public static void recursiveDelete(File file) {
+        final String methodName = "recursiveDelete(File)";
+
+        if (file.exists()) {
+            if (enableLogging) {
+                Log.info(c, methodName, "Deleting " + file);
+            }
+            if (file.isDirectory()) {
+                for (File child : file.listFiles()) {
+                    if (child.isDirectory()) {
+                        recursiveDelete(child);
+                    } else {
+                        child.delete();
+                    }
                 }
             }
-            dir.delete();
+            file.delete();
         }
     }
 
     /**
-     * Copies the contents of a source file into a destination file
+     * Copies the contents of a source file into the destination file. All parent directories
+     * for the destination file will be created.
      *
-     * @param  sourceFile
-     * @param  destFile
-     * @throws IOException
+     * @param  sourceFile  The file to copy.
+     * @param  destFile    The file to copy to.
+     * @throws IOException If an I/O error occurs copying the file.
      */
     public static void copyFile(File sourceFile, File destFile) throws IOException {
-        // Creates the destination file if it doesn't exists
-        if (!destFile.exists()) {
-            destFile.createNewFile();
+        final String methodName = "copyFile(File,File)";
+
+        if (enableLogging) {
+            Log.info(c, methodName, "Copying " + sourceFile + " to " + destFile);
         }
 
-        FileChannel source = null;
-        FileChannel destination = null;
-
-        try {
-            source = new FileInputStream(sourceFile).getChannel();
-            destination = new FileOutputStream(destFile).getChannel();
-            destination.transferFrom(source, 0, source.size());
-        } finally {
-            if (source != null) {
-                try {
-                    source.close();
-                } catch (IOException e) {
-                }
+        /*
+         * Create parent directories if necessary.
+         */
+        File parentFile = destFile.getParentFile();
+        if (parentFile != null && !parentFile.exists()) {
+            if (enableLogging) {
+                Log.info(c, methodName, "Creating parent directory " + parentFile);
             }
-            if (destination != null) {
-                try {
-                    destination.close();
-                } catch (IOException e) {
-                }
-            }
+            Files.createDirectories(parentFile.toPath());
         }
+
+        Files.copy(sourceFile.toPath(), destFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
     }
 
+    /**
+     * Copy the source directory and its contents to the target directory.
+     *
+     * @param  source      The directory to make a copy of.
+     * @param  target      The directory to copy to.
+     * @throws IOException If an I/O error occurs copying the directory.
+     */
     public static void copyDirectory(File source, File target) throws IOException {
+        final String methodName = "copyDirectory(File,File)";
+
         if (source.isDirectory()) {
             if (!target.exists()) {
-                target.mkdir();
+                if (enableLogging) {
+                    Log.info(c, methodName, "Creating directory " + target);
+                }
+                Files.createDirectories(target.toPath());
+            }
+            if (enableLogging) {
+                Log.info(c, methodName, "Copying directory " + source + " to " + target);
             }
 
             String[] children = source.list();
@@ -94,6 +114,13 @@ public class FileUtils {
         }
     }
 
+    /**
+     * Read the File specified by the input path to a String.
+     *
+     * @param  file        The file to read.
+     * @return             The file contents as a String.
+     * @throws IOException If an I/O error occurs reading the file.
+     */
     public static String readFile(String file) throws IOException {
         File f = new File(file);
         if (!f.exists() || f.isDirectory())
@@ -110,5 +137,4 @@ public class FileUtils {
         }
         return sb.toString();
     }
-
 }
