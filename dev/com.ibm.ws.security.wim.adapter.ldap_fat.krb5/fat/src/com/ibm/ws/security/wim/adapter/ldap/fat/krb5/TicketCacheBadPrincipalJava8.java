@@ -12,6 +12,7 @@ package com.ibm.ws.security.wim.adapter.ldap.fat.krb5;
 
 import static componenttest.topology.utils.LDAPFatUtils.updateConfigDynamically;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -40,7 +41,7 @@ public class TicketCacheBadPrincipalJava8 extends CommonBindTest {
 
     @BeforeClass
     public static void setStopMessages() {
-        stopStrings = new String[] { "CWIML4507E", "CWWKS4347E" };
+        stopStrings = new String[] { "CWIML4507E", "CWWKS4347E", "CWIML4512E" };
     }
 
     /**
@@ -64,8 +65,14 @@ public class TicketCacheBadPrincipalJava8 extends CommonBindTest {
         loginUserShouldFail();
 
         assertFalse("Expected to find Kerberos bind failure: CWIML4507E", server.findStringsInLogsAndTraceUsingMark("CWIML4507E").isEmpty());
-        // Message added to avoid an NPE when running on Java 8
-        assertFalse("Expected to find Kerberos bind failure: CWWKS4347E", server.findStringsInLogsAndTraceUsingMark("CWWKS4347E").isEmpty());
+        /*
+         * The same base exception is not always thrown, two options here, either confirms that we tried to use an
+         * invalid principal name.
+         */
+        boolean foundBadPrincipalName = !server.findStringsInLogsAndTraceUsingMark("CWIML4512E").isEmpty();
+        boolean foundKerberosLevelError = !server.findStringsInLogsAndTraceUsingMark("CWWKS4347E").isEmpty();
+        assertTrue("Expected to find Kerberos bind failure: Either `CWIML4512E` or `CWWKS4347E`", foundBadPrincipalName || foundKerberosLevelError);
+
     }
 
 }
