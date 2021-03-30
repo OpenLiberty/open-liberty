@@ -340,8 +340,8 @@
         
         <!--com.ibm.ws.webcontainer.-->
         <AD id="setHtmlContentTypeOnError"
-            name="%setHtmlContentTypeOnError.name"
-            description="%setHtmlContentTypeOnError.desc"
+            name="internal"
+            description="internal"
             required="false" type="Boolean" default="true" />
 
         <AD name="internal" description="internal use only"
