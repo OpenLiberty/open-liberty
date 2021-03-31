@@ -27,6 +27,10 @@ fat.project: true
 tested.features: \
   enterprisebeanslite-4.0,\
   servlet-5.0, \
+  expressionLanguage-4.0, \
+  pages-3.0, \
+  appSecurity-4.0, \
+  cdi-3.0, \
   xmlBinding-3.0, \
   xmlWS-3.0
 

@@ -19,7 +19,7 @@ src: \
 
 fat.project: true
 
-#tested.features: expressionLanguage-4.0, appsecurity-4.0, servlet-5.0, cdi-3.0, pages-3.0, xmlBinding-3.0, appAuthentication-2.0, appAuthorization-2.0
+tested.features: expressionLanguage-4.0, appsecurity-4.0, servlet-5.0, cdi-3.0
 
 -buildpath: \
   com.ibm.websphere.javaee.servlet.3.1;version=latest,\

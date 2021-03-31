@@ -16,7 +16,8 @@ src: \
 
 fat.project: true
 
-tested.features: jdbc-4.1, restfulwsclient-3.0, restfulws-3.0, jsonp-2.0
+tested.features: jdbc-4.1, restfulwsclient-3.0, restfulws-3.0, jsonp-2.0, \
+    expressionlanguage-4.0, pages-3.0, appsecurity-4.0
 
 -buildpath: \
 	fattest.simplicity;version=latest,\
