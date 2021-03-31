@@ -133,7 +133,6 @@ public class ComplexClientTest extends AbstractTest {
     }
 
     @Test
-    //@SkipForRepeat("EE9_FEATURES") // Continue to skip this test for EE9 as RestEasy does not allow a null for a Client Property value    
     public void complexTestNew2MixFilter() throws Exception {
         this.runTestOnServer(target, "testNew2MixFilter", null, "222,{filter1=GET},223,{filter2=null}", // CXF
                              "222,{filter1=GET},223,{filter2=*/*}"); //RESTEasy - defaults to "*/*" if no Accept header set by client
