@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2020 IBM Corporation and others.
+ * Copyright (c) 2013, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,30 +10,31 @@
  *******************************************************************************/
 package io.openliberty.wsoc.tests;
 
-import java.util.Set;
+import java.io.File;
 import java.util.logging.Logger;
 
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.ws.fat.util.LoggingTest;
-import com.ibm.ws.fat.util.SharedServer;
+import com.ibm.ws.fat.util.browser.WebBrowser;
+import com.ibm.ws.fat.util.browser.WebBrowserFactory;
 import com.ibm.ws.fat.util.browser.WebResponse;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
+import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.HttpUtils;
 import io.openliberty.wsoc.tests.all.AnnotatedTest;
 import io.openliberty.wsoc.tests.all.BinaryEncodeDecodeTest;
 import io.openliberty.wsoc.tests.all.ConfiguratorTest;
@@ -60,61 +61,31 @@ import io.openliberty.wsoc.util.wsoc.WsocTest;
  * @author unknown
  */
 @RunWith(FATRunner.class)
-public class BasicTest extends LoggingTest {
+public class BasicTest {
+    public static final String SERVER_NAME = "basicTestServer";
+    @Server(SERVER_NAME)
 
-    @ClassRule
-    public static SharedServer SS = new SharedServer("basicTestServer", false);
+    public static LibertyServer LS;
 
-    private static WebServerSetup bwst = new WebServerSetup(SS);
+    private static WebServerSetup bwst = null;
 
     @Rule
     public final TestRule notOnZRule = new OnlyRunNotOnZRule();
 
-    private final WsocTest wt = new WsocTest(SS, false);
-
-    private final AnnotatedTest at = new AnnotatedTest(wt);
-
-    private final ProgrammaticTest pt = new ProgrammaticTest(wt);
-
-    private final MultiClientTest mct = new MultiClientTest(wt);
-
-    private final OnErrorTest oet = new OnErrorTest(wt);
-
-    private final PathParamTest ppt = new PathParamTest(wt);
-
-    private final ConfiguratorTest ct = new ConfiguratorTest(wt);
-
-    private final BinaryEncodeDecodeTest bedt = new BinaryEncodeDecodeTest(wt);
-
-    private final HeaderTest ht = new HeaderTest(wt, SS, getTestCaseLogDirectory());
+    private static WsocTest wt = null;
+    private static AnnotatedTest at = null;
+    private static ProgrammaticTest pt = null;
+    private static MultiClientTest mct = null;
+    private static OnErrorTest oet = null;
+    private static PathParamTest ppt = null;
+    private static ConfiguratorTest ct = null;
+    private static BinaryEncodeDecodeTest bedt = null;
+    private static HeaderTest ht = null;
 
     private static final Logger LOG = Logger.getLogger(BasicTest.class.getName());
 
     private static final String BASIC_JAR_NAME = "basic";
     private static final String BASIC_WAR_NAME = "basic";
-
-    protected WebResponse runAsSSCAndVerifyResponse(String className, String testName) throws Exception {
-        int securePort = 0, port = 0;
-        String host = "";
-        LibertyServer server = SS.getLibertyServer();
-        if (WebServerControl.isWebserverInFront()) {
-            try {
-                host = WebServerControl.getHostname();
-                securePort = WebServerControl.getSecurePort();
-                port = Integer.valueOf(WebServerControl.getPort()).intValue();
-            } catch (Exception e) {
-                throw new RuntimeException("Failed to get ports or host from webserver", e);
-            }
-        } else {
-            securePort = server.getHttpDefaultSecurePort();
-            host = server.getHostname();
-            port = server.getHttpDefaultPort();
-        }
-        return SS.verifyResponse(createWebBrowserForTestCase(),
-                                 "/basic/SingleRequest?classname=" + className + "&testname=" + testName + "&targethost=" + host + "&targetport=" + port
-                                                                + "&secureport=" + securePort,
-                                 "SuccessfulTest");
-    }
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -132,17 +103,23 @@ public class BasicTest extends LoggingTest {
                                                            "io.openliberty.wsoc.util.wsoc",
                                                            "io.openliberty.wsoc.tests.all",
                                                            "io.openliberty.wsoc.endpoints.client.basic");
+
         BasicApp = (WebArchive) ShrinkHelper.addDirectory(BasicApp, "test-applications/" + BASIC_WAR_NAME + ".war/resources");
         BasicApp = BasicApp.addAsLibraries(BasicJar);
-        // Verify if the apps are in the server before trying to deploy them
-        if (SS.getLibertyServer().isStarted()) {
-            Set<String> appInstalled = SS.getLibertyServer().getInstalledAppNames(BASIC_WAR_NAME);
-            LOG.info("addAppToServer : " + BASIC_WAR_NAME + " already installed : " + !appInstalled.isEmpty());
-            if (appInstalled.isEmpty())
-                ShrinkHelper.exportDropinAppToServer(SS.getLibertyServer(), BasicApp);
-        }
-        SS.startIfNotStarted();
-        SS.getLibertyServer().waitForStringInLog("CWWKZ0001I.* " + BASIC_WAR_NAME);
+        ShrinkHelper.exportDropinAppToServer(LS, BasicApp);
+
+        LS.startServer();
+        LS.waitForStringInLog("CWWKZ0001I.* " + BASIC_WAR_NAME);
+        bwst = new WebServerSetup(LS);
+        wt = new WsocTest(LS, false);
+        at = new AnnotatedTest(wt);
+        pt = new ProgrammaticTest(wt);
+        mct = new MultiClientTest(wt);
+        oet = new OnErrorTest(wt);
+        ppt = new PathParamTest(wt);
+        ct = new ConfiguratorTest(wt);
+        bedt = new BinaryEncodeDecodeTest(wt);
+        ht = new HeaderTest(wt, LS, (java.io.File) null);
         bwst.setUp();
     }
 
@@ -156,10 +133,58 @@ public class BasicTest extends LoggingTest {
 
         }
 
-        if (SS.getLibertyServer() != null && SS.getLibertyServer().isStarted()) {
-            SS.getLibertyServer().stopServer("CWWKH0023E", "CWWKH0020E", "CWWKH0039E", "CWWKH0040E", "SRVE8115W", "SRVE0190E");
+        if (LS != null && LS.isStarted()) {
+            LS.stopServer("CWWKH0023E", "CWWKH0020E", "CWWKH0039E", "CWWKH0040E", "SRVE8115W", "SRVE0190E");
         }
         bwst.tearDown();
+    }
+
+    protected WebResponse runAsLSAndVerifyResponse(String className, String testName) throws Exception {
+        int securePort = 0, port = 0;
+        String host = "";
+        LibertyServer server = LS;
+        if (WebServerControl.isWebserverInFront()) {
+            try {
+                host = WebServerControl.getHostname();
+                securePort = WebServerControl.getSecurePort();
+                port = Integer.valueOf(WebServerControl.getPort()).intValue();
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to get ports or host from webserver", e);
+            }
+        } else {
+            securePort = server.getHttpDefaultSecurePort();
+            host = server.getHostname();
+            port = server.getHttpDefaultPort();
+        }
+        WebBrowser browser = WebBrowserFactory.getInstance().createWebBrowser((File) null);
+        String[] expectedInResponse = {
+                                        "SuccessfulTest"
+        };
+        return verifyResponse(browser,
+                              "/basic/SingleRequest?classname=" + className + "&testname=" + testName + "&targethost=" + host + "&targetport=" + port
+                                       + "&secureport=" + securePort,
+                              expectedInResponse);
+    }
+
+    /**
+     * Submits an HTTP request at the path specified by <code>resource</code>,
+     * and verifies that the HTTP response body contains the all of the supplied text
+     * specified by the array of * <code>expectedResponses</code>
+     *
+     * @param webBrowser        the browser used to submit the request
+     * @param resource          the resource on the shared server to request
+     * @param expectedResponses an array of the different subsets of the text expected from the HTTP response
+     * @return the HTTP response (in case further validation is required)
+     * @throws Exception if the <code>expectedResponses</code> is not contained in the HTTP response body
+     */
+    public WebResponse verifyResponse(WebBrowser webBrowser, String resource, String[] expectedResponses) throws Exception {
+        WebResponse response = webBrowser.request(HttpUtils.createURL(LS, resource).toString());
+        LOG.info("Response from webBrowser: " + response.getResponseBody());
+        for (String textToFind : expectedResponses) {
+            response.verifyResponseBodyContains(textToFind);
+        }
+
+        return response;
     }
 
     //
@@ -177,7 +202,7 @@ public class BasicTest extends LoggingTest {
     @Mode(TestMode.FULL)
     @Test
     public void testSSCAnnotatedByteArraySuccess() throws Exception {
-        this.runAsSSCAndVerifyResponse("AnnotatedTest", "testAnnotatedByteArraySuccess");
+        this.runAsLSAndVerifyResponse("AnnotatedTest", "testAnnotatedByteArraySuccess");
     }
 
     // move these overlapping test up high in the file, to get the overlapping servlet to load and initialize early
@@ -187,7 +212,8 @@ public class BasicTest extends LoggingTest {
         String[] expectedInResponse = {
                                         "Simple Vanilla HTML to test overlapping URL mapping"
         };
-        this.verifyResponse("/basic/URIOverlapping.html", expectedInResponse);
+        WebBrowser browser = WebBrowserFactory.getInstance().createWebBrowser((File) null);
+        this.verifyResponse(browser, "/basic/URIOverlapping.html", expectedInResponse);
     }
 
     @Mode(TestMode.FULL)
@@ -196,7 +222,8 @@ public class BasicTest extends LoggingTest {
         String[] expectedInResponse = {
                                         "Hello World"
         };
-        this.verifyResponse("/basic/URIOverlapping", expectedInResponse);
+        WebBrowser browser = WebBrowserFactory.getInstance().createWebBrowser((File) null);
+        verifyResponse(browser, "/basic/URIOverlapping", expectedInResponse);
     }
 
     @Mode(TestMode.FULL)
@@ -214,7 +241,7 @@ public class BasicTest extends LoggingTest {
     @Mode(TestMode.FULL)
     @Test
     public void testSSCMaxSessionIdleTimeoutTCKStyle() throws Exception {
-        this.runAsSSCAndVerifyResponse("AnnotatedTest", "testMaxSessionIdleTimeoutTCKStyle");
+        this.runAsLSAndVerifyResponse("AnnotatedTest", "testMaxSessionIdleTimeoutTCKStyle");
     }
 
     @Mode(TestMode.FULL)
@@ -226,7 +253,7 @@ public class BasicTest extends LoggingTest {
     @Mode(TestMode.LITE)
     @Test
     public void testSSCAnnotatedReaderSuccess() throws Exception {
-        this.runAsSSCAndVerifyResponse("AnnotatedTest", "testAnnotatedReaderSuccess");
+        this.runAsLSAndVerifyResponse("AnnotatedTest", "testAnnotatedReaderSuccess");
     }
 
     @Mode(TestMode.LITE)
@@ -238,7 +265,7 @@ public class BasicTest extends LoggingTest {
     @Mode(TestMode.FULL)
     @Test
     public void testSSCAnnotatedTextSuccess() throws Exception {
-        this.runAsSSCAndVerifyResponse("AnnotatedTest", "testAnnotatedTextSuccess");
+        this.runAsLSAndVerifyResponse("AnnotatedTest", "testAnnotatedTextSuccess");
     }
 
     @Mode(TestMode.LITE)
@@ -250,7 +277,7 @@ public class BasicTest extends LoggingTest {
     @Mode(TestMode.FULL)
     @Test
     public void testSSCAsyncAnnotatedTextSuccess() throws Exception {
-        this.runAsSSCAndVerifyResponse("AnnotatedTest", "testAsyncAnnotatedTextSuccess");
+        this.runAsLSAndVerifyResponse("AnnotatedTest", "testAsyncAnnotatedTextSuccess");
     }
 
     @Mode(TestMode.FULL)
@@ -262,7 +289,7 @@ public class BasicTest extends LoggingTest {
     @Mode(TestMode.LITE)
     @Test
     public void testSSCFutureAnnotatedTextSuccess() throws Exception {
-        this.runAsSSCAndVerifyResponse("AnnotatedTest", "testFutureAnnotatedTextSuccess");
+        this.runAsLSAndVerifyResponse("AnnotatedTest", "testFutureAnnotatedTextSuccess");
     }
 
     @Mode(TestMode.FULL)
@@ -280,7 +307,7 @@ public class BasicTest extends LoggingTest {
     @Mode(TestMode.FULL)
     @Test
     public void testSSCFutureAnnotatedWithReturnByteSuccess() throws Exception {
-        this.runAsSSCAndVerifyResponse("AnnotatedTest", "testFutureAnnotatedWithReturnByteSuccess");
+        this.runAsLSAndVerifyResponse("AnnotatedTest", "testFutureAnnotatedWithReturnByteSuccess");
     }
 
     @Mode(TestMode.LITE)
@@ -292,7 +319,7 @@ public class BasicTest extends LoggingTest {
     @Mode(TestMode.FULL)
     @Test
     public void testSSCAnnotatedVoidOnMsgReturn() throws Exception {
-        this.runAsSSCAndVerifyResponse("AnnotatedTest", "testAnnotatedVoidOnMsgReturn");
+        this.runAsLSAndVerifyResponse("AnnotatedTest", "testAnnotatedVoidOnMsgReturn");
     }
 
     @Mode(TestMode.LITE)
@@ -304,7 +331,7 @@ public class BasicTest extends LoggingTest {
     @Mode(TestMode.FULL)
     @Test
     public void testSSCAnnotatedPingSuccess() throws Exception {
-        this.runAsSSCAndVerifyResponse("AnnotatedTest", "testAnnotatedPingSuccess");
+        this.runAsLSAndVerifyResponse("AnnotatedTest", "testAnnotatedPingSuccess");
     }
 
     @Mode(TestMode.FULL)
@@ -316,7 +343,7 @@ public class BasicTest extends LoggingTest {
     @Mode(TestMode.LITE)
     @Test
     public void testSSCAnnotatedPingPongSuccess() throws Exception {
-        this.runAsSSCAndVerifyResponse("AnnotatedTest", "testAnnotatedPingPongSuccess");
+        this.runAsLSAndVerifyResponse("AnnotatedTest", "testAnnotatedPingPongSuccess");
     }
 
     @Mode(TestMode.LITE)
@@ -328,7 +355,7 @@ public class BasicTest extends LoggingTest {
     @Mode(TestMode.FULL)
     @Test
     public void testSSCAnnotatedTextMessageSuccess() throws Exception {
-        this.runAsSSCAndVerifyResponse("AnnotatedTest", "testAnnotatedTextMessageSuccess");
+        this.runAsLSAndVerifyResponse("AnnotatedTest", "testAnnotatedTextMessageSuccess");
     }
 
     /**
@@ -344,7 +371,7 @@ public class BasicTest extends LoggingTest {
     @Mode(TestMode.FULL)
     @Test
     public void testSSCConfiguratorGetEndpointInstance() throws Exception {
-        this.runAsSSCAndVerifyResponse("AnnotatedTest", "testConfiguratorGetEndpointInstance");
+        this.runAsLSAndVerifyResponse("AnnotatedTest", "testConfiguratorGetEndpointInstance");
     }
 
     /**
@@ -360,7 +387,7 @@ public class BasicTest extends LoggingTest {
     @Mode(TestMode.FULL)
     @Test
     public void testSSCConfiguratorGetEndpointInstanceShared() throws Exception {
-        this.runAsSSCAndVerifyResponse("AnnotatedTest", "testConfiguratorGetEndpointInstanceShared");
+        this.runAsLSAndVerifyResponse("AnnotatedTest", "testConfiguratorGetEndpointInstanceShared");
     }
 
     @Mode(TestMode.LITE)
@@ -372,7 +399,7 @@ public class BasicTest extends LoggingTest {
     @Mode(TestMode.FULL)
     @Test
     public void testSSCDoubleTypeMessage() throws Exception {
-        this.runAsSSCAndVerifyResponse("AnnotatedTest", "testDoubleTypeMessage");
+        this.runAsLSAndVerifyResponse("AnnotatedTest", "testDoubleTypeMessage");
     }
 
     @Mode(TestMode.FULL)
@@ -384,7 +411,7 @@ public class BasicTest extends LoggingTest {
     @Mode(TestMode.FULL)
     @Test
     public void testSSCFloatTypeMessage() throws Exception {
-        this.runAsSSCAndVerifyResponse("AnnotatedTest", "testFloatTypeMessage");
+        this.runAsLSAndVerifyResponse("AnnotatedTest", "testFloatTypeMessage");
     }
 
     @Mode(TestMode.FULL)
@@ -396,7 +423,7 @@ public class BasicTest extends LoggingTest {
     @Mode(TestMode.FULL)
     @Test
     public void testSSCLongTypeMessage() throws Exception {
-        this.runAsSSCAndVerifyResponse("AnnotatedTest", "testLongTypeMessage");
+        this.runAsLSAndVerifyResponse("AnnotatedTest", "testLongTypeMessage");
     }
 
     @Mode(TestMode.FULL)
@@ -408,7 +435,7 @@ public class BasicTest extends LoggingTest {
     @Mode(TestMode.FULL)
     @Test
     public void testSSCIntegerTypeMessage() throws Exception {
-        this.runAsSSCAndVerifyResponse("AnnotatedTest", "testIntegerTypeMessage");
+        this.runAsLSAndVerifyResponse("AnnotatedTest", "testIntegerTypeMessage");
     }
 
     @Mode(TestMode.FULL)
@@ -420,7 +447,7 @@ public class BasicTest extends LoggingTest {
     @Mode(TestMode.FULL)
     @Test
     public void testSSCShortTypeMessage() throws Exception {
-        this.runAsSSCAndVerifyResponse("AnnotatedTest", "testShortTypeMessage");
+        this.runAsLSAndVerifyResponse("AnnotatedTest", "testShortTypeMessage");
     }
 
     @Mode(TestMode.LITE)
@@ -432,7 +459,7 @@ public class BasicTest extends LoggingTest {
     @Mode(TestMode.FULL)
     @Test
     public void testSSCPrimitiveShortTypeMessage() throws Exception {
-        this.runAsSSCAndVerifyResponse("AnnotatedTest", "testPrimitiveShortTypeMessage");
+        this.runAsLSAndVerifyResponse("AnnotatedTest", "testPrimitiveShortTypeMessage");
     }
 
     @Mode(TestMode.LITE)
@@ -444,7 +471,7 @@ public class BasicTest extends LoggingTest {
     @Mode(TestMode.FULL)
     @Test
     public void testSSCBooleanTypeMessage() throws Exception {
-        this.runAsSSCAndVerifyResponse("AnnotatedTest", "testBooleanTypeMessage");
+        this.runAsLSAndVerifyResponse("AnnotatedTest", "testBooleanTypeMessage");
     }
 
     /**
@@ -457,7 +484,7 @@ public class BasicTest extends LoggingTest {
     @Mode(TestMode.FULL)
     @Test
     public void testSSCCustomStateConfigurator() throws Exception {
-        this.runAsSSCAndVerifyResponse("AnnotatedTest", "testCustomStateConfigurator");
+        this.runAsLSAndVerifyResponse("AnnotatedTest", "testCustomStateConfigurator");
     }
 
     /**
@@ -472,7 +499,7 @@ public class BasicTest extends LoggingTest {
     @Mode(TestMode.FULL)
     @Test
     public void testSSCWillDecode() throws Exception {
-        this.runAsSSCAndVerifyResponse("AnnotatedTest", "testWillDecode");
+        this.runAsLSAndVerifyResponse("AnnotatedTest", "testWillDecode");
     }
 
     //    Jetty fails on this one -  cannot handle close reason of more than 107 bytes - at least I think it is jetty.
@@ -487,7 +514,7 @@ public class BasicTest extends LoggingTest {
     @Test
     @ExpectedFFDC({ "com.ibm.ws.wsoc.MaxMessageException" })
     public void testSSCMaxMessageSize() throws Exception {
-        this.runAsSSCAndVerifyResponse("AnnotatedTest", "testMaxMessageSize");
+        this.runAsLSAndVerifyResponse("AnnotatedTest", "testMaxMessageSize");
     }
 
     //  Jetty fails on this one -  cannot handle close reason of more than 107 bytes - at least I think it is jetty.
@@ -502,14 +529,14 @@ public class BasicTest extends LoggingTest {
     @Test
     @ExpectedFFDC({ "com.ibm.ws.wsoc.MaxMessageException" })
     public void testSSCProgrammaticMaxMessageSize() throws Exception {
-        this.runAsSSCAndVerifyResponse("AnnotatedTest", "testProgrammaticMaxMessageSize");
+        this.runAsLSAndVerifyResponse("AnnotatedTest", "testProgrammaticMaxMessageSize");
     }
 
     @Mode(TestMode.FULL)
     @Test
     @ExpectedFFDC({ "com.ibm.ws.wsoc.MaxMessageException" })
     public void testSSCMaxTextMessageSize() throws Exception {
-        this.runAsSSCAndVerifyResponse("AnnotatedTest", "testMaxTextMessageSize");
+        this.runAsLSAndVerifyResponse("AnnotatedTest", "testMaxTextMessageSize");
     }
 
     //Tests defaults in @ServerEndpoint
@@ -522,7 +549,7 @@ public class BasicTest extends LoggingTest {
     @Mode(TestMode.FULL)
     @Test
     public void testSSCDefaults() throws Exception {
-        this.runAsSSCAndVerifyResponse("AnnotatedTest", "testDefaults");
+        this.runAsLSAndVerifyResponse("AnnotatedTest", "testDefaults");
     }
 
     // for why this is commented - see comment #2 at the top of the file
@@ -534,7 +561,7 @@ public class BasicTest extends LoggingTest {
     // for why this is commented - see comment #2 at the top of the file
     //@Mode(TestMode.FULL)
     //public void testSSCAnnotatedPrimitiveByte() throws Exception {
-    //    this.runAsSSCAndVerifyResponse("AnnotatedTest", "testAnnotatedPrimitiveByte");
+    //    this.runAsLSAndVerifyResponse("AnnotatedTest", "testAnnotatedPrimitiveByte");
     //}
 
     @Mode(TestMode.LITE)
@@ -546,7 +573,7 @@ public class BasicTest extends LoggingTest {
     @Mode(TestMode.FULL)
     @Test
     public void testSSCbyteReturnTypeMessage() throws Exception {
-        this.runAsSSCAndVerifyResponse("AnnotatedTest", "testbyteReturnTypeMessage");
+        this.runAsLSAndVerifyResponse("AnnotatedTest", "testbyteReturnTypeMessage");
     }
 
     @Mode(TestMode.LITE)
@@ -558,13 +585,13 @@ public class BasicTest extends LoggingTest {
     @Mode(TestMode.FULL)
     @Test
     public void testSSCListenerAddAnnotatedEndpointTextSuccess() throws Exception {
-        this.runAsSSCAndVerifyResponse("AnnotatedTest", "testListenerAddAnnotatedEndpointTextSuccess");
+        this.runAsLSAndVerifyResponse("AnnotatedTest", "testListenerAddAnnotatedEndpointTextSuccess");
     }
 
     @Mode(TestMode.LITE)
     @Test
     public void testSSCConnectToClass() throws Exception {
-        this.runAsSSCAndVerifyResponse("AnnotatedTest", "testConnectToClass");
+        this.runAsLSAndVerifyResponse("AnnotatedTest", "testConnectToClass");
     }
 
     //
@@ -582,7 +609,7 @@ public class BasicTest extends LoggingTest {
     @Mode(TestMode.FULL)
     @Test
     public void testSSCProgrammaticTextSuccess() throws Exception {
-        this.runAsSSCAndVerifyResponse("ProgrammaticTest", "testProgrammaticTextSuccess");
+        this.runAsLSAndVerifyResponse("ProgrammaticTest", "testProgrammaticTextSuccess");
     }
 
     @Mode(TestMode.FULL)
@@ -595,7 +622,7 @@ public class BasicTest extends LoggingTest {
 //    @Mode(TestMode.LITE)
 //    @Test
 //    public void testSSCProgrammaticCloseSuccess() throws Exception {
-//        this.runAsSSCAndVerifyResponse("ProgrammaticTest", "testProgrammaticCloseSuccess");
+//        this.runAsLSAndVerifyResponse("ProgrammaticTest", "testProgrammaticCloseSuccess");
 //    }
 
     @Mode(TestMode.FULL)
@@ -607,7 +634,7 @@ public class BasicTest extends LoggingTest {
     @Mode(TestMode.FULL)
     @Test
     public void testSSCProgrammaticReaderSuccess() throws Exception {
-        this.runAsSSCAndVerifyResponse("ProgrammaticTest", "testProgrammaticReaderSuccess");
+        this.runAsLSAndVerifyResponse("ProgrammaticTest", "testProgrammaticReaderSuccess");
     }
 
     @Mode(TestMode.FULL)
@@ -619,7 +646,7 @@ public class BasicTest extends LoggingTest {
     @Mode(TestMode.FULL)
     @Test
     public void testSSCProgrammaticInputStreamSuccess() throws Exception {
-        this.runAsSSCAndVerifyResponse("ProgrammaticTest", "testProgrammaticInputStreamSuccess");
+        this.runAsLSAndVerifyResponse("ProgrammaticTest", "testProgrammaticInputStreamSuccess");
     }
 
     @Mode(TestMode.LITE)
@@ -631,7 +658,7 @@ public class BasicTest extends LoggingTest {
     @Mode(TestMode.FULL)
     @Test
     public void testSSCProgrammaticByteBufferSuccess() throws Exception {
-        this.runAsSSCAndVerifyResponse("ProgrammaticTest", "testProgrammaticByteBufferSuccess");
+        this.runAsLSAndVerifyResponse("ProgrammaticTest", "testProgrammaticByteBufferSuccess");
     }
 
     @Mode(TestMode.FULL)
@@ -643,7 +670,7 @@ public class BasicTest extends LoggingTest {
     @Mode(TestMode.LITE)
     @Test
     public void testSSCProgrammaticCodinguccess() throws Exception {
-        this.runAsSSCAndVerifyResponse("ProgrammaticTest", "testProgrammaticCodinguccess");
+        this.runAsLSAndVerifyResponse("ProgrammaticTest", "testProgrammaticCodinguccess");
     }
 
     // defect 205750 - Test is in Trace Bucket so comment it out of here for now
@@ -665,7 +692,7 @@ public class BasicTest extends LoggingTest {
     @Mode(TestMode.FULL)
     @Test
     public void testSSCMsgHandlerInheritance() throws Exception {
-        this.runAsSSCAndVerifyResponse("ProgrammaticTest", "testMsgHandlerInheritance");
+        this.runAsLSAndVerifyResponse("ProgrammaticTest", "testMsgHandlerInheritance");
     }
 
     /**
@@ -680,7 +707,7 @@ public class BasicTest extends LoggingTest {
     @Mode(TestMode.FULL)
     @Test
     public void testSSCProgEndpointSessionGetPathParamaters() throws Exception {
-        this.runAsSSCAndVerifyResponse("ProgrammaticTest", "testProgEndpointSessionGetPathParamaters");
+        this.runAsLSAndVerifyResponse("ProgrammaticTest", "testProgEndpointSessionGetPathParamaters");
     }
 
     //
@@ -699,7 +726,7 @@ public class BasicTest extends LoggingTest {
     //@Mode(TestMode.FULL)
     //@Test
     //public void testSSCMultipleClientsPublishingandReceivingToThemselvesTextSuccess() throws Exception {
-    //    this.runAsSSCAndVerifyResponse("MultiClientTest", "testMultipleClientsPublishingandReceivingToThemselvesTextSuccess");
+    //    this.runAsLSAndVerifyResponse("MultiClientTest", "testMultipleClientsPublishingandReceivingToThemselvesTextSuccess");
     //}
 
     // Move to trace test bucket because of build break 244260
@@ -712,7 +739,7 @@ public class BasicTest extends LoggingTest {
     @Mode(TestMode.FULL)
     @Test
     public void testSSCSinglePublisherMultipleReciverTextSuccess() throws Exception {
-        this.runAsSSCAndVerifyResponse("MultiClientTest", "testSinglePublisherMultipleReciverTextSuccess");
+        this.runAsLSAndVerifyResponse("MultiClientTest", "testSinglePublisherMultipleReciverTextSuccess");
     }
 
     //
@@ -735,27 +762,27 @@ public class BasicTest extends LoggingTest {
     @Test
     @ExpectedFFDC({ "java.lang.reflect.InvocationTargetException" })
     public void TestSSCOnMessageError() throws Exception {
-        this.runAsSSCAndVerifyResponse("OnErrorTest", "TestOnMessageError");
+        this.runAsLSAndVerifyResponse("OnErrorTest", "TestOnMessageError");
     }
 
     @Mode(TestMode.FULL)
     @Test
     @ExpectedFFDC({ "java.lang.NullPointerException" })
     public void TestSSCProgramticEndpointError() throws Exception {
-        this.runAsSSCAndVerifyResponse("OnErrorTest", "TestProgramticEndpointError");
+        this.runAsLSAndVerifyResponse("OnErrorTest", "TestProgramticEndpointError");
     }
 
     @Mode(TestMode.FULL)
     @Test
     @ExpectedFFDC({ "javax.websocket.DecodeException" })
     public void TestSSCDecoderError() throws Exception {
-        this.runAsSSCAndVerifyResponse("OnErrorTest", "TestDecoderError");
+        this.runAsLSAndVerifyResponse("OnErrorTest", "TestDecoderError");
     }
 
     @Mode(TestMode.FULL)
     @Test
     public void TestSSCEncoderError() throws Exception {
-        this.runAsSSCAndVerifyResponse("OnErrorTest", "TestEncoderError");
+        this.runAsLSAndVerifyResponse("OnErrorTest", "TestEncoderError");
     }
 
     //
@@ -779,7 +806,7 @@ public class BasicTest extends LoggingTest {
     @Mode(TestMode.LITE)
     @Test
     public void testSSCPathParamShortTypeMessage() throws Exception {
-        this.runAsSSCAndVerifyResponse("PathParamTest", "testShortTypePathParamMessage");
+        this.runAsLSAndVerifyResponse("PathParamTest", "testShortTypePathParamMessage");
     }
 
     // for why this is commented - see comment #2 at the top of the file
@@ -791,7 +818,7 @@ public class BasicTest extends LoggingTest {
     // for why this is commented - see comment #2 at the top of the file
     //@Mode(TestMode.FULL)
     //public void testSSCPathParamAnotatedReaderSuccess() throws Exception {
-    //    this.runAsSSCAndVerifyResponse("PathParamTest", "testAnotatedReaderPathParamSuccess");
+    //    this.runAsLSAndVerifyResponse("PathParamTest", "testAnotatedReaderPathParamSuccess");
     //}
 
     @Mode(TestMode.FULL)
@@ -803,7 +830,7 @@ public class BasicTest extends LoggingTest {
     @Mode(TestMode.FULL)
     @Test
     public void TestSSCPathParamOnOpenAndTestOnClose() throws Exception {
-        this.runAsSSCAndVerifyResponse("PathParamTest", "TestOnOpenAndTestOnClose");
+        this.runAsLSAndVerifyResponse("PathParamTest", "TestOnOpenAndTestOnClose");
     }
 
     /*
@@ -820,7 +847,7 @@ public class BasicTest extends LoggingTest {
     @Test
     @ExpectedFFDC({ "java.lang.NumberFormatException", "javax.websocket.DecodeException" })
     public void TestSSCPathParamOnError() throws Exception {
-        this.runAsSSCAndVerifyResponse("PathParamTest", "TestOnError");
+        this.runAsLSAndVerifyResponse("PathParamTest", "TestOnError");
     }
 
     /*
@@ -837,7 +864,7 @@ public class BasicTest extends LoggingTest {
     @Test
     @ExpectedFFDC({ "javax.websocket.DecodeException" })
     public void TestSSCPathParamUnmatchedNonStringPathParamTest() throws Exception {
-        this.runAsSSCAndVerifyResponse("PathParamTest", "TestUnmatchedNonStringPathParamTest");
+        this.runAsLSAndVerifyResponse("PathParamTest", "TestUnmatchedNonStringPathParamTest");
     }
 
     /*
@@ -852,7 +879,7 @@ public class BasicTest extends LoggingTest {
     @Mode(TestMode.FULL)
     @Test
     public void TestSSCPathParamUnmatchedStringPathParamTest() throws Exception {
-        this.runAsSSCAndVerifyResponse("PathParamTest", "TestUnmatchedStringPathParamTest");
+        this.runAsLSAndVerifyResponse("PathParamTest", "TestUnmatchedStringPathParamTest");
     }
 
     /**
@@ -867,14 +894,14 @@ public class BasicTest extends LoggingTest {
     @Mode(TestMode.FULL)
     @Test
     public void TestSSCPathParamSessionPathParamTest() throws Exception {
-        this.runAsSSCAndVerifyResponse("PathParamTest", "TestSessionPathParamTest");
+        this.runAsLSAndVerifyResponse("PathParamTest", "TestSessionPathParamTest");
     }
 
     @Mode(TestMode.FULL)
     @Test
     @ExpectedFFDC({ "java.lang.reflect.InvocationTargetException" })
     public void TestSSCRuntimeExceptionTCKTest() throws Exception {
-        this.runAsSSCAndVerifyResponse("PathParamTest", "RuntimeExceptionTCKTest");
+        this.runAsLSAndVerifyResponse("PathParamTest", "RuntimeExceptionTCKTest");
     }
 
     //
@@ -893,7 +920,7 @@ public class BasicTest extends LoggingTest {
     @Test
     @AllowedFFDC({ "java.io.IOException" })
     public void testSSCCheckOriginFailedSuccess() throws Exception {
-        this.runAsSSCAndVerifyResponse("ConfiguratorTest", "testCheckOriginFailedSuccess");
+        this.runAsLSAndVerifyResponse("ConfiguratorTest", "testCheckOriginFailedSuccess");
     }
 
     @Mode(TestMode.FULL)
@@ -907,7 +934,7 @@ public class BasicTest extends LoggingTest {
     //@Mode(TestMode.LITE)
     //@Test
     //public void testSSCConfiguratorSuccess() throws Exception {
-    //    this.runAsSSCAndVerifyResponse("ConfiguratorTest", "testConfiguratorSuccess");
+    //    this.runAsLSAndVerifyResponse("ConfiguratorTest", "testConfiguratorSuccess");
     //}
 
     @Mode(TestMode.FULL)
@@ -919,7 +946,7 @@ public class BasicTest extends LoggingTest {
     @Mode(TestMode.FULL)
     @Test
     public void testSSCNewConfiguratorSuccess() throws Exception {
-        this.runAsSSCAndVerifyResponse("ConfiguratorTest", "testNewConfiguratorSuccess");
+        this.runAsLSAndVerifyResponse("ConfiguratorTest", "testNewConfiguratorSuccess");
     }
 
     @Mode(TestMode.FULL)
@@ -932,7 +959,7 @@ public class BasicTest extends LoggingTest {
     @Test
     @AllowedFFDC({ "java.io.IOException" })
     public void testSSCFailHandshakeSuccess() throws Exception {
-        this.runAsSSCAndVerifyResponse("ConfiguratorTest", "testFailHandshakeSuccess");
+        this.runAsLSAndVerifyResponse("ConfiguratorTest", "testFailHandshakeSuccess");
     }
 
     @Mode(TestMode.FULL)
@@ -950,7 +977,7 @@ public class BasicTest extends LoggingTest {
     @Mode(TestMode.FULL)
     @Test
     public void testSSCNegotiatedExtensionsSuccess() throws Exception {
-        this.runAsSSCAndVerifyResponse("ConfiguratorTest", "testNegotiatedExtensionsSuccess");
+        this.runAsLSAndVerifyResponse("ConfiguratorTest", "testNegotiatedExtensionsSuccess");
     }
 
     @Mode(TestMode.FULL)
@@ -962,13 +989,13 @@ public class BasicTest extends LoggingTest {
     @Mode(TestMode.FULL)
     @Test
     public void testSSCNegotiatedExtensionsPart2Success() throws Exception {
-        this.runAsSSCAndVerifyResponse("ConfiguratorTest", "testNegotiatedExtensionsPart2Success");
+        this.runAsLSAndVerifyResponse("ConfiguratorTest", "testNegotiatedExtensionsPart2Success");
     }
 
     // for why this is commented - see comment #2 at the top of the file
     //@Mode(TestMode.FULL)
     //public void testSSCBasicExtensionsSuccess() throws Exception {
-    //    this.runAsSSCAndVerifyResponse("ConfiguratorTest", "testBasicExtensionsSuccess");
+    //    this.runAsLSAndVerifyResponse("ConfiguratorTest", "testBasicExtensionsSuccess");
     //}
 
     // for why this is commented - see comment #2 at the top of the file
@@ -980,7 +1007,7 @@ public class BasicTest extends LoggingTest {
     // for why this is commented - see comment #2 at the top of the file
     //@Mode(TestMode.FULL)
     //public void testSSCDetailedExtensionsSuccess() throws Exception {
-    //    this.runAsSSCAndVerifyResponse("ConfiguratorTest", "testDetailedExtensionsSuccess");
+    //    this.runAsLSAndVerifyResponse("ConfiguratorTest", "testDetailedExtensionsSuccess");
     //}
 
     @Mode(TestMode.LITE)
@@ -998,7 +1025,7 @@ public class BasicTest extends LoggingTest {
     // for why this is commented - see comment #2 at the top of the file
     //@Mode(TestMode.FULL)
     //public void testSSCConfiguredSubprotocolsSuccess() throws Exception {
-    //    this.runAsSSCAndVerifyResponse("ConfiguratorTest", "testConfiguredSubprotocolsSuccess");
+    //    this.runAsLSAndVerifyResponse("ConfiguratorTest", "testConfiguredSubprotocolsSuccess");
     //}
 
     @Mode(TestMode.LITE)
@@ -1021,7 +1048,7 @@ public class BasicTest extends LoggingTest {
 //    @Mode(TestMode.FULL)
 //    @Test
 //    public void testSSCConfiguratorCase() throws Exception {
-//        this.runAsSSCAndVerifyResponse("ConfiguratorTest", "testConfiguratorCaseSuccess");
+//        this.runAsLSAndVerifyResponse("ConfiguratorTest", "testConfiguratorCaseSuccess");
 //    }
 //
     //
@@ -1039,7 +1066,7 @@ public class BasicTest extends LoggingTest {
     @Mode(TestMode.FULL)
     @Test
     public void testSSCProgrammaticPartialTextSuccess() throws Exception {
-        this.runAsSSCAndVerifyResponse("ProgrammaticTest", "testProgrammaticPartialTextSuccess");
+        this.runAsLSAndVerifyResponse("ProgrammaticTest", "testProgrammaticPartialTextSuccess");
     }
 
     @Mode(TestMode.FULL)
@@ -1051,7 +1078,7 @@ public class BasicTest extends LoggingTest {
     @Mode(TestMode.LITE)
     @Test
     public void testSSCProgrammaticPartialTextSuccess2() throws Exception {
-        this.runAsSSCAndVerifyResponse("ProgrammaticTest", "testProgrammaticPartialTextSuccess2");
+        this.runAsLSAndVerifyResponse("ProgrammaticTest", "testProgrammaticPartialTextSuccess2");
     }
 
     @Mode(TestMode.FULL)
@@ -1063,13 +1090,13 @@ public class BasicTest extends LoggingTest {
     @Mode(TestMode.FULL)
     @Test
     public void testSSCProgrammaticPartialTextWithServerPing() throws Exception {
-        this.runAsSSCAndVerifyResponse("ProgrammaticTest", "testProgrammaticPartialTextWithServerPing");
+        this.runAsLSAndVerifyResponse("ProgrammaticTest", "testProgrammaticPartialTextWithServerPing");
     }
 
     @Mode(TestMode.FULL)
     @Test
     public void testSSCClientProgWholeServerAnnotatedPartial() throws Exception {
-        this.runAsSSCAndVerifyResponse("AnnotatedTest", "testClientProgWholeServerAnnotatedPartial");
+        this.runAsLSAndVerifyResponse("AnnotatedTest", "testClientProgWholeServerAnnotatedPartial");
     }
 
     @Mode(TestMode.FULL)
@@ -1081,7 +1108,7 @@ public class BasicTest extends LoggingTest {
     @Mode(TestMode.FULL)
     @Test
     public void testSSCClientAnnoWholeServerProgPartial() throws Exception {
-        this.runAsSSCAndVerifyResponse("AnnotatedTest", "testClientAnnoWholeServerProgPartial");
+        this.runAsLSAndVerifyResponse("AnnotatedTest", "testClientAnnoWholeServerProgPartial");
     }
 
     @Mode(TestMode.FULL)
@@ -1093,7 +1120,7 @@ public class BasicTest extends LoggingTest {
     @Mode(TestMode.FULL)
     @Test
     public void testSSCProgrammaticPartialBinarySuccess1() throws Exception {
-        this.runAsSSCAndVerifyResponse("AnnotatedTest", "testProgrammaticPartialBinarySuccess1");
+        this.runAsLSAndVerifyResponse("AnnotatedTest", "testProgrammaticPartialBinarySuccess1");
     }
 
     @Mode(TestMode.LITE)
@@ -1105,7 +1132,7 @@ public class BasicTest extends LoggingTest {
     @Mode(TestMode.FULL)
     @Test
     public void testSSCProgrammaticPartialBinarySuccess2() throws Exception {
-        this.runAsSSCAndVerifyResponse("AnnotatedTest", "testProgrammaticPartialBinarySuccess2");
+        this.runAsLSAndVerifyResponse("AnnotatedTest", "testProgrammaticPartialBinarySuccess2");
     }
 
     @Mode(TestMode.FULL)
@@ -1117,7 +1144,7 @@ public class BasicTest extends LoggingTest {
     @Mode(TestMode.FULL)
     @Test
     public void testSSCProgrammaticPartialTextSuccess3() throws Exception {
-        this.runAsSSCAndVerifyResponse("AnnotatedTest", "testProgrammaticPartialTextSuccess3");
+        this.runAsLSAndVerifyResponse("AnnotatedTest", "testProgrammaticPartialTextSuccess3");
     }
 
     @Mode(TestMode.LITE)
@@ -1129,7 +1156,7 @@ public class BasicTest extends LoggingTest {
     @Mode(TestMode.FULL)
     @Test
     public void testSSCProgrammaticPartialTextWithClientPing() throws Exception {
-        this.runAsSSCAndVerifyResponse("AnnotatedTest", "testProgrammaticPartialTextWithClientPing");
+        this.runAsLSAndVerifyResponse("AnnotatedTest", "testProgrammaticPartialTextWithClientPing");
     }
 
     //
@@ -1147,7 +1174,7 @@ public class BasicTest extends LoggingTest {
     @Mode(TestMode.FULL)
     @Test
     public void testSSCAnnotatedBinaryDecoderSuccess() throws Exception {
-        this.runAsSSCAndVerifyResponse("BinaryEncodeDecodeTest", "testAnnotatedBinaryDecoderSuccess");
+        this.runAsLSAndVerifyResponse("BinaryEncodeDecodeTest", "testAnnotatedBinaryDecoderSuccess");
     }
 
     //this tests binary decoder and encoder inheritance
@@ -1161,7 +1188,7 @@ public class BasicTest extends LoggingTest {
     @Mode(TestMode.LITE)
     @Test
     public void testSSCAnnotatedBinaryDecoderExtendSuccess() throws Exception {
-        this.runAsSSCAndVerifyResponse("BinaryEncodeDecodeTest", "testAnnotatedBinaryDecoderExtendSuccess");
+        this.runAsLSAndVerifyResponse("BinaryEncodeDecodeTest", "testAnnotatedBinaryDecoderExtendSuccess");
     }
 
     //this tests encoder inheritance with generics
@@ -1176,7 +1203,7 @@ public class BasicTest extends LoggingTest {
     @Mode(TestMode.FULL)
     @Test
     public void testSSCParamTypeCoding() throws Exception {
-        this.runAsSSCAndVerifyResponse("AnnotatedTest", "testParamTypeCoding");
+        this.runAsLSAndVerifyResponse("AnnotatedTest", "testParamTypeCoding");
     }
 
     @Mode(TestMode.LITE)
@@ -1253,16 +1280,6 @@ public class BasicTest extends LoggingTest {
     @Test
     public void testServletUpgradeCommitted() throws Exception {
         ht.testInvalidAcceptKey("/basic/pathUpgradeServlet/testString/1");
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.fat.util.LoggingTest#getSharedServer()
-     */
-    @Override
-    protected SharedServer getSharedServer() {
-        return SS;
     }
 
 }
