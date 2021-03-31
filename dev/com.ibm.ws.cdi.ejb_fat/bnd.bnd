@@ -25,6 +25,9 @@ tested.features:\
         jaxrs-2.1,\
         jsf-2.3,\
         localconnector-1.0,\
+        cdi-3.0,\
+        servlet-5.0,\
+        expressionLanguage-4.0,\
         enterprisebeans-4.0,\
         managedbeans-2.0,\
         enterprisebeansremote-4.0,\

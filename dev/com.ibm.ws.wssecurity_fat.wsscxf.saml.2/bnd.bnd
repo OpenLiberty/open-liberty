@@ -21,7 +21,7 @@ src: \
 
 fat.project: true
 
-tested.features: jsp-2.3, jdbc-4.1, el-3.0
+tested.features: jsp-2.3, jdbc-4.1, el-3.0, federatedregistry-1.0, ldapregistry-3.0
 
 # Dependencies may be local bundles (e.g. com.ibm.websphere.javaee.servlet.3.1)
 #      or binaries from Artifactory (e.g. commons-logging:commons-logging)
