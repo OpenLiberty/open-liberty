@@ -27,7 +27,7 @@ src: \
 
 fat.project: true
 tested.features:\
-        jwt-1.0, jsonp-2.0, restfulwsclient-3.0, restfulws-3.0, pages-3.0
+        jwt-1.0, jsonp-2.0, restfulwsclient-3.0, restfulws-3.0, pages-3.0, appsecurity-4.0
 
 
 # To define a global minimum java level for the FAT, use the following property.
