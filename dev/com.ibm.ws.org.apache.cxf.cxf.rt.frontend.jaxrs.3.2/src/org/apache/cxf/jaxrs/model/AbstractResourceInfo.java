@@ -131,8 +131,6 @@ public abstract class AbstractResourceInfo {
         CONTEXT_PROPS.put("org.apache.cxf.jaxrs.provider.MultipartProvider", new ProviderContextInfo(Collections.singleton("mc"), null));
         CONTEXT_PROPS.put("org.apache.cxf.jaxrs.nio.NioMessageBodyWriter", ProviderContextInfo.NO_PROCESSING_REQUIRED);
         CONTEXT_PROPS.put("org.apache.cxf.jaxrs.model.wadl.WadlGenerator", ProviderContextInfo.NO_PROCESSING_REQUIRED);
-        CONTEXT_PROPS.put("com.ibm.ws.jaxrs21.sse.LibertySseEventSinkContextProvider", ProviderContextInfo.NO_PROCESSING_REQUIRED);
-        CONTEXT_PROPS.put("org.apache.cxf.jaxrs.sse.SseContextProvider", ProviderContextInfo.NO_PROCESSING_REQUIRED);
         CONTEXT_PROPS.put("com.ibm.ws.jaxrs20.providers.customexceptionmapper.CustomWebApplicationExceptionMapper", ProviderContextInfo.NO_PROCESSING_REQUIRED);
         CONTEXT_PROPS.put("com.ibm.ws.jaxrs20.security.LibertyAuthFilter", ProviderContextInfo.NO_PROCESSING_REQUIRED);
         CONTEXT_PROPS.put("org.eclipse.microprofile.rest.client.ext.ResponseExceptionMapper", ProviderContextInfo.NO_PROCESSING_REQUIRED);
@@ -214,7 +212,7 @@ public abstract class AbstractResourceInfo {
         // Liberty code change end
 
         if (constructorProxies != null) {
-            Map<Class<?>, Map<Class<?>, ThreadLocalProxy<?>>> proxies = getConstructorProxyMap(true);
+            Map<Class<?>, Map<Class<?>, ThreadLocalProxy<?>>> proxies = getConstructorProxyMap();
             proxies.put(serviceClass, constructorProxies);
             //Liberty code change start defect 169218
             //Add the constructorProxies to the set
@@ -379,20 +377,21 @@ public abstract class AbstractResourceInfo {
 
     public Map<Class<?>, ThreadLocalProxy<?>> getConstructorProxies() {
         if (constructorProxiesAvailable) {
-            return getConstructorProxyMap(false).get(serviceClass);
+            return getConstructorProxyMap().get(serviceClass);
         }
         return null;
     }
 
     @SuppressWarnings("unchecked")
-    private Map<Class<?>, Map<Class<?>, ThreadLocalProxy<?>>> getConstructorProxyMap(boolean create) {
+    private Map<Class<?>, Map<Class<?>, ThreadLocalProxy<?>>> getConstructorProxyMap() {
         Object property = bus.getProperty(CONSTRUCTOR_PROXY_MAP);
         if (property == null) {
-            Map<Class<?>, Map<Class<?>, ThreadLocalProxy<?>>> map = new ConcurrentHashMap<>(2);
+            Map<Class<?>, Map<Class<?>, ThreadLocalProxy<?>>> map
+                = new ConcurrentHashMap<>(2);
             bus.setProperty(CONSTRUCTOR_PROXY_MAP, map);
             property = map;
         }
-        return (Map<Class<?>, Map<Class<?>, ThreadLocalProxy<?>>>) property;
+        return (Map<Class<?>, Map<Class<?>, ThreadLocalProxy<?>>>)property;
     }
 
     private Map<Class<?>, Map<Field, ThreadLocalProxy<?>>> getFieldProxyMap(boolean create) {
@@ -533,7 +532,7 @@ public abstract class AbstractResourceInfo {
     public void clearThreadLocalProxies() {
         clearProxies(getFieldProxyMap(false));
         clearProxies(getSetterProxyMap(false));
-        clearProxies(getConstructorProxyMap(false));
+        clearProxies(getConstructorProxyMap());
     }
 
     private <T> void clearProxies(Map<Class<?>, Map<T, ThreadLocalProxy<?>>> tlps) {

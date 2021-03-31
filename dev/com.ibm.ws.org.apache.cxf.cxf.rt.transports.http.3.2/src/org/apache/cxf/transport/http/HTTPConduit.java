@@ -597,10 +597,8 @@ public abstract class HTTPConduit
             MessageContentsList objs = MessageContentsList.getContentsList(message);
             if (objs != null && !objs.isEmpty()) {
                 Object obj = objs.get(0);
-                if (obj.getClass() != String.class
-                    || (obj.getClass() == String.class && ((String)obj).length() > 0)) {
-                    return true;
-                }
+                return obj.getClass() != String.class
+                    || (obj.getClass() == String.class && ((String)obj).length() > 0);
             }
         }
         return false;

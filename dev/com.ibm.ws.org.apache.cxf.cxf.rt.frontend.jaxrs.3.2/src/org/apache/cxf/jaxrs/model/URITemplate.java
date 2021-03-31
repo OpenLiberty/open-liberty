@@ -43,6 +43,7 @@ import com.ibm.websphere.ras.annotation.Trivial;
 public final class URITemplate {
 
     public static final String TEMPLATE_PARAMETERS = "jaxrs.template.parameters";
+    public static final String URI_TEMPLATE = "jaxrs.template.uri";
     public static final String LIMITED_REGEX_SUFFIX = "(/.*)?";
     public static final String FINAL_MATCH_GROUP = "FINAL_MATCH_GROUP";
     private static final String DEFAULT_PATH_VARIABLE_REGEX = "([^/]+?)";
@@ -83,7 +84,6 @@ public final class URITemplate {
             } else if (chunk instanceof Variable) {
                 Variable var = (Variable) chunk;
                 variables.add(var.getName());
-                // Liberty change begin
                 String pattern = var.getPattern();
                 if (pattern != null) {
                     customVariables.add(var.getName());
@@ -98,7 +98,6 @@ public final class URITemplate {
                         patternBuilder.append(pattern);
                         patternBuilder.append(')');
                     }
-                    //Liberty change end
                 } else {
                     patternBuilder.append(DEFAULT_PATH_VARIABLE_REGEX);
                 }

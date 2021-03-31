@@ -90,8 +90,8 @@ public class MediaTypeHeaderProvider implements HeaderDelegate<MediaType> {
         int paramsStart = mType.indexOf(';', i + 1);
         int end = paramsStart == -1 ? mType.length() : paramsStart;
 
-        String type = mType.substring(0, i);
-        String subtype = mType.substring(i + 1, end);
+        String type = mType.substring(0, i).trim();
+        String subtype = mType.substring(i + 1, end).trim();
         //Liberty change start
         if (!isValid(type) || !isValid(subtype)) {
             throw new IllegalArgumentException("Failure parsing MediaType string: " + type);

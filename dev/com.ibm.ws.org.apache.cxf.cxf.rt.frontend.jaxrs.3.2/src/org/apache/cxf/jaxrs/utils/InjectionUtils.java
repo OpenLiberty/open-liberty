@@ -126,6 +126,9 @@ public final class InjectionUtils {
 
     public static final Set<String> STANDARD_CONTEXT_CLASSES = new HashSet<>();
     public static final Set<String> VALUE_CONTEXTS = new HashSet<>();
+
+    private static final boolean USE_JAXB;
+
     static {
         // JAX-RS 1.0-1.1
         STANDARD_CONTEXT_CLASSES.add(Application.class.getName());
@@ -148,6 +151,17 @@ public final class InjectionUtils {
 
         VALUE_CONTEXTS.add(Application.class.getName());
         VALUE_CONTEXTS.add("javax.ws.rs.sse.Sse");
+
+        boolean useJaxb;
+        try {
+            ClassLoaderUtils.loadClass(
+                    "javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter",
+                    InjectionUtils.class);
+            useJaxb = true;
+        } catch (final ClassNotFoundException cnfe) {
+            useJaxb = false;
+        }
+        USE_JAXB = useJaxb;
     }
     private static final ResourceBundle BUNDLE = BundleUtils.getBundle(InjectionUtils.class);
 
@@ -537,7 +551,9 @@ public final class InjectionUtils {
 
         boolean adapterHasToBeUsed = false;
         Class<?> cls = pClass;
-        Class<?> valueType = JAXBUtils.getValueTypeFromAdapter(pClass, pClass, paramAnns);
+        Class<?> valueType = !USE_JAXB
+                ? cls
+                : JAXBUtils.getValueTypeFromAdapter(pClass, pClass, paramAnns);
         if (valueType != cls) {
             cls = valueType;
             adapterHasToBeUsed = true;
@@ -616,20 +632,16 @@ public final class InjectionUtils {
     }
 
     public static <T> T createFromParameterHandler(String value,
-                                                   Class<T> pClass,
-                                                   Type genericType,
-                                                   Annotation[] anns,
-                                                   Message message) {
-        T result = null;
-        if (message != null) {
-            ServerProviderFactory pf = ServerProviderFactory.getInstance(message);
-            ParamConverter<T> pm = pf.createParameterHandler(pClass, genericType, anns, message);
-            if (pm != null) {
-                result = pm.fromString(value);
-            }
-        }
-        return result;
+                                                    Class<T> pClass,
+                                                    Type genericType,
+                                                    Annotation[] anns,
+                                                    Message message) {
+        return getParamConverter(pClass, genericType, anns, message)
+            .map(pm -> pm.fromString(value))
+            .orElse(null);
     }
+    
+    
 
     public static void reportServerError(String messageName, String parameter) {
         reportServerError(messageName, parameter, true);
@@ -655,7 +667,7 @@ public final class InjectionUtils {
         Exception factoryMethodEx = null;
         for (String mName : methodNames) {
             try {
-                result = evaluateFactoryMethod(value, cls, pType, mName);
+                result = evaluateFactoryMethod(value, cls, mName);
                 if (result != null) {
                     factoryMethodEx = null;
                     break;
@@ -682,7 +694,6 @@ public final class InjectionUtils {
     @FFDCIgnore({ NoSuchMethodException.class, IllegalAccessException.class })
     private static <T> T evaluateFactoryMethod(String value,
                                                Class<T> pClass,
-                                               ParameterType pType,
                                                String methodName)
                     throws InvocationTargetException {
         try {
@@ -806,9 +817,9 @@ public final class InjectionUtils {
                             paramValue = InjectionUtils.mergeCollectionsOrArrays(paramValue, appendValue,
                                                                                  genericType);
                         } else if (isSupportedMap(genericType)) {
-                            Object appendValue = InjectionUtils.injectIntoMap(
-                                                                              type, genericType, paramAnns, processedValues, true, pType, message);
-                            paramValue = InjectionUtils.mergeMap(paramValue, appendValue, genericType);
+                            Object appendValue = injectIntoMap(
+                                genericType, paramAnns, processedValues, true, pType, message);
+                            paramValue = mergeMap(paramValue, appendValue);
 
                         } else if (isbean) {
                             paramValue = InjectionUtils.handleBean(type, paramAnns, processedValues,
@@ -835,7 +846,7 @@ public final class InjectionUtils {
     }
 
     @SuppressWarnings("unchecked")
-    private static Object mergeMap(Object first, Object second, Type genericType) {
+    private static Object mergeMap(Object first, Object second) {
         if (first == null) {
             return second;
         } else if (first instanceof Map) {
@@ -845,7 +856,7 @@ public final class InjectionUtils {
         return null;
     }
 
-    private static Object injectIntoMap(Class<?> rawType, Type genericType,
+    private static Object injectIntoMap(Type genericType,
                                         Annotation[] paramAnns,
                                         MultivaluedMap<String, String> processedValues,
                                         boolean decoded,
@@ -1001,11 +1012,11 @@ public final class InjectionUtils {
     static Class<?> getCollectionType(Class<?> rawType) {
         Class<?> type = null;
         if (SortedSet.class.isAssignableFrom(rawType)) {
-            type = TreeSet.class;
+            type = TreeSet.class; //NOPMD
         } else if (Set.class.isAssignableFrom(rawType)) {
-            type = HashSet.class;
+            type = HashSet.class; //NOPMD
         } else if (Collection.class.isAssignableFrom(rawType)) {
-            type = ArrayList.class;
+            type = ArrayList.class; //NOPMD
         }
         return type;
 
@@ -1117,7 +1128,6 @@ public final class InjectionUtils {
         }
         return newValues;
     }
-
     //
     //CHECKSTYLE:OFF
     public static Object createParameterObject(List<String> paramValues,
@@ -1130,7 +1140,7 @@ public final class InjectionUtils {
                                                Message message) {
         //CHECKSTYLE:ON
 
-        if (paramValues == null) {
+        if (paramValues == null || paramValues.size() == 1 && paramValues.get(0) == null) {
             if (defaultValue != null) {
                 paramValues = Collections.singletonList(defaultValue);
             } else {
@@ -1480,7 +1490,8 @@ public final class InjectionUtils {
                 if (!cri.isSingleton()) {
                     InjectionUtils.injectThroughMethod(requestObject, method, o, message);
                 } else {
-                    ThreadLocalProxy<Object> proxy = (ThreadLocalProxy<Object>) cri.getContextSetterProxy(method);
+                    ThreadLocalProxy<Object> proxy
+                        = (ThreadLocalProxy<Object>)cri.getContextSetterProxy(method);
                     if (proxy != null) {
                         proxy.set(o);
                     }

@@ -12,6 +12,7 @@
 	<featureManager>
 		<feature>componenttest-1.0</feature>
 		<feature>jaxrs-2.1</feature>
+		<feature>beanvalidation-2.0</feature>
 		<feature>osgiConsole-1.0</feature>
 	</featureManager>
 
@@ -19,5 +20,29 @@
 	<variable name="onError" value="FAIL" />
 
 	<application location="BasicSseApp.war"/>
+	
+	<javaPermission className="java.lang.RuntimePermission" name="createClassLoader" actions="*"/>
+	<javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.sun.misc" actions="*"/>
+	<javaPermission className="java.lang.RuntimePermission" name="setContextClassLoader" actions="*"/>
+	<javaPermission className="java.lang.RuntimePermission" name="getClassLoader" actions="*"/>
+	<javaPermission className="java.util.PropertyPermission" name="slf4j.detectLoggerNameMismatch" actions="read"/>
+	<javaPermission className="java.util.PropertyPermission" name="org.slf4j.simpleLogger.*" actions="read"/>
+	<javaPermission className="java.util.PropertyPermission" name="org.slf4j.simpleLogger.showThreadName" actions="read"/>
+	<javaPermission className="java.util.PropertyPermission" name="org.slf4j.simpleLogger.showDateTime" actions="read"/>
+	<javaPermission className="java.util.PropertyPermission" name="org.slf4j.simpleLogger.showShortLogName" actions="read"/>
+	<javaPermission className="java.util.PropertyPermission" name="org.slf4j.simpleLogger.showLogName" actions="read"/>
+	<javaPermission className="java.util.PropertyPermission" name="org.slf4j.simpleLogger.defaultLogLevel" actions="read"/>
+	<javaPermission className="java.util.PropertyPermission" name="org.apache.cxf.Logger" actions="read"/>
+	<javaPermission className="java.util.PropertyPermission" name="org.apache.cxf.JDKBugHacks.defaultUsesCaches" actions="read"/>
+	<javaPermission className="java.util.PropertyPermission" name="org.apache.cxf.JDKBugHacks.securityProviders" actions="read"/>
+	<javaPermission className="java.util.PropertyPermission" name="org.apache.cxf.JDKBugHacks.authConfiguration" actions="read"/>
+	<javaPermission className="java.util.PropertyPermission" name="org.apache.cxf.JDKBugHacks.all" actions="read"/>
+	<javaPermission className="java.util.PropertyPermission" name="org.apache.cxf.JDKBugHacks.policy" actions="read"/>
+	<javaPermission className="java.util.PropertyPermission" name="org.apache.cxf.JDKBugHacks.imageIO" actions="read"/>
+	<javaPermission className="java.util.PropertyPermission" name="org.apache.cxf.JDKBugHacks.documentBuilderFactory" actions="read"/>
+	<javaPermission className="java.util.PropertyPermission" name="org.apache.cxf.JDKBugHacks.gcRequestLatency" actions="read"/>
+	<javaPermission className="java.util.PropertyPermission" name="java.home" actions="read"/>
+	<javaPermission className="java.util.PropertyPermission" name="javax.ws.rs.sse.SseEventSource.Builder" actions="read"/>
+	<javaPermission className="java.io.FilePermission" name="/Library/Java/JavaVirtualMachines/adoptopenjdk-11-openj9.jdk/Contents/Home/lib/jaxrs.properties" actions="read"/>
 
 </server>

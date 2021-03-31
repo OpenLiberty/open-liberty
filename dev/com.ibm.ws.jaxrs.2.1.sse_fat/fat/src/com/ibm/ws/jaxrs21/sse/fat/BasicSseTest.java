@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.jaxrs21.sse.fat;
 
+import java.io.File;
+
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
@@ -38,11 +40,15 @@ public class BasicSseTest extends FATServletClient {
     public static LibertyServer server;
 
     private static final String appName = "BasicSseApp";
+    private static final String cxf = "lib/";
 
     @BeforeClass
     public static void setUp() throws Exception {
         WebArchive app = ShrinkWrap.create(WebArchive.class, appName + ".war")
                         .addPackage("jaxrs21sse.basic");
+        
+        app.addAsLibraries(new File(cxf).listFiles());
+        
         ShrinkHelper.exportAppToServer(server, app);
 
         server.addInstalledAppForValidation(appName);

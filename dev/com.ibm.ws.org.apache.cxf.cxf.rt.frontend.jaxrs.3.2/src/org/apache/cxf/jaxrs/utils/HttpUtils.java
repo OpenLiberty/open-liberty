@@ -348,7 +348,7 @@ public final class HttpUtils {
             }
             sb.append(value);
             if (i + 1 < values.size()) {
-                sb.append(",");
+                sb.append(',');
             }
         }
         return sb.toString();
@@ -602,7 +602,7 @@ public final class HttpUtils {
             ind = 0;
         }
         if (ind == 0) {
-            path = path.substring(ind + address.length());
+            path = path.substring(address.length());
         }
         if (addSlash && !path.startsWith("/")) {
             path = "/" + path;

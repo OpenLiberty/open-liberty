@@ -137,9 +137,12 @@ public final class ResourceUtils {
             if (processParams) {
                 for (int i = 0; i < params.length; i++) {
                     if (!perRequest) {
-                        if (AnnotationUtils.getAnnotation(anns[i], Context.class) == null) {
-                            match = false;
-                            break;
+                        // Only check if parameter annotations were detected.
+                        if (anns[i].length != 0) {
+                            if (AnnotationUtils.getAnnotation(anns[i], Context.class) == null) {
+                                match = false;
+                                break;
+                            }
                         }
                     } else if (!AnnotationUtils.isValidParamAnnotations(anns[i])) {
                         match = false;

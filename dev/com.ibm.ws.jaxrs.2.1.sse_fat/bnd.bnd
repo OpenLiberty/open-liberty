@@ -23,6 +23,11 @@ src: \
 
 fat.project: true
 
+# These features get added programatically
+tested.features: \
+  jaxrs-2.1
+
+
 -buildpath: \
   com.ibm.websphere.javaee.annotation.1.2;version=latest,\
   com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
@@ -31,5 +36,6 @@ fat.project: true
   com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
   com.ibm.websphere.javaee.jaxrs.2.1;version=latest,\
   com.ibm.websphere.javaee.servlet.4.0;version=latest,\
-  com.ibm.websphere.javaee.jsonb.1.0;version=latest
+  com.ibm.websphere.javaee.jsonb.1.0;version=latest,\
+  org.apache.cxf:cxf-rt-rs-sse;version=3.4.3
 

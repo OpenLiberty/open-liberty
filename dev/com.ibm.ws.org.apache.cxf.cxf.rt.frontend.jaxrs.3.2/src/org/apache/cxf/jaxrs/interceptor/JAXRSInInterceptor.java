@@ -74,6 +74,7 @@ public class JAXRSInInterceptor extends AbstractPhaseInterceptor<Message> {
     private static final ResourceBundle BUNDLE = BundleUtils.getBundle(JAXRSInInterceptor.class);
     private static final String RESOURCE_METHOD = "org.apache.cxf.resource.method";
     private static final String RESOURCE_OPERATION_NAME = "org.apache.cxf.resource.operation.name";
+
     public JAXRSInInterceptor() {
         super(Phase.UNMARSHAL);
     }
@@ -306,6 +307,7 @@ public class JAXRSInInterceptor extends AbstractPhaseInterceptor<Message> {
         exchange.put(JAXRSUtils.ROOT_RESOURCE_CLASS, cri);
         message.put(RESOURCE_METHOD, ori.getMethodToInvoke());
         message.put(URITemplate.TEMPLATE_PARAMETERS, values);
+        message.put(URITemplate.URI_TEMPLATE, JAXRSUtils.getUriTemplate(message, cri, ori));
 
         String plainOperationName = ori.getMethodToInvoke().getName();
         if (numberOfResources > 1) {

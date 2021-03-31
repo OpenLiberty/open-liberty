@@ -232,6 +232,9 @@ public class JAXRSOutInterceptor extends AbstractOutDatabindingInterceptor {
             }
             responseMediaType = checkFinalContentType(responseMediaType, writers, checkWriters);
         } catch (Throwable ex) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, ex.getMessage());
+        }
             handleWriteException(providerFactory, message, ex, firstTry);
             return;
         }
