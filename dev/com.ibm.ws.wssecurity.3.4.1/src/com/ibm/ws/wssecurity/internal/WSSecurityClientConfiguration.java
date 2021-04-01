@@ -84,7 +84,7 @@ public class WSSecurityClientConfiguration implements ConfigurationListener {
 
     private volatile Map<String, Object> properties;
     private final Set<String> pids = new HashSet<String>();
-
+    
     @Reference(policy = ReferencePolicy.DYNAMIC)
     protected void setConfigurationAdmin(ConfigurationAdmin configAdmin) {
         this.configAdmin = configAdmin;

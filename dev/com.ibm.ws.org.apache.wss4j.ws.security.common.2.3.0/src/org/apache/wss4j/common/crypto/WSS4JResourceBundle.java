@@ -23,9 +23,10 @@ import java.util.Enumeration;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
-
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.I18n;
+
+import com.ibm.ws.ffdc.annotation.FFDCIgnore; //Liberty code change
 
 /**
  * ResourceBundle for WSS4J
@@ -39,9 +40,7 @@ public class WSS4JResourceBundle extends ResourceBundle {
     private final ResourceBundle xmlSecResourceBundle;
 
     public WSS4JResourceBundle() {
-        
-        
-        wss4jSecResourceBundle = ResourceBundle.getBundle("org.apache.wss4j.common.crypto.wss4j_errors");
+        wss4jSecResourceBundle = ResourceBundle.getBundle("messages.wss4j_errors");
 
         ResourceBundle tmpResourceBundle;
         try {
@@ -61,6 +60,7 @@ public class WSS4JResourceBundle extends ResourceBundle {
     }
 
     @Override
+    @FFDCIgnore(MissingResourceException.class) //Liberty code change
     protected Object handleGetObject(String key) {
         Object value = null;
         try {

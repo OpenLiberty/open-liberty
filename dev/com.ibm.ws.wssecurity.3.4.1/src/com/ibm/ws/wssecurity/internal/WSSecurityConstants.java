@@ -21,13 +21,10 @@ public class WSSecurityConstants {
     public static final ResourceBundle messages = ResourceBundle.getBundle(TR_RESOURCE_BUNDLE);
 
     public static final String WSSEC = "ws-security";
-    //public static final String UPDATED_PREFIX = "security"; //@AV999
+    public static final String SEC = "security"; //v3
     public static final String CXF_USER_NAME = WSSEC + ".username";
-    //public static final String UPDATED_CXF_USER_NAME = UPDATED_PREFIX + ".username"; //@AV999
     public static final String CXF_USER_PASSWORD = WSSEC + ".password";
-    //public static final String UPDATED_CXF_USER_PASSWORD = UPDATED_PREFIX + ".password"; //@AV999
     public static final String CXF_CBH = WSSEC + ".callback-handler";
-    //public static final String UPDATED_CXF_CBH = UPDATED_PREFIX + ".callback-handler"; //@AV999
 
     public static final String WSS4J_KS_TYPE = "org.apache.ws.security.crypto.merlin.keystore.type";
     public static final String WSS4J_KS_PASSWORD = "org.apache.ws.security.crypto.merlin.keystore.password";
@@ -47,6 +44,9 @@ public class WSSecurityConstants {
 
     public static final String CXF_SIG_CRYPTO = WSSEC + ".signature.crypto";
     public static final String CXF_ENC_CRYPTO = WSSEC + ".encryption.crypto";
+    //v3
+    public static final String SEC_SIG_CRYPTO = SEC + ".signature.crypto";
+    public static final String SEC_ENC_CRYPTO = SEC + ".encryption.crypto";
 
     public static final String CALLER_CONFIG = "callerConfig";
     public static final String CALLER_NAME = "name";

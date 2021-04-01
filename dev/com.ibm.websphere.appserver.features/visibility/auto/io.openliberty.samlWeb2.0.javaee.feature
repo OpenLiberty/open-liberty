@@ -7,12 +7,8 @@ IBM-Provision-Capability:\
 IBM-Install-Policy: when-satisfied
 -features=\
   com.ibm.websphere.appserver.servlet-3.0; ibm.tolerates:="3.1,4.0", \
-  com.ibm.websphere.appserver.appSecurity-2.0; ibm.tolerates:=3.0
--bundles=\
-  com.ibm.ws.org.opensaml.opensaml.2.6.1, \
-  com.ibm.ws.org.opensaml.openws.1.5.6, \
-  com.ibm.ws.security.saml.sso.2.0,\
-  com.ibm.ws.security.saml.wab.2.0, \
-  com.ibm.ws.security.common
+  com.ibm.websphere.appserver.appSecurity-2.0; ibm.tolerates:=3.0, \
+  com.ibm.websphere.appserver.wss4j-1.0; ibm.tolerates:=2.3, \
+  com.ibm.websphere.appserver.samlWebOpenSaml-2.6; ibm.tolerates:=3.4
 kind=ga
 edition=core

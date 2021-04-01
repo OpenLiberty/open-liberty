@@ -7,8 +7,12 @@ IBM-Provision-Capability:\
 IBM-Install-Policy: when-satisfied
 -features=\
   com.ibm.websphere.appserver.servlet-5.0, \
-  io.openliberty.appSecurity-4.0
+  io.openliberty.appSecurity-4.0, \
+  com.ibm.websphere.appserver.wss4j-1.0
 -bundles=\
+  com.ibm.ws.org.opensaml.xmltooling.1.4.4, \
+  com.ibm.ws.org.joda.time.1.6.2, \
+  com.ibm.ws.org.apache.commons.httpclient, \
   io.openliberty.org.opensaml.opensaml.2.6.1, \
   io.openliberty.org.opensaml.openws.1.5.6, \
   io.openliberty.security.saml.internal.sso.2.0, \

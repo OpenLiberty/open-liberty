@@ -22,6 +22,7 @@ IBM-API-Package:\
   org.apache.ws.security.transform;  type="third-party", \
   org.apache.ws.security.util;  type="third-party", \
   org.apache.ws.security.validate;  type="third-party", \
+  org.apache.wss4j.common.ext; type="third-party", \
   com.ibm.ws.wssecurity.callback;  version="1.0"; type="internal"
 IBM-ShortName: wsSecurity-1.1
 Subsystem-Name: Web Service Security 1.1
