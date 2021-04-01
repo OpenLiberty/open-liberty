@@ -39,7 +39,7 @@ import com.ibm.wsspi.webcontainer.logging.LoggerFactory;
 import com.ibm.wsspi.webcontainer.servlet.IServletWrapper;
 import com.ibm.wsspi.webcontainer40.WCCustomProperties40;
 
-public class SRTServletRequest40 extends SRTServletRequest31 implements HttpServletRequest {
+public class SRTServletRequest40 extends SRTServletRequest31 implements HttpServletRequest, ISRTServletRequest40 {
 
     protected static final Logger logger = LoggerFactory.getInstance().getLogger("com.ibm.ws.webcontainer40.srt");
     private static final String CLASS_NAME = "com.ibm.ws.webcontainer40.srt.SRTServletRequest40";
@@ -121,6 +121,7 @@ public class SRTServletRequest40 extends SRTServletRequest31 implements HttpServ
         return this.getCurrentHttpServletMapping(dispatchContext);
     }
 
+    @Override
     public HttpServletMapping getCurrentHttpServletMapping(WebAppDispatcherContext40 dispatchContext) {
         String methodName = "getCurrentHttpServletMapping";
 

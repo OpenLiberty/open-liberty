@@ -34,6 +34,7 @@ import com.ibm.ws.webcontainer.security.WebAppSecurityCollaboratorImpl;
 import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
 import com.ibm.ws.webcontainer.srt.SRTServletRequest;
 import com.ibm.wsspi.security.tai.TAIResult;
+import com.ibm.wsspi.webcontainer.servlet.IExtendedRequest;
 
 public class TAIWebUtils {
 
@@ -109,11 +110,11 @@ public class TAIWebUtils {
     }
 
     public void savePostParameters(HttpServletRequest request) {
-        PostParameterHelper.savePostParams((SRTServletRequest) request);
+        PostParameterHelper.savePostParams((IExtendedRequest) request);
     }
 
     public void restorePostParameters(HttpServletRequest request) {
-        PostParameterHelper.restorePostParams((SRTServletRequest) request);
+        PostParameterHelper.restorePostParams((IExtendedRequest) request);
     }
 
     public ReferrerURLCookieHandler getCookieHandler() {
