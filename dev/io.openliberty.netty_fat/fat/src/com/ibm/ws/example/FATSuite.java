@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.netty_fat;
+package com.ibm.ws.example;
 
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
@@ -21,7 +21,7 @@ import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                SimpleTest.class,
+                NettyWsByteBufferTests.class,
 })
 public class FATSuite {
 
