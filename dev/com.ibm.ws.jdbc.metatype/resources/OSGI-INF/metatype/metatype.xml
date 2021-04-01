@@ -1392,16 +1392,7 @@
   <AD id="sslPassword"                   ibmui:group="Advanced" required="false" type="String"  ibm:type="password"    name="%sslPassword"         description="%sslPassword.desc"/>
   <AD id="sslRootCert"                   ibmui:group="Advanced" required="false" type="String"  ibm:type="location"    name="%sslRootCert"         description="%sslRootCert.desc"/>
   <AD id="socketTimeout"                 ibmui:group="Advanced" required="false" type="String"  ibm:type="duration(s)" name="%socketTimeout"       description="%socketTimeout.desc"/>
-  <AD id="targetServerType"              ibmui:group="Advanced" required="false" type="String"                         name="%targetServerType"    description="%targetServerType.desc">
-   <Option value="any"             label="any"/>
-   <Option value="primary"         label="primary"/>
-   <Option value="secondary"       label="secondary"/>
-   <Option value="preferSecondary" label="preferSecondary"/>
-   <!-- Deprecated, but still permitted, by PostgreSQL JDBC Driver: -->
-   <Option value="master"          label="master"/>
-   <Option value="slave"           label="slave"/>
-   <Option value="preferSlave"     label="preferSlave"/>
-  </AD>
+  <AD id="targetServerType"              ibmui:group="Advanced" required="false" type="String"                         name="%targetServerType"    description="%targetServerType.desc"/>
   <AD id="tcpKeepAlive"                  ibmui:group="Advanced" required="false" type="Boolean" name="%tcpKeepAlive" description="%tcpKeepAlive.desc"/>
   <AD id="user"                          ibmui:group="Advanced" required="false" type="String"  name="%user" description="%user.desc"/>
   <AD id="URL"                           ibmui:group="Advanced" required="false" type="String"  name="%URL" description="%URL.desc"/>
