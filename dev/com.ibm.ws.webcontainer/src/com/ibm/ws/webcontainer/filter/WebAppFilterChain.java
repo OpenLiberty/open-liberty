@@ -34,6 +34,7 @@ import com.ibm.ws.webcontainer.webapp.WebApp;
 import com.ibm.wsspi.http.HttpInboundConnection;
 import com.ibm.wsspi.webcontainer.RequestProcessor;
 import com.ibm.wsspi.webcontainer.logging.LoggerFactory;
+import com.ibm.wsspi.webcontainer.servlet.IExtendedRequest;
 import com.ibm.wsspi.webcontainer.util.ServletUtil;
 
 /**
@@ -156,8 +157,8 @@ protected static final Logger logger = LoggerFactory.getInstance().getLogger("co
                         logger.logp(Level.FINE, CLASS_NAME, "invokeTarget", " looking at H2 upgrade");
                     }
                     HttpInboundConnection httpInboundConnection = null;
-                    if (request instanceof SRTServletRequest) {
-                        SRTServletRequest srtReq = (SRTServletRequest)request;
+                    if (request instanceof IExtendedRequest) {
+                    	IExtendedRequest srtReq = (IExtendedRequest)request;
                         IRequestExtended iReq = (IRequestExtended)srtReq.getIRequest();
                         if (iReq != null) {
                             httpInboundConnection = iReq.getHttpInboundConnection();

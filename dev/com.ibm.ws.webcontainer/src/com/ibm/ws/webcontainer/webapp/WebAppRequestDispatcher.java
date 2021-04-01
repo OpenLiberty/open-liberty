@@ -31,6 +31,7 @@ import com.ibm.ws.webcontainer.WebContainer;
 import com.ibm.ws.webcontainer.osgi.collaborator.CollaboratorHelperImpl;
 import com.ibm.ws.webcontainer.servlet.ServletWrapper;
 import com.ibm.ws.webcontainer.servlet.exception.NoTargetForURIException;
+import com.ibm.ws.webcontainer.srt.ISRTServletRequest;
 import com.ibm.ws.webcontainer.srt.SRTRequestContext;
 import com.ibm.ws.webcontainer.srt.SRTServletRequest;
 import com.ibm.ws.webcontainer.srt.SRTServletResponse;
@@ -193,7 +194,7 @@ public class WebAppRequestDispatcher implements RequestDispatcher, WebContainerC
     // of
     // iVar
     {
-        SRTRequestContext reqCtx = ((SRTServletRequest) wasReq).getRequestContext();
+        SRTRequestContext reqCtx = ((ISRTServletRequest) wasReq).getRequestContext();
         // Spec says that we SHOULD NOT perform security access checks in
         // forwards and includes. But this exposes a security hole where
         // an unauthenticated user can get into a secured app by simply
@@ -1170,7 +1171,7 @@ public class WebAppRequestDispatcher implements RequestDispatcher, WebContainerC
             //Setup to check is we dispatched from async to sync servlet
             wasAsyncSupported = wasReq.isAsyncSupported();            
 
-            if (((SRTServletRequest) wasReq).getRequestContext().isWithinApplication(webapp) == false) {
+            if (((ISRTServletRequest) wasReq).getRequestContext().isWithinApplication(webapp) == false) {
                 //PK91120 Start
                 if (reqState!=null&&reqState.getAttribute("com.ibm.ws.webcontainer.invokeListenerRequest") != null)
                     reqState.removeAttribute("com.ibm.ws.webcontainer.invokeListenerRequest");
@@ -1471,7 +1472,7 @@ public class WebAppRequestDispatcher implements RequestDispatcher, WebContainerC
             if (boundary_changed) {
                 // PK17095 Catching EmptyStackException for rollBackBoundary
                 try {
-                    ((SRTServletRequest) wasReq).getRequestContext().rollBackBoundary();
+                    ((ISRTServletRequest) wasReq).getRequestContext().rollBackBoundary();
                 } catch (EmptyStackException ese) {
                     com.ibm.wsspi.webcontainer.util.FFDCWrapper.processException(ese,
                                                                                  "com.ibm.ws.webcontainer.webapp.WebAppRequestDispatcher.forward", "367", this);
