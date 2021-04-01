@@ -26,7 +26,6 @@ import java.util.Collection;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Set;
-import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
@@ -122,8 +121,26 @@ public class PackageCommandTest {
     private static final String SELF_EXTRACT_CLASS_NAME =
         "wlp.lib.extract.SelfExtractRun";
     private static final String SELF_EXTRACT_RESOURCE_NAME =
-        "wlp/lib/extract/SelfExtractRun.class"; 
+        "wlp/lib/extract/SelfExtractRun.class";
 
+    /**
+     * Thrown an {@link org.junit.AssumptionViolatedException}
+     * (a runtime exception) if self-extract files do not exist
+     * in a target server.
+     * 
+     * Any jar type packaging requires self extract files.
+     * Don't run any tests which require these files if the
+     * server image doesn't have them.  This is the case when
+     * running the tests in commercial liberty.
+     *
+     * @param server The server to test.
+     */
+    public static void assumeSelfExtractExists(LibertyServer server) {
+        File installRoot = new File(server.getInstallRoot());
+        File selfExtractClass = new File(installRoot, SELF_EXTRACT_RESOURCE_NAME);
+        assumeTrue( selfExtractClass.exists() );
+    }
+    
     /**
      * Packages --include=minify,runnable jar and verifies correct content.
      */
@@ -133,6 +150,8 @@ public class PackageCommandTest {
         String serverName = bootstrapFatServerName;
         LibertyServer server = bootstrapFatServer;
 
+        assumeSelfExtractExists(bootstrapFatServer);
+        
         String packageName = serverName + ".jar";
         String packagePath = bootstrapFatServerPath + '/' + packageName;
         String[] packageCmd = {
@@ -492,6 +511,8 @@ public class PackageCommandTest {
     public void testDefaultingToJar() throws Exception {
         LibertyServer server = rootFatServer;
 
+        assumeSelfExtractExists(rootFatServer);
+
         ensureProductExt(server);
 
         String packageName = archiveNameJar;
@@ -564,7 +585,7 @@ public class PackageCommandTest {
      * Verify the embedded server instance launched by the package command does
      * not corrupt the feature cache of the packaged (target) server.
      */
-    
+
     private static final List<String> cacheFeatures;
     static {
         cacheFeatures = new ArrayList<String>(3);

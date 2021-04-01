@@ -170,15 +170,17 @@ public abstract class AbstractLooseConfigTest {
         return archivePath;
     }
 
+    @SuppressWarnings("unused")
+    protected void verifyContents(
+        String archivePath, String serverRoot,
+        boolean includeUsr,
+        String serverName, String moduleName) throws IOException {
+        // Do nothing by default.
+    }    
+    
     protected static final boolean INCLUDE_USR = true;
     protected static final boolean VERIFY_APP = true;
 
-    protected void verifyContents(
-            String archivePath,
-            String installRoot, boolean includeUsr, 
-            String serverName, String appName) throws IOException {
-    }
-        
     protected void verifyContents(
             String archivePath,
             String installRoot, boolean includeUsr, 
@@ -751,5 +753,5 @@ public abstract class AbstractLooseConfigTest {
         return ( line.contains("reflective access") ||
                  line.contains("consider reporting") ||
                  line.contains("illegal access") );
-    }    
+    }
 }

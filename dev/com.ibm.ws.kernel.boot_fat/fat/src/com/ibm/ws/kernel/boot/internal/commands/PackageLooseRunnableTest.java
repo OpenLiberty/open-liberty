@@ -104,6 +104,9 @@ public class PackageLooseRunnableTest extends AbstractLooseConfigTest {
     public void testRunnableDefaultRoot() throws Exception {
         String prepackedModuleName = MODULE_NAME_LOOSE;
         String packedModuleName = MODULE_NAME;
+        
+        PackageCommandTest.assumeSelfExtractExists( getServer() );
+
         String archivePath = packageRunnable(prepackedModuleName, ARCHIVE_NAME_1_JAR, SERVER_ROOT_DEFAULT);
         verifyContents(archivePath,
             SERVER_ROOT_DEFAULT, INCLUDE_USR, SERVER_NAME,
@@ -115,6 +118,9 @@ public class PackageLooseRunnableTest extends AbstractLooseConfigTest {
     public void testRunnable() throws Exception {
         String prepackedModuleName = MODULE_NAME_LOOSE;
         String packedModuleName = MODULE_NAME;
+
+        PackageCommandTest.assumeSelfExtractExists( getServer() );
+
         String archivePath = packageRunnable(prepackedModuleName, ARCHIVE_NAME_2_JAR, SERVER_ROOT);
         // Note the change from 'SERVER_ROOT' to 'SERVER_ROOT_DEFAULT';
         // The server root parameter is ignored when packaging a runnable server.
