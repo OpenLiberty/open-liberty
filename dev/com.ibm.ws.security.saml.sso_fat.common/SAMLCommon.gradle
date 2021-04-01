@@ -33,7 +33,8 @@ dependencies {
                'commons-logging:commons-logging:1.1.1',
                'httpunit:httpunit:1.6.2',                           // 1.7 has issues noted above
                'jtidy:jtidy:4aug2000r7-dev',
-               'rhino:js:1.6R5'
+               'rhino:js:1.6R5',
+               'xml-apis:xml-apis:1.4.01'
               
   /*
    * Previously we had an uber jar named htmlunit-2.20-OSGi.jar. It appears to have contained all of

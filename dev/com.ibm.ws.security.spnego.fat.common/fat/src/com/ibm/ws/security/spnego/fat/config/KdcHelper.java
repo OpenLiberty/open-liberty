@@ -909,7 +909,8 @@ public abstract class KdcHelper {
                 /*
                  * Execute the command on the channel and wait for it to complete.
                  */
-                Set<ClientChannelEvent> ccEvents = channel.waitFor(EnumSet.of(ClientChannelEvent.CLOSED), remainingTimeoutMs);
+                Set<ClientChannelEvent> ccEvents = channel.waitFor(EnumSet.of(ClientChannelEvent.EXIT_STATUS), remainingTimeoutMs);
+                Log.info(thisClass, methodName, "Client channel returned the following events: " + ccEvents);
 
                 /*
                  * Did the command timeout? If so throw an exception.
@@ -997,23 +998,34 @@ public abstract class KdcHelper {
      * @param remoteFile The remote file to copy.
      * @param localFile  The local file to copy to.
      * @return True if the copy succeeded, false otherwise.
-     * @throws IOException If the copy failed for some reason.
      */
-    protected boolean copyFromRemoteFile(ClientSession sshSession, String remoteFile, String localFile) throws IOException {
+    protected boolean copyFromRemoteFile(ClientSession sshSession, String remoteFile, String localFile) {
         remoteFile = remoteFile.replace("\\", "/"); // Convert windows path to Linux
 
         Log.info(thisClass, "copyFromRemoteFile", "Copying remote file " + remoteFile + " to local file " + localFile);
 
-        ScpClient scpClient = ScpClientCreator.instance().createScpClient(sshSession);
-        scpClient.download(remoteFile, new FileOutputStream(localFile));
+        boolean success = false;
+
+        try {
+            ScpClient scpClient = ScpClientCreator.instance().createScpClient(sshSession);
+            scpClient.download(remoteFile, new FileOutputStream(localFile));
+            success = true;
+        } catch (IOException e) {
+            Log.error(thisClass, "copyFromRemoteFile", e, "SCP encountered an error downloading the remote file "
+                                                          + sshSession.getRemoteAddress() + ":" + remoteFile + " to " + localFile);
+        }
 
         /*
          * Validate the copy by looking at the size.
+         *
+         * NOTE: Originally added this code to validate the file size matches that on the remote system,
+         * but had issues where the standard output with the file size was not coming back in a timely
+         * fashion, so now we will rely on the SCP download throwing an IOException on failure.
          */
-        long remoteSize = Long.valueOf(executeSshCommand(sshSession, "wc -c < " + remoteFile, 10).getStdout().trim());
-        long localSize = new File(localFile).length();
+//        long remoteSize = Long.valueOf(executeSshCommand(sshSession, "wc -c < " + remoteFile, 10).getStdout().trim());
+//        long localSize = new File(localFile).length();
+//        boolean success = remoteSize == localSize;
 
-        boolean success = remoteSize == localSize;
         Log.info(thisClass, "copyFromRemoteFile", "Copy from remote file was successful? " + success);
         return success;
     }
@@ -1025,23 +1037,33 @@ public abstract class KdcHelper {
      * @param localFile  The local file to copy from.
      * @param remoteFile The remote file to copy to.
      * @return True if the copy succeeded, false otherwise.
-     * @throws IOException If the copy failed for some reason.
      */
-    protected boolean copyLocalFileToRemote(ClientSession sshSession, String localFile, String remoteFile) throws IOException {
+    protected boolean copyLocalFileToRemote(ClientSession sshSession, String localFile, String remoteFile) {
         remoteFile = remoteFile.replace("\\", "/"); // Convert windows path to Linux
 
         Log.info(thisClass, "copyLocalFileToRemote", "Copying local file " + localFile + " to remote file " + remoteFile);
 
-        ScpClient scpClient = ScpClientCreator.instance().createScpClient(sshSession);
-        scpClient.upload(localFile, remoteFile);
+        boolean success = false;
+        try {
+            ScpClient scpClient = ScpClientCreator.instance().createScpClient(sshSession);
+            scpClient.upload(localFile, remoteFile);
+            success = true;
+        } catch (IOException e) {
+            Log.error(thisClass, "copyLocalFileToRemote", e, "SCP encountered an error uploading the local file "
+                                                             + localFile + " to " + sshSession.getRemoteAddress() + ":" + remoteFile);
+        }
 
         /*
          * Validate the copy by looking at the size.
+         *
+         * NOTE: Originally added this code to validate the file size matches that on the remote system,
+         * but had issues where the standard output with the file size was not coming back in a timely
+         * fashion, so now we will rely on the SCP upload throwing an IOException on failure.
          */
-        long remoteSize = Long.valueOf(executeSshCommand(sshSession, "wc -c < " + remoteFile, 10).getStdout().trim());
-        long localSize = new File(localFile).length();
+//        long remoteSize = Long.valueOf(executeSshCommand(sshSession, "wc -c < " + remoteFile, 10).getStdout().trim());
+//        long localSize = new File(localFile).length();
+//        boolean success = remoteSize == localSize;
 
-        boolean success = remoteSize == localSize;
         Log.info(thisClass, "copyLocalFileToRemote", "Copy to remote file was successful? " + success);
         return success;
     }

@@ -42,8 +42,8 @@ import com.ibm.wsspi.channelfw.ChannelConfiguration;
  * to use either plain socket listeners or SSL listeners
  * 
  */
-@Component(configurationPolicy = ConfigurationPolicy.REQUIRE,
-                property = { "service.vendor=IBM" })
+@SuppressWarnings("restriction") // Suppress warnings for import and use of com.ibm.ws.config.xml.internal.nester.Nester
+@Component(configurationPolicy = ConfigurationPolicy.REQUIRE, property = { "service.vendor=IBM" })
 public class IIOPEndpointImpl implements IIOPEndpoint {
 
     private static final TraceComponent tc = Tr.register(IIOPEndpointImpl.class);
@@ -92,7 +92,7 @@ public class IIOPEndpointImpl implements IIOPEndpoint {
 //    }
 
     @FFDCIgnore(PrivilegedActionException.class)
-    private void resolveListenerAddress() throws PrivilegedActionException {
+    private void resolveListenerAddress() {
         if (host == null) {
             try {
                 host = AccessController.doPrivileged(new PrivilegedExceptionAction<String>() {

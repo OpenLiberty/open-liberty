@@ -18,7 +18,7 @@
 
     <properties>
         <!-- Use the following to test a release (1.2) or release candidate (1.2-RC1) -->
-        <microprofile.context.propagation.version>1.2-RC1</microprofile.context.propagation.version>
+        <microprofile.context.propagation.version>1.2</microprofile.context.propagation.version>
 
         <!-- Use the following to test a local snaphost (1.2-SNAPSHOT) -->
         <!-- The test case launch must be guarded with "if (FATRunner.FAT_TEST_LOCALRUN)" of this option is delivered. -->

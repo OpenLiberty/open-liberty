@@ -98,7 +98,7 @@ public final class WSName extends CompoundName {
     WSName plus(WSName that) {
         Enumeration<String> e1 = this.getAll();
         Enumeration<String> e2 = that.getAll();
-        Enumeration<String> e3 = new CompositeEnumeration<String>(e1).add(e2);
+        Enumeration<String> e3 = new CompositeEnumeration<>(e1).add(e2);
         return new WSName(e3);
     }
 
@@ -106,7 +106,7 @@ public final class WSName extends CompoundName {
     public WSName getPrefix(int index) {
         if (index < 0)
             throw new ArrayIndexOutOfBoundsException(index);
-        Vector<String> elems = new Vector<String>(index);
+        Vector<String> elems = new Vector<>(index);
         for (int i = 0; i < index; i++)
             elems.add(get(i));
         return new WSName(elems.elements());
@@ -116,7 +116,7 @@ public final class WSName extends CompoundName {
     public WSName getSuffix(int index) {
         if (index > size())
             throw new ArrayIndexOutOfBoundsException(index);
-        Vector<String> elems = new Vector<String>(size() - index);
+        Vector<String> elems = new Vector<>(size() - index);
         for (int i = index; i < size(); i++)
             elems.add(get(i));
         return new WSName(elems.elements());

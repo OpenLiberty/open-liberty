@@ -559,7 +559,7 @@ public class MemoryStore implements IStore {
         if (s != null) {
             for (Iterator it = s.iterator(); it.hasNext();) {
                 MemorySession ms = (MemorySession) _sessions.get(it.next());
-                ms.internalInvalidate(false);
+                if(ms!=null) ms.internalInvalidate(false);
             }
         }
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINE)) {

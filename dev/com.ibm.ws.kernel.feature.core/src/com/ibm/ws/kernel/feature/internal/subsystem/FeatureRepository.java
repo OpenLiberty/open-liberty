@@ -594,12 +594,17 @@ public final class FeatureRepository implements FeatureResolver.Repository {
                && f.length() == bf.length;
     }
 
+    // Remove milliseconds from timestamp values to address inconsistencies in container file systems
+    long reduceTimestampPrecision(long value) {
+        return (value / 1000) * 1000;
+    }
+
     boolean isCachedEntryValid(File f, SubsystemFeatureDefinitionImpl def) {
         if (def != null) {
             ImmutableAttributes cachedAttr = def.getImmutableAttributes();
 
             // See if the file has changed: if it has, we need to start over
-            if (cachedAttr.lastModified == f.lastModified()) {
+            if (reduceTimestampPrecision(cachedAttr.lastModified) == reduceTimestampPrecision(f.lastModified())) {
                 if (cachedAttr.length == f.length())
                     return true;
             }

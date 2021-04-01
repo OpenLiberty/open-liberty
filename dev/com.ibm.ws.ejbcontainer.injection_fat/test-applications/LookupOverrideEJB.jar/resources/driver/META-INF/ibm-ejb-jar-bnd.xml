@@ -1,0 +1,145 @@
+<ejb-jar-bnd
+        xmlns="http://websphere.ibm.com/xml/ns/javaee"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-ejb-jar-bnd_1_0.xsd"
+        version="1.0">
+
+
+    <session name="LookupNameBndDriverBean"> 
+
+<!-- test 2 -->
+       <ejb-ref
+           name="SLT2"
+           binding-name="ejblocal:SLT2"
+       />
+
+<!-- test 3 -->
+       <ejb-ref
+           name="SLT3"
+           binding-name="ejblocal:SLT2"
+       />
+
+       <ejb-ref
+           name="SLT3Remote"
+           binding-name="SLT3R"
+       />       
+
+<!-- test 4.5 -->
+       <ejb-ref
+           name="SLT4"
+           binding-name="ejblocal:SLT"
+       />
+
+
+
+<!--
+R4 
+@Resource(name="MessageDestinationRef_RequestQueueLookup", lookup="Jetstream/jms/RequestQueue") 
+-->
+      <resource-ref name="jms/WSTestQCF" 
+                    binding-name="Jetstream/jms/WSTestQCF"
+      />
+
+
+
+<!-- 
+R5 - For verifying this annotation injects the correct DataSource :
+@Resource(name="ResourceRef_DataSource_BindingNameOverLookup", lookup="eis/BogusDataSource")
+
+Note:  There must NOT be a corresponding resource-ref in ejb-jar.xml for this variation
+ -->
+      <resource-ref name="ResourceRef_DataSource_BindingNameOverLookup"
+                    binding-name="jdbc/TestDataSource"
+      />      
+     
+     
+<!-- 
+R6 - For verifying this annotation injects the correct String :
+@Resource(name="ResourceEnvRef_Queue_BindingNameOverLookup", lookup="BogusEnvRef")
+
+Note:  There must NOT be a corresponding resource-env-ref in ejb-jar.xml for this variation.
+-->
+      <resource-env-ref name="ResourceEnvRef_Queue_BindingNameOverLookup"
+                        binding-name="Jetstream/jms/ResponseQueue"
+      />
+     
+
+     
+<!-- 
+R7 - For verifying this annotation injects the correct String :
+@Resource(name="MessageDestinationRef_BindingNameOverLookup", lookup="BogusMessageDestinationRef")
+
+Note:  There must NOT be a corresponding message-destination-ref in ejb-jar.xml for this variation
+-->
+      <message-destination-ref name="MessageDestinationRef_BindingNameOverLookup"
+                        binding-name="Jetstream/jms/RequestQueue"
+      />
+
+
+
+<!-- 
+R8 - For verifying this annotation injects the correct DataSource :
+@Resource(name="ResourceRef_DataSource_BindingNameOverLookupName")
+Note: also need corresponding resource-ref in ejb-jar.xml
+ -->
+      <resource-ref name="ResourceRef_DataSource_BindingNameOverLookupName"
+                    binding-name="jdbc/TestDataSource"
+      />      
+
+
+
+<!-- 
+R9 - For verifying this annotation injects the correct String :
+@Resource(name="ResourceEnvRef_Queue_BindingNameOverLookupName")
+Note: also need corresponding resource-ref in ejb-jar.xml
+ -->
+      <resource-env-ref name="ResourceEnvRef_Queue_BindingNameOverLookupName"
+                    binding-name="Jetstream/jms/ResponseQueue"
+      />      
+ 
+  
+ 
+<!-- 
+R10 - For verifying this annotation injects the correct message destination :
+@Resource(name="MessageDestinationRef_BindingNameOverLookupName") 
+Note: also need corresponding message-destination-ref in ejb-jar.xml
+-->
+      <message-destination-ref name="MessageDestinationRef_BindingNameOverLookupName"
+                               binding-name="Jetstream/jms/RequestQueue"
+      />
+
+
+  
+
+
+    </session>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+      
+
+<!-- To be able to refer to these beans with shorthand binding names -->
+
+    <session name="SimpleLookupTargetBean">
+       <interface class="com.ibm.bnd.lookupoverride.driver.ejb.SimpleLookupTarget"
+                  binding-name="ejblocal:SLT"/>
+    </session>    
+
+    <session name="SimpleLookupTargetBean2">
+       <interface class="com.ibm.bnd.lookupoverride.driver.ejb.SimpleLookupTarget"
+                  binding-name="ejblocal:SLT2"/>
+    </session>   
+
+    <session name="SimpleRemoteLookupTargetBean">
+       <interface class="com.ibm.bnd.lookupoverride.driver.ejb.SimpleLookupTarget"
+                  binding-name="SLT3R"/>
+    </session>   
+
+
+</ejb-jar-bnd>

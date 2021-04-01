@@ -53,6 +53,8 @@ public class DerbyNetworkClientHelper extends DerbyHelper {
     DerbyNetworkClientHelper(WSManagedConnectionFactoryImpl mcf) {
         super(mcf);
 
+        dataStoreHelper = "com.ibm.websphere.rsadapter.DerbyNetworkServerDataStoreHelper";
+
         mcf.doesStatementCacheIsoLevel = true;
 
         Properties props = mcf.dsConfig.get().vendorProps;
@@ -108,13 +110,8 @@ public class DerbyNetworkClientHelper extends DerbyHelper {
         else { // means need to integrate
             genPw = new PrintWriter(new TraceWriter(derbyTc), true);
         }
-    }
-    
-    @Override
-    void customizeStaleStates() {
-        super.customizeStaleStates();
         
-        Collections.addAll(staleErrorCodes,
+        Collections.addAll(staleConCodes,
                            -4499);
     }
 

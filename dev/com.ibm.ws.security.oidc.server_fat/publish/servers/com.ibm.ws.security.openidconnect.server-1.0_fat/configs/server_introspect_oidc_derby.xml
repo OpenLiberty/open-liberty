@@ -1,0 +1,153 @@
+<!--
+    Copyright (c) 2021 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+	<featureManager>
+		<feature>ssl-1.0</feature>
+		<feature>jdbc-4.0</feature>
+		<feature>jndi-1.0</feature>
+		<feature>securitylibertyinternals-1.0</feature>
+		<feature>openidConnectServer-1.0</feature>
+	</featureManager>
+
+	<config monitorInterval="100ms" />
+
+	<ldapRegistry
+		id="ldap"
+		realm="SampleLdapIDSRealm"
+		host="${ldap.server.8.name}"
+		port="${ldap.server.8.ssl.port}"
+		ignoreCase="true"
+		baseDN="o=ibm,c=us"
+		bindDN="${ldap.server.8.bindDN}"
+		bindPassword="${ldap.server.8.bindPassword}"
+		ldapType="IBM Tivoli Directory Server"
+		idsFilters="ibm_dir_server"
+		sslEnabled="true"
+		sslRef="LDAPSSLSettings"
+		searchTimeout="8m"
+	>
+		<failoverServers name="failoverLdapServers">
+			<server
+				host="${ldap.server.4.name}"
+				port="${ldap.server.4.ssl.port}" />
+		</failoverServers>
+	</ldapRegistry>
+
+	<!-- Yes, this is valid XML -->
+	<idsLdapFilterProperties
+		id="ibm_dir_server"
+		userFilter="(&amp;(uid=%v)(objectclass=ePerson))"
+		groupFilter="(&amp;(cn=%v)(|(objectclass=groupOfNames)(objectclass=groupOfUniqueNames)(objectclass=groupOfURLs)))"
+		userIdMap="*:uid"
+		groupIdMap="*:cn"
+		groupMemberIdMap="ibm-allGroups:member;ibm-allGroups:uniqueMember;groupOfNames:member;groupOfUniqueNames:uniqueMember"
+	>
+	</idsLdapFilterProperties>
+
+	<keyStore
+		id="defaultKeyStore"
+		password="keyspass" />
+
+	<ssl
+		id="LDAPSSLSettings"
+		keyStoreRef="LDAPKeyStore"
+		trustStoreRef="LDAPTrustStore"
+		clientAuthenticationSupported="true" />
+	<keyStore
+		id="LDAPKeyStore"
+		location="${server.config.dir}/commonLdapSSLKeyStore.jks"
+		type="JKS"
+		password="{xor}CDo9Hgw=" />
+	<keyStore
+		id="LDAPTrustStore"
+		location="${server.config.dir}/commonLdapSSLTrustStore.jks"
+		type="JKS"
+		password="{xor}CDo9Hgw=" />
+
+	<oauth-roles>
+		<authenticated>
+			<user name="testuser" />
+			<group name="group1" />
+			<user name="user1g1" />
+		</authenticated>
+		<clientManager>
+			<user name="testuser" />
+			<group name="group1" />
+		</clientManager>
+	</oauth-roles>
+
+	<authorization-roles id="com.ibm.ws.security.oidc10">
+		<security-role name="authenticated">
+			<user name="testuser" />
+			<group name="group1" />
+			<user name="user1g1" />
+		</security-role>
+		<security-role name="clientManager">
+			<user name="testuser" />
+			<group name="group1" />
+		</security-role>
+	</authorization-roles>
+
+	<include location="${server.config.dir}/imports/fatTestPorts.xml" />
+
+	<webAppSecurity
+		httpOnlyCookies="false"
+		allowFailOverToBasicAuth="true" />
+
+	<httpSession cookieHttpOnly="false" />
+
+	<!-- **************************************************************************** -->
+	<!-- Database definitions. -->
+	<!-- **************************************************************************** -->
+	<jdbcDriver id="DerbyEmbedded">
+		<library>
+			<fileset
+				dir="${server.config.dir}/derby"
+				includes="derby.jar" />
+		</library>
+	</jdbcDriver>
+
+	<dataSource
+		id="OAuthFvtDataSource"
+		jndiName="jdbc/OAuth2DB"
+		jdbcDriverRef="DerbyEmbedded"
+	>
+        <!-- The following configures in-memory Derby.  For Derby on disk, which is needed if the database
+    	is required beyond a single server start, configure the databaseName with a file location such as:
+    	databaseName="${shared.config.dir}/data/derbydb" -->
+		<properties.derby.embedded
+			databaseName="memory:oAuthDB"
+			createDatabase="create" />
+	</dataSource>
+
+	<openidConnectProvider
+		id="OidcOpConfigDerby"
+		oauthProviderRef="OAuthConfigDerby"
+		jwkEnabled="${oidcJWKEnabled}"
+		signatureAlgorithm="${oidcSignAlg}" />
+	<oauthProvider
+		id="OAuthConfigDerby"
+		filter="request-url%=ssodemo"
+		accessTokenLifetime="30s"
+		oauthOnly="false"
+		jwtAccessToken="${oidcCreateJWTToken}"
+	>
+		<databaseStore
+			dataSourceRef="OAuthFvtDataSource"
+			user="bob"
+			password="bob" />
+		<autoAuthorizeClient>dclient01</autoAuthorizeClient>
+		<autoAuthorizeClient>dclient02</autoAuthorizeClient>
+	</oauthProvider>
+
+
+</server>

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2020 IBM Corporation and others.
+# Copyright (c) 2002, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -185,3 +185,11 @@ trusted.header.origin.invalid.value.useraction=Ensure that configured IP address
 trusted.sensitive.header.origin.invalid.value=CWWKT0039W: The [{0}] configured trustedSensitiveHeaderOrigin value is invalid and cannot be used.
 trusted.sensitive.header.origin.invalid.value.explanation=The specified value must be either a full IP address or correctly formatted hostname.
 trusted.sensitive.header.origin.invalid.value.useraction=Ensure that configured IP addresses contain a value for each segment, and that hostnames do not contain any invalid characters.
+
+config.hsts.invalid.max.age.value=CWWKT0040W: The [{0}] configured value for the max-age directive is invalid and cannot be used. The value for the max-age directive must be a non-negative integer.
+config.hsts.invalid.max.age.value.explanation=The value for the max-age directive cannot be a negative integer.
+config.hsts.invalid.max.age.value.useraction=Ensure that the configured max-age directive contains a non-negative integer value.
+
+config.hsts.missing.max.age=CWWKT0041W: An attempt was made to configure [{0}] as the Strict-Transport-Security header. This configuration does not contain the mandatory max-age directive. A configuration that does not contain a max-age directive is invalid and cannot be used.
+config.hsts.missing.max.age.explanation=The specified configuration must contain a max-age directive with a non-negative integer value.
+config.hsts.missing.max.age.useraction=Ensure that the configuration contains a max-age directive with a non-negative integer value.

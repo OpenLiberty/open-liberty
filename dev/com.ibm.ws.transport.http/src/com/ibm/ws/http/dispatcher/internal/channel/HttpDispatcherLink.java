@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2020 IBM Corporation and others.
+ * Copyright (c) 2009, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -48,6 +48,7 @@ import com.ibm.wsspi.http.HttpResponse;
 import com.ibm.wsspi.http.SSLContext;
 import com.ibm.wsspi.http.URLEscapingUtils;
 import com.ibm.wsspi.http.WorkClassifier;
+import com.ibm.wsspi.http.channel.HttpRequestMessage;
 import com.ibm.wsspi.http.channel.HttpResponseMessage;
 import com.ibm.wsspi.http.channel.values.ConnectionValues;
 import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
@@ -611,8 +612,10 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             return;
         }
 
-        HttpResponseMessage rMsg = finalSc.getResponse();
-        setResponseProperties(rMsg, code);
+        HttpRequestMessage rqMsg = finalSc.getRequest();
+        HttpResponseMessage rsMsg = finalSc.getResponse();
+
+        setResponseProperties(rqMsg, rsMsg, code);
 
         HttpOutputStream body = finalResponse.getBody();
 
@@ -684,7 +687,17 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
      * @param rMsg The HttpResponseMessage to set.
      * @param code The StatusCode to return.
      */
-    void setResponseProperties(HttpResponseMessage rMsg, StatusCodes code) {
+    void setResponseProperties(HttpRequestMessage rqMsg, HttpResponseMessage rMsg, StatusCodes code) {
+
+        if (rMsg.getHeader(HttpHeaderKeys.HDR_HSTS).asString() == null) {
+
+            String scheme = rqMsg.getScheme();
+            String htsHeader = ("https".equalsIgnoreCase(scheme)) ? HttpDispatcher.getHSTS() : null;
+            if (htsHeader != null) {
+                rMsg.setHeader(HttpHeaderKeys.HDR_HSTS, htsHeader);
+            }
+        }
+
         rMsg.setStatusCode(code);
         rMsg.setConnection(ConnectionValues.CLOSE);
         rMsg.setCharset(Charset.forName("UTF-8"));
@@ -699,7 +712,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
      * It is the value of the part before ":" in the Host header value, if any,
      * or the resolved server name, or the server IP address.
      *
-     * @param request        the inbound request
+     * @param request the inbound request
      * @param remoteHostAddr the requesting client IP address
      */
     @Override
@@ -730,8 +743,8 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
      * the part after ":" in the Host header value, if any, or the server port
      * where the client connection was accepted on.
      *
-     * @param request        the inbound request
-     * @param localPort      the server port where the client connection was accepted on.
+     * @param request the inbound request
+     * @param localPort the server port where the client connection was accepted on.
      * @param remoteHostAddr the requesting client IP address
      */
     @Override

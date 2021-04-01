@@ -41,6 +41,7 @@ import com.ibm.ws.jaxrs20.fat.jacksonJsonIgnore.JacksonJsonIgnoreTest;
 import com.ibm.ws.jaxrs20.fat.json.UTF8Test;
 import com.ibm.ws.jaxrs20.fat.link.LinkHeaderTest;
 import com.ibm.ws.jaxrs20.fat.managedbeans.ManagedBeansTest;
+import com.ibm.ws.jaxrs20.fat.multipart.MultipartTest;
 import com.ibm.ws.jaxrs20.fat.options.OptionsTest;
 import com.ibm.ws.jaxrs20.fat.paramconverter.ParamConverterTest;
 import com.ibm.ws.jaxrs20.fat.params.ParamsTest;
@@ -100,6 +101,7 @@ import componenttest.rules.repeater.RepeatTests;
                 JerseyTest.class,
                 JerseyInjectionTest.class,
                 LinkHeaderTest.class,
+                MultipartTest.class,
                 ManagedBeansTest.class,
                 OptionsTest.class,
                 ParamConverterTest.class,

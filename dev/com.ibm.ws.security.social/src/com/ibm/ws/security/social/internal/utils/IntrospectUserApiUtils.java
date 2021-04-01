@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,7 +12,6 @@ package com.ibm.ws.security.social.internal.utils;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.util.HashMap;
@@ -20,28 +19,26 @@ import java.util.Map;
 
 import javax.json.Json;
 import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
-import javax.json.JsonValue;
-import javax.json.JsonValue.ValueType;
+import javax.json.JsonReaderFactory;
 import javax.json.stream.JsonParsingException;
 import javax.net.ssl.SSLSocketFactory;
 import javax.servlet.http.HttpServletResponse;
 
-import org.jose4j.lang.JoseException;
-
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.ws.common.internal.encoder.Base64Coder;
 import com.ibm.ws.security.common.http.HttpUtils;
 import com.ibm.ws.security.social.SocialLoginConfig;
 import com.ibm.ws.security.social.TraceConstants;
 import com.ibm.ws.security.social.error.SocialLoginException;
 import com.ibm.ws.security.social.internal.Oauth2LoginConfigImpl;
-import com.ibm.ws.common.internal.encoder.Base64Coder;
 
 public class IntrospectUserApiUtils {
 
     public static final TraceComponent tc = Tr.register(IntrospectUserApiUtils.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
+
+    private static final JsonReaderFactory readerFactory = Json.createReaderFactory(null);
 
     SocialLoginConfig config = null;
 
@@ -111,7 +108,7 @@ public class IntrospectUserApiUtils {
             throw new SocialLoginException("RESPONSE_NOT_JSON", null, null);
         }
         try {
-            return Json.createReader(new StringReader(response)).readObject();
+            return readerFactory.createReader(new StringReader(response)).readObject();
         } catch (JsonParsingException e) {
             throw new SocialLoginException("RESPONSE_NOT_JSON", e, new Object[] { response, e });
         }

@@ -2,7 +2,7 @@
 ###############################################################################
 # WebSphere Application Server liberty launch script
 #
-# Copyright IBM Corp. 2011, 2020
+# Copyright IBM Corp. 2011, 2021
 # The source code for this program is not published or other-
 # wise divested of its trade secrets, irrespective of what has
 # been deposited with the U.S. Copyright Office.
@@ -575,7 +575,7 @@ serverEnvDefaults()
     fi
   fi
 
-# Prefer OPENJ9_JAVA_OPTIONS to deprecated IBM_JAVA_OPTIONS
+  # Prefer OPENJ9_JAVA_OPTIONS to deprecated IBM_JAVA_OPTIONS
   if [ -z "${OPENJ9_JAVA_OPTIONS}" ]
   then
     SPECIFIED_JAVA_OPTIONS=${IBM_JAVA_OPTIONS}
@@ -592,11 +592,19 @@ serverEnvDefaults()
     if ( echo "${SPECIFIED_JAVA_OPTIONS}" | grep -q "Xshareclasses"); then
       SERVER_IBM_JAVA_OPTIONS=${SPECIFIED_JAVA_OPTIONS}
     else
+      # Set -Xscmx
+      if [ "${ACTION}" = "debug" ]
+      then
+        XSCMX_VAL="130m"
+      else
+        XSCMX_VAL="80m"
+      fi
+  
       if $shareclassesCacheDirPerm
       then
-        SERVER_IBM_JAVA_OPTIONS="-Xshareclasses:name=liberty-%u,nonfatal,cacheDir=\"${WLP_OUTPUT_DIR}/.classCache\",cacheDirPerm=1000 -XX:ShareClassesEnableBCI -Xscmx80m ${SPECIFIED_JAVA_OPTIONS}"
+        SERVER_IBM_JAVA_OPTIONS="-Xshareclasses:name=liberty-%u,nonfatal,cacheDir=\"${WLP_OUTPUT_DIR}/.classCache\",cacheDirPerm=1000 -XX:ShareClassesEnableBCI -Xscmx${XSCMX_VAL} ${SPECIFIED_JAVA_OPTIONS}"
       else
-        SERVER_IBM_JAVA_OPTIONS="-Xshareclasses:name=liberty-%u,nonfatal,cacheDir=\"${WLP_OUTPUT_DIR}/.classCache\" -XX:ShareClassesEnableBCI -Xscmx80m ${SPECIFIED_JAVA_OPTIONS}"
+        SERVER_IBM_JAVA_OPTIONS="-Xshareclasses:name=liberty-%u,nonfatal,cacheDir=\"${WLP_OUTPUT_DIR}/.classCache\" -XX:ShareClassesEnableBCI -Xscmx${XSCMX_VAL} ${SPECIFIED_JAVA_OPTIONS}"
       fi
     fi
   esac

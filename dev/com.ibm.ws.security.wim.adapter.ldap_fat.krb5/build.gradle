@@ -9,7 +9,47 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
+/* 
+ * This is where all application ZIP and WARs will be built.
+ */
+def appBuildDir = "${buildDir}/test-application"
 
-addRequiredLibraries.dependsOn addJakartaTransformer
+dependencies { 
+    requiredLibs 'org.apache.directory.server:apacheds-all:2.0.0-M24',
+	'org.apache.directory.server:kerberos-client:2.0.0-M24',
+    project(':fattest.simplicity'),
+    project(':com.ibm.ws.security.registry_test.servlet'),
+    project(':com.ibm.ws.com.unboundid'),
+    'org.slf4j:slf4j-jdk14:1.7.7'
+}
 
+autoFVT.dependsOn ':com.ibm.ws.security.registry_test.servlet:assemble'
 
+autoFVT.doLast {
+  
+  /*
+   * Copy the userRegistry WAR into test servers.
+   */
+  def servers = [
+    'com.ibm.ws.security.registry.ldap.fat.krb5.base'
+  ]
+  servers.each { server ->
+    copy { 
+      from new File(project(':com.ibm.ws.security.registry_test.servlet').buildDir, 'test-application/userRegistry.war')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/dropins')
+    }
+  }
+  
+  /*
+   * Copy the InMemoryLdapServer truststore into test servers.
+   */
+  servers = [
+    'com.ibm.ws.security.registry.ldap.fat.krb5.base'
+  ]
+  servers.each { server ->
+    copy { 
+      from project(':com.ibm.ws.com.unboundid').file('resources/truststore.p12')
+      into new File(autoFvtDir,'publish/servers/' + server)
+    }
+  }
+}

@@ -54,11 +54,15 @@ public class FATSuite {
 
     @BeforeClass
     public static void beforeSuite() throws Exception {
-        //Allows local tests to switch between using a local docker client, to using a remote docker client.
-        ExternalTestServiceDockerClientStrategy.setupTestcontainers();
-        testContainer = DatabaseContainerFactory.createType(type);
-        Log.info(FATSuite.class, "beforeSuite", "start test container of type: " + type);
-        testContainer.start();
+        try {
+			//Allows local tests to switch between using a local docker client, to using a remote docker client.
+			ExternalTestServiceDockerClientStrategy.setupTestcontainers();
+			testContainer = DatabaseContainerFactory.createType(type);
+			Log.info(FATSuite.class, "beforeSuite", "start test container of type: " + type);
+			testContainer.start();
+		} catch (IllegalArgumentException e) {
+			Log.error(FATSuite.class, "beforeSuite", e, "Test bucket didn't start properly");
+		}
     }
 
     @AfterClass

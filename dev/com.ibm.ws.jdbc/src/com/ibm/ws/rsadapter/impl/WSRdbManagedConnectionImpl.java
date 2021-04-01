@@ -929,7 +929,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
         try{
             return getTypeMap();
         } catch (SQLException e) {
-            if (AdapterUtil.isUnsupportedException(e)) {
+            if (helper.isUnsupported(e)) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     Tr.debug(this, tc, "supportsGetTypeMap false due to " + e);
                 mcf.supportsGetTypeMap = false;
@@ -2976,7 +2976,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
                 } catch(UnsupportedOperationException uoe){
                     // Ignore since we are only attempting to cleanup
                 } catch (SQLException sqle) {
-                    if(AdapterUtil.isUnsupportedException(sqle)){
+                    if (helper.isUnsupported(sqle)){
                         // ignore unsupported exception
                     } else {
                         FFDCFilter.processException(sqle, getClass().getName() + ".cleanupStates",
@@ -3000,7 +3000,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
                 } catch(UnsupportedOperationException uoe){
                     // Ignore since we are only attempting to cleanup
                 } catch (SQLException sqle) {
-                    if(AdapterUtil.isUnsupportedException(sqle)){
+                    if (helper.isUnsupported(sqle)){
                         // ignore unsupported exception
                     } else {
                         FFDCFilter.processException(sqle, getClass().getName() + ".cleanupStates",
@@ -3063,7 +3063,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
                 } catch(UnsupportedOperationException uoe){
                     // Ignore since we are only attempting to cleanup
                 } catch (SQLException sqle) {
-                    if(AdapterUtil.isUnsupportedException(sqle)){
+                    if (helper.isUnsupported(sqle)){
                         // ignore unsupported exception
                     } else {
                         FFDCFilter.processException(sqle, getClass().getName() + ".cleanupStates",
@@ -4333,7 +4333,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
             if (isTraceOn && tc.isDebugEnabled()) 
                 Tr.debug(this, tc, "validate", AdapterUtil.getStackTraceWithState(sqle));
 
-            if (helper.isConnectionError(sqle)) {
+            if (mcf.dataStoreHelper == null ? helper.isConnectionError(sqle) : mcf.dataStoreHelper.isConnectionError(sqle)) {
                 // Don't do any cleanup
                 if (isTraceOn && tc.isEntryEnabled())
                     Tr.exit(this, tc, "validate", false);
@@ -4350,9 +4350,9 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
                     } catch (SQLException rollbackEx) {
                         // No FFDC coded needed
 
-                        // There is a possiblility that now the connection is stale.
+                        // There is a possibility that now the connection is stale.
 
-                        if (helper.isConnectionError(rollbackEx)) {
+                        if (mcf.dataStoreHelper == null ? helper.isConnectionError(rollbackEx) : mcf.dataStoreHelper.isConnectionError(rollbackEx)) {
                             if (isTraceOn && tc.isEntryEnabled())
                                 Tr.exit(this, tc, "validate", AdapterUtil.getStackTraceWithState(rollbackEx));
                             return false;
@@ -4368,9 +4368,9 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
                 } catch (SQLException cleanEx) {
                     // No FFDC coded needed
 
-                    // There is a possiblility that now the connection is stale.
+                    // There is a possibility that now the connection is stale.
 
-                    if (helper.isConnectionError(cleanEx)) {
+                    if (mcf.dataStoreHelper == null ? helper.isConnectionError(cleanEx) : mcf.dataStoreHelper.isConnectionError(cleanEx)) {
                         if (isTraceOn && tc.isEntryEnabled())
                             Tr.exit(this, tc, "validate", AdapterUtil.getStackTraceWithState(cleanEx));
                         return false;
@@ -4384,7 +4384,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
 
                     // There is a possibility that now the connection is stale.
 
-                    if (helper.isConnectionError(cleanEx)) {
+                    if (mcf.dataStoreHelper == null ? helper.isConnectionError(cleanEx) : mcf.dataStoreHelper.isConnectionError(cleanEx)) {
                         if (isTraceOn && tc.isEntryEnabled())
                             Tr.exit(this, tc, "validate", AdapterUtil.getStackTraceWithState(cleanEx));
                         return false;
@@ -4496,7 +4496,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
         } catch (SQLException e) {
             // In case the driver is not 4.1 compliant but says it is 
             String sqlMessge = e.getMessage() == null ? "" : e.getMessage();
-            if (AdapterUtil.isUnsupportedException(e))
+            if (helper.isUnsupported(e))
                 x = e;
             //try to catch any other variation of not supported, does not support, unsupported, etc.
             //this is needed by several JDBC drivers, but one known driver is DataDirect OpenEdge JDBC Driver
@@ -4576,7 +4576,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
         } catch (SQLException e) {
             // In case the driver is not 4.1 compliant but says it is 
             String sqlMessge = e.getMessage() == null ? "" : e.getMessage();
-            if (AdapterUtil.isUnsupportedException(e))
+            if (helper.isUnsupported(e))
                 x = e;
             //try to catch any other variation of not supported, does not support, unsupported, etc.
             //this is needed by several JDBC drivers, but one known driver is DataDirect OpenEdge JDBC Driver

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,14 +25,14 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.ws.messaging.JMS20security.fat.TestUtils;
+
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
-
-import com.ibm.ws.messaging.JMS20security.fat.TestUtils;
 
 @RunWith(FATRunner.class)
 public class JMSContextTest_118065 {
@@ -97,18 +97,31 @@ public class JMSContextTest_118065 {
         server.copyFileToLibertyServerRoot("resources/security",
                                            "clientLTPAKeys/mykey.jks");
 
+        TestUtils.addDropinsWebApp(server, "TemporaryQueue", "web");
+
+        startAppservers();
+    }
+
+    /**
+     * Start both the JMSConsumerClient local and remote messaging engine AppServers.
+     *
+     * @throws Exception
+     */
+    private static void startAppservers() throws Exception {
         server.setServerConfigurationFile("JMSContext_ssl.xml");
         server1.setServerConfigurationFile("TestServer1_ssl.xml");
-        TestUtils.addDropinsWebApp(server, "TemporaryQueue", "web");
-        server1.startServer("JMSContextTest_118065_Server.log");
-        String messageFromLog = server1.waitForStringInLog("CWWKF0011I.*",
-                                                           server1.getMatchingLogFile("trace.log"));
-        assertNotNull("Could not find the upload message in the new file",
-                      messageFromLog);
-
         server.startServer("JMSContextTest_118065_Client.log");
-        messageFromLog = server.waitForStringInLog("CWWKF0011I.*", server.getMatchingLogFile("messages.log"));
-        assertNotNull("Server ready message not found", messageFromLog);
+        server1.startServer("JMSContextTest_118065_Server.log");
+
+        // CWWKF0011I: The TestServer1 server is ready to run a smarter planet. The TestServer1 server started in 6.435 seconds.
+        // CWSID0108I: JMS server has started.
+        // CWWKS4105I: LTPA configuration is ready after 4.028 seconds.
+        for (String messageId : new String[] { "CWWKF0011I.*", "CWSID0108I.*", "CWWKS4105I.*" }) {
+            String waitFor = server.waitForStringInLog(messageId, server.getMatchingLogFile("messages.log"));
+            assertNotNull("Server message " + messageId + " not found", waitFor);
+            waitFor = server1.waitForStringInLog(messageId, server1.getMatchingLogFile("messages.log"));
+            assertNotNull("Server1 message " + messageId + " not found", waitFor);
+        }
     }
 
     // -----118065 ----------

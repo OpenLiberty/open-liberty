@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2020 IBM Corporation and others.
+ * Copyright (c) 2009, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -40,6 +40,8 @@ public class ParsedScheduleExpression implements Serializable {
      * The serialization version.
      */
     private static final int VERSION = 1; // d639610
+
+    private static final long ONE_HOUR_MILLIS = 60 * 60 * 1000;
 
     /**
      * Determine if the bitmask <tt>haystack</tt> contains the set bit
@@ -471,8 +473,17 @@ public class ParsedScheduleExpression implements Serializable {
         // second.  Note that the parser has already guaranteed that the start
         // time has been rounded.
         else if (lastTimeout != start && lastTimeout % 1000 != 0) {
+            long startInMillis = cal.getTimeInMillis();
             cal.set(Calendar.MILLISECOND, 0);
             cal.add(Calendar.SECOND, 1);
+            long endInMillis = cal.getTimeInMillis();
+            // If cal.set() shifted ahead by an hour due to fall daylight savings time
+            // adjustment, then reset back an hour so only advanced to next second.
+            if (endInMillis - startInMillis > ONE_HOUR_MILLIS) {
+                cal.setTimeInMillis(endInMillis - ONE_HOUR_MILLIS);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "getTimeout: first: reset back one hour due to fall DST");
+            }
         }
 
         if (!advance(cal)) {
@@ -522,9 +533,11 @@ public class ParsedScheduleExpression implements Serializable {
         //
         // Because this implementation uses java.util.Calendar, spring DST will
         // skip hour(2) (display time jumps from 1:59:59 to 3:00:00), and autumn
-        // DST will execute hour(1) only once (adding a second to a Calendar with
+        // DST would execute hour(1) only once (adding a second to a Calendar with
         // time 1:00:00 results in 2:00:00 regardless of whether it is the
-        // "first" or "second" 1AM).
+        // "first" or "second" 1AM), however an adjustment is made here for
+        // autumn DST to advance through both 1AM occurrences for timers that
+        // repeat at least once per hour.
         for (;;) {
             if (cal.getTimeInMillis() > end) {
                 if (isTraceOn && tc.isEntryEnabled())
@@ -535,7 +548,16 @@ public class ParsedScheduleExpression implements Serializable {
             if (seconds != WILD_CARD) {
                 int second = cal.get(Calendar.SECOND);
                 if (!contains(seconds, second)) {
+                    long startInMillis = cal.getTimeInMillis();
                     advance(cal, Calendar.SECOND, Calendar.MINUTE, seconds, second);
+                    long endInMillis = cal.getTimeInMillis();
+                    // If cal.set() shifted ahead by an hour due to fall daylight savings time
+                    // adjustment, then reset back an hour so only advanced to next second.
+                    if (endInMillis - startInMillis > ONE_HOUR_MILLIS) {
+                        cal.setTimeInMillis(endInMillis - ONE_HOUR_MILLIS);
+                        if (isTraceOn && tc.isDebugEnabled())
+                            Tr.debug(tc, "advance: second: reset back one hour due to fall DST");
+                    }
 
                     if (isTraceOn && tc.isDebugEnabled())
                         Tr.debug(tc, "advanced second: " + toString(cal));
@@ -546,8 +568,17 @@ public class ParsedScheduleExpression implements Serializable {
             if (minutes != WILD_CARD) {
                 int minute = cal.get(Calendar.MINUTE);
                 if (!contains(minutes, minute)) {
+                    long startInMillis = cal.getTimeInMillis();
                     cal.set(Calendar.SECOND, firstOfWildCard(seconds)); // d659945.1
                     advance(cal, Calendar.MINUTE, Calendar.HOUR_OF_DAY, minutes, minute);
+                    long endInMillis = cal.getTimeInMillis();
+                    // If cal.set() shifted ahead by an hour due to fall daylight savings time
+                    // adjustment, then reset back an hour so only advanced to next minute.
+                    if (endInMillis - startInMillis > ONE_HOUR_MILLIS) {
+                        cal.setTimeInMillis(endInMillis - ONE_HOUR_MILLIS);
+                        if (isTraceOn && tc.isDebugEnabled())
+                            Tr.debug(tc, "advance: minute: reset back one hour due to fall DST");
+                    }
 
                     if (isTraceOn && tc.isDebugEnabled())
                         Tr.debug(tc, "advanced minute: " + toString(cal));
@@ -558,10 +589,33 @@ public class ParsedScheduleExpression implements Serializable {
             if (hours != WILD_CARD) {
                 int hour = cal.get(Calendar.HOUR_OF_DAY);
                 if (!contains(hours, hour)) {
-                    // d659945.1 - Reset fields using firstOfWildCard.
+                    long startInMillis = cal.getTimeInMillis();
                     cal.set(Calendar.SECOND, firstOfWildCard(seconds));
                     cal.set(Calendar.MINUTE, firstOfWildCard(minutes));
                     advance(cal, Calendar.HOUR_OF_DAY, Calendar.DAY_OF_MONTH, hours, hour);
+                    long endInMillis = cal.getTimeInMillis();
+                    if (endInMillis - startInMillis > ONE_HOUR_MILLIS) {
+                        int endHour = cal.get(Calendar.HOUR_OF_DAY);
+                        if (endHour == 3 && !contains(hours, endHour)) {
+                            // If cal.set() shifted ahead by an hour to 3 AM due to spring daylight savings time
+                            // adjustment and that is not in the schedule, then reset back an hour so next
+                            // iteration only advances one day, not two.
+                            cal.setTimeInMillis(endInMillis - ONE_HOUR_MILLIS);
+                            if (isTraceOn && tc.isDebugEnabled())
+                                Tr.debug(tc, "advance: hour: reset back one hour due to spring DST");
+                        } else if (endHour == 1) {
+                            // If cal.set() may have shifted ahead by an hour to second 1 AM due to fall daylight
+                            // savings time adjustment, then try resetting back an hour so only advanced to first
+                            // 1 AM. Verify the reset is needed by confirming hour has not changed.
+                            cal.setTimeInMillis(endInMillis - ONE_HOUR_MILLIS);
+                            if (cal.get(Calendar.HOUR_OF_DAY) == 1) {
+                                if (isTraceOn && tc.isDebugEnabled())
+                                    Tr.debug(tc, "advance: hour: reset back one hour due to fall DST");
+                            } else {
+                                cal.setTimeInMillis(endInMillis);
+                            }
+                        }
+                    }
 
                     if (isTraceOn && tc.isDebugEnabled())
                         Tr.debug(tc, "advanced hour: " + toString(cal));

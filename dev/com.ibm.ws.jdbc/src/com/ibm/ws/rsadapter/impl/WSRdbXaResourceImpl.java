@@ -1082,9 +1082,6 @@ public class WSRdbXaResourceImpl implements WSXAResource, FFDCSelfIntrospectable
         this.ivXid = xid;
 
         try {
-            // TODO if we add dsConfig.transactionBranchesLooselyCoupled, then for Oracle, do
-            // flags |= 0x10000; // value of oracle.jdbc.xa.OracleXAResource.ORATRANSLOOSE
-
             ivXaRes.start(xid, flags);
             ivStateManager.setState(WSStateManager.XA_START);
         } catch (TransactionException te) {
@@ -1204,7 +1201,9 @@ public class WSRdbXaResourceImpl implements WSXAResource, FFDCSelfIntrospectable
                 {
                     Tr.debug(this, tc, "Authorization Exception is chanined to the XAException");
                 }
-            } else if (ivManagedConnection.helper.isConnectionError(cause)) {
+            } else if (ivManagedConnection.mcf.dataStoreHelper == null
+                       ? ivManagedConnection.helper.isConnectionError(cause)
+                       : ivManagedConnection.mcf.dataStoreHelper.isConnectionError(cause)) {
                 connError = true;
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) 
                 {

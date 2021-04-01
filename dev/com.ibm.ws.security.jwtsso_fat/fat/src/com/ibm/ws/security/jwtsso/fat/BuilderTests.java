@@ -143,7 +143,6 @@ public class BuilderTests extends CommonJwtssoFat {
         //verifyJwtHeaderDoesNotContainKey(jwtCookie.getValue(), "kid");
 
         actions.destroyWebClient(webClient);
-
     }
 
 }

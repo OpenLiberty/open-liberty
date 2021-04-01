@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2006 IBM Corporation and others.
+ * Copyright (c) 2005, 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -92,7 +92,8 @@ public class WsByteBufferPoolManagerImpl implements WsByteBufferPoolManager {
     private long lastTimeCheck = 0L;
     private int leakDetectionInterval = -1;
     private String leakDetectionOutput = null;
-    private final Integer leakDetectionSyncObject = new Integer(1);
+    private final Object leakDetectionSyncObject = new Object() {
+    };
 
     /**
      * Create the one WsByteBufferPool Manager that is to be used.

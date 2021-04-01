@@ -75,8 +75,9 @@ public class BookContinuationStore {
     @Path("/books/timeouthandler/{id}")
     public void getBookDescriptionWithHandler(@PathParam("id") String id,
                                               @Suspended AsyncResponse async) {
-        async.setTimeout(1000, TimeUnit.MILLISECONDS);
+        System.out.println("DEBUG getBookDescriptionWithHandler id = " + id + " async = " + async);
         async.setTimeoutHandler(new TimeoutHandlerImpl(id, false));
+        async.setTimeout(1000, TimeUnit.MILLISECONDS);
     }
 
     @GET
@@ -159,7 +160,7 @@ public class BookContinuationStore {
         try {
             Thread.sleep(3000);
         } catch (InterruptedException ex) {
-            // ignore 
+            // ignore
         }
 
         response.resume(books.values().toString());
@@ -232,10 +233,13 @@ public class BookContinuationStore {
 
         @Override
         public void handleTimeout(AsyncResponse asyncResponse) {
+            System.out.println("DEBUG handleTimeout >> " + id + "   asyncResponse = " + asyncResponse);
             if (!resumeOnly && timeoutExtendedCounter.addAndGet(1) <= 2) {
                 asyncResponse.setTimeout(1, TimeUnit.SECONDS);
+                System.out.println("DEBUG handleTimeout << " + id + " set new timeout - counter: " + timeoutExtendedCounter.get());
             } else {
                 asyncResponse.resume(books.get(id));
+                System.out.println("DEBUG handleTimeout << " + id + " resume ");
             }
         }
 

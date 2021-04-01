@@ -1682,8 +1682,13 @@ public interface WIMMessageKey {
     String IDMAP_INVALID_FORMAT = "IDMAP_INVALID_FORMAT";
 
     /**
-     * KRB5_SERVICE_NOT_AVAILABLE=CWIML4521E: The {0} LdapRegistry attempted to bind to the Ldap server using Kerberos credentials for {1} principal name, but the KerberosService
+     * CWIML4521E: The {0} LdapRegistry attempted to bind to the Ldap server using Kerberos credentials for {1} principal name, but the KerberosService
      * is not available. The bind authentication mechanism is {2}.
      */
     String KRB5_SERVICE_NOT_AVAILABLE = "KRB5_SERVICE_NOT_AVAILABLE";
+
+    /**
+     * CWIML4523E: The {0} value for {1} is invalid. It requires an attribute value assertion where the value assertion is =%v. For example, {2}.
+     */
+    String FILTER_MISSING_PERCENT_V = "FILTER_MISSING_PERCENT_V";
 }

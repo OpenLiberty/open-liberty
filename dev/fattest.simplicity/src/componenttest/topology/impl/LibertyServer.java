@@ -2639,7 +2639,13 @@ public class LibertyServer implements LogMonitorClient {
 
         String runLevel = RepeatTestFilter.getMostRecentRepeatAction();
 
-        String logDirectoryName = pathToAutoFVTOutputServersFolder + "/" + serverToUse + "-" + runLevel + "-" + sdf.format(d);
+        String logDirectoryName = "";
+        if (runLevel == null || runLevel.isEmpty()) {
+            logDirectoryName = pathToAutoFVTOutputServersFolder + "/" + serverToUse + "-" + sdf.format(d);
+        }
+        else {
+            logDirectoryName = pathToAutoFVTOutputServersFolder + "/" + serverToUse + "-" + runLevel + "-" + sdf.format(d);
+        }
         LocalFile logFolder = new LocalFile(logDirectoryName);
         RemoteFile serverFolder = new RemoteFile(machine, serverRoot);
 

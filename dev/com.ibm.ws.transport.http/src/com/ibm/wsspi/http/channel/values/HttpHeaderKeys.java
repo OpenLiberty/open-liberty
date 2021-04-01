@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2019 IBM Corporation and others.
+ * Copyright (c) 2004, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -222,6 +222,8 @@ public class HttpHeaderKeys extends HeaderKeys {
     public static final HttpHeaderKeys HDR_X_FORWARDED_PROTO = new HttpHeaderKeys("X-Forwarded-Proto");
     /** Private WAS header used by the HTTP Session Manager to determine if a request is failed over */
     public static final HttpHeaderKeys HDR_$WSFO = new HttpHeaderKeys("$WSFO");
+
+    public static final HttpHeaderKeys HDR_HSTS = new HttpHeaderKeys("Strict-Transport-Security");
     /** Max value of header keys that will be kept in key storage */
     public static final int ORD_MAX = 1024;
 

@@ -65,7 +65,7 @@ Include-Resource: \
   com.ibm.ws.webcontainer,\
   com.ibm.ws.managedobject,\
   com.google.code.findbugs:jsr305;version=3.0.2,\
-  com.google.guava:guava;version=27.0.1,\
+  com.google.guava:guava;version=30.1,\
   com.ibm.ws.security.authorization.util,\
   io.openliberty.grpc.1.0.internal.common;version=latest,\
   io.openliberty.io.grpc.1.0;version=latest,\

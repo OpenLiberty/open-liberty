@@ -45,15 +45,12 @@ public class SybaseHelper extends DatabaseHelper
     SybaseHelper(WSManagedConnectionFactoryImpl mcf) {
         super(mcf);
 
+        dataStoreHelper = "com.ibm.websphere.rsadapter.Sybase11DataStoreHelper";
+
         mcf.defaultIsolationLevel = Connection.TRANSACTION_REPEATABLE_READ;
         mcf.supportsGetTypeMap = false;
-    }
-    
-    @Override
-    void customizeStaleStates() {
-        super.customizeStaleStates();
         
-        Collections.addAll(staleSQLStates,
+        Collections.addAll(staleConCodes,
                            "JZ0C0",
                            "JZ0C1");
     }
@@ -204,7 +201,7 @@ public class SybaseHelper extends DatabaseHelper
             super.gatherAndDisplayMetaDataInfo(conn, mcf);                 
         } catch (SQLException x)
         {
-            if (isConnectionError(x))
+            if (mcf.dataStoreHelper == null ? isConnectionError(x) : mcf.dataStoreHelper.isConnectionError(x))
                 throw x;
 
             Tr.info(tc, "META_DATA_EXCEPTION", x.getMessage());

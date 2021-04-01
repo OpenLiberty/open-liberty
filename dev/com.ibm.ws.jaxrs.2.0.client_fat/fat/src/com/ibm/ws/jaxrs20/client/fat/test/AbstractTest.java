@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,7 +33,7 @@ public class AbstractTest extends FATServletClient {
 
     protected LibertyServer serverRef;
 
-    protected void runTestOnServer(String target, String testMethod, Map<String, String> params, String expectedResponse) throws ProtocolException, MalformedURLException, IOException {
+    protected void runTestOnServer(String target, String testMethod, Map<String, String> params, String... expectedResponses) throws ProtocolException, MalformedURLException, IOException {
 
         //build basic URI
         StringBuilder sBuilder = new StringBuilder("http://").append(serverRef.getHostname())
@@ -77,6 +77,13 @@ public class AbstractTest extends FATServletClient {
         }
 
         Log.info(this.getClass(), testMethod, "The response: " + logOutput.toString());
-        assertTrue("Real response is " + line + " and the expected response is " + expectedResponse, line.contains(expectedResponse));
+        boolean foundExpectedResponse = false;
+        for (String expectedResponse : expectedResponses) {
+            if (line.contains(expectedResponse)) {
+                foundExpectedResponse = true;
+                break;
+            }
+        }
+        assertTrue("Real response is " + line + " and the expected response is one of " + String.join(" | ", expectedResponses),  foundExpectedResponse);
     }
 }

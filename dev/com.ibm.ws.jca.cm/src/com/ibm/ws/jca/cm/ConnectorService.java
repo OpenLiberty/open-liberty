@@ -72,7 +72,7 @@ public abstract class ConnectorService {
     /**
      * Get a translated message from J2CAMessages file.
      *
-     * @param key message key.
+     * @param key  message key.
      * @param args message parameters
      * @return a translated message.
      */
@@ -100,19 +100,26 @@ public abstract class ConnectorService {
      * This is copied from Tim's code in tWAS and updated slightly to
      * override with the Liberty ignore/warn/fail setting.
      *
-     * @param tc the TraceComponent from where the message originates
-     * @param throwable an already created Throwable object, which can be used if the desired action is fail.
+     * @param tc                    the TraceComponent from where the message originates
+     * @param throwable             an already created Throwable object, which can be used if the desired action is fail.
      * @param exceptionClassToRaise the class of the Throwable object to return
-     * @param msgKey the NLS message key
-     * @param objs list of objects to substitute in the NLS message
+     * @param msgKey                the NLS message key
+     * @param objs                  list of objects to substitute in the NLS message
      * @return either null or the Throwable object
      */
     public abstract <T extends Throwable> T ignoreWarnOrFail(TraceComponent tc, Throwable throwable, Class<T> exceptionClassToRaise, String msgKey, Object... objs);
 
     /**
+     * Indicates if heritage behavior is enabled.
+     *
+     * @return true if heritage/legacy behavior is enabled, otherwise false.
+     */
+    public abstract boolean isHeritageEnabled();
+
+    /**
      * Logs a message from the J2CAMessages file.
      *
-     * @param key message key.
+     * @param key  message key.
      * @param args message parameters
      */
     public static final void logMessage(Level level, String key, Object... args) {

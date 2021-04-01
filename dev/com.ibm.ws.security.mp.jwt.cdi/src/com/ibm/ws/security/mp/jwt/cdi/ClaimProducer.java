@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,6 +26,7 @@ import javax.json.JsonArray;
 import javax.json.JsonNumber;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
+import javax.json.JsonReaderFactory;
 import javax.json.JsonString;
 import javax.json.JsonStructure;
 import javax.json.JsonValue;
@@ -43,6 +44,8 @@ import com.ibm.websphere.ras.TraceComponent;
 public class ClaimProducer {
 
     private static final TraceComponent tc = Tr.register(ClaimProducer.class);
+
+    private static final JsonReaderFactory readerFactory = Json.createReaderFactory(null);
 
     @Inject
     private JsonWebToken jsonWebToken;
@@ -164,7 +167,7 @@ public class ClaimProducer {
     // TODO: Determine how to match JsonValue.TRUE/FALSE
 
     private JsonValue getAsJsonValue(String claimName) {
-        JsonReader reader = Json.createReader(new StringReader(jsonWebToken.toString()));
+        JsonReader reader = readerFactory.createReader(new StringReader(jsonWebToken.toString()));
         JsonObject jsonObject = reader.readObject();
         return jsonObject.get(claimName);
     }

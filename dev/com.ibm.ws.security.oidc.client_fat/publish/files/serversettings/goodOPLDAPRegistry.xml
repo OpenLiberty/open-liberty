@@ -1,0 +1,34 @@
+<!--
+    Copyright (c) 2021 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+	<ldapRegistry
+		id="LDAP"
+		realm="SampleLdapIDSRealm"
+		host="${ldap.server.8.name}"
+		port="${ldap.server.8.port}"
+		ignoreCase="true"
+		baseDN="o=ibm,c=us"
+		userFilter="(&amp;(uid=%v)(objectclass=ePerson))"
+		groupFilter="(&amp;(cn=%v)(|(objectclass=groupOfNames)(objectclass=groupOfUniqueNames)))"
+		userIdMap="*:uid"
+		groupIdMap="*:cn"
+		groupMemberIdMap="ibm-allGroups:member;ibm-allGroups:uniqueMember"
+		ldapType="IBM Tivoli Directory Server"
+		searchTimeout="8m"
+	>
+		<failoverServers name="failoverLdapServers">
+			<server
+				host="${ldap.server.4.name}"
+				port="${ldap.server.4.port}" />
+		</failoverServers>
+	</ldapRegistry>
+</server>

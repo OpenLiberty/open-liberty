@@ -91,7 +91,7 @@ public class ORBConfigAdapter implements com.ibm.ws.transport.iiop.config.Config
      * @exception ConfigException if configuration cannot be interpreted
      */
     private String[] translateToTargetArgs(Map<String, Object> props, Collection<SubsystemFactory> subsystemFactories) throws ConfigException {
-        ArrayList<String> list = new ArrayList<String>();
+        ArrayList<String> list = new ArrayList<>();
 
         for (SubsystemFactory sf : subsystemFactories) {
             sf.addTargetORBInitArgs(props, list);
@@ -105,7 +105,7 @@ public class ORBConfigAdapter implements com.ibm.ws.transport.iiop.config.Config
     }
 
     private Properties translateToTargetProps(Map<String, Object> config, Map<String, Object> extraConfig, List<IIOPEndpoint> endpoints,
-                                              Collection<SubsystemFactory> subsystemFactories) throws ConfigException {
+                                              Collection<SubsystemFactory> subsystemFactories) {
         Properties result = createYokoORBProperties();
         for (SubsystemFactory sf : subsystemFactories) {
             addInitializerPropertyForSubsystem(result, sf, true);
@@ -152,7 +152,7 @@ public class ORBConfigAdapter implements com.ibm.ws.transport.iiop.config.Config
      * @exception ConfigException if configuration cannot be interpreted
      */
     private String[] translateToClientArgs(Map<String, Object> clientProps, Collection<SubsystemFactory> subsystemFactories) throws ConfigException {
-        ArrayList<String> list = new ArrayList<String>();
+        ArrayList<String> list = new ArrayList<>();
 
         for (SubsystemFactory sf : subsystemFactories) {
             sf.addClientORBInitArgs(clientProps, list);

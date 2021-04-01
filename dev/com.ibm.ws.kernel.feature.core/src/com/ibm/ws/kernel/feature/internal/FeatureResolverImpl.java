@@ -257,7 +257,10 @@ public class FeatureResolverImpl implements FeatureResolver {
 
         // Return the best solution found
         selectionContext.restoreBestSolution();
-        return selectionContext.getResult().getResolvedFeatures();
+        Set<String> resolvedFeatures = selectionContext.getResult().getResolvedFeatures();
+        // return a copy to make sure the returned results do not change in another iteration
+        // over auto features
+        return new LinkedHashSet<String>(resolvedFeatures);
     }
 
     Set<String> processCurrentPermutation(Collection<String> rootFeatures, Set<String> preResolved, SelectionContext selectionContext) {
@@ -1000,6 +1003,11 @@ public class FeatureResolverImpl implements FeatureResolver {
         }
 
         ResultImpl setResolvedFeatures(Collection<String> resolved) {
+            // NOTE: This should replace any existing resolved.
+            // When processing auto-features we start with
+            // an already processed permutation with a result
+            // we must replace that with this new set of resolved
+            _resolved.clear();
             _resolved.addAll(resolved);
             return this;
         }

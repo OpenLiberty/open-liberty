@@ -15,8 +15,6 @@ src: \
 	fat/src,\
 	test-applications/transaction/src
 
--sub: *.bnd
-
 fat.project: true
 
 

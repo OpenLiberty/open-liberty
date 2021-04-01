@@ -12,6 +12,7 @@ package test.jdbc.heritage.driver.helper;
 
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.lang.reflect.Constructor;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
@@ -20,6 +21,12 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
+import java.sql.SQLNonTransientConnectionException;
+import java.sql.SQLRecoverableException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -27,11 +34,16 @@ import java.util.concurrent.atomic.AtomicReference;
 import javax.security.auth.Subject;
 import javax.transaction.xa.XAException;
 
+import com.ibm.websphere.ce.cm.DuplicateKeyException;
+import com.ibm.websphere.ce.cm.StaleConnectionException;
+import com.ibm.websphere.ce.cm.StaleStatementException;
 import com.ibm.ws.jdbc.heritage.AccessIntent;
 import com.ibm.ws.jdbc.heritage.DataStoreHelperMetaData;
 import com.ibm.ws.jdbc.heritage.GenericDataStoreHelper;
 
 import test.jdbc.heritage.driver.HDConnection;
+import test.jdbc.heritage.driver.HeritageDBConnection;
+import test.jdbc.heritage.driver.HeritageDBDoesNotImplementItException;
 
 /**
  * Data store helper for the test JDBC driver.
@@ -42,6 +54,21 @@ public class HDDataStoreHelper extends GenericDataStoreHelper {
     private final int defaultQueryTimeout;
 
     private AtomicReference<?> dsConfigRef;
+
+    private Map<Object, Class<?>> exceptionIdentificationOverrides = Collections.emptyMap();
+
+    private static final Map<Object, Class<?>> exceptionMap = new HashMap<Object, Class<?>>();
+    {
+        exceptionMap.put(44098, StaleConnectionException.class); // vendor-specific error code for when isValid fails
+        exceptionMap.put("22013", StaleStatementException.class);
+        exceptionMap.put("08000", StaleConnectionException.class);
+        exceptionMap.put("08001", HeritageDBStaleConnectionException.class);
+        exceptionMap.put("08003", StaleConnectionException.class);
+        exceptionMap.put("08004", StaleConnectionException.class); // identifyException removes this mapping
+        exceptionMap.put("08006", StaleConnectionException.class);
+        exceptionMap.put("0A000", HeritageDBFeatureUnavailableException.class);
+        exceptionMap.put("23000", DuplicateKeyException.class);
+    }
 
     public HDDataStoreHelper(Properties props) {
         String value = props == null ? null : props.getProperty("queryTimeout");
@@ -65,6 +92,8 @@ public class HDDataStoreHelper extends GenericDataStoreHelper {
 
     @Override
     public void doConnectionSetup(Connection con) throws SQLException {
+        ((HDConnection) con).setExceptionIdentificationOverrides(exceptionIdentificationOverrides);
+
         try (CallableStatement stmt = con.prepareCall("CALL SYSCS_UTIL.SYSCS_SET_RUNTIMESTATISTICS(1)")) {
             stmt.setPoolable(false);
             stmt.execute();
@@ -121,8 +150,64 @@ public class HDDataStoreHelper extends GenericDataStoreHelper {
 
     @Override
     public String getXAExceptionContents(XAException x) {
-        // This ought to be unreachable for non-xa-capable javax.sql.DataSource.
-        throw new UnsupportedOperationException("This driver does not provide an XADataSource.");
+        return x.getClass().getName() + "(error code " + x.errorCode + "): " + x.getMessage() + " caused by " + x.getCause();
+    }
+
+    @Override
+    public boolean isConnectionError(SQLException x) {
+        return x instanceof SQLRecoverableException
+               || x instanceof SQLNonTransientConnectionException
+               || x instanceof StaleConnectionException
+               || mapException(x) instanceof StaleConnectionException;
+    }
+
+    @Override
+    public boolean isUnsupported(SQLException x) {
+        return x instanceof SQLFeatureNotSupportedException
+               || x instanceof HeritageDBDoesNotImplementItException
+               || x instanceof HeritageDBFeatureUnavailableException;
+    }
+
+    @Override
+    public SQLException mapException(SQLException x) {
+        String sqlState = x.getSQLState();
+        int errorCode = x.getErrorCode();
+        Class<?> exceptionClass = exceptionIdentificationOverrides.get(errorCode);
+        if (exceptionClass == null) {
+            exceptionClass = exceptionIdentificationOverrides.get(sqlState);
+            if (exceptionClass == null) {
+                exceptionClass = exceptionMap.get(errorCode);
+                if (exceptionClass == null) {
+                    exceptionClass = exceptionMap.get(sqlState);
+                    if (exceptionClass == null)
+                        return x;
+                }
+            }
+        }
+
+        System.out.println("datastorehelper.mapException sqlState: " + sqlState + ", errorCode: " + errorCode + " " + x.getClass().getName());
+        System.out.println("  --> " + exceptionClass.getName());
+        System.out.println("  based on map:  " + exceptionMap);
+        System.out.println("  and overrides: " + exceptionIdentificationOverrides);
+
+        if (Void.class.equals(exceptionClass))
+            return x;
+
+        try {
+            @SuppressWarnings("unchecked")
+            final Class<? extends SQLException> sqlXClass = (Class<? extends SQLException>) exceptionClass;
+            return AccessController.doPrivileged((PrivilegedExceptionAction<SQLException>) () -> {
+                Constructor<? extends SQLException> ctor = sqlXClass.getConstructor(SQLException.class);
+                return ctor.newInstance(x);
+            });
+        } catch (PrivilegedActionException privX) {
+            return new SQLException(privX);
+        }
+    }
+
+    @Override
+    public int modifyXAFlag(int xaStartFlags) {
+        return xaStartFlags |= HeritageDBConnection.LOOSELY_COUPLED_TRANSACTION_BRANCHES;
     }
 
     private Object readConfig(String fieldName) {
@@ -138,5 +223,11 @@ public class HDDataStoreHelper extends GenericDataStoreHelper {
     @Override
     public void setConfig(Object configRef) {
         dsConfigRef = (AtomicReference<?>) configRef;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public void setUserDefinedMap(@SuppressWarnings("rawtypes") Map map) {
+        exceptionIdentificationOverrides = map;
     }
 }

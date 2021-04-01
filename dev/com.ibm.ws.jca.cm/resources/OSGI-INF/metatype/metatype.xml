@@ -34,9 +34,20 @@
   <AD id="reapTime"                           name="%reapTime"     description="%reapTime.desc"     default="3m"     type="String" ibm:type="duration(s)" min="-1"/>
   <!-- Advanced properties for connectionManager -->
   <AD id="autoCloseConnections"               name="%autoCloseCon"  description="%autoCloseCon.desc"  ibmui:group="Advanced" default="true"   type="Boolean"/>
+  <AD id="enableContainerAuthForDirectLookups"      name="%enableContainerAuth" description="%enableContainerAuth.desc" ibmui:group="Advanced" default="false"   type="Boolean"/>
   <AD id="enableSharingForDirectLookups"      name="%enableSharing" description="%enableSharing.desc" ibmui:group="Advanced" default="true"   type="Boolean"/>
   <AD id="maxConnectionsPerThread"            name="%maxConPerThd"  description="%maxConPerThd.desc"  ibmui:group="Advanced" required="false" type="Integer" min="0"/>
   <AD id="numConnectionsPerThreadLocal"       name="%numConPerThd"  description="%numConPerThd.desc"  ibmui:group="Advanced" required="false" type="Integer" min="0"/>
+ </OCD>
+
+ <!-- Connector Service (internal) -->
+
+ <Designate factoryPid="com.ibm.ws.jca.connector">
+  <Object ocdref="com.ibm.ws.jca.connector" />
+ </Designate>
+
+ <OCD id="com.ibm.ws.jca.connector" ibm:alias="connectorService" name="internal" description="internal use only">
+  <AD id="enableHeritageBehavior" type="Boolean" default="false" name="internal" description="internal use only"/>
  </OCD>
 
 </metatype:MetaData>

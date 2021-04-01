@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.nio.file.CopyOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -310,10 +311,12 @@ public class JakartaEE9Action extends FeatureReplacementAction {
                     if (!Files.exists(backupAppPath)) {
                         Files.createFile(backupAppPath);
                     }
+
                     // move original to backup
-                    Files.move(appPath, backupAppPath, StandardCopyOption.REPLACE_EXISTING);
+                    retryableMove(appPath, backupAppPath, StandardCopyOption.REPLACE_EXISTING);
+
                     // rename jakarta app to the original filename
-                    Files.move(outputPath, appPath);
+                    retryableMove(outputPath, appPath);
                 }
             } else {
                 throw new RuntimeException("Jakarta transformer failed for: " + appPath);
@@ -333,5 +336,42 @@ public class JakartaEE9Action extends FeatureReplacementAction {
             }
             Log.info(c, m, "Transforming complete app: " + outputPath);
         }
+    }
+
+    /**
+     * A move with retries built in. This is particularly useful for when encountering an issue on Windows where the JakartaTransformer applications has finished executing, but
+     * files it accessed may still not have had their handles released by the system.
+     *
+     * @param  source      The source path.
+     * @param  target      The target path.
+     * @param  options     Copy options.
+     * @return             The path of the copied file.
+     * @throws IOException If the source path was unable to be moved.
+     */
+    private static Path retryableMove(Path source, Path target, CopyOption... options) throws IOException {
+        IOException failure = null;
+        boolean issuedMsg = false;
+        for (int idx = 0; idx < 30; idx++) {
+            try {
+                return Files.move(source, target, options);
+            } catch (IOException e) {
+                if (!issuedMsg) {
+                    Log.warning(c, "retryableMove - Failed to move file, will retry for 30 seconds: " + e);
+                    issuedMsg = true;
+                }
+
+                /*
+                 * On windows we often see java.nio.file.FileSystemException with error message:
+                 * "The process cannot access the file because it is being used by another process"
+                 */
+                failure = e; // Save for later.
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e1) {
+                    /* Ignore. Try again. */
+                }
+            }
+        }
+        throw failure;
     }
 }

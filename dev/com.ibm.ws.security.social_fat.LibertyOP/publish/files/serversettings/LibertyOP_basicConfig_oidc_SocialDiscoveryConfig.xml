@@ -1,0 +1,255 @@
+<!-- 
+/*******************************************************************************
+ * Copyright (c) 2021 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+-->
+<server>
+
+	<oidcLogin
+		id="oidcLogin1"
+		signatureAlgorithm="RS256"
+		scope="profile email openid"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		discoveryEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/.well-known/openid-configuration"
+		authFilterRef="authFilter1"
+		hostNameVerificationEnabled="false"
+	>
+	</oidcLogin>
+
+	<oidcLogin
+		id="oidcLogin_badClientId"
+		signatureAlgorithm="RS256"
+		scope="profile email openid"
+		userNameAttribute="sub"
+		clientId="client09"
+		clientSecret="secret"
+		discoveryEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/.well-known/openid-configuration"
+		authFilterRef="authFilter_badClientId"
+		hostNameVerificationEnabled="false"
+	>
+	</oidcLogin>
+	
+	<oidcLogin
+		id="oidcLogin_blankClientSecret"
+		signatureAlgorithm="RS256"
+		scope="profile email openid"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret=" "
+		discoveryEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/.well-known/openid-configuration"
+		authFilterRef="authFilter_blankClientSecret"
+		hostNameVerificationEnabled="false"
+	>
+	</oidcLogin>
+	
+		<oidcLogin
+		id="oidcLogin_enabledTrue"
+		enabled="true"
+		signatureAlgorithm="RS256"
+		scope="profile email openid"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		discoveryEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/.well-known/openid-configuration"
+		authFilterRef="authFilter_enabledTrue"
+		hostNameVerificationEnabled="false"
+	>
+	</oidcLogin>
+
+	<oidcLogin
+		id="oidcLogin_enabledFalse"
+		enabled="false"
+		signatureAlgorithm="RS256"
+		scope="profile email openid"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		discoveryEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/.well-known/openid-configuration"
+		authFilterRef="authFilter_enabledFalse"
+		hostNameVerificationEnabled="false"
+	>
+	</oidcLogin>
+	
+		<oidcLogin
+		id="oidcLogin_badAuthFilterRef"
+		signatureAlgorithm="RS256"
+		scope="profile email openid"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		discoveryEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/.well-known/openid-configuration"
+		authFilterRef="authFilter_badAuthFilterRef"
+		hostNameVerificationEnabled="false"
+	>
+	</oidcLogin>
+	
+		<oidcLogin
+		id="oidcLogin_tEAM_clientSecretBasic"
+		signatureAlgorithm="RS256"
+		scope="profile email openid"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		discoveryEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/.well-known/openid-configuration"
+		tokenEndpointAuthMethod="client_secret_basic"
+		authFilterRef="authFilter_tEAM_clientSecretBasic"
+		hostNameVerificationEnabled="false"
+	>
+	</oidcLogin>
+
+	<oidcLogin
+		id="oidcLogin_tEAM_clientSecretPost"
+		signatureAlgorithm="RS256"
+		scope="profile email openid"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		discoveryEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/.well-known/openid-configuration"
+		tokenEndpointAuthMethod="client_secret_post"
+		authFilterRef="authFilter_tEAM_clientSecretPost"
+		hostNameVerificationEnabled="false"
+	>
+	</oidcLogin>
+	
+	<oidcLogin
+		id="oidcLogin_realmName"
+		signatureAlgorithm="RS256"
+		scope="profile email openid"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		discoveryEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/.well-known/openid-configuration"
+		realmName="myLibertyOPRealm"
+		authFilterRef="authFilter_realmName"
+		hostNameVerificationEnabled="false"
+	>
+	</oidcLogin>
+	
+	<oidcLogin
+		id="oidcLogin_mapToUserRegistryFalse"
+		signatureAlgorithm="RS256"
+		scope="profile email openid"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		discoveryEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/.well-known/openid-configuration"
+		mapToUserRegistry="false"
+		authFilterRef="authFilter_mapToUserRegistryFalse"
+		hostNameVerificationEnabled="false"
+	>
+	</oidcLogin>
+
+	<oidcLogin
+		id="oidcLogin_mapToUserRegistryTrue"
+		signatureAlgorithm="RS256"
+		scope="profile email openid"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		discoveryEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/.well-known/openid-configuration"
+		mapToUserRegistry="true"
+		authFilterRef="authFilter_mapToUserRegistryTrue"
+		hostNameVerificationEnabled="false"
+	>
+	</oidcLogin>
+	
+	<oidcLogin
+		id="oidcLogin_goodjwt_builder"
+		signatureAlgorithm="RS256"
+		scope="profile email openid"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		discoveryEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/.well-known/openid-configuration"
+		authFilterRef="authFilter_good_jwt_builder"
+		hostNameVerificationEnabled="false"
+	>
+		<jwt builder="goodJwtBuilder" />
+	</oidcLogin>
+
+	<oidcLogin
+		id="oidcLogin_jwt_builder_HS256"
+		signatureAlgorithm="RS256"
+		scope="profile email openid"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		discoveryEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/.well-known/openid-configuration"
+		authFilterRef="authFilter_jwt_builder_HS256"
+		hostNameVerificationEnabled="false"
+	>
+		<jwt builder="goodJwtBuilder_HS256" />
+	</oidcLogin>
+	
+
+	<oidcLogin
+		id="oidcLogin_badScope"
+		signatureAlgorithm="RS256"
+		scope="my dog has fleas"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		discoveryEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/.well-known/openid-configuration"
+		authFilterRef="authFilter_badScope"
+		hostNameVerificationEnabled="false"
+	>
+	</oidcLogin>
+	
+	<oidcLogin
+		id="oidcLogin_addParms"
+		signatureAlgorithm="RS256"
+		scope="profile email openid"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		discoveryEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/.well-known/openid-configuration"
+		authFilterRef="authFilter_addParms"
+		hostNameVerificationEnabled="false"
+	>
+	    <authzParameter name="mq_authz1" value="mqa1234" />
+        <tokenParameter name="mq_token1" value="mqt1234" />
+        <authzParameter name="mq_authz2" value="mqa_5678" />
+        <tokenParameter name="mq_token2" value="mqt_5678" />
+	</oidcLogin>
+	
+
+	<oidcLogin
+		id="oidcLogin_addBadParms"
+		signatureAlgorithm="RS256"
+		scope="profile email openid"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		discoveryEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/.well-known/openid-configuration"
+		authFilterRef="authFilter_addBadParms"
+		hostNameVerificationEnabled="false"
+	>
+		<authzParameter  value="mqa1234" />
+        <tokenParameter name="mq_token1" value="" />
+	</oidcLogin>
+	
+	<oidcLogin
+		id="oidcLogin_forwardLoginParameter"
+		signatureAlgorithm="RS256"
+		scope="profile email openid"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="secret"
+		discoveryEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/.well-known/openid-configuration"
+		authFilterRef="authFilter_forwardLoginParameter"
+		forwardLoginParameter="login_hint,ui_locales"
+		hostNameVerificationEnabled="false"
+	>
+		<authzParameter name="mq_authz1" value="mqa1234" />
+	</oidcLogin>
+
+</server>

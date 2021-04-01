@@ -666,7 +666,6 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog {
                 Tr.debug(tc, "Have deleted row with return: " + ret + ", commit the change");
 
             conn.commit();
-            Tr.audit(tc, "WTRN0108I: Deleted Lease for server with recovery identity " + recoveryIdentity);
         }
         // Catch and report an SQLException. In the finally block we'll determine whether the condition is transient or not.
         catch (SQLException sqlex) {

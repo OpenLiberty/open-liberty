@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2020 IBM Corporation and others.
+ * Copyright (c) 1997, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1823,7 +1823,7 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         Subject subj = null;
         if (this.containerManagedAuth) {
-            final Map<String, Object> loginConfigProps = (Map<String, Object>) this.cmConfig.getLoginConfigProperties().clone();
+            final Map<String, Object> loginConfigProps = new HashMap<String, Object>(this.cmConfig.getLoginConfigProperties());
             String name = this.cmConfig.getLoginConfigurationName();
             final String loginConfigurationName = name == null ? connectionFactorySvc.getJaasLoginContextEntryName() : name;
 
