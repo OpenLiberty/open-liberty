@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2020 IBM Corporation and others.
+ * Copyright (c) 2015, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,23 +10,21 @@
  *******************************************************************************/
 package io.openliberty.wsoc.tests;
 
-import java.util.Set;
 import java.util.logging.Logger;
 
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.ws.fat.util.LoggingTest;
-import com.ibm.ws.fat.util.SharedServer;
 
+import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.topology.impl.LibertyServer;
 import io.openliberty.wsoc.endpoints.client.basic.AnnotatedClientEP;
 import io.openliberty.wsoc.util.OnlyRunNotOnZRule;
 import io.openliberty.wsoc.util.WebServerSetup;
@@ -36,17 +34,18 @@ import io.openliberty.wsoc.util.wsoc.WsocTest;
  *
  */
 @RunWith(FATRunner.class)
-public class MiscellaneousTest extends LoggingTest {
+public class MiscellaneousTest {
+    public static final String SERVER_NAME = "miscellaneousTestServer";
+    @Server(SERVER_NAME)
 
-    @ClassRule
-    public static SharedServer SS = new SharedServer("miscellaneousTestServer", false);
+    public static LibertyServer LS;
 
-    private static WebServerSetup bwst = new WebServerSetup(SS);
+    private static WebServerSetup bwst = null;
 
     @Rule
     public final TestRule notOnZRule = new OnlyRunNotOnZRule();
 
-    private final WsocTest wt = new WsocTest(SS, false);
+    private static WsocTest wt = null;
 
     private static final Logger LOG = Logger.getLogger(MiscellaneousTest.class.getName());
 
@@ -62,16 +61,14 @@ public class MiscellaneousTest extends LoggingTest {
                                                                    "io.openliberty.wsoc.tests.all",
                                                                    "io.openliberty.wsoc.endpoints.client.basic");
         MiscellaneousApp = (WebArchive) ShrinkHelper.addDirectory(MiscellaneousApp, "test-applications/" + MISCELLANEOUS_WAR_NAME + ".war/resources");
-        // Verify if the apps are in the server before trying to deploy them
-        if (SS.getLibertyServer().isStarted()) {
-            Set<String> appInstalled = SS.getLibertyServer().getInstalledAppNames(MISCELLANEOUS_WAR_NAME);
-            LOG.info("addAppToServer : " + MISCELLANEOUS_WAR_NAME + " already installed : " + !appInstalled.isEmpty());
-            if (appInstalled.isEmpty())
-                ShrinkHelper.exportDropinAppToServer(SS.getLibertyServer(), MiscellaneousApp);
-        }
-        SS.startIfNotStarted();
-        SS.getLibertyServer().waitForStringInLog("CWWKZ0001I.* " + MISCELLANEOUS_WAR_NAME);
+        ShrinkHelper.exportDropinAppToServer(LS, MiscellaneousApp);
+
+        LS.startServer();
+        LS.waitForStringInLog("CWWKZ0001I.* " + MISCELLANEOUS_WAR_NAME);
+
+        bwst = new WebServerSetup(LS);
         bwst.setUp();
+        wt = new WsocTest(LS, false);
     }
 
     @AfterClass
@@ -84,8 +81,8 @@ public class MiscellaneousTest extends LoggingTest {
 
         }
 
-        if (SS.getLibertyServer() != null && SS.getLibertyServer().isStarted()) {
-            SS.getLibertyServer().stopServer(null);
+        if (LS != null && LS.isStarted()) {
+            LS.stopServer();
         }
         bwst.tearDown();
     }
@@ -98,16 +95,6 @@ public class MiscellaneousTest extends LoggingTest {
         String uri = "/miscellaneous/miscNoCDIInjectedEndpoint";
         wt.runEchoTest(new AnnotatedClientEP.TextTest(textValues), uri, textValues);
 
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.fat.util.LoggingTest#getSharedServer()
-     */
-    @Override
-    protected SharedServer getSharedServer() {
-        return SS;
     }
 
 }
