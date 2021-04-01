@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2020 IBM Corporation and others.
+# Copyright (c) 2002, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -183,3 +183,11 @@ trusted.header.origin.invalid.value.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u0
 trusted.sensitive.header.origin.invalid.value=CWWKT0039W: A konfigur\u00e1lt [{0}] trustedSensitiveHeaderOrigin \u00e9rt\u00e9k \u00e9rv\u00e9nytelen, \u00e9s nem haszn\u00e1lhat\u00f3.
 trusted.sensitive.header.origin.invalid.value.explanation=A megadott \u00e9rt\u00e9knek vagy teljes IP-c\u00edmnek, vagy helyesen form\u00e1zott gazdan\u00e9vnek kell lennie.
 trusted.sensitive.header.origin.invalid.value.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a konfigur\u00e1lt IP-c\u00edmek mindegyik szegmenshez tartalmaznak \u00e9rt\u00e9ket, \u00e9s hogy a gazdanevek nem tartalmaznak \u00e9rv\u00e9nytelen karaktereket.
+
+config.hsts.invalid.max.age.value=CWWKT0040W: A max-age el\u0151\u00edr\u00e1shoz a be\u00e1ll\u00edtott [{0}] \u00e9rt\u00e9k \u00e9rv\u00e9nytelen, \u00e9s nem haszn\u00e1lhat\u00f3. A max-age el\u0151\u00edr\u00e1s \u00e9rt\u00e9ke csak nem negat\u00edv eg\u00e9sz sz\u00e1m lehet.
+config.hsts.invalid.max.age.value.explanation=A max-age el\u0151\u00edr\u00e1s \u00e9rt\u00e9ke nem lehet negat\u00edv eg\u00e9sz sz\u00e1m.
+config.hsts.invalid.max.age.value.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a be\u00e1ll\u00edtott max-age el\u0151\u00edr\u00e1sban nem negat\u00edv eg\u00e9sz \u00e9rt\u00e9k szerepeljen.
+
+config.hsts.missing.max.age=CWWKT0041W: K\u00eds\u00e9rlet t\u00f6rt\u00e9nt [{0}] be\u00e1ll\u00edt\u00e1s\u00e1ra Szigor\u00fa sz\u00e1ll\u00edt\u00e1si biztons\u00e1g (HSTS) fejl\u00e9ck\u00e9nt. Ez a konfigur\u00e1ci\u00f3 nem tartalmazza a k\u00f6telez\u0151 max-age el\u0151\u00edr\u00e1st. Az a konfigur\u00e1ci\u00f3, amely nem tartalmaz max-age el\u0151\u00edr\u00e1st, \u00e9rv\u00e9nytelen \u00e9s nem haszn\u00e1lhat\u00f3.
+config.hsts.missing.max.age.explanation=A megadott konfigur\u00e1ci\u00f3nak tartalmaznia kell egy nem negat\u00edv eg\u00e9sz sz\u00e1m \u00e9rt\u00e9ket tartalmaz\u00f3 max-age el\u0151\u00edr\u00e1st.
+config.hsts.missing.max.age.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a konfigur\u00e1ci\u00f3 tartalmazzon egy nem negat\u00edv eg\u00e9sz sz\u00e1m \u00e9rt\u00e9k\u0171 max-age el\u0151\u00edr\u00e1st. 
