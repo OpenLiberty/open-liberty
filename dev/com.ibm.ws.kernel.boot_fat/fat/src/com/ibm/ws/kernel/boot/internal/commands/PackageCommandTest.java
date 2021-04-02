@@ -108,7 +108,7 @@ public class PackageCommandTest {
      * and does not run.
      */
     @Test
-    public void testCorrectErrorMessageWhenLibExtractDirIsMissing() throws Exception {
+    public void testMinify_Error_MissingLibExtract() throws Exception {
         LibertyServer server = bootstrapFatServer;
 
         String extractPath = bootstrapFatInstallPath + "/lib/extract";
@@ -146,12 +146,13 @@ public class PackageCommandTest {
      */
     @Test
     @SkipIfSysProp("os.name=z/OS") // Jar not supported on Z/OS
-    public void testCreateRunnableJar() throws Exception {
+    public void testRunnable() throws Exception {
         String serverName = bootstrapFatServerName;
         LibertyServer server = bootstrapFatServer;
 
+        // '--include=runnable' requires that the 'lib/extract' folder exists.        
         assumeSelfExtractExists(bootstrapFatServer);
-        
+
         String packageName = serverName + ".jar";
         String packagePath = bootstrapFatServerPath + '/' + packageName;
         String[] packageCmd = {
@@ -239,7 +240,7 @@ public class PackageCommandTest {
 //    }
 
     @Test
-    public void testCorrectErrorMessageWhenProductExtensionsInstalledAndServerRootSpecified() throws Exception {
+    public void testMinify_Error_ProductExtensions_EmptyServerRoot() throws Exception {
         LibertyServer server = rootFatServer;
 
         ensureProductExt(server);
@@ -257,8 +258,11 @@ public class PackageCommandTest {
      * the archive file.
      */
     @Test
-    public void testMinifyInclude() throws Exception {
+    public void testMinify() throws Exception {
         LibertyServer server = rootFatServer;
+
+        // '--include=minify' requires that the 'lib/extract' folder exists.        
+        assumeSelfExtractExists(rootFatServer);
 
         String packageName = archiveNameZip;
         String packagePath = rootFatServerPath + '/' + packageName;
@@ -336,7 +340,7 @@ public class PackageCommandTest {
     }
 
     @Test
-    public void testUsrInclude() throws Exception {
+    public void testUsr() throws Exception {
         LibertyServer server = rootFatServer;
 
         String packageName = archiveNameZip;
@@ -371,40 +375,11 @@ public class PackageCommandTest {
     }
 
     /**
-     * This tests that when --server-root is supplied, that the value supplied
-     * shows up as the root of the archive
-     */
-    @Test
-    public void testServerRootSpecified() throws Exception {
-        LibertyServer server = rootFatServer;
-
-        String packageName = archiveNameZip;
-        String packagePath = rootFatServerPath + '/' + packageName;        
-        String[] packageCmd = {
-            "--archive=" + packageName,
-            "--include=minify",
-            "--server-root=MyRoot"
-        };
-        verifyPackage(server, packageCmd, packageName, packagePath);
-
-        try ( ZipFile zipFile = new ZipFile(packagePath) ) {
-            boolean foundMyRootEntry = false;
-            for (Enumeration<? extends ZipEntry> en = zipFile.entries(); en.hasMoreElements();) {
-                ZipEntry entry = en.nextElement();
-                foundMyRootEntry |= entry.getName().startsWith("MyRoot");
-            }
-            if ( !foundMyRootEntry ) {
-                fail("Package [ " + packagePath + " ] missing root entries [ /MyRoot ]");
-            }
-        }
-    }
-
-    /**
      * This tests that when --server-root is supplied, and --include=usr that the
      * /shared folder is also placed at the root of the archive.
      */
     @Test
-    public void testSharedFolderWithServerRootandUsrSpecified() throws Exception {
+    public void testUsr_SharedFolder_ServerRoot() throws Exception {
         LibertyServer server = rootFatServer;
         
         Path sharedPath = Paths.get(server.getServerSharedPath());
@@ -445,8 +420,11 @@ public class PackageCommandTest {
      * does show up in the archive file.
      */
     @Test
-    public void testServerFoundWithServerRootSpecified() throws Exception {
+    public void testMinify_ServerRoot() throws Exception {
         LibertyServer server = rootFatServer;
+
+        // '--include=minify' requires that the 'lib/extract' folder exists.        
+        assumeSelfExtractExists(rootFatServer);
 
         String packageName = archiveNameZip;
         String packagePath = rootFatServerPath + '/' + packageName;        
@@ -490,7 +468,7 @@ public class PackageCommandTest {
      * a file extension not ending with .jar that an error is returned.
      */
     @Test
-    public void testCorrectErrorMessageWhenRunnableAndNonJARArchiveSpecified() throws Exception {
+    public void testRunnable_Error_NonJar() throws Exception {
         LibertyServer server = rootFatServer;
 
         ensureProductExt(server);
@@ -508,9 +486,10 @@ public class PackageCommandTest {
      */
     @Test
     @SkipIfSysProp("os.name=z/OS") // Jar not supported on Z/OS    
-    public void testDefaultingToJar() throws Exception {
+    public void testRunnable_DefaultToJar() throws Exception {
         LibertyServer server = rootFatServer;
 
+        // '--include=runnable' requires that the 'lib/extract' folder exists.
         assumeSelfExtractExists(rootFatServer);
 
         ensureProductExt(server);
@@ -529,7 +508,7 @@ public class PackageCommandTest {
      * that a .zip archive is created by default.
      */
     @Test
-    public void testDefaultingToZip() throws Exception {
+    public void testUsr_DefaultToZip() throws Exception {
         LibertyServer server = rootFatServer;
 
         ensureProductExt(server);
@@ -547,7 +526,7 @@ public class PackageCommandTest {
      * This tests that a .tar.gz file type is created when specified by --archive.
      */
     @Test
-    public void testTarGz() throws Exception {
+    public void testUsr_TarGz() throws Exception {
         LibertyServer server = rootFatServer;
 
         ensureProductExt(server);
@@ -568,7 +547,7 @@ public class PackageCommandTest {
      */
     @Test
     @SkipIfSysProp("os.name=z/OS") // Jar not supported on Z/OS    
-    public void testCorrectErrorMessageWhenUsrandJARArchiveSpecified() throws Exception {
+    public void testUsr_Error_Jar() throws Exception {
         LibertyServer server = rootFatServer;
 
         ensureProductExt(server);
@@ -618,9 +597,12 @@ public class PackageCommandTest {
     }
 
     @Test
-    public void testMinifyDoesNotCorruptServerFeatureCache() throws Exception {
+    public void testMinify_PreserveFeatureCache() throws Exception {
         LibertyServer server = bootstrapFatServer;
         String serverPath = bootstrapFatServerPath;
+
+        // '--include=minify' requires that the 'lib/extract' folder exists.
+        assumeSelfExtractExists(rootFatServer);
 
         try ( ServerFeatures serverFeatures = new ServerFeatures(server, cacheFeatures) ) {
             String initialFeatures = collectFeatures(server, "initial");

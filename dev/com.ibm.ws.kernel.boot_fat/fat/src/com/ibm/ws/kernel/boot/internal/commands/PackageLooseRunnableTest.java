@@ -84,7 +84,7 @@ public class PackageLooseRunnableTest extends AbstractLooseConfigTest {
     //
 
     @Test
-    public void testIncludeAll() throws Exception {
+    public void testAll() throws Exception {
         String prepackedModuleName = MODULE_NAME_LOOSE;
         String packedModuleName = MODULE_NAME;
         String archiveName = ARCHIVE_NAME_ZIP;
@@ -101,7 +101,7 @@ public class PackageLooseRunnableTest extends AbstractLooseConfigTest {
     }
 
     @Test
-    public void testRunnableDefaultRoot() throws Exception {
+    public void testRunnable_DefaultRoot() throws Exception {
         String prepackedModuleName = MODULE_NAME_LOOSE;
         String packedModuleName = MODULE_NAME;
         

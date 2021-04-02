@@ -125,7 +125,7 @@ public class PackageLooseFilterTest extends AbstractLooseConfigTest {
     //
 
     @Test
-    public void testIncludeUsr_Filter() throws Exception {
+    public void testUsr_Filter() throws Exception {
         String[] packageCmd = new String[] {
             "--archive=" + SERVER_NAME,
             "--include=usr",

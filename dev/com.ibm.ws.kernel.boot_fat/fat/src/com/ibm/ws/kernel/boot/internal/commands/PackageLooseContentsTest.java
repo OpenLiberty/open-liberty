@@ -117,7 +117,7 @@ public class PackageLooseContentsTest extends AbstractLooseConfigTest {
     //
 
     @Test
-    public void testIncludeUsr_Contents() throws Exception {
+    public void testUsr() throws Exception {
         String[] packageCmd = new String[] {
             "--archive=" + SERVER_NAME,
             "--include=usr",

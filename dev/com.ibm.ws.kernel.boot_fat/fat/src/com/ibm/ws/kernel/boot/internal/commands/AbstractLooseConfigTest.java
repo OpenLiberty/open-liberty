@@ -148,7 +148,16 @@ public abstract class AbstractLooseConfigTest {
             System.out.println(methodName + ": Package arg: " + cmdArg);
         }
 
-        server.getFileFromLibertyInstallRoot("lib/extract");
+        // 'lib/extract' need not be present when packaging to a ZIP archive.
+        //
+        // 'lib/extract' must be present when packaging to a JAR archive.
+        // However, tests which package to a JAR have an early test for
+        // the directory, and the test is skipped if the directory is
+        // not present.
+        //
+        // The result is that in either case, this test is not needed.
+        //
+        // server.getFileFromLibertyInstallRoot("lib/extract");
 
         server.copyFileToLibertyServerRoot(CONFIG_SOURCE, getAppsTargetDir(), looseConfig);
 
