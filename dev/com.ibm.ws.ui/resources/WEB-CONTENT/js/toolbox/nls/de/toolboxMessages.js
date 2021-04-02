@@ -24,4 +24,3 @@ define({
         TOOL_DUPLICATE: "Das Lesezeichen ist bereits vorhanden. Geben Sie einen eindeutigen Namen an.",
         TOOL_BADREQUEST: "Beim Hinzufügen des Lesezeichens zur Toolbox ist ein Fehler aufgetreten: {0}."
 });
-

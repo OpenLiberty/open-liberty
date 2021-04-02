@@ -14,7 +14,7 @@ define({
     ERROR_URL_REQUEST_NO_STATUS : "{0} 요청 중에 오류가 발생했습니다.", // url
     ERROR_URL_REQUEST : "{1} 요청 중에 {0} 오류가 발생했습니다.", //responseStatusCode, url
     ERROR_SERVER_UNAVAILABLE : "할당된 시간에 서버가 응답하지 않았습니다.",
-    ERROR_APP_NOT_AVAILABLE : "{0} 애플리케이션을 {3} 디렉토리에 있는 {2} 호스트의 {1} 서버에 대해 더 이상 사용할 수 없습니다. ", //appName, serverName, hostName, userdirName
+    ERROR_APP_NOT_AVAILABLE : "{0} 애플리케이션을 {3} 디렉토리에 있는 {2} 호스트의 {1} 서버에 대해 더 이상 사용할 수 없습니다.", //appName, serverName, hostName, userdirName
     ERROR_APPLICATION_OPERATION : "{4} 디렉토리에 있는 {3} 호스트의 {2} 서버에서 {1} 애플리케이션을 {0}하려고 시도하는 중에 오류가 발생했습니다.", //operation, appName, serverName, hostName, userdirName
     CLUSTER_STATUS : "{0} 클러스터가 {1}입니다.", //clusterName, clusterStatus
     CLUSTER_UNAVAILABLE : "{0} 클러스터를 더 이상 사용할 수 없습니다.", //clusterName
@@ -37,4 +37,3 @@ define({
     STANDALONE_STOP_FAILED : '서버 중지 조작이 완료되지 않았습니다. 세부사항은 서버 로그를 확인하십시오.',
     STANDALONE_STOP_SUCCESS : '서버가 중지되었습니다.',
 });
-

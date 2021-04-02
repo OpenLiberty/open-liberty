@@ -16,7 +16,6 @@ define({
       SEARCH_RESOURCE_TYPE_ALL: "Tutto", // Search all resource types
       GRID_COLUMN_SELECTION_BUTTON_LABEL: "Selezione colonna",
       GRID_COLUMN_SELECTION_MENU_LABEL: "Selezione colonna per {0}",    // Grid Identifier 
-      BREADCRUMB_SEPARATOR_LABEL : "Separatore miniature",
+      BREADCRUMB_SEPARATOR_LABEL : "Separatore breadcrumb",
       SEARCH_PILL_DELETE_BUTTON : "Rimuovi criteri di ricerca"
 });
-

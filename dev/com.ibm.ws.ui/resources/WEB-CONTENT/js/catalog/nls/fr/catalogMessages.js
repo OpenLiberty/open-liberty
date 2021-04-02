@@ -16,4 +16,3 @@ define({
         ERROR_URLACCESS_NOURL: "Vous avez demandé le statut d'une URL sans préciser l'URL",
         ERROR_URLANALYZE_NOURL: "Vous avez demandé l'analyse d'une URL sans préciser l'URL"
 });
-

@@ -24,4 +24,3 @@ define({
         TOOL_DUPLICATE: "Le signet existe déjà. Indiquer un nom unique.",
         TOOL_BADREQUEST: "Une erreur s'est produite lors de l'ajout du signet à la boîte à outils : {0}."
 });
-

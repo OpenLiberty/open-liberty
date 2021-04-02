@@ -16,4 +16,3 @@ define({
         ERROR_URLACCESS_NOURL: "Egy URL állapotát kérte, de nem adott meg URL-t.",
         ERROR_URLANALYZE_NOURL: "Egy URL elemzését kérte, de nem adott meg URL-t."
 });
-

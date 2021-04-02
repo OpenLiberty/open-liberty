@@ -31,7 +31,7 @@ define({
       APPLICATION_NAME : "应用程序名称",
       APPLICATION: "应用程序",
       INSTANCE_ID : "实例标识",
-      LAST_UPDATE : "最近一次更新时间",
+      LAST_UPDATE : "最近一次更新",
       LAST_UPDATE_RANGE : "最近一次更新范围",
       LAST_UPDATED_TIME : "最近一次更新时间",
       DASHBOARD_VIEW : "仪表板视图",
@@ -81,8 +81,8 @@ define({
       INSTANCES_TABLE_IDENTIFIER: "作业实例表",
       EXECUTIONS_TABLE_IDENTIFIER: "作业执行表",
       STEPS_DETAILS_TABLE_IDENTIFIER: "步骤详细信息表",
-      LOADING_VIEW : "页面当前正在加载信息",
-      LOADING_VIEW_TITLE : "正在加载视图",
+      LOADING_VIEW : "页面当前正在装入信息",
+      LOADING_VIEW_TITLE : "正在装入视图",
       LOADING_GRID : "等待要从服务器返回的搜索结果",
       PAGENUMBER : "页码",
       SELECT_QUERY_SIZE: "选择查询大小",
@@ -97,18 +97,18 @@ define({
       INSTANCE_ACTIONS_BUTTON_LABEL: "作业实例 {0} 的操作",     // Job Instance ID number
       INSTANCE_ACTIONS_MENU_LABEL:  "作业实例操作菜单",
 
-      RESTART_INSTANCE_MESSAGE: "要重新启动与作业实例 {0} 关联的最新作业执行吗？",     // Job Instance ID number
-      STOP_INSTANCE_MESSAGE: "要停止与作业实例 {0} 关联的最新作业执行吗？",           // Job Instance ID number
-      PURGE_INSTANCE_MESSAGE: "要清除与作业实例 {0} 关联的所有数据库条目和作业日志吗？",     // Job Instance ID number
+      RESTART_INSTANCE_MESSAGE: "要重新启动与作业实例 {0} 相关联的最新作业执行吗？",     // Job Instance ID number
+      STOP_INSTANCE_MESSAGE: "要停止与作业实例 {0} 相关联的最新作业执行吗？",           // Job Instance ID number
+      PURGE_INSTANCE_MESSAGE: "要清除与作业实例 {0} 相关联的所有数据库条目和作业日志吗？",     // Job Instance ID number
       PURGE_JOBSTORE_ONLY: "仅清除作业存储",
 
       RESTART_INST_ERROR_MESSAGE: "重新启动请求失败。",
       STOP_INST_ERROR_MESSAGE: "停止请求失败。",
-      PURGE_INST_ERROR_MESSAGE: "清除请求已失败。",
+      PURGE_INST_ERROR_MESSAGE: "清除请求失败。",
       ACTION_REQUEST_ERROR_MESSAGE: "操作请求失败，状态码为 {0}。URL：{1}",  // Status Code number, URL string
 
       // RESTART JOB WITH PARAMETERS DIALOG
-      REUSE_PARMS_TOGGLE_LABEL: "复用先前执行中的参数",
+      REUSE_PARMS_TOGGLE_LABEL: "复用先前执行所使用的参数",
       JOB_PARAMETERS_EMPTY: "未选择“{0}”时，请使用此区域来输入作业参数。",   // 0 - Checkbox label - REUSE_PARMS_TOGGLE_LABEL
       JOB_PARAMETER_NAME: "参数名称",
       JOB_PARAMETER_VALUE: "参数值",
@@ -116,9 +116,9 @@ define({
       PARM_VALUE_COLUMN_HEADER: "值",
       PARM_ADD_ICON_TITLE: "添加参数",
       PARM_REMOVE_ICON_TITLE: "移除参数",
-      PARMS_ENTRY_ERROR: "参数名称是必需的。",
+      PARMS_ENTRY_ERROR: "需要参数名称。",
       JOB_PARAMETER_CREATE: "选择 {0} 以将参数添加至此作业实例的下一次执行过程。",  // 0 - Button label
-      JOB_PARAMETER_CREATE_BUTTON: "表头中的添加参数按钮。",
+      JOB_PARAMETER_CREATE_BUTTON: "表头中的“添加参数”按钮。",
 
       //JOB LOGS PAGE MESSAGES
       JOBLOGS_LOG_CONTENT : "作业日志内容",
@@ -128,7 +128,7 @@ define({
       LOGS_NAVIGATION_BAR : "作业日志导航栏",
       DOWNLOAD : "下载",
       LOG_TOP : "日志的顶部",
-      LOG_END : "日志的底部",
+      LOG_END : "日志的末尾",
       PREVIOUS_PAGE : "上一页",
       NEXT_PAGE : "下一页",
       DOWNLOAD_ARIA : "下载文件",
@@ -137,7 +137,7 @@ define({
       REST_CALL_FAILED : "对访存数据的调用失败。",
       NO_JOB_EXECUTION_URL : "URL 中未提供任何作业执行号码，或者此实例未显示任何作业执行日志。",
       NO_VIEW : "URL 错误：不存在此类视图。",
-      WRONG_TOOL_ID : "URL 的查询字符串不是以工具标识 {0} 而是以 {1} 开头。",   // {0} and {1} are both Strings
+      WRONG_TOOL_ID : "URL 的查询字符串不是以工具标识 {0} 开头，而是以 {1} 开头。",   // {0} and {1} are both Strings
       URL_NO_LOGS : "URL 错误：不存在任何日志。",
       NOT_A_NUMBER : "URL 错误：{0} 必须为数字。",                                                // {0} is a field name
       PARAMETER_REPETITION : "URL 错误：{0} 在参数中只能出现一次。",                   // {0} is a field name
@@ -151,4 +151,3 @@ define({
       GRIDX_SUMMARY_TEXT : "显示最新的 ${0} 个作业实例"
 
 });
-

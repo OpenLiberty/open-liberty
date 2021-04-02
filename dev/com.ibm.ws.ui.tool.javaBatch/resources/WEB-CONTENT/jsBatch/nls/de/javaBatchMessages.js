@@ -76,7 +76,7 @@ define({
       BREADCRUMB_JOB_EXECUTION : "Jobausführung {0}",              // Job Execution ID
       BREADCRUMB_JOB_LOG : "Jobprotokoll {0}",
       BATCH_SEARCH_CRITERIA_INVALID : "Die Suchkriterien sind nicht gültig.",
-      ERROR_CANNOT_HAVE_MULTIPLE_SEARCHBY : "Die Suchkriterien können nicht mehrfache Filter mit folgenden Parameter haben: {0} ", // {0} will be another translated message key like SUBMITTER and BATCH_JOB_NAME
+      ERROR_CANNOT_HAVE_MULTIPLE_SEARCHBY : "Die Suchkriterien können nicht mehrere Parameter zum Filtern nach {0} haben.", // {0} will be another translated message key like SUBMITTER and BATCH_JOB_NAME
 
       INSTANCES_TABLE_IDENTIFIER: "Tabelle mit Jobinstanzen",
       EXECUTIONS_TABLE_IDENTIFIER: "Tabelle mit Jobausführungen",
@@ -86,8 +86,8 @@ define({
       LOADING_GRID : "Es wird auf die Rückgabe der Suchergebnisse des Servers gewartet.",
       PAGENUMBER : "Seitennummer",
       SELECT_QUERY_SIZE: "Abfragegröße auswählen",
-      LINK_EXPLORE_HOST: "Auswählen, um Details zum Host {0} im Explore-Tool anzuzeigen.",      // Host name
-      LINK_EXPLORE_SERVER: "Auswählen, um Details zum Server {0} im Explore-Tool anzuzeigen.",  // Server name
+      LINK_EXPLORE_HOST: "Auswählen, um Details zum Host {0} im Tool 'Untersuchen' anzuzeigen.",      // Host name
+      LINK_EXPLORE_SERVER: "Auswählen, um Details zum Server {0} im Tool 'Untersuchen' anzuzeigen.",  // Server name
 
       //ACTIONS
       RESTART: "Erneut starten",
@@ -151,4 +151,3 @@ define({
       GRIDX_SUMMARY_TEXT : "Es werden die ${0} aktuellsten Jobinstanzen angezeigt."
 
 });
-

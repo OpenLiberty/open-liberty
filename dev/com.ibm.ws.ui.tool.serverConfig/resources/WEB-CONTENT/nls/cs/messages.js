@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
- 
+
 var editorMessages = {
 "VALUE": "Hodnota",
 "SELECT": "Vybrat",
@@ -75,7 +75,7 @@ var editorMessages = {
 "OPEN": "Otevřít",
 "READ_ONLY_WARNING_MESSAGE": "Na tomto serveru není nakonfigurovaný přístup ke vzdáleným souborům. Soubory jsou k dispozici v režimu jen pro čtení. Chcete-li povolit přístup pro zápis, přidejte do souboru server.xml následující prvek:",
 "SAVE_BEFORE_CLOSING_DIALOG_TITLE": "Zavřít",
-"SAVE_BEFORE_CLOSING_DIALOG_MESSAGE": "Uložit změny do {0} před zavřením?",
+"SAVE_BEFORE_CLOSING_DIALOG_MESSAGE": "Uložit změny {0} před zavřením?",
 "DONT_SAVE": "Neukládat",
 "RETURN_TO_EDITOR": "Vrátit do editoru",
 "THE_VALUE_SHOULD_BE_A_BOOLEAN": "Hodnota může být true nebo false.",

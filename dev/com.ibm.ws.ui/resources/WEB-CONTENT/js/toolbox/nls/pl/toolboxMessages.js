@@ -24,4 +24,3 @@ define({
         TOOL_DUPLICATE: "Zakładka już istnieje. Podaj unikalną nazwę.",
         TOOL_BADREQUEST: "Wystąpił błąd podczas dodawania zakładki do panelu narzędzi: {0}."
 });
-

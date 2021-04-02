@@ -24,4 +24,3 @@ define({
         TOOL_DUPLICATE: "书签已存在。请指定唯一名称。",
         TOOL_BADREQUEST: "将书签添加至工具箱时发生错误：{0}。"
 });
-

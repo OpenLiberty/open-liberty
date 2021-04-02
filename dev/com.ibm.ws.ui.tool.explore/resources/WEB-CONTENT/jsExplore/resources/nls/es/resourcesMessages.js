@@ -18,7 +18,7 @@ define({
     ERROR_APPLICATION_OPERATION : "Se ha producido un error al intentar {0} la aplicación {1} en el servidor {2} del host {3} en el directorio {4}.", //operation, appName, serverName, hostName, userdirName
     CLUSTER_STATUS : "El clúster {0} está {1}.", //clusterName, clusterStatus
     CLUSTER_UNAVAILABLE : "El clúster {0} ya no está disponible.", //clusterName
-    STOP_FAILED_DURING_RESTART : "La detención no se completó satisfactoriamente durante el reinicio.  El error fue: {0}", //errMsg
+    STOP_FAILED_DURING_RESTART : "La detención no se completó correctamente durante el reinicio.  El error fue: {0}", //errMsg
     ERROR_CLUSTER_OPERATION : "Se ha producido un error al intentar {0} el clúster {1}.", //operation, clusterName
     SERVER_NONEXISTANT : "El servidor {0} no existe.", // serverName
     ERROR_SERVER_OPERATION : "Se ha producido un error al intentar {0} el servidor {1} en el host {2} en el directorio {3}.", //operation, serverName, hostName, userdirName
@@ -34,7 +34,6 @@ define({
     // Used by standalone stop operation
     STANDALONE_STOP_NO_MBEAN : 'El servidor no se ha detenido. La API necesaria para detener el servidor no estaba disponible.',
     STANDALONE_STOP_CANT_DETERMINE_MBEAN : 'El servidor no se ha detenido. La API necesaria para detener el servidor no ha podido determinarse.',
-    STANDALONE_STOP_FAILED : 'La operación de detención del servidor no se ha completado satisfactoriamente. Compruebe los registros del servidor para conocer los detalles.',
-    STANDALONE_STOP_SUCCESS : 'El servidor se ha detenido satisfactoriamente.',
+    STANDALONE_STOP_FAILED : 'La operación de detención del servidor no se ha completado correctamente. Consulte los registros del servidor para obtener más detalles.',
+    STANDALONE_STOP_SUCCESS : 'El servidor se ha detenido correctamente.',
 });
-

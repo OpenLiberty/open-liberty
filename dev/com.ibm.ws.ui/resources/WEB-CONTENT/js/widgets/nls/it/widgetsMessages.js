@@ -8,8 +8,8 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
- 
- define({
+
+define({
     LIBERTY_HEADER_TITLE: "Centro di gestione Liberty",
     LIBERTY_HEADER_PROFILE: "Preferenze",
     LIBERTY_HEADER_LOGOUT: "Logout",
@@ -105,5 +105,5 @@
 
     TOOL_OIDC_ACCESS_DENIED: "L'utente non è nel ruolo che dispone dell'autorizzazione per completare questa richiesta.",
     TOOL_OIDC_GENERIC_ERROR: "Si è verificato un errore. Esaminare l'errore nel log per ulteriori informazioni.",
-    TOOL_DISABLE: "L'utente non dispone dell'autorizzazione per utilizzare questo strumento. Solo gli utenti con il ruolo di amministratore dispongono dell'autorizzazione per utilizzare questo strumento." 
+    TOOL_DISABLE: "L'utente non ha l'autorizzazione per utilizzare questo strumento. Solo gli utenti con il ruolo Amministratore hanno l'autorizzazione per utilizzare questo strumento." 
 });

@@ -12,14 +12,14 @@
 define({
       ACCOUNTING_STRING : "Identifiant comptable",
       SEARCH_RESOURCE_TYPE_ALL : "Tout",
-      SEARCH : "Rechercher",
+      SEARCH : "Recherche",
       JAVA_BATCH_SEARCH_BOX_LABEL : "Entrez les critères de recherche en sélectionnant le bouton permettant d'ajouter des critères de recherche et en spécifiant une valeur",
       SUBMITTED : "Soumis",
       JMS_QUEUED : "En file d'attente JMS",
       JMS_CONSUMED : "Consommé par JMS",
-      JOB_PARAMETER : "Paramètre de travail",
-      DISPATCHED : "Distribué",
-      FAILED : "En échec",
+      JOB_PARAMETER : "Paramètre du travail",
+      DISPATCHED : "Réparti",
+      FAILED : "Echec",
       STOPPED : "Arrêté",
       COMPLETED : "Terminé",
       ABANDONED : "Abandonné",
@@ -30,15 +30,15 @@ define({
       INSTANCE_STATE : "Etat d'instance",
       APPLICATION_NAME : "Nom d'application",
       APPLICATION: "Application",
-      INSTANCE_ID : "ID instance",
+      INSTANCE_ID : "ID d'instance",
       LAST_UPDATE : "Dernière mise à jour",
       LAST_UPDATE_RANGE : "Dernière plage de mise à jour",
       LAST_UPDATED_TIME : "Heure de la dernière mise à jour",
-      DASHBOARD_VIEW : "Vue Tableau de bord",
+      DASHBOARD_VIEW : "Vue du tableau de bord",
       HOMEPAGE : "Page d'accueil",
       JOBLOGS : "Journaux de travail",
       QUEUED : "En file d'attente",
-      ENDED : "Interrompu",
+      ENDED : "Terminé",
       ERROR : "Erreur",
       CLOSE : "Fermer",
       WARNING : "Avertissement",
@@ -47,14 +47,14 @@ define({
       BATCH_JOB_NAME: "Nom de travail par lots",
       SUBMITTER: "Emetteur",
       BATCH_STATUS: "Statut du lot",
-      EXECUTION_ID: "ID exécution de travail",
+      EXECUTION_ID: "ID d'exécution de travail",
       EXIT_STATUS: "Statut de sortie",
       CREATE_TIME: "Heure de création",
       START_TIME: "Heure de début",
       END_TIME: "Heure de fin",
       SERVER: "Serveur",
       SERVER_NAME: "Nom du serveur",
-      SERVER_USER_DIRECTORY: "Répertoire utilisateur",
+      SERVER_USER_DIRECTORY: "Annuaire d'utilisateurs",
       SERVERS_USER_DIRECTORY: "Répertoire utilisateur du serveur",
       HOST: "Hôte",
       NAME: "Nom",
@@ -105,18 +105,18 @@ define({
       RESTART_INST_ERROR_MESSAGE: "La demande de redémarrage a échoué.",
       STOP_INST_ERROR_MESSAGE: "La demande d'arrêt a échoué.",
       PURGE_INST_ERROR_MESSAGE: "La demande de purge a échoué.",
-      ACTION_REQUEST_ERROR_MESSAGE: "La demande d'action a échoué avec le code de statut : {0}.  URL : {1}",  // Status Code number, URL string
+      ACTION_REQUEST_ERROR_MESSAGE: "La demande d'action a échoué avec le code de statut : {0}. URL : {1}",  // Status Code number, URL string
 
       // RESTART JOB WITH PARAMETERS DIALOG
       REUSE_PARMS_TOGGLE_LABEL: "Réutiliser les paramètres de la précédente exécution",
       JOB_PARAMETERS_EMPTY: "Lorsque '{0}' n'est pas coché, utilisez cette zone pour entrer les paramètres du travail.",   // 0 - Checkbox label - REUSE_PARMS_TOGGLE_LABEL
-      JOB_PARAMETER_NAME: "Nom de paramètre",
-      JOB_PARAMETER_VALUE: "Valeur de paramètre",
+      JOB_PARAMETER_NAME: "Nom paramètre",
+      JOB_PARAMETER_VALUE: "Valeur paramètre",
       PARM_NAME_COLUMN_HEADER: "Paramètre",
       PARM_VALUE_COLUMN_HEADER: "Valeur",
       PARM_ADD_ICON_TITLE: "Ajouter un paramètre",
-      PARM_REMOVE_ICON_TITLE: "Retirer le paramètre",
-      PARMS_ENTRY_ERROR: "Un nom de paramètre est requis.",
+      PARM_REMOVE_ICON_TITLE: "Supprimer un paramètre",
+      PARMS_ENTRY_ERROR: "Nom de paramètre requis.",
       JOB_PARAMETER_CREATE: "Sélectionnez {0} pour ajouter des paramètres à la prochaine exécution de cette instance de travail.",  // 0 - Button label
       JOB_PARAMETER_CREATE_BUTTON: "Bouton Ajouter un paramètre dans l'en-tête de tableau.",
 
@@ -142,7 +142,7 @@ define({
       NOT_A_NUMBER : "Erreur d'URL : {0} doit être un nombre.",                                                // {0} is a field name
       PARAMETER_REPETITION : "Erreur d'URL : {0} ne peut figurer qu'une seule fois dans les paramètres.",                   // {0} is a field name
       URL_PAGE_PARAMS_ERROR : "Erreur d'URL : le paramètre page n'est pas compris dans la plage admise.",
-      INVALID_PARAMETER : "Erreur d'URL : {0} n'est pas un paramètres valide.",                                       // {0} is a String
+      INVALID_PARAMETER : "Erreur d'URL : {0} n'est pas un paramètre valide.",                                       // {0} is a String
       URL_MULTIPLE_ATTRIBUTES : "Erreur d'URL : l'URL peut spécifier une exécution de travail ou une instance de travail, mais pas les deux.",
       MISSING_EXECUTION_ID_PARAM : "Un paramètre d'ID d'exécution requis est manquant.",
       PERSISTENCE_CONFIGURATION_REQUIRED : "Une configuration de base de données Java Batch persistante est requise pour utiliser l'outil Java Batch.",
@@ -151,4 +151,3 @@ define({
       GRIDX_SUMMARY_TEXT : "Affichage des ${0} instances de travail les plus récentes"
 
 });
-

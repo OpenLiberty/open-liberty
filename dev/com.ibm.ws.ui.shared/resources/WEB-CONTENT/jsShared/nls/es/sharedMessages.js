@@ -13,10 +13,9 @@ define({
       SEARCH_BUTTON_ADD : "Añadir criterios de búsqueda",
       SEARCH_BUTTON_CLEAR : "Borrar campo de búsqueda",
       SEARCH_BUTTON_SEARCH : "Buscar",
-      SEARCH_RESOURCE_TYPE_ALL: "Todo", // Search all resource types
+      SEARCH_RESOURCE_TYPE_ALL: "Todos", // Search all resource types
       GRID_COLUMN_SELECTION_BUTTON_LABEL: "Selección de columna",
       GRID_COLUMN_SELECTION_MENU_LABEL: "Selección de columna para {0}",    // Grid Identifier 
       BREADCRUMB_SEPARATOR_LABEL : "Separador de rastros de navegación",
       SEARCH_PILL_DELETE_BUTTON : "Eliminar criterios de búsqueda"
 });
-

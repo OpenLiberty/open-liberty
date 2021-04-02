@@ -10,47 +10,47 @@
  *******************************************************************************/
 
 define({
-      ACCOUNTING_STRING : "Elszámolási karakterlánc",
+      ACCOUNTING_STRING : "Fiókkezelési karaktersorozat",
       SEARCH_RESOURCE_TYPE_ALL : "Minden",
       SEARCH : "Keresés",
       JAVA_BATCH_SEARCH_BOX_LABEL : "A keresési feltételeket a Keresési feltétel hozzáadása gomb kiválasztásával majd érték meghatározásával adhatja meg",
-      SUBMITTED : "Elküldve",
+      SUBMITTED : "Beküldve",
       JMS_QUEUED : "JMS sorba állítva",
       JMS_CONSUMED : "JMS feldolgozta",
       JOB_PARAMETER : "Feladat paraméter",
-      DISPATCHED : "Intézkedés történt",
-      FAILED : "Sikertelen",
+      DISPATCHED : "Elindítva",
+      FAILED : "Meghiúsult",
       STOPPED : "Leállítva",
-      COMPLETED : "Befejeződött",
+      COMPLETED : "Kész",
       ABANDONED : "Elhagyva",
       STARTED : "Elindítva",
-      STARTING : "Indul",
-      STOPPING : "Leáll",
+      STARTING : "Indítás",
+      STOPPING : "Leállítás",
       REFRESH : "Frissítés",
       INSTANCE_STATE : "Példány állapota",
       APPLICATION_NAME : "Alkalmazás neve",
       APPLICATION: "Alkalmazás",
-      INSTANCE_ID : "Példányazonosító",
+      INSTANCE_ID : "Példány azonosítója",
       LAST_UPDATE : "Legutóbbi frissítés",
       LAST_UPDATE_RANGE : "Utolsó frissítés tartománya",
       LAST_UPDATED_TIME : "Utolsó frissítés dátuma",
-      DASHBOARD_VIEW : "Irányítópult nézet",
-      HOMEPAGE : "Honlap",
+      DASHBOARD_VIEW : "Műszerfal nézet",
+      HOMEPAGE : "Kezdőlap",
       JOBLOGS : "Feladatnaplók",
-      QUEUED : "Sorba állítva",
+      QUEUED : "Sorban áll",
       ENDED : "Vége",
       ERROR : "Hiba",
       CLOSE : "Bezárás",
       WARNING : "Figyelmeztetés",
-      GO_TO_DASHBOARD: "Ugrás az irányítópulthoz",
-      DASHBOARD : "Irányítópult",
+      GO_TO_DASHBOARD: "Ugrás a műszerfalra",
+      DASHBOARD : "Műszerfal",
       BATCH_JOB_NAME: "Kötegelt feladat neve",
       SUBMITTER: "Beküldő",
       BATCH_STATUS: "Köteg állapota",
       EXECUTION_ID: "Feladatvégrehajtás azonosítója",
       EXIT_STATUS: "Kilépési állapot",
-      CREATE_TIME: "Létrehozási idő",
-      START_TIME: "Kezdési idő",
+      CREATE_TIME: "Létrehozás időpontja",
+      START_TIME: "Indítási idő",
       END_TIME: "Befejezési idő",
       SERVER: "Kiszolgáló",
       SERVER_NAME: "Kiszolgáló neve",
@@ -68,14 +68,14 @@ define({
       PARTITION_ID: "Partíció {0}",                               // Partition ID number
       VIEW_EXECUTION_DETAILS: "{0} feladatvégrehajtás részleteinek megtekintése",    // Job Execution ID number
       PARENT_DETAILS: "Szülőinformációk részletei",
-      TIMES: "Időbélyegek",      // Heading on section referencing create, start, and end timestamps
+      TIMES: "Időpontok",      // Heading on section referencing create, start, and end timestamps
       STATUS: "Állapot",
       SEARCH_ON: "Szűrő kiválasztása a következőhöz: {1} {0}",                    // {0} Value, {1} Column name
       SEARCH_PILL_INPUT : "Adja meg a keresési feltételeket.",
       BREADCRUMB_JOB_INSTANCE : "Feladatpéldány: {0}",                // Job Instance ID
       BREADCRUMB_JOB_EXECUTION : "Feladatvégrehajtás: {0}",              // Job Execution ID
       BREADCRUMB_JOB_LOG : "Feladatnapló: {0}",
-      BATCH_SEARCH_CRITERIA_INVALID : "A keresési feltételek nem érvényesek.",
+      BATCH_SEARCH_CRITERIA_INVALID : "A keresési feltételek érvénytelenek.",
       ERROR_CANNOT_HAVE_MULTIPLE_SEARCHBY : "A keresési feltételekben csak egy {0} paraméter szerinti szűrés lehet.", // {0} will be another translated message key like SUBMITTER and BATCH_JOB_NAME
 
       INSTANCES_TABLE_IDENTIFIER: "Feladatpéldányok táblázata",
@@ -110,8 +110,8 @@ define({
       // RESTART JOB WITH PARAMETERS DIALOG
       REUSE_PARMS_TOGGLE_LABEL: "Paraméterek újrafelhasználása korábbi végrehajtásból",
       JOB_PARAMETERS_EMPTY: "Ha a '{0}' nincs bejelölve, akkor itt adja meg a feladat paramétereit.",   // 0 - Checkbox label - REUSE_PARMS_TOGGLE_LABEL
-      JOB_PARAMETER_NAME: "Paraméter neve",
-      JOB_PARAMETER_VALUE: "Paraméter értéke",
+      JOB_PARAMETER_NAME: "Paraméternév",
+      JOB_PARAMETER_VALUE: "Paraméterérték",
       PARM_NAME_COLUMN_HEADER: "Paraméter",
       PARM_VALUE_COLUMN_HEADER: "Érték",
       PARM_ADD_ICON_TITLE: "Paraméter hozzáadása",
@@ -121,7 +121,7 @@ define({
       JOB_PARAMETER_CREATE_BUTTON: "Paraméter hozzáadása gomb a táblázat fejlécében.",
 
       //JOB LOGS PAGE MESSAGES
-      JOBLOGS_LOG_CONTENT : "Munkanapló tartalma",
+      JOBLOGS_LOG_CONTENT : "Feladatnapló tartalma",
       FILE_DOWNLOAD : "Fájl letöltése",
       DOWNLOAD_DIALOG_DESCRIPTION : "Kívánja letölteni a naplófájlt?",
       INCLUDE_ALL_LOGS : "A feladatvégrehajtás összes naplófájljának szerepeltetése",
@@ -151,4 +151,3 @@ define({
       GRIDX_SUMMARY_TEXT : "Legutóbbi ${0} feladatpéldány megjelenítve"
 
 });
-

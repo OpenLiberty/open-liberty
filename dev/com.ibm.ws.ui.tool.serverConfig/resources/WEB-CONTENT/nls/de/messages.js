@@ -69,7 +69,7 @@ var editorMessages = {
 "ERROR_SAVING_FILE_MESSAGE": "Die Änderungen wurden nicht gespeichert. Der Server ist möglicherweise inaktiv, die Datei ist schreibgeschützt oder Ihre Benutzerrolle ist nicht berechtigt, die Konfigurationsänderungen vorzunehmen. ",
 "ERROR": "Fehler",
 "UNSAVED_CHANGES_MESSAGE": "Es sind nicht gespeicherte Änderungen vorhanden.",
-"READ_ONLY": "Schreibgeschützt",
+"READ_ONLY": "Lesezugriff",
 "RESTRICTED_OR_UNAVAILABLE": "Eingeschränkt oder nicht verfügbar",
 "EXPLORE_INCLUDES": "Includes untersuchen",
 "OPEN": "Öffnen",

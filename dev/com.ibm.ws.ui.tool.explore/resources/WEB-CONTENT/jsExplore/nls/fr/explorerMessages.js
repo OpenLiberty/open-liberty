@@ -394,7 +394,7 @@ define({
 
     STATUS : "Statut",
     STATE : "Etat :",
-    NAME : "Nom : ",
+    NAME : "Nom :",
     DIRECTORY : "Répertoire.",
     INFORMATION : "Informations",
     DETAILS : "Détails",
@@ -539,7 +539,7 @@ define({
     GRAPH_SERVER_NOT_STARTED: "Les statistiques en cours ne sont pas disponibles pour ce serveur car il est arrêté. Démarrez le serveur pour commencer le contrôle.",
     GRAPH_SERVER_HOSTING_APP_NOT_STARTED: "Les statistiques en cours ne sont pas disponibles pour cette application car le serveur associé est arrêté. Démarrez le serveur pour commencer le contrôle de cette application.",
     GRAPH_FEATURES_NOT_CONFIGURED: "Vous n'avez sauvegardé aucun élément pour le moment. Contrôlez cette ressource en sélectionnant l'icône Editer et en ajoutant des métriques.",
-    NO_GRAPHS_AVAILABLE: "Aucune métrique disponible à ajouter. Essayez d'installer des fonctionnalités supplémentaires pour que davantage de métriques soient disponibles. ",
+    NO_GRAPHS_AVAILABLE: "Aucune métrique disponible à ajouter. Essayez d'installer des fonctionnalités supplémentaires pour que davantage de métriques soient disponibles.",
     NO_APPS_GRAPHS_AVAILABLE: "Aucune métrique disponible à ajouter. Essayez d'installer des fonctionnalités supplémentaires pour que davantage de métriques soient disponibles. De même, vérifiez que l'application est en cours d'utilisation.",
     GRAPH_CONFIG_NOT_SAVED_TITLE : "Modifications non sauvegardées",
     GRAPH_CONFIG_NOT_SAVED_DESCR : "Certaines modifications n'ont pas été sauvegardées. Si vous changez de page, ces modifications seront perdues.",
@@ -586,7 +586,7 @@ define({
     TITLE_FOR_HOST: "Hôte {0}", // host name
 
     // objectView descriptor
-    COLLECTIVE_CONTROLLER_DESCRIPTOR: "Collective controller",
+    COLLECTIVE_CONTROLLER_DESCRIPTOR: "Contrôleur de collectivité",
     LIBERTY_SERVER : "serveur Liberty",
     NODEJS_SERVER : "Serveur Node.js",
     CONTAINER : "Conteneur",

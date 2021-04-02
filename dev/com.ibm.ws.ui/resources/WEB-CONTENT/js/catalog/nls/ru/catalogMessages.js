@@ -16,4 +16,3 @@ define({
         ERROR_URLACCESS_NOURL: "Запрошено состояние URL, но не указан URL",
         ERROR_URLANALYZE_NOURL: "Запрошен анализ URL, но не указан URL"
 });
-

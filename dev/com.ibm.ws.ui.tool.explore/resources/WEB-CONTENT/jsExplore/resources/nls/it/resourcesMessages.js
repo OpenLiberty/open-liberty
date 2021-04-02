@@ -23,18 +23,17 @@ define({
     SERVER_NONEXISTANT : "Il server {0} non esiste.", // serverName
     ERROR_SERVER_OPERATION : "Si è verificato un errore durante il tentativo di {0} il server {1} sull'host {2} nella directory {3}.", //operation, serverName, hostName, userdirName
     ERROR_SERVER_OPERATION_SET_MAINTENANCE_MODE : "La modalità di manutenzione per il server {0} sull'host {1} nella directory {2} non è stata impostata a causa di un errore.", //serverName, hostName, userdirName
-    ERROR_SERVER_OPERATION_UNSET_MAINTENANCE_MODE : "Il tentativo di annullare l'impostazione della modalità di manutenzione per il server {0} sull'host {1} nella directory {2} non è stato completato a causa di un errore.", //serverName, hostName, userdirName
+    ERROR_SERVER_OPERATION_UNSET_MAINTENANCE_MODE : "Il tentativo di annullare l'impostazione per la modalità di manutenzione per il server {0} sull'host {1} nella directory {2} non è stato completato a causa di un errore.", //serverName, hostName, userdirName
     ERROR_HOST_OPERATION_SET_MAINTENANCE_MODE : "La modalità di manutenzione per l'host {0} non è stata impostata a causa di un errore.", // hostName
-    ERROR_HOST_OPERATION_UNSET_MAINTENANCE_MODE : "Il tentativo di annullare l'impostazione della modalità di manutenzione per l'host {0} non è stato completato a causa di un errore.", // hostName
+    ERROR_HOST_OPERATION_UNSET_MAINTENANCE_MODE : "Il tentativo di annullare l'impostazione della modalità di manutenzione per l'host {0} non è stata completata a causa di un errore.", // hostName
     // Dialog messages on operation errors
     SERVER_START_ERROR: "Errore durante l'avvio del server.",
-    SERVER_START_CLEAN_ERROR: "Errore durante l'avvio del server --clean. ",
+    SERVER_START_CLEAN_ERROR: "Errore durante l'avvio del server --clean.",
     SERVER_STOP_ERROR: "Errore durante l'arresto del server.",
     SERVER_RESTART_ERROR: "Errore durante il riavvio del server.",
     // Used by standalone stop operation
     STANDALONE_STOP_NO_MBEAN : 'Il server non si è arrestato. L\'API richiesta per arrestare il server non era disponibile.',
-    STANDALONE_STOP_CANT_DETERMINE_MBEAN : 'Il server non si è arrestato. Non è stato possibile determinare l\'API richiesta per arrestare il server.',
+    STANDALONE_STOP_CANT_DETERMINE_MBEAN : 'Il server non si è arrestato. Non è stato possibile determinare l\'API richiesta per arrestare il server. ',
     STANDALONE_STOP_FAILED : 'L\'operazione di arresto del server non è stata completata correttamente. Per i dettagli, consultare i log del server.',
-    STANDALONE_STOP_SUCCESS : 'Arresto del server riuscito.',
+    STANDALONE_STOP_SUCCESS : 'Server arrestato correttamente.',
 });
-

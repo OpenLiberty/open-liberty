@@ -9,7 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 define({
-      SEARCH_ENTER_CRITERIA : "輸入搜尋準則。請使用下移鍵，來選取類型，然後選取 Tab 鍵，來指定值。您也可以輸入 type:value，然後選取 Tab 鍵。使用左邊的點擊滑鼠和下移鍵來選取一個最近的搜尋準則。",
+      SEARCH_ENTER_CRITERIA : "請輸入搜尋準則。請使用下移鍵來選取類型，然後使用 Tab 鍵來指定值。您也可以輸入 type:value，然後使用 Tab 鍵。使用左邊的點擊滑鼠和下移鍵來選取一個最近的搜尋準則。",
       SEARCH_BUTTON_ADD : "新增搜尋準則",
       SEARCH_BUTTON_CLEAR : "清除搜尋欄位",
       SEARCH_BUTTON_SEARCH : "搜尋",
@@ -19,4 +19,3 @@ define({
       BREADCRUMB_SEPARATOR_LABEL : "瀏覽途徑分隔字元",
       SEARCH_PILL_DELETE_BUTTON : "移除搜尋準則"
 });
-

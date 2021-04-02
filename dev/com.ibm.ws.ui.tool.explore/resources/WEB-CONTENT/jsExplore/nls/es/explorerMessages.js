@@ -587,8 +587,8 @@ define({
 
     // objectView descriptor
     COLLECTIVE_CONTROLLER_DESCRIPTOR: "Controlador colectivo",
-    LIBERTY_SERVER : "servidor de Liberty",
-    NODEJS_SERVER : "Servidor Node.js",
+    LIBERTY_SERVER : "Servidor de Liberty",
+    NODEJS_SERVER : "Servidor de Node.js",
     CONTAINER : "Contenedor",
     CONTAINER_LIBERTY : "Liberty",
     CONTAINER_DOCKER : "Docker",

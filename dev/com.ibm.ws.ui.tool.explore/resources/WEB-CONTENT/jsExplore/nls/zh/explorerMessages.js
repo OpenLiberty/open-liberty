@@ -60,7 +60,7 @@ define({
     CONFIGURE : "配置",
 
     SEARCH_RESOURCE_TYPE: "类型", // Search by resource types
-    SEARCH_RESOURCE_STATE: "省/自治区/直辖市", // Search by resource types
+    SEARCH_RESOURCE_STATE: "状态", // Search by resource types
     SEARCH_RESOURCE_TYPE_ALL: "全部", // Search all resource types
     SEARCH_RESOURCE_NAME: "名称", // Search by resource name
     SEARCH_RESOURCE_TAG: "标签", // Search by resource tag

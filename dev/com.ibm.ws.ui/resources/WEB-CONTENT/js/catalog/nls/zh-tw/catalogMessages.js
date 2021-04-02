@@ -9,11 +9,10 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 define({
-        ERROR_DELETETOOL_NOID: "要求刪除工具，但未提供 ID。",
+        ERROR_DELETETOOL_NOID: "已要求刪除工具，但未提供 ID。",
         ERROR_ADDBOOKMARK_NOPROPS: "新增書籤時未指定書籤內容。",
-        ERROR_GETTOOL_NOTOOL: "無此工具 {0}。",
-        ERROR_GETTOOL_NOID: "要求工具，但未提供 ID。",
-        ERROR_URLACCESS_NOURL: "要求 URL 的狀態，但未提供 URL",
-        ERROR_URLANALYZE_NOURL: "要求分析 URL，但未提供 URL"
+        ERROR_GETTOOL_NOTOOL: "沒有此工具 {0}。",
+        ERROR_GETTOOL_NOID: "已要求工具，但未提供 ID。",
+        ERROR_URLACCESS_NOURL: "已要求 URL 的狀態，但未提供 URL",
+        ERROR_URLANALYZE_NOURL: "已要求分析 URL，但未提供 URL"
 });
-

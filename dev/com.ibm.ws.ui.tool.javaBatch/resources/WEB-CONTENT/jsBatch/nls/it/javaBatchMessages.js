@@ -45,13 +45,13 @@ define({
       GO_TO_DASHBOARD: "Vai al dashboard",
       DASHBOARD : "Dashboard",
       BATCH_JOB_NAME: "Nome lavoro batch",
-      SUBMITTER: "Inoltratore",
+      SUBMITTER: "Mittente",
       BATCH_STATUS: "Stato batch",
-      EXECUTION_ID: "ID di esecuzione lavoro",
+      EXECUTION_ID: "ID esecuzione lavoro",
       EXIT_STATUS: "Stato di uscita",
-      CREATE_TIME: "Data/ora di creazione",
-      START_TIME: "Data/ora di avvio",
-      END_TIME: "Data/ora di fine",
+      CREATE_TIME: "Data/ora creazione",
+      START_TIME: "Ora di inizio",
+      END_TIME: "Ora di fine",
       SERVER: "Server",
       SERVER_NAME: "Nome server",
       SERVER_USER_DIRECTORY: "Directory utente",
@@ -63,7 +63,7 @@ define({
       JES_JOB_ID: "ID lavoro JES",
       ACTIONS: "Azioni",
       VIEW_LOG_FILE: "Visualizza file di log",
-      STEP_NAME: "Nome passo",
+      STEP_NAME: "Nome fase",
       ID: "ID",
       PARTITION_ID: "Partizione {0}",                               // Partition ID number
       VIEW_EXECUTION_DETAILS: "Visualizza dettagli esecuzione lavoro {0}",    // Job Execution ID number
@@ -76,18 +76,18 @@ define({
       BREADCRUMB_JOB_EXECUTION : "Esecuzione lavoro {0}",              // Job Execution ID
       BREADCRUMB_JOB_LOG : "Log lavoro {0}",
       BATCH_SEARCH_CRITERIA_INVALID : "I criteri di ricerca non sono validi.",
-      ERROR_CANNOT_HAVE_MULTIPLE_SEARCHBY : "I criteri di ricerca non possono avere più filtri per i parametri {0}. ", // {0} will be another translated message key like SUBMITTER and BATCH_JOB_NAME
+      ERROR_CANNOT_HAVE_MULTIPLE_SEARCHBY : "I criteri di ricerca non possono avere più filtri per i parametri {0}.", // {0} will be another translated message key like SUBMITTER and BATCH_JOB_NAME
 
       INSTANCES_TABLE_IDENTIFIER: "Tabella istanze lavoro",
       EXECUTIONS_TABLE_IDENTIFIER: "Tabella esecuzioni lavoro",
       STEPS_DETAILS_TABLE_IDENTIFIER: "Tabella dettagli passi",
       LOADING_VIEW : "La pagina sta caricando le informazioni",
-      LOADING_VIEW_TITLE : "Caricamento vista",
-      LOADING_GRID : "In attesa della restituzione dei risultati della ricerca dal  server",
+      LOADING_VIEW_TITLE : "Caricamento della vista",
+      LOADING_GRID : "In attesa della restituzione dei risultati della ricerca dal server",
       PAGENUMBER : "Numero di pagina",
       SELECT_QUERY_SIZE: "Seleziona dimensione query",
-      LINK_EXPLORE_HOST: "Selezionare per visualizzare i dettagli sull'host {0} nello strumento Esplora. ",      // Host name
-      LINK_EXPLORE_SERVER: "Selezionare per visualizzare i dettagli sul server {0} nello strumento Esplora. ",  // Server name
+      LINK_EXPLORE_HOST: "Selezionare per visualizzare i dettagli sull'host {0} nello strumento Esplora.",      // Host name
+      LINK_EXPLORE_SERVER: "Selezionare per visualizzare i dettagli sul server {0} nello strumento Esplora.",  // Server name
 
       //ACTIONS
       RESTART: "Riavvia",
@@ -99,7 +99,7 @@ define({
 
       RESTART_INSTANCE_MESSAGE: "Riavviare l'esecuzione lavoro più recente associata all'istanza lavoro {0}?",     // Job Instance ID number
       STOP_INSTANCE_MESSAGE: "Arrestare l'esecuzione lavoro più recente associata all'istanza lavoro {0}?",           // Job Instance ID number
-      PURGE_INSTANCE_MESSAGE: "Cancellare tutte le voci di database e i log lavori associati all'istanza lavoro? {0}?",     // Job Instance ID number
+      PURGE_INSTANCE_MESSAGE: "Cancellare tutte le voci di database e i log lavori associati all'istanza lavoro {0}?",     // Job Instance ID number
       PURGE_JOBSTORE_ONLY: "Cancella solo archivio lavoro",
 
       RESTART_INST_ERROR_MESSAGE: "Richiesta di riavvio non riuscita.",
@@ -126,7 +126,7 @@ define({
       DOWNLOAD_DIALOG_DESCRIPTION : "Scaricare il file di log?",
       INCLUDE_ALL_LOGS : "Includi tutti i file di log per l'esecuzione lavoro",
       LOGS_NAVIGATION_BAR : "Barra di navigazione dei log lavori",
-      DOWNLOAD : "Download",
+      DOWNLOAD : "Scarica",
       LOG_TOP : "Inizio dei log",
       LOG_END : "Fine dei log",
       PREVIOUS_PAGE : "Pagina precedente",
@@ -139,7 +139,7 @@ define({
       NO_VIEW : "Errore URL: non esistono viste simili.",
       WRONG_TOOL_ID : "La stringa di query dell'URL non inizia con l'ID strumento {0}, ma con {1}.",   // {0} and {1} are both Strings
       URL_NO_LOGS : "Errore URL: Nessun log esistente.",
-      NOT_A_NUMBER : "Errore URL: {0} deve essere un numero. ",                                                // {0} is a field name
+      NOT_A_NUMBER : "Errore URL: {0} deve essere un membro.",                                                // {0} is a field name
       PARAMETER_REPETITION : "Errore URL: {0} può esistere una sola volta nei parametri.",                   // {0} is a field name
       URL_PAGE_PARAMS_ERROR : "Errore URL: il parametro pagina è fuori dall'intervallo.",
       INVALID_PARAMETER : "Errore URL: {0} non è un parametro valido.",                                       // {0} is a String
@@ -151,4 +151,3 @@ define({
       GRIDX_SUMMARY_TEXT : "Visualizzazione delle ultime ${0} istanze lavoro"
 
 });
-

@@ -16,4 +16,3 @@ define({
         ERROR_URLACCESS_NOURL: "Byl požadován stav URL, ale nebyla zadána adresa URL.",
         ERROR_URLANALYZE_NOURL: "Byla požadována analýza URL, ale nebyla zadána adresa URL."
 });
-

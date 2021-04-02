@@ -8,8 +8,8 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
- 
- define({
+
+define({
     LIBERTY_HEADER_TITLE: "Liberty Admin Center",
     LIBERTY_HEADER_PROFILE: "設定",
     LIBERTY_HEADER_LOGOUT: "ログアウト",
@@ -105,5 +105,5 @@
 
     TOOL_OIDC_ACCESS_DENIED: "ユーザーはこの要求を完了するためのアクセス権があるロールに属していません。",
     TOOL_OIDC_GENERIC_ERROR: "エラーが発生しました。 詳しくは、ログに記述されているエラーを確認してください。",
-    TOOL_DISABLE: "ユーザーはこのツールを使用するための許可を持っていません。管理者役割のユーザーのみがこのツールを使用する許可を持ちます。" 
+    TOOL_DISABLE: "ユーザーはこのツールを使用するための許可を持っていません。 管理者役割のユーザーのみがこのツールを使用する許可を持ちます。" 
 });

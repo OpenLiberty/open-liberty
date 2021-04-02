@@ -18,7 +18,7 @@ define({
     DASHBOARD_VIEW_ALL_HOSTS : "Visualizza tutti gli host",
     DASHBOARD_VIEW_ALL_RUNTIMES : "Visualizza tutti i runtime",
     SEARCH : "Ricerca",
-    SEARCH_RECENT : "Ricerche recenti ",
+    SEARCH_RECENT : "Ricerche recenti",
     SEARCH_RESOURCES : "Ricerca nelle risorse",
     SEARCH_RESULTS : "Risultati della ricerca",
     SEARCH_NO_RESULTS : "Nessun risultato",
@@ -69,8 +69,8 @@ define({
     SEARCH_RESOURCE_CONTAINER_NONE: "Nessuno", // Search by container type none
     SEARCH_RESOURCE_RUNTIMETYPE: "Tipo di runtime", // Search by runtime type
     SEARCH_RESOURCE_OWNER: "Proprietario", // Search by owner
-    SEARCH_RESOURCE_CONTACT: "Contatto ", // Search by contact
-    SEARCH_RESOURCE_NOTE: "Nota ", // Search by note
+    SEARCH_RESOURCE_CONTACT: "Contatto", // Search by contact
+    SEARCH_RESOURCE_NOTE: "Nota", // Search by note
 
     GRID_HEADER_USERDIR : "Directory utente",
     GRID_HEADER_NAME : "Nome",
@@ -208,7 +208,7 @@ define({
     STATS_TIME_5MINUTES : "5m",
     STATS_TIME_1MINUTE : "1m",
     STATS_PERSPECTIVE_SUMMARY : "Riepilogo",
-    STATS_PERSPECTIVE_TRAFFIC : "Traffico ",
+    STATS_PERSPECTIVE_TRAFFIC : "Traffico",
     STATS_PERSPECTIVE_TRAFFIC_JVM : "Traffico JVM",
     STATS_PERSPECTIVE_TRAFFIC_CONN : "Traffico connessione",
     STATS_PERSPECTIVE_TRAFFIC_LAACCESS : "Traffico log accessi",
@@ -286,8 +286,8 @@ define({
     TOTAL : "Totale",
     UTILIZATION : "Utilizzo superiore al {0}%", // percent
 
-    ELLIPSIS_ARIA: "Espandere per vedere altre opzioni. ",
-    EXPAND : "Espandi ",
+    ELLIPSIS_ARIA: "Espandere per vedere altre opzioni.",
+    EXPAND : "Espandi",
     COLLAPSE: "Comprimi",
 
     ALL : "Tutto",
@@ -471,7 +471,7 @@ define({
     RESOURCE_ON_CLUSTER_RESOURCE : "{0} sul cluster {1}", // resource name, resource name
 
     RESTART_DISABLED_FOR_ADMIN_CENTER: "Il riavvio è disabilitato per questo server perché ospita il centro di gestione",
-    ACTION_DISABLED_FOR_USER: "Le azioni sono disabilitate su questa risorsa perché l'utente non è autorizzato ",
+    ACTION_DISABLED_FOR_USER: "Le azioni sono disabilitate su questa risorsa perché l'utente non è autorizzato",
 
     RESTART_AC_TITLE: "Nessun riavvio per il centro di gestione",
     RESTART_AC_DESCRIPTION: "{0} sta fornendo il centro di gestione. Il centro di gestione non può riavviarsi da solo.",
@@ -540,7 +540,7 @@ define({
     GRAPH_SERVER_HOSTING_APP_NOT_STARTED: "Le statistiche correnti non sono disponibili per questa applicazione perché il server associato è arrestato. Avvia il server per iniziare a monitorare questa applicazione.",
     GRAPH_FEATURES_NOT_CONFIGURED: "Non sono ancora presenti elementi. Monitorare questa risorsa selezionando l'icona Modifica e aggiungendo metriche.",
     NO_GRAPHS_AVAILABLE: "Non sono disponibili metriche da aggiungere. Tentare con l'installazione di altre funzioni di monitoraggio per rendere disponibili più metriche.",
-    NO_APPS_GRAPHS_AVAILABLE: "Non sono disponibili metriche da aggiungere. Tentare con l'installazione di altre funzioni di monitoraggio per rendere disponibili più metriche.Inoltre, assicurarsi che l'applicazione sia in uso.",
+    NO_APPS_GRAPHS_AVAILABLE: "Non sono disponibili metriche da aggiungere. Tentare con l'installazione di altre funzioni di monitoraggio per rendere disponibili più metriche. Inoltre, assicurarsi che l'applicazione sia in uso.",
     GRAPH_CONFIG_NOT_SAVED_TITLE : "Modifiche non salvate",
     GRAPH_CONFIG_NOT_SAVED_DESCR : "Sono presenti modifiche non salvate. Se si passa a un'altra pagina si perderanno le modifiche.",
     GRAPH_CONFIG_NOT_SAVED_MSG : "Salvare le modifiche?",

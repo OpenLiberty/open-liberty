@@ -9,11 +9,10 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 define({
-        ERROR_DELETETOOL_NOID: "A fost cerută ştergerea unei unelte, dar nu a fost furnizat ID-ul.",
-        ERROR_ADDBOOKMARK_NOPROPS: "Nu a fost specificată nicio proprietate de semn de carte la adăugarea unui semn de carte.",
-        ERROR_GETTOOL_NOTOOL: "Nu există unealta {0}.",
-        ERROR_GETTOOL_NOID: "A fost cerută o unealtă, dar nu a fost furnizat ID-ul.",
-        ERROR_URLACCESS_NOURL: "A fost cerut statusul unui URL, dar nu a fost furnizat niciun URL",
-        ERROR_URLANALYZE_NOURL: "A fost cerută analizarea unui URL, dar nu a fost furnizat niciun URL"
+        ERROR_DELETETOOL_NOID: "S-a cerut ştergerea unei unelte dar nu s-a furnizat un ID.",
+        ERROR_ADDBOOKMARK_NOPROPS: "Nu s-a specificat nicio proprietate de semn de carte la adăugarea unui semn de carte.",
+        ERROR_GETTOOL_NOTOOL: "Nicio astfel de unealtă {0}.",
+        ERROR_GETTOOL_NOID: "S-a cerut o unealtă dar nu s-a furnizat un ID.",
+        ERROR_URLACCESS_NOURL: "S-a cerut starea unui URL dar nu s-a furnizat un URL",
+        ERROR_URLANALYZE_NOURL: "S-a cerut analizarea unui URL dar nu s-a furnizat un URL"
 });
-

@@ -9,11 +9,10 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 define({
-        ERROR_DELETETOOL_NOID: "Foi solicitado para excluir uma ferramenta, mas não foi fornecido um ID.",
+        ERROR_DELETETOOL_NOID: "Solicitado para excluir uma ferramenta, mas sem o fornecimento de um ID.",
         ERROR_ADDBOOKMARK_NOPROPS: "Nenhuma propriedade de marcador especificada ao incluir um marcador.",
-        ERROR_GETTOOL_NOTOOL: "Nenhuma ferramenta desse tipo {0}.",
-        ERROR_GETTOOL_NOID: "Foi solicitada uma ferramenta, mas não foi fornecido um ID.",
-        ERROR_URLACCESS_NOURL: "Foi solicitado o status de uma URL, mas não foi fornecida uma URL",
-        ERROR_URLANALYZE_NOURL: "Foi solicitado para analisar uma URL, mas não foi fornecida uma URL"
+        ERROR_GETTOOL_NOTOOL: "Não existe essa ferramenta {0}.",
+        ERROR_GETTOOL_NOID: "Solicitada uma ferramenta, mas sem o fornecimento de um ID.",
+        ERROR_URLACCESS_NOURL: "Solicitado o status de uma URL, mas sem o fornecimento de uma URL",
+        ERROR_URLANALYZE_NOURL: "Solicitado para analisar uma URL, mas sem o fornecimento de uma URL"
 });
-

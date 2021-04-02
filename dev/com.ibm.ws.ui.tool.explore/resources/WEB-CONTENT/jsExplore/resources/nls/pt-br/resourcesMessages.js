@@ -37,4 +37,3 @@ define({
     STANDALONE_STOP_FAILED : 'A operação de parada do servidor não foi concluída com sucesso. Verifique os logs do servidor para obter detalhes.',
     STANDALONE_STOP_SUCCESS : 'Servidor interrompido com sucesso.',
 });
-

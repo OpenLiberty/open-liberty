@@ -14,4 +14,3 @@ define({
         missingMessage: "Tato hodnota je povinná.",
         rangeMessage: "Hodnota je mimo rozsah."
 });
-

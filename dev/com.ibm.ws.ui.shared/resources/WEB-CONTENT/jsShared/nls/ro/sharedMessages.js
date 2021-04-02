@@ -19,4 +19,3 @@ define({
       BREADCRUMB_SEPARATOR_LABEL : "Separator urmă de întoarcere",
       SEARCH_PILL_DELETE_BUTTON : "Înlăturare criterii de căutare"
 });
-

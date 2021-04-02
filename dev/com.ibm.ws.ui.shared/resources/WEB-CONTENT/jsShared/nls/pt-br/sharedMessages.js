@@ -9,14 +9,13 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 define({
-      SEARCH_ENTER_CRITERIA : "Inserir critérios de procura. Use a seta para baixo para selecionar o tipo e, então, a tecla tab para especificar o valor. Também é possível inserir tipo:valor seguido por tab.  Use o clique do botão esquerdo do mouse e a seta para baixo para selecionar um critério de procura recente.",
+      SEARCH_ENTER_CRITERIA : "Inserir critérios de procura. Use a seta para baixo para selecionar o tipo e, em seguida, a tecla Tab para especificar o valor. Também é possível inserir type:value seguido por Tab.  Use o clique do botão esquerdo do mouse e a seta para baixo para selecionar um critério de procura recente.",
       SEARCH_BUTTON_ADD : "Incluir critério de procura",
       SEARCH_BUTTON_CLEAR : "Limpar campo de procura",
       SEARCH_BUTTON_SEARCH : "Procurar",
-      SEARCH_RESOURCE_TYPE_ALL: "Todos", // Search all resource types
-      GRID_COLUMN_SELECTION_BUTTON_LABEL: "Seleção de Coluna",
+      SEARCH_RESOURCE_TYPE_ALL: "Tudo", // Search all resource types
+      GRID_COLUMN_SELECTION_BUTTON_LABEL: "Seleção da Coluna",
       GRID_COLUMN_SELECTION_MENU_LABEL: "Seleção de Coluna para {0}",    // Grid Identifier 
-      BREADCRUMB_SEPARATOR_LABEL : "Separador de trilha de navegação",
+      BREADCRUMB_SEPARATOR_LABEL : "Separador de Breadcrumb",
       SEARCH_PILL_DELETE_BUTTON : "Remover critério de procura"
 });
-
