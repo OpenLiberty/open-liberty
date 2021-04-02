@@ -11,9 +11,10 @@ package com.ibm.ws.webcontainer40.srt;
 
 import javax.servlet.http.HttpServletMapping;
 
+import com.ibm.ws.webcontainer.srt.ISRTServletRequest;
 import com.ibm.ws.webcontainer40.osgi.webapp.WebAppDispatcherContext40;
 
-public interface ISRTServletRequest40 {
+public interface ISRTServletRequest40 extends ISRTServletRequest {
 
     HttpServletMapping getCurrentHttpServletMapping(WebAppDispatcherContext40 dispatchContext);
 }

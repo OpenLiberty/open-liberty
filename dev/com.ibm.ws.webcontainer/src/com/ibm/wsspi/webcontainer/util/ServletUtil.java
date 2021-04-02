@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.wsspi.webcontainer.util;
 
-import java.lang.reflect.Proxy;
 import java.text.MessageFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -54,11 +53,6 @@ public class ServletUtil {
 	 */
 	public static com.ibm.wsspi.webcontainer.servlet.IExtendedRequest unwrapRequest(ServletRequest req)
 	{
-	        Class<?> reqClass = req.getClass();
-	        if (Proxy.isProxyClass(reqClass)) {
-	            if (req.toString().contains("SRTServletRequest40"))
-	                return (com.ibm.wsspi.webcontainer.servlet.IExtendedRequest) req;
-	        }
 		return unwrapRequest(req, com.ibm.wsspi.webcontainer.servlet.IExtendedRequest.class);
 	}
 
@@ -71,7 +65,6 @@ public class ServletUtil {
 	{
 		ServletRequest r = req;
 		while (!(requestClass.isInstance(r)))
-		//while (!(requestClass.isAssignableFrom(r.getClass())))
 		{
 			if (logWarning && logger.isLoggable(Level.WARNING)) {
 		            logger.logp(Level.WARNING, CLASS_NAME, "unwrapRequest",MessageFormat.format(nls.getString(
