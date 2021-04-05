@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2021 IBM Corporation and others.
+ * Copyright (c) 1997, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1771,19 +1771,19 @@ public abstract class ValidateVisitor extends JspVisitor {
 	//method used to replace ELSupport.checkType
 	private final static void ELCheckType(final Object obj, final Class<?> type) throws ELException {
 	    if (String.class.equals(type)) {
-	        ELSupport.coerceToString(null, obj);
+	        ELSupport.coerceToString(obj);
         }
         if (ELArithmetic.isNumberType(type)) {
-            ELSupport.coerceToNumber(null, obj, type);
+            ELSupport.coerceToNumber(obj, type);
         }
         if (Character.class.equals(type) || Character.TYPE == type) {
-            ELSupport.coerceToCharacter(null, obj);
+            ELSupport.coerceToCharacter(obj);
         }
         if (Boolean.class.equals(type) || Boolean.TYPE == type) {
-            ELSupport.coerceToBoolean(null, obj);
+            ELSupport.coerceToBoolean(obj);
         }
         if (type.isEnum()) {
-            ELSupport.coerceToEnum(null, obj, type);
+            ELSupport.coerceToEnum(obj, type);
         }
 	}
 
