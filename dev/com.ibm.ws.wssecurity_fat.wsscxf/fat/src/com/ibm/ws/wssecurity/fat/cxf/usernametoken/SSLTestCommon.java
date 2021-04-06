@@ -14,8 +14,12 @@ package com.ibm.ws.wssecurity.fat.cxf.usernametoken;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+//4/2021
+import java.io.File;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+//4/2021
+import java.util.Set;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
@@ -31,6 +35,8 @@ import org.junit.runner.RunWith;
 
 //Added 10/2020
 import com.ibm.websphere.simplicity.ShrinkHelper;
+//4/2021
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.wssecurity.fat.utils.common.SharedTools;
 import com.ibm.ws.wssecurity.fat.utils.common.UpdateServerXml;
@@ -44,6 +50,7 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
 //Added 11/2020
@@ -110,6 +117,14 @@ public class SSLTestCommon {
         //String thisMethod = "setup";
         //orig from CL:
         //server = LibertyServerFactory.getLibertyServer("com.ibm.ws.wssecurity_fat.ssl");
+
+        //4/2021
+        ServerConfiguration config = server.getServerConfiguration();
+        Set<String> features = config.getFeatureManager().getFeatures();
+        if (features.contains("jaxws-2.3")) {
+            copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_ee8.xml");
+        }
+        //End 4/2021
 
         //Added 10/2020
         ShrinkHelper.defaultDropinApp(server, "untsslclient", "com.ibm.ws.wssecurity.fat.untsslclient", "fats.cxf.basicssl.wssec", "fats.cxf.basicssl.wssec.types");
@@ -296,4 +311,19 @@ public class SSLTestCommon {
                                        + strMethod);
         System.err.println("*****************************" + strMethod);
     }
+
+    //4/2021
+    public static void copyServerXml(String copyFromFile) throws Exception {
+
+        try {
+            String serverFileLoc = (new File(server.getServerConfigurationPath().replace('\\', '/'))).getParent();
+            Log.info(thisClass, "copyServerXml", "Copying: " + copyFromFile
+                                                 + " to " + serverFileLoc);
+            LibertyFileManager.copyFileIntoLiberty(server.getMachine(),
+                                                   serverFileLoc, "server.xml", copyFromFile);
+        } catch (Exception ex) {
+            ex.printStackTrace(System.out);
+        }
+    }
+
 }

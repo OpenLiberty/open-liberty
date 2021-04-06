@@ -34,6 +34,8 @@ import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 
+//4/2021
+import componenttest.annotation.AllowedFFDC;
 //Added 11/2020
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -151,6 +153,8 @@ public class CxfSymSampleTests {
         return;
     }
 
+    //4/2021 added allowed ffdc to run with EE8
+    @AllowedFFDC(value = { "java.net.MalformedURLException", "java.lang.ClassNotFoundException" })
     @Test
     public void testEcho1Service() throws Exception {
         String thisMethod = "testEcho1Service";
@@ -175,6 +179,8 @@ public class CxfSymSampleTests {
         return;
     }
 
+    //4/2021 add allowed ffdc to run with EE8
+    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     @Test
     public void testEcho2Service() throws Exception {
         String thisMethod = "testEcho2Service";
@@ -199,6 +205,8 @@ public class CxfSymSampleTests {
         return;
     }
 
+    //4/2021 add allowed ffdc to run with EE8
+    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     @Test
     public void testEcho3Service() throws Exception {
         String thisMethod = "testEcho3Service";
@@ -223,6 +231,8 @@ public class CxfSymSampleTests {
         return;
     }
 
+    //4/2021 add allowed ffdc to run with EE8
+    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     @Test
     public void testEcho5Service() throws Exception {
         String thisMethod = "testEcho5Service";
@@ -247,6 +257,8 @@ public class CxfSymSampleTests {
         return;
     }
 
+    //4/2021 add allowed ffdc to run with EE8
+    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     @Test
     public void testEcho6Service() throws Exception {
         String thisMethod = "testEcho6Service";
