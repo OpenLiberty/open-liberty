@@ -162,6 +162,9 @@ joda-time:joda-time:2.9.9
 jtidy:jtidy:4aug2000r7-dev
 net.minidev:json-smart:1.3.1
 net.sf.ehcache:ehcache-core:2.5.2
+net.shibboleth.idp:idp-war:3.3.1
+net.shibboleth.idp:idp-war:4.0.1
+net.shibboleth.idp:idp-war:4.1.0
 net.shibboleth.utilities:java-support:7.5.1
 net.sourceforge.cssparser:cssparser:0.9.23
 net.sourceforge.htmlunit:htmlunit-core-js:2.15
@@ -296,6 +299,8 @@ org.codehaus.jackson:jackson-core-asl:1.6.2
 org.codehaus.jackson:jackson-jaxrs:1.6.2
 org.codehaus.jackson:jackson-mapper-asl:1.6.2
 org.codehaus.jackson:jackson-xc:1.6.2
+org.codehaus.janino:commons-compiler:3.1.3
+org.codehaus.janino:janino:3.1.3
 org.codehaus.woodstox:stax2-api:4.2
 org.codehaus.woodstox:woodstox-core-asl:4.2.0
 org.cryptacular:cryptacular:1.2.4
