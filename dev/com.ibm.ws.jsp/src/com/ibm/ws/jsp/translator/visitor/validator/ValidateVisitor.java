@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2021 IBM Corporation and others.
+ * Copyright (c) 1997, 2007 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -135,12 +135,12 @@ public abstract class ValidateVisitor extends JspVisitor {
     protected ValidateResult result = null;
     protected TagLibraryCache tagLibraryCache = null;
     protected Stack tagCountStack = new Stack();
-    private Vector dupVector = new Vector();		//PK29373
+    private Vector dupVector = new Vector();            //PK29373
     private HashMap<String,Integer> scriptVars = new HashMap<String,Integer>();
     private HashMap<String,String> prefixToUriMap = new HashMap<String,String>();
     protected String jspUri = null;
     protected TagCountResult tagCountResult = null;
-    protected boolean dupFlag = false;		//PK29373
+    protected boolean dupFlag = false;          //PK29373
     protected JspOptions jspOptions = null; //PK53233
     protected boolean evalQuotedAndEscapedExpression = false; //PK53233
 
@@ -299,7 +299,7 @@ public abstract class ValidateVisitor extends JspVisitor {
                 throw new JspTranslationException(jspElement, "jsp.error.missing.attribute", new Object[] { attributes[i].getName()});
             }
             else if (attributes[i].isRequired() == false && attribs.containsKey(attributes[i].getName())) {
-				varNameSuffix.append("_"+attributes[i].getName());
+                                varNameSuffix.append("_"+attributes[i].getName());
             }
         }
         
@@ -338,15 +338,15 @@ public abstract class ValidateVisitor extends JspVisitor {
         if (tei != null) {
             // defect 420617 - tei needs TagInfo
             tei.setTagInfo(ti);
-    		if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINER)){
-    			logger.logp(Level.FINER, CLASS_NAME, "visitCustomTagStart","tei.getTagInfo().getTagLibrary().getTagLibraryInfos() =[" + tei.getTagInfo().getTagLibrary().getTagLibraryInfos() +"]");
-    		}
+                if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINER)){
+                        logger.logp(Level.FINER, CLASS_NAME, "visitCustomTagStart","tei.getTagInfo().getTagLibrary().getTagLibraryInfos() =[" + tei.getTagInfo().getTagLibrary().getTagLibraryInfos() +"]");
+                }
 
-	        if (tei.getVariableInfo(tagData) != null
-	            && tei.getVariableInfo(tagData).length > 0
-	            && ti.getTagVariableInfos().length > 0) {
-	            throw new JspTranslationException(jspElement, "jsp.error.non_null_tei_and_var_subelems");
-	        }
+                if (tei.getVariableInfo(tagData) != null
+                    && tei.getVariableInfo(tagData).length > 0
+                    && ti.getTagVariableInfos().length > 0) {
+                    throw new JspTranslationException(jspElement, "jsp.error.non_null_tei_and_var_subelems");
+                }
         }
         ValidationMessage[] validationMessages = ti.validate(tagData);
 
@@ -442,9 +442,9 @@ public abstract class ValidateVisitor extends JspVisitor {
     }
 
     protected void visitJspRootStart(Element jspElement) throws JspCoreException {
-		if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINER)){
-			logger.logp(Level.FINER, CLASS_NAME, "visitJspRootStart","enter visitJspRootStart() =[" + jspElement.getNodeValue() +"]");
-		}
+                if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINER)){
+                        logger.logp(Level.FINER, CLASS_NAME, "visitJspRootStart","enter visitJspRootStart() =[" + jspElement.getNodeValue() +"]");
+                }
         if (jspElement.getParentNode().getNodeType() != Node.DOCUMENT_NODE) {
             throw new JspTranslationException(jspElement, "jsp.error.root.must.be.top");
         }
@@ -485,23 +485,23 @@ public abstract class ValidateVisitor extends JspVisitor {
                             if (result.getTagLibMap().containsKey(uri) == false) {
                                 result.getTagLibMap().put(uri, tli);
                                 tli.setTagLibMap(result.getTagLibMap()); //jsp2.1work
-                        		if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINER)){
-                        			logger.logp(Level.FINER, CLASS_NAME, "visitJspRootStart","getTagLibraryInfos() =[" + tli.getTagLibraryInfos() +"]");
-                        		}
+                                        if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINER)){
+                                                logger.logp(Level.FINER, CLASS_NAME, "visitJspRootStart","getTagLibraryInfos() =[" + tli.getTagLibraryInfos() +"]");
+                                        }
                                 prefixToUriMap.put(prefix, uri);
                                 validateTagLib(jspElement.getOwnerDocument(), uri, prefix, tli);
                             }
                         }
                         else {
                             if (jspConfiguration.isXml() == false)
-                            	throw new JspTranslationException(jspElement, "jsp.error.tld.not.found", new Object[] { uri, prefix });
+                                throw new JspTranslationException(jspElement, "jsp.error.tld.not.found", new Object[] { uri, prefix });
                         }
                     }
                 }
                 else if (attribute.getNodeName().equals("version")) {
                     if (attribute.getNodeValue().equals("1.2") == false 
-                    	&& attribute.getNodeValue().equals("2.0") == false 
-                		&& attribute.getNodeValue().equals("2.1") == false) {
+                        && attribute.getNodeValue().equals("2.0") == false 
+                                && attribute.getNodeValue().equals("2.1") == false) {
                         throw new JspTranslationException(jspElement, "jsp.error.root.invalid.version", new Object[] { attribute.getNodeValue()});
                     }
                 }
@@ -627,15 +627,15 @@ public abstract class ValidateVisitor extends JspVisitor {
     }
 
     protected void visitJspTextStart(Element jspElement) throws JspCoreException {
-		if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINER)){
-			logger.logp(Level.FINER, CLASS_NAME, "visitJspTextStart","jspElement =[" + jspElement +"]");
-		}
+                if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINER)){
+                        logger.logp(Level.FINER, CLASS_NAME, "visitJspTextStart","jspElement =[" + jspElement +"]");
+                }
         for (int i = 0; i < jspElement.getChildNodes().getLength(); i++) {
             Node n = jspElement.getChildNodes().item(i);
-    		if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINER)){
-    			logger.logp(Level.FINER, CLASS_NAME, "visitJspTextStart","Node n =[" + n +"]");
-    			logger.logp(Level.FINER, CLASS_NAME, "visitJspTextStart","Node n TYPE =[" + n.getNodeType() +"]");
-    		}
+                if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINER)){
+                        logger.logp(Level.FINER, CLASS_NAME, "visitJspTextStart","Node n =[" + n +"]");
+                        logger.logp(Level.FINER, CLASS_NAME, "visitJspTextStart","Node n TYPE =[" + n.getNodeType() +"]");
+                }
             if (n.getNodeType() == Node.CDATA_SECTION_NODE) {
                 CDATASection cdata = (CDATASection) n;
                 visitJspELTextStart(jspElement, cdata.getData(), java.lang.String.class);
@@ -808,72 +808,72 @@ public abstract class ValidateVisitor extends JspVisitor {
         // defect 393421 Check for multiple occurrences with different values
         boolean allowJspOutputElementMismatch=JspOptions.ALLOWJSPOUTPUTELEMENTMISMATCH;
         JspOptions jspOptions = (JspOptions)inputMap.get("JspOptions");
-		if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINER)){
-			logger.logp(Level.FINER, CLASS_NAME, "visitJspOutputStart","jspOptions =[" + jspOptions +"]");
-		}
+                if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINER)){
+                        logger.logp(Level.FINER, CLASS_NAME, "visitJspOutputStart","jspOptions =[" + jspOptions +"]");
+                }
         if (jspOptions != null) {
-    		if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINER)){
-    			logger.logp(Level.FINER, CLASS_NAME, "visitJspOutputStart","jspOptions.isAllowJspOutputElementMismatch():  ["+jspOptions.isAllowJspOutputElementMismatch()+"]");
-    		}
-    		allowJspOutputElementMismatch=jspOptions.isAllowJspOutputElementMismatch();
+                if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINER)){
+                        logger.logp(Level.FINER, CLASS_NAME, "visitJspOutputStart","jspOptions.isAllowJspOutputElementMismatch():  ["+jspOptions.isAllowJspOutputElementMismatch()+"]");
+                }
+                allowJspOutputElementMismatch=jspOptions.isAllowJspOutputElementMismatch();
         }
         if (!allowJspOutputElementMismatch) {
-	        String omitXmlDecl = null;
-	        if (docTypeDeclElement!=null) 
-	        	omitXmlDecl = docTypeDeclElement.getValue();
-	        String doctypeRoot = null;
-	        if (docTypeRootElement!=null) 
-	        	doctypeRoot = docTypeRootElement.getValue();
-	        String doctypePublic = null;
-	        if (docTypePublicElement !=null) 
-	        	doctypePublic = docTypePublicElement.getValue();
-	        String doctypeSystem = null;
-	        if (docTypeSystemElement!=null) 
-	        	doctypeSystem = docTypeSystemElement.getValue();
-	
-	        String omitXmlDeclOld = result.getOmitXmlDecl();
-	        String doctypeRootOld = result.getDoctypeRoot();
-	        String doctypePublicOld = result.getDoctypePublic();
-	        String doctypeSystemOld = result.getDoctypeSystem();
-			if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINER)){
-				logger.logp(Level.FINER, CLASS_NAME, "visitJspOutputStart","omitXmlDecl =[" + omitXmlDecl +"] omitXmlDeclOld =[" + omitXmlDeclOld +"]  ");
-				logger.logp(Level.FINER, CLASS_NAME, "visitJspOutputStart","doctypeRoot =[" + doctypeRoot +"] doctypeRootOld =[" + doctypeRootOld +"]  ");
-				logger.logp(Level.FINER, CLASS_NAME, "visitJspOutputStart","doctypePublic =[" + doctypePublic +"] doctypePublicOld =[" + doctypePublicOld +"]  ");
-				logger.logp(Level.FINER, CLASS_NAME, "visitJspOutputStart","doctypeSystem =[" + doctypeSystem +"] doctypeSystemOld =[" + doctypeSystemOld +"]  ");
-			}
-	
-	        if (omitXmlDecl != null && omitXmlDeclOld != null
-	                && !omitXmlDecl.equals(omitXmlDeclOld)) {
-	        	throw new JspTranslationException(jspElement, "jsp.error.jspoutput.conflict", new Object[] { "omit-xml-declaration", omitXmlDeclOld, omitXmlDecl });
-	        }
-	
-	        if (doctypeRoot != null && doctypeRootOld != null
-	                && !doctypeRoot.equals(doctypeRootOld)) {
-	        	throw new JspTranslationException(jspElement, "jsp.error.jspoutput.conflict", new Object[] { "doctype-root-element", doctypeRootOld, doctypeRoot });
-	        }
-	
-	        if (doctypePublic != null && doctypePublicOld != null
-	                && !doctypePublic.equals(doctypePublicOld)) {
-	        	throw new JspTranslationException(jspElement, "jsp.error.jspoutput.conflict", new Object[] { "doctype-public", doctypePublicOld, doctypePublic });
-	        }
-	
-	        if (doctypeSystem != null && doctypeSystemOld != null
-	                && !doctypeSystem.equals(doctypeSystemOld)) {
-	        	throw new JspTranslationException(jspElement, "jsp.error.jspoutput.conflict", new Object[] { "doctype-system", doctypeSystemOld, doctypeSystem });
-	        }
-	
-	        if (omitXmlDecl != null) {
-	            result.setOmitXmlDecl(omitXmlDecl);
-	        }
-	        if (doctypeRoot != null) {
-	        	result.setDoctypeRoot(doctypeRoot);
-	        }
-	        if (doctypeSystem != null) {
-	        	result.setDoctypeSystem(doctypeSystem);
-	        }
-	        if (doctypePublic != null) {
-	        	result.setDoctypePublic(doctypePublic);
-	        }
+                String omitXmlDecl = null;
+                if (docTypeDeclElement!=null) 
+                        omitXmlDecl = docTypeDeclElement.getValue();
+                String doctypeRoot = null;
+                if (docTypeRootElement!=null) 
+                        doctypeRoot = docTypeRootElement.getValue();
+                String doctypePublic = null;
+                if (docTypePublicElement !=null) 
+                        doctypePublic = docTypePublicElement.getValue();
+                String doctypeSystem = null;
+                if (docTypeSystemElement!=null) 
+                        doctypeSystem = docTypeSystemElement.getValue();
+        
+                String omitXmlDeclOld = result.getOmitXmlDecl();
+                String doctypeRootOld = result.getDoctypeRoot();
+                String doctypePublicOld = result.getDoctypePublic();
+                String doctypeSystemOld = result.getDoctypeSystem();
+                        if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINER)){
+                                logger.logp(Level.FINER, CLASS_NAME, "visitJspOutputStart","omitXmlDecl =[" + omitXmlDecl +"] omitXmlDeclOld =[" + omitXmlDeclOld +"]  ");
+                                logger.logp(Level.FINER, CLASS_NAME, "visitJspOutputStart","doctypeRoot =[" + doctypeRoot +"] doctypeRootOld =[" + doctypeRootOld +"]  ");
+                                logger.logp(Level.FINER, CLASS_NAME, "visitJspOutputStart","doctypePublic =[" + doctypePublic +"] doctypePublicOld =[" + doctypePublicOld +"]  ");
+                                logger.logp(Level.FINER, CLASS_NAME, "visitJspOutputStart","doctypeSystem =[" + doctypeSystem +"] doctypeSystemOld =[" + doctypeSystemOld +"]  ");
+                        }
+        
+                if (omitXmlDecl != null && omitXmlDeclOld != null
+                        && !omitXmlDecl.equals(omitXmlDeclOld)) {
+                        throw new JspTranslationException(jspElement, "jsp.error.jspoutput.conflict", new Object[] { "omit-xml-declaration", omitXmlDeclOld, omitXmlDecl });
+                }
+        
+                if (doctypeRoot != null && doctypeRootOld != null
+                        && !doctypeRoot.equals(doctypeRootOld)) {
+                        throw new JspTranslationException(jspElement, "jsp.error.jspoutput.conflict", new Object[] { "doctype-root-element", doctypeRootOld, doctypeRoot });
+                }
+        
+                if (doctypePublic != null && doctypePublicOld != null
+                        && !doctypePublic.equals(doctypePublicOld)) {
+                        throw new JspTranslationException(jspElement, "jsp.error.jspoutput.conflict", new Object[] { "doctype-public", doctypePublicOld, doctypePublic });
+                }
+        
+                if (doctypeSystem != null && doctypeSystemOld != null
+                        && !doctypeSystem.equals(doctypeSystemOld)) {
+                        throw new JspTranslationException(jspElement, "jsp.error.jspoutput.conflict", new Object[] { "doctype-system", doctypeSystemOld, doctypeSystem });
+                }
+        
+                if (omitXmlDecl != null) {
+                    result.setOmitXmlDecl(omitXmlDecl);
+                }
+                if (doctypeRoot != null) {
+                        result.setDoctypeRoot(doctypeRoot);
+                }
+                if (doctypeSystem != null) {
+                        result.setDoctypeSystem(doctypeSystem);
+                }
+                if (doctypePublic != null) {
+                        result.setDoctypePublic(doctypePublic);
+                }
         }
         // END defect 393421 Check for multiple occurrences with different values        
         
@@ -929,18 +929,18 @@ public abstract class ValidateVisitor extends JspVisitor {
     protected void visitAttributeDirectiveStart(Element jspElement) throws JspCoreException {}
     protected void visitVariableDirectiveStart(Element jspElement) throws JspCoreException {}
     protected void visitUninterpretedTagStart(Element jspElement) throws JspCoreException {
-		if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINER)){
-			logger.logp(Level.FINER, CLASS_NAME, "visitUninterpretedTagStart","jspElement =[" + jspElement +"]");
-		}
+                if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINER)){
+                        logger.logp(Level.FINER, CLASS_NAME, "visitUninterpretedTagStart","jspElement =[" + jspElement +"]");
+                }
         // 245645.1 Start
         String uri = jspElement.getNamespaceURI();
-		if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINER)){
-			logger.logp(Level.FINER, CLASS_NAME, "visitUninterpretedTagStart","uri =[" + uri +"]");
-		}
+                if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINER)){
+                        logger.logp(Level.FINER, CLASS_NAME, "visitUninterpretedTagStart","uri =[" + uri +"]");
+                }
         if (uri != null) {
-    		if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINER)){
-    			logger.logp(Level.FINER, CLASS_NAME, "visitUninterpretedTagStart","uri =[" + uri +"]");
-    		}
+                if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINER)){
+                        logger.logp(Level.FINER, CLASS_NAME, "visitUninterpretedTagStart","uri =[" + uri +"]");
+                }
             if (uri.startsWith("urn:jsptld:")) {
                 uri = uri.substring(uri.indexOf("urn:jsptld:") + 11);
             }
@@ -964,15 +964,15 @@ public abstract class ValidateVisitor extends JspVisitor {
         // 245645.1 End
         // EL Function support
         NamedNodeMap nodeAttrs = jspElement.getAttributes();
-		if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINER)){
-			logger.logp(Level.FINER, CLASS_NAME, "visitUninterpretedTagStart","nodeAttrs = ["+nodeAttrs+"]");
-			logger.logp(Level.FINER, CLASS_NAME, "visitUninterpretedTagStart","nodeAttrs.getLength() = ["+nodeAttrs.getLength()+"]");
-		}
+                if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINER)){
+                        logger.logp(Level.FINER, CLASS_NAME, "visitUninterpretedTagStart","nodeAttrs = ["+nodeAttrs+"]");
+                        logger.logp(Level.FINER, CLASS_NAME, "visitUninterpretedTagStart","nodeAttrs.getLength() = ["+nodeAttrs.getLength()+"]");
+                }
         for (int i = 0; i < nodeAttrs.getLength(); i++) {
             Attr attr = (Attr)nodeAttrs.item(i);
-    		if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINER)){
-    			logger.logp(Level.FINER, CLASS_NAME, "visitUninterpretedTagStart","nodeAttrs attr = ["+attr+"]");
-    		}
+                if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINER)){
+                        logger.logp(Level.FINER, CLASS_NAME, "visitUninterpretedTagStart","nodeAttrs attr = ["+attr+"]");
+                }
             visitJspELTextStart(jspElement, attr.getValue(), java.lang.String.class);
         }
     }
@@ -1003,14 +1003,14 @@ public abstract class ValidateVisitor extends JspVisitor {
     protected void visitVariableDirectiveEnd(Element jspElement) throws JspCoreException {}
     protected void visitJspOutputEnd(Element jspElement) throws JspCoreException {}
     protected void visitUninterpretedTagEnd(Element jspElement) throws JspCoreException {
-		if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINER)){
-			logger.logp(Level.FINER, CLASS_NAME, "visitUninterpretedTagEnd","jspElement =[" + jspElement +"]");
-		}
+                if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINER)){
+                        logger.logp(Level.FINER, CLASS_NAME, "visitUninterpretedTagEnd","jspElement =[" + jspElement +"]");
+                }
         // 245645.1 Start
         String uri = jspElement.getNamespaceURI();
-		if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINER)){
-			logger.logp(Level.FINER, CLASS_NAME, "visitUninterpretedTagEnd","uri =[" + uri +"]");
-		}
+                if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINER)){
+                        logger.logp(Level.FINER, CLASS_NAME, "visitUninterpretedTagEnd","uri =[" + uri +"]");
+                }
         if (uri != null) {
             if (uri.startsWith("urn:jsptld:")) {
                 uri = uri.substring(uri.indexOf("urn:jsptld:") + 11);
@@ -1097,7 +1097,7 @@ public abstract class ValidateVisitor extends JspVisitor {
     }
 
     //PK29373
-	private void setDuplicateVars(VariableInfo varInfo) {
+        private void setDuplicateVars(VariableInfo varInfo) {
         // PM23092
         boolean alreadyDup = false;
         VariableInfo var = null;
@@ -1113,13 +1113,13 @@ public abstract class ValidateVisitor extends JspVisitor {
             dupVector.addElement((Object)varInfo);
         }
         // PM23092
-	}
+        }
 
-	private Vector getDuplicateVars()
-	{
-		return dupVector;
-	}
-	//PK29373
+        private Vector getDuplicateVars()
+        {
+                return dupVector;
+        }
+        //PK29373
 
     protected void validateTagLib(Document jspDocument, String uri, String prefix, TagLibraryInfoImpl tli) throws JspCoreException {
         TagLibraryValidator tlv = tli.getTagLibraryValidator();
@@ -1239,28 +1239,28 @@ public abstract class ValidateVisitor extends JspVisitor {
     }
 
     protected void visitJspELTextStart(Element jspElement, String cdata, Class expectedType) throws JspCoreException {
-		if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINER)){
-			logger.logp(Level.FINER, CLASS_NAME, "visitJspELTextStart","cdata =[" + cdata +"]");
-			logger.logp(Level.FINER, CLASS_NAME, "visitJspELTextStart","cdata.indexOf('${') =[" + cdata.indexOf("${") +"]");
-			logger.logp(Level.FINER, CLASS_NAME, "visitJspELTextStart","cdata.indexOf('#{') =[" + cdata.indexOf("#{") +"]");
-		}
+                if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINER)){
+                        logger.logp(Level.FINER, CLASS_NAME, "visitJspELTextStart","cdata =[" + cdata +"]");
+                        logger.logp(Level.FINER, CLASS_NAME, "visitJspELTextStart","cdata.indexOf('${') =[" + cdata.indexOf("${") +"]");
+                        logger.logp(Level.FINER, CLASS_NAME, "visitJspELTextStart","cdata.indexOf('#{') =[" + cdata.indexOf("#{") +"]");
+                }
         if (cdata.indexOf("${") == -1 && cdata.indexOf("#{") == -1) { // quick check to see if EL may exist
             return;
         }
 
-		if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINER)){
-			logger.logp(Level.FINER, CLASS_NAME, "visitJspELTextStart","calling ELValidator.getELExpressions");
-		}
+                if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINER)){
+                        logger.logp(Level.FINER, CLASS_NAME, "visitJspELTextStart","calling ELValidator.getELExpressions");
+                }
         String[] expressions = ELValidator.getELExpressions(cdata, jspConfiguration, evalQuotedAndEscapedExpression);
-		if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINER)){
-			logger.logp(Level.FINER, CLASS_NAME, "visitJspELTextStart","expressions returned: ["+expressions+"]");
-		}
+                if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINER)){
+                        logger.logp(Level.FINER, CLASS_NAME, "visitJspELTextStart","expressions returned: ["+expressions+"]");
+                }
 
         if (expressions != null) {
             for (int i = 0; i < expressions.length; i++) {
-        		if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINER)){
-        			logger.logp(Level.FINER, CLASS_NAME, "visitJspELTextStart","about to validate expression: ["+expressions[i]+"]");
-        		}
+                        if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINER)){
+                                logger.logp(Level.FINER, CLASS_NAME, "visitJspELTextStart","about to validate expression: ["+expressions[i]+"]");
+                        }
                 ELValidator.validateELExpression(jspElement, expressions[i], expectedType, jspConfiguration, result, context, prefixToUriMap);
             }
         }
@@ -1358,9 +1358,9 @@ public abstract class ValidateVisitor extends JspVisitor {
     }
 
     protected CustomTagInstance validateCustomTagAttributeValues(Element jspElement, TagAttributeInfo[] attributes, boolean hasDynamicAttributes, TagLibraryInfoImpl tli) throws JspCoreException {
-		if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINER)){
-			logger.logp(Level.FINER, CLASS_NAME, "validateCustomTagAttributeValues","Entry");
-		}
+                if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINER)){
+                        logger.logp(Level.FINER, CLASS_NAME, "validateCustomTagAttributeValues","Entry");
+                }
 
         Hashtable attributeMap = new Hashtable(11);
         boolean isScriptless = true;
@@ -1376,19 +1376,19 @@ public abstract class ValidateVisitor extends JspVisitor {
             String nodeValue = parentNode.getNodeValue();
 
             if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINER)){
-            	logger.logp(Level.FINER, CLASS_NAME, "validateCustomTagAttributeValues","nodeName =[" + nodeName + "]");
-            	logger.logp(Level.FINER, CLASS_NAME, "validateCustomTagAttributeValues","nodeValue =[" + nodeValue+ "]");
+                logger.logp(Level.FINER, CLASS_NAME, "validateCustomTagAttributeValues","nodeName =[" + nodeName + "]");
+                logger.logp(Level.FINER, CLASS_NAME, "validateCustomTagAttributeValues","nodeValue =[" + nodeValue+ "]");
             }
 
             if (nodeName.equals("jsp:id") == false && nodeName.startsWith("xmlns") == false) {
-        		if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINER)){
-        			logger.logp(Level.FINER, CLASS_NAME, "validateCustomTagAttributeValues","NOT jsp:id and NOT xmlns");
-        		}
+                        if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINER)){
+                                logger.logp(Level.FINER, CLASS_NAME, "validateCustomTagAttributeValues","NOT jsp:id and NOT xmlns");
+                        }
                 TagAttributeInfo tai = getTagAttributeInfo(attributes, nodeName);
-        		if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINER)){
-        			logger.logp(Level.FINER, CLASS_NAME, "validateCustomTagAttributeValues","attributes ["+attributes+"] nodeName ["+nodeName+"]  nodeValue ["+nodeValue+"]");
-        			logger.logp(Level.FINER, CLASS_NAME, "validateCustomTagAttributeValues","tai ["+tai+"]");
-        		}
+                        if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINER)){
+                                logger.logp(Level.FINER, CLASS_NAME, "validateCustomTagAttributeValues","attributes ["+attributes+"] nodeName ["+nodeName+"]  nodeValue ["+nodeValue+"]");
+                                logger.logp(Level.FINER, CLASS_NAME, "validateCustomTagAttributeValues","tai ["+tai+"]");
+                        }
                 boolean dynamicDeferredMethod = false;
                 String dynamicDeferredMethodSignature = null;
                 if (tai == null) {
@@ -1398,27 +1398,27 @@ public abstract class ValidateVisitor extends JspVisitor {
                 }
                 //512063 removed else: This should be called for dynamicAttributes too since these can also be deferred
                 //else {
-                isScriptless = validateCustomTagAttribute(jspElement, attributeMap, isScriptless, checkDeferred, nodeName, tai, nodeValue, dynamicDeferredMethod, dynamicDeferredMethodSignature);            		
+                isScriptless = validateCustomTagAttribute(jspElement, attributeMap, isScriptless, checkDeferred, nodeName, tai, nodeValue, dynamicDeferredMethod, dynamicDeferredMethodSignature);                      
                 //}
             }
         }
         NodeList nl = jspElement.getChildNodes();
         if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINER)){
-        	logger.logp(Level.FINER, CLASS_NAME, "validateCustomTagAttributeValues","nl.getLength() =[" + nl.getLength()+"]");
+                logger.logp(Level.FINER, CLASS_NAME, "validateCustomTagAttributeValues","nl.getLength() =[" + nl.getLength()+"]");
         }
 
         for (int i = 0; i < nl.getLength(); i++) {
             Node n = nl.item(i);
             if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINER)){
-            	logger.logp(Level.FINER, CLASS_NAME, "validateCustomTagAttributeValues","n.getNodeName() =[" + n.getNodeName()+"]");
-            	logger.logp(Level.FINER, CLASS_NAME, "validateCustomTagAttributeValues","n.getNodeType() =[" + n.getNodeType()+"]");
+                logger.logp(Level.FINER, CLASS_NAME, "validateCustomTagAttributeValues","n.getNodeName() =[" + n.getNodeName()+"]");
+                logger.logp(Level.FINER, CLASS_NAME, "validateCustomTagAttributeValues","n.getNodeType() =[" + n.getNodeType()+"]");
             }
 
             if (n.getNodeType() == Node.ELEMENT_NODE) {
                 Element e = (Element) n;
                 if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINER)){
-                	logger.logp(Level.FINER, CLASS_NAME, "validateCustomTagAttributeValues","e.getNamespaceURI() =[" + e.getNamespaceURI()+"]");
-                	logger.logp(Level.FINER, CLASS_NAME, "validateCustomTagAttributeValues","e.getLocalName() =[" + e.getLocalName()+"]");
+                        logger.logp(Level.FINER, CLASS_NAME, "validateCustomTagAttributeValues","e.getNamespaceURI() =[" + e.getNamespaceURI()+"]");
+                        logger.logp(Level.FINER, CLASS_NAME, "validateCustomTagAttributeValues","e.getLocalName() =[" + e.getLocalName()+"]");
                 }
 
                 if (e.getNamespaceURI() != null && e.getNamespaceURI().equals(Constants.JSP_NAMESPACE) && e.getLocalName().equals(Constants.JSP_ATTRIBUTE_TYPE)) {
@@ -1482,13 +1482,13 @@ public abstract class ValidateVisitor extends JspVisitor {
                     if (e.hasChildNodes()) {
                         int numChildren = childAttributeNodeList.getLength();
                         if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINER)){
-                        	logger.logp(Level.FINER, CLASS_NAME, "validateCustomTagAttributeValues","numChildren =[" + numChildren+"]");
+                                logger.logp(Level.FINER, CLASS_NAME, "validateCustomTagAttributeValues","numChildren =[" + numChildren+"]");
                         }
                         if (numChildren == 1) {
                             Node childAttrNode = e.getFirstChild();
                             if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINER)){
-                            	logger.logp(Level.FINER, CLASS_NAME, "validateCustomTagAttributeValues","childAttrNode.getNodeName(): " + childAttrNode.getNodeName());
-                            	logger.logp(Level.FINER, CLASS_NAME, "validateCustomTagAttributeValues","childAttrNode.getNodeType(): " + childAttrNode.getNodeType());
+                                logger.logp(Level.FINER, CLASS_NAME, "validateCustomTagAttributeValues","childAttrNode.getNodeName(): " + childAttrNode.getNodeName());
+                                logger.logp(Level.FINER, CLASS_NAME, "validateCustomTagAttributeValues","childAttrNode.getNodeType(): " + childAttrNode.getNodeType());
                             }
                             
                             //This section is for an attribute specified like this:
@@ -1500,28 +1500,28 @@ public abstract class ValidateVisitor extends JspVisitor {
                                 if (trim == true) {
                                     nodeValue = nodeValue.trim();
                                 }
-                                isScriptless = validateCustomTagAttribute(jspElement, attributeMap, isScriptless, checkDeferred, nodeName, tai, nodeValue, dynamicDeferredMethod, dynamicDeferredMethodSignature);           		
+                                isScriptless = validateCustomTagAttribute(jspElement, attributeMap, isScriptless, checkDeferred, nodeName, tai, nodeValue, dynamicDeferredMethod, dynamicDeferredMethodSignature);                      
                             }                            
                             // PK62934 start
                             //This section is for an attribute specified like this:
                             //<jsp:attribute name="test"><%=request.getAttribute("abc")%></jsp:attribute>
                             // The expression is only one child
                             else if (childAttrNode.getNodeType() == Node.ELEMENT_NODE) {
-                            	if (!areChildrenScriptless(e)) {
+                                if (!areChildrenScriptless(e)) {
                             
-                            		if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINER)){
-                            			logger.logp(Level.FINER, CLASS_NAME, "validateCustomTagAttributeValues","Element children are not scriptless.");
-                            		}
-                            		if (tai!=null && tai.canBeRequestTime() == false) {
-                            			throw new JspTranslationException(jspElement, "jsp.error.attribute.cannot.be.request.time", new Object[] { nodeName, childAttrNode.getNodeValue()});
-                            		}
-                            		else {
-                            			isScriptless = false;
-                            			attributeMap.put(nodeName, TagData.REQUEST_TIME_VALUE);
-                            		}
-                            	}
-                            	else {
-                            		attributeMap.put(nodeName, TagData.REQUEST_TIME_VALUE);
+                                        if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINER)){
+                                                logger.logp(Level.FINER, CLASS_NAME, "validateCustomTagAttributeValues","Element children are not scriptless.");
+                                        }
+                                        if (tai!=null && tai.canBeRequestTime() == false) {
+                                                throw new JspTranslationException(jspElement, "jsp.error.attribute.cannot.be.request.time", new Object[] { nodeName, childAttrNode.getNodeValue()});
+                                        }
+                                        else {
+                                                isScriptless = false;
+                                                attributeMap.put(nodeName, TagData.REQUEST_TIME_VALUE);
+                                        }
+                                }
+                                else {
+                                        attributeMap.put(nodeName, TagData.REQUEST_TIME_VALUE);
                                 }
                             }
                             //PK62934 end
@@ -1534,7 +1534,7 @@ public abstract class ValidateVisitor extends JspVisitor {
                             for (int child = 0; child < numChildren; child++) {
                                 Node currNode = childAttributeNodeList.item(child);
                                 if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINER)){
-                                	logger.logp(Level.FINER, CLASS_NAME, "validateCustomTagAttributeValues","currNode.getNodeName(): " + currNode.getNodeName());
+                                        logger.logp(Level.FINER, CLASS_NAME, "validateCustomTagAttributeValues","currNode.getNodeName(): " + currNode.getNodeName());
                                     logger.logp(Level.FINER, CLASS_NAME, "validateCustomTagAttributeValues","currNode.getNodeType(): " + currNode.getNodeType());
                                     logger.logp(Level.FINER, CLASS_NAME, "validateCustomTagAttributeValues","currNode.getNodeValue(): " + currNode.getNodeValue());
                                 }
@@ -1545,26 +1545,26 @@ public abstract class ValidateVisitor extends JspVisitor {
                                         nodeValue = nodeValue.trim();
                                     }
                                     if (nodeValue.length() > 0) {
-                                    	//PK62934 - only count cdata once...expressions will break up cdata and mess up the counter.
-                                    	if (!previousCData) {
-                                    		childrenWithValues++;
-                                    	}
-                                    	previousCData = true; //PK62934
+                                        //PK62934 - only count cdata once...expressions will break up cdata and mess up the counter.
+                                        if (!previousCData) {
+                                                childrenWithValues++;
+                                        }
+                                        previousCData = true; //PK62934
                                     }
                                 }
                                 // PK62934 start
                                 else if (currNode.getNodeType() == Node.ELEMENT_NODE) {
-                                	Element e1 = (Element) currNode;
-                                	
+                                        Element e1 = (Element) currNode;
+                                        
                                     if (!areChildrenScriptless(e)) {
-                                    	if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINER)){
-                                			logger.logp(Level.FINER, CLASS_NAME, "validateCustomTagAttributeValues 2","2. Element children are not scriptless.");
-                                		}
-                                    	if (tai!=null && tai.canBeRequestTime() == false) {
+                                        if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINER)){
+                                                        logger.logp(Level.FINER, CLASS_NAME, "validateCustomTagAttributeValues 2","2. Element children are not scriptless.");
+                                                }
+                                        if (tai!=null && tai.canBeRequestTime() == false) {
                                             throw new JspTranslationException(jspElement, "jsp.error.attribute.cannot.be.request.time", new Object[] { nodeName, currNode.getNodeValue()});
                                         }
                                         else {
-                                        	isScriptless = false;
+                                                isScriptless = false;
                                         }
                                     }
                                 }
@@ -1577,9 +1577,9 @@ public abstract class ValidateVisitor extends JspVisitor {
                             }
                             //PK62934 changing isFragment check to true instead of false.
                             if (isFragment == true && childrenWithValues > 1) {
-                            	if(logger.isLoggable(Level.FINER)){
-                            		logger.logp(Level.FINER, CLASS_NAME, "validateCustomTagAttributeValues","childrenWithValues =["+childrenWithValues+"]");                        		
-                            	}
+                                if(logger.isLoggable(Level.FINER)){
+                                        logger.logp(Level.FINER, CLASS_NAME, "validateCustomTagAttributeValues","childrenWithValues =["+childrenWithValues+"]");                                        
+                                }
                                 throw new JspTranslationException(jspElement, "jsp.error.attribute.cannot.be.request.time.fragment", new Object[] { nodeName });
                             }
                             else {
@@ -1596,21 +1596,21 @@ public abstract class ValidateVisitor extends JspVisitor {
         return new CustomTagInstance(attributeMap, isScriptless);
     }
 
-	private boolean validateCustomTagAttribute(Element jspElement, Hashtable attributeMap, boolean isScriptless, boolean checkDeferred, String nodeName, TagAttributeInfo tai, String nodeValue, boolean dynamicDeferredMethod, String dynamicDeferredMethodSignature) throws JspTranslationException, JspCoreException {
-		boolean isExpr = JspTranslatorUtil.isExpression(nodeValue);
-		if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINER)){
-			logger.logp(Level.FINER, CLASS_NAME, "validateCustomTagAttribute","about to call JspTranslatorUtil.isELInterpreterInput(nodeValue, jspConfiguration)");
-		}
-		boolean isElExpr = JspTranslatorUtil.isELInterpreterInput(nodeValue, jspConfiguration, checkDeferred);
-		if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINER)){
-			logger.logp(Level.FINER, CLASS_NAME, "validateCustomTagAttribute","isExpr =["+isExpr+"] isElExpr= ["+isElExpr+"]");
-			if (tai!=null) {
-			    logger.logp(Level.FINER, CLASS_NAME, "validateCustomTagAttribute","tai.canBeRequestTime() =["+tai.canBeRequestTime()+"] tai.isDeferredMethod()= ["+tai.isDeferredMethod()+"] tai.isDeferredValue()= ["+tai.isDeferredValue()+"]");
+        private boolean validateCustomTagAttribute(Element jspElement, Hashtable attributeMap, boolean isScriptless, boolean checkDeferred, String nodeName, TagAttributeInfo tai, String nodeValue, boolean dynamicDeferredMethod, String dynamicDeferredMethodSignature) throws JspTranslationException, JspCoreException {
+                boolean isExpr = JspTranslatorUtil.isExpression(nodeValue);
+                if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINER)){
+                        logger.logp(Level.FINER, CLASS_NAME, "validateCustomTagAttribute","about to call JspTranslatorUtil.isELInterpreterInput(nodeValue, jspConfiguration)");
+                }
+                boolean isElExpr = JspTranslatorUtil.isELInterpreterInput(nodeValue, jspConfiguration, checkDeferred);
+                if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINER)){
+                        logger.logp(Level.FINER, CLASS_NAME, "validateCustomTagAttribute","isExpr =["+isExpr+"] isElExpr= ["+isElExpr+"]");
+                        if (tai!=null) {
+                            logger.logp(Level.FINER, CLASS_NAME, "validateCustomTagAttribute","tai.canBeRequestTime() =["+tai.canBeRequestTime()+"] tai.isDeferredMethod()= ["+tai.isDeferredMethod()+"] tai.isDeferredValue()= ["+tai.isDeferredValue()+"]");
             } else {
                 logger.logp(Level.FINER, CLASS_NAME, "validateCustomTagAttribute","tai is null, must be a dynamic attribute");
             }
-		}
-		
+                }
+                
         boolean elExpression = false;
         boolean deferred = false;
         boolean deferredValueIsLiteral = jspConfiguration.isDeferredSyntaxAllowedAsLiteral();
@@ -1639,16 +1639,16 @@ public abstract class ValidateVisitor extends JspVisitor {
             }
         }
         
-        boolean expression = isExpr || elExpression;		
-		if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINER)){
-			logger.logp(Level.FINER, CLASS_NAME, "validateCustomTagAttribute","nodeValue ["+nodeValue+"]");
-			logger.logp(Level.FINER, CLASS_NAME, "validateCustomTagAttribute","deferred ["+deferred+"]");
-			logger.logp(Level.FINER, CLASS_NAME, "validateCustomTagAttribute","deferredValueIsLiteral ["+deferredValueIsLiteral+"]");
-			logger.logp(Level.FINER, CLASS_NAME, "validateCustomTagAttribute","checkDeferred ["+checkDeferred+"]");
-			logger.logp(Level.FINER, CLASS_NAME, "validateCustomTagAttribute","expression ["+expression+"]");
-			logger.logp(Level.FINER, CLASS_NAME, "validateCustomTagAttribute","isExpr ["+isExpr+"]");
-			logger.logp(Level.FINER, CLASS_NAME, "validateCustomTagAttribute","jspConfiguration.elIgnored() ["+jspConfiguration.elIgnored()+"]");
-		}
+        boolean expression = isExpr || elExpression;            
+                if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINER)){
+                        logger.logp(Level.FINER, CLASS_NAME, "validateCustomTagAttribute","nodeValue ["+nodeValue+"]");
+                        logger.logp(Level.FINER, CLASS_NAME, "validateCustomTagAttribute","deferred ["+deferred+"]");
+                        logger.logp(Level.FINER, CLASS_NAME, "validateCustomTagAttribute","deferredValueIsLiteral ["+deferredValueIsLiteral+"]");
+                        logger.logp(Level.FINER, CLASS_NAME, "validateCustomTagAttribute","checkDeferred ["+checkDeferred+"]");
+                        logger.logp(Level.FINER, CLASS_NAME, "validateCustomTagAttribute","expression ["+expression+"]");
+                        logger.logp(Level.FINER, CLASS_NAME, "validateCustomTagAttribute","isExpr ["+isExpr+"]");
+                        logger.logp(Level.FINER, CLASS_NAME, "validateCustomTagAttribute","jspConfiguration.elIgnored() ["+jspConfiguration.elIgnored()+"]");
+                }
         boolean thisIsADynamicAttribute=false;
         if (tai==null) {
             thisIsADynamicAttribute=true; 
@@ -1659,13 +1659,13 @@ public abstract class ValidateVisitor extends JspVisitor {
         if (thisIsADynamicAttribute || 
             (tai.canBeRequestTime() || ((checkDeferred) && (tai.isDeferredMethod() || tai.isDeferredValue())))) { // jsp2.1ELwork
         //PK79754 - end
-			if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINER)){
-				logger.logp(Level.FINER, CLASS_NAME, "validateCustomTagAttribute","in tai check nodeValue ["+nodeValue+"]");
-				logger.logp(Level.FINER, CLASS_NAME, "validateCustomTagAttribute","in tai check deferred ["+deferred+"]");
-				logger.logp(Level.FINER, CLASS_NAME, "validateCustomTagAttribute","in tai check deferredValueIsLiteral ["+deferredValueIsLiteral+"]");
-				logger.logp(Level.FINER, CLASS_NAME, "validateCustomTagAttribute","in tai check checkDeferred ["+checkDeferred+"]");
-				logger.logp(Level.FINER, CLASS_NAME, "validateCustomTagAttribute","in tai check expression ["+expression+"]");
-			}
+                        if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINER)){
+                                logger.logp(Level.FINER, CLASS_NAME, "validateCustomTagAttribute","in tai check nodeValue ["+nodeValue+"]");
+                                logger.logp(Level.FINER, CLASS_NAME, "validateCustomTagAttribute","in tai check deferred ["+deferred+"]");
+                                logger.logp(Level.FINER, CLASS_NAME, "validateCustomTagAttribute","in tai check deferredValueIsLiteral ["+deferredValueIsLiteral+"]");
+                                logger.logp(Level.FINER, CLASS_NAME, "validateCustomTagAttribute","in tai check checkDeferred ["+checkDeferred+"]");
+                                logger.logp(Level.FINER, CLASS_NAME, "validateCustomTagAttribute","in tai check expression ["+expression+"]");
+                        }
             String expectedType = null;
             //512063: Setting default values in case the tai is null (for dynamic attributes)
             boolean taiIsDeferredMethod = dynamicDeferredMethod;//passed in for dynamicAttribute (will be overwritten if tai is defined)
@@ -1722,70 +1722,70 @@ public abstract class ValidateVisitor extends JspVisitor {
                         throw new JspTranslationException(jspElement, "jsp.error.coerce_to_type", new Object[] { taiGetName, expectedType, nodeValue });
                     }
                 }
-		        attributeMap.put(nodeName, nodeValue);
-		    } else {
+                        attributeMap.put(nodeName, nodeValue);
+                    } else {
                 if (isExpr) {
-		            isScriptless = false;
-		        }
-				if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINER)){
-					logger.logp(Level.FINER, CLASS_NAME, "validateCustomTagAttribute","isScriptless =["+isScriptless+"]");
-				}
-		        
-		        if (deferred && !taiIsDeferredMethod && !taiIsDeferredValue) {
-		            // No deferred expressions allowed for this attribute
-		            throw new JspTranslationException(jspElement, "jsp.error.attribute.cannot.be.request.time", new Object[] { nodeName, nodeValue });
-		            //err.jspError(n, "jsp.error.attribute.custom.non_rt_with_expr",
-		            //        tai.getName());
-		        }
-		        if (!deferred && !taiCanBeRequestTime) {
-		            // Must be rtexprvalue
-		            throw new JspTranslationException(jspElement, "jsp.error.attribute.cannot.be.request.time", new Object[] { nodeName, nodeValue });
-		            //err.jspError(n, "jsp.error.attribute.custom.non_rt_with_expr",
-		            //        tai.getName());
-		        }
-		        if (elExpression) {                                
-		            expectedType = taiGetExpectedTypeName; // !!!!!!!!!!!!!!!!
-		            if (expectedType == null)
-		                expectedType = "java.lang.Object";
-		    		if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINER)){
-		    			logger.logp(Level.FINER, CLASS_NAME, "validateCustomTagAttribute","about to call validateELExpression, expectedType =["+expectedType+"]");
-		    		}
-		            ELValidator.validateELExpression(jspElement, nodeValue, expectedType, jspConfiguration, context, result, prefixToUriMap);
-		        }
-		        attributeMap.put(nodeName, TagData.REQUEST_TIME_VALUE);
-		    }
-		} else {
-		    // Attribute does not accept any expressions.
-		    // Make sure its value does not contain any.
-		    if (expression) {
-		        throw new JspTranslationException(jspElement, "jsp.error.attribute.cannot.be.request.time", new Object[] { nodeName, nodeValue });
-		    }
+                            isScriptless = false;
+                        }
+                                if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINER)){
+                                        logger.logp(Level.FINER, CLASS_NAME, "validateCustomTagAttribute","isScriptless =["+isScriptless+"]");
+                                }
+                        
+                        if (deferred && !taiIsDeferredMethod && !taiIsDeferredValue) {
+                            // No deferred expressions allowed for this attribute
+                            throw new JspTranslationException(jspElement, "jsp.error.attribute.cannot.be.request.time", new Object[] { nodeName, nodeValue });
+                            //err.jspError(n, "jsp.error.attribute.custom.non_rt_with_expr",
+                            //        tai.getName());
+                        }
+                        if (!deferred && !taiCanBeRequestTime) {
+                            // Must be rtexprvalue
+                            throw new JspTranslationException(jspElement, "jsp.error.attribute.cannot.be.request.time", new Object[] { nodeName, nodeValue });
+                            //err.jspError(n, "jsp.error.attribute.custom.non_rt_with_expr",
+                            //        tai.getName());
+                        }
+                        if (elExpression) {                                
+                            expectedType = taiGetExpectedTypeName; // !!!!!!!!!!!!!!!!
+                            if (expectedType == null)
+                                expectedType = "java.lang.Object";
+                                if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINER)){
+                                        logger.logp(Level.FINER, CLASS_NAME, "validateCustomTagAttribute","about to call validateELExpression, expectedType =["+expectedType+"]");
+                                }
+                            ELValidator.validateELExpression(jspElement, nodeValue, expectedType, jspConfiguration, context, result, prefixToUriMap);
+                        }
+                        attributeMap.put(nodeName, TagData.REQUEST_TIME_VALUE);
+                    }
+                } else {
+                    // Attribute does not accept any expressions.
+                    // Make sure its value does not contain any.
+                    if (expression) {
+                        throw new JspTranslationException(jspElement, "jsp.error.attribute.cannot.be.request.time", new Object[] { nodeName, nodeValue });
+                    }
             if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINER)){
-        		logger.logp(Level.FINER, CLASS_NAME, "validateCustomTagAttributeValues","Adding to attribute map nodeName =[" + nodeName + "] nodeValue =[" + nodeValue +"]");
+                        logger.logp(Level.FINER, CLASS_NAME, "validateCustomTagAttributeValues","Adding to attribute map nodeName =[" + nodeName + "] nodeValue =[" + nodeValue +"]");
             }
-		    attributeMap.put(nodeName, nodeValue);            			
-		}
-		return isScriptless;
-	}
-	
-	//method used to replace ELSupport.checkType
-	private final static void ELCheckType(final Object obj, final Class<?> type) throws ELException {
-	    if (String.class.equals(type)) {
-	        ELSupport.coerceToString(null, obj);
+                    attributeMap.put(nodeName, nodeValue);                              
+                }
+                return isScriptless;
+        }
+        
+        //method used to replace ELSupport.checkType
+        private final static void ELCheckType(final Object obj, final Class<?> type) throws ELException {
+            if (String.class.equals(type)) {
+                ELSupport.coerceToString(obj);
         }
         if (ELArithmetic.isNumberType(type)) {
-            ELSupport.coerceToNumber(null, obj, type);
+            ELSupport.coerceToNumber(obj, type);
         }
         if (Character.class.equals(type) || Character.TYPE == type) {
-            ELSupport.coerceToCharacter(null, obj);
+            ELSupport.coerceToCharacter(obj);
         }
         if (Boolean.class.equals(type) || Boolean.TYPE == type) {
-            ELSupport.coerceToBoolean(null, obj);
+            ELSupport.coerceToBoolean(obj);
         }
         if (type.isEnum()) {
-            ELSupport.coerceToEnum(null, obj, type);
+            ELSupport.coerceToEnum(obj, type);
         }
-	}
+        }
 
     protected void validateRequiredAttributes(Element jspElement, List specifiedActionAttrs, String[] requiredAttrs) throws JspCoreException {
         for (int i = 0; i < requiredAttrs.length; i++) {
