@@ -882,9 +882,17 @@ public class PluginGenerator {
                 boolean result = outFile.asFile().renameTo(pluginFile);
 
                 //See if rename was unsuccessful. 
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    if(!result){
+                
+                if(!result){
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "Rename to plugin-cfg.xml failed!");
+                    }
+                    try {
+                        Files.move(outFile.asFile().toPath(), pluginFile.toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+                    } catch (IOException ex) {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "Rename to plugin-cfg.xml failed on the second attempt!");
+                        }
                     }
                 }
 
