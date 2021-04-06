@@ -186,7 +186,7 @@ public class ShibbolethHelpers {
         String logLoc = server.getServer().getLogsRoot().replace("\\", "/");
         bootstrapUtils.writeBootstrapProperty(server, "was.idp.logs", logLoc);
         fixShibbolethJDKSettings(server, curDir);
-        fixShibbolethJvmOptions(server);
+        //fixShibbolethJvmOptions(server);
 
     }
 

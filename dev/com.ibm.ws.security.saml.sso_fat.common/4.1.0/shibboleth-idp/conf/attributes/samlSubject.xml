@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:c="http://www.springframework.org/schema/c"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+                           http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd"
+                           
+       default-init-method="initialize"
+       default-destroy-method="destroy">
+
+    <!-- https://wiki.oasis-open.org/security/SAMLSubjectIDAttr -->
+
+    <bean parent="shibboleth.TranscodingRuleLoader">
+    <constructor-arg>
+    <list>
+
+        <bean parent="shibboleth.TranscodingProperties">
+            <property name="properties">
+                <props merge="true">
+                    <prop key="id">samlSubjectID</prop>
+                    <prop key="transcoder">SAML2ScopedStringTranscoder</prop>
+                    <prop key="saml2.name">urn:oasis:names:tc:SAML:attribute:subject-id</prop>
+                    <prop key="displayName.en">Unique ID</prop>
+                    <prop key="displayName.de">Eindeutige ID</prop>
+                    <prop key="displayName.fr">ID unique</prop>
+                    <prop key="displayName.it">ID unico</prop>
+                    <prop key="displayName.ja">サブジェクトID</prop>
+                    <prop key="description.en">A unique identifier for a person, mainly for inter-institutional user identification.</prop>
+                    <prop key="description.de">Eindeutige Benutzeridentifikation</prop>
+                    <prop key="description.de-ch">Eindeutige Benützeridentifikation</prop>
+                    <prop key="description.fr">Identifiant unique de l'utilisateur</prop>
+                    <prop key="description.it">Un identificativo personale che identifica chiaramente l'utente in seno alla sua organizzazione</prop>
+                    <prop key="description.ja">フェデレーション内で一意で永続的かつ難読化された利用者識別子(eduPersonUniqueIdの後継)</prop>
+                </props>
+            </property>
+        </bean>
+
+        <bean parent="shibboleth.TranscodingProperties">
+            <property name="properties">
+                <props merge="true">
+                    <prop key="id">samlPairwiseID</prop>
+                    <prop key="transcoder">SAML2ScopedStringTranscoder</prop>
+                    <prop key="saml2.name">urn:oasis:names:tc:SAML:attribute:pairwise-id</prop>
+                    <prop key="displayName.en">Pairwise ID</prop>
+                    <prop key="displayName.de">Pairwise ID</prop>
+                    <prop key="displayName.fr">Pairwise ID</prop>
+                    <prop key="displayName.it">Pairwise ID</prop>
+                    <prop key="displayName.ja">ペアワイズID</prop>
+                    <prop key="description.en">Pairwise ID: A unique identifier for a person, different for each service provider.</prop>
+                    <prop key="description.de">Pairwise ID: Eindeutige Benutzeridentifikation, unterschiedlich pro Service Provider.</prop>
+                    <prop key="description.de-ch">Pairwise ID: Eindeutige Benützeridentifikation, unterschiedlich pro Service Provider.</prop>
+                    <prop key="description.fr">Pairwise ID: Un identifiant unique de l'utilisateur, différent pour chaque fournisseur de service.</prop>
+                    <prop key="description.it">Pairwise ID: identificativo unico della persona, differente per ogni fornitore di servizio.</prop>
+                    <prop key="description.ja">フェデレーション内で一意かつSP毎に送出される値が異なる利用者識別子(eduPersonTargetedIDの後継)</prop>
+                </props>
+            </property>
+        </bean>
+
+    </list>
+    </constructor-arg>
+    </bean>
+    
+</beans>

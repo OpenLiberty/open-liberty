@@ -1,0 +1,688 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:c="http://www.springframework.org/schema/c"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+                           http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd"
+
+	default-init-method="initialize"
+	default-destroy-method="destroy"
+>
+
+	<!-- Unverified RP configuration, defaults to no support for any profiles. 
+		Add <ref> elements to the list to enable specific default profile settings 
+		(as below), or create new beans inline to override defaults. "Unverified" 
+		typically means the IdP has no metadata, or equivalent way of assuring the 
+		identity and legitimacy of a requesting system. To run an "open" IdP, you 
+		can enable profiles here. -->
+	<bean
+		id="shibboleth.UnverifiedRelyingParty"
+		parent="RelyingParty"
+	>
+		<property name="profileConfigurations">
+			<list>
+				<!-- <bean parent="SAML2.SSO" p:encryptAssertions="false" /> -->
+			</list>
+		</property>
+	</bean>
+
+	<!-- Default configuration, with default settings applied for all profiles, 
+		and enables the attribute-release consent flow. chc - these 2 lines cause 
+		the release of information page to be issued - for ease of test automation, 
+		I'm bypassing that page <bean parent="Shibboleth.SSO" p:postAuthenticationFlows="attribute-release"/> 
+		<bean parent="SAML2.SSO" p:postAuthenticationFlows="attribute-release"/> -->
+	<bean
+		id="shibboleth.DefaultRelyingParty"
+		parent="RelyingParty"
+	>
+		<property name="profileConfigurations">
+			<list>
+				<bean parent="Shibboleth.SSO" />
+				<ref bean="SAML1.AttributeQuery" />
+				<ref bean="SAML1.ArtifactResolution" />
+				<bean
+					parent="SAML2.SSO"
+					p:signResponses="false"
+					p:signAssertions="true"
+					p:encryptAssertions="false" />
+				<ref bean="SAML2.ECP" />
+				<ref bean="SAML2.Logout" />
+				<ref bean="SAML2.AttributeQuery" />
+				<ref bean="SAML2.ArtifactResolution" />
+				<ref bean="Liberty.SSOS" />
+			</list>
+		</property>
+	</bean>
+
+	<!-- Container for any overrides you want to add. -->
+
+	<util:list id="shibboleth.RelyingPartyOverrides">
+
+		<!-- Override example that identifies a single RP by name and configures 
+			it for SAML 2 SSO without encryption. This is a common "vendor" scenario. -->
+
+
+		<bean
+			parent="RelyingPartyByName"
+			c:relyingPartyIds="#{{'https://localhost:xxx_SpSecurePort_xxx/ibm/saml20/sp1',
+														'https://localhost:xxx_SpSecurePort_xxx/ibm/saml20/sp13',
+														'https://localhost:xxx_SpSecurePort_xxx/ibm/saml20/sp1s2',
+														'https://localhost:xxx_SpSecurePort_xxx/ibm/saml20/sp1ReqSigned',
+														'https://localhost:xxx_SpSecurePort_xxx/ibm/saml20/sp-dash',
+														'https://localhost:xxx_SpSecurePort_xxx/ibm/saml20/sp_underscore',
+														'https://localhost:xxx_SpSecurePort_xxx/ibm/saml20/spOP',
+														'https://localhost:xxx_SpSecurePort_xxx/ibm/saml20/OAuth01',
+														'https://localhost:xxx_SpSecurePort_xxx/ibm/saml20/customLogout_absExternalURL',
+														'https://localhost:xxx_SpSecurePort_xxx/ibm/saml20/customLogout_absLocalURL',
+														'https://localhost:xxx_SpSecurePort_xxx/ibm/saml20/customLogout_emptyString',
+														'https://localhost:xxx_SpSecurePort_xxx/ibm/saml20/customLogout_invalidRelativePath',
+														'https://localhost:xxx_SpSecurePort_xxx/ibm/saml20/customLogout_invalidURL',
+														'https://localhost:xxx_SpSecurePort_xxx/ibm/saml20/customLogout_relativePath',
+														'https://localhost:xxx_SpSecurePort2_xxx/ibm/saml20/server2_sp1'
+														}}"
+		>
+			<property name="profileConfigurations">
+				<list>
+					<bean parent="Shibboleth.SSO" />
+					<ref bean="SAML1.AttributeQuery" />
+					<ref bean="SAML1.ArtifactResolution" />
+					<bean
+						parent="SAML2.SSO"
+						p:signResponses="false"
+						p:signAssertions="true"
+						p:encryptAssertions="false"
+						p:securityConfiguration-ref="SHA1SecurityConfig"
+						p:nameIDFormatPrecedence="urn:oasis:names:tc:SAML:2.0:nameid-format:uid"
+						p:maximumSPSessionLifetime="PT1H" />
+					<ref bean="SAML2.ECP" />
+					<ref bean="SAML2.Logout" />
+					<ref bean="SAML2.AttributeQuery" />
+					<ref bean="SAML2.ArtifactResolution" />
+					<ref bean="Liberty.SSOS" />
+				</list>
+			</property>
+		</bean>
+
+		<bean
+			parent="RelyingPartyByName"
+			c:relyingPartyIds="#{{'https://localhost:xxx_SpSecurePort_xxx/ibm/saml20/sp1NotSigned'}}"
+		>
+			<property name="profileConfigurations">
+				<list>
+					<bean parent="Shibboleth.SSO" />
+					<ref bean="SAML1.AttributeQuery" />
+					<ref bean="SAML1.ArtifactResolution" />
+					<bean
+						parent="SAML2.SSO"
+						p:signResponses="false"
+						p:signAssertions="false"
+						p:encryptAssertions="false"
+						p:securityConfiguration-ref="SHA1SecurityConfig"
+						p:nameIDFormatPrecedence="urn:oasis:names:tc:SAML:2.0:nameid-format:uid"
+						p:maximumSPSessionLifetime="PT1H" />
+					<ref bean="SAML2.ECP" />
+					<ref bean="SAML2.Logout" />
+					<ref bean="SAML2.AttributeQuery" />
+					<ref bean="SAML2.ArtifactResolution" />
+					<ref bean="Liberty.SSOS" />
+				</list>
+			</property>
+		</bean>
+
+
+
+		<bean
+			parent="RelyingPartyByName"
+			c:relyingPartyIds="#{{'https://localhost:xxx_SpSecurePort_xxx/ibm/saml20/sp2',
+											'https://localhost:xxx_SpSecurePort2_xxx/ibm/saml20/server2_sp2'}}"
+		>
+			<property name="profileConfigurations">
+				<list>
+					<bean parent="Shibboleth.SSO" />
+					<ref bean="SAML1.AttributeQuery" />
+					<ref bean="SAML1.ArtifactResolution" />
+					<bean
+						parent="SAML2.SSO"
+						p:signResponses="false"
+						p:signAssertions="true"
+						p:encryptAssertions="false"
+						p:securityConfiguration-ref="SHA256SecurityConfig"
+						p:nameIDFormatPrecedence="urn:oasis:names:tc:SAML:2.0:nameid-format:uid" />
+					<ref bean="SAML2.ECP" />
+					<ref bean="SAML2.Logout" />
+					<ref bean="SAML2.AttributeQuery" />
+					<ref bean="SAML2.ArtifactResolution" />
+					<ref bean="Liberty.SSOS" />
+				</list>
+			</property>
+		</bean>
+
+		<bean
+			parent="RelyingPartyByName"
+			c:relyingPartyIds="#{{'https://localhost:xxx_SpSecurePort_xxx/ibm/saml20/defaultSP'}}"
+		>
+			<property name="profileConfigurations">
+				<list>
+					<bean parent="Shibboleth.SSO" />
+					<ref bean="SAML1.AttributeQuery" />
+					<ref bean="SAML1.ArtifactResolution" />
+					<bean
+						parent="SAML2.SSO"
+						p:signResponses="true"
+						p:signAssertions="true"
+						p:encryptAssertions="false"
+						p:securityConfiguration-ref="SHA256SecurityConfig"
+						p:nameIDFormatPrecedence="urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress" />
+					<ref bean="SAML2.ECP" />
+					<ref bean="SAML2.Logout" />
+					<ref bean="SAML2.AttributeQuery" />
+					<ref bean="SAML2.ArtifactResolution" />
+					<ref bean="Liberty.SSOS" />
+				</list>
+			</property>
+		</bean>
+
+		<bean
+			parent="RelyingPartyByName"
+			c:relyingPartyIds="#{{'https://localhost:xxx_SpSecurePort_xxx/ibm/saml20/sp5'}}"
+		>
+			<property name="profileConfigurations">
+				<list>
+					<bean parent="Shibboleth.SSO" />
+					<ref bean="SAML1.AttributeQuery" />
+					<ref bean="SAML1.ArtifactResolution" />
+					<bean
+						parent="SAML2.SSO"
+						p:signResponses="false"
+						p:signAssertions="true"
+						p:encryptAssertions="true"
+						p:securityConfiguration-ref="SHA1SecurityConfig"
+						p:nameIDFormatPrecedence="urn:oasis:names:tc:SAML:2.0:nameid-format:uid" />
+					<ref bean="SAML2.ECP" />
+					<ref bean="SAML2.Logout" />
+					<ref bean="SAML2.AttributeQuery" />
+					<ref bean="SAML2.ArtifactResolution" />
+					<ref bean="Liberty.SSOS" />
+				</list>
+			</property>
+		</bean>
+
+		<bean
+			parent="RelyingPartyByName"
+			c:relyingPartyIds="#{{'https://localhost:xxx_SpSecurePort_xxx/ibm/saml20/sp50'}}"
+		>
+			<property name="profileConfigurations">
+				<list>
+					<bean parent="Shibboleth.SSO" />
+					<ref bean="SAML1.AttributeQuery" />
+					<ref bean="SAML1.ArtifactResolution" />
+					<bean
+						parent="SAML2.SSO"
+						p:signResponses="false"
+						p:signAssertions="true"
+						p:encryptAssertions="false"
+						p:securityConfiguration-ref="ChainedSecurityConfig"
+						p:nameIDFormatPrecedence="urn:oasis:names:tc:SAML:2.0:nameid-format:uid" />
+					<ref bean="SAML2.ECP" />
+					<ref bean="SAML2.Logout" />
+					<ref bean="SAML2.AttributeQuery" />
+					<ref bean="SAML2.ArtifactResolution" />
+					<ref bean="Liberty.SSOS" />
+				</list>
+			</property>
+		</bean>
+
+		<bean
+			parent="RelyingPartyByName"
+			c:relyingPartyIds="#{{'https://localhost:xxx_SpSecurePort_xxx/ibm/saml20/sp_enc_aes128'}}"
+		>
+			<property name="profileConfigurations">
+				<list>
+					<bean parent="Shibboleth.SSO" />
+					<ref bean="SAML1.AttributeQuery" />
+					<ref bean="SAML1.ArtifactResolution" />
+					<bean
+						parent="SAML2.SSO"
+						p:signResponses="true"
+						p:signAssertions="true"
+						p:encryptAssertions="true"
+						p:securityConfiguration-ref="encryption128"
+						p:nameIDFormatPrecedence="urn:oasis:names:tc:SAML:2.0:nameid-format:uid" />
+					<ref bean="SAML2.ECP" />
+					<ref bean="SAML2.Logout" />
+					<ref bean="SAML2.AttributeQuery" />
+					<ref bean="SAML2.ArtifactResolution" />
+					<ref bean="Liberty.SSOS" />
+				</list>
+			</property>
+		</bean>
+
+		<bean
+			parent="RelyingPartyByName"
+			c:relyingPartyIds="#{{'https://localhost:xxx_SpSecurePort_xxx/ibm/saml20/sp_enc_aes192'}}"
+		>
+			<property name="profileConfigurations">
+				<list>
+					<bean parent="Shibboleth.SSO" />
+					<ref bean="SAML1.AttributeQuery" />
+					<ref bean="SAML1.ArtifactResolution" />
+					<bean
+						parent="SAML2.SSO"
+						p:signResponses="true"
+						p:signAssertions="false"
+						p:encryptAssertions="true"
+						p:securityConfiguration-ref="encryption192"
+						p:nameIDFormatPrecedence="urn:oasis:names:tc:SAML:2.0:nameid-format:uid" />
+					<ref bean="SAML2.ECP" />
+					<ref bean="SAML2.Logout" />
+					<ref bean="SAML2.AttributeQuery" />
+					<ref bean="SAML2.ArtifactResolution" />
+					<ref bean="Liberty.SSOS" />
+				</list>
+			</property>
+		</bean>
+
+		<bean
+			parent="RelyingPartyByName"
+			c:relyingPartyIds="#{{'https://localhost:xxx_SpSecurePort_xxx/ibm/saml20/sp_enc_aes256'}}"
+		>
+			<property name="profileConfigurations">
+				<list>
+					<bean parent="Shibboleth.SSO" />
+					<ref bean="SAML1.AttributeQuery" />
+					<ref bean="SAML1.ArtifactResolution" />
+					<bean
+						parent="SAML2.SSO"
+						p:signResponses="true"
+						p:signAssertions="false"
+						p:encryptAssertions="true"
+						p:securityConfiguration-ref="encryption256"
+						p:nameIDFormatPrecedence="urn:oasis:names:tc:SAML:2.0:nameid-format:uid" />
+					<ref bean="SAML2.ECP" />
+					<ref bean="SAML2.Logout" />
+					<ref bean="SAML2.AttributeQuery" />
+					<ref bean="SAML2.ArtifactResolution" />
+					<ref bean="Liberty.SSOS" />
+				</list>
+			</property>
+		</bean>
+
+		<bean
+			parent="RelyingPartyByName"
+			c:relyingPartyIds="#{{'https://localhost:xxx_SpSecurePort_xxx/ibm/saml20/sp_enc_aes256_mismatch'}}"
+		>
+			<property name="profileConfigurations">
+				<list>
+					<bean parent="Shibboleth.SSO" />
+					<ref bean="SAML1.AttributeQuery" />
+					<ref bean="SAML1.ArtifactResolution" />
+					<bean
+						parent="SAML2.SSO"
+						p:signResponses="true"
+						p:signAssertions="false"
+						p:encryptAssertions="true"
+						p:securityConfiguration-ref="encryption128"
+						p:nameIDFormatPrecedence="urn:oasis:names:tc:SAML:2.0:nameid-format:uid" />
+					<ref bean="SAML2.ECP" />
+					<ref bean="SAML2.Logout" />
+					<ref bean="SAML2.AttributeQuery" />
+					<ref bean="SAML2.ArtifactResolution" />
+					<ref bean="Liberty.SSOS" />
+				</list>
+			</property>
+		</bean>
+
+		<bean
+			parent="RelyingPartyByName"
+			c:relyingPartyIds="#{{'https://localhost:xxx_SpSecurePort_xxx/ibm/saml20/spNameIdX509SubjectName'}}"
+		>
+			<property name="profileConfigurations">
+				<list>
+					<bean parent="Shibboleth.SSO" />
+					<ref bean="SAML1.AttributeQuery" />
+					<ref bean="SAML1.ArtifactResolution" />
+					<bean
+						parent="SAML2.SSO"
+						p:signResponses="false"
+						p:signAssertions="true"
+						p:encryptAssertions="false"
+						p:securityConfiguration-ref="SHA1SecurityConfig"
+						p:nameIDFormatPrecedence="urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName"
+						p:maximumSPSessionLifetime="PT1H" />
+					<ref bean="SAML2.ECP" />
+					<ref bean="SAML2.Logout" />
+					<ref bean="SAML2.AttributeQuery" />
+					<ref bean="SAML2.ArtifactResolution" />
+					<ref bean="Liberty.SSOS" />
+				</list>
+			</property>
+		</bean>
+		<bean
+			parent="RelyingPartyByName"
+			c:relyingPartyIds="#{{'https://localhost:xxx_SpSecurePort_xxx/ibm/saml20/spNameIdWindowsDomain'}}"
+		>
+			<property name="profileConfigurations">
+				<list>
+					<bean parent="Shibboleth.SSO" />
+					<ref bean="SAML1.AttributeQuery" />
+					<ref bean="SAML1.ArtifactResolution" />
+					<bean
+						parent="SAML2.SSO"
+						p:signResponses="false"
+						p:signAssertions="true"
+						p:encryptAssertions="false"
+						p:securityConfiguration-ref="SHA1SecurityConfig"
+						p:nameIDFormatPrecedence="urn:oasis:names:tc:SAML:1.1:nameid-format:WindowsDomainQualifiedName"
+						p:maximumSPSessionLifetime="PT1H" />
+					<ref bean="SAML2.ECP" />
+					<ref bean="SAML2.Logout" />
+					<ref bean="SAML2.AttributeQuery" />
+					<ref bean="SAML2.ArtifactResolution" />
+					<ref bean="Liberty.SSOS" />
+				</list>
+			</property>
+		</bean>
+		<bean
+			parent="RelyingPartyByName"
+			c:relyingPartyIds="#{{'https://localhost:xxx_SpSecurePort_xxx/ibm/saml20/spNameIdKerberos'}}"
+		>
+			<property name="profileConfigurations">
+				<list>
+					<bean parent="Shibboleth.SSO" />
+					<ref bean="SAML1.AttributeQuery" />
+					<ref bean="SAML1.ArtifactResolution" />
+					<bean
+						parent="SAML2.SSO"
+						p:signResponses="false"
+						p:signAssertions="true"
+						p:encryptAssertions="false"
+						p:securityConfiguration-ref="SHA1SecurityConfig"
+						p:nameIDFormatPrecedence="urn:oasis:names:tc:SAML:2.0:nameid-format:kerberos"
+						p:maximumSPSessionLifetime="PT1H" />
+					<ref bean="SAML2.ECP" />
+					<ref bean="SAML2.Logout" />
+					<ref bean="SAML2.AttributeQuery" />
+					<ref bean="SAML2.ArtifactResolution" />
+					<ref bean="Liberty.SSOS" />
+				</list>
+			</property>
+		</bean>
+		<bean
+			parent="RelyingPartyByName"
+			c:relyingPartyIds="#{{'https://localhost:xxx_SpSecurePort_xxx/ibm/saml20/spNameidEntity'}}"
+		>
+			<property name="profileConfigurations">
+				<list>
+					<bean parent="Shibboleth.SSO" />
+					<ref bean="SAML1.AttributeQuery" />
+					<ref bean="SAML1.ArtifactResolution" />
+					<bean
+						parent="SAML2.SSO"
+						p:signResponses="false"
+						p:signAssertions="true"
+						p:encryptAssertions="false"
+						p:securityConfiguration-ref="SHA1SecurityConfig"
+						p:nameIDFormatPrecedence="urn:oasis:names:tc:SAML:2.0:nameid-format:entity"
+						p:maximumSPSessionLifetime="PT1H" />
+					<ref bean="SAML2.ECP" />
+					<ref bean="SAML2.Logout" />
+					<ref bean="SAML2.AttributeQuery" />
+					<ref bean="SAML2.ArtifactResolution" />
+					<ref bean="Liberty.SSOS" />
+				</list>
+			</property>
+		</bean>
+		<bean
+			parent="RelyingPartyByName"
+			c:relyingPartyIds="#{{'https://localhost:xxx_SpSecurePort_xxx/ibm/saml20/spNameIdPersistent'}}"
+		>
+			<property name="profileConfigurations">
+				<list>
+					<bean parent="Shibboleth.SSO" />
+					<ref bean="SAML1.AttributeQuery" />
+					<ref bean="SAML1.ArtifactResolution" />
+					<bean
+						parent="SAML2.SSO"
+						p:signResponses="false"
+						p:signAssertions="true"
+						p:encryptAssertions="false"
+						p:securityConfiguration-ref="SHA1SecurityConfig"
+						p:nameIDFormatPrecedence="urn:oasis:names:tc:SAML:1.1:nameid-format:persistent"
+						p:maximumSPSessionLifetime="PT1H" />
+					<ref bean="SAML2.ECP" />
+					<ref bean="SAML2.Logout" />
+					<ref bean="SAML2.AttributeQuery" />
+					<ref bean="SAML2.ArtifactResolution" />
+					<ref bean="Liberty.SSOS" />
+				</list>
+			</property>
+		</bean>
+		<bean
+			parent="RelyingPartyByName"
+			c:relyingPartyIds="#{{'https://localhost:xxx_SpSecurePort_xxx/ibm/saml20/spNameIdTransient'}}"
+		>
+			<property name="profileConfigurations">
+				<list>
+					<bean parent="Shibboleth.SSO" />
+					<ref bean="SAML1.AttributeQuery" />
+					<ref bean="SAML1.ArtifactResolution" />
+					<bean
+						parent="SAML2.SSO"
+						p:signResponses="false"
+						p:signAssertions="true"
+						p:encryptAssertions="false"
+						p:securityConfiguration-ref="SHA1SecurityConfig"
+						p:nameIDFormatPrecedence="urn:oasis:names:tc:SAML:2.0:nameid-format:transient"
+						p:maximumSPSessionLifetime="PT1H" />
+					<ref bean="SAML2.ECP" />
+					<ref bean="SAML2.Logout" />
+					<ref bean="SAML2.AttributeQuery" />
+					<ref bean="SAML2.ArtifactResolution" />
+					<ref bean="Liberty.SSOS" />
+				</list>
+			</property>
+		</bean>
+		<bean
+			parent="RelyingPartyByName"
+			c:relyingPartyIds="#{{'https://localhost:xxx_SpSecurePort_xxx/ibm/saml20/spNameIdEncrypted'}}"
+		>
+			<property name="profileConfigurations">
+				<list>
+					<bean parent="Shibboleth.SSO" />
+					<ref bean="SAML1.AttributeQuery" />
+					<ref bean="SAML1.ArtifactResolution" />
+					<bean
+						parent="SAML2.SSO"
+						p:signResponses="false"
+						p:signAssertions="true"
+						p:encryptAssertions="false"
+						p:encryptNameIDs="true"
+						p:securityConfiguration-ref="SHA1SecurityConfig"
+						p:nameIDFormatPrecedence="urn:oasis:names:tc:SAML:1.1:nameid-format:encrypted"
+						p:maximumSPSessionLifetime="PT1H" />
+					<ref bean="SAML2.ECP" />
+					<ref bean="SAML2.Logout" />
+					<ref bean="SAML2.AttributeQuery" />
+					<ref bean="SAML2.ArtifactResolution" />
+					<ref bean="Liberty.SSOS" />
+				</list>
+			</property>
+		</bean>
+		<bean
+			parent="RelyingPartyByName"
+			c:relyingPartyIds="#{{'https://localhost:xxx_SpSecurePort_xxx/ibm/saml20/spNameIdCustomize'}}"
+		>
+			<property name="profileConfigurations">
+				<list>
+					<bean parent="Shibboleth.SSO" />
+					<ref bean="SAML1.AttributeQuery" />
+					<ref bean="SAML1.ArtifactResolution" />
+					<bean
+						parent="SAML2.SSO"
+						p:signResponses="false"
+						p:signAssertions="true"
+						p:encryptAssertions="false"
+						p:securityConfiguration-ref="SHA1SecurityConfig"
+						p:nameIDFormatPrecedence="urn:oasis:names:tc:SAML:2.0:nameid-format:uid"
+						p:maximumSPSessionLifetime="PT1H" />
+					<ref bean="SAML2.ECP" />
+					<ref bean="SAML2.Logout" />
+					<ref bean="SAML2.AttributeQuery" />
+					<ref bean="SAML2.ArtifactResolution" />
+					<ref bean="Liberty.SSOS" />
+				</list>
+			</property>
+		</bean>
+
+		<bean
+			parent="RelyingPartyByName"
+			c:relyingPartyIds="#{{'https://localhost:xxx_SpSecurePort_xxx/ibm/saml20/spShortLifetime'}}"
+		>
+			<property name="profileConfigurations">
+				<list>
+					<bean parent="Shibboleth.SSO" />
+					<ref bean="SAML1.AttributeQuery" />
+					<ref bean="SAML1.ArtifactResolution" />
+					<bean
+						parent="SAML2.SSO"
+						p:signResponses="false"
+						p:signAssertions="true"
+						p:encryptAssertions="false"
+						p:securityConfiguration-ref="SHA1SecurityConfig"
+						p:nameIDFormatPrecedence="urn:oasis:names:tc:SAML:2.0:nameid-format:uid"
+						p:maximumSPSessionLifetime="PT20S" />
+					<ref bean="SAML2.ECP" />
+					<ref bean="SAML2.Logout" />
+					<ref bean="SAML2.AttributeQuery" />
+					<ref bean="SAML2.ArtifactResolution" />
+					<ref bean="Liberty.SSOS" />
+				</list>
+			</property>
+		</bean>
+
+		<!-- <bean parent="SAML2.SSO" p:encryptAssertions="false" p:nameIDFormatPrecedence="urn:oasis:names:tc:SAML:2.0:nameid-format:persistent" 
+			/> -->
+
+		<!-- <bean parent="RelyingPartyByName" c:relyingPartyIds="https://sp.example.org"> 
+			<property name="profileConfigurations"> <list> <bean parent="SAML2.SSO" p:encryptAssertions="false" 
+			/> </list> </property> </bean> -->
+
+	</util:list>
+
+	<bean
+		id="SHA1SecurityConfig"
+		parent="shibboleth.DefaultSecurityConfiguration"
+	>
+		<property name="signatureSigningConfiguration">
+			<ref bean="shibboleth.SigningConfiguration.SHA1" />
+		</property>
+	</bean>
+
+	<bean
+		id="SHA256SecurityConfig"
+		parent="shibboleth.DefaultSecurityConfiguration"
+	>
+		<property name="signatureSigningConfiguration">
+			<ref bean="shibboleth.SigningConfiguration.SHA256" />
+		</property>
+	</bean>
+
+	<!-- not supported <bean id="SHA128SecurityConfig" parent="shibboleth.DefaultSecurityConfiguration"> 
+		<property name="signatureSigningConfiguration"> <ref bean="shibboleth.SigningConfiguration.SHA128" 
+		/> </property> </bean> -->
+
+	<bean
+		id="ChainedSecurityConfig"
+		parent="shibboleth.DefaultSecurityConfiguration"
+	>
+		<property name="signatureSigningConfiguration">
+			<ref bean="shibboleth.SigningConfiguration.chained" />
+		</property>
+	</bean>
+
+	<bean
+		id="shibboleth.SigningConfiguration.chained"
+		parent="shibboleth.BasicSignatureSigningConfiguration"
+		p:signingCredentials-ref="shibboleth.DefaultSigningCredential2" />
+
+	<bean
+		id="encryption128"
+		class="net.shibboleth.idp.profile.config.SecurityConfiguration"
+	>
+		<property name="signatureSigningConfiguration">
+			<ref bean="shibboleth.SigningConfiguration.SHA1" />
+		</property>
+		<property name="encryptionConfiguration">
+			<bean parent="shibboleth.BasicEncryptionConfiguration">
+				<property name="dataEncryptionAlgorithms">
+					<list>
+						<util:constant
+							static-field="org.opensaml.xmlsec.encryption.support.EncryptionConstants.ALGO_ID_BLOCKCIPHER_AES128" />
+					</list>
+				</property>
+				<property name="keyTransportEncryptionAlgorithms">
+					<list>
+						<util:constant
+							static-field="org.opensaml.xmlsec.encryption.support.EncryptionConstants.ALGO_ID_KEYTRANSPORT_RSAOAEP" />
+					</list>
+				</property>
+			</bean>
+		</property>
+	</bean>
+
+	<bean
+		id="encryption192"
+		class="net.shibboleth.idp.profile.config.SecurityConfiguration"
+	>
+		<property name="signatureSigningConfiguration">
+			<ref bean="shibboleth.SigningConfiguration.SHA1" />
+		</property>
+		<property name="encryptionConfiguration">
+			<bean parent="shibboleth.BasicEncryptionConfiguration">
+				<property name="dataEncryptionAlgorithms">
+					<list>
+						<util:constant
+							static-field="org.opensaml.xmlsec.encryption.support.EncryptionConstants.ALGO_ID_BLOCKCIPHER_AES192" />
+					</list>
+				</property>
+				<property name="keyTransportEncryptionAlgorithms">
+					<list>
+						<util:constant
+							static-field="org.opensaml.xmlsec.encryption.support.EncryptionConstants.ALGO_ID_KEYTRANSPORT_RSAOAEP" />
+					</list>
+				</property>
+			</bean>
+		</property>
+	</bean>
+
+	<bean
+		id="encryption256"
+		class="net.shibboleth.idp.profile.config.SecurityConfiguration"
+	>
+		<property name="signatureSigningConfiguration">
+			<ref bean="shibboleth.SigningConfiguration.SHA1" />
+		</property>
+		<property name="encryptionConfiguration">
+			<bean parent="shibboleth.BasicEncryptionConfiguration">
+				<property name="dataEncryptionAlgorithms">
+					<list>
+						<util:constant
+							static-field="org.opensaml.xmlsec.encryption.support.EncryptionConstants.ALGO_ID_BLOCKCIPHER_AES256" />
+					</list>
+				</property>
+				<property name="keyTransportEncryptionAlgorithms">
+					<list>
+						<util:constant
+							static-field="org.opensaml.xmlsec.encryption.support.EncryptionConstants.ALGO_ID_KEYTRANSPORT_RSAOAEP" />
+					</list>
+				</property>
+			</bean>
+		</property>
+	</bean>
+
+</beans>
