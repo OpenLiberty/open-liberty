@@ -28,6 +28,8 @@ import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 
+//4/2021
+import componenttest.annotation.AllowedFFDC;
 //Added 10/2020
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -105,6 +107,8 @@ public class CxfUNTBasicTests {
      *
      */
 
+    //4/2021 add allowed ffdc to run with EE8
+    @AllowedFFDC(value = { "java.lang.ClassNotFoundException" })
     @Test
     public void testUntCxfSvcClient() throws Exception {
 

@@ -331,6 +331,8 @@ public class CxfX509MigTests {
      *
      */
 
+    //4/2021 add allowed ffdc to run with EE8
+    @AllowedFFDC(value = { "java.net.MalformedURLException", "java.lang.ClassNotFoundException" })
     @Test
     public void testCxfX509AsymIssuerSerialMigService() throws Exception {
         String thisMethod = "testCxfX509AsymIssuerSerialMigService";
@@ -523,6 +525,8 @@ public class CxfX509MigTests {
      *
      */
 
+    //4/2021 add allowed ffdc to run with EE8
+    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     @Test
     public void testCxfX509AsymThumbprintMigService() throws Exception {
         String thisMethod = "testCxfX509AsymThumbprintMigService";
@@ -732,6 +736,8 @@ public class CxfX509MigTests {
      *
      */
 
+    //4/2021 add allowed ffdc to run with EE8
+    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     @Test
     public void testCxfX509AsymProtectTokensMigService() throws Exception {
         String thisMethod = "testCxfX509AsymProtectTokensMigService";
@@ -902,6 +908,8 @@ public class CxfX509MigTests {
      *
      */
 
+    //4/2021 add allowed ffdc to run with EE8
+    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     @Test
     public void testCxfX509TransportEndrosingMigServiceHttps() throws Exception {
         String thisMethod = "testCxfX509TransportEndorsingMigService";
@@ -1087,6 +1095,8 @@ public class CxfX509MigTests {
      *
      */
 
+    //4/2021 add allowed ffdc to run with EE8
+    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     @Test
     public void testCxfX509TransportEndrosingSP11MigServiceHttps() throws Exception {
         String thisMethod = "testCxfX509TransportEndorsingSP11MigService";
@@ -1255,6 +1265,8 @@ public class CxfX509MigTests {
      *
      */
 
+    //4/2021 add allowed ffdc to run with EE8
+    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     @Test
     public void testCxfX509TransportSignedEndrosingMigServiceHttps() throws Exception {
         String thisMethod = "testCxfX509TransportSignedEndorsingMigService";
@@ -1423,6 +1435,8 @@ public class CxfX509MigTests {
      *
      */
 
+    //4/2021 add allowed ffdc to run with EE8
+    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     @Test
     public void testCxfX509TransportEndrosingEncryptedMigServiceHttps() throws Exception {
         String thisMethod = "testCxfX509TransportEndorsingEncryptedMigService";
@@ -1592,6 +1606,8 @@ public class CxfX509MigTests {
      *
      */
 
+    //4/2021 add allowed ffdc to run with EE8
+    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     @Test
     public void testCxfX509TransportSignedEndrosingEncryptedMigServiceHttps() throws Exception {
         String thisMethod = "testCxfX509TransportSignedEndorsingEncryptedMigService";
@@ -1818,6 +1834,8 @@ public class CxfX509MigTests {
      *
      */
 
+    //4/2021 add allowed ffdc to run with EE8
+    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     @Test
     public void testCxfX509TransportSupportingSignedMigServiceHttps() throws Exception {
         String thisMethod = "testCxfX509TransportSupportingSignedMigService";
@@ -2157,6 +2175,8 @@ public class CxfX509MigTests {
      *
      */
 
+    //4/2021 add allowed ffdc to run with EE8
+    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     @Test
     public void testCxfX509AsymmetricSignatureMigService() throws Exception {
         String thisMethod = "testCxfX509AsymmetricSignatureMigService";
@@ -2192,7 +2212,9 @@ public class CxfX509MigTests {
     //Orig:
     //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
     //2/2021
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException" })
+    //@AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException" })
+    //4/2021
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException", "java.net.MalformedURLException" })
     public void testCxfX509AsymmetricSignatureReplayMigService() throws Exception {
         // This is a negative test case.
         // It ought to fail at the second request.
@@ -2378,6 +2400,8 @@ public class CxfX509MigTests {
      *
      */
 
+    //4/2021 add allowed ffdc for EE8
+    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     @Test
     public void testCxfX509AsymmetricSignatureSP11MigService() throws Exception {
         String thisMethod = "testCxfX509AsymmetricSignatureSP11MigService";
@@ -2560,6 +2584,8 @@ public class CxfX509MigTests {
      *
      */
 
+    //4/2021 add allowed ffdc to run with EE8
+    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     @Test
     public void testCxfX509AsymmetricEncryptionMigService() throws Exception {
         String thisMethod = "testCxfX509AsymmetricEncryptionMigService";
@@ -2635,6 +2661,8 @@ public class CxfX509MigTests {
      *
      */
 
+    //4/2021 add allowed ffdc to run with EE8
+    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     @Test
     public void testWsComplexService() throws Exception {
         String thisMethod = "testWsComplexService";
@@ -2665,6 +2693,8 @@ public class CxfX509MigTests {
      *
      */
 
+    //4/2021 add allowed ffdc to run with EE8
+    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     @Test
     public void testWsComplexSP11Service() throws Exception {
         String thisMethod = "testWsComplexSP11Service";
@@ -2704,6 +2734,8 @@ public class CxfX509MigTests {
      *
      */
 
+    //4/2021 add allowed ffdc to run with EE8
+    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     @Test
     public void testAsymmetricBasic256Service() throws Exception {
         String thisMethod = "testAsymmetricBasic256Service";
@@ -2749,6 +2781,8 @@ public class CxfX509MigTests {
      * It expects to pass
      */
 
+    //4/2021 add allowed ffdc to run with EE8
+    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     @Test
     public void testAsymSignatureConfirmService() throws Exception {
         String thisMethod = "testAsymSignatureConfirmService";
@@ -2787,6 +2821,8 @@ public class CxfX509MigTests {
      * It expects to pass
      **/
 
+    //4/2021 add allowed ffdc to run with EE8
+    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     @Test
     public void testAsymEncSignService() throws Exception {
         String thisMethod = "testAsymEncSignService";
@@ -2846,6 +2882,9 @@ public class CxfX509MigTests {
      * The test passed.
      *
      */
+
+    //4/2021 add allowed ffdc to run with EE8
+    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     @Test
     public void testTripleDesService() throws Exception {
         String thisMethod = "testTripleDesService";
@@ -2877,6 +2916,9 @@ public class CxfX509MigTests {
      * The test passed.
      *
      */
+
+    //4/2021 add allowed ffdc to run with EE8
+    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     @Test
     public void testBasic128Service() throws Exception {
         String thisMethod = "testBasic128Service";
@@ -2916,7 +2958,7 @@ public class CxfX509MigTests {
      *
      */
 
-    //2/2021 run with EE7 (passed)
+    //2/2021 run with EE7
     @Test
     //Orig:
     //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
@@ -3539,7 +3581,9 @@ public class CxfX509MigTests {
     //Orig:
     //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
     //2/2021
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException" })
+    //@AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException" })
+    //4/2021
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException", "java.net.MalformedURLException" })
     public void testBadAsymEndSignService() throws Exception {
         String thisMethod = "testBadAsymEncSignService";
         methodFull = "testBadAsymEncSignService";
