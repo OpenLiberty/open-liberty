@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2020 IBM Corporation and others.
+# Copyright (c) 2002, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -186,3 +186,11 @@ trusted.header.origin.invalid.value.useraction=\u8bf7\u786e\u4fdd\u6240\u914d\u7
 trusted.sensitive.header.origin.invalid.value=CWWKT0039W: \u6240\u914d\u7f6e\u7684 trustedSensitiveHeaderOrigin \u503c [{0}] \u65e0\u6548\uff0c\u65e0\u6cd5\u4f7f\u7528\u3002
 trusted.sensitive.header.origin.invalid.value.explanation=\u6240\u6307\u5b9a\u7684\u503c\u5fc5\u987b\u662f\u5b8c\u6574 IP \u5730\u5740\u6216\u8005\u662f\u683c\u5f0f\u6b63\u786e\u7684\u4e3b\u673a\u540d\u3002
 trusted.sensitive.header.origin.invalid.value.useraction=\u8bf7\u786e\u4fdd\u6240\u914d\u7f6e\u7684 IP \u5730\u5740\u5305\u542b\u6bcf\u4e2a\u6bb5\u7684\u4e00\u4e2a\u503c\uff0c\u5e76\u4e14\u4e3b\u673a\u540d\u4e0d\u5305\u542b\u4efb\u4f55\u65e0\u6548\u5b57\u7b26\u3002
+
+config.hsts.invalid.max.age.value=CWWKT0040W: \u4e3a max-age \u4f2a\u6307\u4ee4\u6240\u914d\u7f6e\u7684\u503c [{0}] \u65e0\u6548\uff0c\u65e0\u6cd5\u4f7f\u7528\u3002max-age \u4f2a\u6307\u4ee4\u7684\u503c\u5fc5\u987b\u662f\u975e\u8d1f\u6574\u6570\u3002
+config.hsts.invalid.max.age.value.explanation=max-age \u4f2a\u6307\u4ee4\u7684\u503c\u4e0d\u5f97\u662f\u8d1f\u6574\u6570\u3002
+config.hsts.invalid.max.age.value.useraction=\u8bf7\u786e\u4fdd\u6240\u914d\u7f6e\u7684 max-age \u4f2a\u6307\u4ee4\u5305\u542b\u975e\u8d1f\u6574\u6570\u503c\u3002
+
+config.hsts.missing.max.age=CWWKT0041W: \u8bd5\u56fe\u5c06 [{0}] \u914d\u7f6e\u4e3a Strict-Transport-Security \u6807\u5934\u3002\u6b64\u914d\u7f6e\u4e0d\u5305\u542b\u5fc5\u9700\u7684 max-age \u4f2a\u6307\u4ee4\u3002\u4e0d\u5305\u542b max-age \u4f2a\u6307\u4ee4\u7684\u914d\u7f6e\u65e0\u6548\uff0c\u65e0\u6cd5\u4f7f\u7528\u3002
+config.hsts.missing.max.age.explanation=\u6240\u6307\u5b9a\u7684\u914d\u7f6e\u5fc5\u987b\u5305\u542b\u5177\u6709\u975e\u8d1f\u6574\u6570\u503c\u7684 max-age \u4f2a\u6307\u4ee4\u3002
+config.hsts.missing.max.age.useraction=\u8bf7\u786e\u4fdd\u914d\u7f6e\u5305\u542b\u5177\u6709\u975e\u8d1f\u6574\u6570\u503c\u7684 max-age \u4f2a\u6307\u4ee4\u3002

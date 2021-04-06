@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,8 +21,10 @@ import javax.json.JsonArray;
 import javax.json.JsonException;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
+import javax.json.JsonReaderFactory;
 import javax.json.JsonStructure;
 import javax.json.JsonWriter;
+import javax.json.JsonWriterFactory;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
@@ -41,6 +43,10 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 @Consumes({ "application/json", "application/*+json" })
 @Provider
 public class JsonPProvider implements MessageBodyReader, MessageBodyWriter {
+
+    private static final JsonWriterFactory writerFactory = Json.createWriterFactory(null);
+
+    private static final JsonReaderFactory readerFactory = Json.createReaderFactory(null);
 
     @Override
     public long getSize(Object obj, Class type, Type genericType, Annotation[] annotations, MediaType mediaType) {
@@ -63,7 +69,7 @@ public class JsonPProvider implements MessageBodyReader, MessageBodyWriter {
 
         JsonWriter writer = null;
         try {
-            writer = Json.createWriter(entityStream);
+            writer = writerFactory.createWriter(entityStream);
             if (writer != null) {
                 writer.write((JsonStructure) obj);
             }
@@ -97,7 +103,7 @@ public class JsonPProvider implements MessageBodyReader, MessageBodyWriter {
 
         JsonReader reader = null;
         try {
-            reader = Json.createReader(entityStream);
+            reader = readerFactory.createReader(entityStream);
             if (reader != null) {
                 return reader.read();
             }

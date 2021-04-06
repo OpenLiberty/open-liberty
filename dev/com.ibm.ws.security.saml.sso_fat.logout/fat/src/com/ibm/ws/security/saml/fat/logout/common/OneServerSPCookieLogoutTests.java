@@ -13,7 +13,7 @@ package com.ibm.ws.security.saml.fat.logout.common;
 
 import static org.junit.Assert.fail;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.StringUtils ;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -675,7 +675,12 @@ public class OneServerSPCookieLogoutTests extends SAMLLogoutCommonTest {
     @Test
     public void OneServerSPCookieLogoutTests_postLogoutRedirectUrl_absoluteExternalURL() throws Exception {
 
-        common_postLogoutRedirectUrl_test(cookieInfo.getAbsExternalURLCookieName(), "customLogout_absExternalURL", PostLogoutPage.EXTERNALPOSTLOGOUTPAGE);
+        if (helpers.pingExternalServer(_testName, "http://example.com", "Example Domain", 30)) {
+            common_postLogoutRedirectUrl_test(cookieInfo.getAbsExternalURLCookieName(), "customLogout_absExternalURL", PostLogoutPage.EXTERNALPOSTLOGOUTPAGE);
+        } else {
+            // skip test if we can't get to the example.com site
+            testSkipped();
+        }
 
     }
 
@@ -868,6 +873,11 @@ public class OneServerSPCookieLogoutTests extends SAMLLogoutCommonTest {
      * @throws Exception
      */
     public void common_postLogoutRedirectUrl_test(String spCookieName, String spName, PostLogoutPage postLogoutUrl) throws Exception {
+
+        if (!helpers.pingExternalServer(_testName, "http://example.com", "Example Domain", 30)) {
+            // skip test if we can't get to the example.com site
+            testSkipped();
+        }
         common_postLogoutRedirectUrl_test(spCookieName, spName, postLogoutUrl, null);
     }
 

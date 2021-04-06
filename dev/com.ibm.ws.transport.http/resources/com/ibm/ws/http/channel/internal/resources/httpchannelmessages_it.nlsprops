@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2020 IBM Corporation and others.
+# Copyright (c) 2002, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -183,3 +183,11 @@ trusted.header.origin.invalid.value.useraction=Assicurarsi che gli indirizzi IP 
 trusted.sensitive.header.origin.invalid.value=CWWKT0039W: Il valore di trustedSensitiveHeaderOrigin configurato [{0}] non \u00e8 valido e non \u00e8 possibile utilizzarlo.
 trusted.sensitive.header.origin.invalid.value.explanation=Il valore specificato deve essere un indirizzo IP completo o un nome host con formato corretto.
 trusted.sensitive.header.origin.invalid.value.useraction=Assicurarsi che gli indirizzi IP configurati contengano un valore per ciascun segmento e che i nomi host non contengano caratteri non validi.
+
+config.hsts.invalid.max.age.value=CWWKT0040W: Il valore [{0}] configurato per la direttiva max-age non \u00e8 valido e non pu\u00f2 essere utilizzato. Il valore per la direttiva max-age deve essere un numero intero non negativo.
+config.hsts.invalid.max.age.value.explanation=Il valore per la direttiva max-age non pu\u00f2 essere un numero intero negativo.
+config.hsts.invalid.max.age.value.useraction=Assicurarsi che la direttiva max-age configurata contenga un valore intero non negativo.
+
+config.hsts.missing.max.age=CWWKT0041W: \u00c8 stato effettuato un tentativo di configurare [{0}] come intestazione Strict-Transport-Security. Questa configurazione non contiene la direttiva max-age obbligatoria. Una configurazione che non contiene una direttiva max-age non \u00e8 valida e non pu\u00f2 essere utilizzata.
+config.hsts.missing.max.age.explanation=La configurazione specificata deve contenere una direttiva max-age con un valore intero non negativo.
+config.hsts.missing.max.age.useraction=Assicurarsi che la configurazione contenga una direttiva max-age con un valore intero non negativo.

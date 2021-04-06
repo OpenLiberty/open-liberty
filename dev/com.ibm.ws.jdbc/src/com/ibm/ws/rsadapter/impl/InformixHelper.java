@@ -17,8 +17,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException; 
 import java.sql.SQLInvalidAuthorizationSpecException; 
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 
 import javax.resource.ResourceException;
 
@@ -35,7 +33,6 @@ public class InformixHelper extends DatabaseHelper {
     private static final TraceComponent tc = Tr.register(InformixHelper.class, "RRA", AdapterUtil.NLS_FILE); 
     @SuppressWarnings("deprecation")
     private transient com.ibm.ejs.ras.TraceComponent infxTc = com.ibm.ejs.ras.Tr.register("com.ibm.ws.informix.logwriter", "WAS.database", null);
-    private transient PrintWriter ifxPw = null;
 
     /**
      * Construct a helper class for the Informix JDBC driver.
@@ -45,14 +42,11 @@ public class InformixHelper extends DatabaseHelper {
     InformixHelper(WSManagedConnectionFactoryImpl mcf) {
         super(mcf);
 
+        dataStoreHelper = "com.ibm.websphere.rsadapter.InformixDataStoreHelper";
+
         mcf.defaultIsolationLevel = Connection.TRANSACTION_REPEATABLE_READ;
-    }
-    
-    @Override
-    void customizeStaleStates() {
-        super.customizeStaleStates();
-        
-        Collections.addAll(staleErrorCodes,
+
+        Collections.addAll(staleConCodes,
                            -79735,
                            -79716,
                            -43207,
@@ -60,6 +54,9 @@ public class InformixHelper extends DatabaseHelper {
                            -25580,
                            -908,
                            43012);
+
+        Collections.addAll(staleStmtCodes,
+                           -710);
     }
 
     @Override
@@ -80,11 +77,11 @@ public class InformixHelper extends DatabaseHelper {
         //not synchronizing here since there will be one helper
         // and most likely the setting will be serially, even if its not, 
         // it shouldn't matter here (tracing).
-        if (ifxPw == null) {
-            ifxPw = new java.io.PrintWriter(new TraceWriter(infxTc), true);
+        if (genPw == null) {
+            genPw = new java.io.PrintWriter(new TraceWriter(infxTc), true);
         }
-        Tr.debug(infxTc, "returning", ifxPw);
-        return ifxPw;
+        Tr.debug(infxTc, "returning", genPw);
+        return genPw;
     }
 
     /**
@@ -143,24 +140,6 @@ public class InformixHelper extends DatabaseHelper {
                || -11033 == ec // Invalid authorization specification. 
                || -25590 == ec // Authentication error.
                || -29007 == ec; // RDB authorization failure. RDB-userID,RDB: RDB-userID,RDB-name. The user is not authorized to access the target RDB. The request is rejected. Contact the DBA of the RDB side if necessary. Correct the authorization problem and rerun the application program. 
-    }
-
-    /**
-     * @return true if the exception or a cause exception in the chain is known to indicate a stale statement. Otherwise false.
-     */
-    @Override
-    public boolean isStaleStatement(SQLException x) {
-        // check for cycles
-        Set<Throwable> chain = new HashSet<Throwable>();
-
-        for (Throwable t = x; t != null && chain.add(t); t = t.getCause())
-            if (t instanceof SQLException) {
-                SQLException sqlX = (SQLException) t;
-                int ec = sqlX.getErrorCode();
-                if (-710 == ec)
-                    return true;
-            }
-        return super.isStaleStatement(x);
     }
 
     @Override

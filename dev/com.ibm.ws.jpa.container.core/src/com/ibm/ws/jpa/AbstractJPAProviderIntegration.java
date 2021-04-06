@@ -182,6 +182,22 @@ public abstract class AbstractJPAProviderIntegration implements JPAProviderInteg
                 JPAAccessor.getJPAComponent().getJPAVersion().equals(JPAVersion.JPA22)) {
                 props.put("eclipselink.sql.allow-convert-result-to-boolean", "false");
             }
+
+            /*
+             * EclipseLink Bug 559307: EclipseLink on all versions can dead-lock forever.
+             * This property was added as a new feature in EclipseLink 3.0. However, the property
+             * currently defaults to `true` and causes performance regression.
+             *
+             * Set this property to `false` so that EclipseLink will disable the debug/trace which
+             * reduces performance.
+             *
+             * NOTE: This property is only applicable for JPA 30. TODO: Setting this property can be
+             * removed from here after updating JPA 3.0 to >= EclipseLink 3.0.1
+             */
+            if (!properties.containsKey("eclipselink.concurrency.manager.allow.readlockstacktrace") &&
+                JPAAccessor.getJPAComponent().getJPAVersion().equals(JPAVersion.JPA30)) {
+                props.put("eclipselink.concurrency.manager.allow.readlockstacktrace", "false");
+            }
         } else if (PROVIDER_HIBERNATE.equals(providerName)) {
             // Hibernate had vastly outdated built-in knowledge of WebSphere API, until version 5.2.13+ and 5.3+.
             // If the version of Hibernate has the Liberty JtaPlatform, use it

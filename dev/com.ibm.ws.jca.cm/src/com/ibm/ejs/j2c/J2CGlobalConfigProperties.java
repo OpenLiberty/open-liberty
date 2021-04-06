@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2020 IBM Corporation and others.
+ * Copyright (c) 1997, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,6 +26,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.jca.adapter.PurgePolicy;
 import com.ibm.ws.jca.cm.AbstractConnectionFactoryService;
 import com.ibm.ws.jca.cm.AppDefinedResource;
+import com.ibm.ws.jca.cm.ConnectionManagerService;
 
 /**
  * The <B>J2CGlobalConfigProperties</B> will contain all the Configuration Related
@@ -94,9 +95,14 @@ public final class J2CGlobalConfigProperties implements PropertyChangeListener, 
     private String transactionResourceRegistration;
 
     protected boolean checkManagedConnectionInstanceof = true;
+
+    private static class J2CLock {
+        // EMPTY
+    }
+
     //The following lock is NOT a config prop but I'm putting
     //it here for convience.
-    protected final transient Integer checkManagedConnectionInstanceofLock = new Integer(0);
+    protected final transient Object checkManagedConnectionInstanceofLock = new J2CLock();
     protected boolean checkManagedConnectionInstanceofInitialized = false;
 
     protected boolean embeddedRa = false;
@@ -349,10 +355,11 @@ public final class J2CGlobalConfigProperties implements PropertyChangeListener, 
     protected Properties dsMetaDataProps = null;
     public boolean callResourceAdapterStatMethods = false;
     public int numberOfInuseConnections = 0;
-    public transient Integer numberOfInuseConnectionsLockObject = new Integer(0);
+    public transient Object numberOfInuseConnectionsLockObject = new J2CLock();
     public int numberOfFreeConnections = 0;
-    public transient Integer numberOfFreeConnectionsLockObject = new Integer(0);
+    public transient Object numberOfFreeConnectionsLockObject = new J2CLock();
     protected transient Integer maxNumberOfMCsAllowableInThread = null;
+    private transient boolean parkIfDissociateUnavailable;
     protected transient Boolean throwExceptionOnMCThreadCheck = null;
 
     String appName;
@@ -381,6 +388,7 @@ public final class J2CGlobalConfigProperties implements PropertyChangeListener, 
                                      boolean autoCloseConnections,
                                      int numConnectionsPerThreadLocal,
                                      Integer maxNumberOfMCsAllowableInThread,
+                                     boolean parkIfDissociateUnavailable,
                                      Boolean throwExceptionOnMCThreadCheck) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.entry(this, tc, "<init>", "Full Constructor");
@@ -422,6 +430,7 @@ public final class J2CGlobalConfigProperties implements PropertyChangeListener, 
         this.autoCloseConnections = autoCloseConnections;
         this.numConnectionsPerThreadLocal = numConnectionsPerThreadLocal;
         this.maxNumberOfMCsAllowableInThread = maxNumberOfMCsAllowableInThread;
+        this.parkIfDissociateUnavailable = parkIfDissociateUnavailable;
         this.throwExceptionOnMCThreadCheck = throwExceptionOnMCThreadCheck;
 
         /*
@@ -964,6 +973,15 @@ public final class J2CGlobalConfigProperties implements PropertyChangeListener, 
                                                    Integer maxNumberOfMCsAllowableInThread) {
         changeSupport.firePropertyChange("maxNumberOfMCsAllowableInThread", this.maxNumberOfMCsAllowableInThread, maxNumberOfMCsAllowableInThread);
         this.maxNumberOfMCsAllowableInThread = maxNumberOfMCsAllowableInThread;
+    }
+
+    public final boolean getParkIfDissociateUnavailable() {
+        return parkIfDissociateUnavailable;
+    }
+
+    public final void setParkIfDissociateUnavailable(boolean value) {
+        changeSupport.firePropertyChange(ConnectionManagerService.TEMPORARILY_ASSOCIATE_IF_DISSOCIATE_UNAVAILABLE, parkIfDissociateUnavailable, value);
+        parkIfDissociateUnavailable = value;
     }
 
     public boolean getThrowExceptionOnMCThreadCheck() {

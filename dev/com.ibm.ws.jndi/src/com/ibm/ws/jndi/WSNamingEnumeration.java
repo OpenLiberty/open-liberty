@@ -18,6 +18,7 @@ public final class WSNamingEnumeration<T> implements NamingEnumeration<T> {
     private final Iterator<?> iterator;
     private final Adapter<Object, T> adapter;
 
+    @SuppressWarnings("unchecked") // Suppress warning for "ugly cast" below
     public<F> WSNamingEnumeration(Iterable<F> from, Adapter<F, T> adapter){
         this.iterator = from.iterator();
         this.adapter = (Adapter<Object, T>)adapter; // ugly cast lets us avoid making F a type param on the class

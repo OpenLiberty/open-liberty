@@ -30,18 +30,18 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConf
  */
 public abstract class StateCache<K, V>
 {
-    
+    public static final String RANDOM_KEY_IN_CSRF_SESSION_TOKEN_SECURE_RANDOM = "secureRandom";
+    public static final String RANDOM_KEY_IN_CSRF_SESSION_TOKEN_RANDOM = "random";
+
     /**
      * Defines how to generate the csrf session token.
      */
     @JSFWebConfigParam(since="2.2.0", expectedValues="secureRandom, random", 
-            defaultValue="none", group="state")
+            defaultValue="secureRandom", group="state")
     public static final String RANDOM_KEY_IN_CSRF_SESSION_TOKEN_PARAM
             = "org.apache.myfaces.RANDOM_KEY_IN_CSRF_SESSION_TOKEN";
-    public static final String RANDOM_KEY_IN_CSRF_SESSION_TOKEN_PARAM_DEFAULT = "random";
-    
-    public static final String RANDOM_KEY_IN_CSRF_SESSION_TOKEN_SECURE_RANDOM = "secureRandom";
-    public static final String RANDOM_KEY_IN_CSRF_SESSION_TOKEN_RANDOM = "random";
+    public static final String RANDOM_KEY_IN_CSRF_SESSION_TOKEN_PARAM_DEFAULT = 
+            RANDOM_KEY_IN_CSRF_SESSION_TOKEN_SECURE_RANDOM;
 
     /**
      * Set the default length of the random key used for the csrf session token.

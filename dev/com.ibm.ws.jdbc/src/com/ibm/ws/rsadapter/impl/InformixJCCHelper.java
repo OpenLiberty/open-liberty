@@ -62,17 +62,14 @@ public class InformixJCCHelper extends InformixHelper {
     InformixJCCHelper(WSManagedConnectionFactoryImpl mcf) throws Exception {
         super(mcf);
 
+        dataStoreHelper = "com.ibm.websphere.rsadapter.InformixJccDataStoreHelper";
+
         mcf.doesStatementCacheIsoLevel = true;
         mcf.supportsGetTypeMap = false;
 
         configuredTraceLevel = 0; // value of DB2BaseDataSource.TRACE_NONE
-    }
-    
-    @Override
-    void customizeStaleStates() {
-        super.customizeStaleStates();
         
-        Collections.addAll(staleErrorCodes,
+        Collections.addAll(staleConCodes,
                            -4499);
     }
 

@@ -617,9 +617,13 @@ public class ServerConfiguration implements Cloneable {
      * @return the sslDefault configuration for this server
      */
     public SSLDefault getSSLDefault() {
-        if (this.sslDefault == null) {
-            this.sslDefault = new SSLDefault();
-        }
+//
+// This code caused an empty SSLDefault element to be
+// added to server XML files in FeatureReplacementAction.
+//
+//        if (this.sslDefault == null) {
+//            this.sslDefault = new SSLDefault();
+//        }
         return this.sslDefault;
     }
 

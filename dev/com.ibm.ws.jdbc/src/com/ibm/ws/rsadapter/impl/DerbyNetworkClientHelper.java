@@ -41,8 +41,6 @@ public class DerbyNetworkClientHelper extends DerbyHelper {
         TRACE_FILE_DIR = "traceDirectory",
         TRACE_FILE_APPEND = "traceFileAppend";
 
-    // move the derbyTc to the super class
-    private transient PrintWriter derbyNSPw; 
     private transient String traceFile; 	
     boolean traceAppend = false; 
     String traceDir = null; 
@@ -54,6 +52,8 @@ public class DerbyNetworkClientHelper extends DerbyHelper {
      */
     DerbyNetworkClientHelper(WSManagedConnectionFactoryImpl mcf) {
         super(mcf);
+
+        dataStoreHelper = "com.ibm.websphere.rsadapter.DerbyNetworkServerDataStoreHelper";
 
         mcf.doesStatementCacheIsoLevel = true;
 
@@ -94,7 +94,7 @@ public class DerbyNetworkClientHelper extends DerbyHelper {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) 
                 Tr.debug(this, tc, "Derby network server JDBC trace was configured to go to a file, Thus no integration with WAS trace.  File name is: ", traceDir + traceFile); 
 
-            derbyNSPw = AccessController.doPrivileged(new PrivilegedAction<PrintWriter>() {
+            genPw = AccessController.doPrivileged(new PrivilegedAction<PrintWriter>() {
                 public PrintWriter run() {
                     try {
                         return new PrintWriter(new FileOutputStream(traceDir + traceFile, traceAppend), true); 
@@ -108,15 +108,10 @@ public class DerbyNetworkClientHelper extends DerbyHelper {
             });
         }
         else { // means need to integrate
-            derbyNSPw = new PrintWriter(new TraceWriter(derbyTc), true);
+            genPw = new PrintWriter(new TraceWriter(derbyTc), true);
         }
-    }
-    
-    @Override
-    void customizeStaleStates() {
-        super.customizeStaleStates();
         
-        Collections.addAll(staleErrorCodes,
+        Collections.addAll(staleConCodes,
                            -4499);
     }
 
@@ -151,11 +146,11 @@ public class DerbyNetworkClientHelper extends DerbyHelper {
         // first the retruned value from the externalhelper.getPrintWriter
         // then, based on the tracewriter.
 
-        if (derbyNSPw == null) {
-            derbyNSPw = new java.io.PrintWriter(new TraceWriter(derbyTc), true);
+        if (genPw == null) {
+            genPw = new java.io.PrintWriter(new TraceWriter(derbyTc), true);
         }
-        Tr.debug(derbyTc, "returning", derbyNSPw);
-        return derbyNSPw;
+        Tr.debug(derbyTc, "returning", genPw);
+        return genPw;
     }
 
     @Override

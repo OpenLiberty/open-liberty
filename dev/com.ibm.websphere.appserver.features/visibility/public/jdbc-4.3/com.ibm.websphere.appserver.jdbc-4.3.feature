@@ -17,3 +17,4 @@ Subsystem-Name: Java Database Connectivity 4.3
   com.ibm.ws.jdbc.metatype
 kind=ga
 edition=core
+WLP-Activation-Type: parallel

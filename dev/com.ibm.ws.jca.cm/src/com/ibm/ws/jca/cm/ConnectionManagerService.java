@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2020 IBM Corporation and others.
+ * Copyright (c) 2011, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -77,6 +77,17 @@ public abstract class ConnectionManagerService extends Observable {
     public static final String NUM_CONNECTIONS_PER_THREAD_LOCAL = "numConnectionsPerThreadLocal";
 
     /**
+     * Name of property controlling whether sharable connection handles for a non-DissociatableManagedConnection
+     * can be temporarily associated (parked) to a dedicated unused ManagedConnection.
+     */
+    public static final String TEMPORARILY_ASSOCIATE_IF_DISSOCIATE_UNAVAILABLE = "temporarilyAssociateIfDissociateUnavailable";
+
+    /**
+     * Name of property controlling the authentication mechanism of connections.
+     */
+    public static final String ENABLE_CONTAINER_AUTH_FOR_DIRECT_LOOKUPS = "enableContainerAuthForDirectLookups";
+
+    /**
      * List of connectionManager properties.
      */
     public static final List<String> CONNECTION_MANAGER_PROPS = Collections.unmodifiableList(Arrays.asList(
@@ -84,13 +95,15 @@ public abstract class ConnectionManagerService extends Observable {
                                                                                                            AUTO_CLOSE_CONNECTIONS,
                                                                                                            J2CConstants.POOL_ConnectionTimeout,
                                                                                                            "enableSharingForDirectLookups",
+                                                                                                           ENABLE_CONTAINER_AUTH_FOR_DIRECT_LOOKUPS,
                                                                                                            MAX_IDLE_TIME,
                                                                                                            MAX_CONNECTIONS_PER_THREAD,
                                                                                                            MAX_POOL_SIZE,
                                                                                                            MIN_POOL_SIZE,
                                                                                                            NUM_CONNECTIONS_PER_THREAD_LOCAL,
                                                                                                            J2CConstants.POOL_PurgePolicy,
-                                                                                                           J2CConstants.POOL_ReapTime));
+                                                                                                           J2CConstants.POOL_ReapTime,
+                                                                                                           TEMPORARILY_ASSOCIATE_IF_DISSOCIATE_UNAVAILABLE));
 
     /**
      * List of connectionManager properties whose names were taken from DataSourceDefinition. To be

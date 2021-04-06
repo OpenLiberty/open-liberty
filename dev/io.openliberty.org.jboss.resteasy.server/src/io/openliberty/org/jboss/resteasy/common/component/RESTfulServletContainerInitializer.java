@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -49,6 +49,7 @@ public class RESTfulServletContainerInitializer extends ResteasyServletInitializ
     private final static String RESTEASY_DISPATCHER_NAME = "org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher";
     private final static String RESTEASY_DISPATCHER_30_NAME = "org.jboss.resteasy.plugins.server.servlet.HttpServlet30Dispatcher";
     private final static String APPLICATION = "javax.ws.rs.Application";
+    private final static String EE8_APP_CLASS_NAME = transformBack("javax.ws.rs.core.Application");
 
 
     public void onStartup(Set<Class<?>> classes, ServletContext servletContext) throws ServletException {
@@ -97,6 +98,15 @@ public class RESTfulServletContainerInitializer extends ResteasyServletInitializ
         ServletRegistration reg = servletContext.getServletRegistration(applicationClass.getName());
         if (reg != null) {
             set.add(reg);
+        } else if (Application.class.equals(applicationClass)) {
+            // try EE8 class name in case the app's web.xml hasn't been properly transformed
+            reg = servletContext.getServletRegistration(EE8_APP_CLASS_NAME);
+            if (reg != null) {
+                set.add(reg);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "App {0} is using older (<=EE8) style app class name with javax package name", servletContext.getServletContextName());
+                }
+            }
         }
         for (ServletRegistration sr : servletContext.getServletRegistrations().values()) {
             String appClassName = sr.getInitParameter(APPLICATION);
@@ -219,7 +229,7 @@ public class RESTfulServletContainerInitializer extends ResteasyServletInitializ
             globallyMapped = true;
         }
 
-        boolean mapped = false;
+        Set<String> mappedServletNames = new HashSet<>();
         Map<String, ? extends ServletRegistration> servletRegistrationMap = ctx.getServletRegistrations();
         for(Map.Entry<String, ? extends ServletRegistration> entry : servletRegistrationMap.entrySet()) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -233,8 +243,10 @@ public class RESTfulServletContainerInitializer extends ResteasyServletInitializ
                 RESTEASY_DISPATCHER_NAME.equals(servletClassName) ||
                 RESTEASY_DISPATCHER_30_NAME.equals(servletClassName) ||
                 Application.class.getName().equals(servletName) ||
+                EE8_APP_CLASS_NAME.equals(servletName) ||
                 appClasses.stream().anyMatch(c -> c.getName().equals(servletName))) {
-                if (mapped) {
+
+                if (mappedServletNames.contains(servletName)) {
                     Tr.warning(tc, "MULTIPLE_REST_SERVLETS_CWWKW1300W", ctx.getServletContextName());
                 }
                 Collection<String> mappings = reg.getMappings();
@@ -249,16 +261,20 @@ public class RESTfulServletContainerInitializer extends ResteasyServletInitializ
                 while (mapping != null && mapping.length() > 0 && (mapping.endsWith("*") || mapping.endsWith("/"))) {
                     mapping = mapping.substring(0, mapping.length() - 1);
                 }
-                if (mapping != null && mapping.length() > 0) {
+                if (mapping != null) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "addMappingParam using mapping: " + mapping);
                     }
                     if (!globallyMapped) {
                         reg.setInitParameter(RESTEASY_MAPPING_PREFIX, mapping);
                     }
-                    mapped = true;
+                    mappedServletNames.add(servletName);
                 }
             }
         }
+    }
+
+    private static String transformBack(String original) {
+        return original.replaceAll("jakarta", "javax");
     }
 }

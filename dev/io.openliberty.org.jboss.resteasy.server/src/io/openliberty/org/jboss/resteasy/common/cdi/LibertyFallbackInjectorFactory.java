@@ -10,23 +10,37 @@
  *******************************************************************************/
 package io.openliberty.org.jboss.resteasy.common.cdi;
 
+import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Type;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
+
+import javax.ws.rs.core.GenericType;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.ext.MessageBodyReader;
 
 import org.jboss.resteasy.core.InjectorFactoryImpl;
+import org.jboss.resteasy.plugins.providers.multipart.IAttachmentImpl;
+import org.jboss.resteasy.plugins.providers.multipart.IBMMultipartProvider;
 import org.jboss.resteasy.spi.ConstructorInjector;
+import org.jboss.resteasy.spi.HttpRequest;
+import org.jboss.resteasy.spi.HttpResponse;
 import org.jboss.resteasy.spi.InjectorFactory;
 import org.jboss.resteasy.spi.MethodInjector;
 import org.jboss.resteasy.spi.PropertyInjector;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.jboss.resteasy.spi.ValueInjector;
 import org.jboss.resteasy.spi.metadata.Parameter;
+import org.jboss.resteasy.spi.metadata.Parameter.ParamType;
 import org.jboss.resteasy.spi.metadata.ResourceClass;
 import org.jboss.resteasy.spi.metadata.ResourceConstructor;
 import org.jboss.resteasy.spi.metadata.ResourceLocator;
 
+import com.ibm.websphere.jaxrs20.multipart.IAttachment;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
@@ -67,10 +81,53 @@ public class LibertyFallbackInjectorFactory implements InjectorFactory {
     public ValueInjector createParameterExtractor(Class injectTargetClass, AccessibleObject injectTarget, String defaultName, Class type, Type genericType, Annotation[] annotations, boolean useDefault, ResteasyProviderFactory factory) {
         return delegate.createParameterExtractor(injectTargetClass, injectTarget, defaultName, type, genericType, annotations, useDefault, factory);
     }
-
+    
     @Override
     public ValueInjector createParameterExtractor(Parameter parameter, ResteasyProviderFactory providerFactory) {
-        return delegate.createParameterExtractor(parameter, providerFactory);
+        if (ParamType.FORM_PARAM.equals(parameter.getParamType()) && IAttachment.class.equals(parameter.getType())) {
+            Type type = new GenericType<List<IAttachment>>() {}.getType();
+            MessageBodyReader<Object> mbr = providerFactory.getMessageBodyReader((Class)List.class, type, null, MediaType.MULTIPART_FORM_DATA_TYPE);
+            
+            return new ValueInjector() {
+                @Override
+                public Object inject(boolean unwrapAsync) {
+                    return null;
+                }
+
+                @SuppressWarnings("unchecked")
+                @Override
+                public Object inject(HttpRequest request, HttpResponse response, boolean unwrapAsync) {
+                    List<IAttachment> atts;
+                    try {
+                        atts = (List<IAttachment>) request.getAttribute("io.openliberty.org.jboss.resteasy.common.cdi.LibertyFallbackInjectorFactory.attachmentList");
+                        if (atts == null) {
+                            atts = (List) mbr.readFrom((Class)List.class, type, null, MediaType.valueOf(request.getMutableHeaders().getFirst("Content-Type")),
+                                                       request.getMutableHeaders(), request.getInputStream());
+                            request.setAttribute("io.openliberty.org.jboss.resteasy.common.cdi.LibertyFallbackInjectorFactory.attachmentList", atts);
+                        }
+                    } catch (IOException ex) {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "Caught IOException while reading multipart form params", ex);
+                        }
+                        return null;
+                    }
+                    for (IAttachment att : atts) {
+                        if (((IAttachmentImpl)att).getFieldName().equals(parameter.getParamName())) {
+                            return att;
+                        }
+                    }
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Request did not contain expected multipart parameter, " + parameter.getParamName()
+                            + " request parameters included: " + atts.stream().map(a -> a.getHeader("Content-Disposition"))
+                                                                              .map(IAttachmentImpl::getFieldNameFromHeader)
+                                                                              .collect(Collectors.joining(",")));
+                    }
+                    return null;
+                }
+            };
+        }
+        ValueInjector injector = delegate.createParameterExtractor(parameter, providerFactory);
+        return injector;
     }
 
     @Override

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2020 IBM Corporation and others.
+ * Copyright (c) 2013, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -710,6 +710,8 @@ public class TestServer extends ExternalResource {
             // sometimes a port is in use during startup, but is available when tests run - the tests will have issues if
             // the port remains blocked and will generate their own errors - ignore this hiccup during the shutdown checks.
             addIgnoredServerException(MessageConstants.CWWKO0221E_PORT_IN_USE);
+            // ignore shutdown timing issues
+            addIgnoredServerExceptions(MessageConstants.CWWKO0227E_EXECUTOR_SERVICE_MISSING);
             server.stopServer(ignoredServerExceptions);
         }
         unInstallCallbackHandler(callback, callbackFeature);
@@ -1297,5 +1299,12 @@ public class TestServer extends ExternalResource {
     public String getBootstrapProperty(String key) throws Exception {
         Properties serverProperties = this.getServer().getBootstrapProperties();
         return serverProperties.getProperty(key, null);
+    }
+    
+    public String getJvmOptionsFilePath() throws Exception {
+        String thisMethod = "getJvmOptionsFilePath";
+        String jvmProps = getServerFileLoc() + "/jvm.options";
+        Log.info(thisClass, thisMethod, "jvm.options property file path: " + jvmProps);
+        return jvmProps;
     }
 }

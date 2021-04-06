@@ -879,7 +879,7 @@ public class AcmeValidityAndRenewTest {
 			 * DNS info can be cached, give more time for cache to expire
 			 */
 			assertNotNull("Should log message that the certificate renew failed",
-					server.waitForStringInLogUsingMark("CWPKI2065W", TIME_BUFFER_BEFORE_EXPIRE * 8));
+					server.waitForStringInLogUsingMark("CWPKI2065W", TIME_BUFFER_BEFORE_EXPIRE * 12));
 
 			/*
 			 * Clear the bad DNS record and the cert checker should recover and fetch a new

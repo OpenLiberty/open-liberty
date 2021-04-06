@@ -16,6 +16,7 @@ Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.rt.bindings.soap.3.2
 
 
 Import-Package: \
+  !java.*, \
   !org.apache.aries.*;version="[0.3,2)", \
   !org.osgi.service.blueprint.*, \
   !org.springframework.*;resolution:=optional;version="[2.5,4)", \

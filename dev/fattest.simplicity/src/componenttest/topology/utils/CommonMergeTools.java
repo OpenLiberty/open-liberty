@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2020 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@
 package componenttest.topology.utils;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -159,6 +160,12 @@ public class CommonMergeTools {
             DOMSource source = new DOMSource(targetDoc);
             StreamResult result = new StreamResult(mergedXMLName);
             transformer.transform(source, result);
+
+//            try {
+//                Log.info(thisClass, methodName, "MergeFile result: \n" + FileUtils.readFile(mergedXMLName));
+//            } catch (IOException e) {
+//                // Error reading file for debug. Ignore.
+//            }
         } catch (TransformerException e) {
             Log.error(thisClass, methodName, e, "Error writing merged XML document.");
             return false;

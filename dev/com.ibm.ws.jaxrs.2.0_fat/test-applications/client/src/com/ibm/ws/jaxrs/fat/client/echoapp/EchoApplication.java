@@ -13,14 +13,17 @@ package com.ibm.ws.jaxrs.fat.client.echoapp;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 
+@ApplicationPath("/echo")
 public class EchoApplication extends Application {
 
     @Override
     public Set<Class<?>> getClasses() {
         Set<Class<?>> classes = new HashSet<Class<?>>();
         classes.add(EchoResource.class);
+        classes.add(TimeoutResource.class);
         return classes;
     }
 

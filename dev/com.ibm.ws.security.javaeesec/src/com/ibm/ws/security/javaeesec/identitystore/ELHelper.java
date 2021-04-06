@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -97,6 +97,43 @@ class ELHelper {
     }
 
     /**
+     * Return whether the expression is a deferred EL expression.
+     *
+     * @param expression The expression to evaluate.
+     * @return True if the expression is a deferred EL expression.
+     */
+    @Trivial
+    static boolean isDeferredExpression(String expression) {
+        return isDeferredExpression(expression, false);
+    }
+
+    /**
+     * Return whether the expression is an deferred EL expression.
+     *
+     * @param expression The expression to evaluate.
+     * @param mask       Set whether to mask the expression and result. Useful for when passwords might be
+     *                       contained in either the expression or the result.
+     * @return True if the expression is a deferred EL expression.
+     */
+    @Trivial
+    static boolean isDeferredExpression(String expression, boolean mask) {
+        final String methodName = "isDeferredExpression";
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.entry(tc, methodName, new Object[] { (expression == null) ? null : mask ? OBFUSCATED_STRING : expression, mask });
+        }
+
+        boolean result = false;
+        if (expression != null) {
+            result = expression.startsWith("#{") && expression.endsWith("}");
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.exit(tc, methodName, result);
+        }
+        return result;
+    }
+
+    /**
      * Return whether the expression is an immediate EL expression.
      *
      * @param expression The expression to evaluate.
@@ -122,7 +159,10 @@ class ELHelper {
             Tr.entry(tc, methodName, new Object[] { (expression == null) ? null : mask ? OBFUSCATED_STRING : expression, mask });
         }
 
-        boolean result = expression.startsWith("${") && expression.endsWith("}");
+        boolean result = false;
+        if (expression != null) {
+            result = expression.startsWith("${") && expression.endsWith("}");
+        }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.exit(tc, methodName, result);
@@ -161,7 +201,7 @@ class ELHelper {
              */
             Object obj = evaluateElExpression(expression);
             if (obj == null) {
-                throw new IllegalArgumentException("EL expression '" + expression + "' for '" + name + "'evaluated to null.");
+                throw new IllegalArgumentException("EL expression '" + expression + "' for '" + name + "' evaluated to null.");
             } else if (obj instanceof Number) {
                 result = ((Number) obj).intValue();
                 immediate = isImmediateExpression(expression);
@@ -264,7 +304,7 @@ class ELHelper {
         try {
             Object obj = evaluateElExpression(expression, mask);
             if (obj == null) {
-                throw new IllegalArgumentException("EL expression '" + (mask ? OBFUSCATED_STRING : expression) + "' for '" + name + "'evaluated to null.");
+                throw new IllegalArgumentException("EL expression '" + (mask ? OBFUSCATED_STRING : expression) + "' for '" + name + "' evaluated to null.");
             } else if (obj instanceof String) {
                 result = (String) obj;
                 immediate = isImmediateExpression(expression, mask);
@@ -312,7 +352,7 @@ class ELHelper {
         try {
             Object obj = evaluateElExpression(expression, mask);
             if (obj == null) {
-                throw new IllegalArgumentException("EL expression '" + (mask ? OBFUSCATED_STRING : expression) + "' for '" + name + "'evaluated to null.");
+                throw new IllegalArgumentException("EL expression '" + (mask ? OBFUSCATED_STRING : expression) + "' for '" + name + "' evaluated to null.");
             } else if (obj instanceof String[]) {
                 result = (String[]) obj;
                 immediate = isImmediateExpression(expression, mask);
@@ -359,7 +399,7 @@ class ELHelper {
         try {
             Object obj = evaluateElExpression(expression, mask);
             if (obj == null) {
-                throw new IllegalArgumentException("EL expression '" + (mask ? OBFUSCATED_STRING : expression) + "' for '" + name + "'evaluated to null.");
+                throw new IllegalArgumentException("EL expression '" + (mask ? OBFUSCATED_STRING : expression) + "' for '" + name + "' evaluated to null.");
             } else if (obj instanceof Stream) {
                 result = (Stream<String>) obj;
                 immediate = isImmediateExpression(expression, mask);

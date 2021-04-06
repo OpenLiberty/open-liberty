@@ -13,6 +13,7 @@ package com.ibm.ws.sib.comms.server.clientsupport;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
+import java.util.concurrent.locks.ReentrantLock;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.sib.Reliability;
 import com.ibm.websphere.sib.exception.SIException;
@@ -101,6 +102,8 @@ public class CATProxyConsumer extends CATConsumer
    /** The amount of bytes that the client wants to 'read-ahead' */
    private int requestedBytes = 0;
    
+   private ReentrantLock bytesLock = new ReentrantLock(true); // PH20984
+   
    /**
     * Constructor
     *
@@ -112,8 +115,12 @@ public class CATProxyConsumer extends CATConsumer
 
       if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "<init>", mainConsumer);
 
+      // We're still in a constructor here, so there should be no need to wait for anyone else to finish playing around with the state
+      setStateWithoutFDC(State.NEW);
+
       this.mainConsumer = mainConsumer;
 
+      // We won't worry about the lock here as we're still constructing the consumer
       requestedBytes = mainConsumer.getRequestedBytes();
       callback = new CATAsynchReadAheadReader(this,mainConsumer);
 
@@ -209,6 +216,8 @@ public class CATProxyConsumer extends CATConsumer
                                               hiddenMessageDelay
                                            });
 
+      if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) SibTr.debug(this, tc, "setting callback for consumer on " + getDestinationName());
+      
       try
       {
          // Note: per the design document, a readahead consumer callback should always be created
@@ -253,7 +262,7 @@ public class CATProxyConsumer extends CATConsumer
       if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "unlockSet",
                                            new Object[]{requestNumber, msgHandles, reply});
 
-      if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) SibTr.debug(this, tc, "Request to delete " + msgHandles.length + " message(s)");
+      if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) SibTr.debug(this, tc, "Request to delete " + msgHandles.length + " message(s) for consumer on destination " + getDestinationName());
 
       try
       {
@@ -326,7 +335,7 @@ public class CATProxyConsumer extends CATConsumer
       if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "unlockSet",
                                            new Object[]{requestNumber, msgHandles, reply, incrementLockCount});
 
-      if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) SibTr.debug(this, tc, "Request to delete " + msgHandles.length + " message(s)");
+      if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) SibTr.debug(this, tc, "Request to delete " + msgHandles.length + " message(s) for consumer on destination " + getDestinationName());
 
       try
       {
@@ -401,7 +410,7 @@ public class CATProxyConsumer extends CATConsumer
 
       if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
       {
-         SibTr.debug(this, tc, "Request to delete " + msgHandles.length + " message(s)");
+         SibTr.debug(this, tc, "Request to delete " + msgHandles.length + " message(s) for consumer on " + getDestinationName());
          if (reply) SibTr.debug(this, tc, "Client is expecting a reply");
       }
 
@@ -497,13 +506,30 @@ public class CATProxyConsumer extends CATConsumer
    {
       if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "unlockAll", requestNumber);
 
+      State returnToState = State.UNDEFINED;
+      
       try
       {
+    	  if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) SibTr.debug(this, tc, "unlocking messages for consumer on " + getDestinationName());
+    	  stateLock.lock();
+    	  
+    	  try {
+    		  awaitStableState();
+    		  returnToState = setState(State.PAUSED);
+    	  }
+    	  finally {
+    		  stateLock.unlock();
+    	  }
+    	  
+          final boolean wasStarted = returnToState.isStarted(); // Remember whether this session was started or not
+    	  boolean restartSession = false;
+    	  
          // Stop the session to prevent any (more) messages going
-         if (mainConsumer.isStarted())
+         if (wasStarted)
          {
             getConsumerSession().stop();
-            started = false;
+           returnToState = State.STOPPED;
+           restartSession = true;
          }
 
          // Increment the message batch
@@ -512,12 +538,9 @@ public class CATProxyConsumer extends CATConsumer
          // Now perform the actual unlockAll
          getConsumerSession().unlockAll();
 
-         // Reset the sent bytes to zero. Do this inside a lock to prevent us updating the counter
+         // Reset the sent bytes to zero. Nobody else should be accessing this at the same time as we're paused.
          // at the same time as anyone else.
-         synchronized (this)
-         {
             setSentBytes(0);
-         }
 
          short jfapPriority = JFapChannelConstants.getJFAPPriority(Integer.valueOf(mainConsumer.getLowestPriority()));
          if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) SibTr.debug(this, tc, "Sending with JFAP priority of " + jfapPriority);
@@ -534,10 +557,10 @@ public class CATProxyConsumer extends CATConsumer
                                    null);
 
             // Now restart the session
-            if (mainConsumer.isStarted())
+            if (restartSession)
             {
                 getConsumerSession().start(false);
-                started = true;     //578471 PK82240
+                returnToState = State.STARTED;     //578471 PK82240
             }
          }
          catch (SIException e)
@@ -570,6 +593,12 @@ public class CATProxyConsumer extends CATConsumer
                                                CommsConstants.CATPROXYCONSUMER_UNLOCKALL_02,
                                                getConversation(), requestNumber);
       }
+      catch (InterruptedException ie) {
+    	  if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) SibTr.debug(this, tc, ie.getMessage(), ie);
+      }
+      finally {
+          if (State.UNDEFINED!=returnToState) setState(returnToState);   // do not leave in transitional state
+      }
 
       if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "unlockAll");
    }
@@ -589,6 +618,7 @@ public class CATProxyConsumer extends CATConsumer
    {
       if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "flush", requestNumber);
 
+      if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) SibTr.debug(this, tc, "flushing messages for consumer on " + getDestinationName());
       try
       {
          // activateAsynchConsumer() can only be called when the consumer is stopped
@@ -662,6 +692,8 @@ public class CATProxyConsumer extends CATConsumer
    {
       if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "sendMessage", sibMessage);
 
+      if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) SibTr.debug(this, tc, "sending message for consumer on " + getDestinationName());
+      
       int msgLen = 0;
 
       // If we are at FAP9 or above we can do a 'chunked' send of the message in seperate
@@ -702,6 +734,7 @@ public class CATProxyConsumer extends CATConsumer
    {
       if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "sendChunkedMessage", sibMessage);
 
+      if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) SibTr.debug(this, tc, "sending message for consumer on " + getDestinationName());
       int msgLen = 0;
 
       // First of all we must encode the message ourselves
@@ -812,6 +845,7 @@ public class CATProxyConsumer extends CATConsumer
       if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "sendEntireMessage",
                                                                                    new Object[]{sibMessage, messageSlices});
 
+      if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) SibTr.debug(this, tc, "sending message for consumer on " + getDestinationName());
       int msgLen = 0;
 
       try
@@ -892,42 +926,76 @@ public class CATProxyConsumer extends CATConsumer
                                                                                       ""+reqBytes
                                                                                    });
 
+      State returnToStateState = State.UNDEFINED;
+
       try
       {
-         // We need to lock down the session to prevent the async consumer updating and corrupting
-         // the counters, and / or stopping the session
-         synchronized (this)
-         {
+    	  if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) SibTr.debug(this, tc, "requesting messages for consumer on " + getDestinationName());
             // Update the counters
-            setSentBytes(getSentBytes() - receivedBytes);
-            setRequestedBytes(reqBytes);
+    	  // Make sure nobody else can update either the counters or the consumer state while we're doing this
+        	 int sent = 0;
+        	 boolean startSession = false; boolean stopSession = false;
+			stateLock.lock();
+			awaitStableState();
+			try {
+				bytesLock.lock();
+				try {
+					setSentBytes(getSentBytes() - receivedBytes);
+					setRequestedBytes(reqBytes);
 
-            int sent = getSentBytes();
-            if (sent < reqBytes)
-            {
-               if (!started)
-               {
-                  if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                     SibTr.debug(this, tc, "Starting the session (sentBytes < requestedBytes && !started)");
-                  getConsumerSession().start(false);
-                  started = true;
-               }
-               else
-               {
-                  if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) SibTr.debug(this, tc, "Already started");
-               }
-            }
-            if (sent >= reqBytes)
-            {
-               if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                  SibTr.debug(this, tc, "Stopping the session (sentBytes >= requestedBytes)");
-               getConsumerSession().stop();
-               started = false;
-            }
-         }
-      }
-      catch (SIException e)
+					sent = getSentBytes();
+
+					// Should we start or stop the consumerSession based on the new counter values?
+					if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+						SibTr.debug(this, tc, "sentBytes = " + sent + ", reqBytes = " + reqBytes);
+					final State currentState = getState();
+					switch (currentState) {
+					case STARTING:
+					case STARTED:
+						if (sent < reqBytes)
+							break; // needs to be started, so do nothing
+						if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+							SibTr.debug(this, tc, "Stopping the session (sentBytes >= requestedBytes)");
+						setState(State.STOPPING);
+						returnToStateState = currentState;
+						stopSession = true;
+						break;
+					case STOPPING:
+					case STOPPED:
+						if (sent >= reqBytes)
+							break; // needs to be stopped, so do nothing
+						if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+							SibTr.debug(this, tc, "Starting the session (sentBytes < requestedBytes && !started)");
+						setState(State.STARTING);
+						returnToStateState = currentState;
+						startSession = true;
+						break;
+
+					default:
+						// Shouldn't end up here.
+						break;
+					}
+				} finally {
+					bytesLock.unlock(); // PH20984
+				}
+			} finally {
+				stateLock.unlock();
+			}
+        	 
+        	 if (startSession) {
+        			 getConsumerSession().start(false);
+        			 returnToStateState = State.STARTED;
+        	 }
+        	 if (stopSession) {
+        			 getConsumerSession().stop();
+        			 returnToStateState = State.STOPPED;
+        	 }
+ 		}
+      catch (Exception e) //(SIException e)
       {
+			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+				SibTr.debug(this, tc, e.getMessage(), e);
+
          //No FFDC code needed
          //Only FFDC if we haven't received a meTerminated event.
          if(!((ConversationState)getConversation().getAttachment()).hasMETerminated())
@@ -944,6 +1012,9 @@ public class CATProxyConsumer extends CATConsumer
                                                     CommsConstants.CATPROXYCONSUMER_REQUEST_MSGS_01,  // d186970
                                                     getClientSessionId(), getConversation(), 0);
       }
+      finally {
+    	  if (State.UNDEFINED != returnToStateState) setState(returnToStateState);
+      }
 
       if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "requestMsgs");
    }
@@ -955,8 +1026,14 @@ public class CATProxyConsumer extends CATConsumer
    public int getRequestedBytes()
    {
       if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "getRequestedBytes");
+      bytesLock.lock(); //PH20984
+      try {
+    	  return requestedBytes;
+      }
+      finally { 
+    	  bytesLock.unlock(); // PH20984
       if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "getRequestedBytes", requestedBytes);
-      return requestedBytes;
+      }
    }
 
    /**
@@ -968,8 +1045,15 @@ public class CATProxyConsumer extends CATConsumer
    public void setRequestedBytes(int newRequestedBytes)
    {
       if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "setRequestedBytes", newRequestedBytes);
-      requestedBytes = newRequestedBytes;
+      bytesLock.lock(); // PH20984
+      try {
+          requestedBytes = newRequestedBytes;
+      }
+      finally {
+    	  bytesLock.unlock(); // PH20984
+      }
       if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "setRequestedBytes");
+      return;
    }
 
    /**
@@ -978,8 +1062,14 @@ public class CATProxyConsumer extends CATConsumer
    public int getSentBytes()
    {
       if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "getSentBytes");
-      if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "getSentBytes", sentBytes);
-      return sentBytes;
+      bytesLock.lock(); // PH20984
+      try {
+          return sentBytes;
+      }
+      finally {
+    	  bytesLock.unlock(); // PH20984
+          if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "getSentBytes", sentBytes);
+      }
    }
 
    /**
@@ -991,9 +1081,46 @@ public class CATProxyConsumer extends CATConsumer
    public void setSentBytes(int newSentBytes)
    {
       if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "setSentBytes", newSentBytes);
+      bytesLock.lock(); // PH20984
+      try {
       sentBytes = newSentBytes;
+      }
+      finally {
+    	  bytesLock.unlock(); // PH20984
+      }
       if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "setSentBytes");
+      return;
    }
+   
+   /**
+    * PH20984
+    * Performs the counter update required by CATAsynchReadAheadReader.consumeMessages()
+    * Once a message has been sent to the client, the sentBytes counter must be updated, and if this means that the requested number of bytes have been sent
+    * the CATAsynchReadAheadReader needs to stop the consumer.
+    * By performing the update and check in a single method here, we can more easily lock around the behaviour and make sure that no other thread alters the
+    * counters while we're doing it.
+    * 
+    * @param msgLen the length of the last message sent
+    * @return whether the total number of sent bytes is at least equal to the number of bytes currently requested
+    */
+   public boolean updateConsumedBytes(int msgLen)
+   {
+	   if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "updateConsumedBytes", msgLen);
+	   if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) SibTr.debug(this, tc, "updating for consumer on destination " + getDestinationName());
+	   bytesLock.lock();
+	   boolean stopConsumer = false;
+	   try {
+		   sentBytes += msgLen;
+		   stopConsumer = (sentBytes >= requestedBytes);
+		   return stopConsumer;
+	   }
+	   finally {
+		   bytesLock.unlock();
+		   if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "updateConsumedBytes", stopConsumer);
+	   }
+   }
+   
+   
 
    /**
     * This method will update the session lowest priority value.
@@ -1032,13 +1159,30 @@ public class CATProxyConsumer extends CATConsumer
    {
       if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "unlockAll", new Object[] {requestNumber,incrementUnlockCount});
 
+      State returnToState = State.UNDEFINED;
+      
       try
       {
+    	  if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) SibTr.debug(this, tc, "unlocking messages for consumer on " + getDestinationName());
+    	  stateLock.lock();
+    	  try {
+    		  awaitStableState();
+    		  returnToState = setState(State.PAUSED);
+    	  }
+    	  finally {
+    		  stateLock.unlock();
+    	  }
+    	  
+    	  final boolean wasStarted = returnToState.isStarted(); // Remember whether this session was started or not	  
          // Stop the session to prevent any (more) messages going
-         if (mainConsumer.isStarted())
+    	  boolean restartSession = false;
+    	  
+         if (wasStarted)
          {
             getConsumerSession().stop();
-            started = false;
+            returnToState = State.STOPPED;
+            restartSession = true;
+            
          }
 
          // Increment the message batch
@@ -1047,12 +1191,9 @@ public class CATProxyConsumer extends CATConsumer
          // Now perform the actual unlockAll
          getConsumerSession().unlockAll(incrementUnlockCount);
 
-         // Reset the sent bytes to zero. Do this inside a lock to prevent us updating the counter
+         // Reset the sent bytes to zero. We're paused, so nobody else should be updating it at the same time
          // at the same time as anyone else.
-         synchronized (this)
-         {
             setSentBytes(0);
-         }
 
          short jfapPriority = JFapChannelConstants.getJFAPPriority(Integer.valueOf(mainConsumer.getLowestPriority()));
          if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) SibTr.debug(this, tc, "Sending with JFAP priority of " + jfapPriority);
@@ -1069,10 +1210,10 @@ public class CATProxyConsumer extends CATConsumer
                                    null);
 
             // Now restart the session
-            if (mainConsumer.isStarted())
+            if (restartSession)
             {
                 getConsumerSession().start(false);
-                started = true;     //578471 PK82240
+                returnToState = State.STARTED;
             }
          }
          catch (SIException e)
@@ -1104,6 +1245,14 @@ public class CATProxyConsumer extends CATConsumer
          StaticCATHelper.sendExceptionToClient(e,
                                                CommsConstants.CATPROXYCONSUMER_UNLOCKALL_04,
                                                getConversation(), requestNumber);
+      }
+      catch (InterruptedException ie)
+      {
+         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) SibTr.debug(this, tc, ie.getMessage(), ie);
+      }
+      finally
+      {
+         if (returnToState != State.UNDEFINED) setState(returnToState);   // do not leave in transitional state
       }
 
       if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "unlockAll");

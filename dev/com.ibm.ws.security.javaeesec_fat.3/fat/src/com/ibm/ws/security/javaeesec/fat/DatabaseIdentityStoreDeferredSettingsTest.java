@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,14 +16,12 @@ import static com.ibm.ws.security.javaeesec.fat_helper.Constants.getUserPrincipa
 import static javax.servlet.http.HttpServletResponse.SC_FORBIDDEN;
 import static javax.servlet.http.HttpServletResponse.SC_OK;
 import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -127,38 +125,46 @@ public class DatabaseIdentityStoreDeferredSettingsTest extends JavaEESecTestBase
     /**
      * Verify that the user responses are as expected.
      *
-     * @param code1 Expected response code for DB_USER1.
-     * @param code2 Expected response code for DB_USER2.
-     * @param code3 Expected response code for DB_USER3.
+     * @param code1 Expected response code for DB_USER1. Skip call for DB_USER1 if null.
+     * @param code2 Expected response code for DB_USER2. Skip call for DB_USER2 if null.
+     * @param code3 Expected response code for DB_USER3. Skip call for DB_USER3 if null.
      * @throws Exception If there was an error processing the request.
      */
-    private void verifyAuthorization(int code1, int code2, int code3) throws Exception {
+    private void verifyAuthorization(Integer code1, Integer code2, Integer code3) throws Exception {
+        String response;
 
         /* DB_USER1 */
-        String response = executeGetRequestBasicAuthCreds(httpclient, urlBase, Constants.DB_USER1, Constants.DB_USER1_PWD, code1);
-        if (code1 == SC_OK) {
-            verifyUserResponse(response, getUserPrincipalFound + Constants.DB_USER1, getRemoteUserFound + Constants.DB_USER1);
-        }
-        passwordChecker.checkForPasswordInAnyFormat(Constants.DB_USER1_PWD);
+        if (code1 != null) {
+            response = executeGetRequestBasicAuthCreds(httpclient, urlBase, Constants.DB_USER1, Constants.DB_USER1_PWD, code1);
+            if (code1 == SC_OK) {
+                verifyUserResponse(response, getUserPrincipalFound + Constants.DB_USER1, getRemoteUserFound + Constants.DB_USER1);
+            }
+            passwordChecker.checkForPasswordInAnyFormat(Constants.DB_USER1_PWD);
 
-        resetConnection();
+            resetConnection();
+        }
 
         /* DB_USER2 */
-        response = executeGetRequestBasicAuthCreds(httpclient, urlBase, Constants.DB_USER2, Constants.DB_USER2_PWD, code2);
-        if (code2 == SC_OK) {
-            verifyUserResponse(response, getUserPrincipalFound + Constants.DB_USER2, getRemoteUserFound + Constants.DB_USER2);
-        }
-        passwordChecker.checkForPasswordInAnyFormat(Constants.DB_USER2_PWD);
+        if (code2 != null) {
+            response = executeGetRequestBasicAuthCreds(httpclient, urlBase, Constants.DB_USER2, Constants.DB_USER2_PWD, code2);
+            if (code2 == SC_OK) {
+                verifyUserResponse(response, getUserPrincipalFound + Constants.DB_USER2, getRemoteUserFound + Constants.DB_USER2);
+            }
+            passwordChecker.checkForPasswordInAnyFormat(Constants.DB_USER2_PWD);
 
-        resetConnection();
+            resetConnection();
+        }
 
         /* DB_USER3 */
-        response = executeGetRequestBasicAuthCreds(httpclient, urlBase, Constants.DB_USER3, Constants.DB_USER3_PWD, code3);
-        if (code3 == SC_OK) {
-            verifyUserResponse(response, getUserPrincipalFound + Constants.DB_USER3, getRemoteUserFound + Constants.DB_USER3);
-        }
-        passwordChecker.checkForPasswordInAnyFormat(Constants.DB_USER3_PWD);
+        if (code3 != null) {
+            response = executeGetRequestBasicAuthCreds(httpclient, urlBase, Constants.DB_USER3, Constants.DB_USER3_PWD, code3);
+            if (code3 == SC_OK) {
+                verifyUserResponse(response, getUserPrincipalFound + Constants.DB_USER3, getRemoteUserFound + Constants.DB_USER3);
+            }
+            passwordChecker.checkForPasswordInAnyFormat(Constants.DB_USER3_PWD);
 
+            resetConnection();
+        }
     }
 
     /**
@@ -206,9 +212,7 @@ public class DatabaseIdentityStoreDeferredSettingsTest extends JavaEESecTestBase
 
         verifyAuthorization(SC_FORBIDDEN, SC_FORBIDDEN, SC_FORBIDDEN);
 
-        String msg = "CWWKS1918E";
-        List<String> errorResults = myServer.findStringsInLogsAndTraceUsingMark(msg);
-        assertTrue("Did not find '" + msg + "' in trace: " + errorResults, !errorResults.isEmpty());
+        assertStringsInLogsUsingMark("CWWKS1918E");
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
@@ -231,9 +235,7 @@ public class DatabaseIdentityStoreDeferredSettingsTest extends JavaEESecTestBase
 
         verifyAuthorization(SC_FORBIDDEN, SC_FORBIDDEN, SC_FORBIDDEN);
 
-        String msg = "CWWKS1918E";
-        List<String> errorResults = myServer.findStringsInLogsAndTraceUsingMark(msg);
-        assertTrue("Did not find '" + msg + "' in trace: " + errorResults, !errorResults.isEmpty());
+        assertStringsInLogsUsingMark("CWWKS1918E");
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
@@ -258,9 +260,7 @@ public class DatabaseIdentityStoreDeferredSettingsTest extends JavaEESecTestBase
 
         verifyAuthorization(SC_FORBIDDEN, SC_FORBIDDEN, SC_FORBIDDEN);
 
-        String msg = "CWWKS1918E";
-        List<String> errorResults = myServer.findStringsInLogsAndTraceUsingMark(msg);
-        assertTrue("Did not find '" + msg + "' in trace: " + errorResults, !errorResults.isEmpty());
+        assertStringsInLogsUsingMark("CWWKS1918E");
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
@@ -281,11 +281,9 @@ public class DatabaseIdentityStoreDeferredSettingsTest extends JavaEESecTestBase
 
         DatabaseSettingsBean.updateDatabaseSettingsBean(server.getServerRoot(), overrides);
 
-        String response = executeGetRequestBasicAuthCreds(httpclient, urlBase, "blue%", Constants.DB_USER1_PWD, SC_UNAUTHORIZED);
+        executeGetRequestBasicAuthCreds(httpclient, urlBase, "blue%", Constants.DB_USER1_PWD, SC_UNAUTHORIZED);
 
-        String msg = "CWWKS1924W"; // should get multiple results error
-        List<String> errorResults = myServer.findStringsInLogsAndTraceUsingMark(msg);
-        assertTrue("Did not find '" + msg + "' in trace: " + errorResults, !errorResults.isEmpty());
+        assertStringsInLogsUsingMark("CWWKS1924W"); // should get multiple results error
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
@@ -305,35 +303,7 @@ public class DatabaseIdentityStoreDeferredSettingsTest extends JavaEESecTestBase
         DatabaseSettingsBean.updateDatabaseSettingsBean(server.getServerRoot(), overrides);
 
         // send in an sql statement for the caller
-        String response = executeGetRequestBasicAuthCreds(httpclient, urlBase, "select * from callers", Constants.DB_USER1_PWD, SC_UNAUTHORIZED);
-
-        Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
-    }
-
-    /**
-     * This test will verify that a callerQuery EL expression that resolves to null is handled.
-     * The callerQuery will be defaulted to an empty string resulting in no user being found.
-     *
-     * <ul>
-     * <li>DB_USER1 - unauthorized (can't find user with bad caller query)</li>
-     * <li>DB_USER2 - unauthorized (can't find user with bad caller query)</li>
-     * <li>DB_USER3 - unauthorized (never authorized)</li>
-     * </ul>
-     *
-     * @throws Exception If the test failed for some unforeseen reason.
-     */
-    @Test
-    @ExpectedFFDC({ "java.lang.IllegalArgumentException", "com.ibm.ws.security.javaeesec.identitystore.IdentityStoreRuntimeException" })
-    public void callerQuery_NULL() throws Exception {
-        Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
-
-        Map<String, String> overrides = new HashMap<String, String>();
-        overrides.put(JavaEESecConstants.CALLER_QUERY, "NULL");
-        DatabaseSettingsBean.updateDatabaseSettingsBean(server.getServerRoot(), overrides);
-
-        FATHelper.resetMarksInLogs(server);
-        verifyAuthorization(SC_FORBIDDEN, SC_FORBIDDEN, SC_FORBIDDEN);
-        server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'callerQuery' configuration for the identity store.");
+        executeGetRequestBasicAuthCreds(httpclient, urlBase, "select * from callers", Constants.DB_USER1_PWD, SC_UNAUTHORIZED);
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
@@ -361,25 +331,16 @@ public class DatabaseIdentityStoreDeferredSettingsTest extends JavaEESecTestBase
         String msg = "DataSource for "; // will only be in trace.log
         String msg2 = "returns: java:comp/InvalidDataSource"; // will be in trace.log and messages.log
 
-        String msg3 = "Always evaluate Datasource: true"; //trace
-        List<String> foundResults = myServer.findStringsInLogsAndTrace(msg3);
-        assertEquals("Expected datasource to not be evaluated: " + msg3, 1, foundResults.size());
-
+        FATHelper.resetMarksInLogs(server);
         verifyAuthorization(SC_FORBIDDEN, SC_FORBIDDEN, SC_FORBIDDEN);
-
-        foundResults = myServer.findStringsInLogsAndTrace(msg);
-        assertTrue("Should not save the datasource: " + msg, foundResults.isEmpty());
-        foundResults = myServer.findStringsInLogs(msg2);
-        assertFalse("Should have evaluated the datasource: " + msg2, foundResults.isEmpty());
-
-        int priorEval = foundResults.size();
+        assertTrue("Should not save the datasource: " + msg, myServer.findStringsInLogsAndTraceUsingMark(msg).isEmpty());
+        assertFalse("Should have evaluated the datasource: " + msg2, myServer.findStringsInLogsAndTraceUsingMark(msg2).isEmpty());
 
         // login again -- we should evaluate the datasource lookup again.
+        FATHelper.resetMarksInLogs(server);
         verifyAuthorization(SC_FORBIDDEN, SC_FORBIDDEN, SC_FORBIDDEN);
-        foundResults = myServer.findStringsInLogsAndTrace(msg);
-        assertTrue("Should not save the datasource: " + msg, foundResults.isEmpty());
-        foundResults = myServer.findStringsInLogs(msg2);
-        assertTrue("Should have evaluated the datasource again: " + msg2, foundResults.size() > priorEval);
+        assertTrue("Should not save the datasource: " + msg, myServer.findStringsInLogsAndTraceUsingMark(msg).isEmpty());
+        assertFalse("Should have evaluated the datasource again: " + msg2, myServer.findStringsInLogsAndTraceUsingMark(msg2).isEmpty());
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
@@ -412,33 +373,6 @@ public class DatabaseIdentityStoreDeferredSettingsTest extends JavaEESecTestBase
     }
 
     /**
-     * This test will verify that a dataSourceLookup EL expression that resolves to null is handled.
-     * The dataSourceLookup will be defaulted to "java:comp/DefaultDataSource".
-     *
-     * <ul>
-     * <li>DB_USER1 - authorized via user</li>
-     * <li>DB_USER2 - authorized via group</li>
-     * <li>DB_USER3 - unauthorized (never authorized)</li>
-     * </ul>
-     *
-     * @throws Exception If the test failed for some unforeseen reason.
-     */
-    @Test
-    public void dataSourceLookup_NULL() throws Exception {
-        Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
-
-        Map<String, String> overrides = new HashMap<String, String>();
-        overrides.put(JavaEESecConstants.DS_LOOKUP, "NULL");
-        DatabaseSettingsBean.updateDatabaseSettingsBean(server.getServerRoot(), overrides);
-
-        FATHelper.resetMarksInLogs(server);
-        verifyAuthorization(SC_OK, SC_OK, SC_FORBIDDEN);
-        server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'dataSourceLookup' configuration for the identity store.");
-
-        Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
-    }
-
-    /**
      * This test will verify that a dataSourceLookup EL expression that resolves to "" (empty string) is handled.
      * The dataSourceLookup will be defaulted to "java:comp/DefaultDataSource".
      *
@@ -461,7 +395,8 @@ public class DatabaseIdentityStoreDeferredSettingsTest extends JavaEESecTestBase
 
         FATHelper.resetMarksInLogs(server);
         verifyAuthorization(SC_FORBIDDEN, SC_FORBIDDEN, SC_FORBIDDEN);
-        server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'dataSourceLookup' configuration for the identity store.");
+
+        assertStringsInLogsUsingMark("CWWKS1918E:.*dataSourceLookup.*cannot be empty");
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
@@ -478,7 +413,7 @@ public class DatabaseIdentityStoreDeferredSettingsTest extends JavaEESecTestBase
      * @throws Exception If the test failed for some unforeseen reason.
      */
     @Test
-    @Ignore("Test hangs on reloadApplications() in remote buids but not on local builds")
+    @Ignore("Test hangs on reloadApplications() in remote builds but not on local builds")
     public void hashAlgorithmParameters_Array() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
 
@@ -490,7 +425,7 @@ public class DatabaseIdentityStoreDeferredSettingsTest extends JavaEESecTestBase
         // Reload the application to re-init the identity store so hash parameters are re-read.
         FATHelper.reloadApplications(server, Stream.of("DatabaseIdstoreDeferred").collect(Collectors.toCollection(HashSet::new)));
         verifyAuthorization(SC_OK, SC_OK, SC_FORBIDDEN);
-        server.findStringsInTrace("Processed HashAlgorithmParameters: \\{" + parameters + "\\}");
+        assertStringsInLogsAndTraceUsingMark("Processed HashAlgorithmParameters: \\{" + parameters + "\\}");
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
@@ -507,7 +442,7 @@ public class DatabaseIdentityStoreDeferredSettingsTest extends JavaEESecTestBase
      * @throws Exception If the test failed for some unforeseen reason.
      */
     @Test
-    @Ignore("Test hangs on reloadApplications() in remote buids but not on local builds")
+    @Ignore("Test hangs on reloadApplications() in remote builds but not on local builds")
     public void hashAlgorithmParameters_Stream() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
 
@@ -519,7 +454,7 @@ public class DatabaseIdentityStoreDeferredSettingsTest extends JavaEESecTestBase
         // Reload the application to re-init the identity store so hash parameters are re-read.
         FATHelper.reloadApplications(server, Stream.of("DatabaseIdstoreDeferred").collect(Collectors.toCollection(HashSet::new)));;
         verifyAuthorization(SC_OK, SC_OK, SC_FORBIDDEN);
-        server.findStringsInTrace("Processed HashAlgorithmParameters: \\{" + parameters + "\\}");
+        assertStringsInLogsAndTraceUsingMark("Processed HashAlgorithmParameters: \\{" + parameters + "\\}");
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
@@ -536,7 +471,7 @@ public class DatabaseIdentityStoreDeferredSettingsTest extends JavaEESecTestBase
      * @throws Exception If the test failed for some unforeseen reason.
      */
     @Test
-    @Ignore("Test hangs on reloadApplications() in remote buids but not on local builds")
+    @Ignore("Test hangs on reloadApplications() in remote builds but not on local builds")
     public void hashAlgorithmParameters_String() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
 
@@ -548,36 +483,7 @@ public class DatabaseIdentityStoreDeferredSettingsTest extends JavaEESecTestBase
         // Reload the application to re-init the identity store so hash parameters are re-read.
         FATHelper.reloadApplications(server, Stream.of("DatabaseIdstoreDeferred").collect(Collectors.toCollection(HashSet::new)));
         verifyAuthorization(SC_OK, SC_OK, SC_FORBIDDEN);
-        server.findStringsInTrace("Processed HashAlgorithmParameters: \\{" + parameters + "\\}");
-
-        Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
-    }
-
-    /**
-     * This test will verify that a hashAlgorithmParameters EL expression that resolves to null is handled.
-     * The hashAlgorithmParameters will be defaulted to an empty string.
-     *
-     * <ul>
-     * <li>DB_USER1 - authorized via user</li>
-     * <li>DB_USER2 - authorized via group</li>
-     * <li>DB_USER3 - unauthorized (never authorized)</li>
-     * </ul>
-     *
-     * @throws Exception If the test failed for some unforeseen reason.
-     */
-    @Test
-    @Ignore("Test hangs on reloadApplications() in remote buids but not on local builds")
-    public void hashAlgorithmParameters_NULL() throws Exception {
-        Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
-
-        Map<String, String> overrides = new HashMap<String, String>();
-        overrides.put(JavaEESecConstants.PWD_HASH_PARAMETERS, "NULL");
-        DatabaseSettingsBean.updateDatabaseSettingsBean(server.getServerRoot(), overrides);
-
-        // Reload the application to re-init the identity store so hash parameters are re-read.
-        FATHelper.reloadApplications(server, Stream.of("DatabaseIdstoreDeferred").collect(Collectors.toCollection(HashSet::new)));
-        verifyAuthorization(SC_OK, SC_OK, SC_FORBIDDEN);
-        server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'hashAlgorithmParameters[0]' configuration for the identity store.");
+        assertStringsInLogsAndTraceUsingMark("Processed HashAlgorithmParameters: \\{" + parameters + "\\}");
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
@@ -604,9 +510,7 @@ public class DatabaseIdentityStoreDeferredSettingsTest extends JavaEESecTestBase
 
         verifyAuthorization(SC_FORBIDDEN, SC_FORBIDDEN, SC_FORBIDDEN);
 
-        String msg = "CWWKS1919W";
-        List<String> errorResults = myServer.findStringsInLogsAndTraceUsingMark(msg);
-        assertTrue("Did not find '" + msg + "' in trace: " + errorResults, !errorResults.isEmpty());
+        assertStringsInLogsUsingMark("CWWKS1919W");
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
@@ -637,39 +541,7 @@ public class DatabaseIdentityStoreDeferredSettingsTest extends JavaEESecTestBase
          */
         FATHelper.reloadApplications(server, Stream.of("DatabaseIdstoreDeferred").collect(Collectors.toCollection(HashSet::new)));
         verifyAuthorization(SC_OK, SC_OK, SC_FORBIDDEN);
-        server.findStringsInTrace("IdentityStore from module BeanManager.*priority : 100");
-
-        Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
-    }
-
-    /**
-     * This test will verify that a priority EL expression that resolves to null is handled.
-     * The priority will be defaulted to 80.
-     *
-     * <ul>
-     * <li>DB_USER1 - authorized via user</li>
-     * <li>DB_USER2 - authorized via group</li>
-     * <li>DB_USER3 - unauthorized (not authorized by user or group)</li>
-     * </ul>
-     *
-     * @throws Exception If the test failed for some unforeseen reason.
-     */
-    @Test
-    @Ignore("Test hangs on reloadApplications() in remote buids but not on local builds")
-    public void priority_NULL() throws Exception {
-        Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
-
-        Map<String, String> overrides = new HashMap<String, String>();
-        overrides.put(JavaEESecConstants.PRIORITY, "NULL");
-        DatabaseSettingsBean.updateDatabaseSettingsBean(server.getServerRoot(), overrides);
-
-        /*
-         * TODO We reload the applications since Java 8 doesn't work with injected entry/exit trace yet.
-         * When it does, we can remove this.
-         */
-        FATHelper.reloadApplications(server, Stream.of("DatabaseIdstoreDeferred").collect(Collectors.toCollection(HashSet::new)));
-        verifyAuthorization(SC_OK, SC_OK, SC_FORBIDDEN);
-        server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'priority/priorityExpression' configuration for the identity store.");
+        assertStringsInLogsAndTraceUsingMark("IdentityStore from module BeanManager.*priority : 100");
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
@@ -699,7 +571,8 @@ public class DatabaseIdentityStoreDeferredSettingsTest extends JavaEESecTestBase
     }
 
     /**
-     * This test will verify that we can change the useFor setting via a deferred EL expression.
+     * This test will verify that a useFor EL expression that resolves to an empty string is handled.
+     * The useFor will be defaulted to have both VALIDATE and PROVIDE_GROUPS.
      *
      * <ul>
      * <li>DB_USER1 - authorized via user</li>
@@ -710,7 +583,7 @@ public class DatabaseIdentityStoreDeferredSettingsTest extends JavaEESecTestBase
      * @throws Exception If the test failed for some unforeseen reason.
      */
     @Test
-    public void useFor_2() throws Exception {
+    public void useFor_EMPTY() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
 
         Map<String, String> overrides = new HashMap<String, String>();
@@ -719,7 +592,8 @@ public class DatabaseIdentityStoreDeferredSettingsTest extends JavaEESecTestBase
 
         FATHelper.resetMarksInLogs(server);
         verifyAuthorization(SC_OK, SC_OK, SC_FORBIDDEN);
-        server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'useFor/useForExpression' configuration for the identity store.");
+
+        assertStringsInLogsUsingMark("CWWKS1916W:.*useForExpression.*cannot be resolved to a valid value");
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
@@ -746,8 +620,94 @@ public class DatabaseIdentityStoreDeferredSettingsTest extends JavaEESecTestBase
 
         FATHelper.resetMarksInLogs(server);
         verifyAuthorization(SC_OK, SC_OK, SC_FORBIDDEN);
-        server.findStringsInLogsAndTrace("CWWKS1916W: An error occurs when the program resolves the 'useFor/useForExpression' configuration for the identity store.");
+
+        assertStringsInLogsUsingMark("CWWKS1916W:.*useForExpression.*cannot be resolved to a valid value");
 
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
+    }
+
+    /**
+     * This test will verify that when initialization of the DatabaseIdentityStoreDefinitionWrapper fails for deferred EL expressions, that we will attempt to re-evaluate the
+     * expression when requesting the value at a later time.
+     *
+     * <p/>This also verifies handling of NULL values that are returned by a bean in a deferred EL expression.
+     *
+     * @throws Exception If the test failed for some unforeseen reason.
+     */
+    @Test
+    @ExpectedFFDC({ "java.lang.IllegalArgumentException", "com.ibm.ws.security.javaeesec.identitystore.IdentityStoreRuntimeException" })
+    public void testReevaluation() throws Exception {
+        Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
+
+        /*
+         * Configure deferred EL expressions to return NULL.
+         */
+        Map<String, String> overrides = new HashMap<String, String>();
+        overrides.put(JavaEESecConstants.CALLER_QUERY, "NULL");
+        overrides.put(JavaEESecConstants.DS_LOOKUP, "NULL");
+        overrides.put(JavaEESecConstants.GROUPS_QUERY, "NULL");
+        overrides.put(JavaEESecConstants.PRIORITY, "NULL");
+        overrides.put(JavaEESecConstants.USE_FOR, "NULL");
+        DatabaseSettingsBean.updateDatabaseSettingsBean(server.getServerRoot(), overrides);
+
+        /*
+         * Reload applications so that the identity store reinitializes. Make the first call to
+         * initialize the identity store definitions.
+         *
+         * We expect to see trace messages indicating we returned null when evaluating the deferred expressions on initialization.
+         *
+         * We also expect to see error and warning messages for most of the settings that have null values. Those that don't
+         * are because we fail too early to need to look them up.
+         */
+        FATHelper.reloadApplications(server, Stream.of("DatabaseIdstoreDeferred").collect(Collectors.toCollection(HashSet::new)));
+        verifyAuthorization(SC_FORBIDDEN, null, null);
+        assertStringsInLogsAndTraceUsingMark("Returning null since callerQuery is a deferred expression and this is called on initialization.");
+        assertStringsInLogsAndTraceUsingMark("Returning null since dataSourceLookup is a deferred expression and this is called on initialization.");
+        assertStringsInLogsAndTraceUsingMark("Returning null since groupsQuery is a deferred expression and this is called on initialization.");
+        // hashAlgorithm is just a string and does not support EL expressions (so no error generated)
+        // hashAlgorithmParameters doesn't issue a message
+        assertStringsInLogsAndTraceUsingMark("Returning null since priorityExpression is a deferred expression and this is called on initialization.");
+        assertStringsInLogsAndTraceUsingMark("Returning null since useForExpression is a deferred expression and this is called on initialization.");
+        assertStringsInLogsUsingMark("CWWKS1918E:.*callerQuery.*evaluated to null");
+        assertStringsInLogsUsingMark("CWWKS1916W:.*dataSourceLookup.*cannot be resolved to a valid value", false); // Fail before we require this
+        assertStringsInLogsUsingMark("CWWKS1919E:.*groupsQuery.*evaluated to null", false); // Fail before we require this
+        assertStringsInLogsUsingMark("CWWKS1916W:.*hashAlgorithmParameters.*cannot be resolved to a valid value");
+        assertStringsInLogsUsingMark("CWWKS1916W:.*priority/priorityExpression.*cannot be resolved to a valid value");
+        assertStringsInLogsUsingMark("CWWKS1916W:.*useFor/useForExpression.*cannot be resolved to a valid value");
+
+        /*
+         * For those settings we got error messages above, unset the overrides so they have valid values. The error and warning
+         * messages will no longer be printed, but a new set will for settings that we didn't request in the last call.
+         */
+        overrides.remove(JavaEESecConstants.CALLER_QUERY);
+        overrides.remove(JavaEESecConstants.PRIORITY);
+        overrides.remove(JavaEESecConstants.USE_FOR);
+        DatabaseSettingsBean.updateDatabaseSettingsBean(server.getServerRoot(), overrides);
+        FATHelper.resetMarksInLogs(server);
+        verifyAuthorization(SC_FORBIDDEN, null, null);
+        assertStringsInLogsAndTraceUsingMark("Returning null since", false); // These should only be thrown on init
+        assertStringsInLogsUsingMark("CWWKS1918E:.*callerQuery.*evaluated to null", false);
+        assertStringsInLogsUsingMark("CWWKS1916W:.*dataSourceLookup.*cannot be resolved to a valid value");
+        assertStringsInLogsUsingMark("CWWKS1919W:.*groupsQuery.*evaluated to null");
+        assertStringsInLogsUsingMark("CWWKS1916W:.*hashAlgorithmParameters.*cannot be resolved to a valid value", false);
+        assertStringsInLogsUsingMark("CWWKS1916W:.*priority/priorityExpression.*cannot be resolved to a valid value", false); // Only checked on init
+        assertStringsInLogsUsingMark("CWWKS1916W:.*useFor/useForExpression.*cannot be resolved to a valid value", false);
+
+        /*
+         * Clear the remaining overrides. No settings should be null and the call should be successful, with no warning or
+         * error messages produced.
+         */
+        overrides.remove(JavaEESecConstants.GROUPS_QUERY);
+        overrides.remove(JavaEESecConstants.DS_LOOKUP);
+        DatabaseSettingsBean.updateDatabaseSettingsBean(server.getServerRoot(), overrides);
+        FATHelper.resetMarksInLogs(server);
+        verifyAuthorization(SC_OK, null, null);
+        assertStringsInLogsAndTraceUsingMark("Returning null since", false); // These should only be thrown on init
+        assertStringsInLogsUsingMark("CWWKS1918E:.*callerQuery.*evaluated to null", false);
+        assertStringsInLogsUsingMark("CWWKS1916W:.*dataSourceLookup.*cannot be resolved to a valid value", false);
+        assertStringsInLogsUsingMark("CWWKS1919W:.*groupsQuery.*evaluated to null", false);
+        assertStringsInLogsUsingMark("CWWKS1916W:.*hashAlgorithmParameters.*cannot be resolved to a valid value", false);
+        assertStringsInLogsUsingMark("CWWKS1916W:.*priority/priorityExpression.*cannot be resolved to a valid value", false); // Only checked on init
+        assertStringsInLogsUsingMark("CWWKS1916W:.*useFor/useForExpression.*cannot be resolved to a valid value", false);
     }
 }

@@ -11,3 +11,4 @@ IBM-Install-Policy: when-satisfied
  com.ibm.ws.jdbc.4.3.jakarta
 kind=beta
 edition=core
+WLP-Activation-Type: parallel

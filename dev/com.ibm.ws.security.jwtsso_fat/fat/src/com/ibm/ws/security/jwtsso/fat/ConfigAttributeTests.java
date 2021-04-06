@@ -11,6 +11,7 @@
 package com.ibm.ws.security.jwtsso.fat;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -319,6 +320,98 @@ public class ConfigAttributeTests extends CommonSecurityFat {
         expectations.addExpectations(CommonExpectations.cookieDoesNotExist(currentAction, webClient, JwtFatConstants.LTPA_COOKIE_NAME));
 
         validationUtils.validateResult(response, currentAction, expectations);
+    }
+    
+    /**
+     * Config:
+     * - <jwtSso id="myJwtSso" useLtpaIfJwtAbsent="false" includeLtpaCookie="false"  authFilterRef="" />
+     * Tests:
+     * - Logs into the protected resource with the JWT SSO feature configured
+     * - Re-access the protected resource in a new web conversation, including the JWT SSO cookie that was just obtained
+     * Expects:
+     * - First access attempt is redirected to formLogin, and successful formLogin returns valid JWT.
+     * - Upon re-access, should reach the resource without having to log in
+     * - Server warning message: CWWKG0033W: The value [] specified for the reference attribute [authFilterRef] was not found in the configuration.
+     */
+    @Test
+    public void test_jwtSso_authFilter_empty() throws Exception {
+        server.reconfigureServerUsingExpandedConfiguration(_testName, "server_jwtSso_authFilter_empty.xml");
+
+        Cookie jwtCookie = actions.logInAndObtainJwtCookie(_testName, protectedUrl, defaultUser, defaultPassword);
+
+        // Access the protected again using a new conversation with the JWT SSO cookie included
+        String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
+
+        Expectations expectations = new Expectations();
+        expectations.addExpectations(CommonExpectations.successfullyReachedProtectedResourceWithJwtCookie(currentAction, protectedUrl, defaultUser));
+        expectations.addExpectations(CommonExpectations.responseTextMissingCookie(currentAction, JwtFatConstants.LTPA_COOKIE_NAME));
+        //Expected warning message: CWWKG0033W: The value [] specified for the reference attribute [authFilterRef] was not found in the configuration. 
+        expectations.addExpectation(new ServerMessageExpectation(currentAction, server, "CWWKG0033W"));
+        
+        Page response = actions.invokeUrlWithCookie(_testName, protectedUrl, jwtCookie);
+        validationUtils.validateResult(response, currentAction, expectations);
+    }
+    
+    /**
+     * Config:
+     * - <jwtSso id="myJwtSso" useLtpaIfJwtAbsent="false" includeLtpaCookie="false" authFilterRef="contains_simpleServlet" />
+     * Tests:
+     * - Logs into the protected resource with the JWT SSO feature configured
+     * - Re-access the protected resource in a new web conversation, including the JWT SSO cookie that was just obtained
+     * Expects:
+     * - First access attempt is redirected to formLogin, and successful formLogin returns valid JWT.
+     * - Upon re-access, the authFilter should match and the client should reach the resource without having to log in
+     */
+    @Test
+    public void test_jwtSso_authFilter_criteriaMet() throws Exception {
+        server.reconfigureServerUsingExpandedConfiguration(_testName, "server_jwtSso_authFilter_match.xml");
+
+        Cookie jwtCookie = actions.logInAndObtainJwtCookie(_testName, protectedUrl, defaultUser, defaultPassword);
+
+        // Access the protected again using a new conversation with the JWT SSO cookie included
+        String currentAction = TestActions.ACTION_INVOKE_PROTECTED_RESOURCE;
+
+        Expectations expectations = new Expectations();
+        expectations.addExpectations(CommonExpectations.successfullyReachedProtectedResourceWithJwtCookie(currentAction, protectedUrl, defaultUser));
+        expectations.addExpectations(CommonExpectations.responseTextMissingCookie(currentAction, JwtFatConstants.LTPA_COOKIE_NAME));
+        
+        Page response = actions.invokeUrlWithCookie(_testName, protectedUrl, jwtCookie);
+        validationUtils.validateResult(response, currentAction, expectations);
+    }
+    
+    /**
+     * Config:
+     * - <jwtSso id="myJwtSso" useLtpaIfJwtAbsent="true" includeLtpaCookie="true"  authFilterRef="notContain_simpleServlet" />
+     * Tests:
+     * - Logs into the protected resource with the JWT SSO feature configured
+     * - Re-access the protected resource in a new web conversation, including the JWT SSO cookie that was just obtained
+     * Expects:
+     * - First access attempt is redirected to formLogin, and successful formLogin returns valid JWT.
+     * - Upon re-access, the authFilter should NOT match and the client should be redirected to the formLogin page.
+     */
+    @Test
+    public void test_jwtSso_authFilter_criteriaNotMet() throws Exception {
+        server.reconfigureServerUsingExpandedConfiguration(_testName, "server_jwtSso_authFilter_notMatch.xml");
+
+        WebClient webClient = new WebClient();
+        Expectations expectations = new Expectations();
+
+        expectations.addExpectations(CommonExpectations.successfullyReachedLoginPage(TestActions.ACTION_INVOKE_PROTECTED_RESOURCE));
+        expectations.addExpectations(CommonExpectations.successfullyReachedProtectedResourceWithJwtCookie(TestActions.ACTION_SUBMIT_LOGIN_CREDENTIALS, protectedUrl, defaultUser, JwtFatConstants.DEFAULT_ISS_REGEX));
+        
+        Page response = actions.invokeUrl(_testName, webClient, protectedUrl);
+        validationUtils.validateResult(response, TestActions.ACTION_INVOKE_PROTECTED_RESOURCE, expectations);
+        
+        response = actions.doFormLogin(response, defaultUser, defaultPassword);
+        validationUtils.validateResult(response, TestActions.ACTION_SUBMIT_LOGIN_CREDENTIALS, expectations);
+
+        Cookie jwtCookie = webClient.getCookieManager().getCookie(JwtFatConstants.JWT_COOKIE_NAME);
+        assertNotNull("Cookie [" + JwtFatConstants.JWT_COOKIE_NAME + "] was null but should not have been.", jwtCookie);
+        
+        // Access the protected again using a new conversation with the JWT SSO cookie included
+        response = actions.invokeUrlWithCookie(_testName, protectedUrl, jwtCookie);
+        validationUtils.validateResult(response, TestActions.ACTION_INVOKE_PROTECTED_RESOURCE, expectations);
+
     }
 
     /**

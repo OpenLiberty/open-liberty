@@ -10,12 +10,15 @@
  *******************************************************************************/
 package com.ibm.ws.jdbc.heritage;
 
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Map;
 
 import javax.resource.ResourceException;
 import javax.security.auth.Subject;
+import javax.transaction.xa.XAException;
 
 /**
  * Extension point for compatibility with data store helpers.
@@ -105,9 +108,66 @@ public abstract class GenericDataStoreHelper {
     public abstract DataStoreHelperMetaData getMetaData();
 
     /**
+     * Overrides the PrintWriter for JDBC driver trace.
+     *
+     * @return PrintWriter to use for JDBC driver trace.
+     */
+    public abstract PrintWriter getPrintWriter();
+
+    /**
+     * Provides additional logging information for an <code>XAException</code>.
+     *
+     * @param xae the exception.
+     * @return detailed information about the exception.
+     */
+    public abstract String getXAExceptionContents(XAException xae);
+
+    /**
+     * Determines if the exception indicates that the connection ought to be
+     * removed from or kept out of the connection pool.
+     *
+     * @param x the exception to check.
+     * @return true to avoid pooling the connection, otherwise false.
+     */
+    public abstract boolean isConnectionError(SQLException x);
+
+    /**
+     * Determines if the exception indicates an unsupported operation.
+     *
+     * @param x the exception.
+     * @return true if the exception indicates an unsupported operation, otherwise false.
+     */
+    public abstract boolean isUnsupported(SQLException x);
+
+    /**
+     * Used to identify an exception and possibly replace it (if replaceExceptions=true).
+     *
+     * @param x an exception.
+     * @return the exception to identify as or replace with.
+     */
+    public abstract SQLException mapException(SQLException x);
+
+    /**
+     * Adds an XA start flag for loosely coupled transaction branches.
+     *
+     * @param xaStartFlags XA start flags to add to.
+     * @return updated XA start flags which are a combination of the flags supplied to this method
+     *         and the flag for loosely coupled transaction branches.
+     */
+    public abstract int modifyXAFlag(int xaStartFlags);
+
+    /**
      * Supplies the dataSource configuration to the data store helper.
      *
      * @param config AtomicReference to the dataSource configuration.
      */
     public abstract void setConfig(Object config);
+
+    /**
+     * Overrides identification of SQLExceptions by supplying a map of
+     * SQL state (a type String key) or error code (a type Integer key) to
+     * <code>com.ibm.websphere.ce.cm.PortableSQLException</code> subclass
+     * or <code>Void.class</code> (which indicates to ignore).
+     */
+    public abstract void setUserDefinedMap(@SuppressWarnings("rawtypes") Map map);
 }

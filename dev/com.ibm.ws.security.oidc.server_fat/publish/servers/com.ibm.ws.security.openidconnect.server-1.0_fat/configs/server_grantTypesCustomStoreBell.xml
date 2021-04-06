@@ -1,0 +1,47 @@
+<!--
+    Copyright (c) 2021 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+	<include location="${server.config.dir}/imports/oidc_featuresWithCustomstoreBell.xml" />
+	<include location="${server.config.dir}/imports/BasicRegistry.xml" />
+	<include location="${server.config.dir}/imports/misc.xml" />
+	<include location="${server.config.dir}/imports/provider_OAuthConfigSampleGrantTypesCustomStore.xml" />
+	<include location="${server.config.dir}/imports/provider_OAuthConfigSampleGrantTypes2.xml" />
+	<include location="${server.config.dir}/imports/provider_OAuthDefaultMediator.xml" />
+	<include location="${server.config.dir}/imports/provider_OAuthSkipUserValidation.xml" />
+	<include location="${server.config.dir}/imports/provider_OAuthConfigTai.xml" />
+	<include location="${server.config.dir}/imports/provider_OIDCConfigSampleGrantTypes.xml" />
+	<include location="${server.config.dir}/imports/provider_OIDCConfigSampleGrantTypes2.xml" />
+	<include location="${server.config.dir}/imports/provider_OIDCDefaultMediator.xml" />
+	<include location="${server.config.dir}/imports/provider_OIDCSkipUserValidation.xml" />
+
+    <library id="customStoreLib">
+		<file name="${wlp.user.dir}/shared/mongo-java-driver.jar" />
+		<fileset dir="${wlp.user.dir}/shared" includes="security.custom.store_1.0.jar" />
+	</library>
+
+	<bell libraryRef="customStoreLib"
+		service="com.ibm.websphere.security.oauth20.store.OAuthStore" />
+    
+    
+     <application type="war" id="oAuth20MongoSetup" name="oAuth20MongoSetup"
+	location="${server.config.dir}/test-apps/oAuth20MongoSetup.war">
+      <classloader commonLibraryRef="customStoreLib"/>
+    </application>
+    
+	<javaPermission
+		codebase="${server.config.dir}/mongoDB/mongo-java-driver.jar"
+		className="java.security.AllPermission" />
+	
+	
+	<javaPermission
+		codebase="${server.config.dir}/derby/derby.jar"
+		className="java.security.AllPermission" />
+</server>

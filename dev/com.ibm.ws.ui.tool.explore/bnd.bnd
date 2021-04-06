@@ -1,0 +1,36 @@
+#*******************************************************************************
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: WebSphere Admin Center Explore Tool
+Bundle-SymbolicName: com.ibm.ws.ui.tool.explore
+Bundle-Description: WebSphere Admin Center Explore Tool, version ${bVersion}
+
+Web-ContextPath: /ibm/adminCenter/explore-1.0
+OL-VirtualHost: ${admin.virtual.host}
+
+IBM-Authorization-Roles: com.ibm.ws.management
+
+Include-Resource: \
+  ${if;${driver;gradle};jsShared/bidiConfig.jsp=build/dojo/jsShared/bidiConfig.jsp}, \
+  ${if;${driver;gradle};=lib/dojo-release}, \
+  ${if;${driver;gradle};svg4everybody=lib/svg4everybody}, \
+  ${if;${driver;gradle};fonts=lib/fonts}, \
+  ${if;${driver;gradle};404=lib/404}, \
+  ${if;${driver;gradle};imagesShared=build/dojo/imagesShared}, \
+  ${if;${driver;gradle};jsShared/utils/toolData.js=build/jsShared/utils/toolData.js}, \
+  ${if;${driver;gradle};jsShared/utils/userConfig.js=build/jsShared/utils/userConfig.js}, \
+  ${if;${driver;gradle};jsShared/utils/apiMsgUtils.js=build/jsShared/utils/apiMsgUtils.js}, \
+  WEB-INF=resources/WEB-INF, \
+  images=resources/WEB-CONTENT/images, \
+  index.jsp=resources/WEB-CONTENT/index.jsp, \
+  feature=resources/WEB-CONTENT/feature

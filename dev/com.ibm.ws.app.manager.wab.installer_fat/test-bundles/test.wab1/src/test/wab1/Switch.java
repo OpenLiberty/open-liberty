@@ -45,13 +45,13 @@ public class Switch extends HttpServlet {
         try {
             if (configuration != null) {
                 configuration.unregister();
+                Thread.sleep(500);
             }
             String context = request.getParameter("context");
             Hashtable<String, String> props = new Hashtable<>();
             props.put(WABConfiguration.CONTEXT_NAME, context);
             props.put(WABConfiguration.CONTEXT_PATH, "/switchTarget");
-            configuration = bc.registerService(WABConfiguration.class, new WABConfiguration() {
-            }, props);
+            configuration = bc.registerService(WABConfiguration.class, new WABConfiguration() {}, props);
             response.getOutputStream().println("SUCCESS service: " + getClass().getName());
             return;
         } catch (Exception e) {

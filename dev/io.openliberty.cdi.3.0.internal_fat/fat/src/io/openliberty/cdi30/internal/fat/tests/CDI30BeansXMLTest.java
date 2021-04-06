@@ -16,11 +16,11 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
-import com.ibm.websphere.simplicity.BeansAsset.Mode;
-import com.ibm.websphere.simplicity.BeansAsset.Version;
 import com.ibm.websphere.simplicity.CDIArchiveHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
+import com.ibm.websphere.simplicity.beansxml.BeansAsset.CDIVersion;
+import com.ibm.websphere.simplicity.beansxml.BeansAsset.DiscoveryMode;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
@@ -52,7 +52,7 @@ public class CDI30BeansXMLTest extends FATServletClient {
                                               .addClass(CDI30BeansXMLTestServlet.class.getName())
                                               .addClass(SimpleBean.class.getName())
                                               .addClass(AnnotatedBean.class.getName());
-        cdiBeansXMLWar = CDIArchiveHelper.addBeansXML(cdiBeansXMLWar, Mode.ALL, Version.CDI30);
+        CDIArchiveHelper.addBeansXML(cdiBeansXMLWar, DiscoveryMode.ALL, CDIVersion.CDI30);
 
         ShrinkHelper.exportDropinAppToServer(server, cdiBeansXMLWar, DeployOptions.SERVER_ONLY);
 

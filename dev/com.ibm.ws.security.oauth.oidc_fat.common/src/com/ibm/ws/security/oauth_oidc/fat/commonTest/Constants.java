@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2020 IBM Corporation and others.
+ * Copyright (c) 2013, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -71,12 +71,12 @@ public class Constants extends com.ibm.ws.security.fat.common.Constants {
     public static final boolean USE_MONGODB = true;
     public static final boolean DO_NOT_USE_MONGODB = false;
 
-    public static final String SYS_PROP_PORT_OP_HTTP_DEFAULT = "OP_HTTP_default";
-    public static final String SYS_PROP_PORT_RP_HTTP_DEFAULT = "RP_HTTP_default";
-    public static final String SYS_PROP_PORT_IDP_HTTP_DEFAULT = "IDP_HTTP_default";
-    public static final String SYS_PROP_PORT_OP_HTTPS_DEFAULT = "OP_HTTP_default.secure";
-    public static final String SYS_PROP_PORT_RP_HTTPS_DEFAULT = "RP_HTTP_default.secure";
-    public static final String SYS_PROP_PORT_IDP_HTTPS_DEFAULT = "IDP_HTTP_default.secure";
+    public static final String SYS_PROP_PORT_OP_HTTP_DEFAULT = "security_1_HTTP_default"; // "OP_HTTP_default";
+    public static final String SYS_PROP_PORT_RP_HTTP_DEFAULT = "security_2_HTTP_default"; // "RP_HTTP_default";
+    public static final String SYS_PROP_PORT_IDP_HTTP_DEFAULT = "security_3_HTTP_default"; // "IDP_HTTP_default";
+    public static final String SYS_PROP_PORT_OP_HTTPS_DEFAULT = "security_1_HTTP_default.secure"; // "OP_HTTP_default.secure";
+    public static final String SYS_PROP_PORT_RP_HTTPS_DEFAULT = "security_2_HTTP_default.secure"; // "RP_HTTP_default.secure";
+    public static final String SYS_PROP_PORT_IDP_HTTPS_DEFAULT = "security_3_HTTP_default.secure"; // "IDP_HTTP_default.secure";
 
     public static final String BOOT_PROP_OIDC_CREATE_JWT = "oidcCreateJWTToken";
     public static final String BOOT_PROP_OIDC_JWK_ENABLED = "oidcJWKEnabled";
@@ -602,17 +602,17 @@ public class Constants extends com.ibm.ws.security.fat.common.Constants {
     public static final String OIDC_PROVIDER = "";
     public static final String OIDC_USERPARM = "j_username";
     public static final String OIDC_PASSPARM = "j_password";
-    public static final String OIDC_USERNAME = "xxx";
-    public static final String OIDC_USERPASSWORD = "xxx";
-    public static final String OIDC_FULLUSERNAME = "xxx";
-    public static final String OIDC_CLIENTIDENTITY = "xxx";
+    public static final String OIDC_USERNAME = "testuser";
+    public static final String OIDC_USERPASSWORD = "testuserpwd";
+    public static final String OIDC_FULLUSERNAME = "Mr. testuser";
+    public static final String OIDC_CLIENTIDENTITY = "client01";
     public static final String OIDC_LOGINBUTTON = "submitButton";
     public static final String OIDC_CONFIRMBUTTON = null;
     public static final String OIDC_CONFIRMBUTTONVALUE = null;
     public static final Long OIDC_CONFIRMSLEEP = null;
     public static final String OIDC_LOGINTITLE = "Login";
-    public static final String OIDC_TOKEN_MANAGER_USER = "xxx";
-    public static final String OIDC_TOKEN_MANAGER_PWD = "xxx";
+    public static final String OIDC_TOKEN_MANAGER_USER = "tokenmgr";
+    public static final String OIDC_TOKEN_MANAGER_PWD = "tokenmgrpwd";
 
     /* ********************** MESSAGES ************************ */
     public static final String MSG_INVALID_GRANT_TYPE = "CWOAU0025E";

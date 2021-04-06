@@ -89,7 +89,7 @@ public abstract class UrlContextFactory implements ObjectFactory, ApplicationRec
 
     @Override
     public Set<String> getDependentApplications() {
-        Set<String> members = new HashSet<String>(appsToRecycle);
+        Set<String> members = new HashSet<>(appsToRecycle);
         appsToRecycle.removeAll(members);
         return members;
     }

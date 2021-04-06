@@ -20,7 +20,7 @@
         <AD name="%hungRequestThreshold" description="%hungRequestThreshold.desc"
             id="hungRequestThreshold" required="false" type="String" ibm:type="duration(ms)" default="10m" />
 		<AD id="enableThreadDumps" name="%enableThreadDumps" description="%enableThreadDumps.desc" required="false"
-		    type="Boolean" default="true" ibm:beta="true"/>
+		    type="Boolean" default="true"/>
         <AD name="%sampleRate" description="%sampleRate.desc"
             id="sampleRate" required="false" type="Integer" min="1" default="1" />
 		<AD id="includeContextInfo" name="%includeContextInfo" description="%includeContextInfo.desc" required="false" 

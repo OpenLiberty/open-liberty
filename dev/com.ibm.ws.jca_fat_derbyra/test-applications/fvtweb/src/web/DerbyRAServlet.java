@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2020 IBM Corporation and others.
+ * Copyright (c) 2017,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,8 +28,10 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -59,9 +61,9 @@ public class DerbyRAServlet extends FATServlet {
     private static final AtomicReference<Connection> nonDissociatableSharableHandleRef = new AtomicReference<Connection>();
 
     /**
-     * Maximum number of milliseconds a test should wait for something to happen
+     * Maximum number of nanoseconds a test should wait for something to happen
      */
-    private static final long TIMEOUT = 5000;
+    private static final long TIMEOUT_NS = TimeUnit.MINUTES.toNanos(2);
 
     public void initDatabaseTables() throws ServletException {
         try {
@@ -176,7 +178,7 @@ public class DerbyRAServlet extends FATServlet {
                     public Collection<String> call() throws Exception {
                         return map1.values();
                     }
-                }).get(TIMEOUT, TimeUnit.MILLISECONDS);
+                }).get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
             } finally {
                 unmanagedExecutor.shutdown();
             }
@@ -447,6 +449,56 @@ public class DerbyRAServlet extends FATServlet {
         assertFalse(con.isClosed());
         assertTrue(nonDissociatableSharableHandleRef.compareAndSet(null, con));
         // intentionally leave the connection open across the end of the servlet request
+    }
+
+    /**
+     * Rely on parking a sharable connection in the absence of support for DissociatableManagedConnection
+     * to avoid exhausting the connection pool.
+     */
+    public void testParkNonDissociatableSharableHandle() throws Exception {
+        DataSource ds = (DataSource) InitialContext.doLookup("eis/ds5"); // creates sharable connections
+
+        // On another thread, use a sharable connection in a transaction, commit the transaction and wait
+        CountDownLatch transactionCommitted = new CountDownLatch(1);
+        CountDownLatch servletThreadDoneWithConnection = new CountDownLatch(1);
+        ExecutorService executor = InitialContext.doLookup("java:comp/DefaultManagedExecutorService");
+        Future<?> future = executor.submit(() -> {
+            UserTransaction tx = InitialContext.doLookup("java:comp/UserTransaction");
+            tx.begin();
+            Connection con1 = ds.getConnection();
+            con1.createStatement().executeQuery("VALUES (51)").getStatement().close();
+            tx.commit();
+            transactionCommitted.countDown();
+
+            // Connection handle remains open, but should now be associated to the parking ManagedConnection.
+            // Remain in this state until allowed to continue.
+
+            assertTrue(servletThreadDoneWithConnection.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+            // It would be possible to use the connection handle again here, if it weren't closed during the cleanup.
+
+            return null;
+        });
+
+        assertTrue(transactionCommitted.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        // At this point, the pool's single connection has been used on another thread, and hopefully freed up by
+        // parking the handle to the parking ManagedConnection. During this time, it should be possible to obtain
+        // the connection for use by the current thread:
+        UserTransaction tx = InitialContext.doLookup("java:comp/UserTransaction");
+        tx.begin();
+        try {
+            Connection con2 = ds.getConnection();
+            con2.createStatement().executeQuery("VALUES (52)").getStatement().close();
+            con2.close();
+        } finally {
+            tx.commit();
+        }
+
+        servletThreadDoneWithConnection.countDown();
+
+        // Surface any errors that occurred on the other thread
+        future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
     }
 
     /**

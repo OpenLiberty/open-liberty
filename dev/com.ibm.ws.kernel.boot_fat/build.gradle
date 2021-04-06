@@ -1,6 +1,7 @@
 /**
  * Copy the OSGi bundle into the osgiEmbedManager test application.
  */
+
 task prebuild(type: Sync) {
     mkdir("test-applications/osgiEmbedManager/resources/WEB-INF/lib")
     into "test-applications/osgiEmbedManager/resources/WEB-INF/lib" 
@@ -8,10 +9,12 @@ task prebuild(type: Sync) {
         include "org.eclipse.osgi.jar"
     }
 }
-build.dependsOn prebuild
+build.dependsOn 'prebuild'
+build.dependsOn ':wlp.lib.extract:assemble'
 
 task postrunfat(type: Delete) {
   dependsOn prebuild
   delete new File("test-applications/osgiEmbedManager/resources/WEB-INF/lib", "org.eclipse.osgi.jar")
 }
 runfat.finalizedBy postrunfat
+

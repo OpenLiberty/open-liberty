@@ -195,8 +195,7 @@ tworzenia serwera {0}. Warto\u015b\u0107 serverPath: {1}, przyczyna: {2}
 error.creatingNewServer.explanation=Nie mo\u017cna utworzy\u0107 okre\u015blonego serwera.
 error.creatingNewServer.useraction=Sprawd\u017a i rozwi\u0105\u017c problem b\u0119d\u0105cy przyczyn\u0105 wyj\u0105tku, a nast\u0119pnie spr\u00f3buj ponownie utworzy\u0107 serwer.
 
-error.noExistingServer=CWWKE0031E: Okre\u015blony serwer {0} nie \
-istnieje. U\u017cyj opcji --create, aby utworzy\u0107 nowy serwer. Warto\u015b\u0107 serverPath: {1}
+error.noExistingServer=CWWKE0031E: Okre\u015blony serwer {0} nie istnieje. U\u017cyj akcji create, aby utworzy\u0107 nowy serwer. Warto\u015b\u0107 serverPath: {1}
 error.noExistingServer.explanation=Okre\u015blony serwer nie istnieje, \
 dlatego nie mo\u017cna wykona\u0107 dla niego dzia\u0142ania.
 error.noExistingServer.useraction=Sprawd\u017a nazw\u0119 serwera lub utw\u00f3rz \
@@ -474,7 +473,7 @@ specyfikacji dla pliku BLST nie jest zgodny z wymagan\u0105 sk\u0142adni\u0105. 
 error.blst.spec.invalid.useraction=Okre\u015bl nazw\u0119 symboliczn\u0105 i \
 zakres wersji pliku BLST w postaci \
 <nazwa_symboliczna>;version="<zakres_wersji>". Nazwa symboliczna musi by\u0107 \
-poprawnym znacznikiem OSGi. Zakres wersji musi by\u0107 poprawnym zakresem wersji OSGi. Dodatkowo zakres wersji musi zawiera\u0107 ograniczenie dolne i g\u00f3rne (w\u0142\u0105czone lub wy\u0142\u0105czne) i nie mo\u017ce okre\u015bla\u0107 kwalifikatora.
+poprawnym znacznikiem OSGi. Zakres wersji musi by\u0107 poprawnym zakresem wersji OSGi. Dodatkowo zakres wersji musi zawiera\u0107 ograniczenie dolne i g\u00f3rne (w\u0142\u0105czne lub wy\u0142\u0105czne) i nie mo\u017ce okre\u015bla\u0107 kwalifikatora.
 
 # {0} The BLST filename
 error.blst.failed.to.resolve=CWWKE0073E: Rozstrzygni\u0119cie \
@@ -565,12 +564,15 @@ czy serwer zosta\u0142 pomy\u015blnie uruchomiony.
 
 warning.serverStartedWithPIDCommandPortDisabled=CWWKE0088W: Zainicjowano procedur\u0119 uruchamiania serwera {0} \
 (ID procesu: {1}), jednak nie mo\u017cna stwierdzi\u0107, czy zosta\u0142a ona zako\u0144czona, poniewa\u017c port komend serwera jest wy\u0142\u0105czony.
-warning.serverStartedWithPIDCommandPortDisabled.explanation=Port komend serwera jest wymagany do komunikacji z dzia\u0142aj\u0105cym serwerem.  Port komend zosta\u0142 jawnie wy\u0142\u0105czony dla tego serwera, dlatego nie mo\u017cna stwierdzi\u0107, \
+warning.serverStartedWithPIDCommandPortDisabled.explanation=Port komend serwera jest wymagany do komunikacji \
+z dzia\u0142aj\u0105cym serwerem.  Port komend zosta\u0142 jawnie wy\u0142\u0105czony dla tego serwera, dlatego nie mo\u017cna stwierdzi\u0107, \
 kiedy uruchamianie serwera zosta\u0142o zako\u0144czone.
-warning.serverStartedWithPIDCommandPortDisabled.useraction=R\u0119cznie sprawd\u017a dzienniki serwera w celu sprawdzenia, czy serwer zosta\u0142 pomy\u015blnie uruchomiony.
+warning.serverStartedWithPIDCommandPortDisabled.useraction=R\u0119cznie sprawd\u017a dzienniki serwera w celu sprawdzenia, \
+czy serwer zosta\u0142 pomy\u015blnie uruchomiony.
 
 error.serverStopCommandPortDisabled=CWWKE0089E: Nie mo\u017cna zatrzyma\u0107 serwera {0}, poniewa\u017c port komend serwera jest wy\u0142\u0105czony.
-error.serverStopCommandPortDisabled.explanation=Port komend serwera jest wymagany do komunikacji z dzia\u0142aj\u0105cym serwerem.  Port komend zosta\u0142 wy\u0142\u0105czony dla tego serwera, dlatego nie mo\u017cna go zatrzyma\u0107 za pomoc\u0105 tego skryptu.  Nale\u017cy zauwa\u017cy\u0107, \u017ce port komend jest domy\u015blnie wy\u0142\u0105czony, je\u015bli serwer zosta\u0142 uruchomiony jako zadanie w systemie z/OS.
+error.serverStopCommandPortDisabled.explanation=Port komend serwera jest wymagany do komunikacji \
+z dzia\u0142aj\u0105cym serwerem.  Port komend zosta\u0142 wy\u0142\u0105czony dla tego serwera, dlatego nie mo\u017cna go zatrzyma\u0107 za pomoc\u0105 tego skryptu.  Nale\u017cy zauwa\u017cy\u0107, \u017ce port komend jest domy\u015blnie wy\u0142\u0105czony, je\u015bli serwer zosta\u0142 uruchomiony jako zadanie w systemie z/OS.
 error.serverStopCommandPortDisabled.useraction=Je\u015bli serwer dzia\u0142a jako zadanie w systemie z/OS, mo\u017cna go zatrzyma\u0107 \
 z poziomu konsoli operatora.  W przeciwnym razie proces serwera mo\u017cna zatrzyma\u0107 z poziomu pow\u0142oki.
 
@@ -650,7 +652,8 @@ error.zosProcStart.start.length.useraction=Skr\u00f3\u0107 nazw\u0119 serwera i 
 info.addProductExtension=CWWKE0108I: Rozszerzenie \
 produktu {0} zosta\u0142o programowo w\u0142\u0105czone. Identyfikator produktu rozszerzenia \
 to {1}. Miejsce instalacji rozszerzenia produktu to {2}.
-info.addProductExtension.explanation= Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny. Rozszerzenie produktu zosta\u0142o dodane przez wywo\u0142anie interfejsu SPI \
+info.addProductExtension.explanation= Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.  \
+Rozszerzenie produktu zosta\u0142o dodane przez wywo\u0142anie interfejsu SPI \
 com.ibm.wsspi.kernel.embeddable.ServerBuilder.addProductExtension.
 info.addProductExtension.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
 
@@ -689,8 +692,7 @@ error.creatingNewClient.explanation=Nie mo\u017cna utworzy\u0107 okre\u015bloneg
 error.creatingNewClient.useraction=Sprawd\u017a i rozwi\u0105\u017c problem \
 b\u0119d\u0105cy przyczyn\u0105 wyj\u0105tku, a nast\u0119pnie spr\u00f3buj ponownie utworzy\u0107 klient.
 
-error.noExistingClient=CWWKE0903E: Okre\u015blony klient {0} \
-nie istnieje. U\u017cyj opcji --create, aby utworzy\u0107 nowy klient. Warto\u015b\u0107 clientPath: {1}
+error.noExistingClient=CWWKE0903E: Okre\u015blony klient {0} nie istnieje. U\u017cyj akcji create, aby utworzy\u0107 nowy klient. Warto\u015b\u0107 clientPath: {1}
 error.noExistingClient.explanation=Okre\u015blony klient nie \
 istnieje, dlatego nie mo\u017cna wykona\u0107 dla niego dzia\u0142ania.
 error.noExistingClient.useraction=Sprawd\u017a nazw\u0119 klienta lub \
@@ -952,6 +954,7 @@ error.missing.version.files.useraction=Upewnij si\u0119, \u017ce katalog istniej
 warning.earlyRelease=CWWKE0953W: Ta wersja produktu {0} jest wersj\u0105 wst\u0119pn\u0105 nieobj\u0119t\u0105 wsparciem.
 warning.earlyRelease.explanation=W wersjach wst\u0119pnych udost\u0119pniane s\u0105 nowe, nie do ko\u0144ca przetestowane funkcje, co s\u0142u\u017cy zbieraniu informacji zwrotnych od u\u017cytkownik\u00f3w przed wydaniem tych funkcji w obs\u0142ugiwanej wersji.
 warning.earlyRelease.useraction=Nie nale\u017cy u\u017cywa\u0107 wersji wst\u0119pnych w systemach produkcyjnych, poniewa\u017c takie wersje nie s\u0105 obj\u0119te wsparciem.
+
 info.serverStarting=Uruchamianie serwera {0}.
 info.serverStarted=Serwer {0} zosta\u0142 uruchomiony.
 info.serverStartedWithPID=Serwer {0} zosta\u0142 \

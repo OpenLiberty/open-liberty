@@ -65,7 +65,6 @@ com.ibm.ws.org.codehaus.jackson:jackson-mapper-asl:1.6.2.1
 com.ibm.ws.org.codehaus.jackson:jackson-mapper-asl:1.9.13
 com.ibm.ws.org.codehaus.jackson:jackson-xc:1.6.2.1
 com.ibm.ws.org.codehaus.jackson:jackson-xc:1.9.13
-com.ibm.ws.org.eclipse.equinox:console:1.1.200.v20150929-1405
 com.ibm.ws.org.eclipse.jdt.core.compiler:ecj:4.4.2
 com.ibm.ws.org.eclipse.microprofile.context-propagation:microprofile-context-propagation-api:1.1.20200728.204607-6
 com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.antlr:2.6.8.WAS-bb702a8

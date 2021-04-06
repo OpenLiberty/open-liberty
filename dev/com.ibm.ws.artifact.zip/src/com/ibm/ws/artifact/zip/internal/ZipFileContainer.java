@@ -185,7 +185,10 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
         EXTRACT_TIME;
     }
 
-    private static final Integer timingsLock = ( COLLECT_TIMINGS ? new Integer(0) : null );
+    public static class TimingsLock {
+        // EMPTY
+    }
+    private static final TimingsLock timingsLock = ( COLLECT_TIMINGS ? new TimingsLock() : null );
 
     private static int[] timingCounts = ( COLLECT_TIMINGS ? new int[ Timings.values().length ] : null );
     private static long[] timingTotals= ( COLLECT_TIMINGS ? new long[ Timings.values().length ] : null );
@@ -261,8 +264,10 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
     }
 
     // Assign 'isMultiRelease' using double locking ...
-
-    private final Integer multiReleaseLock = new Integer(0);
+    private static class MultiReleaseLock {
+        // EMPTY
+    }
+    private final MultiReleaseLock multiReleaseLock = new MultiReleaseLock();
     private volatile Boolean isMultiRelease = null;
 
     /**
@@ -358,7 +363,7 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
             this.zipFileNotifier = new ZipFileArtifactNotifier(this, useArchivePath);
             this.archiveName = archiveFile.getName();
         } else {
-            this.archiveFileLock = new Integer(1);
+            this.archiveFileLock = new ArchiveFileLock();
             this.zipFileNotifier = new ZipFileArtifactNotifier(this, entryInEnclosingContainer);
             this.archiveName = entryInEnclosingContainer.getName();
         }
@@ -583,8 +588,11 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
     // failure is handled by issuing an error, then processing with the archive
     // being empty.
 
+    private static class ArchiveFileLock {
+        // EMPTY
+    }
     // Null if the container started with an archive file.
-    private final Integer archiveFileLock;
+    private final ArchiveFileLock archiveFileLock;
 
     private boolean archiveFileFailed;
     private File archiveFile;
@@ -688,7 +696,10 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
 
     //
 
-    private final Integer zipFileHandleLock = new Integer(2);
+    private static class ZipFileHandleLock {
+        // Empty
+    }
+    private final ZipFileHandleLock zipFileHandleLock = new ZipFileHandleLock();
     private boolean zipFileHandleFailed;
     private ZipFileHandle zipFileHandle;
 
@@ -799,7 +810,10 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
 
     //
 
-    private final Integer fastModeLock = new Integer(3);
+    private static class FastModeLock {
+        // EMPTY
+    }
+    private final FastModeLock fastModeLock = new FastModeLock();
     private int fastModeCount;
 
     @Override
@@ -835,7 +849,10 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
 
     //
 
-    private final Integer zipEntryDataLock = new Integer(4);
+    private static class ZipEntryDataLock {
+        // EMPTY
+    }
+    private final ZipEntryDataLock zipEntryDataLock = new ZipEntryDataLock();
     private volatile ZipEntryData[] zipEntryData;
     private Map<String, ZipEntryData> zipEntryDataMap;
 
@@ -1093,8 +1110,10 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
         }
     }
 
-    private final Integer iteratorDataLock = new Integer(5);
-
+    private static class IteratorDataLock {
+        // EMPTY
+    }
+    private final IteratorDataLock iteratorDataLock = new IteratorDataLock();
     private volatile Map<String, ZipFileContainerUtils.IteratorData> iteratorData;
 
     @Trivial
@@ -1118,7 +1137,11 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
 
     //
 
-    private final Integer nestedContainerEntriesLock = new Integer(6);
+    private static class NestedContainerEntriesLock {
+        // EMPTY
+    }
+    private final NestedContainerEntriesLock nestedContainerEntriesLock =
+        new NestedContainerEntriesLock();
     private Map<String, ZipFileEntry> nestedContainerEntries;
 
     @Trivial
@@ -1431,8 +1454,6 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
 
     // Extraction utility ...
 
-    private static final Integer extractionsLock = new Integer(7);
-
     private static final Map<String, CountDownLatch> extractionLocks =
         new HashMap<String, CountDownLatch>();
 
@@ -1457,7 +1478,7 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
         boolean isPrimary;
         CountDownLatch completionLatch;
 
-        synchronized( extractionsLock ) {
+        synchronized( extractionLocks ) {
             completionLatch = extractionLocks.get(path);
 
             if ( completionLatch != null ) {
@@ -1478,13 +1499,13 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
     //       unblocking secondary extractions.
 
     private void releaseExtractionGuard(ExtractionGuard extractionLatch) {
-        synchronized( extractionsLock ) {
+        synchronized( extractionLocks ) {
             extractionLocks.remove( extractionLatch.path );
         }
         extractionLatch.completionLatch.countDown();
     }
 
-    private class ExtractionGuard {
+    private static class ExtractionGuard {
         public final String path;
         public final boolean isPrimary;
         public final CountDownLatch completionLatch;

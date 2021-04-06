@@ -73,6 +73,8 @@ import javax.naming.ldap.LdapName;
 import javax.naming.ldap.PagedResultsControl;
 import javax.naming.ldap.PagedResultsResponseControl;
 
+import org.osgi.service.cm.ConfigurationAdmin;
+
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
@@ -205,6 +207,8 @@ public class LdapConnection {
     /** The KerberosService for use when bindAuthMechanism is GSSAPI (Kerberos), also loads the keytab/config if configured in the <kerberos> element */
     private KerberosService kerberosService = null;
 
+    private ConfigurationAdmin configAdmin = null;
+
     /**
      * Returns a hash key for the name|filter|cons tuple used in the search
      * query-results cache.
@@ -304,9 +308,10 @@ public class LdapConnection {
      * @param ldapConfigMgr The {@link LdapConfigManager} to get configuration from.
      * @param ks            The {@link KerberosService} to get KRB5 configuration from (can be null).
      */
-    public LdapConnection(LdapConfigManager ldapConfigMgr, KerberosService ks) {
+    public LdapConnection(LdapConfigManager ldapConfigMgr, KerberosService ks, ConfigurationAdmin configAdminRef) {
         iLdapConfigMgr = ldapConfigMgr;
         kerberosService = ks;
+        configAdmin = configAdminRef;
     }
 
     /**
@@ -448,7 +453,7 @@ public class LdapConnection {
                 iContextManager.addFailoverServer((String) server.get(CONFIG_PROP_HOST), (Integer) server.get(CONFIG_PROP_PORT));
             }
         }
-        iContextManager.setWriteToSecondary(Boolean.getBoolean((String) configProps.get(CONFIG_PROP_ALLOW_WRITE_TO_SECONDARY_SERVERS)));
+        iContextManager.setWriteToSecondary((Boolean) configProps.get(CONFIG_PROP_ALLOW_WRITE_TO_SECONDARY_SERVERS));
         iContextManager.setReturnToPrimary((Boolean) configProps.get(CONFIG_PROP_RETURN_TO_PRIMARY_SERVER));
         iContextManager.setQueryInterval((Integer) configProps.get(CONFIG_PROP_PRIMARY_SERVER_QUERY_TIME_INTERVAL) * 60);
 
@@ -470,7 +475,7 @@ public class LdapConnection {
             betaFenceCheckKrb5();
 
             iContextManager.setKerberosCredentials(iReposId, kerberosService, (String) configProps.get(ConfigConstants.CONFIG_PROP_KRB5_PRINCIPAL),
-                                                   (String) configProps.get(ConfigConstants.CONFIG_PROP_KRB5_TICKET_CACHE));
+                                                   (String) configProps.get(ConfigConstants.CONFIG_PROP_KRB5_TICKET_CACHE), configAdmin);
         }
 
         /*
@@ -758,6 +763,30 @@ public class LdapConnection {
         return iAttrsCache;
     }
 
+    /**
+     * Clear both the searchResults and attributes caches. This can be a big
+     * performance hit to populate so only use when we need to clear to prevent
+     * stale access to users/groups/attributes.
+     *
+     */
+    public void clearCaches() {
+        try {
+            if (iSearchResultsCache != null) {
+                iSearchResultsCache.clear();
+            }
+            if (iAttrsCache != null) {
+                iAttrsCache.clear();
+            }
+        } catch (Exception e) {
+            /*
+             * Unlikely to still hit an NPE here, but shouldn't be a fatal error if we couldn't clear a cache
+             * that doesn't exist
+             */
+            if (tc.isEventEnabled()) {
+                Tr.event(tc, "clearCaches Unexpected exception occurred while clearing the search and attributes cache", e);
+            }
+        }
+    }
     /**
      * Method to invalidate the specified entry from the attributes cache. One or all
      * parameters can be set in a single call. If all parameters are null, then this
@@ -2247,7 +2276,7 @@ public class LdapConnection {
      */
     public void modifyAttributes(String name, ModificationItem[] mods) throws NamingException, WIMException {
         TimedDirContext ctx = iContextManager.getDirContext();
-        // checkWritePermission(ctx); TODO Why are we not checking for permission here?
+        iContextManager.checkWritePermission(ctx);
         try {
             try {
                 ctx.modifyAttributes(new LdapName(name), mods);
@@ -2405,6 +2434,6 @@ public class LdapConnection {
      */
     protected void updateKerberosService(KerberosService ks) {
         kerberosService = ks;
-        iContextManager.updateKerberosService(ks);
+        iContextManager.updateKerberosService(ks, this);
     }
 }

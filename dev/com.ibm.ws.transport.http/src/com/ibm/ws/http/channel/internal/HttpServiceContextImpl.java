@@ -937,10 +937,10 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             } catch (Throwable t) {
                 // check if we're on an HTTP2 connection in the closed state
                 HttpInboundServiceContextImpl context = (HttpInboundServiceContextImpl) this;
-                H2HttpInboundLinkWrap link = (H2HttpInboundLinkWrap) context.getLink();
+                HttpInboundLink link = context.getLink();
                 boolean h2Closing = false;
                 if (link instanceof H2HttpInboundLinkWrap) {
-                    H2HttpInboundLinkWrap h2link = (H2HttpInboundLinkWrap) context.getLink();
+                    H2HttpInboundLinkWrap h2link = (H2HttpInboundLinkWrap) link;
                     if (h2link.muxLink.checkIfGoAwaySendingOrClosing()) {
                         h2Closing = true;
                     }

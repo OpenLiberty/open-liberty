@@ -1,0 +1,35 @@
+#*******************************************************************************
+# Copyright (c) 2016, 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: WebSphere Admin Center Server Config Tool
+Bundle-SymbolicName: com.ibm.ws.ui.tool.serverConfig
+Bundle-Description: WebSphere Admin Center Server Config Tool, version ${bVersion}
+
+Web-ContextPath: /ibm/adminCenter/serverConfig-1.0
+OL-VirtualHost: ${admin.virtual.host}
+
+IBM-Authorization-Roles: com.ibm.ws.management
+
+Include-Resource: \
+  ${if;${driver;gradle};lib/orion_editor=lib/orion}, \
+  ${if;${driver;gradle};lib=lib/jquery}, \
+  ${if;${driver;gradle};lib/bootstrap=lib/bootstrap}, \
+  ${if;${driver;gradle};fonts=lib/fonts}, \
+  ${if;${driver;gradle};404=lib/404}, \
+  ${if;${driver;gradle};js/prod.min.js=lib/prod.min.js}, \
+  WEB-INF=resources/WEB-INF, \
+  index.jsp=resources/WEB-CONTENT/index.jsp, \
+  feature=resources/WEB-CONTENT/feature, \
+  css=resources/WEB-CONTENT/css, \
+  img=resources/WEB-CONTENT/img, \
+  nls=resources/WEB-CONTENT/nls

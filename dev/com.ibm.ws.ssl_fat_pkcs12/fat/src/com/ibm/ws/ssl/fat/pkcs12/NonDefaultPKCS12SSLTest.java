@@ -60,7 +60,7 @@ public class NonDefaultPKCS12SSLTest extends CommonSSLTest {
     public void testNonDefaultSSLConfigUsingPKCS12() throws Exception {
 
         Log.info(c, name.getMethodName(), "Entering " + name.getMethodName());
-        String protocol = TLSV11_PROTOCOL;
+        String protocol = TLSV12_PROTOCOL;
 
         server.setServerConfigurationFile(NON_DEFAULT_KEYSTORE_LOCATION_USING_PKCS12_NO_TYPE_SPECIFIED);
         server.startServer(name.getMethodName() + ".log");

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,7 +17,6 @@ import static org.junit.Assert.fail;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -58,9 +57,6 @@ public class LdapConfigManagerTest {
         }
     }
 
-    @After
-    public void tearDown() {}
-
     @Test
     public void testGetAttributeName() {
         LdapEntity ldapEnt = new LdapEntity("PersonAccount");
@@ -73,12 +69,12 @@ public class LdapConfigManagerTest {
 
     @Test
     public void testGetUserFilter() {
-        assertEquals("(&(objectcategory=Person)(samaccountname=IBMuser*))", ldapConfigManager.getUserFilter().toString());
+        assertEquals("(&(objectcategory=Person)(samaccountname=%v))", ldapConfigManager.getUserFilter().toString());
     }
 
     @Test
     public void testGetGroupFilter() {
-        assertEquals("(&(objectcategory=group)(cn=IBM*))", ldapConfigManager.getGroupFilter().toString());
+        assertEquals("(&(objectcategory=group)(cn=%v))", ldapConfigManager.getGroupFilter().toString());
     }
 
     @Test
@@ -88,14 +84,12 @@ public class LdapConfigManagerTest {
 
     private void initialize(Map<String, Object> configProps) {
         configProps.put("ldapType", "Microsoft Active Directory");
-        configProps.put("activedFilters.0.groupFilter", "(&(objectcategory=group)(cn=IBM*))");
-        configProps.put("activedFilters.0.userFilter", "(&(objectcategory=Person)(samaccountname=IBMuser*))");
+        configProps.put("activedFilters.0.groupFilter", "(&(objectcategory=group)(cn=%v))");
+        configProps.put("activedFilters.0.userFilter", "(&(objectcategory=Person)(samaccountname=%v))");
         configProps.put("userIdMap", "user:sn");
         configProps.put("activedFilters.0.groupMemberIdMap", "uniqueMemberOf:uniqueMember");
         configProps.put("baseDN", "cn=users,dc=vmm,dc=com");
         configProps.put("loginProperty.0.name", "uid");
         configProps.put("loginProperty.1.name", "sn");
-
     }
-
 }

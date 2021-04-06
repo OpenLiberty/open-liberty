@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -40,12 +40,12 @@ import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.JavaInfo.Vendor;
 import componenttest.topology.impl.LibertyServer;
 
 @AllowedFFDC("java.lang.ClassNotFoundException")
-@SkipForRepeat("EE9_FEATURES") // currently broken due to multiple issues
 @RunWith(FATRunner.class)
 public class AnnotationScanTest {
 
@@ -81,7 +81,7 @@ public class AnnotationScanTest {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer("CWWKW0101W", "CWWKW0102W", "SRVE8052E", "SRVE0276E", "SRVE0190E");
+        server.stopServer("CWWKW0101W", "CWWKW0102W", "SRVE8052E", "SRVE0276E", "SRVE0190E", "SRVE0271E");
     }
 
     @Before
@@ -108,6 +108,7 @@ public class AnnotationScanTest {
      * @throws Exception
      */
     @Test
+    @AllowedFFDC("java.lang.ClassCastException")
     public void testApplication1Resource1() throws Exception {
         String resp = client.target(getBaseTestUri(annwar, "/app1/")).request().get(String.class);
         assertTrue(resp, resp.equals("Hello world!") || resp.equals(MyRegularResource.class.getName()));
@@ -430,6 +431,7 @@ public class AnnotationScanTest {
      * the Application init-param element.
      */
     @Test
+    @SkipForRepeat(JakartaEE9Action.ID) // this actually should be fine under the EE8/EE9 spec - but it would ignore any Application subclasses
     public void testServletSpecifiedWithoutApplicationInitParam() throws Exception {
         assertEquals("Did not find expected warning indicating servlet is missing Application init-param", 1,
                      server.findStringsInLogs("CWWKW0101W.*annotationscan.*App7IBMRestServlet.*com.ibm.websphere.jaxrs.server.IBMRestServlet").size());
@@ -441,7 +443,13 @@ public class AnnotationScanTest {
      */
     @Test
     public void testServletSpecifiedWithInvalidApplicationClass() throws Exception {
+        int messageCount = 0;
+        if (JakartaEE9Action.isActive()) {
+            messageCount = server.findStringsInLogs("SRVE0271E.*NotAnAppIBMRestServlet.*annotationscan.*com.ibm.ws.jaxrs.fat.annotation.multipleapp.MyResource3 incompatible with jakarta.ws.rs.core.Application").size();
+        } else {
+            messageCount = server.findStringsInLogs("CWWKW0102W.*annotationscan.*NotAnAppIBMRestServlet.*com.ibm.ws.jaxrs.fat.annotation.multipleapp.MyResource3").size();
+        }
         assertEquals("Did not find expected warning indicating servlet contains invalid Application class", 1,
-                     server.findStringsInLogs("CWWKW0102W.*annotationscan.*NotAnAppIBMRestServlet.*com.ibm.ws.jaxrs.fat.annotation.multipleapp.MyResource3").size());
+                     messageCount);
     }
 }

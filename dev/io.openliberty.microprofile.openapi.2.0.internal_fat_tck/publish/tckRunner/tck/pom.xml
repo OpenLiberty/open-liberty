@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.openliberty.microprofile.openapi20.internal</groupId>
@@ -14,7 +13,6 @@
     <properties>
         <microprofile.openapi.version>2.0</microprofile.openapi.version>
 
-     
         <surefire.version>2.17</surefire.version> <!-- Any changes to the surefire version must be tested against ZOS-->
 <!--    
         <surefire.version>2.19.1</surefire.version>
@@ -24,7 +22,7 @@
  -->
         <arquillian.version>1.6.0.Final</arquillian.version>
         <arquillian-wlp.version>1.0.5</arquillian-wlp.version>
-        
+
         <suiteXmlFile>${defaultSuiteFiles}</suiteXmlFile>
         <targetDirectory>${project.basedir}/target</targetDirectory>
 <!-- 
@@ -43,10 +41,10 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-	          <groupId>org.jboss.spec.javax.servlet</groupId>
-	          <artifactId>jboss-servlet-api_3.0_spec</artifactId>
-	          <version>1.0.2.Final</version> <!-- Defines the version of this artifact that arquillian-liberty-managed should use -->
-	        </dependency>
+                <groupId>org.jboss.spec.javax.servlet</groupId>
+                <artifactId>jboss-servlet-api_3.0_spec</artifactId>
+                <version>1.0.2.Final</version> <!-- Needed for ZOS. Defines the version of this artifact that arquillian-liberty-managed should use -->
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -79,7 +77,7 @@
                     </suiteXmlFiles>
  -->
 
-                 </configuration>
+                </configuration>
             </plugin>
         </plugins>
     </build>
@@ -119,9 +117,9 @@
             </exclusions>
         </dependency>
         <dependency>
-          <groupId>com.beust</groupId>
-          <artifactId>jcommander</artifactId>
-          <version>1.78</version>
+            <groupId>com.beust</groupId>
+            <artifactId>jcommander</artifactId>
+            <version>1.78</version>
         </dependency>
         <dependency>
             <groupId>org.jboss.arquillian.testng</groupId>
@@ -141,6 +139,6 @@
             <artifactId>xml-path</artifactId>
             <version>3.0.6</version>
         </dependency>
- -->        
+ -->
     </dependencies>
 </project>

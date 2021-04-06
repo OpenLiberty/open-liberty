@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -52,7 +52,7 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 @Provider
 public class JsonPProvider implements MessageBodyReader<Object>, MessageBodyWriter<Object> {
 
-    JsonProvider jsonProvider = null;
+    final JsonProvider jsonProvider;
 
     public JsonPProvider() {
         jsonProvider = AccessController.doPrivileged(new PrivilegedAction<JsonProvider>(){
@@ -155,7 +155,7 @@ public class JsonPProvider implements MessageBodyReader<Object>, MessageBodyWrit
         return null;
     }
 
-    private static <T> T castNumber(InputStream in, Class<T> type) throws IOException {
+    private <T> T castNumber(InputStream in, Class<T> type) throws IOException {
         //read stream to string and then create a JsonNumber manually...
         String str;
         try (Scanner s = new Scanner(in).useDelimiter("\\A")) {
@@ -172,9 +172,9 @@ public class JsonPProvider implements MessageBodyReader<Object>, MessageBodyWrit
         if (type.isAssignableFrom(JsonNumber.class)) {
             // check for decimal point
             if (str.contains(".")) {
-                return type.cast(Json.createValue(Double.parseDouble(str)));
+                return type.cast(jsonProvider.createValue(Double.parseDouble(str)));
             }
-            return type.cast(Json.createValue(Long.parseLong(str)));
+            return type.cast(jsonProvider.createValue(Long.parseLong(str)));
         }
         if (type.isAssignableFrom(BigDecimal.class)) {
             return type.cast(new BigDecimal(str));

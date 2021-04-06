@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2019 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,7 +34,7 @@ public class FATSuite {
     }
 
     @ClassRule
-    public static CouchDBContainer cloudant = new CouchDBContainer("aguibert/couchdb-ssl:1.0")
+    public static CouchDBContainer cloudant = new CouchDBContainer("gjwatts/couchdb-tls12:1.0")
                     .withLogConsumer(new SimpleLogConsumer(FATSuite.class, "cloudant"));
 
 }

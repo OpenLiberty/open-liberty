@@ -174,7 +174,7 @@ public class DB2KerberosTest extends FATServletClient {
         String keytabPath = Paths.get("publish", "servers", "com.ibm.ws.jdbc.fat.krb5", "security", "krb5.keytab").toAbsolutePath().toString();
 
         ProcessBuilder pb = new ProcessBuilder("kinit", "-k", "-t", keytabPath, //
-                        "-c", ccPath, //
+                        "-c", "FILE:" + ccPath, //Some linux kinit installs require FILE:
                         KRB5_USER + "@" + KerberosContainer.KRB5_REALM);
         pb.environment().put("KRB5_CONFIG", Paths.get(server.getServerRoot(), "security", "krb5.conf").toAbsolutePath().toString());
         pb.redirectErrorStream(true);

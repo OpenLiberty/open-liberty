@@ -16,6 +16,15 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import com.ibm.ws.jpa.spec21.TestCDI_EJB;
+import com.ibm.ws.jpa.spec21.TestCDI_WEB;
+import com.ibm.ws.jpa.spec21.TestTXDDSynchronization;
+import com.ibm.ws.jpa.spec21.TestTXSynchronization;
+import com.ibm.ws.jpa.spec21.olgh.TestOLGH10240_EJB;
+import com.ibm.ws.jpa.spec21.olgh.TestOLGH10240_Web;
+import com.ibm.ws.jpa.spec21.olgh.TestOLGH8820_EJB;
+import com.ibm.ws.jpa.spec21.olgh.TestOLGH8820_Web;
+
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 

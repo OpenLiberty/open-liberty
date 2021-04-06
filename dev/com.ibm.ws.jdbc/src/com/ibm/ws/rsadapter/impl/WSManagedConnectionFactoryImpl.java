@@ -31,6 +31,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference; 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -77,7 +78,9 @@ import com.ibm.ws.jdbc.osgi.JDBCRuntimeVersion;
 import com.ibm.ws.kernel.service.util.SecureAction;
 import com.ibm.ws.resource.ResourceRefInfo;
 import com.ibm.ws.rsadapter.AdapterUtil;
-import com.ibm.ws.rsadapter.DSConfig; 
+import com.ibm.ws.rsadapter.DSConfig;
+import com.ibm.ws.rsadapter.IdentifyExceptionAs;
+import com.ibm.ws.rsadapter.SQLStateAndCode;
 import com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException;
 import com.ibm.ws.rsadapter.jdbc.WSJdbcTracer;
 
@@ -359,24 +362,15 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
 
         createDatabaseHelper(config.vendorProps instanceof PropertyService ? ((PropertyService) config.vendorProps).getFactoryPID() : PropertyService.FACTORY_PID);
 
-        if (config.heritageHelperClass == null) {
+        if (connectorSvc.isHeritageEnabled()) {
+            dataStoreHelper = createDataStoreHelper();
+        } else {
             dataStoreHelper = null;
             supportsGetNetworkTimeout = supportsGetSchema = atLeastJDBCVersion(JDBCRuntimeVersion.VERSION_4_1);
-        } else {
-            Properties helperProps = new Properties(); // TODO populate with what is needed
-            dataStoreHelper = AccessController.doPrivileged((PrivilegedExceptionAction<GenericDataStoreHelper>) () ->
-                (GenericDataStoreHelper) jdbcDriverLoader.loadClass(config.heritageHelperClass).getConstructor(Properties.class).newInstance(helperProps));
-            dataStoreHelper.setConfig(dsConfigRef);
-            DataStoreHelperMetaData metadata = dataStoreHelper.getMetaData();
-            defaultIsolationLevel = dataStoreHelper.getIsolationLevel(null);
-            doesStatementCacheIsoLevel = metadata.doesStatementCacheIsoLevel();
-            isCustomHelper = !config.heritageHelperClass.startsWith("com.ibm.websphere.rsadapter");
-            supportsGetCatalog = metadata.supportsGetCatalog();
-            supportsGetNetworkTimeout = metadata.supportsGetNetworkTimeout();
-            supportsGetSchema = metadata.supportsGetSchema();
-            supportsGetTypeMap = metadata.supportsGetTypeMap();
-            supportsIsReadOnly = metadata.supportsIsReadOnly();
         }
+
+        if (helper.shouldTraceBeEnabled(this))
+            helper.enableJdbcLogging(this);
 
         if (config.supplementalJDBCTrace == null || config.supplementalJDBCTrace) {
             TraceComponent tracer = helper.getTracer();
@@ -466,9 +460,69 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
         if (helper == null)
             if (dsClassName.startsWith("com.ibm.db2.jcc.")) helper = new DB2JCCHelper(this); // unable to distinguish between DB2/Informix
             else helper = new DatabaseHelper(this);
+    }
 
-        if (helper.shouldTraceBeEnabled(this))
-            helper.enableJdbcLogging(this);
+    /**
+     * Creates a legacy DataStoreHelper and populates or overrides some default values from it.
+     *
+     * @return legacy DataStoreHelper.
+     * @throws PrivilegedActionException if an error occurs.
+     * @throws ResourceException if an error occurs.
+     * @throws ClassNotFoundException if unable to load a data store helper class.
+     */
+    private GenericDataStoreHelper createDataStoreHelper() throws PrivilegedActionException, ResourceException, ClassNotFoundException {
+        DSConfig config = dsConfig.get();
+        Properties helperProps = new Properties(); // TODO populate with what is needed
+
+        String helperClassName = config.heritageHelperClass == null ? helper.dataStoreHelper : config.heritageHelperClass;
+
+        GenericDataStoreHelper dataStoreHelper = AccessController.doPrivileged((PrivilegedExceptionAction<GenericDataStoreHelper>) () ->
+            (GenericDataStoreHelper) jdbcDriverLoader.loadClass(helperClassName).getConstructor(Properties.class).newInstance(helperProps));
+
+        dataStoreHelper.setConfig(dsConfig);
+
+        if (helper.genPw == null)
+            helper.genPw = dataStoreHelper.getPrintWriter();
+
+        DataStoreHelperMetaData metadata = dataStoreHelper.getMetaData();
+        defaultIsolationLevel = dataStoreHelper.getIsolationLevel(null);
+        doesStatementCacheIsoLevel = metadata.doesStatementCacheIsoLevel();
+        isCustomHelper = !helperClassName.startsWith("com.ibm.websphere.rsadapter");
+        supportsGetCatalog = metadata.supportsGetCatalog();
+        supportsGetNetworkTimeout = metadata.supportsGetNetworkTimeout();
+        supportsGetSchema = metadata.supportsGetSchema();
+        supportsGetTypeMap = metadata.supportsGetTypeMap();
+        supportsIsReadOnly = metadata.supportsIsReadOnly();
+
+        Map<Object, Class<?>> map = new HashMap<Object, Class<?>>();
+        for (Map.Entry<Object, String> entry : config.identifyExceptions.entrySet())
+            try {
+                String className = entry.getValue();
+                if (!className.contains("."))
+                    try {
+                        IdentifyExceptionAs identifyAs = IdentifyExceptionAs.valueOf(className);
+                        if (identifyAs.legacyClassName == null)
+                            className = IdentifyExceptionAs.None.legacyClassName; // no equivalent legacy exception class, do not replace it
+                        else
+                            className = identifyAs.legacyClassName;
+                    } catch (IllegalArgumentException x) {
+                        // probably an error, but maybe the user has a custom exception class without a package, so continue on...
+                    }
+                Class<?> exceptionClass = WSManagedConnectionFactoryImpl.priv.loadClass(jdbcDriverLoader, className);
+                Object key = entry.getKey();
+                if (key instanceof String || key instanceof Integer)
+                    map.put(key, exceptionClass);
+                else
+                    // TODO NLS message
+                    throw new IllegalArgumentException("The sqlState and errorCode attributes cannot both be configured on the same identifyException element when replaceExceptions=true is enabled.");
+            } catch (ClassNotFoundException x) {
+                Tr.error(tc, "8066E_IDENTIFY_EXCEPTION_INVALID_TARGET", entry.getValue(), Arrays.toString(IdentifyExceptionAs.values()) + ", com.ibm.websphere.ce.cm.*, ...");
+                throw x;
+            }
+        if (!map.isEmpty())
+            dataStoreHelper.setUserDefinedMap(map);
+
+        return dataStoreHelper;
     }
 
     /**

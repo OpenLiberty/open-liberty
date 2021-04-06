@@ -1,8 +1,0 @@
-###########
-com.ibm.ws.cdi20.fat.apps.configurator.bean.AfterBeanDiscoveryObserver
-com.ibm.ws.cdi20.fat.apps.configurator.beanAttributes.ProcessBeanAttributesObserver
-com.ibm.ws.cdi20.fat.apps.configurator.injectionPoint.ProcessInjectionPointObserver
-com.ibm.ws.cdi20.fat.apps.configurator.observerMethod.ProcessObserverMethodObserver
-com.ibm.ws.cdi20.fat.apps.configurator.producer.ProcessProducerObserver
-com.ibm.ws.cdi20.fat.apps.configurator.annotatedTypeConfigurator.ProcessAnnotatedTypeObserver
-###########

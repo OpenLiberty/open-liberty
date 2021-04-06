@@ -1,0 +1,274 @@
+<!-- 
+/*******************************************************************************
+ * Copyright (c) 2021 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+-->
+<server>
+	<openidConnectProvider
+		id="OidcConfigSample"
+		oauthProviderRef="OAuthConfigSample"
+		signatureAlgorithm="RS256"
+		keyStoreRef="rsa_key"
+		keyAliasName="rsacert"
+		requireOpenidScopeForUserInfo="false" />
+
+	<oauthProvider
+		id="OAuthConfigSample"
+		jwtAccessToken="${oidcCreateJWTToken}"
+		autoAuthorize="true"
+	>
+		<autoAuthorizeClient>client01</autoAuthorizeClient>
+		<autoAuthorizeClient>oidcLoginUser</autoAuthorizeClient>
+
+		<localStore>
+			<client
+				name="client01"
+				secret="{xor}LDo8LTor"
+				displayname="client01"
+				redirect="https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin1,
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oauth2Login1,
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_badClientId, 
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_blankClientId, 
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_emptyClientId, 
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_badClientSecret, 
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_blankClientSecret, 
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_emptyClientSecret, 
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_XOR_Secret, 
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_bad_XOR_Secret, 
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_enabledTrue, 
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_enabledFalse,
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_badAuthFilterRef, 
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_badAuthEndpoint, 
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_badTokenEndpoint, 
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_tEAM_clientSecretBasic, 
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_tEAM_clientSecretPost, 
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_tEAM_clientSecretBad, 
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_goodUserApi, 
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_badUserApi, 
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_blankUserApi, 
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_emptyUserApi, 
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_basicUserApiType, 
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_introspectUserApiType, 
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_kubeUserApiType, 
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_goodUserApiToken, 
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_badUserApiToken, 
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_blankUserApiToken, 
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_emptyUserApiToken, 
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_realmName, 
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_blankRealmName, 
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_emptyRealmName, 
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_mapToUserRegistryFalse, 
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_mapToUserRegistryTrue, 
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_goodjwt_builder, 
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_blankjwt_builder, 
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_emptyjwt_builder, 
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_jwt_builder_HS256, 
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_goodTrust, 
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_jvmprops_goodTrust,
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_badTrust,
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_blankTrust,
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_emptyTrust,
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_blankAuthEndpoint, 
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_emptyAuthEndpoint,
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_blankTokenEndpoint, 
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_emptyTokenEndpoint,
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_badIssuer,
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_blankIssuer,
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_emptyIssuer,
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_isClientSideRedirectSupported_true,
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_isClientSideRedirectSupported_false,
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_jwksUri_jwkDisabledInOP,
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_badScope,
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_blankScope,
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_emptyScope,
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_goodUserNameAttribute,
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_badUserNameAttribute,
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_blankUserNameAttribute,
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_emptyUserNameAttribute,
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_goodGroupNameAttribute,
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_badGroupNameAttribute,
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_blankGroupNameAttribute,
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_emptyGroupNameAttribute,
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_goodRealmNameAttribute,
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_badRealmNameAttribute,
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_blankRealmNameAttribute,
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_emptyRealmNameAttribute,
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_goodUserUniqueIdAttribute,
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_badUserUniqueIdAttribute,
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_blankUserUniqueIdAttribute,
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_emptyUserUniqueIdAttribute,
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_goodRedirectToRPHostAndPort,
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_badRedirectToRPHostAndPort,
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_blankRedirectToRPHostAndPort,
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_emptyRedirectToRPHostAndPort,
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_addParms,
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_addBadParms,
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_overrideEndpts,
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_codeResponseType,
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_idTokenTokenResponseType,
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_idTokenResponseType,
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_tokenResponseType,
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_responseModeFormPost_codeResponseType,
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_responseModeFormPost_idTokenTokenResponseType,
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_responseModeFormPost_idTokenResponseType,
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_responseModeFormPost_tokenResponseType,
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_forwardLoginParameter,
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_accessTokenRequiredTrue,
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_accessTokenRequiredTrue_withIntrospectRequiredAttrs,
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_accessTokenRequiredFalse,
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_accessTokenSupportedTrue_optionalParmsOmitted,
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_accessTokenSupportedTrue_optionalParmsOmitted_withIntrospectRequiredAttrs,
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_accessTokenSupportedTrue_optionalParmsIncluded,
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_accessTokenSupportedFalse,
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_accessTokenRequiredTrue_accessTokenSupportedTrue,
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_accessTokenHeaderNameBearer,
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_accessTokenHeaderNameXForwardedAccessToken,
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_accessTokenHeaderNameUserDefined"
+				scope="ALL_SCOPES"
+				introspectTokens="true"
+				enabled="true" />
+		</localStore>
+	</oauthProvider>
+
+
+	<openidConnectProvider
+		id="OidcConfigSample_JWT_JWK"
+		oauthProviderRef="OAuthConfigSample_JWT_JWK"
+		jwkEnabled="true"
+		signatureAlgorithm="RS256"
+		keyStoreRef="rsa_key"
+		requireOpenidScopeForUserInfo="false" />
+
+	<oauthProvider
+		id="OAuthConfigSample_JWT_JWK"
+		jwtAccessToken="true"
+		autoAuthorize="true"
+	>
+		<autoAuthorizeClient>client06</autoAuthorizeClient>
+		<autoAuthorizeClient>oidcLoginUser</autoAuthorizeClient>
+
+		<localStore>
+			<client
+				name="client06"
+				secret="{xor}LDo8LTor"
+				displayname="client06"
+				redirect="https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_goodJwksUri,
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_goodJwksUri_goodTrust,
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_badJwksUri,
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_blankJwksUri,
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_emptyJwksUri,
+				https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_hostNameVerificationEnabledTrue"
+				scope="ALL_SCOPES"
+				introspectTokens="true"
+				enabled="true" />
+		</localStore>
+	</oauthProvider>
+
+	<openidConnectProvider
+		id="OidcConfigSample_limitedScope"
+		oauthProviderRef="OAuthConfigSample_limitedScope"
+		jwkEnabled="true"
+		signatureAlgorithm="RS256"
+		keyStoreRef="rsa_key"
+		requireOpenidScopeForUserInfo="false" />
+
+	<oauthProvider
+		id="OAuthConfigSample_limitedScope"
+		autoAuthorize="true"
+	>
+		<autoAuthorizeClient>client02</autoAuthorizeClient>
+		<autoAuthorizeClient>oidcLoginUser</autoAuthorizeClient>
+
+		<localStore>
+			<client
+				name="client02"
+				secret="{xor}LDo8LTor"
+				displayname="client02"
+				redirect="https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_badScope_limitedOPScope"
+				scope="someScope"
+				introspectTokens="true"
+				enabled="true" />
+		</localStore>
+	</oauthProvider>
+
+	<openidConnectProvider
+		id="OidcConfigSample_missingAuthCodeGrantType"
+		oauthProviderRef="OAuthConfigSample_missingAuthCodeGrantType"
+		signatureAlgorithm="RS256"
+		keyStoreRef="rsa_key"
+		keyAliasName="rsacert"
+		requireOpenidScopeForUserInfo="false" />
+
+	<oauthProvider
+		id="OAuthConfigSample_missingAuthCodeGrantType"
+		jwtAccessToken="${oidcCreateJWTToken}"
+		autoAuthorize="true"
+	>
+		<autoAuthorizeClient>client01</autoAuthorizeClient>
+		<autoAuthorizeClient>oidcLoginUser</autoAuthorizeClient>
+
+		<localStore>
+			<client
+				name="client01"
+				secret="{xor}LDo8LTor"
+				displayname="client01"
+				redirect="https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_opMissingAuthCodeGrantType_codeResponseType"
+				scope="ALL_SCOPES"
+				grantTypes="implicit, refresh_token, client_credentials, password, urn:ietf:params:oauth:grant-type:jwt-bearer"
+				introspectTokens="true"
+				enabled="true" />
+		</localStore>
+	</oauthProvider>
+	
+	<openidConnectProvider
+		id="OidcConfigSample_missingImplicitGrantType"
+		oauthProviderRef="OAuthConfigSample_missingImplicitGrantType"
+		signatureAlgorithm="RS256"
+		keyStoreRef="rsa_key"
+		keyAliasName="rsacert"
+		requireOpenidScopeForUserInfo="false" />
+
+	<oauthProvider
+		id="OAuthConfigSample_missingImplicitGrantType"
+		jwtAccessToken="${oidcCreateJWTToken}"
+		autoAuthorize="true"
+	>
+		<autoAuthorizeClient>client01</autoAuthorizeClient>
+		<autoAuthorizeClient>oidcLoginUser</autoAuthorizeClient>
+
+		<localStore>
+			<client
+				name="client01"
+				secret="{xor}LDo8LTor"
+				displayname="client01"
+				redirect="https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_opMissingImplicitGrantType_idTokenTokenResponseType,
+							https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_opMissingImplicitGrantType_idTokenResponseType,
+							https://localhost:${bvt.prop.HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_opMissingImplicitGrantType_tokenResponseType"
+				grantTypes="authorization_code, refresh_token, client_credentials, password, urn:ietf:params:oauth:grant-type:jwt-bearer"
+				scope="ALL_SCOPES"
+				introspectTokens="true"
+				enabled="true" />
+		</localStore>
+	</oauthProvider>
+	
+	<oauth-roles>
+		<authenticated>
+			<user name="testuser" />
+			<user name="oidcLoginUser" />
+			<group name="group1" />
+		</authenticated>
+		<clientManager>
+			<user name="testuser" />
+			<user name="oidcLoginUser" />
+			<group name="group1" />
+		</clientManager>
+	</oauth-roles>
+
+</server>

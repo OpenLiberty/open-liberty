@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2020 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,27 +10,28 @@
  *******************************************************************************/
 package io.openliberty.wsoc.tests;
 
-import java.util.Set;
+import java.io.File;
 import java.util.logging.Logger;
 
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.ws.fat.util.LoggingTest;
-import com.ibm.ws.fat.util.SharedServer;
+import com.ibm.ws.fat.util.browser.WebBrowser;
+import com.ibm.ws.fat.util.browser.WebBrowserFactory;
 import com.ibm.ws.fat.util.browser.WebResponse;
 
+import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.HttpUtils;
 import io.openliberty.wsoc.tests.all.TraceEnabledTest;
 import io.openliberty.wsoc.util.OnlyRunNotOnZRule;
 import io.openliberty.wsoc.util.WebServerControl;
@@ -43,47 +44,24 @@ import io.openliberty.wsoc.util.wsoc.WsocTest;
  * @author unknown
  */
 @RunWith(FATRunner.class)
-public class TraceTest extends LoggingTest {
+public class TraceTest {
 
-    @ClassRule
-    public static SharedServer SS = new SharedServer("traceTestServer", false);
+    public static final String SERVER_NAME = "traceTestServer";
+    @Server(SERVER_NAME)
 
-    private static WebServerSetup bwst = new WebServerSetup(SS);
+    public static LibertyServer LS;
+
+    private static WebServerSetup bwst = null;
 
     @Rule
     public final TestRule notOnZRule = new OnlyRunNotOnZRule();
 
-    private final WsocTest wt = new WsocTest(SS, false);
-
-    private final TraceEnabledTest mct = new TraceEnabledTest(wt);
+    private static WsocTest wt = null;;
+    private static TraceEnabledTest mct = null;
 
     private static final Logger LOG = Logger.getLogger(SecureTest.class.getName());
 
     private static final String TRACE_WAR_NAME = "trace";
-
-    protected WebResponse runAsSSCAndVerifyResponse(String className, String testName) throws Exception {
-        int securePort = 0, port = 0;
-        String host = "";
-        LibertyServer server = SS.getLibertyServer();
-        if (WebServerControl.isWebserverInFront()) {
-            try {
-                host = WebServerControl.getHostname();
-                securePort = WebServerControl.getSecurePort();
-                port = Integer.valueOf(WebServerControl.getPort()).intValue();
-            } catch (Exception e) {
-                throw new RuntimeException("Failed to get ports or host from webserver", e);
-            }
-        } else {
-            securePort = server.getHttpDefaultSecurePort();
-            host = server.getHostname();
-            port = server.getHttpDefaultPort();
-        }
-        // seem odd, but "context" is the root here because the client side app lives in the context war file
-        return SS.verifyResponse(createWebBrowserForTestCase(),
-                                 "/trace/SingleRequest?classname=" + className + "&testname=" + testName + "&targethost=" + host + "&targetport=" + port
-                                                                + "&secureport=" + securePort,
-                                 "SuccessfulTest");
-    }
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -96,17 +74,15 @@ public class TraceTest extends LoggingTest {
                                                            "io.openliberty.wsoc.tests.all",
                                                            "io.openliberty.wsoc.endpoints.client.trace");
         TraceApp = (WebArchive) ShrinkHelper.addDirectory(TraceApp, "test-applications/" + TRACE_WAR_NAME + ".war/resources");
-        // Verify if the apps are in the server before trying to deploy them
-        if (SS.getLibertyServer().isStarted()) {
-            Set<String> appInstalled = SS.getLibertyServer().getInstalledAppNames(TRACE_WAR_NAME);
-            LOG.info("addAppToServer : " + TRACE_WAR_NAME + " already installed : " + !appInstalled.isEmpty());
-            if (appInstalled.isEmpty())
-                ShrinkHelper.exportDropinAppToServer(SS.getLibertyServer(), TraceApp);
-        }
-        SS.startIfNotStarted();
-        SS.getLibertyServer().waitForStringInLog("CWWKZ0001I.* " + TRACE_WAR_NAME);
+        ShrinkHelper.exportDropinAppToServer(LS, TraceApp);
+
+        LS.startServer();
+        LS.waitForStringInLog("CWWKZ0001I.* " + TRACE_WAR_NAME);
+
+        bwst = new WebServerSetup(LS);
         bwst.setUp();
-        bwst.setUp();
+        wt = new WsocTest(LS, false);
+        mct = new TraceEnabledTest(wt);
 
     }
 
@@ -120,10 +96,60 @@ public class TraceTest extends LoggingTest {
 
         }
 
-        if (SS.getLibertyServer() != null && SS.getLibertyServer().isStarted()) {
-            SS.getLibertyServer().stopServer(null);
+        if (LS != null && LS.isStarted()) {
+            LS.stopServer();
         }
         bwst.tearDown();
+    }
+
+    protected WebResponse runAsLSAndVerifyResponse(String className, String testName) throws Exception {
+        int securePort = 0, port = 0;
+        String host = "";
+        LibertyServer server = LS;
+        if (WebServerControl.isWebserverInFront()) {
+            try {
+                host = WebServerControl.getHostname();
+                securePort = WebServerControl.getSecurePort();
+                port = Integer.valueOf(WebServerControl.getPort()).intValue();
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to get ports or host from webserver", e);
+            }
+        } else {
+            securePort = server.getHttpDefaultSecurePort();
+            host = server.getHostname();
+            port = server.getHttpDefaultPort();
+        }
+
+        WebBrowser browser = WebBrowserFactory.getInstance().createWebBrowser((File) null);
+        String[] expectedInResponse = {
+                                        "SuccessfulTest"
+        };
+        // seem odd, but "context" is the root here because the client side app lives in the context war file
+        return verifyResponse(browser,
+                              "/trace/SingleRequest?classname=" + className + "&testname=" + testName + "&targethost=" + host + "&targetport=" + port
+                                       + "&secureport=" + securePort,
+                              expectedInResponse);
+    }
+
+    /**
+     * Submits an HTTP request at the path specified by <code>resource</code>,
+     * and verifies that the HTTP response body contains the all of the supplied text
+     * specified by the array of * <code>expectedResponses</code>
+     *
+     * @param webBrowser        the browser used to submit the request
+     * @param resource          the resource on the shared server to request
+     * @param expectedResponses an array of the different subsets of the text expected from the HTTP response
+     * @return the HTTP response (in case further validation is required)
+     * @throws Exception if the <code>expectedResponses</code> is not contained in the HTTP response body
+     */
+    public WebResponse verifyResponse(WebBrowser webBrowser, String resource, String[] expectedResponses) throws Exception {
+        WebResponse response = webBrowser.request(HttpUtils.createURL(LS, resource).toString());
+        LOG.info("Response from webBrowser: " + response.getResponseBody());
+        for (String textToFind : expectedResponses) {
+            response.verifyResponseBodyContains(textToFind);
+        }
+
+        return response;
     }
 
     @Test
@@ -133,25 +159,25 @@ public class TraceTest extends LoggingTest {
 
     @Test
     public void testSSCProgrammaticCloseSuccess() throws Exception {
-        this.runAsSSCAndVerifyResponse("TraceEnabledTest", "testProgrammaticCloseSuccess");
+        this.runAsLSAndVerifyResponse("TraceEnabledTest", "testProgrammaticCloseSuccess");
     }
 
     @Mode(TestMode.FULL)
     @Test
     public void testSSCProgrammaticCloseSuccessOnOpen() throws Exception {
-        this.runAsSSCAndVerifyResponse("TraceEnabledTest", "testProgrammaticCloseSuccessOnOpen");
+        this.runAsLSAndVerifyResponse("TraceEnabledTest", "testProgrammaticCloseSuccessOnOpen");
     }
 
     @Test
     public void testSSCConfiguratorSuccess() throws Exception {
-        this.runAsSSCAndVerifyResponse("TraceEnabledTest", "testConfiguratorSuccess");
+        this.runAsLSAndVerifyResponse("TraceEnabledTest", "testConfiguratorSuccess");
     }
 
     // Move to trace test bucket because of build break 217622
     @Mode(TestMode.FULL)
     @Test
     public void testSSCMultipleClientsPublishingandReceivingToThemselvesTextSuccess() throws Exception {
-        this.runAsSSCAndVerifyResponse("TraceEnabledTest", "testMultipleClientsPublishingandReceivingToThemselvesTextSuccess");
+        this.runAsLSAndVerifyResponse("TraceEnabledTest", "testMultipleClientsPublishingandReceivingToThemselvesTextSuccess");
     }
 
     // Move to trace test bucket because of build break 244260
@@ -167,15 +193,5 @@ public class TraceTest extends LoggingTest {
     //public void testAsyncAnnotatedTextSuccess() throws Exception {
     //    mct.testAsyncAnnotatedTextSuccess();
     //}
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.fat.util.LoggingTest#getSharedServer()
-     */
-    @Override
-    protected SharedServer getSharedServer() {
-        return SS;
-    }
 
 }

@@ -279,3 +279,7 @@ IDMAP_INVALID_FORMAT.useraction=Update the userIdMap value so that it adheres to
 KRB5_SERVICE_NOT_AVAILABLE=CWIML4521E: The {0} LDAP registry attempted to bind to the LDAP server by using Kerberos credentials for the {1} principal name, but the Kerberos service that provides these credentials is not available. The bind authentication mechanism is {2}.
 KRB5_SERVICE_NOT_AVAILABLE.explanation=The Kerberos service was not available when the LDAP registry attempted to bind to the LDAP server. If the Kerberos service is not available, no users can authenticate.
 KRB5_SERVICE_NOT_AVAILABLE.useraction=Review the LDAP registry configuration settings for the bindAuthMechanism, krb5Principal, and krb5TicketCache attributes as well as the Kerberos configuration. Restart the server.
+
+FILTER_MISSING_PERCENT_V=CWIML4523E: The {0} value for {1} is invalid. It requires an attribute value assertion where the value assertion is =%v. For example, {2}.
+FILTER_MISSING_PERCENT_V.explanation=The LDAP registry replaces the %v with the value to search for when doing searches for users or groups.
+FILTER_MISSING_PERCENT_V.useraction=Update the specified filter to include an attribute value assertion that contains =%v in the value assertion.

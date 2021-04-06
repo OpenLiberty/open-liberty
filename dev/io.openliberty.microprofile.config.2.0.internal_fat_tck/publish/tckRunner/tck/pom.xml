@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- 
-    Copyright (c) 2020 IBM Corporation and others. All rights reserved.
+    Copyright (c) 2020, 2021 IBM Corporation and others. All rights reserved.
     This program and the accompanying materials are made available under the 
     terms of the Eclipse Public License v1.0 which accompanies this distribution, 
     and is available at 
@@ -8,8 +8,7 @@
     Contributors: 
         IBM Corporation - initial API and implementation
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.openliberty.microprofile.config20.internal</groupId>
@@ -43,28 +42,28 @@
                 <scope>import</scope>
             </dependency>
             <dependency>
-	          <groupId>org.jboss.spec.javax.servlet</groupId>
-	          <artifactId>jboss-servlet-api_3.0_spec</artifactId>
-	          <version>1.0.2.Final</version> <!-- Defines the version of this artifact that arquillian-liberty-managed should use -->
-	        </dependency>
+                <groupId>org.jboss.spec.javax.servlet</groupId>
+                <artifactId>jboss-servlet-api_3.0_spec</artifactId>
+                <version>1.0.2.Final</version> <!-- Needed for ZOS. Defines the version of this artifact that arquillian-liberty-managed should use -->
+            </dependency>
         </dependencies>
     </dependencyManagement> 
-    
+
     <!-- Whilst using an artifact that is in Maven (microprofile-config-tck:2.0-RC15) we shouldn't need this.
-	<repositories>
-		<! If the TCK is using a custom built artifact, e.g.- microprofile-config-tck:2.0-ibm20201020.
-		And Artifactory is unavailable, the following DHE repository should be searched for the artifact >
-		<repository>
-			<name>IBM DHE Maven repository</name>
-			<id>DHE</id>
-			<url>http://public.dhe.ibm.com/ibmdl/export/pub/software/olrepo</url>
-		</repository>
-	</repositories>
-	-->
+    <repositories>
+        <! If the TCK is using a custom built artifact, e.g.- microprofile-config-tck:2.0-ibm20201020.
+        And Artifactory is unavailable, the following DHE repository should be searched for the artifact >
+        <repository>
+            <name>IBM DHE Maven repository</name>
+            <id>DHE</id>
+            <url>http://public.dhe.ibm.com/ibmdl/export/pub/software/olrepo</url>
+        </repository>
+    </repositories>
+    -->
 
     <dependencies>
 
-       <dependency>
+        <dependency>
             <groupId>com.ibm.ws</groupId>
             <artifactId>fattest.simplicity</artifactId>
             <version>1</version>
@@ -75,7 +74,7 @@
         <dependency>
             <groupId>org.eclipse.microprofile.config</groupId>
             <artifactId>microprofile-config-tck</artifactId>
-            <version>2.0</version> 
+            <version>2.0</version>
         </dependency>
 
         <dependency>
@@ -92,7 +91,7 @@
             <version>2.0</version>
             <scope>provided</scope>
         </dependency>
-        
+
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
@@ -108,7 +107,7 @@
         <dependency>
             <groupId>io.openliberty.arquillian</groupId>
             <artifactId>arquillian-liberty-managed</artifactId>
-            <version>1.0.5</version> 
+            <version>1.0.5</version>
             <scope>test</scope>
         </dependency>
 

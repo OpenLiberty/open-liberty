@@ -86,7 +86,7 @@ public class LDAPRegressionTest {
         try {
             if (libertyServer != null) {
                 /* Temporarily allow CWWKE0701E for testBetaFenceForBindAuthMech */
-                libertyServer.stopServer("CWWKE0701E");
+                libertyServer.stopServer("CWIML4523E", "CWWKE0701E");
             }
         } finally {
             if (ds != null) {
@@ -396,6 +396,33 @@ public class LDAPRegressionTest {
         Log.info(c, methodName, "Finished Liberty server update");
 
         assertFalse("Did not find CWWKE0701E for beta fence in log", libertyServer.findStringsInLogs("CWWKE0701E").isEmpty());
+    }
 
+    /**
+     * Verify that we issue an error and throw an exception when a user filter without a %v is found.
+     */
+    @Test
+    public void testUserFilterWithoutPercentV() throws Exception {
+        ServerConfiguration clone = basicConfiguration.clone();
+        LdapRegistry ldap = createLdapRegistry(clone);
+        ldap.getCustomFilters().setUserFilter("(uid=someuser)");
+
+        updateConfigDynamically(libertyServer, clone);
+
+        assertFalse("Did not find CWIML4523E in log", libertyServer.findStringsInLogsAndTraceUsingMark("CWIML4523E.*uid=someuser.*userFilter").isEmpty());
+    }
+
+    /**
+     * Verify that we issue an error and throw an exception when a group filter without a %v is found.
+     */
+    @Test
+    public void testGroupFilterWithoutPercentV() throws Exception {
+        ServerConfiguration clone = basicConfiguration.clone();
+        LdapRegistry ldap = createLdapRegistry(clone);
+        ldap.getCustomFilters().setGroupFilter("(cn=somegroup)");
+
+        updateConfigDynamically(libertyServer, clone);
+
+        assertFalse("Did not find CWIML4523E in log", libertyServer.findStringsInLogsAndTraceUsingMark("CWIML4523E.*cn=somegroup.*groupFilter").isEmpty());
     }
 }

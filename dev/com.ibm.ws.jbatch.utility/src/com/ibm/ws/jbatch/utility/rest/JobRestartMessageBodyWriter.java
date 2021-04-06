@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -37,7 +37,7 @@ public class JobRestartMessageBodyWriter implements EntityWriter {
      * @return a JsonObject for the given map
      */
     protected JsonObject buildJsonObjectFromMap( Map map ) {
-        JsonObjectBuilder builder = Json.createObjectBuilder();
+        JsonObjectBuilder builder = builderFactory.createObjectBuilder();
         
         for (Map.Entry entry : (Set<Map.Entry>) map.entrySet() ) {
             builder.add( (String) entry.getKey(), (String) entry.getValue() );
@@ -49,11 +49,11 @@ public class JobRestartMessageBodyWriter implements EntityWriter {
     @Override
     public void writeEntity(OutputStream entityStream) {
     
-        JsonObjectBuilder builder = Json.createObjectBuilder();
+        JsonObjectBuilder builder = builderFactory.createObjectBuilder();
         
         builder.add( "jobParameters", buildJsonObjectFromMap( jobRestart.getJobParameters() ) );
         
-        Json.createWriter(entityStream).writeObject( builder.build() );
+        writerFactory.createWriter(entityStream).writeObject( builder.build() );
     }
     
 
