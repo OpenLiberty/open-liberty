@@ -64,7 +64,6 @@ public class TicketCacheBadPrincipalJava8 extends CommonBindTest {
         Log.info(c, testName.getMethodName(), "Login expected to fail, config has a bad principalName");
         loginUserShouldFail();
 
-        assertFalse("Expected to find Kerberos bind failure: CWIML4507E", server.findStringsInLogsAndTraceUsingMark("CWIML4507E").isEmpty());
         /*
          * The same base exception is not always thrown, two options here, either confirms that we tried to use an
          * invalid principal name.
@@ -73,6 +72,9 @@ public class TicketCacheBadPrincipalJava8 extends CommonBindTest {
         boolean foundKerberosLevelError = !server.findStringsInLogsAndTraceUsingMark("CWWKS4347E").isEmpty();
         assertTrue("Expected to find Kerberos bind failure: Either `CWIML4512E` or `CWWKS4347E`", foundBadPrincipalName || foundKerberosLevelError);
 
+        if (foundKerberosLevelError) { // should be wrapped in a WIM level message.
+            assertFalse("Expected to find Kerberos bind failure: CWIML4507E", server.findStringsInLogsAndTraceUsingMark("CWIML4507E").isEmpty());
+        }
     }
 
 }
