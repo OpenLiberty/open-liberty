@@ -12,6 +12,8 @@
 package com.ibm.ws.wssecurity.fat.cxf.usernametoken;
 
 import java.io.File;
+//4/2021
+import java.util.Set;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -20,6 +22,8 @@ import org.junit.runner.RunWith;
 
 //Added 10/2020
 import com.ibm.websphere.simplicity.ShrinkHelper;
+//4/2021
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.AllowedFFDC;
@@ -48,12 +52,34 @@ public class CxfSSLUNTNonceTimeOutTests extends SSLTestCommon {
     @BeforeClass
     public static void setUp() throws Exception {
         String thisMethod = "setup";
-        String copyFromFile = System.getProperty("user.dir") +
-                              File.separator +
-                              server.getPathToAutoFVTNamedServer() +
-                              "server_customize.xml";
+        //4/2021
+        String copyFromFile = "";
+
+        //Orig:
+        //String copyFromFile = System.getProperty("user.dir") +
+        //                      File.separator +
+        //                      server.getPathToAutoFVTNamedServer() +
+        //                      "server_customize.xml";
+
         //orig from CL:
         //server = LibertyServerFactory.getLibertyServer("com.ibm.ws.wssecurity_fat.ssl");
+
+        //4/2021
+        ServerConfiguration config = server.getServerConfiguration();
+        Set<String> features = config.getFeatureManager().getFeatures();
+        if (features.contains("jaxws-2.2")) {
+            copyFromFile = System.getProperty("user.dir") +
+                           File.separator +
+                           server.getPathToAutoFVTNamedServer() +
+                           "server_customize.xml";
+        }
+        if (features.contains("jaxws-2.3")) {
+            copyFromFile = System.getProperty("user.dir") +
+                           File.separator +
+                           server.getPathToAutoFVTNamedServer() +
+                           "server_customize_ee8.xml";
+        }
+        //End 4/2021
 
         //Added 10/2020
         ShrinkHelper.defaultDropinApp(server, "untsslclient", "com.ibm.ws.wssecurity.fat.untsslclient", "fats.cxf.basicssl.wssec", "fats.cxf.basicssl.wssec.types");
