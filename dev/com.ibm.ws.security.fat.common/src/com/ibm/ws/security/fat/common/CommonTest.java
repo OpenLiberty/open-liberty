@@ -15,10 +15,12 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Scanner;
 
+import org.junit.After;
 import org.junit.Rule;
 import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
 
+import com.gargoylesoftware.htmlunit.WebClient;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.utils.WebClientTracker;
 
@@ -176,6 +178,33 @@ public class CommonTest {
         } catch (Exception e) {
             e.printStackTrace(System.out);
             throw new RuntimeException("Exception thrown searching for passwords in the server logs");
+        }
+    }
+
+    public WebClient getAndSaveWebClient() throws Exception {
+
+        WebClient webClient = TestHelpers.getWebClient();
+        webClientTracker.addWebClient(webClient);
+        return webClient;
+    }
+
+    public WebClient getAndSaveWebClient(boolean override) throws Exception {
+
+        WebClient webClient = TestHelpers.getWebClient(override);
+        webClientTracker.addWebClient(webClient);
+        return webClient;
+    }
+
+    @After
+    public void endTestCleanup() throws Exception {
+
+        try {
+
+            // clean up webClients
+            webClientTracker.closeAllWebClients();
+
+        } catch (Exception e) {
+            e.printStackTrace(System.out);
         }
     }
 }

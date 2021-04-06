@@ -92,7 +92,7 @@ public class SameSiteTests extends CommonTest {
 
     public void mainPathTest(SameSiteTestExpectations.TestServerExpectations testExpectation, TestSettings settings, String subTestPrefix) throws Exception {
 
-        WebClient webClient = CommonTestHelpers.getWebClient(true);
+        WebClient webClient = getAndSaveWebClient(true);
 
         Log.info(thisClass, "main", "redirect enabled: " + webClient.getOptions().isRedirectEnabled());
 
