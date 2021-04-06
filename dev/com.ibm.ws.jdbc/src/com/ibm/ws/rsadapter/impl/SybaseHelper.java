@@ -49,13 +49,8 @@ public class SybaseHelper extends DatabaseHelper
 
         mcf.defaultIsolationLevel = Connection.TRANSACTION_REPEATABLE_READ;
         mcf.supportsGetTypeMap = false;
-    }
-    
-    @Override
-    void customizeStaleStates() {
-        super.customizeStaleStates();
         
-        Collections.addAll(staleSQLStates,
+        Collections.addAll(staleConCodes,
                            "JZ0C0",
                            "JZ0C1");
     }

@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.mp.jwt.impl.utils;
 
@@ -17,6 +17,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.json.Json;
+import javax.json.JsonBuilderFactory;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 
@@ -36,6 +37,8 @@ import com.ibm.ws.security.mp.jwt.TraceConstants;
  */
 public class ClaimsUtils {
     public static final TraceComponent tc = Tr.register(ClaimsUtils.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
+
+    private static final JsonBuilderFactory builderFactory = Json.createBuilderFactory(null);
 
     public ClaimsUtils() {
     }
@@ -158,7 +161,7 @@ public class ClaimsUtils {
     private void replaceMapWithJsonObject(String claimName, JwtClaims claimsSet) {
         try {
             Map<String, Object> map = claimsSet.getClaimValue(claimName, Map.class);
-            JsonObjectBuilder builder = Json.createObjectBuilder();
+            JsonObjectBuilder builder = builderFactory.createObjectBuilder();
             for (Map.Entry<String, Object> entry : map.entrySet()) {
                 builder.add(entry.getKey(), entry.getValue().toString());
             }

@@ -93,7 +93,7 @@ public class SimpleBindTest extends CommonBindTest {
      */
     @Test
     @CheckForLeakedPasswords(LdapKerberosUtils.BIND_PASSWORD)
-    public void basicLoginChecksNoBindAuth() throws Exception {
+    public void basicLoginChecksSimple_withoutBindAuth() throws Exception {
         Log.info(c, testName.getMethodName(), "Run basic login checks with no bindAuthMechanism set.");
 
         ServerConfiguration newServer = emptyConfiguration.clone();
@@ -136,6 +136,37 @@ public class SimpleBindTest extends CommonBindTest {
 
         Log.info(c, testName.getMethodName(), "Basic logins should fail with bindAuth=none, blocked by DirectoryService.");
         loginUserShouldFail();
+    }
+
+    /**
+     * Regression test. Do not set bindAuthMech and run tests with DirectoryService allowing anonymous bind.
+     *
+     * @throws Exception
+     */
+    @AllowedFFDC("javax.naming.NoPermissionException")
+    @Test
+    public void basicLoginChecksNone_withoutBindAuth() throws Exception {
+        Log.info(c, testName.getMethodName(), "Run basic login checks with none implied, with allowing anon access.");
+
+        DirectoryService ds = ApacheDSandKDC.getDirectoryService();
+        assertNotNull("DirectoryService is null, cannot update anon access.", ds);
+        try {
+            Log.info(c, testName.getMethodName(), "Updating DirectoryService to allow anonymous bind.");
+            ds.setAllowAnonymousAccess(true);
+
+            ServerConfiguration newServer = emptyConfiguration.clone();
+            LdapRegistry ldap = getLdapRegistryWithSimpleBind();
+            ldap.setBindAuthMechanism(ConfigConstants.CONFIG_AUTHENTICATION_TYPE_NONE);
+            newServer.getLdapRegistries().add(ldap);
+            updateConfigDynamically(server, newServer);
+
+            Log.info(c, testName.getMethodName(), "Basic login should be successful with bindAuth=none, allowed by DirectoryService.");
+            baselineTests();
+        } finally {
+            Log.info(c, testName.getMethodName(), "Updating DirectoryService to block anonymous bind.");
+            ds.setAllowAnonymousAccess(false);
+        }
+
     }
 
     /**
@@ -183,7 +214,7 @@ public class SimpleBindTest extends CommonBindTest {
         assertFalse("LdapRegistry should modify: " + ldapModify, server.findStringsInLogsAndTraceUsingMark(ldapModify).isEmpty());
 
         Log.info(c, testName.getMethodName(), "Swap to a different valid config file, LdapRegistry should process a modify.");
-        String altConfigFile = ApacheDSandKDC.createConfigFile("altConfig-", KDC_PORT);
+        String altConfigFile = ApacheDSandKDC.createConfigFile("altConfig-", KDC_PORT, true, false);
         kerb.configFile = altConfigFile;
         updateConfigDynamically(server, newServer);
         loginUser();

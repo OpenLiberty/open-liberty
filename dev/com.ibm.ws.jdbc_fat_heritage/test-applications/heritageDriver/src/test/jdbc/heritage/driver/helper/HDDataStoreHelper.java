@@ -21,8 +21,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 import java.sql.SQLNonTransientConnectionException;
 import java.sql.SQLRecoverableException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -40,6 +42,8 @@ import com.ibm.ws.jdbc.heritage.DataStoreHelperMetaData;
 import com.ibm.ws.jdbc.heritage.GenericDataStoreHelper;
 
 import test.jdbc.heritage.driver.HDConnection;
+import test.jdbc.heritage.driver.HeritageDBConnection;
+import test.jdbc.heritage.driver.HeritageDBDoesNotImplementItException;
 
 /**
  * Data store helper for the test JDBC driver.
@@ -51,7 +55,7 @@ public class HDDataStoreHelper extends GenericDataStoreHelper {
 
     private AtomicReference<?> dsConfigRef;
 
-    private Map<Object, Class<?>> exceptionIdentificationOverrides;
+    private Map<Object, Class<?>> exceptionIdentificationOverrides = Collections.emptyMap();
 
     private static final Map<Object, Class<?>> exceptionMap = new HashMap<Object, Class<?>>();
     {
@@ -146,8 +150,7 @@ public class HDDataStoreHelper extends GenericDataStoreHelper {
 
     @Override
     public String getXAExceptionContents(XAException x) {
-        // This ought to be unreachable for non-xa-capable javax.sql.DataSource.
-        throw new UnsupportedOperationException("This driver does not provide an XADataSource.");
+        return x.getClass().getName() + "(error code " + x.errorCode + "): " + x.getMessage() + " caused by " + x.getCause();
     }
 
     @Override
@@ -156,6 +159,13 @@ public class HDDataStoreHelper extends GenericDataStoreHelper {
                || x instanceof SQLNonTransientConnectionException
                || x instanceof StaleConnectionException
                || mapException(x) instanceof StaleConnectionException;
+    }
+
+    @Override
+    public boolean isUnsupported(SQLException x) {
+        return x instanceof SQLFeatureNotSupportedException
+               || x instanceof HeritageDBDoesNotImplementItException
+               || x instanceof HeritageDBFeatureUnavailableException;
     }
 
     @Override
@@ -193,6 +203,11 @@ public class HDDataStoreHelper extends GenericDataStoreHelper {
         } catch (PrivilegedActionException privX) {
             return new SQLException(privX);
         }
+    }
+
+    @Override
+    public int modifyXAFlag(int xaStartFlags) {
+        return xaStartFlags |= HeritageDBConnection.LOOSELY_COUPLED_TRANSACTION_BRANCHES;
     }
 
     private Object readConfig(String fieldName) {

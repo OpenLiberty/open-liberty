@@ -110,13 +110,8 @@ public class DerbyNetworkClientHelper extends DerbyHelper {
         else { // means need to integrate
             genPw = new PrintWriter(new TraceWriter(derbyTc), true);
         }
-    }
-    
-    @Override
-    void customizeStaleStates() {
-        super.customizeStaleStates();
         
-        Collections.addAll(staleErrorCodes,
+        Collections.addAll(staleConCodes,
                            -4499);
     }
 

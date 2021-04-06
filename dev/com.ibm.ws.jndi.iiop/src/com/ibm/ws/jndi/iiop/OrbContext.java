@@ -36,7 +36,7 @@ static final TraceComponent tc = Tr.register(OrbContext.class);
 
     public OrbContext(ORB orb, Hashtable<?,?> environment) {
         this.orb = orb;
-        this.environment = new Hashtable<Object, Object>(environment);
+        this.environment = new Hashtable<>(environment);
     }
 
     @Override

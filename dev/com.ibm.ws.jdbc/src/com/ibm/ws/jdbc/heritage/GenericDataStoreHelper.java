@@ -132,12 +132,29 @@ public abstract class GenericDataStoreHelper {
     public abstract boolean isConnectionError(SQLException x);
 
     /**
+     * Determines if the exception indicates an unsupported operation.
+     *
+     * @param x the exception.
+     * @return true if the exception indicates an unsupported operation, otherwise false.
+     */
+    public abstract boolean isUnsupported(SQLException x);
+
+    /**
      * Used to identify an exception and possibly replace it (if replaceExceptions=true).
      *
      * @param x an exception.
      * @return the exception to identify as or replace with.
      */
     public abstract SQLException mapException(SQLException x);
+
+    /**
+     * Adds an XA start flag for loosely coupled transaction branches.
+     *
+     * @param xaStartFlags XA start flags to add to.
+     * @return updated XA start flags which are a combination of the flags supplied to this method
+     *         and the flag for loosely coupled transaction branches.
+     */
+    public abstract int modifyXAFlag(int xaStartFlags);
 
     /**
      * Supplies the dataSource configuration to the data store helper.

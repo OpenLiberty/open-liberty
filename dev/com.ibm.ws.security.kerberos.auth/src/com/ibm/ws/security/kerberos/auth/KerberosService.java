@@ -92,14 +92,14 @@ public class KerberosService {
     @Trivial
     @FFDCIgnore({ MalformedURLException.class, URISyntaxException.class, IllegalArgumentException.class })
     protected void initialize(ComponentContext ctx, boolean modifyPath) {
-        String rawKeytab = (String) ctx.getProperties().get("keytab");
-        String rawConfigFile = (String) ctx.getProperties().get("configFile");
+        String rawKeytab = (String) ctx.getProperties().get(Krb5Constants.KEYTAB);
+        String rawConfigFile = (String) ctx.getProperties().get(Krb5Constants.CONFIG_FILE);
 
         if (rawKeytab != null) {
             keytab = Paths.get(rawKeytab);
             if (keytab.toFile().exists()) {
                 if (tc.isInfoEnabled()) {
-                    Tr.info(tc, "KRB5_FILE_FOUND_CWWKS4346I", "keytab", keytab.toAbsolutePath());
+                    Tr.info(tc, "KRB5_FILE_FOUND_CWWKS4346I", Krb5Constants.KEYTAB, keytab.toAbsolutePath());
                 }
             } else {
                 try {
@@ -110,27 +110,27 @@ public class KerberosService {
                     File keytabFile = new File(keytabUrl.toURI());
                     if (keytabFile.exists()) {
                         if (tc.isInfoEnabled()) {
-                            Tr.info(tc, "KRB5_FILE_FOUND_CWWKS4346I", "keytab", rawKeytab);
+                            Tr.info(tc, "KRB5_FILE_FOUND_CWWKS4346I", Krb5Constants.KEYTAB, rawKeytab);
                         }
                     } else {
-                        Tr.error(tc, "KRB5_FILE_NOT_FOUND_CWWKS4345E", "keytab", "<kerberos>", rawKeytab);
+                        Tr.error(tc, "KRB5_FILE_NOT_FOUND_CWWKS4345E", Krb5Constants.KEYTAB, "<kerberos>", rawKeytab);
                     }
                 } catch (MalformedURLException ex) {
                     // catch blocks are separate due to a limitation of @FFDCIgnore
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "Could not find keytab as a Path or URL: ", ex);
                     }
-                    Tr.error(tc, "KRB5_FILE_NOT_FOUND_CWWKS4345E", "keytab", "<kerberos>", rawKeytab);
+                    Tr.error(tc, "KRB5_FILE_NOT_FOUND_CWWKS4345E", Krb5Constants.KEYTAB, "<kerberos>", rawKeytab);
                 } catch (URISyntaxException ex) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "Could not find keytab as a Path or URL: ", ex);
                     }
-                    Tr.error(tc, "KRB5_FILE_NOT_FOUND_CWWKS4345E", "keytab", "<kerberos>", rawKeytab);
+                    Tr.error(tc, "KRB5_FILE_NOT_FOUND_CWWKS4345E", Krb5Constants.KEYTAB, "<kerberos>", rawKeytab);
                 } catch (IllegalArgumentException ex) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "Could not find keytab as a Path or URL: ", ex);
                     }
-                    Tr.error(tc, "KRB5_FILE_NOT_FOUND_CWWKS4345E", "keytab", "<kerberos>", rawKeytab);
+                    Tr.error(tc, "KRB5_FILE_NOT_FOUND_CWWKS4345E", Krb5Constants.KEYTAB, "<kerberos>", rawKeytab);
                 }
             }
         } else {
@@ -148,10 +148,10 @@ public class KerberosService {
 
             if (configFile.toFile().exists()) {
                 if (tc.isInfoEnabled()) {
-                    Tr.info(tc, "KRB5_FILE_FOUND_CWWKS4346I", "configFile", configFile.toAbsolutePath());
+                    Tr.info(tc, "KRB5_FILE_FOUND_CWWKS4346I", Krb5Constants.CONFIG_FILE, configFile.toAbsolutePath());
                 }
             } else {
-                Tr.error(tc, "KRB5_FILE_NOT_FOUND_CWWKS4345E", "configFile", "<kerberos>", configFile.toAbsolutePath());
+                Tr.error(tc, "KRB5_FILE_NOT_FOUND_CWWKS4345E", Krb5Constants.CONFIG_FILE, "<kerberos>", configFile.toAbsolutePath());
             }
         } else if (rawConfigFile == null && modifyPath) {
             /*
@@ -272,6 +272,21 @@ public class KerberosService {
         Set<GSSCredential> gssCreds = subject.getPrivateCredentials(GSSCredential.class);
         if (gssCreds == null || gssCreds.size() == 0) {
             GSSCredential gssCred = SubjectHelper.createGSSCredential(subject);
+
+            if (gssCred == null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "The createGSSCredential on subject " + subject + " using principal, " + principal + ", returned null. ");
+                }
+                String msg = null;
+                if (ccache != null) {
+                    msg = Tr.formatMessage(tc, "KRB5_LOGIN_FAILED_CACHE_CWWKS4347E", principal, ccache.toAbsolutePath());
+                } else if (keytab != null) {
+                    msg = Tr.formatMessage(tc, "KRB5_LOGIN_FAILED_KEYTAB_CWWKS4348E", principal, keytab.toAbsolutePath());
+                } else {
+                    msg = Tr.formatMessage(tc, "KRB5_LOGIN_FAILED_DEFAULT_KEYTAB_CWWKS4349E", principal);
+                }
+                throw new LoginException(msg);
+            }
             if (System.getSecurityManager() == null) {
                 subject.getPrivateCredentials().add(gssCred);
             } else {

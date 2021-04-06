@@ -21,7 +21,7 @@ import com.ibm.ws.jndi.WSName;
 
 public enum CosNameUtil {
     ;
-    static NameComponent[] cosify(WSName name) throws InvalidNameException {
+    static NameComponent[] cosify(WSName name) {
         NameComponent[] cosName = new NameComponent[name.size()];
         for (int i = 0; i < cosName.length; i++)
             cosName[i] = new NameComponent(name.get(i), "");

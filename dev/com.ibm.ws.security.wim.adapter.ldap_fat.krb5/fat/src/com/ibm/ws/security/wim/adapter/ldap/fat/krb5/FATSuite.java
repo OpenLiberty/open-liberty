@@ -32,6 +32,9 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
                 TicketCacheBindMultiRegistryTest.class,
                 KeytabBadPrincipalNameTest.class,
                 TicketCacheBadPrincipalNameTest.class,
+                TicketCacheBindExpireTests.class,
+                RealmNameJVMProp.class,
+                TicketCacheBadPrincipalJava8.class,
                 /*
                  * vvv Leave Krb5ConfigJVMProp as the last test, the JVM prop changes the rest of the tests
                  */

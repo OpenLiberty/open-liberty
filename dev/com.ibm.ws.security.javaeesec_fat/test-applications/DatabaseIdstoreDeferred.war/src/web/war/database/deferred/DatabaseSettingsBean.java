@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ package web.war.database.deferred;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Properties;
@@ -112,13 +113,20 @@ public class DatabaseSettingsBean {
         if (resultsSet.size() > 0) {
             results = resultsSet.toArray(new ValidationType[resultsSet.size()]);
         }
-        System.out.println(CLASS_NAME + ".getUseFor() returns: " + results);
+        System.out.println(CLASS_NAME + ".getUseFor() returns: " + Arrays.toString(results));
         return results;
     }
 
     private void refreshConfiguration() throws IOException {
         props = new Properties();
-        props.load(new FileReader("DatabaseSettingsBean.props"));
+        FileReader fr = new FileReader("DatabaseSettingsBean.props");
+        try {
+            props.load(fr);
+        } finally {
+            if (fr != null) {
+                fr.close();
+            }
+        }
     }
 
     /**
@@ -148,7 +156,14 @@ public class DatabaseSettingsBean {
         if (!overrides.isEmpty()) {
             for (int i = 0; i < 3; i++) { // if the build machines are struggling, we can have timing issues reading in updated values.
                 Properties checkProps = new Properties();
-                checkProps.load(new FileReader(directory + "/DatabaseSettingsBean.props"));
+                FileReader fr = new FileReader(directory + "/DatabaseSettingsBean.props");
+                try {
+                    checkProps.load(fr);
+                } finally {
+                    if (fr != null) {
+                        fr.close();
+                    }
+                }
 
                 boolean allprops = true;
                 for (String prop : overrides.keySet()) {
@@ -179,14 +194,16 @@ public class DatabaseSettingsBean {
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {
-
+                    // Ignore.
                 }
             }
+        } else {
+            Log.info(DatabaseSettingsBean.class, "updateDatabaseSettingsBean", "No overrides were specified. Using default values.");
         }
     }
 
     /**
-     * Common logic for returning a property. If the property's value is a string null "null",
+     * Common logic for returning a property. If the property's value is the string "null",
      * return null. This will allow testing null handling from beans.
      *
      * @param prop

@@ -49,15 +49,11 @@ public class WASObjectFactoryBuilder implements ObjectFactoryBuilder {
 
         if (className != null) {
             try {
-                @SuppressWarnings("unchecked")
-                Class<? extends ObjectFactory> clazz = (Class<? extends ObjectFactory>) Class.forName(className, true, getClassLoader());
-                of = clazz.newInstance();
+                of = newObjectFactory(Class.forName(className, true, getClassLoader()));
             } catch (ClassNotFoundException e) {
                 // try current classloader:
                 try {
-                    @SuppressWarnings("unchecked")
-                    Class<? extends ObjectFactory> clazz = (Class<? extends ObjectFactory>) Class.forName(className);
-                    of = clazz.newInstance();
+                    of = newObjectFactory(Class.forName(className));
                 } catch (Throwable t) {
                     //ignore - FFDC for original exception is more useful
                 }
@@ -93,6 +89,11 @@ public class WASObjectFactoryBuilder implements ObjectFactoryBuilder {
         }
 
         return of;
+    }
+
+    @SuppressWarnings({ "deprecation", "unchecked" })
+    private ObjectFactory newObjectFactory(Class<?> ofType) throws IllegalAccessException, InstantiationException {
+        return ((Class<? extends ObjectFactory>)ofType).newInstance();
     }
 
     private ClassLoader getClassLoader() {

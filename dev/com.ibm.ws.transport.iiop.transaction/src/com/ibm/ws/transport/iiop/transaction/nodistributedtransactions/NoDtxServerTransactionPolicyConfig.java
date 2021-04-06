@@ -30,6 +30,7 @@ import com.ibm.ws.transport.iiop.transaction.AbstractServerTransactionPolicyConf
  * @version $Rev: 451417 $ $Date: 2006-09-29 13:13:22 -0700 (Fri, 29 Sep 2006) $
  */
 public class NoDtxServerTransactionPolicyConfig extends AbstractServerTransactionPolicyConfig {
+    private static final long serialVersionUID = 1L;
     private static final TraceComponent tc = Tr.register(NoDtxServerTransactionPolicyConfig.class);
 
     private final TransactionManager transactionManager;

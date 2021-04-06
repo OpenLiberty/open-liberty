@@ -83,6 +83,11 @@ public abstract class ConnectionManagerService extends Observable {
     public static final String TEMPORARILY_ASSOCIATE_IF_DISSOCIATE_UNAVAILABLE = "temporarilyAssociateIfDissociateUnavailable";
 
     /**
+     * Name of property controlling the authentication mechanism of connections.
+     */
+    public static final String ENABLE_CONTAINER_AUTH_FOR_DIRECT_LOOKUPS = "enableContainerAuthForDirectLookups";
+
+    /**
      * List of connectionManager properties.
      */
     public static final List<String> CONNECTION_MANAGER_PROPS = Collections.unmodifiableList(Arrays.asList(
@@ -90,6 +95,7 @@ public abstract class ConnectionManagerService extends Observable {
                                                                                                            AUTO_CLOSE_CONNECTIONS,
                                                                                                            J2CConstants.POOL_ConnectionTimeout,
                                                                                                            "enableSharingForDirectLookups",
+                                                                                                           ENABLE_CONTAINER_AUTH_FOR_DIRECT_LOOKUPS,
                                                                                                            MAX_IDLE_TIME,
                                                                                                            MAX_CONNECTIONS_PER_THREAD,
                                                                                                            MAX_POOL_SIZE,

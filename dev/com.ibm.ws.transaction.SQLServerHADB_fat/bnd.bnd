@@ -11,6 +11,7 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
+Import-Package: ${defaultPackageImport}, com.ibm.ws.transaction.web
 
 src: \
 	fat/src,\

@@ -458,9 +458,6 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
             Tr.debug(tc, "FIS 114950");
         }
 
-        Tr.audit(tc, "WTRN0108I: " +
-                     "Use SQL RecoveryLog for " + _logName + " on server " + _serverName);
-
         // Now establish a 'traceId' string. This is output at key trace points to allow
         // easy mapping of recovery log operations to clients logs.
         _traceId = "SQLMultiScopeRecoveryLog:" + "serverName=" + _serverName + ":"

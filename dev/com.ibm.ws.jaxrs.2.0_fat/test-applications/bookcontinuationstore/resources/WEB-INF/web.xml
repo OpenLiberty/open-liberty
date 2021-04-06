@@ -12,6 +12,7 @@
   <servlet id="Servlet_1">
   	<servlet-name>BookContinuationStore</servlet-name>
   	<servlet-class>com.ibm.websphere.jaxrs.server.IBMRestServlet</servlet-class>
+  	<async-supported>true</async-supported>
   	<init-param>
   		<param-name>javax.ws.rs.Application</param-name>
   		<param-value>com.ibm.ws.jaxrs20.fat.bookcontinuationstore.BookApplication</param-value>

@@ -65,7 +65,7 @@ public class Krb5ConfigJVMProp extends CommonBindTest {
         loginUser();
 
         Log.info(c, testName.getMethodName(), "Add a valid config file with a new name as a JVM property, restart server to take effect");
-        String altConfigFile = ApacheDSandKDC.createConfigFile("altConfig-", KDC_PORT);
+        String altConfigFile = ApacheDSandKDC.createConfigFile("altConfig-", KDC_PORT, true, false);
         server.setJvmOptions(Arrays.asList("-Djava.security.krb5.conf=" + altConfigFile, "-Dcom.ibm.ws.beta.edition=true"));
         server.restartServer();
 

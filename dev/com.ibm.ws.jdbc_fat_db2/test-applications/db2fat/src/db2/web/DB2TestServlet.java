@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2019 IBM Corporation and others.
+ * Copyright (c) 2017,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -60,6 +60,12 @@ public class DB2TestServlet extends FATServlet {
 
     @Resource(lookup = "jdbc/db2-secure")
     DataSource db2_secure;
+
+    @Resource(name = "java:comp/jdbc/env/unsharable-ds-xa-loosely-coupled", shareable = false)
+    private DataSource unsharable_ds_xa_loosely_coupled;
+
+    @Resource(name = "java:comp/jdbc/env/unsharable-ds-xa-tightly-coupled", shareable = false)
+    private DataSource unsharable_ds_xa_tightly_coupled;
 
     @Resource
     private UserTransaction tran;
@@ -239,6 +245,49 @@ public class DB2TestServlet extends FATServlet {
             rs.close();
         } finally {
             conn.close();
+        }
+    }
+
+    /**
+     * Confirm that locks are not shared between transaction branches that are loosely coupled.
+     */
+    @Test
+    public void testTransactionBranchesLooselyCoupled() throws Exception {
+        tran.begin();
+        try {
+            try (Connection con1 = unsharable_ds_xa_loosely_coupled.getConnection()) {
+                con1.createStatement().executeUpdate("INSERT INTO MYTABLE VALUES (31, 'thirty-one')");
+
+                // Obtain a second (unshared) connection so that we have 2 transaction branches
+                try (Connection con2 = unsharable_ds_xa_loosely_coupled.getConnection()) {
+                    ResultSet result = con2.createStatement().executeQuery("SELECT STRVAL FROM MYTABLE WHERE ID=31");
+                    assertFalse(result.next());
+                }
+            }
+        } finally {
+            tran.commit();
+        }
+    }
+
+    /**
+     * Confirm that locks are shared between transaction branches that are tightly coupled.
+     */
+    @Test
+    public void testTransactionBranchesTightlyCoupled() throws Exception {
+        tran.begin();
+        try {
+            try (Connection con1 = unsharable_ds_xa_tightly_coupled.getConnection()) {
+                con1.createStatement().executeUpdate("INSERT INTO MYTABLE VALUES (32, 'thirty-two')");
+
+                // Obtain a second (unshared) connection so that we have 2 transaction branches
+                try (Connection con2 = unsharable_ds_xa_tightly_coupled.getConnection()) {
+                    ResultSet result = con2.createStatement().executeQuery("SELECT STRVAL FROM MYTABLE WHERE ID=32");
+                    assertTrue(result.next());
+                    assertEquals("thirty-two", result.getString(1));
+                }
+            }
+        } finally {
+            tran.commit();
         }
     }
 }

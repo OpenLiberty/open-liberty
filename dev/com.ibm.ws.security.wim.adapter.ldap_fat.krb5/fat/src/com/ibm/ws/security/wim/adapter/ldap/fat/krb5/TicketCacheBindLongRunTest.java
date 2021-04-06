@@ -11,7 +11,6 @@
 package com.ibm.ws.security.wim.adapter.ldap.fat.krb5;
 
 import static componenttest.topology.utils.LDAPFatUtils.updateConfigDynamically;
-import static org.junit.Assert.assertNotNull;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -20,8 +19,11 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.config.wim.LdapRegistry;
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.security.registry.test.UserRegistryServletConnection;
+import com.ibm.ws.security.wim.adapter.ldap.fat.krb5.utils.LdapKerberosUtils;
 
 import componenttest.annotation.AllowedFFDC;
+import componenttest.annotation.CheckForLeakedPasswords;
 import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -30,8 +32,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 /**
  * Tests Kerberos bind (GSSAPI) for Ldap, using primarily the krb5TicketCache
  *
- * The tests in this bucket are longer running. Server restarts, restarting ApacheDS,
- * waiting for expiring tickets, etc.
+ * The tests in this bucket are longer running. Server restarts, restarting ApacheDS, etc.
  *
  */
 @RunWith(FATRunner.class)
@@ -87,87 +88,61 @@ public class TicketCacheBindLongRunTest extends CommonBindTest {
     }
 
     /**
-     * Create a ticketCache with a short expiration. Confirm that we fail once the ticket is expired.
-     *
-     * The ticket is marked as renewable, we should not have to manually renew.
+     * Verify that when we dynamic add a <kerberos/> and <ldapRegistry/> config, we do a Kerberos modify
+     * before a LdapRegistry init to ensure we load with the valid config file.
      *
      * @throws Exception
      */
     @Test
-    public void ticketExpiresAtRuntime() throws Exception {
-        Log.info(c, testName.getMethodName(), "Provide an expiring ticket, renew at runtime");
+    @CheckForLeakedPasswords({ LdapKerberosUtils.BIND_PASSWORD, ApacheDSandKDC.vmmUser1pwd })
+    public void dynamimcUpdateLoop() throws Exception {
+        int numUpdates = 30;
 
-        String expiringTicketCache = ApacheDSandKDC.createTicketCacheShortLife(true);
+        Log.info(c, testName.getMethodName(), "Run login check with dynamic update " + numUpdates + " times.");
 
-        ServerConfiguration newServer = emptyConfiguration.clone();
-        LdapRegistry ldap = getLdapRegistryWithTicketCache();
-        ldap.setKrb5TicketCache(expiringTicketCache);
-        newServer.getLdapRegistries().add(ldap);
-        addKerberosConfig(newServer);
-        updateConfigDynamically(server, newServer);
+        for (int i = 0; i < numUpdates; i++) {
+            ServerConfiguration newServer = emptyConfiguration.clone();
+            LdapRegistry ldap = getLdapRegistryWithTicketCacheWithContextPool();
+            addKerberosConfig(newServer);
+            newServer.getLdapRegistries().add(ldap);
+            updateConfigDynamically(server, newServer);
 
-        // Mark file so we can check for trace updates
-        server.setMarkToEndOfLog(server.getDefaultTraceFile());
+            loginUser();
 
-        loginUser(); // createDirContext will do the initial bind
-
-        loginUser(); // principal will be fetch from the KerberosService cache and renewed.
-
-        /*
-         * Tried to check the ccache directly, but endTime is not updated.
-         * Checking trace that we had to do a renew.
-         */
-        String renewTrace = "Successfully renewed ticket"; // trace from  LRUCache for KerberosService
-
-        assertNotNull("Expected to see trace that we renewed the ticket: " + renewTrace, server.waitForStringInTraceUsingMark(renewTrace));
-
+            resetServerConfig();
+        }
     }
 
     /**
-     * Create a ticketCache with a short expiration. Confirm that we fail once the ticket is expired.
-     *
-     * The ticket is marked as not renewable, manually get an updated ticketCache and check that we
-     * can login again.
+     * Verify that when we start the server with <kerberos/> and <ldapRegistry/> config, we do a Kerberos init
+     * before a LdapRegistry init to ensure we load with the valid config file.
      *
      * @throws Exception
      */
     @Test
-    @AllowedFFDC("javax.security.auth.login.LoginException")
-    public void ticketExpiresAtRuntimeNoRenew() throws Exception {
-        Log.info(c, testName.getMethodName(), "Provide an expiring ticket that is not renewable");
+    @CheckForLeakedPasswords({ LdapKerberosUtils.BIND_PASSWORD, ApacheDSandKDC.vmmUser1pwd })
+    public void serverRestartLoop() throws Exception {
+        int numUpdates = 5;
 
-        String expiringTicketCache = ApacheDSandKDC.createTicketCacheShortLife(false);
+        Log.info(c, testName.getMethodName(), "Run login check with sever restart " + numUpdates + " times.");
 
         ServerConfiguration newServer = emptyConfiguration.clone();
-        LdapRegistry ldap = getLdapRegistryWithTicketCache();
-        ldap.setKrb5TicketCache(expiringTicketCache);
-        newServer.getLdapRegistries().add(ldap);
+        LdapRegistry ldap = getLdapRegistryWithTicketCacheWithContextPool();
         addKerberosConfig(newServer);
+        newServer.getLdapRegistries().add(ldap);
         updateConfigDynamically(server, newServer);
-
         loginUser();
 
-        Log.info(c, testName.getMethodName(), "Sleep for ticket expiration time. Max Time: " + ApacheDSandKDC.MIN_LIFE);
-        long maxTime = System.currentTimeMillis() + ApacheDSandKDC.MIN_LIFE;
-        while (System.currentTimeMillis() < maxTime) {
-            Thread.sleep(30000);
-            if (servlet.checkPassword(vmmUser1, vmmUser1pwd) != null) {
-                Log.info(c, testName.getMethodName(), "Login not expired, sleep again.");
-            } else {
-                break;
-            }
+        for (int i = 0; i < numUpdates; i++) {
+            server.stopServer("CWIML4520E"); // have to supply stop server message here as it picks up the message from the LdapRestart tests
+            server.startServer();
+            startupChecks();
+
+            Log.info(c, "setUp", "Creating servlet connection the server");
+            servlet = new UserRegistryServletConnection(server.getHostname(), server.getHttpDefaultPort());
+
+            loginUser();
         }
-
-        Log.info(c, testName.getMethodName(), "Sleep complete! Log in user again, expect to fail.");
-        loginUserShouldFail();
-
-        Log.info(c, testName.getMethodName(), "Updating a fresh ticketCache, should be able to login again.");
-        expiringTicketCache = ApacheDSandKDC.createTicketCacheShortLife(true);
-        ldap.setKrb5TicketCache(expiringTicketCache);
-        updateConfigDynamically(server, newServer);
-
-        loginUser();
-
     }
 
 }

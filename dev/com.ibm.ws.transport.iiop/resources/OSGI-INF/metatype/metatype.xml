@@ -31,10 +31,6 @@
     <OCD description="%orbWrapper.desc" name="%orbWrapper.name" 
          id="com.ibm.ws.transport.iiop.internal.ORBWrapper" ibm:alias="orb">
 
-        <AD name="internal" description="internal use only"
-            id="ComponentFactory.target" required="true" type="String"
-            ibm:final="true" default="(component.factory=com.ibm.ws.transport.iiop.internal.ORBWrapperInternal)" />
-
         <AD name="%orbWrapper.nameService" description="%orbWrapper.nameService.desc"
             id="nameService" required="false" type="String" default="corbaname::localhost:2809" />
 

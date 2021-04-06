@@ -35,7 +35,6 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
-@SkipForRepeat("EE9_FEATURES") // currently broken due to multiple issues
 public class ClientTest extends AbstractTest {
 
     @Server("com.ibm.ws.jaxrs.fat.client")
@@ -168,12 +167,23 @@ public class ClientTest extends AbstractTest {
 
     /**
      * Test that the client times out if the request is not processed in less
-     * than the readTimeout value
+     * than the readTimeout value - using a CXF-specific property, "http.receive.timeout"
      */
     @Mode(TestMode.FULL)
     @Test
-    public void testReadTimeoutTimeout() throws Exception {
-        this.runTestOnServer(target, "testReadTimeoutTimeout", null, "OK");
+    @SkipForRepeat("EE9_FEATURES") // RESTEasy does not honor CXF properties
+    public void testReadTimeoutTimeout_cxfProp() throws Exception {
+        this.runTestOnServer(target, "testReadTimeoutTimeout_cxfProp", null, "OK");
+    }
+
+    /**
+     * Test that the client times out if the request is not processed in less
+     * than the readTimeout value - using the IBM property, ""com.ibm.ws.jaxrs.client.receive.timeout""
+     */
+    @Mode(TestMode.FULL)
+    @Test
+    public void testReadTimeoutTimeout_ibmProp() throws Exception {
+        this.runTestOnServer(target, "testReadTimeoutTimeout_ibmProp", null, "OK");
     }
 
     /**

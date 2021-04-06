@@ -60,7 +60,7 @@ public class NonDefaultJKSSSLTest extends CommonSSLTest {
     public void testNonDefaultSSLConfigUsingJKS() throws Exception {
 
         Log.info(c, name.getMethodName(), "Entering " + name.getMethodName());
-        String protocol = TLSV11_PROTOCOL;
+        String protocol = TLSV12_PROTOCOL;
 
         server.setServerConfigurationFile(NON_DEFAULT_KEYSTORE_LOCATION_USING_JKS_NO_TYPE_SPECIFIED);
         server.startServer(name.getMethodName() + ".log");

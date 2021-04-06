@@ -1459,7 +1459,7 @@ public class WebConfigParamsLogger
             paramValue = facesContext.getExternalContext().getInitParameter("org.apache.myfaces.RANDOM_KEY_IN_CSRF_SESSION_TOKEN");
             if (paramValue == null)
             {
-                log.info("No context init parameter 'org.apache.myfaces.RANDOM_KEY_IN_CSRF_SESSION_TOKEN' found, using default value 'none'.");
+                log.info("No context init parameter 'org.apache.myfaces.RANDOM_KEY_IN_CSRF_SESSION_TOKEN' found, using default value 'secureRandom'.");
             }
             else
             {
@@ -1477,7 +1477,7 @@ public class WebConfigParamsLogger
                 {
                     if (log.isLoggable(Level.WARNING))
                     { 
-                        log.warning("Wrong value in context init parameter 'org.apache.myfaces.RANDOM_KEY_IN_CSRF_SESSION_TOKEN' (='" + paramValue + "'), using default value 'none'");
+                        log.warning("Wrong value in context init parameter 'org.apache.myfaces.RANDOM_KEY_IN_CSRF_SESSION_TOKEN' (='" + paramValue + "'), using default value 'secureRandom'");
                     }
                 }
             }
@@ -1579,7 +1579,7 @@ public class WebConfigParamsLogger
             paramValue = facesContext.getExternalContext().getInitParameter("org.apache.myfaces.RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN");
             if (paramValue == null)
             {
-                log.info("No context init parameter 'org.apache.myfaces.RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN' found, using default value 'none'.");
+                log.info("No context init parameter 'org.apache.myfaces.RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN' found, using default value 'secureRandom'.");
             }
             else
             {
@@ -1597,7 +1597,7 @@ public class WebConfigParamsLogger
                 {
                     if (log.isLoggable(Level.WARNING))
                     { 
-                        log.warning("Wrong value in context init parameter 'org.apache.myfaces.RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN' (='" + paramValue + "'), using default value 'none'");
+                        log.warning("Wrong value in context init parameter 'org.apache.myfaces.RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN' (='" + paramValue + "'), using default value 'secureRandom'");
                     }
                 }
             }

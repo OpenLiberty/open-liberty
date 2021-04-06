@@ -229,13 +229,8 @@ public class DB2JCCHelper extends DB2Helper {
         } else { // means need to integrate
             genPw = new PrintWriter(new TraceWriter(db2Tc), true);
         }
-    }
-    
-    @Override
-    void customizeStaleStates() {
-        super.customizeStaleStates();
         
-        Collections.addAll(staleErrorCodes,
+        Collections.addAll(staleConCodes,
                            -4499,
                            -4498,
                            -1776);

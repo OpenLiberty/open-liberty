@@ -80,11 +80,6 @@ public class DB2iToolboxHelper extends DB2Helper {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(this, tc, "isolationSwitchingSupported property not set for this datasource");
         }
-    }
-    
-    @Override
-    void customizeStaleStates() {
-        super.customizeStaleStates();
         
         // --- The Native driver will return this CLI SQLState (HY017) whenever a connection is no longer available.
         //     This covers the case when an underlying iSeries QSQSRVR prestart job on the iSeries that represents
@@ -102,7 +97,7 @@ public class DB2iToolboxHelper extends DB2Helper {
         // **** DuplicateKeyException *****
         //     SQLCode   SQLState  Toolbox  Native       DatabaseHelper         DB2Helper        DB2iToolboxHelper
         //     SQL0803   23505        X       X           SQLState              SQLCode
-        Collections.addAll(staleSQLStates,
+        Collections.addAll(staleConCodes,
                 "HY017");
     }
 

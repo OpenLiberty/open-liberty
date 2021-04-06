@@ -628,7 +628,16 @@ public class AdapterUtil {
                 return "TMNOFLAGS (" + flag + ')'; 
 
             case XAResource.TMRESUME:
-                return "TMRESUME (" + flag + ')'; 
+                return "TMRESUME (" + flag + ')';
+
+            case 0x8000:
+                return "SSTRANSTIGHTLYCPLD (" + flag + ')'; // Microsoft SQL Server JDBC driver
+
+            case 0x10000:
+                return "ORATRANSLOOSE (" + flag + ')'; // Oracle JDBC driver
+
+            case 0x800000:
+                return "TMLCS (" + flag + ')'; // DB2 JCC driver
         }
 
         return "UNKNOWN XA RESOURCE START FLAG (" + flag + ')'; 
@@ -1188,9 +1197,9 @@ public class AdapterUtil {
                 mapsToStaleConnection = iHelper.isConnectionError(sqlX);
             } else {
                 mappedX = mcf.dataStoreHelper.mapException(sqlX);
-                mapsToStaleConnection = isLegacyException(mappedX, "com.ibm.websphere.ce.cm.StaleConnectionException");
+                mapsToStaleConnection = isLegacyException(mappedX, IdentifyExceptionAs.StaleConnection.legacyClassName);
                 if (tc.isDebugEnabled())
-                    Tr.debug(tc, "mapped to " + mappedX.getClass().getName());
+                    Tr.debug(tc, mappedX == sqlX ? "not replaced" : ("mapped to " + mappedX.getClass().getName()));
                 // Legacy code does not replace BatchUpdateException
                 if (sqlX instanceof BatchUpdateException)
                     mappedX = sqlX;
@@ -1201,21 +1210,21 @@ public class AdapterUtil {
 
             // Check for stale statement
 
-            if (isLegacyException(mappedX, "com.ibm.websphere.ce.cm.StaleStatementException"))
+            if (mcf.dataStoreHelper == null)
+                isStaleStatement = iHelper.isStaleStatement(sqlX);
+            else if (isLegacyException(mappedX, IdentifyExceptionAs.StaleStatement.legacyClassName))
                 try {
                     isStaleStatement = true;
                     SQLException m = mappedX;
                     mappedX = AccessController.doPrivileged((PrivilegedExceptionAction<SQLException>) () -> {
                         @SuppressWarnings("unchecked")
                         Class<? extends SQLException> StaleConnectionException = (Class<? extends SQLException>)
-                            m.getClass().getClassLoader().loadClass("com.ibm.websphere.ce.cm.StaleConnectionException");
+                            m.getClass().getClassLoader().loadClass(IdentifyExceptionAs.StaleConnection.legacyClassName);
                         return StaleConnectionException.getConstructor(SQLException.class).newInstance(m.getNextException());
                     });
                 } catch (PrivilegedActionException privX) {
                     FFDCFilter.processException(privX, AdapterUtil.class.getName(), "1210");
                 }
-            else
-                isStaleStatement = iHelper.isStaleStatement(sqlX);
 
             if (isStaleStatement) {
                 if (handle == null) {
@@ -1398,24 +1407,6 @@ public class AdapterUtil {
                 Tr.debug(tc, "adapterUtil matchGSSName return with exception ", false);
             return false;
         }
-    }
-
-    /**
-     * Identifies if an exception indicates an unsupported operation.
-     * 
-     * @param sqle the exception.
-     * @return true if unsupported, otherwise false.
-     */
-    public static boolean isUnsupportedException(SQLException sqle){
-        if(sqle instanceof SQLFeatureNotSupportedException)
-            return true;
-        
-        String state = sqle.getSQLState() == null ? "" : sqle.getSQLState();
-        int code = sqle.getErrorCode();
-
-        return state.startsWith("0A") || 0x0A000 == code // standard code for unsupported operation
-            || state.startsWith("HYC00") // ODBC error code
-            || code == -79700 && "IX000".equals(state); // Informix specific
     }
     
     public static ClassLoader getClassLoaderWithPriv(final Library lib) {

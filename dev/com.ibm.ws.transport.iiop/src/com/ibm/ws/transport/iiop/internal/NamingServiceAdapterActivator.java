@@ -56,7 +56,7 @@ public class NamingServiceAdapterActivator implements AdapterActivatorOp {
             }
         }
         if (poaName.equals(name)) {
-            List<Policy> policies = new ArrayList<Policy>();
+            List<Policy> policies = new ArrayList<>();
             try {
                 serverPolicySource.addConfiguredPolicies(policies, orbRef);
             } catch (Exception e) { //TODO figure out what exceptions can occur

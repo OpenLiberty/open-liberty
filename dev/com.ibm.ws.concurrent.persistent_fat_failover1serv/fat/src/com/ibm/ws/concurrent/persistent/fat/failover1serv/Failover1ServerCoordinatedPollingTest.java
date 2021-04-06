@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -89,7 +89,9 @@ public class Failover1ServerCoordinatedPollingTest extends FATServletClient {
             "javax.persistence.PersistenceException", // caused by RollbackException
             "javax.persistence.ResourceException", // connection error event on retry
             "java.lang.IllegalStateException", // for EclipseLink retry after connection has been aborted due to rollback
-            "java.lang.NullPointerException" // can happen when task execution overlaps removal of executor
+            "java.lang.NullPointerException", // can happen when task execution overlaps removal of executor
+            "java.sql.SQLException", // closed, likely due to config update
+            "org.apache.derby.client.am.XaException" // no connection, likely due to config update
     })
     @Test
     public void testMultipleInstancesCompeteToRunManyLateTasksPC() throws Exception {
@@ -231,7 +233,8 @@ public class Failover1ServerCoordinatedPollingTest extends FATServletClient {
                         "CWWKC1502W.*", // Rolled back task [id or name]
                         "CWWKC1503W.*", // Rolled back task [id or name] due to failure ...
                         "DSRA*", // various errors possible due to rollback or usage during shutdown
-                        "J2CA*" // various errors possible due to rollback or usage during shutdown
+                        "J2CA*", // various errors possible due to rollback or usage during shutdown
+                        "WTRN.*" // commit fails - no connection after config update
                         );
                 server.startServer();
             }
@@ -246,7 +249,12 @@ public class Failover1ServerCoordinatedPollingTest extends FATServletClient {
     // If scheduled task execution happens to be attempted while persistentExecutors are being removed, it might fail.
     // This is expected. After the configuration update completes, tasks will be able to run again successfully
     // and pass the test.
-    @AllowedFFDC({ "java.lang.IllegalStateException", "java.lang.NullPointerException" })
+    @AllowedFFDC({
+        "java.lang.IllegalStateException",
+        "java.lang.NullPointerException",
+        "java.sql.SQLException", // closed, likely due to config update
+        "org.apache.derby.client.am.XaException" // no connection, likely due to config update
+        })
     @Test
     public void testMultipleInstancesCompeteToRunOneLateTaskPC() throws Exception {
         // Schedule on the only instance that is currently able to run tasks
