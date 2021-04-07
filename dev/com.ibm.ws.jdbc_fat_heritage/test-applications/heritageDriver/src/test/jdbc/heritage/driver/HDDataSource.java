@@ -20,6 +20,9 @@ import javax.sql.XADataSource;
 public class HDDataSource extends org.apache.derby.jdbc.EmbeddedDataSource implements XADataSource, DataSource {
     private static final long serialVersionUID = 1L;
 
+    String driverType;
+    int longDataCacheSize = 10;
+    String responseBuffering;
     boolean supportsCatalog = true;
     boolean supportsNetworkTimeout = true;
     boolean supportsReadOnly = true;
@@ -46,6 +49,18 @@ public class HDDataSource extends org.apache.derby.jdbc.EmbeddedDataSource imple
         return new HDConnection(this, super.getConnection(username, password));
     }
 
+    public String getDriverType() {
+        return driverType;
+    }
+
+    public int getLongDataCacheSize() {
+        return longDataCacheSize;
+    }
+
+    public String getResponseBuffering() {
+        return responseBuffering;
+    }
+
     public boolean getSupportsCatalog() {
         return supportsCatalog;
     }
@@ -64,6 +79,18 @@ public class HDDataSource extends org.apache.derby.jdbc.EmbeddedDataSource imple
 
     public boolean getSupportsTypeMap() {
         return supportsTypeMap;
+    }
+
+    public void setDriverType(String value) {
+        driverType = value;
+    }
+
+    public void setLongDataCacheSize(int value) {
+        longDataCacheSize = value;
+    }
+
+    public void setResponseBuffering(String value) {
+        responseBuffering = value;
     }
 
     public void setSupportsCatalog(boolean supports) {
