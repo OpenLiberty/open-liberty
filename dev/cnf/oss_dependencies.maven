@@ -215,6 +215,7 @@ org.apache.cxf.xjcplugins:cxf-xjc-dv:2.6.0
 org.apache.cxf.xjcplugins:cxf-xjc-ts:2.6.0
 org.apache.cxf:cxf-api:2.6.2
 org.apache.cxf:cxf-core:3.1.18
+org.apache.cxf:cxf-core:3.4.3
 org.apache.cxf:cxf-rt-bindings-soap:3.4.1
 org.apache.cxf:cxf-rt-bindings-xml:2.6.2
 org.apache.cxf:cxf-rt-bindings-xml:3.4.1
@@ -235,6 +236,7 @@ org.apache.cxf:cxf-rt-security:3.4.1
 org.apache.cxf:cxf-rt-transports-http-hc:3.4.1
 org.apache.cxf:cxf-rt-transports-http:2.6.2
 org.apache.cxf:cxf-rt-transports-http:3.1.18
+org.apache.cxf:cxf-rt-transports-http:3.4.3
 org.apache.cxf:cxf-rt-ws-addr:3.4.1
 org.apache.cxf:cxf-rt-ws-mex:3.4.1
 org.apache.cxf:cxf-rt-ws-policy:3.4.1
