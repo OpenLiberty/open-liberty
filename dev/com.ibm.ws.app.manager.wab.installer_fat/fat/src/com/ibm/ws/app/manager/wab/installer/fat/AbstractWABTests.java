@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,8 +10,13 @@
  *******************************************************************************/
 package com.ibm.ws.app.manager.wab.installer.fat;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.util.Collections;
 
 import org.junit.After;
@@ -27,6 +32,7 @@ import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.HttpUtils;
+import componenttest.topology.utils.HttpUtils.HTTPRequestMethod;
 
 /**
  *
@@ -124,10 +130,32 @@ public abstract class AbstractWABTests {
     }
 
     protected void checkWAB(String path, String... expected) throws Exception {
-        if (!path.startsWith("/")) {
-            path = "/" + path;
-        }
-        HttpUtils.findStringInUrl(server, path, expected);
+        // On some of our FAT systems it takes a long time for configurable context path WABS
+        // to come up. Allow the HttpGet up to 10 retries with a 1-second wait.
+        checkWAB(path, 10, expected);
     }
 
+    protected void checkWAB(String path, int retries, String... expected) throws Exception {
+        int[] allowedUnexpectedResponseCodes = null;
+
+        final String urlPath = !path.startsWith("/") ? "/" + path : path;
+        try {
+            AccessController.doPrivileged(new PrivilegedExceptionAction<Void>() {
+                @Override
+                public Void run() throws IOException {
+                    HttpURLConnection connection = HttpUtils.getHttpConnection(HttpUtils.createURL(server, urlPath),
+                                                                               HttpURLConnection.HTTP_OK,
+                                                                               allowedUnexpectedResponseCodes,
+                                                                               retries, HTTPRequestMethod.GET);
+                    HttpUtils.findStringInHttpConnection(connection, expected);
+                    return null;
+                }
+            });
+        } catch (PrivilegedActionException e) {
+            Throwable cause = e.getCause();
+            if (cause instanceof IOException) {
+                throw (IOException) cause;
+            }
+        }
+    }
 }

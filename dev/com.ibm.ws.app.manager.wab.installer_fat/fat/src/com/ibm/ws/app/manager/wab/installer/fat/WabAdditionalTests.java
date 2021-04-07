@@ -53,7 +53,8 @@ public class WabAdditionalTests extends AbstractWABTests {
     @Test
     public void testOSGIProtectionFilter() throws Exception {
         try {
-            checkWAB(PRODUCT1 + "/OSGI-INF/internal.txt", "internal stuff");
+            int retries = 5; // don't wait the usual 10 count for this to fail
+            checkWAB(PRODUCT1 + "/OSGI-INF/internal.txt", retries, "internal stuff");
             fail("Expected 404 on get of internal resource");
         } catch (AssertionError e) {
             if (!e.getMessage().matches(".*Expected response 200 .*received 404.*")) {
