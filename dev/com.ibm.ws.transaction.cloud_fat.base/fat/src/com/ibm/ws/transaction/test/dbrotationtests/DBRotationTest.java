@@ -152,7 +152,7 @@ public class DBRotationTest extends FATServletClient {
         startServers(server1);
 
         // Server appears to have started ok. Check for key string to see whether recovery has succeeded
-        assertNotNull("peer recovery failed", server1.waitForStringInTrace("Performed recovery for cloud001", LOG_SEARCH_TIMEOUT));
+        assertNotNull("peer recovery failed", server1.waitForStringInTrace("Performed recovery for cloud0011", LOG_SEARCH_TIMEOUT));
     }
 
     /**
@@ -184,7 +184,7 @@ public class DBRotationTest extends FATServletClient {
         startServers(server2);
 
         // Server appears to have started ok. Check for key string to see whether peer recovery has succeeded
-        assertNotNull("peer recovery failed", server2.waitForStringInTrace("Performed recovery for cloud001", LOG_SEARCH_TIMEOUT));
+        assertNotNull("peer recovery failed", server2.waitForStringInTrace("Performed recovery for cloud0011", LOG_SEARCH_TIMEOUT));
         server2.stopServer();
     }
 
@@ -214,7 +214,7 @@ public class DBRotationTest extends FATServletClient {
         // longLeaseLengthServer1 is shared  with the log failure tests which turn FFDC checking off.
         // Need to explicitly turn it on here in case those tests ran earlier
         longLeaseLengthServer1.setFFDCChecking(true);
-        
+
         startServers(longLeaseLengthServer1);
         try {
             runTestWithResponse(longLeaseLengthServer1, SERVLET_NAME, "modifyLeaseOwner");
@@ -255,7 +255,7 @@ public class DBRotationTest extends FATServletClient {
         startServers(server2);
 
         // Server appears to have started ok. Check for 2 key strings to see whether peer recovery has succeeded
-        assertNotNull("peer recovery failed", server2.waitForStringInTrace("Performed recovery for cloud001", LOG_SEARCH_TIMEOUT));
+        assertNotNull("peer recovery failed", server2.waitForStringInTrace("Performed recovery for cloud0011", LOG_SEARCH_TIMEOUT));
         server2.stopServer();
     }
 
@@ -272,7 +272,7 @@ public class DBRotationTest extends FATServletClient {
             // (from server1's point of view) acquire server1's log and recover it.
 
             //  Check for key string to see whether peer recovery has succeeded
-            assertNotNull("peer recovery failed", server2.waitForStringInTrace("Performed recovery for cloud001", LOG_SEARCH_TIMEOUT));
+            assertNotNull("peer recovery failed", server2.waitForStringInTrace("Performed recovery for cloud0011", LOG_SEARCH_TIMEOUT));
             server2.stopServer();
 
             // server1 now attempts some 2PC and will fail and terminate because its logs have been taken
@@ -311,7 +311,7 @@ public class DBRotationTest extends FATServletClient {
             // (from server1's point of view) acquire server1's log and recover it.
 
             //  Check for key string to see whether peer recovery has succeeded
-            assertNotNull("peer recovery failed", server2.waitForStringInTrace("Performed recovery for cloud001", LOG_SEARCH_TIMEOUT));
+            assertNotNull("peer recovery failed", server2.waitForStringInTrace("Performed recovery for cloud0011", LOG_SEARCH_TIMEOUT));
             server2.stopServer();
 
             // server1 now attempts some 2PC which will fail because its logs have been taken but the server will NOT terminate
