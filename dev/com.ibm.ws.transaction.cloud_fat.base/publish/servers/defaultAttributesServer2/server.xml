@@ -27,7 +27,7 @@
       recoverOnStartup="true"
       waitForRecovery="false"
       heuristicRetryInterval="10"
-      recoveryIdentity="cloud002-1"
+      recoveryIdentity="cloud002"
       recoveryGroup="defaultGroup"
       enableHADBPeerLocking="true"
       leaseLength="20"
