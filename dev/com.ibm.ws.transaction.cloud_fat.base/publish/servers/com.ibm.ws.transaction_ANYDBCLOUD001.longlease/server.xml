@@ -4,7 +4,7 @@
       recoverOnStartup="true"
       waitForRecovery="false"
       heuristicRetryInterval="10"
-      recoveryIdentity="cloud001-1"
+      recoveryIdentity="cloud001"
       recoveryGroup="defaultGroup"
       leaseLength="300"
       leaseCheckInterval="25"
