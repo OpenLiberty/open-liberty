@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2019 IBM Corporation and others.
+ * Copyright (c) 2017, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
+@SuppressWarnings("serial")
 @WebServlet("/Simple2PCCloudServlet")
 public class Simple2PCCloudServlet extends Base2PCCloudServlet {
 
@@ -41,22 +42,29 @@ public class Simple2PCCloudServlet extends Base2PCCloudServlet {
             Statement stmt = con.createStatement();
 
             try {
-                System.out.println("modifyLeaseOwner: sel-for-update against Lease table");
                 String selForUpdateString = "SELECT LEASE_OWNER" +
                                             " FROM WAS_LEASES_LOG" +
-                                            " WHERE SERVER_IDENTITY='cloud001' FOR UPDATE OF LEASE_OWNER";
+                                            " WHERE SERVER_IDENTITY='cloud0011' FOR UPDATE OF LEASE_OWNER";
+                System.out.println("testLeaseTableAccess: " + selForUpdateString);
                 ResultSet rs = stmt.executeQuery(selForUpdateString);
+                String owner = null;
                 while (rs.next()) {
-                    String owner = rs.getString("LEASE_OWNER");
+                    owner = rs.getString("LEASE_OWNER");
                     System.out.println("testLeaseTableAccess: owner is - " + owner);
                 }
+
                 rs.close();
 
+                if (owner == null) {
+                    throw new Exception("No rows were returned for " + selForUpdateString);
+                }
+
                 String updateString = "UPDATE WAS_LEASES_LOG" +
-                                      " SET LEASE_OWNER = 'cloud002'" +
-                                      " WHERE SERVER_IDENTITY='cloud001'";
+                                      " SET LEASE_OWNER = 'cloud0021'" +
+                                      " WHERE SERVER_IDENTITY='cloud0011'";
+                System.out.println("testLeaseTableAccess: " + updateString);
                 stmt.executeUpdate(updateString);
-            } catch (SQLException x) {
+            } catch (Exception x) {
                 System.out.println("testLeaseTableAccess: caught exception - " + x);
             }
 
@@ -81,23 +89,29 @@ public class Simple2PCCloudServlet extends Base2PCCloudServlet {
             Statement stmt = con.createStatement();
 
             try {
-                System.out.println("modifyLeaseOwner: sel-for-update against Lease table");
                 String selForUpdateString = "SELECT LEASE_OWNER" +
                                             " FROM WAS_LEASES_LOG" +
-                                            " WHERE SERVER_IDENTITY='cloud001' FOR UPDATE" +
+                                            " WHERE SERVER_IDENTITY='cloud0011' FOR UPDATE" +
                                             (isPostgreSQL ? "" : " OF LEASE_OWNER");
+                System.out.println("modifyLeaseOwner: " + selForUpdateString);
                 ResultSet rs = stmt.executeQuery(selForUpdateString);
+                String owner = null;
                 while (rs.next()) {
-                    String owner = rs.getString("LEASE_OWNER");
+                    owner = rs.getString("LEASE_OWNER");
                     System.out.println("modifyLeaseOwner: owner is - " + owner);
                 }
                 rs.close();
 
+                if (owner == null) {
+                    throw new Exception("No rows were returned for " + selForUpdateString);
+                }
+
                 String updateString = "UPDATE WAS_LEASES_LOG" +
-                                      " SET LEASE_OWNER = 'cloud002'" +
-                                      " WHERE SERVER_IDENTITY='cloud001'";
+                                      " SET LEASE_OWNER = 'cloud0021'" +
+                                      " WHERE SERVER_IDENTITY='cloud0011'";
+                System.out.println("modifyLeaseOwner: " + updateString);
                 stmt.executeUpdate(updateString);
-            } catch (SQLException x) {
+            } catch (Exception x) {
                 System.out.println("modifyLeaseOwner: caught exception - " + x);
             }
 
@@ -119,7 +133,7 @@ public class Simple2PCCloudServlet extends Base2PCCloudServlet {
             try {
 
                 long latch = 255L;
-                String updateString = "UPDATE " + "WAS_PARTNER_LOGcloud001" +
+                String updateString = "UPDATE " + "WAS_PARTNER_LOGcloud0011" +
                                       " SET RUSECTION_ID = " + latch +
                                       " WHERE RU_ID = -1";
                 stmt.executeUpdate(updateString);
@@ -143,8 +157,8 @@ public class Simple2PCCloudServlet extends Base2PCCloudServlet {
             Statement stmt = con.createStatement();
 
             try {
-                String updateString = "UPDATE " + "WAS_PARTNER_LOGcloud001" +
-                                      " SET SERVER_NAME = 'cloud002'" +
+                String updateString = "UPDATE " + "WAS_PARTNER_LOGcloud0011" +
+                                      " SET SERVER_NAME = 'cloud0021'" +
                                       " WHERE RU_ID = -1";
                 stmt.executeUpdate(updateString);
             } catch (SQLException x) {
