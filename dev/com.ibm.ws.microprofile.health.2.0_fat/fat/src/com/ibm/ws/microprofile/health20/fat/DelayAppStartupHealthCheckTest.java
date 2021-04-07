@@ -193,7 +193,19 @@ public class DelayAppStartupHealthCheckTest {
                             repeat = false;
                             startServerThread.join();
                         } else if (System.currentTimeMillis() - start_time > time_out) {
-                            throw new TimeoutException("Timed out waiting for server and app to be ready. Timeout set to " + time_out + "ms.");
+
+                            List<String> lines = server1.findStringsInFileInLibertyServerRoot("O Exiting init function - Thread.sleep completed.", MESSAGE_LOG);
+
+                            if (lines.size() == 0) {
+                                log("testReadinessEndpointOnServerStart", "waiting for DelayedServlet sleep to finish.");
+                                server1.waitForStringInLog("O Exiting init function - Thread.sleep completed.");
+                                log("testReadinessEndpointOnServerStart", "DelayedServlet sleep finished.");
+                            }
+
+                            else {
+                                log("testReadinessEndpointOnServerStart", "DelayedServlet sleep finished but timeout still reached.");
+                                throw new TimeoutException("Timed out waiting for server and app to be ready. Timeout set to " + time_out + "ms.");
+                            }
                         }
                     }
 
