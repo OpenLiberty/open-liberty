@@ -62,11 +62,11 @@ public class FormParamInjector extends StringParameterInjector implements ValueI
    @Override
    public Object inject(HttpRequest request, HttpResponse response, boolean unwrapAsync)
    {
-	  // Liberty change start
-      MultivaluedMap<String, String> formParams = request.getFormParameters(); 
+      // Liberty change start 
       MultivaluedMap<String, String> decodedFormParams = request.getDecodedFormParameters();
       MediaType mediaType = request.getHttpHeaders().getMediaType();
       if (String.class.equals(type) && mediaType != null && mediaType.getType().equalsIgnoreCase("multipart")) {
+          MultivaluedMap<String, String> formParams = request.getFormParameters(); 
           if (formParams == null || formParams.size() < 1) {
               try {
                   Type genericType = (new ArrayList<IAttachment>() {}).getClass().getGenericSuperclass();
