@@ -11,18 +11,12 @@
 package com.ibm.ws.security.saml.fat.jaxrs.config.IDPInitiated;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.ibm.ws.security.fat.common.ValidationData.validationData;
-import com.ibm.ws.security.saml.fat.jaxrs.config.utils.RSSamlConfigSettings;
-import com.ibm.ws.security.saml.fat.jaxrs.config.utils.RSSamlProviderSettings;
-import com.ibm.ws.security.saml20.fat.commonTest.SAMLConstants;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLMessageConstants;
-import com.ibm.ws.security.saml20.fat.commonTest.SAMLTestSettings;
 
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
@@ -43,95 +37,11 @@ import componenttest.topology.impl.LibertyServerWrapper;
 @LibertyServerWrapper
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
-public class RSSamlIDPInitiatedSSLConfigTests extends RSSamlIDPInitiatedConfigCommonTests {
+public class RSSamlIDPInitiatedSSLConfigNoReconfigTests extends RSSamlIDPInitiatedConfigCommonTests {
 
     /*****************************************
      * TESTS
      **************************************/
-
-    /**************************************
-     * signatureMethodAlgorithm
-     **************************************/
-
-    /**
-     * Test purpose: - signatureMethodAlgorithm: SHA1 Expected results: - The
-     * SAML token should be successfully processed by JAX-RS.
-     *
-     * @throws Exception
-     */
-    @Test
-    public void RSSamlIDPInitiatedConfigTests_signatureMethodAlgorithm_SHA1() throws Exception {
-
-        RSSamlConfigSettings updatedRsSamlSettings = rsConfigSettings.copyConfigSettings();
-        RSSamlProviderSettings updatedProviderSettings = updatedRsSamlSettings.getDefaultRSSamlProviderSettings();
-        updatedProviderSettings.setSignatureMethodAlgorithm("SHA1");
-
-        List<validationData> expectations = commonUtils.getGoodExpectationsForJaxrsGet(flowType, testSettings);
-
-        generalConfigTest(updatedRsSamlSettings, expectations, testSettings);
-    }
-
-    /**
-     * Test purpose: - signatureMethodAlgorithm: SHA128 Expected results: - The
-     * SAML token should be successfully processed by JAX-RS.
-     *
-     * @throws Exception
-     */
-    @Test
-    public void RSSamlIDPInitiatedConfigTests_signatureMethodAlgorithm_SHA128() throws Exception {
-
-        RSSamlConfigSettings updatedRsSamlSettings = rsConfigSettings.copyConfigSettings();
-        RSSamlProviderSettings updatedProviderSettings = updatedRsSamlSettings.getDefaultRSSamlProviderSettings();
-        updatedProviderSettings.setSignatureMethodAlgorithm("SHA128");
-
-        List<validationData> expectations = commonUtils.getGoodExpectationsForJaxrsGet(flowType, testSettings);
-
-        generalConfigTest(updatedRsSamlSettings, expectations, testSettings);
-    }
-
-    /**
-     * Test purpose: - signatureMethodAlgorithm: SHA256 Expected results: - 401
-     * when invoking JAX-RS. - CWWKS5049E message in the app server log saying
-     * the signature was not valid (weaker than required).
-     *
-     * @throws Exception
-     */
-    @ExpectedFFDC({ "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.ws.security.SecurityPolicyException" })
-    @Test
-    public void RSSamlIDPInitiatedConfigTests_signatureMethodAlgorithm_SHA256() throws Exception {
-
-        RSSamlConfigSettings updatedRsSamlSettings = rsConfigSettings.copyConfigSettings();
-        RSSamlProviderSettings updatedProviderSettings = updatedRsSamlSettings.getDefaultRSSamlProviderSettings();
-        updatedProviderSettings.setSignatureMethodAlgorithm("SHA256");
-
-        List<validationData> expectations = get401ExpectationsForJaxrsGet("Did not get the expected message saying the received signature was not valid and weaker than required.",
-                SAMLMessageConstants.CWWKS5049E_SIGNATURE_NOT_TRUSTED_OR_VALID);
-
-        generalConfigTest(updatedRsSamlSettings, expectations, testSettings);
-    }
-
-    /**
-     * Test purpose: - signatureMethodAlgorithm: SHA128 - SAML SP specifies
-     * SHA256 as the signature algorithm Expected results: - TODO
-     *
-     * @throws Exception
-     */
-    // !@Test
-    public void RSSamlIDPInitiatedConfigTests_signatureMethodAlgorithm_SHA128_sp256() throws Exception {
-
-        RSSamlConfigSettings updatedRsSamlSettings = rsConfigSettings.copyConfigSettings();
-        RSSamlProviderSettings updatedProviderSettings = updatedRsSamlSettings.getDefaultRSSamlProviderSettings();
-        updatedProviderSettings.setSignatureMethodAlgorithm("SHA128");
-
-        // Update test settings to use an SP that encrypts SAML assertions
-        SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
-        updatedTestSettings.updatePartnerInSettings("sp1", SP_SIG_ALG_SHA256, true);
-        updatedTestSettings.setSpecificIDPChallenge(2);
-
-        List<validationData> expectations = commonUtils.getGoodExpectationsForJaxrsGet(flowType, updatedTestSettings);
-
-        generalConfigTest(updatedRsSamlSettings, expectations, updatedTestSettings);
-    }
 
     /**************************************
      * wantAssertionsSigned
@@ -158,8 +68,6 @@ public class RSSamlIDPInitiatedSSLConfigTests extends RSSamlIDPInitiatedConfigCo
     @Test
     public void RSSamlIDPInitiatedConfigTests_keyStoreRef_notSpecified() throws Exception {
 
-        testAppServer.reconfigServer(buildSPServerName(APP_SERVER_ORIG_CONFIG), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
-
         String appExtension = "keyStoreRef_notSpecified";
 
         Map<String, String> errorMsgs = new HashMap<String, String>();
@@ -183,8 +91,6 @@ public class RSSamlIDPInitiatedSSLConfigTests extends RSSamlIDPInitiatedConfigCo
     @Test
     public void RSSamlIDPInitiatedConfigTests_keyStoreRef_empty() throws Exception {
 
-        testAppServer.reconfigServer(buildSPServerName(APP_SERVER_ORIG_CONFIG), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
-
         String appExtension = "keyStoreRef_empty";
 
         Map<String, String> errorMsgs = new HashMap<String, String>();
@@ -206,8 +112,6 @@ public class RSSamlIDPInitiatedSSLConfigTests extends RSSamlIDPInitiatedConfigCo
     @ExpectedFFDC({ "java.security.KeyStoreException", "com.ibm.ws.security.saml.error.SamlException" })
     @Test
     public void RSSamlIDPInitiatedConfigTests_keyStoreRef_nonExistentKeystore() throws Exception {
-
-        testAppServer.reconfigServer(buildSPServerName(APP_SERVER_ORIG_CONFIG), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
 
         String appExtension = "keyStoreRef_nonExistent";
 
@@ -231,8 +135,6 @@ public class RSSamlIDPInitiatedSSLConfigTests extends RSSamlIDPInitiatedConfigCo
     @Test
     public void RSSamlIDPInitiatedConfigTests_keyStoreRef_singleKey_invalid() throws Exception {
 
-        testAppServer.reconfigServer(buildSPServerName(APP_SERVER_ORIG_CONFIG), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
-
         String appExtension = "keyStoreRef_singleKey_invalid";
 
         // TODO also get open source errors for decrypting the key
@@ -254,8 +156,6 @@ public class RSSamlIDPInitiatedSSLConfigTests extends RSSamlIDPInitiatedConfigCo
     @Test
     public void RSSamlIDPInitiatedConfigTests_keyStoreRef_singleKey_valid() throws Exception {
 
-        testAppServer.reconfigServer(buildSPServerName(APP_SERVER_ORIG_CONFIG), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
-
         String appExtension = "keyStoreRef_singleKey_valid";
 
         successfulKeyStoreTest(appExtension);
@@ -273,8 +173,6 @@ public class RSSamlIDPInitiatedSSLConfigTests extends RSSamlIDPInitiatedConfigCo
      */
     @Test
     public void RSSamlIDPInitiatedConfigTests_keyStoreRef_multiKey_samlspIncluded() throws Exception {
-
-        testAppServer.reconfigServer(buildSPServerName(APP_SERVER_ORIG_CONFIG), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
 
         String appExtension = "keyStoreRef_multiKey_samlspIncluded";
 
@@ -295,8 +193,6 @@ public class RSSamlIDPInitiatedSSLConfigTests extends RSSamlIDPInitiatedConfigCo
     @ExpectedFFDC("com.ibm.ws.security.saml.error.SamlException")
     @Test
     public void RSSamlIDPInitiatedConfigTests_keyStoreRef_multiKey_samlspMissing() throws Exception {
-
-        testAppServer.reconfigServer(buildSPServerName(APP_SERVER_ORIG_CONFIG), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
 
         String appExtension = "keyStoreRef_multiKey_samlspMissing";
 
@@ -326,8 +222,6 @@ public class RSSamlIDPInitiatedSSLConfigTests extends RSSamlIDPInitiatedConfigCo
     @Test
     public void RSSamlIDPInitiatedConfigTests_keyAlias_notSpecified_emptyKeystore() throws Exception {
 
-        testAppServer.reconfigServer(buildSPServerName(APP_SERVER_ORIG_CONFIG), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
-
         String appExtension = "keyAlias_notSpecified_emptyKeystore";
 
         Map<String, String> errorMsgs = new HashMap<String, String>();
@@ -351,8 +245,6 @@ public class RSSamlIDPInitiatedSSLConfigTests extends RSSamlIDPInitiatedConfigCo
     @Test
     public void RSSamlIDPInitiatedConfigTests_keyAlias_notSpecified_oneKeyInKeystore_invalid() throws Exception {
 
-        testAppServer.reconfigServer(buildSPServerName(APP_SERVER_ORIG_CONFIG), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
-
         String appExtension = "keyAlias_notSpecified_oneKeyInKeystore_invalid";
 
         // TODO also get open source errors for decrypting the key
@@ -375,8 +267,6 @@ public class RSSamlIDPInitiatedSSLConfigTests extends RSSamlIDPInitiatedConfigCo
     @Test
     public void RSSamlIDPInitiatedConfigTests_keyAlias_notSpecified_oneKeyInKeystore_valid_certMappedToNonDefaultAlias() throws Exception {
 
-        testAppServer.reconfigServer(buildSPServerName(APP_SERVER_ORIG_CONFIG), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
-
         String appExtension = "keyAlias_notSpecified_oneKeyInKeystore_valid_certMappedToNonDefaultAlias";
 
         successfulKeyStoreTest(appExtension);
@@ -396,8 +286,6 @@ public class RSSamlIDPInitiatedSSLConfigTests extends RSSamlIDPInitiatedConfigCo
     @ExpectedFFDC("com.ibm.ws.security.saml.error.SamlException")
     @Test
     public void RSSamlIDPInitiatedConfigTests_keyAlias_notSpecified_multipleKeysInKeystore_includesValid_validKeyMappedToNonDefaultAlias() throws Exception {
-
-        testAppServer.reconfigServer(buildSPServerName(APP_SERVER_ORIG_CONFIG), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
 
         String appExtension = "keyAlias_notSpecified_multipleKeysInKeystore_includesValid_validKeyMappedToNonDefaultAlias";
 
@@ -420,8 +308,6 @@ public class RSSamlIDPInitiatedSSLConfigTests extends RSSamlIDPInitiatedConfigCo
     @Test
     public void RSSamlIDPInitiatedConfigTests_keyAlias_notSpecified_multipleKeysInKeystore_includesValid_validKeyMappedToDefaultAlias() throws Exception {
 
-        testAppServer.reconfigServer(buildSPServerName(APP_SERVER_ORIG_CONFIG), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
-
         String appExtension = "keyAlias_notSpecified_multipleKeysInKeystore_includesValid_validKeyMappedToDefaultAlias";
 
         successfulKeyStoreTest(appExtension);
@@ -441,8 +327,6 @@ public class RSSamlIDPInitiatedSSLConfigTests extends RSSamlIDPInitiatedConfigCo
     @ExpectedFFDC("com.ibm.ws.security.saml.error.SamlException")
     @Test
     public void RSSamlIDPInitiatedConfigTests_keyAlias_empty_emptyKeystore() throws Exception {
-
-        testAppServer.reconfigServer(buildSPServerName(APP_SERVER_ORIG_CONFIG), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
 
         String appExtension = "keyAlias_empty_emptyKeystore";
 
@@ -465,8 +349,6 @@ public class RSSamlIDPInitiatedSSLConfigTests extends RSSamlIDPInitiatedConfigCo
     @Test
     public void RSSamlIDPInitiatedConfigTests_keyAlias_empty_oneKeyInKeystore_valid_certMappedToNonDefaultAlias() throws Exception {
 
-        testAppServer.reconfigServer(buildSPServerName(APP_SERVER_ORIG_CONFIG), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
-
         String appExtension = "keyAlias_empty_oneKeyInKeystore_valid_certMappedToNonDefaultAlias";
 
         successfulKeyStoreTest(appExtension);
@@ -484,8 +366,6 @@ public class RSSamlIDPInitiatedSSLConfigTests extends RSSamlIDPInitiatedConfigCo
      */
     @Test
     public void RSSamlIDPInitiatedConfigTests_keyAlias_empty_multipleKeysInKeystore_includesValid_validKeyMappedToDefaultAlias() throws Exception {
-
-        testAppServer.reconfigServer(buildSPServerName(APP_SERVER_ORIG_CONFIG), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
 
         String appExtension = "keyAlias_empty_multipleKeysInKeystore_includesValid_validKeyMappedToDefaultAlias";
 
@@ -505,8 +385,6 @@ public class RSSamlIDPInitiatedSSLConfigTests extends RSSamlIDPInitiatedConfigCo
     @ExpectedFFDC({ "com.ibm.ws.security.saml.error.SamlException", "java.security.cert.CertificateException" })
     @Test
     public void RSSamlIDPInitiatedConfigTests_keyAlias_nonExistentKey() throws Exception {
-
-        testAppServer.reconfigServer(buildSPServerName(APP_SERVER_ORIG_CONFIG), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
 
         String appExtension = "keyAlias_nonExistentKey";
 
@@ -529,8 +407,6 @@ public class RSSamlIDPInitiatedSSLConfigTests extends RSSamlIDPInitiatedConfigCo
     @Test
     public void RSSamlIDPInitiatedConfigTests_keyAlias_valid_oneKeyInKeystore() throws Exception {
 
-        testAppServer.reconfigServer(buildSPServerName(APP_SERVER_ORIG_CONFIG), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
-
         String appExtension = "keyAlias_valid_oneKeyInKeystore";
 
         successfulKeyStoreTest(appExtension);
@@ -548,8 +424,6 @@ public class RSSamlIDPInitiatedSSLConfigTests extends RSSamlIDPInitiatedConfigCo
      */
     @Test
     public void RSSamlIDPInitiatedConfigTests_keyAlias_valid_multipleKeysInKeystore() throws Exception {
-
-        testAppServer.reconfigServer(buildSPServerName(APP_SERVER_ORIG_CONFIG), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
 
         String appExtension = "keyAlias_valid_multipleKeysInKeystore";
 
@@ -572,8 +446,6 @@ public class RSSamlIDPInitiatedSSLConfigTests extends RSSamlIDPInitiatedConfigCo
     @ExpectedFFDC({ "com.ibm.ws.security.saml.error.SamlException", "java.security.cert.CertificateException" })
     @Test
     public void RSSamlIDPInitiatedConfigTests_keyAlias_invalid_multipleKeysInKeystore() throws Exception {
-
-        testAppServer.reconfigServer(buildSPServerName(APP_SERVER_ORIG_CONFIG), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
 
         String appExtension = "keyAlias_invalid_multipleKeysInKeystore";
 
@@ -603,8 +475,6 @@ public class RSSamlIDPInitiatedSSLConfigTests extends RSSamlIDPInitiatedConfigCo
     @Test
     public void RSSamlIDPInitiatedConfigTests_rsKeyPassword_notSpecified_keystoreKeyPassword_empty_singleKeyInKeystore_noKeyAlias_validKey() throws Exception {
 
-        testAppServer.reconfigServer(buildSPServerName(APP_SERVER_ORIG_CONFIG), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
-
         String appExtension = "keyPassword_notSpecified_keystoreKeyPassword_empty_singleKeyInKeystore_noKeyAlias_validKey";
 
         Map<String, String> errorMsgs = new HashMap<String, String>();
@@ -632,8 +502,6 @@ public class RSSamlIDPInitiatedSSLConfigTests extends RSSamlIDPInitiatedConfigCo
     @Test
     public void RSSamlIDPInitiatedConfigTests_rsKeyPassword_notSpecified_keystoreKeyPassword_empty_multipleKeysInKeystore_noKeyAlias_validKey() throws Exception {
 
-        testAppServer.reconfigServer(buildSPServerName(APP_SERVER_ORIG_CONFIG), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
-
         String appExtension = "keyPassword_notSpecified_keystoreKeyPassword_empty_multipleKeysInKeystore_noKeyAlias_validKey";
 
         Map<String, String> errorMsgs = new HashMap<String, String>();
@@ -660,8 +528,6 @@ public class RSSamlIDPInitiatedSSLConfigTests extends RSSamlIDPInitiatedConfigCo
     @Test
     public void RSSamlIDPInitiatedConfigTests_rsKeyPassword_notSpecified_keystoreKeyPassword_nonEmpty_singleKeyInKeystore_noKeyAlias_validKey() throws Exception {
 
-        testAppServer.reconfigServer(buildSPServerName(APP_SERVER_ORIG_CONFIG), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
-
         String appExtension = "keyPassword_notSpecified_keystoreKeyPassword_nonEmpty_singleKeyInKeystore_noKeyAlias_validKey";
 
         Map<String, String> errorMsgs = new HashMap<String, String>();
@@ -685,8 +551,6 @@ public class RSSamlIDPInitiatedSSLConfigTests extends RSSamlIDPInitiatedConfigCo
     @Test
     public void RSSamlIDPInitiatedConfigTests_rsKeyPassword_notSpecified_keystoreKeyPassword_matchesKeystore_singleKeyInKeystore_noKeyAlias_validKey() throws Exception {
 
-        testAppServer.reconfigServer(buildSPServerName(APP_SERVER_ORIG_CONFIG), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
-
         String appExtension = "keyPassword_notSpecified_keystoreKeyPassword_matchesKeystore_singleKeyInKeystore_noKeyAlias_validKey";
 
         successfulKeyStoreTest(appExtension);
@@ -707,8 +571,6 @@ public class RSSamlIDPInitiatedSSLConfigTests extends RSSamlIDPInitiatedConfigCo
     @ExpectedFFDC({ "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.xml.encryption.DecryptionException" })
     @Test
     public void RSSamlIDPInitiatedConfigTests_rsKeyPassword_notSpecified_keystoreKeyPassword_matchesKeystore_multipleKeysInKeystore_keyAlias_invalidKey() throws Exception {
-
-        testAppServer.reconfigServer(buildSPServerName(APP_SERVER_ORIG_CONFIG), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
 
         String appExtension = "keyPassword_notSpecified_keystoreKeyPassword_matchesKeystore_multipleKeysInKeystore_keyAlias_invalidKey";
 
@@ -733,8 +595,6 @@ public class RSSamlIDPInitiatedSSLConfigTests extends RSSamlIDPInitiatedConfigCo
     @Test
     public void RSSamlIDPInitiatedConfigTests_rsKeyPassword_notSpecified_keystoreKeyPassword_matchesKeystore_multipleKeysInKeystore_keyAlias_validKey() throws Exception {
 
-        testAppServer.reconfigServer(buildSPServerName(APP_SERVER_ORIG_CONFIG), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
-
         String appExtension = "keyPassword_notSpecified_keystoreKeyPassword_matchesKeystore_multipleKeysInKeystore_keyAlias_validKey";
 
         successfulKeyStoreTest(appExtension);
@@ -754,8 +614,6 @@ public class RSSamlIDPInitiatedSSLConfigTests extends RSSamlIDPInitiatedConfigCo
      */
     @Test
     public void RSSamlIDPInitiatedConfigTests_rsKeyPassword_empty_keystoreKeyPassword_notSpecified_singleKeyInKeystore_noKeyAlias_validKey() throws Exception {
-
-        testAppServer.reconfigServer(buildSPServerName(APP_SERVER_ORIG_CONFIG), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
 
         String appExtension = "keyPassword_empty_keystoreKeyPassword_notSpecified_singleKeyInKeystore_noKeyAlias_validKey";
 
@@ -777,8 +635,6 @@ public class RSSamlIDPInitiatedSSLConfigTests extends RSSamlIDPInitiatedConfigCo
     @ExpectedFFDC({ "com.ibm.ws.security.saml.error.SamlException", "java.security.KeyStoreException" })
     @Test
     public void RSSamlIDPInitiatedConfigTests_rsKeyPassword_empty_keystoreKeyPassword_empty_singleKeyInKeystore_noKeyAlias_validKey() throws Exception {
-
-        testAppServer.reconfigServer(buildSPServerName(APP_SERVER_ORIG_CONFIG), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
 
         String appExtension = "keyPassword_empty_keystoreKeyPassword_empty_singleKeyInKeystore_noKeyAlias_validKey";
 
@@ -805,8 +661,6 @@ public class RSSamlIDPInitiatedSSLConfigTests extends RSSamlIDPInitiatedConfigCo
     @Test
     public void RSSamlIDPInitiatedConfigTests_rsKeyPassword_empty_keystoreKeyPassword_empty_multipleKeysInKeystore_keyAlias_validKey() throws Exception {
 
-        testAppServer.reconfigServer(buildSPServerName(APP_SERVER_ORIG_CONFIG), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
-
         String appExtension = "keyPassword_empty_keystoreKeyPassword_empty_multipleKeysInKeystore_keyAlias_validKey";
 
         Map<String, String> errorMsgs = new HashMap<String, String>();
@@ -832,8 +686,6 @@ public class RSSamlIDPInitiatedSSLConfigTests extends RSSamlIDPInitiatedConfigCo
     @Test
     public void RSSamlIDPInitiatedConfigTests_rsKeyPassword_empty_keystoreKeyPassword_nonEmpty_multipleKeysInKeystore_keyAlias_validKey() throws Exception {
 
-        testAppServer.reconfigServer(buildSPServerName(APP_SERVER_ORIG_CONFIG), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
-
         String appExtension = "keyPassword_empty_keystoreKeyPassword_nonEmpty_multipleKeysInKeystore_keyAlias_validKey";
 
         Map<String, String> errorMsgs = new HashMap<String, String>();
@@ -858,8 +710,6 @@ public class RSSamlIDPInitiatedSSLConfigTests extends RSSamlIDPInitiatedConfigCo
     @Test
     public void RSSamlIDPInitiatedConfigTests_rsKeyPassword_empty_keystoreKeyPassword_matchesKeystore_singleKeyInKeystore_noKeyAlias_validKey() throws Exception {
 
-        testAppServer.reconfigServer(buildSPServerName(APP_SERVER_ORIG_CONFIG), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
-
         String appExtension = "keyPassword_empty_keystoreKeyPassword_matchesKeystore_singleKeyInKeystore_noKeyAlias_validKey";
 
         successfulKeyStoreTest(appExtension);
@@ -879,8 +729,6 @@ public class RSSamlIDPInitiatedSSLConfigTests extends RSSamlIDPInitiatedConfigCo
      */
     @Test
     public void RSSamlIDPInitiatedConfigTests_rsKeyPassword_empty_keystoreKeyPassword_matchesKeystore_multipleKeysInKeystore_keyAlias_validKey() throws Exception {
-
-        testAppServer.reconfigServer(buildSPServerName(APP_SERVER_ORIG_CONFIG), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
 
         String appExtension = "keyPassword_empty_keystoreKeyPassword_matchesKeystore_multipleKeysInKeystore_keyAlias_validKey";
 
@@ -902,8 +750,6 @@ public class RSSamlIDPInitiatedSSLConfigTests extends RSSamlIDPInitiatedConfigCo
      */
     @Test
     public void RSSamlIDPInitiatedConfigTests_rsKeyPassword_nonEmpty_keystoreKeyPassword_notSpecified_singleKeyInKeystore_noKeyAlias_validKey() throws Exception {
-
-        testAppServer.reconfigServer(buildSPServerName(APP_SERVER_ORIG_CONFIG), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
 
         String appExtension = "keyPassword_nonEmpty_keystoreKeyPassword_notSpecified_singleKeyInKeystore_noKeyAlias_validKey";
 
@@ -929,8 +775,6 @@ public class RSSamlIDPInitiatedSSLConfigTests extends RSSamlIDPInitiatedConfigCo
     @Test
     public void RSSamlIDPInitiatedConfigTests_rsKeyPassword_nonEmpty_keystoreKeyPassword_empty_singleKeyInKeystore_noKeyAlias_validKey() throws Exception {
 
-        testAppServer.reconfigServer(buildSPServerName(APP_SERVER_ORIG_CONFIG), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
-
         String appExtension = "keyPassword_nonEmpty_keystoreKeyPassword_empty_singleKeyInKeystore_noKeyAlias_validKey";
 
         Map<String, String> errorMsgs = new HashMap<String, String>();
@@ -954,8 +798,6 @@ public class RSSamlIDPInitiatedSSLConfigTests extends RSSamlIDPInitiatedConfigCo
     @ExpectedFFDC({ "com.ibm.ws.security.saml.error.SamlException", "java.security.KeyStoreException" })
     @Test
     public void RSSamlIDPInitiatedConfigTests_rsKeyPassword_nonEmpty_keystoreKeyPassword_nonEmptyMatches_singleKeyInKeystore_noKeyAlias_validKey() throws Exception {
-
-        testAppServer.reconfigServer(buildSPServerName(APP_SERVER_ORIG_CONFIG), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
 
         String appExtension = "keyPassword_nonEmpty_keystoreKeyPassword_nonEmptyMatches_singleKeyInKeystore_noKeyAlias_validKey";
 
@@ -982,8 +824,6 @@ public class RSSamlIDPInitiatedSSLConfigTests extends RSSamlIDPInitiatedConfigCo
     @ExpectedFFDC("com.ibm.ws.security.saml.error.SamlException")
     @Test
     public void RSSamlIDPInitiatedConfigTests_rsKeyPassword_nonEmpty_keystoreKeyPassword_nonEmptyMatches_multipleKeysInKeystore_noKeyAlias_validKey() throws Exception {
-
-        testAppServer.reconfigServer(buildSPServerName(APP_SERVER_ORIG_CONFIG), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
 
         String appExtension = "keyPassword_nonEmpty_keystoreKeyPassword_nonEmptyMatches_multipleKeysInKeystore_noKeyAlias_validKey";
 
@@ -1013,8 +853,6 @@ public class RSSamlIDPInitiatedSSLConfigTests extends RSSamlIDPInitiatedConfigCo
     @Test
     public void RSSamlIDPInitiatedConfigTests_rsKeyPassword_nonEmpty_keystoreKeyPassword_nonEmptyMatches_multipleKeysInKeystore_keyAlias_nonExistentKey() throws Exception {
 
-        testAppServer.reconfigServer(buildSPServerName(APP_SERVER_ORIG_CONFIG), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
-
         String appExtension = "keyPassword_nonEmpty_keystoreKeyPassword_nonEmptyMatches_multipleKeysInKeystore_keyAlias_nonExistentKey";
 
         Map<String, String> errorMsgs = new HashMap<String, String>();
@@ -1040,8 +878,6 @@ public class RSSamlIDPInitiatedSSLConfigTests extends RSSamlIDPInitiatedConfigCo
     @Test
     public void RSSamlIDPInitiatedConfigTests_rsKeyPassword_nonEmpty_keystoreKeyPassword_nonEmptyMatches_multipleKeysInKeystore_keyAlias_invalidKey() throws Exception {
 
-        testAppServer.reconfigServer(buildSPServerName(APP_SERVER_ORIG_CONFIG), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
-
         String appExtension = "keyPassword_nonEmpty_keystoreKeyPassword_nonEmptyMatches_multipleKeysInKeystore_keyAlias_invalidKey";
 
         Map<String, String> errorMsgs = new HashMap<String, String>();
@@ -1065,8 +901,6 @@ public class RSSamlIDPInitiatedSSLConfigTests extends RSSamlIDPInitiatedConfigCo
     @ExpectedFFDC({ "com.ibm.ws.security.saml.error.SamlException", "java.security.KeyStoreException" })
     @Test
     public void RSSamlIDPInitiatedConfigTests_rsKeyPassword_nonEmpty_keystoreKeyPassword_nonEmptyMatches_multipleKeysInKeystore_keyAlias_validKey() throws Exception {
-
-        testAppServer.reconfigServer(buildSPServerName(APP_SERVER_ORIG_CONFIG), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
 
         String appExtension = "keyPassword_nonEmpty_keystoreKeyPassword_nonEmptyMatches_multipleKeysInKeystore_keyAlias_validKey";
 
@@ -1097,8 +931,6 @@ public class RSSamlIDPInitiatedSSLConfigTests extends RSSamlIDPInitiatedConfigCo
     @Test
     public void RSSamlIDPInitiatedConfigTests_rsKeyPassword_nonEmpty_keystoreKeyPassword_matchesKeystore_multipleKeysInKeystore_noKeyAlias_validKey() throws Exception {
 
-        testAppServer.reconfigServer(buildSPServerName(APP_SERVER_ORIG_CONFIG), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
-
         String appExtension = "keyPassword_nonEmpty_keystoreKeyPassword_matchesKeystore_multipleKeysInKeystore_noKeyAlias_validKey";
 
         Map<String, String> errorMsgs = new HashMap<String, String>();
@@ -1123,8 +955,6 @@ public class RSSamlIDPInitiatedSSLConfigTests extends RSSamlIDPInitiatedConfigCo
     @Test
     public void RSSamlIDPInitiatedConfigTests_rsKeyPassword_matchesKeystore_keystoreKeyPassword_notSpecified_singleKeyInKeystore_noKeyAlias_validKey() throws Exception {
 
-        testAppServer.reconfigServer(buildSPServerName(APP_SERVER_ORIG_CONFIG), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
-
         String appExtension = "keyPassword_matchesKeystore_keystoreKeyPassword_notSpecified_singleKeyInKeystore_noKeyAlias_validKey";
 
         successfulKeyStoreTest(appExtension);
@@ -1143,8 +973,6 @@ public class RSSamlIDPInitiatedSSLConfigTests extends RSSamlIDPInitiatedConfigCo
      */
     @Test
     public void RSSamlIDPInitiatedConfigTests_rsKeyPassword_matchesKeystore_keystoreKeyPassword_notSpecified_multipleKeysInKeystore_noKeyAlias_validKey() throws Exception {
-
-        testAppServer.reconfigServer(buildSPServerName(APP_SERVER_ORIG_CONFIG), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
 
         String appExtension = "keyPassword_matchesKeystore_keystoreKeyPassword_notSpecified_multipleKeysInKeystore_noKeyAlias_validKey";
 
@@ -1166,8 +994,6 @@ public class RSSamlIDPInitiatedSSLConfigTests extends RSSamlIDPInitiatedConfigCo
     @ExpectedFFDC({ "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.xml.encryption.DecryptionException" })
     @Test
     public void RSSamlIDPInitiatedConfigTests_rsKeyPassword_matchesKeystore_keystoreKeyPassword_notSpecified_multipleKeysInKeystore_keyAlias_invalidKey() throws Exception {
-
-        testAppServer.reconfigServer(buildSPServerName(APP_SERVER_ORIG_CONFIG), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
 
         String appExtension = "keyPassword_matchesKeystore_keystoreKeyPassword_notSpecified_multipleKeysInKeystore_keyAlias_invalidKey";
 
@@ -1192,8 +1018,6 @@ public class RSSamlIDPInitiatedSSLConfigTests extends RSSamlIDPInitiatedConfigCo
     @Test
     public void RSSamlIDPInitiatedConfigTests_rsKeyPassword_matchesKeystore_keystoreKeyPassword_notSpecified_multipleKeysInKeystore_keyAlias_validKey() throws Exception {
 
-        testAppServer.reconfigServer(buildSPServerName(APP_SERVER_ORIG_CONFIG), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
-
         String appExtension = "keyPassword_matchesKeystore_keystoreKeyPassword_notSpecified_multipleKeysInKeystore_keyAlias_validKey";
 
         successfulKeyStoreTest(appExtension);
@@ -1213,8 +1037,6 @@ public class RSSamlIDPInitiatedSSLConfigTests extends RSSamlIDPInitiatedConfigCo
     @Test
     public void RSSamlIDPInitiatedConfigTests_rsKeyPassword_matchesKeystore_keystoreKeyPassword_empty_singleKeyInKeystore_noKeyAlias_validKey() throws Exception {
 
-        testAppServer.reconfigServer(buildSPServerName(APP_SERVER_ORIG_CONFIG), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
-
         String appExtension = "keyPassword_matchesKeystore_keystoreKeyPassword_empty_singleKeyInKeystore_noKeyAlias_validKey";
 
         successfulKeyStoreTest(appExtension);
@@ -1233,8 +1055,6 @@ public class RSSamlIDPInitiatedSSLConfigTests extends RSSamlIDPInitiatedConfigCo
      */
     @Test
     public void RSSamlIDPInitiatedConfigTests_rsKeyPassword_matchesKeystore_keystoreKeyPassword_empty_multipleKeysInKeystore_noKeyAlias_validKey() throws Exception {
-
-        testAppServer.reconfigServer(buildSPServerName(APP_SERVER_ORIG_CONFIG), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
 
         String appExtension = "keyPassword_matchesKeystore_keystoreKeyPassword_empty_multipleKeysInKeystore_noKeyAlias_validKey";
 
@@ -1256,8 +1076,6 @@ public class RSSamlIDPInitiatedSSLConfigTests extends RSSamlIDPInitiatedConfigCo
     @ExpectedFFDC({ "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.xml.encryption.DecryptionException" })
     @Test
     public void RSSamlIDPInitiatedConfigTests_rsKeyPassword_matchesKeystore_keystoreKeyPassword_empty_multipleKeysInKeystore_keyAlias_invalidKey() throws Exception {
-
-        testAppServer.reconfigServer(buildSPServerName(APP_SERVER_ORIG_CONFIG), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
 
         String appExtension = "keyPassword_matchesKeystore_keystoreKeyPassword_empty_multipleKeysInKeystore_keyAlias_invalidKey";
 
@@ -1282,8 +1100,6 @@ public class RSSamlIDPInitiatedSSLConfigTests extends RSSamlIDPInitiatedConfigCo
     @Test
     public void RSSamlIDPInitiatedConfigTests_rsKeyPassword_matchesKeystore_keystoreKeyPassword_empty_multipleKeysInKeystore_keyAlias_validKey() throws Exception {
 
-        testAppServer.reconfigServer(buildSPServerName(APP_SERVER_ORIG_CONFIG), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
-
         String appExtension = "keyPassword_matchesKeystore_keystoreKeyPassword_empty_multipleKeysInKeystore_keyAlias_validKey";
 
         successfulKeyStoreTest(appExtension);
@@ -1302,8 +1118,6 @@ public class RSSamlIDPInitiatedSSLConfigTests extends RSSamlIDPInitiatedConfigCo
      */
     @Test
     public void RSSamlIDPInitiatedConfigTests_rsKeyPassword_matchesKeystore_keystoreKeyPassword_nonEmpty_singleKeyInKeystore_noKeyAlias_validKey() throws Exception {
-
-        testAppServer.reconfigServer(buildSPServerName(APP_SERVER_ORIG_CONFIG), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
 
         String appExtension = "keyPassword_matchesKeystore_keystoreKeyPassword_nonEmpty_singleKeyInKeystore_noKeyAlias_validKey";
 
@@ -1324,8 +1138,6 @@ public class RSSamlIDPInitiatedSSLConfigTests extends RSSamlIDPInitiatedConfigCo
      */
     @Test
     public void RSSamlIDPInitiatedConfigTests_rsKeyPassword_matchesKeystore_keystoreKeyPassword_nonEmpty_multipleKeysInKeystore_keyAlias_validKey() throws Exception {
-
-        testAppServer.reconfigServer(buildSPServerName(APP_SERVER_ORIG_CONFIG), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
 
         String appExtension = "keyPassword_matchesKeystore_keystoreKeyPassword_nonEmpty_multipleKeysInKeystore_keyAlias_validKey";
 
