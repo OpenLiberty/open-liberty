@@ -885,12 +885,17 @@ public abstract class KdcHelper {
         final String methodName = "executeSshCommand";
         Log.info(thisClass, methodName, "Executing SSH command --> \"{1}\" with a {2}s timeout on session {0}", new Object[] { sshSession, command, timeout });
 
-        try (ByteArrayOutputStream stderr = new ByteArrayOutputStream();
-                        ByteArrayOutputStream stdout = new ByteArrayOutputStream();
+        try (ByteArrayOutputStream stdout = new ByteArrayOutputStream();
                         ChannelExec channel = sshSession.createExecChannel(command)) {
+
+            /*
+			 * Redirect stdout and stderr to one stream. I don't capture each separately b/c I want
+			 * to see the output in temporal order.
+			 */
             channel.setOut(stdout);
-            channel.setErr(stderr);
+            channel.setErr(stdout);
             channel.addChannelListener(new SshChannelListener());
+			
             try {
                 long remainingTimeoutMs = TimeUnit.SECONDS.toMillis(timeout);
 
@@ -920,7 +925,7 @@ public abstract class KdcHelper {
                     throw new IOException("The SSH command timed out while executing. The timeout was " + timeout + " seconds.");
                 }
 
-                return new ProgramOutput(command, channel.getExitStatus(), new String(stdout.toByteArray()), new String(stderr.toByteArray()));
+                return new ProgramOutput(command, channel.getExitStatus(), new String(stdout.toByteArray()), null);
             } finally {
                 try {
                     channel.close(false);
@@ -928,54 +933,36 @@ public abstract class KdcHelper {
                     // Ignore.
                 }
 
-                logSshOutput(new String(stdout.toByteArray()).trim(), new String(stderr.toByteArray()).trim());
+                logSshOutput(new String(stdout.toByteArray()).trim());
             }
         }
     }
 
     /**
-     * Log stdout and stderr from an SSH channel.
+     * Log output from an SSH channel.
      *
      * @param stdout Standard output from the channel.
-     * @param stderr Standard input from the channel.
      */
-    private static void logSshOutput(String stdout, String stderr) {
+    private static void logSshOutput(String stdout) {
         final String methodName = "logSshOutput";
 
         /*
          * Process stdout.
          */
         if (stdout.isEmpty()) {
-            stdout = "    [STDOUT] <NONE>";
+            stdout = "    [OUTPUT] <NONE>";
         } else {
             /*
-             * Add "    [STDOUT] " to the beginning of each line. The split
+             * Add "    [OUTPUT] " to the beginning of each line. The split
              * method might be resource intensive if we have large strings.
              */
             stdout = Arrays.stream(stdout.split("\\r?\\n"))
                             .filter(line -> true)
-                            .map(line -> "    [STDOUT] " + line + System.lineSeparator())
+                            .map(line -> "    [OUTPUT] " + line + System.lineSeparator())
                             .collect(Collectors.joining());
         }
 
-        /*
-         * Process stderr.
-         */
-        if (stderr.isEmpty()) {
-            stderr = "    [STDERR] <NONE>";
-        } else {
-            /*
-             * Add "    [STDERR] " to the beginning of each line. The split
-             * method might be resource intensive if we have large strings.
-             */
-            stderr = Arrays.stream(stderr.split("\\r?\\n"))
-                            .filter(line -> true)
-                            .map(line -> "    [STDERR] " + line + System.lineSeparator())
-                            .collect(Collectors.joining());
-        }
-
-        Log.info(thisClass, methodName, "SSH command standard output: \n{0}", stdout);
-        Log.info(thisClass, methodName, "SSH command standard error: \n{0}", stderr);
+        Log.info(thisClass, methodName, "SSH command output: \n{0}", stdout);
     }
 
     /**
