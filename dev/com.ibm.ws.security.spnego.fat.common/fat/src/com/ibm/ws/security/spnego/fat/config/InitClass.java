@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,10 +28,11 @@ import componenttest.topology.utils.ExternalTestService;
 public class InitClass {
     private static final Class<?> c = InitClass.class;
     /**
-     * Active Directory appears to allow user names with a max of 20 characters. We add "_http" to the end of the host name to
-     * create the user name, so the host name we use for the user name must be 15 characters or less.
+     * Active Directory appears to allow user names with a max of 20 characters. We add "_http" or
+     * "_httpsn" to the end of the host name to create the user name, so the host name we use for
+     * the user name must be 15 characters or less.
      */
-    public static final int CANONICAL_HOST_NAME_CHAR_LIMIT = 15;
+    public static final int CANONICAL_HOST_NAME_CHAR_LIMIT = 13;
 
     public static String KDC_HOSTNAME = null;
     public static String KDC_HOST_SHORTNAME = null;
@@ -230,21 +231,32 @@ public class InitClass {
             String tmpHostLowerCase = canonicalHostName.toLowerCase();
             if (tmpHostLowerCase.contains("ebc")) {
                 canonicalHostName = createRandomStringHostNameForEbc(canonicalHostName);
+            } else {
+                canonicalHostName = createRandomStringHostName(canonicalHostName);
             }
         }
+
+        /*
+         * If we can't resolve a canonical hostname other than localhost, we will have problems with
+         * the input and output keytab being named the same. This in itself isn't a big deal,
+         * but multiple hosts using the same keytab file on the shared remote KDCs will cause issues.
+         *
+         * Perhaps we could create a random hostname above, but I don't think this should be much
+         * of an issue unless running on your local machine.
+         *
+         * This might be due to a DNS not being able to resolve the host name, or perhaps b/c of network
+         * configuration on the local machine. For example on linux, /etc/hosts resolves 127.0.0.1 to
+         * localhost before a FQDN.
+         */
+        if ("localhost".equalsIgnoreCase(canonicalHostName)) {
+            throw new UnknownHostException("The canonical host name of " + canonicalHostName + " is not supported. Ensure that your host name is resolvable.");
+        }
+
         serverCanonicalHostName = canonicalHostName;
         Log.info(c, methodName, "canonicalHostName: " + canonicalHostName);
         return canonicalHostName;
     }
 
-    /**
-     * EBC test machines have long host names, but the first several characters are common to all, so aren't uniquely identifying.
-     * Extracts a unique string from the host name if the host name matches a certain pattern. Otherwise returns a simple
-     * substring of the host name.
-     *
-     * @param canonicalHostName
-     * @return
-     */
     /**
      * EBC test machines have long host names, create a random string host name for EBC test machine.
      *
@@ -267,7 +279,32 @@ public class InitClass {
             libertyHostMap.put(canonicalHostName, rndHostName);
             isRndHostName = true;
         }
-        Log.info(c, methodName, "EBC canonical hostname " + canonicalHostName + " map to the randon genrating hostname " + rndHostName);
+        Log.info(c, methodName, "EBC canonical hostname " + canonicalHostName + " mapped to the random generated hostname " + rndHostName);
+        return rndHostName;
+    }
+
+    /**
+     * Some test machines have long host names, create a random string host name for long named test machines.
+     *
+     * @param canonicalHostName
+     * @return
+     */
+	 protected static String createRandomStringHostName(String canonicalHostName) {
+        String methodName = "createRandomStringHostName";
+        rndHostName = libertyHostMap.get(canonicalHostName);
+        if (rndHostName == null) {
+            String chars = "abcdefghijklmnopqrstuvwxyz0123456789";
+            StringBuilder rdnString = new StringBuilder();
+            Random rnd = new Random();
+            while (rdnString.length() < CANONICAL_HOST_NAME_CHAR_LIMIT) {
+                int index = (int) (rnd.nextFloat() * chars.length());
+                rdnString.append(chars.charAt(index));
+            }
+            rndHostName = rdnString.toString();
+            libertyHostMap.put(canonicalHostName, rndHostName);
+            isRndHostName = true;
+        }
+        Log.info(c, methodName, "Canonical hostname " + canonicalHostName + " mapped to the random generated hostname " + rndHostName);
         return rndHostName;
     }
 

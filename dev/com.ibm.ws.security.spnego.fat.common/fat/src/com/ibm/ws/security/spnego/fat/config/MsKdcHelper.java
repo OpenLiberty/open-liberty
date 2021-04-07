@@ -32,8 +32,6 @@ public class MsKdcHelper extends KdcHelper {
 
     private final String KRB5_DEFAULT_LOCATION = "/Windows/";
 
-    private static String userSuffix = "_http";
-
     public String customSpnName = null;
 
     protected MsKdcHelper(LibertyServer server) {
@@ -46,7 +44,7 @@ public class MsKdcHelper extends KdcHelper {
 
         krb5DefaultLocation = KRB5_DEFAULT_LOCATION;
 
-        setDefaultUserName();
+        setDefaultUserName(null);
     }
 
     public MsKdcHelper(LibertyServer server, String kdcUser, String kdcPassword, String kdcRealm) {
@@ -54,18 +52,22 @@ public class MsKdcHelper extends KdcHelper {
         super(server, kdcUser, kdcPassword, kdcRealm);
         krb5DefaultLocation = KRB5_DEFAULT_LOCATION;
 
-        setDefaultUserName();
+        setDefaultUserName(null);
 
     }
 
     /**
      * Sets the default name to be used for the user to be created or modified on the KDC.
+     *
+     * @param suffix Suffix to override {@link #userSuffix} with.
      */
-    private void setDefaultUserName() {
+    private void setDefaultUserName(String suffix) {
         String methodName = "setDefaultUserName";
+
+        String userSuffix = (suffix != null) ? suffix : "_http";
+
         try {
-            String shortHostName = InitClass.serverShortHostName;
-            defaultUserName = shortHostName + userSuffix;
+            defaultUserName = InitClass.serverShortHostName + userSuffix;
             Log.info(thisClass, methodName, "Default user name set to: " + defaultUserName);
         } catch (Exception e) {
             Log.warning(thisClass, "Failed to set default user name: " + e.getMessage());
@@ -85,10 +87,7 @@ public class MsKdcHelper extends KdcHelper {
     public void createSpnAndKeytab(String spnRealm, boolean useCanonicalName, Map<String, String> optionalCmdArgs) throws Exception {
         String methodName = "createSpnAndKeytab";
         Log.info(thisClass, methodName, "Creating SPN and keytab with MS KDC");
-        if (!useCanonicalName) {
-            userSuffix = "_httpSHORTNAME";
-        }
-        setDefaultUserName();
+        setDefaultUserName((!useCanonicalName) ? "_httpSN" : null); // Was _httpSHORTNAME, but samaccountname can only be 20 chars
 
         try {
             Log.info(thisClass, methodName, "Copying files needed for Kerberos");
@@ -323,6 +322,7 @@ public class MsKdcHelper extends KdcHelper {
         pushLocalFileToRemoteMachine(kdcMachine, SPNEGOConstants.CREATE_WIN_USER_LOCAL_FILE, SPNEGOConstants.CREATE_WIN_USER_REMOTE_FILE);
         pushLocalFileToRemoteMachine(kdcMachine, SPNEGOConstants.REMOTE_WIN_USER_LOCAL_FILE, SPNEGOConstants.REMOVE_WIN_USER_REMOTE_FILE);
         pushLocalFileToRemoteMachine(kdcMachine, SPNEGOConstants.CREATE_WIN_KEYTAB_LOCAL_FILE, SPNEGOConstants.CREATE_WIN_KEYTAB_REMOTE_FILE);
+        pushLocalFileToRemoteMachine(kdcMachine, SPNEGOConstants.KRB5_LOCAL_KEYTAB_LOCAL_FILE, SPNEGOConstants.KRB5_LOCAL_KEYTAB_REMOTE_FILE);
     }
 
     /**
@@ -397,7 +397,7 @@ public class MsKdcHelper extends KdcHelper {
             }
         }
         if (output.getStdout().isEmpty() && output.getStderr().isEmpty()) {
-            Log.info(thisClass, methodName, "The command did not ran successfully, Expect failures.");
+            Log.info(thisClass, methodName, "The command did not run successfully, Expect failures.");
         }
 
         if (output.getReturnCode() != 0) {
