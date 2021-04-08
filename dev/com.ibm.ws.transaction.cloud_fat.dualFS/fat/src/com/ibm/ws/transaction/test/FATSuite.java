@@ -17,11 +17,13 @@ import org.junit.runners.Suite.SuiteClasses;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
-import com.ibm.ws.transaction.test.tests.DualServerDynamicFSTest;
+import com.ibm.ws.transaction.test.tests.DualServerDynamicFSTest1;
+import com.ibm.ws.transaction.test.tests.DualServerDynamicFSTest2;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                DualServerDynamicFSTest.class,
+                DualServerDynamicFSTest1.class,
+                DualServerDynamicFSTest2.class,
 })
 public class FATSuite {
 }
