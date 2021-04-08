@@ -885,15 +885,11 @@ public class PluginGenerator {
                 
                 if(!result){
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "Rename to plugin-cfg.xml failed!");
+                        Tr.debug(tc, "Rename to plugin-cfg.xml failed! Trying again.");
                     }
-                    try {
-                        Files.move(outFile.asFile().toPath(), pluginFile.toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
-                    } catch (IOException ex) {
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "Rename to plugin-cfg.xml failed on the second attempt!");
-                        }
-                    }
+
+                    Files.move(outFile.asFile().toPath(), pluginFile.toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+
                 }
 
                 // tell the user where the file is - quietly for implicit requests
