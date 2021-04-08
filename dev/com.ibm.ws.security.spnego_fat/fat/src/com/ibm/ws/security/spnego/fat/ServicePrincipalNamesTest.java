@@ -307,7 +307,7 @@ public class ServicePrincipalNamesTest extends CommonTest {
     public void testInvalidSpnList_BadFormatGoodSpn() {
         try {
             testHelper.reconfigureServer("invalidSpnList_badFormatGoodSpn.xml", name.getMethodName(), SPNEGOConstants.RESTART_SERVER);
-            testHelper.setShutdownMessages("CWWKE0701E");
+            testHelper.setShutdownMessages("CWWKE0701E", "CWWKS4308E");
             List<String> checkMsgs = new ArrayList<String>();
             if (FATSuite.OTHER_SUPPORT_JDKS) {
                 // JDK 11 the strings /)-!@#$%, ^&amp;*(), ;[] are not supported, therefore the error message
