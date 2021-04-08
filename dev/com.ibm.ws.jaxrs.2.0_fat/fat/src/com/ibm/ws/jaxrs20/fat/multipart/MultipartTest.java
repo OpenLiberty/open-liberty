@@ -24,7 +24,6 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
-//@SkipForRepeat("EE9_FEATURES") // multipart impl currently depends on CXF-classes - will need separate impl for RESTEasy
 @RunWith(FATRunner.class)
 public class MultipartTest extends FATServletClient {
     private static final String war = "multipart";
