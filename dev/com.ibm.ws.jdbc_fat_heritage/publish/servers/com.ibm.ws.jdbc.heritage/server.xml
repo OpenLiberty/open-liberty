@@ -39,6 +39,7 @@
   <dataSource id="DefaultDataSource" containerAuthDataRef="dbAuth" queryTimeout="1m21s" supplementalJDBCTrace="true" type="javax.sql.XADataSource" validationTimeout="18s">
     <jdbcDriver libraryRef="JDBCLib" javax.sql.XADataSource="test.jdbc.heritage.driver.HDDataSource"/>
     <properties databaseName="memory:testdb" createDatabase="create"
+                driverType="fake" longDataCacheSize="4" responseBuffering="maybe"
                 supportsCatalog="false" supportsNetworkTimeout="false" supportsReadOnly="false" supportsSchema="false" supportsTypeMap="false"/>
                 <!-- rely on custom DataStoreHelper metadata to determine lack of support for the above attributes -->
     <heritageSettings helperClass="test.jdbc.heritage.driver.helper.HDDataStoreHelper" replaceExceptions="true"/>
