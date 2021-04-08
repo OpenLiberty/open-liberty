@@ -52,4 +52,12 @@
     <javaPermission codebase="${server.config.dir}/apps/MPConcurrentConfigApp.war" className="java.lang.RuntimePermission" name="modifyThread"/>
     <javaPermission codebase="${server.config.dir}/apps/MPConcurrentConfigApp.war" className="java.lang.RuntimePermission" name="setContextClassLoader"/>
     <javaPermission codebase="${server.config.dir}/apps/MPConcurrentConfigApp.war" className="java.util.PropertyPermission" name="java.util.concurrent.ForkJoinPool.*" actions="read"/>
+
+    <!-- Needed for the application to create and use Subjects for testing -->
+    <javaPermission codebase="${server.config.dir}/apps/MPConcurrentConfigApp.war" className="javax.security.auth.AuthPermission" name="doAs"/>
+    <javaPermission codebase="${server.config.dir}/apps/MPConcurrentConfigApp.war" className="javax.security.auth.AuthPermission" name="doAsPrivileged"/>
+    <javaPermission codebase="${server.config.dir}/apps/MPConcurrentConfigApp.war" className="javax.security.auth.AuthPermission" name="getSubject"/>
+    <javaPermission codebase="${server.config.dir}/apps/MPConcurrentConfigApp.war" className="javax.security.auth.AuthPermission" name="setReadOnly"/>
+    <javaPermission codebase="${server.config.dir}/apps/MPConcurrentConfigApp.war" className="javax.security.auth.AuthPermission" name="wssecurity.getCallerSubject"/>
+    <javaPermission codebase="${server.config.dir}/apps/MPConcurrentConfigApp.war" className="javax.security.auth.AuthPermission" name="wssecurity.getRunAsSubject"/>
 </server>
