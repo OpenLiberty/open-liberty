@@ -1,0 +1,48 @@
+<!--
+    Copyright (c) 2019, 2021 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server description="JPA Injection Tests Server">
+    <include location="../fatTestPorts.xml"/>
+    <include location="${shared.config.dir}/${env.repeat_phase}"/>
+
+    <dataSource id="jdbc/JPA_JTA_DS" jndiName="jdbc/JPA_JTA_DS" fat.modify="true">
+            <jdbcDriver libraryRef="AnonymousJDBCLib"/>
+            <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" />
+    </dataSource>
+
+    <dataSource id="jdbc/JPA_NJTA_DS" jndiName="jdbc/JPA_NJTA_DS" fat.modify="true" transactional="false">
+            <jdbcDriver libraryRef="AnonymousJDBCLib"/>
+            <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" />
+    </dataSource>
+
+    <library id="AnonymousJDBCLib" fat.modify="true">
+        <fileset dir="${shared.resource.dir}/jdbc" includes="${env.DB_DRIVER}"/>
+    </library>
+
+    <!-- JDBC driver -->
+    <javaPermission codebase="${shared.resource.dir}/jdbc/${env.DB_DRIVER}" className="java.security.AllPermission"/>
+
+    <!-- Permission needed for SQLServer driver -->
+    <javaPermission className="java.net.SocketPermission" name="*" actions="connect,resolve"/>
+
+    <!-- Permission needed for Oracle driver -->
+    <javaPermission className="java.lang.RuntimePermission" name="accessDeclaredMembers" />
+
+    <!-- File read write permissions -->
+    <javaPermission className="java.util.PropertyPermission" name="user.dir" actions="read"/>
+    <javaPermission className="java.io.FilePermission" name="files/timertestoutput.txt" actions="read,write"/>
+    <javaPermission className="java.io.FilePermission" name="files" actions="write"/>
+
+    <!--<logging  traceSpecification="JPA=all=enabled:EJBContainer=all=enabled"
+              traceFileName="trace.log"
+              maxFileSize="2000"
+              maxFiles="10"
+              traceFormat="BASIC" />-->
+</server>
