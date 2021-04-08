@@ -32,7 +32,7 @@ public class ContextUtil {
     /**
      * Test data
      */
-    public static final String ADDHEADERNAME = "ThreadLocalProviders";
+    public static final String ADDHEADERNAME = "MyHeader";
 
     /**
      * URI and Request Name
