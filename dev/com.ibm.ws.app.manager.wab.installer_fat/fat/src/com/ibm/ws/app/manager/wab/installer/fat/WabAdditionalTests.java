@@ -31,6 +31,7 @@ public class WabAdditionalTests extends AbstractWABTests {
     @BeforeClass
     public static void startServer() throws Exception {
         server.startServer(WabAdditionalTests.class.getSimpleName() + ".log");
+        setConfiguration(CONFIG_DEFAULT, MESSAGES_DEFAULT);
     }
 
     @AfterClass
