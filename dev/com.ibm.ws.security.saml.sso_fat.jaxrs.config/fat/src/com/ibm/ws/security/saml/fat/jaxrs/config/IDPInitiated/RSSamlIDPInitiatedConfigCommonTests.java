@@ -174,11 +174,7 @@ public class RSSamlIDPInitiatedConfigCommonTests extends SAMLCommonTest {
         // between tests
         testSAMLServer.setRestoreServerBetweenTests(false);
         testAppServer.setRestoreServerBetweenTests(false);
-        // some of the configs in the class are complex and cause the server to
-        // take more than 2 minutes to refresh - allow up to 4 minutes
-        testAppServer.setOverrideRestartWaitTime(2 * (120 * 1000)); // 2 x
-                                                                    // default
-                                                                    // value
+
     }
 
     @Before
