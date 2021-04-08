@@ -280,7 +280,12 @@ public class HttpSessionContextImpl extends SessionContext implements IHttpSessi
       /* PM73188 - Fixing regression from PM87133. Some customers were seeing a negative active count due to isValid being called multiple times in a row.
       * If the customer still needs this setting on, then they need to set ModifyActiveCountOnInvalidatedSession="true" in server.xml.
       */
-      if (_smc.getModifyActiveCountOnInvalidatedSession()) {
+      boolean active = isess.getRefCount() > 0;
+      if (isTraceOn && LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINE))
+      {
+        LoggingUtil.SESSION_LOGGER_CORE.logp(Level.FINE, methodClassName, methodNames[IS_VALID], "Still in the service method " + active);
+      }
+      if (!active && _smc.getModifyActiveCountOnInvalidatedSession()) {
           _coreHttpSessionManager.getIStore().getStoreCallback().sessionReleased(isess); // PM87133, since the session is no longer valid, it's also no longer active, we need to decrement active count
       }
     }
