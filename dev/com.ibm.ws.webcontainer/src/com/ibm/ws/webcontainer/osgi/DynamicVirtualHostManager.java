@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,6 +28,7 @@ import com.ibm.ws.webcontainer.osgi.osgi.WebContainerConstants;
 import com.ibm.wsspi.http.VirtualHost;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.location.WsResource;
+import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 
 /**
  * The VirtualHostManager bridges between the {@link com.ibm.ws.webcontainer.osgi.DynamicVirtualHost} and
@@ -102,7 +103,9 @@ public class DynamicVirtualHostManager implements Runnable {
         // referenced by applications aren't present in the config. This only happens at startup, 
         // not w/ dynamically added applications later.. but at least there is _some_ indication
         // that something might be missing from the config.. 
-        if ( !missingHosts.isEmpty() ) {
+        // For long lived server shutdowns, avoid throwing these exceptions since the Virtual 
+        // Hosts might have been cleared. 
+        if ( !missingHosts.isEmpty() && !FrameworkState.isStopping()) {
             Tr.warning(tc, "UNKNOWN_VIRTUAL_HOST", missingHosts);
         }
     }
