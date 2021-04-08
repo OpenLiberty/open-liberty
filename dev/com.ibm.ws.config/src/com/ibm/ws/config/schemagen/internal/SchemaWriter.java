@@ -274,16 +274,26 @@ class SchemaWriter {
             }
         }
 
+        Map<String, TypeBuilder.OCDTypeReference> typeReferences =  builder.getPidTypeMap();
+
+        for (TypeBuilder.OCDType type : types) {
+            if (type.getParentPids() != null) {
+                for (String parentPid : type.getParentPids()) {
+                    OCDTypeReference parentTypeRef = typeReferences.get(parentPid);
+                    if (parentTypeRef != null) {
+                        OCDType parentType = parentTypeRef.getOCDType();
+                        if (parentType != null && parentType.getSupportsExtensions() && shouldAddOCD(type)) {
+                            parentType.addChild(type);
+                        }
+                    }
+                }
+            }
+        }
+
         // write types first for each OCD
         for (TypeBuilder.OCDType type : types) {
             if (shouldAddOCD(type)) {
                 writeObjectClassType(builder, type);
-                /*
-                 * Remove Child-first case. To do in V9
-                 * if (type.getParentPids() != null) {
-                 * writeObjectClassNestedType(type);
-                 * }
-                 */
             }
         }
 
@@ -307,7 +317,7 @@ class SchemaWriter {
         }
 
         // write element for each defined pid or factory pid
-        for (Map.Entry<String, TypeBuilder.OCDTypeReference> entry : builder.getPidTypeMap().entrySet()) {
+        for (Map.Entry<String, TypeBuilder.OCDTypeReference> entry : typeReferences.entrySet()) {
             String pid = entry.getKey();
             TypeBuilder.OCDTypeReference type = entry.getValue();
             OCDType ocdType = type.getOCDType();
