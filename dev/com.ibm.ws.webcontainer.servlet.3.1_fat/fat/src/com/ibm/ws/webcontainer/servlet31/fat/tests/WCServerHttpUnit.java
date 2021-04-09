@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2020 IBM Corporation and others.
+ * Copyright (c) 2013, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,39 +18,37 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
-import java.util.Set;
 
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.ws.fat.util.LoggingTest;
-import com.ibm.ws.fat.util.SharedServer;
 import com.meterware.httpunit.GetMethodWebRequest;
 import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 
 import componenttest.annotation.ExpectedFFDC;
+import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.topology.impl.LibertyServer;
 
 /**
  * Tests to execute on the wcServer that use HttpUnit.
  */
 @RunWith(FATRunner.class)
-public class WCServerHttpUnit extends LoggingTest {
+public class WCServerHttpUnit {
     private static final Logger LOG = Logger.getLogger(WCServerHttpUnit.class.getName());
     protected static final Map<String, String> testUrlMap = new HashMap<String, String>();
 
-    @ClassRule
-    public static SharedServer SHARED_SERVER = new SharedServer("servlet31_wcServer");
+    @Server("servlet31_wcServer")
+    public static LibertyServer server;
 
     private static final String SESSION_ID_LISTENER_JAR_NAME = "SessionIdListener";
     private static final String TEST_SERVLET_31_JAR_NAME = "TestServlet31";
@@ -70,21 +68,18 @@ public class WCServerHttpUnit extends LoggingTest {
                                                                    "com.ibm.ws.webcontainer.servlet_31_fat.testservlet31.war.listeners");
         TestServlet31App = (WebArchive) ShrinkHelper.addDirectory(TestServlet31App, "test-applications/TestServlet31.war/resources");
         TestServlet31App = TestServlet31App.addAsLibraries(SessionIdListenerJar, TestServlet31Jar);
-        // Verify if the apps are in the server before trying to deploy them
-        if (SHARED_SERVER.getLibertyServer().isStarted()) {
-            Set<String> appInstalled = SHARED_SERVER.getLibertyServer().getInstalledAppNames(TEST_SERVLET_31_APP_NAME);
-            LOG.info("addAppToServer : " + TEST_SERVLET_31_APP_NAME + " already installed : " + !appInstalled.isEmpty());
-            if (appInstalled.isEmpty())
-              ShrinkHelper.exportDropinAppToServer(SHARED_SERVER.getLibertyServer(), TestServlet31App);
-          }
-        SHARED_SERVER.startIfNotStarted();
-        SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* " + TEST_SERVLET_31_APP_NAME);
+
+        // Export the application.
+        ShrinkHelper.exportDropinAppToServer(server, TestServlet31App);
+
+        // Start the server and use the class name so we can find logs easily.
+        server.startServer(WCServerHttpUnit.class.getSimpleName() + ".log");
     }
 
     @AfterClass
     public static void testCleanup() throws Exception {
-        if (SHARED_SERVER.getLibertyServer() != null && SHARED_SERVER.getLibertyServer().isStarted()) {
-            SHARED_SERVER.getLibertyServer().stopServer("SRVE8015E:.*", "SRVE0777E:.*", "SRVE0315E:.*");
+        if (server != null && server.isStarted()) {
+            server.stopServer("SRVE8015E:.*", "SRVE0777E:.*", "SRVE0315E:.*");
         }
     }
 
@@ -123,7 +118,7 @@ public class WCServerHttpUnit extends LoggingTest {
 
         String contextRoot = "/TestServlet31";
 
-        String URLString = SHARED_SERVER.getServerUrl(true, contextRoot + "/ContentLengthLongServlet/" + Long.toString(postDataSize));
+        String URLString = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + contextRoot + "/ContentLengthLongServlet/" + Long.toString(postDataSize);
         LOG.info("Request URL : " + URLString);
 
         String resp = "";
@@ -180,7 +175,7 @@ public class WCServerHttpUnit extends LoggingTest {
 
         String contextRoot = "/TestServlet31";
 
-        String URLString = SHARED_SERVER.getServerUrl(true, contextRoot + "/ContentLengthLongServlet/RESP" + Long.toString(postDataSize));
+        String URLString = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + contextRoot + "/ContentLengthLongServlet/RESP" + Long.toString(postDataSize);
         LOG.info("Request URL : " + URLString);
 
         try {
@@ -233,7 +228,7 @@ public class WCServerHttpUnit extends LoggingTest {
         String contextRoot = "/TestServlet31";
         wc.setExceptionsThrownOnErrorStatus(false);
 
-        WebRequest request = new GetMethodWebRequest(SHARED_SERVER.getServerUrl(true, contextRoot + "/Redirector?Test=relative"));
+        WebRequest request = new GetMethodWebRequest("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + contextRoot + "/Redirector?Test=relative");
         WebResponse response = wc.getResponse(request);
         LOG.info("Servlet response : " + response.getText());
         assertTrue(response.getResponseCode() == 200);
@@ -247,7 +242,8 @@ public class WCServerHttpUnit extends LoggingTest {
         String contextRoot = "/TestServlet31";
         wc.setExceptionsThrownOnErrorStatus(false);
 
-        WebRequest request = new GetMethodWebRequest(SHARED_SERVER.getServerUrl(true, contextRoot + "/Redirector/path/info?Test=relativeWithPathInfo"));
+        WebRequest request = new GetMethodWebRequest("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + contextRoot
+                                                     + "/Redirector/path/info?Test=relativeWithPathInfo");
         WebResponse response = wc.getResponse(request);
         LOG.info("Servlet response : " + response.getText());
         assertTrue(response.getResponseCode() == 200);
@@ -260,7 +256,7 @@ public class WCServerHttpUnit extends LoggingTest {
         String contextRoot = "/TestServlet31";
         wc.setExceptionsThrownOnErrorStatus(false);
 
-        WebRequest request = new GetMethodWebRequest(SHARED_SERVER.getServerUrl(true, contextRoot + "/Redirector?Test=absolute"));
+        WebRequest request = new GetMethodWebRequest("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + contextRoot + "/Redirector?Test=absolute");
         WebResponse response = wc.getResponse(request);
         LOG.info("Servlet response : " + response.getText());
         assertTrue(response.getResponseCode() == 200);
@@ -273,7 +269,7 @@ public class WCServerHttpUnit extends LoggingTest {
         String contextRoot = "/TestServlet31";
         wc.setExceptionsThrownOnErrorStatus(false);
 
-        WebRequest request = new GetMethodWebRequest(SHARED_SERVER.getServerUrl(true, contextRoot + "/Redirector?Test=network"));
+        WebRequest request = new GetMethodWebRequest("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + contextRoot + "/Redirector?Test=network");
         WebResponse response = wc.getResponse(request);
         LOG.info("Servlet response : " + response.getText());
         assertTrue(response.getResponseCode() == 200);
@@ -286,7 +282,7 @@ public class WCServerHttpUnit extends LoggingTest {
         String contextRoot = "/TestServlet31";
         wc.setExceptionsThrownOnErrorStatus(false);
 
-        WebRequest request = new GetMethodWebRequest(SHARED_SERVER.getServerUrl(true, contextRoot + "/SessionCookieConfigTest"));
+        WebRequest request = new GetMethodWebRequest("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + contextRoot + "/SessionCookieConfigTest");
         WebResponse response = wc.getResponse(request);
         LOG.info("Servlet response : " + response.getText());
         assertTrue(response.getResponseCode() == 200);
@@ -328,7 +324,7 @@ public class WCServerHttpUnit extends LoggingTest {
         String contextRoot = "/TestServlet31";
         wc.setExceptionsThrownOnErrorStatus(false);
 
-        WebRequest request = new GetMethodWebRequest(SHARED_SERVER.getServerUrl(true, contextRoot + "/RequestParameterTest" + parameters));
+        WebRequest request = new GetMethodWebRequest("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + contextRoot + "/RequestParameterTest" + parameters);
         WebResponse response = wc.getResponse(request);
         LOG.info("Servlet response : " + response.getText());
         assertTrue(response.getResponseCode() == 200);
@@ -604,7 +600,7 @@ public class WCServerHttpUnit extends LoggingTest {
 
         String contextRoot = "/TestServlet31";
 
-        String URLString = SHARED_SERVER.getServerUrl(true, contextRoot + "/RequestParameterTest");
+        String URLString = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + contextRoot + "/RequestParameterTest";
         LOG.info("Request URL : " + URLString);
 
         byte[] initialParamsBytes = initialParams.getBytes();
@@ -708,7 +704,7 @@ public class WCServerHttpUnit extends LoggingTest {
         wc.setExceptionsThrownOnErrorStatus(false);
         String contextRoot = "/TestServlet31";
         wc.setExceptionsThrownOnErrorStatus(false);
-        WebRequest request = new GetMethodWebRequest(SHARED_SERVER.getServerUrl(true, contextRoot + "/ErrorServlet?sendError=true"));
+        WebRequest request = new GetMethodWebRequest("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + contextRoot + "/ErrorServlet?sendError=true");
         WebResponse response = wc.getResponse(request);
         String text = response.getText();
         int code = response.getResponseCode();
@@ -721,7 +717,7 @@ public class WCServerHttpUnit extends LoggingTest {
         assertTrue("wrong status code: actual = " + code + " :: expected = 404", code == 404);
         assertTrue("wrong output: actual = " + text + " :: expected = " + "web.xml", text.indexOf("web.xml") > -1);
 
-        request = new GetMethodWebRequest(SHARED_SERVER.getServerUrl(true, contextRoot + "/ErrorServlet"));
+        request = new GetMethodWebRequest("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + contextRoot + "/ErrorServlet");
         response = wc.getResponse(request);
         text = response.getText();
         code = response.getResponseCode();
@@ -779,7 +775,7 @@ public class WCServerHttpUnit extends LoggingTest {
             wc.setHeaderField("Content-Type", contentType);
         }
 
-        WebRequest request = new GetMethodWebRequest(SHARED_SERVER.getServerUrl(true, contextRoot + uri));
+        WebRequest request = new GetMethodWebRequest("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + contextRoot + uri);
         WebResponse response = wc.getResponse(request);
         String text = response.getText();
         int code = response.getResponseCode();
@@ -792,15 +788,4 @@ public class WCServerHttpUnit extends LoggingTest {
         return text;
 
     }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.fat.util.LoggingTest#getSharedServer()
-     */
-    @Override
-    protected SharedServer getSharedServer() {
-        return SHARED_SERVER;
-    }
-
 }
