@@ -50,6 +50,7 @@ import javax.transaction.xa.XAResource;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.service.util.JavaInfo;
 import com.ibm.ws.kernel.service.util.JavaInfo.Vendor;
 import com.ibm.ws.resource.ResourceRefInfo;
@@ -860,13 +861,28 @@ public class OracleHelper extends DatabaseHelper {
             Tr.exit(this, tc, "getPooledConnection", results);
         return results;
     }
-    
-    private static void checkIBMJava8() throws ResourceException {
+
+    @FFDCIgnore(Exception.class)
+    private void checkIBMJava8() throws ResourceException {
         if (JavaInfo.majorVersion() == 8 && JavaInfo.vendor() == Vendor.IBM) {
-            // The Oracle JDBC driver does not support kerberos authentication on IBM JDK 8 because
+            // The Oracle JDBC driver prior to 21c does not support kerberos authentication on IBM JDK 8 because
             // it has dependencies to the internal Sun security APIs which don't exist in IBM JDK 8
-            Tr.error(tc, "KERBEROS_ORACLE_IBMJDK_NOT_SUPPORTED");
-            throw new ResourceException(AdapterUtil.getNLSMessage("KERBEROS_ORACLE_IBMJDK_NOT_SUPPORTED"));
+            boolean ibmJdkSupported;
+            try {
+                Class<?> OracleDatabaseMetaData = mcf.jdbcDriverLoader.loadClass("oracle.jdbc.OracleDatabaseMetaData");
+                int majorVersion = (int) OracleDatabaseMetaData.getMethod("getDriverMajorVersionInfo").invoke(null);
+                ibmJdkSupported = majorVersion >= 21;
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "Oracle major version: " + majorVersion);
+            } catch (Exception x) {
+                // absence of the Oracle class/methods means a newer version beyond 21c, where the IBM JDK is supported
+                ibmJdkSupported = true;
+            }
+
+            if (!ibmJdkSupported) {
+                Tr.error(tc, "KERBEROS_ORACLE_IBMJDK_NOT_SUPPORTED");
+                throw new ResourceException(AdapterUtil.getNLSMessage("KERBEROS_ORACLE_IBMJDK_NOT_SUPPORTED"));
+            }
         }
     }
 
