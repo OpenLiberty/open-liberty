@@ -37,6 +37,7 @@ import com.ibm.ws.request.timing.app.RequestTimingServlet;
 
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -92,6 +93,7 @@ import componenttest.topology.impl.LibertyServer;
  * request during the mbean call which happens inside the initial servlet call.
  */
 @RunWith(FATRunner.class)
+@SkipForRepeat({ "MPM23", "MPM22", "MPM20" })
 public class RequestTimingEventTest {
 
     private static final Class<RequestTimingEventTest> c = RequestTimingEventTest.class;
