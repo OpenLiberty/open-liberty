@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -99,6 +99,7 @@ public class Krb5ConfigTest extends CommonTest {
     public void testKrbKeytabNotFound_NonExistentLocation() {
         try {
             testHelper.reconfigureServer("krbKeytabNotFound_NonExistentLocation.xml", name.getMethodName(), SPNEGOConstants.DONT_RESTART_SERVER);
+            testHelper.addShutdownMessages("CWWKS4305E");
             commonUnsuccessfulSpnegoServletCall();
             testHelper.checkForMessages(true, MessageConstants.KEYTAB_NOT_FOUND_CWWKS4305E);
         } catch (Exception ex) {
