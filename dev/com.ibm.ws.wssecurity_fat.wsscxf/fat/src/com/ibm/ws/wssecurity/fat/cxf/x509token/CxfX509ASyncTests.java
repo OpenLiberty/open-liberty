@@ -29,8 +29,8 @@ import com.ibm.ws.wssecurity.fat.utils.common.CommonTests;
 import com.ibm.ws.wssecurity.fat.utils.common.PrepCommonSetup;
 import com.ibm.ws.wssecurity.fat.utils.common.UpdateWSDLPortNum;
 
-//Added 11/2020
 import componenttest.annotation.Server;
+//Added 11/2020
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -102,7 +102,9 @@ public class CxfX509ASyncTests extends CommonTests {
      *
      */
 
+    //2/2021 this test failed with EE8, see https://github.com/OpenLiberty/open-liberty/issues/16071
     @Test
+    //skip EE7 test
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
     public void testCxfAsyncInvokeNonBlocking() throws Exception {
 

@@ -119,7 +119,9 @@ public class CxfSSLUNTNonceTimeOutTests extends SSLTestCommon {
      */
     @Test
     //2/2021
-    @AllowedFFDC("java.util.MissingResourceException") //@AV999
+    //@AllowedFFDC("java.util.MissingResourceException") //@AV999
+    //4/2021
+    @AllowedFFDC(value = { "java.util.MissingResourceException", "java.lang.ClassNotFoundException" })
     public void testCxfUntHardcodedReplayOneAndMoreMinutesSSL() throws Exception {
 
         //reconfigAndRestartServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_customize.xml");

@@ -88,6 +88,8 @@ public class CxfX509StrTypeTests extends CommonTests {
      * This is a positive scenario.
      */
 
+    //4/2021
+    @AllowedFFDC(value = { "java.net.MalformedURLException", "java.lang.ClassNotFoundException" })
     @Test
     public void testCxfClientSignThumbPrint() throws Exception {
 
@@ -126,6 +128,8 @@ public class CxfX509StrTypeTests extends CommonTests {
      * This is a positive scenario.
      */
 
+    //4/2021
+    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     @Test
     public void testCxfClientSignIssuerSerial() throws Exception {
 

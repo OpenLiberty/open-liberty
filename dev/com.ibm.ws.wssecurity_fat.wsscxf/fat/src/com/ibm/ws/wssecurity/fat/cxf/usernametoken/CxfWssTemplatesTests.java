@@ -53,7 +53,9 @@ public class CxfWssTemplatesTests extends CommonTests {
      */
     @Test
     //2/2021
-    @AllowedFFDC("java.util.MissingResourceException") //@AV999
+    //@AllowedFFDC("java.util.MissingResourceException") //@AV999
+    //4/2021
+    @AllowedFFDC(value = { "java.util.MissingResourceException", "java.net.MalformedURLException", "java.lang.ClassNotFoundException" })
     public void testCXFUserNameTokenPasswordHashOverSSL() throws Exception {
         // reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_enchdr.xml");
         genericTest(
@@ -95,7 +97,9 @@ public class CxfWssTemplatesTests extends CommonTests {
      */
     @Test
     //2/2021
-    @AllowedFFDC("java.util.MissingResourceException") //@AV999
+    //@AllowedFFDC("java.util.MissingResourceException") //@AV999
+    //4/2021
+    @AllowedFFDC(value = { "java.util.MissingResourceException", "java.net.MalformedURLException" })
     public void testCXFUserNameTokenPasswordTextOverSSL() throws Exception {
         genericTest(
                     // test name for logging
@@ -136,6 +140,9 @@ public class CxfWssTemplatesTests extends CommonTests {
      *
      * Verify that the Web service is invoked successfully. This is a positive scenario.
      */
+
+    //4/2021
+    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     @Test
     public void testCXFAsymmetricX509MutualAuthenticationWithUnt() throws Exception {
         genericTest(
@@ -212,6 +219,8 @@ public class CxfWssTemplatesTests extends CommonTests {
                     "The test expected a successful message from the server.");
     }
 
+    //4/2021
+    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     //2/2021 to test with EE8, then the corresponding server_sym_wss4j.xml can be used
     @Test
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
@@ -288,6 +297,8 @@ public class CxfWssTemplatesTests extends CommonTests {
                     "The test expected a successful message from the server.");
     }
 
+    //4/2021
+    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     //2/2021 to test with EE8, then the corresponding server_sym_wss4j.xml can be used
     @Test
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
@@ -370,6 +381,8 @@ public class CxfWssTemplatesTests extends CommonTests {
                     "The test expected a successful message from the server.");
     }
 
+    //4/2021
+    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     //2/2021 to test with EE8, then the corresponding server_sym_wss4j.xml can be used
     @Test
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)

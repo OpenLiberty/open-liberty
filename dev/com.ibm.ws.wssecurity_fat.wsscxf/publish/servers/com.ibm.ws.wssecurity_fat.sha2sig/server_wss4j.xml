@@ -45,7 +45,7 @@
 			org.apache.ws.security.crypto.merlin.keystore.alias="soapprovider"
 			org.apache.ws.security.crypto.merlin.file="${server.config.dir}/dsig-receiver.ks" />
 	</wsSecurityProvider>
-
+     
 	<wsSecurityClient
 		id="default"
 		ws-security.password="security"

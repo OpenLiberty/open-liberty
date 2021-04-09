@@ -33,6 +33,8 @@ import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 
+//4/2021
+import componenttest.annotation.AllowedFFDC;
 //Added 11/2020
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -144,6 +146,8 @@ public class CxfInteropX509Tests {
         return;
     }
 
+    //4/2021
+    @AllowedFFDC(value = { "java.net.MalformedURLException", "java.lang.ClassNotFoundException" })
     @Test
     public void testEcho21Service() throws Exception {
         String thisMethod = "testEcho21Service";
@@ -173,6 +177,8 @@ public class CxfInteropX509Tests {
         return;
     }
 
+    //4/2021
+    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     @Test
     public void testEcho22Service() throws Exception {
         String thisMethod = "testEcho22Service";
@@ -202,6 +208,8 @@ public class CxfInteropX509Tests {
         return;
     }
 
+    //4/2021
+    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     @Test
     public void testEcho23Service() throws Exception {
         String thisMethod = "testEcho23Service";
