@@ -56,8 +56,8 @@ public class RequestTimingMetricsTest {
     public static LibertyServer server;
 
     // Keeping a AtomicLong total count because of threads created
-    public static AtomicInteger totalRequestCount = new AtomicInteger();
-    public static int activeServletRequest = 1;
+    public static AtomicInteger totalRequestCount;
+    public static int activeServletRequest;
 
     public final String TestRequestHandlerUrl = getRequestTimingServletURLString("TestRequestHandler", 0);
 
@@ -68,6 +68,8 @@ public class RequestTimingMetricsTest {
     @BeforeClass
     public static void setUp() throws Exception {
         ShrinkHelper.defaultDropinApp(server, "RequestTimingWebApp", "com.ibm.ws.request.timing.app");
+        totalRequestCount = new AtomicInteger();
+        activeServletRequest = 1;
         server.startServer();
     }
 

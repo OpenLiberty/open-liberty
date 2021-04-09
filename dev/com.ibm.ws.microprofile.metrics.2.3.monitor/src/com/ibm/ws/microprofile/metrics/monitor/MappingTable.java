@@ -60,6 +60,14 @@ public class MappingTable {
 	
 	private MappingTable() {
 		
+		String[][] requestTimeTable = new String[][] {
+			{ "vendor", "requestTiming.requestCount", "Request Count", "requestTiming.requestCount.description", COUNTER, MetricUnits.NONE, "RequestCount", null, null },
+			{ "vendor", "requestTiming.activeRequestCount", "Active Request Count", "requestTiming.activeRequestCount.description", GAUGE, MetricUnits.NONE, "ActiveRequestCount", null, null },
+			{ "vendor", "requestTiming.slowRequestCount", "Slow Request Count", "requestTiming.slowRequestCount.description", GAUGE, MetricUnits.NONE, "SlowRequestCount", null, null },
+			{ "vendor", "requestTiming.hungRequestCount", "Hung Request Count", "requestTiming.hungRequestCount.description", GAUGE, MetricUnits.NONE, "HungRequestCount", null, null }
+		};
+		mappingTable.put("WebSphere:type=RequestTimingStats,name=*", requestTimeTable);
+		
 		String[][] threadPoolTable = new String[][] {
 			{ "vendor", "threadpool.activeThreads", "Active Threads", "threadpool.activeThreads.description", GAUGE, MetricUnits.NONE, "ActiveThreads", null, THREADPOOL_TAG_NAME },
 			{ "vendor", "threadpool.size", "Thread Pool Size", "threadpool.size.description", GAUGE, MetricUnits.NONE, "PoolSize", null, THREADPOOL_TAG_NAME }
