@@ -97,8 +97,11 @@ public class CxfEndSupTokensSymTests extends CommonTests {
      * This is a positive scenario.
      *
      */
+
     @Test
-    @AllowedFFDC("javax.net.ssl.SSLException")
+    //@AllowedFFDC("javax.net.ssl.SSLException")
+    //4/2021
+    @AllowedFFDC(value = { "javax.net.ssl.SSLException", "java.net.MalformedURLException", "java.lang.ClassNotFoundException" })
     public void testCXFEndSupTokens4() throws Exception {
 
         String thisMethod = "testCXFEndSupTokens4";
@@ -142,7 +145,9 @@ public class CxfEndSupTokensSymTests extends CommonTests {
      *
      */
     @Test
-    @AllowedFFDC("javax.net.ssl.SSLException")
+    //@AllowedFFDC("javax.net.ssl.SSLException")
+    //4/2021
+    @AllowedFFDC(value = { "javax.net.ssl.SSLException", "java.net.MalformedURLException" })
     public void testCXFEndSupTokens4ClAddEncrypted() throws Exception {
 
         String thisMethod = "testCXFEndSupTokens4ClAddEncrypted";
@@ -186,7 +191,9 @@ public class CxfEndSupTokensSymTests extends CommonTests {
      *
      */
     @Test
-    @AllowedFFDC("javax.net.ssl.SSLException")
+    //@AllowedFFDC("javax.net.ssl.SSLException")
+    //4/2021
+    @AllowedFFDC(value = { "javax.net.ssl.SSLException", "java.net.MalformedURLException" })
     public void testCXFEndSupTokens4ClAddSigned() throws Exception {
 
         String thisMethod = "testCXFEndSupTokens4ClAddSigned";
@@ -229,6 +236,9 @@ public class CxfEndSupTokensSymTests extends CommonTests {
      * This is a positive scenario.
      *
      */
+
+    //4/2021
+    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     @Test
     public void testCXFEndSupTokens4ClAddSignedEncrypted() throws Exception {
 
@@ -271,6 +281,9 @@ public class CxfEndSupTokensSymTests extends CommonTests {
      * This is a positive scenario.
      *
      */
+
+    //4/2021
+    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     @Test
     public void testCXFEndSupTokens5() throws Exception {
 
@@ -314,6 +327,9 @@ public class CxfEndSupTokensSymTests extends CommonTests {
      * This is a positive scenario.
      *
      */
+
+    //4/2021
+    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     @Test
     public void testCXFEndSupTokens5AddEncrypted() throws Exception {
 
@@ -359,7 +375,9 @@ public class CxfEndSupTokensSymTests extends CommonTests {
      *
      */
     @Test
-    @AllowedFFDC("org.apache.ws.security.WSSecurityException")
+    //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
+    //4/2021
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.net.MalformedURLException" })
     public void testCXFEndSupTokens5MissingSigned() throws Exception {
 
         String thisMethod = "testCXFEndSupTokens5MissingSigned";
@@ -404,7 +422,9 @@ public class CxfEndSupTokensSymTests extends CommonTests {
      *
      */
     @Test
-    @AllowedFFDC("org.apache.ws.security.WSSecurityException")
+    //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
+    //4/2021
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.net.MalformedURLException" })
     public void testCXFEndSupTokens5MissingSignedAddEncrypted() throws Exception {
 
         String thisMethod = "testCXFEndSupTokens5MissingSignedAddEncrypted";
@@ -447,6 +467,9 @@ public class CxfEndSupTokensSymTests extends CommonTests {
      * This is a positive scenario.
      *
      */
+
+    //4/2021
+    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     @Test
     public void testCXFEndSupTokens6() throws Exception {
 
@@ -490,6 +513,9 @@ public class CxfEndSupTokensSymTests extends CommonTests {
      * This is a positive scenario.
      *
      */
+
+    //4/2021
+    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     @Test
     public void testCXFEndSupTokens6AddSigned() throws Exception {
 
@@ -535,7 +561,9 @@ public class CxfEndSupTokensSymTests extends CommonTests {
      *
      */
     @Test
-    @AllowedFFDC("org.apache.ws.security.WSSecurityException")
+    //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
+    //4/2021
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.net.MalformedURLException" })
     public void testCXFEndSupTokens6MissingEncrypted() throws Exception {
 
         String thisMethod = "testCXFEndSupTokens6MissingEncrypted";
@@ -580,7 +608,9 @@ public class CxfEndSupTokensSymTests extends CommonTests {
      *
      */
     @Test
-    @AllowedFFDC("org.apache.ws.security.WSSecurityException")
+    //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
+    //4/2021
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.net.MalformedURLException" })
     public void testCXFEndSupTokens6MissingEncryptedAddSigned() throws Exception {
 
         String thisMethod = "testCXFEndSupTokens6MissingEncryptedAddSigned";
@@ -623,6 +653,9 @@ public class CxfEndSupTokensSymTests extends CommonTests {
      * This is a positive scenario.
      *
      */
+
+    //4/2021
+    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     @Test
     public void testCXFEndSupTokens7() throws Exception {
 
@@ -667,7 +700,9 @@ public class CxfEndSupTokensSymTests extends CommonTests {
      *
      */
     @Test
-    @AllowedFFDC("org.apache.ws.security.WSSecurityException")
+    // @AllowedFFDC("org.apache.ws.security.WSSecurityException")
+    //4/2021
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.net.MalformedURLException" })
     public void testCXFEndSupTokens7MissingEncrypted() throws Exception {
 
         String thisMethod = "testCXFEndSupTokens7MissingEncrypted";
@@ -758,7 +793,9 @@ public class CxfEndSupTokensSymTests extends CommonTests {
      *
      */
     @Test
-    @AllowedFFDC("org.apache.ws.security.WSSecurityException")
+    //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
+    //4/2021
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.net.MalformedURLException" })
     public void testCXFEndSupTokens7MissingSignedEncrypted() throws Exception {
 
         String thisMethod = "testCXFEndSupTokens7MissingSignedEncrypted";

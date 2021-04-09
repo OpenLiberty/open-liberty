@@ -88,6 +88,9 @@ public class CxfWss11SigTests extends CommonTests {
      * This is a positive scenario.
      *
      */
+
+    //4/2021
+    @AllowedFFDC(value = { "java.net.MalformedURLException", "java.lang.ClassNotFoundException" })
     @Test
     public void testCXFClientBasicSigConfirm() throws Exception {
 
@@ -128,6 +131,9 @@ public class CxfWss11SigTests extends CommonTests {
      * This is a positive scenario.
      *
      */
+
+    //4/2021
+    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     @Test
     public void testCXFClientBasicSigConfirmNoSig() throws Exception {
 
@@ -171,9 +177,10 @@ public class CxfWss11SigTests extends CommonTests {
     @Test
     //Orig:
     //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
-    //Mei:
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException" })
-    //End
+    //2/2021
+    //@AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException" })
+    //4/2021
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException", "java.net.MalformedURLException" })
     public void testCXFClientBasicSigClConfSrvNoConf() throws Exception {
 
         String thisMethod = "testCXFClientBasicSigClConfSrvNoConf";
@@ -219,6 +226,9 @@ public class CxfWss11SigTests extends CommonTests {
      * This is a positive scenario.
      *
      */
+
+    //4/2021
+    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     @Test
     public void testCXFClientBasicSigClNoConfSrvConf() throws Exception {
 
@@ -330,12 +340,9 @@ public class CxfWss11SigTests extends CommonTests {
     //2/2021 to test with EE8, then the corresponding message can be expected
     @Test
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    //Orig:
-    //@ExpectedFFDC("org.apache.ws.security.WSSecurityException")
-    //Mei:
-    //not working? @AllowedFFDC("org.apache.ws.security.WSSecurityException") //@AV999
-    @AllowedFFDC("org.apache.wss4j.common.ext.WSSecurityException")
-    //End
+    //@AllowedFFDC("org.apache.wss4j.common.ext.WSSecurityException")
+    //4/2021
+    @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "java.net.MalformedURLException" })
     public void testCXFClientBasicEncryptedElementMisMatchEE8Only() throws Exception {
 
         String thisMethod = "testCXFClientBasicEncryptedElementMisMatchEE8Only";
@@ -439,6 +446,8 @@ public class CxfWss11SigTests extends CommonTests {
 
     }
 
+    //4/2021
+    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     //2/2021 to test with EE8, then the corresponding server_enchdr_wss4j.xml can be used
     @Test
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
@@ -547,7 +556,9 @@ public class CxfWss11SigTests extends CommonTests {
     //2/2021 to test with EE8, then the corresponding message can be expected and server_wss4j.xml can be used
     @Test
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    @AllowedFFDC("org.apache.ws.security.WSSecurityException")
+    //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
+    //4/2021
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.net.MalformedURLException" })
     public void testCXFClientBasicSigSignedElementMisMatchEE8Only() throws Exception {
 
         String thisMethod = "testCXFClientBasicSigSignedElementMisMatchEE8Only";
@@ -645,6 +656,8 @@ public class CxfWss11SigTests extends CommonTests {
 
     }
 
+    //4/2021
+    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     //2/2021 run with EE8
     @Test
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
@@ -726,6 +739,8 @@ public class CxfWss11SigTests extends CommonTests {
 
     }
 
+    //4/2021
+    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     //2/2021 run with EE8
     @Test
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)

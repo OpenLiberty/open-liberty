@@ -33,6 +33,8 @@ import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 
+//4/2021
+import componenttest.annotation.AllowedFFDC;
 //Added 10/2020
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -144,6 +146,8 @@ public class CxfCallerX509SymTests {
      *
      */
 
+    //4/2021
+    @AllowedFFDC(value = { "java.net.MalformedURLException", "java.lang.ClassNotFoundException" })
     @Test
     public void testCxfCallerSymmetricEndorsingPolicy() throws Exception {
         //UpdateServerXml.reconfigServer(server, System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_x509_sym.xml");
@@ -177,6 +181,8 @@ public class CxfCallerX509SymTests {
      *
      */
 
+    //4/2021
+    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     @Test
     public void testCxfCallerSymmetricEndorsingPolicyHttps() throws Exception {
         //UpdateServerXml.reconfigServer(server, System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_x509_sym.xml");

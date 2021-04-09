@@ -50,7 +50,9 @@ public class CxfSSLUNTBasicTests extends SSLTestCommon {
      */
     @Test
     //2/2021
-    @AllowedFFDC("java.util.MissingResourceException") //@AV999
+    //@AllowedFFDC("java.util.MissingResourceException") //@AV999
+    //4/2021
+    @AllowedFFDC(value = { "java.util.MissingResourceException", "java.net.MalformedURLException", "java.lang.ClassNotFoundException" })
     public void testUntWssecSvcClientSSL() throws Exception {
 
         genericTest("testUntWssecSvcClientSSL", untSSLClientUrl,
@@ -180,7 +182,9 @@ public class CxfSSLUNTBasicTests extends SSLTestCommon {
      */
     @Test
     //2/2021
-    @AllowedFFDC("java.util.MissingResourceException")
+    //@AllowedFFDC("java.util.MissingResourceException")
+    //4/2021
+    @AllowedFFDC(value = { "java.util.MissingResourceException", "java.net.MalformedURLException", "java.lang.ClassNotFoundException" })
     public void testUntWssecSvcClientSSLManaged() throws Exception {
 
         genericTest("testUntWssecSvcClientSSLManaged", untSSLClientUrl,

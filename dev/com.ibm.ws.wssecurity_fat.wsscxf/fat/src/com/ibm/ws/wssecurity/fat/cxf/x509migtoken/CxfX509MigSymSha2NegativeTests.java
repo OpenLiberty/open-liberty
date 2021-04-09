@@ -161,7 +161,10 @@ public class CxfX509MigSymSha2NegativeTests {
     //Orig:
     //@AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.lang.Exception" })
     //2/2021
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.lang.Exception", "org.apache.wss4j.common.ext.WSSecurityException" })
+    //@AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.lang.Exception", "org.apache.wss4j.common.ext.WSSecurityException" })
+    //4/2021
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.lang.Exception", "org.apache.wss4j.common.ext.WSSecurityException", "java.net.MalformedURLException",
+                           "java.lang.ClassNotFoundException" })
     public void testCxfX509KeyIdMigSymServiceSha1ToSha512() throws Exception {
 
         String thisMethod = "testCxfX509KeyIdMigSymService";
@@ -198,7 +201,10 @@ public class CxfX509MigSymSha2NegativeTests {
     //Orig:
     //@AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.lang.Exception" })
     //2/2021
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.lang.Exception", "org.apache.wss4j.common.ext.WSSecurityException" })
+    //@AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.lang.Exception", "org.apache.wss4j.common.ext.WSSecurityException" })
+    //4/2021
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.lang.Exception", "org.apache.wss4j.common.ext.WSSecurityException",
+                           "java.net.MalformedURLException" })
     public void testCxfX509KeyIdMigSymServiceHttpsSha1ToSha512() throws Exception {
 
         String thisMethod = "testCxfX509KeyIdMigSymService";
@@ -235,7 +241,9 @@ public class CxfX509MigSymSha2NegativeTests {
     //Orig:
     //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
     //2/2021
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException" })
+    //@AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException" })
+    //4/2021
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException", "java.net.MalformedURLException" })
     public void testCxfX509IssuerSerialMigSymServiceSha1ToSha512() throws Exception {
 
         String thisMethod = "testCxfX509IssuerSerialMigSymService";

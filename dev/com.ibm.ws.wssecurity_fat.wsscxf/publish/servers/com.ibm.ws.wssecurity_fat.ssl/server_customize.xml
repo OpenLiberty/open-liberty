@@ -71,9 +71,11 @@
 		id="default"
 		ws-security.timestamp.timeToLive="120"
 		ws-security.usernametoken.timeToLive="60"
-		ws-security.cache.config.file="${server.config.dir}/cxf-ehcache.xml"
+		ws-security.cache.config.file="${server.config.dir}/cxf-ehcache_ee7.xml"
 		ws-security.return.security.error="true"
 	>
+	<!-- 4/2021 updated from cxf-ehcache.xml to cxf-ehcache_ee7.xml to avoid other EE8 tests (SSLUntBasic, SSLNonce) associating with same _fat.ssl server but don't need to use this xml to attempt accessing this file but result with error parsing -->
+	<!-- "Error parsing XML configuration at file:/C:/../libertyGit/open-liberty/dev/build.image/wlp/usr/servers/com.ibm.ws.wssecurity_fat.ssl/cxf-ehcache.xml" -->
 	<!-- 3/2021 added ws-security.return.security.error -->
 	<!-- 2/2021 added for EE8 testing: ws-security.usernametoken.timeToLive="60" -->
 	

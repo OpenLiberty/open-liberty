@@ -299,7 +299,9 @@ public class CxfX509MigSymTests {
      */
 
     @Test
-    @AllowedFFDC(value = { "java.lang.Exception" })
+    //@AllowedFFDC(value = { "java.lang.Exception" })
+    //4/2021
+    @AllowedFFDC(value = { "java.lang.Exception", "java.net.MalformedURLException", "java.lang.ClassNotFoundException" })
     public void testCxfX509KeyIdMigSymService() throws Exception {
 
         String thisMethod = "testCxfX509KeyIdMigSymService";
@@ -331,7 +333,9 @@ public class CxfX509MigSymTests {
      */
 
     @Test
-    @AllowedFFDC(value = { "java.lang.Exception" })
+    //@AllowedFFDC(value = { "java.lang.Exception" })
+    //4/2021
+    @AllowedFFDC(value = { "java.lang.Exception", "java.net.MalformedURLException" })
     public void testCxfX509KeyIdMigSymServiceHttps() throws Exception {
 
         String thisMethod = "testCxfX509KeyIdMigSymService";
@@ -512,7 +516,8 @@ public class CxfX509MigSymTests {
      *
      */
 
-    @Test
+    //4/2021
+    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     public void testCxfX509IssuerSerialMigSymService() throws Exception {
         String thisMethod = "testCxfX509IssuerSerialMigSymService";
         methodFull = "testCxfX509IssuerSerialMigSymService";
@@ -706,6 +711,8 @@ public class CxfX509MigSymTests {
      *
      */
 
+    //4/2021
+    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     @Test
     public void testCxfX509ProtectTokensMigSymService() throws Exception {
         String thisMethod = "testCxfX509ProtectTokensMigSymService";
@@ -880,6 +887,8 @@ public class CxfX509MigSymTests {
      *
      */
 
+    //4/2021
+    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     @Test
     public void testCxfX509ThumbprintMigSymService() throws Exception {
         String thisMethod = "testCxfX509ThumbprintMigSymService";
@@ -1086,6 +1095,8 @@ public class CxfX509MigSymTests {
      *
      */
 
+    //4/2021
+    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     @Test
     public void testCxfX509KeyIdDerivedMigSymService() throws Exception {
         String thisMethod = "testCxfX509KeyIdDerivedMigSymService";
@@ -1292,6 +1303,8 @@ public class CxfX509MigSymTests {
      *
      */
 
+    //4/2021
+    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     @Test
     public void testCxfX509ThumbprintDerivedMigSymService() throws Exception {
         String thisMethod = "testCxfX509ThumbprintDerivedMigSymService";
@@ -1331,6 +1344,9 @@ public class CxfX509MigSymTests {
      * and make sure it works
      *
      **/
+
+    //4/2021
+    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     @Test
     public void testX509KeyIdentifierUNTService() throws Exception {
         String thisMethod = "testX509KeyIdentifierUNTService";
@@ -1372,6 +1388,9 @@ public class CxfX509MigSymTests {
      * and make sure it works
      *
      **/
+
+    //4/2021
+    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     @Test
     public void testX509SignatureConfirmService() throws Exception {
         String thisMethod = "testX509SignatureConfirmService";
@@ -1409,6 +1428,9 @@ public class CxfX509MigSymTests {
      * </sp:SignedSupportingTokens>
      * It expects to pass
      **/
+
+    //4/2021
+    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     @Test
     public void testSymEncSignService() throws Exception {
         String thisMethod = "testSymEncSignService";
@@ -1440,6 +1462,9 @@ public class CxfX509MigSymTests {
      * In case, this test case, we need to figure out and maybe document
      *
      **/
+
+    //4/2021
+    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     @Test
     public void testSymEncSignStrictService() throws Exception {
         String thisMethod = "testSymEncSignStrictService";
@@ -1473,7 +1498,9 @@ public class CxfX509MigSymTests {
     //Orig:
     //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
     //2/2021
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException" })
+    //@AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException" })
+    //4/2021
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException", "java.net.MalformedURLException" })
     public void testBasic192Service() throws Exception {
         String thisMethod = "testBasic192Service";
         methodFull = "testBasic192Service";
@@ -1568,7 +1595,9 @@ public class CxfX509MigSymTests {
     // With SymmetricBinding
     //
     @Test
-    @AllowedFFDC("javax.net.ssl.SSLException")
+    //@AllowedFFDC("javax.net.ssl.SSLException")
+    //4/2021
+    @AllowedFFDC(value = { "javax.net.ssl.SSLException", "java.net.MalformedURLException" })
     public void testSymmetricEndorsingUNTPolicy() throws Exception {
         String thisMethod = "testSymmetricEndorsingUNTPolicy";
         methodFull = "testSymmetricEndorsingUNTPolicy";
@@ -1599,6 +1628,8 @@ public class CxfX509MigSymTests {
         return;
     }
 
+    //4/2021
+    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     @Test
     public void testSymmetricEndorsingUNTPolicyHttps() throws Exception {
         String thisMethod = "testSymmetricEndorsingUNTPolicy";
@@ -1705,7 +1736,9 @@ public class CxfX509MigSymTests {
      */
 
     @Test
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.lang.Exception" })
+    //@AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.lang.Exception" })
+    //4/2021
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.lang.Exception", "java.net.MalformedURLException" })
     public void testBadCxfX509KeyIdMigSymEncryptBeforeSigningService() throws Exception {
         String thisMethod = "testCxfX509KeyIdMigSymEncryptBeforeSigningService";
         methodFull = "testBadCxfX509KeyIdMigSymEncryptBeforeSigningService";
@@ -1736,7 +1769,9 @@ public class CxfX509MigSymTests {
      */
 
     @Test
-    @AllowedFFDC("org.apache.ws.security.WSSecurityException")
+    //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
+    //4/2021
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.net.MalformedURLException" })
     public void testBadCxfX509IssuerSerialMigSymNoEncryptSignatureService() throws Exception {
         String thisMethod = "testCxfX509IssuerSerialMigSymNoEncryptSignatureService";
         methodFull = "testBadCxfX509IssuerSerialMigSymNoEncryptSignatureService";
@@ -1767,7 +1802,9 @@ public class CxfX509MigSymTests {
      */
 
     @Test
-    @AllowedFFDC("org.apache.ws.security.WSSecurityException")
+    //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
+    //4/2021
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.net.MalformedURLException" })
     public void testBadCxfX509ProtectTokensMigSymService() throws Exception {
         String thisMethod = "testCxfX509ProtectTokensMigSymService";
         methodFull = "testBadCxfX509ProtectTokensMigSymService";
@@ -1830,7 +1867,9 @@ public class CxfX509MigSymTests {
      */
 
     @Test
-    @AllowedFFDC("org.apache.ws.security.WSSecurityException")
+    //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
+    //4/2021
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.net.MalformedURLException" })
     public void testBadCxfX509KeyIdDerivedMigSymService() throws Exception {
         String thisMethod = "testCxfX509KeyIdDerivedMigSymService";
         methodFull = "testBadCxfX509KeyIdDerivedMigSymService";
@@ -1861,8 +1900,10 @@ public class CxfX509MigSymTests {
      */
 
     @Test
-    @AllowedFFDC("org.apache.ws.security.WSSecurityException")
+    //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
     // gkuo: To be discussed with Chunlong
+    //4/2021
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.net.MalformedURLException" })
     public void testBadCxfX509ThumbprintDerivedMigSymService() throws Exception {
         String thisMethod = "testCxfX509ThumbprintDerivedMigSymService";
         methodFull = "testBadCxfX509ThumbprintDerivedMigSymService";
@@ -1903,7 +1944,9 @@ public class CxfX509MigSymTests {
      *
      **/
     @Test
-    @AllowedFFDC("org.apache.ws.security.WSSecurityException")
+    //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
+    //4/2021
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.net.MalformedURLException" })
     public void testBadX509KeyIdentifierUNTService() throws Exception {
         String thisMethod = "testBadX509KeyIdentifierUNTService";
         methodFull = "testBadX509KeyIdentifierUNTService";
@@ -1946,7 +1989,9 @@ public class CxfX509MigSymTests {
      *
      **/
     @Test
-    @AllowedFFDC("org.apache.ws.security.WSSecurityException")
+    //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
+    //4/2021
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.net.MalformedURLException" })
     public void testBadX509SignatureConfirmService() throws Exception {
         String thisMethod = "testBadX509SignatureConfirmService";
         methodFull = "testBadX509SignatureConfirmService";
@@ -1991,7 +2036,9 @@ public class CxfX509MigSymTests {
     //Orig:
     //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
     //2/2021
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException" })
+    //@AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException" })
+    //4/2021
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException", "java.net.MalformedURLException" })
     public void testBadSymEncSignService() throws Exception {
         String thisMethod = "testBadSymEncSignService";
         methodFull = "testBadSymEncSignService";
@@ -2023,6 +2070,8 @@ public class CxfX509MigSymTests {
      *
      **/
 
+    //4/2021
+    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     @Test
     public void testBadSymEncSignStrictService() throws Exception {
         String thisMethod = "testBadSymEncSignStrictService";
@@ -2057,7 +2106,9 @@ public class CxfX509MigSymTests {
     //Orig:
     //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
     //2/2021
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException" })
+    //@AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException" })
+    //4/2021
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException", "java.net.MalformedURLException" })
     public void testBadBasic192Service() throws Exception {
         String thisMethod = "testBadBasic192Service";
         methodFull = "testBadBasic192Service";
@@ -2102,7 +2153,9 @@ public class CxfX509MigSymTests {
     //Orig:
     //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
     //2/2021
-    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException" })
+    //@AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException" })
+    //4/2021
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "org.apache.wss4j.common.ext.WSSecurityException", "java.net.MalformedURLException" })
     public void testBadInclusiveC14NService() throws Exception {
         String thisMethod = "testBadInclusiveC14NService";
         methodFull = "testBadInclusiveC14NService";
@@ -2143,6 +2196,9 @@ public class CxfX509MigSymTests {
     // But the ws service client exclude the EndorsingSupportingToken tag.
     // It expects to fail
     //
+
+    //4/2021
+    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     @Test
     public void testBadSymmetricEndorsingUNTPolicy() throws Exception {
         String thisMethod = "testBadSymmetricEndorsingUNTPolicy";

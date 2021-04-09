@@ -106,6 +106,9 @@ public class CxfX509EncTests extends CommonTests {
      * This is a positive scenario.
      *
      */
+
+    //4/2021
+    @AllowedFFDC(value = { "java.net.MalformedURLException", "java.lang.ClassNotFoundException" })
     @Test
     public void testCXFClientEncryptUsernameToken() throws Exception {
 
@@ -232,6 +235,9 @@ public class CxfX509EncTests extends CommonTests {
      * This is a positive scenario.
      *
      */
+
+    //4/2021
+    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     @Test
     public void testCXFClientEncryptBodyAndUnt() throws Exception {
 
@@ -271,6 +277,9 @@ public class CxfX509EncTests extends CommonTests {
      * This is a positive scenario.
      *
      */
+
+    //4/2021
+    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     @Test
     public void testCXFClientEncryptUntNonce() throws Exception {
 
@@ -309,6 +318,9 @@ public class CxfX509EncTests extends CommonTests {
      * This is a positive scenario.
      *
      */
+
+    //4/2021
+    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     @Test
     public void testCxfClientEncryptSignature() throws Exception {
 
@@ -440,6 +452,8 @@ public class CxfX509EncTests extends CommonTests {
     @Test
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
     @ExpectedFFDC("org.apache.wss4j.common.ext.WSSecurityException") //@AV999
+    //4/2021
+    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     public void testCXFClientWrongEncKeyAlgorithmEE8Only() throws Exception {
 
         String thisMethod = "testCXFClientWrongEncKeyAlgorithm";
@@ -530,6 +544,8 @@ public class CxfX509EncTests extends CommonTests {
     @Test
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
     @ExpectedFFDC("org.apache.wss4j.common.ext.WSSecurityException") //@AV999
+    //4/2021
+    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     public void testCXFClientWrongDataEncAlgorithmEE8Only() throws Exception {
 
         String thisMethod = "testCXFClientWrongDataEncAlgorithm";
@@ -631,6 +647,8 @@ public class CxfX509EncTests extends CommonTests {
     @Test
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
     @ExpectedFFDC("org.apache.wss4j.common.ext.WSSecurityException") //@AV999
+    //4/2021
+    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     public void testCXFClientWrongEncryptionKeyEE8Only() throws Exception {
 
         String thisMethod = "testCXFClientWrongEncryptionKey";
@@ -718,6 +736,8 @@ public class CxfX509EncTests extends CommonTests {
 
     }
 
+    //4/2021
+    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     //2/2021 run with EE8 and the corresponding server_wss4j.xml can be used
     @Test
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
