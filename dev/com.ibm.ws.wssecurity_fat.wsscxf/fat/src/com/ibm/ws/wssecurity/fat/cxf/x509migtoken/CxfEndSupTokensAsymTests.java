@@ -99,7 +99,9 @@ public class CxfEndSupTokensAsymTests extends CommonTests {
      */
     @Test
     //2/2021
-    @AllowedFFDC("java.util.MissingResourceException") //@AV999
+    //@AllowedFFDC("java.util.MissingResourceException") //@AV999
+    //4/2021
+    @AllowedFFDC(value = { "java.util.MissingResourceException", "java.net.MalformedURLException", "java.lang.ClassNotFoundException" })
     public void testCXFEndSupTokens0() throws Exception {
 
         String thisMethod = "testCXFEndSupTokens0";
@@ -186,7 +188,9 @@ public class CxfEndSupTokensAsymTests extends CommonTests {
      */
     @Test
     //2/2021
-    @AllowedFFDC("java.util.MissingResourceException") //@AV999
+    //@AllowedFFDC("java.util.MissingResourceException") //@AV999
+    //4/2021
+    @AllowedFFDC(value = { "java.util.MissingResourceException", "java.net.MalformedURLException" })
     public void testCXFEndSupTokens0Body() throws Exception {
 
         String thisMethod = "testCXFEndSupTokens0Body";
@@ -230,7 +234,9 @@ public class CxfEndSupTokensAsymTests extends CommonTests {
      */
     @Test
     //2/2021
-    @AllowedFFDC("java.util.MissingResourceException") //@AV999
+    //@AllowedFFDC("java.util.MissingResourceException") //@AV999
+    //4/2021
+    @AllowedFFDC(value = { "java.util.MissingResourceException", "java.net.MalformedURLException" })
     public void testCXFEndSupTokens0BodyElement() throws Exception {
 
         String thisMethod = "testCXFEndSupTokens0BodyElement";
@@ -316,7 +322,9 @@ public class CxfEndSupTokensAsymTests extends CommonTests {
      */
     @Test
     //2/2021
-    @AllowedFFDC("java.util.MissingResourceException") //@AV999
+    //@AllowedFFDC("java.util.MissingResourceException") //@AV999
+    //4/2021
+    @AllowedFFDC(value = { "java.util.MissingResourceException", "java.net.MalformedURLException" })
     public void testCXFEndSupTokens1() throws Exception {
 
         String thisMethod = "testCXFEndSupTokens1";

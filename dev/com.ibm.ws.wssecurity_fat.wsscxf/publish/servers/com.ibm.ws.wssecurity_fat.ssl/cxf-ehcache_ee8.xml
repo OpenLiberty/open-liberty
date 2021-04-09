@@ -33,6 +33,10 @@
         <expiry>
             <ttl unit="seconds">3600</ttl>
         </expiry>
+        <!-- 4/2021 this element "persistence" resulted test failure under new runtime "Cannot confirm XML sub-type correctness. You might be missing client side libraries." 
+        <persistence>
+           <directory="java.io.tmpdir">
+        </persistence> and it's removed to resolve the issue. -->
         <resources>
             <heap unit="entries">10000</heap>
         </resources>
@@ -43,9 +47,6 @@
         <expiry>
             <ttl unit="seconds">60</ttl>
         </expiry>
-        <persistence>
-           <directory="java.io.tmpdir">
-        </persistence> 
         <resources>
             <heap unit="entries">500</heap>
             <disk unit="MB" persistent="true">10</disk>

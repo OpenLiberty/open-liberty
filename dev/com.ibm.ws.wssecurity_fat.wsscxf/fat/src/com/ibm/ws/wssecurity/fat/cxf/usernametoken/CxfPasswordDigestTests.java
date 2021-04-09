@@ -134,6 +134,8 @@ public class CxfPasswordDigestTests extends CommonTests {
      *
      */
 
+    //4/2021
+    @AllowedFFDC(value = { "java.lang.ClassNotFoundException" })
     @Test
     public void testPWDigestCXFSvcClientSpecifyUser() throws Exception {
 
@@ -150,6 +152,8 @@ public class CxfPasswordDigestTests extends CommonTests {
      *
      */
 
+    //4/2021
+    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     @Test
     public void testPWDigestCXFSvcClientSpecifyUserSSL() throws Exception {
 
@@ -183,6 +187,8 @@ public class CxfPasswordDigestTests extends CommonTests {
      *
      */
 
+    //4/2021
+    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     @Test
     public void testPWDigestCXFSvcClientDefaultUserSSL() throws Exception {
 
@@ -200,6 +206,8 @@ public class CxfPasswordDigestTests extends CommonTests {
 
     }
 
+    //4/2021
+    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     @Test
     public void testPWDigestCXFSvcClientNoIdValidPwSSL() throws Exception {
 
@@ -396,6 +404,8 @@ public class CxfPasswordDigestTests extends CommonTests {
 
     }
 
+    //4/2021
+    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     @Test
     public void testPWDigestCXFSvcClientCreatedSSL() throws Exception {
 
@@ -412,6 +422,8 @@ public class CxfPasswordDigestTests extends CommonTests {
 
     }
 
+    //4/2021
+    @AllowedFFDC(value = { "java.net.MalformedURLException", "java.lang.ClassNotFoundException" })
     @Test
     public void testPWDigestCXFSvcClientNonceCreatedSSL() throws Exception {
 
@@ -430,6 +442,8 @@ public class CxfPasswordDigestTests extends CommonTests {
 
     }
 
+    //4/2021
+    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     @Test
     public void testPWDigestCXFSvcClientNonceSSL() throws Exception {
 
@@ -530,6 +544,8 @@ public class CxfPasswordDigestTests extends CommonTests {
 
     }
 
+    //4/2021
+    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     //2/2021 run with EE8 and the corresponding server_withClCallback_wss4j.xml can be used
     @Test
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
@@ -714,6 +730,8 @@ public class CxfPasswordDigestTests extends CommonTests {
 
     }
 
+    //4/2021
+    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     //2/2021 run with EE8 and the corresponding server_withClCallback_wss4j.xml can be used
     @Test
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)

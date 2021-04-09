@@ -37,8 +37,10 @@
 		id="default"
 		ws-security.callback-handler="com.ibm.ws.wssecurity.example.cbhwss4j.CommonPasswordCallbackWss4j"
 		ws-security.signature.username="soapprovider"
+		ws-security.return.security.error="true"
 	>
-	<!-- EE8 Callbackhandler -->
+	<!-- 2/2021 updated EE8 Callbackhandler -->
+	<!-- 4/2021 added ws-security.return.security.error -->
 	
 		<signatureProperties
 			signatureAlgorithm="sha256"
@@ -47,7 +49,7 @@
 			org.apache.ws.security.crypto.merlin.keystore.alias="soapprovider"
 			org.apache.ws.security.crypto.merlin.file="${server.config.dir}/dsig-receiver.ks" />
 	</wsSecurityProvider>
-
+     
 	<wsSecurityClient
 		id="default"
 		ws-security.password="security"

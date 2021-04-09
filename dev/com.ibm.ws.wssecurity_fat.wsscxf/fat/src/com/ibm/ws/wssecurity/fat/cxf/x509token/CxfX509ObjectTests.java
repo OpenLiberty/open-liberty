@@ -150,6 +150,8 @@ public class CxfX509ObjectTests {
      * This test does not require default ws-sec configuration (specified in server.xml)for the service client.
      */
 
+    //4/2021 this test expects to fail with EE8 "java.lang.ClassNotFoundException: org.apache.wss4j.common.crypto.CryptoFactory"
+    //Aruna is aware of the cause from feature definition API packages; waiting for the next stage of update to fix it
     @Test
     public void testCxfX509Service() throws Exception {
 

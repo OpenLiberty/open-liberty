@@ -127,6 +127,8 @@ public class CxfSha2SigTests extends CommonTests {
     //2/2021 to test with EE8, then the corresponding server_orig_wss4j.xml can be used
     @Test
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    //4/2021
+    @AllowedFFDC(value = { "java.net.MalformedURLException", "java.lang.ClassNotFoundException" })
     public void testCxfSha2SignSoapBodyEE8Only() throws Exception {
 
         String thisMethod = "testCxfSha2SignSoapBody";
@@ -207,7 +209,9 @@ public class CxfSha2SigTests extends CommonTests {
     //2/2021 to test with EE8, then the corresponding server_orig_wss4j.xml can be used
     @Test
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
-    @AllowedFFDC("org.apache.ws.security.WSSecurityException")
+    //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
+    //4/2021
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.net.MalformedURLException" })
     public void testCxfSha2DigestAlgorithmEE8Only() throws Exception {
 
         String thisMethod = "testCxfSha2DigestAlgorithm";
@@ -287,6 +291,8 @@ public class CxfSha2SigTests extends CommonTests {
     //2/2021 to test with EE8, then the corresponding server_sha384_wss4j.xml can be used
     @Test
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    //4/2021
+    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     public void testCxfSha384SigAlgorithmEE8Only() throws Exception {
 
         String thisMethod = "testCxfSha384SigAlgorithm";
@@ -366,6 +372,8 @@ public class CxfSha2SigTests extends CommonTests {
     //2/2021 to test with EE8, then the corresponding server_sha512_wss4j.xml can be used
     @Test
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
+    //4/2021
+    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     public void testCxfSha512SigAlgorithmEE8Only() throws Exception {
 
         String thisMethod = "testCxfSha512SigAlgorithm";
@@ -454,7 +462,9 @@ public class CxfSha2SigTests extends CommonTests {
     @Test
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
     //2/2021
-    @AllowedFFDC("org.apache.wss4j.common.ext.WSSecurityException")
+    //@AllowedFFDC("org.apache.wss4j.common.ext.WSSecurityException")
+    //4/2021
+    @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "java.net.MalformedURLException", "java.lang.ClassNotFoundException" })
     public void testCxfSha1ToSha2SigAlgorithmEE8Only() throws Exception {
 
         String thisMethod = "testCxfSha1ToSha2SigAlgorithm";
@@ -536,6 +546,8 @@ public class CxfSha2SigTests extends CommonTests {
 
     }
 
+    //4/2021
+    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     //2/2021 to test with EE8, then the corresponding server_2048_wss4j.xml can be used
     @Test
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
@@ -617,6 +629,8 @@ public class CxfSha2SigTests extends CommonTests {
 
     }
 
+    //4/2021
+    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     //2/2021 to test with EE8, then the corresponding server_sha3sym_wss4j.xml can be used
     @Test
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
@@ -697,6 +711,8 @@ public class CxfSha2SigTests extends CommonTests {
 
     }
 
+    //4/2021
+    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     //2/2021 to test with EE8, then the corresponding server_sha5sym_wss4j.xml can be used
     @Test
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)

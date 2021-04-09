@@ -146,6 +146,8 @@ public class CxfX509OverRideTests {
     // overwrite them.
     //
 
+    //4/2021
+    @AllowedFFDC(value = { "java.net.MalformedURLException", "java.lang.ClassNotFoundException" })
     @Test
     public void testCxfX509Service() throws Exception {
         String thisMethod = "testCxfX509Service";

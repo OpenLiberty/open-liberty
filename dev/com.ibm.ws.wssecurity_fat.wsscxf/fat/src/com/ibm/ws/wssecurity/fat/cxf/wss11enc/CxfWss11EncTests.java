@@ -26,6 +26,8 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.wssecurity.fat.utils.common.CommonTests;
 import com.ibm.ws.wssecurity.fat.utils.common.PrepCommonSetup;
 
+//4/2021
+import componenttest.annotation.AllowedFFDC;
 //Added 10/2020
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
@@ -131,6 +133,8 @@ public class CxfWss11EncTests extends CommonTests {
                     "The test expected a succesful message from the server.");
     }
 
+    //4/2021
+    @AllowedFFDC(value = { "java.net.MalformedURLException", "java.lang.ClassNotFoundException" })
     //2/2021 to test with EE8, then the corresponding server_enchdr_wss4j.xml can be used
     @Test
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
@@ -219,6 +223,8 @@ public class CxfWss11EncTests extends CommonTests {
                     "The test expected a succesful message from the server.");
     }
 
+    //4/2021
+    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     //2/2021 to test with EE8, then the corresponding server_wss4j.xml and callbackhandler can be used
     @Test
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
@@ -306,6 +312,8 @@ public class CxfWss11EncTests extends CommonTests {
                     "The test expected a succesful message from the server.");
     }
 
+    //4/2021
+    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     //2/2021 to test with EE8, then the corresponding server_wss4j.xml and callbackhandler can be used
     @Test
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)

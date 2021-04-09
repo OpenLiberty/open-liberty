@@ -11,6 +11,9 @@ S * Copyright (c) 2020, 2021 IBM Corporation and others.
 
 package com.ibm.ws.wssecurity.fat.cxf.usernametoken;
 
+//4/2021
+import java.io.File;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -26,10 +29,6 @@ public class CxfSSLUNTNonceTests extends SSLTestCommon {
 
     static private final Class<?> thisClass = CxfSSLUNTNonceTests.class;
 
-    //2/2021
-    //@ClassRule
-    //public static RepeatTests r = RepeatTests.withoutModification().andWith(FeatureReplacementAction.EE8_FEATURES().forServers(serverName).removeFeature("jsp-2.2").removeFeature("jaxws-2.2").removeFeature("servlet-3.1").removeFeature("usr:wsseccbh-1.0").addFeature("jsp-2.3").addFeature("jaxws-2.3").addFeature("servlet-4.0").addFeature("usr:wsseccbh-2.0"));
-
     /**
      * TestDescription:
      *
@@ -40,16 +39,19 @@ public class CxfSSLUNTNonceTests extends SSLTestCommon {
      * (nonce generated) The request should be successful.
      *
      */
+
     @Test
     //2/2021
-    @AllowedFFDC("java.util.MissingResourceException") //@AV999
+    //@AllowedFFDC("java.util.MissingResourceException") //@AV999
+    //4/2021
+    @AllowedFFDC(value = { "java.util.MissingResourceException", "java.net.MalformedURLException", "java.lang.ClassNotFoundException" })
     public void testCxfUntNonceOnlySSL() throws Exception {
 
         genericTest("testCxfUntNonceOnlySSL", untSSLClientUrl,
                     portNumberSecure, "user1", "security", "FVTVersionBA5Service",
                     "UrnBasicPlcyBA5", "", "",
                     "Response: WSSECFVT FVTVersion_ba05",
-                    "The test expected a succesful message from the server.");
+                    "The test expected a successful message from the server.");
 
     }
 
@@ -63,16 +65,19 @@ public class CxfSSLUNTNonceTests extends SSLTestCommon {
      * msg is sent (nonce/created generated) The request should be successful.
      *
      */
+
     @Test
     //2/2021
-    @AllowedFFDC("java.util.MissingResourceException") //@AV999
+    //@AllowedFFDC("java.util.MissingResourceException") //@AV999
+    //4/2021
+    @AllowedFFDC(value = { "java.util.MissingResourceException", "java.net.MalformedURLException", "java.lang.ClassNotFoundException" })
     public void testCxfUntNonceAndCreatedSSL() throws Exception {
 
         genericTest("testCxfUntNonceAndCreatedSSL", untSSLClientUrl,
                     portNumberSecure, "user1", "security", "FVTVersionBA4Service",
                     "UrnBasicPlcyBA4", "", "",
                     "Response: WSSECFVT FVTVersion_ba04",
-                    "The test expected a succesful message from the server.");
+                    "The test expected a successful message from the server.");
 
     }
 
@@ -87,16 +92,19 @@ public class CxfSSLUNTNonceTests extends SSLTestCommon {
      * should be successful.
      *
      */
+
     @Test
     //2/2021
-    @AllowedFFDC("java.util.MissingResourceException") //@AV999
+    //@AllowedFFDC("java.util.MissingResourceException") //@AV999
+    //4/2021
+    @AllowedFFDC(value = { "java.util.MissingResourceException", "java.net.MalformedURLException", "java.lang.ClassNotFoundException" })
     public void testCxfUntNonceAndCreatedNoIdSSL() throws Exception {
 
         genericTest("testCxfUntNonceAndCreatedNoIdSSL", untSSLClientUrl,
                     portNumberSecure, null, null, "FVTVersionBA4Service",
                     "UrnBasicPlcyBA4", "", "",
                     "Response: WSSECFVT FVTVersion_ba04",
-                    "The test expected a succesful message from the server.");
+                    "The test expected a successful message from the server.");
 
     }
 
@@ -120,6 +128,9 @@ public class CxfSSLUNTNonceTests extends SSLTestCommon {
     //2/2021
     @AllowedFFDC(value = { "java.util.MissingResourceException", "org.apache.wss4j.common.ext.WSSecurityException", "org.apache.ws.security.WSSecurityException" })
     public void testCxfUntExpiredMsgSSL() throws Exception {
+
+        //4/2021
+        reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_ee8.xml");
 
         genericTest("testCxfUntExpiredMsgSSL", untSSLClientUrl, portNumberSecure,
                     "user1", "security", "FVTVersionBA4Service", "UrnBasicPlcyBA4",
@@ -166,7 +177,9 @@ public class CxfSSLUNTNonceTests extends SSLTestCommon {
     @Test
     @SkipForRepeat(SkipForRepeat.NO_MODIFICATION)
     //2/2021
-    @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "java.util.MissingResourceException" })
+    //@AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "java.util.MissingResourceException" })
+    //4/2021
+    @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException", "java.util.MissingResourceException", "java.net.MalformedURLException" })
     public void testCxfUntOldExtFutureTimestampSSLEE8Only() throws Exception {
 
         genericTest(
@@ -194,16 +207,19 @@ public class CxfSSLUNTNonceTests extends SSLTestCommon {
      * should pass as the Timestamp should be generated.
      *
      */
+
     @Test
     //2/2021
-    @AllowedFFDC("java.util.MissingResourceException") //@AV999
+    //@AllowedFFDC("java.util.MissingResourceException") //@AV999
+    //4/2021
+    @AllowedFFDC(value = { "java.util.MissingResourceException", "java.net.MalformedURLException", "java.lang.ClassNotFoundException" })
     public void testCxfUntReqTimestampSSL() throws Exception {
 
         genericTest("testCxfUntReqTimestampSSL", untSSLClientUrl,
                     portNumberSecure, "user1", "security", "FVTVersionBA5Service",
                     "UrnBasicPlcyBA5", "", "",
                     "Response: WSSECFVT FVTVersion_ba05",
-                    "The test expected a succesful message from the server.");
+                    "The test expected a successful message from the server.");
 
     }
 

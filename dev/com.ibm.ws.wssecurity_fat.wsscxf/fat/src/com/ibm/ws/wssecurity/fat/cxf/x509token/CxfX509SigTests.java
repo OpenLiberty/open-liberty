@@ -87,6 +87,8 @@ public class CxfX509SigTests extends CommonTests {
 
     }
 
+    //4/2021
+    @AllowedFFDC(value = { "java.net.MalformedURLException", "java.lang.ClassNotFoundException" })
     @Test
     public void testCxfClientSignSoapBody() throws Exception {
 
@@ -190,7 +192,9 @@ public class CxfX509SigTests extends CommonTests {
     }
 
     @Test
-    @AllowedFFDC("org.apache.ws.security.WSSecurityException")
+    //@AllowedFFDC("org.apache.ws.security.WSSecurityException")
+    //4/2021
+    @AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException", "java.net.MalformedURLException" })
     public void testCxfClientTimestampMissing() throws Exception {
 
         newClientWsdl = updateClientWsdl(defaultClientWsdlLoc + "X509XmlSigClientTimestamps.wsdl",
@@ -255,6 +259,8 @@ public class CxfX509SigTests extends CommonTests {
 
     }
 
+    //4/2021
+    @AllowedFFDC(value = { "java.net.MalformedURLException" })
     @Test
     public void testCxfClientSignBodyUNTAndTs() throws Exception {
 
