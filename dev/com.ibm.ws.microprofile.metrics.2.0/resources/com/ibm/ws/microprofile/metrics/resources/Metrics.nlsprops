@@ -130,8 +130,8 @@ session.invalidatedbyTimeout.total.description=The number of sessions that have 
 
 requestTiming.requestCount.description=The number of servlet requests since the server started.
 requestTiming.activeRequestCount.description=The number of servlet requests currently running.
-requestTiming.slowRequestCount.description=The number of servlet requests that are currently running and are deemed slow.
-requestTiming.hungRequestCount.description=The number of servlet requests that are currently running and are deemed hung.
+requestTiming.slowRequestCount.description=The number of servlet requests that are currently running but are slow.
+requestTiming.hungRequestCount.description=The number of servlet requests that are currently running but are hung.
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Metrics error message
