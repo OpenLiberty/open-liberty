@@ -81,7 +81,7 @@ All features (both "Design Approved" and "No Design Approved")
 1 week before Onboarding
 - [ ] No Stop Ship issues for the feature. (Epic owner / Feature owner / Release PM)
 - [ ] Ship Readiness Review and Release Notes completed (Epic owner / Feature owner / Release PM)
-- [ ] Github Epic and Epic's issues are closed / complete. All PRs are committed to the master branch. (Epic owner / Feature owner / Backlog Subtribe PM)
+- [ ] Github Epic and Epic's issues are closed / complete. All PRs are committed to the release branch. (Epic owner / Feature owner / Backlog Subtribe PM)
 
 1 week before GA
 - [ ] Create, populate, and link to the [Blog post issue](https://github.com/OpenLiberty/open-liberty/issues/new?assignees=lauracowen%2C+jakub-pomykala&labels=&template=blog_post_ga_release.md&title=GA+BLOG+-+title_of_your_update)
