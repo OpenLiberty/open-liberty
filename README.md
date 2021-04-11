@@ -67,7 +67,9 @@ See [this guide](https://openliberty.io/guides/getting-started.html)  to learn h
 
 
 ## Contributing
+
 Our [CONTRIBUTING](https://github.com/OpenLiberty/open-liberty/blob/release/CONTRIBUTING.md) document contains details for submitting pull requests.
+**FYI:** The project recently renamed `master` branch to `release`.  More info here: https://github.com/OpenLiberty/open-liberty/wiki/Master-rename-to-Release
 
 ### Running a Build
 
