@@ -4125,6 +4125,9 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
          */
         if (getExpectedTotalConnectionCount() != totalConnectionCount.get()) {
             try {
+                //TODO remove
+                if (isTracingEnabled && tc.isDebugEnabled())
+                    Tr.debug(tc, "KJA1017 calling purgePoolAndResetTotal()");
                 purgePoolAndResetTotal();
             } catch (PropertyVetoException e) {
                 if (tc.isDebugEnabled()) {

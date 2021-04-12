@@ -147,6 +147,12 @@ public class PoolManagerMBeanImpl extends StandardMBean implements ConnectionMan
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Size", o);
             }
+		//TODO remove
+        } else if ("setSize".equalsIgnoreCase(actionName)) {
+            setSize((long) params[0]);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Set size", params[0]);
+            }
         } else if ("getAvailable".equalsIgnoreCase(actionName)) {
             o = getAvailable();
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -242,6 +248,12 @@ public class PoolManagerMBeanImpl extends StandardMBean implements ConnectionMan
     @Override
     public long getSize() {
         return _pm.totalConnectionCount.get();
+    }
+
+	//TODO remove
+    @Override
+    public void setSize(long size) {
+        _pm.totalConnectionCount.set((int) size);
     }
 
     @Override
