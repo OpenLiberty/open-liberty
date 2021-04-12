@@ -140,6 +140,11 @@ public class ServerCommandPortTest {
     public void testServerCommandPortEnabled() throws Exception {
         LibertyServer server = commandPortEnabledServer;
 
+        JavaInfo java = JavaInfo.forCurrentVM();
+        if (java.majorVersion() != 8) {
+            server.copyFileToLibertyServerRoot("illegalAccess/jvm.options");
+        }
+
         String output = server.startServer().getStdout();
         assertTrue(output.contains("Server " + server.getServerName() + " started"));
 
