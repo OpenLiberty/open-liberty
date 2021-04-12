@@ -55,8 +55,8 @@ public class MultiSessionTests extends FATServletClient {
         }
 
         // I think we need this for tracing to turn on (as well as changes in bootstrap.properties)
-        H2FATApplicationHelper.addWarToServerDropins(server, "H2TestModule.war", false, "http2.test.war.servlets");
-        H2FATApplicationHelper.addWarToServerDropins(runtimeServer, "H2FATDriver.war", false, "http2.test.driver.war.servlets");
+        H2FATApplicationHelper.addWarToServerDropins(server, "H2TestModule.war", true, "http2.test.war.servlets");
+        H2FATApplicationHelper.addWarToServerDropins(runtimeServer, "H2FATDriver.war", true, "http2.test.driver.war.servlets");
 
         server.startServer(true, true);
         runtimeServer.startServer(true);
