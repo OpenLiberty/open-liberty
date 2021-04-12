@@ -23,6 +23,8 @@ import static org.junit.Assert.fail;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.naming.directory.SearchResult;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -36,7 +38,6 @@ import com.ibm.websphere.simplicity.config.wim.FederatedRepository;
 import com.ibm.websphere.simplicity.config.wim.LdapRegistry;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.com.unboundid.InMemoryLDAPServer;
-import com.ibm.ws.security.registry.SearchResult;
 import com.ibm.ws.security.registry.test.UserRegistryServletConnection;
 import com.ibm.ws.security.wim.adapter.ldap.fat.krb5.utils.LdapKerberosUtils;
 import com.unboundid.ldap.sdk.LDAPConnection;
@@ -117,7 +118,11 @@ public class CommonBindTest {
 
         server.copyFileToLibertyInstallRoot("lib/features", "internalfeatures/securitylibertyinternals-1.0.mf");
 
-        server.startServer();
+        try {
+            server.startServer();
+        } catch (Exception ex) {
+            server.serverDump();
+        }
 
         startupChecks();
 
