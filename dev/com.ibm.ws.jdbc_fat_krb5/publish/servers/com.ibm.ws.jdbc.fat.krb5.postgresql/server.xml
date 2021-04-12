@@ -8,7 +8,7 @@
   <include location="../fatTestPorts.xml"/>
 
   <library id="pglib">
-    <fileset dir="${server.config.dir}/postgresql"/>
+    <file name="${shared.resource.dir}/jdbc/postgresql.jar"/>
   </library>
   
   <kerberos configFile="${KRB5_CONF}"/>
@@ -45,7 +45,7 @@
     <containerAuthData user="${PG_USER}"  password="${PG_PASS}"/>
   </dataSource>
     
-  <javaPermission codebase="${server.config.dir}postgresql/postgresql.jar" className="java.security.AllPermission"/>
+  <javaPermission codebase="${shared.resource.dir}/jdbc/postgresql.jar" className="java.security.AllPermission"/>
   <javaPermission className="java.net.SocketPermission" name="*" actions="connect,resolve"/>
   <javaPermission className="javax.security.auth.kerberos.ServicePermission" name="*" actions="initiate"/>
   <javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
