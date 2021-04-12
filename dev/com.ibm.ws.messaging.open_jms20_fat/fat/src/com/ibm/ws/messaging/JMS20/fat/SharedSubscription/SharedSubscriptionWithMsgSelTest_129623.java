@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.messaging.JMS20.fat.SharedSubscription;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -49,12 +50,6 @@ public class SharedSubscriptionWithMsgSelTest_129623 {
 
     private static LibertyServer engineServer =
         LibertyServerFactory.getLibertyServer("SharedSubscriptionEngine");
-
-    public int occurrencesInLog(String text) throws Exception {
-        return TestUtils.occurrencesInLog(clientServer, "trace.log", text);
-    }
-
-    //
 
     private static final String subscriptionAppName = "SharedSubscriptionWithMsgSel";
     private static final String subscriptionContextRoot = "SharedSubscriptionWithMsgSel";
@@ -131,6 +126,8 @@ public class SharedSubscriptionWithMsgSelTest_129623 {
 
     @AfterClass
     public static void tearDown() {
+        // Remove the try / catch clauses once the following issue is resolved.
+        // See https://github.com/OpenLiberty/open-liberty/issues/10931
         try {
             clientServer.stopServer();
         } catch (Exception e) {
@@ -305,29 +302,26 @@ public class SharedSubscriptionWithMsgSelTest_129623 {
     @Mode(TestMode.FULL)
     @Test
     public void testMultiSharedDurableConsumer_SecOff() throws Exception {
+        clientServer.setMarkToEndOfLog();
         runInServlet("testBasicMDBTopic");
-        Thread.sleep(1000);
-        int count1 = occurrencesInLog("Received in MDB1: testBasicMDBTopic:");
-        int count2 = occurrencesInLog("Received in MDB2: testBasicMDBTopic:");
-
-        boolean testFailed = false;
-        if ( !((count1 > 1) && (count2 > 1) && (count1 + count2 == 20)) ) {
-            testFailed = true;
-        }
-
+        
+        // The servlet has sent 20 distinct messages which are received by either MDB1 or MDB2,
+        // the MDB's run as multiple instances so the order the messages are received is unpredictable.
+        // We allow up to 120 seconds to receive all of the messages,
+        // although normally there should be minimal delay and anything more that 10 seconds means that the test infrastructure is not 
+        // providing enough resources.
+        long receiveStartMilliseconds = System.currentTimeMillis();
+        int count = clientServer.waitForMultipleStringsInLogUsingMark(20, "Received in MDB[1-2]: testBasicMDBTopic:");
+        assertEquals("Incorrect number of messages:"+count, count, 20);
+        long receiveMilliseconds = System.currentTimeMillis()-receiveStartMilliseconds;
+        assertTrue("Test infrastructure failure, excessive time to receive:"+receiveMilliseconds, receiveMilliseconds<10*1000);
+        
+        clientServer.setMarkToEndOfLog();
         runInServlet("testBasicMDBTopic_TCP");
-        Thread.sleep(1000);
-        int count3 = occurrencesInLog("Received in MDB1: testBasicMDBTopic_TCP:");
-        int count4 = occurrencesInLog("Received in MDB2: testBasicMDBTopic_TCP:");
-
-        boolean testFailed_TCP = false;
-        if ( !((count3 > 1) && (count4 > 1) && (count3 + count4 == 20)) ) {
-            testFailed_TCP = true;
-        }
-
-        assertFalse("testMultiSharedDurableConsumer_SecOff failed testBasicMDBTopic" +
-                    " [ " + count1 + " ] [ " + count2 + " ]", testFailed);
-        assertFalse("testMultiSharedDurableConsumer_SecOff failed testBasicMDBTopic_TCP" +
-                    " [ " + count3 + " ] [ " + count4 + " ]", testFailed_TCP);
+        receiveStartMilliseconds = System.currentTimeMillis();
+        count = clientServer.waitForMultipleStringsInLogUsingMark(20, "Received in MDB[1-2]: testBasicMDBTopic_TCP:");
+        assertEquals("Incorrect number of messages:"+count, count, 20);
+        receiveMilliseconds = System.currentTimeMillis()-receiveStartMilliseconds;
+        assertTrue("Test infrastructure failure, excessive time to receive:"+receiveMilliseconds, receiveMilliseconds<10*1000);
     }
 }
