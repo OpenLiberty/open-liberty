@@ -15,7 +15,7 @@ Bundle-Name: JPA Injection Test Common Elements
 Bundle-SymbolicName: com.ibm.ws.jpa.tests.spec10.injection.common
 Bundle-Description: JPA Injection Test Common Elements; version=${bVersion}
 
-test.project: true
+test.project: false
 publish.wlp.jar.disabled: true
 instrument.disabled: true
 
