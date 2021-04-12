@@ -45,7 +45,7 @@ import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.JavaInfo.Vendor;
 import componenttest.topology.impl.LibertyServer;
 
-@AllowedFFDC("java.lang.ClassNotFoundException")
+@AllowedFFDC({"java.lang.ClassNotFoundException", "java.lang.ClassCastException"})
 @RunWith(FATRunner.class)
 public class AnnotationScanTest {
 
@@ -108,7 +108,6 @@ public class AnnotationScanTest {
      * @throws Exception
      */
     @Test
-    @AllowedFFDC("java.lang.ClassCastException")
     public void testApplication1Resource1() throws Exception {
         String resp = client.target(getBaseTestUri(annwar, "/app1/")).request().get(String.class);
         assertTrue(resp, resp.equals("Hello world!") || resp.equals(MyRegularResource.class.getName()));
@@ -445,7 +444,7 @@ public class AnnotationScanTest {
     public void testServletSpecifiedWithInvalidApplicationClass() throws Exception {
         int messageCount = 0;
         if (JakartaEE9Action.isActive()) {
-            messageCount = server.findStringsInLogs("SRVE0271E.*NotAnAppIBMRestServlet.*annotationscan.*com.ibm.ws.jaxrs.fat.annotation.multipleapp.MyResource3 incompatible with jakarta.ws.rs.core.Application").size();
+            messageCount = server.findStringsInLogs("SRVE0271E.*NotAnAppIBMRestServlet.*annotationscan.*com.ibm.ws.jaxrs.fat.annotation.multipleapp.MyResource3.*jakarta.ws.rs.core.Application").size();
         } else {
             messageCount = server.findStringsInLogs("CWWKW0102W.*annotationscan.*NotAnAppIBMRestServlet.*com.ibm.ws.jaxrs.fat.annotation.multipleapp.MyResource3").size();
         }
