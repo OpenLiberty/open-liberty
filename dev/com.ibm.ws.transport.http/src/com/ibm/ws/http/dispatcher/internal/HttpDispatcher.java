@@ -121,12 +121,12 @@ public class HttpDispatcher {
     /** Property for enabling/disabling the default welcome page */
     private volatile boolean enableWelcomePage = true;
 
-    /** PM97514 - keep original value recieved from config for negotiating between dispatcher & webcontainer settings */
+    /** PM97514 - keep original value received from config for negotiating between dispatcher & webcontainer settings */
     private volatile String[] origHeaderOrigin = null;
     /** PM97514 - webcontainer trusted attribute */
     private volatile boolean wcTrusted = true;
 
-    /** keep original value recieved from config for negotiating between dispatcher & webcontainer settings */
+    /** keep original value received from config for negotiating between dispatcher & webcontainer settings */
     private volatile String[] origSensitiveHeaderOrigin = null;
 
     /** keep track of the hosts for which private headers are trusted */

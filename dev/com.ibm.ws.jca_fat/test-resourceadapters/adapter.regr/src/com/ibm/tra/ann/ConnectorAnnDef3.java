@@ -45,7 +45,7 @@ import com.ibm.tra.trace.DebugTracer;
 
 //displayName="CONN_DEF_3_DISPNAME",  // Not a test RAR name==> ra.xml has display name
 
-//eisType="CONN_DEF_3_EISTYPE",    
+//eisType="CONN_DEF_3_EISTYPE",
 
 //licenseDescription={"CONN_DEF_3_LICDESC"},
 //licenseRequired=false,                         // CONN_DEF_3_LICREQ
@@ -83,7 +83,8 @@ public class ConnectorAnnDef3 implements ResourceAdapter, Serializable {
 
     private transient XATerminator myXATerminator = null;
 
-    public ConnectorAnnDef3() {}
+    public ConnectorAnnDef3() {
+    }
 
     // Resource Adapter Configuration Properties
 //  @ConfigProperty(
@@ -196,7 +197,7 @@ public class ConnectorAnnDef3 implements ResourceAdapter, Serializable {
         if (activationSpec instanceof ActivationSpecImpl) {
             if (debug) {
                 ActivationSpecImpl aSpec = (ActivationSpecImpl) activationSpec;
-                out.println("Recieved com.ibm.inbound.impl.ActivationSpecImpl");
+                out.println("Received com.ibm.inbound.impl.ActivationSpecImpl");
                 out.println("Contents of ActivationSpec: ");
                 out.println("prop1: " + aSpec.getProp1());
                 out.println("destType: " + aSpec.getDestinationType());
@@ -231,7 +232,7 @@ public class ConnectorAnnDef3 implements ResourceAdapter, Serializable {
         if (activationSpec instanceof ActivationSpecImpl) {
             ActivationSpecImpl aSpec = (ActivationSpecImpl) activationSpec;
             if (debug) {
-                out.println("Recieved com.ibm.inbound.impl.ActivationSpecImpl");
+                out.println("Received com.ibm.inbound.impl.ActivationSpecImpl");
                 out.println("Contents of ActivationSpec: ");
                 out.println("prop1:" + aSpec.getProp1());
                 out.println("destType: " + aSpec.getDestinationType());

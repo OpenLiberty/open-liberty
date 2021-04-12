@@ -161,7 +161,7 @@ public abstract class SipTransaction
 
     
     /**
-     * A final response to this transaction recieved or being sent
+     * A final response to this transaction received or being sent
      * @param response
      */
 	public void onFinalResponse(SipServletResponse response)

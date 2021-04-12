@@ -20,7 +20,7 @@ import com.ibm.wsspi.sib.core.SelectionCriteria;
 /**
  * This class is used when we cache the properties of a consumer session.
  * This happens when a client does a SICoreConnection.receive(wait / noWait).
- * At this point we will create a consumer and do the recieve but we will not
+ * At this point we will create a consumer and do the receive but we will not
  * destroy the consumer in case they do it again.
  * <p>
  * The important method here is the equals method as we need to work out whether

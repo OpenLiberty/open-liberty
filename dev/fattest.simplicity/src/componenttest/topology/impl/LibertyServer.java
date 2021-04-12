@@ -2059,7 +2059,7 @@ public class LibertyServer implements LogMonitorClient {
             //since this is going to connect to the secure port, that needs to be ready
             //before an attempt to make the JMX connection
             Log.info(c, method, "Checking that the JMX RestConnector is available and secured");
-            assertNotNull("CWWKO0219I.*ssl not recieved", waitForStringInLogUsingMark("CWWKO0219I.*ssl"));
+            assertNotNull("CWWKO0219I.*ssl not received", waitForStringInLogUsingMark("CWWKO0219I.*ssl"));
 
             assertNotNull("IBMJMXConnectorREST app did not report as ready", waitForStringInLogUsingMark("CWWKT0016I.*IBMJMXConnectorREST"));
 

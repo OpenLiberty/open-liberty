@@ -89,7 +89,7 @@ public class JaxrsJsonClientTestServlet extends FATServlet {
     }
 
     @Test
-    public void recieveInvalidJson() throws Exception {
+    public void receiveInvalidJson() throws Exception {
 
         Response response = client.target(URI_CONTEXT_ROOT)
                         .path("badsimpleresource/badresponse")

@@ -56,7 +56,7 @@ public class OpenAPIValidationTestOne {
 
         assertNotNull("Web application is not available at /openapi_validation/",
             server.waitForStringInLog("CWWKT0016I.*/openapi_validation/")); // wait for endpoint to become available
-        assertNotNull("CWWKF0011I.* not recieved on relationServer",
+        assertNotNull("CWWKF0011I.* not received on relationServer",
             server.waitForStringInLog("CWWKF0011I.*")); // wait for server is ready to run a smarter planet message
         assertNotNull("The application openapi_validation was processed and an OpenAPI document was produced.",
             server.waitForStringInLog("CWWKO1660I.*and an OpenAPI document was produced.")); // wait for application to

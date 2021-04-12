@@ -52,7 +52,7 @@ import com.ibm.ws.sip.stack.util.StackExternalizedPerformanceMgr;
  *
  * A declarative services component.
  * The component is responsible of PMI and overload detection.
- * Is injected when a first request recieved
+ * Is injected when a first request received
  * 
  */
 @Component(service = PerformanceMgr.class,
