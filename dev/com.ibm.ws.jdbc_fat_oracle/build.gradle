@@ -10,7 +10,7 @@
  *******************************************************************************/
 apply from: "../wlp-gradle/subprojects/maven-central-mirror.gradle"
 
-ext.oracleVersion = '19.3.0.0'
+ext.oracleVersion = '21.1.0.0'
 
 configurations {
   oracle	{transitive = false}
@@ -22,12 +22,12 @@ dependencies {
   requiredLibs 	"org.testcontainers:database-commons:${testcontainersVersion}",
                	"org.testcontainers:oracle-xe:${testcontainersVersion}",
                	"org.testcontainers:jdbc:${testcontainersVersion}"
-  oracle        "com.oracle.ojdbc:ojdbc8_g:${oracleVersion}"
-  oraclessl     "com.oracle.ojdbc:ojdbc8_g:${oracleVersion}",
-               	"com.oracle.ojdbc:oraclepki:${oracleVersion}",
-               	"com.oracle.ojdbc:osdt_core:${oracleVersion}",
-               	"com.oracle.ojdbc:osdt_cert:${oracleVersion}"				
-  ucp           "com.oracle.ojdbc:ucp:${oracleVersion}"
+  oracle        "com.oracle.database.jdbc.debug:ojdbc8_g:${oracleVersion}"
+  oraclessl     "com.oracle.database.jdbc.debug:ojdbc8_g:${oracleVersion}",
+               	"com.oracle.database.security:oraclepki:${oracleVersion}",
+               	"com.oracle.database.security:osdt_core:${oracleVersion}",
+               	"com.oracle.database.security:osdt_cert:${oracleVersion}"				
+  ucp           "com.oracle.database.jdbc:ucp:${oracleVersion}"
 }
 
 task copyAnonymousOracle(type: Copy) {
