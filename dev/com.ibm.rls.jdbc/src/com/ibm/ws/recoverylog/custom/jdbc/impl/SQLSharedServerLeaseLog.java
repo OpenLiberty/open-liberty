@@ -86,6 +86,11 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog {
      */
     private static final Object _CreateTableLock = new Object();
 
+    /**
+     * Flag to indicate whether the server is stopping.
+     */
+    volatile private boolean _serverStopping;
+
     public SQLSharedServerLeaseLog(CustomLogProperties logProperties) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "SQLSharedServerStatusLog", new Object[] { logProperties, this });
@@ -238,6 +243,13 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog {
         PreparedStatement updateStmt = null;
         ResultSet lockingRS = null;
 
+        // if the server is stopping, we should simply return
+        if (_serverStopping) {
+            if (tc.isEntryEnabled())
+                Tr.exit(tc, "updateServerLease", this);
+            return;
+        }
+
         if (tc.isDebugEnabled())
             Tr.debug(tc, "Work with recoveryIdentity - ", recoveryIdentity);
 
@@ -258,11 +270,17 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog {
                 conn = _theDS.getConnection();
             }
 
-            // If we were unable to get a connection, throw an exception
+            // If we were unable to get a connection, throw an exception, but not if we're stopping
             if (conn == null) {
-                if (tc.isEntryEnabled())
-                    Tr.exit(tc, "updateServerLease", "Null connection InternalLogException");
-                throw new InternalLogException("Failed to get JDBC Connection", null);
+                if (!_serverStopping) {
+                    if (tc.isEntryEnabled())
+                        Tr.exit(tc, "updateServerLease", "Null connection InternalLogException");
+                    throw new InternalLogException("Failed to get JDBC Connection", null);
+                } else {
+                    if (tc.isEntryEnabled())
+                        Tr.exit(tc, "updateServerLease", "null connection");
+                    return;
+                }
             }
 
             if (tc.isDebugEnabled())
@@ -291,30 +309,36 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog {
             } // eof Exception e block
 
             if (currentEx != null) {
-                if (isServerStartup) {
-                    // Perhaps we couldn't find the table ... so attempt to create it
-                    synchronized (_CreateTableLock) // Guard against trying to create a table from multiple threads
-                    {
-                        try {
-                            Tr.audit(tc, "WTRN0108I: Create Shared Lease Table");
-                            createLeaseTable(conn);
+                if (!_serverStopping) {
+                    if (isServerStartup) {
+                        // Perhaps we couldn't find the table ... so attempt to create it
+                        synchronized (_CreateTableLock) // Guard against trying to create a table from multiple threads
+                        {
+                            try {
+                                Tr.audit(tc, "WTRN0108I: Create Shared Lease Table");
+                                createLeaseTable(conn);
 
-                            conn.commit();
+                                conn.commit();
 
-                            newTable = true;
-                        } catch (Exception ine) {
-                            if (tc.isDebugEnabled())
-                                Tr.debug(tc, "Table Creation failed with exception: " + ine);
-                            // Set the current exception to ine
-                            throw ine;
-                        }
-                    } // eof synchronize block
-                } // eof isServerStartup
-                else {
-                    if (tc.isDebugEnabled())
-                        Tr.debug(tc, "Lease select update failed with exception: " + currentEx);
-                    // Set the current exception to ine
-                    throw currentEx;
+                                newTable = true;
+                            } catch (Exception ine) {
+                                if (tc.isDebugEnabled())
+                                    Tr.debug(tc, "Table Creation failed with exception: " + ine);
+                                // Set the current exception to ine
+                                throw ine;
+                            }
+                        } // eof synchronize block
+                    } // eof isServerStartup
+                    else {
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "Lease select update failed with exception: " + currentEx);
+                        // Set the current exception to ine
+                        throw currentEx;
+                    }
+                } else { // server is stopping report but exit without throwing exception
+                    if (tc.isEntryEnabled())
+                        Tr.exit(tc, "updateServerLease", "Lease select update failed with exception: " + currentEx);
+                    return;
                 }
             }
 
@@ -380,9 +404,16 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog {
 
             // Either a new table or we couldn't find the row for our server. Insert it.
             if (needInsert) {
-                // Insert a new row into the lease table
-                insertNewLease(recoveryIdentity, recoveryGroup, conn);
+                if (!_serverStopping) {
+                    // Insert a new row into the lease table
+                    insertNewLease(recoveryIdentity, recoveryGroup, conn);
+                } else { // server is stopping exit without insert
+                    if (tc.isEntryEnabled())
+                        Tr.exit(tc, "updateServerLease", "skip insert server is stopping");
+                    return;
+                }
             }
+
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "COMMIT the change");
             conn.commit();
@@ -621,7 +652,7 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog {
 //TODO:recovery. How do we know if original server has re-started and needs the lease to NOT be deleted? Or does it matter? ie if the lease
 //TODO:is deleted by a peer, could the original server not simply (re)insert its own row?
     @Override
-    public void deleteServerLease(String recoveryIdentity) throws Exception {
+    public synchronized void deleteServerLease(String recoveryIdentity) throws Exception {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "deleteServerLease", new java.lang.Object[] { recoveryIdentity, this });
 
@@ -873,4 +904,17 @@ public class SQLSharedServerLeaseLog implements SharedServerLeaseLog {
         _leaseTimeout = leaseTimeout;
     }
 
+    /**
+     * Signals to the Lease Log that the server is stopping.
+     */
+    @Override
+    public void serverStopping() {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "serverStopping ", new Object[] { this });
+
+        _serverStopping = true;
+
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "serverStopping", this);
+    }
 }
