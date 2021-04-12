@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,7 +21,10 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.security.AccessController;
 import java.security.Principal;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
@@ -719,9 +722,27 @@ public abstract class FlexibleBaseNoJavaEESecServlet extends HttpServlet {
     }
 
     private Subject fetchSubject() throws WSSecurityException {
-        // Get the CallerSubject
-        Subject callerSubject = WSSubject.getCallerSubject();
-        return callerSubject;
+        try {
+            return AccessController.doPrivileged(new PrivilegedExceptionAction<Subject>() {
+                @Override
+                public Subject run() throws Exception {
+                    // Get the CallerSubject
+                    return WSSubject.getCallerSubject();
+                }
+            });
+        } catch (PrivilegedActionException e) {
+            /*
+             * Re-throw the cause. It is either the only named exception from
+             * WSSubject.getCallerSubject(), WSSecurityException, or it is a
+             * RuntimeException.
+             */
+            Exception cause = e.getException();
+            if (cause instanceof WSSecurityException) {
+                throw (WSSecurityException) cause;
+            } else {
+                throw (RuntimeException) cause;
+            }
+        }
     }
 
     /**
@@ -731,7 +752,7 @@ public abstract class FlexibleBaseNoJavaEESecServlet extends HttpServlet {
      * logic is done, a flush() may get called and lock out changes to the
      * response.
      *
-     * @param sb Running StringBuffer
+     * @param sb  Running StringBuffer
      * @param msg Message to write
      */
     protected void writeLine(StringBuffer sb, String msg) {
