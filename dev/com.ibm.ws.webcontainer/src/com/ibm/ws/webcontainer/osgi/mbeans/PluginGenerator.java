@@ -879,14 +879,7 @@ public class PluginGenerator {
                     FileUtils.forceDelete(pluginFile);
                 }
 
-                boolean result = outFile.asFile().renameTo(pluginFile);
-
-                //See if rename was unsuccessful. 
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    if(!result){
-                        Tr.debug(tc, "Rename to plugin-cfg.xml failed!");
-                    }
-                }
+                Files.move(outFile.asFile().toPath(), pluginFile.toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
 
                 // tell the user where the file is - quietly for implicit requests
                 String fullFilePath = pluginFile.getAbsolutePath();
