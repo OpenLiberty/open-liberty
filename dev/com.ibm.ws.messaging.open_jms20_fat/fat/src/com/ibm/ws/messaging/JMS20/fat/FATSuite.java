@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2020 IBM Corporation and others.
+ * Copyright (c) 2013, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -67,11 +67,7 @@ import componenttest.rules.repeater.RepeatTests;
 })
 
 public class FATSuite {
-    // Run only during the Jakarta repeat for now.  When
-    // the tests are removed from WS-CD-Open, the pre-jakarta
-    // repeat can be re-enabled in open-liberty.
-
     @ClassRule
-    public static RepeatTests repeater =
-        RepeatTests.with( new JakartaEE9Action() );
+    public static RepeatTests repeater = RepeatTests.withoutModification()
+                                                    .andWith(new JakartaEE9Action());      
 }

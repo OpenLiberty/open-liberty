@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013,2020 IBM Corporation and others.
+ * Copyright (c) 2013,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1028,38 +1028,29 @@ public class SharedSubscriptionWithMsgSelServlet extends HttpServlet {
         }
     }
 
-    public void testCreateSharedNonDurableConsumerWithMsgSelector_2Subscribers_TCP(
-                                                                                   HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public void testCreateSharedNonDurableConsumerWithMsgSelector_2Subscribers_TCP(HttpServletRequest request, HttpServletResponse response) 
+        throws Exception {
 
-        JMSContext jmsContext = jmsTCFTCP.createContext();
+        try (JMSContext jmsContext = jmsTCFTCP.createContext()) {
 
-        CompositeData[] obn1 = listSubscriptions("WebSphere:feature=wasJmsServer,type=Topic,name=NewTopic1");
+            CompositeData[] obn1 = listSubscriptions("WebSphere:feature=wasJmsServer,type=Topic,name=NewTopic1");
 
-        JMSConsumer jmsConsumer1 = jmsContext.createSharedConsumer(jmsTopic1, "TEST2", "Team = 'WAS'");
-        JMSProducer jmsProducer = jmsContext.createProducer();
+            JMSConsumer jmsConsumer1 = jmsContext.createSharedConsumer(jmsTopic1, "TEST2", "Team = 'WAS'");
+            JMSProducer jmsProducer = jmsContext.createProducer();
 
-        TextMessage msgOut = jmsContext.createTextMessage("testCreateSharedNonDurableConsumerWithMsgSelector_2Subscribers_TCP");
-        msgOut.setStringProperty("Team", "WAS");
-        jmsProducer.send(jmsTopic1, msgOut);
-        TextMessage msgIn = (TextMessage) jmsConsumer1.receive(30000);
+            TextMessage msgOut = jmsContext.createTextMessage("testCreateSharedNonDurableConsumerWithMsgSelector_2Subscribers_TCP");
+            msgOut.setStringProperty("Team", "WAS");
+            jmsProducer.send(jmsTopic1, msgOut);
+            TextMessage msgIn = (TextMessage) jmsConsumer1.receive(30000);
 
-        JMSConsumer jmsConsumer2 = jmsContext.createSharedConsumer(jmsTopic1, "TEST2", "Team = 'WAS'");
+            JMSConsumer jmsConsumer2 = jmsContext.createSharedConsumer(jmsTopic1, "TEST2", "Team = 'WAS'");
 
-        CompositeData[] obn2 = listSubscriptions("WebSphere:feature=wasJmsServer,type=Topic,name=NewTopic1");
+            CompositeData[] obn2 = listSubscriptions("WebSphere:feature=wasJmsServer,type=Topic,name=NewTopic1");
 
-        int added = Math.abs(obn2.length - obn1.length);
+            int added = Math.abs(obn2.length - obn1.length);
 
-        boolean testFailed = false;
-        if (added != 1) {
-            testFailed = true;
-        }
-
-        jmsConsumer1.close();
-        jmsConsumer2.close();
-        jmsContext.close();
-
-        if (testFailed) {
-            throw new Exception("testCreateSharedNonDurableConsumerWithMsgSelector_2Subscribers_TCP failed");
+            if (added != 1)
+                throw new Exception("testCreateSharedNonDurableConsumerWithMsgSelector_2Subscribers_TCP failed obn1="+obn1+" obn2="+obn2);
         }
     }
 
@@ -1290,8 +1281,8 @@ public class SharedSubscriptionWithMsgSelServlet extends HttpServlet {
         }
     }
 
-    public void testBasicMDBTopic(
-                                  HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public void testBasicMDBTopic(HttpServletRequest request, HttpServletResponse response) 
+        throws Exception {
 
         TopicConnectionFactory fatTCF = (TopicConnectionFactory) new InitialContext().lookup("java:comp/env/jms/FAT_TCF");
         Topic fatTopic = (Topic) new InitialContext().lookup("java:comp/env/jms/FAT_TOPIC");
@@ -1303,13 +1294,11 @@ public class SharedSubscriptionWithMsgSelServlet extends HttpServlet {
             jmsPublisher.send(fatTopic, "testBasicMDBTopic:" + msgNo);
         }
 
-        Thread.sleep(1000);
-
         jmsContext.close();
     }
 
-    public void testBasicMDBTopic_TCP(
-                                      HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public void testBasicMDBTopic_TCP(HttpServletRequest request, HttpServletResponse response) 
+        throws Exception {
 
         TopicConnectionFactory fatTCF = (TopicConnectionFactory) new InitialContext().lookup("java:comp/env/jms/FAT_COMMS_TCF");
 
@@ -1321,8 +1310,6 @@ public class SharedSubscriptionWithMsgSelServlet extends HttpServlet {
         for (int msgNo = 0; msgNo < msgs; msgNo++) {
             jmsPublisher.send(fatTopic, "testBasicMDBTopic_TCP:" + msgNo);
         }
-
-        Thread.sleep(1000);
 
         jmsContext.close();
     }
