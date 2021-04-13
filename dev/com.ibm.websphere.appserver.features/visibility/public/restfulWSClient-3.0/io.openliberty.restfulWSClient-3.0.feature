@@ -9,15 +9,7 @@ IBM-API-Package: jakarta.ws.rs; type="spec", \
  jakarta.ws.rs.ext; type="spec", \
  jakarta.ws.rs.sse; type="spec", \
  com.ibm.websphere.jaxrs20.multipart; type="ibm-api", \
- com.ibm.websphere.jaxrs.providers.json4j; type="ibm-api", \
- org.jboss.resteasy.annotations; type="internal", \
- org.jboss.resteasy.client.jaxrs; type="internal", \
- org.jboss.resteasy.client.jaxrs.internal; type="internal", \
- org.jboss.resteasy.plugins.providers.sse.client; type="internal", \
- org.jboss.resteasy.plugins.providers.sse; type="internal", \
- org.jboss.resteasy.plugins.providers; type="internal", \
- org.jboss.resteasy.spi;type="internal", \
- org.reactivestreams;type="internal"
+ com.ibm.websphere.jaxrs.providers.json4j; type="ibm-api"
 IBM-SPI-Package: com.ibm.wsspi.webservices.handler
 IBM-App-ForceRestart: uninstall, \
  install
