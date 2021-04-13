@@ -10,12 +10,13 @@
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/rejar.props
 bVersion=1.0
-cxfVersion=3.4.1
+cxfVersion=3.4.3
 
 Bundle-SymbolicName: com.ibm.ws.org.apache.cxf.cxf.rt.frontend.simple.3.2
 
 
 Import-Package: \
+ org.apache.cxf.binding.soap.interceptor, \
  !java.*,\
  !com.ctc.wstx.*,\
  !org.codehaus.stax2.*,\
