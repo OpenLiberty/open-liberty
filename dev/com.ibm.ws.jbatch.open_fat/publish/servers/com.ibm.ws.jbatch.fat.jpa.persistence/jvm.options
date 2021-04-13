@@ -1,0 +1,1 @@
+-Xdump:system+java+snap:events=throw+systhrow,filter=java/lang/NoClassDefFoundError,msg_filter=com.ibm.ws.javaee.ddmodel.web.common.WebAppType,request=exclusive+prepwalk+serial+preempt
