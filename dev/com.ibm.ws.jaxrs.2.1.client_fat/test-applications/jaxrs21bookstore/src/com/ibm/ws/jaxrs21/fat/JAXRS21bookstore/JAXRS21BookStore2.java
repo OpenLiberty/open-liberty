@@ -20,6 +20,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
+import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.Response;
 
 /**
@@ -44,6 +45,7 @@ public class JAXRS21BookStore2 {
     @GET
     @Path("/rxget2")
     public void getasyncBookObject(@Suspended AsyncResponse async) {
+        System.out.println("JAXRS21BookStore2.getasyncBookObject ");
         async.resume(new JAXRS21Book("Good book", 100));
     }
 
@@ -56,8 +58,9 @@ public class JAXRS21BookStore2 {
     @GET
     @Path("/rxget3")
     public void getasyncBookList(@Suspended AsyncResponse async) {
-        async.resume(books);
-
+        GenericEntity<List<JAXRS21Book>> genericEntity = (new GenericEntity<List<JAXRS21Book>>(books){
+        });
+        async.resume(genericEntity);
     }
 
     @POST
@@ -78,7 +81,9 @@ public class JAXRS21BookStore2 {
     @Path("/rxpost3")
     public void postasyncBookList(@Suspended AsyncResponse async, JAXRS21Book newBook) {
         books.add(newBook);
-        async.resume(books);
+        GenericEntity<List<JAXRS21Book>> genericEntity = (new GenericEntity<List<JAXRS21Book>>(books){
+        });
+        async.resume(genericEntity);
     }
 
     @GET

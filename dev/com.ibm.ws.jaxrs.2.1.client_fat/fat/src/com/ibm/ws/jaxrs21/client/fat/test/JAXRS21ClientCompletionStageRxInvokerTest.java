@@ -25,7 +25,6 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
@@ -104,9 +103,6 @@ public class JAXRS21ClientCompletionStageRxInvokerTest extends JAXRS21AbstractTe
      */
 
     @Test
-    @SkipForRepeat("EE9_FEATURES") // Continue to skip seeing E handleFailure RESTEASY002005: Failed executing GET /JAXRS21bookstore2/rxget3
-//    org.jboss.resteasy.core.NoMessageBodyWriterFoundFailure: Could not find MessageBodyWriter for response object of type: java.util.ArrayList of media type: application/xml;charset=UTF-8;resteasy-server-has-produces=true
-// may have to convert the ArrayList to a byte[]
     public void testCompletionStageRxInvoker_get3WithGenericType() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
         this.runTestOnServer(completionStageRxInvokerTarget, "testCompletionStageRxInvoker_get3WithGenericType", p, "true");
@@ -167,7 +163,6 @@ public class JAXRS21ClientCompletionStageRxInvokerTest extends JAXRS21AbstractTe
      */
 
     @Test
-    @SkipForRepeat("EE9_FEATURES") // currently broken due to multiple issues
     public void testCompletionStageRxInvoker_post3WithGenericType() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
         this.runTestOnServer(completionStageRxInvokerTarget, "testCompletionStageRxInvoker_post3WithGenericType", p, "Test book3");
