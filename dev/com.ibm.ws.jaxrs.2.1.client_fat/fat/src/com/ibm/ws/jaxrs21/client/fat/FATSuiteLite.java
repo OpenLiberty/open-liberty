@@ -20,6 +20,7 @@ import com.ibm.ws.jaxrs21.client.fat.test.JAXRS21ClientCallbackTest;
 import com.ibm.ws.jaxrs21.client.fat.test.JAXRS21ClientCompletionStageRxInvokerTest;
 import com.ibm.ws.jaxrs21.client.fat.test.JAXRS21ClientJerseyRxInvokerTest;
 import com.ibm.ws.jaxrs21.client.fat.test.JAXRS21ClientLTPATest;
+//import com.ibm.ws.jaxrs21.client.fat.test.JAXRS21ClientRestEasyRxInvokerTest;
 import com.ibm.ws.jaxrs21.client.fat.test.JAXRS21ClientSSLProxyAuthTest;
 import com.ibm.ws.jaxrs21.client.fat.test.JAXRS21ClientSSLTest;
 import com.ibm.ws.jaxrs21.client.fat.test.JAXRS21ComplexClientTest;
@@ -47,6 +48,7 @@ import componenttest.rules.repeater.RepeatTests;
                 JAXRS21ClientLTPATest.class,
                 JAXRS21ClientJerseyRxInvokerTest.class,
                 JAXRS21ClientCXFRxInvokerTest.class,
+//                JAXRS21ClientRestEasyRxInvokerTest.class,
                 JAXRS21ClientCompletionStageRxInvokerTest.class,
                 JAXRS21ReactiveSampleTest.class })
 public class FATSuiteLite {
