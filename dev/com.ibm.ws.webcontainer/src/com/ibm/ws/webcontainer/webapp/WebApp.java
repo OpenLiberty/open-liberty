@@ -4101,8 +4101,8 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
         // PK82794
         if (WCCustomProperties.SUPPRESS_LAST_ZERO_BYTE_PACKAGE) {
            // reqState.setAttribute("com.ibm.ws.webcontainer.suppresslastzerobytepackage", "true");
-            if (req instanceof SRTServletRequest) {
-                SRTServletRequest srtReq = (SRTServletRequest) req;
+            if (req instanceof IExtendedRequest) {
+                IExtendedRequest srtReq = (IExtendedRequest) req;
                 IRequestExtended iReq = (IRequestExtended)srtReq.getIRequest();
                 if (iReq != null) {
                     HttpInboundConnection httpInboundConnection = iReq.getHttpInboundConnection();
