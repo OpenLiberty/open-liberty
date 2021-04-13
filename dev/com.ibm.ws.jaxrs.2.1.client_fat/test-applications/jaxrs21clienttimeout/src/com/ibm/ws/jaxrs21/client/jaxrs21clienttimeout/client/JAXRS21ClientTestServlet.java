@@ -104,9 +104,13 @@ public class JAXRS21ClientTestServlet extends HttpServlet {
             try {
                 res = c.target("http://" + serverIP + ":" + serverPort + "/" + moduleName + "/JAXRS21TimeoutClientTest/BasicResource").path("echo").path(param.get("param")).request()
                         .get(String.class);
-            } catch (Exception e) {
-                e.printStackTrace();
-                res = "[Timeout Error]:" + e.toString();
+            } catch (Exception expected) {
+                expected.printStackTrace();
+                if (expected.toString().contains("SocketTimeoutException")) {
+                    res = "[Timeout Error]:" + "SocketTimeoutException";
+                } else {
+                    res = "[Timeout Error]:" + expected.toString();
+                }
             }
         } catch (NumberFormatException e) {
             e.printStackTrace();

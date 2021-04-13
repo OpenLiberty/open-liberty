@@ -10,18 +10,22 @@
  *******************************************************************************/
 package io.openliberty.restfulWS30.client.fat;
 
+import static componenttest.rules.repeater.EERepeatTests.EEVersion.EE9;
+
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import io.openliberty.restfulWS30.client.fat.test.PathParamTest;
 
+
 @RunWith(Suite.class)
 @SuiteClasses({
                 ClientFeatureTest.class,
                 SslTest.class,
-                PathParamTest.class
+                PathParamTest.class                
 })
 public class FATSuite {
-
+    
 }
