@@ -10,4 +10,4 @@
  *******************************************************************************/
 apply from: '../com.ibm.ws.security.saml.sso_fat.common/SAMLCommon.gradle'
 
-addRequiredLibraries.dependsOn copyApache, copyResolver, copyShibbolethServer, copySamlFat_sp_server, copySamlFat_second_sp_server
+addRequiredLibraries.dependsOn copyApache, copyShibbolethIdpConfig, copyResolver, copyShibbolethServer, copySamlFat_sp_server, copySamlFat_second_sp_server

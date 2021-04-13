@@ -83,22 +83,16 @@ task copyShibbolethServer (dependsOn: [':com.ibm.ws.security.fat.common:assemble
 //    from new File(project(':com.ibm.ws.security.saml.sso_fat.common').projectDir, 'publish/files/policyFiles')
 //    into new File(autoFvtDir, "publish/servers/${serverName}/policyFiles")
 //  }
-    // copyShibbolethTestAppFilesToServer
-    if (JavaVersion.current() < JavaVersion.VERSION_11) {
-	    println 'in less than Java 11'
-   	 	copy {
-	 	  from new File(project(':com.ibm.ws.security.saml.sso_fat.common').buildDir, 'test-application/idp-war-3.3.1.war')
- 	      into new File(autoFvtDir, "publish/servers/${serverName}/test-apps")
-	      rename 'idp-war-3.3.1.war', 'idp.war'
-	    }
-    } else {
-		println 'in Java 11 or greater'
-	    copy {
-	      from new File(project(':com.ibm.ws.security.saml.sso_fat.common').buildDir, 'test-application/idp-war-4.1.0.war')
-	      into new File(autoFvtDir, "publish/servers/${serverName}/test-apps")
-	      rename 'idp-war-4.1.0.war', 'idp.war'
-	    }
-    }    
+    // copyShibbolethTestAppFilesToServer  (copy both 3.3.1 and 4.1.0 and let the tests decide at runtime which to use)
+   	copy {
+	  from new File(project(':com.ibm.ws.security.saml.sso_fat.common').buildDir, 'test-application/idp-war-3.3.1.war')
+ 	  into new File(autoFvtDir, "publish/servers/${serverName}/test-apps")
+	}
+	copy {
+	  from new File(project(':com.ibm.ws.security.saml.sso_fat.common').buildDir, 'test-application/idp-war-4.1.0.war')
+	  into new File(autoFvtDir, "publish/servers/${serverName}/test-apps")
+	}
+ 
     // copySecurityKeysToServer
     copy {
       from new File(project(':com.ibm.ws.security.saml.sso_fat.common').projectDir, 'securitykeys')
@@ -124,7 +118,7 @@ task copyShibKeys () {
    }
 }
 
-task copyApache (dependsOn: [':com.ibm.ws.security.fat.common:assemble', ':com.ibm.ws.security.saml.sso_fat.common:assemble', 'copyShibKeys']) {
+task copyApache () {
   doLast {
     /*
      * Copy the local ApacheDS LDAP instances. 
@@ -134,26 +128,18 @@ task copyApache (dependsOn: [':com.ibm.ws.security.fat.common:assemble', ':com.i
       into autoFvtDir
       include 'apacheds-2.0.0-M15/**'
     }
-    /*
-     *  Copy the appropriate version of the Shibboleth config tree - when running on Java 11 and below, we have to use
-     *    an older version of Shibboleth (we're using 3.3.1) For Java 15 and above, we 'have' to use version 4.1.0, but that version
-     *    will work on anything above Java 10
-     */
-    if (JavaVersion.current() < JavaVersion.VERSION_11) {
-	    println 'in less than Java 11'
-    	copy {
-      		from new File(project(':com.ibm.ws.security.saml.sso_fat.common').buildDir, '3.3.1')
-      		into autoFvtDir
-      		include 'shibboleth-idp/**'
-    	}
-    } else {
-		println 'in Java 11 or greater'
-	    copy {
-      		from new File(project(':com.ibm.ws.security.saml.sso_fat.common').buildDir, '4.1.0')
-      		into autoFvtDir
-      		include 'shibboleth-idp/**'
-	    }
-    }       	
+  }  
+}
+
+task copyShibbolethIdpConfig (dependsOn: [':com.ibm.ws.security.fat.common:assemble', ':com.ibm.ws.security.saml.sso_fat.common:assemble', 'copyShibKeys']) {
+
+  doLast {
+
+    copy {
+      from project(':com.ibm.ws.security.saml.sso_fat.common').buildDir
+      into autoFvtDir
+      include 'shibboleth-idp/**'
+    }
   }
 }
 

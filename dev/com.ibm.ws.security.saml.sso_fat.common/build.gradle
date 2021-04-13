@@ -48,7 +48,6 @@ configurations {
 dependencies {
     /*
      * These dependencies will be used for the shibboleth IDP server.
-                  'net.shibboleth.idp:idp-war:3.3.1',
      */
     shibbolethIdp331 'ch.qos.logback:logback-classic:1.2.3',
                   'net.shibboleth.idp:idp-war:3.3.1',
@@ -67,9 +66,7 @@ dependencies {
                   'net.shibboleth.idp.plugin.scripting:idp-plugin-rhino-impl:1.0.0',
                   'net.shibboleth.idp.plugin.scripting:idp-plugin-scripting-api:1.0.0',
                   'org.mozilla:rhino:1.7.13'
-                  
-//                  'net.shibboleth.idp:idp-war:4.1.0',
-                   
+                                     
     /*
      * These JARs will be copied into $buildDir/collectedJars
      * for eash of retrieval by other projects.
@@ -99,8 +96,8 @@ def downloadDir= "${projectDir}/build/downloads"
 /* 
  * where we'll stash fixes needed to the idp.war file
  */
-def fixed401Files = "${projectDir}/4.0.1/shibboleth-idp/fixedFiles"
-def fixed410Files = "${projectDir}/4.1.0/shibboleth-idp/fixedFiles"
+def fixed401Files = "${projectDir}/shibboleth-idp/4.0.1/fixedFiles"
+def fixed410Files = "${projectDir}/shibboleth-idp/4.1.0/fixedFiles"
 
 
 /******************************************************************
@@ -238,14 +235,6 @@ task copy_41x_IDP {
   }  
 }
 
-//   copy {
-//    from new File(projectDir, 'shibboleth-idp/war/idp-war-4.1.0.war')
-//    into downloadDir
-//  }  
-//    from new File(projectDir, 'shibboleth-idp/war/idp-war-4.1.0.war')
-//    rename 'idp-war-.*.war', 'idp.war'
-
-
 /******************************************************************
  ******************************************************************
  **
@@ -310,7 +299,7 @@ task updateIdp_4_1_x_WAR(type: Zip, dependsOn: copy_41x_IDP) {
     include 'jcl-over-slf4j-1.7.30.jar', 'logback-classic-*.jar', 'janino-3.1.3.jar', 'commons-compiler-3.1.3.jar'
     into 'WEB-INF/lib'
   }
-  
+  // jars needed for javascript support removal from Java
   from (downloadDir) {
     include 'rhino-1.7.13.jar', 'idp-plugin-scripting-api-1.0.0.jar', 'idp-plugin-rhino-impl-1.0.0.jar'
     into 'WEB-INF/lib'
@@ -345,21 +334,11 @@ assemble.doLast {
 
 
   /*
-   * Copy the Shibboleth configuration to the build directory and
-   * then copy the Shibboleth IDP war to the same directory.
+   * Copy the Shibboleth configuration to the build directory
    */
   copy {
-    from new File(projectDir, '3.3.1/shibboleth-idp')
-    into new File(buildDir, '3.3.1/shibboleth-idp')
+  	from new File(projectDir, 'shibboleth-idp')
+    into new File(buildDir, 'shibboleth-idp')
   }
-  copy {
-    from new File(projectDir, '4.1.0/shibboleth-idp')
-    into new File(buildDir, '4.1.0/shibboleth-idp')
-  }
-  // chc - do we need this?
-//  copy {
-//    from appBuildDir
-//    into new File(buildDir, 'shibboleth-idp/war')
-//    include 'idp*.war'
-//  }
+
 }
