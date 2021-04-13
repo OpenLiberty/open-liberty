@@ -1104,7 +1104,7 @@
     <dependency>
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-bindings-soap</artifactId>
-      <version>3.4.1</version>
+      <version>3.4.3</version>
     </dependency>
     <dependency>
       <groupId>org.apache.cxf</groupId>
@@ -1114,12 +1114,12 @@
     <dependency>
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-bindings-xml</artifactId>
-      <version>3.4.1</version>
+      <version>3.4.3</version>
     </dependency>
     <dependency>
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-databinding-jaxb</artifactId>
-      <version>3.4.1</version>
+      <version>3.4.3</version>
     </dependency>
     <dependency>
       <groupId>org.apache.cxf</groupId>
@@ -1134,12 +1134,12 @@
     <dependency>
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-frontend-jaxws</artifactId>
-      <version>3.4.1</version>
+      <version>3.4.3</version>
     </dependency>
     <dependency>
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-frontend-simple</artifactId>
-      <version>3.4.1</version>
+      <version>3.4.3</version>
     </dependency>
     <dependency>
       <groupId>org.apache.cxf</groupId>
@@ -1149,7 +1149,7 @@
     <dependency>
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-management</artifactId>
-      <version>3.4.1</version>
+      <version>3.4.3</version>
     </dependency>
     <dependency>
       <groupId>org.apache.cxf</groupId>
@@ -1189,7 +1189,7 @@
     <dependency>
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-transports-http-hc</artifactId>
-      <version>3.4.1</version>
+      <version>3.4.3</version>
     </dependency>
     <dependency>
       <groupId>org.apache.cxf</groupId>
@@ -1209,7 +1209,7 @@
     <dependency>
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-ws-addr</artifactId>
-      <version>3.4.1</version>
+      <version>3.4.3</version>
     </dependency>
     <dependency>
       <groupId>org.apache.cxf</groupId>
@@ -1219,7 +1219,7 @@
     <dependency>
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-ws-policy</artifactId>
-      <version>3.4.1</version>
+      <version>3.4.3</version>
     </dependency>
     <dependency>
       <groupId>org.apache.cxf</groupId>
@@ -1234,7 +1234,7 @@
     <dependency>
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-wsdl</artifactId>
-      <version>3.4.1</version>
+      <version>3.4.3</version>
     </dependency>
     <dependency>
       <groupId>org.apache.cxf</groupId>
@@ -1244,12 +1244,12 @@
     <dependency>
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-tools-common</artifactId>
-      <version>3.4.1</version>
+      <version>3.4.3</version>
     </dependency>
     <dependency>
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-tools-validator</artifactId>
-      <version>3.4.1</version>
+      <version>3.4.3</version>
     </dependency>
     <dependency>
       <groupId>org.apache.cxf</groupId>

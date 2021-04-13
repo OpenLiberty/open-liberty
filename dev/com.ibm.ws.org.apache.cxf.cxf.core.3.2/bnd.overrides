@@ -47,6 +47,7 @@ Export-Package: \
   org.apache.cxf.common.jaxb;version=${exportVer},\
   org.apache.cxf.common.logging;version=${exportVer},\
   org.apache.cxf.common.security;version=${exportVer},\
+  org.apache.cxf.common.spi;version=${exportVer},\
   org.apache.cxf.common.util;version=${exportVer},\
   org.apache.cxf.common.xmlschema;version=${exportVer},\
   org.apache.cxf.configuration;version=${exportVer},\
