@@ -37,6 +37,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -79,6 +80,7 @@ import com.ibm.ws.webcontainer.osgi.collaborator.CollaboratorHelperImpl;
 import com.ibm.ws.webcontainer.servlet.RequestUtils;
 import com.ibm.ws.webcontainer.session.SessionManagerConfigBase;
 import com.ibm.ws.webcontainer.util.EmptyEnumeration;
+import com.ibm.ws.webcontainer.util.Enumerator;
 import com.ibm.ws.webcontainer.util.UnsynchronizedStack;
 import com.ibm.ws.webcontainer.webapp.WebApp;
 import com.ibm.ws.webcontainer.webapp.WebAppConfiguration;
@@ -1700,7 +1702,7 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
         if (WCCustomProperties.CHECK_REQUEST_OBJECT_IN_USE){
             checkRequestObjectInUse();
         }
-        Hashtable aParam = new Hashtable(3);
+        HashMap aParam = new HashMap(3);
         aParam.put(name, values);
         mergeQueryParams(aParam);
     }
@@ -1852,7 +1854,7 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
     // PK57679 End
 
 
-    public void setRawParameters(Hashtable params)
+    public void setRawParameters(HashMap params)
     {
         if (WCCustomProperties.CHECK_REQUEST_OBJECT_IN_USE){
             checkRequestObjectInUse();
@@ -1864,7 +1866,7 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
         SRTServletRequestThreadData.getInstance().setParameters(params);
     }
 
-    public Hashtable getRawParameters()
+    public HashMap getRawParameters()
     {
         if (WCCustomProperties.CHECK_REQUEST_OBJECT_IN_USE){
             checkRequestObjectInUse();
@@ -1874,7 +1876,7 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
             logger.logp(Level.FINE, CLASS_NAME,"getRawParameters", "");
         }
         parseParameters();
-        return (Hashtable) SRTServletRequestThreadData.getInstance().getParameters();
+        return (HashMap) SRTServletRequestThreadData.getInstance().getParameters();
     }
 
     /**
@@ -1912,7 +1914,7 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
     }
 
     /**
-     * Returns an enumeration of strings representing the parameter names
+     * Returns an Set of strings representing the parameter names
      * for this request.
      */
     public Enumeration getParameterNames()
@@ -1925,7 +1927,8 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
             checkRequestObjectInUse();
         }
         parseParameters();
-        return ((Hashtable) SRTServletRequestThreadData.getInstance().getParameters()).keys();
+        return (new Enumerator<String>(SRTServletRequestThreadData.getInstance().getParameters().keySet()));
+       // return ( SRTServletRequestThreadData.getInstance().getParameters()).keys();
     }
 
     /**
@@ -2316,7 +2319,7 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
 
         try
         {
-            reqData.setParameters(new Hashtable());
+            reqData.setParameters(new HashMap());
             String ct = getContentType();
 
             if (ct != null)
@@ -2506,12 +2509,12 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
         // end pq70055: part 2
         if (reqData.getParameters() == null)
         {
-            reqData.setParameters(new Hashtable());
+            reqData.setParameters(new HashMap());
         }
     }
 
     // Added for servlet 3.1 support - method is overidden by SRTServletRequest31 
-    protected Hashtable parsePostData() throws IOException {
+    protected HashMap parsePostData() throws IOException {
         if( getContentLength() > 0){
             if (TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE))  //306998.15
                 logger.logp(Level.FINE, CLASS_NAME,"parsePostData", "parsing post data based upon content length");
@@ -2532,7 +2535,7 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
             checkRequestObjectInUse();
         }
         SRTServletRequestThreadData reqData = SRTServletRequestThreadData.getInstance();
-        Hashtable tmpQueryParams = null;
+        HashMap tmpQueryParams = null;
         LinkedList queryStringList = SRTServletRequestThreadData.getInstance().getQueryStringList();
         if (queryStringList ==null || queryStringList.isEmpty()){ //258025
             String queryString = getQueryString();
@@ -2557,19 +2560,19 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
                 if (TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {  //306998.15
                     logger.logp(Level.FINE, CLASS_NAME,"parseQueryStringList", "queryString --> " + queryString);
                 }
-                if (qsListItem._qsHashtable != null)
-                    mergeQueryParams(qsListItem._qsHashtable);
+                if (qsListItem._qsHashmap != null)
+                    mergeQueryParams(qsListItem._qsHashmap);
                 else if (queryString != null && ((queryString.indexOf('=') != -1) || WCCustomProperties.ALLOW_QUERY_PARAM_WITH_NO_EQUAL))//PM35450
                 {
                     if (reqData.getParameters() == null || reqData.getParameters().isEmpty())// 258025
                     {
-                        qsListItem._qsHashtable = RequestUtils.parseQueryString(queryString, getReaderEncoding());
-                        reqData.setParameters(qsListItem._qsHashtable);
+                        qsListItem._qsHashmap = RequestUtils.parseQueryString(queryString, getReaderEncoding());
+                        reqData.setParameters(qsListItem._qsHashmap);
                         qsListItem._qs = null;
                     }
                     else{
                         tmpQueryParams = RequestUtils.parseQueryString(queryString, getReaderEncoding());
-                        qsListItem._qsHashtable = tmpQueryParams;
+                        qsListItem._qsHashmap = tmpQueryParams;
                         qsListItem._qs = null;
                         mergeQueryParams(tmpQueryParams);
                     }
@@ -2579,7 +2582,7 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
     }
 
     // End 256836
-    private void mergeQueryParams(Hashtable tmpQueryParams)
+    private void mergeQueryParams(HashMap tmpQueryParams)
     {
         if (TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {  //306998.15
             logger.logp(Level.FINE, CLASS_NAME,"mergeQueryParams", "");
@@ -2595,10 +2598,10 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
                 logger.logp(Level.FINE, CLASS_NAME,"mergeQueryParams", "tmpQueryParams.size() " + tmpQueryParams.size());
                 logger.logp(Level.FINE, CLASS_NAME,"mergeQueryParams", "tmpQueryParams " + tmpQueryParams);
             }
-            Enumeration enumeration = tmpQueryParams.keys();
-            while (enumeration.hasMoreElements())
+            Iterator it = tmpQueryParams.keySet().iterator();
+            while (it.hasNext())
             {
-                Object key = enumeration.nextElement();
+                Object key = it.next();
                 // Check for QueryString parms with the same name
                 // pre-append to postdata values if necessary
                 if (reqData.getParameters() != null && reqData.getParameters().containsKey(key))
@@ -2628,7 +2631,7 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
                 else
                 {
                     if (reqData.getParameters() == null) // PK14900
-                        reqData.setParameters(new Hashtable());// PK14900
+                        reqData.setParameters(new HashMap());// PK14900
                     reqData.getParameters().put(key, tmpQueryParams.get(key));
                     if (TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE))  //306998.15
                     {
@@ -2640,7 +2643,7 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
     }
 
     // Begin 256836
-    private void removeQueryParams(Hashtable tmpQueryParams)
+    private void removeQueryParams(HashMap tmpQueryParams)
     {
         if (TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {  //306998.15
             logger.logp(Level.FINE, CLASS_NAME,"removeQueryParams", "");
@@ -2656,10 +2659,10 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
                 logger.logp(Level.FINE, CLASS_NAME,"removeQueryParams", "tmpQueryParams.size() " + tmpQueryParams.size());
                 logger.logp(Level.FINE, CLASS_NAME,"removeQueryParams", "tmpQueryParams " + tmpQueryParams);
             }
-            Enumeration enumeration = tmpQueryParams.keys();
-            while (enumeration.hasMoreElements())
+            Iterator it = tmpQueryParams.keySet().iterator();
+            while (it.hasNext())
             {
-                Object key = enumeration.nextElement();
+                Object key = it.next();
                 // Check for QueryString parms with the same name
                 // pre-append to postdata values if necessary
                 if (reqData.getParameters().containsKey(key))
@@ -2862,7 +2865,7 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
             reqData.pushParameterStack(null);
         } else
         {
-            _paramStack.push(((Hashtable) reqData.getParameters()).clone());
+            _paramStack.push(((HashMap) reqData.getParameters()).clone());
         }
         if (TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE) && reqData.getParameters() !=null)  //306998.15
         {
@@ -2885,7 +2888,7 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
 
         try
         {
-            SRTServletRequestThreadData.getInstance().setParameters((Hashtable) _paramStack.pop());
+            SRTServletRequestThreadData.getInstance().setParameters((HashMap) _paramStack.pop());
         } catch (java.util.EmptyStackException empty)
         {
             if (TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {  //306998.15
@@ -2950,7 +2953,7 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
             if (reqData.getParameters()==null&&_tmpParameters!=null) // Parameters above current inluce/forward were never parsed
             {
                 reqData.setParameters(_tmpParameters);
-                Hashtable tmpQueryParams = ((QSListItem) queryStringList.getLast())._qsHashtable;
+                HashMap tmpQueryParams = ((QSListItem) queryStringList.getLast())._qsHashmap;
                 if (tmpQueryParams == null)
                 {
                     tmpQueryParams = RequestUtils.parseQueryString(((QSListItem) queryStringList.getLast())._qs, getReaderEncoding(true));
@@ -3016,12 +3019,12 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
         // if _parameters is null, then the string will be parsed if needed
         if (reqData.getParameters() != null && additionalQueryString != null)
         {
-            Hashtable parameters = RequestUtils.parseQueryString(additionalQueryString, getReaderEncoding(true));
+            HashMap parameters = RequestUtils.parseQueryString(additionalQueryString, getReaderEncoding(true));
+
             // end 249841, 256836
             String[] valArray;
-            for (Enumeration e = parameters.keys(); e.hasMoreElements();)
+            for (String key : (Set<String>) parameters.keySet())
             {
-                String key = (String) e.nextElement();
                 String[] newVals = (String[]) parameters.get(key);
 
                 // Check to see if a parameter with the key already exists
@@ -3436,10 +3439,10 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
     class QSListItem
     {
         String _qs = null;
-        Hashtable _qsHashtable = null;
-        QSListItem(String qs, Hashtable qsHashtable){
+        HashMap _qsHashmap = null;
+        QSListItem(String qs, HashMap qsHashmap){
             _qs = qs;
-            _qsHashtable = qsHashtable;
+            _qsHashmap = qsHashmap;
         }
     }
 

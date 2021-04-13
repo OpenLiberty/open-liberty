@@ -17,6 +17,8 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.HashMap;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -30,6 +32,7 @@ import com.ibm.websphere.servlet.request.ServletInputStreamAdapter;
 import com.ibm.ws.webcontainer.servlet.RequestUtils;
 import com.ibm.wsspi.webcontainer.logging.LoggerFactory;
 import com.ibm.wsspi.webcontainer.WCCustomProperties; //PM35450
+import com.ibm.ws.webcontainer.util.Enumerator;
 
 /**
  *
@@ -53,7 +56,7 @@ protected static Logger logger = LoggerFactory.getInstance().getLogger("com.ibm.
     private HttpServletRequest _req;
     private ServletInputStream _in;
     private BufferedReader _reader;
-    private Hashtable _parameters = new Hashtable();
+    private HashMap _parameters = new HashMap();
     private Hashtable _headers = new Hashtable(); //@bkm
     
     private static TraceNLS nls = TraceNLS.getTraceNLS(ChainedRequest.class, "com.ibm.ws.webcontainer.resources.Messages");
@@ -172,7 +175,7 @@ protected static Logger logger = LoggerFactory.getInstance().getLogger("com.ibm.
         {
             parseParameters();
         }
-        return _parameters.keys();
+        return (new Enumerator<String>(_parameters.keySet()));
     }
 
     public String[] getParameterValues(String name)
@@ -214,12 +217,12 @@ protected static Logger logger = LoggerFactory.getInstance().getLogger("com.ibm.
             }
             if (_parameters == null)
             {
-                _parameters = new Hashtable();
+                _parameters = new HashMap();
             }
         }
     }
 
-    private Hashtable parsePostData(int len, ServletInputStream in)
+    private HashMap parsePostData(int len, ServletInputStream in)
     {
         int inputLen, offset;
         byte[] postedBytes = null;
@@ -250,7 +253,7 @@ protected static Logger logger = LoggerFactory.getInstance().getLogger("com.ibm.
         catch (IOException e)
         {
             com.ibm.wsspi.webcontainer.util.FFDCWrapper.processException(e, "com.ibm.websphere.servlet.filter.ChainedResponse.parsePostData", "326", this);
-            return new Hashtable();
+            return new HashMap();
         }
 
         // XXX we shouldn't assume that the only kind of POST body

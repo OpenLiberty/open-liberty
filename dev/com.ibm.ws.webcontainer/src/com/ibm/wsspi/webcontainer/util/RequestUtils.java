@@ -13,6 +13,7 @@ package com.ibm.wsspi.webcontainer.util;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.text.MessageFormat;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.logging.Level;
@@ -84,12 +85,12 @@ public class RequestUtils {
     *
     */
     @SuppressWarnings("rawtypes")
-    static public Hashtable parseQueryString(String s) {
+    static public HashMap parseQueryString(String s) {
         return parseQueryString(new StringQueryString(s), SHORT_ENGLISH);
     }
 
     @SuppressWarnings("rawtypes")
-    static public Hashtable parseQueryString(String s, String encoding) {
+    static public HashMap parseQueryString(String s, String encoding) {
         return parseQueryString(new StringQueryString(s), encoding);
     }
 
@@ -522,13 +523,13 @@ public class RequestUtils {
     }
 
     @SuppressWarnings("rawtypes")
-    static private Hashtable parseQueryString(QueryString qs, String encoding) {
+    static private HashMap parseQueryString(QueryString qs, String encoding) {
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) { //PK75617
             logger.entering(CLASS_NAME, "parseQueryString( QueryString , encoding --> [" + encoding + "])"); //PM35450.1
         } //PK75617
         int totalSize = 0; //PM53930
         int dupSize = 0; // 728397
-        Hashtable<String, String[]> ht = new Hashtable<>();
+        HashMap<String, String[]> ht = new HashMap<>();
         HashSet<Integer> key_hset = new HashSet<>(); // 728397
         // PK23256 begin
         boolean encoding_is_ShortEnglish = isShortEnglishEncoding(encoding);
@@ -628,7 +629,7 @@ public class RequestUtils {
     }
 
     @SuppressWarnings("rawtypes")
-    static public Hashtable parseQueryString(char[][] cha, String encoding) {
+    static public HashMap parseQueryString(char[][] cha, String encoding) {
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) { //PK75617
             logger.entering(CLASS_NAME, "parseQueryString( query , encoding --> [" + encoding + "])"); //PM35450.1
         }                                                                                            //PK75617
@@ -639,7 +640,7 @@ public class RequestUtils {
 
         // Call optimized version if there is only 1 char[]
         if (cha.length == 1) {
-            Hashtable returnValue = parseQueryString(new CharArrayQueryString(cha[0]), encoding);
+            HashMap returnValue = parseQueryString(new CharArrayQueryString(cha[0]), encoding);
             cha[0] = null;
             return returnValue;
         }

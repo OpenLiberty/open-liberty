@@ -12,7 +12,7 @@ package com.ibm.ws.webcontainer.util;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.Hashtable;
+import java.util.HashMap;
 
 import org.junit.Test;
 
@@ -43,7 +43,7 @@ public class RequestUtilsTest {
         }
     }
 
-    private void validateParams(Hashtable params, String[] expectedKeys, String[][] expectedValues) {
+    private void validateParams(HashMap params, String[] expectedKeys, String[][] expectedValues) {
         Assert.assertEquals(expectedKeys.length, params.size());
         for (int i = 0; i < expectedKeys.length; ++i) {
             String[] val = (String[]) params.get(expectedKeys[i]);
@@ -56,7 +56,7 @@ public class RequestUtilsTest {
     }
 
     private void testString(String queryString, String encoding, String[] keys, String[][] values) throws Exception {
-        Hashtable params = RequestUtils.parseQueryString(queryString, encoding);
+        HashMap params = RequestUtils.parseQueryString(queryString, encoding);
         validateParams(params, keys, values);
     }
     
@@ -82,7 +82,7 @@ public class RequestUtilsTest {
             optimizedCase[0][i] = queryString.charAt(i);
         }
 
-        Hashtable params = RequestUtils.parseQueryString(optimizedCase, encoding);
+        HashMap params = RequestUtils.parseQueryString(optimizedCase, encoding);
         validateParams(params, keys, values);
 
         Assert.assertNull(optimizedCase[0]);

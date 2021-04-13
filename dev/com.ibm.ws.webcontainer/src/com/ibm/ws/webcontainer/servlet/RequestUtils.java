@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.AccessController;
 import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.StringTokenizer;
 
@@ -280,7 +281,7 @@ public class RequestUtils extends com.ibm.wsspi.webcontainer.util.RequestUtils
     }
     
     @SuppressWarnings("rawtypes")
-    public static Hashtable parsePostData(int len, ServletInputStream in, String encoding, boolean multireadPropertyEnabled) /* 157338 add throws */ throws IOException // MultiRead
+    public static HashMap parsePostData(int len, ServletInputStream in, String encoding, boolean multireadPropertyEnabled) /* 157338 add throws */ throws IOException // MultiRead
     {    
         String postedBody = getPostBody(len, in, encoding);
 
@@ -294,7 +295,7 @@ public class RequestUtils extends com.ibm.wsspi.webcontainer.util.RequestUtils
     }
     
     @SuppressWarnings("rawtypes")
-    public static Hashtable parsePostDataLong(long len, ServletInputStream in, String encoding, boolean multireadPropertyEnabled) throws IOException // MultiRead
+    public static HashMap parsePostDataLong(long len, ServletInputStream in, String encoding, boolean multireadPropertyEnabled) throws IOException // MultiRead
     {
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE))
             logger.logp(Level.FINE,CLASS_NAME,"parsePostDataLong","len = " + len, ", encoding = " + encoding);
@@ -347,7 +348,7 @@ public class RequestUtils extends com.ibm.wsspi.webcontainer.util.RequestUtils
     
     // begin 231634    Support posts with query parms in chunked body    WAS.webcontainer    
     @SuppressWarnings("rawtypes")
-    public static Hashtable parsePostData(ServletInputStream in, String encoding, boolean multireadPropertyEnabled) /* 157338 add throws */ throws IOException
+    public static HashMap parsePostData(ServletInputStream in, String encoding, boolean multireadPropertyEnabled) /* 157338 add throws */ throws IOException
     {
         int inputLen;
         byte[] postedBytes = null;
