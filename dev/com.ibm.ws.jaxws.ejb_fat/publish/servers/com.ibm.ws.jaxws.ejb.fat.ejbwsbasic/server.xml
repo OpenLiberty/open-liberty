@@ -6,6 +6,9 @@
         <feature>ejbLite-3.2</feature>
     </featureManager>
 
+
+	<logging traceSpecification="com.ibm.ws.jaxws.*=all:org.apache.cxf.*=all" />
+	
     <include location="../fatTestPorts.xml"/>
     
   	<javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>

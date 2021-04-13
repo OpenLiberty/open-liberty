@@ -32,9 +32,11 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.ws.AsyncHandler;
+import javax.xml.ws.BindingProvider;
 import javax.xml.ws.Dispatch;
 import javax.xml.ws.Response;
 import javax.xml.ws.Service;
+import javax.xml.ws.soap.AddressingFeature;
 import javax.xml.ws.soap.SOAPBinding;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -76,7 +78,7 @@ public class EJBWSProviderTest {
     private static final QName PORT_NAME = new QName("http://ejbbasic.jaxws.ws.ibm.com/", "UserQueryPort");
 
     public static final String GET_USER_REQUEST_MESSAGE = "<?xml version=\"1.0\"?><S:Envelope xmlns:S=\"http://schemas.xmlsoap.org/soap/envelope/\">"
-                                                          + "<S:Body><p:getUser xmlns:p=\"http://ejbbasic.jaxws.ws.ibm.com/\">"
+                                                          + "<S:Body><p:getUser xmlns:p=\"http://ejbbasic.jaxws.ws.ibm.com/\" >"
                                                           + "<arg0>Arugal</arg0></p:getUser>"
                                                           + "</S:Body></S:Envelope>";
 
@@ -120,8 +122,34 @@ public class EJBWSProviderTest {
     public void testQueryUserProvider() throws Exception {
         Service service = Service.create(SERVICE_NAME);
         service.addPort(PORT_NAME, SOAPBinding.SOAP11HTTP_BINDING, ENDPOINT_URL);
-        Dispatch<SOAPMessage> dispatch = service.createDispatch(PORT_NAME, SOAPMessage.class, Service.Mode.MESSAGE);
+
+        Dispatch<SOAPMessage> dispatch = service.createDispatch(PORT_NAME, SOAPMessage.class, Service.Mode.MESSAGE, new AddressingFeature());
+        dispatch.getRequestContext().put(BindingProvider.SOAPACTION_URI_PROPERTY, "http://ejbbasic.jaxws.ws.ibm.com/UserQuery#getUser");
+
         SOAPMessage requestSOAPMessage = createGetUserSOAPMessage();
+
+        //MimeHeaders headers = requestSOAPMessage.getMimeHeaders();
+        //headers.addHeader("SOAPAction", "http://ejbbasic.jaxws.ws.ibm.com/UserQuery#getUser");
+
+        SOAPMessage responseSOAPMessage = dispatch.invoke(requestSOAPMessage);
+
+        assertQueryUserResponse(responseSOAPMessage);
+    }
+
+    @Test
+    public void testQueryUserProviderWithSOAPActionMismatch() throws Exception {
+        Service service = Service.create(SERVICE_NAME);
+        service.addPort(PORT_NAME, SOAPBinding.SOAP11HTTP_BINDING, ENDPOINT_URL);
+
+        Dispatch<SOAPMessage> dispatch = service.createDispatch(PORT_NAME, SOAPMessage.class, Service.Mode.MESSAGE, new AddressingFeature());
+
+        dispatch.getRequestContext().put(BindingProvider.SOAPACTION_URI_PROPERTY, "http://ejbbasim/UserQuery#getUserMismatch");
+
+        //dispatch.getRequestContext().put("allowNonMatchingToDefaultSoapAction", "false");
+        SOAPMessage requestSOAPMessage = createGetUserSOAPMessage();
+
+        //MimeHeaders headers = requestSOAPMessage.getMimeHeaders();
+        //headers.addHeader("SOAPAction", "http://ejbbasic.jaxws.ws.ibm.com/UserQuery#getUser");
 
         SOAPMessage responseSOAPMessage = dispatch.invoke(requestSOAPMessage);
 

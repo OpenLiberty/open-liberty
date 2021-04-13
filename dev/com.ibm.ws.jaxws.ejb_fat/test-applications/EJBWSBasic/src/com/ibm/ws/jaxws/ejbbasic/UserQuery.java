@@ -12,11 +12,14 @@ package com.ibm.ws.jaxws.ejbbasic;
 
 import javax.ejb.Stateless;
 import javax.jws.WebService;
+import javax.xml.ws.soap.Addressing;
 
 @Stateless
 @WebService
+@Addressing(enabled = true, required = true)
 public class UserQuery {
 
+    @javax.xml.ws.Action(input = "http://ejbbasic.jaxws.ws.ibm.com/UserQuery#getUser")
     public User getUser(String userName) throws UserNotFoundException {
         return StaticUserRepository.getUser(userName);
     }

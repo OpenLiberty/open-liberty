@@ -28,6 +28,7 @@ import javax.xml.ws.AsyncHandler;
 import javax.xml.ws.BindingProvider;
 import javax.xml.ws.Response;
 import javax.xml.ws.WebServiceRef;
+import javax.xml.ws.soap.Addressing;
 
 import com.ibm.ws.jaxws.ejbbasic.view.client.SayHelloInterface;
 import com.ibm.ws.jaxws.ejbbasic.view.client.SayHelloService;
@@ -42,7 +43,12 @@ public class EJBBasicClientServlet extends HttpServlet {
 
     private static final long MAX_ASYNC_WAIT_TIME = 30 * 1000;
 
-    @WebServiceRef(value = UserQueryService.class, wsdlLocation = "WEB-INF/wsdl/UserQueryService.wsdl")
+    @Addressing
+    @WebServiceRef(name = "service/UserQueryService", value = UserQueryService.class, wsdlLocation = "WEB-INF/wsdl/UserQueryService.wsdl")
+    private UserQuery userQueryService;
+
+    @Addressing
+    @WebServiceRef(name = "service/UserQuery", value = UserQueryService.class, wsdlLocation = "WEB-INF/wsdl/UserQueryService.wsdl")
     private UserQuery userQuery;
 
     @EJB(beanName = "UseQueryEJBBean")
@@ -104,8 +110,12 @@ public class EJBBasicClientServlet extends HttpServlet {
     public void testQueryUser(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         PrintWriter writer = resp.getWriter();
         try {
-            setEndpointAddress((BindingProvider) userQuery, req, "EJBWSBasic/UserQueryService");
-            User user = userQuery.getUser("Illidan Stormrage");
+
+            setEndpointAddress((BindingProvider) userQueryService, req, "EJBWSBasic/UserQueryService");
+            BindingProvider bp = (BindingProvider) userQuery;
+            UserQuery uq = userQueryService;
+            System.out.println("@TJJ From servlet bp syntehic get is: " + bp.getRequestContext().get("operation.is.synthetic"));
+            User user = uq.getUser("Illidan Stormrage");
             if (user == null) {
                 writer.write("FAILED Expected user instance is not returned");
             } else if (!"Illidan Stormrage".equals(user.getName())) {
@@ -238,6 +248,7 @@ public class EJBBasicClientServlet extends HttpServlet {
     public void testListUsers(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         PrintWriter writer = resp.getWriter();
         setEndpointAddress((BindingProvider) userQuery, req, "EJBWSBasic/UserQueryService");
+
         List<User> users = userQuery.listUsers();
         if (users == null) {
             writer.write("FAILED Expected user instances are not returned");
@@ -251,5 +262,9 @@ public class EJBBasicClientServlet extends HttpServlet {
     protected void setEndpointAddress(BindingProvider bindingProvider, HttpServletRequest request, String endpointPath) {
         bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
                                                 "http://" + request.getServerName() + ":" + request.getServerPort() + "/" + endpointPath);
+
+        bindingProvider.getRequestContext().put("operation.is.synthetic", true);
+        bindingProvider.getRequestContext().put("allowNonMatchingToDefaultSoapAction", true);
+        bindingProvider.getRequestContext().put("allowNonMatchingToDefaultSoapAction", true);
     }
 }
