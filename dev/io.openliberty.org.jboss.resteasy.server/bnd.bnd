@@ -68,7 +68,7 @@ Private-Package: \
   io.openliberty.org.jboss.resteasy.common.component
   
 instrument.ffdc: false
-instrument.disabled: false
+instrument.disabled: true
 
 
 Include-Resource:\
