@@ -8,7 +8,7 @@
         same named beans in previous files. -->
     <context-param>
         <param-name>contextConfigLocation</param-name>
-        <param-value>classpath*:/META-INF/net.shibboleth.idp/preconfig.xml,${idp.home}/system/conf/global-system.xml,classpath*:/META-INF/net.shibboleth.idp/postconfig.xml</param-value>
+        <param-value>classpath*:/META-INF/net.shibboleth.idp/preconfig.xml,classpath:/net/shibboleth/idp/conf/global-system.xml,classpath*:/META-INF/net.shibboleth.idp/postconfig.xml</param-value>
     </context-param>
     
     <context-param>
@@ -126,7 +126,7 @@
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
         <init-param>
             <param-name>contextConfigLocation</param-name>
-            <param-value>${idp.home}/system/conf/mvc-beans.xml, ${idp.home}/system/conf/webflow-config.xml</param-value>
+            <param-value>classpath*:/META-INF/net/shibboleth/idp/mvc/preconfig.xml,classpath:/net/shibboleth/idp/conf/mvc-beans.xml,classpath:/net/shibboleth/idp/conf/webflow-config.xml,classpath*:/META-INF/net/shibboleth/idp/mvc/postconfig.xml</param-value>
         </init-param>
         <init-param>
             <param-name>contextClass</param-name>

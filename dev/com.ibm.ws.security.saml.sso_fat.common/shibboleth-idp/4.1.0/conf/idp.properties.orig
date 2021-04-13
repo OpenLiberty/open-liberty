@@ -8,7 +8,7 @@ idp.entityID= https://localhost:xxx_IdpSecurePort_xxx/idp/shibboleth
 idp.scope= austin.ibm.com
 
 # General cookie properties (maxAge only applies to persistent cookies)
-#idp.cookie.secure = false
+idp.cookie.secure = false
 #idp.cookie.httpOnly = true
 #idp.cookie.domain =
 #idp.cookie.path =
