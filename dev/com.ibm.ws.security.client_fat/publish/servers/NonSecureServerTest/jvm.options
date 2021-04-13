@@ -1,0 +1,2 @@
+-Xdump:system+java+snap:events=throw+systhrow,filter=java/lang/NoSuchMethodError,request=exclusive+prepwalk+serial+preempt
+-Xdump:system+java+snap:events=throw+systhrow,filter=java/lang/NoClassDefFoundError,request=exclusive+prepwalk+serial+preempt
