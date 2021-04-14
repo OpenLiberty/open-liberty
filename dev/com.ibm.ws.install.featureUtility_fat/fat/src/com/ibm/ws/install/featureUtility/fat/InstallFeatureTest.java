@@ -153,7 +153,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 
         Map<String, String> propsMap = new HashMap<String, String>();
         propsMap.put("featureLocalRepo", minifiedRoot + "/repo/");
-        propsMap.put("wlptestjson.groupid", "com.ibm.websphere.appserver.features");
+        propsMap.put("wlptestjson.featuresbom", "com.ibm.websphere.appserver.features:features:20.0.0.4");
         writeToProps(minifiedRoot+ "/etc/featureUtility.properties", propsMap);
         String[] param1s = { "installFeature", "adminCenter-1.0", "--acceptLicense", "--verbose" };
 
@@ -202,7 +202,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 
         Map<String, String> propsMap = new HashMap<String, String>();
         propsMap.put("featureLocalRepo", minifiedRoot + "/repo/");
-        propsMap.put("wlptestjson.groupid", "com.ibm.websphere.appserver.features");
+        propsMap.put("wlptestjson.featuresbom", "com.ibm.websphere.appserver.features:features:20.0.0.4");
         writeToProps(minifiedRoot+ "/etc/featureUtility.properties", propsMap);
         String[] param1s = { "installFeature", "adminCenter-1.0", "deploy-1.0", "--acceptLicense", "--verbose" };
 
