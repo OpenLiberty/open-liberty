@@ -28,6 +28,7 @@ import com.ibm.ws.security.jwtsso.fat.actions.RunWithMpJwtVersion;
 import com.ibm.ws.security.jwtsso.fat.utils.CommonExpectations;
 import com.ibm.ws.security.jwtsso.fat.utils.CommonJwtssoFat;
 import com.ibm.ws.security.jwtsso.fat.utils.JwtFatConstants;
+import com.ibm.ws.security.jwtsso.fat.utils.MessageConstants;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -87,7 +88,8 @@ public class SigAlgTests extends CommonJwtssoFat {
      */
     @Test
     public void SigAlgTests_signWithRS384() throws Exception {
-        server.reconfigureServerUsingExpandedConfiguration(_testName, "server_signRS384.xml");
+        // reconfig server to add RS384 (make sure that SSL channel has restarted)
+        server.reconfigureServerUsingExpandedConfiguration(_testName, "server_signRS384.xml", MessageConstants.CWWKO0219I_SSL_CHANNEL_READY);
 
         WebClient webClient = actions.createWebClient();
 
@@ -129,7 +131,8 @@ public class SigAlgTests extends CommonJwtssoFat {
     @Mode(TestMode.LITE)
     @Test
     public void SigAlgTests_signWithES512() throws Exception {
-        server.reconfigureServerUsingExpandedConfiguration(_testName, "server_signES512.xml");
+        // reconfig server to add RS384 (make sure that SSL channel has restarted)
+        server.reconfigureServerUsingExpandedConfiguration(_testName, "server_signES512.xml", MessageConstants.CWWKO0219I_SSL_CHANNEL_READY);
 
         WebClient webClient = actions.createWebClient();
 
