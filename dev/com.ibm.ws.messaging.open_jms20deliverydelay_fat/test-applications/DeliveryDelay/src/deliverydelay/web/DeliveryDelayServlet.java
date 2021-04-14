@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2020 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -121,33 +121,17 @@ public class DeliveryDelayServlet extends HttpServlet {
         return topic;
     }
 
-    public void emptyQueue(QueueConnectionFactory qcf, Queue q) throws Exception {
-        JMSContext jmsContext = qcf.createContext();
-
-        try {
-            QueueBrowser qb = jmsContext.createBrowser(q);
-            Enumeration e = qb.getEnumeration();
-
+    public void emptyQueue(QueueConnectionFactory qcf, Queue q) 
+        throws Exception {
+       
+        long messagesReceived = 0; 
+        try (JMSContext jmsContext = qcf.createContext(JMSContext.SESSION_TRANSACTED)) {
             JMSConsumer jmsConsumer = jmsContext.createConsumer(q);
-
-            try {
-                int numMsgs = 0;
-                while ( e.hasMoreElements() ) {
-                    e.nextElement();
-                    numMsgs++;
-                }
-
-                for ( int msgNo = 0; msgNo < numMsgs; msgNo++ ) {
-                    jmsConsumer.receive();
-                }
-
-            } finally {
-                jmsConsumer.close();
-            }
-
-        } finally {
-            jmsContext.close();
+            while ( jmsConsumer.receiveNoWait() != null) {messagesReceived++;}
+            jmsContext.commit();
         }
+        if (messagesReceived != 0) 
+            throw new Exception("Queue:"+q+ "contained "+messagesReceived+" messages");
     }
 
     public int getMessageCount(QueueBrowser qb) throws JMSException {
@@ -276,11 +260,10 @@ public class DeliveryDelayServlet extends HttpServlet {
 
         Tr.entry(this, tc, test);
         try {
-            getClass()
-                .getMethod(test, HttpServletRequest.class, HttpServletResponse.class)
-                .invoke(this, request, response);
-
             System.out.println(" Starting : " + test);
+            getClass().getMethod(test, HttpServletRequest.class, HttpServletResponse.class)
+                      .invoke(this, request, response);
+       
             out.println(test + " COMPLETED SUCCESSFULLY");
             System.out.println(" Ending : " + test);
             Tr.exit(this, tc, test);
