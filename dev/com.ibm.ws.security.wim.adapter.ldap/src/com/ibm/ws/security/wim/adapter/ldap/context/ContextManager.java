@@ -18,7 +18,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
+import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Properties;
@@ -44,6 +47,9 @@ import javax.naming.ldap.LdapName;
 import javax.security.auth.Subject;
 import javax.security.auth.login.LoginException;
 
+import org.osgi.service.cm.Configuration;
+import org.osgi.service.cm.ConfigurationAdmin;
+
 import com.ibm.websphere.crypto.PasswordUtil;
 import com.ibm.websphere.ras.ProtectedString;
 import com.ibm.websphere.ras.Tr;
@@ -55,7 +61,10 @@ import com.ibm.websphere.security.wim.ras.WIMMessageKey;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.authentication.utility.SubjectHelper;
 import com.ibm.ws.security.kerberos.auth.KerberosService;
+import com.ibm.ws.security.kerberos.auth.Krb5Constants;
 import com.ibm.ws.security.wim.adapter.ldap.BEROutputStream;
+import com.ibm.ws.security.wim.adapter.ldap.LdapConnection;
+import com.ibm.ws.security.wim.adapter.ldap.LdapConstants;
 import com.ibm.wsspi.kernel.service.utils.SerializableProtectedString;
 import com.ibm.wsspi.security.wim.exception.EntityAlreadyExistsException;
 import com.ibm.wsspi.security.wim.exception.EntityHasDescendantsException;
@@ -265,6 +274,8 @@ public class ContextManager {
 
     /** Read/Write lock to prevent multiple processes from using and updating the KerberosService and/or context pool at the same time. **/
     private final ReadWriteLock kerberServiceModifyLock = new ReentrantReadWriteLock();
+
+    private ConfigurationAdmin configAdmin = null;
 
     /**
      * Add a fail-over LDAP server hostname and port.
@@ -494,12 +505,11 @@ public class ContextManager {
      * @return The {@link TimedDirContext}.
      * @throws NamingException If there was an issue binding to the LDAP server.
      */
+    @FFDCIgnore({ javax.security.auth.login.LoginException.class, PrivilegedActionException.class })
     private TimedDirContext createDirContext(Hashtable<String, Object> env, long createTimestamp) throws NamingException {
         if (isKerberosBindAuth()) {
             try {
-                Subject subject = handleKerberos();
-                // Using javax.security.sasl.Sasl.CREDENTIALS caused intermittent compile failures on Java 8
-                env.put("javax.security.sasl.credentials", SubjectHelper.getGSSCredentialFromSubject(subject));
+                handleKerberos(env);
             } catch (LoginException e) {
                 NamingException ne = new NamingException(e.getMessage());
                 ne.setRootCause(e);
@@ -543,7 +553,23 @@ public class ContextManager {
             ClassLoader origCL = getContextClassLoader();
             setContextClassLoader(getClass());
             try {
-                TimedDirContext ctx = new TimedDirContext(env, getConnectionRequestControls(), createTimestamp);
+                TimedDirContext ctx = null;
+                if (isKerberosBindAuth()) {
+                    try {
+                        ctx = java.security.AccessController.doPrivileged(new PrivilegedExceptionAction<TimedDirContext>() {
+                            @Override
+                            public TimedDirContext run() throws NamingException {
+                                return new TimedDirContext(env, getConnectionRequestControls(), createTimestamp);
+                            }
+                        });
+                    } catch (PrivilegedActionException pae) {
+                        NamingException e = (NamingException) pae.getException();
+                        throw e;
+                    }
+                }
+                if (ctx == null) {
+                    ctx = new TimedDirContext(env, getConnectionRequestControls(), createTimestamp);
+                }
                 String newURL = getProviderURL(ctx);
                 // Set the active URL if context pool is disabled,
                 // otherwise active URL will be set when pool is refreshed
@@ -703,9 +729,9 @@ public class ContextManager {
      * @throws EntityNotFoundException If part of the name cannot be found to destroy the entity.
      * @throws WIMSystemException If any other {@link NamingException} occurs or the context cannot be released.
      */
-    public void destroySubcontext(String name) throws EntityHasDescendantsException, EntityNotFoundException, WIMSystemException {
+    public void destroySubcontext(String name) throws OperationNotSupportedException, EntityHasDescendantsException, EntityNotFoundException, WIMSystemException {
         TimedDirContext ctx = getDirContext();
-        // checkWritePermission(ctx); // TODO Why are we not checking permissions here?
+        checkWritePermission(ctx);
         try {
             try {
                 ctx.destroySubcontext(new LdapName(name));
@@ -1177,10 +1203,75 @@ public class ContextManager {
          */
 
         /*
+         * If the contextPool is enabled and Kerberos is enabled, check if the current config and keytab are null from the <kerberos/> config. If they are null,
+         * use the config service to check if there's any config for them that is not processed yet (outstanding modify() that will happen after this initialize completes.
+         * If there's <kerberos/> config, delay creating the context pool and wait until LdapRegistry receives a modify and calls updateKerberosService. This avoids a
+         * temporary failure logged to FFDC connecting to the KDC/LDAP before updating with the complete <kerberos/> config.
+         */
+        boolean delayContextPool = false;
+        if (iContextPoolEnabled && isKerberosBindAuth() && kerberosService != null && kerberosService.getKeytab() == null && kerberosService.getConfigFile() == null
+            && configAdmin != null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, METHODNAME
+                             + " The Kerberos config is currently null for the keytab and config file, double check that there isn't an incoming modify with non-null config");
+            }
+
+            try {
+                if (configAdmin != null) {
+                    Configuration[] kerbConfig = configAdmin.listConfigurations(Krb5Constants.PID_ID);
+
+                    if (kerbConfig != null) {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, METHODNAME + " Kerberos configuration ref found, check the config and keytab properties.");
+                        }
+                        for (int i = 0; i < kerbConfig.length; i++) { // really should be only 1 entry
+                            Dictionary<String, Object> props = kerbConfig[i].getProperties();
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                Tr.debug(tc, METHODNAME + " Checking props: " + props);
+                            }
+                            if (props != null) {
+                                Object keytab = props.get(Krb5Constants.KEYTAB);
+                                if (keytab != null) {
+                                    delayContextPool = true;
+                                    break;
+                                }
+
+                                Object config = props.get(Krb5Constants.CONFIG_FILE);
+                                if (config != null) {
+                                    delayContextPool = true;
+                                    break;
+                                }
+                            }
+                        }
+                    } else {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, METHODNAME + " The Kerberos config object is null, nothing to double check.");
+                        }
+                    }
+                } else {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, METHODNAME + " METHODNAME + \" ConfigAdmin is null, nothing to double check.");
+                    }
+                }
+            } catch (Exception e) {
+                if (tc.isEventEnabled()) {
+                    Tr.event(tc, METHODNAME + " Exception trying to review Kerberos config", e);
+                }
+            }
+
+
+        }
+        /*
          * Create Context Pool
          */
         try {
-            createContextPool(iInitPoolSize, null);
+            if (delayContextPool) {
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, METHODNAME + " Delay creating the context pool until the Kerberos service completes a config update and notifies LdapRegistry.");
+                }
+            } else {
+                createContextPool(iInitPoolSize, null);
+            }
         } catch (NamingException e) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, METHODNAME + " Can not create context pool: " + e.toString(true));
@@ -1606,7 +1697,8 @@ public class ContextManager {
      * @param krb5TicketCache
      */
     @FFDCIgnore({ MalformedURLException.class, URISyntaxException.class, IllegalArgumentException.class })
-    public void setKerberosCredentials(String id, KerberosService kerb, String krb5Principal, String rawKrb5TicketCache) throws PropertyNotDefinedException {
+    public void setKerberosCredentials(String id, KerberosService kerb, String krb5Principal, String rawKrb5TicketCache,
+                                       ConfigurationAdmin configAdmin) throws PropertyNotDefinedException {
         if (!isKerberosBindAuth()) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "setKerberosCredentials was called, but Kerberos is not enabled. BindAuthMechanism is " + bindAuthMechanism);
@@ -1619,6 +1711,7 @@ public class ContextManager {
 
             reposId = id;
             kerberosService = kerb;
+            this.configAdmin = configAdmin;
 
             if (rawKrb5TicketCache != null && !rawKrb5TicketCache.trim().isEmpty()) {
                 krb5TicketCache = Paths.get(rawKrb5TicketCache);
@@ -1659,6 +1752,22 @@ public class ContextManager {
             if (this.krb5TicketCache != null && (kerberosService != null && kerberosService.getKeytab() != null)) {
                 if (tc.isDebugEnabled()) {
                     Tr.debug(tc, "setKerberosCredentials the ticketCache and keytab were both configured, ticketCache is tried first, then keytab");
+                }
+            }
+
+            /*
+             * Clear the principal from the kerberService cache in case the ticketCache changed.
+             */
+            if (kerberosService != null && krb5Principal != null && !krb5Principal.trim().isEmpty()) {
+                try {
+                    kerberosService.clearPrincipalFromCache(krb5Principal);
+                } catch (java.lang.IllegalArgumentException e) {
+                    /**
+                     * Can fail if the principle name is incorrect and the realm cannot be found. Avoid failing during activate.
+                     */
+                    if (tc.isEventEnabled()) {
+                        Tr.event(tc, "Failed to clear subjectCache", e);
+                    }
                 }
             }
 
@@ -1728,6 +1837,9 @@ public class ContextManager {
         sb.append(", iReturnToPrimary=").append(iReturnToPrimary);
         sb.append(", iReferral=").append(iReferral);
         sb.append(", iBinaryAttributeNames=").append(iBinaryAttributeNames);
+        sb.append(", bindAuthMechanism=").append(bindAuthMechanism);
+        sb.append(", krb5Principal=").append(krb5Principal);
+        sb.append(", krb5TicketCache=").append(krb5TicketCache);
         sb.append("}");
 
         return sb.toString();
@@ -1783,7 +1895,8 @@ public class ContextManager {
      *
      * @return
      */
-    private Subject handleKerberos() throws LoginException, MalformedURLException {
+    @FFDCIgnore({ javax.security.auth.login.LoginException.class, IllegalArgumentException.class, PrivilegedActionException.class })
+    private void handleKerberos(Hashtable<String, Object> env) throws LoginException, MalformedURLException {
         final String METHODNAME = "handleKerberos";
         if (!isKerberosBindAuth()) {
             /*
@@ -1792,9 +1905,9 @@ public class ContextManager {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, METHODNAME + " Kerberos login method was called, but Kerberos is not enabled. BindAuthMechanism is " + bindAuthMechanism);
             }
-            return null;
+            return;
         }
-        Subject subject = null;
+
         acquireKrb5ReadLock();
         try {
             if (kerberosService == null) {
@@ -1807,7 +1920,21 @@ public class ContextManager {
             }
 
             try {
-                subject = kerberosService.getOrCreateSubject(krb5Principal, null, krb5TicketCache);
+                try {
+                    java.security.AccessController.doPrivileged(new PrivilegedExceptionAction<Subject>() {
+                        @Override
+                        public Subject run() throws LoginException {
+                            Subject subject = kerberosService.getOrCreateSubject(krb5Principal, null, krb5TicketCache);
+                            // Using javax.security.sasl.Sasl.CREDENTIALS caused intermittent compile failures on Java 8
+                            env.put("javax.security.sasl.credentials", SubjectHelper.getGSSCredentialFromSubject(subject));
+                            return subject;
+                        }
+                    });
+                } catch (PrivilegedActionException pae) {
+                    LoginException e = (LoginException) pae.getException();
+                    throw e;
+                }
+
             } catch (LoginException e) {
                 /*
                  * Customize the exception, based on the provided krb5 config: ticketCache vs keytab vs default
@@ -1823,12 +1950,20 @@ public class ContextManager {
                 LoginException le = new LoginException(msg + " " + e.getClass().getName() + ": " + e.getMessage());
                 le.initCause(e);
                 throw le;
+            } catch (IllegalArgumentException ie) {
+                /*
+                 * Caused by: java.lang.IllegalArgumentException: KrbException: Cannot locate default realm
+                 * at java.security.jgss/javax.security.auth.kerberos.KerberosPrincipal.<init>(KerberosPrincipal.java:174)
+                 */
+                String msg = Tr.formatMessage(tc, WIMMessageKey.INVALID_KRB5_PRINCIPAL, WIMMessageHelper.generateMsgParms(krb5Principal));
+                String rootMessage = ie.getMessage(); // Only print if there's info, sometimes the java.lang.IllegalArgumentException has no getMessage
+                LoginException le = new LoginException(msg + " " + ie.getClass().getName() + (rootMessage == null ? "" : ": " + ie.getMessage()));
+                le.initCause(ie);
+                throw le;
             }
         } finally {
             releaseKrb5ReadLock();
         }
-
-        return subject;
     }
 
     /**
@@ -1845,27 +1980,33 @@ public class ContextManager {
     }
 
     /**
-     * When invoked, this will dump the context pool (if enabled) and recreate the pool with the new kerberos configuration.
+     * When invoked, if Kerberos (GSSAPI) is enabled, this will dump the context pool (if enabled)
+     * and recreate the pool with the new kerberos configuration.
+     *
+     * Also clear the caches within the write lock, to make sure we're not allowing stale access after a config update.
      *
      * @param ks
+     * @param ldapConn
      */
-    public void updateKerberosService(KerberosService ks) {
+    public void updateKerberosService(KerberosService ks, LdapConnection ldapConn) {
+        String METHOD_NAME = "updateKerberosService";
         if (isKerberosBindAuth()) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, METHOD_NAME + " Kerberos is enabled and the KerberosService was updated, acquire write lock and process krb5 update tasks");
+            }
             acquireKrb5WriteLock();
             try {
                 kerberosService = ks;
                 if (iContextPoolEnabled) {
                     try {
-                        /*
-                         * Do we want to refresh if ticketCache is enabled and only keytab changes? This could be unnecessary churn if the keytab is
-                         * only used for another config. However, if the customer is banking on the keytab working if the ticketCache fails, then
-                         * we'll be delaying refreshing the context pool.
-                         */
-                        reCreateDirContext(getDirContext(), "The Kerberos configuration was updated, refresh the context pool.");
+                        reCreateDirContext(getDirContext(), LdapConstants.KERBEROS_UDPATE_MSG);
                     } catch (WIMSystemException e) {
-
+                        if (tc.isEventEnabled()) {
+                            Tr.event(tc, METHOD_NAME + " Exception processing reCreateDirContext after a KerberosService update.", e);
+                        }
                     }
                 }
+                ldapConn.clearCaches();
             } finally {
                 releaseKrb5WriteLock();
             }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -304,7 +304,7 @@ public class CommonValidationTools {
                             + " but received [" + responseContent + "]." + fullResponseContent,
                             !responseContent.contains(expected.getValidationValue()));
                 } else {
-                    if (expected.getCheckType().equals(Constants.STRING_MATCHES)) {
+                    if (expected.getCheckType().equals(Constants.STRING_MATCHES) || expected.getCheckType().equals(Constants.STRING_EQUALS)) {
                         Pattern pattern = Pattern.compile(expected.getValidationValue());
                         Matcher m = pattern.matcher(responseContent);
 
@@ -767,7 +767,7 @@ public class CommonValidationTools {
                     }
                     if (key.equals(Constants.TOKEN_TYPE_KEY)) {
                         msgUtils.assertTrueAndLog(thisMethod, "Token Type is null", value != null);
-                        msgUtils.assertTrueAndLog(thisMethod, "Token Type value expected: Bearer but recieved" + value, value.equals("Bearer"));
+                        msgUtils.assertTrueAndLog(thisMethod, "Token Type value expected: Bearer but received" + value, value.equals("Bearer"));
                     }
                     // make sure it has value if it exists - we've already done the check for should it be there or not
                     if (key.equals(Constants.ID_TOKEN_KEY)) {

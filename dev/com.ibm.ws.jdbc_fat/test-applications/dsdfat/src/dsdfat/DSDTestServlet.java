@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,9 @@
  *******************************************************************************/
 package dsdfat;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
@@ -18,6 +21,7 @@ import java.sql.Statement;
 
 import javax.annotation.Resource;
 import javax.annotation.sql.DataSourceDefinition;
+import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
 import componenttest.app.FATServlet;
@@ -35,6 +39,7 @@ import componenttest.app.FATServlet;
                                      "connectionTimeout=0",
                                      "containerAuthDataRef=derbyAuth1",
                                      "createDatabase=create",
+                                     "enableContainerAuthForDirectLookups=true",
                                      "onConnect=DECLARE GLOBAL TEMPORARY TABLE TEMP8 (COL1 VARCHAR(80)) ON COMMIT PRESERVE ROWS NOT LOGGED",
                                      "queryTimeout=1m20s",
                                      "reapTime=2000ms"
@@ -107,4 +112,21 @@ public class DSDTestServlet extends FATServlet {
             con.close();
         }
     }
+
+    /**
+     * Verify that connections use container authentication when enableContainerAuthForDirectLookups=true
+     * is configured on an application-defined data source.
+     */
+    public void testEnableContainerAuthForDirectLookupsTrueOnAppDefinedDataSource() throws Exception {
+        DataSource ds = (DataSource) new InitialContext().lookup("java:comp/env/jdbc/dsfat8");
+        try (Connection con = ds.getConnection()) {
+            DatabaseMetaData metadata = con.getMetaData();
+            // dbuser1 indicates container auth
+            // APP (default Derby user) indicates application auth
+            String user = metadata.getUserName();
+            assertNotNull(user);
+            assertEquals("dbuser1", user.toLowerCase());
+        }
+    }
+
 }

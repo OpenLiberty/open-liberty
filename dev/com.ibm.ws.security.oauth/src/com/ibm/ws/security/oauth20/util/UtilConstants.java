@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2020 IBM Corporation and others.
+ * Copyright (c) 1997, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,7 +32,8 @@ public class UtilConstants extends com.ibm.ws.security.oauth20.api.Constants {
     public final static String AUTHORIZATION_CODE = "authorization_code";
     public final static String OAUTH_SERVICE_APP_JAVAEE = "com.ibm.ws.security.oauth.2.0";
     public final static String OAUTH_SERVICE_APP_JAKARTA = "io.openliberty.security.oauth.internal.2.0";
-    public final static String OIDC_SERVICE_APP = "com.ibm.ws.security.openidconnect.server";
+    public final static String OIDC_SERVICE_APP_JAVAEE = "com.ibm.ws.security.openidconnect.server";
+    public final static String OIDC_SERVICE_APP_JAKARTA = "io.openliberty.security.openidconnect.internal.server";
     public final static String OAUTH_PROVIDER_NAME = "OAuthProvider";
     public final static String CHARACTER_ENCODING = "characterEncoding";
     public final static String AUTHORIZATION_HEADER_NAME = "Authorization";

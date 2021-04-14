@@ -54,10 +54,10 @@ public class DatabaseContainerFactory {
      * If {fat.bucket.db.type} is not set with a value,
      * default to Derby Embedded.
      *
-     * @return JdbcDatabaseContainer - The test container.
+     * @return                          JdbcDatabaseContainer - The test container.
      *
      * @throws IllegalArgumentException - if database rotation {fat.test.databases} is not set or is false,
-     * or database type {fat.bucket.db.type} is unsupported.
+     *                                      or database type {fat.bucket.db.type} is unsupported.
      */
     public static JdbcDatabaseContainer<?> create() throws IllegalArgumentException {
         return create(DatabaseContainerType.Derby);
@@ -66,8 +66,8 @@ public class DatabaseContainerFactory {
     /**
      * @see #create()
      *
-     * This method let's you specify the default database type if one is not provided.
-     * This should mainly be used if you want to use derby client instead of derby embedded as your default.
+     *      This method let's you specify the default database type if one is not provided.
+     *      This should mainly be used if you want to use derby client instead of derby embedded as your default.
      */
     public static JdbcDatabaseContainer<?> create(DatabaseContainerType defaultType) throws IllegalArgumentException {
         String dbRotation = System.getProperty("fat.test.databases");
@@ -124,11 +124,11 @@ public class DatabaseContainerFactory {
                     cont = (JdbcDatabaseContainer<?>) clazz.getConstructor().newInstance();
                     break;
                 case Oracle:
-                    cont = (JdbcDatabaseContainer<?>) clazz.getConstructor(String.class).newInstance("kyleaure/oracle-18.4.0-xe-prebuilt:1.0");
+                    cont = (JdbcDatabaseContainer<?>) clazz.getConstructor(String.class).newInstance("kyleaure/oracle-18.4.0-xe-prebuilt:2.0");
                     cont.withExposedPorts(1521, 5500, 8080); // need to manually expose ports due to regression in 1.14.0
                     break;
                 case Postgres:
-                    cont = (JdbcDatabaseContainer<?>) clazz.getConstructor().newInstance();
+                    cont = (JdbcDatabaseContainer<?>) clazz.getConstructor(String.class).newInstance("postgres");
                     //This allows postgres by default to participate in XA transactions (2PC).
                     //Documentation on the Prepare Transaction action in postgres: https://www.postgresql.org/docs/9.3/sql-prepare-transaction.html
 

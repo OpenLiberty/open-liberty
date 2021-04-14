@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2020 IBM Corporation and others.
+ * Copyright (c) 2011, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -119,7 +119,13 @@ public class SSOAuthenticator implements WebAuthenticator {
             return authResult;
         }
 
-        authResult = handleJwtSSO(req, res);
+        if (isJwtAuthFilterAccept(req)) {
+            authResult = handleJwtSSO(req, res);
+            if (authResult != null && authResult.getStatus() == AuthResult.SUCCESS) {
+                return authResult;
+            }
+        }
+
         // If there is a jwtSSOToken in a request, use LTPA will not be allowed.
         // If there is NO jwtSSOToken in a request and shouldUseLtpaIfJwtAbsent is true, use LTPA will be allowed
         if (authResult != null || !JwtSSOTokenHelper.shouldUseLtpaIfJwtAbsent()) {
@@ -333,6 +339,18 @@ public class SSOAuthenticator implements WebAuthenticator {
             }
         }
         //If no SSO authFilter service, then we will process all request
+        return true;
+    }
+
+    protected boolean isJwtAuthFilterAccept(HttpServletRequest req) {
+        String pid = JwtSSOTokenHelper.getAuthFilterRef();
+        if (pid != null && ssoAuthFilterRef != null) {
+            SSOAuthFilter ssoAuthFilter = ssoAuthFilterRef.getService();
+            if (ssoAuthFilter != null) {
+                return ssoAuthFilter.processRequest(req, pid);
+            }
+        }
+        //If no authFilterRef or SSO authFilter service, we will process all request
         return true;
     }
 

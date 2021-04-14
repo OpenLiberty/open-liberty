@@ -12,16 +12,20 @@ package com.ibm.ws.security.oauth20.plugins.custom;
 
 import org.junit.Before;
 
+import com.ibm.ws.security.oauth.test.ClientRegistrationHelper;
+
 /**
  * Was OauthClientStoreTest, changed to OauthClientStoreXORTest when OauthClientStoreHashTest was added
  */
 public class OauthClientStoreXORTest extends OauthClientStoreCommon {
 
+    public OauthClientStoreXORTest() {
+        clientRegistrationHelper = new ClientRegistrationHelper(false);
+    }
+
     @Override
     @Before
     public void setUp() throws Exception {
-        setHash(false);
-
         super.setUp();
 
         oauthClientStore = new OauthClientStore(componentId, oauthStore);

@@ -4,11 +4,11 @@
 #TODO needs to be provided by user
 USER_NAME=
 
-#Version of docker image.  Increment if doing a new release
-VERSION=1.0
+#TODO need to provide version of docker image.  Increment if doing a new release
+VERSION=
 
-#Name of the final image
-IMAGE_NAME=postgres-test-table
+#TODO need to provide name of the final image
+IMAGE_NAME=
 
 #Docker image signiture in form username/image:version
 SIGNITURE=$USER_NAME/$IMAGE_NAME:$VERSION

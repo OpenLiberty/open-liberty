@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2013 IBM Corporation and others.
+# Copyright (c) 2012, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -222,10 +222,53 @@ LDAP_REGISTRY_INVALID_MAPPING=CWIML4504W: Der angepasste X.509-Zertifikatsmapper
 LDAP_REGISTRY_INVALID_MAPPING.explanation=Der angepasste X.509-Zertifikatsmapper muss einen nicht leeren Wert ungleich null zur\u00fcckgeben oder eine der benannten Ausnahmen ausl\u00f6sen.
 LDAP_REGISTRY_INVALID_MAPPING.useraction=\u00c4ndern Sie die Implementierung des angepassten X.509-Zertifikatsmappers so, dass kein leerer Wert und kein Nullwert zur\u00fcckgegeben wird. Wenn kein g\u00fcltiger Wert zur\u00fcckgegeben werden kann, muss die Implementierung eine gepr\u00fcfte Ausnahme zur\u00fcckgeben.
 
-LOGINPROPERTY_OVERRIDE_USERFILTER=CWIML4505W: Das definierte Attribut userFilter wird ignoriert, weil loginProperty-Attribute definiert sind. Der Benutzerfilter wird dynamisch generiert.
-LOGINPROPERTY_OVERRIDE_USERFILTER.explanation=Es ist mindestens eine Instanz des Attributs loginProperty definiert. Diese Attribute werden verwendet, um den Benutzerfilter zu erstellen.
-LOGINPROPERTY_OVERRIDE_USERFILTER.useraction=Wenn das Attribut userFilter bevorzugt wird, entfernen Sie alle loginProperty-Attribute.
+LOGINPROPERTY_OVERRIDE_USERFILTER=CWIML4505W: Das definierte userFilter-Attribut wird ignoriert, weil die loginProperty-Attribute definiert sind. Der Benutzerfilter wird dynamisch generiert.
+LOGINPROPERTY_OVERRIDE_USERFILTER.explanation=Eine oder mehrere Instanzen des loginProperty-Attributs sind definiert. Diese Attribute werden verwendet, um den Benutzerfilter zu erstellen.
+LOGINPROPERTY_OVERRIDE_USERFILTER.useraction=Wenn das userFilter-Attribut bevorzugt wird, entfernen Sie alle loginProperty-Attribute.
 
 INVALID_LOGIN_PROPERTIES=CWIML4506E: Die folgenden Anmeldeeigenschaften sind nicht g\u00fcltig: {0}.
-INVALID_LOGIN_PROPERTIES.explanation=Mindestens eine Anmeldeeigenschaft ist keine g\u00fcltige WIM-PersonAccount-Eigenschaft.
-INVALID_LOGIN_PROPERTIES.useraction=W\u00e4hlen Sie g\u00fcltige PersonAccount-Eigenschaften aus oder f\u00fcgen Sie die Eigenschaften PersonAccount als erweiterte Eigenschaften hinzu. Stellen Sie sicher, dass die Gro\u00df-/Kleinschreibung f\u00fcr jede Anmeldeeigenschaft mit der Gro\u00df-/Kleinschreibung der entsprechenden PersonAccount-Eigenschaft \u00fcbereinstimmt.
+INVALID_LOGIN_PROPERTIES.explanation=Mindestens eine der Anmeldeeigenschaften ist keine g\u00fcltige WIM PersonAccount-Eigenschaft.
+INVALID_LOGIN_PROPERTIES.useraction=W\u00e4hlen Sie entweder g\u00fcltige PersonAccount-Eigenschaften aus oder f\u00fcgen Sie die Eigenschaften der PersonAccount-Eigenschaft als erweiterte Eigenschaften hinzu. Stellen Sie sicher, dass die Gro\u00df-/Kleinschreibung jeder Anmeldeeigenschaft mit der Gro\u00df-/Kleinschreibung der entsprechenden PersonAccount-Eigenschaft \u00fcbereinstimmt.
+
+KRB5_LOGIN_FAILED_CACHE=CWIML4507E: Die Kerberos-Anmeldung mit dem Kerberos-Principal {0} und dem Kerberos-Berechtigungsnachweis-Cache (ccache) {1} ist fehlgeschlagen.
+KRB5_LOGIN_FAILED_CACHE.explanation=Entweder ist der angegebene Kerberos-Principal ung\u00fcltig oder der Kerberos-Berechtigungsnachweis-Cache (ccache) ist ung\u00fcltig oder abgelaufen.
+KRB5_LOGIN_FAILED_CACHE.useraction=Stellen Sie sicher, dass ein g\u00fcltiger Kerberos-Principal angegeben wird und der Kerberos-Berechtigungsnachweis-Cache (ccache) nicht abgelaufen ist.
+KRB5_LOGIN_FAILED_KEYTAB=CWIML4508E: Die Kerberos-Anmeldung mit dem Kerberos-Principal {0} und dem Kerberos-Chiffrierschl\u00fcssel {1} ist fehlgeschlagen.
+KRB5_LOGIN_FAILED_KEYTAB.explanation=Entweder ist der angegebene Kerberos-Principal ung\u00fcltig oder der Kerberos-Chiffrierschl\u00fcssel ist ung\u00fcltig.
+KRB5_LOGIN_FAILED_KEYTAB.useraction=Stellen Sie sicher, dass ein g\u00fcltiger Kerberos-Principal und ein g\u00fcltiger Kerberos-Chiffrierschl\u00fcssel, der den Kerberos-Principal enth\u00e4lt, angegeben wird.		
+KRB5_LOGIN_FAILED_DEFAULT_CACHE=CWIML4509E: Die Kerberos-Anmeldung mit dem Kerberos-Principal {0} und dem Kerberos-Standardberechtigungsnachweiscache (ccache) ist fehlgeschlagen.
+KRB5_LOGIN_FAILED_DEFAULT_CACHE.explanation=Entweder ist der angegebene Kerberos-Principal ung\u00fcltig oder der Kerberos-Standardberechtigungsnachweis-Cache (ccache) ist ung\u00fcltig oder abgelaufen.
+KRB5_LOGIN_FAILED_DEFAULT_CACHE.useraction=Stellen Sie sicher, dass ein g\u00fcltiger Kerberos-Principal angegeben wird und der Kerberos-Standardberechtigungsnachweis-Cache (ccache) nicht abgelaufen ist.
+KRB5_LOGIN_FAILED_DEFAULT_KEYTAB=CWIML4510E: Die Kerberos-Anmeldung mit dem Kerberos-Principal {0} und dem Kerberos-Standardchiffrierschl\u00fcssel ist fehlgeschlagen.
+KRB5_LOGIN_FAILED_DEFAULT_KEYTAB.explanation=Entweder ist der angegebene Kerberos-Principal ung\u00fcltig oder der Kerberos-Standardchiffrierschl\u00fcssel ist ung\u00fcltig.
+KRB5_LOGIN_FAILED_DEFAULT_KEYTAB.useraction=Stellen Sie sicher, dass ein g\u00fcltiger Kerberos-Principal angegeben wurde und der Kerberos-Standardchiffrierschl\u00fcssel g\u00fcltig ist.
+KRB5_TICKETCACHE_USED=CWIML4511E: Die LDAP-Registry {0} wurde mit dem {1}-Kerberos-Ticket-Cache-Dateinamen (ccache) und dem {2}-Chiffrierschl\u00fcsseldateinamen konfiguriert. Der Kerberos-Berechtigungsnachweis-Cache (ccache) wird f\u00fcr die Kerberos-Bindungsauthentifizierung beim LDAP-Server verwendet.
+KRB5_TICKETCACHE_USED.explanation=Um die Chiffrierschl\u00fcsseldatei verwenden zu k\u00f6nnen, muss der Name der Chiffrierschl\u00fcsseldatei angegeben werden, der Name der Kerberos-Berechtigungsnachweis-Cache-Datei (ccache) darf jedoch nicht angegeben werden.
+KRB5_TICKETCACHE_USED.useraction=Es ist keine Aktion erforderlich. Damit diese Nachricht nicht mehr angezeigt wird, entfernen Sie entweder das LDAP-Registry-Attribut ticketCache oder das Kerberos-Attribut keytab.
+
+INVALID_KRB5_PRINCIPAL=CWIML4512E: Der Kerberos-Principalname {0} ist falsch formatiert oder der Realmname fehlt, oder ein Standardrealmname wurde nicht gefunden.
+INVALID_KRB5_PRINCIPAL.explanation=Der Kerberos-Principalname darf nicht null sein. Der Principalname muss entweder den Realmnamen enthalten oder es muss ein Standardrealmname in der Kerberos-Konfigurationsdatei definiert sein.
+INVALID_KRB5_PRINCIPAL.useraction=Korrigieren Sie den Namen des Principals oder f\u00fcgen Sie einen Standardrealmnamen hinzu. 
+CANNOT_READ_KRB5_FILE=CWIML4513E: Die LDAP-Registry {0} kann die Kerberos-Datei {1} nicht lesen.
+CANNOT_READ_KRB5_FILE.explanation=Die Kerberos-Datei kann nicht ge\u00f6ffnet werden. Entweder sind die Dateiberechtigungen falsch oder die Datei ist nicht vorhanden.
+CANNOT_READ_KRB5_FILE.useraction=Vergewissern Sie sich, dass die Dateiposition richtig ist und der Server Leseberechtigung hat. 
+# CWIML4514 already used
+
+KRB5_FILE_NOT_FOUND=CWIML4515E: Das Attribut {0} aus dem Element {1} ist f\u00fcr eine Datei konfiguriert, die an der folgenden Position nicht vorhanden ist: {2}
+KRB5_FILE_NOT_FOUND.explanation=Die Konfiguration bezieht sich auf eine Datei, die entweder nicht gelesen werden kann oder nicht vorhanden ist.
+KRB5_FILE_NOT_FOUND.useraction=Stellen Sie sicher, dass die Konfiguration auf eine Datei verweist, die vorhanden ist, und die vom Anwendungsprozess gelesen werden kann.
+
+KRB5_FILE_FOUND=CWIML4516E: Die LDAP-Registry-Komponente ist f\u00fcr die Verwendung einer {0}-Datei konfiguriert, die sich an der folgenden Position befindet: {1}.
+KRB5_FILE_FOUND.explanation=Die konfigurierte Datei wurde erfolgreich lokalisiert.
+KRB5_FILE_FOUND.useraction=Es ist keine Aktion erforderlich. 
+# CWIML4517 already used
+
+IDMAP_INVALID_FORMAT=CWIML4518W: Der Wert {0} {1} hat ein ung\u00fcltiges Format. Der Wert muss als eine durch Semikola getrennte Liste der Paare ''objectclass:attribute'' bzw. ''*:attribute'' angegeben werden.
+IDMAP_INVALID_FORMAT.explanation=Der userIdMap-Wert muss ein g\u00fcltiges Format haben, damit Objektklassen und Attribute geparst werden k\u00f6nnen.
+IDMAP_INVALID_FORMAT.useraction=Aktualisieren Sie den userIdMap-Wert so, dass er dem angegebenen Format entspricht.
+
+# CWIML4519 and CWIML4520 already used
+
+KRB5_SERVICE_NOT_AVAILABLE=CWIML4521E: Die LDAP-Registry {0} hat versucht, mithilfe von Kerberos-Berechtigungsnachweisen f\u00fcr den {1}-Principalnamen eine Bindung zu einem LDAP-Server herzustellen, aber der Kerberos-Service, der diese Berechtigungsnachweise bereitstellt, ist nicht verf\u00fcgbar. Das Authentifizierungsverfahren f\u00fcr die Bindung ist: {2}.
+KRB5_SERVICE_NOT_AVAILABLE.explanation=Der Kerberos-Service war nicht verf\u00fcgbar, als die LDAP-Registry versucht hat, eine Bindung zum LDAP-Server herzustellen. Der Kerberos-Service muss verf\u00fcgbar sein, damit sich Benutzer authentifizieren k\u00f6nnen.
+KRB5_SERVICE_NOT_AVAILABLE.useraction=\u00dcberpr\u00fcfen Sie die Konfigurationseinstellungen der LDAP-Registry im Hinblick auf die Attribute bindAuthMechanism, krb5Principal und krb5TicketCache sowie die Kerberos-Konfiguration. Starten Sie den Server erneut. 

@@ -32,6 +32,7 @@ import com.ibm.ejs.ras.TraceNLS;
 import com.ibm.websphere.servlet.error.ServletErrorReport;
 import com.ibm.ws.webcontainer.osgi.WebContainer;
 import com.ibm.ws.webcontainer.session.IHttpSessionContext;
+import com.ibm.ws.webcontainer.srt.ISRTServletRequest;
 import com.ibm.ws.webcontainer.srt.SRTRequestContext;
 import com.ibm.ws.webcontainer.srt.SRTServletRequest;
 import com.ibm.ws.webcontainer.util.UnsynchronizedStack;
@@ -142,7 +143,7 @@ public abstract class WebAppDispatcherContext implements Cloneable, IWebAppDispa
         _request = req;
         if (req != null)
         {
-            reqContext = ((SRTServletRequest)_request).getRequestContext();
+            reqContext = ((ISRTServletRequest)_request).getRequestContext();
         }
     }
 
@@ -921,7 +922,7 @@ public abstract class WebAppDispatcherContext implements Cloneable, IWebAppDispa
      */
     public void setPathElements(String servletPath, String pathInfo)
     {
-        ((SRTServletRequest)_request).resetPathElements();
+        ((ISRTServletRequest)_request).resetPathElements();
 
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable (Level.FINE)) {    //PI67942
             logger.logp(Level.FINE, CLASS_NAME,"setPathElements", "servletPath = " + servletPath +", pathInfo = " + pathInfo +" : this = " + this);

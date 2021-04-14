@@ -8,5 +8,5 @@ IBM-Install-Policy: when-satisfied
 -bundles=\
  io.openliberty.rest.handler.config.openapi.2.0,\
  io.openliberty.rest.handler.config.openapi.common
-kind=beta
+kind=ga
 edition=core

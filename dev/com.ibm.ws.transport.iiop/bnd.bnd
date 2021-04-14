@@ -43,7 +43,6 @@ IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
   com.ibm.ws.transport.iiop.internal.ORBWrapperInternal, \
   com.ibm.ws.transport.iiop.internal.IIOPEndpointImpl, \
   com.ibm.ws.transport.iiop.internal.NamingServiceAdapterActivator, \
-  com.ibm.ws.transport.iiop.internal.ReadyListenerImpl, \
   com.ibm.ws.transport.iiop.internal.ServerPolicySourceImpl, \
   com.ibm.ws.transport.iiop.internal.WSClassRegistration, \
   com.ibm.ws.transport.iiop.internal.WSUtilService, \

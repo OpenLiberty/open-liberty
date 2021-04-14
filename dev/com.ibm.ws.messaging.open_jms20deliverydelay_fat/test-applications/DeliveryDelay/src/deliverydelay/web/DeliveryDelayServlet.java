@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2020 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@ import java.io.PrintWriter;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Enumeration;
 
 import javax.jms.BytesMessage;
@@ -5055,80 +5056,57 @@ public class DeliveryDelayServlet extends HttpServlet {
         }
     }
 
-    public void testSendMessage(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        boolean testFailed = false;
-
-        JMSContext jmsContext = jmsQCFBindings.createContext();
-        emptyQueue(jmsQCFBindings, jmsQueue);
-        JMSProducer jmsProducer = jmsContext.createProducer();
-
-        jmsProducer.setDeliveryDelay((deliveryDelay * 12));
-        TextMessage sendMsg = jmsContext.createTextMessage("testSendMessage");
-
-        sendAndCheckDeliveryTime(jmsProducer, jmsQueue, sendMsg);
-
-        jmsContext.close();
+    public void testSendMessage(HttpServletRequest request, HttpServletResponse response) 
+        throws Exception {
+        sendMessage(jmsQCFBindings);
+    }
+    
+    public void testSendMessage_TCP(HttpServletRequest request, HttpServletResponse response) 
+        throws Exception {
+        sendMessage(jmsQCFTCP);        
     }
 
-    public void testReceiveMessage(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
+    private void sendMessage(QueueConnectionFactory queueConnectionFactory)
+        throws Exception {
 
-        boolean testFailed = false;
+        try (JMSContext jmsContext = queueConnectionFactory.createContext()) {
+            emptyQueue(queueConnectionFactory, jmsQueue);
+            JMSProducer jmsProducer = jmsContext.createProducer();
 
-        JMSContext jmsContext = jmsQCFBindings.createContext();
-
-        JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsQueue);
-
-        String recdMsg = ((TextMessage) jmsConsumer.receive(120000)).getText();
-        if ( !recdMsg.equals("testSendMessage") ) {
-            testFailed = true;
-        }
-
-        jmsConsumer.close();
-        jmsContext.close();
-
-        if ( testFailed ) {
-            throw new Exception("testReceiveMessage failed");
+            long delayMilliseconds = deliveryDelay * 12;
+            jmsProducer.setDeliveryDelay(delayMilliseconds);
+            TextMessage sendMsg = jmsContext.createTextMessage(this.getClass().getName()+".testSendMessage() deliveryDelay="+delayMilliseconds+" milliseconds, sentAt:"+new Date());
+            sendMsg.setLongProperty("MustArriveAfter",System.currentTimeMillis()+delayMilliseconds);
+            sendAndCheckDeliveryTime(jmsProducer, jmsQueue, sendMsg);
         }
     }
 
-    public void testSendMessage_TCP(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        JMSContext jmsContext = jmsQCFTCP.createContext();
-        emptyQueue(jmsQCFTCP, jmsQueue);
-        JMSProducer jmsProducer = jmsContext.createProducer();
-
-        jmsProducer.setDeliveryDelay((deliveryDelay * 12));
-        TextMessage sendMsg = jmsContext.createTextMessage("testSendMessage");
-
-        sendAndCheckDeliveryTime(jmsProducer, jmsQueue, sendMsg);
-
-        jmsContext.close();
+    public void testReceiveMessage(HttpServletRequest request, HttpServletResponse response)
+        throws Exception {
+        receiveMessage(jmsQCFBindings);
     }
 
-    public void testReceiveMessage_TCP(
-        HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        boolean testFailed = false;
-
-        JMSContext jmsContext = jmsQCFTCP.createContext();
-
-        JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsQueue);
-
-        String recdMsg = ((TextMessage) jmsConsumer.receive(120000)).getText();
-
-        if ( (recdMsg == null) || !recdMsg.equals("testSendMessage") ) {
-            testFailed = true;
-        }
-
-        jmsConsumer.close();
-        jmsContext.close();
-
-        if ( testFailed ) {
-            throw new Exception("testReceiveMessage failed");
-        }
+    public void testReceiveMessage_TCP(HttpServletRequest request, HttpServletResponse response)
+        throws Exception {
+        receiveMessage(jmsQCFTCP);
     }
+    
+    private void receiveMessage(QueueConnectionFactory queueConnectionFactory)
+        throws Exception {
+
+        try (JMSContext jmsContext = queueConnectionFactory.createContext()) {
+            JMSConsumer jmsConsumer = jmsContext.createConsumer(jmsQueue);
+
+            TextMessage receivedMessage = (TextMessage) jmsConsumer.receive(deliveryDelay*12);
+            if (receivedMessage == null)
+                throw new Exception("No message received");
+            if ( !receivedMessage.getText().startsWith(this.getClass().getName()+".testSendMessage() "))
+                throw new Exception("Incorrect Message received:"+receivedMessage.getText());
+            if (receivedMessage.getLongProperty("MustArriveAfter") > System.currentTimeMillis())
+                throw new Exception("Message arrived too soon\n"
+                                   +"MustArriveAfter:"+receivedMessage.getLongProperty("MustArriveAfter")+" time now:"+System.currentTimeMillis()+"\n"
+                                   +"Message:"+receivedMessage.getText());        
+        }      
+    }
+
 }

@@ -862,16 +862,28 @@ public class PermissionManager implements PermissionsCombiner {
         }
     }
     
-    
+
     private void RecursiveFind(File dir, String fileName, String codeBase, ArrayList<Permission> permissions)  
     { 
-        
-        // take the archive referenced by fileName apart to its individual archives
         ZipFile z = null;
-        if (!codeBase.contains("expanded")) {
+        File tempFile = new File(codeBase);
+        
+        // fileName comes in empty if the path contains a slash on the end (file or directory)
+        if(fileName == null || fileName.trim().equals("")) {
+            if (codeBase.endsWith("/")) {
+                String trimmedFileName = codeBase.substring(0,codeBase.length() - 1);
+                fileName = trimmedFileName.substring(trimmedFileName.lastIndexOf("/"), trimmedFileName.length());
+            } else {
+                fileName = codeBase;
+            }
+            
+        }
+       
+        // Take the archive referenced by fileName apart to its individual archives
+        // Only do this if the codeBase is NOT an expanded app (ie directory)
+        if (!codeBase.contains("expanded") && !(tempFile.isDirectory() && (fileName.endsWith(".ear") || fileName.endsWith(".war")))) {
             try {
                 z = new ZipFile(codeBase);
-               
             } catch (java.io.IOException ioe) {
                 // should never get here
             }
@@ -885,11 +897,9 @@ public class PermissionManager implements PermissionsCombiner {
                     }
                     String individualArchive = ze.getName();
                     RecursiveArchiveFind(dir, individualArchive, codeBase, permissions);
-                    
                 }         
             }    
         }
-
     } 
 
 }

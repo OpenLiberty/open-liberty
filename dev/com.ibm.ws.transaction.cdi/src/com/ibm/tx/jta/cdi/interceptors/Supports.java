@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,8 @@ import javax.interceptor.InvocationContext;
 import javax.transaction.Transactional;
 import javax.transaction.Transactional.TxType;
 
+import com.ibm.websphere.uow.UOWSynchronizationRegistry;
+
 @Transactional(value = TxType.SUPPORTS)
 @Priority(Interceptor.Priority.PLATFORM_BEFORE + 200)
 @Interceptor
@@ -29,11 +31,15 @@ public class Supports extends TransactionalInterceptor {
      * <p>If called inside a transaction context, the managed bean method execution
      * must then continue inside this transaction context.</p>
      */
-
     @AroundInvoke
     public Object supports(final InvocationContext context) throws Exception {
 
-        return runUnderUOWManagingEnablement(getUOWM().getUOWType(), true, context, "SUPPORTS");
+        int uowType = UOWSynchronizationRegistry.UOW_TYPE_LOCAL_TRANSACTION;
+
+        if (getUOWM().getUOWStatus() != UOWSynchronizationRegistry.UOW_STATUS_NONE) {
+            uowType = getUOWM().getUOWType();
+        }
+        return runUnderUOWManagingEnablement(uowType, true, context, "SUPPORTS");
 
     }
 }

@@ -338,11 +338,21 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
                 // For cloud support, retrieve recovery identity from the configuration if it is defined.
                 if (cp != null) {
                     _recoveryIdentity = cp.getRecoveryIdentity();
-                    if (tc.isDebugEnabled())
-                        Tr.debug(tc, "RecoveryIdentity is ", _recoveryIdentity);
+                    if (_recoveryIdentity != null) {
+                        final String sanitizedRI = _recoveryIdentity.replaceAll("\\W", "");
+
+                        if (!_recoveryIdentity.equals(sanitizedRI)) {
+                            if (tc.isDebugEnabled())
+                                Tr.debug(tc, "Sanitized recoveryIdentity: ", sanitizedRI);
+                            _recoveryIdentity = sanitizedRI;
+                        } else {
+                            if (tc.isDebugEnabled())
+                                Tr.debug(tc, "recoveryIdentity: ", _recoveryIdentity);
+                        }
+                    }
                     _recoveryGroup = cp.getRecoveryGroup();
                     if (tc.isDebugEnabled())
-                        Tr.debug(tc, "recoveryGroup is ", _recoveryGroup);
+                        Tr.debug(tc, "recoveryGroup: ", _recoveryGroup);
                 }
 
                 //Add this guard to ensure that we have sufficient config to drive recovery.

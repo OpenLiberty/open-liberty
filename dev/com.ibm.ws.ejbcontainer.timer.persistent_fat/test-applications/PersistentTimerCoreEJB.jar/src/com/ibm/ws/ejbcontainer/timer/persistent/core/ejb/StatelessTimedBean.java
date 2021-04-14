@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2020 IBM Corporation and others.
+ * Copyright (c) 2003, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -60,12 +60,13 @@ public class StatelessTimedBean implements SessionBean, TimedObject {
     private static CountDownLatch timerLatch = new CountDownLatch(1);
     private static CountDownLatch timerIntervalLatch = new CountDownLatch(1);
     private static CountDownLatch timerFirstIntervalLatch = new CountDownLatch(1);
-    private static CountDownLatch timerIntervalWaitLatch = new CountDownLatch(1);
     private static CountDownLatch testOpsInTimeoutLatch = new CountDownLatch(1);
 
     private SessionContext ivContext;
     private TimerService ivTimerService;
     private final boolean isJavaEE;
+
+    private static boolean shouldCancel = false;
 
     // These fields hold the test results for EJB callback methods
     private static Object svSetSessionContextResults;
@@ -309,13 +310,11 @@ public class StatelessTimedBean implements SessionBean, TimedObject {
 
     /** Never called for Stateless Session Bean. **/
     @Override
-    public void ejbActivate() {
-    }
+    public void ejbActivate() {}
 
     /** Never called for Stateless Session Bean. **/
     @Override
-    public void ejbPassivate() {
-    }
+    public void ejbPassivate() {}
 
     /**
      * Test getTimerService()/TimerService access from a method on a Stateless
@@ -358,9 +357,10 @@ public class StatelessTimedBean implements SessionBean, TimedObject {
         svTimeoutCounts = new int[timer.length];
 
         timerLatch = new CountDownLatch(timer.length - 1); // one timer cancelled
-        timerIntervalWaitLatch = new CountDownLatch(1); // block interval timer until ready
         timerIntervalLatch = new CountDownLatch(2);
         timerFirstIntervalLatch = new CountDownLatch(1);
+
+        shouldCancel = false;
 
         // -------------------------------------------------------------------
         // 1 - Verify getTimerService() returns a valid TimerService
@@ -672,12 +672,20 @@ public class StatelessTimedBean implements SessionBean, TimedObject {
         // 21 - Verify Timer.getNextTimeout() on repeating Timer works
         // -------------------------------------------------------------------
         {
-            //wait for first interval
-            waitForTimers(timerFirstIntervalLatch, MAX_TIMER_WAIT);
-            svLogger.info("testTimerService: Calling Timer.getNextTimeout()");
-            Date nextTime = timer[2].getNextTimeout();
-            long remaining = nextTime.getTime() - System.currentTimeMillis();
-            Assert.assertTrue("21 --> Timer.getNextTimeout() returned unexpected value: " + remaining,
+            // If the timer is way behind on firing, the nextTimeout could potentially be negative a few times until
+            // it catches up, loop up to 5 timer timeouts to potentially catch up.
+            long remaining = -1;
+            int maxTries = 5;
+            do {
+                //wait for interval
+                timerFirstIntervalLatch = new CountDownLatch(1);
+                waitForTimers(timerFirstIntervalLatch, MAX_TIMER_WAIT);
+                svLogger.info("21 --> testTimerService: Calling Timer.getNextTimeout(), try #" + (6 - maxTries));
+                Date nextTime = timer[2].getNextTimeout();
+                remaining = nextTime.getTime() - System.currentTimeMillis();
+                svLogger.info("21 --> remaining time until getNextTimeout: " + remaining);
+            } while (remaining < (1 - TIMER_PRECISION) && --maxTries > 0);
+            Assert.assertTrue("21 --> Timer.getNextTimeout() returned unexpected value after " + (6 - maxTries) + " tries: " + remaining,
                               remaining >= (1 - TIMER_PRECISION) && remaining <= (INTERVAL + TIMER_PRECISION));
         }
 
@@ -686,9 +694,9 @@ public class StatelessTimedBean implements SessionBean, TimedObject {
         // -------------------------------------------------------------------
         {
             successful = true;
-
+            shouldCancel = true;
             svLogger.info("testTimerService: Waiting for timers to expire. . .");
-            timerIntervalWaitLatch.countDown(); // allow 2nd interval to run
+            timerIntervalLatch = new CountDownLatch(2);
             waitForTimers(timerIntervalLatch, MAX_TIMER_WAIT);
 
             // See if all except cancelled timers have expired once...
@@ -697,9 +705,9 @@ public class StatelessTimedBean implements SessionBean, TimedObject {
                 switch (i) {
                     case 2:
                     case 4:
-                        if (svTimeoutCounts[i] != 2) {
+                        if (svTimeoutCounts[i] < 2) {
                             successful = false;
-                            svLogger.info("Timer[" + i + "] not executed twice: " +
+                            svLogger.info("Timer[" + i + "] not executed at least twice: " +
                                           timer[i]);
                         }
                         break;
@@ -866,14 +874,6 @@ public class StatelessTimedBean implements SessionBean, TimedObject {
         }
 
         if (timerIndex >= 0) {
-            if (svTimeoutCounts[timerIndex] == 1) {
-                // Don't run the 2nd interval until test is ready
-                try {
-                    timerIntervalWaitLatch.await(MAX_TIMER_WAIT, TimeUnit.MILLISECONDS);
-                } catch (InterruptedException e) {
-                    e.printStackTrace(System.out);
-                }
-            }
 
             svTimeoutCounts[timerIndex]++;
 
@@ -883,8 +883,10 @@ public class StatelessTimedBean implements SessionBean, TimedObject {
             if (svTimeoutCounts[timerIndex] == 1) {
                 timerLatch.countDown();
             } else if (svTimeoutCounts[timerIndex] > 1) {
-                timer.cancel();
-                timerIntervalLatch.countDown();
+                if (shouldCancel) {
+                    timer.cancel();
+                    timerIntervalLatch.countDown();
+                }
             }
 
             return;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2020 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -3452,11 +3452,19 @@ public class EJBJarType extends DescriptionGroup implements DeploymentDescriptor
                 StringType destination_type = new StringType();
                 parser.parse(destination_type);
 
+                String type_queue = MessageDriven.ACTIVATION_CONFIG_PROPERTY_DESTINATION_TYPE_JAKARTA_QUEUE;
+                String type_topic = MessageDriven.ACTIVATION_CONFIG_PROPERTY_DESTINATION_TYPE_JAKARTA_TOPIC;
+                if (parser.runtimeVersion < 90) {
+                    // Runtime versions prior to 9.0 use javax versions of classes
+                    type_queue = MessageDriven.ACTIVATION_CONFIG_PROPERTY_DESTINATION_TYPE_QUEUE;
+                    type_topic = MessageDriven.ACTIVATION_CONFIG_PROPERTY_DESTINATION_TYPE_TOPIC;
+                }
+
                 String destination_type_value = destination_type.getValue();
-                if ("javax.jms.Queue".equals(destination_type_value) || "javax.jms.Topic".equals(destination_type_value)) {
+                if (type_queue.equals(destination_type_value) || type_topic.equals(destination_type_value)) {
                     activation_config.addActivationConfigProperty(parser, MessageDriven.ACTIVATION_CONFIG_PROPERTY_DESTINATION_TYPE, destination_type_value);
                 } else {
-                    throw new ParseException(parser.invalidEnumValue(destination_type_value, "javax.jms.Queue", "javax.jms.Topic"));
+                    throw new ParseException(parser.invalidEnumValue(destination_type_value, type_queue, type_topic));
                 }
                 return true;
             }

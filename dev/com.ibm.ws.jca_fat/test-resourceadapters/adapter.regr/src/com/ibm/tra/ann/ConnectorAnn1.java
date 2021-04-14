@@ -38,11 +38,11 @@ import com.ibm.tra.trace.DebugTracer;
 @SuppressWarnings("serial")
 @Connector(
 
-// begin 635650 - AuthenticationMechanism does not support @Target{}, 
+// begin 635650 - AuthenticationMechanism does not support @Target{},
 // which causes @AuthenticationMechanism to fail compilation.
 
-           authMechanisms = @AuthenticationMechanism(), // CONN_1_AUTHMECH=AUTHMECH_DEF 
-//authMechanisms={},                          // CONN_1_AUTHMECH=null  
+           authMechanisms = @AuthenticationMechanism(), // CONN_1_AUTHMECH=AUTHMECH_DEF
+//authMechanisms={},                          // CONN_1_AUTHMECH=null
 // end 635650
 
            description = "CONN_1_DESC",
@@ -58,10 +58,10 @@ import com.ibm.tra.trace.DebugTracer;
 
            requiredWorkContexts = SecurityContext.class, // CONN_1_REQWRKCTX
 
-// begin 635650 - SecurityPermission does not support @Target{}, 
+// begin 635650 - SecurityPermission does not support @Target{},
 // which causes @SecurityPermission() to fail compilation.
            securityPermissions = @SecurityPermission(), // CONN_1_SECPERM=SECPERM_DEF
-//securityPermissions={},                     // CONN_SECPERM=null 
+//securityPermissions={},                     // CONN_SECPERM=null
 // end 635650
 
            smallIcon = "CONN_1_SMALLICON",
@@ -89,7 +89,8 @@ public class ConnectorAnn1 implements ResourceAdapter, Serializable {
 
     private transient XATerminator myXATerminator = null;
 
-    public ConnectorAnn1() {}
+    public ConnectorAnn1() {
+    }
 
     // Resource Adapter Configuration Properties
 //  @ConfigProperty(
@@ -205,7 +206,7 @@ public class ConnectorAnn1 implements ResourceAdapter, Serializable {
         if (activationSpec instanceof ActivationSpecImpl) {
             if (debug) {
                 ActivationSpecImpl aSpec = (ActivationSpecImpl) activationSpec;
-                out.println("Recieved com.ibm.inbound.impl.ActivationSpecImpl");
+                out.println("Received com.ibm.inbound.impl.ActivationSpecImpl");
                 out.println("Contents of ActivationSpec: ");
                 out.println("prop1: " + aSpec.getProp1());
                 out.println("destType: " + aSpec.getDestinationType());
@@ -240,7 +241,7 @@ public class ConnectorAnn1 implements ResourceAdapter, Serializable {
         if (activationSpec instanceof ActivationSpecImpl) {
             ActivationSpecImpl aSpec = (ActivationSpecImpl) activationSpec;
             if (debug) {
-                out.println("Recieved com.ibm.inbound.impl.ActivationSpecImpl");
+                out.println("Received com.ibm.inbound.impl.ActivationSpecImpl");
                 out.println("Contents of ActivationSpec: ");
                 out.println("prop1:" + aSpec.getProp1());
                 out.println("destType: " + aSpec.getDestinationType());

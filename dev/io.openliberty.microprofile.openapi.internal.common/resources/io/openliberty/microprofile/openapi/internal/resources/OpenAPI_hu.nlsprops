@@ -1,4 +1,4 @@
-# Copyright (c) 2018, 2020 IBM Corporation and others.
+# Copyright (c) 2018, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -61,6 +61,6 @@ OPENAPI_APPLICATION_PROCESSED=CWWKO1660I: A(z) {0} alkalmaz\u00e1s fel lett dolg
 OPENAPI_APPLICATION_PROCESSED.explanation=Az OpenAPI dokumentum el\u0151\u00e1ll\u00edt\u00e1sra ker\u00fclt a megadott alkalmaz\u00e1shoz. A /openapi v\u00e9gponton tekinthet\u0151 meg.
 OPENAPI_APPLICATION_PROCESSED.useraction=Nincs teend\u0151.
 
-OPENAPI_APPLICATION_PROCESSING_ERROR=CWWKO1661E: Hiba t\u00f6rt\u00e9nt a(z) {0} alkalmaz\u00e1s feldolgoz\u00e1sa sor\u00e1n, \u00e9s egy OpenAPI dokumentum nem k\u00e9sz\u00fclt el.
+OPENAPI_APPLICATION_PROCESSING_ERROR=CWWKO1661E: Hiba t\u00f6rt\u00e9nt a(z) {0} alkalmaz\u00e1s feldolgoz\u00e1sa sor\u00e1n, \u00e9s egy OpenAPI dokumentum nem k\u00e9sz\u00fclt el. A hiba a k\u00f6vetkez\u0151 volt: {1}.
 OPENAPI_APPLICATION_PROCESSING_ERROR.explanation=Fut\u00e1s k\u00f6zbeni hiba t\u00f6rt\u00e9nt az alkalmaz\u00e1s feldolgoz\u00e1sa sor\u00e1n.
-OPENAPI_APPLICATION_PROCESSING_ERROR.useraction=Gy\u0171jtse \u00f6ssze a napl\u00f3kat \u00e9s keresse meg az IBM szervizt.
+OPENAPI_APPLICATION_PROCESSING_ERROR.useraction=Az FFDC napl\u00f3k \u00e9s a kiv\u00e9tel sz\u00f6veg\u00e9nek \u00e1ttekint\u00e9s\u00e9vel azonos\u00edtsa a probl\u00e9m\u00e1t.

@@ -37,6 +37,9 @@
     <!-- JDBC driver -->
     <javaPermission codebase="${shared.resource.dir}/jdbc/${env.DB_DRIVER}" className="java.security.AllPermission"/>
 
+    <!-- Permission needed for Postgres driver -->
+    <javaPermission className="java.util.PropertyPermission" name="org.postgresql.forceBinary" actions="read"/>
+    
     <!-- Permission needed for SQLServer driver -->
     <javaPermission className="java.net.SocketPermission" name="*" actions="connect,resolve"/>
 

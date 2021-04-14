@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2013 IBM Corporation and others.
+# Copyright (c) 2012, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -46,6 +46,7 @@ INVALID_PROPERTY_VALUE.useraction=Aseg\u00farese de que el valor de la propiedad
 GENERIC=CWIML1999E: La operaci\u00f3n del registro de usuarios no ha podido completarse. Se ha producido un error de tiempo de ejecuci\u00f3n durante el proceso: {0}
 GENERIC.explanation=El programa ha encontrado el error especificado durante la operaci\u00f3n.
 GENERIC.useraction= Revise los registros para averiguar la causa de este error y realice las acciones correctivas adecuadas.
+
 MISSING_MANDATORY_PROPERTY=CWIML1028E: La operaci\u00f3n del registro de usuarios no ha podido completarse. Falta el valor de la propiedad obligatoria {0}. Especifique un valor para la propiedad obligatoria.
 MISSING_MANDATORY_PROPERTY.explanation=La operaci\u00f3n no puede realizarse porque falta el valor de la propiedad obligatoria. Por ejemplo, no se ha especificado la propiedad RDN (nombre distinguido relativo) durante la creaci\u00f3n de la entidad; o faltan propertyName o entityTypeName en PropertyDefinitionControl o en ExtensionPropertyDefinitionControl; o falta entityName en entitySchema.
 MISSING_MANDATORY_PROPERTY.useraction=Especifique un valor para la propiedad obligatoria.
@@ -228,3 +229,53 @@ LOGINPROPERTY_OVERRIDE_USERFILTER.useraction=Si se prefiere el atributo userFilt
 INVALID_LOGIN_PROPERTIES=CWIML4506E: Las siguientes propiedades de inicio de sesi\u00f3n no son v\u00e1lidas: {0}.
 INVALID_LOGIN_PROPERTIES.explanation=Una o varias propiedades de inicio de sesi\u00f3n no son propiedades de WIM PersonAccount v\u00e1lidas.
 INVALID_LOGIN_PROPERTIES.useraction=Elija propiedades PersonAccount v\u00e1lidas o a\u00f1ada las propiedades a PersonAccount como propiedades ampliadas. Aseg\u00farese de que las may\u00fasculas y min\u00fasculas de cada propiedad de inicio de sesi\u00f3n coincida con las de la propiedad PersonAccount correspondiente.
+
+KRB5_LOGIN_FAILED_CACHE=CWIML4507E: El inicio de sesi\u00f3n de Kerberos ha fallado con el principal de Kerberos {0} y la memoria cach\u00e9 de credenciales (ccache) de Kerberos {1}.
+KRB5_LOGIN_FAILED_CACHE.explanation=El principal de Kerberos especificado no es v\u00e1lido o la memoria cach\u00e9 de credenciales (ccache) de Kerberos no es v\u00e1lida o ha caducado.
+KRB5_LOGIN_FAILED_CACHE.useraction=Aseg\u00farese de que se ha especificado un principal de Kerberos v\u00e1lido y de que la memoria cach\u00e9 de credenciales de Kerberos (ccache) no ha caducado.
+
+KRB5_LOGIN_FAILED_KEYTAB=CWIML4508E: El inicio de sesi\u00f3n de Kerberos ha fallado con el principal de Kerberos {0} y la tabla de claves de Kerberos {1}.
+KRB5_LOGIN_FAILED_KEYTAB.explanation=El principal de Kerberos especificado no es v\u00e1lido o la tabla de claves de Kerberos no es v\u00e1lida.
+KRB5_LOGIN_FAILED_KEYTAB.useraction=Aseg\u00farese de que se ha especificado un principal de Kerberos v\u00e1lido y una tabla de claves de Kerberos v\u00e1lida que contiene el principal de Kerberos.
+		
+KRB5_LOGIN_FAILED_DEFAULT_CACHE=CWIML4509E: El inicio de sesi\u00f3n de Kerberos ha fallado con el principal de Kerberos {0} y la memoria cach\u00e9 de credenciales de Kerberos predeterminada.
+KRB5_LOGIN_FAILED_DEFAULT_CACHE.explanation=El principal de Kerberos especificado no es v\u00e1lido o la memoria cach\u00e9 de credenciales (ccache) de Kerberos predeterminada no es v\u00e1lida o ha caducado.
+KRB5_LOGIN_FAILED_DEFAULT_CACHE.useraction=Aseg\u00farese de que se ha especificado un principal de Kerberos v\u00e1lido y de que la memoria cach\u00e9 de credenciales de Kerberos (ccache) predeterminada no ha caducado.
+
+KRB5_LOGIN_FAILED_DEFAULT_KEYTAB=CWIML4510E: El inicio de sesi\u00f3n de Kerberos ha fallado con el principal de Kerberos {0} y la tabla de claves de Kerberos predeterminada.
+KRB5_LOGIN_FAILED_DEFAULT_KEYTAB.explanation=El principal de Kerberos especificado no es v\u00e1lido o la tabla de claves de Kerberos predeterminada no es v\u00e1lida.
+KRB5_LOGIN_FAILED_DEFAULT_KEYTAB.useraction=Aseg\u00farese de que se ha especificado un principal de Kerberos v\u00e1lido y de que la tabla de claves de Kerberos predeterminada es v\u00e1lida.
+
+KRB5_TICKETCACHE_USED=CWIML4511E: El registro de LDAP {0} est\u00e1 configurado con el nombre de archivo de memoria cach\u00e9 (ccache) de t\u00edquet de Kerberos {1} y el nombre de archivo de tabla de claves {2}. La memoria cach\u00e9 de credenciales (ccache) de Kerberos se utiliza para la autenticaci\u00f3n de enlace de Kerberos con el servidor LDAP.
+KRB5_TICKETCACHE_USED.explanation=Para utilizar el archivo de tabla de claves, se debe especificar el nombre de archivo de tabla de claves y no se debe especificar el nombre de archivo de memoria cach\u00e9 de credenciales (ccache) de Kerberos.
+KRB5_TICKETCACHE_USED.useraction=No se requiere ninguna acci\u00f3n. Para evitar este mensaje, elimine el atributo ticketCache del registro de LDAP o el atributo keytab de Kerberos.
+
+INVALID_KRB5_PRINCIPAL=CWIML4512E: El nombre de principal de Kerberos {0} est\u00e1 formateado incorrectamente, falta el nombre de reino o no se ha encontrado un nombre de reino predeterminado.
+INVALID_KRB5_PRINCIPAL.explanation=El nombre de principal de Kerberos no puede ser nulo. El nombre de principal debe incluir el nombre de reino o debe haber un nombre de reino predeterminado definido en el archivo de configuraci\u00f3n de Kerberos.
+INVALID_KRB5_PRINCIPAL.useraction=Corrija el nombre del principal o a\u00f1ada un nombre de reino predeterminado.
+
+CANNOT_READ_KRB5_FILE=CWIML4513E: El registro de LDAP {0} no puede leer el archivo de Kerberos {1}.
+CANNOT_READ_KRB5_FILE.explanation=No se puede abrir el archivo de Kerberos. Los permisos de archivo son incorrectos o el archivo no existe.
+CANNOT_READ_KRB5_FILE.useraction=Verifique que la ubicaci\u00f3n de archivo es correcta y que el servidor tiene permisos para leer archivos.
+
+# CWIML4514 already used
+
+KRB5_FILE_NOT_FOUND=CWIML4515E: El atributo {0} del elemento {1} se ha configurado en un archivo que no existe en la siguiente ubicaci\u00f3n: {2}
+KRB5_FILE_NOT_FOUND.explanation=La configuraci\u00f3n hace referencia a un archivo que es ilegible o que no existe.
+KRB5_FILE_NOT_FOUND.useraction=Aseg\u00farese de que la configuraci\u00f3n apunta a un archivo que existe y que es legible para el proceso de aplicaci\u00f3n.
+
+KRB5_FILE_FOUND=CWIML4516E: El componente de registro de LDAP est\u00e1 configurado para utilizar un archivo {0} que se encuentra en {1}.
+KRB5_FILE_FOUND.explanation=El archivo configurado se ha ubicado satisfactoriamente.
+KRB5_FILE_FOUND.useraction=No se requiere ninguna acci\u00f3n.
+
+# CWIML4517 already used
+
+IDMAP_INVALID_FORMAT=CWIML4518W: El valor {0} {1} est\u00e1 mal formado. El valor debe ser una lista separada por signos de punto y coma de pares ''objectclass:attribute'' o ''*:attribute''.
+IDMAP_INVALID_FORMAT.explanation=El valor userIdMap debe tener un formato v\u00e1lido para que se pueda analizar la clase de objeto y el atributo.
+IDMAP_INVALID_FORMAT.useraction=Actualice el valor de userIdMap para que se ajuste al formato especificado.
+
+# CWIML4519 and CWIML4520 already used
+
+KRB5_SERVICE_NOT_AVAILABLE=CWIML4521E: El registro de LDAP {0} ha intentado enlazar con el servidor de LDAP utilizando credenciales de Kerberos para el nombre de principal {1}, pero el servicio Kerberos que proporciona estas credenciales no est\u00e1 disponible. El mecanismo de autenticaci\u00f3n de enlace es {2}.
+KRB5_SERVICE_NOT_AVAILABLE.explanation=El servicio Kerberos no estaba disponible cuando el registro de LDAP ha intentado enlazar con el servidor LDAP. Si el servicio Kerberos no est\u00e1 disponible, no se puede autenticar ning\u00fan usuario.
+KRB5_SERVICE_NOT_AVAILABLE.useraction=Revise los valores de configuraci\u00f3n del registro de LDAP para comprobar los atributos bindAuthMechanism, krb5Principal y krb5TicketCache, as\u00ed como la configuraci\u00f3n de Kerberos. Reinicie el servidor.

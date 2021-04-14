@@ -11,6 +11,7 @@
 package com.ibm.ws.http.channel.internal.inbound;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -1040,10 +1041,7 @@ public class HttpInboundLink extends InboundProtocolLink implements InterChannel
         if (buffer.remaining() >= 24) {
             byte[] arr = new byte[24];
             buffer.get(arr);
-            String bufferString = new String(arr, 0, 24);
-            if (bufferString != null && !bufferString.isEmpty() && bufferString.startsWith(HttpConstants.HTTP2PrefaceString)) {
-                hasMagicString = true;
-            }
+            hasMagicString = Arrays.equals(arr, HttpConstants.HTTP2PrefaceBytes);
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {

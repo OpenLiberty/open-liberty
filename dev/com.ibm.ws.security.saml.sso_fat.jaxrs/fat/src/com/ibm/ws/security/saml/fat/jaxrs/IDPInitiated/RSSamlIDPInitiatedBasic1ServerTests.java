@@ -21,7 +21,6 @@ import com.gargoylesoftware.htmlunit.WebClient;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.ValidationData.validationData;
 import com.ibm.ws.security.saml.fat.jaxrs.common.RSSamlBasicTests;
-import com.ibm.ws.security.saml20.fat.commonTest.SAMLCommonTestHelpers;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLConstants;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLMessageConstants;
 
@@ -136,7 +135,7 @@ public class RSSamlIDPInitiatedBasic1ServerTests extends RSSamlBasicTests {
 
         testAppServer.reconfigServer(buildSPServerName("server_1_noDefaultCfgs.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         List<validationData> expectations = commonUtils.getGoodExpectationsForJaxrsGet(flowType, testSettings);
 
@@ -160,7 +159,7 @@ public class RSSamlIDPInitiatedBasic1ServerTests extends RSSamlBasicTests {
 
         testAppServer.reconfigServer(buildSPServerName(order1), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
 
-        WebClient webClient1 = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient1 = getAndSaveWebClient();
 
         List<validationData> expectations = addConfusedExpectation(SAMLConstants.INVOKE_JAXRS_GET, null);
 
@@ -169,7 +168,7 @@ public class RSSamlIDPInitiatedBasic1ServerTests extends RSSamlBasicTests {
 
         testAppServer.reconfigServer(buildSPServerName(order2), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
 
-        WebClient webClient2 = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient2 = getAndSaveWebClient();
 
         // make sure we get the error page indicating that we're not authorized
         genericSAML(_testName, webClient2, testSettings, throughJAXRSGet, expectations);
@@ -192,7 +191,7 @@ public class RSSamlIDPInitiatedBasic1ServerTests extends RSSamlBasicTests {
 
         testAppServer.reconfigServer(buildSPServerName(order1a), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
 
-        WebClient webClient1 = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient1 = getAndSaveWebClient();
 
         List<validationData> expectations = addConfusedExpectation(SAMLConstants.INVOKE_JAXRS_GET, null);
 
@@ -201,7 +200,7 @@ public class RSSamlIDPInitiatedBasic1ServerTests extends RSSamlBasicTests {
 
         testAppServer.reconfigServer(buildSPServerName(order2a), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
 
-        WebClient webClient2 = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient2 = getAndSaveWebClient();
 
         // make sure we get the error page indicating that we're not authorized
         genericSAML(_testName, webClient2, testSettings, throughJAXRSGet, expectations);

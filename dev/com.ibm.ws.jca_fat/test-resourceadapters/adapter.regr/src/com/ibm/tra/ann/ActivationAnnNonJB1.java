@@ -60,7 +60,7 @@ public class ActivationAnnNonJB1 /* implements Serializable */ {
         destination = dest;
         if (DebugTracer.isDebugActivationSpec()) {
             PrintStream out = DebugTracer.getPrintStream();
-            out.println("ActivationAnnNonJB1.setDestination(): recieved dest: ");
+            out.println("ActivationAnnNonJB1.setDestination(): received dest: ");
             out.println("toString(): " + destination.toString());
             out.println("Class: " + destination.getClass().getName());
             out.println("End ActivationAnnNonJB1.setDestination()");

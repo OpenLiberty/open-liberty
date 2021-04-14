@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,8 +13,6 @@ package com.ibm.ws.cdi20.fat.tests;
 import static componenttest.rules.repeater.EERepeatTests.EEVersion.EE8;
 import static componenttest.rules.repeater.EERepeatTests.EEVersion.EE9;
 
-import java.io.File;
-
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
@@ -22,8 +20,10 @@ import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.CDIArchiveHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
+import com.ibm.websphere.simplicity.beansxml.BeansAsset.DiscoveryMode;
 import com.ibm.ws.cdi20.fat.apps.beanManagerLookup.BeanManagerLookupServlet;
 import com.ibm.ws.cdi20.fat.apps.beanManagerLookup.MyBeanCDI20;
 import com.ibm.ws.cdi20.fat.apps.configurator.ConfiguratorTestBase;
@@ -99,21 +99,26 @@ public class BasicCdi20Tests extends FATServletClient {
         if (TestModeFilter.shouldRun(TestMode.FULL)) {
 
             WebArchive app2 = ShrinkWrap.create(WebArchive.class, CONFIGURATION_APP_NAME + ".war")
-                                        .addPackages(true, ConfiguratorTestBase.class.getPackage())
-                                        .addAsManifestResource(new File("test-applications/" + CONFIGURATION_APP_NAME
-                                                                        + "/resources/META-INF/services/javax.enterprise.inject.spi.Extension"),
-                                                               "services/javax.enterprise.inject.spi.Extension")
-                                        .addAsWebInfResource(new File("test-applications/" + CONFIGURATION_APP_NAME + "/resources/META-INF/beans.xml"), "beans.xml"); // NEEDS TO GO IN WEB-INF in a war
+                                        .addPackages(true, ConfiguratorTestBase.class.getPackage());
+
+            CDIArchiveHelper.addCDIExtensionService(app2,
+                                                    com.ibm.ws.cdi20.fat.apps.configurator.bean.AfterBeanDiscoveryObserver.class,
+                                                    com.ibm.ws.cdi20.fat.apps.configurator.beanAttributes.ProcessBeanAttributesObserver.class,
+                                                    com.ibm.ws.cdi20.fat.apps.configurator.injectionPoint.ProcessInjectionPointObserver.class,
+                                                    com.ibm.ws.cdi20.fat.apps.configurator.observerMethod.ProcessObserverMethodObserver.class,
+                                                    com.ibm.ws.cdi20.fat.apps.configurator.producer.ProcessProducerObserver.class,
+                                                    com.ibm.ws.cdi20.fat.apps.configurator.annotatedTypeConfigurator.ProcessAnnotatedTypeObserver.class);
+
+            CDIArchiveHelper.addBeansXML(app2, DiscoveryMode.ALL);
 
             WebArchive app3 = ShrinkWrap.create(WebArchive.class, INTERCEPTION_FACTORY_APP_NAME + ".war")
                                         .addPackages(true, InterceptionFactoryServlet.class.getPackage());
 
             WebArchive app4 = ShrinkWrap.create(WebArchive.class, TRIM_TEST_APP_NAME + ".war")
-                                        .addPackages(true, TrimTestServlet.class.getPackage())
-                                        .addAsManifestResource(new File("test-applications/" + TRIM_TEST_APP_NAME
-                                                                        + "/resources/META-INF/services/javax.enterprise.inject.spi.Extension"),
-                                                               "services/javax.enterprise.inject.spi.Extension")
-                                        .addAsWebInfResource(new File("test-applications/" + TRIM_TEST_APP_NAME + "/resources/META-INF/beans.xml"), "beans.xml"); // NEEDS TO GO IN WEB-INF in a war
+                                        .addPackages(true, TrimTestServlet.class.getPackage());
+
+            CDIArchiveHelper.addCDIExtensionService(app4, com.ibm.ws.cdi20.fat.apps.trimTest.PATObserver.class);
+            CDIArchiveHelper.addBeansXML(app4, TrimTestServlet.class);
 
             ShrinkHelper.exportDropinAppToServer(server, app2, DeployOptions.SERVER_ONLY);
             ShrinkHelper.exportDropinAppToServer(server, app3, DeployOptions.SERVER_ONLY);

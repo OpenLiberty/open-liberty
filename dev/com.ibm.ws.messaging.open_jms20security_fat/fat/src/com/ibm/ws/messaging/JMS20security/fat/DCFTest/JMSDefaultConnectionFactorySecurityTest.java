@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -100,19 +100,33 @@ public class JMSDefaultConnectionFactorySecurityTest {
                                             "features/testjmsinternals-1.0.mf");
         server.copyFileToLibertyServerRoot("resources/security",
                                            "clientLTPAKeys/mykey.jks");
-        server.setServerConfigurationFile("DCFResSecurityClient.xml");
-        server1.setServerConfigurationFile("TestServer1_ssl.xml");
-
-        server1.startServer("DCFServer.log");
-        String waitFor = server1.waitForStringInLog("CWWKF0011I.*", server1.getMatchingLogFile("messages.log"));
-        assertNotNull("Server ready message not found", waitFor);
 
         TestUtils.addDropinsWebApp(server, "JMSDCFSecurity", "web");
         TestUtils.addDropinsWebApp(server, "JMSContextInject", "web");
-        server.startServer("DCFTestClient.log");
-        waitFor = server.waitForStringInLog("CWWKF0011I.*", server.getMatchingLogFile("messages.log"));
-        assertNotNull("Server ready message not found", waitFor);
 
+        startAppservers();
+    }
+
+    /**
+     * Start both the JMSConsumerClient local and remote messaging engine AppServers.
+     *
+     * @throws Exception
+     */
+    private static void startAppservers() throws Exception {
+        server.setServerConfigurationFile("DCFResSecurityClient.xml");
+        server1.setServerConfigurationFile("TestServer1_ssl.xml");
+        server.startServer("DCFTestClient.log");
+        server1.startServer("DCFServer.log");
+
+        // CWWKF0011I: The TestServer1 server is ready to run a smarter planet. The TestServer1 server started in 6.435 seconds.
+        // CWSID0108I: JMS server has started.
+        // CWWKS4105I: LTPA configuration is ready after 4.028 seconds.
+        for (String messageId : new String[] { "CWWKF0011I.*", "CWSID0108I.*", "CWWKS4105I.*" }) {
+            String waitFor = server.waitForStringInLog(messageId, server.getMatchingLogFile("messages.log"));
+            assertNotNull("Server message " + messageId + " not found", waitFor);
+            waitFor = server1.waitForStringInLog(messageId, server1.getMatchingLogFile("messages.log"));
+            assertNotNull("Server1 message " + messageId + " not found", waitFor);
+        }
     }
 
     @org.junit.AfterClass
@@ -170,14 +184,9 @@ public class JMSDefaultConnectionFactorySecurityTest {
         assertNotNull("Server ready message not found", waitFor);
         val = runInServlet("testP2PMQ_TCP_SecOn");
         assertTrue("testP2PMQ_TCP_SecOn failed ", val);
+
         server.stopServer();
         server1.stopServer();
-        server.setServerConfigurationFile("DCFResSecurityClient.xml");
-        server1.startServer();
-        waitFor = server1.waitForStringInLog("CWWKF0011I.*", server1.getMatchingLogFile("messages.log"));
-        assertNotNull("Server ready message not found", waitFor);
-        server.startServer();
-        waitFor = server.waitForStringInLog("CWWKF0011I.*", server.getMatchingLogFile("messages.log"));
-        assertNotNull("Server ready message not found", waitFor);
+        startAppservers();
     }
 }

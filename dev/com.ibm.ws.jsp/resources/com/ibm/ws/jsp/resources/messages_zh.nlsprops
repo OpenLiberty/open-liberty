@@ -577,7 +577,6 @@ jsp.error.tagfile.invoke.scope_invalid.explanation=
 jsp.error.tagfile.invoke.scope_invalid.useraction=
 
 jsp.error.tagfile.dobody.scope_invalid=JSPG0141E: jsp:doBody \u4f5c\u7528\u57df\u503c\u65e0\u6548
-
 jsp.error.tagfile.dobody.scope_invalid.explanation=
 jsp.error.tagfile.dobody.scope_invalid.useraction=
 
@@ -846,7 +845,6 @@ jsp.error.no.doctype-root-element.attr.explanation=
 jsp.error.no.doctype-root-element.attr.useraction=
 
 jsp.error.no.doctype-system.attr=JSPG0214E: \u9519\u8bef\uff0c\u672a\u63d0\u4f9b doctype-system\u3002
-
 jsp.error.no.doctype-system.attr.explanation=
 jsp.error.no.doctype-system.attr.useraction=
 
@@ -1264,3 +1262,7 @@ jsp.parse.tld.exception.useraction=\u8bf7\u68c0\u67e5 JSP \u6807\u8bb0\u5e93\u63
 system.java.compiler.not.found=JSPG0304W: JSP \u5c5e\u6027 useJDKCompiler \u8bbe\u7f6e\u4e3a true\uff0c\u4f46\u627e\u4e0d\u5230 Java SDK \u7f16\u8bd1\u5668\u3002JSP \u5bb9\u5668\u4f7f\u7528\u5728\u4ea7\u54c1\u4e2d\u5d4c\u5165\u7684\u7f16\u8bd1\u5668\u6765\u5728 Web \u6a21\u5757\u4e2d\u7f16\u8bd1 JSP \u6587\u4ef6\uff1a{0}\u3002
 system.java.compiler.not.found.explanation=JSP \u5bb9\u5668\u627e\u4e0d\u5230\u7cfb\u7edf\u7f16\u8bd1\u5668\uff0c\u8fd9\u901a\u5e38\u6307\u793a\u5728\u7c7b\u8def\u5f84\u4e2d\u627e\u4e0d\u5230 Java SDK JAR \u6587\u4ef6 tools.jar\u3002
 system.java.compiler.not.found.useraction=\u786e\u4fdd Java SDK JAR \u6587\u4ef6 tools.jar \u4f4d\u4e8e\u7c7b\u8def\u5f84\u4e2d\uff0c\u5e76\u9a8c\u8bc1 Java SDK \u662f\u5426\u652f\u6301 Java \u7f16\u8bd1\u5668 API\u3002\u8bf7\u53c2\u9605 Java \u89c4\u8303\u8bf7\u6c42 199 \u4ee5\u83b7\u53d6\u66f4\u591a\u4fe1\u606f\u3002
+
+jsp.feature.not.loaded.correctly=CWWJS0001: JSP [Pages] \u529f\u80fd\u90e8\u4ef6\u672a\u4f7f\u7528\u53ef\u63a5\u53d7\u7248\u672c\u88c5\u5165\u3002
+jsp.feature.not.loaded.correctly.explanation=JSP [Pages] \u529f\u80fd\u90e8\u4ef6\u4f7f\u7528\u4e0e\u8be5 JSP [Pages] \u529f\u80fd\u90e8\u4ef6\u7684 Java [Jakarta] EE \u89c4\u8303\u76f8\u5bf9\u5e94\u7684\u7248\u672c\u6765\u88c5\u5165\u3002\u88c5\u5165\u8be5\u529f\u80fd\u90e8\u4ef6\u65f6\u672a\u5b9a\u4e49\u4efb\u4f55\u7248\u672c\u3002
+jsp.feature.not.loaded.correctly.useraction=\u8bf7\u68c0\u67e5 server.xml \u6587\u4ef6\u4ee5\u4e86\u89e3\u662f\u5426\u5b58\u5728 JSP [Pages] \u529f\u80fd\u90e8\u4ef6\u3002\u53ea\u5e94\u6307\u5b9a\u4e00\u4e2a JSP [Pages] \u529f\u80fd\u90e8\u4ef6\u3002

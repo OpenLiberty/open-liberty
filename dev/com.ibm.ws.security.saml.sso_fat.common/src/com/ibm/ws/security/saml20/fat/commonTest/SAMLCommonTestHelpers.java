@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2020 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -44,10 +44,10 @@ import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 import com.gargoylesoftware.htmlunit.util.Cookie;
 import com.gargoylesoftware.htmlunit.util.NameValuePair;
 import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.security.fat.common.utils.AutomationTools;
 import com.ibm.ws.security.fat.common.TestHelpers;
 import com.ibm.ws.security.fat.common.ValidationData;
 import com.ibm.ws.security.fat.common.ValidationData.validationData;
+import com.ibm.ws.security.fat.common.utils.AutomationTools;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLTestSettings.CXFSettings;
 
 public class SAMLCommonTestHelpers extends TestHelpers {
@@ -123,7 +123,7 @@ public class SAMLCommonTestHelpers extends TestHelpers {
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public Object buildPostIDPInitiatedRequest(String testcase, WebClient webClient, SAMLTestSettings settings,
-            List<validationData> expectations) throws Exception {
+                                               List<validationData> expectations) throws Exception {
 
         String thisMethod = "buildPostIDPInitiatedRequest";
         msgUtils.printMethodName(thisMethod);
@@ -219,7 +219,8 @@ public class SAMLCommonTestHelpers extends TestHelpers {
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public Object buildSolicitedSPInitiatedRequest(String testcase, WebClient webClient, SAMLTestSettings settings, List<validationData> expectations, HttpMethod method) throws Exception {
+    public Object buildSolicitedSPInitiatedRequest(String testcase, WebClient webClient, SAMLTestSettings settings, List<validationData> expectations,
+                                                   HttpMethod method) throws Exception {
 
         String thisMethod = "buildSolicitedSPInitiatedRequest";
         msgUtils.printMethodName(thisMethod);
@@ -263,7 +264,9 @@ public class SAMLCommonTestHelpers extends TestHelpers {
                 Log.info(thisClass, thisMethod, "relay state: " + id);
             }
 
-            settings.setSamlTokenValidationData(settings.getSamlTokenValidationData().getNameId(), settings.getSamlTokenValidationData().getIssuer(), id, settings.getSamlTokenValidationData().getMessageID(), settings.getSamlTokenValidationData().getEncryptionKeyUser(), settings.getSamlTokenValidationData().getRecipient(), settings.getSamlTokenValidationData().getEncryptAlg());
+            settings.setSamlTokenValidationData(settings.getSamlTokenValidationData().getNameId(), settings.getSamlTokenValidationData().getIssuer(), id,
+                                                settings.getSamlTokenValidationData().getMessageID(), settings.getSamlTokenValidationData().getEncryptionKeyUser(),
+                                                settings.getSamlTokenValidationData().getRecipient(), settings.getSamlTokenValidationData().getEncryptAlg());
         } catch (Exception e) {
             Log.error(thisClass, testcase, e, "Exception occurred in " + thisMethod);
             System.err.println("Exception: " + e);
@@ -273,7 +276,7 @@ public class SAMLCommonTestHelpers extends TestHelpers {
     }
 
     public Object handleIdpClientJsp(String testcase, WebClient webClient, Object startPage, SAMLTestSettings settings,
-            List<validationData> expectations) throws Exception {
+                                     List<validationData> expectations) throws Exception {
 
         String thisMethod = "handleIdpClientJsp";
         msgUtils.printMethodName(thisMethod);
@@ -297,7 +300,7 @@ public class SAMLCommonTestHelpers extends TestHelpers {
             HtmlTextInput textField = form.getInputByName("urlIdpRequest");
             if (samlcttools.isIDPADFS(settings.getIdpRoot())) {
                 textField.setValueAttribute(settings.getIdpChallenge() + "?RelayState=RPID" + URLEncoder.encode("=" + settings.getSpConsumer() +
-                        "&RelayState=" + settings.getSpTargetApp(), "UTF-8"));
+                                                                                                                "&RelayState=" + settings.getSpTargetApp(), "UTF-8"));
             } else {
                 textField.setValueAttribute(settings.getIdpChallenge());
             }
@@ -333,7 +336,7 @@ public class SAMLCommonTestHelpers extends TestHelpers {
     }
 
     public Object processIdpJsp(String testcase, WebClient webClient, Object startPage, SAMLTestSettings settings,
-            List<validationData> expectations) throws Exception {
+                                List<validationData> expectations) throws Exception {
 
         String thisMethod = "processIdpJsp";
         msgUtils.printMethodName(thisMethod);
@@ -376,7 +379,7 @@ public class SAMLCommonTestHelpers extends TestHelpers {
     }
 
     public Object performIDPLogin(String testcase, WebClient webClient, HtmlPage startPage, SAMLTestSettings settings,
-            List<validationData> expectations) throws Exception {
+                                  List<validationData> expectations) throws Exception {
 
         String thisMethod = "performIDPLogin";
         msgUtils.printMethodName(thisMethod);
@@ -449,7 +452,8 @@ public class SAMLCommonTestHelpers extends TestHelpers {
         return processContinue(testcase, webClient, startPage, settings, expectations, SAMLConstants.PROCESS_LOGOUT_CONTINUE);
     }
 
-    public Object processContinue(String testcase, WebClient webClient, HtmlPage startPage, SAMLTestSettings settings, List<validationData> expectations, String step) throws Exception {
+    public Object processContinue(String testcase, WebClient webClient, HtmlPage startPage, SAMLTestSettings settings, List<validationData> expectations,
+                                  String step) throws Exception {
 
         String thisMethod = "processContinue";
         msgUtils.printMethodName(thisMethod);
@@ -546,7 +550,8 @@ public class SAMLCommonTestHelpers extends TestHelpers {
 
     }
 
-    public Object processLogoutPropagateYes(String testcase, WebClient webClient, HtmlPage startPage, SAMLTestSettings settings, List<validationData> expectations) throws Exception {
+    public Object processLogoutPropagateYes(String testcase, WebClient webClient, HtmlPage startPage, SAMLTestSettings settings,
+                                            List<validationData> expectations) throws Exception {
 
         String thisMethod = "processLogoutPropagateYes";
         msgUtils.printMethodName(thisMethod);
@@ -697,7 +702,8 @@ public class SAMLCommonTestHelpers extends TestHelpers {
         return processRequest(testcase, webClient, startPage, settings, expectations, SAMLConstants.PROCESS_LOGOUT_REDIRECT);
     }
 
-    public Object processRequest(String testcase, WebClient webClient, HtmlPage startPage, SAMLTestSettings settings, List<validationData> expectations, String step) throws Exception {
+    public Object processRequest(String testcase, WebClient webClient, HtmlPage startPage, SAMLTestSettings settings, List<validationData> expectations,
+                                 String step) throws Exception {
 
         String thisMethod = "processRequest";
         msgUtils.printMethodName(thisMethod);
@@ -748,7 +754,7 @@ public class SAMLCommonTestHelpers extends TestHelpers {
     }
 
     public Object invokeACSWithSAMLResponse(String testcase, WebClient webClient, Object startPage, SAMLTestSettings settings,
-            List<validationData> expectations, String stepName, Boolean returnResultingResponse) throws Exception {
+                                            List<validationData> expectations, String stepName, Boolean returnResultingResponse) throws Exception {
 
         String thisMethod = "invokeACSWithSAMLResponse";
         msgUtils.printMethodName(thisMethod);
@@ -810,22 +816,22 @@ public class SAMLCommonTestHelpers extends TestHelpers {
     }
 
     public void invokeAlternateApp(String testcase, WebClient webClient, Object thePage, SAMLTestSettings settings,
-            List<validationData> expectations) throws Exception {
+                                   List<validationData> expectations) throws Exception {
         invokeApp(testcase, webClient, thePage, settings, settings.getSpAlternateApp(), expectations, SAMLConstants.INVOKE_ALTERNATE_APP);
     }
 
     public void invokeDefaultApp(String testcase, WebClient webClient, Object thePage, SAMLTestSettings settings,
-            List<validationData> expectations) throws Exception {
+                                 List<validationData> expectations) throws Exception {
         invokeApp(testcase, webClient, thePage, settings, settings.getSpDefaultApp(), expectations, SAMLConstants.INVOKE_DEFAULT_APP);
     }
 
     public void invokeApp(String testcase, WebClient webClient, Object startPage, SAMLTestSettings settings,
-            String app, List<validationData> expectations, String step) throws Exception {
+                          String app, List<validationData> expectations, String step) throws Exception {
 
         String thisMethod = "invokeApp";
         msgUtils.printMethodName(thisMethod);
         Object thePage;
-
+        WebClient webClient2 = null;
         try {
 
             if (app == null) {
@@ -836,7 +842,7 @@ public class SAMLCommonTestHelpers extends TestHelpers {
 
             setMarkEndOfLogs();
 
-            WebClient webClient2 = getWebClient();
+            webClient2 = getWebClient();
 
             URL url = AutomationTools.getNewUrl(app);
             WebRequest request = new WebRequest(url, HttpMethod.POST);
@@ -855,7 +861,8 @@ public class SAMLCommonTestHelpers extends TestHelpers {
             }
 
             if (webClient != null) {
-                if ((settings.getAccessTokenType().equals(SAMLConstants.SP_ACCESS_TOKEN_TYPE)) || (settings.getAccessTokenType().equals(SAMLConstants.SP_AND_LTPA_ACCESS_TOKEN_TYPE))) {
+                if ((settings.getAccessTokenType().equals(SAMLConstants.SP_ACCESS_TOKEN_TYPE))
+                    || (settings.getAccessTokenType().equals(SAMLConstants.SP_AND_LTPA_ACCESS_TOKEN_TYPE))) {
                     Log.info(thisClass, thisMethod, "Retrieving SP cookie(s)");
                     //ArrayList<String[]> SP_cookies = extractSPCookies(wc);
                     for (String[] cookie : SP_cookies) {
@@ -880,8 +887,8 @@ public class SAMLCommonTestHelpers extends TestHelpers {
                 }
 
                 if ((settings.getAccessTokenType().equals(SAMLConstants.LTPA_ACCESS_TOKEN_TYPE)) ||
-                        (settings.getAccessTokenType().equals(SAMLConstants.SP_AND_LTPA_ACCESS_TOKEN_TYPE)) ||
-                        (settings.getAccessTokenType().equals(SAMLConstants.LTPA_ALTERED_ACCESS_TOKEN_TYPE))) {
+                    (settings.getAccessTokenType().equals(SAMLConstants.SP_AND_LTPA_ACCESS_TOKEN_TYPE)) ||
+                    (settings.getAccessTokenType().equals(SAMLConstants.LTPA_ALTERED_ACCESS_TOKEN_TYPE))) {
                     Log.info(thisClass, thisMethod, "Retrieving LTPA cookie");
                     // otherwise it's LTPA
                     //	String ltpaToken2 = extractLtpaCookie(wc);
@@ -929,22 +936,24 @@ public class SAMLCommonTestHelpers extends TestHelpers {
             Log.error(thisClass, testcase, e, "Exception occurred in " + thisMethod);
             System.err.println("Exception: " + e);
             validationTools.validateException(expectations, step, e);
+        } finally {
+            destroyWebClient(webClient2);
         }
 
     }
 
     public void invokeDefaultAppSameConversation(String testcase, WebClient webClient, Object somePage, SAMLTestSettings settings,
-            List<validationData> expectations) throws Exception {
+                                                 List<validationData> expectations) throws Exception {
         invokeAppSameConversation(testcase, webClient, somePage, settings, settings.getSpDefaultApp(), expectations, SAMLConstants.INVOKE_DEFAULT_APP);
     }
 
     public void invokeAlternateAppSameConversation(String testcase, WebClient webClient, Object somePage, SAMLTestSettings settings,
-            List<validationData> expectations) throws Exception {
+                                                   List<validationData> expectations) throws Exception {
         invokeAppSameConversation(testcase, webClient, somePage, settings, settings.getSpAlternateApp(), expectations, SAMLConstants.INVOKE_ALTERNATE_APP);
     }
 
     public void invokeAppSameConversation(String testcase, WebClient webClient, Object somePage, SAMLTestSettings settings,
-            String app, List<validationData> expectations, String step) throws Exception {
+                                          String app, List<validationData> expectations, String step) throws Exception {
 
         String thisMethod = "invokeAppSameConversation";
         msgUtils.printMethodName(thisMethod);
@@ -984,7 +993,7 @@ public class SAMLCommonTestHelpers extends TestHelpers {
     }
 
     public Object performFormLogin(String testcase, WebClient webClient, HtmlPage startPage, SAMLTestSettings settings,
-            List<validationData> expectations) throws Exception {
+                                   List<validationData> expectations) throws Exception {
 
         String thisMethod = "performFormLogin";
         msgUtils.printMethodName(thisMethod);
@@ -1061,6 +1070,10 @@ public class SAMLCommonTestHelpers extends TestHelpers {
 
         setMarkEndOfLogs();
 
+        boolean cleanupWebClient = false;
+        if (inWebClient == null) {
+            cleanupWebClient = true;
+        }
         WebClient webClient = getWebClient(inWebClient);
 
         URL url = AutomationTools.getNewUrl(settings.getSpMetaDataEdpt());
@@ -1076,6 +1089,9 @@ public class SAMLCommonTestHelpers extends TestHelpers {
         validationTools.setServers(testSAMLServer, testSAMLOIDCServer, testOIDCServer, testAppServer, testIDPServer);
         validationTools.validateResult(webClient, thePage, SAMLConstants.SAML_META_DATA_ENDPOINT, expectations, settings);
 
+        if (cleanupWebClient) {
+            destroyWebClient(webClient);
+        }
         return thePage;
     }
 
@@ -1087,7 +1103,7 @@ public class SAMLCommonTestHelpers extends TestHelpers {
      */
 
     public Object performSPLogout(String testcase, WebClient webClient, Object somePage, SAMLTestSettings settings,
-            List<validationData> expectations) throws Exception {
+                                  List<validationData> expectations) throws Exception {
 
         String thisMethod = "performSPLogout";
         msgUtils.printMethodName(thisMethod);
@@ -1120,7 +1136,7 @@ public class SAMLCommonTestHelpers extends TestHelpers {
     }
 
     public Object performIDPLogout(String testcase, WebClient webClient, Object somePage, SAMLTestSettings settings,
-            List<validationData> expectations) throws Exception {
+                                   List<validationData> expectations) throws Exception {
 
         String thisMethod = "performIDPLogout";
         msgUtils.printMethodName(thisMethod);
@@ -1321,17 +1337,21 @@ public class SAMLCommonTestHelpers extends TestHelpers {
     // Unsolicited flow is basically the same as solicited (but behaviours should be more like idp initiated
     public List<validationData> setDefaultGoodSAMLUnSolicitedSPInitiatedExpectations(SAMLTestSettings testSettings) throws Exception {
         List<validationData> expectations = setDefaultGoodSAMLExpectations(SAMLConstants.PROCESS_IDP_JSP, SAMLConstants.CALL_EXTRA_APP, testSettings, null);
-        expectations = vData.addExpectation(expectations, SAMLConstants.BUILD_POST_SP_INITIATED_REQUEST, SAMLConstants.RESPONSE_TITLE, SAMLConstants.STRING_CONTAINS, "Did not land on the IDP Client jsp", null, SAMLConstants.IDP_CLIENT_JSP_TITLE);
-        expectations = vData.addExpectation(expectations, SAMLConstants.HANDLE_IDPCLIENT_JSP, SAMLConstants.RESPONSE_TITLE, SAMLConstants.STRING_CONTAINS, "Did not land on the IDP Client jsp", null, SAMLConstants.IDP_PROCESS_JSP_TITLE);
+        expectations = vData.addExpectation(expectations, SAMLConstants.BUILD_POST_SP_INITIATED_REQUEST, SAMLConstants.RESPONSE_TITLE, SAMLConstants.STRING_CONTAINS,
+                                            "Did not land on the IDP Client jsp", null, SAMLConstants.IDP_CLIENT_JSP_TITLE);
+        expectations = vData.addExpectation(expectations, SAMLConstants.HANDLE_IDPCLIENT_JSP, SAMLConstants.RESPONSE_TITLE, SAMLConstants.STRING_CONTAINS,
+                                            "Did not land on the IDP Client jsp", null, SAMLConstants.IDP_PROCESS_JSP_TITLE);
         return expectations;
 
     }
 
     public List<validationData> setDefaultGoodSAMLExpectations(String startingAction, Boolean callAltApp, SAMLTestSettings testSettings, String checkType) throws Exception {
         List<validationData> expectations = setDefaultGoodSAMLExpectationsThroughACSOnly(startingAction, testSettings, checkType);
-        expectations = vData.addExpectation(expectations, SAMLConstants.INVOKE_DEFAULT_APP, SAMLConstants.RESPONSE_TITLE, SAMLConstants.STRING_CONTAINS, "Did not land on default app", null, SAMLConstants.APP1_TITLE);
+        expectations = vData.addExpectation(expectations, SAMLConstants.INVOKE_DEFAULT_APP, SAMLConstants.RESPONSE_TITLE, SAMLConstants.STRING_CONTAINS,
+                                            "Did not land on default app", null, SAMLConstants.APP1_TITLE);
         if (callAltApp) {
-            expectations = vData.addExpectation(expectations, SAMLConstants.INVOKE_ALTERNATE_APP, SAMLConstants.RESPONSE_FULL, SAMLConstants.STRING_CONTAINS, "Did not land alternate app", null, SAMLConstants.APP2_TITLE);
+            expectations = vData.addExpectation(expectations, SAMLConstants.INVOKE_ALTERNATE_APP, SAMLConstants.RESPONSE_FULL, SAMLConstants.STRING_CONTAINS,
+                                                "Did not land alternate app", null, SAMLConstants.APP2_TITLE);
         }
         setSimpleServletExpecatations(expectations, testSettings);
         return expectations;
@@ -1339,15 +1359,21 @@ public class SAMLCommonTestHelpers extends TestHelpers {
 
     public List<validationData> setDefaultGoodSAMLExpectationsThroughACSOnly(String startingAction, SAMLTestSettings testSettings, String checkType) throws Exception {
         List<validationData> expectations = vData.addSuccessStatusCodes();
-        expectations = vData.addExpectation(expectations, startingAction, SAMLConstants.RESPONSE_TITLE, SAMLConstants.STRING_CONTAINS, "Did not land on the IDP form login form.", null, samlcttools.getLoginTitle(testSettings.getIdpRoot()));
-        expectations = vData.addExpectation(expectations, SAMLConstants.PERFORM_IDP_LOGIN, SAMLConstants.RESPONSE_TITLE, SAMLConstants.STRING_CONTAINS, "Did not receive expected SAML POST response", null, samlcttools.getResponseTitle(testSettings.getIdpRoot()));
-        expectations = vData.addExpectation(expectations, SAMLConstants.PERFORM_IDP_LOGIN, SAMLConstants.RESPONSE_FULL, SAMLConstants.STRING_CONTAINS, "Did not receive expected SAML Response", null, SAMLConstants.SAML_RESPONSE);
+        expectations = vData.addExpectation(expectations, startingAction, SAMLConstants.RESPONSE_TITLE, SAMLConstants.STRING_CONTAINS, "Did not land on the IDP form login form.",
+                                            null, samlcttools.getLoginTitle(testSettings.getIdpRoot()));
+        expectations = vData.addExpectation(expectations, SAMLConstants.PERFORM_IDP_LOGIN, SAMLConstants.RESPONSE_TITLE, SAMLConstants.STRING_CONTAINS,
+                                            "Did not receive expected SAML POST response", null, samlcttools.getResponseTitle(testSettings.getIdpRoot()));
+        expectations = vData.addExpectation(expectations, SAMLConstants.PERFORM_IDP_LOGIN, SAMLConstants.RESPONSE_FULL, SAMLConstants.STRING_CONTAINS,
+                                            "Did not receive expected SAML Response", null, SAMLConstants.SAML_RESPONSE);
         if (SAMLConstants.STRING_CONTAINS.equals(checkType)) {
-            expectations = vData.addExpectation(expectations, SAMLConstants.PERFORM_IDP_LOGIN, SAMLConstants.SAML_TOKEN_CONTAINS, SAMLConstants.STRING_CONTAINS, "SAML Token did not contain expected values", null, null);
+            expectations = vData.addExpectation(expectations, SAMLConstants.PERFORM_IDP_LOGIN, SAMLConstants.SAML_TOKEN_CONTAINS, SAMLConstants.STRING_CONTAINS,
+                                                "SAML Token did not contain expected values", null, null);
         } else {
-            expectations = vData.addExpectation(expectations, SAMLConstants.PERFORM_IDP_LOGIN, SAMLConstants.SAML_TOKEN, SAMLConstants.STRING_CONTAINS, "SAML Token did not contain expected values", null, null);
+            expectations = vData.addExpectation(expectations, SAMLConstants.PERFORM_IDP_LOGIN, SAMLConstants.SAML_TOKEN, SAMLConstants.STRING_CONTAINS,
+                                                "SAML Token did not contain expected values", null, null);
         }
-        expectations = vData.addExpectation(expectations, SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE, SAMLConstants.RESPONSE_TITLE, SAMLConstants.STRING_CONTAINS, "Did not get to the Snoop Servlet", null, SAMLConstants.APP1_TITLE);
+        expectations = vData.addExpectation(expectations, SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE, SAMLConstants.RESPONSE_TITLE, SAMLConstants.STRING_CONTAINS,
+                                            "Did not get to the Snoop Servlet", null, SAMLConstants.APP1_TITLE);
 
         return expectations;
 
@@ -1374,10 +1400,12 @@ public class SAMLCommonTestHelpers extends TestHelpers {
 
         if (step != null) {
             //			expectations = vData.addExpectation(expectations, step, SAMLConstants.RESPONSE_TITLE, SAMLConstants.STRING_CONTAINS, "Did not land on correct app for step: " + step, null, SAMLConstants.APP2_TITLE);
-            expectations = vData.addExpectation(expectations, step, SAMLConstants.RESPONSE_FULL, SAMLConstants.STRING_CONTAINS, "Did not land on correct app for step: " + step, null, "getRequestURL: " + theApp);
+            expectations = vData.addExpectation(expectations, step, SAMLConstants.RESPONSE_FULL, SAMLConstants.STRING_CONTAINS, "Did not land on correct app for step: " + step,
+                                                null, "getRequestURL: " + theApp);
 
             if (testSettings.getIncludeTokenInSubject()) {
-                expectations = vData.addExpectation(expectations, step, SAMLConstants.RESPONSE_FULL, SAMLConstants.STRING_CONTAINS, "Did not get the expected issuer", null, "SAMLIssuerName:" + testSettings.getIdpIssuer());
+                expectations = vData.addExpectation(expectations, step, SAMLConstants.RESPONSE_FULL, SAMLConstants.STRING_CONTAINS, "Did not get the expected issuer", null,
+                                                    "SAMLIssuerName:" + testSettings.getIdpIssuer());
             }
         }
     }
@@ -1386,7 +1414,8 @@ public class SAMLCommonTestHelpers extends TestHelpers {
         return setDefaultGoodSAMLCXFExpectations(expectations, flowType, testSettings, null);
     }
 
-    public List<validationData> setDefaultGoodSAMLCXFExpectations(List<validationData> expectations, String flowType, SAMLTestSettings testSettings, String serverMsg) throws Exception {
+    public List<validationData> setDefaultGoodSAMLCXFExpectations(List<validationData> expectations, String flowType, SAMLTestSettings testSettings,
+                                                                  String serverMsg) throws Exception {
 
         // other tests will have validated the SAML Token and other steps and values in the SAML flow
         // this method will only set expectations for the CXF portion of a flow
@@ -1406,23 +1435,28 @@ public class SAMLCommonTestHelpers extends TestHelpers {
                 part = cxfSettings.getBodyPartToCheck();
             }
         }
-        expectations = vData.addExpectation(expectations, SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE, SAMLConstants.RESPONSE_TITLE, SAMLConstants.STRING_CONTAINS, "Did not get to the Service Cleint", null, titleToCheck);
-        expectations = vData.addExpectation(expectations, SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE, SAMLConstants.RESPONSE_FULL, SAMLConstants.STRING_CONTAINS, "Did not get to the Service Cleint", null, part);
+        expectations = vData.addExpectation(expectations, SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE, SAMLConstants.RESPONSE_TITLE, SAMLConstants.STRING_CONTAINS,
+                                            "Did not get to the Service Cleint", null, titleToCheck);
+        expectations = vData.addExpectation(expectations, SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE, SAMLConstants.RESPONSE_FULL, SAMLConstants.STRING_CONTAINS,
+                                            "Did not get to the Service Cleint", null, part);
         //		expectations = vData.addExpectation(expectations, SAMLConstants.PERFORM_IDP_LOGIN, SAMLConstants.SAML_TOKEN, SAMLConstants.STRING_CONTAINS, "SAML Token did not contain expected values", null, null);
 
         return expectations;
 
     }
 
-    public List<validationData> setErrorSAMLCXFExpectationsMatches(List<validationData> expectations, String flowType, SAMLTestSettings testSettings, String errorResponse) throws Exception {
+    public List<validationData> setErrorSAMLCXFExpectationsMatches(List<validationData> expectations, String flowType, SAMLTestSettings testSettings,
+                                                                   String errorResponse) throws Exception {
         return setErrorSAMLCXFExpectationsWithTypeCheck(expectations, flowType, testSettings, errorResponse, SAMLConstants.STRING_MATCHES);
     }
 
-    public List<validationData> setErrorSAMLCXFExpectations(List<validationData> expectations, String flowType, SAMLTestSettings testSettings, String errorResponse) throws Exception {
+    public List<validationData> setErrorSAMLCXFExpectations(List<validationData> expectations, String flowType, SAMLTestSettings testSettings,
+                                                            String errorResponse) throws Exception {
         return setErrorSAMLCXFExpectationsWithTypeCheck(expectations, flowType, testSettings, errorResponse, SAMLConstants.STRING_CONTAINS);
     }
 
-    public List<validationData> setErrorSAMLCXFExpectationsWithTypeCheck(List<validationData> expectations, String flowType, SAMLTestSettings testSettings, String errorResponse, String checkType) throws Exception {
+    public List<validationData> setErrorSAMLCXFExpectationsWithTypeCheck(List<validationData> expectations, String flowType, SAMLTestSettings testSettings, String errorResponse,
+                                                                         String checkType) throws Exception {
 
         // other tests will have validated the SAML Token and other steps and values in the SAML flow
         // this method will only set expectations for the CXF portion of a flow
@@ -1443,8 +1477,10 @@ public class SAMLCommonTestHelpers extends TestHelpers {
                 part = cxfSettings.getBodyPartToCheck();
             }
         }
-        expectations = vData.addExpectation(expectations, SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE, SAMLConstants.RESPONSE_TITLE, SAMLConstants.STRING_CONTAINS, "Did not get to the Service Client", null, titleToCheck);
-        expectations = vData.addExpectation(expectations, SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE, SAMLConstants.RESPONSE_FULL, checkType, "Service Client did not report the correct failure", null, part);
+        expectations = vData.addExpectation(expectations, SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE, SAMLConstants.RESPONSE_TITLE, SAMLConstants.STRING_CONTAINS,
+                                            "Did not get to the Service Client", null, titleToCheck);
+        expectations = vData.addExpectation(expectations, SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE, SAMLConstants.RESPONSE_FULL, checkType,
+                                            "Service Client did not report the correct failure", null, part);
         //		expectations = vData.addExpectation(expectations, SAMLConstants.PERFORM_IDP_LOGIN, SAMLConstants.SAML_TOKEN, SAMLConstants.STRING_CONTAINS, "SAML Token did not contain expected values", null, null);
 
         return expectations;
@@ -1587,7 +1623,8 @@ public class SAMLCommonTestHelpers extends TestHelpers {
 
     }
 
-    protected void processResponse(String testcase, String currentAction, HttpURLConnection connection, SAMLTestSettings settings, List<validationData> expectations) throws Exception {
+    protected void processResponse(String testcase, String currentAction, HttpURLConnection connection, SAMLTestSettings settings,
+                                   List<validationData> expectations) throws Exception {
 
         String thisMethod = "processResponse";
         msgUtils.printMethodName(thisMethod);
@@ -1740,7 +1777,8 @@ public class SAMLCommonTestHelpers extends TestHelpers {
      * @return
      * @throws Exception
      */
-    public List<validationData> addMessageExpectation(SAMLTestServer theServer, List<validationData> expected, String step, String log, String checkType, String failureMessage, String logMessage) throws Exception {
+    public List<validationData> addMessageExpectation(SAMLTestServer theServer, List<validationData> expected, String step, String log, String checkType, String failureMessage,
+                                                      String logMessage) throws Exception {
         // Set the actual expectation to find the message in the server log
         expected = vData.addExpectation(expected, step, log, checkType, failureMessage, null, logMessage);
 
@@ -1795,7 +1833,8 @@ public class SAMLCommonTestHelpers extends TestHelpers {
         return form;
     }
 
-    public void genericInvokePage(String testcase, WebClient webClient, String requestedUrl, HttpMethod getOrPost, SAMLTestSettings settings, List<validationData> expectations) throws Exception {
+    public void genericInvokePage(String testcase, WebClient webClient, String requestedUrl, HttpMethod getOrPost, SAMLTestSettings settings,
+                                  List<validationData> expectations) throws Exception {
 
         String thisMethod = "genericInvokePage";
         msgUtils.printMethodName(thisMethod);
@@ -1825,6 +1864,71 @@ public class SAMLCommonTestHelpers extends TestHelpers {
             validationTools.validateException(expectations, SAMLConstants.GENERIC_INVOKE_PAGE, e);
         }
 
+    }
+
+    public boolean pingExternalServer(String testcase, String serverUrl, String expectedTitle, int waitTime) throws Exception {
+
+        String thisMethod = "pingExternalServer";
+        msgUtils.printMethodName(thisMethod);
+        WebClient webClient = null;
+        WebRequest request = null;
+        boolean status = false;
+
+        try {
+            webClient = getWebClient();
+
+            // Build the request
+            URL url = AutomationTools.getNewUrl(serverUrl);
+            request = new WebRequest(url, HttpMethod.GET);
+        } catch (Exception e) {
+            Log.error(thisClass, thisMethod, e, "Exception occurred in " + thisMethod);
+            System.err.println("Exception: " + e);
+        }
+
+        boolean keepChecking = true;
+        int timeSlept = 0;
+        while (keepChecking) {
+
+            try {
+                msgUtils.printAllCookies(webClient);
+                msgUtils.printRequestParts(webClient, request, testcase, "Outgoing request");
+                Object thePage = webClient.getPage(request);
+                // make sure the page is processed before continuing
+                waitBeforeContinuing(webClient);
+                String title = AutomationTools.getResponseTitle(thePage);
+                Log.info(thisClass, thisMethod, "**********************************************************");
+                Log.info(thisClass, thisMethod, "Was able to get a reponse from the requested url - " + serverUrl);
+                if (expectedTitle != null) {
+                    if (title != null && title.contains(expectedTitle)) {
+                        keepChecking = false;
+                        status = true;
+                        Log.info(thisClass, thisMethod, "The title in the reqponse was what we expected: " + expectedTitle);
+                    } else {
+                        Log.info(thisClass, thisMethod,
+                                 "Connected with url with title (" + title + ") - this is NOT wahat we expected - we were expecting (" + expectedTitle + ").  We may try again.");
+                    }
+                } else {
+                    keepChecking = false;
+                    status = true;
+                    Log.info(thisClass, thisMethod, "The title in the reqponse was NOT validated - the actual title was: " + title);
+                }
+                Log.info(thisClass, thisMethod, "**********************************************************");
+            } catch (Exception e) {
+                Log.info(thisClass, thisMethod, "Exception occurred in " + thisMethod + System.getProperty("line.separator") + e.getMessage());
+            }
+            if (keepChecking) {
+                if (timeSlept >= waitTime) {
+                    keepChecking = false;
+                    Log.info(thisClass, thisMethod, "Tried to ping " + serverUrl + " for more than the requested " + waitTime + " seconds - giving up.");
+                } else {
+                    Log.info(thisClass, thisMethod, "Sleeping 5 seconds");
+                    testSleep(5);
+                    timeSlept = timeSlept + 5;
+                }
+            }
+        }
+        destroyWebClient(webClient);
+        return status;
     }
 
 }

@@ -487,4 +487,5 @@ public class ShrinkHelper {
         exportUserFeatureArchive(server, jar, DeployOptions.OVERWRITE);
         return jar;
     }
+
 }

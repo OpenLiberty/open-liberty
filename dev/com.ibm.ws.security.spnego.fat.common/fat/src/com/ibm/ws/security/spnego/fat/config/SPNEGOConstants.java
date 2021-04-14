@@ -48,6 +48,8 @@ public class SPNEGOConstants {
     public final static String KRB5_INI_FILE = "krb5.ini";
     public final static String KRB5_KEYTAB_FILE = "krb5.keytab";
     public final static String SLASH_KERBEROS_SLASH = "/kerberos/";
+    public final static String KRB5_LOCAL_KEYTAB_LOCAL_FILE = SLASH_KERBEROS_SLASH + "localhost.keytab";
+    public final static String KRB5_LOCAL_KEYTAB_REMOTE_FILE = "localhost_HTTP_krb5.keytab";
     public final static String CREATE_WIN_USER_REMOTE_FILE = "createWinUser.vbs";
     public final static String CREATE_WIN_USER_LOCAL_FILE = SLASH_KERBEROS_SLASH + CREATE_WIN_USER_REMOTE_FILE;
     public final static String REMOVE_WIN_USER_REMOTE_FILE = "removeWinUsers.vbs";

@@ -20,6 +20,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -28583,8 +28584,10 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                     eStr = e.toString();
                 }
                 if (pvdr == JPAProviderImpl.ECLIPSELINK) {
-                    String lookFor = "An exception occurred while creating a query in EntityManager: \n" +
-                                     "Exception Description: Internal problem encountered while compiling [select new com.dw.test.Detail (e.empid, e.salary) from EmpBean e].";
+//                    String lookFor = "An exception occurred while creating a query in EntityManager: \n" +
+//                                     "Exception Description: Internal problem encountered while compiling [select new com.dw.test.Detail (e.empid, e.salary) from EmpBean e].";
+                    String lookFor = "Exception Description: Internal problem encountered while compiling [select new com.dw.test.Detail (e.empid, e.salary) from EmpBean e].";
+
                     System.out.println("eStr = " + eStr);
                     System.out.println("lookFor = " + lookFor);
                     boolean result = eStr.contains(lookFor);
@@ -28655,8 +28658,10 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                     eStr = e.toString();
                 }
                 if (pvdr == JPAProviderImpl.ECLIPSELINK) {
-                    String lookFor = "An exception occurred while creating a query in EntityManager: \n" +
-                                     "Exception Description: Internal problem encountered while compiling [select new com.dw.test.Detail (max(e.empid), max(e.salary)) from EmpBean e].";
+//                    String lookFor = "An exception occurred while creating a query in EntityManager: \n" +
+//                                     "Exception Description: Internal problem encountered while compiling [select new com.dw.test.Detail (max(e.empid), max(e.salary)) from EmpBean e].";
+                    String lookFor = "Exception Description: Internal problem encountered while compiling [select new com.dw.test.Detail (max(e.empid), max(e.salary)) from EmpBean e].";
+
                     System.out.println("eStr = " + eStr);
                     System.out.println("lookFor = " + lookFor);
                     boolean result = eStr.contains(lookFor);
@@ -28784,8 +28789,9 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                     eStr = e.toString();
                 }
                 if (pvdr == JPAProviderImpl.ECLIPSELINK) {
-                    String lookFor = "An exception occurred while creating a query in EntityManager: \n" +
-                                     "Exception Description: Problem compiling [select new com.ibm.ws.query.utils.SimpleDeptEmpView (d.deptno, d.name) from DeptBean d ].";
+//                    String lookFor = "An exception occurred while creating a query in EntityManager: \n" +
+//                                     "Exception Description: Problem compiling [select new com.ibm.ws.query.utils.SimpleDeptEmpView (d.deptno, d.name) from DeptBean d ].";
+                    String lookFor = "Exception Description: Problem compiling [select new com.ibm.ws.query.utils.SimpleDeptEmpView (d.deptno, d.name) from DeptBean d ].";
                     System.out.println("eStr = " + eStr);
                     System.out.println("lookFor = " + lookFor);
                     boolean result = eStr.contains(lookFor);
@@ -29166,8 +29172,10 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
                     eStr = e.toString();
                 }
                 if (pvdr == JPAProviderImpl.ECLIPSELINK) {
-                    String lookFor = "Problem compiling [select new com.ibm.ws.query.utils.DeptEmpListView (d.no, d.name, d.budget, d.emps ) from DeptBean d ]. \n" +
-                                     "[74, 80] The state field path 'd.emps' cannot be resolved to a collection type.";
+//                    String lookFor = "Problem compiling [select new com.ibm.ws.query.utils.DeptEmpListView (d.no, d.name, d.budget, d.emps ) from DeptBean d ]. \n" +
+//                                     "[74, 80] The state field path 'd.emps' cannot be resolved to a collection type.";
+                    String lookFor = "[74, 80] The state field path 'd.emps' cannot be resolved to a collection type.";
+
                     System.out.println("eStr = " + eStr);
                     System.out.println("lookFor = " + lookFor);
                     boolean result = eStr.contains(lookFor);
@@ -29373,7 +29381,9 @@ public class JULoopQueryAnoTest extends AbstractTestLogic {
      */
 
     private static Calendar calendar = new GregorianCalendar();
-    private static long pdtOffset = -(calendar.get(Calendar.ZONE_OFFSET)) - 8 * (60 * 60 * 1000);
+    private static TimeZone currentTZ = calendar.getTimeZone();
+    private static long pdtOffset = -(calendar.get(calendar.ZONE_OFFSET)) -
+                                    (7 + (currentTZ.observesDaylightTime() ? 1 : 0)) * (60 * 60 * 1000);
     private static java.sql.Date hireDate = new java.sql.Date(0 + pdtOffset);
     private static java.sql.Time hireTime = new Time(0 + pdtOffset);
     private static Timestamp hireTimestamp = new Timestamp(0 + pdtOffset);

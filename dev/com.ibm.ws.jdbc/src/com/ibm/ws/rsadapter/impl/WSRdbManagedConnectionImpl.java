@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2001, 2019 IBM Corporation and others.
+ * Copyright (c) 2001, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.rsadapter.impl;
 
-import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.security.AccessController;
@@ -22,8 +21,10 @@ import java.sql.Driver;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
 import java.sql.Statement;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
@@ -70,6 +71,7 @@ import com.ibm.ws.rsadapter.ConnectionSharing;
 import com.ibm.ws.rsadapter.DSConfig; 
 import com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException;
 import com.ibm.ws.rsadapter.jdbc.WSJdbcConnection;
+import com.ibm.ws.rsadapter.jdbc.WSJdbcTracer;
 import com.ibm.ws.tx.embeddable.EmbeddableWebSphereTransactionManager;
 
 /**
@@ -184,6 +186,11 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
      * 
      */
     private Boolean transactional;
+
+    /**
+     * Indicates if doConnectionCleanupPerCloseConnection is needed due to doConnectionSetupPerGetConnection.
+     */
+    public boolean perCloseCleanupNeeded;
 
     boolean _claimedVictim;
 
@@ -351,6 +358,8 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
     public boolean clientInfoExplicitlySet;
     public boolean clientInfoImplicitlySet;
 
+    private Properties doConnectionSetupPerTranProps;
+
     // Indicates if the Connection supports two phase commit.
     private boolean is2Phase;
 
@@ -381,8 +390,6 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
      * 
      */
     private long fatalErrorCount;
-
-    private boolean inCleanup = false;
 
     /**
      * Constructs an instance of WSRdbManagedConnectionImpl.
@@ -654,7 +661,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
                                 cri.ivUserName,
                                 cri.ivPassword,
                                 isolationChanged ? currentTransactionIsolation : cri.ivIsoLevel,
-                                connectionPropertyChanged ? getCatalog() : cri.ivCatalog,
+                                connectionPropertyChanged && mcf.supportsGetCatalog ? getCatalog() : cri.ivCatalog,
                                 connectionPropertyChanged && mcf.supportsIsReadOnly ? Boolean.valueOf(isReadOnly()) : cri.ivReadOnly,
                                 connectionPropertyChanged ? currentShardingKey : cri.ivShardingKey,
                                 connectionPropertyChanged ? currentSuperShardingKey : cri.ivSuperShardingKey,
@@ -922,7 +929,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
         try{
             return getTypeMap();
         } catch (SQLException e) {
-            if (AdapterUtil.isUnsupportedException(e)) {
+            if (helper.isUnsupported(e)) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     Tr.debug(this, tc, "supportsGetTypeMap false due to " + e);
                 mcf.supportsGetTypeMap = false;
@@ -992,7 +999,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
                     Tr.debug(this, tc, "MCF is NOT rrsTransactional:  setting currentAutoCommit and defaultAutoCommit to " + defaultAutoCommit + " from underlying Connection"); 
                 } 
             } 
-            defaultCatalog = sqlConn.getCatalog();
+            defaultCatalog = mcf.supportsGetCatalog ? sqlConn.getCatalog() : null;
             defaultReadOnly = mcf.supportsIsReadOnly ? sqlConn.isReadOnly() : false;
             defaultTypeMap = getTypeMapSafely();
             currentShardingKey = initialShardingKey = cri.ivShardingKey;
@@ -1660,12 +1667,6 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
 
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
 
-        if (inCleanup) {
-            if (isTraceOn && tc.isDebugEnabled())
-                Tr.debug(this, tc, "An error occured during connection cleanup. Since the container drives " +
-                                   "the cleanup op, it will directly receive the exception.");
-            return;
-        }
         if (connectionErrorDetected) {
             if (isTraceOn && tc.isEventEnabled())
                 Tr.event(this, tc, "CONNECTION_ERROR_OCCURRED event already fired");
@@ -1673,7 +1674,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
             return;
         }
 
-        if (ex instanceof SQLException && mcf.helper.isAnAuthorizationException((SQLException) ex)) {
+        if (ex instanceof SQLException && helper.isAnAuthorizationException((SQLException) ex)) {
             if (isTraceOn && tc.isDebugEnabled())
                 Tr.debug(this, tc, "CONNECTION_ERROR_OCCURRED will fire an event to only purge and destroy this connection");
 
@@ -2043,7 +2044,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
                     // the reuse call won't go down to the DB til the next execution of the.  DB optimizaiton.
                     // if we were in a tran, a connection will have to match as we do compare subject and CRI
                     // the fact that the gssNames don't match, means we are not in a tra.
-                    mcf.helper.reuseKerbrosConnection(sqlConn, cri.gssCredential, null);
+                    helper.reuseKerbrosConnection(sqlConn, cri.gssCredential, null);
 
                     //now save the cri props in the mc
                     mc_gssCredential = cri.gssCredential;
@@ -2065,7 +2066,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
                 setTransactionIsolation(cri.ivIsoLevel);
             }
 
-            if (cri.ivCatalog != null && !cri.ivCatalog.equals(defaultCatalog)) {
+            if (cri.ivCatalog != null && !cri.ivCatalog.equals(defaultCatalog) && mcf.supportsGetCatalog) {
                 setCatalog(cri.ivCatalog);
             }
 
@@ -2355,6 +2356,33 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
                 (stateMgr.getState() == WSStateManager.RRS_GLOBAL_TRANSACTION_ACTIVE 
                 && !rrsGlobalTransactionReallyActive)) 
             {
+                if (mcf.dataStoreHelper != null)
+                    try
+                    {
+                        if (doConnectionSetupPerTranProps == null) {
+                            doConnectionSetupPerTranProps = new Properties();
+                            doConnectionSetupPerTranProps.setProperty("FIRST_TIME_CALLED", "true");
+                        } else {
+                            doConnectionSetupPerTranProps.setProperty("FIRST_TIME_CALLED", "false");
+                        }
+
+                        // Remove the wrapper for supplemental trace before invoking a custom helper
+                        // because the java.sql.Connection wrapper prevents access to vendor APIs
+                        // that might be used by the custom helper.
+                        Connection conn = mcf.isCustomHelper ?
+                            (Connection) WSJdbcTracer.getImpl(sqlConn) : sqlConn;
+
+                        // if we have a subject, it will take precedence
+                        mcf.dataStoreHelper.doConnectionSetupPerTransaction(subject,
+                           (subject == null ? newCRI.ivUserName : null),
+                            conn, _claimedVictim, doConnectionSetupPerTranProps);
+                    }
+                    catch (SQLException sqe)
+                    {
+                        FFDCFilter.processException(sqe, getClass().getName(), "2294", this);
+                        throw new DataStoreAdapterException("DSA_ERROR", sqe, getClass());
+                    }
+
                 // setting the new subject in the managed connection, this may be the same
                 // as the existing one, however, in the claimedVictim path it won't. Setting it all the time.
                 this.subject = subject;
@@ -2407,6 +2435,33 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
 
         if (isTraceOn && tc.isDebugEnabled())
             Tr.debug(this, tc, "numHandlesInUse", numHandlesInUse);
+
+        if (mcf.isCustomHelper && numHandlesInUse == 1)
+            try
+            {
+                Map<String, Object> props = new HashMap<String, Object>();
+                props.put("SUBJECT", subject);
+
+                // Remove the wrapper for supplemental trace before invoking a custom helper
+                // because the java.sql.Connection wrapper prevents access to vendor APIs
+                // that might be used by the custom helper.
+                Connection conn = mcf.isCustomHelper ?
+                    (Connection) WSJdbcTracer.getImpl(sqlConn) : sqlConn;
+
+                boolean conSetupPerformed = mcf.dataStoreHelper.doConnectionSetupPerGetConnection(conn, false, props);
+                if (isTraceOn && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "doConnectionSetupPerGetConnection", mcf.dataStoreHelper, this, sqlConn, conSetupPerformed);
+
+                // indicate that we need to undo in case cleanup is called before close
+                perCloseCleanupNeeded = true;
+            }
+            catch (Throwable t)
+            {
+                FFDCFilter.processException(t, getClass().getName(), "2849", this);
+                if (t instanceof SQLException)
+                    t = AdapterUtil.mapSQLException((SQLException) t, this);
+                throw new DataStoreAdapterException("DSA_ERROR", t, getClass());
+            }
 
         // Record the number of fatal connection errors found on connections created by the
         // parent ManagedConnectionFactory at the time the last handle was created for this
@@ -2749,7 +2804,25 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
             throw x;
         }
 
-        inCleanup = false;
+        if (perCloseCleanupNeeded)
+            try {
+                perCloseCleanupNeeded = false;
+
+                Connection conn = mcf.isCustomHelper ?
+                    (Connection) WSJdbcTracer.getImpl(sqlConn) : sqlConn;
+
+                boolean conCleanupPerformed = mcf.dataStoreHelper.doConnectionCleanupPerCloseConnection(conn, false, null);
+
+                if (isTraceOn && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "doConnectionCleanupPerCloseConnection", mcf.dataStoreHelper, sqlConn, conCleanupPerformed);
+            }
+            catch (Throwable x) {
+                if (isTraceOn && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "doConnectionCleanupPerCloseConnection", x);
+                SQLException sqlx = x instanceof SQLException ? (SQLException) x
+                                : new SQLException(x.getMessage(), null, 999999); // 999999 matches legacy behavior
+                throw AdapterUtil.translateSQLException(sqlx, this, false, getClass());
+            }
 
         // Reset to null so that it gets refreshed on next use.
         transactional = null; 
@@ -2797,9 +2870,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
         // connection pool, we should reset the autocommit of this connection to false.
         //  - SybaseHelper will also return true.
 
-        //  - change wasAutoCommitResetByCleanup to wasCleanupReturnTrue
-
-        boolean wasCleanupReturnTrue;
+        boolean modifiedByCleanup;
 
         try {
 
@@ -2809,7 +2880,9 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
                 helper.resetClientInformation(this);
             }
 
-            wasCleanupReturnTrue = mcf.helper.doConnectionCleanup(sqlConn);
+            modifiedByCleanup = mcf.dataStoreHelper == null
+                              ? helper.doConnectionCleanup(sqlConn)
+                              : mcf.dataStoreHelper.doConnectionCleanup((Connection) WSJdbcTracer.getImpl(sqlConn));
 
             if (!connectionErrorDetected) 
             {
@@ -2842,7 +2915,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
         // modifications are accounted for. 
 
         if (!connectionErrorDetected && 
-            (connectionPropertyChanged || wasCleanupReturnTrue)) 
+            (connectionPropertyChanged || modifiedByCleanup)) 
         {
             if (mcf.supportsIsReadOnly) {
                 try {
@@ -2864,22 +2937,25 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
                 }
             }
 
-            try {
-                setCatalog(defaultCatalog);
+            if (mcf.supportsGetCatalog)
+            {
+                try {
+                    setCatalog(defaultCatalog);
 
-                // Update the connection request information after switching back to the
-                // default catalog.
-                if (connectionSharing == ConnectionSharing.MatchCurrentState)
-                {
-                    if (!cri.isCRIChangable()) // create a changable CRI if existing one is not
-                        setCRI(WSConnectionRequestInfoImpl.createChangableCRIFromNon(cri));
+                    // Update the connection request information after switching back to the
+                    // default catalog.
+                    if (connectionSharing == ConnectionSharing.MatchCurrentState)
+                    {
+                        if (!cri.isCRIChangable()) // create a changable CRI if existing one is not
+                            setCRI(WSConnectionRequestInfoImpl.createChangableCRIFromNon(cri));
 
-                    cri.setCatalog(defaultCatalog);
+                        cri.setCatalog(defaultCatalog);
+                    }
+                } catch (SQLException sqle) {
+                    FFDCFilter.processException(sqle, getClass().getName() + ".cleanupStates",
+                                                "1227", this);
+                    throw new DataStoreAdapterException("DSA_ERROR", sqle, getClass());
                 }
-            } catch (SQLException sqle) {
-                FFDCFilter.processException(sqle, getClass().getName() + ".cleanupStates",
-                                            "1227", this);
-                throw new DataStoreAdapterException("DSA_ERROR", sqle, getClass());
             }
 
             if (mcf.supportsGetTypeMap) {
@@ -2900,7 +2976,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
                 } catch(UnsupportedOperationException uoe){
                     // Ignore since we are only attempting to cleanup
                 } catch (SQLException sqle) {
-                    if(AdapterUtil.isUnsupportedException(sqle)){
+                    if (helper.isUnsupported(sqle)){
                         // ignore unsupported exception
                     } else {
                         FFDCFilter.processException(sqle, getClass().getName() + ".cleanupStates",
@@ -2924,7 +3000,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
                 } catch(UnsupportedOperationException uoe){
                     // Ignore since we are only attempting to cleanup
                 } catch (SQLException sqle) {
-                    if(AdapterUtil.isUnsupportedException(sqle)){
+                    if (helper.isUnsupported(sqle)){
                         // ignore unsupported exception
                     } else {
                         FFDCFilter.processException(sqle, getClass().getName() + ".cleanupStates",
@@ -2987,7 +3063,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
                 } catch(UnsupportedOperationException uoe){
                     // Ignore since we are only attempting to cleanup
                 } catch (SQLException sqle) {
-                    if(AdapterUtil.isUnsupportedException(sqle)){
+                    if (helper.isUnsupported(sqle)){
                         // ignore unsupported exception
                     } else {
                         FFDCFilter.processException(sqle, getClass().getName() + ".cleanupStates",
@@ -3000,7 +3076,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
             connectionPropertyChanged = false;
 
             //  - get the autocommit value, isolation level value and holdability value from the native connection
-            if (wasCleanupReturnTrue) {
+            if (modifiedByCleanup) {
                 try {
                     currentAutoCommit = sqlConn.getAutoCommit();
                     if (cachedConnection != null) 
@@ -3226,7 +3302,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
                 if (mcf.supportsUOWDetection) {
                     String operation = "none";
                     try {
-                        if (mcf.helper.isInDatabaseUnitOfWork(sqlConn)) {
+                        if (helper.isInDatabaseUnitOfWork(sqlConn)) {
                             /*
                              * If the DB supports UOW Detection and we are in a DB UOW we will commit or rollback per
                              * setting on the DataSource.
@@ -3350,7 +3426,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
                  */
                 if (mcf.supportsUOWDetection) {
                     try {
-                        if (mcf.helper.isInDatabaseUnitOfWork(sqlConn)) {
+                        if (helper.isInDatabaseUnitOfWork(sqlConn)) {
 
                             if (!mcf.loggedImmplicitTransactionFound) {
                                 Tr.info(tc, "IMPLICIT_TRANSACTION_FOUND");
@@ -4237,7 +4313,10 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
             }
 
             // Clean up the connection.
-            mcf.helper.doConnectionCleanup(sqlConn);
+            if (mcf.dataStoreHelper == null)
+                helper.doConnectionCleanup(sqlConn);
+            else
+                mcf.dataStoreHelper.doConnectionCleanup((Connection) WSJdbcTracer.getImpl(sqlConn));
 
             // Clear the warning.
             sqlConn.clearWarnings();
@@ -4254,7 +4333,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
             if (isTraceOn && tc.isDebugEnabled()) 
                 Tr.debug(this, tc, "validate", AdapterUtil.getStackTraceWithState(sqle));
 
-            if (helper.isConnectionError(sqle)) {
+            if (mcf.dataStoreHelper == null ? helper.isConnectionError(sqle) : mcf.dataStoreHelper.isConnectionError(sqle)) {
                 // Don't do any cleanup
                 if (isTraceOn && tc.isEntryEnabled())
                     Tr.exit(this, tc, "validate", false);
@@ -4271,9 +4350,9 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
                     } catch (SQLException rollbackEx) {
                         // No FFDC coded needed
 
-                        // There is a possiblility that now the connection is stale.
+                        // There is a possibility that now the connection is stale.
 
-                        if (helper.isConnectionError(rollbackEx)) {
+                        if (mcf.dataStoreHelper == null ? helper.isConnectionError(rollbackEx) : mcf.dataStoreHelper.isConnectionError(rollbackEx)) {
                             if (isTraceOn && tc.isEntryEnabled())
                                 Tr.exit(this, tc, "validate", AdapterUtil.getStackTraceWithState(rollbackEx));
                             return false;
@@ -4282,13 +4361,16 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
                 }
 
                 try {
-                    mcf.helper.doConnectionCleanup(sqlConn);
+                    if (mcf.dataStoreHelper == null)
+                        helper.doConnectionCleanup(sqlConn);
+                    else
+                        mcf.dataStoreHelper.doConnectionCleanup((Connection) WSJdbcTracer.getImpl(sqlConn));
                 } catch (SQLException cleanEx) {
                     // No FFDC coded needed
 
-                    // There is a possiblility that now the connection is stale.
+                    // There is a possibility that now the connection is stale.
 
-                    if (helper.isConnectionError(cleanEx)) {
+                    if (mcf.dataStoreHelper == null ? helper.isConnectionError(cleanEx) : mcf.dataStoreHelper.isConnectionError(cleanEx)) {
                         if (isTraceOn && tc.isEntryEnabled())
                             Tr.exit(this, tc, "validate", AdapterUtil.getStackTraceWithState(cleanEx));
                         return false;
@@ -4302,7 +4384,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
 
                     // There is a possibility that now the connection is stale.
 
-                    if (helper.isConnectionError(cleanEx)) {
+                    if (mcf.dataStoreHelper == null ? helper.isConnectionError(cleanEx) : mcf.dataStoreHelper.isConnectionError(cleanEx)) {
                         if (isTraceOn && tc.isEntryEnabled())
                             Tr.exit(this, tc, "validate", AdapterUtil.getStackTraceWithState(cleanEx));
                         return false;
@@ -4414,7 +4496,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
         } catch (SQLException e) {
             // In case the driver is not 4.1 compliant but says it is 
             String sqlMessge = e.getMessage() == null ? "" : e.getMessage();
-            if (AdapterUtil.isUnsupportedException(e))
+            if (helper.isUnsupported(e))
                 x = e;
             //try to catch any other variation of not supported, does not support, unsupported, etc.
             //this is needed by several JDBC drivers, but one known driver is DataDirect OpenEdge JDBC Driver
@@ -4494,7 +4576,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
         } catch (SQLException e) {
             // In case the driver is not 4.1 compliant but says it is 
             String sqlMessge = e.getMessage() == null ? "" : e.getMessage();
-            if (AdapterUtil.isUnsupportedException(e))
+            if (helper.isUnsupported(e))
                 x = e;
             //try to catch any other variation of not supported, does not support, unsupported, etc.
             //this is needed by several JDBC drivers, but one known driver is DataDirect OpenEdge JDBC Driver

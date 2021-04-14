@@ -508,6 +508,16 @@ public class TestHelpers {
         return webClient;
     }
 
+    public static void destroyWebClient(WebClient webClient) throws Exception {
+        try {
+            if (webClient != null) {
+                webClient.close();
+            }
+        } catch (Exception e) {
+            Log.info(thisClass, "destroyWebClient", "Exception occurred trying to clean up the web client - tests will continue:  Exception was: " + e.toString());
+        }
+    }
+
     public void waitBeforeContinuing(WebClient webClient) throws Exception {
         Log.info(thisClass, "waitBeforeContinuing", "Waiting for HtmlUnit to finish its business");
         webClient.waitForBackgroundJavaScriptStartingBefore(5000);

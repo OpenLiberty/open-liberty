@@ -846,7 +846,7 @@ public class SourceStream extends ControllableStream implements BatchListener
   /**
     * This method is called when all the messages up to the ackPrefix
     * have been acknowledged. For pointTopoint this is called when an Ack
-    * message is recieved from the target. For pubsub this is called when
+    * message is received from the target. For pubsub this is called when
     * all the InternalOutputStreams associated with this SourceStream have
     * received Ack messages.  
     *  

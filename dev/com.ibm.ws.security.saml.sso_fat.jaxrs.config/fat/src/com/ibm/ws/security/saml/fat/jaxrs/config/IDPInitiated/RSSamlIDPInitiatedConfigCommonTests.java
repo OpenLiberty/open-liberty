@@ -27,7 +27,6 @@ import com.ibm.ws.security.fat.common.config.settings.SSLSettings;
 import com.ibm.ws.security.saml.fat.jaxrs.config.utils.RSSamlConfigSettings;
 import com.ibm.ws.security.saml.fat.jaxrs.config.utils.RSSamlProviderSettings;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLCommonTest;
-import com.ibm.ws.security.saml20.fat.commonTest.SAMLCommonTestHelpers;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLConstants;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLMessageConstants;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLTestServer;
@@ -175,11 +174,7 @@ public class RSSamlIDPInitiatedConfigCommonTests extends SAMLCommonTest {
         // between tests
         testSAMLServer.setRestoreServerBetweenTests(false);
         testAppServer.setRestoreServerBetweenTests(false);
-        // some of the configs in the class are complex and cause the server to
-        // take more than 2 minutes to refresh - allow up to 4 minutes
-        testAppServer.setOverrideRestartWaitTime(2 * (120 * 1000)); // 2 x
-                                                                    // default
-                                                                    // value
+
     }
 
     @Before
@@ -458,7 +453,7 @@ public class RSSamlIDPInitiatedConfigCommonTests extends SAMLCommonTest {
 
         testAppServer.reconfigServer(buildSPServerName(serverCfgFile), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         genericSAML(_testName, webClient, testSettings, throughJAXRSGet, buildExpectationsWithIdentityInfo(expectedRealm, expectedUser, expectedGroup));
 
@@ -477,7 +472,7 @@ public class RSSamlIDPInitiatedConfigCommonTests extends SAMLCommonTest {
 
         testAppServer.reconfigServer(buildSPServerName(serverCfgFile), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         List<validationData> expectations = get401ExpectationsForJaxrsGet("Did not get expected message saying no user registry service was available.",
                 SAMLMessageConstants.CWWKS3005E_NO_USER_REGISTRY);
@@ -504,7 +499,7 @@ public class RSSamlIDPInitiatedConfigCommonTests extends SAMLCommonTest {
 
         testAppServer.reconfigServer(buildSPServerName(serverCfgFile), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         List<validationData> expectations = get401ExpectationsForJaxrsGet("Did not get expected message saying a required attribute was missing",
                 SAMLMessageConstants.CWWKS5068E_MISSING_ATTRIBUTE + ".+\\[" + attrName + "\\]");
@@ -528,7 +523,7 @@ public class RSSamlIDPInitiatedConfigCommonTests extends SAMLCommonTest {
 
         testAppServer.reconfigServer(testServerConfigFile, testName.getMethodName(), Constants.NO_EXTRA_MSGS, Constants.JUNIT_REPORTING);
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         genericSAML(_testName, webClient, settings, throughJAXRSGet, expectations);
     }
@@ -626,7 +621,7 @@ public class RSSamlIDPInitiatedConfigCommonTests extends SAMLCommonTest {
     protected void successfulJaxRsInvocation(String appExtension) throws Exception {
         SAMLTestSettings updatedTestSettings = commonUtils.changeTestApps(testAppServer, testSettings, appExtension);
         List<validationData> expectations = commonUtils.getGoodExpectationsForJaxrsGet(flowType, updatedTestSettings);
-        genericSAML(_testName, SAMLCommonTestHelpers.getWebClient(), updatedTestSettings, throughJAXRSGet, expectations);
+        genericSAML(_testName, getAndSaveWebClient(), updatedTestSettings, throughJAXRSGet, expectations);
     }
 
     /**
@@ -690,7 +685,7 @@ public class RSSamlIDPInitiatedConfigCommonTests extends SAMLCommonTest {
             }
         }
 
-        genericSAML(_testName, SAMLCommonTestHelpers.getWebClient(), updatedTestSettings, throughJAXRSGet, expectations);
+        genericSAML(_testName, getAndSaveWebClient(), updatedTestSettings, throughJAXRSGet, expectations);
     }
 
     /**
@@ -728,7 +723,7 @@ public class RSSamlIDPInitiatedConfigCommonTests extends SAMLCommonTest {
         }
         expectations = vData.addExpectation(expectations, SAMLConstants.PERFORM_IDP_LOGIN, SAMLConstants.SAML_TOKEN_ENCRYPTED, SAMLConstants.STRING_CONTAINS, "Did not receive the expected encrypted SAML token content.", null, null);
 
-        genericSAML(_testName, SAMLCommonTestHelpers.getWebClient(), updatedTestSettings, throughJAXRSGet, expectations);
+        genericSAML(_testName, getAndSaveWebClient(), updatedTestSettings, throughJAXRSGet, expectations);
     }
 
 }

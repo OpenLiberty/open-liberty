@@ -317,26 +317,24 @@ public class ConfigTest extends FATServletClient {
 
         // First verify the default behavior
         runTest(basicfat, "testConfigChangeAutoCloseConnectionsLeakConnection");
-        runTest(basicfat, "testConfigChangeAutoCloseConnectionsConnectionNotClosed"); // TODO update when the default switches
-
-        // TODO after the change to the default, swap the order of the next two blocks:
-
-        conMgr1.setAutoCloseConnections("true");
-        try {
-            updateServerConfig(config, EMPTY_EXPR_LIST);
-            runTest(basicfat, "testConfigChangeAutoCloseConnectionsLeakConnection");
-            runTest(basicfat, "testConfigChangeAutoCloseConnectionsConnectionClosed");
-        } catch (Throwable x) {
-            System.out.println("Failure during " + method + " with the following config:");
-            System.out.println(config);
-            throw x;
-        }
+        runTest(basicfat, "testConfigChangeAutoCloseConnectionsConnectionClosed");
 
         conMgr1.setAutoCloseConnections("false");
         try {
             updateServerConfig(config, EMPTY_EXPR_LIST);
             runTest(basicfat, "testConfigChangeAutoCloseConnectionsLeakConnection");
             runTest(basicfat, "testConfigChangeAutoCloseConnectionsConnectionNotClosed");
+        } catch (Throwable x) {
+            System.out.println("Failure during " + method + " with the following config:");
+            System.out.println(config);
+            throw x;
+        }
+
+        conMgr1.setAutoCloseConnections("true");
+        try {
+            updateServerConfig(config, EMPTY_EXPR_LIST);
+            runTest(basicfat, "testConfigChangeAutoCloseConnectionsLeakConnection");
+            runTest(basicfat, "testConfigChangeAutoCloseConnectionsConnectionClosed");
         } catch (Throwable x) {
             System.out.println("Failure during " + method + " with the following config:");
             System.out.println(config);

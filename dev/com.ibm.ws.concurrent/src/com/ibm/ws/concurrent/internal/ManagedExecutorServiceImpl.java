@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2020 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -452,6 +452,11 @@ public class ManagedExecutorServiceImpl implements ExecutorService, //
         Set<String> members = new HashSet<String>(applications);
         applications.removeAll(members);
         return members;
+    }
+
+    @Override
+    public PolicyExecutor getLongRunningPolicyExecutor() {
+        return longRunningPolicyExecutorRef.get();
     }
 
     @Override

@@ -150,7 +150,7 @@ error.creatingNewServer=CWWKE0030E: Si \u00e8 verificata un''eccezione durante l
 error.creatingNewServer.explanation=Impossibile creare il server specificato.
 error.creatingNewServer.useraction=Risolvere l'eccezione, quindi provare nuovamente a creare il server.
 
-error.noExistingServer=CWWKE0031E: Il server specificato {0} non esiste; utilizzare l''opzione --create per creare un nuovo server. serverPath: {1}
+error.noExistingServer=CWWKE0031E: Il server {0} specificato non esiste; utilizzare l''azione di creazione per creare un nuovo server. serverPath: {1}
 error.noExistingServer.explanation=Il server specificato non esiste, per cui non \u00e8 possibile eseguire alcuna azione su di esso.
 error.noExistingServer.useraction=Controllare il nome del server oppure creare un server con il nome specificato, quindi ripetere il comando.
 
@@ -309,7 +309,7 @@ info.javadump.request.received.explanation=Questo messaggio \u00e8 unicamente a 
 info.javadump.request.received.useraction=Non \u00e8 richiesta alcuna azione.
 
 info.javadump.created=CWWKE0068I: Dump Java creato: {0}
-info.javadump.created.explanation=Questo messaggio \u00e8 solo a scopo informativo.
+info.javadump.created.explanation=Questo messaggio \u00e8 unicamente a scopo informativo.
 info.javadump.created.useraction=Non \u00e8 richiesta alcuna azione.
 
 warn.javadump.unsupported=CWWKE0069W: Dump Java di tipo {0} non supportato.
@@ -487,7 +487,7 @@ error.creatingNewClient=CWWKE0902E: Si \u00e8 verificata un''eccezione durante l
 error.creatingNewClient.explanation=Non \u00e8 stato possibile creare il client specificato.
 error.creatingNewClient.useraction=Controllare e risolvere l'eccezione, quindi provare nuovamente a creare il client.
 
-error.noExistingClient=CWWKE0903E: Il client specificato {0} non esiste; utilizzare l''opzione --create per creare un nuovo client. clientPath: {1}
+error.noExistingClient=CWWKE0903E: Il client {0} specificato non esiste; utilizzare l''azione di creazione per creare un nuovo client. clientPath: {1}
 error.noExistingClient.explanation=Il client specificato non esiste, per cui non \u00e8 possibile eseguire alcuna azione su di esso.
 error.noExistingClient.useraction=Controllare il nome client oppure creare un client con il nome specificato, quindi ritentare il comando.
 
@@ -588,19 +588,19 @@ error.package.missingLibExtractDir.useraction=Reinstallare WebSphere Liberty Pro
 
 info.server.pause.all.request.received=CWWKE0923I: \u00c8 stata ricevuta una richiesta di sospendere tutti i componenti sospendibili nel server.
 info.server.pause.all.request.received.explanation=\u00c8 stata emessa una richiesta di sospendere tutti i componenti sospendibili nel server. Il server tenter\u00e0 di sospendere questi componenti. 
-info.server.pause.all.request.received.useraction=Nessuna azione richiesta.
+info.server.pause.all.request.received.useraction=Non \u00e8 richiesta alcuna azione.
 
 info.server.pause.request.received=CWWKE0924I: \u00c8 stata ricevuta una richiesta di sospendere i seguenti componenti nel server: {0}
 info.server.pause.request.received.explanation=\u00c8 stata emessa una richiesta di sospendere componenti specifici nel server. Il server tenter\u00e0 di sospendere questi componenti. 
-info.server.pause.request.received.useraction=Nessuna azione richiesta.
+info.server.pause.request.received.useraction=Non \u00e8 richiesta alcuna azione.
 
 info.server.resume.all.request.received=CWWKE0925I: \u00c8 stata ricevuta una richiesta di riattivare tutti i componenti sospesi nel server.
 info.server.resume.all.request.received.explanation=\u00c8 stata emessa una richiesta di riattivare tutti i componenti sospesi nel server. Il server tenter\u00e0 di riattivare questi componenti.
-info.server.resume.all.request.received.useraction=Nessuna azione richiesta.
+info.server.resume.all.request.received.useraction=Non \u00e8 richiesta alcuna azione.
 
 info.server.resume.request.received=CWWKE0926I: \u00c8 stata ricevuta una richiesta di riattivare i seguenti componenti nel server: {0}
 info.server.resume.request.received.explanation=\u00c8 stata emessa una richiesta di riattivare componenti specifici nel server. Il server tenter\u00e0 di riattivare questi componenti se sospesi.
-info.server.resume.request.received.useraction=Nessuna azione richiesta.
+info.server.resume.request.received.useraction=Non \u00e8 richiesta alcuna azione.
 
 error.pause.request.failed=CWWKE0927E: \u00c8 stata ricevuta una richiesta di sospensione, ma l'infrastruttura per sospendere i componenti non \u00e8 disponibile. Impossibile elaborare la richiesta. 
 error.pause.request.failed.explanation=Un utente ha emesso una richiesta di sospensione. Tuttavia, la richiesta non pu\u00f2 essere elaborata. Il server potrebbe stare ancora inizializzando o si sta arrestando.
@@ -648,15 +648,15 @@ warning.server.status.missing.targets.useraction=Verificare che i nomi component
 
 info.server.pause.request.completed=CWWKE0938I: Una richiesta di sospensione \u00e8 stata completata.
 info.server.pause.request.completed.explanation=Una richiesta di sospensione \u00e8 stata completata.
-info.server.pause.request.completed.useraction=Nessuna azione richiesta.
+info.server.pause.request.completed.useraction=Non \u00e8 richiesta alcuna azione.
 
 info.server.resume.request.completed=CWWKE0939I: Una richiesta di riattivazione \u00e8 stata completata.
 info.server.resume.request.completed.explanation=Una richiesta di riattivazione \u00e8 stata completata.
-info.server.resume.request.completed.useraction=Nessuna azione richiesta.
+info.server.resume.request.completed.useraction=Non \u00e8 richiesta alcuna azione.
 
 info.envProductExtension=CWWKE0940I: L''estensione del prodotto {0} ha un identificativo prodotto di {1} e un''ubicazione di intallazione prodotto di {2}. Questa estensione di prodotto \u00e8 stata abilitata specificando la variabile di ambiente WLP_PRODUCT_EXT_DIR. 
 info.envProductExtension.explanation= La variabile di ambiente WLP_PRODUCT_EXT_DIR punta all'ubicazione dell'estensione del prodotto. Il server \u00e8 stato trovato e utilizza l'estensione del prodotto.
-info.envProductExtension.useraction=Nessuna azione richiesta.
+info.envProductExtension.useraction=Non \u00e8 richiesta alcuna azione.
 
 warning.variable.invalid=CWWKE0941W: La dichiarazione di variabile {0} specificata in server.env non \u00e8 valida perch\u00e9 contiene caratteri non alfanumerici nel nome della variabile. Questo valore non verr\u00e0 utilizzato.
 warning.variable.invalid.explanation=Sono consentiti solo caratteri alfanumerici nei nomi delle variabili specificati nel file server.env.
@@ -684,11 +684,11 @@ warning.server.status.invalid.targets.useraction=Specificare nell'opzione di des
 
 warning.package.root.invalid=CWWKE0947W: Un'opzione --server-root con un argomento vuoto non \u00e8 consentita quando sono installate le estensioni prodotto. Verr\u00e0 utilizzato l'argomento predefinito wlp.
 warning.package.root.invalid.explanation=L'utente ha effettuato una richiesta di package con un'opzione --server-root che specifica un argomento vuoto e sono state rilevate le estensioni prodotto. Verr\u00e0 utilizzata la root server predefinita wlp.
-warning.package.root.invalid.useraction=Nessuna azione richiesta.
+warning.package.root.invalid.useraction=Non \u00e8 richiesta alcuna azione.
 
 warning.package.root.invalid.runnable=CWWKE0948W: Una opzione --server-root con --include=runnable non \u00e8 una combinazione consentita. Per la root del server viene utilizzato l'argomento predefinito di wlp.
 warning.package.root.invalid.runnable.explanation=L'utente ha effettuato una richiesta di package con un'opzione --server-root e --include=runnable, che non \u00e8 una combinazione consentita. Viene utilizzata la root server predefinita wlp.
-warning.package.root.invalid.runnable.useraction=Nessuna azione richiesta.
+warning.package.root.invalid.runnable.useraction=Non sono richieste azioni.
 
 error.package.extension=CWWKE0950E: Il nome file di archivio deve terminare con .jar quando viene utilizzata l'opzione runnable.
 error.package.extension.explanation=L'opzione --archive deve includere un'estensione file che termina con .jar quando si specifica --include=runnable.
@@ -703,8 +703,8 @@ error.missing.version.files.explanation=La directory che contiene i file di info
 error.missing.version.files.useraction=Verificare che la directory esista e che possa essere letta dall'utente corrente. 
 
 warning.earlyRelease=CWWKE0953W: Questa versione di {0} \u00e8 una versione di release anticipata non supportata.
-warning.earlyRelease.explanation=Le nuove funzioni non completamente testate vengono rese disponibili nelle release anticipate per suscitare il feedback prima di essere incluse in una release supportata.
-warning.earlyRelease.useraction=Non utilizzare la versione release anticipata in sistemi di produzione, poich\u00e9 le versioni di release anticipate non sono supportate.
+warning.earlyRelease.explanation=Le nuove funzioni che non sono ancora state completamente verificate vengono rese disponibili nelle release anticipate al fine di ottenere un feedback prima che vengano incluse in una release supportata.
+warning.earlyRelease.useraction=Non utilizzare una versione di release anticipata su sistema di produzione, poich\u00e9 le versioni di release anticipate non sono supportate.
 
 info.serverStarting=Avvio del server {0} in corso.
 info.serverStarted=Server {0} avviato.
@@ -752,7 +752,8 @@ info.pauseFailedException=Sospensione del server {0} non riuscita. Per ulteriori
 controllare i log del server.
 info.pausingListeners.target=Sospensione dei componenti di destinazione specificati del server {0}.
 info.pausedListeners.target=Sospensione dei componenti di destinazione specificati del server {0} completata.
-info.pauseFailedException.target=Sospensione dei componenti di destinazione specificati del server {0} non riuscita. Per ulteriori informazioni, \
+info.pauseFailedException.target=Sospensione dei componenti di destinazione specificati del server {0} non riuscita. \
+Per ulteriori informazioni, \
 controllare i log del server.
 info.resumingListeners=Riattivazione del server {0}.
 info.resumedListeners=Riattivazione del server {0} completata.
@@ -760,7 +761,8 @@ info.resumeFailedException=Riattivazione del server {0} non riuscita. Per ulteri
 controllare i log del server.
 info.resumingListeners.target=Riattivazione dei componenti di destinazione specificati del server {0}.
 info.resumedListeners.target=Riattivazione dei componenti di destinazione specificati del server {0} completata.
-info.resumeFailedException.target=Riattivazione dei componenti di destinazione specificati del server {0} non riuscita. Per ulteriori informazioni, \
+info.resumeFailedException.target=Riattivazione dei componenti di destinazione specificati del server {0} non riuscita. \
+Per ulteriori informazioni, \
 controllare i log del server.
 info.serverCommandAuthFailure=Il comando {0} non \u00e8 riuscito perch\u00e9 il processo non ha potuto eliminare il file {1}.
 info.serverCommandCommFailure=Il comando {0} non \u00e8 riuscito a causa di un problema di comunicazione con il server.

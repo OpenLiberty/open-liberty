@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2018 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -66,12 +66,17 @@ public class FATSuite {
      * @see {@link FatLogHandler#generateHelpFile()}
      */
     @BeforeClass
-    public static void generateHelpFile() {
+    public static void setUp() {
         FatLogHandler.generateHelpFile();
         //Transform the bundles for EE9
         if (RepeatTestFilter.isRepeatActionActive("EE9_FEATURES")) {
             for (String path : PATHS_TO_BUNDLES) {
-                JakartaEE9Action.transformApp(Paths.get(path));
+                //We transform into a new bundle because on Windows the transformer will be stopped by 
+                //a filelock if it tries to modify a userbundle jar even if we've uninstalled the userbundle.
+                //the bundles must not be installed before the EE9 run. 
+                //(this is done during the EE9 run rather than the safer choice of transforming first so it can
+                //be installed at any time to avoid running the transformer if it is not needed)
+                JakartaEE9Action.transformApp(Paths.get(path), Paths.get(path.replace(".jar", "-jakarta.jar")));
             }
         }
     }

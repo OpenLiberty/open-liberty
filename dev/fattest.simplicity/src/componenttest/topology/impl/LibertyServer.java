@@ -97,6 +97,7 @@ import com.ibm.ws.logging.utils.FileLogHolder;
 import componenttest.common.apiservices.Bootstrap;
 import componenttest.common.apiservices.LocalMachine;
 import componenttest.custom.junit.runner.LogPolice;
+import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.depchain.FeatureDependencyProcessor;
 import componenttest.exception.TopologyException;
 import componenttest.topology.impl.JavaInfo.Vendor;
@@ -2058,7 +2059,7 @@ public class LibertyServer implements LogMonitorClient {
             //since this is going to connect to the secure port, that needs to be ready
             //before an attempt to make the JMX connection
             Log.info(c, method, "Checking that the JMX RestConnector is available and secured");
-            assertNotNull("CWWKO0219I.*ssl not recieved", waitForStringInLogUsingMark("CWWKO0219I.*ssl"));
+            assertNotNull("CWWKO0219I.*ssl not received", waitForStringInLogUsingMark("CWWKO0219I.*ssl"));
 
             assertNotNull("IBMJMXConnectorREST app did not report as ready", waitForStringInLogUsingMark("CWWKT0016I.*IBMJMXConnectorREST"));
 
@@ -2636,7 +2637,15 @@ public class LibertyServer implements LogMonitorClient {
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy-HH-mm-ss");
         Date d = new Date(System.currentTimeMillis());
 
-        String logDirectoryName = pathToAutoFVTOutputServersFolder + "/" + serverToUse + "-" + sdf.format(d);
+        String runLevel = RepeatTestFilter.getMostRecentRepeatAction();
+
+        String logDirectoryName = "";
+        if (runLevel == null || runLevel.isEmpty()) {
+            logDirectoryName = pathToAutoFVTOutputServersFolder + "/" + serverToUse + "-" + sdf.format(d);
+        }
+        else {
+            logDirectoryName = pathToAutoFVTOutputServersFolder + "/" + serverToUse + "-" + runLevel + "-" + sdf.format(d);
+        }
         LocalFile logFolder = new LocalFile(logDirectoryName);
         RemoteFile serverFolder = new RemoteFile(machine, serverRoot);
 

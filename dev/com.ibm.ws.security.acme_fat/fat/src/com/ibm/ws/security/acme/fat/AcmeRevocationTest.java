@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,7 +16,6 @@ import static junit.framework.Assert.assertNotNull;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
-import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertThat;
 
 import java.io.File;
@@ -30,7 +29,6 @@ import javax.xml.bind.DatatypeConverter;
 import org.apache.http.Header;
 import org.apache.http.StatusLine;
 import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -38,7 +36,6 @@ import org.apache.http.util.EntityUtils;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
@@ -51,7 +48,6 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.acme.docker.CAContainer;
 import com.ibm.ws.security.acme.docker.boulder.BoulderContainer;
 import com.ibm.ws.security.acme.docker.pebble.PebbleContainer;
-import com.ibm.ws.security.acme.internal.util.AcmeConstants;
 import com.ibm.ws.security.acme.internal.web.AcmeCaRestHandler;
 import com.ibm.ws.security.acme.utils.AcmeFatUtils;
 
@@ -67,9 +63,14 @@ import componenttest.topology.impl.LibertyServer;
  * replace it if necessary.
  * 
  * TODO There are no CRL tests.
+ * 
+ * >>>>QUARANTINE -- The Boulder intermediate certificate expired. Work to
+ * either update the existing certificate or pull a new image of Boulder (which
+ * has made significant change is ongoing). Further notes in RTC 279882.
  */
 @RunWith(FATRunner.class)
-@Mode(TestMode.FULL)
+// @Mode(TestMode.FULL)
+@Mode(TestMode.QUARANTINE)
 public class AcmeRevocationTest {
 
 	@Server("com.ibm.ws.security.acme.fat.revocation")

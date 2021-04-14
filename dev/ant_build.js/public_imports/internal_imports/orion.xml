@@ -1,0 +1,76 @@
+<!--
+    Copyright (c) 2020 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<project name="orion" default="get-orion-lib">
+    
+    <property name="orion.project.destination" location="${basedir}/lib/orion" />
+    <property name="orion.version" value="6.19.0" />
+    <property name="orion.home" location="${basedir}/../ant_build.js/lib/orion" />
+	<property name="orion.src" value="${orion.home}/orion-${orion.version}" />
+	<property name="orion.src.jar" value="${orion.home}/che-orion-editor-${orion.version}.jar" />
+	
+	<target name="orion-pre">
+	 <echo>Unzipping orion to ${orion.src}</echo>
+        <delete includeEmptyDirs="true">
+            <fileset dir="${orion.home}" includes="**/orion-*/**" excludes="che-orion-editor-*.jar" defaultexcludes="no" />
+        </delete>
+        <mkdir dir="${orion.src}" />
+        <unzip src="${orion.src.jar}" dest="${orion.src}" />
+    </target>
+    
+    <!-- Common 'orion build' process-->
+    <target name="get-orion-lib" depends="orion-pre">
+        <echo>Getting orion!</echo>
+        <echo>orion.project.destination: ${orion.project.destination}</echo>
+        <echo>orion.home: ${orion.home}</echo>
+        <delete dir="${orion.project.destination}" failonerror="false" />
+        <mkdir dir="${orion.project.destination}" />
+		<mkdir dir="${orion.project.destination}/code_edit" />
+		<mkdir dir="${orion.project.destination}/javascript" />
+		<mkdir dir="${orion.project.destination}/orion" />
+		<mkdir dir="${orion.project.destination}/others" />
+		<mkdir dir="${orion.project.destination}/plugins" />
+		<mkdir dir="${orion.project.destination}/requirejs" />
+		<mkdir dir="${orion.project.destination}/webtools" />
+		<copy todir="${orion.project.destination}/code_edit">
+            <fileset dir="${orion.src}/org/eclipse/che/orion/public/built-codeEdit/code_edit">
+				<exclude name="**/built-codeEdit-amd.js" />
+                <exclude name="**/built-codeEdit-amd.min.js" />
+                <exclude name="**/built-codeEdit.js" />
+            </fileset>
+        </copy>
+		<copy todir="${orion.project.destination}/javascript">
+            <fileset dir="${orion.src}/org/eclipse/che/orion/public/built-codeEdit/javascript">
+            </fileset>
+        </copy>
+		<copy todir="${orion.project.destination}/orion">
+            <fileset dir="${orion.src}/org/eclipse/che/orion/public/built-codeEdit/orion">
+            </fileset>
+        </copy>
+		<copy todir="${orion.project.destination}/others">
+            <fileset dir="${orion.src}/org/eclipse/che/orion/public/built-codeEdit/others">
+				<exclude name="**/jslintPlugin*" />
+            </fileset>
+        </copy>
+		<copy todir="${orion.project.destination}/plugins">
+            <fileset dir="${orion.src}/org/eclipse/che/orion/public/built-codeEdit/plugins">
+            </fileset>
+        </copy>
+		<copy todir="${orion.project.destination}/requirejs">
+            <fileset dir="${orion.src}/org/eclipse/che/orion/public/built-codeEdit/requirejs">
+            </fileset>
+        </copy>
+		<copy todir="${orion.project.destination}/webtools">
+            <fileset dir="${orion.src}/org/eclipse/che/orion/public/built-codeEdit/webtools">
+				<exclude name="**/images/*" />
+            </fileset>
+        </copy>
+    </target>
+</project>

@@ -1069,9 +1069,9 @@ NO_NEIGHBOUR_REPLY_WARNING_CWSIP0381.useraction=Make sure that the remote messag
 
 # -------------------------------------------------------------------------------------------------
 # {0} The UUID of the Remote messaging engine
-NEIGHBOUR_REPLY_RECIEVED_INFO_CWSIP0382=CWSIP0382I: Messaging engine {0} responded to subscription request, Publish Subscribe topology now consistent.
-NEIGHBOUR_REPLY_RECIEVED_INFO_CWSIP0382.explanation=Successful communications have been made between messaging engines and the Publish subscribe Topology is consistent.
-NEIGHBOUR_REPLY_RECIEVED_INFO_CWSIP0382.useraction=none
+NEIGHBOUR_REPLY_RECEIVED_INFO_CWSIP0382=CWSIP0382I: Messaging engine {0} responded to subscription request, Publish Subscribe topology now consistent.
+NEIGHBOUR_REPLY_RECEIVED_INFO_CWSIP0382.explanation=Successful communications were made between messaging engines and the publish subscribe topology is consistent.
+NEIGHBOUR_REPLY_RECEIVED_INFO_CWSIP0382.useraction=none
 
 # -------------------------------------------------------------------------------------------------
 # {0} The remote messaging engine name
@@ -1847,7 +1847,7 @@ HEALTHSTATE_STATUS_CWSIP0908.useraction=CMSG0002
 # {0} Exception class causing the blockage
 # {1} Target destination
 HEALTHSTATE_STATUS_CWSIP0919=CWSIP0919W: Blocked receiver, the receiver cannot deliver the current inbound message for reason {0} on destination {1}
-HEALTHSTATE_STATUS_CWSIP0919.explanation=The reciever is unable to deliver a message to the target destination for the given reason, until this problem is resolved delivery of subsequent messages will be blocked.
+HEALTHSTATE_STATUS_CWSIP0919.explanation=The receiver is unable to deliver a message to the target destination for the given reason. Until this problem is resolved, delivery of subsequent messages is blocked.
 HEALTHSTATE_STATUS_CWSIP0919.useraction=If this state persists take appropriate action to resolve the problem with the message.
 
 # -------------------------------------------------------------------------------------------------

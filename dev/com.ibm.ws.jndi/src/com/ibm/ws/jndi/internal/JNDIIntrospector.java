@@ -60,7 +60,7 @@ public class JNDIIntrospector implements Introspector {
 
         int numberOfEntries = 0;
 
-        for (Entry<String, Object> entry : new TreeMap<String, Object>(node.children).entrySet()) {
+        for (Entry<String, Object> entry : new TreeMap<>(node.children).entrySet()) {
 
             String key = parentNamePrefix + entry.getKey();
 

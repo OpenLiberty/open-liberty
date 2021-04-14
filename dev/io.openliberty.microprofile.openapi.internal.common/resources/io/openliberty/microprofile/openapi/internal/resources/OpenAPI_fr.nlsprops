@@ -1,4 +1,4 @@
-# Copyright (c) 2018, 2020 IBM Corporation and others.
+# Copyright (c) 2018, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -61,6 +61,6 @@ OPENAPI_APPLICATION_PROCESSED=CWWKO1660I: L''application {0} a \u00e9t\u00e9 tra
 OPENAPI_APPLICATION_PROCESSED.explanation=Document OpenAPI g\u00e9n\u00e9r\u00e9 pour l'application sp\u00e9cifi\u00e9e. Il peut \u00eatre affich\u00e9 sur un noeud final /openapi.
 OPENAPI_APPLICATION_PROCESSED.useraction=Aucune action n'est requise.
 
-OPENAPI_APPLICATION_PROCESSING_ERROR=CWWKO1661E: Une erreur est survenue lors du traitement de l''application {0} et aucun document OpenAPI n''a \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9.
+OPENAPI_APPLICATION_PROCESSING_ERROR=CWWKO1661E: Une erreur est survenue lors du traitement de l''application {0} et aucun document OpenAPI n''a \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9. L''erreur est la suivante : {1}.
 OPENAPI_APPLICATION_PROCESSING_ERROR.explanation=Une erreur d'ex\u00e9cution est survenue lors du traitement de l'application.
-OPENAPI_APPLICATION_PROCESSING_ERROR.useraction=Rassemblez les journaux et contactez le support IBM.
+OPENAPI_APPLICATION_PROCESSING_ERROR.useraction=Consultez les journaux de l'outil de diagnostic de premier niveau (FFDC) et le texte de l'exception pour identifier le probl\u00e8me.

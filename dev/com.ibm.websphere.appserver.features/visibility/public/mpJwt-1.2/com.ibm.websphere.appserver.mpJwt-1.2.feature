@@ -21,6 +21,6 @@ Subsystem-Name: MicroProfile JSON Web Token 1.2
   com.ibm.ws.security.mp.jwt.cdi,\
   io.openliberty.security.mp.jwt.1.2.config,\
   com.ibm.ws.security.mp.jwt.1.1.config
-kind=beta
+kind=ga
 edition=core
 WLP-Activation-Type: parallel

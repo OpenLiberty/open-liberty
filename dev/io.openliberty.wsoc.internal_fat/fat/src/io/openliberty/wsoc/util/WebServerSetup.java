@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2020 IBM Corporation and others.
+ * Copyright (c) 2016, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,8 +16,6 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.OutputStream;
 
-import com.ibm.ws.fat.util.SharedServer;
-
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
@@ -33,6 +31,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
 import com.ibm.websphere.simplicity.log.Log;
+
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -48,17 +47,16 @@ public class WebServerSetup {
     private String targetHost = "localhost";
     private int webserverPort = 80;
     private int webserverSecurePort = 443;
-    private SharedServer ss = null;
+    private LibertyServer ls = null;
 
-    public WebServerSetup(SharedServer ss) {
-        this.ss = ss;
+    public WebServerSetup(LibertyServer ls) {
+        this.ls = ls;
     }
 
     public void setUp() throws Exception {
 
-        LibertyServer server = ss.getLibertyServer();
-        targetPort = server.getHttpDefaultPort();
-        targetSecurePort = server.getHttpDefaultSecurePort();
+        targetPort = ls.getHttpDefaultPort();
+        targetSecurePort = ls.getHttpDefaultSecurePort();
 
         webserverInFront = WebServerControl.isWebserverInFront();
 
@@ -68,9 +66,8 @@ public class WebServerSetup {
             } catch (Exception e) {
                 throw new RuntimeException("Failed to get host from webserver", e);
             }
-        }
-        else {
-            targetHost = server.getHostname();
+        } else {
+            targetHost = ls.getHostname();
         }
         webserverHost = WebServerControl.getHostname();
 
@@ -83,8 +80,7 @@ public class WebServerSetup {
         if (webserverInFront) {
             Log.info(c, "setUp", "NonSecure WebServer: " + webserverHost + ":" + webserverPort + " targetNonSecure: " + targetHost + ":" + targetPort);
             Log.info(c, "setUp", "Secure WebServer: " + webserverHost + ":" + webserverSecurePort + " targetSecure: " + targetHost + ":" + targetSecurePort);
-        }
-        else {
+        } else {
             Log.info(c, "setUp", "targetNonSecure: " + targetHost + ":" + targetPort);
             Log.info(c, "setUp", "targetSecure: " + targetHost + ":" + targetSecurePort);
         }
@@ -110,7 +106,7 @@ public class WebServerSetup {
 
         if (webserverInFront)
             //stop
-            WebServerControl.stopWebServer(ss.getServerName());
+            WebServerControl.stopWebServer(ls.getServerName());
 
     }
 

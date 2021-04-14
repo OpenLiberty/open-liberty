@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2014 IBM Corporation and others.
+ * Copyright (c) 2013, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -209,11 +209,16 @@ class ServerXMLConfiguration {
         return lastModified;
     }
 
+    // Remove milliseconds from timestamp values to address inconsistencies in container file systems
+    long reduceTimestampPrecision(long value) {
+      return (value / 1000) * 1000;
+    }
+
     /**
      * @return
      */
     public boolean isModified() {
-        return getLastResourceModifiedTime() != configReadTime;
+        return reduceTimestampPrecision(getLastResourceModifiedTime()) != reduceTimestampPrecision(configReadTime);
     }
 
     public Collection<String> getFilesToMonitor() {

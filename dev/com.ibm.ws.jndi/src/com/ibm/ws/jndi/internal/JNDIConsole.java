@@ -76,8 +76,8 @@ public class JNDIConsole implements CommandProvider {
         try {
             announce(ci, "listBindings", name);
             NamingEnumeration<Binding> bindings = name == null ? getContext().listBindings(WSName.EMPTY_NAME) : getContext().listBindings(name);
-            Set<String> subcontexts = new TreeSet<String>();
-            Map<String, Binding> noncontexts = new TreeMap<String, Binding>();
+            Set<String> subcontexts = new TreeSet<>();
+            Map<String, Binding> noncontexts = new TreeMap<>();
             while (bindings.hasMore()) {
                 Binding b = bindings.next();
                 if (b.getObject() instanceof WSContext)

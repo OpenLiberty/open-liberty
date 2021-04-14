@@ -765,7 +765,7 @@ public class PartitionedStepControllerImpl extends BaseStepControllerImpl {
      */
     private void waitForNextPartitionToFinish() throws JobStoppingException {
 
-        //Use this counter to count the number of cycles we recieve jms reply message
+        //Use this counter to count the number of cycles we receive jms reply message
         boolean isStoppingStoppedOrFailed = false;
         PartitionReplyMsg msg = null;
 

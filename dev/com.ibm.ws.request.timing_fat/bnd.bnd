@@ -13,8 +13,7 @@ bVersion=1.0
 
 src: \
 	fat/src,\
-	test-applications/jdbcTestPrj_3/src,\
-	test-applications/TestWebApp/src
+	test-applications/jdbcTestPrj_3/src
 
 fat.project: true
 

@@ -11,6 +11,7 @@
 package com.ibm.ws.microprofile.config.impl;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -49,6 +50,10 @@ class ConfigWrapper {
             close = true;
         }
         return close;
+    }
+
+    Set<String> listApplications() {
+        return Collections.unmodifiableSet(this.applications);
     }
 
     void close() {

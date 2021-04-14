@@ -9,7 +9,8 @@ visibility=private
  com.ibm.websphere.appserver.iiopclient-1.0
 -bundles=com.ibm.ws.clientcontainer.jakarta, \
  com.ibm.ws.app.manager.war.jakarta, \
- com.ibm.ws.app.manager.client
+ com.ibm.ws.app.manager.client, \
+ com.ibm.ws.managedobject
 kind=beta
 edition=base
 WLP-Activation-Type: parallel

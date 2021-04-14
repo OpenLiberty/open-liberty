@@ -55,13 +55,13 @@ class ClientSideStateCacheImpl extends StateCache<Object, Object>
         String csrfRandomMode = WebConfigParamUtils.getStringInitParameter(facesContext.getExternalContext(),
                 RANDOM_KEY_IN_CSRF_SESSION_TOKEN_PARAM, 
                 RANDOM_KEY_IN_CSRF_SESSION_TOKEN_PARAM_DEFAULT);
-        if (RANDOM_KEY_IN_CSRF_SESSION_TOKEN_SECURE_RANDOM.equals(csrfRandomMode))
+        if (RANDOM_KEY_IN_CSRF_SESSION_TOKEN_RANDOM.equals(csrfRandomMode))
         {
-            csrfSessionTokenFactory = new SecureRandomCsrfSessionTokenFactory(facesContext);
+            csrfSessionTokenFactory = new RandomCsrfSessionTokenFactory(facesContext);
         }
         else
         {
-            csrfSessionTokenFactory = new RandomCsrfSessionTokenFactory(facesContext);
+            csrfSessionTokenFactory = new SecureRandomCsrfSessionTokenFactory(facesContext);
         }
     }
 

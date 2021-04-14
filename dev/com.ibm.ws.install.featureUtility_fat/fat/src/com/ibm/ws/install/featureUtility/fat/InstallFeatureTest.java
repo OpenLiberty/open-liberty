@@ -66,7 +66,9 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         resetOriginalWlpProps();
         cleanUpTempFiles();
     }
-
+    
+    
+    
     /**
      * Test the install of jsp-2.3 from maven central.
      *
@@ -76,11 +78,25 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
     public void testInstallFeature() throws Exception {
         final String METHOD_NAME = "testInstallFeature";
         Log.entering(c, METHOD_NAME);
+        replaceWlpProperties("20.0.0.4");
+        copyFileToMinifiedRoot("etc", "../../publish/propertyFiles/publishRepoOverrideProps/featureUtility.properties");
+
+        copyFileToMinifiedRoot("repo/com/ibm/websphere/appserver/features/features/20.0.0.4",
+                "../../publish/repo/com/ibm/websphere/appserver/features/features/20.0.0.4/features-20.0.0.4.json");
+
+        copyFileToMinifiedRoot("repo/io/openliberty/features/features/20.0.0.4",
+                "../../publish/repo/io/openliberty/features/features/20.0.0.4/features-20.0.0.4.json");
+
+        copyFileToMinifiedRoot("repo/io/openliberty/features/jsp-2.3/20.0.0.4",
+                "../../publish/repo/io/openliberty/features/jsp-2.3/20.0.0.4/jsp-2.3-20.0.0.4.esa");
+
+
+
+        writeToProps(minifiedRoot+ "/etc/featureUtility.properties", "featureLocalRepo", minifiedRoot + "/repo/");
 
         String[] param1s = { "installFeature", "jsp-2.3", "--verbose"};
         String [] fileLists = {"lib/features/com.ibm.websphere.appserver.jsp-2.3.mf"};
 //        deleteFiles(METHOD_NAME, "com.ibm.websphere.appserver.jsp-2.3", fileLists);
-
         ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
         assertEquals("Exit code should be 0",0, po.getReturnCode());
         String output = po.getStdout();
@@ -98,6 +114,23 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
     public void testInstallAutoFeature() throws Exception {
         final String METHOD_NAME = "testInstallAutoFeature";
         Log.entering(c, METHOD_NAME);
+        replaceWlpProperties("20.0.0.4");
+        copyFileToMinifiedRoot("etc", "../../publish/propertyFiles/publishRepoOverrideProps/featureUtility.properties");
+
+        copyFileToMinifiedRoot("repo/com/ibm/websphere/appserver/features/features/20.0.0.4",
+                "../../publish/repo/com/ibm/websphere/appserver/features/features/20.0.0.4/features-20.0.0.4.json");
+
+        copyFileToMinifiedRoot("repo/io/openliberty/features/features/20.0.0.4",
+                "../../publish/repo/io/openliberty/features/features/20.0.0.4/features-20.0.0.4.json");
+
+        copyFileToMinifiedRoot("repo/io/openliberty/features/jsf-2.2/20.0.0.4",
+                "../../publish/repo/io/openliberty/features/jsf-2.2/20.0.0.4/jsf-2.2-20.0.0.4.esa");
+
+        copyFileToMinifiedRoot("repo/io/openliberty/features/cdi-1.2/20.0.0.4",
+                "../../publish/repo/io/openliberty/features/cdi-1.2/20.0.0.4/cdi-1.2-20.0.0.4.esa");
+
+
+        writeToProps(minifiedRoot+ "/etc/featureUtility.properties", "featureLocalRepo", minifiedRoot + "/repo/");
 
         String[] param1s = { "installFeature", "jsf-2.2", "cdi-1.2", "--verbose"};
         String [] fileListA = {"lib/features/com.ibm.websphere.appserver.jsf-2.2.mf", "lib/features/com.ibm.websphere.appserver.cdi1.2-jsf2.2.mf"};
@@ -285,6 +318,20 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
     public void testAlreadyInstalledFeature() throws Exception {
         final String METHOD_NAME = "testAlreadyInstalledFeature";
         Log.entering(c, METHOD_NAME);
+        
+        replaceWlpProperties("20.0.0.4");
+        copyFileToMinifiedRoot("etc", "../../publish/propertyFiles/publishRepoOverrideProps/featureUtility.properties");
+
+        copyFileToMinifiedRoot("repo/com/ibm/websphere/appserver/features/features/20.0.0.4",
+                "../../publish/repo/com/ibm/websphere/appserver/features/features/20.0.0.4/features-20.0.0.4.json");
+
+        copyFileToMinifiedRoot("repo/io/openliberty/features/features/20.0.0.4",
+                "../../publish/repo/io/openliberty/features/features/20.0.0.4/features-20.0.0.4.json");
+
+        copyFileToMinifiedRoot("repo/io/openliberty/features/mpHealth-2.0/20.0.0.4",
+                "../../publish/repo/io/openliberty/features/mpHealth-2.0/20.0.0.4/mpHealth-2.0-20.0.0.4.esa");
+        
+        writeToProps(minifiedRoot+ "/etc/featureUtility.properties", "featureLocalRepo", minifiedRoot + "/repo/");
 
         String[] param1s = { "installFeature", "mpHealth-2.0", "--verbose"};
         String [] fileLists = {"lib/features/com.ibm.websphere.appserver.mpHealth-2.0.mf"};

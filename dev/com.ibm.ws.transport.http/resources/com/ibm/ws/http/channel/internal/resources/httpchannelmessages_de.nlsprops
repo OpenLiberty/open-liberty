@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2020 IBM Corporation and others.
+# Copyright (c) 2002, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -185,3 +185,11 @@ trusted.header.origin.invalid.value.useraction=Stellen Sie sicher, dass konfigur
 trusted.sensitive.header.origin.invalid.value=CWWKT0039W: Der konfigurierte trustedSensitiveHeaderOrigin-Wert [{0}] ist ung\u00fcltig und kann nicht verwendet werden.
 trusted.sensitive.header.origin.invalid.value.explanation=Sie m\u00fcssen eine vollst\u00e4ndige IP-Adresse oder einen korrekt formatierten Hostnamen angeben.
 trusted.sensitive.header.origin.invalid.value.useraction=Stellen Sie sicher, dass konfigurierte IP-Adressen einen Wert f\u00fcr jedes Segment enthalten und dass Hostnamen keine ung\u00fcltigen Zeichen enthalten.
+
+config.hsts.invalid.max.age.value=CWWKT0040W: Der konfigurierte Wert [{0}] f\u00fcr die Anweisung max-age ist ung\u00fcltig und kann nicht verwendet werden. Der Wert f\u00fcr die Anweisung max-age muss eine nicht negative ganze Zahl sein.
+config.hsts.invalid.max.age.value.explanation=Der Wert f\u00fcr die Anweisung max-age darf keine negative ganze Zahl sein.
+config.hsts.invalid.max.age.value.useraction=Stellen Sie sicher, dass die konfigurierte Anweisung max-age einen Wert enth\u00e4lt, der eine nicht negative ganze Zahl ist.
+
+config.hsts.missing.max.age=CWWKT0041W: Es wurde versucht, [{0}] als Strict-Transport-Security-Header zu konfigurieren. Diese Konfiguration enth\u00e4lt nicht die obligatorische Anweisung max-age. Eine Konfiguration, die keine Anweisung max-age enth\u00e4lt, ist nicht g\u00fcltig und kann nicht verwendet werden.
+config.hsts.missing.max.age.explanation=Die angegeben Konfiguration muss eine Anweisung max-age mit einer nicht negativen ganzen Zahl enthalten.
+config.hsts.missing.max.age.useraction=Stellen Sie sicher, dass die Konfiguration eine Anweisung max-age mit einer nicht negativen ganzen Zahl enth\u00e4lt.

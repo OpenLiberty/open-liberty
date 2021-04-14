@@ -27,8 +27,8 @@ public class JsonbReceptionBean extends AbstractReceptionBean<TestData> {
 
     @Override
     @Incoming("output")
-    public CompletionStage<Void> recieveMessage(Message<TestData> msg) {
-        return super.recieveMessage(msg);
+    public CompletionStage<Void> receiveMessage(Message<TestData> msg) {
+        return super.receiveMessage(msg);
     }
 
 }

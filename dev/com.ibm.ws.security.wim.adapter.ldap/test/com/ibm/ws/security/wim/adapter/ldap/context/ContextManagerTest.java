@@ -720,7 +720,7 @@ public class ContextManagerTest {
         ContextManager cm = new ContextManager();
         cm.setPrimaryServer("localhost", primaryLdapServer.getLdapServer().getPort());
         cm.setBindAuthMechanism(ConfigConstants.CONFIG_BIND_AUTH_KRB5);
-        cm.setKerberosCredentials("UnitTestLdap", null, "testPrincipal", "DummyTicketCache");
+        cm.setKerberosCredentials("UnitTestLdap", null, "testPrincipal", "DummyTicketCache", null);
         cm.initialize();
 
         String toString = cm.toString();
@@ -899,7 +899,7 @@ public class ContextManagerTest {
         ContextManager cm = new ContextManager();
         cm.setBindAuthMechanism(ConfigConstants.CONFIG_BIND_AUTH_KRB5);
         cm.setPrimaryServer("localhost", primaryLdapServer.getLdapServer().getPort());
-        cm.setKerberosCredentials("UnitTestLdap", null, null, "badFileName");
+        cm.setKerberosCredentials("UnitTestLdap", null, null, "badFileName", null);
 
         assertEquals(InitializeResult.MISSING_KRB5_PRINCIPAL_NAME, cm.initialize());
     }
@@ -913,7 +913,7 @@ public class ContextManagerTest {
         ContextManager cm = new ContextManager();
         cm.setBindAuthMechanism(ConfigConstants.CONFIG_BIND_AUTH_KRB5);
         cm.setPrimaryServer("localhost", primaryLdapServer.getLdapServer().getPort());
-        cm.setKerberosCredentials("UnitTestLdap", null, "", "badFileName");
+        cm.setKerberosCredentials("UnitTestLdap", null, "", "badFileName", null);
 
         assertEquals(InitializeResult.MISSING_KRB5_PRINCIPAL_NAME, cm.initialize());
     }

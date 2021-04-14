@@ -48,9 +48,10 @@ public class ClientConfigTestServlet extends HttpServlet {
         String url = request.getParameter("url");
         if (url == null)
             url = "http://localhost:56789";
+        Client client = null;
         try {
             ps.println("creating new client for " + url);
-            Client client = ClientBuilder.newClient();
+            client = ClientBuilder.newClient();
             WebTarget target = client.target(url).path("resource");
             ps.println("--- for resource------");
             ps.println("Webtarget: " + target);
@@ -85,6 +86,8 @@ public class ClientConfigTestServlet extends HttpServlet {
             buf = buf.replace("at ", "<br>at ");
             ps.println("<br>stack trace: <br>");
             ps.println(buf);
+        } finally {
+            client.close();
         }
 
     }

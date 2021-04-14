@@ -369,6 +369,17 @@ public class LogstashSSLTest extends LogstashCollectorTest {
 
     //TODO add other methods to validate posted trace data
 
+    /**
+     * Reset server configurations
+     *
+     * @throws Exception
+     */
+    @Before
+    public void resetServer() throws Exception {
+        setConfig("server_reset.xml");
+        clearContainerOutput();
+    }
+
     @AfterClass
     public static void completeTest() throws Exception {
         if (!runTest) {

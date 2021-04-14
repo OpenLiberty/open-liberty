@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 IBM Corporation and others.
+ * Copyright (c) 2018, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,4 +25,5 @@ public class MessageConstants {
     public static final String CWWKE1107W_QUIESCE_WAITING_ON_THREAD = "CWWKE1107W";
     public static final String CWWKG0014E_XML_PARSER_ERROR = "CWWKG0014E";
     public static final String CWWKO0221E_PORT_IN_USE = "CWWKO0221E";
+    public static final String CWWKO0227E_EXECUTOR_SERVICE_MISSING = "CWWKO0227E";
 }

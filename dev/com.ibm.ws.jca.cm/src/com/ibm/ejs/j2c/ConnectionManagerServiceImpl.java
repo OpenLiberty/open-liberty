@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2020 IBM Corporation and others.
+ * Copyright (c) 2011, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -292,18 +292,20 @@ public class ConnectionManagerServiceImpl extends ConnectionManagerService {
             Tr.entry(this, tc, "getCMConfigData");
 
         // Defaults for direct lookup
-        int auth = J2CConstants.AUTHENTICATION_APPLICATION;
+        int auth;
         int branchCoupling = ResourceRefInfo.BRANCH_COUPLING_UNSET;
         int commitPriority = 0;
         int isolation = Connection.TRANSACTION_NONE;
         int sharingScope;
         String loginConfigName = null;
-        HashMap<String, String> loginConfigProps = null;
+        Map<String, String> loginConfigProps = Collections.<String, String> emptyMap();
         String resRefName = null;
 
         if (refInfo != null) {
             if (refInfo.getAuth() == ResourceRef.AUTH_CONTAINER)
                 auth = J2CConstants.AUTHENTICATION_CONTAINER;
+            else
+                auth = J2CConstants.AUTHENTICATION_APPLICATION;
 
             branchCoupling = refInfo.getBranchCoupling();
             commitPriority = refInfo.getCommitPriority();
@@ -320,8 +322,15 @@ public class ConnectionManagerServiceImpl extends ConnectionManagerService {
                                || enableSharingForDirectLookups instanceof String && Boolean.parseBoolean((String) enableSharingForDirectLookups) //
                                                ? ResourceRefInfo.SHARING_SCOPE_SHAREABLE //
                                                : ResourceRefInfo.SHARING_SCOPE_UNSHAREABLE;
+
+                Object enableContainerAuthForDirectLookups = properties.get(ConnectionManagerService.ENABLE_CONTAINER_AUTH_FOR_DIRECT_LOOKUPS);
+                auth = enableContainerAuthForDirectLookups == null
+                       || Boolean.FALSE.equals(enableContainerAuthForDirectLookups)
+                       || enableContainerAuthForDirectLookups instanceof String
+                          && !Boolean.parseBoolean((String) enableContainerAuthForDirectLookups) ? J2CConstants.AUTHENTICATION_APPLICATION : J2CConstants.AUTHENTICATION_CONTAINER;
             } else {
                 sharingScope = ResourceRefInfo.SHARING_SCOPE_SHAREABLE;
+                auth = J2CConstants.AUTHENTICATION_APPLICATION;
             }
         }
 
@@ -467,7 +476,8 @@ public class ConnectionManagerServiceImpl extends ConnectionManagerService {
         }
 
         Object value = map.remove(AUTO_CLOSE_CONNECTIONS);
-        boolean autoCloseConnections = value instanceof Boolean ? (Boolean) value : Boolean.parseBoolean((String) value);
+        boolean autoCloseConnections = value == null || // default to true for app-defined resources
+                                       (value instanceof Boolean ? (Boolean) value : Boolean.parseBoolean((String) value));
 
         if (disableLibertyConnectionPool) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
@@ -507,6 +517,9 @@ public class ConnectionManagerServiceImpl extends ConnectionManagerService {
              */
             purgePolicy = validateProperty(map, J2CConstants.POOL_PurgePolicy, PurgePolicy.EntirePool, PurgePolicy.class, connectorSvc);
         }
+
+        value = map.remove(TEMPORARILY_ASSOCIATE_IF_DISSOCIATE_UNAVAILABLE);
+        boolean temporarilyAssociateIfDissociateUnavailable = value instanceof Boolean ? (Boolean) value : Boolean.parseBoolean((String) value);
 
         boolean throwExceptionOnMCThreadCheck = false;
 
@@ -552,6 +565,9 @@ public class ConnectionManagerServiceImpl extends ConnectionManagerService {
             if (pm.gConfigProps.getMaxNumberOfMCsAllowableInThread() != maxNumberOfMCsAllowableInThread)
                 pm.gConfigProps.setMaxNumberOfMCsAllowableInThread(maxNumberOfMCsAllowableInThread);
 
+            if (pm.gConfigProps.getParkIfDissociateUnavailable() != temporarilyAssociateIfDissociateUnavailable)
+                pm.gConfigProps.setParkIfDissociateUnavailable(temporarilyAssociateIfDissociateUnavailable);
+
             return null;
         } else {
             // Connection pool does not exist, create j2c global configuration properties for creating pool.
@@ -560,7 +576,8 @@ public class ConnectionManagerServiceImpl extends ConnectionManagerService {
                             100, // maxFreePoolHashSize,
                             false, // diagnoseConnectionUsage,
                             connectionTimeout, maxPoolSize, minPoolSize, purgePolicy, reapTime, maxIdleTime, agedTimeout, ConnectionPoolProperties.DEFAULT_HOLD_TIME_LIMIT, 0, // commit priority not supported
-                            autoCloseConnections, numConnectionsPerThreadLocal, maxNumberOfMCsAllowableInThread, throwExceptionOnMCThreadCheck);
+                            autoCloseConnections, numConnectionsPerThreadLocal, maxNumberOfMCsAllowableInThread, //
+                            temporarilyAssociateIfDissociateUnavailable, throwExceptionOnMCThreadCheck);
 
         }
     }

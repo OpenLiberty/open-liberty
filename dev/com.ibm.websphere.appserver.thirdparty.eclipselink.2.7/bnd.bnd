@@ -57,6 +57,7 @@ Import-Package: \
             javax.json.stream;resolution:=optional, \
             javax.management;resolution:=optional, \
             javax.management.openmbean;resolution:=optional, \
+            javax.mail.internet;resolution:=optional, \
             javax.naming;resolution:=optional, \
             javax.persistence;jpa="2.2";consumer="persistenceService";resolution:=optional, \
             javax.persistence.criteria;jpa="2.2";consumer="persistenceService", \

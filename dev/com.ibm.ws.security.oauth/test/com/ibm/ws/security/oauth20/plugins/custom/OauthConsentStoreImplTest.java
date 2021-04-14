@@ -24,6 +24,7 @@ import org.jmock.api.Action;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.action.VoidAction;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -54,7 +55,9 @@ public class OauthConsentStoreImplTest {
     private OauthConsentStore oauthConsentStore;
     private OAuthStore oauthStore;
 
-    private static SharedOutputManager outputMgr = SharedOutputManager.getInstance().trace("com.ibm.ws.security.oauth20.plugins.custom.*=all");
+    private static String traceString = "com.ibm.ws.security.oauth20.plugins.custom.*";
+
+    private static SharedOutputManager outputMgr = SharedOutputManager.getInstance().trace(traceString + "=all");
 
     @Rule
     public TestRule managerRule = outputMgr;
@@ -81,6 +84,11 @@ public class OauthConsentStoreImplTest {
     @After
     public void tearDown() throws Exception {
         mockery.assertIsSatisfied();
+    }
+
+    @AfterClass
+    public static void tearDownAfterClass() {
+        outputMgr.trace(traceString + "=all=disabled");
     }
 
     /**

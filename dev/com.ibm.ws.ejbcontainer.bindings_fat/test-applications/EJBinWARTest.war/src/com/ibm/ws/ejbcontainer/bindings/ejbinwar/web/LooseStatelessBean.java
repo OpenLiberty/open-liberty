@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2019 IBM Corporation and others.
+ * Copyright (c) 2010, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,7 +20,6 @@ import javax.ejb.Remote;
 import javax.ejb.Stateless;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.rmi.PortableRemoteObject;
 
 import com.ibm.ws.ejbcontainer.bindings.ejbinwar.ejb.BasicSingletonInterface;
 import com.ibm.ws.ejbcontainer.bindings.ejbinwar.ejb.BasicSingletonInterfaceRemote;
@@ -76,10 +75,7 @@ public class LooseStatelessBean {
         ivctx = new InitialContext();
 
         svLogger.info("--> Looking up generic object using: ejb/EJBinWARTestApp/EJBBean.jar/SingletonBean#com.ibm.ws.ejbcontainer.bindings.ejbinwar.ejb.BasicSingletonInterfaceRemote");
-        Object o = ivctx.lookup("ejb/EJBinWARTestApp/EJBBean.jar/SingletonBean#com.ibm.ws.ejbcontainer.bindings.ejbinwar.ejb.BasicSingletonInterfaceRemote");
-
-        svLogger.info("--> Narrowing the object to BasicSingletonInterfaceRemote... ");
-        BasicSingletonInterfaceRemote remoteStandaloneSing = (BasicSingletonInterfaceRemote) PortableRemoteObject.narrow(o, BasicSingletonInterfaceRemote.class);
+        BasicSingletonInterfaceRemote remoteStandaloneSing = (BasicSingletonInterfaceRemote) ivctx.lookup("ejb/EJBinWARTestApp/EJBBean.jar/SingletonBean#com.ibm.ws.ejbcontainer.bindings.ejbinwar.ejb.BasicSingletonInterfaceRemote");
 
         boolean result = false;
         result = remoteStandaloneSing.verifyStandaloneEJBLookup();

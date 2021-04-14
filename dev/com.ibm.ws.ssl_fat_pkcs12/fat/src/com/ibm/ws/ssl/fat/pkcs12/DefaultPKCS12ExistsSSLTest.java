@@ -60,7 +60,7 @@ public class DefaultPKCS12ExistsSSLTest extends CommonSSLTest {
     public void testDefaultMinimalSSLCertificateFileKeyPKCS12FileDoesExist() throws Exception {
 
         Log.info(c, name.getMethodName(), "Entering " + name.getMethodName());
-        String protocol = TLSV11_PROTOCOL;
+        String protocol = TLSV12_PROTOCOL;
 
         server.setServerConfigurationFile(DEFAULT_MINIMAL_SSL_CONFIG);
         server.startServer(name.getMethodName() + ".log");

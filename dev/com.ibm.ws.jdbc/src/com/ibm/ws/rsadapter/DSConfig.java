@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 IBM Corporation and others.
+ * Copyright (c) 2011, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,8 +21,6 @@ import java.util.NavigableMap;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
-import javax.resource.spi.IllegalStateException;
-
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCSelfIntrospectable;
@@ -30,7 +28,6 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.jca.cm.ConnectorService;
 import com.ibm.ws.jdbc.internal.DataSourceDef;
 import com.ibm.ws.jdbc.internal.PropertyService;
-import com.ibm.ws.rsadapter.impl.WSManagedConnectionFactoryImpl;
 import com.ibm.wsspi.kernel.service.utils.MetatypeUtils;
 import com.ibm.wsspi.resource.ResourceFactory;
 
@@ -39,53 +36,8 @@ import com.ibm.wsspi.resource.ResourceFactory;
  */
 public class DSConfig implements FFDCSelfIntrospectable {
     private static final TraceComponent tc = Tr.register(DSConfig.class, AdapterUtil.TRACE_GROUP, AdapterUtil.NLS_FILE);
-    
-    public static class IdentifyException {
-        
-        public static enum Target {
-            None,
-            StaleConnection
-        }
-        
-        public Integer errorCode;
-        public String sqlState;
-        public Target as;
-        
-        @FFDCIgnore(IllegalArgumentException.class)
-        public void setProperty(String name, Object value) {
-            if ("errorCode".equals(name)) {
-                errorCode = (Integer) value;
-            } else if ("sqlState".equals(name)) {
-                sqlState = (String) value;
-            } else if ("as".equals(name)) {
-                try {
-                    as = Target.valueOf((String) value);
-                } catch (IllegalArgumentException e) {
-                    Tr.error(tc, "8066E_IDENTIFY_EXCEPTION_INVALID_TARGET", value, Arrays.toString(Target.values()));
-                    throw e;
-                }
-            }
-        }
-        
-        public void validate() {
-            if (errorCode == null && sqlState == null) {
-                Tr.error(tc, "8067E_IDENTIFY_EXCEPTION_ERRCODE_SQLSTATE");
-                throw new IllegalArgumentException(AdapterUtil.getNLSMessage("8067E_IDENTIFY_EXCEPTION_ERRCODE_SQLSTATE"));
-            }
-            // do not need to validate the 'as' attribute because it is marked required in metatype so it will be enforced in config layer
-        }
-        
-        @Override
-        public String toString() {
-            return new StringBuilder(super.toString())
-                            .append("{ errorCode=").append(errorCode)
-                            .append(", sqlState=").append(sqlState)
-                            .append(", as=" + as).append(" }")
-                            .toString();
-        }
-    }
 
-    // WebSphere data source property names and values
+    // dataSource property names and values
     public static final String
                     BEGIN_TRAN_FOR_SCROLLING_APIS = "beginTranForResultSetScrollingAPIs",
                     BEGIN_TRAN_FOR_VENDOR_APIS = "beginTranForVendorAPIs",
@@ -96,11 +48,14 @@ public class DSConfig implements FFDCSelfIntrospectable {
                     ENABLE_BEGIN_END_REQUEST = "enableBeginEndRequest", // Not a supported property. Only for internal testing/experimentation.
                     ENABLE_CONNECTION_CASTING = "enableConnectionCasting",
                     ENABLE_MULTITHREADED_ACCESS_DETECTION = "enableMultithreadedAccessDetection", // currently disabled in liberty profile
+                    HELPER_CLASS = "heritage.0.helperClass", // from flattened heritage config
+                    HERITAGE = "heritage", // flattened config
                     JDBC_DRIVER_REF = "jdbcDriverRef",
-                    IDENTIFY_EXCEPTION = "identifyException",
+                    IDENTIFY_EXCEPTION = "identifyException", // flattened config
                     ON_CONNECT = "onConnect",
                     QUERY_TIMEOUT = "queryTimeout",
                     RECOVERY_AUTH_DATA_REF = "recoveryAuthDataRef",
+                    REPLACE_EXCEPTIONS = "heritage.0.replaceExceptions", // from flattened heritage config
                     STATEMENT_CACHE_SIZE = "statementCacheSize",
                     SUPPLEMENTAL_JDBC_TRACE = "supplementalJDBCTrace",
                     SYNC_QUERY_TIMEOUT_WITH_TRAN_TIMEOUT = "syncQueryTimeoutWithTransactionTimeout",
@@ -211,6 +166,9 @@ public class DSConfig implements FFDCSelfIntrospectable {
      */
     public final boolean enableBeginEndRequest;
 
+    // TODO remove this once branch coupling support is GA
+    public final boolean enableBranchCouplingExtension;
+
     /**
      * Indicates to automatically create a dynamic proxy for interfaces implemented by the connection. 
      */
@@ -232,9 +190,24 @@ public class DSConfig implements FFDCSelfIntrospectable {
     private Map.Entry<String, Object> entry;
 
     /**
+     * Data store helper class name. Null if none.
+     */
+    public final String heritageHelperClass;
+
+    /**
+     * Indicates whether to replace exceptions or only identify them.
+     */
+    public final boolean heritageReplaceExceptions;
+
+    /**
      * config.displayId of the data source.
      */
     public final String id;
+
+    /**
+     * Identifies exceptions by SQL state and error code, or the combination of both.
+     */
+    public final Map<Object, String> identifyExceptions;
 
     /**
      * Default isolation level for new connections.
@@ -246,11 +219,6 @@ public class DSConfig implements FFDCSelfIntrospectable {
      */
     public final String jndiName;
     
-    /**
-     * List of identified exceptinos to check if certain errorCode or sqlState values that should map to specific actions.
-     */
-    public final List<IdentifyException> identifyExceptions;
-
     /**
      * List of SQL commands to execute once per newly established connection. Can be null if none are configured.
      */
@@ -338,9 +306,12 @@ public class DSConfig implements FFDCSelfIntrospectable {
         CommitOrRollbackOnCleanup commitOrRollback = remove(COMMIT_OR_ROLLBACK_ON_CLEANUP, null, CommitOrRollbackOnCleanup.class);
         connectionSharing = remove(CONNECTION_SHARING, ConnectionSharing.MatchOriginalRequest, ConnectionSharing.class);
         enableBeginEndRequest = remove(ENABLE_BEGIN_END_REQUEST, false); // Not a supported property. Only for internal testing/experimentation.
+        enableBranchCouplingExtension = remove("enableBranchCouplingExtension", false); // TODO remove once GA
         enableConnectionCasting = remove(ENABLE_CONNECTION_CASTING, false);
         enableMultithreadedAccessDetection = false;
-        identifyExceptions = new ArrayList<>(remove(IDENTIFY_EXCEPTION, Collections.emptyMap()).values());
+        heritageHelperClass = remove(HELPER_CLASS, (String) null);
+        heritageReplaceExceptions = remove(REPLACE_EXCEPTIONS, false);
+        identifyExceptions = remove(IDENTIFY_EXCEPTION, Collections.emptyMap());
         isolationLevel = remove(DataSourceDef.isolationLevel.name(), -1, -1, null, -1, 0, 1, 2, 4, 8, 16, 4096);
         onConnect = remove(ON_CONNECT, (String[]) null);
         queryTimeout = remove(QUERY_TIMEOUT, (Integer) null, 0, TimeUnit.SECONDS);
@@ -354,9 +325,6 @@ public class DSConfig implements FFDCSelfIntrospectable {
                         ? (transactional ? null : CommitOrRollbackOnCleanup.rollback)
                                         : commitOrRollback;
                         
-        for (IdentifyException errorMapping : identifyExceptions)
-            errorMapping.validate();
-
         if (trace && tc.isDebugEnabled() && entry != null)
             Tr.debug(this, tc, "unknown attributes: " + entries);
         // TODO: when we have a stricter variant of onError, apply it to unrecognized attributes
@@ -555,6 +523,32 @@ public class DSConfig implements FFDCSelfIntrospectable {
         for (int diff; value == null && entry != null && (diff = entry.getKey().compareTo(name)) <= 0; entry = entries.pollFirstEntry()) {
             if (diff == 0) // matched
                 value = (Map) entry.getValue();
+            else {
+                // TODO: when we have a stricter variant of onError, apply it to unrecognized attributes
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "unrecognized attribute: " + entry.getKey());
+                //SQLException ex = AdapterUtil.ignoreWarnOrFail(tc, null, SQLException.class, "PROP_NOT_FOUND", jndiName == null ? id : jndiName, entry.getKey());
+                //if (ex != null)
+                //    throw ex;
+            }
+        }
+
+        return value == null ? defaultValue : value;
+    }
+
+    /**
+     * Remove properties up to and including the specified property. Return the property if found.
+     *
+     * @param name name of the property.
+     * @param defaultValue default value to use if not found.
+     * @return value of the property if found. Otherwise the default value.
+     */
+    private String remove(String name, String defaultValue) throws SQLException {
+        String value = null;
+
+        for (int diff; value == null && entry != null && (diff = entry.getKey().compareTo(name)) <= 0; entry = entries.pollFirstEntry()) {
+            if (diff == 0) // matched
+                value = (String) entry.getValue();
             else {
                 // TODO: when we have a stricter variant of onError, apply it to unrecognized attributes
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())

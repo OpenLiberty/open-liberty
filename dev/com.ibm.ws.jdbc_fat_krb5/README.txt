@@ -3,7 +3,7 @@
 This bucket uses several custom docker images:
  - A kerberos container (e.g. 'aguibert/krb5-server:1.1')
  - A DB2 container (e.g. '')
- - An Oracle container (e.g. 'aguibert/krb5-oracle:1.0')
+ - An Oracle container (e.g. 'kyleaure/krb5-oracle:2.0')
  
 The files necessary to build each container can be found under the 'publish/files/' folder. For example, to rebuild the Oracle container you can do:
 

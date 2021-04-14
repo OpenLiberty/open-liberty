@@ -190,6 +190,11 @@ public class DerbyResourceAdapterTest extends FATServletClient {
     }
 
     @Test
+    public void testParkNonDissociatableSharableHandle() throws Exception {
+        runTest(DerbyRAServlet);
+    }
+
+    @Test
     public void testRecursiveTimer() throws Exception {
         runTest(DerbyRAAnnoServlet);
     }

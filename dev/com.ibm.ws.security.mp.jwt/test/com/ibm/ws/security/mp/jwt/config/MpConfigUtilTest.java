@@ -6,21 +6,20 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.mp.jwt.config;
 
 import com.ibm.ws.security.mp.jwt.MpConfigProxyService;
 import com.ibm.ws.webcontainer.srt.SRTServletRequest;
-import com.ibm.ws.webcontainer.webapp.WebApp;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
-import com.ibm.wsspi.webcontainer.webapp.IWebAppDispatcherContext;
 
 import java.util.HashSet;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
 import static org.junit.Assert.assertEquals;
@@ -32,14 +31,11 @@ import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
-
-import org.osgi.framework.ServiceReference;
 
 import test.common.SharedOutputManager;
 
@@ -59,9 +55,8 @@ public class MpConfigUtilTest {
     private final AtomicServiceReference<MpConfigProxyService> mpConfigProxyServiceRef = mockery.mock(AtomicServiceReference.class, "mpConfigProxyServiceRef");
     private final MpConfigProxyService mpConfigProxyService = mockery.mock(MpConfigProxyService.class);
     private final HttpServletRequest req = mockery.mock(HttpServletRequest.class);
+    private final ServletContext servletCtx = mockery.mock(ServletContext.class);
     private final SRTServletRequest srtReq = mockery.mock(SRTServletRequest.class);
-    private final IWebAppDispatcherContext webAppDispatcherContext = mockery.mock(IWebAppDispatcherContext.class);
-    private final WebApp webApp = mockery.mock(WebApp.class);
     private final ClassLoader cl = mockery.mock(ClassLoader.class);
 
     @Rule
@@ -125,6 +120,10 @@ public class MpConfigUtilTest {
     public void getMpConfigWithConfigProxyServiceNoSrtReq() {
         mockery.checking(new Expectations() {
             {
+                one(req).getServletContext();
+                will(returnValue(servletCtx));
+                one(servletCtx).getClassLoader();
+                will(returnValue(null));
                 one(mpConfigProxyServiceRef).getService();
                 will(returnValue(mpConfigProxyService));
                 one(mpConfigProxyService).getSupportedConfigPropertyNames();
@@ -156,14 +155,12 @@ public class MpConfigUtilTest {
     public void getMpConfigWithConfigProxyServiceSrtReq() {
         mockery.checking(new Expectations() {
             {
+                one(srtReq).getServletContext();
+                will(returnValue(servletCtx));
+                one(servletCtx).getClassLoader();
+                will(returnValue(cl));
                 one(mpConfigProxyServiceRef).getService();
                 will(returnValue(mpConfigProxyService));
-                one(srtReq).getWebAppDispatcherContext();
-                will(returnValue(webAppDispatcherContext));
-                one(webAppDispatcherContext).getWebApp();
-                will(returnValue(webApp));
-                one(webApp).getClassLoader();
-                will(returnValue(cl));
                 one(mpConfigProxyService).getSupportedConfigPropertyNames();
                 will(returnValue(getSupportedMpConfigProps()));
                 one(mpConfigProxyService).getConfigValue(cl, MpConstants.ISSUER, String.class);
@@ -193,14 +190,12 @@ public class MpConfigUtilTest {
     public void getMpConfigWithConfigProxyServiceSrtReqNoIssuer() {
         mockery.checking(new Expectations() {
             {
+                one(srtReq).getServletContext();
+                will(returnValue(servletCtx));
+                one(servletCtx).getClassLoader();
+                will(returnValue(cl));
                 one(mpConfigProxyServiceRef).getService();
                 will(returnValue(mpConfigProxyService));
-                one(srtReq).getWebAppDispatcherContext();
-                will(returnValue(webAppDispatcherContext));
-                one(webAppDispatcherContext).getWebApp();
-                will(returnValue(webApp));
-                one(webApp).getClassLoader();
-                will(returnValue(cl));
                 one(mpConfigProxyService).getSupportedConfigPropertyNames();
                 will(returnValue(getSupportedMpConfigProps()));
                 one(mpConfigProxyService).getConfigValue(cl, MpConstants.ISSUER, String.class);
@@ -228,14 +223,12 @@ public class MpConfigUtilTest {
     public void getMpConfigWithConfigProxyServiceSrtReqNoPublicKey() {
         mockery.checking(new Expectations() {
             {
+                one(srtReq).getServletContext();
+                will(returnValue(servletCtx));
+                one(servletCtx).getClassLoader();
+                will(returnValue(cl));
                 one(mpConfigProxyServiceRef).getService();
                 will(returnValue(mpConfigProxyService));
-                one(srtReq).getWebAppDispatcherContext();
-                will(returnValue(webAppDispatcherContext));
-                one(webAppDispatcherContext).getWebApp();
-                will(returnValue(webApp));
-                one(webApp).getClassLoader();
-                will(returnValue(cl));
                 one(mpConfigProxyService).getSupportedConfigPropertyNames();
                 will(returnValue(getSupportedMpConfigProps()));
                 one(mpConfigProxyService).getConfigValue(cl, MpConstants.ISSUER, String.class);
@@ -263,14 +256,12 @@ public class MpConfigUtilTest {
     public void getMpConfigWithConfigProxyServiceSrtReqNoKeyLocation() {
         mockery.checking(new Expectations() {
             {
+                one(srtReq).getServletContext();
+                will(returnValue(servletCtx));
+                one(servletCtx).getClassLoader();
+                will(returnValue(cl));
                 one(mpConfigProxyServiceRef).getService();
                 will(returnValue(mpConfigProxyService));
-                one(srtReq).getWebAppDispatcherContext();
-                will(returnValue(webAppDispatcherContext));
-                one(webAppDispatcherContext).getWebApp();
-                will(returnValue(webApp));
-                one(webApp).getClassLoader();
-                will(returnValue(cl));
                 one(mpConfigProxyService).getSupportedConfigPropertyNames();
                 will(returnValue(getSupportedMpConfigProps()));
                 one(mpConfigProxyService).getConfigValue(cl, MpConstants.ISSUER, String.class);
@@ -298,14 +289,12 @@ public class MpConfigUtilTest {
     public void getMpConfigWithConfigProxyServiceSrtReqNoProperties() {
         mockery.checking(new Expectations() {
             {
+                one(srtReq).getServletContext();
+                will(returnValue(servletCtx));
+                one(servletCtx).getClassLoader();
+                will(returnValue(cl));
                 one(mpConfigProxyServiceRef).getService();
                 will(returnValue(mpConfigProxyService));
-                one(srtReq).getWebAppDispatcherContext();
-                will(returnValue(webAppDispatcherContext));
-                one(webAppDispatcherContext).getWebApp();
-                will(returnValue(webApp));
-                one(webApp).getClassLoader();
-                will(returnValue(cl));
                 one(mpConfigProxyService).getSupportedConfigPropertyNames();
                 will(returnValue(getSupportedMpConfigProps()));
                 one(mpConfigProxyService).getConfigValue(cl, MpConstants.ISSUER, String.class);
@@ -329,14 +318,12 @@ public class MpConfigUtilTest {
     public void getMpConfigWithConfigProxyServiceSrtReqTrim() {
         mockery.checking(new Expectations() {
             {
+                one(srtReq).getServletContext();
+                will(returnValue(servletCtx));
+                one(servletCtx).getClassLoader();
+                will(returnValue(cl));
                 one(mpConfigProxyServiceRef).getService();
                 will(returnValue(mpConfigProxyService));
-                one(srtReq).getWebAppDispatcherContext();
-                will(returnValue(webAppDispatcherContext));
-                one(webAppDispatcherContext).getWebApp();
-                will(returnValue(webApp));
-                one(webApp).getClassLoader();
-                will(returnValue(cl));
                 one(mpConfigProxyService).getSupportedConfigPropertyNames();
                 will(returnValue(getSupportedMpConfigProps()));
                 one(mpConfigProxyService).getConfigValue(cl, MpConstants.ISSUER, String.class);

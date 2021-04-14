@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2019 IBM Corporation and others.
+    Copyright (c) 2019, 2021 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -42,6 +42,21 @@
 			id="markInternalResponse" required="true" type="Boolean"
 			default="false" />
 	
+		<!-- enable.set.outbound.interface -->
+		<AD name="%enableSetOutboundIF.name" description="%enableSetOutboundIF.desc"
+			id="enableSetOutboundIF" required="true" type="Boolean"
+			default="false" />
+
+		<!-- enable.set.lb.outbound.interface -->
+		<AD name="%enableSetLBOutboundIF.name" description="%enableSetLBOutboundIF.desc"
+			id="enableSetLBOutboundIF" required="true" type="Boolean"
+			default="false" />
+
+		<!-- add.ibm-po.loopback.msg -->
+		<AD name="%addIBMPOLBMsg.name" description="%addIBMPOLBMsg.desc"
+			id="addIBMPOLBMsg" required="true" type="Boolean"
+			default="true" />
+
 		<!-- __________________Start______________sipOverloadProtectionMgr______________________________________________ -->
 			
 		<!-- message.queue.burst.factor -->
@@ -335,6 +350,21 @@
 		<AD name="%commaSeparatedHeaders.name" description="%commaSeparatedHeaders.desc"
 			id="commaSeparatedHeaders" required="true" type="String" cardinality="2147483647"
 			default="" />
+			
+		<!-- javax.sip.strict.outbound.local.port -->
+		<AD name="%strictOutboundLocalPort.name" description="%strictOutboundLocalPort.desc"
+			id="strictOutboundLocalPort" required="true" type="Boolean"
+			default="false" />
+			
+		<!-- use.listening.point.from.outbound -->
+		<AD name="%useLPFromOutbound.name" description="%useLPFromOutbound.desc"
+			id="useLPFromOutbound" required="true" type="Boolean"
+			default="false" />
+
+		<!-- javax.clone.ack.2xx.retransmission -->
+		<AD name="%cloneAckOn2xxRetransmission.name" description="%cloneAckOn2xxRetransmission.desc"
+			id="cloneAckOn2xxRetransmission" required="true" type="Boolean"
+			default="false" />
 			
 	</OCD>
 

@@ -17,7 +17,6 @@ import org.junit.Test;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.ibm.ws.security.fat.common.ValidationData.validationData;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLCommonTest;
-import com.ibm.ws.security.saml20.fat.commonTest.SAMLCommonTestHelpers;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLConstants;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLMessageConstants;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLTestSettings;
@@ -60,7 +59,7 @@ public class RSSamlAPITests extends SAMLCommonTest {
     @Test
     public void RSSamlAPITests_useJaxRSCLientServlet_encodedAssertion() throws Exception {
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.setRSSettings(updatedTestSettings.getRSSettings().getHeaderName(), updatedTestSettings.getRSSettings().getHeaderFormat(), SAMLConstants.ASSERTION_ENCODED);
@@ -96,7 +95,7 @@ public class RSSamlAPITests extends SAMLCommonTest {
     @Test
     public void RSSamlAPITests_useJaxRSCLientServlet_compressedEncodedAssertion() throws Exception {
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.setRSSettings(updatedTestSettings.getRSSettings().getHeaderName(), updatedTestSettings.getRSSettings().getHeaderFormat(), SAMLConstants.ASSERTION_COMPRESSED_ENCODED);
@@ -138,7 +137,7 @@ public class RSSamlAPITests extends SAMLCommonTest {
             testSAMLServer.reconfigServer(buildSPServerName("server_apiTest_text_only.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
         }
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.setRSSettings(updatedTestSettings.getRSSettings().getHeaderName(), updatedTestSettings.getRSSettings().getHeaderFormat(), SAMLConstants.ASSERTION_TEXT_ONLY);
@@ -170,7 +169,7 @@ public class RSSamlAPITests extends SAMLCommonTest {
     @Test
     public void RSSamlAPITests_useJaxRSCLientServlet_junkInAssertion() throws Exception {
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.setRSSettings(updatedTestSettings.getRSSettings().getHeaderName(), updatedTestSettings.getRSSettings().getHeaderFormat(), "junk");
@@ -196,7 +195,7 @@ public class RSSamlAPITests extends SAMLCommonTest {
     @Test
     public void RSSamlAPITests_useJaxRSCLientServlet_emptyAssertion() throws Exception {
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.setRSSettings(updatedTestSettings.getRSSettings().getHeaderName(), updatedTestSettings.getRSSettings().getHeaderFormat(), "empty");
@@ -226,7 +225,7 @@ public class RSSamlAPITests extends SAMLCommonTest {
     @Test
     public void RSSamlAPITests_useJaxRSCLientServlet_runtimePropagateToken_setStringTrue() throws Exception {
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.setRSSettings("Authorization", SAMLConstants.SAML_HEADER_5t, SAMLConstants.ASSERTION_ENCODED);
@@ -263,7 +262,7 @@ public class RSSamlAPITests extends SAMLCommonTest {
     @Test
     public void RSSamlAPITests_useJaxRSCLientServlet_runtimePropagateToken_setBooleanTrue() throws Exception {
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.setRSSettings("Authorization", SAMLConstants.SAML_HEADER_6t, SAMLConstants.ASSERTION_ENCODED);
@@ -297,7 +296,7 @@ public class RSSamlAPITests extends SAMLCommonTest {
     @Test
     public void RSSamlAPITests_useJaxRSCLientServlet_runtimePropagateToken_setStringFalse() throws Exception {
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.setRSSettings("Authorization", SAMLConstants.SAML_HEADER_5f, SAMLConstants.ASSERTION_ENCODED);
@@ -329,7 +328,7 @@ public class RSSamlAPITests extends SAMLCommonTest {
     @Test
     public void RSSamlAPITests_useJaxRSCLientServlet_runtimePropagateToken_setBooleanFalse() throws Exception {
 
-        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        WebClient webClient = getAndSaveWebClient();
 
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.setRSSettings("Authorization", SAMLConstants.SAML_HEADER_6f, SAMLConstants.ASSERTION_ENCODED);

@@ -237,3 +237,7 @@ info.directory.app.useraction=Aucune action n'est requise.
 info.unexpanded.app=CWWKZ0136I: L''application {0} utilise le fichier archive \u00e0 l''emplacement {1}.
 info.unexpanded.app.explanation=L'emplacement pour l'application d\u00e9signe un fichier archive binaire. Le fichier archive ne sera pas \u00e9tendu sur le disque car l'extension automatique des applications n'a pas \u00e9t\u00e9 configur\u00e9e.
 info.unexpanded.app.useraction=Aucune action n'est requise.
+
+warning.could.not.expand.app.loc=CWWKZ0137W: Impossible de d\u00e9velopper l''application {0} \u00e0 l''emplacement {1} sp\u00e9cifi\u00e9 par la propri\u00e9t\u00e9 expandLocation.
+warning.could.not.expand.app.loc.explanation=L'application n'a pas pu \u00eatre d\u00e9velopp\u00e9e \u00e0 l'emplacement sp\u00e9cifi\u00e9 par la propri\u00e9t\u00e9 expandLocation. L'emplacement par d\u00e9faut ${server.config.dir}/apps/expanded/ a \u00e9t\u00e9 utilis\u00e9 pour l'application.
+warning.could.not.expand.app.loc.useraction=Corrigez la valeur sp\u00e9cifi\u00e9e par la propri\u00e9t\u00e9 expandLocation et red\u00e9marrez le serveur ou mettez \u00e0 jour l'application.

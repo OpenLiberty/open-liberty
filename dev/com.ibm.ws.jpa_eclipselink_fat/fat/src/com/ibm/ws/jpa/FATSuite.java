@@ -17,6 +17,25 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 
+import com.ibm.ws.jpa.eclipselink.TestOLGH10068_EJB;
+import com.ibm.ws.jpa.eclipselink.TestOLGH10068_Web;
+import com.ibm.ws.jpa.eclipselink.TestOLGH14426_EJB;
+import com.ibm.ws.jpa.eclipselink.TestOLGH14426_Web;
+import com.ibm.ws.jpa.eclipselink.TestOLGH14457_EJB;
+import com.ibm.ws.jpa.eclipselink.TestOLGH14457_Web;
+import com.ibm.ws.jpa.eclipselink.TestOLGH8014_EJB;
+import com.ibm.ws.jpa.eclipselink.TestOLGH8014_Web;
+import com.ibm.ws.jpa.eclipselink.TestOLGH8294_EJB;
+import com.ibm.ws.jpa.eclipselink.TestOLGH8294_Web;
+import com.ibm.ws.jpa.eclipselink.TestOLGH8461_EJB;
+import com.ibm.ws.jpa.eclipselink.TestOLGH8461_Web;
+import com.ibm.ws.jpa.eclipselink.TestOLGH8950_EJB;
+import com.ibm.ws.jpa.eclipselink.TestOLGH8950_Web;
+import com.ibm.ws.jpa.eclipselink.TestOLGH9018_EJB;
+import com.ibm.ws.jpa.eclipselink.TestOLGH9018_Web;
+import com.ibm.ws.jpa.eclipselink.TestOLGH9035_EJB;
+import com.ibm.ws.jpa.eclipselink.TestOLGH9035_Web;
+
 import componenttest.containers.ExternalTestServiceDockerClientStrategy;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;

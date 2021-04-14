@@ -127,19 +127,20 @@ public abstract class ContextNode_Fixture {
     final Object unbindObject(ContextNode target, String name) throws Exception {
         // This should only fail if we are using destroySubcontext() to perform the unbind
         switch (bindType) {
-            case CONTEXT:
-                thrown.expect(NotContextException.class);
+        case CONTEXT:
+            thrown.expect(NotContextException.class);
+        default:
+            return unbind(target, name);
         }
-        return unbind(target, name);
-
     }
 
     final Object unbindNonEmptyContext(ContextNode target, String name) throws Exception {
         // Set up what exceptions to expect
         switch (bindType) {
-            case CONTEXT:
-                thrown.expect(ContextNotEmptyException.class);
+        case CONTEXT:
+            thrown.expect(ContextNotEmptyException.class);
+        default:
+            return unbind(target, name);
         }
-        return unbind(target, name);
     }
 }

@@ -219,7 +219,7 @@ public class CertificateLoginModuleTest extends LoginModuleTester {
         try {
             module.login();
         } catch (AuthenticationException e) {
-            assertEquals("Recieved wrong exception message",
+            assertEquals("Received wrong exception message",
                          "CWWKS1101W: CLIENT-CERT Authentication did not succeed for the client certificate with dn CN=userName. The dn does not map to a user in the registry.",
                          e.getMessage());
         }
@@ -253,7 +253,7 @@ public class CertificateLoginModuleTest extends LoginModuleTester {
         try {
             module.login();
         } catch (AuthenticationException e) {
-            assertEquals("Recieved wrong exception message",
+            assertEquals("Received wrong exception message",
                          "CWWKS1101W: CLIENT-CERT Authentication did not succeed for the client certificate with dn CN=userName. The dn does not map to a user in the registry.",
                          e.getMessage());
         }
@@ -312,7 +312,8 @@ public class CertificateLoginModuleTest extends LoginModuleTester {
                     }
 
                     @Override
-                    public void describeTo(Description arg0) {}
+                    public void describeTo(Description arg0) {
+                    }
                 });
             }
         });

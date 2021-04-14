@@ -55,7 +55,7 @@ dependencies {
 		'com.microsoft.sqlserver:mssql-jdbc:8.2.1.jre8',
 		'org.apache.derby:derbyclient:10.11.1.1',
 		'org.apache.derby:derby:10.11.1.1',
-		'com.oracle.ojdbc:ojdbc8_g:19.3.0.0'
+		'com.oracle.database.jdbc.debug:ojdbc8_g:21.1.0.0'
 
   // this will inherit from the 'testcontainers' config
   databaseRotationDrivers "org.testcontainers:database-commons:${testcontainersVersion}",
@@ -140,7 +140,7 @@ task copyDatabaseRotationDrivers(type: Copy) {
 }
 
 task copyFeatureBundles {
-  mustRunAfter assemble
+  dependsOn assemble
   enabled project.file('test-bundles').exists()
   doLast {
     new File(project.buildDir, 'buildfiles').eachLine { String line ->
@@ -489,13 +489,13 @@ ext.gitClone = { proj, branch = 'NOT_SET', folder = '', site = 'git@github.com',
     return
   }
 
-  // Default the branch to master but allow -Dbranch= or a parameter coming in
+  // Default the branch to release but allow -Dbranch= or a parameter coming in
   if( "NOT_SET".equals( branch ) ){
     String branchProp = System.getProperty('branch')
     if( branchProp != null && branchProp.length() > 0 ){
        branch = branchProp
     }else{
-       branch = "master"
+       branch = "release"
     }
   }
   

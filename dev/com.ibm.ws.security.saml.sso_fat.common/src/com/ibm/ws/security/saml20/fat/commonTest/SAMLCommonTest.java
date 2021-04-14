@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2020 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -526,7 +526,7 @@ public class SAMLCommonTest extends CommonTest {
                               String[] testActions, List<validationData> expectations, Object somePage) throws Exception {
 
         if (webClient == null) {
-            webClient = SAMLCommonTestHelpers.getWebClient();
+            webClient = getAndSaveWebClient();
         }
 
         // WebResponse response = null;
@@ -692,7 +692,7 @@ public class SAMLCommonTest extends CommonTest {
                                     String[] testActions, List<validationData> expectations, Object somePage) throws Exception {
 
         if (webClient == null) {
-            webClient = SAMLCommonTestHelpers.getWebClient();
+            webClient = getAndSaveWebClient();
         }
 
         // WebResponse response = null;
@@ -858,6 +858,15 @@ public class SAMLCommonTest extends CommonTest {
      */
     @After
     public void endTest() throws Exception {
+
+        try {
+
+            // clean up webClients
+            webClientTracker.closeAllWebClients();
+
+        } catch (Exception e) {
+            e.printStackTrace(System.out);
+        }
 
         try {
 
@@ -1213,5 +1222,19 @@ public class SAMLCommonTest extends CommonTest {
                 JakartaEE9Action.transformApp(someArchive);
             }
         }
+    }
+
+    public WebClient getAndSaveWebClient() throws Exception {
+
+        WebClient webClient = SAMLCommonTestHelpers.getWebClient();
+        webClientTracker.addWebClient(webClient);
+        return webClient;
+    }
+
+    public WebClient getAndSaveWebClient(boolean override) throws Exception {
+
+        WebClient webClient = SAMLCommonTestHelpers.getWebClient(override);
+        webClientTracker.addWebClient(webClient);
+        return webClient;
     }
 }

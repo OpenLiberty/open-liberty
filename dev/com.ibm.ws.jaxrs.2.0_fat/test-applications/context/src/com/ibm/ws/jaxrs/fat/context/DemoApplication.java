@@ -112,7 +112,7 @@ public class DemoApplication extends javax.ws.rs.core.Application {
                 throw new RuntimeException();
             }
             if (uriInfo.getRequestUri().toString().contains(ContextUtil.HTTPHEADERSNAME1)) {
-                context.getHeaders().add(providers.getClass().getSimpleName(), ContextUtil.METHODNAME1);
+                context.getHeaders().add(ContextUtil.ADDHEADERNAME, ContextUtil.METHODNAME1);
             }
         }
     }
@@ -135,7 +135,7 @@ public class DemoApplication extends javax.ws.rs.core.Application {
             }
 
             if (uriInfo.getRequestUri().toString().contains(ContextUtil.HTTPHEADERSNAME2)) {
-                context.getHeaders().add(providers.getClass().getSimpleName(), ContextUtil.METHODNAME2);
+                context.getHeaders().add(ContextUtil.ADDHEADERNAME, ContextUtil.METHODNAME2);
             }
         }
     }
@@ -158,7 +158,7 @@ public class DemoApplication extends javax.ws.rs.core.Application {
                 throw new RuntimeException();
             }
             if (uriInfo.getRequestUri().toString().contains(ContextUtil.HTTPHEADERSNAME3)) {
-                context.getHeaders().add(providers.getClass().getSimpleName(), ContextUtil.METHODNAME3);
+                context.getHeaders().add(ContextUtil.ADDHEADERNAME, ContextUtil.METHODNAME3);
             }
         }
     }
@@ -177,7 +177,7 @@ public class DemoApplication extends javax.ws.rs.core.Application {
                 throw new RuntimeException();
             }
             if (ui.getRequestUri().toString().contains(ContextUtil.HTTPHEADERSNAME4)) {
-                context.getHeaders().add(providers.getClass().getSimpleName(), ContextUtil.METHODNAME4);
+                context.getHeaders().add(ContextUtil.ADDHEADERNAME, ContextUtil.METHODNAME4);
             }
         }
 

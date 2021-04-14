@@ -25,6 +25,9 @@ public class RepeatTestFilter {
 
     private static Logger log = Logger.getLogger(RepeatTestFilter.class.getName());
 
+    //TODO RepeatTests calls activateRepeatAction() and then deactivateRepeatAction() in such a way that I believe this queue
+    //will only ever have one item. If is the case then this class should be rewritten to use a relevent data structure 
+
     /** Stack of repeat actions. The top of the stack is the most recent repeat action. */
     private static Deque<String> REPEAT_ACTION_STACK = new ArrayDeque<String>();
 
@@ -147,10 +150,10 @@ public class RepeatTestFilter {
     }
 
     /**
-     * Is the repeat action active?
+     * Is the repeat action currently active?
      *
      * @param  action The repeat action to check.
-     * @return        True if the repeat action is active.
+     * @return True if the repeat action is active.
      */
     public static boolean isRepeatActionActive(String action) {
         return REPEAT_ACTION_STACK.contains(action);

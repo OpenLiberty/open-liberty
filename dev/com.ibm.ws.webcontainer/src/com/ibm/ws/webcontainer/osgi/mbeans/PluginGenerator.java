@@ -866,18 +866,20 @@ public class PluginGenerator {
                     }
                     return;
                 }
+                
                 // Verify that the temp plugin file exists
                 if (!outFile.exists()) {
                     throw new FileNotFoundException("File " + outFile.asFile().getAbsolutePath() + " could not be found");
                 }
                 // Construct the actual plugin file path
                 File pluginFile = new File(outFile.asFile().getParentFile(), pcd.PluginConfigFileName);
+                
 
                 if (pluginFile.exists()) {
                     FileUtils.forceDelete(pluginFile);
                 }
 
-                outFile.asFile().renameTo(pluginFile);
+                Files.move(outFile.asFile().toPath(), pluginFile.toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
 
                 // tell the user where the file is - quietly for implicit requests
                 String fullFilePath = pluginFile.getAbsolutePath();

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2019, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@ package basicfat;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -124,7 +125,9 @@ import componenttest.app.FATServlet;
                                                        user = "dbuser1",
                                                        password = "{xor}Oz0vKDtu",
                                                        properties = {
+                                                                      "containerAuthDataRef=derbyAuth2",
                                                                       "createDatabase=create",
+                                                                      "enableContainerAuthForDirectLookups=false",
                                                                       "validationTimeout=10s"
                                                        })
 
@@ -1215,6 +1218,43 @@ public class DataSourceTestServlet extends FATServlet {
     }
 
     /**
+     * Verify that connections do not use container authentication when enableContainerAuthForDirectLookups=false
+     * is configured on an application-defined data source.
+     */
+    public void testEnableContainerAuthForDirectLookupsFalse() throws Exception {
+        DataSource ds = (DataSource) new InitialContext().lookup("java:comp/env/jdbc/dsValTderbyAnn");
+        try (Connection con = ds.getConnection()) {
+            DatabaseMetaData metadata = con.getMetaData();
+            // dbuser2 indicates container auth
+            // dbuser1 indicates application auth
+            String user = metadata.getUserName();
+            assertNotNull(user);
+            assertEquals("dbuser1", user.toLowerCase());
+        }
+    }
+
+    /**
+     * Verify that connections are CONTAINER auth when enableContainerAuthForDirectLookups=true
+     */
+    public void testEnableContainerAuthForDirectLookupsTrue() throws Exception {
+        DataSource ds = (DataSource) new InitialContext().lookup("jdbc/dsfat12");
+        Connection con = null;
+        try {
+            con = ds.getConnection();
+            // user should be dbuser2
+            DatabaseMetaData metadata = con.getMetaData();
+            String user = metadata.getUserName();
+            if (!"dbuser2".equalsIgnoreCase(user))
+                throw new Exception("Expected user 'dbuser2', got '" + user
+                                    + "' Connection is using APPLICATION res-auth - enableContainerAuthForDirectLookups property is not being honored. ");
+        } finally {
+            if (con != null) {
+                con.close();
+            }
+        }
+    }
+
+    /**
      * Verify that pooled connections are properly cleaned up.
      */
     public void testConnectionCleanup() throws Exception {
@@ -2236,7 +2276,7 @@ public class DataSourceTestServlet extends FATServlet {
                 throw new Exception("Default query timeout not honored for callable statement. Instead: " + cstmtQueryTimeout);
             cstmt.setQueryTimeout(40);
 
-            tran.setTransactionTimeout(25);
+            tran.setTransactionTimeout(28);
             try {
                 tran.begin();
                 try {
@@ -2244,7 +2284,7 @@ public class DataSourceTestServlet extends FATServlet {
                     pstmt.executeQuery();
 
                     timeout = pstmt.getQueryTimeout();
-                    if (timeout > 25 || timeout < 20)
+                    if (timeout > 28 || timeout < 10)
                         throw new Exception("Query timeout not properly synced to tran timeout. Instead: " + timeout);
 
                     cstmt.executeQuery();
@@ -2259,7 +2299,7 @@ public class DataSourceTestServlet extends FATServlet {
 
                     int prevTimeout = timeout;
                     timeout = pstmt.getQueryTimeout();
-                    if (timeout >= prevTimeout || timeout < 15)
+                    if (timeout >= prevTimeout || timeout < 5)
                         throw new Exception("Query timeout not properly synced to tran timeout. Instead: " + timeout + " (previous timeout was: " + prevTimeout + ")");
                 } finally {
                     tran.commit();

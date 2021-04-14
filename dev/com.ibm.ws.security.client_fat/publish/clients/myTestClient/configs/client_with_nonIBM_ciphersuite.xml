@@ -17,6 +17,7 @@
 	</featureManager>
 
 	<application id="myCalc" name="BasicCalculatorClient" type="ear" location="BasicCalculatorClient.ear" />
+    <orb id="defaultOrb" orbSSLInitTimeout="60"/>
 
 	<orb id="defaultOrb">
 		<clientPolicy.clientContainerCsiv2>

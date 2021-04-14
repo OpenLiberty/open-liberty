@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -38,9 +38,9 @@ public class LDAPFatUtils {
     /**
      * Assert that two distinguished names are equal.
      *
-     * @param msg Message to print on failure.
-     * @param dn1 The first distinguished name.
-     * @param dn2 The second distinguished name.
+     * @param  msg                  Message to print on failure.
+     * @param  dn1                  The first distinguished name.
+     * @param  dn2                  The second distinguished name.
      * @throws InvalidNameException If either of the names
      */
     public static void assertDNsEqual(String msg, String dn1, String dn2) {
@@ -68,11 +68,43 @@ public class LDAPFatUtils {
     }
 
     /**
+     * Assert that two distinguished names are equal. Extra message for Kerberos case.
+     *
+     * @param  msg                  Message to print on failure.
+     * @param  dn1                  The first distinguished name.
+     * @param  dn2                  The second distinguished name.
+     * @throws InvalidNameException If either of the names
+     */
+    public static void assertDNsEqualKrb5(String msg, String dn1, String dn2) {
+
+        LdapName ln1 = null;
+        LdapName ln2 = null;
+
+        assertNotNull("First distinguished name passed into assertDNsEqual is null.", dn1);
+        assertNotNull("Second distinguished name passed into assertDNsEqual is null. Check that ContextManager.createDirContext was successful.", dn2);
+
+        try {
+            ln1 = new LdapName(dn1);
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail("Distinguished name 1 was invalid: " + dn1 + ". Exception " + e);
+        }
+        try {
+            ln2 = new LdapName(dn2);
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail("Distinguished name 2 was invalid: " + dn2 + ". Exception " + e);
+        }
+
+        assertEquals(msg, ln1, ln2);
+    }
+
+    /**
      * Assert two strings are equals, ignoring case.
      *
-     * @param message Message to print if the assertion fails.
+     * @param message  Message to print if the assertion fails.
      * @param expected The expected value.
-     * @param actual The actual value.
+     * @param actual   The actual value.
      */
     public static void assertEqualsIgnoreCase(String message, String expected, String actual) {
 
@@ -101,7 +133,7 @@ public class LDAPFatUtils {
      * Assert that a list contains the expected value, ignoring case.
      *
      * @param expected The expected value.
-     * @param actual The list containing the actual values.
+     * @param actual   The list containing the actual values.
      */
     public static void assertContainsIgnoreCase(String expected, List<String> actual) {
         for (String actualValue : actual) {
@@ -116,10 +148,10 @@ public class LDAPFatUtils {
      * Convenience method to create an LdapRegistry configuration object for Active Directory LDAP server
      * and if provided a {@link ServerConfiguration} instance add it to the list of LDAP registries.
      *
-     * @param serverConfiguration The {@link ServerConfiguration} instance. Can be null.
-     * @param id The registry ID. Can be null.
-     * @param realm The realm name. Can be null.
-     * @return The LdapRegistry instance.
+     * @param  serverConfiguration The {@link ServerConfiguration} instance. Can be null.
+     * @param  id                  The registry ID. Can be null.
+     * @param  realm               The realm name. Can be null.
+     * @return                     The LdapRegistry instance.
      */
     public static LdapRegistry createADLdapRegistry(ServerConfiguration serverConfiguration, String id, String realm) {
         LdapRegistry ldap = new LdapRegistry();
@@ -146,10 +178,10 @@ public class LDAPFatUtils {
      * realm name and participating base entries and if provided a {@link ServerConfiguration}
      * set it as the FederatedRepository on the {@link ServerConfiguration} instance.
      *
-     * @param serverConfiguration The {@link ServerConfiguration} instance. Can be null.
-     * @param primaryRealmName The primary realm name.
-     * @param participatingBaseEntries The participating base entries in an array of Strings.
-     * @return The FederatedRepository instance.
+     * @param  serverConfiguration      The {@link ServerConfiguration} instance. Can be null.
+     * @param  primaryRealmName         The primary realm name.
+     * @param  participatingBaseEntries The participating base entries in an array of Strings.
+     * @return                          The FederatedRepository instance.
      */
     public static FederatedRepository createFederatedRepository(ServerConfiguration serverConfiguration, String primaryRealmName, String[] participatingBaseEntries) {
 
@@ -175,10 +207,10 @@ public class LDAPFatUtils {
      * Convenience method to create an LdapRegistry configuration object for Oracle / Sun LDAP server
      * and if provided a {@link ServerConfiguration} instance add it to the list of LDAP registries.
      *
-     * @param serverConfiguration The {@link ServerConfiguration} instance. Can be null.
-     * @param id The registry ID. Can be null.
-     * @param realm The realm name. Can be null.
-     * @return The LdapRegistry instance.
+     * @param  serverConfiguration The {@link ServerConfiguration} instance. Can be null.
+     * @param  id                  The registry ID. Can be null.
+     * @param  realm               The realm name. Can be null.
+     * @return                     The LdapRegistry instance.
      */
     public static LdapRegistry createSunLdapRegistry(ServerConfiguration serverConfiguration, String id, String realm, String name) {
         LdapRegistry ldap = new LdapRegistry();
@@ -204,10 +236,10 @@ public class LDAPFatUtils {
      * Convenience method to create an LdapRegistry configuration object for TDS LDAP server
      * and if provided a {@link ServerConfiguration} instance add it to the list of LDAP registries.
      *
-     * @param serverConfiguration The {@link ServerConfiguration} instance. Can be null.
-     * @param id The registry ID. Can be null.
-     * @param realm The realm name. Can be null.
-     * @return The LdapRegistry instance.
+     * @param  serverConfiguration The {@link ServerConfiguration} instance. Can be null.
+     * @param  id                  The registry ID. Can be null.
+     * @param  realm               The realm name. Can be null.
+     * @return                     The LdapRegistry instance.
      */
     public static LdapRegistry createTDSLdapRegistry(ServerConfiguration serverConfiguration, String id, String realm) {
         LdapRegistry ldap = new LdapRegistry();
@@ -233,8 +265,8 @@ public class LDAPFatUtils {
      * This method will the reset the log and trace marks for log and trace searches, update the
      * configuration and then wait for the server to re-initialize.
      *
-     * @param server The server to update.
-     * @param config The configuration to use.
+     * @param  server    The server to update.
+     * @param  config    The configuration to use.
      * @throws Exception If there was an issue updating the server configuration.
      */
     public static void updateConfigDynamically(LibertyServer server, ServerConfiguration config) throws Exception {
@@ -245,10 +277,10 @@ public class LDAPFatUtils {
      * This method will the reset the log and trace marks for log and trace searches, update the
      * configuration and then wait for the server to re-initialize. Optionally it will then wait for the application to start.
      *
-     * @param server The server to update.
-     * @param config The configuration to use.
-     * @param waitForAppToStart Wait for the application to start.
-     * @throws Exception If there was an issue updating the server configuration.
+     * @param  server            The server to update.
+     * @param  config            The configuration to use.
+     * @param  waitForAppToStart Wait for the application to start.
+     * @throws Exception         If there was an issue updating the server configuration.
      */
     public static void updateConfigDynamically(LibertyServer server, ServerConfiguration config, boolean waitForAppToStart) throws Exception {
         resetMarksInLogs(server);
@@ -262,7 +294,7 @@ public class LDAPFatUtils {
     /**
      * Reset the marks in all Liberty logs.
      *
-     * @param server The server for the logs to reset the marks.
+     * @param  server    The server for the logs to reset the marks.
      * @throws Exception If there was an error resetting the marks.
      */
     public static void resetMarksInLogs(LibertyServer server) throws Exception {
