@@ -164,7 +164,7 @@ public final class JAXRSClientImpl extends ClientImpl {
                     }
                 }
             }
-        } catch (Exception ex) {
+        } catch (Throwable ex) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "<init> failed to find and install declared providers ", ex);
             }
