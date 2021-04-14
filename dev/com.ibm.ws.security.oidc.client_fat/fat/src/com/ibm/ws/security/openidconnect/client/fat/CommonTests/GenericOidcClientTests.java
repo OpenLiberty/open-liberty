@@ -1223,6 +1223,7 @@ public class GenericOidcClientTests extends CommonTest {
         testRPServer.addIgnoredServerException(MessageConstants.CWWKS1708E_CLIENT_FAILED_TO_CONTACT_PROVIDER);
         testRPServer.addIgnoredServerException("CWWKS1524E");
         testRPServer.addIgnoredServerException("CWWKS1525E");
+        testRPServer.addIgnoredServerException("CWWKO0801E");
 
         validationTools.validateResult(response, failingAction, expectations, updatedTestSettings);
 
