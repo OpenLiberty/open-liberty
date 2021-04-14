@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 IBM Corporation and others.
+ * Copyright (c) 2018, 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -47,14 +47,8 @@ import javax.json.JsonObject;
 import javax.json.JsonReader;
 import javax.json.JsonValue;
 import javax.json.JsonValue.ValueType;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.aries.util.manifest.ManifestProcessor;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 import com.ibm.ws.install.CancelException;
 import com.ibm.ws.install.InstallConstants;
@@ -430,7 +424,7 @@ public class InstallKernelMap implements Map {
             } else {
                 throw new IllegalArgumentException();
             }
-        } else if (TARGET_JSON_DIR.equals(key)) { 
+        } else if (TARGET_JSON_DIR.equals(key)) {
             if (value instanceof File) {
                 data.put(TARGET_JSON_DIR, value);
             } else {
@@ -582,7 +576,7 @@ public class InstallKernelMap implements Map {
             } else {
                 throw new IllegalArgumentException();
             }
-        } else if (GENERATE_JSON_GROUP_ID_MAP.equals(key)) { 
+        } else if (GENERATE_JSON_GROUP_ID_MAP.equals(key)) {
             if (value instanceof Map) {
                 data.put(GENERATE_JSON_GROUP_ID_MAP, value);
             } else {
@@ -684,7 +678,7 @@ public class InstallKernelMap implements Map {
             if (value instanceof File) {
                 data.put(DIRECTORY_BASED_REPOSITORY, value);
             }
-        } else if (INDIVIDUAL_ESAS.equals(key)) { 
+        } else if (INDIVIDUAL_ESAS.equals(key)) {
             if (value instanceof List) {
                 data.put(INDIVIDUAL_ESAS, value);
             } else {
@@ -925,7 +919,8 @@ public class InstallKernelMap implements Map {
                 if (upgradeRequired()) {
                     upgradeOL();
                     String fromRepo = getDownloadDir((String) data.get(FROM_REPO));
-                    String jsonPath = fromRepo + "/" + WEBSPHERE_LIBERTY_GROUP_ID.replace(".", "/") + "/features/" + openLibertyVersion + "/features-" + openLibertyVersion + ".json";
+                    String jsonPath = fromRepo + "/" + WEBSPHERE_LIBERTY_GROUP_ID.replace(".", "/") + "/features/" + openLibertyVersion + "/features-" + openLibertyVersion
+                                      + ".json";
                     File websphereJson = new File(jsonPath);
                     RepositoryConnection repo = new SingleFileRepositoryConnection(websphereJson);
                     repoList.add(repo);
@@ -1448,12 +1443,12 @@ public class InstallKernelMap implements Map {
     private File generateJsonFromIndividualESAs(Path jsonDirectory, Map<String, String> shortNameMap) throws IOException, RepositoryException, InstallException {
         String dir = jsonDirectory.toString();
         List<File> esas = (List<File>) data.get(INDIVIDUAL_ESAS);
-        File singleJson = new File(dir + File.separator +"SingleJson.json");
+        File singleJson = new File(dir + File.separator + "SingleJson.json");
 
         return createJson(singleJson, shortNameMap, esas);
 
     }
-    
+
     /**
      * generate a JSON from provided individual ESA files
      *
@@ -1466,14 +1461,14 @@ public class InstallKernelMap implements Map {
      */
     private File generateJsonFromESAList(Path jsonDirectory, Map<String, String> shortNameMap, List<File> esas) throws IOException, RepositoryException, InstallException {
         String dir = jsonDirectory.toString();
-        File singleJson = new File(dir + File.separator +"SingleJson.json");
+        File singleJson = new File(dir + File.separator + "SingleJson.json");
 
         return createJson(singleJson, shortNameMap, esas);
 
     }
-    
+
     private File createJson(File singleJson, Map<String, String> shortNameMap, List<File> esas) throws InstallException, RepositoryException {
-        
+
         for (File esa : esas) {
             try {
                 populateFeatureNameFromManifest(esa, shortNameMap);
@@ -1542,9 +1537,9 @@ public class InstallKernelMap implements Map {
      * The missing artifact indexees can be accessed using key: missingArtifactIndexes
      * TODO maybe make this return an object
      *
-     * @param rootDir            the local maven repository
-     * @param artifacts          a list of artifacts in the form groupId:artifactId:version or esa file
-     * @param extension          file extension
+     * @param rootDir   the local maven repository
+     * @param artifacts a list of artifacts in the form groupId:artifactId:version or esa file
+     * @param extension file extension
      * @return a map containing the found and not found artifacts.
      */
     private Map<String, List> fetchArtifactsFromLocalRepository(File rootDir, Collection<String> artifacts, String extension) {
@@ -1665,7 +1660,7 @@ public class InstallKernelMap implements Map {
             String mavenCoordinateDirectory = groupId.replace(".", "/") + "/" + artifactId + "/" + version + "/";
             String jsonFilePath = mavenCoordinateDirectory + "features-" + version + ".json";
             File foundJson = new File(fromDir, jsonFilePath);
-            
+
             if (foundJson.exists()) {
                 jsons.add(foundJson);
                 foundJsons.add(jsonCoord);
@@ -1676,61 +1671,61 @@ public class InstallKernelMap implements Map {
         return jsons;
 
     }
-    
+
     /**
-    *
-    * @param jsonsRequired a list of group id's for which a JSON file is required, i.e [io.openliberty.features, com.ibm.websphere.appserver.features]
-    * @return list of the downloaded JSON files
-    * @throws InstallException
-    */
-   @SuppressWarnings("unchecked")
-   public List<File> getJsonsFromMavenCentral(Set<String> jsonsRequired) throws InstallException {
-       // get open liberty json
-       List<File> result = new ArrayList<File>();
-       List<String> jsonsNotFound = new ArrayList<>();
-       this.put(DOWNLOAD_FILETYPE, "json");
-       boolean singleArtifactInstall = true;
-       this.put(DOWNLOAD_INDIVIDUAL_ARTIFACT, singleArtifactInstall);
-       for (String jsonCoord : jsonsRequired) {
-           this.put(DOWNLOAD_ARTIFACT_SINGLE, jsonCoord);
-           this.put(DOWNLOAD_ARTIFACT_LIST, jsonCoord);
+     *
+     * @param jsonsRequired a list of group id's for which a JSON file is required, i.e [io.openliberty.features, com.ibm.websphere.appserver.features]
+     * @return list of the downloaded JSON files
+     * @throws InstallException
+     */
+    @SuppressWarnings("unchecked")
+    public List<File> getJsonsFromMavenCentral(Set<String> jsonsRequired) throws InstallException {
+        // get open liberty json
+        List<File> result = new ArrayList<File>();
+        List<String> jsonsNotFound = new ArrayList<>();
+        this.put(DOWNLOAD_FILETYPE, "json");
+        boolean singleArtifactInstall = true;
+        this.put(DOWNLOAD_INDIVIDUAL_ARTIFACT, singleArtifactInstall);
+        for (String jsonCoord : jsonsRequired) {
+            this.put(DOWNLOAD_ARTIFACT_SINGLE, jsonCoord);
+            this.put(DOWNLOAD_ARTIFACT_LIST, jsonCoord);
 
-           Object downloaded = this.get(DOWNLOAD_RESULT);
-           if (this.get("action.error.message") != null) {
-               fine("action.exception.stacktrace: " + this.get("action.error.stacktrace"));
-               String exceptionMessage = (String) this.get("action.error.message");
-               throw new InstallException(exceptionMessage);
-           }
-           if (downloaded == null) {
-               fine("Could not download this json with maven coordinate: " + jsonCoord);
-               jsonsNotFound.add(jsonCoord);
-           } else if (downloaded instanceof List) {
-               if (((List) downloaded).isEmpty()) {
-                   jsonsNotFound.add(jsonCoord);
-               } else {
-                   result.addAll((List<File>) downloaded);
-               }
-           } else if (downloaded instanceof File) {
-               if (!((File) downloaded).exists()) {
-                   jsonsNotFound.add(jsonCoord);
-               } else {
-                   result.add((File) downloaded);
-               }
-           }
+            Object downloaded = this.get(DOWNLOAD_RESULT);
+            if (this.get("action.error.message") != null) {
+                fine("action.exception.stacktrace: " + this.get("action.error.stacktrace"));
+                String exceptionMessage = (String) this.get("action.error.message");
+                throw new InstallException(exceptionMessage);
+            }
+            if (downloaded == null) {
+                fine("Could not download this json with maven coordinate: " + jsonCoord);
+                jsonsNotFound.add(jsonCoord);
+            } else if (downloaded instanceof List) {
+                if (((List) downloaded).isEmpty()) {
+                    jsonsNotFound.add(jsonCoord);
+                } else {
+                    result.addAll((List<File>) downloaded);
+                }
+            } else if (downloaded instanceof File) {
+                if (!((File) downloaded).exists()) {
+                    jsonsNotFound.add(jsonCoord);
+                } else {
+                    result.add((File) downloaded);
+                }
+            }
 
-       }
-       fine("Downloaded the following json files from remote: " + result);
+        }
+        fine("Downloaded the following json files from remote: " + result);
 
-       if (!jsonsNotFound.isEmpty()) {
-           InstallException ie = new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getMessage("ERROR_FAILED_TO_LOCATE_AND_DOWNLOAD_JSONS", jsonsNotFound));
-           data.put(ACTION_RESULT, ERROR);
-           data.put(ACTION_ERROR_MESSAGE, ie.getMessage());
-           data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(ie));
-       }
+        if (!jsonsNotFound.isEmpty()) {
+            InstallException ie = new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getMessage("ERROR_FAILED_TO_LOCATE_AND_DOWNLOAD_JSONS", jsonsNotFound));
+            data.put(ACTION_RESULT, ERROR);
+            data.put(ACTION_ERROR_MESSAGE, ie.getMessage());
+            data.put(ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(ie));
+        }
 
-       return result;
+        return result;
 
-   }
+    }
 
     private Map<String, Object> getEnvMap() {
         Map<String, Object> envMapRet = new HashMap<String, Object>();
@@ -2144,7 +2139,7 @@ public class InstallKernelMap implements Map {
         }
         return result;
     }
-    
+
     public File generateJson(File targetJsonDir, List<File> esas) throws IOException, RepositoryException, InstallException {
         Map<String, String> shortNameMap = new HashMap<String, String>();
         File result = generateJsonFromESAList(targetJsonDir.toPath(), shortNameMap, esas);
