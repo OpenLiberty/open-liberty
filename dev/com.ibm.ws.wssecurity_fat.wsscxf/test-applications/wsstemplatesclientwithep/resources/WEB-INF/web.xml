@@ -9,24 +9,18 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
          http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
-    <display-name>CxfWssTemplatesSvcClient</display-name>
+    <display-name>CxfWssTemplatesSvcClientWithep</display-name>
 
     <servlet>
-        <servlet-name>wsstemplatesclient</servlet-name>
-        <display-name>wsstemplatesclient</display-name>
-        <description>CXF WSS Templates test Service Client</description>
-        <servlet-class>com.ibm.ws.wssecurity.fat.wsstemplatesclient.CxfWssTemplatesSvcClient</servlet-class>
+        <servlet-name>wsstemplatesclientwithhep</servlet-name>
+        <display-name>wsstemplatesclientwithhep</display-name>
+        <description>CXF WSS Templates test Service Client</description>        			   
+        <servlet-class>com.ibm.ws.wssecurity.fat.wsstemplatesclientwithep.CxfWssTemplatesSvcClientWithep</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
-<!-- comment out
-    <servlet-mapping>
-        <servlet-name>wsstemplatesclient</servlet-name>
-        <url-pattern>/CxfWssTemplatesSvcClient</url-pattern>
-    </servlet-mapping>
--->
+    
     <session-config>
         <session-timeout>60</session-timeout>
     </session-config>
 
 </web-app>
-
