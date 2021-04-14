@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,6 +28,14 @@ import io.smallrye.config.SmallRyeConfigBuilder;
 public class OLSmallRyeConfigBuilder extends SmallRyeConfigBuilder {
 
     private static final TraceComponent tc = Tr.register(OLSmallRyeConfigBuilder.class);
+
+    public OLSmallRyeConfigBuilder() {
+        super();
+        //I have no idea why this property would default to true in the SmallRye code
+        //With it set to true, you get a validation error on hundreds of properties
+        //At the moment, I don't really understand what it is for
+        withValidateUnknown(false);
+    }
 
     @Override
     protected List<ConfigSource> getDefaultSources() {
