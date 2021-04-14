@@ -515,7 +515,7 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
             helper.genPw = dataStoreHelper.getPrintWriter();
 
         DataStoreHelperMetaData metadata = dataStoreHelper.getMetaData();
-        defaultIsolationLevel = dataStoreHelper.getIsolationLevel(null);
+        defaultIsolationLevel = dataStoreHelper.getIsolationLevel();
         doesStatementCacheIsoLevel = metadata.doesStatementCacheIsoLevel();
         isCustomHelper = !helperClassName.startsWith("com.ibm.websphere.rsadapter");
         supportsGetCatalog = metadata.supportsGetCatalog();
