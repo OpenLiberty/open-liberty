@@ -94,11 +94,10 @@ public abstract class GenericDataStoreHelper {
     /**
      * Returns the default to use for transaction isolation level when not specified another way.
      *
-     * @param unused always null. This is only here for compatibility.
      * @return transaction isolation level constant from java.sql.Connection
-     * @throws ResourceException never. This is only here for compatibility.
+     * @throws ResourceException if raised by the data store helper.
      */
-    public abstract int getIsolationLevel(AccessIntent unused) throws ResourceException;
+    public abstract int getIsolationLevel() throws ResourceException;
 
     /**
      * Returns metadata for the data store helper.
