@@ -45,7 +45,7 @@ import componenttest.topology.impl.LibertyServer;
  * case can check that the password specified in the actual Client APIs are not logged, even when tracing is enabled.
  */
 @RunWith(FATRunner.class)
-@SkipForRepeat("EE9_FEATURES") // currently broken due to multiple issues
+@SkipForRepeat("EE9_FEATURES") // Continue to skip this test for EE9 as proxy authority (properties com.ibm.ws.jaxrs.client.proxy.*) is not supported yet
 public class JAXRS21ClientSSLProxyAuthTest extends JAXRS21AbstractTest {
     private final static Class<?> c = JAXRS21ClientSSLProxyAuthTest.class;
 

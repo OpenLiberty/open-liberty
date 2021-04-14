@@ -28,6 +28,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -80,14 +81,18 @@ public class PathParamTest extends AbstractTest {
     }
 
     private StringBuilder runGetMethod(String path, int exprc, String testOut, boolean check) throws IOException {
-        URL url = new URL("http://localhost:" + getPort() + "/" + moduleName + path);
+        
+        String urlString = "http://localhost:" + getPort() + "/" + moduleName + path;
+        URL url = new URL(urlString);        
+        Log.info(this.getClass(), "runGetMethod", "Calling ClientTestApp with URL=", urlString);        
+        
         int retcode;
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         try {
             con.setDoInput(true);
             con.setDoOutput(true);
             con.setUseCaches(false);
-            con.setRequestMethod("GET");
+            con.setRequestMethod("GET"); 
 
             retcode = con.getResponseCode();
 

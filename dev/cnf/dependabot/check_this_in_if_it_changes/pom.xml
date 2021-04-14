@@ -2353,6 +2353,11 @@
     </dependency>
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-rxjava2</artifactId>
+      <version>4.5.8.Final</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-servlet-initializer</artifactId>
       <version>4.5.8.Final</version>
     </dependency>
