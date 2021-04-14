@@ -1019,19 +1019,24 @@ public class WebApp extends com.ibm.ws.webcontainer.webapp.WebApp implements Com
                           logger.logp(Level.FINE, CLASS_NAME, methodName, "Selection Type: [ {0} ]", handledType.getName() );
                       }
 
-                      String actualClassReason = "Selection of handlesType class [ " + handledTypeName + " ]";
-                      addClassToHandlesTypesStartupSet(handledTypeName, startupTypes, actualClassReason);
-
-                      String classesReason = "Selection on sub-classes of [ " + handledTypeName + " ]";
-                      for ( String targetClassName : annoTargets.getSubclassNames(handledTypeName)) {
-                          addClassToHandlesTypesStartupSet(targetClassName, startupTypes, classesReason);
+                      // add the @HandlesTypes param class for init if setHandledTypesClasses=false
+                      if (!WCCustomProperties.SET_HANDLED_TYPES_CLASSES) {
+                          String actualClassReason = "Selection of handlesType class [ " + handledTypeName + " ]";
+                          addClassToHandlesTypesStartupSet(handledTypeName, startupTypes, actualClassReason);
                       }
-
-                      String interfaceReason = "Selection on interface [ " + handledTypeName + " ]";
-                      Set<String> implementerClassNames = annoTargets.getAllImplementorsOf(handledTypeName);   
-                      for ( String implementerClassName : implementerClassNames ) {
-                          addClassToHandlesTypesStartupSet(implementerClassName, startupTypes, interfaceReason);
-                      }                  
+                      // if @HandlesTypes param is an interface look for implementors, otherwise look for subclasses
+                      if ( ((com.ibm.wsspi.annocache.targets.AnnotationTargets_Targets) annoTargets).isInterface(handledTypeName) ) {
+                          String interfaceReason = "Selection on interface [ " + handledTypeName + " ]";
+                          Set<String> implementerClassNames = annoTargets.getAllImplementorsOf(handledTypeName);
+                          for ( String implementerClassName : implementerClassNames ) {
+                              addClassToHandlesTypesStartupSet(implementerClassName, startupTypes, interfaceReason);
+                          }
+                      } else {
+                          String classesReason = "Selection on sub-classes of [ " + handledTypeName + " ]";
+                          for ( String targetClassName : annoTargets.getSubclassNames(handledTypeName)) {
+                              addClassToHandlesTypesStartupSet(targetClassName, startupTypes, classesReason);
+                          }
+                      }
                   }
               }
           }
@@ -1140,7 +1145,6 @@ public class WebApp extends com.ibm.ws.webcontainer.webapp.WebApp implements Com
               }
           } else {
               handlesTypesOnStartupSet.add(targetInitializerClass);
-          
               if ( enableTrace ) { 
                   logger.logp(Level.FINE, CLASS_NAME, methodName,
                               "Adding initializer [ {0} ] to [ {1} ] [ {2} ]",
