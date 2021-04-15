@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2009, 2020 IBM Corporation and others.
+# Copyright (c) 2009, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -131,6 +131,12 @@ session.invalidatedbyTimeout.total.description=The number of sessions that have 
 
 REST.request.description=The number of invocations and total response time of this RESTful resource method since the start of the server. The metric will not record the elapsed time nor count of a REST request if it resulted in an unmapped exception. Also tracks the highest recorded time duration within the previous completed full minute and lowest recorded time duration within the previous completed full minute.
 REST.request.unmappedException.description=The total number of unmapped exceptions that occur from this RESTful resource method since the start of the server.
+
+
+requestTiming.requestCount.description=The number of servlet requests since the server started.
+requestTiming.activeRequestCount.description=The number of servlet requests currently running.
+requestTiming.slowRequestCount.description=The number of servlet requests that are currently running but are slow.
+requestTiming.hungRequestCount.description=The number of servlet requests that are currently running but are hung.
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Metrics error message
 #-----------------------------------------------------------------------------------------------------------------------------
