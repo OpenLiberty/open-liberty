@@ -1,0 +1,40 @@
+###############################################################################
+# Copyright (c) 2010 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO Websphere kernel channel framework service: byte buffer support
+#CMVCPATHNAME com.ibm.ws.channelfw/resources/com/ibm/ws/bytebuffer/internal/resources/ByteBufferMessages.nlsprops
+#NLS_ENCODING=UNICODE
+#
+#ISMESSAGEFILE TRUE
+# NLS_MESSAGEFORMAT_VAR
+
+### WSBB will use message ids from 0600-0799
+
+NOT_VALID_CUSTOM_PROPERTY=CWWKO0600E: La propri\u00e9t\u00e9 personnalis\u00e9e {0} a la valeur {1}. Cette valeur est incorrecte.
+NOT_VALID_CUSTOM_PROPERTY.explanation=Une propri\u00e9t\u00e9 personnalis\u00e9e a \u00e9t\u00e9 sp\u00e9cifi\u00e9e avec une valeur non comprise dans l'intervalle des valeurs valides.
+NOT_VALID_CUSTOM_PROPERTY.useraction=Corrigez l'erreur de configuration.
+
+UNRECOGNIZED_CUSTOM_PROPERTY=CWWKO0601W: La propri\u00e9t\u00e9 personnalis\u00e9e {0} sp\u00e9cifi\u00e9e pour le composant WsByteBuffer n''est pas valide.
+UNRECOGNIZED_CUSTOM_PROPERTY.explanation=Une propri\u00e9t\u00e9 personnalis\u00e9e a \u00e9t\u00e9 sp\u00e9cifi\u00e9e de mani\u00e8re incorrecte.
+UNRECOGNIZED_CUSTOM_PROPERTY.useraction=Corrigez l'erreur de configuration.
+
+CONFIG_VALUE_NUMBER_EXCEPTION=CWWKO0602E: Le composant WsByteBuffer a g\u00e9n\u00e9r\u00e9 une exception de format num\u00e9rique (NumberFormatException) lors du traitement de la propri\u00e9t\u00e9 suivante : Nom de propri\u00e9t\u00e9 : {0}  Valeur : {1}
+CONFIG_VALUE_NUMBER_EXCEPTION.explanation=La valeur d'une propri\u00e9t\u00e9 de configuration WsByteBuffer n'est pas un nombre valide.
+CONFIG_VALUE_NUMBER_EXCEPTION.useraction=Corrigez l'erreur de configuration.
+
+POOL_MISMATCH=CWWKO0603E: Les sp\u00e9cifications de profondeurs de pool et de tailles de pool du composant WsByteBuffer n''ont pas le m\u00eame nombre d''entr\u00e9es. Tailles : {0}  Profondeurs : {1}
+POOL_MISMATCH.explanation=Les tailles et profondeurs de pool ont \u00e9t\u00e9 sp\u00e9cifi\u00e9es de mani\u00e8re incorrecte.
+POOL_MISMATCH.useraction=Corrigez l'erreur de configuration.

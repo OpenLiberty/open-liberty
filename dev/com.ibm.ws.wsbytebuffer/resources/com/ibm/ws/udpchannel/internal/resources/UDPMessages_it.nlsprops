@@ -1,0 +1,58 @@
+###############################################################################
+# Copyright (c) 2010 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO Websphere kernel channel framework service: udp channel
+#CMVCPATHNAME com.ibm.ws.channelfw/resources/com/ibm/ws/udpchannel/internal/resources/UDPMessages.nlsprops
+#NLS_ENCODING=UNICODE
+#ISMESSAGEFILE TRUE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+
+### UDP channel will use message numbers 0400-0599
+
+CWUDP0001I=CWWKO0400I: Canale UDP {0} in ascolto sull''host {1} porta {2}.
+CWUDP0001I.explanation=Il canale UDP \u00e8 stato avviato correttamente.
+CWUDP0001I.useraction=Non \u00e8 richiesta alcuna azione.
+
+CWUDP0002I=CWWKO0401I: Il canale UDP {0} non \u00e8 pi\u00f9 in ascolto sull''host {1} porta {2}.
+CWUDP0002I.explanation=Il canale UDP \u00e8 stato arrestato normalmente.
+CWUDP0002I.useraction=Non \u00e8 richiesta alcuna azione.
+
+CWUDP0003W=CWWKO0402W: Il canale UDP {0} \u00e8 stato creato con un valore della propriet\u00e0 di configurazione non corretto. Nome: {1}  Valore: {2}.
+CWUDP0003W.explanation=I valori di configurazione vengono ignorati dal canale UDP.
+CWUDP0003W.useraction=Non \u00e8 richiesta alcuna azione.
+
+CWUDP0004E=CWWKO0403E: Inizializzazione del canale UDP {0} non riuscita.  Impossibile risolvere l''host {1}.
+CWUDP0004E.explanation=Il sistema non \u00e8 stato in grado di risolvere il nome host configurato.
+CWUDP0004E.useraction=Verificare che la configurazione del nome host sia corretta.
+
+CWUDP0005E=CWWKO0404E: Inizializzazione del canale UDP {0} non riuscita.  Bind del socket del datagramma non riuscito per l''host {1} e la porta {2}.
+CWUDP0005E.explanation=La porta configurata potrebbe essere gi\u00e0 in uso.
+CWUDP0005E.useraction=Verificare che la configurazione della porta sia corretta.
+
+CWUDP0006I=CWWKO0405I: Il canale UDP ha eseguito una ricerca DNS (Domain Name System) dell''host {0} con esito negativo. Tale ricerca con esito negativo si \u00e8 verificata {1} volte.
+CWUDP0006I.explanation=Il canale UDP ha provato ad inviare un pacchetto ad un host di cui non \u00e8 stato possibile risolvere il nome. Il server DNS potrebbe non essere in esecuzione o configurato in modo errato.
+CWUDP0006I.useraction=Verificare che la configurazione DNS per il server sia corretta.
+
+EXECUTOR_SVC_MISSING=CWWKO0406E: Si \u00e8 verificato un errore interno. Servizio Executor mancante.
+EXECUTOR_SVC_MISSING.explanation=CMSG0001
+EXECUTOR_SVC_MISSING.useraction=CMSG0002

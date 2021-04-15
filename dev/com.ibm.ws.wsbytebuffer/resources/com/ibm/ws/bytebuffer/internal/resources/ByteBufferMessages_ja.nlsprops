@@ -1,0 +1,40 @@
+###############################################################################
+# Copyright (c) 2010 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO Websphere kernel channel framework service: byte buffer support
+#CMVCPATHNAME com.ibm.ws.channelfw/resources/com/ibm/ws/bytebuffer/internal/resources/ByteBufferMessages.nlsprops
+#NLS_ENCODING=UNICODE
+#
+#ISMESSAGEFILE TRUE
+# NLS_MESSAGEFORMAT_VAR
+
+### WSBB will use message ids from 0600-0799
+
+NOT_VALID_CUSTOM_PROPERTY=CWWKO0600E: \u30ab\u30b9\u30bf\u30e0\u30fb\u30d7\u30ed\u30d1\u30c6\u30a3\u30fc {0} \u306e\u5024\u304c {1} \u3067\u3059\u3002\u3053\u306e\u5024\u306f\u7121\u52b9\u3067\u3059\u3002
+NOT_VALID_CUSTOM_PROPERTY.explanation=\u30ab\u30b9\u30bf\u30e0\u30fb\u30d7\u30ed\u30d1\u30c6\u30a3\u30fc\u306b\u6709\u52b9\u7bc4\u56f2\u5916\u306e\u5024\u304c\u6307\u5b9a\u3055\u308c\u307e\u3057\u305f\u3002
+NOT_VALID_CUSTOM_PROPERTY.useraction=\u69cb\u6210\u30a8\u30e9\u30fc\u3092\u4fee\u6b63\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+
+UNRECOGNIZED_CUSTOM_PROPERTY=CWWKO0601W: WsByteBuffer \u30b3\u30f3\u30dd\u30fc\u30cd\u30f3\u30c8\u306b\u6307\u5b9a\u3055\u308c\u305f\u30ab\u30b9\u30bf\u30e0\u30fb\u30d7\u30ed\u30d1\u30c6\u30a3\u30fc {0} \u306f\u7121\u52b9\u3067\u3059\u3002
+UNRECOGNIZED_CUSTOM_PROPERTY.explanation=\u6307\u5b9a\u3055\u308c\u305f\u30ab\u30b9\u30bf\u30e0\u30fb\u30d7\u30ed\u30d1\u30c6\u30a3\u30fc\u306f\u6b63\u3057\u304f\u3042\u308a\u307e\u305b\u3093\u3002
+UNRECOGNIZED_CUSTOM_PROPERTY.useraction=\u69cb\u6210\u30a8\u30e9\u30fc\u3092\u4fee\u6b63\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+
+CONFIG_VALUE_NUMBER_EXCEPTION=CWWKO0602E: \u4ee5\u4e0b\u306e\u30d7\u30ed\u30d1\u30c6\u30a3\u30fc\u3092\u51e6\u7406\u4e2d\u306b\u3001WsByteBuffer \u30b3\u30f3\u30dd\u30fc\u30cd\u30f3\u30c8\u304c NumberFormatException \u4f8b\u5916\u3092\u751f\u6210\u3057\u307e\u3057\u305f: \u30d7\u30ed\u30d1\u30c6\u30a3\u30fc\u540d: {0}\u3001\u5024: {1}
+CONFIG_VALUE_NUMBER_EXCEPTION.explanation=WsByteBuffer \u69cb\u6210\u30d7\u30ed\u30d1\u30c6\u30a3\u30fc\u5024\u306f\u6709\u52b9\u306a\u6570\u5024\u3067\u3042\u308a\u307e\u305b\u3093\u3002
+CONFIG_VALUE_NUMBER_EXCEPTION.useraction=\u69cb\u6210\u30a8\u30e9\u30fc\u3092\u4fee\u6b63\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+
+POOL_MISMATCH=CWWKO0603E: WsByteBuffer \u30d7\u30fc\u30eb\u30fb\u30b5\u30a4\u30ba\u306e\u6307\u5b9a\u3068\u3001\u30d7\u30fc\u30eb\u306e\u6df1\u3055\u306e\u6307\u5b9a\u3067\u3001\u9805\u76ee\u6570\u304c\u540c\u3058\u3067\u306f\u3042\u308a\u307e\u305b\u3093\u3002\u30b5\u30a4\u30ba: {0}\u3001\u6df1\u3055: {1}
+POOL_MISMATCH.explanation=\u30d7\u30fc\u30eb\u30fb\u30b5\u30a4\u30ba\u307e\u305f\u306f\u30d7\u30fc\u30eb\u306e\u6df1\u3055\u306e\u6307\u5b9a\u306b\u8aa4\u308a\u304c\u3042\u308a\u307e\u3059\u3002
+POOL_MISMATCH.useraction=\u69cb\u6210\u30a8\u30e9\u30fc\u3092\u4fee\u6b63\u3057\u3066\u304f\u3060\u3055\u3044\u3002

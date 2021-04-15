@@ -1,0 +1,58 @@
+###############################################################################
+# Copyright (c) 2010 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO Websphere kernel channel framework service: udp channel
+#CMVCPATHNAME com.ibm.ws.channelfw/resources/com/ibm/ws/udpchannel/internal/resources/UDPMessages.nlsprops
+#NLS_ENCODING=UNICODE
+#ISMESSAGEFILE TRUE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+
+### UDP channel will use message numbers 0400-0599
+
+CWUDP0001I=CWWKO0400I: Le canal UDP {0} \u00e9coute sur l''h\u00f4te {1} port {2}.
+CWUDP0001I.explanation=Le canal UDP a d\u00e9marr\u00e9 normalement.
+CWUDP0001I.useraction=Aucune action n'est requise.
+
+CWUDP0002I=CWWKO0401I: Le canal UDP {0} a arr\u00eat\u00e9 l''\u00e9coute sur l''h\u00f4te {1} port {2}.
+CWUDP0002I.explanation=Le canal UDP s'est arr\u00eat\u00e9 normalement.
+CWUDP0002I.useraction=Aucune action n'est requise.
+
+CWUDP0003W=CWWKO0402W: Le canal UDP {0} a \u00e9t\u00e9 construit avec une valeur de propri\u00e9t\u00e9 de configuration incorrecte. Nom : {1}  Valeur : {2}.
+CWUDP0003W.explanation=Les valeurs de configuration sont ignor\u00e9es par le canal UDP.
+CWUDP0003W.useraction=Aucune action n'est requise.
+
+CWUDP0004E=CWWKO0403E: L''initialisation du canal UDP {0} n''a pas r\u00e9ussi. L''h\u00f4te {1} n''a pas pu \u00eatre r\u00e9solu.
+CWUDP0004E.explanation=Le syst\u00e8me ne peut pas r\u00e9soudre le nom d'h\u00f4te configur\u00e9.
+CWUDP0004E.useraction=V\u00e9rifiez que la configuration du nom d'h\u00f4te est correcte.
+
+CWUDP0005E=CWWKO0404E: L''initialisation du canal UDP {0} n''a pas r\u00e9ussi. La liaison de socket Datagramme n''a pas r\u00e9ussi pour l''h\u00f4te {1} et le port {2}.
+CWUDP0005E.explanation=Le port configur\u00e9 est peut-\u00eatre d\u00e9j\u00e0 utilis\u00e9.
+CWUDP0005E.useraction=V\u00e9rifiez que la configuration du port est correcte.
+
+CWUDP0006I=CWWKO0405I: Une recherche DNS de l''h\u00f4te {0} n''a pas r\u00e9ussi pour le canal UDP. Cet \u00e9chec s''est produit {1} fois.
+CWUDP0006I.explanation=Le canal UDP a tent\u00e9 d'envoyer un paquet \u00e0 un h\u00f4te dont le nom d'h\u00f4te ne peut \u00eatre r\u00e9solu. Il se peut que le serveur DNS soit inactif ou mal configur\u00e9.
+CWUDP0006I.useraction=V\u00e9rifiez que la configuration DNS est correcte pour le serveur.
+
+EXECUTOR_SVC_MISSING=CWWKO0406E: Une erreur interne s'est produite. Le service ex\u00e9cuteur est manquant.
+EXECUTOR_SVC_MISSING.explanation=CMSG0001
+EXECUTOR_SVC_MISSING.useraction=CMSG0002
