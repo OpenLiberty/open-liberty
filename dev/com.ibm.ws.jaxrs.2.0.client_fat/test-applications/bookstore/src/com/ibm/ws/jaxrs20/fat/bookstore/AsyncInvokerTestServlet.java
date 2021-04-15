@@ -330,16 +330,22 @@ public class AsyncInvokerTestServlet extends HttpServlet {
         long startTime2 = System.currentTimeMillis();
 
         try {
+            System.out.println("testAsyncInvoker_getConnectionTimeout before future.get()");
             Response response = future.get();
+            System.out.println("testAsyncInvoker_getConnectionTimeout Did not time out as expected");
             // Did not time out as expected
             ret.append(response.readEntity(String.class));
         } catch (InterruptedException e) {
+            System.out.println("testAsyncInvoker_getConnectionTimeout Failed InterruptedException " + e);
             ret.append("InterruptedException");
             e.printStackTrace();
         } catch (ExecutionException e) {
+            System.out.println("testAsyncInvoker_getConnectionTimeout ExecutionException " + e);
             if (e.getCause().toString().contains("ProcessingException")) {
+                System.out.println("testAsyncInvoker_getConnectionTimeout Timeout as expected" );
                 ret.append("Timeout as expected");
             } else {
+                System.out.println("testAsyncInvoker_getConnectionTimeout Failed ExecutionException");
                 ret.append("ExecutionException");
                 e.printStackTrace();
             }
