@@ -1,7 +1,7 @@
 package com.ibm.tx.jta.impl;
 
 /*******************************************************************************
- * Copyright (c) 2002, 2020 IBM Corporation and others.
+ * Copyright (c) 2002, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -86,6 +86,8 @@ public class RecoveryManager implements Runnable {
     protected SharedServerLeaseLog _leaseLog;
     protected String _recoveryGroup;
     protected String _localRecoveryIdentity;
+    protected boolean _peerTranLogEverOpened = false;
+    protected boolean _peerXaLogEverOpened = false;
 
     protected PartnerLogTable _recoveryPartnerLogTable;
 
@@ -566,7 +568,15 @@ public class RecoveryManager implements Runnable {
             // situation, server shutdown will be peppered with LogClosedException errors. Needs refinement.
             if (_tranLog != null && ((!_failureScopeController.localFailureScope()) || (!transactionsLeft))) {
                 try {
-                    _tranLog.closeLog();
+                    // If this is a local log or an opened peer tran log then it can be closed
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc,
+                                 "Close tran log if it is local " + _failureScopeController.localFailureScope() +
+                                     " or is a peer log that was opened " + _peerTranLogEverOpened);
+                    if (_failureScopeController.localFailureScope() || _peerTranLogEverOpened) {
+                        _tranLog.closeLog();
+                        _peerTranLogEverOpened = false;
+                    }
                 } catch (PeerLostLogOwnershipException ple) {
                     // No FFDC or Error messaging in this case
                     if (tc.isEntryEnabled())
@@ -649,7 +659,15 @@ public class RecoveryManager implements Runnable {
         } finally {
             if (_xaLog != null) {
                 try {
-                    _xaLog.closeLog();
+                    // If this is a local log or an opened peer partner log then it can be closed
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc,
+                                 "Close partner log if it is local " + _failureScopeController.localFailureScope() +
+                                     " or is a peer log that was opened " + _peerXaLogEverOpened);
+                    if (_failureScopeController.localFailureScope() || _peerXaLogEverOpened) {
+                        _xaLog.closeLog();
+                        _peerXaLogEverOpened = false;
+                    }
                 } catch (PeerLostLogOwnershipException ple) {
                     // No FFDC in this case
                     if (tc.isDebugEnabled())
@@ -1751,6 +1769,10 @@ public class RecoveryManager implements Runnable {
             if (_tranLog != null) {
                 try {
                     _tranLog.openLog();
+
+                    // If this is a peer tran log, then flag that we have opened it.
+                    if (!_failureScopeController.localFailureScope() && _localRecoveryIdentity != null && !_localRecoveryIdentity.equals(serverName))
+                        _peerTranLogEverOpened = true;
                 } catch (LogIncompatibleException exc) {
                     // No FFDC Code needed.
                     // The attempt to open the transaction log has failed because this recovery log is from a version
@@ -1825,6 +1847,9 @@ public class RecoveryManager implements Runnable {
             if (_xaLog != null) {
                 try {
                     _xaLog.openLog();
+                    // If this is a peer partner log, then flag that we have opened it.
+                    if (!_failureScopeController.localFailureScope() && _localRecoveryIdentity != null && !_localRecoveryIdentity.equals(serverName))
+                        _peerXaLogEverOpened = true;
                     if (_recoverXaLog != null)
                         _recoverXaLog.openLog();
                 } catch (LogIncompatibleException exc) {
