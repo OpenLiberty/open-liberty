@@ -37,11 +37,11 @@ import javax.transaction.xa.XAException;
 import com.ibm.websphere.ce.cm.DuplicateKeyException;
 import com.ibm.websphere.ce.cm.StaleConnectionException;
 import com.ibm.websphere.ce.cm.StaleStatementException;
-import com.ibm.ws.jdbc.heritage.AccessIntent;
 import com.ibm.ws.jdbc.heritage.DataStoreHelperMetaData;
 import com.ibm.ws.jdbc.heritage.GenericDataStoreHelper;
 
 import test.jdbc.heritage.driver.HDConnection;
+import test.jdbc.heritage.driver.HDDataSource;
 import test.jdbc.heritage.driver.HeritageDBConnection;
 import test.jdbc.heritage.driver.HeritageDBDoesNotImplementItException;
 
@@ -73,6 +73,27 @@ public class HDDataStoreHelper extends GenericDataStoreHelper {
     public HDDataStoreHelper(Properties props) {
         String value = props == null ? null : props.getProperty("queryTimeout");
         defaultQueryTimeout = value == null || value.length() <= 0 ? 0 : Integer.parseInt(value);
+
+        // verify that various properties are supplied
+        String driverType = props.getProperty("driverType");
+        if (!"fake".equals(driverType))
+            throw new UnsupportedOperationException("This DataStoreHelper only works with fake JDBC drivers, not " + driverType);
+
+        String dataSourceClassName = props.getProperty("dataSourceClass");
+        if (!HDDataSource.class.getName().equals(dataSourceClassName))
+            throw new UnsupportedOperationException("This DataStoreHelper is incapable of supporting data source class " + dataSourceClassName);
+
+        int longDataCacheSize = Integer.parseInt(props.getProperty("longDataCacheSize"));
+        if (longDataCacheSize != 4)
+            throw new IllegalArgumentException(Integer.toString(longDataCacheSize));
+
+        String responseBuffering = props.getProperty("responseBuffering");
+        if (!"maybe".equals(responseBuffering))
+            throw new IllegalArgumentException(responseBuffering);
+
+        String informixLockModeWait = props.getProperty("informixLockModeWait");
+        if (informixLockModeWait != null)
+            throw new UnsupportedOperationException("This DataStoreHelper doesn't work with Informix. Found informixLockModeWait: " + informixLockModeWait);
     }
 
     @Override
@@ -133,7 +154,7 @@ public class HDDataStoreHelper extends GenericDataStoreHelper {
     }
 
     @Override
-    public int getIsolationLevel(AccessIntent unused) {
+    public int getIsolationLevel() {
         return Connection.TRANSACTION_SERIALIZABLE;
     }
 

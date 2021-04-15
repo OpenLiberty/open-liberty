@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2020 IBM Corporation and others.
+ * Copyright (c) 1997, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -80,7 +80,6 @@ import com.ibm.ws.resource.ResourceRefInfo;
 import com.ibm.ws.rsadapter.AdapterUtil;
 import com.ibm.ws.rsadapter.DSConfig;
 import com.ibm.ws.rsadapter.IdentifyExceptionAs;
-import com.ibm.ws.rsadapter.SQLStateAndCode;
 import com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException;
 import com.ibm.ws.rsadapter.jdbc.WSJdbcTracer;
 
@@ -472,7 +471,38 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
      */
     private GenericDataStoreHelper createDataStoreHelper() throws PrivilegedActionException, ResourceException, ClassNotFoundException {
         DSConfig config = dsConfig.get();
-        Properties helperProps = new Properties(); // TODO populate with what is needed
+        Properties helperProps = new Properties();
+        Object value;
+
+        if ((value = config.vendorProps.get("currentSQLID")) != null)
+            helperProps.setProperty("currentSQLID", value.toString());
+
+        helperProps.setProperty("dataSourceClass", vendorImplClass.getName());
+
+        if ((value = config.vendorProps.get("driverType")) != null)
+            helperProps.put("driverType", value.toString());
+
+        if ((value = config.vendorProps.get("informixAllowNewLine")) != null)
+            helperProps.put("informixAllowNewLine", value.toString());
+
+        if ((value = config.vendorProps.get("informixLockModeWait")) != null)
+            helperProps.put("informixLockModeWait", value.toString());
+
+        if ((value = config.vendorProps.get("longDataCacheSize")) != null)
+            helperProps.put("longDataCacheSize", value.toString());
+
+        if (config.queryTimeout != null)
+            helperProps.put("queryTimeout", Integer.toString(config.queryTimeout));
+
+        // reauthentication is not configurable, defaults to false
+
+        if ((value = config.vendorProps.get("responseBuffering")) != null)
+            helperProps.put("responseBuffering", value.toString());
+
+        // useTrustedContextWithAuthentication is not configurable, defaults to false
+
+        if (config.isolationLevel != -1)
+            helperProps.put("webSphereDefaultIsolationLevel", Integer.toString(config.isolationLevel));
 
         String helperClassName = config.heritageHelperClass == null ? helper.dataStoreHelper : config.heritageHelperClass;
 
@@ -485,7 +515,7 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
             helper.genPw = dataStoreHelper.getPrintWriter();
 
         DataStoreHelperMetaData metadata = dataStoreHelper.getMetaData();
-        defaultIsolationLevel = dataStoreHelper.getIsolationLevel(null);
+        defaultIsolationLevel = dataStoreHelper.getIsolationLevel();
         doesStatementCacheIsoLevel = metadata.doesStatementCacheIsoLevel();
         isCustomHelper = !helperClassName.startsWith("com.ibm.websphere.rsadapter");
         supportsGetCatalog = metadata.supportsGetCatalog();

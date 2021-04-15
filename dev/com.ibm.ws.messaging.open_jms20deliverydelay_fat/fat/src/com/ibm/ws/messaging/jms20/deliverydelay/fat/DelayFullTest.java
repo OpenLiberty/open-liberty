@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2020 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,10 +14,16 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
+import java.util.Set;
 
 import org.junit.runner.RunWith;
 import org.junit.AfterClass;
@@ -32,6 +38,8 @@ import com.ibm.websphere.simplicity.log.Log;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 
+import com.ibm.websphere.simplicity.LocalFile;
+import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.custom.junit.runner.FATRunner;
@@ -451,32 +459,7 @@ public class DelayFullTest {
         boolean testResult2 = runInServlet("testReceiveMessage_TCP");
         assertTrue("testReceiveMessage_TCP failed", testResult2);
     }
-
-    //
-
-    private List<String> getClientFeatures() {
-        List<String> features = new ArrayList<String>();
-
-        features.add("osgiconsole-1.0");
-        features.add("jndi-1.0");
-
-        if ( JakartaEE9Action.isActive() ) {
-            features.add("servlet-5.0");
-            features.add("pages-3.0");
-            features.add("messagingClient-3.0");
-            features.add( getServerFeature() );
-        } else {
-            features.add("servlet-3.1");
-            features.add("jsp-2.3");
-            features.add("wasJmsClient-2.0");
-            features.add( getServerFeature() );
-        }
-        
-        features.add("testjmsinternals-1.0");
-
-        return features;
-    }
-
+    
     private String getServerFeature() {
         return ( JakartaEE9Action.isActive() ? "messagingServer-3.0" : "wasJmsServer-1.0" );
     }
@@ -516,23 +499,32 @@ public class DelayFullTest {
             changedMessageFromLog);
     }
 
+    /**
+     * <ul>
+     * <li>Put a message to the client's messaging engine with a delivery delay.
+     * <li>Remove and then restore the messaging feature.
+     * <li>Wait for the message to be delivered.
+     * <li>Check that the message appeared after the delivery delay even though the messaging 
+     * feature was not installed for part of the delivery delay interval.
+     * </ul>
+     */
     @Test
     public void testDDRemoveAddServerFeature() throws Exception {
         boolean testResult1 = runInServlet("testSendMessage");
         assertTrue("testSendMessage failed", testResult1);
 
-        List<String> features = getClientFeatures();
+        Set<String> clientFeatures = clientServer.getServerConfiguration().getFeatureManager().getFeatures();
         String serverFeature = getServerFeature();
         String serverFragment = getServerMessageFragment();
 
         clientServer.setMarkToEndOfLog(clientServer.getMatchingLogFile("trace.log"));
-        features.remove(serverFeature);
-        clientServer.changeFeatures(features);
+        clientFeatures.remove(serverFeature);
+        clientServer.changeFeatures(new ArrayList<String>(clientFeatures));
         verifyRemovedFeature(clientServer, serverFragment);
 
         clientServer.setMarkToEndOfLog(clientServer.getMatchingLogFile("trace.log"));
-        features.add(serverFeature);
-        clientServer.changeFeatures(features);
+        clientFeatures.add(serverFeature);
+        clientServer.changeFeatures(new ArrayList<String>(clientFeatures));
         verifyAddedFeature(clientServer, serverFragment);
 
         int appCount = clientServer.waitForMultipleStringsInLog(3, "CWWKT0016I.*DeliveryDelay.*");
@@ -543,25 +535,25 @@ public class DelayFullTest {
         assertTrue("testReceiveMessage failed", testResult2);
     }
 
-    // @Test TODO Already disabled.
-    //       Should be fixed or removed in a subsequent issue or pull-request.
+    // @Test Restore after fixing...
+    // https://github.com/OpenLiberty/open-liberty/issues/16508
     public void testDDRemoveAddServerFeature_TCP() throws Exception {
         boolean testResult1 = runInServlet("testSendMessage_TCP");
         assertTrue("testSendMessage_TCP failed", testResult1);
 
-        List<String> features = getClientFeatures();
+        Set<String> engineFeatures = engineServer.getServerConfiguration().getFeatureManager().getFeatures();
         String serverFeature = getServerFeature();
         String serverFragment = getServerMessageFragment();
 
-        clientServer.setMarkToEndOfLog(clientServer.getMatchingLogFile("trace.log"));
-        features.remove(serverFeature);
-        clientServer.changeFeatures(features);
-        verifyRemovedFeature(clientServer, serverFragment);
+        engineServer.setMarkToEndOfLog(engineServer.getMatchingLogFile("trace.log"));
+        engineFeatures.remove(serverFeature);
+        engineServer.changeFeatures(new ArrayList<String>(engineFeatures));
+        verifyRemovedFeature(engineServer, serverFragment);
 
-        clientServer.setMarkToEndOfLog(clientServer.getMatchingLogFile("trace.log"));
-        features.add(serverFeature);
-        clientServer.changeFeatures(features);
-        verifyAddedFeature(clientServer, serverFragment);
+        engineServer.setMarkToEndOfLog(engineServer.getMatchingLogFile("trace.log"));
+        engineFeatures.add(serverFeature);
+        engineServer.changeFeatures(new ArrayList<String>(engineFeatures));
+        verifyAddedFeature(engineServer, serverFragment);
 
         boolean testResult2 = runInServlet("testReceiveMessage_TCP");
         assertTrue("testReceiveMessage_TCP failed", testResult2);

@@ -42,7 +42,7 @@ public class OpenAPIValidationTestFour {
         assertNotNull("Web application is not available at /Validation/",
                       server.waitForStringInLog("CWWKT0016I.*/Validation/"));
         // wait for server is ready to run a smarter planet message
-        assertNotNull("CWWKF0011I.* not recieved on relationServer",
+        assertNotNull("CWWKF0011I.* not received on relationServer",
                       server.waitForStringInLog("CWWKF0011I.*"));
     }
 

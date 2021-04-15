@@ -49,9 +49,9 @@ public class WebContainerContextInjectionResource {
         httpServletResponse.addHeader("responseheadername", "responseheadervalue");
         httpServletResponse.setStatus(HttpServletResponse.SC_OK);
 
-        try {
-            PrintWriter pw =
-                            new PrintWriter(new OutputStreamWriter(httpServletResponse.getOutputStream()));
+        try (PrintWriter pw =
+                        new PrintWriter(new OutputStreamWriter(httpServletResponse.getOutputStream()))) {
+
             /*
              * PrintWriter does not automatically flush so going to flush pw
              * manually. Reminder, cannot just flush HttpServletResponse

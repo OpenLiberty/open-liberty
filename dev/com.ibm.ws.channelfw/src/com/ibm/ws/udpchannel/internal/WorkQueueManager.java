@@ -665,7 +665,7 @@ public class WorkQueueManager implements UDPSelectorMonitor {
 
                         failureCount++;
                         //
-                        // If I have recieved more than 5 IOException's in a
+                        // If I have received more than 5 IOException's in a
                         // row, then we need to start sleeping some in between.
                         //
                         // if (failureCount > 5) {

@@ -1,0 +1,40 @@
+#*******************************************************************************
+# Copyright (c) 2019 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: Request Timing Monitor
+Bundle-SymbolicName: com.ibm.ws.request.timing.monitor
+Bundle-Description: RequestTiming Monitor; version=${bVersion}
+
+WS-TraceGroup: requestTiming
+
+Export-Package:  com.ibm.ws.request.timing.monitor, \
+				 com.ibm.websphere.request.timing
+
+Liberty-Monitoring-Components: com.ibm.ws.request.timing.monitor.RequestTimingMonitor
+
+DynamicImport-Package: com.ibm.websphere.monitor.meters;version="1.0.0", \
+ com.ibm.websphere.monitor.annotation;version="1.0.0", \
+ com.ibm.websphere.monitor.jmx;version="1.0.0"
+ 
+-dsannotations: \
+  com.ibm.ws.request.timing.monitor.RequestTimingMonitor
+
+-buildpath: \
+    com.ibm.websphere.org.osgi.core;version=latest,\
+    com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+    com.ibm.ws.request.timing;version=latest,\
+    com.ibm.ws.monitor;version=latest,\
+    com.ibm.ws.logging;version=latest,\
+    com.ibm.websphere.javaee.servlet.3.0;version=latest,\
+    com.ibm.wsspi.org.osgi.service.component.annotations;version=latest
+

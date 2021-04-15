@@ -139,8 +139,8 @@
 
         <!--com.ibm.ws.webcontainer.-->
         <AD id="enableMultiReadOfPostData"
-            name="internal" 
-            description="internal use only" 
+            name="%enableMultiReadOfPostData.name" 
+            description="%enableMultiReadOfPostData.desc" 
             required="false" type="Boolean" default="false" />
 
         <!-- custom properties introduced in WAS v7 -->

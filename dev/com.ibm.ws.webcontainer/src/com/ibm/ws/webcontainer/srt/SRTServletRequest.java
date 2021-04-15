@@ -105,7 +105,7 @@ import com.ibm.wsspi.webcontainer.webapp.IWebAppDispatcherContext;
 
 
 @SuppressWarnings("unchecked")
-public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, IServletRequest, IPrivateRequestAttributes, IInputStreamObserver, ServletRequestExtended, HttpInputStreamObserver
+public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, IServletRequest, IPrivateRequestAttributes, IInputStreamObserver, ServletRequestExtended, HttpInputStreamObserver, ISRTServletRequest
 {
     // Class level objects
     // =========================

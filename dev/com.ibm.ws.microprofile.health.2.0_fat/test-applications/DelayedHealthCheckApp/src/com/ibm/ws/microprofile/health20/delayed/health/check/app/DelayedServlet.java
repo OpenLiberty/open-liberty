@@ -33,7 +33,7 @@ public class DelayedServlet extends HttpServlet {
 
     @Override
     public void init() {
-        System.out.println("Entering init function - Starting Thread.sleep for 30 seconds.");
+        System.out.println("Entering init function - Starting Thread.sleep for 65 seconds.");
         try {
             Thread.sleep(65000); //30 seconds = 30000 ms
         } catch (InterruptedException e) {

@@ -7,7 +7,7 @@
 </p>
 <p align="center">
   <a href="https://openliberty.io/">
-    <img src="https://github.com/OpenLiberty/open-liberty/blob/master/logos/logo_horizontal_light_navy.png" alt="title" width="400">
+    <img src="https://github.com/OpenLiberty/open-liberty/blob/release/logos/logo_horizontal_light_navy.png" alt="title" width="400">
   </a>
 </p>
 <br />
@@ -67,7 +67,9 @@ See [this guide](https://openliberty.io/guides/getting-started.html)  to learn h
 
 
 ## Contributing
-Our [CONTRIBUTING](https://github.com/OpenLiberty/open-liberty/blob/master/CONTRIBUTING.md) document contains details for submitting pull requests.
+
+Our [CONTRIBUTING](https://github.com/OpenLiberty/open-liberty/blob/release/CONTRIBUTING.md) document contains details for submitting pull requests.
+**FYI:** The project recently renamed `master` branch to `release`.  More info here: https://github.com/OpenLiberty/open-liberty/wiki/Master-rename-to-Release
 
 ### Running a Build
 

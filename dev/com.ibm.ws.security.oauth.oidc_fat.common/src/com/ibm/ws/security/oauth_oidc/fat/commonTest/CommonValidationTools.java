@@ -767,7 +767,7 @@ public class CommonValidationTools {
                     }
                     if (key.equals(Constants.TOKEN_TYPE_KEY)) {
                         msgUtils.assertTrueAndLog(thisMethod, "Token Type is null", value != null);
-                        msgUtils.assertTrueAndLog(thisMethod, "Token Type value expected: Bearer but recieved" + value, value.equals("Bearer"));
+                        msgUtils.assertTrueAndLog(thisMethod, "Token Type value expected: Bearer but received" + value, value.equals("Bearer"));
                     }
                     // make sure it has value if it exists - we've already done the check for should it be there or not
                     if (key.equals(Constants.ID_TOKEN_KEY)) {

@@ -16,12 +16,12 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import io.openliberty.restfulWS30.client.fat.test.PathParamTest;
 
+
 @RunWith(Suite.class)
 @SuiteClasses({
                 ClientFeatureTest.class,
                 SslTest.class,
                 PathParamTest.class
 })
-public class FATSuite {
-
+public class FATSuite {    
 }

@@ -127,7 +127,8 @@ public class ConnectorAnn3 implements ResourceAdapter, Serializable {
 
     private transient XATerminator myXATerminator = null;
 
-    public ConnectorAnn3() {}
+    public ConnectorAnn3() {
+    }
 
     // Resource Adapter Configuration Properties
 //  @ConfigProperty(
@@ -227,7 +228,7 @@ public class ConnectorAnn3 implements ResourceAdapter, Serializable {
         if (activationSpec instanceof ActivationSpecImpl) {
             if (debug) {
                 ActivationSpecImpl aSpec = (ActivationSpecImpl) activationSpec;
-                out.println("Recieved com.ibm.inbound.impl.ActivationSpecImpl");
+                out.println("Received com.ibm.inbound.impl.ActivationSpecImpl");
                 out.println("Contents of ActivationSpec: ");
                 out.println("prop1: " + aSpec.getProp1());
                 out.println("destType: " + aSpec.getDestinationType());
@@ -262,7 +263,7 @@ public class ConnectorAnn3 implements ResourceAdapter, Serializable {
         if (activationSpec instanceof ActivationSpecImpl) {
             ActivationSpecImpl aSpec = (ActivationSpecImpl) activationSpec;
             if (debug) {
-                out.println("Recieved com.ibm.inbound.impl.ActivationSpecImpl");
+                out.println("Received com.ibm.inbound.impl.ActivationSpecImpl");
                 out.println("Contents of ActivationSpec: ");
                 out.println("prop1:" + aSpec.getProp1());
                 out.println("destType: " + aSpec.getDestinationType());

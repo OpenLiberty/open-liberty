@@ -100,7 +100,7 @@ public class SRTServletRequestUtilsTest {
             }
         });
 
-        assertEquals("Did not recieve the expected value",
+        assertEquals("Did not receive the expected value",
                      value, SRTServletRequestUtils.getPrivateAttribute(reqWrapper1, key));
     }
 
@@ -116,7 +116,7 @@ public class SRTServletRequestUtilsTest {
             }
         });
 
-        assertEquals("Did not recieve the expected value",
+        assertEquals("Did not receive the expected value",
                      value, SRTServletRequestUtils.getPrivateAttribute(srtReq, key));
     }
 

@@ -67,7 +67,7 @@ rootProject.ext.betaFeatures = {
     betaFeatures
 }
 
-task copyFeaturePiiFiles {
+copyPiiFiles {
   doLast {
     def featureFiles = fileTree(dir: project.projectDir, include: 'visibility/**/*.feature')
     featureFiles.each { featureFile ->
@@ -89,8 +89,6 @@ task copyFeaturePiiFiles {
     }
   }
 }
-
-copyPiiFiles.dependsOn copyFeaturePiiFiles
 
 Set<String> obtain(Map<String, Set<String>> featureToEditions, String edition) {
   Set<String> features = featureToEditions.get(edition)

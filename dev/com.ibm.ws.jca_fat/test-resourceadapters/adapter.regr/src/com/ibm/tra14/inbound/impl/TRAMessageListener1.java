@@ -25,7 +25,7 @@ public class TRAMessageListener1 implements MessageListener {
 
         if (DebugTracer.isDebugMessages()) {
             PrintStream out = DebugTracer.getPrintStream();
-            out.println("TRAMessageListener1 Recieved a message: " + arg0.toString());
+            out.println("TRAMessageListener1 Received a message: " + arg0.toString());
         }
 
     }

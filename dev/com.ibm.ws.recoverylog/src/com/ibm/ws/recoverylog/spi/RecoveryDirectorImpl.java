@@ -659,7 +659,7 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
                         try {
                             _outstandingInitializationRecords.wait();
                         } catch (InterruptedException exc) {
-                            // This exception is recieved if another thread interrupts this thread by calling this threads
+                            // This exception is received if another thread interrupts this thread by calling this threads
                             // Thread.interrupt method. The RecoveryDirectorImpl class does not use this mechanism for
                             // breaking out of the wait call - it uses notifyAll to wake up all waiting threads. This
                             // exception should never be generated. If for some reason it is called then ignore it and
@@ -747,7 +747,7 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
                         try {
                             _outstandingTerminationRecords.wait();
                         } catch (InterruptedException exc) {
-                            // This exception is recieved if another thread interrupts this thread by calling this threads
+                            // This exception is received if another thread interrupts this thread by calling this threads
                             // Thread.interrupt method. The RecoveryDirectorImpl class does not use this mechanism for
                             // breaking out of the wait call - it uses notifyAll to wake up all waiting threads. This
                             // exception should never be generated. If for some reason it is called then ignore it and

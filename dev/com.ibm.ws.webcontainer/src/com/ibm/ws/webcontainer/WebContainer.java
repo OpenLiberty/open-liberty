@@ -924,7 +924,7 @@ public abstract class WebContainer extends BaseContainer {
                     }
                     // end 272738    Duplicate CacheServletWrappers when url-rewriting is enabled    WAS.webcontainer: rewritten to handle jsessionid.
 
-                    currDispatchContext.setQueryString(((SRTServletRequest) hreq).getQueryString());
+                    currDispatchContext.setQueryString(hreq.getQueryString());
                     hreq.setValuesIfMultiReadofPostdataEnabled(); //MultiRead
                     if (vhost != null) {
                         vhost.addSecureRedirect(hreq, vhostKey);
