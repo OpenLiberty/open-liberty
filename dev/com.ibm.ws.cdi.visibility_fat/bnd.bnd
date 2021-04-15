@@ -90,7 +90,7 @@ tested.features:\
 	com.ibm.websphere.security;version=latest,\
 	com.ibm.websphere.javaee.concurrent.1.0;version=latest,\
 	com.ibm.websphere.javaee.cdi.1.2;version=latest,\
-	com.ibm.ws.org.apache.commons.logging.1.0.3;version=latest,\
+	io.openliberty.org.apache.commons.logging;version=latest,\
 	com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
 	com.ibm.websphere.javaee.jsf.2.2;version=latest,\
 	com.ibm.websphere.org.osgi.core;version=latest,\

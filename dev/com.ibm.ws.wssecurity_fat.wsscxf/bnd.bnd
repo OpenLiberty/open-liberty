@@ -79,9 +79,9 @@ fat.project: true
   com.ibm.ws.org.apache.cxf.ws.security.2.6.2;version=latest,\
   com.ibm.websphere.security;version=latest,\
   com.ibm.ws.wssecurity;version=latest,\
-  com.ibm.ws.org.apache.commons.codec.1.4;version=latest,\
+  io.openliberty.org.apache.commons.codec;version=latest,\
   com.ibm.ws.org.apache.commons.lang3;version=latest,\
-  com.ibm.ws.org.apache.commons.logging.1.0.3;version=latest,\
+  io.openliberty.org.apache.commons.logging;version=latest,\
   com.ibm.ws.org.apache.cxf.cxf.api.2.6.2;version=latest,\
   com.ibm.ws.org.apache.cxf.cxf.rt.bindings.soap.2.6.2;version=latest,\
   com.ibm.ws.org.apache.cxf.cxf.rt.core.2.6.2;version=latest,\

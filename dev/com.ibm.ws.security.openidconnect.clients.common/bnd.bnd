@@ -84,7 +84,7 @@ Private-Package: \
 	com.ibm.ws.org.jose4j;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.ws.security.common.jsonwebkey;version=latest,\
-	com.ibm.ws.org.apache.commons.codec;version=latest,\
+	io.openliberty.org.apache.commons.codec;version=latest,\
 	com.ibm.ws.transport.http;version=latest
 
 -testpath: \
@@ -102,5 +102,5 @@ Private-Package: \
 	com.ibm.ws.security.registry;version=latest,\
 	com.ibm.ws.security.test.common;version=latest,\
 	com.ibm.json4j;version=latest,\
-	commons-logging:commons-logging;version=1.1.3,\
+	io.openliberty.org.apache.commons.logging;version=latest,\
 	com.ibm.ws.logging;version=latest

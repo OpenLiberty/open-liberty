@@ -71,8 +71,8 @@ dependencies {
      * These JARs will be copied into $buildDir/collectedJars
      * for eash of retrieval by other projects.
      */
-    collectedDeps 'commons-codec:commons-codec:1.4',
-                  'commons-logging:commons-logging:1.1.1',
+    collectedDeps project(':io.openliberty.org.apache.commons.codec'),
+                  project(':io.openliberty.org.apache.commons.logging'),
                   'com.unboundid:unboundid-ldapsdk:5.1.0',
 //                  'jdom:1.1.2',                                     NOT USED IN OPEN LIBERTY YET
                   project(':com.ibm.json4j'),
