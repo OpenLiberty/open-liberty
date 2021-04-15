@@ -48,7 +48,7 @@ Subsystem-Name: Jakarta Server Faces 3.0
  com.ibm.ws.org.apache.commons.beanutils.1.9.4, \
  com.ibm.ws.org.apache.commons.collections, \
  com.ibm.ws.org.apache.commons.discovery.0.2, \
- com.ibm.ws.org.apache.commons.logging.1.0.3, \
+ io.openliberty.org.apache.commons.logging, \
  com.ibm.ws.jsf.shared.jakarta, \
  io.openliberty.faces.internal.jakarta, \
  com.ibm.ws.cdi.interfaces.jakarta, \

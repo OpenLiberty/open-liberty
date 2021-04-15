@@ -13,7 +13,7 @@
 dependencies {
   requiredLibs project(":com.ibm.ws.tx.embeddable"),
                project(":com.ibm.ws.transaction.cloud_fat.base"),
-               'commons-logging:commons-logging:1.1.3'
+               project(':io.openliberty.org.apache.commons.logging')
 }
 
 task copyCommonFiles {

@@ -63,6 +63,6 @@ instrument.disabled: true
   org.jboss.narayana:common;version=${narayanaVersion}.Final, \
   org.jboss.narayana.rts:lra-service-base;version=${narayanaVersion}.Final, \
   com.ibm.ws.org.apache.httpcomponents;version=latest, \
-  com.ibm.ws.org.apache.commons.logging.1.0.3;version=latest
+  io.openliberty.org.apache.commons.logging;version=latest
   
 

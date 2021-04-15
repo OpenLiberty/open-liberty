@@ -12,9 +12,9 @@ Subsystem-Name: JSON Web Token 1.0
   io.openliberty.jwt1.0.internal.ee-6.0; ibm.tolerates:="9.0"
 -bundles=\
   com.ibm.ws.org.apache.httpcomponents, \
-  com.ibm.ws.org.apache.commons.logging.1.0.3, \
+  io.openliberty.org.apache.commons.logging, \
   com.ibm.ws.security.common.jsonwebkey, \
-  com.ibm.ws.org.apache.commons.codec, \
+  io.openliberty.org.apache.commons.codec, \
   com.ibm.ws.org.jose4j, \
   com.ibm.ws.com.google.gson.2.2.4, \
   com.ibm.ws.org.slf4j.api.1.7.7, \

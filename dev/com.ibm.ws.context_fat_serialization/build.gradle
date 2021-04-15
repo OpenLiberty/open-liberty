@@ -12,5 +12,5 @@
 addRequiredLibraries.dependsOn addJakartaTransformer
 
 dependencies {
-  requiredLibs 'commons-codec:commons-codec:1.4'
+  requiredLibs project(':io.openliberty.org.apache.commons.codec')
 }

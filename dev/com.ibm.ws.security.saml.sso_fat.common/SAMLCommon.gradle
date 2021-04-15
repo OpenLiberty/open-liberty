@@ -29,8 +29,6 @@ dependencies {
    */
   requiredLibs project(':com.ibm.ws.security.saml.sso_fat.common'),
                project(':com.ibm.ws.org.apache.httpcomponents'),
-               'commons-codec:commons-codec:1.4',
-               'commons-logging:commons-logging:1.1.1',
                'httpunit:httpunit:1.6.2',                           // 1.7 has issues noted above
                'jtidy:jtidy:4aug2000r7-dev',
                'rhino:js:1.6R5',

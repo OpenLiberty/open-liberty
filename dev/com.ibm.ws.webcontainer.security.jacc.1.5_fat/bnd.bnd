@@ -23,8 +23,8 @@ tested.features: jacc-1.5, expressionLanguage-4.0, appsecurity-4.0, servlet-5.0,
     com.ibm.websphere.security;version=latest,\
     com.ibm.ws.security.audit_fat.common.tooling,\
     com.ibm.ws.webcontainer.security_test.servlets;version=latest,\
-    commons-codec:commons-codec;version=1.4,\
-    commons-logging:commons-logging;version=1.1.1,\
+    io.openliberty.org.apache.commons.codec;version=latest,\
+    io.openliberty.org.apache.commons.logging;version=latest,\
     fattest.simplicity;version=latest,\
     org.apache.httpcomponents:httpclient;strategy=exact;version=4.1.2,\
     org.apache.httpcomponents:httpcore;strategy=exact;version=4.1.2,\
