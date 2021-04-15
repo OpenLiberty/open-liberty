@@ -93,8 +93,7 @@ public class FileSharedServerLeaseLog implements SharedServerLeaseLog {
     private static final FileSharedServerLeaseLog _fileLeaseLog = new FileSharedServerLeaseLog();
 
     //to prevent creating another instance of Singleton
-    public FileSharedServerLeaseLog() {
-    }
+    public FileSharedServerLeaseLog() {}
 
     /**
      * WebSphere RAS TraceComponent registration.
@@ -840,5 +839,13 @@ public class FileSharedServerLeaseLog implements SharedServerLeaseLog {
         if (tc.isEntryEnabled())
             Tr.exit(tc, "setPeerRecoveryLeaseTimeout", this);
 
+    }
+
+    /**
+     * Signals to the Lease Log that the server is stopping.
+     */
+    @Override
+    public void serverStopping() {
+        // No-op in filesystem implementation
     }
 }
