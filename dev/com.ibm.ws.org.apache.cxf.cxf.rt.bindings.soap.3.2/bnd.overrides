@@ -60,7 +60,7 @@ Import-Package: \
   org.apache.cxf.common;version="[3.2.4,4.0)", \
   org.apache.cxf.common.i18n;version="[3.2.4,4.0)", \
   org.apache.cxf.common.injection;version="[3.2.4,4.0)", \
-  org.apache.cxf.common.logging;version="[3.2.4,4.0)", \  
+  org.apache.cxf.common.logging;version="[3.2.4,4.0)", \
   org.apache.cxf.common.spi;version="[3.2.4,4.0)", \
   org.apache.cxf.common.util;version="[3.2.4,4.0)", \
   org.apache.cxf.common.xmlschema;version="[3.2.4,4.0)", \

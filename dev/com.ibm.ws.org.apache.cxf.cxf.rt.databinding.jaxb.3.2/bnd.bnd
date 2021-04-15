@@ -13,7 +13,7 @@
 cxfVersion=3.4.3
 
 -includeresource: \
-   @${repo;org.apache.cxf:cxf-rt-bindings-xml;${cxfVersion};EXACT}!/*-INF/*, \
+   @${repo;org.apache.cxf:cxf-rt-databinding-jaxb;${cxfVersion};EXACT}!/*-INF/*, \
    META-INF=resources/META-INF
 
 -buildpath: org.apache.cxf:cxf-rt-databinding-jaxb;strategy=exact;version=${cxfVersion},\
