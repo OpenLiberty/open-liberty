@@ -37,7 +37,6 @@ import javax.transaction.xa.XAException;
 import com.ibm.websphere.ce.cm.DuplicateKeyException;
 import com.ibm.websphere.ce.cm.StaleConnectionException;
 import com.ibm.websphere.ce.cm.StaleStatementException;
-import com.ibm.ws.jdbc.heritage.AccessIntent;
 import com.ibm.ws.jdbc.heritage.DataStoreHelperMetaData;
 import com.ibm.ws.jdbc.heritage.GenericDataStoreHelper;
 
@@ -155,7 +154,7 @@ public class HDDataStoreHelper extends GenericDataStoreHelper {
     }
 
     @Override
-    public int getIsolationLevel(AccessIntent unused) {
+    public int getIsolationLevel() {
         return Connection.TRANSACTION_SERIALIZABLE;
     }
 
