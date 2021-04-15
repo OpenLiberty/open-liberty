@@ -349,7 +349,9 @@ public class AsyncResponseImpl implements AsyncResponse, ContinuationCallback {
         ContinuationProvider provider =
             (ContinuationProvider)inMessage.get(ContinuationProvider.class.getName());
         if (provider == null) {
-            throw new IllegalArgumentException("Continuation not supported. Please ensure that all servlets and servlet filters support async operations");
+            throw new IllegalArgumentException(
+                "Continuation not supported. " 
+                + "Please ensure that all servlets and servlet filters support async operations");
         }
         cont = provider.getContinuation();
         initialSuspend = true;
