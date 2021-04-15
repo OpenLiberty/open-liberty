@@ -45,7 +45,7 @@ instrument.classesExcludes: com/ibm/ws/security/common/jwk/internal/resources/*.
     com.ibm.wsspi.org.osgi.service.component.annotations;version=latest, \
     com.ibm.ws.com.google.gson.2.2.4;version=latest,\
     com.ibm.ws.org.jose4j;version=latest,\
-    com.ibm.ws.org.apache.commons.codec;version=latest, \
+    io.openliberty.org.apache.commons.codec;version=latest, \
     com.ibm.websphere.javaee.servlet.3.0;version=latest, \
     com.ibm.websphere.security;version=latest, \
     com.ibm.ws.security;version=latest, \
@@ -70,5 +70,5 @@ instrument.classesExcludes: com/ibm/ws/security/common/jwk/internal/resources/*.
     com.ibm.ws.org.objenesis:objenesis;version=1.0, \
     com.ibm.ws.kernel.boot;version=latest, \
     com.ibm.ws.security.test.common;version=latest, \
-    commons-logging:commons-logging;version=1.1.3
+    io.openliberty.org.apache.commons.logging;version=latest
 

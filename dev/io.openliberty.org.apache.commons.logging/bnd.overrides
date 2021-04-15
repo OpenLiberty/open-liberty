@@ -1,0 +1,4 @@
+-include= ~../cnf/resources/bnd/rejar.props
+bVersion=1.2
+
+Bundle-SymbolicName: io.openliberty.org.apache.commons.logging

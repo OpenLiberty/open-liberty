@@ -54,4 +54,6 @@ tested.features: \
   org.apache.wink:wink-common;version=1.4,\
   org.json:json;version=20080701,\
   io.openliberty.com.fasterxml.jackson;version=latest,\
-  io.openliberty.com.fasterxml.jackson.jaxrs;version=latest
+  io.openliberty.com.fasterxml.jackson.jaxrs;version=latest,\
+  io.openliberty.org.apache.commons.logging;version=latest,\
+  io.openliberty.org.apache.commons.codec;version=latest

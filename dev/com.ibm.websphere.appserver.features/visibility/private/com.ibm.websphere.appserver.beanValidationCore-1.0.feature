@@ -13,7 +13,7 @@ IBM-App-ForceRestart: install, \
  com.ibm.ws.org.apache.commons.collections, \
  com.ibm.ws.javaee.dd, \
  com.ibm.ws.javaee.dd.common, \
- com.ibm.ws.org.apache.commons.logging.1.0.3, \
+ io.openliberty.org.apache.commons.logging, \
  com.ibm.ws.beanvalidation
 kind=ga
 edition=core

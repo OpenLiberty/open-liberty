@@ -46,4 +46,6 @@ tested.features: mpfaulttolerance-1.0,\
 	com.ibm.ws.security;version=latest,\
 	com.ibm.websphere.security;version=latest,\
 	com.ibm.websphere.javaee.cdi.1.2;version=latest,\
-	com.ibm.ws.microprofile.faulttolerance_repeat_tests;version=latest
+	com.ibm.ws.microprofile.faulttolerance_repeat_tests;version=latest,\
+        io.openliberty.org.apache.commons.logging;version=latest,\
+        io.openliberty.org.apache.commons.codec;version=latest
