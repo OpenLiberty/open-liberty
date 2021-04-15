@@ -1257,6 +1257,11 @@
       <version>3.1.18</version>
     </dependency>
     <dependency>
+      <groupId>org.apache.cxf</groupId>
+      <artifactId>cxf-tools-wadlto-jaxrs</artifactId>
+      <version>3.4.3</version>
+    </dependency>
+    <dependency>
       <groupId>org.apache.deltaspike.cdictrl</groupId>
       <artifactId>deltaspike-cdictrl-api</artifactId>
       <version>1.5.0</version>
