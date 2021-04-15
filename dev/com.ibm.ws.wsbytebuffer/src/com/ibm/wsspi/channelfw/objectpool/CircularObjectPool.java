@@ -10,7 +10,7 @@
  *******************************************************************************/
 package com.ibm.wsspi.channelfw.objectpool;
 
-import com.ibm.websphere.channelfw.osgi.WsByteBufferBundle;
+import com.ibm.websphere.wsbytebuffer.osgi.WsByteBufferBundle;
 
 /**
  * Supplies basic object pooling functionality. This class can be wrapped by

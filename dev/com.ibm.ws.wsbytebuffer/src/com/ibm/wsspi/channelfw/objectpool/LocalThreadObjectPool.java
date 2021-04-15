@@ -10,10 +10,10 @@
  *******************************************************************************/
 package com.ibm.wsspi.channelfw.objectpool;
 
-import com.ibm.websphere.channelfw.osgi.WsByteBufferBundle;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.bytebuffer.internal.ChannelFrameworkConstants;
+import com.ibm.websphere.wsbytebuffer.osgi.WsByteBufferBundle;
+import com.ibm.ws.bytebuffer.internal.WsByteBufferConstants;
 
 /**
  * this object is now the same as the CircularObjectPool, without sync blocks
@@ -48,7 +48,7 @@ public class LocalThreadObjectPool implements ObjectPool {
     /**
      * Trace Component
      */
-    private static final TraceComponent tc = Tr.register(LocalThreadObjectPool.class, ChannelFrameworkConstants.BASE_TRACE_NAME, ChannelFrameworkConstants.BASE_BUNDLE);
+    private static final TraceComponent tc = Tr.register(LocalThreadObjectPool.class, WsByteBufferConstants.BASE_TRACE_NAME, WsByteBufferConstants.BASE_BUNDLE);
 
     /**
      * Creates an object pool.

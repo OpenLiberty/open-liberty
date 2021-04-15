@@ -11,10 +11,11 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-Bundle-Name: Channel Framework
+Bundle-Name: WsByteBuffer
 Bundle-SymbolicName: com.ibm.ws.wsbytebuffer; singleton:=true
 Bundle-Description: Provides WsByteBuffer buffer functionality
 
+# TODO
 WS-TraceGroup: ChannelFramework
 
 IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml

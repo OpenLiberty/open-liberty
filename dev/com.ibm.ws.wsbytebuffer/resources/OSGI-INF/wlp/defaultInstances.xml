@@ -8,19 +8,3 @@
     Contributors:
         IBM Corporation - initial API and implementation
  -->
-<server>
-
-    <!-- The documentation for this variable states that the value here should
-         be the fully qualified host name of the system. It should be the name
-         of the system that the customer wishes to use, particularly on a
-         multi-homed system (multiple NICs, multiple mapped names, etc).
-         It should not be set to things like "*", although we have no way to
-         enforce that. Also, we do not require configurations reference this
-         variable, but its use is encouraged. -->
-	<variable name="defaultHostName" value="localhost" />
-
-	<tcpOptions id="defaultTCPOptions" service.ranking="-1" />
-
-	<udpOptions id="defaultUDPOptions" service.ranking="-1" />
-
-</server>

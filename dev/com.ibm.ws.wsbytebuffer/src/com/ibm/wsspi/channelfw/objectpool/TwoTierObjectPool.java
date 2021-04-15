@@ -14,7 +14,7 @@ import java.util.Hashtable;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.bytebuffer.internal.ChannelFrameworkConstants;
+import com.ibm.ws.bytebuffer.internal.WsByteBufferConstants;
 
 /**
  * A two-tiered object pool uses a global shared pool along with threadlocal
@@ -28,7 +28,7 @@ public class TwoTierObjectPool implements ObjectPool {
     private ThreadLocal<LocalThreadObjectPool> threadLocals = null;
     // main pool
     private CircularObjectPool mainPool = null;
-    // factory to creaet new objects for this pool
+    // factory to create new objects for this pool
     private ObjectFactory factory;
     // tracking table
     private Hashtable<Object, Object> inUseTable = null;
@@ -44,7 +44,7 @@ public class TwoTierObjectPool implements ObjectPool {
     /**
      * Trace Component
      */
-    private static final TraceComponent tc = Tr.register(TwoTierObjectPool.class, ChannelFrameworkConstants.BASE_TRACE_NAME, ChannelFrameworkConstants.BASE_BUNDLE);
+    private static final TraceComponent tc = Tr.register(TwoTierObjectPool.class, WsByteBufferConstants.BASE_TRACE_NAME, WsByteBufferConstants.BASE_BUNDLE);
 
     /**
      * Construct a two tier pool with one tier using the LocalThreadObjectPool
@@ -240,7 +240,8 @@ public class TwoTierObjectPool implements ObjectPool {
     /**
      * @return Object[]
      */
-    public Object[] getInUseTable() {
+    @SuppressWarnings("rawtypes")
+	public Object[] getInUseTable() {
         return (((Hashtable) inUseTable.clone()).keySet().toArray());
     }
 

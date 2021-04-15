@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.websphere.channelfw.osgi;
+package com.ibm.websphere.wsbytebuffer.osgi;
 
 import java.util.Map;
 import java.util.Queue;
@@ -57,8 +57,8 @@ public class WsByteBufferBundle implements ServerQuiesceListener {
 
     /** Trace service */
     private static final TraceComponent tc = Tr.register(WsByteBufferBundle.class,
-                                                         com.ibm.ws.bytebuffer.internal.ChannelFrameworkConstants.BASE_TRACE_NAME,
-                                                         com.ibm.ws.bytebuffer.internal.ChannelFrameworkConstants.BASE_BUNDLE);
+                                                         com.ibm.ws.bytebuffer.internal.WsByteBufferConstants.BASE_TRACE_NAME,
+                                                         com.ibm.ws.bytebuffer.internal.WsByteBufferConstants.BASE_BUNDLE);
 
     /**
      * Active HttpDispatcher instance. May be null between deactivate and activate
@@ -185,7 +185,6 @@ public class WsByteBufferBundle implements ServerQuiesceListener {
         // the server is fully started, but before the "smarter planet" message has been output. Use this signal to run tasks, mostly likely tasks that will
         // finish the port listening logic, that need to run at the end of server startup
 
-        Callable<?> task;
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(this, tc, "WsByteBuffer signaled- Server Completely Started signal received");
         }
@@ -305,10 +304,10 @@ public class WsByteBufferBundle implements ServerQuiesceListener {
     }
 
     /**
-     * Access the channel framework's {@link java.util.concurrent.ExecutorService} to
+     * Access the {@link java.util.concurrent.ExecutorService} to
      * use for work dispatch.
      *
-     * @return the executor service instance to use within the channel framework
+     * @return the executor service instance to use
      */
     public static ExecutorService getExecutorService() {
         WsByteBufferBundle c = instance.get();
@@ -406,9 +405,9 @@ public class WsByteBufferBundle implements ServerQuiesceListener {
     }
 
     /**
-     * Access the channel framework's {@link ApproximateTime} service.
+     * Access the {@link ApproximateTime} service.
      *
-     * @return the approximate time service instance to use within the channel framework
+     * @return the approximate time service instance to use
      */
     public static long getApproxTime() {
         return QuickApproxTime.getApproxTime();

@@ -12,4 +12,4 @@
  * @version 1.0
  */
 @org.osgi.annotation.versioning.Version("1.0")
-package com.ibm.websphere.channelfw.osgi;
+package com.ibm.websphere.wsbytebuffer.osgi;
