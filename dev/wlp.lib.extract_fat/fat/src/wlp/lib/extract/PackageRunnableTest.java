@@ -93,6 +93,14 @@ public class PackageRunnableTest {
 
         outputAutoFVTDirectory = new File("output/servers/", serverName);
         Log.info(c, method, "outputAutoFVTDirectory: " + outputAutoFVTDirectory.getAbsolutePath());
+
+        // Remove the runnable jar if it exists from other test runs...
+        if (runnableJar.exists()) {
+            Log.info(c, method, "Removing " + runnableJar.getAbsolutePath() + " as it existed at the start of a test.");
+            assertTrue("Unable to delete runnableJar at " + runnableJar.getAbsolutePath(), runnableJar.delete());
+        } else {
+            Log.info(c, method, runnableJar.getAbsolutePath() + " did not exist.");
+        }
     }
 
     @BeforeClass
@@ -126,9 +134,9 @@ public class PackageRunnableTest {
         // Doesn't work on z/OS (because you can't package into a jar on z/OS)
         assumeTrue(!System.getProperty("os.name").equals("z/OS"));
 
-        String stdout = server.executeServerScript("package",
-                                                   new String[] { "--archive=" + runnableJar.getAbsolutePath(),
-                                                                  "--include=minify,runnable" }).getStdout();
+        String[] args = new String[] { "--archive=" + runnableJar.getAbsolutePath(), "--include=minify,runnable" };
+        Log.info(c, method, "package command parameters = " + Arrays.toString(args));
+        String stdout = server.executeServerScript("package", args).getStdout();
 
         String searchString = "Server " + serverName + " package complete";
         if (!stdout.contains(searchString)) {
@@ -140,17 +148,6 @@ public class PackageRunnableTest {
 
         // Validate the package was successful.  If not, log off the manifest.mf contents.
         boolean rc = validatePackageManifestExists();
-
-        // If we have an invalid package, save off the jar for troubleshooting.
-        if (rc == false) {
-            outputAutoFVTDirectory.mkdirs();
-            Log.info(c, method, "Copying directory from " +
-                                runnableJar.getAbsolutePath() + " to " +
-                                outputAutoFVTDirectory.getAbsolutePath() + "/" + serverName + ".jar");
-
-            File srcDir = new File(runnableJar.getAbsolutePath());
-            copyFile(srcDir, new File(outputAutoFVTDirectory.getAbsolutePath() + "/" + serverName + ".jar"));
-        }
 
         executeTheJar(extractDirectory1, false, true, false);
         checkDirStructure(extractDirectory1, true);
@@ -174,6 +171,7 @@ public class PackageRunnableTest {
         // Doesn't work on z/OS (because you can't package into a jar on z/OS)
         assumeTrue(!System.getProperty("os.name").equals("z/OS"));
 
+        Log.info(c, method, "*** This test is ONLY using --include=runnable, and does not include minify!!!!");
         String stdout = server.executeServerScript("package",
                                                    new String[] { "--archive=" + runnableJar.getAbsolutePath(),
                                                                   "--include=runnable" }).getStdout();
@@ -301,6 +299,7 @@ public class PackageRunnableTest {
      */
     private String executeTheJar(File extractDirectory, boolean useDummyUserDir, boolean useRunEnv, boolean useNormalStop) throws Exception, InterruptedException {
 
+        String method = "executeTheJar";
         if (!extractDirectory.exists()) {
             extractDirectory.mkdirs();
         }
@@ -310,7 +309,7 @@ public class PackageRunnableTest {
         assertTrue("Extract directory " + extractDirectory.getAbsolutePath() + " does not exist.", extractDirectory.exists());
 
         String[] cmd = { "java", "-jar", runnableJar.getAbsolutePath() };
-        Log.info(c, "executeTheJar", "Running command: " + Arrays.toString(cmd));
+        Log.info(c, method, "Running command: " + Arrays.toString(cmd));
         ProcessBuilder processBuilder = new ProcessBuilder(cmd);
         processBuilder.redirectErrorStream(true);
         if (useRunEnv == true) {
@@ -335,7 +334,7 @@ public class PackageRunnableTest {
 
             synchronized (proc) {
                 proc.wait(1000); // wait 1 second
-                Log.info(c, "executeTheJar", "Waiting for server to complete initialization - " + count + " seconds elapsed.");
+                Log.info(c, method, "Waiting for server to complete initialization - " + count + " seconds elapsed.");
             }
             found = outputReader.foundWatchFor();
             extractLoc = outputReader.extractLoc();
@@ -343,15 +342,15 @@ public class PackageRunnableTest {
         }
 
         if (!found) {
-            Log.info(c, "executeTheJar", "Process is alive: " + proc.isAlive());
+            Log.info(c, method, "Process is alive: " + proc.isAlive());
             // capture the messages.log for debugging test
             File messagesLog = new File(server.getInstallRoot(), "/usr/servers/" + serverName + "/logs/messages.log").getAbsoluteFile();
             if (messagesLog.exists()) {
                 Files.lines(messagesLog.toPath()).forEach((l) -> {
-                    Log.info(c, "executeTheJar", "MESSAGES LINE: " + l);
+                    Log.info(c, method, "MESSAGES LINE: " + l);
                 });
             } else {
-                Log.info(c, "executeTheJar", "No messages.log - " + messagesLog.getAbsolutePath());
+                Log.info(c, method, "No messages.log - " + messagesLog.getAbsolutePath());
             }
 
             // log the contents of the runnable jar's manifest.mf
@@ -360,13 +359,13 @@ public class PackageRunnableTest {
 
             for (Enumeration<JarEntry> e = jarFile.entries(); e.hasMoreElements();) {
                 JarEntry je = e.nextElement();
-                Log.info(c, "executeTheJar", "entry name = " + je.getName() + " entry size = " + je.getSize());
+                Log.info(c, method, "entry name = " + je.getName() + " entry size = " + je.getSize());
                 if (je.getName().equals("META-INF/MANIFEST.MF")) {
 
-                    Log.info(c, "executeTheJar", "=== Start dumping contents of manifest file ===");
+                    Log.info(c, method, "=== Start dumping contents of manifest file ===");
                     readJarEntryContent(jarFile, je);
                     manifestFound = true;
-                    Log.info(c, "executeTheJar", "=== End dumping contents of manifest file ===");
+                    Log.info(c, method, "=== End dumping contents of manifest file ===");
                 }
             }
 
@@ -375,6 +374,16 @@ public class PackageRunnableTest {
             }
 
             assertTrue("Runnable jar did not contain a META-INF/MANIFEST.MF file", manifestFound);
+
+            // If we have an invalid package, save off the jar for troubleshooting.
+            outputAutoFVTDirectory.mkdirs();
+            Log.info(c, method, "Copying directory from " +
+                                runnableJar.getAbsolutePath() + " to " +
+                                outputAutoFVTDirectory.getAbsolutePath() + "/" + serverName + ".jar");
+
+            File srcDir = new File(runnableJar.getAbsolutePath());
+            copyFile(srcDir, new File(outputAutoFVTDirectory.getAbsolutePath() + "/" + serverName + ".jar"));
+
         }
 
         assertTrue("Server did not start successfully in time.", found);
@@ -392,7 +401,7 @@ public class PackageRunnableTest {
             os.close();
         }
 
-        Log.info(c, "executeTheJar", "Waiting 30 seconds...to make sure all Liberty thread exiting.");
+        Log.info(c, method, "Waiting 30 seconds...to make sure all Liberty thread exiting.");
         Thread.sleep(30000); // wait 30 second
 
         return extractLoc;
