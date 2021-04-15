@@ -248,6 +248,7 @@ org.apache.cxf:cxf-tools-common:3.1.18
 org.apache.cxf:cxf-tools-common:3.4.3
 org.apache.cxf:cxf-tools-validator:3.4.3
 org.apache.cxf:cxf-tools-wadlto-jaxrs:3.1.18
+org.apache.cxf:cxf-tools-wadlto-jaxrs:3.4.3
 org.apache.deltaspike.cdictrl:deltaspike-cdictrl-api:1.5.0
 org.apache.deltaspike.cdictrl:deltaspike-cdictrl-weld:1.5.0
 org.apache.deltaspike.core:deltaspike-core-api:1.5.0
