@@ -30,7 +30,7 @@ Include-Resource: \
 
 # Components shared between jsf-2.3 and faces-3.0 
 Service-Component: \
-  com.ibm.ws.jsf_internal; \
+  io.openliberty.faces.internal; \
     implementation:=com.ibm.ws.jsf.extprocessor.JSFExtensionFactory; \
     provide:='com.ibm.wsspi.webcontainer.extension.ExtensionFactory'; \
     serializationService=com.ibm.ws.serialization.SerializationService; \
@@ -39,16 +39,16 @@ Service-Component: \
     greedy:="cdiJSFInitializerService"; \
     optional:="cdiJSFInitializerService"; \
     properties:="service.vendor=IBM", \
-  com.ibm.ws.myfaces.initializer; \
+  io.openliberty.myfaces.initializer; \
     implementation:=com.ibm.ws.jsf.ee.WASMyFacesContainerInitializer; \
     provide:=javax.servlet.ServletContainerInitializer; \
     properties:="service.vendor=IBM,service.ranking:Integer=101", \
-  com.ibm.ws.jsf.injection.class.list.collaborator; \
+  io.openliberty.faces.injection.class.list.collaborator; \
     implementation:=com.ibm.ws.jsf.shared.util.JSFInjectionClassListCollaborator ; \
     provide:='com.ibm.wsspi.webcontainer.collaborator.WebAppInjectionClassListCollaborator'; \
     immediate:=true; \
     properties:="service.vendor=IBM", \
-  com.ibm.ws.org.apache.myfaces_${replace;${bVersion};\\.;_}.ResourceProvider; \
+  io.openliberty.org.apache.myfaces_${replace;${bVersion};\\.;_}.ResourceProvider; \
     implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
     provide:=com.ibm.wsspi.classloading.ResourceProvider; \
     configuration-policy:=ignore; \
