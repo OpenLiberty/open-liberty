@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2020 IBM Corporation and others.
+ * Copyright (c) 2014, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,7 +20,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Set;
 import java.util.logging.Logger;
 
 import org.apache.commons.httpclient.HttpClient;
@@ -28,24 +27,23 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.ws.fat.util.LoggingTest;
-import com.ibm.ws.fat.util.SharedServer;
 
+import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
-public class AsyncWriteListenerHttpUnit extends LoggingTest {
+public class AsyncWriteListenerHttpUnit {
 
-    @ClassRule
-    public static SharedServer SHARED_SERVER = new SharedServer("servlet31_wcServer");
+    @Server("servlet31_wcServer")
+    public static LibertyServer server;
 
     private static final String LIBERTY_WRITE_LISTENER_FILTER_APP_NAME = "LibertyWriteListenerFilterTest";
     private static final String LIBERTY_READ_WRITE_LISTENER_APP_NAME = "LibertyReadWriteListenerTest";
@@ -79,39 +77,28 @@ public class AsyncWriteListenerHttpUnit extends LoggingTest {
     public static void setupClass() throws Exception {
         // SHARED_SERVER.getLibertyServer().stopServer(false, "SRVE8015E:.*");
         // Build the war app CDI12TestV2Injection.war and add the dependencies
-        WebArchive LibertyWriteListenerFilterApp = ShrinkHelper.buildDefaultApp(LIBERTY_WRITE_LISTENER_FILTER_APP_NAME + ".war",
+        WebArchive libertyWriteListenerFilterApp = ShrinkHelper.buildDefaultApp(LIBERTY_WRITE_LISTENER_FILTER_APP_NAME + ".war",
                                                                                 "com.ibm.ws.webcontainer.servlet_31_fat.libertywritelistenerfiltertest.war.writeListener");
-        LibertyWriteListenerFilterApp = (WebArchive) ShrinkHelper.addDirectory(LibertyWriteListenerFilterApp, "test-applications/LibertyWriteListenerFilterTest.war/resources");
-        WebArchive LibertyReadWriteListenerApp = ShrinkHelper.buildDefaultApp(LIBERTY_READ_WRITE_LISTENER_APP_NAME + ".war",
+        libertyWriteListenerFilterApp = (WebArchive) ShrinkHelper.addDirectory(libertyWriteListenerFilterApp, "test-applications/LibertyWriteListenerFilterTest.war/resources");
+        WebArchive libertyReadWriteListenerApp = ShrinkHelper.buildDefaultApp(LIBERTY_READ_WRITE_LISTENER_APP_NAME + ".war",
                                                                               "com.ibm.ws.webcontainer.servlet_31_fat.libertyreadwritelistenertest.war.readListener",
                                                                               "com.ibm.ws.webcontainer.servlet_31_fat.libertyreadwritelistenertest.war.writeListener",
                                                                               "com.ibm.ws.webcontainer.servlet_31_fat.libertyreadwritelistenertest.war.upgradeHandler");
-        LibertyReadWriteListenerApp = (WebArchive) ShrinkHelper.addDirectory(LibertyReadWriteListenerApp, "test-applications/LibertyReadWriteListenerTest.war/resources");
-        // Verify if the apps are in the server before trying to deploy them
-        if (SHARED_SERVER.getLibertyServer().isStarted()) {
-            Set<String> appInstalled = SHARED_SERVER.getLibertyServer().getInstalledAppNames(LIBERTY_WRITE_LISTENER_FILTER_APP_NAME);
-            LOG.info("addAppToServer : " + LIBERTY_WRITE_LISTENER_FILTER_APP_NAME + " already installed : " + !appInstalled.isEmpty());
+        libertyReadWriteListenerApp = (WebArchive) ShrinkHelper.addDirectory(libertyReadWriteListenerApp, "test-applications/LibertyReadWriteListenerTest.war/resources");
 
-            if (appInstalled.isEmpty())
-                ShrinkHelper.exportDropinAppToServer(SHARED_SERVER.getLibertyServer(), LibertyWriteListenerFilterApp);
+        // Export the applications.
+        ShrinkHelper.exportDropinAppToServer(server, libertyWriteListenerFilterApp);
+        ShrinkHelper.exportDropinAppToServer(server, libertyReadWriteListenerApp);
 
-            appInstalled = SHARED_SERVER.getLibertyServer().getInstalledAppNames(LIBERTY_READ_WRITE_LISTENER_APP_NAME);
-            LOG.info("addAppToServer : " + LIBERTY_READ_WRITE_LISTENER_APP_NAME + " already installed : " + !appInstalled.isEmpty());
-
-            if (appInstalled.isEmpty())
-                ShrinkHelper.exportDropinAppToServer(SHARED_SERVER.getLibertyServer(), LibertyReadWriteListenerApp);
-        }
-        SHARED_SERVER.startIfNotStarted();
-
-        SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* " + LIBERTY_READ_WRITE_LISTENER_APP_NAME);
-        SHARED_SERVER.getLibertyServer().waitForStringInLog("CWWKZ0001I.* " + LIBERTY_WRITE_LISTENER_FILTER_APP_NAME);
+        // Start the server and use the class name so we can find logs easily.
+        server.startServer(AsyncWriteListenerHttpUnit.class.getSimpleName() + ".log");
     }
 
     @AfterClass
     public static void testCleanup() throws Exception {
         // test cleanup
-        if (SHARED_SERVER.getLibertyServer() != null && SHARED_SERVER.getLibertyServer().isStarted()) {
-            SHARED_SERVER.getLibertyServer().stopServer("SRVE0918E:.*", "SRVE8015E:.*", "SRVE9007E:.*", "SRVE9009E:.*", "SRVE9005E:.*", "SRVE8015E:.*");
+        if (server != null && server.isStarted()) {
+            server.stopServer("SRVE0918E:.*", "SRVE8015E:.*", "SRVE9007E:.*", "SRVE9009E:.*", "SRVE9005E:.*", "SRVE8015E:.*");
         }
     }
 
@@ -119,7 +106,7 @@ public class AsyncWriteListenerHttpUnit extends LoggingTest {
     public void TestWrite_DontCheckisReady_fromWL() throws Exception {
         // Make sure the test framework knows that SRVE0918E is expected
 
-        SHARED_SERVER.getLibertyServer().setMarkToEndOfLog(SHARED_SERVER.getLibertyServer().getMatchingLogFile("trace.log"));
+        server.setMarkToEndOfLog(server.getMatchingLogFile("trace.log"));
         String testToCall = "TestWrite_DontCheckisReady_fromWL";
 
         LOG.info("\n [WebContainer | AsyncWriteListenerHttpUnit]: *************" + testToCall + "*************");
@@ -129,7 +116,7 @@ public class AsyncWriteListenerHttpUnit extends LoggingTest {
             assertEquals(expectedResponseSize, actualResponseSize);
             //Also check for exception in logs
 
-            String message = SHARED_SERVER.getLibertyServer().waitForStringInLogUsingMark("SRVE0918E");
+            String message = server.waitForStringInLogUsingMark("SRVE0918E");
             LOG.info(testToCall + " Entries found in log : " + message);
             assertNotNull("Could not find message", message);
 
@@ -137,7 +124,7 @@ public class AsyncWriteListenerHttpUnit extends LoggingTest {
             e.printStackTrace();
             fail(testToCall + " Exception from request: " + e.getMessage() + " ,exception is: " + e.toString());
         } finally {
-            SHARED_SERVER.getLibertyServer().setMarkToEndOfLog();
+            server.setMarkToEndOfLog();
         }
     }
 
@@ -146,7 +133,7 @@ public class AsyncWriteListenerHttpUnit extends LoggingTest {
     public void TestWriteFromServlet_AftersetWL() throws Exception {
         // Make sure the test framework knows that SRVE0918E is expected
 
-        SHARED_SERVER.getLibertyServer().setMarkToEndOfLog(SHARED_SERVER.getLibertyServer().getMatchingLogFile("trace.log"));
+        server.setMarkToEndOfLog(server.getMatchingLogFile("trace.log"));
         String testToCall = "TestWriteFromServlet_AftersetWL";
 
         LOG.info("\n [WebContainer | AsyncWriteListenerHttpUnit]: *************" + testToCall + "*************");
@@ -164,7 +151,7 @@ public class AsyncWriteListenerHttpUnit extends LoggingTest {
 
             //Also check for exception in logs
 
-            String message = SHARED_SERVER.getLibertyServer().waitForStringInLogUsingMark("SRVE0918E");
+            String message = server.waitForStringInLogUsingMark("SRVE0918E");
             LOG.info(testToCall + " Entries found in log : " + message);
             assertNotNull("Could not find message", message);
 
@@ -172,7 +159,7 @@ public class AsyncWriteListenerHttpUnit extends LoggingTest {
             e.printStackTrace();
             fail(testToCall + " Exception from request: " + e.getMessage() + " ,exception is: " + e.toString());
         } finally {
-            SHARED_SERVER.getLibertyServer().setMarkToEndOfLog();
+            server.setMarkToEndOfLog();
         }
     }
 
@@ -231,13 +218,13 @@ public class AsyncWriteListenerHttpUnit extends LoggingTest {
         String testToCall = "Test_ISE_SetWL_NonAsyncServlet";
         // Make sure the test framework knows that SRVE9014E is expected
 
-        SHARED_SERVER.getLibertyServer().setMarkToEndOfLog(SHARED_SERVER.getLibertyServer().getMatchingLogFile("trace.log"));
+        server.setMarkToEndOfLog(server.getMatchingLogFile("trace.log"));
         LOG.info("\n [WebContainer | AsyncWriteListenerHttpUnit]: *************" + testToCall + "*************");
         int responseCode = 0;
 
         try {
             HttpClient httpClient = new HttpClient();
-            PostMethod post = new PostMethod(SHARED_SERVER.getServerUrl(true, WRITE_LISTENER_SERVLET_FALSE_URL));
+            PostMethod post = new PostMethod("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + WRITE_LISTENER_SERVLET_FALSE_URL);
             post.addParameter("testKey", "testValue");
             post.setRequestHeader("TestToCall", testToCall);
 
@@ -261,7 +248,7 @@ public class AsyncWriteListenerHttpUnit extends LoggingTest {
             e.printStackTrace();
             fail(testToCall + " Exception from request: " + e.getMessage());
         } finally {
-            SHARED_SERVER.getLibertyServer().setMarkToEndOfLog();
+            server.setMarkToEndOfLog();
         }
     }
 
@@ -275,14 +262,14 @@ public class AsyncWriteListenerHttpUnit extends LoggingTest {
         String testToCall = "Test_ISE_setSecondWriteListener";
         // Make sure the test framework knows that SRVE9009E is expected
 
-        SHARED_SERVER.getLibertyServer().setMarkToEndOfLog(SHARED_SERVER.getLibertyServer().getMatchingLogFile("trace.log"));
+        server.setMarkToEndOfLog(server.getMatchingLogFile("trace.log"));
 
         LOG.info("\n [WebContainer | AsyncWriteListenerHttpUnit]: *************" + testToCall + "*************");
 
         try {
 
             HttpClient httpClient = new HttpClient();
-            PostMethod post = new PostMethod(SHARED_SERVER.getServerUrl(true, WRITE_LISTENER_SERVLET_URL));
+            PostMethod post = new PostMethod("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + WRITE_LISTENER_SERVLET_URL);
             post.setRequestHeader("TestToCall", testToCall);
             int responseCode = httpClient.executeMethod(post);
             LOG.info(testToCall + " Status Code = " + responseCode);
@@ -290,11 +277,11 @@ public class AsyncWriteListenerHttpUnit extends LoggingTest {
             String expectedData1 = "java.lang.IllegalStateException";
             String expectedData2 = "SRVE9009E";
 
-            String message = SHARED_SERVER.getLibertyServer().waitForStringInLogUsingMark(expectedData1);
+            String message = server.waitForStringInLogUsingMark(expectedData1);
             LOG.info(testToCall + " Entries found in log : " + message);
             assertNotNull("Could not find message", message);
 
-            message = SHARED_SERVER.getLibertyServer().waitForStringInLogUsingMark(expectedData2);
+            message = server.waitForStringInLogUsingMark(expectedData2);
             LOG.info(testToCall + " Entries found in log : " + message);
             assertNotNull("Could not find message", message);
 
@@ -316,7 +303,7 @@ public class AsyncWriteListenerHttpUnit extends LoggingTest {
             e.printStackTrace();
             fail("Exception from request: " + e.getMessage());
         } finally {
-            SHARED_SERVER.getLibertyServer().setMarkToEndOfLog();
+            server.setMarkToEndOfLog();
         }
     }
 
@@ -329,7 +316,7 @@ public class AsyncWriteListenerHttpUnit extends LoggingTest {
         LOG.info("\n [WebContainer | AsyncWriteListenerHttpUnit]: *************" + testToCall + "*************");
         try {
             HttpClient httpClient = new HttpClient();
-            PostMethod post = new PostMethod(SHARED_SERVER.getServerUrl(true, WRITE_LISTENER_SERVLET_URL));
+            PostMethod post = new PostMethod("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + WRITE_LISTENER_SERVLET_URL);
             post.setRequestHeader("TestToCall", testToCall);
             int responseCode = httpClient.executeMethod(post);
             LOG.info(testToCall + " Status Code = " + responseCode);
@@ -367,7 +354,7 @@ public class AsyncWriteListenerHttpUnit extends LoggingTest {
             final String ExpectedData = "javax.naming.NameNotFoundException: javax.naming.NameNotFoundException: java:comp/UserTransaction";
 
             HttpClient httpClient = new HttpClient();
-            PostMethod post = new PostMethod(SHARED_SERVER.getServerUrl(true, WRITE_LISTENER_SERVLET_URL));
+            PostMethod post = new PostMethod("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + WRITE_LISTENER_SERVLET_URL);
             post.setRequestHeader("TestToCall", testToCall);
 
             int responseCode = httpClient.executeMethod(post);
@@ -459,7 +446,7 @@ public class AsyncWriteListenerHttpUnit extends LoggingTest {
             StringBuilder sb = new StringBuilder();
             int PostDataSize = 1000;
             char[] buffer = new char[1000];
-            URL url = new URL(SHARED_SERVER.getServerUrl(true, WRITE_LISTENER_SERVLET_URL));
+            URL url = new URL("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + WRITE_LISTENER_SERVLET_URL);
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("POST");
             con.setRequestProperty("TestToCall", testcase);
@@ -497,7 +484,7 @@ public class AsyncWriteListenerHttpUnit extends LoggingTest {
         LOG.info("\n [WebContainer | AsyncWriteListenerHttpUnit]: *************" + testcase + "*************");
         try {
             HttpClient httpClient = new HttpClient();
-            PostMethod post = new PostMethod(SHARED_SERVER.getServerUrl(true, WRITE_LISTENER_SERVLET_URL));
+            PostMethod post = new PostMethod("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + WRITE_LISTENER_SERVLET_URL);
             int PostDataSize = 1000;
 
             post.addRequestHeader("ContentSizeSent", String.valueOf(PostDataSize));
@@ -535,7 +522,7 @@ public class AsyncWriteListenerHttpUnit extends LoggingTest {
             final String ExpectedData = "TestonError onError method is called ! TestonError";
 
             HttpClient httpClient = new HttpClient();
-            PostMethod post = new PostMethod(SHARED_SERVER.getServerUrl(true, WRITE_LISTENER_SERVLET_URL));
+            PostMethod post = new PostMethod("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + WRITE_LISTENER_SERVLET_URL);
             post.setRequestHeader("TestToCall", testcase);
 
             int responseCode = httpClient.executeMethod(post);
@@ -568,7 +555,7 @@ public class AsyncWriteListenerHttpUnit extends LoggingTest {
             int PostDataSize = 1000;
 
             HttpClient httpClient = new HttpClient();
-            PostMethod post = new PostMethod(SHARED_SERVER.getServerUrl(true, WRITE_LISTENER__FILTER_SERVLET_URL));
+            PostMethod post = new PostMethod("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + WRITE_LISTENER__FILTER_SERVLET_URL);
 
             post.addRequestHeader("TestToCall", testToCall);
             post.addRequestHeader("ContentSizeSent", String.valueOf(PostDataSize));
@@ -591,7 +578,7 @@ public class AsyncWriteListenerHttpUnit extends LoggingTest {
     public void TestWriteFromFilter_AftersetWL() throws Exception {
         // Make sure the test framework knows that SRVE0918E is expected
 
-        SHARED_SERVER.getLibertyServer().setMarkToEndOfLog(SHARED_SERVER.getLibertyServer().getMatchingLogFile("trace.log"));
+        server.setMarkToEndOfLog(server.getMatchingLogFile("trace.log"));
         String testToCall = "TestWriteFromFilter_AftersetWL";
 
         LOG.info("\n [WebContainer | AsyncWriteListenerHttpUnit]: *************" + testToCall + "*************");
@@ -609,7 +596,7 @@ public class AsyncWriteListenerHttpUnit extends LoggingTest {
 
             //Also check for exception in logs
 
-            String message = SHARED_SERVER.getLibertyServer().waitForStringInLogUsingMark("SRVE0918E");
+            String message = server.waitForStringInLogUsingMark("SRVE0918E");
             LOG.info(testToCall + " Entries found in log : " + message);
             assertNotNull("Could not find message :: ", message);
 
@@ -617,7 +604,7 @@ public class AsyncWriteListenerHttpUnit extends LoggingTest {
             e.printStackTrace();
             fail(testToCall + " Exception from request: " + e.getMessage() + " ,exception is: " + e.toString());
         } finally {
-            SHARED_SERVER.getLibertyServer().setMarkToEndOfLog();
+            server.setMarkToEndOfLog();
         }
     }
 
@@ -626,15 +613,15 @@ public class AsyncWriteListenerHttpUnit extends LoggingTest {
      * @return
      * @throws Exception
      *
-     *             This method will not take care of println
+     *                       This method will not take care of println
      */
     private int connectSendExpectDataSizeInResponse(int ExpectdResponseSize, String testtocall) throws Exception {
 
         String URLString = null;
         if (testtocall.equals("TestWriteFromFilter_AftersetWL")) {
-            URLString = SHARED_SERVER.getServerUrl(true, WRITE_LISTENER__FILTER_SERVLET_URL);
+            URLString = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + WRITE_LISTENER__FILTER_SERVLET_URL;
         } else
-            URLString = SHARED_SERVER.getServerUrl(true, WRITE_LISTENER_SERVLET_URL);
+            URLString = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + WRITE_LISTENER_SERVLET_URL;
 
         URL url = null;
         HttpURLConnection con = null;
@@ -686,7 +673,7 @@ public class AsyncWriteListenerHttpUnit extends LoggingTest {
      */
     private int sendOneorMultiChunks_ExpectDataSizeInResponse(int ExpectdResponseSize, String type, String noOfChunks, String testName) throws Exception {
 
-        String URLString = SHARED_SERVER.getServerUrl(true, WRITE_LISTENER_SERVLET_URL);
+        String URLString = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + WRITE_LISTENER_SERVLET_URL;
         URL url = null;
         HttpURLConnection con = null;
 
@@ -765,10 +752,5 @@ public class AsyncWriteListenerHttpUnit extends LoggingTest {
         LOG.info("End reading the response.  Expected response size : " + ExpectdResponseSize);
         return total;
 
-    }
-
-    @Override
-    protected SharedServer getSharedServer() {
-        return SHARED_SERVER;
     }
 }
