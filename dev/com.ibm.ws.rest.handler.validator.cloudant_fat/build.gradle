@@ -20,7 +20,7 @@ dependencies {
       			          'com.cloudant:cloudant-http:2.16.0'
       cloudantOld         'com.cloudant:cloudant-client:2.8.0',
                           'com.cloudant:cloudant-http:2.8.0'
-      cloudantCommonDeps  'commons-io:commons-io:2.6',
+      cloudantCommonDeps  project(':com.ibm.ws.org.apache.commons.io'),
       					  'com.google.code.gson:gson:2.8.0'
 }
 
